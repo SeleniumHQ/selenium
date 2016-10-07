@@ -18,18 +18,16 @@
 package org.openqa.selenium.server.htmlrunner;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assume.assumeFalse;
+import static org.junit.Assume.assumeNotNull;
 
 import com.google.common.base.StandardSystemProperty;
-import com.google.common.collect.ImmutableSortedSet;
 
 import com.thoughtworks.selenium.testing.SeleniumAppServer;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.openqa.selenium.Platform;
 import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.os.CommandLine;
 
@@ -39,24 +37,37 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.concurrent.TimeUnit;
 
-@RunWith(Parameterized.class)
 public class CoreSelfTest {
 
-  private final String browser;
-  private static AppServer server;
+  private String browser;
+  private AppServer server;
 
-  public CoreSelfTest(String browser) {
-    this.browser = browser;
+  @Before
+  public void detectBrowser() {
+    browser = System.getProperty("selenium.browser", "*googlechrome");
+
+    switch (browser) {
+      case "*firefox":
+        assumeNotNull(CommandLine.find("geckodriver"));
+        break;
+
+      case "*googlechrome":
+        assumeNotNull(CommandLine.find("chromedriver"));
+        break;
+
+      default:
+        assumeFalse("No known driver able to be found", false);
+    }
   }
 
-  @BeforeClass
-  public static void startTestServer() {
+  @Before
+  public void startTestServer() {
     server = new SeleniumAppServer();
     server.start();
   }
 
-  @AfterClass
-  public static void stopTestServer() {
+  @After
+  public void stopTestServer() {
     server.stop();
   }
 
@@ -83,30 +94,5 @@ public class CoreSelfTest {
         null);
 
     assertEquals("PASSED", result);
-  }
-
-  @Parameterized.Parameters
-  public static Iterable<String> parameters() {
-    ImmutableSortedSet.Builder<String> browsers = ImmutableSortedSet.naturalOrder();
-
-    if (CommandLine.find("chromedriver") != null) {
-      browsers.add("*googlechrome");
-    }
-
-    if (CommandLine.find("geckodriver") != null) {
-      browsers.add("*firefox");
-    }
-
-    switch (Platform.getCurrent().family()) {
-      case MAC:
-        //        browsers.add("*safari");
-        break;
-
-      case WINDOWS:
-        browsers.add("*MicrosoftEdge");
-        break;
-    }
-
-    return browsers.build();
   }
 }

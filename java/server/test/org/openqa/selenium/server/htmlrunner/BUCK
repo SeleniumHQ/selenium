@@ -1,10 +1,24 @@
+browsers = {'firefox': '*firefox', 'chrome': '*googlechrome'}
+for browser in browsers.keys():
+  java_test(
+    name = 'htmlrunner-' + browser,
+    srcs = ['CoreSelfTest.java'],
+    vm_args = ["-Dselenium.browser=%s" % browsers[browser]],
+    deps = [
+      ':tests',
+      '//java/client/src/org/openqa/selenium:selenium',
+      '//java/client/test/com/thoughtworks/selenium:tests',
+      '//java/client/test/org/openqa/selenium/environment:environment',
+      '//java/server/src/org/openqa/selenium/server/htmlrunner:htmlrunner',
+      '//third_party/java/guava:guava',
+      '//third_party/java/junit:junit',
+    ],
+  )
+
 java_test(
-  name = 'htmlrunner',
-  srcs = glob(['*.java']),
+  name ='tests',
+  srcs = glob(['*UnitTest.java']),
   deps = [
-    '//java/client/src/org/openqa/selenium:selenium',
-    '//java/client/test/com/thoughtworks/selenium:tests',
-    '//java/client/test/org/openqa/selenium/environment:environment',
     '//java/server/src/org/openqa/selenium/server/htmlrunner:htmlrunner',
     '//third_party/java/guava:guava',
     '//third_party/java/junit:junit',
