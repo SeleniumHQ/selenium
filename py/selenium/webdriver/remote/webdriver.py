@@ -894,7 +894,7 @@ class WebDriver(object):
             driver.get_window_position()
         """
         if self.w3c:
-            return self.execute(Command.W3C_GET_WINDOW_POSITION)
+            return self.execute(Command.W3C_GET_WINDOW_POSITION)['value']
         else:
             return self.execute(Command.GET_WINDOW_POSITION, {
                 'windowHandle': windowHandle})['value']
