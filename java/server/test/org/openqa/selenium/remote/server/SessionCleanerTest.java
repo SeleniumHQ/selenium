@@ -34,7 +34,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.internal.Killable;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.SessionId;
-import org.openqa.selenium.remote.server.testing.StaticTestSessions;
+import org.openqa.testing.StaticTestSessions;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
