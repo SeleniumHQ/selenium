@@ -93,7 +93,7 @@ public class GridNodeConfigurationTest {
     assertNull(gnc.nodePolling);
     assertNull(gnc.proxy);
     assertNull(gnc.register);
-    assertNull(gnc.registerCycle);
+    assertEquals(5000, gnc.registerCycle.intValue());
     assertNull(gnc.unregisterIfStillDownAfter);
 
     //not a @Parameter
@@ -108,6 +108,7 @@ public class GridNodeConfigurationTest {
 
     assertEquals("{\"capabilities\":[{\"browserName\":\"chrome\",\"platform\":\"LINUX\"}],"
                + "\"nodeStatusCheckTimeout\":5000,"
+               + "\"registerCycle\":5000,"
                + "\"custom\":{},"
                + "\"maxSession\":1,"
                + "\"debug\":false,"
