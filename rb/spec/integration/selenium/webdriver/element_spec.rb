@@ -31,7 +31,7 @@ module Selenium
         it 'should raise if different element receives click' do
           driver.navigate.to url_for('click_tests/overlapping_elements.html')
           element_error = 'Other element would receive the click: <div id="over"><\/div>'
-          error = /Element is not clickable at point \(\d+, \d+\)\. #{element_error}/
+          error = /is not clickable at point \(\d+, \d+\)\. #{element_error}/
           expect { driver.find_element(id: 'contents').click }
             .to raise_error(Selenium::WebDriver::Error::UnknownError, error)
         end
