@@ -88,7 +88,6 @@ class ErrorHandler(object):
         status = response.get('status', None)
         if status is None or status == ErrorCode.SUCCESS:
             return
-
         value = None
         message = response.get("message", "")
         screen = response.get("screen", "")
@@ -98,7 +97,7 @@ class ErrorHandler(object):
             if value_json and isinstance(value_json, basestring):
                 import json
                 try:
-                    value = json.loads(value_json)
+                    value = json.loads(value_json)['value']
                     status = value.get('error', None)
                     if status is None:
                         status = value["status"]

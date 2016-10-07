@@ -176,7 +176,7 @@ class WebDriver(object):
                 capabilities[k].update(v)
         if browser_profile:
             capabilities['desiredCapabilities']['firefox_profile'] = browser_profile.encoded
-        response = self.execute(Command.NEW_SESSION, capabilities)
+        response = self.execute(Command.NEW_SESSION, capabilities)['value']
         self.session_id = response['sessionId']
         self.capabilities = response['value']
 
@@ -894,7 +894,7 @@ class WebDriver(object):
             driver.get_window_position()
         """
         if self.w3c:
-            return self.execute(Command.W3C_GET_WINDOW_POSITION)
+            return self.execute(Command.W3C_GET_WINDOW_POSITION)['value']
         else:
             return self.execute(Command.GET_WINDOW_POSITION, {
                 'windowHandle': windowHandle})['value']
