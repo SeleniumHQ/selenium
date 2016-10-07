@@ -1,0 +1,17 @@
+java_library(name = 'test-base',
+  srcs = glob([
+    '*.java',
+  ]),
+  deps = [
+    '//third_party/java/guava:guava',
+    '//java/client/src/org/openqa/selenium/remote:remote',
+    '//java/server/src/org/openqa/selenium/remote/server:server',
+    '//java/server/src/org/openqa/selenium/remote/server:sessions',
+    '//third_party/java/mockito:mockito',
+    '//third_party/java/servlet:servlet-api',
+  ],
+  visibility = [
+    '//java/server/test/org/openqa/selenium/...',
+    '//java/server/test/org/openqa/grid/...',
+  ],
+)

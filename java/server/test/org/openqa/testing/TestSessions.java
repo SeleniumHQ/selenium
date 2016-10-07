@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.remote.server.testing;
+package org.openqa.testing;
 
 import static org.mockito.Mockito.mock;
 

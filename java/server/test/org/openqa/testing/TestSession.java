@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.remote.server.testing;
+package org.openqa.testing;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;

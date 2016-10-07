@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.remote.server.testing;
+package org.openqa.testing;
 
 import com.google.common.base.Charsets;
 import com.google.common.collect.Maps;
