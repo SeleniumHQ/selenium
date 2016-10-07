@@ -8,13 +8,8 @@ java_library(name = 'javascript',
     '//third_party/java/hamcrest:hamcrest',
     '//third_party/java/junit:junit',
     '//third_party/java/guava:guava',
-
-  #     "//java/client/test/org/openqa/selenium:base",
-#     "//java/client/test/org/openqa/selenium/environment",
-#     "//java/client/test/org/openqa/selenium/testing/drivers",
-#     "//third_party/java/guava",
-#     "//third_party/java/junit",
   ],
   visibility = [
+    '//javascript/...',
   ],
 )
