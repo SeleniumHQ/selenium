@@ -38,48 +38,48 @@ public class TestVisibility extends InternalSelenseTestBase {
     try {
       assertFalse(selenium.isVisible("visibleParagraph"));
       fail("expected failure");
-    } catch (Throwable e) {
+    } catch (Throwable ignored) {
     }
     try {
       assertTrue(selenium.isVisible("hiddenParagraph"));
       fail("expected failure");
-    } catch (Throwable e) {
+    } catch (Throwable ignored) {
     }
     try {
       assertTrue(selenium.isVisible("suppressedParagraph"));
       fail("expected failure");
-    } catch (Throwable e) {
+    } catch (Throwable ignored) {
     }
     try {
       assertTrue(selenium.isVisible("classSuppressedParagraph"));
       fail("expected failure");
-    } catch (Throwable e) {
+    } catch (Throwable ignored) {
     }
     try {
       assertTrue(selenium.isVisible("jsClassSuppressedParagraph"));
       fail("expected failure");
-    } catch (Throwable e) {
+    } catch (Throwable ignored) {
     }
     try {
       assertTrue(selenium.isVisible("hiddenSubElement"));
       fail("expected failure");
-    } catch (Throwable e) {
+    } catch (Throwable ignored) {
     }
     try {
       assertTrue(selenium.isVisible("suppressedSubElement"));
       fail("expected failure");
-    } catch (Throwable e) {
+    } catch (Throwable ignored) {
     }
     try {
       assertTrue(selenium.isVisible("jsHiddenParagraph"));
       fail("expected failure");
-    } catch (Throwable e) {
+    } catch (Throwable ignored) {
     }
     verifyFalse(selenium.isVisible("hiddenInput"));
     try {
       assertTrue(selenium.isVisible("nonExistentElement"));
       fail("expected failure");
-    } catch (Throwable e) {
+    } catch (Throwable ignored) {
     }
   }
 }

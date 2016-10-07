@@ -34,27 +34,27 @@ public class TestEditable extends InternalSelenseTestBase {
     try {
       assertFalse(selenium.isEditable("normal_text"));
       fail("expected failure");
-    } catch (Throwable e) {
+    } catch (Throwable ignored) {
     }
     try {
       assertFalse(selenium.isEditable("normal_select"));
       fail("expected failure");
-    } catch (Throwable e) {
+    } catch (Throwable ignored) {
     }
     try {
       assertTrue(selenium.isEditable("disabled_text"));
       fail("expected failure");
-    } catch (Throwable e) {
+    } catch (Throwable ignored) {
     }
     try {
       assertTrue(selenium.isEditable("disabled_select"));
       fail("expected failure");
-    } catch (Throwable e) {
+    } catch (Throwable ignored) {
     }
     try {
       assertTrue(selenium.isEditable("fake_input"));
       fail("expected failure");
-    } catch (Throwable e) {
+    } catch (Throwable ignored) {
     }
   }
 }

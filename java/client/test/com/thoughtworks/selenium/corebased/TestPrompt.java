@@ -35,7 +35,7 @@ public class TestPrompt extends InternalSelenseTestBase {
       if (second >= 60) fail("timeout");
       try {
         if (selenium.isPromptPresent()) break;
-      } catch (Exception e) {
+      } catch (Exception ignored) {
       }
       Thread.sleep(1000);
     }

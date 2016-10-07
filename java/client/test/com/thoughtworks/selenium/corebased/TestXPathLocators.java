@@ -56,12 +56,12 @@ public class TestXPathLocators extends InternalSelenseTestBase {
     try {
       assertTrue(selenium.isElementPresent("xpath=id('foo')//applet2"));
       fail("expected failure");
-    } catch (Throwable e) {
+    } catch (Throwable ignored) {
     }
     try {
       assertTrue(selenium.isElementPresent("xpath=//a[0}"));
       fail("expected failure");
-    } catch (Throwable e) {
+    } catch (Throwable ignored) {
     }
 
     // These cases are now covered by the "in play attributes" optimization.

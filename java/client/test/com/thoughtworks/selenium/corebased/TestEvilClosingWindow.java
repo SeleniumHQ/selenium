@@ -36,7 +36,7 @@ public class TestEvilClosingWindow extends InternalSelenseTestBase {
       assertTrue(selenium.getLocation().matches(
           "^[\\s\\S]*/tests/html/test_select_window_popup\\.html$"));
       fail("expected failure");
-    } catch (Throwable e) {
+    } catch (Throwable ignored) {
     }
   }
 }

@@ -32,7 +32,7 @@ public class TestElementPresent extends InternalSelenseTestBase {
       if (second >= 60) fail("timeout");
       try {
         if (!selenium.isElementPresent("aLink")) break;
-      } catch (Exception e) {
+      } catch (Exception ignored) {
       }
       Thread.sleep(1000);
     }
@@ -43,7 +43,7 @@ public class TestElementPresent extends InternalSelenseTestBase {
       if (second >= 60) fail("timeout");
       try {
         if (selenium.isElementPresent("aLink")) break;
-      } catch (Exception e) {
+      } catch (Exception ignored) {
       }
       Thread.sleep(1000);
     }

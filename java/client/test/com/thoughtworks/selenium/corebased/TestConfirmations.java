@@ -33,7 +33,7 @@ public class TestConfirmations extends InternalSelenseTestBase {
       if (second >= 60) fail("timeout");
       try {
         if (selenium.isConfirmationPresent()) break;
-      } catch (Exception e) {
+      } catch (Exception ignored) {
       }
       Thread.sleep(1000);
     }

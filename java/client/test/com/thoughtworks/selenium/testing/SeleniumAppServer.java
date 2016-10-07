@@ -33,7 +33,7 @@ public class SeleniumAppServer extends JettyAppServer {
     addServlet(context, "/cachedContentTest", CachedContentServlet.class);
   }
 
-  protected File findRootOfRcTestPages() {
+  private File findRootOfRcTestPages() {
     return InProject.locate("java/server/test/org/openqa/selenium");
   }
 

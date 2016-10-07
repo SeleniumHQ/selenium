@@ -26,13 +26,8 @@ public enum UnexpectedAlertBehaviour {
 
   private String text;
 
-  private UnexpectedAlertBehaviour(String text) {
+  UnexpectedAlertBehaviour(String text) {
     this.text = text;
-  }
-
-  @Override
-  public String toString() {
-    return String.valueOf(text);
   }
 
   public static UnexpectedAlertBehaviour fromString(String text) {
@@ -44,5 +39,10 @@ public enum UnexpectedAlertBehaviour {
       }
     }
     return null;
+  }
+
+  @Override
+  public String toString() {
+    return String.valueOf(text);
   }
 }
