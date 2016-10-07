@@ -150,7 +150,7 @@ public class FirefoxProfileTest {
   @Test
   public void shouldInstallExtensionFromZip() throws IOException {
     FirefoxProfile profile = new FirefoxProfile();
-    profile.addExtension(InProject.locate(FIREBUG_PATH));
+    profile.addExtension(InProject.locate(FIREBUG_PATH).toFile());
     File profileDir = profile.layoutOnDisk();
     File extensionDir = new File(profileDir, "extensions/firebug@software.joehewitt.com");
     assertTrue(extensionDir.exists());
@@ -159,7 +159,7 @@ public class FirefoxProfileTest {
   @Test
   public void shouldInstallExtensionFromDirectory() throws IOException {
     FirefoxProfile profile = new FirefoxProfile();
-    File extension = InProject.locate(FIREBUG_PATH);
+    File extension = InProject.locate(FIREBUG_PATH).toFile();
     File unzippedExtension = FileHandler.unzip(new FileInputStream(extension));
     profile.addExtension(unzippedExtension);
     File profileDir = profile.layoutOnDisk();

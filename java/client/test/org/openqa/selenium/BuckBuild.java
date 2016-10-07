@@ -50,7 +50,7 @@ public class BuckBuild {
   }
 
   public Path go() throws IOException {
-    Path projectRoot = InProject.locate("Rakefile").toPath().getParent();
+    Path projectRoot = InProject.locate("Rakefile").getParent();
 
     if (!isInDevMode()) {
       // we should only need to do this when we're in dev mode
@@ -140,7 +140,7 @@ public class BuckBuild {
 
   private void downloadBuckPexIfNecessary(ImmutableList.Builder<String> builder)
     throws IOException {
-    Path projectRoot = InProject.locate("Rakefile").getParentFile().toPath();
+    Path projectRoot = InProject.locate("Rakefile").getParent();
     String buckVersion = new String(Files.readAllBytes(projectRoot.resolve(".buckversion"))).trim();
 
     Path pex = projectRoot.resolve("buck-out/crazy-fun/" + buckVersion + "/buck.pex");

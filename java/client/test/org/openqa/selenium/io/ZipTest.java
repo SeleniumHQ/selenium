@@ -33,6 +33,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -97,20 +98,20 @@ public class ZipTest {
 
   @Test
   public void testCanUnzipASingleEntry() throws IOException {
-    File source = InProject.locate(
+    Path source = InProject.locate(
         "java/client/test/org/openqa/selenium/internal/single-file.zip");
 
-    zip.unzip(source, outputDir);
+    zip.unzip(source.toFile(), outputDir);
 
     assertTrue(new File(outputDir, "example.txt").exists());
   }
 
   @Test
   public void testCanUnzipAComplexZip() throws IOException {
-    File source = InProject.locate(
+    Path source = InProject.locate(
         "java/client/test/org/openqa/selenium/internal/subfolders.zip");
 
-    zip.unzip(source, outputDir);
+    zip.unzip(source.toFile(), outputDir);
 
     assertTrue(new File(outputDir, "example.txt").exists());
     assertTrue(new File(outputDir, "subdir/foodyfun.txt").exists());

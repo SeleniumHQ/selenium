@@ -19,8 +19,10 @@ package org.openqa.selenium.testing;
 
 import org.openqa.selenium.WebDriverException;
 
-import java.io.File;
 import java.io.FileNotFoundException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class InProject {
   /**
@@ -31,14 +33,14 @@ public class InProject {
    * @throws org.openqa.selenium.WebDriverException wrapped FileNotFoundException if file could not
    *         be found
    */
-  public static File locate(String path) {
-    File dir = new File(".").getAbsoluteFile();
-    while (dir != null) {
-      File needle = new File(dir, path);
-      if (needle.exists()) {
+  public static Path locate(String path) {
+    Path dir = Paths.get(".").toAbsolutePath();
+    while (dir != null && !dir.equals(dir.getParent())) {
+      Path needle = dir.resolve(path);
+      if (Files.exists(needle)) {
         return needle;
       }
-      dir = dir.getParentFile();
+      dir = dir.getParent();
     }
 
     throw new WebDriverException(new FileNotFoundException(

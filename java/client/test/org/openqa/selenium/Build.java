@@ -75,7 +75,7 @@ public class Build {
     }
     command.addAll(targets);
     ProcessBuilder builder = new ProcessBuilder(command);
-    builder.directory(InProject.locate("Rakefile").getParentFile());
+    builder.directory(InProject.locate("Rakefile").getParent().toFile());
     builder.redirectErrorStream(true);
     return builder;
   }
