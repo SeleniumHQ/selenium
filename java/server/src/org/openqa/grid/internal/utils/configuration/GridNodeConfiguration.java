@@ -155,7 +155,7 @@ public class GridNodeConfiguration extends GridConfiguration {
     names = "-registerCycle",
     description = "<Integer> in ms : specifies how often the node will try to register itself again. Allows administrator to restart the hub without restarting (or risk orphaning) registered nodes. Must be specified with the \"-register\" option"
   )
-  public Integer registerCycle;
+  public Integer registerCycle = 5000;
 
   @Expose
   @Parameter(
