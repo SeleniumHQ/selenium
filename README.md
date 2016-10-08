@@ -1,3 +1,19 @@
+## Table of Contents
+- [Documentation](#documentation)
+- [Pull Requests](#pull-requests)
+- [Building](#building)
+  - [Buck](#buck)
+- [Requirements](#requirements)
+  - [Optional Requirements](#optional-requirements)
+  - [Internet Explorer Driver](#internet-explorer-driver)
+- [Common Tasks](#common-tasks)
+- [Tour](#tour)
+- [Maven POM files](#maven-pom-files)
+- [Build Output](#build-output)
+- [Help with *go*](#help-with-go)
+  - [Maven _per se_](#maven-_per-se_)
+  - [Useful Resources](#useful-resources)
+
 # Selenium
 
 Selenium is an umbrella project encapsulating a variety of tools and 

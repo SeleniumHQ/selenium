@@ -1,3 +1,21 @@
+## Table of Contents
+- [Contributing to Selenium](#contributing-to-selenium)
+  - [Issue Contributions](#issue-contributions)
+  - [Documentation Contributions](#documentation-contributions)
+  - [Code Contributions](#code-contributions)
+    - [Step 1: Fork](#step-1-fork)
+      - [Dependencies](#dependencies)
+      - [License Headers](#license-headers)
+    - [Step 2: Branch](#step-2-branch)
+    - [Step 3: Commit](#step-3-commit)
+    - [Step 4: Rebase](#step-4-rebase)
+    - [Step 5: Test](#step-5-test)
+    - [Step 6: Sign the CLA](#step-6-sign-the-cla)
+    - [Step 7: Push](#step-7-push)
+    - [Step 8: Integration](#step-8-integration)
+  - [Stages of an Issue or PR](#stages-of-an-issue-or-pr)
+  - [Communication](#communication)
+
 # Contributing to Selenium
 
 The Selenium project welcomes contributions from everyone. There are a
