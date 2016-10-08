@@ -1,4 +1,6 @@
 # Selenium
+[![star this repo](http://githubbadges.com/star.svg?user=seleniumhq&repo=selenium&style=flat&color=fff&background=007ec6)](https://github.com/seleniumhq/selenium)
+[![fork this repo](http://githubbadges.com/fork.svg?user=seleniumhq&repo=selenium&style=flat&color=fff&background=007ec6)](https://github.com/seleniumhq/selenium/fork)
 
 Selenium is an umbrella project encapsulating a variety of tools and 
 libraries enabling web browser automation. Selenium specifically 
