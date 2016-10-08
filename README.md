@@ -1,4 +1,4 @@
-# Selenium
+# Selenium [![Build Status](https://travis-ci.org/SeleniumHQ/selenium.svg?branch=master)](https://travis-ci.org/SeleniumHQ/selenium)
 
 Selenium is an umbrella project encapsulating a variety of tools and 
 libraries enabling web browser automation. Selenium specifically 
