@@ -22,12 +22,16 @@ import org.junit.Test;
 import org.openqa.grid.selenium.GridLauncherV3;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.io.IOUtils;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.net.UrlChecker;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.support.ui.FluentWait;
 
+import java.io.IOException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -49,6 +53,15 @@ public class GridViaCommandLineTest {
     String[] nodeArgs = {"-role", "node", "-hub", "http://localhost:" + hubPort, "-browser", "browserName=chrome,maxInstances=1", "-port", nodePort.toString()};
     GridLauncherV3.main(nodeArgs);
     urlChecker.waitUntilAvailable(100, TimeUnit.SECONDS, new URL(String.format("http://localhost:%d/wd/hub/status", nodePort)));
+
+    new FluentWait<URL>(new URL(String.format("http://localhost:%d/grid/console", hubPort))).withTimeout(5, TimeUnit.SECONDS).pollingEvery(50, TimeUnit.MILLISECONDS)
+      .until((URL u) -> {
+        try {
+          return IOUtils.readFully(u.openConnection().getInputStream()).contains("chrome");
+        } catch (IOException ioe) {
+          return false;
+        }
+      });
 
     WebDriver driver = new RemoteWebDriver(new URL(String.format("http://localhost:%d/wd/hub", hubPort)),
                                                    DesiredCapabilities.chrome());
