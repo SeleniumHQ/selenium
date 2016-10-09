@@ -26,9 +26,11 @@ import org.junit.Test;
 import org.openqa.grid.internal.mock.GridHelper;
 import org.openqa.grid.web.servlet.handler.RequestHandler;
 import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.support.ui.FluentWait;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * registering an already existing node assumes the node has been restarted, and all the resources
@@ -72,11 +74,7 @@ public class AddingProxyAgainFreesResources {
     // add the request to the queue
 
     handler2 = GridHelper.createNewSessionHandler(registry, ff);
-    new Thread(new Runnable() { // Thread safety reviewed
-      public void run() {
-        handler2.process();
-      }
-    }).start();
+    new Thread(() -> {handler2.process();}).start();
     // the 1 slot of the node is used.
     assertEquals(1, p1.getTotalUsed());
 
@@ -89,7 +87,9 @@ public class AddingProxyAgainFreesResources {
 
   @Test(timeout = 1000)
   public void validateRequest2isNowRunningOnTheNode() throws InterruptedException {
-    Thread.sleep(250);
+    FluentWait<RequestHandler> wait = new FluentWait<>(handler2);
+    wait.withTimeout(1, TimeUnit.SECONDS).pollingEvery(100, TimeUnit.MILLISECONDS)
+      .until((RequestHandler input) -> input.getSession() != null);
     assertNotNull(handler2.getSession());
   }
 
