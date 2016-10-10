@@ -70,6 +70,7 @@ for browser in browsers.keys():
     name = 'selenium-core-%s' % browser,
     vm_args = [
       '-Dselenium.browser=%s' % browsers[browser],
+      '-Dwebdriver.firefox.marionette=false',
       '-Djs.test.timeout=120000',
       '-Djs.test.dir=%s' % get_base_path(),
     ],
