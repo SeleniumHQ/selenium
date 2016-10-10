@@ -46,6 +46,7 @@ import org.openqa.selenium.testing.drivers.IgnoreComparitorUnitTest;
     IgnoreComparitorUnitTest.class,
     IndividualKeyboardActionsTest.class,
     IndividualMouseActionsTest.class,
+    KeysTest.class,
     LinuxEphemeralPortRangeDetectorTest.class,
     LoggingTest.class,
     NetworkUtilsTest.class,
