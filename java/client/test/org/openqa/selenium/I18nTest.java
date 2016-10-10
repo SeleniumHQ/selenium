@@ -90,7 +90,8 @@ public class I18nTest extends JUnit4TestBase {
   @Test
   @Ignore(
       value = {MARIONETTE, HTMLUNIT, CHROME},
-      reason = "CHROME: ChromeDriver only supports characters in the BMP")
+      reason = "CHROME: ChromeDriver only supports characters in the BMP" +
+               "MARIONETTE: Doesn't handle first codepoint correctly.")
   public void testEnteringSupplementaryCharacters() {
     assumeFalse("IE: versions less thank 10 have issue 5069",
                 TestUtilities.isInternetExplorer(driver) &&
