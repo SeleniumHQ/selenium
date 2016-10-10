@@ -14,33 +14,7 @@ env:
   global:
     - DISPLAY=:99.0
   matrix:
-    - TASK=build
-    - TASK=atoms
-    - TASK=java TARGET=java_small_tests
-    - TASK=java TARGET=chrome
-    - TASK=java TARGET=grid TOXENV=chrome
-    - TASK=rb TARGET=unit-test
-    - TASK=rb TARGET=chrome-test
-    - TASK=rb TARGET=firefox-test
-    - TASK=rb TARGET=ff-legacy-test
-    - TASK=rb TARGET=phantomjs-test
-    - TASK=rb TARGET=remote-chrome-test
-    - TASK=rb TARGET=remote-firefox-test
-    - TASK=rb TARGET=remote-ff-legacy-test
-    - TASK=rb TARGET=remote-phantomjs-test
-    - TASK=py TOXENV=py27-chrome
-    - TASK=py TOXENV=py27-firefox
-    - TASK=py TOXENV=py27-marionette
-    - TASK=py TOXENV=py27-phantomjs
-    - TASK=py TOXENV=py27-remote
-matrix:
-  fast_finish: true
-  allow_failures:
-    - env: TASK=rb TARGET=remote-firefox-test
-    - env: TASK=py TOXENV=py27-chrome
-    - env: TASK=py TOXENV=py27-firefox
-    - env: TASK=py TOXENV=py27-marionette
-    - env: TASK=py TOXENV=py27-remote
+    - TASK=py TOXENV=py27-remote RUST_BACKTRACE=1
 before_script:
   - sh -e /etc/init.d/xvfb start
 script:
@@ -108,7 +82,9 @@ script:
       if [[ $TASK == "py" ]]; then
         ./go py_prep_for_install_release
         pip install --user tox-travis
-        tox -- --verbose --instafail
+        tox -- --verbose --instafail -x
+        echo "============ GECKODRIVER.LOG ============"
+        cat geckodriver.log
       fi
   - |
       if [[ $TASK == "rb" ]]; then
