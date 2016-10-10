@@ -39,6 +39,8 @@ import static org.openqa.selenium.remote.DriverCommand.GET_PAGE_SOURCE;
 import static org.openqa.selenium.remote.DriverCommand.GET_WINDOW_HANDLES;
 import static org.openqa.selenium.remote.DriverCommand.IS_ELEMENT_DISPLAYED;
 import static org.openqa.selenium.remote.DriverCommand.MAXIMIZE_CURRENT_WINDOW;
+import static org.openqa.selenium.remote.DriverCommand.SEND_KEYS_TO_ACTIVE_ELEMENT;
+import static org.openqa.selenium.remote.DriverCommand.SEND_KEYS_TO_ELEMENT;
 import static org.openqa.selenium.remote.DriverCommand.SET_ALERT_VALUE;
 import static org.openqa.selenium.remote.DriverCommand.SET_CURRENT_WINDOW_POSITION;
 import static org.openqa.selenium.remote.DriverCommand.SET_CURRENT_WINDOW_SIZE;
@@ -49,6 +51,8 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.io.Resources;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonPrimitive;
 
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.internal.WebElementToJsonConverter;
@@ -57,6 +61,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * A command codec that adheres to the W3C's WebDriver wire protocol.
@@ -165,6 +171,28 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
 
       case IS_ELEMENT_DISPLAYED:
         return executeAtom("isDisplayed.js", asElement(parameters.get("id")));
+
+      case SEND_KEYS_TO_ACTIVE_ELEMENT:
+      case SEND_KEYS_TO_ELEMENT:
+        HashMap<String, Object> amended = new HashMap<>(parameters);
+        // convert "value" to an array of UTF-8 bytes. We have a list of charsequences. Iterate over
+        // each of these and grab the code points, which we encode as json primitives. This allows
+        // gson to work its magic. Mostly.
+        String total = Stream.of((CharSequence[]) parameters.get("value"))
+          .flatMap(Stream::of)
+          .collect(Collectors.joining());
+
+        // String has the correct value here.
+        JsonArray newValue = new JsonArray();
+        int offset = 0;
+        while (offset < total.length()) {
+          int next = total.codePointAt(offset);
+          newValue.add(new JsonPrimitive(new StringBuilder().appendCodePoint(next).toString()));
+          offset += Character.charCount(next);
+        }
+
+        amended.put("value", newValue);
+        return amended;
 
       case SET_CURRENT_WINDOW_POSITION:
         return toScript(
