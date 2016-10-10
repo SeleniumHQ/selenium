@@ -103,7 +103,7 @@ script:
       fi
   - |
       if [[ $TASK == "atoms_tests" ]]; then
-        ./go //javascript/atoms:test_$TARGET:run //javascript/webdriver:test_$TARGET:run //javascript/selenium-atoms:test_$TARGET:run //javascript/selenium-core:test_$TARGET:run
+        ./go //javascript/atoms:atoms-$TARGET:run //javascript/webdriver:webdriver-$TARGET:run //javascript/selenium-atoms:selenium-atoms-$TARGET:run //javascript/selenium-core:selenium-core-$TARGET:run
       fi
   - |
       if [[ $TASK == "java" ]]; then
