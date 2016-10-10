@@ -111,7 +111,7 @@ public class SessionTimesOutTest {
     }
   }
 
-  @Test(timeout = 10000)
+  @Test(timeout = 20000)
   public void testTimeoutSlow() throws InterruptedException {
     Registry registry = Registry.newInstance();
     registry.getConfiguration().timeout = 1800;
