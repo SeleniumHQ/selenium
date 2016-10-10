@@ -16,6 +16,7 @@ env:
   matrix:
     - TASK=build
     - TASK=atoms
+    - TASK=atoms-tests TARGET=chrome
     - TASK=java TARGET=java_small_tests
     - TASK=java TARGET=chrome
     - TASK=java TARGET=grid TOXENV=chrome
@@ -99,6 +100,10 @@ script:
         ./go //javascript/ie-driver:atoms
         ./go //javascript/chrome-driver:atoms
         ./go //javascript/android-atoms:atoms ios_driver
+      fi
+  - |
+      if [[ $TASK == "atoms-test" ]]; then
+        ./go test_$TARGET //javascript/atoms:test_$TARGET:run //javascript/webdriver:test_$TARGET:run //javascript/selenium-atoms:test_$TARGET:run //javascript/selenium-core:test_$TARGET:run
       fi
   - |
       if [[ $TASK == "java" ]]; then
