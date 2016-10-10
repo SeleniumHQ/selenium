@@ -4,6 +4,7 @@ java_test(name = 'test-synthesized',
   ],
   vm_args = [
     '-Dselenium.browser=ff',
+    '-Dwebdriver.firefox.marionette=false',
   ],
   deps = [
     ':tests',
