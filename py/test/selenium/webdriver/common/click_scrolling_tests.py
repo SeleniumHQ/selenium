@@ -17,8 +17,11 @@
 
 import pytest
 
+from selenium.common.exceptions import (
+    ElementNotVisibleException,
+    MoveTargetOutOfBoundsException,
+    WebDriverException)
 from selenium.webdriver.common.by import By
-from selenium.common.exceptions import MoveTargetOutOfBoundsException
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
@@ -53,9 +56,9 @@ class TestClickScrolling(object):
         except MoveTargetOutOfBoundsException as e:
             AssertionError("Should not be out of bounds: %s" % e.msg)
 
+    @pytest.mark.xfail_marionette(
+        reason='https://github.com/w3c/webdriver/issues/408')
     def testShouldBeAbleToClickOnAnElementHiddenByOverflow(self, driver, pages):
-        if driver.capabilities['browserName'] == 'firefox' and driver.w3c == True:
-            pytest.xfail("Marionette and W3C: https://github.com/w3c/webdriver/issues/408")
         pages.load("scroll.html")
 
         link = driver.find_element(By.ID, "line8")
@@ -63,9 +66,10 @@ class TestClickScrolling(object):
         link.click()
         assert "line8" == driver.find_element(By.ID, "clicked").text
 
+    @pytest.mark.xfail_chrome(
+        reason='https://bugs.chromium.org/p/chromedriver/issues/detail?id=1536',
+        raises=WebDriverException)
     def testShouldBeAbleToClickOnAnElementHiddenByDoubleOverflow(self, driver, pages):
-        if driver.capabilities['browserName'] == 'chrome':
-            pytest.xfail("Chrome Issue: https://bugs.chromium.org/p/chromedriver/issues/detail?id=1536")
         pages.load("scrolling_tests/page_with_double_overflow_auto.html")
 
         driver.find_element(By.ID, "link").click()
@@ -85,9 +89,9 @@ class TestClickScrolling(object):
         yOffset = driver.execute_script("return arguments[0].scrollTop", list)
         assert 0 == yOffset, "Should not have scrolled"
 
+    @pytest.mark.xfail_chrome(
+        reason='https://bugs.chromium.org/p/chromedriver/issues/detail?id=1542')
     def testShouldNotScrollIfAlreadyScrolledAndElementIsInView(self, driver, pages):
-        if driver.capabilities['browserName'] == 'chrome':
-            pytest.xfail("Chrome Issue: https://bugs.chromium.org/p/chromedriver/issues/detail?id=1542")
         pages.load("scroll3.html")
         driver.find_element(By.ID, "button1").click()
         scrollTop = self.getScrollTop(driver)
@@ -99,16 +103,17 @@ class TestClickScrolling(object):
         driver.find_element(By.ID, "radio").click()
         # If we don't throw, we're good
 
+    @pytest.mark.xfail_marionette(
+        reason='https://github.com/w3c/webdriver/issues/408',
+        raises=ElementNotVisibleException)
     def testShouldScrollOverflowElementsIfClickPointIsOutOfViewButElementIsInView(self, driver, pages):
-        if driver.capabilities['browserName'] == 'firefox':
-            pytest.skip("Scrolling to containing frames isnt spec'ed https://github.com/w3c/webdriver/issues/408")
         pages.load("scroll5.html")
         driver.find_element(By.ID, "inner").click()
         assert "clicked" == driver.find_element(By.ID, "clicked").text
 
+    @pytest.mark.xfail_marionette(
+        reason='https://github.com/w3c/webdriver/issues/408')
     def testShouldBeAbleToClickElementInAFrameThatIsOutOfView(self, driver, pages):
-        if driver.capabilities['browserName'] == 'firefox':
-            pytest.skip("Scrolling to containing frames isnt spec'ed https://github.com/w3c/webdriver/issues/408")
         pages.load("scrolling_tests/page_with_frame_out_of_view.html")
         driver.switch_to.frame(driver.find_element_by_name("frame"))
         element = driver.find_element(By.NAME, "checkbox")
@@ -161,9 +166,9 @@ class TestClickScrolling(object):
     def getScrollTop(self, driver):
         return driver.execute_script("return document.body.scrollTop")
 
+    @pytest.mark.xfail_marionette(
+        reason='https://github.com/w3c/webdriver/issues/408')
     def testShouldBeAbleToClickElementInATallFrame(self, driver, pages):
-        if driver.capabilities['browserName'] == 'firefox':
-            pytest.skip("Scrolling to containing frames isnt spec'ed https://github.com/w3c/webdriver/issues/408")
         pages.load("scrolling_tests/page_with_tall_frame.html")
         driver.switch_to.frame(driver.find_element_by_name("tall_frame"))
         element = driver.find_element(By.NAME, "checkbox")

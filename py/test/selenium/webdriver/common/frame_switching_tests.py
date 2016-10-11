@@ -15,10 +15,19 @@
 # specific language governing permissions and limitations
 # under the License.
 
+try:
+    from http.client import BadStatusLine
+except ImportError:
+    from httplib import BadStatusLine
+
 import pytest
 
+from selenium.common.exceptions import (
+    NoSuchElementException,
+    NoSuchFrameException,
+    TimeoutException,
+    WebDriverException)
 from selenium.webdriver.common.by import By
-from selenium.common.exceptions import NoSuchElementException, NoSuchFrameException
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
@@ -150,7 +159,7 @@ class TestFrameSwitching(object):
         with pytest.raises(NoSuchFrameException):
             driver.switch_to.frame(27)
 
-    @pytest.mark.ignore_phantomjs
+    @pytest.mark.xfail_phantomjs(raises=WebDriverException)
     def testShouldBeAbleToSwitchToParentFrame(self, driver, pages):
         pages.load("frameset.html")
         driver.switch_to.frame(driver.find_element_by_name("fourth"))
@@ -158,7 +167,7 @@ class TestFrameSwitching(object):
         driver.switch_to.frame(driver.find_element_by_name("first"))
         assert driver.find_element(By.ID, "pageNumber").text == "1"
 
-    @pytest.mark.ignore_phantomjs
+    @pytest.mark.xfail_phantomjs(raises=WebDriverException)
     def testShouldBeAbleToSwitchToParentFrameFromASecondLevelFrame(self, driver, pages):
         pages.load("frameset.html")
         driver.switch_to.frame(driver.find_element_by_name("fourth"))
@@ -167,13 +176,13 @@ class TestFrameSwitching(object):
         driver.switch_to.frame(driver.find_element_by_name("child2"))
         assert driver.find_element(By.ID, "pageNumber").text == "11"
 
-    @pytest.mark.ignore_phantomjs
+    @pytest.mark.xfail_phantomjs(raises=WebDriverException)
     def testSwitchingToParentFrameFromDefaultContextIsNoOp(self, driver, pages):
         pages.load("xhtmlTest.html")
         driver.switch_to.parent_frame()
         assert driver.title == "XHTML Test Page"
 
-    @pytest.mark.ignore_phantomjs
+    @pytest.mark.xfail_phantomjs(raises=WebDriverException)
     def testShouldBeAbleToSwitchToParentFromAnIframe(self, driver, pages):
         pages.load("iframes.html")
         driver.switch_to.frame(0)
@@ -198,7 +207,7 @@ class TestFrameSwitching(object):
 
         WebDriverWait(driver, 3).until(EC.text_to_be_present_in_element((By.XPATH, '//p'), 'Success!'))
 
-    @pytest.mark.ignore_marionette
+    @pytest.mark.xfail_marionette(raises=TimeoutException)
     def testShouldFocusOnTheReplacementWhenAFrameFollowsALinkToA_TopTargetedPage(self, driver, pages):
         pages.load("frameset.html")
         driver.switch_to.frame(0)
@@ -265,21 +274,21 @@ class TestFrameSwitching(object):
         element = driver.find_element(By.XPATH, "//*[@id = 'changeme']")
         assert element is not None
 
-    @pytest.mark.ignore_phantomjs
+    @pytest.mark.xfail_phantomjs
     def testGetCurrentUrlReturnsTopLevelBrowsingContextUrl(self, driver, pages):
         pages.load("frameset.html")
         assert "frameset.html" in driver.current_url
         driver.switch_to.frame(driver.find_element_by_name("second"))
         assert "frameset.html" in driver.current_url
 
-    @pytest.mark.ignore_phantomjs
+    @pytest.mark.xfail_phantomjs
     def testGetCurrentUrlReturnsTopLevelBrowsingContextUrlForIframes(self, driver, pages):
         pages.load("iframes.html")
         assert "iframes.html" in driver.current_url
         driver.switch_to.frame(driver.find_element_by_id("iframe1"))
         assert "iframes.html" in driver.current_url
 
-    @pytest.mark.ignore_phantomjs
+    @pytest.mark.xfail_phantomjs(raises=BadStatusLine)
     def testShouldBeAbleToSwitchToTheTopIfTheFrameIsDeletedFromUnderUs(self, driver, pages):
         pages.load("frame_switching_tests/deletingFrame.html")
         driver.switch_to.frame(driver.find_element_by_id("iframe1"))
@@ -296,7 +305,7 @@ class TestFrameSwitching(object):
         driver.switch_to.frame(driver.find_element_by_id("iframe1"))
         WebDriverWait(driver, 3).until(EC.presence_of_element_located((By.ID, "success")))
 
-    @pytest.mark.ignore_phantomjs
+    @pytest.mark.xfail_phantomjs(raises=BadStatusLine)
     def testShouldBeAbleToSwitchToTheTopIfTheFrameIsDeletedFromUnderUsWithFrameIndex(self, driver, pages):
         pages.load("frame_switching_tests/deletingFrame.html")
         iframe = 0
@@ -311,7 +320,7 @@ class TestFrameSwitching(object):
         WebDriverWait(driver, 3).until(EC.frame_to_be_available_and_switch_to_it(iframe))
         WebDriverWait(driver, 3).until(EC.presence_of_element_located((By.ID, "success")))
 
-    @pytest.mark.ignore_phantomjs
+    @pytest.mark.xfail_phantomjs(raises=BadStatusLine)
     def testShouldBeAbleToSwitchToTheTopIfTheFrameIsDeletedFromUnderUsWithWebelement(self, driver, pages):
         pages.load("frame_switching_tests/deletingFrame.html")
         iframe = driver.find_element(By.ID, "iframe1")
@@ -328,9 +337,9 @@ class TestFrameSwitching(object):
         WebDriverWait(driver, 3).until(EC.frame_to_be_available_and_switch_to_it(iframe))
         WebDriverWait(driver, 3).until(EC.presence_of_element_located((By.ID, "success")))
 
-    @pytest.mark.ignore_marionette
-    @pytest.mark.ignore_phantomjs
-    @pytest.mark.ignore_firefox
+    @pytest.mark.xfail_chrome(raises=NoSuchElementException)
+    @pytest.mark.xfail_marionette(raises=WebDriverException)
+    @pytest.mark.xfail_phantomjs(raises=BadStatusLine)
     def testShouldNotBeAbleToDoAnythingTheFrameIsDeletedFromUnderUs(self, driver, pages):
         pages.load("frame_switching_tests/deletingFrame.html")
         driver.switch_to.frame(driver.find_element_by_id("iframe1"))
@@ -338,7 +347,7 @@ class TestFrameSwitching(object):
         killIframe = driver.find_element(By.ID, "killIframe")
         killIframe.click()
 
-        with pytest.raises(NoSuchElementException):
+        with pytest.raises(NoSuchFrameException):
             driver.find_element(By.ID, "killIframe").click()
 
     def testShouldReturnWindowTitleInAFrameset(self, driver, pages):

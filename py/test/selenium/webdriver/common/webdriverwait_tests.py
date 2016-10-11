@@ -114,9 +114,10 @@ class TestWebDriverWait(object):
         ignored = (InvalidElementStateException, StaleElementReferenceException)
         assert WebDriverWait(driver, 1, 0.7, ignored_exceptions=ignored).until_not(throwSERE)
 
+    @pytest.mark.xfail_marionette(
+        reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1297551',
+        raises=TimeoutException)
     def testExpectedConditionTitleIs(self, driver, pages):
-        if driver.capabilities['browserName'] == 'firefox' and driver.w3c:
-            pytest.xfail("Marionette issue: https://bugzilla.mozilla.org/show_bug.cgi?id=1297551")
         pages.load("blank.html")
         WebDriverWait(driver, 1).until(EC.title_is("blank"))
         driver.execute_script("setTimeout(function(){document.title='not blank'}, 200)")
@@ -125,9 +126,10 @@ class TestWebDriverWait(object):
         with pytest.raises(TimeoutException):
             WebDriverWait(driver, 0.7).until(EC.title_is("blank"))
 
+    @pytest.mark.xfail_marionette(
+        reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1297551',
+        raises=TimeoutException)
     def testExpectedConditionTitleContains(self, driver, pages):
-        if driver.capabilities['browserName'] == 'firefox' and driver.w3c:
-            pytest.xfail("Marionette issue: https://bugzilla.mozilla.org/show_bug.cgi?id=1297551")
         pages.load("blank.html")
         driver.execute_script("setTimeout(function(){document.title='not blank'}, 200)")
         WebDriverWait(driver, 1).until(EC.title_contains("not"))
@@ -152,9 +154,10 @@ class TestWebDriverWait(object):
         element = WebDriverWait(driver, 5).until(EC.visibility_of(hidden))
         assert element.is_displayed() is True
 
+    @pytest.mark.xfail_marionette(
+        reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1297551',
+        raises=TimeoutException)
     def testExpectedConditionTextToBePresentInElement(self, driver, pages):
-        if driver.capabilities['browserName'] == 'firefox' and driver.w3c:
-            pytest.xfail("Marionette issue: https://bugzilla.mozilla.org/show_bug.cgi?id=1297551")
         pages.load('booleanAttributes.html')
         with pytest.raises(TimeoutException):
             WebDriverWait(driver, 0.7).until(EC.text_to_be_present_in_element((By.ID, 'unwrappable'), 'Expected'))
@@ -170,9 +173,10 @@ class TestWebDriverWait(object):
         WebDriverWait(driver, 1).until(EC.text_to_be_present_in_element_value((By.ID, 'inputRequired'), 'Expected'))
         assert 'Example Expected text' == driver.find_element_by_id('inputRequired').get_attribute('value')
 
+    @pytest.mark.xfail_marionette(
+        reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1297551',
+        raises=TimeoutException)
     def testExpectedConditionFrameToBeAvailableAndSwitchToItByName(self, driver, pages):
-        if driver.capabilities['browserName'] == 'firefox' and driver.w3c:
-            pytest.xfail("Marionette issue: https://bugzilla.mozilla.org/show_bug.cgi?id=1297551")
         pages.load("blank.html")
         with pytest.raises(TimeoutException):
             WebDriverWait(driver, 1).until(EC.frame_to_be_available_and_switch_to_it('myFrame'))
@@ -180,9 +184,10 @@ class TestWebDriverWait(object):
         WebDriverWait(driver, 1).until(EC.frame_to_be_available_and_switch_to_it('myFrame'))
         assert 'click me' == driver.find_element_by_id('alertInFrame').text
 
+    @pytest.mark.xfail_marionette(
+        reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1297551',
+        raises=TimeoutException)
     def testExpectedConditionFrameToBeAvailableAndSwitchToItByLocator(self, driver, pages):
-        if driver.capabilities['browserName'] == 'firefox' and driver.w3c:
-            pytest.xfail("Marionette issue: https://bugzilla.mozilla.org/show_bug.cgi?id=1297551")
         pages.load("blank.html")
         with pytest.raises(TimeoutException):
             WebDriverWait(driver, 1).until(EC.frame_to_be_available_and_switch_to_it((By.ID, 'myFrame')))
@@ -190,9 +195,9 @@ class TestWebDriverWait(object):
         WebDriverWait(driver, 1).until(EC.frame_to_be_available_and_switch_to_it((By.ID, 'myFrame')))
         assert 'click me' == driver.find_element_by_id('alertInFrame').text
 
+    @pytest.mark.xfail_marionette(
+        reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1297551')
     def testExpectedConditionInvisiblityOfElementLocated(self, driver, pages):
-        if driver.capabilities['browserName'] == 'firefox' and driver.w3c:
-            pytest.xfail("Marionette issue: https://bugzilla.mozilla.org/show_bug.cgi?id=1297551")
         pages.load("javascriptPage.html")
         driver.execute_script("delayedShowHide(0, true)")
         with pytest.raises(TimeoutException):
@@ -201,9 +206,10 @@ class TestWebDriverWait(object):
         element = WebDriverWait(driver, 0.7).until(EC.invisibility_of_element_located((By.ID, 'clickToHide')))
         assert element.is_displayed() is False
 
+    @pytest.mark.xfail_marionette(
+        reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1297551',
+        raises=TimeoutException)
     def testExpectedConditionElementToBeClickable(self, driver, pages):
-        if driver.capabilities['browserName'] == 'firefox' and driver.w3c:
-            pytest.xfail("Marionette issue: https://bugzilla.mozilla.org/show_bug.cgi?id=1297551")
         pages.load("javascriptPage.html")
         with pytest.raises(TimeoutException):
             WebDriverWait(driver, 0.7).until(EC.element_to_be_clickable((By.ID, 'clickToHide')))
@@ -225,9 +231,10 @@ class TestWebDriverWait(object):
         with pytest.raises(StaleElementReferenceException):
             element.text
 
+    @pytest.mark.xfail_marionette(
+        reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1297551',
+        raises=TimeoutException)
     def testExpectedConditionElementToBeSelected(self, driver, pages):
-        if driver.capabilities['browserName'] == 'firefox' and driver.w3c:
-            pytest.xfail("Marionette issue: https://bugzilla.mozilla.org/show_bug.cgi?id=1297551")
         pages.load("formPage.html")
         element = driver.find_element_by_id('checky')
         with pytest.raises(TimeoutException):
@@ -236,9 +243,10 @@ class TestWebDriverWait(object):
         WebDriverWait(driver, 0.7).until(EC.element_to_be_selected(element))
         assert element.is_selected() is True
 
+    @pytest.mark.xfail_marionette(
+        reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1297551',
+        raises=TimeoutException)
     def testExpectedConditionElementLocatedToBeSelected(self, driver, pages):
-        if driver.capabilities['browserName'] == 'firefox' and driver.w3c:
-            pytest.xfail("Marionette issue: https://bugzilla.mozilla.org/show_bug.cgi?id=1297551")
         pages.load("formPage.html")
         element = driver.find_element_by_id('checky')
         with pytest.raises(TimeoutException):
@@ -247,9 +255,10 @@ class TestWebDriverWait(object):
         WebDriverWait(driver, 0.7).until(EC.element_located_to_be_selected((By.ID, 'checky')))
         assert element.is_selected() is True
 
+    @pytest.mark.xfail_marionette(
+        reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1297551',
+        raises=TimeoutException)
     def testExpectedConditionElementSelectionStateToBe(self, driver, pages):
-        if driver.capabilities['browserName'] == 'firefox' and driver.w3c:
-            pytest.xfail("Marionette issue: https://bugzilla.mozilla.org/show_bug.cgi?id=1297551")
         pages.load("formPage.html")
         element = driver.find_element_by_id('checky')
         WebDriverWait(driver, 0.7).until(EC.element_selection_state_to_be(element, False))
@@ -260,9 +269,10 @@ class TestWebDriverWait(object):
         WebDriverWait(driver, 0.7).until(EC.element_selection_state_to_be(element, True))
         assert element.is_selected() is True
 
+    @pytest.mark.xfail_marionette(
+        reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1297551',
+        raises=TimeoutException)
     def testExpectedConditionElementLocatedSelectionStateToBe(self, driver, pages):
-        if driver.capabilities['browserName'] == 'firefox' and driver.w3c:
-            pytest.xfail("Marionette issue: https://bugzilla.mozilla.org/show_bug.cgi?id=1297551")
         pages.load("formPage.html")
         element = driver.find_element_by_id('checky')
         WebDriverWait(driver, 0.7).until(EC.element_located_selection_state_to_be((By.ID, 'checky'), False))
@@ -273,11 +283,13 @@ class TestWebDriverWait(object):
         WebDriverWait(driver, 0.7).until(EC.element_located_selection_state_to_be((By.ID, 'checky'), True))
         assert element.is_selected() is True
 
+    @pytest.mark.xfail_marionette(
+        reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1297551',
+        raises=TimeoutException)
+    @pytest.mark.xfail_phantomjs(
+        reason='https://github.com/detro/ghostdriver/issues/20',
+        raises=WebDriverException)
     def testExpectedConditionAlertIsPresent(self, driver, pages):
-        if driver.capabilities['browserName'] == 'phantomjs':
-            pytest.xfail("phantomjs driver does not support alerts")
-        if driver.capabilities['browserName'] == 'firefox' and driver.w3c:
-            pytest.xfail("Marionette issue: https://bugzilla.mozilla.org/show_bug.cgi?id=1297551")
         pages.load('blank.html')
         with pytest.raises(TimeoutException):
             WebDriverWait(driver, 0.7).until(EC.alert_is_present())

@@ -32,7 +32,11 @@
 
 import pytest
 
-from selenium.common.exceptions import NoSuchElementException, NoSuchWindowException
+from selenium.common.exceptions import (
+    NoSuchElementException,
+    NoSuchWindowException,
+    TimeoutException,
+    WebDriverException)
 from selenium.webdriver.support.wait import WebDriverWait
 
 
@@ -121,9 +125,11 @@ class TestApiExample(object):
         elems = div.find_elements_by_tag_name("p")
         assert len(elems) == 1
 
+    @pytest.mark.xfail_marionette(
+        reason="W3C implementations can't switch to a window by name",
+        raises=TimeoutException,
+        run=False)
     def testSwitchToWindow(self, driver, pages):
-        if driver.w3c:
-            pytest.xfail("W3C implementations can't switch to a window by name")
         title_1 = "XHTML Test Page"
         title_2 = "We Arrive Here"
         switch_to_window_timeout = 5
@@ -221,9 +227,9 @@ class TestApiExample(object):
         assert visible
         assert not not_visible
 
+    @pytest.mark.xfail_phantomjs(
+        reason='https://github.com/detro/ghostdriver/issues/466')
     def testMoveWindowPosition(self, driver, pages):
-        if driver.capabilities['browserName'] == 'phantomjs':
-            pytest.xfail("phantomjs driver does not support moving the window position")
         pages.load("blank.html")
         loc = driver.get_window_position()
         # note can't test 0,0 since some OS's dont allow that location
@@ -252,12 +258,14 @@ class TestApiExample(object):
         assert size['width'] == newSize[0]
         assert size['height'] == newSize[1]
 
-    @pytest.mark.ignore_marionette
+    @pytest.mark.xfail_marionette(
+        raises=WebDriverException)
     def testGetLogTypes(self, driver, pages):
         pages.load("blank.html")
         assert isinstance(driver.log_types, list)
 
-    @pytest.mark.ignore_marionette
+    @pytest.mark.xfail_marionette(
+        raises=WebDriverException)
     def testGetLog(self, driver, pages):
         pages.load("blank.html")
         for log_type in driver.log_types:

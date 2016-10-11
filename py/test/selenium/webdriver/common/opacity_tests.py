@@ -22,7 +22,7 @@ from selenium.webdriver.common.by import By
 
 class TestOpacity(object):
 
-    @pytest.mark.ignore_ie
+    @pytest.mark.xfail_ie
     def testShouldBeAbleToClickOnElementsWithOpacityZero(self, driver, pages):
         pages.load("click_jacker.html")
         element = driver.find_element(By.ID, "clickJacker")
@@ -32,7 +32,7 @@ class TestOpacity(object):
         element.click()
         assert '1' == element.value_of_css_property("opacity")
 
-    @pytest.mark.ignore_ie
+    @pytest.mark.xfail_ie
     def testShouldBeAbleToSelectOptionsFromAnInvisibleSelect(self, driver, pages):
         pages.load("formPage.html")
         select = driver.find_element(By.ID, "invisi_select")
