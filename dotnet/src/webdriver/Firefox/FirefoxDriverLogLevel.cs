@@ -56,6 +56,11 @@ namespace OpenQA.Selenium.Firefox
         /// <summary>
         /// Represents the Fatal value, the least detailed logging level available.
         /// </summary>
-        Fatal
+        Fatal,
+
+        /// <summary>
+        /// Represents that the logging value is unspecified, and should be the default level.
+        /// </summary>
+        Default
     }
 }

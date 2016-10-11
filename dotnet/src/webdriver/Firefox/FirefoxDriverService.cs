@@ -33,11 +33,10 @@ namespace OpenQA.Selenium.Firefox
         private static readonly Uri FirefoxDriverDownloadUrl = new Uri("https://github.com/mozilla/geckodriver/releases");
 
         private bool connectToRunningBrowser;
-        private bool disableBrowserMultiprocessSupport;
         private int browserCommunicationPort = -1;
         private string browserBinaryPath = string.Empty;
         private string host = string.Empty;
-        private FirefoxDriverLogLevel loggingLevel = FirefoxDriverLogLevel.Fatal;
+        private FirefoxDriverLogLevel loggingLevel = FirefoxDriverLogLevel.Default;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FirefoxDriverService"/> class.
@@ -66,16 +65,6 @@ namespace OpenQA.Selenium.Firefox
         {
             get { return this.browserCommunicationPort; }
             set { this.browserCommunicationPort = value; }
-        }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether to disable multiprocess support
-        /// (otherwise known as "electrolysis" or "e10s") for Firefox.
-        /// </summary>
-        public bool DisableBrowserMultiprocessSupport
-        {
-            get { return this.disableBrowserMultiprocessSupport; }
-            set { this.disableBrowserMultiprocessSupport = value; }
         }
 
         /// <summary>
@@ -182,11 +171,6 @@ namespace OpenQA.Selenium.Firefox
             get
             {
                 StringBuilder argsBuilder = new StringBuilder();
-                if (this.disableBrowserMultiprocessSupport)
-                {
-                    argsBuilder.Append(" --no-e10s");
-                }
-
                 if (this.connectToRunningBrowser)
                 {
                     argsBuilder.Append(" --connect-existing");
@@ -212,7 +196,7 @@ namespace OpenQA.Selenium.Firefox
                     argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --host \"{0}\"", this.host);
                 }
 
-                if (this.loggingLevel != FirefoxDriverLogLevel.Fatal)
+                if (this.loggingLevel != FirefoxDriverLogLevel.Default)
                 {
                     argsBuilder.Append(string.Format(CultureInfo.InvariantCulture, " --log {0}", this.loggingLevel.ToString().ToLowerInvariant()));
                 }
