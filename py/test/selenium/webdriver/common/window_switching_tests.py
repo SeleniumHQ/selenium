@@ -50,6 +50,8 @@ class TestWindowSwitching(object):
 
     @pytest.mark.ignore_chrome
     def testShouldThrowNoSuchWindowExceptionOnAnAttemptToGetItsHandle(self, driver, pages):
+        if driver.capabilities['browserName'] == 'firefox' and driver.w3c:
+            pytest.xfail("Marionette Doesnt Throw: https://bugzilla.mozilla.org/show_bug.cgi?id=1309173")
         pages.load("xhtmlTest.html")
         current = driver.current_window_handle
         handles = driver.window_handles

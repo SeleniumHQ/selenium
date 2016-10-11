@@ -33,7 +33,8 @@ class TestAdvancedUserInteraction(object):
 
     def performDragAndDropWithMouse(self, driver, pages):
         """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
-        # self._before()
+        if driver.capabilities['browserName'] == 'firefox':
+            pytest.skip("Actions not available in Marionette. https://bugzilla.mozilla.org/show_bug.cgi?id=1292178")
         pages.load("draggableLists.html")
         dragReporter = driver.find_element_by_id("dragging_reports")
         toDrag = driver.find_element_by_id("rightitem-3")
@@ -55,6 +56,8 @@ class TestAdvancedUserInteraction(object):
 
     def testDraggingElementWithMouseMovesItToAnotherList(self, driver, pages):
         """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
+        if driver.capabilities['browserName'] == 'firefox':
+            pytest.skip("Actions not available in Marionette. https://bugzilla.mozilla.org/show_bug.cgi?id=1292178")
         self.performDragAndDropWithMouse(driver, pages)
         dragInto = driver.find_element_by_id("sortable1")
         assert 6 == len(dragInto.find_elements_by_tag_name("li"))
@@ -63,6 +66,8 @@ class TestAdvancedUserInteraction(object):
         """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface.
         Disabled since this test doesn't work with HTMLUNIT.
         """
+        if driver.capabilities['browserName'] == 'firefox':
+            pytest.skip("Actions not available in Marionette. https://bugzilla.mozilla.org/show_bug.cgi?id=1292178")
         self.performDragAndDropWithMouse(driver, pages)
         dragReporter = driver.find_element_by_id("dragging_reports")
         assert "Nothing happened. DragOut DropIn RightItem 3" == dragReporter.text
@@ -77,6 +82,8 @@ class TestAdvancedUserInteraction(object):
 
     def testDragAndDrop(self, driver, pages):
         """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
+        if driver.capabilities['browserName'] == 'firefox':
+            pytest.skip("Actions not available in Marionette. https://bugzilla.mozilla.org/show_bug.cgi?id=1292178")
         element_available_timeout = 15
         wait = WebDriverWait(self, element_available_timeout)
         pages.load("droppableItems.html")
@@ -104,6 +111,8 @@ class TestAdvancedUserInteraction(object):
 
     def testDoubleClick(self, driver, pages):
         """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
+        if driver.capabilities['browserName'] == 'firefox':
+            pytest.skip("Actions not available in Marionette. https://bugzilla.mozilla.org/show_bug.cgi?id=1292178")
         pages.load("javascriptPage.html")
         toDoubleClick = driver.find_element_by_id("doubleClickField")
 
@@ -115,6 +124,8 @@ class TestAdvancedUserInteraction(object):
 
     def testContextClick(self, driver, pages):
         """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
+        if driver.capabilities['browserName'] == 'firefox':
+            pytest.skip("Actions not available in Marionette. https://bugzilla.mozilla.org/show_bug.cgi?id=1292178")
         pages.load("javascriptPage.html")
         if driver.capabilities['browserName'] == 'phantomjs':
             pytest.xfail("phantomjs driver has an issue here")
@@ -128,6 +139,8 @@ class TestAdvancedUserInteraction(object):
 
     def testMoveAndClick(self, driver, pages):
         """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
+        if driver.capabilities['browserName'] == 'firefox':
+            pytest.skip("Actions not available in Marionette. https://bugzilla.mozilla.org/show_bug.cgi?id=1292178")
         pages.load("javascriptPage.html")
         toClick = driver.find_element_by_id("clickField")
 
@@ -141,6 +154,8 @@ class TestAdvancedUserInteraction(object):
     @pytest.mark.ignore_chrome
     def testCannotMoveToANullLocator(self, driver, pages):
         """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
+        if driver.capabilities['browserName'] == 'firefox':
+            pytest.skip("Actions not available in Marionette. https://bugzilla.mozilla.org/show_bug.cgi?id=1292178")
         pages.load("javascriptPage.html")
 
         with pytest.raises(AttributeError):
@@ -152,6 +167,8 @@ class TestAdvancedUserInteraction(object):
         """Copied from org.openqa.selenium.interactions.CombinedInputActionsTest.
         Disabled since this test doesn't work with HTMLUNIT.
         """
+        if driver.capabilities['browserName'] == 'firefox':
+            pytest.skip("Actions not available in Marionette. https://bugzilla.mozilla.org/show_bug.cgi?id=1292178")
         pages.load("formSelectionPage.html")
         options = driver.find_elements_by_tag_name("option")
         selectThreeOptions = ActionChains(driver) \
@@ -171,9 +188,12 @@ class TestAdvancedUserInteraction(object):
     @pytest.mark.ignore_chrome
     def testSelectingMultipleItems(self, driver, pages):
         """Copied from org.openqa.selenium.interactions.CombinedInputActionsTest."""
-        pages.load("selectableItems.html")
+        if driver.capabilities['browserName'] == 'firefox':
+            pytest.skip("Actions not available in Marionette. https://bugzilla.mozilla.org/show_bug.cgi?id=1292178")
         if driver.capabilities['browserName'] == 'phantomjs':
             pytest.xfail("phantomjs driver does not seem to select all the elements")
+
+        pages.load("selectableItems.html")
         reportingElement = driver.find_element_by_id("infodiv")
         assert "no info" == reportingElement.text
 
@@ -197,6 +217,8 @@ class TestAdvancedUserInteraction(object):
     def testMovingMouseBackAndForthPastViewPort(self, driver, pages):
         if driver.capabilities['browserName'] == 'phantomjs':
             pytest.xfail("phantomjs driver does not seem to trigger the events")
+        if driver.capabilities['browserName'] == 'firefox':
+            pytest.skip("Actions not available in Marionette. https://bugzilla.mozilla.org/show_bug.cgi?id=1292178")
         self._before(driver)
         pages.load("veryLargeCanvas.html")
 
@@ -240,6 +262,8 @@ class TestAdvancedUserInteraction(object):
         wait.until(expectedEventsFired)
 
     def testSendingKeysToActiveElementWithModifier(self, driver, pages):
+        if driver.capabilities['browserName'] == 'firefox':
+            pytest.skip("Actions not available in Marionette. https://bugzilla.mozilla.org/show_bug.cgi?id=1292178")
         pages.load("formPage.html")
         e = driver.find_element_by_id("working")
         e.click()

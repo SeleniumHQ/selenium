@@ -15,6 +15,8 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import pytest
+
 
 class TestEventFiring(object):
 
@@ -58,6 +60,8 @@ class TestEventFiring(object):
         assert result == "mouse down"
 
     def testShouldEmitOnChangeEventsWhenSelectingElements(self, driver, pages):
+        if driver.capabilities['browserName'] == 'firefox' and driver.w3c == True:
+            pytest.xfail("Marionette Issue: https://bugzilla.mozilla.org/show_bug.cgi?id=1309240")
         pages.load("javascriptPage.html")
         # Intentionally not looking up the select tag.  See selenium r7937 for details.
         allOptions = driver.find_elements_by_xpath("//select[@id='selector']//option")

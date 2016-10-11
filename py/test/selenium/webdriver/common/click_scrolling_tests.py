@@ -54,6 +54,8 @@ class TestClickScrolling(object):
             AssertionError("Should not be out of bounds: %s" % e.msg)
 
     def testShouldBeAbleToClickOnAnElementHiddenByOverflow(self, driver, pages):
+        if driver.capabilities['browserName'] == 'firefox' and driver.w3c == True:
+            pytest.xfail("Marionette and W3C: https://github.com/w3c/webdriver/issues/408")
         pages.load("scroll.html")
 
         link = driver.find_element(By.ID, "line8")
@@ -94,11 +96,15 @@ class TestClickScrolling(object):
         # If we don't throw, we're good
 
     def testShouldScrollOverflowElementsIfClickPointIsOutOfViewButElementIsInView(self, driver, pages):
+        if driver.capabilities['browserName'] == 'firefox':
+            pytest.skip("Scrolling to containing frames isnt spec'ed https://github.com/w3c/webdriver/issues/408")
         pages.load("scroll5.html")
         driver.find_element(By.ID, "inner").click()
         assert "clicked" == driver.find_element(By.ID, "clicked").text
 
     def testShouldBeAbleToClickElementInAFrameThatIsOutOfView(self, driver, pages):
+        if driver.capabilities['browserName'] == 'firefox':
+            pytest.skip("Scrolling to containing frames isnt spec'ed https://github.com/w3c/webdriver/issues/408")
         pages.load("scrolling_tests/page_with_frame_out_of_view.html")
         driver.switch_to.frame(driver.find_element_by_name("frame"))
         element = driver.find_element(By.NAME, "checkbox")
@@ -155,6 +161,8 @@ class TestClickScrolling(object):
         return driver.execute_script("return document.body.scrollTop")
 
     def testShouldBeAbleToClickElementInATallFrame(self, driver, pages):
+        if driver.capabilities['browserName'] == 'firefox':
+            pytest.skip("Scrolling to containing frames isnt spec'ed https://github.com/w3c/webdriver/issues/408")
         pages.load("scrolling_tests/page_with_tall_frame.html")
         driver.switch_to.frame(driver.find_element_by_name("tall_frame"))
         element = driver.find_element(By.NAME, "checkbox")

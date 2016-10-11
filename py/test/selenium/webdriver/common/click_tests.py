@@ -35,9 +35,13 @@ def clearCookies(request, driver):
 class TestClick(object):
 
     def testAddingACookieThatExpiredInThePast(self, driver):
+        if driver.capabilities['browserName'] == 'firefox' and driver.w3c:
+            pytest.xfail("Test is failing because of some state being leftover.")
         driver.find_element(By.ID, "overflowLink").click()
         assert driver.title == "XHTML Test Page"
 
     def testClickingALinkMadeUpOfNumbersIsHandledCorrectly(self, driver):
+        if driver.capabilities['browserName'] == 'firefox' and driver.w3c:
+            pytest.xfail("Marionette Issue: https://bugzilla.mozilla.org/show_bug.cgi?id=1309244")
         driver.find_element(By.LINK_TEXT, "333333").click()
         assert driver.title == "XHTML Test Page"
