@@ -727,6 +727,7 @@ nsCommandProcessor.prototype.newSession = function(response, parameters) {
     goog.log.info(nsCommandProcessor.LOG_,
         'Created a new session with id: ' + session.getId());
     this.getSessionCapabilities(response);
+    return;  // Response already sent
   }
 
   response.send();
