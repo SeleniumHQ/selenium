@@ -74,6 +74,7 @@ namespace Selenium
 	/// pattern.
 	/// </p>
 	/// </summary>
+    [Obsolete("The ISelenium interface and Selenium RC is deprecated. Please use WebDriver instead.")]
 	public interface ISelenium
 	{
 		/// <summary>
