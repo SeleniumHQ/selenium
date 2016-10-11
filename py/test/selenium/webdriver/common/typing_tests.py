@@ -18,6 +18,8 @@
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 
+import pytest
+
 
 class TestTyping(object):
 
@@ -172,9 +174,9 @@ class TestTyping(object):
         element.send_keys(numericLineCharsNonShifted)
         assert element.get_attribute("value") == numericLineCharsNonShifted
 
-    # @Ignore(value = {HTMLUNIT, CHROME_NON_WINDOWS, SELENESE, ANDROID},
-    # reason = "untested user agent")
     def testNumericShiftKeys(self, driver, pages):
+        if driver.capabilities['browserName'] == 'firefox' and driver.w3c:
+            pytest.xfail("Marionette issue: https://bugzilla.mozilla.org/show_bug.cgi?id=1255258")
         pages.load("javascriptPage.html")
         result = driver.find_element(by=By.ID, value="result")
         element = driver.find_element(by=By.ID, value="keyReporter")
@@ -191,6 +193,8 @@ class TestTyping(object):
         assert element.get_attribute("value") == lowerAlphas
 
     def testUppercaseAlphaKeys(self, driver, pages):
+        if driver.capabilities['browserName'] == 'firefox' and driver.w3c:
+            pytest.xfail("Marionette issue: https://bugzilla.mozilla.org/show_bug.cgi?id=1255258")
         pages.load("javascriptPage.html")
         result = driver.find_element(by=By.ID, value="result")
         element = driver.find_element(by=By.ID, value="keyReporter")
@@ -200,6 +204,8 @@ class TestTyping(object):
         assert "up: 16" in result.text.strip()
 
     def testAllPrintableKeys(self, driver, pages):
+        if driver.capabilities['browserName'] == 'firefox' and driver.w3c:
+            pytest.xfail("Marionette issue: https://bugzilla.mozilla.org/show_bug.cgi?id=1255258")
         pages.load("javascriptPage.html")
         result = driver.find_element(by=By.ID, value="result")
         element = driver.find_element(by=By.ID, value="keyReporter")
@@ -248,12 +254,16 @@ class TestTyping(object):
 
     # @Ignore(value = {HTMLUNIT, CHROME_NON_WINDOWS, SELENESE}, reason = "untested user agents")
     def testSpecialSpaceKeys(self, driver, pages):
+        if driver.capabilities['browserName'] == 'firefox' and driver.w3c:
+            pytest.xfail("Marionette issue: https://bugzilla.mozilla.org/show_bug.cgi?id=1255258")
         pages.load("javascriptPage.html")
         element = driver.find_element(by=By.ID, value="keyReporter")
         element.send_keys("abcd" + Keys.SPACE + "fgh" + Keys.SPACE + "ij")
         assert element.get_attribute("value") == "abcd fgh ij"
 
     def testNumberpadAndFunctionKeys(self, driver, pages):
+        if driver.capabilities['browserName'] == 'firefox' and driver.w3c:
+            pytest.xfail("Marionette issue: https://bugzilla.mozilla.org/show_bug.cgi?id=1255258")
         pages.load("javascriptPage.html")
         element = driver.find_element(by=By.ID, value="keyReporter")
         element.send_keys(

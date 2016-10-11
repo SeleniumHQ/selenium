@@ -122,6 +122,8 @@ class TestApiExample(object):
         assert len(elems) == 1
 
     def testSwitchToWindow(self, driver, pages):
+        if driver.w3c:
+            pytest.xfail("W3C implementations can't switch to a window by name")
         title_1 = "XHTML Test Page"
         title_2 = "We Arrive Here"
         switch_to_window_timeout = 5
