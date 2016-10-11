@@ -21,8 +21,8 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 
 class TestWindow(object):
-    @pytest.mark.ignore_chrome
-    @pytest.mark.ignore_ie
+
+    @pytest.mark.xfail_ie
     def testShouldMaximizeTheWindow(self, driver):
         resize_timeout = 5
         wait = WebDriverWait(driver, resize_timeout)

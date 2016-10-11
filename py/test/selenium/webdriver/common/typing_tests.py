@@ -172,9 +172,9 @@ class TestTyping(object):
         element.send_keys(numericLineCharsNonShifted)
         assert element.get_attribute("value") == numericLineCharsNonShifted
 
+    @pytest.mark.xfail_marionette(
+        reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1255258')
     def testNumericShiftKeys(self, driver, pages):
-        if driver.capabilities['browserName'] == 'firefox' and driver.w3c:
-            pytest.xfail("Marionette issue: https://bugzilla.mozilla.org/show_bug.cgi?id=1255258")
         pages.load("javascriptPage.html")
         result = driver.find_element(by=By.ID, value="result")
         element = driver.find_element(by=By.ID, value="keyReporter")
@@ -190,9 +190,9 @@ class TestTyping(object):
         element.send_keys(lowerAlphas)
         assert element.get_attribute("value") == lowerAlphas
 
+    @pytest.mark.xfail_marionette(
+        reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1255258')
     def testUppercaseAlphaKeys(self, driver, pages):
-        if driver.capabilities['browserName'] == 'firefox' and driver.w3c:
-            pytest.xfail("Marionette issue: https://bugzilla.mozilla.org/show_bug.cgi?id=1255258")
         pages.load("javascriptPage.html")
         result = driver.find_element(by=By.ID, value="result")
         element = driver.find_element(by=By.ID, value="keyReporter")
@@ -201,9 +201,9 @@ class TestTyping(object):
         assert element.get_attribute("value") == upperAlphas
         assert "up: 16" in result.text.strip()
 
+    @pytest.mark.xfail_marionette(
+        reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1255258')
     def testAllPrintableKeys(self, driver, pages):
-        if driver.capabilities['browserName'] == 'firefox' and driver.w3c:
-            pytest.xfail("Marionette issue: https://bugzilla.mozilla.org/show_bug.cgi?id=1255258")
         pages.load("javascriptPage.html")
         result = driver.find_element(by=By.ID, value="result")
         element = driver.find_element(by=By.ID, value="keyReporter")
@@ -248,17 +248,17 @@ class TestTyping(object):
         element.send_keys(Keys.LEFT, Keys.LEFT, Keys.BACK_SPACE)
         assert element.get_attribute("value") == "abcdfgi"
 
+    @pytest.mark.xfail_marionette(
+        reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1255258')
     def testSpecialSpaceKeys(self, driver, pages):
-        if driver.capabilities['browserName'] == 'firefox' and driver.w3c:
-            pytest.xfail("Marionette issue: https://bugzilla.mozilla.org/show_bug.cgi?id=1255258")
         pages.load("javascriptPage.html")
         element = driver.find_element(by=By.ID, value="keyReporter")
         element.send_keys("abcd" + Keys.SPACE + "fgh" + Keys.SPACE + "ij")
         assert element.get_attribute("value") == "abcd fgh ij"
 
+    @pytest.mark.xfail_marionette(
+        reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1255258')
     def testNumberpadAndFunctionKeys(self, driver, pages):
-        if driver.capabilities['browserName'] == 'firefox' and driver.w3c:
-            pytest.xfail("Marionette issue: https://bugzilla.mozilla.org/show_bug.cgi?id=1255258")
         pages.load("javascriptPage.html")
         element = driver.find_element(by=By.ID, value="keyReporter")
         element.send_keys(

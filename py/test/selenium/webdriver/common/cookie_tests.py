@@ -47,9 +47,8 @@ class TestCookie(object):
         returned = driver.execute_script('return document.cookie')
         assert cookie['name'] in returned
 
+    @pytest.mark.xfail_ie
     def testAddingACookieThatExpiredInThePast(self, cookie, driver):
-        if driver.name == 'internet explorer':
-            pytest.skip("Issue needs investigating")
         expired = cookie.copy()
         expired['expiry'] = calendar.timegm(time.gmtime()) - 1
         driver.add_cookie(expired)

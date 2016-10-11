@@ -17,7 +17,9 @@
 
 import pytest
 
-from selenium.common.exceptions import ElementNotVisibleException
+from selenium.common.exceptions import (
+    ElementNotVisibleException,
+    InvalidElementStateException)
 from selenium.webdriver.common.by import By
 
 
@@ -77,9 +79,8 @@ class TestVisibility(object):
         with pytest.raises(ElementNotVisibleException):
             element.click()
 
+    @pytest.mark.xfail_phantomjs(raises=InvalidElementStateException)
     def testShouldNotBeAbleToTypeAnElementThatIsNotDisplayed(self, driver, pages):
-        if driver.capabilities['browserName'] == 'phantomjs':
-            pytest.xfail("phantomjs driver throws the wrong exception")
         pages.load("javascriptPage.html")
         element = driver.find_element(by=By.ID, value="unclickable")
         with pytest.raises(ElementNotVisibleException):

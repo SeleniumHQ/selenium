@@ -48,9 +48,9 @@ class TestWindowSwitching(object):
         with pytest.raises(NoSuchWindowException):
             driver.switch_to.window("invalid name")
 
+    @pytest.mark.xfail_marionette(
+        reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1309173')
     def testShouldThrowNoSuchWindowExceptionOnAnAttemptToGetItsHandle(self, driver, pages):
-        if driver.capabilities['browserName'] == 'firefox' and driver.w3c:
-            pytest.xfail("Marionette Doesnt Throw: https://bugzilla.mozilla.org/show_bug.cgi?id=1309173")
         pages.load("xhtmlTest.html")
         current = driver.current_window_handle
         handles = driver.window_handles
@@ -64,7 +64,7 @@ class TestWindowSwitching(object):
         with pytest.raises(NoSuchWindowException):
             driver.current_window_handle
 
-    @pytest.mark.ignore_ie
+    @pytest.mark.xfail_ie
     def testShouldThrowNoSuchWindowExceptionOnAnyOperationIfAWindowIsClosed(self, driver, pages):
         pages.load("xhtmlTest.html")
         current = driver.current_window_handle
@@ -82,7 +82,7 @@ class TestWindowSwitching(object):
         with pytest.raises(NoSuchWindowException):
             driver.find_element_by_tag_name("body")
 
-    @pytest.mark.ignore_ie
+    @pytest.mark.xfail_ie
     def testShouldThrowNoSuchWindowExceptionOnAnyElementOperationIfAWindowIsClosed(self, driver, pages):
         pages.load("xhtmlTest.html")
         current = driver.current_window_handle
@@ -98,7 +98,7 @@ class TestWindowSwitching(object):
         with pytest.raises(NoSuchWindowException):
             element.text
 
-    @pytest.mark.ignore_marionette
+    @pytest.mark.xfail_marionette(run=False)
     def testClickingOnAButtonThatClosesAnOpenWindowDoesNotCauseTheBrowserToHang(self, driver, pages):
         pages.load("xhtmlTest.html")
         current = driver.current_window_handle
@@ -112,7 +112,7 @@ class TestWindowSwitching(object):
         driver.switch_to.window(current)
         driver.find_element_by_id("linkId")
 
-    @pytest.mark.ignore_marionette
+    @pytest.mark.xfail_marionette(run=False)
     def testCanCallGetWindowHandlesAfterClosingAWindow(self, driver, pages):
         pages.load("xhtmlTest.html")
         current = driver.current_window_handle
@@ -139,7 +139,7 @@ class TestWindowSwitching(object):
         new_handle = driver.current_window_handle
         assert current == new_handle
 
-    @pytest.mark.ignore_marionette
+    @pytest.mark.xfail_marionette(run=False)
     def testThatAccessingFindingAnElementAfterWindowIsClosedAndHaventswitchedDoesntCrash(self, driver, pages):
         pages.load("xhtmlTest.html")
         current = driver.current_window_handle

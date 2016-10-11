@@ -17,17 +17,16 @@
 
 import pytest
 
+from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.html5.application_cache import ApplicationCache
 
 
 class TestAppCache(object):
 
-    @pytest.mark.ignore_firefox
-    @pytest.mark.ignore_marionette
-    @pytest.mark.ignore_chrome
+    @pytest.mark.xfail_chrome
+    @pytest.mark.xfail_marionette(raises=WebDriverException)
+    @pytest.mark.xfail_phantomjs(raises=WebDriverException)
     def testWeCanGetTheStatusOfTheAppCache(self, driver, pages):
-        if driver.capabilities['browserName'] == 'phantomjs':
-            pytest.xfail("phantomjs driver does not implement appcache")
         pages.load('html5Page')
         driver.implicitly_wait(2)
         app_cache = driver.application_cache

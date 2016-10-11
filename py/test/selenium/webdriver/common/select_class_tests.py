@@ -17,7 +17,11 @@
 
 import pytest
 
-from selenium.common.exceptions import NoSuchElementException, ElementNotSelectableException, UnexpectedTagNameException
+from selenium.common.exceptions import (
+    ElementNotSelectableException,
+    InvalidElementStateException,
+    NoSuchElementException,
+    UnexpectedTagNameException)
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.common.by import By
 
@@ -40,8 +44,11 @@ class TestWebDriverSelectSupport(object):
                 sel.select_by_index(x)
                 assert sel.first_selected_option.text == select['values'][x]
 
-    @pytest.mark.xfail
-    # disabled select isn't immediatedly throwing an ElementNotSelectableException when trying to select
+    @pytest.mark.xfail_chrome
+    @pytest.mark.xfail_firefox
+    @pytest.mark.xfail_marionette(raises=InvalidElementStateException)
+    @pytest.mark.xfail_phantomjs
+    @pytest.mark.xfail_safari
     def testSelectDisabledByIndexShouldThrowException(self, driver, pages):
         pages.load("formPage.html")
         sel = Select(driver.find_element(By.NAME, disabledSelect['name']))
@@ -57,8 +64,11 @@ class TestWebDriverSelectSupport(object):
                 sel.select_by_value(select['values'][x].lower())
                 assert sel.first_selected_option.text == select['values'][x]
 
-    # disabled select isn't immediatedly throwing an ElementNotSelectableException when trying to select
-    @pytest.mark.xfail
+    @pytest.mark.xfail_chrome
+    @pytest.mark.xfail_firefox
+    @pytest.mark.xfail_marionette(raises=InvalidElementStateException)
+    @pytest.mark.xfail_phantomjs
+    @pytest.mark.xfail_safari
     def testSelectDisabledByValueShouldThrowException(self, driver, pages):
         pages.load("formPage.html")
         sel = Select(driver.find_element(By.NAME, disabledSelect['name']))
@@ -75,11 +85,10 @@ class TestWebDriverSelectSupport(object):
                 sel.select_by_visible_text(select['values'][x])
                 assert sel.first_selected_option.text == select['values'][x]
 
+    @pytest.mark.xfail_chrome(
+        reason='https://bugs.chromium.org/p/chromedriver/issues/detail?id=822')
+    @pytest.mark.xfail_phantomjs
     def testSelectByVisibleTextShouldNormalizeSpaces(self, driver, pages):
-        if driver.capabilities['browserName'] == 'phantomjs':
-            pytest.xfail("phantomjs does not normalize spaces in text")
-        if driver.capabilities['browserName'] == 'chrome':
-            pytest.xfail("Chrome Issue: https://bugs.chromium.org/p/chromedriver/issues/detail?id=1539")
         pages.load("formPage.html")
 
         for select in [singleSelectValuesWithSpaces]:
@@ -89,8 +98,11 @@ class TestWebDriverSelectSupport(object):
                 sel.select_by_visible_text(select['values'][x])
                 assert sel.first_selected_option.text == select['values'][x]
 
-    @pytest.mark.xfail
-    # disabled select isn't immediatedly throwing an ElementNotSelectableException when trying to select
+    @pytest.mark.xfail_chrome
+    @pytest.mark.xfail_firefox
+    @pytest.mark.xfail_marionette(raises=InvalidElementStateException)
+    @pytest.mark.xfail_phantomjs
+    @pytest.mark.xfail_safari
     def testSelectDisabledByVisibleTextShouldThrowException(self, driver, pages):
         pages.load("formPage.html")
         sel = Select(driver.find_element(By.NAME, disabledSelect['name']))

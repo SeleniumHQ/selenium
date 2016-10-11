@@ -91,9 +91,9 @@ class TestElementAttribute(object):
         textArea = driver.find_element_by_xpath("//textarea[@id='notWorkingArea']")
         assert not textArea.is_enabled()
 
+    @pytest.mark.xfail_marionette(
+        reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1309234')
     def testShouldThrowExceptionIfSendingKeysToElementDisabledUsingRandomDisabledStrings(self, driver, pages):
-        if driver.capabilities['browserName'] == 'firefox' and driver.w3c == True:
-            pytest.xfail("Marionette Issue: https://bugzilla.mozilla.org/show_bug.cgi?id=1309234")
         pages.load("formPage.html")
         disabledTextElement1 = driver.find_element_by_id("disabledTextElement1")
         with pytest.raises(WebDriverException):
@@ -231,7 +231,7 @@ class TestElementAttribute(object):
         element1 = driver.find_element_by_id("working")
         assert element1.get_attribute("required") is None
 
-    @pytest.mark.ignore_ie
+    @pytest.mark.xfail_ie
     def testShouldReturnTrueForPresentBooleanAttributes(self, driver, pages):
         pages.load("booleanAttributes.html")
         element1 = driver.find_element_by_id("emailRequired")

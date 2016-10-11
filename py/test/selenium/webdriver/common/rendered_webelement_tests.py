@@ -17,14 +17,15 @@
 
 import pytest
 
+from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By
 
 
 class TestRenderedWebElement(object):
 
+    @pytest.mark.xfail_marionette(
+        reason='https://github.com/w3c/webdriver/issues/417')
     def testShouldPickUpStyleOfAnElement(self, driver, pages):
-        if driver.capabilities['browserName'] == 'firefox' and driver.w3c == True:
-            pytest.xfail("Marionette and W3C Issue: https://github.com/w3c/webdriver/issues/417")
         pages.load("javascriptPage.html")
 
         element = driver.find_element(by=By.ID, value="green-parent")
@@ -49,11 +50,19 @@ class TestRenderedWebElement(object):
         assert size["width"] > 0
         assert size["height"] > 0
 
+    @pytest.mark.xfail_chrome(
+        reason='Get Element Rect command not implemented',
+        raises=WebDriverException)
+    @pytest.mark.xfail_firefox(
+        reason='Get Element Rect command not implemented',
+        raises=WebDriverException)
+    @pytest.mark.xfail_phantomjs(
+        reason='Get Element Rect command not implemented',
+        raises=WebDriverException)
+    @pytest.mark.xfail_safari(
+        reason='Get Element Rect command not implemented',
+        raises=WebDriverException)
     def testShouldBeAbleToDetermineTheRectOfAnElement(self, driver, pages):
-        if driver.capabilities['browserName'] == 'phantomjs':
-            pytest.xfail("phantomjs driver does not support rect command")
-        if not driver.w3c:
-            pytest.xfail("Not a W3C WebDriver compliant browser")
         pages.load("xhtmlTest.html")
 
         element = driver.find_element(By.ID, "username")

@@ -17,10 +17,10 @@
 
 import pytest
 
+from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By
 
 
-@pytest.mark.ignore_marionette
 class TestPageLoading(object):
 
     def testShouldWaitForDocumentToBeLoaded(self, driver, pages):
@@ -37,16 +37,19 @@ class TestPageLoading(object):
     #    pages.load("metaRedirect.html")
     #    assert driver.title == "We Arrive Here"
 
+    @pytest.mark.xfail_marionette(run=False)
     def testShouldBeAbleToGetAFragmentOnTheCurrentPage(self, driver, pages):
         pages.load("xhtmlTest.html")
         location = driver.current_url
         driver.get(location + "#text")
         driver.find_element(by=By.ID, value="id1")
 
+    @pytest.mark.xfail_marionette(raises=WebDriverException)
     def testShouldReturnWhenGettingAUrlThatDoesNotResolve(self, driver):
         #  Of course, we're up the creek if this ever does get registered
         driver.get("http://www.thisurldoesnotexist.comx/")
 
+    @pytest.mark.xfail_marionette(raises=WebDriverException)
     def testShouldReturnWhenGettingAUrlThatDoesNotConnect(self, driver):
         #  Here's hoping that there's nothing here. There shouldn't be
         driver.get("http://localhost:3001")
@@ -102,7 +105,8 @@ class TestPageLoading(object):
         driver.forward()
         assert driver.title == "We Arrive Here"
 
-    @pytest.mark.ignore_ie
+    @pytest.mark.xfail_ie
+    @pytest.mark.xfail_marionette(run=False)
     def testShouldNotHangifDocumentOpenCallIsNeverFollowedByDocumentCloseCall(self, driver, pages):
         pages.load("document_write_in_onload.html")
         driver.find_element(By.XPATH, "//body")

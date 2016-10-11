@@ -54,20 +54,18 @@ class TestPositionAndSize(object):
         assert 0 <= element.location_once_scrolled_into_view["y"] <= (windowHeight - 100)
         self._check_location(element.location, x=10, y=5010)
 
-    @pytest.mark.ignore_marionette
+    @pytest.mark.xfail_marionette
+    @pytest.mark.xfail_phantomjs
     def testShouldGetCoordinatesOfAnElementInAFrame(self, driver, pages):
-        if driver.capabilities['browserName'] == 'phantomjs':
-            pytest.xfail("phantomjs calculates coordinates differently")
         pages.load("coordinates_tests/element_in_frame.html")
         driver.switch_to_frame(driver.find_element(By.NAME, "ifr"))
         element = driver.find_element(By.ID, "box")
         self._check_location(element.location_once_scrolled_into_view, x=25, y=25)
         self._check_location(element.location, x=10, y=10)
 
-    @pytest.mark.ignore_marionette
+    @pytest.mark.xfail_marionette
+    @pytest.mark.xfail_phantomjs
     def testShouldGetCoordinatesOfAnElementInANestedFrame(self, driver, pages):
-        if driver.capabilities['browserName'] == 'phantomjs':
-            pytest.xfail("phantomjs calculates coordinates differently")
         pages.load("coordinates_tests/element_in_nested_frame.html")
         driver.switch_to_frame(driver.find_element(By.NAME, "ifr"))
         driver.switch_to_frame(driver.find_element(By.NAME, "ifr"))

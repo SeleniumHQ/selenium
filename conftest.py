@@ -21,6 +21,7 @@ import time
 import urllib
 
 import pytest
+from _pytest.skipping import MarkEvaluator
 
 from selenium import webdriver
 from selenium.webdriver import DesiredCapabilities
@@ -62,10 +63,16 @@ def driver(request):
     except AttributeError:
         raise Exception('This test requires a --driver to be specified.')
 
-    skip = request.node.get_marker('ignore_{0}'.format(driver_class.lower()))
-    if skip is not None:
-        reason = skip.kwargs.get('reason') or skip.name
-        pytest.skip(reason)
+    # conditionally mark tests as expected to fail based on driver
+    request.node._evalxfail = request.node._evalxfail or MarkEvaluator(
+        request.node, 'xfail_{0}'.format(driver_class.lower()))
+
+    # skip driver instantiation if xfail(run=False)
+    if not request.config.getoption('runxfail'):
+        if request.node._evalxfail.istrue():
+            if request.node._evalxfail.get('run') is False:
+                yield
+                return
 
     if driver_class == 'BlackBerry':
         kwargs.update({'device_password': 'password'})
