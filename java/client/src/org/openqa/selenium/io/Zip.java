@@ -117,7 +117,7 @@ public class Zip {
   }
 
   public void unzip(String source, File outputDir) throws IOException {
-    byte[] bytes = Base64.getDecoder().decode(source);
+    byte[] bytes = Base64.getMimeDecoder().decode(source);
 
     ByteArrayInputStream bis = null;
     try {
