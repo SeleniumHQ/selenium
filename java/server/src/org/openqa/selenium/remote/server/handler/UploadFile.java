@@ -51,6 +51,6 @@ public class UploadFile extends WebDriverHandler<String> implements JsonParamete
   }
 
   public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
-    file = ((String) allParameters.get("file")).replaceAll("\\n", "");
+    file = (String) allParameters.get("file");
   }
 }
