@@ -79,6 +79,7 @@ namespace OpenQA.Selenium.IE
         /// <summary>
         /// Gets or sets the implementation to be used by the IEDriverServer.
         /// </summary>
+        [Obsolete("Vendor implementation is no longer valid, making this property unnecessary. This property will be removed in a future release.")]
         public InternetExplorerDriverEngine Implementation
         {
             get { return this.engineImplementation; }
