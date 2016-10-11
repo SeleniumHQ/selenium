@@ -1,5 +1,6 @@
 dotnet_test(name = "remote",
   deps = [
+    "//java/client/test/org/openqa/selenium/environment:webserver",
     "//java/server/src/org/openqa/grid/selenium:selenium"
   ],
   srcs = "**/*.cs",
