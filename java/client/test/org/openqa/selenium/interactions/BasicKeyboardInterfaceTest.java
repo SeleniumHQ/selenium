@@ -167,7 +167,7 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
 
     sendLowercase.perform();
 
-    assertThat(keyReporter.getAttribute("value"), is("abc def"));
+    shortWait.until(ExpectedConditions.attributeToBe(keyReporter, "value", "abc def"));
   }
 
   @Ignore(value = {HTMLUNIT, IE, SAFARI}, reason = "untested")

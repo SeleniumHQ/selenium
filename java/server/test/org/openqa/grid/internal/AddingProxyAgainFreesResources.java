@@ -23,6 +23,7 @@ import static org.junit.Assert.assertNotNull;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.openqa.grid.common.exception.GridException;
 import org.openqa.grid.internal.mock.GridHelper;
 import org.openqa.grid.web.servlet.handler.RequestHandler;
 import org.openqa.selenium.remote.CapabilityType;
@@ -89,6 +90,7 @@ public class AddingProxyAgainFreesResources {
   public void validateRequest2isNowRunningOnTheNode() throws InterruptedException {
     FluentWait<RequestHandler> wait = new FluentWait<>(handler2);
     wait.withTimeout(1, TimeUnit.SECONDS).pollingEvery(100, TimeUnit.MILLISECONDS)
+      .ignoring(GridException.class)
       .until((RequestHandler input) -> input.getSession() != null);
     assertNotNull(handler2.getSession());
   }
