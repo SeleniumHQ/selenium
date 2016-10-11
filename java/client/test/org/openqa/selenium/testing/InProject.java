@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.testing;
 
+import com.google.common.base.Preconditions;
+
 import org.openqa.selenium.WebDriverException;
 
 import java.io.FileNotFoundException;
@@ -34,13 +36,21 @@ public class InProject {
    *         be found
    */
   public static Path locate(String path) {
+    // Find the rakefile first
     Path dir = Paths.get(".").toAbsolutePath();
     while (dir != null && !dir.equals(dir.getParent())) {
-      Path needle = dir.resolve(path);
-      if (Files.exists(needle)) {
-        return needle;
+      Path rakefile = dir.resolve("Rakefile");
+      if (Files.exists(rakefile)) {
+        break;
       }
       dir = dir.getParent();
+    }
+    Preconditions.checkNotNull(dir, "Unable to find root of project");
+    dir = dir.normalize();
+
+    Path needle = dir.resolve(path);
+    if (Files.exists(needle)) {
+      return needle;
     }
 
     throw new WebDriverException(new FileNotFoundException(
