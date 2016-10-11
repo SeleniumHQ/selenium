@@ -25,6 +25,7 @@ java_library(name = 'helpers',
   ],
   deps = [
     '//java/client/src/org/openqa/selenium:exceptions',
+    '//third_party/java/guava:guava',
   ],
   visibility = [
     '//java/client/test/...',
