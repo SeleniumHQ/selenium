@@ -408,12 +408,7 @@ public class FirefoxDriverTest extends JUnit4TestBase {
   }
 
   private ExpectedCondition<Boolean> urlToBe(final String expectedUrl) {
-    return new ExpectedCondition<Boolean>() {
-      @Override
-      public Boolean apply(WebDriver driver) {
-        return expectedUrl.equals(driver.getCurrentUrl());
-      }
-    };
+    return driver1 -> expectedUrl.equals(driver1.getCurrentUrl());
   }
 
   @Test

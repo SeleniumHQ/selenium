@@ -43,7 +43,7 @@ public class BasicAuth extends HttpServlet {
 
   private boolean isAuthorized(String auth) {
     if (auth != null) {
-      final int index = auth.indexOf(' ');
+      final int index = auth.indexOf(' ') + 1;
 
       if (index > 0) {
         final String credentials = new String(decoder.decode(auth.substring(index)));
