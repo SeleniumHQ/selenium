@@ -201,7 +201,11 @@ task :test_grid => [
   "//java/server/test/org/openqa/grid:grid:run",
   "//java/server/test/org/openqa/grid/e2e:e2e:run"
 ]
-task :test_ie => [ "//java/client/test/org/openqa/selenium/ie:ie:run" ]
+task :test_ie => [ 
+  "//cpp/iedriverserver:win32",
+  "//cpp/iedriverserver:x64",
+  "//java/client/test/org/openqa/selenium/ie:ie:run"
+]
 task :test_jobbie => [ :test_ie ]
 task :test_firefox => [ "//java/client/test/org/openqa/selenium/firefox:test-synthesized:run" ]
 task :test_opera => [ "//java/client/test/org/openqa/selenium/opera:opera:run" ]
