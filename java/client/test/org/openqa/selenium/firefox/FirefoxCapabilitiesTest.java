@@ -18,16 +18,12 @@
 package org.openqa.selenium.firefox;
 
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeTrue;
-import static org.junit.Assume.assumeFalse;
-
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
 
-import org.junit.After;
+import org.apache.http.ConnectionClosedException;
 import org.junit.Before;
 import org.junit.Test;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.HasCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
@@ -44,8 +40,6 @@ import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 @Ignore(MARIONETTE)
 public class FirefoxCapabilitiesTest extends JUnit4TestBase {
 
-  private WebDriver localDriver;
-
   @Before
   public void checkIsFirefoxDriver() {
     assumeTrue(TestUtilities.isFirefox(driver));
@@ -57,69 +51,53 @@ public class FirefoxCapabilitiesTest extends JUnit4TestBase {
     assumeTrue(TestUtilities.isLocal());
   }
 
-  @Test
+  @Test(expected = SessionNotCreatedException.class)
   public void testDisableJavascriptCapability() {
-    try {
-      configureCapability(CapabilityType.SUPPORTS_JAVASCRIPT, false);
-      fail("Disabling of Javascript for the Firefox driver should fail");
-    } catch (SessionNotCreatedException expected) {
-    }
+    configureCapability(CapabilityType.SUPPORTS_JAVASCRIPT, false);
   }
 
-  @Test
+  @Test(expected = SessionNotCreatedException.class)
   public void testDisableHandlesAlertsCapability() {
-    try {
-      configureCapability(CapabilityType.SUPPORTS_ALERTS, false);
-      fail("Disabling of alerts for the Firefox driver should fail");
-    } catch (SessionNotCreatedException expected) {
-    }
+    configureCapability(CapabilityType.SUPPORTS_ALERTS, false);
   }
 
-  @Test
+  @Test(expected = SessionNotCreatedException.class)
   public void testDisableCssSelectorCapability() {
-    try {
-      configureCapability(CapabilityType.SUPPORTS_FINDING_BY_CSS, false);
-      fail("Disabling of CSS selectors for the Firefox driver should fail");
-    } catch (SessionNotCreatedException expected) {
-    }
+    configureCapability(CapabilityType.SUPPORTS_FINDING_BY_CSS, false);
   }
 
-  @Test
+  @Test(expected = SessionNotCreatedException.class)
   public void testDisableScreenshotCapability() {
-    try {
-      configureCapability(CapabilityType.TAKES_SCREENSHOT, false);
-      fail("Disabling of screenshot capability for the Firefox driver should fail");
-    } catch (SessionNotCreatedException expected) {
-    }
+    configureCapability(CapabilityType.TAKES_SCREENSHOT, false);
   }
 
-  @Test
+  @Test(expected = SessionNotCreatedException.class)
   public void testEnableRotatableCapability() {
-    try {
-      configureCapability(CapabilityType.ROTATABLE, true);
-      fail("Enabling of rotatable capability for the Firefox driver should fail");
-    } catch (SessionNotCreatedException expected) {
-    }
+    configureCapability(CapabilityType.ROTATABLE, true);
   }
 
   private void configureCapability(String capability, boolean isEnabled) {
     DesiredCapabilities requiredCaps = new DesiredCapabilities();
     requiredCaps.setCapability(capability, isEnabled);
     WebDriverBuilder builder = new WebDriverBuilder().setRequiredCapabilities(requiredCaps);
-    localDriver = builder.get();
 
-    Capabilities caps = ((HasCapabilities) localDriver).getCapabilities();
-    assertTrue(String.format("The %s capability should be included in capabilities " +
-        "for the session", capability), caps.getCapability(capability) != null);
-    assertTrue(String.format("Capability %s should be set to %b", capability, isEnabled),
-        isEnabled == (Boolean) caps.getCapability(capability));
-  }
+    WebDriver localDriver = null;
+    try {
+      localDriver = builder.get();
 
-  @After
-  public void quitDriver() {
-    if (this.localDriver != null) {
-      this.localDriver.quit();
-      this.localDriver = null;
+      Capabilities caps = ((HasCapabilities) localDriver).getCapabilities();
+
+      assertTrue(String.format("The %s capability should be included in capabilities " +
+                               "for the session", capability),
+                 caps.getCapability(capability) != null);
+      assertTrue(String.format("Capability %s should be set to %b", capability, isEnabled),
+                 isEnabled == (Boolean) caps.getCapability(capability));
+    } catch (SessionNotCreatedException e) {
+      throw e;
+    } catch (Exception e) {
+      assumeTrue(
+        "Browser failed to start, because the connection died. This is a known issue with firefox.",
+        e instanceof ConnectionClosedException);
     }
   }
 }
