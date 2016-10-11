@@ -185,7 +185,7 @@ task :test_javascript => [
   '//javascript/atoms:atoms-chrome:run',
   '//javascript/webdriver:webdriver-chrome:run',
   '//javascript/webdriver:es6_test_chrome:run',
-  '//javascript/selenium-atoms:selenium-atoms:run',
+  '//javascript/selenium-atoms:selenium-atoms-chrome:run',
   '//javascript/selenium-core:selenium-core-chrome:run']
 task :test_chrome => [ "//java/client/test/org/openqa/selenium/chrome:chrome:run" ]
 task :test_chrome_atoms => [
@@ -201,7 +201,7 @@ task :test_grid => [
   "//java/server/test/org/openqa/grid:grid:run",
   "//java/server/test/org/openqa/grid/e2e:e2e:run"
 ]
-task :test_ie => [ 
+task :test_ie => [
   "//cpp/iedriverserver:win32",
   "//cpp/iedriverserver:x64",
   "//java/client/test/org/openqa/selenium/ie:ie:run"
