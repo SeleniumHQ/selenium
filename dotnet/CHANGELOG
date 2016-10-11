@@ -1,17 +1,39 @@
-V3.0.0-beta3
+v3.0.0
+======
+ * Major release of the .NET bindings for Selenium. Selenium RC classes
+   and interfaces (DefaultSelenium and ISelenium) have officially been
+   marked with the Obsolete attribute. Please move to Selenium WebDriver
+ * Geckodriver is now the default mechanism for automating Firefox. This
+   is Mozilla's implementation of a driver for that browser, and is
+   required for automating Firefox versions 48 and above.
+ * The IE driver no longer actively supports IE 7 or 8. Only IE 9, 10, and
+   11 are actively supported.
+ * The legacy driver for Safari maintained by the Selenium project is no
+   longer supported. This release includes support for Apple's Safari
+   driver, for Safari 10, available on macOS 10.11 ("El Capitan") and 10.12
+   ("Sierra").
+ * Updated to conform to the latest options schema for geckodriver. This
+   release expects geckodriver.exe v0.11.1 or later.
+ * Marked InternetExplorerDriverService.Implementation property as
+   deprecated. The Microsoft (vendor) implementation is no longer maintained
+   and will not be updated. As it never had feature parity with the open-
+   source implementation, the property is now unnecessary, and the feature
+   will be removed from IEDriverServer.exe in a future release.
+
+v3.0.0-beta3
 ============
  * Modified to use automation atoms for getAttribute and isDisplayed in .NET
    for W3C remote ends
  * Added ability to set additional command line arguments for geckodriver
 
-V3.0.0-beta2
+v3.0.0-beta2
 ============
  * Updated GetAttribute shim for GetAttribute method for W3C protocol remote
    ends.
  * Modified parameter name in SendKeys to alert for W3C protocol remote
    ends.
 
-V3.0.0-beta1
+v3.0.0-beta1
 ============
  * The Mozilla-provided Marionette-based FirefoxDriver is now the default
    implementation for automating Firefox. Additionally, this aligns the
