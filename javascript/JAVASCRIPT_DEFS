@@ -1,0 +1,59 @@
+orig_js_fragment = js_fragment
+
+def js_fragment(name, **kwargs):
+    orig_js_fragment(name, **kwargs)
+
+    # Android
+    defs = kwargs.get('defines', [])
+    defs = defs + [
+        'goog.userAgent.ASSUME_MOBILE_WEBKIT=true',
+        'goog.userAgent.product.ASSUME_ANDROID=true']
+    args = kwargs.copy();
+    args['defines'] = defs
+    fragment_name = name + '-android'
+    orig_js_fragment(fragment_name, **args)
+
+    # Chrome
+    defs = kwargs.get('defines', [])
+    defs = defs + [
+        'goog.userAgent.ASSUME_WEBKIT=true',
+        'goog.userAgent.product.ASSUME_CHROME=true',
+    ]
+    args = kwargs.copy();
+    args['defines'] = defs
+    fragment_name = name + '-chrome'
+    orig_js_fragment(fragment_name, **args)
+
+    # Edge and IE
+    defs = kwargs.get('defines', [])
+    defs = defs + [
+        'goog.userAgent.ASSUME_IE=true',
+    ]
+    args = kwargs.copy();
+    args['defines'] = defs
+    fragment_name = name + '-ie'
+    orig_js_fragment(fragment_name, **args)
+
+    # iOS
+    defs = kwargs.get('defines', [])
+    defs = defs + [
+        # We use the same fragments for iPad and iPhone, so just compile a
+        # generic mobile webkit.
+        'goog.userAgent.ASSUME_MOBILE_WEBKIT=true',
+    ]
+    args = kwargs.copy();
+    args['defines'] = defs
+    fragment_name = name + '-ios'
+    orig_js_fragment(fragment_name, **args)
+
+
+    # Firefox
+    defs = kwargs.get('defines', [])
+    defs = defs + [
+        'goog.userAgent.ASSUME_GECKO=true',
+        'goog.userAgent.product.ASSUME_FIREFOX=true',
+    ]
+    args = kwargs.copy();
+    args['defines'] = defs
+    fragment_name = name + '-firefox'
+    orig_js_fragment(fragment_name, **args)
