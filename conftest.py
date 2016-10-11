@@ -21,6 +21,7 @@ import time
 import urllib
 
 import pytest
+from _pytest.skipping import MarkEvaluator
 
 from selenium import webdriver
 from selenium.webdriver import DesiredCapabilities
@@ -61,6 +62,10 @@ def driver(request):
         driver_class = request.param
     except AttributeError:
         raise Exception('This test requires a --driver to be specified.')
+
+    # conditionally mark tests as expected to fail based on driver
+    request.node._evalxfail = request.node._evalxfail or MarkEvaluator(
+        request.node, 'xfail_{0}'.format(driver_class.lower()))
 
     skip = request.node.get_marker('ignore_{0}'.format(driver_class.lower()))
     if skip is not None:
