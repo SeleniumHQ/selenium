@@ -1,3 +1,5 @@
+include_defs('//javascript/JAVASCRIPT_DEFS')
+
 js_fragment(name = 'clear',
   function = 'bot.action.clear',
   module = 'bot.action',
