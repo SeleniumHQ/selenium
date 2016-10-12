@@ -37,6 +37,7 @@ import static org.openqa.selenium.testing.TestUtilities.isIe7;
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.TestUtilities;
 
 import java.io.File;
@@ -94,6 +95,8 @@ public class FormHandlingTest extends JUnit4TestBase {
 
   @Test(expected = NoSuchElementException.class)
   @Ignore(value = {PHANTOMJS, SAFARI})
+  @NotYetImplemented(
+    value = MARIONETTE, reason = "Delegates to JS and so the wrong exception is returned")
   public void testShouldNotBeAbleToSubmitAFormThatDoesNotExist() {
     driver.get(pages.formPage);
     driver.findElement(By.name("SearchableText")).submit();
