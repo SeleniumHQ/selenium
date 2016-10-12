@@ -57,6 +57,8 @@ class TestRenderedWebElement(object):
     def testShouldBeAbleToDetermineTheRectOfAnElement(self, driver, pages):
         if driver.capabilities['browserName'] == 'phantomjs':
             pytest.xfail("phantomjs driver does not support rect command")
+        if not driver.w3c:
+            pytest.xfail("Not a W3C WebDriver compliant browser")
         pages.load("xhtmlTest.html")
 
         element = driver.find_element(By.ID, "username")

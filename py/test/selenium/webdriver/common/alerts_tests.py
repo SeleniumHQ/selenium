@@ -14,6 +14,7 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+import sys
 
 import pytest
 
@@ -130,6 +131,8 @@ class TestAlerts(object):
     def testSettingTheValueOfAnAlertThrows(self, driver, pages):
         if driver.capabilities['browserName'] == 'phantomjs':
             pytest.xfail("phantomjs driver does not support alerts")
+        if driver.capabilities['browserName'] == 'chrome':
+            pytest.xfail("Chrome issue: https://bugs.chromium.org/p/chromedriver/issues/detail?id=1534")
         pages.load("alerts.html")
         driver.find_element(By.ID, "alert").click()
 
@@ -141,6 +144,8 @@ class TestAlerts(object):
     def testAlertShouldNotAllowAdditionalCommandsIfDimissed(self, driver, pages):
         if driver.capabilities['browserName'] == 'phantomjs':
             pytest.xfail("phantomjs driver does not support alerts")
+        if driver.capabilities['browserName'] == 'chrome' and sys.platform == 'darwin':
+            pytest.xfail("Chrome issue: https://bugs.chromium.org/p/chromedriver/issues/detail?id=26")
         pages.load("alerts.html")
         driver.find_element(By.ID, "alert").click()
 
@@ -314,6 +319,8 @@ class TestAlerts(object):
             pytest.xfail("phantomjs driver does not support alerts")
         if driver.capabilities['browserName'] == 'firefox':
             pytest.xfail("Known Marionette failure: https://bugzilla.mozilla.org/show_bug.cgi?id=1279211")
+        if driver.capabilities['browserName'] == 'chrome':
+            pytest.xfail("Know Chrome Issue: https://bugs.chromium.org/p/chromedriver/issues/detail?id=1537")
         pages.load("alerts.html")
         driver.find_element(by=By.ID, value="alert").click()
         alert = self._waitForAlert(driver)

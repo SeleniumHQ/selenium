@@ -80,6 +80,8 @@ class TestWebDriverSelectSupport(object):
     def testSelectByVisibleTextShouldNormalizeSpaces(self, driver, pages):
         if driver.capabilities['browserName'] == 'phantomjs':
             pytest.xfail("phantomjs does not normalize spaces in text")
+        if driver.capabilities['browserName'] == 'chrome':
+            pytest.xfail("Chrome Issue: https://bugs.chromium.org/p/chromedriver/issues/detail?id=1539")
         pages.load("formPage.html")
 
         for select in [singleSelectValuesWithSpaces]:

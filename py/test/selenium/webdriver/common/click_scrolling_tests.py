@@ -64,6 +64,8 @@ class TestClickScrolling(object):
         assert "line8" == driver.find_element(By.ID, "clicked").text
 
     def testShouldBeAbleToClickOnAnElementHiddenByDoubleOverflow(self, driver, pages):
+        if driver.capabilities['browserName'] == 'chrome':
+            pytest.xfail("Chrome Issue: https://bugs.chromium.org/p/chromedriver/issues/detail?id=1536")
         pages.load("scrolling_tests/page_with_double_overflow_auto.html")
 
         driver.find_element(By.ID, "link").click()
@@ -84,6 +86,8 @@ class TestClickScrolling(object):
         assert 0 == yOffset, "Should not have scrolled"
 
     def testShouldNotScrollIfAlreadyScrolledAndElementIsInView(self, driver, pages):
+        if driver.capabilities['browserName'] == 'chrome':
+            pytest.xfail("Chrome Issue: https://bugs.chromium.org/p/chromedriver/issues/detail?id=1542")
         pages.load("scroll3.html")
         driver.find_element(By.ID, "button1").click()
         scrollTop = self.getScrollTop(driver)

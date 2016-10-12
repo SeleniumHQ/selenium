@@ -162,12 +162,16 @@ class TestDriverElementFinding(object):
 
     @pytest.mark.ignore_phantomjs
     def test_Finding_ASingle_Element_By_Empty_Tag_Name_Should_Throw(self, driver, pages):
+        if driver.capabilities['browserName'] == 'chrome':
+            pytest.xfail("Chrome issue: https://bugs.chromium.org/p/chromedriver/issues/detail?id=1541")
         pages.load("formPage.html")
         with pytest.raises(InvalidSelectorException):
             driver.find_element(By.TAG_NAME, "")
 
     @pytest.mark.ignore_phantomjs
     def test_Finding_Multiple_Elements_By_Empty_Tag_Name_Should_Return_Empty_List(self, driver, pages):
+        if driver.capabilities['browserName'] == 'chrome':
+            pytest.xfail("Chrome Issue: https://bugs.chromium.org/p/chromedriver/issues/detail?id=1540")
         pages.load("formPage.html")
         with pytest.raises(InvalidSelectorException):
             driver.find_elements(By.TAG_NAME, "")
@@ -302,6 +306,7 @@ class TestDriverElementFinding(object):
     @pytest.mark.ignore_firefox
     @pytest.mark.ignore_marionette
     @pytest.mark.ignore_phantomjs
+    @pytest.mark.ignore_chrome
     def test_Should_Be_Able_To_Find_Element_By_XPath_With_Namespace(self, driver, pages):
         pages.load("svgPage.html")
         element = driver.find_element(By.XPATH, "//svg:svg//svg:text")
