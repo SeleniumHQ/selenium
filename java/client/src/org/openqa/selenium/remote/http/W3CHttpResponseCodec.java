@@ -103,7 +103,8 @@ public class W3CHttpResponseCodec extends AbstractHttpResponseCodec {
           Object value = jsonToBeanConverter.convert(Object.class, parsed.get("value"));
           response.setValue(value);
         } else {
-          response.setValue(null);
+          // Assume that the body of the response was the response.
+          response.setValue(jsonToBeanConverter.convert(Object.class, content));
         }
       }
     }
