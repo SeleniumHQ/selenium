@@ -33,18 +33,36 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.openqa.selenium.ElementNotSelectableException;
 import org.openqa.selenium.ElementNotVisibleException;
+import org.openqa.selenium.ImeActivationFailedException;
+import org.openqa.selenium.ImeNotAvailableException;
 import org.openqa.selenium.InvalidArgumentException;
+import org.openqa.selenium.InvalidCookieDomainException;
 import org.openqa.selenium.InvalidElementStateException;
 import org.openqa.selenium.InvalidSelectorException;
+import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NoSuchFrameException;
+import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.NoSuchWindowException;
+import org.openqa.selenium.ScriptTimeoutException;
+import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.StaleElementReferenceException;
+import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.UnableToSetCookieException;
+import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.UnsupportedCommandException;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.interactions.InvalidCoordinatesException;
+import org.openqa.selenium.interactions.MoveTargetOutOfBoundsException;
 
+import javafx.util.Pair;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -419,24 +437,44 @@ public class ErrorHandlerTest {
   }
 
   @Test
-  public void testInvalidElementStateExceptionIsRaisedForJSONWP() {
-    try {
-      handler.throwIfResponseFailed(createResponse(ErrorCodes.INVALID_ELEMENT_STATE), 123);
-      fail("Should have thrown an InvalidElementStateException");
-    } catch (InvalidElementStateException iese) {
-      assertEquals("InvalidElementStateException", iese.getClass().getSimpleName());
-      assertEquals(ErrorCodes.INVALID_ELEMENT_STATE, new ErrorCodes().toStatusCode(iese));
-    }
-  }
+  public void testStatusCodesRaisedBackToStatusMatches() {
+    List<Pair<Integer, Class>> exceptions = Arrays.asList(
+      new Pair(ErrorCodes.NO_SUCH_SESSION, NoSuchSessionException.class),
+      new Pair(ErrorCodes.NO_SUCH_ELEMENT, NoSuchElementException.class),
+      new Pair(ErrorCodes.NO_SUCH_FRAME, NoSuchFrameException.class),
+      new Pair(ErrorCodes.UNKNOWN_COMMAND, UnsupportedCommandException.class),
+      new Pair(ErrorCodes.STALE_ELEMENT_REFERENCE, StaleElementReferenceException.class),
+      new Pair(ErrorCodes.ELEMENT_NOT_VISIBLE, ElementNotVisibleException.class),
+      new Pair(ErrorCodes.INVALID_ELEMENT_STATE, InvalidElementStateException.class),
+      new Pair(ErrorCodes.UNHANDLED_ERROR, WebDriverException.class),
+      new Pair(ErrorCodes.ELEMENT_NOT_SELECTABLE, ElementNotSelectableException.class),
+      new Pair(ErrorCodes.JAVASCRIPT_ERROR, WebDriverException.class),
+      new Pair(ErrorCodes.XPATH_LOOKUP_ERROR, InvalidSelectorException.class),
+      new Pair(ErrorCodes.TIMEOUT, TimeoutException.class),
+      new Pair(ErrorCodes.NO_SUCH_WINDOW, NoSuchWindowException.class),
+      new Pair(ErrorCodes.INVALID_COOKIE_DOMAIN, InvalidCookieDomainException.class),
+      new Pair(ErrorCodes.UNABLE_TO_SET_COOKIE, UnableToSetCookieException.class),
+      new Pair(ErrorCodes.UNEXPECTED_ALERT_PRESENT, UnhandledAlertException.class),
+      new Pair(ErrorCodes.NO_ALERT_PRESENT, NoAlertPresentException.class),
+      new Pair(ErrorCodes.ASYNC_SCRIPT_TIMEOUT, ScriptTimeoutException.class),
+      new Pair(ErrorCodes.INVALID_ELEMENT_COORDINATES, InvalidCoordinatesException.class),
+      new Pair(ErrorCodes.IME_NOT_AVAILABLE, ImeNotAvailableException.class),
+      new Pair(ErrorCodes.IME_ENGINE_ACTIVATION_FAILED, ImeActivationFailedException.class),
+      new Pair(ErrorCodes.INVALID_SELECTOR_ERROR, InvalidSelectorException.class),
+      new Pair(ErrorCodes.SESSION_NOT_CREATED, SessionNotCreatedException.class),
+      new Pair(ErrorCodes.MOVE_TARGET_OUT_OF_BOUNDS, MoveTargetOutOfBoundsException.class),
+      new Pair(ErrorCodes.INVALID_XPATH_SELECTOR, InvalidSelectorException.class),
+      new Pair(ErrorCodes.INVALID_XPATH_SELECTOR_RETURN_TYPER, InvalidSelectorException.class)
+    );
 
-  @Test
-  public void testElementNotVisibleStateExceptionIsRaisedForJSONWP() {
-    try {
-      handler.throwIfResponseFailed(createResponse(ErrorCodes.ELEMENT_NOT_VISIBLE), 123);
-      fail("Should have thrown an InvalidElementStateException");
-    } catch (ElementNotVisibleException enve) {
-      assertEquals("ElementNotVisibleException", enve.getClass().getSimpleName());
-      assertEquals(ErrorCodes.ELEMENT_NOT_VISIBLE, new ErrorCodes().toStatusCode(enve));
+    for (Pair<Integer, Class> exception : exceptions) {
+      try {
+        handler.throwIfResponseFailed(createResponse(exception.getKey()), 123);
+        fail("Should have thrown an Exception");
+      } catch (Exception e) {
+        assertEquals("Checking status code: " + exception.getKey(), exception.getValue().getSimpleName(), e.getClass().getSimpleName());
+        assertEquals(e.getClass().getSimpleName() + " ErrorCodes.toStatusCode", exception.getKey().intValue(), new ErrorCodes().toStatusCode(e));
+      }
     }
   }
 
