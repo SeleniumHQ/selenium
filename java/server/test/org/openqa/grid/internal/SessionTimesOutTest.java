@@ -25,6 +25,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.listeners.TimeoutListener;
@@ -32,7 +33,6 @@ import org.openqa.grid.internal.mock.GridHelper;
 import org.openqa.grid.web.servlet.handler.RequestHandler;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.testing.Ignore;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -112,7 +112,7 @@ public class SessionTimesOutTest {
     }
   }
 
-  @Ignore(reason = "flaky in travis CI")
+  @Ignore(value = "flaky in travis CI")
   @Test(timeout = 20000)
   public void testTimeoutSlow() throws InterruptedException {
     Registry registry = Registry.newInstance();
