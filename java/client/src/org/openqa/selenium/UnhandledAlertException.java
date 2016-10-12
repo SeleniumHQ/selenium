@@ -17,6 +17,9 @@
 
 package org.openqa.selenium;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
+
 public class UnhandledAlertException extends WebDriverException {
 
   private final String alertText;
@@ -35,5 +38,13 @@ public class UnhandledAlertException extends WebDriverException {
    */
   public String getAlertText() {
     return alertText;
+  }
+
+  public JsonObject toJson() {
+    JsonObject text = new JsonObject();
+    text.add("text", new JsonPrimitive(alertText));
+    JsonObject alert = new JsonObject();
+    alert.add("alert", text);
+    return alert;
   }
 }

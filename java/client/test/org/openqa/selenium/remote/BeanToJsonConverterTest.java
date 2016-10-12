@@ -32,6 +32,7 @@ import org.junit.runners.JUnit4;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.Proxy;
+import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.logging.LogEntries;
 import org.openqa.selenium.logging.LogEntry;
@@ -325,6 +326,12 @@ public class BeanToJsonConverterTest {
 
     assertTrue(raw, converted.has("stackTrace"));
     verifyStackTraceInJson(raw, stackTrace);
+  }
+
+  @Test
+  public void testShouldConverUnhandledAlertException() {
+    RuntimeException clientError = new UnhandledAlertException("unhandled alert", "cheese!");
+    assertEquals("{\"alert\":{\"text\":\"cheese!\"}}", new BeanToJsonConverter().convert(clientError));
   }
 
   @Test
