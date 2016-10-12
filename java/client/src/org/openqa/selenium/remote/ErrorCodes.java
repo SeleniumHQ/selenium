@@ -110,6 +110,7 @@ public class ErrorCodes {
              .add(new StatusTuple("element not selectable", ELEMENT_NOT_SELECTABLE, ElementNotSelectableException.class))
              .add(new StatusTuple("element not interactable", INVALID_ELEMENT_STATE, ElementNotInteractableException.class))
              .add(new StatusTuple("element not interactable", ELEMENT_NOT_VISIBLE, ElementNotVisibleException.class))
+             .add(new StatusTuple("element not visible", ELEMENT_NOT_VISIBLE, ElementNotVisibleException.class))
              .add(new StatusTuple("invalid argument", UNHANDLED_ERROR, InvalidArgumentException.class))
              .add(new StatusTuple("invalid cookie domain", INVALID_COOKIE_DOMAIN, InvalidCookieDomainException.class))
              .add(new StatusTuple("invalid element coordinates", INVALID_ELEMENT_COORDINATES, InvalidCoordinatesException.class))
