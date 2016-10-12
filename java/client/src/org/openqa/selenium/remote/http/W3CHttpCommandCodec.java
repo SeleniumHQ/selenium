@@ -44,6 +44,7 @@ import static org.openqa.selenium.remote.DriverCommand.SEND_KEYS_TO_ELEMENT;
 import static org.openqa.selenium.remote.DriverCommand.SET_ALERT_VALUE;
 import static org.openqa.selenium.remote.DriverCommand.SET_CURRENT_WINDOW_POSITION;
 import static org.openqa.selenium.remote.DriverCommand.SET_CURRENT_WINDOW_SIZE;
+import static org.openqa.selenium.remote.DriverCommand.SET_TIMEOUT;
 import static org.openqa.selenium.remote.DriverCommand.SUBMIT_ELEMENT;
 
 import com.google.common.base.Charsets;
@@ -199,13 +200,31 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
           parameters.get("x"),
           parameters.get("y"));
 
+      case SET_TIMEOUT:
+        String timeoutType = (String) parameters.get("type");
+        Number duration = (Number) parameters.get("ms");
+
+        if (timeoutType == null) {
+          // Assume a local end that Knows What To Do according to the spec
+          return parameters;
+        }
+
+        return ImmutableMap.<String, Object>builder()
+          .putAll(
+            parameters.entrySet().stream()
+              .filter(e -> !timeoutType.equals(e.getKey()))
+              .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)))
+          .put(timeoutType, duration)
+          .build();
+
       case SUBMIT_ELEMENT:
         return toScript(
           "var form = arguments[0];\n" +
           "while (form.nodeName != \"FORM\" && form.parentNode) {\n" +
           "  form = form.parentNode;\n" +
           "}\n" +
-          "if (form == null) { throw Error('Unable to find containing form element'); }\n" +
+          "if (!form) { throw Error('Unable to find containing form element'); }\n" +
+          "if (!form.ownerDocument) { throw Error('Unable to find owning document'); }\n" +
           "var e = form.ownerDocument.createEvent('Event');\n" +
           "e.initEvent('submit', true, true);\n" +
           "if (form.dispatchEvent(e)) { form.submit() }\n",
