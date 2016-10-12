@@ -418,6 +418,28 @@ public class ErrorHandlerTest {
     }
   }
 
+  @Test
+  public void testInvalidElementStateExceptionIsRaisedForJSONWP() {
+    try {
+      handler.throwIfResponseFailed(createResponse(ErrorCodes.INVALID_ELEMENT_STATE), 123);
+      fail("Should have thrown an InvalidElementStateException");
+    } catch (InvalidElementStateException iese) {
+      assertEquals("InvalidElementStateException", iese.getClass().getSimpleName());
+      assertEquals(ErrorCodes.INVALID_ELEMENT_STATE, new ErrorCodes().toStatusCode(iese));
+    }
+  }
+
+  @Test
+  public void testElementNotVisibleStateExceptionIsRaisedForJSONWP() {
+    try {
+      handler.throwIfResponseFailed(createResponse(ErrorCodes.ELEMENT_NOT_VISIBLE), 123);
+      fail("Should have thrown an InvalidElementStateException");
+    } catch (ElementNotVisibleException enve) {
+      assertEquals("ElementNotVisibleException", enve.getClass().getSimpleName());
+      assertEquals(ErrorCodes.ELEMENT_NOT_VISIBLE, new ErrorCodes().toStatusCode(enve));
+    }
+  }
+
   private Response createResponse(int status) {
     return createResponse(status, null);
   }
