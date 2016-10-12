@@ -225,7 +225,7 @@
       expectedFailures.expectFailureFor(
           goog.labs.userAgent.device.isMobile() || goog.labs.userAgent.device.isTablet() ||
             (goog.userAgent.IE && !goog.userAgent.isVersion(7)) ||
-            goog.userAgent.product.CHROME);
+            (goog.userAgent.product.CHROME && goog.userAgent.MAC));
 
       expectedFailures.run(function() {
         assertTrue('Horizontal scroll did not account for scrollbar. ' +
