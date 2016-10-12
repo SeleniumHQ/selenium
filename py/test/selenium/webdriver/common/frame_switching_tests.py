@@ -233,6 +233,7 @@ class TestFrameSwitching(object):
     @pytest.mark.ignore_phantomjs
     @pytest.mark.ignore_firefox
     @pytest.mark.ignore_marionette
+    @pytest.mark.ignore_chrome
     def testShouldBeAbleToClickInAFrame(self, driver, pages):
         pages.load("frameset.html")
         driver.switch_to.frame("third")
@@ -292,6 +293,7 @@ class TestFrameSwitching(object):
     @pytest.mark.ignore_marionette
     @pytest.mark.ignore_phantomjs
     @pytest.mark.ignore_firefox
+    @pytest.mark.ignore_chrome
     def testShouldBeAbleToSwitchToTheTopIfTheFrameIsDeletedFromUnderUs(self, driver, pages):
         pages.load("frame_switching_tests/deletingFrame.html")
         driver.switch_to.frame(driver.find_element_by_id("iframe1"))
@@ -381,7 +383,7 @@ class TestFrameSwitching(object):
                 url = driver.execute_script("return window.location.href")
             # IE6 and Chrome add "?"-symbol to the end of the URL
         if (url.endswith("?")):
-            url = url.substring(0, url.length() - 1)
+            url = url[:len(url) - 1]
 
         assert pages.url("frame_switching_tests/bug4876_iframe.html") == url
 
