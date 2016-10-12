@@ -13,11 +13,11 @@ IMPORTANT CHANGES
 Other major changes:
 
 * Stability fixes in Grid.
-* All Grid nodes can now offer help
-* Updated to the latest version of HtmlUnitDriver
+* All Grid nodes can now offer help.
+* Updated to the latest version of HtmlUnitDriver.
 * Re-enabled log gathering for the standalone server.
 * Firefox profile is passed to both the legacy FirefoxDriver and
-  geckodriver
+  geckodriver.
 
 v3.0.0-beta4
 ============
