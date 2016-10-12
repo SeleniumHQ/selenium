@@ -20,6 +20,7 @@ env:
     - TASK=java TARGET=java_small_tests
     - TASK=java TARGET=chrome
     - TASK=java TARGET=grid TOXENV=chrome
+    - TASK=api_docs TARGET=java
     - TASK=rb TARGET=unit-test
     - TASK=rb TARGET=chrome-test
     - TASK=rb TARGET=firefox-test
@@ -42,6 +43,8 @@ matrix:
     - env: TASK=py TOXENV=py27-firefox
     - env: TASK=py TOXENV=py27-marionette
     - env: TASK=py TOXENV=py27-remote
+    - env: TASK=api_docs TARGET=py_
+    - env: TASK=api_docs TARGET=//rb:
 before_script:
   - sh -e /etc/init.d/xvfb start
 script:
@@ -121,4 +124,11 @@ script:
         rvm install 2.2.3
         rvm use 2.2.3
         ./go //rb:$TARGET
+      fi
+  - |
+      if [[ $TASK == "api_docs" ]]; then
+        if [[ $TARGET == "py_" ]]; then
+          ./go py_prep_for_install_release
+        fi
+        ./go ${TARGET}docs
       fi
