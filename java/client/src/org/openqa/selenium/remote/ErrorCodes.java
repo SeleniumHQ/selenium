@@ -108,8 +108,8 @@ public class ErrorCodes {
       .put(400,
            ImmutableSortedSet.<StatusTuple>naturalOrder()
              .add(new StatusTuple("element not selectable", ELEMENT_NOT_SELECTABLE, ElementNotSelectableException.class))
-             .add(new StatusTuple("element not interactable", INVALID_ELEMENT_STATE, ElementNotInteractableException.class))
-             .add(new StatusTuple("element not interactable", ELEMENT_NOT_VISIBLE, ElementNotVisibleException.class))
+             .add(new StatusTuple("element not interactable", INVALID_ELEMENT_STATE, ElementNotInteractableException.class, INVALID_ELEMENT_STATE))
+             .add(new StatusTuple("element not interactable", ELEMENT_NOT_VISIBLE, ElementNotVisibleException.class, INVALID_ELEMENT_STATE))
              .add(new StatusTuple("element not visible", ELEMENT_NOT_VISIBLE, ElementNotVisibleException.class))
              .add(new StatusTuple("invalid argument", UNHANDLED_ERROR, InvalidArgumentException.class))
              .add(new StatusTuple("invalid cookie domain", INVALID_COOKIE_DOMAIN, InvalidCookieDomainException.class))
@@ -177,6 +177,7 @@ public class ErrorCodes {
     ALL_CODES.values().stream()
       .flatMap(Collection::stream)
       .filter(tuple -> tuple.getException() != null)
+      .filter(tuple -> tuple.jsonStatus == tuple.seleniumExceptionToResponseCode)
       .collect(Collectors.toMap(StatusTuple::asState, StatusTuple::getException, (key1, key2) -> key1));
 
   public String toState(Integer status) {
