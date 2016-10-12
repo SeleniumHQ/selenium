@@ -45,7 +45,6 @@ matrix:
     - env: TASK=py TOXENV=py27-firefox
     - env: TASK=py TOXENV=py27-marionette
     - env: TASK=py TOXENV=py27-remote
-    - env: TASK=api_docs TARGET=py_
     - env: TASK=api_docs TARGET="//rb:"
 before_script:
   - sh -e /etc/init.d/xvfb start
