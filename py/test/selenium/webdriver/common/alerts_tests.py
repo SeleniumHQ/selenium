@@ -119,6 +119,8 @@ class TestAlerts(object):
     def testShouldAllowAUserToSetTheValueOfAPrompt(self, driver, pages):
         if driver.capabilities['browserName'] == 'phantomjs':
             pytest.xfail("phantomjs driver does not support alerts")
+        if driver.capabilities['browserName'] == 'chrome':
+            pytest.xfail("Chrome issue: https://bugs.chromium.org/p/chromedriver/issues/detail?id=1543")
         pages.load("alerts.html")
         driver.find_element(by=By.ID, value="prompt").click()
         alert = self._waitForAlert(driver)
@@ -293,6 +295,8 @@ class TestAlerts(object):
     def testShouldAllowTheUserToGetTheTextOfAPrompt(self, driver, pages):
         if driver.capabilities['browserName'] == 'phantomjs':
             pytest.xfail("phantomjs driver does not support alerts")
+        if driver.capabilities['browserName'] == 'chrome':
+            pytest.xfail("Chrome issue: https://bugs.chromium.org/p/chromedriver/issues/detail?id=1545")
         pages.load("alerts.html")
         driver.find_element(By.ID, "prompt").click()
 
