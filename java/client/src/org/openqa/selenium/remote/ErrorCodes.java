@@ -93,6 +93,11 @@ public class ErrorCodes {
   public static final int MOVE_TARGET_OUT_OF_BOUNDS = 34;
   public static final int INVALID_XPATH_SELECTOR = 51;
   public static final int INVALID_XPATH_SELECTOR_RETURN_TYPER = 52;
+
+  // json wire protocol doesn't have analogous status codes for
+  // these new W3C status repsonse 'codes', so making some up!
+  public static final int ELEMENT_NOT_INTERACTABLE = 60;
+
   // The following error codes are derived straight from HTTP return codes.
   public static final int METHOD_NOT_ALLOWED = 405;
 
@@ -108,8 +113,7 @@ public class ErrorCodes {
       .put(400,
            ImmutableSortedSet.<StatusTuple>naturalOrder()
              .add(new StatusTuple("element not selectable", ELEMENT_NOT_SELECTABLE, ElementNotSelectableException.class))
-             .add(new StatusTuple("element not interactable", INVALID_ELEMENT_STATE, ElementNotInteractableException.class))
-             .add(new StatusTuple("element not interactable", ELEMENT_NOT_VISIBLE, ElementNotVisibleException.class))
+             .add(new StatusTuple("element not interactable", ELEMENT_NOT_INTERACTABLE, ElementNotInteractableException.class))
              .add(new StatusTuple("element not visible", ELEMENT_NOT_VISIBLE, ElementNotVisibleException.class))
              .add(new StatusTuple("invalid argument", UNHANDLED_ERROR, InvalidArgumentException.class))
              .add(new StatusTuple("invalid cookie domain", INVALID_COOKIE_DOMAIN, InvalidCookieDomainException.class))
