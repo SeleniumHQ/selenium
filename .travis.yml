@@ -21,6 +21,8 @@ env:
     - TASK=java TARGET=chrome
     - TASK=java TARGET=grid TOXENV=chrome
     - TASK=api_docs TARGET=java
+    - TASK=api_docs TARGET=py_
+    - TASK=api_docs TARGET="//rb:"
     - TASK=rb TARGET=unit-test
     - TASK=rb TARGET=chrome-test
     - TASK=rb TARGET=firefox-test
