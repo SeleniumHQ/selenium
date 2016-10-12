@@ -52,6 +52,7 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.io.Resources;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
 import org.openqa.selenium.WebDriverException;
@@ -174,25 +175,23 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
 
       case SEND_KEYS_TO_ACTIVE_ELEMENT:
       case SEND_KEYS_TO_ELEMENT:
-        HashMap<String, Object> amended = new HashMap<>(parameters);
-        // convert "value" to an array of UTF-8 bytes. We have a list of charsequences. Iterate over
-        // each of these and grab the code points, which we encode as json primitives. This allows
-        // gson to work its magic. Mostly.
-        String total = Stream.of((CharSequence[]) parameters.get("value"))
-          .flatMap(Stream::of)
-          .collect(Collectors.joining());
+        return ImmutableMap.<String, Object>builder()
+          .putAll(
+            parameters.entrySet().stream()
+              .filter(e -> !"value".equals(e.getKey()))
+              .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)))
+          .put(
+            "value",
+            stringToUtf8Array(
+              Stream.of((CharSequence[]) parameters.get("value"))
+                .flatMap(Stream::of)
+                .collect(Collectors.joining())))
+          .build();
 
-        // String has the correct value here.
-        JsonArray newValue = new JsonArray();
-        int offset = 0;
-        while (offset < total.length()) {
-          int next = total.codePointAt(offset);
-          newValue.add(new JsonPrimitive(new StringBuilder().appendCodePoint(next).toString()));
-          offset += Character.charCount(next);
-        }
-
-        amended.put("value", newValue);
-        return amended;
+      case SET_ALERT_VALUE:
+        return ImmutableMap.<String, Object>builder()
+          .put("value", stringToUtf8Array((String) parameters.get("text")))
+          .build();
 
       case SET_CURRENT_WINDOW_POSITION:
         return toScript(
@@ -215,6 +214,17 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
       default:
         return parameters;
     }
+  }
+
+  private JsonArray stringToUtf8Array(String toConvert) {
+    JsonArray toReturn = new JsonArray();
+    int offset = 0;
+    while (offset < toConvert.length()) {
+      int next = toConvert.codePointAt(offset);
+      toReturn.add(new JsonPrimitive(new StringBuilder().appendCodePoint(next).toString()));
+      offset += Character.charCount(next);
+    }
+    return toReturn;
   }
 
   private Map<String, ?> executeAtom(String atomFileName, Object... args) {
