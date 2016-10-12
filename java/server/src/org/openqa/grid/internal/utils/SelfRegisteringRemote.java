@@ -177,6 +177,9 @@ public class SelfRegisteringRemote {
     LOG.fine("Using the json request : " + registrationRequest.toJson());
 
     Boolean register = registrationRequest.getConfiguration().register;
+    if (register == null) {
+      register = false;
+    }
 
     if (!register) {
       LOG.info("No registration sent ( register = false )");
