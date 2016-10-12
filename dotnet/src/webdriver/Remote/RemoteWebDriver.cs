@@ -1305,6 +1305,9 @@ namespace OpenQA.Selenium.Remote
                         case WebDriverResult.InvalidSelector:
                             throw new InvalidSelectorException(errorMessage);
 
+                        case WebDriverResult.NoSuchDriver:
+                            throw new WebDriverException(errorMessage);
+
                         default:
                             throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, "{0} ({1})", errorMessage, errorResponse.Status));
                     }
