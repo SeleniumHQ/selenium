@@ -190,6 +190,8 @@ module Selenium
               hash['platform'] = value.to_s.upcase
             when :proxy
               hash['proxy'] = value.as_json if value
+            when :firefox_options
+              hash['moz:firefoxOptions'] = value
             when String, :firefox_binary
               hash[key.to_s] = value
             when Symbol
