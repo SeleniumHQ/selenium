@@ -30,6 +30,8 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -41,6 +43,7 @@ import org.junit.runners.JUnit4;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.Proxy;
+import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.logging.LogEntries;
 import org.openqa.selenium.logging.LogEntry;
@@ -48,6 +51,7 @@ import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.logging.LoggingPreferences;
 
 import java.awt.*;
+import java.io.StringReader;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -326,6 +330,16 @@ public class BeanToJsonConverterTest {
     assertTrue(raw, converted.has("stackTrace"));
     verifyStackTraceInJson(raw, stackTrace);
   }
+
+  @Test
+  public void testShouldConverUnhandledAlertException() {
+    RuntimeException clientError = new UnhandledAlertException("unhandled alert", "cheese!");
+    Map<?, ?> obj = new Gson()
+        .fromJson(new StringReader(new BeanToJsonConverter().convert(clientError)), Map.class);
+    assertTrue(obj.containsKey("alert"));
+    assertEquals(ImmutableMap.of("text", "cheese!"), obj.get("alert"));
+  }
+
 
   @Test
   public void testShouldConvertDatesToMillisecondsInUtcTime() {
