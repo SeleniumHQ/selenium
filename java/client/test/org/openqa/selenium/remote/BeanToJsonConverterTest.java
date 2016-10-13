@@ -17,6 +17,15 @@
 
 package org.openqa.selenium.remote;
 
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
@@ -32,7 +41,6 @@ import org.junit.runners.JUnit4;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.Proxy;
-import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.logging.LogEntries;
 import org.openqa.selenium.logging.LogEntry;
@@ -48,15 +56,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
-
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 
 @RunWith(JUnit4.class)
@@ -326,12 +325,6 @@ public class BeanToJsonConverterTest {
 
     assertTrue(raw, converted.has("stackTrace"));
     verifyStackTraceInJson(raw, stackTrace);
-  }
-
-  @Test
-  public void testShouldConverUnhandledAlertException() {
-    RuntimeException clientError = new UnhandledAlertException("unhandled alert", "cheese!");
-    assertEquals("{\"alert\":{\"text\":\"cheese!\"}}", new BeanToJsonConverter().convert(clientError));
   }
 
   @Test
