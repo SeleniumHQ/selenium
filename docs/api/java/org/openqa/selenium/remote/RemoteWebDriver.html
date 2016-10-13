@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10,"i21":10,"i22":10,"i23":10,"i24":10,"i25":10,"i26":10,"i27":10,"i28":10,"i29":10,"i30":10,"i31":10,"i32":10,"i33":10,"i34":10,"i35":10,"i36":10,"i37":10,"i38":10,"i39":10,"i40":10,"i41":10,"i42":10,"i43":10,"i44":10,"i45":10,"i46":10,"i47":10,"i48":10,"i49":10,"i50":10,"i51":10,"i52":10,"i53":10,"i54":10,"i55":10,"i56":10,"i57":10,"i58":10,"i59":10,"i60":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10,"i21":10,"i22":10,"i23":10,"i24":10,"i25":10,"i26":10,"i27":10,"i28":10,"i29":10,"i30":10,"i31":10,"i32":10,"i33":10,"i34":10,"i35":10,"i36":10,"i37":10,"i38":10,"i39":10,"i40":10,"i41":10,"i42":10,"i43":10,"i44":10,"i45":10,"i46":10,"i47":10,"i48":10,"i49":10,"i50":10,"i51":10,"i52":10,"i53":10,"i54":10,"i55":10,"i56":10,"i57":10,"i58":10,"i59":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -398,23 +398,19 @@ implements <a href="../../../../org/openqa/selenium/WebDriver.html" title="inter
 </td>
 </tr>
 <tr id="i39" class="rowColor">
-<td class="colFirst"><code>int</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getW3CStandardComplianceLevel--">getW3CStandardComplianceLevel</a></span>()</code>&nbsp;</td>
-</tr>
-<tr id="i40" class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getWindowHandle--">getWindowHandle</a></span>()</code>
 <div class="block">Return an opaque handle to this window that uniquely identifies it within this driver instance.</div>
 </td>
 </tr>
-<tr id="i41" class="rowColor">
+<tr id="i40" class="altColor">
 <td class="colFirst"><code>java.util.Set&lt;java.lang.String&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getWindowHandles--">getWindowHandles</a></span>()</code>
 <div class="block">Return a set of window handles which can be used to iterate over all open windows of this
  WebDriver instance by passing them to <a href="../../../../org/openqa/selenium/WebDriver.html#switchTo--"><code>WebDriver.switchTo()</code></a>.<a href="../../../../org/openqa/selenium/WebDriver.Options.html#window--"><code>WebDriver.Options.window()</code></a></div>
 </td>
 </tr>
-<tr id="i42" class="altColor">
+<tr id="i41" class="rowColor">
 <td class="colFirst"><code>protected void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#log-org.openqa.selenium.remote.SessionId-java.lang.String-java.lang.Object-org.openqa.selenium.remote.RemoteWebDriver.When-">log</a></span>(<a href="../../../../org/openqa/selenium/remote/SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;sessionId,
    java.lang.String&nbsp;commandName,
@@ -423,102 +419,102 @@ implements <a href="../../../../org/openqa/selenium/WebDriver.html" title="inter
 <div class="block">Override this to be notified at key points in the execution of a command.</div>
 </td>
 </tr>
-<tr id="i43" class="rowColor">
+<tr id="i42" class="altColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/WebDriver.Options.html" title="interface in org.openqa.selenium">WebDriver.Options</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#manage--">manage</a></span>()</code>
 <div class="block">Gets the Option interface</div>
 </td>
 </tr>
-<tr id="i44" class="altColor">
+<tr id="i43" class="rowColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/WebDriver.Navigation.html" title="interface in org.openqa.selenium">WebDriver.Navigation</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#navigate--">navigate</a></span>()</code>
 <div class="block">An abstraction allowing the driver to access the browser's history and to navigate to a given
  URL.</div>
 </td>
 </tr>
-<tr id="i45" class="rowColor">
+<tr id="i44" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#quit--">quit</a></span>()</code>
 <div class="block">Quits this driver, closing every associated window.</div>
 </td>
 </tr>
-<tr id="i46" class="altColor">
+<tr id="i45" class="rowColor">
 <td class="colFirst"><code>protected void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#setCommandExecutor-org.openqa.selenium.remote.CommandExecutor-">setCommandExecutor</a></span>(<a href="../../../../org/openqa/selenium/remote/CommandExecutor.html" title="interface in org.openqa.selenium.remote">CommandExecutor</a>&nbsp;executor)</code>&nbsp;</td>
 </tr>
-<tr id="i47" class="rowColor">
+<tr id="i46" class="altColor">
 <td class="colFirst"><code>protected void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#setElementConverter-org.openqa.selenium.remote.internal.JsonToWebElementConverter-">setElementConverter</a></span>(org.openqa.selenium.remote.internal.JsonToWebElementConverter&nbsp;converter)</code>&nbsp;</td>
 </tr>
-<tr id="i48" class="altColor">
+<tr id="i47" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#setErrorHandler-org.openqa.selenium.remote.ErrorHandler-">setErrorHandler</a></span>(<a href="../../../../org/openqa/selenium/remote/ErrorHandler.html" title="class in org.openqa.selenium.remote">ErrorHandler</a>&nbsp;handler)</code>&nbsp;</td>
 </tr>
-<tr id="i49" class="rowColor">
+<tr id="i48" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#setFileDetector-org.openqa.selenium.remote.FileDetector-">setFileDetector</a></span>(<a href="../../../../org/openqa/selenium/remote/FileDetector.html" title="interface in org.openqa.selenium.remote">FileDetector</a>&nbsp;detector)</code>
 <div class="block">Set the file detector to be used when sending keyboard input.</div>
 </td>
 </tr>
-<tr id="i50" class="altColor">
+<tr id="i49" class="rowColor">
 <td class="colFirst"><code>protected void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#setFoundBy-org.openqa.selenium.SearchContext-org.openqa.selenium.WebElement-java.lang.String-java.lang.String-">setFoundBy</a></span>(<a href="../../../../org/openqa/selenium/SearchContext.html" title="interface in org.openqa.selenium">SearchContext</a>&nbsp;context,
           <a href="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
           java.lang.String&nbsp;by,
           java.lang.String&nbsp;using)</code>&nbsp;</td>
 </tr>
-<tr id="i51" class="rowColor">
+<tr id="i50" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#setLogLevel-java.util.logging.Level-">setLogLevel</a></span>(java.util.logging.Level&nbsp;level)</code>
 <div class="block">Sets the RemoteWebDriver's client log level.</div>
 </td>
 </tr>
-<tr id="i52" class="altColor">
+<tr id="i51" class="rowColor">
 <td class="colFirst"><code>protected void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#setSessionId-java.lang.String-">setSessionId</a></span>(java.lang.String&nbsp;opaqueKey)</code>&nbsp;</td>
 </tr>
-<tr id="i53" class="rowColor">
+<tr id="i52" class="altColor">
 <td class="colFirst"><code>protected void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#startClient--">startClient</a></span>()</code>
 <div class="block">Method called before <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#startSession-org.openqa.selenium.Capabilities-"><code>starting a new session</code></a>.</div>
 </td>
 </tr>
-<tr id="i54" class="altColor">
+<tr id="i53" class="rowColor">
 <td class="colFirst"><code>protected void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#startClient-org.openqa.selenium.Capabilities-org.openqa.selenium.Capabilities-">startClient</a></span>(<a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;desiredCapabilities,
            <a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;requiredCapabilities)</code>
 <div class="block">Method called before <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#startSession-org.openqa.selenium.Capabilities-"><code>starting a new session</code></a>.</div>
 </td>
 </tr>
-<tr id="i55" class="rowColor">
+<tr id="i54" class="altColor">
 <td class="colFirst"><code>protected void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#startSession-org.openqa.selenium.Capabilities-">startSession</a></span>(<a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;desiredCapabilities)</code>&nbsp;</td>
 </tr>
-<tr id="i56" class="altColor">
+<tr id="i55" class="rowColor">
 <td class="colFirst"><code>protected void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#startSession-org.openqa.selenium.Capabilities-org.openqa.selenium.Capabilities-">startSession</a></span>(<a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;desiredCapabilities,
             <a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;requiredCapabilities)</code>&nbsp;</td>
 </tr>
-<tr id="i57" class="rowColor">
+<tr id="i56" class="altColor">
 <td class="colFirst"><code>protected void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#stopClient--">stopClient</a></span>()</code>
 <div class="block">Method called after executing a <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#quit--"><code>quit()</code></a> command.</div>
 </td>
 </tr>
-<tr id="i58" class="altColor">
+<tr id="i57" class="rowColor">
 <td class="colFirst"><code>protected void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#stopClient-org.openqa.selenium.Capabilities-org.openqa.selenium.Capabilities-">stopClient</a></span>(<a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;desiredCapabilities,
           <a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;requiredCapabilities)</code>
 <div class="block">Method called after executing a <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#quit--"><code>quit()</code></a> command.</div>
 </td>
 </tr>
-<tr id="i59" class="rowColor">
+<tr id="i58" class="altColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/WebDriver.TargetLocator.html" title="interface in org.openqa.selenium">WebDriver.TargetLocator</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#switchTo--">switchTo</a></span>()</code>
 <div class="block">Send future commands to a different frame or window.</div>
 </td>
 </tr>
-<tr id="i60" class="altColor">
+<tr id="i59" class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#toString--">toString</a></span>()</code>&nbsp;</td>
 </tr>
@@ -612,15 +608,6 @@ implements <a href="../../../../org/openqa/selenium/WebDriver.html" title="inter
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a name="getW3CStandardComplianceLevel--">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getW3CStandardComplianceLevel</h4>
-<pre>public&nbsp;int&nbsp;getW3CStandardComplianceLevel()</pre>
-</li>
-</ul>
 <a name="setFileDetector-org.openqa.selenium.remote.FileDetector-">
 <!--   -->
 </a>

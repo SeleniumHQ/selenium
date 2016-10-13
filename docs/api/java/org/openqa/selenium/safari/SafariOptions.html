@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":9,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10};
+var methods = {"i0":10,"i1":9,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -200,22 +200,33 @@ extends java.lang.Object</pre>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/safari/SafariOptions.html#getUseCleanSession--">getUseCleanSession</a></span>()</code>&nbsp;</td>
 </tr>
 <tr id="i4" class="altColor">
+<td class="colFirst"><code>boolean</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/safari/SafariOptions.html#getUseTechnologyPreview--">getUseTechnologyPreview</a></span>()</code>&nbsp;</td>
+</tr>
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/safari/SafariOptions.html#hashCode--">hashCode</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/safari/SafariOptions.html#setPort-int-">setPort</a></span>(int&nbsp;port)</code>
 <div class="block">Set the port the <code>SafariDriverServer</code> should be started on.</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/safari/SafariOptions.html#setUseCleanSession-boolean-">setUseCleanSession</a></span>(boolean&nbsp;useCleanSession)</code>
 <div class="block">Instruct the SafariDriver to delete all existing session data when starting a new session.</div>
 </td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i8" class="altColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/safari/SafariOptions.html#setUseTechnologyPreview-boolean-">setUseTechnologyPreview</a></span>(boolean&nbsp;useTechnologyPreview)</code>
+<div class="block">Instruct the SafariDriver to use the Safari Technology Preview if true, otherwise use the
+ release version of Safari.</div>
+</td>
+</tr>
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>com.google.gson.JsonObject</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/safari/SafariOptions.html#toJson--">toJson</a></span>()</code>
 <div class="block">Converts this instance to its JSON representation.</div>
@@ -337,6 +348,22 @@ extends java.lang.Object</pre>
 </dl>
 </li>
 </ul>
+<a name="setUseTechnologyPreview-boolean-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setUseTechnologyPreview</h4>
+<pre>public&nbsp;void&nbsp;setUseTechnologyPreview(boolean&nbsp;useTechnologyPreview)</pre>
+<div class="block">Instruct the SafariDriver to use the Safari Technology Preview if true, otherwise use the
+ release version of Safari. Defaults to using the release version of Safari.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>useTechnologyPreview</code> - If true, the SafariDriver will use the Safari Technology Preview,
+     otherwise will use the release version of Safari.</dd>
+</dl>
+</li>
+</ul>
 <a name="getPort--">
 <!--   -->
 </a>
@@ -366,6 +393,15 @@ extends java.lang.Object</pre>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../org/openqa/selenium/safari/SafariOptions.html#setUseCleanSession-boolean-"><code>setUseCleanSession(boolean)</code></a></dd>
 </dl>
+</li>
+</ul>
+<a name="getUseTechnologyPreview--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getUseTechnologyPreview</h4>
+<pre>public&nbsp;boolean&nbsp;getUseTechnologyPreview()</pre>
 </li>
 </ul>
 <a name="toJson--">

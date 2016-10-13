@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10};
+var methods = {"i0":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -72,7 +72,7 @@ var activeTableTab = "activeTableTab";
 <div>
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
-<li>Nested&nbsp;|&nbsp;</li>
+<li><a href="#nested.classes.inherited.from.class.org.openqa.selenium.remote.http.AbstractHttpCommandCodec">Nested</a>&nbsp;|&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
@@ -98,7 +98,12 @@ var activeTableTab = "activeTableTab";
 <li>java.lang.Object</li>
 <li>
 <ul class="inheritance">
+<li><a href="../../../../../org/openqa/selenium/remote/http/AbstractHttpCommandCodec.html" title="class in org.openqa.selenium.remote.http">org.openqa.selenium.remote.http.AbstractHttpCommandCodec</a></li>
+<li>
+<ul class="inheritance">
 <li>org.openqa.selenium.remote.http.JsonHttpCommandCodec</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -112,8 +117,7 @@ var activeTableTab = "activeTableTab";
 <hr>
 <br>
 <pre>public class <span class="typeNameLabel">JsonHttpCommandCodec</span>
-extends java.lang.Object
-implements <a href="../../../../../org/openqa/selenium/remote/CommandCodec.html" title="interface in org.openqa.selenium.remote">CommandCodec</a>&lt;<a href="../../../../../org/openqa/selenium/remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&gt;</pre>
+extends <a href="../../../../../org/openqa/selenium/remote/http/AbstractHttpCommandCodec.html" title="class in org.openqa.selenium.remote.http">AbstractHttpCommandCodec</a></pre>
 <div class="block">A command codec that adheres to the Selenium project's JSON/HTTP wire protocol.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
@@ -126,6 +130,21 @@ implements <a href="../../../../../org/openqa/selenium/remote/CommandCodec.html"
 <div class="summary">
 <ul class="blockList">
 <li class="blockList">
+<!-- ======== NESTED CLASS SUMMARY ======== -->
+<ul class="blockList">
+<li class="blockList"><a name="nested.class.summary">
+<!--   -->
+</a>
+<h3>Nested Class Summary</h3>
+<ul class="blockList">
+<li class="blockList"><a name="nested.classes.inherited.from.class.org.openqa.selenium.remote.http.AbstractHttpCommandCodec">
+<!--   -->
+</a>
+<h3>Nested classes/interfaces inherited from class&nbsp;org.openqa.selenium.remote.http.<a href="../../../../../org/openqa/selenium/remote/http/AbstractHttpCommandCodec.html" title="class in org.openqa.selenium.remote.http">AbstractHttpCommandCodec</a></h3>
+<code><a href="../../../../../org/openqa/selenium/remote/http/AbstractHttpCommandCodec.CommandSpec.html" title="class in org.openqa.selenium.remote.http">AbstractHttpCommandCodec.CommandSpec</a></code></li>
+</ul>
+</li>
+</ul>
 <!-- ======== CONSTRUCTOR SUMMARY ======== -->
 <ul class="blockList">
 <li class="blockList"><a name="constructor.summary">
@@ -156,26 +175,18 @@ implements <a href="../../../../../org/openqa/selenium/remote/CommandCodec.html"
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr id="i0" class="altColor">
-<td class="colFirst"><code><a href="../../../../../org/openqa/selenium/remote/Command.html" title="class in org.openqa.selenium.remote">Command</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/http/JsonHttpCommandCodec.html#decode-org.openqa.selenium.remote.http.HttpRequest-">decode</a></span>(<a href="../../../../../org/openqa/selenium/remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&nbsp;encodedCommand)</code>
-<div class="block">Decodes a command.</div>
-</td>
-</tr>
-<tr id="i1" class="rowColor">
-<td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/http/JsonHttpCommandCodec.html#defineCommand-java.lang.String-org.openqa.selenium.remote.http.HttpMethod-java.lang.String-">defineCommand</a></span>(java.lang.String&nbsp;name,
-             <a href="../../../../../org/openqa/selenium/remote/http/HttpMethod.html" title="enum in org.openqa.selenium.remote.http">HttpMethod</a>&nbsp;method,
-             java.lang.String&nbsp;pathPattern)</code>
-<div class="block">Defines a new command mapping.</div>
-</td>
-</tr>
-<tr id="i2" class="altColor">
-<td class="colFirst"><code><a href="../../../../../org/openqa/selenium/remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/http/JsonHttpCommandCodec.html#encode-org.openqa.selenium.remote.Command-">encode</a></span>(<a href="../../../../../org/openqa/selenium/remote/Command.html" title="class in org.openqa.selenium.remote">Command</a>&nbsp;command)</code>
-<div class="block">Encodes a command.</div>
-</td>
+<td class="colFirst"><code>protected java.util.Map&lt;java.lang.String,?&gt;</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/http/JsonHttpCommandCodec.html#amendParameters-java.lang.String-java.util.Map-">amendParameters</a></span>(java.lang.String&nbsp;name,
+               java.util.Map&lt;java.lang.String,?&gt;&nbsp;parameters)</code>&nbsp;</td>
 </tr>
 </table>
+<ul class="blockList">
+<li class="blockList"><a name="methods.inherited.from.class.org.openqa.selenium.remote.http.AbstractHttpCommandCodec">
+<!--   -->
+</a>
+<h3>Methods inherited from class&nbsp;org.openqa.selenium.remote.http.<a href="../../../../../org/openqa/selenium/remote/http/AbstractHttpCommandCodec.html" title="class in org.openqa.selenium.remote.http">AbstractHttpCommandCodec</a></h3>
+<code><a href="../../../../../org/openqa/selenium/remote/http/AbstractHttpCommandCodec.html#alias-java.lang.String-java.lang.String-">alias</a>, <a href="../../../../../org/openqa/selenium/remote/http/AbstractHttpCommandCodec.html#decode-org.openqa.selenium.remote.http.HttpRequest-">decode</a>, <a href="../../../../../org/openqa/selenium/remote/http/AbstractHttpCommandCodec.html#defineCommand-java.lang.String-org.openqa.selenium.remote.http.AbstractHttpCommandCodec.CommandSpec-">defineCommand</a>, <a href="../../../../../org/openqa/selenium/remote/http/AbstractHttpCommandCodec.html#defineCommand-java.lang.String-org.openqa.selenium.remote.http.HttpMethod-java.lang.String-">defineCommand</a>, <a href="../../../../../org/openqa/selenium/remote/http/AbstractHttpCommandCodec.html#delete-java.lang.String-">delete</a>, <a href="../../../../../org/openqa/selenium/remote/http/AbstractHttpCommandCodec.html#encode-org.openqa.selenium.remote.Command-">encode</a>, <a href="../../../../../org/openqa/selenium/remote/http/AbstractHttpCommandCodec.html#get-java.lang.String-">get</a>, <a href="../../../../../org/openqa/selenium/remote/http/AbstractHttpCommandCodec.html#post-java.lang.String-">post</a></code></li>
+</ul>
 <ul class="blockList">
 <li class="blockList"><a name="methods.inherited.from.class.java.lang.Object">
 <!--   -->
@@ -214,61 +225,17 @@ implements <a href="../../../../../org/openqa/selenium/remote/CommandCodec.html"
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a name="encode-org.openqa.selenium.remote.Command-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>encode</h4>
-<pre>public&nbsp;<a href="../../../../../org/openqa/selenium/remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&nbsp;encode(<a href="../../../../../org/openqa/selenium/remote/Command.html" title="class in org.openqa.selenium.remote">Command</a>&nbsp;command)</pre>
-<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../../../../../org/openqa/selenium/remote/CommandCodec.html#encode-org.openqa.selenium.remote.Command-">CommandCodec</a></code></span></div>
-<div class="block">Encodes a command.</div>
-<dl>
-<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../../../../org/openqa/selenium/remote/CommandCodec.html#encode-org.openqa.selenium.remote.Command-">encode</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../org/openqa/selenium/remote/CommandCodec.html" title="interface in org.openqa.selenium.remote">CommandCodec</a>&lt;<a href="../../../../../org/openqa/selenium/remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&gt;</code></dd>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>command</code> - the command to encode.</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>the encoded command.</dd>
-</dl>
-</li>
-</ul>
-<a name="decode-org.openqa.selenium.remote.http.HttpRequest-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>decode</h4>
-<pre>public&nbsp;<a href="../../../../../org/openqa/selenium/remote/Command.html" title="class in org.openqa.selenium.remote">Command</a>&nbsp;decode(<a href="../../../../../org/openqa/selenium/remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&nbsp;encodedCommand)</pre>
-<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../../../../../org/openqa/selenium/remote/CommandCodec.html#decode-T-">CommandCodec</a></code></span></div>
-<div class="block">Decodes a command.</div>
-<dl>
-<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../../../../org/openqa/selenium/remote/CommandCodec.html#decode-T-">decode</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../org/openqa/selenium/remote/CommandCodec.html" title="interface in org.openqa.selenium.remote">CommandCodec</a>&lt;<a href="../../../../../org/openqa/selenium/remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&gt;</code></dd>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>encodedCommand</code> - the command to decode.</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>the decoded command.</dd>
-</dl>
-</li>
-</ul>
-<a name="defineCommand-java.lang.String-org.openqa.selenium.remote.http.HttpMethod-java.lang.String-">
+<a name="amendParameters-java.lang.String-java.util.Map-">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
-<h4>defineCommand</h4>
-<pre>public&nbsp;void&nbsp;defineCommand(java.lang.String&nbsp;name,
-                          <a href="../../../../../org/openqa/selenium/remote/http/HttpMethod.html" title="enum in org.openqa.selenium.remote.http">HttpMethod</a>&nbsp;method,
-                          java.lang.String&nbsp;pathPattern)</pre>
-<div class="block">Defines a new command mapping.</div>
+<h4>amendParameters</h4>
+<pre>protected&nbsp;java.util.Map&lt;java.lang.String,?&gt;&nbsp;amendParameters(java.lang.String&nbsp;name,
+                                                            java.util.Map&lt;java.lang.String,?&gt;&nbsp;parameters)</pre>
 <dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>name</code> - The command name.</dd>
-<dd><code>method</code> - The HTTP method to use for the command.</dd>
-<dd><code>pathPattern</code> - The URI path pattern for the command. When encoding a command, each
-     path segment prefixed with a ":" will be replaced with the corresponding parameter
-     from the encoded command.</dd>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../../../../../org/openqa/selenium/remote/http/AbstractHttpCommandCodec.html#amendParameters-java.lang.String-java.util.Map-">amendParameters</a></code>&nbsp;in class&nbsp;<code><a href="../../../../../org/openqa/selenium/remote/http/AbstractHttpCommandCodec.html" title="class in org.openqa.selenium.remote.http">AbstractHttpCommandCodec</a></code></dd>
 </dl>
 </li>
 </ul>
@@ -324,7 +291,7 @@ implements <a href="../../../../../org/openqa/selenium/remote/CommandCodec.html"
 <div>
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
-<li>Nested&nbsp;|&nbsp;</li>
+<li><a href="#nested.classes.inherited.from.class.org.openqa.selenium.remote.http.AbstractHttpCommandCodec">Nested</a>&nbsp;|&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>

@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9};
+var methods = {"i0":9,"i1":9,"i2":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -47,7 +47,7 @@ var activeTableTab = "activeTableTab";
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../../../org/openqa/selenium/remote/server/log/DefaultPerSessionLogHandler.html" title="class in org.openqa.selenium.remote.server.log"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
+<li>Prev&nbsp;Class</li>
 <li><a href="../../../../../../org/openqa/selenium/remote/server/log/LoggingOptions.html" title="class in org.openqa.selenium.remote.server.log"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
@@ -147,8 +147,7 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>static void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/openqa/selenium/remote/server/log/LoggingManager.html#configureLogging-org.openqa.selenium.remote.server.log.LoggingOptions-boolean-">configureLogging</a></span>(<a href="../../../../../../org/openqa/selenium/remote/server/log/LoggingOptions.html" title="class in org.openqa.selenium.remote.server.log">LoggingOptions</a>&nbsp;options,
-                boolean&nbsp;debugMode)</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/openqa/selenium/remote/server/log/LoggingManager.html#configureLogging-boolean-">configureLogging</a></span>(boolean&nbsp;debugMode)</code>&nbsp;</td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>static void</code></td>
@@ -160,22 +159,6 @@ extends java.lang.Object</pre>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/openqa/selenium/remote/server/log/LoggingManager.html#perSessionLogHandler--">perSessionLogHandler</a></span>()</code>
 <div class="block">Provides a PerSessionLogHandler</div>
 </td>
-</tr>
-<tr id="i3" class="rowColor">
-<td class="colFirst"><code>protected static void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/openqa/selenium/remote/server/log/LoggingManager.html#resetLoggerToOriginalState--">resetLoggerToOriginalState</a></span>()</code>&nbsp;</td>
-</tr>
-<tr id="i4" class="altColor">
-<td class="colFirst"><code>protected static void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/openqa/selenium/remote/server/log/LoggingManager.html#restoreOriginalHandlersFormattersAndLevels-java.util.logging.Logger-">restoreOriginalHandlersFormattersAndLevels</a></span>(java.util.logging.Logger&nbsp;logger)</code>&nbsp;</td>
-</tr>
-<tr id="i5" class="rowColor">
-<td class="colFirst"><code>protected static void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/openqa/selenium/remote/server/log/LoggingManager.html#saveOriginalHandlersFormattersAndLevels-java.util.logging.Logger-">saveOriginalHandlersFormattersAndLevels</a></span>(java.util.logging.Logger&nbsp;logger)</code>&nbsp;</td>
-</tr>
-<tr id="i6" class="altColor">
-<td class="colFirst"><code>static <a href="../../../../../../org/openqa/selenium/remote/server/log/ShortTermMemoryHandler.html" title="class in org.openqa.selenium.remote.server.log">ShortTermMemoryHandler</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../org/openqa/selenium/remote/server/log/LoggingManager.html#shortTermMemoryHandler--">shortTermMemoryHandler</a></span>()</code>&nbsp;</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -216,23 +199,13 @@ extends java.lang.Object</pre>
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a name="configureLogging-org.openqa.selenium.remote.server.log.LoggingOptions-boolean-">
+<a name="configureLogging-boolean-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>configureLogging</h4>
-<pre>public static&nbsp;void&nbsp;configureLogging(<a href="../../../../../../org/openqa/selenium/remote/server/log/LoggingOptions.html" title="class in org.openqa.selenium.remote.server.log">LoggingOptions</a>&nbsp;options,
-                                    boolean&nbsp;debugMode)</pre>
-</li>
-</ul>
-<a name="shortTermMemoryHandler--">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>shortTermMemoryHandler</h4>
-<pre>public static&nbsp;<a href="../../../../../../org/openqa/selenium/remote/server/log/ShortTermMemoryHandler.html" title="class in org.openqa.selenium.remote.server.log">ShortTermMemoryHandler</a>&nbsp;shortTermMemoryHandler()</pre>
+<pre>public static&nbsp;void&nbsp;configureLogging(boolean&nbsp;debugMode)</pre>
 </li>
 </ul>
 <a name="perSessionLogHandler--">
@@ -243,47 +216,16 @@ extends java.lang.Object</pre>
 <h4>perSessionLogHandler</h4>
 <pre>public static&nbsp;<a href="../../../../../../org/openqa/selenium/remote/server/log/PerSessionLogHandler.html" title="class in org.openqa.selenium.remote.server.log">PerSessionLogHandler</a>&nbsp;perSessionLogHandler()</pre>
 <div class="block">Provides a PerSessionLogHandler</div>
-<dl>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>a PerSessionLogHandler, never null. May be a NoOpSessionLogHandler</dd>
-</dl>
 </li>
 </ul>
 <a name="overrideSimpleFormatterWithTerseOneForConsoleHandler-java.util.logging.Logger-boolean-">
 <!--   -->
 </a>
-<ul class="blockList">
+<ul class="blockListLast">
 <li class="blockList">
 <h4>overrideSimpleFormatterWithTerseOneForConsoleHandler</h4>
 <pre>public static&nbsp;void&nbsp;overrideSimpleFormatterWithTerseOneForConsoleHandler(java.util.logging.Logger&nbsp;logger,
                                                                         boolean&nbsp;debugMode)</pre>
-</li>
-</ul>
-<a name="resetLoggerToOriginalState--">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>resetLoggerToOriginalState</h4>
-<pre>protected static&nbsp;void&nbsp;resetLoggerToOriginalState()</pre>
-</li>
-</ul>
-<a name="restoreOriginalHandlersFormattersAndLevels-java.util.logging.Logger-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>restoreOriginalHandlersFormattersAndLevels</h4>
-<pre>protected static&nbsp;void&nbsp;restoreOriginalHandlersFormattersAndLevels(java.util.logging.Logger&nbsp;logger)</pre>
-</li>
-</ul>
-<a name="saveOriginalHandlersFormattersAndLevels-java.util.logging.Logger-">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>saveOriginalHandlersFormattersAndLevels</h4>
-<pre>protected static&nbsp;void&nbsp;saveOriginalHandlersFormattersAndLevels(java.util.logging.Logger&nbsp;logger)</pre>
 </li>
 </ul>
 </li>
@@ -313,7 +255,7 @@ extends java.lang.Object</pre>
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../../../org/openqa/selenium/remote/server/log/DefaultPerSessionLogHandler.html" title="class in org.openqa.selenium.remote.server.log"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
+<li>Prev&nbsp;Class</li>
 <li><a href="../../../../../../org/openqa/selenium/remote/server/log/LoggingOptions.html" title="class in org.openqa.selenium.remote.server.log"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">

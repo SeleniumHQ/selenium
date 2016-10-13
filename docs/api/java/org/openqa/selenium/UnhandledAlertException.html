@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10};
+var methods = {"i0":10,"i1":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -192,6 +192,10 @@ extends <a href="../../../org/openqa/selenium/WebDriverException.html" title="cl
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr id="i0" class="altColor">
+<td class="colFirst"><code>java.util.Map&lt;java.lang.String,java.lang.String&gt;</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../org/openqa/selenium/UnhandledAlertException.html#getAlert--">getAlert</a></span>()</code>&nbsp;</td>
+</tr>
+<tr id="i1" class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/openqa/selenium/UnhandledAlertException.html#getAlertText--">getAlertText</a></span>()</code>&nbsp;</td>
 </tr>
@@ -261,7 +265,7 @@ extends <a href="../../../org/openqa/selenium/WebDriverException.html" title="cl
 <a name="getAlertText--">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>getAlertText</h4>
 <pre>public&nbsp;java.lang.String&nbsp;getAlertText()</pre>
@@ -269,6 +273,16 @@ extends <a href="../../../org/openqa/selenium/WebDriverException.html" title="cl
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>the text of the unhandled alert.</dd>
 </dl>
+</li>
+</ul>
+<a name="getAlert--">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>getAlert</h4>
+<pre><a href="../../../org/openqa/selenium/Beta.html" title="annotation in org.openqa.selenium">@Beta</a>
+public&nbsp;java.util.Map&lt;java.lang.String,java.lang.String&gt;&nbsp;getAlert()</pre>
 </li>
 </ul>
 </li>

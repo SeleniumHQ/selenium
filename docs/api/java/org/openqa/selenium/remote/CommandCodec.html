@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":6,"i1":6};
+var methods = {"i0":6,"i1":6,"i2":6,"i3":6};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -103,7 +103,7 @@ var activeTableTab = "activeTableTab";
 </dl>
 <dl>
 <dt>All Known Implementing Classes:</dt>
-<dd><a href="../../../../org/openqa/selenium/remote/http/JsonHttpCommandCodec.html" title="class in org.openqa.selenium.remote.http">JsonHttpCommandCodec</a></dd>
+<dd><a href="../../../../org/openqa/selenium/remote/http/AbstractHttpCommandCodec.html" title="class in org.openqa.selenium.remote.http">AbstractHttpCommandCodec</a>, <a href="../../../../org/openqa/selenium/remote/http/JsonHttpCommandCodec.html" title="class in org.openqa.selenium.remote.http">JsonHttpCommandCodec</a>, <a href="../../../../org/openqa/selenium/remote/http/W3CHttpCommandCodec.html" title="class in org.openqa.selenium.remote.http">W3CHttpCommandCodec</a></dd>
 </dl>
 <hr>
 <br>
@@ -128,12 +128,27 @@ var activeTableTab = "activeTableTab";
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr id="i0" class="altColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/remote/CommandCodec.html#alias-java.lang.String-java.lang.String-">alias</a></span>(java.lang.String&nbsp;commandName,
+     java.lang.String&nbsp;isAnAliasFor)</code>
+<div class="block">Allow commands to have aliases.</div>
+</td>
+</tr>
+<tr id="i1" class="rowColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/remote/Command.html" title="class in org.openqa.selenium.remote">Command</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/remote/CommandCodec.html#decode-T-">decode</a></span>(<a href="../../../../org/openqa/selenium/remote/CommandCodec.html" title="type parameter in CommandCodec">T</a>&nbsp;encodedCommand)</code>
 <div class="block">Decodes a command.</div>
 </td>
 </tr>
-<tr id="i1" class="rowColor">
+<tr id="i2" class="altColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/remote/CommandCodec.html#defineCommand-java.lang.String-org.openqa.selenium.remote.http.HttpMethod-java.lang.String-">defineCommand</a></span>(java.lang.String&nbsp;name,
+             <a href="../../../../org/openqa/selenium/remote/http/HttpMethod.html" title="enum in org.openqa.selenium.remote.http">HttpMethod</a>&nbsp;method,
+             java.lang.String&nbsp;pathPattern)</code>
+<div class="block">Enhance this command codec with additional commands.</div>
+</td>
+</tr>
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/remote/CommandCodec.html" title="type parameter in CommandCodec">T</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/remote/CommandCodec.html#encode-org.openqa.selenium.remote.Command-">encode</a></span>(<a href="../../../../org/openqa/selenium/remote/Command.html" title="class in org.openqa.selenium.remote">Command</a>&nbsp;command)</code>
 <div class="block">Encodes a command.</div>
@@ -177,7 +192,7 @@ var activeTableTab = "activeTableTab";
 </a><a name="decode-T-">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>decode</h4>
 <pre><a href="../../../../org/openqa/selenium/remote/Command.html" title="class in org.openqa.selenium.remote">Command</a>&nbsp;decode(<a href="../../../../org/openqa/selenium/remote/CommandCodec.html" title="type parameter in CommandCodec">T</a>&nbsp;encodedCommand)</pre>
@@ -189,6 +204,34 @@ var activeTableTab = "activeTableTab";
 <dd>the decoded command.</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code><a href="../../../../org/openqa/selenium/UnsupportedCommandException.html" title="class in org.openqa.selenium">UnsupportedCommandException</a></code> - If the command is not supported by this codec.</dd>
+</dl>
+</li>
+</ul>
+<a name="defineCommand-java.lang.String-org.openqa.selenium.remote.http.HttpMethod-java.lang.String-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>defineCommand</h4>
+<pre>void&nbsp;defineCommand(java.lang.String&nbsp;name,
+                   <a href="../../../../org/openqa/selenium/remote/http/HttpMethod.html" title="enum in org.openqa.selenium.remote.http">HttpMethod</a>&nbsp;method,
+                   java.lang.String&nbsp;pathPattern)</pre>
+<div class="block">Enhance this command codec with additional commands.</div>
+</li>
+</ul>
+<a name="alias-java.lang.String-java.lang.String-">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>alias</h4>
+<pre>void&nbsp;alias(java.lang.String&nbsp;commandName,
+           java.lang.String&nbsp;isAnAliasFor)</pre>
+<div class="block">Allow commands to have aliases.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>commandName</code> - The command being added.</dd>
+<dd><code>isAnAliasFor</code> - The command name that this is an alias for.</dd>
 </dl>
 </li>
 </ul>
