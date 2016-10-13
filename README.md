@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/SeleniumHQ/selenium.svg)](//travis-ci.org/SeleniumHQ/selenium)
 # Selenium
 
 Selenium is an umbrella project encapsulating a variety of tools and 
