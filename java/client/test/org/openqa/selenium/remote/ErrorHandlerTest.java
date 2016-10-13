@@ -479,7 +479,7 @@ public class ErrorHandlerTest {
         int expected = exception.getKey();
         if (e instanceof InvalidSelectorException) {
           // all of the special invalid selector exceptions are just mapped to the generic invalid selector
-          expected = 32;
+          expected = ErrorCodes.INVALID_SELECTOR_ERROR;
         }
         int seenStatusCode = new ErrorCodes().toStatusCode(e);
         if (seenStatusCode != expected) {
