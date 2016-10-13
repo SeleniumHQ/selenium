@@ -384,8 +384,8 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
   }
 
   @Override
-  protected void stopClient(Capabilities desiredCapabilities, Capabilities requiredCapabilities) {
-    if (isLegacy(desiredCapabilities)) {
+  protected void stopClient() {
+    if (this.getCommandExecutor() instanceof LazyCommandExecutor) {
       ((LazyCommandExecutor) this.getCommandExecutor()).quit();
     }
   }
