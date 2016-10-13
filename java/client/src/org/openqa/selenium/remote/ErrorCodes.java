@@ -58,6 +58,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Defines common error codes for the wire protocol.
@@ -97,6 +98,9 @@ public class ErrorCodes {
   // json wire protocol doesn't have analogous status codes for
   // these new W3C status repsonse 'codes', so making some up!
   public static final int ELEMENT_NOT_INTERACTABLE = 60;
+  public static final int INVALID_ARGUMENT = 61;
+  public static final int NO_SUCH_COOKIE = 62;
+  public static final int UNABLE_TO_CAPTURE_SCREEN = 63;
 
   // The following error codes are derived straight from HTTP return codes.
   public static final int METHOD_NOT_ALLOWED = 405;
@@ -113,9 +117,9 @@ public class ErrorCodes {
       .put(400,
            ImmutableSortedSet.<StatusTuple>naturalOrder()
              .add(new StatusTuple("element not selectable", ELEMENT_NOT_SELECTABLE, ElementNotSelectableException.class))
-             .add(new StatusTuple("element not interactable", ELEMENT_NOT_INTERACTABLE, ElementNotInteractableException.class))
+             .add(new StatusTuple("element not interactable", ELEMENT_NOT_INTERACTABLE, ElementNotInteractableException.class, UNHANDLED_ERROR))
              .add(new StatusTuple("element not visible", ELEMENT_NOT_VISIBLE, ElementNotVisibleException.class))
-             .add(new StatusTuple("invalid argument", UNHANDLED_ERROR, InvalidArgumentException.class))
+             .add(new StatusTuple("invalid argument", INVALID_ARGUMENT, InvalidArgumentException.class, UNHANDLED_ERROR))
              .add(new StatusTuple("invalid cookie domain", INVALID_COOKIE_DOMAIN, InvalidCookieDomainException.class))
              .add(new StatusTuple("invalid element coordinates", INVALID_ELEMENT_COORDINATES, InvalidCoordinatesException.class))
              .add(new StatusTuple("invalid element state", INVALID_ELEMENT_STATE, InvalidElementStateException.class))
@@ -131,9 +135,9 @@ public class ErrorCodes {
       .put(404,
            ImmutableSortedSet.<StatusTuple>naturalOrder()
              .add(new StatusTuple("invalid session id", NO_SUCH_SESSION, NoSuchSessionException.class))
-             .add(new StatusTuple("no such cookie", UNHANDLED_ERROR, NoSuchCookieException.class))
+             .add(new StatusTuple("no such cookie", NO_SUCH_COOKIE, NoSuchCookieException.class, UNHANDLED_ERROR))
              .add(new StatusTuple("no such element", NO_SUCH_ELEMENT, NoSuchElementException.class))
-             .add(new StatusTuple("unknown command", UNKNOWN_COMMAND, UnsupportedCommandException.class, UNHANDLED_ERROR))
+             .add(new StatusTuple("unknown command", UNKNOWN_COMMAND, UnsupportedCommandException.class))
              .build())
       .put(405,
            ImmutableSortedSet.<StatusTuple>naturalOrder()
@@ -146,13 +150,13 @@ public class ErrorCodes {
              .build())
   .put(500,
        ImmutableSortedSet.<StatusTuple>naturalOrder()
-         .add(new StatusTuple("javascript error", JAVASCRIPT_ERROR, WebDriverException.class, UNHANDLED_ERROR))
+         .add(new StatusTuple("javascript error", JAVASCRIPT_ERROR, WebDriverException.class))
          .add(new StatusTuple("move target out of bounds", MOVE_TARGET_OUT_OF_BOUNDS, MoveTargetOutOfBoundsException.class))
          .add(new StatusTuple("session not created", SESSION_NOT_CREATED, SessionNotCreatedException.class))
          .add(new StatusTuple("unable to set cookie", UNABLE_TO_SET_COOKIE, UnableToSetCookieException.class))
-         .add(new StatusTuple("unable to capture screen", UNHANDLED_ERROR, ScreenshotException.class))
+         .add(new StatusTuple("unable to capture screen", UNABLE_TO_CAPTURE_SCREEN, ScreenshotException.class, UNHANDLED_ERROR))
          .add(new StatusTuple("unexpected alert open", UNEXPECTED_ALERT_PRESENT, UnhandledAlertException.class))
-         .add(new StatusTuple("unknown error", UNHANDLED_ERROR, WebDriverException.class, UNHANDLED_ERROR))
+         .add(new StatusTuple("unknown error", UNHANDLED_ERROR, WebDriverException.class))
          .add(new StatusTuple("unsupported operation", METHOD_NOT_ALLOWED, UnsupportedCommandException.class, UNHANDLED_ERROR))
          .add(new StatusTuple("unsupported operation", IME_NOT_AVAILABLE, ImeNotAvailableException.class))
          .add(new StatusTuple("unsupported operation", IME_ENGINE_ACTIVATION_FAILED, ImeActivationFailedException.class))
@@ -164,6 +168,11 @@ public class ErrorCodes {
   private static final Map<Integer, String> JSON_TO_W3C = ALL_CODES.values().stream()
     .flatMap(Collection::stream)
     .collect(Collectors.toMap(StatusTuple::asStatus, StatusTuple::asState, (key1, key2) -> key1));
+
+  private static final Map<Integer, Class> JSON_TO_EXCEPTION = ALL_CODES.values().stream()
+    .flatMap(Collection::stream)
+    .filter(tuple -> tuple.getException() != null)
+    .collect(Collectors.toMap(StatusTuple::asStatus, StatusTuple::getException, (key1, key2) -> key1));
 
   private static final Map<String, Integer> W3C_TO_JSON = ALL_CODES.values().stream()
     .flatMap(Collection::stream)
@@ -221,7 +230,7 @@ public class ErrorCodes {
    *         {@code statusCode == 0}.
    */
   public Class<? extends WebDriverException> getExceptionType(int statusCode) {
-    return getExceptionType(toState(statusCode));
+    return JSON_TO_EXCEPTION.getOrDefault(statusCode, WebDriverException.class);
   }
 
   public Class<? extends WebDriverException> getExceptionType(String webdriverState) {
@@ -242,12 +251,33 @@ public class ErrorCodes {
     }
 
     // And then handle the other cases
-    Set<Integer> possibleMatches = ALL_CODES.values().stream()
+    Stream<StatusTuple> allCodesStream = ALL_CODES.values().stream()
       .flatMap(Collection::stream)
       .filter(tuple -> tuple.getException() != null)
-      .filter(tuple -> tuple.associatedException.isAssignableFrom(e.getClass()))
+      .filter(tuple -> tuple.associatedException.isAssignableFrom(e.getClass()));
+
+    if (e instanceof WebDriverException && ((WebDriverException)e).getStatusCode() != null) {
+      allCodesStream = allCodesStream.filter(tuple -> ((WebDriverException)e).getStatusCode() == tuple.jsonStatus );
+    }
+
+    Set<Integer> possibleMatches = allCodesStream
       .map(StatusTuple::getStatusFromException)
       .collect(Collectors.toSet());
+
+    if (possibleMatches.size() > 1) {
+      // if there's multiple matches, let's try filtering on the exact exception class to see if we
+      // can reduce the possibilities
+      Set<Integer> reducedPossibleMatches = ALL_CODES.values().stream()
+        .flatMap(Collection::stream)
+        .filter(tuple -> tuple.getException() != null)
+        .filter(tuple -> tuple.associatedException.equals(e.getClass()))
+        .map(StatusTuple::getStatusFromException)
+        .collect(Collectors.toSet());
+
+      if (reducedPossibleMatches.size() > 0) {
+        possibleMatches = reducedPossibleMatches;
+      }
+    }
 
     return Preconditions.checkNotNull(Iterables.getFirst(possibleMatches, UNHANDLED_ERROR));
   }
