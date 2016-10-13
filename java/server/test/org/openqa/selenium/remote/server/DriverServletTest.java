@@ -182,7 +182,7 @@ public class DriverServletTest {
     assertEquals(500, response.getStatus());
 
     JsonObject jsonResponse = new JsonParser().parse(response.getBody()).getAsJsonObject();
-    assertEquals(ErrorCodes.UNHANDLED_ERROR, jsonResponse.get("status").getAsInt());
+    assertEquals(ErrorCodes.UNKNOWN_COMMAND, jsonResponse.get("status").getAsInt());
 
     JsonObject value = jsonResponse.get("value").getAsJsonObject();
     assertTrue(value.get("message").getAsString().startsWith("POST /"));
