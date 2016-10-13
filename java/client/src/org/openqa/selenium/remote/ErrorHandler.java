@@ -31,7 +31,6 @@ import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.WebDriverException;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
@@ -215,13 +214,7 @@ public class ErrorHandler {
     try {
       Constructor<T> constructor = clazz.getConstructor(parameterTypes);
       return constructor.newInstance(parameters);
-    } catch (NoSuchMethodException e) {
-      // Do nothing - fall through.
-    } catch (InvocationTargetException e) {
-      // Do nothing - fall through.
-    } catch (InstantiationException e) {
-      // Do nothing - fall through.
-    } catch (IllegalAccessException e) {
+    } catch (ReflectiveOperationException e) {
       // Do nothing - fall through.
     } catch (OutOfMemoryError error) {
       // It can happen...
