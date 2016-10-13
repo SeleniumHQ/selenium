@@ -119,6 +119,9 @@ java_library(name = 'exceptions',
     '//java/client/src/org/openqa/selenium/os:os',
     '//java/client/test/org/openqa/selenium/testing:helpers',
   ],
+  deps = [
+    '//third_party/java/gson:gson',
+  ],
 )
 
 java_library(
