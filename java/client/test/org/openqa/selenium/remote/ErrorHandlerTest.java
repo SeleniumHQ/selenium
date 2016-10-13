@@ -144,7 +144,7 @@ public class ErrorHandlerTest {
       handler.throwIfResponseFailed(createResponse(ErrorCodes.UNHANDLED_ERROR, "boom"), 123);
       fail("Should have thrown!");
     } catch (WebDriverException expected) {
-      assertEquals(InvalidArgumentException.class, expected.getClass());
+      assertEquals(WebDriverException.class, expected.getClass());
       assertDoesNotHaveACause(expected);
       assertThat(expected.getMessage(), containsString("boom"));
       assertThat(expected.getMessage(), containsString(new WebDriverException().getMessage()));
@@ -282,7 +282,7 @@ public class ErrorHandlerTest {
 
       Throwable cause = expected.getCause();
       assertNotNull(cause);
-      assertEquals(InvalidArgumentException.class, cause.getClass());
+      assertEquals(WebDriverException.class, cause.getClass());
       assertEquals(new WebDriverException(serverError.getMessage()).getMessage(),
           cause.getMessage());
       assertStackTracesEqual(serverError.getStackTrace(), cause.getStackTrace());
@@ -315,7 +315,7 @@ public class ErrorHandlerTest {
 
       Throwable cause = expected.getCause();
       assertNotNull(cause);
-      assertEquals(InvalidArgumentException.class, cause.getClass());
+      assertEquals(WebDriverException.class, cause.getClass());
       assertEquals(helper.getMessage(),
           cause.getMessage());
 
@@ -349,7 +349,7 @@ public class ErrorHandlerTest {
 
       Throwable cause = expected.getCause();
       assertNotNull(cause);
-      assertEquals(InvalidArgumentException.class, cause.getClass());
+      assertEquals(WebDriverException.class, cause.getClass());
       assertEquals(helper.getMessage(),
           cause.getMessage());
 
@@ -383,7 +383,7 @@ public class ErrorHandlerTest {
 
       Throwable cause = expected.getCause();
       assertNotNull(cause);
-      assertEquals(InvalidArgumentException.class, cause.getClass());
+      assertEquals(WebDriverException.class, cause.getClass());
       assertEquals(helper.getMessage(),
           cause.getMessage());
 
