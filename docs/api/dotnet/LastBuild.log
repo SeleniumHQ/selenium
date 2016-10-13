@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shfbBuild product="Sandcastle Help File Builder and Tools" version="2015.7.25.0" projectFile="C:\Projects\webdriver\dotnet\docs\docs.shfbproj" started="11/4/2015 12:03:59 PM">
+<shfbBuild product="Sandcastle Help File Builder and Tools" version="2015.7.25.0" projectFile="C:\Projects\webdriver\dotnet\docs\docs.shfbproj" started="10/13/2016 11:06:14 AM">
 <buildStep step="Initializing">
 Finding tools...
 The Sandcastle tools are located in &#39;C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\&#39;
@@ -37,16 +37,16 @@ Copying XML comments files
 </buildStep>
 <buildStep step="GenerateSharedContent">
 Generating shared content files (en-US, English (United States))...
-    Last step completed in 00:00:00.0153
+    Last step completed in 00:00:00.0156
 </buildStep>
 <buildStep step="GenerateApiFilter">
 Generating API filter for MRefBuilder...
-    Last step completed in 00:00:00.0530
+    Last step completed in 00:00:00.0625
 </buildStep>
 <buildStep step="GenerateReflectionInfo">
 Generating reflection information...
 [C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe - GenerateRefInfo.proj]
-Build started 11/4/2015 12:04:00 PM.
+Build started 10/13/2016 11:06:15 AM.
 Project &quot;C:\Projects\webdriver\build\docs\dotnet\web\Working\GenerateRefInfo.proj&quot; on node 1 (default targets).
 Project file contains ToolsVersion=&quot;12.0&quot;. This toolset may be unknown or missing, in which case you may be able to resolve this by installing the appropriate version of MSBuild, or the build may have been forced to a particular ToolsVersion for policy reasons. Treating the project as if it had ToolsVersion=&quot;4.0&quot;. For more information, please see http://go.microsoft.com/fwlink/?LinkId=291333.
 PrepareForBuild:
@@ -56,7 +56,7 @@ GenerateRefInfo:
   Copyright c 2006-2015, Microsoft Corporation, All Rights Reserved.
   Portions Copyright c 2006-2015, Eric Woodruff, All Rights Reserved.
   Loaded 4 assemblies for reflection and 1 dependency assemblies.
-  Wrote information on 20 namespaces, 219 types, and 1886 members
+  Wrote information on 19 namespaces, 200 types, and 1761 members
   Copying file from &quot;reflection.org&quot; to &quot;reflection.all&quot;.
   XslTransform (v2015.7.25.0)
   Copyright c 2006-2015, Microsoft Corporation, All Rights Reserved.
@@ -66,13 +66,13 @@ Done Building Project &quot;C:\Projects\webdriver\build\docs\dotnet\web\Working\
 
 Build succeeded.
 
-Time Elapsed 00:00:01.30
-    Last step completed in 00:00:01.5538
+Time Elapsed 00:00:00.79
+    Last step completed in 00:00:00.9348
 </buildStep>
 <buildStep step="TransformReflectionInfo">
 Transforming reflection output...
 [C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe - TransformManifest.proj]
-Build started 11/4/2015 12:04:02 PM.
+Build started 10/13/2016 11:06:16 AM.
 Project &quot;C:\Projects\webdriver\build\docs\dotnet\web\Working\TransformManifest.proj&quot; on node 1 (default targets).
 Project file contains ToolsVersion=&quot;12.0&quot;. This toolset may be unknown or missing, in which case you may be able to resolve this by installing the appropriate version of MSBuild, or the build may have been forced to a particular ToolsVersion for policy reasons. Treating the project as if it had ToolsVersion=&quot;4.0&quot;. For more information, please see http://go.microsoft.com/fwlink/?LinkId=291333.
 TransformManifest:
@@ -96,9 +96,6 @@ TransformManifest:
     Unique name M_OpenQA_Selenium_ElementNotVisibleException__ctor_1 generated for M:OpenQA.Selenium.ElementNotVisibleException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)
     Unique name M_OpenQA_Selenium_ElementNotVisibleException__ctor_2 generated for M:OpenQA.Selenium.ElementNotVisibleException.#ctor(System.String)
     Unique name M_OpenQA_Selenium_ElementNotVisibleException__ctor_3 generated for M:OpenQA.Selenium.ElementNotVisibleException.#ctor(System.String,System.Exception)
-    Unique name M_OpenQA_Selenium_IllegalLocatorException__ctor_1 generated for M:OpenQA.Selenium.IllegalLocatorException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)
-    Unique name M_OpenQA_Selenium_IllegalLocatorException__ctor_2 generated for M:OpenQA.Selenium.IllegalLocatorException.#ctor(System.String)
-    Unique name M_OpenQA_Selenium_IllegalLocatorException__ctor_3 generated for M:OpenQA.Selenium.IllegalLocatorException.#ctor(System.String,System.Exception)
     Unique name M_OpenQA_Selenium_IMouse_MouseMove_1 generated for M:OpenQA.Selenium.IMouse.MouseMove(OpenQA.Selenium.Interactions.Internal.ICoordinates,System.Int32,System.Int32)
     Unique name M_OpenQA_Selenium_INavigation_GoToUrl_1 generated for M:OpenQA.Selenium.INavigation.GoToUrl(System.Uri)
     Unique name M_OpenQA_Selenium_InvalidCookieDomainException__ctor_1 generated for M:OpenQA.Selenium.InvalidCookieDomainException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)
@@ -158,11 +155,15 @@ TransformManifest:
     Unique name M_OpenQA_Selenium_Chrome_ChromeDriver__ctor_7 generated for M:OpenQA.Selenium.Chrome.ChromeDriver.#ctor(System.String,OpenQA.Selenium.Chrome.ChromeOptions,System.TimeSpan)
     Unique name M_OpenQA_Selenium_Chrome_ChromeDriverService_CreateDefaultService_1 generated for M:OpenQA.Selenium.Chrome.ChromeDriverService.CreateDefaultService(System.String)
     Unique name M_OpenQA_Selenium_Chrome_ChromeDriverService_CreateDefaultService_2 generated for M:OpenQA.Selenium.Chrome.ChromeDriverService.CreateDefaultService(System.String,System.String)
+    Unique name M_OpenQA_Selenium_Chrome_ChromeMobileEmulationDeviceSettings__ctor_1 generated for M:OpenQA.Selenium.Chrome.ChromeMobileEmulationDeviceSettings.#ctor(System.String)
     Unique name M_OpenQA_Selenium_Chrome_ChromeOptions_AddAdditionalCapability_1 generated for M:OpenQA.Selenium.Chrome.ChromeOptions.AddAdditionalCapability(System.String,System.Object,System.Boolean)
     Unique name M_OpenQA_Selenium_Chrome_ChromeOptions_AddArguments_1 generated for M:OpenQA.Selenium.Chrome.ChromeOptions.AddArguments(System.String[])
     Unique name M_OpenQA_Selenium_Chrome_ChromeOptions_AddEncodedExtensions_1 generated for M:OpenQA.Selenium.Chrome.ChromeOptions.AddEncodedExtensions(System.String[])
     Unique name M_OpenQA_Selenium_Chrome_ChromeOptions_AddExcludedArguments_1 generated for M:OpenQA.Selenium.Chrome.ChromeOptions.AddExcludedArguments(System.String[])
     Unique name M_OpenQA_Selenium_Chrome_ChromeOptions_AddExtensions_1 generated for M:OpenQA.Selenium.Chrome.ChromeOptions.AddExtensions(System.String[])
+    Unique name M_OpenQA_Selenium_Chrome_ChromeOptions_AddWindowTypes_1 generated for M:OpenQA.Selenium.Chrome.ChromeOptions.AddWindowTypes(System.String[])
+    Unique name M_OpenQA_Selenium_Chrome_ChromeOptions_EnableMobileEmulation_1 generated for M:OpenQA.Selenium.Chrome.ChromeOptions.EnableMobileEmulation(System.String)
+    Unique name M_OpenQA_Selenium_Chrome_ChromePerformanceLoggingPreferences_AddTracingCategories_1 generated for M:OpenQA.Selenium.Chrome.ChromePerformanceLoggingPreferences.AddTracingCategories(System.String[])
     Unique name M_OpenQA_Selenium_Edge_EdgeDriver__ctor_1 generated for M:OpenQA.Selenium.Edge.EdgeDriver.#ctor(OpenQA.Selenium.Edge.EdgeDriverService)
     Unique name M_OpenQA_Selenium_Edge_EdgeDriver__ctor_2 generated for M:OpenQA.Selenium.Edge.EdgeDriver.#ctor(OpenQA.Selenium.Edge.EdgeDriverService,OpenQA.Selenium.Edge.EdgeOptions)
     Unique name M_OpenQA_Selenium_Edge_EdgeDriver__ctor_3 generated for M:OpenQA.Selenium.Edge.EdgeDriver.#ctor(OpenQA.Selenium.Edge.EdgeDriverService,OpenQA.Selenium.Edge.EdgeOptions,System.TimeSpan)
@@ -186,6 +187,12 @@ TransformManifest:
     Unique name M_OpenQA_Selenium_Firefox_FirefoxDriverServer_Dispose_1 generated for M:OpenQA.Selenium.Firefox.FirefoxDriverServer.Dispose(System.Boolean)
     Unique name M_OpenQA_Selenium_Firefox_FirefoxDriverService_CreateDefaultService_1 generated for M:OpenQA.Selenium.Firefox.FirefoxDriverService.CreateDefaultService(System.String)
     Unique name M_OpenQA_Selenium_Firefox_FirefoxDriverService_CreateDefaultService_2 generated for M:OpenQA.Selenium.Firefox.FirefoxDriverService.CreateDefaultService(System.String,System.String)
+    Unique name M_OpenQA_Selenium_Firefox_FirefoxOptions_AddAdditionalCapability_1 generated for M:OpenQA.Selenium.Firefox.FirefoxOptions.AddAdditionalCapability(System.String,System.Object,System.Boolean)
+    Unique name M_OpenQA_Selenium_Firefox_FirefoxOptions_AddArguments_1 generated for M:OpenQA.Selenium.Firefox.FirefoxOptions.AddArguments(System.String[])
+    Unique name M_OpenQA_Selenium_Firefox_FirefoxOptions_SetPreference_1 generated for M:OpenQA.Selenium.Firefox.FirefoxOptions.SetPreference(System.String,System.Double)
+    Unique name M_OpenQA_Selenium_Firefox_FirefoxOptions_SetPreference_2 generated for M:OpenQA.Selenium.Firefox.FirefoxOptions.SetPreference(System.String,System.Int32)
+    Unique name M_OpenQA_Selenium_Firefox_FirefoxOptions_SetPreference_3 generated for M:OpenQA.Selenium.Firefox.FirefoxOptions.SetPreference(System.String,System.Int64)
+    Unique name M_OpenQA_Selenium_Firefox_FirefoxOptions_SetPreference_4 generated for M:OpenQA.Selenium.Firefox.FirefoxOptions.SetPreference(System.String,System.String)
     Unique name M_OpenQA_Selenium_Firefox_FirefoxProfile__ctor_1 generated for M:OpenQA.Selenium.Firefox.FirefoxProfile.#ctor(System.String)
     Unique name M_OpenQA_Selenium_Firefox_FirefoxProfile__ctor_2 generated for M:OpenQA.Selenium.Firefox.FirefoxProfile.#ctor(System.String,System.Boolean)
     Unique name M_OpenQA_Selenium_Firefox_FirefoxProfile_SetPreference_1 generated for M:OpenQA.Selenium.Firefox.FirefoxProfile.SetPreference(System.String,System.Int32)
@@ -249,37 +256,24 @@ TransformManifest:
     Unique name M_OpenQA_Selenium_Remote_RemoteWebElement_FindElements_1 generated for M:OpenQA.Selenium.Remote.RemoteWebElement.FindElements(System.String,System.String)
     Unique name M_OpenQA_Selenium_Remote_Response__ctor_1 generated for M:OpenQA.Selenium.Remote.Response.#ctor(OpenQA.Selenium.Remote.SessionId)
     Unique name M_OpenQA_Selenium_Remote_StackTraceElement__ctor_1 generated for M:OpenQA.Selenium.Remote.StackTraceElement.#ctor(System.Collections.Generic.Dictionary{System.String,System.Object})
-    Unique name M_OpenQA_Selenium_Safari_SafariDriver__ctor_1 generated for M:OpenQA.Selenium.Safari.SafariDriver.#ctor(OpenQA.Selenium.Safari.SafariOptions)
-    Unique name M_OpenQA_Selenium_Safari_SafariDriverCommandExecutor_Dispose_1 generated for M:OpenQA.Selenium.Safari.SafariDriverCommandExecutor.Dispose(System.Boolean)
-    Unique name M_OpenQA_Selenium_Safari_SafariDriverServer_Dispose_1 generated for M:OpenQA.Selenium.Safari.SafariDriverServer.Dispose(System.Boolean)
-    Unique name M_OpenQA_Selenium_Safari_Internal_HandshakeException__ctor_1 generated for M:OpenQA.Selenium.Safari.Internal.HandshakeException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)
-    Unique name M_OpenQA_Selenium_Safari_Internal_HandshakeException__ctor_2 generated for M:OpenQA.Selenium.Safari.Internal.HandshakeException.#ctor(System.String)
-    Unique name M_OpenQA_Selenium_Safari_Internal_HandshakeException__ctor_3 generated for M:OpenQA.Selenium.Safari.Internal.HandshakeException.#ctor(System.String,System.Exception)
-    Unique name M_OpenQA_Selenium_Safari_Internal_IWebSocketConnection_Send_1 generated for M:OpenQA.Selenium.Safari.Internal.IWebSocketConnection.Send(System.String)
-    Unique name M_OpenQA_Selenium_Safari_Internal_SocketWrapper__ctor_1 generated for M:OpenQA.Selenium.Safari.Internal.SocketWrapper.#ctor(System.Net.Sockets.Socket)
-    Unique name M_OpenQA_Selenium_Safari_Internal_SocketWrapper_Dispose_1 generated for M:OpenQA.Selenium.Safari.Internal.SocketWrapper.Dispose(System.Boolean)
-    Unique name M_OpenQA_Selenium_Safari_Internal_WebSocketConnection_Send_1 generated for M:OpenQA.Selenium.Safari.Internal.WebSocketConnection.Send(System.String)
-    Unique name M_OpenQA_Selenium_Safari_Internal_WebSocketException__ctor_1 generated for M:OpenQA.Selenium.Safari.Internal.WebSocketException.#ctor(System.Int32)
-    Unique name M_OpenQA_Selenium_Safari_Internal_WebSocketException__ctor_2 generated for M:OpenQA.Selenium.Safari.Internal.WebSocketException.#ctor(System.Int32,System.String)
-    Unique name M_OpenQA_Selenium_Safari_Internal_WebSocketException__ctor_3 generated for M:OpenQA.Selenium.Safari.Internal.WebSocketException.#ctor(System.Int32,System.String,System.Exception)
-    Unique name M_OpenQA_Selenium_Safari_Internal_WebSocketException__ctor_4 generated for M:OpenQA.Selenium.Safari.Internal.WebSocketException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)
-    Unique name M_OpenQA_Selenium_Safari_Internal_WebSocketException__ctor_5 generated for M:OpenQA.Selenium.Safari.Internal.WebSocketException.#ctor(System.String)
-    Unique name M_OpenQA_Selenium_Safari_Internal_WebSocketException__ctor_6 generated for M:OpenQA.Selenium.Safari.Internal.WebSocketException.#ctor(System.String,System.Exception)
-    Unique name M_OpenQA_Selenium_Safari_Internal_WebSocketServer__ctor_1 generated for M:OpenQA.Selenium.Safari.Internal.WebSocketServer.#ctor(System.String)
-    Unique name M_OpenQA_Selenium_Safari_Internal_WebSocketServer_Dispose_1 generated for M:OpenQA.Selenium.Safari.Internal.WebSocketServer.Dispose(System.Boolean)
+    Unique name M_OpenQA_Selenium_Safari_SafariDriver__ctor_1 generated for M:OpenQA.Selenium.Safari.SafariDriver.#ctor(OpenQA.Selenium.Safari.SafariDriverService)
+    Unique name M_OpenQA_Selenium_Safari_SafariDriver__ctor_2 generated for M:OpenQA.Selenium.Safari.SafariDriver.#ctor(OpenQA.Selenium.Safari.SafariDriverService,OpenQA.Selenium.Safari.SafariOptions)
+    Unique name M_OpenQA_Selenium_Safari_SafariDriver__ctor_3 generated for M:OpenQA.Selenium.Safari.SafariDriver.#ctor(OpenQA.Selenium.Safari.SafariDriverService,OpenQA.Selenium.Safari.SafariOptions,System.TimeSpan)
+    Unique name M_OpenQA_Selenium_Safari_SafariDriver__ctor_4 generated for M:OpenQA.Selenium.Safari.SafariDriver.#ctor(OpenQA.Selenium.Safari.SafariOptions)
+    Unique name M_OpenQA_Selenium_Safari_SafariDriver__ctor_5 generated for M:OpenQA.Selenium.Safari.SafariDriver.#ctor(System.String)
+    Unique name M_OpenQA_Selenium_Safari_SafariDriver__ctor_6 generated for M:OpenQA.Selenium.Safari.SafariDriver.#ctor(System.String,OpenQA.Selenium.Safari.SafariOptions)
+    Unique name M_OpenQA_Selenium_Safari_SafariDriver__ctor_7 generated for M:OpenQA.Selenium.Safari.SafariDriver.#ctor(System.String,OpenQA.Selenium.Safari.SafariOptions,System.TimeSpan)
+    Unique name M_OpenQA_Selenium_Safari_SafariDriverService_CreateDefaultService_1 generated for M:OpenQA.Selenium.Safari.SafariDriverService.CreateDefaultService(System.String)
+    Unique name M_OpenQA_Selenium_Safari_SafariDriverService_CreateDefaultService_2 generated for M:OpenQA.Selenium.Safari.SafariDriverService.CreateDefaultService(System.String,System.String)
     Unique name M_OpenQA_Selenium_Support_Events_EventFiringWebDriver_Dispose_1 generated for M:OpenQA.Selenium.Support.Events.EventFiringWebDriver.Dispose(System.Boolean)
     Unique name M_OpenQA_Selenium_Support_Events_FindElementEventArgs__ctor_1 generated for M:OpenQA.Selenium.Support.Events.FindElementEventArgs.#ctor(OpenQA.Selenium.IWebDriver,OpenQA.Selenium.IWebElement,OpenQA.Selenium.By)
     Unique name M_OpenQA_Selenium_Support_Events_WebDriverNavigationEventArgs__ctor_1 generated for M:OpenQA.Selenium.Support.Events.WebDriverNavigationEventArgs.#ctor(OpenQA.Selenium.IWebDriver,System.String)
-    Unique name M_OpenQA_Selenium_Support_PageObjects_PageFactory_InitElements_1 generated for M:OpenQA.Selenium.Support.PageObjects.PageFactory.InitElements(OpenQA.Selenium.ISearchContext,System.Object,OpenQA.Selenium.Support.PageObjects.IElementLocatorFactory)
-    Unique name M_OpenQA_Selenium_Support_PageObjects_PageFactory_InitElements_2 generated for M:OpenQA.Selenium.Support.PageObjects.PageFactory.InitElements(OpenQA.Selenium.ISearchContext,System.Object,OpenQA.Selenium.Support.PageObjects.IPageObjectMemberDecorator)
-    Unique name M_OpenQA_Selenium_Support_PageObjects_PageFactory_InitElements__1_1 generated for M:OpenQA.Selenium.Support.PageObjects.PageFactory.InitElements``1(OpenQA.Selenium.IWebDriver,OpenQA.Selenium.Support.PageObjects.IElementLocatorFactory)
-    Unique name M_OpenQA_Selenium_Support_PageObjects_PageFactory_InitElements__1_2 generated for M:OpenQA.Selenium.Support.PageObjects.PageFactory.InitElements``1(OpenQA.Selenium.Support.PageObjects.IElementLocator)
-    Unique name M_OpenQA_Selenium_Support_PageObjects_PageFactory_InitElements_3 generated for M:OpenQA.Selenium.Support.PageObjects.PageFactory.InitElements(System.Object,OpenQA.Selenium.Support.PageObjects.IElementLocator)
-    Unique name M_OpenQA_Selenium_Support_PageObjects_PageFactory_InitElements_4 generated for M:OpenQA.Selenium.Support.PageObjects.PageFactory.InitElements(System.Object,OpenQA.Selenium.Support.PageObjects.IElementLocator,OpenQA.Selenium.Support.PageObjects.IPageObjectMemberDecorator)
+    Unique name M_OpenQA_Selenium_Support_PageObjects_PageFactory_InitElements_1 generated for M:OpenQA.Selenium.Support.PageObjects.PageFactory.InitElements(OpenQA.Selenium.ISearchContext,System.Object,OpenQA.Selenium.Support.PageObjects.IPageObjectMemberDecorator)
+    Unique name M_OpenQA_Selenium_Support_PageObjects_PageFactory_InitElements__1_1 generated for M:OpenQA.Selenium.Support.PageObjects.PageFactory.InitElements``1(OpenQA.Selenium.Support.PageObjects.IElementLocator)
+    Unique name M_OpenQA_Selenium_Support_PageObjects_PageFactory_InitElements_2 generated for M:OpenQA.Selenium.Support.PageObjects.PageFactory.InitElements(System.Object,OpenQA.Selenium.Support.PageObjects.IElementLocator)
+    Unique name M_OpenQA_Selenium_Support_PageObjects_PageFactory_InitElements_3 generated for M:OpenQA.Selenium.Support.PageObjects.PageFactory.InitElements(System.Object,OpenQA.Selenium.Support.PageObjects.IElementLocator,OpenQA.Selenium.Support.PageObjects.IPageObjectMemberDecorator)
     Unique name M_OpenQA_Selenium_Support_PageObjects_RetryingElementLocator__ctor_1 generated for M:OpenQA.Selenium.Support.PageObjects.RetryingElementLocator.#ctor(OpenQA.Selenium.ISearchContext,System.TimeSpan)
     Unique name M_OpenQA_Selenium_Support_PageObjects_RetryingElementLocator__ctor_2 generated for M:OpenQA.Selenium.Support.PageObjects.RetryingElementLocator.#ctor(OpenQA.Selenium.ISearchContext,System.TimeSpan,System.TimeSpan)
-    Unique name M_OpenQA_Selenium_Support_PageObjects_RetryingElementLocatorFactory__ctor_1 generated for M:OpenQA.Selenium.Support.PageObjects.RetryingElementLocatorFactory.#ctor(System.TimeSpan)
-    Unique name M_OpenQA_Selenium_Support_PageObjects_RetryingElementLocatorFactory__ctor_2 generated for M:OpenQA.Selenium.Support.PageObjects.RetryingElementLocatorFactory.#ctor(System.TimeSpan,System.TimeSpan)
     Unique name M_OpenQA_Selenium_Support_UI_DefaultWait_1__ctor_1 generated for M:OpenQA.Selenium.Support.UI.DefaultWait`1.#ctor(`0,OpenQA.Selenium.Support.UI.IClock)
     Unique name M_OpenQA_Selenium_Support_UI_ExpectedConditions_ElementSelectionStateToBe_1 generated for M:OpenQA.Selenium.Support.UI.ExpectedConditions.ElementSelectionStateToBe(OpenQA.Selenium.IWebElement,System.Boolean)
     Unique name M_OpenQA_Selenium_Support_UI_ExpectedConditions_ElementToBeClickable_1 generated for M:OpenQA.Selenium.Support.UI.ExpectedConditions.ElementToBeClickable(OpenQA.Selenium.IWebElement)
@@ -320,12 +314,12 @@ Done Building Project &quot;C:\Projects\webdriver\build\docs\dotnet\web\Working\
 
 Build succeeded.
 
-Time Elapsed 00:00:01.63
-    Last step completed in 00:00:01.8345
+Time Elapsed 00:00:01.34
+    Last step completed in 00:00:01.4183
 </buildStep>
 <buildStep step="GenerateNamespaceSummaries">
 Generating namespace summary information...
-    Last step completed in 00:00:00.1473
+    Last step completed in 00:00:00.1472
 </buildStep>
 <buildStep step="CopyAdditionalContent">
 Copying additional content files...
@@ -339,7 +333,7 @@ Merging conceptual and additional tables of contents...
 <buildStep step="GenerateIntermediateTableOfContents">
 Generating intermediate table of contents file...
 [C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe - GenerateIntermediateTOC.proj]
-Build started 11/4/2015 12:04:04 PM.
+Build started 10/13/2016 11:06:17 AM.
 Project &quot;C:\Projects\webdriver\build\docs\dotnet\web\Working\GenerateIntermediateTOC.proj&quot; on node 1 (default targets).
 Project file contains ToolsVersion=&quot;12.0&quot;. This toolset may be unknown or missing, in which case you may be able to resolve this by installing the appropriate version of MSBuild, or the build may have been forced to a particular ToolsVersion for policy reasons. Treating the project as if it had ToolsVersion=&quot;4.0&quot;. For more information, please see http://go.microsoft.com/fwlink/?LinkId=291333.
 GenerateIntermediateTOC:
@@ -351,14 +345,14 @@ Done Building Project &quot;C:\Projects\webdriver\build\docs\dotnet\web\Working\
 
 Build succeeded.
 
-Time Elapsed 00:00:00.41
+Time Elapsed 00:00:00.16
 Generating conceptual content intermediate TOC file...
-    Last step completed in 00:00:00.6161
+    Last step completed in 00:00:00.2692
 </buildStep>
 <buildStep step="CreateBuildAssemblerConfigs">
 Creating Sandcastle configuration files...
     sandcastle.config
-    Last step completed in 00:00:00.2214
+    Last step completed in 00:00:00.2312
 </buildStep>
 <buildStep step="MergeCustomConfigs">
 Merging custom build component configurations
@@ -368,7 +362,7 @@ C:\Projects\webdriver\build\docs\dotnet\web\Working\sandcastle.config
 <buildStep step="BuildReferenceTopics">
 Building reference help topics...
 [C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe - BuildReferenceTopics.proj]
-Build started 11/4/2015 12:04:05 PM.
+Build started 10/13/2016 11:06:18 AM.
 Project &quot;C:\Projects\webdriver\build\docs\dotnet\web\Working\BuildReferenceTopics.proj&quot; on node 1 (default targets).
 Project file contains ToolsVersion=&quot;12.0&quot;. This toolset may be unknown or missing, in which case you may be able to resolve this by installing the appropriate version of MSBuild, or the build may have been forced to a particular ToolsVersion for policy reasons. Treating the project as if it had ToolsVersion=&quot;4.0&quot;. For more information, please see http://go.microsoft.com/fwlink/?LinkId=291333.
 BuildReferenceTopics:
@@ -377,19 +371,19 @@ BuildReferenceTopics:
   Portions Copyright c 2006-2015, Eric Woodruff, All Rights Reserved.
   Loading configuration...
   Processing topics...
-  Processed 2531 topic(s)
-  CopyFromIndexComponent: &quot;reflection&quot; in-memory cache entries used: 14 of 15.
+  Processed 2329 topic(s)
+  CopyFromIndexComponent: &quot;reflection&quot; in-memory cache entries used: 12 of 15.
   CopyFromIndexComponent: &quot;comments&quot; in-memory cache entries used: 5 of 30.
 Done Building Project &quot;C:\Projects\webdriver\build\docs\dotnet\web\Working\BuildReferenceTopics.proj&quot; (default targets).
 
 Build succeeded.
 
-Time Elapsed 00:01:07.07
-    Last step completed in 00:01:07.2806
+Time Elapsed 00:01:42.37
+    Last step completed in 00:01:42.5042
 </buildStep>
 <buildStep step="CombiningIntermediateTocFiles">
 Combining conceptual and API intermediate TOC files...
-    Last step completed in 00:00:00.0156
+    Last step completed in 00:00:00.0200
 </buildStep>
 <buildStep step="ExtractingHtmlInfo">
 Extracting HTML info for HTML Help 1 and/or website...
@@ -402,17 +396,17 @@ E-Mail: Eric@EWoodruff.us
 Using LCID &#39;1033&#39;, code page &#39;65001&#39;, encoding charset &#39;UTF-8&#39;.
 
 Processing Help 1 files in C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\HtmlHelp1
-Processed 2531 HTML files
+Processed 2329 HTML files
 Sorting keywords and generating See Also indices
 Saving HTML Help 1 keyword index to C:\Projects\webdriver\build\docs\dotnet\web\Working\WebDriver.hhk
 Saving HTML Help 1 table of contents to C:\Projects\webdriver\build\docs\dotnet\web\Working\WebDriver.hhc
 
 Processing website files in C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\Website
-Processed 2531 HTML files
+Processed 2329 HTML files
 Sorting keywords and generating See Also indices
 Saving website keyword index to C:\Projects\webdriver\build\docs\dotnet\web\Working\WebKI.xml
 Saving website table of contents to C:\Projects\webdriver\build\docs\dotnet\web\Working\WebTOC.xml
-    Last step completed in 00:00:26.5583
+    Last step completed in 00:00:45.0723
 </buildStep>
 <buildStep step="CopyStandardHelpContent">
 Copying standard help content...
@@ -563,7 +557,7 @@ C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyle
 C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2010\..\LegacyWeb\TOC.css -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\Website\TOC.css
 C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2010\..\LegacyWeb\TOC.js -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\Website\TOC.js
 C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2010\..\LegacyWeb\Web.Config -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\Website\Web.Config
-    Last step completed in 00:00:00.6001
+    Last step completed in 00:00:00.8011
 </buildStep>
 <buildStep step="GenerateHelpFormatTableOfContents">
 Generating HTML Help 1 table of contents file...
@@ -575,7 +569,7 @@ Generating HTML Help 1 index file...
 </buildStep>
 <buildStep step="GenerateHelpProject">
 Generating HTML Help 1 project file...
-    Last step completed in 00:00:00.0532
+    Last step completed in 00:00:00.0313
 </buildStep>
 <buildStep step="CompilingHelpFile">
 Compiling HTML Help 1 file...
@@ -593,11 +587,11 @@ Project file contains ToolsVersion=&quot;12.0&quot;. This toolset may be unknown
   
   Compile time: 0 minutes, 10 seconds
   
-  2,533	Topics
+  2,331	Topics
   
-  31,636	Local links
+  29,498	Local links
   
-  7,634	Internet links
+  7,580	Internet links
   
   0	Graphics
   
@@ -605,20 +599,20 @@ Project file contains ToolsVersion=&quot;12.0&quot;. This toolset may be unknown
   
   
   
-  Created c:\Projects\webdriver\build\docs\dotnet\web\Working\Output\HtmlHelp1\WebDriver.chm, 2,536,312 bytes
+  Created c:\Projects\webdriver\build\docs\dotnet\web\Working\Output\HtmlHelp1\WebDriver.chm, 2,387,950 bytes
   
-  Compression decreased file by 22,445,402 bytes.
+  Compression decreased file by 20,775,825 bytes.
   
-    Last step completed in 00:00:11.7973
+    Last step completed in 00:00:10.7251
 </buildStep>
 <buildStep step="GenerateHelpFormatTableOfContents">
 Generating website table of contents file...
-    Last step completed in 00:00:00.0153
+    Last step completed in 00:00:00.0000
 </buildStep>
 <buildStep step="GenerateFullTextIndex">
 Generating full-text index for the website...
 
-    Last step completed in 00:00:04.7186
+    Last step completed in 00:00:04.4384
 </buildStep>
 <buildStep step="CopyingWebsiteFiles">
 Copying website files to output folder...
@@ -627,17 +621,16 @@ Copied 500 files
 Copied 1000 files
 Copied 1500 files
 Copied 2000 files
-Copied 2500 files
-Copied 2646 files for the website content
-    Last step completed in 00:00:03.5286
+Copied 2444 files for the website content
+    Last step completed in 00:00:04.0864
 </buildStep>
 <buildStep step="CleanIntermediates">
 Removing intermediate files...
-    Last step completed in 00:00:02.5644
+    Last step completed in 00:00:02.4374
 </buildStep>
 <buildStep step="Completed">
 
-Build completed successfully at 11/4/2015 12:06:02 PM.  Total time: 00:02:02.1739
+Build completed successfully at 10/13/2016 11:09:08 AM.  Total time: 00:02:53.7437
 
 </buildStep>
 </shfbBuild>
