@@ -113,15 +113,15 @@ java_library(name = 'exceptions',
     'WebDriverException.java',
     'internal/BuildInfo.java',
   ],
+  deps = [
+    ':beta',
+  ],
   visibility = [
     '//java/client/src/org/openqa/selenium/interactions:exceptions',
     '//java/client/src/org/openqa/selenium/io:io',
     '//java/client/src/org/openqa/selenium/net:net',
     '//java/client/src/org/openqa/selenium/os:os',
     '//java/client/test/org/openqa/selenium/testing:helpers',
-  ],
-  deps = [
-    '//third_party/java/gson:gson',
   ],
 )
 
