@@ -1,7 +1,8 @@
-3.0.0 (2016-10-11)
+3.0.0 (2016-10-13)
 ===================
 
-No Ruby changes in this release
+Firefox:
+  * Update :firefox_options support for geckodriver 0.11
 
 3.0.0.beta4 (2016-09-29)
 ===================
