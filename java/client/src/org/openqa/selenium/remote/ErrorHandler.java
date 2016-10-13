@@ -161,6 +161,12 @@ public class ErrorHandler {
 
     if (toThrow == null) {
       toThrow = createThrowable(outerErrorType,
+                                new Class<?>[] {String.class, Throwable.class, Integer.class},
+                                new Object[] {message, cause, response.getStatus()});
+    }
+
+    if (toThrow == null) {
+      toThrow = createThrowable(outerErrorType,
           new Class<?>[] {String.class, Throwable.class},
           new Object[] {message, cause});
     }

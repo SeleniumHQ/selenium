@@ -53,14 +53,12 @@ import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.UnableToSetCookieException;
 import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.UnsupportedCommandException;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.interactions.InvalidCoordinatesException;
 import org.openqa.selenium.interactions.MoveTargetOutOfBoundsException;
 
 import javafx.util.Pair;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -473,7 +471,12 @@ public class ErrorHandlerTest {
         fail("Should have thrown an Exception");
       } catch (Exception e) {
         assertEquals("Checking status code: " + exception.getKey(), exception.getValue().getSimpleName(), e.getClass().getSimpleName());
-        assertEquals(e.getClass().getSimpleName() + " ErrorCodes.toStatusCode", exception.getKey().intValue(), new ErrorCodes().toStatusCode(e));
+        int expected = exception.getKey();
+        if (e instanceof InvalidSelectorException) {
+          // all of the special invalid selector exceptions are just mapped to the generic invalid selector
+          expected = 32;
+        }
+        assertEquals(e.getClass().getSimpleName() + " ErrorCodes.toStatusCode", expected, new ErrorCodes().toStatusCode(e));
       }
     }
   }

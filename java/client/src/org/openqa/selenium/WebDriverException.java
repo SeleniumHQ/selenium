@@ -29,6 +29,7 @@ public class WebDriverException extends RuntimeException {
   public static final String SESSION_ID = "Session ID";
   public static final String DRIVER_INFO = "Driver info";
   protected static final String BASE_SUPPORT_URL = "http://seleniumhq.org/exceptions/";
+  protected Integer statusCode;
 
   private Map<String, String> extraInfo = new HashMap<>();
 
@@ -46,6 +47,23 @@ public class WebDriverException extends RuntimeException {
 
   public WebDriverException(String message, Throwable cause) {
     super(message, cause);
+  }
+
+  public WebDriverException(String message, Throwable cause, Integer statusCode) {
+    super(message, cause);
+    this.statusCode = statusCode;
+  }
+
+  /**
+   * DO NOT USE -
+   * This is to help the standalone server map exceptions from remote ends back to clients without
+   * losing the original status code provide (if one is). This will be going away in 4.0 when status
+   * codes are only string messages
+   * @return status code from the response of the remote end driver.
+   */
+  @Deprecated
+  public Integer getStatusCode() {
+    return statusCode;
   }
 
   @Override
