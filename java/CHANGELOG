@@ -1,3 +1,8 @@
+v3.1.0
+======
+
+* FirefoxDriver (legacy) fix to cleanup temp filesystem on quit (#2914 #2908)
+
 v3.0.0
 ======
 
