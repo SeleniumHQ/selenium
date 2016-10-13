@@ -18,11 +18,7 @@
 
 package org.openqa.selenium.remote;
 
-import com.google.common.base.Preconditions;
-import com.google.common.collect.ComparisonChain;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.Iterables;
 
 import org.openqa.selenium.Beta;
@@ -35,6 +31,7 @@ import org.openqa.selenium.InvalidArgumentException;
 import org.openqa.selenium.InvalidCookieDomainException;
 import org.openqa.selenium.InvalidElementStateException;
 import org.openqa.selenium.InvalidSelectorException;
+import org.openqa.selenium.JavascriptException;
 import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.NoSuchCookieException;
 import org.openqa.selenium.NoSuchElementException;
@@ -52,13 +49,13 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.interactions.InvalidCoordinatesException;
 import org.openqa.selenium.interactions.MoveTargetOutOfBoundsException;
 
-import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Defines common error codes for the wire protocol.
@@ -107,118 +104,46 @@ public class ErrorCodes {
 
   private static final Logger log = Logger.getLogger(ErrorCodes.class.getName());
 
-  private static final ImmutableMap<Integer, ImmutableSet<StatusTuple>>
-    ALL_CODES =
-    ImmutableMap.<Integer, ImmutableSet<StatusTuple>>builder()
-      .put(200,
-           ImmutableSortedSet.<StatusTuple>naturalOrder()
-             .add(new StatusTuple("success", SUCCESS, null))
-           .build())
-      .put(400,
-           ImmutableSortedSet.<StatusTuple>naturalOrder()
-             .add(new StatusTuple("element not selectable", ELEMENT_NOT_SELECTABLE, ElementNotSelectableException.class))
-             .add(new StatusTuple("element not interactable", ELEMENT_NOT_INTERACTABLE, ElementNotInteractableException.class, UNHANDLED_ERROR))
-             .add(new StatusTuple("element not visible", ELEMENT_NOT_VISIBLE, ElementNotVisibleException.class))
-             .add(new StatusTuple("invalid argument", INVALID_ARGUMENT, InvalidArgumentException.class, UNHANDLED_ERROR))
-             .add(new StatusTuple("invalid cookie domain", INVALID_COOKIE_DOMAIN, InvalidCookieDomainException.class))
-             .add(new StatusTuple("invalid element coordinates", INVALID_ELEMENT_COORDINATES, InvalidCoordinatesException.class))
-             .add(new StatusTuple("invalid element state", INVALID_ELEMENT_STATE, InvalidElementStateException.class))
-             .add(new StatusTuple("invalid selector", INVALID_SELECTOR_ERROR, InvalidSelectorException.class, INVALID_SELECTOR_ERROR))
-             .add(new StatusTuple("invalid selector", INVALID_XPATH_SELECTOR, InvalidSelectorException.class, INVALID_SELECTOR_ERROR))
-             .add(new StatusTuple("invalid selector", INVALID_XPATH_SELECTOR_RETURN_TYPER, InvalidSelectorException.class, INVALID_SELECTOR_ERROR))
-             .add(new StatusTuple("invalid selector", XPATH_LOOKUP_ERROR, InvalidSelectorException.class, INVALID_SELECTOR_ERROR))
-             .add(new StatusTuple("no such alert", NO_ALERT_PRESENT, NoAlertPresentException.class))
-             .add(new StatusTuple("no such frame", NO_SUCH_FRAME, NoSuchFrameException.class))
-             .add(new StatusTuple("no such window", NO_SUCH_WINDOW, NoSuchWindowException.class))
-             .add(new StatusTuple("stale element reference", STALE_ELEMENT_REFERENCE, StaleElementReferenceException.class))
-             .build())
-      .put(404,
-           ImmutableSortedSet.<StatusTuple>naturalOrder()
-             .add(new StatusTuple("invalid session id", NO_SUCH_SESSION, NoSuchSessionException.class))
-             .add(new StatusTuple("no such cookie", NO_SUCH_COOKIE, NoSuchCookieException.class, UNHANDLED_ERROR))
-             .add(new StatusTuple("no such element", NO_SUCH_ELEMENT, NoSuchElementException.class))
-             .add(new StatusTuple("unknown command", UNKNOWN_COMMAND, UnsupportedCommandException.class))
-             .build())
-      .put(405,
-           ImmutableSortedSet.<StatusTuple>naturalOrder()
-             .add(new StatusTuple("unknown method", METHOD_NOT_ALLOWED, UnsupportedCommandException.class, UNHANDLED_ERROR))
-             .build())
-      .put(408,
-           ImmutableSortedSet.<StatusTuple>naturalOrder()
-             .add(new StatusTuple("script timeout", ASYNC_SCRIPT_TIMEOUT, ScriptTimeoutException.class))
-             .add(new StatusTuple("timeout", TIMEOUT, TimeoutException.class))
-             .build())
-  .put(500,
-       ImmutableSortedSet.<StatusTuple>naturalOrder()
-         .add(new StatusTuple("javascript error", JAVASCRIPT_ERROR, WebDriverException.class))
-         .add(new StatusTuple("move target out of bounds", MOVE_TARGET_OUT_OF_BOUNDS, MoveTargetOutOfBoundsException.class))
-         .add(new StatusTuple("session not created", SESSION_NOT_CREATED, SessionNotCreatedException.class))
-         .add(new StatusTuple("unable to set cookie", UNABLE_TO_SET_COOKIE, UnableToSetCookieException.class))
-         .add(new StatusTuple("unable to capture screen", UNABLE_TO_CAPTURE_SCREEN, ScreenshotException.class, UNHANDLED_ERROR))
-         .add(new StatusTuple("unexpected alert open", UNEXPECTED_ALERT_PRESENT, UnhandledAlertException.class))
-         .add(new StatusTuple("unknown error", UNHANDLED_ERROR, WebDriverException.class))
-         .add(new StatusTuple("unsupported operation", METHOD_NOT_ALLOWED, UnsupportedCommandException.class, UNHANDLED_ERROR))
-         .add(new StatusTuple("unsupported operation", IME_NOT_AVAILABLE, ImeNotAvailableException.class))
-         .add(new StatusTuple("unsupported operation", IME_ENGINE_ACTIVATION_FAILED, ImeActivationFailedException.class))
-         .build())
-      .build();
-
-  // A single JSON status code can map to many w3c codes. The exceptions thrown are the same. It'll
-  // be fine.
-  private static final Map<Integer, String> JSON_TO_W3C = ALL_CODES.values().stream()
-    .flatMap(Collection::stream)
-    .collect(Collectors.toMap(StatusTuple::asStatus, StatusTuple::asState, (key1, key2) -> key1));
-
-  private static final Map<Integer, Class> JSON_TO_EXCEPTION = ALL_CODES.values().stream()
-    .flatMap(Collection::stream)
-    .filter(tuple -> tuple.getException() != null)
-    .collect(Collectors.toMap(StatusTuple::asStatus, StatusTuple::getException, (key1, key2) -> key1));
-
-  private static final Map<String, Integer> W3C_TO_JSON = ALL_CODES.values().stream()
-    .flatMap(Collection::stream)
-    .collect(Collectors.toMap(StatusTuple::asState, StatusTuple::asStatus, (key1, key2) -> key1));
-
-  private static final Map<Integer, Map<String, Integer>> HTTP_TO_STATE_AND_STATUS =
-    ALL_CODES.entrySet().stream()
-      .collect(Collectors.toMap(
-        Map.Entry::getKey,
-        entry -> entry.getValue()
-          .stream()
-          .collect(Collectors.toMap(StatusTuple::asState, StatusTuple::asStatus, (key1, key2) -> key1))));
-
-  private static final Map<String, Class<? extends WebDriverException>> STATE_TO_EXCEPTION =
-    ALL_CODES.values().stream()
-      .flatMap(Collection::stream)
-      .filter(tuple -> tuple.getException() != null)
-      .collect(Collectors.toMap(StatusTuple::asState, StatusTuple::getException, (key1, key2) -> key1));
-
   public String toState(Integer status) {
-    return JSON_TO_W3C.getOrDefault(status, "unknown error");
+    if (status == null) {
+      return toState(UNHANDLED_ERROR);
+    }
+
+    if (SUCCESS == status) {
+      return SUCCESS_STRING;
+    }
+
+    Set<String> possibleMatches = KNOWN_ERRORS.stream()
+      .filter(knownError -> knownError.getJsonCode() == status)
+      .filter(KnownError::isCanonicalForW3C)
+      .map(KnownError::getW3cCode)
+      .collect(Collectors.toSet());
+
+    return Iterables.getOnlyElement(possibleMatches, "unhandled error");
   }
 
   public int toStatus(String webdriverState, Optional<Integer> httpStatus) {
-    // Look it up in the map if the http status code has been provided
-    if (httpStatus.isPresent()) {
-      Map<String, Integer> tuples = HTTP_TO_STATE_AND_STATUS.get(httpStatus.get());
-      if (tuples != null) {
-        Integer value = tuples.get(webdriverState);
-        if (value != null) {
-          return value;
-        }
-        log.info(String.format(
-          "HTTP Status: '%d' -> no JSON status mapping for '%s'",
-          httpStatus.get(),
-          webdriverState));
-      } else {
-        log.info(String.format(
-          "No JSON status codes found for HTTP status: '%d' -> ",
-          httpStatus.get()));
-      }
-
+    if (SUCCESS_STRING.equals(webdriverState)) {
+      return 0;
     }
 
-    // Fall through to just doing a straight look up
-    return W3C_TO_JSON.getOrDefault(webdriverState, UNHANDLED_ERROR);
+    Set<KnownError> possibleMatches = KNOWN_ERRORS.stream()
+      .filter(knownError -> knownError.getW3cCode().equals(webdriverState))
+      .filter(KnownError::isCanonicalForW3C)
+      .collect(Collectors.toSet());
+
+    if (possibleMatches.isEmpty()) {
+      return UNHANDLED_ERROR;
+    }
+    KnownError error = Iterables.getOnlyElement(possibleMatches);
+    if (httpStatus.isPresent() && httpStatus.get() != error.getW3cHttpStatus()) {
+      log.info(String.format(
+        "HTTP Status: '%d' -> incorrect JSON status mapping for '%s' (%d expected)",
+        httpStatus.get(),
+        webdriverState,
+        error.getW3cHttpStatus()));
+    }
+    return error.getJsonCode();
   }
 
   /**
@@ -230,11 +155,27 @@ public class ErrorCodes {
    *         {@code statusCode == 0}.
    */
   public Class<? extends WebDriverException> getExceptionType(int statusCode) {
-    return JSON_TO_EXCEPTION.getOrDefault(statusCode, WebDriverException.class);
+    if (SUCCESS == statusCode) {
+      return null;
+    }
+
+    // We know that the tuple of (status code, exception) is distinct.
+    Set<Class<? extends WebDriverException>> allPossibleExceptions = KNOWN_ERRORS.stream()
+      .filter(knownError -> knownError.getJsonCode() == statusCode)
+      .map(KnownError::getException)
+      .collect(Collectors.toSet());
+
+    return Iterables.getOnlyElement(allPossibleExceptions, WebDriverException.class);
   }
 
   public Class<? extends WebDriverException> getExceptionType(String webdriverState) {
-    return STATE_TO_EXCEPTION.getOrDefault(webdriverState, WebDriverException.class);
+    Set<Class<? extends WebDriverException>> possibleMatches = KNOWN_ERRORS.stream()
+      .filter(knownError -> knownError.getW3cCode().equals(webdriverState))
+      .filter(KnownError::isCanonicalForW3C)
+      .map(KnownError::getException)
+      .collect(Collectors.toSet());
+
+    return Iterables.getOnlyElement(possibleMatches, WebDriverException.class);
   }
 
   public int toStatusCode(Throwable e) {
@@ -242,106 +183,135 @@ public class ErrorCodes {
       return SUCCESS;
     }
 
-    // Handle the cases where the JSON wire protocol was more specific than the W3C one
-    if (ImeNotAvailableException.class.equals(e.getClass())) {
-      return IME_NOT_AVAILABLE;
-    }
-    if (ImeActivationFailedException.class.equals(e.getClass())) {
-      return IME_ENGINE_ACTIVATION_FAILED;
-    }
-
-    // And then handle the other cases
-    Stream<StatusTuple> allCodesStream = ALL_CODES.values().stream()
-      .flatMap(Collection::stream)
-      .filter(tuple -> tuple.getException() != null)
-      .filter(tuple -> tuple.associatedException.isAssignableFrom(e.getClass()));
-
-    if (e instanceof WebDriverException && ((WebDriverException)e).getStatusCode() != null) {
-      allCodesStream = allCodesStream.filter(tuple -> ((WebDriverException)e).getStatusCode() == tuple.jsonStatus );
-    }
-
-    Set<Integer> possibleMatches = allCodesStream
-      .map(StatusTuple::getStatusFromException)
+    Set<Integer> possibleMatches = KNOWN_ERRORS.stream()
+      .filter(knownError -> knownError.getException().equals(e.getClass()))
+      .filter(knownError -> knownError.isCanonicalJsonCodeForException)
+      .map(KnownError::getJsonCode)
       .collect(Collectors.toSet());
 
-    if (possibleMatches.size() > 1) {
-      // if there's multiple matches, let's try filtering on the exact exception class to see if we
-      // can reduce the possibilities
-      Set<Integer> reducedPossibleMatches = ALL_CODES.values().stream()
-        .flatMap(Collection::stream)
-        .filter(tuple -> tuple.getException() != null)
-        .filter(tuple -> tuple.associatedException.equals(e.getClass()))
-        .map(StatusTuple::getStatusFromException)
-        .collect(Collectors.toSet());
-
-      if (reducedPossibleMatches.size() > 0) {
-        possibleMatches = reducedPossibleMatches;
-      }
-    }
-
-    return Preconditions.checkNotNull(Iterables.getFirst(possibleMatches, UNHANDLED_ERROR));
+    return Iterables.getOnlyElement(possibleMatches, UNHANDLED_ERROR);
   }
 
   public boolean isMappableError(Throwable rootCause) {
     if (rootCause == null) {
       return false;
     }
-
-    Set<Integer> possibleMatches = ALL_CODES.values().stream()
-      .flatMap(Collection::stream)
-      .filter(tuple -> tuple.getException() != null)
-      .filter(tuple -> tuple.associatedException.isAssignableFrom(rootCause.getClass()))
-      .map(StatusTuple::asStatus)
+    Set<KnownError> possibleMatches = KNOWN_ERRORS.stream()
+      .filter(knownError -> knownError.getException().equals(rootCause.getClass()))
       .collect(Collectors.toSet());
 
     return !possibleMatches.isEmpty();
   }
 
-  private static class StatusTuple implements Comparable<StatusTuple> {
-    private final String w3cState;
-    private final int jsonStatus;
-    private final Class<? extends WebDriverException> associatedException;
-    // Mapping from the original error codes implementation.
-    private final int seleniumExceptionToResponseCode;
+  // Every row on this table should be self-explanatory, except for the two booleans at the end.
+  // The first of these is "isCanonicalJsonCodeForException". This means that when doing the mapping
+  // for a JSON Wire Protocol status code, this KnownError provides the exception that should be
+  // thrown. The second boolean is "isCanonicalForW3C". This means that when mapping a state or
+  // exception to a W3C state, this KnownError provides the default exception and Json Wire Protocol
+  // status to send.
+  private static final ImmutableSet<KnownError> KNOWN_ERRORS = ImmutableSet.<KnownError>builder()
+    .add(new KnownError(ASYNC_SCRIPT_TIMEOUT, "script timeout", 408, ScriptTimeoutException.class, true, true))
+    .add(new KnownError(ELEMENT_NOT_SELECTABLE, "element not selectable", 400, ElementNotSelectableException.class, true, true))
+    .add(new KnownError(ELEMENT_NOT_INTERACTABLE, "element not interactable", 400, ElementNotInteractableException.class, true, true))
+    .add(new KnownError(ELEMENT_NOT_VISIBLE, "element not visible", 400, ElementNotVisibleException.class, true, true))
+    .add(new KnownError(IME_ENGINE_ACTIVATION_FAILED, "unsupported operation", 500, ImeActivationFailedException.class, true, false))
+    .add(new KnownError(IME_NOT_AVAILABLE, "unsupported operation", 500, ImeNotAvailableException.class, true, false))
+    .add(new KnownError(INVALID_ARGUMENT, "invalid argument", 400, InvalidArgumentException.class, true, true))
+    .add(new KnownError(INVALID_COOKIE_DOMAIN, "invalid cookie domain", 400, InvalidCookieDomainException.class, true, true))
+    .add(new KnownError(INVALID_ELEMENT_COORDINATES, "invalid element coordinates", 400, InvalidCoordinatesException.class, true, true))
+    .add(new KnownError(INVALID_ELEMENT_STATE, "invalid element state", 400, InvalidElementStateException.class, true, true))
+    .add(new KnownError(INVALID_SELECTOR_ERROR, "invalid selector", 400, InvalidSelectorException.class, true, true))
+    .add(new KnownError(INVALID_XPATH_SELECTOR, "invalid selector", 400, InvalidSelectorException.class, false, false))
+    .add(new KnownError(INVALID_XPATH_SELECTOR_RETURN_TYPER, "invalid selector", 400, InvalidSelectorException.class, false, true))
+    .add(new KnownError(JAVASCRIPT_ERROR, "javascript error", 500, JavascriptException.class, true, true))
+    .add(new KnownError(METHOD_NOT_ALLOWED, "unknown method", 405, UnsupportedCommandException.class, false, true))
+    .add(new KnownError(METHOD_NOT_ALLOWED, "unsupported operation", 500, UnsupportedCommandException.class, false, true))
+    .add(new KnownError(MOVE_TARGET_OUT_OF_BOUNDS, "move target out of bounds", 500, MoveTargetOutOfBoundsException.class, true, true))
+    .add(new KnownError(NO_ALERT_PRESENT, "no such alert", 400, NoAlertPresentException.class, true, true))
+    .add(new KnownError(NO_SUCH_COOKIE, "no such cookie", 404, NoSuchCookieException.class, true, true))
+    .add(new KnownError(NO_SUCH_ELEMENT, "no such element", 404, NoSuchElementException.class, true, true))
+    .add(new KnownError(NO_SUCH_FRAME, "no such frame", 400, NoSuchFrameException.class, true, true))
+    .add(new KnownError(NO_SUCH_SESSION, "invalid session id", 404, NoSuchSessionException.class, true, true))
+    .add(new KnownError(NO_SUCH_WINDOW, "no such window", 400, NoSuchWindowException.class, true, true))
+    .add(new KnownError(SESSION_NOT_CREATED, "session not created", 500, SessionNotCreatedException.class ,true, true))
+    .add(new KnownError(STALE_ELEMENT_REFERENCE, "stale element reference", 400, StaleElementReferenceException.class, true, true))
+    .add(new KnownError(TIMEOUT, "timeout", 408, TimeoutException.class, true, true))
+    .add(new KnownError(XPATH_LOOKUP_ERROR, "invalid selector", 400, InvalidSelectorException.class, false, false))
+    .add(new KnownError(UNABLE_TO_CAPTURE_SCREEN, "unable to capture screen", 500, ScreenshotException.class, true, true))
+    .add(new KnownError(UNABLE_TO_SET_COOKIE, "unable to set cookie", 500, UnableToSetCookieException.class, true, true))
+    .add(new KnownError(UNEXPECTED_ALERT_PRESENT, "unexpected alert open", 500, UnhandledAlertException.class, true, true))
+    .add(new KnownError(UNHANDLED_ERROR, "unknown error", 500, WebDriverException.class, true, true))
+    .add(new KnownError(UNKNOWN_COMMAND, "unknown command", 404, UnsupportedCommandException.class, true, true))
 
-    public StatusTuple(String w3cState, int jsonStatus, Class<? extends WebDriverException> ex) {
-      this(w3cState, jsonStatus, ex, jsonStatus);
+    .build();
+
+  static {{
+    // Validate uniqueness constraints.
+    //
+    // There should be only one canonical JSON Wire protocol code per exception
+    Map<Object, Set<KnownError>> matched = new HashMap<>();
+    for (KnownError knownError : KNOWN_ERRORS) {
+      matched.getOrDefault(knownError, new HashSet<>()).add(knownError);
+    }
+    for (Set<KnownError> errors : matched.values()) {
+      if (errors.size() != 1) {
+        throw new RuntimeException("Duplicate canonical exceptions: " + errors);
+      }
     }
 
-    public StatusTuple(
-      String w3cState,
-      int jsonStatus,
-      Class<? extends WebDriverException> ex,
-      int seleniumExceptionToResponseCode) {
-      this.w3cState = w3cState;
-      this.jsonStatus = jsonStatus;
-      this.associatedException = ex;
-      // This field is derived from the original implementation of ErrorCodes. Also used when
-      this.seleniumExceptionToResponseCode = seleniumExceptionToResponseCode;
+    // There should only be one canonical W3C code to JSON Wire Protocol code
+    matched = new HashMap<>();
+    for (KnownError error : KNOWN_ERRORS) {
+      matched.getOrDefault(error.getW3cCode(), new HashSet<>()).add(error);
+    }
+    for (Set<KnownError> errors : matched.values()) {
+      if (errors.size() != 1) {
+        throw new RuntimeException("Duplicate canonical w3c state codes: " + errors);
+      }
+    }
+  }}
+
+  private static class KnownError {
+    private final int jsonCode;
+    private final String w3cCode;
+    private final int w3cHttpStatus;
+    private final Class<? extends WebDriverException> exception;
+    private final boolean isCanonicalJsonCodeForException;
+    private final boolean isCanonicalForW3C;
+
+    public KnownError(
+      int jsonCode,
+      String w3cCode,
+      int w3cHttpStatus,
+      Class<? extends WebDriverException> exception,
+      boolean isCanonicalJsonCodeForException,
+      boolean isCanonicalForW3C) {
+      this.jsonCode = jsonCode;
+      this.w3cCode = w3cCode;
+      this.w3cHttpStatus = w3cHttpStatus;
+      this.exception = exception;
+      this.isCanonicalJsonCodeForException = isCanonicalJsonCodeForException;
+      this.isCanonicalForW3C = isCanonicalForW3C;
     }
 
-    public int asStatus() {
-      return jsonStatus;
+    public int getJsonCode() {
+      return jsonCode;
     }
 
-    public String asState() {
-      return w3cState;
+    public String getW3cCode() {
+      return w3cCode;
     }
 
-    public int getStatusFromException() {
-      return seleniumExceptionToResponseCode;
-    }
-
-    @Override
-    public int compareTo(StatusTuple that) {
-      return ComparisonChain.start()
-        .compare(this.w3cState, that.w3cState)
-        .compare(this.jsonStatus, that.jsonStatus)
-        .result();
+    public int getW3cHttpStatus() {
+      return w3cHttpStatus;
     }
 
     public Class<? extends WebDriverException> getException() {
-      return associatedException;
+      return exception;
+    }
+
+    public boolean isCanonicalForW3C() {
+      return isCanonicalForW3C;
     }
   }
 }

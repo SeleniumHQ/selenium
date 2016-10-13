@@ -26,6 +26,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 
@@ -37,10 +38,10 @@ import org.openqa.selenium.ElementNotSelectableException;
 import org.openqa.selenium.ElementNotVisibleException;
 import org.openqa.selenium.ImeActivationFailedException;
 import org.openqa.selenium.ImeNotAvailableException;
-import org.openqa.selenium.InvalidArgumentException;
 import org.openqa.selenium.InvalidCookieDomainException;
 import org.openqa.selenium.InvalidElementStateException;
 import org.openqa.selenium.InvalidSelectorException;
+import org.openqa.selenium.JavascriptException;
 import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NoSuchFrameException;
@@ -60,8 +61,10 @@ import org.openqa.selenium.interactions.MoveTargetOutOfBoundsException;
 import javafx.util.Pair;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Unit tests for {@link ErrorHandler}.
@@ -446,7 +449,7 @@ public class ErrorHandlerTest {
       new Pair<Integer, Class>(ErrorCodes.INVALID_ELEMENT_STATE, InvalidElementStateException.class),
       new Pair<Integer, Class>(ErrorCodes.UNHANDLED_ERROR, WebDriverException.class),
       new Pair<Integer, Class>(ErrorCodes.ELEMENT_NOT_SELECTABLE, ElementNotSelectableException.class),
-      new Pair<Integer, Class>(ErrorCodes.JAVASCRIPT_ERROR, WebDriverException.class),
+      new Pair<Integer, Class>(ErrorCodes.JAVASCRIPT_ERROR, JavascriptException.class),
       new Pair<Integer, Class>(ErrorCodes.XPATH_LOOKUP_ERROR, InvalidSelectorException.class),
       new Pair<Integer, Class>(ErrorCodes.TIMEOUT, TimeoutException.class),
       new Pair<Integer, Class>(ErrorCodes.NO_SUCH_WINDOW, NoSuchWindowException.class),
@@ -465,19 +468,27 @@ public class ErrorHandlerTest {
       new Pair<Integer, Class>(ErrorCodes.INVALID_XPATH_SELECTOR_RETURN_TYPER, InvalidSelectorException.class)
     );
 
+    Set<String> collectedFailures = new HashSet<>();
     for (Pair<Integer, Class> exception : exceptions) {
       try {
         handler.throwIfResponseFailed(createResponse(exception.getKey()), 123);
         fail("Should have thrown an Exception");
       } catch (Exception e) {
         assertEquals("Checking status code: " + exception.getKey(), exception.getValue().getSimpleName(), e.getClass().getSimpleName());
+
         int expected = exception.getKey();
         if (e instanceof InvalidSelectorException) {
           // all of the special invalid selector exceptions are just mapped to the generic invalid selector
           expected = 32;
         }
-        assertEquals(e.getClass().getSimpleName() + " ErrorCodes.toStatusCode", expected, new ErrorCodes().toStatusCode(e));
+        int seenStatusCode = new ErrorCodes().toStatusCode(e);
+        if (seenStatusCode != expected) {
+          collectedFailures.add(String.format("%s: ErrorCode.toStatusCode. Expected %d, saw %d", e.getClass().getSimpleName(), expected, seenStatusCode));
+        }
       }
+    }
+    if (!collectedFailures.isEmpty()) {
+      fail(Joiner.on("\n").join(collectedFailures));
     }
   }
 
