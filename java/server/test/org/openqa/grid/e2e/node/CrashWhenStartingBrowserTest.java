@@ -65,9 +65,7 @@ public class CrashWhenStartingBrowserTest {
 
     remote = GridTestHelper.getRemoteWithoutCapabilities(hub.getUrl(), GridRole.NODE);
 
-    DesiredCapabilities firefox = DesiredCapabilities.firefox();
-    firefox.setCapability(FirefoxDriver.BINARY, WRONG_PATH);
-    remote.addBrowser(firefox, 1);
+    remote.addBrowser(DesiredCapabilities.firefox(), 1);
 
     remote.setRemoteServer(new SeleniumServer(remote.getConfiguration()));
     remote.startRemoteServer();
@@ -91,6 +89,7 @@ public class CrashWhenStartingBrowserTest {
     WebDriverException exception = null;
     try {
       DesiredCapabilities ff = DesiredCapabilities.firefox();
+      ff.setCapability(FirefoxDriver.BINARY, WRONG_PATH);
       new RemoteWebDriver(hub.getWebDriverHubRequestURL(), ff);
     } catch (WebDriverException expected) {
       exception = expected;

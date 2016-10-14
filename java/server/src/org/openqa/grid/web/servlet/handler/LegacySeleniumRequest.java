@@ -94,30 +94,6 @@ public class LegacySeleniumRequest extends SeleniumBasedRequest {
   }
 
   @Override
-  public String getNewSessionRequestedCapability(TestSession session) {
-    try {
-      String body = getBody();
-      String[] pieces = body.split("&");
-      StringBuilder builder = new StringBuilder();
-
-      for (String piece : pieces) {
-        if (piece.startsWith("1=")) {
-          piece = URLDecoder.decode(piece, "UTF-8");
-          String parts[] = piece.split("1=");
-          piece =
-            (String) BrowserNameUtils.parseGrid2Environment(piece).get(CapabilityType.BROWSER_NAME);
-        }
-        builder.append(piece).append("&");
-      }
-      return builder.toString();
-    } catch (UnsupportedEncodingException ignore) {
-
-    }
-    throw new NewSessionException("Error with the request ");
-
-  }
-
-  @Override
   public String getBody() {
     String postBody = super.getBody();
     return !(postBody == null || postBody.equals("")) ? postBody : getQueryString();

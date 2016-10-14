@@ -202,10 +202,6 @@ public class DefaultProxyFindsFirefoxLocationsTest {
     HttpServletRequest httpreq = mock(HttpServletRequest.class);
     return new SeleniumBasedRequest(httpreq, registry, RequestType.START_SESSION, desiredCapability) {
 
-      public String getNewSessionRequestedCapability(TestSession session) {
-        return null;
-      }
-
       public ExternalSessionKey extractSession() {
         return null;
       }

@@ -79,12 +79,4 @@ public class WebDriverRequest extends SeleniumBasedRequest {
       throw new GridException("Cannot extract a capabilities from the request: " + json, e);
     }
   }
-
-  @Override
-  public String getNewSessionRequestedCapability(TestSession session) {
-    JsonObject c = new JsonObject();
-    c.add("desiredCapabilities",
-          new BeanToJsonConverter().convertObject(session.getRequestedCapabilities()));
-    return new Gson().toJson(c);
-  }
 }
