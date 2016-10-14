@@ -857,7 +857,10 @@ class WebDriver {
    * by the driver. Unlike other commands, this error cannot be suppressed. In
    * other words, scheduling a command to find an element doubles as an assert
    * that the element is present on the page. To test whether an element is
-   * present on the page, use {@link #isElementPresent} instead.
+   * present on the page, use {@link #findElements}:
+   *
+   *     driver.findElements(By.id('foo'))
+   *         .then(found => console.log('Element found? %s', !!found.length));
    *
    * The search criteria for an element may be defined using one of the
    * factories in the {@link webdriver.By} namespace, or as a short-hand
