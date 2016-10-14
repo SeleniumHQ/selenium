@@ -49,7 +49,13 @@ public class DefaultNetworkInterfaceProvider implements NetworkInterfaceProvider
 
     List<NetworkInterface> result = new ArrayList<>();
     while (interfaces.hasMoreElements()) {
-      result.add(createInterface(interfaces.nextElement()));
+      try {
+        java.net.NetworkInterface iface = interfaces.nextElement();
+        if (iface.isUp()) {
+          result.add(createInterface(interfaces.nextElement()));
+        }
+      }
+      catch (SocketException e) {}
     }
     this.cachedInterfaces = Collections.unmodifiableList(result);
   }
