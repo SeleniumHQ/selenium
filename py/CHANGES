@@ -1,3 +1,7 @@
+Selenium 3.0.1
+* Fix regressions with python 3
+* Add support for Safari Technology Preview
+
 Selenium 3.0.0
 * new FirefoxDriver ctor precedence logic and moz:firefoxOptions support (#2882)
 * Add W3C Set Window Position and W3C Get Window Position
