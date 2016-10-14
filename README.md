@@ -1,7 +1,7 @@
-Selenium
+Selenium [![Build Status](https://travis-ci.org/SeleniumHQ/selenium.svg)](//travis-ci.org/SeleniumHQ/selenium)
 ========
 [![SeleniumHQ](http://www.seleniumhq.org/images/big-logo.png)](http://www.seleniumhq.org/)
-[![Build Status](https://travis-ci.org/SeleniumHQ/selenium.svg)](//travis-ci.org/SeleniumHQ/selenium)
+
 
 
 
