@@ -131,10 +131,6 @@ public abstract class SeleniumBasedRequest extends HttpServletRequestWrapper {
    */
   public abstract Map<String, Object> extractDesiredCapability();
 
-  // TODO freynaud remove the TestSession parameter.The listener can modify the
-  // original request instead.
-  public abstract String getNewSessionRequestedCapability(TestSession session);
-
   public RequestType getRequestType() {
     return type;
   }

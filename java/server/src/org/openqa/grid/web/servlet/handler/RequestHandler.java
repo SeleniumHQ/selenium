@@ -84,8 +84,6 @@ public class RequestHandler implements Comparable<RequestHandler> {
   public void forwardNewSessionRequestAndUpdateRegistry(TestSession session)
       throws NewSessionException {
     try {
-      String content = request.getNewSessionRequestedCapability(session);
-      getRequest().setBody(content);
       session.forward(getRequest(), getResponse(), true);
     } catch (IOException e) {
       //log.warning("Error forwarding the request " + e.getMessage());
