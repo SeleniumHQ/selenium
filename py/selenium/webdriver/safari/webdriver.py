@@ -32,7 +32,8 @@ class WebDriver(RemoteWebDriver):
 
     """
 
-    def __init__(self, port=0, desired_capabilities=DesiredCapabilities.SAFARI, quiet=False):
+    def __init__(self, port=0, executable_path="/usr/bin/safaridriver",
+                 desired_capabilities=DesiredCapabilities.SAFARI, quiet=False):
         """
         Creates a new instance of the Safari driver.
 
@@ -43,7 +44,7 @@ class WebDriver(RemoteWebDriver):
          - desired_capabilities: Dictionary object with desired capabilities (Can be used to provide various Safari switches).
          - quiet - set to True to suppress stdout and stderr of the driver
         """
-        self.service = Service(port=port, quiet=quiet)
+        self.service = Service(executable_path, port=port, quiet=quiet)
         self.service.start()
 
         RemoteWebDriver.__init__(
