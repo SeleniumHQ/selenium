@@ -214,7 +214,7 @@ class WebDriver(RemoteWebDriver):
         self.execute("SET_CONTEXT", {"context": context})
 
     @contextmanager
-    def using_context(self, context):
+    def context(self, context):
         """Sets the context that Selenium commands are running in using
         a `with` statement. The state of the context on the server is
         saved before entering the block, and restored upon exiting it.

@@ -27,7 +27,7 @@ class TestUsingContext(object):
             return driver.execute('GET_CONTEXT').pop('value')
 
         assert get_context() == driver.CONTEXT_CONTENT
-        with driver.using_context(driver.CONTEXT_CHROME):
+        with driver.context(driver.CONTEXT_CHROME):
             assert get_context() == driver.CONTEXT_CHROME
         assert get_context() == driver.CONTEXT_CONTENT
 
