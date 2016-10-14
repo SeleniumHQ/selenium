@@ -15,27 +15,19 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from selenium import webdriver
+from selenium.webdriver import Firefox
 
 
-class TestUsingContext:
+class TestUsingContext(object):
 
-    def setup_method(self, method):
+    def test_using_context_sets_correct_context_and_returns(self, capabilities):
+        driver = Firefox(capabilities=capabilities)
 
-        capabilities = {'marionette': True}
-        self.driver = webdriver.Firefox(capabilities=capabilities)
-
-    def test_using_context_sets_correct_context_and_returns(self):
         def get_context():
-            return self.driver.execute('GET_CONTEXT').pop('value')
+            return driver.execute('GET_CONTEXT').pop('value')
 
-        assert get_context() == self.driver.CONTEXT_CONTENT
-        with self.driver.using_context(self.driver.CONTEXT_CHROME):
-            assert get_context() == self.driver.CONTEXT_CHROME
-        assert get_context() == self.driver.CONTEXT_CONTENT
+        assert get_context() == driver.CONTEXT_CONTENT
+        with driver.using_context(driver.CONTEXT_CHROME):
+            assert get_context() == driver.CONTEXT_CHROME
+        assert get_context() == driver.CONTEXT_CONTENT
 
-    def teardown_method(self, method):
-        try:
-            self.driver.quit()
-        except:
-            pass

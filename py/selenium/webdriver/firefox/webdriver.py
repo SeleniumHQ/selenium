@@ -98,7 +98,6 @@ class WebDriver(RemoteWebDriver):
         :param firefox_options: Instance of ``options.Options``.
         :param log_path: Where to log information from the driver.
 
-<<<<<<< 6bb01d6fb21694fbd74c24c6cb4529fd4b5536e5
         """
         self.binary = None
         self.profile = None
@@ -147,8 +146,6 @@ class WebDriver(RemoteWebDriver):
 
         self.CONTEXT_CHROME = 'chrome'
         self.CONTEXT_CONTENT = 'content'
-
-        # marionette
 
         if capabilities.get("marionette"):
             self.service = Service(executable_path, log_path=log_path)
