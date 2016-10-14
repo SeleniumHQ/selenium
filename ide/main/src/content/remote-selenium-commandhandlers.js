@@ -373,7 +373,7 @@ function AccessorResult(result) {
   } else if (Deferred.isPromise(result)) {
     //We have a deferred, we need to change the terminating condition to include the resolution of the deferred
     result.done(function(arg) {
-      self.result = arg;
+      this.result = arg;
     });
     this.terminationCondition = function() {
       if (result.isRejected()) {
