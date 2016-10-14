@@ -336,7 +336,7 @@ public class HTMLLauncher {
     @Parameter(
       names = "-port",
       hidden = true)
-    private Integer port;
+    private Integer port = 0;
 
     @Parameter(
       names = "-trustAllSSLCertificates",
