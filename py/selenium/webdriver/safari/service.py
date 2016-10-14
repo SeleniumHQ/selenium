@@ -25,7 +25,7 @@ class Service(service.Service):
     Object that manages the starting and stopping of the SafariDriver
     """
 
-    def __init__(self, port=0, quiet=False):
+    def __init__(self, executable_path, port=0, quiet=False):
         """
         Creates a new instance of the Service
 
@@ -33,8 +33,7 @@ class Service(service.Service):
          - executable_path : Path to the SafariDriver
          - port : Port the service is running on """
 
-        path = '/usr/bin/safaridriver'
-        if not os.path.exists(path):
+        if not os.path.exists(executable_path):
             raise Exception("SafariDriver requires Safari 10 on OSX El Capitan or greater")
 
         if port == 0:
@@ -44,7 +43,7 @@ class Service(service.Service):
         log = PIPE
         if quiet:
             log = open(os.devnull, 'w')
-        service.Service.__init__(self, path, port, log)
+        service.Service.__init__(self, executable_path, port, log)
 
     def command_line_args(self):
         return ["-p", "%s" % self.port]
