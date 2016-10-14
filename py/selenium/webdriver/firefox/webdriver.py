@@ -213,7 +213,7 @@ class WebDriver(RemoteWebDriver):
 
         Usage example::
 
-            with selenium.using_context(selenium.CONTEXT_CHROME):
+            with selenium.context(selenium.CONTEXT_CHROME):
                 # chrome scope
                 ... do stuff ...
         """
