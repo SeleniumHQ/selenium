@@ -133,17 +133,6 @@ class WebDriver(RemoteWebDriver):
         # W3C remote
         # TODO(ato): Perform conformance negotiation
 
-        self.profile = firefox_profile or FirefoxProfile()
-        self.profile.native_events_enabled = (
-            self.NATIVE_EVENTS_ALLOWED and self.profile.native_events_enabled)
-
-        self.binary = firefox_binary or capabilities.get("binary", FirefoxBinary())
-
-        self.options = firefox_options or Options()
-        self.options.binary_location = self.binary if isinstance(self.binary, basestring) else self.binary._start_cmd
-        self.options.profile = self.profile
-        capabilities.update(self.options.to_capabilities())
-
         self.CONTEXT_CHROME = 'chrome'
         self.CONTEXT_CONTENT = 'content'
 
