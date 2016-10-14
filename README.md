@@ -1,14 +1,18 @@
+Selenium
+========
+[![SeleniumHQ](http://www.seleniumhq.org/images/big-logo.png)](http://www.seleniumhq.org/)
 [![Build Status](https://travis-ci.org/SeleniumHQ/selenium.svg)](//travis-ci.org/SeleniumHQ/selenium)
-# Selenium
 
-Selenium is an umbrella project encapsulating a variety of tools and 
-libraries enabling web browser automation. Selenium specifically 
-provides infrastructure for the [W3C WebDriver specification](https://dvcs.w3.org/hg/webdriver/raw-file/tip/webdriver-spec.html) 
-— a platform and language-neutral coding interface compatible with all 
+
+
+Selenium is an umbrella project encapsulating a variety of tools and
+libraries enabling web browser automation. Selenium specifically
+provides infrastructure for the [W3C WebDriver specification](https://dvcs.w3.org/hg/webdriver/raw-file/tip/webdriver-spec.html)
+— a platform and language-neutral coding interface compatible with all
 major web browsers.
 
-The project is made possible by volunteer contributors who've 
-generously donated thousands of hours in code development and upkeep. 
+The project is made possible by volunteer contributors who've
+generously donated thousands of hours in code development and upkeep.
 
 Selenium's source code is made available under the [Apache 2.0 license](https://github.com/SeleniumHQ/selenium/blob/master/LICENSE).
 
@@ -29,7 +33,7 @@ API documentation:
 
 ## Pull Requests
 
-Please read [CONTRIBUTING.md](https://github.com/SeleniumHQ/selenium/blob/master/CONTRIBUTING.md) 
+Please read [CONTRIBUTING.md](https://github.com/SeleniumHQ/selenium/blob/master/CONTRIBUTING.md)
 before submitting your pull requests.
 
 ## Building
@@ -43,7 +47,7 @@ see directories carrying multiple build directive files.
 For reference, crazyfun's build files are named *build.desc*,
 while buck's are named simply *BUCK*.
 
-Before building ensure that you have the 
+Before building ensure that you have the
 [most recent `chromedriver` ](https://sites.google.com/a/chromium.org/chromedriver/downloads)
 available on your `$PATH`.  
 
@@ -140,12 +144,12 @@ you also need:
 * [Visual Studio 2008](http://www.microsoft.com/visualstudio/en-gb/products/2008-editions)
 * 32 and 64 bit cross compilers
 
-The build will work on any platform, but the tests for IE will be 
+The build will work on any platform, but the tests for IE will be
 skipped silently, if you are not building on Windows.
 
 ## Common Tasks
 
-For an express build of the binaries we release run the following from 
+For an express build of the binaries we release run the following from
 the directory containing the `Rakefile`:
 
 ```sh
@@ -286,8 +290,8 @@ targets.
 ## Maven _per se_
 
 If it is not clear already, Selenium is not built with Maven, it is
-built with [Buck](https://github.com/SeleniumHQ/buck), 
-though that is invoked with *go* as outlined above so you do not really 
+built with [Buck](https://github.com/SeleniumHQ/buck),
+though that is invoked with *go* as outlined above so you do not really
 have to learn too much about that.
 
 That said, it is possible to relatively quickly build selenium pieces
@@ -315,5 +319,5 @@ the name.
 ## Useful Resources
 
 Refer to the [Building Web
-Driver](https://github.com/SeleniumHQ/selenium/wiki/Building-WebDriver) 
+Driver](https://github.com/SeleniumHQ/selenium/wiki/Building-WebDriver)
 wiki page for the last word on building the bits and pieces of Selenium.
