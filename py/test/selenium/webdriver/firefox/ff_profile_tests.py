@@ -59,7 +59,7 @@ class TestFirefoxProfile(object):
         assert 'hi there' == profile.default_preferences["sample.preference"]
 
         encoded = profile.encoded
-        decoded = base64.decodestring(encoded)
+        decoded = base64.b64decode(encoded)
         with BytesIO(decoded) as fp:
             zip = zipfile.ZipFile(fp, "r")
             for entry in zip.namelist():
@@ -79,7 +79,7 @@ class TestFirefoxProfile(object):
         assert 'hi there' == profile.default_preferences["sample.preference.2"]
 
         encoded = profile.encoded
-        decoded = base64.decodestring(encoded)
+        decoded = base64.b64decode(encoded)
         with BytesIO(decoded) as fp:
             zip = zipfile.ZipFile(fp, "r")
             for entry in zip.namelist():
