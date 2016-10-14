@@ -118,12 +118,12 @@ class WebDriver(RemoteWebDriver):
         # firefox_binary and firefox_profile
         # override firefox_options
         if firefox_binary is not None:
-            if isinstance(firefox_binary, types.StringTypes):
+            if isinstance(firefox_binary, basestring):
                 firefox_binary = FirefoxBinary(firefox_binary)
             self.binary = firefox_binary
             firefox_options.binary = firefox_binary
         if firefox_profile is not None:
-            if isinstance(firefox_profile, types.StringTypes):
+            if isinstance(firefox_profile, basestring):
                 firefox_profile = FirefoxProfile(firefox_profile)
             self.profile = firefox_profile
             firefox_options.profile = firefox_profile

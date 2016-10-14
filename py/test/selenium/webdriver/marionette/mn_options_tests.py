@@ -16,9 +16,11 @@
 # under the License.
 
 import pytest
-import shutil
-import tempfile
-import types
+
+try:
+    basestring
+except NameError:  # Python 3.x
+    basestring = str
 
 from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
@@ -92,7 +94,7 @@ class TestUnit(object):
         caps = opts.to_capabilities()
         assert "moz:firefoxOptions" in caps
         assert "profile" in caps["moz:firefoxOptions"]
-        assert isinstance(caps["moz:firefoxOptions"]["profile"], types.StringTypes)
+        assert isinstance(caps["moz:firefoxOptions"]["profile"], basestring)
         assert caps["moz:firefoxOptions"]["profile"] == profile.encoded
 
         opts.add_argument("--foo")
@@ -106,5 +108,5 @@ class TestUnit(object):
         caps = opts.to_capabilities()
         assert "moz:firefoxOptions" in caps
         assert "binary" in caps["moz:firefoxOptions"]
-        assert isinstance(caps["moz:firefoxOptions"]["binary"], types.StringTypes)
+        assert isinstance(caps["moz:firefoxOptions"]["binary"], basestring)
         assert caps["moz:firefoxOptions"]["binary"] == binary._start_cmd
