@@ -58,8 +58,7 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.interactions.InvalidCoordinatesException;
 import org.openqa.selenium.interactions.MoveTargetOutOfBoundsException;
 
-import javafx.util.Pair;
-
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -74,6 +73,26 @@ import java.util.Set;
 @RunWith(JUnit4.class)
 public class ErrorHandlerTest {
   private ErrorHandler handler;
+
+  class Pair<K,V>
+    extends Object
+    implements Serializable {
+    K theKey;
+    V theValue;
+    Pair(K key, V value){
+      theKey=key;
+      theValue=value;
+    }
+
+
+    public K getKey() {
+      return theKey;
+    }
+
+    public V getValue() {
+      return theValue;
+    }
+  }
 
   @Before
   public void setUp() {
