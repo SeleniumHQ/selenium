@@ -64,7 +64,7 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
 
     sendLowercase.perform();
 
-    assertThat(keyReporter.getAttribute("value"), is("abc def"));
+    shortWait.until(ExpectedConditions.attributeToBe(keyReporter, "value", "abc def"));
   }
 
   @JavascriptEnabled
@@ -203,7 +203,8 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
     WebElement keyReporter = driver.findElement(By.id("keyReporter"));
 
     getBuilder(driver).click(keyReporter).sendKeys("abc def").perform();
-    assertThat(keyReporter.getAttribute("value"), is("abc def"));
+
+    shortWait.until(ExpectedConditions.attributeToBe(keyReporter, "value", "abc def"));
 
     getBuilder(driver).click(keyReporter)
         .keyDown(Keys.SHIFT)
@@ -258,7 +259,8 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
     WebElement keyReporter = driver.findElement(By.id("keyReporter"));
 
     getBuilder(driver).click(keyReporter).sendKeys("abc def").perform();
-    assertThat(keyReporter.getAttribute("value"), is("abc def"));
+
+    shortWait.until(ExpectedConditions.attributeToBe(keyReporter, "value", "abc def"));
 
     getBuilder(driver).click(keyReporter)
         .keyDown(Keys.CONTROL)

@@ -58,11 +58,8 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.interactions.InvalidCoordinatesException;
 import org.openqa.selenium.interactions.MoveTargetOutOfBoundsException;
 
-import javafx.util.Pair;
-
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -439,37 +436,36 @@ public class ErrorHandlerTest {
 
   @Test
   public void testStatusCodesRaisedBackToStatusMatches() {
-    List<Pair<Integer, Class>> exceptions = Arrays.asList(
-      new Pair<Integer, Class>(ErrorCodes.NO_SUCH_SESSION, NoSuchSessionException.class),
-      new Pair<Integer, Class>(ErrorCodes.NO_SUCH_ELEMENT, NoSuchElementException.class),
-      new Pair<Integer, Class>(ErrorCodes.NO_SUCH_FRAME, NoSuchFrameException.class),
-      new Pair<Integer, Class>(ErrorCodes.UNKNOWN_COMMAND, UnsupportedCommandException.class),
-      new Pair<Integer, Class>(ErrorCodes.STALE_ELEMENT_REFERENCE, StaleElementReferenceException.class),
-      new Pair<Integer, Class>(ErrorCodes.ELEMENT_NOT_VISIBLE, ElementNotVisibleException.class),
-      new Pair<Integer, Class>(ErrorCodes.INVALID_ELEMENT_STATE, InvalidElementStateException.class),
-      new Pair<Integer, Class>(ErrorCodes.UNHANDLED_ERROR, WebDriverException.class),
-      new Pair<Integer, Class>(ErrorCodes.ELEMENT_NOT_SELECTABLE, ElementNotSelectableException.class),
-      new Pair<Integer, Class>(ErrorCodes.JAVASCRIPT_ERROR, JavascriptException.class),
-      new Pair<Integer, Class>(ErrorCodes.XPATH_LOOKUP_ERROR, InvalidSelectorException.class),
-      new Pair<Integer, Class>(ErrorCodes.TIMEOUT, TimeoutException.class),
-      new Pair<Integer, Class>(ErrorCodes.NO_SUCH_WINDOW, NoSuchWindowException.class),
-      new Pair<Integer, Class>(ErrorCodes.INVALID_COOKIE_DOMAIN, InvalidCookieDomainException.class),
-      new Pair<Integer, Class>(ErrorCodes.UNABLE_TO_SET_COOKIE, UnableToSetCookieException.class),
-      new Pair<Integer, Class>(ErrorCodes.UNEXPECTED_ALERT_PRESENT, UnhandledAlertException.class),
-      new Pair<Integer, Class>(ErrorCodes.NO_ALERT_PRESENT, NoAlertPresentException.class),
-      new Pair<Integer, Class>(ErrorCodes.ASYNC_SCRIPT_TIMEOUT, ScriptTimeoutException.class),
-      new Pair<Integer, Class>(ErrorCodes.INVALID_ELEMENT_COORDINATES, InvalidCoordinatesException.class),
-      new Pair<Integer, Class>(ErrorCodes.IME_NOT_AVAILABLE, ImeNotAvailableException.class),
-      new Pair<Integer, Class>(ErrorCodes.IME_ENGINE_ACTIVATION_FAILED, ImeActivationFailedException.class),
-      new Pair<Integer, Class>(ErrorCodes.INVALID_SELECTOR_ERROR, InvalidSelectorException.class),
-      new Pair<Integer, Class>(ErrorCodes.SESSION_NOT_CREATED, SessionNotCreatedException.class),
-      new Pair<Integer, Class>(ErrorCodes.MOVE_TARGET_OUT_OF_BOUNDS, MoveTargetOutOfBoundsException.class),
-      new Pair<Integer, Class>(ErrorCodes.INVALID_XPATH_SELECTOR, InvalidSelectorException.class),
-      new Pair<Integer, Class>(ErrorCodes.INVALID_XPATH_SELECTOR_RETURN_TYPER, InvalidSelectorException.class)
-    );
+    Map<Integer, Class> exceptions = new HashMap<>();
+    exceptions.put(ErrorCodes.NO_SUCH_SESSION, NoSuchSessionException.class);
+    exceptions.put(ErrorCodes.NO_SUCH_ELEMENT, NoSuchElementException.class);
+    exceptions.put(ErrorCodes.NO_SUCH_FRAME, NoSuchFrameException.class);
+    exceptions.put(ErrorCodes.UNKNOWN_COMMAND, UnsupportedCommandException.class);
+    exceptions.put(ErrorCodes.STALE_ELEMENT_REFERENCE, StaleElementReferenceException.class);
+    exceptions.put(ErrorCodes.ELEMENT_NOT_VISIBLE, ElementNotVisibleException.class);
+    exceptions.put(ErrorCodes.INVALID_ELEMENT_STATE, InvalidElementStateException.class);
+    exceptions.put(ErrorCodes.UNHANDLED_ERROR, WebDriverException.class);
+    exceptions.put(ErrorCodes.ELEMENT_NOT_SELECTABLE, ElementNotSelectableException.class);
+    exceptions.put(ErrorCodes.JAVASCRIPT_ERROR, JavascriptException.class);
+    exceptions.put(ErrorCodes.XPATH_LOOKUP_ERROR, InvalidSelectorException.class);
+    exceptions.put(ErrorCodes.TIMEOUT, TimeoutException.class);
+    exceptions.put(ErrorCodes.NO_SUCH_WINDOW, NoSuchWindowException.class);
+    exceptions.put(ErrorCodes.INVALID_COOKIE_DOMAIN, InvalidCookieDomainException.class);
+    exceptions.put(ErrorCodes.UNABLE_TO_SET_COOKIE, UnableToSetCookieException.class);
+    exceptions.put(ErrorCodes.UNEXPECTED_ALERT_PRESENT, UnhandledAlertException.class);
+    exceptions.put(ErrorCodes.NO_ALERT_PRESENT, NoAlertPresentException.class);
+    exceptions.put(ErrorCodes.ASYNC_SCRIPT_TIMEOUT, ScriptTimeoutException.class);
+    exceptions.put(ErrorCodes.INVALID_ELEMENT_COORDINATES, InvalidCoordinatesException.class);
+    exceptions.put(ErrorCodes.IME_NOT_AVAILABLE, ImeNotAvailableException.class);
+    exceptions.put(ErrorCodes.IME_ENGINE_ACTIVATION_FAILED, ImeActivationFailedException.class);
+    exceptions.put(ErrorCodes.INVALID_SELECTOR_ERROR, InvalidSelectorException.class);
+    exceptions.put(ErrorCodes.SESSION_NOT_CREATED, SessionNotCreatedException.class);
+    exceptions.put(ErrorCodes.MOVE_TARGET_OUT_OF_BOUNDS, MoveTargetOutOfBoundsException.class);
+    exceptions.put(ErrorCodes.INVALID_XPATH_SELECTOR, InvalidSelectorException.class);
+    exceptions.put(ErrorCodes.INVALID_XPATH_SELECTOR_RETURN_TYPER, InvalidSelectorException.class);
 
     Set<String> collectedFailures = new HashSet<>();
-    for (Pair<Integer, Class> exception : exceptions) {
+    for (Map.Entry<Integer, Class> exception : exceptions.entrySet()) {
       try {
         handler.throwIfResponseFailed(createResponse(exception.getKey()), 123);
         fail("Should have thrown an Exception");
