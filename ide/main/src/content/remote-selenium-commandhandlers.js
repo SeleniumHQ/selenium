@@ -364,16 +364,16 @@ AccessorHandler.prototype.execute = function(seleniumApi, command) {
 };
 
 function AccessorResult(result) {
+  var self = this;
   //TODO Samit: should we modify this?
   if (result.terminationCondition) {
-    var self = this;
     this.terminationCondition = function() {
       return result.terminationCondition.call(self);
     };
   } else if (Deferred.isPromise(result)) {
     //We have a deferred, we need to change the terminating condition to include the resolution of the deferred
     result.done(function(arg) {
-      this.result = arg;
+      self.result = arg;
     });
     this.terminationCondition = function() {
       if (result.isRejected()) {
