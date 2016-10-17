@@ -23,7 +23,7 @@ module Selenium
   module WebDriver
     module Remote
       # added for rescue
-      Bridge::QUIT_ERRORS << Curl::Err::RecvError
+      Bridge.protect_against(Curl::Err::RecvError)
 
       module Http
         #
