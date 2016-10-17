@@ -29,6 +29,19 @@ module Selenium
       class Bridge
         include BridgeHelper
 
+        @@quit_errors = []
+
+        #
+        # Adds an error to the list of errors that Bridge protects against when quitting
+        #
+        # @param error [Exception]
+        #   Exception that `Bridge`s will now protect against when quitting
+
+        def self.protect_against(error)
+          @@quit_errors.push(error)
+        end
+
+
         attr_accessor :context, :http, :file_detector
         attr_reader :capabilities
 
@@ -201,12 +214,10 @@ module Selenium
           switch_to_frame(nil)
         end
 
-        QUIT_ERRORS = [IOError].freeze
-
         def quit
           execute :quit
           http.close
-        rescue *QUIT_ERRORS
+        rescue *@@quit_errors
         end
 
         def close
