@@ -19,6 +19,8 @@ env:
     - TASK=atoms_tests TARGET=chrome
     - TASK=java TARGET=java_small_tests
     - TASK=java TARGET=chrome
+    - TASK=java TARGET=firefox
+    - TASK=java TARGET=ff-legacy
     - TASK=java TARGET=grid TOXENV=chrome
     - TASK=api_docs TARGET=java
     - TASK=api_docs TARGET=py_
@@ -46,6 +48,8 @@ matrix:
     - env: TASK=py TOXENV=py27-marionette
     - env: TASK=py TOXENV=py27-remote
     - env: TASK=api_docs TARGET="//rb:"
+    - env: TASK=java TARGET=firefox
+    - env: TASK=java TARGET=ff-legacy
 before_script:
   - sh -e /etc/init.d/xvfb start
 script:
@@ -113,7 +117,14 @@ script:
       fi
   - |
       if [[ $TASK == "java" ]]; then
-        ./go test_$TARGET
+        case $TARGET in
+        ff-legacy)
+          ./go test_firefox
+        firefox)
+          ./go //java/client/test/org/openqa/selenium/firefox:marionette:run
+        *)
+          ./go test_$TARGET
+        esac
       fi
   - |
       if [[ $TASK == "py" ]]; then
