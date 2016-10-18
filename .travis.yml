@@ -124,16 +124,21 @@ script:
         case $TARGET in
         ff-legacy)
           ./go test_firefox
+          ;;
         firefox)
           ./go //java/client/test/org/openqa/selenium/firefox:marionette:run
+          ;;
 
         # -rc are the WebDriverBackedSelenium tests
         firefox-rc-test)
           ./go //java/client/test/com/thoughtworks/selenium:firefox-rc-test:run
+          ;;
         chrome-rc-test)
           ./go //java/client/test/com/thoughtworks/selenium:chrome-rc-test:run
+          ;;
         *)
           ./go test_$TARGET
+          ;;
         esac
       fi
   - |
