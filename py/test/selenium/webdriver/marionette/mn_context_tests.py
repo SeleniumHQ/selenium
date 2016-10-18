@@ -15,13 +15,10 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from selenium.webdriver import Firefox
-
 
 class TestUsingContext(object):
 
-    def test_using_context_sets_correct_context_and_returns(self, capabilities):
-        driver = Firefox(capabilities=capabilities)
+    def test_context_sets_correct_context_and_returns(self, driver):
 
         def get_context():
             return driver.execute('GET_CONTEXT').pop('value')
