@@ -1,5 +1,6 @@
 ## v.next
 
+* (__NOTICE__) The minimum supported version of Node is now 6.9.0 LTS
 * Removed support for the SafariDriver browser extension. This has been
   replaced by Apple's safaridriver, which is included wtih Safari 10
   (available on OS X El Capitan and macOS Sierra).
