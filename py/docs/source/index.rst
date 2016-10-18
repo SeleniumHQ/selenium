@@ -50,7 +50,7 @@ for example, requires `geckodriver <https://github.com/mozilla/geckodriver/relea
 
 Failure to observe this step will give you an error `selenium.common.exceptions.WebDriverException: Message: 'geckodriver' executable needs to be in PATH.`
 
-Other supported browsers will have their own drivers available. Links to the more popular browser drivers follow.
+Other supported browsers will have their own drivers available. Links to some of the more popular browser drivers follow.
 
 +--------------+-----------------------------------------------------------------------+
 | **Chrome**:  | https://sites.google.com/a/chromium.org/chromedriver/downloads        |
