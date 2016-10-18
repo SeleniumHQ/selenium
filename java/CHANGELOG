@@ -1,6 +1,11 @@
-v3.1.0
+v3.0.1
 ======
 
+* include ElementScrollBehavior enum in the release 
+* Add dependency on HTMLUnit to be included in the standalone server 
+* Grid new session requests pass original request through to the node
+  without any modifications
+* Fix NPE in htmlrunner when port is not specified
 * FirefoxDriver (legacy) fix to cleanup temp filesystem on quit (#2914 #2908)
 
 v3.0.0
