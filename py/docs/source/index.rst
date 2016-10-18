@@ -27,7 +27,7 @@ Supported Python Versions
 =========================
 
 * Python 2.6, 2.7
-* Python 3.2+
+* Python 3.3+
 
 Installing
 ==========
