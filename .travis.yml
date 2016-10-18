@@ -19,8 +19,10 @@ env:
     - TASK=atoms_tests TARGET=chrome
     - TASK=java TARGET=java_small_tests
     - TASK=java TARGET=chrome
+    - TASK=java TARGET=chrome-rc-test
     - TASK=java TARGET=firefox
     - TASK=java TARGET=ff-legacy
+    - TASK=java TARGET=firefox-rc-test
     - TASK=java TARGET=grid TOXENV=chrome
     - TASK=api_docs TARGET=java
     - TASK=api_docs TARGET=py_
@@ -50,6 +52,8 @@ matrix:
     - env: TASK=api_docs TARGET="//rb:"
     - env: TASK=java TARGET=firefox
     - env: TASK=java TARGET=ff-legacy
+    - env: TASK=java TARGET=firefox-rc-test
+    - env: TASK=java TARGET=chrome-rc-test
 before_script:
   - sh -e /etc/init.d/xvfb start
 script:
@@ -122,6 +126,12 @@ script:
           ./go test_firefox
         firefox)
           ./go //java/client/test/org/openqa/selenium/firefox:marionette:run
+
+        # -rc are the WebDriverBackedSelenium tests
+        firefox-rc-test)
+          ./go //java/client/test/com/thoughtworks/selenium:firefox-rc-test:run
+        chrome-rc-test)
+          ./go //java/client/test/com/thoughtworks/selenium:chrome-rc-test:run
         *)
           ./go test_$TARGET
         esac
