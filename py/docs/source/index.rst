@@ -42,6 +42,16 @@ Alternately, you can download the source distribution from `PyPI <http://pypi.py
 
 Note: both of the methods described above install `selenium` as a system-wide package  That will require administrative/root access to their machine.  You may consider using a `virtualenv <http://www.virtualenv.org/>`_ to create isolated Python environments instead.
 
+Drivers
+=======
+
+Selenium requires a driver to interface with the chosen browser. Firefox,
+for example, requires `geckodriver <https://github.com/mozilla/geckodriver/releases>`_, which needs to be installed before the below examples can be run. Make sure it's in your `PATH`, e. g., place it in `/usr/bin` or `/usr/local/bin`.
+
+Failure to observe this step will give you an error `selenium.common.exceptions.WebDriverException: Message: 'geckodriver' executable needs to be in PATH.`
+
+Other supported browsers will have their own drivers available.
+
 Example 0:
 ==========
 
