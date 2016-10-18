@@ -16,6 +16,7 @@ env:
   matrix:
     - TASK=build
     - TASK=atoms
+    - TASK=atoms_test
     - TASK=atoms_tests TARGET=chrome
     - TASK=atoms_tests TARGET=ff-legacy
     - TASK=java TARGET=java_small_tests
@@ -25,6 +26,7 @@ env:
     - TASK=java TARGET=ff-legacy
     - TASK=java TARGET=firefox-rc-test
     - TASK=java TARGET=grid TOXENV=chrome
+    - TASK=java TARGET=htmlunit
     - TASK=api_docs TARGET=java
     - TASK=api_docs TARGET=py_
     - TASK=api_docs TARGET="//rb:"
@@ -115,6 +117,10 @@ script:
         ./go //javascript/ie-driver:atoms
         ./go //javascript/chrome-driver:atoms
         ./go //javascript/android-atoms:atoms ios_driver
+      fi
+  - |
+      if [[ $TASK == "atoms_test" ]]; then
+        ./go //java/client/test/org/openqa/selenium/atoms:test:run
       fi
   - |
       if [[ $TASK == "atoms_tests" ]]; then
