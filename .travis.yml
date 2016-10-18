@@ -73,7 +73,7 @@ script:
   - |
       if [[ $TARGET == *"ff-legacy"* ]] || [ $TOXENV == *"firefox"* ]]; then
         pip install --user mozdownload mozinstall
-        mozdownload --version 47.0.1 --destination firefox.tar.bz2
+        mozdownload --version 45.4.0esr --destination firefox.tar.bz2
         mozinstall firefox.tar.bz2
         sudo ln -sf $PWD/firefox/firefox /usr/local/bin/firefox
         firefox --version
