@@ -54,7 +54,6 @@ matrix:
     - env: TASK=py TOXENV=py27-remote
     - env: TASK=api_docs TARGET="//rb:"
     - env: TASK=java TARGET=firefox
-    - env: TASK=java TARGET=ff-legacy
     - env: TASK=java TARGET=firefox-rc-test
     - env: TASK=java TARGET=chrome-rc-test
     - env: TASK=atoms_tests TARGET=ff-legacy
