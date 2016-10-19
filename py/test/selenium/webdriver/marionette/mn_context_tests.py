@@ -15,16 +15,16 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from selenium.webdriver.remote.remote_connection import RemoteConnection
 
+class TestUsingContext(object):
 
-class FirefoxRemoteConnection(RemoteConnection):
-    def __init__(self, remote_server_addr, keep_alive=True):
-        RemoteConnection.__init__(self, remote_server_addr, keep_alive)
+    def test_context_sets_correct_context_and_returns(self, driver):
 
-        self._commands["GET_CONTEXT"] = ('GET', '/session/$sessionId/moz/context')
-        self._commands["SET_CONTEXT"] = ("POST", "/session/$sessionId/moz/context")
-        self._commands["ELEMENT_GET_ANONYMOUS_CHILDREN"] = \
-            ("POST", "/session/$sessionId/moz/xbl/$id/anonymous_children")
-        self._commands["ELEMENT_FIND_ANONYMOUS_ELEMENTS_BY_ATTRIBUTE"] = \
-            ("POST", "/session/$sessionId/moz/xbl/$id/anonymous_by_attribute")
+        def get_context():
+            return driver.execute('GET_CONTEXT').pop('value')
+
+        assert get_context() == driver.CONTEXT_CONTENT
+        with driver.context(driver.CONTEXT_CHROME):
+            assert get_context() == driver.CONTEXT_CHROME
+        assert get_context() == driver.CONTEXT_CONTENT
+
