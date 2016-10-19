@@ -9,6 +9,8 @@
 
 * Fixed potential reference errors in `selenium-webdriver/testing` when users
   create a cycle with mocha by running with mocha's `--hook` flag.
+* Fixed `WebDriver.switchTo().activeElement()` to use the correct HTTP method
+  for compatibility with the W3C spec.
 
 
 ### API Changes
