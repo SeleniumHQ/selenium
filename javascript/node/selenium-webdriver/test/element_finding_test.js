@@ -406,5 +406,19 @@ test.suite(function(env) {
             (e) => assert(e).instanceOf(TypeError));
       });
     });
+
+    describe('switchTo().activeElement()', function() {
+      test.it('returns document.activeElement', function() {
+        driver.get(Pages.formPage);
+
+        let email = driver.findElement(By.css('#email'));
+        driver.executeScript('arguments[0].focus()', email);
+
+        let ae = driver.switchTo().activeElement();
+        let equal = driver.executeScript(
+            'return arguments[0] === arguments[1]', email, ae);
+        assert(equal).isTrue();
+      });
+    });
   });
 });
