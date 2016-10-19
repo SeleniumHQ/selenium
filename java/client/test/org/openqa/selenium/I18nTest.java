@@ -173,7 +173,7 @@ public class I18nTest extends JUnit4TestBase {
         + " It was:" + elementValue, elementValue.equals(tokyo));
   }
 
-  @Ignore(value = {IE, CHROME, FIREFOX})
+  @Ignore(value = {IE, CHROME, FIREFOX, HTMLUNIT})
   @Test
   public void testShouldBeAbleToInputJapanese() {
     assumeTrue("IME is supported on Linux only.",
