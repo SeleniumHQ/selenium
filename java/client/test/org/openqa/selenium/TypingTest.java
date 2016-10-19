@@ -417,7 +417,6 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @NotYetImplemented(HTMLUNIT)
   @Test
   public void testHomeAndEndAndPageUpAndPageDownKeys() {
     assumeFalse("FIXME: macs don't have HOME keys, would PGUP work?",
@@ -512,7 +511,6 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @NotYetImplemented(HTMLUNIT)
   @Test
   @Ignore(MARIONETTE)
   public void testChordControlHomeShiftEndDelete() {
@@ -569,7 +567,6 @@ public class TypingTest extends JUnit4TestBase {
   // and linux, but not on the MAC.
 
   @JavascriptEnabled
-  @NotYetImplemented(HTMLUNIT)
   @Test
   @Ignore(MARIONETTE)
   public void testChordControlCutAndPaste() {

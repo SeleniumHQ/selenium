@@ -276,7 +276,6 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
     wait.until(titleIs("We Arrive Here"));
   }
 
-  @NotYetImplemented(HTMLUNIT)
   @Test
   public void testChordControlCutAndPaste() {
     assumeFalse("FIXME: macs don't have CONRTROL key", getEffectivePlatform().is(Platform.MAC));
