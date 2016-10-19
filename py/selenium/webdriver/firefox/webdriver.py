@@ -31,6 +31,8 @@ import sys
 import types
 
 from .extension_connection import ExtensionConnection
+from contextlib import contextmanager
+
 from .firefox_binary import FirefoxBinary
 from .firefox_profile import FirefoxProfile
 from .options import Options
@@ -130,6 +132,10 @@ class WebDriver(RemoteWebDriver):
 
         # W3C remote
         # TODO(ato): Perform conformance negotiation
+
+        self.CONTEXT_CHROME = 'chrome'
+        self.CONTEXT_CONTENT = 'content'
+
         if capabilities.get("marionette"):
             self.service = Service(executable_path, log_path=log_path)
             self.service.start()
@@ -195,3 +201,25 @@ class WebDriver(RemoteWebDriver):
 
     def set_context(self, context):
         self.execute("SET_CONTEXT", {"context": context})
+
+    @contextmanager
+    def context(self, context):
+        """Sets the context that Selenium commands are running in using
+        a `with` statement. The state of the context on the server is
+        saved before entering the block, and restored upon exiting it.
+
+        :param context: Context, may be one of the class properties
+            `CONTEXT_CHROME` or `CONTEXT_CONTENT`.
+
+        Usage example::
+
+            with selenium.context(selenium.CONTEXT_CHROME):
+                # chrome scope
+                ... do stuff ...
+        """
+        initial_context = self.execute('GET_CONTEXT').pop('value')
+        self.set_context(context)
+        try:
+            yield
+        finally:
+            self.set_context(initial_context)
