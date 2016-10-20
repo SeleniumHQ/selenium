@@ -77,12 +77,7 @@ public class FluentWait<T> implements Wait<T> {
 
   private Duration timeout = FIVE_HUNDRED_MILLIS;
   private Duration interval = FIVE_HUNDRED_MILLIS;
-  private Supplier<String> messageSupplier = new Supplier<String>() {
-    @Override
-    public String get() {
-      return null;
-    }
-  };
+  private Supplier<String> messageSupplier = () -> null;
 
   private List<Class<? extends Throwable>> ignoredExceptions = Lists.newLinkedList();
 
@@ -124,12 +119,7 @@ public class FluentWait<T> implements Wait<T> {
    * @return A self reference.
    */
   public FluentWait<T> withMessage(final String message) {
-    this.messageSupplier = new Supplier<String>() {
-      @Override
-      public String get() {
-        return message;
-      }
-    };
+    this.messageSupplier = () -> message;
     return this;
   }
 
@@ -203,10 +193,12 @@ public class FluentWait<T> implements Wait<T> {
    */
   public void until(final Predicate<T> isTrue) {
     until(new Function<T, Boolean>() {
+      @Override
       public Boolean apply(T input) {
         return isTrue.apply(input);
       }
 
+      @Override
       public String toString() {
         return isTrue.toString();
       }
@@ -230,17 +222,14 @@ public class FluentWait<T> implements Wait<T> {
    *         from null or false before the timeout expired.
    * @throws TimeoutException If the timeout expires.
    */
+  @Override
   public <V> V until(Function<? super T, V> isTrue) {
     long end = clock.laterBy(timeout.in(MILLISECONDS));
-    Throwable lastException = null;
+    Throwable lastException;
     while (true) {
       try {
         V value = isTrue.apply(input);
-        if (value != null && Boolean.class.equals(value.getClass())) {
-          if (Boolean.TRUE.equals(value)) {
-            return value;
-          }
-        } else if (value != null) {
+        if (value != null && (Boolean.class != value.getClass() || Boolean.TRUE.equals(value))) {
           return value;
         }
 
