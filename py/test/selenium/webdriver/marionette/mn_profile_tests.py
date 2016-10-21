@@ -19,16 +19,23 @@ import os
 
 import pytest
 
-from selenium.webdriver import Firefox, FirefoxProfile
+from selenium.webdriver import FirefoxProfile
+from selenium.webdriver.firefox.options import Options
 
 
-@pytest.fixture
-def driver(capabilities, profile):
-    driver = Firefox(
-        capabilities=capabilities,
-        firefox_profile=profile)
-    yield driver
-    driver.quit()
+@pytest.fixture(params=['capabilities', 'firefox_profile', 'firefox_options'])
+def driver_kwargs(request, driver_kwargs, profile):
+    if request.param == 'capabilities':
+        options = {'profile': profile}
+        driver_kwargs[request.param].setdefault('moz:firefoxOptions', options)
+    elif request.param == 'firefox_profile':
+        driver_kwargs[request.param] = profile
+    elif request.param == 'firefox_options':
+        options = Options()
+        options.profile = profile
+        driver_kwargs[request.param] = options
+    driver_kwargs['firefox_profile'] = profile
+    return driver_kwargs
 
 
 @pytest.fixture

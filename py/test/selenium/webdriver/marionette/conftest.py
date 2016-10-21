@@ -27,7 +27,17 @@ def capabilities():
 
 
 @pytest.fixture
-def driver(capabilities):
-    driver = Firefox(capabilities=capabilities)
+def driver_class():
+    return Firefox
+
+
+@pytest.fixture
+def driver_kwargs(capabilities):
+    return {'capabilities': capabilities}
+
+
+@pytest.fixture
+def driver(driver_class, driver_kwargs):
+    driver = driver_class(**driver_kwargs)
     yield driver
     driver.quit()
