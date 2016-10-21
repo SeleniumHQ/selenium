@@ -16,12 +16,6 @@
 # under the License.
 
 
-from selenium.webdriver import Firefox
-
-
-class TestMarionetteSpecific(object):
-
-    def test_we_can_switch_context_to_chrome(self, capabilities):
-        driver = Firefox(capabilities=capabilities)
-        driver.set_context('chrome')
-        assert 1 == driver.execute_script("var c = Components.classes; return 1;")
+def test_we_can_switch_context_to_chrome(driver):
+    driver.set_context('chrome')
+    assert 1 == driver.execute_script("var c = Components.classes; return 1;")
