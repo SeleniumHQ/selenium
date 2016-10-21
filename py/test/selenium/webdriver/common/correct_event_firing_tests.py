@@ -60,19 +60,14 @@ class TestEventFiring(object):
         assert result == "mouse down"
 
     def testShouldEmitOnChangeEventsWhenSelectingElements(self, driver, pages):
-        if driver.capabilities['browserName'] == 'firefox' and driver.w3c == True:
-            pytest.xfail("Marionette Issue: https://bugzilla.mozilla.org/show_bug.cgi?id=1309240")
         pages.load("javascriptPage.html")
-        # Intentionally not looking up the select tag.  See selenium r7937 for details.
-        allOptions = driver.find_elements_by_xpath("//select[@id='selector']//option")
+        select = driver.find_element_by_id('selector')
+        options = select.find_elements_by_tag_name('option')
         initialTextValue = driver.find_element_by_id("result").text
 
-        foo = allOptions[0]
-        bar = allOptions[1]
-
-        foo.click()
+        select.click()
         assert driver.find_element_by_id("result").text == initialTextValue
-        bar.click()
+        options[1].click()
         assert driver.find_element_by_id("result").text == "bar"
 
     def testShouldEmitOnChangeEventsWhenChangingTheStateOfACheckbox(self, driver, pages):
