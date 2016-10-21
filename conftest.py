@@ -79,7 +79,10 @@ def driver(request):
         kwargs.update({'desired_capabilities': capabilities})
     driver = getattr(webdriver, driver_class)(**kwargs)
     yield driver
-    driver.quit()
+    try:
+        driver.quit()
+    except:
+        pass
 
 
 @pytest.fixture(autouse=True, scope='session')
