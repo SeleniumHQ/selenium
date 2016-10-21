@@ -17,20 +17,18 @@
 
 import pytest
 
-from selenium.webdriver import Firefox
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 
 
-class TestMarionetteBinary(object):
+@pytest.fixture(params=['foo', FirefoxBinary(firefox_path='foo')],
+                ids=['string', 'binary'])
+def driver_kwargs(request, driver_kwargs):
+    driver_kwargs['firefox_binary'] = request.param
+    return driver_kwargs
 
-    def test_invalid_binary_str(self, capabilities):
-        with pytest.raises(WebDriverException) as excinfo:
-            Firefox(capabilities=capabilities, firefox_binary='foo')
-        assert 'entity not found' in str(excinfo.value)
 
-    def test_invalid_binary_obj(self, capabilities):
-        with pytest.raises(WebDriverException) as excinfo:
-            binary = FirefoxBinary(firefox_path='foo')
-            Firefox(capabilities=capabilities, firefox_binary=binary)
-        assert 'entity not found' in str(excinfo.value)
+def test_invalid_binary(driver_class, driver_kwargs):
+    with pytest.raises(WebDriverException) as excinfo:
+        driver_class(**driver_kwargs)
+    assert 'entity not found' in str(excinfo.value)
