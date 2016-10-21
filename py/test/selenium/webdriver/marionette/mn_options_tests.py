@@ -25,14 +25,12 @@ except NameError:  # Python 3.x
 from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
 from selenium.webdriver.firefox.options import Log, Options
-from selenium.webdriver import Firefox
 
 
 @pytest.fixture
-def driver(capabilities):
-    driver = Firefox(firefox_options=Options(), capabilities=capabilities)
-    yield driver
-    driver.quit()
+def driver_kwargs(driver_kwargs):
+    driver_kwargs['firefox_options'] = Options()
+    return driver_kwargs
 
 
 class TestIntegration(object):
