@@ -187,9 +187,10 @@ class WebDriver(RemoteWebDriver):
         else:
             self.binary.kill()
         try:
-            shutil.rmtree(self.profile.path)
-            if self.profile.tempfolder is not None:
-                shutil.rmtree(self.profile.tempfolder)
+            if self.profile is not None:
+                shutil.rmtree(self.profile.path)
+                if self.profile.tempfolder is not None:
+                    shutil.rmtree(self.profile.tempfolder)
         except Exception as e:
             print(str(e))
 
