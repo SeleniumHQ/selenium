@@ -18,6 +18,8 @@
 import pytest
 
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.wait import WebDriverWait
 
 
 @pytest.fixture(autouse=True)
@@ -25,23 +27,12 @@ def loadPage(pages):
     pages.load("clicks.html")
 
 
-@pytest.fixture(autouse=True)
-def clearCookies(request, driver):
-    def fin():
-        driver.delete_all_cookies()
-    request.addfinalizer(fin)
-
-
 class TestClick(object):
 
-    def testAddingACookieThatExpiredInThePast(self, driver):
-        if driver.capabilities['browserName'] == 'firefox' and driver.w3c:
-            pytest.xfail("Test is failing because of some state being leftover.")
+    def testCanClickOnALinkThatOverflowsAndFollowIt(self, driver):
         driver.find_element(By.ID, "overflowLink").click()
-        assert driver.title == "XHTML Test Page"
+        WebDriverWait(driver, 3).until(EC.title_is("XHTML Test Page"))
 
     def testClickingALinkMadeUpOfNumbersIsHandledCorrectly(self, driver):
-        if driver.capabilities['browserName'] == 'firefox' and driver.w3c:
-            pytest.xfail("Marionette Issue: https://bugzilla.mozilla.org/show_bug.cgi?id=1309244")
         driver.find_element(By.LINK_TEXT, "333333").click()
-        assert driver.title == "XHTML Test Page"
+        WebDriverWait(driver, 3).until(EC.title_is("XHTML Test Page"))
