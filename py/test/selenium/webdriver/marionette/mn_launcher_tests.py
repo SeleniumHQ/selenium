@@ -16,7 +16,5 @@
 # under the License.
 
 
-class TestMarionetteLauncher(object):
-
-    def test_launch_and_close_browser(self, driver):
-        assert 'appBuildId' in driver.capabilities
+def test_launch_and_close_browser(driver):
+    assert 'appBuildId' in driver.capabilities
