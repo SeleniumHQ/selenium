@@ -297,8 +297,9 @@ class DriverService {
  * @return {!Promise<!Array<string>>}
  */
 function resolveCommandLineFlags(args) {
-  return Promise.resolve(args)           // Resolve the outer array.
-      .then(args => Promise.all(args));  // Then resolve the individual flags.
+  // Resolve the outer array, then the individual flags.
+  return Promise.resolve(args)
+      .then(/** !Array<CommandLineFlag> */args => Promise.all(args));
 }
 
 
