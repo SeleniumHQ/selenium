@@ -277,6 +277,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(HTMLUNIT)
   public void testChordControlCutAndPaste() {
     assumeFalse("FIXME: macs don't have CONRTROL key", getEffectivePlatform().is(Platform.MAC));
     assumeFalse("Windows: native events library  does not support storing modifiers state yet",
