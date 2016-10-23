@@ -59,7 +59,7 @@ public interface JavascriptExecutor {
    *
    * @param script The JavaScript to execute
    * @param args The arguments to the script. May be empty
-   * @return One of Boolean, Long, String, List or WebElement. Or null.
+   * @return One of Boolean, Long, Double, String, List or WebElement. Or null.
    */
   Object executeScript(String script, Object... args);
 
