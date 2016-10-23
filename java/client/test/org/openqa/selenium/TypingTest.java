@@ -533,7 +533,6 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @NotYetImplemented(HTMLUNIT)
   @Test
   @Ignore(MARIONETTE)
   public void testChordReveseShiftHomeSelectionDeletes() {
