@@ -172,7 +172,6 @@ class TestAdvancedUserInteraction(object):
         resultElement = driver.find_element_by_id("result")
         assert "roquefort parmigiano cheddar" == resultElement.text
 
-    @pytest.mark.ignore_chrome
     def testSelectingMultipleItems(self, driver, pages):
         """Copied from org.openqa.selenium.interactions.CombinedInputActionsTest."""
         if driver.capabilities['browserName'] == 'firefox':
