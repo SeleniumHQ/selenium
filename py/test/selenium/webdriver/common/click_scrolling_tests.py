@@ -122,15 +122,12 @@ class TestClickScrolling(object):
         element.click()
         assert element.is_selected()
 
-    @pytest.mark.ignore_chrome
-    @pytest.mark.ignore_marionette
-    @pytest.mark.ignore_firefox
-    @pytest.mark.ignore_phantomjs
     def testShouldNotBeAbleToClickElementThatIsOutOfViewInANonScrollableFrame(self, driver, pages):
         pages.load("scrolling_tests/page_with_non_scrolling_frame.html")
         driver.switch_to.frame("scrolling_frame")
         element = driver.find_element(By.NAME, "scroll_checkbox")
         element.click()
+        # TODO we should assert that the click was unsuccessful
 
     def testShouldBeAbleToClickElementThatIsOutOfViewInAFrameThatIsOutOfView(self, driver, pages):
         pages.load("scrolling_tests/page_with_scrolling_frame_out_of_view.html")
