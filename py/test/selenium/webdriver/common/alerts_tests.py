@@ -29,8 +29,6 @@ from selenium.common.exceptions import UnexpectedAlertPresentException
 class TestAlerts(object):
 
     def testShouldBeAbleToOverrideTheWindowAlertMethod(self, driver, pages):
-        if driver.capabilities['browserName'] == 'phantomjs':
-            pytest.xfail("phantomjs driver does not support alerts")
         pages.load("alerts.html")
         driver.execute_script(
             "window.alert = function(msg) { document.getElementById('text').innerHTML = msg; }")
