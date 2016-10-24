@@ -54,10 +54,8 @@ class TestAdvancedUserInteraction(object):
         dragInto = driver.find_element_by_id("sortable1")
         assert 6 == len(dragInto.find_elements_by_tag_name("li"))
 
-    def _testDraggingElementWithMouseFiresEvents(self, driver, pages):
-        """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface.
-        Disabled since this test doesn't work with HTMLUNIT.
-        """
+    def testDraggingElementWithMouseFiresEvents(self, driver, pages):
+        """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
         if driver.capabilities['browserName'] == 'firefox':
             pytest.skip("Actions not available in Marionette. https://bugzilla.mozilla.org/show_bug.cgi?id=1292178")
         self.performDragAndDropWithMouse(driver, pages)
