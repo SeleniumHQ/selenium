@@ -152,10 +152,8 @@ class TestAdvancedUserInteraction(object):
                 .move_to_element(None)
             move.perform()
 
-    def _testClickingOnFormElements(self, driver, pages):
-        """Copied from org.openqa.selenium.interactions.CombinedInputActionsTest.
-        Disabled since this test doesn't work with HTMLUNIT.
-        """
+    def testClickingOnFormElements(self, driver, pages):
+        """Copied from org.openqa.selenium.interactions.CombinedInputActionsTest."""
         if driver.capabilities['browserName'] == 'firefox':
             pytest.skip("Actions not available in Marionette. https://bugzilla.mozilla.org/show_bug.cgi?id=1292178")
         pages.load("formSelectionPage.html")
