@@ -27,8 +27,6 @@ class TestAdvancedUserInteraction(object):
 
     def performDragAndDropWithMouse(self, driver, pages):
         """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
-        if driver.capabilities['browserName'] == 'firefox':
-            pytest.skip("Actions not available in Marionette. https://bugzilla.mozilla.org/show_bug.cgi?id=1292178")
         pages.load("draggableLists.html")
         dragReporter = driver.find_element_by_id("dragging_reports")
         toDrag = driver.find_element_by_id("rightitem-3")
