@@ -43,15 +43,9 @@ class TestPageLoading(object):
         driver.get(location + "#text")
         driver.find_element(by=By.ID, value="id1")
 
-    @pytest.mark.ignore_firefox
-    @pytest.mark.ignore_phantomjs
-    @pytest.mark.ignore_safari
     def testShouldReturnWhenGettingAUrlThatDoesNotResolve(self, driver):
-        if driver.capabilities['browserName'] == 'chrome':
-            pytest.xfail("Chrome Issue: https://bugs.chromium.org/p/chromedriver/issues/detail?id=1538")
-        with pytest.raises(ValueError):
-            #  Of course, we're up the creek if this ever does get registered
-            driver.get("http://www.thisurldoesnotexist.comx/")
+        #  Of course, we're up the creek if this ever does get registered
+        driver.get("http://www.thisurldoesnotexist.comx/")
 
     @pytest.mark.ignore_safari
     def testShouldReturnWhenGettingAUrlThatDoesNotConnect(self, driver):
