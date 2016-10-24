@@ -34,6 +34,7 @@ import static org.openqa.selenium.testing.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
 
 import org.junit.Test;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
@@ -336,7 +337,7 @@ public class ElementAttributeTest extends JUnit4TestBase {
     WebElement element = driver.findElement(By.id("working"));
     assertEquals("", element.getAttribute("value"));
     element.sendKeys("hello world");
-    assertEquals("hello world", element.getAttribute("value"));
+    shortWait.until(ExpectedConditions.attributeToBe(element, "value", "hello world"));
   }
 
   @Test
@@ -346,7 +347,7 @@ public class ElementAttributeTest extends JUnit4TestBase {
     WebElement element = driver.findElement(By.id("email"));
     assertEquals("", element.getAttribute("value"));
     element.sendKeys("hello@example.com");
-    assertEquals("hello@example.com", element.getAttribute("value"));
+    shortWait.until(ExpectedConditions.attributeToBe(element, "value", "hello@example.com"));
   }
 
   @Test
@@ -356,7 +357,7 @@ public class ElementAttributeTest extends JUnit4TestBase {
     WebElement element = driver.findElement(By.id("emptyTextArea"));
     assertEquals("", element.getAttribute("value"));
     element.sendKeys("hello world");
-    assertEquals("hello world", element.getAttribute("value"));
+    shortWait.until(ExpectedConditions.attributeToBe(element, "value", "hello world"));
   }
 
   @Ignore({MARIONETTE})
