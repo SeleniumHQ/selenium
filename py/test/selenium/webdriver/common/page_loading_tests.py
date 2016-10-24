@@ -47,7 +47,6 @@ class TestPageLoading(object):
         #  Of course, we're up the creek if this ever does get registered
         driver.get("http://www.thisurldoesnotexist.comx/")
 
-    @pytest.mark.ignore_safari
     def testShouldReturnWhenGettingAUrlThatDoesNotConnect(self, driver):
         #  Here's hoping that there's nothing here. There shouldn't be
         driver.get("http://localhost:3001")
