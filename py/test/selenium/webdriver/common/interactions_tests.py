@@ -16,8 +16,6 @@
 # under the License.
 
 """Tests for advanced user interactions."""
-import sys
-
 import pytest
 
 from selenium.webdriver.common.keys import Keys
@@ -26,10 +24,6 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 
 class TestAdvancedUserInteraction(object):
-
-    def _before(self, driver):
-        if driver.capabilities['browserName'] == 'firefox' and sys.platform == 'darwin':
-            pytest.skip("native events not supported on Mac for Firefox")
 
     def performDragAndDropWithMouse(self, driver, pages):
         """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
@@ -212,54 +206,6 @@ class TestAdvancedUserInteraction(object):
         actionsBuilder = ActionChains(driver)
         actionsBuilder.click(listItems[6]).perform()
         assert "#item7" == reportingElement.text
-
-    @pytest.mark.ignore_chrome
-    def testMovingMouseBackAndForthPastViewPort(self, driver, pages):
-        if driver.capabilities['browserName'] == 'phantomjs':
-            pytest.xfail("phantomjs driver does not seem to trigger the events")
-        if driver.capabilities['browserName'] == 'firefox':
-            pytest.skip("Actions not available in Marionette. https://bugzilla.mozilla.org/show_bug.cgi?id=1292178")
-        self._before(driver)
-        pages.load("veryLargeCanvas.html")
-
-        firstTarget = driver.find_element_by_id("r1")
-        ActionChains(driver) \
-            .move_to_element(firstTarget) \
-            .click() \
-            .perform()
-        resultArea = driver.find_element_by_id("result")
-        expectedEvents = "First"
-        wait = WebDriverWait(resultArea, 15)
-
-        def expectedEventsFired(element):
-            return element.text == expectedEvents
-
-        wait.until(expectedEventsFired)
-
-        # Move to element with id 'r2', at (2500, 50) to (2580, 100).
-        ActionChains(driver) \
-            .move_by_offset(2540 - 150, 75 - 125) \
-            .click() \
-            .perform()
-
-        expectedEvents += " Second"
-        wait.until(expectedEventsFired)
-
-        # Move to element with id 'r3' at (60, 1500) to (140, 1550).
-        ActionChains(driver) \
-            .move_by_offset(100 - 2540, 1525 - 75) \
-            .click() \
-            .perform()
-        expectedEvents += " Third"
-        wait.until(expectedEventsFired)
-
-        # Move to element with id 'r4' at (220,180) to (320, 230).
-        ActionChains(driver) \
-            .move_by_offset(270 - 100, 205 - 1525) \
-            .click() \
-            .perform()
-        expectedEvents += " Fourth"
-        wait.until(expectedEventsFired)
 
     def testSendingKeysToActiveElementWithModifier(self, driver, pages):
         if driver.capabilities['browserName'] == 'firefox':
