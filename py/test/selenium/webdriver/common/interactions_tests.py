@@ -141,7 +141,6 @@ class TestAdvancedUserInteraction(object):
         click.perform()
         assert "Clicked" == toClick.get_attribute('value')
 
-    @pytest.mark.ignore_chrome
     def testCannotMoveToANullLocator(self, driver, pages):
         """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
         if driver.capabilities['browserName'] == 'firefox':
