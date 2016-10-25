@@ -149,8 +149,6 @@ class TestApiExample(object):
         assert not elem.is_enabled()
 
     def testIsSelectedAndToggle(self, driver, pages):
-        if driver.capabilities['browserName'] == 'chrome' and int(driver.capabilities['version'].split('.')[0]) < 16:
-            pytest.skip("deselecting preselected values only works on chrome >= 16")
         pages.load("formPage.html")
         elem = driver.find_element_by_id("multi")
         option_elems = elem.find_elements_by_xpath("option")
