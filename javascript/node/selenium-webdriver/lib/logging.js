@@ -521,8 +521,14 @@ function getLogger(name) {
 }
 
 
+/**
+ * Pads a number to ensure it has a minimum of two digits.
+ * 
+ * @param {number} n the number to be padded.
+ * @return {string} the padded number.
+ */
 function pad(n) {
-  if (n > 10) {
+  if (n >= 10) {
     return '' + n;
   } else {
     return '0' + n;
