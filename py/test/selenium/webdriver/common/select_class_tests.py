@@ -98,8 +98,6 @@ class TestWebDriverSelectSupport(object):
             sel.select_by_visible_text('Bar')
 
     def testSelectByIndexMultiple(self, driver, pages):
-        if driver.capabilities['browserName'] == 'chrome' and int(driver.capabilities['version'].split('.')[0]) < 16:
-            pytest.skip("deselecting preselected values only works on chrome >= 16")
         pages.load("formPage.html")
 
         for select in [multiSelectValues1, multiSelectValues2]:
@@ -113,8 +111,6 @@ class TestWebDriverSelectSupport(object):
                     assert selected[j].text == select['values'][j]
 
     def testSelectByValueMultiple(self, driver, pages):
-        if driver.capabilities['browserName'] == 'chrome' and int(driver.capabilities['version'].split('.')[0]) < 16:
-            pytest.skip("deselecting preselected values only works on chrome >= 16")
         pages.load("formPage.html")
 
         for select in [multiSelectValues1, multiSelectValues2]:
@@ -128,8 +124,6 @@ class TestWebDriverSelectSupport(object):
                     assert selected[j].text == select['values'][j]
 
     def testSelectByVisibleTextMultiple(self, driver, pages):
-        if driver.capabilities['browserName'] == 'chrome' and int(driver.capabilities['version'].split('.')[0]) < 16:
-            pytest.skip("deselecting preselected values only works on chrome >= 16")
         pages.load("formPage.html")
 
         for select in [multiSelectValues1, multiSelectValues2]:
@@ -149,8 +143,6 @@ class TestWebDriverSelectSupport(object):
                 Select(driver.find_element(By.NAME, select['name'])).deselect_all()
 
     def testDeselectAllMultiple(self, driver, pages):
-        if driver.capabilities['browserName'] == 'chrome' and int(driver.capabilities['version'].split('.')[0]) < 16:
-            pytest.skip("deselecting preselected values only works on chrome >= 16")
         pages.load("formPage.html")
         for select in [multiSelectValues1, multiSelectValues2]:
             sel = Select(driver.find_element(By.NAME, select['name']))
@@ -176,8 +168,6 @@ class TestWebDriverSelectSupport(object):
                 Select(driver.find_element(By.NAME, select['name'])).deselect_by_visible_text(select['values'][0])
 
     def testDeselectByIndexMultiple(self, driver, pages):
-        if driver.capabilities['browserName'] == 'chrome' and int(driver.capabilities['version'].split('.')[0]) < 16:
-            pytest.skip("deselecting preselected values only works on chrome >= 16")
         pages.load("formPage.html")
         for select in [multiSelectValues1, multiSelectValues2]:
             sel = Select(driver.find_element(By.NAME, select['name']))
@@ -194,8 +184,6 @@ class TestWebDriverSelectSupport(object):
             assert selected[1].text == select['values'][2]
 
     def testDeselectByValueMultiple(self, driver, pages):
-        if driver.capabilities['browserName'] == 'chrome' and int(driver.capabilities['version'].split('.')[0]) < 16:
-            pytest.skip("deselecting preselected values only works on chrome >= 16")
         pages.load("formPage.html")
         for select in [multiSelectValues1, multiSelectValues2]:
             sel = Select(driver.find_element(By.NAME, select['name']))
@@ -212,8 +200,6 @@ class TestWebDriverSelectSupport(object):
             assert selected[1].text == select['values'][2]
 
     def testDeselectByVisibleTextMultiple(self, driver, pages):
-        if driver.capabilities['browserName'] == 'chrome' and int(driver.capabilities['version'].split('.')[0]) < 16:
-            pytest.skip("deselecting preselected values only works on chrome >= 16")
         pages.load("formPage.html")
         for select in [multiSelectValues1, multiSelectValues2]:
             sel = Select(driver.find_element(By.NAME, select['name']))
