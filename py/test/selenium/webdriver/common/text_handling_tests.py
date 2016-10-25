@@ -79,8 +79,6 @@ class TestTextHandling(object):
 
     # @Ignore({IPHONE, SELENESE})
     def testShouldTreatANonBreakingSpaceAsAnyOtherWhitespaceCharacterWhenCollapsingWhitespace(self, driver, pages):
-        if driver.capabilities['browserName'] == 'chrome' and int(driver.capabilities['version'].split('.')[0]) < 16:
-            pytest.skip("only works on chrome >= 16")
         pages.load("simpleTest.html")
         element = driver.find_element(by=By.ID, value="nbspandspaces")
         text = element.text
