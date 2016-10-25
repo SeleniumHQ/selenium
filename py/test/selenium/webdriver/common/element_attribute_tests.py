@@ -226,7 +226,6 @@ class TestElementAttribute(object):
         element.send_keys("hello world")
         assert "hello world" == element.get_attribute("value")
 
-    @pytest.mark.ignore_chrome
     def testShouldReturnNullForNonPresentBooleanAttributes(self, driver, pages):
         pages.load("booleanAttributes.html")
         element1 = driver.find_element_by_id("working")
