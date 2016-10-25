@@ -1184,9 +1184,7 @@ describe('promise control flow', function() {
                 .test(e.message),
             'unexpected error message: ' + e.message);
       });
-      return waitForIdle().then(function() {
-        assert.ok('Promise should not be cancelled', d.promise.isPending());
-      });
+      return waitForIdle();
     });
 
     it('unboundedWaitOnPromiseResolution', function() {
@@ -1202,7 +1200,6 @@ describe('promise control flow', function() {
 
       timeout(10).then(function() {
         assert.deepEqual(['a'], messages);
-        assert.ok(waitResult.isPending());
         d.fulfill(1234);
         return waitResult;
       }).then(function() {
@@ -1440,7 +1437,6 @@ describe('promise control flow', function() {
         let errors = Array.from(e.errors);
         assert.deepEqual([once, twice], errors);
         assertFlowHistory('one');
-        assert.ok(!twoResult.isPending(), 'Did not cancel the second task');
       });
     });
   });
@@ -1752,13 +1748,11 @@ describe('promise control flow', function() {
     return waitForIdle().
         then(pair.assertErrback).
         then(function() {
-          assert.ok(!task1.isPending());
           pair = callbackPair();
           return task1.then(pair.callback, pair.errback);
         }).
         then(function() {
           pair.assertErrback();
-          assert.ok(!task2.isPending());
           pair = callbackPair();
           return task2.then(pair.callback, pair.errback);
         }).
@@ -1777,7 +1771,6 @@ describe('promise control flow', function() {
     }).then(pair.callback, pair.errback);
 
     return waitForIdle().then(pair.assertErrback).then(function() {
-      assert.ok(!task.isPending());
       pair = callbackPair();
       task.then(pair.callback, pair.errback);
     }).then(function() {
@@ -2035,7 +2028,6 @@ describe('promise control flow', function() {
 
     return timeout(10).then(function() {
       assert.deepEqual([1], order);
-      assert.ok(unresolved.promise.isPending());
 
       outerTask.cancel('no soup for you');
       return waitForIdle();
@@ -2077,7 +2069,6 @@ describe('promise control flow', function() {
 
       }).then(function() {
         assert.equal(0, called);
-        assert.ok(!task.isPending());
         return task;
 
       }).then(fail, function(e) {
@@ -2103,9 +2094,6 @@ describe('promise control flow', function() {
 
       }).then(function() {
         assert.equal(0, called);
-        assert.ok(!task1.isPending());
-        assert.ok(!task2.isPending());
-        assert.ok(!task3.isPending());
       });
     });
   });

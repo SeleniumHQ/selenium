@@ -247,15 +247,11 @@ class DriverService {
             pathname: self.path_
           });
 
-          return new Promise(function(fulfill, reject) {
-            var ready = httpUtil.waitForServer(serverUrl, timeout)
-                .then(fulfill, reject);
-            earlyTermination.catch(function(e) {
-              ready.cancel(/** @type {Error} */(e));
-              reject(Error(e.message));
-            });
-          }).then(function() {
-            return serverUrl;
+          return new Promise((fulfill, reject) => {
+            let cancelToken =
+                earlyTermination.catch(e => reject(Error(e.message)));
+            return httpUtil.waitForServer(serverUrl, timeout, cancelToken)
+                .then(_ => fulfill(serverUrl));
           });
         });
       }));

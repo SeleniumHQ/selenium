@@ -799,6 +799,37 @@ class MultipleUnhandledRejectionError extends Error {
  * @const
  */
 const IMPLEMENTED_BY_SYMBOL = Symbol('promise.Thenable');
+const CANCELLABLE_SYMBOL = Symbol('promise.CancellableThenable');
+
+
+/**
+ * @param {function(new: ?)} ctor
+ * @param {!Object} symbol
+ */
+function addMarkerSymbol(ctor, symbol) {
+  try {
+    ctor.prototype[symbol] = true;
+  } catch (ignored) {
+    // Property access denied?
+  }
+}
+
+
+/**
+ * @param {*} object
+ * @param {!Object} symbol
+ * @return {boolean}
+ */
+function hasMarkerSymbol(object, symbol) {
+  if (!object) {
+    return false;
+  }
+  try {
+    return !!object[symbol];
+  } catch (e) {
+    return false;  // Property access seems to be forbidden.
+  }
+}
 
 
 /**
@@ -812,19 +843,12 @@ const IMPLEMENTED_BY_SYMBOL = Symbol('promise.Thenable');
 class Thenable {
   /**
    * Adds a property to a class prototype to allow runtime checks of whether
-   * instances of that class implement the Thenable interface. This function
-   * will also ensure the prototype's {@code then} function is exported from
-   * compiled code.
+   * instances of that class implement the Thenable interface.
    * @param {function(new: Thenable, ...?)} ctor The
    *     constructor whose prototype to modify.
    */
   static addImplementation(ctor) {
-    ctor.prototype['then'] = ctor.prototype.then;
-    try {
-      ctor.prototype[IMPLEMENTED_BY_SYMBOL] = true;
-    } catch (ignored) {
-      // Property access denied?
-    }
+    addMarkerSymbol(ctor, IMPLEMENTED_BY_SYMBOL);
   }
 
   /**
@@ -835,28 +859,8 @@ class Thenable {
    *     interface.
    */
   static isImplementation(object) {
-    if (!object) {
-      return false;
-    }
-    try {
-      return !!object[IMPLEMENTED_BY_SYMBOL];
-    } catch (e) {
-      return false;  // Property access seems to be forbidden.
-    }
+    return hasMarkerSymbol(object, IMPLEMENTED_BY_SYMBOL);
   }
-
-  /**
-   * Cancels the computation of this promise's value, rejecting the promise in
-   * the process. This method is a no-op if the promise has already been
-   * resolved.
-   *
-   * @param {(string|Error)=} opt_reason The reason this promise is being
-   *     cancelled. This value will be wrapped in a {@link CancellationError}.
-   */
-  cancel(opt_reason) {}
-
-  /** @return {boolean} Whether this promise's value is still being computed. */
-  isPending() {}
 
   /**
    * Registers listeners for when this instance is resolved.
@@ -897,44 +901,48 @@ class Thenable {
    * @template R
    */
   catch(errback) {}
+}
+
+
+/**
+ * Marker interface for objects that allow consumers to request the cancellation
+ * of a promies-based operation. A cancelled promise will be rejected with a
+ * {@link CancellationError}.
+ *
+ * This interface is considered package-private and should not be used outside
+ * of selenium-webdriver.
+ *
+ * @interface
+ * @extends {Thenable<T>}
+ * @template T
+ * @package
+ */
+class CancellableThenable {
+  /**
+   * @param {function(new: CancellableThenable, ...?)} ctor
+   */
+  static addImplementation(ctor) {
+    Thenable.addImplementation(ctor);
+    addMarkerSymbol(ctor, CANCELLABLE_SYMBOL);
+  }
 
   /**
-   * Registers a listener to invoke when this promise is resolved, regardless
-   * of whether the promise's value was successfully computed. This function
-   * is synonymous with the {@code finally} clause in a synchronous API:
-   *
-   *     // Synchronous API:
-   *     try {
-   *       doSynchronousWork();
-   *     } finally {
-   *       cleanUp();
-   *     }
-   *
-   *     // Asynchronous promise API:
-   *     doAsynchronousWork().finally(cleanUp);
-   *
-   * __Note:__ similar to the {@code finally} clause, if the registered
-   * callback returns a rejected promise or throws an error, it will silently
-   * replace the rejection error (if any) from this promise:
-   *
-   *     try {
-   *       throw Error('one');
-   *     } finally {
-   *       throw Error('two');  // Hides Error: one
-   *     }
-   *
-   *     promise.rejected(Error('one'))
-   *         .finally(function() {
-   *           throw Error('two');  // Hides Error: one
-   *         });
-   *
-   * @param {function(): (R|IThenable<R>)} callback The function to call when
-   *     this promise is resolved.
-   * @return {!ManagedPromise<R>} A promise that will be fulfilled
-   *     with the callback result.
-   * @template R
+   * @param {*} object
+   * @return {boolean}
    */
-  finally(callback) {}
+  static isImplementation(object) {
+    return hasMarkerSymbol(object, CANCELLABLE_SYMBOL);
+  }
+
+  /**
+   * Requests the cancellation of the computation of this promise's value,
+   * rejecting the promise in the process. This method is a no-op if the promise
+   * has already been resolved.
+   *
+   * @param {(string|Error)=} opt_reason The reason this promise is being
+   *     cancelled. This value will be wrapped in a {@link CancellationError}.
+   */
+  cancel(opt_reason) {}
 }
 
 
@@ -967,7 +975,7 @@ const ON_CANCEL_HANDLER = new WeakMap;
  * fulfilled or rejected state, at which point the promise is considered
  * resolved.
  *
- * @implements {Thenable<T>}
+ * @implements {CancellableThenable<T>}
  * @template T
  * @see http://promises-aplus.github.io/promises-spec/
  */
@@ -1176,7 +1184,7 @@ class ManagedPromise {
     }
 
     if (this.parent_ && canCancel(this.parent_)) {
-      this.parent_.cancel(opt_reason);
+      /** @type {!CancellableThenable} */(this.parent_).cancel(opt_reason);
     } else {
       var reason = CancellationError.wrap(opt_reason);
       let onCancel = ON_CANCEL_HANDLER.get(this);
@@ -1194,16 +1202,11 @@ class ManagedPromise {
 
     function canCancel(promise) {
       if (!(promise instanceof ManagedPromise)) {
-        return Thenable.isImplementation(promise);
+        return CancellableThenable.isImplementation(promise);
       }
       return promise.state_ === PromiseState.PENDING
           || promise.state_ === PromiseState.BLOCKED;
     }
-  }
-
-  /** @override */
-  isPending() {
-    return this.state_ === PromiseState.PENDING;
   }
 
   /** @override */
@@ -1218,21 +1221,15 @@ class ManagedPromise {
         null, errback, 'catch', ManagedPromise.prototype.catch);
   }
 
-  /** @override */
+  /**
+   * @param {function(): (R|IThenable<R>)} callback
+   * @return {!ManagedPromise<R>}
+   * @template R
+   * @see ./promise.finally()
+   */
   finally(callback) {
-    var error;
-    var mustThrow = false;
-    return this.then(function() {
-      return callback();
-    }, function(err) {
-      error = err;
-      mustThrow = true;
-      return callback();
-    }).then(function() {
-      if (mustThrow) {
-        throw error;
-      }
-    });
+    let result = thenFinally(this, callback);
+    return /** @type {!ManagedPromise} */(result);
   }
 
   /**
@@ -1308,7 +1305,16 @@ class ManagedPromise {
     }
   }
 }
-Thenable.addImplementation(ManagedPromise);
+CancellableThenable.addImplementation(ManagedPromise);
+
+
+/**
+ * @param {!ManagedPromise} promise
+ * @return {boolean}
+ */
+function isPending(promise) {
+  return promise.state_ === PromiseState.PENDING;
+}
 
 
 /**
@@ -1487,6 +1493,59 @@ function checkedNodeCall(fn, var_args) {
       fn.apply(undefined, args);
     } catch (ex) {
       reject(ex);
+    }
+  });
+}
+
+/**
+ * Registers a listener to invoke when a promise is resolved, regardless
+ * of whether the promise's value was successfully computed. This function
+ * is synonymous with the {@code finally} clause in a synchronous API:
+ *
+ *     // Synchronous API:
+ *     try {
+ *       doSynchronousWork();
+ *     } finally {
+ *       cleanUp();
+ *     }
+ *
+ *     // Asynchronous promise API:
+ *     doAsynchronousWork().finally(cleanUp);
+ *
+ * __Note:__ similar to the {@code finally} clause, if the registered
+ * callback returns a rejected promise or throws an error, it will silently
+ * replace the rejection error (if any) from this promise:
+ *
+ *     try {
+ *       throw Error('one');
+ *     } finally {
+ *       throw Error('two');  // Hides Error: one
+ *     }
+ *
+ *     let p = Promise.reject(Error('one'));
+ *     promise.finally(p, function() {
+ *       throw Error('two');  // Hides Error: one
+ *     });
+ *
+ * @param {!IThenable<?>} promise The promise to add the listener to.
+ * @param {function(): (R|IThenable<R>)} callback The function to call when
+ *     the promise is resolved.
+ * @return {!IThenable<R>} A promise that will be resolved with the callback
+ *     result.
+ * @template R
+ */
+function thenFinally(promise, callback) {
+  let error;
+  let mustThrow = false;
+  return promise.then(function() {
+    return callback();
+  }, function(err) {
+    error = err;
+    mustThrow = true;
+    return callback();
+  }).then(function() {
+    if (mustThrow) {
+      throw error;
     }
   });
 }
@@ -2510,6 +2569,9 @@ class TaskQueue extends events.EventEmitter {
     /** @private {({task: !Task, q: !TaskQueue}|null)} */
     this.pending_ = null;
 
+    /** @private {TaskQueue} */
+    this.subQ_ = null;
+
     /** @private {TaskQueueState} */
     this.state_ = TaskQueueState.NEW;
 
@@ -2690,7 +2752,7 @@ class TaskQueue extends events.EventEmitter {
     var task;
     do {
       task = this.getNextTask_();
-    } while (task && !task.promise.isPending());
+    } while (task && !isPending(task.promise));
 
     if (!task) {
       this.state_ = TaskQueueState.FINISHED;
@@ -2701,20 +2763,30 @@ class TaskQueue extends events.EventEmitter {
       return;
     }
 
-    var self = this;
-    var subQ = new TaskQueue(this.flow_);
-    subQ.once('end', () => self.onTaskComplete_(result))
-        .once('error', (e) => self.onTaskFailure_(result, e));
-    vlog(2, () => self + ' created ' + subQ + ' for ' + task);
+    let result = undefined;
+    this.subQ_ = new TaskQueue(this.flow_);
 
-    var result = undefined;
+    this.subQ_.once('end', () => {  // On task completion.
+      this.subQ_ = null;
+      this.pending_ && this.pending_.task.fulfill(result);
+    });
+
+    this.subQ_.once('error', e => {  // On task failure.
+      this.subQ_ = null;
+      if (Thenable.isImplementation(result)) {
+        result.cancel(CancellationError.wrap(e));
+      }
+      this.pending_ && this.pending_.task.reject(e);
+    });
+    vlog(2, () => `${this} created ${this.subQ_} for ${task}`);
+
     try {
-      this.pending_ = {task: task, q: subQ};
+      this.pending_ = {task: task, q: this.subQ_};
       task.promise.queue_ = this;
-      result = subQ.execute_(task.execute);
-      subQ.start();
+      result = this.subQ_.execute_(task.execute);
+      this.subQ_.start();
     } catch (ex) {
-      subQ.abort_(ex);
+      this.subQ_.abort_(ex);
     }
   }
 
@@ -2802,28 +2874,6 @@ class TaskQueue extends events.EventEmitter {
     } else {
       this.dropTask_(task);
     }
-  }
-
-  /**
-   * @param {*} value the value originally returned by the task function.
-   * @private
-   */
-  onTaskComplete_(value) {
-    if (this.pending_) {
-      this.pending_.task.fulfill(value);
-    }
-  }
-
-  /**
-   * @param {*} taskFnResult the value originally returned by the task function.
-   * @param {*} error the error that caused the task function to terminate.
-   * @private
-   */
-  onTaskFailure_(taskFnResult, error) {
-    if (Thenable.isImplementation(taskFnResult)) {
-      taskFnResult.cancel(CancellationError.wrap(error));
-    }
-    this.pending_.task.reject(error);
   }
 
   /**
@@ -2983,7 +3033,7 @@ function consume(generatorFn, opt_self, var_args) {
   }
 
   function pump(fn, opt_arg) {
-    if (!deferred.promise.isPending()) {
+    if (!isPending(deferred.promise)) {
       return;  // Defererd was cancelled; silently abort.
     }
 
@@ -3008,6 +3058,7 @@ function consume(generatorFn, opt_self, var_args) {
 
 
 module.exports = {
+  CancellableThenable: CancellableThenable,
   CancellationError: CancellationError,
   ControlFlow: ControlFlow,
   Deferred: Deferred,
@@ -3024,6 +3075,7 @@ module.exports = {
   defer: defer,
   delayed: delayed,
   filter: filter,
+  finally: thenFinally,
   fulfilled: fulfilled,
   fullyResolved: fullyResolved,
   isGenerator: isGenerator,

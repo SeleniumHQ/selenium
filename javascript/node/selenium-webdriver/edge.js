@@ -278,11 +278,10 @@ class Driver extends webdriver.WebDriver {
     var driver = webdriver.WebDriver.createSession(executor, caps, opt_flow);
     super(driver.getSession(), executor, driver.controlFlow());
 
-    var boundQuit = this.quit.bind(this);
-
     /** @override */
-    this.quit = function() {
-      return boundQuit().finally(service.kill.bind(service));
+    this.quit = () => {
+      return /** @type {!promise.Thenable} */(
+          promise.finally(super.quit(), service.kill.bind(service)));
     };
   }
 

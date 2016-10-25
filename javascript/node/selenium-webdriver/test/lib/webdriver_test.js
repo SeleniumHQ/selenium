@@ -1649,7 +1649,6 @@ describe('WebDriver', function() {
       var deferredText = new promise.Deferred();
 
       var alert = new AlertPromise({}, deferredText.promise);
-      assert.ok(alert.isPending());
 
       deferredText.fulfill(new Alert({}, 'foo'));
       return alert.getText().then(function(text) {

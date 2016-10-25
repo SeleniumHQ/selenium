@@ -808,8 +808,6 @@ describe('promise error handling', function() {
     return waitForAbort()
       .then(function() {
         assert.deepEqual(['a.1', 'b.1', 'c.1', 'b.2', 'c.2'], seen);
-        assert.ok(!b3.isPending());
-        assert.ok(!c3.isPending());
       })
       .then(() => assertWasCancelled(b3))
       .then(() => assertWasCancelled(c3));
@@ -827,7 +825,6 @@ describe('promise error handling', function() {
       });
     }).then(function(error) {
       assert.ok(error instanceof promise.CancellationError);
-      assert.ok(!task.isPending());
       return task.catch(function(error) {
         assert.ok(error instanceof promise.CancellationError);
       });
