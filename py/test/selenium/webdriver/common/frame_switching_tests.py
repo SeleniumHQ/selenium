@@ -186,7 +186,6 @@ class TestFrameSwitching(object):
     #
     # ----------------------------------------------------------------------------------------------
 
-    @pytest.mark.ignore_marionette
     def testShouldContinueToReferToTheSameFrameOnceItHasBeenSelected(self, driver, pages):
         pages.load("frameset.html")
         driver.switch_to.frame(2)
