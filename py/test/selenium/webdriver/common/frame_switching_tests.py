@@ -186,7 +186,6 @@ class TestFrameSwitching(object):
     #
     # ----------------------------------------------------------------------------------------------
 
-    @pytest.mark.ignore_firefox
     @pytest.mark.ignore_marionette
     def testShouldContinueToReferToTheSameFrameOnceItHasBeenSelected(self, driver, pages):
         pages.load("frameset.html")
@@ -201,7 +200,6 @@ class TestFrameSwitching(object):
         WebDriverWait(driver, 3).until(EC.text_to_be_present_in_element((By.XPATH, '//p'), 'Success!'))
 
     @pytest.mark.ignore_marionette
-    @pytest.mark.ignore_firefox
     def testShouldFocusOnTheReplacementWhenAFrameFollowsALinkToA_TopTargetedPage(self, driver, pages):
         pages.load("frameset.html")
         driver.switch_to.frame(0)
