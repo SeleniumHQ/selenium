@@ -312,12 +312,10 @@ class TestDriverElementFinding(object):
         element = driver.find_element(By.XPATH, "//svg:svg//svg:text")
         assert element.text == "Test Chart"
 
-    @pytest.mark.ignore_firefox
-    @pytest.mark.ignore_phantomjs
     def test_Should_Be_Able_To_Find_Element_By_XPath_In_Xml_Document(self, driver, pages):
         pages.load("simple.xml")
         element = driver.find_element(By.XPATH, "//foo")
-        assert element.text == "baz"
+        assert "baz" in element.text
 
     # By.xpath negative
 
@@ -429,7 +427,6 @@ class TestDriverElementFinding(object):
         with pytest.raises(NoSuchElementException):
             driver.find_element(By.CSS_SELECTOR, "")
 
-    @pytest.mark.ignore_phantomjs
     def test_Finding_Multiple_Elements_By_Empty_Css_Selector_Should_Throw(self, driver, pages):
         pages.load("xhtmlTest.html")
         with pytest.raises(NoSuchElementException):
