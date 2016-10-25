@@ -49,8 +49,6 @@ class TestWebDriverSelectSupport(object):
             sel.select_by_index(1)
 
     def testSelectByValueSingle(self, driver, pages):
-        if driver.capabilities['browserName'] == 'chrome':
-            pytest.xfail("chrome currently doesn't allow css selectors with comma's in them that are not compound")
         pages.load("formPage.html")
 
         for select in [singleSelectValues1]:
