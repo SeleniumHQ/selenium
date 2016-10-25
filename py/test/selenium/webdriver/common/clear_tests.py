@@ -20,7 +20,6 @@ import pytest
 from selenium.common.exceptions import InvalidElementStateException
 
 
-@pytest.mark.ignore_chrome
 class TestClear(object):
 
     def testWritableTextInputShouldClear(self, driver, pages):
