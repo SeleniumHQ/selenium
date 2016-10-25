@@ -22,7 +22,6 @@ from selenium.webdriver.common.by import By
 
 class TestRenderedWebElement(object):
 
-    @pytest.mark.ignore_chrome
     def testShouldPickUpStyleOfAnElement(self, driver, pages):
         if driver.capabilities['browserName'] == 'firefox' and driver.w3c == True:
             pytest.xfail("Marionette and W3C Issue: https://github.com/w3c/webdriver/issues/417")
