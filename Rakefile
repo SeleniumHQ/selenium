@@ -304,6 +304,7 @@ task :build => [:all, :firefox, :remote, :selenium, :tests]
 
 desc 'Clean build artifacts.'
 task :clean do
+  rm_rf 'buck-out/'
   rm_rf 'build/'
   rm_rf 'java/client/build/'
   rm_rf 'dist/'
