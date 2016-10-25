@@ -48,7 +48,6 @@ class TestWindowSwitching(object):
         with pytest.raises(NoSuchWindowException):
             driver.switch_to.window("invalid name")
 
-    @pytest.mark.ignore_chrome
     def testShouldThrowNoSuchWindowExceptionOnAnAttemptToGetItsHandle(self, driver, pages):
         if driver.capabilities['browserName'] == 'firefox' and driver.w3c:
             pytest.xfail("Marionette Doesnt Throw: https://bugzilla.mozilla.org/show_bug.cgi?id=1309173")
@@ -65,7 +64,6 @@ class TestWindowSwitching(object):
         with pytest.raises(NoSuchWindowException):
             driver.current_window_handle
 
-    @pytest.mark.ignore_chrome
     @pytest.mark.ignore_ie
     def testShouldThrowNoSuchWindowExceptionOnAnyOperationIfAWindowIsClosed(self, driver, pages):
         pages.load("xhtmlTest.html")
@@ -84,7 +82,6 @@ class TestWindowSwitching(object):
         with pytest.raises(NoSuchWindowException):
             driver.find_element_by_tag_name("body")
 
-    @pytest.mark.ignore_chrome
     @pytest.mark.ignore_ie
     def testShouldThrowNoSuchWindowExceptionOnAnyElementOperationIfAWindowIsClosed(self, driver, pages):
         pages.load("xhtmlTest.html")
@@ -127,8 +124,7 @@ class TestWindowSwitching(object):
         driver.switch_to.window(handles[0])
 
         driver.find_element_by_id("close").click()
-        all_handles = driver.window_handles
-        assert 1 == len(all_handles)
+        WebDriverWait(driver, 3).until(EC.number_of_windows_to_be(1))
 
     def testCanObtainAWindowHandle(self, driver, pages):
         pages.load("xhtmlTest.html")
