@@ -293,7 +293,7 @@ class number_of_windows_to_be(object):
         self.num_windows = num_windows
 
     def __call__(self, driver):
-        return driver.window_handles == self.num_windows
+        return len(driver.window_handles) == self.num_windows
 
 
 class new_window_is_opened(object):
