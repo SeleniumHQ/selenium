@@ -201,9 +201,6 @@ class Profile {
     /** @private {!Object} */
     this.preferences_ = {};
 
-    Object.assign(this.preferences_, getDefaultPreferences()['mutable']);
-    Object.assign(this.preferences_, getDefaultPreferences()['frozen']);
-
     /** @private {boolean} */
     this.nativeEventsEnabled_ = true;
 
@@ -218,12 +215,27 @@ class Profile {
   }
 
   /**
+   * @return {(string|undefined)} Path to an existing Firefox profile directory
+   *     to use as a template when writing this Profile to disk.
+   */
+  getTemplateDir() {
+    return this.template_;
+  }
+
+  /**
    * Registers an extension to be included with this profile.
    * @param {string} extension Path to the extension to include, as either an
    *     unpacked extension directory or the path to a xpi file.
    */
   addExtension(extension) {
     this.extensions_.push(extension);
+  }
+
+  /**
+   * @return {!Array<string>} A list of extensions to install in this profile.
+   */
+  getExtensions() {
+    return this.extensions_;
   }
 
   /**
@@ -252,6 +264,13 @@ class Profile {
    */
   getPreference(key) {
     return this.preferences_[key];
+  }
+
+  /**
+   * @return {!Object} A copy of all currently configured preferences.
+   */
+  getPreferences() {
+    return Object.assign({}, this.preferences_);
   }
 
   /**
@@ -353,6 +372,8 @@ class Profile {
 
     // Freeze preferences for async operations.
     var prefs = {};
+    Object.assign(prefs, getDefaultPreferences()['mutable']);
+    Object.assign(prefs, getDefaultPreferences()['frozen']);
     Object.assign(prefs, this.preferences_);
 
     // Freeze extensions for async operations.

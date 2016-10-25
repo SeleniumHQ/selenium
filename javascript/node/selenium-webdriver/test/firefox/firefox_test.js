@@ -48,6 +48,25 @@ test.suite(function(env) {
         }
       });
 
+      /**
+       * Runs a test that requires Firefox Developer Edition. The test will be
+       * skipped if dev cannot be found on the current system.
+       */
+      function runWithFirefoxDev(options, testFn) {
+        let binary = new firefox.Binary();
+        binary.useDevEdition();
+        return binary.locate().then(exe => {
+          options.setBinary(exe);
+          driver = env.builder()
+              .setFirefoxOptions(options)
+              .build();
+          return driver.call(testFn);
+        }, err => {
+          console.warn(
+              'Skipping test: could not find Firefox Dev Edition: ' + err);
+        });
+      }
+
       test.it('can start Firefox with custom preferences', function() {
         var profile = new firefox.Profile();
         profile.setPreference('general.useragent.override', 'foo;bar');
@@ -66,53 +85,47 @@ test.suite(function(env) {
       });
 
       test.it('can start Firefox with a jetpack extension', function() {
-        var profile = new firefox.Profile();
+        let profile = new firefox.Profile();
         profile.addExtension(JETPACK_EXTENSION);
 
-        var options = new firefox.Options().setProfile(profile);
+        let options = new firefox.Options().setProfile(profile);
 
-        driver = env.builder().
-            setFirefoxOptions(options).
-            build();
-
-        loadJetpackPage(driver,
-            'data:text/html;charset=UTF-8,<html><div>content</div></html>');
-        assert(driver.findElement({id: 'jetpack-sample-banner'}).getText())
-            .equalTo('Hello, world!');
+        return runWithFirefoxDev(options, function() {
+          loadJetpackPage(driver,
+              'data:text/html;charset=UTF-8,<html><div>content</div></html>');
+          assert(driver.findElement({id: 'jetpack-sample-banner'}).getText())
+              .equalTo('Hello, world!');
+        });
       });
 
       test.it('can start Firefox with a normal extension', function() {
-        var profile = new firefox.Profile();
+        let profile = new firefox.Profile();
         profile.addExtension(NORMAL_EXTENSION);
 
-        var options = new firefox.Options().setProfile(profile);
+        let options = new firefox.Options().setProfile(profile);
 
-        driver = env.builder().
-            setFirefoxOptions(options).
-            build();
-
-        driver.get('data:text/html,<html><div>content</div></html>');
-        assert(driver.findElement({id: 'sample-extension-footer'}).getText())
-            .equalTo('Goodbye');
+        return runWithFirefoxDev(options, function() {
+          driver.get('data:text/html,<html><div>content</div></html>');
+          assert(driver.findElement({id: 'sample-extension-footer'}).getText())
+              .equalTo('Goodbye');
+        });
       });
 
       test.it('can start Firefox with multiple extensions', function() {
-        var profile = new firefox.Profile();
+        let profile = new firefox.Profile();
         profile.addExtension(JETPACK_EXTENSION);
         profile.addExtension(NORMAL_EXTENSION);
 
-        var options = new firefox.Options().setProfile(profile);
+        let options = new firefox.Options().setProfile(profile);
 
-        driver = env.builder().
-            setFirefoxOptions(options).
-            build();
-
-        loadJetpackPage(driver,
-            'data:text/html;charset=UTF-8,<html><div>content</div></html>');
-        assert(driver.findElement({id: 'jetpack-sample-banner'}).getText())
-            .equalTo('Hello, world!');
-        assert(driver.findElement({id: 'sample-extension-footer'}).getText())
-            .equalTo('Goodbye');
+        return runWithFirefoxDev(options, function() {
+          loadJetpackPage(driver,
+              'data:text/html;charset=UTF-8,<html><div>content</div></html>');
+          assert(driver.findElement({id: 'jetpack-sample-banner'}).getText())
+              .equalTo('Hello, world!');
+          assert(driver.findElement({id: 'sample-extension-footer'}).getText())
+              .equalTo('Goodbye');
+        });
       });
 
       function loadJetpackPage(driver, url) {

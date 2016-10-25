@@ -455,8 +455,34 @@ var DriverSpec;
  */
 function createGeckoDriver(
     executor, caps, profile, binary, flow) {
+  let firefoxOptions = {};
+  caps.set('moz:firefoxOptions', firefoxOptions);
+
+  if (binary) {
+    if (binary.getExe()) {
+      firefoxOptions['binary'] = binary.getExe();
+    }
+
+    let args = binary.getArguments();
+    if (args.length) {
+      firefoxOptions['args'] = args;
+    }
+  }
+
   if (profile) {
-    caps.set(Capability.PROFILE, profile.encode());
+    // If the user specified a template directory or any extensions to install,
+    // we need to encode the profile as a base64 string (which requires writing
+    // it to disk first). Otherwise, if the user just specified some custom
+    // preferences, we can send those directly.
+    if (profile.getTemplateDir() || profile.getExtensions().length) {
+      firefoxOptions['profile'] = profile.encode();
+
+    } else {
+      let prefs = profile.getPreferences();
+      if (Object.keys(prefs).length) {
+        firefoxOptions['prefs'] = prefs;
+      }
+    }
   }
 
   let sessionCaps = caps;
@@ -578,7 +604,6 @@ class Driver extends webdriver.WebDriver {
       caps = new capabilities.Capabilities(opt_config);
     }
 
-    let hasBinary = caps.has(Capability.BINARY);
     let binary = caps.get(Capability.BINARY) || new Binary();
     caps.delete(Capability.BINARY);
     if (typeof binary === 'string') {
@@ -606,7 +631,7 @@ class Driver extends webdriver.WebDriver {
           opt_executor,
           caps,
           profile,
-          hasBinary ? binary : null,
+          binary,
           opt_flow);
     } else {
       if (opt_executor) {

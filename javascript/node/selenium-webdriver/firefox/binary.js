@@ -182,6 +182,15 @@ class Binary {
   }
 
   /**
+   * @return {(string|undefined)} The path to the Firefox executable to use, or
+   *     `undefined` if WebDriver should attempt to locate Firefox automatically
+   *     on the current system.
+   */
+  getExe() {
+    return this.exe_;
+  }
+
+  /**
    * Add arguments to the command line used to start Firefox.
    * @param {...(string|!Array.<string>)} var_args Either the arguments to add
    *     as varargs, or the arguments as an array.
@@ -194,6 +203,14 @@ class Binary {
         this.args_.push(arguments[i]);
       }
     }
+  }
+
+  /**
+   * @return {!Array<string>} The command line arguments to use when starting
+   *     the browser.
+   */
+  getArguments() {
+    return this.args_;
   }
 
   /**
