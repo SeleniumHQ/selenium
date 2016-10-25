@@ -178,8 +178,6 @@ class TestAdvancedUserInteraction(object):
         """Copied from org.openqa.selenium.interactions.CombinedInputActionsTest."""
         if driver.capabilities['browserName'] == 'firefox':
             pytest.skip("Actions not available in Marionette. https://bugzilla.mozilla.org/show_bug.cgi?id=1292178")
-        if driver.capabilities['browserName'] == 'phantomjs':
-            pytest.xfail("phantomjs driver does not seem to select all the elements")
 
         pages.load("selectableItems.html")
         reportingElement = driver.find_element_by_id("infodiv")
