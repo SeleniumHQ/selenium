@@ -44,9 +44,9 @@ class TestWebDriverSelectSupport(object):
     # disabled select isn't immediatedly throwing an ElementNotSelectableException when trying to select
     def testSelectDisabledByIndexShouldThrowException(self, driver, pages):
         pages.load("formPage.html")
+        sel = Select(driver.find_element(By.NAME, disabledSelect['name']))
         with pytest.raises(ElementNotSelectableException):
-            sel = Select(driver.find_element(By.NAME, disabledSelect['name']))
-            sel.select_by_index(0)
+            sel.select_by_index(1)
 
     def testSelectByValueSingle(self, driver, pages):
         if driver.capabilities['browserName'] == 'chrome':
@@ -63,9 +63,9 @@ class TestWebDriverSelectSupport(object):
     @pytest.mark.xfail
     def testSelectDisabledByValueShouldThrowException(self, driver, pages):
         pages.load("formPage.html")
+        sel = Select(driver.find_element(By.NAME, disabledSelect['name']))
         with pytest.raises(ElementNotSelectableException):
-            sel = Select(driver.find_element(By.NAME, disabledSelect['name']))
-            sel.select_by_value('foo')
+            sel.select_by_value('bar')
 
     def testSelectByVisibleTextSingle(self, driver, pages):
         pages.load("formPage.html")
@@ -95,9 +95,9 @@ class TestWebDriverSelectSupport(object):
     # disabled select isn't immediatedly throwing an ElementNotSelectableException when trying to select
     def testSelectDisabledByVisibleTextShouldThrowException(self, driver, pages):
         pages.load("formPage.html")
+        sel = Select(driver.find_element(By.NAME, disabledSelect['name']))
         with pytest.raises(ElementNotSelectableException):
-            sel = Select(driver.find_element(By.NAME, disabledSelect['name']))
-            sel.select_by_visible_text('foo')
+            sel.select_by_visible_text('Bar')
 
     def testSelectByIndexMultiple(self, driver, pages):
         if driver.capabilities['browserName'] == 'chrome' and int(driver.capabilities['version'].split('.')[0]) < 16:
