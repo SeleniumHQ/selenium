@@ -224,10 +224,6 @@ class TestFrameSwitching(object):
     def getTextOfGreetingElement(self, driver):
         return WebDriverWait(driver, 3).until(EC.presence_of_element_located((By.ID, "greeting"))).text
 
-    @pytest.mark.ignore_phantomjs
-    @pytest.mark.ignore_firefox
-    @pytest.mark.ignore_marionette
-    @pytest.mark.ignore_chrome
     def testShouldBeAbleToClickInAFrame(self, driver, pages):
         pages.load("frameset.html")
         driver.switch_to.frame("third")
@@ -237,10 +233,9 @@ class TestFrameSwitching(object):
         # driver should still be focused on frame "third" ...
         assert self.getTextOfGreetingElement(driver) == "Success!"
         # Make sure it was really frame "third" which was replaced ...
-        WebDriverWait(driver, 3).until(EC.presence_of_element_located((By.ID, "third")))
         driver.switch_to.default_content()
         driver.switch_to.frame("third")
-        assert self.getTextOfGreetingElement() == "Success!"
+        assert self.getTextOfGreetingElement(driver) == "Success!"
 
     def testShouldBeAbleToClickInAFrameThatRewritesTopWindowLocation(self, driver, pages):
         pages.load("click_tests/issue5237.html")
