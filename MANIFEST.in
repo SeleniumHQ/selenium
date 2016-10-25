@@ -17,4 +17,5 @@ include py/selenium/selenium.py
 include py/selenium/__init__.py
 include py/CHANGES
 include py/README.rst
+include LICENSE
 recursive-include selenium.egg-info *
