@@ -279,10 +279,7 @@ class TestFrameSwitching(object):
         driver.switch_to.frame(driver.find_element_by_id("iframe1"))
         assert "iframes.html" in driver.current_url
 
-    @pytest.mark.ignore_marionette
     @pytest.mark.ignore_phantomjs
-    @pytest.mark.ignore_firefox
-    @pytest.mark.ignore_chrome
     def testShouldBeAbleToSwitchToTheTopIfTheFrameIsDeletedFromUnderUs(self, driver, pages):
         pages.load("frame_switching_tests/deletingFrame.html")
         driver.switch_to.frame(driver.find_element_by_id("iframe1"))
@@ -290,7 +287,8 @@ class TestFrameSwitching(object):
         killIframe = driver.find_element(By.ID, "killIframe")
         killIframe.click()
         driver.switch_to.default_content()
-        WebDriverWait(driver, 3).until(EC.presence_of_element_located((By.ID, "iframe1")))
+        WebDriverWait(driver, 3).until_not(
+            EC.presence_of_element_located((By.ID, "iframe1")))
 
         addIFrame = driver.find_element(By.ID, "addBackFrame")
         addIFrame.click()
