@@ -23,11 +23,13 @@ import static org.openqa.selenium.firefox.FirefoxDriver.PROFILE;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
+import org.openqa.selenium.logging.LogLevelMapping;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.io.File;
@@ -37,6 +39,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 
 
 /**
@@ -64,6 +67,7 @@ public class FirefoxOptions {
   private Map<String, Boolean> booleanPrefs = new HashMap<>();
   private Map<String, Integer> intPrefs = new HashMap<>();
   private Map<String, String> stringPrefs = new HashMap<>();
+  private Level logLevel = null;
 
   public FirefoxOptions setBinary(Path path) {
     return setBinary(checkNotNull(path).toString());
@@ -112,6 +116,11 @@ public class FirefoxOptions {
 
   public FirefoxOptions addPreference(String key, String value) {
     stringPrefs.put(checkNotNull(key), checkNotNull(value));
+    return this;
+  }
+
+  public FirefoxOptions setLogLevel(Level logLevel) {
+    this.logLevel = logLevel;
     return this;
   }
 
@@ -184,6 +193,12 @@ public class FirefoxOptions {
       options.add("prefs", allPrefs);
     }
 
+    if (logLevel != null) {
+      JsonObject level = new JsonObject();
+      level.add("level", new JsonPrimitive(logLevelToGeckoLevel()));
+      options.add("log", level);
+    }
+
     JsonArray arguments = new JsonArray();
     for (String arg : args) {
       arguments.add(new JsonPrimitive(arg));
@@ -191,6 +206,35 @@ public class FirefoxOptions {
     options.add("args", arguments);
 
     return options;
+  }
+
+  private String logLevelToGeckoLevel() {
+    // levels defined by GeckoDriver
+    // https://github.com/mozilla/geckodriver#log-object
+    if (logLevel.intValue() < Level.FINE.intValue()) {
+      return "trace";
+    }
+    if (logLevel == Level.FINE) {
+      return "debug";
+    }
+    if (logLevel == Level.CONFIG) {
+      return "config";
+    }
+    if (logLevel == Level.INFO) {
+      return "info";
+    }
+    if (logLevel == Level.WARNING) {
+      return "warn";
+    }
+    if (logLevel == Level.SEVERE) {
+      return "error";
+    }
+    if (logLevel == Level.OFF) {
+      return "fatal";
+    }
+
+    // something else?  ¯\_(ツ)_/¯
+    return "debug";
   }
 
 }
