@@ -35,15 +35,11 @@ class TestRenderedWebElement(object):
         backgroundColour = element.value_of_css_property("background-color")
         assert "rgba(255, 0, 0, 1)" == backgroundColour
 
-    @pytest.mark.ignore_chrome
     def testShouldAllowInheritedStylesToBeUsed(self, driver, pages):
-        if driver.capabilities['browserName'] == 'phantomjs':
-            pytest.xfail("phantomjs has an issue with getting the right value for background-color")
         pages.load("javascriptPage.html")
-
         element = driver.find_element(by=By.ID, value="green-item")
         backgroundColour = element.value_of_css_property("background-color")
-        assert "transparent" == backgroundColour
+        assert backgroundColour in ("rgba(0, 0, 0, 0)", "transparent")
 
     def testShouldCorrectlyIdentifyThatAnElementHasWidth(self, driver, pages):
         pages.load("xhtmlTest.html")
