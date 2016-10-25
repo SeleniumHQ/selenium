@@ -420,11 +420,10 @@ class Driver extends webdriver.WebDriver {
 
     super(driver.getSession(), executor, driver.controlFlow());
 
-    let boundQuit = this.quit.bind(this);
-
     /** @override */
-    this.quit = function() {
-      return boundQuit().finally(service.kill.bind(service));
+    this.quit = () => {
+      return /** @type {!promise.Thenable} */(
+          promise.finally(super.quit(), service.kill.bind(service)));
     };
   }
 

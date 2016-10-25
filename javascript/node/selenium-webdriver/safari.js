@@ -216,7 +216,8 @@ class Driver extends webdriver.WebDriver {
 
     /** @override */
     this.quit = () => {
-      return super.quit().finally(onQuit);
+      return /** @type {!promise.Thenable} */(
+          promise.finally(super.quit(), onQuit));
     };
   }
 }

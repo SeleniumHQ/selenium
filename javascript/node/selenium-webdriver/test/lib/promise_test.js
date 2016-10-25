@@ -207,7 +207,7 @@ describe('promise', function() {
             });
       });
 
-      it('"parent" is a Thenable', function() {
+      it('"parent" is a CancellableThenable', function() {
         function noop() {}
 
         class FakeThenable {
@@ -224,11 +224,12 @@ describe('promise', function() {
             return new FakeThenable(result);
           }
         }
-        promise.Thenable.addImplementation(FakeThenable);
+        promise.CancellableThenable.addImplementation(FakeThenable);
 
         let root = new promise.Promise(noop);
         let thenable = new FakeThenable(root);
         assert.ok(promise.Thenable.isImplementation(thenable));
+        assert.ok(promise.CancellableThenable.isImplementation(thenable));
 
         let child = new promise.Promise(resolve => resolve(thenable));
         assert.ok(child instanceof promise.Promise);

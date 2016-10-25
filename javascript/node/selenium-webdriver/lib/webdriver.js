@@ -482,7 +482,8 @@ class WebDriver {
         'WebDriver.quit()');
     // Delete our session ID when the quit command finishes; this will allow us
     // to throw an error when attemnpting to use a driver post-quit.
-    return result.finally(() => delete this.session_);
+    return /** @type {!promise.Thenable} */(
+        promise.finally(result, () => delete this.session_));
   }
 
   /**
@@ -2207,7 +2208,7 @@ class WebElement {
  *       return el.click();
  *     });
  *
- * @implements {promise.Thenable<!WebElement>}
+ * @implements {promise.CancellableThenable<!WebElement>}
  * @final
  */
 class WebElementPromise extends WebElement {
@@ -2220,20 +2221,23 @@ class WebElementPromise extends WebElement {
   constructor(driver, el) {
     super(driver, 'unused');
 
-    /** @override */
-    this.cancel = el.cancel.bind(el);
-
-    /** @override */
-    this.isPending = el.isPending.bind(el);
+    /**
+     * Cancel operation is only supported if the wrapped thenable is also
+     * cancellable.
+     * @param {(string|Error)=} opt_reason
+     * @override
+     */
+    this.cancel = function(opt_reason) {
+      if (promise.CancellableThenable.isImplementation(el)) {
+        /** @type {!promise.CancellableThenable} */(el).cancel(opt_reason);
+      }
+    }
 
     /** @override */
     this.then = el.then.bind(el);
 
     /** @override */
     this.catch = el.catch.bind(el);
-
-    /** @override */
-    this.finally = el.finally.bind(el);
 
     /**
      * Defers returning the element ID until the wrapped WebElement has been
@@ -2247,7 +2251,7 @@ class WebElementPromise extends WebElement {
     };
   }
 }
-promise.Thenable.addImplementation(WebElementPromise);
+promise.CancellableThenable.addImplementation(WebElementPromise);
 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -2358,7 +2362,7 @@ class Alert {
  *       return alert.dismiss();
  *     });
  *
- * @implements {promise.Thenable<!webdriver.Alert>}
+ * @implements {promise.CancellableThenable<!webdriver.Alert>}
  * @final
  */
 class AlertPromise extends Alert {
@@ -2371,20 +2375,23 @@ class AlertPromise extends Alert {
   constructor(driver, alert) {
     super(driver, 'unused');
 
-    /** @override */
-    this.cancel = alert.cancel.bind(alert);
-
-    /** @override */
-    this.isPending = alert.isPending.bind(alert);
+    /**
+     * Cancel operation is only supported if the wrapped thenable is also
+     * cancellable.
+     * @param {(string|Error)=} opt_reason
+     * @override
+     */
+    this.cancel = function(opt_reason) {
+      if (promise.CancellableThenable.isImplementation(alert)) {
+        /** @type {!promise.CancellableThenable} */(alert).cancel(opt_reason);
+      }
+    };
 
     /** @override */
     this.then = alert.then.bind(alert);
 
     /** @override */
     this.catch = alert.catch.bind(alert);
-
-    /** @override */
-    this.finally = alert.finally.bind(alert);
 
     /**
      * Defer returning text until the promised alert has been resolved.
@@ -2437,7 +2444,7 @@ class AlertPromise extends Alert {
     };
   }
 }
-promise.Thenable.addImplementation(AlertPromise);
+promise.CancellableThenable.addImplementation(AlertPromise);
 
 
 // PUBLIC API

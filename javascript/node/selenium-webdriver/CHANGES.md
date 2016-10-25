@@ -16,6 +16,10 @@
 ### API Changes
 
  * Removed `safari.Options#useLegacyDriver()`
+ * Reduced the API on `promise.Thenable` for compatibility with native promises:
+   - Removed `#isPending()`
+   - Removed `#cancel()`
+   - Removed `#finally()`
 
 
 ## v3.0.0-beta-3
