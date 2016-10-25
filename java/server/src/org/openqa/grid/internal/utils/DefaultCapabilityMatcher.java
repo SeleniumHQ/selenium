@@ -42,6 +42,7 @@ public class DefaultCapabilityMatcher implements CapabilityMatcher {
     toConsider.add(CapabilityType.PLATFORM);
     toConsider.add(CapabilityType.BROWSER_NAME);
     toConsider.add(CapabilityType.VERSION);
+    toConsider.add(CapabilityType.BROWSER_VERSION);
     toConsider.add(CapabilityType.APPLICATION_NAME);
 
   }
@@ -63,24 +64,37 @@ public class DefaultCapabilityMatcher implements CapabilityMatcher {
       if (!key.startsWith(GRID_TOKEN) && toConsider.contains(key)) {
         if (requestedCapability.get(key) != null) {
           String value = requestedCapability.get(key).toString();
+          // ignore matching 'ANY' or '*" or empty string cases
           if (!("ANY".equalsIgnoreCase(value) || "".equals(value) || "*".equals(value))) {
-            Platform requested = extractPlatform(requestedCapability.get(key));
-            // special case for platform
-            if (requested != null) {
-              Platform node = extractPlatform(nodeCapability.get(key));
-              if (node == null) {
-                return false;
-              }
-              if (!node.is(requested)) {
-                return false;
-              }
-            } else {
-              if (!requestedCapability.get(key).equals(nodeCapability.get(key))) {
-                return false;
-              }
+            switch (key) {
+              case CapabilityType.PLATFORM:
+                Platform requested = extractPlatform(requestedCapability.get(key));
+                if (requested != null) {
+                  Platform node = extractPlatform(nodeCapability.get(key));
+                  if (node == null) {
+                    return false;
+                  }
+                  if (!node.is(requested)) {
+                    return false;
+                  }
+                }
+                break;
+
+              case CapabilityType.BROWSER_VERSION:
+              case CapabilityType.VERSION:
+                // w3c uses 'browserVersion' but 2.X / 3.X use 'version'
+                // w3c name takes precedence
+                Object nodeVersion = nodeCapability.getOrDefault(CapabilityType.BROWSER_VERSION, nodeCapability.get(CapabilityType.VERSION));
+                if (!value.equals(nodeVersion)) {
+                  return false;
+                }
+                break;
+
+              default:
+                if (!requestedCapability.get(key).equals(nodeCapability.get(key))) {
+                  return false;
+                }
             }
-          } else {
-            // null value matches anything.
           }
         }
       }
