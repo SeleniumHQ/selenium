@@ -307,7 +307,7 @@ describe('io', function() {
     });
 
     it('catches errors from invalid input', function() {
-      return io.read(1234)
+      return io.read({})
           .then(() => assert.fail('should have failed'),
                 (e) => assert.ok(e instanceof TypeError));
     });
