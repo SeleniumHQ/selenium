@@ -39,13 +39,11 @@ class TestExecutingAsyncJavaScript(object):
         assert not bool(driver.execute_async_script("arguments[arguments.length - 1](false);"))
         assert bool(driver.execute_async_script("arguments[arguments.length - 1](true);"))
 
-    # @Ignore(value = SELENESE, reason = "SeleniumRC cannot return null values.")
     def testShouldBeAbleToReturnJavascriptPrimitivesFromAsyncScripts_NullAndUndefined(self, driver, pages):
         pages.load("ajaxy_page.html")
         assert driver.execute_async_script("arguments[arguments.length - 1](null)") is None
         assert driver.execute_async_script("arguments[arguments.length - 1]()") is None
 
-    # @Ignore(value = SELENESE, reason = "Selenium cannot return arrays")
     def testShouldBeAbleToReturnAnArrayLiteralFromAnAsyncScript(self, driver, pages):
         pages.load("ajaxy_page.html")
         result = driver.execute_async_script("arguments[arguments.length - 1]([]);")
@@ -53,7 +51,6 @@ class TestExecutingAsyncJavaScript(object):
         assert type(result) == list
         assert len(result) == 0
 
-    # @Ignore(value = SELENESE, reason = "Selenium cannot return arrays")
     def testShouldBeAbleToReturnAnArrayObjectFromAnAsyncScript(self, driver, pages):
         pages.load("ajaxy_page.html")
         result = driver.execute_async_script("arguments[arguments.length - 1](new Array());")
@@ -61,8 +58,6 @@ class TestExecutingAsyncJavaScript(object):
         assert type(result) == list
         assert len(result) == 0
 
-    # @Ignore(value = ANDROID, SELENESE,
-    #  reason = "Android does not properly handle arrays; Selenium cannot return arrays")
     def testShouldBeAbleToReturnArraysOfPrimitivesFromAsyncScripts(self, driver, pages):
         pages.load("ajaxy_page.html")
 
@@ -78,7 +73,6 @@ class TestExecutingAsyncJavaScript(object):
         assert result.pop() is None
         assert len(result) == 0
 
-    # @Ignore(value = SELENESE, reason = "Selenium cannot return elements from scripts")
     def testShouldBeAbleToReturnWebElementsFromAsyncScripts(self, driver, pages):
         pages.load("ajaxy_page.html")
 
@@ -86,8 +80,6 @@ class TestExecutingAsyncJavaScript(object):
         assert isinstance(result, WebElement)
         assert "body" == result.tag_name.lower()
 
-    # @Ignore(value = ANDROID, SELENESE,
-    #  reason = "Android does not properly handle arrays; Selenium cannot return elements")
     def testShouldBeAbleToReturnArraysOfWebElementsFromAsyncScripts(self, driver, pages):
         pages.load("ajaxy_page.html")
 
@@ -140,9 +132,6 @@ class TestExecutingAsyncJavaScript(object):
         with pytest.raises(WebDriverException):
             driver.execute_async_script("throw Error('you should catch this!');")
 
-    # @Ignore(value = ANDROID, CHROME,
-    #  reason = "Android: Emulator is too slow and latency causes test to fall out of sync with app;"
-    #      + "Chrome: Click is not working")
     def testShouldBeAbleToExecuteAsynchronousScripts(self, driver, pages):
         pages.load("ajaxy_page.html")
 

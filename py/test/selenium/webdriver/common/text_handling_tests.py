@@ -40,7 +40,6 @@ class TestTextHandling(object):
         assert "More than one line of text" in text
         assert "and block level elements" in text
 
-    # @Ignore(SELENESE)
     def testShouldIgnoreScriptElements(self, driver, pages):
         pages.load("javascriptEnhancedForm.html")
         labelForUsername = driver.find_element(by=By.ID, value="labelforusername")
@@ -77,7 +76,6 @@ class TestTextHandling(object):
 
         assert text == "This line has a non-breaking space"
 
-    # @Ignore({IPHONE, SELENESE})
     def testShouldTreatANonBreakingSpaceAsAnyOtherWhitespaceCharacterWhenCollapsingWhitespace(self, driver, pages):
         pages.load("simpleTest.html")
         element = driver.find_element(by=By.ID, value="nbspandspaces")
@@ -85,7 +83,6 @@ class TestTextHandling(object):
 
         assert text == "This line has a   non-breaking space and spaces"
 
-    # @Ignore(IPHONE)
     def testHavingInlineElementsShouldNotAffectHowTextIsReturned(self, driver, pages):
         pages.load("simpleTest.html")
         text = driver.find_element(by=By.ID, value="inline").text
@@ -98,7 +95,6 @@ class TestTextHandling(object):
 
         assert text == "An inline element"
 
-    # @Ignore(value = {SELENESE, IPHONE, IE}, reason = "iPhone: sendKeys is broken")
     def testShouldBeAbleToSetMoreThanOneLineOfTextInATextArea(self, driver, pages):
         pages.load("formPage.html")
         textarea = driver.find_element(by=By.ID, value="withText")
@@ -151,14 +147,12 @@ class TestTextHandling(object):
         text = driver.find_element(by=By.ID, value="inlinespan").text
         assert text == "line has text"
 
-    # @Ignore(value = {SELENESE, IPHONE})
     def testReadALargeAmountOfData(self, driver, pages):
         pages.load("macbeth.html")
         source = driver.page_source.strip().lower()
 
         assert source.endswith("</html>")
 
-    # @Ignore({SELENESE, IPHONE})
     def testShouldOnlyIncludeVisibleText(self, driver, pages):
         pages.load("javascriptPage.html")
 

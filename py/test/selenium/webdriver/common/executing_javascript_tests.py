@@ -43,7 +43,6 @@ class TestExecutingJavaScript(object):
         assert type(result) == int
         assert int(result) > 1
 
-    # @Ignore(SELENESE)
     def testShouldBeAbleToExecuteSimpleJavascriptAndReturnAWebElement(self, driver, pages):
         pages.load("xhtmlTest.html")
 
@@ -62,7 +61,6 @@ class TestExecutingJavaScript(object):
         assert type(result) == bool
         assert bool(result)
 
-    # @Ignore(SELENESE, IPHONE)
     def testShouldBeAbleToExecuteSimpleJavascriptAndAStringsArray(self, driver, pages):
         pages.load("javascriptPage.html")
         expectedResult = []
@@ -74,7 +72,6 @@ class TestExecutingJavaScript(object):
 
         assert expectedResult == result
 
-    # @Ignore(SELENESE, IPHONE)
     def testShouldBeAbleToExecuteSimpleJavascriptAndReturnAnArray(self, driver, pages):
         pages.load("javascriptPage.html")
         expectedResult = []

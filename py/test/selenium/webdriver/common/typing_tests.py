@@ -142,8 +142,6 @@ class TestTyping(object):
         #  filled, we're a letter short here
         assert result.text == "I like chees"
 
-    # @Ignore(value = {HTMLUNIT, CHROME_NON_WINDOWS, SELENESE, ANDROID},
-    #      reason = "untested user agents")
     def testShouldReportKeyCodeOfArrowKeysUpDownEvents(self, driver, pages):
         pages.load("javascriptPage.html")
         result = driver.find_element(by=By.ID, value="result")
@@ -238,8 +236,6 @@ class TestTyping(object):
     #                   "0" + Keys.PAGE_UP + Keys.END + "111" + Keys.HOME + "00")
     #  assert element.get_attribute("value") == "0000abc1111"
 
-    # @Ignore(value = {HTMLUNIT, CHROME_NON_WINDOWS, SELENESE, ANDROID},
-    #      reason = "untested user agents")
     def testDeleteAndBackspaceKeys(self, driver, pages):
         pages.load("javascriptPage.html")
         element = driver.find_element(by=By.ID, value="keyReporter")
@@ -252,7 +248,6 @@ class TestTyping(object):
         element.send_keys(Keys.LEFT, Keys.LEFT, Keys.BACK_SPACE)
         assert element.get_attribute("value") == "abcdfgi"
 
-    # @Ignore(value = {HTMLUNIT, CHROME_NON_WINDOWS, SELENESE}, reason = "untested user agents")
     def testSpecialSpaceKeys(self, driver, pages):
         if driver.capabilities['browserName'] == 'firefox' and driver.w3c:
             pytest.xfail("Marionette issue: https://bugzilla.mozilla.org/show_bug.cgi?id=1255258")
