@@ -134,7 +134,6 @@ class TestFrameSwitching(object):
         driver.switch_to.frame(driver.find_element_by_name("child2"))
         assert driver.find_element(By.ID, "pageNumber").text == "11"
 
-    @pytest.mark.ignore_phantomjs
     def testShouldThrowFrameNotFoundExceptionLookingUpSubFramesWithSuperFrameNames(self, driver, pages):
         pages.load("frameset.html")
         driver.switch_to.frame(driver.find_element_by_name("fourth"))
@@ -187,7 +186,6 @@ class TestFrameSwitching(object):
     #
     # ----------------------------------------------------------------------------------------------
 
-    @pytest.mark.ignore_phantomjs
     @pytest.mark.ignore_firefox
     @pytest.mark.ignore_marionette
     def testShouldContinueToReferToTheSameFrameOnceItHasBeenSelected(self, driver, pages):
@@ -203,7 +201,6 @@ class TestFrameSwitching(object):
         WebDriverWait(driver, 3).until(EC.text_to_be_present_in_element((By.XPATH, '//p'), 'Success!'))
 
     @pytest.mark.ignore_marionette
-    @pytest.mark.ignore_phantomjs
     @pytest.mark.ignore_firefox
     def testShouldFocusOnTheReplacementWhenAFrameFollowsALinkToA_TopTargetedPage(self, driver, pages):
         pages.load("frameset.html")
@@ -365,7 +362,6 @@ class TestFrameSwitching(object):
         driver.switch_to.frame(driver.find_element(By.NAME, "third"))
         assert driver.execute_script("return window != window.top")
 
-    @pytest.mark.ignore_phantomjs
     def testShouldNotSwitchMagicallyToTheTopWindow(self, driver, pages):
         pages.load("frame_switching_tests/bug4876.html")
         driver.switch_to.frame(0)
