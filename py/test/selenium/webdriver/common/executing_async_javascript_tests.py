@@ -23,7 +23,6 @@ from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.remote.webelement import WebElement
 
 
-@pytest.mark.ignore_phantomjs
 class TestExecutingAsyncJavaScript(object):
 
     def testShouldNotTimeoutIfCallbackInvokedImmediately(self, driver, pages):
@@ -95,12 +94,14 @@ class TestExecutingAsyncJavaScript(object):
         assert "body" == list_[0].tag_name
         # assert list_[0] == list_[1]
 
+    @pytest.mark.ignore_phantomjs
     def testShouldTimeoutIfScriptDoesNotInvokeCallback(self, driver, pages):
         pages.load("ajaxy_page.html")
         with pytest.raises(TimeoutException):
             # Script is expected to be async and explicitly callback, so this should timeout.
             driver.execute_async_script("return 1 + 2;")
 
+    @pytest.mark.ignore_phantomjs
     def testShouldTimeoutIfScriptDoesNotInvokeCallbackWithAZeroTimeout(self, driver, pages):
         pages.load("ajaxy_page.html")
         with pytest.raises(TimeoutException):
