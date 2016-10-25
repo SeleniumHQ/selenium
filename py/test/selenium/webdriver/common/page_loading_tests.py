@@ -51,7 +51,6 @@ class TestPageLoading(object):
         #  Here's hoping that there's nothing here. There shouldn't be
         driver.get("http://localhost:3001")
 
-    # @Ignore({IE, IPHONE, SELENESE})
     # def testShouldBeAbleToLoadAPageWithFramesetsAndWaitUntilAllFramesAreLoaded() {
     #     driver.get(pages.framesetPage)
     #
