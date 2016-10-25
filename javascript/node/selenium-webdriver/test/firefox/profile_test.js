@@ -52,7 +52,6 @@ describe('Profile', function() {
 
     it('allows overriding mutable properties', function() {
       var profile = new Profile();
-      assert.equal('about:blank', profile.getPreference('browser.newtab.url'));
 
       profile.setPreference('browser.newtab.url', 'http://www.example.com');
       assert.equal('http://www.example.com',

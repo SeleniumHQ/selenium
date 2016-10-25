@@ -7,10 +7,13 @@
 
   To use Safari 9 or older, users will have to use an older version of Selenium.
 
+* geckodriver v0.11.0 or newer is now required for Firefox.
 * Fixed potential reference errors in `selenium-webdriver/testing` when users
   create a cycle with mocha by running with mocha's `--hook` flag.
 * Fixed `WebDriver.switchTo().activeElement()` to use the correct HTTP method
   for compatibility with the W3C spec.
+* Update the `selenium-webdriver/firefox` module to use geckodriver's
+  "moz:firefoxOptions" dictionary for Firefox-specific configuration values.
 
 
 ### API Changes
