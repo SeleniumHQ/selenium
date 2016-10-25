@@ -132,9 +132,9 @@ class TestTextHandling(object):
         text = driver.find_element(by=By.ID, value="empty").text
         assert text == ""
 
+    @pytest.mark.xfail
     def testShouldReturnEmptyStringWhenTagIsSelfClosing(self, driver, pages):
-        pytest.skip("Skipping till issue 1225 is fixed")
-        pages.load("xhtmlTest.html")
+        pages.load("xhtmlFormPage.xhtml")
 
         text = driver.find_element(by=By.ID, value="self-closed").text
         assert text == ""
