@@ -1,5 +1,4 @@
 require 'childprocess'
-require 'java'
 require 'rake-tasks/checks'
 
 module Buck
