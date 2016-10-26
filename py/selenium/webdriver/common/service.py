@@ -24,15 +24,25 @@ import time
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common import utils
 
+try:
+    from subprocess import DEVNULL
+    _HAS_NATIVE_DEVNULL = True
+except ImportError:
+    DEVNULL = -3
+    _HAS_NATIVE_DEVNULL = False
+
 
 class Service(object):
 
-    def __init__(self, executable, port=0, log_file=PIPE, env=None, start_error_message=""):
+    def __init__(self, executable, port=0, log_file=DEVNULL, env=None, start_error_message=""):
         self.path = executable
 
         self.port = port
         if self.port == 0:
             self.port = utils.free_port()
+
+        if not _HAS_NATIVE_DEVNULL and log_file == DEVNULL:
+            log_file = open(os.devnull, 'wb')
 
         self.start_error_message = start_error_message
         self.log_file = log_file
@@ -126,7 +136,7 @@ class Service(object):
         """
         Stops the service.
         """
-        if self.log_file != PIPE:
+        if self.log_file != PIPE and not (self.log_file == DEVNULL and _HAS_NATIVE_DEVNULL):
             try:
                 self.log_file.close()
             except Exception:
