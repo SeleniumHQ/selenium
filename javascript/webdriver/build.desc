@@ -29,30 +29,3 @@ js_library(name = "all_js",
   deps = [
     "//javascript/atoms:all_js",
   ])
-
-js_test(name = "test",
-  srcs = [
-    "test/atoms/**/*_test.html",
-  ],
-  test_dir = "test/atoms",
-  deps = [
-    ":all_js",
-    "//java/client/test/org/openqa/selenium/javascript",
-    "//java/server/test/org/openqa/selenium:server-with-tests",
-  ])
-
-# Tests that should only run in browsers with ES6 support.
-js_test(name = "es6_test",
-  srcs = [
-    "test/*.js",
-    "test/http/**/*.js",
-  ],
-  deps = [
-    ":http",
-    "//java/client/test/org/openqa/selenium/javascript",
-    "//java/server/test/org/openqa/selenium:server-with-tests",
-  ],
-  browsers = [
-    "chrome",
-    "ff"
-  ])
