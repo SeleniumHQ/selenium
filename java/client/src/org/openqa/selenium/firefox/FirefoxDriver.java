@@ -41,6 +41,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.internal.NewProfileExtensionConnection;
 import org.openqa.selenium.firefox.internal.ProfilesIni;
+import org.openqa.selenium.html5.LocalStorage;
+import org.openqa.selenium.html5.SessionStorage;
 import org.openqa.selenium.internal.Killable;
 import org.openqa.selenium.internal.Lock;
 import org.openqa.selenium.internal.SocketLock;
