@@ -31,19 +31,3 @@ js_library(name = "json",
     "json.js",
     "userAgent.js"
   ])
-
-js_test(name = "test",
-  srcs = [
-    "test/*_test.html",
-    "test/html5/*_test.html",
-  ],
-  deps = [
-    ":all_js",
-    "//java/client/test/org/openqa/selenium/javascript",
-    "//java/server/test/org/openqa/selenium:server-with-tests",
-  ])
-
-
-
-
-

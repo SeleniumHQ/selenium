@@ -14,6 +14,32 @@ export_file(name = 'style',
   ],
 )
 
+browsers = {
+  'firefox': 'ff',
+  'chrome': 'chrome',
+  'ie': 'ie'}
+for browser in browsers.keys():
+  java_test(
+    name = 'remote-%s' % browser,
+    vm_args = [
+      '-Dselenium.browser=%s' % browsers[browser],
+      '-Dwebdriver.firefox.marionette=false',
+      '-Djs.test.timeout=20',
+      '-Djs.test.dir=%s' % get_base_path(),
+    ],
+    test_classes = [
+      'org.openqa.selenium.javascript.ClosureTestSuite',
+    ],
+    deps = [
+      '//java/client/test/org/openqa/selenium/javascript:javascript',
+      '//java/client/src/org/openqa/selenium/chrome:chrome',
+      '//java/client/src/org/openqa/selenium/edge:edge',
+      '//java/client/src/org/openqa/selenium/ie:ie',
+      '//java/client/src/org/openqa/selenium/firefox:firefox',
+    ],
+  )
+
+
 js_binary(name = 'client',
   srcs = glob(['*.js', 'ui/*.js',]),
   deps = [
