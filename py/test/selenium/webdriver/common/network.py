@@ -24,11 +24,17 @@ if os.name != "nt":
     import struct
 
     def get_interface_ip(ifname):
+        def _bytes(value, encoding):
+            try:
+                return bytes(value, encoding) # Python 3
+            except TypeError:
+                return value # Python 2
+
         sckt = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         return socket.inet_ntoa(fcntl.ioctl(
             sckt.fileno(),
             0x8915,  # SIOCGIFADDR
-            struct.pack('256s', ifname[:15])
+            struct.pack('256s', _bytes(ifname[:15], 'utf-8'))
         )[20:24])
 
 
