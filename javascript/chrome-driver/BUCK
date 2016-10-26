@@ -1,0 +1,52 @@
+js_library(name = 'lib',
+  srcs = glob(['*.js']),
+  deps = [ '//javascript/atoms:all_js' ])
+
+js_fragment(name = 'get_location_in_view',
+  module = 'webdriver.chrome',
+  function = 'webdriver.chrome.getLocationInView',
+  deps = [ ':lib' ])
+
+js_fragment(name = 'get_first_client_rect',
+  module = 'webdriver.chrome',
+  function = 'webdriver.chrome.getFirstClientRect',
+  deps = [ ':lib' ])
+
+js_fragment(name = 'is_element_clickable',
+  module = 'webdriver.chrome',
+  function = 'webdriver.chrome.isElementClickable',
+  deps = [ ':lib' ])
+
+js_fragment(name = 'get_page_zoom',
+  module = 'webdriver.chrome',
+  function = 'webdriver.chrome.getPageZoom',
+  deps = [ ':lib' ])
+
+js_fragment(name = 'is_element_displayed',
+  module = 'webdriver.chrome',
+  function = 'webdriver.chrome.isElementDisplayed',
+  deps = [
+    ':lib',
+    '//javascript/atoms/fragments:is_displayed',
+    ])
+
+js_fragment(name = 'find_element',
+  module = 'webdriver.chrome',
+  function = 'webdriver.chrome.findElement',
+  deps = [ ':lib' ])
+
+java_test(
+  name = 'atoms-chrome',
+  vm_args = [
+    '-Dselenium.browser=chrome',
+    '-Djs.test.timeout=20',
+    '-Djs.test.dir=%s' % get_base_path(),
+  ],
+  test_classes = [
+    'org.openqa.selenium.javascript.ClosureTestSuite',
+  ],
+  deps = [
+    '//java/client/test/org/openqa/selenium/javascript:javascript',
+    '//java/client/src/org/openqa/selenium/chrome:chrome',
+  ],
+)
