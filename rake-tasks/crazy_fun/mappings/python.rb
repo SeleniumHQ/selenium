@@ -1,5 +1,6 @@
 require 'rake'
 require 'rake-tasks/browsers.rb'
+require 'rake-tasks/buck.rb'
 require 'rake-tasks/crazy_fun/mappings/common'
 
 class PythonMappings

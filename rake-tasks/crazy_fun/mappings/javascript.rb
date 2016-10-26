@@ -1,6 +1,5 @@
 require 'rake-tasks/crazy_fun/mappings/common'
 require 'rake-tasks/crazy_fun/mappings/common'
-require 'rake-tasks/crazy_fun/mappings/java'
 require 'pathname'
 require 'set'
 
@@ -181,9 +180,6 @@ class JavascriptMappings
 end
 
 module Javascript
-  # CrazyFunJava.ant.taskdef :name      => "jscomp",
-  #                          :classname => "com.google.javascript.jscomp.ant.CompileTask",
-  #                          :classpath => "third_party/closure/bin/compiler-20130603.jar"
 
   class ClosureDeps
 
@@ -561,7 +557,7 @@ module Javascript
 
         flags.push("--js_output_file=#{output}")
 
-        cmd = "" <<
+        cmd = "java -cp third_party/closure/bin/compiler.jar com.google.javascript.jscomp.CommandLineRunner " <<
            flags.join(" ") <<
            " --js='" <<
            all_deps.join("' --js='") << "'"
@@ -574,12 +570,7 @@ module Javascript
 
         mkdir_p File.dirname(output)
 
-        CrazyFunJava.ant.java :classname => "com.google.javascript.jscomp.CommandLineRunner", :failonerror => true do
-          classpath do
-            pathelement :path =>  "third_party/closure/bin/compiler.jar"
-          end
-          arg :line => cmd
-        end
+        sh cmd
       end
     end
   end
@@ -743,12 +734,10 @@ module Javascript
 
         mkdir_p Platform.path_for folder
 
-        CrazyFunJava.ant.java :classname => "com.google.javascript.jscomp.CommandLineRunner", :failonerror => true do
-          classpath do
-            pathelement :path =>  "third_party/closure/bin/compiler.jar"
-          end
-          arg :line => flags.join(" ")
-        end
+        cmd = "java -cp third_party/closure/bin/compiler.jar com.google.javascript.jscomp.CommandLineRunner " <<
+          flags.join(" ")
+
+        sh cmd
       end
     end
   end
@@ -830,9 +819,9 @@ module Javascript
         formatting =
             (ENV['pretty_print'] == 'true') ?  "--formatting=PRETTY_PRINT" : ""
 
-        cmd = "" <<
+        cmd = "java -cp third_party/closure/bin/compiler.jar com.google.javascript.jscomp.CommandLineRunner " <<
             "--js_output_file=#{output} " <<
-            "--output_wrapper='#{wrapper}' " <<
+            "--output_wrapper=\"#{wrapper}\" " <<
             "--compilation_level=#{compilation_level(minify)} " <<
             "--define=goog.NATIVE_ARRAY_PROTOTYPES=false " <<
             "--define=bot.json.NATIVE_JSON=false " <<
@@ -868,12 +857,7 @@ module Javascript
 
         mkdir_p File.dirname(output)
 
-        CrazyFunJava.ant.java :classname => "com.google.javascript.jscomp.CommandLineRunner", :fork => false, :failonerror => true do
-          classpath do
-            pathelement :path =>  "third_party/closure/bin/compiler.jar"
-          end
-          arg :line => cmd
-        end
+        sh cmd
       end
 
       output_task = Rake::Task[output]
