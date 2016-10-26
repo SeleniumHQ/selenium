@@ -1,0 +1,35 @@
+js_library(name = 'deps',
+  srcs = glob([ '*.js' ]),
+  deps = [ '//javascript/atoms:all_js' ])
+
+js_fragment(name = 'find_element',
+  module = 'webdriver.ie',
+  function = 'webdriver.ie.findElement',
+  deps = [ ':deps' ])
+
+js_fragment(name = 'find_elements',
+  module = 'webdriver.ie',
+  function = 'webdriver.ie.findElements',
+  deps = [ ':deps' ])
+
+js_fragment(name = 'is_in_parent_overflow',
+  module = 'webdriver.ie',
+  function = 'webdriver.ie.isInParentOverflow',
+  deps = [ ':deps' ])
+
+java_test(
+  name = 'atoms-ie',
+  vm_args = [
+    '-Dselenium.browser=ie',
+    '-Djs.test.timeout=20',
+    '-Djs.test.dir=%s' % get_base_path(),
+  ],
+  test_classes = [
+    'org.openqa.selenium.javascript.ClosureTestSuite',
+  ],
+  deps = [
+    '//java/client/test/org/openqa/selenium/javascript:javascript',
+    '//java/client/src/org/openqa/selenium/ie:ie',
+    '//java/client/src/org/openqa/selenium/edge:edge',
+  ],
+)
