@@ -12,7 +12,7 @@ The `selenium` package is used to automate web browser interaction from Python.
 +-----------+-------------------------------------------------------------------------------------+
 | **Home**: | http://www.seleniumhq.org                                                           |
 +-----------+-------------------------------------------------------------------------------------+
-| **Docs**: | `selenium package API <http://seleniumhq.github.io/selenium/docs/api/py/api.html>`_ |
+| **Docs**: | `selenium package API <https://seleniumhq.github.io/selenium/docs/api/py/api.html>`_ |
 +-----------+-------------------------------------------------------------------------------------+
 | **Dev**:  | https://github.com/SeleniumHQ/Selenium                                              |
 +-----------+-------------------------------------------------------------------------------------+
