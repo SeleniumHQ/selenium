@@ -55,7 +55,7 @@ copyright = '2011, plightbo, simon.m.stewart, hbchai, jrhuggins, et al.'
 # built documents.
 #
 # The short X.Y version.
-version = '2.0'
+version = '3.0'
 # The full version, including alpha/beta/rc tags.
 release = version
 
