@@ -32,7 +32,7 @@ Supported Python Versions
 Installing
 ==========
 
-If you have `pip <http://www.pip-installer.org>`_ on your system, you can simply install or upgrade the Python bindings::
+If you have `pip <https://pip.pypa.io/>`_ on your system, you can simply install or upgrade the Python bindings::
 
     pip install -U selenium
 
