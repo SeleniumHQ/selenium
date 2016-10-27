@@ -113,6 +113,11 @@ public class Hub {
 
     handler.addServlet(TestSessionStatusServlet.class.getName(), "/grid/api/testsession/*");
 
+    //User facing API V1 end points
+    for (APIEndpointRegistry.EndPoint endpoint : APIEndpointRegistry.getEndpoints()) {
+      handler.addServlet(endpoint.getClassName(), endpoint.getServerRegistrationPermalink());
+    }
+
     // add optional default servlets
     if (!config.isWithOutServlet(ResourceServlet.class)) {
       handler.addServlet(ResourceServlet.class.getName(), "/grid/resources/*");
@@ -165,13 +170,6 @@ public class Hub {
       root.setAttribute(Registry.KEY, registry);
 
       addDefaultServlets(root);
-
-
-      //User facing API V1 end points
-      for(APIEndpointRegistry.EndPoint endpoint : APIEndpointRegistry.getEndpoints()){
-        root.addServlet(endpoint.getClassName(), endpoint.getServerRegistrationPermalink());
-      }
-      //END User facing API V1 end points
 
       // Load any additional servlets provided by the user.
       for (Map.Entry<String, Class<? extends Servlet>> entry : extraServlet.entrySet()) {
