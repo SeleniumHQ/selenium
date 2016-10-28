@@ -17,20 +17,16 @@
 
 package org.openqa.grid.web.servlet.api.v1.utils;
 
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.codec.binary.StringUtils;
+import java.util.Base64;
 
 public class ProxyIdUtil {
 
-  public static final String UTF_8 = "UTF-8";
-
   public static String encodeId(String input) {
-    byte[] base64ProxyUrl =  Base64.encodeBase64(input.getBytes());
-    return StringUtils.newString(base64ProxyUrl, UTF_8);
+    return Base64.getEncoder().encodeToString(input.getBytes());
   }
 
   public static String decodeId(String base64EncodedString) {
-    return new String(Base64.decodeBase64(base64EncodedString));
+    return new String(Base64.getDecoder().decode(base64EncodedString));
   }
 
 }
