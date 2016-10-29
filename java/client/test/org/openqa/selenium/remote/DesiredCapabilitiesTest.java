@@ -120,4 +120,35 @@ public class DesiredCapabilitiesTest {
     assertEquals(caps.getCapability(CapabilityType.PLATFORM), "FreeBSD");
   }
 
+  @Test
+  public void shouldShortenLongValues() {
+    Map<String, Object> capabilitiesMap = new HashMap<String, Object>() {{
+      put("key", createString(1025));
+    }};
+
+    DesiredCapabilities caps = new DesiredCapabilities(capabilitiesMap);
+    assertEquals(caps.toString().length(), 53);
+  }
+
+  @Test
+  public void shouldShortenLongEnclosedValues() {
+    Map<String, Object> capabilitiesMap = new HashMap<String, Object>() {{
+      put("key", new HashMap<String, String>() {{
+        put("subkey", createString(1025));
+      }});
+    }};
+
+    DesiredCapabilities caps = new DesiredCapabilities(capabilitiesMap);
+    System.out.println(caps.toString());
+    assertEquals(caps.toString().length(), 62);
+  }
+
+  private String createString(int length) {
+    StringBuilder outputBuffer = new StringBuilder(length);
+    for (int i = 0; i < length; i++){
+      outputBuffer.append("x");
+    }
+    return outputBuffer.toString();
+  }
+
 }

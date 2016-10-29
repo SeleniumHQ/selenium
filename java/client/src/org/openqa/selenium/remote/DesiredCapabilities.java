@@ -265,19 +265,26 @@ public class DesiredCapabilities implements Serializable, Capabilities {
 
   @Override
   public String toString() {
-    Map<String, String> map = Maps.newHashMap();
+    return String.format("Capabilities [%s]", shortenMapValues(capabilities));
+  }
 
-    for (Map.Entry<String, ?> entry : capabilities.entrySet()) {
-      String value = String.valueOf(entry.getValue());
-      if ("firefox_profile".equals(entry.getKey())) {
-        if (value.length() > 32) {
+  private Map<String, Object> shortenMapValues(Map<String, Object> map) {
+    Map<String, Object> newMap = Maps.newHashMap();
+
+    for (Map.Entry<String, Object> entry : map.entrySet()) {
+      if (entry.getValue() instanceof Map) {
+        newMap.put(entry.getKey(),
+                   shortenMapValues((Map<String, Object>) entry.getValue()));
+      } else {
+        String value = String.valueOf(entry.getValue());
+        if (value.length() > 1024) {
           value = value.substring(0, 29) + "...";
         }
+        newMap.put(entry.getKey(), value);
       }
-      map.put(entry.getKey(), value);
     }
 
-    return String.format("Capabilities [%s]", map);
+    return newMap;
   }
 
   @Override
