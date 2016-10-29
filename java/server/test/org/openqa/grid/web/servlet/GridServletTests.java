@@ -24,7 +24,8 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
   DisplayHelpServletTest.class,
   ResourceServletTest.class,
-  ConsoleServletTest.class
+  ConsoleServletTest.class,
+  RegistrationServletTest.class
 })
 public class GridServletTests {
 }

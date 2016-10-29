@@ -17,6 +17,8 @@
 
 package org.openqa.grid.web.servlet;
 
+import com.google.gson.JsonObject;
+
 import org.openqa.testing.FakeHttpServletRequest;
 import org.openqa.testing.FakeHttpServletResponse;
 import org.openqa.testing.UrlInfo;
@@ -39,7 +41,15 @@ public class BaseServletTest {
 
   protected FakeHttpServletResponse sendCommand(String method, String commandPath)
     throws IOException, ServletException {
+    return sendCommand(method, commandPath, null);
+  }
+
+  protected FakeHttpServletResponse sendCommand(String method, String commandPath,
+                                              JsonObject parameters) throws IOException, ServletException {
     FakeHttpServletRequest request = new FakeHttpServletRequest(method, createUrl(commandPath));
+    if (parameters != null) {
+      request.setBody(parameters.toString());
+    }
     FakeHttpServletResponse response = new FakeHttpServletResponse();
     servlet.service(request, response);
     return response;
