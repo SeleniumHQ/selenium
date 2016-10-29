@@ -91,12 +91,12 @@ public class ConsoleServlet extends RegistryBasedServlet {
     builder.append("<html>");
     builder.append("<head>");
     builder
-        .append("<script src='/grid/resources/org/openqa/grid/images/jquery-1.6.1.min.js'></script>");
+        .append("<script src='/grid/resources/org/openqa/grid/images/jquery-3.1.1.min.js'></script>");
 
-    builder.append("<script src='/grid/resources/org/openqa/grid/images/console-beta.js'></script>");
+    builder.append("<script src='/grid/resources/org/openqa/grid/images/consoleservlet.js'></script>");
 
     builder
-        .append("<link href='/grid/resources/org/openqa/grid/images/console-beta.css' rel='stylesheet' type='text/css' />");
+        .append("<link href='/grid/resources/org/openqa/grid/images/consoleservlet.css' rel='stylesheet' type='text/css' />");
     builder
         .append("<link href='/grid/resources/org/openqa/grid/images/favicon.ico' rel='icon' type='image/x-icon' />");
 
@@ -116,7 +116,7 @@ public class ConsoleServlet extends RegistryBasedServlet {
 
     builder.append("<body>");
 
-    builder.append("<div id='main_content'>");
+    builder.append("<div id='main-content'>");
 
     builder.append(getHeader());
 
@@ -133,7 +133,7 @@ public class ConsoleServlet extends RegistryBasedServlet {
 
 
 
-    builder.append("<div id='leftColumn'>");
+    builder.append("<div id='left-column'>");
     for (int i = 0; i < leftColumnSize; i++) {
       builder.append(nodes.get(i));
     }
@@ -141,7 +141,7 @@ public class ConsoleServlet extends RegistryBasedServlet {
 
     builder.append("</div>");
 
-    builder.append("<div id='rightColumn'>");
+    builder.append("<div id='right-column'>");
     for (int i = leftColumnSize; i < nodes.size(); i++) {
       builder.append(nodes.get(i));
     }
@@ -217,7 +217,7 @@ public class ConsoleServlet extends RegistryBasedServlet {
     StringBuilder builder = new StringBuilder();
 
     GridHubConfiguration config = getRegistry().getConfiguration();
-    builder.append("<div  id='hubConfig'>");
+    builder.append("<div  id='hub-config'>");
     builder.append("<b>Config for the hub :</b><br/>");
     builder.append(prettyHtmlPrint(config));
 

@@ -49,9 +49,9 @@ body {
 }
 
 #content {
-  width: 900px;
-  margin-left: auto;
-  margin-right: auto
+  width: 90%;
+  margin-left: 5%;
+  margin-right: 5%;
 }
 
 #content-body {
