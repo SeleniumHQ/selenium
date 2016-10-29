@@ -12,7 +12,6 @@
       "seleniumProtocol": "WebDriver"
     },
     {
-      "platform": "WINDOWS",
       "browserName": "internet explorer",
       "maxInstances": 1,
       "seleniumProtocol": "WebDriver"
