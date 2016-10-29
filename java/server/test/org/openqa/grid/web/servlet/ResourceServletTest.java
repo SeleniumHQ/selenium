@@ -40,7 +40,8 @@ public class ResourceServletTest extends BaseServletTest {
 
   @Test
   public void testGetResourceSuccess() throws IOException, ServletException {
-    FakeHttpServletResponse response = sendCommand("GET", "/org/openqa/grid/images/console-beta.css");
+    FakeHttpServletResponse response = sendCommand("GET",
+                                                   "/org/openqa/grid/images/consoleservlet.css");
     assertEquals(HttpServletResponse.SC_OK, response.getStatus());
     assertNotNull(response.getBody());
   }

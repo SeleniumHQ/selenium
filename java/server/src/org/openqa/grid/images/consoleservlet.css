@@ -1,0 +1,216 @@
+* {
+  padding: 0px;
+  margin: 0px;
+}
+
+body {
+  background:
+    url("/grid/resources/org/openqa/grid/images/blue-background-gradient.png")
+    repeat-x scroll left top white;
+  color: #000000;
+  font-family: verdana, sans-serif;
+  font-size: small;
+  margin-top: 20px;
+  min-width: 900px;
+}
+
+h1,h2,h3,h4,h5,h6 {
+  border-bottom: 1px solid #CCCCCC;
+  clear: left;
+  font-family: arial, verdana, sans-serif;
+  margin: 1em 0 0.2em;
+}
+
+#header h2 {
+  border: none;
+  color: white;
+  margin-left: 75px;
+  font-weight: bold;
+  font-size: 150%;
+  font-family: verdana, sans-serif;
+}
+
+#main-content {
+  width: 90%;
+  margin-right: 5%;
+  margin-left: 5%;
+}
+
+#header {
+  margin-bottom: 0.5em;
+}
+
+li {
+  display: inline;
+  margin: 0;
+  padding: 0 20px 0 0;
+}
+
+#header {
+  background-color: #455372;
+  border-radius: 10px;
+  height: 3em;
+  min-height: 39px;
+  padding: 15px 0;
+  position: relative;
+}
+
+#header div {
+  bottom: 0;
+  list-style: none outside none;
+  margin: 0;
+  padding: 0 15px 0 0;
+  position: absolute;
+  right: 0;
+  width: auto;
+  z-index: 90;
+}
+
+#header h1 {
+  border: none;
+  font-size: 2px;
+  height: 8px;
+  left: 0;
+  margin: 0;
+  position: absolute;
+  top: 0;
+  z-index: 100;
+}
+
+#header h1 a {
+  background: url("/grid/resources/org/openqa/grid/images/selenium.png")
+              no-repeat scroll 0 0 transparent;
+  display: block;
+  height: 64px;
+  text-decoration: none;
+  text-indent: 200em;
+  width: 100px;
+}
+
+#left-column {
+  width: 49%;
+  float: left;
+  border-right: 1px rgb(216, 230, 240) solid;
+}
+
+#right-column {
+  width: 49%;
+  float: right;
+}
+
+li {
+  float: left;
+  margin: 0 1px 0 0;
+  padding: 0 6px 0 0;
+}
+
+ul a {
+  color: #FFFFFF;
+  display: block;
+  float: left;
+  font-weight: bold;
+  padding: 4px 4px 4px 4px;
+  text-decoration: none;
+}
+
+.tabs ul {
+  margin: 0px;
+  padding: 0px;
+}
+
+.tabs li {
+  float: left;
+  display: inline;
+  margin-right: 5px;
+  height: 32px;
+  overflow: hidden;
+}
+
+.tabs li a {
+  display: block;
+  line-height: 32px;
+  height: 32px;
+}
+
+.tabs {
+  height: 32px;
+  width: 100%;
+  margin-top: 12px;
+  margin-left: 4%;
+}
+
+.content {
+  background: white;
+  width: 96%;
+  margin-left: 1%;
+  margin-right: 1%;
+  margin-bottom: 1%;
+  padding: 1%;
+}
+
+.proxy {
+  width: 98%;
+  background: rgb(216, 230, 240);
+  border-bottom: 1px solid rgb(216, 230, 240);
+  margin-bottom: 9px;
+  overflow: hidden;
+}
+
+.proxyname {
+  background: #515358;
+  color: #FFFFFF;
+  width: 100%;
+  padding-left: 3%;
+}
+
+.proxyid {
+  background: rgb(116, 127, 150);
+  color: #FFFFFF;
+  width: 100%;
+  padding-left: 5%;
+}
+
+.tabs a:hover {
+  background: #515358;
+  border-top: 2px solid #414348;
+}
+
+.tabs a {
+  background: #414348;
+  border-top: 2px solid #414348;
+}
+
+.selected a {
+  background: white;
+  border-top: 2px solid white;
+  color: #515358;
+  display: block;
+  font-weight: bold;
+  padding: 4px 4px 4px 4px;
+  text-decoration: none;
+}
+
+.selected a:hover {
+  background: white;
+  border-top: 2px solid orange;
+  color: #515358;
+  display: block;
+  font-weight: bold;
+  padding: 4px 4px 4px 4px;
+  text-decoration: none;
+}
+
+.clearfix {
+  clear: both;
+  height: 1px;
+  overflow: hidden;
+}
+
+#hub-config {
+  min-width:55%;
+}
+
+a#helplink {
+  text-decoration: none;
+  color: #FFF;
+}
