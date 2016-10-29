@@ -14,6 +14,8 @@
   for compatibility with the W3C spec.
 * Update the `selenium-webdriver/firefox` module to use geckodriver's
   "moz:firefoxOptions" dictionary for Firefox-specific configuration values.
+* Extending the `selenium-webdriver/testing` module to support tests defined
+  using generator functions.
 
 
 ### API Changes

@@ -156,6 +156,49 @@ describe('Mocha async "done" support', function() {
 
 });
 
+describe('generator support', function() {
+  let arr;
+
+  beforeEach(() => arr = []);
+  afterEach(() => assert.deepEqual(arr, [0, 1, 2, 3]));
+
+  test.it('sync generator', function* () {
+    arr.push(yield arr.length);
+    arr.push(yield arr.length);
+    arr.push(yield arr.length);
+    arr.push(yield arr.length);
+  });
+
+  test.it('async generator', function* () {
+    arr.push(yield Promise.resolve(arr.length));
+    arr.push(yield Promise.resolve(arr.length));
+    arr.push(yield Promise.resolve(arr.length));
+    arr.push(yield Promise.resolve(arr.length));
+  });
+
+  test.it('generator returns promise', function*() {
+    arr.push(yield Promise.resolve(arr.length));
+    arr.push(yield Promise.resolve(arr.length));
+    arr.push(yield Promise.resolve(arr.length));
+    setTimeout(_ => arr.push(arr.length), 10);
+    return new Promise((resolve) => setTimeout(_ => resolve(), 25));
+  });
+
+  describe('generator runs with proper "this" context', () => {
+    before(function() { this.values = [0, 1, 2, 3]; });
+    test.it('', function*() {
+      arr = this.values;
+    });
+  });
+
+  it('generator function must not take a callback', function() {
+    arr = [0, 1, 2, 3];  // For teardown hook.
+    assert.throws(_ => {
+      test.it('', function*(done){});
+    }, TypeError);
+  });
+});
+
 describe('ControlFlow and "done" work together', function() {
    var flow, order;
    before(function() {
@@ -170,9 +213,9 @@ describe('ControlFlow and "done" work together', function() {
          order.push(4);
       });
       done();
-   })
+   });
 
    after(function() {
       assert.deepEqual([1, 2, 3, 4], order);
-   })
+   });
 });
