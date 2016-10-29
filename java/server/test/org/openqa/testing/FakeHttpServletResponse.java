@@ -34,6 +34,7 @@ public class FakeHttpServletResponse extends HeaderContainer
   private final StringWriter stringWriter = new StringWriter();
   private final ServletOutputStream servletOutputStream =
       new StringServletOutputStream(stringWriter);
+  private final PrintWriter printWriter = new PrintWriter(servletOutputStream);
   private int status = HttpServletResponse.SC_OK;
 
   public int getStatus() {
@@ -114,7 +115,7 @@ public class FakeHttpServletResponse extends HeaderContainer
   }
 
   public PrintWriter getWriter() throws IOException {
-    throw new UnsupportedOperationException();
+    return printWriter;
   }
 
   public void setCharacterEncoding(String s) {
