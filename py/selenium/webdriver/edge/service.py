@@ -15,14 +15,43 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from subprocess import PIPE
 from selenium.webdriver.common import service
 
 
 class Service(service.Service):
-    def __init__(self, executable_path, port=0, log_file=PIPE):
-        service.Service.__init__(self, executable_path, port=port, log_file=log_file,
-                                 start_error_message="Please download from http://go.microsoft.com/fwlink/?LinkId=619687 ")
+
+    def __init__(self, executable_path, port=0, verbose=False, log_path=None):
+        """
+        Creates a new instance of the EdgeDriver service.
+
+        EdgeDriver provides an interface for Microsoft WebDriver to use
+        with Microsoft Edge.
+
+        :param executable_path: Path to the Microsoft WebDriver binary.
+        :param port: Run the remote service on a specified port.
+            Defaults to 0, which binds to a random open port of the
+            system's choosing.
+        :verbose: Whether to make the webdriver more verbose (passes the
+            --verbose option to the binary). Defaults to False.
+        :param log_path: Optional path for the webdriver binary to log to.
+            Defaults to None which disables logging.
+
+        """
+
+        self.service_args = []
+        if verbose:
+            self.service_args.append("--verbose")
+
+        params = {
+            "executable": executable_path,
+            "port": port,
+            "start_error_message": "Please download from http://go.microsoft.com/fwlink/?LinkId=619687"
+        }
+
+        if log_path:
+            params["log_file"] = open(log_path, "a+")
+
+        service.Service.__init__(self, **params)
 
     def command_line_args(self):
-        return ["--port=%d" % self.port]
+        return ["--port=%d" % self.port] + self.service_args
