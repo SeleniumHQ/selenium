@@ -20,7 +20,7 @@
     "url": "https://github.com/SeleniumHQ/selenium.git"
   },
   "engines": {
-    "node": ">= 6.9.x"
+    "node": ">= 6.9.0"
   },
   "dependencies": {
     "adm-zip": "0.4.4",
@@ -30,7 +30,7 @@
   },
   "devDependencies": {
     "express": "^4.11.2",
-    "mocha": ">= 1.21.x",
+    "mocha": ">= 1.21.0",
     "multer": "^0.1.7",
     "promises-aplus-tests": "^2.1.0",
     "serve-index": "^1.6.1",
