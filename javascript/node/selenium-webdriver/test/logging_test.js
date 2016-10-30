@@ -84,7 +84,7 @@ test.suite(function(env) {
           .then(function(entries) {
             assert(entries.length).equalTo(1);
             assert(entries[0].level.name).equalTo('SEVERE');
-            assert(entries[0].message).endsWith('and this is an error');
+            assert(entries[0].message).matches(/.*\"?and this is an error\"?/);
           });
     });
 
@@ -108,13 +108,13 @@ test.suite(function(env) {
           .then(function(entries) {
             assert(entries.length).equalTo(3);
             assert(entries[0].level.name).equalTo('DEBUG');
-            assert(entries[0].message).endsWith('hello');
+            assert(entries[0].message).matches(/.*\"?hello\"?/);
 
             assert(entries[1].level.name).equalTo('WARNING');
-            assert(entries[1].message).endsWith('this is a warning');
+            assert(entries[1].message).matches(/.*\"?this is a warning\"?/);
 
             assert(entries[2].level.name).equalTo('SEVERE');
-            assert(entries[2].message).endsWith('and this is an error');
+            assert(entries[2].message).matches(/.*\"?and this is an error\"?/);
           });
     });
 
