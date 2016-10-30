@@ -265,14 +265,14 @@ class WebDriver {
    *     schedule commands through. Defaults to the active flow object.
    */
   constructor(session, executor, opt_flow) {
+    /** @private {!promise.ControlFlow} */
+    this.flow_ = opt_flow || promise.controlFlow();
+
     /** @private {!promise.Thenable<!Session>} */
-    this.session_ = promise.fulfilled(session);
+    this.session_ = this.flow_.promise(resolve => resolve(session));
 
     /** @private {!command.Executor} */
     this.executor_ = executor;
-
-    /** @private {!promise.ControlFlow} */
-    this.flow_ = opt_flow || promise.controlFlow();
 
     /** @private {input.FileDetector} */
     this.fileDetector_ = null;
@@ -1717,7 +1717,7 @@ class WebElement {
     this.driver_ = driver;
 
     /** @private {!promise.Thenable<string>} */
-    this.id_ = promise.fulfilled(id);
+    this.id_ = driver.controlFlow().promise(resolve => resolve(id));
   }
 
   /**
@@ -1769,7 +1769,7 @@ class WebElement {
    */
   static equals(a, b) {
     if (a === b) {
-      return promise.fulfilled(true);
+      return a.driver_.controlFlow().promise(resolve => resolve(true));
     }
     let ids = [a.getId(), b.getId()];
     return promise.all(ids).then(function(ids) {
@@ -2278,7 +2278,7 @@ class Alert {
     this.driver_ = driver;
 
     /** @private {!promise.Thenable<string>} */
-    this.text_ = promise.fulfilled(text);
+    this.text_ = driver.controlFlow().promise(resolve => resolve(text));
   }
 
   /**

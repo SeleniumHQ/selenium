@@ -91,13 +91,13 @@ test.suite(function(env) {
   describe('safaridriver', function() {
     let service;
 
-    test.afterEach(function() {
+    afterEach(function() {
       if (service) {
         return service.kill();
       }
     });
 
-    test.it('can start safaridriver', function() {
+    it('can start safaridriver', function() {
       service = new safari.ServiceBuilder().build();
 
       return service.start().then(function(url) {

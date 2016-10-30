@@ -21,8 +21,7 @@ const spawn = require('child_process').spawn,
     fs = require('fs'),
     path = require('path');
 
-const isDevMode = require('../devmode'),
-    promise = require('../promise');
+const isDevMode = require('../devmode');
 
 var projectRoot = path.normalize(path.join(__dirname, '../../../../..'));
 
@@ -69,7 +68,7 @@ Build.prototype.onlyOnce = function() {
 
 /**
  * Executes the build.
- * @return {!webdriver.promise.Promise} A promise that will be resolved when
+ * @return {!Promise} A promise that will be resolved when
  *     the build has completed.
  * @throws {Error} If no targets were specified.
  */
@@ -86,7 +85,7 @@ Build.prototype.go = function() {
     });
 
     if (!targets.length) {
-      return promise.fulfilled();
+      return Promise.resolve();
     }
   }
 
@@ -100,7 +99,7 @@ Build.prototype.go = function() {
     cmd = path.join(projectRoot, 'go');
   }
 
-  var result = promise.defer();
+  var result = Promise.defer();
   spawn(cmd, args, {
     cwd: projectRoot,
     env: process.env,
@@ -110,7 +109,7 @@ Build.prototype.go = function() {
       targets.forEach(function(target) {
         builtTargets[target] = 1;
       });
-      return result.fulfill();
+      return result.resolve();
     }
 
     var msg = 'Unable to build artifacts';

@@ -84,7 +84,7 @@ describe('until', function() {
     it('byWebElementPromise', function() {
       executor.on(CommandName.SWITCH_TO_FRAME, () => true);
       var el = new webdriver.WebElementPromise(driver,
-          promise.fulfilled(new webdriver.WebElement(driver, {ELEMENT: 1234})));
+          Promise.resolve(new webdriver.WebElement(driver, {ELEMENT: 1234})));
       return driver.wait(until.ableToSwitchToFrame(el), 100);
     });
 

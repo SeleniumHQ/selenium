@@ -96,7 +96,7 @@ test.suite(function(env) {
 
   var driver;
   test.beforeEach(function() { driver = null; });
-  test.afterEach(function() { driver && driver.quit(); });
+  test.afterEach(function() { return driver && driver.quit(); });
 
   function createDriver(proxy) {
     // For Firefox we need to explicitly enable proxies for localhost by
@@ -104,10 +104,11 @@ test.suite(function(env) {
     let profile = new firefox.Profile();
     profile.setPreference('network.proxy.no_proxies_on', '');
 
-    driver = env.builder()
+    return env.builder()
         .setFirefoxOptions(new firefox.Options().setProfile(profile))
         .setProxy(proxy)
-        .build();
+        .buildAsync()
+        .then(d => driver = d);
   }
 
   // Proxy support not implemented.
@@ -116,14 +117,14 @@ test.suite(function(env) {
     // phantomjs 1.9.1 in webdriver mode does not appear to respect proxy
     // settings.
     test.ignore(env.browsers(Browser.PHANTOM_JS)).
-    it('can configure HTTP proxy host', function() {
-      createDriver(proxy.manual({
+    it('can configure HTTP proxy host', function*() {
+      yield createDriver(proxy.manual({
         http: proxyServer.host()
       }));
 
-      driver.get(helloServer.url());
-      assert(driver.getTitle()).equalTo('Proxy page');
-      assert(driver.findElement({tagName: 'h3'}).getText()).
+      yield driver.get(helloServer.url());
+      yield assert(driver.getTitle()).equalTo('Proxy page');
+      yield assert(driver.findElement({tagName: 'h3'}).getText()).
           equalTo('This is the proxy landing page');
     });
 
@@ -134,20 +135,20 @@ test.suite(function(env) {
         Browser.FIREFOX,
         'legacy-' + Browser.FIREFOX,
         Browser.PHANTOM_JS)).
-    it('can bypass proxy for specific hosts', function() {
-      createDriver(proxy.manual({
+    it('can bypass proxy for specific hosts', function*() {
+      yield createDriver(proxy.manual({
         http: proxyServer.host(),
         bypass: helloServer.host()
       }));
 
-      driver.get(helloServer.url());
-      assert(driver.getTitle()).equalTo('Hello');
-      assert(driver.findElement({tagName: 'h3'}).getText()).
+      yield driver.get(helloServer.url());
+      yield assert(driver.getTitle()).equalTo('Hello');
+      yield assert(driver.findElement({tagName: 'h3'}).getText()).
           equalTo('Hello, world!');
 
-      driver.get(goodbyeServer.url());
-      assert(driver.getTitle()).equalTo('Proxy page');
-      assert(driver.findElement({tagName: 'h3'}).getText()).
+      yield driver.get(goodbyeServer.url());
+      yield assert(driver.getTitle()).equalTo('Proxy page');
+      yield assert(driver.findElement({tagName: 'h3'}).getText()).
           equalTo('This is the proxy landing page');
     });
 
@@ -159,17 +160,17 @@ test.suite(function(env) {
   test.ignore(env.browsers(
       Browser.IE, Browser.OPERA, Browser.PHANTOM_JS, Browser.SAFARI)).
   describe('pac proxy settings', function() {
-    test.it('can configure proxy through PAC file', function() {
-      createDriver(proxy.pac(proxyServer.url('/proxy.pac')));
+    test.it('can configure proxy through PAC file', function*() {
+      yield createDriver(proxy.pac(proxyServer.url('/proxy.pac')));
 
-      driver.get(helloServer.url());
-      assert(driver.getTitle()).equalTo('Proxy page');
-      assert(driver.findElement({tagName: 'h3'}).getText()).
+      yield driver.get(helloServer.url());
+      yield assert(driver.getTitle()).equalTo('Proxy page');
+      yield assert(driver.findElement({tagName: 'h3'}).getText()).
           equalTo('This is the proxy landing page');
 
-      driver.get(goodbyeServer.url());
-      assert(driver.getTitle()).equalTo('Goodbye');
-      assert(driver.findElement({tagName: 'h3'}).getText()).
+      yield driver.get(goodbyeServer.url());
+      yield assert(driver.getTitle()).equalTo('Goodbye');
+      yield assert(driver.findElement({tagName: 'h3'}).getText()).
           equalTo('Goodbye, world!');
     });
   });

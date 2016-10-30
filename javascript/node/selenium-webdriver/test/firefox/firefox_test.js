@@ -44,7 +44,7 @@ test.suite(function(env) {
 
       test.afterEach(function() {
         if (driver) {
-          driver.quit();
+          return driver.quit();
         }
       });
 
@@ -67,7 +67,7 @@ test.suite(function(env) {
         });
       }
 
-      test.it('can start Firefox with custom preferences', function() {
+      test.it('can start Firefox with custom preferences', function*() {
         var profile = new firefox.Profile();
         profile.setPreference('general.useragent.override', 'foo;bar');
 
@@ -77,9 +77,9 @@ test.suite(function(env) {
             setFirefoxOptions(options).
             build();
 
-        driver.get('data:text/html,<html><div>content</div></html>');
+        yield driver.get('data:text/html,<html><div>content</div></html>');
 
-        var userAgent = driver.executeScript(
+        var userAgent = yield driver.executeScript(
             'return window.navigator.userAgent');
         assert(userAgent).equalTo('foo;bar');
       });
@@ -90,11 +90,13 @@ test.suite(function(env) {
 
         let options = new firefox.Options().setProfile(profile);
 
-        return runWithFirefoxDev(options, function() {
-          loadJetpackPage(driver,
+        return runWithFirefoxDev(options, function*() {
+          yield loadJetpackPage(driver,
               'data:text/html;charset=UTF-8,<html><div>content</div></html>');
-          assert(driver.findElement({id: 'jetpack-sample-banner'}).getText())
-              .equalTo('Hello, world!');
+
+          let text =
+              yield driver.findElement({id: 'jetpack-sample-banner'}).getText();
+          assert(text).equalTo('Hello, world!');
         });
       });
 
@@ -104,10 +106,13 @@ test.suite(function(env) {
 
         let options = new firefox.Options().setProfile(profile);
 
-        return runWithFirefoxDev(options, function() {
-          driver.get('data:text/html,<html><div>content</div></html>');
-          assert(driver.findElement({id: 'sample-extension-footer'}).getText())
-              .equalTo('Goodbye');
+        return runWithFirefoxDev(options, function*() {
+          yield driver.get('data:text/html,<html><div>content</div></html>');
+
+          let footer =
+              yield driver.findElement({id: 'sample-extension-footer'});
+          let text = yield footer.getText();
+          assert(text).equalTo('Goodbye');
         });
       });
 
@@ -118,13 +123,18 @@ test.suite(function(env) {
 
         let options = new firefox.Options().setProfile(profile);
 
-        return runWithFirefoxDev(options, function() {
-          loadJetpackPage(driver,
+        return runWithFirefoxDev(options, function*() {
+          yield loadJetpackPage(driver,
               'data:text/html;charset=UTF-8,<html><div>content</div></html>');
-          assert(driver.findElement({id: 'jetpack-sample-banner'}).getText())
-              .equalTo('Hello, world!');
-          assert(driver.findElement({id: 'sample-extension-footer'}).getText())
-              .equalTo('Goodbye');
+
+          let banner =
+              yield driver.findElement({id: 'jetpack-sample-banner'}).getText();
+          assert(banner).equalTo('Hello, world!');
+
+          let footer =
+              yield driver.findElement({id: 'sample-extension-footer'})
+                  .getText();
+          assert(footer).equalTo('Goodbye');
         });
       });
 
@@ -132,7 +142,7 @@ test.suite(function(env) {
         // On linux the jetpack extension does not always run the first time
         // we load a page. If this happens, just reload the page (a simple
         // refresh doesn't appear to work).
-        driver.wait(function() {
+        return driver.wait(function() {
           driver.get(url);
           return driver.findElements({id: 'jetpack-sample-banner'})
               .then(found => found.length > 0);
@@ -144,21 +154,21 @@ test.suite(function(env) {
       var driver1, driver2;
 
       test.ignore(env.isRemote).
-      it('can start multiple sessions with single binary instance', function() {
+      it('can start multiple sessions with single binary instance', function*() {
         var options = new firefox.Options().setBinary(new firefox.Binary);
         env.builder().setFirefoxOptions(options);
-        driver1 = env.builder().build();
-        driver2 = env.builder().build();
+        driver1 = yield env.builder().buildAsync();
+        driver2 = yield env.builder().buildAsync();
         // Ok if this doesn't fail.
       });
 
-      test.afterEach(function() {
+      test.afterEach(function*() {
         if (driver1) {
-          driver1.quit();
+          yield driver1.quit();
         }
 
         if (driver2) {
-          driver2.quit();
+          yield driver2.quit();
         }
       });
     });
@@ -166,32 +176,35 @@ test.suite(function(env) {
     describe('context switching', function() {
       var driver;
 
-      test.beforeEach(function() {
-        driver = env.builder().build();
+      test.beforeEach(function*() {
+        driver = yield env.builder().buildAsync();
       });
 
       test.afterEach(function() {
         if (driver) {
-          driver.quit();
+          return driver.quit();
         }
       });
 
       test.ignore(() => !env.isMarionette).
       it('can get context', function() {
-        assert(driver.getContext()).equalTo(Context.CONTENT);
+        return assert(driver.getContext()).equalTo(Context.CONTENT);
       });
 
       test.ignore(() => !env.isMarionette).
-      it('can set context', function() {
-        driver.setContext(Context.CHROME);
-        assert(driver.getContext()).equalTo(Context.CHROME);
-        driver.setContext(Context.CONTENT);
-        assert(driver.getContext()).equalTo(Context.CONTENT);
+      it('can set context', function*() {
+        yield driver.setContext(Context.CHROME);
+        let ctxt = yield driver.getContext();
+        assert(ctxt).equalTo(Context.CHROME);
+
+        yield driver.setContext(Context.CONTENT);
+        ctxt = yield driver.getContext();
+        assert(ctxt).equalTo(Context.CONTENT);
       });
 
       test.ignore(() => !env.isMarionette).
       it('throws on unknown context', function() {
-        driver.setContext("foo").then(assert.fail, function(e) {
+        return driver.setContext("foo").then(assert.fail, function(e) {
           assert(e).instanceOf(error.InvalidArgumentError);
         });
       });

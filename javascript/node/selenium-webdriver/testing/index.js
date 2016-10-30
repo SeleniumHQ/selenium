@@ -78,8 +78,20 @@
 
 'use strict';
 
-var promise = require('..').promise;
-var flow = promise.controlFlow();
+const promise = require('..').promise;
+const flow = (function() {
+  const initial = process.env['SELENIUM_PROMISE_MANAGER'];
+  try {
+    process.env['SELENIUM_PROMISE_MANAGER'] = '1';
+    return promise.controlFlow();
+  } finally {
+    if (initial === undefined) {
+      delete process.env['SELENIUM_PROMISE_MANAGER'];
+    } else {
+      process.env['SELENIUM_PROMISE_MANAGER'] = initial;
+    }
+  }
+})();
 
 
 /**
@@ -147,19 +159,21 @@ function makeAsyncTestFn(fn) {
     const runTest = (resolve, reject) => {
       try {
         if (isAsync) {
-          const callback = err => err ? reject(err) : resolve();
-          if (isGenerator) {
-            promise.consume(fn, this, callback);
-          } else {
-            fn.call(this, callback);
-          }
+          fn.call(this, err => err ? reject(err) : resolve());
+        } else if (isGenerator) {
+          resolve(promise.consume(fn, this));
         } else {
-          resolve(isGenerator ? promise.consume(fn, this) : fn.call(this));
+          resolve(fn.call(this));
         }
       } catch (ex) {
         reject(ex);
       }
     };
+
+    if (!promise.USE_PROMISE_MANAGER) {
+      new Promise(runTest).then(seal(done), done);
+      return;
+    }
 
     var runnable = this.runnable();
     var mochaCallback = runnable.callback;

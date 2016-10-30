@@ -594,7 +594,7 @@ class Builder {
    * __Note:__ this method is purely a convenience wrapper around
    * {@link #build()}.
    *
-   * @return {!promise.Promise<!webdriver.WebDriver>} A promise that will be
+   * @return {!promise.Thenable<!webdriver.WebDriver>} A promise that will be
    *    fulfilled with the newly created WebDriver instance once the browser
    *    has been fully initialized.
    * @see #build()
