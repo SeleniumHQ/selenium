@@ -35,16 +35,14 @@
  *     node selenium-webdriver/example/google_search.js
  */
 
-var webdriver = require('..'),
-    By = webdriver.By,
-    until = webdriver.until;
+const {Builder, By, until} = require('..');
 
-var driver = new webdriver.Builder()
+var driver = new Builder()
     .forBrowser('firefox')
     .build();
 
-driver.get('http://www.google.com/ncr');
-driver.findElement(By.name('q')).sendKeys('webdriver');
-driver.findElement(By.name('btnG')).click();
-driver.wait(until.titleIs('webdriver - Google Search'), 1000);
-driver.quit();
+driver.get('http://www.google.com/ncr')
+    .then(_ => driver.findElement(By.name('q')).sendKeys('webdriver'))
+    .then(_ => driver.findElement(By.name('btnG')).click())
+    .then(_ => driver.wait(until.titleIs('webdriver - Google Search'), 1000))
+    .then(_ => driver.quit());

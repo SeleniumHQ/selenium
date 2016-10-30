@@ -250,8 +250,15 @@ class DriverService {
           return new Promise((fulfill, reject) => {
             let cancelToken =
                 earlyTermination.catch(e => reject(Error(e.message)));
-            return httpUtil.waitForServer(serverUrl, timeout, cancelToken)
-                .then(_ => fulfill(serverUrl));
+
+            httpUtil.waitForServer(serverUrl, timeout, cancelToken)
+                .then(_ => fulfill(serverUrl), err => {
+                  if (err instanceof promise.CancellationError) {
+                    fulfill(serverUrl);
+                  } else {
+                    reject(err);
+                  }
+                });
           });
         });
       }));

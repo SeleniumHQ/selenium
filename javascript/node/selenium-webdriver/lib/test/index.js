@@ -217,18 +217,18 @@ function suite(fn, opt_options) {
   try {
 
     // Server is only started if required for a specific config.
-    testing.after(function() {
+    after(function() {
       if (seleniumServer) {
         return seleniumServer.stop();
       }
     });
 
     browsers.forEach(function(browser) {
-      testing.describe('[' + browser + ']', function() {
+      describe('[' + browser + ']', function() {
 
         if (isDevMode && nativeRun) {
           if (browser === LEGACY_FIREFOX) {
-            testing.before(function() {
+            before(function() {
               return build.of('//javascript/firefox-driver:webdriver')
                   .onlyOnce().go();
             });
@@ -243,7 +243,7 @@ function suite(fn, opt_options) {
                 serverJar, {loopback: useLoopback});
           }
 
-          testing.before(function() {
+          before(function() {
             this.timeout(0);
             return seleniumServer.start(60 * 1000);
           });
@@ -259,14 +259,14 @@ function suite(fn, opt_options) {
 
 // GLOBAL TEST SETUP
 
-testing.before(function() {
+before(function() {
    // Do not pass register fileserver.start directly with testing.before,
    // as start takes an optional port, which before assumes is an async
    // callback.
    return fileserver.start();
 });
 
-testing.after(function() {
+after(function() {
    return fileserver.stop();
 });
 

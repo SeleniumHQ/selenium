@@ -17,6 +17,42 @@
 
 /**
  * @fileoverview
+ *
+ * > ### IMPORTANT NOTICE
+ * >
+ * > The promise manager contained in this module is in the process of being
+ * > phased out in favor of native JavaScript promises. This will be a long
+ * > process and will not be completed until there have been two major LTS Node
+ * > releases (approx. Node v10.0) that support
+ * > [async functions](https://tc39.github.io/ecmascript-asyncawait/).
+ * >
+ * > At this time, the promise manager can be disabled by setting an environment
+ * > variable, `SELENIUM_PROMISE_MANAGER=0`. In the absence of async functions,
+ * > users may use generators with the
+ * > {@link ./promise.consume promise.consume()} function to write "synchronous"
+ * > style tests:
+ * >
+ * > ```js
+ * > const {Builder, By, promise, until} = require('selenium-webdriver');
+ * >
+ * > let result = promise.consume(function* doGoogleSearch() {
+ * >   let driver = new Builder().forBrowser('firefox').build();
+ * >   yield driver.get('http://www.google.com/ncr');
+ * >   yield driver.findElement(By.name('q')).sendKeys('webdriver');
+ * >   yield driver.findElement(By.name('btnG')).click();
+ * >   yield driver.wait(until.titleIs('webdriver - Google Search'), 1000);
+ * >   yield driver.quit();
+ * > });
+ * >
+ * > result.then(_ => console.log('SUCCESS!'),
+ * >             e => console.error('FAILURE: ' + e));
+ * > ```
+ * >
+ * > The motiviation behind this change and full deprecation plan are documented
+ * > in [issue 2969](https://github.com/SeleniumHQ/selenium/issues/2969).
+ * >
+ * >
+ *
  * The promise module is centered around the {@linkplain ControlFlow}, a class
  * that coordinates the execution of asynchronous tasks. The ControlFlow allows
  * users to focus on the imperative commands for their script without worrying
@@ -643,7 +679,6 @@ function asyncRun(fn) {
   });
 }
 
-
 /**
  * @param {number} level What level of verbosity to log with.
  * @param {(string|function(this: T): string)} loggable The message to log.
@@ -836,7 +871,7 @@ function hasMarkerSymbol(object, symbol) {
  * Thenable is a promise-like object with a {@code then} method which may be
  * used to schedule callbacks on a promised value.
  *
- * @interface
+ * @record
  * @extends {IThenable<T>}
  * @template T
  */
@@ -871,8 +906,8 @@ class Thenable {
    * @param {?(function(*): (R|IThenable<R>))=} opt_errback
    *     The function to call if this promise is rejected. The function should
    *     expect a single argument: the rejection reason.
-   * @return {!ManagedPromise<R>} A new promise which will be
-   *     resolved with the result of the invoked callback.
+   * @return {!Thenable<R>} A new promise which will be resolved with the result
+   *     of the invoked callback.
    * @template R
    */
   then(opt_callback, opt_errback) {}
@@ -896,8 +931,8 @@ class Thenable {
    * @param {function(*): (R|IThenable<R>)} errback The
    *     function to call if this promise is rejected. The function should
    *     expect a single argument: the rejection reason.
-   * @return {!ManagedPromise<R>} A new promise which will be
-   *     resolved with the result of the invoked callback.
+   * @return {!Thenable<R>} A new promise which will be resolved with the result
+   *     of the invoked callback.
    * @template R
    */
   catch(errback) {}
@@ -991,6 +1026,12 @@ class ManagedPromise {
    *     this instance was created under. Defaults to the currently active flow.
    */
   constructor(resolver, opt_flow) {
+    if (!usePromiseManager()) {
+      throw TypeError(
+        'Unable to create a managed promise instance: the promise manager has'
+            + ' been disabled by the SELENIUM_PROMISE_MANAGER environment'
+            + ' variable: ' + process.env['SELENIUM_PROMISE_MANAGER']);
+    }
     getUid(this);
 
     /** @private {!ControlFlow} */
@@ -1411,19 +1452,11 @@ function isPromise(value) {
  * Creates a promise that will be resolved at a set time in the future.
  * @param {number} ms The amount of time, in milliseconds, to wait before
  *     resolving the promise.
- * @return {!ManagedPromise} The promise.
+ * @return {!Thenable} The promise.
  */
 function delayed(ms) {
-  var key;
-  return new ManagedPromise(function(fulfill) {
-    key = setTimeout(function() {
-      key = null;
-      fulfill();
-    }, ms);
-  }).catch(function(e) {
-    clearTimeout(key);
-    key = null;
-    throw e;
+  return createPromise(resolve => {
+    setTimeout(() => resolve(), ms);
   });
 }
 
@@ -1480,12 +1513,12 @@ function rejected(opt_reason) {
  * @param {!Function} fn The function to wrap.
  * @param {...?} var_args The arguments to apply to the function, excluding the
  *     final callback.
- * @return {!ManagedPromise} A promise that will be resolved with the
+ * @return {!Thenable} A promise that will be resolved with the
  *     result of the provided function's callback.
  */
 function checkedNodeCall(fn, var_args) {
   let args = Array.prototype.slice.call(arguments, 1);
-  return new ManagedPromise(function(fulfill, reject) {
+  return createPromise(function(fulfill, reject) {
     try {
       args.push(function(error, value) {
         error ? reject(error) : fulfill(value);
@@ -1560,16 +1593,15 @@ function thenFinally(promise, callback) {
  *     resolved successfully.
  * @param {Function=} opt_errback The function to call when the value is
  *     rejected.
- * @return {!ManagedPromise} A new promise.
+ * @return {!Thenable} A new promise.
  */
 function when(value, opt_callback, opt_errback) {
   if (Thenable.isImplementation(value)) {
     return value.then(opt_callback, opt_errback);
   }
 
-  return new ManagedPromise(function(fulfill) {
-    fulfill(value);
-  }).then(opt_callback, opt_errback);
+  return createPromise(resolve => resolve(value))
+      .then(opt_callback, opt_errback);
 }
 
 
@@ -1601,14 +1633,14 @@ function asap(value, callback, opt_errback) {
  *
  * @param {!Array<(T|!ManagedPromise<T>)>} arr An array of
  *     promises to wait on.
- * @return {!ManagedPromise<!Array<T>>} A promise that is
+ * @return {!Thenable<!Array<T>>} A promise that is
  *     fulfilled with an array containing the fulfilled values of the
  *     input array, or rejected with the same reason as the first
  *     rejected value.
  * @template T
  */
 function all(arr) {
-  return new ManagedPromise(function(fulfill, reject) {
+  return createPromise(function(fulfill, reject) {
     var n = arr.length;
     var values = [];
 
@@ -1662,12 +1694,12 @@ function all(arr) {
  * @template TYPE, SELF
  */
 function map(arr, fn, opt_self) {
-  return fulfilled(arr).then(function(v) {
+  return createPromise(resolve => resolve(arr)).then(v => {
     if (!Array.isArray(v)) {
       throw TypeError('not an array');
     }
     var arr = /** @type {!Array} */(v);
-    return new ManagedPromise(function(fulfill, reject) {
+    return createPromise(function(fulfill, reject) {
       var n = arr.length;
       var values = new Array(n);
       (function processNext(i) {
@@ -1720,12 +1752,12 @@ function map(arr, fn, opt_self) {
  * @template TYPE, SELF
  */
 function filter(arr, fn, opt_self) {
-  return fulfilled(arr).then(function(v) {
+  return createPromise(resolve => resolve(arr)).then(v => {
     if (!Array.isArray(v)) {
       throw TypeError('not an array');
     }
     var arr = /** @type {!Array} */(v);
-    return new ManagedPromise(function(fulfill, reject) {
+    return createPromise(function(fulfill, reject) {
       var n = arr.length;
       var values = [];
       var valuesLength = 0;
@@ -1773,7 +1805,7 @@ function filter(arr, fn, opt_self) {
  *     promise.fullyResolved(value);  // Stack overflow.
  *
  * @param {*} value The value to fully resolve.
- * @return {!ManagedPromise} A promise for a fully resolved version
+ * @return {!Thenable} A promise for a fully resolved version
  *     of the input value.
  */
 function fullyResolved(value) {
@@ -1787,7 +1819,7 @@ function fullyResolved(value) {
 /**
  * @param {*} value The value to fully resolve. If a promise, assumed to
  *     already be resolved.
- * @return {!ManagedPromise} A promise for a fully resolved version
+ * @return {!Thenable} A promise for a fully resolved version
  *     of the input value.
  */
 function fullyResolveValue(value) {
@@ -1814,13 +1846,13 @@ function fullyResolveValue(value) {
     return fullyResolveKeys(/** @type {!Object} */ (value));
   }
 
-  return fulfilled(value);
+  return createPromise(resolve => resolve(value));
 }
 
 
 /**
  * @param {!(Array|Object)} obj the object to resolve.
- * @return {!ManagedPromise} A promise that will be resolved with the
+ * @return {!Thenable} A promise that will be resolved with the
  *     input object once all of its values have been fully resolved.
  */
 function fullyResolveKeys(obj) {
@@ -1832,8 +1864,9 @@ function fullyResolveKeys(obj) {
     }
     return n;
   })();
+
   if (!numKeys) {
-    return fulfilled(obj);
+    return createPromise(resolve => resolve(obj));
   }
 
   function forEachProperty(obj, fn) {
@@ -1847,7 +1880,7 @@ function fullyResolveKeys(obj) {
   }
 
   var numResolved = 0;
-  return new ManagedPromise(function(fulfill, reject) {
+  return createPromise(function(fulfill, reject) {
     var forEachKey = isArray ? forEachElement: forEachProperty;
 
     forEachKey(obj, function(partialValue, key) {
@@ -1881,6 +1914,228 @@ function fullyResolveKeys(obj) {
 //////////////////////////////////////////////////////////////////////////////
 
 
+/**
+ * Defines methods for coordinating the execution of asynchronous tasks.
+ * @record
+ */
+class Scheduler {
+  /**
+   * Schedules a task for execution. If the task function is a generator, the
+   * task will be executed using {@link ./promise.consume consume()}.
+   *
+   * @param {function(): (T|IThenable<T>)} fn The function to call to start the
+   *     task.
+   * @param {string=} opt_description A description of the task for debugging
+   *     purposes.
+   * @return {!Thenable<T>} A promise that will be resolved with the task
+   *     result.
+   * @template T
+   */
+  execute(fn, opt_description) {}
+
+  /**
+   * Creates a new promise using the given resolver function.
+   *
+   * @param {function(
+   *             function((T|IThenable<T>|Thenable|null)=),
+   *             function(*=))} resolver
+   * @return {!Thenable<T>}
+   * @template T
+   */
+  promise(resolver) {}
+
+  /**
+   * Schedules a `setTimeout` call.
+   *
+   * @param {number} ms The timeout delay, in milliseconds.
+   * @param {string=} opt_description A description to accompany the timeout.
+   * @return {!Thenable<void>} A promise that will be resolved when the timeout
+   *     fires.
+   */
+  timeout(ms, opt_description) {}
+
+  /**
+   * Schedules a task to wait for a condition to hold.
+   *
+   * If the condition is defined as a function, it may return any value. Promies
+   * will be resolved before testing if the condition holds (resolution time
+   * counts towards the timeout). Once resolved, values are always evaluated as
+   * booleans.
+   *
+   * If the condition function throws, or returns a rejected promise, the
+   * wait task will fail.
+   *
+   * If the condition is defined as a promise, the scheduler will wait for it to
+   * settle. If the timeout expires before the promise settles, the promise
+   * returned by this function will be rejected.
+   *
+   * If this function is invoked with `timeout === 0`, or the timeout is
+   * omitted, this scheduler will wait indefinitely for the condition to be
+   * satisfied.
+   *
+   * @param {(!IThenable<T>|function())} condition The condition to poll,
+   *     or a promise to wait on.
+   * @param {number=} opt_timeout How long to wait, in milliseconds, for the
+   *     condition to hold before timing out. If omitted, the flow will wait
+   *     indefinitely.
+   * @param {string=} opt_message An optional error message to include if the
+   *     wait times out; defaults to the empty string.
+   * @return {!Thenable<T>} A promise that will be fulfilled
+   *     when the condition has been satisified. The promise shall be rejected
+   *     if the wait times out waiting for the condition.
+   * @throws {TypeError} If condition is not a function or promise or if timeout
+   *     is not a number >= 0.
+   * @template T
+   */
+  wait(condition, opt_timeout, opt_message) {}
+}
+
+
+function usePromiseManager() {
+  return process.env['SELENIUM_PROMISE_MANAGER'] === undefined
+      || !/^0|false$/i.test(process.env['SELENIUM_PROMISE_MANAGER']);
+}
+
+
+/**
+ * @param {function(
+ *             function((T|IThenable<T>|Thenable|null)=),
+ *             function(*=))} resolver
+ * @return {!Thenable<T>}
+ * @template T
+ */
+function createPromise(resolver) {
+  let ctor = usePromiseManager() ? ManagedPromise : NativePromise;
+  return new ctor(resolver);
+}
+
+
+/**
+ * @param {!Scheduler} scheduler The scheduler to use.
+ * @param {(!IThenable<T>|function())} condition The condition to poll,
+ *     or a promise to wait on.
+ * @param {number=} opt_timeout How long to wait, in milliseconds, for the
+ *     condition to hold before timing out. If omitted, the flow will wait
+ *     indefinitely.
+ * @param {string=} opt_message An optional error message to include if the
+ *     wait times out; defaults to the empty string.
+ * @return {!Thenable<T>} A promise that will be fulfilled
+ *     when the condition has been satisified. The promise shall be rejected
+ *     if the wait times out waiting for the condition.
+ * @throws {TypeError} If condition is not a function or promise or if timeout
+ *     is not a number >= 0.
+ * @template T
+ */
+function scheduleWait(scheduler, condition, opt_timeout, opt_message) {
+  let timeout = opt_timeout || 0;
+  if (typeof timeout !== 'number' || timeout < 0) {
+    throw TypeError('timeout must be a number >= 0: ' + timeout);
+  }
+
+  if (isPromise(condition)) {
+    return scheduler.execute(function() {
+      if (!timeout) {
+        return condition;
+      }
+      return scheduler.promise(function(fulfill, reject) {
+        let start = Date.now();
+        let timer = setTimeout(function() {
+          timer = null;
+          reject(Error((opt_message ? opt_message + '\n' : '') +
+                       'Timed out waiting for promise to resolve after ' +
+                       (Date.now() - start) + 'ms'));
+        }, timeout);
+
+        /** @type {Thenable} */(condition).then(
+          function(value) {
+            timer && clearTimeout(timer);
+            fulfill(value);
+          },
+          function(error) {
+            timer && clearTimeout(timer);
+            reject(error);
+          });
+      });
+    }, opt_message || '<anonymous wait: promise resolution>');
+  }
+
+  if (typeof condition !== 'function') {
+    throw TypeError('Invalid condition; must be a function or promise: ' +
+        typeof condition);
+  }
+
+  if (isGenerator(condition)) {
+    let original = condition;
+    condition = () => consume(original);
+  }
+
+  return scheduler.execute(function() {
+    var startTime = Date.now();
+    return scheduler.promise(function(fulfill, reject) {
+      pollCondition();
+
+      function pollCondition() {
+        var conditionFn = /** @type {function()} */(condition);
+        scheduler.execute(conditionFn).then(function(value) {
+          var elapsed = Date.now() - startTime;
+          if (!!value) {
+            fulfill(value);
+          } else if (timeout && elapsed >= timeout) {
+            reject(new Error((opt_message ? opt_message + '\n' : '') +
+                             'Wait timed out after ' + elapsed + 'ms'));
+          } else {
+            // Do not use asyncRun here because we need a non-micro yield
+            // here so the UI thread is given a chance when running in a
+            // browser.
+            setTimeout(pollCondition, 0);
+          }
+        }, reject);
+      }
+    });
+  }, opt_message || '<anonymous wait>');
+}
+
+
+/**
+ * A scheduler that executes all tasks immediately, with no coordination. This
+ * class is an event emitter for API compatibility with the {@link ControlFlow},
+ * however, it emits no events.
+ *
+ * @implements {Scheduler}
+ */
+class SimpleScheduler extends events.EventEmitter {
+  /** @override */
+  execute(fn) {
+    return this.promise((resolve, reject) => {
+      try {
+        if (isGenerator(fn)) {
+          consume(fn).then(resolve, reject);
+        } else {
+          resolve(fn.call(undefined));
+        }
+      } catch (ex) {
+        reject(ex);
+      }
+    });
+  }
+
+  /** @override */
+  promise(resolver) {
+    return new NativePromise(resolver);
+  }
+
+  /** @override */
+  timeout(ms) {
+    return this.promise(resolve => setTimeout(_ => resolve(), ms));
+  }
+
+  /** @override */
+  wait(condition, opt_timeout, opt_message) {
+    return scheduleWait(this, condition, opt_timeout, opt_message);
+  }
+}
+const SIMPLE_SCHEDULER = new SimpleScheduler;
+
 
 /**
  * Handles the execution of scheduled tasks, each of which may be an
@@ -1910,10 +2165,17 @@ function fullyResolveKeys(obj) {
  * Refer to the {@link ./promise} module documentation for a  detailed
  * explanation of how the ControlFlow coordinates task execution.
  *
+ * @implements {Scheduler}
  * @final
  */
 class ControlFlow extends events.EventEmitter {
   constructor() {
+    if (!usePromiseManager()) {
+      throw TypeError(
+          'Cannot instantiate control flow when the promise manager has'
+              + ' been disabled');
+    }
+
     super();
 
     /** @private {boolean} */
@@ -2083,21 +2345,7 @@ class ControlFlow extends events.EventEmitter {
     return this.activeQueue_;
   }
 
-  /**
-   * Schedules a task for execution. If there is nothing currently in the
-   * queue, the task will be executed in the next turn of the event loop. If
-   * the task function is a generator, the task will be executed using
-   * {@link ./promise.consume consume()}.
-   *
-   * @param {function(): (T|IThenable<T>)} fn The function to
-   *     call to start the task. If the function returns a promise,
-   *     this instance will wait for it to be resolved before starting the
-   *     next task.
-   * @param {string=} opt_description A description of the task.
-   * @return {!Thenable<T>} A promise that will be resolved
-   *     with the result of the action.
-   * @template T
-   */
+  /** @override */
   execute(fn, opt_description) {
     if (isGenerator(fn)) {
       let original = fn;
@@ -2119,126 +2367,21 @@ class ControlFlow extends events.EventEmitter {
     return task.promise;
   }
 
-  /**
-   * Inserts a {@code setTimeout} into the command queue. This is equivalent to
-   * a thread sleep in a synchronous programming language.
-   *
-   * @param {number} ms The timeout delay, in milliseconds.
-   * @param {string=} opt_description A description to accompany the timeout.
-   * @return {!Thenable} A promise that will be resolved with
-   *     the result of the action.
-   */
+  /** @override */
+  promise(resolver) {
+    return new ManagedPromise(resolver, this);
+  }
+
+  /** @override */
   timeout(ms, opt_description) {
-    return this.execute(function() {
-      return delayed(ms);
+    return this.execute(() => {
+      return this.promise(resolve => setTimeout(() => resolve(), ms));
     }, opt_description);
   }
 
-  /**
-   * Schedules a task that shall wait for a condition to hold. Each condition
-   * function may return any value, but it will always be evaluated as a
-   * boolean.
-   *
-   * Condition functions may schedule sub-tasks with this instance, however,
-   * their execution time will be factored into whether a wait has timed out.
-   *
-   * In the event a condition returns a ManagedPromise, the polling loop will wait for
-   * it to be resolved before evaluating whether the condition has been
-   * satisfied. The resolution time for a promise is factored into whether a
-   * wait has timed out.
-   *
-   * If the condition function throws, or returns a rejected promise, the
-   * wait task will fail.
-   *
-   * If the condition is defined as a promise, the flow will wait for it to
-   * settle. If the timeout expires before the promise settles, the promise
-   * returned by this function will be rejected.
-   *
-   * If this function is invoked with `timeout === 0`, or the timeout is
-   * omitted, the flow will wait indefinitely for the condition to be satisfied.
-   *
-   * @param {(!IThenable<T>|function())} condition The condition to poll,
-   *     or a promise to wait on.
-   * @param {number=} opt_timeout How long to wait, in milliseconds, for the
-   *     condition to hold before timing out. If omitted, the flow will wait
-   *     indefinitely.
-   * @param {string=} opt_message An optional error message to include if the
-   *     wait times out; defaults to the empty string.
-   * @return {!Thenable<T>} A promise that will be fulfilled
-   *     when the condition has been satisified. The promise shall be rejected
-   *     if the wait times out waiting for the condition.
-   * @throws {TypeError} If condition is not a function or promise or if timeout
-   *     is not a number >= 0.
-   * @template T
-   */
+  /** @override */
   wait(condition, opt_timeout, opt_message) {
-    var timeout = opt_timeout || 0;
-    if (typeof timeout !== 'number' || timeout < 0) {
-      throw TypeError('timeout must be a number >= 0: ' + timeout);
-    }
-
-    if (isPromise(condition)) {
-      return this.execute(function() {
-        if (!timeout) {
-          return condition;
-        }
-        return new ManagedPromise(function(fulfill, reject) {
-          var start = Date.now();
-          var timer = setTimeout(function() {
-            timer = null;
-            reject(Error((opt_message ? opt_message + '\n' : '') +
-                         'Timed out waiting for promise to resolve after ' +
-                         (Date.now() - start) + 'ms'));
-          }, timeout);
-
-          /** @type {Thenable} */(condition).then(
-            function(value) {
-              timer && clearTimeout(timer);
-              fulfill(value);
-            },
-            function(error) {
-              timer && clearTimeout(timer);
-              reject(error);
-            });
-        });
-      }, opt_message || '<anonymous wait: promise resolution>');
-    }
-
-    if (typeof condition !== 'function') {
-      throw TypeError('Invalid condition; must be a function or promise: ' +
-          typeof condition);
-    }
-
-    if (isGenerator(condition)) {
-      let original = condition;
-      condition = () => consume(original);
-    }
-
-    var self = this;
-    return this.execute(function() {
-      var startTime = Date.now();
-      return new ManagedPromise(function(fulfill, reject) {
-        pollCondition();
-
-        function pollCondition() {
-          var conditionFn = /** @type {function()} */(condition);
-          self.execute(conditionFn).then(function(value) {
-            var elapsed = Date.now() - startTime;
-            if (!!value) {
-              fulfill(value);
-            } else if (timeout && elapsed >= timeout) {
-              reject(new Error((opt_message ? opt_message + '\n' : '') +
-                               'Wait timed out after ' + elapsed + 'ms'));
-            } else {
-              // Do not use asyncRun here because we need a non-micro yield
-              // here so the UI thread is given a chance when running in a
-              // browser.
-              setTimeout(pollCondition, 0);
-            }
-          }, reject);
-        }
-      });
-    }, opt_message || '<anonymous wait>');
+    return scheduleWait(this, condition, opt_timeout, opt_message);
   }
 
   /**
@@ -2907,9 +3050,9 @@ class TaskQueue extends events.EventEmitter {
 
 /**
  * The default flow to use if no others are active.
- * @type {!ControlFlow}
+ * @type {ControlFlow}
  */
-var defaultFlow = new ControlFlow();
+var defaultFlow;
 
 
 /**
@@ -2928,6 +3071,11 @@ var activeFlows = [];
  * @throws {Error} If the default flow is not currently active.
  */
 function setDefaultFlow(flow) {
+  if (!usePromiseManager()) {
+    throw Error(
+        'You  may not change set the control flow when the promise'
+            +' manager is disabled');
+  }
   if (activeFlows.length) {
     throw Error('You may only change the default flow while it is active');
   }
@@ -2937,10 +3085,21 @@ function setDefaultFlow(flow) {
 
 /**
  * @return {!ControlFlow} The currently active control flow.
+ * @suppress {checkTypes}
  */
 function controlFlow() {
-  return /** @type {!ControlFlow} */ (
-      activeFlows.length ? activeFlows[activeFlows.length - 1] : defaultFlow);
+  if (!usePromiseManager()) {
+    return SIMPLE_SCHEDULER;
+  }
+
+  if (activeFlows.length) {
+    return activeFlows[activeFlows.length - 1];
+  }
+
+  if (!defaultFlow) {
+    defaultFlow = new ControlFlow;
+  }
+  return defaultFlow;
 }
 
 
@@ -3004,53 +3163,51 @@ function isGenerator(fn) {
  * @param {Object=} opt_self The object to use as "this" when invoking the
  *     initial generator.
  * @param {...*} var_args Any arguments to pass to the initial generator.
- * @return {!ManagedPromise<?>} A promise that will resolve to the
+ * @return {!Thenable<?>} A promise that will resolve to the
  *     generator's final result.
  * @throws {TypeError} If the given function is not a generator.
  */
-function consume(generatorFn, opt_self, var_args) {
+function consume(generatorFn, opt_self, ...var_args) {
   if (!isGenerator(generatorFn)) {
     throw new TypeError('Input is not a GeneratorFunction: ' +
         generatorFn.constructor.name);
   }
 
-  var deferred = defer();
-  var generator = generatorFn.apply(
-      opt_self, Array.prototype.slice.call(arguments, 2));
-  callNext();
-  return deferred.promise;
+  let ret;
+  return ret = createPromise((resolve, reject) => {
+    let generator = generatorFn.apply(opt_self, var_args);
+    callNext();
 
-  /** @param {*=} opt_value . */
-  function callNext(opt_value) {
-    pump(generator.next, opt_value);
-  }
-
-  /** @param {*=} opt_error . */
-  function callThrow(opt_error) {
-    // Dictionary lookup required because Closure compiler's built-in
-    // externs does not include GeneratorFunction.prototype.throw.
-    pump(generator['throw'], opt_error);
-  }
-
-  function pump(fn, opt_arg) {
-    if (!isPending(deferred.promise)) {
-      return;  // Defererd was cancelled; silently abort.
+    /** @param {*=} opt_value . */
+    function callNext(opt_value) {
+      pump(generator.next, opt_value);
     }
 
-    try {
-      var result = fn.call(generator, opt_arg);
-    } catch (ex) {
-      deferred.reject(ex);
-      return;
+    /** @param {*=} opt_error . */
+    function callThrow(opt_error) {
+      pump(generator.throw, opt_error);
     }
 
-    if (result.done) {
-      deferred.fulfill(result.value);
-      return;
-    }
+    function pump(fn, opt_arg) {
+      if (ret instanceof ManagedPromise && !isPending(ret)) {
+        return;  // Defererd was cancelled; silently abort.
+      }
 
-    asap(result.value, callNext, callThrow);
-  }
+      try {
+        var result = fn.call(generator, opt_arg);
+      } catch (ex) {
+        reject(ex);
+        return;
+      }
+
+      if (result.done) {
+        resolve(result.value);
+        return;
+      }
+
+      asap(result.value, callNext, callThrow);
+    }
+  });
 }
 
 
@@ -3065,6 +3222,7 @@ module.exports = {
   MultipleUnhandledRejectionError: MultipleUnhandledRejectionError,
   Thenable: Thenable,
   Promise: ManagedPromise,
+  Scheduler: Scheduler,
   all: all,
   asap: asap,
   captureStackTrace: captureStackTrace,
@@ -3084,6 +3242,9 @@ module.exports = {
   rejected: rejected,
   setDefaultFlow: setDefaultFlow,
   when: when,
+
+  /** @return {boolean} Whether the promise manager is enabled. */
+  get USE_PROMISE_MANAGER() { return usePromiseManager(); },
 
   get LONG_STACK_TRACES() { return LONG_STACK_TRACES; },
   set LONG_STACK_TRACES(v) { LONG_STACK_TRACES = v; },

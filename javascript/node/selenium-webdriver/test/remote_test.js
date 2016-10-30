@@ -26,6 +26,8 @@ var promise = require('../').promise,
     cmd = require('../lib/command'),
     remote = require('../remote');
 
+const {enablePromiseManager} = require('../lib/test/promise');
+
 describe('DriverService', function() {
   describe('start()', function() {
     var service;
@@ -41,36 +43,34 @@ describe('DriverService', function() {
       return service.kill();
     });
 
-    it('fails if child-process dies', function(done) {
+    it('fails if child-process dies', function() {
       this.timeout(1000);
-      service.start(500)
-      .then(expectFailure.bind(null, done), verifyFailure.bind(null, done));
+      return service.start(500).then(expectFailure, verifyFailure);
     });
 
-    it('failures propagate through control flow if child-process dies',
-      function(done) {
-        this.timeout(1000);
+    enablePromiseManager(function() {
+      describe(
+          'failures propagate through control flow if child-process dies',
+          function() {
+            it('', function() {
+              this.timeout(1000);
 
-        promise.controlFlow().execute(function() {
-          promise.controlFlow().execute(function() {
-            return service.start(500);
+              return promise.controlFlow().execute(function() {
+                promise.controlFlow().execute(function() {
+                  return service.start(500);
+                });
+              }).then(expectFailure, verifyFailure);
+            });
           });
-        })
-        .then(expectFailure.bind(null, done), verifyFailure.bind(null, done));
-      });
+    });
 
-    function verifyFailure(done, e) {
-      try {
-        assert.ok(!(e instanceof promise.CancellationError));
-        assert.equal('Server terminated early with status 1', e.message);
-        done();
-      } catch (ex) {
-        done(ex);
-      }
+    function verifyFailure(e) {
+      assert.ok(!(e instanceof promise.CancellationError));
+      assert.equal('Server terminated early with status 1', e.message);
     }
 
-    function expectFailure(done) {
-      done(Error('expected to fail'));
+    function expectFailure() {
+      throw Error('expected to fail');
     }
   });
 });

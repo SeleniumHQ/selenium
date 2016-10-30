@@ -16,6 +16,10 @@
   "moz:firefoxOptions" dictionary for Firefox-specific configuration values.
 * Extending the `selenium-webdriver/testing` module to support tests defined
   using generator functions.
+* The promise manager can be disabled by setting an enviornment variable:
+  `SELENIUM_PROMISE_MANAGER=0`. This is part of a larger plan to remove the
+  promise manager, as documented at
+  <https://github.com/SeleniumHQ/selenium/issues/2969>
 
 
 ### API Changes

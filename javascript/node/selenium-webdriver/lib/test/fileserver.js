@@ -28,8 +28,7 @@ var serveIndex = require('serve-index');
 
 var Server = require('./httpserver').Server,
     resources = require('./resources'),
-    isDevMode = require('../devmode'),
-    promise = require('../promise');
+    isDevMode = require('../devmode');
 
 var WEB_ROOT = '/common';
 var JS_ROOT = '/javascript';
@@ -269,7 +268,7 @@ function sendIndex(request, response) {
 /**
  * Starts the server on the specified port.
  * @param {number=} opt_port The port to use, or 0 for any free port.
- * @return {!webdriver.promise.Promise.<Host>} A promise that will resolve
+ * @return {!Promise<Host>} A promise that will resolve
  *     with the server host when it has fully started.
  */
 exports.start = server.start.bind(server);
@@ -277,7 +276,7 @@ exports.start = server.start.bind(server);
 
 /**
  * Stops the server.
- * @return {!webdriver.promise.Promise} A promise that will resolve when the
+ * @return {!Promise} A promise that will resolve when the
  *     server has closed all connections.
  */
 exports.stop = server.stop.bind(server);
