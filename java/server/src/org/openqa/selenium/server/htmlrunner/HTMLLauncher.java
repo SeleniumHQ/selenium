@@ -164,7 +164,7 @@ public class HTMLLauncher {
         ResourceHandler handler = new ResourceHandler();
         handler.setDirectoriesListed(true);
         handler.setWelcomeFiles(new String[]{path.getFileName().toString(), "index.html"});
-        handler.setBaseResource(Resource.newResource(path.getParent().toFile()));
+        handler.setBaseResource(Resource.newResource(path.toFile().getAbsoluteFile().getParentFile()));
 
         ContextHandler context = new ContextHandler("/tests");
         context.setHandler(handler);
