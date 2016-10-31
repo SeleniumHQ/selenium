@@ -49,7 +49,7 @@ while buck's are named simply *BUCK*.
 
 Before building ensure that you have the
 [most recent `chromedriver` ](https://sites.google.com/a/chromium.org/chromedriver/downloads)
-available on your `$PATH`.  
+available on your `$PATH`. You may have to update this from time to time.
 
 To build Selenium, in the same directory as this file:
 
