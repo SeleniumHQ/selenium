@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.server.htmlrunner;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.openqa.selenium.firefox.FirefoxDriver.MARIONETTE;
 
 import com.beust.jcommander.JCommander;
@@ -171,7 +172,7 @@ public class HTMLLauncher {
         server.setHandler(context);
         server.start();
 
-        PortProber.pollPort(port);
+        PortProber.waitForPortUp(port, 15, SECONDS);
 
         URL serverUrl = server.getURI().toURL();
         return new URL(serverUrl.getProtocol(), serverUrl.getHost(), serverUrl.getPort(),
