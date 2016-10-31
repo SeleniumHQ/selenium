@@ -30,3 +30,10 @@ class TestScreenshot(object):
         pages.load("simpleTest.html")
         result = driver.get_screenshot_as_png()
         assert imghdr.what('', result) == 'png'
+
+    def test_get_element_screenshot(self, driver, pages):
+        pages.load("simpleTest.html")
+        element = driver.find_element_by_id("multiline")
+        import pdb; pdb.set_trace()
+        result = base64.b64decode(element.screenshot_as_base64)
+        assert imghdr.what('', result) == 'png'

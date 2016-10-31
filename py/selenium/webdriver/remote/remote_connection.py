@@ -212,7 +212,7 @@ class RemoteConnection(object):
             Command.GET_TITLE: ('GET', '/session/$sessionId/title'),
             Command.GET_PAGE_SOURCE: ('GET', '/session/$sessionId/source'),
             Command.SCREENSHOT: ('GET', '/session/$sessionId/screenshot'),
-            Command.ELEMENT_SCREENSHOT: ('GET', '/session/$sessionId/screenshot/$id'),
+            Command.ELEMENT_SCREENSHOT: ('GET', '/session/$sessionId/element/$id/screenshot'),
             Command.FIND_ELEMENT: ('POST', '/session/$sessionId/element'),
             Command.FIND_ELEMENTS: ('POST', '/session/$sessionId/elements'),
             Command.GET_ACTIVE_ELEMENT:
