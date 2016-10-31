@@ -30,7 +30,7 @@ test.suite(function(env) {
   var driver;
 
   test.before(function*() {
-    driver = yield env.builder().buildAsync();
+    driver = yield env.builder().build();
   });
 
   test.after(function() {
@@ -38,7 +38,7 @@ test.suite(function(env) {
   });
 
   // Cookie handling is broken.
-  test.ignore(env.browsers(Browser.PHANTOMJS, Browser.SAFARI)).
+  test.ignore(env.browsers(Browser.PHANTOM_JS, Browser.SAFARI)).
   describe('Cookie Management;', function() {
 
     test.beforeEach(function*() {

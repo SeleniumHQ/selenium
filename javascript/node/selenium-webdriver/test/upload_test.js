@@ -42,7 +42,7 @@ test.suite(function(env) {
 
   var driver;
   test.before(function*() {
-    driver = yield env.builder().buildAsync();
+    driver = yield env.builder().build();
   });
 
   test.after(function() {

@@ -157,8 +157,8 @@ test.suite(function(env) {
       it('can start multiple sessions with single binary instance', function*() {
         var options = new firefox.Options().setBinary(new firefox.Binary);
         env.builder().setFirefoxOptions(options);
-        driver1 = yield env.builder().buildAsync();
-        driver2 = yield env.builder().buildAsync();
+        driver1 = yield env.builder().build();
+        driver2 = yield env.builder().build();
         // Ok if this doesn't fail.
       });
 
@@ -177,7 +177,7 @@ test.suite(function(env) {
       var driver;
 
       test.beforeEach(function*() {
-        driver = yield env.builder().buildAsync();
+        driver = yield env.builder().build();
       });
 
       test.afterEach(function() {

@@ -148,6 +148,8 @@ function createExecutor(url) {
  */
 class Driver extends webdriver.WebDriver {
   /**
+   * Creates a new PhantomJS session.
+   *
    * @param {capabilities.Capabilities=} opt_capabilities The desired
    *     capabilities.
    * @param {promise.ControlFlow=} opt_flow The control flow to use,
@@ -155,8 +157,9 @@ class Driver extends webdriver.WebDriver {
    * @param {string=} opt_logFile Path to the log file for the phantomjs
    *     executable's output. For convenience, this may be set at runtime with
    *     the `SELENIUM_PHANTOMJS_LOG` environment variable.
+   * @return {!Driver} A new driver reference.
    */
-  constructor(opt_capabilities, opt_flow, opt_logFile) {
+  static createSession(opt_capabilities, opt_flow, opt_logFile) {
     // TODO: add an Options class for consistency with the other driver types.
 
     var caps = opt_capabilities || capabilities.Capabilities.phantomjs();
@@ -214,17 +217,8 @@ class Driver extends webdriver.WebDriver {
     });
 
     var executor = createExecutor(service.start());
-    var driver = webdriver.WebDriver.createSession(executor, caps, opt_flow);
-
-    super(driver.getSession(), executor, driver.controlFlow());
-
-    var boundQuit = this.quit.bind(this);
-
-    /** @override */
-    this.quit = function() {
-      let killService = () => service.kill();
-      return boundQuit().then(killService, killService);
-    };
+    return /** @type {!Driver} */(webdriver.WebDriver.createSession(
+        executor, caps, opt_flow, this, () => service.kill()));
   }
 
   /**

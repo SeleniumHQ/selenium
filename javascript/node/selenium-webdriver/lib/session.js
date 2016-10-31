@@ -17,7 +17,7 @@
 
 'use strict';
 
-const Capabilities = require('./capabilities').Capabilities;
+const {Capabilities} = require('./capabilities');
 
 
 /**

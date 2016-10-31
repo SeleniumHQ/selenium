@@ -26,7 +26,7 @@ var Browser = require('..').Browser,
 
 test.suite(function(env) {
   var driver;
-  test.beforeEach(function*() { driver = yield env.builder().buildAsync(); });
+  test.beforeEach(function*() { driver = yield env.builder().build(); });
   test.afterEach(function() { return driver.quit(); });
 
   test.ignore(

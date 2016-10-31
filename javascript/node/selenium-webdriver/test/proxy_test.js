@@ -104,11 +104,10 @@ test.suite(function(env) {
     let profile = new firefox.Profile();
     profile.setPreference('network.proxy.no_proxies_on', '');
 
-    return env.builder()
+    return driver = env.builder()
         .setFirefoxOptions(new firefox.Options().setProfile(profile))
         .setProxy(proxy)
-        .buildAsync()
-        .then(d => driver = d);
+        .build();
   }
 
   // Proxy support not implemented.

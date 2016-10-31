@@ -27,7 +27,7 @@ test.suite(function(env) {
   test.after(function() { return driver.quit(); });
 
   test.it('should return lower case tag name', function*() {
-    driver = yield env.builder().buildAsync();
+    driver = yield env.builder().build();
     yield driver.get(test.Pages.formPage);
 
     let el = yield driver.findElement(By.id('cheese'));
