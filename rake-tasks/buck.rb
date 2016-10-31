@@ -185,6 +185,7 @@ rule /\/\/.*:zip/ => [ proc {|task_name| task_name[0..-5]} ] do |task|
 
       output.lines do |line|
         line.chomp!
+        line = line.gsub(/\\/, "/")
 
         if line =~ /gen\/third_party\/.*\.jar/
           third_party.push(line)
