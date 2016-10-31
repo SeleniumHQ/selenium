@@ -207,7 +207,6 @@ class Driver extends webdriver.WebDriver {
     var port = portprober.findFreePort();
     var service = new remote.DriverService(exe, {
       port: port,
-      stdio: 'inherit',
       args: Promise.resolve(port).then(function(port) {
         args.push('--webdriver=' + port);
         return args;
