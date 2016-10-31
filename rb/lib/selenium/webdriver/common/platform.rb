@@ -146,9 +146,8 @@ module Selenium
           paths.each do |path|
             full_path = File.join(path, binary_name)
             full_path.tr!('\\', '/') if windows?
-            exe = Dir.glob(full_path).first
-            next unless exe
-            return exe if File.executable?(exe)
+            exe = Dir.glob(full_path).select { |f| File.executable?(f) }.first
+            return exe if exe
           end
         end
 
