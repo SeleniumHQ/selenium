@@ -516,24 +516,6 @@ describe('WebDriver', function() {
         .then(assert.fail, assertIsStubError);
   });
 
-  it('testCannotScheduleCommandsIfTheSessionIdHasBeenDeleted', function() {
-    var driver = new FakeExecutor().createDriver();
-    delete driver.session_;
-    assert.throws(() => driver.get('http://www.google.com'));
-  });
-
-  it('testDeletesSessionIdAfterQuitting', function() {
-    var driver;
-    let executor = new FakeExecutor().
-        expect(CName.QUIT).
-        end();
-
-    driver = executor.createDriver();
-    return driver.quit().then(function() {
-      assert.equal(void 0, driver.session_);
-    });
-  });
-
   it('testReportsErrorWhenExecutingCommandsAfterExecutingAQuit', function() {
     let executor = new FakeExecutor().
         expect(CName.QUIT).

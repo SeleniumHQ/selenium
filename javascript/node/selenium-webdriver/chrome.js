@@ -119,8 +119,7 @@ const fs = require('fs'),
 
 const http = require('./http'),
     io = require('./io'),
-    Capabilities = require('./lib/capabilities').Capabilities,
-    Capability = require('./lib/capabilities').Capability,
+    {Capabilities, Capability} = require('./lib/capabilities'),
     command = require('./lib/command'),
     logging = require('./lib/logging'),
     promise = require('./lib/promise'),
@@ -678,34 +677,27 @@ class Options {
  * Creates a new WebDriver client for Chrome.
  */
 class Driver extends webdriver.WebDriver {
-  /**
-   * @param {(Capabilities|Options)=} opt_config The configuration
-   *     options.
-   * @param {remote.DriverService=} opt_service The session to use; will use
-   *     the {@linkplain #getDefaultService default service} by default.
-   * @param {promise.ControlFlow=} opt_flow The control flow to use,
-   *     or {@code null} to use the currently active flow.
-   * @param {http.Executor=} opt_executor A pre-configured command executor that
-   *     should be used to send commands to the remote end. The provided
-   *     executor should not be reused with other clients as its internal
-   *     command mappings will be updated to support Chrome-specific commands.
-   *
-   * You may provide either a custom executor or a driver service, but not both.
-   *
-   * @throws {Error} if both `opt_service` and `opt_executor` are provided.
-   */
-  constructor(opt_config, opt_service, opt_flow, opt_executor) {
-    if (opt_service && opt_executor) {
-      throw Error(
-          'Either a DriverService or Executor may be provided, but not both');
-    }
 
+  /**
+   * Creates a new session with the ChromeDriver.
+   *
+   * @param {(Capabilities|Options)=} opt_config The configuration options.
+   * @param {(remote.DriverService|http.Executor)=} opt_serviceExecutor Either
+   *     a  DriverService to use for the remote end, or a preconfigured executor
+   *     for an externally managed endpoint. If neither is provided, the
+   *     {@linkplain ##getDefaultService default service} will be used by
+   *     default.
+   * @param {promise.ControlFlow=} opt_flow The control flow to use, or `null`
+   *     to use the currently active flow.
+   * @return {!Driver} A new driver instance.
+   */
+  static createSession(opt_config, opt_serviceExecutor, opt_flow) {
     let executor;
-    if (opt_executor) {
-      executor = opt_executor;
+    if (opt_serviceExecutor instanceof http.Executor) {
+      executor = opt_serviceExecutor;
       configureExecutor(executor);
     } else {
-      let service = opt_service || getDefaultService();
+      let service = opt_serviceExecutor || getDefaultService();
       executor = createExecutor(service.start());
     }
 
@@ -713,9 +705,8 @@ class Driver extends webdriver.WebDriver {
         opt_config instanceof Options ? opt_config.toCapabilities() :
         (opt_config || Capabilities.chrome());
 
-    let driver = webdriver.WebDriver.createSession(executor, caps, opt_flow);
-
-    super(driver.getSession(), executor, driver.controlFlow());
+    return /** @type {!Driver} */(
+        webdriver.WebDriver.createSession(executor, caps, opt_flow, this));
   }
 
   /**

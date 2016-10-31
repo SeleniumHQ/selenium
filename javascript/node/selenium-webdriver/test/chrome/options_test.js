@@ -215,7 +215,7 @@ test.suite(function(env) {
 
       driver = yield env.builder()
           .setChromeOptions(options)
-          .buildAsync();
+          .build();
 
       yield driver.get(test.Pages.ajaxyPage);
 

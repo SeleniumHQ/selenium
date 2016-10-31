@@ -28,7 +28,7 @@ const command = require('./command');
 const error = require('./error');
 const input = require('./input');
 const logging = require('./logging');
-const Session = require('./session').Session;
+const {Session} = require('./session');
 const Symbols = require('./symbols');
 const promise = require('./promise');
 
@@ -237,145 +237,14 @@ function fromWireValue(driver, value) {
 
 
 /**
- * Creates a new WebDriver client, which provides control over a browser.
+ * Structural interface for a WebDriver client.
  *
- * Every command.Command returns a {@link promise.Promise} that
- * represents the result of that command. Callbacks may be registered on this
- * object to manipulate the command result or catch an expected error. Any
- * commands scheduled with a callback are considered sub-commands and will
- * execute before the next command in the current frame. For example:
- *
- *     var message = [];
- *     driver.call(message.push, message, 'a').then(function() {
- *       driver.call(message.push, message, 'b');
- *     });
- *     driver.call(message.push, message, 'c');
- *     driver.call(function() {
- *       alert('message is abc? ' + (message.join('') == 'abc'));
- *     });
- *
+ * @record
  */
-class WebDriver {
-  /**
-   * @param {!(Session|IThenable<!Session>)} session Either a
-   *     known session or a promise that will be resolved to a session.
-   * @param {!command.Executor} executor The executor to use when sending
-   *     commands to the browser.
-   * @param {promise.ControlFlow=} opt_flow The flow to
-   *     schedule commands through. Defaults to the active flow object.
-   */
-  constructor(session, executor, opt_flow) {
-    /** @private {!promise.ControlFlow} */
-    this.flow_ = opt_flow || promise.controlFlow();
+class IWebDriver {
 
-    /** @private {!promise.Thenable<!Session>} */
-    this.session_ = this.flow_.promise(resolve => resolve(session));
-
-    /** @private {!command.Executor} */
-    this.executor_ = executor;
-
-    /** @private {input.FileDetector} */
-    this.fileDetector_ = null;
-  }
-
-  /**
-   * Creates a new WebDriver client for an existing session.
-   * @param {!command.Executor} executor Command executor to use when querying
-   *     for session details.
-   * @param {string} sessionId ID of the session to attach to.
-   * @param {promise.ControlFlow=} opt_flow The control flow all
-   *     driver commands should execute under. Defaults to the
-   *     {@link promise.controlFlow() currently active}  control flow.
-   * @return {!WebDriver} A new client for the specified session.
-   */
-  static attachToSession(executor, sessionId, opt_flow) {
-    let flow = opt_flow || promise.controlFlow();
-    let cmd = new command.Command(command.Name.DESCRIBE_SESSION)
-        .setParameter('sessionId', sessionId);
-    let session = flow.execute(
-        () => executeCommand(executor, cmd).catch(err => {
-          // The DESCRIBE_SESSION command is not supported by the W3C spec, so
-          // if we get back an unknown command, just return a session with
-          // unknown capabilities.
-          if (err instanceof error.UnknownCommandError) {
-            return new Session(sessionId, new Capabilities);
-          }
-          throw err;
-        }),
-        'WebDriver.attachToSession()');
-    return new WebDriver(session, executor, flow);
-  }
-
-  /**
-   * Creates a new WebDriver session.
-   *
-   * By default, the requested session `capabilities` are merely "desired" and
-   * the remote end will still create a new session even if it cannot satisfy
-   * all of the requested capabilities. You can query which capabilities a
-   * session actually has using the
-   * {@linkplain #getCapabilities() getCapabilities()} method on the returned
-   * WebDriver instance.
-   *
-   * To define _required capabilities_, provide the `capabilities` as an object
-   * literal with `required` and `desired` keys. The `desired` key may be
-   * omitted if all capabilities are required, and vice versa. If the server
-   * cannot create a session with all of the required capabilities, it will
-   * return an {@linkplain error.SessionNotCreatedError}.
-   *
-   *     let required = new Capabilities().set('browserName', 'firefox');
-   *     let desired = new Capabilities().set('version', '45');
-   *     let driver = WebDriver.createSession(executor, {required, desired});
-   *
-   * This function will always return a WebDriver instance. If there is an error
-   * creating the session, such as the aforementioned SessionNotCreatedError,
-   * the driver will have a rejected {@linkplain #getSession session} promise.
-   * It is recommended that this promise is left _unhandled_ so it will
-   * propagate through the {@linkplain promise.ControlFlow control flow} and
-   * cause subsequent commands to fail.
-   *
-   *     let required = Capabilities.firefox();
-   *     let driver = WebDriver.createSession(executor, {required});
-   *
-   *     // If the createSession operation failed, then this command will also
-   *     // also fail, propagating the creation failure.
-   *     driver.get('http://www.google.com').catch(e => console.log(e));
-   *
-   * @param {!command.Executor} executor The executor to create the new session
-   *     with.
-   * @param {(!Capabilities|
-   *          {desired: (Capabilities|undefined),
-   *           required: (Capabilities|undefined)})} capabilities The desired
-   *     capabilities for the new session.
-   * @param {promise.ControlFlow=} opt_flow The control flow all driver
-   *     commands should execute under, including the initial session creation.
-   *     Defaults to the {@link promise.controlFlow() currently active}
-   *     control flow.
-   * @return {!WebDriver} The driver for the newly created session.
-   */
-  static createSession(executor, capabilities, opt_flow) {
-    let flow = opt_flow || promise.controlFlow();
-    let cmd = new command.Command(command.Name.NEW_SESSION);
-
-    if (capabilities && (capabilities.desired || capabilities.required)) {
-      cmd.setParameter('desiredCapabilities', capabilities.desired);
-      cmd.setParameter('requiredCapabilities', capabilities.required);
-    } else {
-      cmd.setParameter('desiredCapabilities', capabilities);
-    }
-
-    let session = flow.execute(
-        () => executeCommand(executor, cmd),
-        'WebDriver.createSession()');
-    return new WebDriver(session, executor, flow);
-  }
-
-  /**
-   * @return {!promise.ControlFlow} The control flow used by this
-   *     instance.
-   */
-  controlFlow() {
-    return this.flow_;
-  }
+  /** @return {!promise.ControlFlow} The control flow used by this instance. */
+  controlFlow() {}
 
   /**
    * Schedules a {@link command.Command} to be executed by this driver's
@@ -387,104 +256,40 @@ class WebDriver {
    *     with the command result.
    * @template T
    */
-  schedule(command, description) {
-    var self = this;
-
-    checkHasNotQuit();
-    command.setParameter('sessionId', this.session_);
-
-    // If any of the command parameters are rejected promises, those
-    // rejections may be reported as unhandled before the control flow
-    // attempts to execute the command. To ensure parameters errors
-    // propagate through the command itself, we resolve all of the
-    // command parameters now, but suppress any errors until the ControlFlow
-    // actually executes the command. This addresses scenarios like catching
-    // an element not found error in:
-    //
-    //     driver.findElement(By.id('foo')).click().catch(function(e) {
-    //       if (e instanceof NoSuchElementError) {
-    //         // Do something.
-    //       }
-    //     });
-    var prepCommand = toWireValue(command.getParameters());
-    prepCommand.catch(function() {});
-
-    var flow = this.flow_;
-    var executor = this.executor_;
-    return flow.execute(function() {
-      // A call to WebDriver.quit() may have been scheduled in the same event
-      // loop as this |command|, which would prevent us from detecting that the
-      // driver has quit above.  Therefore, we need to make another quick check.
-      // We still check above so we can fail as early as possible.
-      checkHasNotQuit();
-
-      // Retrieve resolved command parameters; any previously suppressed errors
-      // will now propagate up through the control flow as part of the command
-      // execution.
-      return prepCommand.then(function(parameters) {
-        command.setParameters(parameters);
-        return executor.execute(command);
-      }).then(value => fromWireValue(self, value));
-    }, description);
-
-    function checkHasNotQuit() {
-      if (!self.session_) {
-        throw new error.NoSuchSessionError(
-          'This driver instance does not have a valid session ID ' +
-          '(did you call WebDriver.quit()?) and may no longer be ' +
-          'used.');
-      }
-    }
-  }
+  schedule(command, description) {}
 
   /**
    * Sets the {@linkplain input.FileDetector file detector} that should be
    * used with this instance.
    * @param {input.FileDetector} detector The detector to use or {@code null}.
    */
-  setFileDetector(detector) {
-    this.fileDetector_ = detector;
-  }
+  setFileDetector(detector) {}
 
   /**
    * @return {!command.Executor} The command executor used by this instance.
    */
-  getExecutor() {
-    return this.executor_;
-  }
+  getExecutor() {}
 
   /**
-   * @return {!promise.Thenable<!Session>} A promise for this client's
-   *     session.
+   * @return {!promise.Thenable<!Session>} A promise for this client's session.
    */
-  getSession() {
-    return this.session_;
-  }
+  getSession() {}
 
   /**
-   * @return {!promise.Thenable<!Capabilities>} A promise
-   *     that will resolve with the this instance's capabilities.
+   * @return {!promise.Thenable<!Capabilities>} A promise that will resolve with
+   *     the this instance's capabilities.
    */
-  getCapabilities() {
-    return this.session_.then(session => session.getCapabilities());
-  }
+  getCapabilities() {}
 
   /**
-   * Schedules a command to quit the current session. After calling quit, this
-   * instance will be invalidated and may no longer be used to issue commands
-   * against the browser.
-   * @return {!promise.Thenable<void>} A promise that will be resolved
-   *     when the command has completed.
+   * Terminates the browser session. After calling quit, this instance will be
+   * invalidated and may no longer be used to issue commands against the
+   * browser.
+   *
+   * @return {!promise.Thenable<void>} A promise that will be resolved when the
+   *     command has completed.
    */
-  quit() {
-    var result = this.schedule(
-        new command.Command(command.Name.QUIT),
-        'WebDriver.quit()');
-    // Delete our session ID when the quit command finishes; this will allow us
-    // to throw an error when attemnpting to use a driver post-quit.
-    return /** @type {!promise.Thenable} */(
-        promise.finally(result, () => delete this.session_));
-  }
+  quit() {}
 
   /**
    * Creates a new action sequence using this driver. The sequence will not be
@@ -499,9 +304,7 @@ class WebDriver {
    *
    * @return {!actions.ActionSequence} A new action sequence for this instance.
    */
-  actions() {
-    return new actions.ActionSequence(this);
-  }
+  actions() {}
 
   /**
    * Creates a new touch sequence using this driver. The sequence will not be
@@ -515,9 +318,7 @@ class WebDriver {
    *
    * @return {!actions.TouchSequence} A new touch sequence for this instance.
    */
-  touchActions() {
-    return new actions.TouchSequence(this);
-  }
+  touchActions() {}
 
   /**
    * Schedules a command to execute JavaScript in the context of the currently
@@ -555,18 +356,7 @@ class WebDriver {
    *    scripts return value.
    * @template T
    */
-  executeScript(script, var_args) {
-    if (typeof script === 'function') {
-      script = 'return (' + script + ').apply(null, arguments);';
-    }
-    let args =
-        arguments.length > 1 ? Array.prototype.slice.call(arguments, 1) : [];
-   return this.schedule(
-        new command.Command(command.Name.EXECUTE_SCRIPT).
-            setParameter('script', script).
-            setParameter('args', args),
-        'WebDriver.executeScript()');
-  }
+  executeScript(script, var_args) {}
 
   /**
    * Schedules a command to execute asynchronous JavaScript in the context of the
@@ -644,17 +434,7 @@ class WebDriver {
    *    scripts return value.
    * @template T
    */
-  executeAsyncScript(script, var_args) {
-    if (typeof script === 'function') {
-      script = 'return (' + script + ').apply(null, arguments);';
-    }
-    let args = Array.prototype.slice.call(arguments, 1);
-    return this.schedule(
-        new command.Command(command.Name.EXECUTE_ASYNC_SCRIPT).
-            setParameter('script', script).
-            setParameter('args', args),
-        'WebDriver.executeScript()');
-  }
+  executeAsyncScript(script, var_args) {}
 
   /**
    * Schedules a command to execute a custom function.
@@ -665,18 +445,7 @@ class WebDriver {
    *     with the function's result.
    * @template T
    */
-  call(fn, opt_scope, var_args) {
-    let args = Array.prototype.slice.call(arguments, 2);
-    return this.flow_.execute(function() {
-      return promise.fullyResolved(args).then(function(args) {
-        if (promise.isGenerator(fn)) {
-          args.unshift(fn, opt_scope);
-          return promise.consume.apply(null, args);
-        }
-        return fn.apply(opt_scope, args);
-      });
-    }, 'WebDriver.call(' + (fn.name || 'function') + ')');
-  }
+  call(fn, opt_scope, var_args) {}
 
   /**
    * Schedules a command to wait for a condition to hold. The condition may be
@@ -730,40 +499,7 @@ class WebDriver {
    *     the returned value will be a {@link WebElementPromise}.
    * @template T
    */
-  wait(condition, opt_timeout, opt_message) {
-    if (promise.isPromise(condition)) {
-      return this.flow_.wait(
-          /** @type {!IThenable} */(condition),
-          opt_timeout, opt_message);
-    }
-
-    var message = opt_message;
-    var fn = /** @type {!Function} */(condition);
-    if (condition instanceof Condition) {
-      message = message || condition.description();
-      fn = condition.fn;
-    }
-
-    var driver = this;
-    var result = this.flow_.wait(function() {
-      if (promise.isGenerator(fn)) {
-        return promise.consume(fn, null, [driver]);
-      }
-      return fn(driver);
-    }, opt_timeout, message);
-
-    if (condition instanceof WebElementCondition) {
-      result = new WebElementPromise(this, result.then(function(value) {
-        if (!(value instanceof WebElement)) {
-          throw TypeError(
-              'WebElementCondition did not resolve to a WebElement: '
-                  + Object.prototype.toString.call(value));
-        }
-        return value;
-      }));
-    }
-    return result;
-  }
+  wait(condition, opt_timeout, opt_message) {}
 
   /**
    * Schedules a command to make the driver sleep for the given amount of time.
@@ -771,31 +507,21 @@ class WebDriver {
    * @return {!promise.Thenable<void>} A promise that will be resolved
    *     when the sleep has finished.
    */
-  sleep(ms) {
-    return this.flow_.timeout(ms, 'WebDriver.sleep(' + ms + ')');
-  }
+  sleep(ms) {}
 
   /**
    * Schedules a command to retrieve the current window handle.
    * @return {!promise.Thenable<string>} A promise that will be
    *     resolved with the current window handle.
    */
-  getWindowHandle() {
-    return this.schedule(
-        new command.Command(command.Name.GET_CURRENT_WINDOW_HANDLE),
-        'WebDriver.getWindowHandle()');
-  }
+  getWindowHandle() {}
 
   /**
    * Schedules a command to retrieve the current list of available window handles.
    * @return {!promise.Thenable<!Array<string>>} A promise that will
    *     be resolved with an array of window handles.
    */
-  getAllWindowHandles() {
-    return this.schedule(
-        new command.Command(command.Name.GET_WINDOW_HANDLES),
-        'WebDriver.getAllWindowHandles()');
-  }
+  getAllWindowHandles() {}
 
   /**
    * Schedules a command to retrieve the current page's source. The page source
@@ -805,21 +531,14 @@ class WebDriver {
    * @return {!promise.Thenable<string>} A promise that will be
    *     resolved with the current page source.
    */
-  getPageSource() {
-    return this.schedule(
-        new command.Command(command.Name.GET_PAGE_SOURCE),
-        'WebDriver.getPageSource()');
-  }
+  getPageSource() {}
 
   /**
    * Schedules a command to close the current window.
    * @return {!promise.Thenable<void>} A promise that will be resolved
    *     when this command has completed.
    */
-  close() {
-    return this.schedule(new command.Command(command.Name.CLOSE),
-                         'WebDriver.close()');
-  }
+  close() {}
 
   /**
    * Schedules a command to navigate to the given URL.
@@ -827,30 +546,21 @@ class WebDriver {
    * @return {!promise.Thenable<void>} A promise that will be resolved
    *     when the document has finished loading.
    */
-  get(url) {
-    return this.navigate().to(url);
-  }
+  get(url) {}
 
   /**
    * Schedules a command to retrieve the URL of the current page.
    * @return {!promise.Thenable<string>} A promise that will be
    *     resolved with the current URL.
    */
-  getCurrentUrl() {
-    return this.schedule(
-        new command.Command(command.Name.GET_CURRENT_URL),
-        'WebDriver.getCurrentUrl()');
-  }
+  getCurrentUrl() {}
 
   /**
    * Schedules a command to retrieve the current page's title.
    * @return {!promise.Thenable<string>} A promise that will be
    *     resolved with the current page's title.
    */
-  getTitle() {
-    return this.schedule(new command.Command(command.Name.GET_TITLE),
-                         'WebDriver.getTitle()');
-  }
+  getTitle() {}
 
   /**
    * Schedule a command to find an element on the page. If the element cannot be
@@ -891,6 +601,404 @@ class WebDriver {
    *     commands against the located element. If the element is not found, the
    *     element will be invalidated and all scheduled commands aborted.
    */
+  findElement(locator) {}
+
+  /**
+   * Schedule a command to search for multiple elements on the page.
+   *
+   * @param {!(by.By|Function)} locator The locator to use.
+   * @return {!promise.Thenable<!Array<!WebElement>>} A
+   *     promise that will resolve to an array of WebElements.
+   */
+  findElements(locator) {}
+
+  /**
+   * Schedule a command to take a screenshot. The driver makes a best effort to
+   * return a screenshot of the following, in order of preference:
+   *
+   * 1. Entire page
+   * 2. Current window
+   * 3. Visible portion of the current frame
+   * 4. The entire display containing the browser
+   *
+   * @return {!promise.Thenable<string>} A promise that will be
+   *     resolved to the screenshot as a base-64 encoded PNG.
+   */
+  takeScreenshot() {}
+
+  /**
+   * @return {!Options} The options interface for this instance.
+   */
+  manage() {}
+
+  /**
+   * @return {!Navigation} The navigation interface for this instance.
+   */
+  navigate() {}
+
+  /**
+   * @return {!TargetLocator} The target locator interface for this
+   *     instance.
+   */
+  switchTo() {}
+}
+
+
+/**
+ * Each WebDriver instance provides automated control over a browser session.
+ *
+ * @implements {IWebDriver}
+ */
+class WebDriver {
+  /**
+   * @param {!(Session|IThenable<!Session>)} session Either a known session or a
+   *     promise that will be resolved to a session.
+   * @param {!command.Executor} executor The executor to use when sending
+   *     commands to the browser.
+   * @param {promise.ControlFlow=} opt_flow The flow to
+   *     schedule commands through. Defaults to the active flow object.
+   * @param {(function(this: void): ?)=} opt_onQuit A function to call, if any,
+   *     when the session is terminated.
+   */
+  constructor(session, executor, opt_flow, opt_onQuit) {
+    /** @private {!promise.ControlFlow} */
+    this.flow_ = opt_flow || promise.controlFlow();
+
+    /** @private {!promise.Thenable<!Session>} */
+    this.session_ = this.flow_.promise(resolve => resolve(session));
+
+    /** @private {!command.Executor} */
+    this.executor_ = executor;
+
+    /** @private {input.FileDetector} */
+    this.fileDetector_ = null;
+
+    /** @private @const {(function(this: void): ?|undefined)} */
+    this.onQuit_ = opt_onQuit;
+  }
+
+  /**
+   * Creates a new WebDriver client for an existing session.
+   * @param {!command.Executor} executor Command executor to use when querying
+   *     for session details.
+   * @param {string} sessionId ID of the session to attach to.
+   * @param {promise.ControlFlow=} opt_flow The control flow all
+   *     driver commands should execute under. Defaults to the
+   *     {@link promise.controlFlow() currently active}  control flow.
+   * @return {!WebDriver} A new client for the specified session.
+   */
+  static attachToSession(executor, sessionId, opt_flow) {
+    let flow = opt_flow || promise.controlFlow();
+    let cmd = new command.Command(command.Name.DESCRIBE_SESSION)
+        .setParameter('sessionId', sessionId);
+    let session = flow.execute(
+        () => executeCommand(executor, cmd).catch(err => {
+          // The DESCRIBE_SESSION command is not supported by the W3C spec, so
+          // if we get back an unknown command, just return a session with
+          // unknown capabilities.
+          if (err instanceof error.UnknownCommandError) {
+            return new Session(sessionId, new Capabilities);
+          }
+          throw err;
+        }),
+        'WebDriver.attachToSession()');
+    return new WebDriver(session, executor, flow);
+  }
+
+  /**
+   * Creates a new WebDriver session.
+   *
+   * By default, the requested session `capabilities` are merely "desired" and
+   * the remote end will still create a new session even if it cannot satisfy
+   * all of the requested capabilities. You can query which capabilities a
+   * session actually has using the
+   * {@linkplain #getCapabilities() getCapabilities()} method on the returned
+   * WebDriver instance.
+   *
+   * To define _required capabilities_, provide the `capabilities` as an object
+   * literal with `required` and `desired` keys. The `desired` key may be
+   * omitted if all capabilities are required, and vice versa. If the server
+   * cannot create a session with all of the required capabilities, it will
+   * return an {@linkplain error.SessionNotCreatedError}.
+   *
+   *     let required = new Capabilities().set('browserName', 'firefox');
+   *     let desired = new Capabilities().set('version', '45');
+   *     let driver = WebDriver.createSession(executor, {required, desired});
+   *
+   * This function will always return a WebDriver instance. If there is an error
+   * creating the session, such as the aforementioned SessionNotCreatedError,
+   * the driver will have a rejected {@linkplain #getSession session} promise.
+   * It is recommended that this promise is left _unhandled_ so it will
+   * propagate through the {@linkplain promise.ControlFlow control flow} and
+   * cause subsequent commands to fail.
+   *
+   *     let required = Capabilities.firefox();
+   *     let driver = WebDriver.createSession(executor, {required});
+   *
+   *     // If the createSession operation failed, then this command will also
+   *     // also fail, propagating the creation failure.
+   *     driver.get('http://www.google.com').catch(e => console.log(e));
+   *
+   * @param {!command.Executor} executor The executor to create the new session
+   *     with.
+   * @param {(!Capabilities|
+   *          {desired: (Capabilities|undefined),
+   *           required: (Capabilities|undefined)})} capabilities The desired
+   *     capabilities for the new session.
+   * @param {promise.ControlFlow=} opt_flow The control flow all driver
+   *     commands should execute under, including the initial session creation.
+   *     Defaults to the {@link promise.controlFlow() currently active}
+   *     control flow.
+   * @param {(function(new: WebDriver,
+   *                   !IThenable<!Session>,
+   *                   !command.Executor,
+   *                   promise.ControlFlow=))=} opt_ctor
+   *    A reference to the constructor of the specific type of WebDriver client
+   *    to instantiate. Will create a vanilla {@linkplain WebDriver} instance
+   *    if a constructor is not provided.
+   * @param {(function(this: void): ?)=} opt_onQuit A callback to invoke when
+   *    the newly created session is terminated. This should be used to clean
+   *    up any resources associated with the session.
+   * @return {!WebDriver} The driver for the newly created session.
+   */
+  static createSession(
+        executor, capabilities, opt_flow, opt_ctor, opt_onQuit) {
+    let flow = opt_flow || promise.controlFlow();
+    let cmd = new command.Command(command.Name.NEW_SESSION);
+
+    if (capabilities && (capabilities.desired || capabilities.required)) {
+      cmd.setParameter('desiredCapabilities', capabilities.desired);
+      cmd.setParameter('requiredCapabilities', capabilities.required);
+    } else {
+      cmd.setParameter('desiredCapabilities', capabilities);
+    }
+
+    let session = flow.execute(
+        () => executeCommand(executor, cmd),
+        'WebDriver.createSession()');
+    const ctor = opt_ctor || WebDriver;
+    return new ctor(session, executor, flow, opt_onQuit);
+  }
+
+  /** @override */
+  controlFlow() {
+    return this.flow_;
+  }
+
+  /** @override */
+  schedule(command, description) {
+    command.setParameter('sessionId', this.session_);
+
+    // If any of the command parameters are rejected promises, those
+    // rejections may be reported as unhandled before the control flow
+    // attempts to execute the command. To ensure parameters errors
+    // propagate through the command itself, we resolve all of the
+    // command parameters now, but suppress any errors until the ControlFlow
+    // actually executes the command. This addresses scenarios like catching
+    // an element not found error in:
+    //
+    //     driver.findElement(By.id('foo')).click().catch(function(e) {
+    //       if (e instanceof NoSuchElementError) {
+    //         // Do something.
+    //       }
+    //     });
+    var prepCommand = toWireValue(command.getParameters());
+    prepCommand.catch(function() {});
+
+    var flow = this.flow_;
+    var executor = this.executor_;
+    return flow.execute(() => {
+      // Retrieve resolved command parameters; any previously suppressed errors
+      // will now propagate up through the control flow as part of the command
+      // execution.
+      return prepCommand.then(function(parameters) {
+        command.setParameters(parameters);
+        return executor.execute(command);
+      }).then(value => fromWireValue(this, value));
+    }, description);
+  }
+
+  /** @override */
+  setFileDetector(detector) {
+    this.fileDetector_ = detector;
+  }
+
+  /** @override */
+  getExecutor() {
+    return this.executor_;
+  }
+
+  /** @override */
+  getSession() {
+    return this.session_;
+  }
+
+  /** @override */
+  getCapabilities() {
+    return this.session_.then(s => s.getCapabilities());
+  }
+
+  /** @override */
+  quit() {
+    var result = this.schedule(
+        new command.Command(command.Name.QUIT),
+        'WebDriver.quit()');
+    // Delete our session ID when the quit command finishes; this will allow us
+    // to throw an error when attemnpting to use a driver post-quit.
+    return /** @type {!promise.Thenable} */(promise.finally(result, () => {
+      this.session_ = this.flow_.promise((_, reject) => {
+        reject(new error.NoSuchSessionError(
+            'This driver instance does not have a valid session ID ' +
+            '(did you call WebDriver.quit()?) and may no longer be used.'));
+      });
+
+      // Only want the session rejection to bubble if accessed.
+      this.session_.catch(function() {});
+
+      if (this.onQuit_) {
+        return this.onQuit_.call(void 0);
+      }
+    }));
+  }
+
+  /** @override */
+  actions() {
+    return new actions.ActionSequence(this);
+  }
+
+  /** @override */
+  touchActions() {
+    return new actions.TouchSequence(this);
+  }
+
+  /** @override */
+  executeScript(script, var_args) {
+    if (typeof script === 'function') {
+      script = 'return (' + script + ').apply(null, arguments);';
+    }
+    let args =
+        arguments.length > 1 ? Array.prototype.slice.call(arguments, 1) : [];
+   return this.schedule(
+        new command.Command(command.Name.EXECUTE_SCRIPT).
+            setParameter('script', script).
+            setParameter('args', args),
+        'WebDriver.executeScript()');
+  }
+
+  /** @override */
+  executeAsyncScript(script, var_args) {
+    if (typeof script === 'function') {
+      script = 'return (' + script + ').apply(null, arguments);';
+    }
+    let args = Array.prototype.slice.call(arguments, 1);
+    return this.schedule(
+        new command.Command(command.Name.EXECUTE_ASYNC_SCRIPT).
+            setParameter('script', script).
+            setParameter('args', args),
+        'WebDriver.executeScript()');
+  }
+
+  /** @override */
+  call(fn, opt_scope, var_args) {
+    let args = Array.prototype.slice.call(arguments, 2);
+    return this.flow_.execute(function() {
+      return promise.fullyResolved(args).then(function(args) {
+        if (promise.isGenerator(fn)) {
+          args.unshift(fn, opt_scope);
+          return promise.consume.apply(null, args);
+        }
+        return fn.apply(opt_scope, args);
+      });
+    }, 'WebDriver.call(' + (fn.name || 'function') + ')');
+  }
+
+  /** @override */
+  wait(condition, opt_timeout, opt_message) {
+    if (promise.isPromise(condition)) {
+      return this.flow_.wait(
+          /** @type {!IThenable} */(condition),
+          opt_timeout, opt_message);
+    }
+
+    var message = opt_message;
+    var fn = /** @type {!Function} */(condition);
+    if (condition instanceof Condition) {
+      message = message || condition.description();
+      fn = condition.fn;
+    }
+
+    var driver = this;
+    var result = this.flow_.wait(function() {
+      if (promise.isGenerator(fn)) {
+        return promise.consume(fn, null, [driver]);
+      }
+      return fn(driver);
+    }, opt_timeout, message);
+
+    if (condition instanceof WebElementCondition) {
+      result = new WebElementPromise(this, result.then(function(value) {
+        if (!(value instanceof WebElement)) {
+          throw TypeError(
+              'WebElementCondition did not resolve to a WebElement: '
+                  + Object.prototype.toString.call(value));
+        }
+        return value;
+      }));
+    }
+    return result;
+  }
+
+  /** @override */
+  sleep(ms) {
+    return this.flow_.timeout(ms, 'WebDriver.sleep(' + ms + ')');
+  }
+
+  /** @override */
+  getWindowHandle() {
+    return this.schedule(
+        new command.Command(command.Name.GET_CURRENT_WINDOW_HANDLE),
+        'WebDriver.getWindowHandle()');
+  }
+
+  /** @override */
+  getAllWindowHandles() {
+    return this.schedule(
+        new command.Command(command.Name.GET_WINDOW_HANDLES),
+        'WebDriver.getAllWindowHandles()');
+  }
+
+  /** @override */
+  getPageSource() {
+    return this.schedule(
+        new command.Command(command.Name.GET_PAGE_SOURCE),
+        'WebDriver.getPageSource()');
+  }
+
+  /** @override */
+  close() {
+    return this.schedule(new command.Command(command.Name.CLOSE),
+                         'WebDriver.close()');
+  }
+
+  /** @override */
+  get(url) {
+    return this.navigate().to(url);
+  }
+
+  /** @override */
+  getCurrentUrl() {
+    return this.schedule(
+        new command.Command(command.Name.GET_CURRENT_URL),
+        'WebDriver.getCurrentUrl()');
+  }
+
+  /** @override */
+  getTitle() {
+    return this.schedule(new command.Command(command.Name.GET_TITLE),
+                         'WebDriver.getTitle()');
+  }
+
+  /** @override */
   findElement(locator) {
     let id;
     locator = by.checkedLocator(locator);
@@ -925,13 +1033,7 @@ class WebDriver {
     });
   }
 
-  /**
-   * Schedule a command to search for multiple elements on the page.
-   *
-   * @param {!(by.By|Function)} locator The locator to use.
-   * @return {!promise.Thenable<!Array<!WebElement>>} A
-   *     promise that will resolve to an array of WebElements.
-   */
+  /** @override */
   findElements(locator) {
     locator = by.checkedLocator(locator);
     if (typeof locator === 'function') {
@@ -973,41 +1075,23 @@ class WebDriver {
     });
   }
 
-  /**
-   * Schedule a command to take a screenshot. The driver makes a best effort to
-   * return a screenshot of the following, in order of preference:
-   *
-   * 1. Entire page
-   * 2. Current window
-   * 3. Visible portion of the current frame
-   * 4. The entire display containing the browser
-   *
-   * @return {!promise.Thenable<string>} A promise that will be
-   *     resolved to the screenshot as a base-64 encoded PNG.
-   */
+  /** @override */
   takeScreenshot() {
     return this.schedule(new command.Command(command.Name.SCREENSHOT),
         'WebDriver.takeScreenshot()');
   }
 
-  /**
-   * @return {!Options} The options interface for this instance.
-   */
+  /** @override */
   manage() {
     return new Options(this);
   }
 
-  /**
-   * @return {!Navigation} The navigation interface for this instance.
-   */
+  /** @override */
   navigate() {
     return new Navigation(this);
   }
 
-  /**
-   * @return {!TargetLocator} The target locator interface for this
-   *     instance.
-   */
+  /** @override */
   switchTo() {
     return new TargetLocator(this);
   }
@@ -2459,6 +2543,7 @@ module.exports = {
   Options: Options,
   TargetLocator: TargetLocator,
   Timeouts: Timeouts,
+  IWebDriver: IWebDriver,
   WebDriver: WebDriver,
   WebElement: WebElement,
   WebElementCondition: WebElementCondition,

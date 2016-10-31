@@ -23,13 +23,11 @@
 
 const http = require('./http');
 const io = require('./io');
-const Capabilities = require('./lib/capabilities').Capabilities;
-const Capability = require('./lib/capabilities').Capability;
+const {Capabilities, Capability} = require('./lib/capabilities');
 const command = require('./lib/command');
 const error = require('./lib/error');
 const logging = require('./lib/logging');
 const promise = require('./lib/promise');
-const Session = require('./lib/session').Session;
 const Symbols = require('./lib/symbols');
 const webdriver = require('./lib/webdriver');
 const portprober = require('./net/portprober');
@@ -193,12 +191,15 @@ class Options {
  */
 class Driver extends webdriver.WebDriver {
   /**
+   * Creates a new Safari session.
+   *
    * @param {(Options|Capabilities)=} opt_config The configuration
    *     options for the new session.
    * @param {promise.ControlFlow=} opt_flow The control flow to create
    *     the driver under.
+   * @return {!Driver} A new driver instance.
    */
-  constructor(opt_config, opt_flow) {
+  static createSession(opt_config, opt_flow) {
     let caps;
     if (opt_config instanceof Options) {
       caps = opt_config.toCapabilities();
@@ -209,16 +210,9 @@ class Driver extends webdriver.WebDriver {
     let service = new ServiceBuilder().build();
     let executor = new http.Executor(
         service.start().then(url => new http.HttpClient(url)));
-    let onQuit = () => service.kill();
 
-    let driver = webdriver.WebDriver.createSession(executor, caps, opt_flow);
-    super(driver.getSession(), executor, driver.controlFlow());
-
-    /** @override */
-    this.quit = () => {
-      return /** @type {!promise.Thenable} */(
-          promise.finally(super.quit(), onQuit));
-    };
+    return /** @type {!Driver} */(webdriver.WebDriver.createSession(
+        executor, caps, opt_flow, this, () => service.kill()));
   }
 }
 

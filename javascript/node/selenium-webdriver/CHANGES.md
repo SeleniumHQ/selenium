@@ -29,6 +29,17 @@
    - Removed `#isPending()`
    - Removed `#cancel()`
    - Removed `#finally()`
+ * Changed all subclasses of `webdriver.WebDriver` to overload the static
+   function `WebDriver.createSession()` instead of doing work in the
+   constructor. All constructors now inherit the base class' function signature.
+   Users are still encouraged to use the `Builder` class instead of creating
+   drivers directly.
+ * `Builder#build()` now returns a "thenable" WebDriver instance, allowing users
+   to immediately schedule commands (as before), or issue them through standard
+   promise callbacks. This is the same pattern already employed for WebElements.
+ * Removed `Builder#buildAsync()` as it was redundant with the new semantics of
+   `build()`.
+
 
 
 ## v3.0.0-beta-3

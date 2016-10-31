@@ -259,14 +259,17 @@ function getDefaultService() {
  */
 class Driver extends webdriver.WebDriver {
   /**
+   * Creates a new browser session for Microsoft's Edge browser.
+   *
    * @param {(capabilities.Capabilities|Options)=} opt_config The configuration
    *     options.
    * @param {remote.DriverService=} opt_service The session to use; will use
    *     the {@linkplain #getDefaultService default service} by default.
    * @param {promise.ControlFlow=} opt_flow The control flow to use, or
    *     {@code null} to use the currently active flow.
+   * @return {!Driver} A new driver instance.
    */
-  constructor(opt_config, opt_service, opt_flow) {
+  static createSession(opt_config, opt_service, opt_flow) {
     var service = opt_service || getDefaultService();
     var client = service.start().then(url => new http.HttpClient(url));
     var executor = new http.Executor(client);
@@ -275,14 +278,8 @@ class Driver extends webdriver.WebDriver {
         opt_config instanceof Options ? opt_config.toCapabilities() :
         (opt_config || capabilities.Capabilities.edge());
 
-    var driver = webdriver.WebDriver.createSession(executor, caps, opt_flow);
-    super(driver.getSession(), executor, driver.controlFlow());
-
-    /** @override */
-    this.quit = () => {
-      return /** @type {!promise.Thenable} */(
-          promise.finally(super.quit(), service.kill.bind(service)));
-    };
+    return /** @type {!Driver} */(webdriver.WebDriver.createSession(
+        executor, caps, opt_flow, this, () => service.kill()));
   }
 
   /**

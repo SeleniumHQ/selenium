@@ -52,7 +52,7 @@ test.suite(function(env) {
 
       driver = yield env.builder()
           .setLoggingPrefs(prefs)
-          .buildAsync();
+          .build();
 
       yield driver.get(dataUrl(
           '<!DOCTYPE html><script>',
@@ -72,7 +72,7 @@ test.suite(function(env) {
 
       driver = yield env.builder()
           .setLoggingPrefs(prefs)
-          .buildAsync();
+          .build();
 
       yield driver.get(dataUrl(
           '<!DOCTYPE html><script>',
@@ -96,7 +96,7 @@ test.suite(function(env) {
 
       driver = yield env.builder()
           .setLoggingPrefs(prefs)
-          .buildAsync();
+          .build();
 
       yield driver.get(dataUrl(
           '<!DOCTYPE html><script>',
@@ -126,7 +126,7 @@ test.suite(function(env) {
 
       driver = yield env.builder()
           .setLoggingPrefs(prefs)
-          .buildAsync();
+          .build();
 
       yield driver.get(dataUrl(
           '<!DOCTYPE html><script>',
@@ -147,7 +147,7 @@ test.suite(function(env) {
 
       driver = yield env.builder()
           .setLoggingPrefs(prefs)
-          .buildAsync();
+          .build();
 
       yield driver.get(dataUrl(
           '<!DOCTYPE html><script>',
