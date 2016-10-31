@@ -25,6 +25,7 @@ module Selenium
         def initialize(opts = {})
           port = opts.delete(:port) || Service::DEFAULT_PORT
           service_args = opts.delete(:service_args) || {}
+
           if opts[:service_log_path]
             service_args.merge!(service_log_path: opts.delete(:service_log_path))
           end
@@ -70,14 +71,18 @@ module Selenium
           chrome_options = caps['chromeOptions'] || caps[:chrome_options] || {}
           chrome_options['binary'] = Chrome.path if Chrome.path
           args = opts.delete(:args) || opts.delete(:switches) || []
+
           unless args.is_a? Array
             raise ArgumentError, ':args must be an Array of Strings'
           end
+
           chrome_options['args'] = args.map(&:to_s)
           profile = opts.delete(:profile).as_json if opts.key?(:profile)
+
           if profile && chrome_options['args'].none? { |arg| arg =~ /user-data-dir/}
             chrome_options['args'] << "--user-data-dir=#{profile[:directory]}"
           end
+
           chrome_options['extensions'] = profile[:extensions] if profile && profile[:extensions]
           chrome_options['detach'] = true if opts.delete(:detach)
           chrome_options['prefs'] = opts.delete(:prefs) if opts.key?(:prefs)
