@@ -18,6 +18,8 @@
 import base64
 import imghdr
 
+import pytest
+
 
 class TestScreenshot(object):
 
@@ -31,9 +33,12 @@ class TestScreenshot(object):
         result = driver.get_screenshot_as_png()
         assert imghdr.what('', result) == 'png'
 
+    @pytest.mark.xfail_chrome
+    @pytest.mark.xfail_firefox
+    @pytest.mark.xfail_marionette
+    @pytest.mark.xfail_remote
     def test_get_element_screenshot(self, driver, pages):
         pages.load("simpleTest.html")
         element = driver.find_element_by_id("multiline")
-        import pdb; pdb.set_trace()
         result = base64.b64decode(element.screenshot_as_base64)
         assert imghdr.what('', result) == 'png'
