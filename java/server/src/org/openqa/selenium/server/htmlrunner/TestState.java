@@ -45,8 +45,9 @@ class TestState {
     storedValues.put(key, value);
   }
 
-  private String getValue(String key) {
-    return Preconditions.checkNotNull(key);
+  private Object getValue(String key) {
+    Preconditions.checkNotNull(key);
+    return storedValues.get(key);
   }
 
   public String expand(String toExpand) {
