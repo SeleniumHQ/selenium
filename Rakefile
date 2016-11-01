@@ -592,55 +592,6 @@ namespace :safari do
   ]
 end
 
-namespace :marionette do
-  atoms_file = "build/javascript/marionette/atoms.js"
-  func_lookup = {"//javascript/atoms/fragments:clear:firefox" => "clearElement",
-                 "//javascript/webdriver/atoms/fragments:get_attribute:firefox" => "getElementAttribute",
-                 "//javascript/webdriver/atoms/fragments:get_text:firefox" => "getElementText",
-                 "//javascript/atoms/fragments:is_enabled:firefox" => "isElementEnabled",
-                 "//javascript/webdriver/atoms/fragments:is_selected:firefox" => "isElementSelected",
-                 "//javascript/atoms/fragments:is_displayed:firefox" => "isElementDisplayed"}
-
-  # This task takes all the relevant Marionette atom dependencies
-  # (listed in func_lookup) and concatenates them to a single atoms.js
-  # file.
-  #
-  # The function names are defined in the func_lookup dictionary of
-  # target to name.
-  #
-  # Instead of having this custom behaviour in Selenium, Marionette
-  # should use the individually generated .js atom files directly in
-  # the future.
-  #
-  # (See Mozilla bug 936204.)
-
-  desc "Generate Marionette atoms"
-  task :atoms => func_lookup.keys do |task|
-    b = StringIO.new
-    b << File.read("javascript/marionette/COPYING") << "\n"
-    b << "\n"
-    b << "const EXPORTED_SYMBOLS = [\"atoms\"];" << "\n"
-    b << "\n"
-    b << "function atoms() {};" << "\n"
-    b << "\n"
-
-    task.prerequisites.each do |target|
-      out = Rake::Task[target].out
-      atom = File.read(out).chop
-
-      b << "// target #{target}" << "\n"
-      b << "atoms.#{func_lookup[target]} = #{atom};" << "\n"
-      b << "\n"
-    end
-
-    puts "Generating uberatoms file: #{atoms_file}"
-    FileUtils.mkpath("build/javascript/marionette")
-    File.open("build/javascript/marionette/atoms.js", "w+") do |h|
-      h.write(b.string)
-    end
-  end
-end
-
 task :authors do
   puts "Generating AUTHORS file"
   sh "(git log --use-mailmap --format='%aN <%aE>' ; cat .OLD_AUTHORS) | sort -uf > AUTHORS"
