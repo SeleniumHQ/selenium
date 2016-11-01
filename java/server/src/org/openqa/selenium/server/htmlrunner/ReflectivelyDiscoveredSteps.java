@@ -71,7 +71,7 @@ class ReflectivelyDiscoveredSteps implements Supplier<ImmutableMap<String, CoreS
       }
 
       CoreStepFactory factory = ((locator, value) -> (selenium, state) ->
-        invokeMethod(method, selenium, locator, value, (result -> NextStepDecorator.IDENTITY)));
+        invokeMethod(method, selenium, state.expand(locator), state.expand(value), (result -> NextStepDecorator.IDENTITY)));
 
       factories.put(method.getName(), factory);
 
