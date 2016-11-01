@@ -213,7 +213,8 @@ public class CoreTestCase {
     }
 
     public String getStepLog() {
-      return step.toString();
+      return cause == null ? step.toString()
+        : String.format("%s\n%s", step.toString(), cause);
     }
   }
 }
