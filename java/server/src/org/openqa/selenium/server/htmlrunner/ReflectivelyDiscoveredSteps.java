@@ -193,7 +193,7 @@ class ReflectivelyDiscoveredSteps implements Supplier<ImmutableMap<String, CoreS
                     if (Boolean.class.isAssignableFrom(result.getClass())) {
                       return (Boolean) result;
                     }
-                    return true;
+                    return result.equals(state.expand(val));
                   } catch (IllegalAccessException e) {
                     // It's going to be interesting to see this be thrown
                     throw new RuntimeException(e);
@@ -222,7 +222,7 @@ class ReflectivelyDiscoveredSteps implements Supplier<ImmutableMap<String, CoreS
                     if (Boolean.class.isAssignableFrom(result.getClass())) {
                       return !(Boolean) result;
                     }
-                    return false;
+                    return !result.equals(state.expand(val));
                   } catch (IllegalAccessException e) {
                     // It's going to be interesting to see this be thrown
                     throw new RuntimeException(e);
