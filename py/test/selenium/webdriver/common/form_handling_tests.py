@@ -23,6 +23,7 @@ from selenium.common.exceptions import WebDriverException
 
 class TestFormHandling(object):
 
+    @pytest.mark.xfail_marionette(reason="https://bugzilla.mozilla.org/show_bug.cgi?id=1291320")
     def testShouldClickOnSubmitInputElements(self, driver, pages):
         pages.load("formPage.html")
         driver.find_element_by_id("submitButton").click()

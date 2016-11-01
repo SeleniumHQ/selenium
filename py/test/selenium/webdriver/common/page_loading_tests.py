@@ -95,6 +95,7 @@ class TestPageLoading(object):
         driver.back()
         assert driver.title == "XHTML Test Page"
 
+    @pytest.mark.xfail_marionette(reason="https://bugzilla.mozilla.org/show_bug.cgi?id=1291320")
     def testShouldBeAbleToNavigateForwardsInTheBrowserHistory(self, driver, pages):
         pages.load("formPage.html")
 
