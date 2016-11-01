@@ -175,7 +175,7 @@ class ReflectivelyDiscoveredSteps implements Supplier<ImmutableMap<String, CoreS
             state.expand(loc),
             state.expand(val),
             (toStore) -> {
-              state.store(state.expand(loc), toStore);
+              state.store(state.expand(val), toStore);
               return NextStepDecorator.IDENTITY;
             }));
 
