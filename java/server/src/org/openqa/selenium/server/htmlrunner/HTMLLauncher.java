@@ -232,7 +232,7 @@ public class HTMLLauncher {
     boolean passed = true;
     for (String browser : browsers) {
       // Turns out that Windows doesn't like "*" in a path name
-      File results = resultsPath.resolve(browser.substring(1) + ".results").toFile();
+      File results = resultsPath.resolve(browser.substring(1) + ".results.html").toFile();
       String result = "FAILED";
 
       try {
