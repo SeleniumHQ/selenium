@@ -36,7 +36,6 @@ class TestScreenshot(object):
     @pytest.mark.xfail_chrome
     @pytest.mark.xfail_firefox
     @pytest.mark.xfail_marionette
-    @pytest.mark.xfail_remote
     def test_get_element_screenshot(self, driver, pages):
         pages.load("simpleTest.html")
         element = driver.find_element_by_id("multiline")

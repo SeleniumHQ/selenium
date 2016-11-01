@@ -165,6 +165,7 @@ class TestApiExample(object):
         assert option_elems[0].is_selected()
         assert option_elems[2].is_selected()
 
+    @pytest.mark.xfail_marionette(reason="https://bugzilla.mozilla.org/show_bug.cgi?id=1291320")
     def testNavigate(self, driver, pages):
         pages.load("formPage.html")
         driver.find_element_by_id("imageButton").submit()

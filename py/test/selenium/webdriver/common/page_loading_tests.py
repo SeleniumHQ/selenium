@@ -74,6 +74,7 @@ class TestPageLoading(object):
     #     # We may have returned to the browser's home page
     #     self.assertEqual(driver.title, anyOf(equalTo(originalTitle), equalTo("We Leave From Here")));
 
+    @pytest.mark.xfail_marionette(reason="https://bugzilla.mozilla.org/show_bug.cgi?id=1291320")
     def testShouldBeAbleToNavigateBackInTheBrowserHistory(self, driver, pages):
         pages.load("formPage.html")
 
@@ -83,6 +84,7 @@ class TestPageLoading(object):
         driver.back()
         assert driver.title == "We Leave From Here"
 
+    @pytest.mark.xfail_marionette(reason="https://bugzilla.mozilla.org/show_bug.cgi?id=1291320")
     def testShouldBeAbleToNavigateBackInTheBrowserHistoryInPresenceOfIframes(self, driver, pages):
         pages.load("xhtmlTest.html")
 
