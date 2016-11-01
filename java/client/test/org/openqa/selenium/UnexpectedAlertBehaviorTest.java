@@ -116,14 +116,22 @@ public class UnexpectedAlertBehaviorTest extends JUnit4TestBase {
       desiredCaps.setCapability(UNEXPECTED_ALERT_BEHAVIOUR, behaviour);
     }
     driver2 = new WebDriverBuilder().setDesiredCapabilities(desiredCaps).get();
-    runScenarioWithUnhandledAlert(expectedAlertText);
+    runScenarioWithUnhandledAlert(expectedAlertText, behaviour != UnexpectedAlertBehaviour.IGNORE);
   }
 
   private void runScenarioWithUnhandledAlert(String expectedAlertText) {
+    runScenarioWithUnhandledAlert(expectedAlertText, true);
+  }
+
+  private void runScenarioWithUnhandledAlert(String expectedAlertText, Boolean ignoreUnhandledAlertException) {
     driver2.get(pages.alertsPage);
     driver2.findElement(By.id("prompt-with-default")).click();
 
-    new WebDriverWait(driver2, 30).ignoring(UnhandledAlertException.class).until(elementTextToEqual(By.id("text"), expectedAlertText));
+    WebDriverWait wait = new WebDriverWait(driver2, 30);
+    if (ignoreUnhandledAlertException) {
+      wait.ignoring(UnhandledAlertException.class);
+    }
+    wait.until(elementTextToEqual(By.id("text"), expectedAlertText));
   }
 
 }
