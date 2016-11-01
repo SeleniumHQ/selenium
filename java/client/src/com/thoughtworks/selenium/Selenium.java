@@ -1782,4 +1782,14 @@ public interface Selenium {
    */
   void keyPressNative(String keycode);
 
+  /**
+   * Simulates keystroke events on the specified element, as though you typed the value key-by-key.
+   *
+   * Added for the sake of compatibility with Selenium IDE.
+   *
+   * @param locator an <a href="#locators">element locator</a>
+   * @param value the value to type
+   */
+  default void sendKeys(String locator, String value) { throw new UnsupportedOperationException(); }
+
 }
