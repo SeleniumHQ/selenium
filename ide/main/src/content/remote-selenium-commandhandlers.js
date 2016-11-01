@@ -364,9 +364,9 @@ AccessorHandler.prototype.execute = function(seleniumApi, command) {
 };
 
 function AccessorResult(result) {
+  var self = this;
   //TODO Samit: should we modify this?
   if (result.terminationCondition) {
-    var self = this;
     this.terminationCondition = function() {
       return result.terminationCondition.call(self);
     };
