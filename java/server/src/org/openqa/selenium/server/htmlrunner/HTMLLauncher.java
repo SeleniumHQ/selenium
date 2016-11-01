@@ -44,6 +44,7 @@ import org.seleniumhq.jetty9.server.Server;
 import org.seleniumhq.jetty9.server.ServerConnector;
 import org.seleniumhq.jetty9.server.handler.ContextHandler;
 import org.seleniumhq.jetty9.server.handler.ResourceHandler;
+import org.seleniumhq.jetty9.util.resource.PathResource;
 import org.seleniumhq.jetty9.util.resource.Resource;
 
 import java.io.File;
@@ -164,7 +165,7 @@ public class HTMLLauncher {
         ResourceHandler handler = new ResourceHandler();
         handler.setDirectoriesListed(true);
         handler.setWelcomeFiles(new String[]{path.getFileName().toString(), "index.html"});
-        handler.setBaseResource(Resource.newResource(path.toFile().getAbsoluteFile().getParentFile()));
+        handler.setBaseResource(new PathResource(path.toFile().getParentFile().toPath().toRealPath()));
 
         ContextHandler context = new ContextHandler("/tests");
         context.setHandler(handler);
