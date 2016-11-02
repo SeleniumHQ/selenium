@@ -71,9 +71,7 @@ var Server = function(requestHandler) {
    *     server has closed all connections.
    */
   this.stop = function() {
-    var d = Promise.defer();
-    server.close(d.resolve);
-    return d.promise;
+    return new Promise(resolve => server.close(resolve));
   };
 
   /**

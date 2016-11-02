@@ -99,31 +99,30 @@ Build.prototype.go = function() {
     cmd = path.join(projectRoot, 'go');
   }
 
-  var result = Promise.defer();
-  spawn(cmd, args, {
-    cwd: projectRoot,
-    env: process.env,
-    stdio: ['ignore', process.stdout, process.stderr]
-  }).on('exit', function(code, signal) {
-    if (code === 0) {
-      targets.forEach(function(target) {
-        builtTargets[target] = 1;
-      });
-      return result.resolve();
-    }
+  return new Promise((resolve, reject) => {
+    spawn(cmd, args, {
+      cwd: projectRoot,
+      env: process.env,
+      stdio: ['ignore', process.stdout, process.stderr]
+    }).on('exit', function(code, signal) {
+      if (code === 0) {
+        targets.forEach(function(target) {
+          builtTargets[target] = 1;
+        });
+        return resolve();
+      }
 
-    var msg = 'Unable to build artifacts';
-    if (code) {  // May be null.
-      msg += '; code=' + code;
-    }
-    if (signal) {
-      msg += '; signal=' + signal;
-    }
+      var msg = 'Unable to build artifacts';
+      if (code) {  // May be null.
+        msg += '; code=' + code;
+      }
+      if (signal) {
+        msg += '; signal=' + signal;
+      }
 
-    result.reject(Error(msg));
+      reject(Error(msg));
+    });
   });
-
-  return result.promise;
 };
 
 

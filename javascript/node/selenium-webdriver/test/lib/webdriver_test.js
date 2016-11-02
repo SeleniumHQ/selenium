@@ -87,6 +87,15 @@ describe('WebDriver', function() {
     uncaughtExceptions.push(e);
   }
 
+  function defer() {
+    let d = {};
+    let promise = new Promise((resolve, reject) => {
+      Object.assign(d, {resolve, reject});
+    });
+    d.promise = promise;
+    return d;
+  }
+
   function waitForIdle(opt_flow) {
     if (!promise.USE_PROMISE_MANAGER) {
       return Promise.resolve();
@@ -896,7 +905,7 @@ describe('WebDriver', function() {
     });
 
     it('resolvesBeforeCallbacksOnWireValueTrigger', function() {
-      var el = Promise.defer();
+      var el = defer();
 
       var element = new WebElementPromise(driver, el.promise);
       var messages = [];
@@ -1548,7 +1557,7 @@ describe('WebDriver', function() {
   describe('alert handling', function() {
     it('alertResolvesWhenPromisedTextResolves', function() {
       let driver = new FakeExecutor().createDriver();
-      let deferredText = Promise.defer();
+      let deferredText = defer();
 
       let alert = new AlertPromise(driver, deferredText.promise);
 
