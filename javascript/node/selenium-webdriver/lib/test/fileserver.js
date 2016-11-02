@@ -193,15 +193,18 @@ function sendDelayedResponse(request, response) {
 }
 
 
-function handleUpload(request, response, next) {
-  multer({
-    inMemory: true,
-    onFileUploadComplete: function(file) {
+function handleUpload(request, response) {
+  let upload = multer({storage: multer.memoryStorage()}).any();
+  upload(request, response, function(err) {
+    if (err) {
+      response.writeHead(500);
+      response.end(err + '');
+    } else {
       response.writeHead(200);
-      response.write(file.buffer);
+      response.write(request.files[0].buffer);
       response.end('<script>window.top.window.onUploadDone();</script>');
     }
-  })(request, response, function() {});
+  });
 }
 
 
