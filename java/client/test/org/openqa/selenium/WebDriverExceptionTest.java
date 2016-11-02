@@ -16,11 +16,21 @@
 // under the License.
 package org.openqa.selenium;
 
+import static org.hamcrest.Matchers.endsWith;
+import static org.hamcrest.Matchers.startsWith;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.openqa.selenium.internal.BuildInfo;
+
+import java.util.Properties;
 
 /**
  * Small test for name extraction
@@ -63,4 +73,31 @@ public class WebDriverExceptionTest {
     assertEquals("unknown", gotName);
   }
 
+  @Test
+  public void appendsSystemInformationToErrorMessage() {
+    WebDriverException exception = spy(new WebDriverException());
+    BuildInfo buildInfo = mock(BuildInfo.class);
+    when(buildInfo.toString()).thenReturn("Build info: nope");
+    doReturn(buildInfo).when(exception).getBuildInformation();
+    doReturn("System info: nope").when(exception).getSystemInformation();
+
+    assertEquals("Build info: nope\n"
+                 + "System info: nope\n"
+                 + "Driver info: driver.version: unknown", exception.getMessage());
+  }
+
+  @Test
+  public void systemInformation() {
+    Properties systemProperties = new Properties();
+    systemProperties.setProperty("os.name", "win");
+    systemProperties.setProperty("os.arch", "x86_64");
+    systemProperties.setProperty("os.version", "95");
+    systemProperties.setProperty("java.version", "1.2");
+
+    String systemInformation = new WebDriverException("ups").getSystemInformation(systemProperties);
+
+    assertThat(systemInformation, startsWith("System info: host: '"));
+    assertThat(systemInformation, endsWith(
+      "', os.name: 'win', os.arch: 'x86_64', os.version: '95', java.version: '1.2'"));
+  }
 }
