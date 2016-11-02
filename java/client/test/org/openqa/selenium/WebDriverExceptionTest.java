@@ -94,10 +94,7 @@ public class WebDriverExceptionTest {
     systemProperties.setProperty("os.version", "95");
     systemProperties.setProperty("java.version", "1.2");
 
-    String systemInformation = new WebDriverException("ups").getSystemInformation(systemProperties);
-
-    assertThat(systemInformation, startsWith("System info: host: '"));
-    assertThat(systemInformation, endsWith(
-      "', os.name: 'win', os.arch: 'x86_64', os.version: '95', java.version: '1.2'"));
+    assertEquals("System info: os.name: 'win', os.arch: 'x86_64', os.version: '95', java.version: '1.2'",
+                 new WebDriverException("ups").getSystemInformation(systemProperties));
   }
 }

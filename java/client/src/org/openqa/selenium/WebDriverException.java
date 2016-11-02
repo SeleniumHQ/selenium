@@ -19,8 +19,6 @@ package org.openqa.selenium;
 
 import org.openqa.selenium.internal.BuildInfo;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -70,19 +68,8 @@ public class WebDriverException extends RuntimeException {
   }
 
   String getSystemInformation(Properties systemProperties) {
-    String host = "N/A";
-    String ip = "N/A";
-
-    try {
-      host = InetAddress.getLocalHost().getHostName();
-      ip = InetAddress.getLocalHost().getHostAddress();
-    } catch (UnknownHostException throw_away) {
-    }
-
     return String.format(
-      "System info: host: '%s', ip: '%s', os.name: '%s', os.arch: '%s', os.version: '%s', java.version: '%s'",
-      host,
-      ip,
+      "System info: os.name: '%s', os.arch: '%s', os.version: '%s', java.version: '%s'",
       systemProperties.getProperty("os.name"),
       systemProperties.getProperty("os.arch"),
       systemProperties.getProperty("os.version"),
