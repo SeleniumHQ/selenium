@@ -18,6 +18,9 @@
 /**
  * @fileoverview An example of starting multiple WebDriver clients that run
  * in parallel in separate control flows.
+ *
+ * This example will only work when the promise manager is enabled
+ * (see <https://github.com/SeleniumHQ/selenium/issues/2969>).
  */
 
 var webdriver = require('..'),
