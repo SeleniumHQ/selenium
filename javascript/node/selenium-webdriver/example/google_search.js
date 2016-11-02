@@ -16,8 +16,10 @@
 // under the License.
 
 /**
- * @fileoverview An example WebDriver script. This requires the chromedriver
- * to be present on the system PATH.
+ * @fileoverview An example WebDriver script.
+ *
+ * Before running this script, ensure that Mozilla's geckodriver is present on
+ * your system PATH: <https://github.com/mozilla/geckodriver/releases>
  *
  * Usage:
  *   // Default behavior

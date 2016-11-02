@@ -18,28 +18,33 @@
 /**
  * @fileoverview An example WebDriver script using generator functions.
  *
- * Usage: node selenium-webdriver/example/google_search_generator.js
+ * Before running this script, ensure that Mozilla's geckodriver is present on
+ * your system PATH: <https://github.com/mozilla/geckodriver/releases>
+ *
+ * Usage:
+ *
+ *     node selenium-webdriver/example/google_search_generator.js
  */
 
-var webdriver = require('..'),
-    By = webdriver.By;
+'use strict';
 
-var driver = new webdriver.Builder()
-    .forBrowser('firefox')
-    .build();
+const {Builder, By, promise, until} = require('..');
 
-driver.get('http://www.google.com/ncr');
-driver.call(function* () {
-  var query = yield driver.findElement(By.name('q'));
-  query.sendKeys('webdriver');
+promise.consume(function* () {
+  let driver;
+  try {
+    driver = yield new Builder().forBrowser('firefox').build();
 
-  var submit = yield driver.findElement(By.name('btnG'));
-  submit.click();
-});
+    yield driver.get('http://www.google.com/ncr');
 
-driver.wait(function* () {
-  var title = yield driver.getTitle();
-  return 'webdriver - Google Search' === title;
-}, 1000);
+    let q = yield driver.findElement(By.name('q'));
+    yield q.sendKeys('webdriver');
 
-driver.quit();
+    let btnG = yield driver.findElement(By.name('btnG'));
+    yield btnG.click();
+
+    yield driver.wait(until.titleIs('webdriver - Google Search'), 1000);
+  } finally {
+    yield driver && driver.quit();
+  }
+}).then(_ => console.log('SUCCESS'), err => console.error('ERROR: ' + err));
