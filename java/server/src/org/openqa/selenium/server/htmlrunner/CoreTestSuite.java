@@ -25,6 +25,7 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
+import java.net.URL;
 import java.util.List;
 
 public class CoreTestSuite {
@@ -35,7 +36,7 @@ public class CoreTestSuite {
     this.url = url;
   }
 
-  public Results run(WebDriver driver, Selenium selenium) {
+  public Results run(WebDriver driver, Selenium selenium, URL baseUrl) {
     if (!url.equals(driver.getCurrentUrl())) {
       driver.get(url);
     }
@@ -69,7 +70,7 @@ public class CoreTestSuite {
     Results results = new Results(rawSuite);
 
     for (String testUrl : allTestUrls) {
-      new CoreTestCase(testUrl).run(results, driver, selenium);
+      new CoreTestCase(testUrl).run(results, driver, selenium, baseUrl);
     }
 
     return results;

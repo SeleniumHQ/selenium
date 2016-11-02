@@ -52,14 +52,14 @@ public class CoreTestCase {
     this.url = Preconditions.checkNotNull(url);
   }
 
-  public void run(Results results, WebDriver driver, Selenium selenium) {
+  public void run(Results results, WebDriver driver, Selenium selenium, URL baseUrl) {
     String currentUrl = driver.getCurrentUrl();
     if (!url.equals(currentUrl)) {
       driver.get(url);
     }
 
     // Grabbing the steps modifies the underlying HTML...
-    List<LoggableStep> steps = findCommands(driver);
+    List<LoggableStep> steps = findCommands(driver, baseUrl);
     // ... which we now grab so we can process it later.
     String rawSource = getLoggableTests(driver);
 
@@ -96,17 +96,18 @@ public class CoreTestCase {
       "return trElement.outerHTML;"));
   }
 
-  private List<LoggableStep> findCommands(WebDriver driver) {
-    // Figure out the base url, if there is one.
-    List<WebElement> allLinks = driver.findElements(By.xpath("//head/link[@rel='selenium.base']"));
-    // Only use the first one (if there's one at all)
-    URL baseUrl = null;
-    if (!allLinks.isEmpty()) {
-      String href = allLinks.get(0).getAttribute("href");
-      try {
-        baseUrl = new URL(href);
-      } catch (MalformedURLException e) {
-        throw new SeleniumException("Base URL for test cannot be parsed: " + href);
+  private List<LoggableStep> findCommands(WebDriver driver, URL baseUrl) {
+    if (baseUrl ==  null) {
+      // Figure out the base url, if it is not specified and there is one in the test case file.
+      List<WebElement> allLinks = driver.findElements(By.xpath("//head/link[@rel='selenium.base']"));
+      // Only use the first one (if there's one at all)
+      if (!allLinks.isEmpty()) {
+        String href = allLinks.get(0).getAttribute("href");
+        try {
+          baseUrl = new URL(href);
+        } catch (MalformedURLException e) {
+          throw new SeleniumException("Base URL for test cannot be parsed: " + href);
+        }
       }
     }
 

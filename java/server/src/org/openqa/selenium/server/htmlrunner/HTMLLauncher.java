@@ -77,7 +77,7 @@ public class HTMLLauncher {
    * Launches a single HTML Selenium test suite.
    *
    * @param browser - the browserString ("*firefox", "*iexplore" or an executable path)
-   * @param browserURL - the start URL for the browser
+   * @param startURL - the start URL for the browser
    * @param suiteURL - the relative URL to the HTML suite
    * @param outputFile - The file to which we'll output the HTML results
    * @param timeoutInSeconds - the amount of time (in seconds) to wait for the browser to finish
@@ -86,7 +86,7 @@ public class HTMLLauncher {
    */
   public String runHTMLSuite(
     String browser,
-    String browserURL,
+    String startURL,
     String suiteURL,
     File outputFile,
     long timeoutInSeconds,
@@ -107,10 +107,10 @@ public class HTMLLauncher {
     WebDriver driver = null;
     try {
       driver = createDriver(browser);
-      URL suiteUrl = determineSuiteUrl(browserURL, suiteURL);
+      URL suiteUrl = determineSuiteUrl(startURL, suiteURL);
 
       driver.get(suiteUrl.toString());
-      Selenium selenium = new WebDriverBackedSelenium(driver, browserURL);
+      Selenium selenium = new WebDriverBackedSelenium(driver, startURL);
       selenium.setTimeout(String.valueOf(timeoutInMs));
       if (userExtensions != null) {
         selenium.setExtensionJs(userExtensions);
@@ -119,7 +119,7 @@ public class HTMLLauncher {
       if (allTables.isEmpty()) {
         throw new RuntimeException("Unable to find suite table: " + driver.getPageSource());
       }
-      Results results = new CoreTestSuite(suiteUrl.toString()).run(driver, selenium);
+      Results results = new CoreTestSuite(suiteUrl.toString()).run(driver, selenium, new URL(startURL));
 
       HTMLTestResults htmlResults = results.toSuiteResult();
       try (Writer writer = Files.newBufferedWriter(outputFile.toPath())) {
@@ -143,7 +143,7 @@ public class HTMLLauncher {
     }
   }
 
-  private URL determineSuiteUrl(String browserUrl, String suiteURL) throws IOException {
+  private URL determineSuiteUrl(String startURL, String suiteURL) throws IOException {
     if (suiteURL.startsWith("https://") || suiteURL.startsWith("http://")) {
       return verifySuiteUrl(new URL(suiteURL));
     }
@@ -184,7 +184,7 @@ public class HTMLLauncher {
     }
 
     // Well then, it must be a URL relative to whatever the browserUrl. Probe and find out.
-    URL browser = new URL(browserUrl);
+    URL browser = new URL(startURL);
     return verifySuiteUrl(new URL(browser, suiteURL));
   }
 
