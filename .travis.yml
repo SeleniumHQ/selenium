@@ -48,9 +48,7 @@ matrix:
   fast_finish: true
   allow_failures:
     - env: TASK=rb TARGET=remote-firefox-test
-    - env: TASK=py TOXENV=py27-chrome
     - env: TASK=py TOXENV=py27-firefox
-    - env: TASK=py TOXENV=py27-marionette
     - env: TASK=py TOXENV=py27-remote
     - env: TASK=api_docs TARGET="//rb:"
     - env: TASK=java TARGET=firefox
