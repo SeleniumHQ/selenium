@@ -1991,7 +1991,11 @@ class Scheduler {
 }
 
 
+let USE_PROMISE_MANAGER;
 function usePromiseManager() {
+  if (typeof USE_PROMISE_MANAGER !== 'undefined') {
+    return !!USE_PROMISE_MANAGER;
+  }
   return process.env['SELENIUM_PROMISE_MANAGER'] === undefined
       || !/^0|false$/i.test(process.env['SELENIUM_PROMISE_MANAGER']);
 }
@@ -3243,8 +3247,21 @@ module.exports = {
   setDefaultFlow: setDefaultFlow,
   when: when,
 
-  /** @return {boolean} Whether the promise manager is enabled. */
+  /**
+   * Indicates whether the promise manager is currently enabled. When disabled,
+   * attempting to use the {@link ControlFlow} or {@link ManagedPromise Promise}
+   * classes will generate an error.
+   *
+   * The promise manager is currently enabled by default, but may be disabled
+   * by setting the environment variable `SELENIUM_PROMISE_MANAGER=0` or by
+   * setting this property to false. Setting this property will always take
+   * precedence ove the use of the environment variable.
+   *
+   * @return {boolean} Whether the promise manager is enabled.
+   * @see <https://github.com/SeleniumHQ/selenium/issues/2969>
+   */
   get USE_PROMISE_MANAGER() { return usePromiseManager(); },
+  set USE_PROMISE_MANAGER(/** boolean */value) { USE_PROMISE_MANAGER = value; },
 
   get LONG_STACK_TRACES() { return LONG_STACK_TRACES; },
   set LONG_STACK_TRACES(v) { LONG_STACK_TRACES = v; },
