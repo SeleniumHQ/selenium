@@ -23,6 +23,8 @@ from selenium.webdriver.support.wait import WebDriverWait
 class TestWindow(object):
 
     @pytest.mark.xfail_ie
+    @pytest.mark.xfail_chrome(reason="Fails on Travis")
+    @pytest.mark.xfail_marionette(reason="Fails on Travis")
     def testShouldMaximizeTheWindow(self, driver):
         resize_timeout = 5
         wait = WebDriverWait(driver, resize_timeout)
