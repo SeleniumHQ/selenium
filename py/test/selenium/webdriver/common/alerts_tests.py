@@ -176,6 +176,7 @@ class TestAlerts(object):
     @pytest.mark.xfail_phantomjs(
         reason='https://github.com/detro/ghostdriver/issues/20',
         raises=WebDriverException)
+    @pytest.mark.xfail_marionette(reason="https://bugzilla.mozilla.org/show_bug.cgi?id=1314462")
     def testShouldAllowUsersToAcceptAnAlertInAFrame(self, driver, pages):
         pages.load("alerts.html")
         driver.switch_to.frame(driver.find_element(By.NAME, "iframeWithAlert"))
@@ -237,6 +238,7 @@ class TestAlerts(object):
     @pytest.mark.xfail_phantomjs(
         reason='https://github.com/detro/ghostdriver/issues/20',
         raises=WebDriverException)
+    @pytest.mark.xfail_chrome(reason="Intermittent on Travis")
     def testHandlesTwoAlertsFromOneInteraction(self, driver, pages):
         pages.load("alerts.html")
 

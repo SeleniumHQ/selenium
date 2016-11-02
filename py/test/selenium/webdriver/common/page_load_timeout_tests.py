@@ -22,6 +22,8 @@ from selenium.common.exceptions import TimeoutException
 
 class TestPageLoadTimeout(object):
 
+    @pytest.mark.xfail_marionette(
+        reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1309231')
     @pytest.mark.xfail_phantomjs(
         reason='PhantomJS does not implement page load timeouts')
     def testShouldTimeoutOnPageLoadTakingTooLong(self, driver, pages):
