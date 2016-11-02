@@ -62,6 +62,15 @@ describe('promise control flow', function() {
       uncaughtExceptions.push(e);
     }
 
+    function defer() {
+      let d = {};
+      let promise = new Promise((resolve, reject) => {
+        Object.assign(d, {resolve, reject});
+      });
+      d.promise = promise;
+      return d;
+    }
+
     function waitForAbort(opt_flow) {
       var theFlow = opt_flow || flow;
       theFlow.removeAllListeners(
@@ -1612,12 +1621,12 @@ describe('promise control flow', function() {
       var defaultFlow = promise.controlFlow();
       defaultFlow.removeAllListeners('uncaughtException');
 
-      var flow1Error = NativePromise.defer();
+      var flow1Error = defer();
       flow1Error.promise.then(function(value) {
         assert.equal(error2, value);
       });
 
-      var flow2Error = NativePromise.defer();
+      var flow2Error = defer();
       flow2Error.promise.then(function(value) {
         assert.equal(error1, value);
       });
@@ -1637,12 +1646,12 @@ describe('promise control flow', function() {
 
     it('testCanSynchronizeFlowsByReturningPromiseFromOneToAnother', function() {
       var flow1 = new promise.ControlFlow;
-      var flow1Done = NativePromise.defer();
+      var flow1Done = defer();
       flow1.once('idle', flow1Done.resolve);
       flow1.once('uncaughtException', flow1Done.reject);
 
       var flow2 = new promise.ControlFlow;
-      var flow2Done = NativePromise.defer();
+      var flow2Done = defer();
       flow2.once('idle', flow2Done.resolve);
       flow2.once('uncaughtException', flow2Done.reject);
 
@@ -1683,7 +1692,7 @@ describe('promise control flow', function() {
       var outerFlow = new promise.ControlFlow;
       var innerFlow = new promise.ControlFlow;
 
-      var block = NativePromise.defer();
+      var block = defer();
       innerFlow.execute(function() {
         return block.promise;
       }, 'block inner flow');

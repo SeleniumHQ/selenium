@@ -60,6 +60,15 @@ describe('promise', function() {
   const assertIsPromise = (p) => assert.ok(promise.isPromise(p));
   const assertNotPromise = (v) => assert.ok(!promise.isPromise(v));
 
+  function defer() {
+    let d = {};
+    let promise = new Promise((resolve, reject) => {
+      Object.assign(d, {resolve, reject});
+    });
+    d.promise = promise;
+    return d;
+  }
+
   function createRejectedPromise(reason) {
     var p = Promise.reject(reason);
     p.catch(function() {});  // Silence unhandled rejection handlers.
@@ -73,7 +82,6 @@ describe('promise', function() {
       }));
       assertIsPromise(new promise.Deferred().promise);
       assertIsPromise(Promise.resolve(123));
-      assertIsPromise(Promise.defer().promise);
       assertIsPromise({then:function() {}});
 
       assertNotPromise(new promise.Deferred());
@@ -308,7 +316,7 @@ describe('promise', function() {
       });
 
       it('WaitsForValueToBeResolvedBeforeInvokingCallback', function() {
-        let d = Promise.defer();
+        let d = defer();
         let callback;
         let result = promise.when(d.promise, callback = callbackHelper(function(value) {
           assert.equal('hi', value);
@@ -570,11 +578,11 @@ describe('promise', function() {
 
     describe('all', function() {
       it('(base case)', function() {
-        let defer = [Promise.defer(), Promise.defer()];
+        let deferredObjs = [defer(), defer()];
         var a = [
             0, 1,
-            defer[0].promise,
-            defer[1].promise,
+            deferredObjs[0].promise,
+            deferredObjs[1].promise,
             4, 5, 6
         ];
         delete a[5];
@@ -586,10 +594,10 @@ describe('promise', function() {
         var result = promise.all(a).then(pair.callback, pair.errback);
         pair.assertNeither();
 
-        defer[0].resolve(2);
+        deferredObjs[0].resolve(2);
         pair.assertNeither();
 
-        defer[1].resolve(3);
+        deferredObjs[1].resolve(3);
         return result.then(() => pair.assertCallback());
       });
 
@@ -598,12 +606,12 @@ describe('promise', function() {
       });
 
       it('usesFirstRejection', function() {
-        let defer = [Promise.defer(), Promise.defer()];
-        let a = [defer[0].promise, defer[1].promise];
+        let deferredObjs = [defer(), defer()];
+        let a = [deferredObjs[0].promise, deferredObjs[1].promise];
 
         var result = promise.all(a).then(assert.fail, assertIsStubError);
-        defer[1].reject(new StubError);
-        setTimeout(() => defer[0].reject(Error('ignored')), 0);
+        deferredObjs[1].reject(new StubError);
+        setTimeout(() => deferredObjs[0].reject(Error('ignored')), 0);
         return result;
       });
     });
@@ -649,7 +657,7 @@ describe('promise', function() {
       });
 
       it('inputIsPromise', function() {
-        var input = Promise.defer();
+        var input = defer();
         var result = promise.map(input.promise, function(value) {
           return value + 1;
         });
@@ -669,8 +677,8 @@ describe('promise', function() {
 
       it('waitsForFunctionResultToResolve', function() {
         var innerResults = [
-          Promise.defer(),
-          Promise.defer()
+          defer(),
+          defer()
         ];
 
         var result = promise.map([1, 2], function(value, index) {
@@ -737,10 +745,10 @@ describe('promise', function() {
 
       it('preservesOrderWhenMapReturnsPromise', function() {
         var deferreds = [
-          Promise.defer(),
-          Promise.defer(),
-          Promise.defer(),
-          Promise.defer()
+          defer(),
+          defer(),
+          defer(),
+          defer()
         ];
         var result = promise.map(deferreds, function(value) {
           return value.promise;
@@ -801,7 +809,7 @@ describe('promise', function() {
       });
 
       it('inputIsPromise', function() {
-        var input = Promise.defer();
+        var input = defer();
         var result = promise.filter(input.promise, function(value) {
           return value > 1 && value < 3;
         });
@@ -821,8 +829,8 @@ describe('promise', function() {
 
       it('waitsForFunctionResultToResolve', function() {
         var innerResults = [
-          Promise.defer(),
-          Promise.defer()
+          defer(),
+          defer()
         ];
 
         var result = promise.filter([1, 2], function(value, index) {
@@ -880,10 +888,10 @@ describe('promise', function() {
 
       it('preservesOrderWhenFilterReturnsPromise', function() {
         var deferreds = [
-          Promise.defer(),
-          Promise.defer(),
-          Promise.defer(),
-          Promise.defer()
+          defer(),
+          defer(),
+          defer(),
+          defer()
         ];
         var result = promise.filter([0, 1, 2, 3], function(value, index) {
           return deferreds[index].promise;

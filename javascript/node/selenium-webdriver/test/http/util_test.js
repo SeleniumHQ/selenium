@@ -126,9 +126,10 @@ describe('selenium-webdriver/http/util', function() {
 
     it('can cancel wait', function() {
       status = 1;
-      let cancel = Promise.defer();
-      setTimeout(_ => cancel.resolve(), 50);
-      return util.waitForServer(baseUrl, 200, cancel.promise)
+      let cancel = new Promise(resolve => {
+        setTimeout(_ => resolve(), 50)
+      });
+      return util.waitForServer(baseUrl, 200, cancel)
           .then(
               () => { throw Error('Did not expect to succeed!'); },
               (e) => assert.ok(e instanceof promise.CancellationError));
@@ -165,9 +166,10 @@ describe('selenium-webdriver/http/util', function() {
 
     it('can cancel wait', function() {
       responseCode = 404;
-      let cancel = Promise.defer();
-      setTimeout(_ => cancel.resolve(), 50);
-      return util.waitForUrl(baseUrl, 200, cancel.promise)
+      let cancel = new Promise(resolve => {
+        setTimeout(_ => resolve(), 50);
+      });
+      return util.waitForUrl(baseUrl, 200, cancel)
           .then(
               () => { throw Error('Did not expect to succeed!'); },
               (e) => assert.ok(e instanceof promise.CancellationError));
