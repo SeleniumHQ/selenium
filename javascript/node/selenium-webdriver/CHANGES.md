@@ -1,4 +1,4 @@
-## v.next
+## v3.0.0
 
 * (__NOTICE__) The minimum supported version of Node is now 6.9.0 LTS
 * Removed support for the SafariDriver browser extension. This has been
