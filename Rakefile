@@ -560,8 +560,9 @@ namespace :node do
   task :deploy => [
     "//cpp:noblur",
     "//cpp:noblur64",
+    "//javascript/atoms/fragments:is-displayed",
     "//javascript/firefox-driver:webdriver",
-    "//javascript/safari-driver:client",
+    "//javascript/webdriver/atoms:getAttribute",
   ] do
     cmd =  "node javascript/node/deploy.js" <<
         " --output=build/javascript/node/selenium-webdriver" <<
@@ -571,7 +572,8 @@ namespace :node do
         " --resource=build/cpp/amd64/libnoblur64.so:firefox/amd64/libnoblur64.so" <<
         " --resource=build/cpp/i386/libnoblur.so:firefox/i386/libnoblur.so" <<
         " --resource=build/javascript/firefox-driver/webdriver.xpi:firefox/webdriver.xpi" <<
-        " --resource=buck-out/gen/javascript/safari-driver/client.js:safari/client.js" <<
+        " --resource=buck-out/gen/javascript/webdriver/atoms/getAttribute.js:atoms/getAttribute.js" <<
+        " --resource=buck-out/gen/javascript/atoms/fragments/is-displayed.js:atoms/isDisplayed.js" <<
         " --resource=common/src/web/:test/data/" <<
         " --exclude_resource=common/src/web/Bin" <<
         " --exclude_resource=.gitignore" <<

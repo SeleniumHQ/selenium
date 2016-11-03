@@ -1905,7 +1905,7 @@ class WebElement {
    * @private
    */
   schedule_(command, description) {
-    command.setParameter('id', this.getId());
+    command.setParameter('id', this);
     return this.driver_.schedule(command, description);
   }
 

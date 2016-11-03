@@ -84,12 +84,14 @@ describe('http', function() {
 
     describe('command routing', function() {
       it('rejects unrecognized commands', function() {
-        assert.throws(
-            () => executor.execute(new Command('fake-name')),
-            function (err) {
-              return err instanceof error.UnknownCommandError
-                  && 'Unrecognized command: fake-name' === err.message;
-            });
+        return executor.execute(new Command('fake-name'))
+            .then(assert.fail, err => {
+              if (err instanceof error.UnknownCommandError
+                  && 'Unrecognized command: fake-name' === err.message) {
+                return;
+              }
+              throw err;
+            })
       });
 
       it('rejects promise if client fails to send request', function() {

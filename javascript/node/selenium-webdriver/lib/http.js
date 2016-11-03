@@ -25,7 +25,11 @@
 
 'use strict';
 
+const fs = require('fs');
+const path = require('path');
+
 const cmd = require('./command');
+const devmode = require('./devmode');
 const error = require('./error');
 const logging = require('./logging');
 const promise = require('./promise');
@@ -110,13 +114,77 @@ class Response {
 }
 
 
+const DEV_ROOT = '../../../../buck-out/gen/javascript/';
+
+/** @enum {string} */
+const Atom = {
+  GET_ATTRIBUTE: devmode
+      ? path.join(__dirname, DEV_ROOT, 'webdriver/atoms/getAttribute.js')
+      : path.join(__dirname, 'atoms/getAttribute.js'),
+  IS_DISPLAYED: devmode
+      ? path.join(__dirname, DEV_ROOT, 'atoms/fragments/is-displayed.js')
+      : path.join(__dirname, 'atoms/isDisplayed.js'),
+};
+
+
+const ATOMS = /** !Map<string, !Promise<string>> */new Map();
+const LOG = logging.getLogger('webdriver.http');
+
+/**
+ * @param {Atom} file The atom file to load.
+ * @return {!Promise<string>} A promise that will resolve to the contents of the
+ *     file.
+ */
+function loadAtom(file) {
+  if (ATOMS.has(file)) {
+    return ATOMS.get(file);
+  }
+  let contents = /** !Promise<string> */new Promise((resolve, reject) => {
+    LOG.finest(() => `Loading atom ${file}`);
+    fs.readFile(file, 'utf8', function(err, data) {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(data);
+      }
+    });
+  });
+  ATOMS.set(file, contents);
+  return contents;
+}
+
+
 function post(path) { return resource('POST', path); }
 function del(path)  { return resource('DELETE', path); }
 function get(path)  { return resource('GET', path); }
 function resource(method, path) { return {method: method, path: path}; }
 
 
-/** @const {!Map<string, {method: string, path: string}>} */
+/** @typedef {{method: string, path: string}} */
+var CommandSpec;
+
+
+/** @typedef {function(!cmd.Command): !Promise<!cmd.Command>} */
+var CommandTransformer;
+
+
+/**
+ * @param {!cmd.Command} command The initial command.
+ * @param {Atom} atom The name of the atom to execute.
+ * @return {!Promise<!cmd.Command>} The transformed command to execute.
+ */
+function toExecuteAtomCommand(command, atom, ...params) {
+  return loadAtom(atom).then(atom => {
+    return new cmd.Command(cmd.Name.EXECUTE_SCRIPT)
+        .setParameter('sessionId', command.getParameter('sessionId'))
+        .setParameter('script', `return (${atom}).apply(null, arguments)`)
+        .setParameter('args', params.map(param => command.getParameter(param)));
+  });
+}
+
+
+
+/** @const {!Map<string, CommandSpec>} */
 const COMMAND_MAP = new Map([
     [cmd.Name.GET_SERVER_STATUS, get('/status')],
     [cmd.Name.NEW_SESSION, post('/session')],
@@ -195,9 +263,15 @@ const COMMAND_MAP = new Map([
 ]);
 
 
-/** @const {!Map<string, {method: string, path: string}>} */
+/** @const {!Map<string, (CommandSpec|CommandTransformer)>} */
 const W3C_COMMAND_MAP = new Map([
   [cmd.Name.GET_ACTIVE_ELEMENT, get('/session/:sessionId/element/active')],
+  [cmd.Name.GET_ELEMENT_ATTRIBUTE, (cmd) => {
+    return toExecuteAtomCommand(cmd, Atom.GET_ATTRIBUTE, 'id', 'name');
+  }],
+  [cmd.Name.IS_ELEMENT_DISPLAYED, (cmd) => {
+    return toExecuteAtomCommand(cmd, Atom.IS_DISPLAYED, 'id');
+  }],
   [cmd.Name.MAXIMIZE_WINDOW, post('/session/:sessionId/window/maximize')],
   [cmd.Name.GET_WINDOW_POSITION, get('/session/:sessionId/window/position')],
   [cmd.Name.SET_WINDOW_POSITION, post('/session/:sessionId/window/position')],
@@ -250,6 +324,53 @@ function doSend(executor, request) {
 
 
 /**
+ * @param {Map<string, CommandSpec>} customCommands
+ *     A map of custom command definitions.
+ * @param {boolean} w3c Whether to use W3C command mappings.
+ * @param {!cmd.Command} command The command to resolve.
+ * @return {!Promise<!Request>} A promise that will resolve with the
+ *     command to execute.
+ */
+function buildRequest(customCommands, w3c, command) {
+  LOG.finest(() => `Translating command: ${command.getName()}`);
+  let spec = customCommands && customCommands.get(command.getName());
+  if (spec) {
+    return toHttpRequest(spec);
+  }
+
+  if (w3c) {
+    spec = W3C_COMMAND_MAP.get(command.getName());
+    if (typeof spec === 'function') {
+      LOG.finest(() => `Transforming command for W3C: ${command.getName()}`);
+      return spec(command)
+          .then(newCommand => buildRequest(customCommands, w3c, newCommand));
+    } else if (spec) {
+      return toHttpRequest(spec);
+    }
+  }
+
+  spec = COMMAND_MAP.get(command.getName());
+  if (spec) {
+    return toHttpRequest(spec);
+  }
+  return Promise.reject(
+      new error.UnknownCommandError(
+          'Unrecognized command: ' + command.getName()));
+
+  /**
+   * @param {CommandSpec} resource
+   * @return {!Promise<!Request>}
+   */
+  function toHttpRequest(resource) {
+    LOG.finest(() => `Building HTTP request: ${JSON.stringify(resource)}`);
+    let parameters = command.getParameters();
+    let path = buildPath(resource.path, parameters);
+    return Promise.resolve(new Request(resource.method, path, parameters));
+  }
+}
+
+
+/**
  * A command executor that communicates with the server using JSON over HTTP.
  *
  * By default, each instance of this class will use the legacy wire protocol
@@ -280,7 +401,7 @@ class Executor {
      */
     this.w3c = false;
 
-    /** @private {Map<string, {method: string, path: string}>} */
+    /** @private {Map<string, CommandSpec>} */
     this.customCommands_ = null;
 
     /** @private {!logging.Logger} */
@@ -309,51 +430,40 @@ class Executor {
 
   /** @override */
   execute(command) {
-    let resource =
-        (this.customCommands_ && this.customCommands_.get(command.getName()))
-        || (this.w3c && W3C_COMMAND_MAP.get(command.getName()))
-        || COMMAND_MAP.get(command.getName());
-    if (!resource) {
-      throw new error.UnknownCommandError(
-          'Unrecognized command: ' + command.getName());
-    }
+    let request = buildRequest(this.customCommands_, this.w3c, command);
+    return request.then(request => {
+      this.log_.finer(() => `>>> ${request.method} ${request.path}`);
+      return doSend(this, request).then(response => {
+        this.log_.finer(() => `>>>\n${request}\n<<<\n${response}`);
 
-    let parameters = command.getParameters();
-    let path = buildPath(resource.path, parameters);
-    let request = new Request(resource.method, path, parameters);
+        let parsed =
+            parseHttpResponse(/** @type {!Response} */ (response), this.w3c);
 
-    let log = this.log_;
-    log.finer(() => '>>>\n' + request);
-    return doSend(this, request).then(response => {
-      log.finer(() => '<<<\n' + response);
+        if (command.getName() === cmd.Name.NEW_SESSION
+            || command.getName() === cmd.Name.DESCRIBE_SESSION) {
+          if (!parsed || !parsed['sessionId']) {
+            throw new error.WebDriverError(
+                'Unable to parse new session response: ' + response.body);
+          }
 
-      let parsed =
-          parseHttpResponse(/** @type {!Response} */ (response), this.w3c);
+          // The remote end is a W3C compliant server if there is no `status`
+          // field in the response. This is not appliable for the DESCRIBE_SESSION
+          // command, which is not defined in the W3C spec.
+          if (command.getName() === cmd.Name.NEW_SESSION) {
+            this.w3c = this.w3c || !('status' in parsed);
+          }
 
-      if (command.getName() === cmd.Name.NEW_SESSION
-          || command.getName() === cmd.Name.DESCRIBE_SESSION) {
-        if (!parsed || !parsed['sessionId']) {
-          throw new error.WebDriverError(
-              'Unable to parse new session response: ' + response.body);
+          return new Session(parsed['sessionId'], parsed['value']);
         }
 
-        // The remote end is a W3C compliant server if there is no `status`
-        // field in the response. This is not appliable for the DESCRIBE_SESSION
-        // command, which is not defined in the W3C spec.
-        if (command.getName() === cmd.Name.NEW_SESSION) {
-          this.w3c = this.w3c || !('status' in parsed);
+        if (parsed
+            && typeof parsed === 'object'
+            && 'value' in parsed) {
+          let value = parsed['value'];
+          return typeof value === 'undefined' ? null : value;
         }
-
-        return new Session(parsed['sessionId'], parsed['value']);
-      }
-
-      if (parsed
-          && typeof parsed === 'object'
-          && 'value' in parsed) {
-        let value = parsed['value'];
-        return typeof value === 'undefined' ? null : value;
-      }
-      return parsed;
+        return parsed;
+      });
     });
   }
 }
