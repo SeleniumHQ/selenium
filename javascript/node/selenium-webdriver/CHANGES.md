@@ -20,6 +20,9 @@
   `SELENIUM_PROMISE_MANAGER=0`. This is part of a larger plan to remove the
   promise manager, as documented at
   <https://github.com/SeleniumHQ/selenium/issues/2969>
+* When communicating with a W3C-compliant remote end, use the atoms library for
+  the `WebElement.getAttribute()` and `WebElement.isDisplayed()` commands. This
+  behavior is consistent with the java, .net, python, and ruby clients.
 
 
 ### API Changes

@@ -1173,7 +1173,7 @@ describe('WebDriver', function() {
           expect(CName.FIND_ELEMENT,
                  {using: 'css selector', value: '*[id="foo"]'}).
               andReturnSuccess(WebElement.buildId('bar')).
-          expect(CName.CLICK_ELEMENT, {'id': 'bar'}).
+          expect(CName.CLICK_ELEMENT, {'id': WebElement.buildId('bar')}).
               andReturnSuccess().
           end();
 
@@ -1188,7 +1188,7 @@ describe('WebDriver', function() {
           expect(CName.FIND_ELEMENT,
                  {using: 'css selector', value: '*[id="foo"]'}).
               andReturnSuccess(WebElement.buildId('bar')).
-          expect(CName.CLICK_ELEMENT, {'id': 'bar'}).
+          expect(CName.CLICK_ELEMENT, {'id': WebElement.buildId('bar')}).
               andReturnSuccess().
           end();
 
@@ -1206,7 +1206,7 @@ describe('WebDriver', function() {
             'args': []
           }).
           andReturnSuccess(WebElement.buildId('bar')).
-          expect(CName.CLICK_ELEMENT, {'id': 'bar'}).
+          expect(CName.CLICK_ELEMENT, {'id': WebElement.buildId('bar')}).
           end();
 
       var driver = executor.createDriver();
@@ -1237,7 +1237,7 @@ describe('WebDriver', function() {
             'script': script,
             'args': ['div']
           }).
-          andReturnSuccess({'ELEMENT':'one'}).
+          andReturnSuccess(WebElement.buildId('one')).
           end();
       var driver = executor.createDriver();
       driver.findElement(By.js(script, 'div'));
@@ -1250,7 +1250,7 @@ describe('WebDriver', function() {
               andReturnSuccess([
                   WebElement.buildId('foo'),
                   WebElement.buildId('bar')]).
-          expect(CName.CLICK_ELEMENT, {'id': 'foo'}).
+          expect(CName.CLICK_ELEMENT, {'id': WebElement.buildId('foo')}).
           andReturnSuccess().
           end();
 
@@ -1396,7 +1396,8 @@ describe('WebDriver', function() {
     it('convertsVarArgsIntoStrings_simpleArgs', function() {
       let executor = new FakeExecutor().
           expect(CName.SEND_KEYS_TO_ELEMENT,
-                 {'id': 'one', 'value':'12abc3'.split('')}).
+                 {'id': WebElement.buildId('one'),
+                  'value':'12abc3'.split('')}).
               andReturnSuccess().
           end();
 
@@ -1412,7 +1413,8 @@ describe('WebDriver', function() {
                  {'using':'css selector', 'value':'*[id="foo"]'}).
               andReturnSuccess(WebElement.buildId('one')).
           expect(CName.SEND_KEYS_TO_ELEMENT,
-                 {'id':'one', 'value':'abc123def'.split('')}).
+                 {'id':WebElement.buildId('one'),
+                  'value':'abc123def'.split('')}).
               andReturnSuccess().
           end();
 
@@ -1430,7 +1432,8 @@ describe('WebDriver', function() {
                  {'using':'css selector', 'value':'*[id="foo"]'}).
               andReturnSuccess(WebElement.buildId('one')).
           expect(CName.SEND_KEYS_TO_ELEMENT,
-                 {'id': 'one', 'value':'modified/path'.split('')}).
+                 {'id': WebElement.buildId('one'),
+                  'value':'modified/path'.split('')}).
               andReturnSuccess().
           end();
 

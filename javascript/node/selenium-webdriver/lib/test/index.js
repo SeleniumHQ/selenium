@@ -114,6 +114,8 @@ var browsersToTest = (function() {
       console.log('Running tests using loopback address')
     }
   }
+  console.log(
+      'Promise manager is enabled? ' + webdriver.promise.USE_PROMISE_MANAGER);
 
   return browsers;
 })();
@@ -215,6 +217,15 @@ function suite(fn, opt_options) {
   }
 
   try {
+
+    before(function() {
+      if (isDevMode) {
+        return build.of(
+            '//javascript/atoms/fragments:is-displayed',
+            '//javascript/webdriver/atoms:getAttribute')
+            .onlyOnce().go();
+      }
+    });
 
     // Server is only started if required for a specific config.
     after(function() {
