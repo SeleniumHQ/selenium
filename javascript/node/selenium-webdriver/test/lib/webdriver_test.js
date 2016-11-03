@@ -363,7 +363,7 @@ describe('WebDriver', function() {
       return driver.getSession().then(v => assert.strictEqual(v, aSession));
     });
 
-    it('handles desired and requried capabilities', function() {
+    it('handles desired and required capabilities', function() {
       let aSession = new Session(SESSION_ID, {'browserName': 'firefox'});
       let executor = new FakeExecutor().
           expect(CName.NEW_SESSION).
@@ -390,6 +390,23 @@ describe('WebDriver', function() {
       var driver =
           WebDriver.createSession(executor, {'browserName': 'firefox'});
       return driver.getSession().then(fail, assertIsStubError);
+    });
+
+    it('invokes quit callback if it fails to create a session', function() {
+      let called = false;
+      let executor = new FakeExecutor()
+          .expect(CName.NEW_SESSION)
+          .withParameters({'desiredCapabilities': {'browserName': 'firefox'}})
+          .andReturnError(new StubError())
+          .end();
+
+      var driver =
+          WebDriver.createSession(executor, {'browserName': 'firefox'},
+              null, null, () => called = true);
+      return driver.getSession().then(fail, err => {
+        assert.ok(called);
+        assertIsStubError(err);
+      });
     });
 
     it('usesActiveFlowByDefault', function() {
@@ -419,6 +436,37 @@ describe('WebDriver', function() {
         assert.notEqual(otherFlow, promise.controlFlow());
 
         return waitForIdle(otherFlow);
+      });
+
+      describe('creation failures bubble up in control flow', function() {
+        function runTest(...args) {
+          let executor = new FakeExecutor()
+              .expect(CName.NEW_SESSION)
+              .withParameters({'desiredCapabilities': {'browserName': 'firefox'}})
+              .andReturnError(new StubError())
+              .end();
+
+          WebDriver.createSession(
+              executor, {'browserName': 'firefox'}, ...args);
+          return waitForAbort().then(assertIsStubError);
+        }
+
+        it('no onQuit callback', () => runTest());
+        it('has onQuit callback', () => runTest(null, null, function() {}));
+
+        it('onQuit callback failure suppress creation failure', function() {
+          let e = new Error('hi!');
+          let executor = new FakeExecutor()
+              .expect(CName.NEW_SESSION)
+              .withParameters({'desiredCapabilities': {'browserName': 'firefox'}})
+              .andReturnError(new StubError())
+              .end();
+
+          WebDriver.createSession(
+              executor, {'browserName': 'firefox'}, null, null,
+              () => {throw e});
+          return waitForAbort().then(err => assert.strictEqual(err, e));
+        });
       });
     });
   });

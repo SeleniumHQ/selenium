@@ -776,6 +776,11 @@ class WebDriver {
     let session = flow.execute(
         () => executeCommand(executor, cmd),
         'WebDriver.createSession()');
+    if (typeof opt_onQuit === 'function') {
+      session = session.catch(err => {
+        return Promise.resolve(opt_onQuit()).then(_ => {throw err});
+      });
+    }
     const ctor = opt_ctor || WebDriver;
     return new ctor(session, executor, flow, opt_onQuit);
   }
