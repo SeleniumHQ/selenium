@@ -198,21 +198,23 @@ module Selenium
       end
 
       not_compliant_on browser: :safari do
-        it 'should switch to a window and execute a block when current window is closed' do
-          driver.navigate.to url_for('xhtmlTest.html')
-          driver.find_element(link: 'Open new window').click
-          wait.until { driver.window_handles.size == 2 }
+        not_compliant_on driver: :remote, browser: :firefox do
+          it 'should switch to a window and execute a block when current window is closed' do
+            driver.navigate.to url_for('xhtmlTest.html')
+            driver.find_element(link: 'Open new window').click
+            wait.until { driver.window_handles.size == 2 }
 
-          driver.switch_to.window(new_window)
-          wait.until { driver.title == 'We Arrive Here' }
+            driver.switch_to.window(new_window)
+            wait.until { driver.title == 'We Arrive Here' }
 
-          driver.close
+            driver.close
 
-          driver.switch_to.window(driver.window_handles.first) do
-            wait.until { driver.title == 'XHTML Test Page' }
+            driver.switch_to.window(driver.window_handles.first) do
+              wait.until { driver.title == 'XHTML Test Page' }
+            end
+
+            expect(driver.title).to eq('XHTML Test Page')
           end
-
-          expect(driver.title).to eq('XHTML Test Page')
         end
       end
 
@@ -282,23 +284,27 @@ module Selenium
 
           # Safari - Raises wrong error
           not_compliant_on browser: :safari do
-            it 'raises when calling #text on a closed alert' do
-              driver.navigate.to url_for('alerts.html')
-              wait_for_element(id: 'alert')
+            not_compliant_on driver: :remote, browser: :firefox do
+              it 'raises when calling #text on a closed alert' do
+                driver.navigate.to url_for('alerts.html')
+                wait_for_element(id: 'alert')
 
-              driver.find_element(id: 'alert').click
+                driver.find_element(id: 'alert').click
 
-              alert = wait_for_alert
-              alert.accept
+                alert = wait_for_alert
+                alert.accept
 
-              wait_for_no_alert
-              expect { alert.text }.to raise_error(Selenium::WebDriver::Error::NoSuchAlertError)
+                wait_for_no_alert
+                expect { alert.text }.to raise_error(Selenium::WebDriver::Error::NoSuchAlertError)
+              end
             end
           end
 
-          not_compliant_on browser: :ie do
-            it 'raises NoAlertOpenError if no alert is present' do
-              expect { driver.switch_to.alert }.to raise_error(Selenium::WebDriver::Error::NoSuchAlertError, /alert|modal/i)
+          not_compliant_on driver: :remote, browser: :firefox do
+            not_compliant_on browser: :ie do
+              it 'raises NoAlertOpenError if no alert is present' do
+                expect { driver.switch_to.alert }.to raise_error(Selenium::WebDriver::Error::NoSuchAlertError, /alert|modal/i)
+              end
             end
           end
 

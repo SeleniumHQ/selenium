@@ -124,11 +124,6 @@ module Selenium
           expect(child.attribute('id')).to eq('2')
         end
 
-        it 'should raise on nonexistant element' do
-          driver.navigate.to url_for('xhtmlTest.html')
-          expect { driver.find_element('nonexistant') }.to raise_error
-        end
-
         it 'should find elements with a hash selector' do
           driver.navigate.to url_for('xhtmlTest.html')
           expect(driver.find_element(class: 'header').text).to eq('XHTML Might Be The Future')
@@ -200,9 +195,11 @@ module Selenium
           expect(driver.execute_script('return true;')).to eq(true)
         end
 
-        it 'should raise if the script is bad' do
-          driver.navigate.to url_for('xhtmlTest.html')
-          expect { driver.execute_script('return squiggle();') }.to raise_error
+        not_compliant_on driver: :remote, browser: :firefox do
+          it 'should raise if the script is bad' do
+            driver.navigate.to url_for('xhtmlTest.html')
+            expect { driver.execute_script('return squiggle();') }.to raise_error(Selenium::WebDriver::Error::JavascriptError)
+          end
         end
 
         it 'should return arrays' do
@@ -274,11 +271,13 @@ module Selenium
 
           # Edge BUG - https://connect.microsoft.com/IE/feedback/details/1849991/
           not_compliant_on browser: :edge do
-            it 'times out if the callback is not invoked' do
-              expect do
-                # Script is expected to be async and explicitly callback, so this should timeout.
-                driver.execute_async_script 'return 1 + 2;'
-              end.to raise_error(Selenium::WebDriver::Error::ScriptTimeoutError)
+            not_compliant_on driver: :remote, browser: :firefox do
+              it 'times out if the callback is not invoked' do
+                expect do
+                  # Script is expected to be async and explicitly callback, so this should timeout.
+                  driver.execute_async_script 'return 1 + 2;'
+                end.to raise_error(Selenium::WebDriver::Error::ScriptTimeoutError)
+              end
             end
           end
         end

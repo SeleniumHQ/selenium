@@ -40,16 +40,20 @@ module Selenium
           end
         end
 
-        it 'should still fail to find an element with implicit waits enabled' do
-          driver.manage.timeouts.implicit_wait = 0.5
-          expect { driver.find_element(id: 'box0') }.to raise_error(WebDriver::Error::NoSuchElementError)
+        not_compliant_on driver: :remote, browser: :firefox do
+          it 'should still fail to find an element with implicit waits enabled' do
+            driver.manage.timeouts.implicit_wait = 0.5
+            expect { driver.find_element(id: 'box0') }.to raise_error(WebDriver::Error::NoSuchElementError)
+          end
         end
 
-        it 'should return after first attempt to find one after disabling implicit waits' do
-          driver.manage.timeouts.implicit_wait = 3
-          driver.manage.timeouts.implicit_wait = 0
+        not_compliant_on driver: :remote, browser: :firefox do
+          it 'should return after first attempt to find one after disabling implicit waits' do
+            driver.manage.timeouts.implicit_wait = 3
+            driver.manage.timeouts.implicit_wait = 0
 
-          expect { driver.find_element(id: 'box0') }.to raise_error(WebDriver::Error::NoSuchElementError)
+            expect { driver.find_element(id: 'box0') }.to raise_error(WebDriver::Error::NoSuchElementError)
+          end
         end
 
         # Safari bug - find_elements does not return empty
