@@ -778,7 +778,7 @@ class WebDriver {
         'WebDriver.createSession()');
     if (typeof opt_onQuit === 'function') {
       session = session.catch(err => {
-        return Promise.resolve(opt_onQuit()).then(_ => {throw err});
+        return Promise.resolve(opt_onQuit.call(void 0)).then(_ => {throw err});
       });
     }
     const ctor = opt_ctor || WebDriver;
