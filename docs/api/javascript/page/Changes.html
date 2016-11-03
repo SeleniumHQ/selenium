@@ -1,4 +1,74 @@
-<!DOCTYPE html><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"><meta http-equiv="Content-Language" content="en"><meta http-equiv="X-UA-Compatible" content="IE=edge"><link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"><title>Changes</title><link href="dossier.css" rel="stylesheet" type="text/css"><header><button class="dossier-menu"><i class="material-icons">menu</i></button><form><input type="search" placeholder="Search" tabindex="1"><i class="material-icons">search</i></form></header><div class="content"><main><article class="page"><h2>v3.0.0-beta-1</h2>
+<!DOCTYPE html><html lang="en" class="loading"><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"><meta http-equiv="X-UA-Compatible" content="IE=edge"><link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"><title>Changes</title><link href="../dossier.css" rel="stylesheet" type="text/css"><header><button class="dossier-menu"><i class="material-icons">menu</i></button><form><input type="search" placeholder="Search" tabindex="1"><i class="material-icons">search</i></form></header><nav class="dossier-nav"></nav><div class="content"><main><article class="page"><h2>v3.0.0</h2>
+<ul><li>
+<p>(<strong>NOTICE</strong>) The minimum supported version of Node is now 6.9.0 LTS</p>
+</li><li>
+<p>Removed support for the SafariDriver browser extension. This has been
+replaced by Apple&#39;s safaridriver, which is included wtih Safari 10
+(available on OS X El Capitan and macOS Sierra).</p>
+<p>To use Safari 9 or older, users will have to use an older version of Selenium.</p>
+</li><li>
+<p>geckodriver v0.11.0 or newer is now required for Firefox.</p>
+</li><li>
+<p>Fixed potential reference errors in <code>selenium-webdriver/testing</code> when users
+create a cycle with mocha by running with mocha&#39;s <code>--hook</code> flag.</p>
+</li><li>
+<p>Fixed <code>WebDriver.switchTo().activeElement()</code> to use the correct HTTP method
+for compatibility with the W3C spec.</p>
+</li><li>
+<p>Update the <code>selenium-webdriver/firefox</code> module to use geckodriver&#39;s
+&#34;moz:firefoxOptions&#34; dictionary for Firefox-specific configuration values.</p>
+</li><li>
+<p>Extending the <code>selenium-webdriver/testing</code> module to support tests defined
+using generator functions.</p>
+</li><li>
+<p>The promise manager can be disabled by setting an enviornment variable:
+<code>SELENIUM_PROMISE_MANAGER&#61;0</code>. This is part of a larger plan to remove the
+promise manager, as documented at
+<a href="https://github.com/SeleniumHQ/selenium/issues/2969">https://github.com/SeleniumHQ/selenium/issues/2969</a></p>
+</li><li>
+<p>When communicating with a W3C-compliant remote end, use the atoms library for
+the <code>WebElement.getAttribute()</code> and <code>WebElement.isDisplayed()</code> commands. This
+behavior is consistent with the java, .net, python, and ruby clients.</p>
+</li></ul>
+<h3>API Changes</h3>
+<ul><li>Removed <code>safari.Options#useLegacyDriver()</code></li><li>Reduced the API on <code>promise.Thenable</code> for compatibility with native promises:
+<ul><li>Removed <code>#isPending()</code></li><li>Removed <code>#cancel()</code></li><li>Removed <code>#finally()</code></li></ul>
+</li><li>Changed all subclasses of <code>webdriver.WebDriver</code> to overload the static
+function <code>WebDriver.createSession()</code> instead of doing work in the
+constructor. All constructors now inherit the base class&#39; function signature.
+Users are still encouraged to use the <code>Builder</code> class instead of creating
+drivers directly.</li><li><code>Builder#build()</code> now returns a &#34;thenable&#34; WebDriver instance, allowing users
+to immediately schedule commands (as before), or issue them through standard
+promise callbacks. This is the same pattern already employed for WebElements.</li><li>Removed <code>Builder#buildAsync()</code> as it was redundant with the new semantics of
+<code>build()</code>.</li></ul>
+<h2>v3.0.0-beta-3</h2>
+<ul><li>Fixed a bug where the promise manager would silently drop callbacks after
+recovering from an unhandled promise rejection.</li><li>Added the <code>firefox.ServiceBuilder</code> class, which may be used to customize the
+geckodriver used for <code>firefox.Driver</code> instances.</li><li>Added support for Safari 10 safaridriver. safaridriver may be disabled
+via tha API, <code>safari.Options#useLegacyDriver</code>, to use the safari
+extension driver.</li><li>Updated the <code>lib/proxy</code> module to support configuring a SOCKS proxy.</li><li>For the <code>promise.ControlFlow</code>, fire the &#34;uncaughtException&#34; event in a new
+turn of the JS event loop. As a result of this change, any errors thrown by
+an event listener will propagate to the global error handler. Previously,
+this event was fired with in the context of a (native) promise callback,
+causing errors to be silently suppressed in the promise chain.</li></ul>
+<h3>API Changes</h3>
+<ul><li>Added <code>remote.DriverService.Builder</code> as a base class for configuring
+DriverService instances that run in a child-process. The
+<code>chrome.ServiceBuilder</code>, <code>edge.ServiceBuilder</code>, and <code>opera.ServiceBuilder</code>
+classes now all extend this base class with browser-specific options.</li><li>For each of the ServiceBuilder clases, renamed <code>usingPort</code> and
+<code>withEnvironment</code> to <code>setPort</code> and <code>setEnvironment</code>, respectively.</li><li>Renamed <code>chrome.ServiceBuilder#setUrlBasePath</code> to <code>#setPath</code></li><li>Changed the signature of the <code>firefox.Driver</code> from <code>(config, flow, executor)</code>
+to <code>(config, executor, flow)</code>.</li><li>Exposed the <code>Condition</code> and <code>WebElementCondition</code> classes from the top-level
+<code>selenium-webdriver</code> module (these were previously only available from
+<code>lib/webdriver</code>).</li></ul>
+<h3>Changes for W3C WebDriver Spec Compliance</h3>
+<ul><li>Updated command mappings for <a href="https://w3c.github.io/webdriver/webdriver-spec.html#get-window-position">getting</a>
+and <a href="https://w3c.github.io/webdriver/webdriver-spec.html#set-window-position">setting</a>
+the window position.</li></ul>
+<h2>v3.0.0-beta-2</h2>
+<h3>API Changes</h3>
+<ul><li>Moved the <code>builder.Builder</code> class into the main module (<code>selenium-webdriver</code>).</li><li>Removed the <code>builder</code> module.</li><li>Fix <code>webdriver.WebDriver#setFileDetector</code> when driving Chrome or Firefox on a
+remote machine.</li></ul>
+<h2>v3.0.0-beta-1</h2>
 <ul><li>Allow users to set the agent used for HTTP connections through
 <code>builder.Builder#usingHttpAgent()</code></li><li>Added new wait conditions: <code>until.urlIs()</code>, <code>until.urlContains()</code>,
 <code>until.urlMatches()</code></li><li>Added work around for <a href="https://bugzilla.mozilla.org/show_bug.cgi?id&#61;1274924">GeckoDriver bug</a>
@@ -471,4 +541,4 @@ available separately)</li><li>Added a portprober for finding free ports</li><li>
 <pre><code>  npm install selenium-webdriver
 </code></pre>
 </li></ul>
-</article></main><footer><div><a href="https://github.com/jleyba/js-dossier">Generated by dossier</a></div></footer></div><nav class="dossier-nav"><section><a class="title" href="index.html" tabindex="2">Overview</a></section><section class="modules"><div class="toggle"><div class="title"><span class="item" tabindex="2">Modules</span><i class="material-icons">expand_more</i></div></div></section><section><a class="title" href="Changes.html" tabindex="2">Changes</a></section></nav><script src="types.js"></script><script src="dossier.js"></script>
+</article></main><footer><div><a href="https://github.com/jleyba/js-dossier">Generated by dossier</a></div></footer></div><script src="../types.js"></script><script src="../dossier.js"></script>
