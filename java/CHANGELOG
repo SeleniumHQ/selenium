@@ -2,13 +2,13 @@ v3.0.2
 ======
 
 * Fixes to make htmlrunner work.
-* Removed native events from FirefoxDriver
+* Removed native events from FirefoxDriver.
 * Truncate the string representation of capabilities for display purposes.
-* Implemented session storage for w3c codec
-* Change server dependency to htmlunit 2.23.2
-* [Grid] DefaultCapabilityMatcher now considers "browserVersion"
+* Implemented session storage for w3c codec.
+* Change server dependency to htmlunit 2.23.2.
+* [Grid] DefaultCapabilityMatcher now considers "browserVersion".
 * [Grid] Fix node registration issue for Se2.x nodes with -servlets.
-* [Grid] Windows nodes are no longer displayed as "mixedOS"
+* [Grid] Windows nodes are no longer displayed as "mixedOS".
 
 v3.0.1
 ======
