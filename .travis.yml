@@ -1,6 +1,171 @@
-language: java
-sudo: required
-jdk: oraclejdk8
+env:
+  global:
+    - DISPLAY=:99.0
+    - PYTEST_ADDOPTS=--verbose --instafail
+matrix:
+  include:
+    - language: java
+      jdk: oraclejdk8
+      env: TASK=build
+      addons:
+        apt:
+          packages:
+            - oracle-java8-installer
+    - language: python
+      python: 2.7
+      env: TOXENV=py27-chrome
+      addons:
+        apt:
+          packages:
+            - oracle-java8-installer
+    - language: python
+      python: 2.7
+      env: TOXENV=py27-firefox
+      addons:
+        apt:
+          packages:
+            - oracle-java8-installer
+        firefox: latest-esr
+    - language: python
+      python: 2.7
+      env: TOXENV=py27-marionette
+      addons:
+        apt:
+          packages:
+            - oracle-java8-installer
+        firefox: latest
+    - language: python
+      python: 2.7
+      env: TOXENV=py27-phantomjs
+      addons:
+        apt:
+          packages:
+            - oracle-java8-installer
+    - language: python
+      python: 2.7
+      env: TOXENV=py27-remote
+      addons:
+        apt:
+          packages:
+            - oracle-java8-installer
+        firefox: latest
+    - language: python
+      python: 3.5
+      env: TOXENV=py35-chrome
+      addons:
+        apt:
+          packages:
+            - oracle-java8-installer
+    - language: python
+      python: 3.5
+      env: TOXENV=py35-firefox
+      addons:
+        apt:
+          packages:
+            - oracle-java8-installer
+        firefox: latest-esr
+    - language: python
+      python: 3.5
+      env: TOXENV=py35-marionette
+      addons:
+        apt:
+          packages:
+            - oracle-java8-installer
+        firefox: latest
+    - language: python
+      python: 3.5
+      env: TOXENV=py35-phantomjs
+      addons:
+        apt:
+          packages:
+            - oracle-java8-installer
+    - language: python
+      python: 3.5
+      env: TOXENV=py35-remote
+      addons:
+        apt:
+          packages:
+            - oracle-java8-installer
+        firefox: latest
+    - language: ruby
+      rvm: 2.2.3
+      jdk: oraclejdk8
+      env: TASK=//rb:unit-test
+      addons:
+        apt:
+          packages:
+            - oracle-java8-installer
+    - language: ruby
+      rvm: 2.2.3
+      jdk: oraclejdk8
+      env: TASK=//rb:chrome-test
+      addons:
+        apt:
+          packages:
+            - oracle-java8-installer
+    - language: ruby
+      rvm: 2.2.3
+      jdk: oraclejdk8
+      env: TASK=//rb:firefox-test
+      addons:
+        apt:
+          packages:
+            - oracle-java8-installer
+        firefox: latest
+    - language: ruby
+      rvm: 2.2.3
+      jdk: oraclejdk8
+      env: TASK=//rb:ff-legecy-test
+      addons:
+        apt:
+          packages:
+            - oracle-java8-installer
+        firefox: latest-esr
+    - language: ruby
+      rvm: 2.2.3
+      jdk: oraclejdk8
+      env: TASK=//rb:phantomjs-test
+      addons:
+        apt:
+          packages:
+            - oracle-java8-installer
+    - language: ruby
+      rvm: 2.2.3
+      jdk: oraclejdk8
+      env: TASK=//rb:remote-chrome-test
+      addons:
+        apt:
+          packages:
+            - oracle-java8-installer
+    - language: ruby
+      rvm: 2.2.3
+      jdk: oraclejdk8
+      env: TASK=//rb:remote-firefox-test
+      addons:
+        apt:
+          packages:
+            - oracle-java8-installer
+        firefox: latest
+    - language: ruby
+      rvm: 2.2.3
+      jdk: oraclejdk8
+      env: TASK=//rb:remote-ff-legacy-test
+      addons:
+        apt:
+          packages:
+            - oracle-java8-installer
+        firefox: latest-esr
+    - language: ruby
+      rvm: 2.2.3
+      jdk: oraclejdk8
+      env: TASK=//rb:remote-phantomjs-test
+      addons:
+        apt:
+          packages:
+            - oracle-java8-installer
+install: ./scripts/travis/install.sh
+before_script: ./scripts/travis/before_script.sh
+script: ./scripts/travis/script.sh
 notifications:
   email: false
   irc:
@@ -10,161 +175,3 @@ notifications:
     on_failure: always
     use_notice: true
     skip_join: true
-env:
-  global:
-    - DISPLAY=:99.0
-  matrix:
-    - TASK=build
-    - TASK=atoms
-    - TASK=atoms_test
-    - TASK=atoms_tests TARGET=chrome
-    - TASK=atoms_tests TARGET=ff-legacy
-    - TASK=java TARGET=java_small_tests
-    - TASK=java TARGET=chrome
-    - TASK=java TARGET=chrome-rc-test
-    - TASK=java TARGET=firefox
-    - TASK=java TARGET=ff-legacy
-    - TASK=java TARGET=firefox-rc-test
-    - TASK=java TARGET=grid TOXENV=chrome
-    - TASK=java TARGET=htmlunit
-    - TASK=api_docs TARGET=java
-    - TASK=api_docs TARGET=py_
-    - TASK=api_docs TARGET="//rb:"
-    - TASK=rb TARGET=unit-test
-    - TASK=rb TARGET=chrome-test
-    - TASK=rb TARGET=firefox-test
-    - TASK=rb TARGET=ff-legacy-test
-    - TASK=rb TARGET=phantomjs-test
-    - TASK=rb TARGET=remote-chrome-test
-    - TASK=rb TARGET=remote-firefox-test
-    - TASK=rb TARGET=remote-ff-legacy-test
-    - TASK=rb TARGET=remote-phantomjs-test
-    - TASK=py TOXENV=py27-chrome
-    - TASK=py TOXENV=py27-firefox
-    - TASK=py TOXENV=py27-marionette
-    - TASK=py TOXENV=py27-phantomjs
-    - TASK=py TOXENV=py27-remote
-matrix:
-  fast_finish: true
-  allow_failures:
-    - env: TASK=rb TARGET=remote-firefox-test
-    - env: TASK=py TOXENV=py27-firefox
-    - env: TASK=py TOXENV=py27-remote
-    - env: TASK=api_docs TARGET="//rb:"
-    - env: TASK=java TARGET=firefox
-    - env: TASK=java TARGET=firefox-rc-test
-    - env: TASK=java TARGET=chrome-rc-test
-    - env: TASK=atoms_tests TARGET=ff-legacy
-before_script:
-  - sh -e /etc/init.d/xvfb start
-script:
-  - |
-      if [[ $TARGET+$TOXENV == *"chrome"* ]]; then
-        sudo apt-get -y purge chromium-browser
-        export CHROME_REVISION=`curl -s http://commondatastorage.googleapis.com/chromium-browser-snapshots/Linux_x64/LAST_CHANGE`
-        curl -L -O "http://commondatastorage.googleapis.com/chromium-browser-snapshots/Linux_x64/${CHROME_REVISION}/chrome-linux.zip"
-        unzip chrome-linux.zip
-        sudo ln -sf $PWD/chrome-linux/chrome-wrapper /usr/local/bin/chrome
-        export CHROMEDRIVER_VERSION=`curl -s http://chromedriver.storage.googleapis.com/LATEST_RELEASE`
-        curl -L -O "http://chromedriver.storage.googleapis.com/${CHROMEDRIVER_VERSION}/chromedriver_linux64.zip"
-        unzip chromedriver_linux64.zip && chmod +x chromedriver && sudo mv chromedriver /usr/local/bin
-      fi
-  - |
-      if [[ $TARGET == *"ff-legacy"* ]] || [ $TOXENV == *"firefox"* ]]; then
-        pip install --user mozdownload mozinstall
-        mozdownload --version 45.4.0esr --destination firefox.tar.bz2
-        mozinstall firefox.tar.bz2
-        sudo ln -sf $PWD/firefox/firefox /usr/local/bin/firefox
-        firefox --version
-        export FF_LEGACY_BINARY=$PWD/firefox/firefox
-      fi
-  - |
-      if [[ $TARGET == *"firefox"* ]] || [[ $TOXENV == *"marionette"* ]] || [[ $TOXENV == *"remote"* ]]; then
-        export GECKODRIVER_VERSION=v0.11.1
-        curl -L -o geckodriver.tar.gz https://github.com/mozilla/geckodriver/releases/download/${GECKODRIVER_VERSION}/geckodriver-${GECKODRIVER_VERSION}-linux64.tar.gz
-        gunzip -c geckodriver.tar.gz | tar xopf -
-        chmod +x geckodriver && sudo mv geckodriver /usr/local/bin
-        pip install --user mozdownload mozinstall
-        mozdownload --version latest --destination firefox.tar.bz2
-        mozinstall firefox.tar.bz2
-        sudo ln -sf $PWD/firefox/firefox /usr/local/bin/firefox
-        firefox --version
-      fi
-  - |
-      if [[ $TARGET+$TOXENV == *"phantomjs"* ]]; then
-        #export PHANTOMJS_NAME=phantomjs-2.1.1-linux-x86_64
-        #curl -OL "https://bitbucket.org/ariya/phantomjs/downloads/${PHANTOMJS_NAME}.tar.bz2"
-        #tar -xvjf $PHANTOMJS_NAME.tar.bz2
-        #chmod +x $PHANTOMJS_NAME/bin/phantomjs
-        phantomjs -v
-      fi
-  - |
-      if [[ $TOXENV == *"remote"* ]]; then
-        ./go selenium-server-standalone
-      fi
-  - |
-      if [[ $TASK == "build" ]]; then
-        ./go build
-      fi
-  - |
-      if [[ $TASK == "atoms" ]]; then
-        ./go //javascript/atoms:atoms
-        ./go //javascript:calcdeps
-        ./go //javascript/webdriver:all_js
-        ./go //javascript/ie-driver:atoms
-        ./go //javascript/chrome-driver:atoms
-        ./go //javascript/android-atoms:atoms ios_driver
-      fi
-  - |
-      if [[ $TASK == "atoms_test" ]]; then
-        ./go //java/client/test/org/openqa/selenium/atoms:test:run
-      fi
-  - |
-      if [[ $TASK == "atoms_tests" ]]; then
-        ./go calcdeps
-        if [[ $TARGET == "ff-legacy" ]]; then
-            TARGET=firefox
-        fi
-        ./go //javascript/atoms:atoms-$TARGET:run //javascript/webdriver:webdriver-$TARGET:run //javascript/selenium-atoms:selenium-atoms-$TARGET:run //javascript/selenium-core:selenium-core-$TARGET:run
-      fi
-  - |
-      if [[ $TASK == "java" ]]; then
-        case $TARGET in
-        ff-legacy)
-          ./go test_firefox
-          ;;
-        firefox)
-          ./go //java/client/test/org/openqa/selenium/firefox:marionette:run
-          ;;
-
-        # -rc are the WebDriverBackedSelenium tests
-        firefox-rc-test)
-          ./go //java/client/test/com/thoughtworks/selenium:firefox-rc-test:run
-          ;;
-        chrome-rc-test)
-          ./go //java/client/test/com/thoughtworks/selenium:chrome-rc-test:run
-          ;;
-        *)
-          ./go test_$TARGET
-          ;;
-        esac
-      fi
-  - |
-      if [[ $TASK == "py" ]]; then
-        ./go py_prep_for_install_release
-        pip install --user tox-travis
-        tox -- --verbose --instafail
-      fi
-  - |
-      if [[ $TASK == "rb" ]]; then
-        rvm install 2.2.3
-        rvm use 2.2.3
-        ./go //rb:$TARGET
-      fi
-  - |
-      if [[ $TASK == "api_docs" ]]; then
-        if [[ $TARGET == "py_" ]]; then
-          ./go py_prep_for_install_release
-        fi
-        ./go ${TARGET}docs
-      fi
