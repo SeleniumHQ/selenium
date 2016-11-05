@@ -46,21 +46,23 @@ module Selenium
           bridge = case browser
                    when :firefox, :ff
                      if Remote::W3CCapabilities.w3c?(opts)
+                       if opts[:desired_capabilities].is_a? Remote::Capabilities
+                         opts[:desired_capabilities] = Remote::W3CCapabilities.new(opts[:desired_capabilities].send(:capabilities))
+                       end
                        Firefox::W3CBridge.new(opts)
                      else
                        Firefox::Bridge.new(opts)
                      end
                    when :remote
-                     if Remote::W3CCapabilities.w3c?(opts)
-                       Remote::W3CBridge.new(opts)
-                     else
-                       Remote::Bridge.new(opts)
-                     end
+                     Remote::Bridge.new(opts)
                    when :ie, :internet_explorer
                      IE::Bridge.new(opts)
                    when :chrome
                      Chrome::Bridge.new(opts)
                    when :edge
+                     if opts[:desired_capabilities]
+                       opts[:desired_capabilities] = Remote::W3CCapabilities.new(opts[:desired_capabilities].send(:capabilities))
+                     end
                      Edge::Bridge.new(opts)
                    when :phantomjs
                      PhantomJS::Bridge.new(opts)

@@ -39,27 +39,22 @@ module Selenium
           @opt[:url] = restart_remote_server if GlobalTestEnv.driver == :remote
         end
 
-        it 'creates default capabilities' do
-          driver_name = GlobalTestEnv.driver
-          driver_name = :firefox if driver_name == :firefox
-
-          begin
-            driver1 = Selenium::WebDriver.for driver_name, @opt
-            expect(driver1.capabilities.browser_version).to match(/^\d\d\./)
-            expect(driver1.capabilities.platform_name).to_not be_nil
-            expect(driver1.capabilities.platform_version).to_not be_nil
-            expect(driver1.capabilities.accept_ssl_certs).to be == false
-            expect(driver1.capabilities.page_load_strategy).to be == 'normal'
-            expect(driver1.capabilities.proxy).to be_nil
-            if GlobalTestEnv.driver == :remote
-              expect(driver1.capabilities.remote_session_id).to match(/^\h{8}-\h{4}-\h{4}-\h{4}-\h{10}/)
-            else
+        not_compliant_on driver: :remote do
+          it 'creates default capabilities' do
+            begin
+              driver1 = Selenium::WebDriver.for GlobalTestEnv.driver, @opt
+              expect(driver1.capabilities.proxy).to be_nil
+              expect(driver1.capabilities.platform_name).to_not be_nil
+              expect(driver1.capabilities.browser_version).to match(/^\d\d\./)
+              expect(driver1.capabilities.platform_version).to_not be_nil
+              expect(driver1.capabilities.accept_ssl_certs).to be == false
               expect(driver1.capabilities.remote_session_id).to be_nil
+              expect(driver1.capabilities.page_load_strategy).to be == 'normal'
+              expect(driver1.capabilities.raise_accessibility_exceptions).to be == false
+              expect(driver1.capabilities.rotatable).to be == false
+            ensure
+              driver1.quit
             end
-            expect(driver1.capabilities.raise_accessibility_exceptions).to be == false
-            expect(driver1.capabilities.rotatable).to be == false
-          ensure
-            driver1.quit
           end
         end
 

@@ -68,12 +68,16 @@ module Selenium
           end
 
           def edge(opts = {})
-            W3CCapabilities.edge(opts)
+            new({
+              browser_name: 'MicrosoftEdge',
+              platform: :windows,
+              javascript_enabled: true,
+              takes_screenshot: true,
+              css_selectors_enabled: true
+            }.merge(opts))
           end
 
           def firefox(opts = {})
-            return W3CCapabilities.firefox(opts) unless opts[:marionette] == false
-
             new({
               browser_name: 'firefox',
               javascript_enabled: true,
