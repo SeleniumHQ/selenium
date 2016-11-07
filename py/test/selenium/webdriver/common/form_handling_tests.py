@@ -19,6 +19,8 @@ import pytest
 
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import WebDriverException
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
 
 
 class TestFormHandling(object):
@@ -27,7 +29,6 @@ class TestFormHandling(object):
     def testShouldClickOnSubmitInputElements(self, driver, pages):
         pages.load("formPage.html")
         driver.find_element_by_id("submitButton").click()
-        driver.implicitly_wait(5)
         assert driver.title == "We Arrive Here"
 
     def testClickingOnUnclickableElementsDoesNothing(self, driver, pages):
@@ -37,25 +38,22 @@ class TestFormHandling(object):
     def testShouldBeAbleToClickImageButtons(self, driver, pages):
         pages.load("formPage.html")
         driver.find_element_by_id("imageButton").click()
-        driver.implicitly_wait(5)
-        assert driver.title == "We Arrive Here"
+        WebDriverWait(driver, 3).until(EC.title_is("We Arrive Here"))
+
 
     def testShouldBeAbleToSubmitForms(self, driver, pages):
         pages.load("formPage.html")
         driver.find_element_by_name("login").submit()
-        driver.implicitly_wait(5)
         assert driver.title == "We Arrive Here"
 
     def testShouldSubmitAFormWhenAnyInputElementWithinThatFormIsSubmitted(self, driver, pages):
         pages.load("formPage.html")
         driver.find_element_by_id("checky").submit()
-        driver.implicitly_wait(5)
         assert driver.title == "We Arrive Here"
 
     def testShouldSubmitAFormWhenAnyElementWihinThatFormIsSubmitted(self, driver, pages):
         pages.load("formPage.html")
         driver.find_element_by_xpath("//form/p").submit()
-        driver.implicitly_wait(5)
         assert driver.title == "We Arrive Here"
 
     def testShouldNotBeAbleToSubmitAFormThatDoesNotExist(self, driver, pages):
