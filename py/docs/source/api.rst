@@ -2,15 +2,6 @@
 Selenium Documentation
 ======================
 
-Selenium
---------
-
-.. currentmodule:: selenium
-.. autosummary::
-   :toctree: selenium
-   
-   selenium
-
 Common
 ------
 
@@ -122,4 +113,3 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
-
