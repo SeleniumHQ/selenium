@@ -339,6 +339,8 @@ class TestAlerts(object):
     @pytest.mark.xfail_phantomjs(
         reason='https://github.com/detro/ghostdriver/issues/20',
         raises=WebDriverException)
+    @pytest.mark.xfail_chrome(
+        reason='https://bugs.chromium.org/p/chromedriver/issues/detail?id=1500')
     def testAlertShouldNotAllowAdditionalCommandsIfDismissed(self, driver, pages):
         pages.load("alerts.html")
         driver.find_element(By.ID, "alert").click()
