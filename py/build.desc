@@ -72,23 +72,7 @@ py_test(
   ])
 
 py_docs(
-  name = "docs",
-  source_folder = "py/docs/source",
-  target_folder = "build/docs/api/py",
-  deps = [ "//py:test_env_docs" ]
-)
-
-py_env(
-  name = "test_env_docs",
-  packages = [
-    "third_party/py/py-1.4.31-py2.py3-none-any.whl",
-    "third_party/py/docutils-0.11.tar.gz",
-    "third_party/py/Jinja2-2.7.tar.gz",
-    "third_party/py/MarkupSafe-0.18.tar.gz",
-    "third_party/py/Pygments-1.6.tar.gz",
-    "third_party/py/Sphinx-1.2b1.tar.gz",
-  ],
-  dest = "build/python"
+  name = "docs"
 )
 
 py_install(
@@ -105,4 +89,3 @@ py_prep(
     "//javascript/firefox-driver:webdriver_prefs",
     "//javascript/webdriver/atoms:getAttribute"
   ])
-

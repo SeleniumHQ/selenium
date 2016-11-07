@@ -13,6 +13,7 @@ notifications:
 env:
   global:
     - DISPLAY=:99.0
+    - PYTEST_ADDOPTS="--verbose --instafail"
   matrix:
     - TASK=build
     - TASK=atoms
@@ -28,7 +29,6 @@ env:
     - TASK=java TARGET=grid TOXENV=chrome
     - TASK=java TARGET=htmlunit
     - TASK=api_docs TARGET=java
-    - TASK=api_docs TARGET=py_
     - TASK=api_docs TARGET="//rb:"
     - TASK=rb TARGET=unit-test
     - TASK=rb TARGET=chrome-test
@@ -44,6 +44,7 @@ env:
     - TASK=py TOXENV=py27-marionette
     - TASK=py TOXENV=py27-phantomjs
     - TASK=py TOXENV=py27-remote
+    - TASK=py TOXENV=docs
 matrix:
   fast_finish: true
   allow_failures:
@@ -153,7 +154,7 @@ script:
       if [[ $TASK == "py" ]]; then
         ./go py_prep_for_install_release
         pip install --user tox-travis
-        tox -- --verbose --instafail
+        tox
       fi
   - |
       if [[ $TASK == "rb" ]]; then
