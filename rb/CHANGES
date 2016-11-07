@@ -1,3 +1,9 @@
+3.0.1 (2016-11-06)
+===================
+
+Ruby:
+  * Always send JSON Wire Protocol commands to server instead of W3C commands
+
 3.0.0 (2016-10-13)
 ===================
 
