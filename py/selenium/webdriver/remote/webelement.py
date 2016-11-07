@@ -160,7 +160,7 @@ class WebElement(object):
         """Finds element within this element's children by ID.
 
         :Args:
-            - id_ - ID of child element to locate.
+            - id\_ - ID of child element to locate.
         """
         return self.find_element(by=By.ID, value=id_)
 
@@ -168,7 +168,7 @@ class WebElement(object):
         """Finds a list of elements within this element's children by ID.
 
         :Args:
-            - id_ - Id of child element to find.
+            - id\_ - Id of child element to find.
         """
         return self.find_elements(by=By.ID, value=id_)
 
@@ -319,7 +319,7 @@ class WebElement(object):
 
         :Args:
             - value - A string for typing, or setting form fields.  For setting
-            file inputs, this could be a local file path.
+              file inputs, this could be a local file path.
 
         Use this to send simple key events or to fill out form fields::
 

@@ -261,7 +261,7 @@ class ActionChains(object):
 
         :Args:
          - keys_to_send: The keys to send.  Modifier keys constants can be found in the
-         'Keys' class.
+           'Keys' class.
         """
         self._actions.append(lambda: self._driver.execute(
             Command.SEND_KEYS_TO_ACTIVE_ELEMENT, {'value': keys_to_typing(keys_to_send)}))
@@ -274,7 +274,7 @@ class ActionChains(object):
         :Args:
          - element: The element to send keys.
          - keys_to_send: The keys to send.  Modifier keys constants can be found in the
-         'Keys' class.
+           'Keys' class.
         """
         self._actions.append(lambda: element.send_keys(*keys_to_send))
         return self
