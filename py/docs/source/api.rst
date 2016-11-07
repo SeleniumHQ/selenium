@@ -81,7 +81,6 @@ Webdriver.opera
 .. autosummary::
    :toctree: webdriver_opera
 
-   selenium.webdriver.opera.service
    selenium.webdriver.opera.webdriver
 
 Webdriver.phantomjs
