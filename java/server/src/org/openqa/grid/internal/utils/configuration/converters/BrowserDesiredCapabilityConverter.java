@@ -28,15 +28,17 @@ public class BrowserDesiredCapabilityConverter implements IStringConverter<Desir
     DesiredCapabilities capabilities = new DesiredCapabilities();
     for (String cap : value.split(",")) {
       String[] pieces = cap.split("=");
+      String capabilityName = pieces[0].trim();
+      String capabilityValue = pieces[1].trim();
       try {
-        final Long x = Long.parseLong(pieces[1]);
-        capabilities.setCapability(pieces[0], x);
+        final Long x = Long.parseLong(capabilityValue);
+        capabilities.setCapability(capabilityName, x);
       } catch (NumberFormatException e) {
         // ignore the exception. process as boolean or string.
-        if (pieces[1].equals("true") || pieces[1].equals("false")) {
-          capabilities.setCapability(pieces[0], Boolean.parseBoolean(pieces[1]));
+        if (capabilityValue.equals("true") || capabilityValue.equals("false")) {
+          capabilities.setCapability(capabilityName, Boolean.parseBoolean(capabilityValue));
         } else {
-          capabilities.setCapability(pieces[0], pieces[1]);
+          capabilities.setCapability(capabilityName, capabilityValue);
         }
       }
     }

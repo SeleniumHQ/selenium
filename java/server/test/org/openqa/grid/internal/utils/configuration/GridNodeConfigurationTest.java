@@ -30,6 +30,7 @@ import com.beust.jcommander.JCommander;
 
 import org.junit.Test;
 import org.openqa.grid.common.exception.GridConfigurationException;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.util.Arrays;
@@ -126,6 +127,20 @@ public class GridNodeConfigurationTest {
     assertEquals("chrome", gnc.capabilities.get(0).getBrowserName());
     assertEquals(10L, gnc.capabilities.get(0).getCapability("maxInstances"));
     assertEquals(false, gnc.capabilities.get(0).getCapability("boolean"));
+    assertEquals(Platform.LINUX, gnc.capabilities.get(0).getPlatform());
+  }
+
+  @Test
+  public void testWithCapabilitiesArgsWithExtraSpacing() {
+    final String[] args = new String[] { "-capabilities",
+                                         "browserName= chrome, platform =linux, maxInstances=10, boolean = false " };
+    GridNodeConfiguration gnc = new GridNodeConfiguration();
+    new JCommander(gnc, args);
+    assertTrue(gnc.capabilities.size() == 1);
+    assertEquals("chrome", gnc.capabilities.get(0).getBrowserName());
+    assertEquals(10L, gnc.capabilities.get(0).getCapability("maxInstances"));
+    assertEquals(false, gnc.capabilities.get(0).getCapability("boolean"));
+    assertEquals(Platform.LINUX, gnc.capabilities.get(0).getPlatform());
   }
 
   @Test
