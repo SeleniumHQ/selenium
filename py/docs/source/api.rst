@@ -1,3 +1,5 @@
+:orphan:
+
 ======================
 Selenium Documentation
 ======================
@@ -26,8 +28,8 @@ Webdriver.common
    selenium.webdriver.common.touch_actions
    selenium.webdriver.common.utils
    selenium.webdriver.common.proxy
+   selenium.webdriver.common.service
    selenium.webdriver.common.html5.application_cache
-
 
 Webdriver.support
 -----------------
@@ -42,6 +44,15 @@ Webdriver.support
    selenium.webdriver.support.expected_conditions
    selenium.webdriver.support.select
    selenium.webdriver.support.wait
+
+Webdriver.android
+-----------------
+
+.. currentmodule:: selenium.webdriver.android
+.. autosummary::
+   :toctree: webdriver_android
+
+   selenium.webdriver.android.webdriver
 
 Webdriver.chrome
 ----------------
@@ -102,6 +113,7 @@ Webdriver.remote
 
    selenium.webdriver.remote.command
    selenium.webdriver.remote.errorhandler
+   selenium.webdriver.remote.mobile
    selenium.webdriver.remote.remote_connection
    selenium.webdriver.remote.utils
    selenium.webdriver.remote.webdriver
