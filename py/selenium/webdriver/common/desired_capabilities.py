@@ -27,8 +27,7 @@ class DesiredCapabilities(object):
     Use this as a starting point for creating a desired capabilities object for
     requesting remote webdrivers for connecting to selenium server or selenium grid.
 
-
-    Usage Example:
+    Usage Example::
 
         from selenium import webdriver
 

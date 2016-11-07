@@ -47,8 +47,8 @@ class Request(url_request.Request):
         Initialise a new HTTP request.
 
         :Args:
-        - url - String for the URL to send the request to.
-        - data - Data to send with the request.
+            - url - String for the URL to send the request to.
+            - data - Data to send with the request.
         """
         if method is None:
             method = data is not None and 'POST' or 'GET'
@@ -74,10 +74,10 @@ class Response(object):
         Initialise a new Response.
 
         :Args:
-        - fp - The response body file object.
-        - code - The HTTP status code returned by the server.
-        - headers - A dictionary of headers returned by the server.
-        - url - URL of the retrieved resource represented by this Response.
+            - fp - The response body file object.
+            - code - The HTTP status code returned by the server.
+            - headers - A dictionary of headers returned by the server.
+            - url - URL of the retrieved resource represented by this Response.
         """
         self.fp = fp
         self.read = fp.read
@@ -117,14 +117,14 @@ class HttpErrorHandler(url_request.HTTPDefaultErrorHandler):
         Default HTTP error handler.
 
         :Args:
-        - req - The original Request object.
-        - fp - The response body file object.
-        - code - The HTTP status code returned by the server.
-        - msg - The HTTP status message returned by the server.
-        - headers - The response headers.
+            - req - The original Request object.
+            - fp - The response body file object.
+            - code - The HTTP status code returned by the server.
+            - msg - The HTTP status message returned by the server.
+            - headers - The response headers.
 
         :Returns:
-        A new Response object.
+            A new Response object.
         """
         return Response(fp, code, headers, req.get_full_url())
 
@@ -141,7 +141,7 @@ class RemoteConnection(object):
     def get_timeout(cls):
         """
         :Returns:
-        Timeout value in seconds for all http requests made to the Remote Connection
+            Timeout value in seconds for all http requests made to the Remote Connection
         """
         return None if cls._timeout == socket._GLOBAL_DEFAULT_TIMEOUT else cls._timeout
 
@@ -151,7 +151,7 @@ class RemoteConnection(object):
         Override the default timeout
 
         :Args:
-        - timeout - timeout value for http requests in seconds
+            - timeout - timeout value for http requests in seconds
         """
         cls._timeout = timeout
 
