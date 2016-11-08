@@ -1,4 +1,4 @@
-## v.next
+## v3.0.1
 
 * More API adjustments to align with native Promises
   - Deprecated `promise.fulfilled(value)`, use `promise.Promise#resolve(value)`
