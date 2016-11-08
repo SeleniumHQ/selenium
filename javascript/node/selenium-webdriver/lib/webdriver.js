@@ -497,6 +497,7 @@ class IWebDriver {
    *     function, or rejected if the condition times out. If the input
    *     input condition is an instance of a {@link WebElementCondition},
    *     the returned value will be a {@link WebElementPromise}.
+   * @throws {TypeError} if the provided `condition` is not a valid type.
    * @template T
    */
   wait(condition, opt_timeout, opt_message) {}
@@ -930,6 +931,12 @@ class WebDriver {
     if (condition instanceof Condition) {
       message = message || condition.description();
       fn = condition.fn;
+    }
+
+    if (typeof fn !== 'function') {
+      throw TypeError(
+          'Wait condition must be a promise-like object, function, or a '
+              + 'Condition object');
     }
 
     var driver = this;

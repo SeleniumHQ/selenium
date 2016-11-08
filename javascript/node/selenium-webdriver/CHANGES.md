@@ -3,6 +3,10 @@
 * More API adjustments to align with native Promises
   - Deprecated `promise.fulfilled(value)`, use `promise.Promise#resolve(value)`
   - Deprecated `promise.rejected(reason)`, use `promise.Promise#reject(reason)`
+* When a `wait()` condition times out, the returned promise will now be
+  rejected with an `error.TimeoutError` instead of a generic `Error` object.
+* `WebDriver#wait()` will now throw a TypeError if an invalid wait condition is
+  provided.
 
 
 ## v3.0.0
