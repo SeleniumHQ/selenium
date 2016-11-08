@@ -7,6 +7,8 @@
   rejected with an `error.TimeoutError` instead of a generic `Error` object.
 * `WebDriver#wait()` will now throw a TypeError if an invalid wait condition is
   provided.
+* Properly catch unhandled promise rejections with an action sequence (only
+  impacts when the promise manager is disabled).
 
 
 ## v3.0.0

@@ -120,9 +120,10 @@ class ActionSequence {
     let actions = this.actions_.concat();
     let driver = this.driver_;
     return driver.controlFlow().execute(function() {
-      actions.forEach(function(action) {
-        driver.schedule(action.command, action.description);
+      let results = actions.map(action => {
+        return driver.schedule(action.command, action.description);
       });
+      return Promise.all(results);
     }, 'ActionSequence.perform');
   }
 
@@ -431,9 +432,10 @@ class TouchSequence {
     let actions = this.actions_.concat();
     let driver = this.driver_;
     return driver.controlFlow().execute(function() {
-      actions.forEach(function(action) {
-        driver.schedule(action.command, action.description);
+      let results = actions.map(action => {
+        return driver.schedule(action.command, action.description);
       });
+      return Promise.all(results);
     }, 'TouchSequence.perform');
   }
 

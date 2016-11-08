@@ -1837,7 +1837,7 @@ describe('WebDriver', function() {
 
   describe('actions()', function() {
     it('failsIfInitialDriverCreationFailed', function() {
-      let session = Promise.reject(new StubError);
+      let session = Promise.reject(new StubError('no session for you'));
       let driver = new FakeExecutor().createDriver(session);
       driver.getSession().catch(function() {});
       return driver.
