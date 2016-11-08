@@ -30,6 +30,7 @@ const logging = require('../../lib/logging');
 const Session = require('../../lib/session').Session;
 const promise = require('../../lib/promise');
 const {enablePromiseManager, promiseManagerSuite} = require('../../lib/test/promise');
+const until = require('../../lib/until');
 const Alert = require('../../lib/webdriver').Alert;
 const AlertPromise = require('../../lib/webdriver').AlertPromise;
 const UnhandledAlertError = require('../../lib/webdriver').UnhandledAlertError;
@@ -1549,43 +1550,26 @@ describe('WebDriver', function() {
   });
 
   describe('waiting', function() {
-    it('waitSucceeds', function() {
-      let executor = new FakeExecutor().
-          expect(CName.FIND_ELEMENTS,
-                 {using: 'css selector', value: '*[id="foo"]'}).
-              andReturnSuccess([]).
-              times(2).
-          expect(CName.FIND_ELEMENTS,
-                 {using: 'css selector', value: '*[id="foo"]'}).
-              andReturnSuccess([WebElement.buildId('bar')]).
-          end();
+    describe('supports custom wait functions', function() {
+      it('waitSucceeds', function() {
+        let executor = new FakeExecutor().
+            expect(CName.FIND_ELEMENTS,
+                   {using: 'css selector', value: '*[id="foo"]'}).
+                andReturnSuccess([]).
+                times(2).
+            expect(CName.FIND_ELEMENTS,
+                   {using: 'css selector', value: '*[id="foo"]'}).
+                andReturnSuccess([WebElement.buildId('bar')]).
+            end();
 
-      var driver = executor.createDriver();
-      driver.wait(function() {
-        return driver.findElements(By.id('foo')).then(els => els.length > 0);
-      }, 200);
-      return waitForIdle();
-    });
-
-    it('waitTimesout_timeoutCaught', function() {
-      let executor = new FakeExecutor().
-          expect(CName.FIND_ELEMENTS,
-                 {using: 'css selector', value: '*[id="foo"]'}).
-              andReturnSuccess([]).
-              anyTimes().
-          end();
-
-      var driver = executor.createDriver();
-      return driver.wait(function() {
-        return driver.findElements(By.id('foo')).then(els => els.length > 0);
-      }, 25).then(fail, function(e) {
-        assert.equal('Wait timed out after ',
-            e.message.substring(0, 'Wait timed out after '.length));
+        var driver = executor.createDriver();
+        driver.wait(function() {
+          return driver.findElements(By.id('foo')).then(els => els.length > 0);
+        }, 200);
+        return waitForIdle();
       });
-    });
 
-    enablePromiseManager(() => {
-      it('waitTimesout_timeoutNotCaught', function() {
+      it('waitTimesout_timeoutCaught', function() {
         let executor = new FakeExecutor().
             expect(CName.FIND_ELEMENTS,
                    {using: 'css selector', value: '*[id="foo"]'}).
@@ -1594,14 +1578,94 @@ describe('WebDriver', function() {
             end();
 
         var driver = executor.createDriver();
-        driver.wait(function() {
+        return driver.wait(function() {
           return driver.findElements(By.id('foo')).then(els => els.length > 0);
-        }, 25);
-        return waitForAbort().then(function(e) {
+        }, 25).then(fail, function(e) {
           assert.equal('Wait timed out after ',
               e.message.substring(0, 'Wait timed out after '.length));
         });
       });
+
+      enablePromiseManager(() => {
+        it('waitTimesout_timeoutNotCaught', function() {
+          let executor = new FakeExecutor().
+              expect(CName.FIND_ELEMENTS,
+                     {using: 'css selector', value: '*[id="foo"]'}).
+                  andReturnSuccess([]).
+                  anyTimes().
+              end();
+
+          var driver = executor.createDriver();
+          driver.wait(function() {
+            return driver.findElements(By.id('foo')).then(els => els.length > 0);
+          }, 25);
+          return waitForAbort().then(function(e) {
+            assert.equal('Wait timed out after ',
+                e.message.substring(0, 'Wait timed out after '.length));
+          });
+        });
+      });
+    });
+
+    describe('supports condition objects', function() {
+      it('wait succeeds', function() {
+        let executor = new FakeExecutor()
+            .expect(CName.FIND_ELEMENTS,
+                    {using: 'css selector', value: '*[id="foo"]'})
+                .andReturnSuccess([])
+                .times(2)
+            .expect(CName.FIND_ELEMENTS,
+                    {using: 'css selector', value: '*[id="foo"]'})
+                .andReturnSuccess([WebElement.buildId('bar')])
+            .end();
+
+        let driver = executor.createDriver();
+        return driver.wait(until.elementLocated(By.id('foo')), 200);
+      });
+
+      it('wait times out', function() {
+        let executor = new FakeExecutor()
+            .expect(CName.FIND_ELEMENTS,
+                    {using: 'css selector', value: '*[id="foo"]'})
+            .andReturnSuccess([])
+            .anyTimes()
+            .end();
+
+        let driver = executor.createDriver();
+        return driver.wait(until.elementLocated(By.id('foo')), 5)
+            .then(fail, err => assert.ok(err instanceof error.TimeoutError));
+      });
+    });
+
+    describe('supports promise objects', function() {
+      it('wait succeeds', function() {
+        let promise = new Promise(resolve => {
+          setTimeout(() => resolve(1), 10);
+        });
+
+        let driver = new FakeExecutor().createDriver();
+        return driver.wait(promise, 200).then(v => assert.equal(v, 1));
+      });
+
+      it('wait times out', function() {
+        let promise = new Promise(resolve => {/* never resolves */});
+
+        let driver = new FakeExecutor().createDriver();
+        return driver.wait(promise, 5)
+            .then(fail, err => assert.ok(err instanceof error.TimeoutError));
+      });
+
+      it('wait fails if promise is rejected', function() {
+        let err = Error('boom');
+        let driver = new FakeExecutor().createDriver();
+        return driver.wait(Promise.reject(err), 5)
+            .then(fail, e => assert.strictEqual(e, err));
+      });
+    });
+
+    it('fails if not supported condition type provided', function() {
+      let driver = new FakeExecutor().createDriver();
+      assert.throws(() => driver.wait({}, 5), TypeError);
     });
   });
 

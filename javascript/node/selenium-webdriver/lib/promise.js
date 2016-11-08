@@ -628,6 +628,7 @@
 
 'use strict';
 
+const error = require('./error');
 const events = require('./events');
 const logging = require('./logging');
 
@@ -2060,9 +2061,11 @@ function scheduleWait(scheduler, condition, opt_timeout, opt_message) {
         let start = Date.now();
         let timer = setTimeout(function() {
           timer = null;
-          reject(Error((opt_message ? opt_message + '\n' : '') +
-                       'Timed out waiting for promise to resolve after ' +
-                       (Date.now() - start) + 'ms'));
+          reject(
+              new error.TimeoutError(
+                  (opt_message ? opt_message + '\n' : '')
+                      + 'Timed out waiting for promise to resolve after '
+                      + (Date.now() - start) + 'ms'));
         }, timeout);
 
         /** @type {Thenable} */(condition).then(
@@ -2100,8 +2103,10 @@ function scheduleWait(scheduler, condition, opt_timeout, opt_message) {
           if (!!value) {
             fulfill(value);
           } else if (timeout && elapsed >= timeout) {
-            reject(new Error((opt_message ? opt_message + '\n' : '') +
-                             'Wait timed out after ' + elapsed + 'ms'));
+            reject(
+                new error.TimeoutError(
+                    (opt_message ? opt_message + '\n' : '')
+                        + `Wait timed out after ${elapsed}ms`));
           } else {
             // Do not use asyncRun here because we need a non-micro yield
             // here so the UI thread is given a chance when running in a

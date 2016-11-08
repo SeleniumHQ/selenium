@@ -22,6 +22,7 @@ const fail = assert.fail;
 const sinon = require('sinon');
 
 const testutil = require('./testutil');
+const {TimeoutError} = require('../../lib/error');
 const promise = require('../../lib/promise');
 const {enablePromiseManager} = require('../../lib/test/promise');
 
@@ -1133,6 +1134,7 @@ describe('promise control flow', function() {
             default:
               fail('unexpected polling count: ' + count);
           }
+          assert.ok(e instanceof TimeoutError, 'Unexpected error: ' + e);
           assert.ok(
               /^counting to 3\nWait timed out after \d+ms$/.test(e.message));
         });
@@ -1190,6 +1192,7 @@ describe('promise control flow', function() {
       it('promiseThatDoesNotResolveBeforeTimeout', function() {
         var d = promise.defer();
         flow.wait(d.promise, 5).then(fail, function(e) {
+          assert.ok(e instanceof TimeoutError, 'Unexpected error: ' + e);
           assert.ok(
               /Timed out waiting for promise to resolve after \d+ms/
                   .test(e.message),
