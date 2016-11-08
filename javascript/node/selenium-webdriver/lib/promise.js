@@ -1073,6 +1073,30 @@ class ManagedPromise {
     }
   }
 
+  /**
+   * Creates a promise that is immediately resolved with the given value.
+   *
+   * @param {T=} opt_value The value to resolve.
+   * @return {!ManagedPromise<T>} A promise resolved with the given value.
+   * @template T
+   */
+  static resolve(opt_value) {
+    if (opt_value instanceof ManagedPromise) {
+      return opt_value;
+    }
+    return new ManagedPromise(resolve => resolve(opt_value));
+  }
+
+  /**
+   * Creates a promise that is immediately rejected with the given reason.
+   *
+   * @param {*=} opt_reason The rejection reason.
+   * @return {!ManagedPromise<?>} A new rejected promise.
+   */
+  static reject(opt_reason) {
+    return new ManagedPromise((_, reject) => reject(opt_reason));
+  }
+
   /** @override */
   toString() {
     return 'ManagedPromise::' + getUid(this) +
@@ -1475,15 +1499,11 @@ function defer() {
  * Creates a promise that has been resolved with the given value.
  * @param {T=} opt_value The resolved value.
  * @return {!ManagedPromise<T>} The resolved promise.
+ * @deprecated Use {@link ManagedPromise#resolve Promise.resolve(value)}.
  * @template T
  */
 function fulfilled(opt_value) {
-  if (opt_value instanceof ManagedPromise) {
-    return opt_value;
-  }
-  return new ManagedPromise(function(fulfill) {
-    fulfill(opt_value);
-  });
+  return ManagedPromise.resolve(opt_value);
 }
 
 
@@ -1491,16 +1511,11 @@ function fulfilled(opt_value) {
  * Creates a promise that has been rejected with the given reason.
  * @param {*=} opt_reason The rejection reason; may be any value, but is
  *     usually an Error or a string.
- * @return {!ManagedPromise<T>} The rejected promise.
- * @template T
+ * @return {!ManagedPromise<?>} The rejected promise.
+ * @deprecated Use {@link ManagedPromise#reject Promise.reject(reason)}.
  */
 function rejected(opt_reason) {
-  if (opt_reason instanceof ManagedPromise) {
-    return opt_reason;
-  }
-  return new ManagedPromise(function(_, reject) {
-    reject(opt_reason);
-  });
+  return ManagedPromise.reject(opt_reason);
 }
 
 
