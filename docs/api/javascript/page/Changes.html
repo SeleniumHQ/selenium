@@ -1,4 +1,11 @@
-<!DOCTYPE html><html lang="en" class="loading"><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"><meta http-equiv="X-UA-Compatible" content="IE=edge"><link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"><title>Changes</title><link href="../dossier.css" rel="stylesheet" type="text/css"><header><button class="dossier-menu"><i class="material-icons">menu</i></button><form><input type="search" placeholder="Search" tabindex="1"><i class="material-icons">search</i></form></header><nav class="dossier-nav"></nav><div class="content"><main><article class="page"><h2>v3.0.0</h2>
+<!DOCTYPE html><html lang="en" class="loading"><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"><meta http-equiv="X-UA-Compatible" content="IE=edge"><link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"><title>Changes</title><link href="../dossier.css" rel="stylesheet" type="text/css"><header><button class="dossier-menu"><i class="material-icons">menu</i></button><form><input type="search" placeholder="Search" tabindex="1"><i class="material-icons">search</i></form></header><nav class="dossier-nav"></nav><div class="content"><main><article class="page"><h2>v3.0.1</h2>
+<ul><li>More API adjustments to align with native Promises
+<ul><li>Deprecated <code>promise.fulfilled(value)</code>, use <code>promise.Promise#resolve(value)</code></li><li>Deprecated <code>promise.rejected(reason)</code>, use <code>promise.Promise#reject(reason)</code></li></ul>
+</li><li>When a <code>wait()</code> condition times out, the returned promise will now be
+rejected with an <code>error.TimeoutError</code> instead of a generic <code>Error</code> object.</li><li><code>WebDriver#wait()</code> will now throw a TypeError if an invalid wait condition is
+provided.</li><li>Properly catch unhandled promise rejections with an action sequence (only
+impacts when the promise manager is disabled).</li></ul>
+<h2>v3.0.0</h2>
 <ul><li>
 <p>(<strong>NOTICE</strong>) The minimum supported version of Node is now 6.9.0 LTS</p>
 </li><li>
