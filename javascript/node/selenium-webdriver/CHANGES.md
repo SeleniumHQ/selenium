@@ -1,3 +1,10 @@
+## v.next
+
+* More API adjustments to align with native Promises
+  - Deprecated `promise.fulfilled(value)`, use `promise.Promise#resolve(value)`
+  - Deprecated `promise.rejected(reason)`, use `promise.Promise#reject(reason)`
+
+
 ## v3.0.0
 
 * (__NOTICE__) The minimum supported version of Node is now 6.9.0 LTS
