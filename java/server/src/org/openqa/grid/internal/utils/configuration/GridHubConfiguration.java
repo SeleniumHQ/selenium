@@ -37,13 +37,45 @@ import org.openqa.grid.internal.utils.configuration.validators.FileExistsValueVa
 import java.io.IOException;
 
 public class GridHubConfiguration extends GridConfiguration {
-  public static final String DEFUALT_HUB_CONFIG_FILE = "defaults/DefaultHub.json";
-  private static final GridHubConfiguration DEFAULT_CONFIG = loadFromJSON(DEFUALT_HUB_CONFIG_FILE);
+  public static final String DEFAULT_HUB_CONFIG_FILE = "defaults/DefaultHub.json";
+
+  /*
+   * IMPORTANT - Keep these constant values in sync with the ones specified in
+   * 'defaults/DefaultHub.json'  -- if for no other reasons documentation & consistency.
+   */
+
+  /**
+   * Default hub role
+   */
+  static final String DEFAULT_ROLE = "hub";
+
+  /**
+   * Default hub port
+   */
+  static final Integer DEFAULT_PORT = 4444;
+
+  /**
+   * Default hub cleanup cycle
+   */
+  static final Integer DEFAULT_CLEANUP_CYCLE = 5000;
+
+  /**
+   * Default hub new session wait timeout
+   */
+  static final Integer DEFAULT_NEW_SESSION_WAIT_TIMEOUT = -1;
+
+  /**
+   * Default hub throw on capability not present toggle
+   */
+  static final Boolean DEFAULT_THROW_ON_CAPABILITY_NOT_PRESENT_TOGGLE = true;
 
   /*
    * config parameters which do not serialize or de-serialize
    */
 
+  /**
+   * Hub specific json config file to use. Defaults to {@code null}.
+   */
   @Parameter(
     names = "-hubConfig",
     description =  "<String> filename: a JSON file (following grid2 format), which defines the hub properties",
@@ -55,44 +87,57 @@ public class GridHubConfiguration extends GridConfiguration {
    * config parameters which serialize and deserialize to/from json
    */
 
+  /**
+   * Capability matcher to use. Defaults to {@link DefaultCapabilityMatcher}
+   */
   @Expose
   @Parameter(
     names = { "-matcher", "-capabilityMatcher" },
-    description = "<String> class name : a class implementing the CapabilityMatcher interface. Specifies the logic the hub will follow to define whether a request can be assigned to a node. For example, if you want to have the matching process use regular expressions instead of exact match when specifying browser version. ALL nodes of a grid ecosystem would then use the same capabilityMatcher, as defined here. Default is org.openqa.grid.internal.utils.DefaultCapabilityMatcher",
+    description = "<String> class name : a class implementing the CapabilityMatcher interface. Specifies the logic the hub will follow to define whether a request can be assigned to a node. For example, if you want to have the matching process use regular expressions instead of exact match when specifying browser version. ALL nodes of a grid ecosystem would then use the same capabilityMatcher, as defined here.",
     converter = StringToClassConverter.CapabilityMatcherStringConverter.class
   )
   public CapabilityMatcher capabilityMatcher = new DefaultCapabilityMatcher();
 
+  /**
+   * Timeout for new session requests. Defaults to unlimited.
+   */
   @Expose
   @Parameter(
     names = "-newSessionWaitTimeout",
-    description = "<Integer> in ms : The time after which a new test waiting for a node to become available will time out. When that happens, the test will throw an exception before attempting to start a browser. Defaults to no timeout ( -1 )"
+    description = "<Integer> in ms : The time after which a new test waiting for a node to become available will time out. When that happens, the test will throw an exception before attempting to start a browser. An unspecified, zero, or negative value means wait indefinitely."
   )
-  public Integer newSessionWaitTimeout = -1;
+  public Integer newSessionWaitTimeout = DEFAULT_NEW_SESSION_WAIT_TIMEOUT;
 
+  /**
+   * Prioritizer for new honoring session requests based on some priority. Defaults to {@code null}.
+   */
   @Expose
   @Parameter(
     names = "-prioritizer",
     description = "<String> class name : a class implementing the Prioritizer interface. Specify a custom Prioritizer if you want to sort the order in which new session requests are processed when there is a queue. Default to null ( no priority = FIFO )",
     converter = StringToClassConverter.PrioritizerStringConverter.class
   )
-  public Prioritizer prioritizer = null;
+  public Prioritizer prioritizer;
 
+  /**
+   * Whether to throw an Exception when there are no capabilities available that match the request. Defaults to {@code true}.
+   */
   @Expose
   @Parameter(
     names = "-throwOnCapabilityNotPresent",
-    description = "<Boolean> true or false : If true, the hub will reject all test requests if no compatible proxy is currently registered. If set to false, the request will queue until a node supporting the capability is registered with the grid. Default is true"
+    description = "<Boolean> true or false : If true, the hub will reject all test requests if no compatible proxy is currently registered. If set to false, the request will queue until a node supporting the capability is registered with the grid.",
+    arity = 1
   )
-  public Boolean throwOnCapabilityNotPresent = true;
+  public Boolean throwOnCapabilityNotPresent = DEFAULT_THROW_ON_CAPABILITY_NOT_PRESENT_TOGGLE;
 
   /**
-   * Init with built-in defaults
+   * Creates a new configuration using the default values.
    */
   public GridHubConfiguration() {
-    role = "hub";
-    if (DEFAULT_CONFIG != null) {
-      merge(DEFAULT_CONFIG);
-    }
+    // overrides values set by base classes
+    role = DEFAULT_ROLE;
+    port = DEFAULT_PORT;
+    cleanUpCycle = DEFAULT_CLEANUP_CYCLE;
   }
 
   /**
@@ -106,7 +151,6 @@ public class GridHubConfiguration extends GridConfiguration {
    * @param json JsonObject to load configuration from
    */
   public static GridHubConfiguration loadFromJSON(JsonObject json) {
-
     try {
       GsonBuilder builder = new GsonBuilder();
       GridHubConfiguration.staticAddJsonTypeAdapter(builder);
@@ -118,11 +162,22 @@ public class GridHubConfiguration extends GridConfiguration {
     }
   }
 
+  /**
+   * Merge this configuration with the specified {@link GridNodeConfiguration}
+   * @param other
+   */
   public void merge(GridNodeConfiguration other) {
     super.merge(other);
   }
 
+  /**
+   * Merge this configuration with the specified {@link GridHubConfiguration}
+   * @param other
+   */
   public void merge(GridHubConfiguration other) {
+    if (other == null) {
+      return;
+    }
     super.merge(other);
 
     if (isMergeAble(other.capabilityMatcher, capabilityMatcher)) {
@@ -146,7 +201,7 @@ public class GridHubConfiguration extends GridConfiguration {
     sb.append(toString(format, "hubConfig", hubConfig));
     sb.append(toString(format, "capabilityMatcher", capabilityMatcher.getClass().getCanonicalName()));
     sb.append(toString(format, "newSessionWaitTimeout", newSessionWaitTimeout));
-    sb.append(toString(format, "prioritizer", prioritizer != null? prioritizer.getClass().getCanonicalName(): null));
+    sb.append(toString(format, "prioritizer", prioritizer != null ? prioritizer.getClass().getCanonicalName(): null));
     sb.append(toString(format, "throwOnCapabilityNotPresent", throwOnCapabilityNotPresent));
     return sb.toString();
   }

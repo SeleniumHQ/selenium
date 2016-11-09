@@ -41,6 +41,8 @@ public class RemoteProxyInheritanceTest {
     Map<String, Object> app1 = new HashMap<>();
     app1.put(CapabilityType.APPLICATION_NAME, "app1");
     GridNodeConfiguration config = new GridNodeConfiguration();
+    config.capabilities.clear();
+    config.proxy = null;
     config.capabilities.add(new DesiredCapabilities(app1));
 
     RemoteProxy p = BaseRemoteProxy.getNewInstance(new RegistrationRequest(config), registry);

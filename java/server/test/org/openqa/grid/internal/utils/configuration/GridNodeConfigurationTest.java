@@ -19,8 +19,10 @@ package org.openqa.grid.internal.utils.configuration;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonObject;
@@ -82,23 +84,81 @@ public class GridNodeConfigurationTest {
   @Test
   public void testDefaults() {
     GridNodeConfiguration gnc = new GridNodeConfiguration();
-    assertEquals("node", gnc.role);
-    assertEquals(5000, gnc.nodeStatusCheckTimeout.intValue());
-    assertTrue(gnc.capabilities.isEmpty());
+    assertEquals(GridNodeConfiguration.DEFAULT_ROLE, gnc.role);
+    assertEquals(GridNodeConfiguration.DEFAULT_PORT, gnc.port);
+    assertEquals(GridNodeConfiguration.DEFAULT_NODE_STATUS_CHECK_TIMEOUT, gnc.nodeStatusCheckTimeout);
+    assertEquals(GridNodeConfiguration.DEFAULT_POLLING_INTERVAL, gnc.nodePolling);
+    assertEquals(GridNodeConfiguration.DEFAULT_PROXY, gnc.proxy);
+    assertEquals(GridNodeConfiguration.DEFAULT_REGISTER_TOGGLE, gnc.register);
+    assertEquals(GridNodeConfiguration.DEFAULT_REGISTER_CYCLE, gnc.registerCycle);
+    assertEquals(GridNodeConfiguration.DEFAULT_HUB, gnc.hub);
+    assertEquals(GridNodeConfiguration.DEFAULT_MAX_SESSION, gnc.maxSession);
+    assertFalse(gnc.capabilities.isEmpty());
+    assertEquals(3, gnc.capabilities.size());
     assertNull(gnc.id);
-    assertNull(gnc.downPollingLimit);
-    assertNull(gnc.hub);
+    assertEquals(GridNodeConfiguration.DEFAULT_DOWN_POLLING_LIMIT, gnc.downPollingLimit);
     assertNull(gnc.hubHost);
     assertNull(gnc.hubPort);
     assertNull(gnc.nodeConfigFile);
-    assertNull(gnc.nodePolling);
-    assertNull(gnc.proxy);
-    assertNull(gnc.register);
-    assertEquals(5000, gnc.registerCycle.intValue());
-    assertNull(gnc.unregisterIfStillDownAfter);
+    assertEquals(GridNodeConfiguration.DEFAULT_UNREGISTER_DELAY, gnc.unregisterIfStillDownAfter);
+
+    assertNull(gnc.cleanUpCycle);
+    assertNull(gnc.host);
+    assertNotNull(gnc.custom);
+    assertTrue(gnc.custom.isEmpty());
+    assertNotNull(gnc.servlets);
+    assertTrue(gnc.servlets.isEmpty());
+    assertNotNull(gnc.withoutServlets);
+    assertTrue(gnc.withoutServlets.isEmpty());
+
+    assertEquals(GridNodeConfiguration.DEFAULT_TIMEOUT, gnc.timeout);
+    assertEquals(GridNodeConfiguration.DEFAULT_BROWSER_TIMEOUT, gnc.browserTimeout);
+    assertFalse(gnc.debug);
+    assertFalse(gnc.help);
+    assertNull(gnc.jettyMaxThreads);
+    assertNull(gnc.log);
 
     //not a @Parameter
     assertNull(gnc.remoteHost);
+  }
+
+  @Test
+  public void testConstructorEqualsDefaultConfig() {
+    GridNodeConfiguration actual = new GridNodeConfiguration();
+    GridNodeConfiguration expected =
+      GridNodeConfiguration.loadFromJSON(GridNodeConfiguration.DEFAULT_NODE_CONFIG_FILE);
+
+    assertEquals(expected.role, actual.role);
+    assertEquals(expected.port, actual.port);
+    assertEquals(expected.capabilities.size(), actual.capabilities.size());
+
+    assertEquals(expected.nodeStatusCheckTimeout, actual.nodeStatusCheckTimeout);
+    assertEquals(expected.nodePolling, actual.nodePolling);
+    assertEquals(expected.proxy, actual.proxy);
+    assertEquals(expected.register, actual.register);
+    assertEquals(expected.registerCycle, actual.registerCycle);
+    assertEquals(expected.hub, actual.hub);
+
+    assertEquals(expected.id, actual.id);
+    assertEquals(expected.downPollingLimit, actual.downPollingLimit);
+    assertEquals(expected.hubPort, actual.hubPort);
+    assertEquals(expected.hubHost, actual.hubHost);
+    assertEquals(expected.nodeConfigFile, actual.nodeConfigFile);
+    assertEquals(expected.unregisterIfStillDownAfter, actual.unregisterIfStillDownAfter);
+
+
+    assertEquals(expected.cleanUpCycle, actual.cleanUpCycle);
+    assertEquals(expected.host, actual.host);
+    assertEquals(expected.maxSession, actual.maxSession);
+    assertEquals(expected.custom.size(), actual.custom.size());
+    assertEquals(expected.servlets.size(), actual.servlets.size());
+    assertEquals(expected.withoutServlets.size(), actual.withoutServlets.size());
+    assertEquals(expected.timeout, actual.timeout);
+    assertEquals(expected.browserTimeout, actual.browserTimeout);
+    assertEquals(expected.debug, actual.debug);
+    assertEquals(expected.help, actual.help);
+    assertEquals(expected.jettyMaxThreads, actual.jettyMaxThreads);
+    assertEquals(expected.log, actual.log);
   }
 
   @Test
@@ -107,14 +167,25 @@ public class GridNodeConfigurationTest {
     GridNodeConfiguration gnc = new GridNodeConfiguration();
     new JCommander(gnc, args);
 
-    assertEquals("{\"capabilities\":[{\"browserName\":\"chrome\",\"platform\":\"LINUX\"}],"
-               + "\"nodeStatusCheckTimeout\":5000,"
-               + "\"registerCycle\":5000,"
-               + "\"custom\":{},"
-               + "\"maxSession\":1,"
-               + "\"debug\":false,"
-               + "\"role\":\"node\","
-               + "\"timeout\":1800}", gnc.toJson().toString());
+    assertEquals("{\"capabilities\":"
+                 + "[{\"browserName\":\"chrome\",\"platform\":\"LINUX\"}],"
+                 + "\"downPollingLimit\":2,"
+                 + "\"hub\":\"http://localhost:4444\","
+                 + "\"nodePolling\":5000,"
+                 + "\"nodeStatusCheckTimeout\":5000,"
+                 + "\"proxy\":\"org.openqa.grid.selenium.proxy.DefaultRemoteProxy\","
+                 + "\"register\":true,"
+                 + "\"registerCycle\":5000,"
+                 + "\"unregisterIfStillDownAfter\":60000,"
+                 + "\"custom\":{},"
+                 + "\"maxSession\":5,"
+                 + "\"servlets\":[],"
+                 + "\"withoutServlets\":[],"
+                 + "\"browserTimeout\":0,"
+                 + "\"debug\":false,"
+                 + "\"port\":5555,"
+                 + "\"role\":\"node\","
+                 + "\"timeout\":1800}", gnc.toJson().toString());
   }
 
   @Test
@@ -168,12 +239,14 @@ public class GridNodeConfigurationTest {
   @Test(expected = RuntimeException.class)
   public void testGetHubHost_forNullConfig() {
     GridNodeConfiguration gnc = new GridNodeConfiguration();
+    gnc.hub = null;
     gnc.getHubHost();
   }
 
   @Test(expected = RuntimeException.class)
   public void testGetHubPort_forNullConfig() {
     GridNodeConfiguration gnc = new GridNodeConfiguration();
+    gnc.hub = null;
     gnc.getHubPort();
   }
 

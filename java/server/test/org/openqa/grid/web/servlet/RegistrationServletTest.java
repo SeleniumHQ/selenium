@@ -19,6 +19,7 @@ package org.openqa.grid.web.servlet;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
@@ -28,6 +29,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import org.openqa.grid.common.RegistrationRequest;
+import org.openqa.grid.common.exception.GridConfigurationException;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.RemoteProxy;
 import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
@@ -52,14 +54,18 @@ public class RegistrationServletTest extends BaseServletTest {
     final String clazz = BaseRequest.class.getCanonicalName();
     String id;
   }
+
   private final class RequestV2 extends BaseRequest {
     final Map<String, Object> configuration = new HashMap<>();
     final List<DesiredCapabilities> capabilities = new ArrayList<>();
   }
 
+  private final class InvalidV2Request extends BaseRequest {
+    final List<DesiredCapabilities> capabilities = new ArrayList<>();
+  }
+
   private final class RequestV3Beta extends BaseRequest {
-    final GridNodeConfiguration configuration =
-      GridNodeConfiguration.loadFromJSON(GridNodeConfiguration.DEFAULT_NODE_CONFIG_FILE);
+    final GridNodeConfiguration configuration = new GridNodeConfiguration();
     final List<DesiredCapabilities> capabilities = new ArrayList<>();
   }
 
@@ -93,6 +99,21 @@ public class RegistrationServletTest extends BaseServletTest {
   }
 
   /**
+   * Tests that the registration request servlet throws an error for a request without a proxy
+   * configuration
+   */
+  @Test(expected = GridConfigurationException.class)
+  public void testInvalidV2Registration() throws Exception {
+    final InvalidV2Request request = new InvalidV2Request();
+    request.capabilities.add(DesiredCapabilities.firefox());
+    request.id = "http://dummynode:1111";
+    final JsonObject json =  new GsonBuilder().serializeNulls().create()
+      .toJsonTree(request, InvalidV2Request.class).getAsJsonObject();
+    sendCommand("POST", "/", json);
+  }
+
+
+  /**
    * Tests that the registration request servlet can process a V2 RegistrationRequest which
    * contains servlets as a comma separated String.
    */
@@ -101,10 +122,11 @@ public class RegistrationServletTest extends BaseServletTest {
     final RequestV2 request = new RequestV2();
     request.configuration.put("servlets", "foo,bar,baz");
     request.configuration.put("registerCycle", 30001);
+    request.configuration.put("proxy", null);
     request.capabilities.add(DesiredCapabilities.firefox());
     request.id = "http://dummynode:1234";
-    final JsonObject json =
-      new GsonBuilder().create().toJsonTree(request, RequestV2.class).getAsJsonObject();
+    final JsonObject json = new GsonBuilder().serializeNulls().create()
+      .toJsonTree(request, RequestV2.class).getAsJsonObject();
     final FakeHttpServletResponse response = sendCommand("POST", "/", json);
     waitForServletToAddProxy();
 
@@ -129,12 +151,11 @@ public class RegistrationServletTest extends BaseServletTest {
   public void testLegacyV3BetaRegistration() throws Exception {
     final RequestV3Beta request = new RequestV3Beta();
     request.configuration.capabilities.clear();
-    //TODO figure out why DefaultRemoteProxy results in a test failure when run from BUCK
     request.configuration.proxy = null;
     request.capabilities.add(DesiredCapabilities.firefox());
     request.id = "http://dummynode:2345";
-    final JsonObject json =
-      new GsonBuilder().create().toJsonTree(request, RequestV3Beta.class).getAsJsonObject();
+    final JsonObject json = new GsonBuilder().serializeNulls().create()
+      .toJsonTree(request, RequestV3Beta.class).getAsJsonObject();
     final FakeHttpServletResponse response = sendCommand("POST", "/", json);
     waitForServletToAddProxy();
 
@@ -159,11 +180,8 @@ public class RegistrationServletTest extends BaseServletTest {
     final GridNodeConfiguration config = new GridNodeConfiguration();
     config.id = "http://dummynode:3456";
     final RegistrationRequest request = RegistrationRequest.build(config);
-    //TODO figure out why DefaultRemoteProxy results in a test failure when run from BUCK
     request.getConfiguration().proxy = null;
-    JsonObject json =
-      new GsonBuilder().create().toJsonTree(request, RegistrationRequest.class).getAsJsonObject();
-    final FakeHttpServletResponse response = sendCommand("POST", "/", json);
+    final FakeHttpServletResponse response = sendCommand("POST", "/", request.toJson());
     waitForServletToAddProxy();
 
     assertEquals(HttpServletResponse.SC_OK, response.getStatus());

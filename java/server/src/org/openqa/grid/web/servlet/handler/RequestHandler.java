@@ -183,10 +183,11 @@ public class RequestHandler implements Comparable<RequestHandler> {
    */
   public void waitForSessionBound() throws InterruptedException, TimeoutException {
     // Maintain compatibility with Grid 1.x, which had the ability to
-    // specify how long to wait before canceling
-    // a request.
-    if (registry.getConfiguration().newSessionWaitTimeout > 0) {
-      if (!sessionAssigned.await(registry.getConfiguration().newSessionWaitTimeout, TimeUnit.MILLISECONDS)) {
+    // specify how long to wait before canceling a request.
+    Integer newSessionWaitTimeout = registry.getConfiguration().newSessionWaitTimeout != null ?
+                                    registry.getConfiguration().newSessionWaitTimeout : 0;
+    if (newSessionWaitTimeout > 0) {
+      if (!sessionAssigned.await(newSessionWaitTimeout.longValue(), TimeUnit.MILLISECONDS)) {
         throw new TimeoutException("Request timed out waiting for a node to become available.");
       }
     } else {

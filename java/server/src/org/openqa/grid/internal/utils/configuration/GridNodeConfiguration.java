@@ -17,6 +17,7 @@
 
 package org.openqa.grid.internal.utils.configuration;
 
+import com.google.common.collect.Lists;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
@@ -50,9 +51,96 @@ public class GridNodeConfiguration extends GridConfiguration {
   public static final String DEFAULT_NODE_CONFIG_FILE = "defaults/DefaultNodeWebDriver.json";
 
   /*
+   * IMPORTANT - Keep these constant values in sync with the ones specified in
+   * 'defaults/DefaultNodeWebDriver.json'  -- if for no other reasons documentation & consistency.
+   */
+
+  /**
+   * Default node role
+   */
+  static final String DEFAULT_ROLE = "node";
+
+  /**
+   * Default hub port
+   */
+  static final Integer DEFAULT_PORT = 5555;
+
+  /**
+   * Default node polling
+   */
+  static final Integer DEFAULT_POLLING_INTERVAL = 5000;
+
+  /**
+   * Default max sessions
+   */
+  static final Integer DEFAULT_MAX_SESSION = 5;
+
+  /**
+   * Default register cycle
+   */
+  static final Integer DEFAULT_REGISTER_CYCLE = 5000;
+
+  /**
+   * Default toggle state for registration
+   */
+  static final Boolean DEFAULT_REGISTER_TOGGLE = true;
+
+  /**
+   * Default hub
+   */
+  static final String DEFAULT_HUB = "http://localhost:4444";
+
+  /**
+   * Default node status check timeout
+   */
+  static final Integer DEFAULT_NODE_STATUS_CHECK_TIMEOUT = 5000;
+
+  /**
+   * Default node unregister delay (unregisterIfStillDownAfter)
+   */
+  static final Integer DEFAULT_UNREGISTER_DELAY = 60000;
+
+  /**
+   * Default node down polling limit
+   */
+  static final Integer DEFAULT_DOWN_POLLING_LIMIT = 2;
+
+  /**
+   * Default proxy class name
+   */
+  static final String DEFAULT_PROXY = "org.openqa.grid.selenium.proxy.DefaultRemoteProxy";
+
+  /**
+   * Default DesiredCapabilites
+   */
+  static final class DefaultDesiredCapabilitiesBuilder {
+    static final List<DesiredCapabilities> getCapabilities() {
+      DesiredCapabilities chrome = new DesiredCapabilities();
+      chrome.setBrowserName("chrome");
+      chrome.setCapability("maxInstances", 5);
+      chrome.setCapability("seleniumProtocol", "WebDriver");
+
+      DesiredCapabilities firefox = new DesiredCapabilities();
+      firefox.setBrowserName("firefox");
+      firefox.setCapability("maxInstances", 5);
+      firefox.setCapability("seleniumProtocol", "WebDriver");
+
+      DesiredCapabilities ie = new DesiredCapabilities();
+      ie.setBrowserName("internet explorer");
+      ie.setCapability("maxInstances", 1);
+      ie.setCapability("seleniumProtocol", "WebDriver");
+
+      return Lists.newArrayList(chrome, firefox, ie);
+    }
+  }
+
+  /*
    * config parameters which do not serialize or de-serialize
    */
 
+  /**
+   * Node specific json config file to use. Defaults to {@code null}.
+   */
   @Parameter(
     names = "-nodeConfig",
     description = "<String> filename : JSON configuration file for the node. Overrides default values",
@@ -77,27 +165,41 @@ public class GridNodeConfiguration extends GridConfiguration {
    * config parameters which serialize and deserialize to/from json
    */
 
+  /**
+   * The host name or IP of the hub. Defaults to {@code null}.
+   */
   @Expose
   @Parameter(
     names = "-hubHost",
-    description = "<String> IP or hostname : the host address of the hub we're attempting to register with. If \"role\" is set to [hub], this option will be ignored. Default is localhost"
+    description = "<String> IP or hostname : the host address of the hub we're attempting to register with. If -hub is specified the -hubHost is determined from it."
   )
   String hubHost;
 
+  /**
+   * The port of the hub. Defaults to {@code null}.
+   */
   @Expose
   @Parameter(
     names = "-hubPort",
-    description = "<Integer> : the port of the hub we're attempting to register with. If \"role\" is set to [hub], this option will be ignored. Default to 4444"
+    description = "<Integer> : the port of the hub we're attempting to register with. If -hub is specified the -hubPort is determined from it."
   )
   Integer hubPort;
 
+  /**
+   * The id tu use for this node. Automatically generated when {@code null}. Defaults to {@code null}.
+   */
   @Expose
   @Parameter(
     names = "-id",
-    description = "<String> : optional unique identifier for the node. Defaults to the url of the remoteHost"
+    description = "<String> : optional unique identifier for the node. Defaults to the url of the remoteHost, when not specified."
   )
   public String id;
 
+  /**
+   * The capabilties of this node. Defaults from the capabilities specified in the
+   * {@link #DEFAULT_NODE_CONFIG_FILE} or an empty list if the {@link #DEFAULT_NODE_CONFIG_FILE}
+   * can not be loaded.
+   */
   @Expose
   @Parameter(
     names = { "-capabilities", "-browser" },
@@ -106,75 +208,103 @@ public class GridNodeConfiguration extends GridConfiguration {
     converter = BrowserDesiredCapabilityConverter.class,
     splitter = NoOpParameterSplitter.class
   )
-  public List<DesiredCapabilities> capabilities = new ArrayList<>();
+  public List<DesiredCapabilities> capabilities = DefaultDesiredCapabilitiesBuilder.getCapabilities();
 
+  /**
+   * The down polling limit for the node. Defaults to {@code null}.
+   */
   @Expose
   @Parameter(
     names = "-downPollingLimit",
-    description = "<Integer> : node is marked as \"down\" if the node hasn't responded after the number of checks specified in [downPollingLimit]. Default is 2"
+    description = "<Integer> : node is marked as \"down\" if the node hasn't responded after the number of checks specified in [downPollingLimit]."
   )
-  public Integer downPollingLimit;
+  public Integer downPollingLimit = DEFAULT_DOWN_POLLING_LIMIT;
 
+  /**
+   * The hub url. Defaults to {@code http://localhost:4444}.
+   */
   @Expose
   @Parameter(
     names = "-hub",
-    description = "<String> (e.g. http://localhost:4444/grid/register) : the url that will be used to post the registration request. This option takes precedence over -hubHost and -hubPort options"
+    description = "<String> : the url that will be used to post the registration request. This option takes precedence over -hubHost and -hubPort options."
   )
-  public String hub;
+  public String hub = DEFAULT_HUB;
 
+  /**
+   * How often to pull the node. Defaults to 5000 ms
+   */
   @Expose
   @Parameter(
     names = "-nodePolling",
-    description = "<Integer> in ms : specifies how often the hub will poll to see if the node is still responding"
+    description = "<Integer> in ms : specifies how often the hub will poll to see if the node is still responding."
   )
-  public Integer nodePolling;
+  public Integer nodePolling = DEFAULT_POLLING_INTERVAL;
 
+  /**
+   * When to time out a node status check. Defaults is after 5000 ms.
+   */
   @Expose
   @Parameter(
     names = "-nodeStatusCheckTimeout",
-    description = "<Integer> in ms : connection/socket timeout, used for node \"nodePolling\" check"
+    description = "<Integer> in ms : connection/socket timeout, used for node \"nodePolling\" check."
   )
-  public Integer nodeStatusCheckTimeout = 5000;
+  public Integer nodeStatusCheckTimeout = DEFAULT_NODE_STATUS_CHECK_TIMEOUT;
 
+  /**
+   * The proxy class name to use. Defaults to org.openqa.grid.selenium.proxy.DefaultRemoteProxy.
+   */
   @Expose
   @Parameter(
     names = "-proxy",
-    description = "<String> : the class used to represent the node proxy. Default is [org.openqa.grid.selenium.proxy.DefaultRemoteProxy]"
+    description = "<String> : the class used to represent the node proxy. Default is [org.openqa.grid.selenium.proxy.DefaultRemoteProxy]."
   )
-  public String proxy;
+  public String proxy = DEFAULT_PROXY;
 
+  /**
+   * Whether to register this node with the hub. Defaults to {@code true}
+   */
   @Expose
   @Parameter(
     names = "-register",
-    description = "if specified, node will attempt to re-register itself automatically with its known grid hub if the hub becomes unavailable. Default is disabled"
+    description = "if specified, node will attempt to re-register itself automatically with its known grid hub if the hub becomes unavailable.",
+    arity = 1
   )
-  public Boolean register;
+  public Boolean register = DEFAULT_REGISTER_TOGGLE;
 
+  /**
+   * How often to re-register this node with the hub. Defaults to every 5000 ms.
+   */
   @Expose
   @Parameter(
     names = "-registerCycle",
-    description = "<Integer> in ms : specifies how often the node will try to register itself again. Allows administrator to restart the hub without restarting (or risk orphaning) registered nodes. Must be specified with the \"-register\" option"
+    description = "<Integer> in ms : specifies how often the node will try to register itself again. Allows administrator to restart the hub without restarting (or risk orphaning) registered nodes. Must be specified with the \"-register\" option."
   )
-  public Integer registerCycle = 5000;
+  public Integer registerCycle = DEFAULT_REGISTER_CYCLE;
 
+  /**
+   * How long to wait before marking this node down. Defaults is 60000 ms.
+   */
   @Expose
   @Parameter(
     names = "-unregisterIfStillDownAfter",
-    description = "<Integer> in ms : if the node remains down for more than [unregisterIfStillDownAfter] ms, it will stop attempting to re-register from the hub. Default is 6000 (1 minute)"
+    description = "<Integer> in ms : if the node remains down for more than [unregisterIfStillDownAfter] ms, it will stop attempting to re-register from the hub."
   )
-  public Integer unregisterIfStillDownAfter;
+  public Integer unregisterIfStillDownAfter = DEFAULT_UNREGISTER_DELAY;
 
   /**
-   * Init with built-in defaults
+   * Creates a new configuration using the default values.
    */
   public GridNodeConfiguration() {
-    role = "node";
+    // overrides values set by base classes
+    role = DEFAULT_ROLE;
+    port = DEFAULT_PORT;
+    maxSession = DEFAULT_MAX_SESSION;
   }
 
   public String getHubHost() {
     if (hubHost == null) {
       if (hub == null) {
-        throw new RuntimeException("You must specify either a hubHost or hub parameter");
+        throw new RuntimeException("You must specify either a hubHost or hub parameter.");
       }
       parseHubUrl();
     }
@@ -184,7 +314,7 @@ public class GridNodeConfiguration extends GridConfiguration {
   public Integer getHubPort() {
     if (hubPort == null) {
       if (hub == null) {
-        throw new RuntimeException("You must specify either a hubPort or hub parameter");
+        throw new RuntimeException("You must specify either a hubPort or hub parameter.");
       }
       parseHubUrl();
     }
@@ -215,7 +345,11 @@ public class GridNodeConfiguration extends GridConfiguration {
   }
 
   public void merge(GridNodeConfiguration other) {
+    if (other == null) {
+      return;
+    }
     super.merge(other);
+
     if (isMergeAble(other.capabilities, capabilities)) {
       capabilities = other.capabilities;
     }
@@ -291,7 +425,6 @@ public class GridNodeConfiguration extends GridConfiguration {
    * @param json JsonObject to load configuration from
    */
   public static GridNodeConfiguration loadFromJSON(JsonObject json) {
-
     try {
       GsonBuilder builder = new GsonBuilder();
       GridNodeConfiguration.staticAddJsonTypeAdapter(builder);
