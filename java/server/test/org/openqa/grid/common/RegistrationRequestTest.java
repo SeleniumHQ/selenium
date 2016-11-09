@@ -53,12 +53,12 @@ public class RegistrationRequestTest {
   }
 
   @Test
-  public void json() {
+  public void testToJson() {
     RegistrationRequest req =
       new RegistrationRequest(new GridNodeConfiguration(), "Franзois", "a\nb\nc");
 
     for (int i = 0; i < 5; i++) {
-      DesiredCapabilities cap = new DesiredCapabilities(BrowserType.FIREFOX, "" + i, Platform.LINUX);
+      DesiredCapabilities cap = new DesiredCapabilities(BrowserType.FIREFOX, String.valueOf(i), Platform.LINUX);
       req.getConfiguration().capabilities.add(cap);
     }
 
@@ -110,8 +110,7 @@ public class RegistrationRequestTest {
     new JCommander(config, "-role", "wd", "-hubHost", "ABC", "-host","localhost");
     RegistrationRequest req = RegistrationRequest.build(config);
     assertEquals("ABC", req.getConfiguration().getHubHost());
-    // should be 3, we a building from the DefaultNodeWebDriver.json
-    assertEquals(3, req.getConfiguration().capabilities.size());
+    assertEquals(config.capabilities.size(), req.getConfiguration().capabilities.size());
   }
 
   @Test
@@ -121,11 +120,8 @@ public class RegistrationRequestTest {
     RegistrationRequest req = RegistrationRequest.build(config);
     assertEquals(true, req.getConfiguration().register);
 
-
     config = new GridNodeConfiguration();
-    // TODO allow one to set a boolean command line arg to false explicitly
-    new JCommander(config, "-role", "wd", "-hubHost", "ABC", "-hubPort", "1234","-host","localhost"/*,"-register","false"*/);
-    config.register = false;
+    new JCommander(config, "-role", "wd", "-hubHost", "ABC", "-hubPort", "1234","-host","localhost", "-register","false");
     RegistrationRequest req2 = RegistrationRequest.build(config);
     assertEquals(false, req2.getConfiguration().register);
 
@@ -147,5 +143,39 @@ public class RegistrationRequestTest {
     RegistrationRequest req = new RegistrationRequest(config);
 
     req.validate();
+  }
+
+  /**
+   * Tests that RegistrationRequest.build(config) returns the expected configuration
+   */
+  @Test
+  public void testBuildWithConfiguration() {
+    GridNodeConfiguration config = new GridNodeConfiguration();
+    config.maxSession = 50;
+    config.timeout = 10;
+
+    RegistrationRequest req = RegistrationRequest.build(config);
+
+    // should have the default capabilities
+    assertEquals(3, req.getConfiguration().capabilities.size());
+
+    // host is "fixed up" by the .build(config) call
+    // verify this happened and remove it for the final assert.
+    assertNotNull(req.getConfiguration().host);
+    req.getConfiguration().host = null;
+
+    // capabilities are seeded from the default node config and "fixed up" by the .build(config)
+    // call. They should now contain a "platform".
+    // verify this and remove them for the final assert
+    assertTrue(req.getConfiguration().capabilities.size() > 0);
+    for (DesiredCapabilities capabilities : req.getConfiguration().capabilities) {
+      assertNotNull(capabilities.getPlatform());
+      assertNotNull(capabilities.getCapability("seleniumProtocol"));
+    }
+
+    GridNodeConfiguration expectedConfig = new GridNodeConfiguration();
+    expectedConfig.merge(config);
+
+    assertEquals(expectedConfig.toString(), req.getConfiguration().toString());
   }
 }

@@ -95,6 +95,7 @@ public class StatusServletTests {
         RemoteProxyFactory.getNewBasicRemoteProxy("app1", "http://machine4:4444", registry);
 
     RegistrationRequest req = new RegistrationRequest();
+    req.getConfiguration().capabilities.clear();
     Map<String, Object> capability = new HashMap<>();
     capability.put(CapabilityType.BROWSER_NAME, "custom app");
     req.getConfiguration().capabilities.add(new DesiredCapabilities(capability));
@@ -116,7 +117,6 @@ public class StatusServletTests {
     newSessionRequest.process();
     session = newSessionRequest.getSession();
     session.setExternalKey(ExternalSessionKey.fromString("ext. key"));
-
   }
 
   @Test
@@ -269,7 +269,6 @@ public class StatusServletTests {
     assertNull(o.get("I'm not a valid key"));
     assertTrue(o.getAsJsonArray("servlets").size() == 0);
     assertFalse(o.has("capabilityMatcher"));
-
   }
 
   /**

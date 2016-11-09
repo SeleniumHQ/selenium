@@ -21,6 +21,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
@@ -37,12 +38,25 @@ public class GridConfigurationTest {
   @Test
   public void testDefaults() {
     GridConfiguration gc = new GridConfiguration();
+    // these values come from the GridConfiguration class
     assertNull(gc.cleanUpCycle);
+    assertNull(gc.maxSession);
+    assertNotNull(gc.custom);
     assertTrue(gc.custom.isEmpty());
     assertNull(gc.host);
-    assertEquals(1, gc.maxSession.intValue());
-    assertNull(gc.servlets);
-    assertNull(gc.withoutServlets);
+    assertNotNull(gc.servlets);
+    assertTrue(gc.servlets.isEmpty());
+    assertNotNull(gc.withoutServlets);
+    assertTrue(gc.withoutServlets.isEmpty());
+    // these values come from the StandaloneConfiguration base class
+    assertEquals(GridConfiguration.DEFAULT_PORT, gc.port);
+    assertEquals(GridConfiguration.DEFAULT_TIMEOUT, gc.timeout);
+    assertEquals(GridConfiguration.DEFAULT_BROWSER_TIMEOUT, gc.browserTimeout);
+    assertEquals(GridConfiguration.DEFAULT_DEBUG_TOGGLE, gc.debug);
+    assertFalse(gc.help);
+    assertNull(gc.jettyMaxThreads);
+    assertNull(gc.log);
+    assertEquals("standalone", gc.role);
   }
 
   @Test

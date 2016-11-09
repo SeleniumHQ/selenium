@@ -39,14 +39,28 @@ public class StandaloneConfigurationTest {
   @Test
   public void testDefaults() {
     StandaloneConfiguration sc = new StandaloneConfiguration();
-
-    assertEquals("standalone", sc.role);
-    assertNull(sc.browserTimeout);
-    assertFalse(sc.debug);
+    assertEquals(StandaloneConfiguration.DEFAULT_ROLE, sc.role);
+    assertEquals(StandaloneConfiguration.DEFAULT_BROWSER_TIMEOUT, sc.browserTimeout);
+    assertEquals(StandaloneConfiguration.DEFAULT_DEBUG_TOGGLE, sc.debug);
+    assertEquals(StandaloneConfiguration.DEFAULT_TIMEOUT, sc.timeout);
     assertFalse(sc.help);
     assertNull(sc.jettyMaxThreads);
     assertNull(sc.log);
-    assertEquals(1800, sc.timeout.intValue());
+  }
+
+  @Test
+  public void testConstructorEqualsDefaultConfig() {
+    StandaloneConfiguration actual = new StandaloneConfiguration();
+    StandaloneConfiguration expected =
+      StandaloneConfiguration.loadFromJSON(StandaloneConfiguration.DEFAULT_STANDALONE_CONFIG_FILE);
+
+    assertEquals(expected.role, actual.role);
+    assertEquals(expected.browserTimeout, actual.browserTimeout);
+    assertEquals(expected.debug, actual.debug);
+    assertEquals(expected.timeout, actual.timeout);
+    assertEquals(expected.help, actual.help);
+    assertEquals(expected.jettyMaxThreads, actual.jettyMaxThreads);
+    assertEquals(expected.log, actual.log);
   }
 
   @Test
@@ -54,22 +68,22 @@ public class StandaloneConfigurationTest {
     StandaloneConfiguration sc = new StandaloneConfiguration();
     String[] args = "-timeout 32123 -browserTimeout 456".split(" ");
     new JCommander(sc, args);
-    assertEquals(32123L, sc.timeout.longValue());
-    assertEquals(456L, sc.browserTimeout.longValue());
+    assertEquals(32123, sc.timeout.intValue());
+    assertEquals(456, sc.browserTimeout.intValue());
   }
 
   @Test
   public void testSetTimeout() throws Exception {
     StandaloneConfiguration sc = new StandaloneConfiguration();
     sc.timeout = 123;
-    assertEquals(123, sc.timeout.longValue());
+    assertEquals(123, sc.timeout.intValue());
   }
 
   @Test
   public void testSetBrowserTimeout() throws Exception {
     StandaloneConfiguration sc = new StandaloneConfiguration();
     sc.browserTimeout = 1233;
-    assertEquals(1233, sc.browserTimeout.longValue());
+    assertEquals(1233, sc.browserTimeout.intValue());
   }
 
   @Test

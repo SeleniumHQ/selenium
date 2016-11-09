@@ -19,6 +19,7 @@ package org.openqa.grid.internal.utils.configuration;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertNull;
@@ -38,19 +39,64 @@ public class GridHubConfigurationTest {
   @Test
   public void testDefaults() {
     GridHubConfiguration ghc = new GridHubConfiguration();
-    assertEquals("hub", ghc.role);
-    assertEquals(0L, ghc.browserTimeout.longValue());
-    assertEquals(5000L, ghc.cleanUpCycle.longValue());
-    assertEquals(-1L, ghc.jettyMaxThreads.longValue());
+    // these values come from the GridHubConfiguration class
+    assertEquals(GridHubConfiguration.DEFAULT_PORT, ghc.port);
+    assertEquals(GridHubConfiguration.DEFAULT_ROLE, ghc.role);
     assertEquals("org.openqa.grid.internal.utils.DefaultCapabilityMatcher",
                     ghc.capabilityMatcher.getClass().getCanonicalName());
-    assertEquals(-1L, ghc.newSessionWaitTimeout.longValue());
-    assertEquals(true, ghc.throwOnCapabilityNotPresent);
-    assertTrue(ghc.servlets.isEmpty());
+    assertEquals(GridHubConfiguration.DEFAULT_NEW_SESSION_WAIT_TIMEOUT,
+                 ghc.newSessionWaitTimeout);
+    assertEquals(GridHubConfiguration.DEFAULT_THROW_ON_CAPABILITY_NOT_PRESENT_TOGGLE,
+                 ghc.throwOnCapabilityNotPresent);
     assertNull(ghc.hubConfig);
     assertNull(ghc.prioritizer);
+
+    // these values come from the GridConfiguration base class
+    assertEquals(GridHubConfiguration.DEFAULT_CLEANUP_CYCLE, ghc.cleanUpCycle);
     assertNull(ghc.host);
-    assertNull(ghc.port);
+    assertNull(ghc.maxSession);
+    assertNotNull(ghc.custom);
+    assertTrue(ghc.custom.isEmpty());
+    assertNotNull(ghc.servlets);
+    assertTrue(ghc.servlets.isEmpty());
+    assertNotNull(ghc.withoutServlets);
+    assertTrue(ghc.withoutServlets.isEmpty());
+
+    // these values come from the StandaloneConfiguration base class
+    assertEquals(GridHubConfiguration.DEFAULT_TIMEOUT, ghc.timeout);
+    assertEquals(GridHubConfiguration.DEFAULT_BROWSER_TIMEOUT, ghc.browserTimeout);
+    assertFalse(ghc.debug);
+    assertFalse(ghc.help);
+    assertNull(ghc.jettyMaxThreads);
+    assertNull(ghc.log);
+  }
+
+  @Test
+  public void testConstructorEqualsDefaultConfig() {
+    GridHubConfiguration actual = new GridHubConfiguration();
+    GridHubConfiguration expected =
+      GridHubConfiguration.loadFromJSON(GridHubConfiguration.DEFAULT_HUB_CONFIG_FILE);
+
+    assertEquals(expected.role, actual.role);
+    assertEquals(expected.port, actual.port);
+    assertEquals(expected.capabilityMatcher.getClass().getCanonicalName(),
+                 actual.capabilityMatcher.getClass().getCanonicalName());
+    assertEquals(expected.newSessionWaitTimeout, actual.newSessionWaitTimeout);
+    assertEquals(expected.throwOnCapabilityNotPresent, actual.throwOnCapabilityNotPresent);
+    assertEquals(expected.hubConfig, actual.hubConfig);
+    assertEquals(expected.prioritizer, actual.prioritizer);
+    assertEquals(expected.cleanUpCycle, actual.cleanUpCycle);
+    assertEquals(expected.host, actual.host);
+    assertEquals(expected.maxSession, actual.maxSession);
+    assertEquals(expected.custom.size(), actual.custom.size());
+    assertEquals(expected.servlets.size(), actual.servlets.size());
+    assertEquals(expected.withoutServlets.size(), actual.withoutServlets.size());
+    assertEquals(expected.timeout, actual.timeout);
+    assertEquals(expected.browserTimeout, actual.browserTimeout);
+    assertEquals(expected.debug, actual.debug);
+    assertEquals(expected.help, actual.help);
+    assertEquals(expected.jettyMaxThreads, actual.jettyMaxThreads);
+    assertEquals(expected.log, actual.log);
   }
 
   @Test
@@ -62,6 +108,7 @@ public class GridHubConfigurationTest {
     assertEquals("hub", ghc.role);
     assertEquals(1234, ghc.port.intValue());
     assertEquals("dummyhost", ghc.host);
+    assertEquals(-1, ghc.newSessionWaitTimeout.intValue());
   }
 
   @Test

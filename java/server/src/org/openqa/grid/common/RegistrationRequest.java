@@ -115,7 +115,8 @@ public class RegistrationRequest {
     builder.registerTypeAdapter(new TypeToken<List<DesiredCapabilities>>(){}.getType(),
                                 new CollectionOfDesiredCapabilitiesSerializer());
 
-    return builder.excludeFieldsWithoutExposeAnnotation().create()
+    // note: it's very important that nulls are serialized for this type.
+    return builder.serializeNulls().excludeFieldsWithoutExposeAnnotation().create()
       .toJsonTree(this, RegistrationRequest.class).getAsJsonObject();
   }
 
@@ -154,10 +155,19 @@ public class RegistrationRequest {
   }
 
   /**
+   * Build a RegistrationRequest. This is different than {@code new RegistrationRequest()} because
+   * it will "fixup" the resulting RegistrationRequest before returning the result
+   * @return
+   */
+  public static RegistrationRequest build() {
+    return RegistrationRequest.build(null, null, null);
+  }
+
+  /**
    * Build a RegistrationRequest from the provided {@link GridNodeConfiguration}. This is different
-   * than {@code new RegistrationRequest(GridNodeConfiguration)} because it will merge the provided
-   * configuration onto the {@link GridNodeConfiguration#DEFAULT_NODE_CONFIG_FILE} and then "fixup"
-   * the resulting RegistrationRequest before returning the result
+   * than {@code new RegistrationRequest(GridNodeConfiguration)} because it will merge any
+   * specified {@link GridNodeConfiguration#nodeConfigFile} onto the provided configuration and it
+   * will "fixup" the resulting RegistrationRequest before returning the result
    * @param configuration the {@link GridNodeConfiguration} to use
    * @return
    */
@@ -168,8 +178,8 @@ public class RegistrationRequest {
   /**
    * Build a RegistrationRequest from the provided {@link GridNodeConfiguration}, use the provided name.
    * This is different than {@code new RegistrationRequest(GridNodeConfiguration, String)} because it
-   * will merge the provided configuration onto the {@link GridNodeConfiguration#DEFAULT_NODE_CONFIG_FILE}
-   * and then "fixup" the resulting RegistrationRequest before returning the result
+   * will merge any specified {@link GridNodeConfiguration#nodeConfigFile} onto the provided
+   * configuration and it will "fixup" the resulting RegistrationRequest before returning the result
    * @param configuration the {@link GridNodeConfiguration} to use
    * @param name the name for the remote
    * @return
@@ -181,18 +191,18 @@ public class RegistrationRequest {
   /**
    * Build a RegistrationRequest from the provided {@link GridNodeConfiguration}, use the provided name
    * and description. This is different than
-   * {@code new RegistrationRequest(GridNodeConfiguration, String, String)} because it will merge the
-   * provided configuration onto the {@link GridNodeConfiguration#DEFAULT_NODE_CONFIG_FILE}
-   * and then "fixup" the resulting RegistrationRequest before returning the result
+   * {@code new RegistrationRequest(GridNodeConfiguration, String, String)} because it will merge any
+   * specified {@link GridNodeConfiguration#nodeConfigFile} onto the provided configuration and it
+   * will "fixup" the resulting RegistrationRequest before returning the result
    * @param configuration the {@link GridNodeConfiguration} to use
    * @param name the name for the remote
    * @param description the description for the remote host
    * @return
    */
   public static RegistrationRequest build(GridNodeConfiguration configuration, String name, String description) {
-    RegistrationRequest pendingRequest =
-      new RegistrationRequest(GridNodeConfiguration
-                                .loadFromJSON(GridNodeConfiguration.DEFAULT_NODE_CONFIG_FILE));
+    RegistrationRequest pendingRequest = (configuration == null) ?
+      new RegistrationRequest(new GridNodeConfiguration(), name, description) :
+      new RegistrationRequest(configuration, name, description);
 
     if (configuration.nodeConfigFile != null) {
       pendingRequest.configuration = GridNodeConfiguration.loadFromJSON(configuration.nodeConfigFile);
@@ -206,9 +216,6 @@ public class RegistrationRequest {
     if (configuration.port != null) {
       pendingRequest.configuration.port = configuration.port;
     }
-
-    pendingRequest.name = name;
-    pendingRequest.description = description;
 
     // make sure we have a valid host
     pendingRequest.fixUpHost();

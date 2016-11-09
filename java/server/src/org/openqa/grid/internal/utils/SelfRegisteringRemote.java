@@ -75,10 +75,10 @@ public class SelfRegisteringRemote {
     try {
       GridHubConfiguration hubConfiguration = getHubConfiguration();
       // the node can not set these values. They must come from the hub
-      if (hubConfiguration.timeout != null) {
+      if (hubConfiguration.timeout != null && hubConfiguration.timeout >= 0) {
         registrationRequest.getConfiguration().timeout = hubConfiguration.timeout;
       }
-      if (hubConfiguration.browserTimeout != null) {
+      if (hubConfiguration.browserTimeout != null && hubConfiguration.browserTimeout >= 0) {
         registrationRequest.getConfiguration().browserTimeout = hubConfiguration.browserTimeout;
       }
     } catch (Exception e) {
@@ -184,7 +184,8 @@ public class SelfRegisteringRemote {
     if (!register) {
       LOG.info("No registration sent ( register = false )");
     } else {
-      final int registerCycleInterval = registrationRequest.getConfiguration().registerCycle;
+      final int registerCycleInterval = registrationRequest.getConfiguration().registerCycle != null ?
+                                        registrationRequest.getConfiguration().registerCycle : 0;
       if (registerCycleInterval > 0) {
         new Thread(new Runnable() { // Thread safety reviewed
 

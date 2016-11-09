@@ -117,11 +117,11 @@ public class SeleniumServer implements GridNodeServer {
 
     handler.setInitParameter(DisplayHelpServlet.HELPER_TYPE_PARAMETER, configuration.role);
 
-    if (configuration.browserTimeout != null) {
+    if (configuration.browserTimeout != null && configuration.browserTimeout >= 0) {
       handler.setInitParameter(DriverServlet.BROWSER_TIMEOUT_PARAMETER,
                                String.valueOf(configuration.browserTimeout));
     }
-    if (configuration.timeout != null) {
+    if (configuration.timeout != null && configuration.timeout >= 0) {
       handler.setInitParameter(DriverServlet.SESSION_TIMEOUT_PARAMETER,
                                String.valueOf(configuration.timeout));
     }

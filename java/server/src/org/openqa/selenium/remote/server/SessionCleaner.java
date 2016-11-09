@@ -54,7 +54,7 @@ class SessionCleaner extends Thread {   // Thread safety reviewed
     }
     if (insideBrowserTimeout > 0 && insideBrowserTimeout < 60000) {
       log.warning("The specified browser timeout is TOO LOW for safe operations and may have " +
-                  "other side-effects\n. Please specify a slightly higher browserTimeout.");
+                  "other side-effects.\n Please specify a slightly higher browserTimeout.");
     }
     long lowestNonZero = Math.min((insideBrowserTimeout > 0) ? insideBrowserTimeout : clientGoneTimeout,
                                   clientGoneTimeout > 0 ? clientGoneTimeout : insideBrowserTimeout);
