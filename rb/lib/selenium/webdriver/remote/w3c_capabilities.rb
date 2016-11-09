@@ -85,7 +85,7 @@ module Selenium
           alias_method :ff, :firefox
 
           def w3c?(opts = {})
-            opts[:marioentte] != false &&
+            opts[:marionette] != false &&
                 (!opts[:desired_capabilities] || opts[:desired_capabilities][:marionette] != false)
           end
 
