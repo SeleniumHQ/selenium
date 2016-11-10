@@ -17,11 +17,40 @@
 
 package org.openqa.selenium.support.events;
 
+import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 public interface WebDriverEventListener {
+
+  /**
+   * This action will be performed each time before {@link Alert#accept()}
+   *
+   * @param driver WebDriver
+   */
+  void beforeAlertAccept(WebDriver driver);
+
+  /**
+   * This action will be performed each time after {@link Alert#accept()}
+   *
+   * @param driver WebDriver
+   */
+  void afterAlertAccept(WebDriver driver);
+
+  /**
+   * This action will be performed each time before {@link Alert#dismiss()}
+   *
+   * @param driver WebDriver
+   */
+  void afterAlertDismiss(WebDriver driver);
+
+  /**
+   * This action will be performed each time after {@link Alert#dismiss()}
+   *
+   * @param driver WebDriver
+   */
+  void beforeAlertDismiss(WebDriver driver);
 
   /**
    * Called before {@link org.openqa.selenium.WebDriver#get get(String url)} respectively
