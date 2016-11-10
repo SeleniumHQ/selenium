@@ -27,6 +27,22 @@ import org.openqa.selenium.WebElement;
  */
 public abstract class AbstractWebDriverEventListener implements WebDriverEventListener {
 
+  public void beforeAlertAccept(WebDriver driver) {
+    // Do nothing.
+  }
+
+  public void afterAlertAccept(WebDriver driver) {
+    // Do nothing.
+  }
+
+  public void afterAlertDismiss(WebDriver driver) {
+    // Do nothing.
+  }
+
+  public void beforeAlertDismiss(WebDriver driver) {
+    // Do nothing.
+  }
+
   public void beforeNavigateTo(String url, WebDriver driver) {
     // Do nothing.
   }
