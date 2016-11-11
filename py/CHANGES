@@ -35,6 +35,7 @@ Selenium 3.0.0.b1
 * Avoid checking exception details for invalid locators due to differences in server implementations
 * Handle capabilities better with Marionette and GeckoDriver
 * Updated the maxVersion of FirefoxDriver xpi maxVersion to work with Firefox 47.0.1
+* Remove Selenium RC support
 
 Selenium 2.53.0
 * Adding Options object for use with Python FirefoxDriver
