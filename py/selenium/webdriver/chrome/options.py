@@ -15,9 +15,10 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import os
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 import base64
+import os
+
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 
 class Options(object):
@@ -111,8 +112,9 @@ class Options(object):
          - extension: path to the *.crx file
         """
         if extension:
-            if os.path.exists(extension):
-                self._extension_files.append(extension)
+            extension_to_add = os.path.abspath(os.path.expanduser(extension))
+            if os.path.exists(extension_to_add):
+                self._extension_files.append(extension_to_add)
             else:
                 raise IOError("Path to the extension doesn't exist")
         else:
