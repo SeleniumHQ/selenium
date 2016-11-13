@@ -94,6 +94,12 @@ matrix:
       env: TASK=javadocs
     - language: python
       python: 2.7
+      env: TOXENV=flake8
+    - language: python
+      python: 2.7
+      env: TOXENV=docs
+    - language: python
+      python: 2.7
       env: CHROME=1 TOXENV=py27-chrome
     - language: python
       python: 2.7
@@ -114,7 +120,10 @@ matrix:
       addons:
         firefox: latest
     - language: python
-      python: 2.7
+      python: 3.5
+      env: TOXENV=flake8
+    - language: python
+      python: 3.5
       env: TOXENV=docs
     - language: python
       python: 3.5
@@ -137,9 +146,6 @@ matrix:
       env: TOXENV=py35-remote
       addons:
         firefox: latest
-    - language: python
-      python: 3.5
-      env: TOXENV=docs
     - language: ruby
       rvm: 2.2.3
       jdk: oraclejdk8

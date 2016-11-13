@@ -23,7 +23,7 @@ class Service(service.Service):
     GeckoDriver."""
 
     def __init__(self, executable_path, port=0, service_args=None,
-            log_path="geckodriver.log", env=None):
+                 log_path="geckodriver.log", env=None):
         """Creates a new instance of the GeckoDriver remote service proxy.
 
         GeckoDriver provides a HTTP interface speaking the W3C WebDriver

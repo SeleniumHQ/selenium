@@ -28,7 +28,6 @@ except NameError:  # Python 3.x
 import shutil
 import socket
 import sys
-import types
 
 from .extension_connection import ExtensionConnection
 from contextlib import contextmanager
