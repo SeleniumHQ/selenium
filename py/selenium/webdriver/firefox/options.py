@@ -57,7 +57,7 @@ class Options(object):
     def binary_location(self):
         return self.binary
 
-    @binary.setter
+    @binary.setter  # noqa
     def binary_location(self, value):
         self.binary = value
 

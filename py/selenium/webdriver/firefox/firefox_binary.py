@@ -46,8 +46,13 @@ class FirefoxBinary(object):
         if self._start_cmd is None:
             self._start_cmd = self._get_firefox_start_cmd()
         if not self._start_cmd.strip():
-            raise WebDriverException("Failed to find firefox binary. You can set it by specifying the path to 'firefox_binary':\n\nfrom selenium.webdriver.firefox.firefox_binary import FirefoxBinary\n\n" +
-                            "binary = FirefoxBinary('/path/to/binary')\ndriver = webdriver.Firefox(firefox_binary=binary)")
+            raise WebDriverException(
+                "Failed to find firefox binary. You can set it by specifying "
+                "the path to 'firefox_binary':\n\nfrom "
+                "selenium.webdriver.firefox.firefox_binary import "
+                "FirefoxBinary\n\nbinary = "
+                "FirefoxBinary('/path/to/binary')\ndriver = "
+                "webdriver.Firefox(firefox_binary=binary)")
         # Rather than modifying the environment of the calling Python process
         # copy it and modify as needed.
         self._firefox_env = os.environ.copy()
