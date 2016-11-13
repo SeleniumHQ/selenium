@@ -19,23 +19,23 @@ from selenium.webdriver import Chrome
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 
-class TestChromeLauncher(object):
+def testLaunchAndCloseBrowser():
+    driver = Chrome()
+    driver.quit()
 
-    def testLaunchAndCloseBrowser(self):
-        driver = Chrome()
-        driver.quit()
 
-    def test_we_can_launch_multiple_chrome_instances(self):
-        driver1 = Chrome()
-        driver2 = Chrome()
-        driver3 = Chrome()
-        driver1.quit()
-        driver2.quit()
-        driver3.quit()
+def test_we_can_launch_multiple_chrome_instances():
+    driver1 = Chrome()
+    driver2 = Chrome()
+    driver3 = Chrome()
+    driver1.quit()
+    driver2.quit()
+    driver3.quit()
 
-    def test_launch_chrome_do_not_affect_default_capabilities(self):
-        expected = DesiredCapabilities.CHROME.copy()
-        driver = Chrome()
-        actual = DesiredCapabilities.CHROME.copy()
-        driver.quit()
-        assert actual == expected
+
+def test_launch_chrome_do_not_affect_default_capabilities():
+    expected = DesiredCapabilities.CHROME.copy()
+    driver = Chrome()
+    actual = DesiredCapabilities.CHROME.copy()
+    driver.quit()
+    assert actual == expected

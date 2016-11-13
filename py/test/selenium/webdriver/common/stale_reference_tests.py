@@ -21,25 +21,25 @@ from selenium.webdriver.common.by import By
 from selenium.common.exceptions import StaleElementReferenceException
 
 
-class TestStaleReference(object):
+def testOldPage(driver, pages):
+    pages.load("simpleTest.html")
+    elem = driver.find_element(by=By.ID, value="links")
+    pages.load("xhtmlTest.html")
+    with pytest.raises(StaleElementReferenceException):
+        elem.click()
 
-    def testOldPage(self, driver, pages):
-        pages.load("simpleTest.html")
-        elem = driver.find_element(by=By.ID, value="links")
-        pages.load("xhtmlTest.html")
-        with pytest.raises(StaleElementReferenceException):
-            elem.click()
 
-    def testShouldNotCrashWhenCallingGetSizeOnAnObsoleteElement(self, driver, pages):
-        pages.load("simpleTest.html")
-        elem = driver.find_element(by=By.ID, value="links")
-        pages.load("xhtmlTest.html")
-        with pytest.raises(StaleElementReferenceException):
-            elem.size
+def testShouldNotCrashWhenCallingGetSizeOnAnObsoleteElement(driver, pages):
+    pages.load("simpleTest.html")
+    elem = driver.find_element(by=By.ID, value="links")
+    pages.load("xhtmlTest.html")
+    with pytest.raises(StaleElementReferenceException):
+        elem.size
 
-    def testShouldNotCrashWhenQueryingTheAttributeOfAStaleElement(self, driver, pages):
-        pages.load("xhtmlTest.html")
-        heading = driver.find_element(by=By.XPATH, value="//h1")
-        pages.load("simpleTest.html")
-        with pytest.raises(StaleElementReferenceException):
-            heading.get_attribute("class")
+
+def testShouldNotCrashWhenQueryingTheAttributeOfAStaleElement(driver, pages):
+    pages.load("xhtmlTest.html")
+    heading = driver.find_element(by=By.XPATH, value="//h1")
+    pages.load("simpleTest.html")
+    with pytest.raises(StaleElementReferenceException):
+        heading.get_attribute("class")

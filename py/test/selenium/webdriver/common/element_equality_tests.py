@@ -18,26 +18,26 @@
 from selenium.webdriver.common.by import By
 
 
-class TestElementEquality(object):
+def testSameElementLookedUpDifferentWaysShouldBeEqual(driver, pages):
+    pages.load("simpleTest.html")
+    body = driver.find_element(By.TAG_NAME, "body")
+    xbody = driver.find_elements(By.XPATH, "//body")[0]
 
-    def testSameElementLookedUpDifferentWaysShouldBeEqual(self, driver, pages):
-        pages.load("simpleTest.html")
-        body = driver.find_element(By.TAG_NAME, "body")
-        xbody = driver.find_elements(By.XPATH, "//body")[0]
+    assert body == xbody
 
-        assert body == xbody
 
-    def testDifferentElementsAreNotEqual(self, driver, pages):
-        pages.load("simpleTest.html")
-        body = driver.find_element(By.TAG_NAME, "body")
-        div = driver.find_element(By.TAG_NAME, "div")
+def testDifferentElementsAreNotEqual(driver, pages):
+    pages.load("simpleTest.html")
+    body = driver.find_element(By.TAG_NAME, "body")
+    div = driver.find_element(By.TAG_NAME, "div")
 
-        assert body != div
+    assert body != div
 
-    def testSameElementsFoundDifferentWaysShouldNotBeDuplicatedInASet(self, driver, pages):
-        pages.load("simpleTest.html")
-        body = driver.find_element(By.TAG_NAME, "body")
-        xbody = driver.find_elements(By.XPATH, "//body")
-        s = set(xbody)
-        s.add(body)
-        assert 1 == len(s)
+
+def testSameElementsFoundDifferentWaysShouldNotBeDuplicatedInASet(driver, pages):
+    pages.load("simpleTest.html")
+    body = driver.find_element(By.TAG_NAME, "body")
+    xbody = driver.find_elements(By.XPATH, "//body")
+    s = set(xbody)
+    s.add(body)
+    assert 1 == len(s)

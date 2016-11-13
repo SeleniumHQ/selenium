@@ -21,54 +21,55 @@ from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By
 
 
-class TestRenderedWebElement(object):
+@pytest.mark.xfail_marionette(
+    reason='https://github.com/w3c/webdriver/issues/417')
+def testShouldPickUpStyleOfAnElement(driver, pages):
+    pages.load("javascriptPage.html")
 
-    @pytest.mark.xfail_marionette(
-        reason='https://github.com/w3c/webdriver/issues/417')
-    def testShouldPickUpStyleOfAnElement(self, driver, pages):
-        pages.load("javascriptPage.html")
+    element = driver.find_element(by=By.ID, value="green-parent")
+    backgroundColour = element.value_of_css_property("background-color")
+    assert "rgba(0, 128, 0, 1)" == backgroundColour
 
-        element = driver.find_element(by=By.ID, value="green-parent")
-        backgroundColour = element.value_of_css_property("background-color")
-        assert "rgba(0, 128, 0, 1)" == backgroundColour
+    element = driver.find_element(by=By.ID, value="red-item")
+    backgroundColour = element.value_of_css_property("background-color")
+    assert "rgba(255, 0, 0, 1)" == backgroundColour
 
-        element = driver.find_element(by=By.ID, value="red-item")
-        backgroundColour = element.value_of_css_property("background-color")
-        assert "rgba(255, 0, 0, 1)" == backgroundColour
 
-    def testShouldAllowInheritedStylesToBeUsed(self, driver, pages):
-        pages.load("javascriptPage.html")
-        element = driver.find_element(by=By.ID, value="green-item")
-        backgroundColour = element.value_of_css_property("background-color")
-        assert backgroundColour in ("rgba(0, 0, 0, 0)", "transparent")
+def testShouldAllowInheritedStylesToBeUsed(driver, pages):
+    pages.load("javascriptPage.html")
+    element = driver.find_element(by=By.ID, value="green-item")
+    backgroundColour = element.value_of_css_property("background-color")
+    assert backgroundColour in ("rgba(0, 0, 0, 0)", "transparent")
 
-    def testShouldCorrectlyIdentifyThatAnElementHasWidth(self, driver, pages):
-        pages.load("xhtmlTest.html")
 
-        shrinko = driver.find_element(by=By.ID, value="linkId")
-        size = shrinko.size
-        assert size["width"] > 0
-        assert size["height"] > 0
+def testShouldCorrectlyIdentifyThatAnElementHasWidth(driver, pages):
+    pages.load("xhtmlTest.html")
 
-    @pytest.mark.xfail_chrome(
-        reason='Get Element Rect command not implemented',
-        raises=WebDriverException)
-    @pytest.mark.xfail_firefox(
-        reason='Get Element Rect command not implemented',
-        raises=WebDriverException)
-    @pytest.mark.xfail_phantomjs(
-        reason='Get Element Rect command not implemented',
-        raises=WebDriverException)
-    @pytest.mark.xfail_safari(
-        reason='Get Element Rect command not implemented',
-        raises=WebDriverException)
-    def testShouldBeAbleToDetermineTheRectOfAnElement(self, driver, pages):
-        pages.load("xhtmlTest.html")
+    shrinko = driver.find_element(by=By.ID, value="linkId")
+    size = shrinko.size
+    assert size["width"] > 0
+    assert size["height"] > 0
 
-        element = driver.find_element(By.ID, "username")
-        rect = element.rect
 
-        assert rect["x"] > 0
-        assert rect["y"] > 0
-        assert rect["width"] > 0
-        assert rect["height"] > 0
+@pytest.mark.xfail_chrome(
+    reason='Get Element Rect command not implemented',
+    raises=WebDriverException)
+@pytest.mark.xfail_firefox(
+    reason='Get Element Rect command not implemented',
+    raises=WebDriverException)
+@pytest.mark.xfail_phantomjs(
+    reason='Get Element Rect command not implemented',
+    raises=WebDriverException)
+@pytest.mark.xfail_safari(
+    reason='Get Element Rect command not implemented',
+    raises=WebDriverException)
+def testShouldBeAbleToDetermineTheRectOfAnElement(driver, pages):
+    pages.load("xhtmlTest.html")
+
+    element = driver.find_element(By.ID, "username")
+    rect = element.rect
+
+    assert rect["x"] > 0
+    assert rect["y"] > 0
+    assert rect["width"] > 0
+    assert rect["height"] > 0

@@ -27,12 +27,11 @@ def loadPage(pages):
     pages.load("clicks.html")
 
 
-class TestClick(object):
+def testCanClickOnALinkThatOverflowsAndFollowIt(driver):
+    driver.find_element(By.ID, "overflowLink").click()
+    WebDriverWait(driver, 3).until(EC.title_is("XHTML Test Page"))
 
-    def testCanClickOnALinkThatOverflowsAndFollowIt(self, driver):
-        driver.find_element(By.ID, "overflowLink").click()
-        WebDriverWait(driver, 3).until(EC.title_is("XHTML Test Page"))
 
-    def testClickingALinkMadeUpOfNumbersIsHandledCorrectly(self, driver):
-        driver.find_element(By.LINK_TEXT, "333333").click()
-        WebDriverWait(driver, 3).until(EC.title_is("XHTML Test Page"))
+def testClickingALinkMadeUpOfNumbersIsHandledCorrectly(driver):
+    driver.find_element(By.LINK_TEXT, "333333").click()
+    WebDriverWait(driver, 3).until(EC.title_is("XHTML Test Page"))

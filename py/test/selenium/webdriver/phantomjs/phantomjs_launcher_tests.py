@@ -20,28 +20,26 @@ import psutil
 from selenium import webdriver
 
 
-class TestPhantomJSLauncher(object):
+def testLaunchAndCloseBrowserWithoutLeakingCookieTempFileDescriptor():
 
-    def testLaunchAndCloseBrowserWithoutLeakingCookieTempFileDescriptor(self):
+    # psutil module is used to get num open file descritors across platforms
+    p = psutil.Process()
 
-        # psutil module is used to get num open file descritors across platforms
-        p = psutil.Process()
+    num_fds_samples = []
 
-        num_fds_samples = []
+    driver = webdriver.PhantomJS()
+    driver.quit()
 
-        driver = webdriver.PhantomJS()
-        driver.quit()
+    num_fds_samples.append(p.num_fds())
 
-        num_fds_samples.append(p.num_fds())
+    driver = webdriver.PhantomJS()
+    driver.quit()
 
-        driver = webdriver.PhantomJS()
-        driver.quit()
+    num_fds_samples.append(p.num_fds())
 
-        num_fds_samples.append(p.num_fds())
+    driver = webdriver.PhantomJS()
+    driver.quit()
 
-        driver = webdriver.PhantomJS()
-        driver.quit()
+    num_fds_samples.append(p.num_fds())
 
-        num_fds_samples.append(p.num_fds())
-
-        assert max(num_fds_samples) == min(num_fds_samples)
+    assert max(num_fds_samples) == min(num_fds_samples)

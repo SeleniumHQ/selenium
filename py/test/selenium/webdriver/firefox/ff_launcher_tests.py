@@ -18,16 +18,15 @@
 from selenium.webdriver import Firefox
 
 
-class TestFirefoxLauncher(object):
+def testDoubleClose(driver):
+    driver.close()
+    driver.close()
 
-    def testDoubleClose(self, driver):
-        driver.close()
-        driver.close()
 
-    def test_we_can_launch_multiple_firefox_instances(self, capabilities):
-        driver1 = Firefox(capabilities=capabilities)
-        driver2 = Firefox(capabilities=capabilities)
-        driver3 = Firefox(capabilities=capabilities)
-        driver1.quit()
-        driver2.quit()
-        driver3.quit()
+def test_we_can_launch_multiple_firefox_instances(capabilities):
+    driver1 = Firefox(capabilities=capabilities)
+    driver2 = Firefox(capabilities=capabilities)
+    driver3 = Firefox(capabilities=capabilities)
+    driver1.quit()
+    driver2.quit()
+    driver3.quit()

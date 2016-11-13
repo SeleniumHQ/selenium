@@ -21,102 +21,110 @@ from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By
 
 
-class TestPageLoading(object):
+def testShouldWaitForDocumentToBeLoaded(driver, pages):
+    pages.load("simpleTest.html")
+    assert driver.title == "Hello WebDriver"
 
-    def testShouldWaitForDocumentToBeLoaded(self, driver, pages):
-        pages.load("simpleTest.html")
-        assert driver.title == "Hello WebDriver"
 
-    # Disabled till Java WebServer is used
-    # def testShouldFollowRedirectsSentInTheHttpResponseHeaders(self, driver, pages):
-    #    pages.load("redirect.html")
-    #    assert driver.title == "We Arrive Here"
+# Disabled till Java WebServer is used
+# def testShouldFollowRedirectsSentInTheHttpResponseHeaders(driver, pages):
+#    pages.load("redirect.html")
+#    assert driver.title == "We Arrive Here"
 
-    # Disabled till the Java WebServer is used
-    # def testShouldFollowMetaRedirects(self, driver, pages):
-    #    pages.load("metaRedirect.html")
-    #    assert driver.title == "We Arrive Here"
 
-    @pytest.mark.xfail_marionette(run=False)
-    def testShouldBeAbleToGetAFragmentOnTheCurrentPage(self, driver, pages):
-        pages.load("xhtmlTest.html")
-        location = driver.current_url
-        driver.get(location + "#text")
-        driver.find_element(by=By.ID, value="id1")
+# Disabled till the Java WebServer is used
+# def testShouldFollowMetaRedirects(driver, pages):
+#    pages.load("metaRedirect.html")
+#    assert driver.title == "We Arrive Here"
 
-    @pytest.mark.xfail_marionette(raises=WebDriverException)
-    def testShouldReturnWhenGettingAUrlThatDoesNotResolve(self, driver):
-        #  Of course, we're up the creek if this ever does get registered
-        driver.get("http://www.thisurldoesnotexist.comx/")
 
-    @pytest.mark.xfail_marionette(raises=WebDriverException)
-    def testShouldReturnWhenGettingAUrlThatDoesNotConnect(self, driver):
-        #  Here's hoping that there's nothing here. There shouldn't be
-        driver.get("http://localhost:3001")
+@pytest.mark.xfail_marionette(run=False)
+def testShouldBeAbleToGetAFragmentOnTheCurrentPage(driver, pages):
+    pages.load("xhtmlTest.html")
+    location = driver.current_url
+    driver.get(location + "#text")
+    driver.find_element(by=By.ID, value="id1")
 
-    # def testShouldBeAbleToLoadAPageWithFramesetsAndWaitUntilAllFramesAreLoaded() {
-    #     driver.get(pages.framesetPage)
-    #
-    #     driver.switchTo().frame(0)
-    #     WebElement pageNumber = driver.findElement(By.xpath("#span[@id='pageNumber']"))
-    #     self.assertEqual((pageNumber.getText().trim(), equalTo("1"))
-    #
-    #     driver.switchTo().defaultContent().switchTo().frame(1)
-    #     pageNumber = driver.findElement(By.xpath("#span[@id='pageNumber']"))
-    #     self.assertEqual((pageNumber.getText().trim(), equalTo("2"))
 
-    # Need to implement this decorator
-    # @NeedsFreshDriver
-    # def testSouldDoNothingIfThereIsNothingToGoBackTo() {
-    #     originalTitle = driver.getTitle();
-    #     driver.get(pages.formPage);
-    #     driver.back();
-    #     # We may have returned to the browser's home page
-    #     self.assertEqual(driver.title, anyOf(equalTo(originalTitle), equalTo("We Leave From Here")));
+@pytest.mark.xfail_marionette(raises=WebDriverException)
+def testShouldReturnWhenGettingAUrlThatDoesNotResolve(driver):
+    #  Of course, we're up the creek if this ever does get registered
+    driver.get("http://www.thisurldoesnotexist.comx/")
 
-    @pytest.mark.xfail_marionette(reason="https://bugzilla.mozilla.org/show_bug.cgi?id=1291320")
-    def testShouldBeAbleToNavigateBackInTheBrowserHistory(self, driver, pages):
-        pages.load("formPage.html")
 
-        driver.find_element(by=By.ID, value="imageButton").submit()
-        assert driver.title == "We Arrive Here"
+@pytest.mark.xfail_marionette(raises=WebDriverException)
+def testShouldReturnWhenGettingAUrlThatDoesNotConnect(driver):
+    #  Here's hoping that there's nothing here. There shouldn't be
+    driver.get("http://localhost:3001")
 
-        driver.back()
-        assert driver.title == "We Leave From Here"
+# def testShouldBeAbleToLoadAPageWithFramesetsAndWaitUntilAllFramesAreLoaded() {
+#     driver.get(pages.framesetPage)
+#
+#     driver.switchTo().frame(0)
+#     WebElement pageNumber = driver.findElement(By.xpath("#span[@id='pageNumber']"))
+#     self.assertEqual((pageNumber.getText().trim(), equalTo("1"))
+#
+#     driver.switchTo().defaultContent().switchTo().frame(1)
+#     pageNumber = driver.findElement(By.xpath("#span[@id='pageNumber']"))
+#     self.assertEqual((pageNumber.getText().trim(), equalTo("2"))
 
-    @pytest.mark.xfail_marionette(reason="https://bugzilla.mozilla.org/show_bug.cgi?id=1291320")
-    def testShouldBeAbleToNavigateBackInTheBrowserHistoryInPresenceOfIframes(self, driver, pages):
-        pages.load("xhtmlTest.html")
+# Need to implement this decorator
+# @NeedsFreshDriver
+# def testSouldDoNothingIfThereIsNothingToGoBackTo() {
+#     originalTitle = driver.getTitle();
+#     driver.get(pages.formPage);
+#     driver.back();
+#     # We may have returned to the browser's home page
+#     self.assertEqual(driver.title, anyOf(equalTo(originalTitle), equalTo("We Leave From Here")));
 
-        driver.find_element(by=By.NAME, value="sameWindow").click()
 
-        assert driver.title == "This page has iframes"
+@pytest.mark.xfail_marionette(reason="https://bugzilla.mozilla.org/show_bug.cgi?id=1291320")
+def testShouldBeAbleToNavigateBackInTheBrowserHistory(driver, pages):
+    pages.load("formPage.html")
 
-        driver.back()
-        assert driver.title == "XHTML Test Page"
+    driver.find_element(by=By.ID, value="imageButton").submit()
+    assert driver.title == "We Arrive Here"
 
-    @pytest.mark.xfail_marionette(reason="https://bugzilla.mozilla.org/show_bug.cgi?id=1291320")
-    def testShouldBeAbleToNavigateForwardsInTheBrowserHistory(self, driver, pages):
-        pages.load("formPage.html")
+    driver.back()
+    assert driver.title == "We Leave From Here"
 
-        driver.find_element(by=By.ID, value="imageButton").submit()
-        assert driver.title == "We Arrive Here"
 
-        driver.back()
-        assert driver.title == "We Leave From Here"
+@pytest.mark.xfail_marionette(reason="https://bugzilla.mozilla.org/show_bug.cgi?id=1291320")
+def testShouldBeAbleToNavigateBackInTheBrowserHistoryInPresenceOfIframes(driver, pages):
+    pages.load("xhtmlTest.html")
 
-        driver.forward()
-        assert driver.title == "We Arrive Here"
+    driver.find_element(by=By.NAME, value="sameWindow").click()
 
-    @pytest.mark.xfail_ie
-    @pytest.mark.xfail_marionette(run=False)
-    def testShouldNotHangifDocumentOpenCallIsNeverFollowedByDocumentCloseCall(self, driver, pages):
-        pages.load("document_write_in_onload.html")
-        driver.find_element(By.XPATH, "//body")
+    assert driver.title == "This page has iframes"
 
-    def testShouldBeAbleToRefreshAPage(self, driver, pages):
-        pages.load("xhtmlTest.html")
+    driver.back()
+    assert driver.title == "XHTML Test Page"
 
-        driver.refresh()
 
-        assert driver.title == "XHTML Test Page"
+@pytest.mark.xfail_marionette(reason="https://bugzilla.mozilla.org/show_bug.cgi?id=1291320")
+def testShouldBeAbleToNavigateForwardsInTheBrowserHistory(driver, pages):
+    pages.load("formPage.html")
+
+    driver.find_element(by=By.ID, value="imageButton").submit()
+    assert driver.title == "We Arrive Here"
+
+    driver.back()
+    assert driver.title == "We Leave From Here"
+
+    driver.forward()
+    assert driver.title == "We Arrive Here"
+
+
+@pytest.mark.xfail_ie
+@pytest.mark.xfail_marionette(run=False)
+def testShouldNotHangifDocumentOpenCallIsNeverFollowedByDocumentCloseCall(driver, pages):
+    pages.load("document_write_in_onload.html")
+    driver.find_element(By.XPATH, "//body")
+
+
+def testShouldBeAbleToRefreshAPage(driver, pages):
+    pages.load("xhtmlTest.html")
+
+    driver.refresh()
+
+    assert driver.title == "XHTML Test Page"

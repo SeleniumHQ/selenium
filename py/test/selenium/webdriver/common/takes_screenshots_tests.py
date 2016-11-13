@@ -21,23 +21,23 @@ import imghdr
 import pytest
 
 
-class TestScreenshot(object):
+def test_get_screenshot_as_base64(driver, pages):
+    pages.load("simpleTest.html")
+    result = base64.b64decode(driver.get_screenshot_as_base64())
+    assert imghdr.what('', result) == 'png'
 
-    def test_get_screenshot_as_base64(self, driver, pages):
-        pages.load("simpleTest.html")
-        result = base64.b64decode(driver.get_screenshot_as_base64())
-        assert imghdr.what('', result) == 'png'
 
-    def test_get_screenshot_as_png(self, driver, pages):
-        pages.load("simpleTest.html")
-        result = driver.get_screenshot_as_png()
-        assert imghdr.what('', result) == 'png'
+def test_get_screenshot_as_png(driver, pages):
+    pages.load("simpleTest.html")
+    result = driver.get_screenshot_as_png()
+    assert imghdr.what('', result) == 'png'
 
-    @pytest.mark.xfail_chrome
-    @pytest.mark.xfail_firefox
-    @pytest.mark.xfail_marionette
-    def test_get_element_screenshot(self, driver, pages):
-        pages.load("simpleTest.html")
-        element = driver.find_element_by_id("multiline")
-        result = base64.b64decode(element.screenshot_as_base64)
-        assert imghdr.what('', result) == 'png'
+
+@pytest.mark.xfail_chrome
+@pytest.mark.xfail_firefox
+@pytest.mark.xfail_marionette
+def test_get_element_screenshot(driver, pages):
+    pages.load("simpleTest.html")
+    element = driver.find_element_by_id("multiline")
+    result = base64.b64decode(element.screenshot_as_base64)
+    assert imghdr.what('', result) == 'png'
