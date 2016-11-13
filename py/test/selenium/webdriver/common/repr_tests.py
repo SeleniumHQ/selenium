@@ -18,23 +18,23 @@
 from selenium.webdriver.support.wait import WebDriverWait
 
 
-class TestClassRepr(object):
+def testShouldImplementReprForWebDriver(driver):
+    driver_repr = repr(driver)
+    assert type(driver).__name__ in driver_repr
+    assert driver.session_id in driver_repr
 
-    def testShouldImplementReprForWebDriver(self, driver):
-        driver_repr = repr(driver)
-        assert type(driver).__name__ in driver_repr
-        assert driver.session_id in driver_repr
 
-    def testShouldImplementReprForWebElement(self, driver, pages):
-        pages.load('simpleTest.html')
-        elem = driver.find_element_by_id("validImgTag")
-        elem_repr = repr(elem)
-        assert type(elem).__name__ in elem_repr
-        assert driver.session_id in elem_repr
-        assert elem._id in elem_repr
+def testShouldImplementReprForWebElement(driver, pages):
+    pages.load('simpleTest.html')
+    elem = driver.find_element_by_id("validImgTag")
+    elem_repr = repr(elem)
+    assert type(elem).__name__ in elem_repr
+    assert driver.session_id in elem_repr
+    assert elem._id in elem_repr
 
-    def testShouldImplementReprForWait(self, driver):
-        wait = WebDriverWait(driver, 30)
-        wait_repr = repr(wait)
-        assert type(wait).__name__ in wait_repr
-        assert driver.session_id in wait_repr
+
+def testShouldImplementReprForWait(driver):
+    wait = WebDriverWait(driver, 30)
+    wait_repr = repr(wait)
+    assert type(wait).__name__ in wait_repr
+    assert driver.session_id in wait_repr

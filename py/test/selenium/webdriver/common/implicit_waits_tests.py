@@ -20,51 +20,54 @@ import pytest
 from selenium.common.exceptions import NoSuchElementException
 
 
-class TestImplicitWait(object):
+def testShouldImplicitlyWaitForASingleElement(driver, pages):
+    pages.load("dynamic.html")
+    add = driver.find_element_by_id("adder")
+    driver.implicitly_wait(3)
+    add.click()
+    driver.find_element_by_id("box0")  # All is well if this doesn't throw.
 
-    def testShouldImplicitlyWaitForASingleElement(self, driver, pages):
-        pages.load("dynamic.html")
-        add = driver.find_element_by_id("adder")
-        driver.implicitly_wait(3)
-        add.click()
-        driver.find_element_by_id("box0")  # All is well if this doesn't throw.
 
-    def testShouldStillFailToFindAnElementWhenImplicitWaitsAreEnabled(self, driver, pages):
-        pages.load("dynamic.html")
-        driver.implicitly_wait(0.5)
-        with pytest.raises(NoSuchElementException):
-            driver.find_element_by_id("box0")
+def testShouldStillFailToFindAnElementWhenImplicitWaitsAreEnabled(driver, pages):
+    pages.load("dynamic.html")
+    driver.implicitly_wait(0.5)
+    with pytest.raises(NoSuchElementException):
+        driver.find_element_by_id("box0")
 
-    def testShouldReturnAfterFirstAttemptToFindOneAfterDisablingImplicitWaits(self, driver, pages):
-        pages.load("dynamic.html")
-        driver.implicitly_wait(3)
-        driver.implicitly_wait(0)
-        with pytest.raises(NoSuchElementException):
-            driver.find_element_by_id("box0")
 
-    def testShouldImplicitlyWaitUntilAtLeastOneElementIsFoundWhenSearchingForMany(self, driver, pages):
-        pages.load("dynamic.html")
-        add = driver.find_element_by_id("adder")
+def testShouldReturnAfterFirstAttemptToFindOneAfterDisablingImplicitWaits(driver, pages):
+    pages.load("dynamic.html")
+    driver.implicitly_wait(3)
+    driver.implicitly_wait(0)
+    with pytest.raises(NoSuchElementException):
+        driver.find_element_by_id("box0")
 
-        driver.implicitly_wait(2)
-        add.click()
-        add.click()
 
-        elements = driver.find_elements_by_class_name("redbox")
-        assert len(elements) >= 1
+def testShouldImplicitlyWaitUntilAtLeastOneElementIsFoundWhenSearchingForMany(driver, pages):
+    pages.load("dynamic.html")
+    add = driver.find_element_by_id("adder")
 
-    def testShouldStillFailToFindAnElemenstWhenImplicitWaitsAreEnabled(self, driver, pages):
-        pages.load("dynamic.html")
+    driver.implicitly_wait(2)
+    add.click()
+    add.click()
 
-        driver.implicitly_wait(0.5)
-        elements = driver.find_elements_by_class_name("redbox")
-        assert 0 == len(elements)
+    elements = driver.find_elements_by_class_name("redbox")
+    assert len(elements) >= 1
 
-    def testShouldReturnAfterFirstAttemptToFindManyAfterDisablingImplicitWaits(self, driver, pages):
-        pages.load("dynamic.html")
-        add = driver.find_element_by_id("adder")
-        driver.implicitly_wait(1.1)
-        driver.implicitly_wait(0)
-        add.click()
-        elements = driver.find_elements_by_class_name("redbox")
-        assert 0 == len(elements)
+
+def testShouldStillFailToFindAnElemenstWhenImplicitWaitsAreEnabled(driver, pages):
+    pages.load("dynamic.html")
+
+    driver.implicitly_wait(0.5)
+    elements = driver.find_elements_by_class_name("redbox")
+    assert 0 == len(elements)
+
+
+def testShouldReturnAfterFirstAttemptToFindManyAfterDisablingImplicitWaits(driver, pages):
+    pages.load("dynamic.html")
+    add = driver.find_element_by_id("adder")
+    driver.implicitly_wait(1.1)
+    driver.implicitly_wait(0)
+    add.click()
+    elements = driver.find_elements_by_class_name("redbox")
+    assert 0 == len(elements)

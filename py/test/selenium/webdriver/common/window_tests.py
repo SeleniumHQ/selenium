@@ -20,21 +20,19 @@ import pytest
 from selenium.webdriver.support.wait import WebDriverWait
 
 
-class TestWindow(object):
-
-    @pytest.mark.xfail_ie
-    @pytest.mark.xfail_chrome(reason="Fails on Travis")
-    @pytest.mark.xfail_marionette(reason="Fails on Travis")
-    def testShouldMaximizeTheWindow(self, driver):
-        resize_timeout = 5
-        wait = WebDriverWait(driver, resize_timeout)
-        old_size = driver.get_window_size()
-        driver.set_window_size(200, 200)
-        wait.until(
-            lambda dr: dr.get_window_size() != old_size if old_size["width"] != 200 and old_size["height"] != 200 else True)
-        size = driver.get_window_size()
-        driver.maximize_window()
-        wait.until(lambda dr: dr.get_window_size() != size)
-        new_size = driver.get_window_size()
-        assert new_size["width"] > size["width"]
-        assert new_size["height"] > size["height"]
+@pytest.mark.xfail_ie
+@pytest.mark.xfail_chrome(reason="Fails on Travis")
+@pytest.mark.xfail_marionette(reason="Fails on Travis")
+def testShouldMaximizeTheWindow(driver):
+    resize_timeout = 5
+    wait = WebDriverWait(driver, resize_timeout)
+    old_size = driver.get_window_size()
+    driver.set_window_size(200, 200)
+    wait.until(
+        lambda dr: dr.get_window_size() != old_size if old_size["width"] != 200 and old_size["height"] != 200 else True)
+    size = driver.get_window_size()
+    driver.maximize_window()
+    wait.until(lambda dr: dr.get_window_size() != size)
+    new_size = driver.get_window_size()
+    assert new_size["width"] > size["width"]
+    assert new_size["height"] > size["height"]

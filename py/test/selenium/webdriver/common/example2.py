@@ -18,13 +18,11 @@
 from google_one_box import GoogleOneBox
 
 
-class TestExample2(object):
+def testSearch(driver):
     """This example shows how to use the page object pattern.
 
     For more information about this pattern, see:
     https://github.com/SeleniumHQ/selenium/wiki/PageObjects"""
-
-    def testSearch(self, driver):
-        google = GoogleOneBox(driver, "http://www.google.com")
-        res = google.search_for("cheese")
-        assert res.link_contains_match_for("Wikipedia")
+    google = GoogleOneBox(driver, "http://www.google.com")
+    res = google.search_for("cheese")
+    assert res.link_contains_match_for("Wikipedia")

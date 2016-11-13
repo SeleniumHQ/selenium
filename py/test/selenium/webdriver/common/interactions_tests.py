@@ -24,197 +24,206 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support.ui import WebDriverWait
 
 
-class TestAdvancedUserInteraction(object):
+def performDragAndDropWithMouse(driver, pages):
+    """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
+    pages.load("draggableLists.html")
+    dragReporter = driver.find_element_by_id("dragging_reports")
+    toDrag = driver.find_element_by_id("rightitem-3")
+    dragInto = driver.find_element_by_id("sortable1")
 
-    def performDragAndDropWithMouse(self, driver, pages):
-        """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
-        pages.load("draggableLists.html")
-        dragReporter = driver.find_element_by_id("dragging_reports")
-        toDrag = driver.find_element_by_id("rightitem-3")
-        dragInto = driver.find_element_by_id("sortable1")
+    holdItem = ActionChains(driver).click_and_hold(toDrag)
+    moveToSpecificItem = ActionChains(driver) \
+        .move_to_element(driver.find_element_by_id("leftitem-4"))
+    moveToOtherList = ActionChains(driver).move_to_element(dragInto)
+    drop = ActionChains(driver).release(dragInto)
+    assert "Nothing happened." == dragReporter.text
 
-        holdItem = ActionChains(driver).click_and_hold(toDrag)
-        moveToSpecificItem = ActionChains(driver) \
-            .move_to_element(driver.find_element_by_id("leftitem-4"))
-        moveToOtherList = ActionChains(driver).move_to_element(dragInto)
-        drop = ActionChains(driver).release(dragInto)
-        assert "Nothing happened." == dragReporter.text
+    holdItem.perform()
+    moveToSpecificItem.perform()
+    moveToOtherList.perform()
+    assert "Nothing happened. DragOut" == dragReporter.text
 
-        holdItem.perform()
-        moveToSpecificItem.perform()
-        moveToOtherList.perform()
-        assert "Nothing happened. DragOut" == dragReporter.text
+    drop.perform()
 
-        drop.perform()
 
-    @pytest.mark.xfail_marionette(
-        reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1292178',
-        raises=WebDriverException)
-    def testDraggingElementWithMouseMovesItToAnotherList(self, driver, pages):
-        """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
-        self.performDragAndDropWithMouse(driver, pages)
-        dragInto = driver.find_element_by_id("sortable1")
-        assert 6 == len(dragInto.find_elements_by_tag_name("li"))
+@pytest.mark.xfail_marionette(
+    reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1292178',
+    raises=WebDriverException)
+def testDraggingElementWithMouseMovesItToAnotherList(driver, pages):
+    """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
+    performDragAndDropWithMouse(driver, pages)
+    dragInto = driver.find_element_by_id("sortable1")
+    assert 6 == len(dragInto.find_elements_by_tag_name("li"))
 
-    @pytest.mark.xfail_marionette(
-        reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1292178',
-        raises=WebDriverException)
-    def testDraggingElementWithMouseFiresEvents(self, driver, pages):
-        """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
-        self.performDragAndDropWithMouse(driver, pages)
-        dragReporter = driver.find_element_by_id("dragging_reports")
-        assert "Nothing happened. DragOut DropIn RightItem 3" == dragReporter.text
 
-    def _isElementAvailable(self, driver, id):
-        """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
-        try:
-            driver.find_element_by_id(id)
-            return True
-        except Exception:
-            return False
+@pytest.mark.xfail_marionette(
+    reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1292178',
+    raises=WebDriverException)
+def testDraggingElementWithMouseFiresEvents(driver, pages):
+    """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
+    performDragAndDropWithMouse(driver, pages)
+    dragReporter = driver.find_element_by_id("dragging_reports")
+    assert "Nothing happened. DragOut DropIn RightItem 3" == dragReporter.text
 
-    @pytest.mark.xfail_marionette(
-        reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1292178',
-        raises=WebDriverException)
-    def testDragAndDrop(self, driver, pages):
-        """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
-        element_available_timeout = 15
-        wait = WebDriverWait(self, element_available_timeout)
-        pages.load("droppableItems.html")
-        wait.until(lambda dr: dr._isElementAvailable(driver, "draggable"))
 
-        if not self._isElementAvailable(driver, "draggable"):
-            raise AssertionError("Could not find draggable element after 15 seconds.")
+def _isElementAvailable(driver, id):
+    """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
+    try:
+        driver.find_element_by_id(id)
+        return True
+    except Exception:
+        return False
 
-        toDrag = driver.find_element_by_id("draggable")
-        dropInto = driver.find_element_by_id("droppable")
 
-        holdDrag = ActionChains(driver) \
-            .click_and_hold(toDrag)
+@pytest.mark.xfail_marionette(
+    reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1292178',
+    raises=WebDriverException)
+def testDragAndDrop(driver, pages):
+    """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
+    element_available_timeout = 15
+    wait = WebDriverWait(element_available_timeout)
+    pages.load("droppableItems.html")
+    wait.until(lambda dr: dr._isElementAvailable(driver, "draggable"))
+
+    if not _isElementAvailable(driver, "draggable"):
+        raise AssertionError("Could not find draggable element after 15 seconds.")
+
+    toDrag = driver.find_element_by_id("draggable")
+    dropInto = driver.find_element_by_id("droppable")
+
+    holdDrag = ActionChains(driver) \
+        .click_and_hold(toDrag)
+    move = ActionChains(driver) \
+        .move_to_element(dropInto)
+    drop = ActionChains(driver).release(dropInto)
+
+    holdDrag.perform()
+    move.perform()
+    drop.perform()
+
+    dropInto = driver.find_element_by_id("droppable")
+    text = dropInto.find_element_by_tag_name("p").text
+    assert "Dropped!" == text
+
+
+@pytest.mark.xfail_marionette(
+    reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1292178',
+    raises=WebDriverException)
+def testDoubleClick(driver, pages):
+    """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
+    pages.load("javascriptPage.html")
+    toDoubleClick = driver.find_element_by_id("doubleClickField")
+
+    dblClick = ActionChains(driver) \
+        .double_click(toDoubleClick)
+
+    dblClick.perform()
+    assert "DoubleClicked" == toDoubleClick.get_attribute('value')
+
+
+@pytest.mark.xfail_marionette(
+    reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1292178',
+    raises=WebDriverException)
+@pytest.mark.xfail_phantomjs(
+    reason='https://github.com/ariya/phantomjs/issues/14005')
+def testContextClick(driver, pages):
+    """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
+    pages.load("javascriptPage.html")
+    toContextClick = driver.find_element_by_id("doubleClickField")
+
+    contextClick = ActionChains(driver) \
+        .context_click(toContextClick)
+
+    contextClick.perform()
+    assert "ContextClicked" == toContextClick.get_attribute('value')
+
+
+@pytest.mark.xfail_marionette(
+    reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1292178')
+def testMoveAndClick(driver, pages):
+    """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
+    pages.load("javascriptPage.html")
+    toClick = driver.find_element_by_id("clickField")
+
+    click = ActionChains(driver) \
+        .move_to_element(toClick) \
+        .click()
+
+    click.perform()
+    assert "Clicked" == toClick.get_attribute('value')
+
+
+@pytest.mark.xfail_marionette(
+    reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1292178')
+def testCannotMoveToANullLocator(driver, pages):
+    """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
+    pages.load("javascriptPage.html")
+
+    with pytest.raises(AttributeError):
         move = ActionChains(driver) \
-            .move_to_element(dropInto)
-        drop = ActionChains(driver).release(dropInto)
-
-        holdDrag.perform()
+            .move_to_element(None)
         move.perform()
-        drop.perform()
 
-        dropInto = driver.find_element_by_id("droppable")
-        text = dropInto.find_element_by_tag_name("p").text
-        assert "Dropped!" == text
 
-    @pytest.mark.xfail_marionette(
-        reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1292178',
-        raises=WebDriverException)
-    def testDoubleClick(self, driver, pages):
-        """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
-        pages.load("javascriptPage.html")
-        toDoubleClick = driver.find_element_by_id("doubleClickField")
+@pytest.mark.xfail_marionette(
+    reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1292178')
+@pytest.mark.xfail_phantomjs
+def testClickingOnFormElements(driver, pages):
+    """Copied from org.openqa.selenium.interactions.CombinedInputActionsTest."""
+    pages.load("formSelectionPage.html")
+    options = driver.find_elements_by_tag_name("option")
+    selectThreeOptions = ActionChains(driver) \
+        .click(options[1]) \
+        .key_down(Keys.SHIFT) \
+        .click(options[2]) \
+        .click(options[3]) \
+        .key_up(Keys.SHIFT)
+    selectThreeOptions.perform()
 
-        dblClick = ActionChains(driver) \
-            .double_click(toDoubleClick)
+    showButton = driver.find_element_by_name("showselected")
+    showButton.click()
 
-        dblClick.perform()
-        assert "DoubleClicked" == toDoubleClick.get_attribute('value')
+    resultElement = driver.find_element_by_id("result")
+    assert "roquefort parmigiano cheddar" == resultElement.text
 
-    @pytest.mark.xfail_marionette(
-        reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1292178',
-        raises=WebDriverException)
-    @pytest.mark.xfail_phantomjs(
-        reason='https://github.com/ariya/phantomjs/issues/14005')
-    def testContextClick(self, driver, pages):
-        """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
-        pages.load("javascriptPage.html")
-        toContextClick = driver.find_element_by_id("doubleClickField")
 
-        contextClick = ActionChains(driver) \
-            .context_click(toContextClick)
+@pytest.mark.xfail_marionette(
+    reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1292178')
+@pytest.mark.xfail_phantomjs
+def testSelectingMultipleItems(driver, pages):
+    """Copied from org.openqa.selenium.interactions.CombinedInputActionsTest."""
+    pages.load("selectableItems.html")
+    reportingElement = driver.find_element_by_id("infodiv")
+    assert "no info" == reportingElement.text
 
-        contextClick.perform()
-        assert "ContextClicked" == toContextClick.get_attribute('value')
+    listItems = driver.find_elements_by_tag_name("li")
+    selectThreeItems = ActionChains(driver) \
+        .key_down(Keys.CONTROL) \
+        .click(listItems[1]) \
+        .click(listItems[3]) \
+        .click(listItems[5]) \
+        .key_up(Keys.CONTROL)
+    selectThreeItems.perform()
 
-    @pytest.mark.xfail_marionette(
-        reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1292178')
-    def testMoveAndClick(self, driver, pages):
-        """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
-        pages.load("javascriptPage.html")
-        toClick = driver.find_element_by_id("clickField")
+    assert "#item2 #item4 #item6" == reportingElement.text
 
-        click = ActionChains(driver) \
-            .move_to_element(toClick) \
-            .click()
+    # Now click on another element, make sure that's the only one selected.
+    actionsBuilder = ActionChains(driver)
+    actionsBuilder.click(listItems[6]).perform()
+    assert "#item7" == reportingElement.text
 
-        click.perform()
-        assert "Clicked" == toClick.get_attribute('value')
 
-    @pytest.mark.xfail_marionette(
-        reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1292178')
-    def testCannotMoveToANullLocator(self, driver, pages):
-        """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
-        pages.load("javascriptPage.html")
+@pytest.mark.xfail_marionette(
+    reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1292178')
+def testSendingKeysToActiveElementWithModifier(driver, pages):
+    pages.load("formPage.html")
+    e = driver.find_element_by_id("working")
+    e.click()
 
-        with pytest.raises(AttributeError):
-            move = ActionChains(driver) \
-                .move_to_element(None)
-            move.perform()
+    ActionChains(driver) \
+        .key_down(Keys.SHIFT) \
+        .send_keys("abc") \
+        .key_up(Keys.SHIFT) \
+        .perform()
 
-    @pytest.mark.xfail_marionette(
-        reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1292178')
-    @pytest.mark.xfail_phantomjs
-    def testClickingOnFormElements(self, driver, pages):
-        """Copied from org.openqa.selenium.interactions.CombinedInputActionsTest."""
-        pages.load("formSelectionPage.html")
-        options = driver.find_elements_by_tag_name("option")
-        selectThreeOptions = ActionChains(driver) \
-            .click(options[1]) \
-            .key_down(Keys.SHIFT) \
-            .click(options[2]) \
-            .click(options[3]) \
-            .key_up(Keys.SHIFT)
-        selectThreeOptions.perform()
-
-        showButton = driver.find_element_by_name("showselected")
-        showButton.click()
-
-        resultElement = driver.find_element_by_id("result")
-        assert "roquefort parmigiano cheddar" == resultElement.text
-
-    @pytest.mark.xfail_marionette(
-        reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1292178')
-    @pytest.mark.xfail_phantomjs
-    def testSelectingMultipleItems(self, driver, pages):
-        """Copied from org.openqa.selenium.interactions.CombinedInputActionsTest."""
-        pages.load("selectableItems.html")
-        reportingElement = driver.find_element_by_id("infodiv")
-        assert "no info" == reportingElement.text
-
-        listItems = driver.find_elements_by_tag_name("li")
-        selectThreeItems = ActionChains(driver) \
-            .key_down(Keys.CONTROL) \
-            .click(listItems[1]) \
-            .click(listItems[3]) \
-            .click(listItems[5]) \
-            .key_up(Keys.CONTROL)
-        selectThreeItems.perform()
-
-        assert "#item2 #item4 #item6" == reportingElement.text
-
-        # Now click on another element, make sure that's the only one selected.
-        actionsBuilder = ActionChains(driver)
-        actionsBuilder.click(listItems[6]).perform()
-        assert "#item7" == reportingElement.text
-
-    @pytest.mark.xfail_marionette(
-        reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1292178')
-    def testSendingKeysToActiveElementWithModifier(self, driver, pages):
-        pages.load("formPage.html")
-        e = driver.find_element_by_id("working")
-        e.click()
-
-        ActionChains(driver) \
-            .key_down(Keys.SHIFT) \
-            .send_keys("abc") \
-            .key_up(Keys.SHIFT) \
-            .perform()
-
-        assert "ABC" == e.get_attribute('value')
+    assert "ABC" == e.get_attribute('value')
