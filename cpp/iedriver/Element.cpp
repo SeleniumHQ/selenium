@@ -1016,11 +1016,13 @@ bool Element::GetClickableViewPortLocation(const bool document_contains_frames, 
     CComPtr<IHTMLDocument2> doc;
     this->GetContainingDocument(false, &doc);
     int document_mode = DocumentHost::GetDocumentMode(doc);
-    CComPtr<IHTMLDocument3> document_element_doc;
+    CComPtr<IHTMLDocument3> document_element_doc;		
+    CComPtr<IHTMLElement> document_element;
     HRESULT hr = doc->QueryInterface<IHTMLDocument3>(&document_element_doc);
-    if (SUCCEEDED(hr) && document_element_doc && document_mode > 5) {
-      CComPtr<IHTMLElement> document_element;
+    if (SUCCEEDED(hr) && document_element_doc) { 
       hr = document_element_doc->get_documentElement(&document_element);
+    }
+    if (SUCCEEDED(hr) && document_mode > 5 && document_element) {
       CComPtr<IHTMLElement2> size_element;
       hr = document_element->QueryInterface<IHTMLElement2>(&size_element);
       size_element->get_clientHeight(&window_height);
