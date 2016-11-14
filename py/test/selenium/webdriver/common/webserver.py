@@ -37,6 +37,7 @@ def updir():
     dirname = os.path.dirname
     return dirname(dirname(__file__))
 
+
 LOGGER = logging.getLogger(__name__)
 WEBDRIVER = os.environ.get("WEBDRIVER", updir())
 HTML_ROOT = os.path.join(WEBDRIVER, "../../../../common/src/web")
