@@ -107,7 +107,7 @@ class WebElement(object):
             return self._execute(Command.GET_ELEMENT_PROPERTY, {"name": name})["value"]
         except WebDriverException:
             # if we hit an end point that doesnt understand getElementProperty lets fake it
-            self.parent.execute_script('return arguments[0][arguments[1]]', self, name)
+            return self.parent.execute_script('return arguments[0][arguments[1]]', self, name)
 
     def get_attribute(self, name):
         """Gets the given attribute or property of the element.
