@@ -38,22 +38,22 @@ def test_should_fire_navigation_events(driver, log, pages):
 
     class EventListener(AbstractEventListener):
 
-        def before_navigate_to(url, driver):
+        def before_navigate_to(self, url, driver):
             log.write(("before_navigate_to %s" % url.split("/")[-1]).encode())
 
-        def after_navigate_to(url, driver):
+        def after_navigate_to(self, url, driver):
             log.write(("after_navigate_to %s" % url.split("/")[-1]).encode())
 
-        def before_navigate_back(driver):
+        def before_navigate_back(self, driver):
             log.write(b"before_navigate_back")
 
-        def after_navigate_back(driver):
+        def after_navigate_back(self, driver):
             log.write(b"after_navigate_back")
 
-        def before_navigate_forward(driver):
+        def before_navigate_forward(self, driver):
             log.write(b"before_navigate_forward")
 
-        def after_navigate_forward(driver):
+        def after_navigate_forward(self, driver):
             log.write(b"after_navigate_forward")
 
     ef_driver = EventFiringWebDriver(driver, EventListener())
@@ -79,10 +79,10 @@ def test_should_fire_click_event(driver, log, pages):
 
     class EventListener(AbstractEventListener):
 
-        def before_click(element, driver):
+        def before_click(self, element, driver):
             log.write(b"before_click")
 
-        def after_click(element, driver):
+        def after_click(self, element, driver):
             log.write(b"after_click")
 
     ef_driver = EventFiringWebDriver(driver, EventListener())
@@ -97,10 +97,10 @@ def test_should_fire_change_value_event(driver, log, pages):
 
     class EventListener(AbstractEventListener):
 
-        def before_change_value_of(element, driver):
+        def before_change_value_of(self, element, driver):
             log.write(b"before_change_value_of")
 
-        def after_change_value_of(element, driver):
+        def after_change_value_of(self, element, driver):
             log.write(b"after_change_value_of")
 
     ef_driver = EventFiringWebDriver(driver, EventListener())
@@ -124,10 +124,10 @@ def test_should_fire_find_event(driver, log, pages):
 
     class EventListener(AbstractEventListener):
 
-        def before_find(by, value, driver):
+        def before_find(self, by, value, driver):
             log.write(("before_find by %s %s" % (by, value)).encode())
 
-        def after_find(by, value, driver):
+        def after_find(self, by, value, driver):
             log.write(("after_find by %s %s" % (by, value)).encode())
 
     ef_driver = EventFiringWebDriver(driver, EventListener())
@@ -155,7 +155,7 @@ def test_should_fire_find_event(driver, log, pages):
 def test_should_call_listener_when_an_exception_is_thrown(driver, log, pages):
 
     class EventListener(AbstractEventListener):
-        def on_exception(exception, driver):
+        def on_exception(self, exception, driver):
             if isinstance(exception, NoSuchElementException):
                 log.write(b"NoSuchElementException is thrown")
 
