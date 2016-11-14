@@ -231,7 +231,7 @@ def testShouldAllowUsersToAcceptAnAlertInANestedFrame(driver, pages):
     assert "Testing Alerts" == driver.title
 
 
-def testShouldThrowAnExceptionIfAnAlertHasNotBeenDealtWithAndDismissTheAlert(self):
+def testShouldThrowAnExceptionIfAnAlertHasNotBeenDealtWithAndDismissTheAlert():
     pass
     # //TODO(David) Complete this test
 
