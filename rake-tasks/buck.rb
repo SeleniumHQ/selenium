@@ -83,7 +83,8 @@ module Buck
         proc.wait
 
         if proc.exit_code != 0
-          raise "Buck build failed"
+          raise "Buck build failed with exit code: #{proc.exit_code}
+stdout: #{proc.io.stdout.output}"
         end
 
         block.call(proc.io.stdout.output) if block
