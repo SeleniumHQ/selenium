@@ -81,9 +81,9 @@ def _isElementAvailable(driver, id):
 def testDragAndDrop(driver, pages):
     """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
     element_available_timeout = 15
-    wait = WebDriverWait(element_available_timeout)
+    wait = WebDriverWait(driver, element_available_timeout)
     pages.load("droppableItems.html")
-    wait.until(lambda dr: dr._isElementAvailable(driver, "draggable"))
+    wait.until(lambda dr: _isElementAvailable(driver, "draggable"))
 
     if not _isElementAvailable(driver, "draggable"):
         raise AssertionError("Could not find draggable element after 15 seconds.")
