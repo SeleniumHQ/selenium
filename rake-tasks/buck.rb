@@ -18,8 +18,8 @@ module Buck
 
       if cached_hash == out_hash
         # Make sure we're running a pristine buck instance
-        sh "\"#{out}\" kill"
-        return [out]
+        sh "python \"#{out}\" kill"
+        return ["python", out]
       end
 
       url = "https://github.com/SeleniumHQ/buck/releases/download/buck-release-#{version}/buck.pex"
@@ -37,8 +37,8 @@ module Buck
 
       ant.get('src' => url, 'dest' => out, 'verbose' => true)
       File.chmod(0755, out)
-      sh "\"#{out}\" kill"
-      [out]
+      sh "python \"#{out}\" kill"
+      ["python", out]
     )
   end
 
