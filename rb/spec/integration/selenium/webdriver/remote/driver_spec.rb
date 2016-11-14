@@ -32,6 +32,18 @@ module Selenium
             expect(driver).to be_kind_of(DriverExtensions::HasRemoteStatus)
             expect(driver.remote_status).to be_kind_of(Hash)
           end
+
+          it 'should allow instantiation with an existing selenium session' do
+            new_driver = Selenium::WebDriver.for(
+                :remote,
+                existing_session: driver.session_id)
+
+            expect(new_driver.session_id).to be(driver.session_id)
+            expect(new_driver.capabilities).to eq(driver.capabilities)
+            expect(driver).to be_kind_of(DriverExtensions::HasRemoteStatus)
+            expect(driver.remote_status).to be_kind_of(Hash)
+          end
+
         end
       end
     end # Remote

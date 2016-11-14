@@ -67,6 +67,9 @@ module Selenium
           desired_capabilities = opts.delete(:desired_capabilities) { Capabilities.firefox }
           url = opts.delete(:url) { "http://#{Platform.localhost}:#{port}/wd/hub" }
 
+          # Added to allow an existing session id to be attached to
+          existing_session = opts.delete(:existing_session) {nil}
+
           unless opts.empty?
             raise ArgumentError, "unknown option#{'s' if opts.size != 1}: #{opts.inspect}"
           end
@@ -85,7 +88,12 @@ module Selenium
           http_client.server_url = uri
 
           @http = http_client
-          @capabilities = create_session(desired_capabilities)
+          if existing_session
+            # Attach to session id rather than creating new session
+            @capabilities  = attach_to_session(existing_session)
+          else
+            @capabilities  = create_session(desired_capabilities)
+          end
 
           @file_detector = nil
         end
@@ -126,6 +134,21 @@ module Selenium
           return Capabilities.json_create resp['value'] if @session_id
 
           raise Error::WebDriverError, 'no sessionId in returned payload'
+        end
+
+        # Method to attach to an existing session
+        def attach_to_session(session_id)
+          # We need to set this instance variable as it used in the raw_execute method
+          @session_id = session_id
+
+          # Make a request to get the details of the session (ie. /wd/hub/session/{session_id})
+          # NB. The raw_execute method expects session_id to be from an instance variable rather than passed in
+          resp = raw_execute :getCapabilities, {}
+          raise Error::WebDriverError, "Expected session #{session_id} in response but #{resp['sessionId']} " \
+                                        'was returned in payload' unless @session_id == resp['sessionId']
+
+          # The Capabilities object in the GET /session is exactly the same the object returned from POST /session
+          Capabilities.json_create resp['value']
         end
 
         def status
