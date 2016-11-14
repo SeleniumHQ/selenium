@@ -18,8 +18,7 @@ module Buck
 
       if cached_hash == out_hash
         # Make sure we're running a pristine buck instance
-        cmd = (windows?) ? ["python"] : []
-        cmd += ["\"#{out}\""]
+        cmd = (windows?) ? ["python", out] : [out]
         sh cmd.join(" ") + " kill", :verbose => true
         return cmd
       end
@@ -39,8 +38,7 @@ module Buck
 
       ant.get('src' => url, 'dest' => out, 'verbose' => true)
       File.chmod(0755, out)
-      cmd = (windows?) ? ["python"] : []
-      cmd += ["\"#{out}\""]
+      cmd = (windows?) ? ["python", out] : [out]
       sh cmd.join(" ") + " kill", :verbose => true
       cmd
     )
