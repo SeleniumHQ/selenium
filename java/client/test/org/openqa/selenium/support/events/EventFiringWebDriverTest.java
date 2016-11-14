@@ -37,6 +37,8 @@ import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.Rotatable;
+import org.openqa.selenium.ScreenOrientation;
 import org.openqa.selenium.StubDriver;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriver.Navigation;
@@ -53,6 +55,30 @@ import java.util.HashMap;
  */
 @RunWith(JUnit4.class)
 public class EventFiringWebDriverTest {
+
+  @Test
+  public void rotatableEvents() {
+    final WebDriver mockedDriver = mock(WebDriver.class);
+    final StringBuilder log = new StringBuilder();
+
+    EventFiringWebDriver testedDriver = new EventFiringWebDriver(mockedDriver);
+    testedDriver.register(new AbstractWebDriverEventListener() {});
+
+    testedDriver.rotate(ScreenOrientation.PORTRAIT);
+    testedDriver.rotate(ScreenOrientation.LANDSCAPE);
+
+    assertEquals(
+      "beforeRotation\n" +
+      "afterRotation\n" +
+      "beforeRotation\n" +
+      "afterRotation\n",
+      log.toString());
+
+    InOrder order = Mockito.inOrder(mockedDriver);
+    order.verify((Rotatable) mockedDriver).rotate(ScreenOrientation.PORTRAIT);
+    order.verify((Rotatable) mockedDriver).rotate(ScreenOrientation.LANDSCAPE);
+    order.verifyNoMoreInteractions();
+  }
 
   @Test
   public void alertEvents() {
