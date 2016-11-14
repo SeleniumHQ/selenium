@@ -1,1 +1,1 @@
--Xmx2048m -XX:+HeapDumpOnOutOfMemoryError
+-Xmx1g -XX:+HeapDumpOnOutOfMemoryError

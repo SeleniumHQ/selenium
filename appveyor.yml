@@ -1,0 +1,9 @@
+shallow_clone: true
+build: off
+install:
+  - 'set JAVA_HOME=C:\Program Files (x86)\Java\jdk1.8.0'
+  - 'set PATH=%JAVA_HOME%;%PATH%'
+  - 'set RUBY_HOME=C:\Ruby22-x64\bin'
+  - 'set PATH=%RUBY_HOME%;%PATH%'
+test_script:
+  - cmd: './go build'
