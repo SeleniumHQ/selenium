@@ -119,6 +119,20 @@ module Selenium
       end
 
       #
+      # Get the value of a the given property with the same name of the element. If the value is not
+      # set, nil is returned.
+      #
+      # @param [String]
+      #   property name
+      # @return [String,nil]
+      #   property value
+      #
+
+      def property(name)
+        bridge.element_property self, name
+      end
+
+      #
       # Get the text content of this element
       #
       # @return [String]

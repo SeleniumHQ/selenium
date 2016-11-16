@@ -525,7 +525,7 @@ module Selenium
         end
 
         def element_property(element, name)
-          execute :getElementProperty, id: element.values.first, name: name
+          execute :getElementProperty, id: element.ref.values.first, name: name
         end
 
         def element_value(element)

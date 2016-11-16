@@ -541,6 +541,11 @@ module Selenium
           execute :getElementAttribute, id: element.ref, name: name
         end
 
+        # Backwards compatibility for w3c
+        def element_property(element, name)
+          execute_script 'return arguments[0][arguments[1]]', element, name
+        end
+
         def element_value(element)
           execute :getElementValue, id: element
         end
