@@ -90,16 +90,7 @@ module Selenium
       #
 
       def all_cookies
-        @bridge.cookies.map do |cookie|
-          {
-            name: cookie['name'],
-            value: cookie['value'],
-            path: cookie['path'],
-            domain: cookie['domain'] && strip_port(cookie['domain']),
-            expires: cookie['expiry'] && datetime_at(cookie['expiry']),
-            secure: cookie['secure']
-          }
-        end
+        @bridge.cookies.map { |cookie| convert_cookie(cookie) }
       end
 
       def timeouts
@@ -145,6 +136,17 @@ module Selenium
 
       def strip_port(str)
         str.split(':', 2).first
+      end
+
+      def convert_cookie(cookie)
+        {
+          name: cookie['name'],
+          value: cookie['value'],
+          path: cookie['path'],
+          domain: cookie['domain'] && strip_port(cookie['domain']),
+          expires: cookie['expiry'] && datetime_at(cookie['expiry']),
+          secure: cookie['secure']
+        }
       end
     end # Options
   end # WebDriver
