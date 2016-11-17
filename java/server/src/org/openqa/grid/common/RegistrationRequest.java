@@ -200,21 +200,22 @@ public class RegistrationRequest {
    * @return
    */
   public static RegistrationRequest build(GridNodeConfiguration configuration, String name, String description) {
-    RegistrationRequest pendingRequest = (configuration == null) ?
-      new RegistrationRequest(new GridNodeConfiguration(), name, description) :
-      new RegistrationRequest(configuration, name, description);
+    GridNodeConfiguration pendingConfiguration = (configuration == null) ?
+                                                 new GridNodeConfiguration() : configuration;
 
-    if (configuration.nodeConfigFile != null) {
-      pendingRequest.configuration = GridNodeConfiguration.loadFromJSON(configuration.nodeConfigFile);
+    RegistrationRequest pendingRequest = new RegistrationRequest(pendingConfiguration, name, description);
+
+    if (pendingConfiguration.nodeConfigFile != null) {
+      pendingRequest.configuration = GridNodeConfiguration.loadFromJSON(pendingConfiguration.nodeConfigFile);
     }
 
-    pendingRequest.configuration.merge(configuration);
+    pendingRequest.configuration.merge(pendingConfiguration);
     //update important merge protected values for the pendingRequest we are building.
-    if (configuration.host != null) {
-      pendingRequest.configuration.host = configuration.host;
+    if (pendingConfiguration.host != null) {
+      pendingRequest.configuration.host = pendingConfiguration.host;
     }
-    if (configuration.port != null) {
-      pendingRequest.configuration.port = configuration.port;
+    if (pendingConfiguration.port != null) {
+      pendingRequest.configuration.port = pendingConfiguration.port;
     }
 
     // make sure we have a valid host

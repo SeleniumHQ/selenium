@@ -19,6 +19,7 @@ package org.openqa.grid.common;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import com.beust.jcommander.JCommander;
@@ -177,5 +178,17 @@ public class RegistrationRequestTest {
     expectedConfig.merge(config);
 
     assertEquals(expectedConfig.toString(), req.getConfiguration().toString());
+  }
+
+  /**
+   * Tests that RegistrationRequest.build() performs as expected
+   */
+  @Test
+  public void testBuild() {
+    RegistrationRequest req = RegistrationRequest.build();
+    assertNotNull(req);
+    assertNotNull(req.getConfiguration());
+    assertNull(req.getName());
+    assertNull(req.getDescription());
   }
 }
