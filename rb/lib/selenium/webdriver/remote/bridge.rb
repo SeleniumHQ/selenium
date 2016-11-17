@@ -367,6 +367,10 @@ module Selenium
         # cookies
         #
 
+        def options
+          @options ||= WebDriver::Options.new(self)
+        end
+
         def add_cookie(cookie)
           execute :addCookie, {}, {cookie: cookie}
         end

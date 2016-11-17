@@ -375,6 +375,10 @@ module Selenium
         # cookies
         #
 
+        def options
+          @options ||= WebDriver::W3COptions.new(self)
+        end
+
         def add_cookie(cookie)
           execute :addCookie, {}, {cookie: cookie}
         end
@@ -383,7 +387,6 @@ module Selenium
           execute :deleteCookie, name: name
         end
 
-        # TODO: - write specs
         def cookie(name)
           execute :getCookie, name: name
         end
@@ -393,7 +396,7 @@ module Selenium
         end
 
         def delete_all_cookies
-          cookies.each { |cookie| delete_cookie(cookie['name']) }
+          execute :deleteAllCookies
         end
 
         #
