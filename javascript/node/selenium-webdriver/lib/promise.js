@@ -103,13 +103,13 @@
  *
  * Whenever the control flow creates a new task queue, it will automatically
  * begin executing tasks in the next available turn of the event loop. This
- * execution is scheduled using a "micro-task" timer, such as a (native)
- * `ManagedPromise.then()` callback.
+ * execution is [scheduled as a microtask][MicrotasksArticle] like e.g. a
+ * (native) `Promise.then()` callback.
  *
  *     setTimeout(() => console.log('a'));
- *     ManagedPromise.resolve().then(() => console.log('b'));  // A native promise.
+ *     Promise.resolve().then(() => console.log('b'));  // A native promise.
  *     flow.execute(() => console.log('c'));
- *     ManagedPromise.resolve().then(() => console.log('d'));
+ *     Promise.resolve().then(() => console.log('d'));
  *     setTimeout(() => console.log('fin'));
  *     // b
  *     // c
@@ -118,13 +118,13 @@
  *     // fin
  *
  * In the example above, b/c/d is logged before a/fin because native promises
- * and this module use "micro-task" timers, which have a higher priority than
- * "macro-tasks" like `setTimeout`.
+ * and this module use "microtask" timers, which have a higher priority than
+ * "macrotasks" like `setTimeout`.
  *
  * ## Task Execution
  *
  * Upon creating a task queue, and whenever an exisiting queue completes a task,
- * the control flow will schedule a micro-task timer to process any scheduled
+ * the control flow will schedule a microtask timer to process any scheduled
  * tasks. This ensures no task is ever started within the same turn of the
  * JavaScript event loop in which it was scheduled, nor is a task ever started
  * within the same turn that another finishes.
@@ -161,7 +161,7 @@
  * ## ManagedPromise Integration
  *
  * In addition to the {@link ControlFlow} class, the promise module also exports
- * a [ManagedPromise/A+] {@linkplain ManagedPromise implementation} that is deeply
+ * a [Promise/A+] {@linkplain ManagedPromise implementation} that is deeply
  * integrated with the ControlFlow. First and foremost, each promise
  * {@linkplain ManagedPromise#then() callback} is scheduled with the
  * control flow as a task. As a result, each callback is invoked in its own turn
@@ -467,17 +467,17 @@
  *
  * ES6 promises do not require users to handle a promise rejections. This can
  * result in subtle bugs as the rejections are silently "swallowed" by the
- * ManagedPromise class.
+ * Promise class.
  *
- *     ManagedPromise.reject(Error('boom'));
+ *     Promise.reject(Error('boom'));
  *     // ... *crickets* ...
  *
  * Selenium's promise module, on the other hand, requires that every rejection
  * be explicitly handled. When a {@linkplain ManagedPromise ManagedPromise} is
  * rejected and no callbacks are defined on that promise, it is considered an
- * _unhandled rejection_ and reproted to the active task queue. If the rejection
+ * _unhandled rejection_ and reported to the active task queue. If the rejection
  * remains unhandled after a single turn of the [event loop][JSEL] (scheduled
- * with a micro-task), it will propagate up the stack.
+ * with a microtask), it will propagate up the stack.
  *
  * ## Error Propagation
  *
@@ -582,9 +582,9 @@
  *
  * Bottom line: you __*must*__ handle rejected promises.
  *
- * # ManagedPromise/A+ Compatibility
+ * # Promise/A+ Compatibility
  *
- * This `promise` module is compliant with the [ManagedPromise/A+][] specification
+ * This `promise` module is compliant with the [Promise/A+] specification
  * except for sections `2.2.6.1` and `2.2.6.2`:
  *
  * >
@@ -598,7 +598,7 @@
  * Specifically, the conformance tests contains the following scenario (for
  * brevity, only the fulfillment version is shown):
  *
- *     var p1 = ManagedPromise.resolve();
+ *     var p1 = Promise.resolve();
  *     p1.then(function() {
  *       console.log('A');
  *       p1.then(() => console.log('B'));
@@ -623,7 +623,8 @@
  *
  * [JSEL]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/EventLoop
  * [GF]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function*
- * [ManagedPromise/A+]: https://promisesaplus.com/
+ * [Promise/A+]: https://promisesaplus.com/
+ * [MicrotasksArticle]: https://jakearchibald.com/2015/tasks-microtasks-queues-and-schedules/
  */
 
 'use strict';
@@ -667,7 +668,7 @@ function getUid(obj) {
 
 
 /**
- * Runs the given function after a micro-task yield.
+ * Runs the given function after a microtask yield.
  * @param {function()} fn The function to run.
  */
 function asyncRun(fn) {
@@ -2622,7 +2623,7 @@ class MicroTask {
   }
 
   /**
-   * Runs the given function after a micro-task yield.
+   * Runs the given function after a microtask yield.
    * @param {function()} fn The function to run.
    */
   static run(fn) {
