@@ -65,7 +65,10 @@ public class RegistrationRequest {
 
   /**
    * Create a new registration request using the supplied {@link GridNodeConfiguration}
-   * @param configuration the {@link GridNodeConfiguration} to use
+   *
+   * @param configuration the {@link GridNodeConfiguration} to use. Internally calls {@code new
+   *                      GridNodeConfiguration()} if a {@code null} value is provided since a
+   *                      request without configuration is not valid.
    */
   public RegistrationRequest(GridNodeConfiguration configuration) {
     this(configuration, null, null);
@@ -73,8 +76,11 @@ public class RegistrationRequest {
 
   /**
    * Create a new registration request using the supplied {@link GridNodeConfiguration}, and name
-   * @param configuration the {@link GridNodeConfiguration} to use
-   * @param name the name for the remote
+   *
+   * @param configuration the {@link GridNodeConfiguration} to use. Internally calls {@code new
+   *                      GridNodeConfiguration()} if a {@code null} value is provided since a
+   *                      request without configuration is not valid.
+   * @param name          the name for the remote
    */
   public RegistrationRequest(GridNodeConfiguration configuration, String name) {
     this(configuration, name, null);
@@ -83,12 +89,15 @@ public class RegistrationRequest {
   /**
    * Create a new registration request using the supplied {@link GridNodeConfiguration}, name, and
    * description
-   * @param configuration the {@link GridNodeConfiguration} to use
-   * @param name the name for the remote
-   * @param description the description for the remote host
+   *
+   * @param configuration the {@link GridNodeConfiguration} to use. Internally calls {@code new
+   *                      GridNodeConfiguration()} if a {@code null} value is provided since a
+   *                      request without configuration is not valid.
+   * @param name          the name for the remote
+   * @param description   the description for the remote host
    */
   public RegistrationRequest(GridNodeConfiguration configuration, String name, String description) {
-    this.configuration = configuration;
+    this.configuration = (configuration == null) ? new GridNodeConfiguration() : configuration;
     this.name = name;
     this.description = description;
 
@@ -155,55 +164,57 @@ public class RegistrationRequest {
   }
 
   /**
-   * Build a RegistrationRequest. This is different than {@code new RegistrationRequest()} because
-   * it will "fixup" the resulting RegistrationRequest before returning the result
+   * Build a RegistrationRequest.
    * @return
    */
   public static RegistrationRequest build() {
-    return RegistrationRequest.build(null, null, null);
+    return RegistrationRequest.build(new GridNodeConfiguration(), null, null);
   }
 
   /**
    * Build a RegistrationRequest from the provided {@link GridNodeConfiguration}. This is different
-   * than {@code new RegistrationRequest(GridNodeConfiguration)} because it will merge any
-   * specified {@link GridNodeConfiguration#nodeConfigFile} onto the provided configuration and it
-   * will "fixup" the resulting RegistrationRequest before returning the result
-   * @param configuration the {@link GridNodeConfiguration} to use
-   * @return
+   * than {@code new RegistrationRequest(GridNodeConfiguration)} because it will first load any
+   * specified {@link GridNodeConfiguration#nodeConfigFile} and then merge the provided
+   * configuration onto it.
+   *
+   * @param configuration the {@link GridNodeConfiguration} to use. Internally calls {@code new
+   *                      GridNodeConfiguration()} if a {@code null} value is provided since a
+   *                      request without configuration is not valid.
    */
   public static RegistrationRequest build(GridNodeConfiguration configuration) {
     return RegistrationRequest.build(configuration, null, null);
   }
 
   /**
-   * Build a RegistrationRequest from the provided {@link GridNodeConfiguration}, use the provided name.
-   * This is different than {@code new RegistrationRequest(GridNodeConfiguration, String)} because it
-   * will merge any specified {@link GridNodeConfiguration#nodeConfigFile} onto the provided
-   * configuration and it will "fixup" the resulting RegistrationRequest before returning the result
-   * @param configuration the {@link GridNodeConfiguration} to use
-   * @param name the name for the remote
-   * @return
+   * Build a RegistrationRequest from the provided {@link GridNodeConfiguration}, use the provided
+   * name. This is different than {@code new RegistrationRequest(GridNodeConfiguration, String)}
+   * because it will first load any specified {@link GridNodeConfiguration#nodeConfigFile} and then
+   * merge the provided configuration onto it.
+   *
+   * @param configuration the {@link GridNodeConfiguration} to use. Internally calls {@code new
+   *                      GridNodeConfiguration()} if a {@code null} value is provided since a
+   *                      request without configuration is not valid.
+   * @param name          the name for the remote
    */
   public static RegistrationRequest build(GridNodeConfiguration configuration, String name) {
     return RegistrationRequest.build(configuration, name, null);
   }
 
   /**
-   * Build a RegistrationRequest from the provided {@link GridNodeConfiguration}, use the provided name
-   * and description. This is different than
-   * {@code new RegistrationRequest(GridNodeConfiguration, String, String)} because it will merge any
-   * specified {@link GridNodeConfiguration#nodeConfigFile} onto the provided configuration and it
-   * will "fixup" the resulting RegistrationRequest before returning the result
-   * @param configuration the {@link GridNodeConfiguration} to use
-   * @param name the name for the remote
-   * @param description the description for the remote host
-   * @return
+   * Build a RegistrationRequest from the provided {@link GridNodeConfiguration}, use the provided
+   * name and description. This is different than {@code new RegistrationRequest(GridNodeConfiguration,
+   * String, String)} because it will first load any specified {@link
+   * GridNodeConfiguration#nodeConfigFile} and then merge the provided configuration onto it.
+   *
+   * @param configuration the {@link GridNodeConfiguration} to use. Internally calls {@code new
+   *                      GridNodeConfiguration()} if a {@code null} value is provided since a
+   *                      request without configuration is not valid.
+   * @param name          the name for the remote
+   * @param description   the description for the remote host
    */
   public static RegistrationRequest build(GridNodeConfiguration configuration, String name, String description) {
-    GridNodeConfiguration pendingConfiguration = (configuration == null) ?
-                                                 new GridNodeConfiguration() : configuration;
-
-    RegistrationRequest pendingRequest = new RegistrationRequest(pendingConfiguration, name, description);
+    RegistrationRequest pendingRequest = new RegistrationRequest(configuration, name, description);
+    GridNodeConfiguration pendingConfiguration = pendingRequest.configuration;
 
     if (pendingConfiguration.nodeConfigFile != null) {
       pendingRequest.configuration = GridNodeConfiguration.loadFromJSON(pendingConfiguration.nodeConfigFile);
@@ -227,6 +238,10 @@ public class RegistrationRequest {
   }
 
   private void fixUpCapabilities() {
+    if (configuration.capabilities == null) {
+      return; // assumes the caller set it/wants it this way
+    }
+
     Platform current = Platform.getCurrent();
     for (DesiredCapabilities cap : configuration.capabilities) {
       if (cap.getPlatform() == null) {
