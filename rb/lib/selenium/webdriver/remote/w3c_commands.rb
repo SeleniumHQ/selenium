@@ -92,6 +92,7 @@ module Selenium
         command :getCookie, :get, 'session/:session_id/cookie/:name'
         command :addCookie, :post, 'session/:session_id/cookie'
         command :deleteCookie, :delete, 'session/:session_id/cookie/:name'
+        command :deleteAllCookies, :delete, 'session/:session_id/cookie'
 
         #
         # timeouts
