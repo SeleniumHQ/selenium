@@ -23,13 +23,12 @@ import static org.openqa.selenium.firefox.FirefoxDriver.PROFILE;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
-import org.openqa.selenium.logging.LogLevelMapping;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.io.File;
@@ -68,6 +67,63 @@ public class FirefoxOptions {
   private Map<String, Integer> intPrefs = new HashMap<>();
   private Map<String, String> stringPrefs = new HashMap<>();
   private Level logLevel = null;
+
+  /** INTERNAL ONLY: DO NOT USE */
+  static FirefoxOptions fromJsonMap(Map<String, Object> map) throws IOException {
+    FirefoxOptions options = new FirefoxOptions();
+
+    if (map.containsKey("binary")) {
+      options.setBinary(getOption(map, "binary", String.class));
+    }
+
+    if (map.containsKey("args")) {
+      @SuppressWarnings("unchecked")  // #YOLO
+      List<String> list = (List) getOption(map, "args", List.class);
+      options.addArguments(list);
+    }
+
+    if (map.containsKey("profile")) {
+      Object value = map.get("profile");
+      if (value instanceof String) {
+        options.setProfile(FirefoxProfile.fromJson((String) value));
+      } else if (value instanceof FirefoxProfile) {
+        options.setProfile((FirefoxProfile) value);
+      } else {
+        throw new WebDriverException(
+            "In FirefoxOptions, don't know how to convert profile: " + map);
+      }
+    }
+
+    if (map.containsKey("prefs")) {
+      @SuppressWarnings("unchecked")  // #YOLO
+      Map<String, Object> prefs = (Map) getOption(map, "prefs", Map.class);
+      prefs.entrySet().forEach(entry -> {
+        Object value = entry.getValue();
+        if (value instanceof Boolean) {
+          options.addPreference(entry.getKey(), (Boolean) value);
+        } else if (value instanceof Integer) {
+          options.addPreference(entry.getKey(), (Integer) value);
+        } else if (value instanceof String) {
+          options.addPreference(entry.getKey(), (String) value);
+        } else {
+          throw new WebDriverException(
+              "Invalid Firefox preference value: " + entry.getKey() + "=" + value);
+        }
+      });
+    }
+
+    return options;
+  }
+
+  private static <T> T getOption(Map<String, Object> map, String key, Class<T> type) {
+    Object value = map.get(key);
+    if (type.isInstance(value)) {
+      return type.cast(value);
+    }
+    throw new WebDriverException(
+        String.format(
+            "In FirefoxOptions, expected key '%s' to be a %s: %s", key, type.getSimpleName(), map));
+  }
 
   public FirefoxOptions setBinary(Path path) {
     return setBinary(checkNotNull(path).toString());
