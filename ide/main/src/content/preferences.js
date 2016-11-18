@@ -155,6 +155,8 @@ SeleniumIDE.Preferences.DEFAULT_OPTIONS = {
   timeout: "30000",
   executeUsingWebDriver: "false",
   webDriverBrowserString: "firefox",
+  webDriverReuseWindow: "always",
+  webDriverServer: "http://localhost:4444",  // Only protocol, host and port portion
 
   //Scheduler related options
   jobResultsServer: 'http://localhost:3000/api/result',

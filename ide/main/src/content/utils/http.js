@@ -56,14 +56,15 @@ HTTP.request = function(method, url, data, headers, callback) {
         } else if (httpRequest.status === 500 ) {
           callback(httpRequest.responseText, false, httpRequest.status);
         } else {
+          callback(httpRequest.responseText, false, httpRequest.status);
           //TODO eliminate alert and signal the failure
 //          alert('There was a problem with the request.\nUrl: ' + url + '\nHttp Status: ' + httpRequest.status + "\nResponse: " + httpRequest.responseText);
           LOG.debug('Error: There was a problem with the request.\nUrl: ' + url + '\nHttp Status: ' + httpRequest.status + "\nResponse: " + httpRequest.responseText);
-          callback(null, false, httpRequest.status);
         }
       }
     } catch(e) {
       //TODO eliminate alert and signal the failure, typically when callback is not given and Deferred is not loaded
+      //LOG.error('Error: There was a problem with the request.\nUrl: ' + url + '\nHttp Status: ' + httpRequest.status + "\nResponse: " + httpRequest.responseText);
       alert('Caught Exception in HTTP.request: ' + e);
       throw e;
     }
@@ -112,5 +113,18 @@ HTTP.post = function(url, data, headers, callback) {
  */
 HTTP.get = function (url, headers, callback) {
   return this.request('GET', url, null, headers, callback);
+};
+
+/**
+ * Shortcut method to create HTTP DELETE requests. See HTTP.request() for more details.
+ *
+ * @param url
+ * @param {Object.<string, string>} [headers] hash with keys containing header names and values containing its value
+ * @param {function(string, string, string)} [callback] a callback function that takes response, success, status. If callback is not given,
+ * a deferred object is created. If deferred.js is not loaded, an exception occurs.
+ * @returns {Deferred} if a deferred has been created
+ */
+HTTP._delete = function (url, headers, callback) {
+  return this.request('DELETE', url, null, headers, callback);
 };
 
