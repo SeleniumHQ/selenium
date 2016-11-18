@@ -405,6 +405,14 @@ public class JsonToBeanConverterTest {
   }
 
   @Test
+  public void testShouldConvertInvalidSelectorError() {
+    Response response = new JsonToBeanConverter()
+      .convert(Response.class, "{\"state\":\"invalid selector\",\"message\":\"invalid xpath selector\"}");
+    assertEquals(32, response.getStatus().intValue());
+    assertEquals(new ErrorCodes().toState(32), response.getState());
+  }
+
+  @Test
   public void testShouldRecognizeStringState() {
     Response response = new JsonToBeanConverter()
       .convert(Response.class, "{\"state\":\"success\",\"value\":\"cheese\"}");
