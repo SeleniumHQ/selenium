@@ -60,7 +60,7 @@ public class ProtocolHandshake {
     parameters.append(",");
     amendOssParamters(parameters, des, req);
     parameters.append("}");
-    LOG.info("Attempting bi-dialect session, assuming Postel's Law holds true on the remote end");
+    LOG.fine("Attempting bi-dialect session, assuming Postel's Law holds true on the remote end");
     Optional<Result> result = createSession(client, parameters);
 
     // Assume a fragile OSS webdriver implementation
@@ -68,7 +68,7 @@ public class ProtocolHandshake {
       parameters = new StringBuilder("{");
       amendOssParamters(parameters, des, req);
       parameters.append("}");
-      LOG.info("Falling back to original OSS JSON Wire Protocol.");
+      LOG.fine("Falling back to original OSS JSON Wire Protocol.");
       result = createSession(client, parameters);
     }
 
@@ -77,13 +77,13 @@ public class ProtocolHandshake {
       parameters = new StringBuilder("{");
       amendW3CParameters(parameters, des, req);
       parameters.append("}");
-      LOG.info("Falling back to straight W3C remote end connection");
+      LOG.fine("Falling back to straight W3C remote end connection");
       result = createSession(client, parameters);
     }
 
     if (result.isPresent()) {
       Result toReturn = result.get();
-      LOG.info(String.format("Detected dialect: %s", toReturn.dialect));
+      LOG.fine(String.format("Detected dialect: %s", toReturn.dialect));
       return toReturn;
     }
 
