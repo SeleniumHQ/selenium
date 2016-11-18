@@ -311,7 +311,7 @@ class UnknownMethodError extends WebDriverError {
 
 
 /**
- * Reports an unsupport operation.
+ * Reports an unsupported operation.
  */
 class UnsupportedOperationError extends WebDriverError {
   /** @param {string=} opt_error the error message, if any. */
@@ -465,7 +465,7 @@ function checkResponse(data) {
 
 /**
  * Throws an error coded from the W3C protocol. A generic error will be thrown
- * if the privded `data` is not a valid encoded error.
+ * if the provided `data` is not a valid encoded error.
  *
  * @param {{error: string, message: string}} data The error data to decode.
  * @throws {WebDriverError} the decoded error.

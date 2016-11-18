@@ -48,7 +48,7 @@
  * >             e => console.error('FAILURE: ' + e));
  * > ```
  * >
- * > The motiviation behind this change and full deprecation plan are documented
+ * > The motivation behind this change and full deprecation plan are documented
  * > in [issue 2969](https://github.com/SeleniumHQ/selenium/issues/2969).
  * >
  * >
@@ -87,8 +87,7 @@
  * The control flow is based on the concept of tasks and task queues. Tasks are
  * functions that define the basic unit of work for the control flow to execute.
  * Each task is scheduled via {@link ControlFlow#execute()}, which will return
- * a {@link ManagedPromise ManagedPromise} that will be resolved with the task's
- * result.
+ * a {@link ManagedPromise} that will be resolved with the task's result.
  *
  * A task queue contains all of the tasks scheduled within a single turn of the
  * [JavaScript event loop][JSEL]. The control flow will create a new task queue
@@ -123,7 +122,7 @@
  *
  * ## Task Execution
  *
- * Upon creating a task queue, and whenever an exisiting queue completes a task,
+ * Upon creating a task queue, and whenever an existing queue completes a task,
  * the control flow will schedule a microtask timer to process any scheduled
  * tasks. This ensures no task is ever started within the same turn of the
  * JavaScript event loop in which it was scheduled, nor is a task ever started
@@ -140,13 +139,13 @@
  *    discarded and the task's promised result (previously returned by
  *    {@link ControlFlow#execute()}) is immediately rejected with the thrown
  *    error.
- * 3. The task function returns sucessfully.
+ * 3. The task function returns successfully.
  *
  * If a task function created a new task queue, the control flow will wait for
  * that queue to complete before processing the task result. If the queue
  * completes without error, the flow will settle the task's promise with the
- * value originaly returned by the task function. On the other hand, if the task
- * queue termintes with an error, the task's promise will be rejected with that
+ * value originally returned by the task function. On the other hand, if the task
+ * queue terminates with an error, the task's promise will be rejected with that
  * error.
  *
  *     flow.execute(function() {
@@ -161,7 +160,7 @@
  * ## ManagedPromise Integration
  *
  * In addition to the {@link ControlFlow} class, the promise module also exports
- * a [Promise/A+] {@linkplain ManagedPromise implementation} that is deeply
+ * a [Promises/A+] {@linkplain ManagedPromise implementation} that is deeply
  * integrated with the ControlFlow. First and foremost, each promise
  * {@linkplain ManagedPromise#then() callback} is scheduled with the
  * control flow as a task. As a result, each callback is invoked in its own turn
@@ -328,7 +327,7 @@
  * Even though a subtask's promised result will never resolve while the task
  * function is on the stack, it will be treated as a promise resolved within the
  * task. In all other scenarios, a task's promise behaves just like a normal
- * promise. In the sample below, `C/D` is loggged before `B` because the
+ * promise. In the sample below, `C/D` is logged before `B` because the
  * resolution of `subtask1` interrupts the flow of the enclosing task. Within
  * the final subtask, `E/F` is logged in order because `subtask1` is a resolved
  * promise when that task runs.
@@ -582,9 +581,9 @@
  *
  * Bottom line: you __*must*__ handle rejected promises.
  *
- * # Promise/A+ Compatibility
+ * # Promises/A+ Compatibility
  *
- * This `promise` module is compliant with the [Promise/A+] specification
+ * This `promise` module is compliant with the [Promises/A+] specification
  * except for sections `2.2.6.1` and `2.2.6.2`:
  *
  * >
@@ -623,7 +622,7 @@
  *
  * [JSEL]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/EventLoop
  * [GF]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function*
- * [Promise/A+]: https://promisesaplus.com/
+ * [Promises/A+]: https://promisesaplus.com/
  * [MicrotasksArticle]: https://jakearchibald.com/2015/tasks-microtasks-queues-and-schedules/
  */
 
@@ -943,7 +942,7 @@ class Thenable {
 
 /**
  * Marker interface for objects that allow consumers to request the cancellation
- * of a promies-based operation. A cancelled promise will be rejected with a
+ * of a promise-based operation. A cancelled promise will be rejected with a
  * {@link CancellationError}.
  *
  * This interface is considered package-private and should not be used outside
@@ -1309,7 +1308,7 @@ class ManagedPromise {
    * @param {!Function} fn The function to use as the top of the stack when
    *     recording the callback's creation point.
    * @return {!ManagedPromise<R>} A new promise which will be resolved with the
-   *     esult of the invoked callback.
+   *     result of the invoked callback.
    * @template R
    * @private
    */
@@ -1974,7 +1973,7 @@ class Scheduler {
   /**
    * Schedules a task to wait for a condition to hold.
    *
-   * If the condition is defined as a function, it may return any value. Promies
+   * If the condition is defined as a function, it may return any value. Promise
    * will be resolved before testing if the condition holds (resolution time
    * counts towards the timeout). Once resolved, values are always evaluated as
    * booleans.
@@ -1998,7 +1997,7 @@ class Scheduler {
    * @param {string=} opt_message An optional error message to include if the
    *     wait times out; defaults to the empty string.
    * @return {!Thenable<T>} A promise that will be fulfilled
-   *     when the condition has been satisified. The promise shall be rejected
+   *     when the condition has been satisfied. The promise shall be rejected
    *     if the wait times out waiting for the condition.
    * @throws {TypeError} If condition is not a function or promise or if timeout
    *     is not a number >= 0.
@@ -2041,7 +2040,7 @@ function createPromise(resolver) {
  * @param {string=} opt_message An optional error message to include if the
  *     wait times out; defaults to the empty string.
  * @return {!Thenable<T>} A promise that will be fulfilled
- *     when the condition has been satisified. The promise shall be rejected
+ *     when the condition has been satisfied. The promise shall be rejected
  *     if the wait times out waiting for the condition.
  * @throws {TypeError} If condition is not a function or promise or if timeout
  *     is not a number >= 0.
@@ -2165,7 +2164,7 @@ const SIMPLE_SCHEDULER = new SimpleScheduler;
 /**
  * Handles the execution of scheduled tasks, each of which may be an
  * asynchronous operation. The control flow will ensure tasks are executed in
- * the ordered scheduled, starting each task only once those before it have
+ * the order scheduled, starting each task only once those before it have
  * completed.
  *
  * Each task scheduled within this flow may return a {@link ManagedPromise} to
@@ -2213,7 +2212,7 @@ class ControlFlow extends events.EventEmitter {
     this.taskQueues_ = null;
 
     /**
-     * Micro task that controls shutting down the control flow. Upon shut down,
+     * Microtask that controls shutting down the control flow. Upon shut down,
      * the flow will emit an
      * {@link ControlFlow.EventType.IDLE} event. Idle events
      * always follow a brief timeout in order to catch latent errors from the
@@ -2222,8 +2221,8 @@ class ControlFlow extends events.EventEmitter {
      * by the promise system until the next turn of the event loop:
      *
      *   // Schedule 1 task that fails.
-     *   var result = promise.controlFlow().schedule('example',
-     *       function() { return promise.rejected('failed'); });
+     *   var result = promise.controlFlow().execute(
+     *       () => promise.rejected('failed'), 'example');
      *   // Set a callback on the result. This delays reporting the unhandled
      *   // failure for 1 turn of the event loop.
      *   result.then(function() {});
@@ -2247,7 +2246,7 @@ class ControlFlow extends events.EventEmitter {
   /**
    * Returns a string representation of this control flow, which is its current
    * {@linkplain #getSchedule() schedule}, sans task stack traces.
-   * @return {string} The string representation of this contorl flow.
+   * @return {string} The string representation of this control flow.
    * @override
    */
   toString() {
@@ -2890,7 +2889,7 @@ class TaskQueue extends events.EventEmitter {
     }
 
     // Now that all of the remaining tasks have been silently cancelled (e.g. no
-    // exisitng callbacks on those tasks will fire), clear the silence bit on
+    // existing callbacks on those tasks will fire), clear the silence bit on
     // the cancellation error. This ensures additional callbacks registered in
     // the future will actually execute.
     cancellation.silent_ = false;
@@ -3069,7 +3068,7 @@ class TaskQueue extends events.EventEmitter {
     }
     return task;
   }
-};
+}
 
 
 
@@ -3215,7 +3214,7 @@ function consume(generatorFn, opt_self, ...var_args) {
 
     function pump(fn, opt_arg) {
       if (ret instanceof ManagedPromise && !isPending(ret)) {
-        return;  // Defererd was cancelled; silently abort.
+        return;  // Deferred was cancelled; silently abort.
       }
 
       try {
@@ -3276,7 +3275,7 @@ module.exports = {
    * The promise manager is currently enabled by default, but may be disabled
    * by setting the environment variable `SELENIUM_PROMISE_MANAGER=0` or by
    * setting this property to false. Setting this property will always take
-   * precedence ove the use of the environment variable.
+   * precedence over the use of the environment variable.
    *
    * @return {boolean} Whether the promise manager is enabled.
    * @see <https://github.com/SeleniumHQ/selenium/issues/2969>
