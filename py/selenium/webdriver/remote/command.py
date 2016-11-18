@@ -69,6 +69,7 @@ class Command(object):
     SWITCH_TO_FRAME = "switchToFrame"
     SWITCH_TO_PARENT_FRAME = "switchToParentFrame"
     GET_ACTIVE_ELEMENT = "getActiveElement"
+    W3C_GET_ACTIVE_ELEMENT = "w3cGetActiveElement"
     GET_CURRENT_URL = "getCurrentUrl"
     GET_PAGE_SOURCE = "getPageSource"
     GET_TITLE = "getTitle"
