@@ -51,6 +51,7 @@ function Editor(window) {
       self.updateExperimentalFeatures(self.app.getBooleanOption('enableExperimentalFeatures'));
       self.updateVisualEye(self.app.getBooleanOption('visualEye'));
       self.health.showAlerts(self.app.getBooleanOption('showHealthAlerts'));
+      self.updateWebdriverBrowser(self.app.options.webDriverBrowserString);
     },
 
     testSuiteChanged: function (testSuite) {
@@ -200,6 +201,12 @@ function Editor(window) {
     } else {
       this.toggleRecordingEnabled(false);
     }
+  }
+
+  // disable webdriver related toolbar buttons if webdriver playback is disabled
+  if ( !this.app.getBooleanOption('executeUsingWebDriver') ) {
+    document.getElementById("browser-button").disabled = true;
+    document.getElementById("close-webdriver-button").disabled = true;
   }
 
   this.updateViewTabs();
@@ -732,10 +739,10 @@ Editor.prototype.submitDiagInfo = function(){
   };
   window.openDialog("chrome://selenium-ide/content/health/diag-info.xul", "diagInfo", "chrome,modal,resizable", data);
   if (data.data.length > 0) {
-    GitHub.createGist("Selenium IDE diagnostic information", data).done(function(url){
+    GitHub.createGistWithFiles("Selenium IDE diagnostic information", data).then(function(url){
       alert("Gist created with diagnostic information.\nPlease update the issue on https://github.com/SeleniumHQ/selenium/issues with this url.\nURL: " + url);
     }, function(response, success, status){
-      alert("Gist creation failed with status " + status + "\nResponse:-\n" + (response || ''));
+      alert("Gist creation failed with status " + status + " and response:-\n" + (response || ''));
     });
   }
 };
@@ -1028,6 +1035,35 @@ Editor.prototype.populateFormatsPopup = function (e, action, format) {
       checked: (format && format.id == formats[i].id) ? true : null
     });
   }
+};
+
+Editor.prototype.setWebdriverBrowser = function (browser) {
+  this.getOptions().webDriverBrowserString = browser;
+  this.updateWebdriverBrowser(browser);
+};
+
+Editor.prototype.updateWebdriverBrowser = function (browser) {
+  var class_name = "";
+  var tooltip = "";
+  if (browser == "firefox") {
+    class_name = "fx";
+    tooltip = "Webdriver playback in Firefox";
+  } else if (browser == "chrome") {
+    class_name = "gc";
+    tooltip = "Webdriver playback in Google Chrome";
+  } else if (browser == "internet explorer") {
+    class_name = "ie";
+    tooltip = "Webdriver playback in Internet Explorer";
+  } else if (browser == "safari") {
+    class_name = "sa";
+    tooltip = "Webdriver playback in Safari";
+  }
+  if ( !this.app.getBooleanOption('executeUsingWebDriver') ) {
+    tooltip = "Webdriver playback is off. Turn it on in the options.";
+  }
+  var btn = document.getElementById("browser-button");
+  btn.setAttribute('class', class_name);
+  btn.setAttribute('tooltiptext', tooltip);
 };
 
 Editor.prototype.updateViewTabs = function () {

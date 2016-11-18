@@ -92,6 +92,11 @@ limitations under the License.
         <checkbox id="enableExperimentalFeatures" label="&options.enableExperimentalFeatures.label;"/>
         <checkbox id="disableFormatChangeMsg" label="&options.disableFormatChangeMsg.label;"/>
         <checkbox id="recordOnOpen" label="&options.recordOnOpen.description;"/>
+        <hbox>
+          <description>Scheduled tests results server</description>
+          <textbox id="jobResultsServer" multiline="false" flex="1"/>
+        </hbox>
+        <description class="tip">URL of server to send test results for scheduled tests</description>
       </tabpanel>
       <tabpanel id="formats" orient="vertical">
         <hbox flex="1">
@@ -154,9 +159,15 @@ limitations under the License.
         <description class="tip">Changes to this option will be applied after an Selenium IDE restart</description>
         <description class="tip">WebDriver playback is still an experimental feature and may not be very stable. Please use it for testing Selenium IDE to provide us feedback.</description>
         <hbox>
+          <description>WebDriver browser string</description>
           <textbox id="webDriverBrowserString" multiline="false" flex="1"/>
         </hbox>
         <description class="tip">Browser choices: android, chrome, firefox, htmlunit, internet explorer, iPhone, iPad</description>
+        <hbox>
+          <description>Selenium server</description>
+          <textbox id="webDriverServer" multiline="false" flex="1"/>
+        </hbox>
+        <description class="tip">Protocol, host and port where your Selenium server is running, e.g. http://localhost:4444</description>
         <label class="text-link" href="http://blog.reallysimplethoughts.com/?p=561" value="How to use WebDriver playback?" />
       </tabpanel>
     </tabpanels>
