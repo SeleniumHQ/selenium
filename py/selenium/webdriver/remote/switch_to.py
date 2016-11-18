@@ -38,7 +38,10 @@ class SwitchTo:
         :Usage:
             element = driver.switch_to.active_element
         """
-        return self._driver.execute(Command.GET_ACTIVE_ELEMENT)['value']
+        if self._driver.w3c:
+            return self._driver.execute(Command.W3C_GET_ACTIVE_ELEMENT)
+        else:
+            return self._driver.execute(Command.GET_ACTIVE_ELEMENT)['value']
 
     @property
     def alert(self):
