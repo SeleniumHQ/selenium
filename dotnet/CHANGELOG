@@ -1,3 +1,8 @@
+v3.0.1
+======
+ * Updated build process to include atoms resources in strong-named assemblies.
+   Fixes issue #3137.
+
 v3.0.0
 ======
  * Major release of the .NET bindings for Selenium. Selenium RC classes
