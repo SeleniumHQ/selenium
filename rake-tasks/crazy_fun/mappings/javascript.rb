@@ -557,20 +557,25 @@ module Javascript
 
         flags.push("--js_output_file=#{output}")
 
-        cmd = "java -cp third_party/closure/bin/compiler.jar com.google.javascript.jscomp.CommandLineRunner " <<
-           flags.join(" ") <<
+        expanded_flags = flags.join(" ") <<
            " --js='" <<
            all_deps.join("' --js='") << "'"
 
         if (args[:externs])
           args[:externs].each do |extern|
-            cmd << " --externs=#{File.join(dir, extern)} "
+            expanded_flags << " --externs=#{File.join(dir, extern)} "
           end
         end
 
         mkdir_p File.dirname(output)
 
+        flag_file = File.join(File.dirname(output), "closure_flags.txt")
+        File.open(flag_file, 'w') {|f| f.write(expanded_flags)}    
+
+        cmd = "java -cp third_party/closure/bin/compiler.jar com.google.javascript.jscomp.CommandLineRunner --flagfile " << flag_file
         sh cmd
+
+        rm_rf flag_file
       end
     end
   end
