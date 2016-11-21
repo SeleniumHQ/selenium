@@ -29,25 +29,6 @@ module Selenium
       class Bridge
         include BridgeHelper
 
-        # TODO: constant shouldn't be modified in class
-        COMMANDS = {}
-
-        #
-        # Defines a wrapper method for a command, which ultimately calls #execute.
-        #
-        # @param name [Symbol]
-        #   name of the resulting method
-        # @param url [String]
-        #   a URL template, which can include some arguments, much like the definitions on the server.
-        #   the :session_id parameter is implicitly handled, but the remainder will become required method arguments.
-        # @param verb [Symbol]
-        #   the appropriate http verb, such as :get, :post, or :delete
-        #
-
-        def self.command(name, verb, url)
-          COMMANDS[name] = [verb, url.freeze]
-        end
-
         attr_accessor :context, :http, :file_detector
         attr_reader :capabilities
 
