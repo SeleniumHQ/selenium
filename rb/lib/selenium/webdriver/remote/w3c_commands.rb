@@ -29,76 +29,76 @@ module Selenium
         # session handling
         #
 
-        command :newSession, :post, 'session'
-        command :deleteSession, :delete, 'session/:session_id'
+        command :new_session, :post, 'session'
+        command :delete_session, :delete, 'session/:session_id'
 
         #
         # basic driver
         #
 
         command :get, :post, 'session/:session_id/url'
-        command :getCurrentUrl, :get, 'session/:session_id/url'
+        command :get_current_url, :get, 'session/:session_id/url'
         command :back, :post, 'session/:session_id/back'
         command :forward, :post, 'session/:session_id/forward'
         command :refresh, :post, 'session/:session_id/refresh'
-        command :getTitle, :get, 'session/:session_id/title'
+        command :get_title, :get, 'session/:session_id/title'
 
         #
         # window and Frame handling
         #
 
-        command :getWindowHandle, :get, 'session/:session_id/window'
-        command :closeWindow, :delete, 'session/:session_id/window'
-        command :switchToWindow, :post, 'session/:session_id/window'
-        command :getWindowHandles, :get, 'session/:session_id/window/handles'
-        command :fullscreenWindow, :post, 'session/:session_id/window/fullscreen'
-        command :maximizeWindow, :post, 'session/:session_id/window/maximize'
-        command :setWindowSize, :post, 'session/:session_id/window/size'
-        command :getWindowSize, :get, 'session/:session_id/window/size'
-        command :switchToFrame, :post, 'session/:session_id/frame'
-        command :switchToParentFrame, :post, 'session/:session_id/frame/parent'
+        command :get_window_handle, :get, 'session/:session_id/window'
+        command :close_window, :delete, 'session/:session_id/window'
+        command :switch_to_window, :post, 'session/:session_id/window'
+        command :get_window_handles, :get, 'session/:session_id/window/handles'
+        command :fullscreen_window, :post, 'session/:session_id/window/fullscreen'
+        command :maximize_window, :post, 'session/:session_id/window/maximize'
+        command :set_window_size, :post, 'session/:session_id/window/size'
+        command :get_window_size, :get, 'session/:session_id/window/size'
+        command :switch_to_frame, :post, 'session/:session_id/frame'
+        command :switch_to_parent_frame, :post, 'session/:session_id/frame/parent'
 
         #
         # element
         #
 
-        command :findElement, :post, 'session/:session_id/element'
-        command :findElements, :post, 'session/:session_id/elements'
-        command :findChildElement, :post, 'session/:session_id/element/:id/element'
-        command :findChildElements, :post, 'session/:session_id/element/:id/elements'
-        command :getActiveElement, :get, 'session/:session_id/element/active'
-        command :isElementSelected, :get, 'session/:session_id/element/:id/selected'
-        command :getElementAttribute, :get, 'session/:session_id/element/:id/attribute/:name'
-        command :getElementProperty, :get, 'session/:session_id/element/:id/property/:name'
-        command :getElementCssValue, :get, 'session/:session_id/element/:id/css/:property_name'
-        command :getElementText, :get, 'session/:session_id/element/:id/text'
-        command :getElementTagName, :get, 'session/:session_id/element/:id/name'
-        command :getElementRect, :get, 'session/:session_id/element/:id/rect'
-        command :isElementEnabled, :get, 'session/:session_id/element/:id/enabled'
+        command :find_element, :post, 'session/:session_id/element'
+        command :find_elements, :post, 'session/:session_id/elements'
+        command :find_child_element, :post, 'session/:session_id/element/:id/element'
+        command :find_child_elements, :post, 'session/:session_id/element/:id/elements'
+        command :get_active_element, :get, 'session/:session_id/element/active'
+        command :is_element_selected, :get, 'session/:session_id/element/:id/selected'
+        command :get_element_attribute, :get, 'session/:session_id/element/:id/attribute/:name'
+        command :get_element_property, :get, 'session/:session_id/element/:id/property/:name'
+        command :get_element_css_value, :get, 'session/:session_id/element/:id/css/:property_name'
+        command :get_element_text, :get, 'session/:session_id/element/:id/text'
+        command :get_element_tag_name, :get, 'session/:session_id/element/:id/name'
+        command :get_element_rect, :get, 'session/:session_id/element/:id/rect'
+        command :is_element_enabled, :get, 'session/:session_id/element/:id/enabled'
 
         #
         # document handling
         #
 
-        command :getPageSource, :get, '/session/:session_id/source'
-        command :executeScript, :post, 'session/:session_id/execute/sync'
-        command :executeAsyncScript, :post, 'session/:session_id/execute/async'
+        command :get_page_source, :get, '/session/:session_id/source'
+        command :execute_script, :post, 'session/:session_id/execute/sync'
+        command :execute_async_script, :post, 'session/:session_id/execute/async'
 
         #
         # cookies
         #
 
-        command :getAllCookies, :get, 'session/:session_id/cookie'
-        command :getCookie, :get, 'session/:session_id/cookie/:name'
-        command :addCookie, :post, 'session/:session_id/cookie'
-        command :deleteCookie, :delete, 'session/:session_id/cookie/:name'
-        command :deleteAllCookies, :delete, 'session/:session_id/cookie'
+        command :get_all_cookies, :get, 'session/:session_id/cookie'
+        command :get_cookie, :get, 'session/:session_id/cookie/:name'
+        command :add_cookie, :post, 'session/:session_id/cookie'
+        command :delete_cookie, :delete, 'session/:session_id/cookie/:name'
+        command :delete_all_cookies, :delete, 'session/:session_id/cookie'
 
         #
         # timeouts
         #
 
-        command :setTimeout, :post, 'session/:session_id/timeouts'
+        command :set_timeout, :post, 'session/:session_id/timeouts'
 
         #
         # actions
@@ -110,26 +110,26 @@ module Selenium
         # Element Operations
         #
 
-        command :elementClick, :post, 'session/:session_id/element/:id/click'
-        command :elementTap, :post, 'session/:session_id/element/:id/tap'
-        command :elementClear, :post, 'session/:session_id/element/:id/clear'
-        command :elementSendKeys, :post, 'session/:session_id/element/:id/value'
+        command :element_click, :post, 'session/:session_id/element/:id/click'
+        command :element_tap, :post, 'session/:session_id/element/:id/tap'
+        command :element_clear, :post, 'session/:session_id/element/:id/clear'
+        command :element_send_keys, :post, 'session/:session_id/element/:id/value'
 
         #
         # alerts
         #
 
-        command :dismissAlert, :post, 'session/:session_id/alert/dismiss'
-        command :acceptAlert, :post, 'session/:session_id/alert/accept'
-        command :getAlertText, :get, 'session/:session_id/alert/text'
-        command :sendAlertText, :post, 'session/:session_id/alert/text'
+        command :dismiss_alert, :post, 'session/:session_id/alert/dismiss'
+        command :accept_alert, :post, 'session/:session_id/alert/accept'
+        command :get_alert_text, :get, 'session/:session_id/alert/text'
+        command :send_alert_text, :post, 'session/:session_id/alert/text'
 
         #
         # screenshot
         #
 
-        command :takeScreenshot, :get, 'session/:session_id/screenshot'
-        command :takeElementScreenshot, :get, 'session/:session_id/element/:id/screenshot'
+        command :take_screenshot, :get, 'session/:session_id/screenshot'
+        command :take_element_screenshot, :get, 'session/:session_id/element/:id/screenshot'
       end
     end # Remote
   end # WebDriver
