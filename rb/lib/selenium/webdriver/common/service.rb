@@ -36,15 +36,29 @@ module Selenium
       SOCKET_LOCK_TIMEOUT = 45
       STOP_TIMEOUT        = 20
 
+      @executable = nil
+      @missing = ''
+
+      class << self
+        attr_accessor :executable, :missing_text
+      end
+
       attr_accessor :host
 
       def initialize(executable_path, port, *extra_args)
-        @executable_path = executable_path
+        @executable_path = binary_path(executable_path)
         @host            = Platform.localhost
         @port            = Integer(port)
         @extra_args      = extra_args
 
         raise Error::WebDriverError, "invalid port: #{@port}" if @port < 1
+      end
+
+      def binary_path(path)
+        path = Platform.find_binary(self.class.executable) if path.nil?
+        raise Error::WebDriverError, self.class.missing_text unless path
+        Platform.assert_executable path
+        path
       end
 
       def start

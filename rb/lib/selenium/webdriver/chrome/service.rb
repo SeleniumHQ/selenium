@@ -26,6 +26,12 @@ module Selenium
 
       class Service < WebDriver::Service
         DEFAULT_PORT = 9515
+        @executable = 'chromedriver'.freeze
+        @missing_text = <<-ERROR.tr("\n", '').freeze
+          Unable to find chromedriver. Please download the server from
+          http://chromedriver.storage.googleapis.com/index.html and place it somewhere on your PATH.
+          More info at https://github.com/SeleniumHQ/selenium/wiki/ChromeDriver.
+        ERROR
 
         private
 

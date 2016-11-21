@@ -25,17 +25,25 @@ require 'selenium/webdriver/phantomjs/bridge'
 module Selenium
   module WebDriver
     module PhantomJS
-      MISSING_TEXT = 'Unable to find phantomjs executable.'.freeze
-
       def self.path=(path)
+        warn <<-DEPRECATE.tr("\n", '').freeze
+          [DEPRECATION] `path=` is deprecated. Pass the driver path as an option instead.
+          e.g. Selenium::WebDriver.for :phantomjs, driver_path: '/path'
+        DEPRECATE
+
         Platform.assert_executable path
         @path = path
       end
 
       def self.path
+        warn <<-DEPRECATE.tr("\n", '').freeze
+          [DEPRECATION] `path` is deprecated. Pass the driver path as an option instead.
+          e.g. Selenium::WebDriver.for :phantomjs, driver_path: '/path'
+        DEPRECATE
+
         @path ||= begin
-          path = Platform.find_binary('phantomjs')
-          raise Error::WebDriverError, MISSING_TEXT unless path
+          path = Platform.find_binary(Service.executable)
+          raise Error::WebDriverError, Service.missing_text unless path
           Platform.assert_executable path
 
           path

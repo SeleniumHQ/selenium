@@ -31,8 +31,8 @@ module Selenium
         before do
           @default_capabilities = Remote::Capabilities.internet_explorer
 
-          allow(IE).to receive(:driver_path).and_return('/foo')
           allow(Remote::Capabilities).to receive(:internet_explorer).and_return(caps)
+          allow(Service).to receive(:binary_path).and_return('/foo')
           allow(Service).to receive(:new).and_return(service)
         end
 

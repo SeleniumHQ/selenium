@@ -26,6 +26,8 @@ module Selenium
 
       class Service < WebDriver::Service
         DEFAULT_PORT = 8910
+        @executable = 'phantomjs'.freeze
+        @missing_text = 'Unable to find phantomjs. Please download from http://phantomjs.org/download.html'.freeze
 
         private
 

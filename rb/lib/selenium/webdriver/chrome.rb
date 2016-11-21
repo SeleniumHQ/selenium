@@ -26,21 +26,25 @@ require 'selenium/webdriver/chrome/profile'
 module Selenium
   module WebDriver
     module Chrome
-      MISSING_TEXT = <<-ERROR.tr("\n", '').freeze
-        Unable to find chromedriver. Please download the server from
-        http://chromedriver.storage.googleapis.com/index.html and place it
-        somewhere on your PATH. More info at https://github.com/SeleniumHQ/selenium/wiki/ChromeDriver.
-      ERROR
-
       def self.driver_path=(path)
+        warn <<-DEPRECATE.tr("\n", '').freeze
+          [DEPRECATION] `driver_path=` is deprecated. Pass the driver path as an option instead.
+          e.g. Selenium::WebDriver.for :chrome, driver_path: '/path'
+        DEPRECATE
+
         Platform.assert_executable path
         @driver_path = path
       end
 
       def self.driver_path
+        warn <<-DEPRECATE.tr("\n", '').freeze
+          [DEPRECATION] `driver_path` is deprecated. Pass the driver path as an option instead.
+          e.g. Selenium::WebDriver.for :chrome, driver_path: '/path'
+        DEPRECATE
+
         @driver_path ||= begin
-          path = Platform.find_binary('chromedriver')
-          raise Error::WebDriverError, MISSING_TEXT unless path
+          path = Platform.find_binary(Service.executable)
+          raise Error::WebDriverError, Service.missing_text unless path
           Platform.assert_executable path
 
           path

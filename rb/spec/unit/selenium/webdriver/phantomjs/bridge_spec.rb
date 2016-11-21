@@ -28,7 +28,7 @@ module Selenium
         let(:http)    { double(Remote::Http::Default, call: resp).as_null_object }
 
         before do
-          allow(PhantomJS).to receive(:path).and_return('/foo')
+          allow(Service).to receive(:binary_path).and_return('/foo')
           allow(Service).to receive(:new).and_return(service)
         end
 
