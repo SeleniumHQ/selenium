@@ -23,11 +23,6 @@ require 'pathname'
 module Selenium
   module WebDriver
     module Safari
-      MISSING_TEXT = <<-ERROR.tr("\n", '').freeze
-        Unable to find Apple's safaridriver which comes with Safari 10.
-        More info at https://webkit.org/blog/6900/webdriver-support-in-safari-10/
-      ERROR
-
       class << self
         def path=(path)
           Platform.assert_executable(path)
@@ -41,19 +36,25 @@ module Selenium
           raise Error::WebDriverError, 'Unable to find Safari'
         end
 
-        def resource_path
-          @resource_path ||= Pathname.new(File.expand_path('../safari/resources', __FILE__))
-        end
-
         def driver_path=(path)
+          warn <<-DEPRECATE.gsub(/\n +| {2,}/, ' ').freeze
+            [DEPRECATION] `driver_path=` is deprecated. Pass the driver path as an option instead.
+            e.g. Selenium::WebDriver.for :safari, driver_path: '/path'
+          DEPRECATE
+
           Platform.assert_executable path
           @driver_path = path
         end
 
-        def driver_path
-          @driver_path ||= '/usr/bin/safaridriver'
-          return @driver_path if File.file?(@driver_path) && File.executable?(@driver_path)
-          raise Error::WebDriverError, MISSING_TEXT
+        def driver_path(warning = true)
+          if warning
+            warn <<-DEPRECATE.gsub(/\n +| {2,}/, ' ').freeze
+              [DEPRECATION] `driver_path` is deprecated. Pass the driver path as an option instead.
+              e.g. Selenium::WebDriver.for :safari, driver_path: '/path'
+            DEPRECATE
+          end
+
+          @driver_path ||= nil
         end
       end
     end # Safari
