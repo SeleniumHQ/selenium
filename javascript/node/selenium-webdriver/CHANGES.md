@@ -1,3 +1,7 @@
+## v.next
+
+* The `lib` package is once again platform agnostic (excluding `lib/devmode`).
+
 ## v3.0.1
 
 * More API adjustments to align with native Promises

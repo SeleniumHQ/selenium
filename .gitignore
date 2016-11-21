@@ -16,6 +16,7 @@ common/build
 cpp/iedriver/IEReturnTypes.h
 java/client/src/org/openqa/selenium/ie/IeReturnTypes.java
 javascript/deps.js
+javascript/node/selenium-webdriver/lib/atoms/
 javascript/node/selenium-webdriver/node_modules/
 javascript/safari-driver/node_modules/
 .idea/vcs.xml

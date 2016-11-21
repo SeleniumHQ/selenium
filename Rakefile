@@ -557,12 +557,34 @@ task :release_ide  => [:ide] do
 end
 
 namespace :node do
+  task :atoms => [
+    "//javascript/atoms/fragments:is-displayed",
+    "//javascript/webdriver/atoms:getAttribute",
+  ] do
+    baseDir = "javascript/node/selenium-webdriver/lib/atoms"
+    mkdir_p baseDir
+
+    [
+      Rake::Task["//javascript/atoms/fragments:is-displayed"].out,
+      Rake::Task["//javascript/webdriver/atoms:getAttribute"].out,
+    ].each do |atom|
+      name = File.basename(atom)
+
+      puts "Generating #{atom} as #{name}"
+      File.open(File.join(baseDir, name), "w") do |f|
+        f << "// GENERATED CODE - DO NOT EDIT\n"
+        f << "module.exports = "
+        f << IO.read(atom).strip
+        f << ";\n"
+      end
+    end
+  end
+
   task :deploy => [
+    "node:atoms",
     "//cpp:noblur",
     "//cpp:noblur64",
-    "//javascript/atoms/fragments:is-displayed",
     "//javascript/firefox-driver:webdriver",
-    "//javascript/webdriver/atoms:getAttribute",
   ] do
     cmd =  "node javascript/node/deploy.js" <<
         " --output=build/javascript/node/selenium-webdriver" <<
@@ -572,8 +594,6 @@ namespace :node do
         " --resource=build/cpp/amd64/libnoblur64.so:firefox/amd64/libnoblur64.so" <<
         " --resource=build/cpp/i386/libnoblur.so:firefox/i386/libnoblur.so" <<
         " --resource=build/javascript/firefox-driver/webdriver.xpi:firefox/webdriver.xpi" <<
-        " --resource=buck-out/gen/javascript/webdriver/atoms/getAttribute.js:atoms/getAttribute.js" <<
-        " --resource=buck-out/gen/javascript/atoms/fragments/is-displayed.js:atoms/isDisplayed.js" <<
         " --resource=common/src/web/:test/data/" <<
         " --exclude_resource=common/src/web/Bin" <<
         " --exclude_resource=.gitignore" <<
