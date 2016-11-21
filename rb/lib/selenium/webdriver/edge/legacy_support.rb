@@ -27,8 +27,7 @@ module Selenium
            send_keys_to_active_element get_window_handles get_current_window_handle
            get_window_size set_window_size get_window_position set_window_position
            maximize_window get_alert_text accept_alert dismiss_alert].each do |cmd|
-          jwp = Remote::Bridge::COMMANDS[cmd]
-          Remote::W3CBridge.command(cmd, jwp.first, jwp.last)
+          Remote::W3CBridge::COMMANDS[cmd] = Remote::Bridge::COMMANDS[cmd]
         end
 
         def execute_script(script, *args)

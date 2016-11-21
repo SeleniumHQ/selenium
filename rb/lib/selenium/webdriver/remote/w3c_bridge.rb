@@ -118,8 +118,7 @@ module Selenium
         end
 
         def status
-          jwp = Selenium::WebDriver::Remote::Bridge::COMMANDS[:status]
-          self.class.command(:status, jwp.first, jwp.last)
+          COMMANDS[:status] = Selenium::WebDriver::Remote::Bridge::COMMANDS[:status]
           execute :status
         end
 
@@ -546,8 +545,7 @@ module Selenium
         end
 
         def element_displayed?(element)
-          jwp = Selenium::WebDriver::Remote::Bridge::COMMANDS[:is_element_displayed]
-          self.class.command(:is_element_displayed, jwp.first, jwp.last)
+          COMMANDS[:is_element_displayed] = Selenium::WebDriver::Remote::Bridge::COMMANDS[:is_element_displayed]
           execute :is_element_displayed, id: element.values.first
         end
 
