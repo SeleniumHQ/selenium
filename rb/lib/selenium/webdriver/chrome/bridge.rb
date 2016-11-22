@@ -100,8 +100,8 @@ module Selenium
           service_args << "--url-base=#{args.delete(:url_base)}" if args.key?(:url_base)
           service_args << "--port-server=#{args.delete(:port_server)}" if args.key?(:port_server)
           service_args << "--whitelisted-ips=#{args.delete(:whitelisted_ips)}" if args.key?(:whitelisted_ips)
-          service_args << "--verbose=#{args.delete(:verbose)}" if args.key?(:whitelisted_ips)
-          service_args << "--silent=#{args.delete(:silent)}" if args.key?(:whitelisted_ips)
+          service_args << "--verbose=#{args.delete(:verbose)}" if args.key?(:verbose)
+          service_args << "--silent=#{args.delete(:silent)}" if args.key?(:silent)
           service_args
         end
       end # Bridge
