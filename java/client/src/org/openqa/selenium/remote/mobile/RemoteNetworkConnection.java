@@ -42,7 +42,7 @@ public class RemoteNetworkConnection implements NetworkConnection {
   @Override
   public ConnectionType setNetworkConnection(
       ConnectionType type) {
-    Map<String, Integer> mode = ImmutableMap.of("type", type.getBitMask());
+    Map<String, ConnectionType> mode = ImmutableMap.of("type", type);
     return new ConnectionType(((Number) executeMethod.execute(DriverCommand.SET_NETWORK_CONNECTION,
                                                             ImmutableMap
                                                                 .of("parameters", mode)))

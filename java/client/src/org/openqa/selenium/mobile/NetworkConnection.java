@@ -94,10 +94,6 @@ public interface NetworkConnection {
       return (mask / 4) > 0;
     }
 
-    public int getBitMask() {
-      return mask;
-    }
-
     @Override
     public boolean equals(Object type) {
       return type instanceof ConnectionType && this.mask == ((ConnectionType) type).mask;
@@ -113,6 +109,9 @@ public interface NetworkConnection {
       return Integer.toString(mask);
     }
 
+    public String toJson() {
+      return toString();
+    }
   }
 
   /**
