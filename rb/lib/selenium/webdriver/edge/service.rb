@@ -29,10 +29,6 @@ module Selenium
 
         private
 
-        def stop_server
-          connect_to_server { |http| http.head('/shutdown') }
-        end
-
         def start_process
           server_command = [@executable_path, "--port=#{@port}", *@extra_args]
           @process       = ChildProcess.build(*server_command)
