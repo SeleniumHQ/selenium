@@ -4,9 +4,22 @@ OS:
 Selenium Version:  
 <!-- 2.52.0, IDE, etc -->
 Browser:  
-<!-- Internet Explorer?  Firefox? 
+<!-- Internet Explorer?  Firefox?
 
-FIREFOX 48+ IS ONLY COMPATIBLE WITH GECKODRIVER. Any issue logged here for 48+ will be closed as a duplicate of #2559
+Since Firefox version 48, Mozilla requires all add-ons to be signed. Until
+recently, Firefox support in Selenium was exclusively provided by an add-on.
+As this add-on is not currently signed, this solution does not work with the
+latest Firefox releases. As an alternative, Mozilla are working on a WebDriver
+specification compliant implementation named GeckoDriver. Please note that the specification is not complete, and that Selenium itself does not comply with
+the specification at this time. This means that features previously available
+through Selenium will not be available using GeckoDriver.
+
+Any issue logged here for Firefox 48 or later will be closed as a duplicate of
+#2559. Our recommendation is to switch to GeckoDriver, or to continue testing
+on Firefox 45 until GeckoDriver is a viable option for you. If you are
+interested in helping us to sign the add-on to restore support for later
+Firefox versions, please see the following comment for what's needed:
+https://github.com/SeleniumHQ/selenium/issues/2942#issuecomment-259717567
 
 If the issue is with Google Chrome consider logging an issue with chromedriver instead:
 https://sites.google.com/a/chromium.org/chromedriver/help
@@ -33,7 +46,7 @@ Browser Version:
 ## Actual Behavior -
 
 ## Steps to reproduce -
-<!-- 
-Please be sure to include an SSCCE (Short, Self Contained, Correct [compilable] example) http://sscce.org/ 
+<!--
+Please be sure to include an SSCCE (Short, Self Contained, Correct [compilable] example) http://sscce.org/
 If you can't provide a link to the page, consider creating a reproducible page on https://jsfiddle.net/
 -->
