@@ -27,6 +27,10 @@ module Selenium
       class Service < WebDriver::Service
         DEFAULT_PORT = 4444
 
+        def stop
+          stop_process
+        end
+
         private
 
         def start_process
@@ -52,10 +56,6 @@ module Selenium
           rescue
             nil
           end
-        end
-
-        def stop_server
-          connect_to_server { |http| http.head('/shutdown') }
         end
 
         def cannot_connect_error_text
