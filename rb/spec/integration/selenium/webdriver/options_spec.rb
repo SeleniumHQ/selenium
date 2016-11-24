@@ -98,13 +98,15 @@ module Selenium
               end
             end
 
-            it 'should delete all' do
-              driver.navigate.to url_for('xhtmlTest.html')
+            not_compliant_on browser: :edge do
+              it 'should delete all' do
+                driver.navigate.to url_for('xhtmlTest.html')
 
-              driver.manage.add_cookie name: 'foo', value: 'bar'
-              driver.manage.add_cookie name: 'bar', value: 'foo'
-              driver.manage.delete_all_cookies
-              expect(driver.manage.all_cookies).to be_empty
+                driver.manage.add_cookie name: 'foo', value: 'bar'
+                driver.manage.add_cookie name: 'bar', value: 'foo'
+                driver.manage.delete_all_cookies
+                expect(driver.manage.all_cookies).to be_empty
+              end
             end
 
             # Firefox - https://bugzilla.mozilla.org/show_bug.cgi?id=1256007

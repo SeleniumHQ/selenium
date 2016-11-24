@@ -76,8 +76,8 @@ module Selenium
           end
 
           def firefox(opts = {})
-            opts[:browser_version] = opts.delete :version
-            opts[:platform_name] = opts.delete :platform
+            opts[:browser_version] = opts.delete(:version) if opts.key?(:version)
+            opts[:platform_name] = opts.delete(:platform) if opts.key?(:platform)
 
             new({browser_name: 'firefox'}.merge(opts))
           end

@@ -112,6 +112,7 @@ module Selenium
       end
 
       def stop_server
+        return if process_exited?
         connect_to_server { |http| http.get('/shutdown') }
       end
 
