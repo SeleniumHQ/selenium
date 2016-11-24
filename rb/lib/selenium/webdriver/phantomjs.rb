@@ -26,7 +26,7 @@ module Selenium
   module WebDriver
     module PhantomJS
       def self.path=(path)
-        warn <<-DEPRECATE.tr("\n", '').freeze
+        warn <<-DEPRECATE.gsub(/\n +| {2,}/, ' ').freeze
           [DEPRECATION] `path=` is deprecated. Pass the driver path as an option instead.
           e.g. Selenium::WebDriver.for :phantomjs, driver_path: '/path'
         DEPRECATE
@@ -35,19 +35,15 @@ module Selenium
         @path = path
       end
 
-      def self.path
-        warn <<-DEPRECATE.tr("\n", '').freeze
-          [DEPRECATION] `path` is deprecated. Pass the driver path as an option instead.
-          e.g. Selenium::WebDriver.for :phantomjs, driver_path: '/path'
-        DEPRECATE
-
-        @path ||= begin
-          path = Platform.find_binary(Service.executable)
-          raise Error::WebDriverError, Service.missing_text unless path
-          Platform.assert_executable path
-
-          path
+      def self.path(warning = true)
+        if warning
+          warn <<-DEPRECATE.gsub(/\n +| {2,}/, ' ').freeze
+            [DEPRECATION] `path` is deprecated. Pass the driver path as an option instead.
+            e.g. Selenium::WebDriver.for :phantomjs, driver_path: '/path'
+          DEPRECATE
         end
+
+        @path ||= nil
       end
     end # PhantomJS
   end # WebDriver

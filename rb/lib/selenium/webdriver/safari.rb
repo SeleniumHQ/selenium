@@ -37,7 +37,7 @@ module Selenium
         end
 
         def driver_path=(path)
-          warn <<-DEPRECATE.tr("\n", '').freeze
+          warn <<-DEPRECATE.gsub(/\n +| {2,}/, ' ').freeze
             [DEPRECATION] `driver_path=` is deprecated. Pass the driver path as an option instead.
             e.g. Selenium::WebDriver.for :safari, driver_path: '/path'
           DEPRECATE
@@ -46,14 +46,15 @@ module Selenium
           @driver_path = path
         end
 
-        def driver_path
-          warn <<-DEPRECATE.tr("\n", '').freeze
-            [DEPRECATION] `driver_path` is deprecated. Pass the driver path as an option instead.
-            e.g. Selenium::WebDriver.for :safari, driver_path: '/path'
-          DEPRECATE
-          @driver_path ||= '/usr/bin/safaridriver'
-          return @driver_path if File.file?(@driver_path) && File.executable?(@driver_path)
-          raise Error::WebDriverError, Service.missing_text
+        def driver_path(warning = true)
+          if warning
+            warn <<-DEPRECATE.gsub(/\n +| {2,}/, ' ').freeze
+              [DEPRECATION] `driver_path` is deprecated. Pass the driver path as an option instead.
+              e.g. Selenium::WebDriver.for :safari, driver_path: '/path'
+            DEPRECATE
+          end
+
+          @driver_path ||= nil
         end
       end
     end # Safari

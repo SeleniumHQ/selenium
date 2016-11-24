@@ -37,10 +37,10 @@ module Selenium
       STOP_TIMEOUT        = 20
 
       @executable = nil
-      @missing = ''
+      @missing_text = nil
 
       class << self
-        attr_accessor :executable, :missing_text
+        attr_reader :executable, :missing_text
       end
 
       attr_accessor :host
