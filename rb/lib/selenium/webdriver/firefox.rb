@@ -41,25 +41,25 @@ module Selenium
       DEFAULT_ASSUME_UNTRUSTED_ISSUER = true
       DEFAULT_LOAD_NO_FOCUS_LIB = false
 
-      MISSING_TEXT = <<-ERROR.tr("\n", '').freeze
-        Unable to find Mozilla geckodriver. Please download the server from
-        https://github.com/mozilla/geckodriver/releases and place it
-        somewhere on your PATH. More info at https://developer.mozilla.org/en-US/docs/Mozilla/QA/Marionette/WebDriver.
-      ERROR
-
       def self.driver_path=(path)
+        warn <<-DEPRECATE.gsub(/\n +| {2,}/, ' ').freeze
+          [DEPRECATION] `driver_path=` is deprecated. Pass the driver path as an option instead.
+          e.g. Selenium::WebDriver.for :firefox, driver_path: '/path'
+        DEPRECATE
+
         Platform.assert_executable path
         @driver_path = path
       end
 
-      def self.driver_path
-        @driver_path ||= begin
-          path = Platform.find_binary('geckodriver*')
-          raise Error::WebDriverError, MISSING_TEXT unless path
-          Platform.assert_executable path
-
-          path
+      def self.driver_path(warning = true)
+        if warning
+          warn <<-DEPRECATE.gsub(/\n +| {2,}/, ' ').freeze
+            [DEPRECATION] `driver_path` is deprecated. Pass the driver path as an option instead.
+            e.g. Selenium::WebDriver.for :firefox, driver_path: '/path'
+          DEPRECATE
         end
+
+        @driver_path ||= nil
       end
 
       def self.path=(path)

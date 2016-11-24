@@ -31,7 +31,8 @@ module Selenium
           end
 
           unless opts.key?(:url)
-            @service = Service.new(Chrome.driver_path, port, *extract_service_args(service_args))
+            driver_path = opts.delete(:driver_path) || Chrome.driver_path(false)
+            @service = Service.new(driver_path, port, *extract_service_args(service_args))
             @service.start
             opts[:url] = @service.uri
           end

@@ -26,6 +26,12 @@ module Selenium
 
       class Service < WebDriver::Service
         DEFAULT_PORT = 9515
+        @executable = 'chromedriver'.freeze
+        @missing_text = <<-ERROR.gsub(/\n +| {2,}/, ' ').freeze
+          Unable to find chromedriver. Please download the server from
+          http://chromedriver.storage.googleapis.com/index.html and place it somewhere on your PATH.
+          More info at https://github.com/SeleniumHQ/selenium/wiki/ChromeDriver.
+        ERROR
 
         private
 
@@ -35,10 +41,6 @@ module Selenium
 
           @process.io.inherit! if $DEBUG
           @process.start
-        end
-
-        def stop_server
-          connect_to_server { |http| http.get('/shutdown') }
         end
 
         def cannot_connect_error_text
