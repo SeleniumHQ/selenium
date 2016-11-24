@@ -29,10 +29,6 @@ module Selenium
 
         private
 
-        def stop_server
-          # server can only be stopped as process
-        end
-
         def start_process
           server_command = [@executable_path, "--port=#{@port}", *@extra_args]
           @process       = ChildProcess.new(*server_command)
