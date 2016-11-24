@@ -38,8 +38,9 @@ module Selenium
         port
       end
 
-      IGNORED_ERRORS = [Errno::EADDRNOTAVAIL].freeze
+      IGNORED_ERRORS = [Errno::EADDRNOTAVAIL]
       IGNORED_ERRORS << Errno::EBADF if Platform.cygwin?
+      IGNORED_ERRORS.freeze
 
       def self.free?(port)
         Platform.interfaces.each do |host|
