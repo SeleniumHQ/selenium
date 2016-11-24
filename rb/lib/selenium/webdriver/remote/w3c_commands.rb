@@ -132,7 +132,7 @@ module Selenium
 
             take_screenshot: [:get, 'session/:session_id/screenshot'.freeze],
             take_element_screenshot: [:get, 'session/:session_id/element/:id/screenshot'.freeze]
-        }
+        }.freeze
       end
     end # Remote
   end # WebDriver

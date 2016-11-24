@@ -44,7 +44,6 @@ module Selenium
         #
 
         def initialize(opts = {})
-          edge_check(opts)
 
           opts = opts.dup
 
@@ -78,13 +77,6 @@ module Selenium
           )
         end
 
-        def edge_check(opts)
-          caps = opts[:desired_capabilities]
-          return unless caps && caps[:browser_name] && caps[:browser_name] == 'MicrosoftEdge'
-          require_relative '../edge/legacy_support'
-          extend Edge::LegacySupport
-        end
-
         def driver_extensions
           [
             DriverExtensions::HasInputDevices,
@@ -96,6 +88,15 @@ module Selenium
             DriverExtensions::HasRemoteStatus,
             DriverExtensions::HasWebStorage
           ]
+        end
+
+        def commands(command)
+          case command
+          when :status, :is_element_displayed
+            Bridge::COMMANDS[command]
+          else
+            COMMANDS[command]
+          end
         end
 
         #
@@ -118,8 +119,6 @@ module Selenium
         end
 
         def status
-          jwp = Selenium::WebDriver::Remote::Bridge::COMMANDS[:status]
-          self.class.command(:status, jwp.first, jwp.last)
           execute :status
         end
 
@@ -546,8 +545,6 @@ module Selenium
         end
 
         def element_displayed?(element)
-          jwp = Selenium::WebDriver::Remote::Bridge::COMMANDS[:is_element_displayed]
-          self.class.command(:is_element_displayed, jwp.first, jwp.last)
           execute :is_element_displayed, id: element.values.first
         end
 
@@ -626,7 +623,7 @@ module Selenium
         #
 
         def raw_execute(command, opts = {}, command_hash = nil)
-          verb, path = COMMANDS[command] || raise(ArgumentError, "unknown command: #{command.inspect}")
+          verb, path = commands(command) || raise(ArgumentError, "unknown command: #{command.inspect}")
           path = path.dup
 
           path[':session_id'] = @session_id if path.include?(':session_id')

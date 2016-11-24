@@ -212,7 +212,7 @@ module Selenium
 
             get_available_log_types: [:get, 'session/:session_id/log/types'.freeze],
             get_log: [:post, 'session/:session_id/log'.freeze]
-        }
+        }.freeze
       end
     end # Remote
   end # WebDriver

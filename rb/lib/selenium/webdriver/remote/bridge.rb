@@ -93,6 +93,10 @@ module Selenium
           ]
         end
 
+        def commands(command)
+          COMMANDS[command]
+        end
+
         #
         # Returns the current session ID.
         #
@@ -628,7 +632,7 @@ module Selenium
         #
 
         def raw_execute(command, opts = {}, command_hash = nil)
-          verb, path = COMMANDS[command] || raise(ArgumentError, "unknown command: #{command.inspect}")
+          verb, path = commands(command) || raise(ArgumentError, "unknown command: #{command.inspect}")
           path = path.dup
 
           path[':session_id'] = @session_id if path.include?(':session_id')
