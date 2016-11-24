@@ -99,8 +99,7 @@ def testShouldGetTextOfAlertOpenedInSetTimeout(driver, pages):
 
 
 @pytest.mark.xfail_chrome(
-    condition=sys.platform == 'darwin',
-    reason='https://bugs.chromium.org/p/chromedriver/issues/detail?id=26',
+    reason='https://bugs.chromium.org/p/chromedriver/issues/detail?id=26 and https://bugs.chromium.org/p/chromedriver/issues/detail?id=1500',
     run=False)
 @pytest.mark.xfail_phantomjs(
     reason='https://github.com/detro/ghostdriver/issues/20',
