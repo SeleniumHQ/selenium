@@ -109,9 +109,7 @@ import static org.openqa.selenium.remote.DriverCommand.UPLOAD_FILE;
 import com.google.common.base.Objects;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
-import com.google.common.collect.BiMap;
-import com.google.common.collect.FluentIterable;
-import com.google.common.collect.HashBiMap;
+
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 
@@ -123,6 +121,7 @@ import org.openqa.selenium.remote.CommandCodec;
 import org.openqa.selenium.remote.JsonToBeanConverter;
 import org.openqa.selenium.remote.SessionId;
 
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -136,7 +135,7 @@ public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpReque
   private static final Splitter PATH_SPLITTER = Splitter.on('/').omitEmptyStrings();
   private static final String SESSION_ID_PARAM = "sessionId";
 
-  private final BiMap<String, CommandSpec> nameToSpec = HashBiMap.create();
+  private final ConcurrentHashMap<String, CommandSpec> nameToSpec = new ConcurrentHashMap();
   private final Map<String, String> aliases = new HashMap<>();
   private final BeanToJsonConverter beanToJsonConverter = new BeanToJsonConverter();
   private final JsonToBeanConverter jsonToBeanConverter = new JsonToBeanConverter();
@@ -281,18 +280,20 @@ public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpReque
     final String path = Strings.isNullOrEmpty(encodedCommand.getUri())
                         ? "/" : encodedCommand.getUri();
     final ImmutableList<String> parts = ImmutableList.copyOf(PATH_SPLITTER.split(path));
-    List<CommandSpec> matchingSpecs = FluentIterable.from(nameToSpec.inverse().keySet())
-        .filter(spec -> {
-          return spec.isFor(encodedCommand.getMethod(), parts);
-        })
-        .toSortedList((a, b) -> a.pathSegments.size() - b.pathSegments.size());
-
-    if (matchingSpecs.isEmpty()) {
+    int minPathLength = Integer.MAX_VALUE;
+    CommandSpec spec = null;
+    String name = null;
+    for (Map.Entry<String, CommandSpec> nameValue : nameToSpec.entrySet()) {
+      if ((nameValue.getValue().pathSegments.size() < minPathLength)
+          && nameValue.getValue().isFor(encodedCommand.getMethod(), parts)) {
+        name = nameValue.getKey();
+        spec = nameValue.getValue();
+      }
+    }
+    if (name == null) {
       throw new UnsupportedCommandException(
           encodedCommand.getMethod() + " " + encodedCommand.getUri());
     }
-    CommandSpec spec = matchingSpecs.get(0);
-
     Map<String, Object> parameters = Maps.newHashMap();
     spec.parsePathParameters(parts, parameters);
 
@@ -303,7 +304,6 @@ public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpReque
       parameters.putAll(tmp);
     }
 
-    String name = nameToSpec.inverse().get(spec);
     SessionId sessionId = null;
     if (parameters.containsKey(SESSION_ID_PARAM)) {
       String id = (String) parameters.remove(SESSION_ID_PARAM);
