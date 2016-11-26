@@ -1,3 +1,9 @@
+3.0.3 (2016-11-26)
+===================
+
+Ruby:
+  * Allow drivers to be executed from batch files on Windows
+
 3.0.2 (2016-11-25)
 ===================
 
