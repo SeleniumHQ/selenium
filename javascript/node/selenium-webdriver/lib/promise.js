@@ -2259,8 +2259,7 @@ class ControlFlow extends events.EventEmitter {
    * control flow stack and cause rejections within parent tasks. If error
    * propagation is disabled, tasks will not be aborted when an unhandled
    * promise rejection is detected, but the rejection _will_ trigger an
-   * {@link ControlFlow.EventType.UNCAUGHT_EXCEPTION}
-   * event.
+   * {@link ControlFlow.EventType.UNCAUGHT_EXCEPTION} event.
    *
    * The default behavior is to propagate all unhandled rejections. _The use
    * of this option is highly discouraged._
@@ -2294,7 +2293,7 @@ class ControlFlow extends events.EventEmitter {
    * {@code opt_includeStackTraces === true}, the string will include the
    * stack trace from when each task was scheduled.
    * @param {string=} opt_includeStackTraces Whether to include the stack traces
-   *     from when each task was scheduled. Defaults to false.
+   * from when each task was scheduled. Defaults to false.
    * @return {string} String representation of this flow's internal state.
    */
   getSchedule(opt_includeStackTraces) {
@@ -2346,7 +2345,7 @@ class ControlFlow extends events.EventEmitter {
   }
 
   /**
-   * Returns the currently actively task queue for this flow. If there is no
+   * Returns the currently active task queue for this flow. If there is no
    * active queue, one will be created.
    * @return {!TaskQueue} the currently active task queue for this flow.
    * @private
