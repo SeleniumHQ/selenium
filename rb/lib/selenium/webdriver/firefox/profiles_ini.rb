@@ -57,11 +57,10 @@ module Selenium
               is_relative = Regexp.last_match(1).strip == '1'
             when /^Path=(.+)$/
               path = Regexp.last_match(1).strip
+              p = path_for(name, is_relative, path)
+              @profile_paths[name] = p if p
             end
           end
-
-          p = path_for(name, is_relative, path)
-          @profile_paths[name] = p if p
         end
 
         def path_for(name, is_relative, path)
