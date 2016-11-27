@@ -22,6 +22,7 @@ using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using WebDriver.Internal;
 
 namespace OpenQA.Selenium.Firefox.Internal
 {
@@ -55,18 +56,8 @@ namespace OpenQA.Selenium.Firefox.Internal
         /// the mutex port to become available.</param>
         public void LockObject(TimeSpan timeout)
         {
-            IPHostEntry hostEntry = Dns.GetHostEntry("localhost");
-
-            // Use the first IPv4 address that we find
-            IPAddress endPointAddress = IPAddress.Parse("127.0.0.1");
-            foreach (IPAddress ip in hostEntry.AddressList)
-            {
-                if (ip.AddressFamily == AddressFamily.InterNetwork)
-                {
-                    endPointAddress = ip;
-                    break;
-                }
-            }
+            // Get the (first) host IP address
+            IPAddress endPointAddress = Host.GetIPAddess();
 
             IPEndPoint address = new IPEndPoint(endPointAddress, this.lockPort);
 
@@ -85,10 +76,12 @@ namespace OpenQA.Selenium.Firefox.Internal
 
                     Thread.Sleep(delayBetweenSocketChecks);
                 }
+#if !NETSTANDARD1_5
                 catch (ThreadInterruptedException e)
                 {
                     throw new WebDriverException("the thread was interrupted", e);
                 }
+#endif
                 catch (IOException e)
                 {
                     throw new WebDriverException("An unexpected error occurred", e);
@@ -117,7 +110,11 @@ namespace OpenQA.Selenium.Firefox.Internal
         {
             try
             {
+#if !NETSTANDARD1_5
                 this.lockSocket.Close();
+#else
+                this.lockSocket.Dispose();
+#endif
             }
             catch (IOException e)
             {
@@ -132,7 +129,11 @@ namespace OpenQA.Selenium.Firefox.Internal
         {
             if (this.lockSocket != null && this.lockSocket.Connected)
             {
+#if !NETSTANDARD1_5
                 this.lockSocket.Close();
+#else
+                this.lockSocket.Dispose();
+#endif
             }
 
             GC.SuppressFinalize(this);
@@ -153,11 +154,13 @@ namespace OpenQA.Selenium.Firefox.Internal
 
         private void PreventSocketInheritance()
         {
+#if !NETSTANDARD1_5
             // TODO (JimEvans): Handle the non-Windows case.
             if (Platform.CurrentPlatform.IsPlatformType(PlatformType.Windows))
             {
                 NativeMethods.SetHandleInformation(this.lockSocket.Handle, NativeMethods.HandleInformation.Inherit | NativeMethods.HandleInformation.ProtectFromClose, NativeMethods.HandleInformation.None);
             }
+#endif
         }
     }
 }

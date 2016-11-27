@@ -20,10 +20,13 @@ using System;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+#if !NETSTANDARD1_5
 using System.Security.Permissions;
+#endif
 using System.Text;
 using Microsoft.Win32;
 using OpenQA.Selenium.Internal;
+using WebDriver.Internal;
 
 namespace OpenQA.Selenium.Firefox.Internal
 {
@@ -81,7 +84,9 @@ namespace OpenQA.Selenium.Firefox.Internal
         /// Sets the library path for the Firefox executable environment.
         /// </summary>
         /// <param name="builder">The <see cref="Process"/> used to execute the binary.</param>
+#if !NETSTANDARD1_5
         [SecurityPermission(SecurityAction.Demand)]
+#endif
         public void SetLibraryPath(Process builder)
         {
             string propertyName = GetLibraryPathPropertyName();
@@ -95,10 +100,17 @@ namespace OpenQA.Selenium.Firefox.Internal
             }
 
             // Check our extra env vars for the same var, and use it too.
+#if !NETSTANDARD1_5
             if (builder.StartInfo.EnvironmentVariables.ContainsKey(propertyName))
             {
                 libraryPath.Append(builder.StartInfo.EnvironmentVariables[propertyName]).Append(Path.PathSeparator);
             }
+#else
+            if (builder.StartInfo.Environment.ContainsKey(propertyName))
+            {
+                libraryPath.Append(builder.StartInfo.Environment[propertyName]).Append(Path.PathSeparator);
+            }
+#endif
 
             // Last, add the contents of the specified system property, defaulting to the binary's path.
             // On Snow Leopard, beware of problems the sqlite library
@@ -115,21 +127,16 @@ namespace OpenQA.Selenium.Firefox.Internal
             }
 
             // Add the library path to the builder.
-            if (builder.StartInfo.EnvironmentVariables.ContainsKey(propertyName))
-            {
-                builder.StartInfo.EnvironmentVariables[propertyName] = libraryPath.ToString();
-            }
-            else
-            {
-                builder.StartInfo.EnvironmentVariables.Add(propertyName, libraryPath.ToString());
-            }
+            builder.StartInfo.SetEnvironmentVariable(propertyName, libraryPath.ToString());
         }
 
         /// <summary>
         /// Locates the Firefox binary by platform.
         /// </summary>
         /// <returns>The full path to the binary.</returns>
+#if !NETSTANDARD1_5
         [SecurityPermission(SecurityAction.Demand)]
+#endif
         private static string LocateFirefoxBinaryFromPlatform()
         {
             string binary = string.Empty;
@@ -155,8 +162,8 @@ namespace OpenQA.Selenium.Firefox.Internal
                     // doesn't have that member of the enum.
                     string[] windowsDefaultInstallLocations = new string[]
                     {
-                        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "Mozilla Firefox"),
-                        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles) + " (x86)", "Mozilla Firefox")
+                        Path.Combine(Host.GetProgramFilesFolder(), "Mozilla Firefox"),
+                        Path.Combine(Host.GetProgramFilesFolder() + " (x86)", "Mozilla Firefox")
                     };
 
                     binary = GetExecutablePathUsingDefaultInstallLocations(windowsDefaultInstallLocations, "Firefox.exe");
@@ -167,7 +174,7 @@ namespace OpenQA.Selenium.Firefox.Internal
                 string[] macDefaultInstallLocations = new string[]
                 {
                     "/Applications/Firefox.app/Contents/MacOS",
-                    string.Format(CultureInfo.InvariantCulture, "/Users/{0}/Applications/Firefox.app/Contents/MacOS", Environment.UserName)
+                    string.Format(CultureInfo.InvariantCulture, "/Users/{0}/Applications/Firefox.app/Contents/MacOS", Host.GetUserName())
                 };
 
                 binary = GetExecutablePathUsingDefaultInstallLocations(macDefaultInstallLocations, "firefox-bin");

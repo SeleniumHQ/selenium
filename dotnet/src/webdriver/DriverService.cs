@@ -21,9 +21,12 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Net;
+#if !NETSTANDARD1_5
 using System.Security.Permissions;
+#endif
 using OpenQA.Selenium.Internal;
 using OpenQA.Selenium.Remote;
+using WebDriver.Internal;
 
 namespace OpenQA.Selenium
 {
@@ -103,7 +106,9 @@ namespace OpenQA.Selenium
         /// </summary>
         public bool IsRunning
         {
+#if !NETSTANDARD1_5
             [SecurityPermission(SecurityAction.Demand)]
+#endif
             get { return this.driverServiceProcess != null && !this.driverServiceProcess.HasExited; }
         }
 
@@ -185,8 +190,10 @@ namespace OpenQA.Selenium
                 {
                     Uri serviceHealthUri = new Uri(this.ServiceUrl, new Uri(DriverCommand.Status, UriKind.Relative));
                     HttpWebRequest request = HttpWebRequest.Create(serviceHealthUri) as HttpWebRequest;
+#if !NETSTANDARD1_5
                     request.KeepAlive = false;
                     request.Timeout = 5000;
+#endif
                     HttpWebResponse response = request.GetResponse() as HttpWebResponse;
 
                     // Checking the response from the 'status' end point. Note that we are simply checking
@@ -194,7 +201,7 @@ namespace OpenQA.Selenium
                     // Content-Type header. A more sophisticated check would parse the JSON response and
                     // validate its values. At the moment we do not do this more sophisticated check.
                     isInitialized = response.StatusCode == HttpStatusCode.OK && response.ContentType.StartsWith("application/json", StringComparison.OrdinalIgnoreCase);
-                    response.Close();
+                    ((IDisposable)response).Dispose();
                 }
                 catch (WebException ex)
                 {
@@ -217,7 +224,9 @@ namespace OpenQA.Selenium
         /// <summary>
         /// Starts the DriverService.
         /// </summary>
+#if !NETSTANDARD1_5
         [SecurityPermission(SecurityAction.Demand)]
+#endif
         public void Start()
         {
             this.driverServiceProcess = new Process();
@@ -270,7 +279,9 @@ namespace OpenQA.Selenium
         /// <summary>
         /// Stops the DriverService.
         /// </summary>
+#if !NETSTANDARD1_5
         [SecurityPermission(SecurityAction.Demand)]
+#endif
         private void Stop()
         {
             if (this.IsRunning)
@@ -287,9 +298,11 @@ namespace OpenQA.Selenium
                         // for a failed HTTP request due to a closed socket is particularly
                         // expensive.
                         HttpWebRequest request = HttpWebRequest.Create(shutdownUrl) as HttpWebRequest;
+#if !NETSTANDARD1_5
                         request.KeepAlive = false;
+#endif
                         HttpWebResponse response = request.GetResponse() as HttpWebResponse;
-                        response.Close();
+                        ((IDisposable)response).Dispose();
                         this.driverServiceProcess.WaitForExit(3000);
                     }
                     catch (WebException)

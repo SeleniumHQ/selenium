@@ -21,6 +21,7 @@ using System.Globalization;
 using System.Net;
 using System.Text;
 using OpenQA.Selenium.Internal;
+using WebDriver.Internal;
 
 namespace OpenQA.Selenium.Firefox
 {
@@ -124,8 +125,10 @@ namespace OpenQA.Selenium.Firefox
                     // session id.
                     Uri serviceHealthUri = new Uri(this.ServiceUrl, new Uri("/session/FakeSessionIdForPollingPurposes", UriKind.Relative));
                     HttpWebRequest request = HttpWebRequest.Create(serviceHealthUri) as HttpWebRequest;
+#if !NETSTANDARD1_5
                     request.KeepAlive = false;
                     request.Timeout = 5000;
+#endif
                     request.Method = "DELETE";
                     HttpWebResponse response = request.GetResponse() as HttpWebResponse;
 
@@ -135,7 +138,7 @@ namespace OpenQA.Selenium.Firefox
                     // response and validate its values. At the moment we do not do this more sophisticated
                     // check.
                     isInitialized = response.StatusCode == HttpStatusCode.OK && response.ContentType.StartsWith("application/json", StringComparison.OrdinalIgnoreCase);
-                    response.Close();
+                    ((IDisposable)response).Dispose();
                 }
                 catch (WebException ex)
                 {
