@@ -2180,14 +2180,14 @@ const SIMPLE_SCHEDULER = new SimpleScheduler;
  * promised result.
  *
  * Each time a ControlFlow empties its task queue, it will fire an
- * {@link ControlFlow.EventType.IDLE IDLE} event. Conversely,
- * whenever the flow terminates due to an unhandled error, it will remove all
+ * {@link ControlFlow.EventType.IDLE IDLE} event. Conversely, whenever
+ * the flow terminates due to an unhandled error, it will remove all
  * remaining tasks in its queue and fire an
  * {@link ControlFlow.EventType.UNCAUGHT_EXCEPTION UNCAUGHT_EXCEPTION} event.
  * If there are no listeners registered with the flow, the error will be
  * rethrown to the global error handler.
  *
- * Refer to the {@link ./promise} module documentation for a  detailed
+ * Refer to the {@link ./promise} module documentation for a detailed
  * explanation of how the ControlFlow coordinates task execution.
  *
  * @implements {Scheduler}
