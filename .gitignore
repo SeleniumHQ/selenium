@@ -61,7 +61,8 @@ selenium.egg-info/
 third_party/java/jetty/jetty-repacked.jar
 *.user
 *.cache
-obj/
+[Bb]in/
+[Oo]bj/
 *.opensdf
 *.suo
 *.sdf
