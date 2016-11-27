@@ -534,7 +534,7 @@
  *
  * When a subtask is discarded due to an unreported rejection in its parent
  * frame, the existing callbacks on that task will never settle and the
- * callbacks will not be invoked. If a new callback is attached ot the subtask
+ * callbacks will not be invoked. If a new callback is attached to the subtask
  * _after_ it has been discarded, it is handled the same as adding a callback
  * to a cancelled promise: the error-callback path is invoked. This behavior is
  * intended to handle cases where the user saves a reference to a task promise,
@@ -595,7 +595,7 @@
  * >      must execute in the order of their originating calls to `then`.
  * >
  *
- * Specifically, the conformance tests contains the following scenario (for
+ * Specifically, the conformance tests contain the following scenario (for
  * brevity, only the fulfillment version is shown):
  *
  *     var p1 = Promise.resolve();
@@ -609,7 +609,7 @@
  *     // B
  *
  * Since the [ControlFlow](#scheduling_callbacks) executes promise callbacks as
- * tasks, with this module, the result would be
+ * tasks, with this module, the result would be:
  *
  *     var p2 = promise.fulfilled();
  *     p2.then(function() {
