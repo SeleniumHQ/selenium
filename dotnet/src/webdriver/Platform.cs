@@ -100,15 +100,13 @@ namespace OpenQA.Selenium
 
         private Platform()
         {
-#if !NETSTANDARD1_5
-            this.major = Environment.OSVersion.Version.Major;
-            this.minor = Environment.OSVersion.Version.Minor;
-#endif
+            Version osVersion = Host.GetOSVersion();
+            this.major = osVersion.Major;
+            this.minor = osVersion.Minor;
 
             switch (Host.GetOperatingSystemFamily())
             {
                 case OperatingSystemFamily.Windows:
-#if !NETSTANDARD1_5
                     if (this.major == 5)
                     {
                         this.platformTypeValue = PlatformType.XP;
@@ -121,9 +119,7 @@ namespace OpenQA.Selenium
                     {
                         this.platformTypeValue = PlatformType.Windows;
                     }
-#else
                     this.platformTypeValue = PlatformType.Windows;
-#endif
                     break;
 
                 // Thanks to a bug in Mono Mac and Linux will be treated the same  https://bugzilla.novell.com/show_bug.cgi?id=515570 but adding this in case

@@ -19,6 +19,7 @@
 using System;
 using System.Net;
 using OpenQA.Selenium.Internal;
+using WebDriver.Internal;
 
 namespace OpenQA.Selenium.Safari
 {
@@ -60,18 +61,21 @@ namespace OpenQA.Selenium.Safari
                     // session id.
                     Uri serviceHealthUri = new Uri(this.ServiceUrl, new Uri("/session/FakeSessionIdForPollingPurposes", UriKind.Relative));
                     HttpWebRequest request = HttpWebRequest.Create(serviceHealthUri) as HttpWebRequest;
+#if !NETSTANDARD1_5
                     request.KeepAlive = false;
                     request.Timeout = 5000;
+#endif
                     request.Method = "DELETE";
-                    HttpWebResponse response = request.GetResponse() as HttpWebResponse;
+                    using (HttpWebResponse response = request.GetResponse() as HttpWebResponse)
+                    {
 
-                    // Checking the response from deleting a nonexistent session. Note that we are simply
-                    // checking that the HTTP status returned is a 200 status, and that the resposne has
-                    // the correct Content-Type header. A more sophisticated check would parse the JSON
-                    // response and validate its values. At the moment we do not do this more sophisticated
-                    // check.
-                    isInitialized = response.StatusCode == HttpStatusCode.OK && response.ContentType.StartsWith("application/json", StringComparison.OrdinalIgnoreCase);
-                    response.Close();
+                        // Checking the response from deleting a nonexistent session. Note that we are simply
+                        // checking that the HTTP status returned is a 200 status, and that the resposne has
+                        // the correct Content-Type header. A more sophisticated check would parse the JSON
+                        // response and validate its values. At the moment we do not do this more sophisticated
+                        // check.
+                        isInitialized = response.StatusCode == HttpStatusCode.OK && response.ContentType.StartsWith("application/json", StringComparison.OrdinalIgnoreCase);
+                    }
                 }
                 catch (WebException ex)
                 {

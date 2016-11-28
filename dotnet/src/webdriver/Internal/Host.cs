@@ -47,6 +47,7 @@ namespace WebDriver.Internal
             return Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 #endif
         }
+
         public static string GetProgramFilesFolder()
         {
 #if NETSTANDARD1_5
@@ -83,22 +84,63 @@ namespace WebDriver.Internal
                 case PlatformID.Win32Windows:
                 case PlatformID.WinCE:
                     return OperatingSystemFamily.Windows;
-                    break;
 
                 case PlatformID.Unix:
                 case (PlatformID)PlatformMonoUnixValue:
                     return OperatingSystemFamily.Linux;
-                    break;
 
                 case PlatformID.MacOSX:
                     return OperatingSystemFamily.OSX;
-                    break;
 
                 case PlatformID.Xbox:
                 default:
                     return OperatingSystemFamily.Other;
             }
 #endif
+        }
+
+        public static Version GetOSVersion()
+        {
+            Version ret;
+
+#if NETSTANDARD1_5
+            var match = System.Text.RegularExpressions.Regex.Match(
+                RuntimeInformation.OSDescription,
+                "^\\D*(?<Major>\\d{1,2})\\.(?<Minor>\\d)(?:\\.(?<Build>\\d+))?(?:\\.(?<Revision>\\d+))?\\D*$"
+                );
+
+            if (!match.Success)
+            {
+                throw new FormatException(
+                    $"The value of {nameof(RuntimeInformation.OSDescription)} ({RuntimeInformation.OSDescription}) has an unexpected format");
+            }
+
+            int major, minor, build, revision;
+            if (match.Groups["Revision"].Success)
+            {
+                major = Convert.ToInt32(match.Groups["Major"].Value);
+                minor = Convert.ToInt32(match.Groups["Minor"].Value);
+                build = Convert.ToInt32(match.Groups["Build"].Value);
+                revision = Convert.ToInt32(match.Groups["Revision"].Value);
+                ret = new Version(major, minor, build, revision);
+            }
+            else if (match.Groups["Build"].Success)
+            {
+                major = Convert.ToInt32(match.Groups["Major"].Value);
+                minor = Convert.ToInt32(match.Groups["Minor"].Value);
+                build = Convert.ToInt32(match.Groups["Build"].Value);
+                ret = new Version(major, minor, build);
+            }
+            else
+            {
+                major = Convert.ToInt32(match.Groups["Major"].Value);
+                minor = Convert.ToInt32(match.Groups["Minor"].Value);
+                ret = new Version(major, minor);
+            }
+#else
+            ret = Environment.OSVersion.Version;
+#endif
+            return ret;
         }
     }
 }

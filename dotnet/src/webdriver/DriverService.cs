@@ -350,5 +350,29 @@ namespace OpenQA.Selenium
 
             return isInitialized;
         }
+
+        /// <summary>
+        /// Returns the a driver filename for the currently running platform
+        /// </summary>
+        /// <param name="fileNameBase">The file name base to derive the executable file name from</param>
+        /// <returns>The file name of the driver service executable.</returns>
+        internal static string DeriveDriverServiceFileName(string fileNameBase)
+        {
+            switch (Host.GetOperatingSystemFamily())
+            {
+                case OperatingSystemFamily.Windows:
+                    fileNameBase += ".exe";
+                    break;
+
+                case OperatingSystemFamily.Linux:
+                case OperatingSystemFamily.OSX:
+                    break;
+
+                default:
+                    throw new WebDriverException("Unsupported platform: " + Host.GetOperatingSystemFamily());
+            }
+            return fileNameBase;
+        }
+
     }
 }

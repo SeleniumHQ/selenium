@@ -130,15 +130,16 @@ namespace OpenQA.Selenium.Firefox
                     request.Timeout = 5000;
 #endif
                     request.Method = "DELETE";
-                    HttpWebResponse response = request.GetResponse() as HttpWebResponse;
+                    using (HttpWebResponse response = request.GetResponse() as HttpWebResponse)
+                    {
 
-                    // Checking the response from deleting a nonexistent session. Note that we are simply
-                    // checking that the HTTP status returned is a 200 status, and that the resposne has
-                    // the correct Content-Type header. A more sophisticated check would parse the JSON
-                    // response and validate its values. At the moment we do not do this more sophisticated
-                    // check.
-                    isInitialized = response.StatusCode == HttpStatusCode.OK && response.ContentType.StartsWith("application/json", StringComparison.OrdinalIgnoreCase);
-                    ((IDisposable)response).Dispose();
+                        // Checking the response from deleting a nonexistent session. Note that we are simply
+                        // checking that the HTTP status returned is a 200 status, and that the resposne has
+                        // the correct Content-Type header. A more sophisticated check would parse the JSON
+                        // response and validate its values. At the moment we do not do this more sophisticated
+                        // check.
+                        isInitialized = response.StatusCode == HttpStatusCode.OK && response.ContentType.StartsWith("application/json", StringComparison.OrdinalIgnoreCase);
+                    }
                 }
                 catch (WebException ex)
                 {
@@ -245,40 +246,7 @@ namespace OpenQA.Selenium.Firefox
         /// <returns>The file name of the Chrome driver service executable.</returns>
         private static string FirefoxDriverServiceFileName()
         {
-            string fileName = DefaultFirefoxDriverServiceFileName;
-
-            // Unfortunately, detecting the currently running platform isn't as
-            // straightforward as you might hope.
-            // See: http://mono.wikia.com/wiki/Detecting_the_execution_platform
-            // and https://msdn.microsoft.com/en-us/library/3a8hyw88(v=vs.110).aspx
-            const int PlatformMonoUnixValue = 128;
-
-            switch (Environment.OSVersion.Platform)
-            {
-                case PlatformID.Win32NT:
-                case PlatformID.Win32S:
-                case PlatformID.Win32Windows:
-                case PlatformID.WinCE:
-                    fileName += ".exe";
-                    break;
-
-                case PlatformID.MacOSX:
-                case PlatformID.Unix:
-                    break;
-
-                // Don't handle the Xbox case. Let default handle it.
-                // case PlatformID.Xbox:
-                //     break;
-                default:
-                    if ((int)Environment.OSVersion.Platform == PlatformMonoUnixValue)
-                    {
-                        break;
-                    }
-
-                    throw new WebDriverException("Unsupported platform: " + Environment.OSVersion.Platform);
-            }
-
-            return fileName;
+            return DeriveDriverServiceFileName(DefaultFirefoxDriverServiceFileName);
         }
     }
 }

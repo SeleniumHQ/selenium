@@ -191,29 +191,7 @@ namespace OpenQA.Selenium.Chrome
         /// <returns>The file name of the Chrome driver service executable.</returns>
         private static string ChromeDriverServiceFileName()
         {
-            string fileName = DefaultChromeDriverServiceExecutableName;
-
-            // Unfortunately, detecting the currently running platform isn't as
-            // straightforward as you might hope.
-            // See: http://mono.wikia.com/wiki/Detecting_the_execution_platform
-            // and https://msdn.microsoft.com/en-us/library/3a8hyw88(v=vs.110).aspx
-            const int PlatformMonoUnixValue = 128;
-
-            switch (Host.GetOperatingSystemFamily())
-            {
-                case OperatingSystemFamily.Windows:
-                    fileName += ".exe";
-                    break;
-
-                case OperatingSystemFamily.Linux:
-                case OperatingSystemFamily.OSX:
-                    break;
-
-                default:
-                    throw new WebDriverException("Unsupported platform: " + Host.GetOperatingSystemFamily());
-            }
-
-            return fileName;
+            return DeriveDriverServiceFileName(DefaultChromeDriverServiceExecutableName);
         }
     }
 }
