@@ -96,7 +96,7 @@ module Selenium
           install_extensions(profile_dir)
           delete_lock_files(profile_dir)
           delete_extensions_cache(profile_dir)
-          # update_user_prefs_in(profile_dir)
+          update_user_prefs_in(profile_dir)
 
           profile_dir
         end
