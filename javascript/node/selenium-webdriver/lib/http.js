@@ -438,7 +438,7 @@ class Executor {
           }
 
           // The remote end is a W3C compliant server if there is no `status`
-          // field in the response. This is not appliable for the DESCRIBE_SESSION
+          // field in the response. This is not applicable for the DESCRIBE_SESSION
           // command, which is not defined in the W3C spec.
           if (command.getName() === cmd.Name.NEW_SESSION) {
             this.w3c = this.w3c || !('status' in parsed);

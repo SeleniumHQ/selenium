@@ -58,7 +58,7 @@ var seleniumServer;
  * Starts an instance of the Selenium server if not yet running.
  * @param {string} jar Path to the server jar to use.
  * @return {!Promise<string>} A promise for the server's
- *     addrss once started.
+ *     address once started.
  */
 function startSeleniumServer(jar) {
   if (!seleniumServer) {
@@ -160,7 +160,7 @@ function createDriver(ctor, ...args) {
         /** @override */
         this.catch = pd.then.bind(pd);
       }
-    }
+    };
     promise.CancellableThenable.addImplementation(thenableWebDriverProxy);
     THENABLE_DRIVERS.set(ctor, thenableWebDriverProxy);
   }

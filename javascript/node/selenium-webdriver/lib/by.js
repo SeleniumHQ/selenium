@@ -153,7 +153,7 @@ class By {
   }
 
   /**
-   * Locates eleemnts by the ID attribute. This locator uses the CSS selector
+   * Locates elements by the ID attribute. This locator uses the CSS selector
    * `*[id="$ID"]`, _not_ `document.getElementById`.
    *
    * @param {string} id The ID to search for.
