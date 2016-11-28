@@ -83,50 +83,56 @@ class SessionCleaner extends Thread {   // Thread safety reviewed
 
   void checkExpiry() {
     for (SessionId sessionId : driverSessions.getSessions()) {
-      Session session = driverSessions.get(sessionId);
-      if (session != null) {
-        boolean useDeleteSession = false;
-        boolean killed = false;
+      try {
+        Session session = driverSessions.get(sessionId);
+        if (session != null) {
+          boolean useDeleteSession = false;
+          boolean killed = false;
 
-        boolean inUse = session.isInUse();
-        if (!inUse && session.isTimedOut(clientGoneTimeout)) {
-          useDeleteSession = true;
-          log.info("Session " + session.getSessionId() + " deleted due to client timeout");
-        }
-        if (inUse && session.isTimedOut(insideBrowserTimeout)) {
-          WebDriver driver = session.getDriver();
-          if (driver instanceof EventFiringWebDriver) {
-            driver = ((EventFiringWebDriver)driver).getWrappedDriver();
-          }
-          if (driver instanceof Killable) {
-            //session.interrupt();
-            ((Killable) driver).kill();
-            killed = true;
-            log.warning("Browser killed and session " + session.getSessionId() + " terminated due to in-browser timeout.");
-          } else {
+          boolean inUse = session.isInUse();
+          if (!inUse && session.isTimedOut(clientGoneTimeout)) {
             useDeleteSession = true;
-            log.warning("Session " + session.getSessionId() + " deleted due to in-browser timeout. " +
-                        "Terminating driver with DeleteSession since it does not support Killable, "
-                        + "the driver in question does not support selenium-server timeouts fully");
+            log.info("Session " + session.getSessionId() + " deleted due to client timeout");
+          }
+          if (inUse && session.isTimedOut(insideBrowserTimeout)) {
+            WebDriver driver = session.getDriver();
+            if (driver instanceof EventFiringWebDriver) {
+              driver = ((EventFiringWebDriver) driver).getWrappedDriver();
+            }
+            if (driver instanceof Killable) {
+              //session.interrupt();
+              ((Killable) driver).kill();
+              killed = true;
+              log.warning("Browser killed and session " + session.getSessionId()
+                          + " terminated due to in-browser timeout.");
+            } else {
+              useDeleteSession = true;
+              log.warning(
+                "Session " + session.getSessionId() + " deleted due to in-browser timeout. " +
+                "Terminating driver with DeleteSession since it does not support Killable, "
+                +                                                                            "the driver in question does not support selenium-server timeouts fully");
+            }
+          }
+
+          if (useDeleteSession) {
+            DeleteSession deleteSession = new DeleteSession(session);
+            try {
+              deleteSession.call();
+            } catch (Exception e) {
+              log.log(Level.WARNING, "Could not delete session " + session.getSessionId(), e);
+              continue;
+            }
+          }
+
+          if (useDeleteSession || killed) {
+            driverSessions.deleteSession(sessionId);
+            final PerSessionLogHandler logHandler = LoggingManager.perSessionLogHandler();
+            logHandler.transferThreadTempLogsToSessionLogs(sessionId);
+            logHandler.removeSessionLogs(sessionId);
           }
         }
-
-        if (useDeleteSession) {
-          DeleteSession deleteSession = new DeleteSession(session);
-          try {
-            deleteSession.call();
-          } catch (Exception e) {
-            log.log(Level.WARNING, "Could not delete session " + session.getSessionId(), e);
-            continue;
-          }
-        }
-
-        if (useDeleteSession || killed) {
-          driverSessions.deleteSession(sessionId);
-          final PerSessionLogHandler logHandler = LoggingManager.perSessionLogHandler();
-          logHandler.transferThreadTempLogsToSessionLogs(sessionId);
-          logHandler.removeSessionLogs(sessionId);
-        }
+      } catch (Exception e) {
+        log.severe("Failed to clean session " + sessionId + " on exception " + e.getMessage());
       }
     }
   }
