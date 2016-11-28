@@ -1,3 +1,15 @@
+Selenium 3.0.2
+* Add support for W3C Get Active Element
+* Return when we use executeScript for faking WebElement.get_property
+* Expand user paths and resolve absolute path for Chrome extensions
+* Add support for verbose logging and custom path to EdgeDriver
+* Update TakeElementScreenshot to match WebDriver specification
+* Raise WebDriverException when FirefoxBinary fails to locate binary
+* Fix getting IP for python 3
+* Write Service log to DEVNULL by default
+* Only attempt to remove the Firefox profile path if one was specified
+* Added context manager for chrome/content in Firefox
+
 Selenium 3.0.1
 * Fix regressions with python 3
 * Add support for Safari Technology Preview
