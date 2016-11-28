@@ -2165,7 +2165,7 @@ const SIMPLE_SCHEDULER = new SimpleScheduler;
 /**
  * Handles the execution of scheduled tasks, each of which may be an
  * asynchronous operation. The control flow will ensure tasks are executed in
- * the ordered schedule, starting each task only once those before it have
+ * the order scheduled, starting each task only once those before it have
  * completed.
  *
  * Each task scheduled within this flow may return a {@link ManagedPromise} to
