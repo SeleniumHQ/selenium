@@ -116,7 +116,13 @@ public class DefaultSession implements Session {
                                       new LinkedBlockingQueue<Runnable>());
 
     // Ensure that the browser is created on the single thread.
-    EventFiringWebDriver initialDriver = execute(webDriverFutureTask);
+    EventFiringWebDriver initialDriver;
+    try {
+      initialDriver = execute(webDriverFutureTask);
+    } catch (Exception e) {
+      close();
+      throw e;
+    }
 
     if (!isQuietModeEnabled(browserCreator, capabilities)) {
       // Memo to self; this is not a constructor escape of "this" - probably ;)
