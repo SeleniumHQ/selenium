@@ -2173,7 +2173,7 @@ const SIMPLE_SCHEDULER = new SimpleScheduler;
  * promises to be resolved before marking the task as completed.
  *
  * Tasks and each callback registered on a {@link ManagedPromise} will be run
- * in their own ControlFlow frame.  Any tasks scheduled within a frame will take
+ * in their own ControlFlow frame. Any tasks scheduled within a frame will take
  * priority over previously scheduled tasks. Furthermore, if any of the tasks in
  * the frame fail, the remainder of the tasks in that frame will be discarded
  * and the failure will be propagated to the user through the callback/task's
