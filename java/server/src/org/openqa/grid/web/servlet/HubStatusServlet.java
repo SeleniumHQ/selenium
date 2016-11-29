@@ -136,16 +136,13 @@ public class HubStatusServlet extends RegistryBasedServlet {
   private JsonObject getSlotCounts() {
     int freeSlots = 0;
     int totalSlots = 0;
+    int usedSlots = 0;
 
     for (RemoteProxy proxy : getRegistry().getAllProxies()) {
-      for (TestSlot slot : proxy.getTestSlots()) {
-        if (slot.getSession() == null) {
-          freeSlots += 1;
-        }
-
-        totalSlots += 1;
-      }
+      totalSlots += proxy.getMaxNumberOfConcurrentTestSessions();
+      usedSlots += proxy.getTotalUsed();
     }
+    freeSlots = totalSlots - usedSlots;
 
     JsonObject result = new JsonObject();
 
