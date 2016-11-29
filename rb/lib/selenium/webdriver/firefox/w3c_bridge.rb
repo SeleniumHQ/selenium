@@ -62,7 +62,7 @@ module Selenium
           if opts.key?(:profile)
             profile = opts.delete(:profile)
             unless profile.is_a?(Profile)
-              profile = Profile.new(profile)
+              profile = Profile.from_name(profile)
             end
             caps[:firefox_options][:profile] = profile.encoded
           end
