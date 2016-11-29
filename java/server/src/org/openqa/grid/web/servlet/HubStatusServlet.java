@@ -139,7 +139,8 @@ public class HubStatusServlet extends RegistryBasedServlet {
     int usedSlots = 0;
 
     for (RemoteProxy proxy : getRegistry().getAllProxies()) {
-      totalSlots += proxy.getMaxNumberOfConcurrentTestSessions();
+      totalSlots += proxy.getTestSlots().size() > proxy.getMaxNumberOfConcurrentTestSessions() ?
+        proxy.getMaxNumberOfConcurrentTestSessions() : proxy.getTestSlots().size();
       usedSlots += proxy.getTotalUsed();
     }
     freeSlots = totalSlots - usedSlots;
