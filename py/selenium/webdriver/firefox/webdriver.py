@@ -103,6 +103,9 @@ class WebDriver(RemoteWebDriver):
         """
         self.binary = None
         self.profile = None
+        self.service = None
+        self._w3c = False
+        self._is_remote = False
 
         if capabilities is None:
             capabilities = DesiredCapabilities.FIREFOX.copy()
@@ -136,6 +139,8 @@ class WebDriver(RemoteWebDriver):
         # TODO(ato): Perform conformance negotiation
 
         if capabilities.get("marionette"):
+            self._w3c = True
+
             self.service = Service(executable_path, log_path=log_path)
             self.service.start()
 
@@ -171,8 +176,6 @@ class WebDriver(RemoteWebDriver):
                 desired_capabilities=capabilities,
                 keep_alive=True)
 
-        self._is_remote = False
-
     def quit(self):
         """Quits the driver and close every associated window."""
         try:
@@ -181,10 +184,12 @@ class WebDriver(RemoteWebDriver):
             # Happens if Firefox shutsdown before we've read the response from
             # the socket.
             pass
-        if "specificationLevel" in self.capabilities:
+
+        if self._w3c:
             self.service.stop()
         else:
             self.binary.kill()
+
         if self.profile is not None:
             try:
                 shutil.rmtree(self.profile.path)
