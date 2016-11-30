@@ -28,16 +28,16 @@ except NameError:  # Python 3.x
 import shutil
 import socket
 import sys
-
-from .extension_connection import ExtensionConnection
 from contextlib import contextmanager
 
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
+
+from .extension_connection import ExtensionConnection
 from .firefox_binary import FirefoxBinary
 from .firefox_profile import FirefoxProfile
 from .options import Options
 from .remote_connection import FirefoxRemoteConnection
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
-from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 from .service import Service
 from .webelement import FirefoxWebElement
 
@@ -46,6 +46,9 @@ class WebDriver(RemoteWebDriver):
 
     # There is no native event support on Mac
     NATIVE_EVENTS_ALLOWED = sys.platform != "darwin"
+
+    CONTEXT_CHROME = "chrome"
+    CONTEXT_CONTENT = "content"
 
     _web_element_cls = FirefoxWebElement
 
@@ -131,9 +134,6 @@ class WebDriver(RemoteWebDriver):
 
         # W3C remote
         # TODO(ato): Perform conformance negotiation
-
-        self.CONTEXT_CHROME = 'chrome'
-        self.CONTEXT_CONTENT = 'content'
 
         if capabilities.get("marionette"):
             self.service = Service(executable_path, log_path=log_path)
