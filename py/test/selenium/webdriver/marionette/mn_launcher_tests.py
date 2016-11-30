@@ -17,4 +17,4 @@
 
 
 def test_launch_and_close_browser(driver):
-    assert 'appBuildId' in driver.capabilities
+    assert 'browserName' in driver.capabilities
