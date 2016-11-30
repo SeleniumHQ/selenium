@@ -52,7 +52,7 @@ class WebDriver(RemoteWebDriver):
 
     _web_element_cls = FirefoxWebElement
 
-    def __init__(self, firefox_profile=None, firefox_binary=None,
+    def __init__(self, firefox_profile=None, firefox_binary="/Users/dburns/development/mozilla-central/obj-ff-dbg.noindex/dist/Nightly.app/Contents/MacOS/firefox",
                  timeout=30, capabilities=None, proxy=None,
                  executable_path="geckodriver", firefox_options=None,
                  log_path="geckodriver.log"):
