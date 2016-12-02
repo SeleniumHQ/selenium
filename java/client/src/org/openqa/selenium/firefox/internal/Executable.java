@@ -123,10 +123,6 @@ public class Executable {
     if (binaryName == null)
       return null;
 
-    File binary = new File(binaryName);
-    if (binary.exists())
-      return binary;
-
     Platform current = Platform.getCurrent();
     if (current.is(WINDOWS)) {
       if (!binaryName.endsWith(".exe"))
