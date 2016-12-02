@@ -129,8 +129,14 @@ public class Executable {
         binaryName += ".exe";
 
     } else if (current.is(MAC)) {
-      if (!binaryName.endsWith(".app"))
+     
+      if (!binaryName.endsWith(".app")){
+        File macBinary = new File(binaryName);
+        if (macBinary.exists()){
+          return macBinary;
+        }
         binaryName += ".app";
+      }
       binaryName += "/Contents/MacOS/firefox-bin";
     }
 
