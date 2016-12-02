@@ -134,7 +134,7 @@ public class Executable {
       binaryName += "/Contents/MacOS/firefox-bin";
     }
 
-    binary = new File(binaryName);
+    File binary = new File(binaryName);
     if (binary.exists())
       return binary;
 
