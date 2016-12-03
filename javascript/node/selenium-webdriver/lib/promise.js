@@ -533,7 +533,7 @@
  *
  * When a subtask is discarded due to an unreported rejection in its parent
  * frame, the existing callbacks on that task will never settle and the
- * callbacks will not be invoked. If a new callback is attached ot the subtask
+ * callbacks will not be invoked. If a new callback is attached to the subtask
  * _after_ it has been discarded, it is handled the same as adding a callback
  * to a cancelled promise: the error-callback path is invoked. This behavior is
  * intended to handle cases where the user saves a reference to a task promise,
@@ -594,7 +594,7 @@
  * >      must execute in the order of their originating calls to `then`.
  * >
  *
- * Specifically, the conformance tests contains the following scenario (for
+ * Specifically, the conformance tests contain the following scenario (for
  * brevity, only the fulfillment version is shown):
  *
  *     var p1 = Promise.resolve();
@@ -608,7 +608,7 @@
  *     // B
  *
  * Since the [ControlFlow](#scheduling_callbacks) executes promise callbacks as
- * tasks, with this module, the result would be
+ * tasks, with this module, the result would be:
  *
  *     var p2 = promise.fulfilled();
  *     p2.then(function() {
@@ -2172,21 +2172,21 @@ const SIMPLE_SCHEDULER = new SimpleScheduler;
  * promises to be resolved before marking the task as completed.
  *
  * Tasks and each callback registered on a {@link ManagedPromise} will be run
- * in their own ControlFlow frame.  Any tasks scheduled within a frame will take
+ * in their own ControlFlow frame. Any tasks scheduled within a frame will take
  * priority over previously scheduled tasks. Furthermore, if any of the tasks in
  * the frame fail, the remainder of the tasks in that frame will be discarded
  * and the failure will be propagated to the user through the callback/task's
  * promised result.
  *
  * Each time a ControlFlow empties its task queue, it will fire an
- * {@link ControlFlow.EventType.IDLE IDLE} event. Conversely,
- * whenever the flow terminates due to an unhandled error, it will remove all
+ * {@link ControlFlow.EventType.IDLE IDLE} event. Conversely, whenever
+ * the flow terminates due to an unhandled error, it will remove all
  * remaining tasks in its queue and fire an
  * {@link ControlFlow.EventType.UNCAUGHT_EXCEPTION UNCAUGHT_EXCEPTION} event.
  * If there are no listeners registered with the flow, the error will be
  * rethrown to the global error handler.
  *
- * Refer to the {@link ./promise} module documentation for a  detailed
+ * Refer to the {@link ./promise} module documentation for a detailed
  * explanation of how the ControlFlow coordinates task execution.
  *
  * @implements {Scheduler}
@@ -2258,8 +2258,7 @@ class ControlFlow extends events.EventEmitter {
    * control flow stack and cause rejections within parent tasks. If error
    * propagation is disabled, tasks will not be aborted when an unhandled
    * promise rejection is detected, but the rejection _will_ trigger an
-   * {@link ControlFlow.EventType.UNCAUGHT_EXCEPTION}
-   * event.
+   * {@link ControlFlow.EventType.UNCAUGHT_EXCEPTION} event.
    *
    * The default behavior is to propagate all unhandled rejections. _The use
    * of this option is highly discouraged._
@@ -2293,7 +2292,7 @@ class ControlFlow extends events.EventEmitter {
    * {@code opt_includeStackTraces === true}, the string will include the
    * stack trace from when each task was scheduled.
    * @param {string=} opt_includeStackTraces Whether to include the stack traces
-   *     from when each task was scheduled. Defaults to false.
+   * from when each task was scheduled. Defaults to false.
    * @return {string} String representation of this flow's internal state.
    */
   getSchedule(opt_includeStackTraces) {
@@ -2345,7 +2344,7 @@ class ControlFlow extends events.EventEmitter {
   }
 
   /**
-   * Returns the currently actively task queue for this flow. If there is no
+   * Returns the currently active task queue for this flow. If there is no
    * active queue, one will be created.
    * @return {!TaskQueue} the currently active task queue for this flow.
    * @private
