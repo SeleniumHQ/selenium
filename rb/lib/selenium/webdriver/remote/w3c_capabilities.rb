@@ -79,7 +79,7 @@ module Selenium
             opts[:browser_version] = opts.delete(:version) if opts.key?(:version)
             opts[:platform_name] = opts.delete(:platform) if opts.key?(:platform)
 
-            new({browser_name: 'firefox'}.merge(opts))
+            new({browser_name: 'firefox', marionette: true}.merge(opts))
           end
 
           alias_method :ff, :firefox
