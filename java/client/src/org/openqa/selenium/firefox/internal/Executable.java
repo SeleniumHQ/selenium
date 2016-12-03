@@ -124,7 +124,7 @@ public class Executable {
       return null;
 
     File binary = new File(binaryName);
-    if (binary.exists())
+    if (binary.exists() && !binary.isDirectory())
       return binary;
 
     Platform current = Platform.getCurrent();
