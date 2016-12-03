@@ -21,7 +21,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-#if !NETSTANDARD1_5
+#if !NETSTANDARD1_3
 using System.Security.Permissions;
 #endif
 using System.Text;
@@ -102,7 +102,7 @@ namespace OpenQA.Selenium.Firefox
         /// </summary>
         /// <param name="profile">The <see cref="FirefoxProfile"/> to use with this instance of Firefox.</param>
         /// <param name="commandLineArguments">The command-line arguments to use in starting Firefox.</param>
-#if !NETSTANDARD1_5
+#if !NETSTANDARD1_3
         [SecurityPermission(SecurityAction.Demand)]
 #endif
         public void StartProfile(FirefoxProfile profile, params string[] commandLineArguments)
@@ -176,7 +176,7 @@ namespace OpenQA.Selenium.Firefox
         /// <summary>
         /// Waits for the process to complete execution.
         /// </summary>
-#if !NETSTANDARD1_5
+#if !NETSTANDARD1_3
         [SecurityPermission(SecurityAction.Demand)]
 #endif
         public void WaitForProcessExit()
@@ -205,7 +205,7 @@ namespace OpenQA.Selenium.Firefox
         /// <summary>
         /// Starts the Firefox process.
         /// </summary>
-#if !NETSTANDARD1_5
+#if !NETSTANDARD1_3
         [SecurityPermission(SecurityAction.Demand)]
 #endif
         protected void StartFirefoxProcess()
@@ -219,7 +219,7 @@ namespace OpenQA.Selenium.Firefox
         /// </summary>
         /// <param name="disposing"><see langword="true"/> to release managed and resources;
         /// <see langword="false"/> to only release unmanaged resources.</param>
-#if !NETSTANDARD1_5
+#if !NETSTANDARD1_3
         [SecurityPermission(SecurityAction.Demand)]
 #endif
         protected virtual void Dispose(bool disposing)
@@ -259,7 +259,7 @@ namespace OpenQA.Selenium.Firefox
             {
                 Thread.Sleep(timeInMilliseconds);
             }
-#if !NETSTANDARD1_5
+#if !NETSTANDARD1_3
             catch (ThreadInterruptedException e)
             {
                 throw new WebDriverException("Thread was interrupted", e);
@@ -338,7 +338,7 @@ namespace OpenQA.Selenium.Firefox
             this.SetEnvironmentProperty("LD_PRELOAD", NoFocusLibraryName);
         }
 
-#if !NETSTANDARD1_5
+#if !NETSTANDARD1_3
         [SecurityPermission(SecurityAction.Demand)]
 #endif
         private void CopeWithTheStrangenessOfTheMac()

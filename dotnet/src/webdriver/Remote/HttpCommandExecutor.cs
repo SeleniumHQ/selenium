@@ -71,7 +71,7 @@ namespace OpenQA.Selenium.Remote
             this.serverResponseTimeout = timeout;
             this.enableKeepAlive = enableKeepAlive;
 
-#if !NETSTANDARD1_5
+#if !NETSTANDARD1_3
             ServicePointManager.Expect100Continue = false;
 
             // In the .NET Framework, HttpWebRequest responses with an error code are limited
@@ -108,7 +108,7 @@ namespace OpenQA.Selenium.Remote
             CommandInfo info = this.commandInfoRepository.GetCommandInfo(commandToExecute.Name);
             HttpWebRequest request = info.CreateWebRequest(this.remoteServerUri, commandToExecute);
             request.Accept = RequestAcceptHeader;
-#if !NETSTANDARD1_5
+#if !NETSTANDARD1_3
             request.Timeout = (int)this.serverResponseTimeout.TotalMilliseconds;
             request.KeepAlive = this.enableKeepAlive;
             request.ServicePoint.ConnectionLimit = 2000;

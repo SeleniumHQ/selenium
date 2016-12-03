@@ -19,16 +19,27 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+#if !NETSTANDARD1_3
 using System.Runtime.Remoting.Messaging;
 using System.Runtime.Remoting.Proxies;
+#else
+using Castle.DynamicProxy;
+#endif
 
 namespace OpenQA.Selenium.Support.PageObjects
 {
     /// <summary>
     /// Represents a base proxy class for objects used with the PageFactory.
     /// </summary>
+#if !NETSTANDARD1_3
     internal abstract class WebDriverObjectProxy : RealProxy
     {
+#else
+    internal abstract class WebDriverObjectProxy : IInterceptor
+    {
+        private ProxyGenerator generator = new ProxyGenerator();
+        private Type classToProxy;
+#endif
         private readonly IElementLocator locator;
         private readonly IEnumerable<By> bys;
         private readonly bool cache;
@@ -42,8 +53,13 @@ namespace OpenQA.Selenium.Support.PageObjects
         /// <param name="bys">The list of methods by which to search for the elements.</param>
         /// <param name="cache"><see langword="true"/> to cache the lookup to the element; otherwise, <see langword="false"/>.</param>
         protected WebDriverObjectProxy(Type classToProxy, IElementLocator locator, IEnumerable<By> bys, bool cache)
+#if !NETSTANDARD1_3
             : base(classToProxy)
         {
+#else
+        {
+            this.classToProxy = classToProxy;
+#endif
             this.locator = locator;
             this.bys = bys;
             this.cache = cache;
@@ -73,6 +89,7 @@ namespace OpenQA.Selenium.Support.PageObjects
             get { return this.cache; }
         }
 
+#if !NETSTANDARD1_3
         /// <summary>
         /// Invokes a method on the object this proxy represents.
         /// </summary>
@@ -90,5 +107,13 @@ namespace OpenQA.Selenium.Support.PageObjects
             MethodInfo proxiedMethod = msg.MethodBase as MethodInfo;
             return new ReturnMessage(proxiedMethod.Invoke(representedValue, msg.Args), null, 0, msg.LogicalCallContext, msg);
         }
+#else
+        public object GetTransparentProxy()
+        {
+            return generator.CreateInterfaceProxyWithoutTarget(classToProxy, this);
+        }
+
+        public abstract void Intercept(IInvocation invocation);
+#endif
     }
 }

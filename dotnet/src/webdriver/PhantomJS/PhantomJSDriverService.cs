@@ -467,7 +467,7 @@ namespace OpenQA.Selenium.PhantomJS
             }
             else
             {
-#if !NETSTANDARD1_5
+#if !NETSTANDARD1_3
                 if (info.PropertyType.IsValueType)
 #else
                 if (info.PropertyType.GetTypeInfo().IsValueType)

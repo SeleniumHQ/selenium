@@ -76,7 +76,7 @@ namespace OpenQA.Selenium.Firefox.Internal
 
                     Thread.Sleep(delayBetweenSocketChecks);
                 }
-#if !NETSTANDARD1_5
+#if !NETSTANDARD1_3
                 catch (ThreadInterruptedException e)
                 {
                     throw new WebDriverException("the thread was interrupted", e);
@@ -110,7 +110,7 @@ namespace OpenQA.Selenium.Firefox.Internal
         {
             try
             {
-#if !NETSTANDARD1_5
+#if !NETSTANDARD1_3
                 this.lockSocket.Close();
 #else
                 this.lockSocket.Dispose();
@@ -129,7 +129,7 @@ namespace OpenQA.Selenium.Firefox.Internal
         {
             if (this.lockSocket != null && this.lockSocket.Connected)
             {
-#if !NETSTANDARD1_5
+#if !NETSTANDARD1_3
                 this.lockSocket.Close();
 #else
                 this.lockSocket.Dispose();
@@ -154,7 +154,7 @@ namespace OpenQA.Selenium.Firefox.Internal
 
         private void PreventSocketInheritance()
         {
-#if !NETSTANDARD1_5
+#if !NETSTANDARD1_3
             // TODO (JimEvans): Handle the non-Windows case.
             if (Platform.CurrentPlatform.IsPlatformType(PlatformType.Windows))
             {

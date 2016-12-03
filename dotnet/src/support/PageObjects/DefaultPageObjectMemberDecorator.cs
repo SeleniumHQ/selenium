@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using OpenQA.Selenium.Internal;
@@ -119,7 +120,11 @@ namespace OpenQA.Selenium.Support.PageObjects
             }
 
             var cacheAttributeType = typeof(CacheLookupAttribute);
-            bool cache = member.GetCustomAttributes(cacheAttributeType, true).Length != 0 || member.DeclaringType.GetCustomAttributes(cacheAttributeType, true).Length != 0;
+#if !NETSTANDARD1_3
+                bool cache = member.GetCustomAttributes(cacheAttributeType, true).Length != 0 || member.DeclaringType.GetCustomAttributes(cacheAttributeType, true).Length != 0;
+#else
+            bool cache = member.GetCustomAttributes(cacheAttributeType, true).Count() != 0 || member.DeclaringType.GetTypeInfo().GetCustomAttributes(cacheAttributeType, true).Count() != 0;
+#endif
             return cache;
         }
 
@@ -136,11 +141,19 @@ namespace OpenQA.Selenium.Support.PageObjects
                 throw new ArgumentNullException("member", "memeber cannot be null");
             }
 
+#if !NETSTANDARD1_3
             var useSequenceAttributes = Attribute.GetCustomAttributes(member, typeof(FindsBySequenceAttribute), true);
             bool useSequence = useSequenceAttributes.Length > 0;
 
             var useFindAllAttributes = Attribute.GetCustomAttributes(member, typeof(FindsByAllAttribute), true);
             bool useAll = useFindAllAttributes.Length > 0;
+#else
+            var useSequenceAttributes = member.GetCustomAttributes<FindsBySequenceAttribute>(true);
+            bool useSequence = useSequenceAttributes.Count() > 0;
+
+            var useFindAllAttributes = member.GetCustomAttributes<FindsByAllAttribute>(true);
+            bool useAll = useFindAllAttributes.Count() > 0;
+#endif
 
             if (useSequence && useAll)
             {
@@ -148,10 +161,16 @@ namespace OpenQA.Selenium.Support.PageObjects
             }
 
             List<By> bys = new List<By>();
+#if !NETSTANDARD1_3
             var attributes = Attribute.GetCustomAttributes(member, typeof(FindsByAttribute), true);
             if (attributes.Length > 0)
             {
                 Array.Sort(attributes);
+#else
+            var attributes = member.GetCustomAttributes<FindsByAttribute>(true).OrderBy(a => a);
+            if (attributes.Count() > 0)
+            {
+#endif
                 foreach (var attribute in attributes)
                 {
                     var castedAttribute = (FindsByAttribute)attribute;
@@ -212,7 +231,11 @@ namespace OpenQA.Selenium.Support.PageObjects
         {
             AssemblyName tempAssemblyName = new AssemblyName(Guid.NewGuid().ToString());
 
+#if !NETSTANDARD1_3
             AssemblyBuilder dynamicAssembly = AppDomain.CurrentDomain.DefineDynamicAssembly(tempAssemblyName, AssemblyBuilderAccess.Run);
+#else
+            AssemblyBuilder dynamicAssembly = AssemblyBuilder.DefineDynamicAssembly(tempAssemblyName, AssemblyBuilderAccess.Run);
+#endif
             ModuleBuilder moduleBuilder = dynamicAssembly.DefineDynamicModule(tempAssemblyName.Name);
             TypeBuilder typeBuilder = moduleBuilder.DefineType(typeof(IWebElement).FullName, TypeAttributes.Public | TypeAttributes.Interface | TypeAttributes.Abstract);
 
@@ -221,7 +244,11 @@ namespace OpenQA.Selenium.Support.PageObjects
                 typeBuilder.AddInterfaceImplementation(type);
             }
 
+#if !NETSTANDARD1_3
             return typeBuilder.CreateType();
+#else
+            return typeBuilder.CreateTypeInfo().AsType();
+#endif
         }
     }
 }

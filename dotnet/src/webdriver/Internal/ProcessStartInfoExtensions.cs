@@ -6,7 +6,7 @@ namespace WebDriver.Internal
     {
         public static void SetEnvironmentVariable(this ProcessStartInfo startInfo, string name, string value)
         {
-#if NETSTANDARD1_5
+#if NETSTANDARD1_3
             if(startInfo.Environment.ContainsKey(name))
             {
                 startInfo.Environment[name] = value;

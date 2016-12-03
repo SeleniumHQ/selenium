@@ -20,7 +20,7 @@ using System;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-#if !NETSTANDARD1_5
+#if !NETSTANDARD1_3
 using System.Security.Permissions;
 #endif
 using System.Text;
@@ -84,7 +84,7 @@ namespace OpenQA.Selenium.Firefox.Internal
         /// Sets the library path for the Firefox executable environment.
         /// </summary>
         /// <param name="builder">The <see cref="Process"/> used to execute the binary.</param>
-#if !NETSTANDARD1_5
+#if !NETSTANDARD1_3
         [SecurityPermission(SecurityAction.Demand)]
 #endif
         public void SetLibraryPath(Process builder)
@@ -100,7 +100,7 @@ namespace OpenQA.Selenium.Firefox.Internal
             }
 
             // Check our extra env vars for the same var, and use it too.
-#if !NETSTANDARD1_5
+#if !NETSTANDARD1_3
             if (builder.StartInfo.EnvironmentVariables.ContainsKey(propertyName))
             {
                 libraryPath.Append(builder.StartInfo.EnvironmentVariables[propertyName]).Append(Path.PathSeparator);
@@ -134,7 +134,7 @@ namespace OpenQA.Selenium.Firefox.Internal
         /// Locates the Firefox binary by platform.
         /// </summary>
         /// <returns>The full path to the binary.</returns>
-#if !NETSTANDARD1_5
+#if !NETSTANDARD1_3
         [SecurityPermission(SecurityAction.Demand)]
 #endif
         private static string LocateFirefoxBinaryFromPlatform()

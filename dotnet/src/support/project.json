@@ -1,0 +1,11 @@
+{
+  "dependencies": {
+    "Castle.Core": "4.0.0-beta002",
+    "System.Reflection.Emit": "4.3.0",
+    "webdriver": "3.0.1-*"
+  },
+  "frameworks": {
+    "netstandard1.3": { }
+  },
+  "version": "3.0.1-*"
+}

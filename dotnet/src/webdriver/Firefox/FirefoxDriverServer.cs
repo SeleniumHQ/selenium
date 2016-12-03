@@ -264,7 +264,7 @@ namespace OpenQA.Selenium.Firefox
             }
             finally
             {
-#if NETSTANDARD1_5
+#if NETSTANDARD1_3
                 extensionSocket.Dispose();
 #else
                 extensionSocket.Close();

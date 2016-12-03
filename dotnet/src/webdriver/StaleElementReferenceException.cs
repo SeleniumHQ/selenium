@@ -24,7 +24,7 @@ namespace OpenQA.Selenium
     /// <summary>
     /// The exception that is thrown when a reference to an element is no longer valid.
     /// </summary>
-#if !NETSTANDARD1_5
+#if !NETSTANDARD1_3
     [Serializable]
 #endif
     public class StaleElementReferenceException : WebDriverException
@@ -60,7 +60,7 @@ namespace OpenQA.Selenium
         {
         }
 
-#if !NETSTANDARD1_5
+#if !NETSTANDARD1_3
         /// <summary>
         /// Initializes a new instance of the <see cref="StaleElementReferenceException"/> class with serialized data.
         /// </summary>

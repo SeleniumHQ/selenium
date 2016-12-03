@@ -85,7 +85,7 @@ namespace Selenium
 		public string DoCommand(string command, string[] args)
 		{
 			IRemoteCommand remoteCommand = new DefaultRemoteCommand(command, args);
-			using (HttpWebResponse response = (HttpWebResponse) CreateWebRequest(remoteCommand).GetResponse())
+			using (HttpWebResponse response = (HttpWebResponse) CreateWebRequest(remoteCommand).GetResponseAsync().Result)
 			{
 				if (response.StatusCode != HttpStatusCode.OK)
 				{
@@ -126,12 +126,21 @@ namespace Selenium
             HttpWebRequest request = (HttpWebRequest) WebRequest.Create(url);
             request.Method = "POST";
             request.ContentType = "application/x-www-form-urlencoded; charset=utf-8";
+#if !NETSTANDARD1_3
             request.Timeout = Timeout.Infinite;
             request.ServicePoint.ConnectionLimit = 2000;
-            
-            Stream rs = request.GetRequestStream();
-            rs.Write(data, 0, data.Length);
-            rs.Close();
+#endif
+
+            using (
+#if NETSTANDARD1_3
+            Stream rs = request.GetRequestStreamAsync().Result
+#else
+            Stream rs = request.GetRequestStream()
+#endif
+            )
+            {
+                rs.Write(data, 0, data.Length);
+            }
             
             return request;
         }

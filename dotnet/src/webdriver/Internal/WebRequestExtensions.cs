@@ -1,4 +1,4 @@
-﻿#if NETSTANDARD1_5
+﻿#if NETSTANDARD1_3
 using System;
 using System.IO;
 using System.Net;

@@ -46,7 +46,7 @@ namespace OpenQA.Selenium.Internal
             }
             finally
             {
-#if !NETSTANDARD1_5
+#if !NETSTANDARD1_3
                 portSocket.Close();
 #else
                 portSocket.Dispose();

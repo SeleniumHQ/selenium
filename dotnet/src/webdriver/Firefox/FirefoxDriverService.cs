@@ -125,7 +125,7 @@ namespace OpenQA.Selenium.Firefox
                     // session id.
                     Uri serviceHealthUri = new Uri(this.ServiceUrl, new Uri("/session/FakeSessionIdForPollingPurposes", UriKind.Relative));
                     HttpWebRequest request = HttpWebRequest.Create(serviceHealthUri) as HttpWebRequest;
-#if !NETSTANDARD1_5
+#if !NETSTANDARD1_3
                     request.KeepAlive = false;
                     request.Timeout = 5000;
 #endif

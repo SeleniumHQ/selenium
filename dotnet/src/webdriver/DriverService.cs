@@ -21,7 +21,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Net;
-#if !NETSTANDARD1_5
+#if !NETSTANDARD1_3
 using System.Security.Permissions;
 #endif
 using OpenQA.Selenium.Internal;
@@ -106,7 +106,7 @@ namespace OpenQA.Selenium
         /// </summary>
         public bool IsRunning
         {
-#if !NETSTANDARD1_5
+#if !NETSTANDARD1_3
             [SecurityPermission(SecurityAction.Demand)]
 #endif
             get { return this.driverServiceProcess != null && !this.driverServiceProcess.HasExited; }
@@ -190,7 +190,7 @@ namespace OpenQA.Selenium
                 {
                     Uri serviceHealthUri = new Uri(this.ServiceUrl, new Uri(DriverCommand.Status, UriKind.Relative));
                     HttpWebRequest request = HttpWebRequest.Create(serviceHealthUri) as HttpWebRequest;
-#if !NETSTANDARD1_5
+#if !NETSTANDARD1_3
                     request.KeepAlive = false;
                     request.Timeout = 5000;
 #endif
@@ -224,7 +224,7 @@ namespace OpenQA.Selenium
         /// <summary>
         /// Starts the DriverService.
         /// </summary>
-#if !NETSTANDARD1_5
+#if !NETSTANDARD1_3
         [SecurityPermission(SecurityAction.Demand)]
 #endif
         public void Start()
@@ -279,7 +279,7 @@ namespace OpenQA.Selenium
         /// <summary>
         /// Stops the DriverService.
         /// </summary>
-#if !NETSTANDARD1_5
+#if !NETSTANDARD1_3
         [SecurityPermission(SecurityAction.Demand)]
 #endif
         private void Stop()
@@ -298,7 +298,7 @@ namespace OpenQA.Selenium
                         // for a failed HTTP request due to a closed socket is particularly
                         // expensive.
                         HttpWebRequest request = HttpWebRequest.Create(shutdownUrl) as HttpWebRequest;
-#if !NETSTANDARD1_5
+#if !NETSTANDARD1_3
                         request.KeepAlive = false;
 #endif
                         HttpWebResponse response = request.GetResponse() as HttpWebResponse;

@@ -66,7 +66,7 @@ namespace OpenQA.Selenium.Internal
                     throw new WebDriverException("The file specified does not exist, and you have specified no internal resource ID");
                 }
 
-#if !NETSTANDARD1_5
+#if !NETSTANDARD1_3
                 Assembly executingAssembly = Assembly.GetCallingAssembly();
 #else
                 Assembly executingAssembly = typeof(ResourceUtilities).GetTypeInfo().Assembly;
@@ -89,7 +89,7 @@ namespace OpenQA.Selenium.Internal
         /// <returns><see langword="true"/> if the resource exists in the calling assembly; otherwise <see langword="false"/>.</returns>
         public static bool IsValidResourceName(string resourceId)
         {
-#if !NETSTANDARD1_5
+#if !NETSTANDARD1_3
             Assembly executingAssembly = Assembly.GetCallingAssembly();
 #else
             Assembly executingAssembly = typeof(ResourceUtilities).GetTypeInfo().Assembly;

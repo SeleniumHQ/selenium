@@ -24,7 +24,7 @@ namespace OpenQA.Selenium
     /// <summary>
     /// The exception that is thrown when an unhandled alert is present.
     /// </summary>
-#if !NETSTANDARD1_5
+#if !NETSTANDARD1_3
     [Serializable]
 #endif
     public class UnhandledAlertException : WebDriverException
@@ -76,7 +76,7 @@ namespace OpenQA.Selenium
         {
         }
 
-#if !NETSTANDARD1_5
+#if !NETSTANDARD1_3
         /// <summary>
         /// Initializes a new instance of the <see cref="UnhandledAlertException"/> class with serialized data.
         /// </summary>
@@ -107,7 +107,7 @@ namespace OpenQA.Selenium
             get { return this.alertText; }
         }
 
-#if !NETSTANDARD1_5
+#if !NETSTANDARD1_3
         /// <summary>
         /// Populates a SerializationInfo with the data needed to serialize the target object.
         /// </summary>

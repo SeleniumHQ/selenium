@@ -26,7 +26,9 @@ namespace OpenQA.Selenium.Support.UI
     /// The exception thrown when using the Select class on a tag that
     /// does not support the HTML select element's selection semantics.
     /// </summary>
+#if !NETSTANDARD1_3
     [Serializable]
+#endif
     public class UnexpectedTagNameException : WebDriverException
     {
         /// <summary>
@@ -69,7 +71,7 @@ namespace OpenQA.Selenium.Support.UI
             : base(message, innerException)
         {
         }
-
+#if !NETSTANDARD1_3
         /// <summary>
         /// Initializes a new instance of the <see cref="UnexpectedTagNameException"/> class with serialized data.
         /// </summary>
@@ -81,5 +83,6 @@ namespace OpenQA.Selenium.Support.UI
             : base(info, context)
         {
         }
+#endif
     }
 }

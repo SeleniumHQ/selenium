@@ -195,7 +195,11 @@ namespace OpenQA.Selenium.Support.PageObjects
             {
                 members.AddRange(type.GetFields(NonPublicBindingOptions));
                 members.AddRange(type.GetProperties(NonPublicBindingOptions));
+#if !NETSTANDARD1_3
                 type = type.BaseType;
+#else
+                type = type.GetTypeInfo().BaseType;
+#endif
             }
 
             foreach (var member in members)

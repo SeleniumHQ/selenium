@@ -24,7 +24,7 @@ namespace OpenQA.Selenium
     /// <summary>
     /// The exception that is thrown when the users attempts to set a cookie with an invalid domain.
     /// </summary>
-#if !NETSTANDARD1_5
+#if !NETSTANDARD1_3
     [Serializable]
 #endif
     public class InvalidCookieDomainException : WebDriverException
@@ -60,7 +60,7 @@ namespace OpenQA.Selenium
         {
         }
 
-#if !NETSTANDARD1_5
+#if !NETSTANDARD1_3
         /// <summary>
         /// Initializes a new instance of the <see cref="InvalidCookieDomainException"/> class with serialized data.
         /// </summary>

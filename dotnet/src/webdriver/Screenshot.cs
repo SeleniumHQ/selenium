@@ -26,7 +26,7 @@ namespace OpenQA.Selenium
     /// <summary>
     /// Represents an image of the page currently loaded in the browser.
     /// </summary>
-#if !NETSTANDARD1_5
+#if !NETSTANDARD1_3
     [Serializable]
 #endif
     public class Screenshot

@@ -11,7 +11,7 @@ namespace WebDriver.Internal
 
         public static string GetUserName()
         {
-#if !NETSTANDARD1_5
+#if !NETSTANDARD1_3
             return Environment.UserName;
 #else
             return Environment.GetEnvironmentVariable("USERNAME");
@@ -22,7 +22,7 @@ namespace WebDriver.Internal
         {
             IPAddress endPointAddress = IPAddress.Parse("127.0.0.1");
 
-#if !NETSTANDARD1_5
+#if !NETSTANDARD1_3
             IPHostEntry hostEntry = Dns.GetHostEntry("localhost");
 
             // Use the first IPv4 address that we find
@@ -41,7 +41,7 @@ namespace WebDriver.Internal
 
         public static string GetApplicationDataFolder()
         {
-#if NETSTANDARD1_5
+#if NETSTANDARD1_3
             return Environment.ExpandEnvironmentVariables("%APPDATA%");
 #else
             return Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
@@ -50,7 +50,7 @@ namespace WebDriver.Internal
 
         public static string GetProgramFilesFolder()
         {
-#if NETSTANDARD1_5
+#if NETSTANDARD1_3
             return Environment.ExpandEnvironmentVariables("%ProgramFiles%");
 #else
             return Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
@@ -59,7 +59,7 @@ namespace WebDriver.Internal
 
         public static OperatingSystemFamily GetOperatingSystemFamily()
         {
-#if NETSTANDARD1_5
+#if NETSTANDARD1_3
             if(RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
                 return OperatingSystemFamily.Windows;
@@ -103,7 +103,7 @@ namespace WebDriver.Internal
         {
             Version ret;
 
-#if NETSTANDARD1_5
+#if NETSTANDARD1_3
             var match = System.Text.RegularExpressions.Regex.Match(
                 RuntimeInformation.OSDescription,
                 "^\\D*(?<Major>\\d{1,2})\\.(?<Minor>\\d)(?:\\.(?<Build>\\d+))?(?:\\.(?<Revision>\\d+))?\\D*$"
