@@ -457,12 +457,12 @@ class IWebDriver {
    * while evaluating the condition, they will be allowed to propagate. In the
    * event a condition returns a {@link promise.Promise promise}, the polling
    * loop will wait for it to be resolved and use the resolved value for whether
-   * the condition has been satisified. Note the resolution time for a promise
+   * the condition has been satisfied. Note the resolution time for a promise
    * is factored into whether a wait has timed out.
    *
    * Note, if the provided condition is a {@link WebElementCondition}, then
    * the wait will return a {@link WebElementPromise} that will resolve to the
-   * element that satisified the condition.
+   * element that satisfied the condition.
    *
    * _Example:_ waiting up to 10 seconds for an element to be present on the
    * page.
@@ -779,7 +779,7 @@ class WebDriver {
         'WebDriver.createSession()');
     if (typeof opt_onQuit === 'function') {
       session = session.catch(err => {
-        return Promise.resolve(opt_onQuit.call(void 0)).then(_ => {throw err});
+        return Promise.resolve(opt_onQuit.call(void 0)).then(_ => {throw err;});
       });
     }
     const ctor = opt_ctor || WebDriver;
@@ -850,7 +850,7 @@ class WebDriver {
         new command.Command(command.Name.QUIT),
         'WebDriver.quit()');
     // Delete our session ID when the quit command finishes; this will allow us
-    // to throw an error when attemnpting to use a driver post-quit.
+    // to throw an error when attempting to use a driver post-quit.
     return /** @type {!promise.Thenable} */(promise.finally(result, () => {
       this.session_ = this.flow_.promise((_, reject) => {
         reject(new error.NoSuchSessionError(
@@ -1181,7 +1181,7 @@ class Navigation {
 /**
  * Provides methods for managing browser and driver state.
  *
- * This class should never be instantiated directly. Insead, obtain an instance
+ * This class should never be instantiated directly. Instead, obtain an instance
  * with {@linkplain WebDriver#manage() webdriver.manage()}.
  */
 class Options {
@@ -1427,7 +1427,7 @@ Options.Cookie.prototype.expiry;
 /**
  * An interface for managing timeout behavior for WebDriver instances.
  *
- * This class should never be instantiated directly. Insead, obtain an instance
+ * This class should never be instantiated directly. Instead, obtain an instance
  * with
  *
  *    webdriver.manage().timeouts()
@@ -2009,7 +2009,7 @@ class WebElement {
    * this instance.
    *
    * Modifier keys (SHIFT, CONTROL, ALT, META) are stateful; once a modifier is
-   * processed in the keysequence, that key state is toggled until one of the
+   * processed in the key sequence, that key state is toggled until one of the
    * following occurs:
    *
    * - The modifier key is encountered again in the sequence. At this point the
@@ -2028,13 +2028,13 @@ class WebElement {
    *                          Key.chord(Key.CONTROL, "a"),
    *                          "now text is");
    *
-   * - The end of the keysequence is encountered. When there are no more keys
+   * - The end of the key sequence is encountered. When there are no more keys
    *   to type, all depressed modifier keys are released (with accompanying
    *   keyup events).
    *
    * If this element is a file input ({@code <input type="file">}), the
    * specified key sequence should specify the path to the file to attach to
-   * the element. This is analgous to the user clicking "Browse..." and entering
+   * the element. This is analogous to the user clicking "Browse..." and entering
    * the path into the file select dialog.
    *
    *     var form = driver.findElement(By.css('form'));
@@ -2050,7 +2050,7 @@ class WebElement {
    *
    * __Note:__ On browsers where native keyboard events are not supported
    * (e.g. Firefox on OS X), key events will be synthesized. Special
-   * punctionation keys will be synthesized according to a standard QWERTY en-us
+   * punctuation keys will be synthesized according to a standard QWERTY en-us
    * keyboard layout.
    *
    * @param {...(number|string|!IThenable<(number|string)>)} var_args The
@@ -2214,7 +2214,7 @@ class WebElement {
 
   /**
    * Schedules a command to query whether the DOM element represented by this
-   * instance is enabled, as dicted by the {@code disabled} attribute.
+   * instance is enabled, as dictated by the {@code disabled} attribute.
    * @return {!promise.Thenable<boolean>} A promise that will be
    *     resolved with whether this element is currently enabled.
    */
@@ -2327,7 +2327,7 @@ class WebElementPromise extends WebElement {
       if (promise.CancellableThenable.isImplementation(el)) {
         /** @type {!promise.CancellableThenable} */(el).cancel(opt_reason);
       }
-    }
+    };
 
     /** @override */
     this.then = el.then.bind(el);

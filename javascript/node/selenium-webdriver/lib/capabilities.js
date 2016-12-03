@@ -103,7 +103,7 @@ const Capability = {
    */
   PROXY: 'proxy',
 
-  /** Whether the driver supports changing the brower's orientation. */
+  /** Whether the driver supports changing the browser's orientation. */
   ROTATABLE: 'rotatable',
 
   /**

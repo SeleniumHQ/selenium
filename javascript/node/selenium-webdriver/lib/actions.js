@@ -333,7 +333,7 @@ class ActionSequence {
   /**
    * Performs a modifier key press. The modifier key is <em>not released</em>
    * until {@link #keyUp} or {@link #sendKeys} is called. The key press will be
-   * targetted at the currently focused element.
+   * targeted at the currently focused element.
    *
    * @param {!input.Key} key The modifier key to push. Must be one of
    *     {ALT, CONTROL, SHIFT, COMMAND, META}.
@@ -347,7 +347,7 @@ class ActionSequence {
   }
 
   /**
-   * Performs a modifier key release. The release is targetted at the currently
+   * Performs a modifier key release. The release is targeted at the currently
    * focused element.
    * @param {!input.Key} key The modifier key to release. Must be one of
    *     {ALT, CONTROL, SHIFT, COMMAND, META}.
@@ -363,7 +363,7 @@ class ActionSequence {
   /**
    * Simulates typing multiple keys. Each modifier key encountered in the
    * sequence will not be released until it is encountered again. All key events
-   * will be targetted at the currently focused element.
+   * will be targeted at the currently focused element.
    *
    * @param {...(string|!input.Key|!Array<(string|!input.Key)>)} var_args
    *     The keys to type.
