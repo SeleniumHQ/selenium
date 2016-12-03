@@ -22,7 +22,8 @@ require_relative '../spec_helper'
 module Selenium
   module WebDriver
     module Firefox
-      describe Profile do
+      not_compliant_on driver: :remote do
+        describe Profile do
           let(:profile) { Profile.new }
 
           def read_generated_prefs(from = nil)
@@ -155,6 +156,7 @@ module Selenium
             end
           end
         end
+      end
     end # Firefox
   end # WebDriver
 end # Selenium
