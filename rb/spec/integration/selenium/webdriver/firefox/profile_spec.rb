@@ -22,8 +22,7 @@ require_relative '../spec_helper'
 module Selenium
   module WebDriver
     module Firefox
-      compliant_on driver: :ff_legacy do
-        describe Profile do
+      describe Profile do
           let(:profile) { Profile.new }
 
           def read_generated_prefs(from = nil)
@@ -145,7 +144,7 @@ module Selenium
             profile['browser.startup.homepage'] = url_for('formPage.html')
 
             begin
-              opt = {desired_capabilities: Remote::Capabilities.firefox(marionette: false),
+              opt = {desired_capabilities: Remote::Capabilities.firefox(marionette: browser == :firefox),
                      profile: profile}
 
               driver_one = WebDriver.for(:firefox, opt.dup)
@@ -156,7 +155,6 @@ module Selenium
             end
           end
         end
-      end
     end # Firefox
   end # WebDriver
 end # Selenium

@@ -21,6 +21,10 @@ module Selenium
   module WebDriver
     module SpecSupport
       module Helpers
+        def browser
+          GlobalTestEnv.driver
+        end
+
         def driver
           GlobalTestEnv.driver_instance
         end

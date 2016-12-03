@@ -82,7 +82,8 @@ module Selenium
               browser_name: 'firefox',
               javascript_enabled: true,
               takes_screenshot: true,
-              css_selectors_enabled: true
+              css_selectors_enabled: true,
+              marionette: false
             }.merge(opts))
           end
 
