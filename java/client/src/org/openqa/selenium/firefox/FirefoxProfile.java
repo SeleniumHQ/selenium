@@ -43,25 +43,27 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.net.URL;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 
 public class FirefoxProfile {
+
   public static final String PORT_PREFERENCE = "webdriver_firefox_port";
   public static final String ALLOWED_HOSTS_PREFERENCE = "webdriver_firefox_allowed_hosts";
 
   private static final String defaultPrefs = "/org/openqa/selenium/firefox/webdriver_prefs.json";
-
+  private static final String ENABLE_NATIVE_EVENTS_PREF = "webdriver_enable_native_events";
+  private static final String ACCEPT_UNTRUSTED_CERTS_PREF = "webdriver_accept_untrusted_certs";
+  private static final String ASSUME_UNTRUSTED_ISSUER_PREF = "webdriver_assume_untrusted_issuer";
   private Preferences additionalPrefs;
-
   private Map<String, Extension> extensions = Maps.newHashMap();
   private boolean enableNativeEvents;
   private boolean loadNoFocusLib;
   private boolean acceptUntrustedCerts;
   private boolean untrustedCertIssuer;
   private File model;
-  private static final String ENABLE_NATIVE_EVENTS_PREF = "webdriver_enable_native_events";
-  private static final String ACCEPT_UNTRUSTED_CERTS_PREF = "webdriver_accept_untrusted_certs";
-  private static final String ASSUME_UNTRUSTED_ISSUER_PREF = "webdriver_assume_untrusted_issuer";
+  private Set<File> temporaryFiles = new CopyOnWriteArraySet<>();
 
   public FirefoxProfile() {
     this(null);
@@ -118,6 +120,16 @@ public class FirefoxProfile {
     }
   }
 
+  public static FirefoxProfile fromJson(String json) throws IOException {
+    File dir = TemporaryFilesystem.getDefaultTmpFS().createTempDir("webdriver", "duplicated");
+
+    new Zip().unzip(json, dir);
+
+    FirefoxProfile firefoxProfile = new FirefoxProfile(dir);
+    firefoxProfile.temporaryFiles.add(dir);
+    return firefoxProfile;
+  }
+
   /**
    * <strong>Internal method. This is liable to change at a moment's notice.</strong>
    *
@@ -148,7 +160,7 @@ public class FirefoxProfile {
 
   public String getStringPreference(String key, String defaultValue) {
     Object preference = additionalPrefs.getPreference(key);
-    if(preference != null && preference instanceof String) {
+    if (preference != null && preference instanceof String) {
       return (String) preference;
     }
     return defaultValue;
@@ -156,7 +168,7 @@ public class FirefoxProfile {
 
   public int getIntegerPreference(String key, int defaultValue) {
     Object preference = additionalPrefs.getPreference(key);
-    if(preference != null && preference instanceof Integer) {
+    if (preference != null && preference instanceof Integer) {
       return (Integer) preference;
     }
     return defaultValue;
@@ -164,7 +176,7 @@ public class FirefoxProfile {
 
   public boolean getBooleanPreference(String key, boolean defaultValue) {
     Object preference = additionalPrefs.getPreference(key);
-    if(preference != null && preference instanceof Boolean) {
+    if (preference != null && preference instanceof Boolean) {
       return (Boolean) preference;
     }
     return defaultValue;
@@ -177,12 +189,12 @@ public class FirefoxProfile {
 
     if (!model.exists()) {
       throw new UnableToCreateProfileException(
-          "Given model profile directory does not exist: " + model.getPath());
+        "Given model profile directory does not exist: " + model.getPath());
     }
 
     if (!model.isDirectory()) {
       throw new UnableToCreateProfileException(
-          "Given model profile directory is not a directory: " + model.getAbsolutePath());
+        "Given model profile directory is not a directory: " + model.getAbsolutePath());
     }
   }
 
@@ -229,7 +241,7 @@ public class FirefoxProfile {
    * and ends with one too) an IllegalArgumentException is thrown: Firefox fails to start properly
    * when some values are set to this.
    *
-   * @param key The key
+   * @param key   The key
    * @param value The new value.
    */
   public void setPreference(String key, String value) {
@@ -239,7 +251,7 @@ public class FirefoxProfile {
   /**
    * Set a preference for this particular profile.
    *
-   * @param key The key
+   * @param key   The key
    * @param value The new value.
    */
   public void setPreference(String key, boolean value) {
@@ -249,7 +261,7 @@ public class FirefoxProfile {
   /**
    * Set a preference for this particular profile.
    *
-   * @param key The key
+   * @param key   The key
    * @param value The new value.
    */
   public void setPreference(String key, int value) {
@@ -388,16 +400,14 @@ public class FirefoxProfile {
     return new Zip().zip(generatedProfile);
   }
 
-  public static FirefoxProfile fromJson(String json) throws IOException {
-    File dir = TemporaryFilesystem.getDefaultTmpFS().createTempDir("webdriver", "duplicated");
-
-    new Zip().unzip(json, dir);
-
-    return new FirefoxProfile(dir);
-  }
-
   protected void cleanTemporaryModel() {
     clean(model);
+  }
+
+  public void cleanTemporaryFiles() {
+    for (File temporaryFile : temporaryFiles) {
+      clean(temporaryFile);
+    }
   }
 
   /**
@@ -413,7 +423,8 @@ public class FirefoxProfile {
   public File layoutOnDisk() {
     try {
       File profileDir = TemporaryFilesystem.getDefaultTmpFS()
-          .createTempDir("anonymous", "webdriver-profile");
+        .createTempDir("anonymous", "webdriver-profile");
+      temporaryFiles.add(profileDir);
       File userPrefs = new File(profileDir, "user.js");
 
       copyModel(model, profileDir);
