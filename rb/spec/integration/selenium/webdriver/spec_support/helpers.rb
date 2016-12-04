@@ -22,7 +22,7 @@ module Selenium
     module SpecSupport
       module Helpers
         def browser
-          GlobalTestEnv.driver
+          GlobalTestEnv.browser
         end
 
         def driver
