@@ -24,12 +24,25 @@ module Selenium
     module Firefox
       describe Profile do
         let(:profile) { Profile.new }
+        let(:browser) { GlobalTestEnv.driver == :remote ? :remote : :firefox }
 
         def read_generated_prefs(from = nil)
           prof = from || profile
           dir = prof.layout_on_disk
 
           File.read(File.join(dir, 'user.js'))
+        end
+
+        def profile_opts
+          if GlobalTestEnv.driver == :remote
+            opt = { desired_capabilities: GlobalTestEnv.remote_capabilities.dup }
+            opt[:desired_capabilities][:firefox_profile] = profile
+            opt[:url] = GlobalTestEnv.remote_server.webdriver_url if GlobalTestEnv.remote_server?
+            opt
+          else
+            { desired_capabilities: Remote::Capabilities.firefox(marionette: GlobalTestEnv.browser == :firefox),
+              profile: profile }
+          end
         end
 
         it 'should set additional preferences' do
@@ -140,24 +153,31 @@ module Selenium
           expect(string).to include('user_pref("network.proxy.type", 4)')
         end
 
-        it 'should be able to use the same profile more than once' do
-          profile['browser.startup.homepage'] = url_for('formPage.html')
+        describe 'with browser' do
+          before(:each) do
+            profile['browser.startup.homepage'] = url_for('simpleTest.html')
+            profile['browser.startup.page'] = 1
+          end
 
-          begin
-            if GlobalTestEnv.driver == :remote
-              opt = { desired_capabilities: GlobalTestEnv.remote_capabilities.dup }
-              opt[:desired_capabilities][:firefox_profile] = profile
-              opt[:url] = GlobalTestEnv.remote_server.webdriver_url if GlobalTestEnv.remote_server?
-            else
-              opt = { desired_capabilities: Remote::Capabilities.firefox(marionette: browser == :firefox),
-                      profile: profile }
+          it 'should instantiate the browser with the correct profile' do
+            begin
+              driver1 = WebDriver.for(browser, profile_opts.dup)
+              expect{ wait(5).until { driver1.find_element(id: 'oneline') } }.to_not raise_error
+            ensure
+              driver1.quit
             end
+          end
 
-            driver_one = WebDriver.for(GlobalTestEnv.driver, opt.dup)
-            driver_two = WebDriver.for(GlobalTestEnv.driver, opt.dup)
-          ensure
-            driver_one.quit if driver_one
-            driver_two.quit if driver_two
+          it 'should be able to use the same profile more than once' do
+            begin
+              driver1 = WebDriver.for(browser, profile_opts.dup)
+              expect{ wait(5).until { driver1.find_element(id: 'oneline') } }.to_not raise_error
+              driver2 = WebDriver.for(browser, profile_opts.dup)
+              expect{ wait(5).until { driver2.find_element(id: 'oneline') } }.to_not raise_error
+            ensure
+              driver1.quit if driver1
+              driver2.quit if driver2
+            end
           end
         end
       end
