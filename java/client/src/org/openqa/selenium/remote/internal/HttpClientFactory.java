@@ -99,8 +99,8 @@ public class HttpClientFactory {
 
     HttpClientBuilder builder = HttpClientBuilder.create()
         .setConnectionManager(getClientConnectionManager())
-        .setDefaultSocketConfig(createSocketConfig(socketTimeout))
-        .setDefaultRequestConfig(createRequestConfig(connectionTimeout, socketTimeout))
+        .setDefaultSocketConfig(socketConfig)
+        .setDefaultRequestConfig(requestConfig)
         .setRoutePlanner(createRoutePlanner());
 
     if (credentials != null) {
