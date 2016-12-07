@@ -1361,7 +1361,10 @@ public class ExpectedConditions {
         try {
           elements = webDriver.findElement(locator).findElements(sub_locator);
         } catch (Exception e) {/**/}
-        return elements;
+        if (elements != null && elements.size() > 0) {
+          return elements;
+        }
+        return null;
       }
 
       @Override
