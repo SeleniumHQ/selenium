@@ -51,6 +51,7 @@ import org.openqa.selenium.interactions.MoveTargetOutOfBoundsException;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -127,15 +128,16 @@ public class ErrorCodes {
       return 0;
     }
 
-    Set<KnownError> possibleMatches = KNOWN_ERRORS.stream()
+    List<KnownError> possibleMatches = KNOWN_ERRORS.stream()
       .filter(knownError -> knownError.getW3cCode().equals(webdriverState))
       .filter(KnownError::isCanonicalForW3C)
-      .collect(Collectors.toSet());
+      .sorted((a,b) -> Integer.compare(a.getJsonCode(),b.getJsonCode()))
+      .collect(Collectors.toList());
 
     if (possibleMatches.isEmpty()) {
       return UNHANDLED_ERROR;
     }
-    KnownError error = Iterables.getOnlyElement(possibleMatches);
+    KnownError error = possibleMatches.get(0);
     if (httpStatus.isPresent() && httpStatus.get() != error.getW3cHttpStatus()) {
       log.info(String.format(
         "HTTP Status: '%d' -> incorrect JSON status mapping for '%s' (%d expected)",

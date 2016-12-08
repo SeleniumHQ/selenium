@@ -169,8 +169,11 @@ class RemoteConnection(object):
         addr = parsed_url.hostname
         if parsed_url.hostname and resolve_ip:
             port = parsed_url.port or None
-            ip = common_utils.find_connectable_ip(parsed_url.hostname,
-                                                  port=port)
+            if parsed_url.scheme == "https":
+                ip = parsed_url.hostname
+            else:
+                ip = common_utils.find_connectable_ip(parsed_url.hostname,
+                                                      port=port)
             if ip:
                 netloc = ip
                 addr = netloc
@@ -215,6 +218,7 @@ class RemoteConnection(object):
             Command.ELEMENT_SCREENSHOT: ('GET', '/session/$sessionId/element/$id/screenshot'),
             Command.FIND_ELEMENT: ('POST', '/session/$sessionId/element'),
             Command.FIND_ELEMENTS: ('POST', '/session/$sessionId/elements'),
+            Command.W3C_GET_ACTIVE_ELEMENT: ('GET', '/session/$sessionId/element/active'),
             Command.GET_ACTIVE_ELEMENT:
                 ('POST', '/session/$sessionId/element/active'),
             Command.FIND_CHILD_ELEMENT:

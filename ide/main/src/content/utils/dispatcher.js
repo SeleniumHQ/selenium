@@ -22,6 +22,12 @@ function Dispatcher(queuePath, server) {
   this.queuePath = queuePath;
 }
 
+
+Dispatcher.prototype.setServer = function(server) {
+  this.server = server;
+};
+
+
 Dispatcher.prototype.send = function(data) {
   return HTTP.post(this.server, data);
   // TODO convert and persist in queue

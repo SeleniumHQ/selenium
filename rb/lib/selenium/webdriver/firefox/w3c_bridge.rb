@@ -27,7 +27,8 @@ module Selenium
           opts[:desired_capabilities] = create_capabilities(opts)
           service_args = opts.delete(:service_args) || {}
 
-          @service = Service.new(Firefox.driver_path, port, *extract_service_args(service_args))
+          driver_path = opts.delete(:driver_path) || Firefox.driver_path(false)
+          @service = Service.new(driver_path, port, *extract_service_args(service_args))
           @service.start
           opts[:url] = @service.uri
 

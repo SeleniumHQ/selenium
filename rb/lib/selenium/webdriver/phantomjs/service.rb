@@ -26,6 +26,8 @@ module Selenium
 
       class Service < WebDriver::Service
         DEFAULT_PORT = 8910
+        @executable = 'phantomjs'.freeze
+        @missing_text = 'Unable to find phantomjs. Please download from http://phantomjs.org/download.html'.freeze
 
         private
 
@@ -51,10 +53,6 @@ module Selenium
           rescue
             nil
           end
-        end
-
-        def stop_server
-          connect_to_server { |http| http.get('/shutdown') }
         end
 
         def cannot_connect_error_text

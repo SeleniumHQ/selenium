@@ -77,6 +77,16 @@ module Selenium
               expect(cookies.first[:value]).to eq('bar')
             end
 
+            # Firefox - https://bugzilla.mozilla.org/show_bug.cgi?id=1282970
+            not_compliant_on browser: :firefox do
+              it 'should get named cookie' do
+                driver.navigate.to url_for('xhtmlTest.html')
+                driver.manage.add_cookie name: 'foo', value: 'bar'
+
+                expect(driver.manage.cookie_named('foo')[:value]).to eq('bar')
+              end
+            end
+
             # Edge BUG - https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/5751773/
             not_compliant_on browser: :edge do
               it 'should delete one' do
@@ -84,15 +94,16 @@ module Selenium
                 driver.manage.add_cookie name: 'foo', value: 'bar'
 
                 driver.manage.delete_cookie('foo')
+                expect(driver.manage.all_cookies.find { |c| c[:name] == 'foo' }).to be_nil
               end
             end
 
-            # Edge BUG - https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/5751773/
             not_compliant_on browser: :edge do
               it 'should delete all' do
                 driver.navigate.to url_for('xhtmlTest.html')
 
                 driver.manage.add_cookie name: 'foo', value: 'bar'
+                driver.manage.add_cookie name: 'bar', value: 'foo'
                 driver.manage.delete_all_cookies
                 expect(driver.manage.all_cookies).to be_empty
               end

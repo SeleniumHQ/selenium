@@ -32,25 +32,6 @@ module Selenium
         include BridgeHelper
         include Atoms
 
-        # TODO: constant shouldn't be modified in class
-        COMMANDS = {}
-
-        #
-        # Defines a wrapper method for a command, which ultimately calls #execute.
-        #
-        # @param name [Symbol]
-        #   name of the resulting method
-        # @param verb [Symbol]
-        #   the appropriate http verb, such as :get, :post, or :delete
-        # @param url [String]
-        #   a URL template, which can include some arguments, much like the definitions on the server.
-        #   the :session_id parameter is implicitly handled, but the remainder will become required method arguments.
-        #
-
-        def self.command(name, verb, url)
-          COMMANDS[name] = [verb, url.freeze]
-        end
-
         attr_accessor :context, :http, :file_detector
         attr_reader :capabilities
 
@@ -63,7 +44,6 @@ module Selenium
         #
 
         def initialize(opts = {})
-          edge_check(opts)
 
           opts = opts.dup
 
@@ -97,13 +77,6 @@ module Selenium
           )
         end
 
-        def edge_check(opts)
-          caps = opts[:desired_capabilities]
-          return unless caps && caps[:browser_name] && caps[:browser_name] == 'MicrosoftEdge'
-          require_relative '../edge/legacy_support'
-          extend Edge::LegacySupport
-        end
-
         def driver_extensions
           [
             DriverExtensions::HasInputDevices,
@@ -115,6 +88,15 @@ module Selenium
             DriverExtensions::HasRemoteStatus,
             DriverExtensions::HasWebStorage
           ]
+        end
+
+        def commands(command)
+          case command
+          when :status, :is_element_displayed
+            Bridge::COMMANDS[command]
+          else
+            COMMANDS[command]
+          end
         end
 
         #
@@ -129,7 +111,7 @@ module Selenium
           # TODO - Remove this when Mozilla fixes bug
           desired_capabilities[:browser_name] = 'firefox' if desired_capabilities[:browser_name] == 'Firefox'
 
-          resp = raw_execute :newSession, {}, {desiredCapabilities: desired_capabilities}
+          resp = raw_execute :new_session, {}, {desiredCapabilities: desired_capabilities}
           @session_id = resp['sessionId']
           return W3CCapabilities.json_create resp['value'] if @session_id
 
@@ -137,8 +119,6 @@ module Selenium
         end
 
         def status
-          jwp = Selenium::WebDriver::Remote::Bridge::COMMANDS[:status]
-          self.class.command(:status, jwp.first, jwp.last)
           execute :status
         end
 
@@ -155,7 +135,7 @@ module Selenium
         end
 
         def timeout(type, milliseconds)
-          execute :setTimeout, {}, {type: type, ms: milliseconds}
+          execute :set_timeout, {}, {type: type, ms: milliseconds}
         end
 
         #
@@ -163,19 +143,19 @@ module Selenium
         #
 
         def accept_alert
-          execute :acceptAlert
+          execute :accept_alert
         end
 
         def dismiss_alert
-          execute :dismissAlert
+          execute :dismiss_alert
         end
 
         def alert=(keys)
-          execute :sendAlertText, {}, {handler: 'prompt', text: keys}
+          execute :send_alert_text, {}, {handler: 'prompt', text: keys}
         end
 
         def alert_text
-          execute :getAlertText
+          execute :get_alert_text
         end
 
         #
@@ -191,11 +171,11 @@ module Selenium
         end
 
         def url
-          execute :getCurrentUrl
+          execute :get_current_url
         end
 
         def title
-          execute :getTitle
+          execute :get_title
         end
 
         def page_source
@@ -205,16 +185,16 @@ module Selenium
         end
 
         def switch_to_window(name)
-          execute :switchToWindow, {}, {handle: name}
+          execute :switch_to_window, {}, {handle: name}
         end
 
         def switch_to_frame(id)
           id = find_element_by('id', id) if id.is_a? String
-          execute :switchToFrame, {}, {id: id}
+          execute :switch_to_frame, {}, {id: id}
         end
 
         def switch_to_parent_frame
-          execute :switchToParentFrame
+          execute :switch_to_parent_frame
         end
 
         def switch_to_default_content
@@ -224,13 +204,13 @@ module Selenium
         QUIT_ERRORS = [IOError].freeze
 
         def quit
-          execute :deleteSession
+          execute :delete_session
           http.close
         rescue *QUIT_ERRORS
         end
 
         def close
-          execute :closeWindow
+          execute :close_window
         end
 
         def refresh
@@ -242,18 +222,18 @@ module Selenium
         #
 
         def window_handles
-          execute :getWindowHandles
+          execute :get_window_handles
         end
 
         def window_handle
-          execute :getWindowHandle
+          execute :get_window_handle
         end
 
         def resize_window(width, height, handle = :current)
           unless handle == :current
             raise Error::WebDriverError, 'Switch to desired window before changing its size'
           end
-          execute :setWindowSize, {}, {width: width,
+          execute :set_window_size, {}, {width: width,
                                        height: height}
         end
 
@@ -261,18 +241,18 @@ module Selenium
           unless handle == :current
             raise Error::UnsupportedOperationError, 'Switch to desired window before changing its size'
           end
-          execute :maximizeWindow
+          execute :maximize_window
         end
 
         def full_screen_window
-          execute :fullscreenWindow
+          execute :fullscreen_window
         end
 
         def window_size(handle = :current)
           unless handle == :current
             raise Error::UnsupportedOperationError, 'Switch to desired window before getting its size'
           end
-          data = execute :getWindowSize
+          data = execute :get_window_size
 
           Dimension.new data['width'], data['height']
         end
@@ -286,7 +266,7 @@ module Selenium
         end
 
         def screenshot
-          execute :takeScreenshot
+          execute :take_screenshot
         end
 
         #
@@ -362,12 +342,12 @@ module Selenium
         #
 
         def execute_script(script, *args)
-          result = execute :executeScript, {}, {script: script, args: args}
+          result = execute :execute_script, {}, {script: script, args: args}
           unwrap_script_result result
         end
 
         def execute_async_script(script, *args)
-          result = execute :executeAsyncScript, {}, {script: script, args: args}
+          result = execute :execute_async_script, {}, {script: script, args: args}
           unwrap_script_result result
         end
 
@@ -375,25 +355,28 @@ module Selenium
         # cookies
         #
 
+        def options
+          @options ||= WebDriver::W3COptions.new(self)
+        end
+
         def add_cookie(cookie)
-          execute :addCookie, {}, {cookie: cookie}
+          execute :add_cookie, {}, {cookie: cookie}
         end
 
         def delete_cookie(name)
-          execute :deleteCookie, name: name
+          execute :delete_cookie, name: name
         end
 
-        # TODO: - write specs
         def cookie(name)
-          execute :getCookie, name: name
+          execute :get_cookie, name: name
         end
 
         def cookies
-          execute :getAllCookies
+          execute :get_all_cookies
         end
 
         def delete_all_cookies
-          cookies.each { |cookie| delete_cookie(cookie['name']) }
+          execute :delete_all_cookies
         end
 
         #
@@ -401,7 +384,7 @@ module Selenium
         #
 
         def click_element(element)
-          execute :elementClick, id: element.values.first
+          execute :element_click, id: element.values.first
         end
 
         def click
@@ -409,7 +392,7 @@ module Selenium
         end
 
         def double_click
-          execute :doubleClick
+          execute :double_click
         end
 
         def context_click
@@ -417,11 +400,11 @@ module Selenium
         end
 
         def mouse_down
-          execute :mouseDown
+          execute :mouse_down
         end
 
         def mouse_up
-          execute :mouseUp
+          execute :mouse_up
         end
 
         def mouse_move_to(element, x = nil, y = nil)
@@ -432,7 +415,7 @@ module Selenium
             params[:yoffset] = y
           end
 
-          execute :mouseMoveTo, {}, params
+          execute :mouse_move_to, {}, params
         end
 
         def send_keys_to_active_element(keys)
@@ -441,11 +424,11 @@ module Selenium
 
         # TODO: - Implement file verification
         def send_keys_to_element(element, keys)
-          execute :elementSendKeys, {id: element.values.first}, {value: keys.join('').split(//)}
+          execute :element_send_keys, {id: element.values.first}, {value: keys.join('').split(//)}
         end
 
         def clear_element(element)
-          execute :elementClear, id: element.values.first
+          execute :element_clear, id: element.values.first
         end
 
         def submit_element(element)
@@ -456,60 +439,60 @@ module Selenium
         end
 
         def drag_element(element, right_by, down_by)
-          execute :dragElement, {id: element.values.first}, {x: right_by, y: down_by}
+          execute :drag_element, {id: element.values.first}, {x: right_by, y: down_by}
         end
 
         def touch_single_tap(element)
-          execute :touchSingleTap, {}, {element: element}
+          execute :touch_single_tap, {}, {element: element}
         end
 
         def touch_double_tap(element)
-          execute :touchDoubleTap, {}, {element: element}
+          execute :touch_double_tap, {}, {element: element}
         end
 
         def touch_long_press(element)
-          execute :touchLongPress, {}, {element: element}
+          execute :touch_long_press, {}, {element: element}
         end
 
         def touch_down(x, y)
-          execute :touchDown, {}, {x: x, y: y}
+          execute :touch_down, {}, {x: x, y: y}
         end
 
         def touch_up(x, y)
-          execute :touchUp, {}, {x: x, y: y}
+          execute :touch_up, {}, {x: x, y: y}
         end
 
         def touch_move(x, y)
-          execute :touchMove, {}, {x: x, y: y}
+          execute :touch_move, {}, {x: x, y: y}
         end
 
         def touch_scroll(element, x, y)
           if element
-            execute :touchScroll, {}, {element: element,
+            execute :touch_scroll, {}, {element: element,
                                        xoffset: x,
                                        yoffset: y}
           else
-            execute :touchScroll, {}, {xoffset: x, yoffset: y}
+            execute :touch_scroll, {}, {xoffset: x, yoffset: y}
           end
         end
 
         def touch_flick(xspeed, yspeed)
-          execute :touchFlick, {}, {xspeed: xspeed, yspeed: yspeed}
+          execute :touch_flick, {}, {xspeed: xspeed, yspeed: yspeed}
         end
 
         def touch_element_flick(element, right_by, down_by, speed)
-          execute :touchFlick, {}, {element: element,
+          execute :touch_flick, {}, {element: element,
                                     xoffset: right_by,
                                     yoffset: down_by,
                                     speed: speed}
         end
 
         def screen_orientation=(orientation)
-          execute :setScreenOrientation, {}, {orientation: orientation}
+          execute :set_screen_orientation, {}, {orientation: orientation}
         end
 
         def screen_orientation
-          execute :getScreenOrientation
+          execute :get_screen_orientation
         end
 
         #
@@ -517,7 +500,7 @@ module Selenium
         #
 
         def element_tag_name(element)
-          execute :getElementTagName, id: element.values.first
+          execute :get_element_tag_name, id: element.values.first
         end
 
         def element_attribute(element, name)
@@ -525,7 +508,7 @@ module Selenium
         end
 
         def element_property(element, name)
-          execute :getElementProperty, id: element.values.first, name: name
+          execute :get_element_property, id: element.ref.values.first, name: name
         end
 
         def element_value(element)
@@ -533,11 +516,11 @@ module Selenium
         end
 
         def element_text(element)
-          execute :getElementText, id: element.values.first
+          execute :get_element_text, id: element.values.first
         end
 
         def element_location(element)
-          data = execute :getElementRect, id: element.values.first
+          data = execute :get_element_rect, id: element.values.first
 
           Point.new data['x'], data['y']
         end
@@ -548,27 +531,25 @@ module Selenium
         end
 
         def element_size(element)
-          data = execute :getElementRect, id: element.values.first
+          data = execute :get_element_rect, id: element.values.first
 
           Dimension.new data['width'], data['height']
         end
 
         def element_enabled?(element)
-          execute :isElementEnabled, id: element.values.first
+          execute :is_element_enabled, id: element.values.first
         end
 
         def element_selected?(element)
-          execute :isElementSelected, id: element.values.first
+          execute :is_element_selected, id: element.values.first
         end
 
         def element_displayed?(element)
-          jwp = Selenium::WebDriver::Remote::Bridge::COMMANDS[:isElementDisplayed]
-          self.class.command(:isElementDisplayed, jwp.first, jwp.last)
-          execute :isElementDisplayed, id: element.values.first
+          execute :is_element_displayed, id: element.values.first
         end
 
         def element_value_of_css_property(element, prop)
-          execute :getElementCssValue, id: element.values.first, property_name: prop
+          execute :get_element_css_value, id: element.values.first, property_name: prop
         end
 
         #
@@ -576,7 +557,7 @@ module Selenium
         #
 
         def active_element
-          Element.new self, execute(:getActiveElement)
+          Element.new self, execute(:get_active_element)
         end
 
         alias_method :switch_to_active_element, :active_element
@@ -585,9 +566,9 @@ module Selenium
           how, what = convert_locators(how, what)
 
           id = if parent
-                 execute :findChildElement, {id: parent.values.first}, {using: how, value: what}
+                 execute :find_child_element, {id: parent.values.first}, {using: how, value: what}
                else
-                 execute :findElement, {}, {using: how, value: what}
+                 execute :find_element, {}, {using: how, value: what}
                end
           Element.new self, id
         end
@@ -596,9 +577,9 @@ module Selenium
           how, what = convert_locators(how, what)
 
           ids = if parent
-                  execute :findChildElements, {id: parent.values.first}, {using: how, value: what}
+                  execute :find_child_elements, {id: parent.values.first}, {using: how, value: what}
                 else
-                  execute :findElements, {}, {using: how, value: what}
+                  execute :find_elements, {}, {using: how, value: what}
                 end
 
           ids.map { |id| Element.new self, id }
@@ -642,7 +623,7 @@ module Selenium
         #
 
         def raw_execute(command, opts = {}, command_hash = nil)
-          verb, path = COMMANDS[command] || raise(ArgumentError, "unknown command: #{command.inspect}")
+          verb, path = commands(command) || raise(ArgumentError, "unknown command: #{command.inspect}")
           path = path.dup
 
           path[':session_id'] = @session_id if path.include?(':session_id')

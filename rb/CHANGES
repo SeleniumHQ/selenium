@@ -1,3 +1,26 @@
+3.0.3 (2016-11-26)
+===================
+
+Ruby:
+  * Allow drivers to be executed from batch files on Windows
+
+3.0.2 (2016-11-25)
+===================
+
+Ruby:
+  * Implement #driver_path as parameter when initializing a driver (thanks lmtierney)
+  * Improve Ruby syntax in driver commands (thanks joe_schulte)
+  * Improve performance when shutting down drivers (thanks lmtierney)
+  * Fix bug for finding open ports on Windows (thanks kou1okada)
+  * Fix bug in auto detection of drivers which allowed selection of non-executable binaries
+
+W3C:
+  * Implement #cookie_named and #delete_all_cookies methods (thanks lmtierney) 
+  * Implement element #property method (thanks lmtierney) 
+
+Chrome:
+  * Fix bug in switches (thanks danvine) 
+
 3.0.1 (2016-11-06)
 ===================
 

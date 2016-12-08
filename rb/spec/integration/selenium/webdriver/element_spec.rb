@@ -94,6 +94,13 @@ module Selenium
         expect(driver.find_element(id: 'withText').attribute('nonexistent')).to be_nil
       end
 
+      not_compliant_on browser: :edge do
+        it 'should get property value' do
+          driver.navigate.to url_for('formPage.html')
+          expect(driver.find_element(id: 'withText').property('nodeName')).to eq('TEXTAREA')
+        end
+      end
+
       it 'should clear' do
         driver.navigate.to url_for('formPage.html')
         driver.find_element(id: 'withText').clear

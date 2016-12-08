@@ -25,191 +25,194 @@ module Selenium
         # https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-reference
         #
 
-        command :newSession, :post, 'session'
-        command :getCapabilities, :get, 'session/:session_id'
-        command :status, :get, 'status'
+        COMMANDS = {
 
-        #
-        # basic driver
-        #
+            new_session: [:post, 'session'.freeze],
+            get_capabilities: [:get, 'session/:session_id'.freeze],
+            status: [:get, 'status'.freeze],
 
-        command :getCurrentUrl, :get, 'session/:session_id/url'
-        command :get, :post, 'session/:session_id/url'
-        command :goForward, :post, 'session/:session_id/forward'
-        command :goBack, :post, 'session/:session_id/back'
-        command :refresh, :post, 'session/:session_id/refresh'
-        command :quit, :delete, 'session/:session_id'
-        command :close, :delete, 'session/:session_id/window'
-        command :getPageSource, :get, 'session/:session_id/source'
-        command :getTitle, :get, 'session/:session_id/title'
-        command :findElement, :post, 'session/:session_id/element'
-        command :findElements, :post, 'session/:session_id/elements'
-        command :getActiveElement, :post, 'session/:session_id/element/active'
+            #
+            # basic driver
+            #
 
-        #
-        # window handling
-        #
+            get_current_url: [:get, 'session/:session_id/url'.freeze],
+            get: [:post, 'session/:session_id/url'.freeze],
+            go_forward: [:post, 'session/:session_id/forward'.freeze],
+            go_back: [:post, 'session/:session_id/back'.freeze],
+            refresh: [:post, 'session/:session_id/refresh'.freeze],
+            quit: [:delete, 'session/:session_id'.freeze],
+            close: [:delete, 'session/:session_id/window'.freeze],
+            get_page_source: [:get, 'session/:session_id/source'.freeze],
+            get_title: [:get, 'session/:session_id/title'.freeze],
+            find_element: [:post, 'session/:session_id/element'.freeze],
+            find_elements: [:post, 'session/:session_id/elements'.freeze],
+            get_active_element: [:post, 'session/:session_id/element/active'.freeze],
 
-        command :getCurrentWindowHandle, :get, 'session/:session_id/window_handle'
-        command :getWindowHandles, :get, 'session/:session_id/window_handles'
-        command :setWindowSize, :post, 'session/:session_id/window/:window_handle/size'
-        command :setWindowPosition, :post, 'session/:session_id/window/:window_handle/position'
-        command :getWindowSize, :get, 'session/:session_id/window/:window_handle/size'
-        command :getWindowPosition, :get, 'session/:session_id/window/:window_handle/position'
-        command :maximizeWindow, :post, 'session/:session_id/window/:window_handle/maximize'
+            #
+            # window handling
+            #
 
-        #
-        # script execution
-        #
+            get_current_window_handle: [:get, 'session/:session_id/window_handle'.freeze],
+            get_window_handles: [:get, 'session/:session_id/window_handles'.freeze],
+            set_window_size: [:post, 'session/:session_id/window/:window_handle/size'.freeze],
+            set_window_position: [:post, 'session/:session_id/window/:window_handle/position'.freeze],
+            get_window_size: [:get, 'session/:session_id/window/:window_handle/size'.freeze],
+            get_window_position: [:get, 'session/:session_id/window/:window_handle/position'.freeze],
+            maximize_window: [:post, 'session/:session_id/window/:window_handle/maximize'.freeze],
 
-        command :executeScript, :post, 'session/:session_id/execute'
-        command :executeAsyncScript, :post, 'session/:session_id/execute_async'
+            #
+            # script execution
+            #
 
-        #
-        # screenshot
-        #
+            execute_script: [:post, 'session/:session_id/execute'.freeze],
+            execute_async_script: [:post, 'session/:session_id/execute_async'.freeze],
 
-        command :screenshot, :get, 'session/:session_id/screenshot'
+            #
+            # screenshot
+            #
 
-        #
-        # alerts
-        #
+            screenshot: [:get, 'session/:session_id/screenshot'.freeze],
 
-        command :dismissAlert, :post, 'session/:session_id/dismiss_alert'
-        command :acceptAlert, :post, 'session/:session_id/accept_alert'
-        command :getAlertText, :get, 'session/:session_id/alert_text'
-        command :setAlertValue, :post, 'session/:session_id/alert_text'
-        command :setAuthentication, :post, 'session/:session_id/alert/credentials'
+            #
+            # alerts
+            #
 
-        #
-        # target locator
-        #
+            dismiss_alert: [:post, 'session/:session_id/dismiss_alert'.freeze],
+            accept_alert: [:post, 'session/:session_id/accept_alert'.freeze],
+            get_alert_text: [:get, 'session/:session_id/alert_text'.freeze],
+            set_alert_value: [:post, 'session/:session_id/alert_text'.freeze],
+            set_authentication: [:post, 'session/:session_id/alert/credentials'.freeze],
 
-        command :switchToFrame, :post, 'session/:session_id/frame'
-        command :switchToParentFrame, :post, 'session/:session_id/frame/parent'
-        command :switchToWindow, :post, 'session/:session_id/window'
+            #
+            # target locator
+            #
 
-        #
-        # options
-        #
+            switch_to_frame: [:post, 'session/:session_id/frame'.freeze],
+            switch_to_parent_frame: [:post, 'session/:session_id/frame/parent'.freeze],
+            switch_to_window: [:post, 'session/:session_id/window'.freeze],
 
-        command :getCookies, :get, 'session/:session_id/cookie'
-        command :addCookie, :post, 'session/:session_id/cookie'
-        command :deleteAllCookies, :delete, 'session/:session_id/cookie'
-        command :deleteCookie, :delete, 'session/:session_id/cookie/:name'
+            #
+            # options
+            #
 
-        #
-        # timeouts
-        #
+            get_cookies: [:get, 'session/:session_id/cookie'.freeze],
+            add_cookie: [:post, 'session/:session_id/cookie'.freeze],
+            delete_all_cookies: [:delete, 'session/:session_id/cookie'.freeze],
+            delete_cookie: [:delete, 'session/:session_id/cookie/:name'.freeze],
 
-        command :implicitlyWait, :post, 'session/:session_id/timeouts/implicit_wait'
-        command :setScriptTimeout, :post, 'session/:session_id/timeouts/async_script'
-        command :setTimeout, :post, 'session/:session_id/timeouts'
+            #
+            # timeouts
+            #
 
-        #
-        # element
-        #
+            implicitly_wait: [:post, 'session/:session_id/timeouts/implicit_wait'.freeze],
+            set_script_timeout: [:post, 'session/:session_id/timeouts/async_script'.freeze],
+            set_timeout: [:post, 'session/:session_id/timeouts'.freeze],
 
-        command :describeElement, :get, 'session/:session_id/element/:id'
-        command :findChildElement, :post, 'session/:session_id/element/:id/element'
-        command :findChildElements, :post, 'session/:session_id/element/:id/elements'
-        command :clickElement, :post, 'session/:session_id/element/:id/click'
-        command :submitElement, :post, 'session/:session_id/element/:id/submit'
-        command :getElementValue, :get, 'session/:session_id/element/:id/value'
-        command :sendKeysToElement, :post, 'session/:session_id/element/:id/value'
-        command :uploadFile, :post, 'session/:session_id/file'
-        command :getElementTagName, :get, 'session/:session_id/element/:id/name'
-        command :clearElement, :post, 'session/:session_id/element/:id/clear'
-        command :isElementSelected, :get, 'session/:session_id/element/:id/selected'
-        command :isElementEnabled, :get, 'session/:session_id/element/:id/enabled'
-        command :getElementAttribute, :get, 'session/:session_id/element/:id/attribute/:name'
-        command :elementEquals, :get, 'session/:session_id/element/:id/equals/:other'
-        command :isElementDisplayed, :get, 'session/:session_id/element/:id/displayed'
-        command :getElementLocation, :get, 'session/:session_id/element/:id/location'
-        command :getElementLocationOnceScrolledIntoView, :get, 'session/:session_id/element/:id/location_in_view'
-        command :getElementSize, :get, 'session/:session_id/element/:id/size'
-        command :dragElement, :post, 'session/:session_id/element/:id/drag'
-        command :getElementValueOfCssProperty, :get, 'session/:session_id/element/:id/css/:property_name'
-        command :getElementText, :get, 'session/:session_id/element/:id/text'
+            #
+            # element
+            #
 
-        #
-        # rotatable
-        #
+            describe_element: [:get, 'session/:session_id/element/:id'.freeze],
+            find_child_element: [:post, 'session/:session_id/element/:id/element'.freeze],
+            find_child_elements: [:post, 'session/:session_id/element/:id/elements'.freeze],
+            click_element: [:post, 'session/:session_id/element/:id/click'.freeze],
+            submit_element: [:post, 'session/:session_id/element/:id/submit'.freeze],
+            get_element_value: [:get, 'session/:session_id/element/:id/value'.freeze],
+            send_keys_to_element: [:post, 'session/:session_id/element/:id/value'.freeze],
+            upload_file: [:post, 'session/:session_id/file'.freeze],
+            get_element_tag_name: [:get, 'session/:session_id/element/:id/name'.freeze],
+            clear_element: [:post, 'session/:session_id/element/:id/clear'.freeze],
+            is_element_selected: [:get, 'session/:session_id/element/:id/selected'.freeze],
+            is_element_enabled: [:get, 'session/:session_id/element/:id/enabled'.freeze],
+            get_element_attribute: [:get, 'session/:session_id/element/:id/attribute/:name'.freeze],
+            element_equals: [:get, 'session/:session_id/element/:id/equals/:other'.freeze],
+            is_element_displayed: [:get, 'session/:session_id/element/:id/displayed'.freeze],
+            get_element_location: [:get, 'session/:session_id/element/:id/location'.freeze],
+            get_element_location_once_scrolled_into_view: [:get, 'session/:session_id/element/:id/location_in_view'.freeze],
+            get_element_size: [:get, 'session/:session_id/element/:id/size'.freeze],
+            drag_element: [:post, 'session/:session_id/element/:id/drag'.freeze],
+            get_element_value_of_css_property: [:get, 'session/:session_id/element/:id/css/:property_name'.freeze],
+            get_element_text: [:get, 'session/:session_id/element/:id/text'.freeze],
 
-        command :getScreenOrientation, :get, 'session/:session_id/orientation'
-        command :setScreenOrientation, :post, 'session/:session_id/orientation'
+            #
+            # rotatable
+            #
 
-        #
-        # interactions API
-        #
+            get_screen_orientation: [:get, 'session/:session_id/orientation'.freeze],
+            set_screen_orientation: [:post, 'session/:session_id/orientation'.freeze],
 
-        command :click, :post, 'session/:session_id/click'
-        command :doubleClick, :post, 'session/:session_id/doubleclick'
-        command :mouseDown, :post, 'session/:session_id/buttondown'
-        command :mouseUp, :post, 'session/:session_id/buttonup'
-        command :mouseMoveTo, :post, 'session/:session_id/moveto'
-        command :sendModifierKeyToActiveElement, :post, 'session/:session_id/modifier'
-        command :sendKeysToActiveElement, :post, 'session/:session_id/keys'
+            #
+            # interactions API
+            #
 
-        #
-        # html 5
-        #
+            click: [:post, 'session/:session_id/click'.freeze],
+            double_click: [:post, 'session/:session_id/doubleclick'.freeze],
+            mouse_down: [:post, 'session/:session_id/buttondown'.freeze],
+            mouse_up: [:post, 'session/:session_id/buttonup'.freeze],
+            mouse_move_to: [:post, 'session/:session_id/moveto'.freeze],
+            send_modifier_key_to_active_element: [:post, 'session/:session_id/modifier'.freeze],
+            send_keys_to_active_element: [:post, 'session/:session_id/keys'.freeze],
 
-        command :executeSql, :post, 'session/:session_id/execute_sql'
+            #
+            # html 5
+            #
 
-        command :getLocation, :get, 'session/:session_id/location'
-        command :setLocation, :post, 'session/:session_id/location'
+            execute_sql: [:post, 'session/:session_id/execute_sql'.freeze],
 
-        command :getAppCache, :get, 'session/:session_id/application_cache'
-        command :getAppCacheStatus, :get, 'session/:session_id/application_cache/status'
-        command :clearAppCache, :delete, 'session/:session_id/application_cache/clear'
+            get_location: [:get, 'session/:session_id/location'.freeze],
+            set_location: [:post, 'session/:session_id/location'.freeze],
 
-        command :getNetworkConnection, :get, 'session/:session_id/network_connection'
-        command :setNetworkConnection, :post, 'session/:session_id/network_connection'
+            get_app_cache: [:get, 'session/:session_id/application_cache'.freeze],
+            get_app_cache_status: [:get, 'session/:session_id/application_cache/status'.freeze],
+            clear_app_cache: [:delete, 'session/:session_id/application_cache/clear'.freeze],
 
-        command :getLocalStorageItem, :get, 'session/:session_id/local_storage/key/:key'
-        command :removeLocalStorageItem, :delete, 'session/:session_id/local_storage/key/:key'
-        command :getLocalStorageKeys, :get, 'session/:session_id/local_storage'
-        command :setLocalStorageItem, :post, 'session/:session_id/local_storage'
-        command :clearLocalStorage, :delete, 'session/:session_id/local_storage'
-        command :getLocalStorageSize, :get, 'session/:session_id/local_storage/size'
+            get_network_connection: [:get, 'session/:session_id/network_connection'.freeze],
+            set_network_connection: [:post, 'session/:session_id/network_connection'.freeze],
 
-        command :getSessionStorageItem, :get, 'session/:session_id/session_storage/key/:key'
-        command :removeSessionStorageItem, :delete, 'session/:session_id/session_storage/key/:key'
-        command :getSessionStorageKeys, :get, 'session/:session_id/session_storage'
-        command :setSessionStorageItem, :post, 'session/:session_id/session_storage'
-        command :clearSessionStorage, :delete, 'session/:session_id/session_storage'
-        command :getSessionStorageSize, :get, 'session/:session_id/session_storage/size'
+            get_local_storage_item: [:get, 'session/:session_id/local_storage/key/:key'.freeze],
+            remove_local_storage_item: [:delete, 'session/:session_id/local_storage/key/:key'.freeze],
+            get_local_storage_keys: [:get, 'session/:session_id/local_storage'.freeze],
+            set_local_storage_item: [:post, 'session/:session_id/local_storage'.freeze],
+            clear_local_storage: [:delete, 'session/:session_id/local_storage'.freeze],
+            get_local_storage_size: [:get, 'session/:session_id/local_storage/size'.freeze],
 
-        #
-        # ime
-        #
+            get_session_storage_item: [:get, 'session/:session_id/session_storage/key/:key'.freeze],
+            remove_session_storage_item: [:delete, 'session/:session_id/session_storage/key/:key'.freeze],
+            get_session_storage_keys: [:get, 'session/:session_id/session_storage'.freeze],
+            set_session_storage_item: [:post, 'session/:session_id/session_storage'.freeze],
+            clear_session_storage: [:delete, 'session/:session_id/session_storage'.freeze],
+            get_session_storage_size: [:get, 'session/:session_id/session_storage/size'.freeze],
 
-        command :imeGetAvailableEngines, :get, 'session/:session_id/ime/available_engines'
-        command :imeGetActiveEngine, :get, 'session/:session_id/ime/active_engine'
-        command :imeIsActivated, :get, 'session/:session_id/ime/activated'
-        command :imeDeactivate, :post, 'session/:session_id/ime/deactivate'
-        command :imeActivateEngine, :post, 'session/:session_id/ime/activate'
+            #
+            # ime
+            #
 
-        #
-        # touch
-        #
+            ime_get_available_engines: [:get, 'session/:session_id/ime/available_engines'.freeze],
+            ime_get_active_engine: [:get, 'session/:session_id/ime/active_engine'.freeze],
+            ime_is_activated: [:get, 'session/:session_id/ime/activated'.freeze],
+            ime_deactivate: [:post, 'session/:session_id/ime/deactivate'.freeze],
+            ime_activate_engine: [:post, 'session/:session_id/ime/activate'.freeze],
 
-        command :touchSingleTap, :post, 'session/:session_id/touch/click'
-        command :touchDoubleTap, :post, 'session/:session_id/touch/doubleclick'
-        command :touchLongPress, :post, 'session/:session_id/touch/longclick'
-        command :touchDown, :post, 'session/:session_id/touch/down'
-        command :touchUp, :post, 'session/:session_id/touch/up'
-        command :touchMove, :post, 'session/:session_id/touch/move'
-        command :touchScroll, :post, 'session/:session_id/touch/scroll'
-        command :touchFlick, :post, 'session/:session_id/touch/flick'
+            #
+            # touch
+            #
 
-        #
-        # logs
-        #
+            touch_single_tap: [:post, 'session/:session_id/touch/click'.freeze],
+            touch_double_tap: [:post, 'session/:session_id/touch/doubleclick'.freeze],
+            touch_long_press: [:post, 'session/:session_id/touch/longclick'.freeze],
+            touch_down: [:post, 'session/:session_id/touch/down'.freeze],
+            touch_up: [:post, 'session/:session_id/touch/up'.freeze],
+            touch_move: [:post, 'session/:session_id/touch/move'.freeze],
+            touch_scroll: [:post, 'session/:session_id/touch/scroll'.freeze],
+            touch_flick: [:post, 'session/:session_id/touch/flick'.freeze],
 
-        command :getAvailableLogTypes, :get, 'session/:session_id/log/types'
-        command :getLog, :post, 'session/:session_id/log'
+            #
+            # logs
+            #
+
+            get_available_log_types: [:get, 'session/:session_id/log/types'.freeze],
+            get_log: [:post, 'session/:session_id/log'.freeze]
+        }.freeze
       end
     end # Remote
   end # WebDriver

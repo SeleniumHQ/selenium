@@ -62,6 +62,7 @@ import org.openqa.selenium.remote.service.DriverCommandExecutor;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -200,6 +201,15 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
     }
 
     Object rawOptions = capabilities.getCapability(FIREFOX_OPTIONS);
+    if (rawOptions instanceof Map) {
+      try {
+        @SuppressWarnings("unchecked")
+        Map<String, Object> map = (Map<String, Object>) rawOptions;
+        rawOptions = FirefoxOptions.fromJsonMap(map);
+      } catch (IOException e) {
+        throw new WebDriverException(e);
+      }
+    }
     if (rawOptions == null) {
       rawOptions = capabilities.getCapability(OLD_FIREFOX_OPTIONS);
     }

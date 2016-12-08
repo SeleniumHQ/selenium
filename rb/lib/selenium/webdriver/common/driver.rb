@@ -121,7 +121,7 @@ module Selenium
       #
 
       def manage
-        @manage ||= WebDriver::Options.new(bridge)
+        bridge.options
       end
 
       #

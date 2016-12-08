@@ -793,11 +793,11 @@ public class ExpectedConditionsTest {
     String testSelector = "testSelector";
     String testNestedSelector = "testNestedSelector";
     when(mockDriver.findElement(By.cssSelector(testSelector))).thenReturn(mockElement);
-    when(mockElement.findElement(By.cssSelector(testSelector))).thenReturn(mockNestedElement);
-    when(mockElement.findElements(By.cssSelector(testSelector)))
+    when(mockElement.findElements(By.cssSelector(testNestedSelector)))
       .thenReturn(Arrays.asList(mockNestedElement));
-    wait.until(presenceOfNestedElementsLocatedBy(By.cssSelector(testSelector),
+    List<WebElement> elements = wait.until(presenceOfNestedElementsLocatedBy(By.cssSelector(testSelector),
                                                  By.cssSelector(testNestedSelector)));
+    assertEquals(elements.get(0), mockNestedElement);
   }
 
   @Test

@@ -31,8 +31,8 @@ module Selenium
         before do
           @default_capabilities = Remote::Capabilities.chrome.as_json
 
-          allow(Chrome).to receive(:driver_path).and_return('/foo')
           allow(Remote::Capabilities).to receive(:chrome).and_return(caps)
+          allow(Service).to receive(:binary_path).and_return('/foo')
           allow(Service).to receive(:new).and_return(service)
         end
 

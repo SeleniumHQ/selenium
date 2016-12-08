@@ -30,8 +30,9 @@ module Selenium
           opts[:desired_capabilities] ||= Remote::Capabilities.phantomjs
 
           unless opts.key?(:url)
+            driver_path = opts.delete(:driver_path) || PhantomJS.path(false)
             args = opts.delete(:args) || opts[:desired_capabilities]['phantomjs.cli.args']
-            @service = Service.new(PhantomJS.path, port, *args)
+            @service = Service.new(driver_path, port, *args)
             @service.start
             opts[:url] = @service.uri
           end

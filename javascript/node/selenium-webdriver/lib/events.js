@@ -22,7 +22,7 @@
  */
 class Listener {
   /**
-   * @param {!Function} fn The acutal listener function.
+   * @param {!Function} fn The actual listener function.
    * @param {(Object|undefined)} scope The object in whose scope to invoke the
    *     listener.
    * @param {boolean} oneshot Whether this listener should only be used once.

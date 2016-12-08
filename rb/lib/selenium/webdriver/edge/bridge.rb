@@ -28,8 +28,10 @@ module Selenium
         def initialize(opts = {})
           port = opts.delete(:port) || Service::DEFAULT_PORT
           service_args = opts.delete(:service_args) || {}
+
           unless opts.key?(:url)
-            @service = Service.new(Edge.driver_path, port, *extract_service_args(service_args))
+            driver_path = opts.delete(:driver_path) || Edge.driver_path(false)
+            @service = Service.new(driver_path, port, *extract_service_args(service_args))
             @service.host = 'localhost' if @service.host == '127.0.0.1'
             @service.start
             opts[:url] = @service.uri
@@ -51,6 +53,20 @@ module Selenium
           ]
         end
 
+        def commands(command)
+          unsupported = %i[execute_script execute_async_script submit_element double_click
+           mouse_down mouse_up mouse_move_to click
+           send_keys_to_active_element get_window_handles get_current_window_handle
+           get_window_size set_window_size get_window_position set_window_position
+           maximize_window get_alert_text accept_alert dismiss_alert]
+          if unsupported.include? command
+            Remote::Bridge::COMMANDS[command]
+          else
+            super
+          end
+
+        end
+
         def capabilities
           @capabilities ||= Remote::Capabilities.edge
         end
@@ -59,6 +75,87 @@ module Selenium
           super
         ensure
           @service.stop if @service
+        end
+
+        def execute_script(script, *args)
+          result = execute :execute_script, {}, {script: script, args: args}
+          unwrap_script_result result
+        end
+
+        def execute_async_script(script, *args)
+          result = execute :execute_async_script, {}, {script: script, args: args}
+          unwrap_script_result result
+        end
+
+        def submit_element(element)
+          execute :submit_element, id: element['ELEMENT']
+        end
+
+        def double_click
+          execute :double_click
+        end
+
+        def click
+          execute :click, {}, {button: 0}
+        end
+
+        def context_click
+          execute :click, {}, {button: 2}
+        end
+
+        def mouse_down
+          execute :mouse_down
+        end
+
+        def mouse_up
+          execute :mouse_up
+        end
+
+        def mouse_move_to(element, x = nil, y = nil)
+          element_id = element['ELEMENT'] if element
+          params = {element: element_id}
+
+          if x && y
+            params[:xoffset] = x
+            params[:yoffset] = y
+          end
+
+          execute :mouse_move_to, {}, params
+        end
+
+        def send_keys_to_active_element(key)
+          execute :send_keys_to_active_element, {}, {value: key}
+        end
+
+        def window_handle
+          execute :get_current_window_handle
+        end
+
+        def window_size(handle = :current)
+          data = execute :get_window_size, window_handle: handle
+
+          Dimension.new data['width'], data['height']
+        end
+
+        def resize_window(width, height, handle = :current)
+          execute :set_window_size, {window_handle: handle},
+                  {width: width,
+                   height: height}
+        end
+
+        def window_position(handle = :current)
+          data = execute :get_window_position, window_handle: handle
+
+          Point.new data['x'], data['y']
+        end
+
+        def reposition_window(x, y, handle = :current)
+          execute :set_window_position, {window_handle: handle},
+                  {x: x, y: y}
+        end
+
+        def maximize_window(handle = :current)
+          execute :maximize_window, window_handle: handle
         end
 
         private

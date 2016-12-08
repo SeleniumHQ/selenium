@@ -30,6 +30,11 @@ var FileUtils = {
   getFile: function(path) {
     var file = Components.classes['@mozilla.org/file/local;1'].createInstance(Components.interfaces.nsILocalFile);
     file.initWithPath(path);
+    if (arguments.length > 1) {
+      for (var i = 1; i < arguments.length; i++) {
+        file.append(arguments[i]);
+      }
+    }
     return file;
   },
 

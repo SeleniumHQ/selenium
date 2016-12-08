@@ -25,16 +25,26 @@
 
 'use strict';
 
-const fs = require('fs');
-const path = require('path');
-
 const cmd = require('./command');
-const devmode = require('./devmode');
 const error = require('./error');
 const logging = require('./logging');
 const promise = require('./promise');
 const Session = require('./session').Session;
 const WebElement = require('./webdriver').WebElement;
+
+const {getAttribute, isDisplayed} = (function() {
+  const load = path => /** @type {!Function} */(require(path));
+  try {
+    return {
+      getAttribute: load('./atoms/getAttribute.js'),
+      isDisplayed: load('./atoms/is-displayed.js'),
+    };
+  } catch (ex) {
+    throw Error(
+        'Failed to import atoms modules. If running in devmode, you need to run'
+            + ' `./go node:atoms` from the project root: ' + ex);
+  }
+})();
 
 
 /**
@@ -116,42 +126,14 @@ class Response {
 
 const DEV_ROOT = '../../../../buck-out/gen/javascript/';
 
-/** @enum {string} */
+/** @enum {!Function} */
 const Atom = {
-  GET_ATTRIBUTE: devmode
-      ? path.join(__dirname, DEV_ROOT, 'webdriver/atoms/getAttribute.js')
-      : path.join(__dirname, 'atoms/getAttribute.js'),
-  IS_DISPLAYED: devmode
-      ? path.join(__dirname, DEV_ROOT, 'atoms/fragments/is-displayed.js')
-      : path.join(__dirname, 'atoms/isDisplayed.js'),
+  GET_ATTRIBUTE: getAttribute,
+  IS_DISPLAYED: isDisplayed
 };
 
 
-const ATOMS = /** !Map<string, !Promise<string>> */new Map();
 const LOG = logging.getLogger('webdriver.http');
-
-/**
- * @param {Atom} file The atom file to load.
- * @return {!Promise<string>} A promise that will resolve to the contents of the
- *     file.
- */
-function loadAtom(file) {
-  if (ATOMS.has(file)) {
-    return ATOMS.get(file);
-  }
-  let contents = /** !Promise<string> */new Promise((resolve, reject) => {
-    LOG.finest(() => `Loading atom ${file}`);
-    fs.readFile(file, 'utf8', function(err, data) {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(data);
-      }
-    });
-  });
-  ATOMS.set(file, contents);
-  return contents;
-}
 
 
 function post(path) { return resource('POST', path); }
@@ -168,17 +150,26 @@ var CommandSpec;
 var CommandTransformer;
 
 
+class InternalTypeError extends TypeError {}
+
+
 /**
  * @param {!cmd.Command} command The initial command.
  * @param {Atom} atom The name of the atom to execute.
  * @return {!Promise<!cmd.Command>} The transformed command to execute.
  */
 function toExecuteAtomCommand(command, atom, ...params) {
-  return loadAtom(atom).then(atom => {
-    return new cmd.Command(cmd.Name.EXECUTE_SCRIPT)
+  return new Promise((resolve, reject) => {
+    if (typeof atom !== 'function') {
+      reject(new InternalTypeError('atom is not a function: ' + typeof atom));
+      return;
+    }
+
+    let newCmd = new cmd.Command(cmd.Name.EXECUTE_SCRIPT)
         .setParameter('sessionId', command.getParameter('sessionId'))
         .setParameter('script', `return (${atom}).apply(null, arguments)`)
         .setParameter('args', params.map(param => command.getParameter(param)));
+    resolve(newCmd);
   });
 }
 
@@ -447,7 +438,7 @@ class Executor {
           }
 
           // The remote end is a W3C compliant server if there is no `status`
-          // field in the response. This is not appliable for the DESCRIBE_SESSION
+          // field in the response. This is not applicable for the DESCRIBE_SESSION
           // command, which is not defined in the W3C spec.
           if (command.getName() === cmd.Name.NEW_SESSION) {
             this.w3c = this.w3c || !('status' in parsed);

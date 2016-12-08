@@ -20,6 +20,7 @@ package org.openqa.grid.internal.utils.configuration.converters;
 import com.beust.jcommander.IStringConverter;
 
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 public class BrowserDesiredCapabilityConverter implements IStringConverter<DesiredCapabilities> {
@@ -30,6 +31,11 @@ public class BrowserDesiredCapabilityConverter implements IStringConverter<Desir
       String[] pieces = cap.split("=");
       String capabilityName = pieces[0].trim();
       String capabilityValue = pieces[1].trim();
+      if (capabilityName.equals(CapabilityType.VERSION)) {
+        // store version as a string, DesiredCapabilities assumes version is a string
+        capabilities.setCapability(capabilityName, capabilityValue);
+        continue;
+      }
       try {
         final Long x = Long.parseLong(capabilityValue);
         capabilities.setCapability(capabilityName, x);

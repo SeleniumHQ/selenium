@@ -31,4 +31,4 @@ def driver_kwargs(request, driver_kwargs):
 def test_invalid_binary(driver_class, driver_kwargs):
     with pytest.raises(WebDriverException) as excinfo:
         driver_class(**driver_kwargs)
-    assert 'entity not found' in str(excinfo.value)
+    assert 'no such file or directory' in str(excinfo.value)
