@@ -36,7 +36,7 @@ public class SetNetworkConnection extends WebDriverHandler<Number> implements Js
   @Override
   public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
     Map<String, Object> parameters = (Map<String, Object>)allParameters.get("parameters");
-    Long bitmask = (Long) parameters.get("type");
+    Number bitmask = (Number) parameters.get("type");
     type = new ConnectionType(bitmask.intValue());
   }
 
