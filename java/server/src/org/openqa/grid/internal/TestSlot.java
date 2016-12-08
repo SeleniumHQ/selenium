@@ -109,6 +109,7 @@ public class TestSlot {
       }
       if (matches(desiredCapabilities)) {
         log.info("Trying to create a new session on test slot " + this.capabilities);
+        desiredCapabilities.putAll(capabilities);
         TestSession session = new TestSession(this, desiredCapabilities, new DefaultTimeSource());
         currentSession = session;
         lastSessionStart = System.currentTimeMillis();
