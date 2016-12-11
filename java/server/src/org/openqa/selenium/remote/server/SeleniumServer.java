@@ -19,10 +19,13 @@ package org.openqa.selenium.remote.server;
 
 import com.beust.jcommander.JCommander;
 
+import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
 import org.openqa.grid.internal.utils.configuration.StandaloneConfiguration;
 import org.openqa.grid.shared.GridNodeServer;
 import org.openqa.grid.web.servlet.DisplayHelpServlet;
 import org.openqa.grid.web.servlet.beta.ConsoleServlet;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.server.handler.DeleteSession;
 import org.seleniumhq.jetty9.server.Connector;
@@ -110,6 +113,20 @@ public class SeleniumServer implements GridNodeServer {
     ServletContextHandler handler = new ServletContextHandler();
 
     driverSessions = new DefaultDriverSessions();
+    if( configuration  instanceof GridNodeConfiguration ){
+        GridNodeConfiguration nodeConf =    (GridNodeConfiguration)configuration;
+        for( DesiredCapabilities  capabilities : nodeConf.capabilities){
+            final String driverClass = (String)capabilities.getCapability("driverClass");
+            if(driverClass != null){
+                try {
+                     Class<WebDriver> driver = ( Class<WebDriver>)Class.forName(driverClass);
+                    driverSessions.registerDriver(capabilities, driver);
+                } catch (ClassNotFoundException e) {
+                     e.printStackTrace();
+                }
+            }
+        }
+    }
     handler.setAttribute(DriverServlet.SESSIONS_KEY, driverSessions);
     handler.setContextPath("/");
     handler.addServlet(DriverServlet.class, "/wd/hub/*");
