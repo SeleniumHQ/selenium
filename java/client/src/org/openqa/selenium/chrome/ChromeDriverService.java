@@ -19,7 +19,8 @@ package org.openqa.selenium.chrome;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.os.CommandLine;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.service.DriverService;
 
@@ -85,7 +86,18 @@ public class ChromeDriverService extends DriverService {
    * @return A new ChromeDriverService using the default configuration.
    */
   public static ChromeDriverService createDefaultService() {
-    return new Builder().usingAnyFreePort().build();
+    return createDefaultService(null);
+  }
+  
+  public static ChromeDriverService createDefaultService(final Capabilities capabilities) {
+      Builder builder =  new Builder().usingAnyFreePort();
+      String driverExe =  capabilities == null ? null : (String)capabilities.getCapability("driverExe");
+      if(driverExe != null && driverExe.length()>0){
+           driverExe = CommandLine.find(driverExe);
+           final File file = new File(driverExe);
+           builder.usingDriverExecutable(file);
+      }      
+      return builder.build();
   }
 
   /**

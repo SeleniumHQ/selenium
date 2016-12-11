@@ -144,7 +144,7 @@ public class ChromeDriver extends RemoteWebDriver
    */
   @Deprecated
   public ChromeDriver(Capabilities capabilities) {
-    this(ChromeDriverService.createDefaultService(), capabilities);
+    this(ChromeDriverService.createDefaultService(capabilities), capabilities);
   }
 
   /**
