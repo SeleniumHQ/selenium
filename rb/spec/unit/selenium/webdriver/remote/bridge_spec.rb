@@ -37,6 +37,16 @@ module Selenium
           bridge = Bridge.new
           expect { bridge.upload('NotAFile') }.to raise_error(Error::WebDriverError)
         end
+
+        it 'respects quit_errors' do
+          http_client = WebDriver::Remote::Http::Default.new
+          allow(http_client).to receive(:request).and_return({'sessionId' => true, 'value' => {}})
+
+          bridge = Bridge.new(http_client: http_client)
+          allow(bridge).to receive(:execute).with(:quit).and_raise(IOError)
+
+          expect {bridge.quit}.to_not raise_error
+        end
       end
     end # Remote
   end # WebDriver
