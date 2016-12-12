@@ -6178,9 +6178,6 @@ jQuery.isXMLDoc = isXML;
 jQuery.contains = contains;
 
 return;
-
-window.Sizzle = Sizzle;
-
 })();
 var runtil = /Until$/,
 	rparentsprev = /^(?:parents|prevUntil|prevAll)/,
