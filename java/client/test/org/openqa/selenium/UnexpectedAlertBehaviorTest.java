@@ -40,7 +40,7 @@ import org.openqa.selenium.testing.TestUtilities;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 @NeedsLocalEnvironment(reason = "Requires local browser launching environment")
-@Ignore(value = {CHROME, PHANTOMJS, SAFARI, MARIONETTE},
+@Ignore(value = {PHANTOMJS, SAFARI, MARIONETTE},
         issues = {3862})
 public class UnexpectedAlertBehaviorTest extends JUnit4TestBase {
 
@@ -66,7 +66,7 @@ public class UnexpectedAlertBehaviorTest extends JUnit4TestBase {
     runScenarioWithUnhandledAlert(UnexpectedAlertBehaviour.DISMISS, "null");
   }
 
-  @Ignore(value = HTMLUNIT, reason = "inconsistent test case")
+  @Ignore(value = {CHROME, HTMLUNIT}, reason = "Chrome uses IGNORE mode by default")
   @Test
   public void dismissUnhandledAlertsByDefault() {
     runScenarioWithUnhandledAlert(null, "null");
@@ -94,7 +94,7 @@ public class UnexpectedAlertBehaviorTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = {IE}, reason = "IE: required capabilities not implemented")
+  @Ignore(value = {IE, CHROME}, reason = "IE, Chrome: required capabilities not implemented")
   @NotYetImplemented(HTMLUNIT)
   public void requiredUnhandledAlertCapabilityHasPriorityOverDesired() {
     // TODO: Resolve why this test doesn't work on the remote server
