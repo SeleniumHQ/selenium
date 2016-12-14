@@ -184,7 +184,6 @@ task :test_javascript => [
   'calcdeps',
   '//javascript/atoms:atoms-chrome:run',
   '//javascript/webdriver:webdriver-chrome:run',
-  '//javascript/webdriver:es6_test_chrome:run',
   '//javascript/selenium-atoms:selenium-atoms-chrome:run',
   '//javascript/selenium-core:selenium-core-chrome:run']
 task :test_chrome => [ "//java/client/test/org/openqa/selenium/chrome:chrome:run" ]
