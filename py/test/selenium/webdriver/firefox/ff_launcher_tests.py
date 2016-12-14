@@ -32,7 +32,6 @@ def test_we_can_launch_multiple_firefox_instances(capabilities):
     driver3.quit()
 
 
-
 def test_launch_firefox_with_none_log_path(capabilities):
     driver = Firefox(capabilities=capabilities, log_path=None)
     driver.quit()
