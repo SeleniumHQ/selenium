@@ -30,7 +30,7 @@ import java.util.regex.Pattern;
 
 class TestState {
   private static Map<String, Object> storedValues = new HashMap<>();
-  private long commandTimeOut = TimeUnit.SECONDS.toMillis(30);
+  //private long commandTimeOut = TimeUnit.SECONDS.toMillis(30);
   private long speed = 0;
 
   public void sleepTight() {
