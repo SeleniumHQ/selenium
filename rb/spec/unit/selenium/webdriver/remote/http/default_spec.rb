@@ -38,6 +38,29 @@ module Selenium
             expect(http.read_timeout).to eq 60
           end
 
+          describe '#initialize' do
+            let(:client) {Default.new(read_timeout: 22, open_timeout: 23)}
+            it 'accepts read timeout options' do
+              expect(client.open_timeout).to eq 23
+            end
+            it 'accepts open timeout options' do
+              expect(client.read_timeout).to eq 22
+            end
+          end
+
+          describe '#timeout=' do
+            let(:value_set) {22}
+            before {
+              client.timeout = value_set
+            }
+            it 'assigns value to #read_timeout' do
+              expect(client.read_timeout).to eq value_set
+            end
+            it 'assigns value to #open_timeout' do
+              expect(client.open_timeout).to eq value_set
+            end
+          end
+
           it 'uses the specified timeout' do
             client.timeout = 10
             http = client.send :http

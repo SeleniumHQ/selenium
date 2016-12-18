@@ -28,6 +28,25 @@ module Selenium
         class Default < Common
           attr_accessor :proxy
 
+          attr_accessor :open_timeout
+          attr_accessor :read_timeout
+
+          # Initializes object.
+          # Warning: Setting +open_timeout+ to non-nil values will cause a separate thread to spawn.
+          # Debuggers that freeze the process will not be able to evaluate any operations if that happens.
+          # @param [Hash] options - Options hash accepting :open_timeout and :read_timeout values.
+          def initialize(options = {})
+            self.open_timeout = options[:open_timeout]
+            self.read_timeout = options[:read_timeout]
+          end
+
+          # Maintaining backward compatibility.
+          def timeout=(value)
+            self.open_timeout = value
+            self.read_timeout = value
+          end
+
+
           private
 
           def http

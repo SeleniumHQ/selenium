@@ -26,19 +26,11 @@ module Selenium
           CONTENT_TYPE    = 'application/json'.freeze
           DEFAULT_HEADERS = {'Accept' => CONTENT_TYPE}.freeze
 
-          attr_accessor :open_timeout
-          attr_accessor :read_timeout
+          attr_accessor :timeout
           attr_writer :server_url
 
-          # Maintaining backward compatibility.
-          def timeout=(value)
-            self.open_timeout = value
-            self.read_timeout = value
-          end
-
           def initialize
-            @open_timeout = nil
-            @read_timeout = nil
+            @timeout = nil
           end
 
           def close
