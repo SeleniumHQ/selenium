@@ -160,14 +160,9 @@ class Service(object):
                     except AttributeError:
                         pass
                 self.process.terminate()
-                self.process.kill()
                 self.process.wait()
+                self.process.kill()
                 self.process = None
         except OSError:
             # kill may not be available under windows environment
             pass
-
-    def __del__(self):
-        # subprocess.Popen doesn't send signal on __del__;
-        # we have to try to stop the launched process.
-        self.stop()
