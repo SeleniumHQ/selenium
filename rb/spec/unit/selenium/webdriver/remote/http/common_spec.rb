@@ -34,6 +34,16 @@ module Selenium
 
             common.call(:post, 'clear', nil)
           end
+
+          describe '#timeout=' do
+            it 'assigns value to #read_timeout and #open_timeout' do
+              common = Common.new
+              value_set = 22
+              common.timeout = value_set
+              expect(common.open_timeout).to eq value_set
+              expect(common.read_timeout).to eq value_set
+            end
+          end
         end
       end # Http
     end # Remote
