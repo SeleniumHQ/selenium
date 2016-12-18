@@ -25,15 +25,47 @@ module Selenium
       module Http
         describe Default do
           let(:client) do
-            client = Default.new
+            client            = Default.new
             client.server_url = URI.parse('http://example.com')
 
             client
           end
 
+          it 'assigns default timeout to nil' do
+            http = client.send :http
+
+            expect(http.open_timeout).to eq nil
+            expect(http.read_timeout).to eq 60
+          end
+
+          describe '#initialize' do
+            let(:client) { Default.new(read_timeout: 22, open_timeout: 23) }
+
+            it 'accepts read timeout options' do
+              expect(client.open_timeout).to eq 23
+            end
+
+            it 'accepts open timeout options' do
+              expect(client.read_timeout).to eq 22
+            end
+          end
+
+          describe '#timeout=' do
+            let(:value_set) { 22 }
+            before { client.timeout = value_set }
+
+            it 'assigns value to #read_timeout' do
+              expect(client.read_timeout).to eq value_set
+            end
+
+            it 'assigns value to #open_timeout' do
+              expect(client.open_timeout).to eq value_set
+            end
+          end
+
           it 'uses the specified timeout' do
             client.timeout = 10
-            http = client.send :http
+            http           = client.send :http
 
             expect(http.open_timeout).to eq(10)
             expect(http.read_timeout).to eq(10)
@@ -41,7 +73,7 @@ module Selenium
 
           it 'uses the specified proxy' do
             client.proxy = Proxy.new(http: 'http://foo:bar@proxy.org:8080')
-            http = client.send :http
+            http         = client.send :http
 
             expect(http).to be_proxy
             expect(http.proxy_address).to eq('proxy.org')
