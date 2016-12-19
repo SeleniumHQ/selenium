@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>selenium.webdriver.remote.utils &mdash; Selenium 2.0 documentation</title>
+    <title>selenium.webdriver.remote.utils &mdash; Selenium 3.0 documentation</title>
     
     <link rel="stylesheet" href="../../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '2.0',
+        VERSION:     '3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../../_static/doctools.js"></script>
-    <link rel="top" title="Selenium 2.0 documentation" href="../../../../index.html" />
+    <link rel="top" title="Selenium 3.0 documentation" href="../../../../index.html" />
     <link rel="up" title="Module code" href="../../../index.html" /> 
   </head>
   <body>
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">Selenium 2.0 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">Selenium 3.0 documentation</a> &raquo;</li>
           <li><a href="../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -74,25 +74,30 @@
 
 <span class="n">LOGGER</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
 
+
 <div class="viewcode-block" id="format_json"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.utils.html#selenium.webdriver.remote.utils.format_json">[docs]</a><span class="k">def</span> <span class="nf">format_json</span><span class="p">(</span><span class="n">json_struct</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">json_struct</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+
 </div>
 <div class="viewcode-block" id="dump_json"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.utils.html#selenium.webdriver.remote.utils.dump_json">[docs]</a><span class="k">def</span> <span class="nf">dump_json</span><span class="p">(</span><span class="n">json_struct</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">json_struct</span><span class="p">)</span>
+
 </div>
 <div class="viewcode-block" id="load_json"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.utils.html#selenium.webdriver.remote.utils.load_json">[docs]</a><span class="k">def</span> <span class="nf">load_json</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+
 </div>
 <div class="viewcode-block" id="handle_find_element_exception"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.utils.html#selenium.webdriver.remote.utils.handle_find_element_exception">[docs]</a><span class="k">def</span> <span class="nf">handle_find_element_exception</span><span class="p">(</span><span class="n">e</span><span class="p">):</span>
-    <span class="k">if</span> <span class="p">(</span><span class="s">&quot;Unable to find&quot;</span> <span class="ow">in</span> <span class="n">e</span><span class="o">.</span><span class="n">response</span><span class="p">[</span><span class="s">&quot;value&quot;</span><span class="p">][</span><span class="s">&quot;message&quot;</span><span class="p">]</span> <span class="ow">or</span>
-        <span class="s">&quot;Unable to locate&quot;</span> <span class="ow">in</span> <span class="n">e</span><span class="o">.</span><span class="n">response</span><span class="p">[</span><span class="s">&quot;value&quot;</span><span class="p">][</span><span class="s">&quot;message&quot;</span><span class="p">]):</span>
+    <span class="k">if</span> <span class="p">(</span><span class="s">&quot;Unable to find&quot;</span> <span class="ow">in</span> <span class="n">e</span><span class="o">.</span><span class="n">response</span><span class="p">[</span><span class="s">&quot;value&quot;</span><span class="p">][</span><span class="s">&quot;message&quot;</span><span class="p">]</span> <span class="ow">or</span> <span class="s">&quot;Unable to locate&quot;</span> <span class="ow">in</span> <span class="n">e</span><span class="o">.</span><span class="n">response</span><span class="p">[</span><span class="s">&quot;value&quot;</span><span class="p">][</span><span class="s">&quot;message&quot;</span><span class="p">]):</span>
         <span class="k">raise</span> <span class="n">NoSuchElementException</span><span class="p">(</span><span class="s">&quot;Unable to locate element:&quot;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">e</span>
+
 </div>
 <div class="viewcode-block" id="return_value_if_exists"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.utils.html#selenium.webdriver.remote.utils.return_value_if_exists">[docs]</a><span class="k">def</span> <span class="nf">return_value_if_exists</span><span class="p">(</span><span class="n">resp</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">resp</span> <span class="ow">and</span> <span class="s">&quot;value&quot;</span> <span class="ow">in</span> <span class="n">resp</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">resp</span><span class="p">[</span><span class="s">&quot;value&quot;</span><span class="p">]</span>
+
 </div>
 <div class="viewcode-block" id="get_root_parent"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.utils.html#selenium.webdriver.remote.utils.get_root_parent">[docs]</a><span class="k">def</span> <span class="nf">get_root_parent</span><span class="p">(</span><span class="n">elem</span><span class="p">):</span>
     <span class="n">parent</span> <span class="o">=</span> <span class="n">elem</span><span class="o">.</span><span class="n">parent</span>
@@ -102,6 +107,7 @@
             <span class="n">parent</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">parent</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">parent</span>
+
 </div>
 <div class="viewcode-block" id="unzip_to_temp_dir"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.utils.html#selenium.webdriver.remote.utils.unzip_to_temp_dir">[docs]</a><span class="k">def</span> <span class="nf">unzip_to_temp_dir</span><span class="p">(</span><span class="n">zip_file_name</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Unzip zipfile to a temporary directory.</span>
@@ -187,7 +193,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">Selenium 2.0 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">Selenium 3.0 documentation</a> &raquo;</li>
           <li><a href="../../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>

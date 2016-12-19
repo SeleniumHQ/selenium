@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>selenium.webdriver.common.action_chains &mdash; Selenium 2.0 documentation</title>
+    <title>selenium.webdriver.common.action_chains &mdash; Selenium 3.0 documentation</title>
     
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '2.0',
+        VERSION:     '3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="Selenium 2.0 documentation" href="../index.html" /> 
+    <link rel="top" title="Selenium 3.0 documentation" href="../index.html" /> 
   </head>
   <body>
     <div class="related">
@@ -35,7 +35,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../index.html">Selenium 2.0 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">Selenium 3.0 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -50,14 +50,14 @@
 <dl class="class">
 <dt id="selenium.webdriver.common.action_chains.ActionChains">
 <em class="property">class </em><tt class="descclassname">selenium.webdriver.common.action_chains.</tt><tt class="descname">ActionChains</tt><big>(</big><em>driver</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/common/action_chains.html#ActionChains"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.action_chains.ActionChains" title="Permalink to this definition">¶</a></dt>
-<dd><p>ActionChains are a way to automate low level interactions such as 
+<dd><p>ActionChains are a way to automate low level interactions such as
 mouse movements, mouse button actions, key press, and context menu interactions.
 This is useful for doing more complex actions like hover over and drag and drop.</p>
 <dl class="docutils">
 <dt>Generate user actions.</dt>
-<dd>When you call methods for actions on the ActionChains object, 
-the actions are stored in a queue in the ActionChains object. 
-When you call perform(), the events are fired in the order they 
+<dd>When you call methods for actions on the ActionChains object,
+the actions are stored in a queue in the ActionChains object.
+When you call perform(), the events are fired in the order they
 are queued up.</dd>
 </dl>
 <p>ActionChains can be used in a chain pattern:</p>
@@ -77,7 +77,7 @@ are queued up.</dd>
 <span class="n">actions</span><span class="o">.</span><span class="n">perform</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>Either way, the actions are performed in the order they are called, one after 
+<p>Either way, the actions are performed in the order they are called, one after
 another.</p>
 <p>Creates a new ActionChains.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -344,10 +344,10 @@ If None, releases on current mouse position.</li>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first simple">
-<li>keys_to_send: The keys to send.  Modifier keys constants can be found in the</li>
+<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first last simple">
+<li>keys_to_send: The keys to send.  Modifier keys constants can be found in the
+&#8216;Keys&#8217; class.</li>
 </ul>
-<p class="last">&#8216;Keys&#8217; class.</p>
 </td>
 </tr>
 </tbody>
@@ -362,11 +362,11 @@ If None, releases on current mouse position.</li>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first simple">
+<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first last simple">
 <li>element: The element to send keys.</li>
-<li>keys_to_send: The keys to send.  Modifier keys constants can be found in the</li>
+<li>keys_to_send: The keys to send.  Modifier keys constants can be found in the
+&#8216;Keys&#8217; class.</li>
 </ul>
-<p class="last">&#8216;Keys&#8217; class.</p>
 </td>
 </tr>
 </tbody>
@@ -414,7 +414,7 @@ If None, releases on current mouse position.</li>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../index.html">Selenium 2.0 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">Selenium 3.0 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

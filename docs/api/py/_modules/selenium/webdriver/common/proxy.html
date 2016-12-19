@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>selenium.webdriver.common.proxy &mdash; Selenium 2.0 documentation</title>
+    <title>selenium.webdriver.common.proxy &mdash; Selenium 3.0 documentation</title>
     
     <link rel="stylesheet" href="../../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '2.0',
+        VERSION:     '3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../../_static/doctools.js"></script>
-    <link rel="top" title="Selenium 2.0 documentation" href="../../../../index.html" />
+    <link rel="top" title="Selenium 3.0 documentation" href="../../../../index.html" />
     <link rel="up" title="Module code" href="../../../index.html" /> 
   </head>
   <body>
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">Selenium 2.0 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">Selenium 3.0 documentation</a> &raquo;</li>
           <li><a href="../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -68,6 +68,7 @@
 <span class="sd">The Proxy implementation.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
+
 <div class="viewcode-block" id="ProxyTypeFactory"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.proxy.html#selenium.webdriver.common.proxy.ProxyTypeFactory">[docs]</a><span class="k">class</span> <span class="nc">ProxyTypeFactory</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Factory for proxy types.</span>
@@ -76,6 +77,7 @@
     <span class="nd">@staticmethod</span>
 <div class="viewcode-block" id="ProxyTypeFactory.make"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.proxy.html#selenium.webdriver.common.proxy.ProxyTypeFactory.make">[docs]</a>    <span class="k">def</span> <span class="nf">make</span><span class="p">(</span><span class="n">ff_value</span><span class="p">,</span> <span class="n">string</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">{</span><span class="s">&#39;ff_value&#39;</span><span class="p">:</span> <span class="n">ff_value</span><span class="p">,</span> <span class="s">&#39;string&#39;</span><span class="p">:</span> <span class="n">string</span><span class="p">}</span>
+
 </div></div>
 <div class="viewcode-block" id="ProxyType"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.proxy.html#selenium.webdriver.common.proxy.ProxyType">[docs]</a><span class="k">class</span> <span class="nc">ProxyType</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -86,13 +88,13 @@
 <span class="sd">       &#39;string&#39; is id of proxy type.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">DIRECT</span> <span class="o">=</span> <span class="n">ProxyTypeFactory</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s">&#39;DIRECT&#39;</span><span class="p">)</span>           <span class="c"># Direct connection, no proxy (default on Windows).</span>
-    <span class="n">MANUAL</span> <span class="o">=</span> <span class="n">ProxyTypeFactory</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s">&#39;MANUAL&#39;</span><span class="p">)</span>           <span class="c"># Manual proxy settings (e.g., for httpProxy).</span>
-    <span class="n">PAC</span> <span class="o">=</span> <span class="n">ProxyTypeFactory</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s">&#39;PAC&#39;</span><span class="p">)</span>                 <span class="c"># Proxy autoconfiguration from URL.</span>
-    <span class="n">RESERVED_1</span> <span class="o">=</span> <span class="n">ProxyTypeFactory</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="s">&#39;RESERVED1&#39;</span><span class="p">)</span>    <span class="c"># Never used.</span>
-    <span class="n">AUTODETECT</span> <span class="o">=</span> <span class="n">ProxyTypeFactory</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="s">&#39;AUTODETECT&#39;</span><span class="p">)</span>   <span class="c"># Proxy autodetection (presumably with WPAD).</span>
-    <span class="n">SYSTEM</span> <span class="o">=</span> <span class="n">ProxyTypeFactory</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="s">&#39;SYSTEM&#39;</span><span class="p">)</span>           <span class="c"># Use system settings (default on Linux).</span>
-    <span class="n">UNSPECIFIED</span> <span class="o">=</span> <span class="n">ProxyTypeFactory</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="s">&#39;UNSPECIFIED&#39;</span><span class="p">)</span> <span class="c"># Not initialized (for internal use).</span>
+    <span class="n">DIRECT</span> <span class="o">=</span> <span class="n">ProxyTypeFactory</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s">&#39;DIRECT&#39;</span><span class="p">)</span>  <span class="c"># Direct connection, no proxy (default on Windows).</span>
+    <span class="n">MANUAL</span> <span class="o">=</span> <span class="n">ProxyTypeFactory</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s">&#39;MANUAL&#39;</span><span class="p">)</span>  <span class="c"># Manual proxy settings (e.g., for httpProxy).</span>
+    <span class="n">PAC</span> <span class="o">=</span> <span class="n">ProxyTypeFactory</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s">&#39;PAC&#39;</span><span class="p">)</span>  <span class="c"># Proxy autoconfiguration from URL.</span>
+    <span class="n">RESERVED_1</span> <span class="o">=</span> <span class="n">ProxyTypeFactory</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="s">&#39;RESERVED1&#39;</span><span class="p">)</span>  <span class="c"># Never used.</span>
+    <span class="n">AUTODETECT</span> <span class="o">=</span> <span class="n">ProxyTypeFactory</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="s">&#39;AUTODETECT&#39;</span><span class="p">)</span>  <span class="c"># Proxy autodetection (presumably with WPAD).</span>
+    <span class="n">SYSTEM</span> <span class="o">=</span> <span class="n">ProxyTypeFactory</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="s">&#39;SYSTEM&#39;</span><span class="p">)</span>  <span class="c"># Use system settings (default on Linux).</span>
+    <span class="n">UNSPECIFIED</span> <span class="o">=</span> <span class="n">ProxyTypeFactory</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="s">&#39;UNSPECIFIED&#39;</span><span class="p">)</span>  <span class="c"># Not initialized (for internal use).</span>
 
     <span class="nd">@classmethod</span>
 <div class="viewcode-block" id="ProxyType.load"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.proxy.html#selenium.webdriver.common.proxy.ProxyType.load">[docs]</a>    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
@@ -101,10 +103,13 @@
         <span class="n">value</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
             <span class="n">attr_value</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">attr_value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">and</span> <span class="s">&#39;string&#39;</span> <span class="ow">in</span> <span class="n">attr_value</span> <span class="ow">and</span> \
-                <span class="n">attr_value</span><span class="p">[</span><span class="s">&#39;string&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">attr_value</span><span class="p">[</span><span class="s">&#39;string&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">value</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">attr_value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">and</span> \
+                    <span class="s">&#39;string&#39;</span> <span class="ow">in</span> <span class="n">attr_value</span> <span class="ow">and</span> \
+                    <span class="n">attr_value</span><span class="p">[</span><span class="s">&#39;string&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> \
+                    <span class="n">attr_value</span><span class="p">[</span><span class="s">&#39;string&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">value</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">attr_value</span>
         <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;No proxy type is found for </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">value</span><span class="p">))</span>
+
 </div></div>
 <div class="viewcode-block" id="Proxy"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.proxy.html#selenium.webdriver.common.proxy.Proxy">[docs]</a><span class="k">class</span> <span class="nc">Proxy</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -346,9 +351,7 @@
 </div>
     <span class="k">def</span> <span class="nf">_verify_proxy_type_compatibility</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">compatibleProxy</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">proxyType</span> <span class="o">!=</span> <span class="n">ProxyType</span><span class="o">.</span><span class="n">UNSPECIFIED</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">proxyType</span> <span class="o">!=</span> <span class="n">compatibleProxy</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot; Specified proxy type (</span><span class="si">%s</span><span class="s">) not compatible with current setting (</span><span class="si">%s</span><span class="s">)&quot;</span> <span class="o">%</span> \
-                                                <span class="p">(</span><span class="n">compatibleProxy</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">proxyType</span><span class="p">))</span>
-
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot; Specified proxy type (</span><span class="si">%s</span><span class="s">) not compatible with current setting (</span><span class="si">%s</span><span class="s">)&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">compatibleProxy</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">proxyType</span><span class="p">))</span>
 
 <div class="viewcode-block" id="Proxy.add_to_capabilities"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.proxy.html#selenium.webdriver.common.proxy.Proxy.add_to_capabilities">[docs]</a>    <span class="k">def</span> <span class="nf">add_to_capabilities</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">capabilities</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -411,7 +414,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">Selenium 2.0 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">Selenium 3.0 documentation</a> &raquo;</li>
           <li><a href="../../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>

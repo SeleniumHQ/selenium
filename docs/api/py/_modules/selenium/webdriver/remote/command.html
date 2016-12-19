@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>selenium.webdriver.remote.command &mdash; Selenium 2.0 documentation</title>
+    <title>selenium.webdriver.remote.command &mdash; Selenium 3.0 documentation</title>
     
     <link rel="stylesheet" href="../../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '2.0',
+        VERSION:     '3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../../_static/doctools.js"></script>
-    <link rel="top" title="Selenium 2.0 documentation" href="../../../../index.html" />
+    <link rel="top" title="Selenium 3.0 documentation" href="../../../../index.html" />
     <link rel="up" title="Module code" href="../../../index.html" /> 
   </head>
   <body>
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">Selenium 2.0 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">Selenium 3.0 documentation</a> &raquo;</li>
           <li><a href="../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -63,6 +63,7 @@
 <span class="c"># KIND, either express or implied.  See the License for the</span>
 <span class="c"># specific language governing permissions and limitations</span>
 <span class="c"># under the License.</span>
+
 
 <div class="viewcode-block" id="Command"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.command.html#selenium.webdriver.remote.command.Command">[docs]</a><span class="k">class</span> <span class="nc">Command</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -107,14 +108,17 @@
     <span class="n">GET_WINDOW_HANDLES</span> <span class="o">=</span> <span class="s">&quot;getWindowHandles&quot;</span>
     <span class="n">GET_WINDOW_SIZE</span> <span class="o">=</span> <span class="s">&quot;getWindowSize&quot;</span>
     <span class="n">W3C_GET_WINDOW_SIZE</span> <span class="o">=</span> <span class="s">&quot;w3cGetWindowSize&quot;</span>
+    <span class="n">W3C_GET_WINDOW_POSITION</span> <span class="o">=</span> <span class="s">&quot;w3cGetWindowPosition&quot;</span>
     <span class="n">GET_WINDOW_POSITION</span> <span class="o">=</span> <span class="s">&quot;getWindowPosition&quot;</span>
     <span class="n">SET_WINDOW_SIZE</span> <span class="o">=</span> <span class="s">&quot;setWindowSize&quot;</span>
     <span class="n">W3C_SET_WINDOW_SIZE</span> <span class="o">=</span> <span class="s">&quot;w3cSetWindowSize&quot;</span>
     <span class="n">SET_WINDOW_POSITION</span> <span class="o">=</span> <span class="s">&quot;setWindowPosition&quot;</span>
+    <span class="n">W3C_SET_WINDOW_POSITION</span> <span class="o">=</span> <span class="s">&quot;w3cSetWindowPosition&quot;</span>
     <span class="n">SWITCH_TO_WINDOW</span> <span class="o">=</span> <span class="s">&quot;switchToWindow&quot;</span>
     <span class="n">SWITCH_TO_FRAME</span> <span class="o">=</span> <span class="s">&quot;switchToFrame&quot;</span>
     <span class="n">SWITCH_TO_PARENT_FRAME</span> <span class="o">=</span> <span class="s">&quot;switchToParentFrame&quot;</span>
     <span class="n">GET_ACTIVE_ELEMENT</span> <span class="o">=</span> <span class="s">&quot;getActiveElement&quot;</span>
+    <span class="n">W3C_GET_ACTIVE_ELEMENT</span> <span class="o">=</span> <span class="s">&quot;w3cGetActiveElement&quot;</span>
     <span class="n">GET_CURRENT_URL</span> <span class="o">=</span> <span class="s">&quot;getCurrentUrl&quot;</span>
     <span class="n">GET_PAGE_SOURCE</span> <span class="o">=</span> <span class="s">&quot;getPageSource&quot;</span>
     <span class="n">GET_TITLE</span> <span class="o">=</span> <span class="s">&quot;getTitle&quot;</span>
@@ -131,6 +135,7 @@
     <span class="n">GET_ELEMENT_SIZE</span> <span class="o">=</span> <span class="s">&quot;getElementSize&quot;</span>
     <span class="n">GET_ELEMENT_RECT</span> <span class="o">=</span> <span class="s">&quot;getElementRect&quot;</span>
     <span class="n">GET_ELEMENT_ATTRIBUTE</span> <span class="o">=</span> <span class="s">&quot;getElementAttribute&quot;</span>
+    <span class="n">GET_ELEMENT_PROPERTY</span> <span class="o">=</span> <span class="s">&quot;getElementProperty&quot;</span>
     <span class="n">GET_ELEMENT_VALUE_OF_CSS_PROPERTY</span> <span class="o">=</span> <span class="s">&quot;getElementValueOfCssProperty&quot;</span>
     <span class="n">ELEMENT_EQUALS</span> <span class="o">=</span> <span class="s">&quot;elementEquals&quot;</span>
     <span class="n">SCREENSHOT</span> <span class="o">=</span> <span class="s">&quot;screenshot&quot;</span>
@@ -144,7 +149,7 @@
     <span class="n">GET_LOG</span> <span class="o">=</span> <span class="s">&quot;getLog&quot;</span>
     <span class="n">GET_AVAILABLE_LOG_TYPES</span> <span class="o">=</span> <span class="s">&quot;getAvailableLogTypes&quot;</span>
 
-    <span class="c">#Alerts</span>
+    <span class="c"># Alerts</span>
     <span class="n">DISMISS_ALERT</span> <span class="o">=</span> <span class="s">&quot;dismissAlert&quot;</span>
     <span class="n">ACCEPT_ALERT</span> <span class="o">=</span> <span class="s">&quot;acceptAlert&quot;</span>
     <span class="n">SET_ALERT_VALUE</span> <span class="o">=</span> <span class="s">&quot;setAlertValue&quot;</span>
@@ -172,7 +177,7 @@
     <span class="n">LONG_PRESS</span> <span class="o">=</span> <span class="s">&quot;touchLongPress&quot;</span>
     <span class="n">FLICK</span> <span class="o">=</span> <span class="s">&quot;touchFlick&quot;</span>
 
-    <span class="c">#HTML 5</span>
+    <span class="c"># HTML 5</span>
     <span class="n">EXECUTE_SQL</span> <span class="o">=</span> <span class="s">&quot;executeSql&quot;</span>
 
     <span class="n">GET_LOCATION</span> <span class="o">=</span> <span class="s">&quot;getLocation&quot;</span>
@@ -235,7 +240,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">Selenium 2.0 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">Selenium 3.0 documentation</a> &raquo;</li>
           <li><a href="../../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>

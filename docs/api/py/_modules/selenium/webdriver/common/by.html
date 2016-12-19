@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>selenium.webdriver.common.by &mdash; Selenium 2.0 documentation</title>
+    <title>selenium.webdriver.common.by &mdash; Selenium 3.0 documentation</title>
     
     <link rel="stylesheet" href="../../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '2.0',
+        VERSION:     '3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../../_static/doctools.js"></script>
-    <link rel="top" title="Selenium 2.0 documentation" href="../../../../index.html" />
+    <link rel="top" title="Selenium 3.0 documentation" href="../../../../index.html" />
     <link rel="up" title="Module code" href="../../../index.html" /> 
   </head>
   <body>
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">Selenium 2.0 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">Selenium 3.0 documentation</a> &raquo;</li>
           <li><a href="../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -68,6 +68,7 @@
 <span class="sd">The By implementation.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
+
 <div class="viewcode-block" id="By"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.by.html#selenium.webdriver.common.by.By">[docs]</a><span class="k">class</span> <span class="nc">By</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Set of supported locator strategies.</span>
@@ -80,14 +81,7 @@
     <span class="n">NAME</span> <span class="o">=</span> <span class="s">&quot;name&quot;</span>
     <span class="n">TAG_NAME</span> <span class="o">=</span> <span class="s">&quot;tag name&quot;</span>
     <span class="n">CLASS_NAME</span> <span class="o">=</span> <span class="s">&quot;class name&quot;</span>
-    <span class="n">CSS_SELECTOR</span> <span class="o">=</span> <span class="s">&quot;css selector&quot;</span>
-
-    <span class="nd">@classmethod</span>
-<div class="viewcode-block" id="By.is_valid"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.by.html#selenium.webdriver.common.by.By.is_valid">[docs]</a>    <span class="k">def</span> <span class="nf">is_valid</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">by</span><span class="p">):</span>
-        <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">by</span> <span class="o">==</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
-                <span class="k">return</span> <span class="bp">True</span>
-        <span class="k">return</span> <span class="bp">False</span></div></div>
+    <span class="n">CSS_SELECTOR</span> <span class="o">=</span> <span class="s">&quot;css selector&quot;</span></div>
 </pre></div>
 
           </div>
@@ -121,7 +115,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">Selenium 2.0 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">Selenium 3.0 documentation</a> &raquo;</li>
           <li><a href="../../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>

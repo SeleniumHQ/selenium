@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>selenium.common.exceptions &mdash; Selenium 2.0 documentation</title>
+    <title>selenium.common.exceptions &mdash; Selenium 3.0 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '2.0',
+        VERSION:     '3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <link rel="top" title="Selenium 2.0 documentation" href="../../../index.html" />
+    <link rel="top" title="Selenium 3.0 documentation" href="../../../index.html" />
     <link rel="up" title="Module code" href="../../index.html" /> 
   </head>
   <body>
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">Selenium 2.0 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">Selenium 3.0 documentation</a> &raquo;</li>
           <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -68,6 +68,7 @@
 <span class="sd">Exceptions that may happen in all the webdriver code.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
+
 <div class="viewcode-block" id="WebDriverException"><a class="viewcode-back" href="../../../common/selenium.common.exceptions.html#selenium.common.exceptions.WebDriverException">[docs]</a><span class="k">class</span> <span class="nc">WebDriverException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Base webdriver exception.</span>
@@ -86,6 +87,7 @@
             <span class="n">stacktrace</span> <span class="o">=</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stacktrace</span><span class="p">)</span>
             <span class="n">exception_msg</span> <span class="o">+=</span> <span class="s">&quot;Stacktrace:</span><span class="se">\n</span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">stacktrace</span>
         <span class="k">return</span> <span class="n">exception_msg</span>
+
 </div>
 <div class="viewcode-block" id="ErrorInResponseException"><a class="viewcode-back" href="../../../common/selenium.common.exceptions.html#selenium.common.exceptions.ErrorInResponseException">[docs]</a><span class="k">class</span> <span class="nc">ErrorInResponseException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -97,30 +99,34 @@
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
         <span class="n">WebDriverException</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">response</span> <span class="o">=</span> <span class="n">response</span>
+
 </div>
 <div class="viewcode-block" id="InvalidSwitchToTargetException"><a class="viewcode-back" href="../../../common/selenium.common.exceptions.html#selenium.common.exceptions.InvalidSwitchToTargetException">[docs]</a><span class="k">class</span> <span class="nc">InvalidSwitchToTargetException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Thrown when frame or window target to be switched doesn&#39;t exist.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span>
+
 </div>
 <div class="viewcode-block" id="NoSuchFrameException"><a class="viewcode-back" href="../../../common/selenium.common.exceptions.html#selenium.common.exceptions.NoSuchFrameException">[docs]</a><span class="k">class</span> <span class="nc">NoSuchFrameException</span><span class="p">(</span><span class="n">InvalidSwitchToTargetException</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Thrown when frame target to be switched doesn&#39;t exist.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span>
+
 </div>
 <div class="viewcode-block" id="NoSuchWindowException"><a class="viewcode-back" href="../../../common/selenium.common.exceptions.html#selenium.common.exceptions.NoSuchWindowException">[docs]</a><span class="k">class</span> <span class="nc">NoSuchWindowException</span><span class="p">(</span><span class="n">InvalidSwitchToTargetException</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Thrown when window target to be switched doesn&#39;t exist.</span>
 
-<span class="sd">    To find the current set of active window handles, you can get a list </span>
+<span class="sd">    To find the current set of active window handles, you can get a list</span>
 <span class="sd">    of the active window handles in the following way::</span>
 
 <span class="sd">        print driver.window_handles</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span>
+
 </div>
 <div class="viewcode-block" id="NoSuchElementException"><a class="viewcode-back" href="../../../common/selenium.common.exceptions.html#selenium.common.exceptions.NoSuchElementException">[docs]</a><span class="k">class</span> <span class="nc">NoSuchElementException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -129,20 +135,22 @@
 <span class="sd">    If you encounter this exception, you may want to check the following:</span>
 <span class="sd">        * Check your selector used in your find_by...</span>
 <span class="sd">        * Element may not yet be on the screen at the time of the find operation,</span>
-<span class="sd">        (webpage is still loading) see selenium.webdriver.support.wait.WebDriverWait() </span>
-<span class="sd">        for how to write a wait wrapper to wait for an element to appear.</span>
+<span class="sd">          (webpage is still loading) see selenium.webdriver.support.wait.WebDriverWait()</span>
+<span class="sd">          for how to write a wait wrapper to wait for an element to appear.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span>
+
 </div>
 <div class="viewcode-block" id="NoSuchAttributeException"><a class="viewcode-back" href="../../../common/selenium.common.exceptions.html#selenium.common.exceptions.NoSuchAttributeException">[docs]</a><span class="k">class</span> <span class="nc">NoSuchAttributeException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Thrown when the attribute of element could not be found.</span>
 
-<span class="sd">    You may want to check if the attribute exists in the particular browser you are </span>
-<span class="sd">    testing against.  Some browsers may have different property names for the same </span>
+<span class="sd">    You may want to check if the attribute exists in the particular browser you are</span>
+<span class="sd">    testing against.  Some browsers may have different property names for the same</span>
 <span class="sd">    property.  (IE8&#39;s .innerText vs. Firefox .textContent)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span>
+
 </div>
 <div class="viewcode-block" id="StaleElementReferenceException"><a class="viewcode-back" href="../../../common/selenium.common.exceptions.html#selenium.common.exceptions.StaleElementReferenceException">[docs]</a><span class="k">class</span> <span class="nc">StaleElementReferenceException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -152,26 +160,28 @@
 
 
 <span class="sd">    Possible causes of StaleElementReferenceException include, but not limited to:</span>
-<span class="sd">        * You are no longer on the same page, or the page may have refreshed since the element </span>
-<span class="sd">        was located.</span>
+<span class="sd">        * You are no longer on the same page, or the page may have refreshed since the element</span>
+<span class="sd">          was located.</span>
 <span class="sd">        * The element may have been removed and re-added to the screen, since it was located.</span>
-<span class="sd">        Such as an element being relocated. </span>
-<span class="sd">        This can happen typically with a javascript framework when values are updated and the </span>
-<span class="sd">        node is rebuilt.</span>
+<span class="sd">          Such as an element being relocated.</span>
+<span class="sd">          This can happen typically with a javascript framework when values are updated and the</span>
+<span class="sd">          node is rebuilt.</span>
 <span class="sd">        * Element may have been inside an iframe or another context which was refreshed.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span>
+
 </div>
-<div class="viewcode-block" id="InvalidElementStateException"><a class="viewcode-back" href="../../../common/selenium.common.exceptions.html#selenium.common.exceptions.InvalidElementStateException">[docs]</a><span class="k">class</span> <span class="nc">InvalidElementStateException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>  
+<div class="viewcode-block" id="InvalidElementStateException"><a class="viewcode-back" href="../../../common/selenium.common.exceptions.html#selenium.common.exceptions.InvalidElementStateException">[docs]</a><span class="k">class</span> <span class="nc">InvalidElementStateException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span>
+
 </div>
 <div class="viewcode-block" id="UnexpectedAlertPresentException"><a class="viewcode-back" href="../../../common/selenium.common.exceptions.html#selenium.common.exceptions.UnexpectedAlertPresentException">[docs]</a><span class="k">class</span> <span class="nc">UnexpectedAlertPresentException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Thrown when an unexpected alert is appeared.</span>
-<span class="sd">    </span>
-<span class="sd">    Usually raised when when an expected modal is blocking webdriver form executing any </span>
+
+<span class="sd">    Usually raised when when an expected modal is blocking webdriver form executing any</span>
 <span class="sd">    more commands.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">screen</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">stacktrace</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">alert_text</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
@@ -180,33 +190,37 @@
 
     <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s">&quot;Alert Text: </span><span class="si">%s</span><span class="se">\n</span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">alert_text</span><span class="p">,</span> <span class="nb">super</span><span class="p">(</span><span class="n">UnexpectedAlertPresentException</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__str__</span><span class="p">())</span>
+
 </div>
 <div class="viewcode-block" id="NoAlertPresentException"><a class="viewcode-back" href="../../../common/selenium.common.exceptions.html#selenium.common.exceptions.NoAlertPresentException">[docs]</a><span class="k">class</span> <span class="nc">NoAlertPresentException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Thrown when switching to no presented alert.</span>
 
-<span class="sd">    This can be caused by calling an operation on the Alert() class when an alert is </span>
+<span class="sd">    This can be caused by calling an operation on the Alert() class when an alert is</span>
 <span class="sd">    not yet on the screen.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span>
+
 </div>
 <div class="viewcode-block" id="ElementNotVisibleException"><a class="viewcode-back" href="../../../common/selenium.common.exceptions.html#selenium.common.exceptions.ElementNotVisibleException">[docs]</a><span class="k">class</span> <span class="nc">ElementNotVisibleException</span><span class="p">(</span><span class="n">InvalidElementStateException</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Thrown when an element is present on the DOM, but  </span>
+<span class="sd">    Thrown when an element is present on the DOM, but</span>
 <span class="sd">    it is not visible, and so is not able to be interacted with.</span>
 
-<span class="sd">    Most commonly encountered when trying to click or read text </span>
+<span class="sd">    Most commonly encountered when trying to click or read text</span>
 <span class="sd">    of an element that is hidden from view.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span>
+
 </div>
 <div class="viewcode-block" id="ElementNotSelectableException"><a class="viewcode-back" href="../../../common/selenium.common.exceptions.html#selenium.common.exceptions.ElementNotSelectableException">[docs]</a><span class="k">class</span> <span class="nc">ElementNotSelectableException</span><span class="p">(</span><span class="n">InvalidElementStateException</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Thrown when trying to select an unselectable element.</span>
-<span class="sd">    </span>
+
 <span class="sd">    For example, selecting a &#39;script&#39; element.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span>
+
 </div>
 <div class="viewcode-block" id="InvalidCookieDomainException"><a class="viewcode-back" href="../../../common/selenium.common.exceptions.html#selenium.common.exceptions.InvalidCookieDomainException">[docs]</a><span class="k">class</span> <span class="nc">InvalidCookieDomainException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -214,36 +228,42 @@
 <span class="sd">    than the current URL.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span>
+
 </div>
 <div class="viewcode-block" id="UnableToSetCookieException"><a class="viewcode-back" href="../../../common/selenium.common.exceptions.html#selenium.common.exceptions.UnableToSetCookieException">[docs]</a><span class="k">class</span> <span class="nc">UnableToSetCookieException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Thrown when a driver fails to set a cookie.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span>
+
 </div>
 <div class="viewcode-block" id="RemoteDriverServerException"><a class="viewcode-back" href="../../../common/selenium.common.exceptions.html#selenium.common.exceptions.RemoteDriverServerException">[docs]</a><span class="k">class</span> <span class="nc">RemoteDriverServerException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span>
+
 </div>
 <div class="viewcode-block" id="TimeoutException"><a class="viewcode-back" href="../../../common/selenium.common.exceptions.html#selenium.common.exceptions.TimeoutException">[docs]</a><span class="k">class</span> <span class="nc">TimeoutException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Thrown when a command does not complete in enough time.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span>
+
 </div>
 <div class="viewcode-block" id="MoveTargetOutOfBoundsException"><a class="viewcode-back" href="../../../common/selenium.common.exceptions.html#selenium.common.exceptions.MoveTargetOutOfBoundsException">[docs]</a><span class="k">class</span> <span class="nc">MoveTargetOutOfBoundsException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Thrown when the target provided to the `ActionsChains` move() </span>
+<span class="sd">    Thrown when the target provided to the `ActionsChains` move()</span>
 <span class="sd">    method is invalid, i.e. out of document.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span>
+
 </div>
 <div class="viewcode-block" id="UnexpectedTagNameException"><a class="viewcode-back" href="../../../common/selenium.common.exceptions.html#selenium.common.exceptions.UnexpectedTagNameException">[docs]</a><span class="k">class</span> <span class="nc">UnexpectedTagNameException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Thrown when a support class did not get an expected web element.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span>
+
 </div>
 <div class="viewcode-block" id="InvalidSelectorException"><a class="viewcode-back" href="../../../common/selenium.common.exceptions.html#selenium.common.exceptions.InvalidSelectorException">[docs]</a><span class="k">class</span> <span class="nc">InvalidSelectorException</span><span class="p">(</span><span class="n">NoSuchElementException</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -254,6 +274,7 @@
 <span class="sd">    (e.g. &quot;count(//input)&quot;).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span>
+
 </div>
 <div class="viewcode-block" id="ImeNotAvailableException"><a class="viewcode-back" href="../../../common/selenium.common.exceptions.html#selenium.common.exceptions.ImeNotAvailableException">[docs]</a><span class="k">class</span> <span class="nc">ImeNotAvailableException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -261,6 +282,7 @@
 <span class="sd">    method call if IME support is not available on the machine.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span>
+
 </div>
 <div class="viewcode-block" id="ImeActivationFailedException"><a class="viewcode-back" href="../../../common/selenium.common.exceptions.html#selenium.common.exceptions.ImeActivationFailedException">[docs]</a><span class="k">class</span> <span class="nc">ImeActivationFailedException</span><span class="p">(</span><span class="n">WebDriverException</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -300,7 +322,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">Selenium 2.0 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">Selenium 3.0 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>

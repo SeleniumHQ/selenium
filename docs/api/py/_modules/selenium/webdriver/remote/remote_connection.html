@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>selenium.webdriver.remote.remote_connection &mdash; Selenium 2.0 documentation</title>
+    <title>selenium.webdriver.remote.remote_connection &mdash; Selenium 3.0 documentation</title>
     
     <link rel="stylesheet" href="../../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '2.0',
+        VERSION:     '3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../../_static/doctools.js"></script>
-    <link rel="top" title="Selenium 2.0 documentation" href="../../../../index.html" />
+    <link rel="top" title="Selenium 3.0 documentation" href="../../../../index.html" />
     <link rel="up" title="Module code" href="../../../index.html" /> 
   </head>
   <body>
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">Selenium 2.0 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">Selenium 3.0 documentation</a> &raquo;</li>
           <li><a href="../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -73,11 +73,12 @@
     <span class="kn">import</span> <span class="nn">http.client</span> <span class="kn">as</span> <span class="nn">httplib</span>
     <span class="kn">from</span> <span class="nn">urllib</span> <span class="kn">import</span> <span class="n">request</span> <span class="k">as</span> <span class="n">url_request</span>
     <span class="kn">from</span> <span class="nn">urllib</span> <span class="kn">import</span> <span class="n">parse</span>
-<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span> <span class="c"># above is available in py3+, below is py2.7</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>  <span class="c"># above is available in py3+, below is py2.7</span>
     <span class="kn">import</span> <span class="nn">httplib</span> <span class="kn">as</span> <span class="nn">httplib</span>
     <span class="kn">import</span> <span class="nn">urllib2</span> <span class="kn">as</span> <span class="nn">url_request</span>
     <span class="kn">import</span> <span class="nn">urlparse</span> <span class="kn">as</span> <span class="nn">parse</span>
 
+<span class="kn">from</span> <span class="nn">selenium.webdriver.common</span> <span class="kn">import</span> <span class="n">utils</span> <span class="k">as</span> <span class="n">common_utils</span>
 <span class="kn">from</span> <span class="nn">.command</span> <span class="kn">import</span> <span class="n">Command</span>
 <span class="kn">from</span> <span class="nn">.errorhandler</span> <span class="kn">import</span> <span class="n">ErrorCode</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">utils</span>
@@ -95,8 +96,8 @@
 <span class="sd">        Initialise a new HTTP request.</span>
 
 <span class="sd">        :Args:</span>
-<span class="sd">        - url - String for the URL to send the request to.</span>
-<span class="sd">        - data - Data to send with the request.</span>
+<span class="sd">            - url - String for the URL to send the request to.</span>
+<span class="sd">            - data - Data to send with the request.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">method</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="n">method</span> <span class="o">=</span> <span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="s">&#39;POST&#39;</span> <span class="ow">or</span> <span class="s">&#39;GET&#39;</span>
@@ -122,10 +123,10 @@
 <span class="sd">        Initialise a new Response.</span>
 
 <span class="sd">        :Args:</span>
-<span class="sd">        - fp - The response body file object.</span>
-<span class="sd">        - code - The HTTP status code returned by the server.</span>
-<span class="sd">        - headers - A dictionary of headers returned by the server.</span>
-<span class="sd">        - url - URL of the retrieved resource represented by this Response.</span>
+<span class="sd">            - fp - The response body file object.</span>
+<span class="sd">            - code - The HTTP status code returned by the server.</span>
+<span class="sd">            - headers - A dictionary of headers returned by the server.</span>
+<span class="sd">            - url - URL of the retrieved resource represented by this Response.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fp</span> <span class="o">=</span> <span class="n">fp</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">read</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">read</span>
@@ -165,14 +166,14 @@
 <span class="sd">        Default HTTP error handler.</span>
 
 <span class="sd">        :Args:</span>
-<span class="sd">        - req - The original Request object.</span>
-<span class="sd">        - fp - The response body file object.</span>
-<span class="sd">        - code - The HTTP status code returned by the server.</span>
-<span class="sd">        - msg - The HTTP status message returned by the server.</span>
-<span class="sd">        - headers - The response headers.</span>
+<span class="sd">            - req - The original Request object.</span>
+<span class="sd">            - fp - The response body file object.</span>
+<span class="sd">            - code - The HTTP status code returned by the server.</span>
+<span class="sd">            - msg - The HTTP status message returned by the server.</span>
+<span class="sd">            - headers - The response headers.</span>
 
 <span class="sd">        :Returns:</span>
-<span class="sd">        A new Response object.</span>
+<span class="sd">            A new Response object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">code</span><span class="p">,</span> <span class="n">headers</span><span class="p">,</span> <span class="n">req</span><span class="o">.</span><span class="n">get_full_url</span><span class="p">())</span>
 
@@ -189,7 +190,7 @@
 <div class="viewcode-block" id="RemoteConnection.get_timeout"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.remote_connection.html#selenium.webdriver.remote.remote_connection.RemoteConnection.get_timeout">[docs]</a>    <span class="k">def</span> <span class="nf">get_timeout</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        :Returns:</span>
-<span class="sd">        Timeout value in seconds for all http requests made to the Remote Connection</span>
+<span class="sd">            Timeout value in seconds for all http requests made to the Remote Connection</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">None</span> <span class="k">if</span> <span class="n">cls</span><span class="o">.</span><span class="n">_timeout</span> <span class="o">==</span> <span class="n">socket</span><span class="o">.</span><span class="n">_GLOBAL_DEFAULT_TIMEOUT</span> <span class="k">else</span> <span class="n">cls</span><span class="o">.</span><span class="n">_timeout</span>
 </div>
@@ -199,7 +200,7 @@
 <span class="sd">        Override the default timeout</span>
 
 <span class="sd">        :Args:</span>
-<span class="sd">        - timeout - timeout value for http requests in seconds</span>
+<span class="sd">            - timeout - timeout value for http requests in seconds</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">cls</span><span class="o">.</span><span class="n">_timeout</span> <span class="o">=</span> <span class="n">timeout</span>
 </div>
@@ -214,13 +215,20 @@
         <span class="c"># Attempt to resolve the hostname and get an IP address.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">keep_alive</span> <span class="o">=</span> <span class="n">keep_alive</span>
         <span class="n">parsed_url</span> <span class="o">=</span> <span class="n">parse</span><span class="o">.</span><span class="n">urlparse</span><span class="p">(</span><span class="n">remote_server_addr</span><span class="p">)</span>
-        <span class="n">addr</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
+        <span class="n">addr</span> <span class="o">=</span> <span class="n">parsed_url</span><span class="o">.</span><span class="n">hostname</span>
         <span class="k">if</span> <span class="n">parsed_url</span><span class="o">.</span><span class="n">hostname</span> <span class="ow">and</span> <span class="n">resolve_ip</span><span class="p">:</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">netloc</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">gethostbyname</span><span class="p">(</span><span class="n">parsed_url</span><span class="o">.</span><span class="n">hostname</span><span class="p">)</span>
+            <span class="n">port</span> <span class="o">=</span> <span class="n">parsed_url</span><span class="o">.</span><span class="n">port</span> <span class="ow">or</span> <span class="bp">None</span>
+            <span class="k">if</span> <span class="n">parsed_url</span><span class="o">.</span><span class="n">scheme</span> <span class="o">==</span> <span class="s">&quot;https&quot;</span><span class="p">:</span>
+                <span class="n">ip</span> <span class="o">=</span> <span class="n">parsed_url</span><span class="o">.</span><span class="n">hostname</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">ip</span> <span class="o">=</span> <span class="n">common_utils</span><span class="o">.</span><span class="n">find_connectable_ip</span><span class="p">(</span><span class="n">parsed_url</span><span class="o">.</span><span class="n">hostname</span><span class="p">,</span>
+                                                      <span class="n">port</span><span class="o">=</span><span class="n">port</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">ip</span><span class="p">:</span>
+                <span class="n">netloc</span> <span class="o">=</span> <span class="n">ip</span>
                 <span class="n">addr</span> <span class="o">=</span> <span class="n">netloc</span>
                 <span class="k">if</span> <span class="n">parsed_url</span><span class="o">.</span><span class="n">port</span><span class="p">:</span>
-                    <span class="n">netloc</span> <span class="o">+=</span> <span class="s">&#39;:</span><span class="si">%d</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">parsed_url</span><span class="o">.</span><span class="n">port</span>
+                    <span class="n">netloc</span> <span class="o">=</span> <span class="n">common_utils</span><span class="o">.</span><span class="n">join_host_port</span><span class="p">(</span><span class="n">netloc</span><span class="p">,</span>
+                                                         <span class="n">parsed_url</span><span class="o">.</span><span class="n">port</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">parsed_url</span><span class="o">.</span><span class="n">username</span><span class="p">:</span>
                     <span class="n">auth</span> <span class="o">=</span> <span class="n">parsed_url</span><span class="o">.</span><span class="n">username</span>
                     <span class="k">if</span> <span class="n">parsed_url</span><span class="o">.</span><span class="n">password</span><span class="p">:</span>
@@ -229,8 +237,9 @@
                 <span class="n">remote_server_addr</span> <span class="o">=</span> <span class="n">parse</span><span class="o">.</span><span class="n">urlunparse</span><span class="p">(</span>
                     <span class="p">(</span><span class="n">parsed_url</span><span class="o">.</span><span class="n">scheme</span><span class="p">,</span> <span class="n">netloc</span><span class="p">,</span> <span class="n">parsed_url</span><span class="o">.</span><span class="n">path</span><span class="p">,</span>
                      <span class="n">parsed_url</span><span class="o">.</span><span class="n">params</span><span class="p">,</span> <span class="n">parsed_url</span><span class="o">.</span><span class="n">query</span><span class="p">,</span> <span class="n">parsed_url</span><span class="o">.</span><span class="n">fragment</span><span class="p">))</span>
-            <span class="k">except</span> <span class="n">socket</span><span class="o">.</span><span class="n">gaierror</span><span class="p">:</span>
-                <span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;Could not get IP address for host: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">parsed_url</span><span class="o">.</span><span class="n">hostname</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;Could not get IP address for host: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span>
+                            <span class="n">parsed_url</span><span class="o">.</span><span class="n">hostname</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_url</span> <span class="o">=</span> <span class="n">remote_server_addr</span>
         <span class="k">if</span> <span class="n">keep_alive</span><span class="p">:</span>
@@ -255,9 +264,10 @@
             <span class="n">Command</span><span class="o">.</span><span class="n">GET_TITLE</span><span class="p">:</span> <span class="p">(</span><span class="s">&#39;GET&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/title&#39;</span><span class="p">),</span>
             <span class="n">Command</span><span class="o">.</span><span class="n">GET_PAGE_SOURCE</span><span class="p">:</span> <span class="p">(</span><span class="s">&#39;GET&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/source&#39;</span><span class="p">),</span>
             <span class="n">Command</span><span class="o">.</span><span class="n">SCREENSHOT</span><span class="p">:</span> <span class="p">(</span><span class="s">&#39;GET&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/screenshot&#39;</span><span class="p">),</span>
-            <span class="n">Command</span><span class="o">.</span><span class="n">ELEMENT_SCREENSHOT</span><span class="p">:</span> <span class="p">(</span><span class="s">&#39;GET&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/screenshot/$id&#39;</span><span class="p">),</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">ELEMENT_SCREENSHOT</span><span class="p">:</span> <span class="p">(</span><span class="s">&#39;GET&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/element/$id/screenshot&#39;</span><span class="p">),</span>
             <span class="n">Command</span><span class="o">.</span><span class="n">FIND_ELEMENT</span><span class="p">:</span> <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/element&#39;</span><span class="p">),</span>
             <span class="n">Command</span><span class="o">.</span><span class="n">FIND_ELEMENTS</span><span class="p">:</span> <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/elements&#39;</span><span class="p">),</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">W3C_GET_ACTIVE_ELEMENT</span><span class="p">:</span> <span class="p">(</span><span class="s">&#39;GET&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/element/active&#39;</span><span class="p">),</span>
             <span class="n">Command</span><span class="o">.</span><span class="n">GET_ACTIVE_ELEMENT</span><span class="p">:</span>
                 <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/element/active&#39;</span><span class="p">),</span>
             <span class="n">Command</span><span class="o">.</span><span class="n">FIND_CHILD_ELEMENT</span><span class="p">:</span>
@@ -295,6 +305,8 @@
                 <span class="p">(</span><span class="s">&#39;GET&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/element/$id/rect&#39;</span><span class="p">),</span>
             <span class="n">Command</span><span class="o">.</span><span class="n">GET_ELEMENT_ATTRIBUTE</span><span class="p">:</span>
                 <span class="p">(</span><span class="s">&#39;GET&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/element/$id/attribute/$name&#39;</span><span class="p">),</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">GET_ELEMENT_PROPERTY</span><span class="p">:</span>
+                <span class="p">(</span><span class="s">&#39;GET&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/element/$id/property/$name&#39;</span><span class="p">),</span>
             <span class="n">Command</span><span class="o">.</span><span class="n">ELEMENT_EQUALS</span><span class="p">:</span>
                 <span class="p">(</span><span class="s">&#39;GET&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/element/$id/equals/$other&#39;</span><span class="p">),</span>
             <span class="n">Command</span><span class="o">.</span><span class="n">GET_ALL_COOKIES</span><span class="p">:</span> <span class="p">(</span><span class="s">&#39;GET&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/cookie&#39;</span><span class="p">),</span>
@@ -348,6 +360,10 @@
                 <span class="p">(</span><span class="s">&#39;GET&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/window/$windowHandle/position&#39;</span><span class="p">),</span>
             <span class="n">Command</span><span class="o">.</span><span class="n">SET_WINDOW_POSITION</span><span class="p">:</span>
                 <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/window/$windowHandle/position&#39;</span><span class="p">),</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">W3C_GET_WINDOW_POSITION</span><span class="p">:</span>
+                <span class="p">(</span><span class="s">&#39;GET&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/window/position&#39;</span><span class="p">),</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">W3C_SET_WINDOW_POSITION</span><span class="p">:</span>
+                <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/window/position&#39;</span><span class="p">),</span>
             <span class="n">Command</span><span class="o">.</span><span class="n">MAXIMIZE_WINDOW</span><span class="p">:</span>
                 <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/window/$windowHandle/maximize&#39;</span><span class="p">),</span>
             <span class="n">Command</span><span class="o">.</span><span class="n">W3C_MAXIMIZE_WINDOW</span><span class="p">:</span>
@@ -465,8 +481,9 @@
                        <span class="s">&quot;Content-type&quot;</span><span class="p">:</span> <span class="s">&quot;application/json;charset=</span><span class="se">\&quot;</span><span class="s">UTF-8</span><span class="se">\&quot;</span><span class="s">&quot;</span><span class="p">,</span>
                        <span class="s">&quot;Accept&quot;</span><span class="p">:</span> <span class="s">&quot;application/json&quot;</span><span class="p">}</span>
             <span class="k">if</span> <span class="n">parsed_url</span><span class="o">.</span><span class="n">username</span><span class="p">:</span>
-                <span class="n">auth</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">standard_b64encode</span><span class="p">((</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">:</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span>
-                       <span class="p">(</span><span class="n">parsed_url</span><span class="o">.</span><span class="n">username</span><span class="p">,</span> <span class="n">parsed_url</span><span class="o">.</span><span class="n">password</span><span class="p">))</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s">&#39;ascii&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s">&#39;ascii&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">)</span>
+                <span class="n">auth</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">standard_b64encode</span><span class="p">((</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">:</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span>
+                    <span class="n">parsed_url</span><span class="o">.</span><span class="n">username</span><span class="p">,</span>
+                    <span class="n">parsed_url</span><span class="o">.</span><span class="n">password</span><span class="p">))</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s">&#39;ascii&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s">&#39;ascii&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">)</span>
                 <span class="n">headers</span><span class="p">[</span><span class="s">&quot;Authorization&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&quot;Basic </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">auth</span>
             <span class="k">if</span> <span class="n">body</span> <span class="ow">and</span> <span class="n">method</span> <span class="o">!=</span> <span class="s">&#39;POST&#39;</span> <span class="ow">and</span> <span class="n">method</span> <span class="o">!=</span> <span class="s">&#39;PUT&#39;</span><span class="p">:</span>
                 <span class="n">body</span> <span class="o">=</span> <span class="bp">None</span>
@@ -484,12 +501,13 @@
                 <span class="n">netloc</span> <span class="o">=</span> <span class="n">parsed_url</span><span class="o">.</span><span class="n">hostname</span>
                 <span class="k">if</span> <span class="n">parsed_url</span><span class="o">.</span><span class="n">port</span><span class="p">:</span>
                     <span class="n">netloc</span> <span class="o">+=</span> <span class="s">&quot;:</span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">parsed_url</span><span class="o">.</span><span class="n">port</span>
-                <span class="n">cleaned_url</span> <span class="o">=</span> <span class="n">parse</span><span class="o">.</span><span class="n">urlunparse</span><span class="p">((</span><span class="n">parsed_url</span><span class="o">.</span><span class="n">scheme</span><span class="p">,</span>
-                                                   <span class="n">netloc</span><span class="p">,</span>
-                                                   <span class="n">parsed_url</span><span class="o">.</span><span class="n">path</span><span class="p">,</span>
-                                                   <span class="n">parsed_url</span><span class="o">.</span><span class="n">params</span><span class="p">,</span>
-                                                   <span class="n">parsed_url</span><span class="o">.</span><span class="n">query</span><span class="p">,</span>
-                                                   <span class="n">parsed_url</span><span class="o">.</span><span class="n">fragment</span><span class="p">))</span>
+                <span class="n">cleaned_url</span> <span class="o">=</span> <span class="n">parse</span><span class="o">.</span><span class="n">urlunparse</span><span class="p">((</span>
+                    <span class="n">parsed_url</span><span class="o">.</span><span class="n">scheme</span><span class="p">,</span>
+                    <span class="n">netloc</span><span class="p">,</span>
+                    <span class="n">parsed_url</span><span class="o">.</span><span class="n">path</span><span class="p">,</span>
+                    <span class="n">parsed_url</span><span class="o">.</span><span class="n">params</span><span class="p">,</span>
+                    <span class="n">parsed_url</span><span class="o">.</span><span class="n">query</span><span class="p">,</span>
+                    <span class="n">parsed_url</span><span class="o">.</span><span class="n">fragment</span><span class="p">))</span>
                 <span class="n">password_manager</span> <span class="o">=</span> <span class="n">url_request</span><span class="o">.</span><span class="n">HTTPPasswordMgrWithDefaultRealm</span><span class="p">()</span>
                 <span class="n">password_manager</span><span class="o">.</span><span class="n">add_password</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span>
                                               <span class="s">&quot;</span><span class="si">%s</span><span class="s">://</span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">parsed_url</span><span class="o">.</span><span class="n">scheme</span><span class="p">,</span> <span class="n">netloc</span><span class="p">),</span>
@@ -583,7 +601,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">Selenium 2.0 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">Selenium 3.0 documentation</a> &raquo;</li>
           <li><a href="../../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>

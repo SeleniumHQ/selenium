@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>selenium.webdriver.remote.remote_connection &mdash; Selenium 2.0 documentation</title>
+    <title>selenium.webdriver.remote.remote_connection &mdash; Selenium 3.0 documentation</title>
     
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '2.0',
+        VERSION:     '3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="Selenium 2.0 documentation" href="../index.html" /> 
+    <link rel="top" title="Selenium 3.0 documentation" href="../index.html" /> 
   </head>
   <body>
     <div class="related">
@@ -35,7 +35,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../index.html">Selenium 2.0 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">Selenium 3.0 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -59,26 +59,20 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"></td>
-</tr>
-</tbody>
-</table>
-<ul class="simple">
+<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first simple">
 <li>req - The original Request object.</li>
 <li>fp - The response body file object.</li>
 <li>code - The HTTP status code returned by the server.</li>
 <li>msg - The HTTP status message returned by the server.</li>
 <li>headers - The response headers.</li>
 </ul>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"></td>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last">A new Response object.</p>
+</td>
 </tr>
 </tbody>
 </table>
-<p>A new Response object.</p>
 </dd></dl>
 
 </dd></dl>
@@ -117,11 +111,10 @@ its JSON payload.</li>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"></td>
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body">Timeout value in seconds for all http requests made to the Remote Connection</td>
 </tr>
 </tbody>
 </table>
-<p>Timeout value in seconds for all http requests made to the Remote Connection</p>
 </dd></dl>
 
 <dl class="classmethod">
@@ -138,13 +131,13 @@ its JSON payload.</li>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"></td>
+<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first last simple">
+<li>timeout - timeout value for http requests in seconds</li>
+</ul>
+</td>
 </tr>
 </tbody>
 </table>
-<ul class="simple">
-<li>timeout - timeout value for http requests in seconds</li>
-</ul>
 </dd></dl>
 
 </dd></dl>
@@ -158,14 +151,14 @@ its JSON payload.</li>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"></td>
-</tr>
-</tbody>
-</table>
-<ul class="simple">
+<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first last simple">
 <li>url - String for the URL to send the request to.</li>
 <li>data - Data to send with the request.</li>
 </ul>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="selenium.webdriver.remote.remote_connection.Request.get_method">
 <tt class="descname">get_method</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/remote_connection.html#Request.get_method"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.remote_connection.Request.get_method" title="Permalink to this definition">¶</a></dt>
@@ -183,16 +176,16 @@ its JSON payload.</li>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"></td>
-</tr>
-</tbody>
-</table>
-<ul class="simple">
+<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first last simple">
 <li>fp - The response body file object.</li>
 <li>code - The HTTP status code returned by the server.</li>
 <li>headers - A dictionary of headers returned by the server.</li>
 <li>url - URL of the retrieved resource represented by this Response.</li>
 </ul>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="selenium.webdriver.remote.remote_connection.Response.close">
 <tt class="descname">close</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/remote_connection.html#Response.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.remote_connection.Response.close" title="Permalink to this definition">¶</a></dt>
@@ -252,7 +245,7 @@ its JSON payload.</li>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../index.html">Selenium 2.0 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">Selenium 3.0 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

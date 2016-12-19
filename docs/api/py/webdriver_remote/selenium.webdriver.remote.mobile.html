@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>selenium.webdriver.remote.mobile &mdash; Selenium 2.0 documentation</title>
+    <title>selenium.webdriver.remote.mobile &mdash; Selenium 3.0 documentation</title>
     
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '2.0',
+        VERSION:     '3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="Selenium 2.0 documentation" href="../index.html" /> 
+    <link rel="top" title="Selenium 3.0 documentation" href="../index.html" /> 
   </head>
   <body>
     <div class="related">
@@ -35,7 +35,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../index.html">Selenium 2.0 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">Selenium 3.0 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -51,12 +51,12 @@
 <em class="property">class </em><tt class="descclassname">selenium.webdriver.remote.mobile.</tt><tt class="descname">Mobile</tt><big>(</big><em>driver</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/mobile.html#Mobile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.mobile.Mobile" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="attribute">
 <dt id="selenium.webdriver.remote.mobile.Mobile.AIRPLANE_MODE">
-<tt class="descname">AIRPLANE_MODE</tt><em class="property"> = &lt;selenium.webdriver.remote.mobile.ConnectionType object at 0x109d1ef50&gt;</em><a class="headerlink" href="#selenium.webdriver.remote.mobile.Mobile.AIRPLANE_MODE" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">AIRPLANE_MODE</tt><em class="property"> = &lt;selenium.webdriver.remote.mobile.Mobile.ConnectionType object at 0x1059a1160&gt;</em><a class="headerlink" href="#selenium.webdriver.remote.mobile.Mobile.AIRPLANE_MODE" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="selenium.webdriver.remote.mobile.Mobile.ALL_NETWORK">
-<tt class="descname">ALL_NETWORK</tt><em class="property"> = &lt;selenium.webdriver.remote.mobile.ConnectionType object at 0x109d1ee90&gt;</em><a class="headerlink" href="#selenium.webdriver.remote.mobile.Mobile.ALL_NETWORK" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">ALL_NETWORK</tt><em class="property"> = &lt;selenium.webdriver.remote.mobile.Mobile.ConnectionType object at 0x1059a10b8&gt;</em><a class="headerlink" href="#selenium.webdriver.remote.mobile.Mobile.ALL_NETWORK" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="class">
@@ -81,12 +81,12 @@
 
 <dl class="attribute">
 <dt id="selenium.webdriver.remote.mobile.Mobile.DATA_NETWORK">
-<tt class="descclassname">Mobile.</tt><tt class="descname">DATA_NETWORK</tt><em class="property"> = &lt;selenium.webdriver.remote.mobile.ConnectionType object at 0x109d1ef10&gt;</em><a class="headerlink" href="#selenium.webdriver.remote.mobile.Mobile.DATA_NETWORK" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">Mobile.</tt><tt class="descname">DATA_NETWORK</tt><em class="property"> = &lt;selenium.webdriver.remote.mobile.Mobile.ConnectionType object at 0x1059a1128&gt;</em><a class="headerlink" href="#selenium.webdriver.remote.mobile.Mobile.DATA_NETWORK" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="selenium.webdriver.remote.mobile.Mobile.WIFI_NETWORK">
-<tt class="descclassname">Mobile.</tt><tt class="descname">WIFI_NETWORK</tt><em class="property"> = &lt;selenium.webdriver.remote.mobile.ConnectionType object at 0x109d1eed0&gt;</em><a class="headerlink" href="#selenium.webdriver.remote.mobile.Mobile.WIFI_NETWORK" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">Mobile.</tt><tt class="descname">WIFI_NETWORK</tt><em class="property"> = &lt;selenium.webdriver.remote.mobile.Mobile.ConnectionType object at 0x1059a10f0&gt;</em><a class="headerlink" href="#selenium.webdriver.remote.mobile.Mobile.WIFI_NETWORK" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -109,10 +109,11 @@
 <dl class="method">
 <dt id="selenium.webdriver.remote.mobile.Mobile.set_network_connection">
 <tt class="descclassname">Mobile.</tt><tt class="descname">set_network_connection</tt><big>(</big><em>network</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/mobile.html#Mobile.set_network_connection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.mobile.Mobile.set_network_connection" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set the network connection for the remote device.
-Example of setting airplane mode:</p>
-<blockquote>
-<div>driver.mobile.set_network_connection(driver.mobile.AIRPLANE_MODE)</div></blockquote>
+<dd><p>Set the network connection for the remote device.</p>
+<p>Example of setting airplane mode:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">driver</span><span class="o">.</span><span class="n">mobile</span><span class="o">.</span><span class="n">set_network_connection</span><span class="p">(</span><span class="n">driver</span><span class="o">.</span><span class="n">mobile</span><span class="o">.</span><span class="n">AIRPLANE_MODE</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </dd></dl>
@@ -156,7 +157,7 @@ Example of setting airplane mode:</p>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../index.html">Selenium 2.0 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">Selenium 3.0 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

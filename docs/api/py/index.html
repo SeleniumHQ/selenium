@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Selenium Client Driver &mdash; Selenium 2.0 documentation</title>
+    <title>Selenium Client Driver &mdash; Selenium 3.0 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '2.0',
+        VERSION:     '3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="Selenium 2.0 documentation" href="#" /> 
+    <link rel="top" title="Selenium 3.0 documentation" href="#" /> 
   </head>
   <body>
     <div class="related">
@@ -35,7 +35,7 @@
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="#">Selenium 2.0 documentation</a> &raquo;</li> 
+        <li><a href="#">Selenium 3.0 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -49,7 +49,7 @@
 <div class="section" id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>Python language bindings for Selenium WebDriver.</p>
-<p>The <cite>selenium</cite> package is used automate web browser interaction from Python.</p>
+<p>The <cite>selenium</cite> package is used to automate web browser interaction from Python.</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="11%" />
@@ -60,7 +60,7 @@
 <td><a class="reference external" href="http://www.seleniumhq.org">http://www.seleniumhq.org</a></td>
 </tr>
 <tr class="row-even"><td><strong>Docs</strong>:</td>
-<td><a class="reference external" href="http://seleniumhq.github.io/selenium/docs/api/py/api.html">selenium package API</a></td>
+<td><a class="reference external" href="https://seleniumhq.github.io/selenium/docs/api/py/api.html">selenium package API</a></td>
 </tr>
 <tr class="row-odd"><td><strong>Dev</strong>:</td>
 <td><a class="reference external" href="https://github.com/SeleniumHQ/Selenium">https://github.com/SeleniumHQ/Selenium</a></td>
@@ -79,18 +79,45 @@
 <h2>Supported Python Versions<a class="headerlink" href="#supported-python-versions" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li>Python 2.6, 2.7</li>
-<li>Python 3.2+</li>
+<li>Python 3.3+</li>
 </ul>
 </div>
 <div class="section" id="installing">
 <h2>Installing<a class="headerlink" href="#installing" title="Permalink to this headline">¶</a></h2>
-<p>If you have <a class="reference external" href="http://www.pip-installer.org">pip</a> on your system, you can simply install or upgrade the Python bindings:</p>
+<p>If you have <a class="reference external" href="https://pip.pypa.io/">pip</a> on your system, you can simply install or upgrade the Python bindings:</p>
 <div class="highlight-python"><pre>pip install -U selenium</pre>
 </div>
-<p>Alternately, you can download the source distribution from <a class="reference external" href="http://pypi.python.org/pypi/selenium">PyPI</a> (e.g. selenium-2.53.1.tar.gz), unarchive it, and run:</p>
+<p>Alternately, you can download the source distribution from <a class="reference external" href="http://pypi.python.org/pypi/selenium">PyPI</a> (e.g. selenium-3.0.2.tar.gz), unarchive it, and run:</p>
 <div class="highlight-python"><pre>python setup.py install</pre>
 </div>
-<p>Note: both of the methods described above install <cite>selenium</cite> as a system-wide package  That will require administrative/root access to there machine.  You may consider using a <a class="reference external" href="http://www.virtualenv.org/">virtualenv</a> to create isolated Python environments instead.</p>
+<p>Note: both of the methods described above install <cite>selenium</cite> as a system-wide package  That will require administrative/root access to their machine.  You may consider using a <a class="reference external" href="http://www.virtualenv.org/">virtualenv</a> to create isolated Python environments instead.</p>
+</div>
+<div class="section" id="drivers">
+<h2>Drivers<a class="headerlink" href="#drivers" title="Permalink to this headline">¶</a></h2>
+<p>Selenium requires a driver to interface with the chosen browser. Firefox,
+for example, requires <a class="reference external" href="https://github.com/mozilla/geckodriver/releases">geckodriver</a>, which needs to be installed before the below examples can be run. Make sure it&#8217;s in your <cite>PATH</cite>, e. g., place it in <cite>/usr/bin</cite> or <cite>/usr/local/bin</cite>.</p>
+<p>Failure to observe this step will give you an error <cite>selenium.common.exceptions.WebDriverException: Message: &#8216;geckodriver&#8217; executable needs to be in PATH.</cite></p>
+<p>Other supported browsers will have their own drivers available. Links to some of the more popular browser drivers follow.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="16%" />
+<col width="84%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>Chrome</strong>:</td>
+<td><a class="reference external" href="https://sites.google.com/a/chromium.org/chromedriver/downloads">https://sites.google.com/a/chromium.org/chromedriver/downloads</a></td>
+</tr>
+<tr class="row-even"><td><strong>Edge</strong>:</td>
+<td><a class="reference external" href="https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/">https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/</a></td>
+</tr>
+<tr class="row-odd"><td><strong>Firefox</strong>:</td>
+<td><a class="reference external" href="https://github.com/mozilla/geckodriver/releases">https://github.com/mozilla/geckodriver/releases</a></td>
+</tr>
+<tr class="row-even"><td><strong>Safari</strong>:</td>
+<td><a class="reference external" href="https://webkit.org/blog/6900/webdriver-support-in-safari-10/">https://webkit.org/blog/6900/webdriver-support-in-safari-10/</a></td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="section" id="example-0">
 <h2>Example 0:<a class="headerlink" href="#example-0" title="Permalink to this headline">¶</a></h2>
@@ -152,9 +179,9 @@
 <h2>Selenium Server (optional)<a class="headerlink" href="#selenium-server-optional" title="Permalink to this headline">¶</a></h2>
 <p>For normal WebDriver scripts (non-Remote), the Java server is not needed.</p>
 <p>However, to use Selenium Webdriver Remote or the legacy Selenium API (Selenium-RC), you need to also run the Selenium server.  The server requires a Java Runtime Environment (JRE).</p>
-<p>Download the server separately, from: <a class="reference external" href="http://selenium-release.storage.googleapis.com/2.53/selenium-server-standalone-2.53.0.jar">http://selenium-release.storage.googleapis.com/2.53/selenium-server-standalone-2.53.0.jar</a></p>
+<p>Download the server separately, from: <a class="reference external" href="http://selenium-release.storage.googleapis.com/3.0/selenium-server-standalone-3.0.0.jar">http://selenium-release.storage.googleapis.com/3.0/selenium-server-standalone-3.0.0.jar</a></p>
 <p>Run the server from the command line:</p>
-<div class="highlight-python"><pre>java -jar selenium-server-standalone-2.53.0.jar</pre>
+<div class="highlight-python"><pre>java -jar selenium-server-standalone-3.0.0.jar</pre>
 </div>
 <p>Then run your Python client scripts.</p>
 </div>
@@ -187,6 +214,7 @@
 <li><a class="reference internal" href="#introduction">Introduction</a></li>
 <li><a class="reference internal" href="#supported-python-versions">Supported Python Versions</a></li>
 <li><a class="reference internal" href="#installing">Installing</a></li>
+<li><a class="reference internal" href="#drivers">Drivers</a></li>
 <li><a class="reference internal" href="#example-0">Example 0:</a></li>
 <li><a class="reference internal" href="#example-1">Example 1:</a></li>
 <li><a class="reference internal" href="#example-2">Example 2:</a></li>
@@ -227,7 +255,7 @@
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="#">Selenium 2.0 documentation</a> &raquo;</li> 
+        <li><a href="#">Selenium 3.0 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

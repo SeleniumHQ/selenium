@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>selenium.common.exceptions &mdash; Selenium 2.0 documentation</title>
+    <title>selenium.common.exceptions &mdash; Selenium 3.0 documentation</title>
     
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '2.0',
+        VERSION:     '3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="Selenium 2.0 documentation" href="../index.html" /> 
+    <link rel="top" title="Selenium 3.0 documentation" href="../index.html" /> 
   </head>
   <body>
     <div class="related">
@@ -35,7 +35,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../index.html">Selenium 2.0 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">Selenium 3.0 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -57,9 +57,9 @@
 <dl class="exception">
 <dt id="selenium.common.exceptions.ElementNotVisibleException">
 <em class="property">exception </em><tt class="descclassname">selenium.common.exceptions.</tt><tt class="descname">ElementNotVisibleException</tt><big>(</big><em>msg=None</em>, <em>screen=None</em>, <em>stacktrace=None</em><big>)</big><a class="reference internal" href="../_modules/selenium/common/exceptions.html#ElementNotVisibleException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.ElementNotVisibleException" title="Permalink to this definition">¶</a></dt>
-<dd><p>Thrown when an element is present on the DOM, but  
+<dd><p>Thrown when an element is present on the DOM, but
 it is not visible, and so is not able to be interacted with.</p>
-<p>Most commonly encountered when trying to click or read text 
+<p>Most commonly encountered when trying to click or read text
 of an element that is hidden from view.</p>
 </dd></dl>
 
@@ -115,7 +115,7 @@ xpath expression) or the expression does not select WebElements
 <dl class="exception">
 <dt id="selenium.common.exceptions.MoveTargetOutOfBoundsException">
 <em class="property">exception </em><tt class="descclassname">selenium.common.exceptions.</tt><tt class="descname">MoveTargetOutOfBoundsException</tt><big>(</big><em>msg=None</em>, <em>screen=None</em>, <em>stacktrace=None</em><big>)</big><a class="reference internal" href="../_modules/selenium/common/exceptions.html#MoveTargetOutOfBoundsException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.MoveTargetOutOfBoundsException" title="Permalink to this definition">¶</a></dt>
-<dd><p>Thrown when the target provided to the <cite>ActionsChains</cite> move() 
+<dd><p>Thrown when the target provided to the <cite>ActionsChains</cite> move()
 method is invalid, i.e. out of document.</p>
 </dd></dl>
 
@@ -123,7 +123,7 @@ method is invalid, i.e. out of document.</p>
 <dt id="selenium.common.exceptions.NoAlertPresentException">
 <em class="property">exception </em><tt class="descclassname">selenium.common.exceptions.</tt><tt class="descname">NoAlertPresentException</tt><big>(</big><em>msg=None</em>, <em>screen=None</em>, <em>stacktrace=None</em><big>)</big><a class="reference internal" href="../_modules/selenium/common/exceptions.html#NoAlertPresentException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.NoAlertPresentException" title="Permalink to this definition">¶</a></dt>
 <dd><p>Thrown when switching to no presented alert.</p>
-<p>This can be caused by calling an operation on the Alert() class when an alert is 
+<p>This can be caused by calling an operation on the Alert() class when an alert is
 not yet on the screen.</p>
 </dd></dl>
 
@@ -131,8 +131,8 @@ not yet on the screen.</p>
 <dt id="selenium.common.exceptions.NoSuchAttributeException">
 <em class="property">exception </em><tt class="descclassname">selenium.common.exceptions.</tt><tt class="descname">NoSuchAttributeException</tt><big>(</big><em>msg=None</em>, <em>screen=None</em>, <em>stacktrace=None</em><big>)</big><a class="reference internal" href="../_modules/selenium/common/exceptions.html#NoSuchAttributeException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.NoSuchAttributeException" title="Permalink to this definition">¶</a></dt>
 <dd><p>Thrown when the attribute of element could not be found.</p>
-<p>You may want to check if the attribute exists in the particular browser you are 
-testing against.  Some browsers may have different property names for the same 
+<p>You may want to check if the attribute exists in the particular browser you are
+testing against.  Some browsers may have different property names for the same
 property.  (IE8&#8217;s .innerText vs. Firefox .textContent)</p>
 </dd></dl>
 
@@ -142,12 +142,12 @@ property.  (IE8&#8217;s .innerText vs. Firefox .textContent)</p>
 <dd><p>Thrown when element could not be found.</p>
 <dl class="docutils">
 <dt>If you encounter this exception, you may want to check the following:</dt>
-<dd><ul class="first simple">
+<dd><ul class="first last simple">
 <li>Check your selector used in your find_by...</li>
-<li>Element may not yet be on the screen at the time of the find operation,</li>
+<li>Element may not yet be on the screen at the time of the find operation,
+(webpage is still loading) see selenium.webdriver.support.wait.WebDriverWait()
+for how to write a wait wrapper to wait for an element to appear.</li>
 </ul>
-<p class="last">(webpage is still loading) see selenium.webdriver.support.wait.WebDriverWait() 
-for how to write a wait wrapper to wait for an element to appear.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -162,10 +162,9 @@ for how to write a wait wrapper to wait for an element to appear.</p>
 <dt id="selenium.common.exceptions.NoSuchWindowException">
 <em class="property">exception </em><tt class="descclassname">selenium.common.exceptions.</tt><tt class="descname">NoSuchWindowException</tt><big>(</big><em>msg=None</em>, <em>screen=None</em>, <em>stacktrace=None</em><big>)</big><a class="reference internal" href="../_modules/selenium/common/exceptions.html#NoSuchWindowException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.NoSuchWindowException" title="Permalink to this definition">¶</a></dt>
 <dd><p>Thrown when window target to be switched doesn&#8217;t exist.</p>
-<p>To find the current set of active window handles, you can get a list 
+<p>To find the current set of active window handles, you can get a list
 of the active window handles in the following way:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="k">print</span> <span class="n">driver</span><span class="o">.</span><span class="n">window_handles</span>
-</pre></div>
+<div class="highlight-python"><pre>print driver.window_handles</pre>
 </div>
 </dd></dl>
 
@@ -181,15 +180,15 @@ of the active window handles in the following way:</p>
 <p>Stale means the element no longer appears on the DOM of the page.</p>
 <dl class="docutils">
 <dt>Possible causes of StaleElementReferenceException include, but not limited to:</dt>
-<dd><ul class="first simple">
-<li>You are no longer on the same page, or the page may have refreshed since the element</li>
+<dd><ul class="first last simple">
+<li>You are no longer on the same page, or the page may have refreshed since the element
+was located.</li>
+<li>The element may have been removed and re-added to the screen, since it was located.
+Such as an element being relocated.
+This can happen typically with a javascript framework when values are updated and the
+node is rebuilt.</li>
+<li>Element may have been inside an iframe or another context which was refreshed.</li>
 </ul>
-<p class="last">was located.
-* The element may have been removed and re-added to the screen, since it was located.
-Such as an element being relocated. 
-This can happen typically with a javascript framework when values are updated and the 
-node is rebuilt.
-* Element may have been inside an iframe or another context which was refreshed.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -210,7 +209,7 @@ node is rebuilt.
 <dt id="selenium.common.exceptions.UnexpectedAlertPresentException">
 <em class="property">exception </em><tt class="descclassname">selenium.common.exceptions.</tt><tt class="descname">UnexpectedAlertPresentException</tt><big>(</big><em>msg=None</em>, <em>screen=None</em>, <em>stacktrace=None</em>, <em>alert_text=None</em><big>)</big><a class="reference internal" href="../_modules/selenium/common/exceptions.html#UnexpectedAlertPresentException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.UnexpectedAlertPresentException" title="Permalink to this definition">¶</a></dt>
 <dd><p>Thrown when an unexpected alert is appeared.</p>
-<p>Usually raised when when an expected modal is blocking webdriver form executing any 
+<p>Usually raised when when an expected modal is blocking webdriver form executing any
 more commands.</p>
 </dd></dl>
 
@@ -265,7 +264,7 @@ more commands.</p>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../index.html">Selenium 2.0 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">Selenium 3.0 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

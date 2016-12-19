@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>selenium.webdriver.common.utils &mdash; Selenium 2.0 documentation</title>
+    <title>selenium.webdriver.common.utils &mdash; Selenium 3.0 documentation</title>
     
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '2.0',
+        VERSION:     '3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="Selenium 2.0 documentation" href="../index.html" /> 
+    <link rel="top" title="Selenium 3.0 documentation" href="../index.html" /> 
   </head>
   <body>
     <div class="related">
@@ -35,7 +35,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../index.html">Selenium 2.0 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">Selenium 3.0 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -48,6 +48,34 @@
 <span id="selenium-webdriver-common-utils"></span><h1>selenium.webdriver.common.utils<a class="headerlink" href="#module-selenium.webdriver.common.utils" title="Permalink to this headline">¶</a></h1>
 <p>The Utils methods.</p>
 <dl class="function">
+<dt id="selenium.webdriver.common.utils.find_connectable_ip">
+<tt class="descclassname">selenium.webdriver.common.utils.</tt><tt class="descname">find_connectable_ip</tt><big>(</big><em>host</em>, <em>port=None</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/common/utils.html#find_connectable_ip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.utils.find_connectable_ip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resolve a hostname to an IP, preferring IPv4 addresses.</p>
+<p>We prefer IPv4 so that we don&#8217;t change behavior from previous IPv4-only
+implementations, and because some drivers (e.g., FirefoxDriver) do not
+support IPv6 connections.</p>
+<p>If the optional port number is provided, only IPs that listen on the given
+port are considered.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first simple">
+<li>host - A hostname.</li>
+<li>port - Optional port number.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last">A single IP address, as a string. If any IPv4 address is found, one is
+returned. Otherwise, if any IPv6 address is found, one is returned. If
+neither, then None is returned.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="selenium.webdriver.common.utils.free_port">
 <tt class="descclassname">selenium.webdriver.common.utils.</tt><tt class="descname">free_port</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/common/utils.html#free_port"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.utils.free_port" title="Permalink to this definition">¶</a></dt>
 <dd><p>Determines a free port using sockets.</p>
@@ -55,14 +83,14 @@
 
 <dl class="function">
 <dt id="selenium.webdriver.common.utils.is_connectable">
-<tt class="descclassname">selenium.webdriver.common.utils.</tt><tt class="descname">is_connectable</tt><big>(</big><em>port</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/common/utils.html#is_connectable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.utils.is_connectable" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">selenium.webdriver.common.utils.</tt><tt class="descname">is_connectable</tt><big>(</big><em>port</em>, <em>host='localhost'</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/common/utils.html#is_connectable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.utils.is_connectable" title="Permalink to this definition">¶</a></dt>
 <dd><p>Tries to connect to the server at port to see if it is running.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first last simple">
-<li>port: The port to connect.</li>
+<li>port - The port to connect.</li>
 </ul>
 </td>
 </tr>
@@ -80,7 +108,27 @@ and specified port to see if it responds successfully.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first last simple">
-<li>port: The port to connect.</li>
+<li>port - The port to connect.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="selenium.webdriver.common.utils.join_host_port">
+<tt class="descclassname">selenium.webdriver.common.utils.</tt><tt class="descname">join_host_port</tt><big>(</big><em>host</em>, <em>port</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/common/utils.html#join_host_port"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.utils.join_host_port" title="Permalink to this definition">¶</a></dt>
+<dd><p>Joins a hostname and port together.</p>
+<p>This is a minimal implementation intended to cope with IPv6 literals. For
+example, _join_host_port(&#8216;::1&#8217;, 80) == &#8216;[::1]:80&#8217;.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first last simple">
+<li>host - A hostname.</li>
+<li>port - An integer port.</li>
 </ul>
 </td>
 </tr>
@@ -133,7 +181,7 @@ and specified port to see if it responds successfully.</p>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../index.html">Selenium 2.0 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">Selenium 3.0 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

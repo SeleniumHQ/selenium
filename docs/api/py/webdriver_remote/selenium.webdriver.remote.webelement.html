@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>selenium.webdriver.remote.webelement &mdash; Selenium 2.0 documentation</title>
+    <title>selenium.webdriver.remote.webelement &mdash; Selenium 3.0 documentation</title>
     
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '2.0',
+        VERSION:     '3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="Selenium 2.0 documentation" href="../index.html" /> 
+    <link rel="top" title="Selenium 3.0 documentation" href="../index.html" /> 
   </head>
   <body>
     <div class="related">
@@ -35,7 +35,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../index.html">Selenium 2.0 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">Selenium 3.0 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -117,7 +117,7 @@ instance will fail.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first last simple">
-<li><a href="#id1"><span class="problematic" id="id2">id_</span></a> - ID of child element to locate.</li>
+<li>id_ - ID of child element to locate.</li>
 </ul>
 </td>
 </tr>
@@ -264,7 +264,7 @@ instance will fail.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first last simple">
-<li><a href="#id3"><span class="problematic" id="id4">id_</span></a> - Id of child element to find.</li>
+<li>id_ - Id of child element to find.</li>
 </ul>
 </td>
 </tr>
@@ -396,6 +396,28 @@ is returned.</p>
 </div>
 </dd></dl>
 
+<dl class="method">
+<dt id="selenium.webdriver.remote.webelement.WebElement.get_property">
+<tt class="descname">get_property</tt><big>(</big><em>name</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/webelement.html#WebElement.get_property"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webelement.WebElement.get_property" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the given property of the element.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first last simple">
+<li>name - Name of the property to retrieve.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># Check if the &quot;active&quot; CSS class is applied to an element.</span>
+<span class="n">text_length</span> <span class="o">=</span> <span class="n">target_element</span><span class="o">.</span><span class="n">get_property</span><span class="p">(</span><span class="s">&quot;text_length&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
 <dl class="attribute">
 <dt id="selenium.webdriver.remote.webelement.WebElement.id">
 <tt class="descname">id</tt><a class="reference internal" href="../_modules/selenium/webdriver/remote/webelement.html#WebElement.id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webelement.WebElement.id" title="Permalink to this definition">¶</a></dt>
@@ -514,10 +536,10 @@ the element is not visible.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first simple">
-<li>value - A string for typing, or setting form fields.  For setting</li>
+<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first last simple">
+<li>value - A string for typing, or setting form fields.  For setting
+file inputs, this could be a local file path.</li>
 </ul>
-<p class="last">file inputs, this could be a local file path.</p>
 </td>
 </tr>
 </tbody>
@@ -608,7 +630,7 @@ the element is not visible.</p>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../index.html">Selenium 2.0 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">Selenium 3.0 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

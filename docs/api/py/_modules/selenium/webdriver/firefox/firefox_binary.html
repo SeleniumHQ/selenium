@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>selenium.webdriver.firefox.firefox_binary &mdash; Selenium 2.0 documentation</title>
+    <title>selenium.webdriver.firefox.firefox_binary &mdash; Selenium 3.0 documentation</title>
     
     <link rel="stylesheet" href="../../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '2.0',
+        VERSION:     '3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../../_static/doctools.js"></script>
-    <link rel="top" title="Selenium 2.0 documentation" href="../../../../index.html" />
+    <link rel="top" title="Selenium 3.0 documentation" href="../../../../index.html" />
     <link rel="up" title="Module code" href="../../../index.html" /> 
   </head>
   <body>
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">Selenium 2.0 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">Selenium 3.0 documentation</a> &raquo;</li>
           <li><a href="../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -95,8 +95,13 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_start_cmd</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_start_cmd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_firefox_start_cmd</span><span class="p">()</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_start_cmd</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
-          <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Failed to find firefox binary. You can set it by specifying the path to &#39;firefox_binary&#39;:</span><span class="se">\n\n</span><span class="s">from selenium.webdriver.firefox.firefox_binary import FirefoxBinary</span><span class="se">\n\n</span><span class="s">&quot;</span> <span class="o">+</span>
-            <span class="s">&quot;binary = FirefoxBinary(&#39;/path/to/binary&#39;)</span><span class="se">\n</span><span class="s">driver = webdriver.Firefox(firefox_binary=binary)&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span>
+                <span class="s">&quot;Failed to find firefox binary. You can set it by specifying &quot;</span>
+                <span class="s">&quot;the path to &#39;firefox_binary&#39;:</span><span class="se">\n\n</span><span class="s">from &quot;</span>
+                <span class="s">&quot;selenium.webdriver.firefox.firefox_binary import &quot;</span>
+                <span class="s">&quot;FirefoxBinary</span><span class="se">\n\n</span><span class="s">binary = &quot;</span>
+                <span class="s">&quot;FirefoxBinary(&#39;/path/to/binary&#39;)</span><span class="se">\n</span><span class="s">driver = &quot;</span>
+                <span class="s">&quot;webdriver.Firefox(firefox_binary=binary)&quot;</span><span class="p">)</span>
         <span class="c"># Rather than modifying the environment of the calling Python process</span>
         <span class="c"># copy it and modify as needed.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_firefox_env</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
@@ -144,15 +149,18 @@
         <span class="k">while</span> <span class="ow">not</span> <span class="n">utils</span><span class="o">.</span><span class="n">is_connectable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">port</span><span class="p">):</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">poll</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
                 <span class="c"># Browser has exited</span>
-                <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="s">&quot;The browser appears to have exited &quot;</span>
-                      <span class="s">&quot;before we could connect. If you specified a log_file in &quot;</span>
-                      <span class="s">&quot;the FirefoxBinary constructor, check it for details.&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span>
+                    <span class="s">&quot;The browser appears to have exited &quot;</span>
+                    <span class="s">&quot;before we could connect. If you specified a log_file in &quot;</span>
+                    <span class="s">&quot;the FirefoxBinary constructor, check it for details.&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">count</span> <span class="o">&gt;=</span> <span class="n">timeout</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">kill</span><span class="p">()</span>
-                <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="s">&quot;Can&#39;t load the profile. Profile &quot;</span>
-                      <span class="s">&quot;Dir: </span><span class="si">%s</span><span class="s"> If you specified a log_file in the &quot;</span>
-                      <span class="s">&quot;FirefoxBinary constructor, check it for details.&quot;</span>
-                      <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">path</span><span class="p">))</span>
+                <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span>
+                    <span class="s">&quot;Can&#39;t load the profile. Possible firefox version mismatch. &quot;</span>
+                    <span class="s">&quot;You must use GeckoDriver instead for Firefox 48+. Profile &quot;</span>
+                    <span class="s">&quot;Dir: </span><span class="si">%s</span><span class="s"> If you specified a log_file in the &quot;</span>
+                    <span class="s">&quot;FirefoxBinary constructor, check it for details.&quot;</span>
+                    <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">path</span><span class="p">))</span>
             <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
             <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">True</span>
@@ -163,10 +171,8 @@
         <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">winreg</span> <span class="kn">import</span> <span class="n">OpenKey</span><span class="p">,</span> <span class="n">QueryValue</span><span class="p">,</span> <span class="n">HKEY_LOCAL_MACHINE</span><span class="p">,</span> <span class="n">HKEY_CURRENT_USER</span>
         <span class="kn">import</span> <span class="nn">shlex</span>
-        <span class="n">keys</span> <span class="o">=</span> <span class="p">(</span>
-           <span class="s">r&quot;SOFTWARE\Classes\FirefoxHTML\shell\open\command&quot;</span><span class="p">,</span>
-           <span class="s">r&quot;SOFTWARE\Classes\Applications\firefox.exe\shell\open\command&quot;</span>
-        <span class="p">)</span>
+        <span class="n">keys</span> <span class="o">=</span> <span class="p">(</span><span class="s">r&quot;SOFTWARE\Classes\FirefoxHTML\shell\open\command&quot;</span><span class="p">,</span>
+                <span class="s">r&quot;SOFTWARE\Classes\Applications\firefox.exe\shell\open\command&quot;</span><span class="p">)</span>
         <span class="n">command</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
         <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
@@ -197,8 +203,7 @@
             <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">start_cmd</span><span class="p">):</span>
                 <span class="n">start_cmd</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s">&quot;~&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">start_cmd</span>
         <span class="k">elif</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="o">==</span> <span class="s">&quot;Windows&quot;</span><span class="p">:</span>
-            <span class="n">start_cmd</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_find_exe_in_registry</span><span class="p">()</span> <span class="ow">or</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_default_windows_location</span><span class="p">())</span>
+            <span class="n">start_cmd</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_find_exe_in_registry</span><span class="p">()</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_windows_location</span><span class="p">())</span>
         <span class="k">elif</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="o">==</span> <span class="s">&#39;Java&#39;</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">_name</span> <span class="o">==</span> <span class="s">&#39;nt&#39;</span><span class="p">:</span>
             <span class="n">start_cmd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_windows_location</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
@@ -208,7 +213,8 @@
                     <span class="k">break</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="c"># couldn&#39;t find firefox on the system path</span>
-                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s">&quot;Could not find firefox in your system PATH.&quot;</span> <span class="o">+</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                    <span class="s">&quot;Could not find firefox in your system PATH.&quot;</span> <span class="o">+</span>
                     <span class="s">&quot; Please specify the firefox binary location or install firefox&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">start_cmd</span>
 
@@ -241,9 +247,11 @@
             <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">library_path</span><span class="p">):</span>
                 <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">library_path</span><span class="p">)</span>
             <span class="kn">import</span> <span class="nn">shutil</span>
-            <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">__file__</span><span class="p">),</span> <span class="n">path</span><span class="p">,</span>
-              <span class="bp">self</span><span class="o">.</span><span class="n">NO_FOCUS_LIBRARY_NAME</span><span class="p">),</span>
-              <span class="n">library_path</span><span class="p">)</span>
+            <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">__file__</span><span class="p">),</span>
+                <span class="n">path</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">NO_FOCUS_LIBRARY_NAME</span><span class="p">),</span>
+                <span class="n">library_path</span><span class="p">)</span>
             <span class="n">built_path</span> <span class="o">+=</span> <span class="n">library_path</span> <span class="o">+</span> <span class="s">&quot;:&quot;</span>
 
         <span class="k">return</span> <span class="n">built_path</span>
@@ -289,7 +297,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">Selenium 2.0 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">Selenium 3.0 documentation</a> &raquo;</li>
           <li><a href="../../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
