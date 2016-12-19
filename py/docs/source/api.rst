@@ -73,6 +73,7 @@ Webdriver.firefox
 
    selenium.webdriver.firefox.extension_connection
    selenium.webdriver.firefox.firefox_binary
+   selenium.webdriver.firefox.options
    selenium.webdriver.firefox.firefox_profile
    selenium.webdriver.firefox.webdriver
 
