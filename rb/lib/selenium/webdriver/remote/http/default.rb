@@ -32,20 +32,22 @@ module Selenium
           attr_accessor :read_timeout
 
           # Initializes object.
-          # Warning: Setting +open_timeout+ to non-nil values will cause a separate thread to spawn.
+          # Warning: Setting {#open_timeout} to non-nil values will cause a separate thread to spawn.
           # Debuggers that freeze the process will not be able to evaluate any operations if that happens.
-          # @param [Hash] options - Options hash accepting :open_timeout and :read_timeout values.
-          def initialize(options = {})
-            self.open_timeout = options[:open_timeout]
-            self.read_timeout = options[:read_timeout]
+          # @param [Numeric] open_timeout - Open timeout to apply to HTTP client.
+          # @param [Numeric] read_timeout - Read timeout (seconds) to apply to HTTP client.
+          def initialize(open_timeout: nil, read_timeout: nil)
+            @open_timeout = open_timeout
+            @read_timeout = read_timeout
           end
 
           # Maintaining backward compatibility.
+          # @param [Numeric] value - Timeout in seconds to apply to both open timeout and read timeouts.
+          # @deprecated Please set the specific desired timeout {#read_timeout} or {#open_timeout} directly.
           def timeout=(value)
             self.open_timeout = value
             self.read_timeout = value
           end
-
 
           private
 
