@@ -91,12 +91,12 @@ public class FirefoxBinary {
       modifyLinkLibraryPath(profileDir);
     }
 
-    List<String> cmdArray = Lists.newArrayList(getExecutable().getPath());
+    List<String> cmdArray = Lists.newArrayList();
     cmdArray.addAll(extraOptions);
     cmdArray.addAll(Lists.newArrayList(commandLineFlags));
-    CommandLine command = new CommandLine(Iterables.toArray(cmdArray, String.class));
+    CommandLine command = new CommandLine(getExecutable().getPath(), Iterables.toArray(cmdArray, String.class));
     command.setEnvironmentVariables(getExtraEnv());
-    executable.setLibraryPath(command, getExtraEnv());
+    getExecutable().setLibraryPath(command, getExtraEnv());
 
     if (stream == null) {
       stream = getExecutable().getDefaultOutputStream();
