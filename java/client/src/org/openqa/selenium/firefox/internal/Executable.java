@@ -88,7 +88,7 @@ public class Executable {
     StringBuilder libraryPath = new StringBuilder();
 
     // If we have an env var set for the path, use it.
-    String env = getEnvVar(propertyName, null);
+    String env = System.getenv(propertyName);
     if (env != null) {
       libraryPath.append(env).append(File.pathSeparator);
     }
@@ -193,21 +193,6 @@ public class Executable {
       }
     }
     return null;
-  }
-
-  /**
-   * Retrieve an env var; if no var is set, returns the default
-   *
-   * @param name the name of the variable
-   * @param defaultValue the default value of the variable
-   * @return the env var
-   */
-  private static String getEnvVar(String name, String defaultValue) {
-    final String value = System.getenv(name);
-    if (value != null) {
-      return value;
-    }
-    return defaultValue;
   }
 
   public OutputStream getDefaultOutputStream() {
