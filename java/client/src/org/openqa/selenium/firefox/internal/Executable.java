@@ -25,10 +25,8 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.os.CommandLine;
 import org.openqa.selenium.os.WindowsUtils;
-import org.openqa.selenium.io.CircularOutputStream;
 
 import java.io.File;
-import java.io.OutputStream;
 import java.util.Map;
 
 import static org.openqa.selenium.Platform.MAC;
@@ -104,10 +102,8 @@ public class Executable {
     // On Snow Leopard, beware of problems the sqlite library
     String firefoxLibraryPath = System.getProperty(FirefoxDriver.SystemProperty.BROWSER_LIBRARY_PATH,
         binary.getAbsoluteFile().getParentFile().getAbsolutePath());
-    if (Platform.getCurrent().is(Platform.MAC) && Platform.getCurrent().getMinorVersion() > 5) {
-      libraryPath.append(libraryPath).append(File.pathSeparator);
-    } else {
-      libraryPath.append(firefoxLibraryPath).append(File.pathSeparator).append(libraryPath);
+    if (! (Platform.getCurrent().is(Platform.MAC) && Platform.getCurrent().getMinorVersion() > 5)) {
+      libraryPath.append(firefoxLibraryPath);
     }
 
     // Add the library path to the builder.

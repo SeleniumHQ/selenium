@@ -20,13 +20,18 @@ package org.openqa.selenium.os;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 
+import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.firefox.internal.Executable;
 
+import java.io.File;
 import java.util.Map;
 
 @RunWith(JUnit4.class)
@@ -135,5 +140,28 @@ public class CommandLineTest {
     commandLine.destroy();
   }
 
+  @Test
+  public void canSetLibraryPathFromExecutable() {
+    Assume.assumeTrue(Platform.getCurrent().is(Platform.WINDOWS));
+    CommandLine commandLine = new CommandLine(testExecutable);
+    Executable executable = new Executable(new File("C:\\windows\\system32\\ping.exe"));
+    Map<String, String> extraEnv = new ImmutableMap.Builder<String, String>()
+      .build();
+    executable.setLibraryPath(commandLine, extraEnv);
+    assertEquals(String.format("%s;%s", System.getenv("PATH"), "C:\\windows\\system32"),
+                 commandLine.getEnvironment().get(CommandLine.getLibraryPathPropertyName()));
+  }
 
+  @Test
+  public void canUpdateLibraryPathFromExtraEnv() {
+    Assume.assumeTrue(Platform.getCurrent().is(Platform.WINDOWS));
+    CommandLine commandLine = new CommandLine(testExecutable);
+    Executable executable = new Executable(new File("C:\\windows\\system32\\ping.exe"));
+    Map<String, String> extraEnv = new ImmutableMap.Builder<String, String>()
+      .put("PATH", "C:\\My\\Tools")
+      .build();
+    executable.setLibraryPath(commandLine, extraEnv);
+    assertEquals(String.format("%s;%s;%s", System.getenv("PATH"), "C:\\My\\Tools", "C:\\windows\\system32"),
+                 commandLine.getEnvironment().get(CommandLine.getLibraryPathPropertyName()));
+  }
 }
