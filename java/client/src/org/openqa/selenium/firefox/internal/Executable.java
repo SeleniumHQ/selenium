@@ -27,7 +27,6 @@ import org.openqa.selenium.os.CommandLine;
 import org.openqa.selenium.os.WindowsUtils;
 
 import java.io.File;
-import java.util.Map;
 
 import static org.openqa.selenium.Platform.MAC;
 import static org.openqa.selenium.Platform.UNIX;
@@ -79,35 +78,6 @@ public class Executable {
 
   public String getPath() {
     return binary.getAbsolutePath();
-  }
-
-  public void setLibraryPath(CommandLine command, final Map<String, String> extraEnv) {
-    final String propertyName = CommandLine.getLibraryPathPropertyName();
-    StringBuilder libraryPath = new StringBuilder();
-
-    // If we have an env var set for the path, use it.
-    String env = System.getenv(propertyName);
-    if (env != null) {
-      libraryPath.append(env).append(File.pathSeparator);
-    }
-
-    // Check our extra env vars for the same var, and use it too.
-    env = extraEnv.get(propertyName);
-    if (env != null) {
-      libraryPath.append(env).append(File.pathSeparator);
-    }
-
-    // Last, add the contents of the specified system property, defaulting to the binary's path.
-
-    // On Snow Leopard, beware of problems the sqlite library
-    String firefoxLibraryPath = System.getProperty(FirefoxDriver.SystemProperty.BROWSER_LIBRARY_PATH,
-        binary.getAbsoluteFile().getParentFile().getAbsolutePath());
-    if (! (Platform.getCurrent().is(Platform.MAC) && Platform.getCurrent().getMinorVersion() > 5)) {
-      libraryPath.append(firefoxLibraryPath);
-    }
-
-    // Add the library path to the builder.
-    command.setEnvironmentVariable(propertyName, libraryPath.toString());
   }
 
   /**

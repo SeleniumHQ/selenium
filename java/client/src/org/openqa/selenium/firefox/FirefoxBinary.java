@@ -97,7 +97,14 @@ public class FirefoxBinary {
     cmdArray.addAll(Lists.newArrayList(commandLineFlags));
     CommandLine command = new CommandLine(getExecutable().getPath(), Iterables.toArray(cmdArray, String.class));
     command.setEnvironmentVariables(getExtraEnv());
-    getExecutable().setLibraryPath(command, getExtraEnv());
+    command.updateDynamicLibraryPath(getExtraEnv().get(CommandLine.getLibraryPathPropertyName()));
+    // On Snow Leopard, beware of problems the sqlite library
+    if (! (Platform.getCurrent().is(Platform.MAC) && Platform.getCurrent().getMinorVersion() > 5)) {
+      String firefoxLibraryPath = System.getProperty(
+        FirefoxDriver.SystemProperty.BROWSER_LIBRARY_PATH,
+        getExecutable().getFile().getAbsoluteFile().getParentFile().getAbsolutePath());
+      command.updateDynamicLibraryPath(firefoxLibraryPath);
+    }
 
     if (stream == null) {
       stream = getDefaultOutputStream();
