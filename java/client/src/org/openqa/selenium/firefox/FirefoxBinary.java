@@ -95,14 +95,14 @@ public class FirefoxBinary {
     List<String> cmdArray = Lists.newArrayList();
     cmdArray.addAll(extraOptions);
     cmdArray.addAll(Lists.newArrayList(commandLineFlags));
-    CommandLine command = new CommandLine(getExecutable().getPath(), Iterables.toArray(cmdArray, String.class));
+    CommandLine command = new CommandLine(getPath(), Iterables.toArray(cmdArray, String.class));
     command.setEnvironmentVariables(getExtraEnv());
     command.updateDynamicLibraryPath(getExtraEnv().get(CommandLine.getLibraryPathPropertyName()));
     // On Snow Leopard, beware of problems the sqlite library
     if (! (Platform.getCurrent().is(Platform.MAC) && Platform.getCurrent().getMinorVersion() > 5)) {
       String firefoxLibraryPath = System.getProperty(
         FirefoxDriver.SystemProperty.BROWSER_LIBRARY_PATH,
-        getExecutable().getFile().getAbsoluteFile().getParentFile().getAbsolutePath());
+        getFile().getAbsoluteFile().getParentFile().getAbsolutePath());
       command.updateDynamicLibraryPath(firefoxLibraryPath);
     }
 
@@ -119,8 +119,12 @@ public class FirefoxBinary {
     command.executeAsync();
   }
 
-  protected Executable getExecutable() {
-    return executable;
+  protected File getFile() {
+    return executable.getFile();
+  }
+
+  protected String getPath() {
+    return executable.getPath();
   }
 
   public Map<String, String> getExtraEnv() {
