@@ -27,6 +27,7 @@ import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.internal.Executable;
 import org.openqa.selenium.firefox.internal.Streams;
+import org.openqa.selenium.io.CircularOutputStream;
 import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.os.CommandLine;
 
@@ -99,7 +100,7 @@ public class FirefoxBinary {
     getExecutable().setLibraryPath(command, getExtraEnv());
 
     if (stream == null) {
-      stream = getExecutable().getDefaultOutputStream();
+      stream = getDefaultOutputStream();
     }
     command.copyOutputTo(stream);
 
@@ -245,5 +246,14 @@ public class FirefoxBinary {
     if (process != null) {
       process.destroy();
     }
+  }
+
+  private OutputStream getDefaultOutputStream() {
+    String firefoxLogFile = System.getProperty(FirefoxDriver.SystemProperty.BROWSER_LOGFILE);
+    if ("/dev/stdout".equals(firefoxLogFile)) {
+      return System.out;
+    }
+    File logFile = firefoxLogFile == null ? null : new File(firefoxLogFile);
+    return new CircularOutputStream(logFile);
   }
 }
