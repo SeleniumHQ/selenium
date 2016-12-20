@@ -17,11 +17,9 @@
 
 package org.openqa.selenium.firefox;
 
-import static org.openqa.selenium.Platform.WINDOWS;
 import static org.openqa.selenium.firefox.FirefoxOptions.FIREFOX_OPTIONS;
 import static org.openqa.selenium.firefox.FirefoxOptions.OLD_FIREFOX_OPTIONS;
 import static org.openqa.selenium.remote.CapabilityType.ACCEPT_SSL_CERTS;
-import static org.openqa.selenium.remote.CapabilityType.HAS_NATIVE_EVENTS;
 import static org.openqa.selenium.remote.CapabilityType.LOGGING_PREFS;
 import static org.openqa.selenium.remote.CapabilityType.PROXY;
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_WEB_STORAGE;
@@ -34,15 +32,11 @@ import com.google.common.collect.Sets;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.OutputType;
-import org.openqa.selenium.Platform;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.SessionNotCreatedException;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.internal.NewProfileExtensionConnection;
 import org.openqa.selenium.firefox.internal.ProfilesIni;
-import org.openqa.selenium.html5.LocalStorage;
-import org.openqa.selenium.html5.SessionStorage;
 import org.openqa.selenium.internal.Killable;
 import org.openqa.selenium.internal.Lock;
 import org.openqa.selenium.internal.SocketLock;
