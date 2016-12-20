@@ -19,7 +19,6 @@ package org.openqa.selenium.firefox;
 
 import static org.openqa.selenium.firefox.FirefoxDriver.ACCEPT_UNTRUSTED_CERTIFICATES;
 import static org.openqa.selenium.firefox.FirefoxDriver.ASSUME_UNTRUSTED_ISSUER;
-import static org.openqa.selenium.firefox.FirefoxDriver.DEFAULT_ENABLE_NATIVE_EVENTS;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Maps;
@@ -54,12 +53,10 @@ public class FirefoxProfile {
   private Preferences additionalPrefs;
 
   private Map<String, Extension> extensions = Maps.newHashMap();
-  private boolean enableNativeEvents;
   private boolean loadNoFocusLib;
   private boolean acceptUntrustedCerts;
   private boolean untrustedCertIssuer;
   private File model;
-  private static final String ENABLE_NATIVE_EVENTS_PREF = "webdriver_enable_native_events";
   private static final String ACCEPT_UNTRUSTED_CERTS_PREF = "webdriver_accept_untrusted_certs";
   private static final String ASSUME_UNTRUSTED_ISSUER_PREF = "webdriver_assume_untrusted_issuer";
 
@@ -94,15 +91,12 @@ public class FirefoxProfile {
     if (prefsInModel.exists()) {
       StringReader reader = new StringReader("{\"frozen\": {}, \"mutable\": {}}");
       Preferences existingPrefs = new Preferences(reader, prefsInModel);
-      enableNativeEvents = getBooleanPreference(existingPrefs, ENABLE_NATIVE_EVENTS_PREF,
-                                                DEFAULT_ENABLE_NATIVE_EVENTS);
       acceptUntrustedCerts = getBooleanPreference(existingPrefs, ACCEPT_UNTRUSTED_CERTS_PREF,
                                                   ACCEPT_UNTRUSTED_CERTIFICATES);
       untrustedCertIssuer = getBooleanPreference(existingPrefs, ASSUME_UNTRUSTED_ISSUER_PREF,
                                                  ASSUME_UNTRUSTED_ISSUER);
       existingPrefs.addTo(additionalPrefs);
     } else {
-      enableNativeEvents = DEFAULT_ENABLE_NATIVE_EVENTS;
       acceptUntrustedCerts = ACCEPT_UNTRUSTED_CERTIFICATES;
       untrustedCertIssuer = ASSUME_UNTRUSTED_ISSUER;
     }
@@ -278,9 +272,6 @@ public class FirefoxProfile {
 
     additionalPrefs.addTo(prefs);
 
-    // Should we use native events?
-    prefs.setPreference(ENABLE_NATIVE_EVENTS_PREF, enableNativeEvents);
-
     // Should we accept untrusted certificates or not?
     prefs.setPreference(ACCEPT_UNTRUSTED_CERTS_PREF, acceptUntrustedCerts);
 
@@ -322,12 +313,19 @@ public class FirefoxProfile {
     }
   }
 
+  @Deprecated
+  /**
+   * @deprecated "Native" events are not supported in FirefoxDriver anymore
+   */
   public boolean areNativeEventsEnabled() {
-    return enableNativeEvents;
+    return false;
   }
 
+  @Deprecated
+  /**
+   * @deprecated "Native" events are not supported in FirefoxDriver anymore
+   */
   public void setEnableNativeEvents(boolean enableNativeEvents) {
-    this.enableNativeEvents = enableNativeEvents;
   }
 
   /**

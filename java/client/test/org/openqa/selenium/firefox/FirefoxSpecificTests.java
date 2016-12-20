@@ -26,7 +26,6 @@ import org.openqa.selenium.firefox.internal.StreamsTest;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-    CapabilitiesToProfileTest.class,
     ExecutableTest.class,
     FirefoxCapabilitiesTest.class,
     FirefoxDriverTest.class,

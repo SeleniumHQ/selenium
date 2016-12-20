@@ -87,8 +87,7 @@ public class FirefoxBinary {
     setEnvironmentProperty("NO_EM_RESTART", "1"); // Prevent the binary from detaching from the
                                                   // console
 
-    if (isOnLinux()
-        && (profile.areNativeEventsEnabled() || profile.shouldLoadNoFocusLib())) {
+    if (isOnLinux() && profile.shouldLoadNoFocusLib()) {
       modifyLinkLibraryPath(profileDir);
     }
 
