@@ -43,9 +43,8 @@ module Selenium
 
           def from_name(name)
             profile = ini[name]
-
-            raise Error::WebDriverError, "unable to find profile named: #{name.inspect}" unless profile
-            profile
+            return profile if profile
+            raise Error::WebDriverError, "unable to find profile named: #{name.inspect}"
           end
 
           def default_preferences
