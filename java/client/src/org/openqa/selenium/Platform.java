@@ -136,6 +136,17 @@ public enum Platform {
     }
   },
 
+  SIERRA("sierra", "macos 10.12") {
+    @Override
+    public Platform family() {
+      return MAC;
+    }
+    @Override
+    public String toString() {
+      return "macOS 10.12";
+    }
+  },
+
   /**
    * Many platforms have UNIX traits, amongst them LINUX, Solaris and BSD.
    */
