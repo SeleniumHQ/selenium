@@ -34,13 +34,8 @@ import static org.openqa.selenium.Platform.WINDOWS;
 
 /**
  * Wrapper around our runtime environment requirements. Performs discovery of firefox instances.
- *
- * <p>
- * NOTE: System and platform binaries will only be discovered at class initialization.
  */
 public class Executable {
-  private static final File SYSTEM_BINARY = locateFirefoxBinaryFromSystemProperty();
-  private static final File PLATFORM_BINARY = locateFirefoxBinaryFromPlatform();
 
   private final File binary;
 
@@ -58,13 +53,15 @@ public class Executable {
               userSpecifiedBinaryPath);
     }
 
-    if (SYSTEM_BINARY != null && SYSTEM_BINARY.exists()) {
-      binary = SYSTEM_BINARY;
+    File systemBinary = locateFirefoxBinaryFromSystemProperty();
+    if (systemBinary != null) {
+      binary = systemBinary;
       return;
     }
 
-    if (PLATFORM_BINARY != null && PLATFORM_BINARY.exists()) {
-      binary = PLATFORM_BINARY;
+    File platformBinary = locateFirefoxBinaryFromPlatform();
+    if (platformBinary != null) {
+      binary = platformBinary;
       return;
     }
 
