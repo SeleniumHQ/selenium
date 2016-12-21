@@ -121,8 +121,11 @@ public class Executable {
 
     Platform current = Platform.getCurrent();
     if (current.is(WINDOWS)) {
-      binary =
-          findExistingBinary(WindowsUtils.getPathsInProgramFiles("Mozilla Firefox\\firefox.exe"));
+      ImmutableList.Builder<String> paths = new ImmutableList.Builder<>();
+      paths.addAll(WindowsUtils.getPathsInProgramFiles("Mozilla Firefox\\firefox.exe"));
+      paths.addAll(WindowsUtils.getPathsInProgramFiles("Firefox Developer Edition\\firefox.exe"));
+      paths.addAll(WindowsUtils.getPathsInProgramFiles("Nightly\\firefox.exe"));
+      binary = findExistingBinaries(paths.build()).stream().findFirst().orElse(null);
 
     } else if (current.is(MAC)) {
       binary = new File("/Applications/Firefox.app/Contents/MacOS/firefox-bin");
@@ -151,13 +154,14 @@ public class Executable {
     return null;
   }
 
-  private static File findExistingBinary(final ImmutableList<String> paths) {
+  private static ImmutableList<File> findExistingBinaries(final ImmutableList<String> paths) {
+    ImmutableList.Builder<File> found = new ImmutableList.Builder<>();
     for (String path : paths) {
       File file = new File(path);
       if (file.exists()) {
-        return file;
+        found.add(file);
       }
     }
-    return null;
+    return found.build();
   }
 }
