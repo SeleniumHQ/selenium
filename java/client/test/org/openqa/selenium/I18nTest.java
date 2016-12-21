@@ -125,7 +125,7 @@ public class I18nTest extends JUnit4TestBase {
   }
 
   @NeedsFreshDriver
-  @Ignore(value = {IE, CHROME, FIREFOX},
+  @Ignore(value = {IE, CHROME, FIREFOX, MARIONETTE},
           reason = "Not implemented on anything other than Firefox/Linux at the moment.")
   @NotYetImplemented(HTMLUNIT)
   @Test
