@@ -1,3 +1,15 @@
+3.0.4 (2016-12-21)
+===================
+
+Firefox:
+  * Implement profile support via geckodriver (#2933 thanks lmtierney)
+
+Ruby:
+  * Fix bug preventing use of Curb client (#2951 thanks clarkenciel)
+  * Support Net::HTTP::Persistent version 3 (#3219 thanks Pete Johns)
+  * Allow Net::HTTP::Default to set open_timout and read_timeout independently (#3264 thanks richseviora)
+  * Change default for Net::HTTP::Default#open_timeout to facilitate debuggers  (#3264 thanks richseviora)
+
 3.0.3 (2016-11-26)
 ===================
 
@@ -134,7 +146,7 @@ Firefox:
 2.49.0 (2016-01-13)
 ===================
 
-Ruby:
+Ruby:g
   * support for SessionNotCreatedError (thanks Alexander Bayandin)
 
 Safari:
