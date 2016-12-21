@@ -196,7 +196,7 @@ matrix:
       env: TASK=//rb:docs
   fast_finish: true
   allow_failures:
-    - env: TASK="calcdeps //javascript/atoms:atoms-firefox:run"
+    - env: TASK="calcdeps //javascript/webdriver:webdriver-firefox:run"
     - env: CHROME=1 TASK=//java/client/test/com/thoughtworks/selenium:chrome-rc-test:run
     - env: TASK=//java/client/test/com/thoughtworks/selenium:firefox-rc-test:run
     - env: TOXENV=py27-firefox
