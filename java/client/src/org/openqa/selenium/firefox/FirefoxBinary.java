@@ -39,6 +39,8 @@ import org.openqa.selenium.os.WindowsUtils;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -439,7 +441,26 @@ public class FirefoxBinary {
 
     String systemFirefox = CommandLine.find("firefox");
     if (systemFirefox != null) {
-      executables.add(new Executable(new File(systemFirefox)));
+      Path firefoxPath = new File(systemFirefox).toPath();
+      if (Files.isSymbolicLink(firefoxPath)) {
+        try {
+          Path realPath = Files.readSymbolicLink(firefoxPath);
+          File attempt1 = realPath.getParent().resolve("firefox").toFile();
+          if (attempt1.exists()) {
+            executables.add(new Executable(attempt1));
+          } else {
+            File attempt2 = realPath.getParent().resolve("firefox-bin").toFile();
+            if (attempt2.exists()) {
+              executables.add(new Executable(attempt2));
+            }
+          }
+        } catch (IOException e) {
+          // ignore this path
+        }
+
+      } else {
+        executables.add(new Executable(new File(systemFirefox)));
+      }
     }
 
     return executables.build().stream();
