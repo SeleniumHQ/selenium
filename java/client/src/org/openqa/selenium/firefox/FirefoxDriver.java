@@ -23,6 +23,7 @@ import static org.openqa.selenium.remote.CapabilityType.ACCEPT_SSL_CERTS;
 import static org.openqa.selenium.remote.CapabilityType.LOGGING_PREFS;
 import static org.openqa.selenium.remote.CapabilityType.PROXY;
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_WEB_STORAGE;
+import static org.openqa.selenium.remote.CapabilityType.VERSION;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableMap;
@@ -221,16 +222,28 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
   }
 
   private static FirefoxBinary getBinary(Capabilities capabilities) {
-    if (capabilities != null && capabilities.getCapability(BINARY) != null) {
-      Object raw = capabilities.getCapability(BINARY);
-      if (raw instanceof FirefoxBinary) {
-        return (FirefoxBinary) raw;
+    if (capabilities != null) {
+      if (capabilities.getCapability(BINARY) != null) {
+        Object raw = capabilities.getCapability(BINARY);
+        if (raw instanceof FirefoxBinary) {
+          return (FirefoxBinary) raw;
+        }
+        File file = new File((String) raw);
+        try {
+          return new FirefoxBinary(file);
+        } catch (WebDriverException wde) {
+          throw new SessionNotCreatedException(wde.getMessage());
+        }
       }
-      File file = new File((String) raw);
-      try {
-        return new FirefoxBinary(file);
-      } catch (WebDriverException wde) {
-        throw new SessionNotCreatedException(wde.getMessage());
+
+      if (capabilities.getCapability(VERSION) != null) {
+        try {
+          FirefoxBinary.Channel channel = FirefoxBinary.Channel.fromString(
+            (String) capabilities.getCapability(VERSION));
+          return new FirefoxBinary(channel);
+        } catch (WebDriverException ex) {
+          return new FirefoxBinary((String) capabilities.getCapability(VERSION));
+        }
       }
     }
     return new FirefoxBinary();
