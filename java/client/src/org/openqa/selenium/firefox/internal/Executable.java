@@ -20,14 +20,22 @@ package org.openqa.selenium.firefox.internal;
 
 import com.google.common.base.Preconditions;
 
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.firefox.FirefoxBinary;
+
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 
 /**
- * Wrapper around our runtime environment requirements. Performs discovery of firefox instances.
+ * Wrapper around Firefox executable.
  */
 public class Executable {
 
   private final File binary;
+  private String version;
+  private FirefoxBinary.Channel channel;
 
   public Executable(File userSpecifiedBinaryPath) {
     Preconditions.checkState(userSpecifiedBinaryPath != null,
@@ -38,11 +46,58 @@ public class Executable {
     binary = userSpecifiedBinaryPath;
   }
 
+  public File getDirectory() {
+    return binary.getAbsoluteFile().getParentFile();
+  }
+
   public File getFile() {
     return binary;
   }
 
   public String getPath() {
     return binary.getAbsolutePath();
+  }
+
+  public String getVersion() {
+    if (version == null) {
+      loadApplicationIni();
+    }
+    return version;
+  }
+
+  public FirefoxBinary.Channel getChannel() {
+    if (channel == null) {
+      loadChannelPref();
+    }
+    return channel;
+  }
+
+  private void loadApplicationIni() {
+    File applicationIni = new File(binary.getAbsoluteFile().getParentFile(), "application.ini");
+    try (BufferedReader reader = Files.newBufferedReader(applicationIni.toPath())) {
+      reader.lines().forEach(line -> {
+        line = line.trim();
+        if (line.startsWith("Version=")) {
+          version = line.substring("Version=".length());
+        }
+      });
+    } catch (IOException e) {
+      throw new WebDriverException("Cannot get version info for of Firefox binary " + binary, e);
+    }
+  }
+
+  private void loadChannelPref() {
+    File channelPrefs = new File(binary.getAbsoluteFile().getParentFile(), "defaults/pref/channel-prefs.js");
+    try (BufferedReader reader = Files.newBufferedReader(channelPrefs.toPath())) {
+      reader.lines().forEach(line -> {
+        line = line.trim();
+        if (line.startsWith("pref(")) {
+          channel = FirefoxBinary.Channel.fromString(
+            line.substring("pref(\"app.update.channel\", \"".length(), line.length()-"\");".length()));
+        }
+      });
+    } catch (IOException e) {
+      throw new WebDriverException("Cannot get channel info for Firefox binary " + binary, e);
+    }
   }
 }

@@ -46,6 +46,40 @@ import java.util.Map;
 import java.util.Set;
 
 public class FirefoxBinary {
+
+  public enum Channel {
+    ESR("esr"),
+    RELEASE("release"),
+    BETA("beta"),
+    DEV("aurora"),
+    NIGHTLY("nightly");
+
+    private String name;
+
+    Channel(String name) {
+      this.name = name;
+    }
+
+    public String toString() {
+      return name;
+    }
+
+    /**
+     * Gets a channel with the name matching the parameter.
+     *
+     * @param name the channel name
+     * @return the Channel enum value matching the parameter
+     */
+    public static Channel fromString(String name) {
+      for (Channel channel : Channel.values()) {
+        if (name.toLowerCase().equals(channel.name)) {
+          return channel;
+        }
+      }
+      throw new WebDriverException("Unrecognized channel: " + name);
+    }
+  }
+
   private static final String NO_FOCUS_LIBRARY_NAME = "x_ignore_nofocus.so";
   private static final String IME_IBUS_HANDLER_LIBRARY_NAME = "libibushandler.so";
   private static final String PATH_PREFIX = "/" +
