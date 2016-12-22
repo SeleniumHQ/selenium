@@ -137,15 +137,24 @@ module Selenium
             data = data.dup
 
             caps = new
-            caps.browser_name          = data.delete('browserName')
-            caps.version               = data.delete('version')
-            caps.platform              = data.delete('platform').downcase.to_sym if data.key?('platform')
-            caps.javascript_enabled    = data.delete('javascriptEnabled')
-            caps.css_selectors_enabled = data.delete('cssSelectorsEnabled')
-            caps.takes_screenshot      = data.delete('takesScreenshot')
-            caps.native_events         = data.delete('nativeEvents')
-            caps.rotatable             = data.delete('rotatable')
-            caps.proxy                 = Proxy.json_create(data['proxy']) if data.key?('proxy') && !data['proxy'].empty?
+            caps.browser_name               = data.delete('browserName')
+            caps.version                    = data.delete('version')
+            caps.platform                   = data.delete('platform').downcase.to_sym if data.key?('platform')
+            caps.handles_alerts             = data.delete('handlesAlerts')
+            caps.css_selectors_enabled      = data.delete('cssSelectorsEnabled')
+            caps.javascript_enabled         = data.delete('javascriptEnabled')
+            caps.database_enabled           = data.delete('databaseEnabled')
+            caps.location_context_enabled   = data.delete('locationContextEnabled')
+            caps.application_cache_enabled  = data.delete('applicationCacheEnabled')
+            caps.browser_connection_enabled = data.delete('browserConnectionEnabled')
+            caps.web_storage_enabled        = data.delete('webStorageEnabled')
+            caps.accept_ssl_certs           = data.delete('acceptSslCerts')
+            caps.rotatable                  = data.delete('rotatable')
+            caps.native_events              = data.delete('nativeEvents')
+            caps.proxy                      = Proxy.json_create(data['proxy']) if data.key?('proxy') && !data['proxy'].empty?
+            caps.unexpected_alert_behaviour = data.delete('unexpectedAlertBehaviour')
+            caps.element_scroll_behavior    = data.delete('elementScrollBehavior')
+            caps.takes_screenshot           = data.delete('takesScreenshot')
 
             # any remaining pairs will be added as is, with no conversion
             caps.merge!(data)
