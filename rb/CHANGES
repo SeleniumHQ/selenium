@@ -146,7 +146,7 @@ Firefox:
 2.49.0 (2016-01-13)
 ===================
 
-Ruby:g
+Ruby:
   * support for SessionNotCreatedError (thanks Alexander Bayandin)
 
 Safari:
