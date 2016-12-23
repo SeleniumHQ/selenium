@@ -19,20 +19,17 @@
 package org.openqa.selenium.io;
 
 import com.google.common.collect.Lists;
-import com.google.common.io.Closeables;
 
 import org.openqa.selenium.Platform;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
-import java.nio.channels.FileChannel;
 import java.nio.file.Files;
 import java.util.List;
 
@@ -54,11 +51,8 @@ public class FileHandler {
     Zip zip = new Zip();
 
     for (String name : names) {
-      InputStream is = locateResource(forClassLoader, name);
-      try {
+      try (InputStream is = locateResource(forClassLoader, name)) {
         zip.unzipFile(outputDir, is, name);
-      } finally {
-        is.close();
       }
     }
   }
@@ -104,19 +98,11 @@ public class FileHandler {
   }
 
   public static boolean makeWritable(File file) throws IOException {
-    if (file.canWrite()) {
-      return true;
-    }
-
-    return file.setWritable(true);
+    return file.canWrite() || file.setWritable(true);
   }
 
   public static boolean makeExecutable(File file) throws IOException {
-    if (canExecute(file)) {
-      return true;
-    }
-
-    return file.setExecutable(true);
+    return canExecute(file) || file.setExecutable(true);
   }
 
   public static Boolean canExecute(File file) {
@@ -226,9 +212,7 @@ public class FileHandler {
   }
 
   public static String readAsString(File toRead) throws IOException {
-    Reader reader = null;
-    try {
-      reader = new BufferedReader(new FileReader(toRead));
+    try (Reader reader = new BufferedReader(new FileReader(toRead))) {
       StringBuilder builder = new StringBuilder();
 
       char[] buffer = new char[4096];
@@ -240,8 +224,6 @@ public class FileHandler {
       }
 
       return builder.toString();
-    } finally {
-      Closeables.close(reader, false);
     }
   }
 }
