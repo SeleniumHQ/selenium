@@ -22,16 +22,16 @@ import org.junit.Test;
 import org.openqa.grid.selenium.GridLauncherV3;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.io.IOUtils;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.net.UrlChecker;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.FluentWait;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -57,7 +57,8 @@ public class GridViaCommandLineTest {
     new FluentWait<URL>(new URL(String.format("http://localhost:%d/grid/console", hubPort))).withTimeout(5, TimeUnit.SECONDS).pollingEvery(50, TimeUnit.MILLISECONDS)
       .until((URL u) -> {
         try {
-          return IOUtils.readFully(u.openConnection().getInputStream()).contains("chrome");
+          return new BufferedReader(
+            new InputStreamReader(u.openConnection().getInputStream(), "UTF-8")).lines().anyMatch(l -> l.contains("chrome"));
         } catch (IOException ioe) {
           return false;
         }

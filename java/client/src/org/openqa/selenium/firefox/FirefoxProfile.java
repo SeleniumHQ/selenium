@@ -30,7 +30,6 @@ import org.openqa.selenium.firefox.internal.ClasspathExtension;
 import org.openqa.selenium.firefox.internal.Extension;
 import org.openqa.selenium.firefox.internal.FileExtension;
 import org.openqa.selenium.io.FileHandler;
-import org.openqa.selenium.io.IOUtils;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.io.Zip;
 
