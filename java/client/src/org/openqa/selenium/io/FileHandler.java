@@ -32,6 +32,7 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.nio.file.Files;
 import java.util.List;
+import java.util.function.Predicate;
 
 /**
  * Utility methods for common filesystem activities
@@ -129,14 +130,16 @@ public class FileHandler {
   }
 
   public static void copy(File from, File to) throws IOException {
-    copy(from, to, new NoFilter());
+    copy(from, to, (file) -> true);
   }
 
   public static void copy(File source, File dest, String suffix) throws IOException {
-    copy(source, dest, suffix == null ? new NoFilter() : new FileSuffixFilter(suffix));
+    copy(source, dest, suffix == null
+                       ? (file) -> true
+                       : (file) -> file.isDirectory() || file.getAbsolutePath().endsWith(suffix));
   }
 
-  private static void copy(File source, File dest, Filter onlyCopy) throws IOException {
+  private static void copy(File source, File dest, Predicate<File> onlyCopy) throws IOException {
     if (!source.exists()) {
       return;
     }
@@ -148,8 +151,8 @@ public class FileHandler {
     }
   }
 
-  private static void copyDir(File from, File to, Filter onlyCopy) throws IOException {
-    if (!onlyCopy.isRequired(from)) {
+  private static void copyDir(File from, File to, Predicate<File> onlyCopy) throws IOException {
+    if (!onlyCopy.test(from)) {
       return;
     }
 
@@ -168,8 +171,8 @@ public class FileHandler {
     }
   }
 
-  private static void copyFile(File from, File to, Filter onlyCopy) throws IOException {
-    if (!onlyCopy.isRequired(from)) {
+  private static void copyFile(File from, File to, Predicate<File> onlyCopy) throws IOException {
+    if (!onlyCopy.test(from)) {
       return;
     }
 
@@ -179,35 +182,6 @@ public class FileHandler {
       if (copied != length) {
         throw new IOException("Could not transfer all bytes from " + from + " to " + to);
       }
-    }
-  }
-
-  /**
-   * Used by file operations to determine whether or not to make use of a file.
-   */
-  public interface Filter {
-    /**
-     * @param file File to be considered.
-     * @return Whether or not to make use of the file in this oprtation.
-     */
-    boolean isRequired(File file);
-  }
-
-  private static class FileSuffixFilter implements Filter {
-    private final String suffix;
-
-    public FileSuffixFilter(String suffix) {
-      this.suffix = suffix;
-    }
-
-    public boolean isRequired(File file) {
-      return file.isDirectory() || file.getAbsolutePath().endsWith(suffix);
-    }
-  }
-
-  private static class NoFilter implements Filter {
-    public boolean isRequired(File file) {
-      return true;
     }
   }
 
