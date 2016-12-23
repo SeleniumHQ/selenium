@@ -50,7 +50,8 @@ public class WebDriverException extends RuntimeException {
 
   @Override
   public String getMessage() {
-    return createMessage(super.getMessage());
+    return super.getCause() instanceof WebDriverException
+           ? super.getMessage() : createMessage(super.getMessage());
   }
 
   private String createMessage(String originalMessageString) {
