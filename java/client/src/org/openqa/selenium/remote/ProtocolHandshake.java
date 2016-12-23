@@ -158,7 +158,7 @@ public class ProtocolHandshake {
     }
 
     if (tempResponse != null) {
-      new ErrorHandler(true).throwIfResponseFailed(tempResponse, 0);
+      new ErrorHandler().throwIfResponseFailed(tempResponse, 0);
     }
 
     // Otherwise, just return empty.
