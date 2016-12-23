@@ -287,14 +287,10 @@ public class FirefoxProfile {
       prefs.setPreference("browser.startup.page", 1);
     }
 
-    FileWriter writer = null;
-    try {
-      writer = new FileWriter(userPrefs);
+    try (FileWriter writer = new FileWriter(userPrefs)) {
       prefs.writeTo(writer);
     } catch (IOException e) {
       throw new WebDriverException(e);
-    } finally {
-      IOUtils.closeQuietly(writer);
     }
   }
 

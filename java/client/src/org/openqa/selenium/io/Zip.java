@@ -18,8 +18,6 @@
 
 package org.openqa.selenium.io;
 
-import com.google.common.io.Closeables;
-
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -44,49 +42,32 @@ public class Zip {
       throw new IOException("File already exists: " + output);
     }
 
-    FileOutputStream fos = null;
-    try {
-      fos = new FileOutputStream(output);
+    try (FileOutputStream fos = new FileOutputStream(output)) {
       zip(inputDir, fos);
-    } finally {
-      Closeables.close(fos, false);
     }
   }
 
   public String zip(File inputDir) throws IOException {
-    ByteArrayOutputStream bos = new ByteArrayOutputStream();
-
-    try {
+    try (ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
       zip(inputDir, bos);
       return Base64.getEncoder().encodeToString(bos.toByteArray());
-    } finally {
-      bos.close();
     }
   }
 
   public String zipFile(File baseDir, File fileToCompress) throws IOException {
     checkArgument(fileToCompress.isFile(), "File should be a file: " + fileToCompress);
 
-    ByteArrayOutputStream bos = new ByteArrayOutputStream();
-    ZipOutputStream zos = new ZipOutputStream(bos);
-
-    try {
+    try (ByteArrayOutputStream bos = new ByteArrayOutputStream();
+         ZipOutputStream zos = new ZipOutputStream(bos)) {
       addToZip(baseDir.getAbsolutePath(), zos, fileToCompress);
       return Base64.getEncoder().encodeToString(bos.toByteArray());
-    } finally {
-      zos.close();
-      bos.close();
     }
 
   }
 
   private void zip(File inputDir, OutputStream writeTo) throws IOException {
-    ZipOutputStream zos = null;
-    try {
-      zos = new ZipOutputStream(writeTo);
+    try (ZipOutputStream zos = new ZipOutputStream(writeTo)) {
       addToZip(inputDir.getAbsolutePath(), zos, inputDir);
-    } finally {
-      Closeables.close(zos, false);
     }
   }
 
@@ -119,30 +100,19 @@ public class Zip {
   public void unzip(String source, File outputDir) throws IOException {
     byte[] bytes = Base64.getMimeDecoder().decode(source);
 
-    ByteArrayInputStream bis = null;
-    try {
-      bis = new ByteArrayInputStream(bytes);
+    try (ByteArrayInputStream bis = new ByteArrayInputStream(bytes)) {
       unzip(bis, outputDir);
-    } finally {
-      Closeables.close(bis, false);
     }
   }
 
   public void unzip(File source, File outputDir) throws IOException {
-    FileInputStream fis = null;
-
-    try {
-      fis = new FileInputStream(source);
+    try (FileInputStream fis = new FileInputStream(source)) {
       unzip(fis, outputDir);
-    } finally {
-      Closeables.close(fis, false);
     }
   }
 
   public void unzip(InputStream source, File outputDir) throws IOException {
-    ZipInputStream zis = new ZipInputStream(source);
-
-    try {
+    try (ZipInputStream zis = new ZipInputStream(source)) {
       ZipEntry entry;
       while ((entry = zis.getNextEntry()) != null) {
         File file = new File(outputDir, entry.getName());
@@ -153,8 +123,6 @@ public class Zip {
 
         unzipFile(outputDir, zis, entry.getName());
       }
-    } finally {
-      zis.close();
     }
   }
 
@@ -165,15 +133,12 @@ public class Zip {
     if (!FileHandler.createDir(toWrite.getParentFile()))
       throw new IOException("Cannot create parent director for: " + name);
 
-    OutputStream out = new BufferedOutputStream(new FileOutputStream(toWrite), BUF_SIZE);
-    try {
+    try (OutputStream out = new BufferedOutputStream(new FileOutputStream(toWrite), BUF_SIZE)) {
       byte[] buffer = new byte[BUF_SIZE];
       int read;
       while ((read = zipStream.read(buffer)) != -1) {
         out.write(buffer, 0, read);
       }
-    } finally {
-      out.close();
     }
   }
 }

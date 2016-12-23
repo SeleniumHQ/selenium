@@ -18,11 +18,8 @@
 
 package org.openqa.selenium.io;
 
-import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
-
-import com.google.common.io.Closeables;
 
 public class IOUtils {
   private static final int BUFFER = 4096;
@@ -40,10 +37,4 @@ public class IOUtils {
     return sb.toString();
   }
 
-  public static void closeQuietly(Closeable closeable) {
-    try {
-      Closeables.close(closeable, true);
-    } catch (IOException ignoted) {
-    }
-  }
 }

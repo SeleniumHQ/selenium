@@ -41,7 +41,6 @@ import org.openqa.grid.web.servlet.handler.RequestType;
 import org.openqa.grid.web.servlet.handler.SeleniumBasedRequest;
 import org.openqa.grid.web.servlet.handler.SeleniumBasedResponse;
 import org.openqa.grid.web.servlet.handler.WebDriverRequest;
-import org.openqa.selenium.io.IOUtils;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -419,8 +418,7 @@ public class TestSession {
   }
 
   private void writeRawBody(HttpServletResponse response, byte[] rawBody) throws IOException {
-    OutputStream out = response.getOutputStream();
-    try {
+    try (OutputStream out = response.getOutputStream()) {
       // We need to set the Content-Length header before we write to the output stream. Usually
       // the
       // Content-Length header is already set because we take it from the proxied request. But, it
@@ -437,8 +435,6 @@ public class TestSession {
       out.write(rawBody);
     } catch (IOException e) {
       throw new ClientGoneException(e);
-    } finally {
-      IOUtils.closeQuietly(out);
     }
   }
 

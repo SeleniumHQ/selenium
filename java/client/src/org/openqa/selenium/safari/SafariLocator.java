@@ -18,7 +18,6 @@
 
 package org.openqa.selenium.safari;
 
-import org.openqa.selenium.io.IOUtils;
 import org.openqa.selenium.os.CommandLine;
 
 import java.io.File;
@@ -118,11 +117,9 @@ class SafariLocator {
 
   protected boolean isScriptFile(File aFile) {
     final char firstTwoChars[] = new char[2];
-    FileReader reader = null;
     int charsRead;
 
-    try {
-      reader = new FileReader(aFile);
+    try (FileReader reader = new FileReader(aFile)) {
       charsRead = reader.read(firstTwoChars);
       if (2 != charsRead) {
         return false;
@@ -130,8 +127,6 @@ class SafariLocator {
       return (firstTwoChars[0] == '#' && firstTwoChars[1] == '!');
     } catch (IOException e) {
       throw new RuntimeException(e);
-    } finally {
-      IOUtils.closeQuietly(reader);
     }
   }
 
