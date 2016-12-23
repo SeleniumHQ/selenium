@@ -22,14 +22,11 @@ import com.google.common.collect.Lists;
 
 import org.openqa.selenium.Platform;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Reader;
 import java.nio.file.Files;
 import java.util.List;
 import java.util.function.Predicate;
@@ -182,22 +179,6 @@ public class FileHandler {
       if (copied != length) {
         throw new IOException("Could not transfer all bytes from " + from + " to " + to);
       }
-    }
-  }
-
-  public static String readAsString(File toRead) throws IOException {
-    try (Reader reader = new BufferedReader(new FileReader(toRead))) {
-      StringBuilder builder = new StringBuilder();
-
-      char[] buffer = new char[4096];
-      int read;
-      while ((read = reader.read(buffer)) != -1) {
-        char[] target = new char[read];
-        System.arraycopy(buffer, 0, target, 0, read);
-        builder.append(target);
-      }
-
-      return builder.toString();
     }
   }
 }

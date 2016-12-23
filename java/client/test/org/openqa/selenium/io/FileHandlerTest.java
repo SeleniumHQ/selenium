@@ -28,10 +28,8 @@ import org.junit.runners.JUnit4;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.Writer;
 import java.util.Random;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -75,19 +73,6 @@ public class FileHandlerTest {
 
     assertTrue(new File(dest, textFile.getName()).exists());
     assertFalse(new File(dest, xmlFile.getName()).exists());
-  }
-
-  @Test
-  public void testCanReadFileAsString() throws IOException {
-    String expected = "I like cheese. And peas";
-
-    File file = File.createTempFile("read-file", "test");
-    Writer writer = new FileWriter(file);
-    writer.write(expected);
-    writer.close();
-
-    String seen = FileHandler.readAsString(file);
-    assertEquals(expected, seen);
   }
 
   private File writeTestZip(File file, int files) throws IOException {
