@@ -29,7 +29,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.List;
-import java.util.function.Predicate;
 
 /**
  * Utility methods for common filesystem activities
@@ -119,32 +118,18 @@ public class FileHandler {
   }
 
   public static void copy(File from, File to) throws IOException {
-    copy(from, to, (file) -> true);
-  }
-
-  public static void copy(File source, File dest, String suffix) throws IOException {
-    copy(source, dest, suffix == null
-                       ? (file) -> true
-                       : (file) -> file.isDirectory() || file.getAbsolutePath().endsWith(suffix));
-  }
-
-  private static void copy(File source, File dest, Predicate<File> onlyCopy) throws IOException {
-    if (!source.exists()) {
+    if (!from.exists()) {
       return;
     }
 
-    if (source.isDirectory()) {
-      copyDir(source, dest, onlyCopy);
+    if (from.isDirectory()) {
+      copyDir(from, to);
     } else {
-      copyFile(source, dest, onlyCopy);
+      copyFile(from, to);
     }
   }
 
-  private static void copyDir(File from, File to, Predicate<File> onlyCopy) throws IOException {
-    if (!onlyCopy.test(from)) {
-      return;
-    }
-
+  private static void copyDir(File from, File to) throws IOException {
     // Create the target directory.
     createDir(to);
 
@@ -155,16 +140,12 @@ public class FileHandler {
     }
     for (String child : children) {
       if (!".parentlock".equals(child) && !"parent.lock".equals(child)) {
-        copy(new File(from, child), new File(to, child), onlyCopy);
+        copy(new File(from, child), new File(to, child));
       }
     }
   }
 
-  private static void copyFile(File from, File to, Predicate<File> onlyCopy) throws IOException {
-    if (!onlyCopy.test(from)) {
-      return;
-    }
-
+  private static void copyFile(File from, File to) throws IOException {
     try (OutputStream out = new FileOutputStream(to)) {
       final long copied = Files.copy(from.toPath(), out);
       final long length = from.length();

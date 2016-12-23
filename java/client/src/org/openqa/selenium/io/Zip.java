@@ -37,16 +37,6 @@ import static com.google.common.base.Preconditions.checkArgument;
 public class Zip {
   private static final int BUF_SIZE = 16384; // "big"
 
-  public void zip(File inputDir, File output) throws IOException {
-    if (output.exists()) {
-      throw new IOException("File already exists: " + output);
-    }
-
-    try (FileOutputStream fos = new FileOutputStream(output)) {
-      zip(inputDir, fos);
-    }
-  }
-
   public String zip(File inputDir) throws IOException {
     try (ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
       zip(inputDir, bos);
@@ -102,12 +92,6 @@ public class Zip {
 
     try (ByteArrayInputStream bis = new ByteArrayInputStream(bytes)) {
       unzip(bis, outputDir);
-    }
-  }
-
-  public void unzip(File source, File outputDir) throws IOException {
-    try (FileInputStream fis = new FileInputStream(source)) {
-      unzip(fis, outputDir);
     }
   }
 
