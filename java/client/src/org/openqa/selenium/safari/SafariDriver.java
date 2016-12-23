@@ -33,8 +33,6 @@ import org.openqa.selenium.remote.service.DriverCommandExecutor;
  */
 public class SafariDriver extends RemoteWebDriver {
 
-  private SafariDriverService service;
-
   /**
    * Initializes a new SafariDriver} class with default {@link SafariOptions}.
    */
