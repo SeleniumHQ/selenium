@@ -249,7 +249,8 @@ public class ErrorHandlerTest {
       handler.throwIfResponseFailed(createResponse(ErrorCodes.UNHANDLED_ERROR, data), 123);
       fail("Should have thrown!");
     } catch (WebDriverException expected) {
-      assertEquals(new WebDriverException(serverError.getMessage() + "\nCommand duration or timeout: 123 milliseconds").getMessage(),
+      assertEquals(new WebDriverException(serverError.getMessage() + "\nCommand duration or timeout: 123 milliseconds",
+                                          new WebDriverException()).getMessage(),
           expected.getMessage());
 
       Throwable cause = expected.getCause();
@@ -277,7 +278,8 @@ public class ErrorHandlerTest {
       handler.throwIfResponseFailed(createResponse(ErrorCodes.UNHANDLED_ERROR, data), 123);
       fail("Should have thrown!");
     } catch (WebDriverException expected) {
-      assertEquals(new WebDriverException(serverError.getMessage() + "\nCommand duration or timeout: 123 milliseconds").getMessage(),
+      assertEquals(new WebDriverException(serverError.getMessage() + "\nCommand duration or timeout: 123 milliseconds",
+                                          new WebDriverException()).getMessage(),
           expected.getMessage());
 
       Throwable cause = expected.getCause();
@@ -304,7 +306,8 @@ public class ErrorHandlerTest {
       handler.throwIfResponseFailed(createResponse(ErrorCodes.UNHANDLED_ERROR, data), 123);
       fail("Should have thrown!");
     } catch (WebDriverException expected) {
-      assertEquals(new WebDriverException("some error message\nCommand duration or timeout: 123 milliseconds").getMessage(),
+      assertEquals(new WebDriverException("some error message\nCommand duration or timeout: 123 milliseconds",
+                                          new WebDriverException()).getMessage(),
           expected.getMessage());
 
       StackTraceElement[] expectedTrace = {
@@ -338,7 +341,8 @@ public class ErrorHandlerTest {
       handler.throwIfResponseFailed(createResponse(ErrorCodes.UNHANDLED_ERROR, data), 123);
       fail("Should have thrown!");
     } catch (WebDriverException expected) {
-      assertEquals(new WebDriverException("some error message\nCommand duration or timeout: 123 milliseconds").getMessage(),
+      assertEquals(new WebDriverException("some error message\nCommand duration or timeout: 123 milliseconds",
+                                          new WebDriverException()).getMessage(),
           expected.getMessage());
 
       StackTraceElement[] expectedTrace = {
@@ -372,7 +376,8 @@ public class ErrorHandlerTest {
       handler.throwIfResponseFailed(createResponse(ErrorCodes.UNHANDLED_ERROR, data), 123);
       fail("Should have thrown!");
     } catch (WebDriverException expected) {
-      assertEquals(new WebDriverException("some error message\nCommand duration or timeout: 123 milliseconds").getMessage(),
+      assertEquals(new WebDriverException("some error message\nCommand duration or timeout: 123 milliseconds",
+                                          new WebDriverException()).getMessage(),
           expected.getMessage());
 
       StackTraceElement[] expectedTrace = {
