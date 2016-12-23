@@ -99,14 +99,6 @@ public class FileHandler {
     return file.canWrite() || file.setWritable(true);
   }
 
-  public static boolean makeExecutable(File file) throws IOException {
-    return canExecute(file) || file.setExecutable(true);
-  }
-
-  public static Boolean canExecute(File file) {
-    return file.canExecute();
-  }
-
   public static boolean isZipped(String fileName) {
     return fileName.endsWith(".zip") || fileName.endsWith(".xpi");
   }
