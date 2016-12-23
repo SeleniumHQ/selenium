@@ -27,15 +27,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.openqa.selenium.testing.InProject;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 @RunWith(JUnit4.class)
 public class ZipTest {
@@ -62,72 +57,6 @@ public class ZipTest {
   }
 
   @Test
-  public void testShouldCreateAZipWithASingleEntry() throws IOException {
-    touch(new File(inputDir, "example.txt"));
-
-    File output = new File(outputDir, "my.zip");
-    zip.zip(inputDir, output);
-
-    assertTrue(output.exists());
-    assertZipContains(output, "example.txt");
-  }
-
-  @Test
-  public void testShouldZipUpASingleSubDirectory() throws IOException {
-    touch(new File(inputDir, "subdir/example.txt"));
-
-    File output = new File(outputDir, "subdir.zip");
-    zip.zip(inputDir, output);
-
-    assertTrue(output.exists());
-    assertZipContains(output, "subdir/example.txt");
-  }
-
-  @Test
-  public void testShouldZipMultipleDirectories() throws IOException {
-    touch(new File(inputDir, "subdir/example.txt"));
-    touch(new File(inputDir, "subdir2/fishy/food.txt"));
-
-    File output = new File(outputDir, "subdir.zip");
-    zip.zip(inputDir, output);
-
-    assertTrue(output.exists());
-    assertZipContains(output, "subdir/example.txt");
-    assertZipContains(output, "subdir2/fishy/food.txt");
-  }
-
-  @Test
-  public void testCanUnzipASingleEntry() throws IOException {
-    Path source = InProject.locate(
-        "java/client/test/org/openqa/selenium/internal/single-file.zip");
-
-    zip.unzip(source.toFile(), outputDir);
-
-    assertTrue(new File(outputDir, "example.txt").exists());
-  }
-
-  @Test
-  public void testCanUnzipAComplexZip() throws IOException {
-    Path source = InProject.locate(
-        "java/client/test/org/openqa/selenium/internal/subfolders.zip");
-
-    zip.unzip(source.toFile(), outputDir);
-
-    assertTrue(new File(outputDir, "example.txt").exists());
-    assertTrue(new File(outputDir, "subdir/foodyfun.txt").exists());
-  }
-
-  @Test
-  public void testWillNotOverwriteAnExistingZip() {
-    try {
-      zip.zip(inputDir, outputDir);
-      fail("Should have thrown an exception");
-    } catch (IOException e) {
-      assertTrue(e.getMessage(), e.getMessage().contains("already exists"));
-    }
-  }
-
-  @Test
   public void testCanZipASingleFile() throws IOException {
     File input = new File(inputDir, "foo.txt");
     File unwanted = new File(inputDir, "nay.txt");
@@ -151,23 +80,6 @@ public class ZipTest {
       fail("Should have failed");
     } catch (IllegalArgumentException ignored) {
     }
-  }
-
-  private void assertZipContains(File output, String s) throws IOException {
-    FileInputStream fis = new FileInputStream(output);
-    ZipInputStream zis = new ZipInputStream(fis);
-    try {
-      ZipEntry entry;
-      while ((entry = zis.getNextEntry()) != null) {
-        if (s.equals(entry.getName().replaceAll("\\\\", "/"))) {
-          return;
-        }
-      }
-    } finally {
-      zis.close();
-    }
-
-    fail("File not in zip: " + s);
   }
 
   private void touch(File file) throws IOException {
