@@ -38,6 +38,7 @@ import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringReader;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -191,7 +192,7 @@ public class FirefoxProfileTest {
     File prefs = new File(dir, "user.js");
     assertTrue(prefs.exists());
 
-    assertTrue(FileHandler.readAsString(prefs).contains("i.like.cheese"));
+    assertTrue(Files.lines(prefs.toPath()).anyMatch(s -> s.contains("i.like.cheese")));
   }
 
   private List<String> readGeneratedProperties(FirefoxProfile profile) throws Exception {
