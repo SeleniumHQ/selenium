@@ -26,7 +26,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.io.Zip;
 import org.openqa.selenium.testing.InProject;
@@ -161,7 +160,7 @@ public class FirefoxProfileTest {
   public void shouldInstallExtensionFromDirectory() throws IOException {
     FirefoxProfile profile = new FirefoxProfile();
     File extension = InProject.locate(FIREBUG_PATH).toFile();
-    File unzippedExtension = FileHandler.unzip(new FileInputStream(extension));
+    File unzippedExtension = Zip.unzipToTempDir(new FileInputStream(extension), "unzip", "stream");
     profile.addExtension(unzippedExtension);
     File profileDir = profile.layoutOnDisk();
     File extensionDir = new File(profileDir, "extensions/firebug@software.joehewitt.com");
@@ -186,8 +185,7 @@ public class FirefoxProfileTest {
 
     assertNotNull(json);
 
-    File dir = TemporaryFilesystem.getDefaultTmpFS().createTempDir("webdriver", "duplicated");
-    Zip.unzip(json, dir);
+    File dir = Zip.unzipToTempDir(json, "webdriver", "duplicated");
 
     File prefs = new File(dir, "user.js");
     assertTrue(prefs.exists());

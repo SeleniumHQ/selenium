@@ -73,12 +73,24 @@ public class Zip {
     }
   }
 
+  public static File unzipToTempDir(String source, String prefix, String suffix) throws IOException {
+    File output = TemporaryFilesystem.getDefaultTmpFS().createTempDir(prefix, suffix);
+    Zip.unzip(source, output);
+    return output;
+  }
+
   public static void unzip(String source, File outputDir) throws IOException {
     byte[] bytes = Base64.getMimeDecoder().decode(source);
 
     try (ByteArrayInputStream bis = new ByteArrayInputStream(bytes)) {
       unzip(bis, outputDir);
     }
+  }
+
+  public static File unzipToTempDir(InputStream source, String prefix, String suffix) throws IOException {
+    File output = TemporaryFilesystem.getDefaultTmpFS().createTempDir(prefix, suffix);
+    Zip.unzip(source, output);
+    return output;
   }
 
   public static void unzip(InputStream source, File outputDir) throws IOException {

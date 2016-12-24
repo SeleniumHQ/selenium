@@ -376,17 +376,11 @@ public class FirefoxProfile {
   }
 
   public String toJson() throws IOException {
-    File generatedProfile = layoutOnDisk();
-
-    return Zip.zip(generatedProfile);
+    return Zip.zip(layoutOnDisk());
   }
 
   public static FirefoxProfile fromJson(String json) throws IOException {
-    File dir = TemporaryFilesystem.getDefaultTmpFS().createTempDir("webdriver", "duplicated");
-
-    Zip.unzip(json, dir);
-
-    return new FirefoxProfile(dir);
+    return new FirefoxProfile(Zip.unzipToTempDir(json, "webdriver", "duplicated"));
   }
 
   protected void cleanTemporaryModel() {
