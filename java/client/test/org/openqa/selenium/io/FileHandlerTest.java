@@ -18,7 +18,6 @@
 package org.openqa.selenium.io;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
@@ -26,23 +25,13 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Random;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
 @RunWith(JUnit4.class)
 public class FileHandlerTest {
-
-  @Test
-  public void testUnzip() throws IOException {
-    File testZip = writeTestZip(File.createTempFile("testUnzip", "zip"), 25);
-    File out = FileHandler.unzip(new FileInputStream(testZip));
-    assertEquals(25, out.list().length);
-  }
 
   @Test
   public void testFileCopy() throws IOException {
@@ -60,30 +49,6 @@ public class FileHandlerTest {
       tmpFile.delete();
       newFile.delete();
     }
-  }
-
-  private File writeTestZip(File file, int files) throws IOException {
-    ZipOutputStream out = new ZipOutputStream(new FileOutputStream(file));
-    for (int i = 0; i < files; i++) {
-      writeTestZipEntry(out);
-    }
-    out.close();
-    file.deleteOnExit();
-    return file;
-  }
-
-  private ZipOutputStream writeTestZipEntry(ZipOutputStream out) throws IOException {
-    File testFile = writeTestFile(File.createTempFile("testZip", "file"));
-    ZipEntry entry = new ZipEntry(testFile.getName());
-    out.putNextEntry(entry);
-    FileInputStream in = new FileInputStream(testFile);
-    byte[] buffer = new byte[16384];
-    while (in.read(buffer, 0, 16384) != -1) {
-      out.write(buffer);
-    }
-    out.flush();
-    in.close();
-    return out;
   }
 
   private File writeTestFile(File file) throws IOException {

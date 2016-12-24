@@ -35,14 +35,6 @@ import java.util.List;
  */
 public class FileHandler {
 
-  public static File unzip(InputStream resource) throws IOException {
-    File output = TemporaryFilesystem.getDefaultTmpFS().createTempDir("unzip", "stream");
-
-    Zip.unzip(resource, output);
-
-    return output;
-  }
-
   public static void copyResource(File outputDir, Class<?> forClassLoader, String... names)
       throws IOException {
     for (String name : names) {
