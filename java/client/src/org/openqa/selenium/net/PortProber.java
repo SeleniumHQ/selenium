@@ -68,19 +68,6 @@ public class PortProber {
     throw new RuntimeException("Unable to find a free port");
   }
 
-  public static Callable<Integer> freeLocalPort(final int port) {
-    return new Callable<Integer>() {
-
-      public Integer call()
-          throws Exception {
-        if (checkPortIsFree(port) != -1) {
-          return port;
-        }
-        return null;
-      }
-    };
-  }
-
   /**
    * Returns a port that is within a probable free range. <p/> Based on the ports in
    * http://en.wikipedia.org/wiki/Ephemeral_ports, this method stays away from all well-known
