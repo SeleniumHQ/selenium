@@ -49,7 +49,7 @@ public class DefaultNetworkInterfaceProvider implements NetworkInterfaceProvider
 
     List<NetworkInterface> result = new ArrayList<>();
     while (interfaces.hasMoreElements()) {
-      result.add(createInterface(interfaces.nextElement()));
+      result.add(new NetworkInterface(interfaces.nextElement()));
     }
     this.cachedInterfaces = Collections.unmodifiableList(result);
   }
@@ -66,13 +66,10 @@ public class DefaultNetworkInterfaceProvider implements NetworkInterfaceProvider
     final String localIF = getLocalInterfaceName();
     try {
       final java.net.NetworkInterface byName = java.net.NetworkInterface.getByName(localIF);
-      return (byName != null) ? createInterface(byName) : null;
+      return (byName != null) ? new NetworkInterface(byName) : null;
     } catch (SocketException e) {
       throw new WebDriverException(e);
     }
   }
 
-  private NetworkInterface createInterface(java.net.NetworkInterface s) {
-    return new NetworkInterface(s);
-  }
 }
