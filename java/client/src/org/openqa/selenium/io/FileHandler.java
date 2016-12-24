@@ -18,8 +18,6 @@
 
 package org.openqa.selenium.io;
 
-import com.google.common.collect.Lists;
-
 import org.openqa.selenium.Platform;
 
 import java.io.File;
@@ -28,6 +26,7 @@ import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -48,7 +47,7 @@ public class FileHandler {
       throws IOException {
     String arch = System.getProperty("os.arch").toLowerCase() + "/";
     List<String> alternatives =
-        Lists.newArrayList(name, "/" + name, arch + name, "/" + arch + name);
+        Arrays.asList(name, "/" + name, arch + name, "/" + arch + name);
     if (Platform.getCurrent().is(Platform.MAC)) {
       alternatives.add("mac/" + name);
       alternatives.add("/mac/" + name);
