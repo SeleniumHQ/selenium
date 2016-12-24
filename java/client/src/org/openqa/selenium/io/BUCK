@@ -4,7 +4,6 @@ java_library(
   deps = [
     '//java/client/src/org/openqa/selenium:exceptions',
     '//java/client/src/org/openqa/selenium:platform',
-    '//third_party/java/guava:guava',
   ],
   visibility = [
     '//java/client/src/org/openqa/selenium:selenium',
