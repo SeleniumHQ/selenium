@@ -20,7 +20,6 @@ package org.openqa.selenium.io;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import org.junit.After;
 import org.junit.Before;
@@ -36,7 +35,6 @@ import java.io.IOException;
 public class ZipTest {
   private File inputDir;
   private File outputDir;
-  private Zip zip;
   private TemporaryFilesystem tmpFs;
 
   @Before
@@ -47,8 +45,6 @@ public class ZipTest {
 
     inputDir = tmpFs.createTempDir("input", "ziptest");
     outputDir = tmpFs.createTempDir("output", "ziptest");
-
-    zip = new Zip();
   }
 
   @After
@@ -63,23 +59,14 @@ public class ZipTest {
     touch(input);
     touch(unwanted);
 
-    String zipped = zip.zipFile(inputDir, input);
+    String zipped = Zip.zip(input);
 
-    zip.unzip(zipped, outputDir);
+    Zip.unzip(zipped, outputDir);
     File unzipped = new File(outputDir, "foo.txt");
     File notThere = new File(outputDir, "nay.txt");
 
     assertTrue(unzipped.exists());
     assertFalse(notThere.exists());
-  }
-
-  @Test
-  public void testZippingASingleFileWillThrowIfInputIsNotAFile() throws IOException {
-    try {
-      zip.zipFile(inputDir.getParentFile(), inputDir);
-      fail("Should have failed");
-    } catch (IllegalArgumentException ignored) {
-    }
   }
 
   private void touch(File file) throws IOException {

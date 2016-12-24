@@ -104,7 +104,7 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
     }
 
     try {
-      String zip = new Zip().zipFile(localFile.getParentFile(), localFile);
+      String zip = Zip.zip(localFile);
       Response response = execute(DriverCommand.UPLOAD_FILE, ImmutableMap.of("file", zip));
       return (String) response.getValue();
     } catch (IOException e) {

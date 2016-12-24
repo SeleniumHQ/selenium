@@ -378,13 +378,13 @@ public class FirefoxProfile {
   public String toJson() throws IOException {
     File generatedProfile = layoutOnDisk();
 
-    return new Zip().zip(generatedProfile);
+    return Zip.zip(generatedProfile);
   }
 
   public static FirefoxProfile fromJson(String json) throws IOException {
     File dir = TemporaryFilesystem.getDefaultTmpFS().createTempDir("webdriver", "duplicated");
 
-    new Zip().unzip(json, dir);
+    Zip.unzip(json, dir);
 
     return new FirefoxProfile(dir);
   }

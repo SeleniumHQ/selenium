@@ -32,36 +32,22 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
-import static com.google.common.base.Preconditions.checkArgument;
-
 public class Zip {
   private static final int BUF_SIZE = 16384; // "big"
 
-  public String zip(File inputDir) throws IOException {
-    try (ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
-      zip(inputDir, bos);
-      return Base64.getEncoder().encodeToString(bos.toByteArray());
-    }
-  }
-
-  public String zipFile(File baseDir, File fileToCompress) throws IOException {
-    checkArgument(fileToCompress.isFile(), "File should be a file: " + fileToCompress);
-
+  public static String zip(File input) throws IOException {
     try (ByteArrayOutputStream bos = new ByteArrayOutputStream();
          ZipOutputStream zos = new ZipOutputStream(bos)) {
-      addToZip(baseDir.getAbsolutePath(), zos, fileToCompress);
+      if (input.isDirectory()) {
+        addToZip(input.getAbsolutePath(), zos, input);
+      } else {
+        addToZip(input.getParentFile().getAbsolutePath(), zos, input);
+      }
       return Base64.getEncoder().encodeToString(bos.toByteArray());
     }
-
   }
 
-  private void zip(File inputDir, OutputStream writeTo) throws IOException {
-    try (ZipOutputStream zos = new ZipOutputStream(writeTo)) {
-      addToZip(inputDir.getAbsolutePath(), zos, inputDir);
-    }
-  }
-
-  private void addToZip(String basePath, ZipOutputStream zos, File toAdd) throws IOException {
+  private static void addToZip(String basePath, ZipOutputStream zos, File toAdd) throws IOException {
     if (toAdd.isDirectory()) {
       File[] files = toAdd.listFiles();
       if (files != null) {
@@ -87,7 +73,7 @@ public class Zip {
     }
   }
 
-  public void unzip(String source, File outputDir) throws IOException {
+  public static void unzip(String source, File outputDir) throws IOException {
     byte[] bytes = Base64.getMimeDecoder().decode(source);
 
     try (ByteArrayInputStream bis = new ByteArrayInputStream(bytes)) {
@@ -95,7 +81,7 @@ public class Zip {
     }
   }
 
-  public void unzip(InputStream source, File outputDir) throws IOException {
+  public static void unzip(InputStream source, File outputDir) throws IOException {
     try (ZipInputStream zis = new ZipInputStream(source)) {
       ZipEntry entry;
       while ((entry = zis.getNextEntry()) != null) {
@@ -110,12 +96,11 @@ public class Zip {
     }
   }
 
-  public void unzipFile(File output, InputStream zipStream, String name)
-      throws IOException {
+  public static void unzipFile(File output, InputStream zipStream, String name) throws IOException {
     File toWrite = new File(output, name);
 
     if (!FileHandler.createDir(toWrite.getParentFile()))
-      throw new IOException("Cannot create parent director for: " + name);
+      throw new IOException("Cannot create parent directory for: " + name);
 
     try (OutputStream out = new BufferedOutputStream(new FileOutputStream(toWrite), BUF_SIZE)) {
       byte[] buffer = new byte[BUF_SIZE];
