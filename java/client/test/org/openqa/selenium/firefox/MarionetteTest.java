@@ -17,17 +17,13 @@
 
 package org.openqa.selenium.firefox;
 
-import static org.junit.Assert.assertEquals;
 import static org.openqa.selenium.testing.Driver.FIREFOX;
-
-import com.google.common.base.Function;
 
 import org.junit.After;
 import org.junit.Test;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 
@@ -52,7 +48,7 @@ public class MarionetteTest extends JUnit4TestBase {
 
     driver = new FirefoxDriver(caps);
 
-    shortWait.until(
+    wait.until(
       input -> "XHTML Test Page".equals(
         ((JavascriptExecutor) driver).executeScript("return document.title")));
   }

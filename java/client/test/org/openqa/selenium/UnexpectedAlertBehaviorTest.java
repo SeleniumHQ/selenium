@@ -60,7 +60,7 @@ public class UnexpectedAlertBehaviorTest extends JUnit4TestBase {
     runScenarioWithUnhandledAlert(UnexpectedAlertBehaviour.ACCEPT, "This is a default value");
   }
 
-  @Ignore(value = HTMLUNIT, reason = "inconsistent test case")
+  @Ignore(value = {HTMLUNIT, CHROME}, reason = "Unstable Chrome behavior")
   @Test
   public void canDismissUnhandledAlert() {
     runScenarioWithUnhandledAlert(UnexpectedAlertBehaviour.DISMISS, "null");
