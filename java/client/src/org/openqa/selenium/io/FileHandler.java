@@ -38,18 +38,16 @@ public class FileHandler {
   public static File unzip(InputStream resource) throws IOException {
     File output = TemporaryFilesystem.getDefaultTmpFS().createTempDir("unzip", "stream");
 
-    new Zip().unzip(resource, output);
+    Zip.unzip(resource, output);
 
     return output;
   }
 
   public static void copyResource(File outputDir, Class<?> forClassLoader, String... names)
       throws IOException {
-    Zip zip = new Zip();
-
     for (String name : names) {
       try (InputStream is = locateResource(forClassLoader, name)) {
-        zip.unzipFile(outputDir, is, name);
+        Zip.unzipFile(outputDir, is, name);
       }
     }
   }

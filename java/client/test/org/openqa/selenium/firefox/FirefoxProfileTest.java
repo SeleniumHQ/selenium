@@ -187,7 +187,7 @@ public class FirefoxProfileTest {
     assertNotNull(json);
 
     File dir = TemporaryFilesystem.getDefaultTmpFS().createTempDir("webdriver", "duplicated");
-    new Zip().unzip(json, dir);
+    Zip.unzip(json, dir);
 
     File prefs = new File(dir, "user.js");
     assertTrue(prefs.exists());
