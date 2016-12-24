@@ -298,6 +298,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(CHROME)
   public void testShouldCaptureScreenshotAtIFramePage() throws Exception {
     driver.get(appServer.whereIs("screen/screen_iframes.html"));
 
@@ -360,7 +361,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   @SwitchToTopAfterTest
   @Test
   @Ignore(
-      value = {IE, MARIONETTE},
+      value = {CHROME, IE, MARIONETTE},
       reason = " IE: v9 takes screesnhot only of switched-in frame area"
   )
   public void testShouldCaptureScreenshotAtIFramePageAfterSwitching() throws Exception {
