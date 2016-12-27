@@ -1271,12 +1271,11 @@ public class ExpectedConditions {
         Boolean displayed = false;
         Boolean exists = false;
         try {
-          exists =
-            findElements(sub_locator, webDriver).size() > 0;
+          exists = element.findElements(sub_locator).size() > 0;
           //duplicating search is to avoid dom rebuilding problems
-          displayed = findElement(sub_locator, webDriver).isDisplayed();
+          displayed = element.findElement(sub_locator).isDisplayed();
         } catch (Exception e) {/**/}
-        return (exists && displayed) ? findElements(sub_locator, webDriver) : null;
+        return (exists && displayed) ? element.findElements(sub_locator) : null;
       }
 
       @Override
