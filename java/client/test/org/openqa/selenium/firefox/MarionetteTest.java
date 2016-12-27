@@ -18,6 +18,7 @@
 package org.openqa.selenium.firefox;
 
 import static org.openqa.selenium.testing.Driver.FIREFOX;
+import static org.openqa.selenium.testing.Driver.MARIONETTE;
 
 import org.junit.After;
 import org.junit.Test;
@@ -40,6 +41,7 @@ public class MarionetteTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(MARIONETTE)
   public void shouldUseFirefoxOptions() throws InterruptedException {
     DesiredCapabilities caps = new FirefoxOptions()
       .addPreference("browser.startup.page", 1)
