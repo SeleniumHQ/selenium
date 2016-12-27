@@ -117,7 +117,7 @@ module Selenium
         end
 
         it 'accepts :service_log_path' do
-          expect(Service).to receive(:new).with(Chrome.driver_path, Service::DEFAULT_PORT, '--log-path=/foo/bar')
+          expect(Service).to receive(:new).with(nil, Service::DEFAULT_PORT, '--log-path=/foo/bar')
           Bridge.new(http_client: http, service_log_path: '/foo/bar')
         end
       end

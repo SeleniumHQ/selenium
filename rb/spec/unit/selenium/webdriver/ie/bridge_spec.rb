@@ -65,7 +65,7 @@ module Selenium
         end
 
         it 'sets the server log level and log file' do
-          expect(Service).to receive(:new).with(IE.driver_path, Service::DEFAULT_PORT, '--log-level=TRACE', '--log-file=/foo/bar')
+          expect(Service).to receive(:new).with(nil, Service::DEFAULT_PORT, '--log-level=TRACE', '--log-file=/foo/bar')
 
           Bridge.new(
             log_level: :trace,
@@ -75,7 +75,7 @@ module Selenium
         end
 
         it 'should be able to set implementation' do
-          expect(Service).to receive(:new).with(IE.driver_path, Service::DEFAULT_PORT, '--implementation=VENDOR')
+          expect(Service).to receive(:new).with(nil, Service::DEFAULT_PORT, '--implementation=VENDOR')
 
           Bridge.new(
             implementation: :vendor,

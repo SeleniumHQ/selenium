@@ -24,7 +24,7 @@ module Selenium
     module Firefox
       describe Extension do
         before do
-          File.stub(exist?: true)
+          allow(File).to receive(:exist?).and_return(true)
         end
 
         let(:extension) do
