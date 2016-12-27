@@ -17,10 +17,13 @@
 
 package org.openqa.selenium.firefox;
 
+import static java.util.Arrays.stream;
 import static java.util.concurrent.TimeUnit.SECONDS;
+import static java.util.stream.Collectors.toList;
 import static org.openqa.selenium.Platform.MAC;
 import static org.openqa.selenium.Platform.UNIX;
 import static org.openqa.selenium.Platform.WINDOWS;
+import static org.openqa.selenium.os.WindowsUtils.getPathsInProgramFiles;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
@@ -78,12 +81,10 @@ public class FirefoxBinary {
      * @return the Channel enum value matching the parameter
      */
     public static Channel fromString(String name) {
-      for (Channel channel : Channel.values()) {
-        if (name.toLowerCase().equals(channel.name)) {
-          return channel;
-        }
-      }
-      throw new WebDriverException("Unrecognized channel: " + name);
+      final String lcName = name.toLowerCase();
+      return stream(Channel.values())
+          .filter(ch -> ch.name.equals(lcName))
+          .findFirst().orElseThrow(() -> new WebDriverException("Unrecognized channel: " + name));
     }
   }
 
@@ -129,11 +130,10 @@ public class FirefoxBinary {
       }
     }
 
-    executable = findMatchingExecutable(e -> e.getChannel() == channel);
-
-    if (executable == null) {
-      throw new WebDriverException("Cannot find firefox binary for channel '" + channel + "' in PATH");
-    }
+    executable = locateFirefoxBinariesFromPlatform()
+        .filter(e -> e.getChannel() == channel)
+        .findFirst().orElseThrow(() -> new WebDriverException(
+            String.format("Cannot find firefox binary for channel '%s' in PATH", channel)));
   }
 
   public FirefoxBinary(String version) {
@@ -149,11 +149,10 @@ public class FirefoxBinary {
       }
     }
 
-    executable = findMatchingExecutable(e -> e.getVersion().startsWith(version));
-
-    if (executable == null) {
-      throw new WebDriverException("Cannot find firefox binary version '" + version + "' in PATH");
-    }
+    executable = locateFirefoxBinariesFromPlatform()
+        .filter(e -> e.getVersion().startsWith(version))
+        .findFirst().orElseThrow(() -> new WebDriverException(
+            String.format("Cannot find firefox binary version '%s' in PATH", version)));
   }
 
   public FirefoxBinary(File pathToFirefoxBinary) {
@@ -185,7 +184,6 @@ public class FirefoxBinary {
     setEnvironmentProperty("MOZ_CRASHREPORTER_DISABLE", "1"); // Disable Breakpad
     setEnvironmentProperty("NO_EM_RESTART", "1"); // Prevent the binary from detaching from the
                                                   // console
-
     if (isOnLinux() && profile.shouldLoadNoFocusLib()) {
       modifyLinkLibraryPath(profileDir);
     }
@@ -401,10 +399,6 @@ public class FirefoxBinary {
                     FirefoxDriver.SystemProperty.BROWSER_BINARY, binaryName));
   }
 
-  private static Executable findMatchingExecutable(Predicate<Executable> matcher) {
-    return locateFirefoxBinariesFromPlatform().filter(matcher).findFirst().orElse(null);
-  }
-
   /**
    * Locates the firefox binary by platform.
    */
@@ -413,11 +407,12 @@ public class FirefoxBinary {
 
     Platform current = Platform.getCurrent();
     if (current.is(WINDOWS)) {
-      ImmutableList.Builder<String> paths = new ImmutableList.Builder<>();
-      paths.addAll(WindowsUtils.getPathsInProgramFiles("Mozilla Firefox\\firefox.exe"));
-      paths.addAll(WindowsUtils.getPathsInProgramFiles("Firefox Developer Edition\\firefox.exe"));
-      paths.addAll(WindowsUtils.getPathsInProgramFiles("Nightly\\firefox.exe"));
-      executables.addAll(findExistingBinaries(paths.build()));
+      executables.addAll(Stream.of(getPathsInProgramFiles("Mozilla Firefox\\firefox.exe"),
+                                   getPathsInProgramFiles("Firefox Developer Edition\\firefox.exe"),
+                                   getPathsInProgramFiles("Nightly\\firefox.exe"))
+          .flatMap(List::stream)
+          .map(File::new).filter(File::exists)
+          .map(Executable::new).collect(toList()));
 
     } else if (current.is(MAC)) {
       // system
@@ -466,14 +461,4 @@ public class FirefoxBinary {
     return executables.build().stream();
   }
 
-  private static ImmutableList<Executable> findExistingBinaries(final ImmutableList<String> paths) {
-    ImmutableList.Builder<Executable> found = new ImmutableList.Builder<>();
-    for (String path : paths) {
-      File file = new File(path);
-      if (file.exists()) {
-        found.add(new Executable(file));
-      }
-    }
-    return found.build();
-  }
 }
