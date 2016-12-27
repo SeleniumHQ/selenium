@@ -75,8 +75,7 @@ public class Executable {
   private void loadApplicationIni() {
     File applicationIni = new File(binary.getAbsoluteFile().getParentFile(), "application.ini");
     try (BufferedReader reader = Files.newBufferedReader(applicationIni.toPath())) {
-      reader.lines().forEach(line -> {
-        line = line.trim();
+      reader.lines().map(String::trim).forEach(line -> {
         if (line.startsWith("Version=")) {
           version = line.substring("Version=".length());
         }
@@ -89,8 +88,7 @@ public class Executable {
   private void loadChannelPref() {
     File channelPrefs = new File(binary.getAbsoluteFile().getParentFile(), "defaults/pref/channel-prefs.js");
     try (BufferedReader reader = Files.newBufferedReader(channelPrefs.toPath())) {
-      reader.lines().forEach(line -> {
-        line = line.trim();
+      reader.lines().map(String::trim).forEach(line -> {
         if (line.startsWith("pref(")) {
           channel = FirefoxBinary.Channel.fromString(
             line.substring("pref(\"app.update.channel\", \"".length(), line.length()-"\");".length()));
