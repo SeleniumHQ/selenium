@@ -42,7 +42,9 @@ module Selenium
           end
 
           def from_name(name)
-            ini[name]
+            profile = ini[name]
+            return profile if profile
+            raise Error::WebDriverError, "unable to find profile named: #{name.inspect}"
           end
 
           def default_preferences
@@ -191,6 +193,10 @@ module Selenium
           end
 
           proxy
+        end
+
+        def encoded
+          Zipper.zip(layout_on_disk)
         end
 
         private

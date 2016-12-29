@@ -18,22 +18,15 @@
 
 package org.openqa.selenium.io;
 
-import com.google.common.collect.Lists;
-import com.google.common.io.Closeables;
-
 import org.openqa.selenium.Platform;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Reader;
-import java.nio.channels.FileChannel;
 import java.nio.file.Files;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -41,24 +34,11 @@ import java.util.List;
  */
 public class FileHandler {
 
-  public static File unzip(InputStream resource) throws IOException {
-    File output = TemporaryFilesystem.getDefaultTmpFS().createTempDir("unzip", "stream");
-
-    new Zip().unzip(resource, output);
-
-    return output;
-  }
-
   public static void copyResource(File outputDir, Class<?> forClassLoader, String... names)
       throws IOException {
-    Zip zip = new Zip();
-
     for (String name : names) {
-      InputStream is = locateResource(forClassLoader, name);
-      try {
-        zip.unzipFile(outputDir, is, name);
-      } finally {
-        is.close();
+      try (InputStream is = locateResource(forClassLoader, name)) {
+        Zip.unzipFile(outputDir, is, name);
       }
     }
   }
@@ -67,7 +47,7 @@ public class FileHandler {
       throws IOException {
     String arch = System.getProperty("os.arch").toLowerCase() + "/";
     List<String> alternatives =
-        Lists.newArrayList(name, "/" + name, arch + name, "/" + arch + name);
+        Arrays.asList(name, "/" + name, arch + name, "/" + arch + name);
     if (Platform.getCurrent().is(Platform.MAC)) {
       alternatives.add("mac/" + name);
       alternatives.add("/mac/" + name);
@@ -104,23 +84,7 @@ public class FileHandler {
   }
 
   public static boolean makeWritable(File file) throws IOException {
-    if (file.canWrite()) {
-      return true;
-    }
-
-    return file.setWritable(true);
-  }
-
-  public static boolean makeExecutable(File file) throws IOException {
-    if (canExecute(file)) {
-      return true;
-    }
-
-    return file.setExecutable(true);
-  }
-
-  public static Boolean canExecute(File file) {
-    return file.canExecute();
+    return file.canWrite() || file.setWritable(true);
   }
 
   public static boolean isZipped(String fileName) {
@@ -143,30 +107,18 @@ public class FileHandler {
   }
 
   public static void copy(File from, File to) throws IOException {
-    copy(from, to, new NoFilter());
-  }
-
-  public static void copy(File source, File dest, String suffix) throws IOException {
-    copy(source, dest, suffix == null ? new NoFilter() : new FileSuffixFilter(suffix));
-  }
-
-  private static void copy(File source, File dest, Filter onlyCopy) throws IOException {
-    if (!source.exists()) {
+    if (!from.exists()) {
       return;
     }
 
-    if (source.isDirectory()) {
-      copyDir(source, dest, onlyCopy);
+    if (from.isDirectory()) {
+      copyDir(from, to);
     } else {
-      copyFile(source, dest, onlyCopy);
+      copyFile(from, to);
     }
   }
 
-  private static void copyDir(File from, File to, Filter onlyCopy) throws IOException {
-    if (!onlyCopy.isRequired(from)) {
-      return;
-    }
-
+  private static void copyDir(File from, File to) throws IOException {
     // Create the target directory.
     createDir(to);
 
@@ -177,71 +129,18 @@ public class FileHandler {
     }
     for (String child : children) {
       if (!".parentlock".equals(child) && !"parent.lock".equals(child)) {
-        copy(new File(from, child), new File(to, child), onlyCopy);
+        copy(new File(from, child), new File(to, child));
       }
     }
   }
 
-  private static void copyFile(File from, File to, Filter onlyCopy) throws IOException {
-    if (!onlyCopy.isRequired(from)) {
-      return;
-    }
-
+  private static void copyFile(File from, File to) throws IOException {
     try (OutputStream out = new FileOutputStream(to)) {
       final long copied = Files.copy(from.toPath(), out);
       final long length = from.length();
       if (copied != length) {
         throw new IOException("Could not transfer all bytes from " + from + " to " + to);
       }
-    }
-  }
-
-  /**
-   * Used by file operations to determine whether or not to make use of a file.
-   */
-  public interface Filter {
-    /**
-     * @param file File to be considered.
-     * @return Whether or not to make use of the file in this oprtation.
-     */
-    boolean isRequired(File file);
-  }
-
-  private static class FileSuffixFilter implements Filter {
-    private final String suffix;
-
-    public FileSuffixFilter(String suffix) {
-      this.suffix = suffix;
-    }
-
-    public boolean isRequired(File file) {
-      return file.isDirectory() || file.getAbsolutePath().endsWith(suffix);
-    }
-  }
-
-  private static class NoFilter implements Filter {
-    public boolean isRequired(File file) {
-      return true;
-    }
-  }
-
-  public static String readAsString(File toRead) throws IOException {
-    Reader reader = null;
-    try {
-      reader = new BufferedReader(new FileReader(toRead));
-      StringBuilder builder = new StringBuilder();
-
-      char[] buffer = new char[4096];
-      int read;
-      while ((read = reader.read(buffer)) != -1) {
-        char[] target = new char[read];
-        System.arraycopy(buffer, 0, target, 0, read);
-        builder.append(target);
-      }
-
-      return builder.toString();
-    } finally {
-      Closeables.close(reader, false);
     }
   }
 }

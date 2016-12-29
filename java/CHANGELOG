@@ -9,6 +9,7 @@ v3.0.2
 * [Grid] DefaultCapabilityMatcher now considers "browserVersion".
 * [Grid] Fix node registration issue for Se2.x nodes with -servlets.
 * [Grid] Windows nodes are no longer displayed as "mixedOS".
+* [Grid] browser version capability specified on node command line no longer parsed to a Number
 
 v3.0.1
 ======

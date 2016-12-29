@@ -799,7 +799,7 @@ public class ExpectedConditions {
       @Override
       public Boolean apply(WebDriver driver) {
         try {
-          WebElement element = driver.findElement(locator);
+          WebElement element = findElement(locator, driver);
           return element.isSelected() == selected;
         } catch (StaleElementReferenceException e) {
           return null;
@@ -892,9 +892,8 @@ public class ExpectedConditions {
    */
   private static WebElement findElement(By by, WebDriver driver) {
     try {
-      return driver.findElement(by);
-    } catch (NoSuchElementException e) {
-      throw e;
+      return driver.findElements(by).stream().findFirst().orElseThrow(
+        () -> new NoSuchElementException("Cannot locate an element using " + by));
     } catch (WebDriverException e) {
       log.log(Level.WARNING,
               String.format("WebDriverException thrown by findElement(%s)", by), e);
@@ -913,7 +912,7 @@ public class ExpectedConditions {
       return driver.findElements(by);
     } catch (WebDriverException e) {
       log.log(Level.WARNING,
-              String.format("WebDriverException thrown by findElement(%s)", by), e);
+              String.format("WebDriverException thrown by findElements(%s)", by), e);
       throw e;
     }
   }
@@ -934,7 +933,7 @@ public class ExpectedConditions {
 
       @Override
       public Boolean apply(WebDriver driver) {
-        WebElement element = driver.findElement(locator);
+        WebElement element = findElement(locator, driver);
         currentValue = element.getAttribute(attribute);
         if (currentValue == null||currentValue.isEmpty()) {
           currentValue = element.getCssValue(attribute);
@@ -963,7 +962,7 @@ public class ExpectedConditions {
       @Override
       public Boolean apply(WebDriver driver) {
         try {
-          currentValue = driver.findElement(locator).getText();
+          currentValue = findElement(locator, driver).getText();
           return currentValue.equals(value);
         } catch (Exception e) {
           return false;
@@ -992,7 +991,7 @@ public class ExpectedConditions {
       @Override
       public Boolean apply(WebDriver driver) {
         try {
-          currentValue = driver.findElement(locator).getText();
+          currentValue = findElement(locator, driver).getText();
           return pattern.matcher(currentValue).find();
         } catch (Exception e) {
           return false;
@@ -1022,7 +1021,7 @@ public class ExpectedConditions {
 
       @Override
       public List<WebElement> apply(WebDriver webDriver) {
-        List<WebElement> elements = webDriver.findElements(locator);
+        List<WebElement> elements = findElements(locator, webDriver);
         currentNumber = elements.size();
         return currentNumber > number ? elements : null;
       }
@@ -1050,7 +1049,7 @@ public class ExpectedConditions {
 
       @Override
       public List<WebElement> apply(WebDriver webDriver) {
-        List<WebElement> elements = webDriver.findElements(locator);
+        List<WebElement> elements = findElements(locator, webDriver);
         currentNumber = elements.size();
         return currentNumber < number ? elements : null;
       }
@@ -1077,7 +1076,7 @@ public class ExpectedConditions {
 
       @Override
       public List<WebElement> apply(WebDriver webDriver) {
-        List<WebElement> elements = webDriver.findElements(locator);
+        List<WebElement> elements = findElements(locator, webDriver);
         currentNumber = elements.size();
         return currentNumber.equals(number) ? elements : null;
       }
@@ -1175,9 +1174,9 @@ public class ExpectedConditions {
       public Boolean apply(WebDriver driver) {
         Boolean contains = false;
         try {
-          currentValue = driver.findElement(locator).getAttribute(attribute);
+          currentValue = findElement(locator, driver).getAttribute(attribute);
           if (currentValue == null || currentValue.isEmpty()) {
-            currentValue = driver.findElement(locator).getCssValue(attribute);
+            currentValue = findElement(locator, driver).getCssValue(attribute);
           }
           contains = currentValue.contains(value);
         } catch (Exception e) {/**/}
@@ -1237,14 +1236,14 @@ public class ExpectedConditions {
         Boolean displayed = false;
         Boolean exists = false;
         try {
-          exists = webDriver.findElement(locator).findElements(sub_locator).size() > 0;
+          exists = findElement(locator, webDriver).findElements(sub_locator).size() > 0;
           displayed =
-            webDriver.findElement(locator).findElement(sub_locator).isDisplayed();
+            findElement(locator, webDriver).findElement(sub_locator).isDisplayed();
         } catch (Exception e) {
           int i = 0;
         }
         return (exists && displayed) ?
-               webDriver.findElement(locator).findElements(sub_locator) :
+               findElement(locator, webDriver).findElements(sub_locator) :
                null;
       }
 
@@ -1272,9 +1271,8 @@ public class ExpectedConditions {
         Boolean displayed = false;
         Boolean exists = false;
         try {
-          exists =
-            element.findElements(sub_locator).size()
-            > 0; //duplicating search is to avoid dom rebuilding problems
+          exists = element.findElements(sub_locator).size() > 0;
+          //duplicating search is to avoid dom rebuilding problems
           displayed = element.findElement(sub_locator).isDisplayed();
         } catch (Exception e) {/**/}
         return (exists && displayed) ? element.findElements(sub_locator) : null;
@@ -1361,7 +1359,10 @@ public class ExpectedConditions {
         try {
           elements = webDriver.findElement(locator).findElements(sub_locator);
         } catch (Exception e) {/**/}
-        return elements;
+        if (elements != null && elements.size() > 0) {
+          return elements;
+        }
+        return null;
       }
 
       @Override

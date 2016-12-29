@@ -35,12 +35,9 @@ public class SetNetworkConnection extends WebDriverHandler<Number> implements Js
   @SuppressWarnings("unchecked")
   @Override
   public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
-	  Map<String, Map<String, Object>> parameters = (Map<String, Map<String, Object>>)allParameters.get("parameters");
-	  Map<String, Object> typeMap = parameters.get("type");
-	  
-	  type = new ConnectionType(Boolean.parseBoolean(typeMap.get("wifiEnabled").toString()), 
-			  					Boolean.parseBoolean(typeMap.get("dataEnabled").toString()),
-			  					Boolean.parseBoolean(typeMap.get("airplaneMode").toString()));
+    Map<String, Object> parameters = (Map<String, Object>)allParameters.get("parameters");
+    Number bitmask = (Number) parameters.get("type");
+    type = new ConnectionType(bitmask.intValue());
   }
 
   @Override

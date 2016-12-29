@@ -31,7 +31,6 @@ require 'rake-tasks/crazy_fun/mappings/visualstudio'
 require 'rake-tasks/task-gen'
 require 'rake-tasks/checks'
 require 'rake-tasks/dotnet'
-require 'rake-tasks/zip'
 require 'rake-tasks/c'
 require 'rake-tasks/selenium'
 require 'rake-tasks/se-ide'
@@ -184,7 +183,6 @@ task :test_javascript => [
   'calcdeps',
   '//javascript/atoms:atoms-chrome:run',
   '//javascript/webdriver:webdriver-chrome:run',
-  '//javascript/webdriver:es6_test_chrome:run',
   '//javascript/selenium-atoms:selenium-atoms-chrome:run',
   '//javascript/selenium-core:selenium-core-chrome:run']
 task :test_chrome => [ "//java/client/test/org/openqa/selenium/chrome:chrome:run" ]

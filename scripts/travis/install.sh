@@ -2,7 +2,8 @@ set -ex
 
 if [[ ! -z $CHROME ]]; then
   sudo apt-get -y purge chromium-browser
-  export CHROME_REVISION=`curl -s http://commondatastorage.googleapis.com/chromium-browser-snapshots/Linux_x64/LAST_CHANGE`
+  #export CHROME_REVISION=`curl -s http://commondatastorage.googleapis.com/chromium-browser-snapshots/Linux_x64/LAST_CHANGE`
+  export CHROME_REVISION=`curl -s https://omahaproxy.appspot.com/all?csv=1 | awk -F"," '/linux,stable/ {print $8}'`
   curl -L -O "http://commondatastorage.googleapis.com/chromium-browser-snapshots/Linux_x64/${CHROME_REVISION}/chrome-linux.zip"
   unzip chrome-linux.zip
   sudo ln -sf $PWD/chrome-linux/chrome-wrapper /usr/local/bin/chrome

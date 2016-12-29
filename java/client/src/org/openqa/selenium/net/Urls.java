@@ -30,28 +30,6 @@ public class Urls {
   private static Logger log = Logger.getLogger(Urls.class.getName());
 
   /**
-   * Strips the specified URL so it only includes a protocol, hostname and port
-   *
-   * @param url URL
-   * @return string of just protocol, host and port
-   */
-  public static String toProtocolHostAndPort(String url) {
-    try {
-      URL u = new URL(url);
-      String path = u.getPath();
-      if (path != null && !"".equals(path) && !path.endsWith("/")) {
-        log.warning("It looks like your baseUrl (" +
-            url
-            +
-            ") is pointing to a file, not a directory (it doesn't end with a /).  We're going to have to strip off the last part of the pathname.");
-      }
-      return u.getProtocol() + "://" + u.getAuthority();
-    } catch (MalformedURLException e) {
-      throw new RuntimeException(e);
-    }
-  }
-
-  /**
    * Encodes the text as an URL using UTF-8.
    *
    * @param value the text too encode

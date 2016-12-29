@@ -28,6 +28,28 @@ module Selenium
         class Default < Common
           attr_accessor :proxy
 
+          attr_accessor :open_timeout
+          attr_accessor :read_timeout
+
+          # Initializes object.
+          # Warning: Setting {#open_timeout} to non-nil values will cause a separate thread to spawn.
+          # Debuggers that freeze the process will not be able to evaluate any operations if that happens.
+          # @param [Numeric] open_timeout - Open timeout to apply to HTTP client.
+          # @param [Numeric] read_timeout - Read timeout (seconds) to apply to HTTP client.
+          def initialize(open_timeout: nil, read_timeout: nil)
+            @open_timeout = open_timeout
+            @read_timeout = read_timeout
+          end
+
+          # Maintaining backward compatibility.
+          # @param [Numeric] value - Timeout in seconds to apply to both open timeout and read timeouts.
+          # @deprecated Please set the specific desired timeout {#read_timeout} or {#open_timeout} directly.
+          def timeout=(value)
+            Kernel.warn 'Selenium::WebDriver::Remote::Http::Default#timeout= is deprecated. Use #read_timeout= or #open_timeout= instead'
+            self.open_timeout = value
+            self.read_timeout = value
+          end
+
           private
 
           def http
@@ -38,10 +60,9 @@ module Selenium
               http.verify_mode = OpenSSL::SSL::VERIFY_NONE
             end
 
-            if @timeout
-              http.open_timeout = @timeout
-              http.read_timeout = @timeout
-            end
+            # Defaulting open_timeout to nil to be consistent with Ruby 2.2 and earlier.
+            http.open_timeout = self.open_timeout
+            http.read_timeout = self.read_timeout if self.read_timeout
 
             http
             )

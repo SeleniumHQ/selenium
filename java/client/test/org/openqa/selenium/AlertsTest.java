@@ -111,7 +111,6 @@ public class AlertsTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore(value = CHROME, reason = "ChromeDriver issue 764")
   public void testShouldAllowUsersToDismissAnAlertManually() {
     wait.until(presenceOfElementLocated(By.id("alert"))).click();
 
@@ -226,6 +225,7 @@ public class AlertsTest extends JUnit4TestBase {
   @JavascriptEnabled
   @SwitchToTopAfterTest
   @Test
+  @Ignore(value = MARIONETTE)
   public void testShouldAllowUsersToAcceptAnAlertInAFrame() {
     driver.switchTo().frame("iframeWithAlert");
 

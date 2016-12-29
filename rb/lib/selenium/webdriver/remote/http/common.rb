@@ -33,6 +33,10 @@ module Selenium
             @timeout = nil
           end
 
+          def quit_errors
+            [IOError]
+          end
+
           def close
             # hook for subclasses - will be called on Driver#quit
           end

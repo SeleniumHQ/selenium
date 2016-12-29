@@ -27,16 +27,18 @@ module Buck
       out_dir = File.dirname out
       FileUtils.mkdir_p(out_dir) unless File.exist?(out_dir)
 
-      # Cut-and-pasted from rake-tasks/crazy_fun/mappings/java.rb. We duplicate the code here so
-      # we can delete that file and have this continue working, but once we delete that file, we
-      # should also stop using this version of ant and just use the ant bundled with jruby.
-      dir = 'third_party/java/ant'
-      Dir[File.join(dir, '*.jar')].each { |jar| require jar }
-      # we set ANT_HOME to avoid JRuby trying to load its own Ant
-      ENV['ANT_HOME'] = dir
-      require "ant"
+      require "third_party/java/httpcomponents/httpcore-4.4.4"
+      require "third_party/java/httpcomponents/httpclient-4.5.2"
+      require "third_party/java/commons-logging/commons-logging-1.2"
+      require "third_party/java/commons-io/commons-io-2.5"
 
-      ant.get('src' => url, 'dest' => out, 'verbose' => true)
+      httpclient = org.apache.http.impl.client.HttpClients.custom().setRedirectStrategy(org.apache.http.impl.client.LaxRedirectStrategy.new()).build()
+      httpget = org.apache.http.client.methods.HttpGet.new(url)
+      response = httpclient.execute(httpget)
+      entity = response.getEntity()
+      org.apache.commons.io.FileUtils.copyInputStreamToFile(entity.getContent(), java.io.File.new(out))
+      org.apache.http.util.EntityUtils.consume(entity) unless entity.nil?
+
       File.chmod(0755, out)
       cmd = (windows?) ? ["python", out] : [out]
       sh cmd.join(" ") + " kill", :verbose => true

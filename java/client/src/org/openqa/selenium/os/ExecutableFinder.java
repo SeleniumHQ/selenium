@@ -24,13 +24,12 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.nio.file.Files;
 import java.util.Map;
 
 import org.openqa.selenium.Platform;
 
-import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.io.Files;
 
 class ExecutableFinder {
   private static final ImmutableSet<String> ENDINGS = Platform.getCurrent().is(WINDOWS) ?
@@ -98,7 +97,7 @@ class ExecutableFinder {
     File pathFile = new File("/etc/paths");
     if (pathFile.exists()) {
       try {
-        pathSegmentBuilder.addAll(Files.readLines(pathFile, Charsets.UTF_8));
+        pathSegmentBuilder.addAll(Files.readAllLines(pathFile.toPath()));
       } catch (IOException e) {
         // Guess we won't include those, then
       }

@@ -22,23 +22,17 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.Pages;
-import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.environment.InProcessTestEnvironment;
 import org.openqa.selenium.environment.TestEnvironment;
 import org.openqa.selenium.firefox.FirefoxProfile;
-import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.drivers.OutOfProcessSeleniumServer;
 
-import java.net.MalformedURLException;
-
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.openqa.selenium.Platform.MAC;
 import static org.openqa.selenium.firefox.FirefoxDriver.PROFILE;
 
 // TODO(reorg): This test is never run. It must be.
@@ -79,26 +73,4 @@ public class CopyProfileTest {
     assertEquals(title, "XHTML Test Page", title);
   }
 
-  @Test
-  public void testCanEnableNativeEventsOnRemoteFirefox() throws MalformedURLException {
-    if (Platform.getCurrent().is(MAC)) {
-      System.out.println("Skipping test: no native events here");
-      return;
-    }
-
-    FirefoxProfile profile = new FirefoxProfile();
-    profile.setEnableNativeEvents(true);
-
-    DesiredCapabilities caps = DesiredCapabilities.firefox();
-    caps.setCapability(PROFILE, profile);
-
-    RemoteWebDriver driver = new RemoteWebDriver(selenium.getWebDriverUrl(), caps);
-
-    Boolean nativeEventsEnabled =
-        (Boolean) driver.getCapabilities().getCapability(CapabilityType.HAS_NATIVE_EVENTS);
-    driver.quit();
-
-    assertTrue("Native events were explicitly enabled and should be on.",
-        nativeEventsEnabled);
-  }
 }

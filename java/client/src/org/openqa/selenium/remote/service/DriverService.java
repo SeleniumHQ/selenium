@@ -27,7 +27,6 @@ import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.net.UrlChecker;
 import org.openqa.selenium.os.CommandLine;
@@ -122,7 +121,7 @@ public class DriverService {
         "The driver executable does not exist: %s", exe.getAbsolutePath());
     checkState(!exe.isDirectory(),
         "The driver executable is a directory: %s", exe.getAbsolutePath());
-    checkState(FileHandler.canExecute(exe),
+    checkState(exe.canExecute(),
         "The driver is not executable: %s", exe.getAbsolutePath());
   }
 

@@ -24,8 +24,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.openqa.selenium.io.IOUtils;
-
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -39,17 +37,13 @@ public class Utf8Servlet extends HttpServlet {
     String fileName = this.getServletContext().getRealPath(request.getPathInfo());
     String fileContent = "";
 
-    InputStream is = null;
-    try {
-      is = new FileInputStream(fileName);
+    try (InputStream is = new FileInputStream(fileName)) {
       // Note: Must read the content as UTF8.
       fileContent = new String(ByteStreams.toByteArray(is), Charset.forName("UTF-8"));
     } catch (IOException e) {
       throw new ServletException("Failed to file: " + fileName + " based on request path: " +
           request.getPathInfo() + ", servlet path: " + request.getServletPath() +
           " and context path: " + request.getContextPath());
-    } finally {
-      IOUtils.closeQuietly(is);
     }
 
     response.setContentType("text/html; charset=UTF-8");

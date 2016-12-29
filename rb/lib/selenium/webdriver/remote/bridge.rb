@@ -201,12 +201,10 @@ module Selenium
           switch_to_frame(nil)
         end
 
-        QUIT_ERRORS = [IOError].freeze
-
         def quit
           execute :quit
           http.close
-        rescue *QUIT_ERRORS
+        rescue *http.quit_errors
         end
 
         def close

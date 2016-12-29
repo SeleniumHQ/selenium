@@ -27,7 +27,6 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.net.SocketTimeoutException;
 import java.util.Random;
-import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 import static java.lang.Math.max;
@@ -66,19 +65,6 @@ public class PortProber {
       }
     }
     throw new RuntimeException("Unable to find a free port");
-  }
-
-  public static Callable<Integer> freeLocalPort(final int port) {
-    return new Callable<Integer>() {
-
-      public Integer call()
-          throws Exception {
-        if (checkPortIsFree(port) != -1) {
-          return port;
-        }
-        return null;
-      }
-    };
   }
 
   /**
