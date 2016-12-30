@@ -2,6 +2,117 @@
   "locked": false,
   "version": 2,
   "targets": {
+    ".NETFramework,Version=v3.5": {
+      "Castle.Core/4.0.0-beta002": {
+        "type": "package",
+        "compile": {
+          "lib/net35/Castle.Core.dll": {}
+        },
+        "runtime": {
+          "lib/net35/Castle.Core.dll": {}
+        }
+      },
+      "Newtonsoft.Json/9.0.1": {
+        "type": "package",
+        "compile": {
+          "lib/net35/Newtonsoft.Json.dll": {}
+        },
+        "runtime": {
+          "lib/net35/Newtonsoft.Json.dll": {}
+        }
+      },
+      "webdriver/3.0.1": {
+        "type": "project",
+        "framework": ".NETFramework,Version=v3.5",
+        "dependencies": {
+          "Newtonsoft.Json": "9.0.1"
+        },
+        "frameworkAssemblies": [
+          "System.Drawing",
+          "System.Xml"
+        ],
+        "compile": {
+          "net35/webdriver.dll": {}
+        },
+        "runtime": {
+          "net35/webdriver.dll": {}
+        }
+      }
+    },
+    ".NETFramework,Version=v4.0": {
+      "Castle.Core/4.0.0-beta002": {
+        "type": "package",
+        "compile": {
+          "lib/net40-client/Castle.Core.dll": {}
+        },
+        "runtime": {
+          "lib/net40-client/Castle.Core.dll": {}
+        }
+      },
+      "Newtonsoft.Json/9.0.1": {
+        "type": "package",
+        "compile": {
+          "lib/net40/Newtonsoft.Json.dll": {}
+        },
+        "runtime": {
+          "lib/net40/Newtonsoft.Json.dll": {}
+        }
+      },
+      "webdriver/3.0.1": {
+        "type": "project",
+        "framework": ".NETFramework,Version=v4.0",
+        "dependencies": {
+          "Newtonsoft.Json": "9.0.1"
+        },
+        "frameworkAssemblies": [
+          "System.Drawing",
+          "System.Xml"
+        ],
+        "compile": {
+          "net40/webdriver.dll": {}
+        },
+        "runtime": {
+          "net40/webdriver.dll": {}
+        }
+      }
+    },
+    ".NETFramework,Version=v4.5": {
+      "Castle.Core/4.0.0-beta002": {
+        "type": "package",
+        "compile": {
+          "lib/net45/Castle.Core.dll": {}
+        },
+        "runtime": {
+          "lib/net45/Castle.Core.dll": {}
+        }
+      },
+      "Newtonsoft.Json/9.0.1": {
+        "type": "package",
+        "compile": {
+          "lib/net45/Newtonsoft.Json.dll": {}
+        },
+        "runtime": {
+          "lib/net45/Newtonsoft.Json.dll": {}
+        }
+      },
+      "webdriver/3.0.1": {
+        "type": "project",
+        "framework": ".NETFramework,Version=v4.5",
+        "dependencies": {
+          "Newtonsoft.Json": "9.0.1"
+        },
+        "frameworkAssemblies": [
+          "System.Drawing",
+          "System.Xml"
+        ],
+        "compile": {
+          "net45/webdriver.dll": {}
+        },
+        "runtime": {
+          "net45/webdriver.dll": {}
+        }
+      }
+    },
     ".NETStandard,Version=v1.3": {
       "Castle.Core/4.0.0-beta002": {
         "type": "package",
@@ -1442,10 +1553,10 @@
           "System.Xml.XmlDocument": "4.0.1"
         },
         "compile": {
-          "netstandard1.3/WebDriver.dll": {}
+          "netstandard1.3/webdriver.dll": {}
         },
         "runtime": {
-          "netstandard1.3/WebDriver.dll": {}
+          "netstandard1.3/webdriver.dll": {}
         }
       }
     }
@@ -5409,16 +5520,20 @@
     "webdriver/3.0.1": {
       "type": "project",
       "path": "../webdriver/project.json",
-      "msbuildProject": "../webdriver/WebDriver.xproj"
+      "msbuildProject": "../webdriver/webdriver.xproj"
     }
   },
   "projectFileDependencyGroups": {
     "": [
       "Castle.Core >= 4.0.0-beta002",
-      "System.Reflection.Emit >= 4.3.0",
       "webdriver >= 3.0.1-*"
     ],
-    ".NETStandard,Version=v1.3": []
+    ".NETFramework,Version=v3.5": [],
+    ".NETFramework,Version=v4.0": [],
+    ".NETFramework,Version=v4.5": [],
+    ".NETStandard,Version=v1.3": [
+      "System.Reflection.Emit >= 4.3.0"
+    ]
   },
   "tools": {},
   "projectFileToolGroups": {}

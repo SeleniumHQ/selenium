@@ -1,11 +1,24 @@
 {
+  "title": "Selenium WebDriver Support",
+  "version": "3.0.1-*",
+  "copyright": "Copyright � Software Freedom Conservancy 2014",
+  "description": "Selenium WebDriver .NET Bindings support classes",
+  "buildOptions": {
+    "outputName": "WebDriver.Support",
+    "xmlDoc": true
+  },
   "dependencies": {
     "Castle.Core": "4.0.0-beta002",
-    "System.Reflection.Emit": "4.3.0",
     "webdriver": "3.0.1-*"
   },
   "frameworks": {
-    "netstandard1.3": { }
-  },
-  "version": "3.0.1-*"
+    "netstandard1.3": {
+      "dependencies": {
+        "System.Reflection.Emit": "4.3.0"
+      }
+    },
+    "net3.5": { },
+    "net4.0": { },
+    "net4.5": { }
+  }
 }

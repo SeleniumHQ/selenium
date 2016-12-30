@@ -1,29 +1,55 @@
-﻿{
+{
+  "title": "Selenium WebDriver",
+  "version": "3.0.1-*",
+  "copyright": "Copyright © Software Freedom Conservancy 2014",
+  "description": "Selenium WebDriver API .NET Bindings",
+  "buildOptions": {
+    "outputName": "WebDriver",
+    "xmlDoc": true
+  },
   "dependencies": {
-    "CoreCompat.System.Drawing": "1.0.0-beta006",
-    "Microsoft.Win32.Registry": "4.0.0",
-    "Newtonsoft.Json": "9.0.1",
-    "System.AppContext": "4.3.0",
-    "System.Console": "4.0.0",
-    "System.Diagnostics.Process": "4.1.0",
-    "System.Diagnostics.Tools": "4.0.1",
-    "System.IO.Compression": "4.1.0",
-    "System.Net.NameResolution": "4.0.0",
-    "System.Net.NetworkInformation": "4.1.0",
-    "System.Net.Requests": "4.0.11",
-    "System.Net.Security": "4.0.0",
-    "System.Net.Sockets": "4.1.0",
-    "System.Reflection.TypeExtensions": "4.1.0",
-    "System.Security.Cryptography.X509Certificates": "4.1.0",
-    "System.Threading.Tasks": "4.0.11",
-    "System.Threading.Thread": "4.0.0",
-    "System.Xml.XmlDocument": "4.0.1",
-    "System.Xml.XPath.XmlDocument": "4.0.1"
+    "Newtonsoft.Json": "9.0.1"
   },
   "frameworks": {
     "netstandard1.3": {
-      "dependencies": { }
+      "dependencies": {
+        "CoreCompat.System.Drawing": "1.0.0-beta006",
+        "Microsoft.Win32.Registry": "4.0.0",
+        "System.AppContext": "4.3.0",
+        "System.Console": "4.0.0",
+        "System.Diagnostics.Process": "4.1.0",
+        "System.Diagnostics.Tools": "4.0.1",
+        "System.IO.Compression": "4.1.0",
+        "System.Net.NameResolution": "4.0.0",
+        "System.Net.NetworkInformation": "4.1.0",
+        "System.Net.Requests": "4.0.11",
+        "System.Net.Security": "4.0.0",
+        "System.Net.Sockets": "4.1.0",
+        "System.Reflection.TypeExtensions": "4.1.0",
+        "System.Security.Cryptography.X509Certificates": "4.1.0",
+        "System.Threading.Tasks": "4.0.11",
+        "System.Threading.Thread": "4.0.0",
+        "System.Xml.XmlDocument": "4.0.1",
+        "System.Xml.XPath.XmlDocument": "4.0.1"
+      }
+    },
+    "net35": {
+      "frameworkAssemblies": {
+        "System.Drawing": "2.0.0.0",
+        "System.Xml": "2.0.0.0"
+      }
+    },
+    "net40": {
+      "frameworkAssemblies": {
+        "System.Drawing": "4.0.0.0",
+        "System.Xml": "4.0.0.0"
+      }
+    },
+    "net45": {
+      "frameworkAssemblies": {
+        "System.Drawing": "4.0.0.0",
+        "System.Xml": "4.0.0.0"
+      }
     }
-  },
-  "version": "3.0.1-*"
+  }
 }

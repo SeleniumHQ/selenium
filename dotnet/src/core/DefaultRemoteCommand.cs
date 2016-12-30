@@ -17,7 +17,11 @@
 
 using System;
 using System.Text;
+#if NETSTANDARD1_3
 using System.Text.Encodings.Web;
+#else
+using System.Web;
+#endif
 
 namespace Selenium
 {

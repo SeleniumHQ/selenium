@@ -85,20 +85,26 @@ namespace Selenium
 		public string DoCommand(string command, string[] args)
 		{
 			IRemoteCommand remoteCommand = new DefaultRemoteCommand(command, args);
-			using (HttpWebResponse response = (HttpWebResponse) CreateWebRequest(remoteCommand).GetResponseAsync().Result)
-			{
-				if (response.StatusCode != HttpStatusCode.OK)
-				{
-					throw new SeleniumException(response.StatusDescription);
-				}
-				string resultBody = ReadResponse(response);
-				if (!resultBody.StartsWith("OK"))
-				{
-					throw new SeleniumException(resultBody);
-				}
-				return resultBody;
+            using (HttpWebResponse response = (HttpWebResponse)CreateWebRequest(remoteCommand)
+#if NETSTANDARD1_3
+                .GetResponseAsync().Result
+#else
+                .GetResponse()
+#endif
+                )
+            {
+                if (response.StatusCode != HttpStatusCode.OK)
+                {
+                    throw new SeleniumException(response.StatusDescription);
+                }
+                string resultBody = ReadResponse(response);
+                if (!resultBody.StartsWith("OK"))
+                {
+                    throw new SeleniumException(resultBody);
+                }
+                return resultBody;
 
-			}
+            }
 		}
 
 		/// <summary>

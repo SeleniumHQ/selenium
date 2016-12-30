@@ -2,6 +2,10 @@
   "locked": false,
   "version": 2,
   "targets": {
+    ".NETFramework,Version=v2.0": {},
+    ".NETFramework,Version=v3.5": {},
+    ".NETFramework,Version=v4.0": {},
+    ".NETFramework,Version=v4.5": {},
     ".NETStandard,Version=v1.3": {
       "Microsoft.NETCore.Platforms/1.1.0": {
         "type": "package",
@@ -2710,14 +2714,26 @@
     }
   },
   "projectFileDependencyGroups": {
-    "": [
+    "": [],
+    ".NETFramework,Version=v2.0": [
+      "System.Web >= 2.0.0"
+    ],
+    ".NETFramework,Version=v3.5": [
+      "System.Web >= 2.0.0"
+    ],
+    ".NETFramework,Version=v4.0": [
+      "System.Web >= 4.0.0"
+    ],
+    ".NETFramework,Version=v4.5": [
+      "System.Web >= 4.0.0"
+    ],
+    ".NETStandard,Version=v1.3": [
       "System.Collections.NonGeneric >= 4.3.0",
       "System.Net.Requests >= 4.3.0",
       "System.Runtime >= 4.3.0",
       "System.Text.Encoding.Extensions >= 4.3.0",
       "System.Text.Encodings.Web >= 4.3.0"
-    ],
-    ".NETStandard,Version=v1.3": []
+    ]
   },
   "tools": {},
   "projectFileToolGroups": {}

@@ -2,6 +2,39 @@
   "locked": false,
   "version": 2,
   "targets": {
+    ".NETFramework,Version=v3.5": {
+      "Newtonsoft.Json/9.0.1": {
+        "type": "package",
+        "compile": {
+          "lib/net35/Newtonsoft.Json.dll": {}
+        },
+        "runtime": {
+          "lib/net35/Newtonsoft.Json.dll": {}
+        }
+      }
+    },
+    ".NETFramework,Version=v4.0": {
+      "Newtonsoft.Json/9.0.1": {
+        "type": "package",
+        "compile": {
+          "lib/net40/Newtonsoft.Json.dll": {}
+        },
+        "runtime": {
+          "lib/net40/Newtonsoft.Json.dll": {}
+        }
+      }
+    },
+    ".NETFramework,Version=v4.5": {
+      "Newtonsoft.Json/9.0.1": {
+        "type": "package",
+        "compile": {
+          "lib/net45/Newtonsoft.Json.dll": {}
+        },
+        "runtime": {
+          "lib/net45/Newtonsoft.Json.dll": {}
+        }
+      }
+    },
     ".NETStandard,Version=v1.3": {
       "CoreCompat.System.Drawing/1.0.0-beta006": {
         "type": "package",
@@ -5098,9 +5131,23 @@
   },
   "projectFileDependencyGroups": {
     "": [
+      "Newtonsoft.Json >= 9.0.1"
+    ],
+    ".NETFramework,Version=v3.5": [
+      "System.Drawing >= 2.0.0",
+      "System.Xml >= 2.0.0"
+    ],
+    ".NETFramework,Version=v4.0": [
+      "System.Drawing >= 4.0.0",
+      "System.Xml >= 4.0.0"
+    ],
+    ".NETFramework,Version=v4.5": [
+      "System.Drawing >= 4.0.0",
+      "System.Xml >= 4.0.0"
+    ],
+    ".NETStandard,Version=v1.3": [
       "CoreCompat.System.Drawing >= 1.0.0-beta006",
       "Microsoft.Win32.Registry >= 4.0.0",
-      "Newtonsoft.Json >= 9.0.1",
       "System.AppContext >= 4.3.0",
       "System.Console >= 4.0.0",
       "System.Diagnostics.Process >= 4.1.0",
@@ -5117,8 +5164,7 @@
       "System.Threading.Thread >= 4.0.0",
       "System.Xml.XPath.XmlDocument >= 4.0.1",
       "System.Xml.XmlDocument >= 4.0.1"
-    ],
-    ".NETStandard,Version=v1.3": []
+    ]
   },
   "tools": {},
   "projectFileToolGroups": {}
