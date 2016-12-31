@@ -17,8 +17,6 @@
         "System.Reflection.Emit": "4.3.0"
       }
     },
-    "net3.5": { },
-    "net4.0": { },
-    "net4.5": { }
+    "net3.5": { }
   }
 }

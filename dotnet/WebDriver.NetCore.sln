@@ -16,6 +16,10 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "WebDriver.Support", "src\su
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Selenium.Core", "src\core\Selenium.Core.xproj", "{A466F95B-6E6A-4FCA-81AA-0C1A78B1C0F0}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{8B268512-142A-47AC-9357-0B4A968862EA}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Selenium.Core.Tests", "test\core.tests\Selenium.Core.Tests.xproj", "{1AA8C36E-FC7A-42A5-9639-F545C6B519EA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -34,6 +38,10 @@ Global
 		{A466F95B-6E6A-4FCA-81AA-0C1A78B1C0F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A466F95B-6E6A-4FCA-81AA-0C1A78B1C0F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A466F95B-6E6A-4FCA-81AA-0C1A78B1C0F0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1AA8C36E-FC7A-42A5-9639-F545C6B519EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1AA8C36E-FC7A-42A5-9639-F545C6B519EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1AA8C36E-FC7A-42A5-9639-F545C6B519EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1AA8C36E-FC7A-42A5-9639-F545C6B519EA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -42,5 +50,6 @@ Global
 		{C55E47DB-07BC-4886-B5BF-86113A340654} = {8E9FDED9-0F0C-47B6-9F18-28C7E28A9FB6}
 		{C5DF911B-5792-4C1F-8859-7210D492A76D} = {8E9FDED9-0F0C-47B6-9F18-28C7E28A9FB6}
 		{A466F95B-6E6A-4FCA-81AA-0C1A78B1C0F0} = {8E9FDED9-0F0C-47B6-9F18-28C7E28A9FB6}
+		{1AA8C36E-FC7A-42A5-9639-F545C6B519EA} = {8B268512-142A-47AC-9357-0B4A968862EA}
 	EndGlobalSection
 EndGlobal

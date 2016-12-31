@@ -38,18 +38,6 @@
         "System.Drawing": "2.0.0.0",
         "System.Xml": "2.0.0.0"
       }
-    },
-    "net40": {
-      "frameworkAssemblies": {
-        "System.Drawing": "4.0.0.0",
-        "System.Xml": "4.0.0.0"
-      }
-    },
-    "net45": {
-      "frameworkAssemblies": {
-        "System.Drawing": "4.0.0.0",
-        "System.Xml": "4.0.0.0"
-      }
     }
   }
 }

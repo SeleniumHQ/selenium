@@ -13,28 +13,6 @@
         }
       }
     },
-    ".NETFramework,Version=v4.0": {
-      "Newtonsoft.Json/9.0.1": {
-        "type": "package",
-        "compile": {
-          "lib/net40/Newtonsoft.Json.dll": {}
-        },
-        "runtime": {
-          "lib/net40/Newtonsoft.Json.dll": {}
-        }
-      }
-    },
-    ".NETFramework,Version=v4.5": {
-      "Newtonsoft.Json/9.0.1": {
-        "type": "package",
-        "compile": {
-          "lib/net45/Newtonsoft.Json.dll": {}
-        },
-        "runtime": {
-          "lib/net45/Newtonsoft.Json.dll": {}
-        }
-      }
-    },
     ".NETStandard,Version=v1.3": {
       "CoreCompat.System.Drawing/1.0.0-beta006": {
         "type": "package",
@@ -5136,14 +5114,6 @@
     ".NETFramework,Version=v3.5": [
       "System.Drawing >= 2.0.0",
       "System.Xml >= 2.0.0"
-    ],
-    ".NETFramework,Version=v4.0": [
-      "System.Drawing >= 4.0.0",
-      "System.Xml >= 4.0.0"
-    ],
-    ".NETFramework,Version=v4.5": [
-      "System.Drawing >= 4.0.0",
-      "System.Xml >= 4.0.0"
     ],
     ".NETStandard,Version=v1.3": [
       "CoreCompat.System.Drawing >= 1.0.0-beta006",

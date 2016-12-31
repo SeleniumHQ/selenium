@@ -14,7 +14,8 @@
  *  limitations under the License.
  *
  */
-using NMock;
+using Moq;
+//using NMock;
 using NUnit.Framework;
 using System;
 using Selenium;
@@ -29,13 +30,13 @@ namespace ThoughtWorks.Selenium.UnitTests
 	{
 		private DefaultSelenium selenium;
 		private ICommandProcessor processor;
-		private Mock mockProcessor;
+        private Mock<ICommandProcessor> mockProcessor;
 
 		[SetUp]
 		public void SetupTest()
 		{
-			mockProcessor = new DynamicMock(typeof (ICommandProcessor));
-			processor = (ICommandProcessor) mockProcessor.MockInstance;
+			mockProcessor = new Mock<ICommandProcessor>(MockBehavior.Loose);
+            processor = (ICommandProcessor) mockProcessor.Object;
 			selenium = new DefaultSelenium(processor);
 		}
 
@@ -54,78 +55,85 @@ namespace ThoughtWorks.Selenium.UnitTests
 		[Test]
 		public void StopSeleniumShouldWork()
 		{
-			mockProcessor.Expect("Stop");
 			selenium.Stop();
+            mockProcessor.Verify(processor => processor.Stop());
 		}
 
 		[Test]
 		public void ChooseCancelOnNextConfirmationShouldWork()
 		{
-			mockProcessor.ExpectAndReturn("DoCommand", "OK", new object[]{"chooseCancelOnNextConfirmation", new String[]{}});
+            mockProcessor.Setup(processor => processor.DoCommand("chooseCancelOnNextConfirmation", It.Is<string[]>(arg => arg.Length == 0))).Returns("Ok");
 			selenium.ChooseCancelOnNextConfirmation();
+            mockProcessor.Verify(processor => processor.DoCommand("chooseCancelOnNextConfirmation", It.Is<string[]>(arg => arg.Length == 0)));
 		}
 
 		[Test]
 		public void ChooseCancelOnNextConfirmationFailsIfResultIsNotOK()
 		{
-			mockProcessor.ExpectAndThrow("DoCommand", new SeleniumException("Error"), 
-				new object[]{"chooseCancelOnNextConfirmation", new String[]{}});
+            mockProcessor.Setup(processor => processor.DoCommand("chooseCancelOnNextConfirmation", It.IsAny<string[]>())).Throws(new SeleniumException("Error"));
             Assert.Throws<SeleniumException>(() => selenium.ChooseCancelOnNextConfirmation());
-		}
+            mockProcessor.Verify(processor => processor.DoCommand("chooseCancelOnNextConfirmation", It.IsAny<string[]>()));
+        }
 
-		[Test]
-		public void ClickShouldWork()
-		{
-			string fieldname= "somefieldname";
-			mockProcessor.ExpectAndReturn("DoCommand", "OK", new object[] {"click", new string[]{fieldname}});
-			selenium.Click(fieldname);
-		}
+        [Test]
+        public void ClickShouldWork()
+        {
+            string fieldname = "somefieldname";
+            mockProcessor.Setup(processor => processor.DoCommand("click", It.Is<string[]>(arg => arg[0] == fieldname))).Returns("Ok");
+            selenium.Click(fieldname);
+            mockProcessor.Verify(processor => processor.DoCommand("click", It.Is<string[]>(arg => arg[0] == fieldname)));
+        }
 
-		
-		[Test]
+
+        [Test]
 		public void ClickShouldFailWhenOKIsNotReturned()
 		{
 			string fieldname = "fieldname";
 
-			mockProcessor.ExpectAndThrow("DoCommand", new SeleniumException("Error"), new object[]{"click", new string[]{fieldname}});
+            mockProcessor.Setup(processor => processor.DoCommand("click", It.Is<string[]>(arg => arg[0] == fieldname))).Throws(new SeleniumException("Error"));
             Assert.Throws<SeleniumException>(() => selenium.Click(fieldname));
-		}
+            mockProcessor.Verify(processor => processor.DoCommand("click", It.Is<string[]>(arg => arg[0] == fieldname)));
+        }
 
-		[Test]
+        [Test]
 		public void VerifySelectedOptionsShouldWork()
 		{
 			string[] values = {"1","2","3","4","5","6"};
 			string fieldname = "fieldname";
-			mockProcessor.ExpectAndReturn("GetStringArray",new string[] {"1","2","3","4","5","6"}, new object[]{"getSelectOptions", new string[]{fieldname}} );
+            mockProcessor.Setup(processor => processor.GetStringArray("getSelectOptions", It.Is<string[]>(arg => arg[0] == fieldname))).Returns(values);
 			string[] actualResult = selenium.GetSelectOptions(fieldname);
-			Assert.AreEqual(new string[] {"1","2","3","4","5","6"}, actualResult);
+            mockProcessor.Verify(processor => processor.GetStringArray("getSelectOptions", It.Is<string[]>(arg => arg[0] == fieldname)));
+            Assert.AreEqual(values, actualResult);
 		}
 
 		[Test]
 		public void GetAllButtonsShouldWork()
 		{
 			string[] values = {"1","2","3","4","5","6"};
-			mockProcessor.ExpectAndReturn("GetStringArray",new string[] {"1","2","3","4","5","6"}, new object[]{"getAllButtons", new string[]{}} );
+            mockProcessor.Setup(processor => processor.GetStringArray("getAllButtons", It.Is<string[]>(arg => arg.Length == 0))).Returns(values);
 			string[] actualResult = selenium.GetAllButtons();
-			Assert.AreEqual(new string[] {"1","2","3","4","5","6"}, actualResult);
+            mockProcessor.Verify(processor => processor.GetStringArray("getAllButtons", It.Is<string[]>(arg => arg.Length == 0)));
+            Assert.AreEqual(values, actualResult);
 		}
 
 		[Test]
 		public void GetAllLinksShouldWork()
 		{
 			string[] values = {"1","2","3","4","5","6"};
-			mockProcessor.ExpectAndReturn("GetStringArray",new string[] {"1","2","3","4","5","6"}, new object[]{"getAllLinks", new string[]{}} );
+            mockProcessor.Setup(processor => processor.GetStringArray("getAllLinks", It.Is<string[]>(arg => arg.Length == 0))).Returns(values);
 			string[] actualResult = selenium.GetAllLinks();
-			Assert.AreEqual(new string[] {"1","2","3","4","5","6"}, actualResult);
+            mockProcessor.Verify(processor => processor.GetStringArray("getAllLinks", It.Is<string[]>(arg => arg.Length == 0)));
+			Assert.AreEqual(values, actualResult);
 		}
 
 		[Test]
 		public void GetAllFieldsShouldWork()
 		{
 			string[] values = {"1","2","3","4","5","6"};
-			mockProcessor.ExpectAndReturn("GetStringArray",new string[] {"1","2","3","4","5","6"}, new object[]{"getAllFields", new string[]{}} );
+            mockProcessor.Setup(processor => processor.GetStringArray("getAllFields", It.Is<string[]>(arg => arg.Length == 0))).Returns(values);
 			string[] actualResult = selenium.GetAllFields();
-			Assert.AreEqual(new string[] {"1","2","3","4","5","6"}, actualResult);
+            mockProcessor.Verify(processor => processor.GetStringArray("getAllFields", It.Is<string[]>(arg => arg.Length == 0)));
+			Assert.AreEqual(values, actualResult);
 		}
 
 

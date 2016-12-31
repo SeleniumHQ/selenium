@@ -21,21 +21,6 @@
       "frameworkAssemblies": {
         "System.Web": "2.0.0.0"
       }
-    },
-    "net35": {
-      "frameworkAssemblies": {
-        "System.Web": "2.0.0.0"
-      }
-    },
-    "net40": {
-      "frameworkAssemblies": {
-        "System.Web": "4.0.0.0"
-      }
-    },
-    "net45": {
-      "frameworkAssemblies": {
-        "System.Web": "4.0.0.0"
-      }
     }
   }
 }
