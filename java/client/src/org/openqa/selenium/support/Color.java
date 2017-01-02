@@ -89,7 +89,7 @@ public class Color {
    * @return a java.awt.Color class instance
    */
   public java.awt.Color getColor() {
-    return new java.awt.Color((float)red, (float)green, (float)blue, (float)alpha);
+    return new java.awt.Color(red, green, blue, (int)(alpha*255));
   }
 
   @Override
