@@ -33,11 +33,9 @@ import com.google.common.collect.Maps;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.internal.Executable;
-import org.openqa.selenium.firefox.internal.Streams;
 import org.openqa.selenium.io.CircularOutputStream;
 import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.os.CommandLine;
-import org.openqa.selenium.os.WindowsUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -49,7 +47,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 public class FirefoxBinary {
@@ -325,11 +322,11 @@ public class FirefoxBinary {
    * @throws IOException IO exception reading from the output stream of the firefox process
    */
   public String getConsoleOutput() throws IOException {
-    if (process == null) {
+    if (process == null || stream == null) {
       return null;
     }
 
-    return Streams.drainStream(stream);
+    return stream instanceof CircularOutputStream ? stream.toString() : null;
   }
 
   public long getTimeout() {
