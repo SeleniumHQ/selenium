@@ -72,6 +72,7 @@ public class UnexpectedAlertBehaviorTest extends JUnit4TestBase {
     runScenarioWithUnhandledAlert(null, "null");
   }
 
+  @Ignore(value = CHROME, reason = "Unstable")
   @NotYetImplemented(HTMLUNIT)
   @Test
   public void canIgnoreUnhandledAlert() {
