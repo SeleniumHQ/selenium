@@ -21,7 +21,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.openqa.selenium.firefox.internal.NewProfileExtensionConnectionTest;
 import org.openqa.selenium.firefox.internal.SocketLockTest;
-import org.openqa.selenium.firefox.internal.StreamsTest;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
@@ -32,7 +31,6 @@ import org.openqa.selenium.firefox.internal.StreamsTest;
     NewProfileExtensionConnectionTest.class,
     PreferencesTest.class,
     SocketLockTest.class,
-    StreamsTest.class
 })
 
 public class FirefoxSpecificTests {
