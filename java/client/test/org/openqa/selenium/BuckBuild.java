@@ -29,6 +29,7 @@ import com.google.common.hash.HashCode;
 import com.google.common.hash.Hashing;
 
 import org.openqa.selenium.os.CommandLine;
+import org.openqa.selenium.os.ExecutableFinder;
 import org.openqa.selenium.testing.InProject;
 
 import java.io.IOException;
@@ -128,7 +129,7 @@ public class BuckBuild {
     // If there's a .nobuckcheck in the root of the file, and we can execute "buck", then assume
     // that the developer knows what they're doing. Ha! Ahaha! Ahahahaha!
     if (Files.exists(noBuckCheck)) {
-      String buckCommand = CommandLine.find("buck");
+      String buckCommand = new ExecutableFinder().find("buck");
       if (buckCommand != null) {
         builder.add(buckCommand);
         return;
@@ -173,9 +174,9 @@ public class BuckBuild {
     }
 
     if (Platform.getCurrent().is(WINDOWS)) {
-      String python = CommandLine.find("python2");
+      String python = new ExecutableFinder().find("python2");
       if (python == null) {
-        python = CommandLine.find("python");
+        python = new ExecutableFinder().find("python");
       }
       Preconditions.checkNotNull(python, "Unable to find python executable");
       builder.add(python);

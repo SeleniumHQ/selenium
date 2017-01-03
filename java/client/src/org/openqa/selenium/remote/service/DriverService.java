@@ -30,6 +30,7 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.net.UrlChecker;
 import org.openqa.selenium.os.CommandLine;
+import org.openqa.selenium.os.ExecutableFinder;
 
 import java.io.File;
 import java.io.IOException;
@@ -103,7 +104,7 @@ public class DriverService {
    */
   protected static File findExecutable(String exeName, String exeProperty, String exeDocs,
       String exeDownload) {
-    String defaultPath = CommandLine.find(exeName);
+    String defaultPath = new ExecutableFinder().find(exeName);
     String exePath = System.getProperty(exeProperty, defaultPath);
     checkState(exePath != null,
         "The path to the driver executable must be set by the %s system property;"

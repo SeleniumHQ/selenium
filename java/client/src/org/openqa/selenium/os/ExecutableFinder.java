@@ -31,7 +31,7 @@ import org.openqa.selenium.Platform;
 
 import com.google.common.collect.ImmutableSet;
 
-class ExecutableFinder {
+public class ExecutableFinder {
   private static final ImmutableSet<String> ENDINGS = Platform.getCurrent().is(WINDOWS) ?
       ImmutableSet.of("", ".cmd", ".exe", ".com", ".bat") : ImmutableSet.of("");
 
