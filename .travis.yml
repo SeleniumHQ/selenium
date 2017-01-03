@@ -147,51 +147,51 @@ matrix:
       addons:
         firefox: latest
     - language: ruby
-      rvm: 2.2.3
+      rvm: 2.3.3
       jdk: oraclejdk8
       env: TASK=//rb:unit-test
     - language: ruby
-      rvm: 2.2.3
+      rvm: 2.3.3
       jdk: oraclejdk8
       env: CHROME=1 TASK=//rb:chrome-test
     - language: ruby
-      rvm: 2.2.3
+      rvm: 2.3.3
       jdk: oraclejdk8
       env: MARIONETTE=1 TASK=//rb:firefox-test
       addons:
         firefox: latest
     - language: ruby
-      rvm: 2.2.3
+      rvm: 2.3.3
       jdk: oraclejdk8
       env: TASK=//rb:ff-legacy-test
       addons:
         firefox: latest-esr
     - language: ruby
-      rvm: 2.2.3
+      rvm: 2.3.3
       jdk: oraclejdk8
       env: PHANTOMJS=1 TASK=//rb:phantomjs-test
     - language: ruby
-      rvm: 2.2.3
+      rvm: 2.3.3
       jdk: oraclejdk8
       env: CHROME=1 TASK=//rb:remote-chrome-test
     - language: ruby
-      rvm: 2.2.3
+      rvm: 2.3.3
       jdk: oraclejdk8
       env: MARIONETTE=1 TASK=//rb:remote-firefox-test
       addons:
         firefox: latest
     - language: ruby
-      rvm: 2.2.3
+      rvm: 2.3.3
       jdk: oraclejdk8
       env: TASK=//rb:remote-ff-legacy-test
       addons:
         firefox: latest-esr
     - language: ruby
-      rvm: 2.2.3
+      rvm: 2.3.3
       jdk: oraclejdk8
       env: PHANTOMJS=1 TASK=//rb:remote-phantomjs-test
     - language: ruby
-      rvm: 2.2.3
+      rvm: 2.3.3
       jdk: oraclejdk8
       env: TASK=//rb:docs
   fast_finish: true
