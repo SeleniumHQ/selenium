@@ -35,8 +35,6 @@ class ExecutableFinder {
   private static final ImmutableSet<String> ENDINGS = Platform.getCurrent().is(WINDOWS) ?
       ImmutableSet.of("", ".cmd", ".exe", ".com", ".bat") : ImmutableSet.of("");
 
-  private static final Method JDK6_CAN_EXECUTE = findJdk6CanExecuteMethod();
-
   private final ImmutableSet.Builder<String> pathSegmentBuilder =
       new ImmutableSet.Builder<>();
 
@@ -105,27 +103,6 @@ class ExecutableFinder {
   }
 
   private static boolean canExecute(File file) {
-    if (!file.exists() || file.isDirectory()) {
-      return false;
-    }
-
-    if (JDK6_CAN_EXECUTE != null) {
-      try {
-        return (Boolean) JDK6_CAN_EXECUTE.invoke(file);
-      } catch (IllegalAccessException e) {
-        // Do nothing
-      } catch (InvocationTargetException e) {
-        // Still do nothing
-      }
-    }
-    return true;
-  }
-
-  private static Method findJdk6CanExecuteMethod() {
-    try {
-      return File.class.getMethod("canExecute");
-    } catch (NoSuchMethodException e) {
-      return null;
-    }
+    return file.exists() && !file.isDirectory() && file.canExecute();
   }
 }
