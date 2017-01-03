@@ -35,9 +35,12 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.internal.Executable;
 import org.openqa.selenium.io.CircularOutputStream;
 import org.openqa.selenium.io.FileHandler;
+import org.openqa.selenium.io.MultiOutputStream;
 import org.openqa.selenium.os.CommandLine;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
@@ -352,13 +355,15 @@ public class FirefoxBinary {
     }
   }
 
-  private OutputStream getDefaultOutputStream() {
+  private OutputStream getDefaultOutputStream() throws FileNotFoundException {
     String firefoxLogFile = System.getProperty(FirefoxDriver.SystemProperty.BROWSER_LOGFILE);
+    if (firefoxLogFile == null) {
+      return new CircularOutputStream();
+    }
     if ("/dev/stdout".equals(firefoxLogFile)) {
       return System.out;
     }
-    File logFile = firefoxLogFile == null ? null : new File(firefoxLogFile);
-    return new CircularOutputStream(logFile);
+    return new MultiOutputStream(new CircularOutputStream(), new FileOutputStream(firefoxLogFile));
   }
 
   /**
