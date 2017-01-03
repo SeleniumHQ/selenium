@@ -108,9 +108,6 @@ module Selenium
         end
 
         def create_session(desired_capabilities)
-          # TODO - Remove this when Mozilla fixes bug
-          desired_capabilities[:browser_name] = 'firefox' if desired_capabilities[:browser_name] == 'Firefox'
-
           resp = raw_execute :new_session, {}, {desiredCapabilities: desired_capabilities}
           @session_id = resp['sessionId']
           return W3CCapabilities.json_create resp['value'] if @session_id
