@@ -37,6 +37,7 @@ import org.openqa.selenium.io.CircularOutputStream;
 import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.io.MultiOutputStream;
 import org.openqa.selenium.os.CommandLine;
+import org.openqa.selenium.os.ExecutableFinder;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -430,13 +431,13 @@ public class FirefoxBinary {
       }
 
     } else if (current.is(UNIX)) {
-      String systemFirefoxBin = CommandLine.find("firefox-bin");
+      String systemFirefoxBin = new ExecutableFinder().find("firefox-bin");
       if (systemFirefoxBin != null) {
         executables.add(new Executable(new File(systemFirefoxBin)));
       }
     }
 
-    String systemFirefox = CommandLine.find("firefox");
+    String systemFirefox = new ExecutableFinder().find("firefox");
     if (systemFirefox != null) {
       Path firefoxPath = new File(systemFirefox).toPath();
       if (Files.isSymbolicLink(firefoxPath)) {
