@@ -96,10 +96,6 @@ module Selenium
           def json_create(data)
             data = data.dup
 
-            # Convert due to Remote Driver implementation
-            data['browserVersion'] = data.delete('version') if data.key? 'version'
-            data['platformName'] = data.delete('platform') if data.key? 'platform'
-
             caps = new
             caps.browser_name = data.delete('browserName')
             caps.browser_version = data.delete('browserVersion')
