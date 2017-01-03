@@ -17,7 +17,8 @@
 
 package org.openqa.selenium.firefox.internal;
 
-import com.google.common.base.Optional;
+import static org.openqa.selenium.firefox.FirefoxProfile.PORT_PREFERENCE;
+import static org.openqa.selenium.internal.SocketLock.DEFAULT_PORT;
 
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.ExtensionConnection;
@@ -26,6 +27,7 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.firefox.NotConnectedException;
 import org.openqa.selenium.internal.Lock;
+import org.openqa.selenium.io.CircularOutputStream;
 import org.openqa.selenium.io.MultiOutputStream;
 import org.openqa.selenium.logging.LocalLogs;
 import org.openqa.selenium.logging.NeedsLocalLogs;
@@ -33,7 +35,6 @@ import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.HttpCommandExecutor;
 import org.openqa.selenium.remote.Response;
-import org.openqa.selenium.io.CircularOutputStream;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -44,9 +45,7 @@ import java.net.Socket;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-
-import static org.openqa.selenium.firefox.FirefoxProfile.PORT_PREFERENCE;
-import static org.openqa.selenium.internal.SocketLock.DEFAULT_PORT;
+import java.util.Optional;
 
 public class NewProfileExtensionConnection implements ExtensionConnection, NeedsLocalLogs {
 
@@ -139,16 +138,16 @@ public class NewProfileExtensionConnection implements ExtensionConnection, Needs
     if (profile.containsWebDriverExtension()) {
       return;
     }
-    profile.addExtension("webdriver", loadCustomExtension().or(loadDefaultExtension()));
+    profile.addExtension("webdriver", loadCustomExtension().orElse(loadDefaultExtension()));
   }
 
   private static Optional<Extension> loadCustomExtension() {
     String xpiProperty = System.getProperty(FirefoxDriver.SystemProperty.DRIVER_XPI_PROPERTY);
     if (xpiProperty != null) {
       File xpi = new File(xpiProperty);
-      return Optional.of((Extension) new FileExtension(xpi));
+      return Optional.of(new FileExtension(xpi));
     }
-    return Optional.absent();
+    return Optional.empty();
   }
 
   private static Extension loadDefaultExtension() {
