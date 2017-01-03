@@ -16,10 +16,8 @@
 // under the License.
 package org.openqa.selenium.os;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import org.junit.Before;
@@ -27,7 +25,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import java.util.Arrays;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -64,69 +61,9 @@ public class WindowsUtilsUnitTest {
   }
 
   @Test
-  public void testWMIC() {
-    if (!WindowsUtils.thisIsWindows()) return;
-    if (!isXpOrHigher()) return;
-    assertFalse("wmic should be found", "wmic".equals(WindowsUtils.findWMIC()));
-  }
-
-  @Test
   public void testTaskKill() {
     if (!WindowsUtils.thisIsWindows()) return;
     if (!isXpOrHigher()) return;
     assertFalse("taskkill should be found", "taskkill".equals(WindowsUtils.findTaskKill()));
-  }
-
-  private void tryKill(String... cmd) throws Exception {
-    CommandLine cl = new CommandLine(cmd);
-    cl.executeAsync();
-    WindowsUtils.kill(cmd);
-    assertFalse("Should be able to kill " + Arrays.toString(cmd), cl.isRunning());
-  }
-
-  @Test
-  public void testKill() throws Exception {
-    if (!WindowsUtils.thisIsWindows()) return;
-    tryKill("sleep.exe", "10");
-    tryKill("sleep", "10");
-  }
-
-  @Test
-  public void testRegistry() {
-    if (!WindowsUtils.thisIsWindows()) return;
-    // TODO(danielwh): Uncomment or remove assert
-    String keyCurrentVersion =
-        "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\CurrentVersion";
-    // String keyProxyEnable =
-    // "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\ProxyEnable";
-    String keySeleniumFoo = "HKEY_CURRENT_USER\\Software\\Selenium\\RemoteControl\\foo";
-    assertTrue("Standard Windows reg key CurrentVersion doesn't exist",
-        WindowsUtils.doesRegistryValueExist(keyCurrentVersion));
-    System.out
-        .println("CurrentVersion: " + WindowsUtils.readStringRegistryValue(keyCurrentVersion));
-    // assertTrue("Standard Windows reg key ProxyEnable doesn't exist",
-    // WindowsUtils.doesRegistryValueExist(keyProxyEnable));
-    // System.out.println("ProxyEnable: " + WindowsUtils.readIntRegistryValue(keyProxyEnable));
-    WindowsUtils.writeStringRegistryValue(keySeleniumFoo, "bar");
-    assertEquals("Didn't set Foo string key correctly", "bar",
-        WindowsUtils.readStringRegistryValue(keySeleniumFoo));
-    WindowsUtils.writeStringRegistryValue(keySeleniumFoo, "baz");
-    assertEquals("Didn't modify Foo string key correctly", "baz",
-        WindowsUtils.readStringRegistryValue(keySeleniumFoo));
-    WindowsUtils.deleteRegistryValue(keySeleniumFoo);
-    assertFalse("Didn't delete Foo key correctly",
-        WindowsUtils.doesRegistryValueExist(keySeleniumFoo));
-    WindowsUtils.writeBooleanRegistryValue(keySeleniumFoo, true);
-    assertTrue("Didn't set Foo boolean key correctly",
-        WindowsUtils.readBooleanRegistryValue(keySeleniumFoo));
-    WindowsUtils.deleteRegistryValue(keySeleniumFoo);
-    assertFalse("Didn't delete Foo key correctly",
-        WindowsUtils.doesRegistryValueExist(keySeleniumFoo));
-  }
-
-  @Test
-  public void testVersion1() {
-    if (!WindowsUtils.thisIsWindows()) return;
-    System.out.println("Version 1: " + WindowsUtils.isRegExeVersion1());
   }
 }
