@@ -41,7 +41,7 @@ public class WindowsUtils {
    * @param name name of the process to kill
    */
   public static void killByName(String name) {
-    executeCommand("taskkill", "/f", "/t", "/im", name);
+    executeCommand(findTaskKill(), "/f", "/t", "/im", name);
   }
 
   /**
@@ -50,12 +50,16 @@ public class WindowsUtils {
    * @param processID PID to kill
    */
   public static void killPID(String processID) {
-    CommandLine cmd = new CommandLine("taskkill", "/f", "/t", "/pid", processID);
+    executeCommand(findTaskKill(), "/f", "/t", "/pid", processID);
+  }
+
+  private static String executeCommand(String commandName, String... args) {
+    CommandLine cmd = new CommandLine(commandName, args);
     cmd.execute();
 
     String output = cmd.getStdOut();
     if (cmd.getExitCode() == 0 || cmd.getExitCode() ==  128 || cmd.getExitCode() ==  255) {
-      return;
+      return output;
     }
     throw new RuntimeException("exec return code " + cmd.getExitCode() + ": " + output);
   }
@@ -165,17 +169,6 @@ public class WindowsUtils {
     LOG.warning("Couldn't find taskkill! Hope it's on the path...");
     taskkill = "taskkill";
     return taskkill;
-  }
-
-  private static String executeCommand(String commandName, String... args) {
-    CommandLine cmd = new CommandLine(commandName, args);
-    cmd.execute();
-
-    String output = cmd.getStdOut();
-    if (!cmd.isSuccessful()) {
-      throw new RuntimeException("exec return code " + cmd.getExitCode() + ": " + output);
-    }
-    return output;
   }
 
   /**
