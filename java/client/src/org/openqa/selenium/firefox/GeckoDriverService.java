@@ -102,7 +102,8 @@ public class GeckoDriverService extends DriverService {
       ImmutableList.Builder<String> argsBuilder = ImmutableList.builder();
       argsBuilder.add(String.format("--port=%d", getPort()));
       if (getLogFile() != null) {
-        argsBuilder.add(String.format("--log-file=\"%s\"", getLogFile().getAbsolutePath()));
+        // TODO: watch https://github.com/mozilla/geckodriver/issues/415
+        //argsBuilder.add(String.format("--log-file=\"%s\"", getLogFile().getAbsolutePath()));
       }
       try {
         argsBuilder.add("-b");
