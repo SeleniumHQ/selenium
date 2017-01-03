@@ -34,10 +34,14 @@ import org.openqa.selenium.os.ExecutableFinder;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Manages the life and death of a native executable driver server.
@@ -49,6 +53,40 @@ import java.util.concurrent.locks.ReentrantLock;
  * used to stop the server.
  */
 public class DriverService {
+
+  private static final Logger LOG = Logger.getLogger(DriverService.class.getName());
+
+  private static class LoggingOutputStream extends OutputStream {
+    private final StringBuffer buffer = new StringBuffer();
+    private final Logger logger;
+
+    public LoggingOutputStream(Logger logger) {
+      this.logger = logger;
+    }
+
+    @Override
+    public void write(int b) throws IOException {
+      buffer.append(b);
+    }
+
+    @Override
+    public void write(byte[] b, int off, int len) throws IOException {
+      throw new IllegalStateException("invalid operation");
+    }
+
+    @Override
+    public void flush() throws IOException {
+      logger.log(Level.INFO,buffer.toString());
+      buffer.delete(0, buffer.length());
+    }
+  }
+
+  private static class LoggerStream extends PrintStream {
+    public LoggerStream(Logger logger){
+      super(new LoggingOutputStream(logger));
+    }
+  }
+
   /**
    * The base URL for the managed server.
    */
@@ -160,7 +198,7 @@ public class DriverService {
       }
       process = new CommandLine(this.executable, args.toArray(new String[] {}));
       process.setEnvironmentVariables(environment);
-      process.copyOutputTo(System.err);
+      process.copyOutputTo(new LoggerStream(LOG));
       process.executeAsync();
 
       waitUntilAvailable();
