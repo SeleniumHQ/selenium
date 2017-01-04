@@ -22,8 +22,8 @@ import com.google.common.collect.Maps;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.FirefoxProfile;
-import org.openqa.selenium.io.FileHandler;
-import org.openqa.selenium.io.TemporaryFilesystem;
+import org.openqa.selenium.internal.io.FileHandler;
+import org.openqa.selenium.internal.io.TemporaryFilesystem;
 
 import java.io.BufferedReader;
 import java.io.File;

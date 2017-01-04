@@ -31,8 +31,8 @@ import org.apache.commons.exec.ExecuteWatchdog;
 import org.apache.commons.exec.Executor;
 import org.apache.commons.exec.PumpStreamHandler;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.io.CircularOutputStream;
-import org.openqa.selenium.io.MultiOutputStream;
+import org.openqa.selenium.internal.io.CircularOutputStream;
+import org.openqa.selenium.internal.io.MultiOutputStream;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;

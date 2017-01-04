@@ -18,10 +18,10 @@
 package org.openqa.selenium.firefox.internal;
 
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.io.FileHandler;
-import org.openqa.selenium.io.TemporaryFilesystem;
+import org.openqa.selenium.internal.io.FileHandler;
+import org.openqa.selenium.internal.io.TemporaryFilesystem;
 
-import org.openqa.selenium.io.Zip;
+import org.openqa.selenium.internal.io.Zip;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 

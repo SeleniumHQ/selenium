@@ -23,9 +23,9 @@ import org.openqa.selenium.interactions.IndividualMouseActionsTest;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
-import org.openqa.selenium.io.FileHandlerTest;
-import org.openqa.selenium.io.TemporaryFilesystemTest;
-import org.openqa.selenium.io.ZipTest;
+import org.openqa.selenium.internal.io.FileHandlerTest;
+import org.openqa.selenium.internal.io.TemporaryFilesystemTest;
+import org.openqa.selenium.internal.io.ZipTest;
 import org.openqa.selenium.logging.LoggingTest;
 import org.openqa.selenium.logging.PerformanceLoggingMockTest;
 import org.openqa.selenium.net.LinuxEphemeralPortRangeDetectorTest;
