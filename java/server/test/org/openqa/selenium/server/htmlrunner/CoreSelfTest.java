@@ -29,7 +29,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.environment.webserver.AppServer;
-import org.openqa.selenium.os.ExecutableFinder;
+import org.openqa.selenium.internal.os.ExecutableFinder;
 
 import java.io.IOException;
 import java.nio.file.Files;

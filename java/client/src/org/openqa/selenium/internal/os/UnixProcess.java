@@ -15,12 +15,12 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.os;
+package org.openqa.selenium.internal.os;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableMap.copyOf;
 import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.openqa.selenium.os.WindowsUtils.thisIsWindows;
+import static org.openqa.selenium.internal.os.WindowsUtils.thisIsWindows;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Maps;

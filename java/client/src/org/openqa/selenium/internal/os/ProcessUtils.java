@@ -16,7 +16,7 @@
 // under the License.
 
 
-package org.openqa.selenium.os;
+package org.openqa.selenium.internal.os;
 
 import org.openqa.selenium.Platform;
 
@@ -28,8 +28,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static org.openqa.selenium.Platform.WINDOWS;
-import static org.openqa.selenium.os.WindowsUtils.killPID;
-import static org.openqa.selenium.os.WindowsUtils.thisIsWindows;
+import static org.openqa.selenium.internal.os.WindowsUtils.killPID;
+import static org.openqa.selenium.internal.os.WindowsUtils.thisIsWindows;
 
 import com.sun.jna.Pointer;
 import com.sun.jna.platform.win32.WinNT;

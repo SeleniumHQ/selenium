@@ -16,14 +16,12 @@
 // under the License.
 
 
-package org.openqa.selenium.os;
+package org.openqa.selenium.internal.os;
 
 import static org.openqa.selenium.Platform.WINDOWS;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.util.Map;
 

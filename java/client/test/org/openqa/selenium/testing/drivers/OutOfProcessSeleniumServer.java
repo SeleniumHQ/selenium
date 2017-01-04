@@ -24,7 +24,7 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.net.UrlChecker;
-import org.openqa.selenium.os.CommandLine;
+import org.openqa.selenium.internal.os.CommandLine;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.testing.InProject;
 
