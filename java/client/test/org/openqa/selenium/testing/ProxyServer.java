@@ -25,8 +25,8 @@ import org.littleshoot.proxy.DefaultHttpProxyServer;
 import org.littleshoot.proxy.HttpRequestFilter;
 
 import org.openqa.selenium.Proxy;
-import org.openqa.selenium.net.NetworkUtils;
-import org.openqa.selenium.net.PortProber;
+import org.openqa.selenium.internal.net.NetworkUtils;
+import org.openqa.selenium.internal.net.PortProber;
 
 import java.util.List;
 

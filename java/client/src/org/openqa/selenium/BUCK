@@ -9,10 +9,10 @@ java_library(name = 'selenium',
     ':primitives',
     '//java/client/src/org/openqa/selenium/interactions:interactions',
     '//java/client/src/org/openqa/selenium/internal/io:io',
+    '//java/client/src/org/openqa/selenium/internal/net:net',
     '//java/client/src/org/openqa/selenium/internal/os:os',
     '//java/client/src/org/openqa/selenium/logging:api',
     '//java/client/src/org/openqa/selenium/logging:logging',
-    '//java/client/src/org/openqa/selenium/net:net',
     '//java/client/src/org/openqa/selenium/security:security',
   ],
   visibility = ['PUBLIC'],
@@ -80,7 +80,6 @@ java_library(name = 'beta',
   visibility = [
     '//java/client/src/org/openqa/selenium/logging:api',
     '//java/client/src/org/openqa/selenium/logging:logging',
-    '//java/client/src/org/openqa/selenium/os:os',
     '//java/client/src/org/openqa/selenium/security:security',
   ],
 )
@@ -120,8 +119,8 @@ java_library(name = 'exceptions',
   visibility = [
     '//java/client/src/org/openqa/selenium/interactions:exceptions',
     '//java/client/src/org/openqa/selenium/internal/io:io',
+    '//java/client/src/org/openqa/selenium/internal/net:net',
     '//java/client/src/org/openqa/selenium/internal/os:os',
-    '//java/client/src/org/openqa/selenium/net:net',
     '//java/client/test/org/openqa/selenium/testing:helpers',
   ],
 )
@@ -137,8 +136,8 @@ java_library(
   ],
   visibility = [
     '//java/client/src/org/openqa/selenium/internal/io:io',
+    '//java/client/src/org/openqa/selenium/internal/net:net',
     '//java/client/src/org/openqa/selenium/internal/os:os',
-    '//java/client/src/org/openqa/selenium/net:net',
   ],
 )
 

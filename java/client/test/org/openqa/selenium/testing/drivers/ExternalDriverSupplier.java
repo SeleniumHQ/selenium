@@ -26,7 +26,7 @@ import com.google.common.base.Throwables;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.net.UrlChecker;
+import org.openqa.selenium.internal.net.UrlChecker;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.LocalFileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;

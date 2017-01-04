@@ -14,22 +14,19 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-package org.openqa.selenium.net;
+package org.openqa.selenium.internal.net;
 
 import static java.lang.System.currentTimeMillis;
 import static org.hamcrest.Matchers.lessThan;
 import static org.junit.Assert.assertThat;
-import static org.openqa.selenium.net.PortProber.findFreePort;
+import static org.openqa.selenium.internal.net.PortProber.findFreePort;
 
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.seleniumhq.jetty9.server.Handler;
-import org.seleniumhq.jetty9.server.HttpConnection;
 import org.seleniumhq.jetty9.server.Request;
 import org.seleniumhq.jetty9.server.Server;
-import org.seleniumhq.jetty9.server.ServerConnector;
 import org.seleniumhq.jetty9.server.handler.AbstractHandler;
 
 import java.io.IOException;

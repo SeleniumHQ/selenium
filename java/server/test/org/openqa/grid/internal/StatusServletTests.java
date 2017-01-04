@@ -42,7 +42,7 @@ import org.openqa.grid.internal.mock.GridHelper;
 import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
 import org.openqa.grid.web.Hub;
 import org.openqa.grid.web.servlet.handler.RequestHandler;
-import org.openqa.selenium.net.PortProber;
+import org.openqa.selenium.internal.net.PortProber;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.internal.HttpClientFactory;

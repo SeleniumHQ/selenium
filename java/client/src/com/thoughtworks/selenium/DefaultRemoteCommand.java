@@ -17,7 +17,7 @@
 
 package com.thoughtworks.selenium;
 
-import org.openqa.selenium.net.Urls;
+import org.openqa.selenium.internal.net.Urls;
 
 /**
  * The default implementation of the RemoteCommand interface

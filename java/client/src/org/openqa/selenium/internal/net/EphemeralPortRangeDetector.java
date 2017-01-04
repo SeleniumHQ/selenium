@@ -15,16 +15,31 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.net;
+package org.openqa.selenium.internal.net;
 
-public class OlderWindowsVersionEphemeralPortDetector implements EphemeralPortRangeDetector
+/**
+ * Identifies the ephemeral port range for a given environment.
+ *
+ * When trying to locate a "random" free port, it is important
+ * to not allocate within the ephemeral range, since these
+ * can be allocated at any time, and the probability of
+ * race conditions increases as the number of recently used ports
+ * increases, something which is quite common when running the
+ * webdriver tests.
+ *
+ */
+public interface EphemeralPortRangeDetector
 {
-  public int getLowestEphemeralPort() {
-    // This could read the registry to get effective values
-    return 1025;
-  }
 
-  public int getHighestEphemeralPort() {
-    return 5000;
-  }
+  /**
+   * Returns the first port in the ephemeral range
+   * @return The first ephemeral port
+   */
+  public int getLowestEphemeralPort();
+  /**
+   * Returns the last port that could be searched for free ports
+   * @return The first port that may be free
+   */
+  public int getHighestEphemeralPort();
+
 }
