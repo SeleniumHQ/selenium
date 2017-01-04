@@ -137,7 +137,8 @@ public class PortProber {
       } catch (UnknownHostException e) {
         throw new RuntimeException(e);
       } catch (IOException e) {
-        throw new RuntimeException(e);
+        // We should also ignore this, BindException is an IOException
+        // Caused by: java.net.BindException: Address already in use (Bind failed)
       }
     }
 
