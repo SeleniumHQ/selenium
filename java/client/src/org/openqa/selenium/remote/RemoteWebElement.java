@@ -42,7 +42,7 @@ import org.openqa.selenium.internal.HasIdentity;
 import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.internal.WrapsDriver;
 import org.openqa.selenium.internal.WrapsElement;
-import org.openqa.selenium.io.Zip;
+import org.openqa.selenium.internal.io.Zip;
 
 import java.io.File;
 import java.io.IOException;

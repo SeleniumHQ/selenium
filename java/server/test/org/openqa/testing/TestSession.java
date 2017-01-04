@@ -19,7 +19,7 @@ package org.openqa.testing;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.io.TemporaryFilesystem;
+import org.openqa.selenium.internal.io.TemporaryFilesystem;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.server.KnownElements;
 import org.openqa.selenium.remote.server.Session;

@@ -21,7 +21,7 @@ import com.google.common.io.Closeables;
 import com.google.common.io.Resources;
 
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.io.FileHandler;
+import org.openqa.selenium.internal.io.FileHandler;
 
 import java.io.File;
 import java.io.FileOutputStream;

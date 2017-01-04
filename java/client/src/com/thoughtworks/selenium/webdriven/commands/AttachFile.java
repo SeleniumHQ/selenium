@@ -25,7 +25,7 @@ import com.thoughtworks.selenium.webdriven.SeleneseCommand;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.io.TemporaryFilesystem;
+import org.openqa.selenium.internal.io.TemporaryFilesystem;
 
 import java.io.File;
 import java.io.FileOutputStream;

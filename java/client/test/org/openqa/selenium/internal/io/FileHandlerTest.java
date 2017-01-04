@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.io;
+package org.openqa.selenium.internal.io;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;

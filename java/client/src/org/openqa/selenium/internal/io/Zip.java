@@ -16,7 +16,7 @@
 // under the License.
 
 
-package org.openqa.selenium.io;
+package org.openqa.selenium.internal.io;
 
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
