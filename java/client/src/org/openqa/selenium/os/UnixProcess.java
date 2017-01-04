@@ -177,15 +177,6 @@ class UnixProcess implements OsProcess {
   }
 
   public String getStdOut() {
-    if (isRunning()) {
-      throw new IllegalStateException(
-          "Cannot get output before executing command line: " + cl);
-    }
-    try {
-      inputOut.flush();
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
     return inputOut.toString();
   }
 
