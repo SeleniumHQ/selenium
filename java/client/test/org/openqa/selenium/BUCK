@@ -65,7 +65,7 @@ java_library(name = 'tests',
   [
     'Messages.java',
     'interactions/touch/TouchTestBase.java',
-    'net/StubNetworkInterfaceProvider.java',
+    'internal/net/StubNetworkInterfaceProvider.java',
   ],
   resources = [
     'messages.properties',
