@@ -326,11 +326,10 @@ public class FirefoxBinary {
    * @throws IOException IO exception reading from the output stream of the firefox process
    */
   public String getConsoleOutput() throws IOException {
-    if (process == null || stream == null) {
+    if (process == null) {
       return null;
     }
-
-    return stream instanceof CircularOutputStream ? stream.toString() : null;
+    return process.getStdOut();
   }
 
   public long getTimeout() {
@@ -358,13 +357,13 @@ public class FirefoxBinary {
 
   private OutputStream getDefaultOutputStream() throws FileNotFoundException {
     String firefoxLogFile = System.getProperty(FirefoxDriver.SystemProperty.BROWSER_LOGFILE);
-    if (firefoxLogFile == null) {
-      return new CircularOutputStream();
+    if (firefoxLogFile != null) {
+      if ("/dev/stdout".equals(firefoxLogFile)) {
+        return System.out;
+      }
+      return new FileOutputStream(firefoxLogFile);
     }
-    if ("/dev/stdout".equals(firefoxLogFile)) {
-      return System.out;
-    }
-    return new MultiOutputStream(new CircularOutputStream(), new FileOutputStream(firefoxLogFile));
+    return null;
   }
 
   /**
