@@ -56,11 +56,12 @@ java_library(name = 'tests',
     'html5/*.java',
     'internal/*Test.java',
     'internal/io/*Test.java',
+    'internal/os/*Test.java',
     'interactions/*.java',
     'interactions/touch/*Test.java',
     'logging/*.java',
     'net/*Test.java',
-    'os/*Test.java',]) +
+    ]) +
   [
     'Messages.java',
     'interactions/touch/TouchTestBase.java',

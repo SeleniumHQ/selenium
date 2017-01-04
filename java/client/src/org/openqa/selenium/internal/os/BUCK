@@ -2,7 +2,6 @@ java_library(
   name = 'os',
   srcs = glob(['*.java']),
   deps = [
-    '//java/client/src/org/openqa/selenium:beta',
     '//java/client/src/org/openqa/selenium:exceptions',
     '//java/client/src/org/openqa/selenium:platform',
     '//java/client/src/org/openqa/selenium/internal/io:io',

@@ -30,8 +30,8 @@ import org.openqa.selenium.logging.LoggingTest;
 import org.openqa.selenium.logging.PerformanceLoggingMockTest;
 import org.openqa.selenium.net.LinuxEphemeralPortRangeDetectorTest;
 import org.openqa.selenium.net.NetworkUtilsTest;
-import org.openqa.selenium.os.CommandLineTest;
-import org.openqa.selenium.os.WindowsUtilsUnitTest;
+import org.openqa.selenium.internal.os.CommandLineTest;
+import org.openqa.selenium.internal.os.WindowsUtilsUnitTest;
 import org.openqa.selenium.testing.drivers.IgnoreComparitorUnitTest;
 
 @RunWith(Suite.class)

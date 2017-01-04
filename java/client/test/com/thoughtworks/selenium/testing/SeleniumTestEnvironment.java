@@ -24,7 +24,7 @@ import org.openqa.selenium.environment.TestEnvironment;
 import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.net.UrlChecker;
-import org.openqa.selenium.os.CommandLine;
+import org.openqa.selenium.internal.os.CommandLine;
 
 import java.net.MalformedURLException;
 import java.net.URL;

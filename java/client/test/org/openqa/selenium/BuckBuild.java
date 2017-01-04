@@ -28,8 +28,8 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.hash.HashCode;
 import com.google.common.hash.Hashing;
 
-import org.openqa.selenium.os.CommandLine;
-import org.openqa.selenium.os.ExecutableFinder;
+import org.openqa.selenium.internal.os.CommandLine;
+import org.openqa.selenium.internal.os.ExecutableFinder;
 import org.openqa.selenium.testing.InProject;
 
 import java.io.IOException;

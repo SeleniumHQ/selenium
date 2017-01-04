@@ -7,7 +7,7 @@ java_library(
   ],
   visibility = [
     '//java/client/src/org/openqa/selenium:selenium',
-    '//java/client/src/org/openqa/selenium/os:os',
+    '//java/client/src/org/openqa/selenium/internal/os:os',
   ],
 )
 

@@ -15,15 +15,36 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.os;
+package org.openqa.selenium.internal.os;
 
-import com.sun.jna.Native;
-import com.sun.jna.win32.W32APIOptions;
+import java.io.File;
+import java.io.OutputStream;
+import java.util.Map;
 
-public interface Kernel32 extends com.sun.jna.platform.win32.Kernel32 {
-  Kernel32 INSTANCE = (Kernel32) Native.loadLibrary(
-      "kernel32", Kernel32.class, W32APIOptions.UNICODE_OPTIONS);
+interface OsProcess {
+  Map<String,String> getEnvironment();
 
-  int GetProcessId(HANDLE Process);
+  void setEnvironmentVariable(String name, String value);
 
+  void copyOutputTo(OutputStream out);
+
+  void setInput(String allInput);
+
+  void setWorkingDirectory(File workingDirectory);
+
+  void executeAsync();
+
+  void waitFor() throws InterruptedException;
+
+  void waitFor(long timeout) throws InterruptedException;
+
+  int destroy();
+
+  int getExitCode();
+
+  String getStdOut();
+
+  boolean isRunning();
+
+  void checkForError();
 }

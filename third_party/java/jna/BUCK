@@ -5,7 +5,7 @@ java_library(
     ':platform',
   ],
   visibility = [
-    '//java/client/src/org/openqa/selenium/os:os',
+    '//java/client/src/org/openqa/selenium/internal/os:os',
   ],
 )
 
