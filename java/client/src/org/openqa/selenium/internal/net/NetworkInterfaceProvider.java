@@ -15,16 +15,19 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.net;
+package org.openqa.selenium.internal.net;
 
 
-public class FixedIANAPortRange implements EphemeralPortRangeDetector
-{
-  public int getLowestEphemeralPort() {
-    return 49152;
-  }
+/**
+ * Provides information about the local network interfaces.
+ *
+ * Basically an abstraction created to allow stubbing of java.net.NetworkInterface, also soothes
+ * some of the jdk1.2 idioms from this interface into jdk1.5 idioms.
+ */
+public interface NetworkInterfaceProvider {
+  Iterable<NetworkInterface> getNetworkInterfaces();
 
-  public int getHighestEphemeralPort() {
-    return 65535;
-  }
+  // TODO: Remove this whole method
+  // This method should only return an iterface if it's named exactly "lo"
+  NetworkInterface getLoInterface();
 }

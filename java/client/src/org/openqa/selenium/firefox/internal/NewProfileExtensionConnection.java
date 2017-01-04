@@ -31,7 +31,7 @@ import org.openqa.selenium.internal.io.CircularOutputStream;
 import org.openqa.selenium.internal.io.MultiOutputStream;
 import org.openqa.selenium.logging.LocalLogs;
 import org.openqa.selenium.logging.NeedsLocalLogs;
-import org.openqa.selenium.net.NetworkUtils;
+import org.openqa.selenium.internal.net.NetworkUtils;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.HttpCommandExecutor;
 import org.openqa.selenium.remote.Response;

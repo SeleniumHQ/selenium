@@ -22,8 +22,8 @@ import com.google.common.collect.Lists;
 import org.openqa.selenium.BuckBuild;
 import org.openqa.selenium.environment.TestEnvironment;
 import org.openqa.selenium.environment.webserver.AppServer;
-import org.openqa.selenium.net.PortProber;
-import org.openqa.selenium.net.UrlChecker;
+import org.openqa.selenium.internal.net.PortProber;
+import org.openqa.selenium.internal.net.UrlChecker;
 import org.openqa.selenium.internal.os.CommandLine;
 
 import java.net.MalformedURLException;

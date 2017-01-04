@@ -16,7 +16,7 @@
 // under the License.
 
 
-package org.openqa.selenium.net;
+package org.openqa.selenium.internal.net;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.NANOSECONDS;

@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.net;
+package org.openqa.selenium.internal.net;
 
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
