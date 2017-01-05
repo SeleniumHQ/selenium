@@ -34,6 +34,7 @@ import org.openqa.selenium.os.ExecutableFinder;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
@@ -68,6 +69,7 @@ public class DriverService {
   private final String executable;
   private final ImmutableList<String> args;
   private final ImmutableMap<String, String> environment;
+  private OutputStream outputStream = System.err;
 
   /**
   *
@@ -160,7 +162,7 @@ public class DriverService {
       }
       process = new CommandLine(this.executable, args.toArray(new String[] {}));
       process.setEnvironmentVariables(environment);
-      process.copyOutputTo(System.err);
+      process.copyOutputTo(outputStream);
       process.executeAsync();
 
       waitUntilAvailable();
@@ -202,6 +204,10 @@ public class DriverService {
       process = null;
       lock.unlock();
     }
+  }
+
+  public void sendOutputTo(OutputStream outputStream) {
+    this.outputStream = outputStream;
   }
 
   public static abstract class Builder<DS extends DriverService, B extends Builder> {
