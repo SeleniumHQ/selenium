@@ -139,6 +139,10 @@ public class FirefoxOptions {
     return this;
   }
 
+  public FirefoxOptions getProfile() {
+    return this.profile;
+  }
+
   // Confusing API. Keeping package visible only
   FirefoxOptions setProfileSafely(FirefoxProfile profile) {
     Preconditions.checkState(
@@ -189,11 +193,6 @@ public class FirefoxOptions {
 
     Object priorProfile = capabilities.getCapability(PROFILE);
     if (priorProfile != null) {
-      if (!booleanPrefs.isEmpty() || !intPrefs.isEmpty() || !stringPrefs.isEmpty()) {
-        throw new IllegalStateException(
-          "Unable to determine if preferences set on this option " +
-          "are the same as the profile in the capabilities");
-      }
       if (!priorProfile.equals(profile)) {
         throw new IllegalStateException(
           "Profile has been set on both the capabilities and these options, but they're " +
