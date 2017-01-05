@@ -264,6 +264,14 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
     this.binary = binary;
   }
 
+  public FirefoxDriver(GeckoDriverService driverService) {
+    this(new DriverCommandExecutor(driverService), null, null);
+  }
+
+  public FirefoxDriver(GeckoDriverService driverService, Capabilities desiredCapabilities) {
+    this(new DriverCommandExecutor(driverService), desiredCapabilities, null);
+  }
+
   public FirefoxDriver(GeckoDriverService driverService, Capabilities desiredCapabilities,
       Capabilities requiredCapabilities) {
     this(new DriverCommandExecutor(driverService), desiredCapabilities, requiredCapabilities);
