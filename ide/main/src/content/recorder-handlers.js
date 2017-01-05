@@ -196,6 +196,7 @@ Recorder.addEventHandler('nodeRemoved', 'DOMNodeRemoved', function(event) {
 
 Recorder.prototype.domModified = function() {
     if (this.delayedRecorder) {
+        this.log.debug("Event was meaningful");
         var handler = this.delayedRecorder;
         this.delayedRecorder = null;
         handler.apply(this);
