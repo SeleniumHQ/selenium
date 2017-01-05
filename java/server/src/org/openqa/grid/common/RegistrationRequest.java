@@ -29,7 +29,7 @@ import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
 import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration.CollectionOfDesiredCapabilitiesDeSerializer;
 import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration.CollectionOfDesiredCapabilitiesSerializer;
 import org.openqa.selenium.Platform;
-import org.openqa.selenium.internal.net.NetworkUtils;
+import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.util.List;

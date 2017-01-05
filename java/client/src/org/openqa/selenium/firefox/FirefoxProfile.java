@@ -29,9 +29,9 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.internal.ClasspathExtension;
 import org.openqa.selenium.firefox.internal.Extension;
 import org.openqa.selenium.firefox.internal.FileExtension;
-import org.openqa.selenium.internal.io.FileHandler;
-import org.openqa.selenium.internal.io.TemporaryFilesystem;
-import org.openqa.selenium.internal.io.Zip;
+import org.openqa.selenium.io.FileHandler;
+import org.openqa.selenium.io.TemporaryFilesystem;
+import org.openqa.selenium.io.Zip;
 
 import java.io.File;
 import java.io.FileWriter;

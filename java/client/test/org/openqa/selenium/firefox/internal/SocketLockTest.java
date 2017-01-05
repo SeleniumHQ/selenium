@@ -26,7 +26,7 @@ import org.junit.runners.JUnit4;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.Lock;
 import org.openqa.selenium.internal.SocketLock;
-import org.openqa.selenium.internal.net.PortProber;
+import org.openqa.selenium.net.PortProber;
 
 import java.util.concurrent.TimeUnit;
 

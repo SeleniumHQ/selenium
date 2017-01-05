@@ -18,8 +18,8 @@
 package org.openqa.selenium.remote.server.handler;
 
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.internal.io.TemporaryFilesystem;
-import org.openqa.selenium.internal.io.Zip;
+import org.openqa.selenium.io.TemporaryFilesystem;
+import org.openqa.selenium.io.Zip;
 import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
 

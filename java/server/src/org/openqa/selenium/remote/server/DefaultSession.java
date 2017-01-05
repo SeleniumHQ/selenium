@@ -32,7 +32,7 @@ import org.openqa.selenium.html5.LocationContext;
 import org.openqa.selenium.html5.WebStorage;
 import org.openqa.selenium.interactions.HasTouchScreen;
 import org.openqa.selenium.internal.FindsByCssSelector;
-import org.openqa.selenium.internal.io.TemporaryFilesystem;
+import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.mobile.NetworkConnection;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;

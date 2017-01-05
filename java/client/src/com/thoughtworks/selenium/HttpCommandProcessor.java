@@ -20,7 +20,7 @@ package com.thoughtworks.selenium;
 import com.google.common.base.Charsets;
 import com.google.common.collect.Lists;
 
-import org.openqa.selenium.internal.net.Urls;
+import org.openqa.selenium.net.Urls;
 
 import java.io.BufferedWriter;
 import java.io.IOException;

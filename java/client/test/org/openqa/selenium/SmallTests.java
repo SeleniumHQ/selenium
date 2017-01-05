@@ -23,15 +23,15 @@ import org.openqa.selenium.interactions.IndividualMouseActionsTest;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
-import org.openqa.selenium.internal.io.FileHandlerTest;
-import org.openqa.selenium.internal.io.TemporaryFilesystemTest;
-import org.openqa.selenium.internal.io.ZipTest;
+import org.openqa.selenium.io.FileHandlerTest;
+import org.openqa.selenium.io.TemporaryFilesystemTest;
+import org.openqa.selenium.io.ZipTest;
 import org.openqa.selenium.logging.LoggingTest;
 import org.openqa.selenium.logging.PerformanceLoggingMockTest;
-import org.openqa.selenium.internal.net.LinuxEphemeralPortRangeDetectorTest;
-import org.openqa.selenium.internal.net.NetworkUtilsTest;
-import org.openqa.selenium.internal.os.CommandLineTest;
-import org.openqa.selenium.internal.os.WindowsUtilsUnitTest;
+import org.openqa.selenium.net.LinuxEphemeralPortRangeDetectorTest;
+import org.openqa.selenium.net.NetworkUtilsTest;
+import org.openqa.selenium.os.CommandLineTest;
+import org.openqa.selenium.os.WindowsUtilsUnitTest;
 import org.openqa.selenium.testing.drivers.IgnoreComparitorUnitTest;
 
 @RunWith(Suite.class)
