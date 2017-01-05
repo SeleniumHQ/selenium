@@ -20,6 +20,7 @@ package org.openqa.selenium.firefox.internal;
 
 import com.google.common.base.Preconditions;
 
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.FirefoxBinary;
 
@@ -27,6 +28,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Optional;
 
 /**
  * Wrapper around Firefox executable.
@@ -73,29 +76,58 @@ public class Executable {
   }
 
   private void loadApplicationIni() {
-    File applicationIni = new File(binary.getAbsoluteFile().getParentFile(), "application.ini");
-    try (BufferedReader reader = Files.newBufferedReader(applicationIni.toPath())) {
-      reader.lines().map(String::trim).forEach(line -> {
-        if (line.startsWith("Version=")) {
-          version = line.substring("Version=".length());
-        }
-      });
-    } catch (IOException e) {
-      throw new WebDriverException("Cannot get version info for of Firefox binary " + binary, e);
+    Optional<Path> applicationIni = getResource("application.ini");
+    if (applicationIni.isPresent()) {
+      try (BufferedReader reader = Files.newBufferedReader(applicationIni.get())) {
+        reader.lines().map(String::trim).forEach(line -> {
+          if (line.startsWith("Version=")) {
+            version = line.substring("Version=".length());
+          }
+        });
+      } catch (IOException e) {
+        throw new WebDriverException("Cannot get version info for of Firefox binary " + binary, e);
+      }
+      return;
     }
+
+    // Set version to something with a ridiculously high number.
+    version = "1000.0 unknown";
   }
 
   private void loadChannelPref() {
-    File channelPrefs = new File(binary.getAbsoluteFile().getParentFile(), "defaults/pref/channel-prefs.js");
-    try (BufferedReader reader = Files.newBufferedReader(channelPrefs.toPath())) {
-      reader.lines().map(String::trim).forEach(line -> {
-        if (line.startsWith("pref(")) {
-          channel = FirefoxBinary.Channel.fromString(
-            line.substring("pref(\"app.update.channel\", \"".length(), line.length()-"\");".length()));
-        }
-      });
-    } catch (IOException e) {
-      throw new WebDriverException("Cannot get channel info for Firefox binary " + binary, e);
+    Optional<Path> channelPrefs = getResource("defaults/pref/channel-prefs.js");
+
+    if (channelPrefs.isPresent()) {
+      try (BufferedReader reader = Files.newBufferedReader(channelPrefs.get())) {
+        reader.lines().map(String::trim).forEach(line -> {
+          if (line.startsWith("pref(")) {
+            channel = FirefoxBinary.Channel.fromString(
+                line.substring("pref(\"app.update.channel\", \"".length(),
+                               line.length() - "\");".length()));
+          }
+        });
+      } catch (IOException e) {
+        throw new WebDriverException("Cannot get channel info for Firefox binary " + binary, e);
+      }
+      return;
     }
+
+    // Pick a sane default
+    channel = FirefoxBinary.Channel.RELEASE;
+  }
+
+  private Optional<Path> getResource(String resourceName) {
+    Path binaryLocation = binary.getAbsoluteFile().toPath();
+    Path discovered;
+    if (Platform.getCurrent().is(Platform.MAC)) {
+      discovered = binaryLocation.getParent().getParent().resolve("Resources").resolve(resourceName);
+    } else {
+      discovered = binaryLocation.getParent().resolve(resourceName);
+    }
+
+    if (Files.exists(discovered)) {
+      return Optional.of(discovered);
+    }
+    return Optional.empty();
   }
 }
