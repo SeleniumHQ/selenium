@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.firefox;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 import com.google.common.collect.ImmutableList;
@@ -78,17 +79,32 @@ public class GeckoDriverService extends DriverService {
   public static class Builder extends DriverService.Builder<
     GeckoDriverService, GeckoDriverService.Builder> {
 
-    private FirefoxBinary binary;
+    private FirefoxBinary firefoxBinary;
 
     public Builder() {
-      this(new FirefoxBinary());
     }
 
     /**
      * @param binary - A custom location where the Firefox binary is available.
+     *
+     * @deprecated Use method usingFirefoxBinary instead
      */
+    @Deprecated
     public Builder(FirefoxBinary binary) {
-      this.binary = binary;
+      this.firefoxBinary = binary;
+    }
+
+    /**
+     * Sets which browser executable the builder will use.
+     *
+     * @param firefoxBinary The browser executable to use.
+     * @return A self reference.
+     */
+    public Builder usingFirefoxBinary(FirefoxBinary firefoxBinary) {
+      checkNotNull(firefoxBinary);
+      checkExecutable(firefoxBinary.getFile());
+      this.firefoxBinary = firefoxBinary;
+      return this;
     }
 
     @Override
@@ -103,13 +119,10 @@ public class GeckoDriverService extends DriverService {
     protected ImmutableList<String> createArgs() {
       ImmutableList.Builder<String> argsBuilder = ImmutableList.builder();
       argsBuilder.add(String.format("--port=%d", getPort()));
-      try {
+      if (firefoxBinary != null) {
         argsBuilder.add("-b");
-        argsBuilder.add(binary.getPath());
-      } catch (WebDriverException e) {
-        // Unable to find Firefox. GeckoDriver will be responsible for finding
-        // Firefox on the PATH or via a capability.
-      }
+        argsBuilder.add(firefoxBinary.getPath());
+      } // else GeckoDriver will be responsible for finding Firefox on the PATH or via a capability.
       return argsBuilder.build();
     }
 
