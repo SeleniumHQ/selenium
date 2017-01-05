@@ -1,6 +1,11 @@
 js_library(name = 'lib',
   srcs = glob(['*.js']),
-  deps = [ '//javascript/atoms:all_js' ])
+  deps = [
+    '//javascript/atoms:dom',
+    '//javascript/atoms:locators',
+    '//third_party/closure:closure',
+  ],
+)
 
 js_fragment(name = 'get_location_in_view',
   module = 'webdriver.chrome',
@@ -27,7 +32,7 @@ js_fragment(name = 'is_element_displayed',
   function = 'webdriver.chrome.isElementDisplayed',
   deps = [
     ':lib',
-    '//javascript/atoms/fragments:is_displayed',
+    '//javascript/atoms/fragments:is-displayed',
     ])
 
 js_fragment(name = 'find_element',
