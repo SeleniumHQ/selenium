@@ -27,5 +27,6 @@ js_fragment(name = 'is-displayed',
   ],
   visibility = [
     '//java/client/src/org/openqa/selenium/remote:is-displayed',
+    '//javascript/chrome-driver:is_element_displayed',
   ],
 )
