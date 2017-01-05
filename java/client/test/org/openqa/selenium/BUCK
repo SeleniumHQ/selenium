@@ -55,17 +55,16 @@ java_library(name = 'tests',
     '*Test.java',
     'html5/*.java',
     'internal/*Test.java',
-    'internal/io/*Test.java',
-    'internal/os/*Test.java',
     'interactions/*.java',
     'interactions/touch/*Test.java',
+    'io/*Test.java',
     'logging/*.java',
     'net/*Test.java',
-    ]) +
+    'os/*Test.java',]) +
   [
     'Messages.java',
     'interactions/touch/TouchTestBase.java',
-    'internal/net/StubNetworkInterfaceProvider.java',
+    'net/StubNetworkInterfaceProvider.java',
   ],
   resources = [
     'messages.properties',

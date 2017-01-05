@@ -20,7 +20,7 @@ package org.openqa.selenium.safari;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
 
-import org.openqa.selenium.internal.net.PortProber;
+import org.openqa.selenium.net.PortProber;
 
 import org.jboss.netty.bootstrap.ServerBootstrap;
 import org.jboss.netty.channel.Channel;

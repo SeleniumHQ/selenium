@@ -114,7 +114,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 
 import org.openqa.selenium.UnsupportedCommandException;
-import org.openqa.selenium.internal.net.Urls;
+import org.openqa.selenium.net.Urls;
 import org.openqa.selenium.remote.BeanToJsonConverter;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.CommandCodec;
@@ -123,6 +123,7 @@ import org.openqa.selenium.remote.SessionId;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**

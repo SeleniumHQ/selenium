@@ -27,10 +27,10 @@ import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.internal.net.PortProber;
-import org.openqa.selenium.internal.net.UrlChecker;
-import org.openqa.selenium.internal.os.CommandLine;
-import org.openqa.selenium.internal.os.ExecutableFinder;
+import org.openqa.selenium.net.PortProber;
+import org.openqa.selenium.net.UrlChecker;
+import org.openqa.selenium.os.CommandLine;
+import org.openqa.selenium.os.ExecutableFinder;
 
 import java.io.File;
 import java.io.IOException;

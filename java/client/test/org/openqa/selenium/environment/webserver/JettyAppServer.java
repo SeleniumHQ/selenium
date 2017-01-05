@@ -17,12 +17,12 @@
 
 package org.openqa.selenium.environment.webserver;
 
-import static org.openqa.selenium.internal.net.PortProber.findFreePort;
+import static org.openqa.selenium.net.PortProber.findFreePort;
 import static org.openqa.selenium.testing.InProject.locate;
 
 import com.google.common.collect.ImmutableList;
 
-import org.openqa.selenium.internal.net.NetworkUtils;
+import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.testing.InProject;
 import org.seleniumhq.jetty9.http.HttpVersion;
 import org.seleniumhq.jetty9.http.MimeTypes;
