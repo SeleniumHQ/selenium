@@ -27,6 +27,7 @@ import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.service.DriverService;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 
@@ -78,6 +79,7 @@ public class GeckoDriverService extends DriverService {
     GeckoDriverService, GeckoDriverService.Builder> {
 
     private FirefoxBinary binary;
+
     public Builder() {
       this(new FirefoxBinary());
     }
@@ -101,10 +103,6 @@ public class GeckoDriverService extends DriverService {
     protected ImmutableList<String> createArgs() {
       ImmutableList.Builder<String> argsBuilder = ImmutableList.builder();
       argsBuilder.add(String.format("--port=%d", getPort()));
-      if (getLogFile() != null) {
-        // TODO: watch https://github.com/mozilla/geckodriver/issues/415
-        //argsBuilder.add(String.format("--log-file=\"%s\"", getLogFile().getAbsolutePath()));
-      }
       try {
         argsBuilder.add("-b");
         argsBuilder.add(binary.getPath());
@@ -117,10 +115,23 @@ public class GeckoDriverService extends DriverService {
 
     @Override
     protected GeckoDriverService createDriverService(File exe, int port,
-                                                                ImmutableList<String> args,
-                                                                ImmutableMap<String, String> environment) {
+                                                     ImmutableList<String> args,
+                                                     ImmutableMap<String, String> environment) {
       try {
-        return new GeckoDriverService(exe, port, args, environment);
+        GeckoDriverService service = new GeckoDriverService(exe, port, args, environment);
+        if (getLogFile() !=  null) {
+          service.sendOutputTo(new FileOutputStream(getLogFile()));
+        } else {
+          String firefoxLogFile = System.getProperty(FirefoxDriver.SystemProperty.BROWSER_LOGFILE);
+          if (firefoxLogFile != null) {
+            if ("/dev/stdout".equals(firefoxLogFile)) {
+              service.sendOutputTo(System.out);
+            }
+            service.sendOutputTo(new FileOutputStream(firefoxLogFile));
+          }
+
+        }
+        return service;
       } catch (IOException e) {
         throw new WebDriverException(e);
       }
