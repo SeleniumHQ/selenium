@@ -139,7 +139,7 @@ public class FirefoxOptions {
     return this;
   }
 
-  public FirefoxOptions getProfile() {
+  public FirefoxProfile getProfile() {
     return this.profile;
   }
 
