@@ -20,7 +20,10 @@ package org.openqa.selenium.interactions;
 
 /**
  * Interface implemented by each driver that implements performing action chains.
+ *
+ * @deprecated Not being replaced.
  */
+@Deprecated
 public interface CanPerformActionChain {
   ActionChainExecutor getActionChainExecutor();
 }

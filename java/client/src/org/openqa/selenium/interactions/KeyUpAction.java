@@ -44,6 +44,6 @@ public class KeyUpAction extends SingleKeyAction implements Action {
   }
 
   public List<Object> asList() {
-    return Arrays.<Object>asList("keyUp", key);
+    return Arrays.asList("keyUp", key);
   }
 }
