@@ -41,7 +41,6 @@ public class MarionetteTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(MARIONETTE)
   public void shouldUseFirefoxOptions() throws InterruptedException {
     DesiredCapabilities caps = new FirefoxOptions()
       .addPreference("browser.startup.page", 1)
@@ -53,5 +52,37 @@ public class MarionetteTest extends JUnit4TestBase {
     wait.until(
       input -> "XHTML Test Page".equals(
         ((JavascriptExecutor) driver).executeScript("return document.title")));
+  }
+
+  @Test
+  public void canSetProfileInFirefoxOptions() throws InterruptedException {
+    FirefoxProfile profile = new FirefoxProfile();
+    profile.setPreference("browser.startup.page", 1);
+    profile.setPreference("browser.startup.homepage", pages.xhtmlTestPage);
+
+    DesiredCapabilities caps = new FirefoxOptions().setProfile(profile)
+        .addTo(DesiredCapabilities.firefox());
+
+    driver = new FirefoxDriver(caps);
+
+    wait.until(
+        input -> "XHTML Test Page".equals(
+            ((JavascriptExecutor) driver).executeScript("return document.title")));
+  }
+
+  @Test
+  public void canSetProfileInCapabilities() throws InterruptedException {
+    FirefoxProfile profile = new FirefoxProfile();
+    profile.setPreference("browser.startup.page", 1);
+    profile.setPreference("browser.startup.homepage", pages.xhtmlTestPage);
+
+    DesiredCapabilities caps = new DesiredCapabilities();
+    caps.setCapability(FirefoxDriver.PROFILE, profile);
+
+    driver = new FirefoxDriver(caps);
+
+    wait.until(
+        input -> "XHTML Test Page".equals(
+            ((JavascriptExecutor) driver).executeScript("return document.title")));
   }
 }
