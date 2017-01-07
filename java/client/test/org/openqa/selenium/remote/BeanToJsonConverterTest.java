@@ -332,7 +332,7 @@ public class BeanToJsonConverterTest {
   }
 
   @Test
-  public void testShouldConverUnhandledAlertException() {
+  public void testShouldConvertUnhandledAlertException() {
     RuntimeException clientError = new UnhandledAlertException("unhandled alert", "cheese!");
     Map<?, ?> obj = new Gson()
         .fromJson(new StringReader(new BeanToJsonConverter().convert(clientError)), Map.class);
