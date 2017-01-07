@@ -128,7 +128,7 @@ class ActionSequence {
   }
 
   /**
-   * Moves the mouse.  The location to move to may be specified in terms of the
+   * Moves the mouse. The location to move to may be specified in terms of the
    * mouse's current location, an offset relative to the top-left corner of an
    * element, or an element (in which case the middle of the element is used).
    *
