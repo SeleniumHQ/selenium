@@ -160,6 +160,8 @@ class Service(object):
                     except AttributeError:
                         pass
                 self.process.terminate()
+                if platform.system() != 'Windows':
+                    os.waitpid(-1 * self.process.pid, os.WNOHANG)
                 self.process.kill()
                 self.process.wait()
                 self.process = None
