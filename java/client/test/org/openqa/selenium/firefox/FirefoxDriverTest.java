@@ -40,7 +40,6 @@ import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.testing.NeedsFreshDriver;
 import org.openqa.selenium.testing.NoDriverAfterTest;
-import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.ParallelTestRunner;
 import org.openqa.selenium.ParallelTestRunner.Worker;
 import org.openqa.selenium.WebDriver;
@@ -69,19 +68,6 @@ import java.util.Random;
 @NeedsLocalEnvironment(reason = "Requires local browser launching environment")
 @Ignore(MARIONETTE)
 public class FirefoxDriverTest extends JUnit4TestBase {
-
-  @Test
-  public void shouldContinueToWorkIfUnableToFindElementById() {
-    driver.get(pages.formPage);
-    try {
-      driver.findElement(By.id("notThere"));
-      fail("Should not be able to select element by id here");
-    } catch (NoSuchElementException e) {
-      // This is expected
-    }
-    // Is this works, then we're golden
-    driver.get(pages.xhtmlTestPage);
-  }
 
   private static class ConnectionCapturingDriver extends FirefoxDriver {
     public ExtensionConnection keptConnection;
