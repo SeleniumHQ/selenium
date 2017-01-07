@@ -24,6 +24,7 @@ import static org.openqa.selenium.remote.CapabilityType.PROXY;
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_WEB_STORAGE;
 import static org.openqa.selenium.remote.CapabilityType.VERSION;
 
+import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
@@ -126,17 +127,28 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
   }
 
   public FirefoxDriver(Capabilities desiredCapabilities) {
-    this(getBinary(desiredCapabilities), extractProfile(desiredCapabilities, null),
-        desiredCapabilities);
+    this(getBinary(desiredCapabilities), null, desiredCapabilities);
   }
 
   public FirefoxDriver(Capabilities desiredCapabilities, Capabilities requiredCapabilities) {
-    this(getBinary(desiredCapabilities), extractProfile(desiredCapabilities, requiredCapabilities),
-        desiredCapabilities, requiredCapabilities);
+    this(getBinary(desiredCapabilities), null, desiredCapabilities, requiredCapabilities);
+  }
+
+  private static FirefoxProfile prepareProfile(FirefoxProfile profile,
+                                               Capabilities desiredCapabilities,
+                                               Capabilities requiredCapabilities) {
+    if (profile == null) {
+      profile = extractProfile(desiredCapabilities, requiredCapabilities);
+    }
+
+    populateProfile(profile, desiredCapabilities);
+    populateProfile(profile, requiredCapabilities);
+
+    return profile;
   }
 
   private static FirefoxProfile extractProfile(Capabilities desiredCapabilities,
-      Capabilities requiredCapabilities) {
+                                               Capabilities requiredCapabilities) {
 
     FirefoxProfile profile = null;
     Object raw = null;
@@ -157,18 +169,50 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
         }
       }
     }
-    profile = getProfile(profile);
-
-    populateProfile(profile, desiredCapabilities);
-    populateProfile(profile, requiredCapabilities);
-
-    return profile;
+    return getProfile(profile);
   }
 
-  static Capabilities populateProfile(FirefoxProfile profile, Capabilities capabilities) {
-    if (capabilities == null) {
-      return capabilities;
+  private static Capabilities addProfileTo(Capabilities capabilities, FirefoxProfile profile) {
+    DesiredCapabilities toReturn =
+        capabilities == null ? new DesiredCapabilities() :
+        capabilities instanceof DesiredCapabilities ? (DesiredCapabilities) capabilities :
+        new DesiredCapabilities(capabilities);
+
+    // legacy driver
+    toReturn.setCapability(FirefoxDriver.PROFILE, profile);
+
+    // geckodriver
+    FirefoxOptions options = new FirefoxOptions();
+    if (capabilities != null) {
+      Object rawOptions = capabilities.getCapability(FIREFOX_OPTIONS);
+      if (rawOptions != null) {
+        if (rawOptions instanceof Map) {
+          try {
+            @SuppressWarnings("unchecked")
+            Map<String, Object> map = (Map<String, Object>) rawOptions;
+            rawOptions = FirefoxOptions.fromJsonMap(map);
+          } catch (IOException e) {
+            throw new WebDriverException(e);
+          }
+        }
+        if (rawOptions != null && !(rawOptions instanceof FirefoxOptions)) {
+          throw new WebDriverException("Firefox option was set, but is not a FirefoxOption: " + rawOptions);
+        }
+        options = (FirefoxOptions) rawOptions;
+      }
     }
+    options.setProfileSafely(profile);
+    toReturn.setCapability(FIREFOX_OPTIONS, options);
+
+    return toReturn;
+  }
+
+  private static void populateProfile(FirefoxProfile profile, Capabilities capabilities) {
+    Preconditions.checkNotNull(profile);
+    if (capabilities == null) {
+      return;
+    }
+
     if (capabilities.getCapability(SUPPORTS_WEB_STORAGE) != null) {
       Boolean supportsWebStorage = (Boolean) capabilities.getCapability(SUPPORTS_WEB_STORAGE);
       profile.setPreference("dom.storage.enabled", supportsWebStorage.booleanValue());
@@ -185,31 +229,6 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
             logsPrefs.getLevel(logtype).intValue());
       }
     }
-
-    Object rawOptions = capabilities.getCapability(FIREFOX_OPTIONS);
-    if (rawOptions instanceof Map) {
-      try {
-        @SuppressWarnings("unchecked")
-        Map<String, Object> map = (Map<String, Object>) rawOptions;
-        rawOptions = FirefoxOptions.fromJsonMap(map);
-      } catch (IOException e) {
-        throw new WebDriverException(e);
-      }
-    }
-    if (rawOptions != null && !(rawOptions instanceof FirefoxOptions)) {
-      throw new WebDriverException("Firefox option was set, but is not a FirefoxOption: " + rawOptions);
-    }
-    FirefoxOptions options = (FirefoxOptions) rawOptions;
-    if (options == null) {
-      options = new FirefoxOptions();
-    }
-    options.setProfileSafely(profile);
-
-    DesiredCapabilities toReturn = capabilities instanceof DesiredCapabilities ?
-                                   (DesiredCapabilities) capabilities :
-                                   new DesiredCapabilities(capabilities);
-    toReturn.setCapability(FIREFOX_OPTIONS, options);
-    return toReturn;
   }
 
   private static FirefoxBinary getBinary(Capabilities capabilities) {
@@ -250,8 +269,9 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
 
   public FirefoxDriver(FirefoxBinary binary, FirefoxProfile profile,
       Capabilities desiredCapabilities, Capabilities requiredCapabilities) {
-    this(createCommandExecutor(desiredCapabilities, binary, profile),
-         populateProfile(profile, desiredCapabilities), requiredCapabilities);
+    this(createCommandExecutor(desiredCapabilities, requiredCapabilities, binary, profile),
+         addProfileTo(desiredCapabilities, prepareProfile(profile, desiredCapabilities, requiredCapabilities)),
+         requiredCapabilities);
     this.binary = binary;
   }
 
@@ -275,10 +295,14 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
           dropCapabilities(requiredCapabilities));
   }
 
-  private static final CommandExecutor createCommandExecutor(Capabilities desiredCapabilities,
+  private static CommandExecutor createCommandExecutor(Capabilities desiredCapabilities,
+                                                             Capabilities requiredCapabilities,
                                                              FirefoxBinary binary,
                                                              FirefoxProfile profile) {
     if (isLegacy(desiredCapabilities)) {
+      if (profile == null) {
+        profile = extractProfile(desiredCapabilities, requiredCapabilities);
+      }
       return new LazyCommandExecutor(binary, profile);
     }
     GeckoDriverService.Builder builder = new GeckoDriverService.Builder().usingPort(0);

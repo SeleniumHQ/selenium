@@ -39,6 +39,13 @@ public class MarionetteTest extends JUnit4TestBase {
   }
 
   @Test
+  public void canStartDriverWithNoParameters() throws InterruptedException {
+    driver = new FirefoxDriver();
+    driver.get(pages.xhtmlTestPage);
+    wait.until($ -> "XHTML Test Page".equals(driver.getTitle()));
+  }
+
+  @Test
   public void shouldUseFirefoxOptions() throws InterruptedException {
     DesiredCapabilities caps = new FirefoxOptions()
       .addPreference("browser.startup.page", 1)
