@@ -129,8 +129,6 @@ public interface DriverCommand {
   String SET_SCREEN_ROTATION = "setScreenRotation";
   String GET_SCREEN_ROTATION = "getScreenRotation";
 
-  String ACTION_CHAIN = "actionChain";
-
   // These belong to the Advanced user interactions - an element is
   // optional for these commands.
   String CLICK = "mouseClick";

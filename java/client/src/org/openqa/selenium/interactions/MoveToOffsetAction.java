@@ -17,16 +17,17 @@
 
 package org.openqa.selenium.interactions;
 
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.internal.MouseAction;
 import org.openqa.selenium.internal.Locatable;
-
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * Move the mouse to a location within the element provided. The coordinates provided specify the
  * offset from the top-left corner of the element.
+ *
+ * @deprecated Use {@link Actions#moveToElement(WebElement, int, int)}
  */
+@Deprecated
 public class MoveToOffsetAction extends MouseAction implements Action {
   private final int xOffset;
   private final int yOffset;
@@ -39,9 +40,5 @@ public class MoveToOffsetAction extends MouseAction implements Action {
 
   public void perform() {
     mouse.mouseMove(getActionLocation(), xOffset, yOffset);
-  }
-
-  public List<Object> asList() {
-    return Arrays.asList("move", getTargetId(), xOffset, yOffset);
   }
 }

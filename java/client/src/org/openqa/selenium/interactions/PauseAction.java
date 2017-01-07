@@ -17,9 +17,6 @@
 
 package org.openqa.selenium.interactions;
 
-import java.util.Arrays;
-import java.util.List;
-
 /**
  * Takes a pause.
  *
@@ -39,9 +36,5 @@ public class PauseAction implements Action {
       Thread.sleep(pause);
     } catch (InterruptedException e) {
     }
-  }
-
-  public List<Object> asList() {
-    return Arrays.asList("wait", pause);
   }
 }

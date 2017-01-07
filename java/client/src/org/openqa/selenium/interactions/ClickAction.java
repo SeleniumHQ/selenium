@@ -17,16 +17,15 @@
 
 package org.openqa.selenium.interactions;
 
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.internal.MouseAction;
 import org.openqa.selenium.internal.Locatable;
 
-import java.util.Arrays;
-import java.util.List;
-
 /**
- * clicks an element.
- *
+ * Clicks an element.
+ * @deprecated Use {@link Actions#click(WebElement)}
  */
+@Deprecated
 public class ClickAction extends MouseAction implements Action {
   public ClickAction(Mouse mouse, Locatable locationProvider) {
     super(mouse, locationProvider);
@@ -35,9 +34,5 @@ public class ClickAction extends MouseAction implements Action {
   public void perform() {
     moveToLocation();
     mouse.click(getActionLocation());
-  }
-
-  public List<Object> asList() {
-    return Arrays.asList("click", getTargetId(), Button.LEFT, 1);
   }
 }

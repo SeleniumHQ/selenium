@@ -18,16 +18,16 @@
 package org.openqa.selenium.interactions;
 
 import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.internal.SingleKeyAction;
 import org.openqa.selenium.internal.Locatable;
-
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * Emulates key press only, without the release.
  *
+ * @deprecated Use {@link Actions#keyDown(WebElement, Keys)}
  */
+@Deprecated
 public class KeyDownAction extends SingleKeyAction implements Action {
   public KeyDownAction(Keyboard keyboard, Mouse mouse, Locatable locationProvider, Keys key) {
     super(keyboard, mouse, locationProvider, key);
@@ -41,9 +41,5 @@ public class KeyDownAction extends SingleKeyAction implements Action {
     focusOnElement();
 
     keyboard.pressKey(key);
-  }
-
-  public List<Object> asList() {
-    return Arrays.asList("keyDown", key);
   }
 }

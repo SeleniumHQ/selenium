@@ -17,19 +17,17 @@
 
 package org.openqa.selenium.interactions;
 
-import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.internal.KeysRelatedAction;
-import org.openqa.selenium.interactions.internal.MultiAction;
 import org.openqa.selenium.internal.Locatable;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Sending a sequence of keys to an element.
  *
+ * @deprecated Use {@link Actions#sendKeys(WebElement, CharSequence...)}
  */
-public class SendKeysAction extends KeysRelatedAction implements Action, MultiAction {
+@Deprecated
+public class SendKeysAction extends KeysRelatedAction implements Action {
   private final CharSequence[] keysToSend;
 
   public SendKeysAction(Keyboard keyboard, Mouse mouse, Locatable locationProvider,
@@ -46,17 +44,5 @@ public class SendKeysAction extends KeysRelatedAction implements Action, MultiAc
     focusOnElement();
 
     keyboard.sendKeys(keysToSend);
-  }
-
-  public List<Action> getActions() {
-    List<Action> actions = new ArrayList<>();
-    for (CharSequence chars : keysToSend) {
-      for (int i = 0; i < chars.length(); i++) {
-        Keys key = Keys.getKeyFromUnicode(chars.charAt(i));
-        actions.add(new KeyDownAction(keyboard, mouse, where, key));
-        actions.add(new KeyUpAction(keyboard, mouse, where, key));
-      }
-    }
-    return actions;
   }
 }

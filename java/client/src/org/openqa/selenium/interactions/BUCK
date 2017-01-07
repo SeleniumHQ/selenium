@@ -1,8 +1,6 @@
 java_library(name = 'interactions',
   srcs = [
-    'ActionChainExecutor.java',
     'Actions.java',
-    'CanPerformActionChain.java',
   ] + glob(['*Action.java', 'internal/*Action.java', 'touch/*.java'], excludes = ['Action.java']),
   exported_deps = [
     ':core',
