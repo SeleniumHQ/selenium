@@ -21,7 +21,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static org.openqa.selenium.firefox.FirefoxDriver.BINARY;
 import static org.openqa.selenium.firefox.FirefoxDriver.PROFILE;
 
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -139,9 +138,6 @@ public class FirefoxOptions {
 
   // Confusing API. Keeping package visible only
   FirefoxOptions setProfileSafely(FirefoxProfile profile) {
-    Preconditions.checkState(
-      this.profile == null || this.profile.equals(profile),
-      "Profile passed to options is different from existing profile that has been set.");
     if (profile == null) {
       return this;
     }
