@@ -27,7 +27,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
@@ -66,11 +65,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
 
 @NeedsLocalEnvironment(reason = "Requires local browser launching environment")
 @Ignore(MARIONETTE)
 public class FirefoxDriverTest extends JUnit4TestBase {
+
   @Test
   public void shouldContinueToWorkIfUnableToFindElementById() {
     driver.get(pages.formPage);
@@ -252,122 +251,12 @@ public class FirefoxDriverTest extends JUnit4TestBase {
     }
   }
 
-  private static boolean platformHasNativeEvents() {
-    return FirefoxDriver.DEFAULT_ENABLE_NATIVE_EVENTS;
-  }
-
   private void sleepBecauseWindowsTakeTimeToOpen() {
     try {
       sleep(1000);
     } catch (InterruptedException e) {
       fail("Interrupted");
     }
-  }
-
-  @NeedsFreshDriver
-  @NoDriverAfterTest
-  @Test
-  public void focusRemainsInOriginalWindowWhenOpeningNewWindow() {
-    assumeTrue(platformHasNativeEvents());
-
-    // Scenario: Open a new window, make sure the current window still gets
-    // native events (keyboard events in this case).
-
-    driver.get(pages.xhtmlTestPage);
-
-    driver.findElement(By.name("windowOne")).click();
-
-    sleepBecauseWindowsTakeTimeToOpen();
-
-    driver.get(pages.javascriptPage);
-
-    WebElement keyReporter = driver.findElement(By.id("keyReporter"));
-    keyReporter.sendKeys("ABC DEF");
-
-    assertThat(keyReporter.getAttribute("value"), is("ABC DEF"));
-  }
-
-  @NeedsFreshDriver
-  @NoDriverAfterTest
-  @Test
-  public void switchingWindowSwitchesFocus() {
-    assumeTrue(platformHasNativeEvents());
-
-    // Scenario: Open a new window, switch to it, make sure it gets native events.
-    // Then switch back to the original window, make sure it gets native events.
-
-    driver.get(pages.xhtmlTestPage);
-
-    String originalWinHandle = driver.getWindowHandle();
-
-    driver.findElement(By.name("windowOne")).click();
-
-    sleepBecauseWindowsTakeTimeToOpen();
-
-    Set<String> allWindowHandles = driver.getWindowHandles();
-
-    // There should be two windows. We should also see each of the window titles at least once.
-    assertEquals(2, allWindowHandles.size());
-
-    allWindowHandles.remove(originalWinHandle);
-    String newWinHandle = (String) allWindowHandles.toArray()[0];
-
-    // Key events in new window.
-    driver.switchTo().window(newWinHandle);
-    sleepBecauseWindowsTakeTimeToOpen();
-    driver.get(pages.javascriptPage);
-
-    WebElement keyReporter = driver.findElement(By.id("keyReporter"));
-    keyReporter.sendKeys("ABC DEF");
-    assertThat(keyReporter.getAttribute("value"), is("ABC DEF"));
-
-    // Key events in original window.
-    driver.switchTo().window(originalWinHandle);
-    sleepBecauseWindowsTakeTimeToOpen();
-    driver.get(pages.javascriptPage);
-
-    WebElement keyReporter2 = driver.findElement(By.id("keyReporter"));
-    keyReporter2.sendKeys("QWERTY");
-    assertThat(keyReporter2.getAttribute("value"), is("QWERTY"));
-  }
-
-  @NeedsFreshDriver
-  @NoDriverAfterTest
-  @Test
-  public void closingWindowAndSwitchingToOriginalSwitchesFocus() {
-    assumeTrue(platformHasNativeEvents());
-
-    // Scenario: Open a new window, switch to it, close it, switch back to the
-    // original window - make sure it gets native events.
-
-    driver.get(pages.xhtmlTestPage);
-    String originalWinHandle = driver.getWindowHandle();
-
-    driver.findElement(By.name("windowOne")).click();
-
-    sleepBecauseWindowsTakeTimeToOpen();
-
-    Set<String> allWindowHandles = driver.getWindowHandles();
-    // There should be two windows. We should also see each of the window titles at least once.
-    assertEquals(2, allWindowHandles.size());
-
-    allWindowHandles.remove(originalWinHandle);
-    String newWinHandle = (String) allWindowHandles.toArray()[0];
-    // Switch to the new window.
-    driver.switchTo().window(newWinHandle);
-    sleepBecauseWindowsTakeTimeToOpen();
-    // Close new window.
-    driver.close();
-
-    // Switch back to old window.
-    driver.switchTo().window(originalWinHandle);
-    sleepBecauseWindowsTakeTimeToOpen();
-
-    // Send events to the new window.
-    driver.get(pages.javascriptPage);
-    WebElement keyReporter = driver.findElement(By.id("keyReporter"));
-    keyReporter.sendKeys("ABC DEF");
-    assertThat(keyReporter.getAttribute("value"), is("ABC DEF"));
   }
 
   @Test
