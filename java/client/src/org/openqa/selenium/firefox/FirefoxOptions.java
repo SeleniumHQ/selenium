@@ -57,8 +57,6 @@ import java.util.logging.Level;
 public class FirefoxOptions {
 
   public final static String FIREFOX_OPTIONS = "moz:firefoxOptions";
-  // TODO(simons): remove once geckodriver 0.12 ships
-  public final static String OLD_FIREFOX_OPTIONS = "firefoxOptions";
 
   private String binary;
   private FirefoxProfile profile;
@@ -202,7 +200,6 @@ public class FirefoxOptions {
     }
 
     capabilities.setCapability(FIREFOX_OPTIONS, this);
-    capabilities.setCapability(OLD_FIREFOX_OPTIONS, this);
 
     if (binary != null) {
       FirefoxBinary actualBinary = new FirefoxBinary(new File(binary));

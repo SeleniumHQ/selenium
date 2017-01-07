@@ -18,7 +18,6 @@
 package org.openqa.selenium.firefox;
 
 import static org.openqa.selenium.firefox.FirefoxOptions.FIREFOX_OPTIONS;
-import static org.openqa.selenium.firefox.FirefoxOptions.OLD_FIREFOX_OPTIONS;
 import static org.openqa.selenium.remote.CapabilityType.ACCEPT_SSL_CERTS;
 import static org.openqa.selenium.remote.CapabilityType.LOGGING_PREFS;
 import static org.openqa.selenium.remote.CapabilityType.PROXY;
@@ -201,9 +200,6 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
         throw new WebDriverException(e);
       }
     }
-    if (rawOptions == null) {
-      rawOptions = capabilities.getCapability(OLD_FIREFOX_OPTIONS);
-    }
     if (rawOptions != null && !(rawOptions instanceof FirefoxOptions)) {
       throw new WebDriverException("Firefox option was set, but is not a FirefoxOption: " + rawOptions);
     }
@@ -216,7 +212,6 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
     DesiredCapabilities toReturn = capabilities instanceof DesiredCapabilities ?
                                    (DesiredCapabilities) capabilities :
                                    new DesiredCapabilities(capabilities);
-    toReturn.setCapability(OLD_FIREFOX_OPTIONS, options);
     toReturn.setCapability(FIREFOX_OPTIONS, options);
     return toReturn;
   }
