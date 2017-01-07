@@ -161,7 +161,7 @@ function readManifest(addonPath) {
     manifest = io.stat(addonPath).then(function(stats) {
       if (!stats.isDirectory()) {
         throw Error(
-            'Add-on path is niether a xpi nor a directory: ' + addonPath);
+            'Add-on path is neither a xpi nor a directory: ' + addonPath);
       }
       return io.read(path.join(addonPath, 'install.rdf'));
     });
