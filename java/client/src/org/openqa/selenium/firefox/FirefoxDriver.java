@@ -107,10 +107,6 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
   public static final String PROFILE = "firefox_profile";
   public static final String MARIONETTE = "marionette";
 
-  @Deprecated
-  // For now, only enable native events on Windows
-  public static final boolean DEFAULT_ENABLE_NATIVE_EVENTS = false;
-
   // Accept untrusted SSL certificates.
   @Deprecated
   public static final boolean ACCEPT_UNTRUSTED_CERTIFICATES = true;
