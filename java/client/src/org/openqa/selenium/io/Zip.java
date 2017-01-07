@@ -36,12 +36,13 @@ public class Zip {
   private static final int BUF_SIZE = 16384; // "big"
 
   public static String zip(File input) throws IOException {
-    try (ByteArrayOutputStream bos = new ByteArrayOutputStream();
-         ZipOutputStream zos = new ZipOutputStream(bos)) {
-      if (input.isDirectory()) {
-        addToZip(input.getAbsolutePath(), zos, input);
-      } else {
-        addToZip(input.getParentFile().getAbsolutePath(), zos, input);
+    try (ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
+      try (ZipOutputStream zos = new ZipOutputStream(bos)) {
+        if (input.isDirectory()) {
+          addToZip(input.getAbsolutePath(), zos, input);
+        } else {
+          addToZip(input.getParentFile().getAbsolutePath(), zos, input);
+        }
       }
       return Base64.getEncoder().encodeToString(bos.toByteArray());
     }
