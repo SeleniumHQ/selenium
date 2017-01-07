@@ -41,6 +41,6 @@ public class DoubleClickAction extends MouseAction implements Action {
   }
 
   public List<Object> asList() {
-    return Arrays.<Object>asList("click", getTargetId(), Button.LEFT, 2);
+    return Arrays.asList("click", getTargetId(), Button.LEFT, 2);
   }
 }

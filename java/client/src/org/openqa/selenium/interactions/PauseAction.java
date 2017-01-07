@@ -42,6 +42,6 @@ public class PauseAction implements Action {
   }
 
   public List<Object> asList() {
-    return Arrays.<Object>asList("wait", pause);
+    return Arrays.asList("wait", pause);
   }
 }

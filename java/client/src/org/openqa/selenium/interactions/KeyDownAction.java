@@ -44,6 +44,6 @@ public class KeyDownAction extends SingleKeyAction implements Action {
   }
 
   public List<Object> asList() {
-    return Arrays.<Object>asList("keyDown", key);
+    return Arrays.asList("keyDown", key);
   }
 }

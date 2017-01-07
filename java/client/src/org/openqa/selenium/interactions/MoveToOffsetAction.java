@@ -42,6 +42,6 @@ public class MoveToOffsetAction extends MouseAction implements Action {
   }
 
   public List<Object> asList() {
-    return Arrays.<Object>asList("move", getTargetId(), xOffset, yOffset);
+    return Arrays.asList("move", getTargetId(), xOffset, yOffset);
   }
 }

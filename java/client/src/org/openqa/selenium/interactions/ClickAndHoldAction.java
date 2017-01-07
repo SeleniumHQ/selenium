@@ -43,6 +43,6 @@ public class ClickAndHoldAction extends MouseAction implements Action {
   }
 
   public List<Object> asList() {
-    return Arrays.<Object>asList("press", getTargetId());
+    return Arrays.asList("press", getTargetId());
   }
 }

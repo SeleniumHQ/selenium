@@ -25,7 +25,6 @@ import java.util.List;
 
 /**
  * Releases the left mouse button
- *
  */
 
 public class ButtonReleaseAction extends MouseAction implements Action {
@@ -45,6 +44,6 @@ public class ButtonReleaseAction extends MouseAction implements Action {
   }
 
   public List<Object> asList() {
-    return Arrays.<Object>asList("release");
+    return Arrays.asList("release");
   }
 }

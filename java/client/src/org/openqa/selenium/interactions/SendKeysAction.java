@@ -23,7 +23,6 @@ import org.openqa.selenium.interactions.internal.MultiAction;
 import org.openqa.selenium.internal.Locatable;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
