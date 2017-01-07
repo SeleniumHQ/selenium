@@ -68,7 +68,7 @@ public class Actions {
   }
 
   private void resetCompositeAction() {
-    action = new CompositeAction(driver);
+    action = new CompositeAction();
   }
 
   /**

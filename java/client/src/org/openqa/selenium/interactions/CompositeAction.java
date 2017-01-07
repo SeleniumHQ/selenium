@@ -18,10 +18,6 @@
 package org.openqa.selenium.interactions;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.ImmutableList;
-
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.interactions.internal.MultiAction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,24 +27,11 @@ import java.util.List;
  *
  */
 public class CompositeAction implements Action {
-  private WebDriver driver;
   private List<Action> actionsList = new ArrayList<>();
 
-  public CompositeAction() {
-  }
-
-  public CompositeAction(WebDriver driver) {
-    this.driver = driver;
-  }
-
   public void perform() {
-    if (driver != null && driver instanceof CanPerformActionChain) {
-      ((CanPerformActionChain) driver).getActionChainExecutor().execute(this);
-
-    } else {
-      for (Action action : actionsList) {
-        action.perform();
-      }
+    for (Action action : actionsList) {
+      action.perform();
     }
   }
 
@@ -60,17 +43,5 @@ public class CompositeAction implements Action {
   @VisibleForTesting
   int getNumberOfActions() {
     return actionsList.size();
-  }
-
-  public List<Action> asList() {
-    ImmutableList.Builder<Action> builder = new ImmutableList.Builder<>();
-    for (Action action : actionsList) {
-      if (action instanceof MultiAction) {
-        builder.addAll(((MultiAction) action).getActions());
-      } else {
-        builder.add(action);
-      }
-    }
-    return builder.build();
   }
 }

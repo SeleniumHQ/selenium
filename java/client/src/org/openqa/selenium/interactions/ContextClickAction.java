@@ -17,15 +17,14 @@
 
 package org.openqa.selenium.interactions;
 
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.internal.MouseAction;
 import org.openqa.selenium.internal.Locatable;
-
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * Context-clicks an element
  *
+ * @deprecated Use {@link Actions#contextClick(WebElement)}
  */
 public class ContextClickAction extends MouseAction implements Action {
   public ContextClickAction(Mouse mouse, Locatable where) {
@@ -39,9 +38,5 @@ public class ContextClickAction extends MouseAction implements Action {
   public void perform() {
     moveToLocation();
     mouse.contextClick(getActionLocation());
-  }
-
-  public List<Object> asList() {
-    return Arrays.asList("click", getTargetId(), Button.RIGHT, 1);
   }
 }

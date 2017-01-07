@@ -21,13 +21,12 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.interactions.internal.SingleKeyAction;
 import org.openqa.selenium.internal.Locatable;
 
-import java.util.Arrays;
-import java.util.List;
-
 /**
  * Emulates key release only, without the press.
  *
+ * @deprecated Use {@link Actions#keyUp(Keys)}
  */
+@Deprecated
 public class KeyUpAction extends SingleKeyAction implements Action {
   public KeyUpAction(Keyboard keyboard, Mouse mouse, Locatable locationProvider, Keys key) {
     super(keyboard, mouse, locationProvider, key);
@@ -41,9 +40,5 @@ public class KeyUpAction extends SingleKeyAction implements Action {
     focusOnElement();
 
     keyboard.releaseKey(key);
-  }
-
-  public List<Object> asList() {
-    return Arrays.asList("keyUp", key);
   }
 }
