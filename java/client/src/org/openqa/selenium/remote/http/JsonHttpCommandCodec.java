@@ -20,7 +20,9 @@ package org.openqa.selenium.remote.http;
 import static org.openqa.selenium.remote.DriverCommand.ACCEPT_ALERT;
 import static org.openqa.selenium.remote.DriverCommand.CLEAR_LOCAL_STORAGE;
 import static org.openqa.selenium.remote.DriverCommand.CLEAR_SESSION_STORAGE;
+import static org.openqa.selenium.remote.DriverCommand.CLICK;
 import static org.openqa.selenium.remote.DriverCommand.DISMISS_ALERT;
+import static org.openqa.selenium.remote.DriverCommand.DOUBLE_CLICK;
 import static org.openqa.selenium.remote.DriverCommand.EXECUTE_ASYNC_SCRIPT;
 import static org.openqa.selenium.remote.DriverCommand.EXECUTE_SCRIPT;
 import static org.openqa.selenium.remote.DriverCommand.GET_ACTIVE_ELEMENT;
@@ -40,14 +42,26 @@ import static org.openqa.selenium.remote.DriverCommand.GET_SESSION_STORAGE_SIZE;
 import static org.openqa.selenium.remote.DriverCommand.GET_WINDOW_HANDLES;
 import static org.openqa.selenium.remote.DriverCommand.IS_ELEMENT_DISPLAYED;
 import static org.openqa.selenium.remote.DriverCommand.MAXIMIZE_CURRENT_WINDOW;
+import static org.openqa.selenium.remote.DriverCommand.MOUSE_DOWN;
+import static org.openqa.selenium.remote.DriverCommand.MOUSE_UP;
+import static org.openqa.selenium.remote.DriverCommand.MOVE_TO;
 import static org.openqa.selenium.remote.DriverCommand.REMOVE_LOCAL_STORAGE_ITEM;
 import static org.openqa.selenium.remote.DriverCommand.REMOVE_SESSION_STORAGE_ITEM;
+import static org.openqa.selenium.remote.DriverCommand.SEND_KEYS_TO_ACTIVE_ELEMENT;
 import static org.openqa.selenium.remote.DriverCommand.SET_ALERT_VALUE;
 import static org.openqa.selenium.remote.DriverCommand.SET_CURRENT_WINDOW_POSITION;
 import static org.openqa.selenium.remote.DriverCommand.SET_CURRENT_WINDOW_SIZE;
 import static org.openqa.selenium.remote.DriverCommand.SET_LOCAL_STORAGE_ITEM;
 import static org.openqa.selenium.remote.DriverCommand.SET_SESSION_STORAGE_ITEM;
 import static org.openqa.selenium.remote.DriverCommand.SUBMIT_ELEMENT;
+import static org.openqa.selenium.remote.DriverCommand.TOUCH_DOUBLE_TAP;
+import static org.openqa.selenium.remote.DriverCommand.TOUCH_DOWN;
+import static org.openqa.selenium.remote.DriverCommand.TOUCH_FLICK;
+import static org.openqa.selenium.remote.DriverCommand.TOUCH_LONG_PRESS;
+import static org.openqa.selenium.remote.DriverCommand.TOUCH_MOVE;
+import static org.openqa.selenium.remote.DriverCommand.TOUCH_SCROLL;
+import static org.openqa.selenium.remote.DriverCommand.TOUCH_SINGLE_TAP;
+import static org.openqa.selenium.remote.DriverCommand.TOUCH_UP;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -102,6 +116,22 @@ public class JsonHttpCommandCodec extends AbstractHttpCommandCodec {
     defineCommand(REMOVE_SESSION_STORAGE_ITEM, delete("/session/:sessionId/session_storage/key/:key"));
     defineCommand(GET_SESSION_STORAGE_ITEM, get("/session/:sessionId/session_storage/key/:key"));
     defineCommand(GET_SESSION_STORAGE_SIZE, get("/session/:sessionId/session_storage/size"));
+
+    // Interactions-related commands.
+    defineCommand(MOUSE_DOWN, post("/session/:sessionId/buttondown"));
+    defineCommand(MOUSE_UP, post("/session/:sessionId/buttonup"));
+    defineCommand(CLICK, post("/session/:sessionId/click"));
+    defineCommand(DOUBLE_CLICK, post("/session/:sessionId/doubleclick"));
+    defineCommand(MOVE_TO, post("/session/:sessionId/moveto"));
+    defineCommand(SEND_KEYS_TO_ACTIVE_ELEMENT, post("/session/:sessionId/keys"));
+    defineCommand(TOUCH_SINGLE_TAP, post("/session/:sessionId/touch/click"));
+    defineCommand(TOUCH_DOUBLE_TAP, post("/session/:sessionId/touch/doubleclick"));
+    defineCommand(TOUCH_DOWN, post("/session/:sessionId/touch/down"));
+    defineCommand(TOUCH_FLICK, post("/session/:sessionId/touch/flick"));
+    defineCommand(TOUCH_LONG_PRESS, post("/session/:sessionId/touch/longclick"));
+    defineCommand(TOUCH_MOVE, post("/session/:sessionId/touch/move"));
+    defineCommand(TOUCH_SCROLL, post("/session/:sessionId/touch/scroll"));
+    defineCommand(TOUCH_UP, post("/session/:sessionId/touch/up"));
   }
 
   @Override

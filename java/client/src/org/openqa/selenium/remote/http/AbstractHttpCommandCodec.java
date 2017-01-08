@@ -214,22 +214,6 @@ public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpReque
     defineCommand(GET_SCREEN_ROTATION, get("/session/:sessionId/rotation"));
     defineCommand(SET_SCREEN_ROTATION, post("/session/:sessionId/rotation"));
 
-    // Interactions-related commands.
-    defineCommand(MOUSE_DOWN, post("/session/:sessionId/buttondown"));
-    defineCommand(MOUSE_UP, post("/session/:sessionId/buttonup"));
-    defineCommand(CLICK, post("/session/:sessionId/click"));
-    defineCommand(DOUBLE_CLICK, post("/session/:sessionId/doubleclick"));
-    defineCommand(MOVE_TO, post("/session/:sessionId/moveto"));
-    defineCommand(SEND_KEYS_TO_ACTIVE_ELEMENT, post("/session/:sessionId/keys"));
-    defineCommand(TOUCH_SINGLE_TAP, post("/session/:sessionId/touch/click"));
-    defineCommand(TOUCH_DOUBLE_TAP, post("/session/:sessionId/touch/doubleclick"));
-    defineCommand(TOUCH_DOWN, post("/session/:sessionId/touch/down"));
-    defineCommand(TOUCH_FLICK, post("/session/:sessionId/touch/flick"));
-    defineCommand(TOUCH_LONG_PRESS, post("/session/:sessionId/touch/longclick"));
-    defineCommand(TOUCH_MOVE, post("/session/:sessionId/touch/move"));
-    defineCommand(TOUCH_SCROLL, post("/session/:sessionId/touch/scroll"));
-    defineCommand(TOUCH_UP, post("/session/:sessionId/touch/up"));
-
     defineCommand(IME_GET_AVAILABLE_ENGINES, get("/session/:sessionId/ime/available_engines"));
     defineCommand(IME_GET_ACTIVE_ENGINE, get("/session/:sessionId/ime/active_engine"));
     defineCommand(IME_IS_ACTIVATED, get("/session/:sessionId/ime/activated"));
