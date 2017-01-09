@@ -254,12 +254,13 @@ module Selenium
           Dimension.new data['width'], data['height']
         end
 
-        def reposition_window(_x, _y, _handle = nil)
-          raise Error::UnsupportedOperationError, 'The W3C standard does not currently support setting the Window Position'
+        def reposition_window(x, y)
+          execute :set_window_position, {}, {x: x, y: y}
         end
 
-        def window_position(_handle = nil)
-          raise Error::UnsupportedOperationError, 'The W3C standard does not currently support getting the Window Position'
+        def window_position
+          data = execute :get_window_position
+          Point.new data['x'], data['y']
         end
 
         def screenshot

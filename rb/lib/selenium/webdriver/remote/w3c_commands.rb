@@ -57,6 +57,8 @@ module Selenium
             maximize_window: [:post, 'session/:session_id/window/maximize'.freeze],
             set_window_size: [:post, 'session/:session_id/window/size'.freeze],
             get_window_size: [:get, 'session/:session_id/window/size'.freeze],
+            set_window_position: [:post, 'session/:session_id/window/position'.freeze],
+            get_window_position: [:get, 'session/:session_id/window/position'.freeze],
             switch_to_frame: [:post, 'session/:session_id/frame'.freeze],
             switch_to_parent_frame: [:post, 'session/:session_id/frame/parent'.freeze],
 
