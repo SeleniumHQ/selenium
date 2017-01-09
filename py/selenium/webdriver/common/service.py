@@ -125,12 +125,13 @@ class Service(object):
             url_request.urlopen("%s/shutdown" % self.service_url)
         except URLError:
             return
-        count = 0
-        while self.is_connectable():
-            if count == 30:
+
+        for _ in 30:
+            if self.is_connectable():
                 break
-            count += 1
-            time.sleep(1)
+            else:
+                time.sleep(1)
+
 
     def stop(self):
         """
@@ -164,5 +165,13 @@ class Service(object):
                 self.process.kill()
                 self.process = None
         except OSError:
-            # kill may not be available under windows environment
+            pass
+
+    def __del__(self):
+        # `subprocess.Popen` doesn't send signal on `__del__`;
+        # so we attemt to close the launched process when `__del__`
+        # is triggered.
+        try:
+            self.stop()
+        except Exception:
             pass
