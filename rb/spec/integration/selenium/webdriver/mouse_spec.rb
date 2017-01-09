@@ -27,6 +27,7 @@ module Selenium
         it 'clicks an element' do
           driver.navigate.to url_for('formPage.html')
           driver.mouse.click driver.find_element(id: 'imageButton')
+          expect(driver.title).to eq 'We Arrive Here'
         end
 
         it 'can drag and drop' do

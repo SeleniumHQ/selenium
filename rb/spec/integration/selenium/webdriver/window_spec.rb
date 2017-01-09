@@ -33,17 +33,19 @@ module Selenium
         expect(size.height).to be > 0
       end
 
-      it 'sets the size of the current window' do
-        size = window.size
+      not_compliant_on browser: :safari do
+        it 'sets the size of the current window' do
+          size = window.size
 
-        target_width = size.width - 20
-        target_height = size.height - 20
+          target_width = size.width - 20
+          target_height = size.height - 20
 
-        window.size = Dimension.new(target_width, target_height)
+          window.size = Dimension.new(target_width, target_height)
 
-        new_size = window.size
-        expect(new_size.width).to eq(target_width)
-        expect(new_size.height).to eq(target_height)
+          new_size = window.size
+          expect(new_size.width).to eq(target_width)
+          expect(new_size.height).to eq(target_height)
+        end
       end
 
       it 'gets the position of the current window' do
@@ -55,7 +57,7 @@ module Selenium
         expect(pos.y).to be >= 0
       end
 
-      not_compliant_on browser: :phantomjs do
+      not_compliant_on browser: [:phantomjs, :safari] do
         it 'sets the position of the current window' do
           pos = window.position
 
@@ -74,16 +76,18 @@ module Selenium
 
       # TODO: - Create Window Manager guard
       not_compliant_on platform: :linux do
-        it 'can maximize the current window' do
-          window.size = old_size = Dimension.new(200, 200)
+        not_compliant_on browser: :safari do
+           it 'can maximize the current window' do
+            window.size = old_size = Dimension.new(200, 200)
 
-          window.maximize
+            window.maximize
 
-          wait.until { window.size != old_size }
+            wait.until { window.size != old_size }
 
-          new_size = window.size
-          expect(new_size.width).to be > old_size.width
-          expect(new_size.height).to be > old_size.height
+            new_size = window.size
+            expect(new_size.width).to be > old_size.width
+            expect(new_size.height).to be > old_size.height
+           end
         end
       end
 

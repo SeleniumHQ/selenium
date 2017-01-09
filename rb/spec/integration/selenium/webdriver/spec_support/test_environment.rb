@@ -28,12 +28,12 @@ module Selenium
           @create_driver_error = nil
           @create_driver_error_count = 0
 
-          @driver = (ENV['WD_SPEC_DRIVER'] || :chrome).to_sym
+          @driver = (ENV['WD_SPEC_DRIVER'] || :remote).to_sym
         end
 
         def browser
           if driver == :remote
-            (ENV['WD_REMOTE_BROWSER'] || :chrome).to_sym
+            (ENV['WD_REMOTE_BROWSER'] || :safari).to_sym
           else
             driver
           end
@@ -143,6 +143,11 @@ module Selenium
 
           caps = WebDriver::Remote::Capabilities.send(browser_name, opt)
 
+          if browser_name == :safari
+            tech_preview_driver = "/Applications/Safari\ Technology\ Preview.app/Contents/MacOS/safaridriver"
+            caps["safari.options"] = {'technologyPreview' => true} if File.exist?(tech_preview_driver)
+          end
+
           unless caps.is_a? WebDriver::Remote::W3CCapabilities
             caps.javascript_enabled = true
             caps.css_selectors_enabled = true
@@ -227,8 +232,12 @@ module Selenium
         end
 
         def create_safari_driver
-          WebDriver::Safari.driver_path = ENV['SAFARIDRIVER'] if ENV['SAFARIDRIVER']
-          WebDriver::Driver.for :safari
+          driver_path = ENV['SAFARIDRIVER']
+          tech_preview_driver = "/Applications/Safari\ Technology\ Preview.app/Contents/MacOS/safaridriver"
+          driver_path ||= tech_preview_driver if File.exist?(tech_preview_driver)
+
+          caps = Selenium::WebDriver::Remote::Capabilities.safari
+          WebDriver::Driver.for :safari, desired_capabilities: caps, driver_path: driver_path
         end
 
         def keep_alive_client
