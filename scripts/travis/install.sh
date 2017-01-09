@@ -13,8 +13,8 @@ if [[ ! -z $CHROME ]]; then
 fi
 
 if [[ ! -z $MARIONETTE ]]; then
-  export GECKODRIVER_VERSION=v0.12.0
-  curl -L -o geckodriver.tar.gz https://github.com/mozilla/geckodriver/releases/download/${GECKODRIVER_VERSION}/geckodriver-${GECKODRIVER_VERSION}-linux64.tar.gz
+  export GECKODRIVER_DOWNLOAD=`curl -s 'https://api.github.com/repos/mozilla/geckodriver/releases/latest' | python -c "import sys, json; r = json.load(sys.stdin); print [a for a in r['assets'] if 'linux64' in a['name']][0]['browser_download_url'];"`
+  curl -L -o geckodriver.tar.gz $GECKODRIVER_DOWNLOAD
   gunzip -c geckodriver.tar.gz | tar xopf -
   chmod +x geckodriver && sudo mv geckodriver /usr/local/bin
 fi
