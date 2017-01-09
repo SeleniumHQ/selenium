@@ -189,7 +189,7 @@ module Selenium
           end
 
           # https://github.com/SeleniumHQ/selenium/issues/3339
-          not_compliant_on driver: :remote, platform: :macosx do
+          not_compliant_on driver: :remote do
             it 'should iterate over open windows when current window is closed' do
               driver.navigate.to url_for('xhtmlTest.html')
               wait_for_element(link: 'Create a new anonymous window')
@@ -214,8 +214,8 @@ module Selenium
       end
 
       not_compliant_on browser: :safari do
-        # TODO - File bug report / investigate
-        not_compliant_on driver: :remote, platform: :macosx do
+        # https://github.com/SeleniumHQ/selenium/issues/3339
+        not_compliant_on driver: :remote do
           it 'should switch to a window and execute a block when current window is closed' do
             driver.navigate.to url_for('xhtmlTest.html')
             driver.find_element(link: 'Open new window').click
