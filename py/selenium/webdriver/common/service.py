@@ -126,7 +126,7 @@ class Service(object):
         except URLError:
             return
 
-        for x in 30:
+        for x in range(30):
             if self.is_connectable():
                 break
             else:
