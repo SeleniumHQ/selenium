@@ -25,20 +25,25 @@ module Selenium
       # server is being asked to create.
       #
 
-      # TODO - Change values back from `nil` to `:any` when Firefox fixes this:
+      # TODO - uncomment when Mozilla fixes this:
       # https://bugzilla.mozilla.org/show_bug.cgi?id=1326397
       class W3CCapabilities
         DEFAULTS = {
           browser_name: '',
-          browser_version: nil,
-          platform_name: nil,
-          platform_version: nil,
-          accept_insecure_certs: false,
+#          browser_version: :any,
+#          platform_name: :any,
+#          platform_version: :any,
+#          accept_insecure_certs: false,
           page_load_strategy: 'normal',
           proxy: nil
         }.freeze
 
         KNOWN = [
+          :browser_version,
+          :platform_name,
+          :platform_version,
+          :accept_insecure_certs,
+
           :remote_session_id,
           :accessibility_checks,
           :rotatable,
@@ -108,7 +113,7 @@ module Selenium
             caps.browser_version = data.delete('browserVersion')
             caps.platform_name = data.delete('platformName')
             caps.platform_version = data.delete('platformVersion')
-            caps.accept_insecure_certs = data.delete('acceptInsecureCerts')
+            caps.accept_insecure_certs = data.delete('acceptInsecureCerts') if data.key?('acceptInsecureCerts')
             caps.page_load_strategy = data.delete('pageLoadStrategy')
             timeouts = data.delete('timeouts')
             caps.implicit_timeout = timeouts['implicit'] if timeouts
