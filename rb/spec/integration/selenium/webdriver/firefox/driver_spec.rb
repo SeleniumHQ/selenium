@@ -42,16 +42,20 @@ module Selenium
         not_compliant_on driver: :remote do
           it 'creates default capabilities' do
             begin
-              driver1 = Selenium::WebDriver.for GlobalTestEnv.driver, @opt
-              expect(driver1.capabilities.proxy).to be_nil
-              expect(driver1.capabilities.platform_name).to_not be_nil
-              expect(driver1.capabilities.browser_version).to match(/^\d\d\./)
-              expect(driver1.capabilities.platform_version).to_not be_nil
-              expect(driver1.capabilities.accept_ssl_certs).to be == false
-              expect(driver1.capabilities.remote_session_id).to be_nil
-              expect(driver1.capabilities.page_load_strategy).to be == 'normal'
-              expect(driver1.capabilities.raise_accessibility_exceptions).to be == false
-              expect(driver1.capabilities.rotatable).to be == false
+              driver1 = Selenium::WebDriver.for(GlobalTestEnv.driver, @opt)
+              caps = driver1.capabilities
+              expect(caps.proxy).to be_nil
+              expect(caps.platform_name).to_not be_nil
+              expect(caps.browser_version).to match(/^\d\d\./)
+              expect(caps.platform_version).to_not be_nil
+              expect(caps.accept_insecure_certs).to be == false
+              expect(caps.remote_session_id).to be_nil
+              expect(caps.page_load_strategy).to be == 'normal'
+              expect(caps.accessibility_checks).to be == false
+              expect(caps.rotatable).to be == false
+              expect(caps.implicit_timeout).to be == 0
+              expect(caps.page_load_timeout).to be == 300000
+              expect(caps.script_timeout).to be == 30000
             ensure
               driver1.quit
             end
@@ -67,7 +71,7 @@ module Selenium
               driver1 = Selenium::WebDriver.for GlobalTestEnv.driver, @opt.dup
 
               default_version = driver1.capabilities.version
-              expect { driver1.capabilities.browser_version }.to_not raise_exception NoMethodError
+              expect { driver1.capabilities.browser_version }.to_not raise_exception
               driver1.quit
 
               caps = Remote::Capabilities.firefox(firefox_options: {binary: ENV['ALT_FIREFOX_BINARY']})
@@ -75,7 +79,7 @@ module Selenium
               driver2 = Selenium::WebDriver.for GlobalTestEnv.driver, @opt
 
               expect(driver2.capabilities.version).to_not eql(default_version)
-              expect { driver2.capabilities.browser_version }.to_not raise_exception NoMethodError
+              expect { driver2.capabilities.browser_version }.to_not raise_exception
               driver2.quit
             ensure
               Firefox::Binary.path = @path
@@ -98,7 +102,7 @@ module Selenium
               driver2 = Selenium::WebDriver.for GlobalTestEnv.driver, @opt
 
               expect(driver2.capabilities.version).to_not eql(default_version)
-              expect { driver2.capabilities.browser_version }.to_not raise_exception NoMethodError
+              expect { driver2.capabilities.browser_version }.to_not raise_exception
               driver2.quit
             ensure
               Firefox::Binary.path = @path
@@ -107,7 +111,7 @@ module Selenium
         end
 
         # https://github.com/mozilla/geckodriver/issues/58
-        not_compliant_on browser: :firefox do
+        not_compliant_on browser: :not_firefox do
           context 'when shared example' do
             it_behaves_like 'driver that can be started concurrently', :firefox
           end

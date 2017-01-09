@@ -24,24 +24,28 @@ module Selenium
       # Specification of the desired and/or actual capabilities of the browser that the
       # server is being asked to create.
       #
+
+      # TODO - Change values back from `nil` to `:any` when Firefox fixes this:
+      # https://bugzilla.mozilla.org/show_bug.cgi?id=1326397
       class W3CCapabilities
         DEFAULTS = {
           browser_name: '',
-          browser_version: :any,
-          platform_name: :any,
-          platform_version: :any,
-          accept_ssl_certs: false,
+          browser_version: nil,
+          platform_name: nil,
+          platform_version: nil,
+          accept_insecure_certs: false,
           page_load_strategy: 'normal',
           proxy: nil
         }.freeze
 
         KNOWN = [
           :remote_session_id,
-          :xul_app_id,
-          :raise_accessibility_exceptions,
+          :accessibility_checks,
           :rotatable,
-          :app_build_id,
-          :device
+          :device,
+          :implicit_timeout,
+          :page_load_timeout,
+          :script_timeout,
         ].freeze
 
         (DEFAULTS.keys + KNOWN).each do |key|
@@ -78,7 +82,10 @@ module Selenium
           def firefox(opts = {})
             opts[:browser_version] = opts.delete(:version) if opts.key?(:version)
             opts[:platform_name] = opts.delete(:platform) if opts.key?(:platform)
-
+            opts[:timeouts] = {}
+            opts[:timeouts]['implicit'] = opts.delete(:implicit_timeout) if opts.key?(:implicit_timeout)
+            opts[:timeouts]['page load'] = opts.delete(:page_load_timeout) if opts.key?(:page_load_timeout)
+            opts[:timeouts]['script'] = opts.delete(:script_timeout) if opts.key?(:script_timeout)
             new({browser_name: 'firefox', marionette: true}.merge(opts))
           end
 
@@ -101,23 +108,23 @@ module Selenium
             caps.browser_version = data.delete('browserVersion')
             caps.platform_name = data.delete('platformName')
             caps.platform_version = data.delete('platformVersion')
-            caps.accept_ssl_certs = data.delete('acceptSslCerts')
+            caps.accept_insecure_certs = data.delete('acceptInsecureCerts')
             caps.page_load_strategy = data.delete('pageLoadStrategy')
+            timeouts = data.delete('timeouts')
+            caps.implicit_timeout = timeouts['implicit'] if timeouts
+            caps.page_load_timeout = timeouts['page load'] if timeouts
+            caps.script_timeout = timeouts['script'] if timeouts
+
             proxy = data.delete('proxy')
             caps.proxy = Proxy.json_create(proxy) unless proxy.nil? || proxy.empty?
 
             # Remote Server Specific
             caps[:remote_session_id] = data.delete('webdriver.remote.sessionid')
 
-            # Obsolete capabilities returned by Remote Server
-            data.delete('javascriptEnabled')
-            data.delete('cssSelectorsEnabled')
-
             # Marionette Specific
-            caps[:xul_app_id] = data.delete('XULappId')
-            caps[:raise_accessibility_exceptions] = data.delete('raisesAccessibilityExceptions')
+            caps[:accessibility_checks] = data.delete('moz:accessibilityChecks')
+            caps[:profile] = data.delete('moz:profile')
             caps[:rotatable] = data.delete('rotatable')
-            caps[:app_build_id] = data.delete('appBuildId')
             caps[:device] = data.delete('device')
 
             # any remaining pairs will be added as is, with no conversion
@@ -131,7 +138,7 @@ module Selenium
         # @option :browser_version          [String] required browser version number
         # @option :platform_name            [Symbol] one of :any, :win, :mac, or :x
         # @option :platform_version         [String] required platform version number
-        # @option :accept_ssl_certs         [Boolean] does the driver accept SSL Cerfifications?
+        # @option :accept_insecure_certs    [Boolean] does the driver accept SSL Cerfifications?
         # @option :proxy                    [Selenium::WebDriver::Proxy, Hash] proxy configuration
         #
         # @api public
