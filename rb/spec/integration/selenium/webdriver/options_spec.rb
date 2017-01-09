@@ -21,7 +21,6 @@ require_relative 'spec_helper'
 
 module Selenium
   module WebDriver
-    # Safari bug - no logs or cookies
     not_compliant_on browser: :safari do
       describe Options do
         not_compliant_on browser: [:firefox, :ie, :edge] do
@@ -78,7 +77,7 @@ module Selenium
             end
 
             # Firefox - https://bugzilla.mozilla.org/show_bug.cgi?id=1282970
-            not_compliant_on browser: :firefox do
+            not_compliant_on driver: :firefox do
               it 'should get named cookie' do
                 driver.navigate.to url_for('xhtmlTest.html')
                 driver.manage.add_cookie name: 'foo', value: 'bar'

@@ -24,6 +24,7 @@ module Selenium
     module DriverExtensions
       describe HasWebStorage do
         compliant_on browser: [:chrome, :firefox] do
+          # TODO - Find out what settings for turning on web storage in remote server
           not_compliant_on driver: :remote, browser: :firefox do
             shared_examples_for 'web storage' do
               before do

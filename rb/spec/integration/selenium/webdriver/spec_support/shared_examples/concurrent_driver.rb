@@ -31,20 +31,10 @@ shared_examples_for 'driver that can be started concurrently' do |browser_name|
       threads = []
       drivers = []
 
-      opt = {}
-      driver = if GlobalTestEnv.remote_server?
-                 opt[:url] = GlobalTestEnv.remote_server.webdriver_url
-                 :remote
-               else
-                 browser_name
-               end
-
-      caps = WebDriver::Remote::Capabilities.send(browser_name, caps_opt)
-      opt[:desired_capabilities] = caps
 
       5.times do
         threads << Thread.new do
-          drivers << Selenium::WebDriver.for(driver, opt.dup)
+          drivers << GlobalTestEnv.send(:create_driver)
         end
       end
 

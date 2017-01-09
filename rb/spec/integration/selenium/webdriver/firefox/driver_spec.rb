@@ -110,11 +110,8 @@ module Selenium
           end
         end
 
-        # https://github.com/mozilla/geckodriver/issues/58
-        not_compliant_on browser: :not_firefox do
-          context 'when shared example' do
-            it_behaves_like 'driver that can be started concurrently', :firefox
-          end
+        context 'when shared example' do
+          it_behaves_like 'driver that can be started concurrently', :firefox
         end
       end
     end
