@@ -148,7 +148,7 @@ module Selenium
         end
 
         def alert=(keys)
-          execute :send_alert_text, {}, {handler: 'prompt', text: keys}
+          execute :send_alert_text, {}, {value: keys.split(//)}
         end
 
         def alert_text
