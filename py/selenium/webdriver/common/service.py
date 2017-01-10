@@ -127,11 +127,10 @@ class Service(object):
             return
 
         for x in range(30):
-            if self.is_connectable():
+            if not self.is_connectable():
                 break
             else:
                 time.sleep(1)
-
 
     def stop(self):
         """
