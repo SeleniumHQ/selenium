@@ -457,7 +457,7 @@ public interface WebDriver extends SearchContext {
     /**
      * Make an engines that is available (appears on the list returned by getAvailableEngines)
      * active. After this call, the only loaded engine on the IME daemon will be this one and the
-     * input sent using sendKeys will be converted by the engine. Noteh that this is a
+     * input sent using sendKeys will be converted by the engine. Note that this is a
      * platform-independent method of activating IME (the platform-specific way being using keyboard
      * shortcuts).
      *

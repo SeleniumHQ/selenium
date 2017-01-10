@@ -34,7 +34,7 @@ public interface Sleeper {
    * Sleeps for the specified duration of time.
    *
    * @param duration How long to sleep.
-   * @throws InterruptedException If hte thread is interrupted while sleeping.
+   * @throws InterruptedException If the thread is interrupted while sleeping.
    */
   void sleep(Duration duration) throws InterruptedException;
 }

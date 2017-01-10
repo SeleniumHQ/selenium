@@ -30,7 +30,7 @@ import java.util.List;
 public interface ISelect {
 
   /**
-   * @return Whether this select element support selecting multiple options at the same time? This
+   * @return Whether this select element supports selecting multiple options at the same time? This
    * is done by checking the value of the "multiple" attribute.
    */
   public boolean isMultiple();
