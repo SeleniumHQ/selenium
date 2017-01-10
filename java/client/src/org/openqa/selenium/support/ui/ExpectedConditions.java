@@ -691,7 +691,7 @@ public class ExpectedConditions {
    * Wait until an element is no longer attached to the DOM.
    *
    * @param element The element to wait for.
-   * @return false is the element is still attached to the DOM, true otherwise.
+   * @return false if the element is still attached to the DOM, true otherwise.
    */
   public static ExpectedCondition<Boolean> stalenessOf(final WebElement element) {
     return new ExpectedCondition<Boolean>() {
@@ -847,7 +847,7 @@ public class ExpectedConditions {
   /**
    * An expectation with the logical opposite condition of the given condition.
    *
-   * Note that if the Condition your are inverting throws an exception that is caught by the Ignored
+   * Note that if the Condition you are inverting throws an exception that is caught by the Ignored
    * Exceptions, the inversion will not take place and lead to confusing results.
    *
    * @param condition ExpectedCondition to be inverted
@@ -999,7 +999,7 @@ public class ExpectedConditions {
    * An expectation for checking number of WebElements with given locator
    *
    * @param locator used to find the element
-   * @param number  user to define exact number of elements
+   * @param number  used to define exact number of elements
    * @return Boolean true when size of elements list is equal to defined
    */
   public static ExpectedCondition<List<WebElement>> numberOfElementsToBeMoreThan(final By locator,
@@ -1027,7 +1027,7 @@ public class ExpectedConditions {
    * number
    *
    * @param locator used to find the element
-   * @param number  user to define maximum number of elements
+   * @param number  used to define maximum number of elements
    * @return Boolean true when size of elements list is less than defined
    */
   public static ExpectedCondition<List<WebElement>> numberOfElementsToBeLessThan(final By locator,
@@ -1054,7 +1054,7 @@ public class ExpectedConditions {
    * An expectation for checking number of WebElements with given locator
    *
    * @param locator used to find the element
-   * @param number  user to define number of elements
+   * @param number  used to define number of elements
    * @return Boolean true when size of elements list is equal to defined
    */
   public static ExpectedCondition<List<WebElement>> numberOfElementsToBe(final By locator,
@@ -1080,7 +1080,7 @@ public class ExpectedConditions {
   /**
    * An expectation for checking given WebElement has attribute with a specific value
    *
-   * @param element   used to check it's parameters
+   * @param element   used to check its parameters
    * @param attribute used to define css or html attribute
    * @param value     used as expected attribute value
    * @return Boolean true when element has css or html attribute with the value
@@ -1112,7 +1112,7 @@ public class ExpectedConditions {
    * An expectation for checking WebElement with given locator has attribute which contains specific
    * value
    *
-   * @param element   used to check it's parameters
+   * @param element   used to check its parameters
    * @param attribute used to define css or html attribute
    * @param value     used as expected attribute value
    * @return Boolean true when element has css or html attribute which contains the value
@@ -1141,7 +1141,7 @@ public class ExpectedConditions {
    * An expectation for checking WebElement with given locator has attribute which contains specific
    * value
    *
-   * @param locator   used to define WebElement to check it's parameters
+   * @param locator   used to define WebElement to check its parameters
    * @param attribute used to define css or html attribute
    * @param value     used as expected attribute value
    * @return Boolean true when element has css or html attribute which contains the value
@@ -1169,7 +1169,7 @@ public class ExpectedConditions {
   /**
    * An expectation for checking WebElement any non empty value for given attribute
    *
-   * @param element   used to check it's parameters
+   * @param element   used to check its parameters
    * @param attribute used to define css or html attribute
    * @return Boolean true when element has css or html attribute with non empty value
    */
