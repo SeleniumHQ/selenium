@@ -17,9 +17,13 @@
 
 package org.openqa.selenium.interactions;
 
+import com.google.common.collect.ImmutableList;
+
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.internal.KeysRelatedAction;
 import org.openqa.selenium.internal.Locatable;
+
+import java.util.List;
 
 /**
  * Sending a sequence of keys to an element.
@@ -30,7 +34,10 @@ import org.openqa.selenium.internal.Locatable;
 public class SendKeysAction extends KeysRelatedAction implements Action {
   private final CharSequence[] keysToSend;
 
-  public SendKeysAction(Keyboard keyboard, Mouse mouse, Locatable locationProvider,
+  public SendKeysAction(
+      Keyboard keyboard,
+      Mouse mouse,
+      Locatable locationProvider,
       CharSequence... keysToSend) {
     super(keyboard, mouse, locationProvider);
     this.keysToSend = keysToSend;
@@ -44,5 +51,21 @@ public class SendKeysAction extends KeysRelatedAction implements Action {
     focusOnElement();
 
     keyboard.sendKeys(keysToSend);
+  }
+
+  @Override
+  public List<Interaction> asInteractions(PointerInput mouse, KeyInput keyboard) {
+    ImmutableList.Builder<Interaction> interactions = ImmutableList.builder();
+
+    optionallyClickElement(mouse, interactions);
+
+    for (CharSequence keys : keysToSend) {
+      keys.codePoints().forEach(codePoint -> {
+        interactions.add(keyboard.createKeyDown(codePoint));
+        interactions.add(keyboard.createKeyUp(codePoint));
+      });
+    }
+
+    return interactions.build();
   }
 }

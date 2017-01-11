@@ -17,10 +17,14 @@
 
 package org.openqa.selenium.interactions;
 
+import com.google.common.collect.ImmutableList;
+
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.internal.SingleKeyAction;
 import org.openqa.selenium.internal.Locatable;
+
+import java.util.List;
 
 /**
  * Emulates key press only, without the release.
@@ -41,5 +45,15 @@ public class KeyDownAction extends SingleKeyAction implements Action {
     focusOnElement();
 
     keyboard.pressKey(key);
+  }
+
+  @Override
+  public List<Interaction> asInteractions(PointerInput mouse, KeyInput keyboard) {
+    ImmutableList.Builder<Interaction> interactions = ImmutableList.builder();
+
+    optionallyClickElement(mouse, interactions);
+    interactions.add(keyboard.createKeyDown(key.getCodePoint()));
+
+    return interactions.build();
   }
 }
