@@ -42,8 +42,10 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.HasInputDevices;
+import org.openqa.selenium.interactions.Interactive;
 import org.openqa.selenium.interactions.Keyboard;
 import org.openqa.selenium.interactions.Mouse;
+import org.openqa.selenium.interactions.Sequence;
 import org.openqa.selenium.internal.FindsByClassName;
 import org.openqa.selenium.internal.FindsByCssSelector;
 import org.openqa.selenium.internal.FindsById;
@@ -63,6 +65,7 @@ import org.openqa.selenium.security.Credentials;
 import org.openqa.selenium.security.UserAndPassword;
 
 import java.net.URL;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -75,9 +78,9 @@ import java.util.logging.Logger;
 
 @Augmentable
 public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
-    FindsById, FindsByClassName, FindsByLinkText, FindsByName,
-    FindsByCssSelector, FindsByTagName, FindsByXPath,
-    HasInputDevices, HasCapabilities, TakesScreenshot {
+      FindsById, FindsByClassName, FindsByLinkText, FindsByName,
+      FindsByCssSelector, FindsByTagName, FindsByXPath,
+      HasInputDevices, HasCapabilities, Interactive, TakesScreenshot {
 
   // TODO(dawagner): This static logger should be unified with the per-instance localLogs
   private static final Logger logger = Logger.getLogger(RemoteWebDriver.class.getName());
@@ -660,6 +663,16 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
   protected ExecuteMethod getExecuteMethod() {
     return executeMethod;
+  }
+
+  @Override
+  public void perform(Collection<Sequence> actions) {
+    execute(DriverCommand.ACTIONS, ImmutableMap.of("actions", actions));
+  }
+
+  @Override
+  public void resetInputState() {
+    execute(DriverCommand.CLEAR_ACTIONS_STATE);
   }
 
   public Keyboard getKeyboard() {
