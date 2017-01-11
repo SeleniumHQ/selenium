@@ -17,13 +17,18 @@
 
 package org.openqa.selenium.interactions;
 
+import com.google.common.collect.ImmutableList;
+
+import java.time.Duration;
+import java.util.List;
+
 /**
  * Takes a pause.
  *
  * @deprecated 'Pause' is considered to be a bad design practice.
  */
 @Deprecated
-public class PauseAction implements Action {
+public class PauseAction implements Action, IsInteraction {
 
   private final long pause;
 
@@ -36,5 +41,10 @@ public class PauseAction implements Action {
       Thread.sleep(pause);
     } catch (InterruptedException e) {
     }
+  }
+
+  @Override
+  public List<Interaction> asInteractions(PointerInput mouse, KeyInput keyboard) {
+    return ImmutableList.of(new Pause(keyboard, Duration.ofMillis(pause)));
   }
 }

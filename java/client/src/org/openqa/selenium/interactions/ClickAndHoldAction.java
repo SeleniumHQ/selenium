@@ -17,9 +17,13 @@
 
 package org.openqa.selenium.interactions;
 
+import com.google.common.collect.ImmutableList;
+
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.internal.MouseAction;
 import org.openqa.selenium.internal.Locatable;
+
+import java.util.List;
 
 /**
  * Presses the left mouse button without releasing it.
@@ -40,5 +44,14 @@ public class ClickAndHoldAction extends MouseAction implements Action {
   public void perform() {
     moveToLocation();
     mouse.mouseDown(getActionLocation());
+  }
+
+  @Override
+  public List<Interaction> asInteractions(PointerInput mouse, KeyInput keyboard) {
+    ImmutableList.Builder<Interaction> interactions = ImmutableList.builder();
+
+    moveToLocation(mouse, interactions);
+
+    return interactions.build();
   }
 }

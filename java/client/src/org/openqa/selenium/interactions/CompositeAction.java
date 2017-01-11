@@ -18,6 +18,8 @@
 package org.openqa.selenium.interactions;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,8 +28,8 @@ import java.util.List;
  * An action for aggregating actions and triggering all of them at the same time.
  *
  */
-public class CompositeAction implements Action {
-  private List<Action> actionsList = new ArrayList<>();
+public class CompositeAction implements Action, IsInteraction {
+  private final List<Action> actionsList = new ArrayList<>();
 
   public void perform() {
     for (Action action : actionsList) {
@@ -36,6 +38,7 @@ public class CompositeAction implements Action {
   }
 
   public CompositeAction addAction(Action action) {
+    Preconditions.checkNotNull(action, "Null actions are not supported.");
     actionsList.add(action);
     return this;
   }
@@ -43,5 +46,21 @@ public class CompositeAction implements Action {
   @VisibleForTesting
   int getNumberOfActions() {
     return actionsList.size();
+  }
+
+  @Override
+  public List<Interaction> asInteractions(PointerInput mouse, KeyInput keyboard) {
+    ImmutableList.Builder<Interaction> interactions = ImmutableList.builder();
+
+    for (Action action : actionsList) {
+      if (!(action instanceof IsInteraction)) {
+        throw new IllegalArgumentException(
+            String.format("Action must implement IsInteraction: %s", action));
+      }
+
+      interactions.addAll(((IsInteraction) action).asInteractions(mouse, keyboard));
+    }
+
+    return interactions.build();
   }
 }
