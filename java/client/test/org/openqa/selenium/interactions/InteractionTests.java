@@ -21,7 +21,6 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-    ActionsTest.class,
     BasicKeyboardInterfaceTest.class,
     BasicMouseInterfaceTest.class,
     CombinedInputActionsTest.class,
