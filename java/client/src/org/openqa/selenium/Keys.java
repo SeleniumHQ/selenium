@@ -99,6 +99,7 @@ public enum Keys implements CharSequence {
   ZENKAKU_HANKAKU ('\uE040');
 
   private final char keyCode;
+  private final int codePoint;
 
   Keys(Keys key) {
     this(key.charAt(0));
@@ -106,6 +107,11 @@ public enum Keys implements CharSequence {
 
   Keys(char keyCode) {
     this.keyCode = keyCode;
+    this.codePoint = String.valueOf(keyCode).codePoints().findFirst().getAsInt();
+  }
+
+  public int getCodePoint() {
+    return codePoint;
   }
 
   public char charAt(int index) {
@@ -182,5 +188,4 @@ public enum Keys implements CharSequence {
 
     return null;
   }
-
 }
