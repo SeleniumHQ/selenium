@@ -386,7 +386,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
     driver.get(pages.mouseTrackerPage);
 
     WebElement trackerDiv = driver.findElement(By.id("mousetracker"));
-    new Actions(driver).moveToElement(trackerDiv).build().perform();
+    new Actions(driver).moveToElement(trackerDiv).perform();
 
     WebElement reporter = driver.findElement(By.id("status"));
 
@@ -407,8 +407,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
     driver.get(pages.mouseTrackerPage);
 
     WebElement trackerDiv = driver.findElement(By.id("mousetracker"));
-    new Actions(driver).moveToElement(trackerDiv, 95, 195).build()
-        .perform();
+    new Actions(driver).moveToElement(trackerDiv, 95, 195).perform();
 
     WebElement reporter = driver.findElement(By.id("status"));
 
@@ -425,8 +424,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
     driver.get(pages.mouseTrackerPage);
 
     WebElement trackerDiv = driver.findElement(By.id("mousetracker"));
-    new Actions(driver).moveToElement(trackerDiv, 0, 0).build()
-        .perform();
+    new Actions(driver).moveToElement(trackerDiv, 0, 0).perform();
 
     WebElement reporter = driver.findElement(By.id("status"));
 
@@ -444,13 +442,13 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
     try {
       driver.get(pages.mouseTrackerPage);
 
-      new Actions(driver).moveByOffset(50, 100).build().perform();
+      new Actions(driver).moveByOffset(50, 100).perform();
 
       WebElement reporter = driver.findElement(By.id("status"));
 
       wait.until(fuzzyMatchingOfCoordinates(reporter, 40, 20));
     } finally {
-      new Actions(driver).moveByOffset(-50, -100).build().perform();
+      new Actions(driver).moveByOffset(-50, -100).perform();
     }
   }
 
