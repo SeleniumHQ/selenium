@@ -80,6 +80,10 @@ public class Sequence implements Encodable {
     return toReturn;
   }
 
+  public Map<String, Object> toJson() {
+    return encode();
+  }
+
   int size() {
     return actions.size();
   }

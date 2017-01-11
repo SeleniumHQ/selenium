@@ -17,33 +17,63 @@
 
 package org.openqa.selenium.interactions;
 
+import static org.openqa.selenium.interactions.PointerInput.Kind.MOUSE;
+import static org.openqa.selenium.interactions.PointerInput.MouseButton.LEFT;
+
+import com.google.common.base.Preconditions;
+
 import org.openqa.selenium.Keys;
+import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.PointerInput.Origin;
+import org.openqa.selenium.interactions.internal.MouseAction.Button;
 import org.openqa.selenium.internal.Locatable;
+
+import java.time.Duration;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.IntConsumer;
 
 /**
  * The user-facing API for emulating complex user gestures. Use this class rather than using the
  * Keyboard or Mouse directly.
- *
+ * <p>
  * Implements the builder pattern: Builds a CompositeAction containing all actions specified by the
  * method calls.
  */
 public class Actions {
-  protected WebDriver driver;
-  protected Mouse mouse;
-  protected Keyboard keyboard;
-  protected CompositeAction action;
 
-  /**
-   * Default constructor - uses the default keyboard, mouse implemented by the driver.
-   * @param driver the driver providing the implementations to use.
-   */
+  private final WebDriver driver;
+
+  // W3C
+  private final Map<InputSource, Sequence> sequences = new HashMap<>();
+  private final PointerInput defaultMouse = new PointerInput(
+      MOUSE,
+      Optional.of("default mouse"));
+  private final KeyInput defaultKeyboard = new KeyInput(Optional.of("default keyboard"));
+
+  // JSON-wire protocol
+  private final Keyboard jsonKeyboard;
+  private final Mouse jsonMouse;
+  protected CompositeAction action = new CompositeAction();
+  private RuntimeException actionsException;
+
   public Actions(WebDriver driver) {
-    this.driver = driver;
-    this.mouse = ((HasInputDevices) driver).getMouse();
-    this.keyboard = ((HasInputDevices) driver).getKeyboard();
-    resetCompositeAction();
+    this.driver = Preconditions.checkNotNull(driver);
+
+    if (driver instanceof HasInputDevices) {
+      HasInputDevices deviceOwner = (HasInputDevices) driver;
+      this.jsonKeyboard = deviceOwner.getKeyboard();
+      this.jsonMouse = deviceOwner.getMouse();
+    } else {
+      this.jsonKeyboard = null;
+      this.jsonMouse = null;
+    }
   }
 
   /**
@@ -51,24 +81,25 @@ public class Actions {
    * additional functionality (for example, dragging-and-dropping from the desktop).
    * @param keyboard the {@link Keyboard} implementation to delegate to.
    * @param mouse the {@link Mouse} implementation to delegate to.
+   * @deprecated Use the new interactions APIs.
    */
+  @Deprecated
   public Actions(Keyboard keyboard, Mouse mouse) {
-    this.mouse = mouse;
-    this.keyboard = keyboard;
-    resetCompositeAction();
+    this.driver = null;
+    this.jsonKeyboard = keyboard;
+    this.jsonMouse = mouse;
   }
 
   /**
    * Only used by the TouchActions class.
    * @param keyboard implementation to delegate to.
+   * @deprecated Use the new interactions API.
    */
+  @Deprecated
   public Actions(Keyboard keyboard) {
-    this.keyboard = keyboard;
-    resetCompositeAction();
-  }
-
-  private void resetCompositeAction() {
-    action = new CompositeAction();
+    this.driver = null;
+    this.jsonKeyboard = keyboard;
+    this.jsonMouse = null;
   }
 
   /**
@@ -77,52 +108,65 @@ public class Actions {
    * Note that the modifier key is <b>never</b> released implicitly - either
    * <i>keyUp(theKey)</i> or <i>sendKeys(Keys.NULL)</i>
    * must be called to release the modifier.
-   * @param theKey Either {@link Keys#SHIFT}, {@link Keys#ALT} or {@link Keys#CONTROL}. If the
+   * @param key Either {@link Keys#SHIFT}, {@link Keys#ALT} or {@link Keys#CONTROL}. If the
    * provided key is none of those, {@link IllegalArgumentException} is thrown.
    * @return A self reference.
    */
-  public Actions keyDown(Keys theKey) {
-    return this.keyDown(null, theKey);
+  public Actions keyDown(CharSequence key) {
+    if (isBuildingActions()) {
+      return keyDown(null, key);
+    }
+    return addKeyAction(key, codePoint -> tick(defaultKeyboard.createKeyDown(codePoint)));
   }
 
   /**
    * Performs a modifier key press after focusing on an element. Equivalent to:
    * <i>Actions.click(element).sendKeys(theKey);</i>
-   * @see #keyDown(org.openqa.selenium.Keys)
+   * @see #keyDown(CharSequence)
    *
-   * @param theKey Either {@link Keys#SHIFT}, {@link Keys#ALT} or {@link Keys#CONTROL}. If the
+   * @param key Either {@link Keys#SHIFT}, {@link Keys#ALT} or {@link Keys#CONTROL}. If the
    * provided key is none of those, {@link IllegalArgumentException} is thrown.
-   * @param element WebElement to perform the action
+   * @param target WebElement to perform the action
    * @return A self reference.
    */
-  public Actions keyDown(WebElement element, Keys theKey) {
-    action.addAction(new KeyDownAction(keyboard, mouse, (Locatable) element, theKey));
-    return this;
+  public Actions keyDown(WebElement target, CharSequence key) {
+    if (isBuildingActions()) {
+      action.addAction(new KeyDownAction(jsonKeyboard, jsonMouse, (Locatable) target, asKeys(key)));
+      return this;
+    }
+    return click(target).keyDown(key);
   }
 
   /**
    * Performs a modifier key release. Releasing a non-depressed modifier key will yield undefined
    * behaviour.
    *
-   * @param theKey Either {@link Keys#SHIFT}, {@link Keys#ALT} or {@link Keys#CONTROL}.
+   * @param key Either {@link Keys#SHIFT}, {@link Keys#ALT} or {@link Keys#CONTROL}.
    * @return A self reference.
    */
-  public Actions keyUp(Keys theKey) {
-    return this.keyUp(null, theKey);
+  public Actions keyUp(CharSequence key) {
+    if (isBuildingActions()) {
+      return keyUp(null, key);
+    }
+
+    return addKeyAction(key, codePoint -> tick(defaultKeyboard.createKeyUp(codePoint)));
   }
 
   /**
    * Performs a modifier key release after focusing on an element. Equivalent to:
    * <i>Actions.click(element).sendKeys(theKey);</i>
-   * @see #keyUp(org.openqa.selenium.Keys) on behaviour regarding non-depressed modifier keys.
+   * @see #keyUp(CharSequence) on behaviour regarding non-depressed modifier keys.
    *
-   * @param theKey Either {@link Keys#SHIFT}, {@link Keys#ALT} or {@link Keys#CONTROL}.
-   * @param element WebElement to perform the action on
+   * @param key Either {@link Keys#SHIFT}, {@link Keys#ALT} or {@link Keys#CONTROL}.
+   * @param target WebElement to perform the action on
    * @return A self reference.
    */
-  public Actions keyUp(WebElement element, Keys theKey) {
-    action.addAction(new KeyUpAction(keyboard, mouse, (Locatable) element, theKey));
-    return this;
+  public Actions keyUp(WebElement target, CharSequence key) {
+    if (isBuildingActions()) {
+      action.addAction(new KeyUpAction(jsonKeyboard, jsonMouse, (Locatable) target, asKeys(key)));
+      return this;
+    }
+    return click(target).keyUp(key);
   }
 
   /**
@@ -136,27 +180,62 @@ public class Actions {
    *
    * @see WebElement#sendKeys(CharSequence...)
    *
-   * @param keysToSend The keys.
+   * @param keys The keys.
    * @return A self reference.
    */
-  public Actions sendKeys(CharSequence... keysToSend) {
-    return this.sendKeys(null, keysToSend);
+  public Actions sendKeys(CharSequence... keys) {
+    if (isBuildingActions()) {
+      action.addAction(new SendKeysAction(jsonKeyboard, jsonMouse, null, keys));
+      return this;
+    }
+
+    for (CharSequence key : keys) {
+      key.codePoints().forEach(codePoint -> {
+        tick(defaultKeyboard.createKeyDown(codePoint));
+        tick(defaultKeyboard.createKeyUp(codePoint));
+      });
+    }
+
+    return this;
   }
 
   /**
    * Equivalent to calling:
    * <i>Actions.click(element).sendKeys(keysToSend).</i>
-   * This method is different from {@link org.openqa.selenium.WebElement#sendKeys(CharSequence...)} - see
-   * {@link Actions#sendKeys(CharSequence...)} for details how.
+   * This method is different from {@link WebElement#sendKeys(CharSequence...)} - see
+   * {@link #sendKeys(CharSequence...)} for details how.
    *
    * @see #sendKeys(java.lang.CharSequence[])
    *
-   * @param element element to focus on.
-   * @param keysToSend The keys.
+   * @param target element to focus on.
+   * @param keys The keys.
    * @return A self reference.
    */
-  public Actions sendKeys(WebElement element, CharSequence... keysToSend) {
-    action.addAction(new SendKeysAction(keyboard, mouse, (Locatable) element, keysToSend));
+  public Actions sendKeys(WebElement target, CharSequence... keys) {
+    if (isBuildingActions()) {
+      action.addAction(new SendKeysAction(jsonKeyboard, jsonMouse, (Locatable) target, keys));
+      return this;
+    }
+    return click(target).sendKeys(keys);
+  }
+
+  private Keys asKeys(CharSequence key) {
+    if (!(key instanceof Keys)) {
+      throw new IllegalArgumentException(
+          "keyDown argument must be an instanceof Keys: " + key);
+    }
+
+    return (Keys) key;
+  }
+
+  private Actions addKeyAction(CharSequence key, IntConsumer consumer) {
+    // Verify that we only have a single character to type.
+    Preconditions.checkState(
+        key.codePoints().count() == 1,
+        "Only one code point is allowed at a time: %s", key);
+
+    key.codePoints().forEach(consumer);
+
     return this;
   }
 
@@ -164,12 +243,15 @@ public class Actions {
    * Clicks (without releasing) in the middle of the given element. This is equivalent to:
    * <i>Actions.moveToElement(onElement).clickAndHold()</i>
    *
-   * @param onElement Element to move to and click.
+   * @param target Element to move to and click.
    * @return A self reference.
    */
-  public Actions clickAndHold(WebElement onElement) {
-    action.addAction(new ClickAndHoldAction(mouse, (Locatable) onElement));
-    return this;
+  public Actions clickAndHold(WebElement target) {
+    if (isBuildingActions()) {
+      action.addAction(new ClickAndHoldAction(jsonMouse, (Locatable) target));
+      return this;
+    }
+    return moveToElement(target).clickAndHold();
   }
 
   /**
@@ -177,7 +259,12 @@ public class Actions {
    * @return A self reference.
    */
   public Actions clickAndHold() {
-    return this.clickAndHold(null);
+    if (isBuildingActions()) {
+      return clickAndHold(null);
+    }
+
+    tick(defaultMouse.createPointerDown(LEFT.asArg()));
+    return this;
   }
 
   /**
@@ -188,12 +275,15 @@ public class Actions {
    * Invoking this action without invoking {@link #clickAndHold()} first will result in
    * undefined behaviour.
    *
-   * @param onElement Element to release the mouse button above.
+   * @param target Element to release the mouse button above.
    * @return A self reference.
    */
-  public Actions release(WebElement onElement) {
-    action.addAction(new ButtonReleaseAction(mouse, (Locatable) onElement));
-    return this;
+  public Actions release(WebElement target) {
+    if (isBuildingActions()) {
+      action.addAction(new ButtonReleaseAction(jsonMouse, (Locatable) target));
+      return this;
+    }
+    return moveToElement(target).release();
   }
 
   /**
@@ -202,19 +292,26 @@ public class Actions {
    * @return A self reference.
    */
   public Actions release() {
-    return this.release(null);
+    if (isBuildingActions()) {
+      this.release(null);
+    }
+
+    return tick(defaultMouse.createPointerUp(Button.LEFT.asArg()));
   }
 
   /**
    * Clicks in the middle of the given element. Equivalent to:
    * <i>Actions.moveToElement(onElement).click()</i>
    *
-   * @param onElement Element to click.
+   * @param target Element to click.
    * @return A self reference.
    */
-  public Actions click(WebElement onElement) {
-    action.addAction(new ClickAction(mouse, (Locatable) onElement));
-    return this;
+  public Actions click(WebElement target) {
+    if (isBuildingActions()) {
+      action.addAction(new ClickAction(jsonMouse, (Locatable) target));
+      return this;
+    }
+    return moveToElement(target).click();
   }
 
   /**
@@ -224,19 +321,28 @@ public class Actions {
    * @return A self reference.
    */
   public Actions click() {
-    return this.click(null);
+    if (isBuildingActions()) {
+      return click(null);
+    }
+    tick(defaultMouse.createPointerDown(0));
+    tick(defaultMouse.createPointerUp(0));
+
+    return this;
   }
 
   /**
    * Performs a double-click at middle of the given element. Equivalent to:
    * <i>Actions.moveToElement(element).doubleClick()</i>
    *
-   * @param onElement Element to move to.
+   * @param target Element to move to.
    * @return A self reference.
    */
-  public Actions doubleClick(WebElement onElement) {
-    action.addAction(new DoubleClickAction(mouse, (Locatable) onElement));
-    return this;
+  public Actions doubleClick(WebElement target) {
+    if (isBuildingActions()) {
+      action.addAction(new DoubleClickAction(jsonMouse, (Locatable) target));
+      return this;
+    }
+    return moveToElement(target).doubleClick();
   }
 
   /**
@@ -244,33 +350,47 @@ public class Actions {
    * @return A self reference.
    */
   public Actions doubleClick() {
-    return this.doubleClick(null);
+    if (isBuildingActions()) {
+      return doubleClick(null);
+    }
+    return click().click();
   }
 
   /**
    * Moves the mouse to the middle of the element. The element is scrolled into view and its
    * location is calculated using getBoundingClientRect.
-   * @param toElement element to move to.
+   * @param target element to move to.
    * @return A self reference.
    */
-  public Actions moveToElement(WebElement toElement) {
-    action.addAction(new MoveMouseAction(mouse, (Locatable) toElement));
-    return this;
+  public Actions moveToElement(WebElement target) {
+    if (isBuildingActions()) {
+      action.addAction(new MoveMouseAction(jsonMouse, (Locatable) target));
+      return this;
+    }
+    return moveToElement(target, 0, 0);
   }
 
   /**
    * Moves the mouse to an offset from the top-left corner of the element.
    * The element is scrolled into view and its location is calculated using getBoundingClientRect.
-   * @param toElement element to move to.
+   * @param target element to move to.
    * @param xOffset Offset from the top-left corner. A negative value means coordinates left from
    * the element.
    * @param yOffset Offset from the top-left corner. A negative value means coordinates above
    * the element.
    * @return A self reference.
    */
-  public Actions moveToElement(WebElement toElement, int xOffset, int yOffset) {
-    action.addAction(new MoveToOffsetAction(mouse, (Locatable) toElement, xOffset, yOffset));
-    return this;
+  public Actions moveToElement(WebElement target, int xOffset, int yOffset) {
+    if (isBuildingActions()) {
+      action.addAction(new MoveToOffsetAction(jsonMouse, (Locatable) target, xOffset, yOffset));
+      return this;
+    }
+
+    return tick(defaultMouse.createPointerMove(
+        Duration.ofMillis(250),
+        Origin.fromElement(target),
+        xOffset,
+        yOffset));
   }
 
   /**
@@ -284,20 +404,28 @@ public class Actions {
    * boundaries.
    */
   public Actions moveByOffset(int xOffset, int yOffset) {
-    action.addAction(new MoveToOffsetAction(mouse, null, xOffset, yOffset));
-    return this;
+    if (isBuildingActions()) {
+      action.addAction(new MoveToOffsetAction(jsonMouse, null, xOffset, yOffset));
+      return this;
+    }
+
+    return tick(
+        defaultMouse.createPointerMove(Duration.ofMillis(200), null, xOffset, yOffset));
   }
 
   /**
    * Performs a context-click at middle of the given element. First performs a mouseMove
    * to the location of the element.
    *
-   * @param onElement Element to move to.
+   * @param target Element to move to.
    * @return A self reference.
    */
-  public Actions contextClick(WebElement onElement) {
-    action.addAction(new ContextClickAction(mouse, (Locatable) onElement));
-    return this;
+  public Actions contextClick(WebElement target) {
+    if (isBuildingActions()) {
+      action.addAction(new ContextClickAction(jsonMouse, (Locatable) target));
+      return this;
+    }
+    return moveToElement(target).contextClick();
   }
 
   /**
@@ -305,7 +433,12 @@ public class Actions {
    * @return A self reference.
    */
   public Actions contextClick() {
-    return this.contextClick(null);
+    if (isBuildingActions()) {
+      return contextClick(null);
+    }
+
+    return tick(defaultMouse.createPointerDown(Button.RIGHT.asArg()))
+        .tick(defaultMouse.createPointerUp(Button.RIGHT.asArg()));
   }
 
   /**
@@ -317,10 +450,13 @@ public class Actions {
    * @return A self reference.
    */
   public Actions dragAndDrop(WebElement source, WebElement target) {
-    action.addAction(new ClickAndHoldAction(mouse, (Locatable) source));
-    action.addAction(new MoveMouseAction(mouse, (Locatable) target));
-    action.addAction(new ButtonReleaseAction(mouse, (Locatable) target));
-    return this;
+    if (isBuildingActions()) {
+      action.addAction(new ClickAndHoldAction(jsonMouse, (Locatable) source));
+      action.addAction(new MoveMouseAction(jsonMouse, (Locatable) target));
+      action.addAction(new ButtonReleaseAction(jsonMouse, (Locatable) target));
+      return this;
+    }
+    return clickAndHold(source).moveToElement(target).release();
   }
 
   /**
@@ -333,10 +469,13 @@ public class Actions {
    * @return A self reference.
    */
   public Actions dragAndDropBy(WebElement source, int xOffset, int yOffset) {
-    action.addAction(new ClickAndHoldAction(mouse, (Locatable) source));
-    action.addAction(new MoveToOffsetAction(mouse, null, xOffset, yOffset));
-    action.addAction(new ButtonReleaseAction(mouse, null));
-    return this;
+    if (isBuildingActions()) {
+      action.addAction(new ClickAndHoldAction(jsonMouse, (Locatable) source));
+      action.addAction(new MoveToOffsetAction(jsonMouse, null, xOffset, yOffset));
+      action.addAction(new ButtonReleaseAction(jsonMouse, null));
+      return this;
+    }
+    return clickAndHold(source).moveByOffset(xOffset, yOffset).release();
   }
 
   /**
@@ -349,27 +488,108 @@ public class Actions {
    */
   @Deprecated
   public Actions pause(long pause) {
-    action.addAction(new PauseAction(pause));
+    if (isBuildingActions()) {
+      action.addAction(new PauseAction(pause));
+      return this;
+    }
+
+    return tick(new Pause(defaultMouse, Duration.ofMillis(pause)));
+  }
+
+  public Actions tick(Interaction... actions) {
+    // All actions must be for a unique source.
+    Set<InputSource> seenSources = new HashSet<>();
+    for (Interaction action : actions) {
+      boolean freshlyAdded = seenSources.add(action.getSource());
+      if (!freshlyAdded) {
+        throw new IllegalStateException(String.format(
+            "You may only add one action per input source per tick: %s",
+            Arrays.asList(actions)));
+      }
+    }
+
+    // Add all actions to sequences
+    for (Interaction action : actions) {
+      Sequence sequence = getSequence(action.getSource());
+      sequence.addAction(action);
+      seenSources.remove(action.getSource());
+    }
+
+    // And now pad the remaining sequences with a pause.
+    for (InputSource source : seenSources) {
+      getSequence(source).addAction(new Pause(source, Duration.ZERO));
+    }
+
+    if (isBuildingActions()) {
+      actionsException = new IllegalArgumentException(
+          "You may not use new style interactions with old style actions");
+    }
+
+    return this;
+  }
+
+  public Actions tick(Action action) {
+    Preconditions.checkState(action instanceof IsInteraction);
+
+    for (Interaction interaction :
+        ((IsInteraction) action).asInteractions(defaultMouse, defaultKeyboard)) {
+      tick(interaction);
+    }
+
+    if (isBuildingActions()) {
+      this.action.addAction(action);
+    }
+
     return this;
   }
 
   /**
-   * Generates a composite action containing all actions so far, ready to be performed (and
-   * resets the internal builder state, so subsequent calls to build() will contain fresh
-   * sequences).
-   *
-   * @return the composite action
+   * A no-op left for legacy reasons.
    */
   public Action build() {
-    CompositeAction toReturn = action;
-    resetCompositeAction();
-    return toReturn;
+    if (isBuildingActions()) {
+      CompositeAction toReturn = action;
+      action = new CompositeAction();
+      return toReturn;
+    }
+    return this::perform;
   }
 
   /**
-   * A convenience method for performing the actions without calling build() first.
+   * Execute all the actions this represents.
    */
   public void perform() {
-    build().perform();
+    try {
+      ((Interactive) driver).perform(sequences.values());
+      sequences.clear();
+    } catch (ClassCastException | UnsupportedCommandException e) {
+      if (actionsException != null) {
+        throw actionsException;
+      }
+      // Fall back to the old way of doing things. Old Skool #ftw
+      action.perform();
+      action = new CompositeAction();
+    }
+  }
+
+  private Sequence getSequence(InputSource source) {
+    Sequence sequence = sequences.get(source);
+    if (sequence != null) {
+      return sequence;
+    }
+
+    int longest = 0;
+    for (Sequence examining : sequences.values()) {
+      longest = Math.max(longest, examining.size());
+    }
+
+    sequence = new Sequence(source, longest);
+    sequences.put(source, sequence);
+
+    return sequence;
+  }
+
+  private boolean isBuildingActions() {
+    return jsonMouse != null || jsonKeyboard != null;
   }
 }
