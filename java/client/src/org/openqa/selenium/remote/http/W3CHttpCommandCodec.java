@@ -18,6 +18,8 @@
 package org.openqa.selenium.remote.http;
 
 import static org.openqa.selenium.remote.DriverCommand.ACCEPT_ALERT;
+import static org.openqa.selenium.remote.DriverCommand.ACTIONS;
+import static org.openqa.selenium.remote.DriverCommand.CLEAR_ACTIONS_STATE;
 import static org.openqa.selenium.remote.DriverCommand.CLEAR_LOCAL_STORAGE;
 import static org.openqa.selenium.remote.DriverCommand.CLEAR_SESSION_STORAGE;
 import static org.openqa.selenium.remote.DriverCommand.DISMISS_ALERT;
@@ -123,6 +125,9 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
     defineCommand(SET_ALERT_VALUE, post("/session/:sessionId/alert/text"));
 
     defineCommand(GET_ACTIVE_ELEMENT, get("/session/:sessionId/element/active"));
+
+    defineCommand(ACTIONS, post("/session/:sessionId/actions"));
+    defineCommand(CLEAR_ACTIONS_STATE, delete("/session/:sessionId/actions"));
   }
 
   @Override
