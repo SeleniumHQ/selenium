@@ -34,6 +34,7 @@ class Options(object):
 
     def __init__(self):
         self._binary = None
+        self._preferences = {}
         self._profile = None
         self._arguments = []
         self.log = Log()
@@ -60,6 +61,15 @@ class Options(object):
     @binary.setter  # noqa
     def binary_location(self, value):
         self.binary = value
+
+    @property
+    def preferences(self):
+        """Returns a dict of preferences."""
+        return self._preferences
+
+    def set_preference(self, name, value):
+        """Sets a preference."""
+        self._preferences[name] = value
 
     @property
     def profile(self):
@@ -100,6 +110,8 @@ class Options(object):
 
         if self._binary is not None:
             opts["binary"] = self._binary._start_cmd
+        if len(self._preferences) > 0:
+            opts["prefs"] = self._preferences
         if self._profile is not None:
             opts["profile"] = self._profile.encoded
         if len(self._arguments) > 0:
