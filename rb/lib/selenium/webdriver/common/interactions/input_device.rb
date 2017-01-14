@@ -17,39 +17,37 @@
 # specific language governing permissions and limitations
 # under the License.
 
+require 'securerandom'
+
 module Selenium
   module WebDriver
-    #
-    # @api private
-    #
+    module Interactions
+      class InputDevice
+        attr_reader :name, :actions
 
-    module DriverExtensions
-      module HasInputDevices
-        #
-        # @return [ActionBuilder]
-        # @api public
-        #
-
-        def action
-          ActionBuilder.new mouse, keyboard
+        def initialize(name = nil)
+          @name = name || SecureRandom.uuid
+          @actions = []
         end
 
-        #
-        # @api private
-        #
-
-        def mouse
-          Mouse.new @bridge
+        def add_action(action)
+          raise TypeError, "#{action.inspect} is not a valid action" unless action.class < Interaction
+          @actions << action
         end
 
-        #
-        # @api private
-        #
-
-        def keyboard
-          Keyboard.new @bridge
+        def clear_actions
+          @actions.clear
         end
-      end # HasInputDevices
-    end # DriverExtensions
+
+        def create_pause(duration = nil)
+          add_action(Pause.new(self, duration))
+        end
+
+        def no_actions? # Determine if only pauses are present
+          actions = @actions.reject { |action| action.type == Interaction::PAUSE }
+          actions.empty?
+        end
+      end # InputDevice
+    end # Interactions
   end # WebDriver
 end # Selenium

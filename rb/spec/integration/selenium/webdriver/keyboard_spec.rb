@@ -27,6 +27,7 @@ module Selenium
         # Edge - https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/8339952
         not_compliant_on browser: :edge do
           it 'sends keys to the active element' do
+            allow($stderr).to receive(:write)
             driver.navigate.to url_for('bodyTypingTest.html')
 
             driver.keyboard.send_keys 'ab'
@@ -41,6 +42,7 @@ module Selenium
         # Edge - https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/8339952
         not_compliant_on browser: :edge do
           it 'can send keys with shift pressed' do
+            allow($stderr).to receive(:write)
             driver.navigate.to url_for('javascriptPage.html')
 
             event_input = driver.find_element(id: 'theworks')
@@ -58,10 +60,12 @@ module Selenium
         end
 
         it 'raises an ArgumentError if the pressed key is not a modifier key' do
+          allow($stderr).to receive(:write)
           expect { driver.keyboard.press :return }.to raise_error(ArgumentError)
         end
 
         it 'can press and release modifier keys' do
+          allow($stderr).to receive(:write)
           driver.navigate.to url_for('javascriptPage.html')
 
           event_input = driver.find_element(id: 'theworks')
