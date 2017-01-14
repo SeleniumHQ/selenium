@@ -25,6 +25,7 @@ module Selenium
     not_compliant_on browser: [:safari, :firefox, :ff_nightly] do
       describe Mouse do
         it 'clicks an element' do
+          allow($stderr).to receive(:write)
           driver.navigate.to url_for('formPage.html')
           original_title = driver.title
           driver.mouse.click driver.find_element(id: 'imageButton')
@@ -33,6 +34,7 @@ module Selenium
         end
 
         it 'can drag and drop' do
+          allow($stderr).to receive(:write)
           driver.navigate.to url_for('droppableItems.html')
 
           draggable = long_wait.until do
@@ -50,6 +52,7 @@ module Selenium
         end
 
         it 'double clicks an element' do
+          allow($stderr).to receive(:write)
           driver.navigate.to url_for('javascriptPage.html')
           element = driver.find_element(id: 'doubleClickField')
 
@@ -62,6 +65,7 @@ module Selenium
 
         not_compliant_on browser: :phantomjs do
           it 'context clicks an element' do
+            allow($stderr).to receive(:write)
             driver.navigate.to url_for('javascriptPage.html')
             element = driver.find_element(id: 'doubleClickField')
 

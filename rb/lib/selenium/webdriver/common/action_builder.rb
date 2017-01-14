@@ -23,9 +23,7 @@ module Selenium
     # The ActionBuilder provides the user a way to set up and perform
     # complex user interactions.
     #
-    # This class should not be instantiated directly, but is created by
-    # Selenium::WebDriver::DriverExtensions::HasInputDevices#action, which
-    # is available on Driver instances that support the user interaction API.
+    # This class should not be instantiated directly, but is created by Driver#action
     #
     # @example
     #

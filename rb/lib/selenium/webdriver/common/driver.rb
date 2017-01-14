@@ -125,6 +125,23 @@ module Selenium
       end
 
       #
+      # @return [ActionBuilder, W3CActionBuilder]
+      # @see ActionBuilder, W3CActionBuilder
+      #
+
+      def action
+        bridge.action
+      end
+
+      def mouse
+        bridge.mouse
+      end
+
+      def keyboard
+        bridge.keyboard
+      end
+
+      #
       # Opens the specified URL in the browser.
       #
 

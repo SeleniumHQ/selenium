@@ -109,6 +109,7 @@ module Selenium
             #
 
             actions: [:post, 'session/:session_id/actions'.freeze],
+            release_actions: [:delete, 'session/:session_id/actions'.freeze],
 
             #
             # Element Operations
