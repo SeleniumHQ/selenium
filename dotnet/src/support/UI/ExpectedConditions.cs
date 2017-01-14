@@ -310,6 +310,27 @@ namespace OpenQA.Selenium.Support.UI
                 }
             };
         }
+      
+        /// <summary>
+        /// An expectation for checking if any text is present in the specified element.
+        /// </summary>
+        /// <param name="element">The WebElement</param>
+        /// <returns><see langword="true"/> once the element contains any text; otherwise, <see langword="false"/>.</returns>
+        public static Func<IWebDriver, bool> AnyTextToBePresentInElement(IWebElement element)
+        {
+            return (driver) =>
+            {
+                try
+                {
+                    var elementText = element.Text.Trim();
+                    return !string.IsNullOrEmpty(elementText);
+                }
+                catch (StaleElementReferenceException)
+                {
+                    return false;
+                }
+            };
+        }
 
         /// <summary>
         /// An expectation for checking whether the given frame is available to switch
