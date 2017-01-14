@@ -15,6 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import signal
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from .service import Service
@@ -69,6 +70,7 @@ class WebDriver(RemoteWebDriver):
         """
         try:
             RemoteWebDriver.quit(self)
+            self.service.process.send_signal(signal.SIGTERM)
         except Exception:
             # We don't care about the message because something probably has gone wrong
             pass
