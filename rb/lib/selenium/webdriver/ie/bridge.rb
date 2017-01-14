@@ -47,7 +47,7 @@ module Selenium
         end
 
         def driver_extensions
-          [DriverExtensions::TakesScreenshot, DriverExtensions::HasInputDevices]
+          [DriverExtensions::TakesScreenshot]
         end
 
         def quit

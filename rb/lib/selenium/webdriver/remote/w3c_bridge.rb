@@ -79,12 +79,10 @@ module Selenium
 
         def driver_extensions
           [
-            DriverExtensions::HasInputDevices,
             DriverExtensions::UploadsFiles,
             DriverExtensions::TakesScreenshot,
             DriverExtensions::HasSessionId,
             DriverExtensions::Rotatable,
-            DriverExtensions::HasTouchScreen,
             DriverExtensions::HasRemoteStatus,
             DriverExtensions::HasWebStorage
           ]
@@ -381,43 +379,32 @@ module Selenium
         # actions
         #
 
+        def action(async = false)
+          W3CActionBuilder.new self,
+                               Interactions.pointer(:mouse, name: 'mouse'),
+                               Interactions.key('keyboard'),
+                               async
+        end
+        alias_method :actions, :action
+
+        def mouse
+          raise Error::UnsupportedOperationError, '#mouse is no longer supported, use #action instead'
+        end
+
+        def keyboard
+          raise Error::UnsupportedOperationError, '#keyboard is no longer supported, use #action instead'
+        end
+
+        def send_actions(data)
+          execute :actions, {}, {actions: data}
+        end
+
+        def release_actions
+          execute :release_actions
+        end
+
         def click_element(element)
           execute :element_click, id: element
-        end
-
-        def click
-          execute :click, {}, {button: 0}
-        end
-
-        def double_click
-          execute :double_click
-        end
-
-        def context_click
-          execute :click, {}, {button: 2}
-        end
-
-        def mouse_down
-          execute :mouse_down
-        end
-
-        def mouse_up
-          execute :mouse_up
-        end
-
-        def mouse_move_to(element, x = nil, y = nil)
-          params = {element: element}
-
-          if x && y
-            params[:xoffset] = x
-            params[:yoffset] = y
-          end
-
-          execute :mouse_move_to, {}, params
-        end
-
-        def send_keys_to_active_element(keys)
-          send_keys_to_element(active_element, keys)
         end
 
         # TODO: - Implement file verification

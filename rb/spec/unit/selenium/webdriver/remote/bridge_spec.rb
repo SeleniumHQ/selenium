@@ -47,6 +47,26 @@ module Selenium
 
           expect {bridge.quit}.to_not raise_error
         end
+
+        context 'when using a deprecated method' do
+          before(:each) do
+            request_body = JSON.generate(sessionId: '11123', value: {})
+            headers = {'Content-Type' => 'application/json'}
+            stub_request(:post, 'http://127.0.0.1:4444/wd/hub/session').to_return(
+                status: 200, body: request_body, headers: headers
+            )
+          end
+
+          it 'warns that #mouse is deprecated' do
+            message = /\[DEPRECATION\] `Driver#mouse` is deprecated with w3c implementation\./
+            expect { Bridge.new.mouse }.to output(message).to_stderr
+          end
+
+          it 'warns that #keyboard is deprecated' do
+            message = /\[DEPRECATION\] `Driver#keyboard` is deprecated with w3c implementation\./
+            expect { Bridge.new.keyboard }.to output(message).to_stderr
+          end
+        end
       end
     end # Remote
   end # WebDriver

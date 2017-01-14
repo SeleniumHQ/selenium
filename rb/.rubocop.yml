@@ -81,3 +81,7 @@ Metrics/MethodLength:
   Max: 33
   Exclude:
     - 'lib/selenium/webdriver/chrome/legacy_bridge.rb'
+
+Metrics/BlockLength:
+  Exclude:
+    - "**/*_spec.rb"

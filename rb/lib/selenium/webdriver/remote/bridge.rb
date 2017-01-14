@@ -80,7 +80,6 @@ module Selenium
 
         def driver_extensions
           [
-            DriverExtensions::HasInputDevices,
             DriverExtensions::UploadsFiles,
             DriverExtensions::TakesScreenshot,
             DriverExtensions::HasSessionId,
@@ -373,6 +372,31 @@ module Selenium
         #
         # actions
         #
+
+        #
+        # @return [ActionBuilder]
+        # @api public
+        #
+
+        def action
+          ActionBuilder.new Mouse.new(self), Keyboard.new(self)
+        end
+
+        def mouse
+          warn <<-DEPRECATE.gsub(/\n +| {2,}/, ' ').freeze
+            [DEPRECATION] `Driver#mouse` is deprecated with w3c implementation. Instead use 
+            driver.action.<command>.perform
+          DEPRECATE
+          Mouse.new self
+        end
+
+        def keyboard
+          warn <<-DEPRECATE.gsub(/\n +| {2,}/, ' ').freeze
+            [DEPRECATION] `Driver#keyboard` is deprecated with w3c implementation. Instead use 
+            driver.action.<command>.perform
+          DEPRECATE
+          Keyboard.new self
+        end
 
         def click_element(element)
           execute :click_element, id: element
