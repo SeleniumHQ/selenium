@@ -938,17 +938,6 @@ bot.dom.concatenateCleanedLines_ = function(lines) {
 
 
 /**
- * @param {!Element} elem The element to consider.
- * @return {string} visible text.
- */
-bot.dom.getVisibleText = function(elem) {
-  var lines = [];
-  bot.dom.appendVisibleTextLinesFromElement_(elem, lines);
-  return bot.dom.concatenateCleanedLines_(lines);
-};
-
-
-/**
  * Helper function used by bot.dom.appendVisibleTextLinesFromElement_ and
  * bot.dom.appendVisibleTextLinesFromElementInComposedDom_
  * @param {!Element} elem Element.
@@ -1215,7 +1204,7 @@ if (bot.dom.IS_SHADOW_DOM_ENABLED) {
    * @param {!Element} elem The element to consider.
    * @return {string} visible text.
    */
-  bot.dom.getVisibleTextInComposedDom = function(elem) {
+  bot.dom.getVisibleText = function(elem) {
     var lines = [];
     bot.dom.appendVisibleTextLinesFromElementInComposedDom_(elem, lines);
     return bot.dom.concatenateCleanedLines_(lines);
