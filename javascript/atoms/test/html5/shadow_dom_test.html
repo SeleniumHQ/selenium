@@ -116,7 +116,9 @@ function testGetParentNodeInComposedDom() {
 
 
 function testGetVisibleTextInComposedDom() {
-  if (bot.dom.IS_SHADOW_DOM_ENABLED) {
+  if (!bot.dom.IS_SHADOW_DOM_ENABLED) {
+    assertFalse(typeof bot.dom.getVisibleTextInComposedDom === "unknown");
+  } else {
     var parentDiv = /** @type {!Element} */ (document.querySelector(
       "* /deep/ #parentDiv"));
     var youngerChildDiv = /** @type {!Element} */ (document.querySelector(
@@ -148,12 +150,12 @@ function testGetVisibleTextInComposedDom() {
         expectedParentContents;
   
     assertEquals(expectedOlderChildContents, 
-        bot.dom.getVisibleText(olderChildDiv));
+        bot.dom.getVisibleTextInComposedDom(olderChildDiv));
     assertEquals(expectedYoungerChildContents, 
-        bot.dom.getVisibleText(youngerChildDiv));
-    assertEquals(expectedParentContents, bot.dom.getVisibleText(parentDiv));
+        bot.dom.getVisibleTextInComposedDom(youngerChildDiv));
+    assertEquals(expectedParentContents, bot.dom.getVisibleTextInComposedDom(parentDiv));
     assertEquals(expectedPageContents, 
-      bot.dom.getVisibleText(/** @type {!Element} */ (document.body)));
+      bot.dom.getVisibleTextInComposedDom(/** @type {!Element} */ (document.body)));
   }
 }
 
