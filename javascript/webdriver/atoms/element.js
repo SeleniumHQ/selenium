@@ -115,10 +115,16 @@ webdriver.atoms.element.isInHead_ = function(element) {
 
 /**
  * @param {!Element} element The element to get the text from.
+ * @param {boolean=} opt_inComposedDom Whether to get text in the composed DOM;
+ *     defaults to false.
  * @return {string} The visible text or an empty string.
  */
-webdriver.atoms.element.getText = function(element) {
-  return bot.dom.getVisibleText(element);
+webdriver.atoms.element.getText = function(element, opt_inComposedDom) {
+  if (!!opt_inComposedDom) {
+    return bot.dom.getVisibleTextInComposedDom(element);
+  } else {
+    return bot.dom.getVisibleText(element);
+  }
 };
 
 
