@@ -19,10 +19,7 @@ package org.openqa.selenium.javascript;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import com.google.common.base.Function;
-import com.google.common.base.Supplier;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
 
 import org.junit.runner.Description;
 import org.junit.runner.Runner;
@@ -44,6 +41,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * JUnit4 test runner for Closure-based JavaScript tests.
@@ -68,33 +67,28 @@ public class JavaScriptTestSuite extends ParentRunner<Runner> {
   private static ImmutableList<Runner> createChildren(
       final Supplier<WebDriver> driverSupplier, final long timeout) throws IOException {
     final Path baseDir = InProject.locate("Rakefile").getParent();
-    final Function<String, URL> pathToUrlFn = new Function<String, URL>() {
-      @Override
-      public URL apply(String s) {
-        AppServer appServer = GlobalTestEnvironment.get().getAppServer();
-        try {
-          return new URL(appServer.whereIs("/" + s));
-        } catch (MalformedURLException e) {
-          throw new RuntimeException(e);
-        }
+    final Function<String, URL> pathToUrlFn = s -> {
+      AppServer appServer = GlobalTestEnvironment.get().getAppServer();
+      try {
+        return new URL(appServer.whereIs("/" + s));
+      } catch (MalformedURLException e) {
+        throw new RuntimeException(e);
       }
     };
 
 
     List<Path> tests = TestFileLocator.findTestFiles();
-    Iterable<Runner> runners = Iterables.transform(tests, new Function<Path, Runner>() {
-      @Override
-      public Runner apply(Path file) {
-        final String path = TestFileLocator.getTestFilePath(baseDir, file);
-        Description description = Description.createSuiteDescription(
-            path.replaceAll(".html$", ""));
+    return tests.stream()
+        .map(file -> {
+          final String path = TestFileLocator.getTestFilePath(baseDir, file);
+          Description description = Description.createSuiteDescription(
+              path.replaceAll(".html$", ""));
 
-        Statement testStatement = new ClosureTestStatement(
-            driverSupplier, path, pathToUrlFn, timeout);
-        return new StatementRunner(testStatement, description);
-      }
-    });
-    return ImmutableList.copyOf(runners);
+          Statement testStatement = new ClosureTestStatement(
+              driverSupplier, path, pathToUrlFn, timeout);
+          return new StatementRunner(testStatement, description);
+        })
+        .collect(ImmutableList.toImmutableList());
   }
 
   @Override
