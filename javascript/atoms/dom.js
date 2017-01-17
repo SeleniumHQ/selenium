@@ -422,7 +422,7 @@ bot.dom.getCascadedStyle_ = function(elem, styleName) {
 
 
 /**
- * Common code used by bot.dom.isShown and bot.dom.isShownInComposedDom.
+ * Extracted code from bot.dom.isShown.
  *
  * @param {!Element} elem The element to consider.
  * @param {boolean} ignoreOpacity Whether to ignore the element's opacity
@@ -535,20 +535,55 @@ bot.dom.isShown_ = function(elem, ignoreOpacity, parentsDisplayedFn) {
  * Options and Optgroup elements are treated as special cases: they are
  * considered shown iff they have a enclosing select element that is shown.
  *
+ * Elements in Shadow DOMs with younger shadow roots are not visible, and
+ * elements distributed into shadow DOMs check the visibility of the
+ * ancestors in the Composed DOM, rather than their ancestors in the logical
+ * DOM.
+ *
  * @param {!Element} elem The element to consider.
  * @param {boolean=} opt_ignoreOpacity Whether to ignore the element's opacity
  *     when determining whether it is shown; defaults to false.
  * @return {boolean} Whether or not the element is visible.
  */
 bot.dom.isShown = function(elem, opt_ignoreOpacity) {
-  // Any element with a display style equal to 'none' or that has an ancestor
-  // with display style equal to 'none' is not shown.
-  function displayed(e) {
-    if (bot.dom.getEffectiveStyle(e, 'display') == 'none') {
-      return false;
+  var displayed;
+
+  if (bot.dom.IS_SHADOW_DOM_ENABLED) {
+    // Any element with a display style equal to 'none' or that has an ancestor
+    // with display style equal to 'none' is not shown.
+    displayed = function(e) {
+      if (bot.dom.getEffectiveStyle(e, 'display') == 'none') {
+        return false;
+      }
+      var parent;
+      do {
+        parent = bot.dom.getParentNodeInComposedDom(e);
+        if (parent instanceof ShadowRoot) {
+          if (parent.host.shadowRoot != parent) {
+            // There is a younger shadow root, which will take precedence over
+            // the shadow this element is in, thus this element won't be
+            // displayed.
+            return false;
+          } else {
+            parent = parent.host;
+          }
+        } else if (parent.nodeType == goog.dom.NodeType.DOCUMENT ||
+            parent.nodeType == goog.dom.NodeType.DOCUMENT_FRAGMENT) {
+          parent = null;
+        }
+      } while (elem && elem.nodeType != goog.dom.NodeType.ELEMENT);
+      return !parent || displayed(parent);
     }
-    var parent = bot.dom.getParentElement(e);
-    return !parent || displayed(parent);
+  } else {
+    // Any element with a display style equal to 'none' or that has an ancestor
+    // with display style equal to 'none' is not shown.
+    displayed =  function(e) {
+      if (bot.dom.getEffectiveStyle(e, 'display') == 'none') {
+        return false;
+      }
+      var parent = bot.dom.getParentElement(e);
+      return !parent || displayed(parent);
+    }
   }
   return bot.dom.isShown_(elem, !!opt_ignoreOpacity, displayed);
 };
@@ -1223,50 +1258,6 @@ if (bot.dom.IS_SHADOW_DOM_ENABLED) {
 
 
   /**
-   * Determines whether an element is what a user would call "shown". This is
-   * heavily based on bot.dom.isShown. It differs only in how it handles
-   * elementsin shadow DOMs, or elements that are distributed into shadow DOMs
-   * by &lt;shadow&gt; or &lt;content&gt; tags. Specifically, elements in shadow
-   * DOMs with younger shadow roots are not visible, and elements distributed
-   * into shadow DOMs check the visibility of the ancestors in the Composed DOM,
-   * rather than their ancestors in the logical DOM.
-   *
-   * @param {!Element} elem The element to consider.
-   * @param {boolean=} opt_ignoreOpacity Whether to ignore the element's opacity
-   *     when determining whether it is shown; defaults to false.
-   * @return {boolean} Whether or not the element is visible.
-   */
-  bot.dom.isShownInComposedDom = function(elem, opt_ignoreOpacity) {
-    // Any element with a display style equal to 'none' or that has an ancestor
-    // with display style equal to 'none' is not shown.
-    function displayed(e) {
-      if (bot.dom.getEffectiveStyle(e, 'display') == 'none') {
-        return false;
-      }
-      var parent;
-      do {
-        parent = bot.dom.getParentNodeInComposedDom(e);
-        if (parent instanceof ShadowRoot) {
-          if (parent.host.shadowRoot != parent) {
-            // There is a younger shadow root, which will take precedence over
-            // the shadow this element is in, thus this element won't be
-            // displayed.
-            return false;
-          } else {
-            parent = parent.host;
-          }
-        } else if (parent.nodeType == goog.dom.NodeType.DOCUMENT ||
-            parent.nodeType == goog.dom.NodeType.DOCUMENT_FRAGMENT) {
-          parent = null;
-        }
-      } while (elem && elem.nodeType != goog.dom.NodeType.ELEMENT);
-      return !parent || displayed(parent);
-    }
-    return bot.dom.isShown_(elem, !!opt_ignoreOpacity, displayed);
-  };
-
-
-  /**
    * @param {!Node} node Node.
    * @param {!Array.<string>} lines Accumulated visible lines of text.
    * @param {boolean} shown whether the node is visible
@@ -1358,7 +1349,7 @@ if (bot.dom.IS_SHADOW_DOM_ENABLED) {
     }
 
     bot.dom.appendVisibleTextLinesFromElementCommon_(
-      elem, lines, bot.dom.isShownInComposedDom,
+      elem, lines, bot.dom.isShown,
       function(node, lines, shown, whitespace, textTransform) {
         // If the node has been distributed into a shadowDom element
         // to be displayed elsewhere, then we shouldn't append
