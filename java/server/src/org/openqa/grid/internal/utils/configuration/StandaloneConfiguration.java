@@ -66,6 +66,17 @@ public class StandaloneConfiguration {
   static final Boolean DEFAULT_DEBUG_TOGGLE = false;
 
   /*
+   * config parameters which do not serialize or deserialize to/from json
+   */
+
+  @Parameter(
+      names = {"--version", "-version"},
+      description = "Displays the version and exits."
+  )
+  // initially defaults to false from boolean primitive type
+  public boolean version;
+
+  /*
    * config parameters which do not serialize to json
    */
 
@@ -101,7 +112,7 @@ public class StandaloneConfiguration {
     names = {"--help", "-help", "-h"},
     help = true,
     hidden = true,
-    description = "Displays this help"
+    description = "Displays this help."
   )
   /**
    * Whether help or usage() is requested. Default {@code false}.
@@ -231,7 +242,7 @@ public class StandaloneConfiguration {
     if (isMergeAble(other.timeout, timeout)) {
       timeout = other.timeout;
     }
-    // role, port, log, debug and help are not merged, they are only consumed by the immediately running node and can't affect a remote
+    // role, port, log, debug, version, and help are not merged, they are only consumed by the immediately running node and can't affect a remote
   }
 
   /**
