@@ -101,6 +101,15 @@
     <Compile Include="Html5\IHasLocationContext.cs" />
     <Compile Include="ILogs.cs" />
     <Compile Include="Internal\IWebElementReference.cs" />
+    <Compile Include="Interactions\ActionBuilder.cs" />
+    <Compile Include="Interactions\ActionSequence.cs" />
+    <Compile Include="Interactions\InputDeviceKind.cs" />
+    <Compile Include="Interactions\InputDevice.cs" />
+    <Compile Include="Interactions\Interaction.cs" />
+    <Compile Include="Interactions\KeyInputDevice.cs" />
+    <Compile Include="Interactions\PauseInteraction.cs" />
+    <Compile Include="Interactions\PointerInputDevice.cs" />
+    <Compile Include="Internal\IActionExecutor.cs" />
     <Compile Include="LogEntry.cs" />
     <Compile Include="LogLevel.cs" />
     <Compile Include="LogType.cs" />

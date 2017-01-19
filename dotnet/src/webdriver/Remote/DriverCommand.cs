@@ -369,6 +369,11 @@ namespace OpenQA.Selenium.Remote
         public static readonly string Actions = "actions";
 
         /// <summary>
+        /// Represents the CancelActions command.
+        /// </summary>
+        public static readonly string CancelActions = "cancelActions";
+
+        /// <summary>
         /// Represents the MouseClick command.
         /// </summary>
         public static readonly string MouseClick = "mouseClick";
