@@ -17,6 +17,7 @@
 // </copyright>
 
 using System;
+using System.Collections.Generic;
 using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.Interactions
@@ -24,8 +25,13 @@ namespace OpenQA.Selenium.Interactions
     /// <summary>
     /// Provides a mechanism for building advanced interactions with the browser.
     /// </summary>
-    public class Actions
+    public class Actions : IAction
     {
+        private IWebDriver driver;
+        private ActionBuilder actionBuilder = new ActionBuilder();
+        private PointerInputDevice defaultMouse = new PointerInputDevice(PointerKind.Mouse, true, "default mouse");
+        private KeyInputDevice defaultKeyboard = new KeyInputDevice("default keyboard");
+
         private IKeyboard keyboard;
         private IMouse mouse;
         private CompositeAction action = new CompositeAction();
@@ -36,6 +42,7 @@ namespace OpenQA.Selenium.Interactions
         /// <param name="driver">The <see cref="IWebDriver"/> object on which the actions built will be performed.</param>
         public Actions(IWebDriver driver)
         {
+            this.driver = driver;
             IHasInputDevices inputDevicesDriver = driver as IHasInputDevices;
             if (inputDevicesDriver == null)
             {
@@ -45,6 +52,7 @@ namespace OpenQA.Selenium.Interactions
                     inputDevicesDriver = wrapper.WrappedDriver as IHasInputDevices;
                     if (inputDevicesDriver != null)
                     {
+                        this.driver = wrapper.WrappedDriver;
                         break;
                     }
 
@@ -85,6 +93,7 @@ namespace OpenQA.Selenium.Interactions
         {
             ILocatable target = GetLocatableFromElement(element);
             this.action.AddAction(new KeyDownAction(this.keyboard, this.mouse, target, theKey));
+            this.actionBuilder.AddAction(this.defaultKeyboard.CreateKeyDown(theKey[0]));
             return this;
         }
 
@@ -112,6 +121,7 @@ namespace OpenQA.Selenium.Interactions
         {
             ILocatable target = GetLocatableFromElement(element);
             this.action.AddAction(new KeyUpAction(this.keyboard, this.mouse, target, theKey));
+            this.actionBuilder.AddAction(this.defaultKeyboard.CreateKeyUp(theKey[0]));
             return this;
         }
 
@@ -135,6 +145,12 @@ namespace OpenQA.Selenium.Interactions
         {
             ILocatable target = GetLocatableFromElement(element);
             this.action.AddAction(new SendKeysAction(this.keyboard, this.mouse, target, keysToSend));
+            foreach (char key in keysToSend)
+            {
+                this.actionBuilder.AddAction(this.defaultKeyboard.CreateKeyDown(key));
+                this.actionBuilder.AddAction(this.defaultKeyboard.CreateKeyUp(key));
+            }
+
             return this;
         }
 
@@ -145,8 +161,7 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions ClickAndHold(IWebElement onElement)
         {
-            ILocatable target = GetLocatableFromElement(onElement);
-            this.action.AddAction(new ClickAndHoldAction(this.mouse, target));
+            this.MoveToElement(onElement).ClickAndHold();
             return this;
         }
 
@@ -156,7 +171,9 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions ClickAndHold()
         {
-            return this.ClickAndHold(null);
+            this.action.AddAction(new ClickAndHoldAction(this.mouse, null));
+            this.actionBuilder.AddAction(this.defaultMouse.CreatePointerDown(MouseButton.Left));
+            return this;
         }
 
         /// <summary>
@@ -166,8 +183,7 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions Release(IWebElement onElement)
         {
-            ILocatable target = GetLocatableFromElement(onElement);
-            this.action.AddAction(new ButtonReleaseAction(this.mouse, target));
+            this.MoveToElement(onElement).Release();
             return this;
         }
 
@@ -177,7 +193,9 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions Release()
         {
-            return this.Release(null);
+            this.action.AddAction(new ButtonReleaseAction(this.mouse, null));
+            this.actionBuilder.AddAction(this.defaultMouse.CreatePointerUp(MouseButton.Left));
+            return this;
         }
 
         /// <summary>
@@ -187,8 +205,7 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions Click(IWebElement onElement)
         {
-            ILocatable target = GetLocatableFromElement(onElement);
-            this.action.AddAction(new ClickAction(this.mouse, target));
+            this.MoveToElement(onElement).Click();
             return this;
         }
 
@@ -198,7 +215,10 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions Click()
         {
-            return this.Click(null);
+            this.action.AddAction(new ClickAction(this.mouse, null));
+            this.actionBuilder.AddAction(this.defaultMouse.CreatePointerDown(MouseButton.Left));
+            this.actionBuilder.AddAction(this.defaultMouse.CreatePointerUp(MouseButton.Left));
+            return this;
         }
 
         /// <summary>
@@ -208,8 +228,7 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions DoubleClick(IWebElement onElement)
         {
-            ILocatable target = GetLocatableFromElement(onElement);
-            this.action.AddAction(new DoubleClickAction(this.mouse, target));
+            this.MoveToElement(onElement).DoubleClick();
             return this;
         }
 
@@ -219,7 +238,12 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions DoubleClick()
         {
-            return this.DoubleClick(null);
+            this.action.AddAction(new DoubleClickAction(this.mouse, null));
+            this.actionBuilder.AddAction(this.defaultMouse.CreatePointerDown(MouseButton.Left));
+            this.actionBuilder.AddAction(this.defaultMouse.CreatePointerUp(MouseButton.Left));
+            this.actionBuilder.AddAction(this.defaultMouse.CreatePointerDown(MouseButton.Left));
+            this.actionBuilder.AddAction(this.defaultMouse.CreatePointerUp(MouseButton.Left));
+            return this;
         }
 
         /// <summary>
@@ -231,6 +255,7 @@ namespace OpenQA.Selenium.Interactions
         {
             ILocatable target = GetLocatableFromElement(toElement);
             this.action.AddAction(new MoveMouseAction(this.mouse, target));
+            this.actionBuilder.AddAction(this.defaultMouse.CreatePointerMove(toElement, 0, 0, TimeSpan.FromMilliseconds(250)));
             return this;
         }
 
@@ -245,6 +270,7 @@ namespace OpenQA.Selenium.Interactions
         {
             ILocatable target = GetLocatableFromElement(toElement);
             this.action.AddAction(new MoveToOffsetAction(this.mouse, target, offsetX, offsetY));
+            this.actionBuilder.AddAction(this.defaultMouse.CreatePointerMove(toElement, offsetX, offsetY, TimeSpan.FromMilliseconds(250)));
             return this;
         }
 
@@ -256,7 +282,9 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions MoveByOffset(int offsetX, int offsetY)
         {
-            return this.MoveToElement(null, offsetX, offsetY);
+            this.action.AddAction(new MoveToOffsetAction(this.mouse, null, offsetX, offsetY));
+            this.actionBuilder.AddAction(this.defaultMouse.CreatePointerMove(CoordinateOrigin.Pointer, offsetX, offsetY, TimeSpan.FromMilliseconds(250)));
+            return this;
         }
 
         /// <summary>
@@ -266,8 +294,7 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions ContextClick(IWebElement onElement)
         {
-            ILocatable target = GetLocatableFromElement(onElement);
-            this.action.AddAction(new ContextClickAction(this.mouse, target));
+            this.MoveToElement(onElement).ContextClick();
             return this;
         }
 
@@ -277,7 +304,10 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions ContextClick()
         {
-            return this.ContextClick(null);
+            this.action.AddAction(new ContextClickAction(this.mouse, null));
+            this.actionBuilder.AddAction(this.defaultMouse.CreatePointerDown(MouseButton.Right));
+            this.actionBuilder.AddAction(this.defaultMouse.CreatePointerUp(MouseButton.Right));
+            return this;
         }
 
         /// <summary>
@@ -288,12 +318,7 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions DragAndDrop(IWebElement source, IWebElement target)
         {
-            ILocatable startElement = GetLocatableFromElement(source);
-            ILocatable endElement = GetLocatableFromElement(target);
-
-            this.action.AddAction(new ClickAndHoldAction(this.mouse, startElement));
-            this.action.AddAction(new MoveMouseAction(this.mouse, endElement));
-            this.action.AddAction(new ButtonReleaseAction(this.mouse, endElement));
+            this.ClickAndHold(source).MoveToElement(target).Release(target);
             return this;
         }
 
@@ -307,10 +332,7 @@ namespace OpenQA.Selenium.Interactions
         public Actions DragAndDropToOffset(IWebElement source, int offsetX, int offsetY)
         {
             ILocatable startElement = GetLocatableFromElement(source);
-
-            this.action.AddAction(new ClickAndHoldAction(this.mouse, startElement));
-            this.action.AddAction(new MoveToOffsetAction(this.mouse, null, offsetX, offsetY));
-            this.action.AddAction(new ButtonReleaseAction(this.mouse, null));
+            this.ClickAndHold(source).MoveByOffset(offsetX, offsetY).Release();
             return this;
         }
 
@@ -320,9 +342,7 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>A composite <see cref="IAction"/> which can be used to perform the actions.</returns>
         public IAction Build()
         {
-            CompositeAction toReturn = this.action;
-            this.action = new CompositeAction();
-            return toReturn;
+            return this;
         }
 
         /// <summary>
@@ -330,7 +350,15 @@ namespace OpenQA.Selenium.Interactions
         /// </summary>
         public void Perform()
         {
-            this.Build().Perform();
+            IActionExecutor actionExecutor = this.driver as IActionExecutor;
+            if (actionExecutor.IsActionExecutor)
+            {
+                actionExecutor.PerformActions(this.actionBuilder.ToActionSequenceList());
+            }
+            else
+            {
+                this.action.Perform();
+            }
         }
 
         /// <summary>

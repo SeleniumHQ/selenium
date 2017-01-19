@@ -23,6 +23,7 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using OpenQA.Selenium.Html5;
+using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.Remote
@@ -60,7 +61,7 @@ namespace OpenQA.Selenium.Remote
     /// }
     /// </code>
     /// </example>
-    public class RemoteWebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFindsById, IFindsByClassName, IFindsByLinkText, IFindsByName, IFindsByTagName, IFindsByXPath, IFindsByPartialLinkText, IFindsByCssSelector, ITakesScreenshot, IHasInputDevices, IHasCapabilities, IHasWebStorage, IHasLocationContext, IHasApplicationCache, IAllowsFileDetection, IHasSessionId
+    public class RemoteWebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFindsById, IFindsByClassName, IFindsByLinkText, IFindsByName, IFindsByTagName, IFindsByXPath, IFindsByPartialLinkText, IFindsByCssSelector, ITakesScreenshot, IHasInputDevices, IHasCapabilities, IHasWebStorage, IHasLocationContext, IHasApplicationCache, IAllowsFileDetection, IHasSessionId, IActionExecutor
     {
         /// <summary>
         /// The default command timeout for HTTP requests in a RemoteWebDriver instance.
@@ -395,6 +396,11 @@ namespace OpenQA.Selenium.Remote
         internal bool IsSpecificationCompliant
         {
             get { return this.CommandExecutor.CommandInfoRepository.SpecificationLevel > 0; }
+        }
+
+        bool IActionExecutor.IsActionExecutor
+        {
+            get { return this.IsSpecificationCompliant; }
         }
 
         /// <summary>
@@ -903,6 +909,37 @@ namespace OpenQA.Selenium.Remote
         {
             this.Dispose(true);
             GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Performs the specified list of actions with this action executor.
+        /// </summary>
+        /// <param name="actionSequenceList">The list of action sequences to perform.</param>
+        void IActionExecutor.PerformActions(List<ActionSequence> actionSequenceList)
+        {
+            if (this.IsSpecificationCompliant)
+            {
+                List<object> objectList = new List<object>();
+                foreach (ActionSequence sequence in actionSequenceList)
+                {
+                    objectList.Add(sequence.ToDictionary());
+                }
+
+                Dictionary<string, object> parameters = new Dictionary<string, object>();
+                parameters["actions"] = objectList;
+                this.Execute(DriverCommand.Actions, parameters);
+            }
+        }
+
+        /// <summary>
+        /// Resets the input state of the action executor.
+        /// </summary>
+        void IActionExecutor.ResetInputState()
+        {
+            if (this.IsSpecificationCompliant)
+            {
+                this.Execute(DriverCommand.CancelActions, null);
+            }
         }
 
         /// <summary>
