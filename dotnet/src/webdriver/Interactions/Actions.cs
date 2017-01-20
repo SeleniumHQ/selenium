@@ -91,6 +91,11 @@ namespace OpenQA.Selenium.Interactions
         /// of <see cref="Keys.Shift"/>, <see cref="Keys.Control"/>, or <see cref="Keys.Alt"/>.</exception>
         public Actions KeyDown(IWebElement element, string theKey)
         {
+            if (string.IsNullOrEmpty(theKey))
+            {
+                throw new ArgumentException("The key value must not be null or empty", "theKey");
+            }
+
             ILocatable target = GetLocatableFromElement(element);
             this.action.AddAction(new KeyDownAction(this.keyboard, this.mouse, target, theKey));
             this.actionBuilder.AddAction(this.defaultKeyboard.CreateKeyDown(theKey[0]));
@@ -119,6 +124,11 @@ namespace OpenQA.Selenium.Interactions
         /// of <see cref="Keys.Shift"/>, <see cref="Keys.Control"/>, or <see cref="Keys.Alt"/>.</exception>
         public Actions KeyUp(IWebElement element, string theKey)
         {
+            if (string.IsNullOrEmpty(theKey))
+            {
+                throw new ArgumentException("The key value must not be null or empty", "theKey");
+            }
+
             ILocatable target = GetLocatableFromElement(element);
             this.action.AddAction(new KeyUpAction(this.keyboard, this.mouse, target, theKey));
             this.actionBuilder.AddAction(this.defaultKeyboard.CreateKeyUp(theKey[0]));
@@ -143,6 +153,11 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions SendKeys(IWebElement element, string keysToSend)
         {
+            if (string.IsNullOrEmpty(keysToSend))
+            {
+                throw new ArgumentException("The key value must not be null or empty", "keysToSend");
+            }
+
             ILocatable target = GetLocatableFromElement(element);
             this.action.AddAction(new SendKeysAction(this.keyboard, this.mouse, target, keysToSend));
             foreach (char key in keysToSend)
@@ -331,7 +346,6 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions DragAndDropToOffset(IWebElement source, int offsetX, int offsetY)
         {
-            ILocatable startElement = GetLocatableFromElement(source);
             this.ClickAndHold(source).MoveByOffset(offsetX, offsetY).Release();
             return this;
         }

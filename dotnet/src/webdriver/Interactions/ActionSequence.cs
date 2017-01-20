@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 
@@ -51,6 +52,9 @@ namespace OpenQA.Selenium.Interactions
             }
         }
 
+        /// <summary>
+        /// Gets the count of actions in the sequence.
+        /// </summary>
         public int Count
         {
             get { return this.interactions.Count; }
@@ -70,13 +74,17 @@ namespace OpenQA.Selenium.Interactions
 
             if (!interactionToAdd.IsValidFor(this.device.DeviceKind))
             {
-                throw new ArgumentException(string.Format("Interaction {0} is invalid for device type {1}."), "interactionToAdd");
+                throw new ArgumentException(string.Format(CultureInfo.InvariantCulture, "Interaction {0} is invalid for device type {1}.", interactionToAdd.GetType(), this.device.DeviceKind), "interactionToAdd");
             }
 
             this.interactions.Add(interactionToAdd);
             return this;
         }
 
+        /// <summary>
+        /// Converts this action sequence into an object suitable for serializing across the wire.
+        /// </summary>
+        /// <returns>A <see cref="Dictionary{TKey, TValue}"/> containing the actions in this sequence.</returns>
         public Dictionary<string, object> ToDictionary()
         {
             Dictionary<string, object> toReturn = this.device.ToDictionary();

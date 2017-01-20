@@ -29,7 +29,11 @@ namespace OpenQA.Selenium.Interactions
     {
         private string deviceName;
 
-        public InputDevice(string deviceName)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="InputDevice"/> class.
+        /// </summary>
+        /// <param name="deviceName">The unique name of the input device represented by this class.</param>
+        protected InputDevice(string deviceName)
         {
             if (string.IsNullOrEmpty(deviceName))
             {
@@ -39,11 +43,17 @@ namespace OpenQA.Selenium.Interactions
             this.deviceName = deviceName;
         }
 
+        /// <summary>
+        /// Gets the unique name of this input device.
+        /// </summary>
         public string DeviceName
         {
             get { return this.deviceName; }
         }
 
+        /// <summary>
+        /// Gets the kind of device for this input device.
+        /// </summary>
         public abstract InputDeviceKind DeviceKind { get; }
 
         /// <summary>

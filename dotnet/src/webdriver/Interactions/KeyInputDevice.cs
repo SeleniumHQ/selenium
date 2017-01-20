@@ -29,16 +29,26 @@ namespace OpenQA.Selenium.Interactions
     /// </summary>
     internal class KeyInputDevice : InputDevice
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="KeyInputDevice"/> class.
+        /// </summary>
         public KeyInputDevice()
             : this(Guid.NewGuid().ToString())
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="KeyInputDevice"/> class, given the device's name.
+        /// </summary>
+        /// <param name="deviceName">The unique name of this input device.</param>
         public KeyInputDevice(string deviceName)
             : base(deviceName)
         {
         }
 
+        /// <summary>
+        /// Gets the type of device for this input device.
+        /// </summary>
         public override InputDeviceKind DeviceKind
         {
             get { return InputDeviceKind.Key; }
@@ -58,11 +68,21 @@ namespace OpenQA.Selenium.Interactions
             return toReturn;
         }
 
+        /// <summary>
+        /// Creates a key-down action for simulating a press of a key.
+        /// </summary>
+        /// <param name="codePoint">The unicode character to be sent.</param>
+        /// <returns>The <see cref="Interaction"/> representing the action.</returns>
         public Interaction CreateKeyDown(char codePoint)
         {
             return new KeyDownInteraction(this, codePoint);
         }
 
+        /// <summary>
+        /// Creates a key-up action for simulating a release of a key.
+        /// </summary>
+        /// <param name="codePoint">The unicode character to be sent.</param>
+        /// <returns>The <see cref="Interaction"/> representing the action.</returns>
         public Interaction CreateKeyUp(char codePoint)
         {
             return new KeyUpInteraction(this, codePoint);
@@ -96,7 +116,6 @@ namespace OpenQA.Selenium.Interactions
 
         private class TypingInteraction : Interaction
         {
-
             private string type;
             private string value;
 
