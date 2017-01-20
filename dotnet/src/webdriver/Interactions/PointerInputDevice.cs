@@ -16,13 +16,13 @@
 // limitations under the License.
 // </copyright>
 
-using OpenQA.Selenium.Internal;
-using OpenQA.Selenium.Remote;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using OpenQA.Selenium.Internal;
+using OpenQA.Selenium.Remote;
 
 namespace OpenQA.Selenium.Interactions
 {
@@ -97,16 +97,30 @@ namespace OpenQA.Selenium.Interactions
         private PointerKind pointerKind;
         private bool isPrimary;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PointerInputDevice"/> class.
+        /// </summary>
         public PointerInputDevice()
             : this(PointerKind.Mouse, true)
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PointerInputDevice"/> class.
+        /// </summary>
+        /// <param name="pointerKind">The kind of pointer represented by this input device.</param>
+        /// <param name="isPrimary">A value indicating whether the pointer device is the primary pointer device.</param>
         public PointerInputDevice(PointerKind pointerKind, bool isPrimary)
             : this(pointerKind, isPrimary, Guid.NewGuid().ToString())
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PointerInputDevice"/> class.
+        /// </summary>
+        /// <param name="pointerKind">The kind of pointer represented by this input device.</param>
+        /// <param name="isPrimary">A value indicating whether the pointer device is the primary pointer device.</param>
+        /// <param name="deviceName">The unique name for this input device.</param>
         public PointerInputDevice(PointerKind pointerKind, bool isPrimary, string deviceName)
             : base(deviceName)
         {
@@ -114,6 +128,9 @@ namespace OpenQA.Selenium.Interactions
             this.isPrimary = isPrimary;
         }
 
+        /// <summary>
+        /// Gets the type of device for this input device.
+        /// </summary>
         public override InputDeviceKind DeviceKind
         {
             get { return InputDeviceKind.Pointer; }
@@ -138,11 +155,21 @@ namespace OpenQA.Selenium.Interactions
             return toReturn;
         }
 
+        /// <summary>
+        /// Creates a pointer down action.
+        /// </summary>
+        /// <param name="button">The button of the pointer that should be pressed.</param>
+        /// <returns>The action representing the pointer down gesture.</returns>
         public Interaction CreatePointerDown(MouseButton button)
         {
             return new PointerDownInteraction(this, button);
         }
 
+        /// <summary>
+        /// Creates a pointer up action.
+        /// </summary>
+        /// <param name="button">The button of the pointer that should be released.</param>
+        /// <returns>The action representing the pointer up gesture.</returns>
         public Interaction CreatePointerUp(MouseButton button)
         {
             return new PointerUpInteraction(this, button);
@@ -205,7 +232,7 @@ namespace OpenQA.Selenium.Interactions
             {
                 Dictionary<string, object> toReturn = new Dictionary<string, object>();
                 toReturn["type"] = "pointerDown";
-                toReturn["button"] = Convert.ToInt32(this.button);
+                toReturn["button"] = Convert.ToInt32(this.button, CultureInfo.InvariantCulture);
 
                 return toReturn;
             }
@@ -230,7 +257,7 @@ namespace OpenQA.Selenium.Interactions
             {
                 Dictionary<string, object> toReturn = new Dictionary<string, object>();
                 toReturn["type"] = "pointerUp";
-                toReturn["button"] = Convert.ToInt32(this.button);
+                toReturn["button"] = Convert.ToInt32(this.button, CultureInfo.InvariantCulture);
 
                 return toReturn;
             }

@@ -30,11 +30,20 @@ namespace OpenQA.Selenium.Interactions
     {
         private TimeSpan duration = TimeSpan.Zero;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PauseInteraction"/> class.
+        /// </summary>
+        /// <param name="sourceDevice">The input device on which to execute the pause.</param>
         public PauseInteraction(InputDevice sourceDevice)
             : this(sourceDevice, TimeSpan.Zero)
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PauseInteraction"/> class.
+        /// </summary>
+        /// <param name="sourceDevice">The input device on which to execute the pause.</param>
+        /// <param name="duration">The length of time to pause for.</param>
         public PauseInteraction(InputDevice sourceDevice, TimeSpan duration)
             : base(sourceDevice)
         {
@@ -60,6 +69,12 @@ namespace OpenQA.Selenium.Interactions
             return toReturn;
         }
 
+        /// <summary>
+        /// Gets a value indicating whether this action is valid for the specified type of input device.
+        /// </summary>
+        /// <param name="sourceDeviceKind">The type of device to check.</param>
+        /// <returns><see langword="true"/> if the action is valid for the specified type of input device;
+        /// otherwise, <see langword="false"/>.</returns>
         public override bool IsValidFor(InputDeviceKind sourceDeviceKind)
         {
             return true;

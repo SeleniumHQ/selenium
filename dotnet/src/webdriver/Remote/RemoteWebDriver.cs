@@ -391,16 +391,19 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
+        /// Gets a value indicating whether this object is a valid action executor.
+        /// </summary>
+        bool IActionExecutor.IsActionExecutor
+        {
+            get { return this.IsSpecificationCompliant; }
+        }
+
+        /// <summary>
         /// Gets a value indicating whether or not the driver is compliant with the W3C WebDriver specification.
         /// </summary>
         internal bool IsSpecificationCompliant
         {
             get { return this.CommandExecutor.CommandInfoRepository.SpecificationLevel > 0; }
-        }
-
-        bool IActionExecutor.IsActionExecutor
-        {
-            get { return this.IsSpecificationCompliant; }
         }
 
         /// <summary>

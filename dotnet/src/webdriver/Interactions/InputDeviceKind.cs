@@ -23,8 +23,19 @@ namespace OpenQA.Selenium.Interactions
     /// </summary>
     internal enum InputDeviceKind
     {
+        /// <summary>
+        /// Represents the null device.
+        /// </summary>
         None,
+
+        /// <summary>
+        /// Represents a key-based device, primarily for entering text.
+        /// </summary>
         Key,
+
+        /// <summary>
+        /// Represents a pointer-based device, such as a mouse, pen, or stylus.
+        /// </summary>
         Pointer
     }
 }
