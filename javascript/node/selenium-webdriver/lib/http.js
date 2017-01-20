@@ -33,11 +33,10 @@ const Session = require('./session').Session;
 const WebElement = require('./webdriver').WebElement;
 
 const {getAttribute, isDisplayed} = (function() {
-  const load = path => /** @type {!Function} */(require(path));
   try {
     return {
-      getAttribute: load('./atoms/getAttribute.js'),
-      isDisplayed: load('./atoms/is-displayed.js'),
+      getAttribute: require('./atoms/getAttribute.js'),
+      isDisplayed: require('./atoms/is-displayed.js')
     };
   } catch (ex) {
     throw Error(
