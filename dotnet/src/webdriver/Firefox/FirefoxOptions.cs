@@ -168,7 +168,7 @@ namespace OpenQA.Selenium.Firefox
 
             foreach (string argument in argumentsToAdd)
             {
-                if (!argument.StartsWith("--"))
+                if (!argument.StartsWith("--", StringComparison.OrdinalIgnoreCase))
                 {
                     throw new ArgumentException(string.Format(CultureInfo.InvariantCulture, "All arguments must start with two dashes ('--'); argument '{0}' does not.", argument), "argumentsToAdd");
                 }
