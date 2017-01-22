@@ -1384,6 +1384,37 @@ function isPending(promise) {
 
 
 /**
+ * Structural interface for a deferred promise resolver.
+ * @record
+ * @template T
+ */
+function Resolver() {}
+
+
+/**
+ * The promised value for this resolver.
+ * @type {!Thenable<T>}
+ */
+Resolver.prototype.promise;
+
+
+/**
+ * Resolves the promised value with the given `value`.
+ * @param {T|Thenable<T>} value
+ * @return {void}
+ */
+Resolver.prototype.resolve;
+
+
+/**
+ * Rejects the promised value with the given `reason`.
+ * @param {*} reason
+ * @return {void}
+ */
+Resolver.prototype.reject;
+
+
+/**
  * Represents a value that will be resolved at some point in the future. This
  * class represents the protected "producer" half of a ManagedPromise - each Deferred
  * has a {@code promise} property that may be returned to consumers for
@@ -1395,6 +1426,7 @@ function isPending(promise) {
  * {@link ControlFlow} as an unhandled failure.
  *
  * @template T
+ * @implements {Resolver<T>}
  */
 class Deferred {
   /**
@@ -1421,16 +1453,24 @@ class Deferred {
      * Resolves this deferred with the given value. It is safe to call this as a
      * normal function (with no bound "this").
      * @param {(T|IThenable<T>|Thenable)=} opt_value The fulfilled value.
+     * @const
      */
-    this.fulfill = function(opt_value) {
+    this.resolve = function(opt_value) {
       checkNotSelf(opt_value);
       fulfill(opt_value);
     };
 
     /**
+     * An alias for {@link #resolve}.
+     * @const
+     */
+    this.fulfill = this.resolve;
+
+    /**
      * Rejects this promise with the given reason. It is safe to call this as a
      * normal function (with no bound "this").
      * @param {*=} opt_reason The rejection reason.
+     * @const
      */
     this.reject = function(opt_reason) {
       checkNotSelf(opt_reason);
@@ -1487,36 +1527,63 @@ function delayed(ms) {
 
 
 /**
- * Creates a new deferred object.
- * @return {!Deferred<T>} The new deferred object.
+ * Creates a new deferred resolver.
+ *
+ * If the promise manager is currently enabled, this function will return a
+ * {@link Deferred} instance. Otherwise, it will return a resolver for a
+ * {@linkplain NativePromise native promise}.
+ *
+ * @return {!Resolver<T>} A new deferred resolver.
  * @template T
  */
 function defer() {
-  return new Deferred();
+  if (usePromiseManager()) {
+    return new Deferred();
+  }
+  let resolve, reject;
+  let promise = new NativePromise((_resolve, _reject) => {
+    resolve = _resolve;
+    reject = _reject;
+  });
+  return {promise, resolve, reject};
 }
 
 
 /**
  * Creates a promise that has been resolved with the given value.
+ *
+ * If the promise manager is currently enabled, this function will return a
+ * {@linkplain ManagedPromise managed promise}. Otherwise, it will return a
+ * {@linkplain NativePromise native promise}.
+ *
  * @param {T=} opt_value The resolved value.
- * @return {!ManagedPromise<T>} The resolved promise.
- * @deprecated Use {@link ManagedPromise#resolve Promise.resolve(value)}.
+ * @return {!Thenable<T>} The resolved promise.
  * @template T
  */
 function fulfilled(opt_value) {
-  return ManagedPromise.resolve(opt_value);
+  if (usePromiseManager()) {
+    return ManagedPromise.resolve(opt_value);
+  }
+  return NativePromise.resolve(opt_value);
 }
 
 
 /**
  * Creates a promise that has been rejected with the given reason.
+ *
+ * If the promise manager is currently enabled, this function will return a
+ * {@linkplain ManagedPromise managed promise}. Otherwise, it will return a
+ * {@linkplain NativePromise native promise}.
+ *
  * @param {*=} opt_reason The rejection reason; may be any value, but is
  *     usually an Error or a string.
- * @return {!ManagedPromise<?>} The rejected promise.
- * @deprecated Use {@link ManagedPromise#reject Promise.reject(reason)}.
+ * @return {!Thenable<?>} The rejected promise.
  */
 function rejected(opt_reason) {
-  return ManagedPromise.reject(opt_reason);
+  if (usePromiseManager()) {
+    return ManagedPromise.reject(opt_reason);
+  }
+  return NativePromise.reject(opt_reason);
 }
 
 
@@ -1610,21 +1677,17 @@ function thenFinally(promise, callback) {
  * @param {Function=} opt_errback The function to call when the value is
  *     rejected.
  * @return {!Thenable} A new promise.
+ * @deprecated Use `promise.fulfilled(value).then(opt_callback, opt_errback)`
  */
 function when(value, opt_callback, opt_errback) {
-  if (Thenable.isImplementation(value)) {
-    return value.then(opt_callback, opt_errback);
-  }
-
-  return createPromise(resolve => resolve(value))
-      .then(opt_callback, opt_errback);
+  return fulfilled(value).then(opt_callback, opt_errback);
 }
 
 
 /**
  * Invokes the appropriate callback function as soon as a promised `value` is
- * resolved. This function is similar to `when()`, except it does not return
- * a new promise.
+ * resolved.
+ *
  * @param {*} value The value to observe.
  * @param {Function} callback The function to call when the value is
  *     resolved successfully.
@@ -1826,7 +1889,7 @@ function filter(arr, fn, opt_self) {
  */
 function fullyResolved(value) {
   if (isPromise(value)) {
-    return when(value, fullyResolveValue);
+    return fulfilled(value).then(fullyResolveValue);
   }
   return fullyResolveValue(value);
 }
@@ -2934,7 +2997,7 @@ class TaskQueue extends events.EventEmitter {
 
     this.subQ_.once('end', () => {  // On task completion.
       this.subQ_ = null;
-      this.pending_ && this.pending_.task.fulfill(result);
+      this.pending_ && this.pending_.task.resolve(result);
     });
 
     this.subQ_.once('error', e => {  // On task failure.
@@ -3245,6 +3308,7 @@ module.exports = {
   MultipleUnhandledRejectionError: MultipleUnhandledRejectionError,
   Thenable: Thenable,
   Promise: ManagedPromise,
+  Resolver: Resolver,
   Scheduler: Scheduler,
   all: all,
   asap: asap,
