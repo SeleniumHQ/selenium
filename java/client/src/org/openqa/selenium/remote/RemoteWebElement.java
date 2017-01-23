@@ -398,4 +398,10 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
     }
     return String.format("[%s]", foundBy);
   }
+
+  public Map<String, Object> toJson() {
+    return ImmutableMap.of(
+        Dialect.OSS.getEncodedElementKey(), getId(),
+        Dialect.W3C.getEncodedElementKey(), getId());
+  }
 }
