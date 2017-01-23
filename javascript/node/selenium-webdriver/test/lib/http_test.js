@@ -325,6 +325,37 @@ describe('http', function() {
             assert.ok(executor.w3c, 'should never downgrade');
           });
         });
+
+        it('handles legacy new session failures', function() {
+          let rawResponse = {
+            status: error.ErrorCode.NO_SUCH_ELEMENT,
+            value: {message: 'hi'}
+          };
+
+          send.returns(Promise.resolve(
+              new http.Response(500, {}, JSON.stringify(rawResponse))));
+
+          return executor.execute(command)
+              .then(() => assert.fail('should have failed'),
+                    e => {
+                      assert.ok(e instanceof error.NoSuchElementError);
+                      assert.equal(e.message, 'hi');
+                    });
+        });
+
+        it('handles w3c new session failures', function() {
+          let rawResponse = {error: 'no such element', message: 'oops'};
+
+          send.returns(Promise.resolve(
+              new http.Response(500, {}, JSON.stringify(rawResponse))));
+
+          return executor.execute(command)
+              .then(() => assert.fail('should have failed'),
+                    e => {
+                      assert.ok(e instanceof error.NoSuchElementError);
+                      assert.equal(e.message, 'oops');
+                    });
+        });
       });
 
       describe('extracts Session from DESCRIBE_SESSION response', function() {

@@ -427,7 +427,8 @@ class Executor {
         this.log_.finer(() => `>>>\n${request}\n<<<\n${response}`);
 
         let parsed =
-            parseHttpResponse(/** @type {!Response} */ (response), this.w3c);
+            parseHttpResponse(
+                command, /** @type {!Response} */ (response), this.w3c);
 
         if (command.getName() === cmd.Name.NEW_SESSION
             || command.getName() === cmd.Name.DESCRIBE_SESSION) {
@@ -475,29 +476,42 @@ function tryParse(str) {
 /**
  * Callback used to parse {@link Response} objects from a
  * {@link HttpClient}.
+ *
+ * @param {!cmd.Command} command The command the response is for.
  * @param {!Response} httpResponse The HTTP response to parse.
  * @param {boolean} w3c Whether the response should be processed using the
  *     W3C wire protocol.
  * @return {?} The parsed response.
  * @throws {WebDriverError} If the HTTP response is an error.
  */
-function parseHttpResponse(httpResponse, w3c) {
+function parseHttpResponse(command, httpResponse, w3c) {
   let parsed = tryParse(httpResponse.body);
   if (parsed !== undefined) {
+    if (httpResponse.status < 200) {
+      // This should never happen, but throw the raw response so
+      // users report it.
+      throw new error.WebDriverError(
+          `Unexpected HTTP response:\n${httpResponse}`);
+    }
+
     if (w3c) {
       if (httpResponse.status > 399) {
         error.throwDecodedError(parsed);
       }
-
-      if (httpResponse.status < 200) {
-        // This should never happen, but throw the raw response so
-        // users report it.
-        throw new error.WebDriverError(
-            `Unexpected HTTP response:\n${httpResponse}`);
-      }
-    } else {
-      error.checkLegacyResponse(parsed);
+      return parsed;
     }
+
+    // If this is a new session command, we need to check for a W3C compliant
+    // error object. This is necessary since a successful new session command
+    // is what puts the executor into W3C mode.
+    if (httpResponse.status > 399
+        && (command.getName() == cmd.Name.NEW_SESSION
+            || command.getName() === cmd.Name.DESCRIBE_SESSION)
+        && error.isErrorResponse(parsed)) {
+      error.throwDecodedError(parsed);
+    }
+
+    error.checkLegacyResponse(parsed);
     return parsed;
   }
 
