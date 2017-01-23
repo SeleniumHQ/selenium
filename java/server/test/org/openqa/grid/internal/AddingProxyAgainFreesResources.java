@@ -91,7 +91,7 @@ public class AddingProxyAgainFreesResources {
     FluentWait<RequestHandler> wait = new FluentWait<>(handler2);
     wait.withTimeout(1, TimeUnit.SECONDS).pollingEvery(100, TimeUnit.MILLISECONDS)
       .ignoring(GridException.class)
-      .until((RequestHandler input) -> input.getSession() != null);
+      .until((RequestHandler input) -> input.getSession());
     assertNotNull(handler2.getSession());
   }
 
