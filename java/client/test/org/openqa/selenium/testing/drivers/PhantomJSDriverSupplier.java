@@ -19,10 +19,9 @@ package org.openqa.selenium.testing.drivers;
 
 import com.google.common.base.Supplier;
 
-import org.openqa.selenium.phantomjs.PhantomJSDriver;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 public class PhantomJSDriverSupplier implements Supplier<WebDriver> {

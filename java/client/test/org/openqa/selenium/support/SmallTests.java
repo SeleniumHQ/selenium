@@ -16,6 +16,8 @@
 // under the License.
 package org.openqa.selenium.support;
 
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 import org.openqa.selenium.support.events.EventFiringWebDriverTest;
 import org.openqa.selenium.support.pagefactory.AjaxElementLocatorTest;
 import org.openqa.selenium.support.pagefactory.AnnotationsTest;
@@ -32,9 +34,6 @@ import org.openqa.selenium.support.ui.QuotesTest;
 import org.openqa.selenium.support.ui.SelectTest;
 import org.openqa.selenium.support.ui.SlowLoadableComponentTest;
 import org.openqa.selenium.support.ui.WebDriverWaitTest;
-
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({

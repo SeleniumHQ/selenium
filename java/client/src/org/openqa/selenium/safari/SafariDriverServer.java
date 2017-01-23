@@ -20,13 +20,12 @@ package org.openqa.selenium.safari;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
 
-import org.openqa.selenium.net.PortProber;
-
 import org.jboss.netty.bootstrap.ServerBootstrap;
 import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.group.ChannelGroup;
 import org.jboss.netty.channel.group.DefaultChannelGroup;
 import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
+import org.openqa.selenium.net.PortProber;
 
 import java.net.InetSocketAddress;
 import java.util.concurrent.BlockingQueue;

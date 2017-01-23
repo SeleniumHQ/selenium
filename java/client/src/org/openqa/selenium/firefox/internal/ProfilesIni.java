@@ -17,6 +17,9 @@
 
 package org.openqa.selenium.firefox.internal;
 
+import static org.openqa.selenium.Platform.MAC;
+import static org.openqa.selenium.Platform.WINDOWS;
+
 import com.google.common.collect.Maps;
 
 import org.openqa.selenium.Platform;
@@ -31,9 +34,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.Map;
-
-import static org.openqa.selenium.Platform.WINDOWS;
-import static org.openqa.selenium.Platform.MAC;
 
 public class ProfilesIni {
   private Map<String, File> profiles = Maps.newHashMap();

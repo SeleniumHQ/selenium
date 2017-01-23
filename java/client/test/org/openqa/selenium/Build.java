@@ -16,12 +16,11 @@
 // under the License.
 package org.openqa.selenium;
 
-import com.google.common.collect.Lists;
-
-import static org.openqa.selenium.Platform.WINDOWS;
-
 import static org.junit.Assert.fail;
+import static org.openqa.selenium.Platform.WINDOWS;
 import static org.openqa.selenium.testing.DevMode.isInDevMode;
+
+import com.google.common.collect.Lists;
 
 import org.openqa.selenium.testing.InProject;
 

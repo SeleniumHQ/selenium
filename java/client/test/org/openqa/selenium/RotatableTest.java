@@ -17,13 +17,13 @@
 
 package org.openqa.selenium;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.openqa.selenium.testing.JUnit4TestBase;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assume.assumeTrue;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.openqa.selenium.testing.JUnit4TestBase;
 
 public class RotatableTest extends JUnit4TestBase {
 

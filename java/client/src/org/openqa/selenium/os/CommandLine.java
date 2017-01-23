@@ -18,6 +18,9 @@
 package org.openqa.selenium.os;
 
 
+import static org.openqa.selenium.Platform.MAC;
+import static org.openqa.selenium.Platform.WINDOWS;
+
 import com.google.common.annotations.VisibleForTesting;
 
 import org.openqa.selenium.Platform;
@@ -26,9 +29,6 @@ import org.openqa.selenium.WebDriverException;
 import java.io.File;
 import java.io.OutputStream;
 import java.util.Map;
-
-import static org.openqa.selenium.Platform.WINDOWS;
-import static org.openqa.selenium.Platform.MAC;
 
 public class CommandLine {
 

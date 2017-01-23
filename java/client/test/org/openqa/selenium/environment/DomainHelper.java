@@ -18,10 +18,10 @@
 
 package org.openqa.selenium.environment;
 
-import org.openqa.selenium.environment.webserver.AppServer;
-
 import com.google.common.base.Preconditions;
 import com.google.common.net.InetAddresses;
+
+import org.openqa.selenium.environment.webserver.AppServer;
 
 public class DomainHelper {
 

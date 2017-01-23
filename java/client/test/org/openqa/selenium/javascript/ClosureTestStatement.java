@@ -19,14 +19,14 @@ package org.openqa.selenium.javascript;
 
 import static org.junit.Assert.fail;
 
+import com.google.common.base.Stopwatch;
+
+import org.junit.runners.model.Statement;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
-
-import com.google.common.base.Stopwatch;
-import org.junit.runners.model.Statement;
 
 import java.net.URL;
 import java.util.concurrent.TimeUnit;

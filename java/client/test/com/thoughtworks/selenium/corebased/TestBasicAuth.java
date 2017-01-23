@@ -20,10 +20,9 @@ package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
 
+import org.junit.Test;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.environment.webserver.AppServer;
-
-import org.junit.Test;
 
 import java.net.MalformedURLException;
 import java.net.URL;

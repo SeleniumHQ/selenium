@@ -17,15 +17,14 @@
 
 package org.openqa.selenium;
 
+import static org.junit.Assert.assertEquals;
+import static org.openqa.selenium.testing.Driver.IE;
+import static org.openqa.selenium.testing.Driver.MARIONETTE;
+
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
-
-import static org.junit.Assert.assertEquals;
-
-import static org.openqa.selenium.testing.Driver.IE;
-import static org.openqa.selenium.testing.Driver.MARIONETTE;
 
 /**
  * @author jmleyba@gmail.com (Jason Leyba)

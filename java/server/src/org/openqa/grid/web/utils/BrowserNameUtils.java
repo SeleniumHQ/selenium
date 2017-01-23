@@ -19,7 +19,6 @@ package org.openqa.grid.web.utils;
 
 import com.google.common.collect.Maps;
 
-import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.Registry;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.BrowserType;

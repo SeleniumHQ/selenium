@@ -9,8 +9,8 @@ java_test(name = 'test-synthesized',
   deps = [
     ':tests',
     '//java/client/src/org/openqa/selenium:selenium',
-    '//java/client/test/org/openqa/selenium/testing:test-base',
     '//java/client/test/org/openqa/selenium:large-tests',
+    '//java/client/test/org/openqa/selenium/testing:test-base',
     '//third_party/java/junit:junit',
   ],
 )
@@ -26,8 +26,8 @@ java_test(name = 'marionette',
   deps = [
     ':tests',
     '//java/client/src/org/openqa/selenium:selenium',
-    '//java/client/test/org/openqa/selenium/testing:test-base',
     '//java/client/test/org/openqa/selenium:large-tests',
+    '//java/client/test/org/openqa/selenium/testing:test-base',
     '//third_party/java/junit:junit',
   ],
 )

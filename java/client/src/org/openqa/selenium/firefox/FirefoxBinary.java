@@ -33,9 +33,7 @@ import com.google.common.collect.Maps;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.internal.Executable;
-import org.openqa.selenium.io.CircularOutputStream;
 import org.openqa.selenium.io.FileHandler;
-import org.openqa.selenium.io.MultiOutputStream;
 import org.openqa.selenium.os.CommandLine;
 import org.openqa.selenium.os.ExecutableFinder;
 

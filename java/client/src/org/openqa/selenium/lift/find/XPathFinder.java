@@ -16,11 +16,10 @@
 // under the License.
 package org.openqa.selenium.lift.find;
 
+import org.hamcrest.Description;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-
-import org.hamcrest.Description;
 
 import java.util.Collection;
 

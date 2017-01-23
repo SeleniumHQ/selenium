@@ -19,9 +19,8 @@ package org.openqa.selenium.logging;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assume.assumeTrue;
 import static org.junit.Assume.assumeFalse;
-
+import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.testing.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
@@ -29,7 +28,6 @@ import static org.openqa.selenium.testing.Driver.PHANTOMJS;
 
 import org.junit.After;
 import org.junit.Test;
-
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;

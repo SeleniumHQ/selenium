@@ -33,8 +33,6 @@ import org.seleniumhq.jetty9.server.handler.ResourceHandler;
 import org.seleniumhq.jetty9.servlet.ServletContextHandler;
 import org.seleniumhq.jetty9.util.resource.Resource;
 
-import javax.servlet.Servlet;
-
 public class Main {
 
   public static void main(String[] args) throws Exception {

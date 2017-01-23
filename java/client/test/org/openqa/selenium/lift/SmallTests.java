@@ -16,11 +16,10 @@
 // under the License.
 package org.openqa.selenium.lift;
 
-import org.openqa.selenium.lift.find.XPathFinderTest;
-import org.openqa.selenium.lift.match.DisplayedMatcherTest;
-
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
+import org.openqa.selenium.lift.find.XPathFinderTest;
+import org.openqa.selenium.lift.match.DisplayedMatcherTest;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
