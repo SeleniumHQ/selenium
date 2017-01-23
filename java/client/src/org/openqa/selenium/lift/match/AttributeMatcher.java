@@ -17,12 +17,11 @@
 
 package org.openqa.selenium.lift.match;
 
-import org.openqa.selenium.WebElement;
-
 import org.hamcrest.Description;
 import org.hamcrest.Factory;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
+import org.openqa.selenium.WebElement;
 
 /**
  * hamcrest matcher for attributes of {@link WebElement}s.

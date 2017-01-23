@@ -22,11 +22,8 @@ import static org.junit.Assert.fail;
 import static org.openqa.selenium.support.ui.ExpectedConditions.stalenessOf;
 
 import org.junit.Test;
-import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
-
-import java.util.concurrent.Callable;
 
 public class StaleElementReferenceTest extends JUnit4TestBase {
 

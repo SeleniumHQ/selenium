@@ -17,18 +17,6 @@
 
 package org.openqa.selenium;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.JavascriptEnabled;
-import org.openqa.selenium.testing.NeedsLocalEnvironment;
-import org.openqa.selenium.testing.NotYetImplemented;
-
-import java.util.Iterator;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.instanceOf;
@@ -48,6 +36,18 @@ import static org.openqa.selenium.testing.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Driver.SAFARI;
 
 import com.google.common.base.Throwables;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JavascriptEnabled;
+import org.openqa.selenium.testing.NeedsLocalEnvironment;
+import org.openqa.selenium.testing.NotYetImplemented;
+
+import java.util.Iterator;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Ignore(value = {PHANTOMJS})
 public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {

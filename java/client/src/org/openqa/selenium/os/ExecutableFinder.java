@@ -20,16 +20,14 @@ package org.openqa.selenium.os;
 
 import static org.openqa.selenium.Platform.WINDOWS;
 
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.nio.file.Files;
-import java.util.Map;
+import com.google.common.collect.ImmutableSet;
 
 import org.openqa.selenium.Platform;
 
-import com.google.common.collect.ImmutableSet;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.Map;
 
 public class ExecutableFinder {
   private static final ImmutableSet<String> ENDINGS = Platform.getCurrent().is(WINDOWS) ?

@@ -19,12 +19,12 @@ package org.openqa.selenium.edge;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import java.io.IOException;
-
 import com.google.gson.JsonObject;
 
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
+
+import java.io.IOException;
 
 
 /**

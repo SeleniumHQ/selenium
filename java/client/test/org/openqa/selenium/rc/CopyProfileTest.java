@@ -18,6 +18,9 @@
 
 package org.openqa.selenium.rc;
 
+import static org.junit.Assert.assertEquals;
+import static org.openqa.selenium.firefox.FirefoxDriver.PROFILE;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,9 +34,6 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.drivers.OutOfProcessSeleniumServer;
-
-import static org.junit.Assert.assertEquals;
-import static org.openqa.selenium.firefox.FirefoxDriver.PROFILE;
 
 // TODO(reorg): This test is never run. It must be.
 // Firefox specific test, but needs to be in remote

@@ -10,8 +10,8 @@ java_test(name = 'htmlunit',
     '//java/client/src/org/openqa/selenium/remote:remote',
     '//java/client/test/org/openqa/selenium:large-tests',
     '//java/client/test/org/openqa/selenium:tests',
-    '//third_party/java/selenium:htmlunit-driver',
     '//third_party/java/junit:junit',
+    '//third_party/java/selenium:htmlunit-driver',
   ],
 )
 
@@ -27,7 +27,7 @@ java_test(name = 'htmlunit-no-js',
     '//java/client/src/org/openqa/selenium/remote:remote',
     '//java/client/test/org/openqa/selenium:large-tests',
     '//java/client/test/org/openqa/selenium:tests',
-    '//third_party/java/selenium:htmlunit-driver',
     '//third_party/java/junit:junit',
+    '//third_party/java/selenium:htmlunit-driver',
   ],
 )

@@ -25,8 +25,8 @@ import static org.openqa.selenium.os.WindowsUtils.thisIsWindows;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Maps;
 
-import org.apache.commons.exec.DefaultExecuteResultHandler;
 import org.apache.commons.exec.DaemonExecutor;
+import org.apache.commons.exec.DefaultExecuteResultHandler;
 import org.apache.commons.exec.ExecuteWatchdog;
 import org.apache.commons.exec.Executor;
 import org.apache.commons.exec.PumpStreamHandler;

@@ -17,10 +17,10 @@
 
 package org.openqa.selenium.logging.profiler;
 
-import java.util.Map;
-
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
+
+import java.util.Map;
 
 public class HttpProfilerLogEntry extends ProfilerLogEntry {
 

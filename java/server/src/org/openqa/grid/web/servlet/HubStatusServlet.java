@@ -27,7 +27,6 @@ import com.google.gson.JsonSyntaxException;
 import org.openqa.grid.common.exception.GridException;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.RemoteProxy;
-import org.openqa.grid.internal.TestSlot;
 
 import java.io.BufferedReader;
 import java.io.IOException;

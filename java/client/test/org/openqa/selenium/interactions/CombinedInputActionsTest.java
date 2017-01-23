@@ -44,13 +44,13 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.Point;
-import org.openqa.selenium.testing.SwitchToTopAfterTest;
 import org.openqa.selenium.WaitingConditions;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
 import org.openqa.selenium.testing.NotYetImplemented;
+import org.openqa.selenium.testing.SwitchToTopAfterTest;
 
 import java.util.List;
 

@@ -18,6 +18,9 @@
 
 package org.openqa.selenium.remote;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -30,9 +33,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
 
 @RunWith(JUnit4.class)
 public class DesiredCapabilitiesTest {

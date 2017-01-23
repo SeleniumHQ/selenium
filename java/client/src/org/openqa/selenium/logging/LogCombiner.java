@@ -17,10 +17,10 @@
 
 package org.openqa.selenium.logging;
 
-import java.util.Comparator;
-
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+
+import java.util.Comparator;
 
 public class LogCombiner {
   private static final Comparator<LogEntry> LOG_ENTRY_TIMESTAMP_COMPARATOR =

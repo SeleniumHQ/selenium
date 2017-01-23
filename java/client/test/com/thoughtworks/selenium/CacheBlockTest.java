@@ -20,8 +20,6 @@ package com.thoughtworks.selenium;
 
 import static org.junit.Assert.assertNotNull;
 
-import com.thoughtworks.selenium.InternalSelenseTestBase;
-
 import org.junit.Test;
 
 public class CacheBlockTest extends InternalSelenseTestBase {

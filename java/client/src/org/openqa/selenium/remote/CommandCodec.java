@@ -18,7 +18,6 @@
 package org.openqa.selenium.remote;
 
 import org.openqa.selenium.UnsupportedCommandException;
-import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.http.HttpMethod;
 
 /**

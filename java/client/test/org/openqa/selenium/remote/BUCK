@@ -10,7 +10,7 @@ java_test(name = 'common-tests',
   ],
   deps = [
    '//java/client/src/org/openqa/selenium:selenium',
-   '//java/client/src/org/openqa/selenium/remote:remote',
+    '//java/client/src/org/openqa/selenium/remote:remote',
     '//third_party/java/gson:gson',
     '//third_party/java/guava:guava',
     '//third_party/java/hamcrest:hamcrest',

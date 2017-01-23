@@ -21,8 +21,6 @@ package org.openqa.selenium.net;
 import org.openqa.selenium.WebDriverException;
 
 import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.util.logging.Logger;
 

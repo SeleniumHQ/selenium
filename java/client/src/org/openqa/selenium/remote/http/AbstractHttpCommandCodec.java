@@ -26,12 +26,10 @@ import static com.google.common.net.HttpHeaders.CONTENT_TYPE;
 import static com.google.common.net.MediaType.JSON_UTF_8;
 import static org.openqa.selenium.remote.DriverCommand.ADD_COOKIE;
 import static org.openqa.selenium.remote.DriverCommand.CLEAR_ELEMENT;
-import static org.openqa.selenium.remote.DriverCommand.CLICK;
 import static org.openqa.selenium.remote.DriverCommand.CLICK_ELEMENT;
 import static org.openqa.selenium.remote.DriverCommand.CLOSE;
 import static org.openqa.selenium.remote.DriverCommand.DELETE_ALL_COOKIES;
 import static org.openqa.selenium.remote.DriverCommand.DELETE_COOKIE;
-import static org.openqa.selenium.remote.DriverCommand.DOUBLE_CLICK;
 import static org.openqa.selenium.remote.DriverCommand.ELEMENT_EQUALS;
 import static org.openqa.selenium.remote.DriverCommand.ELEMENT_SCREENSHOT;
 import static org.openqa.selenium.remote.DriverCommand.FIND_CHILD_ELEMENT;
@@ -74,14 +72,10 @@ import static org.openqa.selenium.remote.DriverCommand.IMPLICITLY_WAIT;
 import static org.openqa.selenium.remote.DriverCommand.IS_BROWSER_ONLINE;
 import static org.openqa.selenium.remote.DriverCommand.IS_ELEMENT_ENABLED;
 import static org.openqa.selenium.remote.DriverCommand.IS_ELEMENT_SELECTED;
-import static org.openqa.selenium.remote.DriverCommand.MOUSE_DOWN;
-import static org.openqa.selenium.remote.DriverCommand.MOUSE_UP;
-import static org.openqa.selenium.remote.DriverCommand.MOVE_TO;
 import static org.openqa.selenium.remote.DriverCommand.NEW_SESSION;
 import static org.openqa.selenium.remote.DriverCommand.QUIT;
 import static org.openqa.selenium.remote.DriverCommand.REFRESH;
 import static org.openqa.selenium.remote.DriverCommand.SCREENSHOT;
-import static org.openqa.selenium.remote.DriverCommand.SEND_KEYS_TO_ACTIVE_ELEMENT;
 import static org.openqa.selenium.remote.DriverCommand.SEND_KEYS_TO_ELEMENT;
 import static org.openqa.selenium.remote.DriverCommand.SET_ALERT_CREDENTIALS;
 import static org.openqa.selenium.remote.DriverCommand.SET_BROWSER_ONLINE;
@@ -96,20 +90,11 @@ import static org.openqa.selenium.remote.DriverCommand.SWITCH_TO_CONTEXT;
 import static org.openqa.selenium.remote.DriverCommand.SWITCH_TO_FRAME;
 import static org.openqa.selenium.remote.DriverCommand.SWITCH_TO_PARENT_FRAME;
 import static org.openqa.selenium.remote.DriverCommand.SWITCH_TO_WINDOW;
-import static org.openqa.selenium.remote.DriverCommand.TOUCH_DOUBLE_TAP;
-import static org.openqa.selenium.remote.DriverCommand.TOUCH_DOWN;
-import static org.openqa.selenium.remote.DriverCommand.TOUCH_FLICK;
-import static org.openqa.selenium.remote.DriverCommand.TOUCH_LONG_PRESS;
-import static org.openqa.selenium.remote.DriverCommand.TOUCH_MOVE;
-import static org.openqa.selenium.remote.DriverCommand.TOUCH_SCROLL;
-import static org.openqa.selenium.remote.DriverCommand.TOUCH_SINGLE_TAP;
-import static org.openqa.selenium.remote.DriverCommand.TOUCH_UP;
 import static org.openqa.selenium.remote.DriverCommand.UPLOAD_FILE;
 
 import com.google.common.base.Objects;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
-
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 
@@ -121,10 +106,9 @@ import org.openqa.selenium.remote.CommandCodec;
 import org.openqa.selenium.remote.JsonToBeanConverter;
 import org.openqa.selenium.remote.SessionId;
 
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * A command codec that adheres to the W3C's WebDriver wire protocol.

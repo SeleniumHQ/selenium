@@ -16,13 +16,12 @@
 // under the License.
 package org.openqa.selenium;
 
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 import org.openqa.selenium.interactions.ActionsTest;
 import org.openqa.selenium.interactions.CompositeActionTest;
 import org.openqa.selenium.interactions.IndividualKeyboardActionsTest;
 import org.openqa.selenium.interactions.IndividualMouseActionsTest;
-
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
 import org.openqa.selenium.io.FileHandlerTest;
 import org.openqa.selenium.io.TemporaryFilesystemTest;
 import org.openqa.selenium.io.ZipTest;

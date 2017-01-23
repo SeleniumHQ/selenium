@@ -28,7 +28,9 @@ import org.junit.runners.JUnit4;
 import org.openqa.grid.web.servlet.beta.ConsoleServlet;
 import org.openqa.testing.FakeHttpServletResponse;
 import org.seleniumhq.jetty9.server.handler.ContextHandler;
+
 import java.io.IOException;
+
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;

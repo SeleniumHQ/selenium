@@ -25,7 +25,6 @@ import com.google.common.io.ByteStreams;
 import org.openqa.grid.common.exception.GridException;
 import org.openqa.grid.internal.ExternalSessionKey;
 import org.openqa.grid.internal.Registry;
-import org.openqa.grid.internal.TestSession;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;

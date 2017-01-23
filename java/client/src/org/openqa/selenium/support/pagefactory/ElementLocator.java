@@ -17,9 +17,9 @@
 
 package org.openqa.selenium.support.pagefactory;
 
-import java.util.List;
-
 import org.openqa.selenium.WebElement;
+
+import java.util.List;
 
 public interface ElementLocator {
   WebElement findElement();

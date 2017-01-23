@@ -30,6 +30,8 @@ import static org.openqa.selenium.testing.Driver.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.isChrome;
 import static org.openqa.selenium.testing.TestUtilities.isOldChromedriver;
 
+import com.google.common.collect.Iterables;
+
 import org.junit.After;
 import org.junit.Test;
 import org.openqa.selenium.WebDriver;
@@ -38,8 +40,6 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
-
-import com.google.common.collect.Iterables;
 
 import java.util.Set;
 import java.util.logging.Level;
