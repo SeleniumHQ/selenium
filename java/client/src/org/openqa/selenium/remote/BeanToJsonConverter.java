@@ -198,10 +198,17 @@ public class BeanToJsonConverter {
         if (res instanceof JsonElement) {
           return (JsonElement) res;
         }
-        try {
-          return new JsonParser().parse((String) res);
-        } catch (JsonParseException e) {
-          return new JsonPrimitive((String) res);
+
+        if (res instanceof Map) {
+          return convertObject(res);
+        } else if (res instanceof Collection) {
+          return convertObject(res);
+        } else if (res instanceof String) {
+          try {
+            return new JsonParser().parse((String) res);
+          } catch (JsonParseException e) {
+            return new JsonPrimitive((String) res);
+          }
         }
       } catch (ReflectiveOperationException e) {
         throw new WebDriverException(e);
