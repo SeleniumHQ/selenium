@@ -41,16 +41,14 @@
  * The provided wrappers leverage the {@link webdriver.promise.ControlFlow}
  * to simplify writing asynchronous tests:
  *
- *     var By = require('selenium-webdriver').By,
- *         until = require('selenium-webdriver').until,
- *         firefox = require('selenium-webdriver/firefox'),
- *         test = require('selenium-webdriver/testing');
+ *     var {Builder, By, until} = require('selenium-webdriver');
+ *     var test = require('selenium-webdriver/testing');
  *
  *     test.describe('Google Search', function() {
  *       var driver;
  *
  *       test.before(function() {
- *         driver = new firefox.Driver();
+ *         driver = new Builder().forBrowser('firefox').build();
  *       });
  *
  *       test.after(function() {
