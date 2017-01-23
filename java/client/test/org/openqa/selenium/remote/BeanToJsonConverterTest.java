@@ -27,12 +27,14 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSyntaxException;
 
 import org.junit.Test;
@@ -231,6 +233,39 @@ public class BeanToJsonConverterTest {
   public void testShouldCallToJsonMethodIfPresent() {
     String json = new BeanToJsonConverter().convert(new JsonAware("converted"));
     assertEquals("\"converted\"", json);
+  }
+
+  @Test
+  public void toJsonMethodCanConvertibleReturnedMap() {
+    class ToJsonReturnsMap {
+      public Map<String, Object> toJson() {
+        return ImmutableMap.of("cheese", "peas");
+      }
+    }
+
+    String json = new BeanToJsonConverter().convert(new ToJsonReturnsMap());
+    JsonObject converted = new JsonParser().parse(json).getAsJsonObject();
+
+    assertEquals(1, converted.entrySet().size());
+    assertEquals("peas", converted.get("cheese").getAsString());
+  }
+
+  @Test
+  public void toJsonMethodCanConvertReturnedCollection() {
+    class ToJsonReturnsCollection {
+      public Set<String> toJson() {
+        return ImmutableSortedSet.of("cheese", "peas");
+      }
+    }
+
+    String json = new BeanToJsonConverter().convert(new ToJsonReturnsCollection());
+    JsonArray converted = new JsonParser().parse(json).getAsJsonArray();
+
+    assertEquals(2, converted.size());
+    JsonArray expected = new JsonArray();
+    expected.add(new JsonPrimitive("cheese"));
+    expected.add(new JsonPrimitive("peas"));
+    assertEquals(expected, converted);
   }
 
   @Test
