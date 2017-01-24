@@ -1158,13 +1158,13 @@ namespace OpenQA.Selenium.Remote
         private static object ConvertObjectToJavaScriptObject(object arg)
         {
             IWrapsElement argAsWrapsElement = arg as IWrapsElement;
-            RemoteWebElement argAsElement = arg as RemoteWebElement;
+            IWebElementReference argAsElementReference = arg as IWebElementReference;
             IEnumerable argAsEnumerable = arg as IEnumerable;
             IDictionary argAsDictionary = arg as IDictionary;
 
-            if (argAsElement == null && argAsWrapsElement != null)
+            if (argAsElementReference == null && argAsWrapsElement != null)
             {
-                argAsElement = argAsWrapsElement.WrappedElement as RemoteWebElement;
+                argAsElementReference = argAsWrapsElement.WrappedElement as IWebElementReference;
             }
 
             object converted = null;
@@ -1173,12 +1173,11 @@ namespace OpenQA.Selenium.Remote
             {
                 converted = arg;
             }
-            else if (argAsElement != null)
+            else if (argAsElementReference != null)
             {
-                // TODO: Remove addition of 'id' key when spec is changed.
-                Dictionary<string, object> elementDictionary = new Dictionary<string, object>();
-                elementDictionary.Add("ELEMENT", argAsElement.InternalElementId);
-                elementDictionary.Add("element-6066-11e4-a52e-4f735466cecf", argAsElement.InternalElementId);
+                // TODO: Remove "ELEMENT" addition when all remote ends are spec-compliant.
+                Dictionary<string, object> elementDictionary = argAsElementReference.ToDictionary();
+                elementDictionary.Add("ELEMENT", argAsElementReference.ElementReferenceId);
                 converted = elementDictionary;
             }
             else if (argAsDictionary != null)

@@ -91,24 +91,24 @@ namespace OpenQA.Selenium.Remote
                 throw new ArgumentNullException("frameElement", "Frame element cannot be null");
             }
 
-            RemoteWebElement convertedElement = frameElement as RemoteWebElement;
-            if (convertedElement == null)
+            IWebElementReference elementReference = frameElement as IWebElementReference;
+            if (elementReference == null)
             {
                 IWrapsElement elementWrapper = frameElement as IWrapsElement;
                 if (elementWrapper != null)
                 {
-                    convertedElement = elementWrapper.WrappedElement as RemoteWebElement;
+                    elementReference = elementWrapper.WrappedElement as IWebElementReference;
                 }
             }
 
-            if (convertedElement == null)
+            if (elementReference == null)
             {
-                throw new ArgumentException("frameElement cannot be converted to RemoteWebElement", "frameElement");
+                throw new ArgumentException("frameElement cannot be converted to IWebElementReference", "frameElement");
             }
 
-            Dictionary<string, object> elementDictionary = new Dictionary<string, object>();
-            elementDictionary.Add("ELEMENT", convertedElement.InternalElementId);
-            elementDictionary.Add("element-6066-11e4-a52e-4f735466cecf", convertedElement.InternalElementId);
+            // TODO: Remove "ELEMENT" addition when all remote ends are spec-compliant.
+            Dictionary<string, object> elementDictionary = elementReference.ToDictionary();
+            elementDictionary.Add("ELEMENT", elementReference.ElementReferenceId);
 
             Dictionary<string, object> parameters = new Dictionary<string, object>();
             parameters.Add("id", elementDictionary);
