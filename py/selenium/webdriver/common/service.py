@@ -168,7 +168,7 @@ class Service(object):
 
     def __del__(self):
         # `subprocess.Popen` doesn't send signal on `__del__`;
-        # so we attemt to close the launched process when `__del__`
+        # so we attempt to close the launched process when `__del__`
         # is triggered.
         try:
             self.stop()
