@@ -1,0 +1,26 @@
+{
+  "title": "Selenium .NET Client Driver",
+  "version": "3.0.1-*",
+  "copyright": "Copyright © Software Freedom Conservancy 2014",
+  "description": "Selenium RC API .NET Bindings",
+  "buildOptions": {
+    "outputName": "ThoughtWorks.Selenium.Core",
+    "xmlDoc": true
+  },
+  "frameworks": {
+    "netstandard1.3": {
+      "dependencies": {
+        "System.Collections.NonGeneric": "4.3.0",
+        "System.Net.Requests": "4.3.0",
+        "System.Runtime": "4.3.0",
+        "System.Text.Encoding.Extensions": "4.3.0",
+        "System.Text.Encodings.Web": "4.3.0"
+      }
+    },
+    "net20": {
+      "frameworkAssemblies": {
+        "System.Web": "2.0.0.0"
+      }
+    }
+  }
+}

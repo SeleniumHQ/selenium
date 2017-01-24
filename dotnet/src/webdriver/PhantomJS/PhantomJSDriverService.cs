@@ -25,6 +25,7 @@ using System.Reflection;
 using System.Text;
 using Newtonsoft.Json;
 using OpenQA.Selenium.Internal;
+using System.Linq;
 
 namespace OpenQA.Selenium.PhantomJS
 {
@@ -454,7 +455,7 @@ namespace OpenQA.Selenium.PhantomJS
 
         private static object GetPropertyDefaultValue(PropertyInfo info)
         {
-            object[] customAttributes = info.GetCustomAttributes(typeof(DefaultValueAttribute), false);
+            object[] customAttributes = info.GetCustomAttributes(typeof(DefaultValueAttribute), false).ToArray();
             if (customAttributes.Length > 0)
             {
                 // Should be one and only one DefaultValue attribute, so just take the one at index 0.
@@ -466,7 +467,11 @@ namespace OpenQA.Selenium.PhantomJS
             }
             else
             {
+#if !NETSTANDARD1_3
                 if (info.PropertyType.IsValueType)
+#else
+                if (info.PropertyType.GetTypeInfo().IsValueType)
+#endif
                 {
                     return Activator.CreateInstance(info.PropertyType);
                 }
@@ -477,7 +482,7 @@ namespace OpenQA.Selenium.PhantomJS
 
         private static string GetPropertyCommandLineArgName(PropertyInfo info)
         {
-            object[] customAttributes = info.GetCustomAttributes(typeof(CommandLineArgumentNameAttribute), false);
+            object[] customAttributes = info.GetCustomAttributes(typeof(CommandLineArgumentNameAttribute), false).ToArray();
             if (customAttributes.Length > 0)
             {
                 // Should be one and only one DefaultValue attribute, so just take the one at index 0.
@@ -493,7 +498,7 @@ namespace OpenQA.Selenium.PhantomJS
 
         private static bool IsSerializableProperty(PropertyInfo info)
         {
-            var attributes = info.GetCustomAttributes(typeof(JsonPropertyAttribute), true);
+            var attributes = info.GetCustomAttributes(typeof(JsonPropertyAttribute), true).ToArray();
             return attributes.Length > 0;
         }
 

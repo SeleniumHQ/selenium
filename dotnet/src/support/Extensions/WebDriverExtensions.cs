@@ -96,7 +96,11 @@ namespace OpenQA.Selenium.Support.Extensions
             Type type = typeof(T);
             if (value == null)
             {
+#if !NETSTANDARD1_3
                 if (type.IsValueType && (Nullable.GetUnderlyingType(type) == null))
+#else
+                if (type.GetTypeInfo().IsValueType && (Nullable.GetUnderlyingType(type) == null))
+#endif
                 {
                     throw new WebDriverException("Script returned null, but desired type is a value type");
                 }

@@ -21,6 +21,7 @@ using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Text;
+using WebDriver.Internal;
 
 namespace OpenQA.Selenium.Remote
 {
@@ -70,6 +71,7 @@ namespace OpenQA.Selenium.Remote
             this.serverResponseTimeout = timeout;
             this.enableKeepAlive = enableKeepAlive;
 
+#if !NETSTANDARD1_3
             ServicePointManager.Expect100Continue = false;
 
             // In the .NET Framework, HttpWebRequest responses with an error code are limited
@@ -80,6 +82,7 @@ namespace OpenQA.Selenium.Remote
             {
                 HttpWebRequest.DefaultMaximumErrorResponseLength = -1;
             }
+#endif
         }
 
         /// <summary>
@@ -104,10 +107,12 @@ namespace OpenQA.Selenium.Remote
 
             CommandInfo info = this.commandInfoRepository.GetCommandInfo(commandToExecute.Name);
             HttpWebRequest request = info.CreateWebRequest(this.remoteServerUri, commandToExecute);
-            request.Timeout = (int)this.serverResponseTimeout.TotalMilliseconds;
             request.Accept = RequestAcceptHeader;
+#if !NETSTANDARD1_3
+            request.Timeout = (int)this.serverResponseTimeout.TotalMilliseconds;
             request.KeepAlive = this.enableKeepAlive;
             request.ServicePoint.ConnectionLimit = 2000;
+#endif
             if (request.Method == CommandInfo.PostCommand)
             {
                 string payload = commandToExecute.ParametersAsJsonString;
@@ -115,7 +120,7 @@ namespace OpenQA.Selenium.Remote
                 request.ContentType = ContentTypeHeader;
                 Stream requestStream = request.GetRequestStream();
                 requestStream.Write(data, 0, data.Length);
-                requestStream.Close();
+                requestStream.Dispose();
             }
 
             Response toReturn = this.CreateResponse(request);
@@ -141,7 +146,7 @@ namespace OpenQA.Selenium.Remote
             Stream responseStream = webResponse.GetResponseStream();
             StreamReader responseStreamReader = new StreamReader(responseStream, Encoding.UTF8);
             string responseString = responseStreamReader.ReadToEnd();
-            responseStreamReader.Close();
+            responseStreamReader.Dispose();
 
             // The response string from the Java remote server has trailing null
             // characters. This is due to the fix for issue 288.
@@ -230,7 +235,7 @@ namespace OpenQA.Selenium.Remote
                     commandResponse.Value = ((string)commandResponse.Value).Replace("\r\n", "\n").Replace("\n", System.Environment.NewLine);
                 }
 
-                webResponse.Close();
+                ((IDisposable)webResponse).Dispose();
             }
 
             return commandResponse;

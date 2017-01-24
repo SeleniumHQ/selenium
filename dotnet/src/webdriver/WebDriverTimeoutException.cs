@@ -24,7 +24,9 @@ namespace OpenQA.Selenium
     /// <summary>
     /// Represents exceptions that are thrown when an error occurs during actions.
     /// </summary>
+#if !NETSTANDARD1_3
     [Serializable]
+#endif
     public class WebDriverTimeoutException : WebDriverException
     {
         /// <summary>
@@ -58,6 +60,7 @@ namespace OpenQA.Selenium
         {
         }
 
+#if !NETSTANDARD1_3
         /// <summary>
         /// Initializes a new instance of the <see cref="WebDriverTimeoutException"/> class with serialized data.
         /// </summary>
@@ -69,5 +72,6 @@ namespace OpenQA.Selenium
             : base(info, context)
         {
         }
+#endif
     }
 }

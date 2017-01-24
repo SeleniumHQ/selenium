@@ -60,7 +60,11 @@ namespace OpenQA.Selenium.Support.PageObjects
                         throw new ArgumentException("Cannot use How.Custom without supplying a custom finder type");
                     }
 
+#if !NETSTANDARD1_3
                     if (!attribute.CustomFinderType.IsSubclassOf(typeof(By)))
+#else
+                    if (!attribute.CustomFinderType.GetTypeInfo().IsSubclassOf(typeof(By)))
+#endif
                     {
                         throw new ArgumentException("Custom finder type must be a descendent of the By class");
                     }

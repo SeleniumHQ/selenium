@@ -24,7 +24,9 @@ namespace OpenQA.Selenium
     /// <summary>
     /// The exception that is thrown when an alert is not found.
     /// </summary>
+#if !NETSTANDARD1_3
     [Serializable]
+#endif
     public class NoAlertPresentException : NotFoundException
     {
         /// <summary>
@@ -58,6 +60,7 @@ namespace OpenQA.Selenium
         {
         }
 
+#if !NETSTANDARD1_3
         /// <summary>
         /// Initializes a new instance of the <see cref="NoAlertPresentException"/> class with serialized data.
         /// </summary>
@@ -69,5 +72,6 @@ namespace OpenQA.Selenium
             : base(info, context)
         {
         }
+#endif
     }
 }

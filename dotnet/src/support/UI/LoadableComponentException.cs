@@ -25,7 +25,9 @@ namespace OpenQA.Selenium.Support.UI
     /// This exception is thrown by <see cref="LoadableComponent{T}"/> to indicate that
     /// the component was not successfully loaded.
     /// </summary>
+#if !NETSTANDARD1_3
     [Serializable]
+#endif
     public class LoadableComponentException : WebDriverException
     {
         /// <summary>
@@ -58,6 +60,7 @@ namespace OpenQA.Selenium.Support.UI
         {
         }
 
+#if !NETSTANDARD1_3
         /// <summary>
         /// Initializes a new instance of the <see cref="LoadableComponentException"/> class with serialized data.
         /// </summary>
@@ -69,5 +72,6 @@ namespace OpenQA.Selenium.Support.UI
             : base(info, context)
         {
         }
+#endif
     }
 }

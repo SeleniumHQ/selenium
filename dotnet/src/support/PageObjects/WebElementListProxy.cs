@@ -19,7 +19,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+#if !NETSTANDARD1_3
 using System.Runtime.Remoting.Messaging;
+#else
+using Castle.DynamicProxy;
+#endif
 
 namespace OpenQA.Selenium.Support.PageObjects
 {
@@ -77,6 +81,7 @@ namespace OpenQA.Selenium.Support.PageObjects
             return new WebElementListProxy(classToProxy, locator, bys, cacheLookups).GetTransparentProxy();
         }
 
+#if !NETSTANDARD1_3
         /// <summary>
         /// Invokes the method that is specified in the provided <see cref="IMessage"/> on the
         /// object that is represented by the current instance.
@@ -90,5 +95,13 @@ namespace OpenQA.Selenium.Support.PageObjects
             var elements = this.ElementList;
             return WebDriverObjectProxy.InvokeMethod(msg as IMethodCallMessage, elements);
         }
+#else
+        public override void Intercept(IInvocation invocation)
+        {
+            var elements = this.ElementList;
+
+            invocation.ReturnValue = invocation.Method.Invoke(elements, invocation.Arguments);
+        }
+#endif
     }
 }

@@ -20,6 +20,7 @@ using System;
 using System.Globalization;
 using System.Text;
 using OpenQA.Selenium.Internal;
+using WebDriver.Internal;
 
 namespace OpenQA.Selenium.Chrome
 {
@@ -190,40 +191,7 @@ namespace OpenQA.Selenium.Chrome
         /// <returns>The file name of the Chrome driver service executable.</returns>
         private static string ChromeDriverServiceFileName()
         {
-            string fileName = DefaultChromeDriverServiceExecutableName;
-
-            // Unfortunately, detecting the currently running platform isn't as
-            // straightforward as you might hope.
-            // See: http://mono.wikia.com/wiki/Detecting_the_execution_platform
-            // and https://msdn.microsoft.com/en-us/library/3a8hyw88(v=vs.110).aspx
-            const int PlatformMonoUnixValue = 128;
-
-            switch (Environment.OSVersion.Platform)
-            {
-                case PlatformID.Win32NT:
-                case PlatformID.Win32S:
-                case PlatformID.Win32Windows:
-                case PlatformID.WinCE:
-                    fileName += ".exe";
-                    break;
-
-                case PlatformID.MacOSX:
-                case PlatformID.Unix:
-                    break;
-
-                // Don't handle the Xbox case. Let default handle it.
-                // case PlatformID.Xbox:
-                //     break;
-                default:
-                    if ((int)Environment.OSVersion.Platform == PlatformMonoUnixValue)
-                    {
-                        break;
-                    }
-
-                    throw new WebDriverException("Unsupported platform: " + Environment.OSVersion.Platform);
-            }
-
-            return fileName;
+            return DeriveDriverServiceFileName(DefaultChromeDriverServiceExecutableName);
         }
     }
 }

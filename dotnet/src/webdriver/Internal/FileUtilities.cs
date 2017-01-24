@@ -157,16 +157,18 @@ namespace OpenQA.Selenium.Internal
         /// <returns>The directory of the currently executing assembly.</returns>
         public static string GetCurrentDirectory()
         {
+#if NETSTANDARD1_3
+            string currentDirectory = Path.GetDirectoryName(AppContext.BaseDirectory);
+#else
             Assembly executingAssembly = typeof(FileUtilities).Assembly;
             string currentDirectory = Path.GetDirectoryName(executingAssembly.Location);
-
             // If we're shadow copying, get the directory from the codebase instead
             if (AppDomain.CurrentDomain.ShadowCopyFiles)
             {
                 Uri uri = new Uri(executingAssembly.CodeBase);
                 currentDirectory = Path.GetDirectoryName(uri.LocalPath);
             }
-
+#endif
             return currentDirectory;
         }
 

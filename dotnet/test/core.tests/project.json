@@ -1,0 +1,30 @@
+{
+  "title": "Selenium Integration Tests",
+  "dependencies": {
+    "dotnet-test-nunit": "3.4.0-beta-3",
+    "Moq": "4.6.38-alpha",
+    "NUnit": "3.5.0",
+    "core": { "target": "project" }
+  },
+
+  "testRunner": "nunit",
+
+  "frameworks": {
+    "netcoreapp1.0": {
+      "imports": [
+        "portable-net45+win8",
+        "netstandard1.3"
+      ],
+      "dependencies": {
+        "Microsoft.NETCore.App": {
+          "version": "1.0.0-*",
+          "type": "platform"
+        }
+      }
+    },
+    "net451": {
+      "dependencies": {
+      }
+    }
+  }
+}

@@ -33,7 +33,7 @@ namespace ThoughtWorks.Selenium.UnitTests
 			string argument1 = "http://localhost";
 			string argument2 = "";
 			DefaultRemoteCommand command = new DefaultRemoteCommand(commandString, new string[]{argument1, argument2});
-			Assert.AreEqual("cmd=open&1=http%3a%2f%2flocalhost&2=", command.CommandString);
+            Assert.That(command.CommandString, Is.EqualTo("cmd=open&1=http%3a%2f%2flocalhost&2=").IgnoreCase);
 		}
 
 		[Test]

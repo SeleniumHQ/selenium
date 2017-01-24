@@ -27,7 +27,9 @@ namespace OpenQA.Selenium
     /// <summary>
     /// Represents a cookie in the browser.
     /// </summary>
+#if !NETSTANDARD1_3
     [Serializable]
+#endif
     [JsonObject(MemberSerialization = MemberSerialization.OptIn)]
     public class Cookie
     {

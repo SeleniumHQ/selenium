@@ -16,14 +16,19 @@
  */
 
 using System;
-using System.Web;
 using System.Text;
+#if NETSTANDARD1_3
+using System.Text.Encodings.Web;
+#else
+using System.Web;
+#endif
+
 namespace Selenium
 {
-	/// <summary>
-	/// A representation of a single remote Command
-	/// </summary>
-	public class DefaultRemoteCommand : IRemoteCommand
+    /// <summary>
+    /// A representation of a single remote Command
+    /// </summary>
+    public class DefaultRemoteCommand : IRemoteCommand
 	{
 		private static readonly string PARSE_ERROR_MESSAGE = "Command string must contain 4 pipe characters and should start with a '|'. Unable to parse command string";
 		private readonly string[] args;
@@ -48,13 +53,22 @@ namespace Selenium
 			get
 			{
 				StringBuilder sb = new StringBuilder("cmd=");
-				sb.Append(HttpUtility.UrlEncode(command));
-				if (args == null) return sb.ToString();
+#if NETSTANDARD1_3
+                sb.Append(UrlEncoder.Default.Encode(command));
+#else
+                sb.Append(HttpUtility.UrlEncode(command));
+#endif
+                if (args == null) return sb.ToString();
 				for (int i = 0; i < args.Length; i++)
 				{
-					sb.Append('&').Append((i+1).ToString()).Append('=').Append(HttpUtility.UrlEncode(args[i]));
-				}
-				return sb.ToString();
+					sb.Append('&').Append((i+1).ToString()).Append('=')
+#if NETSTANDARD1_3
+                        .Append(UrlEncoder.Default.Encode(args[i]));
+#else
+                        .Append(HttpUtility.UrlEncode(args[i]));
+#endif
+                }
+                return sb.ToString();
 			}
 		}
 		

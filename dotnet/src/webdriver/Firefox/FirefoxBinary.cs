@@ -21,11 +21,14 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+#if !NETSTANDARD1_3
 using System.Security.Permissions;
+#endif
 using System.Text;
 using System.Threading;
 using OpenQA.Selenium.Firefox.Internal;
 using OpenQA.Selenium.Internal;
+using WebDriver.Internal;
 
 namespace OpenQA.Selenium.Firefox
 {
@@ -99,7 +102,9 @@ namespace OpenQA.Selenium.Firefox
         /// </summary>
         /// <param name="profile">The <see cref="FirefoxProfile"/> to use with this instance of Firefox.</param>
         /// <param name="commandLineArguments">The command-line arguments to use in starting Firefox.</param>
+#if !NETSTANDARD1_3
         [SecurityPermission(SecurityAction.Demand)]
+#endif
         public void StartProfile(FirefoxProfile profile, params string[] commandLineArguments)
         {
             if (profile == null)
@@ -136,14 +141,7 @@ namespace OpenQA.Selenium.Firefox
 
             foreach (string environmentVar in this.extraEnv.Keys)
             {
-                if (this.process.StartInfo.EnvironmentVariables.ContainsKey(environmentVar))
-                {
-                    this.process.StartInfo.EnvironmentVariables[environmentVar] = this.extraEnv[environmentVar];
-                }
-                else
-                {
-                    this.process.StartInfo.EnvironmentVariables.Add(environmentVar, this.extraEnv[environmentVar]);
-                }
+                this.process.StartInfo.SetEnvironmentVariable(environmentVar, this.extraEnv[environmentVar]);
             }
 
             this.BinaryExecutable.SetLibraryPath(this.process);
@@ -178,7 +176,9 @@ namespace OpenQA.Selenium.Firefox
         /// <summary>
         /// Waits for the process to complete execution.
         /// </summary>
+#if !NETSTANDARD1_3
         [SecurityPermission(SecurityAction.Demand)]
+#endif
         public void WaitForProcessExit()
         {
             this.process.WaitForExit();
@@ -205,7 +205,9 @@ namespace OpenQA.Selenium.Firefox
         /// <summary>
         /// Starts the Firefox process.
         /// </summary>
+#if !NETSTANDARD1_3
         [SecurityPermission(SecurityAction.Demand)]
+#endif
         protected void StartFirefoxProcess()
         {
             this.process.Start();
@@ -217,7 +219,9 @@ namespace OpenQA.Selenium.Firefox
         /// </summary>
         /// <param name="disposing"><see langword="true"/> to release managed and resources;
         /// <see langword="false"/> to only release unmanaged resources.</param>
+#if !NETSTANDARD1_3
         [SecurityPermission(SecurityAction.Demand)]
+#endif
         protected virtual void Dispose(bool disposing)
         {
             if (!this.isDisposed)
@@ -255,9 +259,14 @@ namespace OpenQA.Selenium.Firefox
             {
                 Thread.Sleep(timeInMilliseconds);
             }
+#if !NETSTANDARD1_3
             catch (ThreadInterruptedException e)
             {
                 throw new WebDriverException("Thread was interrupted", e);
+            }
+#endif
+            finally
+            {
             }
         }
 
@@ -329,7 +338,9 @@ namespace OpenQA.Selenium.Firefox
             this.SetEnvironmentProperty("LD_PRELOAD", NoFocusLibraryName);
         }
 
+#if !NETSTANDARD1_3
         [SecurityPermission(SecurityAction.Demand)]
+#endif
         private void CopeWithTheStrangenessOfTheMac()
         {
             if (Platform.CurrentPlatform.IsPlatformType(PlatformType.Mac))
