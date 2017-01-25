@@ -159,7 +159,7 @@ matrix:
       jdk: oraclejdk8
       env: MARIONETTE=1 TASK=//rb:firefox-test
       addons:
-        firefox: latest
+        firefox: latest-nightly
     - language: ruby
       rvm: 2.3.3
       jdk: oraclejdk8
@@ -179,7 +179,7 @@ matrix:
       jdk: oraclejdk8
       env: MARIONETTE=1 TASK=//rb:remote-firefox-test
       addons:
-        firefox: latest
+        firefox: latest-nightly
     - language: ruby
       rvm: 2.3.3
       jdk: oraclejdk8
@@ -205,6 +205,7 @@ matrix:
     - env: TOXENV=py36-firefox
     - env: MARIONETTE=1 TOXENV=py36-marionette
     - env: TOXENV=py36-remote
+    - env: PHANTOMJS=1 TASK=//rb:remote-phantomjs-test
     - env: TASK=//rb:docs
 before_install: ./scripts/travis/before_install.sh
 install: ./scripts/travis/install.sh
