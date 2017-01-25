@@ -28,22 +28,14 @@ module Selenium
       # TODO - uncomment when Mozilla fixes this:
       # https://bugzilla.mozilla.org/show_bug.cgi?id=1326397
       class W3CCapabilities
-        DEFAULTS = {
-          browser_name: '',
-#          browser_version: :any,
-#          platform_name: :any,
-#          platform_version: :any,
-#          accept_insecure_certs: false,
-          page_load_strategy: 'normal',
-          proxy: nil
-        }.freeze
-
         KNOWN = [
+          :browser_name,
           :browser_version,
           :platform_name,
           :platform_version,
           :accept_insecure_certs,
-
+          :page_load_strategy,
+          :proxy,
           :remote_session_id,
           :accessibility_checks,
           :rotatable,
@@ -53,7 +45,7 @@ module Selenium
           :script_timeout,
         ].freeze
 
-        (DEFAULTS.keys + KNOWN).each do |key|
+        KNOWN.each do |key|
           define_method key do
             @capabilities.fetch(key)
           end
@@ -150,7 +142,7 @@ module Selenium
         #
 
         def initialize(opts = {})
-          @capabilities = DEFAULTS.merge(opts)
+          @capabilities = opts
           self.proxy = opts.delete(:proxy)
         end
 
