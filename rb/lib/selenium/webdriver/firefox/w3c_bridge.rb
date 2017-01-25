@@ -56,7 +56,8 @@ module Selenium
         private
 
         def create_capabilities(opts)
-          caps = opts.delete(:desired_capabilities) || Remote::W3CCapabilities.firefox
+          caps = Remote::W3CCapabilities.firefox
+          caps.merge!(opts.delete(:desired_capabilities)) if opts.key? :desired_capabilities
           firefox_options_caps = caps[:firefox_options] || {}
           caps[:firefox_options] = firefox_options_caps.merge(opts[:firefox_options] || {})
           if opts.key?(:profile)
