@@ -177,15 +177,13 @@ module Selenium
             driver.find_element(link: 'Open new window').click
             wait.until { driver.window_handles.size == 3 }
 
-            titles = {}
+            titles = []
             driver.window_handles.each do |wh|
-              driver.switch_to.window(wh) { titles[driver.title] = wh }
+              driver.switch_to.window(wh) { titles << driver.title}
             end
 
-            handle = titles['We Arrive Here']
-
-            driver.switch_to.window(handle)
-            expect(driver.title).to eq('We Arrive Here')
+            driver.switch_to.window(driver.window_handles.last)
+            expect(driver.title).to eq(titles.last)
           end
 
           # https://github.com/SeleniumHQ/selenium/issues/3339
