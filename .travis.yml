@@ -120,30 +120,30 @@ matrix:
       addons:
         firefox: latest
     - language: python
-      python: 3.5
+      python: 3.6
       env: TOXENV=flake8
     - language: python
-      python: 3.5
+      python: 3.6
       env: TOXENV=docs
     - language: python
-      python: 3.5
-      env: CHROME=1 TOXENV=py35-chrome
+      python: 3.6
+      env: CHROME=1 TOXENV=py36-chrome
     - language: python
-      python: 3.5
-      env: TOXENV=py35-firefox
+      python: 3.6
+      env: TOXENV=py36-firefox
       addons:
         firefox: latest-esr
     - language: python
-      python: 3.5
-      env: MARIONETTE=1 TOXENV=py35-marionette
+      python: 3.6
+      env: MARIONETTE=1 TOXENV=py36-marionette
       addons:
         firefox: latest
     - language: python
-      python: 3.5
-      env: PHANTOMJS=1 TOXENV=py35-phantomjs
+      python: 3.6
+      env: PHANTOMJS=1 TOXENV=py36-phantomjs
     - language: python
-      python: 3.5
-      env: TOXENV=py35-remote
+      python: 3.6
+      env: TOXENV=py36-remote
       addons:
         firefox: latest
     - language: ruby
@@ -202,9 +202,9 @@ matrix:
     - env: TOXENV=py27-firefox
     - env: MARIONETTE=1 TOXENV=py27-marionette
     - env: TOXENV=py27-remote
-    - env: TOXENV=py35-firefox
-    - env: MARIONETTE=1 TOXENV=py35-marionette
-    - env: TOXENV=py35-remote
+    - env: TOXENV=py36-firefox
+    - env: MARIONETTE=1 TOXENV=py36-marionette
+    - env: TOXENV=py36-remote
     - env: TASK=//rb:docs
 before_install: ./scripts/travis/before_install.sh
 install: ./scripts/travis/install.sh
