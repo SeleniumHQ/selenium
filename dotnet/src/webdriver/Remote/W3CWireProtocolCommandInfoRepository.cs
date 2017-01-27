@@ -87,7 +87,6 @@ namespace OpenQA.Selenium.Remote
             this.TryAddCommand(DriverCommand.GetCookie, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/cookie/{name}"));
             this.TryAddCommand(DriverCommand.DeleteCookie, new CommandInfo(CommandInfo.DeleteCommand, "/session/{sessionId}/cookie/{name}"));
             this.TryAddCommand(DriverCommand.SetTimeout, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/timeouts"));
-            this.TryAddCommand(DriverCommand.Actions, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/actions"));
             this.TryAddCommand(DriverCommand.ClickElement, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/element/{id}/click"));
             this.TryAddCommand(DriverCommand.TapElement, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/element/{id}/tap"));
             this.TryAddCommand(DriverCommand.ClearElement, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/element/{id}/clear"));
