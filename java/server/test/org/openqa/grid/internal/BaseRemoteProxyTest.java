@@ -30,7 +30,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.common.exception.GridException;
+import org.openqa.grid.internal.mock.GridHelper;
 import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
+import org.openqa.grid.web.servlet.handler.RequestHandler;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
@@ -158,6 +160,28 @@ public class BaseRemoteProxyTest {
     assertEquals(23000, p.getTimeOut());
   }
 
+  @Test
+  public void proxyWithCustomTestSlot() {
+    GridNodeConfiguration nodeConfiguration = new GridNodeConfiguration();
+    RegistrationRequest req = RegistrationRequest.build(nodeConfiguration);
+    DesiredCapabilities caps = new DesiredCapabilities();
+    caps.setCapability(CapabilityType.APPLICATION_NAME, "app1");
+    req.getConfiguration().capabilities.add(caps);
+    req.getConfiguration().proxy = MyCustomProxy.class.getName();
+    RemoteProxy p = BaseRemoteProxy.getNewInstance(req,registry);
+    Map<String, Object> app1 = new HashMap<>();
+    app1.put(CapabilityType.APPLICATION_NAME, "app1");
+    app1.put("slotName", "CrazySlot");
+
+    registry.add(p);
+    RequestHandler newSessionRequest = GridHelper.createNewSessionHandler(registry, app1);
+
+    newSessionRequest.process();
+    TestSession session = newSessionRequest.getSession();
+    TestSlot slot = session.getSlot();
+    assertTrue(slot instanceof MyTestSlot);
+    assertTrue(slot.toString().contains("CrazySlot"));
+  }
 
   @After
   public void teardown() {

@@ -21,5 +21,5 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses(RegistrationRequestTest.class)
+@Suite.SuiteClasses( {RegistrationRequestTest.class,SeleniumProtocolTest.class})
 public class CommonTests {}
