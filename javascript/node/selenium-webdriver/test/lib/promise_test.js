@@ -301,6 +301,25 @@ describe('promise', function() {
   });
 
   promiseManagerSuite(() => {
+    describe('fulfilled', function() {
+      it('returns input value if it is already a valid promise', function() {
+        let p = promise.createPromise(function() {});
+        let r = promise.fulfilled(p);
+        assert.strictEqual(p, r);
+      });
+
+      it('creates a new promise fulfilled with input', function() {
+        return promise.fulfilled(1234).then(v => assert.equal(1234, v));
+      });
+
+      it('can convert thenables to valid promise', function() {
+        let thenable = {then: function(cb) {cb(1234)}};
+        let p = promise.fulfilled(thenable);
+        assert.notStrictEqual(thenable, p);
+        return p.then(v => assert.equal(1234, v));
+      });
+    });
+
     describe('when', function() {
       it('ReturnsAResolvedPromiseIfGivenANonPromiseValue', function() {
         var ret = promise.when('abc');

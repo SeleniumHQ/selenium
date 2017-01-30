@@ -1561,10 +1561,11 @@ function defer() {
  * @template T
  */
 function fulfilled(opt_value) {
-  if (usePromiseManager()) {
-    return ManagedPromise.resolve(opt_value);
+  let ctor = usePromiseManager() ? ManagedPromise : NativePromise;
+  if (opt_value instanceof ctor) {
+    return /** @type {!Thenable<T>} */(opt_value);
   }
-  return NativePromise.resolve(opt_value);
+  return ctor.resolve(opt_value);
 }
 
 
@@ -2081,6 +2082,10 @@ function usePromiseManager() {
 
 
 /**
+ * Creates a new promise with the given `resolver` function. If the promise
+ * manager is currently enabled, the returned promise will be a
+ * {@linkplain ManagedPromise} instance. Otherwise, it will be a native promise.
+ *
  * @param {function(
  *             function((T|IThenable<T>|Thenable|null)=),
  *             function(*=))} resolver
@@ -3317,6 +3322,7 @@ module.exports = {
   consume: consume,
   controlFlow: controlFlow,
   createFlow: createFlow,
+  createPromise: createPromise,
   defer: defer,
   delayed: delayed,
   filter: filter,
