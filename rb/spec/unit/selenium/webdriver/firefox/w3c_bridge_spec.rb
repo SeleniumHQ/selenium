@@ -21,8 +21,8 @@ require File.expand_path('../../spec_helper', __FILE__)
 
 module Selenium
   module WebDriver
-    module PhantomJS
-      describe Bridge do
+    module Firefox
+      describe W3CBridge do
         let(:resp) { {'sessionId' => 'foo', 'value' => @expected_capabilities.as_json} }
         let(:service) { double(Service, start: true, uri: 'http://example.com:1234') }
         let(:http) { double(Remote::Http::Default).as_null_object }
@@ -30,8 +30,8 @@ module Selenium
 
         before do
           allow(Service).to receive(:new).and_return(service)
-          @expected_capabilities = Remote::Capabilities.phantomjs
-          @capabilities = Remote::Capabilities.phantomjs
+          @expected_capabilities = Remote::W3CCapabilities.firefox
+          @capabilities = Remote::W3CCapabilities.firefox
         end
 
         it 'accepts server URL' do
@@ -39,7 +39,7 @@ module Selenium
           expect(http).to receive(:server_url=).with(URI.parse('http://example.com:4321'))
           allow(http).to receive(:call).with(*args).and_return(resp)
 
-          Bridge.new(http_client: http, url: 'http://example.com:4321')
+          W3CBridge.new(http_client: http, url: 'http://example.com:4321')
         end
 
         it 'accepts a driver path and port' do
@@ -48,7 +48,7 @@ module Selenium
           expect(Service).to receive(:new).with(path, port).and_return(service)
           allow(http).to receive(:call).with(*args).and_return(resp)
 
-          Bridge.new(http_client: http, driver_path: path, port: port)
+          W3CBridge.new(http_client: http, driver_path: path, port: port)
         end
 
         it 'uses driver path from class' do
@@ -56,45 +56,87 @@ module Selenium
           allow(Platform).to receive(:assert_executable).with(path).and_return(true)
           allow(Platform).to receive(:assert_executable).with(nil).and_return(true)
 
-          PhantomJS.driver_path = path
+          Firefox.driver_path = path
           expect(Service).to receive(:new).with(path, Service::DEFAULT_PORT).and_return(service)
           allow(http).to receive(:call).with(*args).and_return(resp)
 
-          Bridge.new(http_client: http)
-          PhantomJS.driver_path = nil
+          W3CBridge.new(http_client: http)
+          Firefox.driver_path = nil
         end
 
         it 'accepts service arguments' do
-          expect(Service).to receive(:new).with(nil, Service::DEFAULT_PORT, *%w[--foo=bar])
+          service_args = {binary: '/foo/geckodriver',
+                          log: '/foo/bar',
+                          marionette_port: 1976,
+                          host: 'localhost'}
+
+          expected = ["--binary=/foo/geckodriver",
+                      "–-log=/foo/bar",
+                      "–-marionette-port=1976",
+                      "–-host=localhost"]
+
+          expect(Service).to receive(:new).with(nil, Service::DEFAULT_PORT, *expected)
           allow(http).to receive(:call).with(*args).and_return(resp)
 
-          Bridge.new(http_client: http, service_args: %w[--foo=bar])
+          W3CBridge.new(http_client: http, service_args: service_args)
         end
 
         it 'uses the default capabilities' do
           allow(http).to receive(:call).with(*args).and_return(resp)
-          bridge = Bridge.new(http_client: http)
+          bridge = W3CBridge.new(http_client: http)
 
           expect(bridge.capabilities).to eq @expected_capabilities
         end
 
         it 'accepts custom capabilities' do
-          opts = {browser_name: 'phantomjs',
+          opts = {browser_name: 'firefox',
                   foo: 'bar',
                   'moo' => 'tar',
-                  javascript_enabled: true,
-                  css_selectors_enabled: true}
+                  firefox_options: {'args' => %w[baz]},
+                  platform_name: :foo
+          }
           opts.each { |k, v| @expected_capabilities[k] = v }
           opts.each { |k, v| @capabilities[k] = v }
 
           allow(http).to receive(:call).with(*args).and_return(resp)
-          bridge = Bridge.new(http_client: http, desired_capabilities: @capabilities)
+          bridge = W3CBridge.new(http_client: http, desired_capabilities: @capabilities)
 
           expect(bridge.capabilities).to eq @expected_capabilities
         end
 
-        it 'raises exception when required capability is not met'
+        it 'lets firefox options be set by hash' do
+          @expected_capabilities.firefox_options['args'] = %w[foo bar]
+          @capabilities.firefox_options['args'] = %w[foo bar]
+
+          allow(http).to receive(:call).with(*args).and_return(resp)
+          bridge = W3CBridge.new(http_client: http, desired_capabilities: @capabilities)
+
+          expect(bridge.capabilities.firefox_options['args']).to eq %w[foo bar]
+        end
+
+        it 'accepts options' do
+          @expected_capabilities.firefox_options = {'args' => %w[--no-remote]}
+          @capabilities.firefox_options = {'args' => %w[--no-remote]}
+
+          allow(http).to receive(:call).with(*args).and_return(resp)
+          bridge = W3CBridge.new(http_client: http, desired_capabilities: @capabilities)
+
+          expect(bridge.capabilities.firefox_options['args']).to eq %w[--no-remote]
+        end
+
+        it 'accepts profile' do
+          profile = Profile.new
+          profile.add_extension(File.expand_path('../sample.xpi', __FILE__))
+          @expected_capabilities.firefox_profile = profile.encoded
+
+          allow(http).to receive(:call).with(*args).and_return(resp)
+
+          bridge = W3CBridge.new(http_client: http, profile: profile)
+
+          # Note - for some reason the encoded string is close to but not equal to each other
+          expect(bridge.capabilities.firefox_profile.size).to eq profile.encoded.size
+        end
       end
-    end # PhantomJS
+    end # Firefox
   end # WebDriver
 end # Selenium

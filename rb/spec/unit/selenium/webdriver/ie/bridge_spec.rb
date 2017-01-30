@@ -23,93 +23,95 @@ module Selenium
   module WebDriver
     module IE
       describe Bridge do
-        let(:resp)    { {'sessionId' => 'foo', 'value' => @default_capabilities.as_json} }
-        let(:service) { double(Service, start: nil, uri: 'http://example.com') }
-        let(:caps)    { {} }
-        let(:http)    { double(Remote::Http::Default, call: resp).as_null_object }
+        let(:resp) { {'sessionId' => 'foo', 'value' => @expected_capabilities.as_json} }
+        let(:service) { double(Service, start: nil, uri: 'http://example.com:1234') }
+        let(:http) { double(Remote::Http::Default, call: resp).as_null_object }
+        let(:args) { [:post, "session", {desiredCapabilities: @expected_capabilities}] }
 
         before do
-          @default_capabilities = Remote::Capabilities.internet_explorer
-
-          allow(Remote::Capabilities).to receive(:internet_explorer).and_return(caps)
-          allow(Service).to receive(:binary_path).and_return('/foo')
+          @expected_capabilities = Remote::Capabilities.internet_explorer
+          @capabilities = Remote::Capabilities.internet_explorer
           allow(Service).to receive(:new).and_return(service)
         end
 
-        it 'raises ArgumentError if passed invalid options' do
-          expect { Bridge.new(foo: 'bar') }.to raise_error(ArgumentError)
+        it 'accepts server URL' do
+          expect(Service).not_to receive(:new)
+          expect(http).to receive(:server_url=).with(URI.parse('http://example.com:4321'))
+          allow(http).to receive(:call).with(*args).and_return(resp)
+
+          Bridge.new(http_client: http, url: 'http://example.com:4321')
         end
 
-        it 'accepts the :introduce_flakiness_by_ignoring_security_domains option' do
-          Bridge.new(
-            introduce_flakiness_by_ignoring_security_domains: true,
-            http_client: http
-          )
+        it 'accepts a driver path and port' do
+          path = '/foo/bar'
+          port = 1234
+          expect(Service).to receive(:new).with(path, port).and_return(service)
+          allow(http).to receive(:call).with(*args).and_return(resp)
 
-          expect(caps[:ignore_protected_mode_settings]).to be true
+          Bridge.new(http_client: http, driver_path: path, port: port)
         end
 
-        it 'has native events enabled by default' do
+        it 'uses driver path from class' do
+          path = '/foo/bar'
+          allow(Platform).to receive(:assert_executable).with(path).and_return(true)
+          allow(Platform).to receive(:assert_executable).with(nil).and_return(true)
+
+          IE.driver_path = path
+          expect(Service).to receive(:new).with(path, Service::DEFAULT_PORT).and_return(service)
+          allow(http).to receive(:call).with(*args).and_return(resp)
+
           Bridge.new(http_client: http)
-
-          expect(caps[:native_events]).to be true
+          IE.driver_path = nil
         end
 
-        it 'can disable native events' do
-          Bridge.new(
-            native_events: false,
-            http_client: http
-          )
+        it 'accepts service arguments' do
+          service_args = {log_level: :debug,
+                          log_file: '/foo',
+                          implementation: :vendor,
+                          host: 'localhost',
+                          extract_path: '/bar',
+                          silent: true}
 
-          expect(caps[:native_events]).to be false
+          expected = ["--log-level=DEBUG",
+                      "--log-file=/foo",
+                      "--implementation=VENDOR",
+                      "--host=localhost",
+                      "--extract_path=/bar",
+                      "--silent"]
+
+          expect(Service).to receive(:new).with(nil, Service::DEFAULT_PORT, *expected)
+          allow(http).to receive(:call).with(*args).and_return(resp)
+
+          Bridge.new(http_client: http, service_args: service_args)
         end
 
-        it 'sets the server log level and log file' do
-          expect(Service).to receive(:new).with(nil, Service::DEFAULT_PORT, '--log-level=TRACE', '--log-file=/foo/bar')
+        it 'uses the default capabilities' do
+          allow(http).to receive(:call).with(*args).and_return(resp)
 
-          Bridge.new(
-            log_level: :trace,
-            log_file: '/foo/bar',
-            http_client: http
-          )
+          bridge = Bridge.new(http_client: http)
+
+          expect(bridge.capabilities).to eq @expected_capabilities
         end
 
-        it 'should be able to set implementation' do
-          expect(Service).to receive(:new).with(nil, Service::DEFAULT_PORT, '--implementation=VENDOR')
+        it 'accepts custom capabilities' do
+          opts = {browser_name: 'ie',
+                  foo: 'bar',
+                  'moo' => 'tar',
+                  native_events: true,
+                  'introduce_flakiness_by_ignoring_security_domains' => true,
+                  javascript_enabled: true,
+                  css_selectors_enabled: true}
+          opts.each { |k, v| @expected_capabilities[k] = v }
+          opts.each { |k, v| @capabilities[k] = v }
 
-          Bridge.new(
-            implementation: :vendor,
-            http_client: http
-          )
+          allow(http).to receive(:call).with(*args).and_return(resp)
+
+          bridge = Bridge.new(http_client: http, desired_capabilities: @capabilities)
+
+          expect(bridge.capabilities).to eq @expected_capabilities
         end
 
-        it 'takes desired capabilities' do
-          custom_caps = Remote::Capabilities.new
-          custom_caps['ignoreProtectedModeSettings'] = true
-
-          expect(http).to receive(:call) do |_, _, payload|
-            expect(payload[:desiredCapabilities]['ignoreProtectedModeSettings']).to be true
-            resp
-          end
-
-          Bridge.new(http_client: http, desired_capabilities: custom_caps)
-        end
-
-        it 'can override desired capabilities through direct arguments' do
-          custom_caps = Remote::Capabilities.new
-          custom_caps['ignoreProtectedModeSettings'] = false
-
-          expect(http).to receive(:call) do |_, _, payload|
-            expect(payload[:desiredCapabilities][:ignore_protected_mode_settings]).to be true
-            resp
-          end
-
-          Bridge.new(
-            http_client: http,
-            desired_capabilities: custom_caps,
-            introduce_flakiness_by_ignoring_security_domains: true
-          )
-        end
+        it 'raises exception when required capability is not met'
       end
     end # IE
   end # WebDriver

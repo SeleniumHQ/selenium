@@ -23,38 +23,61 @@ module Selenium
   module WebDriver
     module Firefox
       describe Bridge do
+        let(:resp) { {'sessionId' => 'foo', 'value' => @expected_capabilities.as_json} }
         let(:launcher) { double(Launcher, launch: nil, quit: nil, url: 'http://localhost:4444/wd/hub') }
-        let(:resp) { {'sessionId' => 'foo', 'value' => @default_capabilities} }
-        let(:http) { double(Remote::Http::Default, call: resp).as_null_object }
-        let(:caps) { Remote::Capabilities.chrome }
+        let(:http) { double(Remote::Http::Default).as_null_object }
+        let(:args) { [:post, "session", {desiredCapabilities: @expected_capabilities}] }
 
         before do
-          @default_capabilities = Remote::Capabilities.firefox.as_json
-          allow(Remote::Capabilities).to receive(:firefox).and_return(caps)
+          @expected_capabilities = Remote::Capabilities.firefox
+          @capabilities = Remote::Capabilities.firefox
           allow(Launcher).to receive(:new).and_return(launcher)
         end
 
-        it 'sets the proxy capability' do
-          proxy = Proxy.new(http: 'localhost:9090')
-          expect(caps).to receive(:proxy=).with proxy
+        it 'accepts a launcher port and a profile' do
+          profile = Profile.new
+          port = 1234
+          expect(Launcher).to receive(:new).with(instance_of(Binary), port, profile).and_return(launcher)
+          allow(http).to receive(:call).with(*args).and_return(resp)
 
-          Bridge.new(http_client: http, proxy: proxy)
+          Bridge.new(http_client: http, port: port, profile: profile)
         end
 
-        it 'raises ArgumentError if passed invalid options' do
-          expect { Bridge.new(foo: 'bar') }.to raise_error(ArgumentError)
+        it 'uses the default capabilities' do
+          allow(http).to receive(:call).with(*args).and_return(resp)
+          bridge = Bridge.new(http_client: http)
+
+          expect(bridge.capabilities).to eq @expected_capabilities
         end
 
-        it 'takes desired capabilities' do
-          custom_caps = Remote::Capabilities.new
-          custom_caps['foo'] = 'bar'
+        it 'accepts custom capabilities' do
+          profile = Profile.new
+          opts = {browser_name: 'firefox',
+                  foo: 'bar',
+                  'moo' => 'tar',
+                  firefox_provile: profile,
+                  javascript_enabled: true,
+                  css_selectors_enabled: true}
+          opts.each { |k, v| @expected_capabilities[k] = v }
+          opts.each { |k, v| @capabilities[k] = v }
 
-          expect(http).to receive(:call) do |_, _, payload|
-            expect(payload[:desiredCapabilities]['foo']).to eq('bar')
-            resp
-          end
+          allow(http).to receive(:call).with(*args).and_return(resp)
+          bridge = Bridge.new(http_client: http, desired_capabilities: @capabilities)
 
-          Bridge.new(http_client: http, desired_capabilities: custom_caps)
+          expect(bridge.capabilities).to eq @expected_capabilities
+        end
+
+        it 'raises exception when required capability is not met'
+
+        it 'accepts profile' do
+          profile = Profile.new
+          @expected_capabilities.firefox_profile = profile
+          @capabilities.firefox_profile = profile
+
+          expect(Launcher).to receive(:new).with(instance_of(Binary), anything, profile).and_return(launcher)
+          allow(http).to receive(:call).with(*args).and_return(resp)
+
+          Bridge.new(http_client: http, desired_capabilities: @capabilities)
         end
       end
     end # Firefox
