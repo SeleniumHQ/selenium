@@ -26,6 +26,8 @@ var firefox = require('../../firefox'),
     Context = require('../../firefox').Context,
     error = require('../..').error;
 
+var {consume} = require('../../lib/promise');
+
 
 var JETPACK_EXTENSION = path.join(__dirname,
     '../../lib/test/data/firefox/jetpack-sample.xpi');
@@ -67,21 +69,33 @@ test.suite(function(env) {
         });
       }
 
-      test.it('can start Firefox with custom preferences', function*() {
-        var profile = new firefox.Profile();
-        profile.setPreference('general.useragent.override', 'foo;bar');
+      describe('can start Firefox with custom preferences', function() {
+        function runTest(opt_dir) {
+          return consume(function*() {
+            let profile = new firefox.Profile(opt_dir);
+            profile.setPreference('general.useragent.override', 'foo;bar');
 
-        var options = new firefox.Options().setProfile(profile);
+            let options = new firefox.Options().setProfile(profile);
 
-        driver = env.builder().
-            setFirefoxOptions(options).
-            build();
+            driver = env.builder().
+                setFirefoxOptions(options).
+                build();
 
-        yield driver.get('data:text/html,<html><div>content</div></html>');
+            yield driver.get('data:text/html,<html><div>content</div></html>');
 
-        var userAgent = yield driver.executeScript(
-            'return window.navigator.userAgent');
-        assert(userAgent).equalTo('foo;bar');
+            var userAgent = yield driver.executeScript(
+                'return window.navigator.userAgent');
+            assert(userAgent).equalTo('foo;bar');
+          });
+        }
+
+        test.it('profile created from scratch', function() {
+          return runTest();
+        });
+
+        test.it('profile created from template', function() {
+          return io.tmpDir().then(runTest);
+        });
       });
 
       test.it('can start Firefox with a jetpack extension', function() {

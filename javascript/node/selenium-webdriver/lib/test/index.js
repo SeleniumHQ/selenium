@@ -24,6 +24,7 @@ var build = require('./build'),
     webdriver = require('../../'),
     flow = webdriver.promise.controlFlow(),
     firefox = require('../../firefox'),
+    logging = require('../../lib/logging'),
     safari = require('../../safari'),
     remote = require('../../remote'),
     testing = require('../../testing'),
@@ -55,6 +56,11 @@ var useLoopback = process.env['SELENIUM_USE_LOOP_BACK'] == '1';
 var noMarionette = /^0|false$/i.test(process.env['SELENIUM_GECKODRIVER']);
 var startServer = !!serverJar && !remoteUrl;
 var nativeRun = !serverJar && !remoteUrl;
+
+if (/^1|true$/i.test(process.env['SELENIUM_VERBOSE'])) {
+  logging.installConsoleHandler();
+  logging.getLogger('webdriver.http').setLevel(logging.Level.ALL);
+}
 
 var browsersToTest = (function() {
   var permitRemoteBrowsers = !!remoteUrl || !!serverJar;
