@@ -18,13 +18,18 @@ namespace OpenQA.Selenium.Environment
         private EnvironmentManager()
         {
             string configFile = AppDomain.CurrentDomain.SetupInformation.ConfigurationFile;
-            // TODO(andre.nogueira): Error checking to guard against malformed config files
-            string driverClassName = GetSettingValue("Driver");
-            string assemblyName = GetSettingValue("Assembly");
-            Assembly assembly = Assembly.Load(assemblyName);
-            driverType = assembly.GetType(driverClassName);
-            browser = (Browser)Enum.Parse(typeof(Browser), GetSettingValue("DriverName"));
-            remoteCapabilities = GetSettingValue("RemoteCapabilities");
+            try
+            {
+                string driverClassName = GetSettingValue("Driver");
+                string assemblyName = GetSettingValue("Assembly");
+                Assembly assembly = Assembly.Load(assemblyName);
+                driverType = assembly.GetType(driverClassName);
+                browser = (Browser)Enum.Parse(typeof(Browser), GetSettingValue("DriverName"));
+                remoteCapabilities = GetSettingValue("RemoteCapabilities");
+            }
+            catch (Exception)
+            {
+            }
 
             urlBuilder = new UrlBuilder();
 
@@ -58,7 +63,16 @@ namespace OpenQA.Selenium.Environment
 
         public static string GetSettingValue(string key)
         {
-            return System.Configuration.ConfigurationManager.AppSettings.GetValues(key)[0];
+            string settingValue = string.Empty;
+            try
+            {
+                settingValue = System.Configuration.ConfigurationManager.AppSettings.GetValues(key)[0];
+            }
+            catch (Exception)
+            {
+            }
+
+            return settingValue;
         }
 
         public Browser Browser 
