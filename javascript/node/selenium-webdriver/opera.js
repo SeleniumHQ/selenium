@@ -62,7 +62,7 @@
  *     var options = new opera.Options();
  *     // configure browser options ...
  *
- *     var driver = new opera.Driver(options, service);
+ *     var driver = opera.Driver.createSession(options, service);
  *
  * Users should only instantiate the {@link Driver} class directly when they
  * need a custom driver service configuration (as shown above). For normal

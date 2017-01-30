@@ -59,7 +59,7 @@
  *     let options = new chrome.Options();
  *     // configure browser options ...
  *
- *     let driver = new chrome.Driver(options, service);
+ *     let driver = chrome.Driver.createSession(options, service);
  *
  * Users should only instantiate the {@link Driver} class directly when they
  * need a custom driver service configuration (as shown above). For normal
@@ -595,7 +595,7 @@ class Options {
    *     let options = new chrome.Options().setMobileEmulation(
    *         {deviceName: 'Google Nexus 5'});
    *
-   *     let driver = new chrome.Driver(options);
+   *     let driver = chrome.Driver.createSession(options);
    *
    * __Example 2: Using Custom Screen Configuration__
    *
@@ -605,7 +605,7 @@ class Options {
    *         pixelRatio: 3.0
    *     });
    *
-   *     let driver = new chrome.Driver(options);
+   *     let driver = chrome.Driver.createSession(options);
    *
    *
    * [em]: https://sites.google.com/a/chromium.org/chromedriver/mobile-emulation
