@@ -1,4 +1,5 @@
 using NUnit.Framework;
+using OpenQA.Selenium.Environment;
 
 namespace OpenQA.Selenium
 {
@@ -69,7 +70,8 @@ namespace OpenQA.Selenium
 
         private void CreateTempFile(string content)
         {
-            testFile = new System.IO.FileInfo("webdriver.tmp");
+            string testFileName = System.IO.Path.Combine(EnvironmentManager.Instance.CurrentDirectory, "webdriver.tmp");
+            testFile = new System.IO.FileInfo(testFileName);
             if (testFile.Exists)
             {
                 testFile.Delete();

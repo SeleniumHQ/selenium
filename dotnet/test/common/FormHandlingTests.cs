@@ -145,7 +145,8 @@ namespace OpenQA.Selenium
             IWebElement uploadElement = driver.FindElement(By.Id("upload"));
             Assert.IsTrue(string.IsNullOrEmpty(uploadElement.GetAttribute("value")));
 
-            System.IO.FileInfo inputFile = new System.IO.FileInfo("test.txt");
+            string filePath = System.IO.Path.Combine(EnvironmentManager.Instance.CurrentDirectory, "test.txt");
+            System.IO.FileInfo inputFile = new System.IO.FileInfo(filePath);
             System.IO.StreamWriter inputFileWriter = inputFile.CreateText();
             inputFileWriter.WriteLine("Hello world");
             inputFileWriter.Close();
@@ -175,7 +176,8 @@ namespace OpenQA.Selenium
             IWebElement uploadElement = driver.FindElement(By.Id("file"));
             Assert.AreEqual(string.Empty, uploadElement.GetAttribute("value"));
 
-            System.IO.FileInfo inputFile = new System.IO.FileInfo("test.txt");
+            string filePath = System.IO.Path.Combine(EnvironmentManager.Instance.CurrentDirectory, "test.txt");
+            System.IO.FileInfo inputFile = new System.IO.FileInfo(filePath);
             System.IO.StreamWriter inputFileWriter = inputFile.CreateText();
             inputFileWriter.WriteLine("Hello world");
             inputFileWriter.Close();
@@ -194,7 +196,8 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.WindowsPhone, "Does not yet support file uploads")]
         public void ShouldBeAbleToUploadTheSameFileTwice()
         {
-            System.IO.FileInfo inputFile = new System.IO.FileInfo("test.txt");
+            string filePath = System.IO.Path.Combine(EnvironmentManager.Instance.CurrentDirectory, "test.txt");
+            System.IO.FileInfo inputFile = new System.IO.FileInfo(filePath);
             System.IO.StreamWriter inputFileWriter = inputFile.CreateText();
             inputFileWriter.WriteLine("Hello world");
             inputFileWriter.Close();
