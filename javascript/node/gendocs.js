@@ -207,7 +207,7 @@ function buildConfig(modules) {
     sourceUrlTemplate:
         'https://github.com/SeleniumHQ/selenium/tree/master/'
             + 'javascript/node/selenium-webdriver/%path%#L%line%',
-    strict: true
+    strict: false
   }
 }
 
