@@ -337,7 +337,8 @@ namespace OpenQA.Selenium
             IWebElement result = driver.FindElement(By.Id("fileResults"));
             Assert.AreEqual(string.Empty, result.Text);
 
-            System.IO.FileInfo inputFile = new System.IO.FileInfo("test.txt");
+            string filePath = System.IO.Path.Combine(EnvironmentManager.Instance.CurrentDirectory, "test.txt");
+            System.IO.FileInfo inputFile = new System.IO.FileInfo(filePath);
             System.IO.StreamWriter inputFileWriter = inputFile.CreateText();
             inputFileWriter.WriteLine("Hello world");
             inputFileWriter.Close();
