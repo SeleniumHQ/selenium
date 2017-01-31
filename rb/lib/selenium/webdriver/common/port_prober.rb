@@ -48,7 +48,8 @@ module Selenium
             TCPServer.new(host, port).close
           rescue *IGNORED_ERRORS => ex
             $stderr.puts "port prober could not bind to #{host}:#{port} (#{ex.message})" if $DEBUG
-            # ignored - some machines appear unable to bind to some of their interfaces
+            # some machines appear unable to bind to some of their interfaces; increment port anyway
+            return false
           end
         end
 
