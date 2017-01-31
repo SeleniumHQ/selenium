@@ -1074,6 +1074,8 @@ namespace OpenQA.Selenium.Remote
         {
             DesiredCapabilities capabilitiesObject = desiredCapabilities as DesiredCapabilities;
             Dictionary<string, object> parameters = new Dictionary<string, object>();
+            Dictionary<string, object> capabilitiesParameter = new Dictionary<string, object>();
+            capabilitiesParameter["desiredCapabilities"] = capabilitiesObject.CapabilitiesDictionary;
             parameters.Add("desiredCapabilities", capabilitiesObject.CapabilitiesDictionary);
             Response response = this.Execute(DriverCommand.NewSession, parameters);
 
