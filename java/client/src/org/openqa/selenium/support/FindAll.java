@@ -23,7 +23,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Used to mark a field on a Page Object to indicate that lookup should use a series of @FindBy tags
+ * Used to mark a field or class on a Page Object to indicate that lookup should use a series of @FindBy tags
  * It will then search for all elements that match any of the FindBy criteria. Note that elements
  * are not guaranteed to be in document order.
  *
