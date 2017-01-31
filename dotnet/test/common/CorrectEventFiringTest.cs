@@ -361,10 +361,10 @@ namespace OpenQA.Selenium
             IWebElement element = driver.FindElement(By.Id("eventish"));
             element.Click();
 
-            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(2));
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(2);
             string clientX = driver.FindElement(By.Id("clientX")).Text;
             string clientY = driver.FindElement(By.Id("clientY")).Text;
-            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(0));
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(0);
 
             Assert.AreNotEqual("0", clientX);
             Assert.AreNotEqual("0", clientY);

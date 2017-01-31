@@ -240,7 +240,7 @@ namespace OpenQA.Selenium
                 Assert.Ignore("Driver does not return control from timeout wait when executed via Marionette");
             }
 
-            driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(2));
+            driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(2);
 
             try
             {
@@ -256,7 +256,7 @@ namespace OpenQA.Selenium
             }
             finally
             {
-                driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.MinValue);
+                driver.Manage().Timeouts().PageLoad = TimeSpan.MinValue;
             }
         }
 
