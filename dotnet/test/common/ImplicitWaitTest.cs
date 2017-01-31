@@ -10,7 +10,7 @@ namespace OpenQA.Selenium
         [TearDown]
         public void ResetImplicitWaitTimeout()
         {
-            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(0));
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromMilliseconds(0);
         }
 
         [Test]
@@ -20,7 +20,7 @@ namespace OpenQA.Selenium
             driver.Url = dynamicPage;
             IWebElement add = driver.FindElement(By.Id("adder"));
 
-            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(3000));
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromMilliseconds(3000);
 
             add.Click();
             driver.FindElement(By.Id("box0"));  // All is well if this doesn't throw.
@@ -31,7 +31,7 @@ namespace OpenQA.Selenium
         public void ShouldStillFailToFindAnElementWhenImplicitWaitsAreEnabled()
         {
             driver.Url = dynamicPage;
-            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(500));
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromMilliseconds(500);
             Assert.Throws<NoSuchElementException>(() => driver.FindElement(By.Id("box0")));
         }
 
@@ -41,8 +41,8 @@ namespace OpenQA.Selenium
         public void ShouldReturnAfterFirstAttemptToFindOneAfterDisablingImplicitWaits()
         {
             driver.Url = dynamicPage;
-            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(3000));
-            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(0));
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromMilliseconds(3000);
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromMilliseconds(0);
             Assert.Throws<NoSuchElementException>(() => driver.FindElement(By.Id("box0")));
         }
 
@@ -54,7 +54,7 @@ namespace OpenQA.Selenium
             driver.Url = dynamicPage;
             IWebElement add = driver.FindElement(By.Id("adder"));
 
-            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(2000));
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromMilliseconds(2000);
             add.Click();
             add.Click();
 
@@ -69,7 +69,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = dynamicPage;
 
-            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(500));
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromMilliseconds(500);
             ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.ClassName("redbox"));
             Assert.AreEqual(0, elements.Count);
         }
@@ -81,8 +81,8 @@ namespace OpenQA.Selenium
         {
             driver.Url = dynamicPage;
             IWebElement add = driver.FindElement(By.Id("adder"));
-            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(1100));
-            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(0));
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromMilliseconds(1100);
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromMilliseconds(0);
             add.Click();
             ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.ClassName("redbox"));
             Assert.AreEqual(0, elements.Count);
@@ -100,7 +100,7 @@ namespace OpenQA.Selenium
 
             IWebElement reveal = driver.FindElement(By.Id("reveal"));
             IWebElement revealed = driver.FindElement(By.Id("revealed"));
-            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(5000));
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromMilliseconds(5000);
 
             Assert.IsFalse(revealed.Displayed, "revealed should not be visible");
             reveal.Click();
