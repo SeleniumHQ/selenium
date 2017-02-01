@@ -32,7 +32,13 @@ module Selenium
           arg.map { |e| unwrap_script_result(e) }
         when Hash
           element_id = element_id_from(arg)
-          element_id = arg if self.is_a?(Remote::W3CBridge) && element_id
+          if element_id
+            if self.is_a?(Firefox::W3CBridge)
+              element_id = {'element-6066-11e4-a52e-4f735466cecf' => element_id}
+            elsif self.is_a?(Remote::W3CBrdige)
+              element_id = arg
+            end
+          end
           return Element.new(self, element_id) if element_id
           arg.each { |k, v| arg[k] = unwrap_script_result(v) }
         else
