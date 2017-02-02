@@ -73,6 +73,22 @@ module Selenium
       server.start
     end
 
+    it 'adds additional JAVA options args' do
+      expect(File).to receive(:exist?).with('selenium-server-test.jar').and_return(true)
+
+      expect(ChildProcess).to receive(:build)
+        .with('java', '-Dwebdriver.chrome.driver=/bin/chromedriver','-jar', 'selenium-server-test.jar', '-port', '4444', 'foo', 'bar')
+        .and_return(mock_process)
+
+      server = Selenium::Server.new('selenium-server-test.jar', background: true)
+      allow(server).to receive(:socket).and_return(mock_poller)
+
+      server << %w[foo bar]
+      server << '-Dwebdriver.chrome.driver=/bin/chromedriver'
+
+      server.start
+    end
+
     it 'downloads the specified version from the selenium site' do
       required_version = '10.2.0'
       expected_download_file_name = "selenium-server-standalone-#{required_version}.jar"
