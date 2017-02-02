@@ -1,11 +1,12 @@
 # -*- encoding: utf-8 -*-
 
-root = File.expand_path(File.dirname(__FILE__))
-raise "cwd must be #{root} when reading gemspec" if root != Dir.pwd
+root = File.realpath(File.dirname(__FILE__))
+cwd = File.realpath(Dir.pwd)
+raise "cwd(#{cwd}) must be #{root} when reading gemspec" if root != cwd
 
 Gem::Specification.new do |s|
   s.name = 'selenium-webdriver'
-  s.version = '3.0.5'
+  s.version = '3.0.6'
 
   s.authors = ['Alex Rodionov', 'Titus Fortner']
   s.email = ['p0deje@gmail.com', 'titusfortner@gmail.com']
