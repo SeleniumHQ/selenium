@@ -26,6 +26,7 @@ def test_launch_and_close_browser():
 def test_multiple_driver_instance_launch():
     for i in range(0,2):
         i = Chrome()
+    for i in range(0,2):
         i.quit()
 
 
