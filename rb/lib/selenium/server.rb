@@ -233,10 +233,8 @@ module Selenium
     def process
       @process ||= (
         # extract any additional_args that start with -D as options
-        options = if @additional_args
-          @additional_args.dup - @additional_args.delete_if{|arg| arg.match(/^-D.*$/)}
-        end
-        cp = ChildProcess.build('java', *options, '-jar', @jar, '-port', @port.to_s, *@additional_args)
+        properties = @additional_args.dup - @additional_args.delete_if { |arg| arg[/^-D/] }
+        cp = ChildProcess.build('java', *properties, '-jar', @jar, '-port', @port.to_s, *@additional_args)
         io = cp.io
 
         if @log.is_a?(String)
