@@ -142,7 +142,10 @@ class Service(object):
             except Exception:
                 pass
 
-        if self.process is None:
+        try:
+            if self.process is None:
+                return
+        except AttributeError:  # self has no attribute 'process'
             return
 
         try:
