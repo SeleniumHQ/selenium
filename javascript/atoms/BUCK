@@ -215,7 +215,6 @@ js_library(name = 'xpath',
     ':bot',
     ':errors',
     '//third_party/closure:closure',
-    '//third_party/js/wgxpath:wgxpath',
   ],
 )
 

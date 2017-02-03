@@ -1,8 +1,0 @@
-js_library(name = 'wgxpath',
-  srcs = glob(['*.js']),
-  deps = [
-    '//third_party/closure:closure',
-  ],
-  visibility = ['PUBLIC'],
-)
-
