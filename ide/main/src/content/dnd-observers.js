@@ -23,25 +23,18 @@ const Cc = Components.classes;
  */
 var suiteTreeDragObserver = {
 
-    onDragStart: function (aEvent, aXferData, aDragAction) {
+    onDragStart: function (e) {
+    var selectedIndex = document.getElementById('suiteTree').currentIndex;
+    if (selectedIndex == -1)
+      return;
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/unicode', selectedIndex);
+  },
 
-        try{
-            var selectedIndex = document.getElementById('suiteTree').currentIndex;
-            if (selectedIndex == -1)
-                return;
-
-            aXferData.data = new TransferData();
-            aXferData.data.addDataForFlavour("text/unicode", selectedIndex.toString());
-            aDragAction.action = Ci.nsIDragService.DRAGDROP_ACTION_MOVE;
-
-        }catch(e){
-            new Log("DND").error("onDragStart error: "+e);
-        }
-    },
-    onDrop: function (aEvent, aXferData, aDragSession) {},
-    onDragExit: function (aEvent, aDragSession) {},
-    onDragOver: function (aEvent, aFlavour, aDragSession) {},
-    getSupportedFlavours: function() {return null; }
+  onDragOver: function (e) {
+    // e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+  }
 };
 
 
@@ -51,23 +44,16 @@ var suiteTreeDragObserver = {
  */
 var commandsDragObserver = {
 
-    onDragStart: function (aEvent, aXferData, aDragAction) {
+    onDragStart: function (e) {
+    var selectedIndex = document.getElementById('commands').currentIndex;
+    if (selectedIndex == -1)
+      return;
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/unicode', selectedIndex);
+  },
 
-        try{
-            var selectedIndex = document.getElementById('commands').currentIndex;
-            if (selectedIndex == -1)
-                return;
-
-            aXferData.data = new TransferData();
-            aXferData.data.addDataForFlavour("text/unicode", selectedIndex.toString());
-            aDragAction.action = Ci.nsIDragService.DRAGDROP_ACTION_MOVE;
-
-        }catch(e){
-            new Log("DND").error("onDragStart error: "+e);
-        }
-    },
-    onDrop: function (aEvent, aXferData, aDragSession) {},
-    onDragExit: function (aEvent, aDragSession) {},
-    onDragOver: function (aEvent, aFlavour, aDragSession) {},
-    getSupportedFlavours: function() {return null; }
+  onDragOver: function (e) {
+    // e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+  }
 };
