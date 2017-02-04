@@ -422,7 +422,11 @@ module Selenium
 
         # TODO: - Implement file verification
         def send_keys_to_element(element, keys)
-          execute :element_send_keys, {id: element.values.first}, {value: keys.join('').split(//)}
+          # Null previously indicated modifier release, w3c specification requires it to be pressed for entire value sent
+          parts = keys.join('').split(Selenium::WebDriver::Keys[:null])
+          parts.each do |part|
+            execute :element_send_keys, {id: element.values.first}, {value: part.chars}
+          end
         end
 
         def clear_element(element)
