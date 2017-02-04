@@ -7,6 +7,8 @@
   `promise.defer()` to all use native promises when the promise manager is
   disabled.
 * Properly handle W3C error responses to new session commands.
+* Updated `selenium-webdriver/testing` to export `describe.only` along with
+  `describe.skip`.
 
 ## v3.0.1
 

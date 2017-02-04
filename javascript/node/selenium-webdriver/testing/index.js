@@ -291,6 +291,19 @@ exports.describe = function(name, opt_fn) {
 
 
 /**
+ * An alias for {@link #describe()} that marks the suite as exclusive,
+ * suppressing all other test suites.
+ * @param {string} name The suite name.
+ * @param {function()=} opt_fn The suite function, or `undefined` to define
+ *     a pending test suite.
+ */
+exports.describe.only = function(name, opt_fn) {
+  let desc = getMochaGlobal('describe');
+  return opt_fn ? desc.only(name, opt_fn) : desc.only(name);
+};
+
+
+/**
  * Defines a suppressed test suite.
  * @param {string} name The suite name.
  * @param {function()=} opt_fn The suite function, or `undefined` to define
