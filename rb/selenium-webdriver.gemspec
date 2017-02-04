@@ -1,8 +1,7 @@
 # -*- encoding: utf-8 -*-
 
-root = File.realpath(File.dirname(__FILE__))
-cwd = File.realpath(Dir.pwd)
-raise "cwd(#{cwd}) must be #{root} when reading gemspec" if root != cwd
+root = File.expand_path(File.dirname(__FILE__))
+raise "cwd must be #{root} when reading gemspec" if root != Dir.pwd
 
 Gem::Specification.new do |s|
   s.name = 'selenium-webdriver'
