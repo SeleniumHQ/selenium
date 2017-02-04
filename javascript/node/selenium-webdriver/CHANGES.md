@@ -9,6 +9,8 @@
 * Properly handle W3C error responses to new session commands.
 * Updated `selenium-webdriver/testing` to export `describe.only` along with
   `describe.skip`.
+* Fixed `selenium-webdriver/lib/until.ableToSwitchToFrame`. It was previously
+  dropping arguments and would never work.
 
 ## v3.0.1
 
