@@ -17,35 +17,29 @@
 
 package org.openqa.grid.web.servlet.api.v1;
 
-import org.openqa.grid.internal.ProxySet;
-import org.openqa.grid.internal.RemoteProxy;
-import org.openqa.grid.internal.TestSlot;
-import org.openqa.grid.web.servlet.api.v1.utils.ProxyIdUtil;
+import com.google.gson.JsonObject;
+
+import org.openqa.grid.internal.TestSession;
+import org.openqa.grid.web.servlet.api.v1.utils.ProxyUtil;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 public class Sessions extends RestApiEndpoint {
 
-  public Map<String, Map<String, String>> getResponse(String query) {
-
-    Map<String, Map<String, String>> sessions = new HashMap<String, Map<String, String>>();
-
-    ProxySet proxies = this.getRegistry().getAllProxies();
-    Iterator<RemoteProxy> iterator = proxies.iterator();
-    while (iterator.hasNext()) {
-      RemoteProxy currentProxy = iterator.next();
-
-      for (TestSlot slot : currentProxy.getTestSlots()) {
-        if (slot.getSession() != null) {
-          Map<String, String> systemInfo = new HashMap<String, String>();
-          systemInfo.put("host", currentProxy.getRemoteHost().getHost());
-          systemInfo.put("proxy", ProxyIdUtil.encodeId(currentProxy.getId()));
-
-          sessions.put(slot.getSession().getExternalKey().getKey(), systemInfo);
-        }
+  @Override
+  public Map<String, JsonObject> getResponse(String query) {
+    Map<String, JsonObject> sessions = new HashMap<>();
+    Set<TestSession> activeSessions = this.getRegistry().getActiveSessions();
+    for (TestSession session : activeSessions) {
+      JsonObject sessionData = new JsonObject();
+      sessionData.add("slotInfo", ProxyUtil.getNodeInfo(session.getSlot().getProxy()));
+      String browser = (String) ProxyUtil.getBrowser(session.getRequestedCapabilities());
+      if (browser != null && !browser.trim().isEmpty()) {
+        sessionData.addProperty("browser", browser);
       }
+      sessions.put(session.getExternalKey().getKey(), sessionData);
     }
     return sessions;
   }

@@ -17,24 +17,13 @@
 
 package org.openqa.grid.web.servlet.api.v1;
 
-import org.openqa.grid.internal.Registry;
-import org.openqa.grid.web.servlet.RegistryBasedServlet;
-
 import java.io.IOException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class ApiV1 extends RegistryBasedServlet {
-
-  public ApiV1() {
-    this(null);
-  }
-
-  public ApiV1(Registry registry) {
-    super(registry);
-  }
+public class ApiV1 extends RestApiEndpoint {
 
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -51,17 +40,22 @@ public class ApiV1 extends RegistryBasedServlet {
     }
   }
 
-  protected String buildHtmlResponse() {
+  @Override
+  public Object getResponse(String query) {
+    return null;
+  }
+
+  private String buildHtmlResponse() {
     StringBuilder html = new StringBuilder();
     html.append("<html><body>");
     html.append("GET endpoints: <br/>");
     html.append("<ul>");
 
     for (APIEndpointRegistry.EndPoint e : APIEndpointRegistry.getEndpoints()) {
-      html.append("<li><a href='" + e.getPermalink() + "'>" + e.getPermalink() + "</a> <ul> ");
-      html.append("<li>Description: " + e.getDescription() + "</li>");
-      html.append("<li>Class: " + e.getClassName() + "</li>");
-      html.append("<li>Usage: " + e.getUsage() + "</li>");
+      html.append(String.format("<li><a href='%s'>%s</a> <ul> ",e.getPermalink(),e.getPermalink()));
+      html.append(String.format("<li>Description: %s</li>",e.getDescription()));
+      html.append(String.format("<li>Class: %s</li>",e.getClassName()));
+      html.append(String.format("<li>Usage: %s</li>",e.getUsage()));
       html.append("</ul></li>");
     }
 

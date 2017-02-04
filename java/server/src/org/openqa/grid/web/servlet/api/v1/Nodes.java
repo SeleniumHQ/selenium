@@ -17,39 +17,32 @@
 
 package org.openqa.grid.web.servlet.api.v1;
 
+import com.google.gson.JsonObject;
+
 import org.openqa.grid.internal.ProxySet;
 import org.openqa.grid.internal.RemoteProxy;
-import org.openqa.grid.web.servlet.api.v1.utils.ProxyIdUtil;
+import org.openqa.grid.web.servlet.api.v1.utils.ProxyUtil;
 
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 public class Nodes extends RestApiEndpoint {
 
   @Override
   public Object getResponse(String query) {
-    Map<String, List<Map>> computerNames = new HashMap<>();
+    List<JsonObject> computers = new LinkedList<>();
 
     ProxySet proxies = this.getRegistry().getAllProxies();
-    Iterator<RemoteProxy> iterator = proxies.iterator();
-    while (iterator.hasNext()) {
-      RemoteProxy currentProxy = iterator.next();
-      String host = currentProxy.getRemoteHost().getHost();
-      String port = String.valueOf(currentProxy.getRemoteHost().getPort());
-
-      if (!computerNames.containsKey(host)) {
-        computerNames.put(host, new LinkedList<>());
-      }
-      Map<String, String> proxyInfo = new HashMap<>();
-      proxyInfo.put("port", port);
-      proxyInfo.put("proxy", ProxyIdUtil.encodeId(currentProxy.getId()));
-      computerNames.get(host).add(proxyInfo);
+    for (RemoteProxy proxy : proxies) {
+      computers.add(gatherComputerData(proxy));
     }
-    return computerNames;
+    return computers;
   }
 
+  private JsonObject gatherComputerData(RemoteProxy proxy) {
+    JsonObject computer = ProxyUtil.getNodeInfo(proxy);
+    computer.add("slotUsage", ProxyUtil.getDetailedSlotUsage(proxy));
+    return computer;
+  }
 
 }

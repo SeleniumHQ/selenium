@@ -23,31 +23,39 @@ import java.util.List;
 public class APIEndpointRegistry {
 
   private static List<EndPoint> get = new LinkedList<>();
-  private static final String apiPrefix = "/api/v1";
+  private static final String API_PREFIX = "/api/v1";
+
+  private APIEndpointRegistry() {
+    //defeat instantiation.
+  }
 
   public static List<EndPoint> getEndpoints() {
     if (get.isEmpty()) {
-      get.add(new EndPoint("/api",
+      get.add(new EndPoint(API_PREFIX,
                            "HTML page documenting the API endpoints (this page)",
                            ApiV1.class.getName()));
 
-      get.add(new EndPoint(apiPrefix + "/nodes",
+      get.add(new EndPoint(API_PREFIX +"/hub",
+                           "Returns configuration and proxy information of the hub",
+                           HubInfo.class.getName()));
+
+      get.add(new EndPoint(API_PREFIX + "/nodes",
                            "List of computers connected to the HUB and the nodes on each computer",
                            Nodes.class.getName()));
 
-      get.add(new EndPoint(apiPrefix + "/proxy",
+      get.add(new EndPoint(API_PREFIX + "/proxy",
                            "Returns configuration and capability information for the current proxy",
                            Proxy.class.getName(),
-                           apiPrefix + "/proxy/&lt;ID&gt; - ID retrieved from the /node endpoint"));
+                           API_PREFIX + "/proxy/&lt;ID&gt; - ID retrieved from the /node endpoint"));
 
-      get.add(new EndPoint(apiPrefix + "/sessions",
+      get.add(new EndPoint(API_PREFIX + "/sessions",
                            "List of currently open sessions",
                            Sessions.class.getName()));
 
-      get.add(new EndPoint(apiPrefix + "/session",
+      get.add(new EndPoint(API_PREFIX + "/session",
                            "Returns details for a given session",
                            SessionInfo.class.getName(),
-                           apiPrefix
+                           API_PREFIX
                            + "/sessions/&lt;ID&gt; - ID retrieved from the /sessions endpoint"));
     }
     return get;
@@ -60,24 +68,22 @@ public class APIEndpointRegistry {
     private String usage;
 
 
-    public EndPoint(String permalink, String description, String className, String usage) {
+    EndPoint(String permalink, String description, String className, String usage) {
       this.permalink = permalink;
       this.description = description;
       this.className = className;
       this.usage = usage;
     }
 
-    public EndPoint(String permalink, String description, String className) {
-      this.permalink = permalink;
-      this.description = description;
-      this.className = className;
+    EndPoint(String permalink, String description, String className) {
+      this(permalink, description, className, null);
     }
 
     public String getDescription() {
       return this.description;
     }
 
-    public String getPermalink() {
+    String getPermalink() {
       return this.permalink;
     }
 

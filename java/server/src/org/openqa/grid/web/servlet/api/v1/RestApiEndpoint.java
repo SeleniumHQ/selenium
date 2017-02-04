@@ -31,11 +31,11 @@ import javax.servlet.http.HttpServletResponse;
 
 public abstract class RestApiEndpoint extends RegistryBasedServlet {
 
-  public RestApiEndpoint() {
+  RestApiEndpoint() {
     this(null);
   }
 
-  public RestApiEndpoint(Registry registry) {
+  RestApiEndpoint(Registry registry) {
     super(registry);
   }
 
@@ -53,20 +53,19 @@ public abstract class RestApiEndpoint extends RegistryBasedServlet {
     response.setStatus(200);
 
     try {
-      try {
-        response.getWriter().print(new GsonBuilder().setPrettyPrinting().create()
+      response.getWriter().print(new GsonBuilder().setPrettyPrinting().create()
                                      .toJson(getResponse(request.getPathInfo())));
-      } finally {
-        response.getWriter().close();
-      }
     } catch (RuntimeException e) {
       throw new GridException(e.getMessage());
+    } finally {
+      response.getWriter().close();
     }
   }
 
   public abstract Object getResponse(String query);
 
-  public Object getResponse() {
-    return getResponse("");
+  boolean isInvalidQuery(String query) {
+    return query == null || "/".equals(query);
   }
+
 }
