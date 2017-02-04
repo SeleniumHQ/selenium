@@ -266,21 +266,25 @@ task :test_java_small_tests => [
   "//java/server/test/org/openqa/selenium/remote/server/log:test:run",
 ]
 
-task :test_rb => [
-  "//rb:unit-test",
+task :test_rb => ["//rb:unit-test", :test_rb_local, :test_rb_remote]
+
+task :test_rb_local => [
   "//rb:chrome-test",
   "//rb:firefox-test",
   "//rb:phantomjs-test",
+  ("//rb:ff-legacy-test" if ENV['FF_LEGACY_BINARY']),
+  ("//rb:safari-test" if mac?),
+  ("//rb:ie-test" if windows?),
+  ("//rb:edge-test" if windows?),
+].compact
+
+task :test_rb_remote => [
   "//rb:remote-chrome-test",
   "//rb:remote-firefox-test",
   "//rb:remote-phantomjs-test",
-  ("//rb:ff-legacy-test" if ENV['FF_LEGACY_BINARY']),
   ("//rb:remote-ff-legacy-test" if ENV['FF_LEGACY_BINARY']),
-  ("//rb:safari-test" if mac?),
   ("//rb:remote-safari-test" if mac?),
-  ("//rb:ie-test" if windows?),
   ("//rb:remote-ie-test" if windows?),
-  ("//rb:edge-test" if windows?),
   ("//rb:remote-edge-test" if windows?)
 ].compact
 
