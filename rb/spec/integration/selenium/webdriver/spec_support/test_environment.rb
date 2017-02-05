@@ -135,7 +135,8 @@ module Selenium
 
         def remote_capabilities
           opt = {}
-          browser_name = if browser == :ff_legacy
+          browser_name = case browser
+                         when :ff_legacy
                            unless ENV['FF_LEGACY_BINARY']
                              raise DriverInstantiationError, "ENV['FF_LEGACY_BINARY'] must be set to test legacy firefox"
                            end
@@ -143,16 +144,14 @@ module Selenium
                            opt[:firefox_binary] = ENV['FF_LEGACY_BINARY']
                            opt[:marionette] = false
                            :firefox
+                         when :safari_preview
+                           opt["safari.options"] = {'technologyPreview' => true}
+                           :safari
                          else
                            browser
                          end
 
           caps = WebDriver::Remote::Capabilities.send(browser_name, opt)
-
-          if browser_name == :safari
-            tech_preview_driver = "/Applications/Safari\ Technology\ Preview.app/Contents/MacOS/safaridriver"
-            caps["safari.options"] = {'technologyPreview' => true} if File.exist?(tech_preview_driver)
-          end
 
           unless caps.is_a? WebDriver::Remote::W3CCapabilities
             caps.javascript_enabled = true
@@ -237,13 +236,11 @@ module Selenium
           WebDriver::Driver.for :phantomjs
         end
 
-        def create_safari_driver
-          driver_path = ENV['SAFARIDRIVER']
+        def create_safari_preview_driver(opt = {})
           tech_preview_driver = "/Applications/Safari\ Technology\ Preview.app/Contents/MacOS/safaridriver"
-          driver_path ||= tech_preview_driver if File.exist?(tech_preview_driver)
-
-          caps = Selenium::WebDriver::Remote::Capabilities.safari
-          WebDriver::Driver.for :safari, desired_capabilities: caps, driver_path: driver_path
+          raise DriverInstantiationError, "Install Safari Technology Preview on MacOS Sierra" unless File.exist?(tech_preview_driver)
+          opt[:driver_path] ||= tech_preview_driver
+          WebDriver::Driver.for :safari, opt
         end
 
         def keep_alive_client

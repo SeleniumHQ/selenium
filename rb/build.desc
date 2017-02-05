@@ -249,6 +249,19 @@ ruby_test(name = "remote-safari",
   ]
 )
 
+ruby_test(name = "remote-safari-preview",
+  srcs = [
+    "spec/integration/selenium/webdriver/*_spec.rb",
+    "spec/integration/selenium/webdriver/remote/**/*_spec.rb",
+    "spec/integration/selenium/webdriver/safari/**/*_spec.rb"
+  ],
+  include = ["rb/spec/integration", "build/rb/lib"],
+  deps = [
+    ":remote",
+    ":safari"
+  ]
+)
+
 ruby_test(name = "remote-ie",
   srcs = [
     "spec/integration/selenium/webdriver/*_spec.rb",
@@ -284,6 +297,15 @@ ruby_library(name = "safari",
 )
 
 ruby_test(name = "safari",
+  srcs = [
+    "spec/integration/selenium/webdriver/*_spec.rb",
+    "spec/integration/selenium/webdriver/safari/**/*_spec.rb"
+  ],
+  include = ["rb/spec/integration", "build/rb/lib"],
+  deps = [":safari"]
+)
+
+ruby_test(name = "safari-preview",
   srcs = [
     "spec/integration/selenium/webdriver/*_spec.rb",
     "spec/integration/selenium/webdriver/safari/**/*_spec.rb"
