@@ -32,7 +32,7 @@ module Selenium
           end.to raise_error(WebDriver::Error::NoSuchElementError)
         end
 
-        compliant_on browser: :ff_legacy do
+        compliant_on browser: :ff_esr do
           it 'should show stack trace information' do
             driver.navigate.to url_for('xhtmlTest.html')
 

@@ -91,10 +91,10 @@ module Selenium
         end
       end
 
-      compliant_on browser: [:firefox, :edge] do
+      compliant_on browser: [:ff_nightly, :firefox, :edge] do
         # Firefox - https://bugzilla.mozilla.org/show_bug.cgi?id=1189749
         # Edge: Not Yet - https://dev.windows.com/en-us/microsoft-edge/platform/status/webdriver/details/
-        not_compliant_on browser: [:firefox, :edge] do
+        not_compliant_on browser: [:firefox, :ff_nightly, :edge] do
           it 'can make window full screen' do
             window.maximize
             old_size = window.size

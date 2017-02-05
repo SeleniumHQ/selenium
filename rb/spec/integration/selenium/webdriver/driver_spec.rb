@@ -273,16 +273,13 @@ module Selenium
           end
 
           # Edge BUG - https://connect.microsoft.com/IE/feedback/details/1849991/
-          # https://bugzilla.mozilla.org/show_bug.cgi?id=1329559
           not_compliant_on browser: :edge do
-            not_compliant_on browser: :firefox do
-              not_compliant_on driver: :remote, platform: :macosx do
-                it 'times out if the callback is not invoked' do
-                  expect do
-                    # Script is expected to be async and explicitly callback, so this should timeout.
-                    driver.execute_async_script 'return 1 + 2;'
-                  end.to raise_error(Selenium::WebDriver::Error::ScriptTimeoutError)
-                end
+            not_compliant_on driver: :remote, platform: :macosx do
+              it 'times out if the callback is not invoked' do
+                expect do
+                  # Script is expected to be async and explicitly callback, so this should timeout.
+                  driver.execute_async_script 'return 1 + 2;'
+                end.to raise_error(Selenium::WebDriver::Error::ScriptTimeoutError)
               end
             end
           end

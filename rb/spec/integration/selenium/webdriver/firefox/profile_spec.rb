@@ -22,7 +22,7 @@ require_relative '../spec_helper'
 module Selenium
   module WebDriver
     module Firefox
-      compliant_on browser: :firefox do
+      compliant_on browser: [:firefox, :ff_nightly] do
         describe Profile do
           let(:profile) { Profile.new }
           let(:browser) { GlobalTestEnv.driver == :remote ? :remote : :firefox }
@@ -41,8 +41,7 @@ module Selenium
               opt[:url] = GlobalTestEnv.remote_server.webdriver_url if GlobalTestEnv.remote_server?
               opt
             else
-              {desired_capabilities: Remote::Capabilities.firefox(marionette: GlobalTestEnv.browser == :firefox),
-               profile: profile}
+              {profile: profile}
             end
           end
 
@@ -164,7 +163,7 @@ module Selenium
 
               it 'should instantiate the browser with the correct profile' do
                 begin
-                  driver1 = WebDriver.for(browser, profile_opts.dup)
+                  driver1 = GlobalTestEnv.send(:create_driver, profile_opts.dup)
                   expect { wait(5).until { driver1.find_element(id: 'oneline') } }.to_not raise_error
                 ensure
                   driver1.quit
@@ -173,9 +172,9 @@ module Selenium
 
               it 'should be able to use the same profile more than once' do
                 begin
-                  driver1 = WebDriver.for(browser, profile_opts.dup)
+                  driver1 = GlobalTestEnv.send(:create_driver, profile_opts.dup)
                   expect { wait(5).until { driver1.find_element(id: 'oneline') } }.to_not raise_error
-                  driver2 = WebDriver.for(browser, profile_opts.dup)
+                  driver2 = GlobalTestEnv.send(:create_driver, profile_opts.dup)
                   expect { wait(5).until { driver2.find_element(id: 'oneline') } }.to_not raise_error
                 ensure
                   driver1.quit if driver1

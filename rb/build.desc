@@ -6,7 +6,7 @@ rubygem(
     "//rb:support",
     "//rb:edge",
     "//rb:firefox",
-    "//rb:ff-legacy",
+    "//rb:ff-esr",
     "//rb:ie",
     "//rb:phantomjs",
     "//rb:remote",
@@ -88,7 +88,7 @@ ruby_test(name = "edge",
   deps = [ ":edge" ]
 )
 
-ruby_library(name = "ff-legacy",
+ruby_library(name = "ff-esr",
   srcs = [
     "lib/selenium/webdriver/firefox/**/*.rb",
     "lib/selenium/webdriver/firefox.rb"
@@ -102,13 +102,13 @@ ruby_library(name = "ff-legacy",
   deps = [":common"]
 )
 
-ruby_test(name = "ff-legacy",
+ruby_test(name = "ff-esr",
   srcs = [
     "spec/integration/selenium/webdriver/*_spec.rb",
     "spec/integration/selenium/webdriver/firefox/**/*_spec.rb"
   ],
   include = ["rb/spec/integration", "build/rb/lib"],
-  deps = [":ff-legacy"]
+  deps = [":ff-esr"]
 )
 
 ruby_library(name = "firefox",
@@ -121,6 +121,15 @@ ruby_library(name = "firefox",
     { "//javascript/firefox-driver:webdriver_prefs" : "rb/lib/selenium/webdriver/firefox/extension/prefs.json" }
   ],
   deps = [":common"]
+)
+
+ruby_test(name = "ff-nightly",
+  srcs = [
+    "spec/integration/selenium/webdriver/*_spec.rb",
+    "spec/integration/selenium/webdriver/firefox/**/*_spec.rb"
+  ],
+  include = ["rb/spec/integration", "build/rb/lib"],
+  deps = [":firefox"]
 )
 
 ruby_test(name = "firefox",
@@ -197,7 +206,7 @@ ruby_test(name = "remote-chrome",
     ":chrome"]
 )
 
-ruby_test(name = "remote-ff-legacy",
+ruby_test(name = "remote-ff-esr",
   srcs = [
     "spec/integration/selenium/webdriver/*_spec.rb",
     "spec/integration/selenium/webdriver/firefox/**/*_spec.rb",
@@ -206,7 +215,20 @@ ruby_test(name = "remote-ff-legacy",
   include = ["rb/spec/integration", "build/rb/lib"],
   deps = [
     ":remote",
-    ":ff-legacy"
+    ":ff-esr"
+  ]
+)
+
+ruby_test(name = "remote-ff-nightly",
+  srcs = [
+    "spec/integration/selenium/webdriver/*_spec.rb",
+    "spec/integration/selenium/webdriver/firefox/**/*_spec.rb",
+    "spec/integration/selenium/webdriver/remote/**/*_spec.rb"
+  ],
+  include = ["rb/spec/integration", "build/rb/lib"],
+  deps = [
+    ":remote",
+    ":firefox"
   ]
 )
 

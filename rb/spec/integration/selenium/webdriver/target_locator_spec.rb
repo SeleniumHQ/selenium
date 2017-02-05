@@ -24,11 +24,6 @@ module Selenium
     describe TargetLocator do
       after do
         ensure_single_window
-
-        # Bug - https://bugzilla.mozilla.org/show_bug.cgi?id=1329556
-        compliant_on browser: :firefox do
-          sleep 1
-        end
       end
 
       let(:new_window) { driver.window_handles.find { |handle| handle != driver.window_handle } }
@@ -179,7 +174,7 @@ module Selenium
 
             titles = {}
             driver.window_handles.each do |wh|
-              driver.switch_to.window(wh) { titles[driver.title] = wh }
+              driver.switch_to.window(wh) { titles[driver.title] = driver.window_handle }
             end
 
             handle = titles['We Arrive Here']
@@ -325,7 +320,7 @@ module Selenium
 
           # Safari - Raises wrong error
           # Firefox - https://bugzilla.mozilla.org/show_bug.cgi?id=1279211
-          not_compliant_on browser: [:firefox, :safari] do
+          not_compliant_on browser: [:firefox, :safari, :ff_nightly] do
             not_compliant_on driver: :remote, platform: :macosx do
               it 'raises an UnhandledAlertError if an alert has not been dealt with' do
                 driver.navigate.to url_for('alerts.html')
@@ -334,11 +329,11 @@ module Selenium
 
                 expect { driver.title }.to raise_error(Selenium::WebDriver::Error::UnhandledAlertError)
 
-                not_compliant_on browser: [:ff_legacy, :ie] do
+                not_compliant_on browser: [:ff_esr, :ie] do
                   driver.switch_to.alert.accept
                 end
 
-                compliant_on browser: :ff_legacy do
+                compliant_on browser: :ff_esr do
                   reset_driver!
                 end
               end

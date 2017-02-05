@@ -20,8 +20,8 @@
 shared_examples_for 'driver that can be started concurrently' do |browser_name|
   it 'is started sequentially' do
     caps_opt = {}
-    if browser_name == :ff_legacy
-      caps_opt[:firefox_binary] = ENV['FF_LEGACY_BINARY']
+    if browser_name == :ff_esr
+      caps_opt[:firefox_binary] = ENV['FF_ESR_BINARY']
       caps_opt[:marionette] = false
       browser_name = :firefox
     end

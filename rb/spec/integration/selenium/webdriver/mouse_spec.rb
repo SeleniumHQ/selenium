@@ -22,7 +22,7 @@ require_relative 'spec_helper'
 module Selenium
   module WebDriver
     # Firefox - "Actions Endpoint Not Yet Implemented"
-    not_compliant_on browser: [:safari, :firefox] do
+    not_compliant_on browser: [:safari, :firefox, :ff_nightly] do
       describe Mouse do
         it 'clicks an element' do
           driver.navigate.to url_for('formPage.html')
