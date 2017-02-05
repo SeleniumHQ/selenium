@@ -26,28 +26,31 @@
  *
  * __Customizing the Firefox Profile__
  *
- * The {@link Profile} class may be used to configure the browser profile used
- * with WebDriver, with functions to install additional
+ * The {@linkplain Profile} class may be used to configure the browser profile
+ * used with WebDriver, with functions to install additional
  * {@linkplain Profile#addExtension extensions}, configure browser
  * {@linkplain Profile#setPreference preferences}, and more. For example, you
  * may wish to include Firebug:
  *
- *     var firefox = require('selenium-webdriver/firefox');
+ *     const {Builder} = require('selenium-webdriver');
+ *     const firefox = require('selenium-webdriver/firefox');
  *
- *     var profile = new firefox.Profile();
+ *     let profile = new firefox.Profile();
  *     profile.addExtension('/path/to/firebug.xpi');
  *     profile.setPreference('extensions.firebug.showChromeErrors', true);
  *
- *     var options = new firefox.Options().setProfile(profile);
- *     var driver = firefox.Driver.createSession(options);
+ *     let options = new firefox.Options().setProfile(profile);
+ *     let driver = new Builder()
+ *         .forBrowser('firefox')
+ *         .setFirefoxOptions(options)
+ *         .build();
  *
- * The {@link Profile} class may also be used to configure WebDriver based on a
- * pre-existing browser profile:
+ * The {@linkplain Profile} class may also be used to configure WebDriver based
+ * on a pre-existing browser profile:
  *
- *     var profile = new firefox.Profile(
+ *     let profile = new firefox.Profile(
  *         '/usr/local/home/bob/.mozilla/firefox/3fgog75h.testing');
- *     var options = new firefox.Options().setProfile(profile);
- *     var driver = firefox.Driver.createSession(options);
+ *     let options = new firefox.Options().setProfile(profile);
  *
  * The FirefoxDriver will _never_ modify a pre-existing profile; instead it will
  * create a copy for it to modify. By extension, there are certain browser
@@ -56,21 +59,35 @@
  *
  * __Using a Custom Firefox Binary__
  *
- * On Windows and OSX, the FirefoxDriver will search for Firefox in its
+ * On Windows and MacOS, the FirefoxDriver will search for Firefox in its
  * default installation location:
  *
- * * Windows: C:\Program Files and C:\Program Files (x86).
- * * Mac OS X: /Applications/Firefox.app
+ * - Windows: C:\Program Files and C:\Program Files (x86).
+ * - MacOS: /Applications/Firefox.app
  *
- * For Linux, Firefox will be located on the PATH: `$(where firefox)`.
+ * For Linux, Firefox will always be located on the PATH: `$(where firefox)`.
  *
- * You can configure WebDriver to start use a custom Firefox installation with
- * the {@link Binary} class:
+ * Several methods are provided for starting Firefox with a custom executable.
+ * First, on Windows and MacOS, you may configure WebDriver to check the default
+ * install location for a non-release channel. If the requested channel cannot
+ * be found in its default location, WebDriver will fallback to searching your
+ * PATH. _Note:_ on Linux, Firefox is _always_ located on your path, regardless
+ * of the requested channel.
  *
- *     var firefox = require('selenium-webdriver/firefox');
- *     var binary = new firefox.Binary('/my/firefox/install/dir/firefox-bin');
- *     var options = new firefox.Options().setBinary(binary);
- *     var driver = firefox.Driver.createSession(options);
+ *     const {Builder} = require('selenium-webdriver');
+ *     const firefox = require('selenium-webdriver/firefox');
+ *
+ *     let options = new firefox.Options().setBinary(firefox.Channel.NIGHTLY);
+ *     let driver = new Builder()
+ *         .forBrowser('firefox')
+ *         .setFirefoxOptions(options)
+ *         .build();
+ *
+ * On all platforms, you may configrue WebDriver to use a Firefox specific
+ * executable:
+ *
+ *     let options = new firefox.Options()
+ *         .setBinary('/my/firefox/install/dir/firefox-bin');
  *
  * __Remote Testing__
  *
@@ -84,11 +101,14 @@
  * binaries are never copied to remote machines and must be referenced by
  * installation path.
  *
- *     var options = new firefox.Options()
+ *     const {Builder} = require('selenium-webdriver');
+ *     const firefox = require('selenium-webdriver/firefox');
+ *
+ *     let options = new firefox.Options()
  *         .setProfile('/profile/path/on/remote/host')
  *         .setBinary('/install/dir/on/remote/host/firefox-bin');
  *
- *     var driver = new (require('selenium-webdriver')).Builder()
+ *     let driver = new Builder()
  *         .forBrowser('firefox')
  *         .usingServer('http://127.0.0.1:4444/wd/hub')
  *         .setFirefoxOptions(options)
@@ -99,8 +119,7 @@
  * To test versions of Firefox prior to Firefox 47, you must disable the use of
  * the geckodriver using the {@link Options} class.
  *
- *     var options = new firefox.Options().useGeckoDriver(false);
- *     var driver = firefox.Driver.createSession(options);
+ *     let options = new firefox.Options().useGeckoDriver(false);
  *
  * Alternatively, you may disable the geckodriver at runtime by setting the
  * environment variable `SELENIUM_MARIONETTE=false`.
@@ -113,7 +132,7 @@
 
 const url = require('url');
 
-const Binary = require('./binary').Binary,
+const {Binary, Channel} = require('./binary'),
     Profile = require('./profile').Profile,
     decodeProfile = require('./profile').decode,
     http = require('../http'),
@@ -196,16 +215,24 @@ class Options {
   }
 
   /**
-   * Sets the binary to use. The binary may be specified as the path to a Firefox
-   * executable, or as a {@link Binary} object.
+   * Sets the binary to use. The binary may be specified as the path to a
+   * Firefox executable, a specific {@link Channel}, or as a {@link Binary}
+   * object.
    *
-   * @param {(string|!Binary)} binary The binary to use.
+   * @param {(string|!Binary|!Channel)} binary The binary to use.
    * @return {!Options} A self reference.
+   * @throws {TypeError} If `binary` is an invalid type.
    */
   setBinary(binary) {
-    if (typeof binary === 'string') {
+    if (typeof binary === 'string' || binary instanceof Channel) {
       binary = new Binary(binary);
     }
+
+    if (!(binary instanceof Binary)) {
+      throw TypeError(
+          'binary must be a string path, Channel, or Binary object');
+    }
+
     this.binary_ = binary;
     return this;
   }
@@ -687,6 +714,7 @@ class Driver extends webdriver.WebDriver {
 
 
 exports.Binary = Binary;
+exports.Channel = Channel;
 exports.Context = Context;
 exports.Driver = Driver;
 exports.Options = Options;

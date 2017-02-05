@@ -11,6 +11,8 @@
   `describe.skip`.
 * Fixed `selenium-webdriver/lib/until.ableToSwitchToFrame`. It was previously
   dropping arguments and would never work.
+* Added the ability to use Firefox Nightly
+* If Firefox cannot be found in the default location, look for it on the PATH
 
 ## v3.0.1
 
