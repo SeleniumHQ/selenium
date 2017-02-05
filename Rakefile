@@ -272,18 +272,20 @@ task :test_rb_local => [
   "//rb:chrome-test",
   "//rb:firefox-test",
   "//rb:phantomjs-test",
-  ("//rb:ff-legacy-test" if ENV['FF_LEGACY_BINARY']),
+  ("//rb:ff-esr-test" if ENV['FF_ESR_BINARY']),
+  ("//rb:ff-nightly-test" if ENV['FF_NIGHTLY_BINARY']),
   ("//rb:safari-preview-test" if mac?),
   ("//rb:safari-test" if mac?),
   ("//rb:ie-test" if windows?),
-  ("//rb:edge-test" if windows?),
+  ("//rb:edge-test" if windows?)
 ].compact
 
 task :test_rb_remote => [
   "//rb:remote-chrome-test",
   "//rb:remote-firefox-test",
   "//rb:remote-phantomjs-test",
-  ("//rb:remote-ff-legacy-test" if ENV['FF_LEGACY_BINARY']),
+  ("//rb:remote-ff-esr-test" if ENV['FF_ESR_BINARY']),
+  ("//rb:remote-ff-nightly-test" if ENV['FF_NIGHTLY_BINARY']),
   ("//rb:remote-safari-preview-test" if mac?),
   ("//rb:remote-safari-test" if mac?),
   ("//rb:remote-ie-test" if windows?),

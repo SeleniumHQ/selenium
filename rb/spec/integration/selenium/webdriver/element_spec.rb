@@ -27,7 +27,7 @@ module Selenium
         driver.find_element(id: 'imageButton').click
       end
 
-      compliant_on browser: [:chrome, :ff_legacy] do
+      compliant_on browser: [:chrome, :ff_esr] do
         not_compliant_on driver: :remote, platform: :macosx do
           it 'should raise if different element receives click' do
             driver.navigate.to url_for('click_tests/overlapping_elements.html')
@@ -39,7 +39,7 @@ module Selenium
         end
       end
 
-      compliant_on browser: [:firefox, :ff_legacy] do
+      compliant_on browser: [:firefox, :ff_esr, :ff_nightly] do
         it 'should not raise if element is only partially covered' do
           driver.navigate.to url_for('click_tests/overlapping_elements.html')
           expect { driver.find_element(id: 'other_contents').click }.not_to raise_error
@@ -169,7 +169,7 @@ module Selenium
       end
 
       # Firefox - "Actions Endpoint Not Yet Implemented"
-      not_compliant_on browser: [:safari, :firefox] do
+      not_compliant_on browser: [:safari, :firefox, :ff_nightly] do
         it 'should drag and drop' do
           driver.navigate.to url_for('dragAndDropTest.html')
 

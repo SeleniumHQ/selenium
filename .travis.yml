@@ -4,7 +4,8 @@ env:
   global:
     - DISPLAY=:99.0
     - PYTEST_ADDOPTS="--verbose --instafail"
-    - FF_LEGACY_BINARY=/usr/local/bin/firefox
+    - FF_ESR_BINARY=$HOME/firefox-latest-esr/firefox/firefox-bin
+    - FF_NIGHTLY_BINARY=$HOME/firefox-latest-nightly/firefox/firefox-bin
 matrix:
   include:
     - language: java
@@ -200,11 +201,17 @@ matrix:
       jdk: oraclejdk8
       env: MARIONETTE=1 TASK=//rb:firefox-test
       addons:
+        firefox: latest
+    - language: ruby
+      rvm: 2.3.3
+      jdk: oraclejdk8
+      env: MARIONETTE=1 TASK=//rb:ff-nightly-test
+      addons:
         firefox: latest-nightly
     - language: ruby
       rvm: 2.3.3
       jdk: oraclejdk8
-      env: TASK=//rb:ff-legacy-test
+      env: TASK=//rb:ff-esr-test
       addons:
         firefox: latest-esr
     - language: ruby
@@ -224,11 +231,17 @@ matrix:
       jdk: oraclejdk8
       env: MARIONETTE=1 TASK=//rb:remote-firefox-test
       addons:
+        firefox: latest
+    - language: ruby
+      rvm: 2.3.3
+      jdk: oraclejdk8
+      env: MARIONETTE=1 TASK=//rb:remote-ff-nightly-test
+      addons:
         firefox: latest-nightly
     - language: ruby
       rvm: 2.3.3
       jdk: oraclejdk8
-      env: TASK=//rb:remote-ff-legacy-test
+      env: TASK=//rb:remote-ff-esr-test
       addons:
         firefox: latest-esr
     - language: ruby

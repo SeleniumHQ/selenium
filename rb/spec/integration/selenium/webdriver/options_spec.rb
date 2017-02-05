@@ -23,7 +23,7 @@ module Selenium
   module WebDriver
     not_compliant_on browser: :safari do
       describe Options do
-        not_compliant_on browser: [:firefox, :ie, :edge] do
+        not_compliant_on browser: [:firefox, :ie, :edge, :ff_nightly] do
           describe 'logs' do
             compliant_on driver: :remote do
               it 'can fetch remote log types' do
@@ -39,7 +39,7 @@ module Selenium
             end
 
             # All other browsers show empty
-            compliant_on browser: [:firefox, :ff_legacy] do
+            compliant_on browser: [:firefox, :ff_esr, :ff_nightly] do
               it 'can get the browser log' do
                 driver.navigate.to url_for('simpleTest.html')
 
@@ -77,7 +77,7 @@ module Selenium
             end
 
             # Firefox - https://bugzilla.mozilla.org/show_bug.cgi?id=1282970
-            not_compliant_on driver: :firefox do
+            not_compliant_on driver: [:firefox, :ff_nightly] do
               it 'should get named cookie' do
                 driver.navigate.to url_for('xhtmlTest.html')
                 driver.manage.add_cookie name: 'foo', value: 'bar'
@@ -109,7 +109,7 @@ module Selenium
             end
 
             # Firefox - https://bugzilla.mozilla.org/show_bug.cgi?id=1256007
-            not_compliant_on browser: :firefox do
+            not_compliant_on browser: [:firefox, :ff_nightly] do
               it 'should use DateTime for expires' do
                 driver.navigate.to url_for('xhtmlTest.html')
 

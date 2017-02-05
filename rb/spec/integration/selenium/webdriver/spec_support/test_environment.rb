@@ -136,13 +136,19 @@ module Selenium
         def remote_capabilities
           opt = {}
           browser_name = case browser
-                         when :ff_legacy
-                           unless ENV['FF_LEGACY_BINARY']
-                             raise DriverInstantiationError, "ENV['FF_LEGACY_BINARY'] must be set to test legacy firefox"
+                         when :ff_esr
+                           unless ENV['FF_ESR_BINARY']
+                             raise DriverInstantiationError, "ENV['FF_ESR_BINARY'] must be set to test Firefox ESR"
                            end
 
-                           opt[:firefox_binary] = ENV['FF_LEGACY_BINARY']
+                           opt[:firefox_binary] = ENV['FF_ESR_BINARY']
                            opt[:marionette] = false
+                           :firefox
+                         when :ff_nightly
+                           unless ENV['FF_NIGHTLY_BINARY']
+                             raise DriverInstantiationError, "ENV['FF_NIGHTLY_BINARY'] must be set to test Firefox Nightly"
+                           end
+                           opt[:firefox_binary] = ENV['FF_NIGHTLY_BINARY']
                            :firefox
                          when :safari_preview
                            opt["safari.options"] = {'technologyPreview' => true}
@@ -163,12 +169,12 @@ module Selenium
 
         private
 
-        def create_driver
+        def create_driver(opt = {})
           method = "create_#{driver}_driver".to_sym
           instance = if private_methods.include?(method)
-                       send method
+                       send method, opt
                      else
-                       WebDriver::Driver.for(driver)
+                       WebDriver::Driver.for(driver, opt)
                      end
           @create_driver_error_count -= 1 unless @create_driver_error_count == 0
           instance
@@ -192,48 +198,55 @@ module Selenium
           raise DriverInstantiationError, msg, @create_driver_error.backtrace
         end
 
-        def create_remote_driver
-          WebDriver::Driver.for(
-            :remote,
-            desired_capabilities: remote_capabilities,
-            url: ENV['WD_REMOTE_URL'] || remote_server.webdriver_url,
-            http_client: keep_alive_client || http_client
-          )
+        def create_remote_driver(opt = {})
+          opt[:desired_capabilities] ||= remote_capabilities
+          opt[:url] ||= ENV['WD_REMOTE_URL'] || remote_server.webdriver_url
+          opt[:http_client] ||= keep_alive_client || http_client
+
+          WebDriver::Driver.for(:remote, opt)
         end
 
-        def create_firefox_driver
+        def create_firefox_driver(opt = {})
           WebDriver::Firefox::Binary.path = ENV['FIREFOX_BINARY'] if ENV['FIREFOX_BINARY']
-          WebDriver::Driver.for :firefox
+          WebDriver::Driver.for :firefox, opt
         end
 
-        def create_ff_legacy_driver
-          unless ENV['FF_LEGACY_BINARY']
-            raise StandardError, "ENV['FF_LEGACY_BINARY'] must be set to test legacy firefox"
+        def create_ff_esr_driver(opt = {})
+          unless ENV['FF_ESR_BINARY']
+            raise StandardError, "ENV['FF_ESR_BINARY'] must be set to test ESR Firefox"
           end
-          WebDriver::Firefox::Binary.path = ENV['FF_LEGACY_BINARY']
+          WebDriver::Firefox::Binary.path = ENV['FF_ESR_BINARY']
 
-          caps = WebDriver::Remote::Capabilities.firefox(marionette: false)
+          opt[:desired_capabilities] ||= WebDriver::Remote::Capabilities.firefox(marionette: false)
 
-          WebDriver::Driver.for :firefox, desired_capabilities: caps
+          WebDriver::Driver.for :firefox, opt
         end
 
-        def create_chrome_driver
+        def create_ff_nightly_driver(opt = {})
+          unless ENV['FF_NIGHTLY_BINARY']
+            raise StandardError, "ENV['FF_NIGHTLY_BINARY'] must be set to test Nightly Firefox"
+          end
+          WebDriver::Firefox::Binary.path = ENV['FF_NIGHTLY_BINARY']
+          opt[:marionette] = true
+          WebDriver::Driver.for :firefox, opt
+        end
+
+        def create_chrome_driver(opt = {})
           binary = ENV['CHROME_BINARY']
           WebDriver::Chrome.path = binary if binary
 
           server = ENV['CHROMEDRIVER'] || ENV['chrome_server']
           WebDriver::Chrome.driver_path = server if server
 
-          args = ENV['TRAVIS'] ? ['--no-sandbox'] : []
+          opt[:args] ||= ENV['TRAVIS'] ? ['--no-sandbox'] : []
 
-          WebDriver::Driver.for :chrome,
-                                args: args
+          WebDriver::Driver.for :chrome, opt
         end
 
-        def create_phantomjs_driver
+        def create_phantomjs_driver(opt = {})
           binary = ENV['PHANTOMJS_BINARY']
           WebDriver::PhantomJS.path = binary if binary
-          WebDriver::Driver.for :phantomjs
+          WebDriver::Driver.for :phantomjs, opt
         end
 
         def create_safari_preview_driver(opt = {})
