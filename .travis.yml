@@ -1,3 +1,4 @@
+dist: trusty
 sudo: required
 env:
   global:
@@ -30,15 +31,31 @@ matrix:
     - language: java
       jdk: oraclejdk8
       env: CHROME=1 TASK="calcdeps //javascript/atoms:atoms-chrome:run"
+      addons:
+        apt:
+          packages:
+            - google-chrome-stable
     - language: java
       jdk: oraclejdk8
       env: CHROME=1 TASK="calcdeps //javascript/webdriver:webdriver-chrome:run"
+      addons:
+        apt:
+          packages:
+            - google-chrome-stable
     - language: java
       jdk: oraclejdk8
       env: CHROME=1 TASK="calcdeps //javascript/selenium-atoms:selenium-atoms-chrome:run"
+      addons:
+        apt:
+          packages:
+            - google-chrome-stable
     - language: java
       jdk: oraclejdk8
       env: CHROME=1 TASK="calcdeps //javascript/selenium-core:selenium-core-chrome:run"
+      addons:
+        apt:
+          packages:
+            - google-chrome-stable
     - language: java
       jdk: oraclejdk8
       env: TASK="calcdeps //javascript/atoms:atoms-firefox:run"
@@ -62,9 +79,17 @@ matrix:
     - language: java
       jdk: oraclejdk8
       env: CHROME=1 TASK=test_chrome
+      addons:
+        apt:
+          packages:
+            - google-chrome-stable
     - language: java
       jdk: oraclejdk8
       env: CHROME=1 TASK=//java/client/test/com/thoughtworks/selenium:chrome-rc-test:run
+      addons:
+        apt:
+          packages:
+            - google-chrome-stable
     - language: java
       jdk: oraclejdk8
       env: TASK=test_firefox
@@ -86,6 +111,10 @@ matrix:
     - language: java
       jdk: oraclejdk8
       env: CHROME=1 TASK=test_grid
+      addons:
+        apt:
+          packages:
+            - google-chrome-stable
     - language: java
       jdk: oraclejdk8
       env: TASK=test_htmlunit
@@ -101,6 +130,10 @@ matrix:
     - language: python
       python: 2.7
       env: CHROME=1 TOXENV=py27-chrome
+      addons:
+        apt:
+          packages:
+            - google-chrome-stable
     - language: python
       python: 2.7
       env: TOXENV=py27-firefox
@@ -128,6 +161,10 @@ matrix:
     - language: python
       python: 3.6
       env: CHROME=1 TOXENV=py36-chrome
+      addons:
+        apt:
+          packages:
+            - google-chrome-stable
     - language: python
       python: 3.6
       env: TOXENV=py36-firefox
@@ -154,6 +191,10 @@ matrix:
       rvm: 2.3.3
       jdk: oraclejdk8
       env: CHROME=1 TASK=//rb:chrome-test
+      addons:
+        apt:
+          packages:
+            - google-chrome-stable
     - language: ruby
       rvm: 2.3.3
       jdk: oraclejdk8
@@ -174,6 +215,10 @@ matrix:
       rvm: 2.3.3
       jdk: oraclejdk8
       env: CHROME=1 TASK=//rb:remote-chrome-test
+      addons:
+        apt:
+          packages:
+            - google-chrome-stable
     - language: ruby
       rvm: 2.3.3
       jdk: oraclejdk8
