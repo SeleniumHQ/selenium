@@ -55,9 +55,7 @@ test.suite(function(env) {
        * skipped if dev cannot be found on the current system.
        */
       function runWithFirefoxDev(options, testFn) {
-        let binary = new firefox.Binary();
-        binary.useDevEdition();
-        return binary.locate().then(exe => {
+        return firefox.Channel.AURORA.locate().then(exe => {
           options.setBinary(exe);
           driver = env.builder()
               .setFirefoxOptions(options)
