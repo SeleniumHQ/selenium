@@ -580,7 +580,7 @@ module Selenium
                   execute :find_elements, {}, {using: how, value: what}
                 end
 
-          ids.map { |id| Element.new self, id }
+          ids.map { |id| Element.new self, element_id_from(id) }
         end
 
         private

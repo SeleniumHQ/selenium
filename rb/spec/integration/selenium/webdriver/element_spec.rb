@@ -208,6 +208,15 @@ module Selenium
         expect(body).to eql(jsbody)
       end
 
+      it 'should know when element arrays are equal' do
+        driver.navigate.to url_for('simpleTest.html')
+
+        tags = driver.find_elements(tag_name: 'div')
+        jstags = driver.execute_script('return document.getElementsByTagName("div")')
+
+        expect(tags).to eq(jstags)
+      end
+
       it 'should know when two elements are not equal' do
         driver.navigate.to url_for('simpleTest.html')
 
