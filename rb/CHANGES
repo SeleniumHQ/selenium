@@ -1,3 +1,9 @@
+3.0.7 (2016-02-06)
+===================
+
+Firefox:
+  * Fix signature of element arrays returned from #find_elements (issue 3471)
+
 3.0.6 (2016-02-05)
 ===================
 
