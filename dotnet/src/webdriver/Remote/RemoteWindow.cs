@@ -50,7 +50,10 @@ namespace OpenQA.Selenium.Remote
                 Response commandResponse;
                 if (this.driver.IsSpecificationCompliant)
                 {
-                    commandResponse = this.driver.InternalExecute(DriverCommand.GetWindowRect, null);
+                    // TODO: Remove window size/position end points when spec-compliant remote ends have
+                    // migrated to the window rect commands.
+                    // commandResponse = this.driver.InternalExecute(DriverCommand.GetWindowRect, null);
+                    commandResponse = this.driver.InternalExecute(DriverCommand.GetWindowPosition, null);
                 }
                 else
                 {
@@ -72,7 +75,10 @@ namespace OpenQA.Selenium.Remote
                 parameters.Add("y", value.Y);
                 if (this.driver.IsSpecificationCompliant)
                 {
-                    this.driver.InternalExecute(DriverCommand.SetWindowRect, parameters);
+                    // TODO: Remove window size/position end points when spec-compliant remote ends have
+                    // migrated to the window rect commands.
+                    // this.driver.InternalExecute(DriverCommand.SetWindowRect, parameters);
+                    this.driver.InternalExecute(DriverCommand.SetWindowPosition, parameters);
                 }
                 else
                 {
@@ -93,7 +99,10 @@ namespace OpenQA.Selenium.Remote
                 Response commandResponse;
                 if (this.driver.IsSpecificationCompliant)
                 {
-                    commandResponse = this.driver.InternalExecute(DriverCommand.GetWindowRect, null);
+                    // TODO: Remove window size/position end points when spec-compliant remote ends have
+                    // migrated to the window rect commands.
+                    // commandResponse = this.driver.InternalExecute(DriverCommand.GetWindowRect, null);
+                    commandResponse = this.driver.InternalExecute(DriverCommand.GetWindowSize, null);
                 }
                 else
                 {
@@ -115,7 +124,10 @@ namespace OpenQA.Selenium.Remote
                 parameters.Add("height", value.Height);
                 if (this.driver.IsSpecificationCompliant)
                 {
-                    this.driver.InternalExecute(DriverCommand.SetWindowRect, parameters);
+                    // TODO: Remove window size/position end points when spec-compliant remote ends have
+                    // migrated to the window rect commands.
+                    // this.driver.InternalExecute(DriverCommand.SetWindowRect, parameters);
+                    this.driver.InternalExecute(DriverCommand.SetWindowSize, parameters);
                 }
                 else
                 {
