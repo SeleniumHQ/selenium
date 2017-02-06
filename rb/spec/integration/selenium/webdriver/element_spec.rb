@@ -200,9 +200,12 @@ module Selenium
 
         body = driver.find_element(tag_name: 'body')
         xbody = driver.find_element(xpath: '//body')
+        jsbody = driver.execute_script('return document.getElementsByTagName("body")[0]')
 
         expect(body).to eq(xbody)
+        expect(body).to eq(jsbody)
         expect(body).to eql(xbody)
+        expect(body).to eql(jsbody)
       end
 
       it 'should know when two elements are not equal' do
