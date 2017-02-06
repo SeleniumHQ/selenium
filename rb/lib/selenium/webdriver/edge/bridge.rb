@@ -77,51 +77,6 @@ module Selenium
           @service.stop if @service
         end
 
-        def execute_script(script, *args)
-          result = execute :execute_script, {}, {script: script, args: args}
-          unwrap_script_result result
-        end
-
-        def execute_async_script(script, *args)
-          result = execute :execute_async_script, {}, {script: script, args: args}
-          unwrap_script_result result
-        end
-
-        def submit_element(element)
-          execute :submit_element, id: element
-        end
-
-        def double_click
-          execute :double_click
-        end
-
-        def click
-          execute :click, {}, {button: 0}
-        end
-
-        def context_click
-          execute :click, {}, {button: 2}
-        end
-
-        def mouse_down
-          execute :mouse_down
-        end
-
-        def mouse_up
-          execute :mouse_up
-        end
-
-        def mouse_move_to(element, x = nil, y = nil)
-          params = {element: element}
-
-          if x && y
-            params[:xoffset] = x
-            params[:yoffset] = y
-          end
-
-          execute :mouse_move_to, {}, params
-        end
-
         def send_keys_to_active_element(key)
           execute :send_keys_to_active_element, {}, {value: key}
         end
