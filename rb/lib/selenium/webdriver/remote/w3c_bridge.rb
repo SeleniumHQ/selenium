@@ -382,7 +382,7 @@ module Selenium
         #
 
         def click_element(element)
-          execute :element_click, id: element.values.first
+          execute :element_click, id: element
         end
 
         def click
@@ -422,11 +422,11 @@ module Selenium
 
         # TODO: - Implement file verification
         def send_keys_to_element(element, keys)
-          execute :element_send_keys, {id: element.values.first}, {value: keys.join('').split(//)}
+          execute :element_send_keys, {id: element}, {value: keys.join('').split(//)}
         end
 
         def clear_element(element)
-          execute :element_clear, id: element.values.first
+          execute :element_clear, id: element
         end
 
         def submit_element(element)
@@ -437,7 +437,7 @@ module Selenium
         end
 
         def drag_element(element, right_by, down_by)
-          execute :drag_element, {id: element.values.first}, {x: right_by, y: down_by}
+          execute :drag_element, {id: element}, {x: right_by, y: down_by}
         end
 
         def touch_single_tap(element)
@@ -498,7 +498,7 @@ module Selenium
         #
 
         def element_tag_name(element)
-          execute :get_element_tag_name, id: element.values.first
+          execute :get_element_tag_name, id: element
         end
 
         def element_attribute(element, name)
@@ -506,7 +506,7 @@ module Selenium
         end
 
         def element_property(element, name)
-          execute :get_element_property, id: element.ref.values.first, name: name
+          execute :get_element_property, id: element.ref, name: name
         end
 
         def element_value(element)
@@ -514,11 +514,11 @@ module Selenium
         end
 
         def element_text(element)
-          execute :get_element_text, id: element.values.first
+          execute :get_element_text, id: element
         end
 
         def element_location(element)
-          data = execute :get_element_rect, id: element.values.first
+          data = execute :get_element_rect, id: element
 
           Point.new data['x'], data['y']
         end
@@ -529,25 +529,25 @@ module Selenium
         end
 
         def element_size(element)
-          data = execute :get_element_rect, id: element.values.first
+          data = execute :get_element_rect, id: element
 
           Dimension.new data['width'], data['height']
         end
 
         def element_enabled?(element)
-          execute :is_element_enabled, id: element.values.first
+          execute :is_element_enabled, id: element
         end
 
         def element_selected?(element)
-          execute :is_element_selected, id: element.values.first
+          execute :is_element_selected, id: element
         end
 
         def element_displayed?(element)
-          execute :is_element_displayed, id: element.values.first
+          execute :is_element_displayed, id: element
         end
 
         def element_value_of_css_property(element, prop)
-          execute :get_element_css_value, id: element.values.first, property_name: prop
+          execute :get_element_css_value, id: element, property_name: prop
         end
 
         #
@@ -564,18 +564,18 @@ module Selenium
           how, what = convert_locators(how, what)
 
           id = if parent
-                 execute :find_child_element, {id: parent.values.first}, {using: how, value: what}
+                 execute :find_child_element, {id: parent}, {using: how, value: what}
                else
                  execute :find_element, {}, {using: how, value: what}
                end
-          Element.new self, id
+          Element.new self, element_id_from(id)
         end
 
         def find_elements_by(how, what, parent = nil)
           how, what = convert_locators(how, what)
 
           ids = if parent
-                  execute :find_child_elements, {id: parent.values.first}, {using: how, value: what}
+                  execute :find_child_elements, {id: parent}, {using: how, value: what}
                 else
                   execute :find_elements, {}, {using: how, value: what}
                 end

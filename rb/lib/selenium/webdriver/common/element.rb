@@ -306,7 +306,8 @@ module Selenium
       #
 
       def as_json(*)
-        @id.is_a?(Hash) ? @id : {:ELEMENT => @id}
+        key = bridge.is_a?(Remote::W3CBridge) ? 'element-6066-11e4-a52e-4f735466cecf' : 'ELEMENT'
+        @id.is_a?(Hash) ? @id : {key => @id}
       end
 
       private
