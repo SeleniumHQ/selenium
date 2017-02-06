@@ -1,3 +1,13 @@
+3.0.6 (2016-02-05)
+===================
+
+Firefox:
+  * Implement W3C window position
+  * Update implementation for W3C send text to alert
+  * Implement timeout settings
+  * Remove default capabilities (thanks lmtierney)
+  * Fix signature of elements returned from #execute_script (thanks Thomas Walpole)
+
 3.0.5 (2016-12-27)
 ===================
 
