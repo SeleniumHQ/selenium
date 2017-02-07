@@ -19,10 +19,9 @@ package org.openqa.selenium;
 
 import org.openqa.selenium.internal.BuildInfo;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 public class WebDriverException extends RuntimeException {
 
@@ -66,21 +65,16 @@ public class WebDriverException extends RuntimeException {
   }
 
   public String getSystemInformation() {
-    String host = "N/A";
-    String ip   = "N/A";
+    return getSystemInformation(System.getProperties());
+  }
 
-    try{
-      host = InetAddress.getLocalHost().getHostName();
-      ip   = InetAddress.getLocalHost().getHostAddress();
-    } catch (UnknownHostException throw_away) {}
-
-    return String.format("System info: host: '%s', ip: '%s', os.name: '%s', os.arch: '%s', os.version: '%s', java.version: '%s'",
-      host,
-      ip,
-      System.getProperty("os.name"),
-      System.getProperty("os.arch"),
-      System.getProperty("os.version"),
-      System.getProperty("java.version"));
+  String getSystemInformation(Properties systemProperties) {
+    return String.format(
+      "System info: os.name: '%s', os.arch: '%s', os.version: '%s', java.version: '%s'",
+      systemProperties.getProperty("os.name"),
+      systemProperties.getProperty("os.arch"),
+      systemProperties.getProperty("os.version"),
+      systemProperties.getProperty("java.version"));
   }
 
   public String getSupportUrl() {
