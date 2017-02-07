@@ -77,7 +77,7 @@ module Selenium
         def execute(*extra_args)
           args = [self.class.path, '-no-remote'] + extra_args
           @process = ChildProcess.build(*args)
-          @process.io.inherit! if $DEBUG
+          @process.io.stdout = @process.io.stderr = WebDriver.logger.io
           @process.start
         end
 

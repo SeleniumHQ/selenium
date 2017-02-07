@@ -214,7 +214,7 @@ module Selenium
           destination = File.join(directory, 'extensions')
 
           @extensions.each do |name, extension|
-            p extension: name if $DEBUG
+            WebDriver.logger.info({extenstion: name}.inspect)
             extension.write_to(destination)
           end
         end
