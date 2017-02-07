@@ -81,5 +81,15 @@ module Selenium
     def self.for(*args)
       WebDriver::Driver.for(*args)
     end
+
+    #
+    # Returns logger instance that can be used across the whole Selenium.
+    #
+    # @return [Logger]
+    #
+
+    def self.logger
+      @logger ||= WebDriver::Logger.new
+    end
   end # WebDriver
 end # Selenium

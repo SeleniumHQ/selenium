@@ -34,25 +34,8 @@ module Selenium
         def start_process
           server_command = [@executable_path, "--webdriver=#{@port}", *@extra_args]
           @process = ChildProcess.build(*server_command.compact)
-
-          if $DEBUG
-            @process.io.inherit!
-          elsif Platform.jruby?
-            # apparently we need to read the output for phantomjs to work on jruby
-            @process.io.stdout = @process.io.stderr = File.new(Platform.null_device, 'w')
-          end
-
+          @process.io.stdout = @process.io.stderr = WebDriver.logger.io
           @process.start
-        end
-
-        def stop_process
-          super
-          return unless Platform.jruby? && !$DEBUG
-          begin
-            @process.io.close
-          rescue
-            nil
-          end
         end
 
         def cannot_connect_error_text
