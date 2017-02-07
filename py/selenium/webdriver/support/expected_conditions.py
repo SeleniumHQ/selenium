@@ -95,6 +95,8 @@ class visibility_of(object):
 
 
 def _element_if_visible(element, visibility=True):
+    if isinstance(element, str) or isinstance(element, dict):
+           raise StaleElementReferenceException("Invalid locator")
     return element if element.is_displayed() == visibility else False
 
 
@@ -325,10 +327,7 @@ def _find_element(driver, by):
     """Looks up an element. Logs and re-raises ``WebDriverException``
     if thrown."""
     try:
-        element  = driver.find_element(*by)
-        if isinstance(element, str) or isinstance(element, dict):
-            raise StaleElementReferenceException("Invalid locator")
-        return element
+        return driver.find_element(*by)
     except NoSuchElementException as e:
         raise e
     except WebDriverException as e:
