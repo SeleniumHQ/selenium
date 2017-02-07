@@ -325,7 +325,10 @@ def _find_element(driver, by):
     """Looks up an element. Logs and re-raises ``WebDriverException``
     if thrown."""
     try:
-        return driver.find_element(*by)
+        element  = driver.find_element(*by)
+        if isinstance(element, str) or isinstance(element, dict):
+            raise StaleElementReferenceException("Invalid locator")
+        return element
     except NoSuchElementException as e:
         raise e
     except WebDriverException as e:
