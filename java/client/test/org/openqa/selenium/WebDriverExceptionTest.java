@@ -17,6 +17,7 @@
 package org.openqa.selenium;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -63,4 +64,9 @@ public class WebDriverExceptionTest {
     assertEquals("unknown", gotName);
   }
 
+  @Test
+  public void testSystemInformation() {
+    assertTrue(new WebDriverException().getSystemInformation().matches(
+      "System info: ip: '.+', os\\.name: '.+', os\\.arch: '.+', os\\.version: '.+', java\\.version: '.+'"));
+  }
 }

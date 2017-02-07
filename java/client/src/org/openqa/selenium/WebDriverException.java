@@ -66,16 +66,13 @@ public class WebDriverException extends RuntimeException {
   }
 
   public String getSystemInformation() {
-    String host = "N/A";
     String ip   = "N/A";
 
     try{
-      host = InetAddress.getLocalHost().getHostName();
       ip   = InetAddress.getLocalHost().getHostAddress();
     } catch (UnknownHostException throw_away) {}
 
-    return String.format("System info: host: '%s', ip: '%s', os.name: '%s', os.arch: '%s', os.version: '%s', java.version: '%s'",
-      host,
+    return String.format("System info: ip: '%s', os.name: '%s', os.arch: '%s', os.version: '%s', java.version: '%s'",
       ip,
       System.getProperty("os.name"),
       System.getProperty("os.arch"),
