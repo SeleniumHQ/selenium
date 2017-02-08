@@ -194,7 +194,7 @@ public class FluentWait<T> implements Wait<T> {
    * @throws TimeoutException If the timeout expires.
    * @deprecated Use a {@link Function} that returns a Boolean.
    */
-  public void until(final Predicate<T> isTrue) {
+  public void until(final Predicate<? super T> isTrue) {
     until(new Function<T, Boolean>() {
       @Override
       public Boolean apply(T input) {

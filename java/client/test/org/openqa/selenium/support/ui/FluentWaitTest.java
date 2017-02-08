@@ -26,6 +26,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.google.common.base.Function;
+import com.google.common.base.Predicate;
+import com.google.common.base.Predicates;
 import com.google.common.base.Supplier;
 
 import org.junit.Before;
@@ -37,6 +39,7 @@ import org.mockito.MockitoAnnotations;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.NoSuchWindowException;
+import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 
@@ -250,6 +253,33 @@ public class FluentWaitTest {
     }
   }
 
+  public void timeoutMessageIncludesToStringOfPredicate() throws Exception {
+    TimeoutException expected = new TimeoutException(
+      "Timed out after 0 seconds waiting for toString called");
+
+    Predicate<Object> predicate = new Predicate<Object>() {
+      public boolean apply(Object ignored) {
+        return false;
+      }
+
+      @Override
+      public String toString() {
+        return "toString called";
+      }
+    };
+
+    FluentWait<Object> wait = new FluentWait<Object>("cheese")
+      .withTimeout(0, TimeUnit.MILLISECONDS);
+
+    try {
+      wait.until(predicate);
+      fail();
+    } catch (TimeoutException actual) {
+      assertEquals(expected.getMessage(), actual.getMessage());
+    }
+  }
+
+
   @Test
   public void canIgnoreThrowables() {
     final AssertionError exception = new AssertionError();
@@ -295,6 +325,16 @@ public class FluentWaitTest {
     } catch (TestException expected) {
       assertSame(sentinelException, expected);
     }
+  }
+
+  @Test
+  public void untilPredicateAcceptsSuperTypes() throws Exception {
+    Predicate<SearchContext> condition = Predicates.alwaysTrue();
+
+    FluentWait<WebDriver> wait = new FluentWait<WebDriver>(mockDriver).withTimeout(0,
+        TimeUnit.MILLISECONDS);
+
+    wait.until(condition);
   }
 
   private static class TestException extends RuntimeException {
