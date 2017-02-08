@@ -24,7 +24,7 @@ module Selenium
     module Firefox
       describe Bridge do
         let(:resp) { {'sessionId' => 'foo', 'value' => @expected_capabilities.as_json} }
-        let(:launcher) { double(Launcher, launch: nil, quit: nil, url: 'http://localhost:4444/wd/hub') }
+        let(:launcher) { double(Launcher, launch: nil, quit: nil, uri: 'http://localhost:4444/wd/hub') }
         let(:http) { double(Remote::Http::Default).as_null_object }
         let(:args) { [:post, "session", {desiredCapabilities: @expected_capabilities}] }
 
@@ -36,6 +36,7 @@ module Selenium
 
         it 'accepts a launcher port and a profile' do
           profile = Profile.new
+          @expected_capabilities.firefox_profile = profile
           port = 1234
           expect(Launcher).to receive(:new).with(instance_of(Binary), port, profile).and_return(launcher)
           allow(http).to receive(:call).with(*args).and_return(resp)

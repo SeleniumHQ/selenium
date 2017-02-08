@@ -22,67 +22,32 @@ module Selenium
     module Firefox
       # @api private
       class W3CBridge < Remote::W3CBridge
-        def initialize(opts = {})
-          opts[:desired_capabilities] = create_capabilities(opts)
-
-          unless opts.key?(:url)
-            port = opts.delete(:port) || Service::DEFAULT_PORT
-            service_args = opts.delete(:service_args) || {}
-
-            driver_path = opts.delete(:driver_path) || Firefox.driver_path
-            @service = Service.new(driver_path, port, *extract_service_args(service_args))
-            @service.start
-            opts[:url] = @service.uri
-          end
-
-          super(opts)
-        end
-
-        def browser
-          :firefox
-        end
-
         def driver_extensions
-          [
-              DriverExtensions::TakesScreenshot,
-              DriverExtensions::HasInputDevices,
-              DriverExtensions::HasWebStorage
-          ]
-        end
-
-        def quit
-          super
-        ensure
-          @service.stop if @service
+          [DriverExtensions::TakesScreenshot,
+           DriverExtensions::HasInputDevices,
+           DriverExtensions::HasWebStorage]
         end
 
         private
 
-        def create_capabilities(opts)
-          caps = opts.delete(:desired_capabilities) || Remote::W3CCapabilities.firefox
-       #   caps.merge!(opts.delete(:desired_capabilities)) if opts.key? :desired_capabilities
-          firefox_options = opts.delete(:options) || {}
-       #   firefox_options.merge!(opts[:firefox_options] || {})
-          if opts.key?(:profile)
-            profile = opts.delete(:profile)
-            unless profile.is_a?(Profile)
-              profile = Profile.from_name(profile)
-            end
-            caps.firefox_profile = profile.encoded
-          end
-
-          Binary.path = firefox[:binary] if firefox_options.key?(:binary)
-          caps[:firefox_options] = firefox_options unless firefox_options.empty?
-          caps
+        def bridge_module
+          Module.nesting[1]
         end
 
-        def extract_service_args(args = {})
+        def default_capabilities
+          Remote::W3CCapabilities.firefox
+        end
+
+        def process_service_args(service_opts)
+          return [] unless service_opts
+          return service_opts if service_opts.is_a? Array
+
           service_args = []
-          service_args << "--binary=#{args[:binary]}" if args.key?(:binary)
-          service_args << "–-log=#{args[:log]}" if args.key?(:log)
-          service_args << "–-marionette-port=#{args[:marionette_port]}" if args.key?(:marionette_port)
-          service_args << "–-host=#{args[:host]}" if args.key?(:host)
-          service_args << "–-port=#{args[:port]}" if args.key?(:port)
+          service_args << "--binary=#{service_opts[:binary]}" if service_opts.key?(:binary)
+          service_args << "–-log=#{service_opts[:log]}" if service_opts.key?(:log)
+          service_args << "–-marionette-port=#{service_opts[:marionette_port]}" if service_opts.key?(:marionette_port)
+          service_args << "–-host=#{service_opts[:host]}" if service_opts.key?(:host)
+          service_args << "–-port=#{service_opts[:port]}" if service_opts.key?(:port)
           service_args
         end
 

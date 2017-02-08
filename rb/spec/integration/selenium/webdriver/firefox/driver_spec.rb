@@ -63,7 +63,7 @@ module Selenium
                 expect(caps.script_timeout).to be == 30000
               end
 
-              expect(caps.remote_session_id).to be_nil
+              expect(caps[:remote_session_id]).to be_nil
               expect(caps.rotatable).to be == false
             ensure
               driver1.quit

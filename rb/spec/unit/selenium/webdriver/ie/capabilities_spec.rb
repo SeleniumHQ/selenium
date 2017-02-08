@@ -62,19 +62,10 @@ module Selenium
           @expected_capabilities.native_events = false
           allow(http).to receive(:call).with(*args).and_return(resp)
 
-          bridge = Bridge.new(http_client: http, native_events: false)
+          @capabilities.native_events = false
+          bridge = Bridge.new(http_client: http, desired_capabilities: @capabilities)
 
           expect(bridge.capabilities.native_events).to be false
-        end
-
-        it 'sets the proxy capabilitiy' do
-          proxy = Proxy.new(http: 'localhost:1234')
-          @expected_capabilities.proxy = proxy
-          allow(http).to receive(:call).with(*args).and_return(resp)
-
-          bridge = Bridge.new(http_client: http, proxy: proxy)
-
-          expect(bridge.capabilities.proxy).to eq proxy
         end
       end
     end # IE

@@ -34,22 +34,13 @@ module Selenium
           @capabilities = Remote::W3CCapabilities.firefox
         end
 
-
-        it 'accepts marionette' do
-          @expected_capabilities[:marionette] = true
-
-          allow(http).to receive(:call).with(*args).and_return(resp)
-          bridge = Bridge.new(http_client: http, marionette: true)
-
-          expect(bridge.capabilities.marionette).to eq true
-        end
-
         it 'accepts proxy' do
           proxy = Proxy.new(http: 'localhost:1234')
           @expected_capabilities.proxy = proxy
+          @capabilities.proxy = proxy
 
           allow(http).to receive(:call).with(*args).and_return(resp)
-          bridge = W3CBridge.new(http_client: http, proxy: proxy)
+          bridge = W3CBridge.new(http_client: http, desired_capabilities: @capabilities)
 
           expect(bridge.capabilities.proxy).to eq proxy
         end

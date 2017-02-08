@@ -126,8 +126,7 @@ module Selenium
 
         it 'accepts profile' do
           profile = Profile.new
-          profile.add_extension(File.expand_path('../sample.xpi', __FILE__))
-          @expected_capabilities.firefox_profile = profile.encoded
+          @expected_capabilities.firefox_profile = profile
 
           allow(http).to receive(:call).with(*args).and_return(resp)
 

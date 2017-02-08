@@ -30,7 +30,7 @@ module Selenium
         @driver_path = path
       end
 
-      def self.driver_path(warning = true)
+      def self.driver_path
         @driver_path ||= nil
       end
     end # Edge

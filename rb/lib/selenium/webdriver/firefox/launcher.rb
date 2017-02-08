@@ -44,6 +44,7 @@ module Selenium
         def url
           "http://#{@host}:#{@port}/hub"
         end
+        alias_method :uri, :url
 
         def launch
           socket_lock.locked do
@@ -60,6 +61,7 @@ module Selenium
           @binary.quit
           FileReaper.reap(@profile_dir) if @profile_dir
         end
+        alias_method :stop, :quit
 
         def find_free_port
           @port = PortProber.above @port

@@ -25,50 +25,29 @@ module Selenium
       #
 
       class Bridge < Remote::Bridge
-        def initialize(opts = {})
-          opts[:desired_capabilities] ||= Remote::Capabilities.phantomjs
+        def driver_extensions
+          [DriverExtensions::TakesScreenshot, DriverExtensions::HasInputDevices]
+        end
 
-          unless opts.key?(:url)
-            port = opts.delete(:port) || Service::DEFAULT_PORT
-            driver_path = opts.delete(:driver_path) || PhantomJS.driver_path
+        private
 
-            if opts.key?(:args)
-              warn <<-DEPRECATE.gsub(/\n +| {2,}/, ' ').freeze
+        def bridge_module
+          Module.nesting[1]
+        end
+
+        def default_capabilities
+          Remote::Capabilities.phantomjs
+        end
+
+        def process_deprecations(opts)
+          if opts.key?(:args)
+            warn <<-DEPRECATE.gsub(/\n +| {2,}/, ' ').freeze
             [DEPRECATION] `:args` is deprecated. Use `:service_args` instead.
-              DEPRECATE
-            end
-
-            args = opts.delete(:args) || opts.delete(:service_args)
-            @service = Service.new(driver_path, port, *args)
-            @service.start
-            opts[:url] = @service.uri
+            DEPRECATE
+            opts[:service_args] = opts.delete :args
           end
 
-          opts[:desired_capabilities][:proxy] = opts.delete(:proxy) if opts.key?(:proxy)
-          opts[:desired_capabilities][:proxy] ||= opts.delete('proxy') if opts.key?('proxy')
-
-          super(opts)
-        end
-
-        def browser
-          :phantomjs
-        end
-
-        def driver_extensions
-          [
-              DriverExtensions::TakesScreenshot,
-              DriverExtensions::HasInputDevices
-          ]
-        end
-
-        def capabilities
-          @capabilities ||= Remote::Capabilities.phantomjs
-        end
-
-        def quit
           super
-        ensure
-          @service.stop if @service
         end
       end # Bridge
     end # PhantomJS

@@ -43,55 +43,38 @@ module Selenium
         def initialize(opts = {})
           opts = opts.dup
 
-          http_client = opts.delete(:http_client) { Http::Default.new }
-          desired_capabilities = opts.delete(:desired_capabilities) { Capabilities.chrome }
-          url = opts.delete(:url) { "http://#{Platform.localhost}:4444/wd/hub" }
-
-          if desired_capabilities.is_a?(Symbol)
-            unless Capabilities.respond_to?(desired_capabilities)
-              raise Error::WebDriverError, "invalid desired capability: #{desired_capabilities.inspect}"
-            end
-            desired_capabilities = Capabilities.send(desired_capabilities)
-          end
-
-          desired_capabilities.options = opts.delete(:options) if opts.key?(:options)
-          desired_capabilities.profile = opts.delete(:profile) if opts.key?(:profile)
-
-          unless opts.empty?
-            raise ArgumentError, "unknown option#{'s' if opts.size != 1}: #{opts.inspect}"
-          end
-
-          uri = url.is_a?(URI) ? url : URI.parse(url)
-          uri.path += '/' unless uri.path =~ %r{\/$}
-
-          http_client.server_url = uri
-
-          @http = http_client
-          @capabilities = create_session(desired_capabilities)
+          process_deprecations(opts)
+          process_capabilities(opts)
 
           @file_detector = nil
+          @http = create_http_client(opts)
+
+          desired_capabilities = opts.delete :desired_capabilities
+
+          raise ArgumentError, "unknown options: #{opts.inspect}" unless opts.empty?
+
+          @capabilities = create_session(desired_capabilities)
         end
 
         def browser
-          @browser ||= (
-            name = @capabilities.browser_name
-            name ? name.tr(' ', '_').to_sym : 'unknown'
-          )
+          @browser ||= @capabilities.browser_name ? @capabilities.browser_name.tr(' ', '_') : 'unknown'
+        end
+
+        def default_capabilities
+          Capabilities.chrome
         end
 
         def driver_extensions
-          [
-            DriverExtensions::HasInputDevices,
-            DriverExtensions::UploadsFiles,
-            DriverExtensions::TakesScreenshot,
-            DriverExtensions::HasSessionId,
-            DriverExtensions::Rotatable,
-            DriverExtensions::HasTouchScreen,
-            DriverExtensions::HasLocation,
-            DriverExtensions::HasNetworkConnection,
-            DriverExtensions::HasRemoteStatus,
-            DriverExtensions::HasWebStorage
-          ]
+          [DriverExtensions::HasInputDevices,
+           DriverExtensions::UploadsFiles,
+           DriverExtensions::TakesScreenshot,
+           DriverExtensions::HasSessionId,
+           DriverExtensions::Rotatable,
+           DriverExtensions::HasTouchScreen,
+           DriverExtensions::HasLocation,
+           DriverExtensions::HasNetworkConnection,
+           DriverExtensions::HasRemoteStatus,
+           DriverExtensions::HasWebStorage]
         end
 
         def commands(command)
@@ -206,6 +189,8 @@ module Selenium
           execute :quit
           http.close
         rescue *http.quit_errors
+        ensure
+          @service.stop if @service
         end
 
         def close
@@ -470,8 +455,8 @@ module Selenium
         def touch_scroll(element, x, y)
           if element
             execute :touch_scroll, {}, {element: element,
-                                       xoffset: x,
-                                       yoffset: y}
+                                        xoffset: x,
+                                        yoffset: y}
           else
             execute :touch_scroll, {}, {xoffset: x, yoffset: y}
           end
@@ -483,9 +468,9 @@ module Selenium
 
         def touch_element_flick(element, right_by, down_by, speed)
           execute :touch_flick, {}, {element: element,
-                                    xoffset: right_by,
-                                    yoffset: down_by,
-                                    speed: speed}
+                                     xoffset: right_by,
+                                     yoffset: down_by,
+                                     speed: speed}
         end
 
         def screen_orientation=(orientation)
@@ -607,6 +592,74 @@ module Selenium
         end
 
         private
+
+        def process_deprecations(opts)
+          if bridge_module == Module.nesting[1] && opts.key?(:port)
+            warn <<-DEPRECATE.gsub(/\n +| {2,}/, ' ').freeze
+                    [DEPRECATION] Using `:port` directly is deprecated.  
+                    Use `{url: "http://localhost:\#{port}/wd/hub"}`, instead.
+            DEPRECATE
+            opts[:url] ||= "http://localhost:#{opts.delete(:port)}/wd/hub"
+          end
+
+          [:proxy, 'proxy'].each do |method|
+            next unless opts.key? method
+            opts[:desired_capabilities] ||= default_capabilities
+
+            warn <<-DEPRECATE.gsub(/\n +| {2,}/, ' ').freeze
+              [DEPRECATION] Using `#{method}` directly is deprecated.  
+              Use `desired_capabilities[#{method}] = value`, instead.
+            DEPRECATE
+
+            opts[:desired_capabilities][method] = opts.delete method
+          end
+
+          if opts.delete :required_capabilities
+            warn '`required_capabilities` is not yet implemented'
+          end
+        end
+
+        def process_capabilities(opts)
+          capabilities = opts.delete(:desired_capabilities) || default_capabilities
+          capabilities = Capabilities.send(capabilities) if capabilities.is_a?(Symbol)
+
+          capabilities.options = opts.delete(:options) if opts.key?(:options)
+          capabilities.profile = opts.delete(:profile) if opts.key?(:profile)
+          opts[:desired_capabilities] = capabilities
+        end
+
+        def create_http_client(opts)
+          http_client = opts.delete(:http_client) || Http::Default.new
+
+          url = if opts.key? :url
+                  opts.delete :url
+                elsif bridge_module != Module.nesting[1]
+                  @service = start_service(opts)
+                  @service.uri
+                else
+                  "http://#{Platform.localhost}:4444/wd/hub"
+                end
+          uri = url.is_a?(URI) ? url : URI.parse(url)
+          uri.path += '/' unless uri.path =~ %r{\/$}
+
+          http_client.server_url = uri
+          http_client
+        end
+
+        def bridge_module
+          Module.nesting[1]
+        end
+
+        def start_service(opts)
+          path = opts.delete(:driver_path) || bridge_module.driver_path
+          port = opts.delete(:port) || bridge_module::Service::DEFAULT_PORT
+          service_args = process_service_args(opts.delete(:service_args))
+          bridge_module::Service.new(path, port, *service_args).tap { |s| s.start }
+        end
+
+        def process_service_args(service_args)
+          service_args || []
+        end
 
         def assert_javascript_enabled
           return if capabilities.javascript_enabled?

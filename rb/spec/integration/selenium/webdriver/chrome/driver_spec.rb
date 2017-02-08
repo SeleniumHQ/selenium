@@ -26,7 +26,7 @@ module Selenium
         describe Driver do
           it 'should accept an array of custom command line arguments' do
             begin
-              driver = Selenium::WebDriver.for :chrome, args: ['--user-agent=foo;bar']
+              driver = Selenium::WebDriver.for :chrome, options: {args: ['--user-agent=foo;bar']}
               driver.navigate.to url_for('click_jacker.html')
 
               ua = driver.execute_script 'return window.navigator.userAgent'
@@ -34,12 +34,6 @@ module Selenium
             ensure
               driver.quit if driver
             end
-          end
-
-          it 'should raise ArgumentError if :args is not an Array' do
-            expect do
-              Selenium::WebDriver.for(:chrome, args: '--foo')
-            end.to raise_error(ArgumentError)
           end
 
           it_behaves_like 'driver that can be started concurrently', :chrome

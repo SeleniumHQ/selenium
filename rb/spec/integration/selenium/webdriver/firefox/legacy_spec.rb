@@ -33,13 +33,12 @@ module Selenium
             not_compliant_on driver: :remote do
               it 'takes a Firefox::Profile instance as argument' do
                 begin
-                  @opt[:desired_capabilities] = Remote::Capabilities.firefox(marionette: false)
                   profile = Selenium::WebDriver::Firefox::Profile.new
                   @opt[:profile] = profile
-                  driver2 = Selenium::WebDriver.for :firefox, @opt
+                  driver2 = GlobalTestEnv.send(:create_driver, @opt)
 
                   stored_profile = driver2.instance_variable_get('@bridge')
-                                          .instance_variable_get('@launcher')
+                                          .instance_variable_get('@service')
                                           .instance_variable_get('@profile')
                   expect(stored_profile).to be == profile
                 ensure

@@ -25,33 +25,19 @@ module Selenium
       #
 
       class Bridge < Remote::W3CBridge
-        def initialize(opts = {})
-          port = opts.delete(:port) || Service::DEFAULT_PORT
-          service_args = opts.delete(:service_args) || {}
-
-          unless opts.key?(:url)
-            driver_path = opts.delete(:driver_path) || Edge.driver_path
-            @service = Service.new(driver_path, port, *extract_service_args(service_args))
-            @service.host = 'localhost' if @service.host == '127.0.0.1'
-            @service.start
-            opts[:url] = @service.uri
-          end
-
-          opts[:desired_capabilities] ||= Remote::W3CCapabilities.edge
-          opts[:desired_capabilities][:proxy] = opts.delete(:proxy) if opts.key?(:proxy)
-
-          super(opts)
-        end
-
-        def browser
-          :edge
-        end
-
         def driver_extensions
-          [
-            DriverExtensions::TakesScreenshot,
-            DriverExtensions::HasInputDevices
-          ]
+          [DriverExtensions::TakesScreenshot,
+           DriverExtensions::HasInputDevices]
+        end
+
+        def start_service(opts)
+          path = opts.delete(:driver_path) || Edge.driver_path
+          port = opts.delete(:port) || Service::DEFAULT_PORT
+          service_args = process_service_args(opts.delete(:service_args))
+          Service.new(path, port, *service_args).tap do |service|
+            service.host = 'localhost' if service.host == '127.0.0.1'
+            service.start
+          end
         end
 
         def commands(command)
@@ -66,16 +52,6 @@ module Selenium
             super
           end
 
-        end
-
-        def capabilities
-          @capabilities ||= Remote::Capabilities.edge
-        end
-
-        def quit
-          super
-        ensure
-          @service.stop if @service
         end
 
         def send_keys_to_active_element(key)
@@ -115,11 +91,22 @@ module Selenium
 
         private
 
-        def extract_service_args(args = {})
+        def default_capabilities
+          Remote::W3CCapabilities.edge
+        end
+
+        def bridge_module
+          Module.nesting[1]
+        end
+
+        def process_service_args(service_opts)
+          return [] unless service_opts
+          return service_opts if service_opts.is_a? Array
+
           service_args = []
-          service_args << "–host=#{args[:host]}" if args.key? :host
-          service_args << "–package=#{args[:package]}" if args.key? :package
-          service_args << "-verbose" if args[:verbose] == true
+          service_args << "–host=#{service_opts[:host]}" if service_opts.key? :host
+          service_args << "–package=#{service_opts[:package]}" if service_opts.key? :package
+          service_args << "-verbose" if service_opts[:verbose] == true
           service_args
         end
       end # Bridge

@@ -28,22 +28,20 @@ module Selenium
       # TODO - uncomment when Mozilla fixes this:
       # https://bugzilla.mozilla.org/show_bug.cgi?id=1326397
       class W3CCapabilities
-        KNOWN = [
-          :browser_name,
-          :browser_version,
-          :platform_name,
-          :platform_version,
-          :accept_insecure_certs,
-          :page_load_strategy,
-          :proxy,
-          :remote_session_id,
-          :accessibility_checks,
-          :rotatable,
-          :device,
-          :implicit_timeout,
-          :page_load_timeout,
-          :script_timeout,
-        ].freeze
+        KNOWN = [:browser_name,
+                 :browser_version,
+                 :platform_name,
+                 :platform_version,
+                 :accept_insecure_certs,
+                 :page_load_strategy,
+                 :proxy,
+                 :remote_session_id,
+                 :accessibility_checks,
+                 :rotatable,
+                 :device,
+                 :implicit_timeout,
+                 :page_load_timeout,
+                 :script_timeout].freeze
 
         KNOWN.each do |key|
           define_method key do
@@ -70,18 +68,17 @@ module Selenium
 
         class << self
           def edge(opts = {})
-            new({
-              browser_name: 'MicrosoftEdge',
-              platform_name: :windows
-            }.merge(opts))
+            new({browser_name: 'MicrosoftEdge',
+                 platform_name: :windows}.merge(opts))
           end
 
           def firefox(opts = {})
             define_method(:firefox_options) { @capabilities[:firefox_options] ||= {} }
             define_method("firefox_options=") { |value| @capabilities[:firefox_options] = value }
-            define_method(:marionette) { @capabilities[:marionette] }
-            define_method(:firefox_profile) { @capabilities[:firefox_profile] ||= {} }
-            define_method("firefox_profile=") { |value| @capabilities[:firefox_profile] = value }
+            define_method(:firefox_profile) { firefox_options['profile'] }
+            define_method("firefox_profile=") { |value| firefox_options['profile'] = value.as_json['zip'] }
+            alias_method :profile=, :firefox_profile=
+            alias_method :options=, :firefox_options=
 
             opts[:browser_version] = opts.delete(:version) if opts.key?(:version)
             opts[:platform_name] = opts.delete(:platform) if opts.key?(:platform)
@@ -202,8 +199,6 @@ module Selenium
               hash['proxy'] = value.as_json if value
             when :firefox_options
               hash['moz:firefoxOptions'] = value
-            when :firefox_profile
-              hash['moz:profile'] = value
             when String, :firefox_binary
               hash[key.to_s] = value
             when Symbol

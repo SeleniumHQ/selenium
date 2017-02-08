@@ -22,96 +22,59 @@ module Selenium
     module Chrome
       # @api private
       class Bridge < Remote::Bridge
-        def initialize(opts = {})
-          port = opts.delete(:port) || Service::DEFAULT_PORT
-          service_args = opts.delete(:service_args) || {}
-
-          if opts[:service_log_path]
-            service_args.merge!(service_log_path: opts.delete(:service_log_path))
-          end
-
-          unless opts.key?(:url)
-            driver_path = opts.delete(:driver_path) || Chrome.driver_path
-            @service = Service.new(driver_path, port, *extract_service_args(service_args))
-            @service.start
-            opts[:url] = @service.uri
-          end
-
-          opts[:desired_capabilities] = create_capabilities(opts)
-
-          super(opts)
-        end
-
-        def browser
-          :chrome
-        end
-
         def driver_extensions
-          [
-            DriverExtensions::TakesScreenshot,
-            DriverExtensions::HasInputDevices,
-            DriverExtensions::HasWebStorage
-          ]
-        end
-
-        def capabilities
-          @capabilities ||= Remote::Capabilities.chrome
-        end
-
-        def quit
-          super
-        ensure
-          @service.stop if @service
+          [DriverExtensions::TakesScreenshot,
+           DriverExtensions::HasInputDevices,
+           DriverExtensions::HasWebStorage]
         end
 
         private
 
-        def create_capabilities(opts)
-          # Deprecate :args & :switches
-
-          caps = opts.delete(:desired_capabilities) { Remote::Capabilities.chrome }
-
-          chrome_options = opts.delete(:chrome_options) || caps[:chrome_options] || {}
-          chrome_options['binary'] = Chrome.path if Chrome.path
-          # args = opts.delete(:args) || opts.delete(:switches)
-
-          # if args
-          #   raise ArgumentError, ':args must be an Array of Strings' unless (args.is_a? Array)
-          #   args.map!(&:to_s)
-          # end
-
-          # profile = opts.delete(:profile).as_json if opts.key?(:profile)
-          #
-          # if profile && (args || []).none? { |arg| arg =~ /user-data-dir/ }
-          #   args ||= []
-          #   args << "--user-data-dir=#{profile[:directory]}"
-          # end
-          #
-          # chrome_options['args'] = args if args
-          # chrome_options['extensions'] = profile[:extensions] if profile && profile[:extensions]
-          chrome_options['detach'] = true if opts.delete(:detach)
-          chrome_options['prefs'] = opts.delete(:prefs) if opts.key?(:prefs)
-
-          caps[:chrome_options] = chrome_options unless chrome_options.empty?
-          caps[:proxy] = opts.delete(:proxy) if opts.key?(:proxy)
-          caps[:proxy] ||= opts.delete('proxy') if opts.key?('proxy')
-
-          caps
+        def bridge_module
+          Module.nesting[1]
         end
 
-        def extract_service_args(args)
-          service_args = []
-          service_args << "--log-path=#{args[:service_log_path]}" if args.key?(:service_log_path)
+        def process_deprecations(opts)
+          if opts[:service_log_path]
+            opts[:service_args] ||= {}
+            warn <<-DEPRECATE.gsub(/\n +| {2,}/, ' ').freeze
+              [DEPRECATION] Using `:service_log_path` directly is deprecated.  
+              Use `service_args[:service_log_path] = value`, instead.
+            DEPRECATE
 
-          # comma-separated list of remote IPv4 addresses
-          if args.key?(:whitelisted_ips)
-            raise ArgumentError unless args[:whitelisted_ips].is_a? Array
-            service_args << "--whitelisted-ips=#{args[:whitelisted_ips].join(',')}"
+            opts[:service_args][:service_log_path] = opts.delete :service_log_path
           end
 
-          if args[:verbose] == true
+          [:args, :switches, :detach, :prefs].each do |method|
+            next unless opts.key? method
+            opts[:options] ||= {}
+
+            warn <<-DEPRECATE.gsub(/\n +| {2,}/, ' ').freeze
+              [DEPRECATION] Using `#{method}` directly is deprecated.  
+              Use `options[#{method}] = value`, instead.
+            DEPRECATE
+
+            opts[:options][method.to_s] = opts.delete method
+          end
+
+          super
+        end
+
+        def process_service_args(service_opts)
+          return [] unless service_opts
+          return service_opts if service_opts.is_a? Array
+
+          service_args = []
+          service_args << "--log-path=#{service_opts[:service_log_path]}" if service_opts.key?(:service_log_path)
+
+          # comma-separated list of remote IPv4 addresses
+          if service_opts.key?(:whitelisted_ips)
+            service_args << "--whitelisted-ips=#{service_opts[:whitelisted_ips].join(',')}"
+          end
+
+          if service_opts[:verbose] == true
             service_args << "--verbose"
-          elsif args[:silent] == true
+          elsif service_opts[:silent] == true
             service_args << "--silent"
           end
 

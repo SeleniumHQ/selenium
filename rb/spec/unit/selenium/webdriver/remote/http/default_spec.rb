@@ -113,14 +113,14 @@ module Selenium
 
           %w[no_proxy NO_PROXY].each do |no_proxy_var|
             it "honors the #{no_proxy_var} environment variable when matching" do
-              with_env('HTTP_PROXY' => 'proxy.org:8080', no_proxy_var => 'example.com') do
+              with_env('http_proxy' => 'proxy.org:8080', no_proxy_var => 'example.com') do
                 http = client.send :http
                 expect(http).not_to be_proxy
               end
             end
 
             it "ignores the #{no_proxy_var} environment variable when not matching" do
-              with_env('HTTP_PROXY' => 'proxy.org:8080', no_proxy_var => 'foo.com') do
+              with_env('http_proxy' => 'proxy.org:8080', no_proxy_var => 'foo.com') do
                 http = client.send :http
 
                 expect(http).to be_proxy
@@ -130,7 +130,7 @@ module Selenium
             end
 
             it "understands a comma separated list of domains in #{no_proxy_var}" do
-              with_env('HTTP_PROXY' => 'proxy.org:8080', no_proxy_var => 'example.com,foo.com') do
+              with_env('http_proxy' => 'proxy.org:8080', no_proxy_var => 'example.com,foo.com') do
                 http = client.send :http
                 expect(http).not_to be_proxy
               end
@@ -138,7 +138,7 @@ module Selenium
 
             unless RUBY_VERSION > '2.0' # Ruby 2.0 does its own proxy handling in net/http, which breaks this behaviour
               it "understands an asterisk in #{no_proxy_var}" do
-                with_env('HTTP_PROXY' => 'proxy.org:8080', no_proxy_var => '*') do
+                with_env('http_proxy' => 'proxy.org:8080', no_proxy_var => '*') do
                   http = client.send :http
                   expect(http).not_to be_proxy
                 end
@@ -146,7 +146,7 @@ module Selenium
             end
 
             it "understands subnetting in #{no_proxy_var}" do
-              with_env('HTTP_PROXY' => 'proxy.org:8080', no_proxy_var => 'localhost,127.0.0.0/8') do
+              with_env('http_proxy' => 'proxy.org:8080', no_proxy_var => 'localhost,127.0.0.0/8') do
                 client.server_url = URI.parse('http://127.0.0.1:4444/wd/hub')
 
                 http = client.send :http

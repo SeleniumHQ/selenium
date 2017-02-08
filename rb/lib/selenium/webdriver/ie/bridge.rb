@@ -25,58 +25,59 @@ module Selenium
       #
 
       class Bridge < Remote::Bridge
-        def initialize(opts = {})
-          port = opts.delete(:port) || Service::DEFAULT_PORT
-          service_args = opts.delete(:service_args) || {}
-          service_args = match_legacy(opts, service_args)
-          driver_path = opts.delete(:driver_path) || IE.driver_path
-
-          unless opts.key?(:url)
-            @service = Service.new(driver_path, port, *extract_service_args(service_args))
-            @service.start
-            opts[:url] = @service.uri
-          end
-
-          caps = opts[:desired_capabilities] ||= Remote::Capabilities.internet_explorer
-          caps[:ignore_protected_mode_settings] = true if opts.delete(:introduce_flakiness_by_ignoring_security_domains)
-          caps[:native_events] = opts.delete(:native_events) != false
-          caps[:proxy] = opts.delete(:proxy) if opts.key?(:proxy)
-          caps[:proxy] ||= opts.delete('proxy') if opts.key?('proxy')
-
-          super(opts)
-        end
-
-        def browser
-          :internet_explorer
-        end
-
         def driver_extensions
           [DriverExtensions::TakesScreenshot, DriverExtensions::HasInputDevices]
         end
 
-        def quit
-          super
-        ensure
-          @service.stop if @service
-        end
-
         private
 
-        def match_legacy(opts, args)
-          args[:log_level] = opts.delete(:log_level) if opts.key?(:log_level)
-          args[:log_file] = opts.delete(:log_file) if opts.key?(:log_file)
-          args[:implementation] = opts.delete(:implementation) if opts.key?(:implementation)
-          args
+        def bridge_module
+          Module.nesting[1]
         end
 
-        def extract_service_args(args)
+        def default_capabilities
+          Remote::Capabilities.internet_explorer
+        end
+
+        def process_deprecations(opts)
+          %i[log_level log_file implementation].each do |method|
+            next unless opts.key? method
+            opts[:service_args] ||= {}
+
+            warn <<-DEPRECATE.gsub(/\n +| {2,}/, ' ').freeze
+              [DEPRECATION] Using `#{method}` directly is deprecated.  
+              Use `service_args[#{method}] = value`, instead.
+            DEPRECATE
+
+            opts[:service_args][method] = opts.delete method
+          end
+
+          [:introduce_flakiness_by_ignoring_security_domains, :native_events].each do |method|
+            next unless opts.key? method
+            opts[:desired_capabilities] ||= default_capabilities
+
+            warn <<-DEPRECATE.gsub(/\n +| {2,}/, ' ').freeze
+              [DEPRECATION] Using `#{method}` directly is deprecated.  
+              Use `desired_capabilities[#{method}] = value`, instead.
+            DEPRECATE
+
+            opts[:desired_capabilities][method] = opts.delete method
+          end
+
+          super
+        end
+
+        def process_service_args(service_opts)
+          return [] unless service_opts
+          return service_opts if service_opts.is_a? Array
+
           service_args = []
-          service_args << "--log-level=#{args.delete(:log_level).to_s.upcase}" if args.key?(:log_level)
-          service_args << "--log-file=#{args.delete(:log_file)}" if args.key?(:log_file)
-          service_args << "--implementation=#{args.delete(:implementation).to_s.upcase}" if args.key?(:implementation)
-          service_args << "--host=#{args.delete(:host)}" if args.key?(:host)
-          service_args << "--extract_path=#{args.delete(:extract_path)}" if args.key?(:extract_path)
-          service_args << "--silent" if args[:silent] == true
+          service_args << "--log-level=#{service_opts.delete(:log_level).to_s.upcase}" if service_opts.key?(:log_level)
+          service_args << "--log-file=#{service_opts.delete(:log_file)}" if service_opts.key?(:log_file)
+          service_args << "--implementation=#{service_opts.delete(:implementation).to_s.upcase}" if service_opts.key?(:implementation)
+          service_args << "--host=#{service_opts.delete(:host)}" if service_opts.key?(:host)
+          service_args << "--extract_path=#{service_opts.delete(:extract_path)}" if service_opts.key?(:extract_path)
+          service_args << "--silent" if service_opts[:silent] == true
           service_args
         end
       end # Bridge
