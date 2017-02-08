@@ -18,7 +18,6 @@
 package com.thoughtworks.selenium.webdriven;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Supplier;
 import com.google.common.collect.Maps;
 
 import com.thoughtworks.selenium.CommandProcessor;
@@ -31,6 +30,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.internal.WrapsDriver;
 
 import java.util.Map;
+import java.util.function.Supplier;
 
 
 /**
