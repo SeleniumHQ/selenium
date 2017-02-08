@@ -1,3 +1,21 @@
+v3.1.0
+======
+
+* Update how the WebDriverException gathers system info. Resolves an
+  issue with slow-downs on OS X Sierra.
+* Update Wait and FluentWait for Java 8. Requires an update to the
+  latest guava version 21.0
+* Remove old marionette actions support.
+* Selenium server now understands a "-version" flag.
+* `WebElement.getText` now returns text from the Shadow DOM.
+* Implemented a more straightforward way to specify firefox binary in
+  GeckoDriverService builder.
+* Firefox can now pick a channel to start from on Windows via
+  `FirefoxBinary.Channel`
+* ChromeDriver now supports `NetworkConnection` interface.
+* htmlrunner bug fixes, in particular around `getValue`, and relative
+  paths to the suite file.
+
 v3.0.2
 ======
 
