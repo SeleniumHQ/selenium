@@ -45,11 +45,11 @@ end
 verbose($DEBUG)
 
 def release_version
-  "3.0"
+  "3.1"
 end
 
 def version
-  "#{release_version}.1"
+  "#{release_version}.0"
 end
 
 ide_version = "2.8.0"
