@@ -236,44 +236,6 @@ class ReflectivelyDiscoveredSteps implements Supplier<ImmutableMap<String, CoreS
             }
             return NextStepDecorator.IDENTITY;
           });
-
-
-//        factories.put(
-//          "waitFor" + shortName,
-//          (loc, val) -> (selenium, state) -> {
-//            String locator = state.expand(loc);
-//            String value = state.expand(val);
-//
-//            String[] args = buildArgs(method, locator, value);
-//
-//            new Wait() {
-//              @Override
-//              public boolean until() {
-//                invokeMethod(method, selenium, buildArgs(method, state.expand(loc), state.expand(val)));
-//                return true;
-//              }
-//            }.wait("Can't wait for " + shortName);
-//            return NextStepDecorator.IDENTITY;
-//          });
-//
-//        factories.put(
-//          "waitFor" + negateName(shortName),
-//          (loc, val) -> (selenium, state) -> {
-//            String locator = state.expand(loc);
-//            String value = state.expand(val);
-//            try {
-//              new Wait() {
-//                @Override
-//                public boolean until() {
-//                  invokeMethod(method, selenium, buildArgs(method, locator, value));
-//                  return true;
-//                }
-//              }.wait("Can't wait for " + shortName);
-//              return NextStepDecorator.ASSERTION_FAILED("Wait succeeded but should have failed");
-//            } catch (Wait.WaitTimedOutException e) {
-//              return NextStepDecorator.IDENTITY;
-//            }
-//          });
       }
 
         factories.put(
