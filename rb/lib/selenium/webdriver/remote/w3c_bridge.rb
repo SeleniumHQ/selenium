@@ -50,11 +50,13 @@ module Selenium
           port = opts.delete(:port) || 4444
           http_client = opts.delete(:http_client) { Http::Default.new }
           desired_capabilities = opts.delete(:desired_capabilities) { W3CCapabilities.firefox }
-          url = opts.delete(:url) { "http://#{Platform.localhost}:#{port}/wd/hub" }
+          url = opts.delete(:url) { "http://#{Platform.localhost}:#{po
+          rt}/wd/hub" }
 
           desired_capabilities = W3CCapabilities.send(desired_capabilities) if desired_capabilities.is_a? Symbol
 
-          desired_capabilities[:marionette] = opts.delete(:marionette) unless opts[:marionette].nil?
+          opts.delete(:marionette)
+          desired_capabilities.proxy = opts.delete(:proxy) if opts.key?(:proxy)
 
           unless opts.empty?
             raise ArgumentError, "unknown option#{'s' if opts.size != 1}: #{opts.inspect}"

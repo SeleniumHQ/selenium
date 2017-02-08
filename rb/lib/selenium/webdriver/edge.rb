@@ -26,23 +26,11 @@ module Selenium
   module WebDriver
     module Edge
       def self.driver_path=(path)
-        warn <<-DEPRECATE.gsub(/\n +| {2,}/, ' ').freeze
-          [DEPRECATION] `driver_path=` is deprecated. Pass the driver path as an option instead.
-          e.g. Selenium::WebDriver.for :edge, driver_path: '/path'
-        DEPRECATE
-
         Platform.assert_executable path
         @driver_path = path
       end
 
       def self.driver_path(warning = true)
-        if warning
-          warn <<-DEPRECATE.gsub(/\n +| {2,}/, ' ').freeze
-            [DEPRECATION] `driver_path` is deprecated. Pass the driver path as an option instead.
-            e.g. Selenium::WebDriver.for :edge, driver_path: '/path'
-          DEPRECATE
-        end
-
         @driver_path ||= nil
       end
     end # Edge

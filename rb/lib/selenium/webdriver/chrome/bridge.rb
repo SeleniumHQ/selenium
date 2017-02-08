@@ -31,7 +31,7 @@ module Selenium
           end
 
           unless opts.key?(:url)
-            driver_path = opts.delete(:driver_path) || Chrome.driver_path(false)
+            driver_path = opts.delete(:driver_path) || Chrome.driver_path
             @service = Service.new(driver_path, port, *extract_service_args(service_args))
             @service.start
             opts[:url] = @service.uri
@@ -67,28 +67,32 @@ module Selenium
         private
 
         def create_capabilities(opts)
+          # Deprecate :args & :switches
+
           caps = opts.delete(:desired_capabilities) { Remote::Capabilities.chrome }
 
-          chrome_options = caps['chromeOptions'] || caps[:chrome_options] || {}
+          chrome_options = opts.delete(:chrome_options) || caps[:chrome_options] || {}
           chrome_options['binary'] = Chrome.path if Chrome.path
-          args = opts.delete(:args) || opts.delete(:switches) || []
+          # args = opts.delete(:args) || opts.delete(:switches)
 
-          unless args.is_a? Array
-            raise ArgumentError, ':args must be an Array of Strings'
-          end
+          # if args
+          #   raise ArgumentError, ':args must be an Array of Strings' unless (args.is_a? Array)
+          #   args.map!(&:to_s)
+          # end
 
-          chrome_options['args'] = args.map(&:to_s)
-          profile = opts.delete(:profile).as_json if opts.key?(:profile)
-
-          if profile && chrome_options['args'].none? { |arg| arg =~ /user-data-dir/}
-            chrome_options['args'] << "--user-data-dir=#{profile[:directory]}"
-          end
-
-          chrome_options['extensions'] = profile[:extensions] if profile && profile[:extensions]
+          # profile = opts.delete(:profile).as_json if opts.key?(:profile)
+          #
+          # if profile && (args || []).none? { |arg| arg =~ /user-data-dir/ }
+          #   args ||= []
+          #   args << "--user-data-dir=#{profile[:directory]}"
+          # end
+          #
+          # chrome_options['args'] = args if args
+          # chrome_options['extensions'] = profile[:extensions] if profile && profile[:extensions]
           chrome_options['detach'] = true if opts.delete(:detach)
           chrome_options['prefs'] = opts.delete(:prefs) if opts.key?(:prefs)
 
-          caps[:chrome_options] = chrome_options
+          caps[:chrome_options] = chrome_options unless chrome_options.empty?
           caps[:proxy] = opts.delete(:proxy) if opts.key?(:proxy)
           caps[:proxy] ||= opts.delete('proxy') if opts.key?('proxy')
 
@@ -97,12 +101,20 @@ module Selenium
 
         def extract_service_args(args)
           service_args = []
-          service_args << "--log-path=#{args.delete(:service_log_path)}" if args.key?(:service_log_path)
-          service_args << "--url-base=#{args.delete(:url_base)}" if args.key?(:url_base)
-          service_args << "--port-server=#{args.delete(:port_server)}" if args.key?(:port_server)
-          service_args << "--whitelisted-ips=#{args.delete(:whitelisted_ips)}" if args.key?(:whitelisted_ips)
-          service_args << "--verbose=#{args.delete(:verbose)}" if args.key?(:verbose)
-          service_args << "--silent=#{args.delete(:silent)}" if args.key?(:silent)
+          service_args << "--log-path=#{args[:service_log_path]}" if args.key?(:service_log_path)
+
+          # comma-separated list of remote IPv4 addresses
+          if args.key?(:whitelisted_ips)
+            raise ArgumentError unless args[:whitelisted_ips].is_a? Array
+            service_args << "--whitelisted-ips=#{args[:whitelisted_ips].join(',')}"
+          end
+
+          if args[:verbose] == true
+            service_args << "--verbose"
+          elsif args[:silent] == true
+            service_args << "--silent"
+          end
+
           service_args
         end
       end # Bridge

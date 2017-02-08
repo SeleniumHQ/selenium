@@ -60,6 +60,19 @@ module Selenium
 
         class << self
           def chrome(opts = {})
+            define_method(:options) { @capabilities[:chrome_options] ||= {} }
+            define_method("options=") { |value| @capabilities[:chrome_options] = value }
+            define_method("profile=") do |profile|
+              profile_json = profile.as_json
+              options['args'] ||= []
+              if options['args'].none? { |arg| arg =~ /user-data-dir/ }
+                options['args'] << "--user-data-dir=#{profile_json[:directory]}"
+              end
+              options['extensions'] = profile_json[:extensions]
+            end
+            alias_method :chrome_options, :options
+            alias_method :chrome_options=, :options=
+
             new({
               browser_name: 'chrome',
               javascript_enabled: true,
@@ -78,6 +91,13 @@ module Selenium
           end
 
           def firefox(opts = {})
+            define_method(:options) { @capabilities[:firefox_options] ||= {} }
+            define_method("options=") { |value| @capabilities[:firefox_options] = value }
+            define_method(:profile) { @capabilities[:firefox_profile] ||= {} }
+            define_method("profile=") { |value| @capabilities[:firefox_profile] = value }
+            alias_method :firefox_options, :options
+            alias_method :firefox_options=, :options=
+
             new({
               browser_name: 'firefox',
               javascript_enabled: true,
@@ -100,6 +120,9 @@ module Selenium
           end
 
           def internet_explorer(opts = {})
+            define_method(:introduce_flakiness_by_ignoring_security_domains) { @capabilities[:introduce_flakiness_by_ignoring_security_domains] == true }
+            define_method("introduce_flakiness_by_ignoring_security_domains=") { |value| @capabilities[:introduce_flakiness_by_ignoring_security_domains] = value }
+
             new({
               browser_name: 'internet explorer',
               platform: :windows,
@@ -120,6 +143,13 @@ module Selenium
           end
 
           def safari(opts = {})
+            define_method(:options) { @capabilities[:safari_options] ||= {} }
+            define_method("options=") { |value| @capabilities[:safari_options] = value }
+            define_method(:technology_preview) { @capabilities[:safari_options] && safari_options['technologyPreview'] == true }
+            define_method("technology_preview=") { |value| safari_options['technologyPreview'] = value }
+            alias_method :safari_options, :options
+            alias_method :safari_options=, :options=
+
             new({
               browser_name: 'safari',
               platform: :mac,
@@ -146,6 +176,12 @@ module Selenium
             caps.native_events         = data.delete('nativeEvents')
             caps.rotatable             = data.delete('rotatable')
             caps.proxy                 = Proxy.json_create(data['proxy']) if data.key?('proxy') && !data['proxy'].empty?
+
+            caps.firefox_profile       = data.delete('firefox_profile') if data.key?('firefox_profile')
+            caps.options               = data.delete('chromeOptions') if data.key?('chromeOptions')
+            caps.options               = data.delete('firefox_options') if data.key?('firefox_options')
+            caps.options               = data.delete('safari.options') if data.key?('safari.options')
+            caps.introduce_flakiness_by_ignoring_security_domains = data.delete('ignoreProtectedModeSettings') if data.key?('ignoreProtectedModeSettings')
 
             # any remaining pairs will be added as is, with no conversion
             caps.merge!(data)
@@ -216,6 +252,13 @@ module Selenium
 
           @capabilities.each do |key, value|
             case key
+            when :introduce_flakiness_by_ignoring_security_domains
+              hash['ignore_protected_mode_settings'] = value
+            when :safari_options
+              hash['safari.options'] = value
+            when :technology_preview
+              hash['safari.options'] ||= {}
+              hash['safari.options']['technologyPreview'] = value
             when :platform
               hash['platform'] = value.to_s.upcase
             when :firefox_profile

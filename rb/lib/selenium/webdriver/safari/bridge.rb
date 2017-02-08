@@ -24,13 +24,22 @@ module Selenium
       class Bridge < Remote::Bridge
         def initialize(opts = {})
           opts[:desired_capabilities] ||= Remote::Capabilities.safari
-          port = opts.delete(:port) || Service::DEFAULT_PORT
-          service_args = opts.delete(:service_args) || {}
 
-          driver_path = opts.delete(:driver_path) || Safari.driver_path(false)
-          @service = Service.new(driver_path, port, *extract_service_args(service_args))
-          @service.start
-          opts[:url] = @service.uri
+          unless opts.key?(:url)
+            port = opts.delete(:port) || Service::DEFAULT_PORT
+            service_args = opts.delete(:service_args) || {}
+
+            driver_path = Safari.technology_preview if opts.delete(:technology_preview) == true
+            driver_path ||= opts.delete(:driver_path) || Safari.driver_path
+            @service = Service.new(driver_path, port, *extract_service_args(service_args))
+            @service.start
+            opts[:url] = @service.uri
+          end
+
+          opts[:desired_capabilities].proxy = opts.delete(:proxy) if opts.key?(:proxy)
+          opts[:desired_capabilities].proxy ||= opts.delete('proxy') if opts.key?('proxy')
+          opts[:desired_capabilities].safari_options = opts.delete(:safari_options) if opts.key?(:safari_options)
+          opts[:desired_capabilities].technology_preview = opts.delete(:technology_preview) if opts.key?(:technology_preview)
 
           super(opts)
         end

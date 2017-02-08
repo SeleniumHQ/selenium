@@ -72,17 +72,24 @@ module Selenium
           def edge(opts = {})
             new({
               browser_name: 'MicrosoftEdge',
-              platform: :windows
+              platform_name: :windows
             }.merge(opts))
           end
 
           def firefox(opts = {})
+            define_method(:firefox_options) { @capabilities[:firefox_options] ||= {} }
+            define_method("firefox_options=") { |value| @capabilities[:firefox_options] = value }
+            define_method(:marionette) { @capabilities[:marionette] }
+            define_method(:firefox_profile) { @capabilities[:firefox_profile] ||= {} }
+            define_method("firefox_profile=") { |value| @capabilities[:firefox_profile] = value }
+
             opts[:browser_version] = opts.delete(:version) if opts.key?(:version)
             opts[:platform_name] = opts.delete(:platform) if opts.key?(:platform)
-            opts[:timeouts] = {}
-            opts[:timeouts]['implicit'] = opts.delete(:implicit_timeout) if opts.key?(:implicit_timeout)
-            opts[:timeouts]['page load'] = opts.delete(:page_load_timeout) if opts.key?(:page_load_timeout)
-            opts[:timeouts]['script'] = opts.delete(:script_timeout) if opts.key?(:script_timeout)
+            timeouts = {}
+            timeouts['implicit'] = opts.delete(:implicit_timeout) if opts.key?(:implicit_timeout)
+            timeouts['page load'] = opts.delete(:page_load_timeout) if opts.key?(:page_load_timeout)
+            timeouts['script'] = opts.delete(:script_timeout) if opts.key?(:script_timeout)
+            opts[:timeouts] = timeouts unless timeouts.empty?
             new({browser_name: 'firefox', marionette: true}.merge(opts))
           end
 
@@ -102,12 +109,12 @@ module Selenium
 
             caps = new
             caps.browser_name = data.delete('browserName')
-            caps.browser_version = data.delete('browserVersion')
-            caps.platform_name = data.delete('platformName')
-            caps.platform_version = data.delete('platformVersion')
+            caps.browser_version = data.delete('browserVersion') if data.key?('browserVersion')
+            caps.platform_name = data.delete('platformName') if data.key?('platformName')
+            caps.platform_version = data.delete('platformVersion') if data.key?('platformVersion')
             caps.accept_insecure_certs = data.delete('acceptInsecureCerts') if data.key?('acceptInsecureCerts')
-            caps.page_load_strategy = data.delete('pageLoadStrategy')
-            timeouts = data.delete('timeouts')
+            caps.page_load_strategy = data.delete('pageLoadStrategy') if data.key?('pageLoadStrategy')
+            timeouts = data.delete('timeouts') if data.key?('timeouts')
             caps.implicit_timeout = timeouts['implicit'] if timeouts
             caps.page_load_timeout = timeouts['page load'] if timeouts
             caps.script_timeout = timeouts['script'] if timeouts
@@ -116,13 +123,15 @@ module Selenium
             caps.proxy = Proxy.json_create(proxy) unless proxy.nil? || proxy.empty?
 
             # Remote Server Specific
-            caps[:remote_session_id] = data.delete('webdriver.remote.sessionid')
+            caps[:remote_session_id] = data.delete('webdriver.remote.sessionid') if data.key?('webdriver.remote.sessionid')
 
             # Marionette Specific
-            caps[:accessibility_checks] = data.delete('moz:accessibilityChecks')
-            caps[:profile] = data.delete('moz:profile')
-            caps[:rotatable] = data.delete('rotatable')
-            caps[:device] = data.delete('device')
+            caps[:accessibility_checks] = data.delete('moz:accessibilityChecks') if data.key?('moz:accessibilityChecks')
+            caps[:firefox_profile] = data.delete('moz:profile') if data.key?('moz:profile')
+            caps.firefox_options = data.delete('moz:firefoxOptions') if data.key?('moz:firefoxOptions')
+            caps[:rotatable] = data.delete('rotatable') if data.key?('rotatable')
+            caps[:device] = data.delete('device') if data.key?('device')
+            caps[:marionette] = data.delete('marionette') if data.key?('marionette')
 
             # any remaining pairs will be added as is, with no conversion
             caps.merge!(data)
@@ -193,6 +202,8 @@ module Selenium
               hash['proxy'] = value.as_json if value
             when :firefox_options
               hash['moz:firefoxOptions'] = value
+            when :firefox_profile
+              hash['moz:profile'] = value
             when String, :firefox_binary
               hash[key.to_s] = value
             when Symbol

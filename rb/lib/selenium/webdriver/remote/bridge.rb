@@ -43,21 +43,22 @@ module Selenium
         def initialize(opts = {})
           opts = opts.dup
 
-          port = opts.delete(:port) || 4444
           http_client = opts.delete(:http_client) { Http::Default.new }
-          desired_capabilities = opts.delete(:desired_capabilities) { Capabilities.firefox }
-          url = opts.delete(:url) { "http://#{Platform.localhost}:#{port}/wd/hub" }
-
-          unless opts.empty?
-            raise ArgumentError, "unknown option#{'s' if opts.size != 1}: #{opts.inspect}"
-          end
+          desired_capabilities = opts.delete(:desired_capabilities) { Capabilities.chrome }
+          url = opts.delete(:url) { "http://#{Platform.localhost}:4444/wd/hub" }
 
           if desired_capabilities.is_a?(Symbol)
             unless Capabilities.respond_to?(desired_capabilities)
               raise Error::WebDriverError, "invalid desired capability: #{desired_capabilities.inspect}"
             end
-
             desired_capabilities = Capabilities.send(desired_capabilities)
+          end
+
+          desired_capabilities.options = opts.delete(:options) if opts.key?(:options)
+          desired_capabilities.profile = opts.delete(:profile) if opts.key?(:profile)
+
+          unless opts.empty?
+            raise ArgumentError, "unknown option#{'s' if opts.size != 1}: #{opts.inspect}"
           end
 
           uri = url.is_a?(URI) ? url : URI.parse(url)

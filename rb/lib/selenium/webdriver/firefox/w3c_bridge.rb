@@ -23,14 +23,17 @@ module Selenium
       # @api private
       class W3CBridge < Remote::W3CBridge
         def initialize(opts = {})
-          port = opts.delete(:port) || Service::DEFAULT_PORT
           opts[:desired_capabilities] = create_capabilities(opts)
-          service_args = opts.delete(:service_args) || {}
 
-          driver_path = opts.delete(:driver_path) || Firefox.driver_path(false)
-          @service = Service.new(driver_path, port, *extract_service_args(service_args))
-          @service.start
-          opts[:url] = @service.uri
+          unless opts.key?(:url)
+            port = opts.delete(:port) || Service::DEFAULT_PORT
+            service_args = opts.delete(:service_args) || {}
+
+            driver_path = opts.delete(:driver_path) || Firefox.driver_path
+            @service = Service.new(driver_path, port, *extract_service_args(service_args))
+            @service.start
+            opts[:url] = @service.uri
+          end
 
           super(opts)
         end
@@ -41,9 +44,9 @@ module Selenium
 
         def driver_extensions
           [
-            DriverExtensions::TakesScreenshot,
-            DriverExtensions::HasInputDevices,
-            DriverExtensions::HasWebStorage
+              DriverExtensions::TakesScreenshot,
+              DriverExtensions::HasInputDevices,
+              DriverExtensions::HasWebStorage
           ]
         end
 
@@ -56,19 +59,20 @@ module Selenium
         private
 
         def create_capabilities(opts)
-          caps = Remote::W3CCapabilities.firefox
-          caps.merge!(opts.delete(:desired_capabilities)) if opts.key? :desired_capabilities
-          firefox_options_caps = caps[:firefox_options] || {}
-          caps[:firefox_options] = firefox_options_caps.merge(opts[:firefox_options] || {})
+          caps = opts.delete(:desired_capabilities) || Remote::W3CCapabilities.firefox
+       #   caps.merge!(opts.delete(:desired_capabilities)) if opts.key? :desired_capabilities
+          firefox_options = opts.delete(:options) || {}
+       #   firefox_options.merge!(opts[:firefox_options] || {})
           if opts.key?(:profile)
             profile = opts.delete(:profile)
             unless profile.is_a?(Profile)
               profile = Profile.from_name(profile)
             end
-            caps[:firefox_options][:profile] = profile.encoded
+            caps.firefox_profile = profile.encoded
           end
 
-          Binary.path = caps[:firefox_options][:binary] if caps[:firefox_options].key?(:binary)
+          Binary.path = firefox[:binary] if firefox_options.key?(:binary)
+          caps[:firefox_options] = firefox_options unless firefox_options.empty?
           caps
         end
 
