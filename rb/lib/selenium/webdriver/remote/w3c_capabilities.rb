@@ -25,42 +25,24 @@ module Selenium
       # server is being asked to create.
       #
 
-      # TODO - uncomment when Mozilla fixes this:
-      # https://bugzilla.mozilla.org/show_bug.cgi?id=1326397
       class W3CCapabilities
-        KNOWN = [:browser_name,
-                 :browser_version,
-                 :platform_name,
-                 :platform_version,
-                 :accept_insecure_certs,
-                 :page_load_strategy,
-                 :proxy,
-                 :remote_session_id,
-                 :accessibility_checks,
-                 :rotatable,
-                 :device,
-                 :implicit_timeout,
-                 :page_load_timeout,
-                 :script_timeout].freeze
-
-        KNOWN.each do |key|
-          define_method key do
-            @capabilities.fetch(key)
-          end
-
-          define_method "#{key}=" do |value|
-            @capabilities[key] = value
-          end
+        [:browser_name,
+         :browser_version,
+         :platform_name,
+         :platform_version,
+         :accept_insecure_certs,
+         :page_load_strategy,
+         :proxy,
+         :remote_session_id,
+         :accessibility_checks,
+         :rotatable,
+         :device,
+         :implicit_timeout,
+         :page_load_timeout,
+         :script_timeout].each do |key|
+          define_method(key) { @capabilities[key] }
+          define_method("#{key}=") { |value| @capabilities[key] = value }
         end
-
-        #
-        # Backward compatibility
-        #
-
-        alias_method :version, :browser_version
-        alias_method :version=, :browser_version=
-        alias_method :platform, :platform_name
-        alias_method :platform=, :platform_name=
 
         #
         # Convenience methods for the common choices.
@@ -105,16 +87,16 @@ module Selenium
             data = data.dup
 
             caps = new
-            caps.browser_name = data.delete('browserName')
+            caps.browser_name = data.delete('browserName') if data.key?('browserName')
             caps.browser_version = data.delete('browserVersion') if data.key?('browserVersion')
             caps.platform_name = data.delete('platformName') if data.key?('platformName')
             caps.platform_version = data.delete('platformVersion') if data.key?('platformVersion')
             caps.accept_insecure_certs = data.delete('acceptInsecureCerts') if data.key?('acceptInsecureCerts')
             caps.page_load_strategy = data.delete('pageLoadStrategy') if data.key?('pageLoadStrategy')
             timeouts = data.delete('timeouts') if data.key?('timeouts')
-            caps.implicit_timeout = timeouts['implicit'] if timeouts
-            caps.page_load_timeout = timeouts['page load'] if timeouts
-            caps.script_timeout = timeouts['script'] if timeouts
+            caps.implicit_timeout = timeouts['implicit'] if timeouts && timeouts.key?('implicit')
+            caps.page_load_timeout = timeouts['page load'] if timeouts && timeouts.key?('page load')
+            caps.script_timeout = timeouts['script'] if timeouts && timeouts.key?('script')
 
             proxy = data.delete('proxy')
             caps.proxy = Proxy.json_create(proxy) unless proxy.nil? || proxy.empty?

@@ -20,7 +20,9 @@
 module Selenium
   module WebDriver
     module Firefox
+      #
       # @api private
+      #
       class W3CBridge < Remote::W3CBridge
         def driver_extensions
           [DriverExtensions::TakesScreenshot,

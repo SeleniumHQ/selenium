@@ -31,7 +31,7 @@ module Selenium
           end
         end
 
-        let(:driver) { FakeDriver.new(double(Remote::Bridge)) }
+        let(:driver) { FakeDriver.new(double(Remote::OSSBridge)) }
 
         describe '#network_connection' do
           it 'returns the correct connection type' do

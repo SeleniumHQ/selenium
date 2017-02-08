@@ -21,7 +21,7 @@ module Selenium
   module WebDriver
     module Safari
       # @api private
-      class Bridge < Remote::Bridge
+      class Bridge < Remote::OSSBridge
 
         private
 

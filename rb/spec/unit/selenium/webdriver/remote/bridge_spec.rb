@@ -22,13 +22,13 @@ require File.expand_path('../../spec_helper', __FILE__)
 module Selenium
   module WebDriver
     module Remote
-      describe Bridge do
+      describe OSSBridge do
         let(:resp) { {'sessionId' => 'foo', 'value' => @expected_capabilities.as_json} }
         let(:http) { double(Remote::Http::Default).as_null_object }
         let(:args) { [:post, "session", {desiredCapabilities: @expected_capabilities}] }
 
         it 'raises ArgumentError if passed invalid options' do
-          expect { Bridge.new(foo: 'bar') }.to raise_error(ArgumentError)
+          expect { OSSBridge.new(foo: 'bar') }.to raise_error(ArgumentError)
         end
 
         it 'raises WebDriverError if uploading non-files' do
@@ -38,7 +38,7 @@ module Selenium
               status: 200, body: request_body, headers: headers
           )
 
-          bridge = Bridge.new
+          bridge = OSSBridge.new
           expect { bridge.upload('NotAFile') }.to raise_error(Error::WebDriverError)
         end
 
@@ -46,7 +46,7 @@ module Selenium
           http_client = WebDriver::Remote::Http::Default.new
           allow(http_client).to receive(:request).and_return({'sessionId' => true, 'value' => {}})
 
-          bridge = Bridge.new(http_client: http_client)
+          bridge = OSSBridge.new(http_client: http_client)
           allow(bridge).to receive(:execute).with(:quit).and_raise(IOError)
 
           expect { bridge.quit }.to_not raise_error
@@ -62,19 +62,19 @@ module Selenium
             expect(http).to receive(:server_url=).with(URI.parse('http://example.com:4321'))
             allow(http).to receive(:call).with(*args).and_return(resp)
 
-            Bridge.new(http_client: http, url: 'http://example.com:4321', desired_capabilities: @capabilities)
+            OSSBridge.new(http_client: http, url: 'http://example.com:4321', desired_capabilities: @capabilities)
           end
 
           it 'uses the default capabilities' do
             allow(http).to receive(:call).with(*args).and_return(resp)
-            bridge = Bridge.new(http_client: http)
+            bridge = OSSBridge.new(http_client: http)
 
             expect(bridge.capabilities).to eq @expected_capabilities
           end
 
           it 'sets desired capabilities by symbol' do
             allow(http).to receive(:call).with(*args).and_return(resp)
-            bridge = Bridge.new(http_client: http, desired_capabilities: :chrome)
+            bridge = OSSBridge.new(http_client: http, desired_capabilities: :chrome)
 
             expect(bridge.capabilities).to eq @expected_capabilities
           end
@@ -90,7 +90,7 @@ module Selenium
             opts.each { |k, v| @capabilities[k] = v }
 
             allow(http).to receive(:call).with(*args).and_return(resp)
-            bridge = Bridge.new(http_client: http, desired_capabilities: @capabilities)
+            bridge = OSSBridge.new(http_client: http, desired_capabilities: @capabilities)
 
             expect(bridge.capabilities).to eq @expected_capabilities
           end
@@ -102,7 +102,7 @@ module Selenium
             @capabilities.chrome_options['args'] = %w[foo bar]
 
             allow(http).to receive(:call).with(*args).and_return(resp)
-            bridge = Bridge.new(http_client: http, desired_capabilities: @capabilities)
+            bridge = OSSBridge.new(http_client: http, desired_capabilities: @capabilities)
 
             expect(bridge.capabilities.chrome_options['args']).to eq %w[foo bar]
           end
@@ -115,7 +115,7 @@ module Selenium
             @expected_capabilities.chrome_options = chrome_options
 
             allow(http).to receive(:call).with(*args).and_return(resp)
-            bridge = Bridge.new(http_client: http, profile: profile, desired_capabilities: :chrome)
+            bridge = OSSBridge.new(http_client: http, profile: profile, desired_capabilities: :chrome)
 
             expect(bridge.capabilities.chrome_options).to eq chrome_options
           end
@@ -132,12 +132,12 @@ module Selenium
             expect(http).to receive(:server_url=).with(URI.parse('http://example.com:4321'))
             allow(http).to receive(:call).with(*args).and_return(resp)
 
-            Bridge.new(http_client: http, url: 'http://example.com:4321', desired_capabilities: @capabilities)
+            OSSBridge.new(http_client: http, url: 'http://example.com:4321', desired_capabilities: @capabilities)
           end
 
           it 'sets desired capabilities by symbol' do
             allow(http).to receive(:call).with(*args).and_return(resp)
-            bridge = Bridge.new(http_client: http, desired_capabilities: :edge)
+            bridge = OSSBridge.new(http_client: http, desired_capabilities: :edge)
 
             expect(bridge.capabilities).to eq @expected_capabilities
           end
@@ -154,7 +154,7 @@ module Selenium
             opts.each { |k, v| @capabilities[k] = v }
 
             allow(http).to receive(:call).with(*args).and_return(resp)
-            bridge = Bridge.new(http_client: http, desired_capabilities: @capabilities)
+            bridge = OSSBridge.new(http_client: http, desired_capabilities: @capabilities)
 
             expect(bridge.capabilities).to eq @expected_capabilities
           end
@@ -171,12 +171,12 @@ module Selenium
             expect(http).to receive(:server_url=).with(URI.parse('http://example.com:4321'))
             allow(http).to receive(:call).with(*args).and_return(resp)
 
-            Bridge.new(http_client: http, url: 'http://example.com:4321', desired_capabilities: @capabilities)
+            OSSBridge.new(http_client: http, url: 'http://example.com:4321', desired_capabilities: @capabilities)
           end
 
           it 'sets desired capabilities by symbol' do
             allow(http).to receive(:call).with(*args).and_return(resp)
-            bridge = Bridge.new(http_client: http, desired_capabilities: :firefox)
+            bridge = OSSBridge.new(http_client: http, desired_capabilities: :firefox)
 
             expect(bridge.capabilities).to eq @expected_capabilities
           end
@@ -192,7 +192,7 @@ module Selenium
             opts.each { |k, v| @capabilities[k] = v }
 
             allow(http).to receive(:call).with(*args).and_return(resp)
-            bridge = Bridge.new(http_client: http, desired_capabilities: @capabilities)
+            bridge = OSSBridge.new(http_client: http, desired_capabilities: @capabilities)
 
             expect(bridge.capabilities).to eq @expected_capabilities
           end
@@ -206,7 +206,7 @@ module Selenium
 
             allow(http).to receive(:call).with(*args).and_return(resp)
 
-            bridge = Bridge.new(http_client: http, profile: profile, desired_capabilities: :firefox)
+            bridge = OSSBridge.new(http_client: http, profile: profile, desired_capabilities: :firefox)
 
             expect(bridge.capabilities.firefox_profile).to eq profile.encoded
           end
@@ -222,19 +222,19 @@ module Selenium
             expect(http).to receive(:server_url=).with(URI.parse('http://example.com:4321'))
             allow(http).to receive(:call).with(*args).and_return(resp)
 
-            Bridge.new(http_client: http, url: 'http://example.com:4321', desired_capabilities: @capabilities)
+            OSSBridge.new(http_client: http, url: 'http://example.com:4321', desired_capabilities: @capabilities)
           end
 
           it 'sets desired capabilities by symbol' do
             allow(http).to receive(:call).with(*args).and_return(resp)
-            bridge = Bridge.new(http_client: http, desired_capabilities: :internet_explorer)
+            bridge = OSSBridge.new(http_client: http, desired_capabilities: :internet_explorer)
 
             expect(bridge.capabilities).to eq @expected_capabilities
           end
 
           it 'sets desired capabilities by aliased symbol' do
             allow(http).to receive(:call).with(*args).and_return(resp)
-            bridge = Bridge.new(http_client: http, desired_capabilities: :ie)
+            bridge = OSSBridge.new(http_client: http, desired_capabilities: :ie)
 
             expect(bridge.capabilities).to eq @expected_capabilities
           end
@@ -253,7 +253,7 @@ module Selenium
             opts.each { |k, v| @capabilities[k] = v }
 
             allow(http).to receive(:call).with(*args).and_return(resp)
-            bridge = Bridge.new(http_client: http, desired_capabilities: @capabilities)
+            bridge = OSSBridge.new(http_client: http, desired_capabilities: @capabilities)
 
             expect(bridge.capabilities).to eq @expected_capabilities
           end
@@ -271,12 +271,12 @@ module Selenium
             expect(http).to receive(:server_url=).with(URI.parse('http://example.com:4321'))
             allow(http).to receive(:call).with(*args).and_return(resp)
 
-            Bridge.new(http_client: http, url: 'http://example.com:4321', desired_capabilities: @capabilities)
+            OSSBridge.new(http_client: http, url: 'http://example.com:4321', desired_capabilities: @capabilities)
           end
 
           it 'sets desired capabilities by symbol' do
             allow(http).to receive(:call).with(*args).and_return(resp)
-            bridge = Bridge.new(http_client: http, desired_capabilities: :phantomjs)
+            bridge = OSSBridge.new(http_client: http, desired_capabilities: :phantomjs)
 
             expect(bridge.capabilities).to eq @expected_capabilities
           end
@@ -291,7 +291,7 @@ module Selenium
             opts.each { |k, v| @capabilities[k] = v }
 
             allow(http).to receive(:call).with(*args).and_return(resp)
-            bridge = Bridge.new(http_client: http, desired_capabilities: @capabilities)
+            bridge = OSSBridge.new(http_client: http, desired_capabilities: @capabilities)
 
             expect(bridge.capabilities).to eq @expected_capabilities
           end
@@ -309,12 +309,12 @@ module Selenium
             expect(http).to receive(:server_url=).with(URI.parse('http://example.com:4321'))
             allow(http).to receive(:call).with(*args).and_return(resp)
 
-            Bridge.new(http_client: http, url: 'http://example.com:4321', desired_capabilities: @capabilities)
+            OSSBridge.new(http_client: http, url: 'http://example.com:4321', desired_capabilities: @capabilities)
           end
 
           it 'sets desired capabilities by symbol' do
             allow(http).to receive(:call).with(*args).and_return(resp)
-            bridge = Bridge.new(http_client: http, desired_capabilities: :safari)
+            bridge = OSSBridge.new(http_client: http, desired_capabilities: :safari)
 
             expect(bridge.capabilities).to eq @expected_capabilities
           end
@@ -332,7 +332,7 @@ module Selenium
             opts.each { |k, v| @capabilities[k] = v }
 
             allow(http).to receive(:call).with(*args).and_return(resp)
-            bridge = Bridge.new(http_client: http, desired_capabilities: @capabilities)
+            bridge = OSSBridge.new(http_client: http, desired_capabilities: @capabilities)
 
             expect(bridge.capabilities).to eq @expected_capabilities
           end
@@ -344,7 +344,7 @@ module Selenium
             @capabilities.safari_options['foo'] = 'bar'
 
             allow(http).to receive(:call).with(*args).and_return(resp)
-            bridge = Bridge.new(http_client: http, desired_capabilities: @capabilities)
+            bridge = OSSBridge.new(http_client: http, desired_capabilities: @capabilities)
 
             expect(bridge.capabilities.safari_options['foo']).to eq 'bar'
           end

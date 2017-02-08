@@ -21,7 +21,7 @@ module Selenium
   module WebDriver
     module Firefox
       # @api private
-      class Bridge < Remote::Bridge
+      class Bridge < Remote::OSSBridge
         def initialize(opts = {})
           super
         rescue

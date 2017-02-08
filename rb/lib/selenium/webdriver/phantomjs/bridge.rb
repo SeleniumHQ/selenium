@@ -23,8 +23,7 @@ module Selenium
       #
       # @api private
       #
-
-      class Bridge < Remote::Bridge
+      class Bridge < Remote::OSSBridge
         def driver_extensions
           [DriverExtensions::TakesScreenshot, DriverExtensions::HasInputDevices]
         end

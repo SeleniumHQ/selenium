@@ -20,7 +20,7 @@
 module Selenium
   module WebDriver
     module Remote
-      class Bridge
+      class OSSBridge
         #
         # https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-reference
         #

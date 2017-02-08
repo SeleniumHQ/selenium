@@ -57,8 +57,10 @@ module Selenium
     #
     # @return [Driver]
     #
-    # @see Selenium::WebDriver::Remote::Bridge
+    # @see Selenium::WebDriver::Remote::OSSBridge
+    # @see Selenium::WebDriver::Remote::W3CBridge
     # @see Selenium::WebDriver::Firefox::Bridge
+    # @see Selenium::WebDriver::Firefox::W3CBridge
     # @see Selenium::WebDriver::IE::Bridge
     # @see Selenium::WebDriver::Edge::Bridge
     # @see Selenium::WebDriver::Chrome::Bridge
