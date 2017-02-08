@@ -35,15 +35,6 @@ module Selenium
 
         private
 
-        def start_process
-          server_command = [@executable_path, "--port=#{@port}", *@extra_args]
-          @process       = ChildProcess.build(*server_command)
-
-          @process.io.inherit! if $DEBUG
-          @process.leader = true
-          @process.start
-        end
-
         def cannot_connect_error_text
           "unable to connect to chromedriver #{@host}:#{@port}"
         end

@@ -24,7 +24,6 @@ module Selenium
     # responsible for starting and stopping driver implementations.
     #
     # Subclasses must implement the following private methods:
-    #   * #start_process
     #   * #stop_server
     #   * #cannot_connect_error_text
     #
@@ -87,6 +86,20 @@ module Selenium
         @uri ||= URI.parse("http://#{@host}:#{@port}")
       end
 
+      protected
+
+      def start_process
+        server_command = [@executable_path, "--port=#{@port}", *@extra_args]
+        @process       = ChildProcess.build(*server_command.compact)
+
+        if $DEBUG
+          @process.io.inherit!
+          puts "Process Starting: #{server_command}"
+        end
+        @process.leader = true
+        @process.start
+      end
+
       private
 
       def connect_to_server
@@ -100,10 +113,6 @@ module Selenium
 
       def find_free_port
         @port = PortProber.above(@port)
-      end
-
-      def start_process
-        raise NotImplementedError, 'subclass responsibility'
       end
 
       def stop_process

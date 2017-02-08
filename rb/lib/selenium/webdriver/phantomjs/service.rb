@@ -37,11 +37,13 @@ module Selenium
 
           if $DEBUG
             @process.io.inherit!
+            puts "Process Starting: #{server_command}"
           elsif Platform.jruby?
             # apparently we need to read the output for phantomjs to work on jruby
             @process.io.stdout = @process.io.stderr = File.new(Platform.null_device, 'w')
           end
 
+          @process.leader = true
           @process.start
         end
 

@@ -23,7 +23,6 @@ module Selenium
       #
       # @api private
       #
-
       class Bridge < Remote::W3CBridge
         def driver_extensions
           [DriverExtensions::TakesScreenshot,
@@ -47,7 +46,7 @@ module Selenium
            get_window_size set_window_size get_window_position set_window_position
            maximize_window get_alert_text accept_alert dismiss_alert]
           if unsupported.include? command
-            Remote::Bridge::COMMANDS[command]
+            Remote::OSSBridge::COMMANDS[command]
           else
             super
           end

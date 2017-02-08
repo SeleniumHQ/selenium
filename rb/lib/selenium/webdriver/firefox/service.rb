@@ -41,16 +41,17 @@ module Selenium
 
         def start_process
           server_command = [@executable_path, "--binary=#{Firefox::Binary.path}", "--port=#{@port}", *@extra_args]
-          @process       = ChildProcess.build(*server_command)
+          @process       = ChildProcess.build(*server_command.compact)
 
           if $DEBUG
             @process.io.inherit!
+            puts "Process Starting: #{server_command}"
           elsif Platform.windows?
             # workaround stdio inheritance issue
             # https://github.com/mozilla/geckodriver/issues/48
             @process.io.stdout = @process.io.stderr = File.new(Platform.null_device, 'w')
           end
-
+          @process.leader = true
           @process.start
         end
 
