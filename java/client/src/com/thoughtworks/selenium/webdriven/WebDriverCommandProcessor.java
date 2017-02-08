@@ -319,7 +319,6 @@ public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver 
     seleneseMethods.put("selectFrame", new SelectFrame(windows));
     seleneseMethods.put("selectPopUp", new SelectPopUp(windows));
     seleneseMethods.put("selectWindow", new SelectWindow(windows));
-    seleneseMethods.put("sendKeys", new SendKeys(alertOverride, elementFinder));
     seleneseMethods.put("setBrowserLogLevel", new NoOp(null));
     seleneseMethods.put("setContext", new NoOp(null));
     seleneseMethods.put(

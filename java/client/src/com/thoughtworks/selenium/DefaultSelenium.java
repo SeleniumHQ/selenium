@@ -326,10 +326,6 @@ public class DefaultSelenium implements Selenium {
     commandProcessor.doCommand("typeKeys", new String[] {locator, value,});
   }
 
-  public void sendKeys(String locator, String value) {
-    commandProcessor.doCommand("sendKeys", new String[] {locator, value,});
-  }
-
   public void setSpeed(String value) {
     commandProcessor.doCommand("setSpeed", new String[] {value,});
   }
