@@ -555,7 +555,7 @@ module Selenium
         #
 
         def active_element
-          Element.new self, execute(:get_active_element)
+          Element.new self, element_id_from(execute(:get_active_element))
         end
 
         alias_method :switch_to_active_element, :active_element
