@@ -23,7 +23,6 @@ import static java.util.Collections.list;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
-import com.google.common.base.Supplier;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.io.ByteStreams;
 import com.google.common.io.Files;
@@ -45,6 +44,7 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
 import java.util.logging.Handler;
 import java.util.logging.Logger;
 

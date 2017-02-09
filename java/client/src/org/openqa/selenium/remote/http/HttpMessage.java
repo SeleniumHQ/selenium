@@ -20,7 +20,6 @@ package org.openqa.selenium.remote.http;
 import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.net.HttpHeaders.CONTENT_TYPE;
 
-import com.google.common.base.Supplier;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
@@ -29,18 +28,12 @@ import com.google.common.net.MediaType;
 
 import java.nio.charset.Charset;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
 class HttpMessage {
 
   private final Multimap<String, String> headers = Multimaps.newListMultimap(
-      Maps.<String, Collection<String>>newHashMap(), new Supplier<List<String>>() {
-        @Override
-        public List<String> get() {
-          return Lists.newLinkedList();
-        }
-      });
+      Maps.<String, Collection<String>>newHashMap(), Lists::newLinkedList);
 
   private final Map<String, Object> attributes = Maps.newHashMap();
 
