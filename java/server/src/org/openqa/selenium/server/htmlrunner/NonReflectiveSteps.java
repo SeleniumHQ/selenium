@@ -18,7 +18,6 @@
 package org.openqa.selenium.server.htmlrunner;
 
 
-import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
 import com.google.common.collect.ImmutableMap;
 
@@ -33,6 +32,7 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.WrapsDriver;
 
+import java.util.function.Supplier;
 import java.util.logging.Logger;
 
 class NonReflectiveSteps {

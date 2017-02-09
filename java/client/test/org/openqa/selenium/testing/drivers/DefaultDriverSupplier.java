@@ -19,13 +19,13 @@ package org.openqa.selenium.testing.drivers;
 
 import static org.openqa.selenium.testing.DevMode.isInDevMode;
 
-import com.google.common.base.Supplier;
 import com.google.common.base.Throwables;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.function.Supplier;
 import java.util.logging.Logger;
 
 public class DefaultDriverSupplier implements Supplier<WebDriver> {
@@ -59,14 +59,10 @@ public class DefaultDriverSupplier implements Supplier<WebDriver> {
     try {
       return driverClass.getConstructor(Capabilities.class, Capabilities.class).
           newInstance(desiredCapabilities, requiredCapabilities);
-    } catch (InstantiationException e) {
-      throw new RuntimeException(e);
-    } catch (IllegalAccessException e) {
-      throw new RuntimeException(e);
-    } catch (NoSuchMethodException e) {
-      throw new RuntimeException(e);
     } catch (InvocationTargetException e) {
       throw Throwables.propagate(e.getTargetException());
+    } catch (ReflectiveOperationException e) {
+      throw new RuntimeException(e);
     }
   }
 }

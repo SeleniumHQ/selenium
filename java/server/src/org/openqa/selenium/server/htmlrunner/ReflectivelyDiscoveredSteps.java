@@ -18,7 +18,6 @@
 package org.openqa.selenium.server.htmlrunner;
 
 
-import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
 import com.google.common.collect.ImmutableMap;
 
@@ -32,6 +31,7 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Supplier;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
