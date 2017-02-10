@@ -29,7 +29,7 @@ namespace OpenQA.Selenium.Interactions
     {
         private IWebDriver driver;
         private ActionBuilder actionBuilder = new ActionBuilder();
-        private PointerInputDevice defaultMouse = new PointerInputDevice(PointerKind.Mouse, true, "default mouse");
+        private PointerInputDevice defaultMouse = new PointerInputDevice(PointerKind.Mouse, "default mouse");
         private KeyInputDevice defaultKeyboard = new KeyInputDevice("default keyboard");
 
         private IKeyboard keyboard;
