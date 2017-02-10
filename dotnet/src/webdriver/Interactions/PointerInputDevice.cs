@@ -95,13 +95,12 @@ namespace OpenQA.Selenium.Interactions
     internal class PointerInputDevice : InputDevice
     {
         private PointerKind pointerKind;
-        private bool isPrimary;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PointerInputDevice"/> class.
         /// </summary>
         public PointerInputDevice()
-            : this(PointerKind.Mouse, true)
+            : this(PointerKind.Mouse)
         {
         }
 
@@ -109,9 +108,8 @@ namespace OpenQA.Selenium.Interactions
         /// Initializes a new instance of the <see cref="PointerInputDevice"/> class.
         /// </summary>
         /// <param name="pointerKind">The kind of pointer represented by this input device.</param>
-        /// <param name="isPrimary">A value indicating whether the pointer device is the primary pointer device.</param>
-        public PointerInputDevice(PointerKind pointerKind, bool isPrimary)
-            : this(pointerKind, isPrimary, Guid.NewGuid().ToString())
+        public PointerInputDevice(PointerKind pointerKind)
+            : this(pointerKind, Guid.NewGuid().ToString())
         {
         }
 
@@ -119,13 +117,11 @@ namespace OpenQA.Selenium.Interactions
         /// Initializes a new instance of the <see cref="PointerInputDevice"/> class.
         /// </summary>
         /// <param name="pointerKind">The kind of pointer represented by this input device.</param>
-        /// <param name="isPrimary">A value indicating whether the pointer device is the primary pointer device.</param>
         /// <param name="deviceName">The unique name for this input device.</param>
-        public PointerInputDevice(PointerKind pointerKind, bool isPrimary, string deviceName)
+        public PointerInputDevice(PointerKind pointerKind, string deviceName)
             : base(deviceName)
         {
             this.pointerKind = pointerKind;
-            this.isPrimary = isPrimary;
         }
 
         /// <summary>
@@ -148,7 +144,6 @@ namespace OpenQA.Selenium.Interactions
             toReturn["id"] = this.DeviceName;
 
             Dictionary<string, object> parameters = new Dictionary<string, object>();
-            parameters["primary"] = this.isPrimary;
             parameters["pointerType"] = this.pointerKind.ToString().ToLowerInvariant();
             toReturn["parameters"] = parameters;
 
