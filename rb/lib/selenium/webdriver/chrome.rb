@@ -22,6 +22,7 @@ require 'net/http'
 require 'selenium/webdriver/chrome/service'
 require 'selenium/webdriver/chrome/driver'
 require 'selenium/webdriver/chrome/profile'
+require 'selenium/webdriver/chrome/options'
 
 module Selenium
   module WebDriver
