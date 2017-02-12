@@ -37,9 +37,6 @@ public class SessionId {
 
   @Override
   public boolean equals(Object obj) {
-    if (obj instanceof SessionId) {
-      return opaqueKey.equals(((SessionId) obj).opaqueKey);
-    }
-    return false;
+    return obj instanceof SessionId && opaqueKey.equals(((SessionId) obj).opaqueKey);
   }
 }
