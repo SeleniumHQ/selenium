@@ -17,25 +17,13 @@
 
 package org.openqa.selenium.remote;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonNull;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonPrimitive;
-import com.google.gson.JsonSyntaxException;
-
+import com.google.gson.*;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class JsonToBeanConverter {
 
@@ -231,9 +219,7 @@ public class JsonToBeanConverter {
   private Method getMethod(Class<?> clazz, String methodName) {
     try {
       return clazz.getMethod(methodName, String.class);
-    } catch (SecurityException e) {
-      // fall through
-    } catch (NoSuchMethodException e) {
+    } catch (SecurityException | NoSuchMethodException e) {
       // fall through
     }
 
@@ -307,11 +293,7 @@ public class JsonToBeanConverter {
           value = null;
         }
         write.invoke(t, convert(type, value, depth + 1));
-      } catch (IllegalArgumentException e) {
-        throw propertyWriteException(property, value, type, e);
-      } catch (IllegalAccessException e) {
-        throw propertyWriteException(property, value, type, e);
-      } catch (InvocationTargetException e) {
+      } catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException e) {
         throw propertyWriteException(property, value, type, e);
       }
     }
@@ -322,9 +304,7 @@ public class JsonToBeanConverter {
   private <T> T newInstance(Class<T> clazz) {
     try {
       return clazz.newInstance();
-    } catch (InstantiationException e) {
-      throw new WebDriverException(e);
-    } catch (IllegalAccessException e) {
+    } catch (InstantiationException | IllegalAccessException e) {
       throw new WebDriverException(e);
     }
   }
