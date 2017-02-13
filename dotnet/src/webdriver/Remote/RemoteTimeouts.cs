@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace OpenQA.Selenium.Remote
 {
@@ -145,7 +146,7 @@ namespace OpenQA.Selenium.Remote
                     throw new WebDriverException("Specified timeout type not defined");
                 }
 
-                return TimeSpan.FromMilliseconds(Convert.ToDouble(responseValue[timeoutType]));
+                return TimeSpan.FromMilliseconds(Convert.ToDouble(responseValue[timeoutType], CultureInfo.InvariantCulture));
             }
             else
             {
