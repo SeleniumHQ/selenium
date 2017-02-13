@@ -316,30 +316,14 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>if %25PROCESSOR_ARCHITECTURE%25 == x86 (
-  if not defined PROCESSOR_ARCHITEW6432 (
-    echo Detected 32-bit platform
-    if exist "$(ProjectDir)..\..\..\build\cpp\Win32\$(ConfigurationName)\IEDriverServer.exe" (
-      echo Found IE 32-bit native binary, copying from Win32 build target $(ProjectDir)..\..\..\build\cpp\Win32\$(ConfigurationName)\IEDriverServer.exe
-      copy /y "$(ProjectDir)..\..\..\build\cpp\Win32\$(ConfigurationName)\IEDriverServer.exe" "$(TargetDir)" &gt; NUL
-    ) else (
-      echo Missing IE 32-bit native binary, copying from Win32 prebuilt location $(ProjectDir)..\..\..\cpp\prebuilt\Win32\Release\IEDriverServer.exe
-      copy /y "$(ProjectDir)..\..\..\cpp\prebuilt\Win32\Release\IEDriverServer.exe" "$(TargetDir)" &gt; NUL
-    )
-    goto end
-  )
-)
-
-echo Detected 64-bit platform
-if exist "$(ProjectDir)..\..\..\build\cpp\x64\$(ConfigurationName)\IEDriverServer.exe" (
-  echo Found IE 64-bit native binary, copying from x64 build target $(ProjectDir)..\..\..\build\cpp\x64\$(ConfigurationName)\IEDriverServer.exe
-  copy /y "$(ProjectDir)..\..\..\build\cpp\x64\$(ConfigurationName)\IEDriverServer.exe" "$(TargetDir)" &gt; NUL
+    <PostBuildEvent>if exist "$(ProjectDir)..\..\..\build\cpp\Win32\$(ConfigurationName)\IEDriverServer.exe" (
+  echo Found IE 32-bit native binary, copying from Win32 build target $(ProjectDir)..\..\..\build\cpp\Win32\$(ConfigurationName)\IEDriverServer.exe
+  copy /y "$(ProjectDir)..\..\..\build\cpp\Win32\$(ConfigurationName)\IEDriverServer.exe" "$(TargetDir)" &gt; NUL
 ) else (
-  echo Missing IE 64-bit native binary, copying from x64 prebuilt location $(ProjectDir)..\..\..\cpp\prebuilt\x64\Release\IEDriverServer.exe
-  copy /y "$(ProjectDir)..\..\..\cpp\prebuilt\x64\Release\IEDriverServer.exe" "$(TargetDir)" &gt; NUL
+  echo Missing IE 32-bit native binary, copying from Win32 prebuilt location $(ProjectDir)..\..\..\cpp\prebuilt\Win32\Release\IEDriverServer.exe
+  copy /y "$(ProjectDir)..\..\..\cpp\prebuilt\Win32\Release\IEDriverServer.exe" "$(TargetDir)" &gt; NUL
 )
 
-:end
 if exist "$(ProjectDir)..\..\..\build\javascript\firefox-driver\webdriver.xpi" (
   echo Copying Firefox extension from $(ProjectDir)..\..\..\build\javascript\firefox-driver\webdriver.xpi
   copy /y "$(ProjectDir)..\..\..\build\javascript\firefox-driver\webdriver.xpi" "$(TargetDir)" &gt; NUL
