@@ -1,3 +1,32 @@
+v3.1.0
+======
+ * Note that this will be the final release containing Selenium RC language
+   bindings for .NET. Users still relying on the RC API will be able to
+   continue to do so using WebDriverBackedSelenium, or by converting their
+   code to use WebDriver proper. Selenium RC has been deprecated for over
+   six years, and the .NET Selenium RC language bindings have not been
+   updated with a code change other than a version bump in nearly that long.
+ * Prepared Screenshot object for removal of direct dependency on
+   System.Drawing.Imaging.ImageFormat. The dependency still exists for now,
+   but is no longer exposed in the public API.
+ * Updated specification compliance for windows and timeouts APIs. The
+   language bindings now properly implement the local end of the W3C
+   WebDriver specification for getting and setting window size and position,
+   and for getting and setting timeouts. It also marks as obsolete the
+   methods for the ITimeouts interface in favor of properties, since the
+   specification supports getting as well as setting timeouts.
+ * Enabled execution of project's .NET tests from within Visual Studio. It
+   is now possible to execute .NET tests from within the Visual Studio IDE.
+   To enable this functionality, you must install the NUnit 3 Test Adapter
+   plug-in. To change the browser against which the tests are executed,
+   modify the dotnet/test/common/App.config file.
+ * Updated .NET upload tests to work no matter working directory
+ * Updated project to use NUnit 3.6.0
+ * Initial development of .NET implementation of W3C spec actions command.
+ * Refactored wire protocol serialization of IWebElements.
+ * Removing custom code for geckodriver since it now implements a status end
+   point.
+
 v3.0.1
 ======
  * Updated build process to include atoms resources in strong-named assemblies.
