@@ -15,10 +15,6 @@ v3.1.0
 * ChromeDriver now supports `NetworkConnection` interface.
 * htmlrunner bug fixes, in particular around `getValue`, and relative
   paths to the suite file.
-
-v3.0.2
-======
-
 * Fixes to make htmlrunner work.
 * Removed native events from FirefoxDriver.
 * Truncate the string representation of capabilities for display purposes.
