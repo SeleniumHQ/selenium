@@ -15,7 +15,10 @@
 // limitations under the License.
 
 #include "WebDriver.h"
+
 #include "logging.h"
+
+#include "StringUtilities.h"
 
 webdriver::Server* StartServer(int port,
                                const std::wstring& host,

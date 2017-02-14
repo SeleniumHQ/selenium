@@ -15,12 +15,15 @@
 // limitations under the License.
 
 #include "IEWebDriverManagerCommandExecutor.h"
-#include "CommandExecutor.h"
+
 #include "command_types.h"
 #include "errorcodes.h"
 #include "IEWebDriverManagerIds.h"
 #include "json.h"
 #include "logging.h"
+
+#include "BrowserFactory.h"
+#include "CommandExecutor.h"
 #include "RegistryUtilities.h"
 #include "StringUtilities.h"
 

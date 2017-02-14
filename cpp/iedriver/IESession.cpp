@@ -15,12 +15,15 @@
 // limitations under the License.
 
 #include "IESession.h"
+
+#include "logging.h"
+
 #include "BrowserFactory.h"
 #include "CommandExecutor.h"
 #include "IECommandExecutor.h"
 #include "IEWebDriverManagerCommandExecutor.h"
-#include "logging.h"
 #include "messages.h"
+#include "StringUtilities.h"
 
 typedef unsigned (__stdcall *ThreadProcedure)(void*);
 

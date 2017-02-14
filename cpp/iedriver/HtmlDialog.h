@@ -17,10 +17,9 @@
 #ifndef WEBDRIVER_IE_HTMLDIALOG_H_
 #define WEBDRIVER_IE_HTMLDIALOG_H_
 
-#include <exdispid.h>
-#include <exdisp.h>
 #include <mshtml.h>
 #include <mshtmdid.h>
+
 #include "DocumentHost.h"
 #include "messages.h"
 

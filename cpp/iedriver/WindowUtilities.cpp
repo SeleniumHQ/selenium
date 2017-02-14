@@ -15,8 +15,11 @@
 // limitations under the License.
 
 #include "WindowUtilities.h"
+
 #include <ctime>
 #include <vector>
+
+#include "StringUtilities.h"
 
 namespace webdriver {
 

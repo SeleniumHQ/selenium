@@ -19,18 +19,17 @@
 
 #include <string>
 #include <vector>
-#include "Element.h"
 
-// Forward declaration of classes to avoid
-// circular include files.
+#include "CustomTypes.h"
+
+// Forward declaration of classes.
 namespace Json {
   class Value;
 } // namespace Json
 
 namespace webdriver {
 
-// Forward declaration of classes to avoid
-// circular include files.
+// Forward declaration of classes.
 class IECommandExecutor;
 
 class Script {

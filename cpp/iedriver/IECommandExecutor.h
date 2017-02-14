@@ -17,22 +17,14 @@
 #ifndef WEBDRIVER_IE_IECOMMANDEXECUTOR_H_
 #define WEBDRIVER_IE_IECOMMANDEXECUTOR_H_
 
-#include <Objbase.h>
+#include <ctime>
 #include <map>
 #include <string>
 #include <unordered_map>
-#include "BrowserFactory.h"
+
 #include "command.h"
-#include "command_types.h"
-#include "DocumentHost.h"
-#include "IECommandHandler.h"
-#include "Element.h"
-#include "ElementFinder.h"
-#include "ElementRepository.h"
-#include "InputManager.h"
-#include "ProxyManager.h"
+#include "CustomTypes.h"
 #include "messages.h"
-#include "response.h"
 
 #define WAIT_TIME_IN_MILLISECONDS 200
 #define FIND_ELEMENT_WAIT_TIME_IN_MILLISECONDS 250
@@ -47,6 +39,14 @@
 #define NONE_PAGE_LOAD_STRATEGY "none"
 
 namespace webdriver {
+
+// Forward declaration of classes.
+class BrowserFactory;
+class CommandHandlerRepository;
+class ElementFinder;
+class ElementRepository;
+class InputManager;
+class ProxyManager;
 
 // We use a CWindowImpl (creating a hidden window) here because we
 // want to synchronize access to the command handler. For that we
@@ -197,14 +197,13 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor> {
     this->enable_full_page_screenshot_ = enable_full_page_screenshot;
   }
 
-  ElementFinder element_finder(void) const { return this->element_finder_; }
+  ElementFinder* element_finder(void) const { return this->element_finder_; }
   InputManager* input_manager(void) const { return this->input_manager_; }
   ProxyManager* proxy_manager(void) const { return this->proxy_manager_; }
   BrowserFactory* browser_factory(void) const { return this->factory_; }
 
   int port(void) const { return this->port_; }
 
-  int browser_version(void) const { return this->factory_->browser_version(); }
   size_t managed_window_count(void) const {
     return this->managed_browsers_.size();
   }
@@ -212,13 +211,11 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor> {
  private:
   typedef std::tr1::unordered_map<std::string, BrowserHandle> BrowserMap;
   typedef std::map<std::string, std::wstring> ElementFindMethodMap;
-  typedef std::map<std::string, CommandHandlerHandle> CommandHandlerMap;
 
   void AddManagedBrowser(BrowserHandle browser_wrapper);
 
   void DispatchCommand(void);
 
-  void PopulateCommandHandlers(void);
   void PopulateElementFinderMethods(void);
 
   bool IsAlertActive(BrowserHandle browser, HWND* alert_handle);
@@ -227,12 +224,13 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor> {
                                     bool force_use_dismiss);
 
   BrowserMap managed_browsers_;
-  ElementRepository managed_elements_;
+  ElementRepository* managed_elements_;
   ElementFindMethodMap element_find_methods_;
+  CommandHandlerRepository* command_handlers_;
 
   std::string current_browser_id_;
 
-  ElementFinder element_finder_;
+  ElementFinder* element_finder_;
 
   int implicit_wait_timeout_;
   int async_script_timeout_;
@@ -252,7 +250,6 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor> {
 
   Command current_command_;
   std::string serialized_response_;
-  CommandHandlerMap command_handlers_;
   bool is_waiting_;
   bool is_valid_;
   bool is_quitting_;

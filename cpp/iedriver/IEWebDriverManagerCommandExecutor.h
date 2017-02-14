@@ -17,17 +17,19 @@
 #ifndef WEBDRIVER_IE_IEWEBDRIVERMANAGERCOMMANDEXECUTOR_H_
 #define WEBDRIVER_IE_IEWEBDRIVERMANAGERCOMMANDEXECUTOR_H_
 
-#include <Objbase.h>
 #include <map>
 #include <string>
 #include <vector>
-#include "BrowserFactory.h"
-#include "IEWebDriverManager.h"
+
 #include "command.h"
 #include "messages.h"
 #include "response.h"
 
+#include "IEWebDriverManager.h"
+
 namespace webdriver {
+
+class BrowserFactory;
 
 // We use a CWindowImpl (creating a hidden window) here because we
 // want to synchronize access to the command handler. For that we
@@ -82,8 +84,6 @@ class IEWebDriverManagerCommandExecutor : public CWindowImpl<IEWebDriverManagerC
   BrowserFactory* browser_factory(void) const { return this->factory_; }
 
   int port(void) const { return this->port_; }
-
-  int browser_version(void) const { return this->factory_->browser_version(); }
 
  private:
   void DispatchCommand(void);

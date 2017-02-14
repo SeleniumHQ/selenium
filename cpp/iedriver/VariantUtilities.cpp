@@ -15,9 +15,14 @@
 // limitations under the License.
 
 #include "VariantUtilities.h"
-#include "IECommandExecutor.h"
+
+#include "errorcodes.h"
 #include "json.h"
 #include "logging.h"
+
+#include "Element.h"
+#include "IECommandExecutor.h"
+#include "StringUtilities.h"
 
 namespace webdriver {
 VariantUtilities::VariantUtilities(void) {

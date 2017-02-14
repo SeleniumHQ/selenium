@@ -18,10 +18,13 @@
 #define WEBDRIVER_IE_INPUTMANAGER_H_
 
 #include <vector>
-#include "DocumentHost.h"
 
-#define USER_INTERACTION_MUTEX_NAME L"WebDriverUserInteractionMutex"
-#define WAIT_TIME_IN_MILLISECONDS_PER_INPUT_EVENT 100
+#include "CustomTypes.h"
+#include "ElementScrollBehavior.h"
+
+namespace Json {
+  class Value;
+}
 
 namespace webdriver {
 
@@ -73,10 +76,10 @@ class InputManager {
     this->require_window_focus_ = require_window_focus;
   }
 
-  ELEMENT_SCROLL_BEHAVIOR scroll_behavior(void) const {
+  ElementScrollBehavior scroll_behavior(void) const {
     return this->scroll_behavior_; 
   }
-  void set_scroll_behavior(const ELEMENT_SCROLL_BEHAVIOR scroll_behavior) {
+  void set_scroll_behavior(const ElementScrollBehavior scroll_behavior) {
     this->scroll_behavior_ = scroll_behavior;
   }
 
@@ -122,7 +125,7 @@ class InputManager {
   bool is_control_pressed_;
   bool is_alt_pressed_;
 
-  ELEMENT_SCROLL_BEHAVIOR scroll_behavior_;
+  ElementScrollBehavior scroll_behavior_;
 
   CComVariant keyboard_state_;
   CComVariant mouse_state_;

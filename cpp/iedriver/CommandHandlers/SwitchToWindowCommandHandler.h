@@ -17,84 +17,19 @@
 #ifndef WEBDRIVER_IE_SWITCHTOWINDOWCOMMANDHANDLER_H_
 #define WEBDRIVER_IE_SWITCHTOWINDOWCOMMANDHANDLER_H_
 
-#include "../Browser.h"
 #include "../IECommandHandler.h"
-#include "../IECommandExecutor.h"
 
 namespace webdriver {
 
 class SwitchToWindowCommandHandler : public IECommandHandler {
  public:
-  SwitchToWindowCommandHandler(void) {
-  }
-
-  virtual ~SwitchToWindowCommandHandler(void) {
-  }
+  SwitchToWindowCommandHandler(void);
+  virtual ~SwitchToWindowCommandHandler(void);
 
  protected:
   void ExecuteInternal(const IECommandExecutor& executor,
                        const ParametersMap& command_parameters,
-                       Response* response) {
-    ParametersMap::const_iterator name_parameter_iterator = command_parameters.find("name");
-    if (name_parameter_iterator == command_parameters.end()) {
-      response->SetErrorResponse(400, "Missing parameter: name");
-      return;
-    } else {
-      std::string found_browser_handle = "";
-      std::string desired_name = name_parameter_iterator->second.asString();	  
-
-      unsigned int limit = 10;
-      unsigned int tries = 0;
-      do {
-        tries++;
-
-        std::vector<std::string> handle_list;
-        executor.GetManagedBrowserHandles(&handle_list);
-
-        for (unsigned int i = 0; i < handle_list.size(); ++i) {
-          BrowserHandle browser_wrapper;
-          int get_handle_loop_status_code = executor.GetManagedBrowser(handle_list[i],
-                                                                       &browser_wrapper);
-          if (get_handle_loop_status_code == WD_SUCCESS) {
-
-            std::string browser_name = browser_wrapper->GetWindowName();
-            if (browser_name == desired_name) {
-              found_browser_handle = handle_list[i];
-              break;
-            }
-
-            std::string browser_handle = handle_list[i];
-            if (browser_handle == desired_name) {
-              found_browser_handle = handle_list[i];
-              break;
-            }
-          }
-        }
-
-        // Wait until new window name becomes available
-        ::Sleep(100);
-
-      } while( tries < limit && found_browser_handle == "");
-
-      if (found_browser_handle == "") {
-        response->SetErrorResponse(ENOSUCHWINDOW, "No window found");
-        return;
-      } else {
-        // Reset the path to the focused frame before switching window context.
-        BrowserHandle current_browser;
-        int status_code = executor.GetCurrentBrowser(&current_browser);
-        if (status_code == WD_SUCCESS) {
-          current_browser->SetFocusedFrameByElement(NULL);
-        }
-
-        IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
-        mutable_executor.set_current_browser_id(found_browser_handle);
-        status_code = executor.GetCurrentBrowser(&current_browser);
-        current_browser->set_wait_required(true);
-        response->SetSuccessResponse(Json::Value::null);
-      }
-    }
-  }
+                       Response* response);
 };
 
 } // namespace webdriver
