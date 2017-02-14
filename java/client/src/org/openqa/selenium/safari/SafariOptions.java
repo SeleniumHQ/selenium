@@ -102,10 +102,10 @@ public class SafariOptions {
   // Setters
 
   /**
-   * Set the port the {@link SafariDriverServer} should be started on. Defaults to 0, in which case
+   * Set the port the {@link SafariDriverService} should be started on. Defaults to 0, in which case
    * the server selects a free port.
    *
-   * @param port The port the {@link SafariDriverServer} should be started on,
+   * @param port The port the {@link SafariDriverService} should be started on,
    *    or 0 if the server should select a free port.
    */
   public void setPort(int port) {
@@ -140,7 +140,7 @@ public class SafariOptions {
   // Getters
 
   /**
-   * @return The port the {@link SafariDriverServer} should be started on.
+   * @return The port the {@link SafariDriverService} should be started on.
    *    If 0, the server should select a free port.
    * @see #setPort(int)
    */
