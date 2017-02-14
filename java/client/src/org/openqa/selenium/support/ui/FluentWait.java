@@ -50,12 +50,12 @@ import java.util.function.Supplier;
  * Sample usage: <pre>
  *   // Waiting 30 seconds for an element to be present on the page, checking
  *   // for its presence once every 5 seconds.
- *   Wait&lt;WebDriver> wait = new FluentWait&lt;WebDriver>(driver)
+ *   Wait&lt;WebDriver&gt; wait = new FluentWait&lt;WebDriver&gt;(driver)
  *       .withTimeout(30, SECONDS)
  *       .pollingEvery(5, SECONDS)
  *       .ignoring(NoSuchElementException.class);
  *
- *   WebElement foo = wait.until(new Function&lt;WebDriver, WebElement>() {
+ *   WebElement foo = wait.until(new Function&lt;WebDriver, WebElement&gt;() {
  *     public WebElement apply(WebDriver driver) {
  *       return driver.findElement(By.id("foo"));
  *     }

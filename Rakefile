@@ -333,7 +333,7 @@ ie_generate_type_mapping(:name => "ie_result_type_java",
                          :out => "java/client/src/org/openqa/selenium/ie/IeReturnTypes.java")
 
 
-task :javadocs => [:common, :firefox, :ie, :remote, :support, :chrome, :selenium] do
+task :javadocs => [:'repack-jetty', :common, :firefox, :ie, :remote, :support, :chrome, :selenium] do
   mkdir_p "build/javadoc"
    sourcepath = ""
    classpath = '.'
