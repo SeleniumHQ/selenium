@@ -17,38 +17,19 @@
 #ifndef WEBDRIVER_IE_MOUSEDOUBLECLICKCOMMANDHANDLER_H_
 #define WEBDRIVER_IE_MOUSEDOUBLECLICKCOMMANDHANDLER_H_
 
-#include "../Browser.h"
 #include "../IECommandHandler.h"
-#include "../IECommandExecutor.h"
 
 namespace webdriver {
 
 class MouseDoubleClickCommandHandler : public IECommandHandler {
  public:
-  MouseDoubleClickCommandHandler(void) {
-  }
-
-  virtual ~MouseDoubleClickCommandHandler(void) {
-  }
+  MouseDoubleClickCommandHandler(void);
+  virtual ~MouseDoubleClickCommandHandler(void);
 
  protected:
   void ExecuteInternal(const IECommandExecutor& executor,
                        const ParametersMap& command_parameters,
-                       Response* response) {
-    BrowserHandle browser_wrapper;
-    int status_code = executor.GetCurrentBrowser(&browser_wrapper);
-    if (status_code != WD_SUCCESS) {
-      response->SetErrorResponse(status_code, "Unable to get browser");
-      return;
-    }
-    Json::Value value = this->RecreateJsonParameterObject(command_parameters);
-    value["action"] = "doubleclick";
-    Json::UInt index = 0;
-    Json::Value actions(Json::arrayValue);
-    actions[index] = value;
-    executor.input_manager()->PerformInputSequence(browser_wrapper, actions);
-    response->SetSuccessResponse(Json::Value::null);
-  }
+                       Response* response);
 };
 
 } // namespace webdriver

@@ -17,33 +17,19 @@
 #ifndef WEBDRIVER_IE_GETTITLECOMMANDHANDLER_H_
 #define WEBDRIVER_IE_GETTITLECOMMANDHANDLER_H_
 
-#include "../Browser.h"
 #include "../IECommandHandler.h"
-#include "../IECommandExecutor.h"
 
 namespace webdriver {
 
 class GetTitleCommandHandler : public IECommandHandler {
  public:
-  GetTitleCommandHandler(void) {
-  }
-
-  virtual ~GetTitleCommandHandler(void) {
-  }
+  GetTitleCommandHandler(void);
+  virtual ~GetTitleCommandHandler(void);
 
  protected:
   void ExecuteInternal(const IECommandExecutor& executor,
                        const ParametersMap& command_parameters,
-                       Response* response) {
-    BrowserHandle browser_wrapper;
-    int status_code = executor.GetCurrentBrowser(&browser_wrapper);
-    if (status_code != WD_SUCCESS) {
-      response->SetErrorResponse(status_code, "Unable to get browser");
-      return;
-    }
-    std::string title = browser_wrapper->GetTitle();
-    response->SetSuccessResponse(title);
-  }
+                       Response* response);
 };
 
 } // namespace webdriver

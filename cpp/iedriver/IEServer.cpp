@@ -15,9 +15,11 @@
 // limitations under the License.
 
 #include "IEServer.h"
+
+#include "logging.h"
+
 #include "IESession.h"
 #include "FileUtilities.h"
-#include "logging.h"
 
 namespace webdriver {
 

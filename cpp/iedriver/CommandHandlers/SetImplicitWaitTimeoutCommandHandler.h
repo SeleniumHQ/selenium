@@ -17,35 +17,19 @@
 #ifndef WEBDRIVER_IE_SETIMPLICITWAITTIMEOUTCOMMANDHANDLER_H_
 #define WEBDRIVER_IE_SETIMPLICITWAITTIMEOUTCOMMANDHANDLER_H_
 
-#include "../Browser.h"
 #include "../IECommandHandler.h"
-#include "../IECommandExecutor.h"
 
 namespace webdriver {
 
 class SetImplicitWaitTimeoutCommandHandler : public IECommandHandler {
 public:
-  SetImplicitWaitTimeoutCommandHandler(void) {
-  }
-
-  virtual ~SetImplicitWaitTimeoutCommandHandler(void) {
-  }
+ SetImplicitWaitTimeoutCommandHandler(void);
+ virtual ~SetImplicitWaitTimeoutCommandHandler(void);
 
 protected:
-  void ExecuteInternal(const IECommandExecutor& executor,
-                       const ParametersMap& command_parameters,
-                       Response* response) {
-    ParametersMap::const_iterator ms_parameter_iterator = command_parameters.find("ms");
-    if (ms_parameter_iterator == command_parameters.end()) {
-      response->SetErrorResponse(400, "Missing parameter: ms");
-      return;
-    } else {
-      int timeout = ms_parameter_iterator->second.asInt();
-      IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
-      mutable_executor.set_implicit_wait_timeout(timeout);
-      response->SetSuccessResponse(Json::Value::null);
-    }
-  }
+ void ExecuteInternal(const IECommandExecutor& executor,
+                      const ParametersMap& command_parameters,
+                      Response* response);
 };
 
 } // namespace webdriver

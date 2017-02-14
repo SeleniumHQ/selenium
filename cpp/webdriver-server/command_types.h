@@ -19,6 +19,8 @@
 #ifndef WEBDRIVER_SERVER_COMMAND_TYPES_H_
 #define WEBDRIVER_SERVER_COMMAND_TYPES_H_
 
+#include <string>
+
 namespace webdriver {
 
 namespace CommandType {

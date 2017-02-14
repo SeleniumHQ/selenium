@@ -17,49 +17,19 @@
 #ifndef WEBDRIVER_IE_SETTIMEOUTCOMMANDHANDLER_H_
 #define WEBDRIVER_IE_SETTIMEOUTCOMMANDHANDLER_H_
 
-#include "../Browser.h"
 #include "../IECommandHandler.h"
-#include "../IECommandExecutor.h"
 
 namespace webdriver {
 
 class SetTimeoutCommandHandler : public IECommandHandler {
  public:
-  SetTimeoutCommandHandler(void) {
-  }
-
-  virtual ~SetTimeoutCommandHandler(void) {
-  }
+  SetTimeoutCommandHandler(void);
+  virtual ~SetTimeoutCommandHandler(void);
 
  protected:
   void ExecuteInternal(const IECommandExecutor& executor,
                        const ParametersMap& command_parameters,
-                       Response* response) {
-    ParametersMap::const_iterator type_parameter_iterator = command_parameters.find("type");
-    ParametersMap::const_iterator ms_parameter_iterator = command_parameters.find("ms");
-    if (type_parameter_iterator == command_parameters.end()) {
-      response->SetErrorResponse(400, "Missing parameter: type");
-      return;
-    } else if (ms_parameter_iterator == command_parameters.end()) {
-      response->SetErrorResponse(400, "Missing parameter: ms");
-      return;
-    } else {
-      std::string timeout_type = type_parameter_iterator->second.asString();
-      int timeout = ms_parameter_iterator->second.asInt();
-      IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
-      if (timeout_type == "implicit") {
-        mutable_executor.set_implicit_wait_timeout(timeout);
-      } else if (timeout_type == "script") {
-        mutable_executor.set_async_script_timeout(timeout);
-      } else if (timeout_type == "page load") {
-         mutable_executor.set_page_load_timeout(timeout);
-      } else {
-        response->SetErrorResponse(EUNHANDLEDERROR, "Invalid timeout type specified: " + timeout_type);
-        return;
-      }
-      response->SetSuccessResponse(Json::Value::null);
-    }
-  }
+                       Response* response);
 };
 
 } // namespace webdriver

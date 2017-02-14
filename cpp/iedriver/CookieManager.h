@@ -22,6 +22,7 @@
 
 namespace webdriver {
 
+// Forward declaration of classes.
 class BrowserCookie;
 class HookProcessor;
 

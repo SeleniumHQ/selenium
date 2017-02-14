@@ -15,7 +15,9 @@
 // limitations under the License.
 
 #include "RegistryUtilities.h"
+
 #include <vector>
+
 #include "logging.h"
 
 namespace webdriver {
