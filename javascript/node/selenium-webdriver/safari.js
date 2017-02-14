@@ -68,7 +68,7 @@ class ServiceBuilder extends remote.DriverService.Builder {
 
 
 const OPTIONS_CAPABILITY_KEY = 'safari.options';
-
+const TECHNOLOGY_PREVIEW_OPTIONS_KEY = 'technologyPreview';
 
 /**
  * Configuration options specific to the {@link Driver SafariDriver}.
@@ -89,16 +89,17 @@ class Options {
    * Extracts the SafariDriver specific options from the given capabilities
    * object.
    * @param {!Capabilities} capabilities The capabilities object.
-   * @return {!Options} The ChromeDriver options.
+   * @return {!Options} The SafariDriver options.
    */
   static fromCapabilities(capabilities) {
     var options = new Options();
-
     var o = capabilities.get(OPTIONS_CAPABILITY_KEY);
+
     if (o instanceof Options) {
       options = o;
     } else if (o) {
       options.setCleanSession(o.cleanSession);
+      options.setTechnologyPreview(o[TECHNOLOGY_PREVIEW_OPTIONS_KEY]);
     }
 
     if (capabilities.has(Capability.PROXY)) {
@@ -149,6 +150,22 @@ class Options {
   }
 
   /**
+   * Instruct the SafariDriver to use the Safari Technology Preview if true.
+   * Otherwise, use the release version of Safari. Defaults to using the release version of Safari.
+   *
+   * @param {boolean} useTechnologyPreview
+   * @return {!Options} A self reference.
+   */
+  setTechnologyPreview(useTechnologyPreview) {
+    if (!this.options_) {
+      this.options_ = {};
+    }
+
+    this.options_[TECHNOLOGY_PREVIEW_OPTIONS_KEY] = !!useTechnologyPreview;
+    return this;
+  }
+
+  /**
    * Converts this options instance to a {@link Capabilities} object.
    * @param {Capabilities=} opt_capabilities The capabilities to
    *     merge these options into, if any.
@@ -179,6 +196,23 @@ class Options {
   }
 }
 
+/**
+ * @param  {(Options|Object<string, *>)=} o The options object
+ * @return {boolean}
+ */
+function useTechnologyPreview(o) {
+  if (o instanceof Options) {
+    return !!(o.options_ && o.options_[TECHNOLOGY_PREVIEW_OPTIONS_KEY]);
+  }
+
+  if (o && typeof o === 'object') {
+    return !!o[TECHNOLOGY_PREVIEW_OPTIONS_KEY];
+  }
+
+  return false;
+}
+
+const SAFARIDRIVER_TECHNOLOGY_PREVIEW_EXE = '/Applications/Safari Technology Preview.app/Contents/MacOS/safaridriver';
 
 /**
  * A WebDriver client for Safari. This class should never be instantiated
@@ -200,14 +234,19 @@ class Driver extends webdriver.WebDriver {
    * @return {!Driver} A new driver instance.
    */
   static createSession(opt_config, opt_flow) {
-    let caps;
+    let caps, exe;
+
     if (opt_config instanceof Options) {
       caps = opt_config.toCapabilities();
     } else {
-      caps = opt_config || Capabilities.safari()
+      caps = opt_config || Capabilities.safari();
     }
 
-    let service = new ServiceBuilder().build();
+    if (useTechnologyPreview(caps.get(OPTIONS_CAPABILITY_KEY))) {
+      exe = SAFARIDRIVER_TECHNOLOGY_PREVIEW_EXE;
+    }
+
+    let service = new ServiceBuilder(exe).build();
     let executor = new http.Executor(
         service.start().then(url => new http.HttpClient(url)));
 
