@@ -14,6 +14,8 @@
 * Added the ability to use Firefox Nightly
 * If Firefox cannot be found in the default location, look for it on the PATH
 * Allow SafariDriver to use Safari Technology Preview.
+* Use the proper wire command for WebElement.getLocation() and
+  WebElement.getSize() for W3C compliant drivers.
 
 ## v3.0.1
 

@@ -259,6 +259,8 @@ const W3C_COMMAND_MAP = new Map([
   [cmd.Name.GET_ELEMENT_ATTRIBUTE, (cmd) => {
     return toExecuteAtomCommand(cmd, Atom.GET_ATTRIBUTE, 'id', 'name');
   }],
+  [cmd.Name.GET_ELEMENT_LOCATION, get('/session/:sessionId/element/:id/rect')],
+  [cmd.Name.GET_ELEMENT_SIZE, get('/session/:sessionId/element/:id/rect')],
   [cmd.Name.IS_ELEMENT_DISPLAYED, (cmd) => {
     return toExecuteAtomCommand(cmd, Atom.IS_DISPLAYED, 'id');
   }],
