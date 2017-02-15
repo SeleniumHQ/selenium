@@ -34,6 +34,14 @@ public enum SeleniumProtocol {
     this.path = path;
   }
 
+  /**
+   * Get the protocol considering the capabilities provided which may define the property
+   * {@link RegistrationRequest#SELENIUM_PROTOCOL}
+   *
+   * @param capabilities map of capabilities to consider
+   * @return the {@link SeleniumProtocol} or throws a {@link GridException} if the capabilities
+   * does not define a recognized protocol.
+   */
   public static SeleniumProtocol fromCapabilitiesMap(Map<String, ?> capabilities) {
     String type = (String) capabilities.get(SELENIUM_PROTOCOL);
     if (type == null || type.trim().isEmpty()) {
@@ -47,6 +55,13 @@ public enum SeleniumProtocol {
     }
   }
 
+  /**
+   * Get the protocol path considering the capabilities provided which may define a new
+   * path via the property {@link RegistrationRequest#PATH}
+   *
+   * @param capabilities map of capabilities to consider
+   * @return the protocol path defined by the capabilities or the value of {@link #getPath}.
+   */
   public String getPathConsideringCapabilitiesMap(Map<String, ?> capabilities) {
     String localPath = (String) capabilities.get(PATH);
     if (localPath != null) {
@@ -55,10 +70,19 @@ public enum SeleniumProtocol {
     return path;
   }
 
+  /**
+   * Get the protocol path
+   *
+   * @return the protocol path
+   */
   public String getPath() {
     return path;
   }
 
+  /**
+   * @deprecated use {@link SeleniumProtocol#Selenium#equals(Object)}
+   */
+  @Deprecated
   public boolean isSelenium() {
     return Selenium.equals(this);
   }

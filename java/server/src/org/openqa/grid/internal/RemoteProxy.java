@@ -41,14 +41,16 @@ import java.util.Map;
 public interface RemoteProxy extends Comparable<RemoteProxy> {
 
   /**
+   * Create a new TestSlot.
    *
-   * @param protocol - A {@link SeleniumProtocol} object that identifies the request flavor.
-   * @param capabilities - the type of test the client is interested in performing.
-   * @return - The entity on a proxy that can host a test session.
+   * @param protocol a {@link SeleniumProtocol} object that identifies the request flavor.
+   * @param capabilities the type of test the client is interested in performing.
+   * @return the entity on a proxy that can host a test session.
    */
-  default TestSlot newTestSlot(SeleniumProtocol protocol, Map<String, Object> capabilities) {
-    return new TestSlot(this, protocol,capabilities);
+  default TestSlot createTestSlot(SeleniumProtocol protocol, Map<String, Object> capabilities) {
+    return new TestSlot(this, protocol, capabilities);
   }
+
   /**
    * Each test running on the node will occupy a test slot.  A test slot can either be in use (have a session) or be
    * available for scheduling (no associated session).  This method allows retrieving the total state of the node,
