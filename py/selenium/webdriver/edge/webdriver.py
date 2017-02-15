@@ -38,8 +38,7 @@ class WebDriver(RemoteWebDriver):
 
         RemoteWebDriver.__init__(
             self,
-            command_executor=RemoteConnection('http://localhost:%d' % self.port,
-                                              resolve_ip=False),
+            command_executor=RemoteConnection('http://localhost:%d' % self.port),
             desired_capabilities=capabilities)
         self._is_remote = False
 
