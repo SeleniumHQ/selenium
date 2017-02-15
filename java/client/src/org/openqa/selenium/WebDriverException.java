@@ -20,12 +20,9 @@ package org.openqa.selenium;
 import org.openqa.selenium.internal.BuildInfo;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.net.UnknownHostException;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -67,18 +64,18 @@ public class WebDriverException extends RuntimeException {
             host = reader.readLine();
           }
         }
-      } catch (IOException ignored) {
-        // Do nothing and fall through
       } catch (InterruptedException e) {
         Thread.currentThread().interrupt();
         throw new RuntimeException(e);
+      } catch (Exception e) {
+        // fall through
       }
     }
     if (host == null) {
       // Give up.
       try {
         host = InetAddress.getLocalHost().getHostName();
-      } catch (UnknownHostException e) {
+      } catch (Exception e) {
         host = "Unknown";  // At least we tried.
       }
     }
@@ -96,7 +93,7 @@ public class WebDriverException extends RuntimeException {
           address = inetAddress.getHostAddress();
           break;
         }
-      } catch (SocketException e) {
+      } catch (Exception e) {
         // Fall through and go the slow way.
       }
     }
@@ -104,7 +101,7 @@ public class WebDriverException extends RuntimeException {
       // Alright. I give up.
       try {
         address = InetAddress.getLocalHost().getHostAddress();
-      } catch (UnknownHostException e) {
+      } catch (Exception e) {
         address = "Unknown";
       }
     }
