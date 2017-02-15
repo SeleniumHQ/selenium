@@ -1,39 +1,44 @@
-java_library(
-  name = 'httpclient',
-  exported_deps = [
-    ':client',
-    ':core',
-    ':mime',
-  ],
-  visibility = ['PUBLIC'],
-)
-
 prebuilt_jar(
-  name = 'client',
+  name = 'httpclient',
   maven_coords = 'org.apache.httpcomponents:httpclient:jar:4.5.2',
   binary_jar = 'httpclient-4.5.2.jar',
   source_jar = 'httpclient-4.5.2-sources.jar',
   deps = [
-    ':core',
+    ':httpcore',
     '//third_party/java/commons-codec:commons-codec',
     '//third_party/java/commons-logging:commons-logging'
+  ],
+  visibility = [
+    '//java/client/src/org/openqa/selenium/remote:remote-lib',
+    '//java/client/test/...',
+    '//java/server/src/org/openqa/grid:grid',
+    '//java/server/test/...',
+    '//third_party/java/htmlunit:htmlunit',
   ],
 )
 
 prebuilt_jar(
-  name = 'core',
+  name = 'httpcore',
   maven_coords = 'org.apache.httpcomponents:httpcore:jar:4.4.4',
   binary_jar = 'httpcore-4.4.4.jar',
   source_jar = 'httpcore-4.4.4-sources.jar',
+  visibility = [
+    # Only made visible because of a bug in prebuilt_jar not exporting deps
+    '//java/client/src/org/openqa/selenium/remote:remote-lib',
+  ],
 )
 
 prebuilt_jar(
-  name = 'mime',
+  name = 'httpmime',
   maven_coords = 'org.apache.httpcomponents:httpmime:jar:4.5.2',
   binary_jar = 'httpmime-4.5.2.jar',
   source_jar = 'httpmime-4.5.2-sources.jar',
   deps = [
-    ':client'
+    ':httpclient'
+  ],
+  visibility = [
+    '//third_party/java/htmlunit:htmlunit',
+    '//third_party/java/selenium:selenium-remote-driver'
   ],
 )
 

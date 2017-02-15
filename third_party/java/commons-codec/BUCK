@@ -5,7 +5,7 @@ prebuilt_jar(
   source_jar = 'commons-codec-1.10-sources.jar',
   visibility = [
     '//third_party/java/htmlunit:htmlunit',
-    '//third_party/java/httpcomponents:client',
+    '//third_party/java/httpcomponents:httpclient',
     '//third_party/java/little_proxy:little_proxy',
   ],
 )

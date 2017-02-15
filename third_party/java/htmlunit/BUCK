@@ -1,31 +1,26 @@
-java_library(
-  name = 'htmlunit',
-  exported_deps = [
-    ':htmlunit-jar',
-    ':htmlunit-core-js',
-  ],
-  deps = [
-    '//third_party/java/websocket:websocket-client',
-  ],
-  visibility = [
-    'PUBLIC',
-  ],
-)
-
 prebuilt_jar(
-  name = 'htmlunit-jar',
-  maven_coords = 'net.sourceforge.htmlunit:htmlunit:jar:2.23',
-  binary_jar = 'htmlunit-2.23.jar',
-  source_jar = 'htmlunit-2.23-sources.jar',
+  name = 'htmlunit',
+  maven_coords = 'net.sourceforge.htmlunit:htmlunit:jar:2.24',
+  binary_jar = 'htmlunit-2.24.jar',
+  source_jar = 'htmlunit-2.24-sources.jar',
   deps = [
     ':htmlunit-core-js',
     ':neko-htmlunit',
-    '//third_party/java/commons:commons-lang',
+    '//third_party/java/commons:commons-lang3',
+    '//third_party/java/commons-codec:commons-codec',
     '//third_party/java/commons-io:commons-io',
     '//third_party/java/commons-logging:commons-logging',
     '//third_party/java/cssparser:cssparser',
     '//third_party/java/httpcomponents:httpclient',
-    '//third_party/java/xml:xml'
+    '//third_party/java/httpcomponents:httpmime',
+    '//third_party/java/websocket:websocket-client',
+    '//third_party/java/xalan:xalan'
+  ],
+  visibility = [
+    '//java/client/src/org/openqa/selenium:client-combined',
+    '//java/client/test/org/openqa/selenium/atoms:tests',
+    '//java/client/test/org/openqa/selenium/testing:test-base',
+    '//third_party/java/selenium:htmlunit-driver',
   ],
 )
 
@@ -34,15 +29,18 @@ prebuilt_jar(
   maven_coords = 'net.sourceforge.htmlunit:htmlunit-core-js:jar:2.23',
   binary_jar = 'htmlunit-core-js-2.23.jar',
   source_jar = 'htmlunit-core-js-2.23-sources.jar',
+  visibility = [
+    '//java/client/test/org/openqa/selenium/atoms:tests',
+  ],
 )
 
 prebuilt_jar(
   name = 'neko-htmlunit',
-  maven_coords = 'net.sourceforge.htmlunit:neko-htmlunit:jar:2.23',
-  binary_jar = 'neko-htmlunit-2.23.jar',
-  source_jar = 'neko-htmlunit-2.23-sources.jar',
+  maven_coords = 'net.sourceforge.htmlunit:neko-htmlunit:jar:2.24',
+  binary_jar = 'neko-htmlunit-2.24.jar',
+  source_jar = 'neko-htmlunit-2.24-sources.jar',
   deps = [
-    '//third_party/java/xml:xml'
+    '//third_party/java/xerces:xercesImpl'
   ],
 )
 

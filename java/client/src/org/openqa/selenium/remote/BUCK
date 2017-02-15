@@ -118,6 +118,10 @@ java_library(name = 'remote-lib',
     ':get-attribute',
     ':is-displayed',
   ],
+  exported_deps = [
+    '//third_party/java/httpcomponents:httpclient',
+    '//third_party/java/httpcomponents:httpcore',
+  ],
   deps = [
     ':api',
     ':capabilities',
@@ -125,7 +129,6 @@ java_library(name = 'remote-lib',
     '//java/client/src/org/openqa/selenium:selenium',
     '//third_party/java/gson:gson',
     '//third_party/java/guava:guava',
-    '//third_party/java/httpcomponents:httpclient',
   ],
 )
 

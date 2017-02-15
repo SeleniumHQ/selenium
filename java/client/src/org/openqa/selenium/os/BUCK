@@ -6,7 +6,7 @@ java_library(
     '//java/client/src/org/openqa/selenium:exceptions',
     '//java/client/src/org/openqa/selenium:platform',
     '//java/client/src/org/openqa/selenium/io:io',
-    '//third_party/java/commons-exec:commons-exec',
+    '//third_party/java/commons:commons-exec',
     '//third_party/java/guava:guava',
     '//third_party/java/jna:jna',
   ],
