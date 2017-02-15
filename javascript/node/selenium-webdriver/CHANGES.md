@@ -1,4 +1,4 @@
-## v.next
+## v3.1.0
 
 * The `lib` package is once again platform agnostic (excluding `lib/devmode`).
 * Deprecated `promise.when(value, callback, errback)`.
