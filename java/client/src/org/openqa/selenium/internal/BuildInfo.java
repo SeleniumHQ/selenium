@@ -94,12 +94,12 @@ public class BuildInfo {
 
   /** @return The embedded build revision or "unknown". */
   public String getBuildRevision() {
-    return BUILD_PROPERTIES.getProperty("build-revision", "unknown");
+    return BUILD_PROPERTIES.getProperty("Build-Revision", "unknown");
   }
 
   /** @return The embedded build time or "unknown". */
   public String getBuildTime() {
-    return BUILD_PROPERTIES.getProperty("build-timestamp", "unknown");
+    return BUILD_PROPERTIES.getProperty("Build-Time", "unknown");
   }
 
   @Override
