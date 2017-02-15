@@ -79,6 +79,11 @@ public class TestSlot {
     this.capabilities = capabilities;
   }
 
+  public TestSlot(RemoteProxy proxy, SeleniumProtocol protocol, Map<String, Object> capabilities) {
+    this(proxy, protocol, protocol.getPathConsideringCapabilitiesMap(capabilities), capabilities);
+  }
+
+
   public Map<String, Object> getCapabilities() {
     return Collections.unmodifiableMap(capabilities);
   }
@@ -147,7 +152,7 @@ public class TestSlot {
    * @return true if the desired capabilities matches for the
    *         {@link RemoteProxy#getCapabilityHelper()}
    */
-  boolean matches(Map<String, Object> desiredCapabilities) {
+  public boolean matches(Map<String, Object> desiredCapabilities) {
     return matcher.matches(capabilities, desiredCapabilities);
   }
 

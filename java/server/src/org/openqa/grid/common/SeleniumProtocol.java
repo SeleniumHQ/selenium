@@ -17,8 +17,47 @@
 
 package org.openqa.grid.common;
 
+import static org.openqa.grid.common.RegistrationRequest.PATH;
+import static org.openqa.grid.common.RegistrationRequest.SELENIUM_PROTOCOL;
+
+import org.openqa.grid.common.exception.GridException;
+
+import java.util.Arrays;
+import java.util.Map;
+
 public enum SeleniumProtocol {
-  Selenium, WebDriver;
+  Selenium("/selenium-server/driver"),
+  WebDriver("/wd/hub");
+  private String path;
+
+  SeleniumProtocol(String path) {
+    this.path = path;
+  }
+
+  public static SeleniumProtocol fromCapabilitiesMap(Map<String, ?> capabilities) {
+    String type = (String) capabilities.get(SELENIUM_PROTOCOL);
+    if (type == null || type.trim().isEmpty()) {
+      return WebDriver;
+    }
+    try {
+      return SeleniumProtocol.valueOf(type);
+    } catch (IllegalArgumentException e) {
+      throw new GridException(type + " isn't a valid protocol type for grid. Valid values :[" +
+                              Arrays.toString(values()) + "]", e);
+    }
+  }
+
+  public String getPathConsideringCapabilitiesMap(Map<String, ?> capabilities) {
+    String localPath = (String) capabilities.get(PATH);
+    if (localPath != null) {
+      return localPath;
+    }
+    return path;
+  }
+
+  public String getPath() {
+    return path;
+  }
 
   public boolean isSelenium() {
     return Selenium.equals(this);
