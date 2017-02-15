@@ -155,7 +155,7 @@ public class BaseRemoteProxy implements RemoteProxy {
         for (String k : capability.asMap().keySet()) {
           c.put(k, capability.getCapability(k));
         }
-        slots.add(newTestSlot( protocol, c));
+        slots.add(createTestSlot(protocol, c));
       }
     }
 

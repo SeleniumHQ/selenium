@@ -32,6 +32,7 @@ import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.message.BasicHttpEntityEnclosingRequest;
 import org.apache.http.message.BasicHttpRequest;
 import org.apache.http.util.EntityUtils;
+import org.openqa.grid.common.SeleniumProtocol;
 import org.openqa.grid.common.exception.ClientGoneException;
 import org.openqa.grid.common.exception.GridException;
 import org.openqa.grid.internal.listeners.CommandListener;
@@ -149,7 +150,7 @@ public class TestSession {
 
     // The session needs to have been open for at least the time interval and we need to have not
     // seen any new commands during that time frame.
-    return slot.getProtocol().isSelenium()
+    return slot.getProtocol().equals(SeleniumProtocol.Selenium)
            && elapsedSinceCreation > MAX_IDLE_TIME_BEFORE_CONSIDERED_ORPHANED
            && sessionCreatedAt == lastActivity;
   }

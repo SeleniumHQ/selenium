@@ -42,32 +42,30 @@ import java.util.List;
 import java.util.Map;
 
 public class BaseRemoteProxyTest {
-
-  private RemoteProxy p1 = null;
-  private RemoteProxy p2 = null;
-
-  private Map<String, Object> app1Capability = new HashMap<>();
-  private Map<String, Object> app2Capability = new HashMap<>();
-  private Registry registry = Registry.newInstance();
+  private Registry registry;
 
   @Before
-  public void setup() throws Exception {
-
-    app1Capability.put(CapabilityType.APPLICATION_NAME, "app1");
-    app2Capability.put(CapabilityType.APPLICATION_NAME, "app2");
-
-    p1 =
-        RemoteProxyFactory
-            .getNewBasicRemoteProxy(app1Capability, "http://machine1:4444/", registry);
-    List<Map<String, Object>> caps = new ArrayList<>();
-    caps.add(app1Capability);
-    caps.add(app2Capability);
-    p2 = RemoteProxyFactory.getNewBasicRemoteProxy(caps, "http://machine4:4444/", registry);
-
+  public void before() {
+    registry = Registry.newInstance();
   }
 
   @Test
-  public void testEqual() {
+  public void testEqual() throws Exception {
+    final Map<String, Object> app1Capability = new HashMap<>();
+    final Map<String, Object> app2Capability = new HashMap<>();
+    app1Capability.put(CapabilityType.APPLICATION_NAME, "app1");
+    app2Capability.put(CapabilityType.APPLICATION_NAME, "app2");
+
+    final RemoteProxy p1 =
+        RemoteProxyFactory.getNewBasicRemoteProxy(app1Capability, "http://machine1:4444/", registry);
+
+    List<Map<String, Object>> caps = new ArrayList<>();
+    caps.add(app1Capability);
+    caps.add(app2Capability);
+    final RemoteProxy p2 =
+        RemoteProxyFactory.getNewBasicRemoteProxy(caps, "http://machine4:4444/", registry);
+
+
     assertTrue(p1.equals(p1));
     assertFalse(p1.equals(p2));
   }
@@ -166,6 +164,7 @@ public class BaseRemoteProxyTest {
     RegistrationRequest req = RegistrationRequest.build(nodeConfiguration);
     DesiredCapabilities caps = new DesiredCapabilities();
     caps.setCapability(CapabilityType.APPLICATION_NAME, "app1");
+    caps.setCapability(RegistrationRequest.PATH, "/foo/bar/baz");
     req.getConfiguration().capabilities.add(caps);
     req.getConfiguration().proxy = MyCustomProxy.class.getName();
     RemoteProxy p = BaseRemoteProxy.getNewInstance(req,registry);
@@ -181,6 +180,7 @@ public class BaseRemoteProxyTest {
     TestSlot slot = session.getSlot();
     assertTrue(slot instanceof MyTestSlot);
     assertTrue(slot.toString().contains("CrazySlot"));
+    assertEquals("/foo/bar/baz", slot.getPath());
   }
 
   @After

@@ -23,7 +23,6 @@ import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.common.exception.GridException;
 
 public class DetachedRemoteProxy extends BaseRemoteProxy {
-
   public DetachedRemoteProxy(RegistrationRequest request, Registry registry) {
     super(request, registry);
   }
@@ -32,5 +31,4 @@ public class DetachedRemoteProxy extends BaseRemoteProxy {
   public JsonObject getStatus() throws GridException {
     return null; // just to make sure there is no GridException thrown
   }
-
 }

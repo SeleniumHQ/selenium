@@ -52,7 +52,7 @@ public class MyCustomProxy extends BaseRemoteProxy {
   }
 
   @Override
-  public TestSlot newTestSlot(SeleniumProtocol protocol, Map<String, Object> capabilities) {
+  public TestSlot createTestSlot(SeleniumProtocol protocol, Map<String, Object> capabilities) {
     return new MyTestSlot(this,protocol, capabilities);
   }
 
