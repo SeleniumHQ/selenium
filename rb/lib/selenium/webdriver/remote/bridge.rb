@@ -52,7 +52,7 @@ module Selenium
 
           raise ArgumentError, "unknown options: #{opts.inspect}" unless opts.empty?
 
-          @capabilities = create_session(desired_capabilities)
+          @capabilities ||= create_session(desired_capabilities)
         end
 
         def browser
