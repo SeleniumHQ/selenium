@@ -63,10 +63,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\core\Selenium.Core.csproj">
-      <Project>{69F4FF0E-13DE-4AF6-B8AF-572A36239083}</Project>
-      <Name>Selenium.Core</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\src\webdriverbackedselenium\Selenium.WebDriverBackedSelenium.csproj">
       <Project>{0EAF6AA9-B712-464B-A11B-FA3CF7577D80}</Project>
       <Name>Selenium.WebDriverBackedSelenium</Name>

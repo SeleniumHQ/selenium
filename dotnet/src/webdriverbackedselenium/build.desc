@@ -8,7 +8,6 @@ dotnet_library(name = "webdriverbackedselenium",
     "System.Xml.dll",
     "System.Web.dll",
     "//dotnet/src/webdriver:webdriver",
-    "//dotnet/src/core:core"
   ],
   resources = [
     {"java/client/src/com/thoughtworks/selenium/webdriven/injectableSelenium.js" : "injectableSelenium.js"},
@@ -39,7 +38,6 @@ dotnet_library(name = "webdriverbackedselenium35",
     "System.Xml.dll",
     "System.Web.dll",
     "//dotnet/src/webdriver:webdriver35",
-    "//dotnet/src/core:core35"
   ],
   resources = [
     {"java/client/src/com/thoughtworks/selenium/webdriven/injectableSelenium.js" : "injectableSelenium.js"},
@@ -70,7 +68,6 @@ dotnet_library(name = "strongnamed",
     "System.Xml.dll",
     "System.Web.dll",
     "//dotnet/src/webdriver:strongnamed",
-    "//dotnet/src/core:strongnamed"
   ],
   resources = [
     {"java/client/src/com/thoughtworks/selenium/webdriven/injectableSelenium.js" : "injectableSelenium.js"},
@@ -102,7 +99,6 @@ dotnet_library(name = "strongnamed35",
     "System.Xml.dll",
     "System.Web.dll",
     "//dotnet/src/webdriver:strongnamed35",
-    "//dotnet/src/core:strongnamed35"
   ],
   resources = [
     {"java/client/src/com/thoughtworks/selenium/webdriven/injectableSelenium.js" : "injectableSelenium.js"},
@@ -136,7 +132,6 @@ dotnet_package(name = "package",
   tags = "Selenium WebDriver remote control RC browser automation",
   packagedeps = [
     {"//dotnet/src/webdriver:package" : ""},
-    {"//dotnet/src/core:package" : ""}
   ],
   assemblies = [
     {"System.Drawing" : ""}
