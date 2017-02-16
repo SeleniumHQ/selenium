@@ -66,7 +66,7 @@ module Selenium
 
         it 'uses technical preview from class to set driver path' do
           allow(Platform).to receive(:assert_executable).with(Safari.technology_preview).and_return(true)
-          Safari.technology_preview = true
+          Safari.technology_preview!
 
           expect(Service).to receive(:new).with(Safari.technology_preview, Service::DEFAULT_PORT)
           allow(http).to receive(:call).with(*args).and_return(resp)

@@ -60,6 +60,11 @@ module Selenium
           super
         end
 
+        def process_capabilities(opts)
+          super
+          opts[:desired_capabilities].options['binary'] = Chrome.path if Chrome.path
+        end
+
         def process_service_args(service_opts)
           return [] unless service_opts
           return service_opts if service_opts.is_a? Array

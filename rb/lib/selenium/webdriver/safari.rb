@@ -28,20 +28,9 @@ module Selenium
           "/Applications/Safari\ Technology\ Preview.app/Contents/MacOS/safaridriver"
         end
 
-        def technology_preview=(value = true)
-          self.driver_path = technology_preview if value
-        end
-
-        def path=(path)
-          Platform.assert_executable(path)
-          @path = path
-        end
-
-        def path
-          @path ||= '/Applications/Safari.app/Contents/MacOS/Safari'
-          return @path if File.file?(@path) && File.executable?(@path)
-          raise Error::WebDriverError, 'Safari is only supported on Mac' unless Platform.os == :macosx
-          raise Error::WebDriverError, 'Unable to find Safari'
+        def technology_preview!
+          raise Error::WebDriverError, "Install Safari Technology Preview on MacOS Sierra" unless File.exist?(tech_preview_driver)
+          self.driver_path = technology_preview
         end
 
         def driver_path=(path)

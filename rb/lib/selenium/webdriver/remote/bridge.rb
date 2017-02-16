@@ -599,7 +599,7 @@ module Selenium
           path = opts.delete(:driver_path) || bridge_module.driver_path
           port = opts.delete(:port) || bridge_module::Service::DEFAULT_PORT
           service_args = process_service_args(opts.delete(:service_args))
-          bridge_module::Service.new(path, port, *service_args).tap { |s| s.start }
+          bridge_module::Service.new(path, port, *service_args).tap(&:start)
         end
 
         def process_service_args(service_args)

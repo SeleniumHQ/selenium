@@ -50,7 +50,7 @@ module Selenium
 
           profile = opts.delete(:profile) || opts[:desired_capabilities].firefox_profile
           port = opts.delete(:port) || DEFAULT_PORT
-          Launcher.new(Binary.new, port, profile).tap { |l| l.launch }
+          Launcher.new(Binary.new, port, profile).tap(&:launch)
         end
       end # Bridge
     end # Firefox
