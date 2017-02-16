@@ -167,6 +167,7 @@
   </HelpKINode>
   <HelpKINode Title="AssumeUntrustedCertificateIssuer field" Url="html/F_OpenQA_Selenium_Firefox_FirefoxDriver_AssumeUntrustedCertificateIssuer.htm" />
   <HelpKINode Title="AssumeUntrustedCertificateIssuer property" Url="html/P_OpenQA_Selenium_Firefox_FirefoxProfile_AssumeUntrustedCertificateIssuer.htm" />
+  <HelpKINode Title="AsynchronousJavaScript property" Url="html/P_OpenQA_Selenium_ITimeouts_AsynchronousJavaScript.htm" />
   <HelpKINode Title="AsyncJavaScriptExecutor class">
     <HelpKINode Title="AsyncJavaScriptExecutor Class" Url="html/T_OpenQA_Selenium_Internal_AsyncJavaScriptExecutor.htm" />
     <HelpKINode Title="about AsyncJavaScriptExecutor class" Url="html/T_OpenQA_Selenium_Internal_AsyncJavaScriptExecutor.htm" />
@@ -198,6 +199,7 @@
     <HelpKINode Title="ChromeOptions.BinaryLocation Property " Url="html/P_OpenQA_Selenium_Chrome_ChromeOptions_BinaryLocation.htm" />
     <HelpKINode Title="OperaOptions.BinaryLocation Property " Url="html/P_OpenQA_Selenium_Opera_OperaOptions_BinaryLocation.htm" />
   </HelpKINode>
+  <HelpKINode Title="Bmp enumeration member" Url="html/T_OpenQA_Selenium_ScreenshotImageFormat.htm" />
   <HelpKINode Title="Bottom enumeration member" Url="html/T_OpenQA_Selenium_IE_InternetExplorerElementScrollBehavior.htm" />
   <HelpKINode Title="Browser field" Url="html/F_OpenQA_Selenium_LogType_Browser.htm" />
   <HelpKINode Title="BrowserAttachTimeout property" Url="html/P_OpenQA_Selenium_IE_InternetExplorerOptions_BrowserAttachTimeout.htm" />
@@ -282,6 +284,7 @@
   <HelpKINode Title="CallEmbeddedHtmlUtilities method" Url="html/M_Selenium_Internal_SeleniumEmulation_JavaScriptLibrary_CallEmbeddedHtmlUtilities.htm" />
   <HelpKINode Title="CallEmbeddedSelenium method" Url="html/M_Selenium_Internal_SeleniumEmulation_JavaScriptLibrary_CallEmbeddedSelenium.htm" />
   <HelpKINode Title="Cancel field" Url="html/F_OpenQA_Selenium_Keys_Cancel.htm" />
+  <HelpKINode Title="CancelActions field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_CancelActions.htm" />
   <HelpKINode Title="Capabilities property">
     <HelpKINode Title="IHasCapabilities.Capabilities Property " Url="html/P_OpenQA_Selenium_IHasCapabilities_Capabilities.htm" />
     <HelpKINode Title="RemoteWebDriver.Capabilities Property " Url="html/P_OpenQA_Selenium_Remote_RemoteWebDriver_Capabilities.htm" />
@@ -1018,6 +1021,7 @@
   <HelpKINode Title="DriverCommand.AcceptAlert field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_AcceptAlert.htm" />
   <HelpKINode Title="DriverCommand.Actions field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_Actions.htm" />
   <HelpKINode Title="DriverCommand.AddCookie field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_AddCookie.htm" />
+  <HelpKINode Title="DriverCommand.CancelActions field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_CancelActions.htm" />
   <HelpKINode Title="DriverCommand.ClearAppCache field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_ClearAppCache.htm" />
   <HelpKINode Title="DriverCommand.ClearElement field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_ClearElement.htm" />
   <HelpKINode Title="DriverCommand.ClearLocalStorage field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_ClearLocalStorage.htm" />
@@ -1069,9 +1073,11 @@
   <HelpKINode Title="DriverCommand.GetSessionStorageItem field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_GetSessionStorageItem.htm" />
   <HelpKINode Title="DriverCommand.GetSessionStorageKeys field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_GetSessionStorageKeys.htm" />
   <HelpKINode Title="DriverCommand.GetSessionStorageSize field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_GetSessionStorageSize.htm" />
+  <HelpKINode Title="DriverCommand.GetTimeouts field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_GetTimeouts.htm" />
   <HelpKINode Title="DriverCommand.GetTitle field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_GetTitle.htm" />
   <HelpKINode Title="DriverCommand.GetWindowHandles field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_GetWindowHandles.htm" />
   <HelpKINode Title="DriverCommand.GetWindowPosition field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_GetWindowPosition.htm" />
+  <HelpKINode Title="DriverCommand.GetWindowRect field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_GetWindowRect.htm" />
   <HelpKINode Title="DriverCommand.GetWindowSize field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_GetWindowSize.htm" />
   <HelpKINode Title="DriverCommand.GoBack field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_GoBack.htm" />
   <HelpKINode Title="DriverCommand.GoForward field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_GoForward.htm" />
@@ -1080,6 +1086,7 @@
   <HelpKINode Title="DriverCommand.IsElementEnabled field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_IsElementEnabled.htm" />
   <HelpKINode Title="DriverCommand.IsElementSelected field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_IsElementSelected.htm" />
   <HelpKINode Title="DriverCommand.MaximizeWindow field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_MaximizeWindow.htm" />
+  <HelpKINode Title="DriverCommand.MinimizeWindow field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_MinimizeWindow.htm" />
   <HelpKINode Title="DriverCommand.MouseClick field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_MouseClick.htm" />
   <HelpKINode Title="DriverCommand.MouseDoubleClick field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_MouseDoubleClick.htm" />
   <HelpKINode Title="DriverCommand.MouseDown field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_MouseDown.htm" />
@@ -1100,8 +1107,9 @@
   <HelpKINode Title="DriverCommand.SetLocation field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_SetLocation.htm" />
   <HelpKINode Title="DriverCommand.SetOrientation field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_SetOrientation.htm" />
   <HelpKINode Title="DriverCommand.SetSessionStorageItem field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_SetSessionStorageItem.htm" />
-  <HelpKINode Title="DriverCommand.SetTimeout field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_SetTimeout.htm" />
+  <HelpKINode Title="DriverCommand.SetTimeouts field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_SetTimeouts.htm" />
   <HelpKINode Title="DriverCommand.SetWindowPosition field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_SetWindowPosition.htm" />
+  <HelpKINode Title="DriverCommand.SetWindowRect field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_SetWindowRect.htm" />
   <HelpKINode Title="DriverCommand.SetWindowSize field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_SetWindowSize.htm" />
   <HelpKINode Title="DriverCommand.Status field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_Status.htm" />
   <HelpKINode Title="DriverCommand.SubmitElement field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_SubmitElement.htm" />
@@ -2012,6 +2020,7 @@
     <HelpKINode Title="DefaultSelenium.GetText Method " Url="html/M_Selenium_DefaultSelenium_GetText.htm" />
     <HelpKINode Title="ISelenium.GetText Method " Url="html/M_Selenium_ISelenium_GetText.htm" />
   </HelpKINode>
+  <HelpKINode Title="GetTimeouts field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_GetTimeouts.htm" />
   <HelpKINode Title="GetTitle field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_GetTitle.htm" />
   <HelpKINode Title="GetTitle method">
     <HelpKINode Title="DefaultSelenium.GetTitle Method " Url="html/M_Selenium_DefaultSelenium_GetTitle.htm" />
@@ -2031,12 +2040,14 @@
   </HelpKINode>
   <HelpKINode Title="GetWindowHandles field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_GetWindowHandles.htm" />
   <HelpKINode Title="GetWindowPosition field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_GetWindowPosition.htm" />
+  <HelpKINode Title="GetWindowRect field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_GetWindowRect.htm" />
   <HelpKINode Title="GetWindowSize field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_GetWindowSize.htm" />
   <HelpKINode Title="GetXpathCount method">
     <HelpKINode Title="DefaultSelenium.GetXpathCount Method " Url="html/M_Selenium_DefaultSelenium_GetXpathCount.htm" />
     <HelpKINode Title="ISelenium.GetXpathCount Method " Url="html/M_Selenium_ISelenium_GetXpathCount.htm" />
   </HelpKINode>
   <HelpKINode Title="GhostDriverPath property" Url="html/P_OpenQA_Selenium_PhantomJS_PhantomJSDriverService_GhostDriverPath.htm" />
+  <HelpKINode Title="Gif enumeration member" Url="html/T_OpenQA_Selenium_ScreenshotImageFormat.htm" />
   <HelpKINode Title="GoBack field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_GoBack.htm" />
   <HelpKINode Title="GoBack method">
     <HelpKINode Title="DefaultSelenium.GoBack Method " Url="html/M_Selenium_DefaultSelenium_GoBack.htm" />
@@ -2412,6 +2423,7 @@
   <HelpKINode Title="Implementation property" Url="html/P_OpenQA_Selenium_IE_InternetExplorerDriverService_Implementation.htm" />
   <HelpKINode Title="ImplicitlyWait field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_ImplicitlyWait.htm" />
   <HelpKINode Title="ImplicitlyWait method" Url="html/M_OpenQA_Selenium_ITimeouts_ImplicitlyWait.htm" />
+  <HelpKINode Title="ImplicitWait property" Url="html/P_OpenQA_Selenium_ITimeouts_ImplicitWait.htm" />
   <HelpKINode Title="INavigation interface">
     <HelpKINode Title="INavigation Interface" Url="html/T_OpenQA_Selenium_INavigation.htm" />
     <HelpKINode Title="about INavigation interface" Url="html/T_OpenQA_Selenium_INavigation.htm" />
@@ -2435,6 +2447,7 @@
   <HelpKINode Title="InitialBrowserUrl property" Url="html/P_OpenQA_Selenium_IE_InternetExplorerOptions_InitialBrowserUrl.htm" />
   <HelpKINode Title="InitializationTimeout property" Url="html/P_OpenQA_Selenium_DriverService_InitializationTimeout.htm" />
   <HelpKINode Title="InitializeCommandDictionary method" Url="html/M_OpenQA_Selenium_Remote_CommandInfoRepository_InitializeCommandDictionary.htm" />
+  <HelpKINode Title="InsecureCertificate enumeration member" Url="html/T_OpenQA_Selenium_WebDriverResult.htm" />
   <HelpKINode Title="Insert field" Url="html/F_OpenQA_Selenium_Keys_Insert.htm" />
   <HelpKINode Title="Install method" Url="html/M_OpenQA_Selenium_Firefox_FirefoxExtension_Install.htm" />
   <HelpKINode Title="InternetExplorer method" Url="html/M_OpenQA_Selenium_Remote_DesiredCapabilities_InternetExplorer.htm" />
@@ -2844,8 +2857,12 @@
     <HelpKINode Title="ITimeouts Interface" Url="html/T_OpenQA_Selenium_ITimeouts.htm" />
     <HelpKINode Title="about ITimeouts interface" Url="html/T_OpenQA_Selenium_ITimeouts.htm" />
     <HelpKINode Title="methods" Url="html/Methods_T_OpenQA_Selenium_ITimeouts.htm" />
+    <HelpKINode Title="properties" Url="html/Properties_T_OpenQA_Selenium_ITimeouts.htm" />
   </HelpKINode>
+  <HelpKINode Title="ITimeouts.AsynchronousJavaScript property" Url="html/P_OpenQA_Selenium_ITimeouts_AsynchronousJavaScript.htm" />
   <HelpKINode Title="ITimeouts.ImplicitlyWait method" Url="html/M_OpenQA_Selenium_ITimeouts_ImplicitlyWait.htm" />
+  <HelpKINode Title="ITimeouts.ImplicitWait property" Url="html/P_OpenQA_Selenium_ITimeouts_ImplicitWait.htm" />
+  <HelpKINode Title="ITimeouts.PageLoad property" Url="html/P_OpenQA_Selenium_ITimeouts_PageLoad.htm" />
   <HelpKINode Title="ITimeouts.SetPageLoadTimeout method" Url="html/M_OpenQA_Selenium_ITimeouts_SetPageLoadTimeout.htm" />
   <HelpKINode Title="ITimeouts.SetScriptTimeout method" Url="html/M_OpenQA_Selenium_ITimeouts_SetScriptTimeout.htm" />
   <HelpKINode Title="ITouchScreen interface">
@@ -2955,6 +2972,7 @@
   <HelpKINode Title="JavaScriptLibrary.CallEmbeddedSelenium method" Url="html/M_Selenium_Internal_SeleniumEmulation_JavaScriptLibrary_CallEmbeddedSelenium.htm" />
   <HelpKINode Title="JavaScriptLibrary.ExecuteScript method" Url="html/M_Selenium_Internal_SeleniumEmulation_JavaScriptLibrary_ExecuteScript.htm" />
   <HelpKINode Title="JavaScriptLibrary.GetSeleniumScript method" Url="html/M_Selenium_Internal_SeleniumEmulation_JavaScriptLibrary_GetSeleniumScript.htm" />
+  <HelpKINode Title="Jpeg enumeration member" Url="html/T_OpenQA_Selenium_ScreenshotImageFormat.htm" />
   <HelpKINode Title="Keyboard property">
     <HelpKINode Title="IHasInputDevices.Keyboard Property " Url="html/P_OpenQA_Selenium_IHasInputDevices_Keyboard.htm" />
     <HelpKINode Title="RemoteWebDriver.Keyboard Property " Url="html/P_OpenQA_Selenium_Remote_RemoteWebDriver_Keyboard.htm" />
@@ -3250,6 +3268,7 @@
     <HelpKINode Title="ChromeOptions.MinidumpPath Property " Url="html/P_OpenQA_Selenium_Chrome_ChromeOptions_MinidumpPath.htm" />
     <HelpKINode Title="OperaOptions.MinidumpPath Property " Url="html/P_OpenQA_Selenium_Opera_OperaOptions_MinidumpPath.htm" />
   </HelpKINode>
+  <HelpKINode Title="MinimizeWindow field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_MinimizeWindow.htm" />
   <HelpKINode Title="MinorVersion property" Url="html/P_OpenQA_Selenium_Platform_MinorVersion.htm" />
   <HelpKINode Title="Mouse property">
     <HelpKINode Title="IHasInputDevices.Mouse Property " Url="html/P_OpenQA_Selenium_IHasInputDevices_Mouse.htm" />
@@ -3369,6 +3388,7 @@
   <HelpKINode Title="NoStringLength enumeration member" Url="html/T_OpenQA_Selenium_WebDriverResult.htm" />
   <HelpKINode Title="NoStringWrapper enumeration member" Url="html/T_OpenQA_Selenium_WebDriverResult.htm" />
   <HelpKINode Title="NoSuchCollection enumeration member" Url="html/T_OpenQA_Selenium_WebDriverResult.htm" />
+  <HelpKINode Title="NoSuchCookie enumeration member" Url="html/T_OpenQA_Selenium_WebDriverResult.htm" />
   <HelpKINode Title="NoSuchDocument enumeration member" Url="html/T_OpenQA_Selenium_WebDriverResult.htm" />
   <HelpKINode Title="NoSuchDriver enumeration member" Url="html/T_OpenQA_Selenium_WebDriverResult.htm" />
   <HelpKINode Title="NoSuchElement enumeration member" Url="html/T_OpenQA_Selenium_WebDriverResult.htm" />
@@ -3604,6 +3624,7 @@
   <HelpKINode Title="OpenQA.Selenium.Safari.SafariOptions class" Url="html/T_OpenQA_Selenium_Safari_SafariOptions.htm" />
   <HelpKINode Title="OpenQA.Selenium.ScreenOrientation enumeration" Url="html/T_OpenQA_Selenium_ScreenOrientation.htm" />
   <HelpKINode Title="OpenQA.Selenium.Screenshot class" Url="html/T_OpenQA_Selenium_Screenshot.htm" />
+  <HelpKINode Title="OpenQA.Selenium.ScreenshotImageFormat enumeration" Url="html/T_OpenQA_Selenium_ScreenshotImageFormat.htm" />
   <HelpKINode Title="OpenQA.Selenium.StaleElementReferenceException class" Url="html/T_OpenQA_Selenium_StaleElementReferenceException.htm" />
   <HelpKINode Title="OpenQA.Selenium.Support.Events namespace" Url="html/N_OpenQA_Selenium_Support_Events.htm" />
   <HelpKINode Title="OpenQA.Selenium.Support.Events.EventFiringWebDriver class" Url="html/T_OpenQA_Selenium_Support_Events_EventFiringWebDriver.htm" />
@@ -3729,6 +3750,7 @@
     <HelpKINode Title="methods" Url="html/Methods_T_OpenQA_Selenium_Support_PageObjects_PageFactory.htm" />
   </HelpKINode>
   <HelpKINode Title="PageFactory.InitElements method" Url="html/Overload_OpenQA_Selenium_Support_PageObjects_PageFactory_InitElements.htm" />
+  <HelpKINode Title="PageLoad property" Url="html/P_OpenQA_Selenium_ITimeouts_PageLoad.htm" />
   <HelpKINode Title="PageLoadStrategy field" Url="html/F_OpenQA_Selenium_Remote_CapabilityType_PageLoadStrategy.htm" />
   <HelpKINode Title="PageLoadStrategy property">
     <HelpKINode Title="EdgeOptions.PageLoadStrategy Property " Url="html/P_OpenQA_Selenium_Edge_EdgeOptions_PageLoadStrategy.htm" />
@@ -3841,6 +3863,7 @@
   <HelpKINode Title="Platform.ToString method" Url="html/M_OpenQA_Selenium_Platform_ToString.htm" />
   <HelpKINode Title="PlatformType enumeration" Url="html/T_OpenQA_Selenium_PlatformType.htm" />
   <HelpKINode Title="PlatformType property" Url="html/P_OpenQA_Selenium_Platform_PlatformType.htm" />
+  <HelpKINode Title="Png enumeration member" Url="html/T_OpenQA_Selenium_ScreenshotImageFormat.htm" />
   <HelpKINode Title="PollingInterval property">
     <HelpKINode Title="DefaultWait(T).PollingInterval Property " Url="html/P_OpenQA_Selenium_Support_UI_DefaultWait_1_PollingInterval.htm" />
     <HelpKINode Title="IWait(T).PollingInterval Property " Url="html/P_OpenQA_Selenium_Support_UI_IWait_1_PollingInterval.htm" />
@@ -4099,6 +4122,7 @@
   <HelpKINode Title="RemoteWebElement.Submit method" Url="html/M_OpenQA_Selenium_Remote_RemoteWebElement_Submit.htm" />
   <HelpKINode Title="RemoteWebElement.TagName property" Url="html/P_OpenQA_Selenium_Remote_RemoteWebElement_TagName.htm" />
   <HelpKINode Title="RemoteWebElement.Text property" Url="html/P_OpenQA_Selenium_Remote_RemoteWebElement_Text.htm" />
+  <HelpKINode Title="RemoteWebElement.ToString method" Url="html/M_OpenQA_Selenium_Remote_RemoteWebElement_ToString.htm" />
   <HelpKINode Title="RemoteWebElement.WrappedDriver property" Url="html/P_OpenQA_Selenium_Remote_RemoteWebElement_WrappedDriver.htm" />
   <HelpKINode Title="RemoteWebStorage class">
     <HelpKINode Title="RemoteWebStorage Class" Url="html/T_OpenQA_Selenium_Remote_RemoteWebStorage.htm" />
@@ -4217,7 +4241,7 @@
   <HelpKINode Title="SafariOptions.AddAdditionalCapability method" Url="html/M_OpenQA_Selenium_Safari_SafariOptions_AddAdditionalCapability.htm" />
   <HelpKINode Title="SafariOptions.SafariOptions constructor" Url="html/M_OpenQA_Selenium_Safari_SafariOptions__ctor.htm" />
   <HelpKINode Title="SafariOptions.ToCapabilities method" Url="html/M_OpenQA_Selenium_Safari_SafariOptions_ToCapabilities.htm" />
-  <HelpKINode Title="SaveAsFile method" Url="html/M_OpenQA_Selenium_Screenshot_SaveAsFile.htm" />
+  <HelpKINode Title="SaveAsFile method" Url="html/Overload_OpenQA_Selenium_Screenshot_SaveAsFile.htm" />
   <HelpKINode Title="ScreenOrientation enumeration" Url="html/T_OpenQA_Selenium_ScreenOrientation.htm" />
   <HelpKINode Title="Screenshot class">
     <HelpKINode Title="Screenshot Class" Url="html/T_OpenQA_Selenium_Screenshot.htm" />
@@ -4230,9 +4254,10 @@
   <HelpKINode Title="Screenshot property" Url="html/P_OpenQA_Selenium_Remote_ErrorResponse_Screenshot.htm" />
   <HelpKINode Title="Screenshot.AsBase64EncodedString property" Url="html/P_OpenQA_Selenium_Screenshot_AsBase64EncodedString.htm" />
   <HelpKINode Title="Screenshot.AsByteArray property" Url="html/P_OpenQA_Selenium_Screenshot_AsByteArray.htm" />
-  <HelpKINode Title="Screenshot.SaveAsFile method" Url="html/M_OpenQA_Selenium_Screenshot_SaveAsFile.htm" />
+  <HelpKINode Title="Screenshot.SaveAsFile method" Url="html/Overload_OpenQA_Selenium_Screenshot_SaveAsFile.htm" />
   <HelpKINode Title="Screenshot.Screenshot constructor" Url="html/M_OpenQA_Selenium_Screenshot__ctor.htm" />
   <HelpKINode Title="Screenshot.ToString method" Url="html/M_OpenQA_Selenium_Screenshot_ToString.htm" />
+  <HelpKINode Title="ScreenshotImageFormat enumeration" Url="html/T_OpenQA_Selenium_ScreenshotImageFormat.htm" />
   <HelpKINode Title="Script property" Url="html/P_OpenQA_Selenium_Support_Events_WebDriverScriptEventArgs_Script.htm" />
   <HelpKINode Title="ScriptEncoding property" Url="html/P_OpenQA_Selenium_PhantomJS_PhantomJSDriverService_ScriptEncoding.htm" />
   <HelpKINode Title="ScriptExecuted event" Url="html/E_OpenQA_Selenium_Support_Events_EventFiringWebDriver_ScriptExecuted.htm" />
@@ -4415,12 +4440,13 @@
     <HelpKINode Title="DefaultSelenium.SetSpeed Method " Url="html/M_Selenium_DefaultSelenium_SetSpeed.htm" />
     <HelpKINode Title="ISelenium.SetSpeed Method " Url="html/M_Selenium_ISelenium_SetSpeed.htm" />
   </HelpKINode>
-  <HelpKINode Title="SetTimeout field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_SetTimeout.htm" />
   <HelpKINode Title="SetTimeout method">
     <HelpKINode Title="DefaultSelenium.SetTimeout Method " Url="html/M_Selenium_DefaultSelenium_SetTimeout.htm" />
     <HelpKINode Title="ISelenium.SetTimeout Method " Url="html/M_Selenium_ISelenium_SetTimeout.htm" />
   </HelpKINode>
+  <HelpKINode Title="SetTimeouts field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_SetTimeouts.htm" />
   <HelpKINode Title="SetWindowPosition field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_SetWindowPosition.htm" />
+  <HelpKINode Title="SetWindowRect field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_SetWindowRect.htm" />
   <HelpKINode Title="SetWindowSize field" Url="html/F_OpenQA_Selenium_Remote_DriverCommand_SetWindowSize.htm" />
   <HelpKINode Title="Severe enumeration member" Url="html/T_OpenQA_Selenium_LogLevel.htm" />
   <HelpKINode Title="Shift field" Url="html/F_OpenQA_Selenium_Keys_Shift.htm" />
@@ -4589,6 +4615,7 @@
   <HelpKINode Title="TextToBePresentInElementValue method" Url="html/Overload_OpenQA_Selenium_Support_UI_ExpectedConditions_TextToBePresentInElementValue.htm" />
   <HelpKINode Title="ThrownException property" Url="html/P_OpenQA_Selenium_Support_Events_WebDriverExceptionEventArgs_ThrownException.htm" />
   <HelpKINode Title="ThrowTimeoutException method" Url="html/M_OpenQA_Selenium_Support_UI_DefaultWait_1_ThrowTimeoutException.htm" />
+  <HelpKINode Title="Tiff enumeration member" Url="html/T_OpenQA_Selenium_ScreenshotImageFormat.htm" />
   <HelpKINode Title="Timeout enumeration member" Url="html/T_OpenQA_Selenium_WebDriverResult.htm" />
   <HelpKINode Title="Timeout property">
     <HelpKINode Title="AsyncJavaScriptExecutor.Timeout Property " Url="html/P_OpenQA_Selenium_Internal_AsyncJavaScriptExecutor_Timeout.htm" />
@@ -4634,6 +4661,7 @@
     <HelpKINode Title="Location.ToString Method " Url="html/M_OpenQA_Selenium_Html5_Location_ToString.htm" />
     <HelpKINode Title="LogEntry.ToString Method " Url="html/M_OpenQA_Selenium_LogEntry_ToString.htm" />
     <HelpKINode Title="Platform.ToString Method " Url="html/M_OpenQA_Selenium_Platform_ToString.htm" />
+    <HelpKINode Title="RemoteWebElement.ToString Method " Url="html/M_OpenQA_Selenium_Remote_RemoteWebElement_ToString.htm" />
     <HelpKINode Title="Response.ToString Method " Url="html/M_OpenQA_Selenium_Remote_Response_ToString.htm" />
     <HelpKINode Title="ReturnedCookie.ToString Method " Url="html/M_OpenQA_Selenium_Internal_ReturnedCookie_ToString.htm" />
     <HelpKINode Title="Screenshot.ToString Method " Url="html/M_OpenQA_Selenium_Screenshot_ToString.htm" />

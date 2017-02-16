@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shfbBuild product="Sandcastle Help File Builder and Tools" version="2015.7.25.0" projectFile="C:\Projects\webdriver\dotnet\docs\docs.shfbproj" started="10/13/2016 11:06:14 AM">
+<shfbBuild product="Sandcastle Help File Builder and Tools" version="2015.7.25.0" projectFile="C:\Projects\webdriver\dotnet\docs\docs.shfbproj" started="2/16/2017 8:04:17 AM">
 <buildStep step="Initializing">
 Finding tools...
 The Sandcastle tools are located in &#39;C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\&#39;
@@ -37,16 +37,16 @@ Copying XML comments files
 </buildStep>
 <buildStep step="GenerateSharedContent">
 Generating shared content files (en-US, English (United States))...
-    Last step completed in 00:00:00.0156
+    Last step completed in 00:00:00.0314
 </buildStep>
 <buildStep step="GenerateApiFilter">
 Generating API filter for MRefBuilder...
-    Last step completed in 00:00:00.0625
+    Last step completed in 00:00:00.0630
 </buildStep>
 <buildStep step="GenerateReflectionInfo">
 Generating reflection information...
 [C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe - GenerateRefInfo.proj]
-Build started 10/13/2016 11:06:15 AM.
+Build started 2/16/2017 8:04:19 AM.
 Project &quot;C:\Projects\webdriver\build\docs\dotnet\web\Working\GenerateRefInfo.proj&quot; on node 1 (default targets).
 Project file contains ToolsVersion=&quot;12.0&quot;. This toolset may be unknown or missing, in which case you may be able to resolve this by installing the appropriate version of MSBuild, or the build may have been forced to a particular ToolsVersion for policy reasons. Treating the project as if it had ToolsVersion=&quot;4.0&quot;. For more information, please see http://go.microsoft.com/fwlink/?LinkId=291333.
 PrepareForBuild:
@@ -56,7 +56,7 @@ GenerateRefInfo:
   Copyright c 2006-2015, Microsoft Corporation, All Rights Reserved.
   Portions Copyright c 2006-2015, Eric Woodruff, All Rights Reserved.
   Loaded 4 assemblies for reflection and 1 dependency assemblies.
-  Wrote information on 19 namespaces, 200 types, and 1761 members
+  Wrote information on 19 namespaces, 201 types, and 1778 members
   Copying file from &quot;reflection.org&quot; to &quot;reflection.all&quot;.
   XslTransform (v2015.7.25.0)
   Copyright c 2006-2015, Microsoft Corporation, All Rights Reserved.
@@ -66,13 +66,13 @@ Done Building Project &quot;C:\Projects\webdriver\build\docs\dotnet\web\Working\
 
 Build succeeded.
 
-Time Elapsed 00:00:00.79
-    Last step completed in 00:00:00.9348
+Time Elapsed 00:00:00.97
+    Last step completed in 00:00:01.1243
 </buildStep>
 <buildStep step="TransformReflectionInfo">
 Transforming reflection output...
 [C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe - TransformManifest.proj]
-Build started 10/13/2016 11:06:16 AM.
+Build started 2/16/2017 8:04:20 AM.
 Project &quot;C:\Projects\webdriver\build\docs\dotnet\web\Working\TransformManifest.proj&quot; on node 1 (default targets).
 Project file contains ToolsVersion=&quot;12.0&quot;. This toolset may be unknown or missing, in which case you may be able to resolve this by installing the appropriate version of MSBuild, or the build may have been forced to a particular ToolsVersion for policy reasons. Treating the project as if it had ToolsVersion=&quot;4.0&quot;. For more information, please see http://go.microsoft.com/fwlink/?LinkId=291333.
 TransformManifest:
@@ -127,6 +127,7 @@ TransformManifest:
     Unique name M_OpenQA_Selenium_NotFoundException__ctor_2 generated for M:OpenQA.Selenium.NotFoundException.#ctor(System.String)
     Unique name M_OpenQA_Selenium_NotFoundException__ctor_3 generated for M:OpenQA.Selenium.NotFoundException.#ctor(System.String,System.Exception)
     Unique name M_OpenQA_Selenium_Proxy__ctor_1 generated for M:OpenQA.Selenium.Proxy.#ctor(System.Collections.Generic.Dictionary{System.String,System.Object})
+    Unique name M_OpenQA_Selenium_Screenshot_SaveAsFile_1 generated for M:OpenQA.Selenium.Screenshot.SaveAsFile(System.String,System.Drawing.Imaging.ImageFormat)
     Unique name M_OpenQA_Selenium_StaleElementReferenceException__ctor_1 generated for M:OpenQA.Selenium.StaleElementReferenceException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)
     Unique name M_OpenQA_Selenium_StaleElementReferenceException__ctor_2 generated for M:OpenQA.Selenium.StaleElementReferenceException.#ctor(System.String)
     Unique name M_OpenQA_Selenium_StaleElementReferenceException__ctor_3 generated for M:OpenQA.Selenium.StaleElementReferenceException.#ctor(System.String,System.Exception)
@@ -314,17 +315,17 @@ Done Building Project &quot;C:\Projects\webdriver\build\docs\dotnet\web\Working\
 
 Build succeeded.
 
-Time Elapsed 00:00:01.34
-    Last step completed in 00:00:01.4183
+Time Elapsed 00:00:01.43
+    Last step completed in 00:00:01.5002
 </buildStep>
 <buildStep step="GenerateNamespaceSummaries">
 Generating namespace summary information...
-    Last step completed in 00:00:00.1472
+    Last step completed in 00:00:00.1268
 </buildStep>
 <buildStep step="CopyAdditionalContent">
 Copying additional content files...
 No additional content to copy
-    Last step completed in 00:00:00.0000
+    Last step completed in 00:00:00.0136
 </buildStep>
 <buildStep step="MergeTablesOfContents">
 Merging conceptual and additional tables of contents...
@@ -333,7 +334,7 @@ Merging conceptual and additional tables of contents...
 <buildStep step="GenerateIntermediateTableOfContents">
 Generating intermediate table of contents file...
 [C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe - GenerateIntermediateTOC.proj]
-Build started 10/13/2016 11:06:17 AM.
+Build started 2/16/2017 8:04:22 AM.
 Project &quot;C:\Projects\webdriver\build\docs\dotnet\web\Working\GenerateIntermediateTOC.proj&quot; on node 1 (default targets).
 Project file contains ToolsVersion=&quot;12.0&quot;. This toolset may be unknown or missing, in which case you may be able to resolve this by installing the appropriate version of MSBuild, or the build may have been forced to a particular ToolsVersion for policy reasons. Treating the project as if it had ToolsVersion=&quot;4.0&quot;. For more information, please see http://go.microsoft.com/fwlink/?LinkId=291333.
 GenerateIntermediateTOC:
@@ -345,14 +346,14 @@ Done Building Project &quot;C:\Projects\webdriver\build\docs\dotnet\web\Working\
 
 Build succeeded.
 
-Time Elapsed 00:00:00.16
+Time Elapsed 00:00:00.14
 Generating conceptual content intermediate TOC file...
-    Last step completed in 00:00:00.2692
+    Last step completed in 00:00:00.2344
 </buildStep>
 <buildStep step="CreateBuildAssemblerConfigs">
 Creating Sandcastle configuration files...
     sandcastle.config
-    Last step completed in 00:00:00.2312
+    Last step completed in 00:00:00.4844
 </buildStep>
 <buildStep step="MergeCustomConfigs">
 Merging custom build component configurations
@@ -362,7 +363,7 @@ C:\Projects\webdriver\build\docs\dotnet\web\Working\sandcastle.config
 <buildStep step="BuildReferenceTopics">
 Building reference help topics...
 [C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe - BuildReferenceTopics.proj]
-Build started 10/13/2016 11:06:18 AM.
+Build started 2/16/2017 8:04:23 AM.
 Project &quot;C:\Projects\webdriver\build\docs\dotnet\web\Working\BuildReferenceTopics.proj&quot; on node 1 (default targets).
 Project file contains ToolsVersion=&quot;12.0&quot;. This toolset may be unknown or missing, in which case you may be able to resolve this by installing the appropriate version of MSBuild, or the build may have been forced to a particular ToolsVersion for policy reasons. Treating the project as if it had ToolsVersion=&quot;4.0&quot;. For more information, please see http://go.microsoft.com/fwlink/?LinkId=291333.
 BuildReferenceTopics:
@@ -371,19 +372,19 @@ BuildReferenceTopics:
   Portions Copyright c 2006-2015, Eric Woodruff, All Rights Reserved.
   Loading configuration...
   Processing topics...
-  Processed 2329 topic(s)
+  Processed 2342 topic(s)
   CopyFromIndexComponent: &quot;reflection&quot; in-memory cache entries used: 12 of 15.
   CopyFromIndexComponent: &quot;comments&quot; in-memory cache entries used: 5 of 30.
 Done Building Project &quot;C:\Projects\webdriver\build\docs\dotnet\web\Working\BuildReferenceTopics.proj&quot; (default targets).
 
 Build succeeded.
 
-Time Elapsed 00:01:42.37
-    Last step completed in 00:01:42.5042
+Time Elapsed 00:01:45.24
+    Last step completed in 00:01:45.3711
 </buildStep>
 <buildStep step="CombiningIntermediateTocFiles">
 Combining conceptual and API intermediate TOC files...
-    Last step completed in 00:00:00.0200
+    Last step completed in 00:00:00.0156
 </buildStep>
 <buildStep step="ExtractingHtmlInfo">
 Extracting HTML info for HTML Help 1 and/or website...
@@ -396,17 +397,17 @@ E-Mail: Eric@EWoodruff.us
 Using LCID &#39;1033&#39;, code page &#39;65001&#39;, encoding charset &#39;UTF-8&#39;.
 
 Processing Help 1 files in C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\HtmlHelp1
-Processed 2329 HTML files
+Processed 2342 HTML files
 Sorting keywords and generating See Also indices
 Saving HTML Help 1 keyword index to C:\Projects\webdriver\build\docs\dotnet\web\Working\WebDriver.hhk
 Saving HTML Help 1 table of contents to C:\Projects\webdriver\build\docs\dotnet\web\Working\WebDriver.hhc
 
 Processing website files in C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\Website
-Processed 2329 HTML files
+Processed 2342 HTML files
 Sorting keywords and generating See Also indices
 Saving website keyword index to C:\Projects\webdriver\build\docs\dotnet\web\Working\WebKI.xml
 Saving website table of contents to C:\Projects\webdriver\build\docs\dotnet\web\Working\WebTOC.xml
-    Last step completed in 00:00:45.0723
+    Last step completed in 00:00:40.9377
 </buildStep>
 <buildStep step="CopyStandardHelpContent">
 Copying standard help content...
@@ -557,7 +558,7 @@ C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyle
 C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2010\..\LegacyWeb\TOC.css -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\Website\TOC.css
 C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2010\..\LegacyWeb\TOC.js -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\Website\TOC.js
 C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2010\..\LegacyWeb\Web.Config -&gt; C:\Projects\webdriver\build\docs\dotnet\web\Working\Output\Website\Web.Config
-    Last step completed in 00:00:00.8011
+    Last step completed in 00:00:00.7646
 </buildStep>
 <buildStep step="GenerateHelpFormatTableOfContents">
 Generating HTML Help 1 table of contents file...
@@ -569,7 +570,7 @@ Generating HTML Help 1 index file...
 </buildStep>
 <buildStep step="GenerateHelpProject">
 Generating HTML Help 1 project file...
-    Last step completed in 00:00:00.0313
+    Last step completed in 00:00:00.0466
 </buildStep>
 <buildStep step="CompilingHelpFile">
 Compiling HTML Help 1 file...
@@ -587,11 +588,11 @@ Project file contains ToolsVersion=&quot;12.0&quot;. This toolset may be unknown
   
   Compile time: 0 minutes, 10 seconds
   
-  2,331	Topics
+  2,344	Topics
   
-  29,498	Local links
+  29,691	Local links
   
-  7,580	Internet links
+  7,536	Internet links
   
   0	Graphics
   
@@ -599,11 +600,11 @@ Project file contains ToolsVersion=&quot;12.0&quot;. This toolset may be unknown
   
   
   
-  Created c:\Projects\webdriver\build\docs\dotnet\web\Working\Output\HtmlHelp1\WebDriver.chm, 2,387,950 bytes
+  Created c:\Projects\webdriver\build\docs\dotnet\web\Working\Output\HtmlHelp1\WebDriver.chm, 2,397,914 bytes
   
-  Compression decreased file by 20,775,825 bytes.
+  Compression decreased file by 20,886,761 bytes.
   
-    Last step completed in 00:00:10.7251
+    Last step completed in 00:00:10.4996
 </buildStep>
 <buildStep step="GenerateHelpFormatTableOfContents">
 Generating website table of contents file...
@@ -612,7 +613,7 @@ Generating website table of contents file...
 <buildStep step="GenerateFullTextIndex">
 Generating full-text index for the website...
 
-    Last step completed in 00:00:04.4384
+    Last step completed in 00:00:04.1874
 </buildStep>
 <buildStep step="CopyingWebsiteFiles">
 Copying website files to output folder...
@@ -621,16 +622,16 @@ Copied 500 files
 Copied 1000 files
 Copied 1500 files
 Copied 2000 files
-Copied 2444 files for the website content
-    Last step completed in 00:00:04.0864
+Copied 2457 files for the website content
+    Last step completed in 00:00:02.9530
 </buildStep>
 <buildStep step="CleanIntermediates">
 Removing intermediate files...
-    Last step completed in 00:00:02.4374
+    Last step completed in 00:00:01.4218
 </buildStep>
 <buildStep step="Completed">
 
-Build completed successfully at 10/13/2016 11:09:08 AM.  Total time: 00:02:53.7437
+Build completed successfully at 2/16/2017 8:07:09 AM.  Total time: 00:02:51.3535
 
 </buildStep>
 </shfbBuild>
