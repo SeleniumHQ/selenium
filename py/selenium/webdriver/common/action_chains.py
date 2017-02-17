@@ -72,6 +72,13 @@ class ActionChains(object):
         """
         for action in self._actions:
             action()
+        return self
+
+    def clear(self):
+        """
+        Clears all stored actions.
+        """
+        self._actions = []
 
     def click(self, on_element=None):
         """
