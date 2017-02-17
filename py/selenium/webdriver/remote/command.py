@@ -108,6 +108,8 @@ class Command(object):
     SET_ALERT_CREDENTIALS = "setAlertCredentials"
 
     # Advanced user interactions
+    W3C_ACTIONS = "actions"
+    W3C_CLEAR_ACTIONS = "clearActionState"
     CLICK = "mouseClick"
     DOUBLE_CLICK = "mouseDoubleClick"
     MOUSE_DOWN = "mouseButtonDown"

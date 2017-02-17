@@ -213,8 +213,6 @@ def testSelectingMultipleItems(driver, pages):
     assert "#item7" == reportingElement.text
 
 
-@pytest.mark.xfail_marionette(
-    reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1292178')
 def testSendingKeysToActiveElementWithModifier(driver, pages):
     pages.load("formPage.html")
     e = driver.find_element_by_id("working")
@@ -227,3 +225,7 @@ def testSendingKeysToActiveElementWithModifier(driver, pages):
         .perform()
 
     assert "ABC" == e.get_attribute('value')
+
+
+def test_can_reset_interactions(driver, pages):
+    ActionChains(driver).reset_actions()
