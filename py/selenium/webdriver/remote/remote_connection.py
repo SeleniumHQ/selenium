@@ -291,6 +291,10 @@ class RemoteConnection(object):
                 ('POST', '/session/$sessionId/alert/credentials'),
             Command.CLICK:
                 ('POST', '/session/$sessionId/click'),
+            Command.W3C_ACTIONS:
+                ('POST', '/session/$sessionId/actions'),
+            Command.W3C_CLEAR_ACTIONS:
+                ('DELETE', '/session/$sessionId/actions'),
             Command.DOUBLE_CLICK:
                 ('POST', '/session/$sessionId/doubleclick'),
             Command.MOUSE_DOWN:

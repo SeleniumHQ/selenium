@@ -21,6 +21,7 @@ The ActionChains implementation,
 from selenium.webdriver.remote.command import Command
 
 from .utils import keys_to_typing
+from .actions.action_builder import ActionBuilder
 
 
 class ActionChains(object):
@@ -65,13 +66,25 @@ class ActionChains(object):
         """
         self._driver = driver
         self._actions = []
+        if self._driver.w3c:
+            self.w3c_actions = ActionBuilder(driver)
+
 
     def perform(self):
         """
         Performs all stored actions.
         """
-        for action in self._actions:
-            action()
+        if self._driver.w3c:
+            self.w3c_actions.perform()
+        else:
+            for action in self._actions:
+                action()
+
+    def reset_actions(self):
+        """
+            Clears actions that are already stored on the remote end.
+        """
+        self._driver.execute(Command.W3C_CLEAR_ACTIONS)
 
     def click(self, on_element=None):
         """
@@ -174,9 +187,12 @@ class ActionChains(object):
         """
         if element:
             self.click(element)
-        self._actions.append(lambda: self._driver.execute(
-            Command.SEND_KEYS_TO_ACTIVE_ELEMENT,
-            {"value": keys_to_typing(value)}))
+        if self._driver.w3c:
+            self.w3c_actions.key_action.key_down(value)
+        else:
+            self._actions.append(lambda: self._driver.execute(
+                Command.SEND_KEYS_TO_ACTIVE_ELEMENT,
+                {"value": keys_to_typing(value)}))
         return self
 
     def key_up(self, value, element=None):
@@ -195,9 +211,12 @@ class ActionChains(object):
         """
         if element:
             self.click(element)
-        self._actions.append(lambda: self._driver.execute(
-            Command.SEND_KEYS_TO_ACTIVE_ELEMENT,
-            {"value": keys_to_typing(value)}))
+        if self._driver.w3c:
+            self.w3c_actions.key_action.key_up(value)
+        else:
+            self._actions.append(lambda: self._driver.execute(
+                Command.SEND_KEYS_TO_ACTIVE_ELEMENT,
+                {"value": keys_to_typing(value)}))
         return self
 
     def move_by_offset(self, xoffset, yoffset):
@@ -263,8 +282,11 @@ class ActionChains(object):
          - keys_to_send: The keys to send.  Modifier keys constants can be found in the
            'Keys' class.
         """
-        self._actions.append(lambda: self._driver.execute(
-            Command.SEND_KEYS_TO_ACTIVE_ELEMENT, {'value': keys_to_typing(keys_to_send)}))
+        if self._driver.w3c:
+            self.w3c_actions.key_action.send_keys(keys_to_send)
+        else:
+            self._actions.append(lambda: self._driver.execute(
+                Command.SEND_KEYS_TO_ACTIVE_ELEMENT, {'value': keys_to_typing(keys_to_send)}))
         return self
 
     def send_keys_to_element(self, element, *keys_to_send):
@@ -276,7 +298,10 @@ class ActionChains(object):
          - keys_to_send: The keys to send.  Modifier keys constants can be found in the
            'Keys' class.
         """
-        self._actions.append(lambda: element.send_keys(*keys_to_send))
+        if self._driver.w3c:
+            self.w3c_actions.key_action.send_keys(keys_to_send, element=element)
+        else:
+            self._actions.append(lambda: element.send_keys(*keys_to_send))
         return self
 
     # Context manager so ActionChains can be used in a 'with .. as' statements.
