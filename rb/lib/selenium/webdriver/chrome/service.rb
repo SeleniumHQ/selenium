@@ -40,7 +40,7 @@ module Selenium
           @process       = ChildProcess.build(*server_command)
 
           @process.io.inherit! if $DEBUG
-          @process.leader = true
+          @process.leader = true unless Platform.windows?
           @process.start
         end
 
