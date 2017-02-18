@@ -32,7 +32,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 /**
@@ -183,31 +182,7 @@ public class FluentWait<T> implements Wait<T> {
 
     return this.ignoreAll(ImmutableList.of(firstType, secondType));
   }
-
-  /**
-   * Repeatedly applies this instance's input value to the given predicate until the timeout expires
-   * or the predicate evaluates to true. This method has been deprecated to simplify the use of
-   * Java 8 lambda expressions with this class. It is suggested calls to this method be replaced by
-   * calls to {@link #until(Function)}.
-   *
-   * @param isTrue The predicate to wait on.
-   * @throws TimeoutException If the timeout expires.
-   * @deprecated Use a {@link Function} that returns a Boolean.
-   */
-  public void until(final Predicate<T> isTrue) {
-    until(new Function<T, Boolean>() {
-      @Override
-      public Boolean apply(T input) {
-        return isTrue.test(input);
-      }
-
-      @Override
-      public String toString() {
-        return isTrue.toString();
-      }
-    });
-  }
-
+  
   /**
    * Repeatedly applies this instance's input value to the given function until one of the following
    * occurs:
