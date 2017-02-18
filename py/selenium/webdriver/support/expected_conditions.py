@@ -20,6 +20,7 @@ from selenium.common.exceptions import NoSuchFrameException
 from selenium.common.exceptions import StaleElementReferenceException
 from selenium.common.exceptions import WebDriverException
 from selenium.common.exceptions import NoAlertPresentException
+from selenium.common.exceptions import ElementNotVisibleException
 
 """
  * Canned "Expected Conditions" which are generally useful within webdriver
@@ -122,6 +123,27 @@ class visibility_of_any_elements_located(object):
 
     def __call__(self, driver):
         return [element for element in _find_elements(driver, self.locator) if _element_if_visible(element)]
+
+
+class visibility_of_all_elements_located(object):
+    """ An expectation for checking that all elements are present on the DOM of a
+    page and visible. Visibility means that the elements are not only displayed
+    but also has a height and width that is greater than 0.
+    locator - used to find the elements
+    returns the list of WebElements once they are located and visible
+    """
+    def __init__(self, locator):
+        self.locator = locator
+
+    def __call__(self, driver):
+        try:
+            elements = _find_elements(driver, self.locator)
+            for element in elements:
+                if not _element_if_visible(element):
+                    raise ElementNotVisibleException
+            return elements
+        except StaleElementReferenceException:
+            return False
 
 
 class text_to_be_present_in_element(object):
