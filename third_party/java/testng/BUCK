@@ -7,7 +7,6 @@ prebuilt_jar(
     '//third_party/java/ant:ant',
     '//third_party/java/beanshell:bsh',
     '//third_party/java/beust:jcommander',
-    '//third_party/java/inject:guice',
     '//third_party/java/junit:junit',
     '//third_party/java/yaml:snakeyaml'
   ],

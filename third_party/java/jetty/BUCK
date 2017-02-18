@@ -63,7 +63,7 @@ for i in REPACK:
   genrule(
     name = name,
     out = '%s.jar' % out,
-    cmd = '$(exe //third_party/java/jarjar:jarjar) process $(location :jarjar-rules) $(location :%s) $OUT' % i
+    cmd = '$(exe //third_party/java/pantsbuild:jarjar-links) process $(location :jarjar-rules) $(location :%s) $OUT' % i
   )
 
   prebuilt_jar(

@@ -425,44 +425,15 @@ desc "Calculate dependencies required for testing the automation atoms"
 task :calcdeps => "build/javascript/deps.js"
 
 desc "Repack jetty"
-task "repack-jetty" => "build/third_party/java/jetty/jetty-repacked.jar"
+task "repack-jetty" => ["//third_party/java/jetty:bundle-jars"] do
 
-# Expose the repack task to CrazyFun.
-task "//third_party/java/jetty:repacked" => "build/third_party/java/jetty/jetty-repacked.jar"
+  # For IntelliJ
+  root = File.join("build", "third_party", "java", "jetty")
+  mkdir_p root
+  cp Rake::Task['//third_party/java/jetty:bundle-jars'].out, File.join(root, "jetty-repacked.jar")
 
-file "build/third_party/java/jetty/jetty-repacked.jar" => [
-   "third_party/java/jetty/jetty-continuation-9.2.13.v20150730.jar",
-   "third_party/java/jetty/jetty-http-9.2.13.v20150730.jar",
-   "third_party/java/jetty/jetty-io-9.2.13.v20150730.jar",
-   "third_party/java/jetty/jetty-jmx-9.2.13.v20150730.jar",
-   "third_party/java/jetty/jetty-security-9.2.13.v20150730.jar",
-   "third_party/java/jetty/jetty-server-9.2.13.v20150730.jar",
-   "third_party/java/jetty/jetty-servlet-9.2.13.v20150730.jar",
-   "third_party/java/jetty/jetty-servlets-9.2.13.v20150730.jar",
-   "third_party/java/jetty/jetty-util-9.2.13.v20150730.jar"
- ] do |t|
-   print "Repacking jetty\n"
-   root = File.join("build", "third_party", "java", "jetty")
-   jarjar = File.join("third_party", "java", "jarjar", "jarjar-1.4.jar")
-   rules = File.join("third_party", "java", "jetty", "jetty-repack-rules")
-   temp = File.join(root, "temp")
-
-   # First, process the files
-   mkdir_p root
-   mkdir_p temp
-
-   t.prerequisites.each do |pre|
-     filename = File.basename(pre, ".jar")
-     out = File.join(root, "#{filename}-repacked.jar")
-     `java -jar #{jarjar} process #{rules} #{pre} #{out}`
-     `cd #{temp} && jar xf #{File.join("..", File.basename(out))}`
-   end
-
-   # Now, merge them
-   `cd #{temp} && jar cvf #{File.join("..", "jetty-repacked.jar")} *`
-
-   # And copy the artifact to third_party so that eclipse users can be made happy
-   cp "build/third_party/java/jetty/jetty-repacked.jar", "third_party/java/jetty/jetty-repacked.jar"
+  # And copy the artifact to third_party so that eclipse users can be made happy
+  cp Rake::Task['//third_party/java/jetty:bundle-jars'].out, "third_party/java/jetty/jetty-repacked.jar"
 end
 
 
