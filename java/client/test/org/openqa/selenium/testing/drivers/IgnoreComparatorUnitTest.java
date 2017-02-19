@@ -38,7 +38,7 @@ import org.openqa.selenium.testing.Ignore;
 import java.util.Set;
 
 @RunWith(JUnit4.class)
-public class IgnoreComparitorUnitTest {
+public class IgnoreComparatorUnitTest {
 
   private static final Platform CURRENT_PLATFORM = Platform.MAC;
   private static final Platform OTHER_PLATFORM = Platform.WINDOWS;
