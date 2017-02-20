@@ -40,7 +40,11 @@ public class CompositeAction implements Action {
     return this;
   }
 
+  /**
+   * @deprecated No replacement.
+   */
   @VisibleForTesting
+  @Deprecated
   int getNumberOfActions() {
     return actionsList.size();
   }
