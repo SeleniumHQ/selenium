@@ -1,3 +1,16 @@
+## v.next
+
+* Added warning log messages when the user creates new managed promises, or
+  schedules unchained tasks. Users may opt in to printing these log messages
+  with
+
+  ```js
+  const {logging} = require('selenium-webdriver');
+  logging.installConsoleHandler();
+  logging.getLogger('promise.ControlFlow').setLevel(logging.Level.WARNING);
+  ```
+
+
 ## v3.1.0
 
 * The `lib` package is once again platform agnostic (excluding `lib/devmode`).
@@ -16,6 +29,7 @@
 * Allow SafariDriver to use Safari Technology Preview.
 * Use the proper wire command for WebElement.getLocation() and
   WebElement.getSize() for W3C compliant drivers.
+
 
 ## v3.0.1
 
