@@ -28,7 +28,7 @@ import java.util.List;
 /**
  * Emulates key release only, without the press.
  *
- * @deprecated Use {@link Actions#keyUp(Keys)}
+ * @deprecated Use {@link Actions#keyUp(CharSequence)}
  */
 @Deprecated
 public class KeyUpAction extends SingleKeyAction implements Action {
