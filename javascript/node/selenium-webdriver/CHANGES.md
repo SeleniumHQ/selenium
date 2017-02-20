@@ -9,6 +9,7 @@
   logging.installConsoleHandler();
   logging.getLogger('promise.ControlFlow').setLevel(logging.Level.WARNING);
   ```
+* If the `JAVA_HOME` environment variable is set, use it to locate java.exe.
 
 
 ## v3.1.0

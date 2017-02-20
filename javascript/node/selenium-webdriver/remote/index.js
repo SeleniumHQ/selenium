@@ -492,7 +492,12 @@ class SeleniumServer extends DriverService {
           return jvmArgs.concat('-jar', jar, '-port', port).concat(args);
         });
 
-    super('java', {
+    let java = 'java';
+    if (process.env['JAVA_HOME']) {
+      java = path.join(process.env['JAVA_HOME'], 'bin/java');
+    }
+
+    super(java, {
       loopback: options.loopback,
       port: port,
       args: args,
