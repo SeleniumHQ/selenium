@@ -19,8 +19,10 @@ package org.openqa.selenium.interactions;
 
 import static org.openqa.selenium.interactions.PointerInput.Kind.MOUSE;
 import static org.openqa.selenium.interactions.PointerInput.MouseButton.LEFT;
+import static org.openqa.selenium.interactions.PointerInput.MouseButton.RIGHT;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.UnsupportedCommandException;
@@ -38,6 +40,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.IntConsumer;
+import java.util.logging.Logger;
 
 /**
  * The user-facing API for emulating complex user gestures. Use this class rather than using the
@@ -48,6 +51,7 @@ import java.util.function.IntConsumer;
  */
 public class Actions {
 
+  private final static Logger LOG = Logger.getLogger(Actions.class.getName());
   private final WebDriver driver;
 
   // W3C
@@ -114,7 +118,7 @@ public class Actions {
    */
   public Actions keyDown(CharSequence key) {
     if (isBuildingActions()) {
-      return keyDown(null, key);
+      action.addAction(new KeyDownAction(jsonKeyboard, jsonMouse, asKeys(key)));
     }
     return addKeyAction(key, codePoint -> tick(defaultKeyboard.createKeyDown(codePoint)));
   }
@@ -132,9 +136,9 @@ public class Actions {
   public Actions keyDown(WebElement target, CharSequence key) {
     if (isBuildingActions()) {
       action.addAction(new KeyDownAction(jsonKeyboard, jsonMouse, (Locatable) target, asKeys(key)));
-      return this;
     }
-    return click(target).keyDown(key);
+    return focusInTicks(target)
+        .addKeyAction(key, codepoint -> tick(defaultKeyboard.createKeyDown(codepoint)));
   }
 
   /**
@@ -146,7 +150,7 @@ public class Actions {
    */
   public Actions keyUp(CharSequence key) {
     if (isBuildingActions()) {
-      return keyUp(null, key);
+      action.addAction(new KeyUpAction(jsonKeyboard, jsonMouse, asKeys(key)));
     }
 
     return addKeyAction(key, codePoint -> tick(defaultKeyboard.createKeyUp(codePoint)));
@@ -164,9 +168,10 @@ public class Actions {
   public Actions keyUp(WebElement target, CharSequence key) {
     if (isBuildingActions()) {
       action.addAction(new KeyUpAction(jsonKeyboard, jsonMouse, (Locatable) target, asKeys(key)));
-      return this;
     }
-    return click(target).keyUp(key);
+
+    return focusInTicks(target)
+        .addKeyAction(key, codePoint -> tick(defaultKeyboard.createKeyUp(codePoint)));
   }
 
   /**
@@ -186,17 +191,9 @@ public class Actions {
   public Actions sendKeys(CharSequence... keys) {
     if (isBuildingActions()) {
       action.addAction(new SendKeysAction(jsonKeyboard, jsonMouse, null, keys));
-      return this;
     }
 
-    for (CharSequence key : keys) {
-      key.codePoints().forEach(codePoint -> {
-        tick(defaultKeyboard.createKeyDown(codePoint));
-        tick(defaultKeyboard.createKeyUp(codePoint));
-      });
-    }
-
-    return this;
+    return sendKeysInTicks(keys);
   }
 
   /**
@@ -214,9 +211,9 @@ public class Actions {
   public Actions sendKeys(WebElement target, CharSequence... keys) {
     if (isBuildingActions()) {
       action.addAction(new SendKeysAction(jsonKeyboard, jsonMouse, (Locatable) target, keys));
-      return this;
     }
-    return click(target).sendKeys(keys);
+
+    return focusInTicks(target).sendKeysInTicks(keys);
   }
 
   private Keys asKeys(CharSequence key) {
@@ -226,6 +223,16 @@ public class Actions {
     }
 
     return (Keys) key;
+  }
+
+  private Actions sendKeysInTicks(CharSequence... keys) {
+    for (CharSequence key : keys) {
+      key.codePoints().forEach(codePoint -> {
+        tick(defaultKeyboard.createKeyDown(codePoint));
+        tick(defaultKeyboard.createKeyUp(codePoint));
+      });
+    }
+    return this;
   }
 
   private Actions addKeyAction(CharSequence key, IntConsumer consumer) {
@@ -249,9 +256,9 @@ public class Actions {
   public Actions clickAndHold(WebElement target) {
     if (isBuildingActions()) {
       action.addAction(new ClickAndHoldAction(jsonMouse, (Locatable) target));
-      return this;
     }
-    return moveToElement(target).clickAndHold();
+    return moveInTicks(target, 0, 0)
+        .tick(defaultMouse.createPointerDown(LEFT.asArg()));
   }
 
   /**
@@ -260,11 +267,10 @@ public class Actions {
    */
   public Actions clickAndHold() {
     if (isBuildingActions()) {
-      return clickAndHold(null);
+      action.addAction(new ClickAndHoldAction(jsonMouse, null));
     }
 
-    tick(defaultMouse.createPointerDown(LEFT.asArg()));
-    return this;
+    return tick(defaultMouse.createPointerDown(LEFT.asArg()));
   }
 
   /**
@@ -281,9 +287,9 @@ public class Actions {
   public Actions release(WebElement target) {
     if (isBuildingActions()) {
       action.addAction(new ButtonReleaseAction(jsonMouse, (Locatable) target));
-      return this;
     }
-    return moveToElement(target).release();
+
+    return moveInTicks(target, 0, 0).tick(defaultMouse.createPointerUp(LEFT.asArg()));
   }
 
   /**
@@ -293,7 +299,7 @@ public class Actions {
    */
   public Actions release() {
     if (isBuildingActions()) {
-      this.release(null);
+      action.addAction(new ButtonReleaseAction(jsonMouse, null));
     }
 
     return tick(defaultMouse.createPointerUp(Button.LEFT.asArg()));
@@ -309,9 +315,9 @@ public class Actions {
   public Actions click(WebElement target) {
     if (isBuildingActions()) {
       action.addAction(new ClickAction(jsonMouse, (Locatable) target));
-      return this;
     }
-    return moveToElement(target).click();
+
+    return moveInTicks(target, 0, 0).clickInTicks(LEFT);
   }
 
   /**
@@ -322,12 +328,20 @@ public class Actions {
    */
   public Actions click() {
     if (isBuildingActions()) {
-      return click(null);
+      action.addAction(new ClickAction(jsonMouse, null));
     }
-    tick(defaultMouse.createPointerDown(0));
-    tick(defaultMouse.createPointerUp(0));
 
+    return clickInTicks(LEFT);
+  }
+
+  private Actions clickInTicks(PointerInput.MouseButton button) {
+    tick(defaultMouse.createPointerDown(button.asArg()));
+    tick(defaultMouse.createPointerUp(button.asArg()));
     return this;
+  }
+
+  private Actions focusInTicks(WebElement target) {
+    return moveInTicks(target, 0, 0).clickInTicks(LEFT);
   }
 
   /**
@@ -340,9 +354,11 @@ public class Actions {
   public Actions doubleClick(WebElement target) {
     if (isBuildingActions()) {
       action.addAction(new DoubleClickAction(jsonMouse, (Locatable) target));
-      return this;
     }
-    return moveToElement(target).doubleClick();
+
+    return moveInTicks(target, 0, 0)
+        .clickInTicks(LEFT)
+        .clickInTicks(LEFT);
   }
 
   /**
@@ -351,9 +367,10 @@ public class Actions {
    */
   public Actions doubleClick() {
     if (isBuildingActions()) {
-      return doubleClick(null);
+      action.addAction(new DoubleClickAction(jsonMouse, null));
     }
-    return click().click();
+
+    return clickInTicks(LEFT).clickInTicks(LEFT);
   }
 
   /**
@@ -365,9 +382,9 @@ public class Actions {
   public Actions moveToElement(WebElement target) {
     if (isBuildingActions()) {
       action.addAction(new MoveMouseAction(jsonMouse, (Locatable) target));
-      return this;
     }
-    return moveToElement(target, 0, 0);
+
+    return moveInTicks(target, 0, 0);
   }
 
   /**
@@ -383,11 +400,17 @@ public class Actions {
   public Actions moveToElement(WebElement target, int xOffset, int yOffset) {
     if (isBuildingActions()) {
       action.addAction(new MoveToOffsetAction(jsonMouse, (Locatable) target, xOffset, yOffset));
-      return this;
     }
 
+    // Of course, this is the offset from the centre of the element. We have no idea what the width
+    // and height are once we execute this method.
+    LOG.info("When using the W3C Action commands, offsets are from the center of element");
+    return moveInTicks(target, xOffset, yOffset);
+  }
+
+  private Actions moveInTicks(WebElement target, int xOffset, int yOffset) {
     return tick(defaultMouse.createPointerMove(
-        Duration.ofMillis(250),
+        Duration.ofMillis(100),
         Origin.fromElement(target),
         xOffset,
         yOffset));
@@ -406,7 +429,6 @@ public class Actions {
   public Actions moveByOffset(int xOffset, int yOffset) {
     if (isBuildingActions()) {
       action.addAction(new MoveToOffsetAction(jsonMouse, null, xOffset, yOffset));
-      return this;
     }
 
     return tick(
@@ -423,9 +445,8 @@ public class Actions {
   public Actions contextClick(WebElement target) {
     if (isBuildingActions()) {
       action.addAction(new ContextClickAction(jsonMouse, (Locatable) target));
-      return this;
     }
-    return moveToElement(target).contextClick();
+    return moveInTicks(target, 0, 0).clickInTicks(RIGHT);
   }
 
   /**
@@ -434,11 +455,10 @@ public class Actions {
    */
   public Actions contextClick() {
     if (isBuildingActions()) {
-      return contextClick(null);
+      action.addAction(new ContextClickAction(jsonMouse, null));
     }
 
-    return tick(defaultMouse.createPointerDown(Button.RIGHT.asArg()))
-        .tick(defaultMouse.createPointerUp(Button.RIGHT.asArg()));
+    return clickInTicks(RIGHT);
   }
 
   /**
@@ -454,9 +474,12 @@ public class Actions {
       action.addAction(new ClickAndHoldAction(jsonMouse, (Locatable) source));
       action.addAction(new MoveMouseAction(jsonMouse, (Locatable) target));
       action.addAction(new ButtonReleaseAction(jsonMouse, (Locatable) target));
-      return this;
     }
-    return clickAndHold(source).moveToElement(target).release();
+
+    return moveInTicks(source, 0, 0)
+        .tick(defaultMouse.createPointerDown(LEFT.asArg()))
+        .moveInTicks(source, 0, 0)
+        .tick(defaultMouse.createPointerUp(LEFT.asArg()));
   }
 
   /**
@@ -473,9 +496,12 @@ public class Actions {
       action.addAction(new ClickAndHoldAction(jsonMouse, (Locatable) source));
       action.addAction(new MoveToOffsetAction(jsonMouse, null, xOffset, yOffset));
       action.addAction(new ButtonReleaseAction(jsonMouse, null));
-      return this;
     }
-    return clickAndHold(source).moveByOffset(xOffset, yOffset).release();
+
+    return moveInTicks(source, 0, 0)
+        .tick(defaultMouse.createPointerDown(LEFT.asArg()))
+        .tick(defaultMouse.createPointerMove(Duration.ofMillis(250), Origin.pointer(), xOffset, yOffset))
+        .tick(defaultMouse.createPointerUp(LEFT.asArg()));
   }
 
   /**
@@ -490,7 +516,6 @@ public class Actions {
   public Actions pause(long pause) {
     if (isBuildingActions()) {
       action.addAction(new PauseAction(pause));
-      return this;
     }
 
     return tick(new Pause(defaultMouse, Duration.ofMillis(pause)));
@@ -551,7 +576,7 @@ public class Actions {
    * @return the composite action
    */
   public Action build() {
-    Action toReturn = new BuiltAction(driver, sequences, action);
+    Action toReturn = new BuiltAction(driver, ImmutableMap.copyOf(sequences), action);
     action = new CompositeAction();
     sequences.clear();
     return toReturn;
