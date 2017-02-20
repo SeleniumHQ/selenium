@@ -1003,6 +1003,9 @@ const PromiseState = {
  */
 const ON_CANCEL_HANDLER = new WeakMap;
 
+const SKIP_LOG = Symbol('skip-log');
+const FLOW_LOG = logging.getLogger('promise.ControlFlow');
+
 
 /**
  * Represents the eventual value of a completed operation. Each promise may be
@@ -1025,14 +1028,29 @@ class ManagedPromise {
    *     functions, one for fulfilling the promise and another for rejecting it.
    * @param {ControlFlow=} opt_flow The control flow
    *     this instance was created under. Defaults to the currently active flow.
+   * @param {?=} opt_skipLog An internal parameter used to skip logging the
+   *     creation of this promise. This parameter has no effect unless it is
+   *     strictly equal to an internal symbol. In other words, this parameter
+   *     is always ignored for external code.
    */
-  constructor(resolver, opt_flow) {
+  constructor(resolver, opt_flow, opt_skipLog) {
     if (!usePromiseManager()) {
       throw TypeError(
         'Unable to create a managed promise instance: the promise manager has'
             + ' been disabled by the SELENIUM_PROMISE_MANAGER environment'
             + ' variable: ' + process.env['SELENIUM_PROMISE_MANAGER']);
+    } else if (opt_skipLog !== SKIP_LOG) {
+      FLOW_LOG.warning(() => {
+        let e =
+            captureStackTrace(
+                'ManagedPromiseError',
+                'Creating a new managed Promise. This call will fail when the'
+                    + ' promise manager is disabled',
+            ManagedPromise)
+        return e.stack;
+      });
     }
+
     getUid(this);
 
     /** @private {!ControlFlow} */
@@ -1432,15 +1450,19 @@ class Deferred {
   /**
    * @param {ControlFlow=} opt_flow The control flow this instance was
    *     created under. This should only be provided during unit tests.
+   * @param {?=} opt_skipLog An internal parameter used to skip logging the
+   *     creation of this promise. This parameter has no effect unless it is
+   *     strictly equal to an internal symbol. In other words, this parameter
+   *     is always ignored for external code.
    */
-  constructor(opt_flow) {
+  constructor(opt_flow, opt_skipLog) {
     var fulfill, reject;
 
     /** @type {!ManagedPromise<T>} */
     this.promise = new ManagedPromise(function(f, r) {
       fulfill = f;
       reject = r;
-    }, opt_flow);
+    }, opt_flow, opt_skipLog);
 
     var self = this;
     var checkNotSelf = function(value) {
@@ -1563,9 +1585,17 @@ function defer() {
 function fulfilled(opt_value) {
   let ctor = usePromiseManager() ? ManagedPromise : NativePromise;
   if (opt_value instanceof ctor) {
-    return /** @type {!Thenable<T>} */(opt_value);
+    return /** @type {!Thenable} */(opt_value);
   }
-  return ctor.resolve(opt_value);
+
+  if (usePromiseManager()) {
+    // We can skip logging warnings about creating a managed promise because
+    // this function will automatically switch to use a native promise when
+    // the promise manager is disabled.
+    return new ManagedPromise(
+        resolve => resolve(opt_value), undefined, SKIP_LOG);
+  }
+  return NativePromise.resolve(opt_value);
 }
 
 
@@ -1582,7 +1612,11 @@ function fulfilled(opt_value) {
  */
 function rejected(opt_reason) {
   if (usePromiseManager()) {
-    return ManagedPromise.reject(opt_reason);
+    // We can skip logging warnings about creating a managed promise because
+    // this function will automatically switch to use a native promise when
+    // the promise manager is disabled.
+    return new ManagedPromise(
+        (_, reject) => reject(opt_reason), undefined, SKIP_LOG);
   }
   return NativePromise.reject(opt_reason);
 }
@@ -2444,15 +2478,31 @@ class ControlFlow extends events.EventEmitter {
     }
 
     if (!this.hold_) {
-      var holdIntervalMs = 2147483647;  // 2^31-1; max timer length for Node.js
+      let holdIntervalMs = 2147483647;  // 2^31-1; max timer length for Node.js
       this.hold_ = setInterval(function() {}, holdIntervalMs);
     }
 
-    var task = new Task(
+    let task = new Task(
         this, fn, opt_description || '<anonymous>',
-        {name: 'Task', top: ControlFlow.prototype.execute});
+        {name: 'Task', top: ControlFlow.prototype.execute},
+        true);
 
-    var q = this.getActiveQueue_();
+    let q = this.getActiveQueue_();
+
+    for (let i = q.tasks_.length; i > 0; i--) {
+      let previousTask = q.tasks_[i - 1];
+      if (previousTask.userTask_) {
+        FLOW_LOG.warning(() => {
+          return `Detected scheduling of an unchained task.
+When the promise manager is disabled, unchained tasks will not wait for
+previously scheduled tasks to finish before starting to execute.
+New task: ${task.promise.stack_.stack}
+Previous task: ${previousTask.promise.stack_.stack}`.split(/\n/).join('\n    ');
+        });
+        break;
+      }
+    }
+
     q.enqueue(task);
     this.emit(ControlFlow.EventType.SCHEDULE_TASK, task.description);
     return task.promise;
@@ -2460,7 +2510,7 @@ class ControlFlow extends events.EventEmitter {
 
   /** @override */
   promise(resolver) {
-    return new ManagedPromise(resolver, this);
+    return new ManagedPromise(resolver, this, SKIP_LOG);
   }
 
   /** @override */
@@ -2729,9 +2779,11 @@ class Task extends Deferred {
    * @param {string} description A description of the task for debugging.
    * @param {{name: string, top: !Function}=} opt_stackOptions Options to use
    *     when capturing the stacktrace for when this task was created.
+   * @param {boolean=} opt_isUserTask Whether this task was explicitly scheduled
+   *     by the use of the promise manager.
    */
-  constructor(flow, fn, description, opt_stackOptions) {
-    super(flow);
+  constructor(flow, fn, description, opt_stackOptions, opt_isUserTask) {
+    super(flow, SKIP_LOG);
     getUid(this);
 
     /** @type {function(): (T|!ManagedPromise<T>)} */
@@ -2742,6 +2794,9 @@ class Task extends Deferred {
 
     /** @type {TaskQueue} */
     this.queue = null;
+
+    /** @private @const {boolean} */
+    this.userTask_ = !!opt_isUserTask;
 
     /**
      * Whether this task is considered block. A blocked task may be registered
