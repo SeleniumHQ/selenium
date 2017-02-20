@@ -91,7 +91,7 @@ module Selenium
           end
 
           def firefox(opts = {})
-            return Remote::W3CCapabilities.firefox(opts) if Remote::W3CCapabilities.w3c?
+            return Remote::W3CCapabilities.firefox(opts) if Remote::W3CCapabilities.w3c?(marionette: opts[:marionette] == false)
             define_method(:options) { @capabilities[:firefox_options] ||= {} }
             define_method("options=") { |value| @capabilities[:firefox_options] = value }
             define_method(:profile) { @capabilities[:firefox_profile] ||= {} }

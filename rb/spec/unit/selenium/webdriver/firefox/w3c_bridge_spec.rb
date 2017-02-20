@@ -85,13 +85,13 @@ module Selenium
           allow(http).to receive(:call).with(*args).and_return(resp)
           bridge = W3CBridge.new(http_client: http)
 
-          expect(bridge.capabilities).to eq @expected_capabilities
+          returned_capabilities = bridge.capabilities.send(:capabilities).delete_if { |_k, v| v.nil? }
+          expect(returned_capabilities).to eq @expected_capabilities.send(:capabilities)
         end
 
         it 'accepts custom capabilities' do
           opts = {browser_name: 'firefox',
-                  foo: 'bar',
-                  'moo' => 'tar',
+                  'foo' => 'bar',
                   firefox_options: {'args' => %w[baz]},
                   platform_name: :foo
           }
@@ -101,7 +101,8 @@ module Selenium
           allow(http).to receive(:call).with(*args).and_return(resp)
           bridge = W3CBridge.new(http_client: http, desired_capabilities: @capabilities)
 
-          expect(bridge.capabilities).to eq @expected_capabilities
+          returned_capabilities = bridge.capabilities.send(:capabilities).delete_if { |_k, v| v.nil? }
+          expect(returned_capabilities).to eq @expected_capabilities.send(:capabilities)
         end
 
         it 'lets firefox options be set by hash' do
@@ -126,7 +127,7 @@ module Selenium
 
         it 'accepts profile' do
           profile = Profile.new
-          @expected_capabilities.firefox_profile = profile
+          @expected_capabilities.profile = profile
 
           allow(http).to receive(:call).with(*args).and_return(resp)
 

@@ -26,27 +26,30 @@ module Selenium
       #
 
       class W3CCapabilities
-        [:browser_name,
-         :browser_version,
-         :platform_name,
-         :platform_version,
-         :accept_insecure_certs,
-         :page_load_strategy,
-         :proxy,
-         :remote_session_id,
-         :accessibility_checks,
-         :rotatable,
-         :device,
-         :implicit_timeout,
-         :page_load_timeout,
-         :script_timeout].each do |key|
+        STANDARD = [:browser_name,
+                    :browser_version,
+                    :platform_name,
+                    :accept_insecure_certs,
+                    :page_load_strategy,
+                    :proxy,
+                    :set_window_rect,
+                    :timeouts,
+                    :unhandled_prompt_behavior]
+
+        STANDARD.each do |key|
           define_method(key) { @capabilities[key] }
           define_method("#{key}=") { |value| @capabilities[key] = value }
         end
 
-        #
-        # Convenience methods for the common choices.
-        #
+        [:implicit_timeout, :page_load_timeout, :script_timeout].each do |key|
+          capability = if key == :page_load_timeout
+                         'page load'
+                       else
+                         key.to_s.gsub('_timeout', '').to_sym
+                       end
+          define_method(key) { @capabilities[:timeouts][capability] }
+          define_method("#{key}=") { |value| @capabilities[:timeouts][capability] = value }
+        end
 
         class << self
           def edge(opts = {})
@@ -55,62 +58,59 @@ module Selenium
           end
 
           def firefox(opts = {})
-            define_method(:firefox_options) { @capabilities[:firefox_options] ||= {} }
-            define_method("firefox_options=") { |value| @capabilities[:firefox_options] = value }
-            define_method(:firefox_profile) { firefox_options['profile'] }
-            define_method("firefox_profile=") { |value| firefox_options['profile'] = value.as_json['zip'] }
-            alias_method :profile=, :firefox_profile=
-            alias_method :options=, :firefox_options=
+            define_method(:accessibility_checks) { @capabilities.fetch(:accessibility_checks, {}) }
+            define_method(:accessibility_checks=) { |value| @capabilities[:accessibility_checks] = value }
 
-            opts[:browser_version] = opts.delete(:version) if opts.key?(:version)
-            opts[:platform_name] = opts.delete(:platform) if opts.key?(:platform)
-            timeouts = {}
-            timeouts['implicit'] = opts.delete(:implicit_timeout) if opts.key?(:implicit_timeout)
-            timeouts['page load'] = opts.delete(:page_load_timeout) if opts.key?(:page_load_timeout)
-            timeouts['script'] = opts.delete(:script_timeout) if opts.key?(:script_timeout)
-            opts[:timeouts] = timeouts unless timeouts.empty?
-            new({browser_name: 'firefox', marionette: true}.merge(opts))
+            define_method(:options) { @capabilities[:firefox_options] ||= {} }
+            define_method(:options=) { |value| @capabilities[:firefox_options] = value }
+            alias_method :firefox_options, :options
+            alias_method :firefox_options=, :options=
+
+            define_method(:profile) { firefox_options[:profile] ||= {} }
+            define_method(:profile=) { |value| firefox_options[:profile] = value.encoded }
+            alias_method :firefox_profile, :profile
+            alias_method :firefox_profile=, :profile=
+
+            new({browser_name: 'firefox'}.merge(opts))
           end
 
           alias_method :ff, :firefox
 
           def w3c?(opts = {})
-            opts[:marionette] != false &&
-                (!opts[:desired_capabilities] || opts[:desired_capabilities][:marionette] != false)
+            if opts[:marionette] == false
+              false
+            elsif opts[:desired_capabilities].nil? || opts[:desired_capabilities].is_a?(W3CCapabilities)
+              true
+            elsif opts[:desired_capabilities][:marionette] == false
+              false
+            else
+              true
+            end
           end
 
           #
           # @api private
           #
 
+          def camel_case(str)
+            str.gsub(/_([a-z])/) { Regexp.last_match(1).upcase }
+          end
+
           def json_create(data)
             data = data.dup
 
             caps = new
-            caps.browser_name = data.delete('browserName') if data.key?('browserName')
-            caps.browser_version = data.delete('browserVersion') if data.key?('browserVersion')
-            caps.platform_name = data.delete('platformName') if data.key?('platformName')
-            caps.platform_version = data.delete('platformVersion') if data.key?('platformVersion')
-            caps.accept_insecure_certs = data.delete('acceptInsecureCerts') if data.key?('acceptInsecureCerts')
-            caps.page_load_strategy = data.delete('pageLoadStrategy') if data.key?('pageLoadStrategy')
-            timeouts = data.delete('timeouts') if data.key?('timeouts')
-            caps.implicit_timeout = timeouts['implicit'] if timeouts && timeouts.key?('implicit')
-            caps.page_load_timeout = timeouts['page load'] if timeouts && timeouts.key?('page load')
-            caps.script_timeout = timeouts['script'] if timeouts && timeouts.key?('script')
 
-            proxy = data.delete('proxy')
+            proxy = data.delete('proxy') if data.key?('proxy')
+            STANDARD.each do |cap|
+              caps.send("#{cap}=", data.delete(camel_case(cap.to_s)))
+            end
+
             caps.proxy = Proxy.json_create(proxy) unless proxy.nil? || proxy.empty?
 
-            # Remote Server Specific
-            caps[:remote_session_id] = data.delete('webdriver.remote.sessionid') if data.key?('webdriver.remote.sessionid')
-
             # Marionette Specific
-            caps[:accessibility_checks] = data.delete('moz:accessibilityChecks') if data.key?('moz:accessibilityChecks')
-            caps[:firefox_profile] = data.delete('moz:profile') if data.key?('moz:profile')
+            caps.accessibility_checks = data.delete('moz:accessibilityChecks') if data.key?('moz:accessibilityChecks')
             caps.firefox_options = data.delete('moz:firefoxOptions') if data.key?('moz:firefoxOptions')
-            caps[:rotatable] = data.delete('rotatable') if data.key?('rotatable')
-            caps[:device] = data.delete('device') if data.key?('device')
-            caps[:marionette] = data.delete('marionette') if data.key?('marionette')
 
             # any remaining pairs will be added as is, with no conversion
             caps.merge!(data)
@@ -130,8 +130,10 @@ module Selenium
         #
 
         def initialize(opts = {})
+          opts[:browser_version] = opts.delete(:version) if opts.key?(:version)
+          opts[:platform_name] = opts.delete(:platform) if opts.key?(:platform)
           @capabilities = opts
-          self.proxy = opts.delete(:proxy)
+          self.proxy = opts.delete(:proxy) if opts.key?(:proxy)
         end
 
         #
@@ -175,16 +177,14 @@ module Selenium
 
           @capabilities.each do |key, value|
             case key
-            when :platform
-              hash['platform'] = value.to_s.upcase
             when :proxy
               hash['proxy'] = value.as_json if value
             when :firefox_options
               hash['moz:firefoxOptions'] = value
-            when String, :firefox_binary
+            when String
               hash[key.to_s] = value
             when Symbol
-              hash[camel_case(key.to_s)] = value
+              hash[self.class.camel_case(key.to_s)] = value
             else
               raise TypeError, "expected String or Symbol, got #{key.inspect}:#{key.class} / #{value.inspect}"
             end
@@ -208,11 +208,6 @@ module Selenium
 
         attr_reader :capabilities
 
-        private
-
-        def camel_case(str)
-          str.gsub(/_([a-z])/) { Regexp.last_match(1).upcase }
-        end
       end # W3CCapabilities
     end # Remote
   end # WebDriver

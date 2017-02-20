@@ -29,7 +29,7 @@ module Selenium
         end
 
         def technology_preview!
-          raise Error::WebDriverError, "Install Safari Technology Preview on MacOS Sierra" unless File.exist?(tech_preview_driver)
+          raise Error::WebDriverError, "Install Safari Technology Preview on MacOS Sierra" unless File.exist?(technology_preview)
           self.driver_path = technology_preview
         end
 

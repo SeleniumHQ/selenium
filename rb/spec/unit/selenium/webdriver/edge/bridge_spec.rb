@@ -80,17 +80,17 @@ module Selenium
         end
 
         it 'uses the default capabilities' do
-          @expected_capabilities.platform_name = 'WINDOWS'
+          @expected_capabilities.platform_name = 'windows'
           allow(http).to receive(:call).with(*args).and_return(resp)
           bridge = Bridge.new(http_client: http)
 
-          expect(bridge.capabilities).to eq @expected_capabilities
+          returned_capabilities = bridge.capabilities.send(:capabilities).delete_if { |_k, v| v.nil? }
+          expect(returned_capabilities).to eq @expected_capabilities.send(:capabilities)
         end
 
         it 'accepts custom capabilities' do
           opts = {browser_name: 'MicrosoftEdge',
-                  foo: 'bar',
-                  'moo' => 'tar',
+                  'foo' => 'bar',
                   platform_name: :foo}
           opts.each { |k, v| @expected_capabilities[k] = v }
           opts.each { |k, v| @capabilities[k] = v }
@@ -98,7 +98,8 @@ module Selenium
           allow(http).to receive(:call).with(*args).and_return(resp)
           bridge = Bridge.new(http_client: http, desired_capabilities: @capabilities)
 
-          expect(bridge.capabilities).to eq @expected_capabilities
+          returned_capabilities = bridge.capabilities.send(:capabilities).delete_if { |_k, v| v.nil? }
+          expect(returned_capabilities).to eq @expected_capabilities.send(:capabilities)
         end
 
         it 'raises exception when required capability is not met'
