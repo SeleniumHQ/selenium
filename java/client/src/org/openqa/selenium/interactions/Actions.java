@@ -544,32 +544,24 @@ public class Actions {
   }
 
   /**
-   * A no-op left for legacy reasons.
+   * Generates a composite action containing all actions so far, ready to be performed (and
+   * resets the internal builder state, so subsequent calls to {@link #build()} will contain fresh
+   * sequences).
+   *
+   * @return the composite action
    */
   public Action build() {
-    if (isBuildingActions()) {
-      CompositeAction toReturn = action;
-      action = new CompositeAction();
-      return toReturn;
-    }
-    return this::perform;
+    Action toReturn = new BuiltAction(driver, sequences, action);
+    action = new CompositeAction();
+    sequences.clear();
+    return toReturn;
   }
 
   /**
-   * Execute all the actions this represents.
+   * A convenience method for performing the actions without calling build() first.
    */
   public void perform() {
-    try {
-      ((Interactive) driver).perform(sequences.values());
-      sequences.clear();
-    } catch (ClassCastException | UnsupportedCommandException e) {
-      if (actionsException != null) {
-        throw actionsException;
-      }
-      // Fall back to the old way of doing things. Old Skool #ftw
-      action.perform();
-      action = new CompositeAction();
-    }
+    build().perform();
   }
 
   private Sequence getSequence(InputSource source) {
@@ -591,5 +583,27 @@ public class Actions {
 
   private boolean isBuildingActions() {
     return jsonMouse != null || jsonKeyboard != null;
+  }
+
+  private static class BuiltAction implements Action {
+    private final WebDriver driver;
+    private final Map<InputSource, Sequence> sequences;
+    private final Action fallBack;
+
+    private BuiltAction(WebDriver driver, Map<InputSource, Sequence> sequences, Action fallBack) {
+      this.driver = driver;
+      this.sequences = sequences;
+      this.fallBack = fallBack;
+    }
+
+    @Override
+    public void perform() {
+      try {
+        ((Interactive) driver).perform(sequences.values());
+      } catch (ClassCastException | UnsupportedCommandException e) {
+        // Fall back to the old way of doing things. Old Skool #ftw
+        fallBack.perform();
+      }
+    }
   }
 }
