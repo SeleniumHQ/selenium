@@ -29,7 +29,7 @@ import java.util.List;
 /**
  * Emulates key press only, without the release.
  *
- * @deprecated Use {@link Actions#keyDown(WebElement, Keys)}
+ * @deprecated Use {@link Actions#keyDown(WebElement, CharSequence)}
  */
 @Deprecated
 public class KeyDownAction extends SingleKeyAction implements Action {
