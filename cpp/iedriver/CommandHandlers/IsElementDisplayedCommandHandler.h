@@ -57,8 +57,14 @@ class IsElementDisplayedCommandHandler : public IECommandHandler {
         if (status_code == WD_SUCCESS) {
           response->SetSuccessResponse(result);
         } else {
-          response->SetErrorResponse(status_code,
+          //there was an error calling isDisplayed, let's double check that the element is still valid.
+          int element_status_code = this->GetElement(executor, element_id, &element_wrapper);
+          if (element_status_code == WD_SUCCESS) {
+            response->SetErrorResponse(status_code,
                                      "Error determining if element is displayed");
+          } else  {
+            response->SetErrorResponse(element_status_code, "Element is no longer valid");
+          }
           return;
         }
       } else {
