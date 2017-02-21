@@ -131,7 +131,7 @@ class RubyMappings
              :files   => files,
              :gemfile => "build/rb/Gemfile"
 
-        sh "find build/docs/api/rb -type f -name '*.html' -exec sed -i '.bak' 's/build\\/rb\\/lib/lib/g' {} +"
+        sh "find build/docs/api/rb -type f -name '*.html' -exec sed -i '' 's/build\\/rb\\/lib/lib/g' {} +"
       end
 
       add_dependencies t, dir, args[:deps]
