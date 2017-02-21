@@ -139,8 +139,8 @@ class visibility_of_all_elements_located(object):
         try:
             elements = _find_elements(driver, self.locator)
             for element in elements:
-                if not _element_if_visible(element):
-                    raise ElementNotVisibleException
+                if _element_if_visible(element, visibility=False):
+                    return False
             return elements
         except StaleElementReferenceException:
             return False
