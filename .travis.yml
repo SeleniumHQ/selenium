@@ -264,7 +264,6 @@ matrix:
     - env: MARIONETTE=1 TOXENV=py36-marionette
     - env: TOXENV=py36-remote
     - env: PHANTOMJS=1 TASK=//rb:remote-phantomjs-test
-    - env: TASK=//rb:docs
 before_install: ./scripts/travis/before_install.sh
 install: ./scripts/travis/install.sh
 before_script: ./scripts/travis/before_script.sh
