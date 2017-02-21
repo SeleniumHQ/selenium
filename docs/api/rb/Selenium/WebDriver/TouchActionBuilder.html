@@ -365,13 +365,13 @@
       <pre class="lines">
 
 
+27
 28
 29
-30
-31</pre>
+30</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/touch_action_builder.rb', line 28</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/touch_action_builder.rb', line 27</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_mouse'>mouse</span><span class='comma'>,</span> <span class='id identifier rubyid_keyboard'>keyboard</span><span class='comma'>,</span> <span class='id identifier rubyid_touch_screen'>touch_screen</span><span class='rparen'>)</span>
   <span class='kw'>super</span><span class='lparen'>(</span><span class='id identifier rubyid_mouse'>mouse</span><span class='comma'>,</span> <span class='id identifier rubyid_keyboard'>keyboard</span><span class='rparen'>)</span>
@@ -404,13 +404,13 @@
       <pre class="lines">
 
 
+55
 56
 57
-58
-59</pre>
+58</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/touch_action_builder.rb', line 56</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/touch_action_builder.rb', line 55</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_double_tap'>double_tap</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
   <span class='ivar'>@actions</span> <span class='op'>&lt;&lt;</span> <span class='lbracket'>[</span><span class='symbol'>:touch_screen</span><span class='comma'>,</span> <span class='symbol'>:double_tap</span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='id identifier rubyid_element'>element</span><span class='rbracket'>]</span><span class='rbracket'>]</span>
@@ -436,13 +436,13 @@
       <pre class="lines">
 
 
+65
 66
 67
-68
-69</pre>
+68</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/touch_action_builder.rb', line 66</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/touch_action_builder.rb', line 65</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_down'>down</span><span class='lparen'>(</span><span class='id identifier rubyid_x'>x</span><span class='comma'>,</span> <span class='id identifier rubyid_y'>y</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='ivar'>@actions</span> <span class='op'>&lt;&lt;</span> <span class='lbracket'>[</span><span class='symbol'>:touch_screen</span><span class='comma'>,</span> <span class='symbol'>:down</span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='id identifier rubyid_x'>x</span><span class='comma'>,</span> <span class='id identifier rubyid_y'>y</span><span class='rbracket'>]</span><span class='rbracket'>]</span>
@@ -468,20 +468,20 @@
       <pre class="lines">
 
 
+41
 42
 43
 44
 45
 46
 47
-48
-49</pre>
+48</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/touch_action_builder.rb', line 42</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/touch_action_builder.rb', line 41</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_flick'>flick</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
-  <span class='kw'>unless</span> <span class='lbracket'>[</span><span class='int'>2</span><span class='comma'>,</span><span class='int'>4</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span> <span class='id identifier rubyid_args'>args</span><span class='period'>.</span><span class='id identifier rubyid_size'>size</span>
+  <span class='kw'>unless</span> <span class='lbracket'>[</span><span class='int'>2</span><span class='comma'>,</span> <span class='int'>4</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span> <span class='id identifier rubyid_args'>args</span><span class='period'>.</span><span class='id identifier rubyid_size'>size</span>
     <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>wrong number of arguments, expected 2 or 4, got </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_args'>args</span><span class='period'>.</span><span class='id identifier rubyid_size'>size</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
   <span class='kw'>end</span>
 
@@ -508,13 +508,13 @@
       <pre class="lines">
 
 
+60
 61
 62
-63
-64</pre>
+63</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/touch_action_builder.rb', line 61</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/touch_action_builder.rb', line 60</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_long_press'>long_press</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
   <span class='ivar'>@actions</span> <span class='op'>&lt;&lt;</span> <span class='lbracket'>[</span><span class='symbol'>:touch_screen</span><span class='comma'>,</span> <span class='symbol'>:long_press</span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='id identifier rubyid_element'>element</span><span class='rbracket'>]</span><span class='rbracket'>]</span>
@@ -540,13 +540,13 @@
       <pre class="lines">
 
 
+75
 76
 77
-78
-79</pre>
+78</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/touch_action_builder.rb', line 76</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/touch_action_builder.rb', line 75</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_move'>move</span><span class='lparen'>(</span><span class='id identifier rubyid_x'>x</span><span class='comma'>,</span> <span class='id identifier rubyid_y'>y</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='ivar'>@actions</span> <span class='op'>&lt;&lt;</span> <span class='lbracket'>[</span><span class='symbol'>:touch_screen</span><span class='comma'>,</span> <span class='symbol'>:move</span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='id identifier rubyid_x'>x</span><span class='comma'>,</span> <span class='id identifier rubyid_y'>y</span><span class='rbracket'>]</span><span class='rbracket'>]</span>
@@ -572,20 +572,20 @@
       <pre class="lines">
 
 
+32
 33
 34
 35
 36
 37
 38
-39
-40</pre>
+39</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/touch_action_builder.rb', line 33</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/touch_action_builder.rb', line 32</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_scroll'>scroll</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
-  <span class='kw'>unless</span> <span class='lbracket'>[</span><span class='int'>2</span><span class='comma'>,</span><span class='int'>3</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span> <span class='id identifier rubyid_args'>args</span><span class='period'>.</span><span class='id identifier rubyid_size'>size</span>
+  <span class='kw'>unless</span> <span class='lbracket'>[</span><span class='int'>2</span><span class='comma'>,</span> <span class='int'>3</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span> <span class='id identifier rubyid_args'>args</span><span class='period'>.</span><span class='id identifier rubyid_size'>size</span>
     <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>wrong number of arguments, expected 2..3, got </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_args'>args</span><span class='period'>.</span><span class='id identifier rubyid_size'>size</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
   <span class='kw'>end</span>
 
@@ -612,13 +612,13 @@
       <pre class="lines">
 
 
+50
 51
 52
-53
-54</pre>
+53</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/touch_action_builder.rb', line 51</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/touch_action_builder.rb', line 50</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_single_tap'>single_tap</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
   <span class='ivar'>@actions</span> <span class='op'>&lt;&lt;</span> <span class='lbracket'>[</span><span class='symbol'>:touch_screen</span><span class='comma'>,</span> <span class='symbol'>:single_tap</span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='id identifier rubyid_element'>element</span><span class='rbracket'>]</span><span class='rbracket'>]</span>
@@ -644,13 +644,13 @@
       <pre class="lines">
 
 
+70
 71
 72
-73
-74</pre>
+73</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/touch_action_builder.rb', line 71</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/touch_action_builder.rb', line 70</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_up'>up</span><span class='lparen'>(</span><span class='id identifier rubyid_x'>x</span><span class='comma'>,</span> <span class='id identifier rubyid_y'>y</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='ivar'>@actions</span> <span class='op'>&lt;&lt;</span> <span class='lbracket'>[</span><span class='symbol'>:touch_screen</span><span class='comma'>,</span> <span class='symbol'>:up</span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='id identifier rubyid_x'>x</span><span class='comma'>,</span> <span class='id identifier rubyid_y'>y</span><span class='rbracket'>]</span><span class='rbracket'>]</span>
@@ -666,9 +666,9 @@
 </div>
 
     <div id="footer">
-  Generated on Wed Oct  7 14:18:46 2015 by
+  Generated on Tue Feb 21 07:29:57 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.7.6 (ruby-2.2.2).
+  0.8.7.6 (ruby-2.4.0).
 </div>
 
   </body>

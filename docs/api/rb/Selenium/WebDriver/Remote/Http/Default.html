@@ -37,7 +37,7 @@
     <span class="title">Default</span>
   
 
-  <div class="noframes"><span class="title">(</span><a href="" target="_top">no frames</a><span class="title">)</span></div>
+  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
 </div>
 
       <div id="search">
@@ -137,6 +137,31 @@
       <li class="public ">
   <span class="summary_signature">
     
+      <a href="#open_timeout-instance_method" title="#open_timeout (instance method)">- (Object) <strong>open_timeout</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+    
+    
+  
+  
+  
+  
+  <span class="private note title">private</span>
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
       <a href="#proxy%3D-instance_method" title="#proxy= (instance method)">- (Object) <strong>proxy</strong> </a>
     
 
@@ -161,6 +186,31 @@
 </li>
 
     
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#read_timeout-instance_method" title="#read_timeout (instance method)">- (Object) <strong>read_timeout</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+    
+    
+  
+  
+  
+  
+  <span class="private note title">private</span>
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+    
   </ul>
 
 
@@ -171,6 +221,68 @@
   <p class="inherited"><span class='object_link'><a href="Common.html#timeout-instance_method" title="Selenium::WebDriver::Remote::Http::Common#timeout (method)">#timeout</a></span></p>
 
 
+  
+    <h2>
+      Instance Method Summary
+      <small>(<a href="#" class="summary_toggle">collapse</a>)</small>
+    </h2>
+
+    <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#initialize-instance_method" title="#initialize (instance method)">- (Default) <strong>initialize</strong>(open_timeout: nil, read_timeout: nil) </a>
+    
+
+    
+  </span>
+  
+  
+    <span class="note title constructor">constructor</span>
+  
+  
+  
+  
+  
+  <span class="private note title">private</span>
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>Initializes object.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public deprecated">
+  <span class="summary_signature">
+    
+      <a href="#timeout%3D-instance_method" title="#timeout= (instance method)">- (Object) <strong>timeout=</strong>(value) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  <span class="deprecated note title">deprecated</span>
+  <span class="private note title">private</span>
+
+  
+    <span class="summary_desc"><strong>Deprecated.</strong> <div class='inline'>
+<p>Please set the specific desired timeout <span class='object_link'><a href="#read_timeout-instance_method" title="Selenium::WebDriver::Remote::Http::Default#read_timeout (method)">#read_timeout</a></span> or <span class='object_link'><a href="#open_timeout-instance_method" title="Selenium::WebDriver::Remote::Http::Default#open_timeout (method)">#open_timeout</a></span>
+directly.</p>
+</div></span>
+  
+</li>
+
+      
+    </ul>
+  
+
 
   
   
@@ -178,14 +290,99 @@
   
   
   
-  <h2>Method Summary</h2>
+  
   
   <h3 class="inherited">Methods inherited from <span class='object_link'><a href="Common.html" title="Selenium::WebDriver::Remote::Http::Common (class)">Common</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="Common.html#call-instance_method" title="Selenium::WebDriver::Remote::Http::Common#call (method)">#call</a></span>, <span class='object_link'><a href="Common.html#close-instance_method" title="Selenium::WebDriver::Remote::Http::Common#close (method)">#close</a></span>, <span class='object_link'><a href="Common.html#initialize-instance_method" title="Selenium::WebDriver::Remote::Http::Common#initialize (method)">#initialize</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="Common.html#call-instance_method" title="Selenium::WebDriver::Remote::Http::Common#call (method)">#call</a></span>, <span class='object_link'><a href="Common.html#close-instance_method" title="Selenium::WebDriver::Remote::Http::Common#close (method)">#close</a></span>, <span class='object_link'><a href="Common.html#quit_errors-instance_method" title="Selenium::WebDriver::Remote::Http::Common#quit_errors (method)">#quit_errors</a></span></p>
 <div id="constructor_details" class="method_details_list">
   <h2>Constructor Details</h2>
   
-    <p class="notice">This class inherits a constructor from <span class='object_link'><a href="Common.html#initialize-instance_method" title="Selenium::WebDriver::Remote::Http::Common#initialize (method)">Selenium::WebDriver::Remote::Http::Common</a></span></p>
+    <div class="method_details first">
+  <h3 class="signature first" id="initialize-instance_method">
+  
+    - (<tt><span class='object_link'><a href="" title="Selenium::WebDriver::Remote::Http::Default (class)">Default</a></span></tt>) <strong>initialize</strong>(open_timeout: nil, read_timeout: nil) 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+<p>Initializes object. Warning: Setting <span class='object_link'><a href="#open_timeout-instance_method" title="Selenium::WebDriver::Remote::Http::Default#open_timeout (method)">#open_timeout</a></span> to non-nil values will
+cause a separate thread to spawn. Debuggers that freeze the process will
+not be able to evaluate any operations if that happens.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  <p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>open_timeout</span>
+      
+      
+        <span class='type'>(<tt>Numeric</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><ul><li>
+<p>Open timeout to apply to HTTP client.</p>
+</li></ul>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>read_timeout</span>
+      
+      
+        <span class='type'>(<tt>Numeric</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><ul><li>
+<p>Read timeout (seconds) to apply to HTTP client.</p>
+</li></ul>
+</div>
+      
+    </li>
+  
+</ul>
+
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+39
+40
+41
+42</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/http/default.rb', line 39</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='label'>open_timeout:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>read_timeout:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='ivar'>@open_timeout</span> <span class='op'>=</span> <span class='id identifier rubyid_open_timeout'>open_timeout</span>
+  <span class='ivar'>@read_timeout</span> <span class='op'>=</span> <span class='id identifier rubyid_read_timeout'>read_timeout</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
   
 </div>
 
@@ -193,9 +390,54 @@
     <h2>Instance Attribute Details</h2>
     
       
-      <span id="proxy-instance_method"></span>
+      <span id="open_timeout=-instance_method"></span>
       <div class="method_details first">
-  <h3 class="signature first" id="proxy=-instance_method">
+  <h3 class="signature first" id="open_timeout-instance_method">
+  
+    - (<tt>Object</tt>) <strong>open_timeout</strong> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+31
+32
+33</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/http/default.rb', line 31</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_open_timeout'>open_timeout</span>
+  <span class='ivar'>@open_timeout</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      
+      <span id="proxy-instance_method"></span>
+      <div class="method_details ">
+  <h3 class="signature " id="proxy=-instance_method">
   
     - (<tt>Object</tt>) <strong>proxy=</strong>(value) 
   
@@ -222,12 +464,12 @@
       <pre class="lines">
 
 
+29
 30
-31
-32</pre>
+31</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/http/default.rb', line 30</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/http/default.rb', line 29</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_proxy='>proxy=</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
   <span class='ivar'>@proxy</span> <span class='op'>=</span> <span class='id identifier rubyid_value'>value</span>
@@ -237,15 +479,140 @@
 </table>
 </div>
     
+      
+      <span id="read_timeout=-instance_method"></span>
+      <div class="method_details ">
+  <h3 class="signature " id="read_timeout-instance_method">
+  
+    - (<tt>Object</tt>) <strong>read_timeout</strong> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+32
+33
+34</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/http/default.rb', line 32</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_read_timeout'>read_timeout</span>
+  <span class='ivar'>@read_timeout</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
   </div>
 
+
+  <div id="instance_method_details" class="method_details_list">
+    <h2>Instance Method Details</h2>
+
+    
+      <div class="method_details first">
+  <h3 class="signature first" id="timeout=-instance_method">
+  
+    - (<tt>Object</tt>) <strong>timeout=</strong>(value) 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+<div class="note deprecated"><strong>Deprecated.</strong> <div class='inline'>
+<p>Please set the specific desired timeout <span class='object_link'><a href="#read_timeout-instance_method" title="Selenium::WebDriver::Remote::Http::Default#read_timeout (method)">#read_timeout</a></span> or <span class='object_link'><a href="#open_timeout-instance_method" title="Selenium::WebDriver::Remote::Http::Default#open_timeout (method)">#open_timeout</a></span>
+directly.</p>
+</div></div>
+
+<p>Maintaining backward compatibility.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  <p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>value</span>
+      
+      
+        <span class='type'>(<tt>Numeric</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><ul><li>
+<p>Timeout in seconds to apply to both open timeout and read timeouts.</p>
+</li></ul>
+</div>
+      
+    </li>
+  
+</ul>
+
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+47
+48
+49
+50
+51</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/http/default.rb', line 47</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_timeout='>timeout=</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
+  <span class='const'>Kernel</span><span class='period'>.</span><span class='id identifier rubyid_warn'>warn</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Selenium::WebDriver::Remote::Http::Default#timeout= is deprecated. Use #read_timeout= or #open_timeout= instead</span><span class='tstring_end'>&#39;</span></span>
+  <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_open_timeout'>open_timeout</span> <span class='op'>=</span> <span class='id identifier rubyid_value'>value</span>
+  <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_read_timeout'>read_timeout</span> <span class='op'>=</span> <span class='id identifier rubyid_value'>value</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
 
 </div>
 
     <div id="footer">
-  Generated on Wed Oct  7 14:18:48 2015 by
+  Generated on Tue Feb 21 07:29:56 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.7.6 (ruby-2.2.2).
+  0.8.7.6 (ruby-2.4.0).
 </div>
 
   </body>

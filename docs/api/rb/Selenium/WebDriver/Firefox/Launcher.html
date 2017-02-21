@@ -37,7 +37,7 @@
     <span class="title">Launcher</span>
   
 
-  <div class="noframes"><span class="title">(</span><a href="" target="_top">no frames</a><span class="title">)</span></div>
+  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
 </div>
 
       <div id="search">
@@ -465,6 +465,8 @@
       <pre class="lines">
 
 
+28
+29
 30
 31
 32
@@ -477,12 +479,10 @@
 39
 40
 41
-42
-43
-44</pre>
+42</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/launcher.rb', line 30</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/launcher.rb', line 28</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_binary'>binary</span><span class='comma'>,</span> <span class='id identifier rubyid_port'>port</span><span class='comma'>,</span> <span class='id identifier rubyid_profile'>profile</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='ivar'>@binary</span> <span class='op'>=</span> <span class='id identifier rubyid_binary'>binary</span>
@@ -490,14 +490,14 @@
 
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'>Error</span><span class='op'>::</span><span class='const'>WebDriverError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>invalid port: </span><span class='embexpr_beg'>#{</span><span class='ivar'>@port</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='ivar'>@port</span> <span class='op'>&lt;</span> <span class='int'>1</span>
 
-  <span class='kw'>if</span> <span class='id identifier rubyid_profile'>profile</span><span class='period'>.</span><span class='id identifier rubyid_kind_of?'>kind_of?</span> <span class='const'>Profile</span>
+  <span class='kw'>if</span> <span class='id identifier rubyid_profile'>profile</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span> <span class='const'>Profile</span>
     <span class='ivar'>@profile</span> <span class='op'>=</span> <span class='id identifier rubyid_profile'>profile</span>
   <span class='kw'>else</span>
     <span class='ivar'>@profile_name</span> <span class='op'>=</span> <span class='id identifier rubyid_profile'>profile</span>
     <span class='ivar'>@profile</span> <span class='op'>=</span> <span class='kw'>nil</span>
   <span class='kw'>end</span>
 
-  <span class='ivar'>@host</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>127.0.0.1</span><span class='tstring_end'>&quot;</span></span>
+  <span class='ivar'>@host</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>127.0.0.1</span><span class='tstring_end'>&#39;</span></span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -552,15 +552,15 @@
       <pre class="lines">
 
 
-106
-107
-108</pre>
+100
+101
+102</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/launcher.rb', line 106</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/launcher.rb', line 100</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_assert_profile'>assert_profile</span>
-  <span class='id identifier rubyid_raise'>raise</span> <span class='const'>Error</span><span class='op'>::</span><span class='const'>WebDriverError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>must create_profile first</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>unless</span> <span class='ivar'>@profile</span> <span class='op'>&amp;&amp;</span> <span class='ivar'>@profile_dir</span>
+  <span class='id identifier rubyid_raise'>raise</span> <span class='const'>Error</span><span class='op'>::</span><span class='const'>WebDriverError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>must create_profile first</span><span class='tstring_end'>&#39;</span></span> <span class='kw'>unless</span> <span class='ivar'>@profile</span> <span class='op'>&amp;&amp;</span> <span class='ivar'>@profile_dir</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -588,6 +588,19 @@
 </div>
 <div class="tags">
   
+<p class="tag_title">Raises:</p>
+<ul class="raise">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="../Error/WebDriverError.html" title="Selenium::WebDriver::Error::WebDriverError (class)">Error::WebDriverError</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
 
 </div><table class="source_code">
   <tr>
@@ -595,25 +608,25 @@
       <pre class="lines">
 
 
+83
+84
 85
 86
 87
 88
 89
-90
-91
-92</pre>
+90</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/launcher.rb', line 85</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/launcher.rb', line 83</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_connect_until_stable'>connect_until_stable</span>
   <span class='id identifier rubyid_poller'>poller</span> <span class='op'>=</span> <span class='const'>SocketPoller</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='ivar'>@host</span><span class='comma'>,</span> <span class='ivar'>@port</span><span class='comma'>,</span> <span class='const'>STABLE_CONNECTION_TIMEOUT</span><span class='rparen'>)</span>
 
-  <span class='kw'>unless</span> <span class='id identifier rubyid_poller'>poller</span><span class='period'>.</span><span class='id identifier rubyid_connected?'>connected?</span>
-    <span class='ivar'>@binary</span><span class='period'>.</span><span class='id identifier rubyid_quit'>quit</span>
-    <span class='id identifier rubyid_raise'>raise</span> <span class='const'>Error</span><span class='op'>::</span><span class='const'>WebDriverError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>unable to obtain stable firefox connection in </span><span class='embexpr_beg'>#{</span><span class='const'>STABLE_CONNECTION_TIMEOUT</span><span class='embexpr_end'>}</span><span class='tstring_content'> seconds (</span><span class='embexpr_beg'>#{</span><span class='ivar'>@host</span><span class='embexpr_end'>}</span><span class='tstring_content'>:</span><span class='embexpr_beg'>#{</span><span class='ivar'>@port</span><span class='embexpr_end'>}</span><span class='tstring_content'>)</span><span class='tstring_end'>&quot;</span></span>
-  <span class='kw'>end</span>
+  <span class='kw'>return</span> <span class='kw'>if</span> <span class='id identifier rubyid_poller'>poller</span><span class='period'>.</span><span class='id identifier rubyid_connected?'>connected?</span>
+  <span class='ivar'>@binary</span><span class='period'>.</span><span class='id identifier rubyid_quit'>quit</span>
+  <span class='id identifier rubyid_error'>error</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>unable to obtain stable firefox connection in </span><span class='embexpr_beg'>#{</span><span class='const'>STABLE_CONNECTION_TIMEOUT</span><span class='embexpr_end'>}</span><span class='tstring_content'> seconds (</span><span class='embexpr_beg'>#{</span><span class='ivar'>@host</span><span class='embexpr_end'>}</span><span class='tstring_content'>:</span><span class='embexpr_beg'>#{</span><span class='ivar'>@port</span><span class='embexpr_end'>}</span><span class='tstring_content'>)</span><span class='tstring_end'>&quot;</span></span>
+  <span class='id identifier rubyid_raise'>raise</span> <span class='const'>Error</span><span class='op'>::</span><span class='const'>WebDriverError</span><span class='comma'>,</span> <span class='id identifier rubyid_error'>error</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -648,18 +661,18 @@
       <pre class="lines">
 
 
+68
+69
 70
 71
 72
 73
 74
 75
-76
-77
-78</pre>
+76</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/launcher.rb', line 70</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/launcher.rb', line 68</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_create_profile'>create_profile</span>
   <span class='id identifier rubyid_fetch_profile'>fetch_profile</span> <span class='kw'>unless</span> <span class='ivar'>@profile</span>
@@ -703,28 +716,20 @@
       <pre class="lines">
 
 
+92
+93
 94
 95
 96
 97
-98
-99
-100
-101
-102
-103
-104</pre>
+98</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/launcher.rb', line 94</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/launcher.rb', line 92</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_fetch_profile'>fetch_profile</span>
   <span class='kw'>if</span> <span class='ivar'>@profile_name</span>
     <span class='ivar'>@profile</span> <span class='op'>=</span> <span class='const'>Profile</span><span class='period'>.</span><span class='id identifier rubyid_from_name'>from_name</span> <span class='ivar'>@profile_name</span>
-
-    <span class='kw'>unless</span> <span class='ivar'>@profile</span>
-      <span class='id identifier rubyid_raise'>raise</span> <span class='const'>Error</span><span class='op'>::</span><span class='const'>WebDriverError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>unable to find profile named: </span><span class='embexpr_beg'>#{</span><span class='ivar'>@profile_name</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
-    <span class='kw'>end</span>
   <span class='kw'>else</span>
     <span class='ivar'>@profile</span> <span class='op'>=</span> <span class='const'>Profile</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span>
   <span class='kw'>end</span>
@@ -762,12 +767,12 @@
       <pre class="lines">
 
 
-66
-67
-68</pre>
+64
+65
+66</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/launcher.rb', line 66</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/launcher.rb', line 64</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_find_free_port'>find_free_port</span>
   <span class='ivar'>@port</span> <span class='op'>=</span> <span class='const'>PortProber</span><span class='period'>.</span><span class='id identifier rubyid_above'>above</span> <span class='ivar'>@port</span>
@@ -805,6 +810,8 @@
       <pre class="lines">
 
 
+48
+49
 50
 51
 52
@@ -812,12 +819,10 @@
 54
 55
 56
-57
-58
-59</pre>
+57</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/launcher.rb', line 50</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/launcher.rb', line 48</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_launch'>launch</span>
   <span class='id identifier rubyid_socket_lock'>socket_lock</span><span class='period'>.</span><span class='id identifier rubyid_locked'>locked</span> <span class='kw'>do</span>
@@ -862,13 +867,13 @@
       <pre class="lines">
 
 
+59
+60
 61
-62
-63
-64</pre>
+62</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/launcher.rb', line 61</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/launcher.rb', line 59</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_quit'>quit</span>
   <span class='ivar'>@binary</span><span class='period'>.</span><span class='id identifier rubyid_quit'>quit</span>
@@ -907,12 +912,12 @@
       <pre class="lines">
 
 
-110
-111
-112</pre>
+104
+105
+106</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/launcher.rb', line 110</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/launcher.rb', line 104</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_socket_lock'>socket_lock</span>
   <span class='ivar'>@socket_lock</span> <span class='op'>||=</span> <span class='const'>SocketLock</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='ivar'>@port</span> <span class='op'>-</span> <span class='int'>1</span><span class='comma'>,</span> <span class='const'>SOCKET_LOCK_TIMEOUT</span><span class='rparen'>)</span>
@@ -950,17 +955,17 @@
       <pre class="lines">
 
 
+78
+79
 80
-81
-82
-83</pre>
+81</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/launcher.rb', line 80</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/launcher.rb', line 78</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_start'>start</span>
   <span class='id identifier rubyid_assert_profile'>assert_profile</span>
-  <span class='ivar'>@binary</span><span class='period'>.</span><span class='id identifier rubyid_start_with'>start_with</span> <span class='ivar'>@profile</span><span class='comma'>,</span> <span class='ivar'>@profile_dir</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>-foreground</span><span class='tstring_end'>&quot;</span></span>
+  <span class='ivar'>@binary</span><span class='period'>.</span><span class='id identifier rubyid_start_with'>start_with</span> <span class='ivar'>@profile</span><span class='comma'>,</span> <span class='ivar'>@profile_dir</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>-foreground</span><span class='tstring_end'>&#39;</span></span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -995,12 +1000,12 @@
       <pre class="lines">
 
 
-46
-47
-48</pre>
+44
+45
+46</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/launcher.rb', line 46</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/launcher.rb', line 44</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_url'>url</span>
   <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>http://</span><span class='embexpr_beg'>#{</span><span class='ivar'>@host</span><span class='embexpr_end'>}</span><span class='tstring_content'>:</span><span class='embexpr_beg'>#{</span><span class='ivar'>@port</span><span class='embexpr_end'>}</span><span class='tstring_content'>/hub</span><span class='tstring_end'>&quot;</span></span>
@@ -1015,9 +1020,9 @@
 </div>
 
     <div id="footer">
-  Generated on Wed Oct  7 14:18:47 2015 by
+  Generated on Tue Feb 21 07:29:55 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.7.6 (ruby-2.2.2).
+  0.8.7.6 (ruby-2.4.0).
 </div>
 
   </body>

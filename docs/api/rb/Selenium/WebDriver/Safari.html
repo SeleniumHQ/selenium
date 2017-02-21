@@ -37,7 +37,7 @@
     <span class="title">Safari</span>
   
 
-  <div class="noframes"><span class="title">(</span><a href="" target="_top">no frames</a><span class="title">)</span></div>
+  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
 </div>
 
       <div id="search">
@@ -79,8 +79,8 @@
   
   
     <dt class="r1 last">Defined in:</dt>
-    <dd class="r1 last">lib/selenium/webdriver/safari/bridge.rb<span class="defines">,<br />
-  lib/selenium/webdriver/safari/browser.rb,<br /> lib/selenium/webdriver/safari/options.rb,<br /> lib/selenium/webdriver/safari/server.rb,<br /> lib/selenium/webdriver/safari.rb</span>
+    <dd class="r1 last">lib/selenium/webdriver/safari.rb<span class="defines">,<br />
+  lib/selenium/webdriver/safari/bridge.rb,<br /> lib/selenium/webdriver/safari/service.rb</span>
 </dd>
   
 </dl>
@@ -92,7 +92,7 @@
     
   
     
-      <strong class="classes">Classes:</strong> <span class='object_link'><a href="Safari/Bridge.html" title="Selenium::WebDriver::Safari::Bridge (class)">Bridge</a></span>, <span class='object_link'><a href="Safari/Browser.html" title="Selenium::WebDriver::Safari::Browser (class)">Browser</a></span>, <span class='object_link'><a href="Safari/Options.html" title="Selenium::WebDriver::Safari::Options (class)">Options</a></span>, <span class='object_link'><a href="Safari/Server.html" title="Selenium::WebDriver::Safari::Server (class)">Server</a></span>
+      <strong class="classes">Classes:</strong> <span class='object_link'><a href="Safari/Bridge.html" title="Selenium::WebDriver::Safari::Bridge (class)">Bridge</a></span>, <span class='object_link'><a href="Safari/Service.html" title="Selenium::WebDriver::Safari::Service (class)">Service</a></span>
     
   
 </p>
@@ -110,6 +110,50 @@
     </h2>
 
     <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#driver_path-class_method" title="driver_path (class method)">+ (Object) <strong>driver_path</strong>(warning = true) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#driver_path%3D-class_method" title="driver_path= (class method)">+ (Object) <strong>driver_path=</strong>(path) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
       
         <li class="public ">
   <span class="summary_signature">
@@ -155,28 +199,6 @@
 </li>
 
       
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#resource_path-class_method" title="resource_path (class method)">+ (Object) <strong>resource_path</strong> </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
     </ul>
   
 
@@ -187,9 +209,9 @@
 
     
       <div class="method_details first">
-  <h3 class="signature first" id="path-class_method">
+  <h3 class="signature first" id="driver_path-class_method">
   
-    + (<tt>Object</tt>) <strong>path</strong> 
+    + (<tt>Object</tt>) <strong>driver_path</strong>(warning = true) 
   
 
   
@@ -201,12 +223,50 @@
       <pre class="lines">
 
 
-33
-34
-35
-36
-37
-38
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/safari.rb', line 49</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_driver_path'>driver_path</span><span class='lparen'>(</span><span class='id identifier rubyid_warning'>warning</span> <span class='op'>=</span> <span class='kw'>true</span><span class='rparen'>)</span>
+  <span class='kw'>if</span> <span class='id identifier rubyid_warning'>warning</span>
+    <span class='id identifier rubyid_warn'>warn</span> <span class='heredoc_beg'>&lt;&lt;-DEPRECATE</span><span class='period'>.</span><span class='id identifier rubyid_gsub'>gsub</span><span class='lparen'>(</span><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>\n +| {2,}</span><span class='regexp_end'>/</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'> </span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span>
+<span class='tstring_content'>      [DEPRECATION] `driver_path` is deprecated. Pass the driver path as an option instead.
+      e.g. Selenium::WebDriver.for :safari, driver_path: &#39;/path&#39;
+</span><span class='heredoc_end'>    DEPRECATE
+</span>  <span class='kw'>end</span>
+
+  <span class='ivar'>@driver_path</span> <span class='op'>||=</span> <span class='kw'>nil</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="driver_path=-class_method">
+  
+    + (<tt>Object</tt>) <strong>driver_path=</strong>(path) 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
 39
 40
 41
@@ -215,31 +275,77 @@
 44
 45
 46
-47
-48
-49
-50</pre>
+47</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/safari.rb', line 33</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/safari.rb', line 39</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_driver_path='>driver_path=</span><span class='lparen'>(</span><span class='id identifier rubyid_path'>path</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_warn'>warn</span> <span class='heredoc_beg'>&lt;&lt;-DEPRECATE</span><span class='period'>.</span><span class='id identifier rubyid_gsub'>gsub</span><span class='lparen'>(</span><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>\n +| {2,}</span><span class='regexp_end'>/</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'> </span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span>
+<span class='tstring_content'>    [DEPRECATION] `driver_path=` is deprecated. Pass the driver path as an option instead.
+    e.g. Selenium::WebDriver.for :safari, driver_path: &#39;/path&#39;
+</span><span class='heredoc_end'>  DEPRECATE
+</span>
+  <span class='const'>Platform</span><span class='period'>.</span><span class='id identifier rubyid_assert_executable'>assert_executable</span> <span class='id identifier rubyid_path'>path</span>
+  <span class='ivar'>@driver_path</span> <span class='op'>=</span> <span class='id identifier rubyid_path'>path</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="path-class_method">
+  
+    + (<tt>Object</tt>) <strong>path</strong> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Raises:</p>
+<ul class="raise">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="Error/WebDriverError.html" title="Selenium::WebDriver::Error::WebDriverError (class)">Error::WebDriverError</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+32
+33
+34
+35
+36
+37</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/safari.rb', line 32</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_path'>path</span>
-  <span class='ivar'>@path</span> <span class='op'>||=</span> <span class='lparen'>(</span>
-    <span class='id identifier rubyid_path'>path</span> <span class='op'>=</span> <span class='kw'>case</span> <span class='const'>Platform</span><span class='period'>.</span><span class='id identifier rubyid_os'>os</span>
-           <span class='kw'>when</span> <span class='symbol'>:windows</span>
-             <span class='const'>Platform</span><span class='period'>.</span><span class='id identifier rubyid_find_in_program_files'>find_in_program_files</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Safari\\Safari.exe</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
-           <span class='kw'>when</span> <span class='symbol'>:macosx</span>
-             <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>/Applications/Safari.app/Contents/MacOS/Safari</span><span class='tstring_end'>&quot;</span></span>
-           <span class='kw'>else</span>
-             <span class='const'>Platform</span><span class='period'>.</span><span class='id identifier rubyid_find_binary'>find_binary</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Safari</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
-           <span class='kw'>end</span>
-
-    <span class='kw'>unless</span> <span class='const'>File</span><span class='period'>.</span><span class='id identifier rubyid_file?'>file?</span><span class='lparen'>(</span><span class='id identifier rubyid_path'>path</span><span class='rparen'>)</span> <span class='op'>&amp;&amp;</span> <span class='const'>File</span><span class='period'>.</span><span class='id identifier rubyid_executable?'>executable?</span><span class='lparen'>(</span><span class='id identifier rubyid_path'>path</span><span class='rparen'>)</span>
-      <span class='id identifier rubyid_raise'>raise</span> <span class='const'>Error</span><span class='op'>::</span><span class='const'>WebDriverError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>unable to find the Safari executable, please set Selenium::WebDriver::Safari.path= or add it to your PATH.</span><span class='tstring_end'>&quot;</span></span>
-    <span class='kw'>end</span>
-
-    <span class='id identifier rubyid_path'>path</span>
-  <span class='rparen'>)</span>
+  <span class='ivar'>@path</span> <span class='op'>||=</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>/Applications/Safari.app/Contents/MacOS/Safari</span><span class='tstring_end'>&#39;</span></span>
+  <span class='kw'>return</span> <span class='ivar'>@path</span> <span class='kw'>if</span> <span class='const'>File</span><span class='period'>.</span><span class='id identifier rubyid_file?'>file?</span><span class='lparen'>(</span><span class='ivar'>@path</span><span class='rparen'>)</span> <span class='op'>&amp;&amp;</span> <span class='const'>File</span><span class='period'>.</span><span class='id identifier rubyid_executable?'>executable?</span><span class='lparen'>(</span><span class='ivar'>@path</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_raise'>raise</span> <span class='const'>Error</span><span class='op'>::</span><span class='const'>WebDriverError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Safari is only supported on Mac</span><span class='tstring_end'>&#39;</span></span> <span class='kw'>unless</span> <span class='const'>Platform</span><span class='period'>.</span><span class='id identifier rubyid_os'>os</span> <span class='op'>==</span> <span class='symbol'>:macosx</span>
+  <span class='id identifier rubyid_raise'>raise</span> <span class='const'>Error</span><span class='op'>::</span><span class='const'>WebDriverError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Unable to find Safari</span><span class='tstring_end'>&#39;</span></span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -261,47 +367,17 @@
       <pre class="lines">
 
 
+27
 28
 29
-30
-31</pre>
+30</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/safari.rb', line 28</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/safari.rb', line 27</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_path='>path=</span><span class='lparen'>(</span><span class='id identifier rubyid_path'>path</span><span class='rparen'>)</span>
   <span class='const'>Platform</span><span class='period'>.</span><span class='id identifier rubyid_assert_executable'>assert_executable</span><span class='lparen'>(</span><span class='id identifier rubyid_path'>path</span><span class='rparen'>)</span>
   <span class='ivar'>@path</span> <span class='op'>=</span> <span class='id identifier rubyid_path'>path</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="resource_path-class_method">
-  
-    + (<tt>Object</tt>) <strong>resource_path</strong> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-52
-53
-54</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/safari.rb', line 52</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_resource_path'>resource_path</span>
-  <span class='ivar'>@resource_path</span> <span class='op'>||=</span> <span class='const'>Pathname</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='const'>File</span><span class='period'>.</span><span class='id identifier rubyid_expand_path'>expand_path</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>../safari/resources</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='kw'>__FILE__</span><span class='rparen'>)</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -313,9 +389,9 @@
 </div>
 
     <div id="footer">
-  Generated on Wed Oct  7 14:18:44 2015 by
+  Generated on Tue Feb 21 07:29:53 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.7.6 (ruby-2.2.2).
+  0.8.7.6 (ruby-2.4.0).
 </div>
 
   </body>

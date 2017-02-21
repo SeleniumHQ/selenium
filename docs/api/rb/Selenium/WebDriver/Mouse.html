@@ -37,7 +37,7 @@
     <span class="title">Mouse</span>
   
 
-  <div class="noframes"><span class="title">(</span><a href="" target="_top">no frames</a><span class="title">)</span></div>
+  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
 </div>
 
       <div id="search">
@@ -352,12 +352,12 @@
       <pre class="lines">
 
 
-30
-31
-32</pre>
+28
+29
+30</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/mouse.rb', line 30</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/mouse.rb', line 28</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_bridge'>bridge</span><span class='rparen'>)</span>
   <span class='ivar'>@bridge</span> <span class='op'>=</span> <span class='id identifier rubyid_bridge'>bridge</span>
@@ -402,13 +402,13 @@
       <pre class="lines">
 
 
+32
+33
 34
-35
-36
-37</pre>
+35</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/mouse.rb', line 34</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/mouse.rb', line 32</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_click'>click</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_move_if_needed'>move_if_needed</span> <span class='id identifier rubyid_element'>element</span>
@@ -447,17 +447,17 @@
       <pre class="lines">
 
 
+42
+43
 44
-45
-46
-47</pre>
+45</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/mouse.rb', line 44</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/mouse.rb', line 42</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_context_click'>context_click</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_move_if_needed'>move_if_needed</span> <span class='id identifier rubyid_element'>element</span>
-  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_contextClick'>contextClick</span>
+  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_context_click'>context_click</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -492,17 +492,17 @@
       <pre class="lines">
 
 
+37
+38
 39
-40
-41
-42</pre>
+40</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/mouse.rb', line 39</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/mouse.rb', line 37</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_double_click'>double_click</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_move_if_needed'>move_if_needed</span> <span class='id identifier rubyid_element'>element</span>
-  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_doubleClick'>doubleClick</span>
+  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_double_click'>double_click</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -537,17 +537,17 @@
       <pre class="lines">
 
 
+47
+48
 49
-50
-51
-52</pre>
+50</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/mouse.rb', line 49</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/mouse.rb', line 47</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_down'>down</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_move_if_needed'>move_if_needed</span> <span class='id identifier rubyid_element'>element</span>
-  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_mouseDown'>mouseDown</span>
+  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_mouse_down'>mouse_down</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -582,15 +582,15 @@
       <pre class="lines">
 
 
-74
-75
-76</pre>
+72
+73
+74</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/mouse.rb', line 74</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/mouse.rb', line 72</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_move_by'>move_by</span><span class='lparen'>(</span><span class='id identifier rubyid_right_by'>right_by</span><span class='comma'>,</span> <span class='id identifier rubyid_down_by'>down_by</span><span class='rparen'>)</span>
-  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_mouseMoveTo'>mouseMoveTo</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='const'>Integer</span><span class='lparen'>(</span><span class='id identifier rubyid_right_by'>right_by</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='const'>Integer</span><span class='lparen'>(</span><span class='id identifier rubyid_down_by'>down_by</span><span class='rparen'>)</span>
+  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_mouse_move_to'>mouse_move_to</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='const'>Integer</span><span class='lparen'>(</span><span class='id identifier rubyid_right_by'>right_by</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='const'>Integer</span><span class='lparen'>(</span><span class='id identifier rubyid_down_by'>down_by</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -633,19 +633,19 @@
       <pre class="lines">
 
 
+66
+67
 68
 69
-70
-71
-72</pre>
+70</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/mouse.rb', line 68</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/mouse.rb', line 66</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_move_to'>move_to</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='comma'>,</span> <span class='id identifier rubyid_right_by'>right_by</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='id identifier rubyid_down_by'>down_by</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_assert_element'>assert_element</span> <span class='id identifier rubyid_element'>element</span>
 
-  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_mouseMoveTo'>mouseMoveTo</span> <span class='id identifier rubyid_element'>element</span><span class='period'>.</span><span class='id identifier rubyid_ref'>ref</span><span class='comma'>,</span> <span class='id identifier rubyid_right_by'>right_by</span><span class='comma'>,</span> <span class='id identifier rubyid_down_by'>down_by</span>
+  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_mouse_move_to'>mouse_move_to</span> <span class='id identifier rubyid_element'>element</span><span class='period'>.</span><span class='id identifier rubyid_ref'>ref</span><span class='comma'>,</span> <span class='id identifier rubyid_right_by'>right_by</span><span class='comma'>,</span> <span class='id identifier rubyid_down_by'>down_by</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -680,17 +680,17 @@
       <pre class="lines">
 
 
+52
+53
 54
-55
-56
-57</pre>
+55</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/mouse.rb', line 54</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/mouse.rb', line 52</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_up'>up</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_move_if_needed'>move_if_needed</span> <span class='id identifier rubyid_element'>element</span>
-  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_mouseUp'>mouseUp</span>
+  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_mouse_up'>mouse_up</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -702,9 +702,9 @@
 </div>
 
     <div id="footer">
-  Generated on Wed Oct  7 14:18:46 2015 by
+  Generated on Tue Feb 21 07:29:54 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.7.6 (ruby-2.2.2).
+  0.8.7.6 (ruby-2.4.0).
 </div>
 
   </body>

@@ -268,12 +268,12 @@
       <pre class="lines">
 
 
+23
 24
-25
-26</pre>
+25</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/navigation.rb', line 24</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/navigation.rb', line 23</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_bridge'>bridge</span><span class='rparen'>)</span>
   <span class='ivar'>@bridge</span> <span class='op'>=</span> <span class='id identifier rubyid_bridge'>bridge</span>
@@ -316,15 +316,15 @@
       <pre class="lines">
 
 
+39
 40
-41
-42</pre>
+41</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/navigation.rb', line 40</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/navigation.rb', line 39</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_back'>back</span>
-  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_goBack'>goBack</span>
+  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_go_back'>go_back</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -357,15 +357,15 @@
       <pre class="lines">
 
 
+47
 48
-49
-50</pre>
+49</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/navigation.rb', line 48</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/navigation.rb', line 47</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_forward'>forward</span>
-  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_goForward'>goForward</span>
+  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_go_forward'>go_forward</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -398,12 +398,12 @@
       <pre class="lines">
 
 
+55
 56
-57
-58</pre>
+57</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/navigation.rb', line 56</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/navigation.rb', line 55</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_refresh'>refresh</span>
   <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_refresh'>refresh</span>
@@ -439,12 +439,12 @@
       <pre class="lines">
 
 
+31
 32
-33
-34</pre>
+33</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/navigation.rb', line 32</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/navigation.rb', line 31</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_to'>to</span><span class='lparen'>(</span><span class='id identifier rubyid_url'>url</span><span class='rparen'>)</span>
   <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_get'>get</span> <span class='id identifier rubyid_url'>url</span>
@@ -459,9 +459,9 @@
 </div>
 
     <div id="footer">
-  Generated on Wed Oct  7 14:18:46 2015 by
+  Generated on Tue Feb 21 07:29:55 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.7.6 (ruby-2.2.2).
+  0.8.7.6 (ruby-2.4.0).
 </div>
 
   </body>

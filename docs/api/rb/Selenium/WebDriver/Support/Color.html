@@ -37,7 +37,7 @@
     <span class="title">Color</span>
   
 
-  <div class="noframes"><span class="title">(</span><a href="" target="_top">no frames</a><span class="title">)</span></div>
+  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
 </div>
 
       <div id="search">
@@ -107,64 +107,57 @@
         <dt id="RGB_PATTERN-constant" class="">RGB_PATTERN =
           
         </dt>
-        <dd><pre class="code"><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>^\s*rgb\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)\s*$</span><span class='regexp_end'>/</span></span></pre></dd>
+        <dd><pre class="code"><span class='tstring'><span class='regexp_beg'>%r{</span><span class='tstring_content'>^\s*rgb\(\s*(\d{1,3})\s*,
+\s*(\d{1,3})\s*,
+\s*(\d{1,3})\s*\)\s*$</span><span class='regexp_end'>}x</span></span></pre></dd>
       
         <dt id="RGB_PCT_PATTERN-constant" class="">RGB_PCT_PATTERN =
           
         </dt>
-        <dd><pre class="code"><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>^\s*rgb\(\s*(\d{1,3}|\d{1,2}\.\d+)%\s*,\s*(\d{1,3}|\d{1,2}\.\d+)%\s*,\s*(\d{1,3}|\d{1,2}\.\d+)%\s*\)\s*$</span><span class='regexp_end'>/</span></span></pre></dd>
+        <dd><pre class="code"><span class='tstring'><span class='regexp_beg'>%r{</span><span class='tstring_content'>^\s*rgb\(\s*(\d{1,3}|\d{1,2}\.\d+)%\s*,
+\s*(\d{1,3}|\d{1,2}\.\d+)%\s*,
+\s*(\d{1,3}|\d{1,2}\.\d+)%\s*\)\s*$</span><span class='regexp_end'>}x</span></span></pre></dd>
       
         <dt id="RGBA_PATTERN-constant" class="">RGBA_PATTERN =
           
         </dt>
-        <dd><pre class="code"><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>^\s*rgba\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(0|1|0\.\d+)\s*\)\s*$</span><span class='regexp_end'>/</span></span></pre></dd>
+        <dd><pre class="code"><span class='tstring'><span class='regexp_beg'>%r{</span><span class='tstring_content'>^\s*rgba\(\s*(\d{1,3})\s*,
+\s*(\d{1,3})\s*,
+\s*(\d{1,3})\s*,
+\s*(0|1|0\.\d+)\s*\)\s*$</span><span class='regexp_end'>}x</span></span></pre></dd>
       
         <dt id="RGBA_PCT_PATTERN-constant" class="">RGBA_PCT_PATTERN =
           
         </dt>
-        <dd><pre class="code"><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>^\s*rgba\(\s*(\d{1,3}|\d{1,2}\.\d+)%\s*,\s*(\d{1,3}|\d{1,2}\.\d+)%\s*,\s*(\d{1,3}|\d{1,2}\.\d+)%\s*,\s*(0|1|0\.\d+)\s*\)\s*$</span><span class='regexp_end'>/</span></span></pre></dd>
+        <dd><pre class="code"><span class='tstring'><span class='regexp_beg'>%r{</span><span class='tstring_content'>^\s*rgba\(\s*(\d{1,3}|\d{1,2}\.\d+)
+%\s*,\s*(\d{1,3}|\d{1,2}\.\d+)
+%\s*,\s*(\d{1,3}|\d{1,2}\.\d+)
+%\s*,\s*(0|1|0\.\d+)\s*\)\s*$</span><span class='regexp_end'>}x</span></span></pre></dd>
       
         <dt id="HEX_PATTERN-constant" class="">HEX_PATTERN =
-          <div class="docstring">
-  <div class="discussion">
-    
-<p>pXDigit or h only works on Ruby 1.9</p>
-
-
-  </div>
-</div>
-<div class="tags">
-  
-
-</div>
+          
         </dt>
-        <dd><pre class="code"><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>#([A-Fa-f0-9]{2})([A-Fa-f0-9]{2})([A-Fa-f0-9]{2})</span><span class='regexp_end'>/</span></span></pre></dd>
+        <dd><pre class="code"><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>#(\h{2})(\h{2})(\h{2})</span><span class='regexp_end'>/</span></span></pre></dd>
       
         <dt id="HEX3_PATTERN-constant" class="">HEX3_PATTERN =
-          <div class="docstring">
-  <div class="discussion">
-    
-<p>pXDigit or h only works on Ruby 1.9</p>
-
-
-  </div>
-</div>
-<div class="tags">
-  
-
-</div>
+          
         </dt>
-        <dd><pre class="code"><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>#([A-Fa-f0-9])([A-Fa-f0-9])([A-Fa-f0-9])</span><span class='regexp_end'>/</span></span></pre></dd>
+        <dd><pre class="code"><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>#(\h)(\h)(\h)</span><span class='regexp_end'>/</span></span></pre></dd>
       
         <dt id="HSL_PATTERN-constant" class="">HSL_PATTERN =
           
         </dt>
-        <dd><pre class="code"><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>^\s*hsl\(\s*(\d{1,3})\s*,\s*(\d{1,3})%\s*,\s*(\d{1,3})%\s*\)\s*$</span><span class='regexp_end'>/</span></span></pre></dd>
+        <dd><pre class="code"><span class='tstring'><span class='regexp_beg'>%r{</span><span class='tstring_content'>^\s*hsl\(\s*(\d{1,3})\s*,
+\s*(\d{1,3})%\s*,
+\s*(\d{1,3})%\s*\)\s*$</span><span class='regexp_end'>}x</span></span></pre></dd>
       
         <dt id="HSLA_PATTERN-constant" class="">HSLA_PATTERN =
           
         </dt>
-        <dd><pre class="code"><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>^\s*hsla\(\s*(\d{1,3})\s*,\s*(\d{1,3})%\s*,\s*(\d{1,3})%\s*,\s*(0|1|0\.\d+)\s*\)\s*$</span><span class='regexp_end'>/</span></span></pre></dd>
+        <dd><pre class="code"><span class='tstring'><span class='regexp_beg'>%r{</span><span class='tstring_content'>^\s*hsla\(\s*(\d{1,3})\s*,
+\s*(\d{1,3})%\s*,
+\s*(\d{1,3})%\s*,
+\s*(0|1|0\.\d+)\s*\)\s*$</span><span class='regexp_end'>}x</span></span></pre></dd>
       
     </dl>
   
@@ -330,6 +323,28 @@
   <span class="summary_signature">
     
       <a href="#from_string-class_method" title="from_string (class method)">+ (Object) <strong>from_string</strong>(str) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#hue_to_rgb-class_method" title="hue_to_rgb (class method)">+ (Object) <strong>hue_to_rgb</strong>(lum1, lum2, hue) </a>
     
 
     
@@ -527,20 +542,20 @@
       <pre class="lines">
 
 
-94
-95
-96
-97
-98
-99</pre>
+112
+113
+114
+115
+116
+117</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/support/color.rb', line 94</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/support/color.rb', line 112</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_red'>red</span><span class='comma'>,</span> <span class='id identifier rubyid_green'>green</span><span class='comma'>,</span> <span class='id identifier rubyid_blue'>blue</span><span class='comma'>,</span> <span class='id identifier rubyid_alpha'>alpha</span> <span class='op'>=</span> <span class='int'>1</span><span class='rparen'>)</span>
-  <span class='ivar'>@red</span>   <span class='op'>=</span> <span class='const'>Integer</span><span class='lparen'>(</span><span class='id identifier rubyid_red'>red</span><span class='rparen'>)</span>
+  <span class='ivar'>@red</span> <span class='op'>=</span> <span class='const'>Integer</span><span class='lparen'>(</span><span class='id identifier rubyid_red'>red</span><span class='rparen'>)</span>
   <span class='ivar'>@green</span> <span class='op'>=</span> <span class='const'>Integer</span><span class='lparen'>(</span><span class='id identifier rubyid_green'>green</span><span class='rparen'>)</span>
-  <span class='ivar'>@blue</span>  <span class='op'>=</span> <span class='const'>Integer</span><span class='lparen'>(</span><span class='id identifier rubyid_blue'>blue</span><span class='rparen'>)</span>
+  <span class='ivar'>@blue</span> <span class='op'>=</span> <span class='const'>Integer</span><span class='lparen'>(</span><span class='id identifier rubyid_blue'>blue</span><span class='rparen'>)</span>
   <span class='ivar'>@alpha</span> <span class='op'>=</span> <span class='const'>Float</span><span class='lparen'>(</span><span class='id identifier rubyid_alpha'>alpha</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -581,12 +596,12 @@
       <pre class="lines">
 
 
-33
-34
-35</pre>
+48
+49
+50</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/support/color.rb', line 33</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/support/color.rb', line 48</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_alpha'>alpha</span>
   <span class='ivar'>@alpha</span>
@@ -624,12 +639,12 @@
       <pre class="lines">
 
 
-33
-34
-35</pre>
+48
+49
+50</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/support/color.rb', line 33</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/support/color.rb', line 48</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_blue'>blue</span>
   <span class='ivar'>@blue</span>
@@ -667,12 +682,12 @@
       <pre class="lines">
 
 
-33
-34
-35</pre>
+48
+49
+50</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/support/color.rb', line 33</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/support/color.rb', line 48</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_green'>green</span>
   <span class='ivar'>@green</span>
@@ -710,12 +725,12 @@
       <pre class="lines">
 
 
-33
-34
-35</pre>
+48
+49
+50</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/support/color.rb', line 33</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/support/color.rb', line 48</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_red'>red</span>
   <span class='ivar'>@red</span>
@@ -747,25 +762,6 @@
       <pre class="lines">
 
 
-56
-57
-58
-59
-60
-61
-62
-63
-64
-65
-66
-67
-68
-69
-70
-71
-72
-73
-74
 75
 76
 77
@@ -782,10 +778,14 @@
 88
 89
 90
-91</pre>
+91
+92
+93
+94
+95</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/support/color.rb', line 56</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/support/color.rb', line 75</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_from_hsl'>from_hsl</span><span class='lparen'>(</span><span class='id identifier rubyid_h'>h</span><span class='comma'>,</span> <span class='id identifier rubyid_s'>s</span><span class='comma'>,</span> <span class='id identifier rubyid_l'>l</span><span class='comma'>,</span> <span class='id identifier rubyid_a'>a</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_h'>h</span> <span class='op'>=</span> <span class='const'>Float</span><span class='lparen'>(</span><span class='id identifier rubyid_h'>h</span><span class='rparen'>)</span> <span class='op'>/</span> <span class='int'>360</span>
@@ -801,24 +801,9 @@
     <span class='id identifier rubyid_luminocity2'>luminocity2</span> <span class='op'>=</span> <span class='lparen'>(</span><span class='id identifier rubyid_l'>l</span> <span class='op'>&lt;</span> <span class='float'>0.5</span><span class='rparen'>)</span> <span class='op'>?</span> <span class='id identifier rubyid_l'>l</span> <span class='op'>*</span> <span class='lparen'>(</span><span class='int'>1</span> <span class='op'>+</span> <span class='id identifier rubyid_s'>s</span><span class='rparen'>)</span> <span class='op'>:</span> <span class='id identifier rubyid_l'>l</span> <span class='op'>+</span> <span class='id identifier rubyid_s'>s</span> <span class='op'>-</span> <span class='id identifier rubyid_l'>l</span> <span class='op'>*</span> <span class='id identifier rubyid_s'>s</span>
     <span class='id identifier rubyid_luminocity1'>luminocity1</span> <span class='op'>=</span> <span class='int'>2</span> <span class='op'>*</span> <span class='id identifier rubyid_l'>l</span> <span class='op'>-</span> <span class='id identifier rubyid_luminocity2'>luminocity2</span>
 
-    <span class='id identifier rubyid_hue_to_rgb'>hue_to_rgb</span> <span class='op'>=</span> <span class='id identifier rubyid_lambda'>lambda</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_lum1'>lum1</span><span class='comma'>,</span> <span class='id identifier rubyid_lum2'>lum2</span><span class='comma'>,</span> <span class='id identifier rubyid_hue'>hue</span><span class='op'>|</span>
-      <span class='id identifier rubyid_hue'>hue</span> <span class='op'>+=</span> <span class='int'>1</span> <span class='kw'>if</span> <span class='id identifier rubyid_hue'>hue</span> <span class='op'>&lt;</span> <span class='float'>0.0</span>
-      <span class='id identifier rubyid_hue'>hue</span> <span class='op'>-=</span> <span class='int'>1</span> <span class='kw'>if</span> <span class='id identifier rubyid_hue'>hue</span> <span class='op'>&gt;</span> <span class='float'>1.0</span>
-
-      <span class='kw'>if</span> <span class='id identifier rubyid_hue'>hue</span> <span class='op'>&lt;</span> <span class='float'>1.0</span> <span class='op'>/</span> <span class='float'>6.0</span>
-         <span class='lparen'>(</span><span class='id identifier rubyid_lum1'>lum1</span> <span class='op'>+</span> <span class='lparen'>(</span><span class='id identifier rubyid_lum2'>lum2</span> <span class='op'>-</span> <span class='id identifier rubyid_lum1'>lum1</span><span class='rparen'>)</span> <span class='op'>*</span> <span class='float'>6.0</span> <span class='op'>*</span> <span class='id identifier rubyid_hue'>hue</span><span class='rparen'>)</span>
-      <span class='kw'>elsif</span>  <span class='id identifier rubyid_hue'>hue</span> <span class='op'>&lt;</span> <span class='float'>1.0</span> <span class='op'>/</span> <span class='float'>2.0</span>
-         <span class='id identifier rubyid_lum2'>lum2</span>
-      <span class='kw'>elsif</span> <span class='id identifier rubyid_hue'>hue</span> <span class='op'>&lt;</span> <span class='float'>2.0</span> <span class='op'>/</span> <span class='float'>3.0</span>
-        <span class='id identifier rubyid_lum1'>lum1</span> <span class='op'>+</span> <span class='lparen'>(</span><span class='id identifier rubyid_lum2'>lum2</span> <span class='op'>-</span> <span class='id identifier rubyid_lum1'>lum1</span><span class='rparen'>)</span> <span class='op'>*</span> <span class='lparen'>(</span><span class='lparen'>(</span><span class='float'>2.0</span> <span class='op'>/</span> <span class='float'>3.0</span><span class='rparen'>)</span> <span class='op'>-</span> <span class='id identifier rubyid_hue'>hue</span><span class='rparen'>)</span> <span class='op'>*</span> <span class='float'>6.0</span>
-      <span class='kw'>else</span>
-        <span class='id identifier rubyid_lum1'>lum1</span>
-      <span class='kw'>end</span>
-    <span class='kw'>end</span>
-
-    <span class='id identifier rubyid_r'>r</span> <span class='op'>=</span> <span class='id identifier rubyid_hue_to_rgb'>hue_to_rgb</span><span class='period'>.</span><span class='id identifier rubyid_call'>call</span><span class='lparen'>(</span><span class='id identifier rubyid_luminocity1'>luminocity1</span><span class='comma'>,</span> <span class='id identifier rubyid_luminocity2'>luminocity2</span><span class='comma'>,</span> <span class='id identifier rubyid_h'>h</span> <span class='op'>+</span> <span class='float'>1.0</span> <span class='op'>/</span> <span class='float'>3.0</span><span class='rparen'>)</span>
-    <span class='id identifier rubyid_g'>g</span> <span class='op'>=</span> <span class='id identifier rubyid_hue_to_rgb'>hue_to_rgb</span><span class='period'>.</span><span class='id identifier rubyid_call'>call</span><span class='lparen'>(</span><span class='id identifier rubyid_luminocity1'>luminocity1</span><span class='comma'>,</span> <span class='id identifier rubyid_luminocity2'>luminocity2</span><span class='comma'>,</span> <span class='id identifier rubyid_h'>h</span><span class='rparen'>)</span>
-    <span class='id identifier rubyid_b'>b</span> <span class='op'>=</span> <span class='id identifier rubyid_hue_to_rgb'>hue_to_rgb</span><span class='period'>.</span><span class='id identifier rubyid_call'>call</span><span class='lparen'>(</span><span class='id identifier rubyid_luminocity1'>luminocity1</span><span class='comma'>,</span> <span class='id identifier rubyid_luminocity2'>luminocity2</span><span class='comma'>,</span> <span class='id identifier rubyid_h'>h</span> <span class='op'>-</span> <span class='float'>1.0</span> <span class='op'>/</span> <span class='float'>3.0</span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_r'>r</span> <span class='op'>=</span> <span class='id identifier rubyid_hue_to_rgb'>hue_to_rgb</span><span class='lparen'>(</span><span class='id identifier rubyid_luminocity1'>luminocity1</span><span class='comma'>,</span> <span class='id identifier rubyid_luminocity2'>luminocity2</span><span class='comma'>,</span> <span class='id identifier rubyid_h'>h</span> <span class='op'>+</span> <span class='float'>1.0</span> <span class='op'>/</span> <span class='float'>3.0</span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_g'>g</span> <span class='op'>=</span> <span class='id identifier rubyid_hue_to_rgb'>hue_to_rgb</span><span class='lparen'>(</span><span class='id identifier rubyid_luminocity1'>luminocity1</span><span class='comma'>,</span> <span class='id identifier rubyid_luminocity2'>luminocity2</span><span class='comma'>,</span> <span class='id identifier rubyid_h'>h</span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_b'>b</span> <span class='op'>=</span> <span class='id identifier rubyid_hue_to_rgb'>hue_to_rgb</span><span class='lparen'>(</span><span class='id identifier rubyid_luminocity1'>luminocity1</span><span class='comma'>,</span> <span class='id identifier rubyid_luminocity2'>luminocity2</span><span class='comma'>,</span> <span class='id identifier rubyid_h'>h</span> <span class='op'>-</span> <span class='float'>1.0</span> <span class='op'>/</span> <span class='float'>3.0</span><span class='rparen'>)</span>
   <span class='kw'>end</span>
 
   <span class='id identifier rubyid_new'>new</span> <span class='lparen'>(</span><span class='id identifier rubyid_r'>r</span> <span class='op'>*</span> <span class='int'>255</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_round'>round</span><span class='comma'>,</span> <span class='lparen'>(</span><span class='id identifier rubyid_g'>g</span> <span class='op'>*</span> <span class='int'>255</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_round'>round</span><span class='comma'>,</span> <span class='lparen'>(</span><span class='id identifier rubyid_b'>b</span> <span class='op'>*</span> <span class='int'>255</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_round'>round</span><span class='comma'>,</span> <span class='id identifier rubyid_a'>a</span>
@@ -843,48 +828,108 @@
       <pre class="lines">
 
 
-35
-36
-37
-38
-39
-40
-41
-42
-43
-44
-45
-46
-47
-48
-49
 50
 51
 52
 53
-54</pre>
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/support/color.rb', line 35</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/support/color.rb', line 50</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_from_string'>from_string</span><span class='lparen'>(</span><span class='id identifier rubyid_str'>str</span><span class='rparen'>)</span>
   <span class='kw'>case</span> <span class='id identifier rubyid_str'>str</span>
   <span class='kw'>when</span> <span class='const'>RGB_PATTERN</span>
-    <span class='id identifier rubyid_new'>new</span> <span class='backref'>$1</span><span class='comma'>,</span> <span class='backref'>$2</span><span class='comma'>,</span> <span class='backref'>$3</span>
+    <span class='id identifier rubyid_new'>new</span> <span class='const'>Regexp</span><span class='period'>.</span><span class='id identifier rubyid_last_match'>last_match</span><span class='lparen'>(</span><span class='int'>1</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='const'>Regexp</span><span class='period'>.</span><span class='id identifier rubyid_last_match'>last_match</span><span class='lparen'>(</span><span class='int'>2</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='const'>Regexp</span><span class='period'>.</span><span class='id identifier rubyid_last_match'>last_match</span><span class='lparen'>(</span><span class='int'>3</span><span class='rparen'>)</span>
   <span class='kw'>when</span> <span class='const'>RGB_PCT_PATTERN</span>
-    <span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='op'>*</span><span class='lbracket'>[</span><span class='backref'>$1</span><span class='comma'>,</span> <span class='backref'>$2</span><span class='comma'>,</span> <span class='backref'>$3</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_e'>e</span><span class='op'>|</span> <span class='const'>Float</span><span class='lparen'>(</span><span class='id identifier rubyid_e'>e</span><span class='rparen'>)</span> <span class='op'>/</span> <span class='int'>100</span> <span class='op'>*</span> <span class='int'>255</span> <span class='rbrace'>}</span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_array'>array</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='const'>Regexp</span><span class='period'>.</span><span class='id identifier rubyid_last_match'>last_match</span><span class='lparen'>(</span><span class='int'>1</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='const'>Regexp</span><span class='period'>.</span><span class='id identifier rubyid_last_match'>last_match</span><span class='lparen'>(</span><span class='int'>2</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='const'>Regexp</span><span class='period'>.</span><span class='id identifier rubyid_last_match'>last_match</span><span class='lparen'>(</span><span class='int'>3</span><span class='rparen'>)</span><span class='rbracket'>]</span>
+    <span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_array'>array</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_e'>e</span><span class='op'>|</span> <span class='const'>Float</span><span class='lparen'>(</span><span class='id identifier rubyid_e'>e</span><span class='rparen'>)</span> <span class='op'>/</span> <span class='int'>100</span> <span class='op'>*</span> <span class='int'>255</span> <span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='kw'>when</span> <span class='const'>RGBA_PATTERN</span>
-    <span class='id identifier rubyid_new'>new</span> <span class='backref'>$1</span><span class='comma'>,</span> <span class='backref'>$2</span><span class='comma'>,</span> <span class='backref'>$3</span><span class='comma'>,</span> <span class='backref'>$4</span>
+    <span class='id identifier rubyid_new'>new</span> <span class='const'>Regexp</span><span class='period'>.</span><span class='id identifier rubyid_last_match'>last_match</span><span class='lparen'>(</span><span class='int'>1</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='const'>Regexp</span><span class='period'>.</span><span class='id identifier rubyid_last_match'>last_match</span><span class='lparen'>(</span><span class='int'>2</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='const'>Regexp</span><span class='period'>.</span><span class='id identifier rubyid_last_match'>last_match</span><span class='lparen'>(</span><span class='int'>3</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='const'>Regexp</span><span class='period'>.</span><span class='id identifier rubyid_last_match'>last_match</span><span class='lparen'>(</span><span class='int'>4</span><span class='rparen'>)</span>
   <span class='kw'>when</span> <span class='const'>RGBA_PCT_PATTERN</span>
-    <span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='op'>*</span><span class='lbracket'>[</span><span class='backref'>$1</span><span class='comma'>,</span> <span class='backref'>$2</span><span class='comma'>,</span> <span class='backref'>$3</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_e'>e</span><span class='op'>|</span> <span class='const'>Float</span><span class='lparen'>(</span><span class='id identifier rubyid_e'>e</span><span class='rparen'>)</span> <span class='op'>/</span> <span class='int'>100</span> <span class='op'>*</span> <span class='int'>255</span> <span class='rbrace'>}</span> <span class='op'>&lt;&lt;</span> <span class='backref'>$4</span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_array'>array</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='const'>Regexp</span><span class='period'>.</span><span class='id identifier rubyid_last_match'>last_match</span><span class='lparen'>(</span><span class='int'>1</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='const'>Regexp</span><span class='period'>.</span><span class='id identifier rubyid_last_match'>last_match</span><span class='lparen'>(</span><span class='int'>2</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='const'>Regexp</span><span class='period'>.</span><span class='id identifier rubyid_last_match'>last_match</span><span class='lparen'>(</span><span class='int'>3</span><span class='rparen'>)</span><span class='rbracket'>]</span>
+    <span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_array'>array</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_e'>e</span><span class='op'>|</span> <span class='const'>Float</span><span class='lparen'>(</span><span class='id identifier rubyid_e'>e</span><span class='rparen'>)</span> <span class='op'>/</span> <span class='int'>100</span> <span class='op'>*</span> <span class='int'>255</span> <span class='rbrace'>}</span> <span class='op'>&lt;&lt;</span> <span class='const'>Regexp</span><span class='period'>.</span><span class='id identifier rubyid_last_match'>last_match</span><span class='lparen'>(</span><span class='int'>4</span><span class='rparen'>)</span><span class='rparen'>)</span>
   <span class='kw'>when</span> <span class='const'>HEX_PATTERN</span>
-    <span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='op'>*</span><span class='lbracket'>[</span><span class='backref'>$1</span><span class='comma'>,</span> <span class='backref'>$2</span><span class='comma'>,</span> <span class='backref'>$3</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_e'>e</span><span class='op'>|</span> <span class='id identifier rubyid_e'>e</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span><span class='lparen'>(</span><span class='int'>16</span><span class='rparen'>)</span> <span class='rbrace'>}</span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_array'>array</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='const'>Regexp</span><span class='period'>.</span><span class='id identifier rubyid_last_match'>last_match</span><span class='lparen'>(</span><span class='int'>1</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='const'>Regexp</span><span class='period'>.</span><span class='id identifier rubyid_last_match'>last_match</span><span class='lparen'>(</span><span class='int'>2</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='const'>Regexp</span><span class='period'>.</span><span class='id identifier rubyid_last_match'>last_match</span><span class='lparen'>(</span><span class='int'>3</span><span class='rparen'>)</span><span class='rbracket'>]</span>
+    <span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_array'>array</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_e'>e</span><span class='op'>|</span> <span class='id identifier rubyid_e'>e</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span><span class='lparen'>(</span><span class='int'>16</span><span class='rparen'>)</span> <span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='kw'>when</span> <span class='const'>HEX3_PATTERN</span>
-    <span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='op'>*</span><span class='lbracket'>[</span><span class='backref'>$1</span><span class='comma'>,</span> <span class='backref'>$2</span><span class='comma'>,</span> <span class='backref'>$3</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_e'>e</span><span class='op'>|</span> <span class='lparen'>(</span><span class='id identifier rubyid_e'>e</span> <span class='op'>*</span> <span class='int'>2</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span><span class='lparen'>(</span><span class='int'>16</span><span class='rparen'>)</span> <span class='rbrace'>}</span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_array'>array</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='const'>Regexp</span><span class='period'>.</span><span class='id identifier rubyid_last_match'>last_match</span><span class='lparen'>(</span><span class='int'>1</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='const'>Regexp</span><span class='period'>.</span><span class='id identifier rubyid_last_match'>last_match</span><span class='lparen'>(</span><span class='int'>2</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='const'>Regexp</span><span class='period'>.</span><span class='id identifier rubyid_last_match'>last_match</span><span class='lparen'>(</span><span class='int'>3</span><span class='rparen'>)</span><span class='rbracket'>]</span>
+    <span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_array'>array</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_e'>e</span><span class='op'>|</span> <span class='lparen'>(</span><span class='id identifier rubyid_e'>e</span> <span class='op'>*</span> <span class='int'>2</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span><span class='lparen'>(</span><span class='int'>16</span><span class='rparen'>)</span> <span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='kw'>when</span> <span class='const'>HSL_PATTERN</span><span class='comma'>,</span> <span class='const'>HSLA_PATTERN</span>
-    <span class='id identifier rubyid_from_hsl'>from_hsl</span><span class='lparen'>(</span><span class='backref'>$1</span><span class='comma'>,</span> <span class='backref'>$2</span><span class='comma'>,</span> <span class='backref'>$3</span><span class='comma'>,</span> <span class='backref'>$4</span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_from_hsl'>from_hsl</span><span class='lparen'>(</span><span class='const'>Regexp</span><span class='period'>.</span><span class='id identifier rubyid_last_match'>last_match</span><span class='lparen'>(</span><span class='int'>1</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='const'>Regexp</span><span class='period'>.</span><span class='id identifier rubyid_last_match'>last_match</span><span class='lparen'>(</span><span class='int'>2</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='const'>Regexp</span><span class='period'>.</span><span class='id identifier rubyid_last_match'>last_match</span><span class='lparen'>(</span><span class='int'>3</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='const'>Regexp</span><span class='period'>.</span><span class='id identifier rubyid_last_match'>last_match</span><span class='lparen'>(</span><span class='int'>4</span><span class='rparen'>)</span><span class='rparen'>)</span>
   <span class='kw'>else</span>
     <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>could not convert </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_str'>str</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_content'> into color</span><span class='tstring_end'>&quot;</span></span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="hue_to_rgb-class_method">
+  
+    + (<tt>Object</tt>) <strong>hue_to_rgb</strong>(lum1, lum2, hue) 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/support/color.rb', line 97</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_hue_to_rgb'>hue_to_rgb</span><span class='lparen'>(</span><span class='id identifier rubyid_lum1'>lum1</span><span class='comma'>,</span> <span class='id identifier rubyid_lum2'>lum2</span><span class='comma'>,</span> <span class='id identifier rubyid_hue'>hue</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_hue'>hue</span> <span class='op'>+=</span> <span class='int'>1</span> <span class='kw'>if</span> <span class='id identifier rubyid_hue'>hue</span> <span class='op'>&lt;</span> <span class='float'>0.0</span>
+  <span class='id identifier rubyid_hue'>hue</span> <span class='op'>-=</span> <span class='int'>1</span> <span class='kw'>if</span> <span class='id identifier rubyid_hue'>hue</span> <span class='op'>&gt;</span> <span class='float'>1.0</span>
+
+  <span class='kw'>if</span> <span class='id identifier rubyid_hue'>hue</span> <span class='op'>&lt;</span> <span class='float'>1.0</span> <span class='op'>/</span> <span class='float'>6.0</span>
+    <span class='lparen'>(</span><span class='id identifier rubyid_lum1'>lum1</span> <span class='op'>+</span> <span class='lparen'>(</span><span class='id identifier rubyid_lum2'>lum2</span> <span class='op'>-</span> <span class='id identifier rubyid_lum1'>lum1</span><span class='rparen'>)</span> <span class='op'>*</span> <span class='float'>6.0</span> <span class='op'>*</span> <span class='id identifier rubyid_hue'>hue</span><span class='rparen'>)</span>
+  <span class='kw'>elsif</span> <span class='id identifier rubyid_hue'>hue</span> <span class='op'>&lt;</span> <span class='float'>1.0</span> <span class='op'>/</span> <span class='float'>2.0</span>
+    <span class='id identifier rubyid_lum2'>lum2</span>
+  <span class='kw'>elsif</span> <span class='id identifier rubyid_hue'>hue</span> <span class='op'>&lt;</span> <span class='float'>2.0</span> <span class='op'>/</span> <span class='float'>3.0</span>
+    <span class='id identifier rubyid_lum1'>lum1</span> <span class='op'>+</span> <span class='lparen'>(</span><span class='id identifier rubyid_lum2'>lum2</span> <span class='op'>-</span> <span class='id identifier rubyid_lum1'>lum1</span><span class='rparen'>)</span> <span class='op'>*</span> <span class='lparen'>(</span><span class='lparen'>(</span><span class='float'>2.0</span> <span class='op'>/</span> <span class='float'>3.0</span><span class='rparen'>)</span> <span class='op'>-</span> <span class='id identifier rubyid_hue'>hue</span><span class='rparen'>)</span> <span class='op'>*</span> <span class='float'>6.0</span>
+  <span class='kw'>else</span>
+    <span class='id identifier rubyid_lum1'>lum1</span>
   <span class='kw'>end</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -917,19 +962,19 @@
       <pre class="lines">
 
 
-101
-102
-103
-104
-105
-106</pre>
+119
+120
+121
+122
+123
+124</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/support/color.rb', line 101</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/support/color.rb', line 119</span>
 
 <span class='kw'>def</span> <span class='op'>==</span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='kw'>true</span> <span class='kw'>if</span> <span class='id identifier rubyid_equal?'>equal?</span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
-  <span class='kw'>return</span> <span class='kw'>false</span> <span class='kw'>unless</span> <span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_kind_of?'>kind_of?</span><span class='lparen'>(</span><span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='rparen'>)</span>
+  <span class='kw'>return</span> <span class='kw'>false</span> <span class='kw'>unless</span> <span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='rparen'>)</span>
 
   <span class='lbracket'>[</span><span class='id identifier rubyid_red'>red</span><span class='comma'>,</span> <span class='id identifier rubyid_green'>green</span><span class='comma'>,</span> <span class='id identifier rubyid_blue'>blue</span><span class='comma'>,</span> <span class='id identifier rubyid_alpha'>alpha</span><span class='rbracket'>]</span> <span class='op'>==</span> <span class='lbracket'>[</span><span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_red'>red</span><span class='comma'>,</span> <span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_green'>green</span><span class='comma'>,</span> <span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_blue'>blue</span><span class='comma'>,</span> <span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_alpha'>alpha</span><span class='rbracket'>]</span>
 <span class='kw'>end</span></pre>
@@ -953,12 +998,12 @@
       <pre class="lines">
 
 
-109
-110
-111</pre>
+127
+128
+129</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/support/color.rb', line 109</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/support/color.rb', line 127</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_hash'>hash</span>
   <span class='lbracket'>[</span><span class='id identifier rubyid_red'>red</span><span class='comma'>,</span> <span class='id identifier rubyid_green'>green</span><span class='comma'>,</span> <span class='id identifier rubyid_blue'>blue</span><span class='comma'>,</span> <span class='id identifier rubyid_alpha'>alpha</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_hash'>hash</span> <span class='op'>^</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='period'>.</span><span class='id identifier rubyid_hash'>hash</span>
@@ -983,15 +1028,15 @@
       <pre class="lines">
 
 
-122
-123
-124</pre>
+140
+141
+142</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/support/color.rb', line 122</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/support/color.rb', line 140</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_hex'>hex</span>
-  <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>#%02x%02x%02x</span><span class='tstring_end'>&quot;</span></span> <span class='op'>%</span> <span class='lbracket'>[</span><span class='id identifier rubyid_red'>red</span><span class='comma'>,</span> <span class='id identifier rubyid_green'>green</span><span class='comma'>,</span> <span class='id identifier rubyid_blue'>blue</span><span class='rbracket'>]</span>
+  <span class='id identifier rubyid_format'>format</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>#%02x%02x%02x</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='id identifier rubyid_red'>red</span><span class='comma'>,</span> <span class='id identifier rubyid_green'>green</span><span class='comma'>,</span> <span class='id identifier rubyid_blue'>blue</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -1013,12 +1058,12 @@
       <pre class="lines">
 
 
-113
-114
-115</pre>
+131
+132
+133</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/support/color.rb', line 113</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/support/color.rb', line 131</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_rgb'>rgb</span>
   <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>rgb(</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_red'>red</span><span class='embexpr_end'>}</span><span class='tstring_content'>, </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_green'>green</span><span class='embexpr_end'>}</span><span class='tstring_content'>, </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_blue'>blue</span><span class='embexpr_end'>}</span><span class='tstring_content'>)</span><span class='tstring_end'>&quot;</span></span>
@@ -1043,13 +1088,13 @@
       <pre class="lines">
 
 
-117
-118
-119
-120</pre>
+135
+136
+137
+138</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/support/color.rb', line 117</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/support/color.rb', line 135</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_rgba'>rgba</span>
   <span class='id identifier rubyid_a'>a</span> <span class='op'>=</span> <span class='id identifier rubyid_alpha'>alpha</span> <span class='op'>==</span> <span class='int'>1</span> <span class='op'>?</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>1</span><span class='tstring_end'>&#39;</span></span> <span class='op'>:</span> <span class='id identifier rubyid_alpha'>alpha</span>
@@ -1065,9 +1110,9 @@
 </div>
 
     <div id="footer">
-  Generated on Wed Oct  7 14:18:49 2015 by
+  Generated on Tue Feb 21 07:29:55 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.7.6 (ruby-2.2.2).
+  0.8.7.6 (ruby-2.4.0).
 </div>
 
   </body>

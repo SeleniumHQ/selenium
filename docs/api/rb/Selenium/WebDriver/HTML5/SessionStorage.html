@@ -37,7 +37,7 @@
     <span class="title">SessionStorage</span>
   
 
-  <div class="noframes"><span class="title">(</span><a href="" target="_top">no frames</a><span class="title">)</span></div>
+  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
 </div>
 
       <div id="search">
@@ -325,12 +325,12 @@
       <pre class="lines">
 
 
+55
 56
-57
-58</pre>
+57</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/html5/session_storage.rb', line 56</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/html5/session_storage.rb', line 55</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_bridge'>bridge</span><span class='rparen'>)</span>
   <span class='ivar'>@bridge</span> <span class='op'>=</span> <span class='id identifier rubyid_bridge'>bridge</span>
@@ -362,15 +362,15 @@
       <pre class="lines">
 
 
+27
 28
-29
-30</pre>
+29</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/html5/session_storage.rb', line 28</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/html5/session_storage.rb', line 27</span>
 
 <span class='kw'>def</span> <span class='op'>[]</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='rparen'>)</span>
-  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_getSessionStorageItem'>getSessionStorageItem</span> <span class='id identifier rubyid_key'>key</span>
+  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_session_storage_item'>session_storage_item</span> <span class='id identifier rubyid_key'>key</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -392,15 +392,15 @@
       <pre class="lines">
 
 
+31
 32
-33
-34</pre>
+33</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/html5/session_storage.rb', line 32</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/html5/session_storage.rb', line 31</span>
 
 <span class='kw'>def</span> <span class='op'>[]=</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='comma'>,</span> <span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
-  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_setSessionStorageItem'>setSessionStorageItem</span> <span class='id identifier rubyid_key'>key</span><span class='comma'>,</span> <span class='id identifier rubyid_value'>value</span>
+  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_session_storage_item'>session_storage_item</span> <span class='id identifier rubyid_key'>key</span><span class='comma'>,</span> <span class='id identifier rubyid_value'>value</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -422,15 +422,15 @@
       <pre class="lines">
 
 
+39
 40
-41
-42</pre>
+41</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/html5/session_storage.rb', line 40</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/html5/session_storage.rb', line 39</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_clear'>clear</span>
-  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_clearSessionStorage'>clearSessionStorage</span>
+  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_clear_session_storage'>clear_session_storage</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -452,15 +452,15 @@
       <pre class="lines">
 
 
+35
 36
-37
-38</pre>
+37</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/html5/session_storage.rb', line 36</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/html5/session_storage.rb', line 35</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='rparen'>)</span>
-  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_removeSessionStorageItem'>removeSessionStorageItem</span> <span class='id identifier rubyid_key'>key</span>
+  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_remove_session_storage_item'>remove_session_storage_item</span> <span class='id identifier rubyid_key'>key</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -482,15 +482,15 @@
       <pre class="lines">
 
 
+47
 48
-49
-50</pre>
+49</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/html5/session_storage.rb', line 48</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/html5/session_storage.rb', line 47</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_keys'>keys</span>
-  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_getSessionStorageKeys'>getSessionStorageKeys</span><span class='period'>.</span><span class='id identifier rubyid_reverse'>reverse</span>
+  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_session_storage_keys'>session_storage_keys</span><span class='period'>.</span><span class='id identifier rubyid_reverse'>reverse</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -512,15 +512,15 @@
       <pre class="lines">
 
 
+43
 44
-45
-46</pre>
+45</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/html5/session_storage.rb', line 44</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/html5/session_storage.rb', line 43</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_size'>size</span>
-  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_getSessionStorageSize'>getSessionStorageSize</span>
+  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_session_storage_size'>session_storage_size</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -532,9 +532,9 @@
 </div>
 
     <div id="footer">
-  Generated on Wed Oct  7 14:18:46 2015 by
+  Generated on Tue Feb 21 07:29:57 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.7.6 (ruby-2.2.2).
+  0.8.7.6 (ruby-2.4.0).
 </div>
 
   </body>

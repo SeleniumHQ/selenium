@@ -37,7 +37,7 @@
     <span class="title">Alert</span>
   
 
-  <div class="noframes"><span class="title">(</span><a href="" target="_top">no frames</a><span class="title">)</span></div>
+  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
 </div>
 
       <div id="search">
@@ -118,6 +118,28 @@
   <span class="summary_signature">
     
       <a href="#accept-instance_method" title="#accept (instance method)">- (Object) <strong>accept</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#authenticate-instance_method" title="#authenticate (instance method)">- (Object) <strong>authenticate</strong>(username, password) </a>
     
 
     
@@ -260,21 +282,21 @@
       <pre class="lines">
 
 
+23
 24
 25
 26
 27
-28
-29</pre>
+28</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/alert.rb', line 24</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/alert.rb', line 23</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_bridge'>bridge</span><span class='rparen'>)</span>
   <span class='ivar'>@bridge</span> <span class='op'>=</span> <span class='id identifier rubyid_bridge'>bridge</span>
 
   <span class='comment'># fail fast if the alert doesn&#39;t exist
-</span>  <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_getAlertText'>getAlertText</span>
+</span>  <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_alert_text'>alert_text</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -303,15 +325,47 @@
       <pre class="lines">
 
 
+30
 31
-32
-33</pre>
+32</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/alert.rb', line 31</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/alert.rb', line 30</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_accept'>accept</span>
-  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_acceptAlert'>acceptAlert</span>
+  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_accept_alert'>accept_alert</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="authenticate-instance_method">
+  
+    - (<tt>Object</tt>) <strong>authenticate</strong>(username, password) 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+46
+47
+48
+49</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/alert.rb', line 46</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_authenticate'>authenticate</span><span class='lparen'>(</span><span class='id identifier rubyid_username'>username</span><span class='comma'>,</span> <span class='id identifier rubyid_password'>password</span><span class='rparen'>)</span>
+  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_authentication'>authentication</span><span class='lparen'>(</span><span class='label'>username:</span> <span class='id identifier rubyid_username'>username</span><span class='comma'>,</span> <span class='label'>password:</span> <span class='id identifier rubyid_password'>password</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_accept'>accept</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -333,15 +387,15 @@
       <pre class="lines">
 
 
+34
 35
-36
-37</pre>
+36</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/alert.rb', line 35</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/alert.rb', line 34</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_dismiss'>dismiss</span>
-  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_dismissAlert'>dismissAlert</span>
+  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_dismiss_alert'>dismiss_alert</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -363,15 +417,15 @@
       <pre class="lines">
 
 
+38
 39
-40
-41</pre>
+40</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/alert.rb', line 39</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/alert.rb', line 38</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_send_keys'>send_keys</span><span class='lparen'>(</span><span class='id identifier rubyid_keys'>keys</span><span class='rparen'>)</span>
-  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_setAlertValue'>setAlertValue</span> <span class='id identifier rubyid_keys'>keys</span>
+  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_alert'>alert</span> <span class='op'>=</span> <span class='id identifier rubyid_keys'>keys</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -393,15 +447,15 @@
       <pre class="lines">
 
 
+42
 43
-44
-45</pre>
+44</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/alert.rb', line 43</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/alert.rb', line 42</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_text'>text</span>
-  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_getAlertText'>getAlertText</span>
+  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_alert_text'>alert_text</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -413,9 +467,9 @@
 </div>
 
     <div id="footer">
-  Generated on Wed Oct  7 14:18:45 2015 by
+  Generated on Tue Feb 21 07:29:54 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.7.6 (ruby-2.2.2).
+  0.8.7.6 (ruby-2.4.0).
 </div>
 
   </body>

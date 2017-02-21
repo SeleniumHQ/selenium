@@ -37,7 +37,7 @@
     <span class="title">Logs</span>
   
 
-  <div class="noframes"><span class="title">(</span><a href="" target="_top">no frames</a><span class="title">)</span></div>
+  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
 </div>
 
       <div id="search">
@@ -220,12 +220,12 @@
       <pre class="lines">
 
 
+27
 28
-29
-30</pre>
+29</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/logs.rb', line 28</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/logs.rb', line 27</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_bridge'>bridge</span><span class='rparen'>)</span>
   <span class='ivar'>@bridge</span> <span class='op'>=</span> <span class='id identifier rubyid_bridge'>bridge</span>
@@ -257,15 +257,15 @@
       <pre class="lines">
 
 
+35
 36
-37
-38</pre>
+37</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/logs.rb', line 36</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/logs.rb', line 35</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_available_types'>available_types</span>
-  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_getAvailableLogTypes'>getAvailableLogTypes</span>
+  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_available_log_types'>available_log_types</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -287,15 +287,15 @@
       <pre class="lines">
 
 
+31
 32
-33
-34</pre>
+33</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/logs.rb', line 32</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/logs.rb', line 31</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_get'>get</span><span class='lparen'>(</span><span class='id identifier rubyid_type'>type</span><span class='rparen'>)</span>
-  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_getLog'>getLog</span> <span class='id identifier rubyid_type'>type</span>
+  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_log'>log</span> <span class='id identifier rubyid_type'>type</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -307,9 +307,9 @@
 </div>
 
     <div id="footer">
-  Generated on Wed Oct  7 14:18:46 2015 by
+  Generated on Tue Feb 21 07:29:53 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.7.6 (ruby-2.2.2).
+  0.8.7.6 (ruby-2.4.0).
 </div>
 
   </body>

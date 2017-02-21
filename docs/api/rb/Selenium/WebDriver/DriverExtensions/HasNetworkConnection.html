@@ -207,7 +207,7 @@
       <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/driver_extensions/has_network_connection.rb', line 24</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_network_connection_type'>network_connection_type</span>
-  <span class='id identifier rubyid_connection_value'>connection_value</span> <span class='op'>=</span> <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_getNetworkConnection'>getNetworkConnection</span>
+  <span class='id identifier rubyid_connection_value'>connection_value</span> <span class='op'>=</span> <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_network_connection'>network_connection</span>
 
   <span class='id identifier rubyid_connection_type'>connection_type</span> <span class='op'>=</span> <span class='id identifier rubyid_values_to_type'>values_to_type</span><span class='lbracket'>[</span><span class='id identifier rubyid_connection_value'>connection_value</span><span class='rbracket'>]</span>
 
@@ -273,11 +273,11 @@
       <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/driver_extensions/has_network_connection.rb', line 34</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_network_connection_type='>network_connection_type=</span><span class='lparen'>(</span><span class='id identifier rubyid_connection_type'>connection_type</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Invalid connection type</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>unless</span> <span class='id identifier rubyid_valid_type?'>valid_type?</span> <span class='id identifier rubyid_connection_type'>connection_type</span>
+  <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Invalid connection type</span><span class='tstring_end'>&#39;</span></span> <span class='kw'>unless</span> <span class='id identifier rubyid_valid_type?'>valid_type?</span> <span class='id identifier rubyid_connection_type'>connection_type</span>
 
   <span class='id identifier rubyid_connection_value'>connection_value</span> <span class='op'>=</span> <span class='id identifier rubyid_type_to_values'>type_to_values</span><span class='lbracket'>[</span><span class='id identifier rubyid_connection_type'>connection_type</span><span class='rbracket'>]</span>
 
-  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_setNetworkConnection'>setNetworkConnection</span> <span class='id identifier rubyid_connection_value'>connection_value</span>
+  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_network_connection'>network_connection</span> <span class='op'>=</span> <span class='id identifier rubyid_connection_value'>connection_value</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -289,9 +289,9 @@
 </div>
 
     <div id="footer">
-  Generated on Wed Oct  7 14:18:44 2015 by
+  Generated on Tue Feb 21 07:29:53 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.7.6 (ruby-2.2.2).
+  0.8.7.6 (ruby-2.4.0).
 </div>
 
   </body>

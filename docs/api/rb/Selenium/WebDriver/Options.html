@@ -37,7 +37,7 @@
     <span class="title">Options</span>
   
 
-  <div class="noframes"><span class="title">(</span><a href="" target="_top">no frames</a><span class="title">)</span></div>
+  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
 </div>
 
       <div id="search">
@@ -99,6 +99,10 @@
 </dl>
 <div class="clear"></div>
 
+<div id="subclasses">
+  <h2>Direct Known Subclasses</h2>
+  <p class="children"><span class='object_link'><a href="W3COptions.html" title="Selenium::WebDriver::W3COptions (class)">W3COptions</a></span></p>
+</div>
 
   <h2>Constant Summary</h2>
   
@@ -365,12 +369,12 @@
       <pre class="lines">
 
 
+27
 28
-29
-30</pre>
+29</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/options.rb', line 28</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/options.rb', line 27</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_bridge'>bridge</span><span class='rparen'>)</span>
   <span class='ivar'>@bridge</span> <span class='op'>=</span> <span class='id identifier rubyid_bridge'>bridge</span>
@@ -536,6 +540,7 @@
       <pre class="lines">
 
 
+44
 45
 46
 47
@@ -546,27 +551,22 @@
 52
 53
 54
-55
-56
-57
-58</pre>
+55</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/options.rb', line 45</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/options.rb', line 44</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_add_cookie'>add_cookie</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>name is required</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>unless</span> <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:name</span><span class='rbracket'>]</span>
-  <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>value is required</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>unless</span> <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:value</span><span class='rbracket'>]</span>
+  <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>name is required</span><span class='tstring_end'>&#39;</span></span> <span class='kw'>unless</span> <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:name</span><span class='rbracket'>]</span>
+  <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>value is required</span><span class='tstring_end'>&#39;</span></span> <span class='kw'>unless</span> <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:value</span><span class='rbracket'>]</span>
 
-  <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:path</span><span class='rbracket'>]</span> <span class='op'>||=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>/</span><span class='tstring_end'>&quot;</span></span>
+  <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:path</span><span class='rbracket'>]</span> <span class='op'>||=</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>/</span><span class='tstring_end'>&#39;</span></span>
   <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:secure</span><span class='rbracket'>]</span> <span class='op'>||=</span> <span class='kw'>false</span>
 
-  <span class='kw'>if</span> <span class='id identifier rubyid_obj'>obj</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:expires</span><span class='rparen'>)</span>
-    <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:expiry</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_seconds_from'>seconds_from</span><span class='lparen'>(</span><span class='id identifier rubyid_obj'>obj</span><span class='rparen'>)</span>
-  <span class='kw'>end</span>
+  <span class='id identifier rubyid_obj'>obj</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:expires</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:expiry</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_seconds_from'>seconds_from</span><span class='lparen'>(</span><span class='id identifier rubyid_obj'>obj</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span> <span class='kw'>if</span> <span class='id identifier rubyid_obj'>obj</span>
 
-
-  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_addCookie'>addCookie</span> <span class='id identifier rubyid_opts'>opts</span>
+  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_add_cookie'>add_cookie</span> <span class='id identifier rubyid_opts'>opts</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -617,33 +617,15 @@
       <pre class="lines">
 
 
-95
-96
-97
-98
-99
-100
-101
-102
-103
-104
-105
-106</pre>
+92
+93
+94</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/options.rb', line 95</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/options.rb', line 92</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_all_cookies'>all_cookies</span>
-  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_getAllCookies'>getAllCookies</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_cookie'>cookie</span><span class='op'>|</span>
-    <span class='lbrace'>{</span>
-      <span class='symbol'>:name</span>    <span class='op'>=&gt;</span> <span class='id identifier rubyid_cookie'>cookie</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>name</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span><span class='comma'>,</span>
-      <span class='symbol'>:value</span>   <span class='op'>=&gt;</span> <span class='id identifier rubyid_cookie'>cookie</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>value</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span><span class='comma'>,</span>
-      <span class='symbol'>:path</span>    <span class='op'>=&gt;</span> <span class='id identifier rubyid_cookie'>cookie</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>path</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span><span class='comma'>,</span>
-      <span class='symbol'>:domain</span>  <span class='op'>=&gt;</span> <span class='id identifier rubyid_cookie'>cookie</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>domain</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_strip_port'>strip_port</span><span class='lparen'>(</span><span class='id identifier rubyid_cookie'>cookie</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>domain</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span><span class='rparen'>)</span><span class='comma'>,</span>
-      <span class='symbol'>:expires</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_cookie'>cookie</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>expiry</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_datetime_at'>datetime_at</span><span class='lparen'>(</span><span class='id identifier rubyid_cookie'>cookie</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>expiry</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='rparen'>)</span><span class='comma'>,</span>
-      <span class='symbol'>:secure</span>  <span class='op'>=&gt;</span> <span class='id identifier rubyid_cookie'>cookie</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>secure</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span>
-    <span class='rbrace'>}</span>
-  <span class='kw'>end</span>
+  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_cookies'>cookies</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_cookie'>cookie</span><span class='op'>|</span> <span class='id identifier rubyid_convert_cookie'>convert_cookie</span><span class='lparen'>(</span><span class='id identifier rubyid_cookie'>cookie</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -714,12 +696,12 @@
       <pre class="lines">
 
 
-67
-68
-69</pre>
+64
+65
+66</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/options.rb', line 67</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/options.rb', line 64</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_cookie_named'>cookie_named</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_all_cookies'>all_cookies</span><span class='period'>.</span><span class='id identifier rubyid_find'>find</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_c'>c</span><span class='op'>|</span> <span class='id identifier rubyid_c'>c</span><span class='lbracket'>[</span><span class='symbol'>:name</span><span class='rbracket'>]</span> <span class='op'>==</span> <span class='id identifier rubyid_name'>name</span> <span class='rbrace'>}</span>
@@ -755,15 +737,15 @@
       <pre class="lines">
 
 
-85
-86
-87</pre>
+82
+83
+84</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/options.rb', line 85</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/options.rb', line 82</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_delete_all_cookies'>delete_all_cookies</span>
-  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_deleteAllCookies'>deleteAllCookies</span>
+  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_delete_all_cookies'>delete_all_cookies</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -816,15 +798,15 @@
       <pre class="lines">
 
 
-77
-78
-79</pre>
+74
+75
+76</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/options.rb', line 77</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/options.rb', line 74</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_delete_cookie'>delete_cookie</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
-  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_deleteCookie'>deleteCookie</span> <span class='id identifier rubyid_name'>name</span>
+  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_delete_cookie'>delete_cookie</span> <span class='id identifier rubyid_name'>name</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -855,12 +837,12 @@
       <pre class="lines">
 
 
-116
-117
-118</pre>
+104
+105
+106</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/options.rb', line 116</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/options.rb', line 104</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_logs'>logs</span>
   <span class='ivar'>@logs</span> <span class='op'>||=</span> <span class='const'>Logs</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='ivar'>@bridge</span><span class='rparen'>)</span>
@@ -885,12 +867,12 @@
       <pre class="lines">
 
 
-108
-109
-110</pre>
+96
+97
+98</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/options.rb', line 108</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/options.rb', line 96</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_timeouts'>timeouts</span>
   <span class='ivar'>@timeouts</span> <span class='op'>||=</span> <span class='const'>Timeouts</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='ivar'>@bridge</span><span class='rparen'>)</span>
@@ -924,12 +906,12 @@
       <pre class="lines">
 
 
-124
-125
-126</pre>
+112
+113
+114</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/options.rb', line 124</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/options.rb', line 112</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_window'>window</span>
   <span class='ivar'>@window</span> <span class='op'>||=</span> <span class='const'>Window</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='ivar'>@bridge</span><span class='rparen'>)</span>
@@ -944,9 +926,9 @@
 </div>
 
     <div id="footer">
-  Generated on Wed Oct  7 14:18:46 2015 by
+  Generated on Tue Feb 21 07:29:55 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.7.6 (ruby-2.2.2).
+  0.8.7.6 (ruby-2.4.0).
 </div>
 
   </body>

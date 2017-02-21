@@ -37,7 +37,7 @@
     <span class="title">Chrome</span>
   
 
-  <div class="noframes"><span class="title">(</span><a href="" target="_top">no frames</a><span class="title">)</span></div>
+  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
 </div>
 
       <div id="search">
@@ -79,8 +79,8 @@
   
   
     <dt class="r1 last">Defined in:</dt>
-    <dd class="r1 last">lib/selenium/webdriver/chrome/bridge.rb<span class="defines">,<br />
-  lib/selenium/webdriver/chrome/profile.rb,<br /> lib/selenium/webdriver/chrome/service.rb,<br /> lib/selenium/webdriver/chrome.rb</span>
+    <dd class="r1 last">lib/selenium/webdriver/chrome.rb<span class="defines">,<br />
+  lib/selenium/webdriver/chrome/bridge.rb,<br /> lib/selenium/webdriver/chrome/profile.rb,<br /> lib/selenium/webdriver/chrome/service.rb</span>
 </dd>
   
 </dl>
@@ -110,6 +110,28 @@
     </h2>
 
     <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#driver_path-class_method" title="driver_path (class method)">+ (Object) <strong>driver_path</strong>(warning = true) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
       
         <li class="public ">
   <span class="summary_signature">
@@ -187,7 +209,51 @@
 
     
       <div class="method_details first">
-  <h3 class="signature first" id="driver_path=-class_method">
+  <h3 class="signature first" id="driver_path-class_method">
+  
+    + (<tt>Object</tt>) <strong>driver_path</strong>(warning = true) 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/chrome.rb', line 39</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_driver_path'>driver_path</span><span class='lparen'>(</span><span class='id identifier rubyid_warning'>warning</span> <span class='op'>=</span> <span class='kw'>true</span><span class='rparen'>)</span>
+  <span class='kw'>if</span> <span class='id identifier rubyid_warning'>warning</span>
+    <span class='id identifier rubyid_warn'>warn</span> <span class='heredoc_beg'>&lt;&lt;-DEPRECATE</span><span class='period'>.</span><span class='id identifier rubyid_gsub'>gsub</span><span class='lparen'>(</span><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>\n +| {2,}</span><span class='regexp_end'>/</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'> </span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span>
+<span class='tstring_content'>      [DEPRECATION] `driver_path` is deprecated. Pass the driver path as an option instead.
+      e.g. Selenium::WebDriver.for :chrome, driver_path: &#39;/path&#39;
+</span><span class='heredoc_end'>    DEPRECATE
+</span>  <span class='kw'>end</span>
+
+  <span class='ivar'>@driver_path</span> <span class='op'>||=</span> <span class='kw'>nil</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="driver_path=-class_method">
   
     + (<tt>Object</tt>) <strong>driver_path=</strong>(path) 
   
@@ -201,15 +267,27 @@
       <pre class="lines">
 
 
+29
 30
 31
-32</pre>
+32
+33
+34
+35
+36
+37</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/chrome.rb', line 30</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/chrome.rb', line 29</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_driver_path='>driver_path=</span><span class='lparen'>(</span><span class='id identifier rubyid_path'>path</span><span class='rparen'>)</span>
-  <span class='const'>Service</span><span class='period'>.</span><span class='id identifier rubyid_executable_path'>executable_path</span> <span class='op'>=</span> <span class='id identifier rubyid_path'>path</span>
+  <span class='id identifier rubyid_warn'>warn</span> <span class='heredoc_beg'>&lt;&lt;-DEPRECATE</span><span class='period'>.</span><span class='id identifier rubyid_gsub'>gsub</span><span class='lparen'>(</span><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>\n +| {2,}</span><span class='regexp_end'>/</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'> </span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span>
+<span class='tstring_content'>    [DEPRECATION] `driver_path=` is deprecated. Pass the driver path as an option instead.
+    e.g. Selenium::WebDriver.for :chrome, driver_path: &#39;/path&#39;
+</span><span class='heredoc_end'>  DEPRECATE
+</span>
+  <span class='const'>Platform</span><span class='period'>.</span><span class='id identifier rubyid_assert_executable'>assert_executable</span> <span class='id identifier rubyid_path'>path</span>
+  <span class='ivar'>@driver_path</span> <span class='op'>=</span> <span class='id identifier rubyid_path'>path</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -231,12 +309,12 @@
       <pre class="lines">
 
 
-39
-40
-41</pre>
+55
+56
+57</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/chrome.rb', line 39</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/chrome.rb', line 55</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_path'>path</span>
   <span class='ivar'>@path</span> <span class='op'>||=</span> <span class='kw'>nil</span>
@@ -261,13 +339,13 @@
       <pre class="lines">
 
 
-34
-35
-36
-37</pre>
+50
+51
+52
+53</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/chrome.rb', line 34</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/chrome.rb', line 50</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_path='>path=</span><span class='lparen'>(</span><span class='id identifier rubyid_path'>path</span><span class='rparen'>)</span>
   <span class='const'>Platform</span><span class='period'>.</span><span class='id identifier rubyid_assert_executable'>assert_executable</span> <span class='id identifier rubyid_path'>path</span>
@@ -283,9 +361,9 @@
 </div>
 
     <div id="footer">
-  Generated on Wed Oct  7 14:18:44 2015 by
+  Generated on Tue Feb 21 07:29:53 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.7.6 (ruby-2.2.2).
+  0.8.7.6 (ruby-2.4.0).
 </div>
 
   </body>

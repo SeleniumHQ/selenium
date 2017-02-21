@@ -37,7 +37,7 @@
     <span class="title">Select</span>
   
 
-  <div class="noframes"><span class="title">(</span><a href="" target="_top">no frames</a><span class="title">)</span></div>
+  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
 </div>
 
       <div id="search">
@@ -99,16 +99,6 @@
 </dl>
 <div class="clear"></div>
 
-<h2>Defined Under Namespace</h2>
-<p class="children">
-  
-    
-      <strong class="modules">Modules:</strong> <span class='object_link'><a href="Select/Escaper.html" title="Selenium::WebDriver::Support::Select::Escaper (module)">Escaper</a></span>
-    
-  
-    
-  
-</p>
 
 
 
@@ -394,6 +384,7 @@
       <pre class="lines">
 
 
+28
 29
 30
 31
@@ -402,21 +393,20 @@
 34
 35
 36
-37
-38</pre>
+37</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/support/select.rb', line 29</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/support/select.rb', line 28</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_tag_name'>tag_name</span> <span class='op'>=</span> <span class='id identifier rubyid_element'>element</span><span class='period'>.</span><span class='id identifier rubyid_tag_name'>tag_name</span>
 
-  <span class='kw'>unless</span> <span class='id identifier rubyid_tag_name'>tag_name</span><span class='period'>.</span><span class='id identifier rubyid_downcase'>downcase</span> <span class='op'>==</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>select</span><span class='tstring_end'>&quot;</span></span>
+  <span class='kw'>unless</span> <span class='id identifier rubyid_tag_name'>tag_name</span><span class='period'>.</span><span class='id identifier rubyid_casecmp'>casecmp</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>select</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_zero?'>zero?</span>
     <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>unexpected tag name </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_tag_name'>tag_name</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
   <span class='kw'>end</span>
 
   <span class='ivar'>@element</span> <span class='op'>=</span> <span class='id identifier rubyid_element'>element</span>
-  <span class='ivar'>@multi</span>   <span class='op'>=</span> <span class='op'>!</span><span class='lbracket'>[</span><span class='kw'>nil</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>false</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='period'>.</span><span class='id identifier rubyid_attribute'>attribute</span><span class='lparen'>(</span><span class='symbol'>:multiple</span><span class='rparen'>)</span><span class='rparen'>)</span>
+  <span class='ivar'>@multi</span> <span class='op'>=</span> <span class='op'>!</span><span class='lbracket'>[</span><span class='kw'>nil</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>false</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='period'>.</span><span class='id identifier rubyid_attribute'>attribute</span><span class='lparen'>(</span><span class='symbol'>:multiple</span><span class='rparen'>)</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -475,16 +465,16 @@ selections.</p>
       <pre class="lines">
 
 
-157
 158
 159
 160
 161
 162
-163</pre>
+163
+164</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/support/select.rb', line 157</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/support/select.rb', line 158</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_deselect_all'>deselect_all</span>
   <span class='kw'>unless</span> <span class='id identifier rubyid_multiple?'>multiple?</span>
@@ -553,6 +543,24 @@ selections.</p>
   
 </ul>
 
+<p class="tag_title">Raises:</p>
+<ul class="raise">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="../Error/UnsupportedOperationError.html" title="Selenium::WebDriver::Error::UnsupportedOperationError (class)">Error::UnsupportedOperationError</a></span></tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>if the element does not support multiple selections.</p>
+</div>
+      
+    </li>
+  
+</ul>
 
   <p class="tag_title">See Also:</p>
   <ul class="see">
@@ -567,7 +575,6 @@ selections.</p>
       <pre class="lines">
 
 
-124
 125
 126
 127
@@ -578,10 +585,11 @@ selections.</p>
 132
 133
 134
-135</pre>
+135
+136</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/support/select.rb', line 124</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/support/select.rb', line 125</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_deselect_by'>deselect_by</span><span class='lparen'>(</span><span class='id identifier rubyid_how'>how</span><span class='comma'>,</span> <span class='id identifier rubyid_what'>what</span><span class='rparen'>)</span>
   <span class='kw'>case</span> <span class='id identifier rubyid_how'>how</span>
@@ -657,17 +665,19 @@ selections.</p>
       <pre class="lines">
 
 
+76
 77
 78
 79
 80</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/support/select.rb', line 77</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/support/select.rb', line 76</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_first_selected_option'>first_selected_option</span>
-  <span class='id identifier rubyid_option'>option</span> <span class='op'>=</span> <span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_find'>find</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_e'>e</span><span class='op'>|</span> <span class='id identifier rubyid_e'>e</span><span class='period'>.</span><span class='id identifier rubyid_selected?'>selected?</span> <span class='rbrace'>}</span>
-  <span class='id identifier rubyid_option'>option</span> <span class='kw'>or</span> <span class='id identifier rubyid_raise'>raise</span> <span class='const'>Error</span><span class='op'>::</span><span class='const'>NoSuchElementError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>no options are selected</span><span class='tstring_end'>&#39;</span></span>
+  <span class='id identifier rubyid_option'>option</span> <span class='op'>=</span> <span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_find'>find</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:selected?</span><span class='rparen'>)</span>
+  <span class='kw'>return</span> <span class='id identifier rubyid_option'>option</span> <span class='kw'>if</span> <span class='id identifier rubyid_option'>option</span>
+  <span class='id identifier rubyid_raise'>raise</span> <span class='const'>Error</span><span class='op'>::</span><span class='const'>NoSuchElementError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>no options are selected</span><span class='tstring_end'>&#39;</span></span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -713,12 +723,12 @@ selections.</p>
       <pre class="lines">
 
 
+45
 46
-47
-48</pre>
+47</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/support/select.rb', line 46</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/support/select.rb', line 45</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_multiple?'>multiple?</span>
   <span class='ivar'>@multi</span>
@@ -767,15 +777,15 @@ selections.</p>
       <pre class="lines">
 
 
+55
 56
-57
-58</pre>
+57</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/support/select.rb', line 56</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/support/select.rb', line 55</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_options'>options</span>
-  <span class='ivar'>@element</span><span class='period'>.</span><span class='id identifier rubyid_find_elements'>find_elements</span> <span class='symbol'>:tag_name</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>option</span><span class='tstring_end'>&#39;</span></span>
+  <span class='ivar'>@element</span><span class='period'>.</span><span class='id identifier rubyid_find_elements'>find_elements</span> <span class='label'>tag_name:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>option</span><span class='tstring_end'>&#39;</span></span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -827,16 +837,16 @@ selections.</p>
       <pre class="lines">
 
 
-143
 144
 145
 146
 147
 148
-149</pre>
+149
+150</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/support/select.rb', line 143</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/support/select.rb', line 144</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_select_all'>select_all</span>
   <span class='kw'>unless</span> <span class='id identifier rubyid_multiple?'>multiple?</span>
@@ -998,15 +1008,15 @@ counting.</p>
       <pre class="lines">
 
 
+65
 66
-67
-68</pre>
+67</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/support/select.rb', line 66</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/support/select.rb', line 65</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_selected_options'>selected_options</span>
-  <span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_select'>select</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_e'>e</span><span class='op'>|</span> <span class='id identifier rubyid_e'>e</span><span class='period'>.</span><span class='id identifier rubyid_selected?'>selected?</span> <span class='rbrace'>}</span>
+  <span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_select'>select</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:selected?</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -1018,9 +1028,9 @@ counting.</p>
 </div>
 
     <div id="footer">
-  Generated on Wed Oct  7 14:18:49 2015 by
+  Generated on Tue Feb 21 07:29:55 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.7.6 (ruby-2.2.2).
+  0.8.7.6 (ruby-2.4.0).
 </div>
 
   </body>

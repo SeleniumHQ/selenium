@@ -37,7 +37,7 @@
     <span class="title">Curb</span>
   
 
-  <div class="noframes"><span class="title">(</span><a href="" target="_top">no frames</a><span class="title">)</span></div>
+  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
 </div>
 
       <div id="search">
@@ -66,7 +66,7 @@
     <div id="content"><h1>Class: Selenium::WebDriver::Remote::Http::Curb
   
   
-  
+  <span class="private note title">Private</span>
 </h1>
 
 <dl class="box">
@@ -103,7 +103,11 @@
 
 <h2>Overview</h2><div class="docstring">
   <div class="discussion">
-    
+    <p class="note private">
+  <strong>This class is part of a private API.</strong>
+  You should avoid using this class if possible, as it may be removed or be changed in the future.
+</p>
+
 <p>An alternative to the default Net::HTTP client.</p>
 
 <p>This can be used for the Firefox and Remote drivers if you have Curb
@@ -151,6 +155,39 @@ installed.</p>
   <p class="inherited"><span class='object_link'><a href="Common.html#timeout-instance_method" title="Selenium::WebDriver::Remote::Http::Common#timeout (method)">#timeout</a></span></p>
 
 
+  
+    <h2>
+      Instance Method Summary
+      <small>(<a href="#" class="summary_toggle">collapse</a>)</small>
+    </h2>
+
+    <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#quit_errors-instance_method" title="#quit_errors (instance method)">- (Object) <strong>quit_errors</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  <span class="private note title">private</span>
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+    </ul>
+  
+
 
   
   
@@ -158,7 +195,7 @@ installed.</p>
   
   
   
-  <h2>Method Summary</h2>
+  
   
   <h3 class="inherited">Methods inherited from <span class='object_link'><a href="Common.html" title="Selenium::WebDriver::Remote::Http::Common (class)">Common</a></span></h3>
   <p class="inherited"><span class='object_link'><a href="Common.html#call-instance_method" title="Selenium::WebDriver::Remote::Http::Common#call (method)">#call</a></span>, <span class='object_link'><a href="Common.html#close-instance_method" title="Selenium::WebDriver::Remote::Http::Common#close (method)">#close</a></span>, <span class='object_link'><a href="Common.html#initialize-instance_method" title="Selenium::WebDriver::Remote::Http::Common#initialize (method)">#initialize</a></span></p>
@@ -170,12 +207,61 @@ installed.</p>
 </div>
 
 
+  <div id="instance_method_details" class="method_details_list">
+    <h2>Instance Method Details</h2>
+
+    
+      <div class="method_details first">
+  <h3 class="signature first" id="quit_errors-instance_method">
+  
+    - (<tt>Object</tt>) <strong>quit_errors</strong> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+42
+43
+44</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/http/curb.rb', line 42</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_quit_errors'>quit_errors</span>
+  <span class='lbracket'>[</span><span class='const'>Curl</span><span class='op'>::</span><span class='const'>Err</span><span class='op'>::</span><span class='const'>RecvError</span><span class='rbracket'>]</span> <span class='op'>+</span> <span class='kw'>super</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
 </div>
 
     <div id="footer">
-  Generated on Wed Oct  7 14:18:48 2015 by
+  Generated on Tue Feb 21 07:29:55 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.7.6 (ruby-2.2.2).
+  0.8.7.6 (ruby-2.4.0).
 </div>
 
   </body>

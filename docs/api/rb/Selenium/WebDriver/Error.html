@@ -37,7 +37,7 @@
     <span class="title">Error</span>
   
 
-  <div class="noframes"><span class="title">(</span><a href="" target="_top">no frames</a><span class="title">)</span></div>
+  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
 </div>
 
       <div id="search">
@@ -101,7 +101,7 @@
   
     <dl class="constants">
       
-        <dt id="Errors-constant" class="">Errors =
+        <dt id="ERRORS-constant" class="">ERRORS =
           <div class="docstring">
   <div class="discussion">
     <p class="note private">
@@ -150,9 +150,9 @@
 </span>  <span class='const'>IMENotAvailableError</span><span class='comma'>,</span>           <span class='comment'># 30
 </span>  <span class='const'>IMEEngineActivationFailedError</span><span class='comma'>,</span> <span class='comment'># 31
 </span>  <span class='const'>InvalidSelectorError</span><span class='comma'>,</span>           <span class='comment'># 32
-</span>  <span class='kw'>nil</span><span class='comma'>,</span>                            <span class='comment'># 33
+</span>  <span class='const'>SessionNotCreatedError</span><span class='comma'>,</span>         <span class='comment'># 33
 </span>  <span class='const'>MoveTargetOutOfBoundsError</span>      <span class='comment'># 34
-</span><span class='rbracket'>]</span></pre></dd>
+</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
       
         <dt id="ObsoleteElementError-constant" class="">ObsoleteElementError =
           
@@ -242,25 +242,25 @@
       <pre class="lines">
 
 
-210
-211
-212
 213
 214
 215
 216
 217
-218</pre>
+218
+219
+220
+221</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/error.rb', line 210</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/error.rb', line 213</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_for_code'>for_code</span><span class='lparen'>(</span><span class='id identifier rubyid_code'>code</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='kw'>if</span> <span class='lbracket'>[</span><span class='kw'>nil</span><span class='comma'>,</span> <span class='int'>0</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span> <span class='id identifier rubyid_code'>code</span>
-  <span class='kw'>return</span> <span class='const'>Errors</span><span class='lbracket'>[</span><span class='id identifier rubyid_code'>code</span> <span class='op'>-</span> <span class='int'>1</span><span class='rbracket'>]</span> <span class='kw'>if</span> <span class='id identifier rubyid_code'>code</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span> <span class='const'>Fixnum</span>
+  <span class='kw'>return</span> <span class='const'>ERRORS</span><span class='lbracket'>[</span><span class='id identifier rubyid_code'>code</span> <span class='op'>-</span> <span class='int'>1</span><span class='rbracket'>]</span> <span class='kw'>if</span> <span class='id identifier rubyid_code'>code</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span> <span class='const'>Integer</span>
 
   <span class='id identifier rubyid_klass_name'>klass_name</span> <span class='op'>=</span> <span class='id identifier rubyid_code'>code</span><span class='period'>.</span><span class='id identifier rubyid_split'>split</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'> </span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:capitalize</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_join'>join</span>
-  <span class='const'>Error</span><span class='period'>.</span><span class='id identifier rubyid_const_get'>const_get</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_klass_name'>klass_name</span><span class='embexpr_end'>}</span><span class='tstring_content'>Error</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+  <span class='const'>Error</span><span class='period'>.</span><span class='id identifier rubyid_const_get'>const_get</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_klass_name'>klass_name</span><span class='period'>.</span><span class='id identifier rubyid_gsub'>gsub</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Error</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span><span class='embexpr_end'>}</span><span class='tstring_content'>Error</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
 <span class='kw'>rescue</span> <span class='const'>NameError</span>
   <span class='const'>WebDriverError</span>
 <span class='kw'>end</span></pre>
@@ -274,9 +274,9 @@
 </div>
 
     <div id="footer">
-  Generated on Wed Oct  7 14:18:44 2015 by
+  Generated on Tue Feb 21 07:29:53 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.7.6 (ruby-2.2.2).
+  0.8.7.6 (ruby-2.4.0).
 </div>
 
   </body>

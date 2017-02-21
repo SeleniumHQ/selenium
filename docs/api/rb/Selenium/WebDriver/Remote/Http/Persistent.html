@@ -37,7 +37,7 @@
     <span class="title">Persistent</span>
   
 
-  <div class="noframes"><span class="title">(</span><a href="" target="_top">no frames</a><span class="title">)</span></div>
+  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
 </div>
 
       <div id="search">
@@ -133,6 +133,11 @@
 
   <h2>Instance Attribute Summary</h2>
   
+  <h3 class="inherited">Attributes inherited from <span class='object_link'><a href="Default.html" title="Selenium::WebDriver::Remote::Http::Default (class)">Default</a></span></h3>
+  <p class="inherited"><span class='object_link'><a href="Default.html#open_timeout-instance_method" title="Selenium::WebDriver::Remote::Http::Default#open_timeout (method)">#open_timeout</a></span>, <span class='object_link'><a href="Default.html#read_timeout-instance_method" title="Selenium::WebDriver::Remote::Http::Default#read_timeout (method)">#read_timeout</a></span></p>
+
+  
+  
   <h3 class="inherited">Attributes inherited from <span class='object_link'><a href="Common.html" title="Selenium::WebDriver::Remote::Http::Common (class)">Common</a></span></h3>
   <p class="inherited"><span class='object_link'><a href="Common.html#timeout-instance_method" title="Selenium::WebDriver::Remote::Http::Common#timeout (method)">#timeout</a></span></p>
 
@@ -179,6 +184,11 @@
   
   
   
+  <h3 class="inherited">Methods inherited from <span class='object_link'><a href="Default.html" title="Selenium::WebDriver::Remote::Http::Default (class)">Default</a></span></h3>
+  <p class="inherited"><span class='object_link'><a href="Default.html#initialize-instance_method" title="Selenium::WebDriver::Remote::Http::Default#initialize (method)">#initialize</a></span>, <span class='object_link'><a href="Default.html#timeout%3D-instance_method" title="Selenium::WebDriver::Remote::Http::Default#timeout= (method)">#timeout=</a></span></p>
+
+  
+  
   
   
   
@@ -186,11 +196,11 @@
   
   
   <h3 class="inherited">Methods inherited from <span class='object_link'><a href="Common.html" title="Selenium::WebDriver::Remote::Http::Common (class)">Common</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="Common.html#call-instance_method" title="Selenium::WebDriver::Remote::Http::Common#call (method)">#call</a></span>, <span class='object_link'><a href="Common.html#initialize-instance_method" title="Selenium::WebDriver::Remote::Http::Common#initialize (method)">#initialize</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="Common.html#call-instance_method" title="Selenium::WebDriver::Remote::Http::Common#call (method)">#call</a></span>, <span class='object_link'><a href="Common.html#initialize-instance_method" title="Selenium::WebDriver::Remote::Http::Common#initialize (method)">#initialize</a></span>, <span class='object_link'><a href="Common.html#quit_errors-instance_method" title="Selenium::WebDriver::Remote::Http::Common#quit_errors (method)">#quit_errors</a></span></p>
 <div id="constructor_details" class="method_details_list">
   <h2>Constructor Details</h2>
   
-    <p class="notice">This class inherits a constructor from <span class='object_link'><a href="Common.html#initialize-instance_method" title="Selenium::WebDriver::Remote::Http::Common#initialize (method)">Selenium::WebDriver::Remote::Http::Common</a></span></p>
+    <p class="notice">This class inherits a constructor from <span class='object_link'><a href="Default.html#initialize-instance_method" title="Selenium::WebDriver::Remote::Http::Default#initialize (method)">Selenium::WebDriver::Remote::Http::Default</a></span></p>
   
 </div>
 
@@ -227,12 +237,12 @@
       <pre class="lines">
 
 
-30
-31
-32</pre>
+28
+29
+30</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/http/persistent.rb', line 30</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/http/persistent.rb', line 28</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_close'>close</span>
   <span class='ivar'>@http</span><span class='period'>.</span><span class='id identifier rubyid_shutdown'>shutdown</span> <span class='kw'>if</span> <span class='ivar'>@http</span>
@@ -247,9 +257,9 @@
 </div>
 
     <div id="footer">
-  Generated on Wed Oct  7 14:18:48 2015 by
+  Generated on Tue Feb 21 07:29:56 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.7.6 (ruby-2.2.2).
+  0.8.7.6 (ruby-2.4.0).
 </div>
 
   </body>

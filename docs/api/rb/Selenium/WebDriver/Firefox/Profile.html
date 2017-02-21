@@ -37,7 +37,7 @@
     <span class="title">Profile</span>
   
 
-  <div class="noframes"><span class="title">(</span><a href="" target="_top">no frames</a><span class="title">)</span></div>
+  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
 </div>
 
       <div id="search">
@@ -111,7 +111,7 @@
         <dt id="VALID_PREFERENCE_TYPES-constant" class="">VALID_PREFERENCE_TYPES =
           
         </dt>
-        <dd><pre class="code"><span class='lbracket'>[</span><span class='const'>TrueClass</span><span class='comma'>,</span> <span class='const'>FalseClass</span><span class='comma'>,</span> <span class='const'>Integer</span><span class='comma'>,</span> <span class='const'>Float</span><span class='comma'>,</span> <span class='const'>String</span><span class='rbracket'>]</span></pre></dd>
+        <dd><pre class="code"><span class='lbracket'>[</span><span class='const'>TrueClass</span><span class='comma'>,</span> <span class='const'>FalseClass</span><span class='comma'>,</span> <span class='const'>Integer</span><span class='comma'>,</span> <span class='const'>Float</span><span class='comma'>,</span> <span class='const'>String</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
       
         <dt id="WEBDRIVER_EXTENSION_PATH-constant" class="">WEBDRIVER_EXTENSION_PATH =
           
@@ -122,12 +122,12 @@
           
         </dt>
         <dd><pre class="code"><span class='lbrace'>{</span>
-  <span class='symbol'>:native_events</span>    <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>webdriver_enable_native_events</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
-  <span class='symbol'>:untrusted_certs</span>  <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>webdriver_accept_untrusted_certs</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
-  <span class='symbol'>:untrusted_issuer</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>webdriver_assume_untrusted_issuer</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
-  <span class='symbol'>:port</span>             <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>webdriver_firefox_port</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
-  <span class='symbol'>:log_file</span>         <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>webdriver.log.file</span><span class='tstring_end'>&#39;</span></span>
-<span class='rbrace'>}</span></pre></dd>
+  <span class='label'>native_events:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>webdriver_enable_native_events</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+  <span class='label'>untrusted_certs:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>webdriver_accept_untrusted_certs</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+  <span class='label'>untrusted_issuer:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>webdriver_assume_untrusted_issuer</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+  <span class='label'>port:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>webdriver_firefox_port</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+  <span class='label'>log_file:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>webdriver.log.file</span><span class='tstring_end'>&#39;</span></span>
+<span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
       
     </dl>
   
@@ -487,6 +487,28 @@ profile.</p>
         <li class="public ">
   <span class="summary_signature">
     
+      <a href="#encoded-instance_method" title="#encoded (instance method)">- (Object) <strong>encoded</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
       <a href="#initialize-instance_method" title="#initialize (instance method)">- (Profile) <strong>initialize</strong>(model = nil) </a>
     
 
@@ -702,8 +724,6 @@ profile.</p>
       <pre class="lines">
 
 
-67
-68
 69
 70
 71
@@ -724,10 +744,13 @@ profile.</p>
 86
 87
 88
-89</pre>
+89
+90
+91
+92</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/profile.rb', line 67</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/profile.rb', line 69</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_model'>model</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='ivar'>@model</span> <span class='op'>=</span> <span class='id identifier rubyid_verify_model'>verify_model</span><span class='lparen'>(</span><span class='id identifier rubyid_model'>model</span><span class='rparen'>)</span>
@@ -743,14 +766,15 @@ profile.</p>
     <span class='ivar'>@additional_prefs</span>  <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
   <span class='kw'>else</span>
     <span class='comment'># TODO: clean this up
-</span>    <span class='ivar'>@native_events</span>     <span class='op'>=</span> <span class='id identifier rubyid_model_prefs'>model_prefs</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='const'>WEBDRIVER_PREFS</span><span class='lbracket'>[</span><span class='symbol'>:native_events</span><span class='rbracket'>]</span><span class='rparen'>)</span> <span class='op'>==</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>true</span><span class='tstring_end'>&quot;</span></span>
-    <span class='ivar'>@secure_ssl</span>        <span class='op'>=</span> <span class='id identifier rubyid_model_prefs'>model_prefs</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='const'>WEBDRIVER_PREFS</span><span class='lbracket'>[</span><span class='symbol'>:untrusted_certs</span><span class='rbracket'>]</span><span class='rparen'>)</span> <span class='op'>!=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>true</span><span class='tstring_end'>&quot;</span></span>
-    <span class='ivar'>@untrusted_issuer</span>  <span class='op'>=</span> <span class='id identifier rubyid_model_prefs'>model_prefs</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='const'>WEBDRIVER_PREFS</span><span class='lbracket'>[</span><span class='symbol'>:untrusted_issuer</span><span class='rbracket'>]</span><span class='rparen'>)</span> <span class='op'>==</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>true</span><span class='tstring_end'>&quot;</span></span>
-    <span class='ivar'>@load_no_focus_lib</span> <span class='op'>=</span> <span class='id identifier rubyid_model_prefs'>model_prefs</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='const'>WEBDRIVER_PREFS</span><span class='lbracket'>[</span><span class='symbol'>:load_no_focus_lib</span><span class='rbracket'>]</span><span class='rparen'>)</span> <span class='op'>==</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>true</span><span class='tstring_end'>&quot;</span></span> <span class='comment'># not stored in profile atm, so will always be false.
-</span>    <span class='ivar'>@additional_prefs</span>  <span class='op'>=</span> <span class='id identifier rubyid_model_prefs'>model_prefs</span>
+</span>    <span class='ivar'>@native_events</span>     <span class='op'>=</span> <span class='id identifier rubyid_model_prefs'>model_prefs</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='const'>WEBDRIVER_PREFS</span><span class='lbracket'>[</span><span class='symbol'>:native_events</span><span class='rbracket'>]</span><span class='rparen'>)</span> <span class='op'>==</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>true</span><span class='tstring_end'>&#39;</span></span>
+    <span class='ivar'>@secure_ssl</span>        <span class='op'>=</span> <span class='id identifier rubyid_model_prefs'>model_prefs</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='const'>WEBDRIVER_PREFS</span><span class='lbracket'>[</span><span class='symbol'>:untrusted_certs</span><span class='rbracket'>]</span><span class='rparen'>)</span> <span class='op'>!=</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>true</span><span class='tstring_end'>&#39;</span></span>
+    <span class='ivar'>@untrusted_issuer</span>  <span class='op'>=</span> <span class='id identifier rubyid_model_prefs'>model_prefs</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='const'>WEBDRIVER_PREFS</span><span class='lbracket'>[</span><span class='symbol'>:untrusted_issuer</span><span class='rbracket'>]</span><span class='rparen'>)</span> <span class='op'>==</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>true</span><span class='tstring_end'>&#39;</span></span>
+    <span class='comment'># not stored in profile atm, so will always be false.
+</span>    <span class='ivar'>@load_no_focus_lib</span> <span class='op'>=</span> <span class='id identifier rubyid_model_prefs'>model_prefs</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='const'>WEBDRIVER_PREFS</span><span class='lbracket'>[</span><span class='symbol'>:load_no_focus_lib</span><span class='rbracket'>]</span><span class='rparen'>)</span> <span class='op'>==</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>true</span><span class='tstring_end'>&#39;</span></span>
+    <span class='ivar'>@additional_prefs</span>  <span class='op'>=</span> <span class='id identifier rubyid_model_prefs'>model_prefs</span>
   <span class='kw'>end</span>
 
-  <span class='ivar'>@extensions</span>        <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
+  <span class='ivar'>@extensions</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -1059,17 +1083,17 @@ profile.</p>
       <pre class="lines">
 
 
-48
-49
 50
 51
-52</pre>
+52
+53
+54</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/profile.rb', line 48</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/profile.rb', line 50</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_default_preferences'>default_preferences</span>
-  <span class='ivar'>@default_preferences</span> <span class='op'>||=</span> <span class='const'>WebDriver</span><span class='period'>.</span><span class='id identifier rubyid_json_load'>json_load</span><span class='lparen'>(</span>
+  <span class='ivar'>@default_preferences</span> <span class='op'>||=</span> <span class='const'>JSON</span><span class='period'>.</span><span class='id identifier rubyid_parse'>parse</span><span class='lparen'>(</span>
     <span class='const'>File</span><span class='period'>.</span><span class='id identifier rubyid_read'>read</span><span class='lparen'>(</span><span class='const'>File</span><span class='period'>.</span><span class='id identifier rubyid_expand_path'>expand_path</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='const'>WebDriver</span><span class='period'>.</span><span class='id identifier rubyid_root'>root</span><span class='embexpr_end'>}</span><span class='tstring_content'>/selenium/webdriver/firefox/extension/prefs.json</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span><span class='rparen'>)</span>
   <span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span>
 <span class='kw'>end</span></pre>
@@ -1087,7 +1111,29 @@ profile.</p>
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Raises:</p>
+<ul class="raise">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="../Error/WebDriverError.html" title="Selenium::WebDriver::Error::WebDriverError (class)">Error::WebDriverError</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -1095,13 +1141,17 @@ profile.</p>
 
 44
 45
-46</pre>
+46
+47
+48</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/profile.rb', line 44</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_from_name'>from_name</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_ini'>ini</span><span class='lbracket'>[</span><span class='id identifier rubyid_name'>name</span><span class='rbracket'>]</span>
+  <span class='id identifier rubyid_profile'>profile</span> <span class='op'>=</span> <span class='id identifier rubyid_ini'>ini</span><span class='lbracket'>[</span><span class='id identifier rubyid_name'>name</span><span class='rbracket'>]</span>
+  <span class='kw'>return</span> <span class='id identifier rubyid_profile'>profile</span> <span class='kw'>if</span> <span class='id identifier rubyid_profile'>profile</span>
+  <span class='id identifier rubyid_raise'>raise</span> <span class='const'>Error</span><span class='op'>::</span><span class='const'>WebDriverError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>unable to find profile named: </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_name'>name</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -1179,8 +1229,6 @@ profile.</p>
       <pre class="lines">
 
 
-111
-112
 113
 114
 115
@@ -1189,17 +1237,19 @@ profile.</p>
 118
 119
 120
-121</pre>
+121
+122
+123</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/profile.rb', line 111</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/profile.rb', line 113</span>
 
 <span class='kw'>def</span> <span class='op'>[]=</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='comma'>,</span> <span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
-  <span class='kw'>unless</span> <span class='const'>VALID_PREFERENCE_TYPES</span><span class='period'>.</span><span class='id identifier rubyid_any?'>any?</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_e'>e</span><span class='op'>|</span> <span class='id identifier rubyid_value'>value</span><span class='period'>.</span><span class='id identifier rubyid_kind_of?'>kind_of?</span> <span class='id identifier rubyid_e'>e</span> <span class='rbrace'>}</span>
+  <span class='kw'>unless</span> <span class='const'>VALID_PREFERENCE_TYPES</span><span class='period'>.</span><span class='id identifier rubyid_any?'>any?</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_e'>e</span><span class='op'>|</span> <span class='id identifier rubyid_value'>value</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span> <span class='id identifier rubyid_e'>e</span> <span class='rbrace'>}</span>
     <span class='id identifier rubyid_raise'>raise</span> <span class='const'>TypeError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>expected one of </span><span class='embexpr_beg'>#{</span><span class='const'>VALID_PREFERENCE_TYPES</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_content'>, got </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_value'>value</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_content'>:</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_value'>value</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
   <span class='kw'>end</span>
 
-  <span class='kw'>if</span> <span class='id identifier rubyid_value'>value</span><span class='period'>.</span><span class='id identifier rubyid_kind_of?'>kind_of?</span><span class='lparen'>(</span><span class='const'>String</span><span class='rparen'>)</span> <span class='op'>&amp;&amp;</span> <span class='const'>Util</span><span class='period'>.</span><span class='id identifier rubyid_stringified?'>stringified?</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
+  <span class='kw'>if</span> <span class='id identifier rubyid_value'>value</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>String</span><span class='rparen'>)</span> <span class='op'>&amp;&amp;</span> <span class='const'>Util</span><span class='period'>.</span><span class='id identifier rubyid_stringified?'>stringified?</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
     <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>preference values must be plain strings: </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_key'>key</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_content'> =&gt; </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_value'>value</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
   <span class='kw'>end</span>
 
@@ -1237,12 +1287,12 @@ profile.</p>
       <pre class="lines">
 
 
-142
 143
-144</pre>
+144
+145</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/profile.rb', line 142</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/profile.rb', line 143</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_add_extension'>add_extension</span><span class='lparen'>(</span><span class='id identifier rubyid_path'>path</span><span class='comma'>,</span> <span class='id identifier rubyid_name'>name</span> <span class='op'>=</span> <span class='id identifier rubyid_extension_name_for'>extension_name_for</span><span class='lparen'>(</span><span class='id identifier rubyid_path'>path</span><span class='rparen'>)</span><span class='rparen'>)</span>
   <span class='ivar'>@extensions</span><span class='lbracket'>[</span><span class='id identifier rubyid_name'>name</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='const'>Extension</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_path'>path</span><span class='rparen'>)</span>
@@ -1267,19 +1317,17 @@ profile.</p>
       <pre class="lines">
 
 
-132
-133
 134
 135
-136</pre>
+136
+137</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/profile.rb', line 132</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/profile.rb', line 134</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_add_webdriver_extension'>add_webdriver_extension</span>
-  <span class='kw'>unless</span> <span class='ivar'>@extensions</span><span class='period'>.</span><span class='id identifier rubyid_has_key?'>has_key?</span><span class='lparen'>(</span><span class='symbol'>:webdriver</span><span class='rparen'>)</span>
-    <span class='id identifier rubyid_add_extension'>add_extension</span><span class='lparen'>(</span><span class='const'>WEBDRIVER_EXTENSION_PATH</span><span class='comma'>,</span> <span class='symbol'>:webdriver</span><span class='rparen'>)</span>
-  <span class='kw'>end</span>
+  <span class='kw'>return</span> <span class='kw'>if</span> <span class='ivar'>@extensions</span><span class='period'>.</span><span class='id identifier rubyid_key?'>key?</span><span class='lparen'>(</span><span class='symbol'>:webdriver</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_add_extension'>add_extension</span><span class='lparen'>(</span><span class='const'>WEBDRIVER_EXTENSION_PATH</span><span class='comma'>,</span> <span class='symbol'>:webdriver</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -1301,12 +1349,12 @@ profile.</p>
       <pre class="lines">
 
 
-162
 163
-164</pre>
+164
+165</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/profile.rb', line 162</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/profile.rb', line 163</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_assume_untrusted_certificate_issuer='>assume_untrusted_certificate_issuer=</span><span class='lparen'>(</span><span class='id identifier rubyid_bool'>bool</span><span class='rparen'>)</span>
   <span class='ivar'>@untrusted_issuer</span> <span class='op'>=</span> <span class='id identifier rubyid_bool'>bool</span>
@@ -1353,15 +1401,45 @@ profile.</p>
       <pre class="lines">
 
 
-158
 159
-160</pre>
+160
+161</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/profile.rb', line 158</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/profile.rb', line 159</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_assume_untrusted_certificate_issuer?'>assume_untrusted_certificate_issuer?</span>
   <span class='ivar'>@untrusted_issuer</span> <span class='op'>==</span> <span class='kw'>true</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="encoded-instance_method">
+  
+    - (<tt>Object</tt>) <strong>encoded</strong> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+198
+199
+200</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/profile.rb', line 198</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_encoded'>encoded</span>
+  <span class='const'>Zipper</span><span class='period'>.</span><span class='id identifier rubyid_zip'>zip</span><span class='lparen'>(</span><span class='id identifier rubyid_layout_on_disk'>layout_on_disk</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -1383,9 +1461,6 @@ profile.</p>
       <pre class="lines">
 
 
-91
-92
-93
 94
 95
 96
@@ -1393,13 +1468,16 @@ profile.</p>
 98
 99
 100
-101</pre>
+101
+102
+103
+104</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/profile.rb', line 91</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/profile.rb', line 94</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_layout_on_disk'>layout_on_disk</span>
-  <span class='id identifier rubyid_profile_dir'>profile_dir</span> <span class='op'>=</span> <span class='ivar'>@model</span> <span class='op'>?</span> <span class='id identifier rubyid_create_tmp_copy'>create_tmp_copy</span><span class='lparen'>(</span><span class='ivar'>@model</span><span class='rparen'>)</span> <span class='op'>:</span> <span class='const'>Dir</span><span class='period'>.</span><span class='id identifier rubyid_mktmpdir'>mktmpdir</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>webdriver-profile</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_profile_dir'>profile_dir</span> <span class='op'>=</span> <span class='ivar'>@model</span> <span class='op'>?</span> <span class='id identifier rubyid_create_tmp_copy'>create_tmp_copy</span><span class='lparen'>(</span><span class='ivar'>@model</span><span class='rparen'>)</span> <span class='op'>:</span> <span class='const'>Dir</span><span class='period'>.</span><span class='id identifier rubyid_mktmpdir'>mktmpdir</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>webdriver-profile</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
   <span class='const'>FileReaper</span> <span class='op'>&lt;&lt;</span> <span class='id identifier rubyid_profile_dir'>profile_dir</span>
 
   <span class='id identifier rubyid_install_extensions'>install_extensions</span><span class='lparen'>(</span><span class='id identifier rubyid_profile_dir'>profile_dir</span><span class='rparen'>)</span>
@@ -1451,12 +1529,12 @@ profile.</p>
       <pre class="lines">
 
 
-150
 151
-152</pre>
+152
+153</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/profile.rb', line 150</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/profile.rb', line 151</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_load_no_focus_lib?'>load_no_focus_lib?</span>
   <span class='ivar'>@load_no_focus_lib</span> <span class='op'>==</span> <span class='kw'>true</span>
@@ -1503,12 +1581,12 @@ profile.</p>
       <pre class="lines">
 
 
-146
 147
-148</pre>
+148
+149</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/profile.rb', line 146</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/profile.rb', line 147</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_native_events?'>native_events?</span>
   <span class='ivar'>@native_events</span> <span class='op'>==</span> <span class='kw'>true</span>
@@ -1533,12 +1611,12 @@ profile.</p>
       <pre class="lines">
 
 
-123
-124
-125</pre>
+125
+126
+127</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/profile.rb', line 123</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/profile.rb', line 125</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_port='>port=</span><span class='lparen'>(</span><span class='id identifier rubyid_port'>port</span><span class='rparen'>)</span>
   <span class='kw'>self</span><span class='lbracket'>[</span><span class='const'>WEBDRIVER_PREFS</span><span class='lbracket'>[</span><span class='symbol'>:port</span><span class='rbracket'>]</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_port'>port</span>
@@ -1563,7 +1641,6 @@ profile.</p>
       <pre class="lines">
 
 
-166
 167
 168
 169
@@ -1592,13 +1669,14 @@ profile.</p>
 192
 193
 194
-195</pre>
+195
+196</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/profile.rb', line 166</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/profile.rb', line 167</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_proxy='>proxy=</span><span class='lparen'>(</span><span class='id identifier rubyid_proxy'>proxy</span><span class='rparen'>)</span>
-  <span class='kw'>unless</span> <span class='id identifier rubyid_proxy'>proxy</span><span class='period'>.</span><span class='id identifier rubyid_kind_of?'>kind_of?</span> <span class='const'>Proxy</span>
+  <span class='kw'>unless</span> <span class='id identifier rubyid_proxy'>proxy</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span> <span class='const'>Proxy</span>
     <span class='id identifier rubyid_raise'>raise</span> <span class='const'>TypeError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>expected </span><span class='embexpr_beg'>#{</span><span class='const'>Proxy</span><span class='period'>.</span><span class='id identifier rubyid_name'>name</span><span class='embexpr_end'>}</span><span class='tstring_content'>, got </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_proxy'>proxy</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_content'>:</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_proxy'>proxy</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
   <span class='kw'>end</span>
 
@@ -1606,16 +1684,16 @@ profile.</p>
   <span class='kw'>when</span> <span class='symbol'>:manual</span>
     <span class='kw'>self</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>network.proxy.type</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='int'>1</span>
 
-    <span class='id identifier rubyid_set_manual_proxy_preference'>set_manual_proxy_preference</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>ftp</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='id identifier rubyid_proxy'>proxy</span><span class='period'>.</span><span class='id identifier rubyid_ftp'>ftp</span>
-    <span class='id identifier rubyid_set_manual_proxy_preference'>set_manual_proxy_preference</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>http</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='id identifier rubyid_proxy'>proxy</span><span class='period'>.</span><span class='id identifier rubyid_http'>http</span>
-    <span class='id identifier rubyid_set_manual_proxy_preference'>set_manual_proxy_preference</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>ssl</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='id identifier rubyid_proxy'>proxy</span><span class='period'>.</span><span class='id identifier rubyid_ssl'>ssl</span>
-    <span class='id identifier rubyid_set_manual_proxy_preference'>set_manual_proxy_preference</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>socks</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='id identifier rubyid_proxy'>proxy</span><span class='period'>.</span><span class='id identifier rubyid_socks'>socks</span>
+    <span class='id identifier rubyid_set_manual_proxy_preference'>set_manual_proxy_preference</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>ftp</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='id identifier rubyid_proxy'>proxy</span><span class='period'>.</span><span class='id identifier rubyid_ftp'>ftp</span>
+    <span class='id identifier rubyid_set_manual_proxy_preference'>set_manual_proxy_preference</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>http</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='id identifier rubyid_proxy'>proxy</span><span class='period'>.</span><span class='id identifier rubyid_http'>http</span>
+    <span class='id identifier rubyid_set_manual_proxy_preference'>set_manual_proxy_preference</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>ssl</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='id identifier rubyid_proxy'>proxy</span><span class='period'>.</span><span class='id identifier rubyid_ssl'>ssl</span>
+    <span class='id identifier rubyid_set_manual_proxy_preference'>set_manual_proxy_preference</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>socks</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='id identifier rubyid_proxy'>proxy</span><span class='period'>.</span><span class='id identifier rubyid_socks'>socks</span>
 
-    <span class='kw'>if</span> <span class='id identifier rubyid_proxy'>proxy</span><span class='period'>.</span><span class='id identifier rubyid_no_proxy'>no_proxy</span>
-      <span class='kw'>self</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>network.proxy.no_proxies_on</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_proxy'>proxy</span><span class='period'>.</span><span class='id identifier rubyid_no_proxy'>no_proxy</span>
-    <span class='kw'>else</span>
-      <span class='kw'>self</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>network.proxy.no_proxies_on</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_end'>&quot;</span></span>
-    <span class='kw'>end</span>
+    <span class='kw'>self</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>network.proxy.no_proxies_on</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='kw'>if</span> <span class='id identifier rubyid_proxy'>proxy</span><span class='period'>.</span><span class='id identifier rubyid_no_proxy'>no_proxy</span>
+                                            <span class='id identifier rubyid_proxy'>proxy</span><span class='period'>.</span><span class='id identifier rubyid_no_proxy'>no_proxy</span>
+                                          <span class='kw'>else</span>
+                                            <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_end'>&#39;</span></span>
+                                          <span class='kw'>end</span>
   <span class='kw'>when</span> <span class='symbol'>:pac</span>
     <span class='kw'>self</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>network.proxy.type</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='int'>2</span>
     <span class='kw'>self</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>network.proxy.autoconfig_url</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_proxy'>proxy</span><span class='period'>.</span><span class='id identifier rubyid_pac'>pac</span>
@@ -1669,12 +1747,12 @@ profile.</p>
       <pre class="lines">
 
 
-154
 155
-156</pre>
+156
+157</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/profile.rb', line 154</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/profile.rb', line 155</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_secure_ssl?'>secure_ssl?</span>
   <span class='ivar'>@secure_ssl</span> <span class='op'>==</span> <span class='kw'>true</span>
@@ -1689,9 +1767,9 @@ profile.</p>
 </div>
 
     <div id="footer">
-  Generated on Wed Oct  7 14:18:47 2015 by
+  Generated on Tue Feb 21 07:29:55 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.7.6 (ruby-2.2.2).
+  0.8.7.6 (ruby-2.4.0).
 </div>
 
   </body>

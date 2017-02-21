@@ -107,7 +107,7 @@
         <dt id="FLICK_SPEED-constant" class="">FLICK_SPEED =
           
         </dt>
-        <dd><pre class="code"><span class='lbrace'>{</span> <span class='symbol'>:normal</span> <span class='op'>=&gt;</span> <span class='int'>0</span><span class='comma'>,</span> <span class='symbol'>:fast</span> <span class='op'>=&gt;</span> <span class='int'>1</span><span class='rbrace'>}</span></pre></dd>
+        <dd><pre class="code"><span class='lbrace'>{</span><span class='label'>normal:</span> <span class='int'>0</span><span class='comma'>,</span> <span class='label'>fast:</span> <span class='int'>1</span><span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
       
     </dl>
   
@@ -364,12 +364,12 @@
       <pre class="lines">
 
 
+29
 30
-31
-32</pre>
+31</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/touch_screen.rb', line 30</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/touch_screen.rb', line 29</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_bridge'>bridge</span><span class='rparen'>)</span>
   <span class='ivar'>@bridge</span> <span class='op'>=</span> <span class='id identifier rubyid_bridge'>bridge</span>
@@ -401,17 +401,17 @@
       <pre class="lines">
 
 
+38
 39
 40
-41
-42</pre>
+41</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/touch_screen.rb', line 39</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/touch_screen.rb', line 38</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_double_tap'>double_tap</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_assert_element'>assert_element</span> <span class='id identifier rubyid_element'>element</span>
-  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_touchDoubleTap'>touchDoubleTap</span> <span class='id identifier rubyid_element'>element</span><span class='period'>.</span><span class='id identifier rubyid_ref'>ref</span>
+  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_touch_double_tap'>touch_double_tap</span> <span class='id identifier rubyid_element'>element</span><span class='period'>.</span><span class='id identifier rubyid_ref'>ref</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -433,17 +433,17 @@
       <pre class="lines">
 
 
+48
 49
 50
-51
-52</pre>
+51</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/touch_screen.rb', line 49</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/touch_screen.rb', line 48</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_down'>down</span><span class='lparen'>(</span><span class='id identifier rubyid_x'>x</span><span class='comma'>,</span> <span class='id identifier rubyid_y'>y</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_x'>x</span><span class='comma'>,</span> <span class='id identifier rubyid_y'>y</span> <span class='op'>=</span> <span class='id identifier rubyid_coords_from'>coords_from</span> <span class='id identifier rubyid_x'>x</span><span class='comma'>,</span> <span class='id identifier rubyid_y'>y</span>
-  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_touchDown'>touchDown</span> <span class='id identifier rubyid_x'>x</span><span class='comma'>,</span> <span class='id identifier rubyid_y'>y</span>
+  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_touch_down'>touch_down</span> <span class='id identifier rubyid_x'>x</span><span class='comma'>,</span> <span class='id identifier rubyid_y'>y</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -465,6 +465,7 @@
       <pre class="lines">
 
 
+77
 78
 79
 80
@@ -483,18 +484,16 @@
 93
 94
 95
-96
-97
-98</pre>
+96</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/touch_screen.rb', line 78</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/touch_screen.rb', line 77</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_flick'>flick</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
   <span class='kw'>case</span> <span class='id identifier rubyid_args'>args</span><span class='period'>.</span><span class='id identifier rubyid_size'>size</span>
   <span class='kw'>when</span> <span class='int'>2</span>
     <span class='id identifier rubyid_x_speed'>x_speed</span><span class='comma'>,</span> <span class='id identifier rubyid_y_speed'>y_speed</span> <span class='op'>=</span> <span class='id identifier rubyid_args'>args</span>
-    <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_touchFlick'>touchFlick</span> <span class='const'>Integer</span><span class='lparen'>(</span><span class='id identifier rubyid_x_speed'>x_speed</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='const'>Integer</span><span class='lparen'>(</span><span class='id identifier rubyid_y_speed'>y_speed</span><span class='rparen'>)</span>
+    <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_touch_flick'>touch_flick</span> <span class='const'>Integer</span><span class='lparen'>(</span><span class='id identifier rubyid_x_speed'>x_speed</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='const'>Integer</span><span class='lparen'>(</span><span class='id identifier rubyid_y_speed'>y_speed</span><span class='rparen'>)</span>
   <span class='kw'>when</span> <span class='int'>4</span>
     <span class='id identifier rubyid_element'>element</span><span class='comma'>,</span> <span class='id identifier rubyid_xoffset'>xoffset</span><span class='comma'>,</span> <span class='id identifier rubyid_yoffset'>yoffset</span><span class='comma'>,</span> <span class='id identifier rubyid_speed'>speed</span> <span class='op'>=</span> <span class='id identifier rubyid_args'>args</span>
 
@@ -505,11 +504,10 @@
       <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>expected one of </span><span class='embexpr_beg'>#{</span><span class='const'>FLICK_SPEED</span><span class='period'>.</span><span class='id identifier rubyid_keys'>keys</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_content'>, got </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_speed'>speed</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
     <span class='kw'>end</span>
 
-    <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_touchElementFlick'>touchElementFlick</span> <span class='id identifier rubyid_element'>element</span><span class='period'>.</span><span class='id identifier rubyid_ref'>ref</span><span class='comma'>,</span> <span class='const'>Integer</span><span class='lparen'>(</span><span class='id identifier rubyid_xoffset'>xoffset</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='const'>Integer</span><span class='lparen'>(</span><span class='id identifier rubyid_yoffset'>yoffset</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='id identifier rubyid_flick_speed'>flick_speed</span>
+    <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_touch_element_flick'>touch_element_flick</span> <span class='id identifier rubyid_element'>element</span><span class='period'>.</span><span class='id identifier rubyid_ref'>ref</span><span class='comma'>,</span> <span class='const'>Integer</span><span class='lparen'>(</span><span class='id identifier rubyid_xoffset'>xoffset</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='const'>Integer</span><span class='lparen'>(</span><span class='id identifier rubyid_yoffset'>yoffset</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='id identifier rubyid_flick_speed'>flick_speed</span>
   <span class='kw'>else</span>
     <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>wrong number of arguments, expected 2 or 4, got </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_args'>args</span><span class='period'>.</span><span class='id identifier rubyid_size'>size</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
   <span class='kw'>end</span>
-
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -531,17 +529,17 @@
       <pre class="lines">
 
 
+43
 44
 45
-46
-47</pre>
+46</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/touch_screen.rb', line 44</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/touch_screen.rb', line 43</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_long_press'>long_press</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_assert_element'>assert_element</span> <span class='id identifier rubyid_element'>element</span>
-  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_touchLongPress'>touchLongPress</span> <span class='id identifier rubyid_element'>element</span><span class='period'>.</span><span class='id identifier rubyid_ref'>ref</span>
+  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_touch_long_press'>touch_long_press</span> <span class='id identifier rubyid_element'>element</span><span class='period'>.</span><span class='id identifier rubyid_ref'>ref</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -563,17 +561,17 @@
       <pre class="lines">
 
 
+58
 59
 60
-61
-62</pre>
+61</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/touch_screen.rb', line 59</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/touch_screen.rb', line 58</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_move'>move</span><span class='lparen'>(</span><span class='id identifier rubyid_x'>x</span><span class='comma'>,</span> <span class='id identifier rubyid_y'>y</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_x'>x</span><span class='comma'>,</span> <span class='id identifier rubyid_y'>y</span> <span class='op'>=</span> <span class='id identifier rubyid_coords_from'>coords_from</span> <span class='id identifier rubyid_x'>x</span><span class='comma'>,</span> <span class='id identifier rubyid_y'>y</span>
-  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_touchMove'>touchMove</span> <span class='id identifier rubyid_x'>x</span><span class='comma'>,</span> <span class='id identifier rubyid_y'>y</span>
+  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_touch_move'>touch_move</span> <span class='id identifier rubyid_x'>x</span><span class='comma'>,</span> <span class='id identifier rubyid_y'>y</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -595,6 +593,7 @@
       <pre class="lines">
 
 
+63
 64
 65
 66
@@ -606,21 +605,20 @@
 72
 73
 74
-75
-76</pre>
+75</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/touch_screen.rb', line 64</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/touch_screen.rb', line 63</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_scroll'>scroll</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
   <span class='kw'>case</span> <span class='id identifier rubyid_args'>args</span><span class='period'>.</span><span class='id identifier rubyid_size'>size</span>
   <span class='kw'>when</span> <span class='int'>2</span>
     <span class='id identifier rubyid_x_offset'>x_offset</span><span class='comma'>,</span> <span class='id identifier rubyid_y_offset'>y_offset</span> <span class='op'>=</span> <span class='id identifier rubyid_args'>args</span>
-    <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_touchScroll'>touchScroll</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='const'>Integer</span><span class='lparen'>(</span><span class='id identifier rubyid_x_offset'>x_offset</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='const'>Integer</span><span class='lparen'>(</span><span class='id identifier rubyid_y_offset'>y_offset</span><span class='rparen'>)</span>
+    <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_touch_scroll'>touch_scroll</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='const'>Integer</span><span class='lparen'>(</span><span class='id identifier rubyid_x_offset'>x_offset</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='const'>Integer</span><span class='lparen'>(</span><span class='id identifier rubyid_y_offset'>y_offset</span><span class='rparen'>)</span>
   <span class='kw'>when</span> <span class='int'>3</span>
     <span class='id identifier rubyid_element'>element</span><span class='comma'>,</span> <span class='id identifier rubyid_x_offset'>x_offset</span><span class='comma'>,</span> <span class='id identifier rubyid_y_offset'>y_offset</span> <span class='op'>=</span> <span class='id identifier rubyid_args'>args</span>
     <span class='id identifier rubyid_assert_element'>assert_element</span> <span class='id identifier rubyid_element'>element</span>
-    <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_touchScroll'>touchScroll</span> <span class='id identifier rubyid_element'>element</span><span class='period'>.</span><span class='id identifier rubyid_ref'>ref</span><span class='comma'>,</span> <span class='const'>Integer</span><span class='lparen'>(</span><span class='id identifier rubyid_x_offset'>x_offset</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='const'>Integer</span><span class='lparen'>(</span><span class='id identifier rubyid_y_offset'>y_offset</span><span class='rparen'>)</span>
+    <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_touch_scroll'>touch_scroll</span> <span class='id identifier rubyid_element'>element</span><span class='period'>.</span><span class='id identifier rubyid_ref'>ref</span><span class='comma'>,</span> <span class='const'>Integer</span><span class='lparen'>(</span><span class='id identifier rubyid_x_offset'>x_offset</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='const'>Integer</span><span class='lparen'>(</span><span class='id identifier rubyid_y_offset'>y_offset</span><span class='rparen'>)</span>
   <span class='kw'>else</span>
     <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>wrong number of arguments, expected 2..3, got </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_args'>args</span><span class='period'>.</span><span class='id identifier rubyid_size'>size</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
   <span class='kw'>end</span>
@@ -645,17 +643,17 @@
       <pre class="lines">
 
 
+33
 34
 35
-36
-37</pre>
+36</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/touch_screen.rb', line 34</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/touch_screen.rb', line 33</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_single_tap'>single_tap</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_assert_element'>assert_element</span> <span class='id identifier rubyid_element'>element</span>
-  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_touchSingleTap'>touchSingleTap</span> <span class='id identifier rubyid_element'>element</span><span class='period'>.</span><span class='id identifier rubyid_ref'>ref</span>
+  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_touch_single_tap'>touch_single_tap</span> <span class='id identifier rubyid_element'>element</span><span class='period'>.</span><span class='id identifier rubyid_ref'>ref</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -677,17 +675,17 @@
       <pre class="lines">
 
 
+53
 54
 55
-56
-57</pre>
+56</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/touch_screen.rb', line 54</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/touch_screen.rb', line 53</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_up'>up</span><span class='lparen'>(</span><span class='id identifier rubyid_x'>x</span><span class='comma'>,</span> <span class='id identifier rubyid_y'>y</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_x'>x</span><span class='comma'>,</span> <span class='id identifier rubyid_y'>y</span> <span class='op'>=</span> <span class='id identifier rubyid_coords_from'>coords_from</span> <span class='id identifier rubyid_x'>x</span><span class='comma'>,</span> <span class='id identifier rubyid_y'>y</span>
-  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_touchUp'>touchUp</span> <span class='id identifier rubyid_x'>x</span><span class='comma'>,</span> <span class='id identifier rubyid_y'>y</span>
+  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_touch_up'>touch_up</span> <span class='id identifier rubyid_x'>x</span><span class='comma'>,</span> <span class='id identifier rubyid_y'>y</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -699,9 +697,9 @@
 </div>
 
     <div id="footer">
-  Generated on Wed Oct  7 14:18:46 2015 by
+  Generated on Tue Feb 21 07:29:56 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.7.6 (ruby-2.2.2).
+  0.8.7.6 (ruby-2.4.0).
 </div>
 
   </body>

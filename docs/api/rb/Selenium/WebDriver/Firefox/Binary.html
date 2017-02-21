@@ -37,7 +37,7 @@
     <span class="title">Binary</span>
   
 
-  <div class="noframes"><span class="title">(</span><a href="" target="_top">no frames</a><span class="title">)</span></div>
+  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
 </div>
 
       <div id="search">
@@ -133,7 +133,7 @@
 
 </div>
         </dt>
-        <dd><pre class="code"><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>x_ignore_nofocus.so</span><span class='tstring_end'>&quot;</span></span></pre></dd>
+        <dd><pre class="code"><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>x_ignore_nofocus.so</span><span class='tstring_end'>&#39;</span></span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
       
         <dt id="NO_FOCUS_LIBRARIES-constant" class="">NO_FOCUS_LIBRARIES =
           <div class="docstring">
@@ -152,9 +152,11 @@
 </div>
         </dt>
         <dd><pre class="code"><span class='lbracket'>[</span>
-  <span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='const'>WebDriver</span><span class='period'>.</span><span class='id identifier rubyid_root'>root</span><span class='embexpr_end'>}</span><span class='tstring_content'>/selenium/webdriver/firefox/native/linux/amd64/</span><span class='embexpr_beg'>#{</span><span class='const'>NO_FOCUS_LIBRARY_NAME</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>amd64/</span><span class='embexpr_beg'>#{</span><span class='const'>NO_FOCUS_LIBRARY_NAME</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span><span class='comma'>,</span>
-  <span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='const'>WebDriver</span><span class='period'>.</span><span class='id identifier rubyid_root'>root</span><span class='embexpr_end'>}</span><span class='tstring_content'>/selenium/webdriver/firefox/native/linux/x86/</span><span class='embexpr_beg'>#{</span><span class='const'>NO_FOCUS_LIBRARY_NAME</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>x86/</span><span class='embexpr_beg'>#{</span><span class='const'>NO_FOCUS_LIBRARY_NAME</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span><span class='comma'>,</span>
-<span class='rbracket'>]</span></pre></dd>
+  <span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='const'>WebDriver</span><span class='period'>.</span><span class='id identifier rubyid_root'>root</span><span class='embexpr_end'>}</span><span class='tstring_content'>/selenium/webdriver/firefox/native/linux/amd64/</span><span class='embexpr_beg'>#{</span><span class='const'>NO_FOCUS_LIBRARY_NAME</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+   <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>amd64/</span><span class='embexpr_beg'>#{</span><span class='const'>NO_FOCUS_LIBRARY_NAME</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span><span class='comma'>,</span>
+  <span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='const'>WebDriver</span><span class='period'>.</span><span class='id identifier rubyid_root'>root</span><span class='embexpr_end'>}</span><span class='tstring_content'>/selenium/webdriver/firefox/native/linux/x86/</span><span class='embexpr_beg'>#{</span><span class='const'>NO_FOCUS_LIBRARY_NAME</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+   <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>x86/</span><span class='embexpr_beg'>#{</span><span class='const'>NO_FOCUS_LIBRARY_NAME</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span>
+<span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
       
         <dt id="WAIT_TIMEOUT-constant" class="">WAIT_TIMEOUT =
           <div class="docstring">
@@ -235,6 +237,28 @@
   <span class="summary_signature">
     
       <a href="#path%3D-class_method" title="path= (class method)">+ (Object) <strong>path=</strong>(path) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  <span class="private note title">private</span>
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#reset_path%21-class_method" title="reset_path! (class method)">+ (Object) <strong>reset_path!</strong> </a>
     
 
     
@@ -387,6 +411,20 @@
       <pre class="lines">
 
 
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
 131
 132
 133
@@ -394,22 +432,10 @@
 135
 136
 137
-138
-139
-140
-141
-142
-143
-144
-145
-146
-147
-148
-149
-150</pre>
+138</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/binary.rb', line 131</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/binary.rb', line 117</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_path'>path</span>
   <span class='ivar'>@path</span> <span class='op'>||=</span> <span class='kw'>case</span> <span class='const'>Platform</span><span class='period'>.</span><span class='id identifier rubyid_os'>os</span>
@@ -418,7 +444,7 @@
             <span class='kw'>when</span> <span class='symbol'>:windows</span>
               <span class='id identifier rubyid_windows_path'>windows_path</span>
             <span class='kw'>when</span> <span class='symbol'>:linux</span><span class='comma'>,</span> <span class='symbol'>:unix</span>
-              <span class='const'>Platform</span><span class='period'>.</span><span class='id identifier rubyid_find_binary'>find_binary</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>firefox3</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>firefox2</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>firefox</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span> <span class='op'>||</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>/usr/bin/firefox</span><span class='tstring_end'>&quot;</span></span>
+              <span class='const'>Platform</span><span class='period'>.</span><span class='id identifier rubyid_find_binary'>find_binary</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>firefox3</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>firefox2</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>firefox</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span> <span class='op'>||</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>/usr/bin/firefox</span><span class='tstring_end'>&#39;</span></span>
             <span class='kw'>else</span>
               <span class='id identifier rubyid_raise'>raise</span> <span class='const'>Error</span><span class='op'>::</span><span class='const'>WebDriverError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>unknown platform: </span><span class='embexpr_beg'>#{</span><span class='const'>Platform</span><span class='period'>.</span><span class='id identifier rubyid_os'>os</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
             <span class='kw'>end</span>
@@ -426,7 +452,9 @@
   <span class='ivar'>@path</span> <span class='op'>=</span> <span class='const'>Platform</span><span class='period'>.</span><span class='id identifier rubyid_cygwin_path'>cygwin_path</span><span class='lparen'>(</span><span class='ivar'>@path</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='const'>Platform</span><span class='period'>.</span><span class='id identifier rubyid_cygwin?'>cygwin?</span>
 
   <span class='kw'>unless</span> <span class='const'>File</span><span class='period'>.</span><span class='id identifier rubyid_file?'>file?</span><span class='lparen'>(</span><span class='ivar'>@path</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='rparen'>)</span>
-    <span class='id identifier rubyid_raise'>raise</span> <span class='const'>Error</span><span class='op'>::</span><span class='const'>WebDriverError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Could not find Firefox binary (os=</span><span class='embexpr_beg'>#{</span><span class='const'>Platform</span><span class='period'>.</span><span class='id identifier rubyid_os'>os</span><span class='embexpr_end'>}</span><span class='tstring_content'>). Make sure Firefox is installed or set the path manually with </span><span class='embexpr_beg'>#{</span><span class='kw'>self</span><span class='embexpr_end'>}</span><span class='tstring_content'>.path=</span><span class='tstring_end'>&quot;</span></span>
+    <span class='id identifier rubyid_error'>error</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Could not find Firefox binary (os=</span><span class='embexpr_beg'>#{</span><span class='const'>Platform</span><span class='period'>.</span><span class='id identifier rubyid_os'>os</span><span class='embexpr_end'>}</span><span class='tstring_content'>). </span><span class='tstring_end'>&quot;</span></span>
+    <span class='id identifier rubyid_error'>error</span> <span class='op'>&lt;&lt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Make sure Firefox is installed or set the path manually with </span><span class='embexpr_beg'>#{</span><span class='kw'>self</span><span class='embexpr_end'>}</span><span class='tstring_content'>.path=</span><span class='tstring_end'>&quot;</span></span>
+    <span class='id identifier rubyid_raise'>raise</span> <span class='const'>Error</span><span class='op'>::</span><span class='const'>WebDriverError</span><span class='comma'>,</span> <span class='id identifier rubyid_error'>error</span>
   <span class='kw'>end</span>
 
   <span class='ivar'>@path</span>
@@ -471,17 +499,60 @@
       <pre class="lines">
 
 
-126
-127
-128
-129</pre>
+108
+109
+110
+111</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/binary.rb', line 126</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/binary.rb', line 108</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_path='>path=</span><span class='lparen'>(</span><span class='id identifier rubyid_path'>path</span><span class='rparen'>)</span>
   <span class='const'>Platform</span><span class='period'>.</span><span class='id identifier rubyid_assert_executable'>assert_executable</span><span class='lparen'>(</span><span class='id identifier rubyid_path'>path</span><span class='rparen'>)</span>
   <span class='ivar'>@path</span> <span class='op'>=</span> <span class='id identifier rubyid_path'>path</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="reset_path!-class_method">
+  
+    + (<tt>Object</tt>) <strong>reset_path!</strong> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+113
+114
+115</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/binary.rb', line 113</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_reset_path!'>reset_path!</span>
+  <span class='ivar'>@path</span> <span class='op'>=</span> <span class='kw'>nil</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -516,33 +587,33 @@
       <pre class="lines">
 
 
-152
-153
-154
-155
-156
-157
-158
-159
-160
-161
-162
-163</pre>
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/binary.rb', line 152</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/binary.rb', line 140</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_version'>version</span>
   <span class='ivar'>@version</span> <span class='op'>=</span> <span class='kw'>case</span> <span class='const'>Platform</span><span class='period'>.</span><span class='id identifier rubyid_os'>os</span>
-               <span class='kw'>when</span> <span class='symbol'>:macosx</span>
-                 <span class='backtick'>`</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_path'>path</span><span class='embexpr_end'>}</span><span class='tstring_content'> -v</span><span class='tstring_end'>`</span></span><span class='period'>.</span><span class='id identifier rubyid_strip'>strip</span><span class='lbracket'>[</span><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>[^\s]*$</span><span class='regexp_end'>/</span></span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>^\d+</span><span class='regexp_end'>/</span></span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span>
-               <span class='kw'>when</span> <span class='symbol'>:windows</span>
-                 <span class='backtick'>`</span><span class='tstring_content'>\&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_path'>path</span><span class='embexpr_end'>}</span><span class='tstring_content'>\&quot; -v | more</span><span class='tstring_end'>`</span></span><span class='period'>.</span><span class='id identifier rubyid_strip'>strip</span><span class='lbracket'>[</span><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>[^\s]*$</span><span class='regexp_end'>/</span></span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>^\d+</span><span class='regexp_end'>/</span></span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span>
-               <span class='kw'>when</span> <span class='symbol'>:linux</span>
-                 <span class='backtick'>`</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_path'>path</span><span class='embexpr_end'>}</span><span class='tstring_content'> -v</span><span class='tstring_end'>`</span></span><span class='period'>.</span><span class='id identifier rubyid_strip'>strip</span><span class='lbracket'>[</span><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>[^\s]*$</span><span class='regexp_end'>/</span></span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>^\d+</span><span class='regexp_end'>/</span></span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span>
-               <span class='kw'>else</span>
-                 <span class='int'>0</span>
-               <span class='kw'>end</span>
+             <span class='kw'>when</span> <span class='symbol'>:macosx</span>
+               <span class='backtick'>`</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_path'>path</span><span class='embexpr_end'>}</span><span class='tstring_content'> -v</span><span class='tstring_end'>`</span></span><span class='period'>.</span><span class='id identifier rubyid_strip'>strip</span><span class='lbracket'>[</span><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>[^\s]*$</span><span class='regexp_end'>/</span></span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>^\d+</span><span class='regexp_end'>/</span></span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span>
+             <span class='kw'>when</span> <span class='symbol'>:windows</span>
+               <span class='backtick'>`</span><span class='tstring_content'>\&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_path'>path</span><span class='embexpr_end'>}</span><span class='tstring_content'>\&quot; -v | more</span><span class='tstring_end'>`</span></span><span class='period'>.</span><span class='id identifier rubyid_strip'>strip</span><span class='lbracket'>[</span><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>[^\s]*$</span><span class='regexp_end'>/</span></span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>^\d+</span><span class='regexp_end'>/</span></span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span>
+             <span class='kw'>when</span> <span class='symbol'>:linux</span>
+               <span class='backtick'>`</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_path'>path</span><span class='embexpr_end'>}</span><span class='tstring_content'> -v</span><span class='tstring_end'>`</span></span><span class='period'>.</span><span class='id identifier rubyid_strip'>strip</span><span class='lbracket'>[</span><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>[^\s]*$</span><span class='regexp_end'>/</span></span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>^\d+</span><span class='regexp_end'>/</span></span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span>
+             <span class='kw'>else</span>
+               <span class='int'>0</span>
+             <span class='kw'>end</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -583,16 +654,16 @@
       <pre class="lines">
 
 
+56
 57
 58
 59
 60
 61
-62
-63</pre>
+62</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/binary.rb', line 57</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/binary.rb', line 56</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_quit'>quit</span>
   <span class='kw'>return</span> <span class='kw'>unless</span> <span class='ivar'>@process</span>
@@ -652,31 +723,29 @@
 51
 52
 53
-54
-55</pre>
+54</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/binary.rb', line 36</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_start_with'>start_with</span><span class='lparen'>(</span><span class='id identifier rubyid_profile'>profile</span><span class='comma'>,</span> <span class='id identifier rubyid_profile_path'>profile_path</span><span class='comma'>,</span> <span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
   <span class='kw'>if</span> <span class='const'>Platform</span><span class='period'>.</span><span class='id identifier rubyid_cygwin?'>cygwin?</span>
-    <span class='id identifier rubyid_profile_path'>profile_path</span> <span class='op'>=</span> <span class='const'>Platform</span><span class='period'>.</span><span class='id identifier rubyid_cygwin_path'>cygwin_path</span><span class='lparen'>(</span><span class='id identifier rubyid_profile_path'>profile_path</span><span class='comma'>,</span> <span class='symbol'>:windows</span> <span class='op'>=&gt;</span> <span class='kw'>true</span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_profile_path'>profile_path</span> <span class='op'>=</span> <span class='const'>Platform</span><span class='period'>.</span><span class='id identifier rubyid_cygwin_path'>cygwin_path</span><span class='lparen'>(</span><span class='id identifier rubyid_profile_path'>profile_path</span><span class='comma'>,</span> <span class='label'>windows:</span> <span class='kw'>true</span><span class='rparen'>)</span>
   <span class='kw'>elsif</span> <span class='const'>Platform</span><span class='period'>.</span><span class='id identifier rubyid_windows?'>windows?</span>
-    <span class='id identifier rubyid_profile_path'>profile_path</span> <span class='op'>=</span> <span class='id identifier rubyid_profile_path'>profile_path</span><span class='period'>.</span><span class='id identifier rubyid_gsub'>gsub</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>/</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\\</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_profile_path'>profile_path</span> <span class='op'>=</span> <span class='id identifier rubyid_profile_path'>profile_path</span><span class='period'>.</span><span class='id identifier rubyid_tr'>tr</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>/</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>\\</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
   <span class='kw'>end</span>
 
-  <span class='const'>ENV</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>XRE_CONSOLE_LOG</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span>           <span class='op'>=</span> <span class='id identifier rubyid_profile'>profile</span><span class='period'>.</span><span class='id identifier rubyid_log_file'>log_file</span> <span class='kw'>if</span> <span class='id identifier rubyid_profile'>profile</span><span class='period'>.</span><span class='id identifier rubyid_log_file'>log_file</span>
-  <span class='const'>ENV</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>XRE_PROFILE_PATH</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span>          <span class='op'>=</span> <span class='id identifier rubyid_profile_path'>profile_path</span>
-  <span class='const'>ENV</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>MOZ_NO_REMOTE</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span>             <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>1</span><span class='tstring_end'>&#39;</span></span> <span class='comment'># able to launch multiple instances
+  <span class='const'>ENV</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>XRE_CONSOLE_LOG</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_profile'>profile</span><span class='period'>.</span><span class='id identifier rubyid_log_file'>log_file</span> <span class='kw'>if</span> <span class='id identifier rubyid_profile'>profile</span><span class='period'>.</span><span class='id identifier rubyid_log_file'>log_file</span>
+  <span class='const'>ENV</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>XRE_PROFILE_PATH</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_profile_path'>profile_path</span>
+  <span class='const'>ENV</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>MOZ_NO_REMOTE</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>1</span><span class='tstring_end'>&#39;</span></span> <span class='comment'># able to launch multiple instances
 </span>  <span class='const'>ENV</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>MOZ_CRASHREPORTER_DISABLE</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>1</span><span class='tstring_end'>&#39;</span></span> <span class='comment'># disable breakpad
-</span>  <span class='const'>ENV</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>NO_EM_RESTART</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span>             <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>1</span><span class='tstring_end'>&#39;</span></span> <span class='comment'># prevent the binary from detaching from the console
+</span>  <span class='const'>ENV</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>NO_EM_RESTART</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>1</span><span class='tstring_end'>&#39;</span></span> <span class='comment'># prevent the binary from detaching from the console
 </span>
   <span class='kw'>if</span> <span class='const'>Platform</span><span class='period'>.</span><span class='id identifier rubyid_linux?'>linux?</span> <span class='op'>&amp;&amp;</span> <span class='lparen'>(</span><span class='id identifier rubyid_profile'>profile</span><span class='period'>.</span><span class='id identifier rubyid_native_events?'>native_events?</span> <span class='op'>||</span> <span class='id identifier rubyid_profile'>profile</span><span class='period'>.</span><span class='id identifier rubyid_load_no_focus_lib?'>load_no_focus_lib?</span><span class='rparen'>)</span>
     <span class='id identifier rubyid_modify_link_library_path'>modify_link_library_path</span> <span class='id identifier rubyid_profile_path'>profile_path</span>
   <span class='kw'>end</span>
 
   <span class='id identifier rubyid_execute'>execute</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_cope_with_mac_strangeness'>cope_with_mac_strangeness</span><span class='lparen'>(</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='const'>Platform</span><span class='period'>.</span><span class='id identifier rubyid_mac?'>mac?</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -711,6 +780,7 @@
       <pre class="lines">
 
 
+64
 65
 66
 67
@@ -719,11 +789,10 @@
 70
 71
 72
-73
-74</pre>
+73</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/binary.rb', line 65</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/binary.rb', line 64</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_wait'>wait</span>
   <span class='kw'>return</span> <span class='kw'>unless</span> <span class='ivar'>@process</span>
@@ -745,9 +814,9 @@
 </div>
 
     <div id="footer">
-  Generated on Wed Oct  7 14:18:47 2015 by
+  Generated on Tue Feb 21 07:29:55 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.7.6 (ruby-2.2.2).
+  0.8.7.6 (ruby-2.4.0).
 </div>
 
   </body>
