@@ -21,7 +21,7 @@ rubydocs(
   ],
   readme = "rb/README.md",
   output_dir = "build/docs/api/rb",
-  deps = [ "//rb:gem:build" ]
+  deps = [ "//rb:gem:build", "//rb:bundle" ]
 )
 
 ruby_library(name = "common",
