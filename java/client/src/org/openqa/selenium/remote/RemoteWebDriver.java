@@ -658,7 +658,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
   }
 
   protected Response execute(String command) {
-    return execute(command, ImmutableMap.<String, Object>of());
+    return execute(command, ImmutableMap.of());
   }
 
   protected ExecuteMethod getExecuteMethod() {
