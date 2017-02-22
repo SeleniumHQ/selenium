@@ -1,3 +1,10 @@
+3.2.0 (2017-02-22)
+===================
+
+Ruby:
+  * Implement new Logger class
+  * Fix issue with chromedriver process leader incompatibility on Win7 (issue 3512)
+
 3.1.0 (2017-02-14)
 ===================
 
