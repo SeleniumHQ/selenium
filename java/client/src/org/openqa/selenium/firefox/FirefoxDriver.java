@@ -58,7 +58,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -149,6 +148,10 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
 
   public FirefoxDriver(FirefoxProfile profile) {
     this(new FirefoxOptions().setProfile(profile));
+  }
+
+  public FirefoxDriver(FirefoxBinary binary, FirefoxProfile profile) {
+    this(new FirefoxOptions().setBinary(binary).setProfile(profile));
   }
 
   public FirefoxDriver(Capabilities desiredCapabilities) {
@@ -282,10 +285,6 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
       }
     }
     return new FirefoxBinary();
-  }
-
-  public FirefoxDriver(FirefoxBinary binary, FirefoxProfile profile) {
-    this(binary, profile, DesiredCapabilities.firefox());
   }
 
   public FirefoxDriver(FirefoxBinary binary, FirefoxProfile profile, Capabilities capabilities) {
