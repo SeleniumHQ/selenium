@@ -171,6 +171,7 @@ java_library(
     "//java/client/src/org/openqa/selenium/support:support",
     "//third_party/java/htmlunit:htmlunit",
     "//third_party/java/phantomjs-driver:phantomjs-driver",
+    '//third_party/java/selenium:htmlunit-driver'
   ],
   visibility = [
     '//java/server/src/org/openqa/grid/selenium:classes',
