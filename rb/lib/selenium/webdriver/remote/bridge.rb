@@ -33,11 +33,7 @@ module Selenium
         attr_reader :capabilities
 
         #
-        # Initializes the bridge with the given server URL.
-        #
-        # @param url         [String] url for the remote server
-        # @param http_client [Object] an HTTP client instance that implements the same protocol as Http::Default
-        # @param desired_capabilities [Capabilities] an instance of Remote::Capabilities describing the capabilities you want
+        # @see W3CBridge#Initialize
         #
 
         def initialize(opts = {})

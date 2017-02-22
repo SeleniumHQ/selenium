@@ -131,7 +131,8 @@ class RubyMappings
              :files   => files,
              :gemfile => "build/rb/Gemfile"
 
-        sh "find build/docs/api/rb -type f -name '*.html' -exec sed -i '' 's/build\\/rb\\/lib/lib/g' {} +"
+        # Need a cross-platform solution, perform manually
+        # sh "find build/docs/api/rb -type f -name '*.html' -exec sed -i '' 's/build\\/rb\\/ib/lib/g' {} +"
       end
 
       add_dependencies t, dir, args[:deps]
