@@ -29,7 +29,6 @@ import com.google.gson.JsonPrimitive;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.firefox.internal.ProfilesIni;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.io.IOException;
@@ -68,6 +67,7 @@ public class FirefoxOptions {
   private Level logLevel = null;
   private Boolean legacy;
   private DesiredCapabilities desiredCapabilities = new DesiredCapabilities();
+  private DesiredCapabilities requiredCapabilities = new DesiredCapabilities();
 
   /** INTERNAL ONLY: DO NOT USE */
   static FirefoxOptions fromJsonMap(Map<String, Object> map) throws IOException {
@@ -172,12 +172,21 @@ public class FirefoxOptions {
   }
 
   public FirefoxProfile getProfile() {
-    final FirefoxProfile toReturn = Optional.ofNullable(profile).orElse(
-        Optional.ofNullable(extractProfile()).orElse(new FirefoxProfile()));
+    FirefoxProfile toReturn = profile;
+    if (toReturn == null) {
+      toReturn = extractProfile(desiredCapabilities);
+    }
+    if (toReturn == null) {
+      toReturn = extractProfile(requiredCapabilities);
+    }
+    if (toReturn == null) {
+      toReturn = new FirefoxProfile();
+    }
 
-    booleanPrefs.entrySet().forEach(pref -> toReturn.setPreference(pref.getKey(), pref.getValue()));
-    intPrefs.entrySet().forEach(pref -> toReturn.setPreference(pref.getKey(), pref.getValue()));
-    stringPrefs.entrySet().forEach(pref -> toReturn.setPreference(pref.getKey(), pref.getValue()));
+    FirefoxProfile prefHolder = toReturn;
+    booleanPrefs.entrySet().forEach(pref -> prefHolder.setPreference(pref.getKey(), pref.getValue()));
+    intPrefs.entrySet().forEach(pref -> prefHolder.setPreference(pref.getKey(), pref.getValue()));
+    stringPrefs.entrySet().forEach(pref -> prefHolder.setPreference(pref.getKey(), pref.getValue()));
 
     return toReturn;
   }
@@ -223,7 +232,7 @@ public class FirefoxOptions {
   public FirefoxOptions addDesiredCapabilities(Capabilities desiredCapabilities) {
     this.desiredCapabilities.merge(desiredCapabilities);
 
-    FirefoxProfile suggestedProfile = extractProfile();
+    FirefoxProfile suggestedProfile = extractProfile(desiredCapabilities);
     if (suggestedProfile !=  null) {
       if (!booleanPrefs.isEmpty() || !intPrefs.isEmpty() || !stringPrefs.isEmpty()) {
         throw new IllegalStateException(
@@ -241,11 +250,32 @@ public class FirefoxOptions {
     return this;
   }
 
-  private FirefoxProfile extractProfile() {
-    if (desiredCapabilities == null) {
+  public FirefoxOptions addRequiredCapabilities(Capabilities requiredCapabilities) {
+    this.requiredCapabilities.merge(requiredCapabilities);
+
+    FirefoxProfile suggestedProfile = extractProfile(desiredCapabilities);
+    if (suggestedProfile !=  null) {
+      if (!booleanPrefs.isEmpty() || !intPrefs.isEmpty() || !stringPrefs.isEmpty()) {
+        throw new IllegalStateException(
+            "Unable to determine if preferences set on this option " +
+            "are the same as the profile in the capabilities");
+      }
+      if (profile != null && !suggestedProfile.equals(profile)) {
+        throw new IllegalStateException(
+            "Profile has been set on both the capabilities and these options, but they're " +
+            "different. Unable to determine which one you want to use.");
+      }
+      profile = suggestedProfile;
+    }
+
+    return this;
+  }
+
+  private FirefoxProfile extractProfile(Capabilities capabilities) {
+    if (capabilities == null) {
       return null;
     }
-    Object raw = desiredCapabilities.getCapability(PROFILE);
+    Object raw = capabilities.getCapability(PROFILE);
     if (raw == null) {
       return null;
 
@@ -302,6 +332,10 @@ public class FirefoxOptions {
     }
 
     return capabilities;
+  }
+
+  public Capabilities toRequiredCapabilities() {
+    return requiredCapabilities;
   }
 
   public DesiredCapabilities addTo(DesiredCapabilities capabilities) {
