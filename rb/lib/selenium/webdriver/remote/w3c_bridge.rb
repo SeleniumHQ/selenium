@@ -36,11 +36,12 @@ module Selenium
         attr_reader :capabilities
 
         #
-        # Initializes the bridge with the given server URL.
-        #
-        # @param url         [String] url for the remote server
-        # @param http_client [Object] an HTTP client instance that implements the same protocol as Http::Default
-        # @param desired_capabilities [Capabilities] an instance of Remote::Capabilities describing the capabilities you want
+        # Initializes the bridge with the given server URL
+        # @param [Hash] opts options for the driver
+        # @option opts [String] :url url for the remote server
+        # @option opts [Integer] :port port number for the remote server
+        # @option opts [Object] :http_client an HTTP client instance that implements the same protocol as Http::Default
+        # @option opts [Capabilities] :desired_capabilities an instance of Remote::Capabilities describing the capabilities you want
         #
 
         def initialize(opts = {})

@@ -108,10 +108,8 @@ module Selenium
       #
       # class, readonly
       #
-      # @param [String]
-      #   attribute name
-      # @return [String,nil]
-      #   attribute value
+      # @param [String] name attribute name
+      # @return [String, nil] attribute value
       #
 
       def attribute(name)
@@ -122,10 +120,8 @@ module Selenium
       # Get the value of a the given property with the same name of the element. If the value is not
       # set, nil is returned.
       #
-      # @param [String]
-      #   property name
-      # @return [String,nil]
-      #   property value
+      # @param [String] name property name
+      # @return [String, nil] property value
       #
 
       def property(name)
@@ -145,7 +141,7 @@ module Selenium
       #
       # Send keystrokes to this element
       #
-      # @param [String, Symbol, Array]
+      # @param [String, Symbol, Array] args keystrokes to send
       #
       # Examples:
       #

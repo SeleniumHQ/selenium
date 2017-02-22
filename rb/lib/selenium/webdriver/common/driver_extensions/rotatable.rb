@@ -30,7 +30,7 @@ module Selenium
         #
         # Change the screen orientation
         #
-        # @param [:landscape, :portrait] Orientation
+        # @param [:landscape, :portrait] orientation
         #
         # @api public
         #
