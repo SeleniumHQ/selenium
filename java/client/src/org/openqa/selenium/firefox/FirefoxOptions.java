@@ -28,9 +28,12 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -38,7 +41,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.logging.Level;
 
 /**
@@ -159,7 +161,36 @@ public class FirefoxOptions {
   }
 
   public FirefoxBinary getBinary() {
-    return Optional.ofNullable(binary).orElse(new FirefoxBinary());
+    if (binary != null) {
+      return binary;
+
+    } else {
+      if (desiredCapabilities.getCapability(FirefoxDriver.BINARY) != null) {
+        Object raw = desiredCapabilities.getCapability(FirefoxDriver.BINARY);
+        if (raw instanceof FirefoxBinary) {
+          return (FirefoxBinary) raw;
+
+        } else {
+          try {
+            return new FirefoxBinary(new File(raw.toString()));
+          } catch (WebDriverException wde) {
+            throw new SessionNotCreatedException(wde.getMessage());
+          }
+        }
+      }
+
+      if (desiredCapabilities.getCapability(CapabilityType.VERSION) != null) {
+        try {
+          FirefoxBinary.Channel channel = FirefoxBinary.Channel.fromString(
+              (String) desiredCapabilities.getCapability(CapabilityType.VERSION));
+          return new FirefoxBinary(channel);
+        } catch (WebDriverException ex) {
+          return new FirefoxBinary((String) desiredCapabilities.getCapability(CapabilityType.VERSION));
+        }
+      }
+    }
+    // last resort
+    return new FirefoxBinary();
   }
 
   public FirefoxBinary getBinaryOrNull() {
