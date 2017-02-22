@@ -30,9 +30,6 @@ mozilla_extension(name = 'webdriver',
     ':status-xpt',
     ':synthetic-mouse',
   ],
-  platforms = [
-    ':winnt-x86-msvc',
-  ],
   resources = [
     ':js-resources',
   ],
@@ -69,20 +66,6 @@ folder(name = 'modules',
 
 export_file(name = 'evaluate.js',
   src = 'js/evaluate.js',
-)
-
-folder(name = 'winnt-x86-msvc',
-  out = 'WINNT_x86-msvc',
-  srcs = [
-    ':win-components',
-  ],
-)
-
-folder(name = 'win-components',
-  out = 'components',
-  srcs = [
-    '//cpp/prebuilt:imehandler-dll',
-  ],
 )
 
 export_file(

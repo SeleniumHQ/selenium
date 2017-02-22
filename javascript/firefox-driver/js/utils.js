@@ -134,10 +134,6 @@ Utils.getNativeComponent = function(componentId, componentInterface) {
   }
 };
 
-Utils.getNativeIME = function() {
-  return Utils.getNativeComponent('@openqa.org/nativeime;1', Components.interfaces.nsINativeIME);
-};
-
 Utils.getPageLoadStrategy = function() {
   var prefs =
       fxdriver.moz.getService('@mozilla.org/preferences-service;1', 'nsIPrefBranch');
