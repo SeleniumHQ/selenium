@@ -74,9 +74,6 @@
     <ClCompile Include="IESession.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="IEWebDriverManagerCommandExecutor.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="InputManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -350,9 +347,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="IESession.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="IEWebDriverManagerCommandExecutor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="InputManager.h">

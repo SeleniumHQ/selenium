@@ -243,7 +243,6 @@
     <ClCompile Include="IECommandHandler.cpp" />
     <ClCompile Include="IEServer.cpp" />
     <ClCompile Include="IESession.cpp" />
-    <ClCompile Include="IEWebDriverManagerCommandExecutor.cpp" />
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="InteractionsManager.cpp" />
     <ClCompile Include="ProxyManager.cpp" />
@@ -346,7 +345,6 @@
     <ClInclude Include="IECommandHandler.h" />
     <ClInclude Include="IEServer.h" />
     <ClInclude Include="IESession.h" />
-    <ClInclude Include="IEWebDriverManagerCommandExecutor.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="InteractionsManager.h" />
     <ClInclude Include="LocationInfo.h" />
