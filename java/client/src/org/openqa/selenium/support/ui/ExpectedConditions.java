@@ -893,7 +893,9 @@ public class ExpectedConditions {
   private static WebElement findElement(By by, WebDriver driver) {
     try {
       return driver.findElements(by).stream().findFirst().orElseThrow(
-        () -> new NoSuchElementException("Cannot locate an element using " + by));
+          () -> new NoSuchElementException("Cannot locate an element using " + by));
+    } catch (NoSuchElementException e) {
+      throw e;
     } catch (WebDriverException e) {
       log.log(Level.WARNING,
               String.format("WebDriverException thrown by findElement(%s)", by), e);
