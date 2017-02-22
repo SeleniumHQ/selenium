@@ -120,7 +120,7 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
 
   // TODO: make it public as soon as it's fully implemented
   FirefoxDriver(FirefoxOptions options) {
-    super(toExecutor(options), options.addTo(new DesiredCapabilities()), null);
+    super(toExecutor(options), options.toDesiredCapabilities(), null);
     //binary = options.getBinary();
   }
 
@@ -155,7 +155,30 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
   }
 
   public FirefoxDriver(Capabilities desiredCapabilities) {
-    this(getBinary(desiredCapabilities), null, desiredCapabilities);
+    this(getFirefoxOptions(desiredCapabilities).addDesiredCapabilities(desiredCapabilities));
+  }
+
+  private static FirefoxOptions getFirefoxOptions(Capabilities capabilities) {
+    FirefoxOptions options = new FirefoxOptions();
+    if (capabilities != null) {
+      Object rawOptions = capabilities.getCapability(FIREFOX_OPTIONS);
+      if (rawOptions != null) {
+        if (rawOptions instanceof Map) {
+          try {
+            @SuppressWarnings("unchecked")
+            Map<String, Object> map = (Map<String, Object>) rawOptions;
+            rawOptions = FirefoxOptions.fromJsonMap(map);
+          } catch (IOException e) {
+            throw new WebDriverException(e);
+          }
+        }
+        if (rawOptions != null && !(rawOptions instanceof FirefoxOptions)) {
+          throw new WebDriverException("Firefox option was set, but is not a FirefoxOption: " + rawOptions);
+        }
+        options = (FirefoxOptions) rawOptions;
+      }
+    }
+    return options;
   }
 
   public FirefoxDriver(Capabilities desiredCapabilities, Capabilities requiredCapabilities) {
@@ -210,25 +233,7 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
     toReturn.setCapability(FirefoxDriver.PROFILE, profile);
 
     // geckodriver
-    FirefoxOptions options = new FirefoxOptions();
-    if (capabilities != null) {
-      Object rawOptions = capabilities.getCapability(FIREFOX_OPTIONS);
-      if (rawOptions != null) {
-        if (rawOptions instanceof Map) {
-          try {
-            @SuppressWarnings("unchecked")
-            Map<String, Object> map = (Map<String, Object>) rawOptions;
-            rawOptions = FirefoxOptions.fromJsonMap(map);
-          } catch (IOException e) {
-            throw new WebDriverException(e);
-          }
-        }
-        if (rawOptions != null && !(rawOptions instanceof FirefoxOptions)) {
-          throw new WebDriverException("Firefox option was set, but is not a FirefoxOption: " + rawOptions);
-        }
-        options = (FirefoxOptions) rawOptions;
-      }
-    }
+    FirefoxOptions options = getFirefoxOptions(capabilities);
     options.setProfileSafely(profile);
     toReturn.setCapability(FIREFOX_OPTIONS, options);
 

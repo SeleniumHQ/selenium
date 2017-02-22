@@ -43,6 +43,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.UnexpectedAlertBehaviour;
 import org.openqa.selenium.testing.NeedsFreshDriver;
 import org.openqa.selenium.ParallelTestRunner;
 import org.openqa.selenium.ParallelTestRunner.Worker;
@@ -83,7 +84,7 @@ public class FirefoxDriverTest extends JUnit4TestBase {
   }
 
   @Test
-  public void canStartDriverWithNoParameters() throws InterruptedException {
+  public void canStartDriverWithNoParameters() {
     localDriver = new FirefoxDriver();
     verifyItIsLegacy(localDriver);
   }
@@ -97,7 +98,7 @@ public class FirefoxDriverTest extends JUnit4TestBase {
   }
 
   @Test
-  public void canStartDriverWithSpecifiedProfile() throws IOException {
+  public void canStartDriverWithSpecifiedProfile() {
     FirefoxProfile profile = new FirefoxProfile();
     profile.setPreference("browser.startup.page", 1);
     profile.setPreference("browser.startup.homepage", pages.xhtmlTestPage);
@@ -116,6 +117,16 @@ public class FirefoxDriverTest extends JUnit4TestBase {
     wait.until($ -> "XHTML Test Page".equals(localDriver.getTitle()));
     verifyItIsLegacy(localDriver);
     verify(binary).startFirefoxProcess(any());
+  }
+
+  @Test
+  public void canPassCapabilities() {
+    DesiredCapabilities capabilities = new DesiredCapabilities();
+    capabilities.setCapability(CapabilityType.PAGE_LOAD_STRATEGY, "none");
+    localDriver = new FirefoxDriver(capabilities);
+    verifyItIsLegacy(localDriver);
+    assertEquals(
+        localDriver.getCapabilities().getCapability(CapabilityType.PAGE_LOAD_STRATEGY), "none");
   }
 
   private static class ConnectionCapturingDriver extends FirefoxDriver {
