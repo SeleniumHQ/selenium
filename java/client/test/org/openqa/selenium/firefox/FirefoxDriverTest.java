@@ -96,6 +96,16 @@ public class FirefoxDriverTest extends JUnit4TestBase {
     verify(binary).startFirefoxProcess(any());
   }
 
+  @Test
+  public void canStartDriverWithSpecifiedProfile() throws IOException {
+    FirefoxProfile profile = new FirefoxProfile();
+    profile.setPreference("browser.startup.page", 1);
+    profile.setPreference("browser.startup.homepage", pages.xhtmlTestPage);
+    localDriver = new FirefoxDriver(profile);
+    wait.until($ -> "XHTML Test Page".equals(localDriver.getTitle()));
+    verifyItIsLegacy(localDriver);
+  }
+
   private static class ConnectionCapturingDriver extends FirefoxDriver {
     public ExtensionConnection keptConnection;
 

@@ -148,7 +148,7 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
   }
 
   public FirefoxDriver(FirefoxProfile profile) {
-    this(new FirefoxBinary(), profile);
+    this(new FirefoxOptions().setProfile(profile));
   }
 
   public FirefoxDriver(Capabilities desiredCapabilities) {
