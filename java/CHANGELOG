@@ -1,3 +1,13 @@
+v3.2.0
+======
+
+* Fix a problem starting Firefox caused by missing libraries
+* Experimental support for the W3C Action endpoints
+* Remove deprecated `FluentWait.until(Predicate<?>)` method. This
+  should make lambdas work properly with Wait instances now.
+* Bump htmlunitdriver version to 2.24
+* [Grid] Allow for customisation of TestSlot (#3431)
+
 v3.1.0
 ======
 
