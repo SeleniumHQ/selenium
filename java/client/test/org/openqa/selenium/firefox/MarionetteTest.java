@@ -37,34 +37,44 @@ import java.util.Optional;
 @Ignore(FIREFOX)
 public class MarionetteTest extends JUnit4TestBase {
 
-  private FirefoxDriver driver;
+  private FirefoxDriver localDriver;
 
   @After
   public void quitDriver() {
-    if (driver != null) {
-      driver.quit();
+    if (localDriver != null) {
+      localDriver.quit();
     }
   }
 
   @Test
   public void canStartDriverWithEmptyOptions() {
-    driver = new FirefoxDriver(new FirefoxOptions());
-    verifyItIsMarionette(driver);
+    localDriver = new FirefoxDriver(new FirefoxOptions());
+    verifyItIsMarionette(localDriver);
   }
 
   @Test
   public void canStartDriverWithNoParameters() {
-    driver = new FirefoxDriver();
-    verifyItIsMarionette(driver);
+    localDriver = new FirefoxDriver();
+    verifyItIsMarionette(localDriver);
   }
 
   @Test
   public void canStartDriverWithSpecifiedBinary() throws IOException {
     FirefoxBinary binary = spy(new FirefoxBinary());
-    driver = new FirefoxDriver(binary);
-    verifyItIsMarionette(driver);
+    localDriver = new FirefoxDriver(binary);
+    verifyItIsMarionette(localDriver);
     verify(binary, atLeastOnce()).getPath();
     verify(binary, never()).startFirefoxProcess(any());
+  }
+
+  @Test
+  public void canStartDriverWithSpecifiedProfile() throws IOException {
+    FirefoxProfile profile = new FirefoxProfile();
+    profile.setPreference("browser.startup.page", 1);
+    profile.setPreference("browser.startup.homepage", pages.xhtmlTestPage);
+    localDriver = new FirefoxDriver(profile);
+    wait.until($ -> "XHTML Test Page".equals(localDriver.getTitle()));
+    verifyItIsMarionette(localDriver);
   }
 
   @Test
@@ -74,9 +84,9 @@ public class MarionetteTest extends JUnit4TestBase {
       .addPreference("browser.startup.homepage", pages.xhtmlTestPage)
       .addTo(DesiredCapabilities.firefox());
 
-    driver = new FirefoxDriver(caps);
+    localDriver = new FirefoxDriver(caps);
 
-    wait.until($ -> "XHTML Test Page".equals(driver.getTitle()));
+    wait.until($ -> "XHTML Test Page".equals(localDriver.getTitle()));
   }
 
   @Test
@@ -88,9 +98,9 @@ public class MarionetteTest extends JUnit4TestBase {
     DesiredCapabilities caps = new FirefoxOptions().setProfile(profile)
         .addTo(DesiredCapabilities.firefox());
 
-    driver = new FirefoxDriver(caps);
+    localDriver = new FirefoxDriver(caps);
 
-    wait.until($ -> "XHTML Test Page".equals(driver.getTitle()));
+    wait.until($ -> "XHTML Test Page".equals(localDriver.getTitle()));
   }
 
   @Test
@@ -102,9 +112,9 @@ public class MarionetteTest extends JUnit4TestBase {
     DesiredCapabilities caps = new DesiredCapabilities();
     caps.setCapability(FirefoxDriver.PROFILE, profile);
 
-    driver = new FirefoxDriver(caps);
+    localDriver = new FirefoxDriver(caps);
 
-    wait.until($ -> "XHTML Test Page".equals(driver.getTitle()));
+    wait.until($ -> "XHTML Test Page".equals(localDriver.getTitle()));
   }
 
   private void verifyItIsMarionette(FirefoxDriver driver) {
