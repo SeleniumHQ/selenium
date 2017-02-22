@@ -36,6 +36,7 @@ import org.seleniumhq.jetty9.server.SslConnectionFactory;
 import org.seleniumhq.jetty9.server.handler.AllowSymLinkAliasChecker;
 import org.seleniumhq.jetty9.server.handler.ContextHandler.ApproveAliases;
 import org.seleniumhq.jetty9.server.handler.ContextHandlerCollection;
+import org.seleniumhq.jetty9.server.handler.HandlerList;
 import org.seleniumhq.jetty9.server.handler.ResourceHandler;
 import org.seleniumhq.jetty9.servlet.ServletContextHandler;
 import org.seleniumhq.jetty9.servlet.ServletHolder;
@@ -267,8 +268,12 @@ public class JettyAppServer implements AppServer {
     staticResource.setMimeTypes(mimeTypes);
 
     context.setContextPath(contextPath);
-    context.setHandler(staticResource);
     context.setAliasChecks(ImmutableList.of(new ApproveAliases(), new AllowSymLinkAliasChecker()));
+
+    HandlerList allHandlers = new HandlerList();
+    allHandlers.addHandler(staticResource);
+    allHandlers.addHandler(context.getHandler());
+    context.setHandler(allHandlers);
 
     handlers.addHandler(context);
 
