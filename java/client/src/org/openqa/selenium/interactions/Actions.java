@@ -432,7 +432,7 @@ public class Actions {
     }
 
     return tick(
-        defaultMouse.createPointerMove(Duration.ofMillis(200), null, xOffset, yOffset));
+        defaultMouse.createPointerMove(Duration.ofMillis(200), Origin.pointer(), xOffset, yOffset));
   }
 
   /**
