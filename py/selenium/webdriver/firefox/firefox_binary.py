@@ -26,6 +26,8 @@ import time
 
 class FirefoxBinary(object):
 
+    NO_FOCUS_LIBRARY_NAME = "x_ignore_nofocus.so"
+
     def __init__(self, firefox_path=None, log_file=None):
         """
         Creates a new instance of Firefox binary.
@@ -82,6 +84,8 @@ class FirefoxBinary(object):
     def _start_from_profile_path(self, path):
         self._firefox_env["XRE_PROFILE_PATH"] = path
 
+        if platform.system().lower() == 'linux':
+            self._modify_link_library_path()
         command = [self._start_cmd, "-foreground"]
         if self.command_line is not None:
             for cli in self.command_line:
@@ -173,6 +177,35 @@ class FirefoxBinary(object):
             if os.access(binary_path, os.X_OK):
                 return binary_path
         return ""
+
+    def _modify_link_library_path(self):
+        existing_ld_lib_path = os.environ.get('LD_LIBRARY_PATH', '')
+
+        new_ld_lib_path = self._extract_and_check(
+            self.profile, self.NO_FOCUS_LIBRARY_NAME, "x86", "amd64")
+
+        new_ld_lib_path += existing_ld_lib_path
+
+        self._firefox_env["LD_LIBRARY_PATH"] = new_ld_lib_path
+        self._firefox_env['LD_PRELOAD'] = self.NO_FOCUS_LIBRARY_NAME
+
+    def _extract_and_check(self, profile, no_focus_so_name, x86, amd64):
+
+        paths = [x86, amd64]
+        built_path = ""
+        for path in paths:
+            library_path = os.path.join(profile.path, path)
+            if not os.path.exists(library_path):
+                os.makedirs(library_path)
+            import shutil
+            shutil.copy(os.path.join(
+                os.path.dirname(__file__),
+                path,
+                self.NO_FOCUS_LIBRARY_NAME),
+                library_path)
+            built_path += library_path + ":"
+
+        return built_path
 
     def which(self, fname):
         """Returns the fully qualified path by searching Path of the given

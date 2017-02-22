@@ -8,6 +8,8 @@ BROWSERS = {
       :driver => "Firefox",
       :resources => [
         { "//javascript/firefox-driver:webdriver" => "selenium/webdriver/firefox/" },
+        { "//cpp:noblur" => "selenium/webdriver/firefox/x86/x_ignore_nofocus.so" },
+        { "//cpp:noblur64" => "selenium/webdriver/firefox/amd64/x_ignore_nofocus.so" }
       ]
     },
     :java => {

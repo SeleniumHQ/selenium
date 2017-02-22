@@ -7,6 +7,8 @@ csharp_library(
     'WebDriver.FirefoxExt.zip': '//javascript/firefox-driver:webdriver',
     'WebDriver.FirefoxExt.zip': '//javascript/firefox-driver:webdriver',
     'WebDriver.FirefoxPreferences': '//javascript/firefox-driver:webdriver_prefs',
+#    'WebDriver.FirefoxNoFocus.x86.dll': '//cpp:noblur',
+#    'WebDriver.FirefoxNoFocus.x64.dll': '//cpp:noblur64',
   },
   deps = [
     'System.dll',

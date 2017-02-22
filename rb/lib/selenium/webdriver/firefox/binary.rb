@@ -22,6 +22,14 @@ module Selenium
     module Firefox
       # @api private
       class Binary
+        NO_FOCUS_LIBRARY_NAME = 'x_ignore_nofocus.so'.freeze
+        NO_FOCUS_LIBRARIES = [
+          ["#{WebDriver.root}/selenium/webdriver/firefox/native/linux/amd64/#{NO_FOCUS_LIBRARY_NAME}",
+           "amd64/#{NO_FOCUS_LIBRARY_NAME}"],
+          ["#{WebDriver.root}/selenium/webdriver/firefox/native/linux/x86/#{NO_FOCUS_LIBRARY_NAME}",
+           "x86/#{NO_FOCUS_LIBRARY_NAME}"]
+        ].freeze
+
         WAIT_TIMEOUT = 90
         QUIT_TIMEOUT = 5
 
@@ -37,6 +45,10 @@ module Selenium
           ENV['MOZ_NO_REMOTE'] = '1' # able to launch multiple instances
           ENV['MOZ_CRASHREPORTER_DISABLE'] = '1' # disable breakpad
           ENV['NO_EM_RESTART'] = '1' # prevent the binary from detaching from the console
+
+          if Platform.linux? && (profile.native_events? || profile.load_no_focus_lib?)
+            modify_link_library_path profile_path
+          end
 
           execute(*args)
         end
@@ -67,6 +79,23 @@ module Selenium
           @process = ChildProcess.build(*args)
           @process.io.stdout = @process.io.stderr = WebDriver.logger.io
           @process.start
+        end
+
+        def modify_link_library_path(profile_path)
+          paths = []
+
+          NO_FOCUS_LIBRARIES.each do |from, to|
+            dest = File.join(profile_path, to)
+            FileUtils.mkdir_p File.dirname(dest)
+            FileUtils.cp from, dest
+
+            paths << File.expand_path(File.dirname(dest))
+          end
+
+          paths += ENV['LD_LIBRARY_PATH'].to_s.split(File::PATH_SEPARATOR)
+
+          ENV['LD_LIBRARY_PATH'] = paths.uniq.join(File::PATH_SEPARATOR)
+          ENV['LD_PRELOAD'] = NO_FOCUS_LIBRARY_NAME
         end
 
         class << self

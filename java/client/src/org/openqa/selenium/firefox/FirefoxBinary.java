@@ -33,6 +33,7 @@ import com.google.common.collect.Maps;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.internal.Executable;
+import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.os.CommandLine;
 import org.openqa.selenium.os.ExecutableFinder;
 
@@ -44,8 +45,10 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Stream;
 
 public class FirefoxBinary {
@@ -83,6 +86,10 @@ public class FirefoxBinary {
           .findFirst().orElseThrow(() -> new WebDriverException("Unrecognized channel: " + name));
     }
   }
+
+  private static final String NO_FOCUS_LIBRARY_NAME = "x_ignore_nofocus.so";
+  private static final String PATH_PREFIX = "/" +
+      FirefoxBinary.class.getPackage().getName().replace(".", "/") + "/";
 
   private final Map<String, String> extraEnv = Maps.newHashMap();
   private final List<String> extraOptions = Lists.newArrayList();
@@ -219,18 +226,65 @@ public class FirefoxBinary {
   }
 
   protected void modifyLinkLibraryPath(File profileDir) {
+    // Extract x_ignore_nofocus.so from x86, amd64 directories inside
+    // the jar into a real place in the filesystem and change LD_LIBRARY_PATH
+    // to reflect that.
+
+    String existingLdLibPath = System.getenv("LD_LIBRARY_PATH");
+    // The returned new ld lib path is terminated with ':'
+    String newLdLibPath =
+        extractAndCheck(profileDir, NO_FOCUS_LIBRARY_NAME, PATH_PREFIX + "x86", PATH_PREFIX +
+            "amd64");
+    if (existingLdLibPath != null && !existingLdLibPath.equals("")) {
+      newLdLibPath += existingLdLibPath;
+    }
+
+    setEnvironmentProperty("LD_LIBRARY_PATH", newLdLibPath);
+    // Set LD_PRELOAD to x_ignore_nofocus.so - this will be taken automagically
+    // from the LD_LIBRARY_PATH
+    setEnvironmentProperty("LD_PRELOAD", NO_FOCUS_LIBRARY_NAME);
   }
 
-  /**
-   * @deprecated Will be removed in 3.3
-   */
-  @Deprecated
-  protected String extractAndCheck(
-      File profileDir,
-      String noFocusSoName,
-      String jarPath32Bit,
-      String jarPath64Bit) {
-    return "";
+  protected String extractAndCheck(File profileDir, String noFocusSoName,
+      String jarPath32Bit, String jarPath64Bit) {
+
+    // 1. Extract x86/x_ignore_nofocus.so to profile.getLibsDir32bit
+    // 2. Extract amd64/x_ignore_nofocus.so to profile.getLibsDir64bit
+    // 3. Create a new LD_LIB_PATH string to contain:
+    // profile.getLibsDir32bit + ":" + profile.getLibsDir64bit
+
+    Set<String> pathsSet = new HashSet<>();
+    pathsSet.add(jarPath32Bit);
+    pathsSet.add(jarPath64Bit);
+
+    StringBuilder builtPath = new StringBuilder();
+
+    for (String path : pathsSet) {
+      try {
+
+        FileHandler.copyResource(profileDir, getClass(), path + File.separator + noFocusSoName);
+
+      } catch (IOException e) {
+        if (Boolean.getBoolean("webdriver.development")) {
+          System.err.println(
+              "Exception unpacking required library, but in development mode. Continuing");
+        } else {
+          throw new WebDriverException(e);
+        }
+      } // End catch.
+
+      String outSoPath = profileDir.getAbsolutePath() + File.separator + path;
+
+      File file = new File(outSoPath, noFocusSoName);
+      if (!file.exists()) {
+        throw new WebDriverException("Could not locate " + path + ": "
+            + "native events will not work.");
+      }
+
+      builtPath.append(outSoPath).append(":");
+    }
+
+    return builtPath.toString();
   }
 
   /**
