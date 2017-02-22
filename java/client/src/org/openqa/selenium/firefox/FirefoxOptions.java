@@ -28,9 +28,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.service.DriverCommandExecutor;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -166,7 +164,7 @@ public class FirefoxOptions {
   }
 
   public FirefoxOptions setProfile(FirefoxProfile profile) {
-    this.profile = checkNotNull(profile);
+    this.profile = profile;
     return this;
   }
 

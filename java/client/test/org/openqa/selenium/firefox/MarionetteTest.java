@@ -78,6 +78,19 @@ public class MarionetteTest extends JUnit4TestBase {
   }
 
   @Test
+  public void canStartDriverWithSpecifiedBinaryAndProfile() throws IOException {
+    FirefoxBinary binary = spy(new FirefoxBinary());
+    FirefoxProfile profile = new FirefoxProfile();
+    profile.setPreference("browser.startup.page", 1);
+    profile.setPreference("browser.startup.homepage", pages.xhtmlTestPage);
+    localDriver = new FirefoxDriver(binary, profile);
+    wait.until($ -> "XHTML Test Page".equals(localDriver.getTitle()));
+    verifyItIsMarionette(localDriver);
+    verify(binary, atLeastOnce()).getPath();
+    verify(binary, never()).startFirefoxProcess(any());
+  }
+
+  @Test
   public void shouldUseFirefoxOptions() throws InterruptedException {
     DesiredCapabilities caps = new FirefoxOptions()
       .addPreference("browser.startup.page", 1)
