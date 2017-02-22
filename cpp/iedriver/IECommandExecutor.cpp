@@ -458,7 +458,7 @@ unsigned int WINAPI IECommandExecutor::ThreadProc(LPVOID lpParameter) {
 void IECommandExecutor::DispatchCommand() {
   LOG(TRACE) << "Entering IECommandExecutor::DispatchCommand";
 
-  Response response(this->session_id_);
+  Response response;
 
   if (!this->command_handlers_->IsValidCommand(this->current_command_.command_type())) {
     LOG(WARN) << "Unable to find command handler for " << this->current_command_.command_type();
@@ -489,10 +489,7 @@ void IECommandExecutor::DispatchCommand() {
             if (command_type != webdriver::CommandType::Quit) {
               // To keep pace with what Firefox does, we'll return the text of the
               // alert in the error response.
-              Json::Value response_value;
-              response_value["message"] = "Modal dialog present";
-              response_value["alert"]["text"] = alert_text;
-              response.SetResponse(EUNEXPECTEDALERTOPEN, response_value);
+              response.SetErrorResponse(EUNEXPECTEDALERTOPEN, "Modal dialog present");
               this->serialized_response_ = response.Serialize();
               return;
             } else {

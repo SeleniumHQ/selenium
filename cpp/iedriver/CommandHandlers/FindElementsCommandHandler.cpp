@@ -35,10 +35,10 @@ void FindElementsCommandHandler::ExecuteInternal(
   ParametersMap::const_iterator using_parameter_iterator = command_parameters.find("using");
   ParametersMap::const_iterator value_parameter_iterator = command_parameters.find("value");
   if (using_parameter_iterator == command_parameters.end()) {
-    response->SetErrorResponse(400, "Missing parameter: using");
+    response->SetErrorResponse(ERROR_INVALID_ARGUMENT, "Missing parameter: using");
     return;
   } else if (value_parameter_iterator == command_parameters.end()) {
-    response->SetErrorResponse(400, "Missing parameter: value");
+    response->SetErrorResponse(ERROR_INVALID_ARGUMENT, "Missing parameter: value");
     return;
   } else {
     std::string mechanism = using_parameter_iterator->second.asString();
@@ -63,7 +63,7 @@ void FindElementsCommandHandler::ExecuteInternal(
           return;
         }
       } else if (status_code == ENOSUCHWINDOW) {
-        response->SetErrorResponse(status_code, "Unable to find elements on closed window");
+        response->SetErrorResponse(ERROR_NO_SUCH_WINDOW, "Unable to find elements on closed window");
         return;
       } else {
         response->SetErrorResponse(status_code, found_elements.asString());

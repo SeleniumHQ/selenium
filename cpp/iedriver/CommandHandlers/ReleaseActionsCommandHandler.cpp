@@ -14,31 +14,31 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef WEBDRIVER_IE_SUBMITELEMENTCOMMANDHANDLER_H_
-#define WEBDRIVER_IE_SUBMITELEMENTCOMMANDHANDLER_H_
-
-#include "../DocumentHost.h"
-#include "../IECommandHandler.h"
+#include "ReleaseActionsCommandHandler.h"
+#include "errorcodes.h"
+#include "../Alert.h"
+#include "../Browser.h"
+#include "../IECommandExecutor.h"
 
 namespace webdriver {
 
-class SubmitElementCommandHandler : public IECommandHandler {
- public:
-  SubmitElementCommandHandler(void);
-  virtual ~SubmitElementCommandHandler(void);
+ReleaseActionsCommandHandler::ReleaseActionsCommandHandler(void) {
+}
 
- protected:
-  void ExecuteInternal(const IECommandExecutor& executor,
-                       const ParametersMap& command_parameters,
-                       Response* response);
+ReleaseActionsCommandHandler::~ReleaseActionsCommandHandler(void) {
+}
 
- private:
-  bool FindParentForm(ElementHandle element_wrapper);
-  int ExecuteAtom(BrowserHandle browser_wrapper,
-                  ElementHandle element_wrapper,
-                  std::string* error_msg);
-};
+void ReleaseActionsCommandHandler::ExecuteInternal(
+    const IECommandExecutor& executor,
+    const ParametersMap& command_parameters,
+    Response* response) {
+  BrowserHandle browser_wrapper;
+  int status_code = executor.GetCurrentBrowser(&browser_wrapper);
+  if (status_code != WD_SUCCESS) {
+    response->SetErrorResponse(status_code, "Unable to get current browser");
+    return;
+  }
+  response->SetSuccessResponse(Json::Value::null);
+}
 
 } // namespace webdriver
-
-#endif // WEBDRIVER_IE_SUBMITELEMENTCOMMANDHANDLER_H_

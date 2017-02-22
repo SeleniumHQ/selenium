@@ -13,18 +13,17 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-#ifndef WEBDRIVER_IE_SETTIMEOUTCOMMANDHANDLER_H_
-#define WEBDRIVER_IE_SETTIMEOUTCOMMANDHANDLER_H_
+#ifndef WEBDRIVER_IE_GETWINDOWRECTCOMMANDHANDLER_H_
+#define WEBDRIVER_IE_GETWINDOWRECTCOMMANDHANDLER_H_
 
 #include "../IECommandHandler.h"
 
 namespace webdriver {
 
-class SetTimeoutCommandHandler : public IECommandHandler {
+class GetWindowRectCommandHandler : public IECommandHandler {
  public:
-  SetTimeoutCommandHandler(void);
-  virtual ~SetTimeoutCommandHandler(void);
+  GetWindowRectCommandHandler(void);
+  virtual ~GetWindowRectCommandHandler(void);
 
  protected:
   void ExecuteInternal(const IECommandExecutor& executor,
@@ -34,4 +33,4 @@ class SetTimeoutCommandHandler : public IECommandHandler {
 
 } // namespace webdriver
 
-#endif // WEBDRIVER_IE_SETTIMEOUTCOMMANDHANDLER_H_
+#endif // WEBDRIVER_IE_GETWINDOWRECTCOMMANDHANDLER_H_

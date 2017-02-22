@@ -37,13 +37,13 @@ void FindChildElementCommandHandler::ExecuteInternal(
   ParametersMap::const_iterator using_parameter_iterator = command_parameters.find("using");
   ParametersMap::const_iterator value_parameter_iterator = command_parameters.find("value");
   if (id_parameter_iterator == command_parameters.end()) {
-    response->SetErrorResponse(400, "Missing parameter in URL: id");
+    response->SetErrorResponse(ERROR_INVALID_ARGUMENT, "Missing parameter in URL: id");
     return;
   } else if (using_parameter_iterator == command_parameters.end()) {
-    response->SetErrorResponse(400, "Missing parameter: using");
+    response->SetErrorResponse(ERROR_INVALID_ARGUMENT, "Missing parameter: using");
     return;
   } else if (value_parameter_iterator == command_parameters.end()) {
-    response->SetErrorResponse(400, "Missing parameter: value");
+    response->SetErrorResponse(ERROR_INVALID_ARGUMENT, "Missing parameter: value");
     return;
   } else {
     std::string mechanism = using_parameter_iterator->second.asString();
@@ -74,7 +74,7 @@ void FindChildElementCommandHandler::ExecuteInternal(
           return;
         }
         if (status_code == ENOSUCHWINDOW) {
-          response->SetErrorResponse(status_code, "Unable to find element on closed window");
+          response->SetErrorResponse(ERROR_NO_SUCH_WINDOW, "Unable to find element on closed window");
           return;
         }
         if (status_code != ENOSUCHELEMENT) {
@@ -87,7 +87,7 @@ void FindChildElementCommandHandler::ExecuteInternal(
       } while (clock() < end);
 
       // This code is executed when status_code == ENOSUCHELEMENT
-      response->SetErrorResponse(status_code, 
+      response->SetErrorResponse(ERROR_NO_SUCH_ELEMENT, 
           "Unable to find element with " + mechanism + " == " + value);
     } else {
       response->SetErrorResponse(status_code, "Element is no longer valid");

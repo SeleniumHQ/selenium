@@ -31,22 +31,12 @@ void MaximizeWindowCommandHandler::ExecuteInternal(
     const IECommandExecutor& executor,
     const ParametersMap& command_parameters,
     Response* response) {
-  ParametersMap::const_iterator id_parameter_iterator = command_parameters.find("windowHandle");
-  if (id_parameter_iterator == command_parameters.end()) {
-    response->SetErrorResponse(400, "Missing parameter in URL: windowHandle");
-    return;
-  } else {
     int status_code = WD_SUCCESS;
-    std::string window_id = id_parameter_iterator->second.asString();
 
     BrowserHandle browser_wrapper;
-    if (window_id == "current") {
-      status_code = executor.GetCurrentBrowser(&browser_wrapper);
-    } else {
-      status_code = executor.GetManagedBrowser(window_id, &browser_wrapper);
-    }
+    status_code = executor.GetCurrentBrowser(&browser_wrapper);
     if (status_code != WD_SUCCESS) {
-      response->SetErrorResponse(status_code, "Error retrieving window with handle " + window_id);
+      response->SetErrorResponse(ERROR_NO_SUCH_WINDOW, "Error retrieving window");
       return;
     }
 
@@ -54,8 +44,14 @@ void MaximizeWindowCommandHandler::ExecuteInternal(
     if (!::IsZoomed(window_handle)) {
       ::ShowWindow(window_handle, SW_MAXIMIZE);
     }
-    response->SetSuccessResponse(Json::Value::null);
-  }
+    RECT window_rect;
+    ::GetWindowRect(window_handle, &window_rect);
+    Json::Value response_value;
+    response_value["width"] = window_rect.right - window_rect.left;
+    response_value["height"] = window_rect.bottom - window_rect.top;
+    response_value["x"] = window_rect.left;
+    response_value["y"] = window_rect.top;
+    response->SetSuccessResponse(response_value);
 }
 
 } // namespace webdriver

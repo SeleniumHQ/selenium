@@ -13,24 +13,32 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-#ifndef WEBDRIVER_IE_GETWINDOWPOSITIONCOMMANDHANDLER_H_
-#define WEBDRIVER_IE_GETWINDOWPOSITIONCOMMANDHANDLER_H_
 
-#include "../IECommandHandler.h"
+#include "ActionsCommandHandler.h"
+#include "errorcodes.h"
+#include "../Alert.h"
+#include "../Browser.h"
+#include "../IECommandExecutor.h"
 
 namespace webdriver {
 
-class GetWindowPositionCommandHandler : public IECommandHandler {
- public:
-  GetWindowPositionCommandHandler(void);
-  virtual ~GetWindowPositionCommandHandler(void);
+ActionsCommandHandler::ActionsCommandHandler(void) {
+}
 
- protected:
-  void ExecuteInternal(const IECommandExecutor& executor,
-                       const ParametersMap& command_parameters,
-                       Response* response);
-};
+ActionsCommandHandler::~ActionsCommandHandler(void) {
+}
+
+void ActionsCommandHandler::ExecuteInternal(
+    const IECommandExecutor& executor,
+    const ParametersMap& command_parameters,
+    Response* response) {
+  BrowserHandle browser_wrapper;
+  int status_code = executor.GetCurrentBrowser(&browser_wrapper);
+  if (status_code != WD_SUCCESS) {
+    response->SetErrorResponse(status_code, "Unable to get current browser");
+    return;
+  }
+  response->SetSuccessResponse(Json::Value::null);
+}
 
 } // namespace webdriver
-
-#endif // WEBDRIVER_IE_GETWINDOWPOSITIONCOMMANDHANDLER_H_

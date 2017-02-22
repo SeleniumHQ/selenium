@@ -14,24 +14,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef WEBDRIVER_IE_SETIMPLICITWAITTIMEOUTCOMMANDHANDLER_H_
-#define WEBDRIVER_IE_SETIMPLICITWAITTIMEOUTCOMMANDHANDLER_H_
+#ifndef WEBDRIVER_IE_RELEASEACTIONSCOMMANDHANDLER_H_
+#define WEBDRIVER_IE_RELEASEACTIONSCOMMANDHANDLER_H_
 
 #include "../IECommandHandler.h"
 
 namespace webdriver {
 
-class SetImplicitWaitTimeoutCommandHandler : public IECommandHandler {
-public:
- SetImplicitWaitTimeoutCommandHandler(void);
- virtual ~SetImplicitWaitTimeoutCommandHandler(void);
+class ReleaseActionsCommandHandler : public IECommandHandler {
+ public:
+ ReleaseActionsCommandHandler(void);
+  virtual ~ReleaseActionsCommandHandler(void);
 
-protected:
- void ExecuteInternal(const IECommandExecutor& executor,
-                      const ParametersMap& command_parameters,
-                      Response* response);
+ protected:
+  void ExecuteInternal(const IECommandExecutor& executor,
+                       const ParametersMap& command_parameters,
+                       Response* response);
 };
 
 } // namespace webdriver
 
-#endif // WEBDRIVER_IE_SETIMPLICITWAITTIMEOUTCOMMANDHANDLER_H_
+#endif // WEBDRIVER_IE_RELEASEACTIONSCOMMANDHANDLER_H_

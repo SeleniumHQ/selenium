@@ -14,17 +14,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef WEBDRIVER_IE_MOUSECLICKCOMMANDHANDLER_H_
-#define WEBDRIVER_IE_MOUSECLICKCOMMANDHANDLER_H_
+#ifndef WEBDRIVER_IE_GETTIMEOUTSCOMMANDHANDLER_H_
+#define WEBDRIVER_IE_GETTIMEOUTSCOMMANDHANDLER_H_
 
 #include "../IECommandHandler.h"
 
 namespace webdriver {
 
-class MouseClickCommandHandler : public IECommandHandler {
+class GetTimeoutsCommandHandler : public IECommandHandler {
  public:
-  MouseClickCommandHandler(void);
-  virtual ~MouseClickCommandHandler(void);
+  GetTimeoutsCommandHandler(void);
+  virtual ~GetTimeoutsCommandHandler(void);
 
  protected:
   void ExecuteInternal(const IECommandExecutor& executor,
@@ -34,4 +34,4 @@ class MouseClickCommandHandler : public IECommandHandler {
 
 } // namespace webdriver
 
-#endif // WEBDRIVER_IE_MOUSECLICKCOMMANDHANDLER_H_
+#endif // WEBDRIVER_IE_SETTIMEOUTSCOMMANDHANDLER_H_

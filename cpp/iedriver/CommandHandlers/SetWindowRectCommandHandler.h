@@ -13,18 +13,17 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-#ifndef WEBDRIVER_IE_MOUSEBUTTONUPCOMMANDHANDLER_H_
-#define WEBDRIVER_IE_MOUSEBUTTONUPCOMMANDHANDLER_H_
+#ifndef WEBDRIVER_IE_SETWINDOWRECTCOMMANDHANDLER_H_
+#define WEBDRIVER_IE_SETWINDOWRECTCOMMANDHANDLER_H_
 
 #include "../IECommandHandler.h"
 
 namespace webdriver {
 
-class MouseButtonUpCommandHandler : public IECommandHandler {
+class SetWindowRectCommandHandler : public IECommandHandler {
  public:
-  MouseButtonUpCommandHandler(void);
-  virtual ~MouseButtonUpCommandHandler(void);
+  SetWindowRectCommandHandler(void);
+  virtual ~SetWindowRectCommandHandler(void);
 
  protected:
   void ExecuteInternal(const IECommandExecutor& executor,
@@ -34,4 +33,4 @@ class MouseButtonUpCommandHandler : public IECommandHandler {
 
 } // namespace webdriver
 
-#endif // WEBDRIVER_IE_MOUSEBUTTONDOWNCOMMANDHANDLER_H_
+#endif // WEBDRIVER_IE_SETWINDOWRECTCOMMANDHANDLER_H_

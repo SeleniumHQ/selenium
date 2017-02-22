@@ -36,7 +36,7 @@ void GetElementTextCommandHandler::ExecuteInternal(
     Response* response) {
   ParametersMap::const_iterator id_parameter_iterator = command_parameters.find("id");
   if (id_parameter_iterator == command_parameters.end()) {
-    response->SetErrorResponse(400, "Missing parameter in URL: id");
+    response->SetErrorResponse(ERROR_INVALID_ARGUMENT, "Missing parameter in URL: id");
     return;
   } else {
     std::string element_id = id_parameter_iterator->second.asString();
@@ -76,7 +76,7 @@ void GetElementTextCommandHandler::ExecuteInternal(
         return;
       }
     } else {
-      response->SetErrorResponse(status_code, "Element is no longer valid");
+      response->SetErrorResponse(ERROR_STALE_ELEMENT_REFERENCE, "Element is no longer valid");
       return;
     }
   }
