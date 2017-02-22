@@ -40,6 +40,13 @@ namespace OpenQA.Selenium
         IWebDriver Frame(string frameName);
 
         /// <summary>
+        /// Select a frame that is nested in other frames.  Traverses frames in order of values passed into method.
+        /// </summary>
+        /// <param name="frameNames">The names of the frames to select.</param>
+        /// <returns>An <see cref="IWebDriver"/> instance focused on the specified frame.</returns>
+        IWebDriver Frame(params string[] frameNames);
+
+        /// <summary>
         /// Select a frame using its previously located <see cref="IWebElement"/>
         /// </summary>
         /// <param name="frameElement">The frame element to switch to.</param>

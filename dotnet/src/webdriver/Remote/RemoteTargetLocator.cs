@@ -80,6 +80,26 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
+        /// Move to a different frame that is nested in other frames.
+        /// </summary>
+        /// <param name="frameNames">names of the frames.  Used in order of values passed into the method.</param>
+        /// <returns>A WebDriver instance that is currently in use</returns>
+        public IWebDriver Frame(params string[] frameNames)
+        {
+            if (frameNames == null)
+            {
+                throw new ArgumentNullException("frameNames", "Array of frame names cannot be null");
+            }
+
+            foreach (string frameName in frameNames)
+            {
+                this.Frame(frameName);
+            }
+
+            return this.driver;
+        }
+
+        /// <summary>
         /// Move to a frame element.
         /// </summary>
         /// <param name="frameElement">a previously found FRAME or IFRAME element.</param>
