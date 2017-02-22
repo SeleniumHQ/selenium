@@ -22,7 +22,6 @@ import static org.openqa.selenium.remote.CapabilityType.ACCEPT_SSL_CERTS;
 import static org.openqa.selenium.remote.CapabilityType.LOGGING_PREFS;
 import static org.openqa.selenium.remote.CapabilityType.PROXY;
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_WEB_STORAGE;
-import static org.openqa.selenium.remote.CapabilityType.VERSION;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
@@ -33,7 +32,6 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Proxy;
-import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.internal.NewProfileExtensionConnection;
 import org.openqa.selenium.firefox.internal.ProfilesIni;
@@ -53,7 +51,6 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.service.DriverCommandExecutor;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Map;
@@ -272,34 +269,6 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
             logsPrefs.getLevel(logtype).intValue());
       }
     }
-  }
-
-  private static FirefoxBinary getBinary(Capabilities capabilities) {
-    if (capabilities != null) {
-      if (capabilities.getCapability(BINARY) != null) {
-        Object raw = capabilities.getCapability(BINARY);
-        if (raw instanceof FirefoxBinary) {
-          return (FirefoxBinary) raw;
-        }
-        File file = new File((String) raw);
-        try {
-          return new FirefoxBinary(file);
-        } catch (WebDriverException wde) {
-          throw new SessionNotCreatedException(wde.getMessage());
-        }
-      }
-
-      if (capabilities.getCapability(VERSION) != null) {
-        try {
-          FirefoxBinary.Channel channel = FirefoxBinary.Channel.fromString(
-            (String) capabilities.getCapability(VERSION));
-          return new FirefoxBinary(channel);
-        } catch (WebDriverException ex) {
-          return new FirefoxBinary((String) capabilities.getCapability(VERSION));
-        }
-      }
-    }
-    return new FirefoxBinary();
   }
 
   public FirefoxDriver(GeckoDriverService driverService) {

@@ -200,6 +200,29 @@ public class FirefoxDriverTest extends JUnit4TestBase {
         localDriver.getCapabilities().getCapability(CapabilityType.PAGE_LOAD_STRATEGY), "none");
   }
 
+  @Test
+  public void canSetBinaryInCapabilities() throws IOException {
+    FirefoxBinary binary = spy(new FirefoxBinary());
+    DesiredCapabilities caps = new DesiredCapabilities();
+    caps.setCapability(FirefoxDriver.BINARY, binary);
+
+    localDriver = new FirefoxDriver(caps);
+
+    verifyItIsLegacy(localDriver);
+    verify(binary).startFirefoxProcess(any());
+  }
+
+  @Test
+  public void canSetBinaryPathInCapabilities() throws IOException {
+    String binPath = new FirefoxBinary().getPath();
+    DesiredCapabilities caps = new DesiredCapabilities();
+    caps.setCapability(FirefoxDriver.BINARY, binPath);
+
+    localDriver = new FirefoxDriver(caps);
+
+    verifyItIsLegacy(localDriver);
+  }
+
   private static class ConnectionCapturingDriver extends FirefoxDriver {
     public ExtensionConnection keptConnection;
 
