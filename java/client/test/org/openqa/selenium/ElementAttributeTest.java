@@ -321,7 +321,6 @@ public class ElementAttributeTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(HTMLUNIT)
   public void testGetAttributeDoesNotReturnAnObjectForSvgProperties() {
     assumeFalse("IE before 9 doesn't support SVG", TestUtilities.isOldIe(driver));
 

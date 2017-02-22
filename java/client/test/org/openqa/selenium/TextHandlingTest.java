@@ -259,7 +259,6 @@ public class TextHandlingTest extends JUnit4TestBase {
     assertThat(text, is("Some text" + newLine + "Some more text"));
   }
 
-  @NotYetImplemented(HTMLUNIT)
   @Test
   public void testShouldHandleNestedBlockLevelElements() {
     driver.get(pages.simpleTestPage);
