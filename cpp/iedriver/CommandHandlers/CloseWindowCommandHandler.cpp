@@ -42,7 +42,7 @@ void CloseWindowCommandHandler::ExecuteInternal(
   BrowserHandle browser_wrapper;
   int status_code = executor.GetCurrentBrowser(&browser_wrapper);
   if (status_code != WD_SUCCESS) {
-    response->SetErrorResponse(status_code, "Unable to get browser");
+    response->SetErrorResponse(ERROR_NO_SUCH_WINDOW, "Unable to get browser");
     return;
   }
   browser_wrapper->Close();

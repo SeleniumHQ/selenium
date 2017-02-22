@@ -51,11 +51,11 @@ void GetElementValueOfCssPropertyCommandHandler::ExecuteInternal(
   ParametersMap::const_iterator id_parameter_iterator = command_parameters.find("id");
   ParametersMap::const_iterator property_name_parameter_iterator = command_parameters.find("propertyName");
   if (id_parameter_iterator == command_parameters.end()) {
-    response->SetErrorResponse(400, "Missing parameter in URL: id");
+    response->SetErrorResponse(ERROR_INVALID_ARGUMENT, "Missing parameter in URL: id");
     return;
   } else if (property_name_parameter_iterator == command_parameters.end()) {
-    response->SetErrorResponse(400,
-                                "Missing parameter in URL: propertyName");
+    response->SetErrorResponse(ERROR_INVALID_ARGUMENT,
+                               "Missing parameter in URL: propertyName");
     return;
   } else {
     std::string element_id = id_parameter_iterator->second.asString();
@@ -64,7 +64,7 @@ void GetElementValueOfCssPropertyCommandHandler::ExecuteInternal(
     BrowserHandle browser_wrapper;
     int status_code = executor.GetCurrentBrowser(&browser_wrapper);
     if (status_code != WD_SUCCESS) {
-      response->SetErrorResponse(status_code, "Unable to get browser");
+      response->SetErrorResponse(ERROR_NO_SUCH_WINDOW, "Unable to get browser");
       return;
     }
 
@@ -83,7 +83,7 @@ void GetElementValueOfCssPropertyCommandHandler::ExecuteInternal(
         return;
       }
     } else {
-      response->SetErrorResponse(status_code, "Element is no longer valid");
+      response->SetErrorResponse(ERROR_STALE_ELEMENT_REFERENCE, "Element is no longer valid");
       return;
     }
   }

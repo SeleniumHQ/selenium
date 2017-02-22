@@ -116,6 +116,9 @@ class Server {
   void SendHttpNotFound(mg_connection* connection,
                         const mg_request_info* request_info,
                         const std::string& body);
+  void SendHttpTimeout(mg_connection* connection,
+                       const mg_request_info* request_info,
+                       const std::string& body);
   void SendHttpNotImplemented(mg_connection* connection,
                               const mg_request_info* request_info,
                               const std::string& body);

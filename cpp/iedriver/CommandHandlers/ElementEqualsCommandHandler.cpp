@@ -35,11 +35,11 @@ void ElementEqualsCommandHandler::ExecuteInternal(
   ParametersMap::const_iterator id_parameter_iterator = command_parameters.find("id");
   ParametersMap::const_iterator other_parameter_iterator = command_parameters.find("other");
   if (id_parameter_iterator == command_parameters.end()) {
-    response->SetErrorResponse(400, "Missing parameter in URL: id");
+    response->SetErrorResponse(ERROR_INVALID_ARGUMENT, "Missing parameter in URL: id");
     return;
   }
   else if (other_parameter_iterator == command_parameters.end()) {
-    response->SetErrorResponse(400, "Missing parameter in URL: other");
+    response->SetErrorResponse(ERROR_INVALID_ARGUMENT, "Missing parameter in URL: other");
     return;
   } else {
     std::string element_id = id_parameter_iterator->second.asString();

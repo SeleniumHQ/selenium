@@ -13,17 +13,18 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-#ifndef WEBDRIVER_IE_GETWINDOWSIZECOMMANDHANDLER_H_
-#define WEBDRIVER_IE_GETWINDOWSIZECOMMANDHANDLER_H_
+
+#ifndef WEBDRIVER_IE_ACTIONSCOMMANDHANDLER_H_
+#define WEBDRIVER_IE_ACTIONSCOMMANDHANDLER_H_
 
 #include "../IECommandHandler.h"
 
 namespace webdriver {
 
-class GetWindowSizeCommandHandler : public IECommandHandler {
+class ActionsCommandHandler : public IECommandHandler {
  public:
-  GetWindowSizeCommandHandler(void);
-  virtual ~GetWindowSizeCommandHandler(void);
+  ActionsCommandHandler(void);
+  virtual ~ActionsCommandHandler(void);
 
  protected:
   void ExecuteInternal(const IECommandExecutor& executor,
@@ -33,4 +34,4 @@ class GetWindowSizeCommandHandler : public IECommandHandler {
 
 } // namespace webdriver
 
-#endif // WEBDRIVER_IE_GETWINDOWSIZECOMMANDHANDLER_H_
+#endif // WEBDRIVER_IE_ACTIONSCOMMANDHANDLER_H_

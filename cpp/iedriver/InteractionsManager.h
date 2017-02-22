@@ -29,16 +29,9 @@
 #define WD_CLIENT_MIDDLE_MOUSE_BUTTON 1
 #define WD_CLIENT_RIGHT_MOUSE_BUTTON 2
 
+#include <vector>
 
 namespace webdriver {
-
-// All the required information to post a keyboard event message.
-struct KeySendingData {
-  HWND to_window;
-  HKL layout;
-  BYTE* keyboardState;
-  int pause_time;
-};
 
 class EventFiringData;
 
@@ -47,24 +40,56 @@ class InteractionsManager {
   InteractionsManager(void);
   ~InteractionsManager(void);
 
-  // Keyboard interactions
-  void sendKeys(HWND windowHandle, const wchar_t* value, int timePerKey);
-  void releaseModifierKeys(HWND windowHandle, int timePerKey);
+  void SendKeyDownMessage(HWND window_handle,
+                          bool shift_pressed,
+                          bool control_pressed,
+                          bool alt_pressed,
+                          int key_code,
+                          int scan_code,
+                          bool extended,
+                          bool unicode,
+                          bool shifted,
+                          HKL layout,
+                          std::vector<BYTE>* keyboard_state);
+  void SendKeyUpMessage(HWND window_handle,
+                        bool shift_pressed,
+                        bool control_pressed,
+                        bool alt_pressed,
+                        int key_code,
+                        int scan_code,
+                        bool extended,
+                        bool unicode,
+                        bool shifted,
+                        HKL layout,
+                        std::vector<BYTE>* keyboard_state);
+
+  void SendMouseMoveMessage(HWND window_handle,
+                            bool shift_pressed,
+                            bool control_pressed,
+                            bool left_pressed,
+                            bool right_pressed,
+                            int x,
+                            int y);
+  void SendMouseUpMessage(HWND window_handle,
+                          bool shift_pressed,
+                          bool control_pressed,
+                          bool left_pressed,
+                          bool right_pressed,
+                          int button,
+                          int x,
+                          int y);
+  void SendMouseDownMessage(HWND window_handle,
+                            bool shift_pressed,
+                            bool control_pressed,
+                            bool left_pressed,
+                            bool right_pressed,
+                            int button,
+                            int x,
+                            int y,
+                            bool is_double_click);
+
   void stopPersistentEventFiring();
   void setEnablePersistentHover(bool enablePersistentHover);
-
-  // Mouse interactions
-  LRESULT clickAt(HWND directInputTo, long x, long y, long button);
-  LRESULT doubleClickAt(HWND directInputTo, long x, long y);
-  LRESULT mouseDownAt(HWND directInputTo, long x, long y, long button);
-  LRESULT mouseUpAt(HWND directInputTo, long x, long y, long button);
-  LRESULT mouseMoveTo(HWND directInputTo,
-                      long duration,
-                      long fromX,
-                      long fromY,
-                      long toX,
-                      long toY);
-  LRESULT mouseDoubleClickDown(HWND directInputTo, long x, long y);
 
   static DWORD WINAPI MouseEventFiringFunction(LPVOID lpParam);
 
@@ -74,89 +99,6 @@ class InteractionsManager {
   static HANDLE hConstantEventsThread;
 
  private:
-  void backgroundUnicodeKeyPress(HWND ieWindow, wchar_t c, int pause);
-  void sendModifierKeyDown(HWND hwnd,
-                           HKL layout,
-                           int modifierKeyCode,
-                           BYTE keyboardState[256],
-                           int pause);
-  void sendModifierKeyUp(HWND hwnd,
-                         HKL layout,
-                         int modifierKeyCode,
-                         BYTE keyboardState[256],
-                         int pause);
-  void sendModifierKeyDownIfNeeded(bool shouldSend,
-                                   HWND hwnd,
-                                   HKL layout,
-                                   int modifierKeyCode,
-                                   BYTE keyboardState[256],
-                                   int pause);
-  void sendModifierKeyUpIfNeeded(bool shouldSend,
-                                 HWND hwnd,
-                                 HKL layout,
-                                 int modifierKeyCode,
-                                 BYTE keyboardState[256],
-                                 int pause);
-
-  bool isShiftPressNeeded(WORD keyCode);
-  bool isControlPressNeeded(WORD keyCode);
-  bool isAltPressNeeded(WORD keyCode);
-  
-  LPARAM generateKeyMessageParam(UINT scanCode, bool extended);
-  
-  void backgroundKeyDown(HWND hwnd,
-                         HKL layout,
-                         BYTE keyboardState[256],
-                         WORD keyCode,
-                         UINT scanCode,
-                         bool extended,
-                         int pause);
-  void backgroundKeyUp(HWND hwnd,
-                       HKL layout,
-                       BYTE keyboardState[256],
-                       WORD keyCode,
-                       UINT scanCode,
-                       bool extended,
-                       int pause);
-  void backgroundKeyPress(HWND hwnd,
-                          HKL layout,
-                          BYTE keyboardState[256],
-                          WORD keyCode,
-                          UINT scanCode,
-                          bool extended,
-                          int pause);
-  
-  bool isClearAllModifiersCode(wchar_t c);
-  bool isShiftCode(wchar_t c);
-  bool isControlCode(wchar_t c);
-  bool isAltCode(wchar_t c);
-  bool isModifierCharacter(wchar_t c);
-  
-  void sendSingleModifierEventAndAdjustState(bool matchingModifier,
-                                             bool& modifierState,
-                                             int modifierKeyCode,
-                                             KeySendingData sendData);
-  void postModifierReleaseMessages(bool releaseShift, 
-                                   bool releaseControl,
-                                   bool releaseAlt,
-                                   KeySendingData sendData);
-  void sendModifierKeyEvent(wchar_t c, 
-                            bool& shiftKey,
-                            bool& controlKey,
-                            bool& altKey,
-                            KeySendingData sendData);
-
-  void fillEventData(long button,
-                     bool buttonDown,
-                     UINT *message,
-                     WPARAM *wparam);
-
-  bool isSameThreadAs(HWND other);
-
-  unsigned long distanceBetweenPoints(long fromX,
-                                      long fromY,
-                                      long toX,
-                                      long toY);
 
   void resumePersistentEventsFiring(HWND inputTo,
                                     long toX,

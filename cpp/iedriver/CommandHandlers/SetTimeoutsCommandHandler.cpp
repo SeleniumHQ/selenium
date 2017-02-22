@@ -14,46 +14,39 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "SetTimeoutCommandHandler.h"
+#include "SetTimeoutsCommandHandler.h"
 #include "errorcodes.h"
 #include "../Browser.h"
 #include "../IECommandExecutor.h"
 
 namespace webdriver {
 
-SetTimeoutCommandHandler::SetTimeoutCommandHandler(void) {
+SetTimeoutsCommandHandler::SetTimeoutsCommandHandler(void) {
 }
 
-SetTimeoutCommandHandler::~SetTimeoutCommandHandler(void) {
+SetTimeoutsCommandHandler::~SetTimeoutsCommandHandler(void) {
 }
 
-void SetTimeoutCommandHandler::ExecuteInternal(
+void SetTimeoutsCommandHandler::ExecuteInternal(
     const IECommandExecutor& executor,
     const ParametersMap& command_parameters,
     Response* response) {
-  ParametersMap::const_iterator type_parameter_iterator = command_parameters.find("type");
-  ParametersMap::const_iterator ms_parameter_iterator = command_parameters.find("ms");
-  if (type_parameter_iterator == command_parameters.end()) {
-    response->SetErrorResponse(400, "Missing parameter: type");
-    return;
-  } else if (ms_parameter_iterator == command_parameters.end()) {
-    response->SetErrorResponse(400, "Missing parameter: ms");
-    return;
-  } else {
-    std::string timeout_type = type_parameter_iterator->second.asString();
-    int timeout = ms_parameter_iterator->second.asInt();
-    IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
+  IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
+  int timeout = 0;
+  ParametersMap::const_iterator timeout_parameter_iterator = command_parameters.begin();
+  for (; timeout_parameter_iterator != command_parameters.end(); ++timeout_parameter_iterator) {
+    std::string timeout_type = timeout_parameter_iterator->first;
+    timeout = timeout_parameter_iterator->second.asInt();
     if (timeout_type == "implicit") {
       mutable_executor.set_implicit_wait_timeout(timeout);
     } else if (timeout_type == "script") {
       mutable_executor.set_async_script_timeout(timeout);
-    } else if (timeout_type == "page load") {
-        mutable_executor.set_page_load_timeout(timeout);
+    } else if (timeout_type == "pageLoad") {
+      mutable_executor.set_page_load_timeout(timeout);
     } else {
-      response->SetErrorResponse(EUNHANDLEDERROR, "Invalid timeout type specified: " + timeout_type);
+      response->SetErrorResponse(ERROR_INVALID_ARGUMENT, "Invalid timeout type specified: " + timeout_type);
       return;
     }
-    response->SetSuccessResponse(Json::Value::null);
   }
 }
 

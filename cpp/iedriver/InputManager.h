@@ -17,6 +17,7 @@
 #ifndef WEBDRIVER_IE_INPUTMANAGER_H_
 #define WEBDRIVER_IE_INPUTMANAGER_H_
 
+#include <ctime>
 #include <vector>
 
 #include "CustomTypes.h"
@@ -35,49 +36,52 @@ struct KeyInfo {
   bool is_webdriver_key;
 };
 
+struct InputState {
+  bool is_shift_pressed;
+  bool is_control_pressed;
+  bool is_alt_pressed;
+  bool is_left_button_pressed;
+  bool is_right_button_pressed;
+  long mouse_x;
+  long mouse_y;
+};
+
 // Forward declaration of classes to avoid
 // circular include files.
 class ElementRepository;
 class InteractionsManager;
 
 class InputManager {
- public:
+public:
   InputManager(void);
   virtual ~InputManager(void);
 
   void Initialize(ElementRepository* element_map);
 
-  int PerformInputSequence(BrowserHandle browser_wrapper, 
-                           const Json::Value& sequence);
-  int MouseMoveTo(BrowserHandle browser_wrapper,
-                  std::string element_id,
-                  bool offset_specified,
-                  int x_offset,
-                  int y_offset);
-  int MouseButtonDown(BrowserHandle browser_wrapper);
-  int MouseButtonUp(BrowserHandle browser_wrapper);
-  int MouseClick(BrowserHandle browser_wrapper, int button);
-  int MouseDoubleClick(BrowserHandle browser_wrapper);
-  int SendKeystrokes(BrowserHandle browser_wrapper,
-                     Json::Value keystroke_array,
-                     bool auto_release_modifier_keys);
+  int PerformInputSequence(BrowserHandle browser_wrapper,
+    const Json::Value& sequence);
   bool SetFocusToBrowser(BrowserHandle browser_wrapper);
 
-  void SetPersistentEvents(bool is_firing);
+  void StartPersistentEvents(void);
   void StopPersistentEvents(void);
 
   bool enable_native_events(void) const { return this->use_native_events_; }
-  void set_enable_native_events(const bool enable_native_events) { 
+  void set_enable_native_events(const bool enable_native_events) {
     this->use_native_events_ = enable_native_events;
   }
 
   bool require_window_focus(void) const { return this->require_window_focus_; }
-  void set_require_window_focus(const bool require_window_focus) { 
+  void set_require_window_focus(const bool require_window_focus) {
     this->require_window_focus_ = require_window_focus;
   }
 
+  bool use_persistent_hover(void) const { return this->use_persistent_hover_; }
+  void set_use_persistent_hover(const bool use_persistent_hover) {
+    this->use_persistent_hover_ = use_persistent_hover;
+  }
+
   ElementScrollBehavior scroll_behavior(void) const {
-    return this->scroll_behavior_; 
+    return this->scroll_behavior_;
   }
   void set_scroll_behavior(const ElementScrollBehavior scroll_behavior) {
     this->scroll_behavior_ = scroll_behavior;
@@ -88,6 +92,10 @@ class InputManager {
 
   VARIANT mouse_state(void) const { return this->mouse_state_; }
   void set_mouse_state(VARIANT state) { this->mouse_state_ = state; }
+
+  bool is_shift_pressed(void) const { return this->is_shift_pressed_; }
+  bool is_control_pressed(void) const { return this->is_control_pressed_; }
+  bool is_alt_pressed(void) const { return this->is_alt_pressed_; }
 
   long last_known_mouse_x(void) const { return this->last_known_mouse_x_; }
   void set_last_known_mouse_x(const long x_coordinate) {
@@ -100,23 +108,47 @@ class InputManager {
   }
 
  private:
+  int PointerMoveTo(BrowserHandle browser_wrapper,
+                    const Json::Value& move_to_action,
+                    InputState* input_state);
+  int PointerDown(BrowserHandle browser_wrapper,
+                  const Json::Value& down_action,
+                  InputState* input_state);
+  int PointerUp(BrowserHandle browser_wrapper,
+                const Json::Value& up_action,
+                InputState* input_state);
+  int KeyDown(BrowserHandle browser_wrapper,
+              const Json::Value& down_action,
+              InputState* input_state);
+  int KeyUp(BrowserHandle browser_wrapper,
+            const Json::Value& up_action,
+            InputState* input_state);
+  int Pause(BrowserHandle browser_wrapper,
+            const Json::Value& pause_action);
+
   void GetNormalizedCoordinates(HWND window_handle,
                                 int x,
                                 int y,
                                 int* normalized_x,
                                 int* normalized_y);
-  void AddMouseInput(HWND window_handle, long flag, int x, int y);
-  void AddKeyboardInput(HWND window_handle, wchar_t character);
+  void AddMouseInput(HWND window_handle, long input_action, int x, int y);
+  void AddKeyboardInput(HWND window_handle, wchar_t character, bool key_up, InputState* input_state);
+  void AddPauseInput(HWND window_handle, int duration);
 
   void CreateKeyboardInputItem(KeyInfo key_info, DWORD initial_flags, bool is_generating_keyup);
 
   bool IsModifierKey(wchar_t character);
 
   KeyInfo GetKeyInfo(HWND windows_handle, wchar_t character);
-  
+  InputState CloneCurrentInputState(void);
+  void UpdateInputState(INPUT current_input);
+
   bool WaitForInputEventProcessing(int input_count);
+  int PerformInputWithSendInput(BrowserHandle browser_wrapper);
+  int PerformInputWithSendMessage(BrowserHandle browser_wrapper);
 
   bool use_native_events_;
+  bool use_persistent_hover_;
   bool require_window_focus_;
   long last_known_mouse_x_;
   long last_known_mouse_y_;
@@ -124,6 +156,10 @@ class InputManager {
   bool is_shift_pressed_;
   bool is_control_pressed_;
   bool is_alt_pressed_;
+  bool is_left_button_pressed_;
+  bool is_right_button_pressed_;
+
+  clock_t last_click_time_;
 
   ElementScrollBehavior scroll_behavior_;
 
@@ -134,6 +170,7 @@ class InputManager {
   InteractionsManager* interactions_manager_;
 
   std::vector<INPUT> inputs_;
+  std::vector<BYTE> keyboard_state_buffer_;
 };
 
 } // namespace webdriver

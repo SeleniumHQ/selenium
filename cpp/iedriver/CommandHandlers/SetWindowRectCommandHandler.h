@@ -13,17 +13,17 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-#ifndef WEBDRIVER_IE_GETWINDOWPOSITIONCOMMANDHANDLER_H_
-#define WEBDRIVER_IE_GETWINDOWPOSITIONCOMMANDHANDLER_H_
+#ifndef WEBDRIVER_IE_SETWINDOWRECTCOMMANDHANDLER_H_
+#define WEBDRIVER_IE_SETWINDOWRECTCOMMANDHANDLER_H_
 
 #include "../IECommandHandler.h"
 
 namespace webdriver {
 
-class GetWindowPositionCommandHandler : public IECommandHandler {
+class SetWindowRectCommandHandler : public IECommandHandler {
  public:
-  GetWindowPositionCommandHandler(void);
-  virtual ~GetWindowPositionCommandHandler(void);
+  SetWindowRectCommandHandler(void);
+  virtual ~SetWindowRectCommandHandler(void);
 
  protected:
   void ExecuteInternal(const IECommandExecutor& executor,
@@ -33,4 +33,4 @@ class GetWindowPositionCommandHandler : public IECommandHandler {
 
 } // namespace webdriver
 
-#endif // WEBDRIVER_IE_GETWINDOWPOSITIONCOMMANDHANDLER_H_
+#endif // WEBDRIVER_IE_SETWINDOWRECTCOMMANDHANDLER_H_

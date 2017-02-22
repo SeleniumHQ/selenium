@@ -35,7 +35,7 @@ void GetCurrentWindowHandleCommandHandler::ExecuteInternal(
   BrowserHandle browser;
   int status_code = executor.GetManagedBrowser(current_handle, &browser);
   if (status_code != WD_SUCCESS) {
-    response->SetErrorResponse(ENOSUCHWINDOW, "Window is closed");
+    response->SetErrorResponse(ERROR_NO_SUCH_WINDOW, "Window is closed");
   } else {
     response->SetSuccessResponse(current_handle);
   }

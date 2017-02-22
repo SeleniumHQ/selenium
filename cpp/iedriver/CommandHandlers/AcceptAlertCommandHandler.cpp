@@ -48,7 +48,7 @@ void AcceptAlertCommandHandler::ExecuteInternal(
     status_code = dialog.Accept();
     if (status_code != WD_SUCCESS) {
       response->SetErrorResponse(status_code,
-                                  "Could not find OK button");
+                                 "Could not find OK button");
     }
 
     // Add sleep to give IE time to close dialog and start Navigation if it's necessary

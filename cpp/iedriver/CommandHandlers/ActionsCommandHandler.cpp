@@ -14,36 +14,42 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "MouseDoubleClickCommandHandler.h"
+#include "ActionsCommandHandler.h"
 #include "errorcodes.h"
+#include "json.h"
+#include "../Alert.h"
 #include "../Browser.h"
 #include "../IECommandExecutor.h"
 #include "../InputManager.h"
 
 namespace webdriver {
 
-MouseDoubleClickCommandHandler::MouseDoubleClickCommandHandler(void) {
+ActionsCommandHandler::ActionsCommandHandler(void) {
 }
 
-MouseDoubleClickCommandHandler::~MouseDoubleClickCommandHandler(void) {
+ActionsCommandHandler::~ActionsCommandHandler(void) {
 }
 
-void MouseDoubleClickCommandHandler::ExecuteInternal(
+void ActionsCommandHandler::ExecuteInternal(
     const IECommandExecutor& executor,
     const ParametersMap& command_parameters,
     Response* response) {
   BrowserHandle browser_wrapper;
   int status_code = executor.GetCurrentBrowser(&browser_wrapper);
   if (status_code != WD_SUCCESS) {
-    response->SetErrorResponse(status_code, "Unable to get browser");
+    response->SetErrorResponse(status_code, "Unable to get current browser");
     return;
   }
-  Json::Value value = this->RecreateJsonParameterObject(command_parameters);
-  value["action"] = "doubleclick";
-  Json::UInt index = 0;
-  Json::Value actions(Json::arrayValue);
-  actions[index] = value;
-  executor.input_manager()->PerformInputSequence(browser_wrapper, actions);
+  ParametersMap::const_iterator actions_parameter_iterator = command_parameters.find("actions");
+  if (actions_parameter_iterator == command_parameters.end()) {
+    response->SetErrorResponse(ERROR_INVALID_ARGUMENT, "Missing parameter: actions");
+    return;
+  }
+  if (!actions_parameter_iterator->second.isArray()) {
+    response->SetErrorResponse(ERROR_INVALID_ARGUMENT, "Actions value is not an array");
+    return;
+  }
+  status_code = executor.input_manager()->PerformInputSequence(browser_wrapper, actions_parameter_iterator->second);
   response->SetSuccessResponse(Json::Value::null);
 }
 

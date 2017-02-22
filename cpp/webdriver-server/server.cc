@@ -190,13 +190,13 @@ int Server::ProcessRequest(struct mg_connection* conn,
                      request_info,
                      SERVER_DEFAULT_PAGE,
                      HTML_CONTENT_TYPE);
-    http_response_code = 200;
+    http_response_code = 0;
   } else if (strcmp(request_info->uri, "/shutdown") == 0) {
     this->SendHttpOk(conn,
                      request_info,
                      SERVER_DEFAULT_PAGE,
                      HTML_CONTENT_TYPE);
-    http_response_code = 200;
+    http_response_code = 0;
     this->ShutDown();
   } else {
     std::string serialized_response = this->DispatchCommand(request_info->uri,
@@ -281,23 +281,13 @@ std::string Server::DispatchCommand(const std::string& uri,
   LOG(DEBUG) << "Command: " << http_verb << " " << uri << " " << command_body;
 
   if (command == webdriver::CommandType::NoCommand) {
-    if (locator_parameters.size() != 0) {
-      // Hand-code the response for an invalid HTTP verb for URL
-      serialized_response.append("{ \"status\" : 405, ");
-      serialized_response.append("\"sessionId\" : \"<no session>\", ");
-      serialized_response.append("\"value\" : \"");
-      serialized_response.append(locator_parameters);
-      serialized_response.append("\" }");
-    } else {
-      // Hand-code the response for an unknown URL
-      serialized_response.append("{ \"status\" : 404, ");
-      serialized_response.append("\"sessionId\" : \"<no session>\", ");
-      serialized_response.append("\"value\" : \"Command not found: ");
-      serialized_response.append(http_verb);
-      serialized_response.append(" ");
-      serialized_response.append(uri);
-      serialized_response.append("\" }");
-    }
+    // Hand-code the response for an unknown URL
+    serialized_response.append("{ \"error\" : \"unknown method\", ");
+    serialized_response.append("\"message\" : \"Command not found: ");
+    serialized_response.append(http_verb);
+    serialized_response.append(" ");
+    serialized_response.append(uri);
+    serialized_response.append("\" }");
   } else if (command == webdriver::CommandType::Status) {
     // Status command must be handled by the server, not by the session.
     serialized_response = this->GetStatus();
@@ -313,18 +303,11 @@ std::string Server::DispatchCommand(const std::string& uri,
         // Calling quit on an invalid session should be a no-op.
         // Hand-code the response for quit on an invalid (already
         // quit) session.
-        serialized_response.append("{ \"status\" : 0, ");
-        serialized_response.append("\"sessionId\" : \"");
-        serialized_response.append(session_id);
-        serialized_response.append("\", ");
-        serialized_response.append("\"value\" : null }");
+        serialized_response.append("{ \"value\" : null }");
       } else {
         // Hand-code the response for an invalid session id
-        serialized_response.append("{ \"status\" : 6, ");
-        serialized_response.append("\"sessionId\" : \"");
-        serialized_response.append(session_id);
-        serialized_response.append("\", ");
-        serialized_response.append("\"value\" : \"session ");
+        serialized_response.append("{ \"error\" : \"invalid session id\", ");
+        serialized_response.append("\"message\" : \"session ");
         serialized_response.append(session_id);
         serialized_response.append(" does not exist\" }");
       }
@@ -345,7 +328,7 @@ std::string Server::DispatchCommand(const std::string& uri,
       if (command == webdriver::CommandType::NewSession) {
         Response new_session_response;
         new_session_response.Deserialize(serialized_response);
-        this->sessions_[new_session_response.session_id()] = session_handle;
+        this->sessions_[new_session_response.GetSessionId()] = session_handle;
       }
       if (!session_is_valid) {
         this->ShutDownSession(session_id);
@@ -411,18 +394,18 @@ int Server::SendResponseToClient(struct mg_connection* conn,
   if (serialized_response.size() > 0) {
     Response response;
     response.Deserialize(serialized_response);
-    return_code = response.status_code();
+    return_code = response.GetHttpResponseCode();
     if (return_code == 0) {
       this->SendHttpOk(conn,
                        request_info,
                        serialized_response,
-                       JSON_CONTENT_TYPE);
+                       HTML_CONTENT_TYPE);
       return_code = 200;
     } else if (return_code == 200) {
       this->SendHttpOk(conn,
                        request_info,
                        serialized_response,
-                       HTML_CONTENT_TYPE);
+                       JSON_CONTENT_TYPE);
     } else if (return_code == 303) {
       std::string location = response.value().asString();
       response.SetSuccessResponse(response.value());
@@ -465,6 +448,7 @@ void Server::SendHttpOk(struct mg_connection* connection,
   out << "HTTP/1.1 200 OK\r\n"
     << "Content-Length: " << strlen(body.c_str()) << "\r\n"
     << "Content-Type: " << content_type << "; charset=UTF-8\r\n"
+    << "Cache-Control: no-cache\r\n"
     << "Vary: Accept-Charset, Accept-Encoding, Accept-Language, Accept\r\n"
     << "Accept-Ranges: bytes\r\n"
     << "Connection: close\r\n\r\n";
@@ -484,6 +468,7 @@ void Server::SendHttpBadRequest(struct mg_connection* const connection,
   out << "HTTP/1.1 400 Bad Request\r\n"
     << "Content-Length: " << strlen(body.c_str()) << "\r\n"
     << "Content-Type: application/json; charset=UTF-8\r\n"
+    << "Cache-Control: no-cache\r\n"
     << "Vary: Accept-Charset, Accept-Encoding, Accept-Language, Accept\r\n"
     << "Accept-Ranges: bytes\r\n"
     << "Connection: close\r\n\r\n";
@@ -503,6 +488,7 @@ void Server::SendHttpInternalError(struct mg_connection* connection,
   out << "HTTP/1.1 500 Internal Server Error\r\n"
     << "Content-Length: " << strlen(body.c_str()) << "\r\n"
     << "Content-Type: application/json; charset=UTF-8\r\n"
+    << "Cache-Control: no-cache\r\n"
     << "Vary: Accept-Charset, Accept-Encoding, Accept-Language, Accept\r\n"
     << "Accept-Ranges: bytes\r\n"
     << "Connection: close\r\n\r\n";
@@ -522,6 +508,7 @@ void Server::SendHttpNotFound(struct mg_connection* const connection,
   out << "HTTP/1.1 404 Not Found\r\n"
     << "Content-Length: " << strlen(body.c_str()) << "\r\n"
     << "Content-Type: application/json; charset=UTF-8\r\n"
+    << "Cache-Control: no-cache\r\n"
     << "Vary: Accept-Charset, Accept-Encoding, Accept-Language, Accept\r\n"
     << "Accept-Ranges: bytes\r\n"
     << "Connection: close\r\n\r\n";
@@ -543,6 +530,23 @@ void Server::SendHttpMethodNotAllowed(
     << "Content-Type: text/html\r\n"
     << "Content-Length: 0\r\n"
     << "Allow: " << allowed_methods << "\r\n\r\n";
+
+  mg_write(connection, out.str().c_str(), out.str().size());
+}
+
+void Server::SendHttpTimeout(struct mg_connection* connection,
+                             const struct mg_request_info* request_info,
+                             const std::string& body) {
+  LOG(TRACE) << "Entering Server::SendHttpTimeout";
+
+  std::ostringstream out;
+  out << "HTTP/1.1 408 Timeout\r\n\r\n"
+    << "Content-Length: " << strlen(body.c_str()) << "\r\n"
+    << "Content-Type: application/json; charset=UTF-8\r\n"
+    << "Cache-Control: no-cache\r\n"
+    << "Vary: Accept-Charset, Accept-Encoding, Accept-Language, Accept\r\n"
+    << "Accept-Ranges: bytes\r\n"
+    << "Connection: close\r\n\r\n";
 
   mg_write(connection, out.str().c_str(), out.str().size());
 }
@@ -629,93 +633,74 @@ std::string Server::ConstructLocatorParameterJson(
 void Server::PopulateCommandRepository() {
   LOG(TRACE) << "Entering Server::PopulateCommandRepository";
 
-  this->AddCommand("/status", "GET", webdriver::CommandType::Status);
   this->AddCommand("/session", "POST",  webdriver::CommandType::NewSession);
-  this->AddCommand("/sessions", "GET",  webdriver::CommandType::GetSessionList);
-  this->AddCommand("/session/:sessionid", "GET",  webdriver::CommandType::GetSessionCapabilities);
   this->AddCommand("/session/:sessionid", "DELETE",  webdriver::CommandType::Quit);
-  this->AddCommand("/session/:sessionid/window_handle", "GET",  webdriver::CommandType::GetCurrentWindowHandle);
-  this->AddCommand("/session/:sessionid/window_handles", "GET",  webdriver::CommandType::GetWindowHandles);
+  this->AddCommand("/status", "GET", webdriver::CommandType::Status);
+  this->AddCommand("/session/:sessionid/timeouts", "GET", webdriver::CommandType::GetTimeouts);
+  this->AddCommand("/session/:sessionid/timeouts", "POST", webdriver::CommandType::SetTimeouts);
   this->AddCommand("/session/:sessionid/url", "GET",  webdriver::CommandType::GetCurrentUrl);
   this->AddCommand("/session/:sessionid/url", "POST",  webdriver::CommandType::Get);
-  this->AddCommand("/session/:sessionid/forward", "POST",  webdriver::CommandType::GoForward);
   this->AddCommand("/session/:sessionid/back", "POST",  webdriver::CommandType::GoBack);
+  this->AddCommand("/session/:sessionid/forward", "POST",  webdriver::CommandType::GoForward);
   this->AddCommand("/session/:sessionid/refresh", "POST",  webdriver::CommandType::Refresh);
-  this->AddCommand("/session/:sessionid/execute", "POST",  webdriver::CommandType::ExecuteScript);
-  this->AddCommand("/session/:sessionid/execute_async", "POST",  webdriver::CommandType::ExecuteAsyncScript);
-  this->AddCommand("/session/:sessionid/screenshot", "GET",  webdriver::CommandType::Screenshot);
+  this->AddCommand("/session/:sessionid/title", "GET",  webdriver::CommandType::GetTitle);
+  this->AddCommand("/session/:sessionid/window", "GET",  webdriver::CommandType::GetCurrentWindowHandle);
+  this->AddCommand("/session/:sessionid/window", "POST",  webdriver::CommandType::SwitchToWindow);
+  this->AddCommand("/session/:sessionid/window", "DELETE",  webdriver::CommandType::CloseWindow);
+  this->AddCommand("/session/:sessionid/window/handles", "GET",  webdriver::CommandType::GetWindowHandles);
   this->AddCommand("/session/:sessionid/frame", "POST",  webdriver::CommandType::SwitchToFrame);
   this->AddCommand("/session/:sessionid/frame/parent", "POST",  webdriver::CommandType::SwitchToParentFrame);
-  this->AddCommand("/session/:sessionid/window", "POST",  webdriver::CommandType::SwitchToWindow);
-  this->AddCommand("/session/:sessionid/window", "DELETE",  webdriver::CommandType::Close);
-  this->AddCommand("/session/:sessionid/cookie", "GET",  webdriver::CommandType::GetAllCookies);
-  this->AddCommand("/session/:sessionid/cookie", "POST",  webdriver::CommandType::AddCookie);
-  this->AddCommand("/session/:sessionid/cookie", "DELETE",  webdriver::CommandType::DeleteAllCookies);
-  this->AddCommand("/session/:sessionid/cookie/:name", "DELETE",  webdriver::CommandType::DeleteCookie);
-  this->AddCommand("/session/:sessionid/source", "GET",  webdriver::CommandType::GetPageSource);
-  this->AddCommand("/session/:sessionid/title", "GET",  webdriver::CommandType::GetTitle);
+  this->AddCommand("/session/:sessionid/window/rect", "GET", webdriver::CommandType::GetWindowRect);
+  this->AddCommand("/session/:sessionid/window/rect", "POST", webdriver::CommandType::SetWindowRect);
+  this->AddCommand("/session/:sessionid/window/maximize", "POST", webdriver::CommandType::MaximizeWindow);
+  this->AddCommand("/session/:sessionid/window/minimize", "POST", webdriver::CommandType::MinimizeWindow);
+  this->AddCommand("/session/:sessionid/window/fullscreen", "POST", webdriver::CommandType::FullscreenWindow);
+  this->AddCommand("/session/:sessionid/element/active", "GET",  webdriver::CommandType::GetActiveElement);
   this->AddCommand("/session/:sessionid/element", "POST",  webdriver::CommandType::FindElement);
   this->AddCommand("/session/:sessionid/elements", "POST",  webdriver::CommandType::FindElements);
-  this->AddCommand("/session/:sessionid/timeouts", "POST",  webdriver::CommandType::SetTimeout);
-  this->AddCommand("/session/:sessionid/timeouts/implicit_wait", "POST",  webdriver::CommandType::ImplicitlyWait);
-  this->AddCommand("/session/:sessionid/timeouts/async_script", "POST",  webdriver::CommandType::SetAsyncScriptTimeout);
-  this->AddCommand("/session/:sessionid/element/active", "POST",  webdriver::CommandType::GetActiveElement);
   this->AddCommand("/session/:sessionid/element/:id/element", "POST",  webdriver::CommandType::FindChildElement);
   this->AddCommand("/session/:sessionid/element/:id/elements", "POST",  webdriver::CommandType::FindChildElements);
-  this->AddCommand("/session/:sessionid/element/:id", "GET",  webdriver::CommandType::DescribeElement);
-  this->AddCommand("/session/:sessionid/element/:id/click", "POST",  webdriver::CommandType::ClickElement);
-  this->AddCommand("/session/:sessionid/element/:id/text", "GET",  webdriver::CommandType::GetElementText);
-  this->AddCommand("/session/:sessionid/element/:id/submit", "POST",  webdriver::CommandType::SubmitElement);
-  this->AddCommand("/session/:sessionid/element/:id/value", "GET",  webdriver::CommandType::GetElementValue);
-  this->AddCommand("/session/:sessionid/element/:id/value", "POST",  webdriver::CommandType::SendKeysToElement);
-  this->AddCommand("/session/:sessionid/element/:id/name", "GET",  webdriver::CommandType::GetElementTagName);
-  this->AddCommand("/session/:sessionid/element/:id/clear", "POST",  webdriver::CommandType::ClearElement);
   this->AddCommand("/session/:sessionid/element/:id/selected", "GET",  webdriver::CommandType::IsElementSelected);
-  this->AddCommand("/session/:sessionid/element/:id/enabled", "GET",  webdriver::CommandType::IsElementEnabled);
-  this->AddCommand("/session/:sessionid/element/:id/displayed", "GET",  webdriver::CommandType::IsElementDisplayed);
-  this->AddCommand("/session/:sessionid/element/:id/location", "GET",  webdriver::CommandType::GetElementLocation);
-  this->AddCommand("/session/:sessionid/element/:id/location_in_view", "GET",  webdriver::CommandType::GetElementLocationOnceScrolledIntoView);
-  this->AddCommand("/session/:sessionid/element/:id/size", "GET",  webdriver::CommandType::GetElementSize);
+  this->AddCommand("/session/:sessionid/element/:id/attribute/:name", "GET", webdriver::CommandType::GetElementAttribute);
+  this->AddCommand("/session/:sessionid/element/:id/property/:name", "GET", webdriver::CommandType::GetElementProperty);
   this->AddCommand("/session/:sessionid/element/:id/css/:propertyName", "GET",  webdriver::CommandType::GetElementValueOfCssProperty);
-  this->AddCommand("/session/:sessionid/element/:id/attribute/:name", "GET",  webdriver::CommandType::GetElementAttribute);
-  this->AddCommand("/session/:sessionid/element/:id/equals/:other", "GET",  webdriver::CommandType::ElementEquals);
-  this->AddCommand("/session/:sessionid/screenshot", "GET",  webdriver::CommandType::Screenshot);
-  this->AddCommand("/session/:sessionid/orientation", "GET",  webdriver::CommandType::GetOrientation);
-  this->AddCommand("/session/:sessionid/orientation", "POST",  webdriver::CommandType::SetOrientation);
+  this->AddCommand("/session/:sessionid/element/:id/text", "GET",  webdriver::CommandType::GetElementText);
+  this->AddCommand("/session/:sessionid/element/:id/name", "GET",  webdriver::CommandType::GetElementTagName);
+  this->AddCommand("/session/:sessionid/element/:id/rect", "GET", webdriver::CommandType::GetElementRect);
+  this->AddCommand("/session/:sessionid/element/:id/enabled", "GET",  webdriver::CommandType::IsElementEnabled);
+  this->AddCommand("/session/:sessionid/element/:id/click", "POST",  webdriver::CommandType::ClickElement);
+  this->AddCommand("/session/:sessionid/element/:id/clear", "POST",  webdriver::CommandType::ClearElement);
+  this->AddCommand("/session/:sessionid/element/:id/value", "POST",  webdriver::CommandType::SendKeysToElement);
+  this->AddCommand("/session/:sessionid/source", "GET",  webdriver::CommandType::GetPageSource);
+  this->AddCommand("/session/:sessionid/execute/sync", "POST",  webdriver::CommandType::ExecuteScript);
+  this->AddCommand("/session/:sessionid/execute/async", "POST",  webdriver::CommandType::ExecuteAsyncScript);
+  this->AddCommand("/session/:sessionid/cookie", "GET",  webdriver::CommandType::GetAllCookies);
+  this->AddCommand("/session/:sessionid/cookie/:name", "GET", webdriver::CommandType::GetNamedCookie);
+  this->AddCommand("/session/:sessionid/cookie", "POST",  webdriver::CommandType::AddCookie);
+  this->AddCommand("/session/:sessionid/cookie", "DELETE",  webdriver::CommandType::DeleteAllCookies);
+  this->AddCommand("/session/:sessionid/cookie/:name", "DELETE",  webdriver::CommandType::DeleteNamedCookie);
+  this->AddCommand("/session/:sessionid/actions", "POST", webdriver::CommandType::Actions);
+  this->AddCommand("/session/:sessionid/actions", "DELETE", webdriver::CommandType::ReleaseActions);
+  this->AddCommand("/session/:sessionid/alert/dismiss", "POST",  webdriver::CommandType::DismissAlert);
+  this->AddCommand("/session/:sessionid/alert/accept", "POST",  webdriver::CommandType::AcceptAlert);
+  this->AddCommand("/session/:sessionid/alert/text", "GET",  webdriver::CommandType::GetAlertText);
+  this->AddCommand("/session/:sessionid/alert/text", "POST",  webdriver::CommandType::SendKeysToAlert);
+  this->AddCommand("/session/:sessionid/screenshot", "GET", webdriver::CommandType::Screenshot);
+  this->AddCommand("/session/:sessionid/element/:id/screenshot", "GET", webdriver::CommandType::ElementScreenshot);
 
-  this->AddCommand("/session/:sessionid/window/:windowHandle/size", "GET",  webdriver::CommandType::GetWindowSize);
-  this->AddCommand("/session/:sessionid/window/:windowHandle/size", "POST",  webdriver::CommandType::SetWindowSize);
-  this->AddCommand("/session/:sessionid/window/:windowHandle/position", "GET",  webdriver::CommandType::GetWindowPosition);
-  this->AddCommand("/session/:sessionid/window/:windowHandle/position", "POST",  webdriver::CommandType::SetWindowPosition);
-  this->AddCommand("/session/:sessionid/window/:windowHandle/maximize", "POST",  webdriver::CommandType::MaximizeWindow);
-
-  this->AddCommand("/session/:sessionid/accept_alert", "POST",  webdriver::CommandType::AcceptAlert);
-  this->AddCommand("/session/:sessionid/dismiss_alert", "POST",  webdriver::CommandType::DismissAlert);
-  this->AddCommand("/session/:sessionid/alert_text", "GET",  webdriver::CommandType::GetAlertText);
-  this->AddCommand("/session/:sessionid/alert_text", "POST",  webdriver::CommandType::SendKeysToAlert);
+  // Additional commands required to be supported, but not defined
+  // in the specification.
   this->AddCommand("/session/:sessionid/alert/credentials", "POST",  webdriver::CommandType::SetAlertCredentials);
-
-  this->AddCommand("/session/:sessionid/keys", "POST",  webdriver::CommandType::SendKeysToActiveElement);
-  this->AddCommand("/session/:sessionid/moveto", "POST",  webdriver::CommandType::MouseMoveTo);
-  this->AddCommand("/session/:sessionid/click", "POST",  webdriver::CommandType::MouseClick);
-  this->AddCommand("/session/:sessionid/doubleclick", "POST",  webdriver::CommandType::MouseDoubleClick);
-  this->AddCommand("/session/:sessionid/buttondown", "POST",  webdriver::CommandType::MouseButtonDown);
-  this->AddCommand("/session/:sessionid/buttonup", "POST",  webdriver::CommandType::MouseButtonUp);
+  this->AddCommand("/session/:sessionid/element/:id/displayed", "GET",  webdriver::CommandType::IsElementDisplayed);
+  this->AddCommand("/session/:sessionid/element/:id/equals/:other", "GET",  webdriver::CommandType::ElementEquals);
+  this->AddCommand("/sessions", "GET",  webdriver::CommandType::GetSessionList);
+  this->AddCommand("/session/:sessionid", "GET",  webdriver::CommandType::GetSessionCapabilities);
 
   this->AddCommand("/session/:sessionid/ime/available_engines", "GET",  webdriver::CommandType::ListAvailableImeEngines);
   this->AddCommand("/session/:sessionid/ime/active_engines", "GET",  webdriver::CommandType::GetActiveImeEngine);
   this->AddCommand("/session/:sessionid/ime/activated", "GET",  webdriver::CommandType::IsImeActivated);
   this->AddCommand("/session/:sessionid/ime/activate", "POST",  webdriver::CommandType::ActivateImeEngine);
   this->AddCommand("/session/:sessionid/ime/deactivate", "POST",  webdriver::CommandType::DeactivateImeEngine);
-
-  this->AddCommand("/session/:sessionid/touch/click", "POST",  webdriver::CommandType::TouchClick);
-  this->AddCommand("/session/:sessionid/touch/down", "POST",  webdriver::CommandType::TouchDown);
-  this->AddCommand("/session/:sessionid/touch/up", "POST",  webdriver::CommandType::TouchUp);
-  this->AddCommand("/session/:sessionid/touch/move", "POST",  webdriver::CommandType::TouchMove);
-  this->AddCommand("/session/:sessionid/touch/scroll", "POST",  webdriver::CommandType::TouchScroll);
-  this->AddCommand("/session/:sessionid/touch/doubleclick", "POST",  webdriver::CommandType::TouchDoubleClick);
-  this->AddCommand("/session/:sessionid/touch/longclick", "POST",  webdriver::CommandType::TouchLongClick);
-  this->AddCommand("/session/:sessionid/touch/flick", "POST",  webdriver::CommandType::TouchFlick);
 }
 
 }  // namespace webdriver

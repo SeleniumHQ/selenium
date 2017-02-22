@@ -14,17 +14,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef WEBDRIVER_IE_MOUSEBUTTONDOWNCOMMANDHANDLER_H_
-#define WEBDRIVER_IE_MOUSEBUTTONDOWNCOMMANDHANDLER_H_
+#ifndef WEBDRIVER_IE_GETELEMENTRECTCOMMANDHANDLER_H_
+#define WEBDRIVER_IE_GETELEMENTRECTCOMMANDHANDLER_H_
 
 #include "../IECommandHandler.h"
 
 namespace webdriver {
 
-class MouseButtonDownCommandHandler : public IECommandHandler {
+class GetElementRectCommandHandler : public IECommandHandler {
  public:
-  MouseButtonDownCommandHandler(void);
-  virtual ~MouseButtonDownCommandHandler(void);
+ GetElementRectCommandHandler(void);
+  virtual ~GetElementRectCommandHandler(void);
 
  protected:
   void ExecuteInternal(const IECommandExecutor& executor,
@@ -34,4 +34,4 @@ class MouseButtonDownCommandHandler : public IECommandHandler {
 
 } // namespace webdriver
 
-#endif // WEBDRIVER_IE_MOUSEBUTTONDOWNCOMMANDHANDLER_H_
+#endif // WEBDRIVER_IE_GETELEMENTRECTCOMMANDHANDLER_H_

@@ -14,32 +14,28 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "SetAsyncScriptTimeoutCommandHandler.h"
+#include "GetTimeoutsCommandHandler.h"
+#include "errorcodes.h"
 #include "../Browser.h"
 #include "../IECommandExecutor.h"
 
 namespace webdriver {
 
-SetAsyncScriptTimeoutCommandHandler::SetAsyncScriptTimeoutCommandHandler(void) {
+GetTimeoutsCommandHandler::GetTimeoutsCommandHandler(void) {
 }
 
-SetAsyncScriptTimeoutCommandHandler::~SetAsyncScriptTimeoutCommandHandler(void) {
+GetTimeoutsCommandHandler::~GetTimeoutsCommandHandler(void) {
 }
 
-void SetAsyncScriptTimeoutCommandHandler::ExecuteInternal(
+void GetTimeoutsCommandHandler::ExecuteInternal(
     const IECommandExecutor& executor,
     const ParametersMap& command_parameters,
     Response* response) {
-  ParametersMap::const_iterator ms_parameter_iterator = command_parameters.find("ms");
-  if (ms_parameter_iterator == command_parameters.end()) {
-    response->SetErrorResponse(400, "Missing parameter: ms");
-    return;
-  } else {
-    int timeout = ms_parameter_iterator->second.asInt();
-    IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
-    mutable_executor.set_async_script_timeout(timeout);
-    response->SetSuccessResponse(Json::Value::null);
-  }
+  Json::Value response_value;
+  response_value["implicit"] = executor.implicit_wait_timeout();
+  response_value["script"] = executor.async_script_timeout();
+  response_value["pageLoad"] = executor.page_load_timeout();
+  response->SetSuccessResponse(response_value);
 }
 
 } // namespace webdriver

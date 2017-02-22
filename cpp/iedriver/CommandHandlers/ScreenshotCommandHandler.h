@@ -36,17 +36,12 @@ class ScreenshotCommandHandler : public IECommandHandler {
 
  private:
   void ClearImage();
-  HRESULT CaptureFullPage(BrowserHandle browser);
   HRESULT CaptureViewport(BrowserHandle browser);
   void CaptureWindow(HWND window_handle,
                      long width,
                      long height);
   bool IsSameColour();
   HRESULT GetBase64Data(std::string& data);
-  void GetBrowserChromeDimensions(HWND top_level_window_handle,
-                                  HWND content_window_handle,
-                                  int* width,
-                                  int* height);
   void GetWindowDimensions(HWND window_handle,
                            int* width,
                            int* height);

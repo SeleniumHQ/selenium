@@ -32,6 +32,7 @@ IEServer::IEServer(int port,
   LOG(TRACE) << "Entering IEServer::IEServer";
   LOG(INFO) << "Driver version: " << version;
   this->version_ = version;
+  this->AddCommand("/session/:sessionid/ie/script/background", "POST", "executeBackgroundScript");
 }
 
 IEServer::~IEServer(void) {

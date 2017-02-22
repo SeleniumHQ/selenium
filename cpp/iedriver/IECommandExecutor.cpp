@@ -71,8 +71,6 @@ LRESULT IECommandExecutor::OnCreate(UINT uMsg,
   this->PopulateElementFinderMethods();
   this->current_browser_id_ = "";
   this->serialized_response_ = "";
-  this->enable_element_cache_cleanup_ = true;
-  this->enable_persistent_hover_ = true;
   this->unexpected_alert_behavior_ = IGNORE_UNEXPECTED_ALERTS;
   this->implicit_wait_timeout_ = 0;
   this->async_script_timeout_ = -1;
@@ -80,7 +78,6 @@ LRESULT IECommandExecutor::OnCreate(UINT uMsg,
   this->is_waiting_ = false;
   this->page_load_strategy_ = "normal";
   this->file_upload_dialog_timeout_ = DEFAULT_FILE_UPLOAD_DIALOG_TIMEOUT_IN_MILLISECONDS;
-  this->enable_full_page_screenshot_ = true;
 
   this->managed_elements_ = new ElementRepository();
   this->input_manager_ = new InputManager();
@@ -179,7 +176,7 @@ LRESULT IECommandExecutor::OnWait(UINT uMsg,
   if (status_code == WD_SUCCESS && !browser->is_closing()) {
     if (this->page_load_timeout_ >= 0 && this->wait_timeout_ < clock()) {
       Response timeout_response;
-      timeout_response.SetErrorResponse(ETIMEOUT, "Timed out waiting for page to load.");
+      timeout_response.SetErrorResponse(ERROR_WEBDRIVER_TIMEOUT, "Timed out waiting for page to load.");
       this->serialized_response_ = timeout_response.Serialize();
       this->is_waiting_ = false;
       browser->set_wait_required(false);
@@ -356,9 +353,7 @@ LRESULT IECommandExecutor::OnRefreshManagedElements(UINT uMsg,
                                                     WPARAM wParam,
                                                     LPARAM lParam,
                                                     BOOL& bHandled) {
-  if (this->enable_element_cache_cleanup_) {
-    this->managed_elements_->ClearCache();
-  }
+  this->managed_elements_->ClearCache();
   return 0;
 }
 
@@ -458,7 +453,7 @@ unsigned int WINAPI IECommandExecutor::ThreadProc(LPVOID lpParameter) {
 void IECommandExecutor::DispatchCommand() {
   LOG(TRACE) << "Entering IECommandExecutor::DispatchCommand";
 
-  Response response(this->session_id_);
+  Response response;
 
   if (!this->command_handlers_->IsValidCommand(this->current_command_.command_type())) {
     LOG(WARN) << "Unable to find command handler for " << this->current_command_.command_type();
@@ -489,10 +484,8 @@ void IECommandExecutor::DispatchCommand() {
             if (command_type != webdriver::CommandType::Quit) {
               // To keep pace with what Firefox does, we'll return the text of the
               // alert in the error response.
-              Json::Value response_value;
-              response_value["message"] = "Modal dialog present";
-              response_value["alert"]["text"] = alert_text;
-              response.SetResponse(EUNEXPECTEDALERTOPEN, response_value);
+              response.SetErrorResponse(EUNEXPECTEDALERTOPEN, "Modal dialog present");
+              response.AddAdditionalData("text", alert_text);
               this->serialized_response_ = response.Serialize();
               return;
             } else {
@@ -645,13 +638,10 @@ int IECommandExecutor::CreateNewBrowser(std::string* error_message) {
     this->is_waiting_ = false;
     return ENOSUCHDRIVER;
   }
+
   // Set persistent hover functionality in the interactions implementation. 
-  this->input_manager_->SetPersistentEvents(this->enable_persistent_hover_);
-  LOG(INFO) << "Persistent hovering set to: " << this->enable_persistent_hover_;
-  if (!this->enable_persistent_hover_) {
-    LOG(INFO) << "Stopping previously-running persistent event thread.";
-    this->input_manager_->StopPersistentEvents();
-  }
+  this->input_manager_->StartPersistentEvents();
+  LOG(INFO) << "Persistent hovering set to: " << this->input_manager_->use_persistent_hover();
 
   this->proxy_manager_->SetProxySettings(process_window_info.hwndBrowser);
   BrowserHandle wrapper(new Browser(process_window_info.pBrowser,

@@ -14,38 +14,44 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "MouseButtonDownCommandHandler.h"
+#include "GetWindowRectCommandHandler.h"
 #include "errorcodes.h"
 #include "../Browser.h"
 #include "../IECommandExecutor.h"
-#include "../InputManager.h"
 
 namespace webdriver {
 
-MouseButtonDownCommandHandler::MouseButtonDownCommandHandler(void) {
+GetWindowRectCommandHandler::GetWindowRectCommandHandler(void) {
 }
 
-MouseButtonDownCommandHandler::~MouseButtonDownCommandHandler(void) {
+GetWindowRectCommandHandler::~GetWindowRectCommandHandler(void) {
 }
 
-void MouseButtonDownCommandHandler::ExecuteInternal(
+void GetWindowRectCommandHandler::ExecuteInternal(
     const IECommandExecutor& executor,
     const ParametersMap& command_parameters,
     Response* response) {
+  int status_code = WD_SUCCESS;
+
   BrowserHandle browser_wrapper;
-  int status_code = executor.GetCurrentBrowser(&browser_wrapper);
+  status_code = executor.GetCurrentBrowser(&browser_wrapper);
   if (status_code != WD_SUCCESS) {
-    response->SetErrorResponse(status_code, "Unable to get current browser");
+    response->SetErrorResponse(ERROR_NO_SUCH_WINDOW, "Error retrieving window");
     return;
   }
-  IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
-  Json::Value value = this->RecreateJsonParameterObject(command_parameters);
-  value["action"] = "buttondown";
-  Json::UInt index = 0;
-  Json::Value actions(Json::arrayValue);
-  actions[index] = value;
-  mutable_executor.input_manager()->PerformInputSequence(browser_wrapper, actions);
-  response->SetSuccessResponse(Json::Value::null);
+
+  // Though there is an atom for getting window size, we cannot use it
+  // as IE doesn't allow JavaScript to get the outer window dimensions
+  // (including chrome).
+  HWND browser_window_handle = browser_wrapper->GetTopLevelWindowHandle();
+  RECT window_rect;
+  ::GetWindowRect(browser_window_handle, &window_rect);
+  Json::Value response_value;
+  response_value["width"] = window_rect.right - window_rect.left;
+  response_value["height"] = window_rect.bottom - window_rect.top;
+  response_value["x"] = window_rect.left;
+  response_value["y"] = window_rect.top;
+  response->SetSuccessResponse(response_value);
 }
 
 } // namespace webdriver
