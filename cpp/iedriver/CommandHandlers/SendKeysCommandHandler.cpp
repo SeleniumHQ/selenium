@@ -19,6 +19,7 @@
 #include <iomanip>
 #include <UIAutomation.h>
 #include "errorcodes.h"
+#include "keycodes.h"
 #include "logging.h"
 #include "../Browser.h"
 #include "../BrowserFactory.h"
@@ -60,17 +61,21 @@ void SendKeysCommandHandler::ExecuteInternal(
     const ParametersMap& command_parameters,
     Response* response) {
   ParametersMap::const_iterator id_parameter_iterator = command_parameters.find("id");
-  ParametersMap::const_iterator value_parameter_iterator = command_parameters.find("value");
+  ParametersMap::const_iterator value_parameter_iterator = command_parameters.find("text");
   if (id_parameter_iterator == command_parameters.end()) {
     response->SetErrorResponse(400, "Missing parameter in URL: id");
     return;
   } else if (value_parameter_iterator == command_parameters.end()) {
-    response->SetErrorResponse(400, "Missing parameter: value");
+    response->SetErrorResponse(400, "Missing parameter: text");
     return;
   } else {
     std::string element_id = id_parameter_iterator->second.asString();
 
-    Json::Value key_array = value_parameter_iterator->second;
+    if (!value_parameter_iterator->second.isString()) {
+      response->SetErrorResponse(ERROR_INVALID_ARGUMENT, "parameter 'text' must be a string");
+      return;
+    }
+    std::wstring keys = StringUtilities::ToWString(value_parameter_iterator->second.asString());
 
     BrowserHandle browser_wrapper;
     int status_code = executor.GetCurrentBrowser(&browser_wrapper);
@@ -106,25 +111,17 @@ void SendKeysCommandHandler::ExecuteInternal(
         }
       }
       bool is_file_element = (file != NULL) ||
-                              (input != NULL && element_type == L"file");
+                             (input != NULL && element_type == L"file");
       if (is_file_element) {
-        std::string keys = "";
-        for (unsigned int i = 0; i < key_array.size(); ++i ) {
-          std::string key(key_array[i].asString());
-          keys.append(key);
-        }
-
-        std::wstring full_keys = StringUtilities::ToWString(keys);
-
         // Key sequence should be a path and file name. Check
         // to see that the file exists before invoking the file
         // selection dialog. Note that we also error if the file
         // path passed in is valid, but is a directory instead of
         // a file.
-        DWORD file_attributes = ::GetFileAttributes(full_keys.c_str());
+        DWORD file_attributes = ::GetFileAttributes(keys.c_str());
         if (file_attributes == INVALID_FILE_ATTRIBUTES ||
             (file_attributes & FILE_ATTRIBUTE_DIRECTORY)) {
-          response->SetErrorResponse(EUNHANDLEDERROR, "Attempting to upload file '" + keys + "' which does not exist.");
+          response->SetErrorResponse(EUNHANDLEDERROR, "Attempting to upload file '" + StringUtilities::ToString(keys) + "' which does not exist.");
           return;
         }
 
@@ -134,7 +131,7 @@ void SendKeysCommandHandler::ExecuteInternal(
         FileNameData key_data;
         key_data.main = top_level_window_handle;
         key_data.hwnd = window_handle;
-        key_data.text = full_keys.c_str();
+        key_data.text = keys.c_str();
         key_data.ieProcId = ie_process_id;
         key_data.dialogTimeout = executor.file_upload_dialog_timeout();
         key_data.useLegacyDialogHandling = executor.use_legacy_file_upload_dialog_handling();
@@ -154,6 +151,71 @@ void SendKeysCommandHandler::ExecuteInternal(
         response->SetSuccessResponse(Json::Value::null);
         return;
       }
+
+      bool shift_pressed = executor.input_manager()->is_shift_pressed();
+      bool control_pressed = executor.input_manager()->is_control_pressed();
+      bool alt_pressed = executor.input_manager()->is_alt_pressed();
+
+      keys.push_back(static_cast<wchar_t>(WD_KEY_NULL));
+      Json::Value key_array(Json::arrayValue);
+      for (size_t i = 0; i < keys.size(); ++i) {
+        std::wstring character = L"";
+        character.push_back(keys[i]);
+        std::string single_key = StringUtilities::ToString(character);
+
+        if (keys[i] == WD_KEY_SHIFT) {
+          Json::Value shift_key_value;
+          shift_key_value["value"] = single_key;
+          if (shift_pressed) {
+            shift_key_value["type"] = "keyUp";
+          } else {
+            shift_key_value["type"] = "keyDown";
+            shift_pressed = true;
+          }
+          key_array.append(shift_key_value);
+          continue;
+        } else if (keys[i] == WD_KEY_CONTROL) {
+          Json::Value control_key_value;
+          control_key_value["value"] = single_key;
+          if (control_pressed) {
+            control_key_value["type"] = "keyUp";
+          } else {
+            control_key_value["type"] = "keyDown";
+            control_pressed = true;
+          }
+          key_array.append(control_key_value);
+          continue;
+        } else if (keys[i] == WD_KEY_ALT) {
+          Json::Value alt_key_value;
+          alt_key_value["value"] = single_key;
+          if (alt_pressed) {
+            alt_key_value["type"] = "keyUp";
+          } else {
+            alt_key_value["type"] = "keyDown";
+            alt_pressed = true;
+          }
+          key_array.append(alt_key_value);
+          continue;
+        }
+
+        Json::Value key_down_value;
+        key_down_value["type"] = "keyDown";
+        key_down_value["value"] = single_key;
+        key_array.append(key_down_value);
+
+        Json::Value key_up_value;
+        key_up_value["type"] = "keyUp";
+        key_up_value["value"] = single_key;
+        key_array.append(key_up_value);
+      }
+
+      Json::Value value;
+      value["type"] = "key";
+      value["id"] = "send keys keyboard";
+      value["actions"] = key_array;
+
+      Json::Value actions(Json::arrayValue);
+      actions.append(value);
 
       bool displayed;
       status_code = element_wrapper->IsDisplayed(true, &displayed);
@@ -175,12 +237,7 @@ void SendKeysCommandHandler::ExecuteInternal(
       if (!this->WaitUntilElementFocused(element)) {
         LOG(WARN) << "Specified element is not the active element. Keystrokes may go to an unexpected DOM element.";
       }
-      Json::Value value = this->RecreateJsonParameterObject(command_parameters);
-      value["action"] = "keys";
-      value["releaseModifiers"] = true;
-      Json::UInt index = 0;
-      Json::Value actions(Json::arrayValue);
-      actions[index] = value;
+      
       status_code = executor.input_manager()->PerformInputSequence(browser_wrapper, actions);
       response->SetSuccessResponse(Json::Value::null);
       return;
@@ -538,7 +595,7 @@ BOOL CALLBACK SendKeysCommandHandler::FindWindowWithClassNameAndProcess(HWND hwn
   DialogParentWindowInfo* process_win_info = reinterpret_cast<DialogParentWindowInfo*>(arg);
   size_t number_of_characters = wcsnlen(process_win_info->class_name, 255);
   std::vector<wchar_t> class_name(number_of_characters + 1);
-  if (::GetClassName(hwnd, &class_name[0], class_name.size()) == 0) {
+  if (::GetClassName(hwnd, &class_name[0], static_cast<int>(class_name.size())) == 0) {
     // No match found. Skip
     return TRUE;
   }
@@ -764,7 +821,7 @@ bool SendKeysCommandHandler::VerifyPageHasFocus(
   return info.hwndFocus == browser_pane_window_handle;
 }
 
-bool SendKeysCommandHandler::WaitUntilElementFocused(IHTMLElement *element) {
+bool SendKeysCommandHandler::WaitUntilElementFocused(IHTMLElement* element) {
   // Check we have focused the element.
   bool has_focus = false;
   CComPtr<IDispatch> dispatch;

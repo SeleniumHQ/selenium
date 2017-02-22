@@ -34,7 +34,7 @@ void SendKeysToAlertCommandHandler::ExecuteInternal(
     Response* response) {
   ParametersMap::const_iterator text_parameter_iterator = command_parameters.find("text");
   if (text_parameter_iterator == command_parameters.end()) {
-    response->SetErrorResponse(400, "Missing parameter: text");
+    response->SetErrorResponse(ERROR_INVALID_ARGUMENT, "Missing parameter: text");
     return;
   }
 
@@ -48,10 +48,14 @@ void SendKeysToAlertCommandHandler::ExecuteInternal(
   ::Sleep(100);
   HWND alert_handle = browser_wrapper->GetActiveDialogWindowHandle();
   if (alert_handle == NULL) {
-    response->SetErrorResponse(ENOSUCHALERT, "No alert is active");
+    response->SetErrorResponse(ERROR_NO_SUCH_ALERT, "No alert is active");
   } else {
     Alert dialog(browser_wrapper, alert_handle);
-    status_code = dialog.SendKeys(text_parameter_iterator->second.asString());
+    if (text_parameter_iterator->second.isString()) {
+      response->SetErrorResponse(ERROR_INVALID_ARGUMENT, "text must be a string");
+    }
+    std::string value = text_parameter_iterator->second.asString();
+    status_code = dialog.SendKeys(value);
     if (status_code != WD_SUCCESS) {
       response->SetErrorResponse(status_code,
                                   "Modal dialog did not have a text box - maybe it was an alert");

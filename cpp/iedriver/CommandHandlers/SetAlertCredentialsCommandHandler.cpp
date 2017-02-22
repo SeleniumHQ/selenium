@@ -34,14 +34,14 @@ void SetAlertCredentialsCommandHandler::ExecuteInternal(
     Response* response) {
   ParametersMap::const_iterator username_parameter_iterator = command_parameters.find("username");
   if (username_parameter_iterator == command_parameters.end()) {
-    response->SetErrorResponse(400, "Missing parameter: username");
+    response->SetErrorResponse(ERROR_INVALID_ARGUMENT, "Missing parameter: username");
     return;
   }
   std::string username = username_parameter_iterator->second.asString();
 
   ParametersMap::const_iterator password_parameter_iterator = command_parameters.find("password");
   if (password_parameter_iterator == command_parameters.end()) {
-    response->SetErrorResponse(400, "Missing parameter: password");
+    response->SetErrorResponse(ERROR_INVALID_ARGUMENT, "Missing parameter: password");
     return;
   }
   std::string password = password_parameter_iterator->second.asString();
@@ -56,19 +56,19 @@ void SetAlertCredentialsCommandHandler::ExecuteInternal(
   ::Sleep(100);
   HWND alert_handle = browser_wrapper->GetActiveDialogWindowHandle();
   if (alert_handle == NULL) {
-    response->SetErrorResponse(ENOSUCHALERT, "No alert is active");
+    response->SetErrorResponse(ERROR_NO_SUCH_ALERT, "No alert is active");
   } else {
     Alert dialog(browser_wrapper, alert_handle);
     status_code = dialog.SetUserName(username);
     if (status_code != WD_SUCCESS) {
       response->SetErrorResponse(status_code,
-                                  "Could not set user name");
+                                 "Could not set user name");
       return;
     }
     status_code = dialog.SetPassword(password);
     if (status_code != WD_SUCCESS) {
       response->SetErrorResponse(status_code,
-                                  "Could not set password");
+                                 "Could not set password");
       return;
     }
     response->SetSuccessResponse(Json::Value::null);

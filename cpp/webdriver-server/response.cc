@@ -20,13 +20,7 @@
 
 namespace webdriver {
 
-Response::Response(void) : status_code_(0), session_id_(""), value_(Json::Value::null) {
-}
-
-Response::Response(const std::string& session_id) {
-  this->session_id_ = session_id;
-  this->status_code_ = 0;
-  this->value_ = Json::Value::null;
+Response::Response(void) : error_(""), value_(Json::Value::null), additional_data_(Json::Value::null) {
 }
 
 Response::~Response(void) {
@@ -38,22 +32,37 @@ void Response::Deserialize(const std::string& json) {
   Json::Value response_object;
   Json::Reader reader;
   reader.parse(json, response_object);
-  if (response_object["status"].isString()) {
-    this->status_code_ = this->ConvertStatusToCode(response_object["status"].asString());
+  Json::Value value_object;
+  if (response_object.isMember("value")) {
+    value_object = response_object["value"];
+    if (value_object.isObject() && value_object.isMember("error")) {
+      this->error_ = value_object["error"].asString();
+      this->value_ = value_object["message"].asString();
+    } else {
+      this->error_ = "";
+      this->value_ = value_object;
+    }
   } else {
-    this->status_code_ = response_object["status"].asInt();
+    this->value_ = Json::Value::null;
   }
-  this->session_id_ = response_object["sessionId"].asString();
-  this->value_ = response_object["value"];
 }
 
 std::string Response::Serialize(void) {
   LOG(TRACE) << "Entering Response::Serialize";
 
   Json::Value json_object;
-  json_object["status"] = this->status_code_;
-  json_object["sessionId"] = this->session_id_;
-  json_object["value"] = this->value_;
+  if (this->error_.size() > 0) {
+    Json::Value error_object;
+    error_object["error"] = this->error_;
+    error_object["message"] = this->value_.asString();
+    error_object["stacktrace"] = "";
+    if (!this->value_.isNull()) {
+      error_object["data"] = this->additional_data_;
+    }
+    json_object["value"] = error_object;
+  } else {
+    json_object["value"] = this->value_;
+  }
   Json::FastWriter writer;
   std::string output(writer.write(json_object));
   return output;
@@ -61,29 +70,117 @@ std::string Response::Serialize(void) {
 
 void Response::SetSuccessResponse(const Json::Value& response_value) {
   LOG(TRACE) << "Entering Response::SetSuccessResponse";
-  this->SetResponse(0, response_value);
+  this->SetResponse("", response_value);
 }
 
-void Response::SetResponse(const int status_code,
-                           const Json::Value& response_value) {
+void Response::SetResponse(const std::string& error,
+                          const Json::Value& response_value) {
   LOG(TRACE) << "Entering Response::SetResponse";
-  this->status_code_ = status_code;
+  this->error_ = error;
   this->value_ = response_value;
+}
+
+void Response::SetErrorResponse(const std::string& error,
+                                const std::string& message) {
+  LOG(TRACE) << "Entering Response::SetErrorResponse";
+  this->SetResponse(error, message);
 }
 
 void Response::SetErrorResponse(const int status_code,
                                 const std::string& message) {
   LOG(TRACE) << "Entering Response::SetErrorResponse";
   LOG(WARN) << "Error response has status code " << status_code << " and message '" << message << "' message";
-  this->status_code_ = status_code;
-  this->value_["message"] = message;
+  this->SetErrorResponse(ConvertErrorCode(status_code), message);
 }
 
-void Response::SetNewSessionResponse(const std::string& new_session_id,
-                                     const Json::Value& response_value) {
-  LOG(TRACE) << "Entering Response::SetNewSessionResponse";
-  this->session_id_ = new_session_id;
-  this->SetResponse(0, response_value);
+void Response::AddAdditionalData(const std::string& data_name,
+                                 const std::string& data_value) {
+  LOG(TRACE) << "Entering Response::AddAdditionalData";
+  if (this->additional_data_.isNull()) {
+    Json::Value new_data;
+    this->additional_data_ = new_data;
+  }
+  this->additional_data_[data_name] = data_value;
+}
+
+std::string Response::GetSessionId(void) {
+  if (this->error_.size() == 0) {
+    return this->value_.get("sessionId", "").asString();
+  }
+  return "";
+}
+
+int Response::GetHttpResponseCode(void) {
+  int response_code = 200;
+  if (this->error_ == ERROR_ELEMENT_CLICK_INTERCEPTED ||
+      this->error_ == ERROR_ELEMENT_NOT_SELECTABLE ||
+      this->error_ == ERROR_ELEMENT_NOT_INTERACTABLE ||
+      this->error_ == ERROR_INSECURE_CERTIFICATE ||
+      this->error_ == ERROR_INVALID_ARGUMENT ||
+      this->error_ == ERROR_INVALID_COOKIE_DOMAIN ||
+      this->error_ == ERROR_INVALID_COORDINATES ||
+      this->error_ == ERROR_INVALID_ELEMENT_STATE ||
+      this->error_ == ERROR_INVALID_SELECTOR ||
+      this->error_ == ERROR_NO_SUCH_ALERT ||
+      this->error_ == ERROR_NO_SUCH_FRAME ||
+      this->error_ == ERROR_NO_SUCH_WINDOW ||
+      this->error_ == ERROR_STALE_ELEMENT_REFERENCE) {
+    response_code = 400;
+  } else if (this->error_ == ERROR_INVALID_SESSION_ID ||
+             this->error_ == ERROR_NO_SUCH_COOKIE ||
+             this->error_ == ERROR_NO_SUCH_ELEMENT ||
+             this->error_ == ERROR_UNKNOWN_COMMAND) {
+    response_code = 404;
+  } else if (this->error_ == ERROR_SCRIPT_TIMEOUT ||
+             this->error_ == ERROR_WEBDRIVER_TIMEOUT) {
+    response_code = 408;
+  } else if (this->error_ == ERROR_UNKNOWN_METHOD) {
+    response_code = 405;
+  } else if (this->error_ == ERROR_JAVASCRIPT_ERROR ||
+             this->error_ == ERROR_MOVE_TARGET_OUT_OF_BOUNDS ||
+             this->error_ == ERROR_SESSION_NOT_CREATED ||
+             this->error_ == ERROR_UNABLE_TO_SET_COOKIE ||
+             this->error_ == ERROR_UNABLE_TO_CAPTURE_SCREEN ||
+             this->error_ == ERROR_UNEXPECTED_ALERT_OPEN ||
+             this->error_ == ERROR_UNKNOWN_ERROR) {
+    response_code = 500;
+  } else {
+    response_code = 200;
+  }
+
+  return response_code;
+}
+
+std::string Response::ConvertErrorCode(const int error_code) {
+  if (error_code == WD_SUCCESS) {
+    return "";
+  } else if (error_code == ENOSUCHFRAME) {
+    return ERROR_NO_SUCH_FRAME;
+  } else if (error_code == ENOSUCHWINDOW) {
+    return ERROR_NO_SUCH_WINDOW;
+  } else if (error_code == EOBSOLETEELEMENT) {
+    return ERROR_STALE_ELEMENT_REFERENCE;
+  } else if (error_code == EINVALIDSELECTOR) {
+    return ERROR_INVALID_SELECTOR;
+  } else if (error_code == ENOSUCHALERT) {
+    return ERROR_NO_SUCH_ALERT;
+  } else if (error_code == EUNEXPECTEDALERTOPEN) {
+    return ERROR_UNEXPECTED_ALERT_OPEN;
+  } else if (error_code == ENOSUCHCOOKIE) {
+    return ERROR_NO_SUCH_COOKIE;
+  } else if (error_code == EELEMENTNOTENABLED) {
+    return ERROR_INVALID_ELEMENT_STATE;
+  } else if (error_code == EELEMENTNOTDISPLAYED) {
+    return ERROR_ELEMENT_NOT_INTERACTABLE;
+  } else if (error_code == EUNEXPECTEDJSERROR) {
+    return ERROR_JAVASCRIPT_ERROR;
+  } else if (error_code == EINVALIDCOOKIEDOMAIN) {
+    return ERROR_INVALID_COOKIE_DOMAIN;
+  } else if (error_code == ESCRIPTTIMEOUT) {
+    return ERROR_SCRIPT_TIMEOUT;
+  }
+
+  return "";
 }
 
 // TODO: This method will be rendered unnecessary once all implementations

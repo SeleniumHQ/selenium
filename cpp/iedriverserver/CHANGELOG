@@ -9,6 +9,18 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v3.4.0.1
+========
+ * This release adds the remote protocol end points and handling of commands
+   as required by the W3C WebDriver Specification for the IE driver. It
+   deprecates and mostly removes behavior that is at odds with the
+   specification, but may have been the proper behavior under the open-source
+   dialect of the protocol. Issues arising from this version of the driver
+   that appeared to work in previous versions will only be addressed if a
+   simple test case is provided that demonstrates it working in a prior
+   version of the driver and failing in this one. Reported issues lacking
+   such a test case will be summarily closed.
+
 v3.4.0.0
 ========
  * Release to synchronize with release of Selenium project.

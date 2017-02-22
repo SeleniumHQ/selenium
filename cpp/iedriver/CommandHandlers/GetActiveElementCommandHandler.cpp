@@ -35,14 +35,14 @@ void GetActiveElementCommandHandler::ExecuteInternal(
   BrowserHandle browser_wrapper;
   int status_code = executor.GetCurrentBrowser(&browser_wrapper);
   if (status_code != WD_SUCCESS) {
-    response->SetErrorResponse(status_code, "Unable to get browser");
+    response->SetErrorResponse(ERROR_NO_SUCH_WINDOW, "Unable to get browser");
     return;
   }
 
   CComPtr<IHTMLDocument2> doc;
   browser_wrapper->GetDocument(&doc);
   if (!doc) {
-    response->SetErrorResponse(ENOSUCHDOCUMENT, "Document is not found");
+    response->SetErrorResponse(ERROR_NO_SUCH_WINDOW, "Document is not found");
     return;
   }
 
@@ -72,7 +72,7 @@ void GetActiveElementCommandHandler::ExecuteInternal(
     mutable_executor.AddManagedElement(element, &element_wrapper);
     response->SetSuccessResponse(element_wrapper->ConvertToJson());
   } else {
-    response->SetErrorResponse(ENOSUCHELEMENT, "An unexpected error occurred getting the active element");
+    response->SetErrorResponse(ERROR_NO_SUCH_ELEMENT, "An unexpected error occurred getting the active element");
   }
 }
 

@@ -28,32 +28,31 @@ namespace webdriver {
 class Response {
  public:
   Response(void);
-  explicit Response(const std::string& session_id);
   virtual ~Response(void);
   std::string Serialize(void);
   void Deserialize(const std::string& json);
 
-  int status_code(void) const { return this->status_code_; }
-
   Json::Value value(void) const { return this->value_; }
 
-  std::string session_id(void) const { return this->session_id_; }
+  std::string error(void) const { return this->error_; }
 
-  void SetResponse(const int status_code, const Json::Value& response_value);
+  int GetHttpResponseCode(void);
+  std::string GetSessionId(void);
+  void SetResponse(const std::string& error, const Json::Value& response_value);
   void SetSuccessResponse(const Json::Value& response_value);
-  void SetNewSessionResponse(const std::string& new_session_id,
-                             const Json::Value& response_value);
   void SetErrorResponse(const int error_code, const std::string& message);
+  void SetErrorResponse(const std::string& error, const std::string& message);
+  void AddAdditionalData(const std::string& data_name, const std::string& data_value);
 
  private:
+  std::string ConvertErrorCode(const int error_code);
   int ConvertStatusToCode(const std::string& status_string);
 
-  // The status code of the response, indicating success or failure.
-  int status_code_;
-  // The ID of the session on which the command was executed.
-  std::string session_id_;
+  // The error of the response, if any.
+  std::string error_;
   // A JSON object that represents the value of the response.
   Json::Value value_;
+  Json::Value additional_data_;
 
   DISALLOW_COPY_AND_ASSIGN(Response);
 };

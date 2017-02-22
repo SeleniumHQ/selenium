@@ -35,10 +35,10 @@ void GetElementAttributeCommandHandler::ExecuteInternal(
   ParametersMap::const_iterator id_parameter_iterator = command_parameters.find("id");
   ParametersMap::const_iterator name_parameter_iterator = command_parameters.find("name");
   if (id_parameter_iterator == command_parameters.end()) {
-    response->SetErrorResponse(400, "Missing parameter in URL: id");
+    response->SetErrorResponse(ERROR_INVALID_ARGUMENT, "Missing parameter in URL: id");
     return;
   } else if (name_parameter_iterator == command_parameters.end()) {
-    response->SetErrorResponse(400, "Missing parameter in URL: name");
+    response->SetErrorResponse(ERROR_INVALID_ARGUMENT, "Missing parameter in URL: name");
     return;
   } else {
     std::string element_id = id_parameter_iterator->second.asString();
@@ -47,7 +47,7 @@ void GetElementAttributeCommandHandler::ExecuteInternal(
     BrowserHandle browser_wrapper;
     int status_code = executor.GetCurrentBrowser(&browser_wrapper);
     if (status_code != WD_SUCCESS) {
-      response->SetErrorResponse(status_code, "Unable to get browser");
+      response->SetErrorResponse(ERROR_NO_SUCH_WINDOW, "Unable to get browser");
       return;
     }
 
@@ -57,8 +57,8 @@ void GetElementAttributeCommandHandler::ExecuteInternal(
       std::string value = "";
       bool is_null;
       status_code = element_wrapper->GetAttributeValue(name,
-                                                        &value,
-                                                        &is_null);
+                                                       &value,
+                                                       &is_null);
       if (status_code != WD_SUCCESS) {
         response->SetErrorResponse(status_code, "Unable to get attribute");
         return;
@@ -72,7 +72,7 @@ void GetElementAttributeCommandHandler::ExecuteInternal(
         }
       }
     } else {
-      response->SetErrorResponse(status_code, "Element is no longer valid");
+      response->SetErrorResponse(ERROR_STALE_ELEMENT_REFERENCE, "Element is no longer valid");
       return;
     }
   }

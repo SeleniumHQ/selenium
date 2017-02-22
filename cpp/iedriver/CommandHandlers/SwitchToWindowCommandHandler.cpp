@@ -31,9 +31,9 @@ void SwitchToWindowCommandHandler::ExecuteInternal(
     const IECommandExecutor& executor,
     const ParametersMap& command_parameters,
     Response* response) {
-  ParametersMap::const_iterator name_parameter_iterator = command_parameters.find("name");
+  ParametersMap::const_iterator name_parameter_iterator = command_parameters.find("handle");
   if (name_parameter_iterator == command_parameters.end()) {
-    response->SetErrorResponse(400, "Missing parameter: name");
+    response->SetErrorResponse(ERROR_INVALID_ARGUMENT, "Missing parameter: name");
     return;
   } else {
     std::string found_browser_handle = "";
@@ -50,15 +50,8 @@ void SwitchToWindowCommandHandler::ExecuteInternal(
       for (unsigned int i = 0; i < handle_list.size(); ++i) {
         BrowserHandle browser_wrapper;
         int get_handle_loop_status_code = executor.GetManagedBrowser(handle_list[i],
-                                                                      &browser_wrapper);
+                                                                     &browser_wrapper);
         if (get_handle_loop_status_code == WD_SUCCESS) {
-
-          std::string browser_name = browser_wrapper->GetWindowName();
-          if (browser_name == desired_name) {
-            found_browser_handle = handle_list[i];
-            break;
-          }
-
           std::string browser_handle = handle_list[i];
           if (browser_handle == desired_name) {
             found_browser_handle = handle_list[i];
@@ -69,11 +62,10 @@ void SwitchToWindowCommandHandler::ExecuteInternal(
 
       // Wait until new window name becomes available
       ::Sleep(100);
-
-    } while( tries < limit && found_browser_handle == "");
+    } while (tries < limit && found_browser_handle == "");
 
     if (found_browser_handle == "") {
-      response->SetErrorResponse(ENOSUCHWINDOW, "No window found");
+      response->SetErrorResponse(ERROR_NO_SUCH_WINDOW, "No window found");
       return;
     } else {
       // Reset the path to the focused frame before switching window context.

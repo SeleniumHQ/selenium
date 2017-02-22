@@ -33,13 +33,13 @@ void GoToUrlCommandHandler::ExecuteInternal(
     Response* response) {
   ParametersMap::const_iterator url_parameter_iterator = command_parameters.find("url");
   if (url_parameter_iterator == command_parameters.end()) {
-    response->SetErrorResponse(400, "Missing parameter: url");
+    response->SetErrorResponse(ERROR_INVALID_ARGUMENT, "Missing parameter: url");
     return;
   } else {
     BrowserHandle browser_wrapper;
     int status_code = executor.GetCurrentBrowser(&browser_wrapper);
     if (status_code != WD_SUCCESS) {
-      response->SetErrorResponse(status_code, "Unable to get browser");
+      response->SetErrorResponse(ERROR_NO_SUCH_WINDOW, "Unable to get browser");
       return;
     }
 
@@ -47,9 +47,9 @@ void GoToUrlCommandHandler::ExecuteInternal(
     std::string url = url_parameter_iterator->second.asString();
     status_code = browser_wrapper->NavigateToUrl(url);
     if (status_code != WD_SUCCESS) {
-      response->SetErrorResponse(status_code, "Failed to navigate to "
-                                                  + url
-                                                  + ". This usually means that a call to the COM method IWebBrowser2::Navigate2() failed.");
+      response->SetErrorResponse(ERROR_UNKNOWN_ERROR, "Failed to navigate to "
+          + url
+          + ". This usually means that a call to the COM method IWebBrowser2::Navigate2() failed.");
       return;
     }
     browser_wrapper->SetFocusedFrameByElement(NULL);

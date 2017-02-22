@@ -14,7 +14,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#pragma once
+#ifndef WEBDRIVER_SERVER_ERRORCODES_H_
+#define WEBDRIVER_SERVER_ERRORCODES_H_
 
 #define WD_SUCCESS 0
 
@@ -48,3 +49,37 @@
 #define ESCRIPTTIMEOUT       28
 #define EINVALIDCOORDINATES  29
 #define EINVALIDSELECTOR     32
+#define ECLICKINTERCEPTED    33
+#define EINVALIDARGUMENT     34
+#define ENOSUCHCOOKIE        35
+
+#define ERROR_ELEMENT_CLICK_INTERCEPTED "element click intercepted"
+#define ERROR_ELEMENT_NOT_SELECTABLE "element not selectable"
+#define ERROR_ELEMENT_NOT_INTERACTABLE "element not interactable"
+#define ERROR_INSECURE_CERTIFICATE "insecure certificate"
+#define ERROR_INVALID_ARGUMENT "invalid argument"
+#define ERROR_INVALID_COOKIE_DOMAIN "invalid cookie domain"
+#define ERROR_INVALID_COORDINATES "invalid coordinates"
+#define ERROR_INVALID_ELEMENT_STATE "invalid element state"
+#define ERROR_INVALID_SELECTOR "invalid selector"
+#define ERROR_INVALID_SESSION_ID "invalid session id"
+#define ERROR_JAVASCRIPT_ERROR "javascript error"
+#define ERROR_MOVE_TARGET_OUT_OF_BOUNDS "move target out of bounds"
+#define ERROR_NO_SUCH_ALERT "no such alert"
+#define ERROR_NO_SUCH_COOKIE "no such cookie"
+#define ERROR_NO_SUCH_ELEMENT "no such element"
+#define ERROR_NO_SUCH_FRAME "no such frame"
+#define ERROR_NO_SUCH_WINDOW "no such window"
+#define ERROR_SCRIPT_TIMEOUT "script timeout"
+#define ERROR_SESSION_NOT_CREATED "session not created"
+#define ERROR_STALE_ELEMENT_REFERENCE "stale element reference"
+#define ERROR_WEBDRIVER_TIMEOUT "timeout"
+#define ERROR_UNABLE_TO_SET_COOKIE "unable to set cookie"
+#define ERROR_UNABLE_TO_CAPTURE_SCREEN "unable to capture screen"
+#define ERROR_UNEXPECTED_ALERT_OPEN "unexpected alert open"
+#define ERROR_UNKNOWN_COMMAND "unknown command"
+#define ERROR_UNKNOWN_ERROR "unknown error"
+#define ERROR_UNKNOWN_METHOD "unknown method"
+#define ERROR_UNSUPPORTED_OPERATION "unsupported operation"
+
+#endif // WEBDRIVER_SERVER_ERRORCODES_H_

@@ -36,10 +36,10 @@ void ExecuteScriptCommandHandler::ExecuteInternal(
   ParametersMap::const_iterator script_parameter_iterator = command_parameters.find("script");
   ParametersMap::const_iterator args_parameter_iterator = command_parameters.find("args");
   if (script_parameter_iterator == command_parameters.end()) {
-    response->SetErrorResponse(400, "Missing parameter: script");
+    response->SetErrorResponse(ERROR_INVALID_ARGUMENT, "Missing parameter: script");
     return;
   } else if (args_parameter_iterator == command_parameters.end()) {
-    response->SetErrorResponse(400, "Missing parameter: args");
+    response->SetErrorResponse(ERROR_INVALID_ARGUMENT, "Missing parameter: args");
     return;
   } else {
     std::string script_body = script_parameter_iterator->second.asString();

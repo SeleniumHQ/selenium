@@ -32,15 +32,15 @@ class NewSessionCommandHandler : public IECommandHandler {
                        Response* response);
 
  private:
-  Json::Value GetCapability(Json::Value capabilities,
-                            std::string capability_name,
-                            Json::ValueType expected_capability_type,
-                            Json::Value default_value);
+  Json::Value GetCapability(const Json::Value& capabilities,
+                            const std::string& capability_name,
+                            const Json::ValueType& expected_capability_type,
+                            const Json::Value& default_value);
 
-  bool IsEquivalentType(Json::ValueType actual_type,
-                        Json::ValueType expected_type);
+  bool IsEquivalentType(const Json::ValueType& actual_type,
+                        const Json::ValueType& expected_type);
 
-  std::string GetJsonTypeDescription(Json::ValueType type);
+  std::string GetJsonTypeDescription(const Json::ValueType& type);
 
   std::string GetUnexpectedAlertBehaviorValue(const std::string& desired_value);
 
@@ -53,6 +53,29 @@ class NewSessionCommandHandler : public IECommandHandler {
   void SetProxySettings(const IECommandExecutor& executor,
                         const Json::Value& proxy_capability,
                         const bool use_per_process_proxy);
+
+  Json::Value ProcessLegacyCapabilities(const IECommandExecutor& executor,
+                                        const Json::Value& capabilities,
+                                        std::string* error_message);
+  Json::Value ProcessCapabilities(const IECommandExecutor& executor,
+                                  const Json::Value& capabilities,
+                                  std::string* error_message);
+
+  bool ValidateCapabilities(const Json::Value& capabilities,
+                            const std::string& capability_set_name,
+                            std::string* error_message);
+  bool ValidateCapabilityType(const Json::Value& capabilities,
+                              const std::string& capability_name,
+                              const Json::ValueType& expected_capability_type,
+                              std::string* error_message);
+  bool MergeCapabilities(const Json::Value& primary_capabilities,
+                         const Json::Value& secondary_capabilities,
+                         Json::Value* merged_capabilities,
+                         std::string* error_message);
+  bool MatchCapabilities(const IECommandExecutor& executor,
+                         const Json::Value& merged_capabilities,
+                         std::string* error_message);
+
   Json::Value CreateReturnedCapabilities(const IECommandExecutor& executor);
 };
 

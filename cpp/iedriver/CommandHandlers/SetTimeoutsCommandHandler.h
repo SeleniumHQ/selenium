@@ -14,17 +14,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef WEBDRIVER_IE_SETASYNCSCRIPTTIMEOUTCOMMANDHANDLER_H_
-#define WEBDRIVER_IE_SETASYNCSCRIPTTIMEOUTCOMMANDHANDLER_H_
+#ifndef WEBDRIVER_IE_SETTIMEOUTSCOMMANDHANDLER_H_
+#define WEBDRIVER_IE_SETTIMEOUTSCOMMANDHANDLER_H_
 
 #include "../IECommandHandler.h"
 
 namespace webdriver {
 
-class SetAsyncScriptTimeoutCommandHandler : public IECommandHandler {
+class SetTimeoutsCommandHandler : public IECommandHandler {
  public:
-  SetAsyncScriptTimeoutCommandHandler(void);
-  virtual ~SetAsyncScriptTimeoutCommandHandler(void);
+  SetTimeoutsCommandHandler(void);
+  virtual ~SetTimeoutsCommandHandler(void);
 
  protected:
   void ExecuteInternal(const IECommandExecutor& executor,
@@ -34,4 +34,4 @@ class SetAsyncScriptTimeoutCommandHandler : public IECommandHandler {
 
 } // namespace webdriver
 
-#endif // WEBDRIVER_IE_SETASYNCSCRIPTIMEOUTCOMMANDHANDLER_H_
+#endif // WEBDRIVER_IE_SETTIMEOUTSCOMMANDHANDLER_H_

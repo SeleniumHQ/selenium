@@ -36,52 +36,246 @@ void NewSessionCommandHandler::ExecuteInternal(
     const IECommandExecutor& executor,
     const ParametersMap& command_parameters,
     Response* response) {
-  IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
-  ParametersMap::const_iterator it = command_parameters.find("desiredCapabilities");
+  Json::Value returned_capabilities;
+  std::string error_message = "";
+
+  // Find W3C capabilities first.
+  ParametersMap::const_iterator it = command_parameters.find("capabilities");
   if (it != command_parameters.end()) {
-    Json::Value unexpected_alert_behavior = this->GetCapability(it->second, UNEXPECTED_ALERT_BEHAVIOR_CAPABILITY, Json::stringValue, DISMISS_UNEXPECTED_ALERTS);
-    mutable_executor.set_unexpected_alert_behavior(this->GetUnexpectedAlertBehaviorValue(unexpected_alert_behavior.asString()));
-
-    Json::Value page_load_strategy = this->GetCapability(it->second, PAGE_LOAD_STRATEGY_CAPABILITY, Json::stringValue, NORMAL_PAGE_LOAD_STRATEGY);
-    mutable_executor.set_page_load_strategy(this->GetPageLoadStrategyValue(page_load_strategy.asString()));
-
-    std::vector<std::string> property_names = it->second.getMemberNames();
-    bool has_ie_options = it->second.isMember(IE_DRIVER_EXTENSIONS_CAPABILITY);
-
-    Json::Value ie_specific_options = it->second.get(IE_DRIVER_EXTENSIONS_CAPABILITY, Json::nullValue);
-    if (ie_specific_options.isNull()) {
-      ie_specific_options = it->second;
+    returned_capabilities = this->ProcessCapabilities(executor, it->second, &error_message);
+  } else {
+    // W3C capabilities not found. Try legacy capabilities.
+    // Note that we ignore requiredCapabilities. This is by design.
+    it = command_parameters.find("desiredCapabilities");
+    if (it != command_parameters.end()) {
+      returned_capabilities = this->ProcessLegacyCapabilities(executor, it->second, &error_message);
     }
-
-    this->SetBrowserFactorySettings(executor, ie_specific_options);
-    this->SetInputSettings(executor, ie_specific_options);
-
-    Json::Value resize_on_screenshot = this->GetCapability(ie_specific_options, ENABLE_FULL_PAGE_SCREENSHOT_CAPABILITY, Json::booleanValue, true);
-    mutable_executor.set_enable_full_page_screenshot(resize_on_screenshot.asBool());
-
-    Json::Value enable_element_cache_cleanup = this->GetCapability(ie_specific_options, ENABLE_ELEMENT_CACHE_CLEANUP_CAPABILITY, Json::booleanValue, true);
-    mutable_executor.set_enable_element_cache_cleanup(enable_element_cache_cleanup.asBool());
-
-    Json::Value use_per_process_proxy_capability = this->GetCapability(ie_specific_options, USE_PER_PROCESS_PROXY_CAPABILITY, Json::booleanValue, false);
-    bool use_per_process_proxy = use_per_process_proxy_capability.asBool();
-    Json::Value proxy = it->second.get(PROXY_CAPABILITY, Json::nullValue);
-    this->SetProxySettings(executor, proxy, use_per_process_proxy);
   }
 
-  std::string create_browser_error_message = "";
-  int result_code = mutable_executor.CreateNewBrowser(&create_browser_error_message);
+  IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
+  if (returned_capabilities.isNull()) {
+    // The browser was not created successfully, therefore the
+    // session must be marked as invalid so the server can
+    // properly shut it down.
+    mutable_executor.set_is_valid(false);
+    response->SetErrorResponse(ERROR_SESSION_NOT_CREATED, error_message);
+    return;
+  }
+
+  error_message = "";
+  int result_code = mutable_executor.CreateNewBrowser(&error_message);
   if (result_code != WD_SUCCESS) {
     // The browser was not created successfully, therefore the
     // session must be marked as invalid so the server can
     // properly shut it down.
     mutable_executor.set_is_valid(false);
-    response->SetErrorResponse(result_code,
-                               "Unexpected error launching Internet Explorer. " + create_browser_error_message);
+    response->SetErrorResponse(ERROR_SESSION_NOT_CREATED,
+        "Unexpected error launching Internet Explorer. " + error_message);
     return;
   }
-  
-  Json::Value returned_capabilities = this->CreateReturnedCapabilities(executor);
-  response->SetNewSessionResponse(executor.session_id(), returned_capabilities);
+  Json::Value new_session_response_object;
+  new_session_response_object["sessionId"] = executor.session_id();
+  new_session_response_object["capabilities"] = returned_capabilities;
+  response->SetSuccessResponse(new_session_response_object);
+}
+
+Json::Value NewSessionCommandHandler::GetCapability(
+    const Json::Value& capabilities,
+    const std::string& capability_name,
+    const Json::ValueType& expected_capability_type,
+    const Json::Value& default_value) {
+  Json::Value capability_value = capabilities.get(capability_name, default_value);
+  if (!this->IsEquivalentType(capability_value.type(), expected_capability_type)) {
+    LOG(WARN) << "Invalid capability setting: " << capability_name
+              << " is type " << this->GetJsonTypeDescription(capability_value.type())
+              << " instead of " << this->GetJsonTypeDescription(expected_capability_type)
+              << ". Default value will be used: " << default_value.toStyledString();
+    return default_value;
+  }
+  return capability_value;
+}
+
+bool NewSessionCommandHandler::IsEquivalentType(
+    const Json::ValueType& actual_type,
+    const Json::ValueType& expected_type) {
+  if (expected_type == actual_type) {
+    return true;
+  }
+  if ((expected_type == Json::intValue || expected_type == Json::uintValue || expected_type == Json::realValue) &&
+     (actual_type == Json::intValue || actual_type == Json::uintValue || actual_type == Json::realValue)) {
+    // All numeric types are equivalent for our purposes.
+    return true;
+  }
+  return false;
+}
+
+std::string NewSessionCommandHandler::GetJsonTypeDescription(
+    const Json::ValueType& type) {
+  switch (type) {
+  case Json::booleanValue:
+    return "boolean";
+  case Json::intValue:
+  case Json::uintValue:
+  case Json::realValue:
+    return "number";
+  case Json::objectValue:
+    return "object";
+  case Json::arrayValue:
+    return "array";
+  case Json::stringValue:
+    return "string";
+  }
+  return "null";
+}
+
+std::string NewSessionCommandHandler::GetUnexpectedAlertBehaviorValue(
+    const std::string& desired_value) {
+  std::string value = DISMISS_UNEXPECTED_ALERTS;
+  if (desired_value == DISMISS_UNEXPECTED_ALERTS ||
+      desired_value == ACCEPT_UNEXPECTED_ALERTS ||
+      desired_value == IGNORE_UNEXPECTED_ALERTS) {
+    value = desired_value;
+  } else {
+    LOG(WARN) << "Desired value of " << desired_value << " for "
+              << UNHANDLED_PROMPT_BEHAVIOR_CAPABILITY << " is not"
+              << " a valid value. Using default of " << value;
+  }
+  return value;
+}
+
+std::string NewSessionCommandHandler::GetPageLoadStrategyValue(
+    const std::string& desired_value) {
+  std::string value = NORMAL_PAGE_LOAD_STRATEGY;
+  if (desired_value == NORMAL_PAGE_LOAD_STRATEGY ||
+      desired_value == EAGER_PAGE_LOAD_STRATEGY ||
+      desired_value == NONE_PAGE_LOAD_STRATEGY) {
+    value = desired_value;
+  } else {
+    LOG(WARN) << "Desired value of " << desired_value << " for "
+              << PAGE_LOAD_STRATEGY_CAPABILITY << " is not"
+              << " a valid value. Using default of " << value;
+  }
+  return value;
+}
+
+Json::Value NewSessionCommandHandler::ProcessLegacyCapabilities(const IECommandExecutor& executor, const Json::Value& capabilities, std::string* error_message) {
+  this->SetBrowserFactorySettings(executor, capabilities);
+
+  this->SetInputSettings(executor, capabilities);
+
+  IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
+
+  Json::Value unexpected_alert_behavior = this->GetCapability(capabilities, UNHANDLED_PROMPT_BEHAVIOR_CAPABILITY, Json::stringValue, DISMISS_UNEXPECTED_ALERTS);
+  mutable_executor.set_unexpected_alert_behavior(this->GetUnexpectedAlertBehaviorValue(unexpected_alert_behavior.asString()));
+
+  Json::Value page_load_strategy = this->GetCapability(capabilities, PAGE_LOAD_STRATEGY_CAPABILITY, Json::stringValue, NORMAL_PAGE_LOAD_STRATEGY);
+  mutable_executor.set_page_load_strategy(this->GetPageLoadStrategyValue(page_load_strategy.asString()));
+
+  Json::Value use_per_process_proxy_capability = this->GetCapability(capabilities, USE_PER_PROCESS_PROXY_CAPABILITY, Json::booleanValue, false);
+  bool use_per_process_proxy = use_per_process_proxy_capability.asBool();
+  Json::Value proxy = capabilities.get(PROXY_CAPABILITY, Json::nullValue);
+  this->SetProxySettings(executor, proxy, use_per_process_proxy);
+
+  return this->CreateReturnedCapabilities(executor);
+}
+
+Json::Value NewSessionCommandHandler::ProcessCapabilities(const IECommandExecutor& executor, const Json::Value& capabilities, std::string* error_message) {
+  Json::Value returned_capabilities(Json::nullValue);
+  Json::Value always_match(Json::objectValue);
+  if (capabilities.isMember("alwaysMatch")) {
+    always_match = capabilities["alwaysMatch"];
+  }
+
+  if (this->ValidateCapabilities(always_match, "alwaysMatch", error_message)) {
+    Json::Value empty_capabilities(Json::objectValue);
+    Json::Value first_match_candidates(Json::arrayValue);
+    first_match_candidates.append(empty_capabilities);
+    if (capabilities.isMember("firstMatch")) {
+      first_match_candidates = capabilities["firstMatch"];
+    }
+    if (!first_match_candidates.isArray()) {
+      *error_message = "firstMatch must be a JSON list";
+    } else {
+      // If the user passed a "firstMatch" array, but it was empty,
+      // seed the firstMatch array with an empty object for merging
+      // purposes.
+      if (first_match_candidates.size() == 0) {
+        first_match_candidates.append(empty_capabilities);
+      }
+      Json::Value validated_first_match_candidates(Json::arrayValue);
+      for (size_t i = 0; i < first_match_candidates.size(); ++i) {
+        std::string first_match_validation_error = "";
+        Json::Value first_match_candidate = first_match_candidates[static_cast<int>(i)];
+        if (this->ValidateCapabilities(first_match_candidate, "firstMatch element " + std::to_string(i), &first_match_validation_error)) {
+          validated_first_match_candidates.append(first_match_candidate);
+        } else {
+          if (error_message->size() > 0) {
+            error_message->append("All firstMatch elements failed validation\n");
+          }
+          error_message->append(first_match_validation_error);
+          LOG(WARN) << "Error validating capabilities: " << first_match_validation_error;
+        }
+      }
+
+      // Because we seed the list of "firstMatch" values with an empty value
+      // if none were passed in, we should always have at least one element
+      // in the array of firstMatch candidates. If we don't then every one
+      // has failed validation, and we need to return back out.
+      if (validated_first_match_candidates.size() > 0) {
+        // Reset the error message in the event any of the firstMatch
+        // candidates failed validation.
+        *error_message = "";
+
+        for (size_t i = 0; i < validated_first_match_candidates.size(); ++i) {
+          Json::Value merged_capabilities(Json::objectValue);
+          Json::Value first_match = validated_first_match_candidates[static_cast<int>(i)];
+          if (!this->MergeCapabilities(always_match, first_match, &merged_capabilities, error_message)) {
+            // If any of the capabilities can't be merged, this is a failure
+            // condition according to the spec, so we fail here.
+            break;
+          }
+          std::string match_error = "";
+          if (this->MatchCapabilities(executor, merged_capabilities, &match_error)) {
+            IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
+
+            Json::Value unexpected_alert_behavior = this->GetCapability(capabilities, UNHANDLED_PROMPT_BEHAVIOR_CAPABILITY, Json::stringValue, DISMISS_UNEXPECTED_ALERTS);
+            mutable_executor.set_unexpected_alert_behavior(unexpected_alert_behavior.asString());
+
+            Json::Value page_load_strategy = this->GetCapability(capabilities, PAGE_LOAD_STRATEGY_CAPABILITY, Json::stringValue, NORMAL_PAGE_LOAD_STRATEGY);
+            mutable_executor.set_page_load_strategy(this->GetPageLoadStrategyValue(page_load_strategy.asString()));
+
+            Json::Value ie_options(Json::objectValue);
+            if (merged_capabilities.isMember(IE_DRIVER_EXTENSIONS_CAPABILITY)) {
+              ie_options = merged_capabilities[IE_DRIVER_EXTENSIONS_CAPABILITY];
+            }
+
+            std::string default_initial_url = "http://localhost:" + std::to_string(static_cast<long long>(executor.port())) + "/";
+            this->SetBrowserFactorySettings(executor, ie_options);
+
+            this->SetInputSettings(executor, ie_options);
+
+            if (merged_capabilities.isMember(PROXY_CAPABILITY)) {
+              Json::Value use_per_process_proxy_capability = this->GetCapability(ie_options, USE_PER_PROCESS_PROXY_CAPABILITY, Json::booleanValue, false);
+              bool use_per_process_proxy = use_per_process_proxy_capability.asBool();
+              this->SetProxySettings(executor, merged_capabilities[PROXY_CAPABILITY], use_per_process_proxy);
+            }
+
+            // Use CreateReturnedCapabilities to fill in unspecified capabilities values.
+            return this->CreateReturnedCapabilities(executor);
+          } else {
+            if (error_message->size() > 0) {
+              error_message->append("No matching capability sets found.\n");
+            }
+            error_message->append("Unable to match capability set ");
+            error_message->append(std::to_string(i));
+            error_message->append(": ");
+            error_message->append(match_error);
+          }
+        }
+      }
+    }
+  }
+  return returned_capabilities;
 }
 
 void NewSessionCommandHandler::SetBrowserFactorySettings(const IECommandExecutor& executor, const Json::Value& capabilities) {
@@ -117,37 +311,6 @@ void NewSessionCommandHandler::SetBrowserFactorySettings(const IECommandExecutor
   }
 }
 
-void NewSessionCommandHandler::SetInputSettings(const IECommandExecutor& executor, const Json::Value& capabilities) {
-  IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
-
-  Json::Value enable_native_events = this->GetCapability(capabilities, NATIVE_EVENTS_CAPABILITY, Json::booleanValue, true);
-  mutable_executor.input_manager()->set_enable_native_events(enable_native_events.asBool());
-
-  Json::Value scroll_behavior = this->GetCapability(capabilities, ELEMENT_SCROLL_BEHAVIOR_CAPABILITY, Json::intValue, 0);
-  mutable_executor.input_manager()->set_scroll_behavior(static_cast<ElementScrollBehavior>(scroll_behavior.asInt()));
-
-  Json::Value require_window_focus = this->GetCapability(capabilities, REQUIRE_WINDOW_FOCUS_CAPABILITY, Json::booleanValue, false);
-  mutable_executor.input_manager()->set_require_window_focus(require_window_focus.asBool());
-
-  Json::Value file_upload_dialog_timeout = this->GetCapability(capabilities, FILE_UPLOAD_DIALOG_TIMEOUT_CAPABILITY, Json::intValue, 0);
-  if (file_upload_dialog_timeout.asInt() > 0) {
-    mutable_executor.set_file_upload_dialog_timeout(file_upload_dialog_timeout.asInt());
-  }
-
-  Json::Value use_legacy_file_upload_dialog_handling = this->GetCapability(capabilities, USE_LEGACY_FILE_UPLOAD_DIALOG_HANDLING_CAPABILITY, Json::booleanValue, false);
-  mutable_executor.set_use_legacy_file_upload_dialog_handling(use_legacy_file_upload_dialog_handling.asBool());
-
-  Json::Value enable_persistent_hover = this->GetCapability(capabilities, ENABLE_PERSISTENT_HOVER_CAPABILITY, Json::booleanValue, true);
-  if (require_window_focus.asBool() || !enable_native_events.asBool()) {
-    // Setting "require_window_focus" implies SendInput() API, and does not therefore require
-    // persistent hover. Likewise, not using native events requires no persistent hover either.
-    mutable_executor.set_enable_persistent_hover(false);
-  }
-  else {
-    mutable_executor.set_enable_persistent_hover(enable_persistent_hover.asBool());
-  }
-}
-
 void NewSessionCommandHandler::SetProxySettings(const IECommandExecutor& executor, const Json::Value& proxy_capability, const bool use_per_process_proxy) {
   ProxySettings proxy_settings = { false, "", "", "", "", "", "", "", "" };
   if (!proxy_capability.isNull()) {
@@ -180,16 +343,44 @@ void NewSessionCommandHandler::SetProxySettings(const IECommandExecutor& executo
   }
 }
 
+void NewSessionCommandHandler::SetInputSettings(const IECommandExecutor& executor, const Json::Value& capabilities) {
+  IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
+
+  Json::Value enable_native_events = this->GetCapability(capabilities, NATIVE_EVENTS_CAPABILITY, Json::booleanValue, true);
+  mutable_executor.input_manager()->set_enable_native_events(enable_native_events.asBool());
+
+  Json::Value scroll_behavior = this->GetCapability(capabilities, ELEMENT_SCROLL_BEHAVIOR_CAPABILITY, Json::intValue, 0);
+  mutable_executor.input_manager()->set_scroll_behavior(static_cast<ElementScrollBehavior>(scroll_behavior.asInt()));
+
+  Json::Value require_window_focus = this->GetCapability(capabilities, REQUIRE_WINDOW_FOCUS_CAPABILITY, Json::booleanValue, false);
+  mutable_executor.input_manager()->set_require_window_focus(require_window_focus.asBool());
+
+  Json::Value file_upload_dialog_timeout = this->GetCapability(capabilities, FILE_UPLOAD_DIALOG_TIMEOUT_CAPABILITY, Json::intValue, 0);
+  if (file_upload_dialog_timeout.asInt() > 0) {
+    mutable_executor.set_file_upload_dialog_timeout(file_upload_dialog_timeout.asInt());
+  }
+
+  Json::Value enable_persistent_hover = this->GetCapability(capabilities, ENABLE_PERSISTENT_HOVER_CAPABILITY, Json::booleanValue, true);
+  if (require_window_focus.asBool() || !enable_native_events.asBool()) {
+    // Setting "require_window_focus" implies SendInput() API, and does not therefore require
+    // persistent hover. Likewise, not using native events requires no persistent hover either.
+    mutable_executor.input_manager()->set_use_persistent_hover(false);
+  } else {
+    mutable_executor.input_manager()->set_use_persistent_hover(enable_persistent_hover.asBool());
+  }
+}
+
 Json::Value NewSessionCommandHandler::CreateReturnedCapabilities(const IECommandExecutor& executor) {
   Json::Value capabilities;
   capabilities[BROWSER_NAME_CAPABILITY] = "internet explorer";
   capabilities[BROWSER_VERSION_CAPABILITY] = std::to_string(static_cast<long long>(executor.browser_factory()->browser_version()));
-  capabilities[PLATFORM_CAPABILITY] = "WINDOWS";
-  capabilities[JAVASCRIPT_ENABLED_CAPABILITY] = true;
+  capabilities[PLATFORM_NAME_CAPABILITY] = "windows";
+  capabilities[ACCEPT_INSECURE_CERTS_CAPABILITY] = false;
   capabilities[PAGE_LOAD_STRATEGY_CAPABILITY] = executor.page_load_strategy();
+  capabilities[SET_WINDOW_RECT_CAPABILITY] = true;
 
   if (executor.unexpected_alert_behavior().size() > 0) {
-    capabilities[UNEXPECTED_ALERT_BEHAVIOR_CAPABILITY] = executor.unexpected_alert_behavior();
+    capabilities[UNHANDLED_PROMPT_BEHAVIOR_CAPABILITY] = executor.unexpected_alert_behavior();
   }
 
   Json::Value ie_options;
@@ -199,16 +390,12 @@ Json::Value NewSessionCommandHandler::CreateReturnedCapabilities(const IECommand
   ie_options[BROWSER_ATTACH_TIMEOUT_CAPABILITY] = executor.browser_factory()->browser_attach_timeout();
   ie_options[BROWSER_COMMAND_LINE_SWITCHES_CAPABILITY] = executor.browser_factory()->browser_command_line_switches();
   ie_options[FORCE_CREATE_PROCESS_API_CAPABILITY] = executor.browser_factory()->force_createprocess_api();
-  ie_options[FORCE_SHELL_WINDOWS_API_CAPABILITY] = executor.browser_factory()->force_shell_windows_api();
   ie_options[ENSURE_CLEAN_SESSION_CAPABILITY] = executor.browser_factory()->clear_cache();
   ie_options[NATIVE_EVENTS_CAPABILITY] = executor.input_manager()->enable_native_events();
-  ie_options[ENABLE_PERSISTENT_HOVER_CAPABILITY] = executor.enable_persistent_hover();
+  ie_options[ENABLE_PERSISTENT_HOVER_CAPABILITY] = executor.input_manager()->use_persistent_hover();
   ie_options[ELEMENT_SCROLL_BEHAVIOR_CAPABILITY] = executor.input_manager()->scroll_behavior();
   ie_options[REQUIRE_WINDOW_FOCUS_CAPABILITY] = executor.input_manager()->require_window_focus();
   ie_options[FILE_UPLOAD_DIALOG_TIMEOUT_CAPABILITY] = executor.file_upload_dialog_timeout();
-  ie_options[USE_LEGACY_FILE_UPLOAD_DIALOG_HANDLING_CAPABILITY] = executor.use_legacy_file_upload_dialog_handling();
-  ie_options[ENABLE_ELEMENT_CACHE_CLEANUP_CAPABILITY] = executor.enable_element_cache_cleanup();
-  ie_options[ENABLE_FULL_PAGE_SCREENSHOT_CAPABILITY] = executor.enable_full_page_screenshot();
 
   if (executor.proxy_manager()->is_proxy_set()) {
     ie_options[USE_PER_PROCESS_PROXY_CAPABILITY] = executor.proxy_manager()->use_per_process_proxy();
@@ -219,83 +406,371 @@ Json::Value NewSessionCommandHandler::CreateReturnedCapabilities(const IECommand
   return capabilities;
 }
 
-Json::Value NewSessionCommandHandler::GetCapability(
-    Json::Value capabilities,
-    std::string capability_name,
-    Json::ValueType expected_capability_type,
-    Json::Value default_value) {
-  Json::Value capability_value = capabilities.get(capability_name, default_value);
-  if (!this->IsEquivalentType(capability_value.type(), expected_capability_type)) {
-    LOG(WARN) << "Invalid capability setting: " << capability_name
-              << " is type " << this->GetJsonTypeDescription(capability_value.type())
-              << " instead of " << this->GetJsonTypeDescription(expected_capability_type)
-              << ". Default value will be used: " << default_value.toStyledString();
-    return default_value;
+bool NewSessionCommandHandler::MatchCapabilities(const IECommandExecutor& executor, const Json::Value& merged_capabilities, std::string* error_message) {
+  Json::Value matched_capabilities(Json::objectValue);
+  matched_capabilities[BROWSER_NAME_CAPABILITY] = "internet explorer";
+  matched_capabilities[BROWSER_VERSION_CAPABILITY] = std::to_string(executor.browser_factory()->browser_version());
+  matched_capabilities[PLATFORM_NAME_CAPABILITY] = "windows";
+  matched_capabilities[ACCEPT_INSECURE_CERTS_CAPABILITY] = false;
+  matched_capabilities[SET_WINDOW_RECT_CAPABILITY] = true;
+  std::vector<std::string> capability_names = merged_capabilities.getMemberNames();
+  std::vector<std::string>::const_iterator name_iterator = capability_names.begin();
+  for (; name_iterator != capability_names.end(); ++name_iterator) {
+    std::string capability_name = *name_iterator;
+    if (capability_name == BROWSER_NAME_CAPABILITY && 
+        merged_capabilities[BROWSER_NAME_CAPABILITY].asString() != "internet explorer") {
+      *error_message = "browserName must be 'internet explorer', but was '" +
+                       merged_capabilities[BROWSER_NAME_CAPABILITY].asString() +
+                       "'";
+      return false;
+    }
+
+    if (capability_name == PLATFORM_NAME_CAPABILITY &&
+        merged_capabilities[PLATFORM_NAME_CAPABILITY].asString() != "windows") {
+      *error_message = "platformName must be 'windows', but was '" +
+                       merged_capabilities[PLATFORM_NAME_CAPABILITY].asString() +
+                       "'";
+      return false;
+    }
+
+    if (capability_name == BROWSER_VERSION_CAPABILITY) {
+      // TODO: Support string version comparisons with '<', '>', '<=', and '>='
+      std::string requested_browser_version_value = merged_capabilities[BROWSER_VERSION_CAPABILITY].asString();
+      int available_browser_version = executor.browser_factory()->browser_version();
+      int requested_browser_version = atoi(requested_browser_version_value.c_str());
+      if (available_browser_version != requested_browser_version) {
+        *error_message = "requested browserVersion value was '" +
+                         requested_browser_version_value +
+                         "', but the installed version of IE is " +
+                         std::to_string(available_browser_version) +
+                         " (note: only exact matches on major version " +
+                         "number are supported)";
+        return false;
+      }
+    }
+
+    if (capability_name == ACCEPT_INSECURE_CERTS_CAPABILITY &&
+        merged_capabilities[ACCEPT_INSECURE_CERTS_CAPABILITY].asBool()) {
+      *error_message = "acceptInsecureCerts was 'true', but the IE driver does not allow bypassing insecure (self-signed) SSL certificates";
+      return false;
+    }
   }
-  return capability_value;
+
+  return true;
 }
 
-bool NewSessionCommandHandler::IsEquivalentType(
-    Json::ValueType actual_type,
-    Json::ValueType expected_type) {
-  if (expected_type == actual_type) {
+bool NewSessionCommandHandler::MergeCapabilities(
+    const Json::Value& primary_capabilities,
+    const Json::Value& secondary_capabilities,
+    Json::Value* merged_capabilities,
+    std::string* error_message) {
+  std::vector<std::string> primary_property_names = primary_capabilities.getMemberNames();
+  for (size_t i = 0; i < primary_property_names.size(); ++i) {
+    std::string property_name = primary_property_names[i];
+    (*merged_capabilities)[property_name] = primary_capabilities[property_name];
+  }
+
+  std::vector<std::string> secondary_property_names = secondary_capabilities.getMemberNames();
+  for (size_t i = 0; i < secondary_property_names.size(); ++i) {
+    std::string property_name = secondary_property_names[i];
+    if (merged_capabilities->isMember(property_name)) {
+      *error_message = "Cannot merge capabilities: " +
+                       property_name + " is already specified";
+      return false;
+    }
+    (*merged_capabilities)[property_name] = secondary_capabilities[property_name];
+  }
+  return true;
+}
+
+bool NewSessionCommandHandler::ValidateCapabilities(
+    const Json::Value& capabilities,
+    const std::string& capability_set_name,
+    std::string* error_message) {
+  if (!capabilities.isObject() && !capabilities.isNull()) {
+    *error_message = capability_set_name + " is not a JSON object.";
+    return false;
+  }
+
+  if (capabilities.isNull()) {
     return true;
   }
-  if ((expected_type == Json::intValue || expected_type == Json::uintValue || expected_type == Json::realValue) &&
-      (actual_type == Json::intValue || actual_type == Json::uintValue || actual_type == Json::realValue)) {
-    // All numeric types are equivalent for our purposes.
-    return true;
+
+  std::vector<std::string> capability_names = capabilities.getMemberNames();
+  std::vector<std::string>::const_iterator name_iterator = capability_names.begin();
+  for (; name_iterator != capability_names.end(); ++name_iterator) {
+    std::string capability_name = *name_iterator;
+    std::string capability_error_message;
+    if (capability_name == ACCEPT_INSECURE_CERTS_CAPABILITY) {
+      if (!this->ValidateCapabilityType(capabilities,
+                                        capability_name,
+                                        Json::ValueType::booleanValue,
+                                        &capability_error_message)) {
+        *error_message = "Invalid capabilities in " +
+                         capability_set_name + ": " + capability_error_message;
+        return false;
+      }
+      continue;
+    }
+
+    if (capability_name == BROWSER_NAME_CAPABILITY) {
+      if (!this->ValidateCapabilityType(capabilities,
+                                        capability_name,
+                                        Json::ValueType::stringValue,
+                                        &capability_error_message)) {
+        *error_message = "Invalid capabilities in " +
+                         capability_set_name + ": " + capability_error_message;
+        return false;
+      }
+      continue;
+    }
+
+    if (capability_name == BROWSER_VERSION_CAPABILITY) {
+      if (!this->ValidateCapabilityType(capabilities,
+                                        capability_name,
+                                        Json::ValueType::stringValue,
+                                        &capability_error_message)) {
+        *error_message = "Invalid capabilities in " +
+                          capability_set_name + ": " +
+                          capability_error_message;
+        return false;
+      }
+      continue;
+    }
+
+    if (capability_name == PLATFORM_NAME_CAPABILITY) {
+      if (!this->ValidateCapabilityType(capabilities,
+                                        capability_name,
+                                        Json::ValueType::stringValue,
+                                        &capability_error_message)) {
+        *error_message = "Invalid capabilities in " +
+                         capability_set_name + ": " + capability_error_message;
+        return false;
+      }
+      continue;
+    }
+
+    if (capability_name == UNHANDLED_PROMPT_BEHAVIOR_CAPABILITY) {
+      if (!this->ValidateCapabilityType(capabilities, 
+                                        capability_name,
+                                        Json::ValueType::stringValue,
+                                        &capability_error_message)) {
+        *error_message = "Invalid capabilities in " +
+                         capability_set_name + ": " + capability_error_message;
+        return false;
+      }
+      else {
+        std::string unhandled_prompt_behavior = capabilities[capability_name].asString();
+        if (unhandled_prompt_behavior != "accept" &&
+            unhandled_prompt_behavior != "dismiss" && unhandled_prompt_behavior != "ignore") {
+          *error_message = "Invalid capabilities in " +
+                           capability_set_name + ": " + 
+                           "unhandledPromptBehavior is " + 
+                           unhandled_prompt_behavior + 
+                           " but must be 'accept' or 'dismiss'";
+          return false;
+        }
+      }
+      continue;
+    }
+
+    if (capability_name == PAGE_LOAD_STRATEGY_CAPABILITY) {
+      std::string page_load_strategy = "";
+      if (capabilities[capability_name].isNull()) {
+        page_load_strategy = "normal";
+      }
+      else if (!this->ValidateCapabilityType(capabilities,
+                                             capability_name,
+                                             Json::ValueType::stringValue,
+                                             &capability_error_message)) {
+        *error_message = "Invalid capabilities in " +
+                         capability_set_name + ": " + capability_error_message;
+        return false;
+      }
+      else {
+        page_load_strategy = capabilities[capability_name].asString();
+        if (page_load_strategy != "none" &&
+            page_load_strategy != "eager" &&
+            page_load_strategy != "normal") {
+          *error_message = "Invalid capabilities in " +
+                           capability_set_name + ": " +
+                           "pageLoadStrategy is " + page_load_strategy +
+                           " but must be 'none', 'eager', or 'normal'";
+          return false;
+        }
+      }
+      continue;
+    }
+
+    if (capability_name == TIMEOUTS_CAPABILITY) {
+      if (!this->ValidateCapabilityType(capabilities,
+                                        capability_name,
+                                        Json::ValueType::objectValue,
+                                        &capability_error_message)) {
+        *error_message = "Invalid capabilities in " +
+                         capability_set_name + ": " + capability_error_message;
+        return false;
+      } else {
+        Json::Value timeouts = capabilities[capability_name];
+        std::vector<std::string> timeout_names = timeouts.getMemberNames();
+        std::vector<std::string>::const_iterator timeout_name_iterator = timeout_names.begin();
+        for (; timeout_name_iterator != timeout_names.end(); ++timeout_name_iterator) {
+          std::string timeout_name = *timeout_name_iterator;
+          if (timeout_name != "pageLoad" &&
+              timeout_name != "implicit" &&
+              timeout_name != "script") {
+            *error_message = "Invalid capabilities in " +
+                             capability_set_name + ": " +
+                             "a timeout named " + timeout_name +
+                             " is specified, but timeout names must be " +
+                             "'implicit', 'pageLoad', or 'script'";
+            return false;
+          }
+          std::string timeout_error = "";
+          if (!this->ValidateCapabilityType(timeouts,
+                                            timeout_name,
+                                            Json::ValueType::intValue,
+                                            &timeout_error)) {
+            *error_message = "Invalid capabilities in " +
+                             capability_set_name + ": " +
+                             "timeout " + timeout_error;
+            return false;
+          }
+          int timeout_value = timeouts[timeout_name].asInt();
+          if (timeout_value < 0) {
+            *error_message = "Invalid capabilities in " +
+                             capability_set_name + ": " + 
+                             "timeout " + timeout_name + " is less than zero";
+            return false;
+          }
+        }
+      }
+      continue;
+    }
+
+    if (capability_name == PROXY_CAPABILITY) {
+      if (!this->ValidateCapabilityType(capabilities,
+                                        capability_name,
+                                        Json::ValueType::objectValue,
+                                        &capability_error_message)) {
+        *error_message = "Invalid capabilities in " +
+                         capability_set_name + ": " +
+                         capability_error_message;
+        return false;
+      } else {
+        Json::Value proxy = capabilities[capability_name];
+        std::vector<std::string> proxy_setting_names = proxy.getMemberNames();
+        std::vector<std::string>::const_iterator proxy_setting_iterator = proxy_setting_names.begin();
+        for (; proxy_setting_iterator != proxy_setting_names.end(); ++proxy_setting_iterator) {
+          std::string proxy_error = "";
+          std::string proxy_setting = *proxy_setting_iterator;
+          if (proxy_setting == "proxyType") {
+            if (!this->ValidateCapabilityType(proxy,
+                                              proxy_setting,
+                                              Json::ValueType::stringValue,
+                                              &proxy_error)) {
+              *error_message = "Invalid capabilities in " + 
+                               capability_set_name + ": " + 
+                               "proxy setting " + proxy_error;
+              return false;
+            }
+            std::string proxy_type = proxy[proxy_setting].asString();
+            if (proxy_type != "pac" && 
+                proxy_type != "noproxy" && 
+                proxy_type != "autodetect" && 
+                proxy_type != "system" && 
+                proxy_type != "manual") {
+              *error_message = "Invalid capabilities in " + 
+                               capability_set_name + ": " + 
+                               "a proxy type named " + proxy_type + 
+                               " is specified, but proxy type must be " +
+                               "'pac', 'noproxy', 'autodetect', 'system', " +
+                               "or 'manual'";
+              return false;
+            }
+            continue;
+          }
+
+          if (proxy_setting == "proxyAutoconfigUrl" ||
+              proxy_setting == "ftpProxy" ||
+              proxy_setting == "httpProxy" ||
+              proxy_setting == "sslProxy" ||
+              proxy_setting == "socksProxy" ||
+              proxy_setting == "socksUsername" ||
+              proxy_setting == "socksPassword") {
+            if (!this->ValidateCapabilityType(proxy, 
+                                              proxy_setting,
+                                              Json::ValueType::stringValue,
+                                              &proxy_error)) {
+              *error_message = "Invalid capabilities in " + 
+                               capability_set_name + ": " + 
+                               "proxy setting " + proxy_error;
+              return false;
+            }
+            continue;
+          }
+
+          if (proxy_setting == "ftpProxyPort" ||
+              proxy_setting == "httpProxyPort" ||
+              proxy_setting == "sslProxyPort" ||
+              proxy_setting == "socksProxyPort" ||
+              proxy_setting == "socksVersion") {
+            if (!this->ValidateCapabilityType(proxy, proxy_setting,
+                                              Json::ValueType::stringValue,
+                                              &proxy_error)) {
+              *error_message = "Invalid capabilities in " + 
+                               capability_set_name + ": " + 
+                               "proxy setting " + proxy_error;
+              return false;
+            }
+            continue;
+          }
+
+          *error_message = "Invalid capabilities in " + 
+                           capability_set_name + ": " + 
+                           "unknown proxy setting named " + proxy_error;
+          return false;
+        }
+      }
+      continue;
+    }
+
+    if (capability_name == IE_DRIVER_EXTENSIONS_CAPABILITY) {
+      if (!this->ValidateCapabilityType(capabilities,
+                                        capability_name,
+                                        Json::ValueType::objectValue,
+                                        &capability_error_message)) {
+        *error_message = "Invalid capabilities in " + 
+                         capability_set_name + ": " +
+                         capability_error_message;
+        return false;
+      }
+      continue;
+    }
+
+    *error_message = "Invalid capabilities in " + capability_set_name + ": " +
+                     "unknown capability named " + capability_name;
+    return false;
   }
-  return false;
+
+  return true;
 }
 
-std::string NewSessionCommandHandler::GetJsonTypeDescription(
-    Json::ValueType type) {
-  switch(type) {
-    case Json::booleanValue:
-      return "boolean";
-    case Json::intValue:
-    case Json::uintValue:
-    case Json::realValue:
-      return "number";
-    case Json::objectValue:
-      return "object";
-    case Json::arrayValue:
-      return "array";
-    case Json::stringValue:
-      return "string";
+bool NewSessionCommandHandler::ValidateCapabilityType(
+    const Json::Value& capabilities,
+    const std::string& capability_name, 
+    const Json::ValueType& expected_capability_type, 
+    std::string* error_message) {
+  Json::Value capability_value = capabilities[capability_name];
+  if (!this->IsEquivalentType(capability_value.type(),
+                              expected_capability_type)) {
+    *error_message = capability_name + " is type " +
+                     this->GetJsonTypeDescription(capability_value.type()) +
+                     " instead of " +
+                     this->GetJsonTypeDescription(expected_capability_type);
+    return false;
   }
-  return "null";
-}
-
-std::string NewSessionCommandHandler::GetUnexpectedAlertBehaviorValue(
-    const std::string& desired_value) {
-  std::string value = DISMISS_UNEXPECTED_ALERTS;
-  if (desired_value == DISMISS_UNEXPECTED_ALERTS ||
-      desired_value == ACCEPT_UNEXPECTED_ALERTS ||
-      desired_value == IGNORE_UNEXPECTED_ALERTS) {
-    value = desired_value;
-  } else {
-    LOG(WARN) << "Desired value of " << desired_value << " for "
-              << UNEXPECTED_ALERT_BEHAVIOR_CAPABILITY << " is not"
-              << " a valid value. Using default of " << value;
-  }
-  return value;
-}
-
-std::string NewSessionCommandHandler::GetPageLoadStrategyValue(
-    const std::string& desired_value) {
-  std::string value = NORMAL_PAGE_LOAD_STRATEGY;
-  if (desired_value == NORMAL_PAGE_LOAD_STRATEGY ||
-      desired_value == EAGER_PAGE_LOAD_STRATEGY ||
-      desired_value == NONE_PAGE_LOAD_STRATEGY) {
-    value = desired_value;
-  } else {
-    LOG(WARN) << "Desired value of " << desired_value << " for "
-              << PAGE_LOAD_STRATEGY_CAPABILITY << " is not"
-              << " a valid value. Using default of " << value;
-  }
-  return value;
+  return true;
 }
 
 } // namespace webdriver
