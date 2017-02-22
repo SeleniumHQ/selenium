@@ -28,17 +28,19 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.service.DriverCommandExecutor;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.logging.Level;
-
 
 /**
  * Manage firefox specific settings in a way that geckodriver can understand. Use {@link
@@ -57,13 +59,14 @@ public class FirefoxOptions {
 
   public final static String FIREFOX_OPTIONS = "moz:firefoxOptions";
 
-  private String binary;
+  private FirefoxBinary binary;
   private FirefoxProfile profile;
   private List<String> args = new ArrayList<>();
   private Map<String, Boolean> booleanPrefs = new HashMap<>();
   private Map<String, Integer> intPrefs = new HashMap<>();
   private Map<String, String> stringPrefs = new HashMap<>();
   private Level logLevel = null;
+  private Boolean legacy;
 
   /** INTERNAL ONLY: DO NOT USE */
   static FirefoxOptions fromJsonMap(Map<String, Object> map) throws IOException {
@@ -122,13 +125,44 @@ public class FirefoxOptions {
             "In FirefoxOptions, expected key '%s' to be a %s: %s", key, type.getSimpleName(), map));
   }
 
-  public FirefoxOptions setBinary(Path path) {
-    return setBinary(checkNotNull(path).toString());
+  public FirefoxOptions setLegacy(boolean legacy) {
+    this.legacy = legacy;
+    return this;
   }
 
-  public FirefoxOptions setBinary(String binary) {
+  public boolean isLegacy() {
+    String forceMarionette = System.getProperty(FirefoxDriver.SystemProperty.DRIVER_USE_MARIONETTE);
+    if (forceMarionette != null) {
+      return !Boolean.valueOf(forceMarionette);
+    }
+    if (legacy != null) {
+      return legacy;
+    }
+//    Object marionette = desiredCapabilities.getCapability(MARIONETTE);
+//    return marionette instanceof Boolean && ! (Boolean) marionette;
+    return false;
+
+  }
+
+  public FirefoxOptions setBinary(FirefoxBinary binary) {
     this.binary = checkNotNull(binary);
     return this;
+  }
+
+  public FirefoxOptions setBinary(Path path) {
+    return setBinary(new FirefoxBinary(checkNotNull(path).toFile()));
+  }
+
+  public FirefoxOptions setBinary(String path) {
+    return setBinary(Paths.get(checkNotNull(path)));
+  }
+
+  public FirefoxBinary getBinary() {
+    return Optional.ofNullable(binary).orElse(new FirefoxBinary());
+  }
+
+  public FirefoxBinary getBinaryOrNull() {
+    return binary;
   }
 
   public FirefoxOptions setProfile(FirefoxProfile profile) {
@@ -137,7 +171,7 @@ public class FirefoxOptions {
   }
 
   public FirefoxProfile getProfile() {
-    return this.profile;
+    return Optional.ofNullable(profile).orElse(new FirefoxProfile());
   }
 
   // Confusing API. Keeping package visible only
@@ -179,6 +213,10 @@ public class FirefoxOptions {
   }
 
   public DesiredCapabilities addTo(DesiredCapabilities capabilities) {
+    if (isLegacy()) {
+      capabilities.setCapability(FirefoxDriver.MARIONETTE, false);
+    }
+
     Object priorBinary = capabilities.getCapability(BINARY);
     if (binary != null && priorBinary != null && !binary.equals(priorBinary)) {
       throw new IllegalStateException(
@@ -197,9 +235,8 @@ public class FirefoxOptions {
     capabilities.setCapability(FIREFOX_OPTIONS, this);
 
     if (binary != null) {
-      FirefoxBinary actualBinary = new FirefoxBinary(new File(binary));
-      actualBinary.addCommandLineOptions(args.toArray(new String[args.size()]));
-      capabilities.setCapability(BINARY, actualBinary);
+      binary.addCommandLineOptions(args.toArray(new String[args.size()]));
+      capabilities.setCapability(BINARY, binary.getPath());
     }
 
     if (profile != null) {
@@ -213,7 +250,7 @@ public class FirefoxOptions {
     JsonObject options = new JsonObject();
 
     if (binary != null) {
-      options.addProperty("binary", binary);
+      options.addProperty("binary", binary.getPath());
     }
 
     if (profile != null) {
@@ -284,5 +321,4 @@ public class FirefoxOptions {
     // something else?  ¯\_(ツ)_/¯
     return "debug";
   }
-
 }
