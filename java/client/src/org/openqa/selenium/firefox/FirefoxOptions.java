@@ -27,7 +27,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.firefox.internal.ProfilesIni;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.io.IOException;
@@ -65,6 +67,7 @@ public class FirefoxOptions {
   private Map<String, String> stringPrefs = new HashMap<>();
   private Level logLevel = null;
   private Boolean legacy;
+  private DesiredCapabilities desiredCapabilities = new DesiredCapabilities();
 
   /** INTERNAL ONLY: DO NOT USE */
   static FirefoxOptions fromJsonMap(Map<String, Object> map) throws IOException {
@@ -143,7 +146,7 @@ public class FirefoxOptions {
   }
 
   public FirefoxOptions setBinary(FirefoxBinary binary) {
-    this.binary = checkNotNull(binary);
+    this.binary = binary;
     return this;
   }
 
@@ -169,7 +172,14 @@ public class FirefoxOptions {
   }
 
   public FirefoxProfile getProfile() {
-    return Optional.ofNullable(profile).orElse(new FirefoxProfile());
+    if (profile !=  null) {
+      return profile;
+    }
+
+//    if (requiredCapabilities != null && requiredCapabilities.getCapability(PROFILE) != null) {
+//      raw = requiredCapabilities.getCapability(PROFILE);
+//    }
+    return extractProfile(desiredCapabilities);
   }
 
   // Confusing API. Keeping package visible only
@@ -210,7 +220,52 @@ public class FirefoxOptions {
     return this;
   }
 
-  public DesiredCapabilities addTo(DesiredCapabilities capabilities) {
+  public FirefoxOptions addDesiredCapabilities(Capabilities desiredCapabilities) {
+    this.desiredCapabilities.merge(desiredCapabilities);
+
+    FirefoxProfile suggestedProfile = extractProfile(desiredCapabilities);
+    if (suggestedProfile !=  null) {
+      if (!booleanPrefs.isEmpty() || !intPrefs.isEmpty() || !stringPrefs.isEmpty()) {
+        throw new IllegalStateException(
+            "Unable to determine if preferences set on this option " +
+            "are the same as the profile in the capabilities");
+      }
+      if (profile != null && !suggestedProfile.equals(profile)) {
+        throw new IllegalStateException(
+            "Profile has been set on both the capabilities and these options, but they're " +
+            "different. Unable to determine which one you want to use.");
+      }
+      profile = suggestedProfile;
+    }
+
+    return this;
+  }
+
+  private FirefoxProfile extractProfile(Capabilities desiredCapabilities) {
+    if (desiredCapabilities == null) {
+      return null;
+    }
+    Object raw = desiredCapabilities.getCapability(PROFILE);
+    if (raw == null) {
+      return null;
+
+    } else if (raw instanceof FirefoxProfile) {
+      return (FirefoxProfile) raw;
+
+    } else if (raw instanceof String) {
+      try {
+        return FirefoxProfile.fromJson((String) raw);
+      } catch (IOException e) {
+        throw new WebDriverException(e);
+      }
+    }
+
+    return null;
+  }
+
+  public Capabilities toDesiredCapabilities() {
+    DesiredCapabilities capabilities = new DesiredCapabilities(desiredCapabilities);
+
     if (isLegacy()) {
       capabilities.setCapability(FirefoxDriver.MARIONETTE, false);
     }
@@ -218,15 +273,20 @@ public class FirefoxOptions {
     Object priorBinary = capabilities.getCapability(BINARY);
     if (binary != null && priorBinary != null && !binary.equals(priorBinary)) {
       throw new IllegalStateException(
-        "Binary already set in capabilities, but is different from the one in these options");
+          "Binary already set in capabilities, but is different from the one in these options");
     }
 
     Object priorProfile = capabilities.getCapability(PROFILE);
     if (priorProfile != null) {
-      if (!priorProfile.equals(profile)) {
+      if (!booleanPrefs.isEmpty() || !intPrefs.isEmpty() || !stringPrefs.isEmpty()) {
         throw new IllegalStateException(
-          "Profile has been set on both the capabilities and these options, but they're " +
-          "different. Unable to determine which one you want to use.");
+            "Unable to determine if preferences set on this option " +
+            "are the same as the profile in the capabilities");
+      }
+      if (profile != null && !priorProfile.equals(profile)) {
+        throw new IllegalStateException(
+            "Profile has been set on both the capabilities and these options, but they're " +
+            "different. Unable to determine which one you want to use.");
       }
     }
 
@@ -241,6 +301,11 @@ public class FirefoxOptions {
       capabilities.setCapability(PROFILE, profile);
     }
 
+    return capabilities;
+  }
+
+  public DesiredCapabilities addTo(DesiredCapabilities capabilities) {
+    capabilities.merge(toDesiredCapabilities());
     return capabilities;
   }
 

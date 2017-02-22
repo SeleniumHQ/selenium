@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.firefox;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.never;
@@ -27,6 +28,7 @@ import static org.testng.Assert.assertNotNull;
 
 import org.junit.After;
 import org.junit.Test;
+import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
@@ -68,7 +70,7 @@ public class MarionetteTest extends JUnit4TestBase {
   }
 
   @Test
-  public void canStartDriverWithSpecifiedProfile() throws IOException {
+  public void canStartDriverWithSpecifiedProfile() {
     FirefoxProfile profile = new FirefoxProfile();
     profile.setPreference("browser.startup.page", 1);
     profile.setPreference("browser.startup.homepage", pages.xhtmlTestPage);
@@ -91,7 +93,17 @@ public class MarionetteTest extends JUnit4TestBase {
   }
 
   @Test
-  public void shouldUseFirefoxOptions() throws InterruptedException {
+  public void canPassCapabilities() {
+    DesiredCapabilities capabilities = new DesiredCapabilities();
+    capabilities.setCapability(CapabilityType.PAGE_LOAD_STRATEGY, "none");
+    localDriver = new FirefoxDriver(capabilities);
+    verifyItIsMarionette(localDriver);
+    assertEquals(
+        localDriver.getCapabilities().getCapability(CapabilityType.PAGE_LOAD_STRATEGY), "none");
+  }
+
+  @Test
+  public void canSetPreferencesInFirefoxOptions() {
     DesiredCapabilities caps = new FirefoxOptions()
       .addPreference("browser.startup.page", 1)
       .addPreference("browser.startup.homepage", pages.xhtmlTestPage)
@@ -103,7 +115,7 @@ public class MarionetteTest extends JUnit4TestBase {
   }
 
   @Test
-  public void canSetProfileInFirefoxOptions() throws InterruptedException {
+  public void canSetProfileInFirefoxOptions() {
     FirefoxProfile profile = new FirefoxProfile();
     profile.setPreference("browser.startup.page", 1);
     profile.setPreference("browser.startup.homepage", pages.xhtmlTestPage);
@@ -117,7 +129,7 @@ public class MarionetteTest extends JUnit4TestBase {
   }
 
   @Test
-  public void canSetProfileInCapabilities() throws InterruptedException {
+  public void canSetProfileInCapabilities() {
     FirefoxProfile profile = new FirefoxProfile();
     profile.setPreference("browser.startup.page", 1);
     profile.setPreference("browser.startup.homepage", pages.xhtmlTestPage);
