@@ -17,6 +17,11 @@
 
 package org.openqa.selenium.firefox;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 import static org.openqa.selenium.testing.Driver.FIREFOX;
 import static org.testng.Assert.assertNotNull;
 
@@ -25,6 +30,9 @@ import org.junit.Test;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
+
+import java.io.IOException;
+import java.util.Optional;
 
 @Ignore(FIREFOX)
 public class MarionetteTest extends JUnit4TestBase {
@@ -39,16 +47,24 @@ public class MarionetteTest extends JUnit4TestBase {
   }
 
   @Test
-  public void canStartDriverWithEmptyOptions() throws InterruptedException {
+  public void canStartDriverWithEmptyOptions() {
     driver = new FirefoxDriver(new FirefoxOptions());
-    assertNotNull(driver.getCapabilities().getCapability("moz:processID"));
+    verifyItIsMarionette(driver);
   }
 
   @Test
-  public void canStartDriverWithNoParameters() throws InterruptedException {
+  public void canStartDriverWithNoParameters() {
     driver = new FirefoxDriver();
-    driver.get(pages.xhtmlTestPage);
-    wait.until($ -> "XHTML Test Page".equals(driver.getTitle()));
+    verifyItIsMarionette(driver);
+  }
+
+  @Test
+  public void canStartDriverWithSpecifiedBinary() throws IOException {
+    FirefoxBinary binary = spy(new FirefoxBinary());
+    driver = new FirefoxDriver(binary);
+    verifyItIsMarionette(driver);
+    verify(binary, atLeastOnce()).getPath();
+    verify(binary, never()).startFirefoxProcess(any());
   }
 
   @Test
@@ -89,5 +105,11 @@ public class MarionetteTest extends JUnit4TestBase {
     driver = new FirefoxDriver(caps);
 
     wait.until($ -> "XHTML Test Page".equals(driver.getTitle()));
+  }
+
+  private void verifyItIsMarionette(FirefoxDriver driver) {
+    assertNotNull(
+        Optional.ofNullable(driver.getCapabilities().getCapability("moz:processID"))
+            .orElse(driver.getCapabilities().getCapability("processId")));
   }
 }

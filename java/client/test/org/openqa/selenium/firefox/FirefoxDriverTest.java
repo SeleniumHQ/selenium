@@ -28,10 +28,12 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
-import static org.testng.Assert.assertNotNull;
 
 import com.google.common.base.Throwables;
 
@@ -41,6 +43,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.testing.NeedsFreshDriver;
 import org.openqa.selenium.ParallelTestRunner;
 import org.openqa.selenium.ParallelTestRunner.Worker;
 import org.openqa.selenium.WebDriver;
@@ -55,7 +58,6 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.DevMode;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.NeedsFreshDriver;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
 import org.openqa.selenium.testing.drivers.SauceDriver;
 import org.openqa.selenium.testing.drivers.SynthesizedFirefoxDriver;
@@ -83,7 +85,15 @@ public class FirefoxDriverTest extends JUnit4TestBase {
   @Test
   public void canStartDriverWithNoParameters() throws InterruptedException {
     localDriver = new FirefoxDriver();
-    assertNull(localDriver.getCapabilities().getCapability("moz:processID"));
+    verifyItIsLegacy(localDriver);
+  }
+
+  @Test
+  public void canStartDriverWithSpecifiedBinary() throws IOException {
+    FirefoxBinary binary = spy(new FirefoxBinary());
+    localDriver = new FirefoxDriver(binary);
+    verifyItIsLegacy(localDriver);
+    verify(binary).startFirefoxProcess(any());
   }
 
   private static class ConnectionCapturingDriver extends FirefoxDriver {
@@ -510,4 +520,10 @@ public class FirefoxDriverTest extends JUnit4TestBase {
   }
 
   private static class CustomFirefoxProfile extends FirefoxProfile {}
+
+  private void verifyItIsLegacy(FirefoxDriver driver) {
+    assertNull(driver.getCapabilities().getCapability("moz:processID"));
+    assertNull(driver.getCapabilities().getCapability("processId"));
+  }
+
 }
