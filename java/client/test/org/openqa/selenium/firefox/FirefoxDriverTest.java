@@ -43,7 +43,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.UnexpectedAlertBehaviour;
 import org.openqa.selenium.testing.NeedsFreshDriver;
 import org.openqa.selenium.ParallelTestRunner;
 import org.openqa.selenium.ParallelTestRunner.Worker;
@@ -92,7 +91,9 @@ public class FirefoxDriverTest extends JUnit4TestBase {
   @Test
   public void canStartDriverWithSpecifiedBinary() throws IOException {
     FirefoxBinary binary = spy(new FirefoxBinary());
+
     localDriver = new FirefoxDriver(binary);
+
     verifyItIsLegacy(localDriver);
     verify(binary).startFirefoxProcess(any());
   }
@@ -102,19 +103,24 @@ public class FirefoxDriverTest extends JUnit4TestBase {
     FirefoxProfile profile = new FirefoxProfile();
     profile.setPreference("browser.startup.page", 1);
     profile.setPreference("browser.startup.homepage", pages.xhtmlTestPage);
+
     localDriver = new FirefoxDriver(profile);
     wait.until($ -> "XHTML Test Page".equals(localDriver.getTitle()));
+
     verifyItIsLegacy(localDriver);
   }
 
   @Test
   public void canStartDriverWithSpecifiedBinaryAndProfile() throws IOException {
     FirefoxBinary binary = spy(new FirefoxBinary());
+
     FirefoxProfile profile = new FirefoxProfile();
     profile.setPreference("browser.startup.page", 1);
     profile.setPreference("browser.startup.homepage", pages.xhtmlTestPage);
+
     localDriver = new FirefoxDriver(binary, profile);
     wait.until($ -> "XHTML Test Page".equals(localDriver.getTitle()));
+
     verifyItIsLegacy(localDriver);
     verify(binary).startFirefoxProcess(any());
   }
@@ -123,8 +129,73 @@ public class FirefoxDriverTest extends JUnit4TestBase {
   public void canPassCapabilities() {
     DesiredCapabilities capabilities = new DesiredCapabilities();
     capabilities.setCapability(CapabilityType.PAGE_LOAD_STRATEGY, "none");
+
     localDriver = new FirefoxDriver(capabilities);
+
     verifyItIsLegacy(localDriver);
+    assertEquals(
+        localDriver.getCapabilities().getCapability(CapabilityType.PAGE_LOAD_STRATEGY), "none");
+  }
+
+  @Test
+  public void canSetPreferencesInFirefoxOptions() {
+    DesiredCapabilities caps = new FirefoxOptions()
+        .addPreference("browser.startup.page", 1)
+        .addPreference("browser.startup.homepage", pages.xhtmlTestPage)
+        .addTo(DesiredCapabilities.firefox());
+
+    localDriver = new FirefoxDriver(caps);
+    wait.until($ -> "XHTML Test Page".equals(localDriver.getTitle()));
+
+    verifyItIsLegacy(localDriver);
+  }
+
+  @Test
+  public void canSetProfileInFirefoxOptions() {
+    FirefoxProfile profile = new FirefoxProfile();
+    profile.setPreference("browser.startup.page", 1);
+    profile.setPreference("browser.startup.homepage", pages.xhtmlTestPage);
+
+    DesiredCapabilities caps = new FirefoxOptions().setProfile(profile)
+        .addTo(DesiredCapabilities.firefox());
+
+    localDriver = new FirefoxDriver(caps);
+    wait.until($ -> "XHTML Test Page".equals(localDriver.getTitle()));
+
+    verifyItIsLegacy(localDriver);
+  }
+
+  @Test
+  public void canSetProfileInCapabilities() {
+    FirefoxProfile profile = new FirefoxProfile();
+    profile.setPreference("browser.startup.page", 1);
+    profile.setPreference("browser.startup.homepage", pages.xhtmlTestPage);
+
+    DesiredCapabilities caps = new DesiredCapabilities();
+    caps.setCapability(FirefoxDriver.PROFILE, profile);
+
+    localDriver = new FirefoxDriver(caps);
+    wait.until($ -> "XHTML Test Page".equals(localDriver.getTitle()));
+
+    verifyItIsLegacy(localDriver);
+  }
+
+  @Test
+  public void canPassCapabilitiesBinaryAndProfileSeparately() throws IOException {
+    FirefoxBinary binary = spy(new FirefoxBinary());
+
+    FirefoxProfile profile = new FirefoxProfile();
+    profile.setPreference("browser.startup.page", 1);
+    profile.setPreference("browser.startup.homepage", pages.xhtmlTestPage);
+
+    DesiredCapabilities capabilities = new DesiredCapabilities();
+    capabilities.setCapability(CapabilityType.PAGE_LOAD_STRATEGY, "none");
+
+    localDriver = new FirefoxDriver(binary, profile, capabilities);
+    wait.until($ -> "XHTML Test Page".equals(localDriver.getTitle()));
+
+    verifyItIsLegacy(localDriver);
+    verify(binary).startFirefoxProcess(any());
     assertEquals(
         localDriver.getCapabilities().getCapability(CapabilityType.PAGE_LOAD_STRATEGY), "none");
   }
