@@ -82,8 +82,6 @@ py_install(
 py_prep(
   name = "prep",
   deps = [
-    "//cpp:noblur",
-    "//cpp:noblur64",
     "//javascript/atoms/fragments:is-displayed",
     "//javascript/firefox-driver:webdriver",
     "//javascript/firefox-driver:webdriver_prefs",
