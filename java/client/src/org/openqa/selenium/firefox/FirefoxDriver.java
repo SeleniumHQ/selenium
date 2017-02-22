@@ -25,7 +25,6 @@ import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_WEB_STORAGE;
 import static org.openqa.selenium.remote.CapabilityType.VERSION;
 
 import com.google.common.base.Preconditions;
-import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -62,8 +61,7 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**
- * An implementation of the {#link WebDriver} interface that drives Firefox. This works through a
- * firefox extension, which gets installed automatically if necessary.
+ * An implementation of the {#link WebDriver} interface that drives Firefox.
  */
 public class FirefoxDriver extends RemoteWebDriver implements Killable {
 
@@ -120,7 +118,7 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
 
   // TODO: make it public as soon as it's fully implemented
   FirefoxDriver(FirefoxOptions options) {
-    super(toExecutor(options), options.toDesiredCapabilities(), null);
+    this(toExecutor(options), options.toDesiredCapabilities(), options.toRequiredCapabilities());
     //binary = options.getBinary();
   }
 
@@ -182,12 +180,19 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
   }
 
   public FirefoxDriver(Capabilities desiredCapabilities, Capabilities requiredCapabilities) {
-    this(getBinary(desiredCapabilities), null, desiredCapabilities, requiredCapabilities);
+    this(getFirefoxOptions(desiredCapabilities).addDesiredCapabilities(desiredCapabilities)
+             .addRequiredCapabilities(requiredCapabilities));
   }
 
   public FirefoxDriver(FirefoxBinary binary, FirefoxProfile profile, Capabilities capabilities) {
     this(getFirefoxOptions(capabilities).setBinary(binary).setProfile(profile)
              .addDesiredCapabilities(capabilities));
+  }
+
+  public FirefoxDriver(FirefoxBinary binary, FirefoxProfile profile,
+                       Capabilities desiredCapabilities, Capabilities requiredCapabilities) {
+    this(getFirefoxOptions(desiredCapabilities).setBinary(binary).setProfile(profile)
+             .addDesiredCapabilities(desiredCapabilities).addRequiredCapabilities(requiredCapabilities));
   }
 
   private static FirefoxProfile prepareProfile(FirefoxProfile profile,
@@ -297,14 +302,6 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
     return new FirefoxBinary();
   }
 
-  public FirefoxDriver(FirefoxBinary binary, FirefoxProfile profile,
-      Capabilities desiredCapabilities, Capabilities requiredCapabilities) {
-    this(createCommandExecutor(desiredCapabilities, requiredCapabilities, binary, profile),
-         addProfileTo(desiredCapabilities, prepareProfile(profile, desiredCapabilities, requiredCapabilities)),
-         requiredCapabilities);
-    this.binary = binary;
-  }
-
   public FirefoxDriver(GeckoDriverService driverService) {
     this(new DriverCommandExecutor(driverService), null, null);
   }
@@ -323,23 +320,6 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
     super(executor,
           dropCapabilities(desiredCapabilities),
           dropCapabilities(requiredCapabilities));
-  }
-
-  private static CommandExecutor createCommandExecutor(Capabilities desiredCapabilities,
-                                                       Capabilities requiredCapabilities,
-                                                       FirefoxBinary binary,
-                                                       FirefoxProfile profile) {
-    if (isLegacy(desiredCapabilities)) {
-      if (profile == null) {
-        profile = extractProfile(desiredCapabilities, requiredCapabilities);
-      }
-      return new LazyCommandExecutor(binary, profile);
-    }
-    GeckoDriverService.Builder builder = new GeckoDriverService.Builder().usingPort(0);
-    if (binary != null) {
-      builder.usingFirefoxBinary(binary);
-    }
-    return new DriverCommandExecutor(builder.build());
   }
 
   @Override
@@ -470,11 +450,8 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
 
     if (isLegacy(capabilities)) {
       final Set<String> toRemove = Sets.newHashSet(BINARY, PROFILE);
-      caps = new DesiredCapabilities(Maps.filterKeys(capabilities.asMap(), new Predicate<String>() {
-        public boolean apply(String key) {
-          return !toRemove.contains(key);
-        }
-      }));
+      caps = new DesiredCapabilities(
+          Maps.filterKeys(capabilities.asMap(), key -> !toRemove.contains(key)));
     } else {
       caps = new DesiredCapabilities(capabilities);
     }
