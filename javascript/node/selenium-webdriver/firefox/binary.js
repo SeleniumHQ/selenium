@@ -33,6 +33,20 @@ const isDevMode = require('../lib/devmode'),
     exec = require('../io/exec');
 
 
+
+/** @const */
+const NO_FOCUS_LIB_X86 = isDevMode ?
+    path.join(__dirname, '../../../../cpp/prebuilt/i386/libnoblur.so') :
+    path.join(__dirname, '../lib/firefox/i386/libnoblur.so') ;
+
+/** @const */
+const NO_FOCUS_LIB_AMD64 = isDevMode ?
+    path.join(__dirname, '../../../../cpp/prebuilt/amd64/libnoblur64.so') :
+    path.join(__dirname, '../lib/firefox/amd64/libnoblur64.so') ;
+
+const X_IGNORE_NO_FOCUS_LIB = 'x_ignore_nofocus.so';
+
+
 /**
  * @param {string} file Path to the file to find, relative to the program files
  *     root.
@@ -151,6 +165,30 @@ Channel.RELEASE = new Channel(
 Channel.NIGHTLY = new Channel(
   '/Applications/FirefoxNightly.app/Contents/MacOS/firefox-bin',
   'Nightly\\firefox.exe');
+
+
+/**
+ * Copies the no focus libs into the given profile directory.
+ * @param {string} profileDir Path to the profile directory to install into.
+ * @return {!Promise<string>} The LD_LIBRARY_PATH prefix string to use
+ *     for the installed libs.
+ */
+function installNoFocusLibs(profileDir) {
+  var x86 = path.join(profileDir, 'x86');
+  var amd64 = path.join(profileDir, 'amd64');
+
+  return io.mkdir(x86)
+      .then(() => copyLib(NO_FOCUS_LIB_X86, x86))
+      .then(() => io.mkdir(amd64))
+      .then(() => copyLib(NO_FOCUS_LIB_AMD64, amd64))
+      .then(function() {
+        return x86 + ':' + amd64;
+      });
+
+  function copyLib(src, dir) {
+    return io.copy(src, path.join(dir, X_IGNORE_NO_FOCUS_LIB));
+  }
+}
 
 
 /**
@@ -273,7 +311,14 @@ class Binary {
     let args = ['-foreground'].concat(this.args_);
 
     return this.locate().then(function(firefox) {
-      return exec(firefox, {args: args, env: env});
+      if (process.platform === 'win32' || process.platform === 'darwin') {
+        return exec(firefox, {args: args, env: env});
+      }
+      return installNoFocusLibs(profile).then(function(ldLibraryPath) {
+        env['LD_LIBRARY_PATH'] = ldLibraryPath + ':' + env['LD_LIBRARY_PATH'];
+        env['LD_PRELOAD'] = X_IGNORE_NO_FOCUS_LIB;
+        return exec(firefox, {args: args, env: env});
+      });
     });
   }
 

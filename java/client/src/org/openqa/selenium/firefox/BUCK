@@ -5,6 +5,8 @@ java_library(name = 'firefox',
   maven_pom_template = '//java/client/src/org/openqa/selenium:template-pom',
   srcs = glob(['*.java', 'internal/*.java']),
   resources = [
+    ':amd64',
+    ':i386',
     ':prefs',
     ':webdriver.xpi',
   ],
@@ -25,4 +27,16 @@ export_file(name = 'prefs',
 
 export_file(name = 'webdriver.xpi',
   src = '//javascript/firefox-driver:webdriver',
+)
+
+export_file(
+  name = 'i386',
+  src = '//cpp/prebuilt:noblur32',
+  out = 'x86/x_ignore_nofocus.so'
+)
+
+export_file(
+  name = 'amd64',
+  src = '//cpp/prebuilt:noblur64',
+  out = 'amd64/x_ignore_nofocus.so'
 )
