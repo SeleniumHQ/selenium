@@ -24,15 +24,18 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.lessThan;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
+import static org.testng.Assert.assertNotNull;
 
 import com.google.common.base.Throwables;
 
+import org.junit.After;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
@@ -67,6 +70,21 @@ import java.util.Random;
 @NeedsLocalEnvironment(reason = "Requires local browser launching environment")
 @Ignore(MARIONETTE)
 public class FirefoxDriverTest extends JUnit4TestBase {
+
+  private FirefoxDriver localDriver;
+
+  @After
+  public void quitDriver() {
+    if (localDriver != null) {
+      localDriver.quit();
+    }
+  }
+
+  @Test
+  public void canStartDriverWithNoParameters() throws InterruptedException {
+    localDriver = new FirefoxDriver();
+    assertNull(localDriver.getCapabilities().getCapability("moz:processID"));
+  }
 
   private static class ConnectionCapturingDriver extends FirefoxDriver {
     public ExtensionConnection keptConnection;

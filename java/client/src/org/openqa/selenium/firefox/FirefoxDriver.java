@@ -58,6 +58,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -118,8 +119,32 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
 
   protected FirefoxBinary binary;
 
+  // TODO: make it public as soon as it's fully implemented
+  FirefoxDriver(FirefoxOptions options) {
+    super(toExecutor(options), options.addTo(new DesiredCapabilities()), options.addTo(new DesiredCapabilities()));
+    //binary = options.getBinary();
+  }
+
+  private static CommandExecutor toExecutor(FirefoxOptions options) {
+    if (options.isLegacy()) {
+      return new FirefoxDriver.LazyCommandExecutor(options.getBinary(), options.getProfile());
+
+    } else {
+      GeckoDriverService.Builder builder = new GeckoDriverService.Builder().usingPort(0);
+      FirefoxBinary binary = options.getBinaryOrNull();
+      if (binary != null) {
+        builder.usingFirefoxBinary(binary);
+      }
+      return new DriverCommandExecutor(builder.build());
+    }
+  }
+
   public FirefoxDriver() {
-    this(new FirefoxBinary(), null);
+    this(new FirefoxOptions());
+  }
+
+  public FirefoxDriver(FirefoxBinary binary) {
+    this(binary, null);
   }
 
   public FirefoxDriver(FirefoxProfile profile) {
@@ -296,9 +321,9 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
   }
 
   private static CommandExecutor createCommandExecutor(Capabilities desiredCapabilities,
-                                                             Capabilities requiredCapabilities,
-                                                             FirefoxBinary binary,
-                                                             FirefoxProfile profile) {
+                                                       Capabilities requiredCapabilities,
+                                                       FirefoxBinary binary,
+                                                       FirefoxProfile profile) {
     if (isLegacy(desiredCapabilities)) {
       if (profile == null) {
         profile = extractProfile(desiredCapabilities, requiredCapabilities);
@@ -471,7 +496,7 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
     private final FirefoxProfile profile;
     private LocalLogs logs = LocalLogs.getNullLogger();
 
-    private LazyCommandExecutor(FirefoxBinary binary, FirefoxProfile profile) {
+    LazyCommandExecutor(FirefoxBinary binary, FirefoxProfile profile) {
       this.binary = binary;
       this.profile = profile;
     }
