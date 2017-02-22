@@ -96,7 +96,6 @@
     <Compile Include="Html5\IWebStorage.cs" />
     <Compile Include="Html5\Location.cs" />
     <Compile Include="IAllowsFileDetection.cs" />
-    <Compile Include="IE\InternetExplorerDriverEngine.cs" />
     <Compile Include="IFileDetector.cs" />
     <Compile Include="Html5\IHasLocationContext.cs" />
     <Compile Include="ILogs.cs" />
