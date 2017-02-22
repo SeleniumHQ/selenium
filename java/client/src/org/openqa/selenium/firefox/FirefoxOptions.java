@@ -172,14 +172,14 @@ public class FirefoxOptions {
   }
 
   public FirefoxProfile getProfile() {
-    if (profile !=  null) {
-      return profile;
-    }
+    final FirefoxProfile toReturn = Optional.ofNullable(profile).orElse(
+        Optional.ofNullable(extractProfile()).orElse(new FirefoxProfile()));
 
-//    if (requiredCapabilities != null && requiredCapabilities.getCapability(PROFILE) != null) {
-//      raw = requiredCapabilities.getCapability(PROFILE);
-//    }
-    return extractProfile(desiredCapabilities);
+    booleanPrefs.entrySet().forEach(pref -> toReturn.setPreference(pref.getKey(), pref.getValue()));
+    intPrefs.entrySet().forEach(pref -> toReturn.setPreference(pref.getKey(), pref.getValue()));
+    stringPrefs.entrySet().forEach(pref -> toReturn.setPreference(pref.getKey(), pref.getValue()));
+
+    return toReturn;
   }
 
   // Confusing API. Keeping package visible only
@@ -223,7 +223,7 @@ public class FirefoxOptions {
   public FirefoxOptions addDesiredCapabilities(Capabilities desiredCapabilities) {
     this.desiredCapabilities.merge(desiredCapabilities);
 
-    FirefoxProfile suggestedProfile = extractProfile(desiredCapabilities);
+    FirefoxProfile suggestedProfile = extractProfile();
     if (suggestedProfile !=  null) {
       if (!booleanPrefs.isEmpty() || !intPrefs.isEmpty() || !stringPrefs.isEmpty()) {
         throw new IllegalStateException(
@@ -241,7 +241,7 @@ public class FirefoxOptions {
     return this;
   }
 
-  private FirefoxProfile extractProfile(Capabilities desiredCapabilities) {
+  private FirefoxProfile extractProfile() {
     if (desiredCapabilities == null) {
       return null;
     }
