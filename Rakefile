@@ -152,10 +152,6 @@ task :chrome => [ "//java/client/src/org/openqa/selenium/chrome" ]
 task :grid => [ "//java/server/src/org/openqa/grid/selenium" ]
 task :ie => [ "//java/client/src/org/openqa/selenium/ie" ]
 task :firefox => [
-  "//cpp:noblur",
-  "//cpp:noblur64",
-  "//cpp:imehandler",
-  "//cpp:imehandler64",
   "//java/client/src/org/openqa/selenium/firefox"
 ]
 task :'debug-server' => "//java/client/test/org/openqa/selenium/environment:webserver:run"
@@ -556,8 +552,6 @@ namespace :node do
 
   task :deploy => [
     "node:atoms",
-    "//cpp:noblur",
-    "//cpp:noblur64",
     "//javascript/firefox-driver:webdriver",
   ] do
     cmd =  "node javascript/node/deploy.js" <<
@@ -565,8 +559,6 @@ namespace :node do
         " --resource=LICENSE:/LICENSE" <<
         " --resource=NOTICE:/NOTICE" <<
         " --resource=javascript/firefox-driver/webdriver.json:firefox/webdriver.json" <<
-        " --resource=build/cpp/amd64/libnoblur64.so:firefox/amd64/libnoblur64.so" <<
-        " --resource=build/cpp/i386/libnoblur.so:firefox/i386/libnoblur.so" <<
         " --resource=build/javascript/firefox-driver/webdriver.xpi:firefox/webdriver.xpi" <<
         " --resource=common/src/web/:test/data/" <<
         " --exclude_resource=common/src/web/Bin" <<
