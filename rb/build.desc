@@ -16,11 +16,11 @@ rubygem(
 
 rubydocs(
   files = [
-    "build/rb/lib/**/*.rb",
-    "build/rb/CHANGES"
+    "lib/**/*.rb",
+    "CHANGES"
   ],
-  readme = "rb/README.md",
-  output_dir = "build/docs/api/rb",
+  readme = "README.md",
+  output_dir = "../docs/api/rb",
   deps = [ "//rb:gem:build", "//rb:bundle" ]
 )
 
