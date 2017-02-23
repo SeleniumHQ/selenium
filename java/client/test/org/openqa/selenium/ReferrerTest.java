@@ -32,6 +32,7 @@ import static org.openqa.selenium.testing.InProject.locate;
 import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
 import com.google.common.base.Objects;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.net.HostAndPort;
@@ -454,6 +455,7 @@ public class ReferrerTest extends JUnit4TestBase {
    */
   private abstract static class ServerResource extends ExternalResource {
     protected final Server server;
+    private HostAndPort hostAndPort;
 
     ServerResource() {
       server = new Server();
@@ -470,7 +472,7 @@ public class ReferrerTest extends JUnit4TestBase {
     }
 
     HostAndPort getHostAndPort() {
-      return HostAndPort.fromParts(server.getURI().getHost(), server.getURI().getPort());
+      return Preconditions.checkNotNull(hostAndPort);
     }
 
     String getBaseUrl() {
@@ -480,6 +482,7 @@ public class ReferrerTest extends JUnit4TestBase {
     void start() {
       try {
         server.start();
+        hostAndPort = HostAndPort.fromParts(server.getURI().getHost(), server.getURI().getPort());
         new UrlChecker().waitUntilAvailable(10, TimeUnit.SECONDS, new URL(getBaseUrl()));
       } catch (Exception e) {
         throw new RuntimeException(e);
