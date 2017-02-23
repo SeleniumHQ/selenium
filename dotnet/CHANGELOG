@@ -1,11 +1,12 @@
 v3.2.0
 ======
-* Removed .NET Selenium RC language binding implementation. As
-  announced previously, this release entirely removes the .NET
-  implementation of the Selenium RC technology stack. The RC API still
-  exists as part of WebDriverBackedSelenium, but is still marked as
-  deprecated.
-
+ * Removed .NET Selenium RC language binding implementation. As
+   announced previously, this release entirely removes the .NET
+   implementation of the Selenium RC technology stack. The RC API still
+   exists as part of WebDriverBackedSelenium, but is still marked as
+   deprecated.
+ * Removed ability to set vendor implementation for IE driver. This
+   property has been marked obsolete for awhile, but is now being removed.
 
 v3.1.0
 ======
