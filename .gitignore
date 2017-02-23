@@ -11,6 +11,7 @@ mockpiframe.log.lck
 junitvmwatcher*.properties
 test-output/
 .*.swp
+*~
 common/build
 /build/
 cpp/iedriver/IEReturnTypes.h
