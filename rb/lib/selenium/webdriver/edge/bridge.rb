@@ -30,7 +30,7 @@ module Selenium
           service_args = opts.delete(:service_args) || {}
 
           unless opts.key?(:url)
-            driver_path = opts.delete(:driver_path) || Edge.driver_path(false)
+            driver_path = opts.delete(:driver_path) || Edge.driver_path
             @service = Service.new(driver_path, port, *extract_service_args(service_args))
             @service.host = 'localhost' if @service.host == '127.0.0.1'
             @service.start

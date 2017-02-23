@@ -250,9 +250,7 @@ module Selenium
         end
 
         def create_safari_preview_driver(opt = {})
-          tech_preview_driver = "/Applications/Safari\ Technology\ Preview.app/Contents/MacOS/safaridriver"
-          raise DriverInstantiationError, "Install Safari Technology Preview on MacOS Sierra" unless File.exist?(tech_preview_driver)
-          opt[:driver_path] ||= tech_preview_driver
+          Safari.technology_preview!
           WebDriver::Driver.for :safari, opt
         end
 
