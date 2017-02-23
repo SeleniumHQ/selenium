@@ -29,7 +29,7 @@ module Selenium
           port = opts.delete(:port) || Service::DEFAULT_PORT
           service_args = opts.delete(:service_args) || {}
           service_args = match_legacy(opts, service_args)
-          driver_path = opts.delete(:driver_path) || IE.driver_path(false)
+          driver_path = opts.delete(:driver_path) || IE.driver_path
 
           @service = Service.new(driver_path, port, *extract_service_args(service_args))
           @service.start
