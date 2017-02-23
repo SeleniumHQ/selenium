@@ -34,6 +34,7 @@ import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Driver.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.getFirefoxVersion;
+import static org.openqa.selenium.testing.TestUtilities.isChrome;
 import static org.openqa.selenium.testing.TestUtilities.isFirefox;
 
 import org.junit.Before;
@@ -396,13 +397,12 @@ public class AlertsTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {CHROME})
   @Test
-  @NotYetImplemented(value = HTMLUNIT,
-    reason = "HtmlUnit: runs on the same test thread, and .back() already changs the current window.")
   public void testShouldHandleAlertOnPageUnload() {
     assumeFalse("Firefox 27 does not trigger alerts on unload",
         isFirefox(driver) && getFirefoxVersion(driver) >= 27);
+    assumeFalse("Chrome does not trigger alerts on unload",
+        isChrome(driver));
     driver.findElement(By.id("open-page-with-onunload-alert")).click();
     driver.navigate().back();
 
@@ -450,13 +450,12 @@ public class AlertsTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {CHROME})
   @Test
-  @NotYetImplemented(value = HTMLUNIT,
-    reason = "HtmlUnit: runs on the same test thread.")
   public void testShouldHandleAlertOnWindowClose() {
     assumeFalse("Firefox 27 does not trigger alerts on unload",
         isFirefox(driver) && getFirefoxVersion(driver) >= 27);
+    assumeFalse("Chrome does not trigger alerts on unload",
+        isChrome(driver));
     String mainWindow = driver.getWindowHandle();
     try {
       driver.findElement(By.id("open-window-with-onclose-alert")).click();
