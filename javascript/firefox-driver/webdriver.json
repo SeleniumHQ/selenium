@@ -60,6 +60,7 @@
     "dom.max_script_run_time": 30,
     "dom.report_all_js_exceptions": true,
     "javascript.options.showInConsole": true,
+    "network.captive-portal-service.enabled": false,
     "security.csp.enable": false,
     "startup.homepage_welcome_url": "about:blank",
     "startup.homepage_welcome_url.additional": "about:blank",
