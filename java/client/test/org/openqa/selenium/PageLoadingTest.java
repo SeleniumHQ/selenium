@@ -401,12 +401,8 @@ public class PageLoadingTest extends JUnit4TestBase {
   @NoDriverAfterTest
   @Test
   public void testPageLoadTimeoutCanBeChanged() {
-    try {
-      testPageLoadTimeoutIsEnforced(2);
-      testPageLoadTimeoutIsEnforced(3);
-    } finally {
-      driver.manage().timeouts().pageLoadTimeout(-1, SECONDS);
-    }
+    testPageLoadTimeoutIsEnforced(2);
+    testPageLoadTimeoutIsEnforced(3);
   }
 
   @Ignore(value = {SAFARI, MARIONETTE},
@@ -419,7 +415,7 @@ public class PageLoadingTest extends JUnit4TestBase {
     try {
       testPageLoadTimeoutIsEnforced(2);
     } finally {
-      driver.manage().timeouts().pageLoadTimeout(-1, SECONDS);
+      driver.manage().timeouts().pageLoadTimeout(300, SECONDS);
     }
 
     // Load another page after get() timed out but before test HTTP server served previous page.
@@ -458,7 +454,7 @@ public class PageLoadingTest extends JUnit4TestBase {
       assertThat(duration, greaterThan(2000));
       assertThat(duration, lessThan(5000));
     } finally {
-      driver.manage().timeouts().pageLoadTimeout(-1, SECONDS);
+      driver.manage().timeouts().pageLoadTimeout(300, SECONDS);
     }
 
     // Load another page after get() timed out but before test HTTP server served previous page.
@@ -493,7 +489,7 @@ public class PageLoadingTest extends JUnit4TestBase {
       assertThat(duration, greaterThan(2000));
       assertThat(duration, lessThan(5000));
     } finally {
-      driver.manage().timeouts().pageLoadTimeout(-1, SECONDS);
+      driver.manage().timeouts().pageLoadTimeout(300, SECONDS);
     }
 
     // Load another page after get() timed out but before test HTTP server served previous page.
@@ -512,7 +508,7 @@ public class PageLoadingTest extends JUnit4TestBase {
     try {
       testPageLoadTimeoutIsEnforced(1);
     } finally {
-      driver.manage().timeouts().pageLoadTimeout(-1, SECONDS);
+      driver.manage().timeouts().pageLoadTimeout(300, SECONDS);
     }
 
     new WebDriverWait(driver, 30)
