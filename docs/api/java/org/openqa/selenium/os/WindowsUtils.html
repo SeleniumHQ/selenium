@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9,"i9":9,"i10":9,"i11":9,"i12":9,"i13":9,"i14":9,"i15":9,"i16":9,"i17":9,"i18":9,"i19":9,"i20":9,"i21":9,"i22":9,"i23":9,"i24":9,"i25":9,"i26":9,"i27":9,"i28":9};
+var methods = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9,"i9":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -47,7 +47,7 @@ var activeTableTab = "activeTableTab";
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../org/openqa/selenium/os/WindowsRegistryException.html" title="class in org.openqa.selenium.os"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
+<li><a href="../../../../org/openqa/selenium/os/ProcessUtils.ProcessStillAliveException.html" title="class in org.openqa.selenium.os"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
 <li>Next&nbsp;Class</li>
 </ul>
 <ul class="navList">
@@ -73,13 +73,13 @@ var activeTableTab = "activeTableTab";
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
-<li><a href="#field.summary">Field</a>&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
-<li><a href="#field.detail">Field</a>&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>
@@ -115,25 +115,6 @@ extends java.lang.Object</pre>
 <div class="summary">
 <ul class="blockList">
 <li class="blockList">
-<!-- =========== FIELD SUMMARY =========== -->
-<ul class="blockList">
-<li class="blockList"><a name="field.summary">
-<!--   -->
-</a>
-<h3>Field Summary</h3>
-<table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Field Summary table, listing fields, and an explanation">
-<caption><span>Fields</span><span class="tabEnd">&nbsp;</span></caption>
-<tr>
-<th class="colFirst" scope="col">Modifier and Type</th>
-<th class="colLast" scope="col">Field and Description</th>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>static java.lang.Boolean</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/os/WindowsUtils.html#regVersion1">regVersion1</a></span></code>&nbsp;</td>
-</tr>
-</table>
-</li>
-</ul>
 <!-- ======== CONSTRUCTOR SUMMARY ======== -->
 <ul class="blockList">
 <li class="blockList"><a name="constructor.summary">
@@ -164,151 +145,58 @@ extends java.lang.Object</pre>
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr id="i0" class="altColor">
-<td class="colFirst"><code>static void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/os/WindowsUtils.html#deleteRegistryValue-java.lang.String-">deleteRegistryValue</a></span>(java.lang.String&nbsp;key)</code>&nbsp;</td>
-</tr>
-<tr id="i1" class="rowColor">
-<td class="colFirst"><code>static java.lang.Class&lt;?&gt;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/os/WindowsUtils.html#discoverRegistryKeyType-java.lang.String-">discoverRegistryKeyType</a></span>(java.lang.String&nbsp;key)</code>&nbsp;</td>
-</tr>
-<tr id="i2" class="altColor">
-<td class="colFirst"><code>static boolean</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/os/WindowsUtils.html#doesRegistryValueExist-java.lang.String-">doesRegistryValueExist</a></span>(java.lang.String&nbsp;key)</code>&nbsp;</td>
-</tr>
-<tr id="i3" class="rowColor">
-<td class="colFirst"><code>static java.lang.String</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/os/WindowsUtils.html#findReg--">findReg</a></span>()</code>
-<div class="block">Finds reg.exe</div>
-</td>
-</tr>
-<tr id="i4" class="altColor">
 <td class="colFirst"><code>static java.io.File</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/os/WindowsUtils.html#findSystemRoot--">findSystemRoot</a></span>()</code>
 <div class="block">Finds the system root directory, e.g.</div>
 </td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i1" class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/os/WindowsUtils.html#findTaskKill--">findTaskKill</a></span>()</code>
 <div class="block">Finds taskkill.exe</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
-<td class="colFirst"><code>static java.io.File</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/os/WindowsUtils.html#findWBEM--">findWBEM</a></span>()</code>
-<div class="block">Finds the WBEM directory in the systemRoot directory</div>
-</td>
-</tr>
-<tr id="i7" class="rowColor">
-<td class="colFirst"><code>static java.lang.String</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/os/WindowsUtils.html#findWMIC--">findWMIC</a></span>()</code>
-<div class="block">Finds WMIC.exe</div>
-</td>
-</tr>
-<tr id="i8" class="altColor">
+<tr id="i2" class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/os/WindowsUtils.html#getEnvVarIgnoreCase-java.lang.String-">getEnvVarIgnoreCase</a></span>(java.lang.String&nbsp;var)</code>&nbsp;</td>
 </tr>
-<tr id="i9" class="rowColor">
-<td class="colFirst"><code>static java.lang.String</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/os/WindowsUtils.html#getLocalAppDataPath--">getLocalAppDataPath</a></span>()</code>
-<div class="block">Returns the path to Local AppData.</div>
-</td>
-</tr>
-<tr id="i10" class="altColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>static com.google.common.collect.ImmutableList&lt;java.lang.String&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/os/WindowsUtils.html#getPathsInProgramFiles-java.lang.String-">getPathsInProgramFiles</a></span>(java.lang.String&nbsp;childPath)</code>&nbsp;</td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/os/WindowsUtils.html#getProgramFiles86Path--">getProgramFiles86Path</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/os/WindowsUtils.html#getProgramFilesPath--">getProgramFilesPath</a></span>()</code>
 <div class="block">Returns the path to the Windows Program Files.</div>
 </td>
 </tr>
-<tr id="i13" class="rowColor">
-<td class="colFirst"><code>static boolean</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/os/WindowsUtils.html#isRegExeVersion1--">isRegExeVersion1</a></span>()</code>&nbsp;</td>
-</tr>
-<tr id="i14" class="altColor">
-<td class="colFirst"><code>static void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/os/WindowsUtils.html#kill-java.lang.String:A-">kill</a></span>(java.lang.String[]&nbsp;cmdarray)</code>
-<div class="block">Searches the process list for a process with the specified command line and kills it</div>
-</td>
-</tr>
-<tr id="i15" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/os/WindowsUtils.html#killByName-java.lang.String-">killByName</a></span>(java.lang.String&nbsp;name)</code>
 <div class="block">Kill processes by name</div>
 </td>
 </tr>
-<tr id="i16" class="altColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/os/WindowsUtils.html#killPID-java.lang.String-">killPID</a></span>(java.lang.String&nbsp;processID)</code>
 <div class="block">Kills the specified process ID</div>
 </td>
 </tr>
-<tr id="i17" class="rowColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>static java.util.Properties</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/os/WindowsUtils.html#loadEnvironment--">loadEnvironment</a></span>()</code>
 <div class="block">Returns the current process environment variables</div>
 </td>
 </tr>
-<tr id="i18" class="altColor">
-<td class="colFirst"><code>static void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/os/WindowsUtils.html#main-java.lang.String:A-">main</a></span>(java.lang.String[]&nbsp;args)</code>&nbsp;</td>
-</tr>
-<tr id="i19" class="rowColor">
-<td class="colFirst"><code>static java.util.Map&lt;java.lang.String,java.lang.String&gt;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/os/WindowsUtils.html#procMap--">procMap</a></span>()</code>
-<div class="block">Returns a map of process IDs to command lines</div>
-</td>
-</tr>
-<tr id="i20" class="altColor">
-<td class="colFirst"><code>static boolean</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/os/WindowsUtils.html#readBooleanRegistryValue-java.lang.String-">readBooleanRegistryValue</a></span>(java.lang.String&nbsp;key)</code>&nbsp;</td>
-</tr>
-<tr id="i21" class="rowColor">
-<td class="colFirst"><code>static int</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/os/WindowsUtils.html#readIntRegistryValue-java.lang.String-">readIntRegistryValue</a></span>(java.lang.String&nbsp;key)</code>&nbsp;</td>
-</tr>
-<tr id="i22" class="altColor">
-<td class="colFirst"><code>static java.lang.String</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/os/WindowsUtils.html#readStringRegistryValue-java.lang.String-">readStringRegistryValue</a></span>(java.lang.String&nbsp;key)</code>&nbsp;</td>
-</tr>
-<tr id="i23" class="rowColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>static boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/os/WindowsUtils.html#thisIsWindows--">thisIsWindows</a></span>()</code>
 <div class="block">Returns true if the current OS is MS Windows; false otherwise</div>
 </td>
-</tr>
-<tr id="i24" class="altColor">
-<td class="colFirst"><code>static void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/os/WindowsUtils.html#traceWith-java.util.logging.Logger-">traceWith</a></span>(java.util.logging.Logger&nbsp;log)</code>&nbsp;</td>
-</tr>
-<tr id="i25" class="rowColor">
-<td class="colFirst"><code>static void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/os/WindowsUtils.html#tryToKillByName-java.lang.String-">tryToKillByName</a></span>(java.lang.String&nbsp;name)</code>
-<div class="block">Kill processes by name, log and ignore errors</div>
-</td>
-</tr>
-<tr id="i26" class="altColor">
-<td class="colFirst"><code>static void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/os/WindowsUtils.html#writeBooleanRegistryValue-java.lang.String-boolean-">writeBooleanRegistryValue</a></span>(java.lang.String&nbsp;key,
-                         boolean&nbsp;data)</code>&nbsp;</td>
-</tr>
-<tr id="i27" class="rowColor">
-<td class="colFirst"><code>static void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/os/WindowsUtils.html#writeIntRegistryValue-java.lang.String-int-">writeIntRegistryValue</a></span>(java.lang.String&nbsp;key,
-                     int&nbsp;data)</code>&nbsp;</td>
-</tr>
-<tr id="i28" class="altColor">
-<td class="colFirst"><code>static void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/os/WindowsUtils.html#writeStringRegistryValue-java.lang.String-java.lang.String-">writeStringRegistryValue</a></span>(java.lang.String&nbsp;key,
-                        java.lang.String&nbsp;data)</code>&nbsp;</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -326,23 +214,6 @@ extends java.lang.Object</pre>
 <div class="details">
 <ul class="blockList">
 <li class="blockList">
-<!-- ============ FIELD DETAIL =========== -->
-<ul class="blockList">
-<li class="blockList"><a name="field.detail">
-<!--   -->
-</a>
-<h3>Field Detail</h3>
-<a name="regVersion1">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>regVersion1</h4>
-<pre>public static&nbsp;java.lang.Boolean regVersion1</pre>
-</li>
-</ul>
-</li>
-</ul>
 <!-- ========= CONSTRUCTOR DETAIL ======== -->
 <ul class="blockList">
 <li class="blockList"><a name="constructor.detail">
@@ -366,31 +237,6 @@ extends java.lang.Object</pre>
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a name="main-java.lang.String:A-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>main</h4>
-<pre>public static&nbsp;void&nbsp;main(java.lang.String[]&nbsp;args)
-                 throws java.lang.Exception</pre>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>args</code> - command line arguments</dd>
-<dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>java.lang.Exception</code> - possible IO exception</dd>
-</dl>
-</li>
-</ul>
-<a name="traceWith-java.util.logging.Logger-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>traceWith</h4>
-<pre>public static&nbsp;void&nbsp;traceWith(java.util.logging.Logger&nbsp;log)</pre>
-</li>
-</ul>
 <a name="killByName-java.lang.String-">
 <!--   -->
 </a>
@@ -405,38 +251,6 @@ extends java.lang.Object</pre>
 </dl>
 </li>
 </ul>
-<a name="tryToKillByName-java.lang.String-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>tryToKillByName</h4>
-<pre>public static&nbsp;void&nbsp;tryToKillByName(java.lang.String&nbsp;name)</pre>
-<div class="block">Kill processes by name, log and ignore errors</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>name</code> - name of the process to kill</dd>
-</dl>
-</li>
-</ul>
-<a name="kill-java.lang.String:A-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>kill</h4>
-<pre>public static&nbsp;void&nbsp;kill(java.lang.String[]&nbsp;cmdarray)
-                 throws java.lang.Exception</pre>
-<div class="block">Searches the process list for a process with the specified command line and kills it</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>cmdarray</code> - the array of command line arguments</dd>
-<dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>java.lang.Exception</code> - if something goes wrong while reading the process list or searching for your
-         command line</dd>
-</dl>
-</li>
-</ul>
 <a name="killPID-java.lang.String-">
 <!--   -->
 </a>
@@ -448,23 +262,6 @@ extends java.lang.Object</pre>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>processID</code> - PID to kill</dd>
-</dl>
-</li>
-</ul>
-<a name="procMap--">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>procMap</h4>
-<pre>public static&nbsp;java.util.Map&lt;java.lang.String,java.lang.String&gt;&nbsp;procMap()
-                                                                throws java.lang.Exception</pre>
-<div class="block">Returns a map of process IDs to command lines</div>
-<dl>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>a map of process IDs to command lines</dd>
-<dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>java.lang.Exception</code> - - if something goes wrong while reading the process list</dd>
 </dl>
 </li>
 </ul>
@@ -515,20 +312,6 @@ extends java.lang.Object</pre>
 <pre>public static&nbsp;com.google.common.collect.ImmutableList&lt;java.lang.String&gt;&nbsp;getPathsInProgramFiles(java.lang.String&nbsp;childPath)</pre>
 </li>
 </ul>
-<a name="getLocalAppDataPath--">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getLocalAppDataPath</h4>
-<pre>public static&nbsp;java.lang.String&nbsp;getLocalAppDataPath()</pre>
-<div class="block">Returns the path to Local AppData. For different users, this will be different.</div>
-<dl>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>the path to Local AppData</dd>
-</dl>
-</li>
-</ul>
 <a name="getEnvVarIgnoreCase-java.lang.String-">
 <!--   -->
 </a>
@@ -552,35 +335,6 @@ extends java.lang.Object</pre>
 </dl>
 </li>
 </ul>
-<a name="findWMIC--">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>findWMIC</h4>
-<pre>public static&nbsp;java.lang.String&nbsp;findWMIC()</pre>
-<div class="block">Finds WMIC.exe</div>
-<dl>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>the exact path to wmic.exe, or just the string "wmic" if it couldn't be found (in which
-         case you can pass that to exec to try to run it from the path)</dd>
-</dl>
-</li>
-</ul>
-<a name="findWBEM--">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>findWBEM</h4>
-<pre>public static&nbsp;java.io.File&nbsp;findWBEM()</pre>
-<div class="block">Finds the WBEM directory in the systemRoot directory</div>
-<dl>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>the WBEM directory, or <code>null</code> if it couldn't be found</dd>
-</dl>
-</li>
-</ul>
 <a name="findTaskKill--">
 <!--   -->
 </a>
@@ -594,119 +348,6 @@ extends java.lang.Object</pre>
 <dd>the exact path to taskkill.exe, or just the string "taskkill" if it couldn't be found
          (in which case you can pass that to exec to try to run it from the path)</dd>
 </dl>
-</li>
-</ul>
-<a name="findReg--">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>findReg</h4>
-<pre>public static&nbsp;java.lang.String&nbsp;findReg()</pre>
-<div class="block">Finds reg.exe</div>
-<dl>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>the exact path to reg.exe, or just the string "reg" if it couldn't be found (in which
-         case you can pass that to exec to try to run it from the path)</dd>
-</dl>
-</li>
-</ul>
-<a name="isRegExeVersion1--">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>isRegExeVersion1</h4>
-<pre>public static&nbsp;boolean&nbsp;isRegExeVersion1()</pre>
-</li>
-</ul>
-<a name="discoverRegistryKeyType-java.lang.String-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>discoverRegistryKeyType</h4>
-<pre>public static&nbsp;java.lang.Class&lt;?&gt;&nbsp;discoverRegistryKeyType(java.lang.String&nbsp;key)</pre>
-</li>
-</ul>
-<a name="readStringRegistryValue-java.lang.String-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>readStringRegistryValue</h4>
-<pre>public static&nbsp;java.lang.String&nbsp;readStringRegistryValue(java.lang.String&nbsp;key)</pre>
-</li>
-</ul>
-<a name="readIntRegistryValue-java.lang.String-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>readIntRegistryValue</h4>
-<pre>public static&nbsp;int&nbsp;readIntRegistryValue(java.lang.String&nbsp;key)</pre>
-</li>
-</ul>
-<a name="readBooleanRegistryValue-java.lang.String-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>readBooleanRegistryValue</h4>
-<pre>public static&nbsp;boolean&nbsp;readBooleanRegistryValue(java.lang.String&nbsp;key)</pre>
-</li>
-</ul>
-<a name="doesRegistryValueExist-java.lang.String-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>doesRegistryValueExist</h4>
-<pre>public static&nbsp;boolean&nbsp;doesRegistryValueExist(java.lang.String&nbsp;key)</pre>
-</li>
-</ul>
-<a name="writeStringRegistryValue-java.lang.String-java.lang.String-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>writeStringRegistryValue</h4>
-<pre>public static&nbsp;void&nbsp;writeStringRegistryValue(java.lang.String&nbsp;key,
-                                            java.lang.String&nbsp;data)
-                                     throws <a href="../../../../org/openqa/selenium/os/WindowsRegistryException.html" title="class in org.openqa.selenium.os">WindowsRegistryException</a></pre>
-<dl>
-<dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code><a href="../../../../org/openqa/selenium/os/WindowsRegistryException.html" title="class in org.openqa.selenium.os">WindowsRegistryException</a></code></dd>
-</dl>
-</li>
-</ul>
-<a name="writeIntRegistryValue-java.lang.String-int-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>writeIntRegistryValue</h4>
-<pre>public static&nbsp;void&nbsp;writeIntRegistryValue(java.lang.String&nbsp;key,
-                                         int&nbsp;data)</pre>
-</li>
-</ul>
-<a name="writeBooleanRegistryValue-java.lang.String-boolean-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>writeBooleanRegistryValue</h4>
-<pre>public static&nbsp;void&nbsp;writeBooleanRegistryValue(java.lang.String&nbsp;key,
-                                             boolean&nbsp;data)</pre>
-</li>
-</ul>
-<a name="deleteRegistryValue-java.lang.String-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>deleteRegistryValue</h4>
-<pre>public static&nbsp;void&nbsp;deleteRegistryValue(java.lang.String&nbsp;key)</pre>
 </li>
 </ul>
 <a name="thisIsWindows--">
@@ -750,7 +391,7 @@ extends java.lang.Object</pre>
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../org/openqa/selenium/os/WindowsRegistryException.html" title="class in org.openqa.selenium.os"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
+<li><a href="../../../../org/openqa/selenium/os/ProcessUtils.ProcessStillAliveException.html" title="class in org.openqa.selenium.os"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
 <li>Next&nbsp;Class</li>
 </ul>
 <ul class="navList">
@@ -776,13 +417,13 @@ extends java.lang.Object</pre>
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
-<li><a href="#field.summary">Field</a>&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
-<li><a href="#field.detail">Field</a>&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>

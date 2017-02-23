@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -109,10 +109,7 @@ var activeTableTab = "activeTableTab";
 <br>
 <pre>public class <span class="typeNameLabel">Executable</span>
 extends java.lang.Object</pre>
-<div class="block">Wrapper around our runtime environment requirements. Performs discovery of firefox instances.
-
- <p>
- NOTE: System and platform binaries will only be discovered at class initialization.</div>
+<div class="block">Wrapper around Firefox executable.</div>
 </li>
 </ul>
 </div>
@@ -149,21 +146,24 @@ extends java.lang.Object</pre>
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr id="i0" class="altColor">
-<td class="colFirst"><code>java.io.OutputStream</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/firefox/internal/Executable.html#getDefaultOutputStream--">getDefaultOutputStream</a></span>()</code>&nbsp;</td>
+<td class="colFirst"><code><a href="../../../../../org/openqa/selenium/firefox/FirefoxBinary.Channel.html" title="enum in org.openqa.selenium.firefox">FirefoxBinary.Channel</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/firefox/internal/Executable.html#getChannel--">getChannel</a></span>()</code>&nbsp;</td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>java.io.File</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/firefox/internal/Executable.html#getFile--">getFile</a></span>()</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/firefox/internal/Executable.html#getDirectory--">getDirectory</a></span>()</code>&nbsp;</td>
 </tr>
 <tr id="i2" class="altColor">
+<td class="colFirst"><code>java.io.File</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/firefox/internal/Executable.html#getFile--">getFile</a></span>()</code>&nbsp;</td>
+</tr>
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/firefox/internal/Executable.html#getPath--">getPath</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i3" class="rowColor">
-<td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/firefox/internal/Executable.html#setLibraryPath-org.openqa.selenium.os.CommandLine-java.util.Map-">setLibraryPath</a></span>(<a href="../../../../../org/openqa/selenium/os/CommandLine.html" title="class in org.openqa.selenium.os">CommandLine</a>&nbsp;command,
-              java.util.Map&lt;java.lang.String,java.lang.String&gt;&nbsp;extraEnv)</code>&nbsp;</td>
+<tr id="i4" class="altColor">
+<td class="colFirst"><code>java.lang.String</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/firefox/internal/Executable.html#getVersion--">getVersion</a></span>()</code>&nbsp;</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -204,6 +204,15 @@ extends java.lang.Object</pre>
 <!--   -->
 </a>
 <h3>Method Detail</h3>
+<a name="getDirectory--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getDirectory</h4>
+<pre>public&nbsp;java.io.File&nbsp;getDirectory()</pre>
+</li>
+</ul>
 <a name="getFile--">
 <!--   -->
 </a>
@@ -222,23 +231,22 @@ extends java.lang.Object</pre>
 <pre>public&nbsp;java.lang.String&nbsp;getPath()</pre>
 </li>
 </ul>
-<a name="setLibraryPath-org.openqa.selenium.os.CommandLine-java.util.Map-">
+<a name="getVersion--">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>setLibraryPath</h4>
-<pre>public&nbsp;void&nbsp;setLibraryPath(<a href="../../../../../org/openqa/selenium/os/CommandLine.html" title="class in org.openqa.selenium.os">CommandLine</a>&nbsp;command,
-                           java.util.Map&lt;java.lang.String,java.lang.String&gt;&nbsp;extraEnv)</pre>
+<h4>getVersion</h4>
+<pre>public&nbsp;java.lang.String&nbsp;getVersion()</pre>
 </li>
 </ul>
-<a name="getDefaultOutputStream--">
+<a name="getChannel--">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
-<h4>getDefaultOutputStream</h4>
-<pre>public&nbsp;java.io.OutputStream&nbsp;getDefaultOutputStream()</pre>
+<h4>getChannel</h4>
+<pre>public&nbsp;<a href="../../../../../org/openqa/selenium/firefox/FirefoxBinary.Channel.html" title="enum in org.openqa.selenium.firefox">FirefoxBinary.Channel</a>&nbsp;getChannel()</pre>
 </li>
 </ul>
 </li>

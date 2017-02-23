@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":6,"i1":6,"i2":6,"i3":6,"i4":6,"i5":6};
+var methods = {"i0":6};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -47,8 +47,8 @@ var activeTableTab = "activeTableTab";
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../org/openqa/selenium/os/CommandLine.html" title="class in org.openqa.selenium.os"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
-<li><a href="../../../../org/openqa/selenium/os/Kernel32.IO_COUNTERS.html" title="class in org.openqa.selenium.os"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
+<li><a href="../../../../org/openqa/selenium/os/ExecutableFinder.html" title="class in org.openqa.selenium.os"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
+<li><a href="../../../../org/openqa/selenium/os/ProcessUtils.html" title="class in org.openqa.selenium.os"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../../index.html?org/openqa/selenium/os/Kernel32.html" target="_top">Frames</a></li>
@@ -72,7 +72,7 @@ var activeTableTab = "activeTableTab";
 <div>
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
-<li><a href="#nested.class.summary">Nested</a>&nbsp;|&nbsp;</li>
+<li>Nested&nbsp;|&nbsp;</li>
 <li><a href="#field.summary">Field</a>&nbsp;|&nbsp;</li>
 <li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
@@ -103,8 +103,7 @@ var activeTableTab = "activeTableTab";
 </dl>
 <hr>
 <br>
-<pre><a href="../../../../org/openqa/selenium/Beta.html" title="annotation in org.openqa.selenium">@Beta</a>
-public interface <span class="typeNameLabel">Kernel32</span>
+<pre>public interface <span class="typeNameLabel">Kernel32</span>
 extends com.sun.jna.platform.win32.Kernel32</pre>
 </li>
 </ul>
@@ -118,29 +117,6 @@ extends com.sun.jna.platform.win32.Kernel32</pre>
 <!--   -->
 </a>
 <h3>Nested Class Summary</h3>
-<table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Nested Class Summary table, listing nested classes, and an explanation">
-<caption><span>Nested Classes</span><span class="tabEnd">&nbsp;</span></caption>
-<tr>
-<th class="colFirst" scope="col">Modifier and Type</th>
-<th class="colLast" scope="col">Interface and Description</th>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>static class&nbsp;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/os/Kernel32.IO_COUNTERS.html" title="class in org.openqa.selenium.os">Kernel32.IO_COUNTERS</a></span></code>&nbsp;</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code>static class&nbsp;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/os/Kernel32.JOBJECT_BASIC_LIMIT_INFORMATION.html" title="class in org.openqa.selenium.os">Kernel32.JOBJECT_BASIC_LIMIT_INFORMATION</a></span></code>&nbsp;</td>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>static class&nbsp;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/os/Kernel32.JOBJECT_EXTENDED_LIMIT_INFORMATION.html" title="class in org.openqa.selenium.os">Kernel32.JOBJECT_EXTENDED_LIMIT_INFORMATION</a></span></code>&nbsp;</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code>static class&nbsp;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/os/Kernel32.JOBOBJECT_BASIC_UI_RESTRICTIONS.html" title="class in org.openqa.selenium.os">Kernel32.JOBOBJECT_BASIC_UI_RESTRICTIONS</a></span></code>&nbsp;</td>
-</tr>
-</table>
 <ul class="blockList">
 <li class="blockList"><a name="nested.classes.inherited.from.class.com.sun.jna.platform.win32.WinNT">
 <!--   -->
@@ -198,36 +174,8 @@ extends com.sun.jna.platform.win32.Kernel32</pre>
 <th class="colLast" scope="col">Field and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code>static int</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/os/Kernel32.html#CREATE_BREAKAWAY_FROM_JOB">CREATE_BREAKAWAY_FROM_JOB</a></span></code>&nbsp;</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code>static int</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/os/Kernel32.html#CREATE_SUSPENDED">CREATE_SUSPENDED</a></span></code>&nbsp;</td>
-</tr>
-<tr class="altColor">
 <td class="colFirst"><code>static <a href="../../../../org/openqa/selenium/os/Kernel32.html" title="interface in org.openqa.selenium.os">Kernel32</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/os/Kernel32.html#INSTANCE">INSTANCE</a></span></code>&nbsp;</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code>static int</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/os/Kernel32.html#JOB_OBJECT_LIMIT_BREAKAWAY_OK">JOB_OBJECT_LIMIT_BREAKAWAY_OK</a></span></code>&nbsp;</td>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>static int</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/os/Kernel32.html#JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE">JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE</a></span></code>&nbsp;</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code>static int</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/os/Kernel32.html#JOB_OBJECT_UILIMIT_GLOBALATOMS">JOB_OBJECT_UILIMIT_GLOBALATOMS</a></span></code>&nbsp;</td>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>static int</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/os/Kernel32.html#JobObjectBasicUIRestrictions">JobObjectBasicUIRestrictions</a></span></code>&nbsp;</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code>static int</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/os/Kernel32.html#JobObjectExtendedLimitInformation">JobObjectExtendedLimitInformation</a></span></code>&nbsp;</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -249,7 +197,7 @@ extends com.sun.jna.platform.win32.Kernel32</pre>
 <!--   -->
 </a>
 <h3>Fields inherited from interface&nbsp;com.sun.jna.platform.win32.WinBase</h3>
-<code>CREATE_DEFAULT_ERROR_MODE, CREATE_FORCEDOS, CREATE_NEW_CONSOLE, CREATE_NEW_PROCESS_GROUP, CREATE_NO_WINDOW, CREATE_PRESERVE_CODE_AUTHZ_LEVEL, CREATE_PROTECTED_PROCESS, CREATE_SEPARATE_WOW_VDM, CREATE_SHARED_WOW_VDM, CREATE_UNICODE_ENVIRONMENT, DEBUG_ONLY_THIS_PROCESS, DEBUG_PROCESS, DETACHED_PROCESS, DRIVE_CDROM, DRIVE_FIXED, DRIVE_NO_ROOT_DIR, DRIVE_RAMDISK, DRIVE_REMOTE, DRIVE_REMOVABLE, DRIVE_UNKNOWN, EXTENDED_STARTUPINFO_PRESENT, FORMAT_MESSAGE_ALLOCATE_BUFFER, FORMAT_MESSAGE_ARGUMENT_ARRAY, FORMAT_MESSAGE_FROM_HMODULE, FORMAT_MESSAGE_FROM_STRING, FORMAT_MESSAGE_FROM_SYSTEM, FORMAT_MESSAGE_IGNORE_INSERTS, HANDLE_FLAG_INHERIT, HANDLE_FLAG_PROTECT_FROM_CLOSE, INFINITE, INHERIT_PARENT_AFFINITY, INVALID_FILE_ATTRIBUTES, INVALID_FILE_SIZE, INVALID_HANDLE_VALUE, INVALID_SET_FILE_POINTER, LHND, LMEM_DISCARDABLE, LMEM_DISCARDED, LMEM_FIXED, LMEM_INVALID_HANDLE, LMEM_LOCKCOUNT, LMEM_MODIFY, LMEM_MOVEABLE, LMEM_NOCOMPACT, LMEM_NODISCARD, LMEM_VALID_FLAGS, LMEM_ZEROINIT, LOGON32_LOGON_BATCH, LOGON32_LOGON_INTERACTIVE, LOGON32_LOGON_NETWORK, LOGON32_LOGON_NETWORK_CLEARTEXT, LOGON32_LOGON_NEW_CREDENTIALS, LOGON32_LOGON_SERVICE, LOGON32_LOGON_UNLOCK, LOGON32_PROVIDER_DEFAULT, LOGON32_PROVIDER_WINNT35, LOGON32_PROVIDER_WINNT40, LOGON32_PROVIDER_WINNT50, LPTR, MAX_COMPUTERNAME_LENGTH, MOVEFILE_COPY_ALLOWED, MOVEFILE_CREATE_HARDLINK, MOVEFILE_DELAY_UNTIL_REBOOT, MOVEFILE_FAIL_IF_NOT_TRACKABLE, MOVEFILE_REPLACE_EXISTING, MOVEFILE_WRITE_THROUGH, STARTF_FORCEOFFFEEDBACK, STARTF_FORCEONFEEDBACK, STARTF_RUNFULLSCREEN, STARTF_USECOUNTCHARS, STARTF_USEFILLATTRIBUTE, STARTF_USEPOSITION, STARTF_USESHOWWINDOW, STARTF_USESIZE, STARTF_USESTDHANDLES, STILL_ACTIVE, WAIT_ABANDONED, WAIT_ABANDONED_0, WAIT_FAILED, WAIT_OBJECT_0</code></li>
+<code>CREATE_BREAKAWAY_FROM_JOB, CREATE_DEFAULT_ERROR_MODE, CREATE_FORCEDOS, CREATE_NEW_CONSOLE, CREATE_NEW_PROCESS_GROUP, CREATE_NO_WINDOW, CREATE_PRESERVE_CODE_AUTHZ_LEVEL, CREATE_PROTECTED_PROCESS, CREATE_SEPARATE_WOW_VDM, CREATE_SHARED_WOW_VDM, CREATE_SUSPENDED, CREATE_UNICODE_ENVIRONMENT, DEBUG_ONLY_THIS_PROCESS, DEBUG_PROCESS, DETACHED_PROCESS, DRIVE_CDROM, DRIVE_FIXED, DRIVE_NO_ROOT_DIR, DRIVE_RAMDISK, DRIVE_REMOTE, DRIVE_REMOVABLE, DRIVE_UNKNOWN, EXTENDED_STARTUPINFO_PRESENT, FORMAT_MESSAGE_ALLOCATE_BUFFER, FORMAT_MESSAGE_ARGUMENT_ARRAY, FORMAT_MESSAGE_FROM_HMODULE, FORMAT_MESSAGE_FROM_STRING, FORMAT_MESSAGE_FROM_SYSTEM, FORMAT_MESSAGE_IGNORE_INSERTS, HANDLE_FLAG_INHERIT, HANDLE_FLAG_PROTECT_FROM_CLOSE, INFINITE, INHERIT_PARENT_AFFINITY, INVALID_FILE_ATTRIBUTES, INVALID_FILE_SIZE, INVALID_HANDLE_VALUE, INVALID_SET_FILE_POINTER, LHND, LMEM_DISCARDABLE, LMEM_DISCARDED, LMEM_FIXED, LMEM_INVALID_HANDLE, LMEM_LOCKCOUNT, LMEM_MODIFY, LMEM_MOVEABLE, LMEM_NOCOMPACT, LMEM_NODISCARD, LMEM_VALID_FLAGS, LMEM_ZEROINIT, LOGON32_LOGON_BATCH, LOGON32_LOGON_INTERACTIVE, LOGON32_LOGON_NETWORK, LOGON32_LOGON_NETWORK_CLEARTEXT, LOGON32_LOGON_NEW_CREDENTIALS, LOGON32_LOGON_SERVICE, LOGON32_LOGON_UNLOCK, LOGON32_PROVIDER_DEFAULT, LOGON32_PROVIDER_WINNT35, LOGON32_PROVIDER_WINNT40, LOGON32_PROVIDER_WINNT50, LPTR, MAX_COMPUTERNAME_LENGTH, MOVEFILE_COPY_ALLOWED, MOVEFILE_CREATE_HARDLINK, MOVEFILE_DELAY_UNTIL_REBOOT, MOVEFILE_FAIL_IF_NOT_TRACKABLE, MOVEFILE_REPLACE_EXISTING, MOVEFILE_WRITE_THROUGH, STARTF_FORCEOFFFEEDBACK, STARTF_FORCEONFEEDBACK, STARTF_RUNFULLSCREEN, STARTF_USECOUNTCHARS, STARTF_USEFILLATTRIBUTE, STARTF_USEPOSITION, STARTF_USESHOWWINDOW, STARTF_USESIZE, STARTF_USESTDHANDLES, STILL_ACTIVE, WAIT_ABANDONED, WAIT_ABANDONED_0, WAIT_FAILED, WAIT_OBJECT_0</code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a name="fields.inherited.from.class.com.sun.jna.platform.win32.WinDef">
@@ -287,34 +235,8 @@ extends com.sun.jna.platform.win32.Kernel32</pre>
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr id="i0" class="altColor">
-<td class="colFirst"><code>boolean</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/os/Kernel32.html#AssignProcessToJobObject-com.sun.jna.platform.win32.WinNT.HANDLE-com.sun.jna.platform.win32.WinNT.HANDLE-">AssignProcessToJobObject</a></span>(com.sun.jna.platform.win32.WinNT.HANDLE&nbsp;hJob,
-                        com.sun.jna.platform.win32.WinNT.HANDLE&nbsp;hProcess)</code>&nbsp;</td>
-</tr>
-<tr id="i1" class="rowColor">
-<td class="colFirst"><code>com.sun.jna.platform.win32.WinNT.HANDLE</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/os/Kernel32.html#CreateJobObject-com.sun.jna.platform.win32.WinBase.SECURITY_ATTRIBUTES-java.lang.String-">CreateJobObject</a></span>(com.sun.jna.platform.win32.WinBase.SECURITY_ATTRIBUTES&nbsp;attrs,
-               java.lang.String&nbsp;name)</code>&nbsp;</td>
-</tr>
-<tr id="i2" class="altColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/os/Kernel32.html#GetProcessId-com.sun.jna.platform.win32.WinNT.HANDLE-">GetProcessId</a></span>(com.sun.jna.platform.win32.WinNT.HANDLE&nbsp;Process)</code>&nbsp;</td>
-</tr>
-<tr id="i3" class="rowColor">
-<td class="colFirst"><code>int</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/os/Kernel32.html#ResumeThread-com.sun.jna.platform.win32.WinNT.HANDLE-">ResumeThread</a></span>(com.sun.jna.platform.win32.WinNT.HANDLE&nbsp;hThread)</code>&nbsp;</td>
-</tr>
-<tr id="i4" class="altColor">
-<td class="colFirst"><code>boolean</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/os/Kernel32.html#SetInformationJobObject-com.sun.jna.platform.win32.WinNT.HANDLE-int-com.sun.jna.Pointer-int-">SetInformationJobObject</a></span>(com.sun.jna.platform.win32.WinNT.HANDLE&nbsp;hJob,
-                       int&nbsp;JobObjectInfoClass,
-                       com.sun.jna.Pointer&nbsp;lpJobObjectInfo,
-                       int&nbsp;cbJobObjectInfoLength)</code>&nbsp;</td>
-</tr>
-<tr id="i5" class="rowColor">
-<td class="colFirst"><code>boolean</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/os/Kernel32.html#TerminateJobObject-com.sun.jna.platform.win32.WinNT.HANDLE-long-">TerminateJobObject</a></span>(com.sun.jna.platform.win32.WinNT.HANDLE&nbsp;hJob,
-                  long&nbsp;uExitCode)</code>&nbsp;</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -341,101 +263,10 @@ extends com.sun.jna.platform.win32.Kernel32</pre>
 <a name="INSTANCE">
 <!--   -->
 </a>
-<ul class="blockList">
+<ul class="blockListLast">
 <li class="blockList">
 <h4>INSTANCE</h4>
 <pre>static final&nbsp;<a href="../../../../org/openqa/selenium/os/Kernel32.html" title="interface in org.openqa.selenium.os">Kernel32</a> INSTANCE</pre>
-</li>
-</ul>
-<a name="JOB_OBJECT_LIMIT_BREAKAWAY_OK">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>JOB_OBJECT_LIMIT_BREAKAWAY_OK</h4>
-<pre>static final&nbsp;int JOB_OBJECT_LIMIT_BREAKAWAY_OK</pre>
-<dl>
-<dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="../../../../constant-values.html#org.openqa.selenium.os.Kernel32.JOB_OBJECT_LIMIT_BREAKAWAY_OK">Constant Field Values</a></dd>
-</dl>
-</li>
-</ul>
-<a name="JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE</h4>
-<pre>static final&nbsp;int JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE</pre>
-<dl>
-<dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="../../../../constant-values.html#org.openqa.selenium.os.Kernel32.JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE">Constant Field Values</a></dd>
-</dl>
-</li>
-</ul>
-<a name="JobObjectExtendedLimitInformation">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>JobObjectExtendedLimitInformation</h4>
-<pre>static final&nbsp;int JobObjectExtendedLimitInformation</pre>
-<dl>
-<dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="../../../../constant-values.html#org.openqa.selenium.os.Kernel32.JobObjectExtendedLimitInformation">Constant Field Values</a></dd>
-</dl>
-</li>
-</ul>
-<a name="JobObjectBasicUIRestrictions">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>JobObjectBasicUIRestrictions</h4>
-<pre>static final&nbsp;int JobObjectBasicUIRestrictions</pre>
-<dl>
-<dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="../../../../constant-values.html#org.openqa.selenium.os.Kernel32.JobObjectBasicUIRestrictions">Constant Field Values</a></dd>
-</dl>
-</li>
-</ul>
-<a name="JOB_OBJECT_UILIMIT_GLOBALATOMS">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>JOB_OBJECT_UILIMIT_GLOBALATOMS</h4>
-<pre>static final&nbsp;int JOB_OBJECT_UILIMIT_GLOBALATOMS</pre>
-<dl>
-<dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="../../../../constant-values.html#org.openqa.selenium.os.Kernel32.JOB_OBJECT_UILIMIT_GLOBALATOMS">Constant Field Values</a></dd>
-</dl>
-</li>
-</ul>
-<a name="CREATE_SUSPENDED">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>CREATE_SUSPENDED</h4>
-<pre>static final&nbsp;int CREATE_SUSPENDED</pre>
-<dl>
-<dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="../../../../constant-values.html#org.openqa.selenium.os.Kernel32.CREATE_SUSPENDED">Constant Field Values</a></dd>
-</dl>
-</li>
-</ul>
-<a name="CREATE_BREAKAWAY_FROM_JOB">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>CREATE_BREAKAWAY_FROM_JOB</h4>
-<pre>static final&nbsp;int CREATE_BREAKAWAY_FROM_JOB</pre>
-<dl>
-<dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="../../../../constant-values.html#org.openqa.selenium.os.Kernel32.CREATE_BREAKAWAY_FROM_JOB">Constant Field Values</a></dd>
-</dl>
 </li>
 </ul>
 </li>
@@ -446,57 +277,6 @@ extends com.sun.jna.platform.win32.Kernel32</pre>
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a name="CreateJobObject-com.sun.jna.platform.win32.WinBase.SECURITY_ATTRIBUTES-java.lang.String-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>CreateJobObject</h4>
-<pre>com.sun.jna.platform.win32.WinNT.HANDLE&nbsp;CreateJobObject(com.sun.jna.platform.win32.WinBase.SECURITY_ATTRIBUTES&nbsp;attrs,
-                                                        java.lang.String&nbsp;name)</pre>
-</li>
-</ul>
-<a name="SetInformationJobObject-com.sun.jna.platform.win32.WinNT.HANDLE-int-com.sun.jna.Pointer-int-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>SetInformationJobObject</h4>
-<pre>boolean&nbsp;SetInformationJobObject(com.sun.jna.platform.win32.WinNT.HANDLE&nbsp;hJob,
-                                int&nbsp;JobObjectInfoClass,
-                                com.sun.jna.Pointer&nbsp;lpJobObjectInfo,
-                                int&nbsp;cbJobObjectInfoLength)</pre>
-</li>
-</ul>
-<a name="AssignProcessToJobObject-com.sun.jna.platform.win32.WinNT.HANDLE-com.sun.jna.platform.win32.WinNT.HANDLE-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>AssignProcessToJobObject</h4>
-<pre>boolean&nbsp;AssignProcessToJobObject(com.sun.jna.platform.win32.WinNT.HANDLE&nbsp;hJob,
-                                 com.sun.jna.platform.win32.WinNT.HANDLE&nbsp;hProcess)</pre>
-</li>
-</ul>
-<a name="TerminateJobObject-com.sun.jna.platform.win32.WinNT.HANDLE-long-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>TerminateJobObject</h4>
-<pre>boolean&nbsp;TerminateJobObject(com.sun.jna.platform.win32.WinNT.HANDLE&nbsp;hJob,
-                           long&nbsp;uExitCode)</pre>
-</li>
-</ul>
-<a name="ResumeThread-com.sun.jna.platform.win32.WinNT.HANDLE-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>ResumeThread</h4>
-<pre>int&nbsp;ResumeThread(com.sun.jna.platform.win32.WinNT.HANDLE&nbsp;hThread)</pre>
-</li>
-</ul>
 <a name="GetProcessId-com.sun.jna.platform.win32.WinNT.HANDLE-">
 <!--   -->
 </a>
@@ -537,8 +317,8 @@ extends com.sun.jna.platform.win32.Kernel32</pre>
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../org/openqa/selenium/os/CommandLine.html" title="class in org.openqa.selenium.os"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
-<li><a href="../../../../org/openqa/selenium/os/Kernel32.IO_COUNTERS.html" title="class in org.openqa.selenium.os"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
+<li><a href="../../../../org/openqa/selenium/os/ExecutableFinder.html" title="class in org.openqa.selenium.os"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
+<li><a href="../../../../org/openqa/selenium/os/ProcessUtils.html" title="class in org.openqa.selenium.os"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../../index.html?org/openqa/selenium/os/Kernel32.html" target="_top">Frames</a></li>
@@ -562,7 +342,7 @@ extends com.sun.jna.platform.win32.Kernel32</pre>
 <div>
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
-<li><a href="#nested.class.summary">Nested</a>&nbsp;|&nbsp;</li>
+<li>Nested&nbsp;|&nbsp;</li>
 <li><a href="#field.summary">Field</a>&nbsp;|&nbsp;</li>
 <li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>

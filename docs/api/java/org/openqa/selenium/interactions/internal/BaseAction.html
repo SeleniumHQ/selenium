@@ -153,12 +153,6 @@ extends java.lang.Object</pre>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>protected </code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/interactions/internal/BaseAction.html#BaseAction--">BaseAction</a></span>()</code>
-<div class="block">No locatable element provided - action in the context of the previous action.</div>
-</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code>protected </code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/interactions/internal/BaseAction.html#BaseAction-org.openqa.selenium.internal.Locatable-">BaseAction</a></span>(<a href="../../../../../org/openqa/selenium/internal/Locatable.html" title="interface in org.openqa.selenium.internal">Locatable</a>&nbsp;actionLocation)</code>
 <div class="block">Common c'tor - a locatable element is provided.</div>
 </td>
@@ -179,8 +173,8 @@ extends java.lang.Object</pre>
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr id="i0" class="altColor">
-<td class="colFirst"><code>protected java.lang.String</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/interactions/internal/BaseAction.html#getTargetId--">getTargetId</a></span>()</code>&nbsp;</td>
+<td class="colFirst"><code>protected java.util.Optional&lt;<a href="../../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/interactions/internal/BaseAction.html#getTargetElement--">getTargetElement</a></span>()</code>&nbsp;</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -224,7 +218,7 @@ extends java.lang.Object</pre>
 <a name="BaseAction-org.openqa.selenium.internal.Locatable-">
 <!--   -->
 </a>
-<ul class="blockList">
+<ul class="blockListLast">
 <li class="blockList">
 <h4>BaseAction</h4>
 <pre>protected&nbsp;BaseAction(<a href="../../../../../org/openqa/selenium/internal/Locatable.html" title="interface in org.openqa.selenium.internal">Locatable</a>&nbsp;actionLocation)</pre>
@@ -235,16 +229,6 @@ extends java.lang.Object</pre>
 </dl>
 </li>
 </ul>
-<a name="BaseAction--">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>BaseAction</h4>
-<pre>protected&nbsp;BaseAction()</pre>
-<div class="block">No locatable element provided - action in the context of the previous action.</div>
-</li>
-</ul>
 </li>
 </ul>
 <!-- ============ METHOD DETAIL ========== -->
@@ -253,13 +237,13 @@ extends java.lang.Object</pre>
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a name="getTargetId--">
+<a name="getTargetElement--">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
-<h4>getTargetId</h4>
-<pre>protected&nbsp;java.lang.String&nbsp;getTargetId()</pre>
+<h4>getTargetElement</h4>
+<pre>protected&nbsp;java.util.Optional&lt;<a href="../../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;&nbsp;getTargetElement()</pre>
 </li>
 </ul>
 </li>

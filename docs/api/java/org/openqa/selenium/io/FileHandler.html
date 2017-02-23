@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9,"i9":9,"i10":9};
+var methods = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -48,7 +48,7 @@ var activeTableTab = "activeTableTab";
 <div class="subNav">
 <ul class="navList">
 <li><a href="../../../../org/openqa/selenium/io/CircularOutputStream.html" title="class in org.openqa.selenium.io"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
-<li><a href="../../../../org/openqa/selenium/io/FileHandler.Filter.html" title="interface in org.openqa.selenium.io"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
+<li><a href="../../../../org/openqa/selenium/io/MultiOutputStream.html" title="class in org.openqa.selenium.io"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../../index.html?org/openqa/selenium/io/FileHandler.html" target="_top">Frames</a></li>
@@ -72,7 +72,7 @@ var activeTableTab = "activeTableTab";
 <div>
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
-<li><a href="#nested.class.summary">Nested</a>&nbsp;|&nbsp;</li>
+<li>Nested&nbsp;|&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
@@ -116,27 +116,6 @@ extends java.lang.Object</pre>
 <div class="summary">
 <ul class="blockList">
 <li class="blockList">
-<!-- ======== NESTED CLASS SUMMARY ======== -->
-<ul class="blockList">
-<li class="blockList"><a name="nested.class.summary">
-<!--   -->
-</a>
-<h3>Nested Class Summary</h3>
-<table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Nested Class Summary table, listing nested classes, and an explanation">
-<caption><span>Nested Classes</span><span class="tabEnd">&nbsp;</span></caption>
-<tr>
-<th class="colFirst" scope="col">Modifier and Type</th>
-<th class="colLast" scope="col">Class and Description</th>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>static interface&nbsp;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/io/FileHandler.Filter.html" title="interface in org.openqa.selenium.io">FileHandler.Filter</a></span></code>
-<div class="block">Used by file operations to determine whether or not to make use of a file.</div>
-</td>
-</tr>
-</table>
-</li>
-</ul>
 <!-- ======== CONSTRUCTOR SUMMARY ======== -->
 <ul class="blockList">
 <li class="blockList"><a name="constructor.summary">
@@ -167,53 +146,31 @@ extends java.lang.Object</pre>
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr id="i0" class="altColor">
-<td class="colFirst"><code>static java.lang.Boolean</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/io/FileHandler.html#canExecute-java.io.File-">canExecute</a></span>(java.io.File&nbsp;file)</code>&nbsp;</td>
-</tr>
-<tr id="i1" class="rowColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/io/FileHandler.html#copy-java.io.File-java.io.File-">copy</a></span>(java.io.File&nbsp;from,
     java.io.File&nbsp;to)</code>&nbsp;</td>
 </tr>
-<tr id="i2" class="altColor">
-<td class="colFirst"><code>static void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/io/FileHandler.html#copy-java.io.File-java.io.File-java.lang.String-">copy</a></span>(java.io.File&nbsp;source,
-    java.io.File&nbsp;dest,
-    java.lang.String&nbsp;suffix)</code>&nbsp;</td>
-</tr>
-<tr id="i3" class="rowColor">
+<tr id="i1" class="rowColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/io/FileHandler.html#copyResource-java.io.File-java.lang.Class-java.lang.String...-">copyResource</a></span>(java.io.File&nbsp;outputDir,
             java.lang.Class&lt;?&gt;&nbsp;forClassLoader,
             java.lang.String...&nbsp;names)</code>&nbsp;</td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i2" class="altColor">
 <td class="colFirst"><code>static boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/io/FileHandler.html#createDir-java.io.File-">createDir</a></span>(java.io.File&nbsp;dir)</code>&nbsp;</td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>static boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/io/FileHandler.html#delete-java.io.File-">delete</a></span>(java.io.File&nbsp;toDelete)</code>&nbsp;</td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>static boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/io/FileHandler.html#isZipped-java.lang.String-">isZipped</a></span>(java.lang.String&nbsp;fileName)</code>&nbsp;</td>
 </tr>
-<tr id="i7" class="rowColor">
-<td class="colFirst"><code>static boolean</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/io/FileHandler.html#makeExecutable-java.io.File-">makeExecutable</a></span>(java.io.File&nbsp;file)</code>&nbsp;</td>
-</tr>
-<tr id="i8" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>static boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/io/FileHandler.html#makeWritable-java.io.File-">makeWritable</a></span>(java.io.File&nbsp;file)</code>&nbsp;</td>
-</tr>
-<tr id="i9" class="rowColor">
-<td class="colFirst"><code>static java.lang.String</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/io/FileHandler.html#readAsString-java.io.File-">readAsString</a></span>(java.io.File&nbsp;toRead)</code>&nbsp;</td>
-</tr>
-<tr id="i10" class="altColor">
-<td class="colFirst"><code>static java.io.File</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/io/FileHandler.html#unzip-java.io.InputStream-">unzip</a></span>(java.io.InputStream&nbsp;resource)</code>&nbsp;</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -254,20 +211,6 @@ extends java.lang.Object</pre>
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a name="unzip-java.io.InputStream-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>unzip</h4>
-<pre>public static&nbsp;java.io.File&nbsp;unzip(java.io.InputStream&nbsp;resource)
-                          throws java.io.IOException</pre>
-<dl>
-<dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>java.io.IOException</code></dd>
-</dl>
-</li>
-</ul>
 <a name="copyResource-java.io.File-java.lang.Class-java.lang.String...-">
 <!--   -->
 </a>
@@ -312,29 +255,6 @@ extends java.lang.Object</pre>
 </dl>
 </li>
 </ul>
-<a name="makeExecutable-java.io.File-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>makeExecutable</h4>
-<pre>public static&nbsp;boolean&nbsp;makeExecutable(java.io.File&nbsp;file)
-                              throws java.io.IOException</pre>
-<dl>
-<dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>java.io.IOException</code></dd>
-</dl>
-</li>
-</ul>
-<a name="canExecute-java.io.File-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>canExecute</h4>
-<pre>public static&nbsp;java.lang.Boolean&nbsp;canExecute(java.io.File&nbsp;file)</pre>
-</li>
-</ul>
 <a name="isZipped-java.lang.String-">
 <!--   -->
 </a>
@@ -356,42 +276,12 @@ extends java.lang.Object</pre>
 <a name="copy-java.io.File-java.io.File-">
 <!--   -->
 </a>
-<ul class="blockList">
+<ul class="blockListLast">
 <li class="blockList">
 <h4>copy</h4>
 <pre>public static&nbsp;void&nbsp;copy(java.io.File&nbsp;from,
                         java.io.File&nbsp;to)
                  throws java.io.IOException</pre>
-<dl>
-<dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>java.io.IOException</code></dd>
-</dl>
-</li>
-</ul>
-<a name="copy-java.io.File-java.io.File-java.lang.String-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>copy</h4>
-<pre>public static&nbsp;void&nbsp;copy(java.io.File&nbsp;source,
-                        java.io.File&nbsp;dest,
-                        java.lang.String&nbsp;suffix)
-                 throws java.io.IOException</pre>
-<dl>
-<dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>java.io.IOException</code></dd>
-</dl>
-</li>
-</ul>
-<a name="readAsString-java.io.File-">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>readAsString</h4>
-<pre>public static&nbsp;java.lang.String&nbsp;readAsString(java.io.File&nbsp;toRead)
-                                     throws java.io.IOException</pre>
 <dl>
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code>java.io.IOException</code></dd>
@@ -426,7 +316,7 @@ extends java.lang.Object</pre>
 <div class="subNav">
 <ul class="navList">
 <li><a href="../../../../org/openqa/selenium/io/CircularOutputStream.html" title="class in org.openqa.selenium.io"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
-<li><a href="../../../../org/openqa/selenium/io/FileHandler.Filter.html" title="interface in org.openqa.selenium.io"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
+<li><a href="../../../../org/openqa/selenium/io/MultiOutputStream.html" title="class in org.openqa.selenium.io"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../../index.html?org/openqa/selenium/io/FileHandler.html" target="_top">Frames</a></li>
@@ -450,7 +340,7 @@ extends java.lang.Object</pre>
 <div>
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
-<li><a href="#nested.class.summary">Nested</a>&nbsp;|&nbsp;</li>
+<li>Nested&nbsp;|&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>

@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -153,20 +153,32 @@ implements <a href="../../../../../org/openqa/selenium/support/events/WebDriverE
 </tr>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/events/AbstractWebDriverEventListener.html#afterAlertAccept-org.openqa.selenium.WebDriver-">afterAlertAccept</a></span>(<a href="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code>
+<div class="block">This action will be performed each time after <a href="../../../../../org/openqa/selenium/Alert.html#accept--"><code>Alert.accept()</code></a></div>
+</td>
+</tr>
+<tr id="i1" class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/events/AbstractWebDriverEventListener.html#afterAlertDismiss-org.openqa.selenium.WebDriver-">afterAlertDismiss</a></span>(<a href="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code>
+<div class="block">This action will be performed each time before <a href="../../../../../org/openqa/selenium/Alert.html#dismiss--"><code>Alert.dismiss()</code></a></div>
+</td>
+</tr>
+<tr id="i2" class="altColor">
+<td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/events/AbstractWebDriverEventListener.html#afterChangeValueOf-org.openqa.selenium.WebElement-org.openqa.selenium.WebDriver-java.lang.CharSequence:A-">afterChangeValueOf</a></span>(<a href="../../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
                   <a href="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
                   java.lang.CharSequence[]&nbsp;keysToSend)</code>
 <div class="block">Called after <a href="../../../../../org/openqa/selenium/WebElement.html#clear--"><code>WebElement.clear()</code></a>, <a href="../../../../../org/openqa/selenium/WebElement.html#sendKeys-java.lang.CharSequence...-"><code>WebElement.sendKeys(...)</code></a>}.</div>
 </td>
 </tr>
-<tr id="i1" class="rowColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/events/AbstractWebDriverEventListener.html#afterClickOn-org.openqa.selenium.WebElement-org.openqa.selenium.WebDriver-">afterClickOn</a></span>(<a href="../../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
             <a href="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code>
 <div class="block">Called after <a href="../../../../../org/openqa/selenium/WebElement.html#click--"><code>WebElement.click()</code></a>.</div>
 </td>
 </tr>
-<tr id="i2" class="altColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/events/AbstractWebDriverEventListener.html#afterFindBy-org.openqa.selenium.By-org.openqa.selenium.WebElement-org.openqa.selenium.WebDriver-">afterFindBy</a></span>(<a href="../../../../../org/openqa/selenium/By.html" title="class in org.openqa.selenium">By</a>&nbsp;by,
            <a href="../../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
@@ -175,25 +187,25 @@ implements <a href="../../../../../org/openqa/selenium/support/events/WebDriverE
  <a href="../../../../../org/openqa/selenium/WebDriver.html#findElements-org.openqa.selenium.By-"><code>WebDriver.findElements(...)</code></a>, or <a href="../../../../../org/openqa/selenium/WebElement.html#findElement-org.openqa.selenium.By-"><code>WebElement.findElement(...)</code></a>, or <a href="../../../../../org/openqa/selenium/WebElement.html#findElement-org.openqa.selenium.By-"><code>WebElement.findElements(...)</code></a>.</div>
 </td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/events/AbstractWebDriverEventListener.html#afterNavigateBack-org.openqa.selenium.WebDriver-">afterNavigateBack</a></span>(<a href="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code>
 <div class="block">Called after <a href="../../../../../org/openqa/selenium/WebDriver.Navigation.html" title="interface in org.openqa.selenium"><code>navigate().back()</code></a>.</div>
 </td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/events/AbstractWebDriverEventListener.html#afterNavigateForward-org.openqa.selenium.WebDriver-">afterNavigateForward</a></span>(<a href="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code>
 <div class="block">Called after <a href="../../../../../org/openqa/selenium/WebDriver.Navigation.html#forward--"><code>navigate().forward()</code></a>.</div>
 </td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/events/AbstractWebDriverEventListener.html#afterNavigateRefresh-org.openqa.selenium.WebDriver-">afterNavigateRefresh</a></span>(<a href="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code>
 <div class="block">Called after <a href="../../../../../org/openqa/selenium/WebDriver.Navigation.html#refresh--"><code>navigate().refresh()</code></a>.</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/events/AbstractWebDriverEventListener.html#afterNavigateTo-java.lang.String-org.openqa.selenium.WebDriver-">afterNavigateTo</a></span>(java.lang.String&nbsp;url,
                <a href="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code>
@@ -201,14 +213,26 @@ implements <a href="../../../../../org/openqa/selenium/support/events/WebDriverE
  <a href="../../../../../org/openqa/selenium/WebDriver.Navigation.html#to-java.lang.String-"><code>navigate().to(String url)</code></a>.</div>
 </td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/events/AbstractWebDriverEventListener.html#afterScript-java.lang.String-org.openqa.selenium.WebDriver-">afterScript</a></span>(java.lang.String&nbsp;script,
            <a href="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code>
 <div class="block">Called after <a href="../../../../../org/openqa/selenium/remote/RemoteWebDriver.html#executeScript-java.lang.String-java.lang.Object...-"><code>RemoteWebDriver.executeScript(java.lang.String, java.lang.Object[])</code></a>.</div>
 </td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i10" class="altColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/events/AbstractWebDriverEventListener.html#beforeAlertAccept-org.openqa.selenium.WebDriver-">beforeAlertAccept</a></span>(<a href="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code>
+<div class="block">This action will be performed each time before <a href="../../../../../org/openqa/selenium/Alert.html#accept--"><code>Alert.accept()</code></a></div>
+</td>
+</tr>
+<tr id="i11" class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/events/AbstractWebDriverEventListener.html#beforeAlertDismiss-org.openqa.selenium.WebDriver-">beforeAlertDismiss</a></span>(<a href="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code>
+<div class="block">This action will be performed each time after <a href="../../../../../org/openqa/selenium/Alert.html#dismiss--"><code>Alert.dismiss()</code></a></div>
+</td>
+</tr>
+<tr id="i12" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/events/AbstractWebDriverEventListener.html#beforeChangeValueOf-org.openqa.selenium.WebElement-org.openqa.selenium.WebDriver-java.lang.CharSequence:A-">beforeChangeValueOf</a></span>(<a href="../../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
                    <a href="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver,
@@ -216,14 +240,14 @@ implements <a href="../../../../../org/openqa/selenium/support/events/WebDriverE
 <div class="block">Called before <a href="../../../../../org/openqa/selenium/WebElement.html#clear--"><code>WebElement.clear()</code></a>, <a href="../../../../../org/openqa/selenium/WebElement.html#sendKeys-java.lang.CharSequence...-"><code>WebElement.sendKeys(...)</code></a>.</div>
 </td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/events/AbstractWebDriverEventListener.html#beforeClickOn-org.openqa.selenium.WebElement-org.openqa.selenium.WebDriver-">beforeClickOn</a></span>(<a href="../../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
              <a href="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code>
 <div class="block">Called before <a href="../../../../../org/openqa/selenium/WebElement.html#click--"><code>WebElement.click()</code></a>.</div>
 </td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i14" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/events/AbstractWebDriverEventListener.html#beforeFindBy-org.openqa.selenium.By-org.openqa.selenium.WebElement-org.openqa.selenium.WebDriver-">beforeFindBy</a></span>(<a href="../../../../../org/openqa/selenium/By.html" title="class in org.openqa.selenium">By</a>&nbsp;by,
             <a href="../../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
@@ -232,25 +256,25 @@ implements <a href="../../../../../org/openqa/selenium/support/events/WebDriverE
  <a href="../../../../../org/openqa/selenium/WebDriver.html#findElements-org.openqa.selenium.By-"><code>WebDriver.findElements(...)</code></a>, or <a href="../../../../../org/openqa/selenium/WebElement.html#findElement-org.openqa.selenium.By-"><code>WebElement.findElement(...)</code></a>, or <a href="../../../../../org/openqa/selenium/WebElement.html#findElement-org.openqa.selenium.By-"><code>WebElement.findElements(...)</code></a>.</div>
 </td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i15" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/events/AbstractWebDriverEventListener.html#beforeNavigateBack-org.openqa.selenium.WebDriver-">beforeNavigateBack</a></span>(<a href="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code>
 <div class="block">Called before <a href="../../../../../org/openqa/selenium/WebDriver.Navigation.html#back--"><code>navigate().back()</code></a>.</div>
 </td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i16" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/events/AbstractWebDriverEventListener.html#beforeNavigateForward-org.openqa.selenium.WebDriver-">beforeNavigateForward</a></span>(<a href="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code>
 <div class="block">Called before <a href="../../../../../org/openqa/selenium/WebDriver.Navigation.html#forward--"><code>navigate().forward()</code></a>.</div>
 </td>
 </tr>
-<tr id="i13" class="rowColor">
+<tr id="i17" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/events/AbstractWebDriverEventListener.html#beforeNavigateRefresh-org.openqa.selenium.WebDriver-">beforeNavigateRefresh</a></span>(<a href="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code>
 <div class="block">Called before <a href="../../../../../org/openqa/selenium/WebDriver.Navigation.html#refresh--"><code>navigate().refresh()</code></a>.</div>
 </td>
 </tr>
-<tr id="i14" class="altColor">
+<tr id="i18" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/events/AbstractWebDriverEventListener.html#beforeNavigateTo-java.lang.String-org.openqa.selenium.WebDriver-">beforeNavigateTo</a></span>(java.lang.String&nbsp;url,
                 <a href="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code>
@@ -258,14 +282,14 @@ implements <a href="../../../../../org/openqa/selenium/support/events/WebDriverE
  <a href="../../../../../org/openqa/selenium/WebDriver.Navigation.html#to-java.lang.String-"><code>navigate().to(String url)</code></a>.</div>
 </td>
 </tr>
-<tr id="i15" class="rowColor">
+<tr id="i19" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/events/AbstractWebDriverEventListener.html#beforeScript-java.lang.String-org.openqa.selenium.WebDriver-">beforeScript</a></span>(java.lang.String&nbsp;script,
             <a href="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code>
 <div class="block">Called before <a href="../../../../../org/openqa/selenium/remote/RemoteWebDriver.html#executeScript-java.lang.String-java.lang.Object...-"><code>RemoteWebDriver.executeScript(java.lang.String, java.lang.Object[])</code></a></div>
 </td>
 </tr>
-<tr id="i16" class="altColor">
+<tr id="i20" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/events/AbstractWebDriverEventListener.html#onException-java.lang.Throwable-org.openqa.selenium.WebDriver-">onException</a></span>(java.lang.Throwable&nbsp;throwable,
            <a href="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code>
@@ -311,6 +335,74 @@ implements <a href="../../../../../org/openqa/selenium/support/events/WebDriverE
 <!--   -->
 </a>
 <h3>Method Detail</h3>
+<a name="beforeAlertAccept-org.openqa.selenium.WebDriver-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>beforeAlertAccept</h4>
+<pre>public&nbsp;void&nbsp;beforeAlertAccept(<a href="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../../../../../org/openqa/selenium/support/events/WebDriverEventListener.html#beforeAlertAccept-org.openqa.selenium.WebDriver-">WebDriverEventListener</a></code></span></div>
+<div class="block">This action will be performed each time before <a href="../../../../../org/openqa/selenium/Alert.html#accept--"><code>Alert.accept()</code></a></div>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../../../../../org/openqa/selenium/support/events/WebDriverEventListener.html#beforeAlertAccept-org.openqa.selenium.WebDriver-">beforeAlertAccept</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../org/openqa/selenium/support/events/WebDriverEventListener.html" title="interface in org.openqa.selenium.support.events">WebDriverEventListener</a></code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>driver</code> - WebDriver</dd>
+</dl>
+</li>
+</ul>
+<a name="afterAlertAccept-org.openqa.selenium.WebDriver-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>afterAlertAccept</h4>
+<pre>public&nbsp;void&nbsp;afterAlertAccept(<a href="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../../../../../org/openqa/selenium/support/events/WebDriverEventListener.html#afterAlertAccept-org.openqa.selenium.WebDriver-">WebDriverEventListener</a></code></span></div>
+<div class="block">This action will be performed each time after <a href="../../../../../org/openqa/selenium/Alert.html#accept--"><code>Alert.accept()</code></a></div>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../../../../../org/openqa/selenium/support/events/WebDriverEventListener.html#afterAlertAccept-org.openqa.selenium.WebDriver-">afterAlertAccept</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../org/openqa/selenium/support/events/WebDriverEventListener.html" title="interface in org.openqa.selenium.support.events">WebDriverEventListener</a></code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>driver</code> - WebDriver</dd>
+</dl>
+</li>
+</ul>
+<a name="afterAlertDismiss-org.openqa.selenium.WebDriver-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>afterAlertDismiss</h4>
+<pre>public&nbsp;void&nbsp;afterAlertDismiss(<a href="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../../../../../org/openqa/selenium/support/events/WebDriverEventListener.html#afterAlertDismiss-org.openqa.selenium.WebDriver-">WebDriverEventListener</a></code></span></div>
+<div class="block">This action will be performed each time before <a href="../../../../../org/openqa/selenium/Alert.html#dismiss--"><code>Alert.dismiss()</code></a></div>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../../../../../org/openqa/selenium/support/events/WebDriverEventListener.html#afterAlertDismiss-org.openqa.selenium.WebDriver-">afterAlertDismiss</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../org/openqa/selenium/support/events/WebDriverEventListener.html" title="interface in org.openqa.selenium.support.events">WebDriverEventListener</a></code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>driver</code> - WebDriver</dd>
+</dl>
+</li>
+</ul>
+<a name="beforeAlertDismiss-org.openqa.selenium.WebDriver-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>beforeAlertDismiss</h4>
+<pre>public&nbsp;void&nbsp;beforeAlertDismiss(<a href="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../../../../../org/openqa/selenium/support/events/WebDriverEventListener.html#beforeAlertDismiss-org.openqa.selenium.WebDriver-">WebDriverEventListener</a></code></span></div>
+<div class="block">This action will be performed each time after <a href="../../../../../org/openqa/selenium/Alert.html#dismiss--"><code>Alert.dismiss()</code></a></div>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../../../../../org/openqa/selenium/support/events/WebDriverEventListener.html#beforeAlertDismiss-org.openqa.selenium.WebDriver-">beforeAlertDismiss</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../org/openqa/selenium/support/events/WebDriverEventListener.html" title="interface in org.openqa.selenium.support.events">WebDriverEventListener</a></code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>driver</code> - WebDriver</dd>
+</dl>
+</li>
+</ul>
 <a name="beforeNavigateTo-java.lang.String-org.openqa.selenium.WebDriver-">
 <!--   -->
 </a>

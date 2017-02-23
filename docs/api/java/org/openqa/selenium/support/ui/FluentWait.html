@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -136,12 +136,12 @@ implements <a href="../../../../../org/openqa/selenium/support/ui/Wait.html" tit
  Sample usage: <pre>
    // Waiting 30 seconds for an element to be present on the page, checking
    // for its presence once every 5 seconds.
-   Wait wait = new FluentWait(driver)
+   Wait&lt;WebDriver&gt; wait = new FluentWait&lt;WebDriver&gt;(driver)
        .withTimeout(30, SECONDS)
        .pollingEvery(5, SECONDS)
        .ignoring(NoSuchElementException.class);
 
-   WebElement foo = wait.until(new Function() {
+   WebElement foo = wait.until(new Function&lt;WebDriver, WebElement&gt;() {
      public WebElement apply(WebDriver driver) {
        return driver.findElement(By.id("foo"));
      }
@@ -240,7 +240,7 @@ implements <a href="../../../../../org/openqa/selenium/support/ui/Wait.html" tit
 </tr>
 <tr id="i5" class="rowColor">
 <td class="colFirst"><code>&lt;V&gt;&nbsp;V</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html#until-com.google.common.base.Function-">until</a></span>(com.google.common.base.Function&lt;? super <a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html" title="type parameter in FluentWait">T</a>,V&gt;&nbsp;isTrue)</code>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html#until-java.util.function.Function-">until</a></span>(java.util.function.Function&lt;? super <a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html" title="type parameter in FluentWait">T</a>,V&gt;&nbsp;isTrue)</code>
 <div class="block">Repeatedly applies this instance's input value to the given function until one of the following
  occurs:
  
@@ -253,25 +253,18 @@ implements <a href="../../../../../org/openqa/selenium/support/ui/Wait.html" tit
 </td>
 </tr>
 <tr id="i6" class="altColor">
-<td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html#until-com.google.common.base.Predicate-">until</a></span>(com.google.common.base.Predicate&lt;<a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html" title="type parameter in FluentWait">T</a>&gt;&nbsp;isTrue)</code>
-<div class="block">Repeatedly applies this instance's input value to the given predicate until the timeout expires
- or the predicate evaluates to true.</div>
-</td>
-</tr>
-<tr id="i7" class="rowColor">
 <td class="colFirst"><code><a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html" title="class in org.openqa.selenium.support.ui">FluentWait</a>&lt;<a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html" title="type parameter in FluentWait">T</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html#withMessage-java.lang.String-">withMessage</a></span>(java.lang.String&nbsp;message)</code>
 <div class="block">Sets the message to be displayed when time expires.</div>
 </td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code><a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html" title="class in org.openqa.selenium.support.ui">FluentWait</a>&lt;<a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html" title="type parameter in FluentWait">T</a>&gt;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html#withMessage-com.google.common.base.Supplier-">withMessage</a></span>(com.google.common.base.Supplier&lt;java.lang.String&gt;&nbsp;messageSupplier)</code>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html#withMessage-java.util.function.Supplier-">withMessage</a></span>(java.util.function.Supplier&lt;java.lang.String&gt;&nbsp;messageSupplier)</code>
 <div class="block">Sets the message to be evaluated and displayed when time expires.</div>
 </td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code><a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html" title="class in org.openqa.selenium.support.ui">FluentWait</a>&lt;<a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html" title="type parameter in FluentWait">T</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html#withTimeout-long-java.util.concurrent.TimeUnit-">withTimeout</a></span>(long&nbsp;duration,
            java.util.concurrent.TimeUnit&nbsp;unit)</code>
@@ -394,13 +387,13 @@ implements <a href="../../../../../org/openqa/selenium/support/ui/Wait.html" tit
 </dl>
 </li>
 </ul>
-<a name="withMessage-com.google.common.base.Supplier-">
+<a name="withMessage-java.util.function.Supplier-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>withMessage</h4>
-<pre>public&nbsp;<a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html" title="class in org.openqa.selenium.support.ui">FluentWait</a>&lt;<a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html" title="type parameter in FluentWait">T</a>&gt;&nbsp;withMessage(com.google.common.base.Supplier&lt;java.lang.String&gt;&nbsp;messageSupplier)</pre>
+<pre>public&nbsp;<a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html" title="class in org.openqa.selenium.support.ui">FluentWait</a>&lt;<a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html" title="type parameter in FluentWait">T</a>&gt;&nbsp;withMessage(java.util.function.Supplier&lt;java.lang.String&gt;&nbsp;messageSupplier)</pre>
 <div class="block">Sets the message to be evaluated and displayed when time expires.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -487,30 +480,13 @@ implements <a href="../../../../../org/openqa/selenium/support/ui/Wait.html" tit
 </dl>
 </li>
 </ul>
-<a name="until-com.google.common.base.Predicate-">
+<a name="until-java.util.function.Function-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>until</h4>
-<pre>public&nbsp;void&nbsp;until(com.google.common.base.Predicate&lt;<a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html" title="type parameter in FluentWait">T</a>&gt;&nbsp;isTrue)</pre>
-<div class="block">Repeatedly applies this instance's input value to the given predicate until the timeout expires
- or the predicate evaluates to true.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>isTrue</code> - The predicate to wait on.</dd>
-<dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code><a href="../../../../../org/openqa/selenium/TimeoutException.html" title="class in org.openqa.selenium">TimeoutException</a></code> - If the timeout expires.</dd>
-</dl>
-</li>
-</ul>
-<a name="until-com.google.common.base.Function-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>until</h4>
-<pre>public&nbsp;&lt;V&gt;&nbsp;V&nbsp;until(com.google.common.base.Function&lt;? super <a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html" title="type parameter in FluentWait">T</a>,V&gt;&nbsp;isTrue)</pre>
+<pre>public&nbsp;&lt;V&gt;&nbsp;V&nbsp;until(java.util.function.Function&lt;? super <a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html" title="type parameter in FluentWait">T</a>,V&gt;&nbsp;isTrue)</pre>
 <div class="block">Repeatedly applies this instance's input value to the given function until one of the following
  occurs:
  <ol>
@@ -522,7 +498,7 @@ implements <a href="../../../../../org/openqa/selenium/support/ui/Wait.html" tit
  </ol></div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../../../../org/openqa/selenium/support/ui/Wait.html#until-com.google.common.base.Function-">until</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../org/openqa/selenium/support/ui/Wait.html" title="interface in org.openqa.selenium.support.ui">Wait</a>&lt;<a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html" title="type parameter in FluentWait">T</a>&gt;</code></dd>
+<dd><code><a href="../../../../../org/openqa/selenium/support/ui/Wait.html#until-java.util.function.Function-">until</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../org/openqa/selenium/support/ui/Wait.html" title="interface in org.openqa.selenium.support.ui">Wait</a>&lt;<a href="../../../../../org/openqa/selenium/support/ui/FluentWait.html" title="type parameter in FluentWait">T</a>&gt;</code></dd>
 <dt><span class="paramLabel">Type Parameters:</span></dt>
 <dd><code>V</code> - The function's expected return type.</dd>
 <dt><span class="paramLabel">Parameters:</span></dt>

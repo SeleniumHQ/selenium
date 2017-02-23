@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":42,"i19":10,"i20":10,"i21":10,"i22":10,"i23":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":42,"i19":10,"i20":10,"i21":10,"i22":10,"i23":10,"i24":10,"i25":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"],32:["t6","Deprecated Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -47,7 +47,7 @@ var activeTableTab = "activeTableTab";
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../org/openqa/selenium/interactions/ActionChainExecutor.html" title="interface in org.openqa.selenium.interactions"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
+<li><a href="../../../../org/openqa/selenium/interactions/Action.html" title="interface in org.openqa.selenium.interactions"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
 <li><a href="../../../../org/openqa/selenium/interactions/ButtonReleaseAction.html" title="class in org.openqa.selenium.interactions"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
@@ -115,7 +115,7 @@ var activeTableTab = "activeTableTab";
 extends java.lang.Object</pre>
 <div class="block">The user-facing API for emulating complex user gestures. Use this class rather than using the
  Keyboard or Mouse directly.
-
+ <p>
  Implements the builder pattern: Builds a CompositeAction containing all actions specified by the
  method calls.</div>
 </li>
@@ -140,18 +140,6 @@ extends java.lang.Object</pre>
 <td class="colFirst"><code>protected <a href="../../../../org/openqa/selenium/interactions/CompositeAction.html" title="class in org.openqa.selenium.interactions">CompositeAction</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/interactions/Actions.html#action">action</a></span></code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
-<td class="colFirst"><code>protected <a href="../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/interactions/Actions.html#driver">driver</a></span></code>&nbsp;</td>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>protected <a href="../../../../org/openqa/selenium/interactions/Keyboard.html" title="interface in org.openqa.selenium.interactions">Keyboard</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/interactions/Actions.html#keyboard">keyboard</a></span></code>&nbsp;</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code>protected <a href="../../../../org/openqa/selenium/interactions/Mouse.html" title="interface in org.openqa.selenium.interactions">Mouse</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/interactions/Actions.html#mouse">mouse</a></span></code>&nbsp;</td>
-</tr>
 </table>
 </li>
 </ul>
@@ -168,20 +156,21 @@ extends java.lang.Object</pre>
 </tr>
 <tr class="altColor">
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/interactions/Actions.html#Actions-org.openqa.selenium.interactions.Keyboard-">Actions</a></span>(<a href="../../../../org/openqa/selenium/interactions/Keyboard.html" title="interface in org.openqa.selenium.interactions">Keyboard</a>&nbsp;keyboard)</code>
-<div class="block">Only used by the TouchActions class.</div>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
+<div class="block"><span class="deprecationComment">Use the new interactions API.</span></div>
+</div>
 </td>
 </tr>
 <tr class="rowColor">
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/interactions/Actions.html#Actions-org.openqa.selenium.interactions.Keyboard-org.openqa.selenium.interactions.Mouse-">Actions</a></span>(<a href="../../../../org/openqa/selenium/interactions/Keyboard.html" title="interface in org.openqa.selenium.interactions">Keyboard</a>&nbsp;keyboard,
        <a href="../../../../org/openqa/selenium/interactions/Mouse.html" title="interface in org.openqa.selenium.interactions">Mouse</a>&nbsp;mouse)</code>
-<div class="block">A constructor that should only be used when the keyboard or mouse were extended to provide
- additional functionality (for example, dragging-and-dropping from the desktop).</div>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
+<div class="block"><span class="deprecationComment">Use the new interactions APIs.</span></div>
+</div>
 </td>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/interactions/Actions.html#Actions-org.openqa.selenium.WebDriver-">Actions</a></span>(<a href="../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code>
-<div class="block">Default constructor - uses the default keyboard, mouse implemented by the driver.</div>
-</td>
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/interactions/Actions.html#Actions-org.openqa.selenium.WebDriver-">Actions</a></span>(<a href="../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code>&nbsp;</td>
 </tr>
 </table>
 </li>
@@ -202,7 +191,7 @@ extends java.lang.Object</pre>
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/interactions/Action.html" title="interface in org.openqa.selenium.interactions">Action</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/interactions/Actions.html#build--">build</a></span>()</code>
 <div class="block">Generates a composite action containing all actions so far, ready to be performed (and
- resets the internal builder state, so subsequent calls to build() will contain fresh
+ resets the internal builder state, so subsequent calls to <a href="../../../../org/openqa/selenium/interactions/Actions.html#build--"><code>build()</code></a> will contain fresh
  sequences).</div>
 </td>
 </tr>
@@ -214,7 +203,7 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/interactions/Actions.html#click-org.openqa.selenium.WebElement-">click</a></span>(<a href="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;onElement)</code>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/interactions/Actions.html#click-org.openqa.selenium.WebElement-">click</a></span>(<a href="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;target)</code>
 <div class="block">Clicks in the middle of the given element.</div>
 </td>
 </tr>
@@ -226,7 +215,7 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i4" class="altColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/interactions/Actions.html#clickAndHold-org.openqa.selenium.WebElement-">clickAndHold</a></span>(<a href="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;onElement)</code>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/interactions/Actions.html#clickAndHold-org.openqa.selenium.WebElement-">clickAndHold</a></span>(<a href="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;target)</code>
 <div class="block">Clicks (without releasing) in the middle of the given element.</div>
 </td>
 </tr>
@@ -238,7 +227,7 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i6" class="altColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/interactions/Actions.html#contextClick-org.openqa.selenium.WebElement-">contextClick</a></span>(<a href="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;onElement)</code>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/interactions/Actions.html#contextClick-org.openqa.selenium.WebElement-">contextClick</a></span>(<a href="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;target)</code>
 <div class="block">Performs a context-click at middle of the given element.</div>
 </td>
 </tr>
@@ -250,7 +239,7 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i8" class="altColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/interactions/Actions.html#doubleClick-org.openqa.selenium.WebElement-">doubleClick</a></span>(<a href="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;onElement)</code>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/interactions/Actions.html#doubleClick-org.openqa.selenium.WebElement-">doubleClick</a></span>(<a href="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;target)</code>
 <div class="block">Performs a double-click at middle of the given element.</div>
 </td>
 </tr>
@@ -273,27 +262,27 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i11" class="rowColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/interactions/Actions.html#keyDown-org.openqa.selenium.Keys-">keyDown</a></span>(<a href="../../../../org/openqa/selenium/Keys.html" title="enum in org.openqa.selenium">Keys</a>&nbsp;theKey)</code>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/interactions/Actions.html#keyDown-java.lang.CharSequence-">keyDown</a></span>(java.lang.CharSequence&nbsp;key)</code>
 <div class="block">Performs a modifier key press.</div>
 </td>
 </tr>
 <tr id="i12" class="altColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/interactions/Actions.html#keyDown-org.openqa.selenium.WebElement-org.openqa.selenium.Keys-">keyDown</a></span>(<a href="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
-       <a href="../../../../org/openqa/selenium/Keys.html" title="enum in org.openqa.selenium">Keys</a>&nbsp;theKey)</code>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/interactions/Actions.html#keyDown-org.openqa.selenium.WebElement-java.lang.CharSequence-">keyDown</a></span>(<a href="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;target,
+       java.lang.CharSequence&nbsp;key)</code>
 <div class="block">Performs a modifier key press after focusing on an element.</div>
 </td>
 </tr>
 <tr id="i13" class="rowColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/interactions/Actions.html#keyUp-org.openqa.selenium.Keys-">keyUp</a></span>(<a href="../../../../org/openqa/selenium/Keys.html" title="enum in org.openqa.selenium">Keys</a>&nbsp;theKey)</code>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/interactions/Actions.html#keyUp-java.lang.CharSequence-">keyUp</a></span>(java.lang.CharSequence&nbsp;key)</code>
 <div class="block">Performs a modifier key release.</div>
 </td>
 </tr>
 <tr id="i14" class="altColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/interactions/Actions.html#keyUp-org.openqa.selenium.WebElement-org.openqa.selenium.Keys-">keyUp</a></span>(<a href="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
-     <a href="../../../../org/openqa/selenium/Keys.html" title="enum in org.openqa.selenium">Keys</a>&nbsp;theKey)</code>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/interactions/Actions.html#keyUp-org.openqa.selenium.WebElement-java.lang.CharSequence-">keyUp</a></span>(<a href="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;target,
+     java.lang.CharSequence&nbsp;key)</code>
 <div class="block">Performs a modifier key release after focusing on an element.</div>
 </td>
 </tr>
@@ -306,13 +295,13 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i16" class="altColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/interactions/Actions.html#moveToElement-org.openqa.selenium.WebElement-">moveToElement</a></span>(<a href="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;toElement)</code>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/interactions/Actions.html#moveToElement-org.openqa.selenium.WebElement-">moveToElement</a></span>(<a href="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;target)</code>
 <div class="block">Moves the mouse to the middle of the element.</div>
 </td>
 </tr>
 <tr id="i17" class="rowColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/interactions/Actions.html#moveToElement-org.openqa.selenium.WebElement-int-int-">moveToElement</a></span>(<a href="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;toElement,
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/interactions/Actions.html#moveToElement-org.openqa.selenium.WebElement-int-int-">moveToElement</a></span>(<a href="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;target,
              int&nbsp;xOffset,
              int&nbsp;yOffset)</code>
 <div class="block">Moves the mouse to an offset from the top-left corner of the element.</div>
@@ -340,25 +329,33 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i21" class="rowColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/interactions/Actions.html#release-org.openqa.selenium.WebElement-">release</a></span>(<a href="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;onElement)</code>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/interactions/Actions.html#release-org.openqa.selenium.WebElement-">release</a></span>(<a href="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;target)</code>
 <div class="block">Releases the depressed left mouse button, in the middle of the given element.</div>
 </td>
 </tr>
 <tr id="i22" class="altColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/interactions/Actions.html#sendKeys-java.lang.CharSequence...-">sendKeys</a></span>(java.lang.CharSequence...&nbsp;keysToSend)</code>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/interactions/Actions.html#sendKeys-java.lang.CharSequence...-">sendKeys</a></span>(java.lang.CharSequence...&nbsp;keys)</code>
 <div class="block">Sends keys to the active element.</div>
 </td>
 </tr>
 <tr id="i23" class="rowColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/interactions/Actions.html#sendKeys-org.openqa.selenium.WebElement-java.lang.CharSequence...-">sendKeys</a></span>(<a href="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
-        java.lang.CharSequence...&nbsp;keysToSend)</code>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/interactions/Actions.html#sendKeys-org.openqa.selenium.WebElement-java.lang.CharSequence...-">sendKeys</a></span>(<a href="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;target,
+        java.lang.CharSequence...&nbsp;keys)</code>
 <div class="block">Equivalent to calling:
  <i>Actions.click(element).sendKeys(keysToSend).</i>
  This method is different from <a href="../../../../org/openqa/selenium/WebElement.html#sendKeys-java.lang.CharSequence...-"><code>WebElement.sendKeys(CharSequence...)</code></a> - see
  <a href="../../../../org/openqa/selenium/interactions/Actions.html#sendKeys-java.lang.CharSequence...-"><code>sendKeys(CharSequence...)</code></a> for details how.</div>
 </td>
+</tr>
+<tr id="i24" class="altColor">
+<td class="colFirst"><code><a href="../../../../org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/interactions/Actions.html#tick-org.openqa.selenium.interactions.Action-">tick</a></span>(<a href="../../../../org/openqa/selenium/interactions/Action.html" title="interface in org.openqa.selenium.interactions">Action</a>&nbsp;action)</code>&nbsp;</td>
+</tr>
+<tr id="i25" class="rowColor">
+<td class="colFirst"><code><a href="../../../../org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/interactions/Actions.html#tick-org.openqa.selenium.interactions.Interaction...-">tick</a></span>(<a href="../../../../org/openqa/selenium/interactions/Interaction.html" title="class in org.openqa.selenium.interactions">Interaction</a>...&nbsp;actions)</code>&nbsp;</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -382,33 +379,6 @@ extends java.lang.Object</pre>
 <!--   -->
 </a>
 <h3>Field Detail</h3>
-<a name="driver">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>driver</h4>
-<pre>protected&nbsp;<a href="../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a> driver</pre>
-</li>
-</ul>
-<a name="mouse">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>mouse</h4>
-<pre>protected&nbsp;<a href="../../../../org/openqa/selenium/interactions/Mouse.html" title="interface in org.openqa.selenium.interactions">Mouse</a> mouse</pre>
-</li>
-</ul>
-<a name="keyboard">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>keyboard</h4>
-<pre>protected&nbsp;<a href="../../../../org/openqa/selenium/interactions/Keyboard.html" title="interface in org.openqa.selenium.interactions">Keyboard</a> keyboard</pre>
-</li>
-</ul>
 <a name="action">
 <!--   -->
 </a>
@@ -433,11 +403,6 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>Actions</h4>
 <pre>public&nbsp;Actions(<a href="../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</pre>
-<div class="block">Default constructor - uses the default keyboard, mouse implemented by the driver.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>driver</code> - the driver providing the implementations to use.</dd>
-</dl>
 </li>
 </ul>
 <a name="Actions-org.openqa.selenium.interactions.Keyboard-org.openqa.selenium.interactions.Mouse-">
@@ -446,8 +411,10 @@ extends java.lang.Object</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>Actions</h4>
-<pre>public&nbsp;Actions(<a href="../../../../org/openqa/selenium/interactions/Keyboard.html" title="interface in org.openqa.selenium.interactions">Keyboard</a>&nbsp;keyboard,
-               <a href="../../../../org/openqa/selenium/interactions/Mouse.html" title="interface in org.openqa.selenium.interactions">Mouse</a>&nbsp;mouse)</pre>
+<pre>@Deprecated
+public&nbsp;Actions(<a href="../../../../org/openqa/selenium/interactions/Keyboard.html" title="interface in org.openqa.selenium.interactions">Keyboard</a>&nbsp;keyboard,
+                           <a href="../../../../org/openqa/selenium/interactions/Mouse.html" title="interface in org.openqa.selenium.interactions">Mouse</a>&nbsp;mouse)</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;<span class="deprecationComment">Use the new interactions APIs.</span></div>
 <div class="block">A constructor that should only be used when the keyboard or mouse were extended to provide
  additional functionality (for example, dragging-and-dropping from the desktop).</div>
 <dl>
@@ -463,7 +430,9 @@ extends java.lang.Object</pre>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>Actions</h4>
-<pre>public&nbsp;Actions(<a href="../../../../org/openqa/selenium/interactions/Keyboard.html" title="interface in org.openqa.selenium.interactions">Keyboard</a>&nbsp;keyboard)</pre>
+<pre>@Deprecated
+public&nbsp;Actions(<a href="../../../../org/openqa/selenium/interactions/Keyboard.html" title="interface in org.openqa.selenium.interactions">Keyboard</a>&nbsp;keyboard)</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;<span class="deprecationComment">Use the new interactions API.</span></div>
 <div class="block">Only used by the TouchActions class.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -479,13 +448,13 @@ extends java.lang.Object</pre>
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a name="keyDown-org.openqa.selenium.Keys-">
+<a name="keyDown-java.lang.CharSequence-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>keyDown</h4>
-<pre>public&nbsp;<a href="../../../../org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</a>&nbsp;keyDown(<a href="../../../../org/openqa/selenium/Keys.html" title="enum in org.openqa.selenium">Keys</a>&nbsp;theKey)</pre>
+<pre>public&nbsp;<a href="../../../../org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</a>&nbsp;keyDown(java.lang.CharSequence&nbsp;key)</pre>
 <div class="block">Performs a modifier key press. Does not release the modifier key - subsequent interactions
  may assume it's kept pressed.
  Note that the modifier key is <b>never</b> released implicitly - either
@@ -493,70 +462,70 @@ extends java.lang.Object</pre>
  must be called to release the modifier.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>theKey</code> - Either <a href="../../../../org/openqa/selenium/Keys.html#SHIFT"><code>Keys.SHIFT</code></a>, <a href="../../../../org/openqa/selenium/Keys.html#ALT"><code>Keys.ALT</code></a> or <a href="../../../../org/openqa/selenium/Keys.html#CONTROL"><code>Keys.CONTROL</code></a>. If the
+<dd><code>key</code> - Either <a href="../../../../org/openqa/selenium/Keys.html#SHIFT"><code>Keys.SHIFT</code></a>, <a href="../../../../org/openqa/selenium/Keys.html#ALT"><code>Keys.ALT</code></a> or <a href="../../../../org/openqa/selenium/Keys.html#CONTROL"><code>Keys.CONTROL</code></a>. If the
  provided key is none of those, <code>IllegalArgumentException</code> is thrown.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>A self reference.</dd>
 </dl>
 </li>
 </ul>
-<a name="keyDown-org.openqa.selenium.WebElement-org.openqa.selenium.Keys-">
+<a name="keyDown-org.openqa.selenium.WebElement-java.lang.CharSequence-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>keyDown</h4>
-<pre>public&nbsp;<a href="../../../../org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</a>&nbsp;keyDown(<a href="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
-                       <a href="../../../../org/openqa/selenium/Keys.html" title="enum in org.openqa.selenium">Keys</a>&nbsp;theKey)</pre>
+<pre>public&nbsp;<a href="../../../../org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</a>&nbsp;keyDown(<a href="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;target,
+                       java.lang.CharSequence&nbsp;key)</pre>
 <div class="block">Performs a modifier key press after focusing on an element. Equivalent to:
  <i>Actions.click(element).sendKeys(theKey);</i></div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>theKey</code> - Either <a href="../../../../org/openqa/selenium/Keys.html#SHIFT"><code>Keys.SHIFT</code></a>, <a href="../../../../org/openqa/selenium/Keys.html#ALT"><code>Keys.ALT</code></a> or <a href="../../../../org/openqa/selenium/Keys.html#CONTROL"><code>Keys.CONTROL</code></a>. If the
+<dd><code>key</code> - Either <a href="../../../../org/openqa/selenium/Keys.html#SHIFT"><code>Keys.SHIFT</code></a>, <a href="../../../../org/openqa/selenium/Keys.html#ALT"><code>Keys.ALT</code></a> or <a href="../../../../org/openqa/selenium/Keys.html#CONTROL"><code>Keys.CONTROL</code></a>. If the
  provided key is none of those, <code>IllegalArgumentException</code> is thrown.</dd>
-<dd><code>element</code> - WebElement to perform the action</dd>
+<dd><code>target</code> - WebElement to perform the action</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>A self reference.</dd>
 <dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="../../../../org/openqa/selenium/interactions/Actions.html#keyDown-org.openqa.selenium.Keys-"><code>keyDown(org.openqa.selenium.Keys)</code></a></dd>
+<dd><a href="../../../../org/openqa/selenium/interactions/Actions.html#keyDown-java.lang.CharSequence-"><code>keyDown(CharSequence)</code></a></dd>
 </dl>
 </li>
 </ul>
-<a name="keyUp-org.openqa.selenium.Keys-">
+<a name="keyUp-java.lang.CharSequence-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>keyUp</h4>
-<pre>public&nbsp;<a href="../../../../org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</a>&nbsp;keyUp(<a href="../../../../org/openqa/selenium/Keys.html" title="enum in org.openqa.selenium">Keys</a>&nbsp;theKey)</pre>
+<pre>public&nbsp;<a href="../../../../org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</a>&nbsp;keyUp(java.lang.CharSequence&nbsp;key)</pre>
 <div class="block">Performs a modifier key release. Releasing a non-depressed modifier key will yield undefined
  behaviour.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>theKey</code> - Either <a href="../../../../org/openqa/selenium/Keys.html#SHIFT"><code>Keys.SHIFT</code></a>, <a href="../../../../org/openqa/selenium/Keys.html#ALT"><code>Keys.ALT</code></a> or <a href="../../../../org/openqa/selenium/Keys.html#CONTROL"><code>Keys.CONTROL</code></a>.</dd>
+<dd><code>key</code> - Either <a href="../../../../org/openqa/selenium/Keys.html#SHIFT"><code>Keys.SHIFT</code></a>, <a href="../../../../org/openqa/selenium/Keys.html#ALT"><code>Keys.ALT</code></a> or <a href="../../../../org/openqa/selenium/Keys.html#CONTROL"><code>Keys.CONTROL</code></a>.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>A self reference.</dd>
 </dl>
 </li>
 </ul>
-<a name="keyUp-org.openqa.selenium.WebElement-org.openqa.selenium.Keys-">
+<a name="keyUp-org.openqa.selenium.WebElement-java.lang.CharSequence-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>keyUp</h4>
-<pre>public&nbsp;<a href="../../../../org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</a>&nbsp;keyUp(<a href="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
-                     <a href="../../../../org/openqa/selenium/Keys.html" title="enum in org.openqa.selenium">Keys</a>&nbsp;theKey)</pre>
+<pre>public&nbsp;<a href="../../../../org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</a>&nbsp;keyUp(<a href="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;target,
+                     java.lang.CharSequence&nbsp;key)</pre>
 <div class="block">Performs a modifier key release after focusing on an element. Equivalent to:
  <i>Actions.click(element).sendKeys(theKey);</i></div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>theKey</code> - Either <a href="../../../../org/openqa/selenium/Keys.html#SHIFT"><code>Keys.SHIFT</code></a>, <a href="../../../../org/openqa/selenium/Keys.html#ALT"><code>Keys.ALT</code></a> or <a href="../../../../org/openqa/selenium/Keys.html#CONTROL"><code>Keys.CONTROL</code></a>.</dd>
-<dd><code>element</code> - WebElement to perform the action on</dd>
+<dd><code>key</code> - Either <a href="../../../../org/openqa/selenium/Keys.html#SHIFT"><code>Keys.SHIFT</code></a>, <a href="../../../../org/openqa/selenium/Keys.html#ALT"><code>Keys.ALT</code></a> or <a href="../../../../org/openqa/selenium/Keys.html#CONTROL"><code>Keys.CONTROL</code></a>.</dd>
+<dd><code>target</code> - WebElement to perform the action on</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>A self reference.</dd>
 <dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="../../../../org/openqa/selenium/interactions/Actions.html#keyUp-org.openqa.selenium.Keys-"><code>on behaviour regarding non-depressed modifier keys.</code></a></dd>
+<dd><a href="../../../../org/openqa/selenium/interactions/Actions.html#keyUp-java.lang.CharSequence-"><code>on behaviour regarding non-depressed modifier keys.</code></a></dd>
 </dl>
 </li>
 </ul>
@@ -566,7 +535,7 @@ extends java.lang.Object</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>sendKeys</h4>
-<pre>public&nbsp;<a href="../../../../org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</a>&nbsp;sendKeys(java.lang.CharSequence...&nbsp;keysToSend)</pre>
+<pre>public&nbsp;<a href="../../../../org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</a>&nbsp;sendKeys(java.lang.CharSequence...&nbsp;keys)</pre>
 <div class="block">Sends keys to the active element. This differs from calling
  <a href="../../../../org/openqa/selenium/WebElement.html#sendKeys-java.lang.CharSequence...-"><code>WebElement.sendKeys(CharSequence...)</code></a> on the active element in two ways:
  <ul>
@@ -576,7 +545,7 @@ extends java.lang.Object</pre>
  </ul></div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>keysToSend</code> - The keys.</dd>
+<dd><code>keys</code> - The keys.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>A self reference.</dd>
 <dt><span class="seeLabel">See Also:</span></dt>
@@ -590,16 +559,16 @@ extends java.lang.Object</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>sendKeys</h4>
-<pre>public&nbsp;<a href="../../../../org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</a>&nbsp;sendKeys(<a href="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;element,
-                        java.lang.CharSequence...&nbsp;keysToSend)</pre>
+<pre>public&nbsp;<a href="../../../../org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</a>&nbsp;sendKeys(<a href="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;target,
+                        java.lang.CharSequence...&nbsp;keys)</pre>
 <div class="block">Equivalent to calling:
  <i>Actions.click(element).sendKeys(keysToSend).</i>
  This method is different from <a href="../../../../org/openqa/selenium/WebElement.html#sendKeys-java.lang.CharSequence...-"><code>WebElement.sendKeys(CharSequence...)</code></a> - see
  <a href="../../../../org/openqa/selenium/interactions/Actions.html#sendKeys-java.lang.CharSequence...-"><code>sendKeys(CharSequence...)</code></a> for details how.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>element</code> - element to focus on.</dd>
-<dd><code>keysToSend</code> - The keys.</dd>
+<dd><code>target</code> - element to focus on.</dd>
+<dd><code>keys</code> - The keys.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>A self reference.</dd>
 <dt><span class="seeLabel">See Also:</span></dt>
@@ -613,12 +582,12 @@ extends java.lang.Object</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>clickAndHold</h4>
-<pre>public&nbsp;<a href="../../../../org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</a>&nbsp;clickAndHold(<a href="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;onElement)</pre>
+<pre>public&nbsp;<a href="../../../../org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</a>&nbsp;clickAndHold(<a href="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;target)</pre>
 <div class="block">Clicks (without releasing) in the middle of the given element. This is equivalent to:
  <i>Actions.moveToElement(onElement).clickAndHold()</i></div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>onElement</code> - Element to move to and click.</dd>
+<dd><code>target</code> - Element to move to and click.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>A self reference.</dd>
 </dl>
@@ -644,7 +613,7 @@ extends java.lang.Object</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>release</h4>
-<pre>public&nbsp;<a href="../../../../org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</a>&nbsp;release(<a href="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;onElement)</pre>
+<pre>public&nbsp;<a href="../../../../org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</a>&nbsp;release(<a href="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;target)</pre>
 <div class="block">Releases the depressed left mouse button, in the middle of the given element.
  This is equivalent to:
  <i>Actions.moveToElement(onElement).release()</i>
@@ -653,7 +622,7 @@ extends java.lang.Object</pre>
  undefined behaviour.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>onElement</code> - Element to release the mouse button above.</dd>
+<dd><code>target</code> - Element to release the mouse button above.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>A self reference.</dd>
 </dl>
@@ -681,12 +650,12 @@ extends java.lang.Object</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>click</h4>
-<pre>public&nbsp;<a href="../../../../org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</a>&nbsp;click(<a href="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;onElement)</pre>
+<pre>public&nbsp;<a href="../../../../org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</a>&nbsp;click(<a href="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;target)</pre>
 <div class="block">Clicks in the middle of the given element. Equivalent to:
  <i>Actions.moveToElement(onElement).click()</i></div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>onElement</code> - Element to click.</dd>
+<dd><code>target</code> - Element to click.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>A self reference.</dd>
 </dl>
@@ -714,12 +683,12 @@ extends java.lang.Object</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>doubleClick</h4>
-<pre>public&nbsp;<a href="../../../../org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</a>&nbsp;doubleClick(<a href="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;onElement)</pre>
+<pre>public&nbsp;<a href="../../../../org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</a>&nbsp;doubleClick(<a href="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;target)</pre>
 <div class="block">Performs a double-click at middle of the given element. Equivalent to:
  <i>Actions.moveToElement(element).doubleClick()</i></div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>onElement</code> - Element to move to.</dd>
+<dd><code>target</code> - Element to move to.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>A self reference.</dd>
 </dl>
@@ -745,12 +714,12 @@ extends java.lang.Object</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>moveToElement</h4>
-<pre>public&nbsp;<a href="../../../../org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</a>&nbsp;moveToElement(<a href="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;toElement)</pre>
+<pre>public&nbsp;<a href="../../../../org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</a>&nbsp;moveToElement(<a href="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;target)</pre>
 <div class="block">Moves the mouse to the middle of the element. The element is scrolled into view and its
  location is calculated using getBoundingClientRect.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>toElement</code> - element to move to.</dd>
+<dd><code>target</code> - element to move to.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>A self reference.</dd>
 </dl>
@@ -762,14 +731,14 @@ extends java.lang.Object</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>moveToElement</h4>
-<pre>public&nbsp;<a href="../../../../org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</a>&nbsp;moveToElement(<a href="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;toElement,
+<pre>public&nbsp;<a href="../../../../org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</a>&nbsp;moveToElement(<a href="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;target,
                              int&nbsp;xOffset,
                              int&nbsp;yOffset)</pre>
 <div class="block">Moves the mouse to an offset from the top-left corner of the element.
  The element is scrolled into view and its location is calculated using getBoundingClientRect.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>toElement</code> - element to move to.</dd>
+<dd><code>target</code> - element to move to.</dd>
 <dd><code>xOffset</code> - Offset from the top-left corner. A negative value means coordinates left from
  the element.</dd>
 <dd><code>yOffset</code> - Offset from the top-left corner. A negative value means coordinates above
@@ -808,12 +777,12 @@ extends java.lang.Object</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>contextClick</h4>
-<pre>public&nbsp;<a href="../../../../org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</a>&nbsp;contextClick(<a href="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;onElement)</pre>
+<pre>public&nbsp;<a href="../../../../org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</a>&nbsp;contextClick(<a href="../../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;target)</pre>
 <div class="block">Performs a context-click at middle of the given element. First performs a mouseMove
  to the location of the element.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>onElement</code> - Element to move to.</dd>
+<dd><code>target</code> - Element to move to.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>A self reference.</dd>
 </dl>
@@ -891,6 +860,24 @@ public&nbsp;<a href="../../../../org/openqa/selenium/interactions/Actions.html" 
 </dl>
 </li>
 </ul>
+<a name="tick-org.openqa.selenium.interactions.Interaction...-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>tick</h4>
+<pre>public&nbsp;<a href="../../../../org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</a>&nbsp;tick(<a href="../../../../org/openqa/selenium/interactions/Interaction.html" title="class in org.openqa.selenium.interactions">Interaction</a>...&nbsp;actions)</pre>
+</li>
+</ul>
+<a name="tick-org.openqa.selenium.interactions.Action-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>tick</h4>
+<pre>public&nbsp;<a href="../../../../org/openqa/selenium/interactions/Actions.html" title="class in org.openqa.selenium.interactions">Actions</a>&nbsp;tick(<a href="../../../../org/openqa/selenium/interactions/Action.html" title="interface in org.openqa.selenium.interactions">Action</a>&nbsp;action)</pre>
+</li>
+</ul>
 <a name="build--">
 <!--   -->
 </a>
@@ -899,7 +886,7 @@ public&nbsp;<a href="../../../../org/openqa/selenium/interactions/Actions.html" 
 <h4>build</h4>
 <pre>public&nbsp;<a href="../../../../org/openqa/selenium/interactions/Action.html" title="interface in org.openqa.selenium.interactions">Action</a>&nbsp;build()</pre>
 <div class="block">Generates a composite action containing all actions so far, ready to be performed (and
- resets the internal builder state, so subsequent calls to build() will contain fresh
+ resets the internal builder state, so subsequent calls to <a href="../../../../org/openqa/selenium/interactions/Actions.html#build--"><code>build()</code></a> will contain fresh
  sequences).</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -944,7 +931,7 @@ public&nbsp;<a href="../../../../org/openqa/selenium/interactions/Actions.html" 
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../org/openqa/selenium/interactions/ActionChainExecutor.html" title="interface in org.openqa.selenium.interactions"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
+<li><a href="../../../../org/openqa/selenium/interactions/Action.html" title="interface in org.openqa.selenium.interactions"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
 <li><a href="../../../../org/openqa/selenium/interactions/ButtonReleaseAction.html" title="class in org.openqa.selenium.interactions"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">

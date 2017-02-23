@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -48,7 +48,7 @@ var activeTableTab = "activeTableTab";
 <div class="subNav">
 <ul class="navList">
 <li><a href="../../../../org/openqa/selenium/firefox/GeckoDriverService.html" title="class in org.openqa.selenium.firefox"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
-<li><a href="../../../../org/openqa/selenium/firefox/MarionetteDriver.html" title="class in org.openqa.selenium.firefox"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
+<li><a href="../../../../org/openqa/selenium/firefox/NotConnectedException.html" title="class in org.openqa.selenium.firefox"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../../index.html?org/openqa/selenium/firefox/GeckoDriverService.Builder.html" target="_top">Frames</a></li>
@@ -140,7 +140,11 @@ extends <a href="../../../../org/openqa/selenium/remote/service/DriverService.Bu
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/GeckoDriverService.Builder.html#Builder--">Builder</a></span>()</code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/GeckoDriverService.Builder.html#Builder-org.openqa.selenium.firefox.FirefoxBinary-">Builder</a></span>(<a href="../../../../org/openqa/selenium/firefox/FirefoxBinary.html" title="class in org.openqa.selenium.firefox">FirefoxBinary</a>&nbsp;binary)</code>&nbsp;</td>
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/GeckoDriverService.Builder.html#Builder-org.openqa.selenium.firefox.FirefoxBinary-">Builder</a></span>(<a href="../../../../org/openqa/selenium/firefox/FirefoxBinary.html" title="class in org.openqa.selenium.firefox">FirefoxBinary</a>&nbsp;binary)</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
+<div class="block"><span class="deprecationComment">Use method usingFirefoxBinary instead</span></div>
+</div>
+</td>
 </tr>
 </table>
 </li>
@@ -171,6 +175,12 @@ extends <a href="../../../../org/openqa/selenium/remote/service/DriverService.Bu
 <tr id="i2" class="altColor">
 <td class="colFirst"><code>protected java.io.File</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/GeckoDriverService.Builder.html#findDefaultExecutable--">findDefaultExecutable</a></span>()</code>&nbsp;</td>
+</tr>
+<tr id="i3" class="rowColor">
+<td class="colFirst"><code><a href="../../../../org/openqa/selenium/firefox/GeckoDriverService.Builder.html" title="class in org.openqa.selenium.firefox">GeckoDriverService.Builder</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/GeckoDriverService.Builder.html#usingFirefoxBinary-org.openqa.selenium.firefox.FirefoxBinary-">usingFirefoxBinary</a></span>(<a href="../../../../org/openqa/selenium/firefox/FirefoxBinary.html" title="class in org.openqa.selenium.firefox">FirefoxBinary</a>&nbsp;firefoxBinary)</code>
+<div class="block">Sets which browser executable the builder will use.</div>
+</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -216,7 +226,9 @@ extends <a href="../../../../org/openqa/selenium/remote/service/DriverService.Bu
 <ul class="blockListLast">
 <li class="blockList">
 <h4>Builder</h4>
-<pre>public&nbsp;Builder(<a href="../../../../org/openqa/selenium/firefox/FirefoxBinary.html" title="class in org.openqa.selenium.firefox">FirefoxBinary</a>&nbsp;binary)</pre>
+<pre>@Deprecated
+public&nbsp;Builder(<a href="../../../../org/openqa/selenium/firefox/FirefoxBinary.html" title="class in org.openqa.selenium.firefox">FirefoxBinary</a>&nbsp;binary)</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;<span class="deprecationComment">Use method usingFirefoxBinary instead</span></div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>binary</code> - - A custom location where the Firefox binary is available.</dd>
@@ -231,6 +243,22 @@ extends <a href="../../../../org/openqa/selenium/remote/service/DriverService.Bu
 <!--   -->
 </a>
 <h3>Method Detail</h3>
+<a name="usingFirefoxBinary-org.openqa.selenium.firefox.FirefoxBinary-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>usingFirefoxBinary</h4>
+<pre>public&nbsp;<a href="../../../../org/openqa/selenium/firefox/GeckoDriverService.Builder.html" title="class in org.openqa.selenium.firefox">GeckoDriverService.Builder</a>&nbsp;usingFirefoxBinary(<a href="../../../../org/openqa/selenium/firefox/FirefoxBinary.html" title="class in org.openqa.selenium.firefox">FirefoxBinary</a>&nbsp;firefoxBinary)</pre>
+<div class="block">Sets which browser executable the builder will use.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>firefoxBinary</code> - The browser executable to use.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>A self reference.</dd>
+</dl>
+</li>
+</ul>
 <a name="findDefaultExecutable--">
 <!--   -->
 </a>
@@ -301,7 +329,7 @@ extends <a href="../../../../org/openqa/selenium/remote/service/DriverService.Bu
 <div class="subNav">
 <ul class="navList">
 <li><a href="../../../../org/openqa/selenium/firefox/GeckoDriverService.html" title="class in org.openqa.selenium.firefox"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
-<li><a href="../../../../org/openqa/selenium/firefox/MarionetteDriver.html" title="class in org.openqa.selenium.firefox"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
+<li><a href="../../../../org/openqa/selenium/firefox/NotConnectedException.html" title="class in org.openqa.selenium.firefox"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../../index.html?org/openqa/selenium/firefox/GeckoDriverService.Builder.html" target="_top">Frames</a></li>

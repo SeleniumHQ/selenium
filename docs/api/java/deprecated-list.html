@@ -75,6 +75,7 @@
 <li><a href="#class">Deprecated Classes</a></li>
 <li><a href="#field">Deprecated Fields</a></li>
 <li><a href="#method">Deprecated Methods</a></li>
+<li><a href="#constructor">Deprecated Constructors</a></li>
 </ul>
 </div>
 <div class="contentContainer"><a name="interface">
@@ -114,18 +115,58 @@
 </tr>
 <tbody>
 <tr class="altColor">
+<td class="colOne"><a href="org/openqa/selenium/interactions/ButtonReleaseAction.html" title="class in org.openqa.selenium.interactions">org.openqa.selenium.interactions.ButtonReleaseAction</a>
+<div class="block"><span class="deprecationComment">Use <a href="org/openqa/selenium/interactions/Actions.html#release--"><code>Actions.release()</code></a></span></div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colOne"><a href="org/openqa/selenium/interactions/ClickAction.html" title="class in org.openqa.selenium.interactions">org.openqa.selenium.interactions.ClickAction</a>
+<div class="block"><span class="deprecationComment">Use <a href="org/openqa/selenium/interactions/Actions.html#click-org.openqa.selenium.WebElement-"><code>Actions.click(WebElement)</code></a></span></div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colOne"><a href="org/openqa/selenium/interactions/ClickAndHoldAction.html" title="class in org.openqa.selenium.interactions">org.openqa.selenium.interactions.ClickAndHoldAction</a>
+<div class="block"><span class="deprecationComment">Use <a href="org/openqa/selenium/interactions/Actions.html#clickAndHold-org.openqa.selenium.WebElement-"><code>Actions.clickAndHold(WebElement)</code></a></span></div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colOne"><a href="org/openqa/selenium/interactions/ContextClickAction.html" title="class in org.openqa.selenium.interactions">org.openqa.selenium.interactions.ContextClickAction</a>
+<div class="block"><span class="deprecationComment">Use <a href="org/openqa/selenium/interactions/Actions.html#contextClick-org.openqa.selenium.WebElement-"><code>Actions.contextClick(WebElement)</code></a></span></div>
+</td>
+</tr>
+<tr class="altColor">
 <td class="colOne"><a href="com/thoughtworks/selenium/DefaultSelenium.html" title="class in com.thoughtworks.selenium">com.thoughtworks.selenium.DefaultSelenium</a>
 <div class="block"><span class="deprecationComment">The RC interface will be removed in Selenium 3.0. Please migrate to using WebDriver.</span></div>
 </td>
 </tr>
 <tr class="rowColor">
+<td class="colOne"><a href="org/openqa/selenium/interactions/DoubleClickAction.html" title="class in org.openqa.selenium.interactions">org.openqa.selenium.interactions.DoubleClickAction</a>
+<div class="block"><span class="deprecationComment">Use <a href="org/openqa/selenium/interactions/Actions.html#doubleClick-org.openqa.selenium.WebElement-"><code>Actions.doubleClick(WebElement)</code></a></span></div>
+</td>
+</tr>
+<tr class="altColor">
 <td class="colOne"><a href="com/thoughtworks/selenium/HttpCommandProcessor.html" title="class in com.thoughtworks.selenium">com.thoughtworks.selenium.HttpCommandProcessor</a>
 <div class="block"><span class="deprecationComment">The RC interface will be removed in Selenium 3.0. Please migrate to using WebDriver.</span></div>
 </td>
 </tr>
+<tr class="rowColor">
+<td class="colOne"><a href="org/openqa/selenium/interactions/KeyDownAction.html" title="class in org.openqa.selenium.interactions">org.openqa.selenium.interactions.KeyDownAction</a>
+<div class="block"><span class="deprecationComment">Use <a href="org/openqa/selenium/interactions/Actions.html#keyDown-org.openqa.selenium.WebElement-java.lang.CharSequence-"><code>Actions.keyDown(WebElement, CharSequence)</code></a></span></div>
+</td>
+</tr>
 <tr class="altColor">
-<td class="colOne"><a href="org/openqa/selenium/firefox/MarionetteDriver.html" title="class in org.openqa.selenium.firefox">org.openqa.selenium.firefox.MarionetteDriver</a>
-<div class="block"><span class="deprecationComment">One should use FirefoxDriver with capability marionette = true or false respectively.</span></div>
+<td class="colOne"><a href="org/openqa/selenium/interactions/KeyUpAction.html" title="class in org.openqa.selenium.interactions">org.openqa.selenium.interactions.KeyUpAction</a>
+<div class="block"><span class="deprecationComment">Use <a href="org/openqa/selenium/interactions/Actions.html#keyUp-java.lang.CharSequence-"><code>Actions.keyUp(CharSequence)</code></a></span></div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colOne"><a href="org/openqa/selenium/interactions/MoveMouseAction.html" title="class in org.openqa.selenium.interactions">org.openqa.selenium.interactions.MoveMouseAction</a>
+<div class="block"><span class="deprecationComment">Use <a href="org/openqa/selenium/interactions/Actions.html#moveToElement-org.openqa.selenium.WebElement-"><code>Actions.moveToElement(WebElement)</code></a></span></div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colOne"><a href="org/openqa/selenium/interactions/MoveToOffsetAction.html" title="class in org.openqa.selenium.interactions">org.openqa.selenium.interactions.MoveToOffsetAction</a>
+<div class="block"><span class="deprecationComment">Use <a href="org/openqa/selenium/interactions/Actions.html#moveToElement-org.openqa.selenium.WebElement-int-int-"><code>Actions.moveToElement(WebElement, int, int)</code></a></span></div>
 </td>
 </tr>
 <tr class="rowColor">
@@ -144,6 +185,11 @@
 </td>
 </tr>
 <tr class="altColor">
+<td class="colOne"><a href="org/openqa/selenium/interactions/SendKeysAction.html" title="class in org.openqa.selenium.interactions">org.openqa.selenium.interactions.SendKeysAction</a>
+<div class="block"><span class="deprecationComment">Use <a href="org/openqa/selenium/interactions/Actions.html#sendKeys-org.openqa.selenium.WebElement-java.lang.CharSequence...-"><code>Actions.sendKeys(WebElement, CharSequence...)</code></a></span></div>
+</td>
+</tr>
+<tr class="rowColor">
 <td class="colOne"><a href="com/thoughtworks/selenium/Wait.html" title="class in com.thoughtworks.selenium">com.thoughtworks.selenium.Wait</a>
 <div class="block"><span class="deprecationComment">The RC interface will be removed in Selenium 3.0. Please migrate to using WebDriver.</span></div>
 </td>
@@ -198,9 +244,7 @@
 </tr>
 <tbody>
 <tr class="altColor">
-<td class="colOne"><a href="org/openqa/selenium/os/CommandLine.html#find-java.lang.String-">org.openqa.selenium.os.CommandLine.find(String)</a>
-<div class="block"><span class="deprecationComment">Use the commandline itself to execute your command.</span></div>
-</td>
+<td class="colOne"><a href="org/openqa/selenium/firefox/FirefoxProfile.html#areNativeEventsEnabled--">org.openqa.selenium.firefox.FirefoxProfile.areNativeEventsEnabled()</a></td>
 </tr>
 <tr class="rowColor">
 <td class="colOne"><a href="org/openqa/selenium/remote/server/DriverFactory.html#hasMappingFor-org.openqa.selenium.Capabilities-">org.openqa.selenium.remote.server.DriverFactory.hasMappingFor(Capabilities)</a>
@@ -223,8 +267,41 @@
 </td>
 </tr>
 <tr class="rowColor">
+<td class="colOne"><a href="org/openqa/selenium/firefox/FirefoxProfile.html#setEnableNativeEvents-boolean-">org.openqa.selenium.firefox.FirefoxProfile.setEnableNativeEvents(boolean)</a></td>
+</tr>
+<tr class="altColor">
 <td class="colOne"><a href="org/openqa/selenium/support/ui/ExpectedConditions.html#textToBePresentInElement-org.openqa.selenium.By-java.lang.String-">org.openqa.selenium.support.ui.ExpectedConditions.textToBePresentInElement(By, String)</a>
 <div class="block"><span class="deprecationComment">Use <a href="org/openqa/selenium/support/ui/ExpectedConditions.html#textToBePresentInElementLocated-org.openqa.selenium.By-java.lang.String-"><code>ExpectedConditions.textToBePresentInElementLocated(By, String)</code></a> instead</span></div>
+</td>
+</tr>
+</tbody>
+</table>
+</li>
+</ul>
+<a name="constructor">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<table class="deprecatedSummary" border="0" cellpadding="3" cellspacing="0" summary="Deprecated Constructors table, listing deprecated constructors, and an explanation">
+<caption><span>Deprecated Constructors</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colOne" scope="col">Constructor and Description</th>
+</tr>
+<tbody>
+<tr class="altColor">
+<td class="colOne"><a href="org/openqa/selenium/interactions/Actions.html#Actions-org.openqa.selenium.interactions.Keyboard-">org.openqa.selenium.interactions.Actions(Keyboard)</a>
+<div class="block"><span class="deprecationComment">Use the new interactions API.</span></div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colOne"><a href="org/openqa/selenium/interactions/Actions.html#Actions-org.openqa.selenium.interactions.Keyboard-org.openqa.selenium.interactions.Mouse-">org.openqa.selenium.interactions.Actions(Keyboard, Mouse)</a>
+<div class="block"><span class="deprecationComment">Use the new interactions APIs.</span></div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colOne"><a href="org/openqa/selenium/firefox/GeckoDriverService.Builder.html#Builder-org.openqa.selenium.firefox.FirefoxBinary-">org.openqa.selenium.firefox.GeckoDriverService.Builder(FirefoxBinary)</a>
+<div class="block"><span class="deprecationComment">Use method usingFirefoxBinary instead</span></div>
 </td>
 </tr>
 </tbody>

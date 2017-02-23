@@ -175,7 +175,7 @@ extends java.lang.Object</pre>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/server/htmlrunner/HTMLLauncher.html#runHTMLSuite-java.lang.String-java.lang.String-java.lang.String-java.io.File-long-java.lang.String-">runHTMLSuite</a></span>(java.lang.String&nbsp;browser,
-            java.lang.String&nbsp;browserURL,
+            java.lang.String&nbsp;startURL,
             java.lang.String&nbsp;suiteURL,
             java.io.File&nbsp;outputFile,
             long&nbsp;timeoutInSeconds,
@@ -229,7 +229,7 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>runHTMLSuite</h4>
 <pre>public&nbsp;java.lang.String&nbsp;runHTMLSuite(java.lang.String&nbsp;browser,
-                                     java.lang.String&nbsp;browserURL,
+                                     java.lang.String&nbsp;startURL,
                                      java.lang.String&nbsp;suiteURL,
                                      java.io.File&nbsp;outputFile,
                                      long&nbsp;timeoutInSeconds,
@@ -239,7 +239,7 @@ extends java.lang.Object</pre>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>browser</code> - - the browserString ("*firefox", "*iexplore" or an executable path)</dd>
-<dd><code>browserURL</code> - - the start URL for the browser</dd>
+<dd><code>startURL</code> - - the start URL for the browser</dd>
 <dd><code>suiteURL</code> - - the relative URL to the HTML suite</dd>
 <dd><code>outputFile</code> - - The file to which we'll output the HTML results</dd>
 <dd><code>timeoutInSeconds</code> - - the amount of time (in seconds) to wait for the browser to finish</dd>

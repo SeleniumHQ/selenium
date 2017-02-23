@@ -87,27 +87,41 @@
 </td>
 </tr>
 <tr class="rowColor">
-<td class="colFirst"><a href="../../../../org/openqa/selenium/interactions/ActionChainExecutor.html" title="interface in org.openqa.selenium.interactions">ActionChainExecutor</a></td>
+<td class="colFirst"><a href="../../../../org/openqa/selenium/interactions/Encodable.html" title="interface in org.openqa.selenium.interactions">Encodable</a></td>
 <td class="colLast">
-<div class="block">Interface representing an operation that allows to execute an action chain.</div>
+<div class="block">This interface allows a custom <a href="../../../../org/openqa/selenium/interactions/Interaction.html" title="class in org.openqa.selenium.interactions"><code>Interaction</code></a> to be JSON encoded for the W3C wire format.</div>
 </td>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><a href="../../../../org/openqa/selenium/interactions/CanPerformActionChain.html" title="interface in org.openqa.selenium.interactions">CanPerformActionChain</a></td>
-<td class="colLast">
-<div class="block">Interface implemented by each driver that implements performing action chains.</div>
-</td>
-</tr>
-<tr class="rowColor">
 <td class="colFirst"><a href="../../../../org/openqa/selenium/interactions/HasInputDevices.html" title="interface in org.openqa.selenium.interactions">HasInputDevices</a></td>
 <td class="colLast">
 <div class="block">Interface implemented by each driver that allows access to the raw input devices.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><a href="../../../../org/openqa/selenium/interactions/HasTouchScreen.html" title="interface in org.openqa.selenium.interactions">HasTouchScreen</a></td>
 <td class="colLast">
 <div class="block">Interface implemented by each driver that allows access to touch screen capabilities.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><a href="../../../../org/openqa/selenium/interactions/InputSource.html" title="interface in org.openqa.selenium.interactions">InputSource</a></td>
+<td class="colLast">
+<div class="block">Models an <a href="https://www.w3.org/TR/webdriver/#dfn-input-source">input source</a> as defined
+ and used by the W3C WebDriver spec.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><a href="../../../../org/openqa/selenium/interactions/Interactive.html" title="interface in org.openqa.selenium.interactions">Interactive</a></td>
+<td class="colLast">
+<div class="block">Indicates that a class can be used with the W3C WebDriver
+ <a href="https://www.w3.org/TR/webdriver/#actions">Actions commands</a>.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><a href="../../../../org/openqa/selenium/interactions/IsInteraction.html" title="interface in org.openqa.selenium.interactions">IsInteraction</a></td>
+<td class="colLast">
+<div class="block">Interface to help us transition code to The New World</div>
 </td>
 </tr>
 <tr class="rowColor">
@@ -147,20 +161,20 @@
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><a href="../../../../org/openqa/selenium/interactions/ButtonReleaseAction.html" title="class in org.openqa.selenium.interactions">ButtonReleaseAction</a></td>
-<td class="colLast">
-<div class="block">Releases the left mouse button</div>
+<td class="colLast">Deprecated
+<div class="block"><span class="deprecationComment">Use <a href="../../../../org/openqa/selenium/interactions/Actions.html#release--"><code>Actions.release()</code></a></span></div>
 </td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><a href="../../../../org/openqa/selenium/interactions/ClickAction.html" title="class in org.openqa.selenium.interactions">ClickAction</a></td>
-<td class="colLast">
-<div class="block">clicks an element.</div>
+<td class="colLast">Deprecated
+<div class="block"><span class="deprecationComment">Use <a href="../../../../org/openqa/selenium/interactions/Actions.html#click-org.openqa.selenium.WebElement-"><code>Actions.click(WebElement)</code></a></span></div>
 </td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><a href="../../../../org/openqa/selenium/interactions/ClickAndHoldAction.html" title="class in org.openqa.selenium.interactions">ClickAndHoldAction</a></td>
-<td class="colLast">
-<div class="block">Presses the left mouse button without releasing it.</div>
+<td class="colLast">Deprecated
+<div class="block"><span class="deprecationComment">Use <a href="../../../../org/openqa/selenium/interactions/Actions.html#clickAndHold-org.openqa.selenium.WebElement-"><code>Actions.clickAndHold(WebElement)</code></a></span></div>
 </td>
 </tr>
 <tr class="altColor">
@@ -171,50 +185,112 @@
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><a href="../../../../org/openqa/selenium/interactions/ContextClickAction.html" title="class in org.openqa.selenium.interactions">ContextClickAction</a></td>
-<td class="colLast">
-<div class="block">Context-clicks an element</div>
+<td class="colLast">Deprecated
+<div class="block"><span class="deprecationComment">Use <a href="../../../../org/openqa/selenium/interactions/Actions.html#contextClick-org.openqa.selenium.WebElement-"><code>Actions.contextClick(WebElement)</code></a></span></div>
 </td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><a href="../../../../org/openqa/selenium/interactions/DoubleClickAction.html" title="class in org.openqa.selenium.interactions">DoubleClickAction</a></td>
-<td class="colLast">
-<div class="block">Double-clicks an element.</div>
+<td class="colLast">Deprecated
+<div class="block"><span class="deprecationComment">Use <a href="../../../../org/openqa/selenium/interactions/Actions.html#doubleClick-org.openqa.selenium.WebElement-"><code>Actions.doubleClick(WebElement)</code></a></span></div>
 </td>
 </tr>
 <tr class="rowColor">
-<td class="colFirst"><a href="../../../../org/openqa/selenium/interactions/KeyDownAction.html" title="class in org.openqa.selenium.interactions">KeyDownAction</a></td>
+<td class="colFirst"><a href="../../../../org/openqa/selenium/interactions/Interaction.html" title="class in org.openqa.selenium.interactions">Interaction</a></td>
 <td class="colLast">
-<div class="block">Emulates key press only, without the release.</div>
+<div class="block">Used as the basis of <a href="../../../../org/openqa/selenium/interactions/Sequence.html" title="class in org.openqa.selenium.interactions"><code>Sequence</code></a>s for the W3C WebDriver spec
+ <a href="https://www.w3.org/TR/webdriver/#actions">Action commands</a>.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><a href="../../../../org/openqa/selenium/interactions/KeyDownAction.html" title="class in org.openqa.selenium.interactions">KeyDownAction</a></td>
+<td class="colLast">Deprecated
+<div class="block"><span class="deprecationComment">Use <a href="../../../../org/openqa/selenium/interactions/Actions.html#keyDown-org.openqa.selenium.WebElement-java.lang.CharSequence-"><code>Actions.keyDown(WebElement, CharSequence)</code></a></span></div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><a href="../../../../org/openqa/selenium/interactions/KeyInput.html" title="class in org.openqa.selenium.interactions">KeyInput</a></td>
+<td class="colLast">
+<div class="block">Models a <a href="https://www.w3.org/TR/webdriver/#dfn-key-input-source">key input source</a>.</div>
 </td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><a href="../../../../org/openqa/selenium/interactions/KeyUpAction.html" title="class in org.openqa.selenium.interactions">KeyUpAction</a></td>
-<td class="colLast">
-<div class="block">Emulates key release only, without the press.</div>
+<td class="colLast">Deprecated
+<div class="block"><span class="deprecationComment">Use <a href="../../../../org/openqa/selenium/interactions/Actions.html#keyUp-java.lang.CharSequence-"><code>Actions.keyUp(CharSequence)</code></a></span></div>
 </td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><a href="../../../../org/openqa/selenium/interactions/MoveMouseAction.html" title="class in org.openqa.selenium.interactions">MoveMouseAction</a></td>
-<td class="colLast">
-<div class="block">Moves the mouse to an element.</div>
+<td class="colLast">Deprecated
+<div class="block"><span class="deprecationComment">Use <a href="../../../../org/openqa/selenium/interactions/Actions.html#moveToElement-org.openqa.selenium.WebElement-"><code>Actions.moveToElement(WebElement)</code></a></span></div>
 </td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><a href="../../../../org/openqa/selenium/interactions/MoveToOffsetAction.html" title="class in org.openqa.selenium.interactions">MoveToOffsetAction</a></td>
-<td class="colLast">
-<div class="block">Move the mouse to a location within the element provided.</div>
+<td class="colLast">Deprecated
+<div class="block"><span class="deprecationComment">Use <a href="../../../../org/openqa/selenium/interactions/Actions.html#moveToElement-org.openqa.selenium.WebElement-int-int-"><code>Actions.moveToElement(WebElement, int, int)</code></a></span></div>
 </td>
 </tr>
 <tr class="rowColor">
+<td class="colFirst"><a href="../../../../org/openqa/selenium/interactions/Pause.html" title="class in org.openqa.selenium.interactions">Pause</a></td>
+<td class="colLast">
+<div class="block">Indicates that a given <a href="../../../../org/openqa/selenium/interactions/InputSource.html" title="interface in org.openqa.selenium.interactions"><code>InputSource</code></a> should pause for a given duration.</div>
+</td>
+</tr>
+<tr class="altColor">
 <td class="colFirst"><a href="../../../../org/openqa/selenium/interactions/PauseAction.html" title="class in org.openqa.selenium.interactions">PauseAction</a></td>
 <td class="colLast">Deprecated
 <div class="block"><span class="deprecationComment">'Pause' is considered to be a bad design practice.</span></div>
 </td>
 </tr>
-<tr class="altColor">
-<td class="colFirst"><a href="../../../../org/openqa/selenium/interactions/SendKeysAction.html" title="class in org.openqa.selenium.interactions">SendKeysAction</a></td>
+<tr class="rowColor">
+<td class="colFirst"><a href="../../../../org/openqa/selenium/interactions/PointerInput.html" title="class in org.openqa.selenium.interactions">PointerInput</a></td>
 <td class="colLast">
-<div class="block">Sending a sequence of keys to an element.</div>
+<div class="block">Models a <a href="https://www.w3.org/TR/webdriver/#dfn-pointer-input-source">pointer input
+ source</a>.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><a href="../../../../org/openqa/selenium/interactions/PointerInput.Origin.html" title="class in org.openqa.selenium.interactions">PointerInput.Origin</a></td>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><a href="../../../../org/openqa/selenium/interactions/SendKeysAction.html" title="class in org.openqa.selenium.interactions">SendKeysAction</a></td>
+<td class="colLast">Deprecated
+<div class="block"><span class="deprecationComment">Use <a href="../../../../org/openqa/selenium/interactions/Actions.html#sendKeys-org.openqa.selenium.WebElement-java.lang.CharSequence...-"><code>Actions.sendKeys(WebElement, CharSequence...)</code></a></span></div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><a href="../../../../org/openqa/selenium/interactions/Sequence.html" title="class in org.openqa.selenium.interactions">Sequence</a></td>
+<td class="colLast">
+<div class="block">A sequence of action objects for a given <a href="../../../../org/openqa/selenium/interactions/InputSource.html" title="interface in org.openqa.selenium.interactions"><code>InputSource</code></a> for use with the W3C
+ <a href="https://www.w3.org/TR/webdriver/#actions">Action commands</a>.</div>
+</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li class="blockList">
+<table class="typeSummary" border="0" cellpadding="3" cellspacing="0" summary="Enum Summary table, listing enums, and an explanation">
+<caption><span>Enum Summary</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Enum</th>
+<th class="colLast" scope="col">Description</th>
+</tr>
+<tbody>
+<tr class="altColor">
+<td class="colFirst"><a href="../../../../org/openqa/selenium/interactions/PointerInput.Kind.html" title="enum in org.openqa.selenium.interactions">PointerInput.Kind</a></td>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><a href="../../../../org/openqa/selenium/interactions/PointerInput.MouseButton.html" title="enum in org.openqa.selenium.interactions">PointerInput.MouseButton</a></td>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><a href="../../../../org/openqa/selenium/interactions/SourceType.html" title="enum in org.openqa.selenium.interactions">SourceType</a></td>
+<td class="colLast">
+<div class="block">One of the allowing types for an <a href="../../../../org/openqa/selenium/interactions/InputSource.html" title="interface in org.openqa.selenium.interactions"><code>InputSource</code></a>.</div>
 </td>
 </tr>
 </tbody>

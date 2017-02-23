@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10};
+var methods = {"i0":10,"i1":10,"i2":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -111,13 +111,18 @@ var activeTableTab = "activeTableTab";
 <ul class="blockList">
 <li class="blockList">
 <dl>
+<dt>All Implemented Interfaces:</dt>
+<dd><a href="../../../../../org/openqa/selenium/interactions/IsInteraction.html" title="interface in org.openqa.selenium.interactions">IsInteraction</a></dd>
+</dl>
+<dl>
 <dt>Direct Known Subclasses:</dt>
 <dd><a href="../../../../../org/openqa/selenium/interactions/ButtonReleaseAction.html" title="class in org.openqa.selenium.interactions">ButtonReleaseAction</a>, <a href="../../../../../org/openqa/selenium/interactions/ClickAction.html" title="class in org.openqa.selenium.interactions">ClickAction</a>, <a href="../../../../../org/openqa/selenium/interactions/ClickAndHoldAction.html" title="class in org.openqa.selenium.interactions">ClickAndHoldAction</a>, <a href="../../../../../org/openqa/selenium/interactions/ContextClickAction.html" title="class in org.openqa.selenium.interactions">ContextClickAction</a>, <a href="../../../../../org/openqa/selenium/interactions/DoubleClickAction.html" title="class in org.openqa.selenium.interactions">DoubleClickAction</a>, <a href="../../../../../org/openqa/selenium/interactions/MoveMouseAction.html" title="class in org.openqa.selenium.interactions">MoveMouseAction</a>, <a href="../../../../../org/openqa/selenium/interactions/MoveToOffsetAction.html" title="class in org.openqa.selenium.interactions">MoveToOffsetAction</a></dd>
 </dl>
 <hr>
 <br>
-<pre>public class <span class="typeNameLabel">MouseAction</span>
-extends <a href="../../../../../org/openqa/selenium/interactions/internal/BaseAction.html" title="class in org.openqa.selenium.interactions.internal">BaseAction</a></pre>
+<pre>public abstract class <span class="typeNameLabel">MouseAction</span>
+extends <a href="../../../../../org/openqa/selenium/interactions/internal/BaseAction.html" title="class in org.openqa.selenium.interactions.internal">BaseAction</a>
+implements <a href="../../../../../org/openqa/selenium/interactions/IsInteraction.html" title="interface in org.openqa.selenium.interactions">IsInteraction</a></pre>
 <div class="block">Base class for all mouse-related actions.</div>
 </li>
 </ul>
@@ -210,13 +215,18 @@ extends <a href="../../../../../org/openqa/selenium/interactions/internal/BaseAc
 <td class="colFirst"><code>protected void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/interactions/internal/MouseAction.html#moveToLocation--">moveToLocation</a></span>()</code>&nbsp;</td>
 </tr>
+<tr id="i2" class="altColor">
+<td class="colFirst"><code>protected void</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/interactions/internal/MouseAction.html#moveToLocation-org.openqa.selenium.interactions.PointerInput-com.google.common.collect.ImmutableList.Builder-">moveToLocation</a></span>(<a href="../../../../../org/openqa/selenium/interactions/PointerInput.html" title="class in org.openqa.selenium.interactions">PointerInput</a>&nbsp;mouse,
+              com.google.common.collect.ImmutableList.Builder&lt;<a href="../../../../../org/openqa/selenium/interactions/Interaction.html" title="class in org.openqa.selenium.interactions">Interaction</a>&gt;&nbsp;interactions)</code>&nbsp;</td>
+</tr>
 </table>
 <ul class="blockList">
 <li class="blockList"><a name="methods.inherited.from.class.org.openqa.selenium.interactions.internal.BaseAction">
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;org.openqa.selenium.interactions.internal.<a href="../../../../../org/openqa/selenium/interactions/internal/BaseAction.html" title="class in org.openqa.selenium.interactions.internal">BaseAction</a></h3>
-<code><a href="../../../../../org/openqa/selenium/interactions/internal/BaseAction.html#getTargetId--">getTargetId</a></code></li>
+<code><a href="../../../../../org/openqa/selenium/interactions/internal/BaseAction.html#getTargetElement--">getTargetElement</a></code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a name="methods.inherited.from.class.java.lang.Object">
@@ -224,6 +234,13 @@ extends <a href="../../../../../org/openqa/selenium/interactions/internal/BaseAc
 </a>
 <h3>Methods inherited from class&nbsp;java.lang.Object</h3>
 <code>clone, equals, finalize, getClass, hashCode, notify, notifyAll, toString, wait, wait, wait</code></li>
+</ul>
+<ul class="blockList">
+<li class="blockList"><a name="methods.inherited.from.class.org.openqa.selenium.interactions.IsInteraction">
+<!--   -->
+</a>
+<h3>Methods inherited from interface&nbsp;org.openqa.selenium.interactions.<a href="../../../../../org/openqa/selenium/interactions/IsInteraction.html" title="interface in org.openqa.selenium.interactions">IsInteraction</a></h3>
+<code><a href="../../../../../org/openqa/selenium/interactions/IsInteraction.html#asInteractions-org.openqa.selenium.interactions.PointerInput-org.openqa.selenium.interactions.KeyInput-">asInteractions</a></code></li>
 </ul>
 </li>
 </ul>
@@ -286,10 +303,20 @@ extends <a href="../../../../../org/openqa/selenium/interactions/internal/BaseAc
 <a name="moveToLocation--">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>moveToLocation</h4>
 <pre>protected&nbsp;void&nbsp;moveToLocation()</pre>
+</li>
+</ul>
+<a name="moveToLocation-org.openqa.selenium.interactions.PointerInput-com.google.common.collect.ImmutableList.Builder-">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>moveToLocation</h4>
+<pre>protected&nbsp;void&nbsp;moveToLocation(<a href="../../../../../org/openqa/selenium/interactions/PointerInput.html" title="class in org.openqa.selenium.interactions">PointerInput</a>&nbsp;mouse,
+                              com.google.common.collect.ImmutableList.Builder&lt;<a href="../../../../../org/openqa/selenium/interactions/Interaction.html" title="class in org.openqa.selenium.interactions">Interaction</a>&gt;&nbsp;interactions)</pre>
 </li>
 </ul>
 </li>

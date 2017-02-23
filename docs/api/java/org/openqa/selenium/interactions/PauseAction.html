@@ -47,8 +47,8 @@ var activeTableTab = "activeTableTab";
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../org/openqa/selenium/interactions/MoveToOffsetAction.html" title="class in org.openqa.selenium.interactions"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
-<li><a href="../../../../org/openqa/selenium/interactions/SendKeysAction.html" title="class in org.openqa.selenium.interactions"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
+<li><a href="../../../../org/openqa/selenium/interactions/Pause.html" title="class in org.openqa.selenium.interactions"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
+<li><a href="../../../../org/openqa/selenium/interactions/PointerInput.html" title="class in org.openqa.selenium.interactions"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../../index.html?org/openqa/selenium/interactions/PauseAction.html" target="_top">Frames</a></li>
@@ -107,7 +107,7 @@ var activeTableTab = "activeTableTab";
 <li class="blockList">
 <dl>
 <dt>All Implemented Interfaces:</dt>
-<dd><a href="../../../../org/openqa/selenium/interactions/Action.html" title="interface in org.openqa.selenium.interactions">Action</a></dd>
+<dd><a href="../../../../org/openqa/selenium/interactions/Action.html" title="interface in org.openqa.selenium.interactions">Action</a>, <a href="../../../../org/openqa/selenium/interactions/IsInteraction.html" title="interface in org.openqa.selenium.interactions">IsInteraction</a></dd>
 </dl>
 <hr>
 <div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
@@ -117,7 +117,7 @@ var activeTableTab = "activeTableTab";
 <pre>@Deprecated
 public class <span class="typeNameLabel">PauseAction</span>
 extends java.lang.Object
-implements <a href="../../../../org/openqa/selenium/interactions/Action.html" title="interface in org.openqa.selenium.interactions">Action</a></pre>
+implements <a href="../../../../org/openqa/selenium/interactions/Action.html" title="interface in org.openqa.selenium.interactions">Action</a>, <a href="../../../../org/openqa/selenium/interactions/IsInteraction.html" title="interface in org.openqa.selenium.interactions">IsInteraction</a></pre>
 <div class="block">Takes a pause.</div>
 </li>
 </ul>
@@ -157,8 +157,9 @@ implements <a href="../../../../org/openqa/selenium/interactions/Action.html" ti
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr id="i0" class="altColor">
-<td class="colFirst"><code>java.util.List&lt;java.lang.Object&gt;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/interactions/PauseAction.html#asList--">asList</a></span>()</code>
+<td class="colFirst"><code>java.util.List&lt;<a href="../../../../org/openqa/selenium/interactions/Interaction.html" title="class in org.openqa.selenium.interactions">Interaction</a>&gt;</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/interactions/PauseAction.html#asInteractions-org.openqa.selenium.interactions.PointerInput-org.openqa.selenium.interactions.KeyInput-">asInteractions</a></span>(<a href="../../../../org/openqa/selenium/interactions/PointerInput.html" title="class in org.openqa.selenium.interactions">PointerInput</a>&nbsp;mouse,
+              <a href="../../../../org/openqa/selenium/interactions/KeyInput.html" title="class in org.openqa.selenium.interactions">KeyInput</a>&nbsp;keyboard)</code>
 <div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 &nbsp;</td>
 </tr>
@@ -222,14 +223,19 @@ implements <a href="../../../../org/openqa/selenium/interactions/Action.html" ti
 </dl>
 </li>
 </ul>
-<a name="asList--">
+<a name="asInteractions-org.openqa.selenium.interactions.PointerInput-org.openqa.selenium.interactions.KeyInput-">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
-<h4>asList</h4>
-<pre>public&nbsp;java.util.List&lt;java.lang.Object&gt;&nbsp;asList()</pre>
+<h4>asInteractions</h4>
+<pre>public&nbsp;java.util.List&lt;<a href="../../../../org/openqa/selenium/interactions/Interaction.html" title="class in org.openqa.selenium.interactions">Interaction</a>&gt;&nbsp;asInteractions(<a href="../../../../org/openqa/selenium/interactions/PointerInput.html" title="class in org.openqa.selenium.interactions">PointerInput</a>&nbsp;mouse,
+                                                  <a href="../../../../org/openqa/selenium/interactions/KeyInput.html" title="class in org.openqa.selenium.interactions">KeyInput</a>&nbsp;keyboard)</pre>
 <div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../../../../org/openqa/selenium/interactions/IsInteraction.html#asInteractions-org.openqa.selenium.interactions.PointerInput-org.openqa.selenium.interactions.KeyInput-">asInteractions</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../org/openqa/selenium/interactions/IsInteraction.html" title="interface in org.openqa.selenium.interactions">IsInteraction</a></code></dd>
+</dl>
 </li>
 </ul>
 </li>
@@ -259,8 +265,8 @@ implements <a href="../../../../org/openqa/selenium/interactions/Action.html" ti
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../org/openqa/selenium/interactions/MoveToOffsetAction.html" title="class in org.openqa.selenium.interactions"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
-<li><a href="../../../../org/openqa/selenium/interactions/SendKeysAction.html" title="class in org.openqa.selenium.interactions"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
+<li><a href="../../../../org/openqa/selenium/interactions/Pause.html" title="class in org.openqa.selenium.interactions"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
+<li><a href="../../../../org/openqa/selenium/interactions/PointerInput.html" title="class in org.openqa.selenium.interactions"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../../index.html?org/openqa/selenium/interactions/PauseAction.html" target="_top">Frames</a></li>

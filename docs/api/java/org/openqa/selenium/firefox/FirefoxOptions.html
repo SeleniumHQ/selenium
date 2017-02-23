@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -141,10 +141,6 @@ extends java.lang.Object</pre>
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html#FIREFOX_OPTIONS">FIREFOX_OPTIONS</a></span></code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
-<td class="colFirst"><code>static java.lang.String</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html#OLD_FIREFOX_OPTIONS">OLD_FIREFOX_OPTIONS</a></span></code>&nbsp;</td>
-</tr>
 </table>
 </li>
 </ul>
@@ -205,18 +201,26 @@ extends java.lang.Object</pre>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html#addTo-org.openqa.selenium.remote.DesiredCapabilities-">addTo</a></span>(<a href="../../../../org/openqa/selenium/remote/DesiredCapabilities.html" title="class in org.openqa.selenium.remote">DesiredCapabilities</a>&nbsp;capabilities)</code>&nbsp;</td>
 </tr>
 <tr id="i6" class="altColor">
-<td class="colFirst"><code><a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html#setBinary-java.nio.file.Path-">setBinary</a></span>(java.nio.file.Path&nbsp;path)</code>&nbsp;</td>
+<td class="colFirst"><code><a href="../../../../org/openqa/selenium/firefox/FirefoxProfile.html" title="class in org.openqa.selenium.firefox">FirefoxProfile</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html#getProfile--">getProfile</a></span>()</code>&nbsp;</td>
 </tr>
 <tr id="i7" class="rowColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html#setBinary-java.lang.String-">setBinary</a></span>(java.lang.String&nbsp;binary)</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html#setBinary-java.nio.file.Path-">setBinary</a></span>(java.nio.file.Path&nbsp;path)</code>&nbsp;</td>
 </tr>
 <tr id="i8" class="altColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html#setProfile-org.openqa.selenium.firefox.FirefoxProfile-">setProfile</a></span>(<a href="../../../../org/openqa/selenium/firefox/FirefoxProfile.html" title="class in org.openqa.selenium.firefox">FirefoxProfile</a>&nbsp;profile)</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html#setBinary-java.lang.String-">setBinary</a></span>(java.lang.String&nbsp;binary)</code>&nbsp;</td>
 </tr>
 <tr id="i9" class="rowColor">
+<td class="colFirst"><code><a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html#setLogLevel-java.util.logging.Level-">setLogLevel</a></span>(java.util.logging.Level&nbsp;logLevel)</code>&nbsp;</td>
+</tr>
+<tr id="i10" class="altColor">
+<td class="colFirst"><code><a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html#setProfile-org.openqa.selenium.firefox.FirefoxProfile-">setProfile</a></span>(<a href="../../../../org/openqa/selenium/firefox/FirefoxProfile.html" title="class in org.openqa.selenium.firefox">FirefoxProfile</a>&nbsp;profile)</code>&nbsp;</td>
+</tr>
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code>com.google.gson.JsonElement</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html#toJson--">toJson</a></span>()</code>&nbsp;</td>
 </tr>
@@ -245,26 +249,13 @@ extends java.lang.Object</pre>
 <a name="FIREFOX_OPTIONS">
 <!--   -->
 </a>
-<ul class="blockList">
+<ul class="blockListLast">
 <li class="blockList">
 <h4>FIREFOX_OPTIONS</h4>
 <pre>public static final&nbsp;java.lang.String FIREFOX_OPTIONS</pre>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../constant-values.html#org.openqa.selenium.firefox.FirefoxOptions.FIREFOX_OPTIONS">Constant Field Values</a></dd>
-</dl>
-</li>
-</ul>
-<a name="OLD_FIREFOX_OPTIONS">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>OLD_FIREFOX_OPTIONS</h4>
-<pre>public static final&nbsp;java.lang.String OLD_FIREFOX_OPTIONS</pre>
-<dl>
-<dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="../../../../constant-values.html#org.openqa.selenium.firefox.FirefoxOptions.OLD_FIREFOX_OPTIONS">Constant Field Values</a></dd>
 </dl>
 </li>
 </ul>
@@ -320,6 +311,15 @@ extends java.lang.Object</pre>
 <pre>public&nbsp;<a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a>&nbsp;setProfile(<a href="../../../../org/openqa/selenium/firefox/FirefoxProfile.html" title="class in org.openqa.selenium.firefox">FirefoxProfile</a>&nbsp;profile)</pre>
 </li>
 </ul>
+<a name="getProfile--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getProfile</h4>
+<pre>public&nbsp;<a href="../../../../org/openqa/selenium/firefox/FirefoxProfile.html" title="class in org.openqa.selenium.firefox">FirefoxProfile</a>&nbsp;getProfile()</pre>
+</li>
+</ul>
 <a name="addArguments-java.lang.String...-">
 <!--   -->
 </a>
@@ -366,6 +366,15 @@ extends java.lang.Object</pre>
 <h4>addPreference</h4>
 <pre>public&nbsp;<a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a>&nbsp;addPreference(java.lang.String&nbsp;key,
                                     java.lang.String&nbsp;value)</pre>
+</li>
+</ul>
+<a name="setLogLevel-java.util.logging.Level-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setLogLevel</h4>
+<pre>public&nbsp;<a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a>&nbsp;setLogLevel(java.util.logging.Level&nbsp;logLevel)</pre>
 </li>
 </ul>
 <a name="addTo-org.openqa.selenium.remote.DesiredCapabilities-">

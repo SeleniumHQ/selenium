@@ -17,8 +17,8 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10};
-var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
+var methods = {"i0":42,"i1":42};
+var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"],32:["t6","Deprecated Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -48,7 +48,7 @@ var activeTableTab = "activeTableTab";
 <div class="subNav">
 <ul class="navList">
 <li><a href="../../../../org/openqa/selenium/interactions/Keyboard.html" title="interface in org.openqa.selenium.interactions"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
-<li><a href="../../../../org/openqa/selenium/interactions/KeyUpAction.html" title="class in org.openqa.selenium.interactions"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
+<li><a href="../../../../org/openqa/selenium/interactions/KeyInput.html" title="class in org.openqa.selenium.interactions"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../../index.html?org/openqa/selenium/interactions/KeyDownAction.html" target="_top">Frames</a></li>
@@ -122,11 +122,15 @@ var activeTableTab = "activeTableTab";
 <li class="blockList">
 <dl>
 <dt>All Implemented Interfaces:</dt>
-<dd><a href="../../../../org/openqa/selenium/interactions/Action.html" title="interface in org.openqa.selenium.interactions">Action</a></dd>
+<dd><a href="../../../../org/openqa/selenium/interactions/Action.html" title="interface in org.openqa.selenium.interactions">Action</a>, <a href="../../../../org/openqa/selenium/interactions/IsInteraction.html" title="interface in org.openqa.selenium.interactions">IsInteraction</a></dd>
 </dl>
 <hr>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
+<div class="block"><span class="deprecationComment">Use <a href="../../../../org/openqa/selenium/interactions/Actions.html#keyDown-org.openqa.selenium.WebElement-java.lang.CharSequence-"><code>Actions.keyDown(WebElement, CharSequence)</code></a></span></div>
+</div>
 <br>
-<pre>public class <span class="typeNameLabel">KeyDownAction</span>
+<pre>@Deprecated
+public class <span class="typeNameLabel">KeyDownAction</span>
 extends <a href="../../../../org/openqa/selenium/interactions/internal/SingleKeyAction.html" title="class in org.openqa.selenium.interactions.internal">SingleKeyAction</a>
 implements <a href="../../../../org/openqa/selenium/interactions/Action.html" title="interface in org.openqa.selenium.interactions">Action</a></pre>
 <div class="block">Emulates key press only, without the release.</div>
@@ -179,13 +183,17 @@ implements <a href="../../../../org/openqa/selenium/interactions/Action.html" ti
 <tr class="altColor">
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/interactions/KeyDownAction.html#KeyDownAction-org.openqa.selenium.interactions.Keyboard-org.openqa.selenium.interactions.Mouse-org.openqa.selenium.Keys-">KeyDownAction</a></span>(<a href="../../../../org/openqa/selenium/interactions/Keyboard.html" title="interface in org.openqa.selenium.interactions">Keyboard</a>&nbsp;keyboard,
              <a href="../../../../org/openqa/selenium/interactions/Mouse.html" title="interface in org.openqa.selenium.interactions">Mouse</a>&nbsp;mouse,
-             <a href="../../../../org/openqa/selenium/Keys.html" title="enum in org.openqa.selenium">Keys</a>&nbsp;key)</code>&nbsp;</td>
+             <a href="../../../../org/openqa/selenium/Keys.html" title="enum in org.openqa.selenium">Keys</a>&nbsp;key)</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
+&nbsp;</td>
 </tr>
 <tr class="rowColor">
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/interactions/KeyDownAction.html#KeyDownAction-org.openqa.selenium.interactions.Keyboard-org.openqa.selenium.interactions.Mouse-org.openqa.selenium.internal.Locatable-org.openqa.selenium.Keys-">KeyDownAction</a></span>(<a href="../../../../org/openqa/selenium/interactions/Keyboard.html" title="interface in org.openqa.selenium.interactions">Keyboard</a>&nbsp;keyboard,
              <a href="../../../../org/openqa/selenium/interactions/Mouse.html" title="interface in org.openqa.selenium.interactions">Mouse</a>&nbsp;mouse,
              <a href="../../../../org/openqa/selenium/internal/Locatable.html" title="interface in org.openqa.selenium.internal">Locatable</a>&nbsp;locationProvider,
-             <a href="../../../../org/openqa/selenium/Keys.html" title="enum in org.openqa.selenium">Keys</a>&nbsp;key)</code>&nbsp;</td>
+             <a href="../../../../org/openqa/selenium/Keys.html" title="enum in org.openqa.selenium">Keys</a>&nbsp;key)</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
+&nbsp;</td>
 </tr>
 </table>
 </li>
@@ -197,18 +205,23 @@ implements <a href="../../../../org/openqa/selenium/interactions/Action.html" ti
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Method Summary table, listing methods, and an explanation">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t6" class="tableTab"><span><a href="javascript:show(32);">Deprecated Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr id="i0" class="altColor">
-<td class="colFirst"><code>java.util.List&lt;java.lang.Object&gt;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/interactions/KeyDownAction.html#asList--">asList</a></span>()</code>&nbsp;</td>
+<td class="colFirst"><code>java.util.List&lt;<a href="../../../../org/openqa/selenium/interactions/Interaction.html" title="class in org.openqa.selenium.interactions">Interaction</a>&gt;</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/interactions/KeyDownAction.html#asInteractions-org.openqa.selenium.interactions.PointerInput-org.openqa.selenium.interactions.KeyInput-">asInteractions</a></span>(<a href="../../../../org/openqa/selenium/interactions/PointerInput.html" title="class in org.openqa.selenium.interactions">PointerInput</a>&nbsp;mouse,
+              <a href="../../../../org/openqa/selenium/interactions/KeyInput.html" title="class in org.openqa.selenium.interactions">KeyInput</a>&nbsp;keyboard)</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
+&nbsp;</td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/interactions/KeyDownAction.html#perform--">perform</a></span>()</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/interactions/KeyDownAction.html#perform--">perform</a></span>()</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
+&nbsp;</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -216,14 +229,14 @@ implements <a href="../../../../org/openqa/selenium/interactions/Action.html" ti
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;org.openqa.selenium.interactions.internal.<a href="../../../../org/openqa/selenium/interactions/internal/KeysRelatedAction.html" title="class in org.openqa.selenium.interactions.internal">KeysRelatedAction</a></h3>
-<code><a href="../../../../org/openqa/selenium/interactions/internal/KeysRelatedAction.html#focusOnElement--">focusOnElement</a></code></li>
+<code><a href="../../../../org/openqa/selenium/interactions/internal/KeysRelatedAction.html#focusOnElement--">focusOnElement</a>, <a href="../../../../org/openqa/selenium/interactions/internal/KeysRelatedAction.html#optionallyClickElement-org.openqa.selenium.interactions.PointerInput-com.google.common.collect.ImmutableList.Builder-">optionallyClickElement</a></code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a name="methods.inherited.from.class.org.openqa.selenium.interactions.internal.BaseAction">
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;org.openqa.selenium.interactions.internal.<a href="../../../../org/openqa/selenium/interactions/internal/BaseAction.html" title="class in org.openqa.selenium.interactions.internal">BaseAction</a></h3>
-<code><a href="../../../../org/openqa/selenium/interactions/internal/BaseAction.html#getTargetId--">getTargetId</a></code></li>
+<code><a href="../../../../org/openqa/selenium/interactions/internal/BaseAction.html#getTargetElement--">getTargetElement</a></code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a name="methods.inherited.from.class.java.lang.Object">
@@ -256,6 +269,7 @@ implements <a href="../../../../org/openqa/selenium/interactions/Action.html" ti
                      <a href="../../../../org/openqa/selenium/interactions/Mouse.html" title="interface in org.openqa.selenium.interactions">Mouse</a>&nbsp;mouse,
                      <a href="../../../../org/openqa/selenium/internal/Locatable.html" title="interface in org.openqa.selenium.internal">Locatable</a>&nbsp;locationProvider,
                      <a href="../../../../org/openqa/selenium/Keys.html" title="enum in org.openqa.selenium">Keys</a>&nbsp;key)</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 </li>
 </ul>
 <a name="KeyDownAction-org.openqa.selenium.interactions.Keyboard-org.openqa.selenium.interactions.Mouse-org.openqa.selenium.Keys-">
@@ -267,6 +281,7 @@ implements <a href="../../../../org/openqa/selenium/interactions/Action.html" ti
 <pre>public&nbsp;KeyDownAction(<a href="../../../../org/openqa/selenium/interactions/Keyboard.html" title="interface in org.openqa.selenium.interactions">Keyboard</a>&nbsp;keyboard,
                      <a href="../../../../org/openqa/selenium/interactions/Mouse.html" title="interface in org.openqa.selenium.interactions">Mouse</a>&nbsp;mouse,
                      <a href="../../../../org/openqa/selenium/Keys.html" title="enum in org.openqa.selenium">Keys</a>&nbsp;key)</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 </li>
 </ul>
 </li>
@@ -284,19 +299,26 @@ implements <a href="../../../../org/openqa/selenium/interactions/Action.html" ti
 <li class="blockList">
 <h4>perform</h4>
 <pre>public&nbsp;void&nbsp;perform()</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../../../../org/openqa/selenium/interactions/Action.html#perform--">perform</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../org/openqa/selenium/interactions/Action.html" title="interface in org.openqa.selenium.interactions">Action</a></code></dd>
 </dl>
 </li>
 </ul>
-<a name="asList--">
+<a name="asInteractions-org.openqa.selenium.interactions.PointerInput-org.openqa.selenium.interactions.KeyInput-">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
-<h4>asList</h4>
-<pre>public&nbsp;java.util.List&lt;java.lang.Object&gt;&nbsp;asList()</pre>
+<h4>asInteractions</h4>
+<pre>public&nbsp;java.util.List&lt;<a href="../../../../org/openqa/selenium/interactions/Interaction.html" title="class in org.openqa.selenium.interactions">Interaction</a>&gt;&nbsp;asInteractions(<a href="../../../../org/openqa/selenium/interactions/PointerInput.html" title="class in org.openqa.selenium.interactions">PointerInput</a>&nbsp;mouse,
+                                                  <a href="../../../../org/openqa/selenium/interactions/KeyInput.html" title="class in org.openqa.selenium.interactions">KeyInput</a>&nbsp;keyboard)</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../../../../org/openqa/selenium/interactions/IsInteraction.html#asInteractions-org.openqa.selenium.interactions.PointerInput-org.openqa.selenium.interactions.KeyInput-">asInteractions</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../org/openqa/selenium/interactions/IsInteraction.html" title="interface in org.openqa.selenium.interactions">IsInteraction</a></code></dd>
+</dl>
 </li>
 </ul>
 </li>
@@ -327,7 +349,7 @@ implements <a href="../../../../org/openqa/selenium/interactions/Action.html" ti
 <div class="subNav">
 <ul class="navList">
 <li><a href="../../../../org/openqa/selenium/interactions/Keyboard.html" title="interface in org.openqa.selenium.interactions"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
-<li><a href="../../../../org/openqa/selenium/interactions/KeyUpAction.html" title="class in org.openqa.selenium.interactions"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
+<li><a href="../../../../org/openqa/selenium/interactions/KeyInput.html" title="class in org.openqa.selenium.interactions"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../../index.html?org/openqa/selenium/interactions/KeyDownAction.html" target="_top">Frames</a></li>

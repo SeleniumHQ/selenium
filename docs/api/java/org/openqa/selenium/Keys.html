@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":9,"i2":9,"i3":9,"i4":10,"i5":10,"i6":10,"i7":9,"i8":9};
+var methods = {"i0":10,"i1":9,"i2":9,"i3":10,"i4":9,"i5":10,"i6":10,"i7":10,"i8":9,"i9":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -364,31 +364,35 @@ implements java.lang.CharSequence</pre>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/openqa/selenium/Keys.html#chord-java.lang.Iterable-">chord</a></span>(java.lang.Iterable&lt;java.lang.CharSequence&gt;&nbsp;value)</code>&nbsp;</td>
 </tr>
 <tr id="i3" class="rowColor">
+<td class="colFirst"><code>int</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../org/openqa/selenium/Keys.html#getCodePoint--">getCodePoint</a></span>()</code>&nbsp;</td>
+</tr>
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>static <a href="../../../org/openqa/selenium/Keys.html" title="enum in org.openqa.selenium">Keys</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/openqa/selenium/Keys.html#getKeyFromUnicode-char-">getKeyFromUnicode</a></span>(char&nbsp;key)</code>
 <div class="block">Get the special key representation, <a href="../../../org/openqa/selenium/Keys.html" title="enum in org.openqa.selenium"><code>Keys</code></a>, of the supplied character if there is one.</div>
 </td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/openqa/selenium/Keys.html#length--">length</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>java.lang.CharSequence</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/openqa/selenium/Keys.html#subSequence-int-int-">subSequence</a></span>(int&nbsp;start,
            int&nbsp;end)</code>&nbsp;</td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/openqa/selenium/Keys.html#toString--">toString</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>static <a href="../../../org/openqa/selenium/Keys.html" title="enum in org.openqa.selenium">Keys</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/openqa/selenium/Keys.html#valueOf-java.lang.String-">valueOf</a></span>(java.lang.String&nbsp;name)</code>
 <div class="block">Returns the enum constant of this type with the specified name.</div>
 </td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>static <a href="../../../org/openqa/selenium/Keys.html" title="enum in org.openqa.selenium">Keys</a>[]</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/openqa/selenium/Keys.html#values--">values</a></span>()</code>
 <div class="block">Returns an array containing the constants of this enum type, in
@@ -1055,6 +1059,15 @@ not permitted.)</div>
 <dd><code>java.lang.IllegalArgumentException</code> - if this enum type has no constant with the specified name</dd>
 <dd><code>java.lang.NullPointerException</code> - if the argument is null</dd>
 </dl>
+</li>
+</ul>
+<a name="getCodePoint--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getCodePoint</h4>
+<pre>public&nbsp;int&nbsp;getCodePoint()</pre>
 </li>
 </ul>
 <a name="charAt-int-">

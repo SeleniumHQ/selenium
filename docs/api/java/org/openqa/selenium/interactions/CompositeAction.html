@@ -107,13 +107,13 @@ var activeTableTab = "activeTableTab";
 <li class="blockList">
 <dl>
 <dt>All Implemented Interfaces:</dt>
-<dd><a href="../../../../org/openqa/selenium/interactions/Action.html" title="interface in org.openqa.selenium.interactions">Action</a></dd>
+<dd><a href="../../../../org/openqa/selenium/interactions/Action.html" title="interface in org.openqa.selenium.interactions">Action</a>, <a href="../../../../org/openqa/selenium/interactions/IsInteraction.html" title="interface in org.openqa.selenium.interactions">IsInteraction</a></dd>
 </dl>
 <hr>
 <br>
 <pre>public class <span class="typeNameLabel">CompositeAction</span>
 extends java.lang.Object
-implements <a href="../../../../org/openqa/selenium/interactions/Action.html" title="interface in org.openqa.selenium.interactions">Action</a></pre>
+implements <a href="../../../../org/openqa/selenium/interactions/Action.html" title="interface in org.openqa.selenium.interactions">Action</a>, <a href="../../../../org/openqa/selenium/interactions/IsInteraction.html" title="interface in org.openqa.selenium.interactions">IsInteraction</a></pre>
 <div class="block">An action for aggregating actions and triggering all of them at the same time.</div>
 </li>
 </ul>
@@ -135,9 +135,6 @@ implements <a href="../../../../org/openqa/selenium/interactions/Action.html" ti
 <tr class="altColor">
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/interactions/CompositeAction.html#CompositeAction--">CompositeAction</a></span>()</code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/interactions/CompositeAction.html#CompositeAction-org.openqa.selenium.WebDriver-">CompositeAction</a></span>(<a href="../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code>&nbsp;</td>
-</tr>
 </table>
 </li>
 </ul>
@@ -158,8 +155,9 @@ implements <a href="../../../../org/openqa/selenium/interactions/Action.html" ti
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/interactions/CompositeAction.html#addAction-org.openqa.selenium.interactions.Action-">addAction</a></span>(<a href="../../../../org/openqa/selenium/interactions/Action.html" title="interface in org.openqa.selenium.interactions">Action</a>&nbsp;action)</code>&nbsp;</td>
 </tr>
 <tr id="i1" class="rowColor">
-<td class="colFirst"><code>java.util.List&lt;<a href="../../../../org/openqa/selenium/interactions/Action.html" title="interface in org.openqa.selenium.interactions">Action</a>&gt;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/interactions/CompositeAction.html#asList--">asList</a></span>()</code>&nbsp;</td>
+<td class="colFirst"><code>java.util.List&lt;<a href="../../../../org/openqa/selenium/interactions/Interaction.html" title="class in org.openqa.selenium.interactions">Interaction</a>&gt;</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/interactions/CompositeAction.html#asInteractions-org.openqa.selenium.interactions.PointerInput-org.openqa.selenium.interactions.KeyInput-">asInteractions</a></span>(<a href="../../../../org/openqa/selenium/interactions/PointerInput.html" title="class in org.openqa.selenium.interactions">PointerInput</a>&nbsp;mouse,
+              <a href="../../../../org/openqa/selenium/interactions/KeyInput.html" title="class in org.openqa.selenium.interactions">KeyInput</a>&nbsp;keyboard)</code>&nbsp;</td>
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code>void</code></td>
@@ -190,19 +188,10 @@ implements <a href="../../../../org/openqa/selenium/interactions/Action.html" ti
 <a name="CompositeAction--">
 <!--   -->
 </a>
-<ul class="blockList">
-<li class="blockList">
-<h4>CompositeAction</h4>
-<pre>public&nbsp;CompositeAction()</pre>
-</li>
-</ul>
-<a name="CompositeAction-org.openqa.selenium.WebDriver-">
-<!--   -->
-</a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>CompositeAction</h4>
-<pre>public&nbsp;CompositeAction(<a href="../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</pre>
+<pre>public&nbsp;CompositeAction()</pre>
 </li>
 </ul>
 </li>
@@ -235,13 +224,18 @@ implements <a href="../../../../org/openqa/selenium/interactions/Action.html" ti
 <pre>public&nbsp;<a href="../../../../org/openqa/selenium/interactions/CompositeAction.html" title="class in org.openqa.selenium.interactions">CompositeAction</a>&nbsp;addAction(<a href="../../../../org/openqa/selenium/interactions/Action.html" title="interface in org.openqa.selenium.interactions">Action</a>&nbsp;action)</pre>
 </li>
 </ul>
-<a name="asList--">
+<a name="asInteractions-org.openqa.selenium.interactions.PointerInput-org.openqa.selenium.interactions.KeyInput-">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
-<h4>asList</h4>
-<pre>public&nbsp;java.util.List&lt;<a href="../../../../org/openqa/selenium/interactions/Action.html" title="interface in org.openqa.selenium.interactions">Action</a>&gt;&nbsp;asList()</pre>
+<h4>asInteractions</h4>
+<pre>public&nbsp;java.util.List&lt;<a href="../../../../org/openqa/selenium/interactions/Interaction.html" title="class in org.openqa.selenium.interactions">Interaction</a>&gt;&nbsp;asInteractions(<a href="../../../../org/openqa/selenium/interactions/PointerInput.html" title="class in org.openqa.selenium.interactions">PointerInput</a>&nbsp;mouse,
+                                                  <a href="../../../../org/openqa/selenium/interactions/KeyInput.html" title="class in org.openqa.selenium.interactions">KeyInput</a>&nbsp;keyboard)</pre>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../../../../org/openqa/selenium/interactions/IsInteraction.html#asInteractions-org.openqa.selenium.interactions.PointerInput-org.openqa.selenium.interactions.KeyInput-">asInteractions</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../org/openqa/selenium/interactions/IsInteraction.html" title="interface in org.openqa.selenium.interactions">IsInteraction</a></code></dd>
+</dl>
 </li>
 </ul>
 </li>

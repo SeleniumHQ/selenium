@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -48,7 +48,7 @@ var activeTableTab = "activeTableTab";
 <div class="subNav">
 <ul class="navList">
 <li><a href="../../../../org/openqa/selenium/firefox/ExtensionConnection.html" title="interface in org.openqa.selenium.firefox"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
-<li><a href="../../../../org/openqa/selenium/firefox/FirefoxDriver.html" title="class in org.openqa.selenium.firefox"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
+<li><a href="../../../../org/openqa/selenium/firefox/FirefoxBinary.Channel.html" title="enum in org.openqa.selenium.firefox"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../../index.html?org/openqa/selenium/firefox/FirefoxBinary.html" target="_top">Frames</a></li>
@@ -72,7 +72,7 @@ var activeTableTab = "activeTableTab";
 <div>
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
-<li>Nested&nbsp;|&nbsp;</li>
+<li><a href="#nested.class.summary">Nested</a>&nbsp;|&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
@@ -115,6 +115,27 @@ extends java.lang.Object</pre>
 <div class="summary">
 <ul class="blockList">
 <li class="blockList">
+<!-- ======== NESTED CLASS SUMMARY ======== -->
+<ul class="blockList">
+<li class="blockList"><a name="nested.class.summary">
+<!--   -->
+</a>
+<h3>Nested Class Summary</h3>
+<table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Nested Class Summary table, listing nested classes, and an explanation">
+<caption><span>Nested Classes</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colLast" scope="col">Class and Description</th>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static class&nbsp;</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxBinary.Channel.html" title="enum in org.openqa.selenium.firefox">FirefoxBinary.Channel</a></span></code>
+<div class="block">Enumerates Firefox channels, according to https://wiki.mozilla.org/RapidRelease</div>
+</td>
+</tr>
+</table>
+</li>
+</ul>
 <!-- ======== CONSTRUCTOR SUMMARY ======== -->
 <ul class="blockList">
 <li class="blockList"><a name="constructor.summary">
@@ -131,6 +152,12 @@ extends java.lang.Object</pre>
 </tr>
 <tr class="rowColor">
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxBinary.html#FirefoxBinary-java.io.File-">FirefoxBinary</a></span>(java.io.File&nbsp;pathToFirefoxBinary)</code>&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxBinary.html#FirefoxBinary-org.openqa.selenium.firefox.FirefoxBinary.Channel-">FirefoxBinary</a></span>(<a href="../../../../org/openqa/selenium/firefox/FirefoxBinary.Channel.html" title="enum in org.openqa.selenium.firefox">FirefoxBinary.Channel</a>&nbsp;channel)</code>&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxBinary.html#FirefoxBinary-java.lang.String-">FirefoxBinary</a></span>(java.lang.String&nbsp;version)</code>&nbsp;</td>
 </tr>
 </table>
 </li>
@@ -165,64 +192,68 @@ extends java.lang.Object</pre>
 </td>
 </tr>
 <tr id="i3" class="rowColor">
-<td class="colFirst"><code>protected <a href="../../../../org/openqa/selenium/firefox/internal/Executable.html" title="class in org.openqa.selenium.firefox.internal">Executable</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxBinary.html#getExecutable--">getExecutable</a></span>()</code>&nbsp;</td>
-</tr>
-<tr id="i4" class="altColor">
 <td class="colFirst"><code>java.util.Map&lt;java.lang.String,java.lang.String&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxBinary.html#getExtraEnv--">getExtraEnv</a></span>()</code>&nbsp;</td>
 </tr>
+<tr id="i4" class="altColor">
+<td class="colFirst"><code>protected java.io.File</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxBinary.html#getFile--">getFile</a></span>()</code>&nbsp;</td>
+</tr>
 <tr id="i5" class="rowColor">
+<td class="colFirst"><code>protected java.lang.String</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxBinary.html#getPath--">getPath</a></span>()</code>&nbsp;</td>
+</tr>
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>long</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxBinary.html#getTimeout--">getTimeout</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>protected boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxBinary.html#isOnLinux--">isOnLinux</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>protected void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxBinary.html#modifyLinkLibraryPath-java.io.File-">modifyLinkLibraryPath</a></span>(java.io.File&nbsp;profileDir)</code>&nbsp;</td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxBinary.html#quit--">quit</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxBinary.html#setEnvironmentProperty-java.lang.String-java.lang.String-">setEnvironmentProperty</a></span>(java.lang.String&nbsp;propertyName,
                       java.lang.String&nbsp;value)</code>&nbsp;</td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxBinary.html#setOutputWatcher-java.io.OutputStream-">setOutputWatcher</a></span>(java.io.OutputStream&nbsp;stream)</code>&nbsp;</td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i12" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxBinary.html#setTimeout-long-">setTimeout</a></span>(long&nbsp;timeout)</code>&nbsp;</td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code>protected void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxBinary.html#startFirefoxProcess-org.openqa.selenium.os.CommandLine-">startFirefoxProcess</a></span>(<a href="../../../../org/openqa/selenium/os/CommandLine.html" title="class in org.openqa.selenium.os">CommandLine</a>&nbsp;command)</code>&nbsp;</td>
 </tr>
-<tr id="i13" class="rowColor">
+<tr id="i14" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxBinary.html#startProfile-org.openqa.selenium.firefox.FirefoxProfile-java.io.File-java.lang.String...-">startProfile</a></span>(<a href="../../../../org/openqa/selenium/firefox/FirefoxProfile.html" title="class in org.openqa.selenium.firefox">FirefoxProfile</a>&nbsp;profile,
             java.io.File&nbsp;profileDir,
             java.lang.String...&nbsp;commandLineFlags)</code>&nbsp;</td>
 </tr>
-<tr id="i14" class="altColor">
+<tr id="i15" class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxBinary.html#toString--">toString</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i15" class="rowColor">
+<tr id="i16" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxBinary.html#waitFor--">waitFor</a></span>()</code>
 <div class="block">Waits for the process to execute, returning the command output taken from the profile's
  execution.</div>
 </td>
 </tr>
-<tr id="i16" class="altColor">
+<tr id="i17" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxBinary.html#waitFor-long-">waitFor</a></span>(long&nbsp;timeout)</code>
 <div class="block">Waits for the process to execute, returning the command output taken from the profile's
@@ -258,6 +289,24 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>FirefoxBinary</h4>
 <pre>public&nbsp;FirefoxBinary()</pre>
+</li>
+</ul>
+<a name="FirefoxBinary-org.openqa.selenium.firefox.FirefoxBinary.Channel-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>FirefoxBinary</h4>
+<pre>public&nbsp;FirefoxBinary(<a href="../../../../org/openqa/selenium/firefox/FirefoxBinary.Channel.html" title="enum in org.openqa.selenium.firefox">FirefoxBinary.Channel</a>&nbsp;channel)</pre>
+</li>
+</ul>
+<a name="FirefoxBinary-java.lang.String-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>FirefoxBinary</h4>
+<pre>public&nbsp;FirefoxBinary(java.lang.String&nbsp;version)</pre>
 </li>
 </ul>
 <a name="FirefoxBinary-java.io.File-">
@@ -335,13 +384,22 @@ extends java.lang.Object</pre>
 </dl>
 </li>
 </ul>
-<a name="getExecutable--">
+<a name="getFile--">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>getExecutable</h4>
-<pre>protected&nbsp;<a href="../../../../org/openqa/selenium/firefox/internal/Executable.html" title="class in org.openqa.selenium.firefox.internal">Executable</a>&nbsp;getExecutable()</pre>
+<h4>getFile</h4>
+<pre>protected&nbsp;java.io.File&nbsp;getFile()</pre>
+</li>
+</ul>
+<a name="getPath--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getPath</h4>
+<pre>protected&nbsp;java.lang.String&nbsp;getPath()</pre>
 </li>
 </ul>
 <a name="getExtraEnv--">
@@ -508,7 +566,7 @@ extends java.lang.Object</pre>
 <div class="subNav">
 <ul class="navList">
 <li><a href="../../../../org/openqa/selenium/firefox/ExtensionConnection.html" title="interface in org.openqa.selenium.firefox"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
-<li><a href="../../../../org/openqa/selenium/firefox/FirefoxDriver.html" title="class in org.openqa.selenium.firefox"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
+<li><a href="../../../../org/openqa/selenium/firefox/FirefoxBinary.Channel.html" title="enum in org.openqa.selenium.firefox"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../../index.html?org/openqa/selenium/firefox/FirefoxBinary.html" target="_top">Frames</a></li>
@@ -532,7 +590,7 @@ extends java.lang.Object</pre>
 <div>
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
-<li>Nested&nbsp;|&nbsp;</li>
+<li><a href="#nested.class.summary">Nested</a>&nbsp;|&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
