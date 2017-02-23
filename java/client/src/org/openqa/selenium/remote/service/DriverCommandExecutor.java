@@ -87,7 +87,7 @@ public class DriverCommandExecutor extends HttpCommandExecutor {
           !service.isRunning()) {
         throw new WebDriverException("The driver server has unexpectedly died!", t);
       }
-      Throwables.propagateIfPossible(t);
+      Throwables.throwIfUnchecked(t);
       throw new WebDriverException(t);
     } finally {
       if (DriverCommand.QUIT.equals(command.getName())) {
