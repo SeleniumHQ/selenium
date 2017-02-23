@@ -1,6 +1,8 @@
 v3.2.0
 ======
 
+* Updated Guava to version 21 and started using Java 8 features. Users
+  are recommended to update too.
 * Fix a problem starting Firefox caused by missing libraries
 * Experimental support for the W3C Action endpoints
 * Remove deprecated `FluentWait.until(Predicate<?>)` method. This
