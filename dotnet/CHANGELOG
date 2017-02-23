@@ -1,3 +1,12 @@
+v3.2.0
+======
+* Removed .NET Selenium RC language binding implementation. As
+  announced previously, this release entirely removes the .NET
+  implementation of the Selenium RC technology stack. The RC API still
+  exists as part of WebDriverBackedSelenium, but is still marked as
+  deprecated.
+
+
 v3.1.0
 ======
  * Note that this will be the final release containing Selenium RC language
