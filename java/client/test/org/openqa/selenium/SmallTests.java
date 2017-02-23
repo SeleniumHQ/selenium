@@ -30,7 +30,7 @@ import org.openqa.selenium.net.LinuxEphemeralPortRangeDetectorTest;
 import org.openqa.selenium.net.NetworkUtilsTest;
 import org.openqa.selenium.os.CommandLineTest;
 import org.openqa.selenium.os.WindowsUtilsUnitTest;
-import org.openqa.selenium.testing.drivers.IgnoreComparitorUnitTest;
+import org.openqa.selenium.testing.drivers.IgnoreComparatorUnitTest;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
@@ -40,7 +40,7 @@ import org.openqa.selenium.testing.drivers.IgnoreComparitorUnitTest;
     CompositeActionTest.class,
     DimensionTest.class,
     FileHandlerTest.class,
-    IgnoreComparitorUnitTest.class,
+    IgnoreComparatorUnitTest.class,
     IndividualKeyboardActionsTest.class,
     IndividualMouseActionsTest.class,
     KeysTest.class,

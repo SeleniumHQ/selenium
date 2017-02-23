@@ -49,7 +49,7 @@ export_file(name = 'firebug',
 
 java_library(name = 'small-tests',
   srcs = [
-    'IgnoreComparitorUnitTest.java',
+    'IgnoreComparatorUnitTest.java',
   ],
   deps = [
     ':drivers',
