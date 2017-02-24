@@ -35,18 +35,19 @@ module Selenium
     #
     class Logger
       extend Forwardable
+      include ::Logger::Severity
 
       def_delegators :@logger, :debug, :debug?,
                      :info, :info?,
                      :warn, :warn?,
                      :error, :error?,
                      :fatal, :fatal?,
-                     :level, :level=
+                     :level
 
       def initialize
         @logger = ::Logger.new($stdout)
         @logger.progname = 'Selenium'
-        @logger.level = ($DEBUG ? :debug : :warn)
+        @logger.level = ($DEBUG ? DEBUG : WARN)
         @logger.formatter = proc do |severity, time, progname, msg|
           "#{time.strftime('%F %T')} #{severity} #{progname} #{msg}\n"
         end
@@ -54,6 +55,35 @@ module Selenium
 
       def output=(io)
         @logger.reopen(io)
+      end
+
+      #
+      # Stolen from Logger 2.3, for Ruby < 2.3 compatibility
+      #
+
+      def level=(severity)
+        if severity.is_a?(Integer)
+          @level = severity
+        else
+          _severity = severity.to_s.downcase
+          puts _severity
+          case _severity
+            when 'debug'.freeze
+              @logger.level = DEBUG
+            when 'info'.freeze
+              @logger.level = INFO
+            when 'warn'.freeze
+              @logger.level = WARN
+            when 'error'.freeze
+              @logger.level = ERROR
+            when 'fatal'.freeze
+              @logger.level = FATAL
+            when 'unknown'.freeze
+              @logger.level = UNKNOWN
+            else
+              raise ArgumentError, "invalid log level: #{severity}"
+          end
+        end
       end
 
       #
