@@ -23,21 +23,23 @@ module Selenium
       # @api private
       class Bridge < Remote::Bridge
         def initialize(opts = {})
-          port = opts.delete(:port) || DEFAULT_PORT
-          profile = opts.delete(:profile)
+          opts[:desired_capabilities] ||= Remote::Capabilities.firefox
+          opts[:desired_capabilities].proxy = opts.delete(:proxy) if opts.key?(:proxy)
 
-          @launcher = create_launcher(port, profile)
-          @launcher.launch
-          opts[:url] = @launcher.url
+          unless opts.key?(:url)
+            port = opts.delete(:port) || DEFAULT_PORT
+            profile = opts.delete(:profile)
 
-          caps = opts[:desired_capabilities] ||= Remote::Capabilities.firefox
-          caps.proxy = opts.delete(:proxy) if opts.key?(:proxy)
-          Binary.path = caps[:firefox_binary] if caps[:firefox_binary]
+            Binary.path = opts[:desired_capabilities][:firefox_binary] if opts[:desired_capabilities][:firefox_binary]
+            @launcher = create_launcher(port, profile)
+            @launcher.launch
+            opts[:url] = @launcher.url
+          end
 
           begin
             super(opts)
           rescue
-            @launcher.quit
+            @launcher.quit if @launcher
             raise
           end
         end
@@ -47,9 +49,7 @@ module Selenium
         end
 
         def driver_extensions
-          [
-            DriverExtensions::TakesScreenshot
-          ]
+          [DriverExtensions::TakesScreenshot]
         end
 
         def quit

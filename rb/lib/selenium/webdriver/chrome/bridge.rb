@@ -23,21 +23,21 @@ module Selenium
       # @api private
       class Bridge < Remote::Bridge
         def initialize(opts = {})
-          port = opts.delete(:port) || Service::DEFAULT_PORT
-          service_args = opts.delete(:service_args) || {}
-
-          if opts[:service_log_path]
-            service_args.merge!(service_log_path: opts.delete(:service_log_path))
-          end
+          opts[:desired_capabilities] = create_capabilities(opts)
 
           unless opts.key?(:url)
+            port = opts.delete(:port) || Service::DEFAULT_PORT
+            service_args = opts.delete(:service_args) || {}
+
+            if opts[:service_log_path]
+              service_args.merge!(service_log_path: opts.delete(:service_log_path))
+            end
+
             driver_path = opts.delete(:driver_path) || Chrome.driver_path
             @service = Service.new(driver_path, port, *extract_service_args(service_args))
             @service.start
             opts[:url] = @service.uri
           end
-
-          opts[:desired_capabilities] = create_capabilities(opts)
 
           super(opts)
         end

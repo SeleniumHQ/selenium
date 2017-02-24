@@ -26,11 +26,11 @@ module Selenium
 
       class Bridge < Remote::Bridge
         def initialize(opts = {})
-          port = opts.delete(:port) || Service::DEFAULT_PORT
           opts[:desired_capabilities] ||= Remote::Capabilities.phantomjs
 
           unless opts.key?(:url)
-            driver_path = opts.delete(:driver_path) || PhantomJS.path
+            port = opts.delete(:port) || Service::DEFAULT_PORT
+            driver_path = opts.delete(:driver_path) || PhantomJS.driver_path
             args = opts.delete(:args) || opts[:desired_capabilities]['phantomjs.cli.args']
             @service = Service.new(driver_path, port, *args)
             @service.start

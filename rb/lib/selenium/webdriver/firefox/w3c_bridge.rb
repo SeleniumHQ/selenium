@@ -23,14 +23,17 @@ module Selenium
       # @api private
       class W3CBridge < Remote::W3CBridge
         def initialize(opts = {})
-          port = opts.delete(:port) || Service::DEFAULT_PORT
           opts[:desired_capabilities] = create_capabilities(opts)
-          service_args = opts.delete(:service_args) || {}
 
-          driver_path = opts.delete(:driver_path) || Firefox.driver_path
-          @service = Service.new(driver_path, port, *extract_service_args(service_args))
-          @service.start
-          opts[:url] = @service.uri
+          unless opts.key?(:url)
+            port = opts.delete(:port) || Service::DEFAULT_PORT
+            service_args = opts.delete(:service_args) || {}
+
+            driver_path = opts.delete(:driver_path) || Firefox.driver_path
+            @service = Service.new(driver_path, port, *extract_service_args(service_args))
+            @service.start
+            opts[:url] = @service.uri
+          end
 
           super(opts)
         end
@@ -40,10 +43,8 @@ module Selenium
         end
 
         def driver_extensions
-          [
-            DriverExtensions::TakesScreenshot,
-            DriverExtensions::HasWebStorage
-          ]
+          [DriverExtensions::TakesScreenshot,
+            DriverExtensions::HasWebStorage]
         end
 
         def quit

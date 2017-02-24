@@ -21,41 +21,27 @@ require File.expand_path('../../spec_helper', __FILE__)
 
 module Selenium
   module WebDriver
-    module Safari
-      describe Bridge do
-        let(:http)    { double(Remote::Http::Default, call: resp).as_null_object }
-        let(:resp)    { {'sessionId' => 'foo', 'value' => @default_capabilities} }
-        let(:service) { double(Service, start: true, uri: 'http://example.com') }
-        let(:caps)    { {} }
+    module Firefox
+      describe W3CBridge do
+        let(:launcher) { double(Launcher, launch: nil, quit: nil, url: 'http://localhost:4444/wd/hub') }
+        let(:resp) { {'sessionId' => 'foo', 'value' => @default_capabilities} }
+        let(:http) { double(Remote::Http::Default, call: resp).as_null_object }
+        let(:caps) { Remote::Capabilities.chrome }
 
         before do
-          @default_capabilities = Remote::Capabilities.safari.as_json
-
-          allow(Remote::Capabilities).to receive(:safari).and_return(caps)
-          allow(Service).to receive(:binary_path).and_return('/foo')
-          allow(Service).to receive(:new).and_return(service)
+          @default_capabilities = Remote::Capabilities.firefox.as_json
+          allow(Remote::Capabilities).to receive(:firefox).and_return(caps)
+          allow(Launcher).to receive(:new).and_return(launcher)
         end
 
         it 'accepts server URL' do
           expect(Service).not_to receive(:new)
           expect(http).to receive(:server_url=).with(URI.parse('http://example.com:4321'))
 
-          Bridge.new(http_client: http, url: 'http://example.com:4321')
-        end
-
-        it 'takes desired capabilities' do
-          custom_caps = Remote::Capabilities.new
-          custom_caps['foo'] = 'bar'
-
-          expect(http).to receive(:call) do |_, _, payload|
-            expect(payload[:desiredCapabilities]['foo']).to eq 'bar'
-            resp
-          end
-
-          Bridge.new(http_client: http, desired_capabilities: custom_caps)
+          W3CBridge.new(http_client: http, url: 'http://example.com:4321')
         end
 
       end
-    end # Safari
+    end # Firefox
   end # WebDriver
 end # Selenium
