@@ -1,3 +1,9 @@
+3.2.1 (2017-02-24)
+===================
+
+Ruby:
+  * Fix bug for supporting Logger on Ruby versions < 2.3
+
 3.2.0 (2017-02-22)
 ===================
 
