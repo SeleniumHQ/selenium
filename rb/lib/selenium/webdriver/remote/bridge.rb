@@ -39,7 +39,13 @@ module Selenium
         def initialize(opts = {})
           opts = opts.dup
 
+          if opts.key?(:port)
+            warn <<-DEPRECATE.gsub(/\n +| {2,}/, ' ').freeze
+            [DEPRECATION] `:port` is deprecated. Use `:url` with full path
+            DEPRECATE
+          end
           port = opts.delete(:port) || 4444
+
           http_client = opts.delete(:http_client) { Http::Default.new }
           desired_capabilities = opts.delete(:desired_capabilities) { Capabilities.firefox }
           url = opts.delete(:url) { "http://#{Platform.localhost}:#{port}/wd/hub" }
