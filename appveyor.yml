@@ -1,9 +1,23 @@
 shallow_clone: true
 build: off
+environment:
+  matrix:
+    - RUBY_VERSION: 22-x64
+      TASK: build
+    - RUBY_VERSION: 200-x64
+      TASK: //rb:ie-test
 install:
   - 'set JAVA_HOME=C:\Program Files (x86)\Java\jdk1.8.0'
   - 'set PATH=%JAVA_HOME%;%PATH%'
   - 'set RUBY_HOME=C:\Ruby22-x64\bin'
   - 'set PATH=%RUBY_HOME%;%PATH%'
+before_test:
+  - ruby -v
+  - gem -v
+  - bundle -v
+  - curl -fsS -o C:\Tools\WebDriver\IEServerDriver.zip http://selenium-release.storage.googleapis.com/3.1/IEDriverServer_Win32_3.1.0.zip
+  - 7z e C:\Tools\WebDriver\IEServerDriver.zip -oC:\Tools\WebDriver -aoa
+  - dir C:\Tools\WebDriver
+
 test_script:
-  - cmd: './go build'
+  - cmd: scripts/appveyor/script.bat
