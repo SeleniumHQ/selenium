@@ -58,15 +58,15 @@ module Selenium
       end
 
       #
-      # Stolen from Logger 2.3, for Ruby < 2.3 compatibility
+      # For Ruby < 2.3 compatibility
+      # Based on https://github.com/ruby/ruby/blob/ruby_2_3/lib/logger.rb#L250
       #
 
       def level=(severity)
         if severity.is_a?(Integer)
-          @level = severity
+          @logger.level = severity
         else
           _severity = severity.to_s.downcase
-          puts _severity
           case _severity
             when 'debug'.freeze
               @logger.level = DEBUG
