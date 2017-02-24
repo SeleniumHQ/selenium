@@ -32,6 +32,13 @@ module Selenium
           allow(Service).to receive(:new).and_return(service)
         end
 
+        it 'accepts server URL' do
+          expect(Service).not_to receive(:new)
+          expect(http).to receive(:server_url=).with(URI.parse('http://example.com:4321'))
+
+          Bridge.new(http_client: http, url: 'http://example.com:4321')
+        end
+
         it 'starts the server with the given arguments' do
           expect(Service).to receive(:new).with(nil, Service::DEFAULT_PORT, *%w[--foo --bar])
           Bridge.new(http_client: http, args: %w[--foo --bar])

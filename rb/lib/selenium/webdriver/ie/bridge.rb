@@ -26,18 +26,22 @@ module Selenium
 
       class Bridge < Remote::Bridge
         def initialize(opts = {})
-          port = opts.delete(:port) || Service::DEFAULT_PORT
-          service_args = opts.delete(:service_args) || {}
-          service_args = match_legacy(opts, service_args)
-          driver_path = opts.delete(:driver_path) || IE.driver_path
+          opts[:desired_capabilities] ||= Remote::Capabilities.internet_explorer
 
-          @service = Service.new(driver_path, port, *extract_service_args(service_args))
-          @service.start
-          opts[:url] = @service.uri
+          unless opts.key?(:url)
+            port = opts.delete(:port) || Service::DEFAULT_PORT
+            service_args = opts.delete(:service_args) || {}
+            service_args = match_legacy(opts, service_args)
+            driver_path = opts.delete(:driver_path) || IE.driver_path
+            @service = Service.new(driver_path, port, *extract_service_args(service_args))
+            @service.start
+            opts[:url] = @service.uri
+          end
 
-          caps = opts[:desired_capabilities] ||= Remote::Capabilities.internet_explorer
-          caps[:ignore_protected_mode_settings] = true if opts.delete(:introduce_flakiness_by_ignoring_security_domains)
-          caps[:native_events] = opts.delete(:native_events) != false
+          if opts.delete(:introduce_flakiness_by_ignoring_security_domains)
+            opts[:desired_capabilities][:ignore_protected_mode_settings] = true
+          end
+          opts[:desired_capabilities][:native_events] = opts.delete(:native_events) != false
 
           super(opts)
         end
@@ -70,6 +74,9 @@ module Selenium
           service_args << "--log-level=#{args.delete(:log_level).to_s.upcase}" if args.key?(:log_level)
           service_args << "--log-file=#{args.delete(:log_file)}" if args.key?(:log_file)
           service_args << "--implementation=#{args.delete(:implementation).to_s.upcase}" if args.key?(:implementation)
+          service_args << "--host=#{args.delete(:host)}" if args.key?(:host)
+          service_args << "--extract_path=#{args.delete(:extract_path)}" if args.key?(:extract_path)
+          service_args << "--silent" if args[:silent] == true
           service_args
         end
       end # Bridge

@@ -21,17 +21,17 @@ require File.expand_path('../../spec_helper', __FILE__)
 
 module Selenium
   module WebDriver
-    module Safari
+    module Edge
       describe Bridge do
-        let(:http)    { double(Remote::Http::Default, call: resp).as_null_object }
-        let(:resp)    { {'sessionId' => 'foo', 'value' => @default_capabilities} }
-        let(:service) { double(Service, start: true, uri: 'http://example.com') }
+        let(:resp)    { {'sessionId' => 'foo', 'value' => @default_capabilities.as_json} }
+        let(:service) { double(Service, start: nil, uri: 'http://example.com') }
         let(:caps)    { {} }
+        let(:http)    { double(Remote::Http::Default, call: resp).as_null_object }
 
         before do
-          @default_capabilities = Remote::Capabilities.safari.as_json
+          @default_capabilities = Remote::Capabilities.internet_explorer
 
-          allow(Remote::Capabilities).to receive(:safari).and_return(caps)
+          allow(Remote::Capabilities).to receive(:internet_explorer).and_return(caps)
           allow(Service).to receive(:binary_path).and_return('/foo')
           allow(Service).to receive(:new).and_return(service)
         end
@@ -43,19 +43,7 @@ module Selenium
           Bridge.new(http_client: http, url: 'http://example.com:4321')
         end
 
-        it 'takes desired capabilities' do
-          custom_caps = Remote::Capabilities.new
-          custom_caps['foo'] = 'bar'
-
-          expect(http).to receive(:call) do |_, _, payload|
-            expect(payload[:desiredCapabilities]['foo']).to eq 'bar'
-            resp
-          end
-
-          Bridge.new(http_client: http, desired_capabilities: custom_caps)
-        end
-
       end
-    end # Safari
+    end # Edge
   end # WebDriver
 end # Selenium
