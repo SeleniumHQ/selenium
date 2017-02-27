@@ -25,6 +25,7 @@ java_library(name = 'tests',
     '//third_party/java/junit:junit',
     '//third_party/java/mockito:mockito',
     '//third_party/java/selenium:htmlunit-driver',
+    '//third_party/java/gson:gson',
     '//third_party/java/servlet:servlet-api',
   ],
 )

@@ -24,6 +24,8 @@ import org.openqa.grid.internal.TestSlot;
 import org.openqa.grid.web.servlet.api.v1.utils.ProxyUtil;
 import org.openqa.selenium.remote.CapabilityType;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -39,7 +41,11 @@ public class Proxy extends RestApiEndpoint {
     }
 
     final String proxyToFind = query.replaceAll("^/", "");
-    final RemoteProxy proxy = this.getRegistry().getAllProxies().getProxyById(proxyToFind);
+    RemoteProxy proxy = this.getRegistry().getAllProxies().getProxyById(proxyToFind);
+    if (proxy == null) {
+      //Maybe user gave only the node ip and port
+      proxy = this.getRegistry().getAllProxies().getProxyById(getProxyId(proxyToFind));
+    }
     if (proxy == null) {
       return proxyInfo;
     }
@@ -70,6 +76,14 @@ public class Proxy extends RestApiEndpoint {
     proxyInfo.put("sessions", sessions);
     proxyInfo.put("slotUsage", ProxyUtil.getDetailedSlotUsage(proxy));
     return proxyInfo;
+  }
+
+  private static String getProxyId(String proxyToFind) {
+    String[] parts = proxyToFind.split(":", 2);
+    if (parts == null || parts.length < 2) {
+      return proxyToFind;
+    }
+    return "http://" + parts[0] + ":" + parts[1];
   }
 
   private void addInfoFromStatusIfPresent(Map<String, Object> map, String key, JsonObject status) {
