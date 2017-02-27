@@ -4,6 +4,7 @@
     <TargetFrameworks>netstandard1.5;net40;net45</TargetFrameworks>
     <DisableImplicitFrameworkDefines>true</DisableImplicitFrameworkDefines>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <PackageVersion>3.2.0</PackageVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard1.5'">
