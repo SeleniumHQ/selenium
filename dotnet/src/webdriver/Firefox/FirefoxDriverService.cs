@@ -200,35 +200,18 @@ namespace OpenQA.Selenium.Firefox
         {
             string fileName = DefaultFirefoxDriverServiceFileName;
 
-            // Unfortunately, detecting the currently running platform isn't as
-            // straightforward as you might hope.
-            // See: http://mono.wikia.com/wiki/Detecting_the_execution_platform
-            // and https://msdn.microsoft.com/en-us/library/3a8hyw88(v=vs.110).aspx
-            const int PlatformMonoUnixValue = 128;
-
-            switch (Environment.OSVersion.Platform)
+            switch (WebDriver.Internal.Host.GetOperatingSystemFamily())
             {
-                case PlatformID.Win32NT:
-                case PlatformID.Win32S:
-                case PlatformID.Win32Windows:
-                case PlatformID.WinCE:
+                case OperatingSystemFamily.Windows:
                     fileName += ".exe";
                     break;
 
-                case PlatformID.MacOSX:
-                case PlatformID.Unix:
+                case OperatingSystemFamily.OSX:
+                case OperatingSystemFamily.Linux:
                     break;
 
-                // Don't handle the Xbox case. Let default handle it.
-                // case PlatformID.Xbox:
-                //     break;
                 default:
-                    if ((int)Environment.OSVersion.Platform == PlatformMonoUnixValue)
-                    {
-                        break;
-                    }
-
-                    throw new WebDriverException("Unsupported platform: " + Environment.OSVersion.Platform);
+                    throw new WebDriverException("Unsupported platform: " + WebDriver.Internal.Host.GetOperatingSystemFamily());
             }
 
             return fileName;
