@@ -84,10 +84,17 @@ namespace OpenQA.Selenium.Safari
                     // session id.
                     Uri serviceHealthUri = new Uri(this.ServiceUrl, new Uri("/session/FakeSessionIdForPollingPurposes", UriKind.Relative));
                     HttpWebRequest request = HttpWebRequest.Create(serviceHealthUri) as HttpWebRequest;
+#if !NETSTANDARD1_5
                     request.KeepAlive = false;
                     request.Timeout = 5000;
+#endif
                     request.Method = "DELETE";
+
+#if NETSTANDARD1_5
+                    HttpWebResponse response = request.GetResponseAsync().Result as HttpWebResponse;
+#else
                     HttpWebResponse response = request.GetResponse() as HttpWebResponse;
+#endif
 
                     // Checking the response from deleting a nonexistent session. Note that we are simply
                     // checking that the HTTP status returned is a 200 status, and that the resposne has
@@ -95,7 +102,11 @@ namespace OpenQA.Selenium.Safari
                     // response and validate its values. At the moment we do not do this more sophisticated
                     // check.
                     isInitialized = response.StatusCode == HttpStatusCode.OK && response.ContentType.StartsWith("application/json", StringComparison.OrdinalIgnoreCase);
+#if NETSTANDARD1_5
+                    response.Dispose();
+#else
                     response.Close();
+#endif
                 }
                 catch (WebException ex)
                 {
