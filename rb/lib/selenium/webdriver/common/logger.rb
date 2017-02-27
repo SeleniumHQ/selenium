@@ -45,16 +45,16 @@ module Selenium
                      :level
 
       def initialize
-        @logger = ::Logger.new($stdout)
-        @logger.progname = 'Selenium'
-        @logger.level = ($DEBUG ? DEBUG : WARN)
-        @logger.formatter = proc do |severity, time, progname, msg|
-          "#{time.strftime('%F %T')} #{severity} #{progname} #{msg}\n"
-        end
+        @logger = create_logger($stdout)
       end
 
       def output=(io)
-        @logger.reopen(io)
+        # `Logger#reopen` was added in Ruby 2.3
+        if @logger.respond_to?(:reopen)
+          @logger.reopen(io)
+        else
+          @logger = create_logger(io)
+        end
       end
 
       #
@@ -66,22 +66,21 @@ module Selenium
         if severity.is_a?(Integer)
           @logger.level = severity
         else
-          _severity = severity.to_s.downcase
-          case _severity
-            when 'debug'.freeze
-              @logger.level = DEBUG
-            when 'info'.freeze
-              @logger.level = INFO
-            when 'warn'.freeze
-              @logger.level = WARN
-            when 'error'.freeze
-              @logger.level = ERROR
-            when 'fatal'.freeze
-              @logger.level = FATAL
-            when 'unknown'.freeze
-              @logger.level = UNKNOWN
-            else
-              raise ArgumentError, "invalid log level: #{severity}"
+          case severity.to_s.downcase
+          when 'debug'.freeze
+            @logger.level = DEBUG
+          when 'info'.freeze
+            @logger.level = INFO
+          when 'warn'.freeze
+            @logger.level = WARN
+          when 'error'.freeze
+            @logger.level = ERROR
+          when 'fatal'.freeze
+            @logger.level = FATAL
+          when 'unknown'.freeze
+            @logger.level = UNKNOWN
+          else
+            raise ArgumentError, "invalid log level: #{severity}"
           end
         end
       end
@@ -103,6 +102,19 @@ module Selenium
         else
           File.new(Platform.null_device, 'w')
         end
+      end
+
+      private
+
+      def create_logger(output)
+        logger = ::Logger.new(output)
+        logger.progname = 'Selenium'
+        logger.level = ($DEBUG ? DEBUG : WARN)
+        logger.formatter = proc do |severity, time, progname, msg|
+          "#{time.strftime('%F %T')} #{severity} #{progname} #{msg}\n"
+        end
+
+        logger
       end
     end # Logger
   end # WebDriver
