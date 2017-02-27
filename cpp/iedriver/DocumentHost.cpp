@@ -148,18 +148,42 @@ int DocumentHost::SetFocusedFrameByElement(IHTMLElement* frame_element) {
     return WD_SUCCESS;
   }
 
-  CComPtr<IHTMLFrameBase2> frame_base;
-  frame_element->QueryInterface<IHTMLFrameBase2>(&frame_base);
-  if (!frame_base) {
-    LOG(WARN) << "IHTMLElement is not a FRAME or IFRAME element";
-    return ENOSUCHFRAME;
-  }
-
   CComPtr<IHTMLWindow2> interim_result;
-  hr = frame_base->get_contentWindow(&interim_result);
-  if (FAILED(hr)) {
-    LOGHR(WARN, hr) << "Cannot get contentWindow from IHTMLFrameBase2, call to IHTMLFrameBase2::get_contentWindow failed";
-    return ENOSUCHFRAME;
+  CComPtr<IHTMLObjectElement4> object_element;
+  hr = frame_element->QueryInterface<IHTMLObjectElement4>(&object_element);
+  if (SUCCEEDED(hr) && object_element) {
+	  CComPtr<IDispatch> object_disp;
+	  object_element->get_contentDocument(&object_disp);
+	  if (!object_disp) {
+		  LOG(WARN) << "Cannot get IDispatch interface from IHTMLObjectElement4 element";
+		  return ENOSUCHFRAME;
+	  }
+
+	  CComPtr<IHTMLDocument2> object_doc;
+	  object_disp->QueryInterface<IHTMLDocument2>(&object_doc);
+	  if (!object_doc) {
+		  LOG(WARN) << "Cannot get IHTMLDocument2 document from IDispatch reference";
+		  return ENOSUCHFRAME;
+	  }
+
+	  hr = object_doc->get_parentWindow(&interim_result);
+	  if (FAILED(hr)) {
+		  LOGHR(WARN, hr) << "Cannot get parentWindow from IHTMLDocument2, call to IHTMLDocument2::get_parentWindow failed";
+		  return ENOSUCHFRAME;
+	  }
+  } else {
+	  CComPtr<IHTMLFrameBase2> frame_base;
+	  frame_element->QueryInterface<IHTMLFrameBase2>(&frame_base);
+	  if (!frame_base) {
+		  LOG(WARN) << "IHTMLElement is not a FRAME or IFRAME element";
+		  return ENOSUCHFRAME;
+	  }
+
+	  hr = frame_base->get_contentWindow(&interim_result);
+	  if (FAILED(hr)) {
+		  LOGHR(WARN, hr) << "Cannot get contentWindow from IHTMLFrameBase2, call to IHTMLFrameBase2::get_contentWindow failed";
+		  return ENOSUCHFRAME;
+	  }
   }
 
   this->focused_frame_window_ = interim_result;
