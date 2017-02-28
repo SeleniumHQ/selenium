@@ -509,8 +509,6 @@ public class Actions {
    *
    * @param pause pause duration, in milliseconds.
    * @return A self reference.
-   *
-   * @deprecated 'Pause' is considered to be a bad design practice.
    */
   @Deprecated
   public Actions pause(long pause) {
@@ -519,6 +517,15 @@ public class Actions {
     }
 
     return tick(new Pause(defaultMouse, Duration.ofMillis(pause)));
+  }
+
+  public Actions pause(Duration duration) {
+    Preconditions.checkNotNull(duration, "Duration of pause not set");
+    if (isBuildingActions()) {
+      action.addAction(new PauseAction(duration.toMillis()));
+    }
+
+    return tick(new Pause(defaultMouse, duration));
   }
 
   public Actions tick(Interaction... actions) {
