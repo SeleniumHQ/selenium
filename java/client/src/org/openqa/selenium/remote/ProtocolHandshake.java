@@ -128,6 +128,18 @@ public class ProtocolHandshake {
     Object w3cError = jsonBlob.get("error");
     Object ossStatus = jsonBlob.get("status");
     Map<String, ?> capabilities = null;
+
+    // The old geckodriver prior to 0.14 returned "value" as the thing containing the session id.
+    // Later versions follow the (amended) w3c spec and return the capabilities in a field called
+    // "value"
+    if (value != null && value instanceof Map) {
+      Map<?, ?> mappedValue = (Map<?, ?>) value;
+      if (mappedValue.containsKey("value") && mappedValue.containsKey("sessionId")) {
+        value = mappedValue.get("value");
+        sessionId = mappedValue.get("sessionId");
+      }
+    }
+
     if (value != null && value instanceof Map) {
       capabilities = (Map<String, ?>) value;
     } else if (value != null && value instanceof Capabilities) {
