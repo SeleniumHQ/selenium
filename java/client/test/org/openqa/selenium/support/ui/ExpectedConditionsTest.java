@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.support.ui;
 
+import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
@@ -74,9 +75,6 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
-/**
- * Tests for {@link ExpectedConditions}.
- */
 @RunWith(JUnit4.class)
 @SuppressWarnings("unchecked")
 public class ExpectedConditionsTest {
@@ -513,13 +511,13 @@ public class ExpectedConditionsTest {
 
   @Test(expected = TimeoutException.class)
   public void waitingForCssAttributeToBeEqualForElementLocatedThrowsTimeoutExceptionWhenAttributeContainsNotEqual() {
-    String testSelector = "testSelector";
+    By parent = By.cssSelector("parent");
     String attributeName = "attributeName";
-    when(mockDriver.findElement(By.cssSelector(testSelector))).thenReturn(mockElement);
+    when(mockDriver.findElements(parent)).thenReturn(singletonList(mockElement));
     when(mockElement.getAttribute(attributeName)).thenReturn("");
     when(mockElement.getCssValue(attributeName)).thenReturn("");
 
-    wait.until(attributeContains(By.cssSelector(testSelector), attributeName, "test"));
+    wait.until(attributeContains(parent, attributeName, "test"));
   }
 
   @Test
@@ -789,13 +787,15 @@ public class ExpectedConditionsTest {
 
   @Test
   public void waitingForPresenseOfNestedElementsWhenElementsPresent() {
-    String testSelector = "testSelector";
-    String testNestedSelector = "testNestedSelector";
-    when(mockDriver.findElement(By.cssSelector(testSelector))).thenReturn(mockElement);
-    when(mockElement.findElements(By.cssSelector(testNestedSelector)))
-      .thenReturn(Arrays.asList(mockNestedElement));
-    List<WebElement> elements = wait.until(presenceOfNestedElementsLocatedBy(By.cssSelector(testSelector),
-                                                 By.cssSelector(testNestedSelector)));
+    By parent = By.cssSelector("parent");
+    By child = By.cssSelector("child");
+
+    when(mockDriver.findElements(parent)).thenReturn(singletonList(mockElement));
+    when(mockElement.findElements(child)).thenReturn(singletonList(mockNestedElement));
+
+    List<WebElement> elements = wait.until(
+        presenceOfNestedElementsLocatedBy(parent, child));
+
     assertEquals(elements.get(0), mockNestedElement);
   }
 
