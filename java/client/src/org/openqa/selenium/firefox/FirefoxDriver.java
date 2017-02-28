@@ -259,14 +259,32 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
     return new FirefoxBinary();
   }
 
+  /**
+   * @deprecated Use {@link FirefoxDriver(Capabilities, Capabilities)} setting the binary and
+   * profile using {@link FirefoxOptions} set as the capability {@link
+   * FirefoxOptions#FIREFOX_OPTIONS}
+   */
+  @Deprecated
   public FirefoxDriver(FirefoxBinary binary, FirefoxProfile profile) {
     this(binary, profile, DesiredCapabilities.firefox());
   }
 
+  /**
+   * @deprecated Use {@link FirefoxDriver(Capabilities, Capabilities)} setting the binary and
+   * profile using {@link FirefoxOptions} set as the capability {@link
+   * FirefoxOptions#FIREFOX_OPTIONS}
+   */
+  @Deprecated
   public FirefoxDriver(FirefoxBinary binary, FirefoxProfile profile, Capabilities capabilities) {
     this(binary, profile, capabilities, null);
   }
 
+  /**
+   * @deprecated Use {@link FirefoxDriver(Capabilities, Capabilities)} setting the binary and
+   * profile using {@link FirefoxOptions} set as the capability {@link
+   * FirefoxOptions#FIREFOX_OPTIONS}
+   */
+  @Deprecated
   public FirefoxDriver(FirefoxBinary binary, FirefoxProfile profile,
       Capabilities desiredCapabilities, Capabilities requiredCapabilities) {
     this(createCommandExecutor(desiredCapabilities, requiredCapabilities, binary, profile),
@@ -275,19 +293,35 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
     this.binary = binary;
   }
 
+  /**
+   * @deprecated No replacement.
+   */
+  @Deprecated
   public FirefoxDriver(GeckoDriverService driverService) {
     this(new DriverCommandExecutor(driverService), null, null);
   }
 
+  /**
+   * @deprecated No replacement.
+   */
+  @Deprecated
   public FirefoxDriver(GeckoDriverService driverService, Capabilities desiredCapabilities) {
     this(new DriverCommandExecutor(driverService), desiredCapabilities, null);
   }
 
+  /**
+   * @deprecated No replacement.
+   */
+  @Deprecated
   public FirefoxDriver(GeckoDriverService driverService, Capabilities desiredCapabilities,
       Capabilities requiredCapabilities) {
     this(new DriverCommandExecutor(driverService), desiredCapabilities, requiredCapabilities);
   }
 
+  /**
+   * @deprecated No replacement.
+   */
+  @Deprecated
   private FirefoxDriver(CommandExecutor executor, Capabilities desiredCapabilities,
       Capabilities requiredCapabilities) {
     super(executor,
