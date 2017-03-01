@@ -45,11 +45,11 @@ module Selenium
 
       attr_accessor :host
 
-      def initialize(executable_path, port, *extra_args)
+      def initialize(executable_path, port, driver_opts)
         @executable_path = binary_path(executable_path)
         @host            = Platform.localhost
         @port            = Integer(port)
-        @extra_args      = extra_args
+        @extra_args      = extract_service_args(driver_opts)
 
         raise Error::WebDriverError, "invalid port: #{@port}" if @port < 1
       end
@@ -137,6 +137,13 @@ module Selenium
       def socket_lock
         @socket_lock ||= SocketLock.new(@port - 1, SOCKET_LOCK_TIMEOUT)
       end
+
+      protected
+
+      def extract_service_args(driver_opts)
+        driver_opts.key?(:args) ? driver_opts.delete(:args) :  []
+      end
+
     end # Service
   end # WebDriver
 end # Selenium
