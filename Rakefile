@@ -45,7 +45,7 @@ end
 verbose($DEBUG)
 
 def release_version
-  "3.2"
+  "3.3"
 end
 
 def version
