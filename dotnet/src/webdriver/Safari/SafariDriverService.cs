@@ -19,6 +19,9 @@
 using System;
 using System.Net;
 using OpenQA.Selenium.Internal;
+#if NETSTANDARD1_5
+using WebDriver.Internal;
+#endif
 
 namespace OpenQA.Selenium.Safari
 {
@@ -90,11 +93,7 @@ namespace OpenQA.Selenium.Safari
 #endif
                     request.Method = "DELETE";
 
-#if NETSTANDARD1_5
-                    HttpWebResponse response = request.GetResponseAsync().Result as HttpWebResponse;
-#else
                     HttpWebResponse response = request.GetResponse() as HttpWebResponse;
-#endif
 
                     // Checking the response from deleting a nonexistent session. Note that we are simply
                     // checking that the HTTP status returned is a 200 status, and that the resposne has
