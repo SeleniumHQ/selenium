@@ -85,14 +85,12 @@ module Selenium
         end
 
         def driver_extensions
-          [
-            DriverExtensions::UploadsFiles,
-            DriverExtensions::TakesScreenshot,
-            DriverExtensions::HasSessionId,
-            DriverExtensions::Rotatable,
-            DriverExtensions::HasRemoteStatus,
-            DriverExtensions::HasWebStorage
-          ]
+          [DriverExtensions::UploadsFiles,
+           DriverExtensions::TakesScreenshot,
+           DriverExtensions::HasSessionId,
+           DriverExtensions::Rotatable,
+           DriverExtensions::HasRemoteStatus,
+           DriverExtensions::HasWebStorage]
         end
 
         def commands(command)
