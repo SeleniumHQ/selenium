@@ -47,7 +47,7 @@ module Selenium
           begin
             TCPServer.new(host, port).close
           rescue *IGNORED_ERRORS => ex
-            WebDriver.logger.info("port prober could not bind to #{host}:#{port} (#{ex.message})")
+            WebDriver.logger.debug("port prober could not bind to #{host}:#{port} (#{ex.message})")
             # ignored - some machines appear unable to bind to some of their interfaces
           end
         end
