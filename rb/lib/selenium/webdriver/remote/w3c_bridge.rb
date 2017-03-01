@@ -49,7 +49,7 @@ module Selenium
           opts = opts.dup
 
           if opts.key?(:port)
-            warn <<-DEPRECATE.gsub(/\n +| {2,}/, ' ').freeze
+            WebDriver.logger.warn <<-DEPRECATE.gsub(/\n +| {2,}/, ' ').freeze
             [DEPRECATION] `:port` is deprecated. Use full url desired.
             DEPRECATE
           end

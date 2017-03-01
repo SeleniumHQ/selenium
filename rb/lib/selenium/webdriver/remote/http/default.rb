@@ -45,7 +45,7 @@ module Selenium
           # @param [Numeric] value - Timeout in seconds to apply to both open timeout and read timeouts.
           # @deprecated Please set the specific desired timeout {#read_timeout} or {#open_timeout} directly.
           def timeout=(value)
-            Kernel.warn 'Selenium::WebDriver::Remote::Http::Default#timeout= is deprecated. Use #read_timeout= or #open_timeout= instead'
+            WebDriver.logger.warn 'Selenium::WebDriver::Remote::Http::Default#timeout= is deprecated. Use #read_timeout= or #open_timeout= instead'
             self.open_timeout = value
             self.read_timeout = value
           end

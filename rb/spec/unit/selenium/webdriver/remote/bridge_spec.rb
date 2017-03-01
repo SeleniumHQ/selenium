@@ -59,12 +59,12 @@ module Selenium
 
           it 'warns that #mouse is deprecated' do
             message = /\[DEPRECATION\] `Driver#mouse` is deprecated with w3c implementation\./
-            expect { Bridge.new.mouse }.to output(message).to_stderr
+            expect { Bridge.new.mouse }.to output(message).to_stdout_from_any_process
           end
 
           it 'warns that #keyboard is deprecated' do
             message = /\[DEPRECATION\] `Driver#keyboard` is deprecated with w3c implementation\./
-            expect { Bridge.new.keyboard }.to output(message).to_stderr
+            expect { Bridge.new.keyboard }.to output(message).to_stdout_from_any_process
           end
         end
       end

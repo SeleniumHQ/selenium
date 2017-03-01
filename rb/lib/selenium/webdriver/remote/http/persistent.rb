@@ -45,7 +45,7 @@ module Selenium
             if Net::HTTP::Persistent::VERSION >= '3'
               Net::HTTP::Persistent.new name: 'webdriver', proxy: proxy
             else
-              warn 'Support for this version of net-http-persistent is deprecated. Please upgrade.'
+              WebDriver.logger.warn 'Support for this version of net-http-persistent is deprecated. Please upgrade.'
               Net::HTTP::Persistent.new 'webdriver', proxy
             end
           end
