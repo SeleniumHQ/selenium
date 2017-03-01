@@ -31,6 +31,7 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.attributeContain
 import static org.openqa.selenium.support.ui.ExpectedConditions.attributeToBe;
 import static org.openqa.selenium.support.ui.ExpectedConditions.attributeToBeNotEmpty;
 import static org.openqa.selenium.support.ui.ExpectedConditions.elementSelectionStateToBe;
+import static org.openqa.selenium.support.ui.ExpectedConditions.invisibilityOf;
 import static org.openqa.selenium.support.ui.ExpectedConditions.invisibilityOfAllElements;
 import static org.openqa.selenium.support.ui.ExpectedConditions.not;
 import static org.openqa.selenium.support.ui.ExpectedConditions.numberOfElementsToBe;
@@ -809,6 +810,12 @@ public class ExpectedConditionsTest {
   public void waitingForAllElementsInvisibilityWhenElementsAreVisible() {
     when(mockElement.isDisplayed()).thenReturn(true);
     wait.until(invisibilityOfAllElements(Arrays.asList(mockElement)));
+  }
+
+  @Test(expected = TimeoutException.class)
+  public void waitingForElementInvisibilityWhenElementIsVisible() {
+    when(mockElement.isDisplayed()).thenReturn(true);
+    wait.until(invisibilityOf(mockElement));
   }
 
   @Test(expected = TimeoutException.class)
