@@ -40,7 +40,7 @@ module Selenium
           opts = opts.dup
 
           if opts.key?(:port)
-            warn <<-DEPRECATE.gsub(/\n +| {2,}/, ' ').freeze
+            WebDriver.logger.warn <<-DEPRECATE.gsub(/\n +| {2,}/, ' ').freeze
             [DEPRECATION] `:port` is deprecated. Use `:url` with full path
             DEPRECATE
           end
@@ -385,7 +385,7 @@ module Selenium
         end
 
         def mouse
-          warn <<-DEPRECATE.gsub(/\n +| {2,}/, ' ').freeze
+          WebDriver.logger.warn <<-DEPRECATE.gsub(/\n +| {2,}/, ' ').freeze
             [DEPRECATION] `Driver#mouse` is deprecated with w3c implementation. Instead use 
             driver.action.<command>.perform
           DEPRECATE
@@ -393,7 +393,7 @@ module Selenium
         end
 
         def keyboard
-          warn <<-DEPRECATE.gsub(/\n +| {2,}/, ' ').freeze
+          WebDriver.logger.warn <<-DEPRECATE.gsub(/\n +| {2,}/, ' ').freeze
             [DEPRECATION] `Driver#keyboard` is deprecated with w3c implementation. Instead use 
             driver.action.<command>.perform
           DEPRECATE
