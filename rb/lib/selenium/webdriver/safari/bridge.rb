@@ -26,11 +26,18 @@ module Selenium
           opts[:desired_capabilities] ||= Remote::Capabilities.safari
 
           unless opts.key?(:url)
-            port = opts.delete(:port) || Service::DEFAULT_PORT
-            service_args = opts.delete(:service_args) || {}
-
             driver_path = opts.delete(:driver_path) || Safari.driver_path
-            @service = Service.new(driver_path, port, *extract_service_args(service_args))
+            port = opts.delete(:port) || Service::DEFAULT_PORT
+
+            opts[:driver_opts] ||= {}
+            if opts.key? :service_args
+              WebDriver.logger.warn <<-DEPRECATE.gsub(/\n +| {2,}/, ' ').freeze
+            [DEPRECATION] `:service_args` is deprecated. Pass switches using `driver_opts`
+              DEPRECATE
+              opts[:driver_opts][:args] = opts.delete(:service_args)
+            end
+
+            @service = Service.new(driver_path, port, opts.delete(:driver_opts))
             @service.start
             opts[:url] = @service.uri
           end
@@ -42,12 +49,6 @@ module Selenium
           super
         ensure
           @service.stop if @service
-        end
-
-        private
-
-        def extract_service_args(args = {})
-          args.key?(:port) ? ["--port=#{args[:port]}"] : []
         end
       end # Bridge
     end # Safari

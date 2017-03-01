@@ -36,13 +36,6 @@ module Selenium
           allow(Service).to receive(:new).and_return(service)
         end
 
-        it 'accepts server URL' do
-          expect(Service).not_to receive(:new)
-          expect(http).to receive(:server_url=).with(URI.parse('http://example.com:4321'))
-
-          Bridge.new(http_client: http, url: 'http://example.com:4321')
-        end
-
         it 'sets the args capability' do
           Bridge.new(http_client: http, args: %w[--foo=bar])
 
@@ -59,7 +52,7 @@ module Selenium
         it 'does not set the chrome.detach capability by default' do
           Bridge.new(http_client: http)
 
-          expect(caps[:chrome_options]['detach']).to be nil
+          expect(caps[:chrome_options]).to be nil
           expect(caps['chrome.detach']).to be nil
         end
 
@@ -73,13 +66,6 @@ module Selenium
           Bridge.new(http_client: http, detach: true)
 
           expect(caps[:chrome_options]['detach']).to be true
-        end
-
-        it 'uses the user-provided server URL if given' do
-          expect(Service).not_to receive(:new)
-          expect(http).to receive(:server_url=).with(URI.parse('http://example.com'))
-
-          Bridge.new(http_client: http, url: 'http://example.com')
         end
 
         it 'raises an ArgumentError if args is not an Array' do
@@ -121,11 +107,6 @@ module Selenium
           end
 
           Bridge.new(http_client: http, desired_capabilities: custom_caps, args: %w[baz])
-        end
-
-        it 'accepts :service_log_path' do
-          expect(Service).to receive(:new).with(nil, Service::DEFAULT_PORT, '--log-path=/foo/bar')
-          Bridge.new(http_client: http, service_log_path: '/foo/bar')
         end
       end
     end # Chrome

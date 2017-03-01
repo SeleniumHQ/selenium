@@ -47,6 +47,14 @@ module Selenium
         def cannot_connect_error_text
           "unable to connect to MicrosoftWebDriver #{@host}:#{@port}"
         end
+
+        def extract_service_args(driver_opts)
+          driver_args = super
+          driver_args << "–host=#{driver_opts[:host]}" if driver_opts.key? :host
+          driver_args << "–package=#{driver_opts[:package]}" if driver_opts.key? :package
+          driver_args << "-verbose" if driver_opts[:verbose] == true
+          driver_args
+        end
       end # Service
     end # Edge
   end # WebDriver

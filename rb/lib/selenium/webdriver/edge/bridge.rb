@@ -26,18 +26,25 @@ module Selenium
 
       class Bridge < Remote::W3CBridge
         def initialize(opts = {})
-          port = opts.delete(:port) || Service::DEFAULT_PORT
-          service_args = opts.delete(:service_args) || {}
+          opts[:desired_capabilities] ||= Remote::W3CCapabilities.edge
 
           unless opts.key?(:url)
             driver_path = opts.delete(:driver_path) || Edge.driver_path
-            @service = Service.new(driver_path, port, *extract_service_args(service_args))
+            port = opts.delete(:port) || Service::DEFAULT_PORT
+
+            opts[:driver_opts] ||= {}
+            if opts.key? :service_args
+              WebDriver.logger.warn <<-DEPRECATE.gsub(/\n +| {2,}/, ' ').freeze
+            [DEPRECATION] `:service_args` is deprecated. Pass switches using `driver_opts`
+              DEPRECATE
+              opts[:driver_opts][:args] = opts.delete(:service_args)
+            end
+
+            @service = Service.new(driver_path, port, opts.delete(:driver_opts))
             @service.host = 'localhost' if @service.host == '127.0.0.1'
             @service.start
             opts[:url] = @service.uri
           end
-
-          opts[:desired_capabilities] ||= Remote::W3CCapabilities.edge
 
           super(opts)
         end
@@ -107,16 +114,6 @@ module Selenium
 
         def maximize_window(handle = :current)
           execute :maximize_window, window_handle: handle
-        end
-
-        private
-
-        def extract_service_args(args = {})
-          service_args = []
-          service_args << "–host=#{args[:host]}" if args.key? :host
-          service_args << "–package=#{args[:package]}" if args.key? :package
-          service_args << "-verbose" if args[:verbose] == true
-          service_args
         end
       end # Bridge
     end # Edge

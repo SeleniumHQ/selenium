@@ -36,13 +36,6 @@ module Selenium
           allow(Service).to receive(:new).and_return(service)
         end
 
-        it 'accepts server URL' do
-          expect(Service).not_to receive(:new)
-          expect(http).to receive(:server_url=).with(URI.parse('http://example.com:4321'))
-
-          Bridge.new(http_client: http, url: 'http://example.com:4321')
-        end
-
         it 'raises ArgumentError if passed invalid options' do
           expect { Bridge.new(foo: 'bar') }.to raise_error(ArgumentError)
         end
@@ -69,25 +62,6 @@ module Selenium
           )
 
           expect(caps[:native_events]).to be false
-        end
-
-        it 'sets the server log level and log file' do
-          expect(Service).to receive(:new).with(nil, Service::DEFAULT_PORT, '--log-level=TRACE', '--log-file=/foo/bar')
-
-          Bridge.new(
-            log_level: :trace,
-            log_file: '/foo/bar',
-            http_client: http
-          )
-        end
-
-        it 'should be able to set implementation' do
-          expect(Service).to receive(:new).with(nil, Service::DEFAULT_PORT, '--implementation=VENDOR')
-
-          Bridge.new(
-            implementation: :vendor,
-            http_client: http
-          )
         end
 
         it 'takes desired capabilities' do
