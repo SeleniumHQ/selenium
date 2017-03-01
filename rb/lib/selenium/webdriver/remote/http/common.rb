@@ -52,7 +52,7 @@ module Selenium
               headers['Content-Length'] = payload.bytesize.to_s if [:post, :put].include?(verb)
 
               WebDriver.logger.info("   >>> #{url} | #{payload}")
-              WebDriver.logger.info("     > #{headers.inspect}")
+              WebDriver.logger.debug("     > #{headers.inspect}")
             elsif verb == :post
               payload = '{}'
               headers['Content-Length'] = '2'
