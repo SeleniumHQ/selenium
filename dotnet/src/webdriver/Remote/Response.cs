@@ -80,6 +80,9 @@ namespace OpenQA.Selenium.Remote
 
                 // If the returned object does *not* have a "value" property
                 // the response value should be the entirety of the response.
+                // TODO: Remove this if statement altogether; there should
+                // never be a spec-compliant response that does not contain a
+                // value property.
                 if (!rawResponse.ContainsKey("value") && this.responseValue == null)
                 {
                     // Special-case for the new session command, where the "capabilities"
@@ -92,6 +95,15 @@ namespace OpenQA.Selenium.Remote
                     {
                         this.responseValue = rawResponse;
                     }
+                }
+
+                // Special case code for the new session command. If the response contains
+                // sessionId and capabilities properties, fix up the session ID and 
+                Dictionary<string, object> valueDictionary = this.responseValue as Dictionary<string, object>;
+                if (valueDictionary != null && valueDictionary.ContainsKey("sessionId") && valueDictionary.ContainsKey("capabilities"))
+                {
+                    this.responseSessionId = valueDictionary["sessionId"].ToString();
+                    this.responseValue = valueDictionary["capabilities"];
                 }
 
                 // Check for an error response by looking for an "error" property,
