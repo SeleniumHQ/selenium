@@ -29,11 +29,26 @@ module Selenium
           opts[:desired_capabilities] ||= Remote::Capabilities.internet_explorer
 
           unless opts.key?(:url)
-            port = opts.delete(:port) || Service::DEFAULT_PORT
-            service_args = opts.delete(:service_args) || {}
-            service_args = match_legacy(opts, service_args)
             driver_path = opts.delete(:driver_path) || IE.driver_path
-            @service = Service.new(driver_path, port, *extract_service_args(service_args))
+            port = opts.delete(:port) || Service::DEFAULT_PORT
+
+            opts[:driver_opts] ||= {}
+            if opts.key? :service_args
+              WebDriver.logger.warn <<-DEPRECATE.gsub(/\n +| {2,}/, ' ').freeze
+            [DEPRECATION] `:service_args` is deprecated. Pass switches using `driver_opts`
+              DEPRECATE
+              opts[:driver_opts][:args] = opts.delete(:service_args)
+            end
+
+            %i[log_level log_file implementation].each do |method|
+              next unless opts.key? method
+              WebDriver.logger.warn <<-DEPRECATE.gsub(/\n +| {2,}/, ' ').freeze
+            [DEPRECATION] `#{method}` is deprecated. Pass switches using `driver_opts`
+              DEPRECATE
+              opts[:driver_opts][method] = opts.delete(method)
+            end
+
+            @service = Service.new(driver_path, port, opts.delete(:driver_opts))
             @service.start
             opts[:url] = @service.uri
           end
@@ -58,26 +73,6 @@ module Selenium
           super
         ensure
           @service.stop if @service
-        end
-
-        private
-
-        def match_legacy(opts, args)
-          args[:log_level] = opts.delete(:log_level) if opts.key?(:log_level)
-          args[:log_file] = opts.delete(:log_file) if opts.key?(:log_file)
-          args[:implementation] = opts.delete(:implementation) if opts.key?(:implementation)
-          args
-        end
-
-        def extract_service_args(args)
-          service_args = []
-          service_args << "--log-level=#{args.delete(:log_level).to_s.upcase}" if args.key?(:log_level)
-          service_args << "--log-file=#{args.delete(:log_file)}" if args.key?(:log_file)
-          service_args << "--implementation=#{args.delete(:implementation).to_s.upcase}" if args.key?(:implementation)
-          service_args << "--host=#{args.delete(:host)}" if args.key?(:host)
-          service_args << "--extract_path=#{args.delete(:extract_path)}" if args.key?(:extract_path)
-          service_args << "--silent" if args[:silent] == true
-          service_args
         end
       end # Bridge
     end # IE

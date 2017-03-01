@@ -26,11 +26,18 @@ module Selenium
           opts[:desired_capabilities] = create_capabilities(opts)
 
           unless opts.key?(:url)
-            port = opts.delete(:port) || Service::DEFAULT_PORT
-            service_args = opts.delete(:service_args) || {}
-
             driver_path = opts.delete(:driver_path) || Firefox.driver_path
-            @service = Service.new(driver_path, port, *extract_service_args(service_args))
+            port = opts.delete(:port) || Service::DEFAULT_PORT
+
+            opts[:driver_opts] ||= {}
+            if opts.key? :service_args
+              WebDriver.logger.warn <<-DEPRECATE.gsub(/\n +| {2,}/, ' ').freeze
+            [DEPRECATION] `:service_args` is deprecated. Pass switches using `driver_opts`
+              DEPRECATE
+              opts[:driver_opts][:args] = opts.delete(:service_args)
+            end
+
+            @service = Service.new(driver_path, port, opts.delete(:driver_opts))
             @service.start
             opts[:url] = @service.uri
           end
@@ -44,7 +51,7 @@ module Selenium
 
         def driver_extensions
           [DriverExtensions::TakesScreenshot,
-            DriverExtensions::HasWebStorage]
+           DriverExtensions::HasWebStorage]
         end
 
         def quit
@@ -71,17 +78,6 @@ module Selenium
           Binary.path = caps[:firefox_options][:binary] if caps[:firefox_options].key?(:binary)
           caps
         end
-
-        def extract_service_args(args = {})
-          service_args = []
-          service_args << "--binary=#{args[:binary]}" if args.key?(:binary)
-          service_args << "–-log=#{args[:log]}" if args.key?(:log)
-          service_args << "–-marionette-port=#{args[:marionette_port]}" if args.key?(:marionette_port)
-          service_args << "–-host=#{args[:host]}" if args.key?(:host)
-          service_args << "–-port=#{args[:port]}" if args.key?(:port)
-          service_args
-        end
-
       end # W3CBridge
     end # Firefox
   end # WebDriver

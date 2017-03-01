@@ -24,14 +24,20 @@ module Selenium
       class Bridge < Remote::Bridge
         def initialize(opts = {})
           opts[:desired_capabilities] ||= Remote::Capabilities.firefox
-          opts[:desired_capabilities].proxy = opts.delete(:proxy) if opts.key?(:proxy)
+
+          if opts.key? :proxy
+            WebDriver.logger.warn <<-DEPRECATE.gsub(/\n +| {2,}/, ' ').freeze
+            [DEPRECATION] `:proxy` is deprecated. Pass in as capability: `Remote::Capabilities.firefox(proxy: #{opts[:proxy]})`
+            DEPRECATE
+            opts[:desired_capabilities].proxy = opts.delete(:proxy)
+          end
 
           unless opts.key?(:url)
             port = opts.delete(:port) || DEFAULT_PORT
             profile = opts.delete(:profile)
 
             Binary.path = opts[:desired_capabilities][:firefox_binary] if opts[:desired_capabilities][:firefox_binary]
-            @launcher = create_launcher(port, profile)
+            @launcher = Launcher.new Binary.new, port, profile
             @launcher.launch
             opts[:url] = @launcher.url
           end
@@ -57,12 +63,6 @@ module Selenium
           nil
         ensure
           @launcher.quit
-        end
-
-        private
-
-        def create_launcher(port, profile)
-          Launcher.new Binary.new, port, profile
         end
       end # Bridge
     end # Firefox
