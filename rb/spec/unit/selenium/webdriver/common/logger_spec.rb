@@ -23,11 +23,11 @@ module Selenium
   module WebDriver
     describe Logger do
       around do |example|
-        WebDriver.instance_variable_set(:@logger, nil) # reset cache
         debug = $DEBUG
         $DEBUG = false
         example.call
         $DEBUG = debug
+        WebDriver.instance_variable_set(:@logger, nil) # reset cache
       end
 
       it 'logs warnings by default' do
