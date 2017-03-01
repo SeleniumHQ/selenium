@@ -1,3 +1,13 @@
+3.2.2 (2017-03-01)
+===================
+
+Ruby:
+  * Fix bug for supporting Logger output on Ruby versions < 2.3
+  * Add more logging and adjust output levels
+
+Remote:
+  * Support for creating Remote session with browser name and url parameters
+
 3.2.1 (2017-02-24)
 ===================
 
