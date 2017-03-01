@@ -1,3 +1,9 @@
+v3.3.0
+======
+
+* Support for geckodriver v0.15.0.
+* Deprecated seldom used FirefoxDriver constructors.
+
 v3.2.0
 ======
 
