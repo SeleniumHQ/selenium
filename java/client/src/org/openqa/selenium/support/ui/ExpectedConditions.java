@@ -1369,16 +1369,7 @@ public class ExpectedConditions {
 
       @Override
       public Boolean apply(WebDriver webDriver) {
-        for (WebElement element : elements) {
-          try {
-            if (element.isDisplayed()) {
-              return false;
-            }
-          } catch (StaleElementReferenceException ignored) {
-            // We can assume a stale element isn't displayed.
-          }
-        }
-        return true;
+        return elements.stream().allMatch(ExpectedConditions::isInvisible);
       }
 
       @Override
@@ -1386,6 +1377,36 @@ public class ExpectedConditions {
         return "invisibility of all elements " + elements;
       }
     };
+  }
+
+  /**
+   * An expectation for checking the element to be invisible
+   *
+   * @param element used to check its invisibility
+   * @return Boolean true when elements is not visible anymore
+   */
+  public static ExpectedCondition<Boolean> invisibilityOf(final WebElement element) {
+    return new ExpectedCondition<Boolean>() {
+
+      @Override
+      public Boolean apply(WebDriver webDriver) {
+        return isInvisible(element);
+      }
+
+      @Override
+      public String toString() {
+        return "invisibility of " + element;
+      }
+    };
+  }
+
+  private static boolean isInvisible(final WebElement element) {
+    try {
+      return !element.isDisplayed();
+    } catch (StaleElementReferenceException ignored) {
+      // We can assume a stale element isn't displayed.
+      return true;
+    }
   }
 
   /**
