@@ -90,7 +90,7 @@ module Selenium
           true
         rescue *NOT_CONNECTED_ERRORS
           sock.close if sock
-          WebDriver.logger.info("polling for socket on #{[@host, @port].inspect}")
+          WebDriver.logger.debug("polling for socket on #{[@host, @port].inspect}")
           false
         end
       end
