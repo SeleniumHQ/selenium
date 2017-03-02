@@ -147,10 +147,8 @@ public class FirefoxOptions {
     if (legacy != null) {
       return legacy;
     }
-//    Object marionette = desiredCapabilities.getCapability(MARIONETTE);
-//    return marionette instanceof Boolean && ! (Boolean) marionette;
-    return false;
 
+    return false;
   }
 
   public FirefoxOptions setBinary(FirefoxBinary binary) {
