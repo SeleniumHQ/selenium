@@ -34,7 +34,6 @@ import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.internal.NewProfileExtensionConnection;
-import org.openqa.selenium.firefox.internal.ProfilesIni;
 import org.openqa.selenium.internal.Killable;
 import org.openqa.selenium.internal.Lock;
 import org.openqa.selenium.internal.SocketLock;
@@ -192,85 +191,6 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
              .addDesiredCapabilities(desiredCapabilities).addRequiredCapabilities(requiredCapabilities));
   }
 
-  private static FirefoxProfile prepareProfile(FirefoxProfile profile,
-                                               Capabilities desiredCapabilities,
-                                               Capabilities requiredCapabilities) {
-    if (profile == null) {
-      profile = extractProfile(desiredCapabilities, requiredCapabilities);
-    }
-
-    populateProfile(profile, desiredCapabilities);
-    populateProfile(profile, requiredCapabilities);
-
-    return profile;
-  }
-
-  private static FirefoxProfile extractProfile(Capabilities desiredCapabilities,
-                                               Capabilities requiredCapabilities) {
-
-    FirefoxProfile profile = null;
-    Object raw = null;
-    if (desiredCapabilities != null && desiredCapabilities.getCapability(PROFILE) != null) {
-      raw = desiredCapabilities.getCapability(PROFILE);
-    }
-    if (requiredCapabilities != null && requiredCapabilities.getCapability(PROFILE) != null) {
-      raw = requiredCapabilities.getCapability(PROFILE);
-    }
-    if (raw != null) {
-      if (raw instanceof FirefoxProfile) {
-        profile = (FirefoxProfile) raw;
-      } else if (raw instanceof String) {
-        try {
-          profile = FirefoxProfile.fromJson((String) raw);
-        } catch (IOException e) {
-          throw new WebDriverException(e);
-        }
-      }
-    }
-    return getProfile(profile);
-  }
-
-  private static Capabilities addProfileTo(Capabilities capabilities, FirefoxProfile profile) {
-    DesiredCapabilities toReturn =
-        capabilities == null ? new DesiredCapabilities() :
-        capabilities instanceof DesiredCapabilities ? (DesiredCapabilities) capabilities :
-        new DesiredCapabilities(capabilities);
-
-    // legacy driver
-    toReturn.setCapability(FirefoxDriver.PROFILE, profile);
-
-    // geckodriver
-    FirefoxOptions options = getFirefoxOptions(capabilities);
-    options.setProfileSafely(profile);
-    toReturn.setCapability(FIREFOX_OPTIONS, options);
-
-    return toReturn;
-  }
-
-  private static void populateProfile(FirefoxProfile profile, Capabilities capabilities) {
-    Preconditions.checkNotNull(profile);
-    if (capabilities == null) {
-      return;
-    }
-
-    if (capabilities.getCapability(SUPPORTS_WEB_STORAGE) != null) {
-      Boolean supportsWebStorage = (Boolean) capabilities.getCapability(SUPPORTS_WEB_STORAGE);
-      profile.setPreference("dom.storage.enabled", supportsWebStorage.booleanValue());
-    }
-    if (capabilities.getCapability(ACCEPT_SSL_CERTS) != null) {
-      Boolean acceptCerts = (Boolean) capabilities.getCapability(ACCEPT_SSL_CERTS);
-      profile.setAcceptUntrustedCertificates(acceptCerts);
-    }
-    if (capabilities.getCapability(LOGGING_PREFS) != null) {
-      LoggingPreferences logsPrefs =
-          (LoggingPreferences) capabilities.getCapability(LOGGING_PREFS);
-      for (String logtype : logsPrefs.getEnabledLogTypes()) {
-        profile.setPreference("webdriver.log." + logtype,
-            logsPrefs.getLevel(logtype).intValue());
-      }
-    }
-  }
-
   public FirefoxDriver(GeckoDriverService driverService) {
     this(new DriverCommandExecutor(driverService), null, null);
   }
@@ -351,10 +271,9 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
   protected void startClient(Capabilities desiredCapabilities, Capabilities requiredCapabilities) {
     if (isLegacy(desiredCapabilities)) {
       LazyCommandExecutor exe = (LazyCommandExecutor) getCommandExecutor();
-      FirefoxProfile profileToUse = getProfile(exe.profile);
 
       // TODO(simon): Make this not sinfully ugly
-      ExtensionConnection connection = connectTo(exe.binary, profileToUse, "localhost");
+      ExtensionConnection connection = connectTo(exe.binary, exe.profile, "localhost");
       exe.setConnection(connection);
 
       try {
@@ -364,22 +283,6 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
       }
 
     }
-  }
-
-  private static FirefoxProfile getProfile(FirefoxProfile profile) {
-    FirefoxProfile profileToUse = profile;
-    String suggestedProfile = System.getProperty(SystemProperty.BROWSER_PROFILE);
-    if (profileToUse == null && suggestedProfile != null) {
-      profileToUse = new ProfilesIni().getProfile(suggestedProfile);
-      if (profileToUse == null) {
-        throw new WebDriverException(String.format(
-            "Firefox profile '%s' named in system property '%s' not found",
-            suggestedProfile, SystemProperty.BROWSER_PROFILE));
-      }
-    } else if (profileToUse == null) {
-      profileToUse = new FirefoxProfile();
-    }
-    return profileToUse;
   }
 
   protected ExtensionConnection connectTo(FirefoxBinary binary, FirefoxProfile profile,

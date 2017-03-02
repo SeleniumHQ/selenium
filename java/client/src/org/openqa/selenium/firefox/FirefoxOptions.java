@@ -20,7 +20,11 @@ package org.openqa.selenium.firefox;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static org.openqa.selenium.firefox.FirefoxDriver.BINARY;
 import static org.openqa.selenium.firefox.FirefoxDriver.PROFILE;
+import static org.openqa.selenium.remote.CapabilityType.ACCEPT_SSL_CERTS;
+import static org.openqa.selenium.remote.CapabilityType.LOGGING_PREFS;
+import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_WEB_STORAGE;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -30,6 +34,8 @@ import com.google.gson.JsonPrimitive;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.firefox.internal.ProfilesIni;
+import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
@@ -203,23 +209,61 @@ public class FirefoxOptions {
   }
 
   public FirefoxProfile getProfile() {
-    FirefoxProfile toReturn = profile;
-    if (toReturn == null) {
-      toReturn = extractProfile(desiredCapabilities);
+    FirefoxProfile profileToUse = profile;
+    if (profileToUse == null) {
+      profileToUse = extractProfile(desiredCapabilities);
     }
-    if (toReturn == null) {
-      toReturn = extractProfile(requiredCapabilities);
+    if (profileToUse == null) {
+      profileToUse = extractProfile(requiredCapabilities);
     }
-    if (toReturn == null) {
-      toReturn = new FirefoxProfile();
+    if (profileToUse == null) {
+      String suggestedProfile = System.getProperty(FirefoxDriver.SystemProperty.BROWSER_PROFILE);
+      if (suggestedProfile != null) {
+        profileToUse = new ProfilesIni().getProfile(suggestedProfile);
+        if (profileToUse == null) {
+          throw new WebDriverException(String.format(
+              "Firefox profile '%s' named in system property '%s' not found",
+              suggestedProfile, FirefoxDriver.SystemProperty.BROWSER_PROFILE));
+        }
+      }
+    }
+    if (profileToUse == null) {
+      profileToUse = new FirefoxProfile();
     }
 
-    FirefoxProfile prefHolder = toReturn;
+    populateProfile(profileToUse, desiredCapabilities);
+    populateProfile(profileToUse, requiredCapabilities);
+
+    FirefoxProfile prefHolder = profileToUse;
     booleanPrefs.entrySet().forEach(pref -> prefHolder.setPreference(pref.getKey(), pref.getValue()));
     intPrefs.entrySet().forEach(pref -> prefHolder.setPreference(pref.getKey(), pref.getValue()));
     stringPrefs.entrySet().forEach(pref -> prefHolder.setPreference(pref.getKey(), pref.getValue()));
 
-    return toReturn;
+    return profileToUse;
+  }
+
+  private static void populateProfile(FirefoxProfile profile, Capabilities capabilities) {
+    Preconditions.checkNotNull(profile);
+    if (capabilities == null) {
+      return;
+    }
+
+    if (capabilities.getCapability(SUPPORTS_WEB_STORAGE) != null) {
+      Boolean supportsWebStorage = (Boolean) capabilities.getCapability(SUPPORTS_WEB_STORAGE);
+      profile.setPreference("dom.storage.enabled", supportsWebStorage.booleanValue());
+    }
+    if (capabilities.getCapability(ACCEPT_SSL_CERTS) != null) {
+      Boolean acceptCerts = (Boolean) capabilities.getCapability(ACCEPT_SSL_CERTS);
+      profile.setAcceptUntrustedCertificates(acceptCerts);
+    }
+    if (capabilities.getCapability(LOGGING_PREFS) != null) {
+      LoggingPreferences logsPrefs =
+          (LoggingPreferences) capabilities.getCapability(LOGGING_PREFS);
+      for (String logtype : logsPrefs.getEnabledLogTypes()) {
+        profile.setPreference("webdriver.log." + logtype,
+                              logsPrefs.getLevel(logtype).intValue());
+      }
+    }
   }
 
   // Confusing API. Keeping package visible only

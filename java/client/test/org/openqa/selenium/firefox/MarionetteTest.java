@@ -114,12 +114,11 @@ public class MarionetteTest extends JUnit4TestBase {
 
   @Test
   public void canSetPreferencesInFirefoxOptions() {
-    DesiredCapabilities caps = new FirefoxOptions()
+    FirefoxOptions options = new FirefoxOptions()
       .addPreference("browser.startup.page", 1)
-      .addPreference("browser.startup.homepage", pages.xhtmlTestPage)
-      .addTo(DesiredCapabilities.firefox());
+      .addPreference("browser.startup.homepage", pages.xhtmlTestPage);
 
-    localDriver = new FirefoxDriver(caps);
+    localDriver = new FirefoxDriver(options);
     wait.until($ -> "XHTML Test Page".equals(localDriver.getTitle()));
 
     verifyItIsMarionette(localDriver);
@@ -131,10 +130,9 @@ public class MarionetteTest extends JUnit4TestBase {
     profile.setPreference("browser.startup.page", 1);
     profile.setPreference("browser.startup.homepage", pages.xhtmlTestPage);
 
-    DesiredCapabilities caps = new FirefoxOptions().setProfile(profile)
-        .addTo(DesiredCapabilities.firefox());
+    FirefoxOptions options = new FirefoxOptions().setProfile(profile);
 
-    localDriver = new FirefoxDriver(caps);
+    localDriver = new FirefoxDriver(options);
     wait.until($ -> "XHTML Test Page".equals(localDriver.getTitle()));
 
     verifyItIsMarionette(localDriver);
@@ -202,6 +200,22 @@ public class MarionetteTest extends JUnit4TestBase {
     verify(binary, never()).startFirefoxProcess(any());
     assertEquals(
         localDriver.getCapabilities().getCapability(CapabilityType.PAGE_LOAD_STRATEGY), "none");
+  }
+
+  @Test
+  public void canSetPreferencesAndProfileInFirefoxOptions() {
+    FirefoxProfile profile = new FirefoxProfile();
+    profile.setPreference("browser.startup.page", 1);
+    profile.setPreference("browser.startup.homepage", pages.xhtmlTestPage);
+
+    FirefoxOptions options = new FirefoxOptions()
+        .setProfile(profile)
+        .addPreference("browser.startup.homepage", pages.javascriptPage);
+
+    localDriver = new FirefoxDriver(options);
+    wait.until($ -> "Testing Javascript".equals(localDriver.getTitle()));
+
+    verifyItIsMarionette(localDriver);
   }
 
   private void verifyItIsMarionette(FirefoxDriver driver) {
