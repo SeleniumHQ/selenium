@@ -26,10 +26,10 @@ from .pointer_input import PointerInput
 class ActionBuilder(object):
     def __init__(self, driver, mouse=None, keyboard=None):
         if mouse is None:
-            mouse = PointerInput("mouse", "mouse")
+            mouse = PointerInput(interaction.POINTER, "mouse")
         if keyboard is None:
-            keyboard = KeyInput("keyboard")
-        self.devices = [keyboard]
+            keyboard = KeyInput(interaction.KEY)
+        self.devices = [mouse, keyboard]
         self._key_action = KeyActions(keyboard)
         self._pointer_action = PointerActions(mouse)
         self.driver = driver
@@ -70,7 +70,9 @@ class ActionBuilder(object):
     def perform(self):
         enc = {"actions": []}
         for device in self.devices:
-            enc["actions"].append(device.encode())
+            encoded = device.encode()
+            if encoded['actions']:
+                enc["actions"].append(encoded)
         self.driver.execute(Command.W3C_ACTIONS, enc)
 
     def clear_actions(self):

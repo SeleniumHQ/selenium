@@ -15,30 +15,44 @@
 # specific language governing permissions and limitations
 # under the License.
 from .input_device import InputDevice
-from .interaction import Pause
+
+from selenium.webdriver.remote.webelement import WebElement
 
 
 class PointerInput(InputDevice):
+
+    DEFAULT_MOVE_DURATION = 250
 
     def __init__(self, type_, name):
         super(PointerInput, self).__init__()
         self.type = type_
         self.name = name
 
-    def create_pointer_move(self, duration=0, x=0, y=0, element=None, origin=None):
-        self.add_action({"type": "pointerMove", "duration": duration, "x": x, "y": y})
+    def create_pointer_move(self, duration=DEFAULT_MOVE_DURATION, x=None, y=None, origin=None):
+        action = {"type": "pointerMove","duration": duration}
+        action["x"] = x
+        action["y"] = y
+        if isinstance(origin, WebElement):
+            action["origin"] = {"element-6066-11e4-a52e-4f735466cecf": origin.id}
+        elif origin is not None:
+            action["origin"] = origin
+
+        self.add_action(action)
 
     def create_pointer_down(self, button):
-        self.add_action({"type": "pointerDown", "duration": 0})
+        self.add_action({"type": "pointerDown", "duration": 0, "button":button})
 
     def create_pointer_up(self, button):
-        self.add_action({"type": "pointerUp", "duration": 0})
+        self.add_action({"type": "pointerUp", "duration": 0, "button":button})
 
     def create_pointer_cancel(self):
         self.add_action({"type": "pointerCancel"})
 
     def create_pause(self, pause_duration):
-        self.add_action(Pause(self, pause_duration))
+        self.add_action({"type": "pause", "duration": pause_duration * 1000})
 
     def encode(self):
-        return {"type": self.type, "id": self.name, "actions": [acts.encode() for acts in self.actions]}
+        return {"type": self.type,
+                "parameters": {"pointerType": self.name},
+                "id": self.name,
+                "actions": [acts for acts in self.actions]}
