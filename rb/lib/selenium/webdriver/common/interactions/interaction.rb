@@ -43,7 +43,7 @@ module Selenium
 
         def encode
           output = {type: type}
-          output[:duration] = @duration * 1000 if @duration
+          output[:duration] = (@duration * 1000).to_i if @duration
           output
         end
       end # Interaction
