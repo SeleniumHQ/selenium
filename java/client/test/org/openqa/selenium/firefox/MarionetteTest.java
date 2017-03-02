@@ -18,14 +18,14 @@
 package org.openqa.selenium.firefox;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.openqa.selenium.testing.Driver.FIREFOX;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.fail;
 
 import org.junit.After;
 import org.junit.Test;
