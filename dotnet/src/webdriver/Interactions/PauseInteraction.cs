@@ -64,7 +64,7 @@ namespace OpenQA.Selenium.Interactions
             Dictionary<string, object> toReturn = new Dictionary<string, object>();
 
             toReturn["type"] = "pause";
-            toReturn["duration"] = this.duration.TotalMilliseconds;
+            toReturn["duration"] = Convert.ToInt64(this.duration.TotalMilliseconds);
 
             return toReturn;
         }

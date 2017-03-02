@@ -323,7 +323,7 @@ namespace OpenQA.Selenium.Interactions
                 toReturn["type"] = "pointerMove";
                 if (this.duration != TimeSpan.MinValue)
                 {
-                    toReturn["duration"] = this.duration.TotalMilliseconds;
+                    toReturn["duration"] = Convert.ToInt64(this.duration.TotalMilliseconds);
                 }
 
                 if (this.target != null)
