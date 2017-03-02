@@ -46,9 +46,6 @@ def performDragAndDropWithMouse(driver, pages):
     drop.perform()
 
 
-@pytest.mark.xfail_marionette(
-    reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1292178',
-    raises=WebDriverException)
 def testDraggingElementWithMouseMovesItToAnotherList(driver, pages):
     """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
     performDragAndDropWithMouse(driver, pages)
@@ -56,9 +53,6 @@ def testDraggingElementWithMouseMovesItToAnotherList(driver, pages):
     assert 6 == len(dragInto.find_elements_by_tag_name("li"))
 
 
-@pytest.mark.xfail_marionette(
-    reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1292178',
-    raises=WebDriverException)
 def testDraggingElementWithMouseFiresEvents(driver, pages):
     """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
     performDragAndDropWithMouse(driver, pages)
@@ -75,9 +69,6 @@ def _isElementAvailable(driver, id):
         return False
 
 
-@pytest.mark.xfail_marionette(
-    reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1292178',
-    raises=WebDriverException)
 def testDragAndDrop(driver, pages):
     """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
     element_available_timeout = 15
@@ -138,8 +129,6 @@ def testContextClick(driver, pages):
     assert "ContextClicked" == toContextClick.get_attribute('value')
 
 
-@pytest.mark.xfail_marionette(
-    reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1292178')
 def testMoveAndClick(driver, pages):
     """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
     pages.load("javascriptPage.html")
@@ -153,8 +142,6 @@ def testMoveAndClick(driver, pages):
     assert "Clicked" == toClick.get_attribute('value')
 
 
-@pytest.mark.xfail_marionette(
-    reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1292178')
 def testCannotMoveToANullLocator(driver, pages):
     """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
     pages.load("javascriptPage.html")
