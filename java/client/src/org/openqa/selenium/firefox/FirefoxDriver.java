@@ -58,6 +58,16 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * An implementation of the {#link WebDriver} interface that drives Firefox.
+ * <p>
+ * The best way to construct a {@code FirefoxDriver} with various options is to make use of the
+ * {@link FirefoxOptions}, like so:
+ *
+ * <pre>
+ *DesiredCapabilities caps = new FirefoxOptions()
+ *    .setProfile(new FirefoxProfile())
+ *    .addTo(DesiredCapabilities.firefox());
+ *WebDriver driver = new FirefoxDriver(caps);
+ * </pre>
  */
 public class FirefoxDriver extends RemoteWebDriver implements Killable {
 
@@ -136,6 +146,10 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
     this(new FirefoxOptions());
   }
 
+  /**
+   * @deprecated Prefer {@link FirefoxOptions#setBinary(FirefoxBinary)}.
+   */
+  @Deprecated
   public FirefoxDriver(FirefoxBinary binary) {
     this(new FirefoxOptions().setBinary(binary));
   }
@@ -144,6 +158,11 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
     this(new FirefoxOptions().setProfile(profile));
   }
 
+  /**
+   * @deprecated Prefer {@link FirefoxOptions#setBinary(FirefoxBinary)}, and
+   *   {@link FirefoxOptions#setProfile(FirefoxProfile)}.
+   */
+  @Deprecated
   public FirefoxDriver(FirefoxBinary binary, FirefoxProfile profile) {
     this(new FirefoxOptions().setBinary(binary).setProfile(profile));
   }
@@ -180,25 +199,47 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
              .addRequiredCapabilities(requiredCapabilities));
   }
 
+  /**
+   * @deprecated Prefer {@link FirefoxOptions#setBinary(FirefoxBinary)},
+   *   {@link FirefoxOptions#setProfile(FirefoxProfile)}
+   */
+  @Deprecated
   public FirefoxDriver(FirefoxBinary binary, FirefoxProfile profile, Capabilities capabilities) {
     this(getFirefoxOptions(capabilities).setBinary(binary).setProfile(profile)
              .addDesiredCapabilities(capabilities));
   }
 
+  /**
+   * @deprecated Prefer {@link FirefoxOptions#setBinary(FirefoxBinary)},
+   *   {@link FirefoxOptions#setProfile(FirefoxProfile)}
+   */
+  @Deprecated
   public FirefoxDriver(FirefoxBinary binary, FirefoxProfile profile,
                        Capabilities desiredCapabilities, Capabilities requiredCapabilities) {
     this(getFirefoxOptions(desiredCapabilities).setBinary(binary).setProfile(profile)
              .addDesiredCapabilities(desiredCapabilities).addRequiredCapabilities(requiredCapabilities));
   }
 
+  /**
+   * @deprecated No replacement.
+   */
+  @Deprecated
   public FirefoxDriver(GeckoDriverService driverService) {
     this(new DriverCommandExecutor(driverService), null, null);
   }
 
+  /**
+   * @deprecated No replacement.
+   */
+  @Deprecated
   public FirefoxDriver(GeckoDriverService driverService, Capabilities desiredCapabilities) {
     this(new DriverCommandExecutor(driverService), desiredCapabilities, null);
   }
 
+  /**
+   * @deprecated No replacement.
+   */
+  @Deprecated
   public FirefoxDriver(GeckoDriverService driverService, Capabilities desiredCapabilities,
       Capabilities requiredCapabilities) {
     this(new DriverCommandExecutor(driverService), desiredCapabilities, requiredCapabilities);
