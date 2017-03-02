@@ -97,13 +97,27 @@ namespace OpenQA.Selenium.Remote
                     }
                 }
 
-                // Special case code for the new session command. If the response contains
-                // sessionId and capabilities properties, fix up the session ID and 
                 Dictionary<string, object> valueDictionary = this.responseValue as Dictionary<string, object>;
-                if (valueDictionary != null && valueDictionary.ContainsKey("sessionId") && valueDictionary.ContainsKey("capabilities"))
+                if (valueDictionary != null)
                 {
-                    this.responseSessionId = valueDictionary["sessionId"].ToString();
-                    this.responseValue = valueDictionary["capabilities"];
+                    // Special case code for the new session command. If the response contains
+                    // sessionId and capabilities properties, fix up the session ID and value members.
+                    if (valueDictionary.ContainsKey("sessionId"))
+                    {
+                        this.responseSessionId = valueDictionary["sessionId"].ToString();
+                        if (valueDictionary.ContainsKey("capabilities"))
+                        {
+                            this.responseValue = valueDictionary["capabilities"];
+                        }
+                        else
+                        {
+                            this.responseValue = valueDictionary["value"];
+                        }
+                    }
+                    else if (valueDictionary.ContainsKey("error"))
+                    {
+                        this.responseStatus = WebDriverError.ResultFromError(valueDictionary["error"].ToString());
+                    }
                 }
 
                 // Check for an error response by looking for an "error" property,
