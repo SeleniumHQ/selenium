@@ -104,16 +104,10 @@ public class DefaultDriverProvider implements DriverProvider {
     } catch (NoSuchMethodException e) {
       try {
         return from.newInstance();
-      } catch (InstantiationException e1) {
-        throw new WebDriverException(e);
-      } catch (IllegalAccessException e1) {
+      } catch (ReflectiveOperationException e1) {
         throw new WebDriverException(e);
       }
-    } catch (InvocationTargetException e) {
-      throw new WebDriverException(e);
-    } catch (InstantiationException e) {
-      throw new WebDriverException(e);
-    } catch (IllegalAccessException e) {
+    } catch (ReflectiveOperationException e) {
       throw new WebDriverException(e);
     }
   }

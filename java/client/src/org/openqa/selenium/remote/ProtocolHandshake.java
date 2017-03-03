@@ -21,8 +21,19 @@ import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.net.HttpHeaders.CONTENT_LENGTH;
 import static com.google.common.net.HttpHeaders.CONTENT_TYPE;
 import static com.google.common.net.MediaType.JSON_UTF_8;
+import static org.openqa.selenium.remote.BrowserType.CHROME;
+import static org.openqa.selenium.remote.BrowserType.EDGE;
+import static org.openqa.selenium.remote.BrowserType.FIREFOX;
+import static org.openqa.selenium.remote.BrowserType.IE;
+import static org.openqa.selenium.remote.BrowserType.OPERA;
+import static org.openqa.selenium.remote.BrowserType.OPERA_BLINK;
+import static org.openqa.selenium.remote.BrowserType.SAFARI;
 
 import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.SessionNotCreatedException;
@@ -33,10 +44,14 @@ import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.logging.Logger;
+import java.util.stream.Stream;
 
 public class ProtocolHandshake {
 
@@ -56,30 +71,14 @@ public class ProtocolHandshake {
 
     // Assume the remote end obeys the robustness principle.
     StringBuilder parameters = new StringBuilder("{");
-    amendW3CParameters(parameters, des, req);
+    amendW3cParameters(parameters, desired, required);
     parameters.append(",");
-    amendOssParamters(parameters, des, req);
+    amendGeckoDriver013Parameters(parameters, des, req);
+    parameters.append(",");
+    amendOssParameters(parameters, des, req);
     parameters.append("}");
-    LOG.fine("Attempting bi-dialect session, assuming Postel's Law holds true on the remote end");
+    LOG.fine("Attempting multi-dialect session, assuming Postel's Law holds true on the remote end");
     Optional<Result> result = createSession(client, parameters);
-
-    // Assume a fragile OSS webdriver implementation
-    if (!result.isPresent()) {
-      parameters = new StringBuilder("{");
-      amendOssParamters(parameters, des, req);
-      parameters.append("}");
-      LOG.fine("Falling back to original OSS JSON Wire Protocol.");
-      result = createSession(client, parameters);
-    }
-
-    // Assume a fragile w3c implementation
-    if (!result.isPresent()) {
-      parameters = new StringBuilder("{");
-      amendW3CParameters(parameters, des, req);
-      parameters.append("}");
-      LOG.fine("Falling back to straight W3C remote end connection");
-      result = createSession(client, parameters);
-    }
 
     if (result.isPresent()) {
       Result toReturn = result.get();
@@ -93,6 +92,117 @@ public class ProtocolHandshake {
         "desired capabilities = %s, required capabilities = %s",
         desired,
         required));
+  }
+
+  private void amendW3cParameters(
+      StringBuilder parameters,
+      Capabilities desired,
+      Capabilities required) {
+    // Technically we should be building up a combination of "alwaysMatch" and "firstMatch" options.
+    // We're going to do a little processing to figure out what we might be able to do, and assume
+    // that people don't really understand the difference between required and desired (which is
+    // commonly the case). Wish us luck. Looking at the current implementations, people may have
+    // set options for multiple browsers, in which case a compliant W3C remote end won't start
+    // a session. If we find this, then we create multiple firstMatch capabilities. Furrfu.
+    // The table of options are:
+    //
+    // Chrome: chromeOptions
+    // Firefox: moz:.*, firefox_binary, firefox_profile, marionette
+    // Edge: none given
+    // IEDriver: ignoreZoomSetting, initialBrowserUrl, enableElementCacheCleanup,
+    //   browserAttachTimeout, enablePersistentHover, requireWindowFocus, logFile, logLevel, host,
+    //   extractPath, silent, ie.*
+    // Opera: operaOptions
+    // SafariDriver: safari.options
+    //
+    // We can't use the constants defined in the classes because it would introduce circular
+    // dependencies between the remote library and the implementations. Yay!
+
+    Map<String, ?> req = required.asMap();
+    Map<String, ?> des = desired.asMap();
+
+    Map<String, ?> chrome = Stream.of(req, des)
+        .map(Map::entrySet)
+        .flatMap(Collection::stream)
+        .filter(entry ->
+                    ("browserName".equals(entry.getKey()) && CHROME.equals(entry.getValue())) ||
+                    "chromeOptions".equals(entry.getKey()))
+        .collect(ImmutableMap.toImmutableMap(Map.Entry::getKey, Map.Entry::getValue));
+
+    Map<String, ?> edge = Stream.of(req, des)
+        .map(Map::entrySet)
+        .flatMap(Collection::stream)
+        .filter(entry -> ("browserName".equals(entry.getKey()) && EDGE.equals(entry.getValue())))
+        .collect(ImmutableMap.toImmutableMap(Map.Entry::getKey, Map.Entry::getValue));
+
+    Map<String, ?> firefox = Stream.of(req, des)
+        .map(Map::entrySet)
+        .flatMap(Collection::stream)
+        .filter(entry ->
+                    ("browserName".equals(entry.getKey()) && FIREFOX.equals(entry.getValue())) ||
+                    "firefox_binary".equals(entry.getKey()) ||
+                    "firefox_profile".equals(entry.getKey()) ||
+                    entry.getKey().startsWith("moz:"))
+        .collect(ImmutableMap.toImmutableMap(Map.Entry::getKey, Map.Entry::getValue));
+
+    Map<String, ?> ie = Stream.of(req, des)
+        .map(Map::entrySet)
+        .flatMap(Collection::stream)
+        .filter(entry ->
+                    ("browserName".equals(entry.getKey()) && IE.equals(entry.getValue())) ||
+                    "browserAttachTimeout".equals(entry.getKey()) ||
+                    "enableElementCacheCleanup".equals(entry.getKey()) ||
+                    "enablePersistentHover".equals(entry.getKey()) ||
+                    "extractPath".equals(entry.getKey()) ||
+                    "host".equals(entry.getKey()) ||
+                    "ignoreZoomSetting".equals(entry.getKey()) ||
+                    "initialBrowserZoom".equals(entry.getKey()) ||
+                    "logFile".equals(entry.getKey()) ||
+                    "logLevel".equals(entry.getKey()) ||
+                    "requireWindowFocus".equals(entry.getKey()) ||
+                    "silent".equals(entry.getKey()) ||
+                    entry.getKey().startsWith("ie."))
+        .collect(ImmutableMap.toImmutableMap(Map.Entry::getKey, Map.Entry::getValue));
+
+    Map<String, ?> opera = Stream.of(req, des)
+        .map(Map::entrySet)
+        .flatMap(Collection::stream)
+        .filter(entry ->
+                    ("browserName".equals(entry.getKey()) && OPERA_BLINK.equals(entry.getValue())) ||
+                    ("browserName".equals(entry.getKey()) && OPERA.equals(entry.getValue())) ||
+                    "operaOptions".equals(entry.getKey()))
+        .collect(ImmutableMap.toImmutableMap(Map.Entry::getKey, Map.Entry::getValue));
+
+    Map<String, ?> safari = Stream.of(req, des)
+        .map(Map::entrySet)
+        .flatMap(Collection::stream)
+        .filter(entry ->
+                    ("browserName".equals(entry.getKey()) && SAFARI.equals(entry.getValue())) ||
+                    "safari.options".equals(entry.getKey()))
+        .collect(ImmutableMap.toImmutableMap(Map.Entry::getKey, Map.Entry::getValue));
+
+    Set<String> excludedKeys = Stream.of(chrome, edge, firefox, ie, opera, safari)
+        .map(Map::keySet)
+        .flatMap(Collection::stream)
+        .collect(ImmutableSet.toImmutableSet());
+
+    Map<String, ?> alwaysMatch = Stream.of(des, req)
+        .map(Map::entrySet)
+        .flatMap(Collection::stream)
+        .filter(entry -> !excludedKeys.contains(entry.getKey()))
+        .filter(entry -> entry.getValue() != null)
+        .filter(entry -> !"marionette".equals(entry.getKey()))  // We never want to send this
+        .distinct()
+        .collect(ImmutableMap.toImmutableMap(Map.Entry::getKey, Map.Entry::getValue));
+
+    // Now, hopefully we're left with just the browser-specific pieces. Skip the empty ones.
+    List<Map<String, ?>> firstMatch = Stream.of(chrome, edge, firefox, ie, opera, safari)
+        .filter(map -> !map.isEmpty())
+        .collect(ImmutableList.toImmutableList());
+
+    BeanToJsonConverter converter = new BeanToJsonConverter();
+    parameters.append("\"alwaysMatch\": ").append(converter.convert(alwaysMatch)).append(",");
+    parameters.append("\"firstMatch\": ").append(converter.convert(firstMatch));
   }
 
   private Optional<Result> createSession(HttpClient client, StringBuilder params)
@@ -177,7 +287,7 @@ public class ProtocolHandshake {
     return Optional.empty();
   }
 
-  private void amendW3CParameters(
+  private void amendGeckoDriver013Parameters(
     StringBuilder params,
     String desired,
     String required) {
@@ -188,7 +298,7 @@ public class ProtocolHandshake {
     params.append("}");
   }
 
-  private void amendOssParamters(
+  private void amendOssParameters(
     StringBuilder params,
     String desired,
     String required) {
