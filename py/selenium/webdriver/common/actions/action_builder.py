@@ -71,7 +71,7 @@ class ActionBuilder(object):
         return new_input
 
     def perform(self):
-        enc ={"actions": []}
+        enc = {"actions": []}
         for device in self.devices:
             enc["actions"].append(device.encode())
         self.driver.execute(Command.W3C_ACTIONS, enc)

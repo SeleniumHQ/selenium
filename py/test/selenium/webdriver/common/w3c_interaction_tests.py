@@ -15,11 +15,8 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import pytest
-
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.actions.action_builder import ActionBuilder
-from selenium.webdriver.common.actions.key_actions import KeyActions
 
 
 def test_should_be_able_to_get_pointer_and_keyboard_inputs(driver, pages):

@@ -382,7 +382,6 @@ class WebElement(object):
         size = {}
         if self._w3c:
             size = self._execute(Command.GET_ELEMENT_RECT)['value']
-            print size
         else:
             size = self._execute(Command.GET_ELEMENT_SIZE)['value']
         new_size = {"height": size["height"],
