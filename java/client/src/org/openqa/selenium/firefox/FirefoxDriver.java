@@ -18,12 +18,8 @@
 package org.openqa.selenium.firefox;
 
 import static org.openqa.selenium.firefox.FirefoxOptions.FIREFOX_OPTIONS;
-import static org.openqa.selenium.remote.CapabilityType.ACCEPT_SSL_CERTS;
-import static org.openqa.selenium.remote.CapabilityType.LOGGING_PREFS;
 import static org.openqa.selenium.remote.CapabilityType.PROXY;
-import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_WEB_STORAGE;
 
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -38,7 +34,6 @@ import org.openqa.selenium.internal.Killable;
 import org.openqa.selenium.internal.Lock;
 import org.openqa.selenium.internal.SocketLock;
 import org.openqa.selenium.logging.LocalLogs;
-import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.logging.NeedsLocalLogs;
 import org.openqa.selenium.remote.BeanToJsonConverter;
 import org.openqa.selenium.remote.Command;
@@ -63,10 +58,9 @@ import java.util.concurrent.TimeUnit;
  * {@link FirefoxOptions}, like so:
  *
  * <pre>
- *DesiredCapabilities caps = new FirefoxOptions()
- *    .setProfile(new FirefoxProfile())
- *    .addTo(DesiredCapabilities.firefox());
- *WebDriver driver = new FirefoxDriver(caps);
+ *FirefoxOptions options = new FirefoxOptions()
+ *    .setProfile(new FirefoxProfile());
+ *WebDriver driver = new FirefoxDriver(options);
  * </pre>
  */
 public class FirefoxDriver extends RemoteWebDriver implements Killable {
@@ -123,9 +117,8 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
   protected FirefoxBinary binary;
 
   // TODO: make it public as soon as it's fully implemented
-  FirefoxDriver(FirefoxOptions options) {
+  public FirefoxDriver(FirefoxOptions options) {
     this(toExecutor(options), options.toDesiredCapabilities(), options.toRequiredCapabilities());
-    //binary = options.getBinary();
   }
 
   private static CommandExecutor toExecutor(FirefoxOptions options) {
@@ -264,7 +257,9 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
    * stopped responding, and you don't want to leak resources. Should not ordinarily be called.
    */
   public void kill() {
-    binary.quit();
+    if (this.getCommandExecutor() instanceof LazyCommandExecutor) {
+      ((LazyCommandExecutor) this.getCommandExecutor()).binary.quit();
+    }
   }
 
   @Override
