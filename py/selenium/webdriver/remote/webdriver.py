@@ -176,7 +176,9 @@ class WebDriver(object):
                 capabilities[k].update(v)
         if browser_profile:
             capabilities['desiredCapabilities']['firefox_profile'] = browser_profile.encoded
-        response = self.execute(Command.NEW_SESSION, capabilities)['value']
+        response = self.execute(Command.NEW_SESSION, capabilities)
+        if 'sessionId' not in response:
+            response = response['value']
         self.session_id = response['sessionId']
         self.capabilities = response['value']
 
