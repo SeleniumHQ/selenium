@@ -127,12 +127,14 @@ public class ProtocolHandshake {
         .filter(entry ->
                     ("browserName".equals(entry.getKey()) && CHROME.equals(entry.getValue())) ||
                     "chromeOptions".equals(entry.getKey()))
+        .distinct()
         .collect(ImmutableMap.toImmutableMap(Map.Entry::getKey, Map.Entry::getValue));
 
     Map<String, ?> edge = Stream.of(req, des)
         .map(Map::entrySet)
         .flatMap(Collection::stream)
         .filter(entry -> ("browserName".equals(entry.getKey()) && EDGE.equals(entry.getValue())))
+        .distinct()
         .collect(ImmutableMap.toImmutableMap(Map.Entry::getKey, Map.Entry::getValue));
 
     Map<String, ?> firefox = Stream.of(req, des)
@@ -143,6 +145,7 @@ public class ProtocolHandshake {
                     "firefox_binary".equals(entry.getKey()) ||
                     "firefox_profile".equals(entry.getKey()) ||
                     entry.getKey().startsWith("moz:"))
+        .distinct()
         .collect(ImmutableMap.toImmutableMap(Map.Entry::getKey, Map.Entry::getValue));
 
     Map<String, ?> ie = Stream.of(req, des)
@@ -162,6 +165,7 @@ public class ProtocolHandshake {
                     "requireWindowFocus".equals(entry.getKey()) ||
                     "silent".equals(entry.getKey()) ||
                     entry.getKey().startsWith("ie."))
+        .distinct()
         .collect(ImmutableMap.toImmutableMap(Map.Entry::getKey, Map.Entry::getValue));
 
     Map<String, ?> opera = Stream.of(req, des)
@@ -171,6 +175,7 @@ public class ProtocolHandshake {
                     ("browserName".equals(entry.getKey()) && OPERA_BLINK.equals(entry.getValue())) ||
                     ("browserName".equals(entry.getKey()) && OPERA.equals(entry.getValue())) ||
                     "operaOptions".equals(entry.getKey()))
+        .distinct()
         .collect(ImmutableMap.toImmutableMap(Map.Entry::getKey, Map.Entry::getValue));
 
     Map<String, ?> safari = Stream.of(req, des)
@@ -179,11 +184,13 @@ public class ProtocolHandshake {
         .filter(entry ->
                     ("browserName".equals(entry.getKey()) && SAFARI.equals(entry.getValue())) ||
                     "safari.options".equals(entry.getKey()))
+        .distinct()
         .collect(ImmutableMap.toImmutableMap(Map.Entry::getKey, Map.Entry::getValue));
 
     Set<String> excludedKeys = Stream.of(chrome, edge, firefox, ie, opera, safari)
         .map(Map::keySet)
         .flatMap(Collection::stream)
+        .distinct()
         .collect(ImmutableSet.toImmutableSet());
 
     Map<String, ?> alwaysMatch = Stream.of(des, req)
