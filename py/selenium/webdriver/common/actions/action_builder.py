@@ -15,18 +15,15 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import interaction
-
-from .key_input import KeyInput
-from .key_actions import KeyActions
-from .pointer_input import PointerInput
-from .pointer_actions import PointerActions
-
 from selenium.webdriver.remote.command import Command
+from . import interaction
+from .key_actions import KeyActions
+from .key_input import KeyInput
+from .pointer_actions import PointerActions
+from .pointer_input import PointerInput
 
 
 class ActionBuilder(object):
-
     def __init__(self, driver, mouse=None, keyboard=None):
         if mouse is None:
             mouse = PointerInput("mouse", "mouse")
