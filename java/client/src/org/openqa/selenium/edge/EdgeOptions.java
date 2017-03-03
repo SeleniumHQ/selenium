@@ -79,8 +79,7 @@ public class EdgeOptions {
 	 */
 	public JsonObject toJson() throws IOException {
 	  JsonObject options = new JsonObject();
-	  if (this.pageLoadStrategy != null)
-	  {
+	  if (this.pageLoadStrategy != null) {
 		  options.addProperty(CapabilityType.PAGE_LOAD_STRATEGY, this.pageLoadStrategy);
 	  }
 
@@ -96,8 +95,7 @@ public class EdgeOptions {
      */
     DesiredCapabilities toCapabilities() {
       DesiredCapabilities capabilities = DesiredCapabilities.edge();
-	  if (this.pageLoadStrategy != null)
-	  {
+	  if (this.pageLoadStrategy != null) {
           capabilities.setCapability(CapabilityType.PAGE_LOAD_STRATEGY, this.pageLoadStrategy);
 	  }
 
