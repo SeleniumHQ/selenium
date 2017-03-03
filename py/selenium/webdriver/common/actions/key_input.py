@@ -14,7 +14,7 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-import interaction
+from . import interaction
 
 from input_device import InputDevice
 from interaction import (Interaction,

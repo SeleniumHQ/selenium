@@ -14,10 +14,9 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-from ..utils import keys_to_typing
-
 from .interaction import Interaction
 from .key_input import KeyInput
+from ..utils import keys_to_typing
 
 
 class KeyActions(Interaction):
