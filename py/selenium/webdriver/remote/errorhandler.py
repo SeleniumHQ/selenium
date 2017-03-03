@@ -97,7 +97,9 @@ class ErrorHandler(object):
             if value_json and isinstance(value_json, basestring):
                 import json
                 try:
-                    value = json.loads(value_json)['value']
+                    value = json.loads(value_json)
+                    if len(value.keys()) == 1:
+                        value = value['value']
                     status = value.get('error', None)
                     if status is None:
                         status = value["status"]
