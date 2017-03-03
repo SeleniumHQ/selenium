@@ -55,11 +55,10 @@ import java.util.logging.Level;
  * <p>
  * An example of usage:
  * <pre>
- *    DesiredCapabilities caps = new FirefoxOptions()
+ *    FirefoxOptions options = new FirefoxOptions()
  *      .addPreference("browser.startup.page", 1)
- *      .addPreference("browser.startup.homepage", "https://www.google.co.uk")
- *      .addTo(DesiredCapabilities.firefox());
- *    WebDriver driver = new FirefoxDriver(caps);
+ *      .addPreference("browser.startup.homepage", "https://www.google.co.uk");
+ *    WebDriver driver = new FirefoxDriver(options);
  * </pre>
  */
 public class FirefoxOptions {

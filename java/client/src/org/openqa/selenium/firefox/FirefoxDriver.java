@@ -116,7 +116,6 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
 
   protected FirefoxBinary binary;
 
-  // TODO: make it public as soon as it's fully implemented
   public FirefoxDriver(FirefoxOptions options) {
     this(toExecutor(options), options.toDesiredCapabilities(), options.toRequiredCapabilities());
   }
