@@ -15,7 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 from input_device import InputDevice
-from interaction import (Interaction, Pause)
+from interaction import Pause
 
 
 class PointerInput(InputDevice):
@@ -35,7 +35,7 @@ class PointerInput(InputDevice):
         self.add_action({"type": "pointerUp", "duration": 0})
 
     def create_pointer_cancel(self):
-        self.add_action({"type":"pointerCancel"})
+        self.add_action({"type": "pointerCancel"})
 
     def create_pause(self, pause_duration):
         self.add_action(Pause(self, pause_duration))

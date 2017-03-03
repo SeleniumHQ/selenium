@@ -69,7 +69,6 @@ class ActionChains(object):
         if self._driver.w3c:
             self.w3c_actions = ActionBuilder(driver)
 
-
     def perform(self):
         """
         Performs all stored actions.
