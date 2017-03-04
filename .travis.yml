@@ -254,9 +254,9 @@ matrix:
       env: TASK=//rb:docs
   fast_finish: true
   allow_failures:
-    - env: TASK="calcdeps //javascript/webdriver:webdriver-firefox:run"
+    - env: MARIONETTE=1 TASK="calcdeps //javascript/webdriver:webdriver-firefox:run"
     - env: CHROME=1 TASK=//java/client/test/com/thoughtworks/selenium:chrome-rc-test:run
-    - env: TASK=//java/client/test/com/thoughtworks/selenium:firefox-rc-test:run
+    - env: MARIONETTE=1 TASK=//java/client/test/com/thoughtworks/selenium:firefox-rc-test:run
     - env: TOXENV=py27-firefox
     - env: MARIONETTE=1 TOXENV=py27-marionette
     - env: TOXENV=py27-remote
