@@ -31,6 +31,7 @@ require 'selenium/webdriver/firefox/bridge'
 require 'selenium/webdriver/firefox/w3c_bridge'
 require 'selenium/webdriver/firefox/binary'
 require 'selenium/webdriver/firefox/service'
+require 'selenium/webdriver/firefox/options'
 
 module Selenium
   module WebDriver
