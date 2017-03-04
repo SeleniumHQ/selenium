@@ -22,6 +22,7 @@ import com.google.gson.JsonObject;
 import org.openqa.grid.internal.TestSession;
 import org.openqa.grid.web.servlet.api.v1.utils.ProxyUtil;
 
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -29,7 +30,36 @@ import java.util.Set;
 public class Sessions extends RestApiEndpoint {
 
   @Override
-  public Map<String, JsonObject> getResponse(String query) {
+  public Object getResponse(String query) {
+    Map<String, Object> sessionInfo = new HashMap<>();
+    if (isInvalidQuery(query)) {
+      return getAllSessions();
+    }
+
+    final String sessionId = query.replaceAll("^/", "");
+    for (TestSession session : getRegistry().getActiveSessions()) {
+      if (session.getExternalKey().getKey().equals(sessionId)) {
+        sessionInfo.put("isOrphaned", session.isOrphaned());
+        sessionInfo.put("internalKey", session.getInternalKey());
+        sessionInfo.put("requestedCapabilities", session.getRequestedCapabilities());
+        sessionInfo.put("isForwardingRequest", session.isForwardingRequest());
+        sessionInfo.put("protocol", session.getSlot().getProtocol());
+        sessionInfo.put("lastActivityWasAt",session.getInactivityTime());
+        sessionInfo.put("requestPath", session.getSlot().getPath());
+        JsonObject proxy = new JsonObject();
+        URL url = session.getSlot().getProxy().getRemoteHost();
+        proxy.addProperty("host", url.getHost());
+        proxy.addProperty("port", url.getPort());
+        proxy.addProperty("nodeId", session.getSlot().getProxy().getId());
+        sessionInfo.put("proxy", proxy);
+        break;
+      }
+
+    }
+    return sessionInfo;
+  }
+
+  private Map<String, JsonObject> getAllSessions() {
     Map<String, JsonObject> sessions = new HashMap<>();
     Set<TestSession> activeSessions = this.getRegistry().getActiveSessions();
     for (TestSession session : activeSessions) {

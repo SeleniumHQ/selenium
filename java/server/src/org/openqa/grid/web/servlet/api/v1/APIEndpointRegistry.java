@@ -39,22 +39,16 @@ public class APIEndpointRegistry {
                            "Returns configuration and proxy information of the hub",
                            HubInfo.class.getName()));
 
-      get.add(new EndPoint(API_PREFIX + "/nodes",
-                           "List of computers connected to the HUB and the nodes on each computer",
-                           Nodes.class.getName()));
-
-      get.add(new EndPoint(API_PREFIX + "/proxy",
-                           "Returns configuration and capability information for the current proxy",
+      get.add(new EndPoint(API_PREFIX + "/proxies",
+                           "Returns configuration and capability information for the current proxy "
+                           + "(or) lists all nodes connected to the hub if invoked without any proxy id",
                            Proxy.class.getName(),
-                           API_PREFIX + "/proxy/&lt;ID&gt; - ID retrieved from the /node endpoint"));
+                           API_PREFIX
+                           + "/proxy/&lt;ID&gt; - ID retrieved from the /node endpoint"));
 
       get.add(new EndPoint(API_PREFIX + "/sessions",
-                           "List of currently open sessions",
-                           Sessions.class.getName()));
-
-      get.add(new EndPoint(API_PREFIX + "/session",
-                           "Returns details for a given session",
-                           SessionInfo.class.getName(),
+                           "Returns details for a given session (or) lists all currently open sessions.",
+                           Sessions.class.getName(),
                            API_PREFIX
                            + "/sessions/&lt;ID&gt; - ID retrieved from the /sessions endpoint"));
     }

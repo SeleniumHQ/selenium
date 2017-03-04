@@ -19,13 +19,12 @@ package org.openqa.grid.web.servlet.api.v1;
 
 import com.google.gson.JsonObject;
 
+import org.openqa.grid.internal.ProxySet;
 import org.openqa.grid.internal.RemoteProxy;
 import org.openqa.grid.internal.TestSlot;
 import org.openqa.grid.web.servlet.api.v1.utils.ProxyUtil;
 import org.openqa.selenium.remote.CapabilityType;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -34,10 +33,10 @@ import java.util.Map;
 public class Proxy extends RestApiEndpoint {
 
   @Override
-  public Map<String, Object> getResponse(String query) {
+  public Object getResponse(String query) {
     Map<String, Object> proxyInfo = new HashMap<>();
     if (isInvalidQuery(query)) {
-      return proxyInfo;
+      return allProxyInfo();
     }
 
     final String proxyToFind = query.replaceAll("^/", "");
@@ -47,7 +46,7 @@ public class Proxy extends RestApiEndpoint {
       proxy = this.getRegistry().getAllProxies().getProxyById(getProxyId(proxyToFind));
     }
     if (proxy == null) {
-      return proxyInfo;
+      return allProxyInfo();
     }
     proxyInfo.put("config", proxy.getConfig().toJson());
     proxyInfo.put("slotUsage", ProxyUtil.getSlotUsage(proxy));
@@ -78,15 +77,24 @@ public class Proxy extends RestApiEndpoint {
     return proxyInfo;
   }
 
+  private List<JsonObject> allProxyInfo() {
+    ProxySet proxies = this.getRegistry().getAllProxies();
+    List<JsonObject> computers = new LinkedList<>();
+    for (RemoteProxy each : proxies) {
+      computers.add(gatherComputerData(each));
+    }
+    return computers;
+  }
+
   private static String getProxyId(String proxyToFind) {
     String[] parts = proxyToFind.split(":", 2);
-    if (parts == null || parts.length < 2) {
+    if (parts.length < 2) {
       return proxyToFind;
     }
     return "http://" + parts[0] + ":" + parts[1];
   }
 
-  private void addInfoFromStatusIfPresent(Map<String, Object> map, String key, JsonObject status) {
+  private static void addInfoFromStatusIfPresent(Map<String, Object> map, String key, JsonObject status) {
     if (!status.has("value")) {
       return;
     }
@@ -96,4 +104,11 @@ public class Proxy extends RestApiEndpoint {
     }
     map.put(key, value.get(key).getAsJsonObject());
   }
+
+  private JsonObject gatherComputerData(RemoteProxy proxy) {
+    JsonObject computer = ProxyUtil.getNodeInfo(proxy);
+    computer.add("slotUsage", ProxyUtil.getDetailedSlotUsage(proxy));
+    return computer;
+  }
+
 }
