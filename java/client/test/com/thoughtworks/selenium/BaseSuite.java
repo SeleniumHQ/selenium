@@ -37,6 +37,7 @@ public class BaseSuite {
     protected void before() throws Throwable {
       log.info("Preparing test environment");
       GlobalTestEnvironment.get(SeleniumTestEnvironment.class);
+      System.setProperty("webdriver.remote.shorten_log_messages", "true");
     }
     @Override
     protected void after() {
