@@ -103,7 +103,7 @@ matrix:
         firefox: latest
     - language: java
       jdk: oraclejdk8
-      env: TASK=//java/client/test/com/thoughtworks/selenium:firefox-rc-test:run
+      env: MARIONETTE=1 TASK=//java/client/test/com/thoughtworks/selenium:firefox-rc-test:run
       addons:
         firefox: latest
     - language: java
@@ -254,7 +254,7 @@ matrix:
       env: TASK=//rb:docs
   fast_finish: true
   allow_failures:
-    - env: MARIONETTE=1 TASK="calcdeps //javascript/webdriver:webdriver-firefox:run"
+    - env: TASK="calcdeps //javascript/webdriver:webdriver-firefox:run"
     - env: CHROME=1 TASK=//java/client/test/com/thoughtworks/selenium:chrome-rc-test:run
     - env: MARIONETTE=1 TASK=//java/client/test/com/thoughtworks/selenium:firefox-rc-test:run
     - env: TOXENV=py27-firefox
