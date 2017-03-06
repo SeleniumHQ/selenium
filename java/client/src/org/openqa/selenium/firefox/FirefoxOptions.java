@@ -24,10 +24,10 @@ import static org.openqa.selenium.remote.CapabilityType.ACCEPT_SSL_CERTS;
 import static org.openqa.selenium.remote.CapabilityType.LOGGING_PREFS;
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_WEB_STORAGE;
 
+import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
@@ -48,6 +48,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -68,7 +69,9 @@ public class FirefoxOptions {
 
   public final static String FIREFOX_OPTIONS = "moz:firefoxOptions";
 
-  private FirefoxBinary binary;
+  private String binaryPath;
+  private FirefoxBinary actualBinary;
+
   private FirefoxProfile profile;
   private List<String> args = new ArrayList<>();
   private Map<String, Boolean> booleanPrefs = new HashMap<>();
@@ -154,53 +157,64 @@ public class FirefoxOptions {
   }
 
   public FirefoxOptions setBinary(FirefoxBinary binary) {
-    this.binary = binary;
+    this.actualBinary = Preconditions.checkNotNull(binary);
+    this.binaryPath = null;
     return this;
   }
 
   public FirefoxOptions setBinary(Path path) {
-    return setBinary(new FirefoxBinary(checkNotNull(path).toFile()));
+    // Default to UNIX-style paths, even on Windows.
+    StringBuilder builder = new StringBuilder(path.isAbsolute() ? "/" : "");
+    this.binaryPath = Joiner.on("/").appendTo(builder, path).toString();
+    this.actualBinary = null;
+    return this;
   }
 
   public FirefoxOptions setBinary(String path) {
     return setBinary(Paths.get(checkNotNull(path)));
   }
 
+  /**
+   * Constructs a {@link FirefoxBinary} and returns that to be used, and because of this is only
+   * useful when actually starting firefox.
+   */
   public FirefoxBinary getBinary() {
-    if (binary != null) {
-      return binary;
+    return getBinaryOrNull().orElse(new FirefoxBinary());
+  }
 
-    } else {
-      if (desiredCapabilities.getCapability(FirefoxDriver.BINARY) != null) {
-        Object raw = desiredCapabilities.getCapability(FirefoxDriver.BINARY);
-        if (raw instanceof FirefoxBinary) {
-          return (FirefoxBinary) raw;
+  public Optional<FirefoxBinary> getBinaryOrNull() {
+    if (actualBinary != null) {
+      return Optional.of(actualBinary);
+    }
+    if (binaryPath != null) {
+      return Optional.of(new FirefoxBinary(new File(binaryPath)));
+    }
 
-        } else {
-          try {
-            return new FirefoxBinary(new File(raw.toString()));
-          } catch (WebDriverException wde) {
-            throw new SessionNotCreatedException(wde.getMessage());
-          }
-        }
-      }
-
-      if (desiredCapabilities.getCapability(CapabilityType.VERSION) != null) {
+    if (desiredCapabilities.getCapability(FirefoxDriver.BINARY) != null) {
+      Object raw = desiredCapabilities.getCapability(FirefoxDriver.BINARY);
+      if (raw instanceof FirefoxBinary) {
+        return Optional.of((FirefoxBinary) raw);
+      } else {
         try {
-          FirefoxBinary.Channel channel = FirefoxBinary.Channel.fromString(
-              (String) desiredCapabilities.getCapability(CapabilityType.VERSION));
-          return new FirefoxBinary(channel);
-        } catch (WebDriverException ex) {
-          return new FirefoxBinary((String) desiredCapabilities.getCapability(CapabilityType.VERSION));
+          return Optional.of(new FirefoxBinary(new File(raw.toString())));
+        } catch (WebDriverException wde) {
+          throw new SessionNotCreatedException(wde.getMessage());
         }
       }
     }
-    // last resort
-    return new FirefoxBinary();
-  }
 
-  public FirefoxBinary getBinaryOrNull() {
-    return binary;
+    if (desiredCapabilities.getCapability(CapabilityType.VERSION) != null) {
+      try {
+        FirefoxBinary.Channel channel = FirefoxBinary.Channel.fromString(
+            (String) desiredCapabilities.getCapability(CapabilityType.VERSION));
+        return Optional.of(new FirefoxBinary(channel));
+      } catch (WebDriverException ex) {
+        return Optional.of(new FirefoxBinary(
+            (String) desiredCapabilities.getCapability(CapabilityType.VERSION)));
+      }
+    }
+    // last resort
+    return Optional.empty();
   }
 
   public FirefoxOptions setProfile(FirefoxProfile profile) {
@@ -376,11 +390,26 @@ public class FirefoxOptions {
     }
 
     Object priorBinary = capabilities.getCapability(BINARY);
-    if (binary != null && priorBinary != null && !binary.equals(priorBinary)) {
-      throw new IllegalStateException(String.format(
-          "Binary already set in capabilities, but is different from the one set here: %s, %s",
-          priorBinary,
-          binary));
+    if (priorBinary instanceof Path) {
+      // Again, unix-style path
+      priorBinary = Joiner.on("/").join((Path) priorBinary);
+    }
+    if (priorBinary instanceof String) {
+      if (actualBinary != null || !priorBinary.equals(binaryPath)) {
+        throw new IllegalStateException(String.format(
+            "Binary already set in capabilities, but is different from the one set here: %s, %s",
+            priorBinary,
+            binaryPath != null ? binaryPath : actualBinary));
+      }
+    }
+    if (priorBinary instanceof FirefoxBinary) {
+      // Relies on instance equality, which is fragile.
+      if (binaryPath != null || !priorBinary.equals(actualBinary)) {
+        throw new IllegalStateException(String.format(
+            "Binary already set in capabilities, but is different from the one set here: %s, %s",
+            priorBinary,
+            actualBinary != null ? actualBinary : binaryPath));
+      }
     }
 
     Object priorProfile = capabilities.getCapability(PROFILE);
@@ -399,9 +428,12 @@ public class FirefoxOptions {
 
     capabilities.setCapability(FIREFOX_OPTIONS, this);
 
-    if (binary != null) {
-      binary.addCommandLineOptions(args.toArray(new String[args.size()]));
-      capabilities.setCapability(BINARY, binary.getPath());
+    if (actualBinary != null) {
+      actualBinary.addCommandLineOptions(args.toArray(new String[args.size()]));
+      capabilities.setCapability(BINARY, actualBinary);
+    }
+    if (binaryPath != null) {
+      capabilities.setCapability(BINARY, binaryPath);
     }
 
     if (profile != null) {
@@ -420,11 +452,13 @@ public class FirefoxOptions {
     return capabilities;
   }
 
-  public JsonElement toJson() throws IOException {
+  public JsonObject toJson() throws IOException {
     JsonObject options = new JsonObject();
 
-    if (binary != null) {
-      options.addProperty("binary", binary.getPath());
+    if (actualBinary != null) {
+      options.addProperty("binary", actualBinary.getPath());
+    } else if (binaryPath != null) {
+      options.addProperty("binary", binaryPath);
     }
 
     if (profile != null) {
@@ -499,7 +533,7 @@ public class FirefoxOptions {
   @Override
   public String toString() {
     return "{" +
-           "binary=" + binary + ", " +
+           "binary=" + getBinaryOrNull() + ", " +
            "args=" + args + ", " +
            "legacy=" + legacy + ", " +
            "logLevel=" + logLevel + ", " +
