@@ -139,7 +139,6 @@ public class DesiredCapabilitiesTest {
     }};
 
     DesiredCapabilities caps = new DesiredCapabilities(capabilitiesMap);
-    System.out.println(caps.toString());
     assertEquals(caps.toString().length(), 62);
   }
 
