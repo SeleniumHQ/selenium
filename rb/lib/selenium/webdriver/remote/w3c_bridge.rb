@@ -111,7 +111,7 @@ module Selenium
         end
 
         def create_session(desired_capabilities)
-          resp = raw_execute :new_session, {}, {desiredCapabilities: desired_capabilities}
+          resp = execute :new_session, {}, {desiredCapabilities: desired_capabilities}
           @session_id = resp['sessionId']
           return W3CCapabilities.json_create resp['value'] if @session_id
 
@@ -599,21 +599,10 @@ module Selenium
         # executes a command on the remote server.
         #
         #
-        # Returns the 'value' of the returned payload
-        #
-
-        def execute(*args)
-          result = raw_execute(*args)
-          result.payload.key?('value') ? result['value'] : result
-        end
-
-        #
-        # executes a command on the remote server.
-        #
         # @return [WebDriver::Remote::Response]
         #
 
-        def raw_execute(command, opts = {}, command_hash = nil)
+        def execute(command, opts = {}, command_hash = nil)
           verb, path = commands(command) || raise(ArgumentError, "unknown command: #{command.inspect}")
           path = path.dup
 
@@ -628,7 +617,7 @@ module Selenium
           end
 
           WebDriver.logger.info("-> #{verb.to_s.upcase} #{path}")
-          http.call verb, path, command_hash
+          http.call(verb, path, command_hash)['value']
         end
 
         def escaper
