@@ -128,7 +128,7 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
     } else {
       GeckoDriverService.Builder builder = new GeckoDriverService.Builder().usingPort(0);
       Optional<FirefoxBinary> binary = options.getBinaryOrNull();
-      if (binary != null) {
+      if (binary.isPresent()) {
         builder.usingFirefoxBinary(binary.get());
       }
       return new DriverCommandExecutor(builder.build());
