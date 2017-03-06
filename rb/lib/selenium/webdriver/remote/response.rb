@@ -95,12 +95,20 @@ module Selenium
           ex.set_backtrace(backtrace + ex.backtrace)
         end
 
+        def error_payload
+          # Even errors are wrapped in 'value' for w3c
+          # Grab 'value' key for error, leave original payload alone and let the bridge process
+          @error_payload ||= !@payload.key?('sessionId') ? @payload['value'] : @payload
+        end
+
         def status
-          @payload['status'] || @payload['error']
+          return unless error_payload.is_a? Hash
+          @status ||= error_payload['status'] || error_payload['error']
         end
 
         def value
-          @payload['value'] || @payload['message']
+          return unless error_payload.is_a? Hash
+          @value ||= error_payload['value'] || error_payload['message']
         end
       end # Response
     end # Remote
