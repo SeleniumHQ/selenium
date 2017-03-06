@@ -48,6 +48,7 @@ import org.openqa.selenium.remote.service.DriverCommandExecutor;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -126,9 +127,9 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
 
     } else {
       GeckoDriverService.Builder builder = new GeckoDriverService.Builder().usingPort(0);
-      FirefoxBinary binary = options.getBinaryOrNull();
+      Optional<FirefoxBinary> binary = options.getBinaryOrNull();
       if (binary != null) {
-        builder.usingFirefoxBinary(binary);
+        builder.usingFirefoxBinary(binary.get());
       }
       return new DriverCommandExecutor(builder.build());
     }
