@@ -61,7 +61,7 @@ namespace OpenQA.Selenium.Remote
     /// }
     /// </code>
     /// </example>
-    public class RemoteWebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFindsById, IFindsByClassName, IFindsByLinkText, IFindsByName, IFindsByTagName, IFindsByXPath, IFindsByPartialLinkText, IFindsByCssSelector, ITakesScreenshot, IHasInputDevices, IHasCapabilities, IHasWebStorage, IHasLocationContext, IHasApplicationCache, IAllowsFileDetection, IHasSessionId, IActionExecutor
+    public class RemoteWebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFindsById, IFindsByClassName, IFindsByLinkText, IFindsByName, IFindsByTagName, IFindsByXPath, IFindsByPartialLinkText, IFindsByCssSelector, ITakesScreenshot, IHasInputDevices, IHasCapabilities, IHasWebStorage, IHasLocationContext, IHasApplicationCache, IAllowsFileDetection, IHasSessionId, IActionExecutor, IHasBrowserExtensions
     {
         /// <summary>
         /// The default command timeout for HTTP requests in a RemoteWebDriver instance.
@@ -915,6 +915,22 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
+        /// Retrieves a list of all browser extensions installed in the current session.
+        /// </summary>
+        /// <returns>ReadOnlyCollection of IBrowserExtension objects so that you can interact with them</returns>
+        /// <example>
+        /// <code>
+        /// IWebDriver driver = new RemoteWebDriver(DesiredCapabilities.Edge());
+        /// ReadOnlyCollection<![CDATA[<IBrowserExtension>]]> exts = driver.GetBrowserExtensions();
+        /// </code>
+        /// </example>
+        public ReadOnlyCollection<IBrowserExtension> GetBrowserExtensions()
+        {
+            Response commandResponse = this.Execute(DriverCommand.GetBrowserExtensions, null);
+            return this.GetBrowserExtensionsFromResponse(commandResponse);
+        }
+
+        /// <summary>
         /// Performs the specified list of actions with this action executor.
         /// </summary>
         /// <param name="actionSequenceList">The list of action sequences to perform.</param>
@@ -1432,6 +1448,46 @@ namespace OpenQA.Selenium.Remote
             }
 
             return returnValue;
+        }
+
+        /// <summary>
+        /// Finds the browser extensions that are in the response
+        /// </summary>
+        /// <param name="response">Response from the browser</param>
+        /// <returns>Collection of extensions</returns>
+        private ReadOnlyCollection<IBrowserExtension> GetBrowserExtensionsFromResponse(Response response)
+        {
+            List<IBrowserExtension> toReturn = new List<IBrowserExtension>();
+            object[] extensions = response.Value as object[];
+            foreach (object extensionObject in extensions)
+            {
+                Dictionary<string, object> extensionDictionary = extensionObject as Dictionary<string, object>;
+                if (extensionDictionary != null)
+                {
+                    string id = string.Empty;
+                    if (extensionDictionary.ContainsKey("id"))
+                    {
+                        id = (string)extensionDictionary["id"];
+                    }
+
+                    // TODO: Parse name once it's included
+                    RemoteBrowserExtension extension = this.CreateExtension(id);
+                    toReturn.Add(extension);
+                }
+            }
+
+            return toReturn.AsReadOnly();
+        }
+
+        /// <summary>
+        /// Creates a <see cref="RemoteBrowserExtension"/> with the specified ID.
+        /// </summary>
+        /// <param name="extensionId">The ID of this extension.</param>
+        /// <returns>A <see cref="RemoteBrowserExtension"/> with the specified ID.</returns>
+        private RemoteBrowserExtension CreateExtension(string extensionId)
+        {
+            RemoteBrowserExtension toReturn = new RemoteBrowserExtension(this, extensionId, extensionId);
+            return toReturn;
         }
     }
 }

@@ -152,6 +152,11 @@ namespace OpenQA.Selenium.Remote
             this.TryAddCommand(DriverCommand.GetSessionStorageItem, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/session_storage/key/{key}"));
             this.TryAddCommand(DriverCommand.RemoveSessionStorageItem, new CommandInfo(CommandInfo.DeleteCommand, "/session/{sessionId}/session_storage/key/{key}"));
             this.TryAddCommand(DriverCommand.GetSessionStorageSize, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/session_storage/size"));
+
+            // Extension commands
+            this.TryAddCommand(DriverCommand.GetBrowserExtensions, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/browserexts"));
+            this.TryAddCommand(DriverCommand.GetBrowserExtensionActions, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/browserext/{extensionId}/actions"));
+            this.TryAddCommand(DriverCommand.TakeBrowserExtensionAction, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/browserext/{extensionId}/action"));
         }
     }
 }

@@ -96,9 +96,11 @@
     <Compile Include="Html5\IWebStorage.cs" />
     <Compile Include="Html5\Location.cs" />
     <Compile Include="IAllowsFileDetection.cs" />
+    <Compile Include="IBrowserExtensionAction.cs" />
     <Compile Include="IFileDetector.cs" />
     <Compile Include="Html5\IHasLocationContext.cs" />
     <Compile Include="ILogs.cs" />
+    <Compile Include="Internal\IHasBrowserExtensions.cs" />
     <Compile Include="Internal\IWebElementReference.cs" />
     <Compile Include="Interactions\ActionBuilder.cs" />
     <Compile Include="Interactions\ActionSequence.cs" />
@@ -109,6 +111,7 @@
     <Compile Include="Interactions\PauseInteraction.cs" />
     <Compile Include="Interactions\PointerInputDevice.cs" />
     <Compile Include="Internal\IActionExecutor.cs" />
+    <Compile Include="IBrowserExtension.cs" />
     <Compile Include="LogEntry.cs" />
     <Compile Include="LogLevel.cs" />
     <Compile Include="LogType.cs" />
@@ -138,7 +141,9 @@
     <Compile Include="PhantomJS\PhantomJSDriverService.cs" />
     <Compile Include="PhantomJS\PhantomJSOptions.cs" />
     <Compile Include="PhantomJS\PhantomJSWebElement.cs" />
+    <Compile Include="Remote\RemoteBrowserExtensionAction.cs" />
     <Compile Include="Remote\RemoteLogs.cs" />
+    <Compile Include="Remote\RemoteBrowserExtension.cs" />
     <Compile Include="Remote\W3CWireProtocolCommandInfoRepository.cs" />
     <Compile Include="Remote\WebDriverError.cs" />
     <Compile Include="Remote\WebDriverWireProtocolCommandInfoRepository.cs" />

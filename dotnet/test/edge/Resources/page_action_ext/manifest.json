@@ -1,0 +1,23 @@
+﻿{
+  "author": "Microsoft",
+  "manifest_version": 2,
+  "name": "Test pageAction invocation",
+  "background": {
+  	"scripts": ["background.js"],
+  	"persistent": true
+  },
+  "page_action": {
+    "default_title": "Invoke pageAction",
+    "default_icon": {
+      "19": "icon-19.png",
+      "38": "icon-38.png"
+    }
+  },
+  "key": "TestPageAction",
+  "description": "Tests pageAction invocation via WebDriver",
+  "version": "1.0",
+  "permissions": [
+    "webNavigation",
+    "<all_urls>"
+  ]
+}

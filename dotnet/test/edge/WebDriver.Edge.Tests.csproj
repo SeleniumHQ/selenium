@@ -45,10 +45,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyTeardown.cs" />
+    <Compile Include="PageActionExtensionTest.cs" />
+    <Compile Include="BrowserActionExtensionTest.cs" />
+    <Compile Include="EdgeDriverTestFixture.cs" />
     <Compile Include="EdgeSpecificTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\browser_action_ext\manifest.json" />
+    <None Include="Resources\page_action_ext\manifest.json" />
     <None Include="WebDriver.Edge.Tests.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -66,7 +71,25 @@
       <Name>WebDriver.Common.Tests</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\browser_action_ext\background.js" />
+    <Content Include="Resources\browser_action_ext\icon-19-inv.png" />
+    <Content Include="Resources\browser_action_ext\icon-38-inv.png" />
+    <Content Include="Resources\browser_action_ext\icon-38.png" />
+    <Content Include="Resources\browser_action_ext\icon-19.png" />
+    <Content Include="Resources\page_action_ext\background.js" />
+    <Content Include="Resources\page_action_ext\icon-19-inv.png" />
+    <Content Include="Resources\page_action_ext\icon-19.png" />
+    <Content Include="Resources\page_action_ext\icon-38-inv.png" />
+    <Content Include="Resources\page_action_ext\icon-38.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>xcopy/q/s/c/y/i "$(ProjectDir)Resources\*.*" "$(TargetDir)Resources\"</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

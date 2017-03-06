@@ -1,0 +1,19 @@
+﻿{
+  "author": "Microsoft",
+  "manifest_version": 2,
+  "name": "Test browserAction invocation",
+  "background": {
+  	"scripts": ["background.js"],
+  	"persistent": true
+  },
+  "browser_action": {
+    "default_title": "Invoke browserAction",
+    "default_icon": {
+      "19": "icon-19.png",
+      "38": "icon-38.png"
+    }
+  },
+  "key": "TestBrowserAction",
+  "description": "Tests browserAction invocation via WebDriver",
+  "version": "1.0"
+}

@@ -562,5 +562,21 @@ namespace OpenQA.Selenium.Remote
         /// Represents the GetLog command.
         /// </summary>
         public static readonly string GetLog = "getLog";
+
+        /// <summary>
+        /// Represents the GetBrowserExtensions command.
+        /// </summary>
+        public static readonly string GetBrowserExtensions = "getBrowserExtensions";
+
+        /// <summary>
+        /// Represents the GetBrowserExtensionActions command.
+        /// </summary>
+        public static readonly string GetBrowserExtensionActions = "getBrowserExtensionActions";
+
+        /// <summary>
+        /// Represents the GetBrowserExtensionActions command.
+        /// </summary>
+        public static readonly string TakeBrowserExtensionAction = "takeBrowserExtensionAction";
+
     }
 }
