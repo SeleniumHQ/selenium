@@ -1,4 +1,4 @@
-## v.next
+## v3.3.0
 
 * Added warning log messages when the user creates new managed promises, or
   schedules unchained tasks. Users may opt in to printing these log messages
@@ -10,6 +10,11 @@
   logging.getLogger('promise.ControlFlow').setLevel(logging.Level.WARNING);
   ```
 * If the `JAVA_HOME` environment variable is set, use it to locate java.exe.
+
+
+## v3.2.0
+
+* Release skipped to stay in sync with the main Selenium project.
 
 
 ## v3.1.0
