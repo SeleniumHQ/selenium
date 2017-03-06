@@ -93,7 +93,7 @@ import org.junit.runners.Suite;
     TestAddLocationStrategy.class,
     TestAddSelection.class,
     TestAlerts.class,
-//    TestBasicAuth.class,
+    TestBasicAuth.class,
     TestBrowserVersion.class,
     TestCheckUncheck.class,
     TestClick.class,
