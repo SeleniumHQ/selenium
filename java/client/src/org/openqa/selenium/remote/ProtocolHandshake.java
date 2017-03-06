@@ -30,8 +30,12 @@ import static org.openqa.selenium.remote.BrowserType.OPERA_BLINK;
 import static org.openqa.selenium.remote.BrowserType.SAFARI;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.stream.JsonWriter;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.SessionNotCreatedException;
@@ -40,15 +44,21 @@ import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -56,33 +66,60 @@ public class ProtocolHandshake {
 
   private final static Logger LOG = Logger.getLogger(ProtocolHandshake.class.getName());
 
+  /**
+   * Capability names that should never be sent across the wire to a w3c compliant remote end.
+   */
+  private final Set<String> UNUSED_W3C_NAMES = ImmutableSet.<String>builder()
+      .add("firefox_binary")
+      .add("firefox_profile")
+      .add("marionette")
+      .build();
+
   public Result createSession(HttpClient client, Command command)
     throws IOException {
-    // Avoid serialising the capabilities too many times. Things like profiles are expensive.
-
     Capabilities desired = (Capabilities) command.getParameters().get("desiredCapabilities");
     desired = desired == null ? new DesiredCapabilities() : desired;
     Capabilities required = (Capabilities) command.getParameters().get("requiredCapabilities");
     required = required == null ? new DesiredCapabilities() : required;
 
-    String des = new BeanToJsonConverter().convert(desired);
-    String req = new BeanToJsonConverter().convert(required);
+    BeanToJsonConverter converter = new BeanToJsonConverter();
+    JsonObject des = (JsonObject) converter.convertObject(desired);
+    JsonObject req = (JsonObject) converter.convertObject(required);
 
-    // Assume the remote end obeys the robustness principle.
-    StringBuilder parameters = new StringBuilder("{");
-    amendW3cParameters(parameters, desired, required);
-    parameters.append(",");
-    amendGeckoDriver013Parameters(parameters, des, req);
-    parameters.append(",");
-    amendOssParameters(parameters, des, req);
-    parameters.append("}");
-    LOG.fine("Attempting multi-dialect session, assuming Postel's Law holds true on the remote end");
-    Optional<Result> result = createSession(client, parameters);
+    // We don't know how large the generated JSON is going to be. Spool it to disk, and then read
+    // the file size, then stream it to the remote end. If we could be sure the remote end could
+    // cope with chunked requests we'd use those. I don't think we can. *sigh*
+    Path jsonFile = Files.createTempFile("new-session", ".json");
 
-    if (result.isPresent()) {
-      Result toReturn = result.get();
-      LOG.info(String.format("Detected dialect: %s", toReturn.dialect));
-      return toReturn;
+    try (
+        BufferedWriter fileWriter = Files.newBufferedWriter(jsonFile, UTF_8);
+        JsonWriter out = new JsonWriter(fileWriter)) {
+      out.setHtmlSafe(true);
+      out.setIndent("  ");
+      Gson gson = new Gson();
+      out.beginObject();
+
+      streamJsonWireProtocolParameters(out, gson, des, req);
+      streamGeckoDriver013Parameters(out, gson, des, req);
+      streamW3CProtocolParameters(out, gson, des, req);
+
+      out.endObject();
+      out.flush();
+
+      long size = Files.size(jsonFile);
+      try (InputStream rawIn = Files.newInputStream(jsonFile);
+           BufferedInputStream contentStream = new BufferedInputStream(rawIn)) {
+        LOG.fine("Attempting multi-dialect session, assuming Postel's Law holds true on the remote end");
+        Optional<Result> result = createSession(client, contentStream, size);
+
+        if (result.isPresent()) {
+          Result toReturn = result.get();
+          LOG.info(String.format("Detected dialect: %s", toReturn.dialect));
+          return toReturn;
+        }
+      }
+    } finally {
+      Files.deleteIfExists(jsonFile);
     }
 
     throw new SessionNotCreatedException(
@@ -93,10 +130,22 @@ public class ProtocolHandshake {
         required));
   }
 
-  private void amendW3cParameters(
-      StringBuilder parameters,
-      Capabilities desired,
-      Capabilities required) {
+  private void streamJsonWireProtocolParameters(
+      JsonWriter out,
+      Gson gson,
+      JsonObject des,
+      JsonObject req) throws IOException {
+    out.name("desiredCapabilities");
+    gson.toJson(des, out);
+    out.name("requiredCapabilities");
+    gson.toJson(req, out);
+  }
+
+  private void streamW3CProtocolParameters(
+      JsonWriter out,
+      Gson gson,
+      JsonObject des,
+      JsonObject req) throws IOException {
     // Technically we should be building up a combination of "alwaysMatch" and "firstMatch" options.
     // We're going to do a little processing to figure out what we might be able to do, and assume
     // that people don't really understand the difference between required and desired (which is
@@ -117,40 +166,37 @@ public class ProtocolHandshake {
     // We can't use the constants defined in the classes because it would introduce circular
     // dependencies between the remote library and the implementations. Yay!
 
-    Map<String, ?> req = required.asMap();
-    Map<String, ?> des = desired.asMap();
-
     Map<String, ?> chrome = Stream.of(des, req)
-        .map(Map::entrySet)
+        .map(JsonObject::entrySet)
         .flatMap(Collection::stream)
         .filter(entry ->
-                    ("browserName".equals(entry.getKey()) && CHROME.equals(entry.getValue())) ||
+                    ("browserName".equals(entry.getKey()) && CHROME.equals(entry.getValue().getAsString())) ||
                     "chromeOptions".equals(entry.getKey()))
         .distinct()
         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
     Map<String, ?> edge = Stream.of(des, req)
-        .map(Map::entrySet)
+        .map(JsonObject::entrySet)
         .flatMap(Collection::stream)
-        .filter(entry -> ("browserName".equals(entry.getKey()) && EDGE.equals(entry.getValue())))
+        .filter(entry -> ("browserName".equals(entry.getKey()) && EDGE.equals(entry.getValue().getAsString())))
         .distinct()
         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
     Map<String, ?> firefox = Stream.of(des, req)
-        .map(Map::entrySet)
+        .map(JsonObject::entrySet)
         .flatMap(Collection::stream)
         .filter(entry ->
-                    ("browserName".equals(entry.getKey()) && FIREFOX.equals(entry.getValue())) ||
+                    ("browserName".equals(entry.getKey()) && FIREFOX.equals(entry.getValue().getAsString())) ||
                     entry.getKey().startsWith("firefox_") ||
                     entry.getKey().startsWith("moz:"))
         .distinct()
         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
     Map<String, ?> ie = Stream.of(req, des)
-        .map(Map::entrySet)
+        .map(JsonObject::entrySet)
         .flatMap(Collection::stream)
         .filter(entry ->
-                    ("browserName".equals(entry.getKey()) && IE.equals(entry.getValue())) ||
+                    ("browserName".equals(entry.getKey()) && IE.equals(entry.getValue().getAsString())) ||
                     "browserAttachTimeout".equals(entry.getKey()) ||
                     "enableElementCacheCleanup".equals(entry.getKey()) ||
                     "enablePersistentHover".equals(entry.getKey()) ||
@@ -167,20 +213,20 @@ public class ProtocolHandshake {
         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
     Map<String, ?> opera = Stream.of(des, req)
-        .map(Map::entrySet)
+        .map(JsonObject::entrySet)
         .flatMap(Collection::stream)
         .filter(entry ->
-                    ("browserName".equals(entry.getKey()) && OPERA_BLINK.equals(entry.getValue())) ||
-                    ("browserName".equals(entry.getKey()) && OPERA.equals(entry.getValue())) ||
+                    ("browserName".equals(entry.getKey()) && OPERA_BLINK.equals(entry.getValue().getAsString())) ||
+                    ("browserName".equals(entry.getKey()) && OPERA.equals(entry.getValue().getAsString())) ||
                     "operaOptions".equals(entry.getKey()))
         .distinct()
         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
     Map<String, ?> safari = Stream.of(des, req)
-        .map(Map::entrySet)
+        .map(JsonObject::entrySet)
         .flatMap(Collection::stream)
         .filter(entry ->
-                    ("browserName".equals(entry.getKey()) && SAFARI.equals(entry.getValue())) ||
+                    ("browserName".equals(entry.getKey()) && SAFARI.equals(entry.getValue().getAsString())) ||
                     "safari.options".equals(entry.getKey()))
         .distinct()
         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
@@ -191,35 +237,62 @@ public class ProtocolHandshake {
         .distinct()
         .collect(ImmutableSet.toImmutableSet());
 
-    Map<String, ?> alwaysMatch = Stream.of(des, req)
-        .map(Map::entrySet)
+    JsonObject alwaysMatch = Stream.of(des, req)
+        .map(JsonObject::entrySet)
         .flatMap(Collection::stream)
         .filter(entry -> !excludedKeys.contains(entry.getKey()))
         .filter(entry -> entry.getValue() != null)
-        .filter(entry -> !"marionette".equals(entry.getKey()))  // We never want to send this
+        .filter(entry -> !UNUSED_W3C_NAMES.contains(entry.getKey()))  // We never want to send this
         .distinct()
-        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        .collect(Collector.of(
+            JsonObject::new,
+            (obj, e) -> obj.add(e.getKey(), e.getValue()),
+            (left, right) -> {
+              for (Map.Entry<String, JsonElement> entry : right.entrySet()) {
+                left.add(entry.getKey(), entry.getValue());
+              }
+              return left;
+            }));
 
     // Now, hopefully we're left with just the browser-specific pieces. Skip the empty ones.
-    List<Map<String, ?>> firstMatch = Stream.of(chrome, edge, firefox, ie, opera, safari)
+    JsonArray firstMatch = Stream.of(chrome, edge, firefox, ie, opera, safari)
         .filter(map -> !map.isEmpty())
-        .collect(ImmutableList.toImmutableList());
+        .map(map -> {
+          JsonObject json = new JsonObject();
+          for (Map.Entry<String, ?> entry : map.entrySet()) {
+            if (!UNUSED_W3C_NAMES.contains(entry.getKey())) {
+              json.add(entry.getKey(), gson.toJsonTree(entry.getValue()));
+            }
+          }
+          return json;
+        })
+        .collect(Collector.of(
+            JsonArray::new,
+            JsonArray::add,
+            (left, right) -> {
+              for (JsonElement element : right) {
+                left.add(element);
+              }
+              return left;
+            }
+        ));
 
-    BeanToJsonConverter converter = new BeanToJsonConverter();
-    parameters.append("\"alwaysMatch\": ").append(converter.convert(alwaysMatch)).append(",");
-    parameters.append("\"firstMatch\": ").append(converter.convert(firstMatch));
+    // TODO(simon): transform some capabilities that changed in the spec (timeout's "pageLoad")
+
+    out.name("alwaysMatch");
+    gson.toJson(alwaysMatch, out);
+    out.name("firstMatch");
+    gson.toJson(firstMatch, out);
   }
 
-  private Optional<Result> createSession(HttpClient client, StringBuilder params)
+  private Optional<Result> createSession(HttpClient client, InputStream newSessionBlob, long size)
     throws IOException {
     // Create the http request and send it
     HttpRequest request = new HttpRequest(HttpMethod.POST, "/session");
-    String content = params.toString();
-    byte[] data = content.getBytes(UTF_8);
 
-    request.setHeader(CONTENT_LENGTH, String.valueOf(data.length));
+    request.setHeader(CONTENT_LENGTH, String.valueOf(size));
     request.setHeader(CONTENT_TYPE, JSON_UTF_8.toString());
-    request.setContent(data);
+    request.setContent(newSessionBlob);
     HttpResponse response = client.execute(request, true);
 
     Map<?, ?> jsonBlob = null;
@@ -231,6 +304,10 @@ public class ProtocolHandshake {
       return Optional.empty();
     } catch (JsonException e) {
       // Fine. Handle that below
+      LOG.log(
+          Level.FINE,
+          "Unable to parse json response. Will continue but diagnostic follows",
+          e);
     }
 
     if (jsonBlob == null) {
@@ -292,26 +369,19 @@ public class ProtocolHandshake {
     return Optional.empty();
   }
 
-  private void amendGeckoDriver013Parameters(
-    StringBuilder params,
-    String desired,
-    String required) {
-    params.append("\"capabilities\": {");
-    params.append("\"desiredCapabilities\": ").append(desired);
-    params.append(",");
-    params.append("\"requiredCapabilities\": ").append(required);
-    params.append("}");
+  private void streamGeckoDriver013Parameters(
+      JsonWriter out,
+      Gson gson,
+      JsonObject des,
+      JsonObject req) throws IOException {
+    out.name("capabilities");
+    out.beginObject();
+    out.name("desiredCapabilities");
+    gson.toJson(des, out);
+    out.name("requiredCapabilities");
+    gson.toJson(req, out);
+    out.endObject();  // End "capabilities"
   }
-
-  private void amendOssParameters(
-    StringBuilder params,
-    String desired,
-    String required) {
-    params.append("\"desiredCapabilities\": ").append(desired);
-    params.append(",");
-    params.append("\"requiredCapabilities\": ").append(required);
-  }
-
 
   public class Result {
     private final Dialect dialect;
