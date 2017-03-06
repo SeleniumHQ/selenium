@@ -44,10 +44,13 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Manage firefox specific settings in a way that geckodriver can understand. Use {@link
@@ -374,8 +377,10 @@ public class FirefoxOptions {
 
     Object priorBinary = capabilities.getCapability(BINARY);
     if (binary != null && priorBinary != null && !binary.equals(priorBinary)) {
-      throw new IllegalStateException(
-          "Binary already set in capabilities, but is different from the one in these options");
+      throw new IllegalStateException(String.format(
+          "Binary already set in capabilities, but is different from the one set here: %s, %s",
+          priorBinary,
+          binary));
     }
 
     Object priorProfile = capabilities.getCapability(PROFILE);
@@ -489,5 +494,23 @@ public class FirefoxOptions {
 
     // something else?  ¯\_(ツ)_/¯
     return "debug";
+  }
+
+  @Override
+  public String toString() {
+    return "{" +
+           "binary=" + binary + ", " +
+           "args=" + args + ", " +
+           "legacy=" + legacy + ", " +
+           "logLevel=" + logLevel + ", " +
+           "prefs=" +
+           Stream.of(booleanPrefs, intPrefs, stringPrefs)
+               .map(Map::entrySet)
+               .flatMap(Collection::stream)
+               .collect(
+                   Collectors.toMap(Map.Entry::getKey, e -> String.valueOf(e.getValue()))) +
+           ", " +
+           "profile=" + profile +
+           "}";
   }
 }
