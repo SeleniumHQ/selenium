@@ -37,7 +37,7 @@ useful if you need to capture the server&#39;s log output for a specific session
  let options &#61; new chrome.Options();
  // configure browser options ...
 
- let driver &#61; new chrome.Driver(options, service);
+ let driver &#61; chrome.Driver.createSession(options, service);
 </code></pre>
 <p>Users should only instantiate the <a href="chrome_exports_Driver.html"><code>Driver</code></a> class directly when they
 need a custom driver service configuration (as shown above). For normal

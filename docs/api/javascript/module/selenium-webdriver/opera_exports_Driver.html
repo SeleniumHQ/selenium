@@ -213,11 +213,11 @@ evaluate the condition until it returns a truthy value. If any errors occur
 while evaluating the condition, they will be allowed to propagate. In the
 event a condition returns a <a href="lib/promise_exports_Promise.html"><code>promise</code></a>, the polling
 loop will wait for it to be resolved and use the resolved value for whether
-the condition has been satisified. Note the resolution time for a promise
+the condition has been satisfied. Note the resolution time for a promise
 is factored into whether a wait has timed out.</p>
 <p>Note, if the provided condition is a <a href="lib/webdriver_exports_WebElementCondition.html"><code>WebElementCondition</code></a>, then
 the wait will return a <a href="lib/webdriver_exports_WebElementPromise.html"><code>WebElementPromise</code></a> that will resolve to the
-element that satisified the condition.</p>
+element that satisfied the condition.</p>
 <p><em>Example:</em> waiting up to 10 seconds for an element to be present on the
 page.</p>
 <pre><code> var button &#61; driver.wait(until.elementLocated(By.id(&#39;foo&#39;)), 10000);

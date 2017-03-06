@@ -5,42 +5,58 @@ Before using this module, you must download the latest
 ensuring browser historys do not share session data (cookies, history, cache,
 offline storage, etc.)</p>
 <p><strong>Customizing the Firefox Profile</strong></p>
-<p>The <a href="profile_exports_Profile.html"><code>Profile</code></a> class may be used to configure the browser profile used
-with WebDriver, with functions to install additional
+<p>The <a href="profile_exports_Profile.html">Profile</a> class may be used to configure the browser profile
+used with WebDriver, with functions to install additional
 <a href="profile_exports_Profile.html#addExtension">extensions</a>, configure browser
 <a href="profile_exports_Profile.html#setPreference">preferences</a>, and more. For example, you
 may wish to include Firebug:</p>
-<pre><code> var firefox &#61; require(&#39;selenium-webdriver/firefox&#39;);
+<pre><code> const {Builder} &#61; require(&#39;selenium-webdriver&#39;);
+ const firefox &#61; require(&#39;selenium-webdriver/firefox&#39;);
 
- var profile &#61; new firefox.Profile();
+ let profile &#61; new firefox.Profile();
  profile.addExtension(&#39;/path/to/firebug.xpi&#39;);
  profile.setPreference(&#39;extensions.firebug.showChromeErrors&#39;, true);
 
- var options &#61; new firefox.Options().setProfile(profile);
- var driver &#61; new firefox.Driver(options);
+ let options &#61; new firefox.Options().setProfile(profile);
+ let driver &#61; new Builder()
+     .forBrowser(&#39;firefox&#39;)
+     .setFirefoxOptions(options)
+     .build();
 </code></pre>
-<p>The <a href="profile_exports_Profile.html"><code>Profile</code></a> class may also be used to configure WebDriver based on a
-pre-existing browser profile:</p>
-<pre><code> var profile &#61; new firefox.Profile(
+<p>The <a href="profile_exports_Profile.html">Profile</a> class may also be used to configure WebDriver based
+on a pre-existing browser profile:</p>
+<pre><code> let profile &#61; new firefox.Profile(
      &#39;/usr/local/home/bob/.mozilla/firefox/3fgog75h.testing&#39;);
- var options &#61; new firefox.Options().setProfile(profile);
- var driver &#61; new firefox.Driver(options);
+ let options &#61; new firefox.Options().setProfile(profile);
 </code></pre>
 <p>The FirefoxDriver will <em>never</em> modify a pre-existing profile; instead it will
 create a copy for it to modify. By extension, there are certain browser
 preferences that are required for WebDriver to function properly and they
 will always be overwritten.</p>
 <p><strong>Using a Custom Firefox Binary</strong></p>
-<p>On Windows and OSX, the FirefoxDriver will search for Firefox in its
+<p>On Windows and MacOS, the FirefoxDriver will search for Firefox in its
 default installation location:</p>
-<ul><li>Windows: C:\Program Files and C:\Program Files (x86).</li><li>Mac OS X: /Applications/Firefox.app</li></ul>
-<p>For Linux, Firefox will be located on the PATH: <code>$(where firefox)</code>.</p>
-<p>You can configure WebDriver to start use a custom Firefox installation with
-the <a href="binary_exports_Binary.html"><code>Binary</code></a> class:</p>
-<pre><code> var firefox &#61; require(&#39;selenium-webdriver/firefox&#39;);
- var binary &#61; new firefox.Binary(&#39;/my/firefox/install/dir/firefox-bin&#39;);
- var options &#61; new firefox.Options().setBinary(binary);
- var driver &#61; new firefox.Driver(options);
+<ul><li>Windows: C:\Program Files and C:\Program Files (x86).</li><li>MacOS: /Applications/Firefox.app</li></ul>
+<p>For Linux, Firefox will always be located on the PATH: <code>$(where firefox)</code>.</p>
+<p>Several methods are provided for starting Firefox with a custom executable.
+First, on Windows and MacOS, you may configure WebDriver to check the default
+install location for a non-release channel. If the requested channel cannot
+be found in its default location, WebDriver will fallback to searching your
+PATH. <em>Note:</em> on Linux, Firefox is <em>always</em> located on your path, regardless
+of the requested channel.</p>
+<pre><code> const {Builder} &#61; require(&#39;selenium-webdriver&#39;);
+ const firefox &#61; require(&#39;selenium-webdriver/firefox&#39;);
+
+ let options &#61; new firefox.Options().setBinary(firefox.Channel.NIGHTLY);
+ let driver &#61; new Builder()
+     .forBrowser(&#39;firefox&#39;)
+     .setFirefoxOptions(options)
+     .build();
+</code></pre>
+<p>On all platforms, you may configrue WebDriver to use a Firefox specific
+executable:</p>
+<pre><code> let options &#61; new firefox.Options()
+     .setBinary(&#39;/my/firefox/install/dir/firefox-bin&#39;);
 </code></pre>
 <p><strong>Remote Testing</strong></p>
 <p>You may customize the Firefox binary and profile when running against a
@@ -52,11 +68,14 @@ profile with several extensions, you should consider installing it on the
 remote host and defining its path via the <a href="index_exports_Options.html"><code>Options</code></a> class. Custom
 binaries are never copied to remote machines and must be referenced by
 installation path.</p>
-<pre><code> var options &#61; new firefox.Options()
+<pre><code> const {Builder} &#61; require(&#39;selenium-webdriver&#39;);
+ const firefox &#61; require(&#39;selenium-webdriver/firefox&#39;);
+
+ let options &#61; new firefox.Options()
      .setProfile(&#39;/profile/path/on/remote/host&#39;)
      .setBinary(&#39;/install/dir/on/remote/host/firefox-bin&#39;);
 
- var driver &#61; new (require(&#39;selenium-webdriver&#39;)).Builder()
+ let driver &#61; new Builder()
      .forBrowser(&#39;firefox&#39;)
      .usingServer(&#39;http://127.0.0.1:4444/wd/hub&#39;)
      .setFirefoxOptions(options)
@@ -65,9 +84,8 @@ installation path.</p>
 <p><strong>Testing Older Versions of Firefox</strong></p>
 <p>To test versions of Firefox prior to Firefox 47, you must disable the use of
 the geckodriver using the <a href="index_exports_Options.html"><code>Options</code></a> class.</p>
-<pre><code> var options &#61; new firefox.Options().useGeckoDriver(false);
- var driver &#61; new firefox.Driver(options);
+<pre><code> let options &#61; new firefox.Options().useGeckoDriver(false);
 </code></pre>
 <p>Alternatively, you may disable the geckodriver at runtime by setting the
 environment variable <code>SELENIUM_MARIONETTE&#61;false</code>.</p>
-<div class="source"><a href="https://github.com/SeleniumHQ/selenium/tree/master/javascript/node/selenium-webdriver/firefox/index.js#L112" target="_blank" title="View source">VIEW SOURCE</a></div></div></section><section class="types"><h2>Exported Classes</h2><ul><li class="summary"><div><a href="index_exports_Binary.html">Binary</a></div><li class="summary"><div><a href="index_exports_Driver.html">Driver</a></div><li class="summary"><div><a href="index_exports_Options.html">Options</a></div><li class="summary"><div><a href="index_exports_Profile.html">Profile</a></div><li class="summary"><div><a href="index_exports_ServiceBuilder.html">ServiceBuilder</a></div></ul></section><section class="types"><h2>Exported Enumerations</h2><ul><li class="summary"><div><a href="index_exports_Context.html">Context</a></div></ul></section></article></main><footer><div><a href="https://github.com/jleyba/js-dossier">Generated by dossier</a></div></footer></div><script src="../../../types.js"></script><script src="../../../dossier.js"></script>
+<div class="source"><a href="https://github.com/SeleniumHQ/selenium/tree/master/javascript/node/selenium-webdriver/firefox/index.js#L131" target="_blank" title="View source">VIEW SOURCE</a></div></div></section><section class="types"><h2>Exported Classes</h2><ul><li class="summary"><div><a href="index_exports_Binary.html">Binary</a></div><li class="summary"><div><a href="index_exports_Channel.html">Channel</a></div><li class="summary"><div><a href="index_exports_Driver.html">Driver</a></div><li class="summary"><div><a href="index_exports_Options.html">Options</a></div><li class="summary"><div><a href="index_exports_Profile.html">Profile</a></div><li class="summary"><div><a href="index_exports_ServiceBuilder.html">ServiceBuilder</a></div></ul></section><section class="types"><h2>Exported Enumerations</h2><ul><li class="summary"><div><a href="index_exports_Context.html">Context</a></div></ul></section></article></main><footer><div><a href="https://github.com/jleyba/js-dossier">Generated by dossier</a></div></footer></div><script src="../../../types.js"></script><script src="../../../dossier.js"></script>

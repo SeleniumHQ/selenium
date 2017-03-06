@@ -78,7 +78,7 @@ options include:</p>
 <pre><code> let options &#61; new chrome.Options().setMobileEmulation(
      {deviceName: &#39;Google Nexus 5&#39;});
 
- let driver &#61; new chrome.Driver(options);
+ let driver &#61; chrome.Driver.createSession(options);
 </code></pre>
 <p><strong>Example 2: Using Custom Screen Configuration</strong></p>
 <pre><code> let options &#61; new chrome.Options().setMobileEmulation({
@@ -87,7 +87,7 @@ options include:</p>
      pixelRatio: 3.0
  });
 
- let driver &#61; new chrome.Driver(options);
+ let driver &#61; chrome.Driver.createSession(options);
 </code></pre>
 <table class="info"><tr class="info-row block" ><th class="info-head">Parameters</th><td class="info-cell" ><table class="info detail"><tr class="info-row" ><td class="info-cell" ><var>config</var></td><td class="info-cell" ><code class="expression">({deviceName: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String" target="_blank">string</a>}|{height: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number" target="_blank">number</a>, pixelRatio: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number" target="_blank">number</a>, width: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number" target="_blank">number</a>}|null)</code></td></tr><tr class="info-row" ><td class="info-cell" ></td><td class="info-cell" ><p>The
 mobile emulation configuration, or <code>null</code> to disable emulation.</p>

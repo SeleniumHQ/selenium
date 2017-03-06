@@ -36,7 +36,7 @@ useful if you need to capture the server&#39;s log output for a specific session
  var options &#61; new edge.Options();
  // configure browser options ...
 
- var driver &#61; new edge.Driver(options, service);
+ var driver &#61; edge.Driver.createSession(options, service);
 </code></pre>
 <p>Users should only instantiate the <a href="edge_exports_Driver.html"><code>Driver</code></a> class directly when they
 need a custom driver service configuration (as shown above). For normal
