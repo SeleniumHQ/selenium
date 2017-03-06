@@ -109,7 +109,7 @@ module Selenium
             caps.page_load_strategy = data.delete('pageLoadStrategy')
             timeouts = data.delete('timeouts')
             caps.implicit_timeout = timeouts['implicit'] if timeouts
-            caps.page_load_timeout = timeouts['page load'] if timeouts
+            caps.page_load_timeout = timeouts['pageLoad'] if timeouts
             caps.script_timeout = timeouts['script'] if timeouts
 
             proxy = data.delete('proxy')

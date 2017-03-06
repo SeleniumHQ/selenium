@@ -135,7 +135,8 @@ module Selenium
         end
 
         def timeout(type, milliseconds)
-          execute :set_timeout, {}, {type: type, ms: milliseconds}
+          type = 'pageLoad' if type == 'page load'
+          execute :set_timeout, {}, {type => milliseconds}
         end
 
         #
