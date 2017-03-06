@@ -100,12 +100,12 @@ matrix:
       jdk: oraclejdk8
       env: MARIONETTE=1 TASK=//java/client/test/org/openqa/selenium/firefox:marionette:run
       addons:
-        firefox: latest
+        firefox: latest-nightly
     - language: java
       jdk: oraclejdk8
       env: MARIONETTE=1 TASK=//java/client/test/com/thoughtworks/selenium:firefox-rc-test:run
       addons:
-        firefox: latest
+        firefox: latest-nightly
     - language: java
       jdk: oraclejdk8
       env: TASK=test_java_small_tests
@@ -144,7 +144,7 @@ matrix:
       python: 2.7
       env: MARIONETTE=1 TOXENV=py27-marionette
       addons:
-        firefox: latest
+        firefox: latest-nightly
     - language: python
       python: 2.7
       env: PHANTOMJS=1 TOXENV=py27-phantomjs
@@ -175,7 +175,7 @@ matrix:
       python: 3.6
       env: MARIONETTE=1 TOXENV=py36-marionette
       addons:
-        firefox: latest
+        firefox: latest-nightly
     - language: python
       python: 3.6
       env: PHANTOMJS=1 TOXENV=py36-phantomjs
