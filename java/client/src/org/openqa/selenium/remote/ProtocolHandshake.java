@@ -30,9 +30,7 @@ import static org.openqa.selenium.remote.BrowserType.OPERA_BLINK;
 import static org.openqa.selenium.remote.BrowserType.SAFARI;
 
 import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
 import org.openqa.selenium.Capabilities;
@@ -51,6 +49,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class ProtocolHandshake {
@@ -121,23 +120,23 @@ public class ProtocolHandshake {
     Map<String, ?> req = required.asMap();
     Map<String, ?> des = desired.asMap();
 
-    Map<String, ?> chrome = Stream.of(req, des)
+    Map<String, ?> chrome = Stream.of(des, req)
         .map(Map::entrySet)
         .flatMap(Collection::stream)
         .filter(entry ->
                     ("browserName".equals(entry.getKey()) && CHROME.equals(entry.getValue())) ||
                     "chromeOptions".equals(entry.getKey()))
         .distinct()
-        .collect(ImmutableMap.toImmutableMap(Map.Entry::getKey, Map.Entry::getValue));
+        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
-    Map<String, ?> edge = Stream.of(req, des)
+    Map<String, ?> edge = Stream.of(des, req)
         .map(Map::entrySet)
         .flatMap(Collection::stream)
         .filter(entry -> ("browserName".equals(entry.getKey()) && EDGE.equals(entry.getValue())))
         .distinct()
-        .collect(ImmutableMap.toImmutableMap(Map.Entry::getKey, Map.Entry::getValue));
+        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
-    Map<String, ?> firefox = Stream.of(req, des)
+    Map<String, ?> firefox = Stream.of(des, req)
         .map(Map::entrySet)
         .flatMap(Collection::stream)
         .filter(entry ->
@@ -146,7 +145,7 @@ public class ProtocolHandshake {
                     "firefox_profile".equals(entry.getKey()) ||
                     entry.getKey().startsWith("moz:"))
         .distinct()
-        .collect(ImmutableMap.toImmutableMap(Map.Entry::getKey, Map.Entry::getValue));
+        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
     Map<String, ?> ie = Stream.of(req, des)
         .map(Map::entrySet)
@@ -166,9 +165,9 @@ public class ProtocolHandshake {
                     "silent".equals(entry.getKey()) ||
                     entry.getKey().startsWith("ie."))
         .distinct()
-        .collect(ImmutableMap.toImmutableMap(Map.Entry::getKey, Map.Entry::getValue));
+        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
-    Map<String, ?> opera = Stream.of(req, des)
+    Map<String, ?> opera = Stream.of(des, req)
         .map(Map::entrySet)
         .flatMap(Collection::stream)
         .filter(entry ->
@@ -176,16 +175,16 @@ public class ProtocolHandshake {
                     ("browserName".equals(entry.getKey()) && OPERA.equals(entry.getValue())) ||
                     "operaOptions".equals(entry.getKey()))
         .distinct()
-        .collect(ImmutableMap.toImmutableMap(Map.Entry::getKey, Map.Entry::getValue));
+        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
-    Map<String, ?> safari = Stream.of(req, des)
+    Map<String, ?> safari = Stream.of(des, req)
         .map(Map::entrySet)
         .flatMap(Collection::stream)
         .filter(entry ->
                     ("browserName".equals(entry.getKey()) && SAFARI.equals(entry.getValue())) ||
                     "safari.options".equals(entry.getKey()))
         .distinct()
-        .collect(ImmutableMap.toImmutableMap(Map.Entry::getKey, Map.Entry::getValue));
+        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
     Set<String> excludedKeys = Stream.of(chrome, edge, firefox, ie, opera, safari)
         .map(Map::keySet)
@@ -200,7 +199,7 @@ public class ProtocolHandshake {
         .filter(entry -> entry.getValue() != null)
         .filter(entry -> !"marionette".equals(entry.getKey()))  // We never want to send this
         .distinct()
-        .collect(ImmutableMap.toImmutableMap(Map.Entry::getKey, Map.Entry::getValue));
+        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
     // Now, hopefully we're left with just the browser-specific pieces. Skip the empty ones.
     List<Map<String, ?>> firstMatch = Stream.of(chrome, edge, firefox, ie, opera, safari)
