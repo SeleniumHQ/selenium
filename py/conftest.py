@@ -15,6 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import os
 import socket
 import subprocess
 import time
@@ -53,7 +54,8 @@ def pytest_addoption(parser):
 
 def pytest_ignore_collect(path, config):
     _drivers = set(drivers).difference(config.getoption('drivers') or drivers)
-    return len([d for d in _drivers if d.lower() in str(path)]) > 0
+    parts = path.dirname.split(os.path.sep)
+    return len([d for d in _drivers if d.lower() in parts]) > 0
 
 
 @pytest.fixture(scope='function')
