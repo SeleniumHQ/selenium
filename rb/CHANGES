@@ -1,3 +1,10 @@
+3.3.0 (2017-03-07)
+===================
+
+W3C:
+  * Support for command response data to be wrapped in a 'value' key
+  * Support for updated timeout formats
+
 3.2.2 (2017-03-01)
 ===================
 
