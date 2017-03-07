@@ -596,7 +596,7 @@ directly.</p>
       <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/http/default.rb', line 47</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_timeout='>timeout=</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
-  <span class='const'>Kernel</span><span class='period'>.</span><span class='id identifier rubyid_warn'>warn</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Selenium::WebDriver::Remote::Http::Default#timeout= is deprecated. Use #read_timeout= or #open_timeout= instead</span><span class='tstring_end'>&#39;</span></span>
+  <span class='const'>WebDriver</span><span class='period'>.</span><span class='id identifier rubyid_logger'>logger</span><span class='period'>.</span><span class='id identifier rubyid_warn'>warn</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Selenium::WebDriver::Remote::Http::Default#timeout= is deprecated. Use #read_timeout= or #open_timeout= instead</span><span class='tstring_end'>&#39;</span></span>
   <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_open_timeout'>open_timeout</span> <span class='op'>=</span> <span class='id identifier rubyid_value'>value</span>
   <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_read_timeout'>read_timeout</span> <span class='op'>=</span> <span class='id identifier rubyid_value'>value</span>
 <span class='kw'>end</span></pre>
@@ -610,7 +610,7 @@ directly.</p>
 </div>
 
     <div id="footer">
-  Generated on Thu Feb 23 07:18:11 2017 by
+  Generated on Tue Mar  7 12:49:42 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.8.7.6 (ruby-2.4.0).
 </div>

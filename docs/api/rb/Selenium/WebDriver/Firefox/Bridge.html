@@ -311,27 +311,43 @@
 40
 41
 42
-43</pre>
+43
+44
+45
+46
+47
+48
+49
+50
+51</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/bridge.rb', line 25</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_port'>port</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:port</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='const'>DEFAULT_PORT</span>
-  <span class='id identifier rubyid_profile'>profile</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:profile</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:desired_capabilities</span><span class='rbracket'>]</span> <span class='op'>||=</span> <span class='const'>Remote</span><span class='op'>::</span><span class='const'>Capabilities</span><span class='period'>.</span><span class='id identifier rubyid_firefox'>firefox</span>
 
-  <span class='ivar'>@launcher</span> <span class='op'>=</span> <span class='id identifier rubyid_create_launcher'>create_launcher</span><span class='lparen'>(</span><span class='id identifier rubyid_port'>port</span><span class='comma'>,</span> <span class='id identifier rubyid_profile'>profile</span><span class='rparen'>)</span>
-  <span class='ivar'>@launcher</span><span class='period'>.</span><span class='id identifier rubyid_launch'>launch</span>
-  <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:url</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='ivar'>@launcher</span><span class='period'>.</span><span class='id identifier rubyid_url'>url</span>
+  <span class='kw'>if</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_key?'>key?</span> <span class='symbol'>:proxy</span>
+    <span class='const'>WebDriver</span><span class='period'>.</span><span class='id identifier rubyid_logger'>logger</span><span class='period'>.</span><span class='id identifier rubyid_warn'>warn</span> <span class='heredoc_beg'>&lt;&lt;-DEPRECATE</span><span class='period'>.</span><span class='id identifier rubyid_gsub'>gsub</span><span class='lparen'>(</span><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>\n +| {2,}</span><span class='regexp_end'>/</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'> </span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span>
+<span class='tstring_content'>    [DEPRECATION] `:proxy` is deprecated. Pass in as capability: `Remote::Capabilities.firefox(proxy: </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbeg'>:</span><span class='id identifier rubyid_proxy'>proxy</span><span class='rbracket'>]</span><span class='embexpr_end'>}</span><span class='tstring_content'>)`
+</span><span class='heredoc_end'>    DEPRECATE
+</span>    <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:desired_capabilities</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_proxy'>proxy</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:proxy</span><span class='rparen'>)</span>
+  <span class='kw'>end</span>
 
-  <span class='id identifier rubyid_caps'>caps</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:desired_capabilities</span><span class='rbracket'>]</span> <span class='op'>||=</span> <span class='const'>Remote</span><span class='op'>::</span><span class='const'>Capabilities</span><span class='period'>.</span><span class='id identifier rubyid_firefox'>firefox</span>
-  <span class='id identifier rubyid_caps'>caps</span><span class='period'>.</span><span class='id identifier rubyid_proxy'>proxy</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:proxy</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_key?'>key?</span><span class='lparen'>(</span><span class='symbol'>:proxy</span><span class='rparen'>)</span>
-  <span class='const'>Binary</span><span class='period'>.</span><span class='id identifier rubyid_path'>path</span> <span class='op'>=</span> <span class='id identifier rubyid_caps'>caps</span><span class='lbracket'>[</span><span class='symbol'>:firefox_binary</span><span class='rbracket'>]</span> <span class='kw'>if</span> <span class='id identifier rubyid_caps'>caps</span><span class='lbracket'>[</span><span class='symbol'>:firefox_binary</span><span class='rbracket'>]</span>
+  <span class='kw'>unless</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_key?'>key?</span><span class='lparen'>(</span><span class='symbol'>:url</span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_port'>port</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:port</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='const'>DEFAULT_PORT</span>
+    <span class='id identifier rubyid_profile'>profile</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:profile</span><span class='rparen'>)</span>
+
+    <span class='const'>Binary</span><span class='period'>.</span><span class='id identifier rubyid_path'>path</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:desired_capabilities</span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='symbol'>:firefox_binary</span><span class='rbracket'>]</span> <span class='kw'>if</span> <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:desired_capabilities</span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='symbol'>:firefox_binary</span><span class='rbracket'>]</span>
+    <span class='ivar'>@launcher</span> <span class='op'>=</span> <span class='const'>Launcher</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span> <span class='const'>Binary</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='comma'>,</span> <span class='id identifier rubyid_port'>port</span><span class='comma'>,</span> <span class='id identifier rubyid_profile'>profile</span>
+    <span class='ivar'>@launcher</span><span class='period'>.</span><span class='id identifier rubyid_launch'>launch</span>
+    <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:url</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='ivar'>@launcher</span><span class='period'>.</span><span class='id identifier rubyid_url'>url</span>
+  <span class='kw'>end</span>
 
   <span class='kw'>begin</span>
     <span class='kw'>super</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
   <span class='kw'>rescue</span>
-    <span class='ivar'>@launcher</span><span class='period'>.</span><span class='id identifier rubyid_quit'>quit</span>
+    <span class='ivar'>@launcher</span><span class='period'>.</span><span class='id identifier rubyid_quit'>quit</span> <span class='kw'>if</span> <span class='ivar'>@launcher</span>
     <span class='id identifier rubyid_raise'>raise</span>
   <span class='kw'>end</span>
 <span class='kw'>end</span></pre>
@@ -375,12 +391,12 @@
       <pre class="lines">
 
 
-45
-46
-47</pre>
+53
+54
+55</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/bridge.rb', line 45</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/bridge.rb', line 53</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_browser'>browser</span>
   <span class='symbol'>:firefox</span>
@@ -418,19 +434,15 @@
       <pre class="lines">
 
 
-49
-50
-51
-52
-53</pre>
+57
+58
+59</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/bridge.rb', line 49</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/bridge.rb', line 57</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_driver_extensions'>driver_extensions</span>
-  <span class='lbracket'>[</span>
-    <span class='const'>DriverExtensions</span><span class='op'>::</span><span class='const'>TakesScreenshot</span>
-  <span class='rbracket'>]</span>
+  <span class='lbracket'>[</span><span class='const'>DriverExtensions</span><span class='op'>::</span><span class='const'>TakesScreenshot</span><span class='rbracket'>]</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -465,15 +477,15 @@
       <pre class="lines">
 
 
-55
-56
-57
-58
-59
-60</pre>
+61
+62
+63
+64
+65
+66</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/bridge.rb', line 55</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/bridge.rb', line 61</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_quit'>quit</span>
   <span class='kw'>super</span>
@@ -491,7 +503,7 @@
 </div>
 
     <div id="footer">
-  Generated on Thu Feb 23 07:18:09 2017 by
+  Generated on Tue Mar  7 12:49:41 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.8.7.6 (ruby-2.4.0).
 </div>

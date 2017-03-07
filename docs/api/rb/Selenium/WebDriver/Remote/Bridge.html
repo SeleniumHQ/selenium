@@ -2817,7 +2817,13 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
 65
 66
 67
-68</pre>
+68
+69
+70
+71
+72
+73
+74</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 39</span>
@@ -2825,7 +2831,13 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_opts'>opts</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_dup'>dup</span>
 
+  <span class='kw'>if</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_key?'>key?</span><span class='lparen'>(</span><span class='symbol'>:port</span><span class='rparen'>)</span>
+    <span class='const'>WebDriver</span><span class='period'>.</span><span class='id identifier rubyid_logger'>logger</span><span class='period'>.</span><span class='id identifier rubyid_warn'>warn</span> <span class='heredoc_beg'>&lt;&lt;-DEPRECATE</span><span class='period'>.</span><span class='id identifier rubyid_gsub'>gsub</span><span class='lparen'>(</span><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>\n +| {2,}</span><span class='regexp_end'>/</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'> </span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span>
+<span class='tstring_content'>    [DEPRECATION] `:port` is deprecated. Use `:url` with full path
+</span><span class='heredoc_end'>    DEPRECATE
+</span>  <span class='kw'>end</span>
   <span class='id identifier rubyid_port'>port</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:port</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='int'>4444</span>
+
   <span class='id identifier rubyid_http_client'>http_client</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:http_client</span><span class='rparen'>)</span> <span class='lbrace'>{</span> <span class='const'>Http</span><span class='op'>::</span><span class='const'>Default</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span> <span class='rbrace'>}</span>
   <span class='id identifier rubyid_desired_capabilities'>desired_capabilities</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:desired_capabilities</span><span class='rparen'>)</span> <span class='lbrace'>{</span> <span class='const'>Capabilities</span><span class='period'>.</span><span class='id identifier rubyid_firefox'>firefox</span> <span class='rbrace'>}</span>
   <span class='id identifier rubyid_url'>url</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:url</span><span class='rparen'>)</span> <span class='lbrace'>{</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>http://</span><span class='embexpr_beg'>#{</span><span class='const'>Platform</span><span class='period'>.</span><span class='id identifier rubyid_localhost'>localhost</span><span class='embexpr_end'>}</span><span class='tstring_content'>:</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_port'>port</span><span class='embexpr_end'>}</span><span class='tstring_content'>/wd/hub</span><span class='tstring_end'>&quot;</span></span> <span class='rbrace'>}</span>
@@ -3079,12 +3091,12 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-139
-140
-141</pre>
+143
+144
+145</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 139</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 143</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_accept_alert'>accept_alert</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:accept_alert</span>
@@ -3131,12 +3143,12 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-377
-378
-379</pre>
+381
+382
+383</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 377</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 381</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_action'>action</span>
   <span class='const'>ActionBuilder</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span> <span class='const'>Mouse</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='const'>Keyboard</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span>
@@ -3180,12 +3192,12 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-602
-603
-604</pre>
+606
+607
+608</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 602</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 606</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_active_element'>active_element</span>
   <span class='const'>Element</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span> <span class='kw'>self</span><span class='comma'>,</span> <span class='id identifier rubyid_element_id_from'>element_id_from</span><span class='lparen'>(</span><span class='id identifier rubyid_execute'>execute</span><span class='lparen'>(</span><span class='symbol'>:get_active_element</span><span class='rparen'>)</span><span class='rparen'>)</span>
@@ -3223,12 +3235,12 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-352
-353
-354</pre>
+356
+357
+358</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 352</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 356</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_add_cookie'>add_cookie</span><span class='lparen'>(</span><span class='id identifier rubyid_cookie'>cookie</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:add_cookie</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>cookie:</span> <span class='id identifier rubyid_cookie'>cookie</span><span class='rbrace'>}</span>
@@ -3266,12 +3278,12 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-147
-148
-149</pre>
+151
+152
+153</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 147</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 151</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_alert='>alert=</span><span class='lparen'>(</span><span class='id identifier rubyid_keys'>keys</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:set_alert_value</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>text:</span> <span class='id identifier rubyid_keys'>keys</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='rbrace'>}</span>
@@ -3309,12 +3321,12 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-151
-152
-153</pre>
+155
+156
+157</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 151</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 155</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_alert_text'>alert_text</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:get_alert_text</span>
@@ -3352,12 +3364,12 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-155
-156
-157</pre>
+159
+160
+161</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 155</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 159</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_authentication'>authentication</span><span class='lparen'>(</span><span class='id identifier rubyid_credentials'>credentials</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:set_authentication</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='id identifier rubyid_credentials'>credentials</span>
@@ -3397,13 +3409,13 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-522
-523
-524
-525</pre>
+526
+527
+528
+529</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 522</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 526</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_available_log_types'>available_log_types</span>
   <span class='id identifier rubyid_types'>types</span> <span class='op'>=</span> <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:get_available_log_types</span>
@@ -3442,15 +3454,15 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-70
-71
-72
-73
-74
-75</pre>
+76
+77
+78
+79
+80
+81</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 70</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 76</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_browser'>browser</span>
   <span class='ivar'>@browser</span> <span class='op'>||=</span> <span class='lparen'>(</span>
@@ -3491,12 +3503,12 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-453
-454
-455</pre>
+457
+458
+459</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 453</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 457</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_clear_element'>clear_element</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:clear_element</span><span class='comma'>,</span> <span class='label'>id:</span> <span class='id identifier rubyid_element'>element</span>
@@ -3534,12 +3546,12 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-276
-277
-278</pre>
+280
+281
+282</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 276</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 280</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_clear_local_storage'>clear_local_storage</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:clear_local_storage</span>
@@ -3577,12 +3589,12 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-300
-301
-302</pre>
+304
+305
+306</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 300</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 304</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_clear_session_storage'>clear_session_storage</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:clear_session_storage</span>
@@ -3620,12 +3632,12 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-401
-402
-403</pre>
+405
+406
+407</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 401</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 405</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_click'>click</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:click</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>button:</span> <span class='int'>0</span><span class='rbrace'>}</span>
@@ -3663,12 +3675,12 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-397
-398
-399</pre>
+401
+402
+403</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 397</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 401</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_click_element'>click_element</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:click_element</span><span class='comma'>,</span> <span class='label'>id:</span> <span class='id identifier rubyid_element'>element</span>
@@ -3706,12 +3718,12 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-205
-206
-207</pre>
+209
+210
+211</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 205</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 209</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_close'>close</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:close</span>
@@ -3749,12 +3761,12 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-91
-92
-93</pre>
+95
+96
+97</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 91</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 95</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_commands'>commands</span><span class='lparen'>(</span><span class='id identifier rubyid_command'>command</span><span class='rparen'>)</span>
   <span class='const'>COMMANDS</span><span class='lbracket'>[</span><span class='id identifier rubyid_command'>command</span><span class='rbracket'>]</span>
@@ -3792,12 +3804,12 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-409
-410
-411</pre>
+413
+414
+415</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 409</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 413</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_context_click'>context_click</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:click</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>button:</span> <span class='int'>2</span><span class='rbrace'>}</span>
@@ -3835,12 +3847,12 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-360
-361
-362</pre>
+364
+365
+366</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 360</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 364</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_cookies'>cookies</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:get_cookies</span>
@@ -3891,16 +3903,16 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-103
-104
-105
-106
 107
 108
-109</pre>
+109
+110
+111
+112
+113</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 103</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 107</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_create_session'>create_session</span><span class='lparen'>(</span><span class='id identifier rubyid_desired_capabilities'>desired_capabilities</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_resp'>resp</span> <span class='op'>=</span> <span class='id identifier rubyid_raw_execute'>raw_execute</span> <span class='symbol'>:new_session</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>desiredCapabilities:</span> <span class='id identifier rubyid_desired_capabilities'>desired_capabilities</span><span class='rbrace'>}</span>
@@ -3942,12 +3954,12 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-364
-365
-366</pre>
+368
+369
+370</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 364</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 368</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_delete_all_cookies'>delete_all_cookies</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:delete_all_cookies</span>
@@ -3985,12 +3997,12 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-356
-357
-358</pre>
+360
+361
+362</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 356</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 360</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_delete_cookie'>delete_cookie</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:delete_cookie</span><span class='comma'>,</span> <span class='label'>name:</span> <span class='id identifier rubyid_name'>name</span>
@@ -4028,12 +4040,12 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-143
-144
-145</pre>
+147
+148
+149</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 143</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 147</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_dismiss_alert'>dismiss_alert</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:dismiss_alert</span>
@@ -4071,12 +4083,12 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-405
-406
-407</pre>
+409
+410
+411</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 405</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 409</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_double_click'>double_click</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:double_click</span>
@@ -4114,12 +4126,12 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-461
-462
-463</pre>
+465
+466
+467</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 461</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 465</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_drag_element'>drag_element</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='comma'>,</span> <span class='id identifier rubyid_right_by'>right_by</span><span class='comma'>,</span> <span class='id identifier rubyid_down_by'>down_by</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:drag_element</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>id:</span> <span class='id identifier rubyid_element'>element</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>x:</span> <span class='id identifier rubyid_right_by'>right_by</span><span class='comma'>,</span> <span class='label'>y:</span> <span class='id identifier rubyid_down_by'>down_by</span><span class='rbrace'>}</span>
@@ -4157,35 +4169,31 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-77
-78
-79
-80
-81
-82
 83
 84
 85
 86
 87
 88
-89</pre>
+89
+90
+91
+92
+93</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 77</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 83</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_driver_extensions'>driver_extensions</span>
-  <span class='lbracket'>[</span>
-    <span class='const'>DriverExtensions</span><span class='op'>::</span><span class='const'>UploadsFiles</span><span class='comma'>,</span>
-    <span class='const'>DriverExtensions</span><span class='op'>::</span><span class='const'>TakesScreenshot</span><span class='comma'>,</span>
-    <span class='const'>DriverExtensions</span><span class='op'>::</span><span class='const'>HasSessionId</span><span class='comma'>,</span>
-    <span class='const'>DriverExtensions</span><span class='op'>::</span><span class='const'>Rotatable</span><span class='comma'>,</span>
-    <span class='const'>DriverExtensions</span><span class='op'>::</span><span class='const'>HasTouchScreen</span><span class='comma'>,</span>
-    <span class='const'>DriverExtensions</span><span class='op'>::</span><span class='const'>HasLocation</span><span class='comma'>,</span>
-    <span class='const'>DriverExtensions</span><span class='op'>::</span><span class='const'>HasNetworkConnection</span><span class='comma'>,</span>
-    <span class='const'>DriverExtensions</span><span class='op'>::</span><span class='const'>HasRemoteStatus</span><span class='comma'>,</span>
-    <span class='const'>DriverExtensions</span><span class='op'>::</span><span class='const'>HasWebStorage</span>
-  <span class='rbracket'>]</span>
+  <span class='lbracket'>[</span><span class='const'>DriverExtensions</span><span class='op'>::</span><span class='const'>UploadsFiles</span><span class='comma'>,</span>
+   <span class='const'>DriverExtensions</span><span class='op'>::</span><span class='const'>TakesScreenshot</span><span class='comma'>,</span>
+   <span class='const'>DriverExtensions</span><span class='op'>::</span><span class='const'>HasSessionId</span><span class='comma'>,</span>
+   <span class='const'>DriverExtensions</span><span class='op'>::</span><span class='const'>Rotatable</span><span class='comma'>,</span>
+   <span class='const'>DriverExtensions</span><span class='op'>::</span><span class='const'>HasTouchScreen</span><span class='comma'>,</span>
+   <span class='const'>DriverExtensions</span><span class='op'>::</span><span class='const'>HasLocation</span><span class='comma'>,</span>
+   <span class='const'>DriverExtensions</span><span class='op'>::</span><span class='const'>HasNetworkConnection</span><span class='comma'>,</span>
+   <span class='const'>DriverExtensions</span><span class='op'>::</span><span class='const'>HasRemoteStatus</span><span class='comma'>,</span>
+   <span class='const'>DriverExtensions</span><span class='op'>::</span><span class='const'>HasWebStorage</span><span class='rbracket'>]</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -4220,12 +4228,12 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-547
-548
-549</pre>
+551
+552
+553</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 547</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 551</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_element_attribute'>element_attribute</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='comma'>,</span> <span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:get_element_attribute</span><span class='comma'>,</span> <span class='label'>id:</span> <span class='id identifier rubyid_element'>element</span><span class='period'>.</span><span class='id identifier rubyid_ref'>ref</span><span class='comma'>,</span> <span class='label'>name:</span> <span class='id identifier rubyid_name'>name</span>
@@ -4276,12 +4284,12 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-590
-591
-592</pre>
+594
+595
+596</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 590</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 594</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_element_displayed?'>element_displayed?</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:is_element_displayed</span><span class='comma'>,</span> <span class='label'>id:</span> <span class='id identifier rubyid_element'>element</span>
@@ -4332,12 +4340,12 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-582
-583
-584</pre>
+586
+587
+588</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 582</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 586</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_element_enabled?'>element_enabled?</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:is_element_enabled</span><span class='comma'>,</span> <span class='label'>id:</span> <span class='id identifier rubyid_element'>element</span>
@@ -4375,14 +4383,14 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-564
-565
-566
-567
-568</pre>
+568
+569
+570
+571
+572</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 564</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 568</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_element_location'>element_location</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_data'>data</span> <span class='op'>=</span> <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:get_element_location</span><span class='comma'>,</span> <span class='label'>id:</span> <span class='id identifier rubyid_element'>element</span>
@@ -4422,14 +4430,14 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-570
-571
-572
-573
-574</pre>
+574
+575
+576
+577
+578</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 570</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 574</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_element_location_once_scrolled_into_view'>element_location_once_scrolled_into_view</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_data'>data</span> <span class='op'>=</span> <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:get_element_location_once_scrolled_into_view</span><span class='comma'>,</span> <span class='label'>id:</span> <span class='id identifier rubyid_element'>element</span>
@@ -4471,12 +4479,12 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-552
-553
-554</pre>
+556
+557
+558</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 552</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 556</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_element_property'>element_property</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='comma'>,</span> <span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute_script'>execute_script</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>return arguments[0][arguments[1]]</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='id identifier rubyid_element'>element</span><span class='comma'>,</span> <span class='id identifier rubyid_name'>name</span>
@@ -4527,12 +4535,12 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-586
-587
-588</pre>
+590
+591
+592</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 586</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 590</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_element_selected?'>element_selected?</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:is_element_selected</span><span class='comma'>,</span> <span class='label'>id:</span> <span class='id identifier rubyid_element'>element</span>
@@ -4570,14 +4578,14 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-576
-577
-578
-579
-580</pre>
+580
+581
+582
+583
+584</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 576</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 580</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_element_size'>element_size</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_data'>data</span> <span class='op'>=</span> <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:get_element_size</span><span class='comma'>,</span> <span class='label'>id:</span> <span class='id identifier rubyid_element'>element</span>
@@ -4619,12 +4627,12 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-543
-544
-545</pre>
+547
+548
+549</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 543</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 547</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_element_tag_name'>element_tag_name</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:get_element_tag_name</span><span class='comma'>,</span> <span class='label'>id:</span> <span class='id identifier rubyid_element'>element</span>
@@ -4662,12 +4670,12 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-560
-561
-562</pre>
+564
+565
+566</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 560</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 564</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_element_text'>element_text</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:get_element_text</span><span class='comma'>,</span> <span class='label'>id:</span> <span class='id identifier rubyid_element'>element</span>
@@ -4705,12 +4713,12 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-556
-557
-558</pre>
+560
+561
+562</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 556</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 560</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_element_value'>element_value</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:get_element_value</span><span class='comma'>,</span> <span class='label'>id:</span> <span class='id identifier rubyid_element'>element</span>
@@ -4748,12 +4756,12 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-594
-595
-596</pre>
+598
+599
+600</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 594</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 598</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_element_value_of_css_property'>element_value_of_css_property</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='comma'>,</span> <span class='id identifier rubyid_prop'>prop</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:get_element_value_of_css_property</span><span class='comma'>,</span> <span class='label'>id:</span> <span class='id identifier rubyid_element'>element</span><span class='comma'>,</span> <span class='label'>property_name:</span> <span class='id identifier rubyid_prop'>prop</span>
@@ -4791,15 +4799,15 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-337
-338
-339
-340
 341
-342</pre>
+342
+343
+344
+345
+346</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 337</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 341</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_execute_async_script'>execute_async_script</span><span class='lparen'>(</span><span class='id identifier rubyid_script'>script</span><span class='comma'>,</span> <span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_assert_javascript_enabled'>assert_javascript_enabled</span>
@@ -4842,15 +4850,15 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-330
-331
-332
-333
 334
-335</pre>
+335
+336
+337
+338
+339</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 330</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 334</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_execute_script'>execute_script</span><span class='lparen'>(</span><span class='id identifier rubyid_script'>script</span><span class='comma'>,</span> <span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_assert_javascript_enabled'>assert_javascript_enabled</span>
@@ -4891,18 +4899,18 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-608
-609
-610
-611
 612
 613
 614
 615
-616</pre>
+616
+617
+618
+619
+620</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 608</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 612</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_find_element_by'>find_element_by</span><span class='lparen'>(</span><span class='id identifier rubyid_how'>how</span><span class='comma'>,</span> <span class='id identifier rubyid_what'>what</span><span class='comma'>,</span> <span class='id identifier rubyid_parent'>parent</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_id'>id</span> <span class='op'>=</span> <span class='kw'>if</span> <span class='id identifier rubyid_parent'>parent</span>
@@ -4946,18 +4954,18 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-618
-619
-620
-621
 622
 623
 624
 625
-626</pre>
+626
+627
+628
+629
+630</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 618</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 622</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_find_elements_by'>find_elements_by</span><span class='lparen'>(</span><span class='id identifier rubyid_how'>how</span><span class='comma'>,</span> <span class='id identifier rubyid_what'>what</span><span class='comma'>,</span> <span class='id identifier rubyid_parent'>parent</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_ids'>ids</span> <span class='op'>=</span> <span class='kw'>if</span> <span class='id identifier rubyid_parent'>parent</span>
@@ -5001,12 +5009,12 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-115
-116
-117</pre>
+119
+120
+121</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 115</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 119</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_get'>get</span><span class='lparen'>(</span><span class='id identifier rubyid_url'>url</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:get</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>url:</span> <span class='id identifier rubyid_url'>url</span><span class='rbrace'>}</span>
@@ -5046,12 +5054,12 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-163
-164
-165</pre>
+167
+168
+169</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 163</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 167</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_go_back'>go_back</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:go_back</span>
@@ -5089,12 +5097,12 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-167
-168
-169</pre>
+171
+172
+173</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 167</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 171</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_go_forward'>go_forward</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:go_forward</span>
@@ -5132,12 +5140,12 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-123
-124
-125</pre>
+127
+128
+129</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 123</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 127</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_implicit_wait_timeout='>implicit_wait_timeout=</span><span class='lparen'>(</span><span class='id identifier rubyid_milliseconds'>milliseconds</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:implicitly_wait</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>ms:</span> <span class='id identifier rubyid_milliseconds'>milliseconds</span><span class='rbrace'>}</span>
@@ -5175,19 +5183,19 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-389
-390
-391
-392
 393
 394
-395</pre>
+395
+396
+397
+398
+399</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 389</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 393</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_keyboard'>keyboard</span>
-  <span class='id identifier rubyid_warn'>warn</span> <span class='heredoc_beg'>&lt;&lt;-DEPRECATE</span><span class='period'>.</span><span class='id identifier rubyid_gsub'>gsub</span><span class='lparen'>(</span><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>\n +| {2,}</span><span class='regexp_end'>/</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'> </span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span>
+  <span class='const'>WebDriver</span><span class='period'>.</span><span class='id identifier rubyid_logger'>logger</span><span class='period'>.</span><span class='id identifier rubyid_warn'>warn</span> <span class='heredoc_beg'>&lt;&lt;-DEPRECATE</span><span class='period'>.</span><span class='id identifier rubyid_gsub'>gsub</span><span class='lparen'>(</span><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>\n +| {2,}</span><span class='regexp_end'>/</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'> </span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span>
 <span class='tstring_content'>    [DEPRECATION] `Driver#keyboard` is deprecated with w3c implementation. Instead use 
     driver.action.&lt;command&gt;.perform
 </span><span class='heredoc_end'>  DEPRECATE
@@ -5228,16 +5236,16 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-260
-261
-262
-263
 264
 265
-266</pre>
+266
+267
+268
+269
+270</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 260</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 264</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_local_storage_item'>local_storage_item</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='comma'>,</span> <span class='id identifier rubyid_value'>value</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='kw'>if</span> <span class='id identifier rubyid_value'>value</span>
@@ -5279,12 +5287,12 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-272
-273
-274</pre>
+276
+277
+278</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 272</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 276</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_local_storage_keys'>local_storage_keys</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:get_local_storage_keys</span>
@@ -5322,12 +5330,12 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-280
-281
-282</pre>
+284
+285
+286</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 280</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 284</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_local_storage_size'>local_storage_size</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:get_local_storage_size</span>
@@ -5365,13 +5373,13 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-308
-309
-310
-311</pre>
+312
+313
+314
+315</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 308</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 312</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_location'>location</span>
   <span class='id identifier rubyid_obj'>obj</span> <span class='op'>=</span> <span class='id identifier rubyid_execute'>execute</span><span class='lparen'>(</span><span class='symbol'>:get_location</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
@@ -5410,20 +5418,20 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-527
-528
-529
-530
 531
 532
 533
 534
 535
 536
-537</pre>
+537
+538
+539
+540
+541</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 527</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 531</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_log'>log</span><span class='lparen'>(</span><span class='id identifier rubyid_type'>type</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_data'>data</span> <span class='op'>=</span> <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:get_log</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>type:</span> <span class='id identifier rubyid_type'>type</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='rbrace'>}</span>
@@ -5469,12 +5477,12 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-231
-232
-233</pre>
+235
+236
+237</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 231</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 235</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_maximize_window'>maximize_window</span><span class='lparen'>(</span><span class='id identifier rubyid_handle'>handle</span> <span class='op'>=</span> <span class='symbol'>:current</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:maximize_window</span><span class='comma'>,</span> <span class='label'>window_handle:</span> <span class='id identifier rubyid_handle'>handle</span>
@@ -5512,19 +5520,19 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-381
-382
-383
-384
 385
 386
-387</pre>
+387
+388
+389
+390
+391</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 381</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 385</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_mouse'>mouse</span>
-  <span class='id identifier rubyid_warn'>warn</span> <span class='heredoc_beg'>&lt;&lt;-DEPRECATE</span><span class='period'>.</span><span class='id identifier rubyid_gsub'>gsub</span><span class='lparen'>(</span><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>\n +| {2,}</span><span class='regexp_end'>/</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'> </span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span>
+  <span class='const'>WebDriver</span><span class='period'>.</span><span class='id identifier rubyid_logger'>logger</span><span class='period'>.</span><span class='id identifier rubyid_warn'>warn</span> <span class='heredoc_beg'>&lt;&lt;-DEPRECATE</span><span class='period'>.</span><span class='id identifier rubyid_gsub'>gsub</span><span class='lparen'>(</span><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>\n +| {2,}</span><span class='regexp_end'>/</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'> </span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span>
 <span class='tstring_content'>    [DEPRECATION] `Driver#mouse` is deprecated with w3c implementation. Instead use 
     driver.action.&lt;command&gt;.perform
 </span><span class='heredoc_end'>  DEPRECATE
@@ -5563,12 +5571,12 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-413
-414
-415</pre>
+417
+418
+419</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 413</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 417</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_mouse_down'>mouse_down</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:mouse_down</span>
@@ -5606,19 +5614,19 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-421
-422
-423
-424
 425
 426
 427
 428
 429
-430</pre>
+430
+431
+432
+433
+434</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 421</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 425</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_mouse_move_to'>mouse_move_to</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='comma'>,</span> <span class='id identifier rubyid_x'>x</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='id identifier rubyid_y'>y</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_params'>params</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='label'>element:</span> <span class='id identifier rubyid_element'>element</span><span class='rbrace'>}</span>
@@ -5663,12 +5671,12 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-417
-418
-419</pre>
+421
+422
+423</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 417</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 421</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_mouse_up'>mouse_up</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:mouse_up</span>
@@ -5706,12 +5714,12 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-318
-319
-320</pre>
+322
+323
+324</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 318</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 322</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_network_connection'>network_connection</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:get_network_connection</span>
@@ -5749,12 +5757,12 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-322
-323
-324</pre>
+326
+327
+328</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 322</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 326</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_network_connection='>network_connection=</span><span class='lparen'>(</span><span class='id identifier rubyid_type'>type</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:set_network_connection</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>parameters:</span> <span class='lbrace'>{</span><span class='label'>type:</span> <span class='id identifier rubyid_type'>type</span><span class='rbrace'>}</span><span class='rbrace'>}</span>
@@ -5794,12 +5802,12 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-348
-349
-350</pre>
+352
+353
+354</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 348</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 352</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_options'>options</span>
   <span class='ivar'>@options</span> <span class='op'>||=</span> <span class='const'>WebDriver</span><span class='op'>::</span><span class='const'>Options</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span>
@@ -5837,12 +5845,12 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-179
-180
-181</pre>
+183
+184
+185</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 179</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 183</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_page_source'>page_source</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:get_page_source</span>
@@ -5880,14 +5888,14 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-199
-200
-201
-202
-203</pre>
+203
+204
+205
+206
+207</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 199</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 203</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_quit'>quit</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:quit</span>
@@ -5927,12 +5935,12 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-209
-210
-211</pre>
+213
+214
+215</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 209</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 213</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_refresh'>refresh</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:refresh</span>
@@ -5970,12 +5978,12 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-268
-269
-270</pre>
+272
+273
+274</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 268</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 272</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_remove_local_storage_item'>remove_local_storage_item</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:remove_local_storage_item</span><span class='comma'>,</span> <span class='label'>key:</span> <span class='id identifier rubyid_key'>key</span>
@@ -6013,12 +6021,12 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-292
-293
-294</pre>
+296
+297
+298</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 292</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 296</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_remove_session_storage_item'>remove_session_storage_item</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:remove_session_storage_item</span><span class='comma'>,</span> <span class='label'>key:</span> <span class='id identifier rubyid_key'>key</span>
@@ -6056,13 +6064,13 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-241
-242
-243
-244</pre>
+245
+246
+247
+248</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 241</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 245</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_reposition_window'>reposition_window</span><span class='lparen'>(</span><span class='id identifier rubyid_x'>x</span><span class='comma'>,</span> <span class='id identifier rubyid_y'>y</span><span class='comma'>,</span> <span class='id identifier rubyid_handle'>handle</span> <span class='op'>=</span> <span class='symbol'>:current</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:set_window_position</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>window_handle:</span> <span class='id identifier rubyid_handle'>handle</span><span class='rbrace'>}</span><span class='comma'>,</span>
@@ -6101,14 +6109,14 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-225
-226
-227
-228
-229</pre>
+229
+230
+231
+232
+233</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 225</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 229</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_resize_window'>resize_window</span><span class='lparen'>(</span><span class='id identifier rubyid_width'>width</span><span class='comma'>,</span> <span class='id identifier rubyid_height'>height</span><span class='comma'>,</span> <span class='id identifier rubyid_handle'>handle</span> <span class='op'>=</span> <span class='symbol'>:current</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:set_window_size</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>window_handle:</span> <span class='id identifier rubyid_handle'>handle</span><span class='rbrace'>}</span><span class='comma'>,</span>
@@ -6148,12 +6156,12 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-514
-515
-516</pre>
+518
+519
+520</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 514</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 518</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_screen_orientation'>screen_orientation</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:get_screen_orientation</span>
@@ -6191,12 +6199,12 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-510
-511
-512</pre>
+514
+515
+516</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 510</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 514</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_screen_orientation='>screen_orientation=</span><span class='lparen'>(</span><span class='id identifier rubyid_orientation'>orientation</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:set_screen_orientation</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>orientation:</span> <span class='id identifier rubyid_orientation'>orientation</span><span class='rbrace'>}</span>
@@ -6234,12 +6242,12 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-252
-253
-254</pre>
+256
+257
+258</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 252</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 256</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_screenshot'>screenshot</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:screenshot</span>
@@ -6277,12 +6285,12 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-127
-128
-129</pre>
+131
+132
+133</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 127</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 131</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_script_timeout='>script_timeout=</span><span class='lparen'>(</span><span class='id identifier rubyid_milliseconds'>milliseconds</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:set_script_timeout</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>ms:</span> <span class='id identifier rubyid_milliseconds'>milliseconds</span><span class='rbrace'>}</span>
@@ -6320,12 +6328,12 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-432
-433
-434</pre>
+436
+437
+438</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 432</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 436</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_send_keys_to_active_element'>send_keys_to_active_element</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:send_keys_to_active_element</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>value:</span> <span class='id identifier rubyid_key'>key</span><span class='rbrace'>}</span>
@@ -6363,17 +6371,17 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-436
-437
-438
-439
 440
 441
 442
-443</pre>
+443
+444
+445
+446
+447</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 436</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 440</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_send_keys_to_element'>send_keys_to_element</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='comma'>,</span> <span class='id identifier rubyid_keys'>keys</span><span class='rparen'>)</span>
   <span class='kw'>if</span> <span class='ivar'>@file_detector</span>
@@ -6416,12 +6424,12 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-119
-120
-121</pre>
+123
+124
+125</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 119</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 123</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_session_capabilities'>session_capabilities</span>
   <span class='const'>Capabilities</span><span class='period'>.</span><span class='id identifier rubyid_json_create'>json_create</span> <span class='id identifier rubyid_execute'>execute</span><span class='lparen'>(</span><span class='symbol'>:get_capabilities</span><span class='rparen'>)</span>
@@ -6461,12 +6469,12 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-99
-100
-101</pre>
+103
+104
+105</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 99</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 103</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_session_id'>session_id</span>
   <span class='ivar'>@session_id</span> <span class='op'>||</span> <span class='id identifier rubyid_raise'>raise</span><span class='lparen'>(</span><span class='const'>Error</span><span class='op'>::</span><span class='const'>WebDriverError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>no current session exists</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
@@ -6504,16 +6512,16 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-284
-285
-286
-287
 288
 289
-290</pre>
+290
+291
+292
+293
+294</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 284</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 288</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_session_storage_item'>session_storage_item</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='comma'>,</span> <span class='id identifier rubyid_value'>value</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='kw'>if</span> <span class='id identifier rubyid_value'>value</span>
@@ -6555,12 +6563,12 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-296
-297
-298</pre>
+300
+301
+302</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 296</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 300</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_session_storage_keys'>session_storage_keys</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:get_session_storage_keys</span>
@@ -6598,12 +6606,12 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-304
-305
-306</pre>
+308
+309
+310</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 304</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 308</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_session_storage_size'>session_storage_size</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:get_session_storage_size</span>
@@ -6641,13 +6649,13 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-313
-314
-315
-316</pre>
+317
+318
+319
+320</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 313</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 317</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_set_location'>set_location</span><span class='lparen'>(</span><span class='id identifier rubyid_lat'>lat</span><span class='comma'>,</span> <span class='id identifier rubyid_lon'>lon</span><span class='comma'>,</span> <span class='id identifier rubyid_alt'>alt</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_loc'>loc</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='label'>latitude:</span> <span class='id identifier rubyid_lat'>lat</span><span class='comma'>,</span> <span class='label'>longitude:</span> <span class='id identifier rubyid_lon'>lon</span><span class='comma'>,</span> <span class='label'>altitude:</span> <span class='id identifier rubyid_alt'>alt</span><span class='rbrace'>}</span>
@@ -6686,12 +6694,12 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-111
-112
-113</pre>
+115
+116
+117</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 111</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 115</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_status'>status</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:status</span>
@@ -6729,12 +6737,12 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-457
-458
-459</pre>
+461
+462
+463</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 457</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 461</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_submit_element'>submit_element</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:submit_element</span><span class='comma'>,</span> <span class='label'>id:</span> <span class='id identifier rubyid_element'>element</span>
@@ -6772,12 +6780,12 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-195
-196
-197</pre>
+199
+200
+201</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 195</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 199</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_switch_to_default_content'>switch_to_default_content</span>
   <span class='id identifier rubyid_switch_to_frame'>switch_to_frame</span><span class='lparen'>(</span><span class='kw'>nil</span><span class='rparen'>)</span>
@@ -6815,12 +6823,12 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-187
-188
-189</pre>
+191
+192
+193</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 187</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 191</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_switch_to_frame'>switch_to_frame</span><span class='lparen'>(</span><span class='id identifier rubyid_id'>id</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:switch_to_frame</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>id:</span> <span class='id identifier rubyid_id'>id</span><span class='rbrace'>}</span>
@@ -6858,12 +6866,12 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-191
-192
-193</pre>
+195
+196
+197</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 191</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 195</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_switch_to_parent_frame'>switch_to_parent_frame</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:switch_to_parent_frame</span>
@@ -6901,12 +6909,12 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-183
-184
-185</pre>
+187
+188
+189</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 183</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 187</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_switch_to_window'>switch_to_window</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:switch_to_window</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>name:</span> <span class='id identifier rubyid_name'>name</span><span class='rbrace'>}</span>
@@ -6944,12 +6952,12 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-131
-132
-133</pre>
+135
+136
+137</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 131</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 135</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_timeout'>timeout</span><span class='lparen'>(</span><span class='id identifier rubyid_type'>type</span><span class='comma'>,</span> <span class='id identifier rubyid_milliseconds'>milliseconds</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:set_timeout</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>type:</span> <span class='id identifier rubyid_type'>type</span><span class='comma'>,</span> <span class='label'>ms:</span> <span class='id identifier rubyid_milliseconds'>milliseconds</span><span class='rbrace'>}</span>
@@ -6987,12 +6995,12 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-175
-176
-177</pre>
+179
+180
+181</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 175</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 179</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_title'>title</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:get_title</span>
@@ -7030,12 +7038,12 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-469
-470
-471</pre>
+473
+474
+475</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 469</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 473</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_touch_double_tap'>touch_double_tap</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:touch_double_tap</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>element:</span> <span class='id identifier rubyid_element'>element</span><span class='rbrace'>}</span>
@@ -7073,12 +7081,12 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-477
-478
-479</pre>
+481
+482
+483</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 477</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 481</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_touch_down'>touch_down</span><span class='lparen'>(</span><span class='id identifier rubyid_x'>x</span><span class='comma'>,</span> <span class='id identifier rubyid_y'>y</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:touch_down</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>x:</span> <span class='id identifier rubyid_x'>x</span><span class='comma'>,</span> <span class='label'>y:</span> <span class='id identifier rubyid_y'>y</span><span class='rbrace'>}</span>
@@ -7116,15 +7124,15 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-503
-504
-505
-506
 507
-508</pre>
+508
+509
+510
+511
+512</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 503</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 507</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_touch_element_flick'>touch_element_flick</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='comma'>,</span> <span class='id identifier rubyid_right_by'>right_by</span><span class='comma'>,</span> <span class='id identifier rubyid_down_by'>down_by</span><span class='comma'>,</span> <span class='id identifier rubyid_speed'>speed</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:touch_flick</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>element:</span> <span class='id identifier rubyid_element'>element</span><span class='comma'>,</span>
@@ -7165,12 +7173,12 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-499
-500
-501</pre>
+503
+504
+505</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 499</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 503</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_touch_flick'>touch_flick</span><span class='lparen'>(</span><span class='id identifier rubyid_xspeed'>xspeed</span><span class='comma'>,</span> <span class='id identifier rubyid_yspeed'>yspeed</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:touch_flick</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>xspeed:</span> <span class='id identifier rubyid_xspeed'>xspeed</span><span class='comma'>,</span> <span class='label'>yspeed:</span> <span class='id identifier rubyid_yspeed'>yspeed</span><span class='rbrace'>}</span>
@@ -7208,12 +7216,12 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-473
-474
-475</pre>
+477
+478
+479</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 473</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 477</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_touch_long_press'>touch_long_press</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:touch_long_press</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>element:</span> <span class='id identifier rubyid_element'>element</span><span class='rbrace'>}</span>
@@ -7251,12 +7259,12 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-485
-486
-487</pre>
+489
+490
+491</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 485</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 489</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_touch_move'>touch_move</span><span class='lparen'>(</span><span class='id identifier rubyid_x'>x</span><span class='comma'>,</span> <span class='id identifier rubyid_y'>y</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:touch_move</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>x:</span> <span class='id identifier rubyid_x'>x</span><span class='comma'>,</span> <span class='label'>y:</span> <span class='id identifier rubyid_y'>y</span><span class='rbrace'>}</span>
@@ -7294,18 +7302,18 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-489
-490
-491
-492
 493
 494
 495
 496
-497</pre>
+497
+498
+499
+500
+501</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 489</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 493</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_touch_scroll'>touch_scroll</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='comma'>,</span> <span class='id identifier rubyid_x'>x</span><span class='comma'>,</span> <span class='id identifier rubyid_y'>y</span><span class='rparen'>)</span>
   <span class='kw'>if</span> <span class='id identifier rubyid_element'>element</span>
@@ -7349,12 +7357,12 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-465
-466
-467</pre>
+469
+470
+471</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 465</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 469</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_touch_single_tap'>touch_single_tap</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:touch_single_tap</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>element:</span> <span class='id identifier rubyid_element'>element</span><span class='rbrace'>}</span>
@@ -7392,12 +7400,12 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-481
-482
-483</pre>
+485
+486
+487</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 481</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 485</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_touch_up'>touch_up</span><span class='lparen'>(</span><span class='id identifier rubyid_x'>x</span><span class='comma'>,</span> <span class='id identifier rubyid_y'>y</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:touch_up</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>x:</span> <span class='id identifier rubyid_x'>x</span><span class='comma'>,</span> <span class='label'>y:</span> <span class='id identifier rubyid_y'>y</span><span class='rbrace'>}</span>
@@ -7435,16 +7443,16 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-445
-446
-447
-448
 449
 450
-451</pre>
+451
+452
+453
+454
+455</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 445</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 449</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_upload'>upload</span><span class='lparen'>(</span><span class='id identifier rubyid_local_file'>local_file</span><span class='rparen'>)</span>
   <span class='kw'>unless</span> <span class='const'>File</span><span class='period'>.</span><span class='id identifier rubyid_file?'>file?</span><span class='lparen'>(</span><span class='id identifier rubyid_local_file'>local_file</span><span class='rparen'>)</span>
@@ -7486,12 +7494,12 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-171
-172
-173</pre>
+175
+176
+177</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 171</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 175</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_url'>url</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:get_current_url</span>
@@ -7529,12 +7537,12 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-221
-222
-223</pre>
+225
+226
+227</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 221</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 225</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_window_handle'>window_handle</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:get_current_window_handle</span>
@@ -7574,12 +7582,12 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-217
-218
-219</pre>
+221
+222
+223</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 217</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 221</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_window_handles'>window_handles</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:get_window_handles</span>
@@ -7617,14 +7625,14 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-246
-247
-248
-249
-250</pre>
+250
+251
+252
+253
+254</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 246</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 250</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_window_position'>window_position</span><span class='lparen'>(</span><span class='id identifier rubyid_handle'>handle</span> <span class='op'>=</span> <span class='symbol'>:current</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_data'>data</span> <span class='op'>=</span> <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:get_window_position</span><span class='comma'>,</span> <span class='label'>window_handle:</span> <span class='id identifier rubyid_handle'>handle</span>
@@ -7664,14 +7672,14 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
       <pre class="lines">
 
 
-235
-236
-237
-238
-239</pre>
+239
+240
+241
+242
+243</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 235</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 239</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_window_size'>window_size</span><span class='lparen'>(</span><span class='id identifier rubyid_handle'>handle</span> <span class='op'>=</span> <span class='symbol'>:current</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_data'>data</span> <span class='op'>=</span> <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:get_window_size</span><span class='comma'>,</span> <span class='label'>window_handle:</span> <span class='id identifier rubyid_handle'>handle</span>
@@ -7688,7 +7696,7 @@ href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-refer
 </div>
 
     <div id="footer">
-  Generated on Thu Feb 23 07:18:09 2017 by
+  Generated on Tue Mar  7 12:49:41 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.8.7.6 (ruby-2.4.0).
 </div>

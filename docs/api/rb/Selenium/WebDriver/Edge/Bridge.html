@@ -512,24 +512,38 @@
 40
 41
 42
-43</pre>
+43
+44
+45
+46
+47
+48
+49
+50</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/edge/bridge.rb', line 28</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_port'>port</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:port</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='const'>Service</span><span class='op'>::</span><span class='const'>DEFAULT_PORT</span>
-  <span class='id identifier rubyid_service_args'>service_args</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:service_args</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
+  <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:desired_capabilities</span><span class='rbracket'>]</span> <span class='op'>||=</span> <span class='const'>Remote</span><span class='op'>::</span><span class='const'>W3CCapabilities</span><span class='period'>.</span><span class='id identifier rubyid_edge'>edge</span>
 
   <span class='kw'>unless</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_key?'>key?</span><span class='lparen'>(</span><span class='symbol'>:url</span><span class='rparen'>)</span>
-    <span class='id identifier rubyid_driver_path'>driver_path</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:driver_path</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='const'>Edge</span><span class='period'>.</span><span class='id identifier rubyid_driver_path'>driver_path</span><span class='lparen'>(</span><span class='kw'>false</span><span class='rparen'>)</span>
-    <span class='ivar'>@service</span> <span class='op'>=</span> <span class='const'>Service</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_driver_path'>driver_path</span><span class='comma'>,</span> <span class='id identifier rubyid_port'>port</span><span class='comma'>,</span> <span class='op'>*</span><span class='id identifier rubyid_extract_service_args'>extract_service_args</span><span class='lparen'>(</span><span class='id identifier rubyid_service_args'>service_args</span><span class='rparen'>)</span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_driver_path'>driver_path</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:driver_path</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='const'>Edge</span><span class='period'>.</span><span class='id identifier rubyid_driver_path'>driver_path</span>
+    <span class='id identifier rubyid_port'>port</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:port</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='const'>Service</span><span class='op'>::</span><span class='const'>DEFAULT_PORT</span>
+
+    <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:driver_opts</span><span class='rbracket'>]</span> <span class='op'>||=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
+    <span class='kw'>if</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_key?'>key?</span> <span class='symbol'>:service_args</span>
+      <span class='const'>WebDriver</span><span class='period'>.</span><span class='id identifier rubyid_logger'>logger</span><span class='period'>.</span><span class='id identifier rubyid_warn'>warn</span> <span class='heredoc_beg'>&lt;&lt;-DEPRECATE</span><span class='period'>.</span><span class='id identifier rubyid_gsub'>gsub</span><span class='lparen'>(</span><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>\n +| {2,}</span><span class='regexp_end'>/</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'> </span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span>
+<span class='tstring_content'>    [DEPRECATION] `:service_args` is deprecated. Pass switches using `driver_opts`
+</span><span class='heredoc_end'>      DEPRECATE
+</span>      <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:driver_opts</span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='symbol'>:args</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:service_args</span><span class='rparen'>)</span>
+    <span class='kw'>end</span>
+
+    <span class='ivar'>@service</span> <span class='op'>=</span> <span class='const'>Service</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_driver_path'>driver_path</span><span class='comma'>,</span> <span class='id identifier rubyid_port'>port</span><span class='comma'>,</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:driver_opts</span><span class='rparen'>)</span><span class='rparen'>)</span>
     <span class='ivar'>@service</span><span class='period'>.</span><span class='id identifier rubyid_host'>host</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>localhost</span><span class='tstring_end'>&#39;</span></span> <span class='kw'>if</span> <span class='ivar'>@service</span><span class='period'>.</span><span class='id identifier rubyid_host'>host</span> <span class='op'>==</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>127.0.0.1</span><span class='tstring_end'>&#39;</span></span>
     <span class='ivar'>@service</span><span class='period'>.</span><span class='id identifier rubyid_start'>start</span>
     <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:url</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='ivar'>@service</span><span class='period'>.</span><span class='id identifier rubyid_uri'>uri</span>
   <span class='kw'>end</span>
-
-  <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:desired_capabilities</span><span class='rbracket'>]</span> <span class='op'>||=</span> <span class='const'>Remote</span><span class='op'>::</span><span class='const'>W3CCapabilities</span><span class='period'>.</span><span class='id identifier rubyid_edge'>edge</span>
 
   <span class='kw'>super</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
@@ -573,12 +587,12 @@
       <pre class="lines">
 
 
-45
-46
-47</pre>
+52
+53
+54</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/edge/bridge.rb', line 45</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/edge/bridge.rb', line 52</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_browser'>browser</span>
   <span class='symbol'>:edge</span>
@@ -616,12 +630,12 @@
       <pre class="lines">
 
 
-67
-68
-69</pre>
+74
+75
+76</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/edge/bridge.rb', line 67</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/edge/bridge.rb', line 74</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_capabilities'>capabilities</span>
   <span class='ivar'>@capabilities</span> <span class='op'>||=</span> <span class='const'>Remote</span><span class='op'>::</span><span class='const'>Capabilities</span><span class='period'>.</span><span class='id identifier rubyid_edge'>edge</span>
@@ -659,22 +673,22 @@
       <pre class="lines">
 
 
-53
-54
-55
-56
-57
-58
-59
 60
 61
 62
 63
 64
-65</pre>
+65
+66
+67
+68
+69
+70
+71
+72</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/edge/bridge.rb', line 53</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/edge/bridge.rb', line 60</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_commands'>commands</span><span class='lparen'>(</span><span class='id identifier rubyid_command'>command</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_unsupported'>unsupported</span> <span class='op'>=</span> <span class='qsymbols_beg'>%i[</span><span class='tstring_content'>execute_script</span><span class='words_sep'> </span><span class='tstring_content'>execute_async_script</span><span class='words_sep'> </span><span class='tstring_content'>submit_element</span><span class='words_sep'> </span><span class='tstring_content'>double_click</span><span class='words_sep'>
@@ -722,12 +736,12 @@
       <pre class="lines">
 
 
-49
-50
-51</pre>
+56
+57
+58</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/edge/bridge.rb', line 49</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/edge/bridge.rb', line 56</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_driver_extensions'>driver_extensions</span>
   <span class='lbracket'>[</span><span class='const'>DriverExtensions</span><span class='op'>::</span><span class='const'>TakesScreenshot</span><span class='rbracket'>]</span>
@@ -765,12 +779,12 @@
       <pre class="lines">
 
 
-108
-109
-110</pre>
+115
+116
+117</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/edge/bridge.rb', line 108</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/edge/bridge.rb', line 115</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_maximize_window'>maximize_window</span><span class='lparen'>(</span><span class='id identifier rubyid_handle'>handle</span> <span class='op'>=</span> <span class='symbol'>:current</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:maximize_window</span><span class='comma'>,</span> <span class='label'>window_handle:</span> <span class='id identifier rubyid_handle'>handle</span>
@@ -808,14 +822,14 @@
       <pre class="lines">
 
 
-71
-72
-73
-74
-75</pre>
+78
+79
+80
+81
+82</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/edge/bridge.rb', line 71</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/edge/bridge.rb', line 78</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_quit'>quit</span>
   <span class='kw'>super</span>
@@ -855,13 +869,13 @@
       <pre class="lines">
 
 
-103
-104
-105
-106</pre>
+110
+111
+112
+113</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/edge/bridge.rb', line 103</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/edge/bridge.rb', line 110</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_reposition_window'>reposition_window</span><span class='lparen'>(</span><span class='id identifier rubyid_x'>x</span><span class='comma'>,</span> <span class='id identifier rubyid_y'>y</span><span class='comma'>,</span> <span class='id identifier rubyid_handle'>handle</span> <span class='op'>=</span> <span class='symbol'>:current</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:set_window_position</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>window_handle:</span> <span class='id identifier rubyid_handle'>handle</span><span class='rbrace'>}</span><span class='comma'>,</span>
@@ -900,14 +914,14 @@
       <pre class="lines">
 
 
-91
-92
-93
-94
-95</pre>
+98
+99
+100
+101
+102</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/edge/bridge.rb', line 91</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/edge/bridge.rb', line 98</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_resize_window'>resize_window</span><span class='lparen'>(</span><span class='id identifier rubyid_width'>width</span><span class='comma'>,</span> <span class='id identifier rubyid_height'>height</span><span class='comma'>,</span> <span class='id identifier rubyid_handle'>handle</span> <span class='op'>=</span> <span class='symbol'>:current</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:set_window_size</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>window_handle:</span> <span class='id identifier rubyid_handle'>handle</span><span class='rbrace'>}</span><span class='comma'>,</span>
@@ -947,12 +961,12 @@
       <pre class="lines">
 
 
-77
-78
-79</pre>
+84
+85
+86</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/edge/bridge.rb', line 77</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/edge/bridge.rb', line 84</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_send_keys_to_active_element'>send_keys_to_active_element</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:send_keys_to_active_element</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>value:</span> <span class='id identifier rubyid_key'>key</span><span class='rbrace'>}</span>
@@ -990,12 +1004,12 @@
       <pre class="lines">
 
 
-81
-82
-83</pre>
+88
+89
+90</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/edge/bridge.rb', line 81</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/edge/bridge.rb', line 88</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_window_handle'>window_handle</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:get_current_window_handle</span>
@@ -1033,14 +1047,14 @@
       <pre class="lines">
 
 
-97
-98
-99
-100
-101</pre>
+104
+105
+106
+107
+108</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/edge/bridge.rb', line 97</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/edge/bridge.rb', line 104</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_window_position'>window_position</span><span class='lparen'>(</span><span class='id identifier rubyid_handle'>handle</span> <span class='op'>=</span> <span class='symbol'>:current</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_data'>data</span> <span class='op'>=</span> <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:get_window_position</span><span class='comma'>,</span> <span class='label'>window_handle:</span> <span class='id identifier rubyid_handle'>handle</span>
@@ -1080,14 +1094,14 @@
       <pre class="lines">
 
 
-85
-86
-87
-88
-89</pre>
+92
+93
+94
+95
+96</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/edge/bridge.rb', line 85</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/edge/bridge.rb', line 92</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_window_size'>window_size</span><span class='lparen'>(</span><span class='id identifier rubyid_handle'>handle</span> <span class='op'>=</span> <span class='symbol'>:current</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_data'>data</span> <span class='op'>=</span> <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:get_window_size</span><span class='comma'>,</span> <span class='label'>window_handle:</span> <span class='id identifier rubyid_handle'>handle</span>
@@ -1104,7 +1118,7 @@
 </div>
 
     <div id="footer">
-  Generated on Thu Feb 23 07:18:08 2017 by
+  Generated on Tue Mar  7 12:49:39 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.8.7.6 (ruby-2.4.0).
 </div>

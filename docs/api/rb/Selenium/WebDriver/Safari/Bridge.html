@@ -260,20 +260,40 @@
 33
 34
 35
-36</pre>
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/safari/bridge.rb', line 25</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:desired_capabilities</span><span class='rbracket'>]</span> <span class='op'>||=</span> <span class='const'>Remote</span><span class='op'>::</span><span class='const'>Capabilities</span><span class='period'>.</span><span class='id identifier rubyid_safari'>safari</span>
-  <span class='id identifier rubyid_port'>port</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:port</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='const'>Service</span><span class='op'>::</span><span class='const'>DEFAULT_PORT</span>
-  <span class='id identifier rubyid_service_args'>service_args</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:service_args</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
 
-  <span class='id identifier rubyid_driver_path'>driver_path</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:driver_path</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='const'>Safari</span><span class='period'>.</span><span class='id identifier rubyid_driver_path'>driver_path</span><span class='lparen'>(</span><span class='kw'>false</span><span class='rparen'>)</span>
-  <span class='ivar'>@service</span> <span class='op'>=</span> <span class='const'>Service</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_driver_path'>driver_path</span><span class='comma'>,</span> <span class='id identifier rubyid_port'>port</span><span class='comma'>,</span> <span class='op'>*</span><span class='id identifier rubyid_extract_service_args'>extract_service_args</span><span class='lparen'>(</span><span class='id identifier rubyid_service_args'>service_args</span><span class='rparen'>)</span><span class='rparen'>)</span>
-  <span class='ivar'>@service</span><span class='period'>.</span><span class='id identifier rubyid_start'>start</span>
-  <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:url</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='ivar'>@service</span><span class='period'>.</span><span class='id identifier rubyid_uri'>uri</span>
+  <span class='kw'>unless</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_key?'>key?</span><span class='lparen'>(</span><span class='symbol'>:url</span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_driver_path'>driver_path</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:driver_path</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='const'>Safari</span><span class='period'>.</span><span class='id identifier rubyid_driver_path'>driver_path</span>
+    <span class='id identifier rubyid_port'>port</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:port</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='const'>Service</span><span class='op'>::</span><span class='const'>DEFAULT_PORT</span>
+
+    <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:driver_opts</span><span class='rbracket'>]</span> <span class='op'>||=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
+    <span class='kw'>if</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_key?'>key?</span> <span class='symbol'>:service_args</span>
+      <span class='const'>WebDriver</span><span class='period'>.</span><span class='id identifier rubyid_logger'>logger</span><span class='period'>.</span><span class='id identifier rubyid_warn'>warn</span> <span class='heredoc_beg'>&lt;&lt;-DEPRECATE</span><span class='period'>.</span><span class='id identifier rubyid_gsub'>gsub</span><span class='lparen'>(</span><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>\n +| {2,}</span><span class='regexp_end'>/</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'> </span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span>
+<span class='tstring_content'>    [DEPRECATION] `:service_args` is deprecated. Pass switches using `driver_opts`
+</span><span class='heredoc_end'>      DEPRECATE
+</span>      <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:driver_opts</span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='symbol'>:args</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:service_args</span><span class='rparen'>)</span>
+    <span class='kw'>end</span>
+
+    <span class='ivar'>@service</span> <span class='op'>=</span> <span class='const'>Service</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_driver_path'>driver_path</span><span class='comma'>,</span> <span class='id identifier rubyid_port'>port</span><span class='comma'>,</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:driver_opts</span><span class='rparen'>)</span><span class='rparen'>)</span>
+    <span class='ivar'>@service</span><span class='period'>.</span><span class='id identifier rubyid_start'>start</span>
+    <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:url</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='ivar'>@service</span><span class='period'>.</span><span class='id identifier rubyid_uri'>uri</span>
+  <span class='kw'>end</span>
 
   <span class='kw'>super</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
@@ -317,14 +337,14 @@
       <pre class="lines">
 
 
-38
-39
-40
-41
-42</pre>
+48
+49
+50
+51
+52</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/safari/bridge.rb', line 38</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/safari/bridge.rb', line 48</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_quit'>quit</span>
   <span class='kw'>super</span>
@@ -341,7 +361,7 @@
 </div>
 
     <div id="footer">
-  Generated on Thu Feb 23 07:18:09 2017 by
+  Generated on Tue Mar  7 12:49:40 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.8.7.6 (ruby-2.4.0).
 </div>

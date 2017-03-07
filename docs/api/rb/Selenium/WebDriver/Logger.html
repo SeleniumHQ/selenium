@@ -94,11 +94,15 @@
     
   
     
+      <dt class="r1">Includes:</dt>
+      <dd class="r1">Logger::Severity</dd>
+      
+    
   
   
   
-    <dt class="r1 last">Defined in:</dt>
-    <dd class="r1 last">lib/selenium/webdriver/common/logger.rb</dd>
+    <dt class="r2 last">Defined in:</dt>
+    <dd class="r2 last">lib/selenium/webdriver/common/logger.rb</dd>
   
 </dl>
 <div class="clear"></div>
@@ -207,6 +211,31 @@
         <li class="public ">
   <span class="summary_signature">
     
+      <a href="#level%3D-instance_method" title="#level= (instance method)">- (Object) <strong>level=</strong>(severity) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>For Ruby &lt; 2.3 compatibility Based on <a
+href="https://github.com/ruby/ruby/blob/ruby_2_3/lib/logger.rb#L250">github.com/ruby/ruby/blob/ruby_2_3/lib/logger.rb#L250</a>.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
       <a href="#output%3D-instance_method" title="#output= (instance method)">- (Object) <strong>output=</strong>(io) </a>
     
 
@@ -230,6 +259,7 @@
   
 
 
+  
   <div id="constructor_details" class="method_details_list">
   <h2>Constructor Details</h2>
   
@@ -259,25 +289,15 @@
       <pre class="lines">
 
 
-46
 47
 48
-49
-50
-51
-52
-53</pre>
+49</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/logger.rb', line 46</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/logger.rb', line 47</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span>
-  <span class='ivar'>@logger</span> <span class='op'>=</span> <span class='op'>::</span><span class='const'>Logger</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='gvar'>$stdout</span><span class='rparen'>)</span>
-  <span class='ivar'>@logger</span><span class='period'>.</span><span class='id identifier rubyid_progname'>progname</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Selenium</span><span class='tstring_end'>&#39;</span></span>
-  <span class='ivar'>@logger</span><span class='period'>.</span><span class='id identifier rubyid_level'>level</span> <span class='op'>=</span> <span class='lparen'>(</span><span class='gvar'>$DEBUG</span> <span class='op'>?</span> <span class='symbol'>:debug</span> <span class='op'>:</span> <span class='symbol'>:warn</span><span class='rparen'>)</span>
-  <span class='ivar'>@logger</span><span class='period'>.</span><span class='id identifier rubyid_formatter'>formatter</span> <span class='op'>=</span> <span class='id identifier rubyid_proc'>proc</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_severity'>severity</span><span class='comma'>,</span> <span class='id identifier rubyid_time'>time</span><span class='comma'>,</span> <span class='id identifier rubyid_progname'>progname</span><span class='comma'>,</span> <span class='id identifier rubyid_msg'>msg</span><span class='op'>|</span>
-    <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_time'>time</span><span class='period'>.</span><span class='id identifier rubyid_strftime'>strftime</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>%F %T</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span><span class='embexpr_end'>}</span><span class='tstring_content'> </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_severity'>severity</span><span class='embexpr_end'>}</span><span class='tstring_content'> </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_progname'>progname</span><span class='embexpr_end'>}</span><span class='tstring_content'> </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_msg'>msg</span><span class='embexpr_end'>}</span><span class='tstring_content'>\n</span><span class='tstring_end'>&quot;</span></span>
-  <span class='kw'>end</span>
+  <span class='ivar'>@logger</span> <span class='op'>=</span> <span class='id identifier rubyid_create_logger'>create_logger</span><span class='lparen'>(</span><span class='gvar'>$stdout</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -326,22 +346,102 @@ for all child processes to ensure their output is redirected there.</p>
       <pre class="lines">
 
 
-70
-71
-72
-73
-74
-75
-76</pre>
+99
+100
+101
+102
+103
+104
+105</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/logger.rb', line 70</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/logger.rb', line 99</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_io'>io</span>
   <span class='kw'>if</span> <span class='id identifier rubyid_debug?'>debug?</span>
     <span class='ivar'>@logger</span><span class='period'>.</span><span class='id identifier rubyid_instance_variable_get'>instance_variable_get</span><span class='lparen'>(</span><span class='symbol'>:@logdev</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_instance_variable_get'>instance_variable_get</span><span class='lparen'>(</span><span class='symbol'>:@dev</span><span class='rparen'>)</span>
   <span class='kw'>else</span>
     <span class='const'>File</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='const'>Platform</span><span class='period'>.</span><span class='id identifier rubyid_null_device'>null_device</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>w</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="level=-instance_method">
+  
+    - (<tt>Object</tt>) <strong>level=</strong>(severity) 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>For Ruby &lt; 2.3 compatibility Based on <a
+href="https://github.com/ruby/ruby/blob/ruby_2_3/lib/logger.rb#L250">github.com/ruby/ruby/blob/ruby_2_3/lib/logger.rb#L250</a></p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/logger.rb', line 65</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_level='>level=</span><span class='lparen'>(</span><span class='id identifier rubyid_severity'>severity</span><span class='rparen'>)</span>
+  <span class='kw'>if</span> <span class='id identifier rubyid_severity'>severity</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Integer</span><span class='rparen'>)</span>
+    <span class='ivar'>@logger</span><span class='period'>.</span><span class='id identifier rubyid_level'>level</span> <span class='op'>=</span> <span class='id identifier rubyid_severity'>severity</span>
+  <span class='kw'>else</span>
+    <span class='kw'>case</span> <span class='id identifier rubyid_severity'>severity</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='period'>.</span><span class='id identifier rubyid_downcase'>downcase</span>
+    <span class='kw'>when</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>debug</span><span class='tstring_end'>&#39;</span></span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span>
+      <span class='ivar'>@logger</span><span class='period'>.</span><span class='id identifier rubyid_level'>level</span> <span class='op'>=</span> <span class='const'>DEBUG</span>
+    <span class='kw'>when</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>info</span><span class='tstring_end'>&#39;</span></span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span>
+      <span class='ivar'>@logger</span><span class='period'>.</span><span class='id identifier rubyid_level'>level</span> <span class='op'>=</span> <span class='const'>INFO</span>
+    <span class='kw'>when</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>warn</span><span class='tstring_end'>&#39;</span></span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span>
+      <span class='ivar'>@logger</span><span class='period'>.</span><span class='id identifier rubyid_level'>level</span> <span class='op'>=</span> <span class='const'>WARN</span>
+    <span class='kw'>when</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>error</span><span class='tstring_end'>&#39;</span></span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span>
+      <span class='ivar'>@logger</span><span class='period'>.</span><span class='id identifier rubyid_level'>level</span> <span class='op'>=</span> <span class='const'>ERROR</span>
+    <span class='kw'>when</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>fatal</span><span class='tstring_end'>&#39;</span></span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span>
+      <span class='ivar'>@logger</span><span class='period'>.</span><span class='id identifier rubyid_level'>level</span> <span class='op'>=</span> <span class='const'>FATAL</span>
+    <span class='kw'>when</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>unknown</span><span class='tstring_end'>&#39;</span></span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span>
+      <span class='ivar'>@logger</span><span class='period'>.</span><span class='id identifier rubyid_level'>level</span> <span class='op'>=</span> <span class='const'>UNKNOWN</span>
+    <span class='kw'>else</span>
+      <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>invalid log level: </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_severity'>severity</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
+    <span class='kw'>end</span>
   <span class='kw'>end</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -364,15 +464,25 @@ for all child processes to ensure their output is redirected there.</p>
       <pre class="lines">
 
 
+51
+52
+53
+54
 55
 56
-57</pre>
+57
+58</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/logger.rb', line 55</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/logger.rb', line 51</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_output='>output=</span><span class='lparen'>(</span><span class='id identifier rubyid_io'>io</span><span class='rparen'>)</span>
-  <span class='ivar'>@logger</span><span class='period'>.</span><span class='id identifier rubyid_reopen'>reopen</span><span class='lparen'>(</span><span class='id identifier rubyid_io'>io</span><span class='rparen'>)</span>
+  <span class='comment'># `Logger#reopen` was added in Ruby 2.3
+</span>  <span class='kw'>if</span> <span class='ivar'>@logger</span><span class='period'>.</span><span class='id identifier rubyid_respond_to?'>respond_to?</span><span class='lparen'>(</span><span class='symbol'>:reopen</span><span class='rparen'>)</span>
+    <span class='ivar'>@logger</span><span class='period'>.</span><span class='id identifier rubyid_reopen'>reopen</span><span class='lparen'>(</span><span class='id identifier rubyid_io'>io</span><span class='rparen'>)</span>
+  <span class='kw'>else</span>
+    <span class='ivar'>@logger</span> <span class='op'>=</span> <span class='id identifier rubyid_create_logger'>create_logger</span><span class='lparen'>(</span><span class='id identifier rubyid_io'>io</span><span class='rparen'>)</span>
+  <span class='kw'>end</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -384,7 +494,7 @@ for all child processes to ensure their output is redirected there.</p>
 </div>
 
     <div id="footer">
-  Generated on Thu Feb 23 07:18:09 2017 by
+  Generated on Tue Mar  7 12:49:41 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.8.7.6 (ruby-2.4.0).
 </div>

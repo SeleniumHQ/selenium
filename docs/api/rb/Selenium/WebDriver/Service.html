@@ -315,7 +315,7 @@ starting and stopping driver implementations.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#initialize-instance_method" title="#initialize (instance method)">- (Service) <strong>initialize</strong>(executable_path, port, *extra_args) </a>
+      <a href="#initialize-instance_method" title="#initialize (instance method)">- (Service) <strong>initialize</strong>(executable_path, port, driver_opts) </a>
     
 
     
@@ -413,7 +413,7 @@ starting and stopping driver implementations.</p>
     <div class="method_details first">
   <h3 class="signature first" id="initialize-instance_method">
   
-    - (<tt><span class='object_link'><a href="" title="Selenium::WebDriver::Service (class)">Service</a></span></tt>) <strong>initialize</strong>(executable_path, port, *extra_args) 
+    - (<tt><span class='object_link'><a href="" title="Selenium::WebDriver::Service (class)">Service</a></span></tt>) <strong>initialize</strong>(executable_path, port, driver_opts) 
   
 
   
@@ -465,11 +465,11 @@ starting and stopping driver implementations.</p>
     <td>
       <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/service.rb', line 48</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_executable_path'>executable_path</span><span class='comma'>,</span> <span class='id identifier rubyid_port'>port</span><span class='comma'>,</span> <span class='op'>*</span><span class='id identifier rubyid_extra_args'>extra_args</span><span class='rparen'>)</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_executable_path'>executable_path</span><span class='comma'>,</span> <span class='id identifier rubyid_port'>port</span><span class='comma'>,</span> <span class='id identifier rubyid_driver_opts'>driver_opts</span><span class='rparen'>)</span>
   <span class='ivar'>@executable_path</span> <span class='op'>=</span> <span class='id identifier rubyid_binary_path'>binary_path</span><span class='lparen'>(</span><span class='id identifier rubyid_executable_path'>executable_path</span><span class='rparen'>)</span>
   <span class='ivar'>@host</span>            <span class='op'>=</span> <span class='const'>Platform</span><span class='period'>.</span><span class='id identifier rubyid_localhost'>localhost</span>
   <span class='ivar'>@port</span>            <span class='op'>=</span> <span class='const'>Integer</span><span class='lparen'>(</span><span class='id identifier rubyid_port'>port</span><span class='rparen'>)</span>
-  <span class='ivar'>@extra_args</span>      <span class='op'>=</span> <span class='id identifier rubyid_extra_args'>extra_args</span>
+  <span class='ivar'>@extra_args</span>      <span class='op'>=</span> <span class='id identifier rubyid_extract_service_args'>extract_service_args</span><span class='lparen'>(</span><span class='id identifier rubyid_driver_opts'>driver_opts</span><span class='rparen'>)</span>
 
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'>Error</span><span class='op'>::</span><span class='const'>WebDriverError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>invalid port: </span><span class='embexpr_beg'>#{</span><span class='ivar'>@port</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='ivar'>@port</span> <span class='op'>&lt;</span> <span class='int'>1</span>
 <span class='kw'>end</span></pre>
@@ -854,7 +854,7 @@ starting and stopping driver implementations.</p>
 </div>
 
     <div id="footer">
-  Generated on Thu Feb 23 07:18:09 2017 by
+  Generated on Tue Mar  7 12:49:41 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.8.7.6 (ruby-2.4.0).
 </div>
