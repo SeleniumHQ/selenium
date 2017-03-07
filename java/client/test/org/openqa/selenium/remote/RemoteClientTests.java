@@ -27,6 +27,7 @@ import org.openqa.selenium.remote.internal.CircularOutputStreamTest;
     AugmenterTest.class,
     ErrorHandlerTest.class,
     CircularOutputStreamTest.class,
+    ProtocolHandshakeTest.class,
     RemoteLogsTest.class,
     RemoteWebDriverInitializationTest.class
 })
