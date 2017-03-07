@@ -141,8 +141,7 @@ public class ProtocolHandshake {
         .flatMap(Collection::stream)
         .filter(entry ->
                     ("browserName".equals(entry.getKey()) && FIREFOX.equals(entry.getValue())) ||
-                    "firefox_binary".equals(entry.getKey()) ||
-                    "firefox_profile".equals(entry.getKey()) ||
+                    entry.getKey().startsWith("firefox_") ||
                     entry.getKey().startsWith("moz:"))
         .distinct()
         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
