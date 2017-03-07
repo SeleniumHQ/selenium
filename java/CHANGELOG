@@ -3,7 +3,6 @@ v3.3.0
 
 * Support for geckodriver v0.15.0.
 * Deprecated seldom used FirefoxDriver constructors.
-
 * Added javadocs to show best way to create a new FirefoxDriver:
   ```
   DesiredCapabilities caps = new FirefoxOptions()
@@ -12,6 +11,10 @@ v3.3.0
       .addTo(DesiredCapabilities.firefox());
   WebDriver driver = new FirefoxDriver(caps);
   ```
+* Stream New Session capabilities to disk before use to avoid eating
+  every byte of available memory.
+* Beginnings of local-end implementation of the w3c New Session
+  capabilities. There's still some work to do.
 
 v3.2.0
 ======
