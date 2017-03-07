@@ -10,13 +10,9 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import org.junit.Test;
-import org.openqa.selenium.HasCapabilities;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.testing.drivers.SynthesizedFirefoxDriver;
 
 import java.io.IOException;
 import java.util.Map;
@@ -84,9 +80,6 @@ public class ProtocolHandshakeTest {
     assertEquals(ImmutableMap.of(), json.get("alwaysMatch"));
     assertEquals(ImmutableList.of(), json.get("firstMatch"));
   }
-
-  @Test
-  public void
 
   class RecordingHttpClient implements HttpClient {
 
