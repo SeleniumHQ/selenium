@@ -105,6 +105,7 @@ import org.openqa.selenium.remote.server.handler.SwitchToFrame;
 import org.openqa.selenium.remote.server.handler.SwitchToParentFrame;
 import org.openqa.selenium.remote.server.handler.SwitchToWindow;
 import org.openqa.selenium.remote.server.handler.UploadFile;
+import org.openqa.selenium.remote.server.handler.W3CActions;
 import org.openqa.selenium.remote.server.handler.html5.ClearLocalStorage;
 import org.openqa.selenium.remote.server.handler.html5.ClearSessionStorage;
 import org.openqa.selenium.remote.server.handler.html5.GetAppCacheStatus;
@@ -347,6 +348,8 @@ public class JsonHttpCommandHandler {
     addNewMapping(IME_IS_ACTIVATED, ImeIsActivated.class);
     addNewMapping(IME_DEACTIVATE, ImeDeactivate.class);
     addNewMapping(IME_ACTIVATE_ENGINE, ImeActivateEngine.class);
+
+    addNewMapping(ACTIONS, W3CActions.class);
 
     // Advanced Touch API
     addNewMapping(TOUCH_SINGLE_TAP, SingleTapOnElement.class);
