@@ -353,9 +353,7 @@ public class ProtocolHandshake {
       tempResponse = new Response(null);
       tempResponse.setStatus(ErrorCodes.SESSION_NOT_CREATED);
       tempResponse.setValue(jsonBlob);
-    } else if (
-      ossStatus instanceof Number &&
-      ((Number) ossStatus).intValue() == ErrorCodes.SESSION_NOT_CREATED) {
+    } else if (ossStatus instanceof Number) {
       tempResponse = new Response(null);
       tempResponse.setStatus(ErrorCodes.SESSION_NOT_CREATED);
       tempResponse.setValue(jsonBlob);
