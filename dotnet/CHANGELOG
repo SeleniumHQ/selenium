@@ -1,3 +1,12 @@
+v3.3.0
+======
+ * Fixed error return values from W3C spec-compliant remote ends
+ * Fixed pointer actions duration in .NET to be an integer
+ * Added ability to run .NET integration tests against Safari
+   Technology Preview release
+ * Fixed accounting for W3C spec-compliant response for new session
+   command that contains a 'value' property.
+
 v3.2.0
 ======
  * Removed .NET Selenium RC language binding implementation. As
