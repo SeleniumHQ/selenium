@@ -226,12 +226,7 @@ public class ResultConfig {
 
     final Constructor<? extends RestishHandler> norags = getConstructor(handlerClazz);
     if (norags != null) {
-      return new HandlerFactory() {
-        @Override
-        public RestishHandler<?> createHandler(SessionId sessionId) throws Exception {
-          return norags.newInstance();
-        }
-      };
+      return norags::newInstance;
     }
 
     throw new IllegalArgumentException("Don't know how to construct " + handlerClazz);
