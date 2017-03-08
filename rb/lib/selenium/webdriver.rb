@@ -30,6 +30,7 @@ module Selenium
   module WebDriver
     Point     = Struct.new(:x, :y)
     Dimension = Struct.new(:width, :height)
+    Rectangle = Struct.new(:x, :y, :width, :height)
     Location  = Struct.new(:latitude, :longitude, :altitude)
 
     autoload :Chrome,    'selenium/webdriver/chrome'
