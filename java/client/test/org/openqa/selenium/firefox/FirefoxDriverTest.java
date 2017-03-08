@@ -43,7 +43,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.testing.NeedsFreshDriver;
 import org.openqa.selenium.ParallelTestRunner;
 import org.openqa.selenium.ParallelTestRunner.Worker;
 import org.openqa.selenium.WebDriver;
@@ -58,6 +57,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.DevMode;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.NeedsFreshDriver;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
 import org.openqa.selenium.testing.drivers.SauceDriver;
 import org.openqa.selenium.testing.drivers.SynthesizedFirefoxDriver;
@@ -405,13 +405,6 @@ public class FirefoxDriverTest extends JUnit4TestBase {
     }
   }
 
-  private void sleepBecauseWindowsTakeTimeToOpen() {
-    try {
-      sleep(1000);
-    } catch (InterruptedException e) {
-      fail("Interrupted");
-    }
-  }
 
   @Test
   public void canBlockInvalidSslCertificates() {
@@ -654,7 +647,8 @@ public class FirefoxDriverTest extends JUnit4TestBase {
       try {
         return new SynthesizedFirefoxDriver(profile);
       } catch (Exception e) {
-        throw Throwables.propagate(e);
+        Throwables.throwIfUnchecked(e);
+        throw new RuntimeException(e);
       }
     }
     return new FirefoxDriver(profile);
