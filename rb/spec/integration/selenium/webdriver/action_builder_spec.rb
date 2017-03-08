@@ -21,7 +21,7 @@ require_relative 'spec_helper'
 
 module Selenium
   module WebDriver
-    not_compliant_on browser: [:safari, :firefox] do
+    not_compliant_on browser: [:safari] do
       not_compliant_on browser: [:firefox, :ff_nightly], driver: :remote do
         describe ActionBuilder do
           describe 'Key actions' do
@@ -70,8 +70,33 @@ module Selenium
               expect(keylogger.text).to match(/keyup *$/)
             end
 
-            # These requires pointer actions to be working in Firefox first
+            it 'can send multiple send_keys commands' do
+              driver.navigate.to url_for('formPage.html')
+
+              input = driver.find_element(css: '#working')
+              input.click
+
+              driver.action.send_keys('abcd', 'dcba').perform
+              wait.until { input.attribute(:value).length == 8 }
+              expect(input.attribute(:value)).to eq('abcddcba')
+            end
+
+            # Certain non-ascii keys are not working in Firefox yet (known but un-filed bug)
             not_compliant_on driver: [:firefox, :ff_nightly] do
+              it 'can send non-ascii keys' do
+                driver.navigate.to url_for('formPage.html')
+
+                input = driver.find_element(css: '#working')
+                input.click
+
+                driver.action.send_keys('abcd', :left, 'a').perform
+                wait.until { input.attribute(:value).length == 5 }
+                expect(input.attribute(:value)).to eq('abcad')
+              end
+            end
+
+            # These requires pointer actions to be working in Firefox first
+            not_compliant_on driver: :firefox do
               it 'can send keys to element' do
                 driver.navigate.to url_for('formPage.html')
 
@@ -81,57 +106,33 @@ module Selenium
                 wait.until { input.attribute(:value).length == 4 }
                 expect(input.attribute(:value)).to eq('abcd')
               end
-
-              it 'can send multiple send_keys commands' do
-                driver.navigate.to url_for('formPage.html')
-
-                input = driver.find_element(css: '#working')
-
-                driver.action.send_keys(input, 'abcd', 'dcba').perform
-                wait.until { input.attribute(:value).length == 8 }
-                expect(input.attribute(:value)).to eq('abcddcba')
-              end
-
-              # Certain non-ascii keys are not working in Firefox yet (known but un-filed bug)
-              it 'can send non-ascii keys' do
-                driver.navigate.to url_for('formPage.html')
-
-                input = driver.find_element(css: '#working')
-
-                driver.action.send_keys(input, 'abcd', :left, 'a').perform
-                wait.until { input.attribute(:value).length == 5 }
-                expect(input.attribute(:value)).to eq('abcad')
-              end
             end
 
-            compliant_on driver: :firefox do
-              it 'can release pressed keys via release action' do
-                driver.navigate.to url_for('javascriptPage.html')
+            it 'can release pressed keys via release action' do
+              driver.navigate.to url_for('javascriptPage.html')
 
-                event_input = driver.find_element(id: 'theworks')
-                keylogger = driver.find_element(id: 'result')
+              event_input = driver.find_element(id: 'theworks')
+              keylogger = driver.find_element(id: 'result')
 
-                event_input.click
+              event_input.click
 
-                driver.action.key_down(:shift).perform
-                wait.until { keylogger.text.include? 'down' }
-                expect(keylogger.text).to match(/keydown *$/)
+              driver.action.key_down(:shift).perform
+              wait.until { keylogger.text.include? 'down' }
+              expect(keylogger.text).to match(/keydown *$/)
 
-                driver.action.release_actions
-                wait.until { keylogger.text.include? 'up' }
-                expect(keylogger.text).to match(/keyup *$/)
-              end
+              driver.action.release_actions
+              wait.until { keylogger.text.include? 'up' }
+              expect(keylogger.text).to match(/keyup *$/)
             end
           end # Key actions
 
-          not_compliant_on browser: [:safari, :firefox, :ff_nightly] do
+          not_compliant_on browser: [:safari, :firefox] do
             describe 'Pointer actions' do
               it 'clicks an element' do
-                driver.navigate.to url_for('formPage.html')
-                original_title = driver.title
-                driver.action.click(driver.find_element(id: 'imageButton')).perform
-                Wait.new.until { driver.title != original_title }
-                expect(driver.title).to eq 'We Arrive Here'
+                driver.navigate.to url_for('javascriptPage.html')
+                element = driver.find_element(id: 'clickField')
+                driver.action.click(element).perform
+                expect(element.attribute(:value)).to eq('Clicked')
               end
 
               it 'can drag and drop' do
@@ -149,14 +150,19 @@ module Selenium
                 expect(text).to eq('Dropped!')
               end
 
-              it 'double clicks an element' do
-                driver.navigate.to url_for('javascriptPage.html')
-                element = driver.find_element(id: 'doubleClickField')
+              # Pending bug with Firefox
+              not_compliant_on driver: [:ff_nightly] do
+                it 'double clicks an element' do
+                  driver.navigate.to url_for('javascriptPage.html')
+                  element = driver.find_element(id: 'doubleClickField')
 
-                driver.action.double_click(element).perform
-                expect(element.attribute(:value)).to eq('DoubleClicked')
+                  driver.action.double_click(element).perform
+                  expect(element.attribute(:value)).to eq('DoubleClicked')
+                end
               end
-              not_compliant_on browser: :phantomjs do
+
+              # Pending bug with Firefox
+              not_compliant_on browser: [:phantomjs, :ff_nightly] do
                 it 'context clicks an element' do
                   driver.navigate.to url_for('javascriptPage.html')
                   element = driver.find_element(id: 'doubleClickField')
@@ -166,7 +172,7 @@ module Selenium
                 end
               end
 
-              compliant_on driver: :firefox do
+              compliant_on driver: :ff_nightly do
                 it 'can release pressed buttons via release action' do
                   driver.navigate.to url_for('javascriptPage.html')
 
