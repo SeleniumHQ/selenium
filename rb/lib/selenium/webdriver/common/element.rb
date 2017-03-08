@@ -236,6 +236,16 @@ module Selenium
       end
 
       #
+      # Get the dimensions and coordinates of this element.
+      #
+      # @return [WebDriver::Rectangle]
+      #
+
+      def rect
+        bridge.element_rect @id
+      end
+
+      #
       # Determine an element's location on the screen once it has been scrolled into view.
       #
       # @return [WebDriver::Point]
