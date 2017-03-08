@@ -108,21 +108,23 @@ module Selenium
               end
             end
 
-            it 'can release pressed keys via release action' do
-              driver.navigate.to url_for('javascriptPage.html')
+            compliant_on driver: :ff_nightly do
+              it 'can release pressed keys via release action' do
+                driver.navigate.to url_for('javascriptPage.html')
 
-              event_input = driver.find_element(id: 'theworks')
-              keylogger = driver.find_element(id: 'result')
+                event_input = driver.find_element(id: 'theworks')
+                keylogger = driver.find_element(id: 'result')
 
-              event_input.click
+                event_input.click
 
-              driver.action.key_down(:shift).perform
-              wait.until { keylogger.text.include? 'down' }
-              expect(keylogger.text).to match(/keydown *$/)
+                driver.action.key_down(:shift).perform
+                wait.until { keylogger.text.include? 'down' }
+                expect(keylogger.text).to match(/keydown *$/)
 
-              driver.action.release_actions
-              wait.until { keylogger.text.include? 'up' }
-              expect(keylogger.text).to match(/keyup *$/)
+                driver.action.release_actions
+                wait.until { keylogger.text.include? 'up' }
+                expect(keylogger.text).to match(/keyup *$/)
+              end
             end
           end # Key actions
 
