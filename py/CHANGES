@@ -1,4 +1,5 @@
 Selenium 3.3.0
+** Note ** If you are updating to this version, please also update GeckoDriver to v0.15.0
 * Fix python HTTPS encoding for python driver (#3379)
 * Allow Firefox preferences to be set directly in Options
 * Fix shutdown and process termination (#3263)
