@@ -1,11 +1,14 @@
-Selenium 3.2.0
-* No major changes to Python bindings
-
-Selenium 3.1.0
+Selenium 3.3.0
 * Fix python HTTPS encoding for python driver (#3379)
 * Allow Firefox preferences to be set directly in Options
 * Fix shutdown and process termination (#3263)
 * Preventing exception if log_path is none or empty. Fixes #3128
+* Add the W3C capability to Firefox for accepting insecure certificates
+* Initial implementation of Pointer Actions
+* Only skip tests if driver name matches a directory name.
+* Update calls that return a pure object with keys to look for 'value' key
+* Initial W3C Actions support
+* fix docs output directory
 
 Selenium 3.0.2
 * Add support for W3C Get Active Element
