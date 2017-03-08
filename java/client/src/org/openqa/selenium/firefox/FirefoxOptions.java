@@ -335,6 +335,18 @@ public class FirefoxOptions {
       }
       profile = suggestedProfile;
     }
+    Object binary = desiredCapabilities.getCapability(BINARY);
+    if (binary != null) {
+      if (binary instanceof File) {
+        setBinary(((File) binary).toPath());
+      } else if (binary instanceof FirefoxBinary) {
+        setBinary((FirefoxBinary) binary);
+      } else if (binary instanceof Path) {
+        setBinary((Path) binary);
+      } else if (binary instanceof String) {
+        setBinary((String) binary);
+      }
+    }
 
     return this;
   }
