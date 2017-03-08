@@ -1,6 +1,9 @@
 3.3.0 (2017-03-07)
 ===================
 
+Firefox:
+  * geckodriver v0.15 or later is required
+
 W3C:
   * Support for command response data to be wrapped in a 'value' key
   * Support for updated timeout formats
