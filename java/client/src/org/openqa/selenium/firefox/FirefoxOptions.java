@@ -158,6 +158,7 @@ public class FirefoxOptions {
 
   public FirefoxOptions setBinary(FirefoxBinary binary) {
     this.actualBinary = Preconditions.checkNotNull(binary);
+    binary.amendOptions(this);
     this.binaryPath = null;
     return this;
   }
@@ -319,6 +320,10 @@ public class FirefoxOptions {
   }
 
   public FirefoxOptions addDesiredCapabilities(Capabilities desiredCapabilities) {
+    if (desiredCapabilities == null) {
+      return this;
+    }
+
     this.desiredCapabilities.merge(desiredCapabilities);
 
     FirefoxProfile suggestedProfile = extractProfile(desiredCapabilities);
@@ -335,6 +340,7 @@ public class FirefoxOptions {
       }
       profile = suggestedProfile;
     }
+
     Object binary = desiredCapabilities.getCapability(BINARY);
     if (binary != null) {
       if (binary instanceof File) {

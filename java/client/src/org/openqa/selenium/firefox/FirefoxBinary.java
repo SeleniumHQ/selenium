@@ -175,6 +175,10 @@ public class FirefoxBinary {
     extraOptions.addAll(Lists.newArrayList(options));
   }
 
+  void amendOptions(FirefoxOptions options) {
+    options.addArguments(extraOptions);
+  }
+
   protected boolean isOnLinux() {
     return Platform.getCurrent().is(Platform.LINUX);
   }
