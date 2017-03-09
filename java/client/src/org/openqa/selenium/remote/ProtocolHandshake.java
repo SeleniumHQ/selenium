@@ -173,14 +173,14 @@ public class ProtocolHandshake {
                     ("browserName".equals(entry.getKey()) && CHROME.equals(entry.getValue().getAsString())) ||
                     "chromeOptions".equals(entry.getKey()))
         .distinct()
-        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (left, right) -> right));
 
     Map<String, ?> edge = Stream.of(des, req)
         .map(JsonObject::entrySet)
         .flatMap(Collection::stream)
         .filter(entry -> ("browserName".equals(entry.getKey()) && EDGE.equals(entry.getValue().getAsString())))
         .distinct()
-        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (left, right) -> right));
 
     Map<String, ?> firefox = Stream.of(des, req)
         .map(JsonObject::entrySet)
@@ -190,7 +190,7 @@ public class ProtocolHandshake {
                     entry.getKey().startsWith("firefox_") ||
                     entry.getKey().startsWith("moz:"))
         .distinct()
-        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (left, right) -> right));
 
     Map<String, ?> ie = Stream.of(req, des)
         .map(JsonObject::entrySet)
@@ -210,7 +210,7 @@ public class ProtocolHandshake {
                     "silent".equals(entry.getKey()) ||
                     entry.getKey().startsWith("ie."))
         .distinct()
-        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (left, right) -> right));
 
     Map<String, ?> opera = Stream.of(des, req)
         .map(JsonObject::entrySet)
@@ -220,7 +220,7 @@ public class ProtocolHandshake {
                     ("browserName".equals(entry.getKey()) && OPERA.equals(entry.getValue().getAsString())) ||
                     "operaOptions".equals(entry.getKey()))
         .distinct()
-        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (left, right) -> right));
 
     Map<String, ?> safari = Stream.of(des, req)
         .map(JsonObject::entrySet)
@@ -229,7 +229,7 @@ public class ProtocolHandshake {
                     ("browserName".equals(entry.getKey()) && SAFARI.equals(entry.getValue().getAsString())) ||
                     "safari.options".equals(entry.getKey()))
         .distinct()
-        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (left, right) -> right));
 
     Set<String> excludedKeys = Stream.of(chrome, edge, firefox, ie, opera, safari)
         .map(Map::keySet)
