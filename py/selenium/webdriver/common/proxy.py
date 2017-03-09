@@ -101,11 +101,11 @@ class Proxy(object):
             if 'autodetect' in raw and raw['autodetect'] is not None:
                 self.auto_detect = raw['autodetect']
             if 'socksProxy' in raw and raw['socksProxy'] is not None:
-                self.socksProxy = raw['socksProxy']
+                self.socks_proxy = raw['socksProxy']
             if 'socksUsername' in raw and raw['socksUsername'] is not None:
-                self.socksUsername = raw['socksUsername']
+                self.socks_username = raw['socksUsername']
             if 'socksPassword' in raw and raw['socksPassword'] is not None:
-                self.socksPassword = raw['socksPassword']
+                self.socks_password = raw['socksPassword']
 
     @property
     def proxy_type(self):
