@@ -29,7 +29,7 @@ class PointerInput(InputDevice):
         self.name = name
 
     def create_pointer_move(self, duration=DEFAULT_MOVE_DURATION, x=None, y=None, origin=None):
-        action = {"type": "pointerMove","duration": duration}
+        action = dict(type="pointerMove", duration=duration)
         action["x"] = x
         action["y"] = y
         if isinstance(origin, WebElement):
@@ -40,10 +40,10 @@ class PointerInput(InputDevice):
         self.add_action(action)
 
     def create_pointer_down(self, button):
-        self.add_action({"type": "pointerDown", "duration": 0, "button":button})
+        self.add_action({"type": "pointerDown", "duration": 0, "button": button})
 
     def create_pointer_up(self, button):
-        self.add_action({"type": "pointerUp", "duration": 0, "button":button})
+        self.add_action({"type": "pointerUp", "duration": 0, "button": button})
 
     def create_pointer_cancel(self):
         self.add_action({"type": "pointerCancel"})
