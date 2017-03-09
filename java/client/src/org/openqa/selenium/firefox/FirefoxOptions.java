@@ -33,11 +33,14 @@ import com.google.gson.JsonPrimitive;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.SessionNotCreatedException;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.internal.ProfilesIni;
 import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
+
+import sun.awt.image.ByteInterleavedRaster;
 
 import java.io.File;
 import java.io.IOException;
@@ -45,11 +48,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -68,6 +73,7 @@ import java.util.stream.Stream;
 public class FirefoxOptions {
 
   public final static String FIREFOX_OPTIONS = "moz:firefoxOptions";
+  private final static Logger LOG = Logger.getLogger(FirefoxOptions.class.getName());
 
   private String binaryPath;
   private FirefoxBinary actualBinary;
@@ -159,16 +165,22 @@ public class FirefoxOptions {
   public FirefoxOptions setBinary(FirefoxBinary binary) {
     this.actualBinary = Preconditions.checkNotNull(binary);
     binary.amendOptions(this);
+    desiredCapabilities.setCapability(BINARY, binary);
     this.binaryPath = null;
     return this;
   }
 
   public FirefoxOptions setBinary(Path path) {
     // Default to UNIX-style paths, even on Windows.
-    StringBuilder builder = new StringBuilder(path.isAbsolute() ? "/" : "");
-    this.binaryPath = Joiner.on("/").appendTo(builder, path).toString();
+    this.binaryPath = asUnixPath(path);
     this.actualBinary = null;
+    desiredCapabilities.setCapability(BINARY, new FirefoxBinary(path.toFile()));
     return this;
+  }
+
+  private String asUnixPath(Path path) {
+    StringBuilder builder = new StringBuilder(path.isAbsolute() ? "/" : "");
+    return Joiner.on("/").appendTo(builder, path).toString();
   }
 
   public FirefoxOptions setBinary(String path) {
@@ -228,6 +240,16 @@ public class FirefoxOptions {
 
   public FirefoxOptions setProfile(FirefoxProfile profile) {
     this.profile = profile;
+
+    if (!booleanPrefs.isEmpty() || !intPrefs.isEmpty() || !stringPrefs.isEmpty()) {
+      LOG.info("Will update profile with preferences from these options.");
+      booleanPrefs.entrySet().forEach(e -> profile.setPreference(e.getKey(), e.getValue()));
+      intPrefs.entrySet().forEach(e -> profile.setPreference(e.getKey(), e.getValue()));
+      stringPrefs.entrySet().forEach(e -> profile.setPreference(e.getKey(), e.getValue()));
+    }
+
+    desiredCapabilities.setCapability(PROFILE, profile);
+
     return this;
   }
 
@@ -289,14 +311,6 @@ public class FirefoxOptions {
     }
   }
 
-  // Confusing API. Keeping package visible only
-  FirefoxOptions setProfileSafely(FirefoxProfile profile) {
-    if (profile == null) {
-      return this;
-    }
-    return setProfile(profile);
-  }
-
   public FirefoxOptions addArguments(String... arguments) {
     addArguments(ImmutableList.copyOf(arguments));
     return this;
@@ -309,16 +323,25 @@ public class FirefoxOptions {
 
   public FirefoxOptions addPreference(String key, boolean value) {
     booleanPrefs.put(checkNotNull(key), value);
+    if (profile != null) {
+      profile.setPreference(key, value);
+    }
     return this;
   }
 
   public FirefoxOptions addPreference(String key, int value) {
     intPrefs.put(checkNotNull(key), value);
+    if (profile != null) {
+      profile.setPreference(key, value);
+    }
     return this;
   }
 
   public FirefoxOptions addPreference(String key, String value) {
     stringPrefs.put(checkNotNull(key), checkNotNull(value));
+    if (profile != null) {
+      profile.setPreference(key, value);
+    }
     return this;
   }
 
@@ -328,28 +351,33 @@ public class FirefoxOptions {
   }
 
   public FirefoxOptions addDesiredCapabilities(Capabilities desiredCapabilities) {
-    if (desiredCapabilities == null) {
+    return validateAndAmendUsing(this.desiredCapabilities, desiredCapabilities);
+  }
+
+  public FirefoxOptions addRequiredCapabilities(Capabilities requiredCapabilities) {
+    return validateAndAmendUsing(this.requiredCapabilities, requiredCapabilities);
+  }
+
+  private FirefoxOptions validateAndAmendUsing(DesiredCapabilities existing, Capabilities caps) {
+    if (caps == null) {
       return this;
     }
 
-    this.desiredCapabilities.merge(desiredCapabilities);
+    existing.merge(caps);
 
-    FirefoxProfile suggestedProfile = extractProfile(desiredCapabilities);
-    if (suggestedProfile !=  null) {
-      if (!booleanPrefs.isEmpty() || !intPrefs.isEmpty() || !stringPrefs.isEmpty()) {
-        throw new IllegalStateException(
-            "Unable to determine if preferences set on this option " +
-            "are the same as the profile in the capabilities");
-      }
-      if (profile != null && !suggestedProfile.equals(profile)) {
-        throw new IllegalStateException(
-            "Profile has been set on both the capabilities and these options, but they're " +
-            "different. Unable to determine which one you want to use.");
-      }
-      profile = suggestedProfile;
+    FirefoxProfile newProfile = extractProfile(caps);
+    if (profile != null && newProfile != null && !profile.equals(newProfile)) {
+      LOG.info("Found a profile on these options and the capabilities. Will assume you " +
+               "want the profile already set here. If you're seeing this in the logs of the " +
+               "standalone server, we've probably just deserialized the same options twice and " +
+               "it's likely that there's nothing to worry about.");
     }
 
-    Object binary = desiredCapabilities.getCapability(BINARY);
+    if (newProfile != null) {
+      setProfile(newProfile);
+    }
+
+    Object binary = existing.getCapability(BINARY);
     if (binary != null) {
       if (binary instanceof File) {
         setBinary(((File) binary).toPath());
@@ -360,27 +388,6 @@ public class FirefoxOptions {
       } else if (binary instanceof String) {
         setBinary((String) binary);
       }
-    }
-
-    return this;
-  }
-
-  public FirefoxOptions addRequiredCapabilities(Capabilities requiredCapabilities) {
-    this.requiredCapabilities.merge(requiredCapabilities);
-
-    FirefoxProfile suggestedProfile = extractProfile(desiredCapabilities);
-    if (suggestedProfile !=  null) {
-      if (!booleanPrefs.isEmpty() || !intPrefs.isEmpty() || !stringPrefs.isEmpty()) {
-        throw new IllegalStateException(
-            "Unable to determine if preferences set on this option " +
-            "are the same as the profile in the capabilities");
-      }
-      if (profile != null && !suggestedProfile.equals(profile)) {
-        throw new IllegalStateException(
-            "Profile has been set on both the capabilities and these options, but they're " +
-            "different. Unable to determine which one you want to use.");
-      }
-      profile = suggestedProfile;
     }
 
     return this;
@@ -409,7 +416,15 @@ public class FirefoxOptions {
   }
 
   public Capabilities toDesiredCapabilities() {
-    DesiredCapabilities capabilities = new DesiredCapabilities(desiredCapabilities);
+    return toCapabilities(desiredCapabilities);
+  }
+
+  public Capabilities toRequiredCapabilities() {
+    return toCapabilities(requiredCapabilities);
+  }
+
+  private Capabilities toCapabilities(Capabilities source) {
+    DesiredCapabilities capabilities = new DesiredCapabilities(source);
 
     if (isLegacy()) {
       capabilities.setCapability(FirefoxDriver.MARIONETTE, false);
@@ -418,40 +433,54 @@ public class FirefoxOptions {
     Object priorBinary = capabilities.getCapability(BINARY);
     if (priorBinary instanceof Path) {
       // Again, unix-style path
-      priorBinary = Joiner.on("/").join((Path) priorBinary);
+      priorBinary = asUnixPath((Path) priorBinary);
     }
     if (priorBinary instanceof String) {
-      if (actualBinary != null || !priorBinary.equals(binaryPath)) {
-        throw new IllegalStateException(String.format(
-            "Binary already set in capabilities, but is different from the one set here: %s, %s",
-            priorBinary,
-            binaryPath != null ? binaryPath : actualBinary));
-      }
+      priorBinary = asUnixPath(Paths.get((String) priorBinary));
     }
     if (priorBinary instanceof FirefoxBinary) {
-      // Relies on instance equality, which is fragile.
-      if (binaryPath != null || !priorBinary.equals(actualBinary)) {
-        throw new IllegalStateException(String.format(
-            "Binary already set in capabilities, but is different from the one set here: %s, %s",
-            priorBinary,
-            actualBinary != null ? actualBinary : binaryPath));
-      }
+      priorBinary = asUnixPath(((FirefoxBinary) priorBinary).getFile().toPath());
+    }
+
+    if ((actualBinary != null && !actualBinary.getFile().toPath().equals(priorBinary)) ||
+        (binaryPath != null && !binaryPath.equals(priorBinary))) {
+      LOG.info(String.format(
+          "Preferring the firefox binary in these options (%s rather than %s)",
+          actualBinary != null ? actualBinary.getPath() : binaryPath,
+          priorBinary));
+    }
+    if (actualBinary != null && binaryPath == null) {
+      capabilities.setCapability(BINARY, actualBinary);
+    } else if (binaryPath != null && actualBinary == null) {
+      capabilities.setCapability(BINARY, new FirefoxBinary(new File(binaryPath)));
     }
 
     Object priorProfile = capabilities.getCapability(PROFILE);
-    if (priorProfile != null) {
-      if (!booleanPrefs.isEmpty() || !intPrefs.isEmpty() || !stringPrefs.isEmpty()) {
-        throw new IllegalStateException(
-            "Unable to determine if preferences set on this option " +
-            "are the same as the profile in the capabilities");
-      }
-      if (profile != null && !priorProfile.equals(profile)) {
-        throw new IllegalStateException(
-            "Profile has been set on both the capabilities and these options, but they're " +
-            "different. Unable to determine which one you want to use.");
+    if (priorProfile instanceof String) {
+      try {
+        priorProfile = FirefoxProfile.fromJson((String) priorProfile);
+      } catch (IOException e) {
+        throw new WebDriverException(e);
       }
     }
-
+    if (priorProfile != null) {
+      if (!booleanPrefs.isEmpty() || !intPrefs.isEmpty() || !stringPrefs.isEmpty()) {
+        LOG.info("Setting our our preferences on the existing profile");
+      }
+      if (profile != null && !priorProfile.equals(profile)) {
+        LOG.info("Found a profile on these options and the capabilities. Will assume you " +
+                 "want the profile already set here. If you're seeing this in the logs of the " +
+                 "standalone server, we've probably just deserialized the same options twice and " +
+                 "it's likely that there's nothing to worry about.");
+      }
+      if (profile == null) {
+        if (priorProfile instanceof FirefoxProfile) {
+          profile = (FirefoxProfile) priorProfile;
+        } else {
+          LOG.info("Unable to use profile: " + priorProfile.getClass());
+        }
+      }
+    }
     capabilities.setCapability(FIREFOX_OPTIONS, this);
 
     if (actualBinary != null) {
@@ -469,12 +498,9 @@ public class FirefoxOptions {
     return capabilities;
   }
 
-  public Capabilities toRequiredCapabilities() {
-    return requiredCapabilities;
-  }
-
   public DesiredCapabilities addTo(DesiredCapabilities capabilities) {
     capabilities.merge(toDesiredCapabilities());
+    capabilities.merge(toRequiredCapabilities());
     return capabilities;
   }
 
