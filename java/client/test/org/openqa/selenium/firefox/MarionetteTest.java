@@ -167,7 +167,7 @@ public class MarionetteTest extends JUnit4TestBase {
 
     verifyItIsMarionette(localDriver);
   }
-  
+
   @Test
   public void canPassCapabilitiesBinaryAndProfileSeparately() throws IOException {
     FirefoxBinary binary = spy(new FirefoxBinary());
