@@ -323,12 +323,16 @@ public class ProtocolHandshake {
 
     // The old geckodriver prior to 0.14 returned "value" as the thing containing the session id.
     // Later versions follow the (amended) w3c spec and return the capabilities in a field called
-    // "value"
+    // "value". The most recent versions of the spec contain any errors wrapped in a value object.
+    // Pull that out if it exists.
     if (value != null && value instanceof Map) {
       Map<?, ?> mappedValue = (Map<?, ?>) value;
       if (mappedValue.containsKey("value") && mappedValue.containsKey("sessionId")) {
         value = mappedValue.get("value");
         sessionId = mappedValue.get("sessionId");
+      }
+      if (mappedValue.containsKey("error")) {
+        w3cError = mappedValue.get("error");
       }
     }
 
