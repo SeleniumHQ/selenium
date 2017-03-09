@@ -191,8 +191,16 @@ public class FirefoxOptions {
       return Optional.of(new FirefoxBinary(new File(binaryPath)));
     }
 
-    if (desiredCapabilities.getCapability(FirefoxDriver.BINARY) != null) {
-      Object raw = desiredCapabilities.getCapability(FirefoxDriver.BINARY);
+    return Stream.of(requiredCapabilities, desiredCapabilities)
+        .map(this::determineBinaryFromCapabilities)
+        .filter(Optional::isPresent)
+        .findFirst()
+        .orElse(Optional.empty());
+  }
+
+  private Optional<FirefoxBinary> determineBinaryFromCapabilities(Capabilities caps) {
+    if (caps.getCapability(FirefoxDriver.BINARY) != null) {
+      Object raw = caps.getCapability(FirefoxDriver.BINARY);
       if (raw instanceof FirefoxBinary) {
         return Optional.of((FirefoxBinary) raw);
       } else {
@@ -204,17 +212,17 @@ public class FirefoxOptions {
       }
     }
 
-    if (desiredCapabilities.getCapability(CapabilityType.VERSION) != null) {
+    if (caps.getCapability(CapabilityType.VERSION) != null) {
       try {
         FirefoxBinary.Channel channel = FirefoxBinary.Channel.fromString(
-            (String) desiredCapabilities.getCapability(CapabilityType.VERSION));
+            (String) caps.getCapability(CapabilityType.VERSION));
         return Optional.of(new FirefoxBinary(channel));
       } catch (WebDriverException ex) {
         return Optional.of(new FirefoxBinary(
-            (String) desiredCapabilities.getCapability(CapabilityType.VERSION)));
+            (String) caps.getCapability(CapabilityType.VERSION)));
       }
     }
-    // last resort
+
     return Optional.empty();
   }
 
@@ -226,10 +234,10 @@ public class FirefoxOptions {
   public FirefoxProfile getProfile() {
     FirefoxProfile profileToUse = profile;
     if (profileToUse == null) {
-      profileToUse = extractProfile(desiredCapabilities);
+      profileToUse = extractProfile(requiredCapabilities);
     }
     if (profileToUse == null) {
-      profileToUse = extractProfile(requiredCapabilities);
+      profileToUse = extractProfile(desiredCapabilities);
     }
     if (profileToUse == null) {
       String suggestedProfile = System.getProperty(FirefoxDriver.SystemProperty.BROWSER_PROFILE);
