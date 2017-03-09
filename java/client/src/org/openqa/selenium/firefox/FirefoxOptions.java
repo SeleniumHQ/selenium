@@ -41,6 +41,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -170,7 +171,9 @@ public class FirefoxOptions {
     // Default to UNIX-style paths, even on Windows.
     this.binaryPath = asUnixPath(path);
     this.actualBinary = null;
-    desiredCapabilities.setCapability(BINARY, new FirefoxBinary(path.toFile()));
+    if (Files.exists(path)) {
+      desiredCapabilities.setCapability(BINARY, new FirefoxBinary(path.toFile()));
+    }
     return this;
   }
 
@@ -448,7 +451,9 @@ public class FirefoxOptions {
     if (actualBinary != null && binaryPath == null) {
       capabilities.setCapability(BINARY, actualBinary);
     } else if (binaryPath != null && actualBinary == null) {
-      capabilities.setCapability(BINARY, new FirefoxBinary(new File(binaryPath)));
+      if (Files.exists(Paths.get(binaryPath))) {
+        capabilities.setCapability(BINARY, new FirefoxBinary(new File(binaryPath)));
+      }
     }
 
     Object priorProfile = capabilities.getCapability(PROFILE);

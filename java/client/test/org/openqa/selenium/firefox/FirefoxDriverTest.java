@@ -26,6 +26,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.junit.Assume.assumeNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
@@ -39,6 +40,7 @@ import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import com.google.common.base.Throwables;
 
 import org.junit.After;
+import org.junit.Assume;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.openqa.selenium.By;
@@ -343,13 +345,10 @@ public class FirefoxDriverTest extends JUnit4TestBase {
   @Test
   public void shouldBeAbleToStartANamedProfile() {
     FirefoxProfile profile = new ProfilesIni().getProfile("default");
+    assumeNotNull(profile);
 
-    if (profile != null) {
-      WebDriver firefox = new FirefoxDriver(profile);
-      firefox.quit();
-    } else {
-      System.out.println("Not running start with named profile test: no default profile found");
-    }
+    WebDriver firefox = new FirefoxDriver(profile);
+    firefox.quit();
   }
 
   @Test(timeout = 60000)

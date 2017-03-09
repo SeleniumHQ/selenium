@@ -167,20 +167,7 @@ public class MarionetteTest extends JUnit4TestBase {
 
     verifyItIsMarionette(localDriver);
   }
-
-  @Test
-  public void cannotUseDifferentProfilesInCapabilitiesAndDirectly() {
-    DesiredCapabilities caps = new DesiredCapabilities();
-    caps.setCapability(FirefoxDriver.PROFILE, new FirefoxProfile());
-
-    try {
-      localDriver = new FirefoxDriver(new FirefoxBinary(), new FirefoxProfile(), caps);
-      fail("Exception expected");
-    } catch (IllegalStateException ex) {
-      // expected
-    }
-  }
-
+  
   @Test
   public void canPassCapabilitiesBinaryAndProfileSeparately() throws IOException {
     FirefoxBinary binary = spy(new FirefoxBinary());
