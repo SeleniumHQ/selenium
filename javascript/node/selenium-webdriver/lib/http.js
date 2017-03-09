@@ -225,6 +225,7 @@ const COMMAND_MAP = new Map([
     [cmd.Name.EXECUTE_SCRIPT, post('/session/:sessionId/execute')],
     [cmd.Name.EXECUTE_ASYNC_SCRIPT, post('/session/:sessionId/execute_async')],
     [cmd.Name.SCREENSHOT, get('/session/:sessionId/screenshot')],
+    [cmd.Name.GET_TIMEOUT, get('/session/:sessionId/timeouts')],
     [cmd.Name.SET_TIMEOUT, post('/session/:sessionId/timeouts')],
     [cmd.Name.MOVE_TO, post('/session/:sessionId/moveto')],
     [cmd.Name.CLICK, post('/session/:sessionId/click')],
