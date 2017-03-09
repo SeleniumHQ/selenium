@@ -117,26 +117,12 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
 
   protected FirefoxBinary binary;
 
-  public FirefoxDriver(FirefoxOptions options) {
-    this(toExecutor(options), options.toDesiredCapabilities(), options.toRequiredCapabilities());
-  }
-
-  private static CommandExecutor toExecutor(FirefoxOptions options) {
-    if (options.isLegacy()) {
-      return new FirefoxDriver.LazyCommandExecutor(options.getBinary(), options.getProfile());
-
-    } else {
-      GeckoDriverService.Builder builder = new GeckoDriverService.Builder().usingPort(0);
-      Optional<FirefoxBinary> binary = options.getBinaryOrNull();
-      if (binary.isPresent()) {
-        builder.usingFirefoxBinary(binary.get());
-      }
-      return new DriverCommandExecutor(builder.build());
-    }
-  }
-
   public FirefoxDriver() {
     this(new FirefoxOptions());
+  }
+
+  public FirefoxDriver(FirefoxOptions options) {
+    this(toExecutor(options), options.toDesiredCapabilities(), options.toRequiredCapabilities());
   }
 
   /**
@@ -164,6 +150,90 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
     this(getFirefoxOptions(desiredCapabilities).addDesiredCapabilities(desiredCapabilities));
   }
 
+  public FirefoxDriver(Capabilities desiredCapabilities, Capabilities requiredCapabilities) {
+    this(getFirefoxOptions(desiredCapabilities)
+             .addDesiredCapabilities(desiredCapabilities)
+             .addRequiredCapabilities(requiredCapabilities));
+  }
+
+  /**
+   * @deprecated Prefer {@link FirefoxOptions#setBinary(FirefoxBinary)},
+   *   {@link FirefoxOptions#setProfile(FirefoxProfile)}
+   */
+  @Deprecated
+  public FirefoxDriver(FirefoxBinary binary, FirefoxProfile profile, Capabilities capabilities) {
+    this(getFirefoxOptions(capabilities)
+             .setBinary(binary)
+             .setProfile(profile)
+             .addDesiredCapabilities(capabilities));
+  }
+
+  /**
+   * @deprecated Prefer {@link FirefoxOptions#setBinary(FirefoxBinary)},
+   *   {@link FirefoxOptions#setProfile(FirefoxProfile)}
+   */
+  @Deprecated
+  public FirefoxDriver(
+      FirefoxBinary binary,
+      FirefoxProfile profile,
+      Capabilities desiredCapabilities,
+      Capabilities requiredCapabilities) {
+    this(getFirefoxOptions(desiredCapabilities)
+             .setBinary(binary).setProfile(profile)
+             .addDesiredCapabilities(desiredCapabilities)
+             .addRequiredCapabilities(requiredCapabilities));
+  }
+
+  /**
+   * @deprecated No replacement.
+   */
+  @Deprecated
+  public FirefoxDriver(GeckoDriverService driverService) {
+    this(new DriverCommandExecutor(driverService), null, null);
+  }
+
+  /**
+   * @deprecated No replacement.
+   */
+  @Deprecated
+  public FirefoxDriver(GeckoDriverService driverService, Capabilities desiredCapabilities) {
+    this(new DriverCommandExecutor(driverService), desiredCapabilities, null);
+  }
+
+  /**
+   * @deprecated No replacement.
+   */
+  @Deprecated
+  public FirefoxDriver(
+      GeckoDriverService driverService,
+      Capabilities desiredCapabilities,
+      Capabilities requiredCapabilities) {
+    this(new DriverCommandExecutor(driverService), desiredCapabilities, requiredCapabilities);
+  }
+
+  private FirefoxDriver(
+      CommandExecutor executor,
+      Capabilities desiredCapabilities,
+      Capabilities requiredCapabilities) {
+    super(executor,
+          dropCapabilities(desiredCapabilities),
+          dropCapabilities(requiredCapabilities));
+  }
+
+  private static CommandExecutor toExecutor(FirefoxOptions options) {
+    if (options.isLegacy()) {
+      return new FirefoxDriver.LazyCommandExecutor(options.getBinary(), options.getProfile());
+
+    } else {
+      GeckoDriverService.Builder builder = new GeckoDriverService.Builder().usingPort(0);
+      Optional<FirefoxBinary> binary = options.getBinaryOrNull();
+      if (binary.isPresent()) {
+        builder.usingFirefoxBinary(binary.get());
+      }
+      return new DriverCommandExecutor(builder.build());
+    }
+  }
+
   private static FirefoxOptions getFirefoxOptions(Capabilities capabilities) {
     FirefoxOptions options = new FirefoxOptions();
 
@@ -189,64 +259,6 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
       options = (FirefoxOptions) rawOptions;
     }
     return options;
-  }
-
-  public FirefoxDriver(Capabilities desiredCapabilities, Capabilities requiredCapabilities) {
-    this(getFirefoxOptions(desiredCapabilities).addDesiredCapabilities(desiredCapabilities)
-             .addRequiredCapabilities(requiredCapabilities));
-  }
-
-  /**
-   * @deprecated Prefer {@link FirefoxOptions#setBinary(FirefoxBinary)},
-   *   {@link FirefoxOptions#setProfile(FirefoxProfile)}
-   */
-  @Deprecated
-  public FirefoxDriver(FirefoxBinary binary, FirefoxProfile profile, Capabilities capabilities) {
-    this(getFirefoxOptions(capabilities).setBinary(binary).setProfile(profile)
-             .addDesiredCapabilities(capabilities));
-  }
-
-  /**
-   * @deprecated Prefer {@link FirefoxOptions#setBinary(FirefoxBinary)},
-   *   {@link FirefoxOptions#setProfile(FirefoxProfile)}
-   */
-  @Deprecated
-  public FirefoxDriver(FirefoxBinary binary, FirefoxProfile profile,
-                       Capabilities desiredCapabilities, Capabilities requiredCapabilities) {
-    this(getFirefoxOptions(desiredCapabilities).setBinary(binary).setProfile(profile)
-             .addDesiredCapabilities(desiredCapabilities).addRequiredCapabilities(requiredCapabilities));
-  }
-
-  /**
-   * @deprecated No replacement.
-   */
-  @Deprecated
-  public FirefoxDriver(GeckoDriverService driverService) {
-    this(new DriverCommandExecutor(driverService), null, null);
-  }
-
-  /**
-   * @deprecated No replacement.
-   */
-  @Deprecated
-  public FirefoxDriver(GeckoDriverService driverService, Capabilities desiredCapabilities) {
-    this(new DriverCommandExecutor(driverService), desiredCapabilities, null);
-  }
-
-  /**
-   * @deprecated No replacement.
-   */
-  @Deprecated
-  public FirefoxDriver(GeckoDriverService driverService, Capabilities desiredCapabilities,
-      Capabilities requiredCapabilities) {
-    this(new DriverCommandExecutor(driverService), desiredCapabilities, requiredCapabilities);
-  }
-
-  private FirefoxDriver(CommandExecutor executor, Capabilities desiredCapabilities,
-      Capabilities requiredCapabilities) {
-    super(executor,
-          dropCapabilities(desiredCapabilities),
-          dropCapabilities(requiredCapabilities));
   }
 
   @Override
