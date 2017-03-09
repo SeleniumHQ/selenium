@@ -688,8 +688,7 @@ class WebDriver(object):
         """
         if self.w3c:
             self.execute(Command.SET_TIMEOUTS, {
-                'ms': float(time_to_wait) * 1000,
-                'type': 'implicit'})
+                'implicit': int(float(time_to_wait) * 1000)})
         else:
             self.execute(Command.IMPLICIT_WAIT, {
                 'ms': float(time_to_wait) * 1000})
@@ -707,8 +706,7 @@ class WebDriver(object):
         """
         if self.w3c:
             self.execute(Command.SET_TIMEOUTS, {
-                'ms': float(time_to_wait) * 1000,
-                'type': 'script'})
+                'script': int(float(time_to_wait) * 1000)})
         else:
             self.execute(Command.SET_SCRIPT_TIMEOUT, {
                 'ms': float(time_to_wait) * 1000})
@@ -725,8 +723,7 @@ class WebDriver(object):
             driver.set_page_load_timeout(30)
         """
         self.execute(Command.SET_TIMEOUTS, {
-            'ms': float(time_to_wait) * 1000,
-            'type': 'page load'})
+            'page load': int(float(time_to_wait) * 1000)})
 
     def find_element(self, by=By.ID, value=None):
         """
