@@ -1,3 +1,12 @@
+## v.next
+
+* Added `Options#getTimeouts()` for retrieving the currently configured session
+  timeouts (i.e. implicit wait). This method will only work with W3C compatible
+  WebDriver implementations.
+* Deprecated the `Timeouts` class in favor of `Options#setTimeouts()`, which
+  supports setting multiple timeouts at once.
+
+
 ## v3.3.0
 
 * Added warning log messages when the user creates new managed promises, or
