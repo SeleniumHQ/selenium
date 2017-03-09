@@ -23,6 +23,7 @@ import static org.openqa.selenium.firefox.FirefoxDriver.PROFILE;
 import static org.openqa.selenium.remote.CapabilityType.ACCEPT_SSL_CERTS;
 import static org.openqa.selenium.remote.CapabilityType.LOGGING_PREFS;
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_WEB_STORAGE;
+import static org.openqa.selenium.remote.CapabilityType.VERSION;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
@@ -33,14 +34,10 @@ import com.google.gson.JsonPrimitive;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.SessionNotCreatedException;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.internal.ProfilesIni;
 import org.openqa.selenium.logging.LoggingPreferences;
-import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
-
-import sun.awt.image.ByteInterleavedRaster;
 
 import java.io.File;
 import java.io.IOException;
@@ -48,7 +45,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -224,14 +220,14 @@ public class FirefoxOptions {
       }
     }
 
-    if (caps.getCapability(CapabilityType.VERSION) != null) {
+    Object rawVersion = caps.getCapability(VERSION);
+    if (rawVersion != null && !"".equals(rawVersion)) {
       try {
-        FirefoxBinary.Channel channel = FirefoxBinary.Channel.fromString(
-            (String) caps.getCapability(CapabilityType.VERSION));
+        FirefoxBinary.Channel channel =
+            FirefoxBinary.Channel.fromString(String.valueOf(rawVersion));
         return Optional.of(new FirefoxBinary(channel));
       } catch (WebDriverException ex) {
-        return Optional.of(new FirefoxBinary(
-            (String) caps.getCapability(CapabilityType.VERSION)));
+        return Optional.of(new FirefoxBinary(String.valueOf(rawVersion)));
       }
     }
 
