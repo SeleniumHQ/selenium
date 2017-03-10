@@ -109,7 +109,8 @@ def pages(driver, webserver):
 
 @pytest.fixture(autouse=True, scope='session')
 def server(request):
-    if 'Remote' not in request.config.getoption('drivers'):
+    drivers = request.config.getoption('drivers')
+    if drivers is None or 'Remote' not in drivers:
         yield None
         return
 
