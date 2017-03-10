@@ -833,7 +833,6 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
       public Timeouts implicitlyWait(long time, TimeUnit unit) {
         execute(DriverCommand.SET_TIMEOUT, ImmutableMap.of(
-            "implicit", TimeUnit.MILLISECONDS.convert(time, unit),
             "type", "implicit",
             "ms", TimeUnit.MILLISECONDS.convert(time, unit)));
         return this;
@@ -841,7 +840,6 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
       public Timeouts setScriptTimeout(long time, TimeUnit unit) {
         execute(DriverCommand.SET_TIMEOUT, ImmutableMap.of(
-            "script", TimeUnit.MILLISECONDS.convert(time, unit),
             "type", "script",
             "ms", TimeUnit.MILLISECONDS.convert(time, unit)));
         return this;
@@ -849,7 +847,6 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
       public Timeouts pageLoadTimeout(long time, TimeUnit unit) {
         execute(DriverCommand.SET_TIMEOUT, ImmutableMap.of(
-            "pageLoad", TimeUnit.MILLISECONDS.convert(time, unit),
             "type", "page load",
             "ms", TimeUnit.MILLISECONDS.convert(time, unit)));
         return this;
