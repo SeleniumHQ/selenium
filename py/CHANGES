@@ -1,3 +1,11 @@
+Selenium 3.3.1
+* Fix encoding of basic auth header when using Python 3 Fixes #3622
+* Add initial unit test suite
+* Update W3C Timeout setting to be in line with the specification
+* support.ui.Select class inherits from object (#3067)
+* fix bug in proxy constructor that some properties are not proper set (#3459)
+* Fix flake8 issues (#3628)
+
 Selenium 3.3.0
 ** Note ** If you are updating to this version, please also update GeckoDriver to v0.15.0
 * Fix python HTTPS encoding for python driver (#3379)
