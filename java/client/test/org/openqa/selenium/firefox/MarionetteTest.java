@@ -19,7 +19,6 @@ package org.openqa.selenium.firefox;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.never;
@@ -65,7 +64,7 @@ public class MarionetteTest extends JUnit4TestBase {
   public void canStartDriverWithSpecifiedBinary() throws IOException {
     FirefoxBinary binary = spy(new FirefoxBinary());
 
-    localDriver = new FirefoxDriver(binary);
+    localDriver = new FirefoxDriver(new FirefoxOptions().setBinary(binary));
 
     verifyItIsMarionette(localDriver);
     verify(binary, atLeastOnce()).getPath();
@@ -92,7 +91,7 @@ public class MarionetteTest extends JUnit4TestBase {
     profile.setPreference("browser.startup.page", 1);
     profile.setPreference("browser.startup.homepage", pages.xhtmlTestPage);
 
-    localDriver = new FirefoxDriver(binary, profile);
+    localDriver = new FirefoxDriver(new FirefoxOptions().setBinary(binary).setProfile(profile));
     wait.until($ -> "XHTML Test Page".equals(localDriver.getTitle()));
 
     verifyItIsMarionette(localDriver);
@@ -162,7 +161,10 @@ public class MarionetteTest extends JUnit4TestBase {
     DesiredCapabilities caps = new DesiredCapabilities();
     caps.setCapability(FirefoxDriver.PROFILE, profile);
 
-    localDriver = new FirefoxDriver(new FirefoxBinary(), profile, caps);
+    localDriver = new FirefoxDriver(
+        new FirefoxOptions()
+            .setProfile(profile)
+            .addDesiredCapabilities(caps));
     wait.until($ -> "XHTML Test Page".equals(localDriver.getTitle()));
 
     verifyItIsMarionette(localDriver);
@@ -179,7 +181,11 @@ public class MarionetteTest extends JUnit4TestBase {
     DesiredCapabilities capabilities = new DesiredCapabilities();
     capabilities.setCapability(CapabilityType.PAGE_LOAD_STRATEGY, "none");
 
-    localDriver = new FirefoxDriver(binary, profile, capabilities);
+    localDriver = new FirefoxDriver(
+        new FirefoxOptions()
+          .setBinary(binary)
+          .setProfile(profile)
+          .addDesiredCapabilities(capabilities));
     wait.until($ -> "XHTML Test Page".equals(localDriver.getTitle()));
 
     verifyItIsMarionette(localDriver);
