@@ -36,6 +36,7 @@ goog.require('bot.ErrorCode');
 goog.require('bot.userAgent');
 goog.require('goog.array');
 goog.require('goog.dom');
+goog.require('goog.events.BrowserEvent');
 goog.require('goog.style');
 goog.require('goog.userAgent');
 goog.require('goog.userAgent.product');
