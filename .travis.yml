@@ -130,6 +130,9 @@ matrix:
       env: TOXENV=docs
     - language: python
       python: 2.7
+      env: TOXENV=py27-unit
+    - language: python
+      python: 2.7
       env: CHROME=1 TOXENV=py27-chrome
       addons:
         apt:
@@ -159,6 +162,9 @@ matrix:
     - language: python
       python: 3.6
       env: TOXENV=docs
+    - language: python
+      python: 3.6
+      env: TOXENV=py36-unit
     - language: python
       python: 3.6
       env: CHROME=1 TOXENV=py36-chrome
