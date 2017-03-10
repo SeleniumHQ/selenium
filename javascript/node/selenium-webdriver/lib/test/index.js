@@ -50,6 +50,7 @@ var NATIVE_BROWSERS = [
 ];
 
 
+var noBuild = /^1|true$/i.test(process.env['SELENIUM_NO_BUILD']);
 var serverJar = process.env['SELENIUM_SERVER_JAR'];
 var remoteUrl = process.env['SELENIUM_REMOTE_URL'];
 var useLoopback = process.env['SELENIUM_USE_LOOP_BACK'] == '1';
@@ -225,7 +226,7 @@ function suite(fn, opt_options) {
   try {
 
     before(function() {
-      if (isDevMode) {
+      if (isDevMode && !noBuild) {
         return build.of(
             '//javascript/atoms/fragments:is-displayed',
             '//javascript/webdriver/atoms:getAttribute')

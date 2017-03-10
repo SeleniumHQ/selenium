@@ -1,10 +1,21 @@
 ## v.next
 
+### Notice
+
+This release requires [geckodriver 0.15.0](https://github.com/mozilla/geckodriver/releases/tag/v0.15.0) or newer.
+
+### API Changes
+
 * Added `Options#getTimeouts()` for retrieving the currently configured session
   timeouts (i.e. implicit wait). This method will only work with W3C compatible
   WebDriver implementations.
 * Deprecated the `Timeouts` class in favor of `Options#setTimeouts()`, which
   supports setting multiple timeouts at once.
+
+### Changes for W3C WebDriver Spec Compliance
+
+* Fix W3C response parsing, which expects response data to always be a JSON
+  object with a `value` key.
 
 
 ## v3.3.0
