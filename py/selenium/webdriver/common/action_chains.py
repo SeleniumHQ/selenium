@@ -160,8 +160,8 @@ class ActionChains(object):
         else:
             if on_element:
                 self.move_to_element(on_element)
-                self._actions.append(lambda: self._driver.execute(
-                                     Command.DOUBLE_CLICK, {}))
+            self._actions.append(lambda: self._driver.execute(
+                                 Command.DOUBLE_CLICK, {}))
         return self
 
     def drag_and_drop(self, source, target):
