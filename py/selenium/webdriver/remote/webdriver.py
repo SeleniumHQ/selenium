@@ -722,8 +722,13 @@ class WebDriver(object):
         :Usage:
             driver.set_page_load_timeout(30)
         """
-        self.execute(Command.SET_TIMEOUTS, {
-            'page load': int(float(time_to_wait) * 1000)})
+        if self.w3c:
+          self.execute(Command.SET_TIMEOUTS, {
+              'pageLoad': int(float(time_to_wait) * 1000)})
+        else:
+          self.execute(Command.SET_TIMEOUTS, {
+              'ms': float(time_to_wait) * 1000,
+              'type': 'page load'})
 
     def find_element(self, by=By.ID, value=None):
         """
