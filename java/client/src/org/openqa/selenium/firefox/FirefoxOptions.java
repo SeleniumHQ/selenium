@@ -19,6 +19,7 @@ package org.openqa.selenium.firefox;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static org.openqa.selenium.firefox.FirefoxDriver.BINARY;
+import static org.openqa.selenium.firefox.FirefoxDriver.MARIONETTE;
 import static org.openqa.selenium.firefox.FirefoxDriver.PROFILE;
 import static org.openqa.selenium.remote.CapabilityType.ACCEPT_SSL_CERTS;
 import static org.openqa.selenium.remote.CapabilityType.LOGGING_PREFS;
@@ -144,6 +145,8 @@ public class FirefoxOptions {
 
   public FirefoxOptions setLegacy(boolean legacy) {
     this.legacy = legacy;
+    desiredCapabilities.setCapability(MARIONETTE, !legacy);
+    requiredCapabilities.setCapability(MARIONETTE, !legacy);
     return this;
   }
 
