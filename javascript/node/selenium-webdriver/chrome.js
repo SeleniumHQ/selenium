@@ -751,22 +751,28 @@ class Driver extends webdriver.WebDriver {
 
   /**
    * Schedules a command to set Chrome network emulation settings.
-   * @param {number} latency Additional latency (ms).
-   * @param {number} download_throughput Maximal aggregated download throughput. 
-   * @param {number} upload_throughput Maximal aggregated upload throughput.
+   * 
+   * __Sample Usage:__
+   * 
+   *  driver.setNetworkConditions({
+   *    offline: false,
+   *    latency: 5, // Additional latency (ms).
+   *    download_throughput: 500 * 1024, // Maximal aggregated download throughput.
+   *    upload_throughput: 500 * 1024 // Maximal aggregated upload throughput.
+   * });
+   * 
+   * @param {Object} spec Defines the network conditions to set
    * @return {!promise.Thenable<void>} A promise that will be resolved
    *     when network emulation settings are set.
    */
-  setNetworkConditions(latency, download_throughput, upload_throughput) {
-    const params = {
-      'offline': false,
-      'latency': latency,
-      'download_throughput': download_throughput,
-      'upload_throughput': upload_throughput
-    };
+  setNetworkConditions(spec) {
+    if (!spec || typeof spec !== 'object') {
+      throw TypeError('setNetworkConditions called with non-network-conditions parameter');
+    }
+
     return this.schedule(
-        new command.Command(Command.SET_NETWORK_CONDITIONS).setParameter('network_conditions', params),
-        'Driver.setNetworkConditions(' + latency + ', ' + download_throughput + ', ' + upload_throughput + ')');
+        new command.Command(Command.SET_NETWORK_CONDITIONS).setParameter('network_conditions', spec),
+        'Driver.setNetworkConditions(' + JSON.stringify(spec) + ')');
   }
 }
 
