@@ -273,7 +273,10 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
       options = (FirefoxOptions) rawOptions;
     }
 
-    options.setLegacy(!capabilities.is(MARIONETTE));
+    Object marionette = capabilities.getCapability(MARIONETTE);
+    if (marionette instanceof Boolean) {
+      options.setLegacy(!(Boolean) marionette);
+    }
     return options;
   }
 

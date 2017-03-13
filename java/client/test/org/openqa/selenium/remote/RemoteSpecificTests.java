@@ -19,12 +19,11 @@ package org.openqa.selenium.remote;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
-import org.openqa.selenium.StandardSeleniumTests;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-    StandardSeleniumTests.class,
-    RemoteSpecificTests.class
+    RemoteWebDriverScreenshotTest.class,
+    StartingFirefoxRemotelyTest.class
 })
-public class RemoteWebDriverTests {
+public class RemoteSpecificTests {
 }
