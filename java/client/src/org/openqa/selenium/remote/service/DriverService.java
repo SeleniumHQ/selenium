@@ -79,7 +79,10 @@ public class DriverService {
   * @param environment The environment for the launched server.
   * @throws IOException If an I/O error occurs.
   */
- protected DriverService(File executable, int port, ImmutableList<String> args,
+ protected DriverService(
+     File executable,
+     int port,
+     ImmutableList<String> args,
      ImmutableMap<String, String> environment) throws IOException {
    this.executable = executable.getCanonicalPath();
    url = new URL(String.format("http://localhost:%d", port));
@@ -104,7 +107,10 @@ public class DriverService {
    * @return The driver executable as a {@link File} object
    * @throws IllegalStateException If the executable not found or cannot be executed
    */
-  protected static File findExecutable(String exeName, String exeProperty, String exeDocs,
+  protected static File findExecutable(
+      String exeName,
+      String exeProperty,
+      String exeDocs,
       String exeDownload) {
     String defaultPath = new ExecutableFinder().find(exeName);
     String exePath = System.getProperty(exeProperty, defaultPath);
