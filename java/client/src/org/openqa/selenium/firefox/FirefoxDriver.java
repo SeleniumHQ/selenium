@@ -51,6 +51,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 /**
  * An implementation of the {#link WebDriver} interface that drives Firefox.
@@ -103,6 +104,8 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
     public static final String DRIVER_USE_MARIONETTE = "webdriver.firefox.marionette";
   }
 
+  private static final Logger LOG = Logger.getLogger(FirefoxDriver.class.getName());
+
   public static final String BINARY = "firefox_binary";
   public static final String PROFILE = "firefox_profile";
   public static final String MARIONETTE = "marionette";
@@ -131,6 +134,7 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
   @Deprecated
   public FirefoxDriver(FirefoxBinary binary) {
     this(new FirefoxOptions().setBinary(binary));
+    warnAboutDeprecatedConstructor("FirefoxBinary", "setBinary(binary)");
   }
 
   public FirefoxDriver(FirefoxProfile profile) {
@@ -144,6 +148,9 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
   @Deprecated
   public FirefoxDriver(FirefoxBinary binary, FirefoxProfile profile) {
     this(new FirefoxOptions().setBinary(binary).setProfile(profile));
+    warnAboutDeprecatedConstructor(
+        "FirefoxBinary and FirefoxProfile",
+        "setBinary(binary).setProfile(profile)");
   }
 
   public FirefoxDriver(Capabilities desiredCapabilities) {
@@ -166,6 +173,9 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
              .setBinary(binary)
              .setProfile(profile)
              .addDesiredCapabilities(capabilities));
+    warnAboutDeprecatedConstructor(
+        "FirefoxBinary, FirefoxProfile, Capabilities",
+        "setBinary(binary).setProfile(profile).addDesiredCapabilities(capabilities)");
   }
 
   /**
@@ -182,6 +192,10 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
              .setBinary(binary).setProfile(profile)
              .addDesiredCapabilities(desiredCapabilities)
              .addRequiredCapabilities(requiredCapabilities));
+    warnAboutDeprecatedConstructor(
+        "FirefoxBinary, FirefoxProfile, Capabilities",
+        "setBinary(binary).setProfile(profile).addDesiredCapabilities(desired)" +
+        ".addRequiredCapabilities(required)");
   }
 
   /**
@@ -259,6 +273,15 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
       options = (FirefoxOptions) rawOptions;
     }
     return options;
+  }
+
+  private void warnAboutDeprecatedConstructor(String arguments, String alternative) {
+    LOG.warning(String.format(
+        "The FirefoxDriver constructor taking %s has been deprecated. Please use the " +
+        "FirefoxDriver(FirefoxOptions) constructor, configuring the FirefoxOptions like this: " +
+        "new FirefoxOptions().%s",
+        arguments,
+        alternative));
   }
 
   @Override
