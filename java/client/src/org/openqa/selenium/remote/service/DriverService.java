@@ -50,6 +50,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * used to stop the server.
  */
 public class DriverService {
+
   /**
    * The base URL for the managed server.
    */
@@ -85,9 +86,14 @@ public class DriverService {
      ImmutableList<String> args,
      ImmutableMap<String, String> environment) throws IOException {
    this.executable = executable.getCanonicalPath();
-   url = new URL(String.format("http://localhost:%d", port));
    this.args = args;
    this.environment = environment;
+
+   this.url = getUrl(port);
+ }
+
+ protected URL getUrl(int port) throws IOException {
+   return new URL(String.format("http://localhost:%d", port));
  }
 
   /**

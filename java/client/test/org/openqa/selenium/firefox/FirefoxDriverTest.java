@@ -451,7 +451,7 @@ public class FirefoxDriverTest extends JUnit4TestBase {
       thread2.join();
 
       runnable1.assertOnRightPage();
-      runnable1.assertOnRightPage();
+      runnable2.assertOnRightPage();
     } finally {
       runnable1.quit();
       runnable2.quit();
