@@ -51,7 +51,7 @@ public class StartingFirefoxRemotelyTest extends JUnit4TestBase {
   }
 
   @After
-  public void quiteDriver() {
+  public void quitDriver() {
     if (localDriver != null) {
       localDriver.quit();
     }
