@@ -194,7 +194,7 @@ public class FirefoxOptions {
    * useful when actually starting firefox.
    */
   public FirefoxBinary getBinary() {
-    return getBinaryOrNull().orElse(new FirefoxBinary());
+    return getBinaryOrNull().orElseGet(() -> new FirefoxBinary());
   }
 
   public Optional<FirefoxBinary> getBinaryOrNull() {
