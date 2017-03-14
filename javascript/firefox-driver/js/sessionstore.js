@@ -255,11 +255,20 @@ wdSessionStoreService.prototype.getSession = function(sessionId) {
     var session = this.sessions_[sessionId].wrappedJSObject;  // XPConnect
     return this.sessions_[sessionId];
   }
-  var sessions = [];
-  for (var session in this.sessions_) {
-    sessions.push(session);
-  }
   throw Components.results.NS_ERROR_NOT_AVAILABLE;
+};
+
+
+/**
+ * Retrieve all the current active session IDs.
+ * @returns {!Array.<string>}
+ */
+wdSessionStoreService.prototype.getSessions = function() {
+  var sessions = [];
+  for (var sessionId in this.sessions_) {
+    sessions.push(sessionId);
+  }
+  return sessions;
 };
 
 
