@@ -82,7 +82,7 @@ public class FirefoxOptions {
   private Map<String, Integer> intPrefs = new HashMap<>();
   private Map<String, String> stringPrefs = new HashMap<>();
   private Level logLevel = null;
-  private Boolean legacy;
+  private boolean legacy;
   private DesiredCapabilities desiredCapabilities = new DesiredCapabilities();
   private DesiredCapabilities requiredCapabilities = new DesiredCapabilities();
 
@@ -143,6 +143,31 @@ public class FirefoxOptions {
             "In FirefoxOptions, expected key '%s' to be a %s: %s", key, type.getSimpleName(), map));
   }
 
+  public FirefoxOptions() {
+    // Read system properties and use those if they are set, allowing users to override them later
+    // should they want to.
+
+    String binary = System.getProperty(FirefoxDriver.SystemProperty.BROWSER_BINARY);
+    if (binary != null) {
+      setBinary(binary);
+    }
+
+    String forceMarionette = System.getProperty(FirefoxDriver.SystemProperty.DRIVER_USE_MARIONETTE);
+    if (forceMarionette != null) {
+      setLegacy(!Boolean.getBoolean(FirefoxDriver.SystemProperty.DRIVER_USE_MARIONETTE));
+    }
+
+    String profileName = System.getProperty(FirefoxDriver.SystemProperty.BROWSER_PROFILE);
+    if (profileName != null) {
+      this.profile = new ProfilesIni().getProfile(profileName);
+      if (this.profile == null) {
+        throw new WebDriverException(String.format(
+            "Firefox profile '%s' named in system property '%s' not found",
+            profileName, FirefoxDriver.SystemProperty.BROWSER_PROFILE));
+      }
+    }
+  }
+
   public FirefoxOptions setLegacy(boolean legacy) {
     this.legacy = legacy;
     desiredCapabilities.setCapability(MARIONETTE, !legacy);
@@ -151,15 +176,7 @@ public class FirefoxOptions {
   }
 
   public boolean isLegacy() {
-    String forceMarionette = System.getProperty(FirefoxDriver.SystemProperty.DRIVER_USE_MARIONETTE);
-    if (forceMarionette != null) {
-      return !Boolean.valueOf(forceMarionette);
-    }
-    if (legacy != null) {
-      return legacy;
-    }
-
-    return false;
+    return legacy;
   }
 
   public FirefoxOptions setBinary(FirefoxBinary binary) {
@@ -256,6 +273,10 @@ public class FirefoxOptions {
   }
 
   public FirefoxProfile getProfile() {
+    return getProfileOrNull().orElseGet(() -> fullyPopulateProfile(new FirefoxProfile()));
+  }
+
+  public Optional<FirefoxProfile> getProfileOrNull() {
     FirefoxProfile profileToUse = profile;
     if (profileToUse == null) {
       profileToUse = extractProfile(requiredCapabilities);
@@ -264,29 +285,21 @@ public class FirefoxOptions {
       profileToUse = extractProfile(desiredCapabilities);
     }
     if (profileToUse == null) {
-      String suggestedProfile = System.getProperty(FirefoxDriver.SystemProperty.BROWSER_PROFILE);
-      if (suggestedProfile != null) {
-        profileToUse = new ProfilesIni().getProfile(suggestedProfile);
-        if (profileToUse == null) {
-          throw new WebDriverException(String.format(
-              "Firefox profile '%s' named in system property '%s' not found",
-              suggestedProfile, FirefoxDriver.SystemProperty.BROWSER_PROFILE));
-        }
-      }
-    }
-    if (profileToUse == null) {
-      profileToUse = new FirefoxProfile();
+      return Optional.empty();
     }
 
-    populateProfile(profileToUse, desiredCapabilities);
-    populateProfile(profileToUse, requiredCapabilities);
+    return Optional.of(fullyPopulateProfile(profileToUse));
+  }
 
-    FirefoxProfile prefHolder = profileToUse;
-    booleanPrefs.entrySet().forEach(pref -> prefHolder.setPreference(pref.getKey(), pref.getValue()));
-    intPrefs.entrySet().forEach(pref -> prefHolder.setPreference(pref.getKey(), pref.getValue()));
-    stringPrefs.entrySet().forEach(pref -> prefHolder.setPreference(pref.getKey(), pref.getValue()));
+  private FirefoxProfile fullyPopulateProfile(FirefoxProfile profile) {
+    populateProfile(profile, desiredCapabilities);
+    populateProfile(profile, requiredCapabilities);
 
-    return profileToUse;
+    booleanPrefs.entrySet().forEach(pref -> profile.setPreference(pref.getKey(), pref.getValue()));
+    intPrefs.entrySet().forEach(pref -> profile.setPreference(pref.getKey(), pref.getValue()));
+    stringPrefs.entrySet().forEach(pref -> profile.setPreference(pref.getKey(), pref.getValue()));
+
+    return profile;
   }
 
   private static void populateProfile(FirefoxProfile profile, Capabilities capabilities) {
