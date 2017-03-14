@@ -17,21 +17,25 @@
 
 package org.openqa.grid.e2e.misc;
 
+import com.google.common.base.Function;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.openqa.grid.selenium.GridLauncherV3;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.io.IOUtils;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.net.UrlChecker;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.FluentWait;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
-import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -55,11 +59,16 @@ public class GridViaCommandLineTest {
     urlChecker.waitUntilAvailable(100, TimeUnit.SECONDS, new URL(String.format("http://localhost:%d/wd/hub/status", nodePort)));
 
     new FluentWait<URL>(new URL(String.format("http://localhost:%d/grid/console", hubPort))).withTimeout(5, TimeUnit.SECONDS).pollingEvery(50, TimeUnit.MILLISECONDS)
-      .until((URL u) -> {
-        try {
-          return IOUtils.readFully(u.openConnection().getInputStream()).contains("chrome");
-        } catch (IOException ioe) {
-          return false;
+      .until(new Function<URL, Boolean>() {
+        @Override
+        public Boolean apply(URL u) {
+          try (InputStream is = u.openConnection().getInputStream();
+               InputStreamReader isr = new InputStreamReader(is, StandardCharsets.UTF_8);
+               BufferedReader reader = new BufferedReader(isr)) {
+            return reader.lines().anyMatch(l -> l.contains("chrome"));
+          } catch (IOException ioe) {
+            return false;
+          }
         }
       });
 

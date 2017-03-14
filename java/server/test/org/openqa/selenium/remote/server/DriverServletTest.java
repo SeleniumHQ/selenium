@@ -23,7 +23,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 
-import com.google.common.base.Supplier;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -45,6 +44,7 @@ import org.openqa.testing.UrlInfo;
 import org.seleniumhq.jetty9.server.handler.ContextHandler;
 
 import java.io.IOException;
+import java.util.function.Supplier;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletContext;
@@ -220,11 +220,7 @@ public class DriverServletTest {
   }
 
   private static Supplier<DriverSessions> createSupplier(final DriverSessions sessions) {
-    return new Supplier<DriverSessions>() {
-      public DriverSessions get() {
-        return sessions;
-      }
-    };
+    return () -> sessions;
   }
 
   @Test

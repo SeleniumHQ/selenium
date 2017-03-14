@@ -21,25 +21,18 @@
 #include <memory>
 #include <string>
 #include <vector>
+
+#include "ElementScrollBehavior.h"
 #include "LocationInfo.h"
 
-// Forward declaration of classes to avoid
-// circular include files.
+// Forward declaration of classes.
 namespace Json {
   class Value;
 } // namespace Json
 
 namespace webdriver {
 
-enum ELEMENT_SCROLL_BEHAVIOR {
-  TOP,
-  BOTTOM
-};
-
-typedef unsigned int (__stdcall *ASYNCEXECPROC)(void*);
-
-// Forward declaration of classes to avoid
-// circular include files.
+// Forward declaration of classes.
 class Browser;
 
 class Element {
@@ -48,10 +41,10 @@ class Element {
   virtual ~Element(void);
   Json::Value ConvertToJson(void);
   std::string GetTagName(void);
-  int GetLocationOnceScrolledIntoView(const ELEMENT_SCROLL_BEHAVIOR scroll,
+  int GetLocationOnceScrolledIntoView(const ElementScrollBehavior scroll,
                                       LocationInfo* location,
                                       std::vector<LocationInfo>* frame_locations);
-  int GetClickLocation(const ELEMENT_SCROLL_BEHAVIOR scroll_behavior,
+  int GetClickLocation(const ElementScrollBehavior scroll_behavior,
                        LocationInfo* element_location,
                        LocationInfo* click_location);
   int GetAttributeValue(const std::string& attribute_name,
@@ -100,8 +93,6 @@ class Element {
   HWND containing_window_handle_;
   clock_t last_click_time_;
 };
-
-typedef std::tr1::shared_ptr<Element> ElementHandle;
 
 } // namespace webdriver
 

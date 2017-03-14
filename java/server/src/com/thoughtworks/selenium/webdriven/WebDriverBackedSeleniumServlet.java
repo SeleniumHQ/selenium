@@ -21,18 +21,14 @@ import static org.openqa.selenium.remote.server.DriverServlet.SESSIONS_KEY;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
-import com.google.common.base.Supplier;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.RemovalListener;
-import com.google.common.cache.RemovalNotification;
-import com.google.common.collect.ImmutableMap;
 
 import com.thoughtworks.selenium.CommandProcessor;
 import com.thoughtworks.selenium.SeleniumException;
 
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.server.DefaultDriverSessions;
@@ -43,8 +39,8 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -57,51 +53,30 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class WebDriverBackedSeleniumServlet extends HttpServlet {
 
-  private static final Random UUID_SEED = new Random();
-
   // Prepare the shared set of thingies
   static Cache<SessionId, CommandProcessor> SESSIONS = CacheBuilder.newBuilder()
     .expireAfterAccess(5, TimeUnit.MINUTES)
-    .removalListener(new RemovalListener<SessionId, CommandProcessor>() {
-      @Override
-      public void onRemoval(RemovalNotification<SessionId, CommandProcessor> notification) {
-        CommandProcessor holder = notification.getValue();
-        if (holder != null) {
-          try {
-            holder.stop();
-          } catch (Exception e) {
-            // Nothing sane to do.
-          }
+    .removalListener((RemovalListener<SessionId, CommandProcessor>) notification -> {
+      CommandProcessor holder = notification.getValue();
+      if (holder != null) {
+        try {
+          holder.stop();
+        } catch (Exception e) {
+          // Nothing sane to do.
         }
       }
     })
     .build();
 
-  private final ImmutableMap<String, DesiredCapabilities> drivers =
-    ImmutableMap.<String, DesiredCapabilities>builder()
-      .put("*" + BrowserType.FIREFOX_PROXY, DesiredCapabilities.firefox())
-      .put("*" + BrowserType.FIREFOX, DesiredCapabilities.firefox())
-      .put("*" + BrowserType.CHROME, DesiredCapabilities.firefox())
-      .put("*" + BrowserType.FIREFOX_CHROME, DesiredCapabilities.firefox())
-      .put("*" + BrowserType.IEXPLORE_PROXY, DesiredCapabilities.internetExplorer())
-      .put("*" + BrowserType.SAFARI, DesiredCapabilities.safari())
-      .put("*" + BrowserType.IE_HTA, DesiredCapabilities.internetExplorer())
-      .put("*" + BrowserType.IEXPLORE, DesiredCapabilities.internetExplorer())
-      .put("*" + BrowserType.GOOGLECHROME, DesiredCapabilities.chrome())
-      .build();
-
   private final Supplier<DriverSessions> sessionsSupplier;
 
   public WebDriverBackedSeleniumServlet() {
-    this.sessionsSupplier = new Supplier<DriverSessions>() {
-      @Override
-      public DriverSessions get() {
-        Object attribute = getServletContext().getAttribute(SESSIONS_KEY);
-        if (attribute == null) {
-          attribute = new DefaultDriverSessions();
-        }
-        return (DriverSessions) attribute;
+    this.sessionsSupplier = () -> {
+      Object attribute = getServletContext().getAttribute(SESSIONS_KEY);
+      if (attribute == null) {
+        attribute = new DefaultDriverSessions();
       }
+      return (DriverSessions) attribute;
     };
   }
 

@@ -19,7 +19,6 @@ package org.openqa.grid.internal.utils.configuration.converters;
 
 import com.beust.jcommander.IStringConverter;
 
-import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 

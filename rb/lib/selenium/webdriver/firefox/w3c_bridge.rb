@@ -23,14 +23,24 @@ module Selenium
       # @api private
       class W3CBridge < Remote::W3CBridge
         def initialize(opts = {})
-          port = opts.delete(:port) || Service::DEFAULT_PORT
           opts[:desired_capabilities] = create_capabilities(opts)
-          service_args = opts.delete(:service_args) || {}
 
-          driver_path = opts.delete(:driver_path) || Firefox.driver_path(false)
-          @service = Service.new(driver_path, port, *extract_service_args(service_args))
-          @service.start
-          opts[:url] = @service.uri
+          unless opts.key?(:url)
+            driver_path = opts.delete(:driver_path) || Firefox.driver_path
+            port = opts.delete(:port) || Service::DEFAULT_PORT
+
+            opts[:driver_opts] ||= {}
+            if opts.key? :service_args
+              WebDriver.logger.warn <<-DEPRECATE.gsub(/\n +| {2,}/, ' ').freeze
+            [DEPRECATION] `:service_args` is deprecated. Pass switches using `driver_opts`
+              DEPRECATE
+              opts[:driver_opts][:args] = opts.delete(:service_args)
+            end
+
+            @service = Service.new(driver_path, port, opts.delete(:driver_opts))
+            @service.start
+            opts[:url] = @service.uri
+          end
 
           super(opts)
         end
@@ -40,11 +50,8 @@ module Selenium
         end
 
         def driver_extensions
-          [
-            DriverExtensions::TakesScreenshot,
-            DriverExtensions::HasInputDevices,
-            DriverExtensions::HasWebStorage
-          ]
+          [DriverExtensions::TakesScreenshot,
+           DriverExtensions::HasWebStorage]
         end
 
         def quit
@@ -56,24 +63,21 @@ module Selenium
         private
 
         def create_capabilities(opts)
-          caps = opts.delete(:desired_capabilities) || Remote::W3CCapabilities.firefox
+          caps = Remote::W3CCapabilities.firefox
+          caps.merge!(opts.delete(:desired_capabilities)) if opts.key? :desired_capabilities
           firefox_options_caps = caps[:firefox_options] || {}
           caps[:firefox_options] = firefox_options_caps.merge(opts[:firefox_options] || {})
+          if opts.key?(:profile)
+            profile = opts.delete(:profile)
+            unless profile.is_a?(Profile)
+              profile = Profile.from_name(profile)
+            end
+            caps[:firefox_options][:profile] = profile.encoded
+          end
 
           Binary.path = caps[:firefox_options][:binary] if caps[:firefox_options].key?(:binary)
           caps
         end
-
-        def extract_service_args(args = {})
-          service_args = []
-          service_args << "--binary=#{args[:binary]}" if args.key?(:binary)
-          service_args << "–-log=#{args[:log]}" if args.key?(:log)
-          service_args << "–-marionette-port=#{args[:marionette_port]}" if args.key?(:marionette_port)
-          service_args << "–-host=#{args[:host]}" if args.key?(:host)
-          service_args << "–-port=#{args[:port]}" if args.key?(:port)
-          service_args
-        end
-
       end # W3CBridge
     end # Firefox
   end # WebDriver

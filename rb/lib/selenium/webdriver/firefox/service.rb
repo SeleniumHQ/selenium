@@ -41,31 +41,24 @@ module Selenium
 
         def start_process
           server_command = [@executable_path, "--binary=#{Firefox::Binary.path}", "--port=#{@port}", *@extra_args]
-          @process       = ChildProcess.build(*server_command)
+          @process = ChildProcess.build(*server_command)
+          WebDriver.logger.debug("Executing Process #{server_command}")
 
-          if $DEBUG
-            @process.io.inherit!
-          elsif Platform.windows?
-            # workaround stdio inheritance issue
-            # https://github.com/mozilla/geckodriver/issues/48
-            @process.io.stdout = @process.io.stderr = File.new(Platform.null_device, 'w')
-          end
-
+          @process.io.stdout = @process.io.stderr = WebDriver.logger.io
           @process.start
-        end
-
-        def stop_process
-          super
-          return unless Platform.windows? && !$DEBUG
-          begin
-            @process.io.close
-          rescue
-            nil
-          end
         end
 
         def cannot_connect_error_text
           "unable to connect to Mozilla geckodriver #{@host}:#{@port}"
+        end
+
+        def extract_service_args(driver_opts)
+          driver_args = super
+          driver_args << "--binary=#{driver_opts[:binary]}" if driver_opts.key?(:binary)
+          driver_args << "–-log=#{driver_opts[:log]}" if driver_opts.key?(:log)
+          driver_args << "–-marionette-port=#{driver_opts[:marionette_port]}" if driver_opts.key?(:marionette_port)
+          driver_args << "–-host=#{driver_opts[:host]}" if driver_opts.key?(:host)
+          driver_args
         end
       end # Service
     end # Firefox

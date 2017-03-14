@@ -23,10 +23,12 @@ import com.google.gson.GsonBuilder;
 import org.openqa.grid.common.GridRole;
 import org.openqa.grid.web.servlet.beta.ConsoleServlet;
 import org.openqa.selenium.internal.BuildInfo;
-import org.openqa.selenium.io.IOUtils;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.stream.Collectors;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -93,7 +95,8 @@ public class DisplayHelpServlet extends HttpServlet {
       } else {
         final String json = new GsonBuilder().serializeNulls().create().toJson(servletConfig);
         final String jsonUtf8 = new String(json.getBytes(), "UTF-8");
-        final String htmlTemplate = IOUtils.readFully(in);
+        final String htmlTemplate =
+          new BufferedReader(new InputStreamReader(in, "UTF-8")).lines().collect(Collectors.joining("\n"));
         final String updatedTemplate =
           htmlTemplate.replace(HELPER_SERVLET_TEMPLATE_CONFIG_JSON_VAR, jsonUtf8);
 

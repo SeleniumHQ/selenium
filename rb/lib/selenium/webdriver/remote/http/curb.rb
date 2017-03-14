@@ -22,8 +22,6 @@ require 'curb'
 module Selenium
   module WebDriver
     module Remote
-      # added for rescue
-      Bridge::QUIT_ERRORS << Curl::Err::RecvError
 
       module Http
         #
@@ -40,6 +38,11 @@ module Selenium
         #
 
         class Curb < Common
+
+          def quit_errors
+            [Curl::Err::RecvError] + super
+          end
+
           private
 
           def request(verb, url, headers, payload)
@@ -82,7 +85,7 @@ module Selenium
               c.max_redirects   = MAX_REDIRECTS
               c.follow_location = true
               c.timeout         = @timeout if @timeout
-              c.verbose         = $DEBUG
+              c.verbose         = WebDriver.logger.info?
 
               c
             )

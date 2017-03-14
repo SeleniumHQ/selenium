@@ -31,7 +31,7 @@ module Selenium
           driver.file_detector = nil
         end
 
-        compliant_on browser: [:chrome, :ff_legacy] do
+        compliant_on browser: [:chrome, :ff_esr] do
           it 'uses the file detector' do
             driver.navigate.to url_for('upload.html')
 

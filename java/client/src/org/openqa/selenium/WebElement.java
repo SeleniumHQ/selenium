@@ -39,7 +39,6 @@ public interface WebElement extends SearchContext, TakesScreenshot {
    * the default on most browsers/platforms) then the method will
    * _not_ wait for the next page to load and the caller should verify
    * that themselves.
-
    *
    * There are some preconditions for an element to be clicked. The
    * element must be visible and it must have a height and width

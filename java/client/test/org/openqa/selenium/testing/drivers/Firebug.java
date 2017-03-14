@@ -20,7 +20,6 @@ package org.openqa.selenium.testing.drivers;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.testing.InProject;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 

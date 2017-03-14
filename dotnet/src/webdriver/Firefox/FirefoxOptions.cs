@@ -168,7 +168,7 @@ namespace OpenQA.Selenium.Firefox
 
             foreach (string argument in argumentsToAdd)
             {
-                if (!argument.StartsWith("--"))
+                if (!argument.StartsWith("--", StringComparison.OrdinalIgnoreCase))
                 {
                     throw new ArgumentException(string.Format(CultureInfo.InvariantCulture, "All arguments must start with two dashes ('--'); argument '{0}' does not.", argument), "argumentsToAdd");
                 }
@@ -325,7 +325,11 @@ namespace OpenQA.Selenium.Firefox
                 }
                 else
                 {
-                    capabilities.SetCapability(FirefoxBinaryCapability, new FirefoxBinary().BinaryExecutable.ExecutablePath);
+                    using (FirefoxBinary executablePathBinary = new FirefoxBinary())
+                    {
+                        string executablePath = executablePathBinary.BinaryExecutable.ExecutablePath;
+                        capabilities.SetCapability(FirefoxBinaryCapability, executablePath);
+                    }
                 }
             }
 
@@ -352,10 +356,13 @@ namespace OpenQA.Selenium.Firefox
             }
             else
             {
-                string executablePath = new FirefoxBinary().BinaryExecutable.ExecutablePath;
-                if (!string.IsNullOrEmpty(executablePath))
+                using (FirefoxBinary executablePathBinary = new FirefoxBinary())
                 {
-                    firefoxOptions[FirefoxBinaryCapability] = executablePath;
+                    string executablePath = executablePathBinary.BinaryExecutable.ExecutablePath;
+                    if (!string.IsNullOrEmpty(executablePath))
+                    {
+                        firefoxOptions[FirefoxBinaryCapability] = executablePath;
+                    }
                 }
             }
 

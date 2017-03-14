@@ -34,6 +34,13 @@ module Selenium
           allow(Launcher).to receive(:new).and_return(launcher)
         end
 
+        it 'accepts server URL' do
+          expect(Launcher).not_to receive(:new)
+          expect(http).to receive(:server_url=).with(URI.parse('http://example.com:4321'))
+
+          Bridge.new(http_client: http, url: 'http://example.com:4321')
+        end
+
         it 'sets the proxy capability' do
           proxy = Proxy.new(http: 'localhost:9090')
           expect(caps).to receive(:proxy=).with proxy

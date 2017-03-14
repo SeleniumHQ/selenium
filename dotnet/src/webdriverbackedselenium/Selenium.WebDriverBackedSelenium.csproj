@@ -99,15 +99,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\core\Selenium.Core.csproj">
-      <Project>{69F4FF0E-13DE-4AF6-B8AF-572A36239083}</Project>
-      <Name>Selenium.Core</Name>
-    </ProjectReference>
     <ProjectReference Include="..\WebDriver\WebDriver.csproj">
       <Project>{83C13931-B27C-425C-AAF0-5F96EEA4F173}</Project>
       <Name>WebDriver</Name>
     </ProjectReference>
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="ICommandProcessor.cs" />
     <Compile Include="Internal\AlertOverride.cs" />
     <Compile Include="Internal\CommandTimer.cs" />
     <Compile Include="Internal\SeleniumEmulation\CompoundMutator.cs" />
@@ -124,6 +121,7 @@
     <Compile Include="Internal\SeleniumEmulation\SetNextConfirmationState.cs" />
     <Compile Include="Internal\SeleniumEmulation\SeleniumSelect.cs" />
     <Compile Include="Internal\SeleniumEmulation\VariableDeclaration.cs" />
+    <Compile Include="ISelenium.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Internal\SeleniumEmulation\AddLocationStrategy.cs" />
     <Compile Include="Internal\SeleniumEmulation\AddSelection.cs" />
@@ -212,6 +210,9 @@
     <Compile Include="Internal\SeleniumEmulation\WindowFocus.cs" />
     <Compile Include="Internal\SeleniumEmulation\WindowMaximize.cs" />
     <Compile Include="Internal\SeleniumEmulation\WindowSelector.cs" />
+    <Compile Include="SeleniumException.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="WebDriverBackedSelenium.cs" />
     <Compile Include="WebDriverCommandProcessor.cs" />
     <Compile Include="Internal\SeleniumEmulation\GetCssCount.cs" />

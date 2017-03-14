@@ -43,6 +43,7 @@ class TestUnit(object):
     def test_ctor(self):
         opts = Options()
         assert opts._binary is None
+        assert opts._preferences == {}
         assert opts._profile is None
         assert opts._arguments == []
         assert isinstance(opts.log, Log)
@@ -60,6 +61,19 @@ class TestUnit(object):
         opts.binary = path
         assert isinstance(opts.binary, FirefoxBinary)
         assert opts.binary._start_cmd == path
+
+    def test_prefs(self):
+        opts = Options()
+        assert len(opts.preferences) == 0
+        assert isinstance(opts.preferences, dict)
+
+        opts.set_preference("spam", "ham")
+        assert len(opts.preferences) == 1
+        opts.set_preference("eggs", True)
+        assert len(opts.preferences) == 2
+        opts.set_preference("spam", "spam")
+        assert len(opts.preferences) == 2
+        assert opts.preferences == {"spam": "spam", "eggs": True}
 
     def test_profile(self, tmpdir_factory):
         opts = Options()
@@ -108,3 +122,10 @@ class TestUnit(object):
         assert "binary" in caps["moz:firefoxOptions"]
         assert isinstance(caps["moz:firefoxOptions"]["binary"], basestring)
         assert caps["moz:firefoxOptions"]["binary"] == binary._start_cmd
+
+        opts.set_preference("spam", "ham")
+        caps = opts.to_capabilities()
+        assert "moz:firefoxOptions" in caps
+        assert "prefs" in caps["moz:firefoxOptions"]
+        assert isinstance(caps["moz:firefoxOptions"]["prefs"], dict)
+        assert caps["moz:firefoxOptions"]["prefs"]["spam"] == "ham"

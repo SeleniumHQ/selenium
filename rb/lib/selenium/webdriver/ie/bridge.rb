@@ -26,18 +26,37 @@ module Selenium
 
       class Bridge < Remote::Bridge
         def initialize(opts = {})
-          port = opts.delete(:port) || Service::DEFAULT_PORT
-          service_args = opts.delete(:service_args) || {}
-          service_args = match_legacy(opts, service_args)
-          driver_path = opts.delete(:driver_path) || IE.driver_path(false)
+          opts[:desired_capabilities] ||= Remote::Capabilities.internet_explorer
 
-          @service = Service.new(driver_path, port, *extract_service_args(service_args))
-          @service.start
-          opts[:url] = @service.uri
+          unless opts.key?(:url)
+            driver_path = opts.delete(:driver_path) || IE.driver_path
+            port = opts.delete(:port) || Service::DEFAULT_PORT
 
-          caps = opts[:desired_capabilities] ||= Remote::Capabilities.internet_explorer
-          caps[:ignore_protected_mode_settings] = true if opts.delete(:introduce_flakiness_by_ignoring_security_domains)
-          caps[:native_events] = opts.delete(:native_events) != false
+            opts[:driver_opts] ||= {}
+            if opts.key? :service_args
+              WebDriver.logger.warn <<-DEPRECATE.gsub(/\n +| {2,}/, ' ').freeze
+            [DEPRECATION] `:service_args` is deprecated. Pass switches using `driver_opts`
+              DEPRECATE
+              opts[:driver_opts][:args] = opts.delete(:service_args)
+            end
+
+            %i[log_level log_file implementation].each do |method|
+              next unless opts.key? method
+              WebDriver.logger.warn <<-DEPRECATE.gsub(/\n +| {2,}/, ' ').freeze
+            [DEPRECATION] `#{method}` is deprecated. Pass switches using `driver_opts`
+              DEPRECATE
+              opts[:driver_opts][method] = opts.delete(method)
+            end
+
+            @service = Service.new(driver_path, port, opts.delete(:driver_opts))
+            @service.start
+            opts[:url] = @service.uri
+          end
+
+          if opts.delete(:introduce_flakiness_by_ignoring_security_domains)
+            opts[:desired_capabilities][:ignore_protected_mode_settings] = true
+          end
+          opts[:desired_capabilities][:native_events] = opts.delete(:native_events) != false
 
           super(opts)
         end
@@ -47,30 +66,13 @@ module Selenium
         end
 
         def driver_extensions
-          [DriverExtensions::TakesScreenshot, DriverExtensions::HasInputDevices]
+          [DriverExtensions::TakesScreenshot]
         end
 
         def quit
           super
         ensure
           @service.stop if @service
-        end
-
-        private
-
-        def match_legacy(opts, args)
-          args[:log_level] = opts.delete(:log_level) if opts.key?(:log_level)
-          args[:log_file] = opts.delete(:log_file) if opts.key?(:log_file)
-          args[:implementation] = opts.delete(:implementation) if opts.key?(:implementation)
-          args
-        end
-
-        def extract_service_args(args)
-          service_args = []
-          service_args << "--log-level=#{args.delete(:log_level).to_s.upcase}" if args.key?(:log_level)
-          service_args << "--log-file=#{args.delete(:log_file)}" if args.key?(:log_file)
-          service_args << "--implementation=#{args.delete(:implementation).to_s.upcase}" if args.key?(:implementation)
-          service_args
         end
       end # Bridge
     end # IE

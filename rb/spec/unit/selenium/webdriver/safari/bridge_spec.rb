@@ -36,6 +36,13 @@ module Selenium
           allow(Service).to receive(:new).and_return(service)
         end
 
+        it 'accepts server URL' do
+          expect(Service).not_to receive(:new)
+          expect(http).to receive(:server_url=).with(URI.parse('http://example.com:4321'))
+
+          Bridge.new(http_client: http, url: 'http://example.com:4321')
+        end
+
         it 'takes desired capabilities' do
           custom_caps = Remote::Capabilities.new
           custom_caps['foo'] = 'bar'

@@ -19,7 +19,6 @@ package org.openqa.grid.web.servlet;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
@@ -27,7 +26,6 @@ import com.google.gson.annotations.SerializedName;
 
 import org.junit.Before;
 import org.junit.Test;
-
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.common.exception.GridConfigurationException;
 import org.openqa.grid.internal.Registry;

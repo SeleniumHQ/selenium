@@ -195,10 +195,13 @@ module Selenium
           expect(driver.execute_script('return true;')).to eq(true)
         end
 
-        not_compliant_on browser: [:chrome, :phantomjs, :edge] do
-          it 'should raise if the script is bad' do
-            driver.navigate.to url_for('xhtmlTest.html')
-            expect { driver.execute_script('return squiggle();') }.to raise_error(Selenium::WebDriver::Error::JavascriptError)
+        # https://github.com/SeleniumHQ/selenium/issues/3337
+        not_compliant_on driver: :remote, platform: :macosx do
+          not_compliant_on browser: [:chrome, :phantomjs, :edge] do
+            it 'should raise if the script is bad' do
+              driver.navigate.to url_for('xhtmlTest.html')
+              expect { driver.execute_script('return squiggle();') }.to raise_error(Selenium::WebDriver::Error::JavascriptError)
+            end
           end
         end
 
@@ -271,7 +274,7 @@ module Selenium
 
           # Edge BUG - https://connect.microsoft.com/IE/feedback/details/1849991/
           not_compliant_on browser: :edge do
-            not_compliant_on driver: :remote, browser: :firefox do
+            not_compliant_on driver: :remote, platform: :macosx do
               it 'times out if the callback is not invoked' do
                 expect do
                   # Script is expected to be async and explicitly callback, so this should timeout.

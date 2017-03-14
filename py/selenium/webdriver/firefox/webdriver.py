@@ -105,7 +105,6 @@ class WebDriver(RemoteWebDriver):
         self.profile = None
         self.service = None
         self._w3c = False
-        self._is_remote = False
 
         if capabilities is None:
             capabilities = DesiredCapabilities.FIREFOX.copy()
@@ -175,6 +174,8 @@ class WebDriver(RemoteWebDriver):
                 command_executor=executor,
                 desired_capabilities=capabilities,
                 keep_alive=True)
+
+        self._is_remote = False
 
     def quit(self):
         """Quits the driver and close every associated window."""

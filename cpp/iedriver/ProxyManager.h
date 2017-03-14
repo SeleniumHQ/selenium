@@ -19,8 +19,7 @@
 
 #include <string>
 
-// Forward declaration of classes to avoid
-// circular include files.
+// Forward declaration of classes.
 namespace Json {
   class Value;
 } // namespace Json

@@ -129,7 +129,9 @@ public interface DriverCommand {
   String SET_SCREEN_ROTATION = "setScreenRotation";
   String GET_SCREEN_ROTATION = "getScreenRotation";
 
-  String ACTION_CHAIN = "actionChain";
+  // W3C Actions APIs
+  String ACTIONS = "actions";
+  String CLEAR_ACTIONS_STATE = "clearActionState";
 
   // These belong to the Advanced user interactions - an element is
   // optional for these commands.

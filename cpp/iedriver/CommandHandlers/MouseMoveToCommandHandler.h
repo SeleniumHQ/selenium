@@ -17,53 +17,19 @@
 #ifndef WEBDRIVER_IE_MOUSEMOVETOCOMMANDHANDLER_H_
 #define WEBDRIVER_IE_MOUSEMOVETOCOMMANDHANDLER_H_
 
-#include "../Browser.h"
 #include "../IECommandHandler.h"
-#include "../IECommandExecutor.h"
 
 namespace webdriver {
 
 class MouseMoveToCommandHandler : public IECommandHandler {
  public:
-  MouseMoveToCommandHandler(void) {
-  }
-
-  virtual ~MouseMoveToCommandHandler(void) {
-  }
+  MouseMoveToCommandHandler(void);
+  virtual ~MouseMoveToCommandHandler(void);
 
  protected:
   void ExecuteInternal(const IECommandExecutor& executor,
                        const ParametersMap& command_parameters,
-                       Response* response) {
-    ParametersMap::const_iterator element_parameter_iterator = command_parameters.find("element");
-    ParametersMap::const_iterator xoffset_parameter_iterator = command_parameters.find("xoffset");
-    ParametersMap::const_iterator yoffset_parameter_iterator = command_parameters.find("yoffset");
-    bool element_specified(element_parameter_iterator != command_parameters.end());
-    bool offset_specified((xoffset_parameter_iterator != command_parameters.end()) &&
-                          (yoffset_parameter_iterator != command_parameters.end()));
-    if (!element_specified && !offset_specified) {
-      response->SetErrorResponse(400,
-                                 "Missing parameters: element, xoffset, yoffset");
-      return;
-    } else {
-      int status_code = WD_SUCCESS;
-      IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
-      BrowserHandle browser_wrapper;
-      status_code = executor.GetCurrentBrowser(&browser_wrapper);
-      if (status_code != WD_SUCCESS) {
-        response->SetErrorResponse(status_code,
-                                    "Unable to get browser");
-        return;
-      }
-      Json::Value value = this->RecreateJsonParameterObject(command_parameters);
-      value["action"] = "moveto";
-      Json::UInt index = 0;
-      Json::Value actions(Json::arrayValue);
-      actions[index] = value;
-      mutable_executor.input_manager()->PerformInputSequence(browser_wrapper, actions);
-      response->SetSuccessResponse(Json::Value::null);
-    }
-  }
+                       Response* response);
 };
 
 } // namespace webdriver

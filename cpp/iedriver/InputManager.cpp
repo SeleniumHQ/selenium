@@ -14,17 +14,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <ctime>
-#include "errorcodes.h"
-#include "ElementRepository.h"
-#include "HookProcessor.h"
 #include "InputManager.h"
-#include "InteractionsManager.h"
+
+#include <ctime>
+
+#include "errorcodes.h"
 #include "json.h"
 #include "keycodes.h"
 #include "logging.h"
+
+#include "Element.h"
+#include "ElementRepository.h"
+#include "HookProcessor.h"
+#include "InteractionsManager.h"
 #include "Script.h"
+#include "StringUtilities.h"
 #include "Generated/atoms.h"
+
+#define USER_INTERACTION_MUTEX_NAME L"WebDriverUserInteractionMutex"
+#define WAIT_TIME_IN_MILLISECONDS_PER_INPUT_EVENT 100
 
 namespace webdriver {
 

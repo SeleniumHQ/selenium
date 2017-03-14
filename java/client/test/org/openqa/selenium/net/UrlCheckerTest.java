@@ -25,11 +25,8 @@ import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.seleniumhq.jetty9.server.Handler;
-import org.seleniumhq.jetty9.server.HttpConnection;
 import org.seleniumhq.jetty9.server.Request;
 import org.seleniumhq.jetty9.server.Server;
-import org.seleniumhq.jetty9.server.ServerConnector;
 import org.seleniumhq.jetty9.server.handler.AbstractHandler;
 
 import java.io.IOException;

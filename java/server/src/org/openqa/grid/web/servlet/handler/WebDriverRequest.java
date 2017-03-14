@@ -18,16 +18,12 @@
 
 package org.openqa.grid.web.servlet.handler;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.google.gson.JsonSyntaxException;
 
 import org.openqa.grid.common.exception.GridException;
 import org.openqa.grid.internal.ExternalSessionKey;
 import org.openqa.grid.internal.Registry;
-import org.openqa.grid.internal.TestSession;
-import org.openqa.selenium.remote.BeanToJsonConverter;
 import org.openqa.selenium.remote.JsonToBeanConverter;
 
 import java.util.Map;

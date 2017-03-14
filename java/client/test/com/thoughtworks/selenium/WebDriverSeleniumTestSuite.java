@@ -17,9 +17,6 @@
 
 package com.thoughtworks.selenium;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-
 import com.thoughtworks.selenium.corebased.SeleniumMouseTest;
 import com.thoughtworks.selenium.corebased.TestAddLocationStrategy;
 import com.thoughtworks.selenium.corebased.TestAddSelection;
@@ -85,6 +82,9 @@ import com.thoughtworks.selenium.corebased.TestWaitFor;
 import com.thoughtworks.selenium.corebased.TestWaitForNot;
 import com.thoughtworks.selenium.corebased.TestWaitInPopupWindow;
 import com.thoughtworks.selenium.corebased.TestXPathLocators;
+
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({

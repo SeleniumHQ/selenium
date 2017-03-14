@@ -1,6 +1,61 @@
 ## v.next
 
+### Notice
+
+This release requires [geckodriver 0.15.0](https://github.com/mozilla/geckodriver/releases/tag/v0.15.0) or newer.
+
+### API Changes
+
+* Added `Options#getTimeouts()` for retrieving the currently configured session
+  timeouts (i.e. implicit wait). This method will only work with W3C compatible
+  WebDriver implementations.
+* Deprecated the `Timeouts` class in favor of `Options#setTimeouts()`, which
+  supports setting multiple timeouts at once.
+
+### Changes for W3C WebDriver Spec Compliance
+
+* Fix W3C response parsing, which expects response data to always be a JSON
+  object with a `value` key.
+
+
+## v3.3.0
+
+* Added warning log messages when the user creates new managed promises, or
+  schedules unchained tasks. Users may opt in to printing these log messages
+  with
+
+  ```js
+  const {logging} = require('selenium-webdriver');
+  logging.installConsoleHandler();
+  logging.getLogger('promise.ControlFlow').setLevel(logging.Level.WARNING);
+  ```
+* If the `JAVA_HOME` environment variable is set, use it to locate java.exe.
+
+
+## v3.2.0
+
+* Release skipped to stay in sync with the main Selenium project.
+
+
+## v3.1.0
+
 * The `lib` package is once again platform agnostic (excluding `lib/devmode`).
+* Deprecated `promise.when(value, callback, errback)`.
+  Use `promise.fulfilled(value).then(callback, errback)`
+* Changed `promise.fulfilled(value)`, `promise.rejected(reason)` and
+  `promise.defer()` to all use native promises when the promise manager is
+  disabled.
+* Properly handle W3C error responses to new session commands.
+* Updated `selenium-webdriver/testing` to export `describe.only` along with
+  `describe.skip`.
+* Fixed `selenium-webdriver/lib/until.ableToSwitchToFrame`. It was previously
+  dropping arguments and would never work.
+* Added the ability to use Firefox Nightly
+* If Firefox cannot be found in the default location, look for it on the PATH
+* Allow SafariDriver to use Safari Technology Preview.
+* Use the proper wire command for WebElement.getLocation() and
+  WebElement.getSize() for W3C compliant drivers.
+
 
 ## v3.0.1
 

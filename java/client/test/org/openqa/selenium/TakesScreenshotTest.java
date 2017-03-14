@@ -17,12 +17,6 @@
 
 package org.openqa.selenium;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JUnit4TestBase;
-
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -43,6 +37,11 @@ import static org.openqa.selenium.testing.TestUtilities.isChrome;
 
 import com.google.common.collect.Sets;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
 import org.openqa.selenium.testing.drivers.SauceDriver;
 
@@ -298,8 +297,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = {CHROME},
-          reason = " CHROME: Unknown actual colors are presented at screenshot")
+  @Ignore(CHROME)
   public void testShouldCaptureScreenshotAtIFramePage() throws Exception {
     driver.get(appServer.whereIs("screen/screen_iframes.html"));
 
@@ -362,9 +360,8 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   @SwitchToTopAfterTest
   @Test
   @Ignore(
-      value = {IE, CHROME, MARIONETTE},
-      reason = " IE: v9 takes screesnhot only of switched-in frame area " +
-               " CHROME: Unknown actual colors are presented at screenshot"
+      value = {CHROME, IE, MARIONETTE},
+      reason = " IE: v9 takes screesnhot only of switched-in frame area"
   )
   public void testShouldCaptureScreenshotAtIFramePageAfterSwitching() throws Exception {
     driver.get(appServer.whereIs("screen/screen_iframes.html"));

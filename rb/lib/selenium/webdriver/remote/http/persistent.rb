@@ -42,7 +42,12 @@ module Selenium
               proxy = URI.parse(url)
             end
 
-            Net::HTTP::Persistent.new 'webdriver', proxy
+            if Net::HTTP::Persistent::VERSION >= '3'
+              Net::HTTP::Persistent.new name: 'webdriver', proxy: proxy
+            else
+              WebDriver.logger.warn 'Support for this version of net-http-persistent is deprecated. Please upgrade.'
+              Net::HTTP::Persistent.new 'webdriver', proxy
+            end
           end
 
           def response_for(request)

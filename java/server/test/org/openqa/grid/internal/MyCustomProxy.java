@@ -18,9 +18,11 @@
 package org.openqa.grid.internal;
 
 import org.openqa.grid.common.RegistrationRequest;
+import org.openqa.grid.common.SeleniumProtocol;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Map;
 
 public class MyCustomProxy extends BaseRemoteProxy {
 
@@ -49,4 +51,18 @@ public class MyCustomProxy extends BaseRemoteProxy {
     return MY_STRING;
   }
 
+  @Override
+  public TestSlot createTestSlot(SeleniumProtocol protocol, Map<String, Object> capabilities) {
+    return new MyTestSlot(this,protocol, capabilities);
+  }
+
+  @Override
+  public TestSession getNewSession(Map<String, Object> requestedCapability) {
+    TestSession session =  super.getNewSession(requestedCapability);
+    TestSlot slot = session.getSlot();
+    if (requestedCapability.containsKey("slotName") && slot instanceof MyTestSlot) {
+      ((MyTestSlot)slot).setSlotName(requestedCapability.get("slotName").toString());
+    }
+    return session;
+  }
 }

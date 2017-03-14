@@ -18,6 +18,7 @@
 #define WEBDRIVER_IE_ASYNCATOMEXECUTOR_H_
 
 #include <vector>
+
 #include "messages.h"
 
 #define ASYNC_SCRIPT_EVENT_NAME L"WD_ASYNC_SCRIPT_START_EVENT"

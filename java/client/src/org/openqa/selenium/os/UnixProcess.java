@@ -25,13 +25,14 @@ import static org.openqa.selenium.os.WindowsUtils.thisIsWindows;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Maps;
 
-import org.apache.commons.exec.DefaultExecuteResultHandler;
 import org.apache.commons.exec.DaemonExecutor;
+import org.apache.commons.exec.DefaultExecuteResultHandler;
 import org.apache.commons.exec.ExecuteWatchdog;
 import org.apache.commons.exec.Executor;
 import org.apache.commons.exec.PumpStreamHandler;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.io.CircularOutputStream;
+import org.openqa.selenium.io.MultiOutputStream;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -106,7 +107,7 @@ class UnixProcess implements OsProcess {
 
   private OutputStream getOutputStream() {
     return drainTo == null ? inputOut
-        : new MultioutputStream(inputOut, drainTo);
+        : new MultiOutputStream(inputOut, drainTo);
   }
 
   public int destroy() {
@@ -176,15 +177,6 @@ class UnixProcess implements OsProcess {
   }
 
   public String getStdOut() {
-    if (isRunning()) {
-      throw new IllegalStateException(
-          "Cannot get output before executing command line: " + cl);
-    }
-    try {
-      inputOut.flush();
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
     return inputOut.toString();
   }
 
@@ -255,38 +247,4 @@ class UnixProcess implements OsProcess {
     }
   }
 
-  class MultioutputStream extends OutputStream {
-
-    private final OutputStream mandatory;
-    private final OutputStream optional;
-
-    MultioutputStream(OutputStream mandatory, OutputStream optional) {
-      this.mandatory = mandatory;
-      this.optional = optional;
-    }
-
-    @Override
-    public void write(int b) throws IOException {
-      mandatory.write(b);
-      if (optional != null) {
-        optional.write(b);
-      }
-    }
-
-    @Override
-    public void flush() throws IOException {
-      mandatory.flush();
-      if (optional != null) {
-        optional.flush();
-      }
-    }
-
-    @Override
-    public void close() throws IOException {
-      mandatory.close();
-      if (optional != null) {
-        optional.close();
-      }
-    }
-  }
 }

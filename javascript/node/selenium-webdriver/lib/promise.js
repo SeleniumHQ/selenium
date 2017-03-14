@@ -1003,6 +1003,9 @@ const PromiseState = {
  */
 const ON_CANCEL_HANDLER = new WeakMap;
 
+const SKIP_LOG = Symbol('skip-log');
+const FLOW_LOG = logging.getLogger('promise.ControlFlow');
+
 
 /**
  * Represents the eventual value of a completed operation. Each promise may be
@@ -1025,14 +1028,29 @@ class ManagedPromise {
    *     functions, one for fulfilling the promise and another for rejecting it.
    * @param {ControlFlow=} opt_flow The control flow
    *     this instance was created under. Defaults to the currently active flow.
+   * @param {?=} opt_skipLog An internal parameter used to skip logging the
+   *     creation of this promise. This parameter has no effect unless it is
+   *     strictly equal to an internal symbol. In other words, this parameter
+   *     is always ignored for external code.
    */
-  constructor(resolver, opt_flow) {
+  constructor(resolver, opt_flow, opt_skipLog) {
     if (!usePromiseManager()) {
       throw TypeError(
         'Unable to create a managed promise instance: the promise manager has'
             + ' been disabled by the SELENIUM_PROMISE_MANAGER environment'
             + ' variable: ' + process.env['SELENIUM_PROMISE_MANAGER']);
+    } else if (opt_skipLog !== SKIP_LOG) {
+      FLOW_LOG.warning(() => {
+        let e =
+            captureStackTrace(
+                'ManagedPromiseError',
+                'Creating a new managed Promise. This call will fail when the'
+                    + ' promise manager is disabled',
+            ManagedPromise)
+        return e.stack;
+      });
     }
+
     getUid(this);
 
     /** @private {!ControlFlow} */
@@ -1384,6 +1402,37 @@ function isPending(promise) {
 
 
 /**
+ * Structural interface for a deferred promise resolver.
+ * @record
+ * @template T
+ */
+function Resolver() {}
+
+
+/**
+ * The promised value for this resolver.
+ * @type {!Thenable<T>}
+ */
+Resolver.prototype.promise;
+
+
+/**
+ * Resolves the promised value with the given `value`.
+ * @param {T|Thenable<T>} value
+ * @return {void}
+ */
+Resolver.prototype.resolve;
+
+
+/**
+ * Rejects the promised value with the given `reason`.
+ * @param {*} reason
+ * @return {void}
+ */
+Resolver.prototype.reject;
+
+
+/**
  * Represents a value that will be resolved at some point in the future. This
  * class represents the protected "producer" half of a ManagedPromise - each Deferred
  * has a {@code promise} property that may be returned to consumers for
@@ -1395,20 +1444,25 @@ function isPending(promise) {
  * {@link ControlFlow} as an unhandled failure.
  *
  * @template T
+ * @implements {Resolver<T>}
  */
 class Deferred {
   /**
    * @param {ControlFlow=} opt_flow The control flow this instance was
    *     created under. This should only be provided during unit tests.
+   * @param {?=} opt_skipLog An internal parameter used to skip logging the
+   *     creation of this promise. This parameter has no effect unless it is
+   *     strictly equal to an internal symbol. In other words, this parameter
+   *     is always ignored for external code.
    */
-  constructor(opt_flow) {
+  constructor(opt_flow, opt_skipLog) {
     var fulfill, reject;
 
     /** @type {!ManagedPromise<T>} */
     this.promise = new ManagedPromise(function(f, r) {
       fulfill = f;
       reject = r;
-    }, opt_flow);
+    }, opt_flow, opt_skipLog);
 
     var self = this;
     var checkNotSelf = function(value) {
@@ -1421,16 +1475,24 @@ class Deferred {
      * Resolves this deferred with the given value. It is safe to call this as a
      * normal function (with no bound "this").
      * @param {(T|IThenable<T>|Thenable)=} opt_value The fulfilled value.
+     * @const
      */
-    this.fulfill = function(opt_value) {
+    this.resolve = function(opt_value) {
       checkNotSelf(opt_value);
       fulfill(opt_value);
     };
 
     /**
+     * An alias for {@link #resolve}.
+     * @const
+     */
+    this.fulfill = this.resolve;
+
+    /**
      * Rejects this promise with the given reason. It is safe to call this as a
      * normal function (with no bound "this").
      * @param {*=} opt_reason The rejection reason.
+     * @const
      */
     this.reject = function(opt_reason) {
       checkNotSelf(opt_reason);
@@ -1487,36 +1549,76 @@ function delayed(ms) {
 
 
 /**
- * Creates a new deferred object.
- * @return {!Deferred<T>} The new deferred object.
+ * Creates a new deferred resolver.
+ *
+ * If the promise manager is currently enabled, this function will return a
+ * {@link Deferred} instance. Otherwise, it will return a resolver for a
+ * {@linkplain NativePromise native promise}.
+ *
+ * @return {!Resolver<T>} A new deferred resolver.
  * @template T
  */
 function defer() {
-  return new Deferred();
+  if (usePromiseManager()) {
+    return new Deferred();
+  }
+  let resolve, reject;
+  let promise = new NativePromise((_resolve, _reject) => {
+    resolve = _resolve;
+    reject = _reject;
+  });
+  return {promise, resolve, reject};
 }
 
 
 /**
  * Creates a promise that has been resolved with the given value.
+ *
+ * If the promise manager is currently enabled, this function will return a
+ * {@linkplain ManagedPromise managed promise}. Otherwise, it will return a
+ * {@linkplain NativePromise native promise}.
+ *
  * @param {T=} opt_value The resolved value.
- * @return {!ManagedPromise<T>} The resolved promise.
- * @deprecated Use {@link ManagedPromise#resolve Promise.resolve(value)}.
+ * @return {!Thenable<T>} The resolved promise.
  * @template T
  */
 function fulfilled(opt_value) {
-  return ManagedPromise.resolve(opt_value);
+  let ctor = usePromiseManager() ? ManagedPromise : NativePromise;
+  if (opt_value instanceof ctor) {
+    return /** @type {!Thenable} */(opt_value);
+  }
+
+  if (usePromiseManager()) {
+    // We can skip logging warnings about creating a managed promise because
+    // this function will automatically switch to use a native promise when
+    // the promise manager is disabled.
+    return new ManagedPromise(
+        resolve => resolve(opt_value), undefined, SKIP_LOG);
+  }
+  return NativePromise.resolve(opt_value);
 }
 
 
 /**
  * Creates a promise that has been rejected with the given reason.
+ *
+ * If the promise manager is currently enabled, this function will return a
+ * {@linkplain ManagedPromise managed promise}. Otherwise, it will return a
+ * {@linkplain NativePromise native promise}.
+ *
  * @param {*=} opt_reason The rejection reason; may be any value, but is
  *     usually an Error or a string.
- * @return {!ManagedPromise<?>} The rejected promise.
- * @deprecated Use {@link ManagedPromise#reject Promise.reject(reason)}.
+ * @return {!Thenable<?>} The rejected promise.
  */
 function rejected(opt_reason) {
-  return ManagedPromise.reject(opt_reason);
+  if (usePromiseManager()) {
+    // We can skip logging warnings about creating a managed promise because
+    // this function will automatically switch to use a native promise when
+    // the promise manager is disabled.
+    return new ManagedPromise(
+        (_, reject) => reject(opt_reason), undefined, SKIP_LOG);
+  }
+  return NativePromise.reject(opt_reason);
 }
 
 
@@ -1610,21 +1712,17 @@ function thenFinally(promise, callback) {
  * @param {Function=} opt_errback The function to call when the value is
  *     rejected.
  * @return {!Thenable} A new promise.
+ * @deprecated Use `promise.fulfilled(value).then(opt_callback, opt_errback)`
  */
 function when(value, opt_callback, opt_errback) {
-  if (Thenable.isImplementation(value)) {
-    return value.then(opt_callback, opt_errback);
-  }
-
-  return createPromise(resolve => resolve(value))
-      .then(opt_callback, opt_errback);
+  return fulfilled(value).then(opt_callback, opt_errback);
 }
 
 
 /**
  * Invokes the appropriate callback function as soon as a promised `value` is
- * resolved. This function is similar to `when()`, except it does not return
- * a new promise.
+ * resolved.
+ *
  * @param {*} value The value to observe.
  * @param {Function} callback The function to call when the value is
  *     resolved successfully.
@@ -1826,7 +1924,7 @@ function filter(arr, fn, opt_self) {
  */
 function fullyResolved(value) {
   if (isPromise(value)) {
-    return when(value, fullyResolveValue);
+    return fulfilled(value).then(fullyResolveValue);
   }
   return fullyResolveValue(value);
 }
@@ -2018,6 +2116,10 @@ function usePromiseManager() {
 
 
 /**
+ * Creates a new promise with the given `resolver` function. If the promise
+ * manager is currently enabled, the returned promise will be a
+ * {@linkplain ManagedPromise} instance. Otherwise, it will be a native promise.
+ *
  * @param {function(
  *             function((T|IThenable<T>|Thenable|null)=),
  *             function(*=))} resolver
@@ -2376,15 +2478,31 @@ class ControlFlow extends events.EventEmitter {
     }
 
     if (!this.hold_) {
-      var holdIntervalMs = 2147483647;  // 2^31-1; max timer length for Node.js
+      let holdIntervalMs = 2147483647;  // 2^31-1; max timer length for Node.js
       this.hold_ = setInterval(function() {}, holdIntervalMs);
     }
 
-    var task = new Task(
+    let task = new Task(
         this, fn, opt_description || '<anonymous>',
-        {name: 'Task', top: ControlFlow.prototype.execute});
+        {name: 'Task', top: ControlFlow.prototype.execute},
+        true);
 
-    var q = this.getActiveQueue_();
+    let q = this.getActiveQueue_();
+
+    for (let i = q.tasks_.length; i > 0; i--) {
+      let previousTask = q.tasks_[i - 1];
+      if (previousTask.userTask_) {
+        FLOW_LOG.warning(() => {
+          return `Detected scheduling of an unchained task.
+When the promise manager is disabled, unchained tasks will not wait for
+previously scheduled tasks to finish before starting to execute.
+New task: ${task.promise.stack_.stack}
+Previous task: ${previousTask.promise.stack_.stack}`.split(/\n/).join('\n    ');
+        });
+        break;
+      }
+    }
+
     q.enqueue(task);
     this.emit(ControlFlow.EventType.SCHEDULE_TASK, task.description);
     return task.promise;
@@ -2392,7 +2510,7 @@ class ControlFlow extends events.EventEmitter {
 
   /** @override */
   promise(resolver) {
-    return new ManagedPromise(resolver, this);
+    return new ManagedPromise(resolver, this, SKIP_LOG);
   }
 
   /** @override */
@@ -2661,9 +2779,11 @@ class Task extends Deferred {
    * @param {string} description A description of the task for debugging.
    * @param {{name: string, top: !Function}=} opt_stackOptions Options to use
    *     when capturing the stacktrace for when this task was created.
+   * @param {boolean=} opt_isUserTask Whether this task was explicitly scheduled
+   *     by the use of the promise manager.
    */
-  constructor(flow, fn, description, opt_stackOptions) {
-    super(flow);
+  constructor(flow, fn, description, opt_stackOptions, opt_isUserTask) {
+    super(flow, SKIP_LOG);
     getUid(this);
 
     /** @type {function(): (T|!ManagedPromise<T>)} */
@@ -2674,6 +2794,9 @@ class Task extends Deferred {
 
     /** @type {TaskQueue} */
     this.queue = null;
+
+    /** @private @const {boolean} */
+    this.userTask_ = !!opt_isUserTask;
 
     /**
      * Whether this task is considered block. A blocked task may be registered
@@ -2934,7 +3057,7 @@ class TaskQueue extends events.EventEmitter {
 
     this.subQ_.once('end', () => {  // On task completion.
       this.subQ_ = null;
-      this.pending_ && this.pending_.task.fulfill(result);
+      this.pending_ && this.pending_.task.resolve(result);
     });
 
     this.subQ_.once('error', e => {  // On task failure.
@@ -3245,6 +3368,7 @@ module.exports = {
   MultipleUnhandledRejectionError: MultipleUnhandledRejectionError,
   Thenable: Thenable,
   Promise: ManagedPromise,
+  Resolver: Resolver,
   Scheduler: Scheduler,
   all: all,
   asap: asap,
@@ -3253,6 +3377,7 @@ module.exports = {
   consume: consume,
   controlFlow: controlFlow,
   createFlow: createFlow,
+  createPromise: createPromise,
   defer: defer,
   delayed: delayed,
   filter: filter,

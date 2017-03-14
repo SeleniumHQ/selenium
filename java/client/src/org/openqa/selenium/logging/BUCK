@@ -21,8 +21,8 @@ java_library(name = 'logging',
   deps = [
     ':api',
     '//java/client/src/org/openqa/selenium:beta',
-    '//third_party/java/guava:guava',
     '//third_party/java/gson:gson',
+    '//third_party/java/guava:guava',
   ],
   visibility = [
     '//java/client/src/org/openqa/selenium:selenium'

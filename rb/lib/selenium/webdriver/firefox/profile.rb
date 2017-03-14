@@ -42,7 +42,9 @@ module Selenium
           end
 
           def from_name(name)
-            ini[name]
+            profile = ini[name]
+            return profile if profile
+            raise Error::WebDriverError, "unable to find profile named: #{name.inspect}"
           end
 
           def default_preferences
@@ -193,6 +195,10 @@ module Selenium
           proxy
         end
 
+        def encoded
+          Zipper.zip(layout_on_disk)
+        end
+
         private
 
         def set_manual_proxy_preference(key, value)
@@ -208,7 +214,7 @@ module Selenium
           destination = File.join(directory, 'extensions')
 
           @extensions.each do |name, extension|
-            p extension: name if $DEBUG
+            WebDriver.logger.debug({extenstion: name}.inspect)
             extension.write_to(destination)
           end
         end

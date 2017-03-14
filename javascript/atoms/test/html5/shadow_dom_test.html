@@ -86,9 +86,7 @@ if (bot.dom.IS_SHADOW_DOM_ENABLED) {
 <script type="text/javascript" >
 
 function testGetParentNodeInComposedDom() {
-  if (!bot.dom.IS_SHADOW_DOM_ENABLED) {
-    assertFalse(typeof bot.dom.getParentNodeInComposedDom === "unknown");
-  } else {
+  if (bot.dom.IS_SHADOW_DOM_ENABLED) {
     var youngChildContent = document.querySelector("* /deep/ #youngChildContent");
     var stuffForYoungChild = /** @type {!Element} */ (document.querySelector(
       "* /deep/ .stuffForYoungChild"));
@@ -116,9 +114,7 @@ function testGetParentNodeInComposedDom() {
 
 
 function testGetVisibleTextInComposedDom() {
-  if (!bot.dom.IS_SHADOW_DOM_ENABLED) {
-    assertFalse(typeof bot.dom.getVisibleTextInComposedDom === "unknown");
-  } else {
+  if (bot.dom.IS_SHADOW_DOM_ENABLED) {
     var parentDiv = /** @type {!Element} */ (document.querySelector(
       "* /deep/ #parentDiv"));
     var youngerChildDiv = /** @type {!Element} */ (document.querySelector(
@@ -150,19 +146,17 @@ function testGetVisibleTextInComposedDom() {
         expectedParentContents;
   
     assertEquals(expectedOlderChildContents, 
-        bot.dom.getVisibleTextInComposedDom(olderChildDiv));
+        bot.dom.getVisibleText(olderChildDiv));
     assertEquals(expectedYoungerChildContents, 
-        bot.dom.getVisibleTextInComposedDom(youngerChildDiv));
-    assertEquals(expectedParentContents, bot.dom.getVisibleTextInComposedDom(parentDiv));
+        bot.dom.getVisibleText(youngerChildDiv));
+    assertEquals(expectedParentContents, bot.dom.getVisibleText(parentDiv));
     assertEquals(expectedPageContents, 
-      bot.dom.getVisibleTextInComposedDom(/** @type {!Element} */ (document.body)));
+      bot.dom.getVisibleText(/** @type {!Element} */ (document.body)));
   }
 }
 
 function testIsShownInComposedDom() {
-  if (!bot.dom.IS_SHADOW_DOM_ENABLED) {
-    assertFalse(typeof bot.dom.isShownInComposedDom === "unknown");
-  } else {
+  if (bot.dom.IS_SHADOW_DOM_ENABLED) {
     var parentHeading = /** @type {!Element} */ (document.querySelector(
       "* /deep/ #parentHeading"));
     var oldChildDiv = document.querySelector("* /deep/ #olderChildDiv");
@@ -170,15 +164,15 @@ function testIsShownInComposedDom() {
       "* /deep/ #neverShownDiv"));
   
     // neverShown is in an older shadow DOM, and thus isn't displayed
-    assertFalse(bot.dom.isShownInComposedDom(neverShownDiv));
+    assertFalse(bot.dom.isShown(neverShownDiv));
   
-    assert(bot.dom.isShownInComposedDom(parentHeading));
+    assert(bot.dom.isShown(parentHeading));
     var oldChildDivDisplay = oldChildDiv.style.display;
     try {
       oldChildDiv.style.display = "None";
       // In the Logical DOM, parentHeading is displayed. But in the Composed
       // DOM it's been pulled within oldChildDiv, and thus is no longer visible.
-      assertFalse(bot.dom.isShownInComposedDom(parentHeading));
+      assertFalse(bot.dom.isShown(parentHeading));
     } finally {
       oldChildDiv.style.display = oldChildDivDisplay;
     }

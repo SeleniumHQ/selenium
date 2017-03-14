@@ -64,25 +64,6 @@ module Selenium
           expect(caps[:native_events]).to be false
         end
 
-        it 'sets the server log level and log file' do
-          expect(Service).to receive(:new).with(IE.driver_path, Service::DEFAULT_PORT, '--log-level=TRACE', '--log-file=/foo/bar')
-
-          Bridge.new(
-            log_level: :trace,
-            log_file: '/foo/bar',
-            http_client: http
-          )
-        end
-
-        it 'should be able to set implementation' do
-          expect(Service).to receive(:new).with(IE.driver_path, Service::DEFAULT_PORT, '--implementation=VENDOR')
-
-          Bridge.new(
-            implementation: :vendor,
-            http_client: http
-          )
-        end
-
         it 'takes desired capabilities' do
           custom_caps = Remote::Capabilities.new
           custom_caps['ignoreProtectedModeSettings'] = true

@@ -17,9 +17,6 @@
 
 package org.openqa.selenium.server.htmlrunner;
 
-import java.util.Iterator;
-import java.util.List;
-
 interface CoreStepFactory {
   CoreStep create(String locator, String value);
 }

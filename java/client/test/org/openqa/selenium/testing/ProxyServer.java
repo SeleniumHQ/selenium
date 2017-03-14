@@ -20,10 +20,8 @@ package org.openqa.selenium.testing;
 import com.google.common.collect.Lists;
 
 import org.jboss.netty.handler.codec.http.HttpRequest;
-
 import org.littleshoot.proxy.DefaultHttpProxyServer;
 import org.littleshoot.proxy.HttpRequestFilter;
-
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.net.PortProber;

@@ -36,18 +36,25 @@ module Selenium
         attr_reader :capabilities
 
         #
-        # Initializes the bridge with the given server URL.
-        #
-        # @param url         [String] url for the remote server
-        # @param http_client [Object] an HTTP client instance that implements the same protocol as Http::Default
-        # @param desired_capabilities [Capabilities] an instance of Remote::Capabilities describing the capabilities you want
+        # Initializes the bridge with the given server URL
+        # @param [Hash] opts options for the driver
+        # @option opts [String] :url url for the remote server
+        # @option opts [Integer] :port port number for the remote server
+        # @option opts [Object] :http_client an HTTP client instance that implements the same protocol as Http::Default
+        # @option opts [Capabilities] :desired_capabilities an instance of Remote::Capabilities describing the capabilities you want
         #
 
         def initialize(opts = {})
 
           opts = opts.dup
 
+          if opts.key?(:port)
+            WebDriver.logger.warn <<-DEPRECATE.gsub(/\n +| {2,}/, ' ').freeze
+            [DEPRECATION] `:port` is deprecated. Use full url desired.
+            DEPRECATE
+          end
           port = opts.delete(:port) || 4444
+
           http_client = opts.delete(:http_client) { Http::Default.new }
           desired_capabilities = opts.delete(:desired_capabilities) { W3CCapabilities.firefox }
           url = opts.delete(:url) { "http://#{Platform.localhost}:#{port}/wd/hub" }
@@ -78,16 +85,12 @@ module Selenium
         end
 
         def driver_extensions
-          [
-            DriverExtensions::HasInputDevices,
-            DriverExtensions::UploadsFiles,
-            DriverExtensions::TakesScreenshot,
-            DriverExtensions::HasSessionId,
-            DriverExtensions::Rotatable,
-            DriverExtensions::HasTouchScreen,
-            DriverExtensions::HasRemoteStatus,
-            DriverExtensions::HasWebStorage
-          ]
+          [DriverExtensions::UploadsFiles,
+           DriverExtensions::TakesScreenshot,
+           DriverExtensions::HasSessionId,
+           DriverExtensions::Rotatable,
+           DriverExtensions::HasRemoteStatus,
+           DriverExtensions::HasWebStorage]
         end
 
         def commands(command)
@@ -108,10 +111,7 @@ module Selenium
         end
 
         def create_session(desired_capabilities)
-          # TODO - Remove this when Mozilla fixes bug
-          desired_capabilities[:browser_name] = 'firefox' if desired_capabilities[:browser_name] == 'Firefox'
-
-          resp = raw_execute :new_session, {}, {desiredCapabilities: desired_capabilities}
+          resp = execute :new_session, {}, {desiredCapabilities: desired_capabilities}
           @session_id = resp['sessionId']
           return W3CCapabilities.json_create resp['value'] if @session_id
 
@@ -135,7 +135,8 @@ module Selenium
         end
 
         def timeout(type, milliseconds)
-          execute :set_timeout, {}, {type: type, ms: milliseconds}
+          type = 'pageLoad' if type == 'page load'
+          execute :set_timeout, {}, {type => milliseconds}
         end
 
         #
@@ -151,7 +152,7 @@ module Selenium
         end
 
         def alert=(keys)
-          execute :send_alert_text, {}, {handler: 'prompt', text: keys}
+          execute :send_alert_text, {}, {value: keys.split(//)}
         end
 
         def alert_text
@@ -257,12 +258,13 @@ module Selenium
           Dimension.new data['width'], data['height']
         end
 
-        def reposition_window(_x, _y, _handle = nil)
-          raise Error::UnsupportedOperationError, 'The W3C standard does not currently support setting the Window Position'
+        def reposition_window(x, y)
+          execute :set_window_position, {}, {x: x, y: y}
         end
 
-        def window_position(_handle = nil)
-          raise Error::UnsupportedOperationError, 'The W3C standard does not currently support getting the Window Position'
+        def window_position
+          data = execute :get_window_position
+          Point.new data['x'], data['y']
         end
 
         def screenshot
@@ -383,52 +385,41 @@ module Selenium
         # actions
         #
 
+        def action(async = false)
+          W3CActionBuilder.new self,
+                               Interactions.pointer(:mouse, name: 'mouse'),
+                               Interactions.key('keyboard'),
+                               async
+        end
+        alias_method :actions, :action
+
+        def mouse
+          raise Error::UnsupportedOperationError, '#mouse is no longer supported, use #action instead'
+        end
+
+        def keyboard
+          raise Error::UnsupportedOperationError, '#keyboard is no longer supported, use #action instead'
+        end
+
+        def send_actions(data)
+          execute :actions, {}, {actions: data}
+        end
+
+        def release_actions
+          execute :release_actions
+        end
+
         def click_element(element)
-          execute :element_click, id: element.values.first
-        end
-
-        def click
-          execute :click, {}, {button: 0}
-        end
-
-        def double_click
-          execute :double_click
-        end
-
-        def context_click
-          execute :click, {}, {button: 2}
-        end
-
-        def mouse_down
-          execute :mouse_down
-        end
-
-        def mouse_up
-          execute :mouse_up
-        end
-
-        def mouse_move_to(element, x = nil, y = nil)
-          params = {element: element}
-
-          if x && y
-            params[:xoffset] = x
-            params[:yoffset] = y
-          end
-
-          execute :mouse_move_to, {}, params
-        end
-
-        def send_keys_to_active_element(keys)
-          send_keys_to_element(active_element, keys)
+          execute :element_click, id: element
         end
 
         # TODO: - Implement file verification
         def send_keys_to_element(element, keys)
-          execute :element_send_keys, {id: element.values.first}, {value: keys.join('').split(//)}
+          execute :element_send_keys, {id: element}, {value: keys.join('').split(//)}
         end
 
         def clear_element(element)
-          execute :element_clear, id: element.values.first
+          execute :element_clear, id: element
         end
 
         def submit_element(element)
@@ -439,7 +430,7 @@ module Selenium
         end
 
         def drag_element(element, right_by, down_by)
-          execute :drag_element, {id: element.values.first}, {x: right_by, y: down_by}
+          execute :drag_element, {id: element}, {x: right_by, y: down_by}
         end
 
         def touch_single_tap(element)
@@ -500,7 +491,7 @@ module Selenium
         #
 
         def element_tag_name(element)
-          execute :get_element_tag_name, id: element.values.first
+          execute :get_element_tag_name, id: element
         end
 
         def element_attribute(element, name)
@@ -508,7 +499,7 @@ module Selenium
         end
 
         def element_property(element, name)
-          execute :get_element_property, id: element.ref.values.first, name: name
+          execute :get_element_property, id: element.ref, name: name
         end
 
         def element_value(element)
@@ -516,13 +507,19 @@ module Selenium
         end
 
         def element_text(element)
-          execute :get_element_text, id: element.values.first
+          execute :get_element_text, id: element
         end
 
         def element_location(element)
-          data = execute :get_element_rect, id: element.values.first
+          data = execute :get_element_rect, id: element
 
           Point.new data['x'], data['y']
+        end
+
+        def element_rect(element)
+          data = execute :get_element_rect, id: element
+
+          Rectangle.new data['x'], data['y'], data['width'], data['height']
         end
 
         def element_location_once_scrolled_into_view(element)
@@ -531,25 +528,25 @@ module Selenium
         end
 
         def element_size(element)
-          data = execute :get_element_rect, id: element.values.first
+          data = execute :get_element_rect, id: element
 
           Dimension.new data['width'], data['height']
         end
 
         def element_enabled?(element)
-          execute :is_element_enabled, id: element.values.first
+          execute :is_element_enabled, id: element
         end
 
         def element_selected?(element)
-          execute :is_element_selected, id: element.values.first
+          execute :is_element_selected, id: element
         end
 
         def element_displayed?(element)
-          execute :is_element_displayed, id: element.values.first
+          execute :is_element_displayed, id: element
         end
 
         def element_value_of_css_property(element, prop)
-          execute :get_element_css_value, id: element.values.first, property_name: prop
+          execute :get_element_css_value, id: element, property_name: prop
         end
 
         #
@@ -557,7 +554,7 @@ module Selenium
         #
 
         def active_element
-          Element.new self, execute(:get_active_element)
+          Element.new self, element_id_from(execute(:get_active_element))
         end
 
         alias_method :switch_to_active_element, :active_element
@@ -566,23 +563,23 @@ module Selenium
           how, what = convert_locators(how, what)
 
           id = if parent
-                 execute :find_child_element, {id: parent.values.first}, {using: how, value: what}
+                 execute :find_child_element, {id: parent}, {using: how, value: what}
                else
                  execute :find_element, {}, {using: how, value: what}
                end
-          Element.new self, id
+          Element.new self, element_id_from(id)
         end
 
         def find_elements_by(how, what, parent = nil)
           how, what = convert_locators(how, what)
 
           ids = if parent
-                  execute :find_child_elements, {id: parent.values.first}, {using: how, value: what}
+                  execute :find_child_elements, {id: parent}, {using: how, value: what}
                 else
                   execute :find_elements, {}, {using: how, value: what}
                 end
 
-          ids.map { |id| Element.new self, id }
+          ids.map { |id| Element.new self, element_id_from(id) }
         end
 
         private
@@ -608,21 +605,10 @@ module Selenium
         # executes a command on the remote server.
         #
         #
-        # Returns the 'value' of the returned payload
-        #
-
-        def execute(*args)
-          result = raw_execute(*args)
-          result.payload.key?('value') ? result['value'] : result
-        end
-
-        #
-        # executes a command on the remote server.
-        #
         # @return [WebDriver::Remote::Response]
         #
 
-        def raw_execute(command, opts = {}, command_hash = nil)
+        def execute(command, opts = {}, command_hash = nil)
           verb, path = commands(command) || raise(ArgumentError, "unknown command: #{command.inspect}")
           path = path.dup
 
@@ -636,8 +622,8 @@ module Selenium
             raise ArgumentError, "#{opts.inspect} invalid for #{command.inspect}"
           end
 
-          puts "-> #{verb.to_s.upcase} #{path}" if $DEBUG
-          http.call verb, path, command_hash
+          WebDriver.logger.info("-> #{verb.to_s.upcase} #{path}")
+          http.call(verb, path, command_hash)['value']
         end
 
         def escaper

@@ -17,39 +17,19 @@
 #ifndef WEBDRIVER_IE_MOUSEBUTTONUPCOMMANDHANDLER_H_
 #define WEBDRIVER_IE_MOUSEBUTTONUPCOMMANDHANDLER_H_
 
-#include "../Browser.h"
 #include "../IECommandHandler.h"
-#include "../IECommandExecutor.h"
 
 namespace webdriver {
 
 class MouseButtonUpCommandHandler : public IECommandHandler {
  public:
-  MouseButtonUpCommandHandler(void) {
-  }
-
-  virtual ~MouseButtonUpCommandHandler(void) {
-  }
+  MouseButtonUpCommandHandler(void);
+  virtual ~MouseButtonUpCommandHandler(void);
 
  protected:
   void ExecuteInternal(const IECommandExecutor& executor,
                        const ParametersMap& command_parameters,
-                       Response* response) {
-    BrowserHandle browser_wrapper;
-    int status_code = executor.GetCurrentBrowser(&browser_wrapper);
-    if (status_code != WD_SUCCESS) {
-      response->SetErrorResponse(status_code, "Unable to get current browser");
-      return;
-    }
-    IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
-    Json::Value value = this->RecreateJsonParameterObject(command_parameters);
-    value["action"] = "buttonup";
-    Json::UInt index = 0;
-    Json::Value actions(Json::arrayValue);
-    actions[index] = value;
-    mutable_executor.input_manager()->PerformInputSequence(browser_wrapper, actions);
-    response->SetSuccessResponse(Json::Value::null);
-  }
+                       Response* response);
 };
 
 } // namespace webdriver

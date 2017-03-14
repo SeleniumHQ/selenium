@@ -31,7 +31,6 @@ require 'rake-tasks/crazy_fun/mappings/visualstudio'
 require 'rake-tasks/task-gen'
 require 'rake-tasks/checks'
 require 'rake-tasks/dotnet'
-require 'rake-tasks/zip'
 require 'rake-tasks/c'
 require 'rake-tasks/selenium'
 require 'rake-tasks/se-ide'
@@ -46,7 +45,7 @@ end
 verbose($DEBUG)
 
 def release_version
-  "3.0"
+  "3.3"
 end
 
 def version
@@ -153,10 +152,6 @@ task :chrome => [ "//java/client/src/org/openqa/selenium/chrome" ]
 task :grid => [ "//java/server/src/org/openqa/grid/selenium" ]
 task :ie => [ "//java/client/src/org/openqa/selenium/ie" ]
 task :firefox => [
-  "//cpp:noblur",
-  "//cpp:noblur64",
-  "//cpp:imehandler",
-  "//cpp:imehandler64",
   "//java/client/src/org/openqa/selenium/firefox"
 ]
 task :'debug-server' => "//java/client/test/org/openqa/selenium/environment:webserver:run"
@@ -184,7 +179,6 @@ task :test_javascript => [
   'calcdeps',
   '//javascript/atoms:atoms-chrome:run',
   '//javascript/webdriver:webdriver-chrome:run',
-  '//javascript/webdriver:es6_test_chrome:run',
   '//javascript/selenium-atoms:selenium-atoms-chrome:run',
   '//javascript/selenium-core:selenium-core-chrome:run']
 task :test_chrome => [ "//java/client/test/org/openqa/selenium/chrome:chrome:run" ]
@@ -268,21 +262,29 @@ task :test_java_small_tests => [
   "//java/server/test/org/openqa/selenium/remote/server/log:test:run",
 ]
 
-task :test_rb => [
-  "//rb:unit-test",
+task :test_rb => ["//rb:unit-test", :test_rb_local, :test_rb_remote]
+
+task :test_rb_local => [
   "//rb:chrome-test",
   "//rb:firefox-test",
   "//rb:phantomjs-test",
+  ("//rb:ff-esr-test" if ENV['FF_ESR_BINARY']),
+  ("//rb:ff-nightly-test" if ENV['FF_NIGHTLY_BINARY']),
+  ("//rb:safari-preview-test" if mac?),
+  ("//rb:safari-test" if mac?),
+  ("//rb:ie-test" if windows?),
+  ("//rb:edge-test" if windows?)
+].compact
+
+task :test_rb_remote => [
   "//rb:remote-chrome-test",
   "//rb:remote-firefox-test",
   "//rb:remote-phantomjs-test",
-  ("//rb:ff-legacy-test" if ENV['FF_LEGACY_BINARY']),
-  ("//rb:remote-ff-legacy-test" if ENV['FF_LEGACY_BINARY']),
-  ("//rb:safari-test" if mac?),
+  ("//rb:remote-ff-esr-test" if ENV['FF_ESR_BINARY']),
+  ("//rb:remote-ff-nightly-test" if ENV['FF_NIGHTLY_BINARY']),
+  ("//rb:remote-safari-preview-test" if mac?),
   ("//rb:remote-safari-test" if mac?),
-  ("//rb:ie-test" if windows?),
   ("//rb:remote-ie-test" if windows?),
-  ("//rb:edge-test" if windows?),
   ("//rb:remote-edge-test" if windows?)
 ].compact
 
@@ -327,7 +329,7 @@ ie_generate_type_mapping(:name => "ie_result_type_java",
                          :out => "java/client/src/org/openqa/selenium/ie/IeReturnTypes.java")
 
 
-task :javadocs => [:common, :firefox, :ie, :remote, :support, :chrome, :selenium] do
+task :javadocs => [:'repack-jetty', :common, :firefox, :ie, :remote, :support, :chrome, :selenium] do
   mkdir_p "build/javadoc"
    sourcepath = ""
    classpath = '.'
@@ -419,44 +421,15 @@ desc "Calculate dependencies required for testing the automation atoms"
 task :calcdeps => "build/javascript/deps.js"
 
 desc "Repack jetty"
-task "repack-jetty" => "build/third_party/java/jetty/jetty-repacked.jar"
+task "repack-jetty" => ["//third_party/java/jetty:bundle-jars"] do
 
-# Expose the repack task to CrazyFun.
-task "//third_party/java/jetty:repacked" => "build/third_party/java/jetty/jetty-repacked.jar"
+  # For IntelliJ
+  root = File.join("build", "third_party", "java", "jetty")
+  mkdir_p root
+  cp Rake::Task['//third_party/java/jetty:bundle-jars'].out, File.join(root, "jetty-repacked.jar")
 
-file "build/third_party/java/jetty/jetty-repacked.jar" => [
-   "third_party/java/jetty/jetty-continuation-9.2.13.v20150730.jar",
-   "third_party/java/jetty/jetty-http-9.2.13.v20150730.jar",
-   "third_party/java/jetty/jetty-io-9.2.13.v20150730.jar",
-   "third_party/java/jetty/jetty-jmx-9.2.13.v20150730.jar",
-   "third_party/java/jetty/jetty-security-9.2.13.v20150730.jar",
-   "third_party/java/jetty/jetty-server-9.2.13.v20150730.jar",
-   "third_party/java/jetty/jetty-servlet-9.2.13.v20150730.jar",
-   "third_party/java/jetty/jetty-servlets-9.2.13.v20150730.jar",
-   "third_party/java/jetty/jetty-util-9.2.13.v20150730.jar"
- ] do |t|
-   print "Repacking jetty\n"
-   root = File.join("build", "third_party", "java", "jetty")
-   jarjar = File.join("third_party", "java", "jarjar", "jarjar-1.4.jar")
-   rules = File.join("third_party", "java", "jetty", "jetty-repack-rules")
-   temp = File.join(root, "temp")
-
-   # First, process the files
-   mkdir_p root
-   mkdir_p temp
-
-   t.prerequisites.each do |pre|
-     filename = File.basename(pre, ".jar")
-     out = File.join(root, "#{filename}-repacked.jar")
-     `java -jar #{jarjar} process #{rules} #{pre} #{out}`
-     `cd #{temp} && jar xf #{File.join("..", File.basename(out))}`
-   end
-
-   # Now, merge them
-   `cd #{temp} && jar cvf #{File.join("..", "jetty-repacked.jar")} *`
-
-   # And copy the artifact to third_party so that eclipse users can be made happy
-   cp "build/third_party/java/jetty/jetty-repacked.jar", "third_party/java/jetty/jetty-repacked.jar"
+  # And copy the artifact to third_party so that eclipse users can be made happy
+  cp Rake::Task['//third_party/java/jetty:bundle-jars'].out, "third_party/java/jetty/jetty-repacked.jar"
 end
 
 
@@ -579,8 +552,6 @@ namespace :node do
 
   task :deploy => [
     "node:atoms",
-    "//cpp:noblur",
-    "//cpp:noblur64",
     "//javascript/firefox-driver:webdriver",
   ] do
     cmd =  "node javascript/node/deploy.js" <<
@@ -588,8 +559,6 @@ namespace :node do
         " --resource=LICENSE:/LICENSE" <<
         " --resource=NOTICE:/NOTICE" <<
         " --resource=javascript/firefox-driver/webdriver.json:firefox/webdriver.json" <<
-        " --resource=build/cpp/amd64/libnoblur64.so:firefox/amd64/libnoblur64.so" <<
-        " --resource=build/cpp/i386/libnoblur.so:firefox/i386/libnoblur.so" <<
         " --resource=build/javascript/firefox-driver/webdriver.xpi:firefox/webdriver.xpi" <<
         " --resource=common/src/web/:test/data/" <<
         " --exclude_resource=common/src/web/Bin" <<

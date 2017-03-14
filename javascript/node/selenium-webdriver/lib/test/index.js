@@ -24,6 +24,7 @@ var build = require('./build'),
     webdriver = require('../../'),
     flow = webdriver.promise.controlFlow(),
     firefox = require('../../firefox'),
+    logging = require('../../lib/logging'),
     safari = require('../../safari'),
     remote = require('../../remote'),
     testing = require('../../testing'),
@@ -49,12 +50,18 @@ var NATIVE_BROWSERS = [
 ];
 
 
+var noBuild = /^1|true$/i.test(process.env['SELENIUM_NO_BUILD']);
 var serverJar = process.env['SELENIUM_SERVER_JAR'];
 var remoteUrl = process.env['SELENIUM_REMOTE_URL'];
 var useLoopback = process.env['SELENIUM_USE_LOOP_BACK'] == '1';
 var noMarionette = /^0|false$/i.test(process.env['SELENIUM_GECKODRIVER']);
 var startServer = !!serverJar && !remoteUrl;
 var nativeRun = !serverJar && !remoteUrl;
+
+if (/^1|true$/i.test(process.env['SELENIUM_VERBOSE'])) {
+  logging.installConsoleHandler();
+  logging.getLogger('webdriver.http').setLevel(logging.Level.ALL);
+}
 
 var browsersToTest = (function() {
   var permitRemoteBrowsers = !!remoteUrl || !!serverJar;
@@ -219,7 +226,7 @@ function suite(fn, opt_options) {
   try {
 
     before(function() {
-      if (isDevMode) {
+      if (isDevMode && !noBuild) {
         return build.of(
             '//javascript/atoms/fragments:is-displayed',
             '//javascript/webdriver/atoms:getAttribute')

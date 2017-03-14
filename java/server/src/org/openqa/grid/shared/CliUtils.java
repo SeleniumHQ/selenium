@@ -17,7 +17,6 @@
 
 package org.openqa.grid.shared;
 
-import java.io.File;
 import java.io.PrintStream;
 
 /**

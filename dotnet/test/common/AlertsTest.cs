@@ -594,6 +594,7 @@ namespace OpenQA.Selenium
         [Category("JavaScript")]
         [IgnoreBrowser(Browser.Android)]
         [IgnoreBrowser(Browser.Chrome)]
+        [IgnoreBrowser(Browser.Edge)]
         [IgnoreBrowser(Browser.HtmlUnit)]
         [IgnoreBrowser(Browser.IPhone)]
         [IgnoreBrowser(Browser.PhantomJS, "Alert commands not yet implemented in GhostDriver")]

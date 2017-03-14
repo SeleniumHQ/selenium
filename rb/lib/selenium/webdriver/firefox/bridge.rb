@@ -23,21 +23,29 @@ module Selenium
       # @api private
       class Bridge < Remote::Bridge
         def initialize(opts = {})
-          port = opts.delete(:port) || DEFAULT_PORT
-          profile = opts.delete(:profile)
+          opts[:desired_capabilities] ||= Remote::Capabilities.firefox
 
-          @launcher = create_launcher(port, profile)
-          @launcher.launch
-          opts[:url] = @launcher.url
+          if opts.key? :proxy
+            WebDriver.logger.warn <<-DEPRECATE.gsub(/\n +| {2,}/, ' ').freeze
+            [DEPRECATION] `:proxy` is deprecated. Pass in as capability: `Remote::Capabilities.firefox(proxy: #{opts[:proxy]})`
+            DEPRECATE
+            opts[:desired_capabilities].proxy = opts.delete(:proxy)
+          end
 
-          caps = opts[:desired_capabilities] ||= Remote::Capabilities.firefox
-          caps.proxy = opts.delete(:proxy) if opts.key?(:proxy)
-          Binary.path = caps[:firefox_binary] if caps[:firefox_binary]
+          unless opts.key?(:url)
+            port = opts.delete(:port) || DEFAULT_PORT
+            profile = opts.delete(:profile)
+
+            Binary.path = opts[:desired_capabilities][:firefox_binary] if opts[:desired_capabilities][:firefox_binary]
+            @launcher = Launcher.new Binary.new, port, profile
+            @launcher.launch
+            opts[:url] = @launcher.url
+          end
 
           begin
             super(opts)
           rescue
-            @launcher.quit
+            @launcher.quit if @launcher
             raise
           end
         end
@@ -47,10 +55,7 @@ module Selenium
         end
 
         def driver_extensions
-          [
-            DriverExtensions::TakesScreenshot,
-            DriverExtensions::HasInputDevices
-          ]
+          [DriverExtensions::TakesScreenshot]
         end
 
         def quit
@@ -58,12 +63,6 @@ module Selenium
           nil
         ensure
           @launcher.quit
-        end
-
-        private
-
-        def create_launcher(port, profile)
-          Launcher.new Binary.new, port, profile
         end
       end # Bridge
     end # Firefox

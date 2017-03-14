@@ -41,16 +41,14 @@
  * The provided wrappers leverage the {@link webdriver.promise.ControlFlow}
  * to simplify writing asynchronous tests:
  *
- *     var By = require('selenium-webdriver').By,
- *         until = require('selenium-webdriver').until,
- *         firefox = require('selenium-webdriver/firefox'),
- *         test = require('selenium-webdriver/testing');
+ *     var {Builder, By, until} = require('selenium-webdriver');
+ *     var test = require('selenium-webdriver/testing');
  *
  *     test.describe('Google Search', function() {
  *       var driver;
  *
  *       test.before(function() {
- *         driver = new firefox.Driver();
+ *         driver = new Builder().forBrowser('firefox').build();
  *       });
  *
  *       test.after(function() {
@@ -289,6 +287,19 @@ exports.controlFlow = function(){
 exports.describe = function(name, opt_fn) {
   let fn = getMochaGlobal('describe');
   return opt_fn ? fn(name, opt_fn) : fn(name);
+};
+
+
+/**
+ * An alias for {@link #describe()} that marks the suite as exclusive,
+ * suppressing all other test suites.
+ * @param {string} name The suite name.
+ * @param {function()=} opt_fn The suite function, or `undefined` to define
+ *     a pending test suite.
+ */
+exports.describe.only = function(name, opt_fn) {
+  let desc = getMochaGlobal('describe');
+  return opt_fn ? desc.only(name, opt_fn) : desc.only(name);
 };
 
 

@@ -15,19 +15,77 @@
 // limitations under the License.
 
 #include "BrowserFactory.h"
+
 #include <ctime>
 #include <vector>
+
 #include <exdispid.h>
 #include <iepmapi.h>
-#include <oleacc.h>
+#include <psapi.h>
 #include <sddl.h>
 #include <shlguid.h>
 #include <shlobj.h>
-#include <WinInet.h>
-#include "FileUtilities.h"
+
 #include "logging.h"
-#include "psapi.h"
+
+#include "FileUtilities.h"
 #include "RegistryUtilities.h"
+#include "StringUtilities.h"
+
+#define HTML_GETOBJECT_MSG L"WM_HTML_GETOBJECT"
+#define OLEACC_LIBRARY_NAME L"OLEACC.DLL"
+#define IEFRAME_LIBRARY_NAME L"ieframe.dll"
+#define IELAUNCHURL_FUNCTION_NAME "IELaunchURL"
+
+#define IE_FRAME_WINDOW_CLASS "IEFrame"
+#define SHELL_DOCOBJECT_VIEW_WINDOW_CLASS "Shell DocObject View"
+#define IE_SERVER_CHILD_WINDOW_CLASS "Internet Explorer_Server"
+
+#define IE_CLSID_REGISTRY_KEY L"SOFTWARE\\Classes\\InternetExplorer.Application\\CLSID"
+#define IE_SECURITY_ZONES_REGISTRY_KEY L"Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\Zones"
+#define IE_TABPROCGROWTH_REGISTRY_KEY L"Software\\Microsoft\\Internet Explorer\\Main"
+
+#define IE_PROTECTED_MODE_SETTING_VALUE_NAME L"2500"
+
+#define IELAUNCHURL_ERROR_MESSAGE "IELaunchURL() returned HRESULT %X ('%s') for URL '%s'"
+#define CREATEPROCESS_ERROR_MESSAGE "CreateProcess() failed for command line '%s'"
+#define NULL_PROCESS_ID_ERROR_MESSAGE " successfully launched Internet Explorer, but did not return a valid process ID."
+#define PROTECTED_MODE_SETTING_ERROR_MESSAGE "Protected Mode settings are not the same for all zones. Enable Protected Mode must be set to the same value (enabled or disabled) for all zones."
+#define ZOOM_SETTING_ERROR_MESSAGE "Browser zoom level was set to %d%%. It should be set to 100%%"
+#define ATTACH_TIMEOUT_ERROR_MESSAGE "Could not find an Internet Explorer window belonging to the process with ID %d within %d milliseconds."
+#define ATTACH_FAILURE_ERROR_MESSAGE "Found browser window using ShellWindows API, but could not attach to the browser IWebBrowser2 object."
+#define CREATEPROCESS_REGISTRY_ERROR_MESSAGE "Unable to use CreateProcess() API. To use CreateProcess() with Internet Explorer 8 or higher, the value of registry setting in HKEY_CURRENT_USER\\Software\\Microsoft\\Internet Explorer\\Main\\TabProcGrowth must be '0'."
+
+#define ZONE_MY_COMPUTER L"0"
+#define ZONE_LOCAL_INTRANET L"1"
+#define ZONE_TRUSTED_SITES L"2"
+#define ZONE_INTERNET L"3"
+#define ZONE_RESTRICTED_SITES L"4"
+
+#define IELAUNCHURL_API L"ielaunchurl"
+#define CREATEPROCESS_API L"createprocess"
+
+#define RUNDLL_EXE_NAME L"rundll32.exe"
+#define INTERNET_CONTROL_PANEL_APPLET_NAME L"inetcpl.cpl"
+#define CLEAR_CACHE_COMMAND_LINE_ARGS L"rundll32.exe %s,ClearMyTracksByProcess %u"
+// This magic value is the combination of the following bitflags:
+// #define CLEAR_HISTORY         0x0001 // Clears history
+// #define CLEAR_COOKIES         0x0002 // Clears cookies
+// #define CLEAR_CACHE           0x0004 // Clears Temporary Internet Files folder
+// #define CLEAR_CACHE_ALL       0x0008 // Clears offline favorites and download history
+// #define CLEAR_FORM_DATA       0x0010 // Clears saved form data for form auto-fill-in
+// #define CLEAR_PASSWORDS       0x0020 // Clears passwords saved for websites
+// #define CLEAR_PHISHING_FILTER 0x0040 // Clears phishing filter data
+// #define CLEAR_RECOVERY_DATA   0x0080 // Clears webpage recovery data
+// #define CLEAR_PRIVACY_ADVISOR 0x0800 // Clears tracking data
+// #define CLEAR_SHOW_NO_GUI     0x0100 // Do not show a GUI when running the cache clearing
+//
+// Bitflags available but not used in this magic value are as follows:
+// #define CLEAR_USE_NO_THREAD      0x0200 // Do not use multithreading for deletion
+// #define CLEAR_PRIVATE_CACHE      0x0400 // Valid only when browser is in private browsing mode
+// #define CLEAR_DELETE_ALL         0x1000 // Deletes data stored by add-ons
+// #define CLEAR_PRESERVE_FAVORITES 0x2000 // Preserves cached data for "favorite" websites
+#define CLEAR_CACHE_OPTIONS 0x09FF
 
 namespace webdriver {
 
@@ -41,6 +99,14 @@ BrowserFactory::~BrowserFactory(void) {
   if (this->oleacc_instance_handle_) {
     ::FreeLibrary(this->oleacc_instance_handle_);
   }
+}
+
+std::string BrowserFactory::initial_browser_url(void) {
+  return StringUtilities::ToString(this->initial_browser_url_);
+}
+
+std::string BrowserFactory::browser_command_line_switches(void) {
+  return StringUtilities::ToString(this->browser_command_line_switches_);
 }
 
 void BrowserFactory::Initialize(BrowserFactorySettings settings) {

@@ -15,8 +15,12 @@
 // limitations under the License.
 
 #include "HtmlDialog.h"
-#include "BrowserFactory.h"
+
+#include "errorcodes.h"
 #include "logging.h"
+
+#include "BrowserFactory.h"
+#include "StringUtilities.h"
 
 namespace webdriver {
 

@@ -17,7 +17,6 @@
 
 package org.openqa.testing;
 
-import com.google.common.base.Supplier;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
@@ -27,7 +26,6 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
 class HeaderContainer {
@@ -36,11 +34,7 @@ class HeaderContainer {
 
   protected HeaderContainer() {
     Map<String, Collection<String>> headersMap = Maps.newHashMap();
-    this.headers = Multimaps.newListMultimap(headersMap, new Supplier<List<String>>() {
-      public List<String> get() {
-        return Lists.newLinkedList();
-      }
-    });
+    this.headers = Multimaps.newListMultimap(headersMap, Lists::newLinkedList);
   }
 
   public String getHeader(String name) {

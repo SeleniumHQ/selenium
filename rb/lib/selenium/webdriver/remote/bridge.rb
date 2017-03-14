@@ -33,17 +33,19 @@ module Selenium
         attr_reader :capabilities
 
         #
-        # Initializes the bridge with the given server URL.
-        #
-        # @param url         [String] url for the remote server
-        # @param http_client [Object] an HTTP client instance that implements the same protocol as Http::Default
-        # @param desired_capabilities [Capabilities] an instance of Remote::Capabilities describing the capabilities you want
+        # @see W3CBridge#Initialize
         #
 
         def initialize(opts = {})
           opts = opts.dup
 
+          if opts.key?(:port)
+            WebDriver.logger.warn <<-DEPRECATE.gsub(/\n +| {2,}/, ' ').freeze
+            [DEPRECATION] `:port` is deprecated. Use `:url` with full path
+            DEPRECATE
+          end
           port = opts.delete(:port) || 4444
+
           http_client = opts.delete(:http_client) { Http::Default.new }
           desired_capabilities = opts.delete(:desired_capabilities) { Capabilities.firefox }
           url = opts.delete(:url) { "http://#{Platform.localhost}:#{port}/wd/hub" }
@@ -79,18 +81,15 @@ module Selenium
         end
 
         def driver_extensions
-          [
-            DriverExtensions::HasInputDevices,
-            DriverExtensions::UploadsFiles,
-            DriverExtensions::TakesScreenshot,
-            DriverExtensions::HasSessionId,
-            DriverExtensions::Rotatable,
-            DriverExtensions::HasTouchScreen,
-            DriverExtensions::HasLocation,
-            DriverExtensions::HasNetworkConnection,
-            DriverExtensions::HasRemoteStatus,
-            DriverExtensions::HasWebStorage
-          ]
+          [DriverExtensions::UploadsFiles,
+           DriverExtensions::TakesScreenshot,
+           DriverExtensions::HasSessionId,
+           DriverExtensions::Rotatable,
+           DriverExtensions::HasTouchScreen,
+           DriverExtensions::HasLocation,
+           DriverExtensions::HasNetworkConnection,
+           DriverExtensions::HasRemoteStatus,
+           DriverExtensions::HasWebStorage]
         end
 
         def commands(command)
@@ -201,12 +200,10 @@ module Selenium
           switch_to_frame(nil)
         end
 
-        QUIT_ERRORS = [IOError].freeze
-
         def quit
           execute :quit
           http.close
-        rescue *QUIT_ERRORS
+        rescue *http.quit_errors
         end
 
         def close
@@ -375,6 +372,31 @@ module Selenium
         #
         # actions
         #
+
+        #
+        # @return [ActionBuilder]
+        # @api public
+        #
+
+        def action
+          ActionBuilder.new Mouse.new(self), Keyboard.new(self)
+        end
+
+        def mouse
+          WebDriver.logger.warn <<-DEPRECATE.gsub(/\n +| {2,}/, ' ').freeze
+            [DEPRECATION] `Driver#mouse` is deprecated with w3c implementation. Instead use 
+            driver.action.<command>.perform
+          DEPRECATE
+          Mouse.new self
+        end
+
+        def keyboard
+          WebDriver.logger.warn <<-DEPRECATE.gsub(/\n +| {2,}/, ' ').freeze
+            [DEPRECATION] `Driver#keyboard` is deprecated with w3c implementation. Instead use 
+            driver.action.<command>.perform
+          DEPRECATE
+          Keyboard.new self
+        end
 
         def click_element(element)
           execute :click_element, id: element
@@ -549,6 +571,13 @@ module Selenium
           Point.new data['x'], data['y']
         end
 
+        def element_rect(element)
+          loc = execute :get_element_location, id: element
+          size = execute :get_element_size, id: element
+
+          Rectangle.new loc['x'], loc['y'], size['width'], size['height']
+        end
+
         def element_location_once_scrolled_into_view(element)
           data = execute :get_element_location_once_scrolled_into_view, id: element
 
@@ -643,7 +672,7 @@ module Selenium
             raise ArgumentError, "#{opts.inspect} invalid for #{command.inspect}"
           end
 
-          puts "-> #{verb.to_s.upcase} #{path}" if $DEBUG
+          WebDriver.logger.info("-> #{verb.to_s.upcase} #{path}")
           http.call verb, path, command_hash
         end
 

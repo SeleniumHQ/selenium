@@ -23,21 +23,31 @@ module Selenium
       # @api private
       class Bridge < Remote::Bridge
         def initialize(opts = {})
-          port = opts.delete(:port) || Service::DEFAULT_PORT
-          service_args = opts.delete(:service_args) || {}
-
-          if opts[:service_log_path]
-            service_args.merge!(service_log_path: opts.delete(:service_log_path))
-          end
+          opts[:desired_capabilities] = create_capabilities(opts)
 
           unless opts.key?(:url)
-            driver_path = opts.delete(:driver_path) || Chrome.driver_path(false)
-            @service = Service.new(driver_path, port, *extract_service_args(service_args))
+            driver_path = opts.delete(:driver_path) || Chrome.driver_path
+            port = opts.delete(:port) || Service::DEFAULT_PORT
+
+            opts[:driver_opts] ||= {}
+            if opts.key? :service_log_path
+              WebDriver.logger.warn <<-DEPRECATE.gsub(/\n +| {2,}/, ' ').freeze
+            [DEPRECATION] `:service_log_path` is deprecated. Use `driver_opts: {log_path: #{opts[:service_log_path]}}`
+              DEPRECATE
+              opts[:driver_opts][:log_path] = opts.delete :service_log_path
+            end
+
+            if opts.key? :service_args
+              WebDriver.logger.warn <<-DEPRECATE.gsub(/\n +| {2,}/, ' ').freeze
+            [DEPRECATION] `:service_args` is deprecated. Pass switches using `driver_opts`
+              DEPRECATE
+              opts[:driver_opts][:args] = opts.delete(:service_args)
+            end
+
+            @service = Service.new(driver_path, port, opts.delete(:driver_opts))
             @service.start
             opts[:url] = @service.uri
           end
-
-          opts[:desired_capabilities] = create_capabilities(opts)
 
           super(opts)
         end
@@ -47,11 +57,8 @@ module Selenium
         end
 
         def driver_extensions
-          [
-            DriverExtensions::TakesScreenshot,
-            DriverExtensions::HasInputDevices,
-            DriverExtensions::HasWebStorage
-          ]
+          [DriverExtensions::TakesScreenshot,
+           DriverExtensions::HasWebStorage]
         end
 
         def capabilities
@@ -77,33 +84,23 @@ module Selenium
             raise ArgumentError, ':args must be an Array of Strings'
           end
 
-          chrome_options['args'] = args.map(&:to_s)
+          args.map!(&:to_s)
           profile = opts.delete(:profile).as_json if opts.key?(:profile)
 
-          if profile && chrome_options['args'].none? { |arg| arg =~ /user-data-dir/}
-            chrome_options['args'] << "--user-data-dir=#{profile[:directory]}"
+          if profile && args.none? { |arg| arg =~ /user-data-dir/ }
+            args << "--user-data-dir=#{profile[:directory]}"
           end
+          chrome_options['args'] = args unless args.empty?
 
           chrome_options['extensions'] = profile[:extensions] if profile && profile[:extensions]
           chrome_options['detach'] = true if opts.delete(:detach)
           chrome_options['prefs'] = opts.delete(:prefs) if opts.key?(:prefs)
 
-          caps[:chrome_options] = chrome_options
+          caps[:chrome_options] = chrome_options unless chrome_options.empty?
           caps[:proxy] = opts.delete(:proxy) if opts.key?(:proxy)
           caps[:proxy] ||= opts.delete('proxy') if opts.key?('proxy')
 
           caps
-        end
-
-        def extract_service_args(args)
-          service_args = []
-          service_args << "--log-path=#{args.delete(:service_log_path)}" if args.key?(:service_log_path)
-          service_args << "--url-base=#{args.delete(:url_base)}" if args.key?(:url_base)
-          service_args << "--port-server=#{args.delete(:port_server)}" if args.key?(:port_server)
-          service_args << "--whitelisted-ips=#{args.delete(:whitelisted_ips)}" if args.key?(:whitelisted_ips)
-          service_args << "--verbose=#{args.delete(:verbose)}" if args.key?(:verbose)
-          service_args << "--silent=#{args.delete(:silent)}" if args.key?(:silent)
-          service_args
         end
       end # Bridge
     end # Chrome

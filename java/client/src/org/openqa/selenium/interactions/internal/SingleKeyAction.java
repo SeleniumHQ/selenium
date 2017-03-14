@@ -47,6 +47,5 @@ public abstract class SingleKeyAction extends KeysRelatedAction {
     if (!isModifier) {
       throw new IllegalArgumentException("Key Down / Up events only make sense for modifier keys.");
     }
-
   }
 }

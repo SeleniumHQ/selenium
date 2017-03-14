@@ -176,6 +176,16 @@ namespace OpenQA.Selenium
         /// <summary>
         /// The selector used (CSS/XPath) was invalid.
         /// </summary>
-        InvalidSelector = 32
+        InvalidSelector = 32,
+
+        /// <summary>
+        /// An insecure SSl certificate was specified.
+        /// </summary>
+        InsecureCertificate = 33,
+
+        /// <summary>
+        /// No cookie was found matching the name requested.
+        /// </summary>
+        NoSuchCookie = 34
     }
 }

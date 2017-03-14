@@ -47,9 +47,10 @@ module Selenium
 
         def start_process
           server_command = [@executable_path, "--port=#{@port}", *@extra_args]
-          @process       = ChildProcess.build(*server_command)
+          @process = ChildProcess.build(*server_command)
+          WebDriver.logger.debug("Executing Process #{server_command}")
 
-          @process.io.inherit! if $DEBUG
+          @process.io.stdout = @process.io.stderr = WebDriver.logger.io
           @process.start
         end
 

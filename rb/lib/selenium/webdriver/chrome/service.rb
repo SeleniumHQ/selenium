@@ -37,14 +37,27 @@ module Selenium
 
         def start_process
           server_command = [@executable_path, "--port=#{@port}", *@extra_args]
-          @process       = ChildProcess.build(*server_command)
+          @process = ChildProcess.build(*server_command)
+          WebDriver.logger.debug("Executing Process #{server_command}")
 
-          @process.io.inherit! if $DEBUG
+          @process.io.stdout = @process.io.stderr = WebDriver.logger.io
+          @process.leader = true unless Platform.windows?
           @process.start
         end
 
         def cannot_connect_error_text
           "unable to connect to chromedriver #{@host}:#{@port}"
+        end
+
+        def extract_service_args(driver_opts)
+          driver_args = super
+          driver_args << "--log-path=#{driver_opts.delete(:log_path)}" if driver_opts.key?(:log_path)
+          driver_args << "--url-base=#{driver_opts.delete(:url_base)}" if driver_opts.key?(:url_base)
+          driver_args << "--port-server=#{driver_opts.delete(:port_server)}" if driver_opts.key?(:port_server)
+          driver_args << "--whitelisted-ips=#{driver_opts.delete(:whitelisted_ips)}" if driver_opts.key?(:whitelisted_ips)
+          driver_args << "--verbose" if driver_opts.key?(:verbose)
+          driver_args << "--silent" if driver_opts.key?(:silent)
+          driver_args
         end
       end # Service
     end # Chrome

@@ -66,7 +66,7 @@ module Python
       task_name = "#{base_task_name}:run"
       task task_name => deps do
         python_version = ENV['pyversion'] || "py27"
-        tox_args = ['tox', '-r']
+        tox_args = ['tox', '-c', 'py/tox.ini', '-r']
         drivers.each do |driver|
           tox_args += ['-e', "#{python_version}-#{driver}".downcase]
         tox_args += ["--"]
@@ -83,7 +83,7 @@ module Python
   class GenerateDocs < Tasks
     def handle(fun, dir, args)
       task Tasks.new.task_name(dir, args[:name]) do
-        sh "tox -e docs", :verbose => true
+        sh "tox -c py/tox.ini -e docs", :verbose => true
       end
     end
   end

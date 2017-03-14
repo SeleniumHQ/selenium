@@ -18,7 +18,6 @@
 package org.openqa.selenium.server.htmlrunner;
 
 
-import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
 import com.google.common.collect.ImmutableMap;
 
@@ -29,9 +28,11 @@ import com.thoughtworks.selenium.webdriven.ElementFinder;
 import com.thoughtworks.selenium.webdriven.JavascriptLibrary;
 import com.thoughtworks.selenium.webdriven.commands.SeleniumSelect;
 
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.WrapsDriver;
 
+import java.util.function.Supplier;
 import java.util.logging.Logger;
 
 class NonReflectiveSteps {
@@ -51,6 +52,8 @@ class NonReflectiveSteps {
       (selenium, state) -> new NextCommandFails(state.expand(locator));
     steps.put("assertErrorOnNext", nextCommandFails);
     steps.put("assertFailureOnNext", nextCommandFails);
+
+    steps.put("sendKeys", SendKeys::new);
 
     steps.put(
       "verifyErrorOnNext",
@@ -194,6 +197,105 @@ class NonReflectiveSteps {
     @Override
     public boolean isOkayToContinueTest() {
       return true;
+    }
+  }
+
+  private static class SendKeys implements CoreStep {
+
+    private final String locator;
+    private final String value;
+
+    private SendKeys(String locator, String value) {
+      this.locator = locator;
+      this.value = value;
+    }
+
+    @Override
+    public NextStepDecorator execute(Selenium selenium, TestState state) {
+      String value = state.expand(this.value);
+
+      value = value.replace("${KEY_ALT}", Keys.ALT);
+      value = value.replace("${KEY_CONTROL}", Keys.CONTROL);
+      value = value.replace("${KEY_CTRL}", Keys.CONTROL);
+      value = value.replace("${KEY_META}", Keys.META);
+      value = value.replace("${KEY_COMMAND}", Keys.COMMAND);
+      value = value.replace("${KEY_SHIFT}", Keys.SHIFT);
+
+      value = value.replace("${KEY_BACKSPACE}", Keys.BACK_SPACE);
+      value = value.replace("${KEY_BKSP}", Keys.BACK_SPACE);
+      value = value.replace("${KEY_DELETE}", Keys.DELETE);
+      value = value.replace("${KEY_DEL}", Keys.DELETE);
+      value = value.replace("${KEY_ENTER}", Keys.ENTER);
+      value = value.replace("${KEY_EQUALS}", Keys.EQUALS);
+      value = value.replace("${KEY_ESCAPE}", Keys.ESCAPE);
+      value = value.replace("${KEY_ESC}", Keys.ESCAPE);
+      value = value.replace("${KEY_INSERT}", Keys.INSERT);
+      value = value.replace("${KEY_INS}", Keys.INSERT);
+      value = value.replace("${KEY_PAUSE}", Keys.PAUSE);
+      value = value.replace("${KEY_SEMICOLON}", Keys.SEMICOLON);
+      value = value.replace("${KEY_SPACE}", Keys.SPACE);
+      value = value.replace("${KEY_TAB}", Keys.TAB);
+
+      value = value.replace("${KEY_LEFT}", Keys.LEFT);
+      value = value.replace("${KEY_UP}", Keys.UP);
+      value = value.replace("${KEY_RIGHT}", Keys.RIGHT);
+      value = value.replace("${KEY_DOWN}", Keys.DOWN);
+      value = value.replace("${KEY_PAGE_UP}", Keys.PAGE_UP);
+      value = value.replace("${KEY_PGUP}", Keys.PAGE_UP);
+      value = value.replace("${KEY_PAGE_DOWN}", Keys.PAGE_DOWN);
+      value = value.replace("${KEY_PGDN}", Keys.PAGE_DOWN);
+      value = value.replace("${KEY_END}", Keys.END);
+      value = value.replace("${KEY_HOME}", Keys.HOME);
+
+      value = value.replace("${KEY_NUMPAD0}", Keys.NUMPAD0);
+      value = value.replace("${KEY_N0}", Keys.NUMPAD0);
+      value = value.replace("${KEY_NUMPAD1}", Keys.NUMPAD1);
+      value = value.replace("${KEY_N1}", Keys.NUMPAD1);
+      value = value.replace("${KEY_NUMPAD2}", Keys.NUMPAD2);
+      value = value.replace("${KEY_N2}", Keys.NUMPAD2);
+      value = value.replace("${KEY_NUMPAD3}", Keys.NUMPAD3);
+      value = value.replace("${KEY_N3}", Keys.NUMPAD3);
+      value = value.replace("${KEY_NUMPAD4}", Keys.NUMPAD4);
+      value = value.replace("${KEY_N4}", Keys.NUMPAD4);
+      value = value.replace("${KEY_NUMPAD5}", Keys.NUMPAD5);
+      value = value.replace("${KEY_N5}", Keys.NUMPAD5);
+      value = value.replace("${KEY_NUMPAD6}", Keys.NUMPAD6);
+      value = value.replace("${KEY_N6}", Keys.NUMPAD6);
+      value = value.replace("${KEY_NUMPAD7}", Keys.NUMPAD7);
+      value = value.replace("${KEY_N7}", Keys.NUMPAD7);
+      value = value.replace("${KEY_NUMPAD8}", Keys.NUMPAD8);
+      value = value.replace("${KEY_N8}", Keys.NUMPAD8);
+      value = value.replace("${KEY_NUMPAD9}", Keys.NUMPAD9);
+      value = value.replace("${KEY_N9}", Keys.NUMPAD9);
+      value = value.replace("${KEY_ADD}", Keys.ADD);
+      value = value.replace("${KEY_NUM_PLUS}", Keys.ADD);
+      value = value.replace("${KEY_DECIMAL}", Keys.DECIMAL);
+      value = value.replace("${KEY_NUM_PERIOD}", Keys.DECIMAL);
+      value = value.replace("${KEY_DIVIDE}", Keys.DIVIDE);
+      value = value.replace("${KEY_NUM_DIVISION}", Keys.DIVIDE);
+      value = value.replace("${KEY_MULTIPLY}", Keys.MULTIPLY);
+      value = value.replace("${KEY_NUM_MULTIPLY}", Keys.MULTIPLY);
+      value = value.replace("${KEY_SEPARATOR}", Keys.SEPARATOR);
+      value = value.replace("${KEY_SEP}", Keys.SEPARATOR);
+      value = value.replace("${KEY_SUBTRACT}", Keys.SUBTRACT);
+      value = value.replace("${KEY_NUM_MINUS}", Keys.SUBTRACT);
+
+      value = value.replace("${KEY_F1}", Keys.F1);
+      value = value.replace("${KEY_F2}", Keys.F2);
+      value = value.replace("${KEY_F3}", Keys.F3);
+      value = value.replace("${KEY_F4}", Keys.F4);
+      value = value.replace("${KEY_F5}", Keys.F5);
+      value = value.replace("${KEY_F6}", Keys.F6);
+      value = value.replace("${KEY_F7}", Keys.F7);
+      value = value.replace("${KEY_F8}", Keys.F8);
+      value = value.replace("${KEY_F9}", Keys.F9);
+      value = value.replace("${KEY_F10}", Keys.F10);
+      value = value.replace("${KEY_F11}", Keys.F11);
+      value = value.replace("${KEY_F12}", Keys.F12);
+
+      selenium.typeKeys(locator, value);
+
+      return NextStepDecorator.IDENTITY;
     }
   }
 }

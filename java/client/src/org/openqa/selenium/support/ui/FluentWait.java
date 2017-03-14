@@ -21,9 +21,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
-import com.google.common.base.Function;
-import com.google.common.base.Predicate;
-import com.google.common.base.Supplier;
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
@@ -34,6 +31,8 @@ import org.openqa.selenium.WebDriverException;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * An implementation of the {@link Wait} interface that may have its timeout and polling interval
@@ -50,12 +49,12 @@ import java.util.concurrent.TimeUnit;
  * Sample usage: <pre>
  *   // Waiting 30 seconds for an element to be present on the page, checking
  *   // for its presence once every 5 seconds.
- *   Wait{@literal<WebDriver>} wait = new FluentWait{@literal<WebDriver>}(driver)
+ *   Wait&lt;WebDriver&gt; wait = new FluentWait&lt;WebDriver&gt;(driver)
  *       .withTimeout(30, SECONDS)
  *       .pollingEvery(5, SECONDS)
  *       .ignoring(NoSuchElementException.class);
  *
- *   WebElement foo = wait.until(new Function{@literal<WebDriver, WebElement>}() {
+ *   WebElement foo = wait.until(new Function&lt;WebDriver, WebElement&gt;() {
  *     public WebElement apply(WebDriver driver) {
  *       return driver.findElement(By.id("foo"));
  *     }
@@ -181,30 +180,9 @@ public class FluentWait<T> implements Wait<T> {
   public FluentWait<T> ignoring(Class<? extends Throwable> firstType,
                                 Class<? extends Throwable> secondType) {
 
-    return this.ignoreAll(ImmutableList.<Class<? extends Throwable>>of(firstType, secondType));
+    return this.ignoreAll(ImmutableList.of(firstType, secondType));
   }
-
-  /**
-   * Repeatedly applies this instance's input value to the given predicate until the timeout expires
-   * or the predicate evaluates to true.
-   *
-   * @param isTrue The predicate to wait on.
-   * @throws TimeoutException If the timeout expires.
-   */
-  public void until(final Predicate<T> isTrue) {
-    until(new Function<T, Boolean>() {
-      @Override
-      public Boolean apply(T input) {
-        return isTrue.apply(input);
-      }
-
-      @Override
-      public String toString() {
-        return isTrue.toString();
-      }
-    });
-  }
-
+  
   /**
    * Repeatedly applies this instance's input value to the given function until one of the following
    * occurs:
@@ -269,7 +247,8 @@ public class FluentWait<T> implements Wait<T> {
         return e;
       }
     }
-    throw Throwables.propagate(e);
+    Throwables.throwIfUnchecked(e);
+    throw new RuntimeException(e);
   }
 
   /**

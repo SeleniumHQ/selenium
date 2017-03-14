@@ -20,7 +20,7 @@ package org.openqa.grid.internal;
 import com.google.gson.JsonObject;
 
 import org.openqa.grid.common.RegistrationRequest;
-import org.openqa.grid.common.exception.GridException;
+import org.openqa.grid.common.SeleniumProtocol;
 import org.openqa.grid.internal.utils.CapabilityMatcher;
 import org.openqa.grid.internal.utils.HtmlRenderer;
 import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
@@ -39,6 +39,18 @@ import java.util.Map;
  * only support Firefox.
  */
 public interface RemoteProxy extends Comparable<RemoteProxy> {
+
+  /**
+   * Create a new TestSlot.
+   *
+   * @param protocol a {@link SeleniumProtocol} object that identifies the request flavor.
+   * @param capabilities the type of test the client is interested in performing.
+   * @return the entity on a proxy that can host a test session.
+   */
+  default TestSlot createTestSlot(SeleniumProtocol protocol, Map<String, Object> capabilities) {
+    return new TestSlot(this, protocol, capabilities);
+  }
+
   /**
    * Each test running on the node will occupy a test slot.  A test slot can either be in use (have a session) or be
    * available for scheduling (no associated session).  This method allows retrieving the total state of the node,
@@ -158,9 +170,8 @@ public interface RemoteProxy extends Comparable<RemoteProxy> {
    *
    * @return the node status.
    *
-   * @throws GridException if the node is down.
    */
-  JsonObject getStatus() throws GridException;
+  JsonObject getStatus() ;
 
   /**
    * Checks if the node has the capability requested.

@@ -17,16 +17,17 @@
 #ifndef WEBDRIVER_IE_DOCUMENTHOST_H_
 #define WEBDRIVER_IE_DOCUMENTHOST_H_
 
-#include <string>
 #include <map>
 #include <memory>
-#include "ErrorCodes.h"
+#include <string>
+
 #include "LocationInfo.h"
 
 #define EELEMENTCLICKPOINTNOTSCROLLED 100
 
 namespace webdriver {
 
+// Forward declaration of classes.
 class BrowserCookie;
 class CookieManager;
 
@@ -109,8 +110,6 @@ class DocumentHost {
   bool wait_required_;
   bool is_closing_;
 };
-
-typedef std::tr1::shared_ptr<DocumentHost> BrowserHandle;
 
 } // namespace webdriver
 

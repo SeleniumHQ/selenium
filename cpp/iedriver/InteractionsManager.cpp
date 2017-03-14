@@ -15,9 +15,12 @@
 // limitations under the License.
 
 #include "InteractionsManager.h"
+
 #include <assert.h>
 #include <math.h>
+
 #include "logging.h"
+
 #include "HookProcessor.h"
 #include "WindowUtilities.h"
 

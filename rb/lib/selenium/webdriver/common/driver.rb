@@ -125,6 +125,23 @@ module Selenium
       end
 
       #
+      # @return [ActionBuilder, W3CActionBuilder]
+      # @see ActionBuilder, W3CActionBuilder
+      #
+
+      def action
+        bridge.action
+      end
+
+      def mouse
+        bridge.mouse
+      end
+
+      def keyboard
+        bridge.keyboard
+      end
+
+      #
       # Opens the specified URL in the browser.
       #
 
@@ -204,7 +221,7 @@ module Selenium
       #
       # @param [String] script
       #   JavaScript source to execute
-      # @param [WebDriver::Element,Integer, Float, Boolean, NilClass, String, Array] *args
+      # @param [WebDriver::Element, Integer, Float, Boolean, NilClass, String, Array] args
       #   Arguments will be available in the given script in the 'arguments' pseudo-array.
       #
       # @return [WebDriver::Element,Integer,Float,Boolean,NilClass,String,Array]
@@ -224,7 +241,7 @@ module Selenium
       #
       # @param [String] script
       #   JavaScript source to execute
-      # @param [WebDriver::Element,Integer, Float, Boolean, NilClass, String, Array] *args
+      # @param [WebDriver::Element,Integer, Float, Boolean, NilClass, String, Array] args
       #   Arguments to the script. May be empty.
       #
       # @return [WebDriver::Element,Integer,Float,Boolean,NilClass,String,Array]
@@ -257,7 +274,7 @@ module Selenium
       # Get the first element matching the given selector. If given a
       # String or Symbol, it will be used as the id of the element.
       #
-      # @param  [String,Hash] id or selector
+      # @param  [String,Hash] sel id or selector
       # @return [WebDriver::Element]
       #
       # Examples:

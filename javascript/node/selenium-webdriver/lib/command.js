@@ -150,6 +150,8 @@ const Name = {
   TAKE_ELEMENT_SCREENSHOT: 'takeElementScreenshot',
   IMPLICITLY_WAIT: 'implicitlyWait',
   SET_SCRIPT_TIMEOUT: 'setScriptTimeout',
+
+  GET_TIMEOUT: 'getTimeout',
   SET_TIMEOUT: 'setTimeout',
 
   ACCEPT_ALERT: 'acceptAlert',

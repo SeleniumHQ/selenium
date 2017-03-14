@@ -4,8 +4,8 @@ prebuilt_jar(
   binary_jar = 'serializer-2.7.2.jar',
   source_jar = 'serializer-2.7.2-sources.jar',
   deps = [
-    '//third_party/java/xerces:xerces',
-    '//third_party/java/xml:apis',
+    '//third_party/java/xerces:xercesImpl',
+    '//third_party/java/xml-apis:xml-apis'
   ],
 )
 
@@ -16,11 +16,10 @@ prebuilt_jar(
   source_jar = 'xalan-2.7.2-sources.jar',
   deps = [
     ':serializer',
-    '//third_party/java/xerces:xerces',
+    '//third_party/java/xerces:xercesImpl'
   ],
   visibility = [
-    '//third_party/java/htmlunit:htmlunit',
-    '//third_party/java/xml:xml',
+    '//third_party/java/htmlunit:htmlunit'
   ],
 )
 

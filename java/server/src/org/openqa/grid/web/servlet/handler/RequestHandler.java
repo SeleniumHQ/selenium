@@ -25,7 +25,6 @@ import org.openqa.grid.internal.RemoteProxy;
 import org.openqa.grid.internal.SessionTerminationReason;
 import org.openqa.grid.internal.TestSession;
 import org.openqa.grid.internal.exception.NewSessionException;
-import org.openqa.grid.internal.listeners.Prioritizer;
 import org.openqa.grid.internal.listeners.TestSessionListener;
 import org.openqa.selenium.remote.DesiredCapabilities;
 

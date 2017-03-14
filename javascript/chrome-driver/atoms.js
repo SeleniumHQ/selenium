@@ -294,14 +294,8 @@ webdriver.chrome.getPageZoom = function(elem) {
 webdriver.chrome.isElementDisplayed = function(elem,
                                                opt_inComposedDom,
                                                opt_ignoreOpacity) {
-  if (!!opt_inComposedDom) {
-    if (!bot.dom.isShownInComposedDom(elem, opt_ignoreOpacity)) {
-      return false;
-    }
-  } else {
-    if (!bot.dom.isShown(elem, opt_ignoreOpacity)) {
-      return false;
-    }
+  if (!bot.dom.isShown(elem, opt_ignoreOpacity)) {
+    return false;
   }
   // if it's not invisible then check if the element is within the shadow DOM
   // of an invisible element, using recursive calls to this function

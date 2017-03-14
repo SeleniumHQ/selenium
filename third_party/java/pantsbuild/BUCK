@@ -1,0 +1,24 @@
+java_binary(
+  name = 'jarjar-links',
+  main_class = 'org.pantsbuild.jarjar.Main',
+  deps = [
+    ':jarjar',
+  ],
+  visibility = [
+    '//third_party/java/jetty:',
+  ],
+)
+
+prebuilt_jar(
+  name = 'jarjar',
+  maven_coords = 'org.pantsbuild:jarjar:jar:1.6.3',
+  binary_jar = 'jarjar-1.6.3.jar',
+  source_jar = 'jarjar-1.6.3-sources.jar',
+  deps = [
+    '//third_party/java/ant:ant',
+    '//third_party/java/asm:asm',
+    '//third_party/java/asm:asm-commons',
+    '//third_party/java/maven:maven-plugin-api'
+  ],
+)
+

@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.testing.drivers;
 
-import com.google.common.base.Supplier;
 import com.google.common.collect.Lists;
 
 import org.openqa.selenium.Capabilities;
@@ -27,6 +26,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.function.Supplier;
 import java.util.logging.Level;
 
 public class WebDriverBuilder implements Supplier<WebDriver> {

@@ -1,6 +1,59 @@
-v3.0.2
+v3.3.1
 ======
 
+* Better support for geckodriver v0.15.0. Notably, exceptions returned
+  from the remote end are now unwrapped properly.
+* Fix a bug with the status page of the standalone server.
+* Deprecated `Capabilities.isJavascriptEnabled`
+
+
+v3.3.0
+======
+
+* Support for geckodriver v0.15.0.
+* Deprecated seldom used FirefoxDriver constructors.
+* Added javadocs to show best way to create a new FirefoxDriver:
+  ```
+  DesiredCapabilities caps = new FirefoxOptions()
+       // For example purposes only
+      .setProfile(new FirefoxProfile())
+      .addTo(DesiredCapabilities.firefox());
+  WebDriver driver = new FirefoxDriver(caps);
+  ```
+* Stream New Session capabilities to disk before use to avoid eating
+  every byte of available memory.
+* Beginnings of local-end implementation of the w3c New Session
+  capabilities. There's still some work to do.
+
+v3.2.0
+======
+
+* Updated Guava to version 21 and started using Java 8 features. Users
+  are recommended to update too.
+* Fix a problem starting Firefox caused by missing libraries
+* Experimental support for the W3C Action endpoints
+* Remove deprecated `FluentWait.until(Predicate<?>)` method. This
+  should make lambdas work properly with Wait instances now.
+* Bump htmlunitdriver version to 2.24
+* [Grid] Allow for customisation of TestSlot (#3431)
+
+v3.1.0
+======
+
+* Update how the WebDriverException gathers system info. Resolves an
+  issue with slow-downs on OS X Sierra.
+* Update Wait and FluentWait for Java 8. Requires an update to the
+  latest guava version 21.0
+* Remove old marionette actions support.
+* Selenium server now understands a "-version" flag.
+* `WebElement.getText` now returns text from the Shadow DOM.
+* Implemented a more straightforward way to specify firefox binary in
+  GeckoDriverService builder.
+* Firefox can now pick a channel to start from on Windows via
+  `FirefoxBinary.Channel`
+* ChromeDriver now supports `NetworkConnection` interface.
+* htmlrunner bug fixes, in particular around `getValue`, and relative
+  paths to the suite file.
 * Fixes to make htmlrunner work.
 * Removed native events from FirefoxDriver.
 * Truncate the string representation of capabilities for display purposes.

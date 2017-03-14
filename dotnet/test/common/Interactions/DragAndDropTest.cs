@@ -127,7 +127,7 @@ namespace OpenQA.Selenium.Interactions
         [Test]
         [Category("Javascript")]
         [IgnoreBrowser(Browser.IE, "Dragging too far in IE causes the element not to move, instead of moving to 0,0.")]
-        [IgnoreBrowser(Browser.Chrome, "Dragging too far in Chrome causes the element not to move, instead of moving to 0,0.")]
+        //[IgnoreBrowser(Browser.Chrome, "Dragging too far in Chrome causes the element not to move, instead of moving to 0,0.")]
         [IgnoreBrowser(Browser.PhantomJS, "Dragging too far in PhantomJS causes the element not to move, as PhantomJS doesn't support dragging outside the viewport.")]
         [IgnoreBrowser(Browser.HtmlUnit)]
         [IgnoreBrowser(Browser.Android, "Mobile browser does not support drag-and-drop")]

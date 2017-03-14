@@ -18,7 +18,6 @@
 package com.thoughtworks.selenium.webdriven;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Supplier;
 import com.google.common.collect.Maps;
 
 import com.thoughtworks.selenium.CommandProcessor;
@@ -31,6 +30,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.internal.WrapsDriver;
 
 import java.util.Map;
+import java.util.function.Supplier;
 
 
 /**
@@ -319,7 +319,6 @@ public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver 
     seleneseMethods.put("selectFrame", new SelectFrame(windows));
     seleneseMethods.put("selectPopUp", new SelectPopUp(windows));
     seleneseMethods.put("selectWindow", new SelectWindow(windows));
-    seleneseMethods.put("sendKeys", new SendKeys(alertOverride, elementFinder));
     seleneseMethods.put("setBrowserLogLevel", new NoOp(null));
     seleneseMethods.put("setContext", new NoOp(null));
     seleneseMethods.put(

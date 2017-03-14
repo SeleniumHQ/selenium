@@ -20,13 +20,13 @@ package org.openqa.selenium.internal;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import org.openqa.selenium.testing.Ignore;
-
 import com.google.common.base.Objects;
 import com.google.common.collect.Sets;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+
+import org.openqa.selenium.testing.Ignore;
 
 import java.lang.reflect.Method;
 import java.util.Set;

@@ -24,6 +24,14 @@ module Selenium
   module WebDriver
     module Safari
       class << self
+        def technology_preview
+          "/Applications/Safari\ Technology\ Preview.app/Contents/MacOS/safaridriver"
+        end
+
+        def technology_preview!
+          self.driver_path = technology_preview
+        end
+
         def path=(path)
           Platform.assert_executable(path)
           @path = path
@@ -37,23 +45,11 @@ module Selenium
         end
 
         def driver_path=(path)
-          warn <<-DEPRECATE.gsub(/\n +| {2,}/, ' ').freeze
-            [DEPRECATION] `driver_path=` is deprecated. Pass the driver path as an option instead.
-            e.g. Selenium::WebDriver.for :safari, driver_path: '/path'
-          DEPRECATE
-
           Platform.assert_executable path
           @driver_path = path
         end
 
-        def driver_path(warning = true)
-          if warning
-            warn <<-DEPRECATE.gsub(/\n +| {2,}/, ' ').freeze
-              [DEPRECATION] `driver_path` is deprecated. Pass the driver path as an option instead.
-              e.g. Selenium::WebDriver.for :safari, driver_path: '/path'
-            DEPRECATE
-          end
-
+        def driver_path
           @driver_path ||= nil
         end
       end

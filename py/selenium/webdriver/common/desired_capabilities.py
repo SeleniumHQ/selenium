@@ -53,6 +53,7 @@ class DesiredCapabilities(object):
         "platform": "ANY",
         "javascriptEnabled": True,
         "marionette": True,
+        "acceptInsecureCerts": True,
     }
 
     INTERNETEXPLORER = {

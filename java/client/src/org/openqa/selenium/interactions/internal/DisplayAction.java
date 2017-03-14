@@ -31,5 +31,4 @@ public abstract class DisplayAction extends BaseAction {
   protected Coordinates getActionLocation() {
     return (where == null) ? null : where.getCoordinates();
   }
-
 }

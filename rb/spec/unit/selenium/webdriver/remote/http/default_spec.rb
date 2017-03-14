@@ -31,8 +31,42 @@ module Selenium
             client
           end
 
+          it 'assigns default timeout to nil' do
+            http = client.send :http
+
+            expect(http.open_timeout).to eq nil
+            expect(http.read_timeout).to eq 60
+          end
+
+          describe '#initialize' do
+            let(:client) { Default.new(read_timeout: 22, open_timeout: 23) }
+
+            it 'accepts read timeout options' do
+              expect(client.open_timeout).to eq 23
+            end
+
+            it 'accepts open timeout options' do
+              expect(client.read_timeout).to eq 22
+            end
+          end
+
+          describe '#timeout=' do
+            let(:value_set) { 22 }
+            before do
+              expect { client.timeout = value_set }.to output.to_stdout_from_any_process
+            end
+
+            it 'assigns value to #read_timeout' do
+              expect(client.read_timeout).to eq value_set
+            end
+
+            it 'assigns value to #open_timeout' do
+              expect(client.open_timeout).to eq value_set
+            end
+          end
+
           it 'uses the specified timeout' do
-            client.timeout = 10
+            expect { client.timeout = 10 }.to output.to_stdout_from_any_process
             http = client.send :http
 
             expect(http.open_timeout).to eq(10)
@@ -81,14 +115,14 @@ module Selenium
 
           %w[no_proxy NO_PROXY].each do |no_proxy_var|
             it "honors the #{no_proxy_var} environment variable when matching" do
-              with_env('HTTP_PROXY' => 'proxy.org:8080', no_proxy_var => 'example.com') do
+              with_env('http_proxy' => 'proxy.org:8080', no_proxy_var => 'example.com') do
                 http = client.send :http
                 expect(http).not_to be_proxy
               end
             end
 
             it "ignores the #{no_proxy_var} environment variable when not matching" do
-              with_env('HTTP_PROXY' => 'proxy.org:8080', no_proxy_var => 'foo.com') do
+              with_env('http_proxy' => 'proxy.org:8080', no_proxy_var => 'foo.com') do
                 http = client.send :http
 
                 expect(http).to be_proxy
@@ -98,23 +132,14 @@ module Selenium
             end
 
             it "understands a comma separated list of domains in #{no_proxy_var}" do
-              with_env('HTTP_PROXY' => 'proxy.org:8080', no_proxy_var => 'example.com,foo.com') do
+              with_env('http_proxy' => 'proxy.org:8080', no_proxy_var => 'example.com,foo.com') do
                 http = client.send :http
                 expect(http).not_to be_proxy
               end
             end
 
-            unless RUBY_VERSION > '2.0' # Ruby 2.0 does its own proxy handling in net/http, which breaks this behaviour
-              it "understands an asterisk in #{no_proxy_var}" do
-                with_env('HTTP_PROXY' => 'proxy.org:8080', no_proxy_var => '*') do
-                  http = client.send :http
-                  expect(http).not_to be_proxy
-                end
-              end
-            end
-
             it "understands subnetting in #{no_proxy_var}" do
-              with_env('HTTP_PROXY' => 'proxy.org:8080', no_proxy_var => 'localhost,127.0.0.0/8') do
+              with_env('http_proxy' => 'proxy.org:8080', no_proxy_var => 'localhost,127.0.0.0/8') do
                 client.server_url = URI.parse('http://127.0.0.1:4444/wd/hub')
 
                 http = client.send :http

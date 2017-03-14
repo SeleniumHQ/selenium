@@ -26,13 +26,23 @@ module Selenium
 
       class Bridge < Remote::Bridge
         def initialize(opts = {})
-          port = opts.delete(:port) || Service::DEFAULT_PORT
           opts[:desired_capabilities] ||= Remote::Capabilities.phantomjs
 
           unless opts.key?(:url)
-            driver_path = opts.delete(:driver_path) || PhantomJS.path(false)
-            args = opts.delete(:args) || opts[:desired_capabilities]['phantomjs.cli.args']
-            @service = Service.new(driver_path, port, *args)
+            driver_path = opts.delete(:driver_path) || PhantomJS.driver_path
+            port = opts.delete(:port) || Service::DEFAULT_PORT
+
+            opts[:driver_opts] ||= {}
+            if opts.key? :args
+              WebDriver.logger.warn <<-DEPRECATE.gsub(/\n +| {2,}/, ' ').freeze
+            [DEPRECATION] `:args` is deprecated. Pass switches using `driver_opts`
+              DEPRECATE
+              opts[:driver_opts][:args] = opts.delete(:args)
+            elsif opts[:desired_capabilities]['phantomjs.cli.args']
+              opts[:driver_opts][:args] = opts[:desired_capabilities]['phantomjs.cli.args']
+            end
+
+            @service = Service.new(driver_path, port, opts.delete(:driver_opts))
             @service.start
             opts[:url] = @service.uri
           end
@@ -45,10 +55,7 @@ module Selenium
         end
 
         def driver_extensions
-          [
-            DriverExtensions::TakesScreenshot,
-            DriverExtensions::HasInputDevices
-          ]
+          [DriverExtensions::TakesScreenshot]
         end
 
         def capabilities

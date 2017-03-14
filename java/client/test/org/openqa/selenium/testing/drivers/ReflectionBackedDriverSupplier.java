@@ -19,7 +19,6 @@ package org.openqa.selenium.testing.drivers;
 
 import static org.openqa.selenium.testing.DevMode.isInDevMode;
 
-import com.google.common.base.Supplier;
 import com.google.common.base.Throwables;
 
 import org.openqa.selenium.Capabilities;
@@ -27,6 +26,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.function.Supplier;
 import java.util.logging.Logger;
 
 public class ReflectionBackedDriverSupplier implements Supplier<WebDriver> {

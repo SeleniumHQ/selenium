@@ -17,13 +17,13 @@
 
 package org.openqa.selenium.remote.server.handler.mobile;
 
-import java.util.Map;
-
 import org.openqa.selenium.mobile.NetworkConnection.ConnectionType;
 import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.handler.WebDriverHandler;
 import org.openqa.selenium.remote.server.handler.html5.Utils;
+
+import java.util.Map;
 
 public class SetNetworkConnection extends WebDriverHandler<Number> implements JsonParametersAware {
   private volatile ConnectionType type;

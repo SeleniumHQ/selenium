@@ -78,6 +78,7 @@ genrule(name = 'manifest',
 java_library(name = 'beta',
   srcs = [ 'Beta.java' ],
   visibility = [
+    '//java/client/src/org/openqa/selenium/interactions:interactions',
     '//java/client/src/org/openqa/selenium/logging:api',
     '//java/client/src/org/openqa/selenium/logging:logging',
     '//java/client/src/org/openqa/selenium/os:os',
@@ -119,6 +120,7 @@ java_library(name = 'exceptions',
   ],
   visibility = [
     '//java/client/src/org/openqa/selenium/interactions:exceptions',
+    '//java/client/src/org/openqa/selenium/interactions:interactions',
     '//java/client/src/org/openqa/selenium/io:io',
     '//java/client/src/org/openqa/selenium/net:net',
     '//java/client/src/org/openqa/selenium/os:os',
@@ -169,6 +171,7 @@ java_library(
     "//java/client/src/org/openqa/selenium/support:support",
     "//third_party/java/htmlunit:htmlunit",
     "//third_party/java/phantomjs-driver:phantomjs-driver",
+    '//third_party/java/selenium:htmlunit-driver'
   ],
   visibility = [
     '//java/server/src/org/openqa/grid/selenium:classes',

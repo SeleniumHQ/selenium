@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.interactions;
 
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -62,14 +61,7 @@ public class ActionsTest {
 
   @Test
   public void creatingAllKeyboardActions() {
-    Actions builder = new Actions(driver);
-
-    builder.keyDown(Keys.SHIFT).sendKeys("abc").keyUp(Keys.CONTROL);
-
-    CompositeAction returnedAction = (CompositeAction) builder.build();
-    returnedAction.perform();
-
-    assertEquals("Expected 3 keyboard actions", 3, returnedAction.getNumberOfActions());
+    new Actions(driver).keyDown(Keys.SHIFT).sendKeys("abc").keyUp(Keys.CONTROL).perform();
 
     InOrder order = inOrder(mockMouse, mockKeyboard, mockCoordinates);
     order.verify(mockKeyboard).pressKey(Keys.SHIFT);
@@ -80,14 +72,7 @@ public class ActionsTest {
 
   @Test
   public void providingAnElementToKeyboardActions() {
-    Actions builder = new Actions(driver);
-
-    builder.keyDown(dummyLocatableElement, Keys.SHIFT);
-
-    CompositeAction returnedAction = (CompositeAction) builder.build();
-    returnedAction.perform();
-
-    assertEquals("Expected 1 keyboard action", 1, returnedAction.getNumberOfActions());
+    new Actions(driver).keyDown(dummyLocatableElement, Keys.SHIFT).perform();
 
     InOrder order = inOrder(mockMouse, mockKeyboard, mockCoordinates);
     order.verify(mockMouse).click(mockCoordinates);
@@ -103,18 +88,17 @@ public class ActionsTest {
     final WebElement dummyElement2 = mockLocatableElementWithCoordinates(dummyCoordinates2);
     final WebElement dummyElement3 = mockLocatableElementWithCoordinates(dummyCoordinates3);
 
-    Actions builder = new Actions(driver);
-
-    builder.keyDown(dummyLocatableElement, Keys.SHIFT)
+    new Actions(driver)
+        .keyDown(dummyLocatableElement, Keys.SHIFT)
         .sendKeys(dummyElement2, "abc")
-        .keyUp(dummyElement3, Keys.CONTROL);
+        .keyUp(dummyElement3, Keys.CONTROL)
+        .perform();
 
-    CompositeAction returnedAction = (CompositeAction) builder.build();
-    returnedAction.perform();
-
-    assertEquals("Expected 3 keyboard actions", 3, returnedAction.getNumberOfActions());
-
-    InOrder order = inOrder(mockMouse, mockKeyboard, mockCoordinates, dummyCoordinates2,
+    InOrder order = inOrder(
+        mockMouse,
+        mockKeyboard,
+        mockCoordinates,
+        dummyCoordinates2,
         dummyCoordinates3);
     order.verify(mockMouse).click(mockCoordinates);
     order.verify(mockKeyboard).pressKey(Keys.SHIFT);
@@ -127,17 +111,14 @@ public class ActionsTest {
 
   @Test
   public void creatingAllMouseActions() {
-    CompositeAction returnedAction = (CompositeAction) new Actions(driver)
+    new Actions(driver)
         .clickAndHold(dummyLocatableElement)
         .release(dummyLocatableElement)
         .click(dummyLocatableElement)
         .doubleClick(dummyLocatableElement)
         .moveToElement(dummyLocatableElement)
         .contextClick(dummyLocatableElement)
-        .build();
-
-    returnedAction.perform();
-    assertEquals("Expected 6 mouse actions", 6, returnedAction.getNumberOfActions());
+        .perform();
 
     InOrder order = inOrder(mockMouse, mockKeyboard, mockCoordinates);
     order.verify(mockMouse).mouseMove(mockCoordinates);

@@ -177,6 +177,8 @@ class WebDriver(object):
         if browser_profile:
             capabilities['desiredCapabilities']['firefox_profile'] = browser_profile.encoded
         response = self.execute(Command.NEW_SESSION, capabilities)
+        if 'sessionId' not in response:
+            response = response['value']
         self.session_id = response['sessionId']
         self.capabilities = response['value']
 
@@ -686,8 +688,7 @@ class WebDriver(object):
         """
         if self.w3c:
             self.execute(Command.SET_TIMEOUTS, {
-                'ms': float(time_to_wait) * 1000,
-                'type': 'implicit'})
+                'implicit': int(float(time_to_wait) * 1000)})
         else:
             self.execute(Command.IMPLICIT_WAIT, {
                 'ms': float(time_to_wait) * 1000})
@@ -705,8 +706,7 @@ class WebDriver(object):
         """
         if self.w3c:
             self.execute(Command.SET_TIMEOUTS, {
-                'ms': float(time_to_wait) * 1000,
-                'type': 'script'})
+                'script': int(float(time_to_wait) * 1000)})
         else:
             self.execute(Command.SET_SCRIPT_TIMEOUT, {
                 'ms': float(time_to_wait) * 1000})
@@ -722,9 +722,13 @@ class WebDriver(object):
         :Usage:
             driver.set_page_load_timeout(30)
         """
-        self.execute(Command.SET_TIMEOUTS, {
-            'ms': float(time_to_wait) * 1000,
-            'type': 'page load'})
+        if self.w3c:
+          self.execute(Command.SET_TIMEOUTS, {
+              'pageLoad': int(float(time_to_wait) * 1000)})
+        else:
+          self.execute(Command.SET_TIMEOUTS, {
+              'ms': float(time_to_wait) * 1000,
+              'type': 'page load'})
 
     def find_element(self, by=By.ID, value=None):
         """
@@ -894,7 +898,7 @@ class WebDriver(object):
             driver.get_window_position()
         """
         if self.w3c:
-            return self.execute(Command.W3C_GET_WINDOW_POSITION)
+            return self.execute(Command.W3C_GET_WINDOW_POSITION)['value']
         else:
             return self.execute(Command.GET_WINDOW_POSITION, {
                 'windowHandle': windowHandle})['value']

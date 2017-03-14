@@ -19,12 +19,12 @@ package org.openqa.selenium.edge;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import java.io.IOException;
-
 import com.google.gson.JsonObject;
 
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
+
+import java.io.IOException;
 
 
 /**
@@ -79,8 +79,7 @@ public class EdgeOptions {
 	 */
 	public JsonObject toJson() throws IOException {
 	  JsonObject options = new JsonObject();
-	  if (this.pageLoadStrategy != null)
-	  {
+	  if (this.pageLoadStrategy != null) {
 		  options.addProperty(CapabilityType.PAGE_LOAD_STRATEGY, this.pageLoadStrategy);
 	  }
 
@@ -96,8 +95,7 @@ public class EdgeOptions {
      */
     DesiredCapabilities toCapabilities() {
       DesiredCapabilities capabilities = DesiredCapabilities.edge();
-	  if (this.pageLoadStrategy != null)
-	  {
+	  if (this.pageLoadStrategy != null) {
           capabilities.setCapability(CapabilityType.PAGE_LOAD_STRATEGY, this.pageLoadStrategy);
 	  }
 

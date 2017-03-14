@@ -370,7 +370,7 @@ module CrazyFunDotNet
       target = nunit "#{task_name}:run" do |nunit_task|
         mkdir_p test_log_dir
         puts "Testing: #{task_name}"
-        nunit_task.command = "third_party/dotnet/nunit-3.2.1/nunit3-console.exe"
+        nunit_task.command = "third_party/dotnet/nunit-3.6.0/nunit3-console.exe"
         nunit_task.assemblies << [output_dir, args[:project]].join(File::SEPARATOR)
         nunit_task.options << "--agents=1"
         nunit_task.options << "--noheader"

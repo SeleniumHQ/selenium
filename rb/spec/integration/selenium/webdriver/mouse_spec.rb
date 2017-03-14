@@ -22,14 +22,19 @@ require_relative 'spec_helper'
 module Selenium
   module WebDriver
     # Firefox - "Actions Endpoint Not Yet Implemented"
-    not_compliant_on browser: [:safari, :firefox] do
+    not_compliant_on browser: [:safari, :firefox, :ff_nightly] do
       describe Mouse do
         it 'clicks an element' do
+          allow($stderr).to receive(:write)
           driver.navigate.to url_for('formPage.html')
+          original_title = driver.title
           driver.mouse.click driver.find_element(id: 'imageButton')
+          Wait.new.until { driver.title != original_title }
+          expect(driver.title).to eq 'We Arrive Here'
         end
 
         it 'can drag and drop' do
+          allow($stderr).to receive(:write)
           driver.navigate.to url_for('droppableItems.html')
 
           draggable = long_wait.until do
@@ -47,6 +52,7 @@ module Selenium
         end
 
         it 'double clicks an element' do
+          allow($stderr).to receive(:write)
           driver.navigate.to url_for('javascriptPage.html')
           element = driver.find_element(id: 'doubleClickField')
 
@@ -59,6 +65,7 @@ module Selenium
 
         not_compliant_on browser: :phantomjs do
           it 'context clicks an element' do
+            allow($stderr).to receive(:write)
             driver.navigate.to url_for('javascriptPage.html')
             element = driver.find_element(id: 'doubleClickField')
 

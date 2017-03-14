@@ -20,9 +20,6 @@ package org.openqa.selenium.remote;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import com.google.gson.JsonObject;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

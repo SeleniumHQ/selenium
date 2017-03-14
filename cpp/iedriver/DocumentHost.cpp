@@ -15,13 +15,17 @@
 // limitations under the License.
 
 #include "DocumentHost.h"
+
+#include "errorcodes.h"
+#include "logging.h"
+
 #include "BrowserCookie.h"
 #include "BrowserFactory.h"
 #include "CookieManager.h"
-#include "logging.h"
 #include "messages.h"
 #include "RegistryUtilities.h"
 #include "Script.h"
+#include "StringUtilities.h"
 
 namespace webdriver {
 

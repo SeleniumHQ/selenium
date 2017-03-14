@@ -104,7 +104,7 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
     }
 
     try {
-      String zip = new Zip().zipFile(localFile.getParentFile(), localFile);
+      String zip = Zip.zip(localFile);
       Response response = execute(DriverCommand.UPLOAD_FILE, ImmutableMap.of("file", zip));
       return (String) response.getValue();
     } catch (IOException e) {
@@ -397,5 +397,11 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
       return String.format("[%s -> unknown locator]", super.toString());
     }
     return String.format("[%s]", foundBy);
+  }
+
+  public Map<String, Object> toJson() {
+    return ImmutableMap.of(
+        Dialect.OSS.getEncodedElementKey(), getId(),
+        Dialect.W3C.getEncodedElementKey(), getId());
   }
 }

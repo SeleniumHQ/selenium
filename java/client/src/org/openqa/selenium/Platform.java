@@ -136,6 +136,17 @@ public enum Platform {
     }
   },
 
+  SIERRA("sierra", "macos 10.12") {
+    @Override
+    public Platform family() {
+      return MAC;
+    }
+    @Override
+    public String toString() {
+      return "macOS 10.12";
+    }
+  },
+
   /**
    * Many platforms have UNIX traits, amongst them LINUX, Solaris and BSD.
    */
@@ -170,34 +181,18 @@ public enum Platform {
   };
 
   private final String[] partOfOsName;
-  private final int minorVersion;
-  private final int majorVersion;
+  private int minorVersion = 0;
+  private int majorVersion = 0;
 
   private Platform(String... partOfOsName) {
     this.partOfOsName = partOfOsName;
-
-    String version = System.getProperty("os.version", "0.0.0");
-    int major = 0;
-    int min = 0;
-
-    Pattern pattern = Pattern.compile("^(\\d+)\\.(\\d+).*");
-    Matcher matcher = pattern.matcher(version);
-    if (matcher.matches()) {
-      try {
-        major = Integer.parseInt(matcher.group(1));
-        min = Integer.parseInt(matcher.group(2));
-      } catch (NumberFormatException e) {
-        // These things happen
-      }
-    }
-
-    majorVersion = major;
-    minorVersion = min;
   }
 
   public String[] getPartOfOsName() {
     return partOfOsName;
   }
+
+  private static Platform current;
 
   /**
    * Get current platform (not necessarily the same as operating system).
@@ -205,7 +200,28 @@ public enum Platform {
    * @return current platform
    */
   public static Platform getCurrent() {
-    return extractFromSysProperty(System.getProperty("os.name"));
+    if (current == null) {
+      current = extractFromSysProperty(System.getProperty("os.name"));
+
+      String version = System.getProperty("os.version", "0.0.0");
+      int major = 0;
+      int min = 0;
+
+      Pattern pattern = Pattern.compile("^(\\d+)\\.(\\d+).*");
+      Matcher matcher = pattern.matcher(version);
+      if (matcher.matches()) {
+        try {
+          major = Integer.parseInt(matcher.group(1));
+          min = Integer.parseInt(matcher.group(2));
+        } catch (NumberFormatException e) {
+          // These things happen
+        }
+      }
+
+      current.majorVersion = major;
+      current.minorVersion = min;
+    }
+    return current;
   }
 
   /**

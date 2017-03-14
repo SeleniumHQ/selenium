@@ -5,7 +5,7 @@ raise "cwd must be #{root} when reading gemspec" if root != Dir.pwd
 
 Gem::Specification.new do |s|
   s.name = 'selenium-webdriver'
-  s.version = '3.0.3'
+  s.version = '3.3.0'
 
   s.authors = ['Alex Rodionov', 'Titus Fortner']
   s.email = ['p0deje@gmail.com', 'titusfortner@gmail.com']
@@ -26,9 +26,9 @@ HTML of the application.'
   s.add_runtime_dependency 'childprocess', ['~> 0.5']
   s.add_runtime_dependency 'websocket', ['~> 1.0']
 
-  s.add_development_dependency 'rspec', ['~> 2.99.0']
+  s.add_development_dependency 'rspec', ['~> 3.0']
   s.add_development_dependency 'rack', ['~> 1.0']
   s.add_development_dependency 'ci_reporter', ['~> 1.6', '>= 1.6.2']
-  s.add_development_dependency 'webmock', ['~> 1.7', '>= 1.7.5']
+  s.add_development_dependency 'webmock', ['~> 2.0']
   s.add_development_dependency 'yard', ['~> 0.8.7']
 end

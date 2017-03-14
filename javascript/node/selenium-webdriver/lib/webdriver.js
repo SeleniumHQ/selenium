@@ -1327,6 +1327,91 @@ class Options {
   }
 
   /**
+   * Schedules a command to fetch the timeouts currently configured for the
+   * current session.
+   *
+   * @return {!promise.Thenable<{script: number,
+   *                             pageLoad: number,
+   *                             implicit: number}>} A promise that will be
+   *     resolved with the timeouts currently configured for the current
+   *     session.
+   * @see #setTimeouts()
+   */
+  getTimeouts() {
+    return this.driver_.schedule(
+        new command.Command(command.Name.GET_TIMEOUT),
+        `WebDriver.manage().getTimeouts()`)
+  }
+
+  /**
+   * Schedules a command to set timeout durations associated with the current
+   * session.
+   *
+   * The following timeouts are supported (all timeouts are specified in
+   * milliseconds):
+   *
+   * -  `implicit` specifies the maximum amount of time to wait for an element
+   *    locator to succeed when {@linkplain WebDriver#findElement locating}
+   *    {@linkplain WebDriver#findElements elements} on the page.
+   *    Defaults to 0 milliseconds.
+   *
+   * -  `pageLoad` specifies the maximum amount of time to wait for a page to
+   *    finishing loading. Defaults to 300000 milliseconds.
+   *
+   * -  `script` specifies the maximum amount of time to wait for an
+   *    {@linkplain WebDriver#executeScript evaluated script} to run. If set to
+   *    `null`, the script timeout will be indefinite.
+   *    Defaults to 30000 milliseconds.
+   *
+   * @param {{script: (number|null|undefined),
+   *          pageLoad: (number|null|undefined),
+   *          implicit: (number|null|undefined)}} conf
+   *     The desired timeout configuration.
+   * @return {!promise.Thenable<void>} A promise that will be resolved when the
+   *     timeouts have been set.
+   * @throws {!TypeError} if an invalid options object is provided.
+   * @see #getTimeouts()
+   * @see <https://w3c.github.io/webdriver/webdriver-spec.html#dfn-set-timeouts>
+   */
+  setTimeouts({script, pageLoad, implicit} = {}) {
+    let cmd = new command.Command(command.Name.SET_TIMEOUT);
+
+    let valid = false;
+    function setParam(key, value) {
+      if (value === null || typeof value === 'number') {
+        valid = true;
+        cmd.setParameter(key, value);
+      } else if (typeof value !== 'undefined') {
+        throw TypeError(
+            'invalid timeouts configuration:'
+                + ` expected "${key}" to be a number, got ${typeof value}`);
+      }
+    }
+    setParam('implicit', implicit);
+    setParam('pageLoad', pageLoad);
+    setParam('script', script);
+
+    if (valid) {
+      return this.driver_.schedule(cmd, `WebDriver.manage().setTimeouts()`)
+          .catch(() => {
+            // Fallback to the legacy method.
+            let cmds = [];
+            if (typeof script === 'number') {
+              cmds.push(legacyTimeout(this.driver_, 'script', script));
+            }
+            if (typeof implicit === 'number') {
+              cmds.push(legacyTimeout(this.driver_, 'implicit', implicit));
+            }
+            if (typeof pageLoad === 'number') {
+              cmds.push(legacyTimeout(this.driver_, 'page load', pageLoad));
+            }
+            return Promise.all(cmds);
+          });
+    }
+    throw TypeError('no timeouts specified');
+  }
+
+  /**
    * @return {!Logs} The interface for managing driver
    *     logs.
    */
@@ -1336,6 +1421,7 @@ class Options {
 
   /**
    * @return {!Timeouts} The interface for managing driver timeouts.
+   * @deprecated Use {@link #setTimeouts()} instead.
    */
   timeouts() {
     return new Timeouts(this.driver_);
@@ -1348,6 +1434,22 @@ class Options {
     return new Window(this.driver_);
   }
 }
+
+
+/**
+ * @param {!WebDriver} driver
+ * @param {string} type
+ * @param {number} ms
+ * @return {!promise.Thenable<void>}
+ */
+function legacyTimeout(driver, type, ms) {
+  return driver.schedule(
+      new command.Command(command.Name.SET_TIMEOUT)
+          .setParameter('type', type)
+          .setParameter('ms', ms),
+      `WebDriver.manage().setTimeouts({${type}: ${ms}})`);
+}
+
 
 
 /**
@@ -1432,6 +1534,9 @@ Options.Cookie.prototype.expiry;
  *
  *    webdriver.manage().timeouts()
  *
+ * @deprecated This has been deprecated in favor of
+ *     {@link Options#setTimeouts()}, which supports setting multiple timeouts
+ *     at once.
  * @see WebDriver#manage()
  * @see Options#timeouts()
  */
@@ -1465,9 +1570,11 @@ class Timeouts {
    * @param {number} ms The amount of time to wait, in milliseconds.
    * @return {!promise.Thenable<void>} A promise that will be resolved
    *     when the implicit wait timeout has been set.
+   * @deprecated Use {@link Options#setTimeouts()
+   *     driver.manage().setTimeouts({implicit: ms})}.
    */
   implicitlyWait(ms) {
-    return this._scheduleCommand(ms, 'implicit', 'implicitlyWait');
+    return this.driver_.manage().setTimeouts({implicit: ms});
   }
 
   /**
@@ -1478,9 +1585,11 @@ class Timeouts {
    * @param {number} ms The amount of time to wait, in milliseconds.
    * @return {!promise.Thenable<void>} A promise that will be resolved
    *     when the script timeout has been set.
+   * @deprecated Use {@link Options#setTimeouts()
+   *     driver.manage().setTimeouts({script: ms})}.
    */
   setScriptTimeout(ms) {
-    return this._scheduleCommand(ms, 'script', 'setScriptTimeout');
+    return this.driver_.manage().setTimeouts({script: ms});
   }
 
   /**
@@ -1491,17 +1600,11 @@ class Timeouts {
    * @param {number} ms The amount of time to wait, in milliseconds.
    * @return {!promise.Thenable<void>} A promise that will be resolved
    *     when the timeout has been set.
+   * @deprecated Use {@link Options#setTimeouts()
+   *     driver.manage().setTimeouts({pageLoad: ms})}.
    */
   pageLoadTimeout(ms) {
-    return this._scheduleCommand(ms, 'page load', 'pageLoadTimeout');
-  }
-
-  _scheduleCommand(ms, timeoutIdentifier, timeoutName) {
-    return this.driver_.schedule(
-        new command.Command(command.Name.SET_TIMEOUT).
-            setParameter('type', timeoutIdentifier).
-            setParameter('ms', ms),
-        `WebDriver.manage().timeouts().${timeoutName}(${ms})`);
+    return this.driver_.manage().setTimeouts({pageLoad: ms});
   }
 }
 

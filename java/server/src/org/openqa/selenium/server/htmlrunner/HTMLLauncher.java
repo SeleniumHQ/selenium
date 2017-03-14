@@ -45,7 +45,6 @@ import org.seleniumhq.jetty9.server.ServerConnector;
 import org.seleniumhq.jetty9.server.handler.ContextHandler;
 import org.seleniumhq.jetty9.server.handler.ResourceHandler;
 import org.seleniumhq.jetty9.util.resource.PathResource;
-import org.seleniumhq.jetty9.util.resource.Resource;
 
 import java.io.File;
 import java.io.IOException;
@@ -56,7 +55,6 @@ import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;

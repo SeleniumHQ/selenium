@@ -291,6 +291,10 @@ class RemoteConnection(object):
                 ('POST', '/session/$sessionId/alert/credentials'),
             Command.CLICK:
                 ('POST', '/session/$sessionId/click'),
+            Command.W3C_ACTIONS:
+                ('POST', '/session/$sessionId/actions'),
+            Command.W3C_CLEAR_ACTIONS:
+                ('DELETE', '/session/$sessionId/actions'),
             Command.DOUBLE_CLICK:
                 ('POST', '/session/$sessionId/doubleclick'),
             Command.MOUSE_DOWN:
@@ -470,6 +474,10 @@ class RemoteConnection(object):
 
             request.add_header('Accept', 'application/json')
             request.add_header('Content-Type', 'application/json;charset=UTF-8')
+
+            if parsed_url.username:
+                base64string = base64.b64encode('{0.username}:{0.password}'.format(parsed_url).encode())
+                request.add_header('Authorization', 'Basic {}'.format(base64string).decode())
 
             if password_manager:
                 opener = url_request.build_opener(url_request.HTTPRedirectHandler(),

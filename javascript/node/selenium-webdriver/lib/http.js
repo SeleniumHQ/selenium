@@ -33,11 +33,10 @@ const Session = require('./session').Session;
 const WebElement = require('./webdriver').WebElement;
 
 const {getAttribute, isDisplayed} = (function() {
-  const load = path => /** @type {!Function} */(require(path));
   try {
     return {
-      getAttribute: load('./atoms/getAttribute.js'),
-      isDisplayed: load('./atoms/is-displayed.js'),
+      getAttribute: require('./atoms/getAttribute.js'),
+      isDisplayed: require('./atoms/is-displayed.js')
     };
   } catch (ex) {
     throw Error(
@@ -226,6 +225,7 @@ const COMMAND_MAP = new Map([
     [cmd.Name.EXECUTE_SCRIPT, post('/session/:sessionId/execute')],
     [cmd.Name.EXECUTE_ASYNC_SCRIPT, post('/session/:sessionId/execute_async')],
     [cmd.Name.SCREENSHOT, get('/session/:sessionId/screenshot')],
+    [cmd.Name.GET_TIMEOUT, get('/session/:sessionId/timeouts')],
     [cmd.Name.SET_TIMEOUT, post('/session/:sessionId/timeouts')],
     [cmd.Name.MOVE_TO, post('/session/:sessionId/moveto')],
     [cmd.Name.CLICK, post('/session/:sessionId/click')],
@@ -260,6 +260,8 @@ const W3C_COMMAND_MAP = new Map([
   [cmd.Name.GET_ELEMENT_ATTRIBUTE, (cmd) => {
     return toExecuteAtomCommand(cmd, Atom.GET_ATTRIBUTE, 'id', 'name');
   }],
+  [cmd.Name.GET_ELEMENT_LOCATION, get('/session/:sessionId/element/:id/rect')],
+  [cmd.Name.GET_ELEMENT_SIZE, get('/session/:sessionId/element/:id/rect')],
   [cmd.Name.IS_ELEMENT_DISPLAYED, (cmd) => {
     return toExecuteAtomCommand(cmd, Atom.IS_DISPLAYED, 'id');
   }],
@@ -427,33 +429,29 @@ class Executor {
       return doSend(this, request).then(response => {
         this.log_.finer(() => `>>>\n${request}\n<<<\n${response}`);
 
-        let parsed =
-            parseHttpResponse(/** @type {!Response} */ (response), this.w3c);
+        let httpResponse = /** @type {!Response} */(response);
+        let {isW3C, value} = parseHttpResponse(command, httpResponse);
 
         if (command.getName() === cmd.Name.NEW_SESSION
             || command.getName() === cmd.Name.DESCRIBE_SESSION) {
-          if (!parsed || !parsed['sessionId']) {
+          if (!value || !value.sessionId) {
             throw new error.WebDriverError(
-                'Unable to parse new session response: ' + response.body);
+                `Unable to parse new session response: ${response.body}`);
           }
 
           // The remote end is a W3C compliant server if there is no `status`
           // field in the response. This is not applicable for the DESCRIBE_SESSION
           // command, which is not defined in the W3C spec.
           if (command.getName() === cmd.Name.NEW_SESSION) {
-            this.w3c = this.w3c || !('status' in parsed);
+            this.w3c = this.w3c || isW3C;
           }
 
-          return new Session(parsed['sessionId'], parsed['value']);
+          // No implementations use the `capabilities` key yet...
+          let capabilities = value.capabilities || value.value;
+          return new Session(value.sessionId, capabilities);
         }
 
-        if (parsed
-            && typeof parsed === 'object'
-            && 'value' in parsed) {
-          let value = parsed['value'];
-          return typeof value === 'undefined' ? null : value;
-        }
-        return parsed;
+        return typeof value === 'undefined' ? null : value;
       });
     });
   }
@@ -476,30 +474,48 @@ function tryParse(str) {
 /**
  * Callback used to parse {@link Response} objects from a
  * {@link HttpClient}.
+ *
+ * @param {!cmd.Command} command The command the response is for.
  * @param {!Response} httpResponse The HTTP response to parse.
- * @param {boolean} w3c Whether the response should be processed using the
- *     W3C wire protocol.
- * @return {?} The parsed response.
+ * @return {{isW3C: boolean, value: ?}} An object describing the parsed
+ *     response. This object will have two fields: `isW3C` indicates whether
+ *     the response looks like it came from a remote end that conforms with the
+ *     W3C WebDriver spec, and `value`, the actual response value.
  * @throws {WebDriverError} If the HTTP response is an error.
  */
-function parseHttpResponse(httpResponse, w3c) {
+function parseHttpResponse(command, httpResponse) {
+  if (httpResponse.status < 200) {
+    // This should never happen, but throw the raw response so users report it.
+    throw new error.WebDriverError(
+        `Unexpected HTTP response:\n${httpResponse}`);
+  }
+
   let parsed = tryParse(httpResponse.body);
-  if (parsed !== undefined) {
-    if (w3c) {
-      if (httpResponse.status > 399) {
-        error.throwDecodedError(parsed);
+  if (parsed && typeof parsed === 'object') {
+    let value = parsed.value;
+    let isW3C =
+        value !== null && typeof value === 'object'
+            && typeof parsed.status === 'undefined';
+
+    if (!isW3C) {
+      error.checkLegacyResponse(parsed);
+
+      // Adjust legacy new session responses to look like W3C to simplify
+      // later processing.
+      if (command.getName() === cmd.Name.NEW_SESSION
+          || command.getName() == cmd.Name.DESCRIBE_SESSION) {
+        value = parsed;
       }
 
-      if (httpResponse.status < 200) {
-        // This should never happen, but throw the raw response so
-        // users report it.
-        throw new error.WebDriverError(
-            `Unexpected HTTP response:\n${httpResponse}`);
-      }
-    } else {
-      error.checkLegacyResponse(parsed);
+    } else if (httpResponse.status > 399) {
+      error.throwDecodedError(value);
     }
-    return parsed;
+
+    return {isW3C, value};
+  }
+
+  if (parsed !== undefined) {
+    return {isW3C: false, value: parsed};
   }
 
   let value = httpResponse.body.replace(/\r\n/g, '\n');
@@ -512,7 +528,7 @@ function parseHttpResponse(httpResponse, w3c) {
     throw new error.WebDriverError(value);
   }
 
-  return value || null;
+  return {isW3C: false, value: value || null};
 }
 
 

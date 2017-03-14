@@ -192,6 +192,15 @@ limitations under the License.
     }
 
 
+    function testShouldThrowWhenWrappingRecursiveStructure() {
+      var obj1 = {};
+      var obj2 = {};
+      obj1['obj2'] = obj2;
+      obj2['obj1'] = obj1;
+      assertThrows(goog.partial(bot.inject.wrapValue, obj1));
+    }
+
+
     function testShouldBeAbleToUnWrapWrappedValues() {
       var unwrapped = [123, 'abc', null, document.body];
       var wrapped = bot.inject.wrapValue(unwrapped);

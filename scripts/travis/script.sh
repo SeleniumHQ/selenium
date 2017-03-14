@@ -9,7 +9,7 @@ if [[ $TOXENV == *"remote"* ]]; then
 fi
 
 if [[ ! -z $TOXENV ]]; then
-  tox
+  tox -c py/tox.ini
 fi
 
 if [[ ! -z $TASK ]]; then

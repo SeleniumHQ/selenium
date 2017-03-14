@@ -20,12 +20,6 @@ package com.thoughtworks.selenium.webdriven;
 
 import com.google.common.collect.Lists;
 
-import com.thoughtworks.selenium.webdriven.FunctionDeclaration;
-import com.thoughtworks.selenium.webdriven.JavascriptLibrary;
-import com.thoughtworks.selenium.webdriven.ScriptMutator;
-import com.thoughtworks.selenium.webdriven.SeleniumMutator;
-import com.thoughtworks.selenium.webdriven.VariableDeclaration;
-
 import java.util.List;
 
 /**

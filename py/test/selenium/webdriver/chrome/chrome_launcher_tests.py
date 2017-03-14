@@ -19,7 +19,7 @@ from selenium.webdriver import Chrome
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 
-def testLaunchAndCloseBrowser():
+def test_launch_and_close_browser():
     driver = Chrome()
     driver.quit()
 

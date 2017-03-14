@@ -15,8 +15,11 @@
 // limitations under the License.
 
 #include "ElementRepository.h"
+
 #include "logging.h"
 #include "errorcodes.h"
+
+#include "Element.h"
 
 namespace webdriver {
 

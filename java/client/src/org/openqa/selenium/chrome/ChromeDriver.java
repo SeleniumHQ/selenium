@@ -19,6 +19,7 @@
 package org.openqa.selenium.chrome;
 
 import com.google.common.collect.ImmutableMap;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
@@ -128,8 +129,10 @@ public class ChromeDriver extends RemoteWebDriver
    * and shutdown upon calling {@link #quit()}.
    *
    * @param service The service to use.
-   * @see #ChromeDriver(ChromeDriverService, ChromeOptions)
+   * @see RemoteWebDriver(org.openqa.selenium.remote.CommandExecutor, Capabilities)
+   * @deprecated Use {@link RemoteWebDriver(org.openqa.selenium.remote.CommandExecutor, Capabilities)}
    */
+  @Deprecated
   public ChromeDriver(ChromeDriverService service) {
     this(service, new ChromeOptions());
   }
@@ -161,7 +164,9 @@ public class ChromeDriver extends RemoteWebDriver
    *
    * @param service The service to use.
    * @param options The options to use.
+   * @deprecated Use {@link RemoteWebDriver(org.openqa.selenium.remote.CommandExecutor, Capabilities)}
    */
+  @Deprecated
   public ChromeDriver(ChromeDriverService service, ChromeOptions options) {
     this(service, options.toCapabilities());
   }
@@ -172,7 +177,9 @@ public class ChromeDriver extends RemoteWebDriver
    *
    * @param service The service to use.
    * @param capabilities The capabilities required from the ChromeDriver.
+   * @deprecated Use {@link RemoteWebDriver(org.openqa.selenium.remote.CommandExecutor, Capabilities)}
    */
+  @Deprecated
   public ChromeDriver(ChromeDriverService service, Capabilities capabilities) {
     super(new ChromeDriverCommandExecutor(service), capabilities);
     locationContext = new RemoteLocationContext(getExecuteMethod());

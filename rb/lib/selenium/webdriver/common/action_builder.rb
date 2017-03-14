@@ -23,9 +23,7 @@ module Selenium
     # The ActionBuilder provides the user a way to set up and perform
     # complex user interactions.
     #
-    # This class should not be instantiated directly, but is created by
-    # Selenium::WebDriver::DriverExtensions::HasInputDevices#action, which
-    # is available on Driver instances that support the user interaction API.
+    # This class should not be instantiated directly, but is created by Driver#action
     #
     # @example
     #
@@ -71,11 +69,13 @@ module Selenium
       #    el = driver.find_element(id: "some_id")
       #    driver.action.key_down(el, :shift).perform
       #
-      # @param [:shift, :alt, :control, :command, :meta] The key to press.
-      # @param [Selenium::WebDriver::Element] element An optional element
+      # @overload key_down(key)
+      #   @param [:shift, :alt, :control, :command, :meta] key The modifier key to press
+      # @overload key_down(element, key)
+      #   @param [Element] element An optional element to move to first
+      #   @param [:shift, :alt, :control, :command, :meta] key The modifier key to press
       # @raise [ArgumentError] if the given key is not a modifier
-      # @return [ActionBuilder] A self reference.
-      #
+      # @return [ActionBuilder] A self reference
 
       def key_down(*args)
         @actions << [:mouse, :click, [args.shift]] if args.first.is_a? Element
@@ -97,10 +97,13 @@ module Selenium
       #   el = driver.find_element(id: "some_id")
       #   driver.action.key_up(el, :alt).perform
       #
-      # @param [:shift, :alt, :control, :command, :meta] The modifier key to release.
-      # @param [Selenium::WebDriver::Element] element An optional element
-      # @raise [ArgumentError] if the given key is not a modifier key
-      # @return [ActionBuilder] A self reference.
+      # @overload key_up(key)
+      #   @param [:shift, :alt, :control, :command, :meta] key The modifier key to release
+      # @overload key_up(element, key)
+      #   @param [Element] element An optional element to move to first
+      #   @param [:shift, :alt, :control, :command, :meta] key The modifier key to release
+      # @raise [ArgumentError] if the given key is not a modifier
+      # @return [ActionBuilder] A self reference
       #
 
       def key_up(*args)
@@ -126,9 +129,12 @@ module Selenium
       #
       #   driver.action.send_keys("help").perform
       #
-      # @param [Selenium::WebDriver::Element] element An optional element
-      # @param [String] keys The keys to be sent.
-      # @return [ActionBuilder] A self reference.
+      # @overload send_keys(keys)
+      #   @param [Array, Symbol, String] keys The key(s) to press and release
+      # @overload send_keys(element, keys)
+      #   @param [Element] element An optional element to move to first
+      #   @param [Array, Symbol, String] keys The key(s) to press and release
+      # @return [ActionBuilder] A self reference
       #
 
       def send_keys(*args)
@@ -149,7 +155,7 @@ module Selenium
       #    el = driver.find_element(id: "some_id")
       #    driver.action.click_and_hold(el).perform
       #
-      # @param [Selenium::WebDriver::Element] element the element to move to and click.
+      # @param [Element] element the element to move to and click.
       # @return [ActionBuilder] A self reference.
       #
 
@@ -332,8 +338,6 @@ module Selenium
       # @param [Selenium::WebDriver::Element] source Element to emulate button down at.
       # @param [Integer] right_by horizontal move offset.
       # @param [Integer] down_by vertical move offset.
-      # @param [Selenium::WebDriver::Element] target Element to move to and release the
-      #   mouse at.
       # @return [ActionBuilder] A self reference.
       #
 

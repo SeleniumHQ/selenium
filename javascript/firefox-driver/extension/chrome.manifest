@@ -11,7 +11,6 @@ interfaces components/wdICoordinate.xpt
 interfaces components/wdIModifierKeys.xpt
 interfaces components/wdIMouse.xpt
 interfaces components/wdIStatus.xpt
-interfaces components/nsINativeIME.xpt
 
 component {c8fffaba-9b7a-41aa-872d-7e7366c16715} components/bad-cert-listener.js
 contract @mozilla.org/security/certoverride;1 {c8fffaba-9b7a-41aa-872d-7e7366c16715}
@@ -43,4 +42,3 @@ contract @googlecode.com/webdriver/modifierkeys;1 {2E4B69B9-21FE-48ad-A2F6-AB355
 
 contract @googlecode.com/webdriver/syntheticmouse;1 {E8F9FEFE-C513-4097-98BE-BE00A41D3645}
 
-binary-component platform/WINNT_x86-msvc/components/imehandler.dll ABI=WINNT_x86-msvc

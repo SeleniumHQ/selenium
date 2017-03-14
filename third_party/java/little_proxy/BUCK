@@ -1,7 +1,7 @@
 prebuilt_jar(name = 'little_proxy',
   binary_jar = 'littleproxy-0.5.3.jar',
   deps = [
-    '//third_party/java/commons:commons-lang',
+    '//third_party/java/commons:commons-lang3',
     '//third_party/java/commons_cli:commons_cli',
     '//third_party/java/commons-codec:commons-codec',
     '//third_party/java/commons-io:commons-io',

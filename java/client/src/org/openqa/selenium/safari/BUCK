@@ -4,20 +4,12 @@ java_library(name = 'safari',
   maven_coords = 'org.seleniumhq.selenium:selenium-safari-driver:' + SE_VERSION,
   maven_pom_template = '//java/client/src/org/openqa/selenium:template-pom',
   srcs = glob(['*.java']),
-  resources = [
-    ':client',
-  ],
   deps = [
     '//java/client/src/org/openqa/selenium:selenium',
     '//java/client/src/org/openqa/selenium/remote:remote',
-    '//third_party/java/guava:guava',
     '//third_party/java/gson:gson',
-    '//third_party/java/netty:netty',
+    '//third_party/java/guava:guava',
   ],
   visibility = ['PUBLIC'],
 )
 
-export_file(name = 'client',
-  src = '//javascript/safari-driver:client',
-  out = 'client.js',
-)

@@ -31,7 +31,7 @@ module Selenium
           allow(File).to receive(:exist?).with(model).and_return true
           allow(File).to receive(:directory?).with(model).and_return true
 
-          Dir.stub(mktmpdir: '/tmp/some/path')
+          allow(Dir).to receive(:mktmpdir).and_return('/tmp/some/path')
           allow(FileUtils).to receive(:rm_rf)
           allow(FileUtils).to receive(:mkdir_p)
           allow(FileUtils).to receive(:cp_r)

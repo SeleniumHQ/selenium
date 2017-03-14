@@ -16,7 +16,7 @@ and has been tested to work on MRI (2.0 through 2.2),
 
 ## License
 
-Copyright 2009-2016 Software Freedom Conservancy
+Copyright 2009-2017 Software Freedom Conservancy
 
 Licensed to the Software Freedom Conservancy (SFC) under one
 or more contributor license agreements.  See the NOTICE file

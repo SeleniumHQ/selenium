@@ -29,7 +29,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.environment.webserver.AppServer;
-import org.openqa.selenium.os.CommandLine;
+import org.openqa.selenium.os.ExecutableFinder;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -48,11 +48,11 @@ public class CoreSelfTest {
 
     switch (browser) {
       case "*firefox":
-        assumeNotNull(CommandLine.find("geckodriver"));
+        assumeNotNull(new ExecutableFinder().find("geckodriver"));
         break;
 
       case "*googlechrome":
-        assumeNotNull(CommandLine.find("chromedriver"));
+        assumeNotNull(new ExecutableFinder().find("chromedriver"));
         break;
 
       default:

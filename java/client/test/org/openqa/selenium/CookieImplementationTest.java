@@ -17,19 +17,6 @@
 
 package org.openqa.selenium;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.openqa.selenium.environment.DomainHelper;
-import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.JavascriptEnabled;
-import org.openqa.selenium.testing.SwitchToTopAfterTest;
-
-import java.net.URI;
-import java.util.Date;
-import java.util.Random;
-import java.util.Set;
-
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
@@ -47,6 +34,19 @@ import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Driver.REMOTE;
 import static org.openqa.selenium.testing.Driver.SAFARI;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.openqa.selenium.environment.DomainHelper;
+import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JavascriptEnabled;
+import org.openqa.selenium.testing.SwitchToTopAfterTest;
+
+import java.net.URI;
+import java.util.Date;
+import java.util.Random;
+import java.util.Set;
 
 public class CookieImplementationTest extends JUnit4TestBase {
 

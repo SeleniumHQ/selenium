@@ -105,7 +105,7 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "ChromeDriver2 does not perform this yet")]
+        //[IgnoreBrowser(Browser.Chrome, "ChromeDriver2 does not perform this yet")]
         [IgnoreBrowser(Browser.IPhone, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Android, "API not implemented in driver")]
         public void ShouldAllowContextClick()

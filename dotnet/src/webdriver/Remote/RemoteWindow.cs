@@ -47,9 +47,21 @@ namespace OpenQA.Selenium.Remote
         {
             get
             {
-                Dictionary<string, object> parameters = new Dictionary<string, object>();
-                parameters.Add("windowHandle", "current");
-                Response commandResponse = this.driver.InternalExecute(DriverCommand.GetWindowPosition, parameters);
+                Response commandResponse;
+                if (this.driver.IsSpecificationCompliant)
+                {
+                    // TODO: Remove window size/position end points when spec-compliant remote ends have
+                    // migrated to the window rect commands.
+                    // commandResponse = this.driver.InternalExecute(DriverCommand.GetWindowRect, null);
+                    commandResponse = this.driver.InternalExecute(DriverCommand.GetWindowPosition, null);
+                }
+                else
+                {
+                    Dictionary<string, object> parameters = new Dictionary<string, object>();
+                    parameters.Add("windowHandle", "current");
+                    commandResponse = this.driver.InternalExecute(DriverCommand.GetWindowPosition, parameters);
+                }
+
                 Dictionary<string, object> rawPosition = (Dictionary<string, object>)commandResponse.Value;
                 int x = Convert.ToInt32(rawPosition["x"], CultureInfo.InvariantCulture);
                 int y = Convert.ToInt32(rawPosition["y"], CultureInfo.InvariantCulture);
@@ -59,10 +71,20 @@ namespace OpenQA.Selenium.Remote
             set
             {
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
-                parameters.Add("windowHandle", "current");
                 parameters.Add("x", value.X);
                 parameters.Add("y", value.Y);
-                this.driver.InternalExecute(DriverCommand.SetWindowPosition, parameters);
+                if (this.driver.IsSpecificationCompliant)
+                {
+                    // TODO: Remove window size/position end points when spec-compliant remote ends have
+                    // migrated to the window rect commands.
+                    // this.driver.InternalExecute(DriverCommand.SetWindowRect, parameters);
+                    this.driver.InternalExecute(DriverCommand.SetWindowPosition, parameters);
+                }
+                else
+                {
+                    parameters.Add("windowHandle", "current");
+                    this.driver.InternalExecute(DriverCommand.SetWindowPosition, parameters);
+                }
             }
         }
 
@@ -74,9 +96,21 @@ namespace OpenQA.Selenium.Remote
         {
             get
             {
-                Dictionary<string, object> parameters = new Dictionary<string, object>();
-                parameters.Add("windowHandle", "current");
-                Response commandResponse = this.driver.InternalExecute(DriverCommand.GetWindowSize, parameters);
+                Response commandResponse;
+                if (this.driver.IsSpecificationCompliant)
+                {
+                    // TODO: Remove window size/position end points when spec-compliant remote ends have
+                    // migrated to the window rect commands.
+                    // commandResponse = this.driver.InternalExecute(DriverCommand.GetWindowRect, null);
+                    commandResponse = this.driver.InternalExecute(DriverCommand.GetWindowSize, null);
+                }
+                else
+                {
+                    Dictionary<string, object> parameters = new Dictionary<string, object>();
+                    parameters.Add("windowHandle", "current");
+                    commandResponse = this.driver.InternalExecute(DriverCommand.GetWindowSize, parameters);
+                }
+
                 Dictionary<string, object> rawPosition = (Dictionary<string, object>)commandResponse.Value;
                 int height = Convert.ToInt32(rawPosition["height"], CultureInfo.InvariantCulture);
                 int width = Convert.ToInt32(rawPosition["width"], CultureInfo.InvariantCulture);
@@ -86,10 +120,20 @@ namespace OpenQA.Selenium.Remote
             set
             {
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
-                parameters.Add("windowHandle", "current");
                 parameters.Add("width", value.Width);
                 parameters.Add("height", value.Height);
-                this.driver.InternalExecute(DriverCommand.SetWindowSize, parameters);
+                if (this.driver.IsSpecificationCompliant)
+                {
+                    // TODO: Remove window size/position end points when spec-compliant remote ends have
+                    // migrated to the window rect commands.
+                    // this.driver.InternalExecute(DriverCommand.SetWindowRect, parameters);
+                    this.driver.InternalExecute(DriverCommand.SetWindowSize, parameters);
+                }
+                else
+                {
+                    parameters.Add("windowHandle", "current");
+                    this.driver.InternalExecute(DriverCommand.SetWindowSize, parameters);
+                }
             }
         }
 
@@ -98,8 +142,13 @@ namespace OpenQA.Selenium.Remote
         /// </summary>
         public void Maximize()
         {
-            Dictionary<string, object> parameters = new Dictionary<string, object>();
-            parameters.Add("windowHandle", "current");
+            Dictionary<string, object> parameters = null;
+            if (!this.driver.IsSpecificationCompliant)
+            {
+                parameters = new Dictionary<string, object>();
+                parameters.Add("windowHandle", "current");
+            }
+
             this.driver.InternalExecute(DriverCommand.MaximizeWindow, parameters);
         }
     }

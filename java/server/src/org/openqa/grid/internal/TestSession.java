@@ -32,6 +32,7 @@ import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.message.BasicHttpEntityEnclosingRequest;
 import org.apache.http.message.BasicHttpRequest;
 import org.apache.http.util.EntityUtils;
+import org.openqa.grid.common.SeleniumProtocol;
 import org.openqa.grid.common.exception.ClientGoneException;
 import org.openqa.grid.common.exception.GridException;
 import org.openqa.grid.internal.listeners.CommandListener;
@@ -41,7 +42,6 @@ import org.openqa.grid.web.servlet.handler.RequestType;
 import org.openqa.grid.web.servlet.handler.SeleniumBasedRequest;
 import org.openqa.grid.web.servlet.handler.SeleniumBasedResponse;
 import org.openqa.grid.web.servlet.handler.WebDriverRequest;
-import org.openqa.selenium.io.IOUtils;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -150,7 +150,7 @@ public class TestSession {
 
     // The session needs to have been open for at least the time interval and we need to have not
     // seen any new commands during that time frame.
-    return slot.getProtocol().isSelenium()
+    return slot.getProtocol().equals(SeleniumProtocol.Selenium)
            && elapsedSinceCreation > MAX_IDLE_TIME_BEFORE_CONSIDERED_ORPHANED
            && sessionCreatedAt == lastActivity;
   }
@@ -419,8 +419,7 @@ public class TestSession {
   }
 
   private void writeRawBody(HttpServletResponse response, byte[] rawBody) throws IOException {
-    OutputStream out = response.getOutputStream();
-    try {
+    try (OutputStream out = response.getOutputStream()) {
       // We need to set the Content-Length header before we write to the output stream. Usually
       // the
       // Content-Length header is already set because we take it from the proxied request. But, it
@@ -437,8 +436,6 @@ public class TestSession {
       out.write(rawBody);
     } catch (IOException e) {
       throw new ClientGoneException(e);
-    } finally {
-      IOUtils.closeQuietly(out);
     }
   }
 

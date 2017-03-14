@@ -15,9 +15,12 @@
 // limitations under the License.
 
 #include "AsyncScriptExecutor.h"
+
 #include <vector>
+
 #include "errorcodes.h"
 #include "logging.h"
+
 #include "Script.h"
 
 namespace webdriver {

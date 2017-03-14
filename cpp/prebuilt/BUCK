@@ -1,29 +1,18 @@
-export_file(name = 'nsINativeEvents.xpt',
+export_file(
+  name = 'noblur32',
+  out = 'i386/x_ignore_nofocus.so',
+  src = 'i386/libnoblur.so',
   visibility = [
-    '//cpp/webdriver-firefox:native-events-xpt',
+    '//java/client/src/org/openqa/selenium/firefox:i386',
   ],
 )
 
-export_file(name = 'nsINativeMouse.xpt',
+export_file(
+  name = 'noblur64',
+  out = 'amd64/x_ignore_nofocus.so',
+  src = 'amd64/libnoblur64.so',
   visibility = [
-    '//cpp/webdriver-firefox:native-mouse-xpt',
+    '//java/client/src/org/openqa/selenium/firefox:amd64',
   ],
 )
 
-export_file(name = 'nsINativeKeyboard.xpt',
-  visibility = [
-    '//cpp/webdriver-firefox:native-keyboard-xpt',
-  ],
-)
-
-export_file(name = 'nsINativeIME.xpt',
-  visibility = [
-    '//cpp/webdriver-firefox:native-ime-xpt',
-  ],
-)
-
-export_file(name = "imehandler-dll",
-  out = 'imehandler.dll',
-  src = 'Win32/Release/imehandler.dll',
-  visibility = [ '//javascript/firefox-driver:win-components' ],
-)

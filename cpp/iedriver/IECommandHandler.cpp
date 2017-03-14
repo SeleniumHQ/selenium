@@ -14,10 +14,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "command_handler.h"
 #include "IECommandHandler.h"
-#include "IECommandExecutor.h"
+
+#include "command_handler.h"
+#include "errorcodes.h"
 #include "logging.h"
+
+#include "DocumentHost.h"
+#include "Element.h"
+#include "IECommandExecutor.h"
 
 namespace webdriver {
 
