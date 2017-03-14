@@ -187,33 +187,6 @@ public class FirefoxDriver extends RemoteWebDriver {
         ".addRequiredCapabilities(required)");
   }
 
-  /**
-   * @deprecated No replacement.
-   */
-  @Deprecated
-  public FirefoxDriver(GeckoDriverService driverService) {
-    this(new DriverCommandExecutor(driverService), null, null);
-  }
-
-  /**
-   * @deprecated No replacement.
-   */
-  @Deprecated
-  public FirefoxDriver(GeckoDriverService driverService, Capabilities desiredCapabilities) {
-    this(new DriverCommandExecutor(driverService), desiredCapabilities, null);
-  }
-
-  /**
-   * @deprecated No replacement.
-   */
-  @Deprecated
-  public FirefoxDriver(
-      GeckoDriverService driverService,
-      Capabilities desiredCapabilities,
-      Capabilities requiredCapabilities) {
-    this(new DriverCommandExecutor(driverService), desiredCapabilities, requiredCapabilities);
-  }
-
   private FirefoxDriver(
       CommandExecutor executor,
       Capabilities desiredCapabilities,
