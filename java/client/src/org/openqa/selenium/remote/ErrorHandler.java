@@ -20,11 +20,7 @@ package org.openqa.selenium.remote;
 
 import static org.openqa.selenium.remote.ErrorCodes.SUCCESS;
 
-import com.google.common.base.Function;
-import com.google.common.base.Optional;
-import com.google.common.base.Predicates;
 import com.google.common.base.Throwables;
-import com.google.common.collect.Iterables;
 import com.google.common.primitives.Ints;
 
 import org.openqa.selenium.UnhandledAlertException;
@@ -35,11 +31,12 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Function;
 
 /**
  * Maps exceptions to status codes for sending over the wire.
- *
- * @author jmleyba@gmail.com (Jason Leyba)
  */
 public class ErrorHandler {
 
@@ -97,7 +94,9 @@ public class ErrorHandler {
     }
 
     if (response.getValue() instanceof Throwable) {
-      throw Throwables.propagate((Throwable) response.getValue());
+      Throwable throwable = (Throwable) response.getValue();
+      Throwables.throwIfUnchecked(throwable);
+      throw new RuntimeException(throwable);
     }
 
     Class<? extends WebDriverException> outerErrorType =
@@ -214,10 +213,8 @@ public class ErrorHandler {
     try {
       Constructor<T> constructor = clazz.getConstructor(parameterTypes);
       return constructor.newInstance(parameters);
-    } catch (ReflectiveOperationException e) {
+    } catch (OutOfMemoryError | ReflectiveOperationException e) {
       // Do nothing - fall through.
-    } catch (OutOfMemoryError error) {
-      // It can happen...
     }
     return null;
   }
@@ -270,10 +267,11 @@ public class ErrorHandler {
       @SuppressWarnings({"unchecked"})
       List<Map<String, Object>> stackTraceInfo =
           (List<Map<String, Object>>) rawErrorData.get(STACK_TRACE);
-      Iterable<StackTraceElement> stackFrames =
-          Iterables.transform(stackTraceInfo, new FrameInfoToStackFrame());
-      stackFrames = Iterables.filter(stackFrames, Predicates.notNull());
-      stackTrace = Iterables.toArray(stackFrames, StackTraceElement.class);
+
+      stackTrace = stackTraceInfo.stream()
+          .map(entry -> new FrameInfoToStackFrame().apply(entry))
+          .filter(Objects::nonNull)
+          .toArray(StackTraceElement[]::new);
     }
 
     toReturn.setStackTrace(stackTrace);
@@ -300,30 +298,33 @@ public class ErrorHandler {
         return null;
       }
 
-      Optional<Number> maybeLineNumberInteger = Optional.absent();
+      Optional<Number> maybeLineNumberInteger = Optional.empty();
 
       final Object lineNumberObject = frameInfo.get(LINE_NUMBER);
       if (lineNumberObject instanceof Number) {
-    	  maybeLineNumberInteger = Optional.of((Number) lineNumberObject);
+        maybeLineNumberInteger = Optional.of((Number) lineNumberObject);
       } else if (lineNumberObject != null) {
-    	  // might be a Number as a String
-    	  maybeLineNumberInteger = Optional.fromNullable((Number) Ints.tryParse(lineNumberObject.toString()));
+        // might be a Number as a String
+        maybeLineNumberInteger = Optional.ofNullable(Ints.tryParse(lineNumberObject.toString()));
       }
 
       // default -1 for unknown, see StackTraceElement constructor javadoc
-      final int lineNumber = maybeLineNumberInteger.or(-1).intValue();
+      final int lineNumber = maybeLineNumberInteger.orElse(-1).intValue();
 
       // Gracefully handle remote servers that don't (or can't) send back
       // complete stack trace info. At least some of this information should
       // be included...
-      String className = frameInfo.containsKey(CLASS_NAME)
-          ? toStringOrNull(frameInfo.get(CLASS_NAME)) : UNKNOWN_CLASS;
-      String methodName = frameInfo.containsKey(METHOD_NAME)
-          ? toStringOrNull(frameInfo.get(METHOD_NAME)) : UNKNOWN_METHOD;
-      String fileName = frameInfo.containsKey(FILE_NAME)
-          ? toStringOrNull(frameInfo.get(FILE_NAME)) : UNKNOWN_FILE;
+      String className = frameInfo.containsKey(CLASS_NAME) ?
+                         toStringOrNull(frameInfo.get(CLASS_NAME)) : UNKNOWN_CLASS;
+      String methodName = frameInfo.containsKey(METHOD_NAME) ?
+                          toStringOrNull(frameInfo.get(METHOD_NAME)) : UNKNOWN_METHOD;
+      String fileName = frameInfo.containsKey(FILE_NAME) ?
+                        toStringOrNull(frameInfo.get(FILE_NAME)) : UNKNOWN_FILE;
 
-      return new StackTraceElement(className, methodName, fileName,
+      return new StackTraceElement(
+          className,
+          methodName,
+          fileName,
           lineNumber);
     }
 
