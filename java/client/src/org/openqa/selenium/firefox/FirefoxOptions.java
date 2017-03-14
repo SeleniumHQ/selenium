@@ -276,7 +276,7 @@ public class FirefoxOptions {
     return getProfileOrNull().orElseGet(() -> fullyPopulateProfile(new FirefoxProfile()));
   }
 
-  public Optional<FirefoxProfile> getProfileOrNull() {
+  private Optional<FirefoxProfile> getProfileOrNull() {
     FirefoxProfile profileToUse = profile;
     if (profileToUse == null) {
       profileToUse = extractProfile(requiredCapabilities);
