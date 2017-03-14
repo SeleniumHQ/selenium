@@ -26,6 +26,7 @@ import static org.openqa.selenium.remote.CapabilityType.LOGGING_PREFS;
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_WEB_STORAGE;
 import static org.openqa.selenium.remote.CapabilityType.VERSION;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
@@ -276,7 +277,8 @@ public class FirefoxOptions {
     return getProfileOrNull().orElseGet(() -> fullyPopulateProfile(new FirefoxProfile()));
   }
 
-  private Optional<FirefoxProfile> getProfileOrNull() {
+  @VisibleForTesting
+  Optional<FirefoxProfile> getProfileOrNull() {
     FirefoxProfile profileToUse = profile;
     if (profileToUse == null) {
       profileToUse = extractProfile(requiredCapabilities);
