@@ -26,7 +26,6 @@ import com.google.common.collect.Sets;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.NoSuchSessionException;
-import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.internal.NewProfileExtensionConnection;
@@ -415,13 +414,6 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
     }
 
     return caps;
-  }
-
-  public <X> X getScreenshotAs(OutputType<X> target) {
-    // Get the screenshot as base64.
-    String base64 = execute(DriverCommand.SCREENSHOT).getValue().toString();
-    // ... and convert it.
-    return target.convertFromBase64Png(base64);
   }
 
   public static class LazyCommandExecutor implements CommandExecutor, NeedsLocalLogs {
