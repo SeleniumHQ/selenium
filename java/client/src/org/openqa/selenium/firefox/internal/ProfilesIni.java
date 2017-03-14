@@ -109,8 +109,9 @@ public class ProfilesIni {
 
   public FirefoxProfile getProfile(String profileName) {
     File profileDir = profiles.get(profileName);
-    if (profileDir == null)
+    if (profileDir == null) {
       return null;
+    }
 
     // Make a copy of the profile to use
     File tempDir = TemporaryFilesystem.getDefaultTmpFS().createTempDir("userprofile", "copy");
