@@ -476,7 +476,8 @@ class RemoteConnection(object):
             request.add_header('Content-Type', 'application/json;charset=UTF-8')
 
             if parsed_url.username:
-                base64string = base64.b64encode('{0.username}:{0.password}'.format(parsed_url).encode())
+                base64string = base64.encodestring(('{0.username}:{0.password}' % (
+                    parsed_url.username, parsed_url.password).encode()).decode().replace('\n', '')
                 request.add_header('Authorization', 'Basic {}'.format(base64string).decode())
 
             if password_manager:
