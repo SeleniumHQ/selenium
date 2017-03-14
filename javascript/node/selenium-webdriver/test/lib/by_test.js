@@ -88,6 +88,27 @@ describe('by', function() {
   });
 
   describe('checkedLocator', function() {
+    it('accepts a By instance', function() {
+      let original = by.By.name('foo');
+      let locator = by.checkedLocator(original);
+      assert.strictEqual(locator, original);
+    });
+
+    it('accepts custom locator functions', function() {
+      let original = function() {};
+      let locator = by.checkedLocator(original);
+      assert.strictEqual(locator, original);
+    });
+
+    // See https://github.com/SeleniumHQ/selenium/issues/3056
+    it('accepts By-like objects', function() {
+      let fakeBy = {using: 'id', value: 'foo'};
+      let locator = by.checkedLocator(fakeBy);
+      assert.strictEqual(locator.constructor, by.By);
+      assert.equal(locator.using, 'id');
+      assert.equal(locator.value, 'foo');
+    });
+
     it('accepts class name', function() {
       let locator = by.checkedLocator({className: 'foo'});
       assert.equal('css selector', locator.using);
