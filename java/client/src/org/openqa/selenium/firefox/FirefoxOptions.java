@@ -407,6 +407,11 @@ public class FirefoxOptions {
       }
     }
 
+    Object rawMarionette = existing.getCapability(MARIONETTE);
+    if (rawMarionette instanceof Boolean) {
+      setLegacy(!(Boolean) rawMarionette);
+    }
+
     return this;
   }
 

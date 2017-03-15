@@ -61,9 +61,8 @@ public class FirefoxOptionsTest {
   }
 
   @Test
-  public void canSetBinaryThroughOptions() throws IOException {
+  public void canSetBinaryThroughOptions() {
     FirefoxOptions options = new FirefoxOptions().setBinary("some/path");
-
     Capabilities caps = options.addTo(new DesiredCapabilities());
 
     assertEquals("some/path", caps.getCapability(FirefoxDriver.BINARY));
@@ -133,6 +132,23 @@ public class FirefoxOptionsTest {
 
       property.set("true");
       options = new FirefoxOptions();
+      assertFalse(options.isLegacy());
+    } finally {
+      property.set(resetValue);
+    }
+  }
+
+  @Test
+  public void settingMarionetteToFalseAsASystemPropertyDoesNotPrecedence() {
+    JreSystemProperty property = new JreSystemProperty(DRIVER_USE_MARIONETTE);
+    String resetValue = property.get();
+
+    try {
+      DesiredCapabilities caps = new DesiredCapabilities();
+      caps.setCapability(FirefoxDriver.MARIONETTE, true);
+
+      property.set("false");
+      FirefoxOptions options = new FirefoxOptions().addDesiredCapabilities(caps);
       assertFalse(options.isLegacy());
     } finally {
       property.set(resetValue);
