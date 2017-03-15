@@ -31,7 +31,6 @@ import org.openqa.selenium.html5.WebStorage;
 import org.openqa.selenium.interactions.HasTouchScreen;
 import org.openqa.selenium.interactions.TouchScreen;
 import org.openqa.selenium.mobile.NetworkConnection;
-import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.FileDetector;
 import org.openqa.selenium.remote.RemoteTouchScreen;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -130,8 +129,8 @@ public class ChromeDriver extends RemoteWebDriver
    * and shutdown upon calling {@link #quit()}.
    *
    * @param service The service to use.
-   * @see RemoteWebDriver#RemoteWebDriver(CommandExecutor, Capabilities)
-   * @deprecated Use {@link RemoteWebDriver#RemoteWebDriver(CommandExecutor, Capabilities)}
+   * @see RemoteWebDriver#RemoteWebDriver(org.openqa.selenium.remote.CommandExecutor, Capabilities)
+   * @deprecated Use {@link RemoteWebDriver#RemoteWebDriver(org.openqa.selenium.remote.CommandExecutor, Capabilities)}
    */
   @Deprecated
   public ChromeDriver(ChromeDriverService service) {
@@ -165,7 +164,7 @@ public class ChromeDriver extends RemoteWebDriver
    *
    * @param service The service to use.
    * @param options The options to use.
-   * @deprecated Use {@link RemoteWebDriver#RemoteWebDriver(CommandExecutor, Capabilities)}
+   * @deprecated Use {@link RemoteWebDriver#RemoteWebDriver(org.openqa.selenium.remote.CommandExecutor, Capabilities)}
    */
   @Deprecated
   public ChromeDriver(ChromeDriverService service, ChromeOptions options) {
@@ -178,7 +177,7 @@ public class ChromeDriver extends RemoteWebDriver
    *
    * @param service The service to use.
    * @param capabilities The capabilities required from the ChromeDriver.
-   * @deprecated Use {@link RemoteWebDriver#RemoteWebDriver(CommandExecutor, Capabilities)}
+   * @deprecated Use {@link RemoteWebDriver#RemoteWebDriver(org.openqa.selenium.remote.CommandExecutor, Capabilities)}
    */
   @Deprecated
   public ChromeDriver(ChromeDriverService service, Capabilities capabilities) {
