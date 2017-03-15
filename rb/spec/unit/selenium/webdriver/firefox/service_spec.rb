@@ -23,14 +23,14 @@ module Selenium
   module WebDriver
     module Firefox
       describe Service do
-        let(:resp) { {'sessionId' => 'foo', 'value' => @default_capabilities} }
+        let(:resp) { { 'value' => {'sessionId' => 'foo', 'value' => @default_capabilities} } }
         let(:service) { double(Service, start: true, uri: 'http://example.com') }
         let(:caps) { {} }
         let(:http) { double(Remote::Http::Default, call: resp).as_null_object }
 
         before do
-          @default_capabilities = Remote::Capabilities.firefox.as_json
-          allow(Remote::Capabilities).to receive(:firefox).and_return(caps)
+          @default_capabilities = Remote::W3CCapabilities.firefox.as_json
+          allow(Remote::W3CCapabilities).to receive(:firefox).and_return(caps)
           allow_any_instance_of(Service).to receive(:start)
           allow_any_instance_of(Service).to receive(:binary_path)
         end

@@ -24,7 +24,7 @@ module Selenium
     module Firefox
       describe W3CBridge do
         let(:launcher) { double(Launcher, launch: nil, quit: nil, url: 'http://localhost:4444/wd/hub') }
-        let(:resp) { {'sessionId' => 'foo', 'value' => @default_capabilities} }
+        let(:resp) { { 'value' => {'sessionId' => 'foo', 'value' => @default_capabilities} } }
         let(:http) { double(Remote::Http::Default, call: resp).as_null_object }
         let(:caps) { Remote::Capabilities.chrome }
 
