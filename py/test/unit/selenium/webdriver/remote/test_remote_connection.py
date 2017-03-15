@@ -15,21 +15,29 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import pytest
+try:
+    from urllib import parse
+except ImportError:  # above is available in py3+, below is py2.7
+    import urlparse as parse
 
-from selenium.webdriver.remote.remote_connection import RemoteConnection
+from selenium.webdriver.remote.remote_connection import (
+    RemoteConnection,
+    Request
+)
 
 
-def test_basic_auth(mocker):
-    def check(request, timeout):
-        assert request.headers['Authorization'] == 'Basic dXNlcjpwYXNz'
+def test_addition_of_auth_headers(mocker):
+    url = 'http://user:pass@remote'
+    parsed_url = parse.urlparse(url)
+    cleaned_url = parse.urlunparse((
+        parsed_url.scheme,
+        parsed_url.hostname,
+        parsed_url.path,
+        parsed_url.params,
+        parsed_url.query,
+        parsed_url.fragment)
+    )
+    request = Request(cleaned_url)
+    RemoteConnection._add_request_headers(request, parsed_url)
+    assert request.headers['Authorization'] == 'Basic dXNlcjpwYXNz'
 
-    try:
-        method = mocker.patch('urllib.request.OpenerDirector.open')
-    except ImportError:
-        method = mocker.patch('urllib2.OpenerDirector.open')
-    method.side_effect = check
-
-    with pytest.raises(AttributeError):
-        RemoteConnection('http://user:pass@remote', resolve_ip=False) \
-            .execute('status', {})
