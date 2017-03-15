@@ -130,7 +130,7 @@ public class ChromeDriver extends RemoteWebDriver
    * and shutdown upon calling {@link #quit()}.
    *
    * @param service The service to use.
-   * @see {@link RemoteWebDriver#RemoteWebDriver(CommandExecutor, Capabilities)}
+   * @see RemoteWebDriver#RemoteWebDriver(CommandExecutor, Capabilities)
    * @deprecated Use {@link RemoteWebDriver#RemoteWebDriver(CommandExecutor, Capabilities)}
    */
   @Deprecated
