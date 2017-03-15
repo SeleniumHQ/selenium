@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.firefox;
 
+import static org.openqa.selenium.firefox.FirefoxDriver.SystemProperty.DRIVER_USE_MARIONETTE;
 import static org.openqa.selenium.firefox.FirefoxOptions.FIREFOX_OPTIONS;
 import static org.openqa.selenium.remote.CapabilityType.PROXY;
 
@@ -273,6 +274,7 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
     }
 
     Object marionette = capabilities.getCapability(MARIONETTE);
+
     if (marionette instanceof Boolean) {
       options.setLegacy(!(Boolean) marionette);
     }
@@ -339,7 +341,7 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
   }
 
   private static Boolean forceMarionetteFromSystemProperty() {
-    String useMarionette = System.getProperty(SystemProperty.DRIVER_USE_MARIONETTE);
+    String useMarionette = System.getProperty(DRIVER_USE_MARIONETTE);
     if (useMarionette == null) {
       return null;
     }
