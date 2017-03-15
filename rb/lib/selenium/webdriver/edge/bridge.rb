@@ -115,6 +115,50 @@ module Selenium
         def maximize_window(handle = :current)
           execute :maximize_window, window_handle: handle
         end
+
+        def create_session(desired_capabilities)
+          resp = raw_execute :new_session, {}, {desiredCapabilities: desired_capabilities}
+          @session_id = resp['sessionId']
+          return Remote::W3CCapabilities.json_create resp['value'] if @session_id
+
+          raise Error::WebDriverError, 'no sessionId in returned payload'
+        end
+
+        #
+        # executes a command on the remote server.
+        #
+        #
+        # Returns the 'value' of the returned payload
+        #
+
+        def execute(*args)
+          result = raw_execute(*args)
+          result.payload.key?('value') ? result['value'] : result
+        end
+
+        #
+        # executes a command on the remote server.
+        #
+        # @return [WebDriver::Remote::Response]
+        #
+
+        def raw_execute(command, opts = {}, command_hash = nil)
+          verb, path = commands(command) || raise(ArgumentError, "unknown command: #{command.inspect}")
+          path = path.dup
+
+          path[':session_id'] = @session_id if path.include?(':session_id')
+
+          begin
+            opts.each do |key, value|
+              path[key.inspect] = escaper.escape(value.to_s)
+            end
+          rescue IndexError
+            raise ArgumentError, "#{opts.inspect} invalid for #{command.inspect}"
+          end
+
+          WebDriver.logger.info("-> #{verb.to_s.upcase} #{path}")
+          http.call verb, path, command_hash
+        end
       end # Bridge
     end # Edge
   end # WebDriver
