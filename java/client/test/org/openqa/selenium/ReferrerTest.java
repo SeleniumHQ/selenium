@@ -38,6 +38,8 @@ import com.google.common.collect.Lists;
 import com.google.common.net.HostAndPort;
 import com.google.common.net.HttpHeaders;
 
+import com.sun.corba.se.impl.orbutil.HexOutputStream;
+
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -59,6 +61,7 @@ import org.seleniumhq.jetty9.server.handler.AbstractHandler;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.file.Files;
@@ -455,16 +458,20 @@ public class ReferrerTest extends JUnit4TestBase {
    */
   private abstract static class ServerResource extends ExternalResource {
     protected final Server server;
-    private HostAndPort hostAndPort;
+    private final int port;
+    private final HostAndPort hostAndPort;
 
     ServerResource() {
-      server = new Server();
+      this.server = new Server();
 
       ServerConnector http = new ServerConnector(server);
       int port = PortProber.findFreePort();
       http.setPort(port);
       http.setIdleTimeout(500000);
-      server.addConnector(http);
+
+      this.port = port;
+      this.server.addConnector(http);
+      this.hostAndPort = HostAndPort.fromParts("localhost", port);
     }
 
     void addHandler(Handler handler) {
@@ -482,7 +489,6 @@ public class ReferrerTest extends JUnit4TestBase {
     void start() {
       try {
         server.start();
-        hostAndPort = HostAndPort.fromParts(server.getURI().getHost(), server.getURI().getPort());
         new UrlChecker().waitUntilAvailable(10, TimeUnit.SECONDS, new URL(getBaseUrl()));
       } catch (Exception e) {
         throw new RuntimeException(e);
