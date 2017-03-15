@@ -81,6 +81,10 @@ public class TestChromeDriver extends RemoteWebDriver {
       Capabilities originalCapabilities) {
     ChromeOptions options = new ChromeOptions();
     options.addArguments("disable-extensions", "disable-infobars", "disable-breakpad");
+    Map<String, Object> prefs = new HashMap<>();
+    prefs.put("exit_type", "None");
+    prefs.put("exited_cleanly", true);
+    options.setExperimentalOption("prefs", prefs);
     String chromePath = System.getProperty("webdriver.chrome.binary");
     if (chromePath != null) {
       options.setBinary(new File(chromePath));
