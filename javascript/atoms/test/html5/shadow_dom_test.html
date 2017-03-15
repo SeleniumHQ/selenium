@@ -157,7 +157,7 @@ function testGetVisibleTextInComposedDom() {
         "colored borders to make it more obvious where each element comes " +
         "from.\n" +
         expectedParentContents + "\n" + expectedOutsideShadowDomContents;
-        
+
     assertEquals(expectedOlderChildContents, 
         bot.dom.getVisibleText(olderChildDiv));
     assertEquals(expectedYoungerChildContents, 
