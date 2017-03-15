@@ -63,6 +63,22 @@ class Request(url_request.Request):
         """
         return self._method
 
+    def add_remote_connection_headers(self, parsed_url):
+        """
+        Helper function to add appropriate headers to remote request.
+
+        :Args:
+         - parsed_url - the parsed url
+        """
+        self.add_header('Accept', 'application/json')
+        self.add_header('Content-Type', 'application/json;charset=UTF-8')
+
+        if parsed_url.username:
+            base64string = base64.b64encode('{0.username}:{0.password}'.format(parsed_url).encode())
+            self.add_header('Authorization', 'Basic {}'.format(base64string.decode()))
+
+        return self.headers
+
 
 class Response(object):
     """
@@ -414,27 +430,6 @@ class RemoteConnection(object):
         url = '%s%s' % (self._url, path)
         return self._request(command_info[0], url, body=data)
 
-    @classmethod
-    def _add_request_headers(cls, request, parsed_url):
-        """
-        Helper function to add appropriate headers to remote request.
-
-        :Args:
-         - request - the remote request being created
-         - parsed_url - the parsed url
-
-        :Returns:
-          Request with headers added
-        """
-        request.add_header('Accept', 'application/json')
-        request.add_header('Content-Type', 'application/json;charset=UTF-8')
-
-        if parsed_url.username:
-            base64string = base64.b64encode('{0.username}:{0.password}'.format(parsed_url).encode())
-            request.add_header('Authorization', 'Basic {}'.format(base64string.decode()))
-
-        return request
-
     def _request(self, method, url, body=None):
         """
         Send an HTTP request to the remote server.
@@ -493,7 +488,7 @@ class RemoteConnection(object):
             else:
                 request = Request(url, data=body.encode('utf-8'), method=method)
 
-            request = self._add_request_headers(request, parsed_url)
+            request.add_remote_connection_headers(parsed_url)
 
             if password_manager:
                 opener = url_request.build_opener(url_request.HTTPRedirectHandler(),
