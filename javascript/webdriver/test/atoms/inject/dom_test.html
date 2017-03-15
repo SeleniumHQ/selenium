@@ -152,7 +152,10 @@ limitations under the License.
 
     function testGetSizeInFrame() {
       var elementRef = window.frames[0].document.getElementById("submitForm");
-      var expectedHeight = goog.style.getSize(elementRef).height;
+      // On Firefox, goog.style.getSize returns 20 instead of 19. The bounding box is 19.5 on my
+      // machine. Rather than allow multiple values, we'll just grab the bounding rect.
+      var rect = elementRef.getBoundingClientRect();
+      var expectedHeight = Math.floor(rect.bottom - rect.top);
       var frame = webdriver.atoms.inject.frame.findFrameByIndex(0);
       var frameWindow = getValueFromJSONObject(frame);
       var element = webdriver.atoms.inject.locators.findElement(
