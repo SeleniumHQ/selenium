@@ -722,10 +722,10 @@ class WebDriver(object):
         :Usage:
             driver.set_page_load_timeout(30)
         """
-        if self.w3c:
+        try:
           self.execute(Command.SET_TIMEOUTS, {
               'pageLoad': int(float(time_to_wait) * 1000)})
-        else:
+        except WebDriverException:
           self.execute(Command.SET_TIMEOUTS, {
               'ms': float(time_to_wait) * 1000,
               'type': 'page load'})
