@@ -7,6 +7,42 @@ env:
     - FF_ESR_BINARY=$HOME/firefox-latest-esr/firefox/firefox-bin
     - FF_NIGHTLY_BINARY=$HOME/firefox-latest-nightly/firefox/firefox-bin
 matrix:
+  exclude:
+    - language: java
+      jdk: oraclejdk8
+      env: CHROME=1 TASK="calcdeps //javascript/selenium-core:selenium-core-chrome:run"
+      addons:
+        apt:
+          packages:
+            - google-chrome-stable
+    - language: java
+      jdk: oraclejdk8
+      env: CHROME=1 TASK=test_chrome
+      addons:
+        apt:
+          packages:
+            - google-chrome-stable
+    - language: java
+      jdk: oraclejdk8
+      env: CHROME=1 TASK=//java/client/test/com/thoughtworks/selenium:chrome-rc-test:run
+      addons:
+        apt:
+          packages:
+            - google-chrome-stable
+    - language: python
+      python: 2.7
+      env: CHROME=1 TOXENV=py27-chrome
+      addons:
+        apt:
+          packages:
+            - google-chrome-stable
+    - language: python
+      python: 3.6
+      env: CHROME=1 TOXENV=py36-chrome
+      addons:
+        apt:
+          packages:
+            - google-chrome-stable
   include:
     - language: java
       jdk: oraclejdk8
@@ -52,13 +88,6 @@ matrix:
             - google-chrome-stable
     - language: java
       jdk: oraclejdk8
-      env: CHROME=1 TASK="calcdeps //javascript/selenium-core:selenium-core-chrome:run"
-      addons:
-        apt:
-          packages:
-            - google-chrome-stable
-    - language: java
-      jdk: oraclejdk8
       env: TASK="calcdeps //javascript/atoms:atoms-firefox:run"
       addons:
         firefox: latest-esr
@@ -79,20 +108,6 @@ matrix:
         firefox: latest-esr
     - language: java
       jdk: oraclejdk8
-      env: CHROME=1 TASK=test_chrome
-      addons:
-        apt:
-          packages:
-            - google-chrome-stable
-    - language: java
-      jdk: oraclejdk8
-      env: CHROME=1 TASK=//java/client/test/com/thoughtworks/selenium:chrome-rc-test:run
-      addons:
-        apt:
-          packages:
-            - google-chrome-stable
-    - language: java
-      jdk: oraclejdk8
       env: TASK=test_firefox
       addons:
         firefox: latest-esr
@@ -111,11 +126,9 @@ matrix:
       env: TASK=test_java_small_tests
     - language: java
       jdk: oraclejdk8
-      env: CHROME=1 TASK=test_grid
+      env: MARIONETTE=1 TASK=test_grid
       addons:
-        apt:
-          packages:
-            - google-chrome-stable
+        firefox: latest-nightly
     - language: java
       jdk: oraclejdk8
       env: TASK=test_htmlunit
@@ -131,13 +144,6 @@ matrix:
     - language: python
       python: 2.7
       env: TOXENV=py27-unit
-    - language: python
-      python: 2.7
-      env: CHROME=1 TOXENV=py27-chrome
-      addons:
-        apt:
-          packages:
-            - google-chrome-stable
     - language: python
       python: 2.7
       env: TOXENV=py27-firefox
@@ -174,13 +180,6 @@ matrix:
     - language: python
       python: 3.6
       env: TOXENV=py36-unit
-    - language: python
-      python: 3.6
-      env: CHROME=1 TOXENV=py36-chrome
-      addons:
-        apt:
-          packages:
-            - google-chrome-stable
     - language: python
       python: 3.6
       env: TOXENV=py36-firefox
