@@ -40,6 +40,7 @@ import org.openqa.selenium.firefox.internal.ProfilesIni;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.testing.JreSystemProperty;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
@@ -69,8 +70,10 @@ public class FirefoxOptionsTest {
   }
 
   @Test
-  public void shouldKeepAFirefoxBinaryAsABinaryIfSetAsOne() {
-    FirefoxBinary binary = new FirefoxBinary();
+  public void shouldKeepAFirefoxBinaryAsABinaryIfSetAsOne() throws IOException {
+    File fakeExecutable = Files.createTempFile("firefox", ".exe").toFile();
+    fakeExecutable.deleteOnExit();
+    FirefoxBinary binary = new FirefoxBinary(fakeExecutable);
     FirefoxOptions options = new FirefoxOptions().setBinary(binary);
 
     Capabilities caps = options.addTo(new DesiredCapabilities());
