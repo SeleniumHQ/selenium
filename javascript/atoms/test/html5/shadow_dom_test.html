@@ -164,8 +164,6 @@ function testGetVisibleTextInComposedDom() {
         bot.dom.getVisibleText(youngerChildDiv));
     assertEquals(expectedParentContents, bot.dom.getVisibleText(parentDiv));
     assertEquals(expectedOutsideShadowDomContents, bot.dom.getVisibleText(divWithNoShadowDOM));
-    
-    
     assertEquals(expectedPageContents, 
       bot.dom.getVisibleText(/** @type {!Element} */ (document.body)));
   }
