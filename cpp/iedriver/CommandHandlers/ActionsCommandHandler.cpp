@@ -16,9 +16,11 @@
 
 #include "ActionsCommandHandler.h"
 #include "errorcodes.h"
+#include "json.h"
 #include "../Alert.h"
 #include "../Browser.h"
 #include "../IECommandExecutor.h"
+#include "../InputManager.h"
 
 namespace webdriver {
 
@@ -38,6 +40,16 @@ void ActionsCommandHandler::ExecuteInternal(
     response->SetErrorResponse(status_code, "Unable to get current browser");
     return;
   }
+  ParametersMap::const_iterator actions_parameter_iterator = command_parameters.find("actions");
+  if (actions_parameter_iterator == command_parameters.end()) {
+    response->SetErrorResponse(400, "Missing parameter: actions");
+    return;
+  }
+  if (!actions_parameter_iterator->second.isArray()) {
+    response->SetErrorResponse(400, "Actions value is not an array");
+    return;
+  }
+  status_code = executor.input_manager()->PerformInputSequence(browser_wrapper, actions_parameter_iterator->second);
   response->SetSuccessResponse(Json::Value::null);
 }
 

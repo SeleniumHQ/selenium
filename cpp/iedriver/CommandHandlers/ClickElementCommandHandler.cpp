@@ -68,18 +68,22 @@ void ClickElementCommandHandler::ExecuteInternal(const IECommandExecutor& execut
           }
         } else {
           Json::Value move_action;
-          move_action["action"] = "moveto";
-          move_action["element"] = element_wrapper->element_id();
+          move_action["type"] = "pointerMove";
+          move_action["origin"] = element_wrapper->ConvertToJson();
+          move_action["duration"] = 0;
 
-          Json::Value click_action;
-          click_action["action"] = "click";
-          click_action["button"] = 0;
+          Json::Value down_action;
+          down_action["type"] = "pointerDown";
+          down_action["button"] = 0;
             
-          Json::UInt index = 0;
-          Json::Value actions(Json::arrayValue);
-          actions[index] = move_action;
-          ++index;
-          actions[index] = click_action;
+          Json::Value up_action;
+          up_action["type"] = "pointerUp";
+          up_action["button"] = 0;
+
+          Json::Value action_array(Json::arrayValue);
+          action_array.append(move_action);
+          action_array.append(down_action);
+          action_array.append(up_action);
             
           // Check to make sure we're not within the double-click time for this element
           // since the last click.
@@ -88,6 +92,18 @@ void ClickElementCommandHandler::ExecuteInternal(const IECommandExecutor& execut
           if (time_since_last_click < double_click_time) {
             ::Sleep(double_click_time - time_since_last_click + 10);
           }
+
+          Json::Value parameters_value;
+          parameters_value["pointerType"] = "mouse";
+
+          Json::Value value;
+          value["type"] = "pointer";
+          value["id"] = "click action mouse";
+          value["parameters"] = parameters_value;
+          value["actions"] = action_array;
+
+          Json::Value actions(Json::arrayValue);
+          actions.append(value);
 
           IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
           status_code = mutable_executor.input_manager()->PerformInputSequence(browser_wrapper, actions);
