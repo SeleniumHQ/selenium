@@ -172,6 +172,9 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
       if (QUIT.equals(command.getName())) {
     	  client.close();
       }
+      if (QUIT.equals(command.getName())) {
+    	  client.close();
+      }
       return response;
     } catch (UnsupportedCommandException e) {
       if (e.getMessage() == null || "".equals(e.getMessage())) {
