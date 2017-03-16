@@ -723,12 +723,12 @@ class WebDriver(object):
             driver.set_page_load_timeout(30)
         """
         try:
-          self.execute(Command.SET_TIMEOUTS, {
-              'pageLoad': int(float(time_to_wait) * 1000)})
+            self.execute(Command.SET_TIMEOUTS, {
+                'pageLoad': int(float(time_to_wait) * 1000)})
         except WebDriverException:
-          self.execute(Command.SET_TIMEOUTS, {
-              'ms': float(time_to_wait) * 1000,
-              'type': 'page load'})
+            self.execute(Command.SET_TIMEOUTS, {
+                'ms': float(time_to_wait) * 1000,
+                'type': 'page load'})
 
     def find_element(self, by=By.ID, value=None):
         """
