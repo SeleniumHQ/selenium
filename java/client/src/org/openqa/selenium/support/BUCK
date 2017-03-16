@@ -23,6 +23,7 @@ java_library(name = 'support',
 
 java_library(name = 'page-factory',
   srcs = [
+    'AbstractFindByBuilder.java',
     'ByIdOrName.java',
     'CacheLookup.java',
     'FindAll.java',
@@ -30,6 +31,7 @@ java_library(name = 'page-factory',
     'FindBys.java',
     'How.java',
     'PageFactory.java',
+    'PageFactoryFinder.java',
   ] + glob(['pagefactory/*.java', 'pagefactory/internal/*.java',]),
   deps = [
     '//java/client/src/org/openqa/selenium:selenium',

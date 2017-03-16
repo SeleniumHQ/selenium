@@ -17,6 +17,10 @@
 
  package org.openqa.selenium.support;
 
+import org.openqa.selenium.By;
+import org.openqa.selenium.support.pagefactory.ByAll;
+import org.openqa.selenium.support.pagefactory.ByChained;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -38,6 +42,24 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.TYPE})
+@PageFactoryFinder(FindAll.FindByBuilder.class)
 public @interface FindAll {
   FindBy[] value();
+
+  public static class FindByBuilder extends AbstractFindByBuilder {
+    public By buildIt(Object annotation) {
+      FindAll findBys = (FindAll) annotation;
+      assertValidFindAll(findBys);
+
+      FindBy[] findByArray = findBys.value();
+      By[] byArray = new By[findByArray.length];
+      for (int i = 0; i < findByArray.length; i++) {
+        byArray[i] = buildByFromFindBy(findByArray[i]);
+      }
+
+      return new ByAll(byArray);
+    }
+
+  }
+
 }
