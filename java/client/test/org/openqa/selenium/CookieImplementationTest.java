@@ -31,6 +31,7 @@ import static org.openqa.selenium.testing.Driver.ALL;
 import static org.openqa.selenium.testing.Driver.CHROME;
 import static org.openqa.selenium.testing.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Driver.IE;
+import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Driver.REMOTE;
 import static org.openqa.selenium.testing.Driver.SAFARI;
@@ -367,6 +368,7 @@ public class CookieImplementationTest extends JUnit4TestBase {
     assertEquals(addedCookie, retrievedCookie);
   }
 
+  @Ignore(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/463")
   @Test
   public void testRetainsCookieExpiry() {
     Cookie addedCookie =
@@ -381,7 +383,8 @@ public class CookieImplementationTest extends JUnit4TestBase {
     assertEquals(addedCookie.getExpiry(), retrieved.getExpiry());
   }
 
-  @Ignore(value = {IE, PHANTOMJS, SAFARI})
+  @Ignore(value = {IE, PHANTOMJS, SAFARI, MARIONETTE},
+      reason = "Marionette cannot open secure page")
   @Test
   public void canHandleSecureCookie() {
     driver.get(domainHelper.getSecureUrlForFirstValidHostname("animals"));
@@ -399,7 +402,8 @@ public class CookieImplementationTest extends JUnit4TestBase {
     assertNotNull(retrieved);
   }
 
-  @Ignore(value = {IE, PHANTOMJS, SAFARI})
+  @Ignore(value = {IE, PHANTOMJS, SAFARI, MARIONETTE},
+      reason = "Marionette cannot open secure page")
   @Test
   public void testRetainsCookieSecure() {
     driver.get(domainHelper.getSecureUrlForFirstValidHostname("animals"));
