@@ -65,6 +65,7 @@ import static org.openqa.selenium.remote.DriverCommand.TOUCH_UP;
 
 import com.google.common.collect.ImmutableMap;
 
+import org.openqa.selenium.InvalidArgumentException;
 import org.openqa.selenium.remote.DriverCommand;
 
 import java.util.Map;
@@ -146,6 +147,18 @@ public class JsonHttpCommandCodec extends AbstractHttpCommandCodec {
           .put("windowHandle", "current")
           .put("handle", "current")
           .build();
+
+      case DriverCommand.SET_TIMEOUT:
+        if (parameters.size() != 1) {
+          throw new InvalidArgumentException(
+              "The JSON wire protocol only supports setting one time out at a time");
+        }
+        Map.Entry<String, ?> entry = parameters.entrySet().iterator().next();
+        String type = entry.getKey();
+        if ("pageLoad".equals(type)) {
+          type = "page load";
+        }
+        return ImmutableMap.of("type", type, "ms", entry.getValue());
 
       case DriverCommand.SWITCH_TO_WINDOW:
         return ImmutableMap.<String, Object>builder()
