@@ -98,7 +98,15 @@ namespace OpenQA.Selenium.Interactions
 
             ILocatable target = GetLocatableFromElement(element);
             this.action.AddAction(new KeyDownAction(this.keyboard, this.mouse, target, theKey));
+            if (element != null)
+            {
+                this.actionBuilder.AddAction(this.defaultMouse.CreatePointerMove(element, 0, 0, TimeSpan.FromMilliseconds(250)));
+                this.actionBuilder.AddAction(this.defaultMouse.CreatePointerDown(MouseButton.Left));
+                this.actionBuilder.AddAction(this.defaultMouse.CreatePointerUp(MouseButton.Left));
+            }
+
             this.actionBuilder.AddAction(this.defaultKeyboard.CreateKeyDown(theKey[0]));
+            this.actionBuilder.AddAction(new PauseInteraction(this.defaultKeyboard, TimeSpan.FromMilliseconds(100)));
             return this;
         }
 
@@ -131,6 +139,13 @@ namespace OpenQA.Selenium.Interactions
 
             ILocatable target = GetLocatableFromElement(element);
             this.action.AddAction(new KeyUpAction(this.keyboard, this.mouse, target, theKey));
+            if (element != null)
+            {
+                this.actionBuilder.AddAction(this.defaultMouse.CreatePointerMove(element, 0, 0, TimeSpan.FromMilliseconds(250)));
+                this.actionBuilder.AddAction(this.defaultMouse.CreatePointerDown(MouseButton.Left));
+                this.actionBuilder.AddAction(this.defaultMouse.CreatePointerUp(MouseButton.Left));
+            }
+
             this.actionBuilder.AddAction(this.defaultKeyboard.CreateKeyUp(theKey[0]));
             return this;
         }
@@ -160,6 +175,13 @@ namespace OpenQA.Selenium.Interactions
 
             ILocatable target = GetLocatableFromElement(element);
             this.action.AddAction(new SendKeysAction(this.keyboard, this.mouse, target, keysToSend));
+            if (element != null)
+            {
+                this.actionBuilder.AddAction(this.defaultMouse.CreatePointerMove(element, 0, 0, TimeSpan.FromMilliseconds(250)));
+                this.actionBuilder.AddAction(this.defaultMouse.CreatePointerDown(MouseButton.Left));
+                this.actionBuilder.AddAction(this.defaultMouse.CreatePointerUp(MouseButton.Left));
+            }
+
             foreach (char key in keysToSend)
             {
                 this.actionBuilder.AddAction(this.defaultKeyboard.CreateKeyDown(key));
@@ -268,6 +290,11 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions MoveToElement(IWebElement toElement)
         {
+            if (toElement == null)
+            {
+                throw new ArgumentException("MoveToElement cannot move to a null element with no offset.", "toElement");
+            }
+
             ILocatable target = GetLocatableFromElement(toElement);
             this.action.AddAction(new MoveMouseAction(this.mouse, target));
             this.actionBuilder.AddAction(this.defaultMouse.CreatePointerMove(toElement, 0, 0, TimeSpan.FromMilliseconds(250)));

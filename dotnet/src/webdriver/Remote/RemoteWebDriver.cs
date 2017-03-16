@@ -1337,6 +1337,14 @@ namespace OpenQA.Selenium.Remote
                                     alertText = alertDescription["text"].ToString();
                                 }
                             }
+                            else if (errorAsDictionary.ContainsKey("data"))
+                            {
+                                Dictionary<string, object> alertData = errorAsDictionary["data"] as Dictionary<string, object>;
+                                if (alertData != null && alertData.ContainsKey("text"))
+                                {
+                                    alertText = alertData["text"].ToString();
+                                }
+                            }
 
                             throw new UnhandledAlertException(errorMessage, alertText);
 

@@ -217,7 +217,8 @@ namespace OpenQA.Selenium.Remote
                 Dictionary<string, object> rawLocation;
                 if (this.driver.IsSpecificationCompliant)
                 {
-                    rawLocation = this.driver.ExecuteScript("return arguments[0].getBoundingClientRect();", this) as Dictionary<string, object>;
+                    object scriptResponse = this.driver.ExecuteScript("var rect = arguments[0].getBoundingClientRect(); return {'x': rect.left, 'y': rect.top};", this);
+                    rawLocation = scriptResponse as Dictionary<string, object>;
                 }
                 else
                 {
@@ -312,6 +313,7 @@ namespace OpenQA.Selenium.Remote
             parameters.Add("id", this.elementId);
             if (this.driver.IsSpecificationCompliant)
             {
+                parameters.Add("text", text);
                 parameters.Add("value", text.ToCharArray());
             }
             else
@@ -334,11 +336,19 @@ namespace OpenQA.Selenium.Remote
         {
             if (this.driver.IsSpecificationCompliant)
             {
+                string elementType = this.GetAttribute("type");
+                if (elementType != null && elementType == "submit")
+                {
+                    this.Click();
+                }
+                else
+                {
                 IWebElement form = this.FindElement(By.XPath("./ancestor-or-self::form"));
                 this.driver.ExecuteScript(
                     "var e = arguments[0].ownerDocument.createEvent('Event');" +
                     "e.initEvent('submit', true, true);" +
                     "if (arguments[0].dispatchEvent(e)) { arguments[0].submit(); }", form);
+                }
             }
             else
             {
@@ -891,7 +901,6 @@ namespace OpenQA.Selenium.Remote
             }
 
             Dictionary<string, object> parameters = new Dictionary<string, object>();
-            parameters.Add("id", this.elementId);
             parameters.Add("other", otherAsElement.Id);
 
             Response response = this.Execute(DriverCommand.ElementEquals, parameters);

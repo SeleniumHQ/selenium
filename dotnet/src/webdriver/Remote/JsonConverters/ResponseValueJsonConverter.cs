@@ -70,6 +70,7 @@ namespace OpenQA.Selenium.Remote
             object processedObject = null;
             if (reader != null)
             {
+                reader.DateParseHandling = DateParseHandling.None;
                 if (reader.TokenType == JsonToken.StartObject)
                 {
                     Dictionary<string, object> dictionaryValue = new Dictionary<string, object>();
@@ -94,7 +95,6 @@ namespace OpenQA.Selenium.Remote
                 }
                 else
                 {
-                    reader.DateParseHandling = DateParseHandling.None;
                     processedObject = reader.Value;
                 }
             }
