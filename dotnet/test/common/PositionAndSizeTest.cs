@@ -55,8 +55,10 @@ namespace OpenQA.Selenium
             Point location = GetLocationInViewPort(By.Id("box"));
             Assert.AreEqual(10, location.X);
             Assert.GreaterOrEqual(location.Y, 0);
-            Assert.LessOrEqual(location.Y, windowHeight - 100);
             Assert.AreEqual(new Point(10, 5010), GetLocationOnPage(By.Id("box")));
+            // GetLocationInViewPort only works within the context of a single frame
+            // for W3C-spec compliant remote ends.
+            // Assert.LessOrEqual(location.Y, windowHeight - 100);
         }
 
         [Test]
@@ -74,8 +76,10 @@ namespace OpenQA.Selenium
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("coordinates_tests/element_in_frame.html");
             driver.SwitchTo().Frame("ifr");
-            Assert.AreEqual(new Point(25, 25), GetLocationInViewPort(By.Id("box")));
             Assert.AreEqual(new Point(10, 10), GetLocationOnPage(By.Id("box")));
+            // GetLocationInViewPort only works within the context of a single frame
+            // for W3C-spec compliant remote ends.
+            // Assert.AreEqual(new Point(25, 25), GetLocationInViewPort(By.Id("box")));
         }
 
         [Test]
@@ -84,8 +88,10 @@ namespace OpenQA.Selenium
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("coordinates_tests/element_in_nested_frame.html");
             driver.SwitchTo().Frame("ifr");
             driver.SwitchTo().Frame("ifr");
-            Assert.AreEqual(new Point(40, 40), GetLocationInViewPort(By.Id("box")));
             Assert.AreEqual(new Point(10, 10), GetLocationOnPage(By.Id("box")));
+            // GetLocationInViewPort only works within the context of a single frame
+            // for W3C-spec compliant remote ends.
+            // Assert.AreEqual(new Point(40, 40), GetLocationInViewPort(By.Id("box")));
         }
 
         [Test]
