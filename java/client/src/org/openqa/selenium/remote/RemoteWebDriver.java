@@ -833,22 +833,19 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
       public Timeouts implicitlyWait(long time, TimeUnit unit) {
         execute(DriverCommand.SET_TIMEOUT, ImmutableMap.of(
-            "type", "implicit",
-            "ms", TimeUnit.MILLISECONDS.convert(time, unit)));
+            "implicit", TimeUnit.MILLISECONDS.convert(time, unit)));
         return this;
       }
 
       public Timeouts setScriptTimeout(long time, TimeUnit unit) {
         execute(DriverCommand.SET_TIMEOUT, ImmutableMap.of(
-            "type", "script",
-            "ms", TimeUnit.MILLISECONDS.convert(time, unit)));
+            "script", TimeUnit.MILLISECONDS.convert(time, unit)));
         return this;
       }
 
       public Timeouts pageLoadTimeout(long time, TimeUnit unit) {
         execute(DriverCommand.SET_TIMEOUT, ImmutableMap.of(
-            "type", "page load",
-            "ms", TimeUnit.MILLISECONDS.convert(time, unit)));
+            "page load", TimeUnit.MILLISECONDS.convert(time, unit)));
         return this;
       }
     } // timeouts class.
