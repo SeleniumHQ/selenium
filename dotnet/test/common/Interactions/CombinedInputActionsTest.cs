@@ -6,8 +6,20 @@ namespace OpenQA.Selenium.Interactions
     [TestFixture]
     public class CombinedInputActionsTest : DriverTestFixture
     {
+        [SetUp]
+        public void Setup()
+        {
+            new Actions(driver).SendKeys(Keys.Null).Perform();
+        }
+
+        [TearDown]
+        public void ReleaseModifierKeys()
+        {
+            new Actions(driver).SendKeys(Keys.Null).Perform();
+        }
+
         [Test]
-        [IgnoreBrowser(Browser.IE, "Shift-click implementation not complete")]
+        [IgnoreBrowser(Browser.IE, "IE reports [0,0] as location for <option> elements")]
         [IgnoreBrowser(Browser.Remote, "Shift-click implementation not complete")]
         [IgnoreBrowser(Browser.IPhone, "Shift-click implementation not complete")]
         [IgnoreBrowser(Browser.Android, "Shift-click implementation not complete")]
@@ -35,7 +47,7 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE, "Control-click implementation not complete")]
+        [IgnoreBrowser(Browser.IE, "Browser does not respond to combined input using SendMessage, only SendInput")]
         [IgnoreBrowser(Browser.Remote, "Control-click implementation not complete")]
         [IgnoreBrowser(Browser.IPhone, "Control-click implementation not complete")]
         [IgnoreBrowser(Browser.Android, "Control-click implementation not complete")]
@@ -50,8 +62,7 @@ namespace OpenQA.Selenium.Interactions
 
             ReadOnlyCollection<IWebElement> listItems = driver.FindElements(By.TagName("li"));
 
-            Actions actionBuider = new Actions(driver);
-            IAction selectThreeItems = actionBuider.KeyDown(Keys.Control)
+            IAction selectThreeItems = new Actions(driver).KeyDown(Keys.Control)
                 .Click(listItems[1])
                 .Click(listItems[3])
                 .Click(listItems[5])
@@ -62,7 +73,7 @@ namespace OpenQA.Selenium.Interactions
             Assert.AreEqual("#item2 #item4 #item6", reportingElement.Text);
 
             // Now click on another element, make sure that's the only one selected.
-            actionBuider.Click(listItems[6]).Build().Perform();
+            new Actions(driver).Click(listItems[6]).Build().Perform();
             Assert.AreEqual("#item7", reportingElement.Text);
         }
 
@@ -143,7 +154,6 @@ namespace OpenQA.Selenium.Interactions
         [IgnoreBrowser(Browser.Safari)]
         [IgnoreBrowser(Browser.HtmlUnit)]
         [IgnoreBrowser(Browser.Opera)]
-        [IgnoreBrowser(Browser.IE, "Windows native events library does not support storing modifiers state yet.")]
         [IgnoreBrowser(Browser.Firefox, "Windows native events library does not support storing modifiers state yet.")]
         public void ChordControlCutAndPaste()
         {
@@ -171,8 +181,8 @@ namespace OpenQA.Selenium.Interactions
 
             //TODO: Figure out why calling sendKey(Key.CONTROL + "a") and then
             //sendKeys("x") does not work on Linux.
-            new Actions(driver)
-                .SendKeys(Keys.Control + "a" + "x")
+            new Actions(driver).KeyDown(Keys.Control)
+                .SendKeys("a" + "x")
                 .Perform();
 
             // Release keys before next step.
@@ -180,8 +190,8 @@ namespace OpenQA.Selenium.Interactions
 
             Assert.AreEqual(string.Empty, element.GetAttribute("value"));
 
-            new Actions(driver)
-                .SendKeys(Keys.Control + "v")
+            new Actions(driver).KeyDown(Keys.Control)
+                .SendKeys("v")
                 .SendKeys("v")
                 .Perform();
 
@@ -191,7 +201,7 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE)]
+        [IgnoreBrowser(Browser.IE, "Browser does not respond to combined input using SendMessage, only SendInput")]
         [IgnoreBrowser(Browser.Remote)]
         [IgnoreBrowser(Browser.IPhone)]
         [IgnoreBrowser(Browser.Android)]
@@ -209,20 +219,31 @@ namespace OpenQA.Selenium.Interactions
             IWebElement link = driver.FindElement(By.Id("link"));
             string originalTitle = driver.Title;
 
-            int nWindows = driver.WindowHandles.Count;
             new Actions(driver)
                 .MoveToElement(link)
                 .KeyDown(Keys.Shift)
-                .Click()
+                .Click(link)
                 .KeyUp(Keys.Shift)
                 .Perform();
-
-            Assert.AreEqual(nWindows + 1, driver.WindowHandles.Count, "Should have opened a new window.");
+            WaitFor(() => { return driver.WindowHandles.Count > 1; }, "Did not receive new window");
+            Assert.AreEqual(2, driver.WindowHandles.Count, "Should have opened a new window.");
             Assert.AreEqual(originalTitle, driver.Title, "Should not have navigated away.");
+
+            string originalHandle = driver.CurrentWindowHandle;
+            foreach(string newHandle in driver.WindowHandles)
+            {
+                if (newHandle != originalHandle)
+                {
+                    driver.SwitchTo().Window(newHandle);
+                    driver.Close();
+                }
+            }
+
+            driver.SwitchTo().Window(originalHandle);
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE)]
+        [IgnoreBrowser(Browser.IE, "Browser does not respond to combined input using SendMessage, only SendInput")]
         [IgnoreBrowser(Browser.Remote)]
         [IgnoreBrowser(Browser.IPhone)]
         [IgnoreBrowser(Browser.Android)]
@@ -240,7 +261,7 @@ namespace OpenQA.Selenium.Interactions
 
             IWebElement toClick = driver.FindElement(By.Id("eventish"));
 
-            new Actions(driver).KeyDown(Keys.Shift).Click(toClick).KeyUp(Keys.Shift).Perform();
+            new Actions(driver).MoveToElement(toClick).KeyDown(Keys.Shift).Click().KeyUp(Keys.Shift).Perform();
 
             IWebElement shiftInfo = WaitFor(() => { return driver.FindElement(By.Id("shiftKey")); }, "Could not find element with id 'shiftKey'");
             Assert.AreEqual("true", shiftInfo.Text);

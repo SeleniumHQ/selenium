@@ -298,6 +298,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.IE, "Hangs")]
         [IgnoreBrowser(Browser.Android, "Untested")]
         [IgnoreBrowser(Browser.HtmlUnit, "Untested")]
         [IgnoreBrowser(Browser.IPhone, "Untested")]
