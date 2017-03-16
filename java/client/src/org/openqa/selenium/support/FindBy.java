@@ -17,6 +17,9 @@
 
 package org.openqa.selenium.support;
 
+import org.openqa.selenium.By;
+import org.openqa.selenium.support.pagefactory.ByChained;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -51,6 +54,7 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.TYPE})
+@PageFactoryFinder(FindBy.FindByBuilder.class)
 public @interface FindBy {
   How how() default How.UNSET;
 
@@ -71,4 +75,21 @@ public @interface FindBy {
   String partialLinkText() default "";
 
   String xpath() default "";
+
+  public static class FindByBuilder extends AbstractFindByBuilder {
+    public By buildIt(Object annotation) {
+      FindBy findBy = (FindBy) annotation;
+      assertValidFindBy(findBy);
+
+      By ans = buildByFromShortFindBy(findBy);
+      if (ans == null) {
+        ans = buildByFromLongFindBy(findBy);
+      }
+
+      return ans;
+
+    }
+
+  }
+
 }
