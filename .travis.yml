@@ -136,7 +136,7 @@ matrix:
       env: TASK=test_java_small_tests
     - language: java
       jdk: oraclejdk8
-      env: MARIONETTE=1 TASK=test_grid
+      env: TASK=test_grid
       addons:
         firefox: latest-nightly
     - language: java
