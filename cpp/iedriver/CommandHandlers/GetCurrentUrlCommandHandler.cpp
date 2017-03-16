@@ -40,14 +40,14 @@ void GetCurrentUrlCommandHandler::ExecuteInternal(
     return;
   }
 
-  std::string current_url = "";
+  // Start with the browser URL.
+  std::string current_url = browser_wrapper->GetBrowserUrl();
   CComPtr<IHTMLDocument2> top_level_document;
   browser_wrapper->GetDocument(true, &top_level_document);
   if (!top_level_document) {
     LOG(WARN) << "Unable to get document from browser. Are you viewing a "
               << "non-HTML document? Falling back to potentially "
               << "inconsistent method for obtaining URL.";
-    current_url = browser_wrapper->GetBrowserUrl();
   } else {
     CComBSTR url;
     HRESULT hr = top_level_document->get_URL(&url);
@@ -56,7 +56,12 @@ void GetCurrentUrlCommandHandler::ExecuteInternal(
     }
     
     std::wstring converted_url(url, ::SysStringLen(url));
-    current_url = StringUtilities::ToString(converted_url);
+
+    // HACK: If the URL starts with "res://", an internal
+    // resource was loaded, so don't get the document URL.
+    if (converted_url.find_first_of(L"res://") != 0) {
+      current_url = StringUtilities::ToString(converted_url);
+    }
   }
 
   response->SetSuccessResponse(current_url);

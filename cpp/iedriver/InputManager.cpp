@@ -170,6 +170,10 @@ int InputManager::PerformInputSequence(BrowserHandle browser_wrapper, const Json
       } else if (action_subtype == "pause") {
         status_code = this->Pause(browser_wrapper, action);
       }
+
+      if (status_code != WD_SUCCESS) {
+        return status_code;
+      }
     }
   }
 
@@ -488,8 +492,7 @@ int InputManager::PointerMoveTo(BrowserHandle browser_wrapper, const Json::Value
           // returned, bail out here.
           LOG(WARN) << "No offset was specified, and the center point of the element could not be scrolled into view.";
           return status_code;
-        }
-        else {
+        } else {
           LOG(WARN) << "Element::CalculateClickPoint() returned an error code indicating the element is not reachable.";
           return status_code;
         }
@@ -672,8 +675,7 @@ int InputManager::KeyDown(BrowserHandle browser_wrapper, const Json::Value & dow
     HWND window_handle = browser_wrapper->GetContentWindowHandle();
     wchar_t character = key[0];
     this->AddKeyboardInput(window_handle, character, false, input_state);
-  }
-  else {
+  } else {
     LOG(DEBUG) << "Using synthetic events for sending keys";
     std::wstring script_source = L"(function() { return function(){" +
                                  atoms::asString(atoms::INPUTS) +

@@ -20,7 +20,7 @@
 
 namespace webdriver {
 
-Response::Response(void) : error_(""), value_(Json::Value::null) {
+Response::Response(void) : error_(""), value_(Json::Value::null), additional_data_(Json::Value::null) {
 }
 
 Response::~Response(void) {
@@ -55,12 +55,11 @@ std::string Response::Serialize(void) {
     json_object["error"] = this->error_;
     json_object["message"] = this->value_.asString();
     json_object["stacktrace"] = "";
-  } else {
-    if (this->value_.isObject() && this->value_.isMember("sessionId")) {
-      json_object = this->value_;
-    } else {
-      json_object["value"] = this->value_;
+    if (!this->value_.isNull()) {
+      json_object["data"] = this->additional_data_;
     }
+  } else {
+    json_object["value"] = this->value_;
   }
   Json::FastWriter writer;
   std::string output(writer.write(json_object));
@@ -73,23 +72,33 @@ void Response::SetSuccessResponse(const Json::Value& response_value) {
 }
 
 void Response::SetResponse(const std::string& error,
-  const Json::Value& response_value) {
+                          const Json::Value& response_value) {
   LOG(TRACE) << "Entering Response::SetResponse";
   this->error_ = error;
   this->value_ = response_value;
 }
 
 void Response::SetErrorResponse(const std::string& error,
-  const std::string& message) {
+                                const std::string& message) {
   LOG(TRACE) << "Entering Response::SetErrorResponse";
   this->SetResponse(error, message);
 }
 
 void Response::SetErrorResponse(const int status_code,
-  const std::string& message) {
+                                const std::string& message) {
   LOG(TRACE) << "Entering Response::SetErrorResponse";
   LOG(WARN) << "Error response has status code " << status_code << " and message '" << message << "' message";
   this->SetErrorResponse(ConvertErrorCode(status_code), message);
+}
+
+void Response::AddAdditionalData(const std::string& data_name,
+                                 const std::string& data_value) {
+  LOG(TRACE) << "Entering Response::AddAdditionalData";
+  if (this->additional_data_.isNull()) {
+    Json::Value new_data;
+    this->additional_data_ = new_data;
+  }
+  this->additional_data_[data_name] = data_value;
 }
 
 std::string Response::GetSessionId(void) {
@@ -142,10 +151,28 @@ std::string Response::ConvertErrorCode(const int error_code) {
     return "";
   } else if (error_code == ENOSUCHFRAME) {
     return ERROR_NO_SUCH_FRAME;
+  } else if (error_code == ENOSUCHWINDOW) {
+    return ERROR_NO_SUCH_WINDOW;
   } else if (error_code == EOBSOLETEELEMENT) {
     return ERROR_STALE_ELEMENT_REFERENCE;
   } else if (error_code == EINVALIDSELECTOR) {
     return ERROR_INVALID_SELECTOR;
+  } else if (error_code == ENOSUCHALERT) {
+    return ERROR_NO_SUCH_ALERT;
+  } else if (error_code == EUNEXPECTEDALERTOPEN) {
+    return ERROR_UNEXPECTED_ALERT_OPEN;
+  } else if (error_code == ENOSUCHCOOKIE) {
+    return ERROR_NO_SUCH_COOKIE;
+  } else if (error_code == EELEMENTNOTENABLED) {
+    return ERROR_INVALID_ELEMENT_STATE;
+  } else if (error_code == EELEMENTNOTDISPLAYED) {
+    return ERROR_ELEMENT_NOT_INTERACTABLE;
+  } else if (error_code == EUNEXPECTEDJSERROR) {
+    return ERROR_JAVASCRIPT_ERROR;
+  } else if (error_code == EINVALIDCOOKIEDOMAIN) {
+    return ERROR_INVALID_COOKIE_DOMAIN;
+  } else if (error_code == ESCRIPTTIMEOUT) {
+    return ERROR_SCRIPT_TIMEOUT;
   }
 
   return "";

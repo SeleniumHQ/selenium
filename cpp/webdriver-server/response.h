@@ -42,6 +42,7 @@ class Response {
   void SetSuccessResponse(const Json::Value& response_value);
   void SetErrorResponse(const int error_code, const std::string& message);
   void SetErrorResponse(const std::string& error, const std::string& message);
+  void AddAdditionalData(const std::string& data_name, const std::string& data_value);
 
  private:
   std::string ConvertErrorCode(const int error_code);
@@ -51,6 +52,7 @@ class Response {
   std::string error_;
   // A JSON object that represents the value of the response.
   Json::Value value_;
+  Json::Value additional_data_;
 
   DISALLOW_COPY_AND_ASSIGN(Response);
 };

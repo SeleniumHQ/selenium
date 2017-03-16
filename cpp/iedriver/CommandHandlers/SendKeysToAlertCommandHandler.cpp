@@ -32,9 +32,9 @@ void SendKeysToAlertCommandHandler::ExecuteInternal(
     const IECommandExecutor& executor,
     const ParametersMap& command_parameters,
     Response* response) {
-  ParametersMap::const_iterator text_parameter_iterator = command_parameters.find("text");
+  ParametersMap::const_iterator text_parameter_iterator = command_parameters.find("value");
   if (text_parameter_iterator == command_parameters.end()) {
-    response->SetErrorResponse(400, "Missing parameter: text");
+    response->SetErrorResponse(ERROR_INVALID_ARGUMENT, "Missing parameter: value");
     return;
   }
 
@@ -48,10 +48,18 @@ void SendKeysToAlertCommandHandler::ExecuteInternal(
   ::Sleep(100);
   HWND alert_handle = browser_wrapper->GetActiveDialogWindowHandle();
   if (alert_handle == NULL) {
-    response->SetErrorResponse(ENOSUCHALERT, "No alert is active");
+    response->SetErrorResponse(ERROR_NO_SUCH_ALERT, "No alert is active");
   } else {
     Alert dialog(browser_wrapper, alert_handle);
-    status_code = dialog.SendKeys(text_parameter_iterator->second.asString());
+    if (text_parameter_iterator->second.isArray()) {
+      response->SetErrorResponse(ERROR_INVALID_ARGUMENT, "value must be a character array");
+    }
+    Json::Value character_array = text_parameter_iterator->second;
+    std::string value = "";
+    for (size_t i = 0; i < character_array.size(); ++i) {
+      value.append(character_array[i].asString());
+    }
+    status_code = dialog.SendKeys(value);
     if (status_code != WD_SUCCESS) {
       response->SetErrorResponse(status_code,
                                   "Modal dialog did not have a text box - maybe it was an alert");

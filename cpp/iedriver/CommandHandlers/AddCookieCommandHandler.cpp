@@ -36,7 +36,7 @@ void AddCookieCommandHandler::ExecuteInternal(
     Response* response) {
   ParametersMap::const_iterator cookie_parameter_iterator = command_parameters.find("cookie");
   if (cookie_parameter_iterator == command_parameters.end()) {
-    response->SetErrorResponse(400, "Missing parameter: cookie");
+    response->SetErrorResponse(ERROR_INVALID_ARGUMENT, "Missing parameter: cookie");
     return;
   }
 

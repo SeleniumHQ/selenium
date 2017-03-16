@@ -39,7 +39,7 @@ void ClickElementCommandHandler::ExecuteInternal(const IECommandExecutor& execut
                       Response* response) {
   ParametersMap::const_iterator id_parameter_iterator = command_parameters.find("id");
   if (id_parameter_iterator == command_parameters.end()) {
-    response->SetErrorResponse(400, "Missing parameter in URL: id");
+    response->SetErrorResponse(ERROR_INVALID_ARGUMENT, "Missing parameter in URL: id");
     return;
   } else {
     int status_code = WD_SUCCESS;
@@ -88,10 +88,6 @@ void ClickElementCommandHandler::ExecuteInternal(const IECommandExecutor& execut
           // Check to make sure we're not within the double-click time for this element
           // since the last click.
           int double_click_time = ::GetDoubleClickTime();
-          int time_since_last_click = static_cast<int>(static_cast<float>(clock() - element_wrapper->last_click_time()) / CLOCKS_PER_SEC * 1000);
-          if (time_since_last_click < double_click_time) {
-            ::Sleep(double_click_time - time_since_last_click + 10);
-          }
 
           Json::Value parameters_value;
           parameters_value["pointerType"] = "mouse";
@@ -108,12 +104,12 @@ void ClickElementCommandHandler::ExecuteInternal(const IECommandExecutor& execut
           IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
           status_code = mutable_executor.input_manager()->PerformInputSequence(browser_wrapper, actions);
           browser_wrapper->set_wait_required(true);
-          element_wrapper->set_last_click_time(clock());
+          ::Sleep(double_click_time + 10);
           if (status_code != WD_SUCCESS) {
             if (status_code == EELEMENTCLICKPOINTNOTSCROLLED) {
               // We hard-code the error code here to be "Element not visible"
               // to maintain compatibility with previous behavior.
-              response->SetErrorResponse(EELEMENTNOTDISPLAYED, "The point at which the driver is attempting to click on the element was not scrolled into the viewport.");
+              response->SetErrorResponse(ERROR_ELEMENT_NOT_INTERACTABLE, "The point at which the driver is attempting to click on the element was not scrolled into the viewport.");
             } else {
               response->SetErrorResponse(status_code, "Cannot click on element");
             }
@@ -129,7 +125,7 @@ void ClickElementCommandHandler::ExecuteInternal(const IECommandExecutor& execut
         } 
 
         if (!displayed) {
-          response->SetErrorResponse(EELEMENTNOTDISPLAYED, "Element is not displayed");
+          response->SetErrorResponse(ERROR_ELEMENT_NOT_INTERACTABLE, "Element is not displayed");
           return;
         }
         std::string synthetic_click_error = "";
@@ -141,7 +137,7 @@ void ClickElementCommandHandler::ExecuteInternal(const IECommandExecutor& execut
           // This is a hack. We should change this when we can get proper error
           // codes back from the atoms. We'll assume the script failed because
           // the element isn't visible.
-          response->SetErrorResponse(EELEMENTNOTDISPLAYED, 
+          response->SetErrorResponse(ERROR_ELEMENT_NOT_INTERACTABLE,
               "Received a JavaScript error attempting to click on the element using synthetic events. We are assuming this is because the element isn't displayed, but it may be due to other problems with executing JavaScript.");
           return;
         }

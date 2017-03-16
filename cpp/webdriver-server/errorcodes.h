@@ -51,6 +51,7 @@
 #define EINVALIDSELECTOR     32
 #define ECLICKINTERCEPTED    33
 #define EINVALIDARGUMENT     34
+#define ENOSUCHCOOKIE        35
 
 #define ERROR_ELEMENT_CLICK_INTERCEPTED "element click intercepted"
 #define ERROR_ELEMENT_NOT_SELECTABLE "element not selectable"

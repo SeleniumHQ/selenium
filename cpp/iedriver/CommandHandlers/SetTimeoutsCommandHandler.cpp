@@ -31,13 +31,13 @@ void SetTimeoutsCommandHandler::ExecuteInternal(
     const IECommandExecutor& executor,
     const ParametersMap& command_parameters,
     Response* response) {
-  ParametersMap::const_iterator timeout_parameter_iterator = command_parameters.begin();
-  int timeout = 0;
   IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
+  int timeout = 0;
+  ParametersMap::const_iterator timeout_parameter_iterator = command_parameters.begin();
   for (; timeout_parameter_iterator != command_parameters.end(); ++timeout_parameter_iterator) {
     std::string timeout_type = timeout_parameter_iterator->first;
+    timeout = timeout_parameter_iterator->second.asInt();
     if (timeout_type == "implicit") {
-      timeout = timeout_parameter_iterator->second.asInt();
       mutable_executor.set_implicit_wait_timeout(timeout);
     } else if (timeout_type == "script") {
       mutable_executor.set_async_script_timeout(timeout);

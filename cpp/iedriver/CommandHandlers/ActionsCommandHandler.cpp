@@ -42,11 +42,11 @@ void ActionsCommandHandler::ExecuteInternal(
   }
   ParametersMap::const_iterator actions_parameter_iterator = command_parameters.find("actions");
   if (actions_parameter_iterator == command_parameters.end()) {
-    response->SetErrorResponse(400, "Missing parameter: actions");
+    response->SetErrorResponse(ERROR_INVALID_ARGUMENT, "Missing parameter: actions");
     return;
   }
   if (!actions_parameter_iterator->second.isArray()) {
-    response->SetErrorResponse(400, "Actions value is not an array");
+    response->SetErrorResponse(ERROR_INVALID_ARGUMENT, "Actions value is not an array");
     return;
   }
   status_code = executor.input_manager()->PerformInputSequence(browser_wrapper, actions_parameter_iterator->second);

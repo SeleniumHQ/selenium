@@ -309,7 +309,6 @@ void InteractionsManager::SendKeyUpMessage(HWND window_handle, bool shift_presse
 }
 
 void InteractionsManager::SendMouseMoveMessage(HWND window_handle, bool shift_pressed, bool control_pressed, bool left_pressed, bool right_pressed, int x, int y) {
-  LPARAM lparam = 0;
   LRESULT message_timeout = 0;
   DWORD send_message_result = 0;
   WPARAM button_value = 0;
@@ -333,70 +332,58 @@ void InteractionsManager::SendMouseMoveMessage(HWND window_handle, bool shift_pr
 }
 
 void InteractionsManager::SendMouseDownMessage(HWND window_handle, bool shift_pressed, bool control_pressed, bool left_pressed, bool right_pressed, int button, int x, int y, bool is_double_click) {
-  LPARAM lparam = 0;
-  LRESULT message_timeout = 0;
-  DWORD send_message_result = 0;
   UINT msg = WM_LBUTTONDOWN;
-  WPARAM button_value = 0;
+  WPARAM button_value = MK_LBUTTON;
   if (is_double_click) {
     msg = WM_LBUTTONDBLCLK;
   }
   if (button == WD_CLIENT_RIGHT_MOUSE_BUTTON) {
     msg = WM_RBUTTONDOWN;
+    button_value = MK_RBUTTON;
     if (is_double_click) {
       msg = WM_RBUTTONDBLCLK;
     }
   }
-  if (left_pressed) {
-    button_value |= MK_LBUTTON;
-  }
-  if (right_pressed) {
-    button_value |= MK_RBUTTON;
-  }
+  int modifier = 0;
   if (shift_pressed) {
-    button_value |= MK_SHIFT;
+    modifier |= MK_SHIFT;
   }
   if (control_pressed) {
-    button_value |= MK_CONTROL;
+    modifier |= MK_CONTROL;
   }
+  button_value |= modifier;
   LPARAM coordinates = MAKELPARAM(x, y);
-  //message_timeout = ::SendMessageTimeout(window_handle, msg, button_value, coordinates, SMTO_NORMAL, 100, &send_message_result);
-  //if (message_timeout == 0) {
-  //  LOGERR(WARN) << "MouseDown: SendMessageTimeout failed";
-  //}
+  // Must use PostMessage for mouse down because message gets lost with
+  // SendMessage and variants. Use a SendMessage with WM_USER to ensure
+  // the posted message has been processed.
   ::PostMessage(window_handle, msg, button_value, coordinates);
-  ::SendMessage(window_handle, WM_USER, 1234, 5678);
+  ::SendMessage(window_handle, WM_USER, 0, 0);
 }
 
 
 void InteractionsManager::SendMouseUpMessage(HWND window_handle, bool shift_pressed, bool control_pressed, bool left_pressed, bool right_pressed, int button, int x, int y) {
-  LPARAM lparam = 0;
-  LRESULT message_timeout = 0;
-  DWORD send_message_result = 0;
   UINT msg = WM_LBUTTONUP;
+  WPARAM button_value = MK_LBUTTON;
   if (button == WD_CLIENT_RIGHT_MOUSE_BUTTON) {
     msg = WM_RBUTTONUP;
+    button_value = MK_RBUTTON;
   }
-  WPARAM button_value = 0;
-  if (left_pressed) {
-    button_value |= MK_LBUTTON;
-  }
-  if (right_pressed) {
-    button_value |= MK_RBUTTON;
-  }
+  int modifier = 0;
   if (shift_pressed) {
-    button_value |= MK_SHIFT;
+    modifier |= MK_SHIFT;
   }
   if (control_pressed) {
-    button_value |= MK_CONTROL;
+    modifier |= MK_CONTROL;
   }
+  button_value |= modifier;
   LPARAM coordinates = MAKELPARAM(x, y);
-  //message_timeout = ::SendMessageTimeout(window_handle, msg, button_value, coordinates, SMTO_NORMAL, 100, &send_message_result);
-  //if (message_timeout == 0) {
-  //  LOGERR(WARN) << "MouseUp: SendMessageTimeout failed";
-  //}
+  // To properly mimic manual mouse movement, we need a move before the up.
+  ::SendMessage(window_handle, WM_MOUSEMOVE, modifier, coordinates);
+  // Must use PostMessage for mouse up because message gets lost with
+  // SendMessage and variants. Use a SendMessage with WM_USER to ensure
+  // the posted message has been processed.
   ::PostMessage(window_handle, msg, button_value, coordinates);
-  ::SendMessage(window_handle, WM_USER, 1234, 5678);
+  ::SendMessage(window_handle, WM_USER, 0, 0);
 }
 
 } // namespace webdriver

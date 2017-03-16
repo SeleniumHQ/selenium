@@ -35,7 +35,7 @@ void DeleteCookieCommandHandler::ExecuteInternal(
     Response* response) {
   ParametersMap::const_iterator name_parameter_iterator = command_parameters.find("name");
   if (name_parameter_iterator == command_parameters.end()) {
-    response->SetErrorResponse(400, "Missing parameter in URL: name");
+    response->SetErrorResponse(ERROR_INVALID_ARGUMENT, "Missing parameter in URL: name");
     return;
   }
 

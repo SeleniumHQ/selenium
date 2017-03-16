@@ -179,7 +179,7 @@ LRESULT IECommandExecutor::OnWait(UINT uMsg,
   if (status_code == WD_SUCCESS && !browser->is_closing()) {
     if (this->page_load_timeout_ >= 0 && this->wait_timeout_ < clock()) {
       Response timeout_response;
-      timeout_response.SetErrorResponse(ETIMEOUT, "Timed out waiting for page to load.");
+      timeout_response.SetErrorResponse(ERROR_WEBDRIVER_TIMEOUT, "Timed out waiting for page to load.");
       this->serialized_response_ = timeout_response.Serialize();
       this->is_waiting_ = false;
       browser->set_wait_required(false);
@@ -490,6 +490,7 @@ void IECommandExecutor::DispatchCommand() {
               // To keep pace with what Firefox does, we'll return the text of the
               // alert in the error response.
               response.SetErrorResponse(EUNEXPECTEDALERTOPEN, "Modal dialog present");
+              response.AddAdditionalData("text", alert_text);
               this->serialized_response_ = response.Serialize();
               return;
             } else {
