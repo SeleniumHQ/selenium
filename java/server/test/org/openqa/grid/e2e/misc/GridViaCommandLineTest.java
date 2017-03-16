@@ -54,7 +54,7 @@ public class GridViaCommandLineTest {
 
     Integer nodePort = PortProber.findFreePort();
 
-    String[] nodeArgs = {"-role", "node", "-hub", "http://localhost:" + hubPort, "-browser", "browserName=chrome,maxInstances=1", "-port", nodePort.toString()};
+    String[] nodeArgs = {"-role", "node", "-hub", "http://localhost:" + hubPort, "-browser", "browserName=htmlunit,maxInstances=1", "-port", nodePort.toString()};
     GridLauncherV3.main(nodeArgs);
     urlChecker.waitUntilAvailable(100, TimeUnit.SECONDS, new URL(String.format("http://localhost:%d/wd/hub/status", nodePort)));
 
@@ -65,7 +65,7 @@ public class GridViaCommandLineTest {
           try (InputStream is = u.openConnection().getInputStream();
                InputStreamReader isr = new InputStreamReader(is, StandardCharsets.UTF_8);
                BufferedReader reader = new BufferedReader(isr)) {
-            return reader.lines().anyMatch(l -> l.contains("chrome"));
+            return reader.lines().anyMatch(l -> l.contains("htmlunit"));
           } catch (IOException ioe) {
             return false;
           }
@@ -73,11 +73,11 @@ public class GridViaCommandLineTest {
       });
 
     WebDriver driver = new RemoteWebDriver(new URL(String.format("http://localhost:%d/wd/hub", hubPort)),
-                                                   DesiredCapabilities.chrome());
+                                                   DesiredCapabilities.htmlUnit());
 
     try {
       driver.get(String.format("http://localhost:%d/grid/console", hubPort));
-      Assert.assertEquals("Should only have one chrome registered to the hub", 1, driver.findElements(By.cssSelector("img[src$='chrome.png']")).size());
+      Assert.assertEquals("Should only have one htmlunit registered to the hub", 1, driver.findElements(By.cssSelector("img[src$='htmlunit.png']")).size());
     } finally {
       try {
         driver.quit();
