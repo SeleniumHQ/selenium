@@ -80,8 +80,8 @@ namespace OpenQA.Selenium.Remote
         /// </summary>
         public TimeSpan PageLoad
         {
-            get { return this.ExecuteGetTimeout("page load"); }
-            set { this.ExecuteSetTimeout("page load", value); }
+            get { return this.ExecuteGetTimeout("pageLoad"); }
+            set { this.ExecuteSetTimeout("pageLoad", value); }
         }
 
         /// <summary>
@@ -131,7 +131,7 @@ namespace OpenQA.Selenium.Remote
         [Obsolete("This method will be removed in a future version. Please set the PageLoad property instead.")]
         public ITimeouts SetPageLoadTimeout(TimeSpan timeToWait)
         {
-            this.ExecuteSetTimeout("page load", timeToWait);
+            this.ExecuteSetTimeout("pageLoad", timeToWait);
             return this;
         }
 
