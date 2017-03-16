@@ -191,7 +191,7 @@ function findFreePort(opt_host) {
           } else {
             findPort();
           }
-        });
+        }, findPort);
       }
     });
   });
