@@ -43,6 +43,21 @@ matrix:
         apt:
           packages:
             - google-chrome-stable
+    - language: java
+      jdk: oraclejdk8
+      env: MARIONETTE=1 TASK=//java/client/test/com/thoughtworks/selenium:firefox-rc-test:run
+      addons:
+        firefox: latest-nightly
+    - language: python
+      python: 2.7
+      env: MARIONETTE=1 TOXENV=py27-marionette
+      addons:
+        firefox: latest-nightly
+    - language: python
+      python: 3.6
+      env: MARIONETTE=1 TOXENV=py36-marionette
+      addons:
+        firefox: latest-nightly
   include:
     - language: java
       jdk: oraclejdk8
@@ -118,11 +133,6 @@ matrix:
         firefox: latest-nightly
     - language: java
       jdk: oraclejdk8
-      env: MARIONETTE=1 TASK=//java/client/test/com/thoughtworks/selenium:firefox-rc-test:run
-      addons:
-        firefox: latest-nightly
-    - language: java
-      jdk: oraclejdk8
       env: TASK=test_java_small_tests
     - language: java
       jdk: oraclejdk8
@@ -149,11 +159,6 @@ matrix:
       env: TOXENV=py27-firefox
       addons:
         firefox: latest-esr
-    - language: python
-      python: 2.7
-      env: MARIONETTE=1 TOXENV=py27-marionette
-      addons:
-        firefox: latest-nightly
     - language: python
       python: 2.7
       env: PHANTOMJS=1 TOXENV=py27-phantomjs
@@ -185,11 +190,6 @@ matrix:
       env: TOXENV=py36-firefox
       addons:
         firefox: latest-esr
-    - language: python
-      python: 3.6
-      env: MARIONETTE=1 TOXENV=py36-marionette
-      addons:
-        firefox: latest-nightly
     - language: python
       python: 3.6
       env: PHANTOMJS=1 TOXENV=py36-phantomjs
@@ -268,7 +268,6 @@ matrix:
       env: TASK=//rb:docs
   fast_finish: true
   allow_failures:
-    - env: MARIONETTE=1 TASK="calcdeps //javascript/webdriver:webdriver-firefox:run"
     - env: CHROME=1 TASK=//java/client/test/com/thoughtworks/selenium:chrome-rc-test:run
     - env: MARIONETTE=1 TASK=//java/client/test/com/thoughtworks/selenium:firefox-rc-test:run
     - env: TOXENV=py27-firefox
@@ -277,6 +276,8 @@ matrix:
     - env: TOXENV=py36-firefox
     - env: MARIONETTE=1 TOXENV=py36-marionette
     - env: TOXENV=py36-remote
+      env: PHANTOMJS=1 TOXENV=py27-phantomjs
+      env: PHANTOMJS=1 TOXENV=py36-phantomjs
 before_install: ./scripts/travis/before_install.sh
 install: ./scripts/travis/install.sh
 before_script: ./scripts/travis/before_script.sh
