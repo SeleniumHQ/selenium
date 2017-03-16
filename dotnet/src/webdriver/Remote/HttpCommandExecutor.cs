@@ -149,6 +149,13 @@ namespace OpenQA.Selenium.Remote
         private HttpResponseInfo MakeHttpRequest(HttpRequestInfo requestInfo)
         {
             HttpWebRequest request = HttpWebRequest.Create(requestInfo.FullUri) as HttpWebRequest;
+            if (!string.IsNullOrEmpty(requestInfo.FullUri.UserInfo) && requestInfo.FullUri.UserInfo.Contains(":"))
+            {
+                string[] userInfo = this.remoteServerUri.UserInfo.Split(new char[] { ':' }, 2);
+                request.Credentials = new NetworkCredential(userInfo[0], userInfo[1]);
+                request.PreAuthenticate = true;
+            }
+
             request.Method = requestInfo.HttpMethod;
             request.Timeout = (int)this.serverResponseTimeout.TotalMilliseconds;
             request.Accept = RequestAcceptHeader;
