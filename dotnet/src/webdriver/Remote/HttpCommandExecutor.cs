@@ -104,6 +104,12 @@ namespace OpenQA.Selenium.Remote
 
             CommandInfo info = this.commandInfoRepository.GetCommandInfo(commandToExecute.Name);
             HttpWebRequest request = info.CreateWebRequest(this.remoteServerUri, commandToExecute);
+            if (this.remoteServerUri.UserInfo.Contains(":"))
+            {
+                string[] userInfo = this.remoteServerUri.UserInfo.Split(':');
+                request.Credentials = new NetworkCredential(userInfo[0], userInfo[1]);
+                request.PreAuthenticate = true;
+            }
             request.Timeout = (int)this.serverResponseTimeout.TotalMilliseconds;
             request.Accept = RequestAcceptHeader;
             request.KeepAlive = this.enableKeepAlive;
