@@ -21,7 +21,6 @@ import static org.openqa.selenium.firefox.FirefoxDriver.SystemProperty.DRIVER_US
 import static org.openqa.selenium.firefox.FirefoxOptions.FIREFOX_OPTIONS;
 import static org.openqa.selenium.remote.CapabilityType.PROXY;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
@@ -50,7 +49,6 @@ import java.net.URI;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 /**
@@ -305,30 +303,6 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
     if (this.getCommandExecutor() instanceof LazyCommandExecutor) {
       ((LazyCommandExecutor) this.getCommandExecutor()).binary.quit();
     }
-  }
-
-  @Override
-  public Options manage() {
-    return new RemoteWebDriverOptions() {
-      @Override
-      public Timeouts timeouts() {
-        return new RemoteTimeouts() {
-          public Timeouts implicitlyWait(long time, TimeUnit unit) {
-            execute(DriverCommand.SET_TIMEOUT, ImmutableMap.of(
-                "type", "implicit",
-                "ms", TimeUnit.MILLISECONDS.convert(time, unit)));
-            return this;
-          }
-
-          public Timeouts setScriptTimeout(long time, TimeUnit unit) {
-            execute(DriverCommand.SET_TIMEOUT, ImmutableMap.of(
-                "type", "script",
-                "ms", TimeUnit.MILLISECONDS.convert(time, unit)));
-            return this;
-          }
-        };
-      }
-    };
   }
 
   private static boolean isLegacy(Capabilities desiredCapabilities) {
