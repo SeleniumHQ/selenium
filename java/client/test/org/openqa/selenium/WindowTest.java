@@ -21,6 +21,7 @@ import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.Platform.ANDROID;
 import static org.openqa.selenium.Platform.LINUX;
@@ -283,6 +284,8 @@ public class WindowTest extends JUnit4TestBase {
   }
 
   private void assumeNotLinuxOnTravis() {
+    assertTrue(TestUtilities.getEffectivePlatform(driver).is(LINUX));
+    assertTrue(Boolean.valueOf(System.getenv().getOrDefault("TRAVIS", "false")));
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(LINUX) && Boolean.valueOf(System.getenv().getOrDefault("TRAVIS", "false")));
   }
 
