@@ -28,17 +28,8 @@ from selenium.webdriver.remote.remote_connection import (
 
 def test_add_remote_connection_headers_adds_auth_header():
     url = 'http://user:pass@remote'
-    parsed_url = parse.urlparse(url)
-    cleaned_url = parse.urlunparse((
-        parsed_url.scheme,
-        parsed_url.hostname,
-        parsed_url.path,
-        parsed_url.params,
-        parsed_url.query,
-        parsed_url.fragment)
-    )
-    request = Request(cleaned_url)
-    request.add_remote_connection_headers(parsed_url)
+    request = Request(url)
+    request.add_remote_connection_headers(parse.urlparse(url))
     assert request.headers['Authorization'] == 'Basic dXNlcjpwYXNz'
 
 
