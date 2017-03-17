@@ -167,7 +167,9 @@ public class TestIgnorance {
   }
 
   public void setBrowser(Browser browser) {
-    this.browser = checkNotNull(browser, "Browser to use must be set");
+    this.browser = checkNotNull(
+        browser,
+        "Browser to use must be set. Do this by setting the 'selenium.browser' system property");
     addIgnoresForBrowser(browser, ignoreComparator);
   }
 
