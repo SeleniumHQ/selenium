@@ -1269,13 +1269,24 @@ bot.dom.appendVisibleTextLinesFromNodeInComposedDom_ = function(
     var castElem = /** @type {!Element} */ (node);
 
     if (bot.dom.isElement(node, 'CONTENT')) {
-      // If the element is <content> then just append the contents of the
-      // nodes that have been distributed into it.
-      var contentElem = /** @type {!Object} */ (node);
-      goog.array.forEach(contentElem.getDistributedNodes(), function(node) {
-        bot.dom.appendVisibleTextLinesFromNodeInComposedDom_(
-            node, lines, shown, whitespace, textTransform);
-      });
+      var parentNode = node;
+      while (parentNode.parentNode) {
+        parentNode = parentNode.parentNode;
+      }
+      if (parentNode instanceof ShadowRoot) {
+        // If the element is <content> and we're inside a shadow DOM then just 
+        // append the contents of the nodes that have been distributed into it.
+        var contentElem = /** @type {!Object} */ (node);
+        goog.array.forEach(contentElem.getDistributedNodes(), function(node) {
+          bot.dom.appendVisibleTextLinesFromNodeInComposedDom_(
+              node, lines, shown, whitespace, textTransform);
+        });
+      } else {
+        // if we're not inside a shadow DOM, then we just treat <content>
+        // as an unknown element and use anything inside the tag
+        bot.dom.appendVisibleTextLinesFromElementInComposedDom_(
+          castElem, lines);
+      }
     } else if (bot.dom.isElement(node, 'SHADOW')) {
       // if the element is <shadow> then find the owning shadowRoot
       var parentNode = node;
