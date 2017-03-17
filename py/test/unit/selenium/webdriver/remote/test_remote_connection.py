@@ -77,7 +77,7 @@ def test_remote_connection_adds_connection_headers_from_get_remote_connection_he
         mock_open = mocker.patch('urllib2.OpenerDirector.open')
 
     def assert_header_added(request, timeout):
-        assert request.headers == test_headers  
+        assert request.headers == test_headers
         return MockResponse()
 
     mock_open.side_effect = assert_header_added

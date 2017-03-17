@@ -64,7 +64,6 @@ class Request(url_request.Request):
         return self._method
 
 
-
 class Response(object):
     """
     Represents an HTTP response.
