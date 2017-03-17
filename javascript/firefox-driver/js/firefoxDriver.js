@@ -857,7 +857,8 @@ FirefoxDriver.prototype.setTimeout = function(respond, parameters) {
       break;
 
     default:
-      break;
+      throw new WebDriverError(bot.ErrorCode.INVALID_ARGUMENT,
+          'Unrecognised timeout type: ' + parameters.type);
   }
   respond.send();
 };
