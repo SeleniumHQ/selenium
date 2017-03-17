@@ -257,6 +257,10 @@ const COMMAND_MAP = new Map([
 /** @const {!Map<string, (CommandSpec|CommandTransformer)>} */
 const W3C_COMMAND_MAP = new Map([
   [cmd.Name.GET_ACTIVE_ELEMENT, get('/session/:sessionId/element/active')],
+  [cmd.Name.GET_ALERT_TEXT, get('/session/:sessionId/alert/text')],
+  [cmd.Name.SET_ALERT_TEXT, post('/session/:sessionId/alert/text')],
+  [cmd.Name.ACCEPT_ALERT, post('/session/:sessionId/alert/accept')],
+  [cmd.Name.DISMISS_ALERT, post('/session/:sessionId/alert/dismiss')],
   [cmd.Name.GET_ELEMENT_ATTRIBUTE, (cmd) => {
     return toExecuteAtomCommand(cmd, Atom.GET_ATTRIBUTE, 'id', 'name');
   }],
@@ -265,6 +269,8 @@ const W3C_COMMAND_MAP = new Map([
   [cmd.Name.IS_ELEMENT_DISPLAYED, (cmd) => {
     return toExecuteAtomCommand(cmd, Atom.IS_DISPLAYED, 'id');
   }],
+  [cmd.Name.EXECUTE_SCRIPT, post('/session/:sessionId/execute/sync')],
+  [cmd.Name.EXECUTE_ASYNC_SCRIPT, post('/session/:sessionId/execute/async')],
   [cmd.Name.MAXIMIZE_WINDOW, post('/session/:sessionId/window/maximize')],
   [cmd.Name.GET_WINDOW_POSITION, get('/session/:sessionId/window/position')],
   [cmd.Name.SET_WINDOW_POSITION, post('/session/:sessionId/window/position')],
