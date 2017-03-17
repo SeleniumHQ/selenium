@@ -477,7 +477,7 @@ class RemoteConnection(object):
 
             if parsed_url.username:
                 base64string = base64.b64encode('{0.username}:{0.password}'.format(parsed_url).encode())
-                request.add_header('Authorization', 'Basic {}'.format(base64string).decode())
+                request.add_header('Authorization', 'Basic {}'.format(base64string).encode().decode())
 
             if password_manager:
                 opener = url_request.build_opener(url_request.HTTPRedirectHandler(),
