@@ -18,6 +18,10 @@ where each element comes from.
     Base-level Stuff
   </div>
 </div>
+<div id="divWithNoShadowDOM">
+<content>
+  Text inside a content tag outside any shadow DOM. Should be displayed
+</content>
 
 <template id="parentTemplate">
 <div id="parentDiv">
@@ -38,7 +42,9 @@ where each element comes from.
         As the older child of a nested shadow root, this is the most likely
         to go wrong bit of the page.
         <H4>Older Child Contents</H4>
-        <content></content>
+        <content>
+          Text inside the older child content tag. Should be replaced
+        </content>
     </div>
 </div>
 </template>
@@ -48,7 +54,9 @@ where each element comes from.
         <H3>Younger Child</H3>
         <div style="border-style:dotted;border-color:blue">
             <H4>Younger Child Contents</H4>
-            <content id="youngChildContent" select=".stuffForYoungChild"></content>
+            <content id="youngChildContent" select=".stuffForYoungChild">
+              Text inside the younger content tag. Should be replaced
+            </content>
         </div>
         <div style="border-style:dashed;border-color:blue">
             <H4>Younger Child Shadow</H4>
@@ -121,6 +129,8 @@ function testGetVisibleTextInComposedDom() {
       "* /deep/ #youngerChildDiv"));
     var olderChildDiv = /** @type {!Element} */ (document.querySelector(
       "* /deep/ #olderChildDiv"));
+    var divWithNoShadowDOM = /** @type {!Element} */ (document.querySelector(
+      "#divWithNoShadowDOM"));
     var expectedOlderChildContents = "Older Child\n" +
         "As the older child of a nested shadow root, this is the most " +
         "likely to go wrong bit of the page.\n" +
@@ -137,19 +147,23 @@ function testGetVisibleTextInComposedDom() {
   
     var expectedParentContents = expectedYoungerChildContents;
   
+    var expectedOutsideShadowDomContents = "Text inside a content tag " + 
+        "outside any shadow DOM. Should be displayed";
+  
     var expectedPageContents = "Page for Shadow DOM chromedriver tests\n" + 
         "The page has a shadow root that in turn contains two shadow roots. " +
         "So we can check behaviour with both nested roots and younger/" +
         "older sibling roots. The various sections are highlighted with " +
         "colored borders to make it more obvious where each element comes " +
         "from.\n" +
-        expectedParentContents;
-  
+        expectedParentContents + "\n" + expectedOutsideShadowDomContents;
+
     assertEquals(expectedOlderChildContents, 
         bot.dom.getVisibleText(olderChildDiv));
     assertEquals(expectedYoungerChildContents, 
         bot.dom.getVisibleText(youngerChildDiv));
     assertEquals(expectedParentContents, bot.dom.getVisibleText(parentDiv));
+    assertEquals(expectedOutsideShadowDomContents, bot.dom.getVisibleText(divWithNoShadowDOM));
     assertEquals(expectedPageContents, 
       bot.dom.getVisibleText(/** @type {!Element} */ (document.body)));
   }
