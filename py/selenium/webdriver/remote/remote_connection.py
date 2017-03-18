@@ -162,6 +162,35 @@ class RemoteConnection(object):
         """
         cls._timeout = socket._GLOBAL_DEFAULT_TIMEOUT
 
+    @classmethod
+    def get_remote_connection_headers(cls, parsed_url, keep_alive=False):
+        """
+        Get headers for remote request.
+
+        :Args:
+         - parsed_url - The parsed url
+         - keep_alive (Boolean) - Is this a keep-alive connection (default: False)
+        """
+
+        headers = {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json;charset=UTF-8',
+            'User-Agent': 'Python http auth'
+        }
+
+        if parsed_url.username:
+            base64string = base64.b64encode('{0.username}:{0.password}'.format(parsed_url).encode())
+            headers.update({
+                'Authorization': 'Basic {}'.format(base64string.decode())
+            })
+
+        if keep_alive:
+            headers.update({
+                'Connection': 'keep-alive'
+            })
+
+        return headers
+
     def __init__(self, remote_server_addr, keep_alive=False, resolve_ip=True):
         # Attempt to resolve the hostname and get an IP address.
         self.keep_alive = keep_alive
@@ -429,17 +458,9 @@ class RemoteConnection(object):
         LOGGER.debug('%s %s %s' % (method, url, body))
 
         parsed_url = parse.urlparse(url)
+        headers = self.get_remote_connection_headers(parsed_url, self.keep_alive)
 
         if self.keep_alive:
-            headers = {"Connection": 'keep-alive', method: parsed_url.path,
-                       "User-Agent": "Python http auth",
-                       "Content-type": "application/json;charset=\"UTF-8\"",
-                       "Accept": "application/json"}
-            if parsed_url.username:
-                auth = base64.standard_b64encode(('%s:%s' % (
-                    parsed_url.username,
-                    parsed_url.password)).encode('ascii')).decode('ascii').replace('\n', '')
-                headers["Authorization"] = "Basic %s" % auth
             if body and method != 'POST' and method != 'PUT':
                 body = None
             try:
@@ -472,12 +493,7 @@ class RemoteConnection(object):
             else:
                 request = Request(url, data=body.encode('utf-8'), method=method)
 
-            request.add_header('Accept', 'application/json')
-            request.add_header('Content-Type', 'application/json;charset=UTF-8')
-
-            if parsed_url.username:
-                base64string = base64.b64encode('{0.username}:{0.password}'.format(parsed_url).encode())
-                request.add_header('Authorization', 'Basic {}'.format(base64string).decode())
+            request.headers.update(headers)
 
             if password_manager:
                 opener = url_request.build_opener(url_request.HTTPRedirectHandler(),
