@@ -17,6 +17,13 @@ matrix:
             - google-chrome-stable
     - language: java
       jdk: oraclejdk8
+      env: CHROME=1 TASK="calcdeps //javascript/webdriver:webdriver-chrome:run"
+      addons:
+        apt:
+          packages:
+            - google-chrome-stable
+    - language: java
+      jdk: oraclejdk8
       env: CHROME=1 TASK=test_chrome
       addons:
         apt:
@@ -83,13 +90,6 @@ matrix:
     - language: java
       jdk: oraclejdk8
       env: CHROME=1 TASK="calcdeps //javascript/atoms:atoms-chrome:run"
-      addons:
-        apt:
-          packages:
-            - google-chrome-stable
-    - language: java
-      jdk: oraclejdk8
-      env: CHROME=1 TASK="calcdeps //javascript/webdriver:webdriver-chrome:run"
       addons:
         apt:
           packages:
