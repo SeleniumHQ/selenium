@@ -276,6 +276,8 @@ const W3C_COMMAND_MAP = new Map([
   [cmd.Name.SET_WINDOW_POSITION, post('/session/:sessionId/window/position')],
   [cmd.Name.GET_WINDOW_SIZE, get('/session/:sessionId/window/size')],
   [cmd.Name.SET_WINDOW_SIZE, post('/session/:sessionId/window/size')],
+  [cmd.Name.GET_CURRENT_WINDOW_HANDLE, get('/session/:sessionId/window')],
+  [cmd.Name.GET_WINDOW_HANDLES, get('/session/:sessionId/window/handles')],
 ]);
 
 
