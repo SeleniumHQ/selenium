@@ -17,8 +17,8 @@
 
 package org.openqa.selenium;
 
-import org.openqa.selenium.logging.Logs;
 import org.openqa.selenium.logging.LoggingPreferences;
+import org.openqa.selenium.logging.Logs;
 
 import java.net.URL;
 import java.util.List;

@@ -18,8 +18,9 @@
 #define WEBDRIVER_IE_ELEMENTREPOSITORY_H_
 
 #include <unordered_map>
+
+#include "CustomTypes.h"
 #include "DocumentHost.h"
-#include "Element.h"
 
 namespace webdriver {
 

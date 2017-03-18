@@ -17,29 +17,57 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require File.expand_path("../../spec_helper", __FILE__)
+require File.expand_path('../../spec_helper', __FILE__)
 
 module Selenium
   module WebDriver
     module Remote
-
       describe Bridge do
-        it "raises ArgumentError if passed invalid options" do
-          expect { Bridge.new(:foo => 'bar') }.to raise_error(ArgumentError)
+        it 'raises ArgumentError if passed invalid options' do
+          expect { Bridge.new(foo: 'bar') }.to raise_error(ArgumentError)
         end
 
-        it "raises WebDriverError if uploading non-files" do
-          request_body = JSON.generate(:sessionId => '11123', :value => {})
+        it 'raises WebDriverError if uploading non-files' do
+          request_body = JSON.generate(sessionId: '11123', value: {})
           headers = {'Content-Type' => 'application/json'}
-          stub_request(:post, "http://127.0.0.1:4444/wd/hub/session").to_return(
-            :status => 200, :body => request_body, :headers => headers)
+          stub_request(:post, 'http://127.0.0.1:4444/wd/hub/session').to_return(
+            status: 200, body: request_body, headers: headers
+          )
 
           bridge = Bridge.new
-          expect { bridge.upload("NotAFile")}.to raise_error(Error::WebDriverError)
+          expect { bridge.upload('NotAFile') }.to raise_error(Error::WebDriverError)
+        end
+
+        it 'respects quit_errors' do
+          http_client = WebDriver::Remote::Http::Default.new
+          allow(http_client).to receive(:request).and_return({'sessionId' => true, 'value' => {}})
+
+          bridge = Bridge.new(http_client: http_client)
+          allow(bridge).to receive(:execute).with(:quit).and_raise(IOError)
+
+          expect {bridge.quit}.to_not raise_error
+        end
+
+        context 'when using a deprecated method' do
+          before(:each) do
+            request_body = JSON.generate(sessionId: '11123', value: {})
+            headers = {'Content-Type' => 'application/json'}
+            stub_request(:post, 'http://127.0.0.1:4444/wd/hub/session').to_return(
+                status: 200, body: request_body, headers: headers
+            )
+          end
+
+          it 'warns that #mouse is deprecated' do
+            message = /\[DEPRECATION\] `Driver#mouse` is deprecated with w3c implementation\./
+            expect { Bridge.new.mouse }.to output(message).to_stdout_from_any_process
+          end
+
+          it 'warns that #keyboard is deprecated' do
+            message = /\[DEPRECATION\] `Driver#keyboard` is deprecated with w3c implementation\./
+            expect { Bridge.new.keyboard }.to output(message).to_stdout_from_any_process
+          end
         end
       end
-
     end # Remote
   end # WebDriver
 end # Selenium
-

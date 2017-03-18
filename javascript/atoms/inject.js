@@ -100,59 +100,67 @@ bot.inject.WINDOW_KEY = 'WINDOW';
  * @see https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol
  */
 bot.inject.wrapValue = function(value) {
-  switch (goog.typeOf(value)) {
-    case 'string':
-    case 'number':
-    case 'boolean':
-      return value;
+  var _wrap = function(value, seen) {
+    switch (goog.typeOf(value)) {
+      case 'string':
+      case 'number':
+      case 'boolean':
+        return value;
 
-    case 'function':
-      return value.toString();
+      case 'function':
+        return value.toString();
 
-    case 'array':
-      return goog.array.map(/**@type {IArrayLike}*/ (value),
-          bot.inject.wrapValue);
-
-    case 'object':
-      // Since {*} expands to {Object|boolean|number|string|undefined}, the
-      // JSCompiler complains that it is too broad a type for the remainder of
-      // this block where {!Object} is expected. Downcast to prevent generating
-      // a ton of compiler warnings.
-      value = /**@type {!Object}*/ (value);
-
-      // Sniff out DOM elements. We're using duck-typing instead of an
-      // instanceof check since the instanceof might not always work
-      // (e.g. if the value originated from another Firefox component)
-      if (goog.object.containsKey(value, 'nodeType') &&
-          (value['nodeType'] == goog.dom.NodeType.ELEMENT ||
-           value['nodeType'] == goog.dom.NodeType.DOCUMENT)) {
-        var ret = {};
-        ret[bot.inject.ELEMENT_KEY] =
-            bot.inject.cache.addElement(/**@type {!Element}*/ (value));
-        return ret;
-      }
-
-      // Check if this is a Window
-      if (goog.object.containsKey(value, 'document')) {
-        var ret = {};
-        ret[bot.inject.WINDOW_KEY] =
-            bot.inject.cache.addElement(/**@type{!Window}*/ (value));
-        return ret;
-      }
-
-      if (goog.isArrayLike(value)) {
+      case 'array':
         return goog.array.map(/**@type {IArrayLike}*/ (value),
-            bot.inject.wrapValue);
-      }
+                              function(v) { return _wrap(v, seen); });
 
-      var filtered = goog.object.filter(value, function(val, key) {
-        return goog.isNumber(key) || goog.isString(key);
-      });
-      return goog.object.map(filtered, bot.inject.wrapValue);
+      case 'object':
+        // Since {*} expands to {Object|boolean|number|string|undefined}, the
+        // JSCompiler complains that it is too broad a type for the remainder of
+        // this block where {!Object} is expected. Downcast to prevent generating
+        // a ton of compiler warnings.
+        value = /**@type {!Object}*/ (value);
+        if (seen.indexOf(value) >= 0) {
+          throw new bot.Error(bot.ErrorCode.UNKNOWN_ERROR,
+            'Recursive object cannot be transferred');
+        }
 
-    default:  // goog.typeOf(value) == 'undefined' || 'null'
-      return null;
-  }
+        // Sniff out DOM elements. We're using duck-typing instead of an
+        // instanceof check since the instanceof might not always work
+        // (e.g. if the value originated from another Firefox component)
+        if (goog.object.containsKey(value, 'nodeType') &&
+            (value['nodeType'] == goog.dom.NodeType.ELEMENT ||
+             value['nodeType'] == goog.dom.NodeType.DOCUMENT)) {
+          var ret = {};
+          ret[bot.inject.ELEMENT_KEY] =
+            bot.inject.cache.addElement(/**@type {!Element}*/ (value));
+          return ret;
+        }
+
+        // Check if this is a Window
+        if (goog.object.containsKey(value, 'document')) {
+          var ret = {};
+          ret[bot.inject.WINDOW_KEY] =
+            bot.inject.cache.addElement(/**@type{!Window}*/ (value));
+          return ret;
+        }
+
+        seen.push(value);
+        if (goog.isArrayLike(value)) {
+          return goog.array.map(/**@type {IArrayLike}*/ (value),
+                                function(v) { return _wrap(v, seen); });
+        }
+
+        var filtered = goog.object.filter(value, function(val, key) {
+          return goog.isNumber(key) || goog.isString(key);
+        });
+        return goog.object.map(filtered, function(v) { return _wrap(v, seen); });
+
+      default:  // goog.typeOf(value) == 'undefined' || 'null'
+        return null;
+    }
+  };
+  return _wrap(value, []);
 };
 
 

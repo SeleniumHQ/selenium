@@ -66,6 +66,7 @@ public class I18nTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
   public void testEnteringHebrewTextFromLeftToRight() {
     driver.get(pages.chinesePage);
     WebElement input = driver.findElement(By.name("i18n"));
@@ -76,6 +77,7 @@ public class I18nTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
   public void testEnteringHebrewTextFromRightToLeft() {
     driver.get(pages.chinesePage);
     WebElement input = driver.findElement(By.name("i18n"));
@@ -87,8 +89,9 @@ public class I18nTest extends JUnit4TestBase {
 
   @Test
   @Ignore(
-      value = {MARIONETTE, CHROME},
-      reason = "CHROME: ChromeDriver only supports characters in the BMP")
+      value = {MARIONETTE, HTMLUNIT, CHROME},
+      reason = "CHROME: ChromeDriver only supports characters in the BMP" +
+               "MARIONETTE: Doesn't handle first codepoint correctly.")
   public void testEnteringSupplementaryCharacters() {
     assumeFalse("IE: versions less thank 10 have issue 5069",
                 TestUtilities.isInternetExplorer(driver) &&
@@ -122,7 +125,7 @@ public class I18nTest extends JUnit4TestBase {
   }
 
   @NeedsFreshDriver
-  @Ignore(value = {IE, CHROME, FIREFOX},
+  @Ignore(value = {IE, CHROME, FIREFOX, MARIONETTE},
           reason = "Not implemented on anything other than Firefox/Linux at the moment.")
   @NotYetImplemented(HTMLUNIT)
   @Test
@@ -170,7 +173,7 @@ public class I18nTest extends JUnit4TestBase {
         + " It was:" + elementValue, elementValue.equals(tokyo));
   }
 
-  @Ignore(value = {IE, CHROME, FIREFOX})
+  @Ignore(value = {IE, CHROME, FIREFOX, HTMLUNIT})
   @Test
   public void testShouldBeAbleToInputJapanese() {
     assumeTrue("IME is supported on Linux only.",

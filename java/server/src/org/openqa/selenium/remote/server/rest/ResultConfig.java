@@ -20,13 +20,13 @@ package org.openqa.selenium.remote.server.rest;
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 
+import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.SessionId;
-import org.openqa.selenium.remote.SessionNotFoundException;
 import org.openqa.selenium.remote.UnreachableBrowserException;
 import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.JsonParametersAware;
@@ -152,12 +152,12 @@ public class ResultConfig {
     return response;
   }
 
-  private void throwUpIfSessionTerminated(SessionId sessId) throws SessionNotFoundException {
+  private void throwUpIfSessionTerminated(SessionId sessId) throws NoSuchSessionException {
     if (sessId == null) return;
     Session session = sessions.get(sessId);
     final boolean isTerminated = session == null;
     if (isTerminated) {
-      throw new SessionNotFoundException();
+      throw new NoSuchSessionException();
     }
   }
 
@@ -204,34 +204,19 @@ public class ResultConfig {
   private HandlerFactory getHandlerFactory(Class<? extends RestishHandler<?>> handlerClazz) {
     final Constructor<? extends RestishHandler<?>> sessionAware = getConstructor(handlerClazz, Session.class);
     if (sessionAware != null) {
-      return new HandlerFactory() {
-        @Override
-        public RestishHandler<?> createHandler(SessionId sessionId) throws Exception {
-          return sessionAware.newInstance(sessionId != null ? sessions.get(sessionId) : null);
-        }
-      };
+      return (sessionId) ->
+          sessionAware.newInstance(sessionId != null ? sessions.get(sessionId) : null);
     }
 
     final Constructor<? extends RestishHandler> driverSessions =
         getConstructor(handlerClazz, DriverSessions.class);
     if (driverSessions != null) {
-      return new HandlerFactory() {
-        @Override
-        public RestishHandler<?> createHandler(SessionId sessionId) throws Exception {
-          return driverSessions.newInstance(sessions);
-        }
-      };
+      return (sessionId) -> driverSessions.newInstance(sessions);
     }
 
-
-    final Constructor<? extends RestishHandler> norags = getConstructor(handlerClazz);
-    if (norags != null) {
-      return new HandlerFactory() {
-        @Override
-        public RestishHandler<?> createHandler(SessionId sessionId) throws Exception {
-          return norags.newInstance();
-        }
-      };
+    final Constructor<? extends RestishHandler> noArgs = getConstructor(handlerClazz);
+    if (noArgs != null) {
+      return (sessionId) -> noArgs.newInstance();
     }
 
     throw new IllegalArgumentException("Don't know how to construct " + handlerClazz);

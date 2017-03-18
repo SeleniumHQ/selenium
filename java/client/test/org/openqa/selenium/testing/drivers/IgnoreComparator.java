@@ -21,8 +21,8 @@ package org.openqa.selenium.testing.drivers;
 import com.google.common.collect.Sets;
 
 import org.openqa.selenium.Platform;
-import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.Driver;
+import org.openqa.selenium.testing.Ignore;
 
 import java.util.Set;
 

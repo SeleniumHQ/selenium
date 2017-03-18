@@ -21,8 +21,8 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 
 import com.google.common.base.Function;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.openqa.grid.common.GridRole;
 import org.openqa.grid.e2e.utils.GridTestHelper;
@@ -38,13 +38,13 @@ import org.openqa.selenium.support.ui.Wait;
 
 public class NodeGoingDownAndUpTest {
 
-  private static Hub hub;
-  private static Registry registry;
-  private static SelfRegisteringRemote remote;
-  private static Wait<Object> wait = new FluentWait<Object>("").withTimeout(30, SECONDS);
+  private Hub hub;
+  private Registry registry;
+  private SelfRegisteringRemote remote;
+  private Wait<Object> wait = new FluentWait<Object>("").withTimeout(30, SECONDS);
 
-  @BeforeClass
-  public static void prepare() throws Exception {
+  @Before
+  public void prepare() throws Exception {
     hub = GridTestHelper.getHub();
     registry = hub.getRegistry();
 
@@ -110,8 +110,8 @@ public class NodeGoingDownAndUpTest {
     };
   }
 
-  @AfterClass
-  public static void stop() throws Exception {
+  @After
+  public void stop() throws Exception {
     hub.stop();
     remote.stopRemoteServer();
   }

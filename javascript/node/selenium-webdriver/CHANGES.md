@@ -1,4 +1,172 @@
-## v3.0.0-dev
+## v.next
+
+### Notice
+
+This release requires [geckodriver 0.15.0](https://github.com/mozilla/geckodriver/releases/tag/v0.15.0) or newer.
+
+### API Changes
+
+* Added `Options#getTimeouts()` for retrieving the currently configured session
+  timeouts (i.e. implicit wait). This method will only work with W3C compatible
+  WebDriver implementations.
+* Deprecated the `Timeouts` class in favor of `Options#setTimeouts()`, which
+  supports setting multiple timeouts at once.
+
+### Changes for W3C WebDriver Spec Compliance
+
+* Fix W3C response parsing, which expects response data to always be a JSON
+  object with a `value` key.
+
+
+## v3.3.0
+
+* Added warning log messages when the user creates new managed promises, or
+  schedules unchained tasks. Users may opt in to printing these log messages
+  with
+
+  ```js
+  const {logging} = require('selenium-webdriver');
+  logging.installConsoleHandler();
+  logging.getLogger('promise.ControlFlow').setLevel(logging.Level.WARNING);
+  ```
+* If the `JAVA_HOME` environment variable is set, use it to locate java.exe.
+
+
+## v3.2.0
+
+* Release skipped to stay in sync with the main Selenium project.
+
+
+## v3.1.0
+
+* The `lib` package is once again platform agnostic (excluding `lib/devmode`).
+* Deprecated `promise.when(value, callback, errback)`.
+  Use `promise.fulfilled(value).then(callback, errback)`
+* Changed `promise.fulfilled(value)`, `promise.rejected(reason)` and
+  `promise.defer()` to all use native promises when the promise manager is
+  disabled.
+* Properly handle W3C error responses to new session commands.
+* Updated `selenium-webdriver/testing` to export `describe.only` along with
+  `describe.skip`.
+* Fixed `selenium-webdriver/lib/until.ableToSwitchToFrame`. It was previously
+  dropping arguments and would never work.
+* Added the ability to use Firefox Nightly
+* If Firefox cannot be found in the default location, look for it on the PATH
+* Allow SafariDriver to use Safari Technology Preview.
+* Use the proper wire command for WebElement.getLocation() and
+  WebElement.getSize() for W3C compliant drivers.
+
+
+## v3.0.1
+
+* More API adjustments to align with native Promises
+  - Deprecated `promise.fulfilled(value)`, use `promise.Promise#resolve(value)`
+  - Deprecated `promise.rejected(reason)`, use `promise.Promise#reject(reason)`
+* When a `wait()` condition times out, the returned promise will now be
+  rejected with an `error.TimeoutError` instead of a generic `Error` object.
+* `WebDriver#wait()` will now throw a TypeError if an invalid wait condition is
+  provided.
+* Properly catch unhandled promise rejections with an action sequence (only
+  impacts when the promise manager is disabled).
+
+
+## v3.0.0
+
+* (__NOTICE__) The minimum supported version of Node is now 6.9.0 LTS
+* Removed support for the SafariDriver browser extension. This has been
+  replaced by Apple's safaridriver, which is included wtih Safari 10
+  (available on OS X El Capitan and macOS Sierra).
+
+  To use Safari 9 or older, users will have to use an older version of Selenium.
+
+* geckodriver v0.11.0 or newer is now required for Firefox.
+* Fixed potential reference errors in `selenium-webdriver/testing` when users
+  create a cycle with mocha by running with mocha's `--hook` flag.
+* Fixed `WebDriver.switchTo().activeElement()` to use the correct HTTP method
+  for compatibility with the W3C spec.
+* Update the `selenium-webdriver/firefox` module to use geckodriver's
+  "moz:firefoxOptions" dictionary for Firefox-specific configuration values.
+* Extending the `selenium-webdriver/testing` module to support tests defined
+  using generator functions.
+* The promise manager can be disabled by setting an enviornment variable:
+  `SELENIUM_PROMISE_MANAGER=0`. This is part of a larger plan to remove the
+  promise manager, as documented at
+  <https://github.com/SeleniumHQ/selenium/issues/2969>
+* When communicating with a W3C-compliant remote end, use the atoms library for
+  the `WebElement.getAttribute()` and `WebElement.isDisplayed()` commands. This
+  behavior is consistent with the java, .net, python, and ruby clients.
+
+
+### API Changes
+
+ * Removed `safari.Options#useLegacyDriver()`
+ * Reduced the API on `promise.Thenable` for compatibility with native promises:
+   - Removed `#isPending()`
+   - Removed `#cancel()`
+   - Removed `#finally()`
+ * Changed all subclasses of `webdriver.WebDriver` to overload the static
+   function `WebDriver.createSession()` instead of doing work in the
+   constructor. All constructors now inherit the base class' function signature.
+   Users are still encouraged to use the `Builder` class instead of creating
+   drivers directly.
+ * `Builder#build()` now returns a "thenable" WebDriver instance, allowing users
+   to immediately schedule commands (as before), or issue them through standard
+   promise callbacks. This is the same pattern already employed for WebElements.
+ * Removed `Builder#buildAsync()` as it was redundant with the new semantics of
+   `build()`.
+
+
+
+## v3.0.0-beta-3
+
+* Fixed a bug where the promise manager would silently drop callbacks after
+  recovering from an unhandled promise rejection.
+* Added the `firefox.ServiceBuilder` class, which may be used to customize the
+  geckodriver used for `firefox.Driver` instances.
+* Added support for Safari 10 safaridriver. safaridriver may be disabled
+  via tha API, `safari.Options#useLegacyDriver`, to use the safari
+  extension driver.
+* Updated the `lib/proxy` module to support configuring a SOCKS proxy.
+* For the `promise.ControlFlow`, fire the "uncaughtException" event in a new
+  turn of the JS event loop. As a result of this change, any errors thrown by
+  an event listener will propagate to the global error handler. Previously,
+  this event was fired with in the context of a (native) promise callback,
+  causing errors to be silently suppressed in the promise chain.
+
+### API Changes
+
+* Added `remote.DriverService.Builder` as a base class for configuring
+  DriverService instances that run in a child-process. The
+  `chrome.ServiceBuilder`, `edge.ServiceBuilder`, and `opera.ServiceBuilder`
+  classes now all extend this base class with browser-specific options.
+* For each of the ServiceBuilder clases, renamed `usingPort` and
+  `withEnvironment` to `setPort` and `setEnvironment`, respectively.
+* Renamed `chrome.ServiceBuilder#setUrlBasePath` to `#setPath`
+* Changed the signature of the `firefox.Driver` from `(config, flow, executor)`
+  to `(config, executor, flow)`.
+* Exposed the `Condition` and `WebElementCondition` classes from the top-level
+  `selenium-webdriver` module (these were previously only available from
+  `lib/webdriver`).
+
+
+### Changes for W3C WebDriver Spec Compliance
+
+* Updated command mappings for [getting](https://w3c.github.io/webdriver/webdriver-spec.html#get-window-position)
+  and [setting](https://w3c.github.io/webdriver/webdriver-spec.html#set-window-position)
+  the window position.
+
+
+## v3.0.0-beta-2
+
+### API Changes
+
+* Moved the `builder.Builder` class into the main module (`selenium-webdriver`).
+* Removed the `builder` module.
+* Fix `webdriver.WebDriver#setFileDetector` when driving Chrome or Firefox on a
+  remote machine.
+
+
+## v3.0.0-beta-1
 
 * Allow users to set the agent used for HTTP connections through
    `builder.Builder#usingHttpAgent()`
@@ -9,6 +177,15 @@
 * Internal cleanup replacing uses of managed promises with native promises
 * Removed the mandatory use of Firefox Dev Edition, when using Marionette driver
 * Fixed timeouts' URL
+* Properly send HTTP requests when using a WebDriver server proxy
+* Properly configure proxies when using the geckodriver
+* `http.Executor` now accepts a promised client. The `builder.Builder` class
+  will now use this instead of a `command.DeferredExecutor` when creating
+  WebDriver instances.
+* For Chrome and Firefox, the `builder.Builder` class will always return an
+  instanceof `chrome.Driver` and `firefox.Driver`, respectively, even when
+  configured to use a remote server (from `builder.Builder#usingServer(url)`,
+  `SELENIUM_REMOTE_URL`, etc).
 
 ### API Changes
 
@@ -19,13 +196,18 @@
 * When adding cookies, the desired expiry must be provided as a Date or in
   _seconds_ since epoch. When retrieving cookies, the expiration is always
   returned in seconds.
-*  Renamed `firefox.Options#useMarionette` to `firefox.Options#useGeckoDriver`
+* Renamed `firefox.Options#useMarionette` to `firefox.Options#useGeckoDriver`
 * Removed deprecated modules:
    - `selenium-webdriver/error` (use `selenium-webdriver/lib/error`,\
      or the `error` property exported by `selenium-webdriver`)
+   - `selenium-webdriver/executors` — this was not previously deprecated, but
+     is no longer used.
 * Removed deprecated types:
+   - `command.DeferredExecutor` — this was not previously deprecated, but is no
+     longer used. It can be trivially implemented by clients should it be
+     needed.
    - `error.InvalidSessionIdError` (use `error.NoSuchSessionError`)
-   - `executors.DeferredExecutor` (use `command.DeferredExecutor`)
+   - `executors.DeferredExecutor`
    - `until.Condition` (use `webdriver.Condition`)
    - `until.WebElementCondition` (use `webdriver.WebElementCondition`)
    - `webdriver.UnhandledAlertError` (use `error.UnexpectedAlertOpenError`)

@@ -21,7 +21,6 @@ package com.thoughtworks.selenium;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import com.thoughtworks.selenium.Wait;
 import com.thoughtworks.selenium.Wait.WaitTimedOutException;
 
 import org.junit.Before;

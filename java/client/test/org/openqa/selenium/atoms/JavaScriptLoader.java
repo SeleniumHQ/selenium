@@ -17,16 +17,17 @@
 
 package org.openqa.selenium.atoms;
 
-import com.google.common.base.Charsets;
-import com.google.common.io.Files;
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import com.google.common.io.Resources;
 
 import org.openqa.selenium.Build;
 import org.openqa.selenium.testing.InProject;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 /**
  * Utility class for loading JavaScript resources.
@@ -37,13 +38,13 @@ class JavaScriptLoader {
   static String loadResource(String resourcePath, String resourceTask) throws IOException {
     URL resourceUrl = JavaScriptLoader.class.getResource(resourcePath);
     if (resourceUrl != null) {
-      return Resources.toString(resourceUrl, Charsets.UTF_8);
+      return Resources.toString(resourceUrl, UTF_8);
     }
     new Build().of(resourceTask).go();
 
-    File topDir = InProject.locate("Rakefile").getParentFile();
-    File builtFile = new File(topDir, taskToBuildOutput(resourceTask));
-    return Files.toString(builtFile, Charsets.UTF_8);
+    Path topDir = InProject.locate("Rakefile").getParent();
+    Path builtFile = topDir.resolve(taskToBuildOutput(resourceTask));
+    return new String(Files.readAllBytes(builtFile), UTF_8);
   }
 
   static String taskToBuildOutput(String taskName) {

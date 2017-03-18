@@ -17,22 +17,24 @@
 # specific language governing permissions and limitations
 # under the License.
 
-shared_examples_for "driver that can be started concurrently" do |browser_name|
-  it "is started sequentially" do
-    expect {
-      # start 5 drivers concurrently
-      threads, drivers = [], []
+shared_examples_for 'driver that can be started concurrently' do |browser_name|
+  it 'is started sequentially' do
+    caps_opt = {}
+    if browser_name == :ff_esr
+      caps_opt[:firefox_binary] = ENV['FF_ESR_BINARY']
+      caps_opt[:marionette] = false
+      browser_name = :firefox
+    end
 
-      opt = {}
-      if GlobalTestEnv.remote_server?
-        opt[:url] = GlobalTestEnv.remote_server.webdriver_url
-        opt[:desired_capabilities] = WebDriver::Remote::Capabilities.send(browser_name)
-      end
-      opt[:marionette] = true if browser_name == :marionette
+    expect do
+      # start 5 drivers concurrently
+      threads = []
+      drivers = []
+
 
       5.times do
         threads << Thread.new do
-          drivers << Selenium::WebDriver.for(GlobalTestEnv.driver, opt)
+          drivers << GlobalTestEnv.send(:create_driver)
         end
       end
 
@@ -45,6 +47,6 @@ shared_examples_for "driver that can be started concurrently" do |browser_name|
         driver.title # make any wire call
         driver.quit
       end
-    }.not_to raise_error
+    end.not_to raise_error
   end
 end

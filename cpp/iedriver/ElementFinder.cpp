@@ -14,10 +14,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "ElementFinder.h"
+
+#include "errorcodes.h"
+#include "logging.h"
+#include "json.h"
+
+#include "DocumentHost.h"
+#include "Element.h"
 #include "Generated/atoms.h"
 #include "Generated/sizzle.h"
 #include "IECommandExecutor.h"
-#include "logging.h"
 #include "Script.h"
 
 namespace webdriver {

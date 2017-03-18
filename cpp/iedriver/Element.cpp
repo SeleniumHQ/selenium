@@ -26,12 +26,17 @@
 #pragma warning (disable: 6387)
 
 #include "Element.h"
+
 #include <algorithm>
+
+#include "errorcodes.h"
+#include "logging.h"
+#include "json.h"
+
 #include "Browser.h"
 #include "Generated/atoms.h"
-#include "json.h"
-#include "logging.h"
 #include "Script.h"
+#include "StringUtilities.h"
 
 namespace webdriver {
 
@@ -207,7 +212,7 @@ bool Element::IsEditable() {
   return result;
 }
 
-int Element::GetClickLocation(const ELEMENT_SCROLL_BEHAVIOR scroll_behavior,
+int Element::GetClickLocation(const ElementScrollBehavior scroll_behavior,
                               LocationInfo* element_location,
                               LocationInfo* click_location) {
   LOG(TRACE) << "Entering Element::GetClickLocation";
@@ -301,7 +306,7 @@ int Element::GetCssPropertyValue(const std::string& property_name,
   return status_code;
 }
 
-int Element::GetLocationOnceScrolledIntoView(const ELEMENT_SCROLL_BEHAVIOR scroll,
+int Element::GetLocationOnceScrolledIntoView(const ElementScrollBehavior scroll,
                                              LocationInfo* location,
                                              std::vector<LocationInfo>* frame_locations) {
   LOG(TRACE) << "Entering Element::GetLocationOnceScrolledIntoView";

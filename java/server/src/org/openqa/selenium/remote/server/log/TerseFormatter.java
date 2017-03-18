@@ -58,16 +58,13 @@ public class TerseFormatter extends Formatter {
    * Buffer for formatting messages. We will reuse this buffer in order to reduce memory
    * allocations.
    */
-  private final StringBuffer buffer;
+  private final StringBuilder buffer;
   private SimpleDateFormat timestampFormatter;
 
-  private boolean longForm;
-
-  public TerseFormatter(boolean longForm) {
-    buffer = new StringBuffer();
+  public TerseFormatter() {
+    buffer = new StringBuilder();
     buffer.append(PREFIX);
     timestampFormatter = new SimpleDateFormat("HH:mm:ss.SSS");
-    this.longForm = longForm;
   }
 
   /**
@@ -82,12 +79,6 @@ public class TerseFormatter extends Formatter {
     buffer.append(timestampFormatter.format(new Date(record.getMillis())));
     buffer.append(' ');
     buffer.append(levelNumberToCommonsLevelName(record.getLevel()));
-    if (longForm) {
-      buffer.append(" [");
-      buffer.append(record.getThreadID());
-      buffer.append("] ");
-      buffer.append(record.getLoggerName());
-    }
     buffer.append(SUFFIX);
     buffer.append(formatMessage(record)).append(lineSeparator);
     if (record.getThrown() != null) {

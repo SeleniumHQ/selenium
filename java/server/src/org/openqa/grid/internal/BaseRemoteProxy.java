@@ -18,8 +18,6 @@
 package org.openqa.grid.internal;
 
 import static org.openqa.grid.common.RegistrationRequest.MAX_INSTANCES;
-import static org.openqa.grid.common.RegistrationRequest.PATH;
-import static org.openqa.grid.common.RegistrationRequest.SELENIUM_PROTOCOL;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -104,14 +102,14 @@ public class BaseRemoteProxy implements RemoteProxy {
     this.request = request;
     this.registry = registry;
     this.config = new GridNodeConfiguration();
-    this.config.merge(request.getConfiguration());
-    // the registry is the 'hub' configuration, which takes precedence.
-    // merging last overrides any other values.
+    // the registry is the 'hub' configuration, which is used as a seed.
     this.config.merge(registry.getConfiguration());
+    // the proxy values must override any that the hub specify where an overlap occurs.
+    // merging last causes the values to be overridden.
+    this.config.merge(request.getConfiguration());
+    // host and port are merge() protected values -- overrule this behavior
     this.config.host = request.getConfiguration().host;
     this.config.port = request.getConfiguration().port;
-    // custom configurations from the remote need to 'override' the hub
-    this.config.custom.putAll(request.getConfiguration().custom);
 
     String url = config.getRemoteHost();
     String id = config.id;
@@ -138,14 +136,13 @@ public class BaseRemoteProxy implements RemoteProxy {
       this.id = remoteHost.toExternalForm();
     }
 
-    List<DesiredCapabilities> capabilities = request.getCapabilities();
+    List<DesiredCapabilities> capabilities = request.getConfiguration().capabilities;
 
     List<TestSlot> slots = new ArrayList<>();
     for (DesiredCapabilities capability : capabilities) {
       Object maxInstance = capability.getCapability(MAX_INSTANCES);
 
-      SeleniumProtocol protocol = getProtocol(capability);
-      String path = getPath(capability);
+      SeleniumProtocol protocol = SeleniumProtocol.fromCapabilitiesMap(capability.asMap());
 
       if (maxInstance == null) {
         log.warning("Max instance not specified. Using default = 1 instance");
@@ -158,43 +155,11 @@ public class BaseRemoteProxy implements RemoteProxy {
         for (String k : capability.asMap().keySet()) {
           c.put(k, capability.getCapability(k));
         }
-        slots.add(new TestSlot(this, protocol, path, c));
+        slots.add(createTestSlot(protocol, c));
       }
     }
 
     this.testSlots = Collections.unmodifiableList(slots);
-  }
-
-  private SeleniumProtocol getProtocol(DesiredCapabilities capability) {
-    String type = (String) capability.getCapability(SELENIUM_PROTOCOL);
-
-    SeleniumProtocol protocol;
-    if (type == null) {
-      protocol = SeleniumProtocol.WebDriver;
-    } else {
-      try {
-        protocol = SeleniumProtocol.valueOf(type);
-      } catch (IllegalArgumentException e) {
-        throw new GridException(
-            type + " isn't a valid protocol type for grid. See SeleniumProtocol enum.", e);
-      }
-    }
-    return protocol;
-  }
-
-  private String getPath(DesiredCapabilities capability) {
-    String type = (String) capability.getCapability(PATH);
-    if (type == null) {
-      switch (getProtocol(capability)) {
-        case Selenium:
-          return "/selenium-server/driver";
-        case WebDriver:
-          return "/wd/hub";
-        default:
-          throw new GridException("Protocol not supported.");
-      }
-    }
-    return type;
   }
 
   public void setupTimeoutListener() {
@@ -270,7 +235,7 @@ public class BaseRemoteProxy implements RemoteProxy {
     }
 
     void cleanUpAllSlots() {
-      for (TestSlot slot : testSlots) {
+      for (TestSlot slot : getTestSlots()) {
         try {
           cleanUpSlot(slot);
         } catch (Throwable t) {
@@ -342,7 +307,7 @@ public class BaseRemoteProxy implements RemoteProxy {
       return null;
     }
     // any slot left for the given app ?
-    for (TestSlot testslot : testSlots) {
+    for (TestSlot testslot : getTestSlots()) {
       TestSession session = testslot.getNewSession(requestedCapability);
 
       if (session != null) {
@@ -355,7 +320,7 @@ public class BaseRemoteProxy implements RemoteProxy {
   public int getTotalUsed() {
     int totalUsed = 0;
 
-    for (TestSlot slot : testSlots) {
+    for (TestSlot slot : getTestSlots()) {
       if (slot.getSession() != null) {
         totalUsed++;
       }
@@ -365,7 +330,7 @@ public class BaseRemoteProxy implements RemoteProxy {
   }
 
   public boolean hasCapability(Map<String, Object> requestedCapability) {
-    for (TestSlot slot : testSlots) {
+    for (TestSlot slot : getTestSlots()) {
       if (slot.matches(requestedCapability)) {
         return true;
       }
@@ -391,7 +356,7 @@ public class BaseRemoteProxy implements RemoteProxy {
   public static <T extends RemoteProxy> T getNewInstance(
       RegistrationRequest request, Registry registry) {
     try {
-      String proxyClass = request.getRemoteProxyClass();
+      String proxyClass = request.getConfiguration().proxy;
       if (proxyClass == null) {
         log.fine("No proxy class. Using default");
         proxyClass = BaseRemoteProxy.class.getCanonicalName();
@@ -483,7 +448,7 @@ public class BaseRemoteProxy implements RemoteProxy {
     String url = getRemoteHost().toExternalForm() + "/wd/hub/status";
     BasicHttpRequest r = new BasicHttpRequest("GET", url);
     HttpClient client = getHttpClientFactory().getGridHttpClient(config.nodeStatusCheckTimeout, config.nodeStatusCheckTimeout);
-    HttpHost host = new HttpHost(getRemoteHost().getHost(), getRemoteHost().getPort());
+    HttpHost host = new HttpHost(getRemoteHost().getHost(), getRemoteHost().getPort(), getRemoteHost().getProtocol());
     HttpResponse response;
     String existingName = Thread.currentThread().getName();
     HttpEntity entity = null;
@@ -544,7 +509,7 @@ public class BaseRemoteProxy implements RemoteProxy {
 
   public long getLastSessionStart() {
     long last = -1;
-    for (TestSlot slot : testSlots) {
+    for (TestSlot slot : getTestSlots()) {
       last = Math.max(last, slot.getLastSessionStart());
     }
     return last;

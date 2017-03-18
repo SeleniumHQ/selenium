@@ -22,11 +22,10 @@ require_relative '../spec_helper'
 module Selenium
   module WebDriver
     module Edge
-
-      compliant_on :browser => :edge do
+      compliant_on browser: :edge do
         describe Driver do
-          not_compliant_on :browser => :edge do
-            it_behaves_like "driver that can be started concurrently", :edge
+          not_compliant_on browser: :edge do
+            it_behaves_like 'driver that can be started concurrently', :edge
           end
         end
       end

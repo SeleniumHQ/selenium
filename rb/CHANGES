@@ -1,9 +1,184 @@
-3.0 (Unreleased)
+3.3.0 (2017-03-07)
+===================
+
+Firefox:
+  * geckodriver v0.15 or later is required
+
+W3C:
+  * Support for command response data to be wrapped in a 'value' key
+  * Support for updated timeout formats
+
+3.2.2 (2017-03-01)
+===================
 
 Ruby:
+  * Fix bug for supporting Logger output on Ruby versions < 2.3
+  * Add more logging and adjust output levels
+
+Remote:
+  * Support for creating Remote session with browser name and url parameters
+
+3.2.1 (2017-02-24)
+===================
+
+Ruby:
+  * Fix bug for supporting Logger on Ruby versions < 2.3
+
+3.2.0 (2017-02-22)
+===================
+
+Ruby:
+  * Implement new Logger class
+  * Fix issue with chromedriver process leader incompatibility on Win7 (issue 3512)
+
+3.1.0 (2017-02-14)
+===================
+
+Firefox:
+  * implement W3C actions endpoint
+
+3.0.8 (2017-02-08)
+===================
+
+Firefox:
+  * Fix signature of element returned from #active_element
+
+3.0.7 (2017-02-06)
+===================
+
+Firefox:
+  * Fix signature of element arrays returned from #find_elements (issue 3471)
+
+3.0.6 (2017-02-05)
+===================
+
+Firefox:
+  * Implement W3C window position
+  * Update implementation for W3C send text to alert
+  * Implement timeout settings
+  * Remove default capabilities (thanks lmtierney)
+  * Fix signature of elements returned from #execute_script (thanks Thomas Walpole)
+
+3.0.5 (2016-12-27)
+===================
+
+Ruby:
+  * Support for Ruby 2.4.0 (Thanks jamespdo)
+
+3.0.4 (2016-12-21)
+===================
+
+Firefox:
+  * Implement profile support via geckodriver (#2933 thanks lmtierney)
+
+Ruby:
+  * Fix bug preventing use of Curb client (#2951 thanks clarkenciel)
+  * Support Net::HTTP::Persistent version 3 (#3219 thanks Pete Johns)
+  * Allow Net::HTTP::Default to set open_timout and read_timeout independently (#3264 thanks richseviora)
+  * Change default for Net::HTTP::Default#open_timeout to facilitate debuggers  (#3264 thanks richseviora)
+
+3.0.3 (2016-11-26)
+===================
+
+Ruby:
+  * Allow drivers to be executed from batch files on Windows
+
+3.0.2 (2016-11-25)
+===================
+
+Ruby:
+  * Implement #driver_path as parameter when initializing a driver (thanks lmtierney)
+  * Improve Ruby syntax in driver commands (thanks joe_schulte)
+  * Improve performance when shutting down drivers (thanks lmtierney)
+  * Fix bug for finding open ports on Windows (thanks kou1okada)
+  * Fix bug in auto detection of drivers which allowed selection of non-executable binaries
+
+W3C:
+  * Implement #cookie_named and #delete_all_cookies methods (thanks lmtierney) 
+  * Implement element #property method (thanks lmtierney) 
+
+Chrome:
+  * Fix bug in switches (thanks danvine) 
+
+3.0.1 (2016-11-06)
+===================
+
+Ruby:
+  * Always send JSON Wire Protocol commands to server instead of W3C commands
+
+3.0.0 (2016-10-13)
+===================
+
+Firefox:
+  * Update :firefox_options support for geckodriver 0.11
+
+3.0.0.beta4 (2016-09-29)
+===================
+
+Ruby:
+  * Remove support for deprecated driver options
+  * Add support for latest driver options
+  * Add support for :port parameter for launching driver
+  * Add support for :service_args parameter for driver command line switches
+  * Improve reliability by increasing service shutdown timeout (#2815; thanks John Barbuto ) 
+
+Firefox:
+  * Add support for :firefox_options in geckodriver
+
+Safari:
+  * Remove support for legacy Safari driver (use Apple's driver built in to Safari 10+)
+
+Chrome:
+  * Set chromedriver to not log by default
+
+3.0.0.beta3.1 (2016-09-03)
+===================
+
+Firefox:
+  * Fixed bug - legacy firefox extension included in gem
+
+3.0.0.beta3 (2016-09-01)
+===================
+
+Firefox:
+  * Implemented w3c getAttribute with javascript atom
+
+3.0.0.beta2.1 (2016-08-03)
+===================
+
+Ruby:
+  * Fixed bug in collections
+
+3.0.0.beta2 (2016-08-02)
+===================
+
+Firefox:
+  * Fixed bug with form submission
+  * Improved w3c element handling
+
+3.0.0.beta1 (2016-07-28)
+===================
+
+Ruby:
+  * Remove support for RC client
+  * Remove support for Ruby < 2.0
+  * Update code to support designated style guidelines
   * Chrome/GeckoDriver/PhantomJS/IE/Edge drivers are refactored to use standard
     service class (issue 1797)
   * Option `:timeout` was removed from IE server (issue 1797)
+
+Chrome:
+  * Remove override of default chromedriver behavior for chrome.detach (issue 2418)
+
+Firefox:
+  * Rename wires to geckodriver
+  * Change default usage from FirefoxDriver to geckodriver
+
+Safari:
+  * Initial support for Apple's Safari Driver in Sierra (issue #2475)
+
+Android and iPhone:
+  * Remove support for deprecated classes (Issue #2476)
 
 2.53.0 (2016-03-15)
 ===================

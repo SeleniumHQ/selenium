@@ -36,21 +36,19 @@ import org.seleniumhq.jetty9.server.SslConnectionFactory;
 import org.seleniumhq.jetty9.server.handler.AllowSymLinkAliasChecker;
 import org.seleniumhq.jetty9.server.handler.ContextHandler.ApproveAliases;
 import org.seleniumhq.jetty9.server.handler.ContextHandlerCollection;
+import org.seleniumhq.jetty9.server.handler.HandlerList;
 import org.seleniumhq.jetty9.server.handler.ResourceHandler;
 import org.seleniumhq.jetty9.servlet.ServletContextHandler;
 import org.seleniumhq.jetty9.servlet.ServletHolder;
-import org.seleniumhq.jetty9.util.resource.Resource;
 import org.seleniumhq.jetty9.util.ssl.SslContextFactory;
 
-import java.io.File;
-import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.EnumSet;
 
 import javax.servlet.DispatcherType;
 import javax.servlet.Filter;
 import javax.servlet.Servlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 public class JettyAppServer implements AppServer {
 
@@ -186,14 +184,14 @@ public class JettyAppServer implements AppServer {
     http.setPort(port);
     http.setIdleTimeout(500000);
 
-    File keystore = getKeyStore();
-    if (!keystore.exists()) {
+    Path keystore = getKeyStore();
+    if (!Files.exists(keystore)) {
       throw new RuntimeException(
-        "Cannot find keystore for SSL cert: " + keystore.getAbsolutePath());
+        "Cannot find keystore for SSL cert: " + keystore.toAbsolutePath());
     }
 
     SslContextFactory sslContextFactory = new SslContextFactory();
-    sslContextFactory.setKeyStorePath(keystore.getAbsolutePath());
+    sslContextFactory.setKeyStorePath(keystore.toAbsolutePath().toString());
     sslContextFactory.setKeyStorePassword("password");
     sslContextFactory.setKeyManagerPassword("password");
 
@@ -216,7 +214,7 @@ public class JettyAppServer implements AppServer {
     }
   }
 
-  protected File getKeyStore() {
+  protected Path getKeyStore() {
     return InProject.locate("java/client/test/org/openqa/selenium/environment/webserver/keystore");
   }
 
@@ -258,30 +256,24 @@ public class JettyAppServer implements AppServer {
     context.addFilter(filter, path, EnumSet.of(dispatches));
   }
 
-  private static class ResourceHandler2 extends ResourceHandler {
-    @Override
-    protected void doDirectory(HttpServletRequest request, HttpServletResponse response, Resource resource) throws IOException {
-      String listing = resource.getListHTML(request.getRequestURI(), request.getPathInfo() != null && request.getPathInfo().lastIndexOf("/") > 0);
-      response.setContentType("text/html; charset=UTF-8");
-      response.getWriter().println(listing);
-    }
-
-  }
-
-  protected ServletContextHandler addResourceHandler(String contextPath, File resourceBase) {
+  protected ServletContextHandler addResourceHandler(String contextPath, Path resourceBase) {
     ServletContextHandler context = new ServletContextHandler();
 
-    ResourceHandler staticResource = new ResourceHandler2();
+    ResourceHandler staticResource = new ResourceHandler();
     staticResource.setDirectoriesListed(true);
     staticResource.setWelcomeFiles(new String[] { "index.html" });
-    staticResource.setResourceBase(resourceBase.getAbsolutePath());
+    staticResource.setResourceBase(resourceBase.toAbsolutePath().toString());
     MimeTypes mimeTypes = new MimeTypes();
     mimeTypes.addMimeMapping("appcache", "text/cache-manifest");
     staticResource.setMimeTypes(mimeTypes);
 
     context.setContextPath(contextPath);
-    context.setHandler(staticResource);
     context.setAliasChecks(ImmutableList.of(new ApproveAliases(), new AllowSymLinkAliasChecker()));
+
+    HandlerList allHandlers = new HandlerList();
+    allHandlers.addHandler(staticResource);
+    allHandlers.addHandler(context.getHandler());
+    context.setHandler(allHandlers);
 
     handlers.addHandler(context);
 

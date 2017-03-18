@@ -24,27 +24,47 @@ module Selenium
   module WebDriver
     module Remote
       module Http
-
         # @api private
         class Default < Common
           attr_accessor :proxy
+
+          attr_accessor :open_timeout
+          attr_accessor :read_timeout
+
+          # Initializes object.
+          # Warning: Setting {#open_timeout} to non-nil values will cause a separate thread to spawn.
+          # Debuggers that freeze the process will not be able to evaluate any operations if that happens.
+          # @param [Numeric] open_timeout - Open timeout to apply to HTTP client.
+          # @param [Numeric] read_timeout - Read timeout (seconds) to apply to HTTP client.
+          def initialize(open_timeout: nil, read_timeout: nil)
+            @open_timeout = open_timeout
+            @read_timeout = read_timeout
+          end
+
+          # Maintaining backward compatibility.
+          # @param [Numeric] value - Timeout in seconds to apply to both open timeout and read timeouts.
+          # @deprecated Please set the specific desired timeout {#read_timeout} or {#open_timeout} directly.
+          def timeout=(value)
+            WebDriver.logger.warn 'Selenium::WebDriver::Remote::Http::Default#timeout= is deprecated. Use #read_timeout= or #open_timeout= instead'
+            self.open_timeout = value
+            self.read_timeout = value
+          end
 
           private
 
           def http
             @http ||= (
-              http = new_http_client
-              if server_url.scheme == "https"
-                http.use_ssl = true
-                http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-              end
+            http = new_http_client
+            if server_url.scheme == 'https'
+              http.use_ssl = true
+              http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+            end
 
-              if @timeout
-                http.open_timeout = @timeout
-                http.read_timeout = @timeout
-              end
+            # Defaulting open_timeout to nil to be consistent with Ruby 2.2 and earlier.
+            http.open_timeout = self.open_timeout
+            http.read_timeout = self.read_timeout if self.read_timeout
 
-              http
+            http
             )
           end
 
@@ -76,15 +96,12 @@ module Selenium
               retry
 
             rescue Errno::ECONNREFUSED => ex
-              if use_proxy?
-                raise ex.class, "using proxy: #{proxy.http}"
-              else
-                raise
-              end
+              raise ex.class, "using proxy: #{proxy.http}" if use_proxy?
+              raise
             end
 
-            if response.kind_of? Net::HTTPRedirection
-              raise Error::WebDriverError, "too many redirects" if redirects >= MAX_REDIRECTS
+            if response.is_a? Net::HTTPRedirection
+              raise Error::WebDriverError, 'too many redirects' if redirects >= MAX_REDIRECTS
               request(:get, URI.parse(response['Location']), DEFAULT_HEADERS.dup, nil, redirects + 1)
             else
               create_response response.code, response.body, response.content_type
@@ -109,7 +126,8 @@ module Selenium
 
           def new_http_client
             if use_proxy?
-              unless proxy.respond_to?(:http) && url = @proxy.http
+              url = @proxy.http
+              unless proxy.respond_to?(:http) && url
                 raise Error::WebDriverError, "expected HTTP proxy, got #{@proxy.inspect}"
               end
 
@@ -124,13 +142,13 @@ module Selenium
 
           def proxy
             @proxy ||= (
-              proxy = ENV['http_proxy'] || ENV['HTTP_PROXY']
-              no_proxy = ENV['no_proxy'] || ENV['NO_PROXY']
+            proxy = ENV['http_proxy'] || ENV['HTTP_PROXY']
+            no_proxy = ENV['no_proxy'] || ENV['NO_PROXY']
 
-              if proxy
-                proxy = "http://#{proxy}" unless proxy.start_with?("http://")
-                Proxy.new(:http => proxy, :no_proxy => no_proxy)
-              end
+            if proxy
+              proxy = "http://#{proxy}" unless proxy.start_with?('http://')
+              Proxy.new(http: proxy, no_proxy: no_proxy)
+            end
             )
           end
 
@@ -138,24 +156,22 @@ module Selenium
             return false if proxy.nil?
 
             if proxy.no_proxy
-              ignored = proxy.no_proxy.split(",").any? do |host|
-                host == "*" ||
-                host == server_url.host || (
-                  begin
-                    IPAddr.new(host).include?(server_url.host)
-                  rescue ArgumentError
-                    false
-                  end
-                )
-
+              ignored = proxy.no_proxy.split(',').any? do |host|
+                host == '*' ||
+                  host == server_url.host || (
+                begin
+                  IPAddr.new(host).include?(server_url.host)
+                rescue ArgumentError
+                  false
+                end
+                  )
               end
 
-              not ignored
+              !ignored
             else
               true
             end
           end
-
         end # Default
       end # Http
     end # Remote

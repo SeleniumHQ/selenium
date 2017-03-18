@@ -182,7 +182,7 @@ public class HttpCommandProcessor implements CommandProcessor {
         if (responsecode == HttpURLConnection.HTTP_MOVED_PERM) {
           pathToServlet = uc.getHeaderField("Location");
         } else if (responsecode != HttpURLConnection.HTTP_OK) {
-          throwAssertionFailureExceptionOrError(uc.getResponseMessage());
+          throwAssertionFailureExceptionOrError(uc.getResponseMessage() + " URL: " + result);
         } else {
           rdr = getInputStreamReader(uc);
           responseString = stringContentsOfInputStream(rdr);

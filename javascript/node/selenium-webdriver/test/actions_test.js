@@ -26,27 +26,26 @@ var Browser = require('..').Browser,
 
 test.suite(function(env) {
   var driver;
-  test.beforeEach(function() { driver = env.builder().build(); });
-  test.afterEach(function() { driver.quit(); });
+  test.beforeEach(function*() { driver = yield env.builder().build(); });
+  test.afterEach(function() { return driver.quit(); });
 
-  test.ignore(env.browsers(Browser.PHANTOM_JS, Browser.SAFARI)).
+  test.ignore(
+      env.browsers(Browser.FIREFOX, Browser.PHANTOM_JS, Browser.SAFARI)).
   describe('WebDriver.actions()', function() {
 
-    test.it('can move to and click element in an iframe', function() {
-      driver.get(fileServer.whereIs('click_tests/click_in_iframe.html'));
+    test.it('can move to and click element in an iframe', function*() {
+      yield driver.get(fileServer.whereIs('click_tests/click_in_iframe.html'));
 
-      driver.wait(until.elementLocated(By.id('ifr')), 5000)
-          .then(function(frame) {
-            driver.switchTo().frame(frame);
-          });
+      yield driver.wait(until.elementLocated(By.id('ifr')), 5000)
+          .then(frame => driver.switchTo().frame(frame));
 
-      var link = driver.findElement(By.id('link'));
-      driver.actions()
+      let link = yield driver.findElement(By.id('link'));
+      yield driver.actions()
           .mouseMove(link)
           .click()
           .perform();
 
-      driver.wait(until.titleIs('Submitted Successfully!'), 5000);
+      return driver.wait(until.titleIs('Submitted Successfully!'), 5000);
     });
 
   });

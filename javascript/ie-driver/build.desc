@@ -17,16 +17,6 @@ js_fragment(name = "is_in_parent_overflow",
   function = "webdriver.ie.isInParentOverflow",
   deps = [ ":deps" ])
 
-js_test(name = "test",
-  srcs = [ "test/*_test.html" ],
-  deps = [
-    ":deps",
-    "//java/client/test/org/openqa/selenium/javascript",
-    "//java/server/test/org/openqa/selenium:server-with-tests",
-  ],
-  browsers = [ "ie" ])
-
-
 js_fragment_header(name = "atoms",
   deps = [
     "//javascript/atoms/fragments:click:ie",

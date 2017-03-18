@@ -17,37 +17,6 @@
 
 package org.openqa.selenium.remote;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonSyntaxException;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-import org.openqa.selenium.Cookie;
-import org.openqa.selenium.Platform;
-import org.openqa.selenium.Proxy;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.logging.LogEntries;
-import org.openqa.selenium.logging.LogEntry;
-import org.openqa.selenium.logging.LogType;
-import org.openqa.selenium.logging.LoggingPreferences;
-
-import java.awt.*;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
@@ -56,6 +25,41 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSortedSet;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSyntaxException;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
+import org.openqa.selenium.Cookie;
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.Proxy;
+import org.openqa.selenium.UnhandledAlertException;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.logging.LogEntries;
+import org.openqa.selenium.logging.LogEntry;
+import org.openqa.selenium.logging.LogType;
+import org.openqa.selenium.logging.LoggingPreferences;
+
+import java.awt.*;
+import java.io.StringReader;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 
 
 @RunWith(JUnit4.class)
@@ -232,6 +236,39 @@ public class BeanToJsonConverterTest {
   }
 
   @Test
+  public void toJsonMethodCanConvertibleReturnedMap() {
+    class ToJsonReturnsMap {
+      public Map<String, Object> toJson() {
+        return ImmutableMap.of("cheese", "peas");
+      }
+    }
+
+    String json = new BeanToJsonConverter().convert(new ToJsonReturnsMap());
+    JsonObject converted = new JsonParser().parse(json).getAsJsonObject();
+
+    assertEquals(1, converted.entrySet().size());
+    assertEquals("peas", converted.get("cheese").getAsString());
+  }
+
+  @Test
+  public void toJsonMethodCanConvertReturnedCollection() {
+    class ToJsonReturnsCollection {
+      public Set<String> toJson() {
+        return ImmutableSortedSet.of("cheese", "peas");
+      }
+    }
+
+    String json = new BeanToJsonConverter().convert(new ToJsonReturnsCollection());
+    JsonArray converted = new JsonParser().parse(json).getAsJsonArray();
+
+    assertEquals(2, converted.size());
+    JsonArray expected = new JsonArray();
+    expected.add(new JsonPrimitive("cheese"));
+    expected.add(new JsonPrimitive("peas"));
+    assertEquals(expected, converted);
+  }
+
+  @Test
   public void testShouldCallAsMapMethodIfPresent() {
     String json = new BeanToJsonConverter().convert(new Mappable1("a key", "a value"));
     assertEquals("{\"a key\":\"a value\"}", json);
@@ -241,18 +278,6 @@ public class BeanToJsonConverterTest {
   public void testShouldCallToMapMethodIfPresent() {
     String json = new BeanToJsonConverter().convert(new Mappable2("a key", "a value"));
     assertEquals("{\"a key\":\"a value\"}", json);
-  }
-
-  @Test
-  public void testShouldCallAsListMethodIfPresent() {
-    String json = new BeanToJsonConverter().convert(new Listable1("item1", "item2"));
-    assertEquals("[\"item1\",\"item2\"]", json);
-  }
-
-  @Test
-  public void testShouldCallToListMethodIfPresent() {
-    String json = new BeanToJsonConverter().convert(new Listable2("item1", "item2"));
-    assertEquals("[\"item1\",\"item2\"]", json);
   }
 
   @Test
@@ -326,6 +351,16 @@ public class BeanToJsonConverterTest {
     assertTrue(raw, converted.has("stackTrace"));
     verifyStackTraceInJson(raw, stackTrace);
   }
+
+  @Test
+  public void testShouldConvertUnhandledAlertException() {
+    RuntimeException clientError = new UnhandledAlertException("unhandled alert", "cheese!");
+    Map<?, ?> obj = new Gson()
+        .fromJson(new StringReader(new BeanToJsonConverter().convert(clientError)), Map.class);
+    assertTrue(obj.containsKey("alert"));
+    assertEquals(ImmutableMap.of("text", "cheese!"), obj.get("alert"));
+  }
+
 
   @Test
   public void testShouldConvertDatesToMillisecondsInUtcTime() {
@@ -575,29 +610,4 @@ public class BeanToJsonConverterTest {
       return ImmutableMap.of(key, value);
     }
   }
-
-  public class Listable1 {
-    private List<String> items;
-
-    public Listable1(String... items) {
-      this.items = ImmutableList.copyOf(items);
-    }
-
-    public List<String> asList() {
-      return items;
-    }
-  }
-
-  public class Listable2 {
-    private List<String> items;
-
-    public Listable2(String... items) {
-      this.items = ImmutableList.copyOf(items);
-    }
-
-    public List<String> toList() {
-      return items;
-    }
-  }
-
 }

@@ -23,6 +23,7 @@ goog.provide('bot.dom');
 
 goog.require('bot');
 goog.require('bot.color');
+goog.require('bot.dom.core');
 goog.require('bot.locators.xpath');
 goog.require('bot.userAgent');
 goog.require('goog.array');
@@ -66,18 +67,9 @@ bot.dom.getActiveElement = function(nodeOrWindow) {
 
 
 /**
- * Returns whether the given node is an element and, optionally, whether it has
- * the given tag name. If the tag name is not provided, returns true if the node
- * is an element, regardless of the tag name.h
- *
- * @param {Node} node The node to test.
- * @param {string=} opt_tagName Tag name to test the node for.
- * @return {boolean} Whether the node is an element with the given tag name.
+ * @const
  */
-bot.dom.isElement = function(node, opt_tagName) {
-  return !!node && node.nodeType == goog.dom.NodeType.ELEMENT &&
-      (!opt_tagName || node.tagName.toUpperCase() == opt_tagName);
-};
+bot.dom.isElement = bot.dom.core.isElement;
 
 
 /**
@@ -113,45 +105,15 @@ bot.dom.hasPointerEventsDisabled_ = function(element) {
 
 
 /**
- * Returns whether the element can be checked or selected.
- *
- * @param {!Element} element The element to check.
- * @return {boolean} Whether the element could be checked or selected.
+ * @const
  */
-bot.dom.isSelectable = function(element) {
-  if (bot.dom.isElement(element, goog.dom.TagName.OPTION)) {
-    return true;
-  }
-
-  if (bot.dom.isElement(element, goog.dom.TagName.INPUT)) {
-    var type = element.type.toLowerCase();
-    return type == 'checkbox' || type == 'radio';
-  }
-
-  return false;
-};
+bot.dom.isSelectable = bot.dom.core.isSelectable;
 
 
 /**
- * Returns whether the element is checked or selected.
- *
- * @param {!Element} element The element to check.
- * @return {boolean} Whether the element is checked or selected.
+ * @const
  */
-bot.dom.isSelected = function(element) {
-  if (!bot.dom.isSelectable(element)) {
-    throw new bot.Error(bot.ErrorCode.ELEMENT_NOT_SELECTABLE,
-        'Element is not selectable');
-  }
-
-  var propertyName = 'selected';
-  var type = element.type && element.type.toLowerCase();
-  if ('checkbox' == type || 'radio' == type) {
-    propertyName = 'checked';
-  }
-
-  return !!bot.dom.getProperty(element, propertyName);
-};
+bot.dom.isSelected = bot.dom.core.isSelected;
 
 
 /**
@@ -173,136 +135,32 @@ bot.dom.FOCUSABLE_FORM_FIELDS_ = [
 
 /**
  * Returns whether a node is a focusable element.  An element may receive focus
- * if it is a form field or has a positive tabindex.
+ * if it is a form field, has a non-negative tabindex, or is editable.
  * @param {!Element} element The node to test.
  * @return {boolean} Whether the node is focusable.
  */
 bot.dom.isFocusable = function(element) {
-  return goog.array.some(bot.dom.FOCUSABLE_FORM_FIELDS_, function(tagName) {
+  return goog.array.some(bot.dom.FOCUSABLE_FORM_FIELDS_, tagNameMatches) ||
+      (bot.dom.getAttribute(element, 'tabindex') != null &&
+          Number(bot.dom.getProperty(element, 'tabIndex')) >= 0) ||
+      bot.dom.isEditable(element);
+
+  function tagNameMatches(tagName) {
     return element.tagName.toUpperCase() == tagName;
-  }) || (bot.dom.getAttribute(element, 'tabindex') != null &&
-         Number(bot.dom.getProperty(element, 'tabIndex')) >= 0);
-};
-
-
-/**
- * Looks up the given property (not to be confused with an attribute) on the
- * given element.
- *
- * @param {!Element} element The element to use.
- * @param {string} propertyName The name of the property.
- * @return {*} The value of the property.
- */
-bot.dom.getProperty = function(element, propertyName) {
-  // When an <option>'s value attribute is not set, its value property should be
-  // its text content, but IE < 8 does not adhere to that behavior, so fix it.
-  // http://www.w3.org/TR/1999/REC-html401-19991224/interact/forms.html#adef-value-OPTION
-  if (bot.userAgent.IE_DOC_PRE8 && propertyName == 'value' &&
-      bot.dom.isElement(element, goog.dom.TagName.OPTION) &&
-      goog.isNull(bot.dom.getAttribute(element, 'value'))) {
-    return goog.dom.getRawTextContent(element);
   }
-  return element[propertyName];
 };
 
 
 /**
- * Regex to split on semicolons, but not when enclosed in parens or quotes.
- * Helper for {@link bot.dom.standardizeStyleAttribute_}.
- * If the style attribute ends with a semicolon this will include an empty
- * string at the end of the array
- * @private {!RegExp}
  * @const
  */
-bot.dom.SPLIT_STYLE_ATTRIBUTE_ON_SEMICOLONS_REGEXP_ =
-    new RegExp('[;]+' +
-               '(?=(?:(?:[^"]*"){2})*[^"]*$)' +
-               '(?=(?:(?:[^\']*\'){2})*[^\']*$)' +
-               '(?=(?:[^()]*\\([^()]*\\))*[^()]*$)');
+bot.dom.getProperty = bot.dom.core.getProperty;
 
 
 /**
- * Standardize a style attribute value, which includes:
- *  (1) converting all property names lowercase
- *  (2) ensuring it ends in a trailing semi-colon
- * @param {string} value The style attribute value.
- * @return {string} The identical value, with the formatting rules described
- *     above applied.
- * @private
+ * @const
  */
-bot.dom.standardizeStyleAttribute_ = function(value) {
-  var styleArray = value.split(
-      bot.dom.SPLIT_STYLE_ATTRIBUTE_ON_SEMICOLONS_REGEXP_);
-  var css = [];
-  goog.array.forEach(styleArray, function(pair) {
-    var i = pair.indexOf(':');
-    if (i > 0) {
-      var keyValue = [pair.slice(0, i), pair.slice(i + 1)];
-      if (keyValue.length == 2) {
-        css.push(keyValue[0].toLowerCase(), ':', keyValue[1], ';');
-      }
-    }
-  });
-  css = css.join('');
-  css = css.charAt(css.length - 1) == ';' ? css : css + ';';
-  return css;
-};
-
-
-/**
- * Get the user-specified value of the given attribute of the element, or null
- * if the attribute is not present.
- *
- * <p>For boolean attributes such as "selected" or "checked", this method
- * returns the value of element.getAttribute(attributeName) cast to a String
- * when attribute is present. For modern browsers, this will be the string the
- * attribute is given in the HTML, but for IE8 it will be the name of the
- * attribute, and for IE7, it will be the string "true". To test whether a
- * boolean attribute is present, test whether the return value is non-null, the
- * same as one would for non-boolean attributes. Specifically, do *not* test
- * whether the boolean evaluation of the return value is true, because the value
- * of a boolean attribute that is present will often be the empty string.
- *
- * <p>For the style attribute, it standardizes the value by lower-casing the
- * property names and always including a trailing semi-colon.
- *
- * @param {!Element} element The element to use.
- * @param {string} attributeName The name of the attribute to return.
- * @return {?string} The value of the attribute or "null" if entirely missing.
- */
-bot.dom.getAttribute = function(element, attributeName) {
-  attributeName = attributeName.toLowerCase();
-
-  // The style attribute should be a css text string that includes only what
-  // the HTML element specifies itself (excluding what is inherited from parent
-  // elements or style sheets). We standardize the format of this string via the
-  // standardizeStyleAttribute method.
-  if (attributeName == 'style') {
-    return bot.dom.standardizeStyleAttribute_(element.style.cssText);
-  }
-
-  // In IE doc mode < 8, the "value" attribute of an <input> is only accessible
-  // as a property.
-  if (bot.userAgent.IE_DOC_PRE8 && attributeName == 'value' &&
-      bot.dom.isElement(element, goog.dom.TagName.INPUT)) {
-    return element['value'];
-  }
-
-  // In IE < 9, element.getAttributeNode will return null for some boolean
-  // attributes that are present, such as the selected attribute on <option>
-  // elements. This if-statement is sufficient if these cases are restricted
-  // to boolean attributes whose reflected property names are all lowercase
-  // (as attributeName is by this point), like "selected". We have not
-  // found a boolean attribute for which this does not work.
-  if (bot.userAgent.IE_DOC_PRE9 && element[attributeName] === true) {
-    return String(element.getAttribute(attributeName));
-  }
-
-  // When the attribute is not present, either attr will be null or
-  // attr.specified will be false.
-  var attr = element.getAttributeNode(attributeName);
-  return (attr && attr.specified) ? attr.value : null;
-};
+bot.dom.getAttribute = bot.dom.core.getAttribute;
 
 
 /**
@@ -551,8 +409,8 @@ bot.dom.getEffectiveStyle = function(elem, propertyName) {
 bot.dom.getCascadedStyle_ = function(elem, styleName) {
   var style = elem.currentStyle || elem.style;
   var value = style[styleName];
-  if (!goog.isDef(value) && goog.isFunction(style['getPropertyValue'])) {
-    value = style['getPropertyValue'](styleName);
+  if (!goog.isDef(value) && goog.isFunction(style.getPropertyValue)) {
+    value = style.getPropertyValue(styleName);
   }
 
   if (value != 'inherit') {
@@ -564,7 +422,7 @@ bot.dom.getCascadedStyle_ = function(elem, styleName) {
 
 
 /**
- * Common code used by bot.dom.isShown and bot.dom.isShownInComposedDom.
+ * Extracted code from bot.dom.isShown.
  *
  * @param {!Element} elem The element to consider.
  * @param {boolean} ignoreOpacity Whether to ignore the element's opacity
@@ -677,20 +535,55 @@ bot.dom.isShown_ = function(elem, ignoreOpacity, parentsDisplayedFn) {
  * Options and Optgroup elements are treated as special cases: they are
  * considered shown iff they have a enclosing select element that is shown.
  *
+ * Elements in Shadow DOMs with younger shadow roots are not visible, and
+ * elements distributed into shadow DOMs check the visibility of the
+ * ancestors in the Composed DOM, rather than their ancestors in the logical
+ * DOM.
+ *
  * @param {!Element} elem The element to consider.
  * @param {boolean=} opt_ignoreOpacity Whether to ignore the element's opacity
  *     when determining whether it is shown; defaults to false.
  * @return {boolean} Whether or not the element is visible.
  */
 bot.dom.isShown = function(elem, opt_ignoreOpacity) {
-  // Any element with a display style equal to 'none' or that has an ancestor
-  // with display style equal to 'none' is not shown.
-  function displayed(e) {
-    if (bot.dom.getEffectiveStyle(e, 'display') == 'none') {
-      return false;
+  var displayed;
+
+  if (bot.dom.IS_SHADOW_DOM_ENABLED) {
+    // Any element with a display style equal to 'none' or that has an ancestor
+    // with display style equal to 'none' is not shown.
+    displayed = function(e) {
+      if (bot.dom.getEffectiveStyle(e, 'display') == 'none') {
+        return false;
+      }
+      var parent;
+      do {
+        parent = bot.dom.getParentNodeInComposedDom(e);
+        if (parent instanceof ShadowRoot) {
+          if (parent.host.shadowRoot != parent) {
+            // There is a younger shadow root, which will take precedence over
+            // the shadow this element is in, thus this element won't be
+            // displayed.
+            return false;
+          } else {
+            parent = parent.host;
+          }
+        } else if (parent.nodeType == goog.dom.NodeType.DOCUMENT ||
+            parent.nodeType == goog.dom.NodeType.DOCUMENT_FRAGMENT) {
+          parent = null;
+        }
+      } while (elem && elem.nodeType != goog.dom.NodeType.ELEMENT);
+      return !parent || displayed(parent);
     }
-    var parent = bot.dom.getParentElement(e);
-    return !parent || displayed(parent);
+  } else {
+    // Any element with a display style equal to 'none' or that has an ancestor
+    // with display style equal to 'none' is not shown.
+    displayed =  function(e) {
+      if (bot.dom.getEffectiveStyle(e, 'display') == 'none') {
+        return false;
+      }
+      var parent = bot.dom.getParentElement(e);
+      return !parent || displayed(parent);
+    }
   }
   return bot.dom.isShown_(elem, !!opt_ignoreOpacity, displayed);
 };
@@ -1085,7 +978,12 @@ bot.dom.concatenateCleanedLines_ = function(lines) {
  */
 bot.dom.getVisibleText = function(elem) {
   var lines = [];
-  bot.dom.appendVisibleTextLinesFromElement_(elem, lines);
+
+  if (bot.dom.IS_SHADOW_DOM_ENABLED) {
+    bot.dom.appendVisibleTextLinesFromElementInComposedDom_(elem, lines);
+  } else {
+    bot.dom.appendVisibleTextLinesFromElement_(elem, lines);
+  }
   return bot.dom.concatenateCleanedLines_(lines);
 };
 
@@ -1322,193 +1220,146 @@ bot.dom.getOpacityNonIE_ = function(elem) {
   return elemOpacity;
 };
 
-if (bot.dom.IS_SHADOW_DOM_ENABLED) {
 
-
-  /**
-   * Returns the display parent element of the given node, or null. This method
-   * differs from bot.dom.getParentElement in the presence of ShadowDOM and
-   * &lt;shadow&gt; or &lt;content&gt; tags. For example if
-   * <ul>
-   * <li>div A contains div B
-   * <li>div B has a css class .C
-   * <li>div A contains a Shadow DOM with a div D
-   * <li>div D contains a contents tag selecting all items of class .C
-   * </ul>
-   * then calling bot.dom.getParentElement on B will return A, but calling
-   * getDisplayParentElement on B will return D.
-   *
-   * @param {!Node} node The node whose parent is desired.
-   * @return {Node} The parent node, if available, null otherwise.
-   */
-  bot.dom.getParentNodeInComposedDom = function(node) {
-    var /**@type {Node}*/ parent = node.parentNode;
-    if (node.getDestinationInsertionPoints) {
-      var destinations = node.getDestinationInsertionPoints();
-      if (destinations.length > 0) {
-        parent = destinations[destinations.length - 1];
-      }
+/**
+ * Returns the display parent element of the given node, or null. This method
+ * differs from bot.dom.getParentElement in the presence of ShadowDOM and
+ * &lt;shadow&gt; or &lt;content&gt; tags. For example if
+ * <ul>
+ * <li>div A contains div B
+ * <li>div B has a css class .C
+ * <li>div A contains a Shadow DOM with a div D
+ * <li>div D contains a contents tag selecting all items of class .C
+ * </ul>
+ * then calling bot.dom.getParentElement on B will return A, but calling
+ * getDisplayParentElement on B will return D.
+ *
+ * @param {!Node} node The node whose parent is desired.
+ * @return {Node} The parent node, if available, null otherwise.
+ */
+bot.dom.getParentNodeInComposedDom = function(node) {
+  var /**@type {Node}*/ parent = node.parentNode;
+  if (node.getDestinationInsertionPoints) {
+    var destinations = node.getDestinationInsertionPoints();
+    if (destinations.length > 0) {
+      parent = destinations[destinations.length - 1];
     }
-    return parent;
-  };
+  }
+  return parent;
+};
 
 
-  /**
-   * @param {!Element} elem The element to consider.
-   * @return {string} visible text.
-   */
-  bot.dom.getVisibleTextInComposedDom = function(elem) {
-    var lines = [];
-    bot.dom.appendVisibleTextLinesFromElementInComposedDom_(elem, lines);
-    return bot.dom.concatenateCleanedLines_(lines);
-  };
+/**
+ * @param {!Node} node Node.
+ * @param {!Array.<string>} lines Accumulated visible lines of text.
+ * @param {boolean} shown whether the node is visible
+ * @param {?string} whitespace the node's 'white-space' effectiveStyle
+ * @param {?string} textTransform the node's 'text-transform' effectiveStyle
+ * @private
+ * @suppress {missingProperties}
+ */
+bot.dom.appendVisibleTextLinesFromNodeInComposedDom_ = function(
+    node, lines, shown, whitespace, textTransform) {
 
+  if (node.nodeType == goog.dom.NodeType.TEXT && shown) {
+    var textNode = /** @type {!Text} */ (node);
+    bot.dom.appendVisibleTextLinesFromTextNode_(textNode, lines,
+        whitespace, textTransform);
+  } else if (bot.dom.isElement(node)) {
+    var castElem = /** @type {!Element} */ (node);
 
-  /**
-   * Determines whether an element is what a user would call "shown". This is
-   * heavily based on bot.dom.isShown. It differs only in how it handles
-   * elementsin shadow DOMs, or elements that are distributed into shadow DOMs
-   * by &lt;shadow&gt; or &lt;content&gt; tags. Specifically, elements in shadow
-   * DOMs with younger shadow roots are not visible, and elements distributed
-   * into shadow DOMs check the visibility of the ancestors in the Composed DOM,
-   * rather than their ancestors in the logical DOM.
-   *
-   * @param {!Element} elem The element to consider.
-   * @param {boolean=} opt_ignoreOpacity Whether to ignore the element's opacity
-   *     when determining whether it is shown; defaults to false.
-   * @return {boolean} Whether or not the element is visible.
-   */
-  bot.dom.isShownInComposedDom = function(elem, opt_ignoreOpacity) {
-    // Any element with a display style equal to 'none' or that has an ancestor
-    // with display style equal to 'none' is not shown.
-    function displayed(e) {
-      if (bot.dom.getEffectiveStyle(e, 'display') == 'none') {
-        return false;
+    if (bot.dom.isElement(node, 'CONTENT')) {
+      var parentNode = node;
+      while (parentNode.parentNode) {
+        parentNode = parentNode.parentNode;
       }
-      var parent;
-      do {
-        parent = bot.dom.getParentNodeInComposedDom(e);
-        if (parent instanceof ShadowRoot) {
-          if (parent.host.shadowRoot != parent) {
-            // There is a younger shadow root, which will take precedence over
-            // the shadow this element is in, thus this element won't be
-            // displayed.
-            return false;
-          } else {
-            parent = parent.host;
-          }
-        } else if (parent.nodeType == goog.dom.NodeType.DOCUMENT ||
-            parent.nodeType == goog.dom.NodeType.DOCUMENT_FRAGMENT) {
-          parent = null;
-        }
-      } while (elem && elem.nodeType != goog.dom.NodeType.ELEMENT);
-      return !parent || displayed(parent);
-    }
-    return bot.dom.isShown_(elem, !!opt_ignoreOpacity, displayed);
-  };
-
-
-  /**
-   * @param {!Node} node Node.
-   * @param {!Array.<string>} lines Accumulated visible lines of text.
-   * @param {boolean} shown whether the node is visible
-   * @param {?string} whitespace the node's 'white-space' effectiveStyle
-   * @param {?string} textTransform the node's 'text-transform' effectiveStyle
-   * @private
-   * @suppress {missingProperties}
-   */
-  bot.dom.appendVisibleTextLinesFromNodeInComposedDom_ = function(
-      node, lines, shown, whitespace, textTransform) {
-
-    if (node.nodeType == goog.dom.NodeType.TEXT && shown) {
-      var textNode = /** @type {!Text} */ (node);
-      bot.dom.appendVisibleTextLinesFromTextNode_(textNode, lines,
-          whitespace, textTransform);
-    } else if (bot.dom.isElement(node)) {
-      var castElem = /** @type {!Element} */ (node);
-
-      if (bot.dom.isElement(node, 'CONTENT')) {
-        // If the element is <content> then just append the contents of the
-        // nodes that have been distributed into it.
+      if (parentNode instanceof ShadowRoot) {
+        // If the element is <content> and we're inside a shadow DOM then just 
+        // append the contents of the nodes that have been distributed into it.
         var contentElem = /** @type {!Object} */ (node);
         goog.array.forEach(contentElem.getDistributedNodes(), function(node) {
           bot.dom.appendVisibleTextLinesFromNodeInComposedDom_(
               node, lines, shown, whitespace, textTransform);
         });
-      } else if (bot.dom.isElement(node, 'SHADOW')) {
-        // if the element is <shadow> then find the owning shadowRoot
-        var parentNode = node;
-        while (parentNode.parentNode) {
-          parentNode = parentNode.parentNode;
-        }
-        if (parentNode instanceof ShadowRoot) {
-          var thisShadowRoot = /** @type {!ShadowRoot} */ (parentNode);
-          if (thisShadowRoot) {
-            // then go through the owning shadowRoots older siblings and append
-            // their contents
-            var olderShadowRoot = thisShadowRoot.olderShadowRoot;
-            while (olderShadowRoot) {
-              goog.array.forEach(
-                  olderShadowRoot.childNodes, function(childNode) {
-                bot.dom.appendVisibleTextLinesFromNodeInComposedDom_(
-                    childNode, lines, shown, whitespace, textTransform);
-              });
-              olderShadowRoot = olderShadowRoot.olderShadowRoot;
-            }
-          }
-        }
       } else {
-        // otherwise append the contents of an element as per normal.
+        // if we're not inside a shadow DOM, then we just treat <content>
+        // as an unknown element and use anything inside the tag
         bot.dom.appendVisibleTextLinesFromElementInComposedDom_(
           castElem, lines);
       }
-    }
-  };
-
-
-  /**
-   * Determines whether a given node has been distributed into a ShadowDOM
-   * element somewhere.
-   * @param {!Node} node The node to check
-   * @return {boolean} True if the node has been distributed.
-   */
-  bot.dom.isNodeDistributedIntoShadowDom = function(node) {
-    var elemOrText = null;
-    if (node.nodeType == goog.dom.NodeType.ELEMENT) {
-      elemOrText = /** @type {!Element} */ (node);
-    } else if (node.nodeType == goog.dom.NodeType.TEXT) {
-      elemOrText = /** @type {!Text} */ (node);
-    }
-    return elemOrText != null &&
-        elemOrText.getDestinationInsertionPoints &&
-        elemOrText.getDestinationInsertionPoints().length > 0;
-  };
-
-
-  /**
-   * @param {!Element} elem Element.
-   * @param {!Array.<string>} lines Accumulated visible lines of text.
-   * @private
-   */
-  bot.dom.appendVisibleTextLinesFromElementInComposedDom_ = function(
-      elem, lines) {
-    if (elem.shadowRoot) {
-        goog.array.forEach(elem.shadowRoot.childNodes, function(node) {
-          bot.dom.appendVisibleTextLinesFromNodeInComposedDom_(
-              node, lines, true, null, null);
-        });
-    }
-
-    bot.dom.appendVisibleTextLinesFromElementCommon_(
-      elem, lines, bot.dom.isShownInComposedDom,
-      function(node, lines, shown, whitespace, textTransform) {
-        // If the node has been distributed into a shadowDom element
-        // to be displayed elsewhere, then we shouldn't append
-        // its contents here).
-        if (!bot.dom.isNodeDistributedIntoShadowDom(node)) {
-          bot.dom.appendVisibleTextLinesFromNodeInComposedDom_(
-              node, lines, shown, whitespace, textTransform);
+    } else if (bot.dom.isElement(node, 'SHADOW')) {
+      // if the element is <shadow> then find the owning shadowRoot
+      var parentNode = node;
+      while (parentNode.parentNode) {
+        parentNode = parentNode.parentNode;
+      }
+      if (parentNode instanceof ShadowRoot) {
+        var thisShadowRoot = /** @type {!ShadowRoot} */ (parentNode);
+        if (thisShadowRoot) {
+          // then go through the owning shadowRoots older siblings and append
+          // their contents
+          var olderShadowRoot = thisShadowRoot.olderShadowRoot;
+          while (olderShadowRoot) {
+            goog.array.forEach(
+                olderShadowRoot.childNodes, function(childNode) {
+              bot.dom.appendVisibleTextLinesFromNodeInComposedDom_(
+                  childNode, lines, shown, whitespace, textTransform);
+            });
+            olderShadowRoot = olderShadowRoot.olderShadowRoot;
+          }
         }
+      }
+    } else {
+      // otherwise append the contents of an element as per normal.
+      bot.dom.appendVisibleTextLinesFromElementInComposedDom_(
+        castElem, lines);
+    }
+  }
+};
+
+
+/**
+ * Determines whether a given node has been distributed into a ShadowDOM
+ * element somewhere.
+ * @param {!Node} node The node to check
+ * @return {boolean} True if the node has been distributed.
+ */
+bot.dom.isNodeDistributedIntoShadowDom = function(node) {
+  var elemOrText = null;
+  if (node.nodeType == goog.dom.NodeType.ELEMENT) {
+    elemOrText = /** @type {!Element} */ (node);
+  } else if (node.nodeType == goog.dom.NodeType.TEXT) {
+    elemOrText = /** @type {!Text} */ (node);
+  }
+  return elemOrText != null &&
+      elemOrText.getDestinationInsertionPoints &&
+      elemOrText.getDestinationInsertionPoints().length > 0;
+};
+
+
+/**
+ * @param {!Element} elem Element.
+ * @param {!Array.<string>} lines Accumulated visible lines of text.
+ * @private
+ */
+bot.dom.appendVisibleTextLinesFromElementInComposedDom_ = function(
+    elem, lines) {
+  if (elem.shadowRoot) {
+      goog.array.forEach(elem.shadowRoot.childNodes, function(node) {
+        bot.dom.appendVisibleTextLinesFromNodeInComposedDom_(
+            node, lines, true, null, null);
       });
-  };
-}
+  }
+
+  bot.dom.appendVisibleTextLinesFromElementCommon_(
+    elem, lines, bot.dom.isShown,
+    function(node, lines, shown, whitespace, textTransform) {
+      // If the node has been distributed into a shadowDom element
+      // to be displayed elsewhere, then we shouldn't append
+      // its contents here).
+      if (!bot.dom.isNodeDistributedIntoShadowDom(node)) {
+        bot.dom.appendVisibleTextLinesFromNodeInComposedDom_(
+            node, lines, shown, whitespace, textTransform);
+      }
+    });
+};

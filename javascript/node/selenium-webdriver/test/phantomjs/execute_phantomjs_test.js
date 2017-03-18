@@ -24,49 +24,35 @@ var test = require('../../lib/test');
 test.suite(function(env) {
   var driver;
 
-  test.before(function() {
-    driver = env.builder().build();
+  test.before(function*() {
+    driver = yield env.builder().build();
   });
 
   test.after(function() {
-    driver.quit();
+    return driver.quit();
   });
 
   var testPageUrl =
       'data:text/html,<html><h1>' + path.basename(__filename) + '</h1></html>';
 
   test.beforeEach(function() {
-    driver.get(testPageUrl);
+    return driver.get(testPageUrl);
   });
 
   describe('phantomjs.Driver', function() {
     describe('#executePhantomJS()', function() {
 
-      test.it('can execute scripts using PhantomJS API', function() {
-        return driver.executePhantomJS('return this.url;').then(function(url) {
-          assert.equal(testPageUrl, decodeURIComponent(url));
-        });
+      test.it('can execute scripts using PhantomJS API', function*() {
+        let url = yield driver.executePhantomJS('return this.url;');
+        assert.equal(testPageUrl, decodeURIComponent(url));
       });
 
-      test.it('can execute scripts as functions', function() {
-        driver.executePhantomJS(function(a, b) {
+      test.it('can execute scripts as functions', function*() {
+        let result = yield driver.executePhantomJS(function(a, b) {
           return a + b;
-        }, 1, 2).then(function(result) {
-          assert.equal(3, result);
-        });
-      });
+        }, 1, 2);
 
-      test.it('can manipulate the current page', function() {
-        driver.manage().addCookie({name: 'foo', value: 'bar'});
-        driver.manage().getCookie('foo').then(function(cookie) {
-          assert.equal('bar', cookie.value);
-        });
-        driver.executePhantomJS(function() {
-          this.clearCookies();
-        });
-        driver.manage().getCookie('foo').then(function(cookie) {
-          assert.equal(null, cookie);
-        });
+        assert.equal(3, result);
       });
     });
   });

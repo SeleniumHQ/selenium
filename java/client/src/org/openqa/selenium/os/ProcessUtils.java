@@ -18,21 +18,21 @@
 
 package org.openqa.selenium.os;
 
-import org.openqa.selenium.Platform;
+import static org.openqa.selenium.Platform.WINDOWS;
+import static org.openqa.selenium.os.WindowsUtils.killPID;
+import static org.openqa.selenium.os.WindowsUtils.thisIsWindows;
 
 import com.google.common.io.Closeables;
+
+import com.sun.jna.Pointer;
+import com.sun.jna.platform.win32.WinNT;
+
+import org.openqa.selenium.Platform;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import static org.openqa.selenium.Platform.WINDOWS;
-import static org.openqa.selenium.os.WindowsUtils.killPID;
-import static org.openqa.selenium.os.WindowsUtils.thisIsWindows;
-
-import com.sun.jna.Pointer;
-import com.sun.jna.platform.win32.WinNT;
 
 public class ProcessUtils {
 
@@ -125,16 +125,7 @@ public class ProcessUtils {
     int exitValue;
 
     try {
-      Field f = process.getClass().getDeclaredField("handle");
-      f.setAccessible(true);
-      long hndl = f.getLong(process);
-
-      Kernel32 kernel = Kernel32.INSTANCE;
-      WinNT.HANDLE handle = new WinNT.HANDLE();
-      handle.setPointer(Pointer.createConstant(hndl));
-      int pid = kernel.GetProcessId(handle);
-
-      killPID("" + pid);
+      killPID("" + getProcessId(process));
       exitValue = waitForProcessDeath(process, 10000);
     } catch (Exception ex) {
       LOG.log(Level.WARNING, "Process refused to die after 10 seconds, and couldn't taskkill it", ex);
@@ -184,13 +175,22 @@ public class ProcessUtils {
   }
 
   static int getProcessId(Process p) {
-    if (Platform.getCurrent().is(WINDOWS)) {
-      throw new IllegalStateException("UnixUtils may not be used on Windows");
-    }
     try {
+      if (Platform.getCurrent().is(WINDOWS)) {
+        Field f = p.getClass().getDeclaredField("handle");
+        f.setAccessible(true);
+        long hndl = f.getLong(p);
+
+        Kernel32 kernel = Kernel32.INSTANCE;
+        WinNT.HANDLE handle = new WinNT.HANDLE();
+        handle.setPointer(Pointer.createConstant(hndl));
+        return kernel.GetProcessId(handle);
+      }
+
       Field f = p.getClass().getDeclaredField("pid");
       f.setAccessible(true);
       return (Integer) f.get(p);
+
     } catch (Exception e) {
       throw new RuntimeException("Couldn't detect pid", e);
     }

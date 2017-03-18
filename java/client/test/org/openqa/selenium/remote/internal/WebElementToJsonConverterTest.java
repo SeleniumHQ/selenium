@@ -28,6 +28,9 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.OutputType;
@@ -36,19 +39,13 @@ import org.openqa.selenium.Rectangle;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.WrapsElement;
+import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.RemoteWebElement;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Unit tests for {@link WebElementToJsonConverter}.
- */
 @RunWith(JUnit4.class)
 public class WebElementToJsonConverterTest {
 
@@ -234,7 +231,9 @@ public class WebElementToJsonConverterTest {
 
     Object value = CONVERTER.apply(new Object[] { element });
     assertContentsInOrder(Lists.newArrayList((Collection<?>) value),
-        ImmutableMap.of("ELEMENT", "abc123"));
+        ImmutableMap.of(
+          Dialect.OSS.getEncodedElementKey(), "abc123",
+          Dialect.W3C.getEncodedElementKey(), "abc123"));
   }
 
   @Test
@@ -254,9 +253,11 @@ public class WebElementToJsonConverterTest {
     assertThat(value, instanceOf(Map.class));
 
     Map<?, ?>  map = (Map<?, ?>) value;
-    assertEquals(1, map.size());
-    assertTrue(map.containsKey("ELEMENT"));
-    assertEquals(expectedKey, map.get("ELEMENT"));
+    assertEquals(2, map.size());
+    assertTrue(map.containsKey(Dialect.OSS.getEncodedElementKey()));
+    assertEquals(expectedKey, map.get(Dialect.OSS.getEncodedElementKey()));
+    assertTrue(map.containsKey(Dialect.W3C.getEncodedElementKey()));
+    assertEquals(expectedKey, map.get(Dialect.W3C.getEncodedElementKey()));
   }
 
   private static void assertContentsInOrder(List<?> list, Object... expectedContents) {

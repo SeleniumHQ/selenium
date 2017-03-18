@@ -22,10 +22,7 @@ var assert = require('assert'),
     path = require('path'),
     tmp = require('tmp');
 
-var io = require('../io'),
-    before = require('../testing').before,
-    beforeEach = require('../testing').beforeEach,
-    it = require('../testing').it;
+var io = require('../io');
 
 
 describe('io', function() {
@@ -310,7 +307,7 @@ describe('io', function() {
     });
 
     it('catches errors from invalid input', function() {
-      return io.read(1234)
+      return io.read({})
           .then(() => assert.fail('should have failed'),
                 (e) => assert.ok(e instanceof TypeError));
     });

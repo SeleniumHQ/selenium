@@ -65,9 +65,12 @@ function checkModifierKey(key) {
  * Class for defining sequences of complex user interactions. Each sequence
  * will not be executed until {@link #perform} is called.
  *
- * Example:
+ * This class should not be instantiated directly. Instead, obtain an instance
+ * using {@link ./webdriver.WebDriver#actions() WebDriver.actions()}.
  *
- *     new ActionSequence(driver).
+ * Sample usage:
+ *
+ *     driver.actions().
  *         keyDown(Key.SHIFT).
  *         click(element1).
  *         click(element2).
@@ -107,7 +110,7 @@ class ActionSequence {
   /**
    * Executes this action sequence.
    *
-   * @return {!./promise.Promise} A promise that will be resolved once
+   * @return {!./promise.Thenable} A promise that will be resolved once
    *     this sequence has completed.
    */
   perform() {
@@ -117,14 +120,15 @@ class ActionSequence {
     let actions = this.actions_.concat();
     let driver = this.driver_;
     return driver.controlFlow().execute(function() {
-      actions.forEach(function(action) {
-        driver.schedule(action.command, action.description);
+      let results = actions.map(action => {
+        return driver.schedule(action.command, action.description);
       });
+      return Promise.all(results);
     }, 'ActionSequence.perform');
   }
 
   /**
-   * Moves the mouse.  The location to move to may be specified in terms of the
+   * Moves the mouse. The location to move to may be specified in terms of the
    * mouse's current location, an offset relative to the top-left corner of an
    * element, or an element (in which case the middle of the element is used).
    *
@@ -329,7 +333,7 @@ class ActionSequence {
   /**
    * Performs a modifier key press. The modifier key is <em>not released</em>
    * until {@link #keyUp} or {@link #sendKeys} is called. The key press will be
-   * targetted at the currently focused element.
+   * targeted at the currently focused element.
    *
    * @param {!input.Key} key The modifier key to push. Must be one of
    *     {ALT, CONTROL, SHIFT, COMMAND, META}.
@@ -343,7 +347,7 @@ class ActionSequence {
   }
 
   /**
-   * Performs a modifier key release. The release is targetted at the currently
+   * Performs a modifier key release. The release is targeted at the currently
    * focused element.
    * @param {!input.Key} key The modifier key to release. Must be one of
    *     {ALT, CONTROL, SHIFT, COMMAND, META}.
@@ -359,7 +363,7 @@ class ActionSequence {
   /**
    * Simulates typing multiple keys. Each modifier key encountered in the
    * sequence will not be released until it is encountered again. All key events
-   * will be targetted at the currently focused element.
+   * will be targeted at the currently focused element.
    *
    * @param {...(string|!input.Key|!Array<(string|!input.Key)>)} var_args
    *     The keys to type.
@@ -377,9 +381,12 @@ class ActionSequence {
  * Class for defining sequences of user touch interactions. Each sequence
  * will not be executed until {@link #perform} is called.
  *
- * Example:
+ * This class should not be instantiated directly. Instead, obtain an instance
+ * using {@link ./webdriver.WebDriver#touchActions() WebDriver.touchActions()}.
  *
- *     new TouchSequence(driver).
+ * Sample usage:
+ *
+ *     driver.touchActions().
  *         tapAndHold({x: 0, y: 0}).
  *         move({x: 3, y: 4}).
  *         release({x: 10, y: 10}).
@@ -415,7 +422,7 @@ class TouchSequence {
 
   /**
    * Executes this action sequence.
-   * @return {!./promise.Promise} A promise that will be resolved once
+   * @return {!./promise.Thenable} A promise that will be resolved once
    *     this sequence has completed.
    */
   perform() {
@@ -425,9 +432,10 @@ class TouchSequence {
     let actions = this.actions_.concat();
     let driver = this.driver_;
     return driver.controlFlow().execute(function() {
-      actions.forEach(function(action) {
-        driver.schedule(action.command, action.description);
+      let results = actions.map(action => {
+        return driver.schedule(action.command, action.description);
       });
+      return Promise.all(results);
     }, 'TouchSequence.perform');
   }
 

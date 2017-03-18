@@ -29,14 +29,12 @@ require 'pathname'
 module Selenium
   module WebDriver
     module UnitSpecHelper
-
-      def with_env(hash, &blk)
-        hash.each { |k,v| ENV[k.to_s] = v.to_s }
+      def with_env(hash)
+        hash.each { |k, v| ENV[k.to_s] = v.to_s }
         yield
       ensure
         hash.each_key { |k| ENV.delete(k) }
       end
-
     end
   end
 end
@@ -44,5 +42,5 @@ end
 RSpec.configure do |c|
   c.include Selenium::WebDriver::UnitSpecHelper
 
-  c.filter_run :focus => true if ENV['focus']
+  c.filter_run focus: true if ENV['focus']
 end

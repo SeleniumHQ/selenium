@@ -17,33 +17,19 @@
 #ifndef WEBDRIVER_IE_REFRESHCOMMANDHANDLER_H_
 #define WEBDRIVER_IE_REFRESHCOMMANDHANDLER_H_
 
-#include "../Browser.h"
 #include "../IECommandHandler.h"
-#include "../IECommandExecutor.h"
 
 namespace webdriver {
 
 class RefreshCommandHandler : public IECommandHandler {
  public:
-  RefreshCommandHandler(void) {
-  }
-
-  virtual ~RefreshCommandHandler(void) {
-  }
+  RefreshCommandHandler(void);
+  virtual ~RefreshCommandHandler(void);
 
  protected:
   void ExecuteInternal(const IECommandExecutor& executor,
                        const ParametersMap& command_parameters,
-                       Response* response) {
-    BrowserHandle browser_wrapper;
-    int status_code = executor.GetCurrentBrowser(&browser_wrapper);
-    if (status_code != WD_SUCCESS) {
-      response->SetErrorResponse(status_code, "Unable to get browser");
-      return;
-    }
-    status_code = browser_wrapper->Refresh();
-    response->SetSuccessResponse(Json::Value::null);
-  }
+                       Response* response);
 };
 
 } // namespace webdriver

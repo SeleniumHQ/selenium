@@ -1,6 +1,6 @@
 {
   "name": "selenium-webdriver",
-  "version": "3.0.0-dev",
+  "version": "3.3.0",
   "description": "The official WebDriver JavaScript bindings from the Selenium project",
   "license": "Apache-2.0",
   "keywords": [
@@ -20,24 +20,23 @@
     "url": "https://github.com/SeleniumHQ/selenium.git"
   },
   "engines": {
-    "node": ">= 4.2.x"
+    "node": ">= 6.9.0"
   },
   "dependencies": {
-    "adm-zip": "0.4.4",
-    "rimraf": "^2.2.8",
-    "tmp": "0.0.24",
-    "ws": "^1.0.1",
-    "xml2js": "0.4.4"
+    "adm-zip": "^0.4.7",
+    "rimraf": "^2.5.4",
+    "tmp": "0.0.30",
+    "xml2js": "^0.4.17"
   },
   "devDependencies": {
-    "express": "^4.11.2",
-    "mocha": ">= 1.21.x",
-    "multer": "^0.1.7",
-    "promises-aplus-tests": "^2.1.0",
-    "serve-index": "^1.6.1",
-    "sinon": "^1.17.2"
+    "express": "^4.14.0",
+    "mocha": "^3.1.2",
+    "multer": "^1.2.0",
+    "promises-aplus-tests": "^2.1.2",
+    "serve-index": "^1.8.0",
+    "sinon": "^1.17.6"
   },
   "scripts": {
-    "test": "mocha --harmony -t 600000 --recursive test"
+    "test": "mocha -t 600000 --recursive test"
   }
 }

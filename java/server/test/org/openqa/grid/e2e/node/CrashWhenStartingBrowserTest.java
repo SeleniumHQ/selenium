@@ -25,8 +25,8 @@ import static org.junit.Assert.assertTrue;
 
 import com.google.common.base.Function;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.openqa.grid.common.GridRole;
 import org.openqa.grid.e2e.utils.GridTestHelper;
@@ -49,25 +49,23 @@ import java.net.MalformedURLException;
 
 public class CrashWhenStartingBrowserTest {
 
-  private static Hub hub;
-  private static SelfRegisteringRemote remote;
-  private static Registry registry;
-  private static Wait<Object> wait = new FluentWait<Object>("").withTimeout(30, SECONDS);
+  private Hub hub;
+  private SelfRegisteringRemote remote;
+  private Registry registry;
+  private Wait<Object> wait = new FluentWait<Object>("").withTimeout(30, SECONDS);
 
-  private static String proxyId;
+  private String proxyId;
 
-  private static final String wrong_path = "stupidPathUnliklyToExist";
+  private static final String WRONG_PATH = "stupidPathUnliklyToExist";
 
-  @BeforeClass
-  public static void prepareANodePointingToANonExistingFirefox() throws Exception {
+  @Before
+  public void prepareANodePointingToANonExistingFirefox() throws Exception {
     hub = GridTestHelper.getHub();
     registry = hub.getRegistry();
 
     remote = GridTestHelper.getRemoteWithoutCapabilities(hub.getUrl(), GridRole.NODE);
 
-    DesiredCapabilities firefox = DesiredCapabilities.firefox();
-    firefox.setCapability(FirefoxDriver.BINARY, wrong_path);
-    remote.addBrowser(firefox, 1);
+    remote.addBrowser(DesiredCapabilities.firefox(), 1);
 
     remote.setRemoteServer(new SeleniumServer(remote.getConfiguration()));
     remote.startRemoteServer();
@@ -91,13 +89,14 @@ public class CrashWhenStartingBrowserTest {
     WebDriverException exception = null;
     try {
       DesiredCapabilities ff = DesiredCapabilities.firefox();
+      ff.setCapability(FirefoxDriver.BINARY, WRONG_PATH);
       new RemoteWebDriver(hub.getWebDriverHubRequestURL(), ff);
     } catch (WebDriverException expected) {
       exception = expected;
     }
 
     assertNotNull(exception);
-    assertTrue(exception.getMessage().contains(wrong_path));
+    assertTrue(exception.getMessage().contains(WRONG_PATH));
 
     RegistryTestHelper.waitForActiveTestSessionCount(registry, 0);
   }
@@ -111,7 +110,7 @@ public class CrashWhenStartingBrowserTest {
     };
   }
 
-  private static String getProxyId() throws Exception {
+  private String getProxyId() throws Exception {
     RemoteProxy p = null;
     for (RemoteProxy remoteProxy : registry.getAllProxies()) {
       p = remoteProxy;
@@ -126,8 +125,8 @@ public class CrashWhenStartingBrowserTest {
     return proxyId;
   }
 
-  @AfterClass
-  public static void stop() throws Exception {
+  @After
+  public void stop() throws Exception {
     remote.stopRemoteServer();
     hub.stop();
   }

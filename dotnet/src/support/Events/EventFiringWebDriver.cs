@@ -1095,6 +1095,52 @@ namespace OpenQA.Selenium.Support.Events
             }
 
             /// <summary>
+            /// Gets or sets the implicit wait timeout, which is the  amount of time the
+            /// driver should wait when searching for an element if it is not immediately
+            /// present.
+            /// </summary>
+            /// <remarks>
+            /// When searching for a single element, the driver should poll the page
+            /// until the element has been found, or this timeout expires before throwing
+            /// a <see cref="NoSuchElementException"/>. When searching for multiple elements,
+            /// the driver should poll the page until at least one element has been found
+            /// or this timeout has expired.
+            /// <para>
+            /// Increasing the implicit wait timeout should be used judiciously as it
+            /// will have an adverse effect on test run time, especially when used with
+            /// slower location strategies like XPath.
+            /// </para>
+            /// </remarks>
+            public TimeSpan ImplicitWait
+            {
+                get { return this.wrappedTimeouts.ImplicitWait; }
+                set { this.wrappedTimeouts.ImplicitWait = value; }
+            }
+
+            /// <summary>
+            /// Gets or sets the asynchronous script timeout, which is the amount
+            /// of time the driver should wait when executing JavaScript asynchronously.
+            /// This timeout only affects the <see cref="IJavaScriptExecutor.ExecuteAsyncScript(string, object[])"/>
+            /// method.
+            /// </summary>
+            public TimeSpan AsynchronousJavaScript
+            {
+                get { return this.wrappedTimeouts.AsynchronousJavaScript; }
+                set { this.wrappedTimeouts.AsynchronousJavaScript = value; }
+            }
+
+            /// <summary>
+            /// Gets or sets the page load timeout, which is the amount of time the driver
+            /// should wait for a page to load when setting the <see cref="IWebDriver.Url"/>
+            /// property.
+            /// </summary>
+            public TimeSpan PageLoad
+            {
+                get { return this.wrappedTimeouts.PageLoad; }
+                set { this.wrappedTimeouts.PageLoad = value; }
+            }
+
+            /// <summary>
             /// Specifies the amount of time the driver should wait when searching for an
             /// element if it is not immediately present.
             /// </summary>
@@ -1112,6 +1158,7 @@ namespace OpenQA.Selenium.Support.Events
             /// slower location strategies like XPath.
             /// </para>
             /// </remarks>
+            [Obsolete("This method will be removed in a future version. Please set the ImplicitWait property instead.")]
             public ITimeouts ImplicitlyWait(TimeSpan timeToWait)
             {
                 return this.wrappedTimeouts.ImplicitlyWait(timeToWait);
@@ -1122,6 +1169,7 @@ namespace OpenQA.Selenium.Support.Events
             /// </summary>
             /// <param name="timeToWait">A <see cref="TimeSpan"/> structure defining the amount of time to wait.</param>
             /// <returns>A self reference</returns>
+            [Obsolete("This method will be removed in a future version. Please set the AsynchronousJavaScript property instead.")]
             public ITimeouts SetScriptTimeout(TimeSpan timeToWait)
             {
                 return this.wrappedTimeouts.SetScriptTimeout(timeToWait);
@@ -1132,6 +1180,7 @@ namespace OpenQA.Selenium.Support.Events
             /// </summary>
             /// <param name="timeToWait">A <see cref="TimeSpan"/> structure defining the amount of time to wait.</param>
             /// <returns>A self reference</returns>
+            [Obsolete("This method will be removed in a future version. Please set the PageLoad property instead.")]
             public ITimeouts SetPageLoadTimeout(TimeSpan timeToWait)
             {
                 this.wrappedTimeouts.SetPageLoadTimeout(timeToWait);

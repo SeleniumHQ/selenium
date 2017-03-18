@@ -18,8 +18,6 @@
 
 package com.thoughtworks.selenium;
 
-import com.thoughtworks.selenium.DefaultSelenium;
-
 import org.junit.Test;
 
 /**

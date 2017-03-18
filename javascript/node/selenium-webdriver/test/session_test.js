@@ -27,27 +27,28 @@ test.suite(function(env) {
   var browsers = env.browsers;
 
   var driver;
-  test.before(function() {
-    driver = env.builder().build();
+  test.before(function*() {
+    driver = yield env.builder().build();
   });
 
   test.after(function() {
-    driver.quit();
+    return driver.quit();
   });
 
-  test.it('can connect to an existing session', function() {
-    driver.get(Pages.simpleTestPage);
-    assert(driver.getTitle()).equalTo('Hello WebDriver');
+  test.it('can connect to an existing session', function*() {
+    yield driver.get(Pages.simpleTestPage);
+    yield assert(driver.getTitle()).equalTo('Hello WebDriver');
 
     return driver.getSession().then(session1 => {
       let driver2 = WebDriver.attachToSession(
           driver.getExecutor(),
           session1.getId());
 
-      assert(driver2.getTitle()).equalTo('Hello WebDriver');
-
-      let session2Id = driver2.getSession().then(s => s.getId());
-      assert(session2Id).equalTo(session1.getId());
+      return assert(driver2.getTitle()).equalTo('Hello WebDriver')
+          .then(_ => {
+            let session2Id = driver2.getSession().then(s => s.getId());
+            return assert(session2Id).equalTo(session1.getId());
+          });
     });
   });
 });

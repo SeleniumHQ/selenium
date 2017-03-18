@@ -23,6 +23,7 @@ import java.util.logging.Logger;
 public enum Browser {
 
   chrome,
+  edge,
   ff,
   htmlunit {
     @Override

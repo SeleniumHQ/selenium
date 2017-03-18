@@ -62,19 +62,12 @@ public class GridHelper {
     return new SeleniumBasedRequest(request, registry, type, desiredCapability) {
 
       @Override
-      public String getNewSessionRequestedCapability(TestSession session) {
-        return null;
-      }
-
-      @Override
       public ExternalSessionKey extractSession() {
-        // TODO Auto-generated method stub
         return null;
       }
 
       @Override
       public RequestType extractRequestType() {
-        // TODO Auto-generated method stub
         return null;
       }
 

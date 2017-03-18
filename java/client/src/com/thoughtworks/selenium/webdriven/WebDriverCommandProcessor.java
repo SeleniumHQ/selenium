@@ -18,7 +18,6 @@
 package com.thoughtworks.selenium.webdriven;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Supplier;
 import com.google.common.collect.Maps;
 
 import com.thoughtworks.selenium.CommandProcessor;
@@ -31,6 +30,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.internal.WrapsDriver;
 
 import java.util.Map;
+import java.util.function.Supplier;
 
 
 /**
@@ -205,6 +205,7 @@ public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver 
     seleneseMethods.put("allowNativeXpath", new AllowNativeXPath());
     seleneseMethods.put("altKeyDown", new AltKeyDown(keyState));
     seleneseMethods.put("altKeyUp", new AltKeyUp(keyState));
+    seleneseMethods.put("answerOnNextPrompt", new AnswerOnNextPrompt());
     seleneseMethods.put("assignId", new AssignId(javascriptLibrary, elementFinder));
     seleneseMethods.put("attachFile", new AttachFile(elementFinder));
     seleneseMethods.put("captureScreenshotToString", new CaptureScreenshotToString());
@@ -238,6 +239,7 @@ public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver 
     seleneseMethods.put("getConfirmation", new GetConfirmation(alertOverride));
     seleneseMethods.put("getCookie", new GetCookie());
     seleneseMethods.put("getCookieByName", new GetCookieByName());
+    seleneseMethods.put("getCursorPosition", new GetCursorPosition(elementFinder));
     seleneseMethods.put("getElementHeight", new GetElementHeight(elementFinder));
     seleneseMethods.put("getElementIndex", new GetElementIndex(elementFinder,
         javascriptLibrary));
@@ -248,6 +250,7 @@ public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver 
     seleneseMethods.put("getExpression", new GetExpression());
     seleneseMethods.put("getHtmlSource", new GetHtmlSource());
     seleneseMethods.put("getLocation", new GetLocation());
+    seleneseMethods.put("getMouseSpeed", new NoOp(10));
     seleneseMethods.put("getSelectedId", new FindFirstSelectedOptionProperty(javascriptLibrary,
         elementFinder, "id"));
     seleneseMethods.put("getSelectedIds", new FindSelectedOptionProperties(javascriptLibrary,
@@ -281,6 +284,7 @@ public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver 
     seleneseMethods.put("isEditable", new IsEditable(elementFinder));
     seleneseMethods.put("isElementPresent", new IsElementPresent(elementFinder));
     seleneseMethods.put("isOrdered", new IsOrdered(elementFinder, javascriptLibrary));
+    seleneseMethods.put("isPromptPresent", new IsPromptPresent(alertOverride));
     seleneseMethods.put("isSomethingSelected", new IsSomethingSelected(javascriptLibrary));
     seleneseMethods.put("isTextPresent", new IsTextPresent(javascriptLibrary));
     seleneseMethods.put("isVisible", new IsVisible(elementFinder));
@@ -317,6 +321,10 @@ public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver 
     seleneseMethods.put("selectWindow", new SelectWindow(windows));
     seleneseMethods.put("setBrowserLogLevel", new NoOp(null));
     seleneseMethods.put("setContext", new NoOp(null));
+    seleneseMethods.put(
+      "setCursorPosition",
+      new SetCursorPosition(javascriptLibrary, elementFinder));
+    seleneseMethods.put("setMouseSpeed", new NoOp(null));
     seleneseMethods.put("setSpeed", new NoOp(null));
     seleneseMethods.put("setTimeout", new SetTimeout(timer));
     seleneseMethods.put("shiftKeyDown", new ShiftKeyDown(keyState));

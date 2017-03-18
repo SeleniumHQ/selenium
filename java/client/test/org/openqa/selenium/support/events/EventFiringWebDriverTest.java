@@ -33,6 +33,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
+import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
@@ -52,6 +53,55 @@ import java.util.HashMap;
  */
 @RunWith(JUnit4.class)
 public class EventFiringWebDriverTest {
+
+  @Test
+  public void alertEvents() {
+    final WebDriver mockedDriver = mock(WebDriver.class);
+    final Alert mockedAlert = mock(Alert.class);
+    final WebDriver.TargetLocator mockedTargetLocator = mock(WebDriver.TargetLocator.class);
+    final StringBuilder log = new StringBuilder();
+
+    when(mockedDriver.switchTo()).thenReturn(mockedTargetLocator);
+    when(mockedTargetLocator.alert()).thenReturn(mockedAlert);
+
+    EventFiringWebDriver testedDriver =
+      new EventFiringWebDriver(mockedDriver).register(new AbstractWebDriverEventListener() {
+        @Override
+        public void beforeAlertAccept(WebDriver driver) {
+          log.append("beforeAlertAccept\n");
+        }
+
+        @Override
+        public void afterAlertAccept(WebDriver driver) {
+          log.append("afterAlertAccept\n");
+        }
+
+        @Override
+        public void beforeAlertDismiss(WebDriver driver) {
+          log.append("beforeAlertDismiss\n");
+        }
+
+        @Override
+        public void afterAlertDismiss(WebDriver driver) {
+          log.append("afterAlertDismiss\n");
+        }
+      });
+
+    testedDriver.switchTo().alert().accept();
+    testedDriver.switchTo().alert().dismiss();
+
+    assertEquals(
+      "beforeAlertAccept\n" +
+        "afterAlertAccept\n" +
+        "beforeAlertDismiss\n" +
+        "afterAlertDismiss\n",
+      log.toString());
+
+    InOrder order = Mockito.inOrder(mockedDriver, mockedAlert);
+    order.verify(mockedAlert).accept();
+    order.verify(mockedAlert).dismiss();
+    order.verifyNoMoreInteractions();
+  }
 
   @Test
   public void navigationEvents() {

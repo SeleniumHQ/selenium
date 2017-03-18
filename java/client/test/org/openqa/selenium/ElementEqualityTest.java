@@ -17,6 +17,9 @@
 
 package org.openqa.selenium;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+
 import org.junit.Test;
 import org.openqa.selenium.internal.WrapsElement;
 import org.openqa.selenium.remote.RemoteWebElement;
@@ -25,9 +28,6 @@ import org.openqa.selenium.testing.JavascriptEnabled;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
 
 import java.util.List;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 
 public class ElementEqualityTest extends JUnit4TestBase {
 

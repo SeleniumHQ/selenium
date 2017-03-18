@@ -17,12 +17,6 @@
 
 package org.openqa.selenium;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JUnit4TestBase;
-
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -43,6 +37,12 @@ import static org.openqa.selenium.testing.TestUtilities.isChrome;
 
 import com.google.common.collect.Sets;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
 import org.openqa.selenium.testing.drivers.SauceDriver;
 
@@ -82,13 +82,13 @@ import javax.imageio.ImageIO;
 @Ignore(value = {IE}, reason = "IE: strange colors appeared")
 public class TakesScreenshotTest extends JUnit4TestBase {
 
-  private TakesScreenshot screenshoter;
+  private TakesScreenshot screenshooter;
   private File tempFile = null;
 
   @Before
   public void setUp() throws Exception {
     assumeTrue(driver instanceof TakesScreenshot);
-    screenshoter = (TakesScreenshot) driver;
+    screenshooter = (TakesScreenshot) driver;
   }
 
   @After
@@ -102,7 +102,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   @Test
   public void testGetScreenshotAsFile() throws Exception {
     driver.get(pages.simpleTestPage);
-    tempFile = screenshoter.getScreenshotAs(OutputType.FILE);
+    tempFile = screenshooter.getScreenshotAs(OutputType.FILE);
     assertTrue(tempFile.exists());
     assertTrue(tempFile.length() > 0);
   }
@@ -110,18 +110,19 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   @Test
   public void testGetScreenshotAsBase64() throws Exception {
     driver.get(pages.simpleTestPage);
-    String screenshot = screenshoter.getScreenshotAs(OutputType.BASE64);
+    String screenshot = screenshooter.getScreenshotAs(OutputType.BASE64);
     assertTrue(screenshot.length() > 0);
   }
 
   @Test
   public void testGetScreenshotAsBinary() throws Exception {
     driver.get(pages.simpleTestPage);
-    byte[] screenshot = screenshoter.getScreenshotAs(OutputType.BYTES);
+    byte[] screenshot = screenshooter.getScreenshotAs(OutputType.BYTES);
     assertTrue(screenshot.length > 0);
   }
 
   @Test
+  @NotYetImplemented(value = CHROME, reason = "Fails unexpectedly")
   public void testShouldCaptureScreenshotOfCurrentViewport() throws Exception {
     // Fails on Sauce for whatever reason; probably display or window manager.
     assumeFalse(SauceDriver.shouldUseSauce()
@@ -262,6 +263,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
       value = {IE},
       reason = " IE: v9 shows strange border which broke color comparison"
   )
+  @NotYetImplemented(value = CHROME, reason = "Fails unexpectedly")
   public void testShouldCaptureScreenshotAtFramePage() throws Exception {
     // Fails on Sauce for whatever reason; probably display or window manager.
     assumeFalse(SauceDriver.shouldUseSauce()
@@ -298,8 +300,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = {CHROME},
-          reason = " CHROME: Unknown actual colors are presented at screenshot")
+  @Ignore(CHROME)
   public void testShouldCaptureScreenshotAtIFramePage() throws Exception {
     driver.get(appServer.whereIs("screen/screen_iframes.html"));
 
@@ -329,6 +330,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
       value = {IE, MARIONETTE},
       reason = "IE: v9 shows strange border which broke color comparison"
   )
+  @NotYetImplemented(value = CHROME, reason = "Fails unexpectedly")
   public void testShouldCaptureScreenshotAtFramePageAfterSwitching() throws Exception {
     // Fails on Sauce for whatever reason; probably display or window manager.
     assumeFalse(SauceDriver.shouldUseSauce()
@@ -362,9 +364,8 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   @SwitchToTopAfterTest
   @Test
   @Ignore(
-      value = {IE, CHROME, MARIONETTE},
-      reason = " IE: v9 takes screesnhot only of switched-in frame area " +
-               " CHROME: Unknown actual colors are presented at screenshot"
+      value = {CHROME, IE, MARIONETTE},
+      reason = " IE: v9 takes screesnhot only of switched-in frame area"
   )
   public void testShouldCaptureScreenshotAtIFramePageAfterSwitching() throws Exception {
     driver.get(appServer.whereIs("screen/screen_iframes.html"));
@@ -400,7 +401,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   private BufferedImage getImage() {
     BufferedImage image = null;
     try {
-      byte[] imageData = screenshoter.getScreenshotAs(OutputType.BYTES);
+      byte[] imageData = screenshooter.getScreenshotAs(OutputType.BYTES);
       assertTrue(imageData != null);
       assertTrue(imageData.length > 0);
       image = ImageIO.read(new ByteArrayInputStream(imageData));

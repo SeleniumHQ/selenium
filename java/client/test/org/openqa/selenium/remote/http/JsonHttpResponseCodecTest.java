@@ -40,9 +40,6 @@ import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.JsonToBeanConverter;
 import org.openqa.selenium.remote.Response;
 
-/**
- * Tests for {@link JsonHttpResponseCodec}.
- */
 @RunWith(JUnit4.class)
 public class JsonHttpResponseCodecTest {
 
@@ -62,7 +59,7 @@ public class JsonHttpResponseCodecTest {
         Response.class, new String(converted.getContent(), UTF_8));
 
     assertEquals(response.getStatus(), rebuilt.getStatus());
-    assertEquals(ErrorCodes.toState(response.getStatus()), rebuilt.getState());
+    assertEquals(new ErrorCodes().toState(response.getStatus()), rebuilt.getState());
     assertEquals(response.getSessionId(), rebuilt.getSessionId());
     assertEquals(response.getValue(), rebuilt.getValue());
   }
@@ -81,7 +78,7 @@ public class JsonHttpResponseCodecTest {
         Response.class, new String(converted.getContent(), UTF_8));
 
     assertEquals(response.getStatus(), rebuilt.getStatus());
-    assertEquals(ErrorCodes.toState(response.getStatus()), rebuilt.getState());
+    assertEquals(new ErrorCodes().toState(response.getStatus()), rebuilt.getState());
     assertEquals(response.getSessionId(), rebuilt.getSessionId());
     assertEquals(response.getValue(), rebuilt.getValue());
   }
@@ -107,7 +104,7 @@ public class JsonHttpResponseCodecTest {
     response.setContent("{\"foobar\"}".getBytes(UTF_8));
 
     Response decoded = codec.decode(response);
-    assertNull(decoded.getStatus());
+    assertEquals(0, decoded.getStatus().longValue());
     assertEquals("{\"foobar\"}", decoded.getValue());
   }
 

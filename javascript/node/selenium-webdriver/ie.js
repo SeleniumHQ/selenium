@@ -30,7 +30,7 @@
 const fs = require('fs'),
     util = require('util');
 
-const executors = require('./executors'),
+const http = require('./http'),
     io = require('./io'),
     capabilities = require('./lib/capabilities'),
     promise = require('./lib/promise'),
@@ -403,28 +403,25 @@ function createServiceFromCapabilities(capabilities) {
  */
 class Driver extends webdriver.WebDriver {
   /**
+   * Creates a new session for Microsoft's Internet Explorer.
+   *
    * @param {(capabilities.Capabilities|Options)=} opt_config The configuration
    *     options.
    * @param {promise.ControlFlow=} opt_flow The control flow to use,
    *     or {@code null} to use the currently active flow.
+   * @return {!Driver} A new driver instance.
    */
-  constructor(opt_config, opt_flow) {
+  static createSession(opt_config, opt_flow) {
     var caps = opt_config instanceof Options ?
         opt_config.toCapabilities() :
         (opt_config || capabilities.Capabilities.ie());
 
     var service = createServiceFromCapabilities(caps);
-    var executor = executors.createExecutor(service.start());
-    var driver = webdriver.WebDriver.createSession(executor, caps, opt_flow);
+    var client = service.start().then(url => new http.HttpClient(url));
+    var executor = new http.Executor(client);
 
-    super(driver.getSession(), executor, driver.controlFlow());
-
-    let boundQuit = this.quit.bind(this);
-
-    /** @override */
-    this.quit = function() {
-      return boundQuit().finally(service.kill.bind(service));
-    };
+    return /** @type {!Driver} */(webdriver.WebDriver.createSession(
+        executor, caps, opt_flow, this, () => service.kill()));
   }
 
   /**

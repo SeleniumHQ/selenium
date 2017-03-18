@@ -314,9 +314,24 @@ namespace OpenQA.Selenium.Remote
         public static readonly string SetWindowPosition = "setWindowPosition";
 
         /// <summary>
+        /// Represents GetWindowRect command
+        /// </summary>
+        public static readonly string GetWindowRect = "getWindowRect";
+
+        /// <summary>
+        /// Represents SetWindowRect command
+        /// </summary>
+        public static readonly string SetWindowRect = "setWindowRect";
+
+        /// <summary>
         /// Represents MaximizeWindow command
         /// </summary>
         public static readonly string MaximizeWindow = "maximizeWindow";
+
+        /// <summary>
+        /// Represents MinimizeWindow command
+        /// </summary>
+        public static readonly string MinimizeWindow = "minimizeWindow";
 
         /// <summary>
         /// Represents FullScreenWindow command
@@ -361,12 +376,22 @@ namespace OpenQA.Selenium.Remote
         /// <summary>
         /// Represents the SetTimeout command
         /// </summary>
-        public static readonly string SetTimeout = "setTimeout";
+        public static readonly string SetTimeouts = "setTimeouts";
+
+        /// <summary>
+        /// Represents the SetTimeout command
+        /// </summary>
+        public static readonly string GetTimeouts = "getTimeouts";
 
         /// <summary>
         /// Represents the Actions command.
         /// </summary>
         public static readonly string Actions = "actions";
+
+        /// <summary>
+        /// Represents the CancelActions command.
+        /// </summary>
+        public static readonly string CancelActions = "cancelActions";
 
         /// <summary>
         /// Represents the MouseClick command.

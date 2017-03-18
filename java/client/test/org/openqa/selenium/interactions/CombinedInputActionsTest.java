@@ -44,13 +44,13 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.Point;
-import org.openqa.selenium.testing.SwitchToTopAfterTest;
 import org.openqa.selenium.WaitingConditions;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
 import org.openqa.selenium.testing.NotYetImplemented;
+import org.openqa.selenium.testing.SwitchToTopAfterTest;
 
 import java.util.List;
 
@@ -276,8 +276,8 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
     wait.until(titleIs("We Arrive Here"));
   }
 
-  @NotYetImplemented(HTMLUNIT)
   @Test
+  @Ignore(HTMLUNIT)
   public void testChordControlCutAndPaste() {
     assumeFalse("FIXME: macs don't have CONRTROL key", getEffectivePlatform().is(Platform.MAC));
     assumeFalse("Windows: native events library  does not support storing modifiers state yet",
@@ -352,7 +352,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore(value = {SAFARI, MARIONETTE}, issues = {4136})
+  @Ignore(value = {SAFARI, MARIONETTE, HTMLUNIT}, issues = {4136})
   @NotYetImplemented(HTMLUNIT) // broken in 2.20
   public void canClickOnASuckerFishStyleMenu() throws InterruptedException {
     driver.get(pages.javascriptPage);
@@ -380,7 +380,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore(value = {SAFARI, MARIONETTE}, issues = {4136})
+  @Ignore(value = {SAFARI, MARIONETTE, HTMLUNIT}, issues = {4136})
   @NotYetImplemented(HTMLUNIT) // broken in 2.20
   public void testCanClickOnSuckerFishMenuItem() throws Exception {
     driver.get(pages.javascriptPage);

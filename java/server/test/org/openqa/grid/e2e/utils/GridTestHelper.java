@@ -57,10 +57,6 @@ public class GridTestHelper {
     return firefoxOnSeleniumCapability;
   }
 
-  public static DesiredCapabilities getFirefoxCapability() {
-    return DesiredCapabilities.firefox();
-  }
-
   public static DesiredCapabilities getDefaultBrowserCapability() {
     String browser = System.getProperty("webdriver.gridtest.browser");
     if (browser != null) {

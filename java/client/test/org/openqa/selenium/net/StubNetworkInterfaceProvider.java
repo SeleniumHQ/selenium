@@ -16,7 +16,6 @@
 // under the License.
 package org.openqa.selenium.net;
 
-import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Arrays;

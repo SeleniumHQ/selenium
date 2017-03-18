@@ -22,10 +22,11 @@ require_relative '../spec_helper'
 module Selenium
   module WebDriver
     module Safari
-
-      compliant_on :browser => :safari do
-        describe Driver do
-          it_behaves_like "driver that can be started concurrently", :safari
+      compliant_on browser: :safari do
+        not_compliant_on browser: :safari do
+          describe Driver do
+            it_behaves_like 'driver that can be started concurrently', :safari
+          end
         end
       end
     end # Safari

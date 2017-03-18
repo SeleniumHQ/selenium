@@ -18,10 +18,8 @@
 package org.openqa.selenium.interactions;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
-
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.interactions.internal.MultiAction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,47 +28,43 @@ import java.util.List;
  * An action for aggregating actions and triggering all of them at the same time.
  *
  */
-public class CompositeAction implements Action {
-  private WebDriver driver;
-  private List<Action> actionsList = new ArrayList<>();
-
-  public CompositeAction() {
-  }
-
-  public CompositeAction(WebDriver driver) {
-    this.driver = driver;
-  }
+public class CompositeAction implements Action, IsInteraction {
+  private final List<Action> actionsList = new ArrayList<>();
 
   public void perform() {
-    if (driver != null && driver instanceof CanPerformActionChain) {
-      ((CanPerformActionChain) driver).getActionChainExecutor().execute(this);
-
-    } else {
-      for (Action action : actionsList) {
-        action.perform();
-      }
+    for (Action action : actionsList) {
+      action.perform();
     }
   }
 
   public CompositeAction addAction(Action action) {
+    Preconditions.checkNotNull(action, "Null actions are not supported.");
     actionsList.add(action);
     return this;
   }
 
+  /**
+   * @deprecated No replacement.
+   */
   @VisibleForTesting
+  @Deprecated
   int getNumberOfActions() {
     return actionsList.size();
   }
 
-  public List<Action> asList() {
-    ImmutableList.Builder<Action> builder = new ImmutableList.Builder<>();
+  @Override
+  public List<Interaction> asInteractions(PointerInput mouse, KeyInput keyboard) {
+    ImmutableList.Builder<Interaction> interactions = ImmutableList.builder();
+
     for (Action action : actionsList) {
-      if (action instanceof MultiAction) {
-        builder.addAll(((MultiAction) action).getActions());
-      } else {
-        builder.add(action);
+      if (!(action instanceof IsInteraction)) {
+        throw new IllegalArgumentException(
+            String.format("Action must implement IsInteraction: %s", action));
       }
+
+      interactions.addAll(((IsInteraction) action).asInteractions(mouse, keyboard));
     }
-    return builder.build();
+
+    return interactions.build();
   }
 }

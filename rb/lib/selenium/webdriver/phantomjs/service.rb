@@ -20,45 +20,29 @@
 module Selenium
   module WebDriver
     module PhantomJS
-
       #
       # @api private
       #
 
       class Service < WebDriver::Service
         DEFAULT_PORT = 8910
+        @executable = 'phantomjs'.freeze
+        @missing_text = 'Unable to find phantomjs. Please download from http://phantomjs.org/download.html'.freeze
 
         private
 
         def start_process
           server_command = [@executable_path, "--webdriver=#{@port}", *@extra_args]
           @process = ChildProcess.build(*server_command.compact)
+          WebDriver.logger.debug("Executing Process #{server_command}")
 
-          if $DEBUG == true
-            @process.io.inherit!
-          elsif Platform.jruby?
-            # apparently we need to read the output for phantomjs to work on jruby
-            @process.io.stdout = @process.io.stderr = File.new(Platform.null_device, 'w')
-          end
-
+          @process.io.stdout = @process.io.stderr = WebDriver.logger.io
           @process.start
-        end
-
-        def stop_process
-          super
-          if Platform.jruby? && !$DEBUG
-            @process.io.close rescue nil
-          end
-        end
-
-        def stop_server
-          connect_to_server { |http| http.get("/shutdown") }
         end
 
         def cannot_connect_error_text
           "unable to connect to phantomjs @ #{uri} after #{START_TIMEOUT} seconds"
         end
-
       end # Service
     end # PhantomJS
   end # WebDriver

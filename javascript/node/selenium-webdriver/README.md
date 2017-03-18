@@ -11,15 +11,15 @@ Selenium may be installed via npm with
     npm install selenium-webdriver
 
 You will need to download additional components to work with each of the major
-browsers. The drivers for Chrome, Firefox, PhantomJS, Opera, and 
+browsers. The drivers for Chrome, Firefox, PhantomJS, Opera, and
 Microsoft's IE and Edge web browsers are all standalone executables that should
-be placed on your system [PATH]. The SafariDriverbrowser extension should be
-installed in your browser before using Selenium; we recommend disabling the
-extension when using the browser without Selenium or installing the extension in
-a profile only used for testing.
+be placed on your system [PATH]. Apple's safaridriver is shipped with
+Safari 10 for OS X El Capitan and macOS Sierra. You will need to enable Remote
+Automation in the Develop menu of Safari 10 before testing.
 
 > **NOTE:**  Mozilla's [geckodriver] is only required for Firefox 47+.
 > Everything you need for Firefox 38-46 is included with this package.
+
 
 | Browser           | Component                          |
 | ----------------- | ---------------------------------- |
@@ -29,7 +29,7 @@ a profile only used for testing.
 | Firefox 47+       | [geckodriver(.exe)][geckodriver]   |
 | PhantomJS         | [phantomjs(.exe)][phantomjs]       |
 | Opera             | [operadriver(.exe)][opera]         |
-| Safari            | [SafariDriver.safariextz][release] |
+| Safari            | [safaridriver]                     |
 
 ## Usage
 
@@ -136,16 +136,16 @@ will also have "best effort" support. Releases older than the latest LTS,
 _semver-major_ releases, and all unstable release branches (e.g. "v.Next")
 are considered strictly unsupported.
 
-For example, suppose the current LTS and stable releases are v4.2.4 and v5.4.1,
+For example, suppose the current LTS and stable releases are v6.9.5 and v7.5.0,
 respectively. Then a Selenium release would have the following support levels:
 
 | Version | Support       |
 | ------- | ------------- |
-| <= 4.1  | _unsupported_ |
-| 4.2     | supported     |
-| 5.0-3   | best effort   |
-| 5.4     | supported     |
-| >= 5.5  | best effort   |
+| <= 6.8  | _unsupported_ |
+| 6.9     | supported     |
+| 7.0-4   | best effort   |
+| 7.5     | supported     |
+| >= 7.5  | best effort   |
 | v.Next  | _unsupported_ |
 
 ### Support Level Definitions
@@ -168,11 +168,11 @@ months, the support window for selenium-webdriver will be roughly:
 
 | Date      | LTS  | Stable |
 | --------- | ---: | -----: |
-| (current) |  4.2 |    5.0 |
-| 2016-04   |  4.2 |    6.0 |
-| 2016-10   |  6.0 |    7.0 |
+| (current) |  6.9 |    7.5 |
 | 2017-04   |  6.0 |    8.0 |
 | 2017-10   |  8.0 |    9.0 |
+| 2018-04   |  8.0 |   10.0 |
+| 2018-10   | 10.0 |   11.0 |
 
 ## Issues
 
@@ -229,3 +229,4 @@ under the License.
 [reduction]: http://www.webkit.org/quality/reduction.html
 [release]: http://selenium-release.storage.googleapis.com/index.html
 [users]: https://groups.google.com/forum/#!forum/selenium-users
+[safaridriver]: https://developer.apple.com/library/prerelease/content/releasenotes/General/WhatsNewInSafari/Articles/Safari_10_0.html#//apple_ref/doc/uid/TP40014305-CH11-DontLinkElementID_28

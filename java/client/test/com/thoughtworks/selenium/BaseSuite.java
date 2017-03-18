@@ -19,14 +19,14 @@ package com.thoughtworks.selenium;
 
 import com.thoughtworks.selenium.testing.SeleniumTestEnvironment;
 
-import java.util.logging.Logger;
-
 import org.junit.ClassRule;
 import org.junit.rules.ExternalResource;
 import org.junit.rules.RuleChain;
 import org.junit.rules.TestRule;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.environment.TestEnvironment;
+
+import java.util.logging.Logger;
 
 public class BaseSuite {
 
@@ -37,6 +37,7 @@ public class BaseSuite {
     protected void before() throws Throwable {
       log.info("Preparing test environment");
       GlobalTestEnvironment.get(SeleniumTestEnvironment.class);
+      System.setProperty("webdriver.remote.shorten_log_messages", "true");
     }
     @Override
     protected void after() {

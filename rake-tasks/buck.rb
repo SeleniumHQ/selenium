@@ -1,5 +1,4 @@
 require 'childprocess'
-require 'java'
 require 'rake-tasks/checks'
 
 module Buck
@@ -14,41 +13,47 @@ module Buck
       version = File.open('.buckversion').first.chomp
       cached_hash = File.open('.buckhash').first.chomp
 
-      out = File.expand_path("~/.crazyfun/buck/#{version}/buck.pex")
+      out = File.expand_path("buck-out/crazy-fun/#{version}/buck.pex")
       out_hash = File.exist?(out) ? Digest::MD5.file(out).hexdigest : nil
 
       if cached_hash == out_hash
         # Make sure we're running a pristine buck instance
-        sh "python #{out} kill"
-        return ["python", out]
+        cmd = (windows?) ? ["python", out] : [out]
+        sh cmd.join(" ") + " kill", :verbose => true
+        return cmd
       end
 
       url = "https://github.com/SeleniumHQ/buck/releases/download/buck-release-#{version}/buck.pex"
       out_dir = File.dirname out
       FileUtils.mkdir_p(out_dir) unless File.exist?(out_dir)
 
-      # Cut-and-pasted from rake-tasks/crazy_fun/mappings/java.rb. We duplicate the code here so
-      # we can delete that file and have this continue working, but once we delete that file, we
-      # should also stop using this version of ant and just use the ant bundled with jruby.
-      dir = 'third_party/java/ant'
-      Dir[File.join(dir, '*.jar')].each { |jar| require jar }
-      # we set ANT_HOME to avoid JRuby trying to load its own Ant
-      ENV['ANT_HOME'] = dir
-      require "ant"
+      require "third_party/java/httpcomponents/httpcore-4.4.4"
+      require "third_party/java/httpcomponents/httpclient-4.5.2"
+      require "third_party/java/commons-logging/commons-logging-1.2"
+      require "third_party/java/commons-io/commons-io-2.5"
 
-      ant.get('src' => url, 'dest' => out, 'verbose' => true)
+      httpclient = org.apache.http.impl.client.HttpClients.custom().setRedirectStrategy(org.apache.http.impl.client.LaxRedirectStrategy.new()).build()
+      httpget = org.apache.http.client.methods.HttpGet.new(url)
+      response = httpclient.execute(httpget)
+      entity = response.getEntity()
+      org.apache.commons.io.FileUtils.copyInputStreamToFile(entity.getContent(), java.io.File.new(out))
+      org.apache.http.util.EntityUtils.consume(entity) unless entity.nil?
+
       File.chmod(0755, out)
-      sh "python #{out} kill"
-      ["python", out]
+      cmd = (windows?) ? ["python", out] : [out]
+      sh cmd.join(" ") + " kill", :verbose => true
+      cmd
     )
   end
 
   def self.buck_cmd
-    @@buck_cmd ||= (
+    (
       lambda { |command, args, &block|
-        args ||= []
-        buck = Buck::download
+        buck = []
+        pex = Buck::download
+        buck.push(*pex)
 
+        args ||= []
         buck.push(command)
         buck.push(*args)
 
@@ -82,14 +87,14 @@ module Buck
         proc.wait
 
         if proc.exit_code != 0
-          raise "Buck build failed"
+          raise "Buck build failed with exit code: #{proc.exit_code}
+stdout: #{proc.io.stdout.output}"
         end
 
         block.call(proc.io.stdout.output) if block
       }
     )
 
-    #block.call(output) if block
   end
 
   def self.enhance_task(task)
@@ -185,6 +190,7 @@ rule /\/\/.*:zip/ => [ proc {|task_name| task_name[0..-5]} ] do |task|
 
       output.lines do |line|
         line.chomp!
+        line = line.gsub(/\\/, "/")
 
         if line =~ /gen\/third_party\/.*\.jar/
           third_party.push(line)
@@ -203,7 +209,12 @@ rule /\/\/.*:zip/ => [ proc {|task_name| task_name[0..-5]} ] do |task|
       first_party.each do |jar|
         sh "cd #{working_dir}/uber && jar xf #{jar}"
       end
-      sh "cd #{working_dir}/uber && jar cMf ../#{target}-nodeps.jar *"
+
+      # TODO: Don't do this. It's sinful.
+      version = File.open('SELENIUM_VERSION', &:gets).chomp
+      version = eval(version)
+
+      sh "cd #{working_dir}/uber && jar cMf ../#{target}-#{version}-nodeps.jar *"
       # TODO: Get the sources of all deps too and build the -src.jar
       rm_rf "#{working_dir}/uber"
 
@@ -223,7 +234,9 @@ rule /\/\/.*/ do |task|
   # cases where the rule was not created by CrazyFun. Rules created by the "rule" method will
   # be a FileTask, whereas those created by CrazyFun are normal rake Tasks.
 
-  if task.class == Rake::FileTask && !task.out
+  buck_file = task.name[/\/\/([^:]+)/, 1] + "/BUCK"
+
+  if task.class == Rake::FileTask && !task.out && File.exists?(buck_file)
     task.enhance do
       Buck::buck_cmd.call('build', ['--deep', task.name])
     end

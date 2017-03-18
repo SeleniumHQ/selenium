@@ -8,11 +8,10 @@ namespace OpenQA.Selenium.Html5
     {
         [Test]
         [IgnoreBrowser(Browser.Android, "Untested feature")]
-       // [IgnoreBrowser(Browser.Chrome, "Not implemented")]
         public void TestAppCacheStatus()
         {
             driver.Url = html5Page;
-            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(2000));
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromMilliseconds(2000);
             IHasApplicationCache hasAppCacheDriver = driver as IHasApplicationCache;
             if (hasAppCacheDriver == null || !hasAppCacheDriver.HasApplicationCache)
             {

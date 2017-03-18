@@ -23,6 +23,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.RemoteWebElement;
 
@@ -34,6 +35,7 @@ import java.util.Map;
  * and Maps to catch nested references. All other values pass through the converter unchanged.
  */
 public class JsonToWebElementConverter implements Function<Object, Object> {
+
   private final RemoteWebDriver driver;
 
   public JsonToWebElementConverter(RemoteWebDriver driver) {
@@ -48,14 +50,14 @@ public class JsonToWebElementConverter implements Function<Object, Object> {
 
     if (result instanceof Map<?, ?>) {
       Map<?, ?> resultAsMap = (Map<?, ?>) result;
-      if (resultAsMap.containsKey("ELEMENT")) {
+      if (resultAsMap.containsKey(Dialect.OSS.getEncodedElementKey())) {
         RemoteWebElement element = newRemoteWebElement();
-        element.setId(String.valueOf(resultAsMap.get("ELEMENT")));
+        element.setId(String.valueOf(resultAsMap.get(Dialect.OSS.getEncodedElementKey())));
         element.setFileDetector(driver.getFileDetector());
         return element;
-      } else if (resultAsMap.containsKey("element-6066-11e4-a52e-4f735466cecf")) {
+      } else if (resultAsMap.containsKey(Dialect.W3C.getEncodedElementKey())) {
         RemoteWebElement element = newRemoteWebElement();
-        element.setId(String.valueOf(resultAsMap.get("element-6066-11e4-a52e-4f735466cecf")));
+        element.setId(String.valueOf(resultAsMap.get(Dialect.W3C.getEncodedElementKey())));
         element.setFileDetector(driver.getFileDetector());
         return element;
       } else {

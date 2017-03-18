@@ -20,32 +20,36 @@
 module Selenium
   module WebDriver
     module Chrome
-
       # @api private
       class Bridge < Remote::Bridge
-
         def initialize(opts = {})
-          http_client = opts.delete(:http_client)
+          opts[:desired_capabilities] = create_capabilities(opts)
 
-          if opts.has_key?(:url)
-            url = opts.delete(:url)
-          else
-            @service = Service.new(Chrome.driver_path, Service::DEFAULT_PORT, *extract_service_args(opts))
+          unless opts.key?(:url)
+            driver_path = opts.delete(:driver_path) || Chrome.driver_path
+            port = opts.delete(:port) || Service::DEFAULT_PORT
+
+            opts[:driver_opts] ||= {}
+            if opts.key? :service_log_path
+              WebDriver.logger.warn <<-DEPRECATE.gsub(/\n +| {2,}/, ' ').freeze
+            [DEPRECATION] `:service_log_path` is deprecated. Use `driver_opts: {log_path: #{opts[:service_log_path]}}`
+              DEPRECATE
+              opts[:driver_opts][:log_path] = opts.delete :service_log_path
+            end
+
+            if opts.key? :service_args
+              WebDriver.logger.warn <<-DEPRECATE.gsub(/\n +| {2,}/, ' ').freeze
+            [DEPRECATION] `:service_args` is deprecated. Pass switches using `driver_opts`
+              DEPRECATE
+              opts[:driver_opts][:args] = opts.delete(:service_args)
+            end
+
+            @service = Service.new(driver_path, port, opts.delete(:driver_opts))
             @service.start
-
-            url = @service.uri
+            opts[:url] = @service.uri
           end
 
-          caps = create_capabilities(opts)
-
-          remote_opts = {
-            :url                  => url,
-            :desired_capabilities => caps
-          }
-
-          remote_opts.merge!(:http_client => http_client) if http_client
-
-          super(remote_opts)
+          super(opts)
         end
 
         def browser
@@ -53,11 +57,8 @@ module Selenium
         end
 
         def driver_extensions
-          [
-            DriverExtensions::TakesScreenshot,
-            DriverExtensions::HasInputDevices,
-            DriverExtensions::HasWebStorage
-          ]
+          [DriverExtensions::TakesScreenshot,
+           DriverExtensions::HasWebStorage]
         end
 
         def capabilities
@@ -73,66 +74,34 @@ module Selenium
         private
 
         def create_capabilities(opts)
-          caps                        = opts.delete(:desired_capabilities) { Remote::Capabilities.chrome }
-          args                        = opts.delete(:args) || opts.delete(:switches)
-          native_events               = opts.delete(:native_events)
-          verbose                     = opts.delete(:verbose)
-          profile                     = opts.delete(:profile)
-          detach                      = opts.delete(:detach)
-          proxy                       = opts.delete(:proxy)
-          no_website_testing_defaults = opts.delete(:no_website_testing_defaults)
-          prefs                       = opts.delete(:prefs)
+          caps = opts.delete(:desired_capabilities) { Remote::Capabilities.chrome }
 
-          unless opts.empty?
-            raise ArgumentError, "unknown option#{'s' if opts.size != 1}: #{opts.inspect}"
+          chrome_options = caps['chromeOptions'] || caps[:chrome_options] || {}
+          chrome_options['binary'] = Chrome.path if Chrome.path
+          args = opts.delete(:args) || opts.delete(:switches) || []
+
+          unless args.is_a? Array
+            raise ArgumentError, ':args must be an Array of Strings'
           end
 
-          chrome_options = caps['chromeOptions'] || {}
+          args.map!(&:to_s)
+          profile = opts.delete(:profile).as_json if opts.key?(:profile)
 
-          if args
-            unless args.kind_of? Array
-              raise ArgumentError, ":args must be an Array of Strings"
-            end
-
-            chrome_options['args'] = args.map { |e| e.to_s }
+          if profile && args.none? { |arg| arg =~ /user-data-dir/ }
+            args << "--user-data-dir=#{profile[:directory]}"
           end
+          chrome_options['args'] = args unless args.empty?
 
-          if profile
-            data = profile.as_json
+          chrome_options['extensions'] = profile[:extensions] if profile && profile[:extensions]
+          chrome_options['detach'] = true if opts.delete(:detach)
+          chrome_options['prefs'] = opts.delete(:prefs) if opts.key?(:prefs)
 
-            chrome_options.merge! 'profile'    => data['zip'],
-                                  'extensions' => data['extensions']
-          end
-
-          chrome_options['binary']                   = Chrome.path if Chrome.path
-          chrome_options['nativeEvents']             = true if native_events
-          chrome_options['verbose']                  = true if verbose
-          chrome_options['detach']                   = detach.nil? || !!detach
-          chrome_options['noWebsiteTestingDefaults'] = true if no_website_testing_defaults
-          chrome_options['prefs']                    = prefs if prefs
-
-          caps['chromeOptions'] = chrome_options
-          caps['proxy'] = proxy if proxy
-
-          # legacy options - for chromedriver < 17.0.963.0
-          caps["chrome.switches"] = chrome_options['args'] if chrome_options.member?('args')
-          %w[binary detach extensions nativeEvents noWebsiteTestingDefaults prefs profile verbose].each do |key|
-            caps["chrome.#{key}"] = chrome_options[key] if chrome_options.member?(key)
-          end
+          caps[:chrome_options] = chrome_options unless chrome_options.empty?
+          caps[:proxy] = opts.delete(:proxy) if opts.key?(:proxy)
+          caps[:proxy] ||= opts.delete('proxy') if opts.key?('proxy')
 
           caps
         end
-
-        def extract_service_args(opts)
-          args = []
-
-          if opts.has_key?(:service_log_path)
-            args << "--log-path=#{opts.delete(:service_log_path)}"
-          end
-
-          args
-        end
-
       end # Bridge
     end # Chrome
   end # WebDriver

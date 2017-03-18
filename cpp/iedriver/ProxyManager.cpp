@@ -15,13 +15,18 @@
 // limitations under the License.
 
 #include "ProxyManager.h"
+
 #include <algorithm>
 #include <vector>
+
 #include <wininet.h>
+
 #include "json.h"
 #include "logging.h"
 #include "messages.h"
+
 #include "HookProcessor.h"
+#include "StringUtilities.h"
 
 #define WD_PROXY_TYPE_DIRECT "direct"
 #define WD_PROXY_TYPE_SYSTEM "system"

@@ -56,6 +56,7 @@ public class SafariOptions {
     private Option() {}  // Utility class.
 
     private static final String CLEAN_SESSION = "cleanSession";
+    private static final String TECHNOLOGY_PREVIEW = "technologyPreview";
     private static final String PORT = "port";
   }
 
@@ -68,6 +69,11 @@ public class SafariOptions {
    * @see #setUseCleanSession(boolean)
    */
   private boolean useCleanSession = false;
+
+  /**
+   * @see #setUseTechnologyPreview(boolean)
+   */
+  private boolean useTechnologyPreview = false;
 
   /**
    * Construct a {@link SafariOptions} instance from given capabilites.
@@ -96,10 +102,10 @@ public class SafariOptions {
   // Setters
 
   /**
-   * Set the port the {@link SafariDriverServer} should be started on. Defaults to 0, in which case
+   * Set the port the {@link SafariDriverService} should be started on. Defaults to 0, in which case
    * the server selects a free port.
    *
-   * @param port The port the {@link SafariDriverServer} should be started on,
+   * @param port The port the {@link SafariDriverService} should be started on,
    *    or 0 if the server should select a free port.
    */
   public void setPort(int port) {
@@ -120,10 +126,21 @@ public class SafariOptions {
     this.useCleanSession = useCleanSession;
   }
 
+  /**
+   * Instruct the SafariDriver to use the Safari Technology Preview if true, otherwise use the
+   * release version of Safari. Defaults to using the release version of Safari.
+   *
+   * @param useTechnologyPreview If true, the SafariDriver will use the Safari Technology Preview,
+   *     otherwise will use the release version of Safari.
+   */
+  public void setUseTechnologyPreview(boolean useTechnologyPreview) {
+    this.useTechnologyPreview = useTechnologyPreview;
+  }
+
   // Getters
 
   /**
-   * @return The port the {@link SafariDriverServer} should be started on.
+   * @return The port the {@link SafariDriverService} should be started on.
    *    If 0, the server should select a free port.
    * @see #setPort(int)
    */
@@ -139,6 +156,10 @@ public class SafariOptions {
     return useCleanSession;
   }
 
+  public boolean getUseTechnologyPreview() {
+    return useTechnologyPreview;
+  }
+
   // (De)serialization of the options
 
   /**
@@ -151,6 +172,7 @@ public class SafariOptions {
     JsonObject options = new JsonObject();
     options.addProperty(Option.PORT, port);
     options.addProperty(Option.CLEAN_SESSION, useCleanSession);
+    options.addProperty(Option.TECHNOLOGY_PREVIEW, useTechnologyPreview);
     return options;
   }
 
@@ -175,6 +197,12 @@ public class SafariOptions {
     if (useCleanSession != null) {
       safariOptions.setUseCleanSession(useCleanSession);
     }
+
+    Boolean useTechnologyPreview = (Boolean) options.get(Option.TECHNOLOGY_PREVIEW);
+    if (useTechnologyPreview != null) {
+      safariOptions.setUseTechnologyPreview(useTechnologyPreview);
+    }
+
     return safariOptions;
   }
 
@@ -198,11 +226,12 @@ public class SafariOptions {
     }
     SafariOptions that = (SafariOptions) other;
     return this.port == that.port
-        && this.useCleanSession == that.useCleanSession;
+        && this.useCleanSession == that.useCleanSession
+        && this.useTechnologyPreview == that.useTechnologyPreview;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(this.port, this.useCleanSession);
+    return Objects.hashCode(this.port, this.useCleanSession, this.useTechnologyPreview);
   }
 }

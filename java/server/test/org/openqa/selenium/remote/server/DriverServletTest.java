@@ -23,7 +23,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 
-import com.google.common.base.Supplier;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -38,13 +37,14 @@ import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.JsonToBeanConverter;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.SessionId;
-import org.openqa.selenium.remote.server.testing.FakeHttpServletRequest;
-import org.openqa.selenium.remote.server.testing.FakeHttpServletResponse;
-import org.openqa.selenium.remote.server.testing.TestSessions;
-import org.openqa.selenium.remote.server.testing.UrlInfo;
+import org.openqa.testing.FakeHttpServletRequest;
+import org.openqa.testing.FakeHttpServletResponse;
+import org.openqa.testing.TestSessions;
+import org.openqa.testing.UrlInfo;
 import org.seleniumhq.jetty9.server.handler.ContextHandler;
 
 import java.io.IOException;
+import java.util.function.Supplier;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletContext;
@@ -182,7 +182,7 @@ public class DriverServletTest {
     assertEquals(500, response.getStatus());
 
     JsonObject jsonResponse = new JsonParser().parse(response.getBody()).getAsJsonObject();
-    assertEquals(ErrorCodes.UNHANDLED_ERROR, jsonResponse.get("status").getAsInt());
+    assertEquals(ErrorCodes.UNKNOWN_COMMAND, jsonResponse.get("status").getAsInt());
 
     JsonObject value = jsonResponse.get("value").getAsJsonObject();
     assertTrue(value.get("message").getAsString().startsWith("POST /"));
@@ -220,11 +220,7 @@ public class DriverServletTest {
   }
 
   private static Supplier<DriverSessions> createSupplier(final DriverSessions sessions) {
-    return new Supplier<DriverSessions>() {
-      public DriverSessions get() {
-        return sessions;
-      }
-    };
+    return () -> sessions;
   }
 
   @Test

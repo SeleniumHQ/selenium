@@ -111,6 +111,7 @@ function getModules() {
   console.log('Scanning sources...');
   const excludeDirs = [
     path.join(__dirname, 'selenium-webdriver/example'),
+    path.join(__dirname, 'selenium-webdriver/lib/atoms'),
     path.join(__dirname, 'selenium-webdriver/lib/firefox'),
     path.join(__dirname, 'selenium-webdriver/lib/safari'),
     path.join(__dirname, 'selenium-webdriver/lib/test'),
@@ -206,7 +207,7 @@ function buildConfig(modules) {
     sourceUrlTemplate:
         'https://github.com/SeleniumHQ/selenium/tree/master/'
             + 'javascript/node/selenium-webdriver/%path%#L%line%',
-    strict: true
+    strict: false
   }
 }
 

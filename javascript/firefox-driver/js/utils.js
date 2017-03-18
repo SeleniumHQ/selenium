@@ -134,10 +134,6 @@ Utils.getNativeComponent = function(componentId, componentInterface) {
   }
 };
 
-Utils.getNativeIME = function() {
-  return Utils.getNativeComponent('@openqa.org/nativeime;1', Components.interfaces.nsINativeIME);
-};
-
 Utils.getPageLoadStrategy = function() {
   var prefs =
       fxdriver.moz.getService('@mozilla.org/preferences-service;1', 'nsIPrefBranch');
@@ -746,12 +742,17 @@ Utils.getClickablePoint = function(element) {
   };
 
   var findClickablePoint = function(r) {
+    // center, center of edges, corners
     var offsets = [
-      { x: Math.floor(r.width / 2), y: Math.floor(r.height / 2) },
-      { x: 0, y: 0 },
-      { x: r.width - 1, y: 0 },
-      { x: 0,  y: r.height - 1 },
-      { x: r.width - 1, y: r.height - 1}
+      { x: Math.floor(r.width / 2), y: Math.floor(r.height / 2) }, // center
+      { x: Math.floor(r.width / 2), y: 0}, // top edge center
+      { x: 0, y: Math.floor(r.height / 2)}, // left edge center
+      { x: r.width - 2, y: Math.floor(r.height / 2)}, // right edge center
+      { x: Math.floor(r.width / 2), y: r.height - 2}, // bottom edge center
+      { x: 0, y: 0 }, // top left corner
+      { x: r.width - 1, y: 0 }, // top right corner
+      { x: 0,  y: r.height - 1 }, // bottom left corner
+      { x: r.width - 1, y: r.height - 1} // bottom right corner
     ]
 
     return goog.array.find(offsets, function(offset){

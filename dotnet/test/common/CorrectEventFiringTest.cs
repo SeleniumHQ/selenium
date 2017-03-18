@@ -337,7 +337,8 @@ namespace OpenQA.Selenium
             IWebElement result = driver.FindElement(By.Id("fileResults"));
             Assert.AreEqual(string.Empty, result.Text);
 
-            System.IO.FileInfo inputFile = new System.IO.FileInfo("test.txt");
+            string filePath = System.IO.Path.Combine(EnvironmentManager.Instance.CurrentDirectory, "test.txt");
+            System.IO.FileInfo inputFile = new System.IO.FileInfo(filePath);
             System.IO.StreamWriter inputFileWriter = inputFile.CreateText();
             inputFileWriter.WriteLine("Hello world");
             inputFileWriter.Close();
@@ -360,10 +361,10 @@ namespace OpenQA.Selenium
             IWebElement element = driver.FindElement(By.Id("eventish"));
             element.Click();
 
-            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(2));
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(2);
             string clientX = driver.FindElement(By.Id("clientX")).Text;
             string clientY = driver.FindElement(By.Id("clientY")).Text;
-            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(0));
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(0);
 
             Assert.AreNotEqual("0", clientX);
             Assert.AreNotEqual("0", clientY);

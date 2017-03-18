@@ -47,27 +47,17 @@ const NO_FOCUS_LIB_AMD64 = isDevMode ?
 const X_IGNORE_NO_FOCUS_LIB = 'x_ignore_nofocus.so';
 
 
-let foundBinary = null;
-let foundDevBinary = null;
-
-
 /**
- * Checks the default Windows Firefox locations in Program Files.
- *
- * @param {boolean=} opt_dev Whether to find the Developer Edition.
+ * @param {string} file Path to the file to find, relative to the program files
+ *     root.
  * @return {!Promise<?string>} A promise for the located executable.
  *     The promise will resolve to {@code null} if Firefox was not found.
  */
-function defaultWindowsLocation(opt_dev) {
-  var files = [
+function findInProgramFiles(file) {
+  let files = [
     process.env['PROGRAMFILES'] || 'C:\\Program Files',
     process.env['PROGRAMFILES(X86)'] || 'C:\\Program Files (x86)'
-  ].map(function(prefix) {
-    if (opt_dev) {
-      return path.join(prefix, 'Firefox Developer Edition\\firefox.exe');
-    }
-    return path.join(prefix, 'Mozilla Firefox\\firefox.exe');
-  });
+  ].map(prefix => path.join(prefix, file));
   return io.exists(files[0]).then(function(exists) {
     return exists ? files[0] : io.exists(files[1]).then(function(exists) {
       return exists ? files[1] : null;
@@ -77,49 +67,104 @@ function defaultWindowsLocation(opt_dev) {
 
 
 /**
- * Locates the Firefox binary for the current system.
+ * Provides methods for locating the executable for a Firefox release channel
+ * on Windows and MacOS. For other systems (i.e. Linux), Firefox will always
+ * be located on the system PATH.
  *
- * @param {boolean=} opt_dev Whether to find the Developer Edition. This only
- *     used on Windows and OSX.
- * @return {!Promise<string>} A promise for the located binary. The promise will
- *     be rejected if Firefox cannot be located.
+ * @final
  */
-function findFirefox(opt_dev) {
-  if (opt_dev && foundDevBinary) {
-    return foundDevBinary;
+class Channel {
+  /**
+   * @param {string} darwin The path to check when running on MacOS.
+   * @param {string} win32 The path to check when running on Windows.
+   */
+  constructor(darwin, win32) {
+    /** @private @const */ this.darwin_ = darwin;
+    /** @private @const */ this.win32_ = win32;
+    /** @private {Promise<string>} */
+    this.found_ = null;
   }
 
-  if (!opt_dev && foundBinary) {
-    return foundBinary;
-  }
-
-  let found;
-  if (process.platform === 'darwin') {
-    let exe = opt_dev
-        ? '/Applications/FirefoxDeveloperEdition.app/Contents/MacOS/firefox-bin'
-        : '/Applications/Firefox.app/Contents/MacOS/firefox-bin';
-    found = io.exists(exe).then(exists => exists ? exe : null);
-
-  } else if (process.platform === 'win32') {
-    found = defaultWindowsLocation(opt_dev);
-
-  } else {
-    found = Promise.resolve(io.findInPath('firefox'));
-  }
-
-  found = found.then(found => {
-    if (found) {
-      return found;
+  /**
+   * Attempts to locate the Firefox executable for this release channel. This
+   * will first check the default installation location for the channel before
+   * checking the user's PATH. The returned promise will be rejected if Firefox
+   * can not be found.
+   *
+   * @return {!Promise<string>} A promise for the location of the located
+   *     Firefox executable.
+   */
+  locate() {
+    if (this.found_) {
+      return this.found_;
     }
-    throw Error('Could not locate Firefox on the current system');
-  });
 
-  if (opt_dev) {
-    return foundDevBinary = found;
-  } else {
-    return foundBinary = found;
+    let found;
+    switch (process.platform) {
+      case 'darwin':
+        found = io.exists(this.darwin_)
+            .then(exists => exists ? this.darwin_ : io.findInPath('firefox'));
+        break;
+
+      case 'win32':
+        found = findInProgramFiles(this.win32_)
+            .then(found => found || io.findInPath('firefox.exe'));
+        break;
+
+      default:
+        found = Promise.resolve(io.findInPath('firefox'));
+        break;
+    }
+
+    this.found_ = found.then(found => {
+      if (found) {
+        // TODO: verify version info.
+        return found;
+      }
+      throw Error('Could not locate Firefox on the current system');
+    });
+    return this.found_;
   }
 }
+
+
+/**
+ * Firefox's developer channel.
+ * @const
+ * @see <https://www.mozilla.org/en-US/firefox/channel/desktop/#aurora>
+ */
+Channel.AURORA = new Channel(
+  '/Applications/FirefoxDeveloperEdition.app/Contents/MacOS/firefox-bin',
+  'Firefox Developer Edition\\firefox.exe');
+
+/**
+ * Firefox's beta channel. Note this is provided mainly for convenience as
+ * the beta channel has the same installation location as the main release
+ * channel.
+ * @const
+ * @see <https://www.mozilla.org/en-US/firefox/channel/desktop/#beta>
+ */
+Channel.BETA = new Channel(
+  '/Applications/Firefox.app/Contents/MacOS/firefox-bin',
+  'Mozilla Firefox\\firefox.exe');
+
+/**
+ * Firefox's release channel.
+ * @const
+ * @see <https://www.mozilla.org/en-US/firefox/desktop/>
+ */
+Channel.RELEASE = new Channel(
+  '/Applications/Firefox.app/Contents/MacOS/firefox-bin',
+  'Mozilla Firefox\\firefox.exe');
+
+/**
+ * Firefox's nightly release channel.
+ * @const
+ * @see <https://www.mozilla.org/en-US/firefox/channel/desktop/#nightly>
+ */
+Channel.NIGHTLY = new Channel(
+  '/Applications/FirefoxNightly.app/Contents/MacOS/firefox-bin',
+  'Nightly\\firefox.exe');
 
 
 /**
@@ -151,20 +196,23 @@ function installNoFocusLibs(profileDir) {
  * use with WebDriver.
  *
  * If created _without_ a path for the Firefox binary to use, this class will
- * attempt to find Firefox when {@link #launch()} is called. For OSX and
+ * attempt to find Firefox when {@link #launch()} is called. For MacOS and
  * Windows, this class will look for Firefox in the current platform's default
- * installation location (e.g. /Applications/Firefox.app on OSX). For all other
- * platforms, the Firefox executable must be available on your system `PATH`.
+ * installation location (e.g. /Applications/Firefox.app on MacOS). For all
+ * other platforms, the Firefox executable must be available on your system
+ * `PATH`.
  *
  * @final
  */
 class Binary {
   /**
-   * @param {string=} opt_exe Path to the Firefox binary to use.
+   * @param {?(string|Channel)=} opt_exeOrChannel Either the path to a specific
+   *     Firefox binary to use, or a {@link Channel} instance that describes
+   *     how to locate the desired Firefox version.
    */
-  constructor(opt_exe) {
-    /** @private {(string|undefined)} */
-    this.exe_ = opt_exe;
+  constructor(opt_exeOrChannel) {
+    /** @private {?(string|Channel)} */
+    this.exe_ = opt_exeOrChannel || null;
 
     /** @private {!Array.<string>} */
     this.args_ = [];
@@ -179,6 +227,15 @@ class Binary {
 
     /** @private {boolean} */
     this.devEdition_ = false;
+  }
+
+  /**
+   * @return {(string|undefined)} The path to the Firefox executable to use, or
+   *     `undefined` if WebDriver should attempt to locate Firefox automatically
+   *     on the current system.
+   */
+  getExe() {
+    return typeof this.exe_ === 'string' ? this.exe_ : undefined;
   }
 
   /**
@@ -197,6 +254,14 @@ class Binary {
   }
 
   /**
+   * @return {!Array<string>} The command line arguments to use when starting
+   *     the browser.
+   */
+  getArguments() {
+    return this.args_;
+  }
+
+  /**
    * Specifies whether to use Firefox Developer Edition instead of the normal
    * stable channel. Setting this option has no effect if this instance was
    * created with a path to a specific Firefox binary.
@@ -206,6 +271,8 @@ class Binary {
    *
    * @param {boolean=} opt_use Whether to use the developer edition. Defaults to
    *     true.
+   * @deprecated Use the {@link Channel} class to indicate the desired Firefox
+   *     version when creating a new binary: `new Binary(Channel.AURORA)`.
    */
   useDevEdition(opt_use) {
     this.devEdition_ = opt_use === undefined || !!opt_use;
@@ -221,7 +288,13 @@ class Binary {
    *     used by this instance.
    */
   locate() {
-    return Promise.resolve(this.exe_ || findFirefox(this.devEdition_));
+    if (typeof this.exe_ === 'string') {
+      return Promise.resolve(this.exe_);
+    } else if (this.exe_ instanceof Channel) {
+      return this.exe_.locate();
+    }
+    let channel = this.devEdition_ ? Channel.AURORA : Channel.RELEASE;
+    return channel.locate();
   }
 
   /**
@@ -267,4 +340,5 @@ class Binary {
 
 
 exports.Binary = Binary;
+exports.Channel = Channel;
 

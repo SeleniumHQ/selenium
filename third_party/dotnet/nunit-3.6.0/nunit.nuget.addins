@@ -1,0 +1,2 @@
+../../NUnit.Extension.*/**/tools/     # nuget v2 layout
+../../../NUnit.Extension.*/**/tools/  # nuget v3 layout

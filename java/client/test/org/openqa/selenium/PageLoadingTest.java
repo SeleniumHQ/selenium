@@ -168,6 +168,7 @@ public class PageLoadingTest extends JUnit4TestBase {
     assertTrue("Took too long to refresh page: " + duration, duration < 5 * 1000);
   }
 
+  @Ignore(value = {CHROME})
   @Test
   public void testEagerStrategyShouldWaitForDocumentToBeLoaded() {
     initLocalDriver("eager");
@@ -339,7 +340,7 @@ public class PageLoadingTest extends JUnit4TestBase {
     // TODO(user): Set the SSL capability to true.
     driver.get(appServer.whereIsSecure("simpleTest.html"));
 
-    assertThat(driver.getTitle(), equalTo("Hello WebDriver"));
+    shortWait.until(titleIs("Hello WebDriver"));
   }
 
   @Ignore({CHROME, IE, PHANTOMJS, SAFARI, MARIONETTE})
@@ -397,15 +398,12 @@ public class PageLoadingTest extends JUnit4TestBase {
   @Ignore(value = {HTMLUNIT, SAFARI, PHANTOMJS, FIREFOX},
           reason = "Safari: see issue 687, comment 41; PHANTOMJS: not tested", issues = {687})
   @NeedsLocalEnvironment
+  @NotYetImplemented(MARIONETTE)
   @NoDriverAfterTest
   @Test
   public void testPageLoadTimeoutCanBeChanged() {
-    try {
-      testPageLoadTimeoutIsEnforced(2);
-      testPageLoadTimeoutIsEnforced(3);
-    } finally {
-      driver.manage().timeouts().pageLoadTimeout(-1, SECONDS);
-    }
+    testPageLoadTimeoutIsEnforced(2);
+    testPageLoadTimeoutIsEnforced(3);
   }
 
   @Ignore(value = {SAFARI, MARIONETTE},
@@ -418,7 +416,7 @@ public class PageLoadingTest extends JUnit4TestBase {
     try {
       testPageLoadTimeoutIsEnforced(2);
     } finally {
-      driver.manage().timeouts().pageLoadTimeout(-1, SECONDS);
+      driver.manage().timeouts().pageLoadTimeout(300, SECONDS);
     }
 
     // Load another page after get() timed out but before test HTTP server served previous page.
@@ -457,7 +455,7 @@ public class PageLoadingTest extends JUnit4TestBase {
       assertThat(duration, greaterThan(2000));
       assertThat(duration, lessThan(5000));
     } finally {
-      driver.manage().timeouts().pageLoadTimeout(-1, SECONDS);
+      driver.manage().timeouts().pageLoadTimeout(300, SECONDS);
     }
 
     // Load another page after get() timed out but before test HTTP server served previous page.
@@ -492,7 +490,7 @@ public class PageLoadingTest extends JUnit4TestBase {
       assertThat(duration, greaterThan(2000));
       assertThat(duration, lessThan(5000));
     } finally {
-      driver.manage().timeouts().pageLoadTimeout(-1, SECONDS);
+      driver.manage().timeouts().pageLoadTimeout(300, SECONDS);
     }
 
     // Load another page after get() timed out but before test HTTP server served previous page.
@@ -511,7 +509,7 @@ public class PageLoadingTest extends JUnit4TestBase {
     try {
       testPageLoadTimeoutIsEnforced(1);
     } finally {
-      driver.manage().timeouts().pageLoadTimeout(-1, SECONDS);
+      driver.manage().timeouts().pageLoadTimeout(300, SECONDS);
     }
 
     new WebDriverWait(driver, 30)
@@ -542,8 +540,8 @@ public class PageLoadingTest extends JUnit4TestBase {
 
     long start = System.currentTimeMillis();
     try {
-      driver
-          .get(appServer.whereIs("sleep?time=" + (webDriverPageLoadTimeout + pageLoadTimeBuffer)));
+      driver.get(appServer.whereIs(
+          "sleep?time=" + (webDriverPageLoadTimeout + pageLoadTimeBuffer)));
       fail("I should have timed out after " + webDriverPageLoadTimeout + " seconds");
     } catch (RuntimeException e) {
       long end = System.currentTimeMillis();

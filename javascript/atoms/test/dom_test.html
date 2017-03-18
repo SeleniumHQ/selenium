@@ -4,7 +4,7 @@
 <title>dom_test</title>
 <script src="test_bootstrap.js"></script>
 <script type="text/javascript">
-  goog.require('bot.dom');
+  goog.require('bot.dom.core');
   goog.require('bot.userAgent');
   goog.require('goog.testing.jsunit');
   goog.require('goog.userAgent');
@@ -24,13 +24,13 @@
     ];
     for (var i = 0; i < toTest.length; i++) {
       assertObjectEquals(toTest[i].expected,
-          bot.dom.standardizeStyleAttribute_(toTest[i].input));
+          bot.dom.core.standardizeStyleAttribute_(toTest[i].input));
     }
   }
 
   function testStandardizeStyleAttributeAppendsAMissingSemicolonToTheEndOfTheString() {
     assertEquals("background-color:green; width:100px; height:50px;",
-        bot.dom.standardizeStyleAttribute_(
+        bot.dom.core.standardizeStyleAttribute_(
             "background-color:green; width:100px; height:50px")
     );
   }
@@ -65,7 +65,7 @@
     ];
     for (var i = 0; i < toTest.length; i++) {
       assertObjectEquals(toTest[i].expected,
-          bot.dom.standardizeStyleAttribute_(toTest[i].input));
+          bot.dom.core.standardizeStyleAttribute_(toTest[i].input));
     }
   }
 </script>

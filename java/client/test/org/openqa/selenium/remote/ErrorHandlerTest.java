@@ -26,6 +26,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 
@@ -33,18 +34,34 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.openqa.selenium.ElementNotSelectableException;
 import org.openqa.selenium.ElementNotVisibleException;
+import org.openqa.selenium.ImeActivationFailedException;
+import org.openqa.selenium.ImeNotAvailableException;
+import org.openqa.selenium.InvalidCookieDomainException;
 import org.openqa.selenium.InvalidElementStateException;
 import org.openqa.selenium.InvalidSelectorException;
+import org.openqa.selenium.JavascriptException;
+import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NoSuchFrameException;
+import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.NoSuchWindowException;
+import org.openqa.selenium.ScriptTimeoutException;
+import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.StaleElementReferenceException;
+import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.UnableToSetCookieException;
+import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.interactions.InvalidCoordinatesException;
+import org.openqa.selenium.interactions.MoveTargetOutOfBoundsException;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Unit tests for {@link ErrorHandler}.
@@ -232,7 +249,8 @@ public class ErrorHandlerTest {
       handler.throwIfResponseFailed(createResponse(ErrorCodes.UNHANDLED_ERROR, data), 123);
       fail("Should have thrown!");
     } catch (WebDriverException expected) {
-      assertEquals(new WebDriverException(serverError.getMessage() + "\nCommand duration or timeout: 123 milliseconds").getMessage(),
+      assertEquals(new WebDriverException(serverError.getMessage() + "\nCommand duration or timeout: 123 milliseconds",
+                                          new WebDriverException()).getMessage(),
           expected.getMessage());
 
       Throwable cause = expected.getCause();
@@ -260,7 +278,8 @@ public class ErrorHandlerTest {
       handler.throwIfResponseFailed(createResponse(ErrorCodes.UNHANDLED_ERROR, data), 123);
       fail("Should have thrown!");
     } catch (WebDriverException expected) {
-      assertEquals(new WebDriverException(serverError.getMessage() + "\nCommand duration or timeout: 123 milliseconds").getMessage(),
+      assertEquals(new WebDriverException(serverError.getMessage() + "\nCommand duration or timeout: 123 milliseconds",
+                                          new WebDriverException()).getMessage(),
           expected.getMessage());
 
       Throwable cause = expected.getCause();
@@ -287,7 +306,8 @@ public class ErrorHandlerTest {
       handler.throwIfResponseFailed(createResponse(ErrorCodes.UNHANDLED_ERROR, data), 123);
       fail("Should have thrown!");
     } catch (WebDriverException expected) {
-      assertEquals(new WebDriverException("some error message\nCommand duration or timeout: 123 milliseconds").getMessage(),
+      assertEquals(new WebDriverException("some error message\nCommand duration or timeout: 123 milliseconds",
+                                          new WebDriverException()).getMessage(),
           expected.getMessage());
 
       StackTraceElement[] expectedTrace = {
@@ -321,7 +341,8 @@ public class ErrorHandlerTest {
       handler.throwIfResponseFailed(createResponse(ErrorCodes.UNHANDLED_ERROR, data), 123);
       fail("Should have thrown!");
     } catch (WebDriverException expected) {
-      assertEquals(new WebDriverException("some error message\nCommand duration or timeout: 123 milliseconds").getMessage(),
+      assertEquals(new WebDriverException("some error message\nCommand duration or timeout: 123 milliseconds",
+                                          new WebDriverException()).getMessage(),
           expected.getMessage());
 
       StackTraceElement[] expectedTrace = {
@@ -339,7 +360,7 @@ public class ErrorHandlerTest {
       assertStackTracesEqual(expectedTrace, cause.getStackTrace());
     }
   }
-  
+
   @SuppressWarnings({"unchecked", "ThrowableInstanceNeverThrown"})
   @Test
   public void testToleratesNumericLineNumberAsString() {
@@ -355,7 +376,8 @@ public class ErrorHandlerTest {
       handler.throwIfResponseFailed(createResponse(ErrorCodes.UNHANDLED_ERROR, data), 123);
       fail("Should have thrown!");
     } catch (WebDriverException expected) {
-      assertEquals(new WebDriverException("some error message\nCommand duration or timeout: 123 milliseconds").getMessage(),
+      assertEquals(new WebDriverException("some error message\nCommand duration or timeout: 123 milliseconds",
+                                          new WebDriverException()).getMessage(),
           expected.getMessage());
 
       StackTraceElement[] expectedTrace = {
@@ -373,7 +395,7 @@ public class ErrorHandlerTest {
       assertStackTracesEqual(expectedTrace, cause.getStackTrace());
     }
   }
-  
+
   @SuppressWarnings({"unchecked", "ThrowableInstanceNeverThrown"})
   @Test
   public void testShouldIndicateWhenTheServerReturnedAnExceptionThatWasSuppressed()
@@ -414,6 +436,60 @@ public class ErrorHandlerTest {
       ScreenshotException screenshot = (ScreenshotException) expected.getCause();
       assertEquals("screenGrabText", screenshot.getBase64EncodedScreenshot());
       assertDoesNotHaveACause(screenshot);
+    }
+  }
+
+  @Test
+  public void testStatusCodesRaisedBackToStatusMatches() {
+    Map<Integer, Class> exceptions = new HashMap<>();
+    exceptions.put(ErrorCodes.NO_SUCH_SESSION, NoSuchSessionException.class);
+    exceptions.put(ErrorCodes.NO_SUCH_ELEMENT, NoSuchElementException.class);
+    exceptions.put(ErrorCodes.NO_SUCH_FRAME, NoSuchFrameException.class);
+    exceptions.put(ErrorCodes.UNKNOWN_COMMAND, UnsupportedCommandException.class);
+    exceptions.put(ErrorCodes.STALE_ELEMENT_REFERENCE, StaleElementReferenceException.class);
+    exceptions.put(ErrorCodes.ELEMENT_NOT_VISIBLE, ElementNotVisibleException.class);
+    exceptions.put(ErrorCodes.INVALID_ELEMENT_STATE, InvalidElementStateException.class);
+    exceptions.put(ErrorCodes.UNHANDLED_ERROR, WebDriverException.class);
+    exceptions.put(ErrorCodes.ELEMENT_NOT_SELECTABLE, ElementNotSelectableException.class);
+    exceptions.put(ErrorCodes.JAVASCRIPT_ERROR, JavascriptException.class);
+    exceptions.put(ErrorCodes.XPATH_LOOKUP_ERROR, InvalidSelectorException.class);
+    exceptions.put(ErrorCodes.TIMEOUT, TimeoutException.class);
+    exceptions.put(ErrorCodes.NO_SUCH_WINDOW, NoSuchWindowException.class);
+    exceptions.put(ErrorCodes.INVALID_COOKIE_DOMAIN, InvalidCookieDomainException.class);
+    exceptions.put(ErrorCodes.UNABLE_TO_SET_COOKIE, UnableToSetCookieException.class);
+    exceptions.put(ErrorCodes.UNEXPECTED_ALERT_PRESENT, UnhandledAlertException.class);
+    exceptions.put(ErrorCodes.NO_ALERT_PRESENT, NoAlertPresentException.class);
+    exceptions.put(ErrorCodes.ASYNC_SCRIPT_TIMEOUT, ScriptTimeoutException.class);
+    exceptions.put(ErrorCodes.INVALID_ELEMENT_COORDINATES, InvalidCoordinatesException.class);
+    exceptions.put(ErrorCodes.IME_NOT_AVAILABLE, ImeNotAvailableException.class);
+    exceptions.put(ErrorCodes.IME_ENGINE_ACTIVATION_FAILED, ImeActivationFailedException.class);
+    exceptions.put(ErrorCodes.INVALID_SELECTOR_ERROR, InvalidSelectorException.class);
+    exceptions.put(ErrorCodes.SESSION_NOT_CREATED, SessionNotCreatedException.class);
+    exceptions.put(ErrorCodes.MOVE_TARGET_OUT_OF_BOUNDS, MoveTargetOutOfBoundsException.class);
+    exceptions.put(ErrorCodes.INVALID_XPATH_SELECTOR, InvalidSelectorException.class);
+    exceptions.put(ErrorCodes.INVALID_XPATH_SELECTOR_RETURN_TYPER, InvalidSelectorException.class);
+
+    Set<String> collectedFailures = new HashSet<>();
+    for (Map.Entry<Integer, Class> exception : exceptions.entrySet()) {
+      try {
+        handler.throwIfResponseFailed(createResponse(exception.getKey()), 123);
+        fail("Should have thrown an Exception");
+      } catch (Exception e) {
+        assertEquals("Checking status code: " + exception.getKey(), exception.getValue().getSimpleName(), e.getClass().getSimpleName());
+
+        int expected = exception.getKey();
+        if (e instanceof InvalidSelectorException) {
+          // all of the special invalid selector exceptions are just mapped to the generic invalid selector
+          expected = ErrorCodes.INVALID_SELECTOR_ERROR;
+        }
+        int seenStatusCode = new ErrorCodes().toStatusCode(e);
+        if (seenStatusCode != expected) {
+          collectedFailures.add(String.format("%s: ErrorCode.toStatusCode. Expected %d, saw %d", e.getClass().getSimpleName(), expected, seenStatusCode));
+        }
+      }
+    }
+    if (!collectedFailures.isEmpty()) {
+      fail(Joiner.on("\n").join(collectedFailures));
     }
   }
 

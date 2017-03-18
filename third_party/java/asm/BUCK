@@ -1,0 +1,33 @@
+prebuilt_jar(
+  name = 'asm',
+  maven_coords = 'org.ow2.asm:asm:jar:5.0.4',
+  binary_jar = 'asm-5.0.4.jar',
+  source_jar = 'asm-5.0.4-sources.jar',
+  visibility = [
+    '//third_party/java/pantsbuild:jarjar'
+  ],
+)
+
+prebuilt_jar(
+  name = 'asm-commons',
+  maven_coords = 'org.ow2.asm:asm-commons:jar:5.0.4',
+  binary_jar = 'asm-commons-5.0.4.jar',
+  source_jar = 'asm-commons-5.0.4-sources.jar',
+  deps = [
+    ':asm-tree'
+  ],
+  visibility = [
+    '//third_party/java/pantsbuild:jarjar'
+  ],
+)
+
+prebuilt_jar(
+  name = 'asm-tree',
+  maven_coords = 'org.ow2.asm:asm-tree:jar:5.0.4',
+  binary_jar = 'asm-tree-5.0.4.jar',
+  source_jar = 'asm-tree-5.0.4-sources.jar',
+  deps = [
+    ':asm'
+  ],
+)
+

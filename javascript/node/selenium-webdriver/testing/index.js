@@ -28,19 +28,27 @@
  * - it.skip
  * - xit
  *
+ * Each of the wrapped functions support generator functions. If the generator
+ * {@linkplain ../lib/promise.consume yields a promise}, the test will wait
+ * for that promise to resolve before invoking the next iteration of the
+ * generator:
+ *
+ *     test.it('generators', function*() {
+ *       let x = yield Promise.resolve(1);
+ *       assert.equal(x, 1);
+ *     });
+ *
  * The provided wrappers leverage the {@link webdriver.promise.ControlFlow}
  * to simplify writing asynchronous tests:
  *
- *     var By = require('selenium-webdriver').By,
- *         until = require('selenium-webdriver').until,
- *         firefox = require('selenium-webdriver/firefox'),
- *         test = require('selenium-webdriver/testing');
+ *     var {Builder, By, until} = require('selenium-webdriver');
+ *     var test = require('selenium-webdriver/testing');
  *
  *     test.describe('Google Search', function() {
  *       var driver;
  *
  *       test.before(function() {
- *         driver = new firefox.Driver();
+ *         driver = new Builder().forBrowser('firefox').build();
  *       });
  *
  *       test.after(function() {
@@ -66,8 +74,22 @@
  *     function maybe() { return Math.random() < 0.5; }
  */
 
-var promise = require('..').promise;
-var flow = promise.controlFlow();
+'use strict';
+
+const promise = require('..').promise;
+const flow = (function() {
+  const initial = process.env['SELENIUM_PROMISE_MANAGER'];
+  try {
+    process.env['SELENIUM_PROMISE_MANAGER'] = '1';
+    return promise.controlFlow();
+  } finally {
+    if (initial === undefined) {
+      delete process.env['SELENIUM_PROMISE_MANAGER'];
+    } else {
+      process.env['SELENIUM_PROMISE_MANAGER'] = initial;
+    }
+  }
+})();
 
 
 /**
@@ -119,13 +141,38 @@ function wrapArgument(value) {
  * Should preserve the semantics of Mocha's Runnable.prototype.run (See
  * https://github.com/mochajs/mocha/blob/master/lib/runnable.js#L192)
  *
- * @param {Function} fn
- * @return {Function}
+ * @param {!Function} fn
+ * @return {!Function}
  */
 function makeAsyncTestFn(fn) {
-  var async = fn.length > 0; // if test function expects a callback, its "async"
+  const isAsync = fn.length > 0;
+  const isGenerator = promise.isGenerator(fn);
+  if (isAsync && isGenerator) {
+    throw TypeError(
+        'generator-based tests must not take a callback; for async testing,'
+            + ' return a promise (or yield on a promise)');
+  }
 
   var ret = /** @type {function(this: mocha.Context)}*/ (function(done) {
+    const runTest = (resolve, reject) => {
+      try {
+        if (isAsync) {
+          fn.call(this, err => err ? reject(err) : resolve());
+        } else if (isGenerator) {
+          resolve(promise.consume(fn, this));
+        } else {
+          resolve(fn.call(this));
+        }
+      } catch (ex) {
+        reject(ex);
+      }
+    };
+
+    if (!promise.USE_PROMISE_MANAGER) {
+      new Promise(runTest).then(seal(done), done);
+      return;
+    }
+
     var runnable = this.runnable();
     var mochaCallback = runnable.callback;
     runnable.callback = function() {
@@ -133,25 +180,9 @@ function makeAsyncTestFn(fn) {
       return mochaCallback.apply(this, arguments);
     };
 
-    var testFn = fn.bind(this);
     flow.execute(function controlFlowExecute() {
       return new promise.Promise(function(fulfill, reject) {
-        if (async) {
-          // If testFn is async (it expects a done callback), resolve the promise of this
-          // test whenever that callback says to.  Any promises returned from testFn are
-          // ignored.
-          testFn(function testFnDoneCallback(err) {
-            if (err) {
-              reject(err);
-            } else {
-              fulfill();
-            }
-          });
-        } else {
-          // Without a callback, testFn can return a promise, or it will
-          // be assumed to have completed synchronously
-          fulfill(testFn());
-        }
+        return runTest(fulfill, reject);
       }, flow);
     }, runnable.fullTitle()).then(seal(done), done);
   });
@@ -196,6 +227,45 @@ function ignore(predicateFn) {
 }
 
 
+/**
+ * @param {string} name
+ * @return {!Function}
+ * @throws {TypeError}
+ */
+function getMochaGlobal(name) {
+  let fn = global[name];
+  let type = typeof fn;
+  if (type !== 'function') {
+    throw TypeError(
+        `Expected global.${name} to be a function, but is ${type}. `
+            + 'This can happen if you try using this module when running '
+            + 'with node directly instead of using the mocha executable');
+  }
+  return fn;
+}
+
+
+const WRAPPED = {
+  after: null,
+  afterEach: null,
+  before: null,
+  beforeEach: null,
+  it: null,
+  itOnly: null,
+  xit: null
+};
+
+
+function wrapIt() {
+  if (!WRAPPED.it) {
+    let it = getMochaGlobal('it');
+    WRAPPED.it = wrapped(it);
+    WRAPPED.itOnly = wrapped(it.only);
+  }
+}
+
+
+
 // PUBLIC API
 
 
@@ -211,67 +281,147 @@ exports.controlFlow = function(){
 /**
  * Registers a new test suite.
  * @param {string} name The suite name.
- * @param {function()=} fn The suite function, or {@code undefined} to define
+ * @param {function()=} opt_fn The suite function, or `undefined` to define
  *     a pending test suite.
  */
-exports.describe = global.describe;
+exports.describe = function(name, opt_fn) {
+  let fn = getMochaGlobal('describe');
+  return opt_fn ? fn(name, opt_fn) : fn(name);
+};
+
+
+/**
+ * An alias for {@link #describe()} that marks the suite as exclusive,
+ * suppressing all other test suites.
+ * @param {string} name The suite name.
+ * @param {function()=} opt_fn The suite function, or `undefined` to define
+ *     a pending test suite.
+ */
+exports.describe.only = function(name, opt_fn) {
+  let desc = getMochaGlobal('describe');
+  return opt_fn ? desc.only(name, opt_fn) : desc.only(name);
+};
+
 
 /**
  * Defines a suppressed test suite.
  * @param {string} name The suite name.
- * @param {function()=} fn The suite function, or {@code undefined} to define
+ * @param {function()=} opt_fn The suite function, or `undefined` to define
  *     a pending test suite.
  */
-exports.xdescribe = global.xdescribe;
-exports.describe.skip = global.describe.skip;
+exports.describe.skip = function(name, opt_fn) {
+  let fn = getMochaGlobal('describe');
+  return opt_fn ? fn.skip(name, opt_fn) : fn.skip(name);
+};
+
+
+/**
+ * Defines a suppressed test suite.
+ * @param {string} name The suite name.
+ * @param {function()=} opt_fn The suite function, or `undefined` to define
+ *     a pending test suite.
+ */
+exports.xdescribe = function(name, opt_fn) {
+  let fn = getMochaGlobal('xdescribe');
+  return opt_fn ? fn(name, opt_fn) : fn(name);
+};
+
 
 /**
  * Register a function to call after the current suite finishes.
  * @param {function()} fn .
  */
-exports.after = wrapped(global.after);
+exports.after = function(fn) {
+  if (!WRAPPED.after) {
+    WRAPPED.after = wrapped(getMochaGlobal('after'));
+  }
+  WRAPPED.after(fn);
+};
+
 
 /**
  * Register a function to call after each test in a suite.
  * @param {function()} fn .
  */
-exports.afterEach = wrapped(global.afterEach);
+exports.afterEach = function(fn) {
+  if (!WRAPPED.afterEach) {
+    WRAPPED.afterEach = wrapped(getMochaGlobal('afterEach'));
+  }
+  WRAPPED.afterEach(fn);
+};
+
 
 /**
  * Register a function to call before the current suite starts.
  * @param {function()} fn .
  */
-exports.before = wrapped(global.before);
+exports.before = function(fn) {
+  if (!WRAPPED.before) {
+    WRAPPED.before = wrapped(getMochaGlobal('before'));
+  }
+  WRAPPED.before(fn);
+};
 
 /**
  * Register a function to call before each test in a suite.
  * @param {function()} fn .
  */
-exports.beforeEach = wrapped(global.beforeEach);
+exports.beforeEach = function(fn) {
+  if (!WRAPPED.beforeEach) {
+    WRAPPED.beforeEach = wrapped(getMochaGlobal('beforeEach'));
+  }
+  WRAPPED.beforeEach(fn);
+};
 
 /**
  * Add a test to the current suite.
  * @param {string} name The test name.
- * @param {function()=} fn The test function, or {@code undefined} to define
+ * @param {function()=} opt_fn The test function, or `undefined` to define
  *     a pending test case.
  */
-exports.it = wrapped(global.it);
+exports.it = function(name, opt_fn) {
+  wrapIt();
+  if (opt_fn) {
+    WRAPPED.it(name, opt_fn);
+  } else {
+    WRAPPED.it(name);
+  }
+};
 
 /**
  * An alias for {@link #it()} that flags the test as the only one that should
  * be run within the current suite.
  * @param {string} name The test name.
- * @param {function()=} fn The test function, or {@code undefined} to define
+ * @param {function()=} opt_fn The test function, or `undefined` to define
  *     a pending test case.
  */
-exports.iit = exports.it.only = wrapped(global.it.only);
+exports.it.only = function(name, opt_fn) {
+  wrapIt();
+  if (opt_fn) {
+    WRAPPED.itOnly(name, opt_fn);
+  } else {
+    WRAPPED.itOnly(name);
+  }
+};
+
 
 /**
  * Adds a test to the current suite while suppressing it so it is not run.
  * @param {string} name The test name.
- * @param {function()=} fn The test function, or {@code undefined} to define
+ * @param {function()=} opt_fn The test function, or `undefined` to define
  *     a pending test case.
  */
-exports.xit = exports.it.skip = wrapped(global.xit);
+exports.xit = function(name, opt_fn) {
+  if (!WRAPPED.xit) {
+    WRAPPED.xit = wrapped(getMochaGlobal('xit'));
+  }
+  if (opt_fn) {
+    WRAPPED.xit(name, opt_fn);
+  } else {
+    WRAPPED.xit(name);
+  }
+};
 
+
+exports.it.skip = exports.xit;
 exports.ignore = ignore;

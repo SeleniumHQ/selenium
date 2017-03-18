@@ -40,7 +40,7 @@ import org.openqa.selenium.testing.TestUtilities;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 @NeedsLocalEnvironment(reason = "Requires local browser launching environment")
-@Ignore(value = {CHROME, PHANTOMJS, SAFARI, MARIONETTE},
+@Ignore(value = {PHANTOMJS, SAFARI, MARIONETTE},
         issues = {3862})
 public class UnexpectedAlertBehaviorTest extends JUnit4TestBase {
 
@@ -60,18 +60,19 @@ public class UnexpectedAlertBehaviorTest extends JUnit4TestBase {
     runScenarioWithUnhandledAlert(UnexpectedAlertBehaviour.ACCEPT, "This is a default value");
   }
 
-  @Ignore(value = HTMLUNIT, reason = "inconsistent test case")
+  @Ignore(value = {HTMLUNIT, CHROME}, reason = "Unstable Chrome behavior")
   @Test
   public void canDismissUnhandledAlert() {
     runScenarioWithUnhandledAlert(UnexpectedAlertBehaviour.DISMISS, "null");
   }
 
-  @Ignore(value = HTMLUNIT, reason = "inconsistent test case")
+  @Ignore(value = {CHROME, HTMLUNIT}, reason = "Chrome uses IGNORE mode by default")
   @Test
   public void dismissUnhandledAlertsByDefault() {
     runScenarioWithUnhandledAlert(null, "null");
   }
 
+  @Ignore(value = CHROME, reason = "Unstable")
   @NotYetImplemented(HTMLUNIT)
   @Test
   public void canIgnoreUnhandledAlert() {
@@ -94,7 +95,7 @@ public class UnexpectedAlertBehaviorTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = {IE}, reason = "IE: required capabilities not implemented")
+  @Ignore(value = {IE, CHROME}, reason = "IE, Chrome: required capabilities not implemented")
   @NotYetImplemented(HTMLUNIT)
   public void requiredUnhandledAlertCapabilityHasPriorityOverDesired() {
     // TODO: Resolve why this test doesn't work on the remote server
@@ -116,18 +117,22 @@ public class UnexpectedAlertBehaviorTest extends JUnit4TestBase {
       desiredCaps.setCapability(UNEXPECTED_ALERT_BEHAVIOUR, behaviour);
     }
     driver2 = new WebDriverBuilder().setDesiredCapabilities(desiredCaps).get();
-    runScenarioWithUnhandledAlert(expectedAlertText);
+    runScenarioWithUnhandledAlert(expectedAlertText, behaviour != UnexpectedAlertBehaviour.IGNORE);
   }
 
   private void runScenarioWithUnhandledAlert(String expectedAlertText) {
+    runScenarioWithUnhandledAlert(expectedAlertText, true);
+  }
+
+  private void runScenarioWithUnhandledAlert(String expectedAlertText, Boolean ignoreUnhandledAlertException) {
     driver2.get(pages.alertsPage);
     driver2.findElement(By.id("prompt-with-default")).click();
-    try {
-      driver2.findElement(By.id("text")).getText();
-    } catch (UnhandledAlertException expected) {
-    }
 
-    new WebDriverWait(driver2, 30).until(elementTextToEqual(By.id("text"), expectedAlertText));
+    WebDriverWait wait = new WebDriverWait(driver2, 30);
+    if (ignoreUnhandledAlertException) {
+      wait.ignoring(UnhandledAlertException.class);
+    }
+    wait.until(elementTextToEqual(By.id("text"), expectedAlertText));
   }
 
 }

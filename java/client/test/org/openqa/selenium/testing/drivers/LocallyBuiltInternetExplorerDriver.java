@@ -37,7 +37,7 @@ public class LocallyBuiltInternetExplorerDriver extends InternetExplorerDriver {
     InternetExplorerDriverService.Builder builder =
         new InternetExplorerDriverService.Builder()
           .usingDriverExecutable(
-            InProject.locate("build/cpp/Win32/Release/IEDriverServer.exe"))
+            InProject.locate("build/cpp/Win32/Release/IEDriverServer.exe").toFile())
           .usingAnyFreePort()
           .withLogFile(new File("iedriver.log"))
           .withLogLevel(InternetExplorerDriverLogLevel.valueOf(

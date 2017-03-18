@@ -15,34 +15,28 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import unittest
-import logging
-from selenium import webdriver
+from selenium.webdriver import Firefox
 
 
-class FirefoxLauncherTests (unittest.TestCase):
+def test_double_close(driver):
+    driver.close()
+    driver.close()
 
-    def testLaunchAndCloseBrowser(self):
-        capabilities = {'marionette': False}
-        self.webdriver = webdriver.Firefox(capabilities=capabilities)
-        self.webdriver.quit()
 
-    def testDoubleClose(self):
-        capabilities = {'marionette': False}
-        self.webdriver = webdriver.Firefox(capabilities=capabilities)
-        self.webdriver.close()
-        self.webdriver.close()
-        self.webdriver.quit()
+def test_we_can_launch_multiple_firefox_instances(capabilities):
+    driver1 = Firefox(capabilities=capabilities)
+    driver2 = Firefox(capabilities=capabilities)
+    driver3 = Firefox(capabilities=capabilities)
+    driver1.quit()
+    driver2.quit()
+    driver3.quit()
 
-    def test_we_can_launch_multiple_firefox_instances(self):
-        capabilities = {'marionette': False}
-        self.webdriver1 = webdriver.Firefox(capabilities=capabilities)
-        self.webdriver2 = webdriver.Firefox(capabilities=capabilities)
-        self.webdriver3 = webdriver.Firefox(capabilities=capabilities)
-        self.webdriver1.quit()
-        self.webdriver2.quit()
-        self.webdriver3.quit()
 
-if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO)
-    unittest.main()
+def test_launch_firefox_with_none_log_path(capabilities):
+    driver = Firefox(capabilities=capabilities, log_path=None)
+    driver.quit()
+
+
+def test_launch_firefox_with_empty_string_log_path(capabilities):
+    driver = Firefox(capabilities=capabilities, log_path="")
+    driver.quit()

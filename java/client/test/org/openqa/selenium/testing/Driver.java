@@ -20,6 +20,7 @@ package org.openqa.selenium.testing;
 public enum Driver {
   ALL,
   CHROME,
+  EDGE,
   HTMLUNIT,
   FIREFOX,
   IE,

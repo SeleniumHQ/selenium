@@ -17,11 +17,12 @@
 
 'use strict';
 
-var assert = require('assert'),
-    http = require('http');
+const assert = require('assert');
+const http = require('http');
 
-var error = require('../../lib/error');
-var util = require('../../http/util');
+const error = require('../../lib/error');
+const util = require('../../http/util');
+const promise = require('../../lib/promise');
 
 describe('selenium-webdriver/http/util', function() {
 
@@ -123,19 +124,15 @@ describe('selenium-webdriver/http/util', function() {
                function() {});
     });
 
-    it('can cancel wait', function(done) {
+    it('can cancel wait', function() {
       status = 1;
-      var err = Error('cancelled!');
-      var isReady =  util.waitForServer(baseUrl, 200).
-          then(function() { done('Did not expect to succeed'); }).
-          then(null, function(e) {
-            assert.equal('cancelled!', e.message);
-          }).
-          then(function() { done(); }, done);
-
-      setTimeout(function() {
-        isReady.cancel('cancelled!');
-      }, 50);
+      let cancel = new Promise(resolve => {
+        setTimeout(_ => resolve(), 50)
+      });
+      return util.waitForServer(baseUrl, 200, cancel)
+          .then(
+              () => { throw Error('Did not expect to succeed!'); },
+              (e) => assert.ok(e instanceof promise.CancellationError));
     });
   });
 
@@ -167,18 +164,15 @@ describe('selenium-webdriver/http/util', function() {
       });
     });
 
-    it('can cancel wait', function(done) {
+    it('can cancel wait', function() {
       responseCode = 404;
-      var isReady =  util.waitForUrl(baseUrl, 200).
-          then(function() { done('Did not expect to succeed'); }).
-          then(null, function(e) {
-            assert.equal('cancelled!', e.message);
-          }).
-          then(function() { done(); }, done);
-
-      setTimeout(function() {
-        isReady.cancel('cancelled!');
-      }, 50);
+      let cancel = new Promise(resolve => {
+        setTimeout(_ => resolve(), 50);
+      });
+      return util.waitForUrl(baseUrl, 200, cancel)
+          .then(
+              () => { throw Error('Did not expect to succeed!'); },
+              (e) => assert.ok(e instanceof promise.CancellationError));
     });
   });
 });

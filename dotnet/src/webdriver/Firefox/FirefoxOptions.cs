@@ -17,6 +17,8 @@
 // </copyright>
 
 using System;
+using System.Collections.Generic;
+using System.Globalization;
 using OpenQA.Selenium.Remote;
 
 namespace OpenQA.Selenium.Firefox
@@ -46,15 +48,206 @@ namespace OpenQA.Selenium.Firefox
     /// </example>
     public class FirefoxOptions : DriverOptions
     {
+        private const string IsMarionetteCapability = "marionette";
+        private const string FirefoxLegacyProfileCapability = "firefox_profile";
+        private const string FirefoxLegacyBinaryCapability = "firefox_binary";
+        private const string FirefoxProfileCapability = "profile";
+        private const string FirefoxBinaryCapability = "binary";
+        private const string FirefoxArgumentsCapability = "args";
+        private const string FirefoxLogCapability = "log";
+        private const string FirefoxPrefsCapability = "prefs";
+        private const string FirefoxOptionsCapability = "moz:firefoxOptions";
+
         private bool isMarionette = true;
+        private string browserBinaryLocation;
+        private FirefoxDriverLogLevel logLevel = FirefoxDriverLogLevel.Default;
+        private FirefoxProfile profile;
+        private List<string> firefoxArguments = new List<string>();
+        private Dictionary<string, object> profilePreferences = new Dictionary<string, object>();
+        private Dictionary<string, object> additionalCapabilities = new Dictionary<string, object>();
+        private Dictionary<string, object> additionalFirefoxOptions = new Dictionary<string, object>();
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not to use the Mozilla-provided Marionette implementation.
+        /// Initializes a new instance of the <see cref="FirefoxOptions"/> class.
         /// </summary>
-        public bool IsMarionette
+        public FirefoxOptions()
+            : base()
         {
-            get { return this.isMarionette; }
-            set { this.isMarionette = value; }
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FirefoxOptions"/> class for the given profile and binary.
+        /// </summary>
+        /// <param name="profile">The <see cref="FirefoxProfile"/> to use in the options.</param>
+        /// <param name="binary">The <see cref="FirefoxBinary"/> to use in the options.</param>
+        internal FirefoxOptions(FirefoxProfile profile, FirefoxBinary binary)
+        {
+            if (profile != null)
+            {
+                this.profile = profile;
+            }
+
+            if (binary != null)
+            {
+                this.browserBinaryLocation = binary.BinaryExecutable.ExecutablePath;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to use the legacy driver implementation.
+        /// </summary>
+        public bool UseLegacyImplementation
+        {
+            get { return !this.isMarionette; }
+            set { this.isMarionette = !value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the <see cref="FirefoxProfile"/> object to be used with this instance.
+        /// </summary>
+        public FirefoxProfile Profile
+        {
+            get { return this.profile; }
+            set { this.profile = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the path and file name of the Firefox browser executable.
+        /// </summary>
+        public string BrowserExecutableLocation
+        {
+            get { return this.browserBinaryLocation; }
+            set { this.browserBinaryLocation = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the logging level of the Firefox driver.
+        /// </summary>
+        public FirefoxDriverLogLevel LogLevel
+        {
+            get { return this.logLevel; }
+            set { this.logLevel = value; }
+        }
+
+        /// <summary>
+        /// Adds an argument to be used in launching the Firefox browser.
+        /// </summary>
+        /// <param name="argumentName">The argument to add.</param>
+        /// <remarks>Arguments must be preceeded by two dashes ("--").</remarks>
+        public void AddArgument(string argumentName)
+        {
+            if (string.IsNullOrEmpty(argumentName))
+            {
+                throw new ArgumentException("argumentName must not be null or empty", "argumentName");
+            }
+
+            this.AddArguments(argumentName);
+        }
+
+        /// <summary>
+        /// Adds a list arguments to be used in launching the Firefox browser.
+        /// </summary>
+        /// <param name="argumentsToAdd">An array of arguments to add.</param>
+        /// <remarks>Each argument must be preceeded by two dashes ("--").</remarks>
+        public void AddArguments(params string[] argumentsToAdd)
+        {
+            this.AddArguments(new List<string>(argumentsToAdd));
+        }
+
+        /// <summary>
+        /// Adds a list arguments to be used in launching the Firefox browser.
+        /// </summary>
+        /// <param name="argumentsToAdd">An array of arguments to add.</param>
+        /// <remarks>Each argument must be preceeded by two dashes ("--").</remarks>
+        public void AddArguments(IEnumerable<string> argumentsToAdd)
+        {
+            if (argumentsToAdd == null)
+            {
+                throw new ArgumentNullException("argumentsToAdd", "argumentsToAdd must not be null");
+            }
+
+            foreach (string argument in argumentsToAdd)
+            {
+                if (!argument.StartsWith("--", StringComparison.OrdinalIgnoreCase))
+                {
+                    throw new ArgumentException(string.Format(CultureInfo.InvariantCulture, "All arguments must start with two dashes ('--'); argument '{0}' does not.", argument), "argumentsToAdd");
+                }
+            }
+
+            this.firefoxArguments.AddRange(argumentsToAdd);
+        }
+
+        /// <summary>
+        /// Sets a preference in the profile used by Firefox.
+        /// </summary>
+        /// <param name="preferenceName">Name of the preference to set.</param>
+        /// <param name="preferenceValue">Value of the preference to set.</param>
+        public void SetPreference(string preferenceName, bool preferenceValue)
+        {
+            this.SetPreferenceValue(preferenceName, preferenceValue);
+        }
+
+        /// <summary>
+        /// Sets a preference in the profile used by Firefox.
+        /// </summary>
+        /// <param name="preferenceName">Name of the preference to set.</param>
+        /// <param name="preferenceValue">Value of the preference to set.</param>
+        public void SetPreference(string preferenceName, int preferenceValue)
+        {
+            this.SetPreferenceValue(preferenceName, preferenceValue);
+        }
+
+        /// <summary>
+        /// Sets a preference in the profile used by Firefox.
+        /// </summary>
+        /// <param name="preferenceName">Name of the preference to set.</param>
+        /// <param name="preferenceValue">Value of the preference to set.</param>
+        public void SetPreference(string preferenceName, long preferenceValue)
+        {
+            this.SetPreferenceValue(preferenceName, preferenceValue);
+        }
+
+        /// <summary>
+        /// Sets a preference in the profile used by Firefox.
+        /// </summary>
+        /// <param name="preferenceName">Name of the preference to set.</param>
+        /// <param name="preferenceValue">Value of the preference to set.</param>
+        public void SetPreference(string preferenceName, double preferenceValue)
+        {
+            this.SetPreferenceValue(preferenceName, preferenceValue);
+        }
+
+        /// <summary>
+        /// Sets a preference in the profile used by Firefox.
+        /// </summary>
+        /// <param name="preferenceName">Name of the preference to set.</param>
+        /// <param name="preferenceValue">Value of the preference to set.</param>
+        public void SetPreference(string preferenceName, string preferenceValue)
+        {
+            this.SetPreferenceValue(preferenceName, preferenceValue);
+        }
+
+        /// <summary>
+        /// Provides a means to add additional capabilities not yet added as type safe options
+        /// for the Chrome driver.
+        /// </summary>
+        /// <param name="capabilityName">The name of the capability to add.</param>
+        /// <param name="capabilityValue">The value of the capability to add.</param>
+        /// <exception cref="ArgumentException">
+        /// thrown when attempting to add a capability for which there is already a type safe option, or
+        /// when <paramref name="capabilityName"/> is <see langword="null"/> or the empty string.
+        /// </exception>
+        /// <remarks>Calling <see cref="AddAdditionalCapability(string, object)"/>
+        /// where <paramref name="capabilityName"/> has already been added will overwrite the
+        /// existing value with the new value in <paramref name="capabilityValue"/>.
+        /// Also, by default, calling this method adds capabilities to the options object passed to
+        /// geckodriver.exe.</remarks>
+        public override void AddAdditionalCapability(string capabilityName, object capabilityValue)
+        {
+            // Add the capability to the chromeOptions object by default. This is to handle
+            // the 80% case where the chromedriver team adds a new option in chromedriver.exe
+            // and the bindings have not yet had a type safe option added.
+            this.AddAdditionalCapability(capabilityName, capabilityValue, false);
         }
 
         /// <summary>
@@ -63,15 +256,44 @@ namespace OpenQA.Selenium.Firefox
         /// </summary>
         /// <param name="capabilityName">The name of the capability to add.</param>
         /// <param name="capabilityValue">The value of the capability to add.</param>
+        /// <param name="isGlobalCapability">Indicates whether the capability is to be set as a global
+        /// capability for the driver instead of a Firefox-specific option.</param>
         /// <exception cref="ArgumentException">
         /// thrown when attempting to add a capability for which there is already a type safe option, or
         /// when <paramref name="capabilityName"/> is <see langword="null"/> or the empty string.
         /// </exception>
-        /// <remarks>For the moment, this method has no effect for the Firefox driver, as use
-        /// of the FirefoxOptions class is only used as a marker for Marionette. This will
-        /// change in the future.</remarks>
-        public override void AddAdditionalCapability(string capabilityName, object capabilityValue)
+        /// <remarks>Calling <see cref="AddAdditionalCapability(string, object, bool)"/>
+        /// where <paramref name="capabilityName"/> has already been added will overwrite the
+        /// existing value with the new value in <paramref name="capabilityValue"/></remarks>
+        public void AddAdditionalCapability(string capabilityName, object capabilityValue, bool isGlobalCapability)
         {
+            if (capabilityName == IsMarionetteCapability ||
+                capabilityName == FirefoxProfileCapability ||
+                capabilityName == FirefoxBinaryCapability ||
+                capabilityName == FirefoxLegacyProfileCapability ||
+                capabilityName == FirefoxLegacyBinaryCapability ||
+                capabilityName == FirefoxArgumentsCapability ||
+                capabilityName == FirefoxLogCapability ||
+                capabilityName == FirefoxPrefsCapability ||
+                capabilityName == FirefoxOptionsCapability)
+            {
+                string message = string.Format(CultureInfo.InvariantCulture, "There is already an option for the {0} capability. Please use that instead.", capabilityName);
+                throw new ArgumentException(message, "capabilityName");
+            }
+
+            if (string.IsNullOrEmpty(capabilityName))
+            {
+                throw new ArgumentException("Capability name may not be null an empty string.", "capabilityName");
+            }
+
+            if (isGlobalCapability)
+            {
+                this.additionalCapabilities[capabilityName] = capabilityValue;
+            }
+            else
+            {
+                this.additionalFirefoxOptions[capabilityName] = capabilityValue;
+            }
         }
 
         /// <summary>
@@ -83,8 +305,111 @@ namespace OpenQA.Selenium.Firefox
         public override ICapabilities ToCapabilities()
         {
             DesiredCapabilities capabilities = DesiredCapabilities.Firefox();
-            capabilities.SetCapability("marionette", this.isMarionette);
+            capabilities.SetCapability(IsMarionetteCapability, this.isMarionette);
+
+            if (this.isMarionette)
+            {
+                Dictionary<string, object> firefoxOptions = this.GenerateFirefoxOptionsDictionary();
+                capabilities.SetCapability(FirefoxOptionsCapability, firefoxOptions);
+            }
+            else
+            {
+                if (this.profile != null)
+                {
+                    capabilities.SetCapability(FirefoxProfileCapability, this.profile.ToBase64String());
+                }
+
+                if (!string.IsNullOrEmpty(this.browserBinaryLocation))
+                {
+                    capabilities.SetCapability(FirefoxBinaryCapability, this.browserBinaryLocation);
+                }
+                else
+                {
+                    using (FirefoxBinary executablePathBinary = new FirefoxBinary())
+                    {
+                        string executablePath = executablePathBinary.BinaryExecutable.ExecutablePath;
+                        capabilities.SetCapability(FirefoxBinaryCapability, executablePath);
+                    }
+                }
+            }
+
+            foreach (KeyValuePair<string, object> pair in this.additionalCapabilities)
+            {
+                capabilities.SetCapability(pair.Key, pair.Value);
+            }
+
             return capabilities;
+        }
+
+        private Dictionary<string, object> GenerateFirefoxOptionsDictionary()
+        {
+            Dictionary<string, object> firefoxOptions = new Dictionary<string, object>();
+
+            if (this.profile != null)
+            {
+                firefoxOptions[FirefoxProfileCapability] = this.profile.ToBase64String();
+            }
+
+            if (!string.IsNullOrEmpty(this.browserBinaryLocation))
+            {
+                firefoxOptions[FirefoxBinaryCapability] = this.browserBinaryLocation;
+            }
+            else
+            {
+                using (FirefoxBinary executablePathBinary = new FirefoxBinary())
+                {
+                    string executablePath = executablePathBinary.BinaryExecutable.ExecutablePath;
+                    if (!string.IsNullOrEmpty(executablePath))
+                    {
+                        firefoxOptions[FirefoxBinaryCapability] = executablePath;
+                    }
+                }
+            }
+
+            if (this.logLevel != FirefoxDriverLogLevel.Default)
+            {
+                Dictionary<string, object> logObject = new Dictionary<string, object>();
+                logObject["level"] = this.logLevel.ToString().ToLowerInvariant();
+                firefoxOptions[FirefoxLogCapability] = logObject;
+            }
+
+            if (this.firefoxArguments.Count > 0)
+            {
+                List<object> args = new List<object>();
+                foreach (string argument in this.firefoxArguments)
+                {
+                    args.Add(argument);
+                }
+
+                firefoxOptions[FirefoxArgumentsCapability] = args;
+            }
+
+            if (this.profilePreferences.Count > 0)
+            {
+                firefoxOptions[FirefoxPrefsCapability] = this.profilePreferences;
+            }
+
+            foreach (KeyValuePair<string, object> pair in this.additionalFirefoxOptions)
+            {
+                firefoxOptions.Add(pair.Key, pair.Value);
+            }
+
+            return firefoxOptions;
+        }
+
+        private void SetPreferenceValue(string preferenceName, object preferenceValue)
+        {
+            if (string.IsNullOrEmpty(preferenceName))
+            {
+                throw new ArgumentException("Preference name may not be null an empty string.", "preferenceName");
+            }
+
+            if (!this.isMarionette)
+            {
+                throw new ArgumentException("Preferences cannot be set directly when using the legacy FirefoxDriver implementation. Set them in the profile.");
+            }
+
+            this.profilePreferences[preferenceName] = preferenceValue;
         }
     }
 }

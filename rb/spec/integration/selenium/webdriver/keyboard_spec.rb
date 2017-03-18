@@ -21,48 +21,55 @@ require_relative 'spec_helper'
 
 module Selenium
   module WebDriver
-
-    # Marionette BUG - Interactions Not Supported
-    # Firefox BUG - https://github.com/SeleniumHQ/selenium/issues/1792
-    not_compliant_on :browser => [:android, :iphone, :safari, :marionette, :firefox] do
+    # Firefox - "Actions Endpoint Not Yet Implemented"
+    not_compliant_on browser: [:safari, :ff_nightly, :firefox] do
       describe Keyboard do
+        # Edge - https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/8339952
+        not_compliant_on browser: :edge do
+          it 'sends keys to the active element' do
+            allow($stderr).to receive(:write)
+            driver.navigate.to url_for('bodyTypingTest.html')
 
-        it "sends keys to the active element" do
-          driver.navigate.to url_for("bodyTypingTest.html")
+            driver.keyboard.send_keys 'ab'
 
-          driver.keyboard.send_keys "ab"
+            text = driver.find_element(id: 'body_result').text.strip
+            expect(text).to eq('keypress keypress')
 
-          text = driver.find_element(:id => "body_result").text.strip
-          expect(text).to eq("keypress keypress")
-
-          expect(driver.find_element(:id => "result").text.strip).to be_empty
+            expect(driver.find_element(id: 'result').text.strip).to be_empty
+          end
         end
 
-        it "can send keys with shift pressed" do
-          driver.navigate.to url_for("javascriptPage.html")
+        # Edge - https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/8339952
+        not_compliant_on browser: :edge do
+          it 'can send keys with shift pressed' do
+            allow($stderr).to receive(:write)
+            driver.navigate.to url_for('javascriptPage.html')
 
-          event_input = driver.find_element(:id => "theworks")
-          keylogger = driver.find_element(:id => "result")
+            event_input = driver.find_element(id: 'theworks')
+            keylogger = driver.find_element(id: 'result')
 
-          driver.mouse.click event_input
+            driver.mouse.click event_input
 
-          driver.keyboard.press :shift
-          driver.keyboard.send_keys "ab"
-          driver.keyboard.release :shift
+            driver.keyboard.press :shift
+            driver.keyboard.send_keys 'ab'
+            driver.keyboard.release :shift
 
-          expect(event_input.attribute(:value)).to eq("AB")
-          expect(keylogger.text.strip).to match(/^(focus )?keydown keydown keypress keyup keydown keypress keyup keyup$/)
+            expect(event_input.attribute(:value)).to eq('AB')
+            expect(keylogger.text.strip).to match(/^(focus )?keydown keydown keypress keyup keydown keypress keyup keyup$/)
+          end
         end
 
-        it "raises an ArgumentError if the pressed key is not a modifier key" do
+        it 'raises an ArgumentError if the pressed key is not a modifier key' do
+          allow($stderr).to receive(:write)
           expect { driver.keyboard.press :return }.to raise_error(ArgumentError)
         end
 
-        it "can press and release modifier keys" do
-          driver.navigate.to url_for("javascriptPage.html")
+        it 'can press and release modifier keys' do
+          allow($stderr).to receive(:write)
+          driver.navigate.to url_for('javascriptPage.html')
 
-          event_input = driver.find_element(:id => "theworks")
-          keylogger = driver.find_element(:id => "result")
+          event_input = driver.find_element(id: 'theworks')
+          keylogger = driver.find_element(id: 'result')
 
           driver.mouse.click event_input
 
@@ -72,7 +79,7 @@ module Selenium
           driver.keyboard.release :shift
           expect(keylogger.text).to match(/keyup *$/)
         end
-      end # Keyboard
+      end
     end
   end # WebDriver
 end # Selenium

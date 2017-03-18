@@ -55,7 +55,7 @@ GitHub.createGistWithFiles = function(description, files) {
   };
   return new Deferred(function(deferred) {
     HTTP.post('https://api.github.com/gists', data, {}, function(response, success, status) {
-      if (status == 201 && response) {
+      if (response && (status == "201")) {
         var result = JSON.parse(response);
         if (result.html_url) {
           deferred.resolve(result.html_url);

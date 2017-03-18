@@ -21,45 +21,44 @@ require_relative 'spec_helper'
 
 module Selenium
   module WebDriver
-
     describe Window do
       let(:window) { driver.manage.window }
 
-      it "gets the size of the current window" do
+      it 'gets the size of the current window' do
         size = window.size
 
-        expect(size).to be_kind_of(Dimension)
+        expect(size).to be_a(Dimension)
 
         expect(size.width).to be > 0
         expect(size.height).to be > 0
       end
 
-      it "sets the size of the current window" do
-        size = window.size
+      not_compliant_on browser: :safari do
+        it 'sets the size of the current window' do
+          size = window.size
 
-        target_width = size.width - 20
-        target_height = size.height - 20
+          target_width = size.width - 20
+          target_height = size.height - 20
 
-        window.size = Dimension.new(target_width, target_height)
+          window.size = Dimension.new(target_width, target_height)
 
-        new_size = window.size
-        expect(new_size.width).to eq(target_width)
-        expect(new_size.height).to eq(target_height)
-      end
-
-      not_compliant_on :browser => :marionette do
-        it "gets the position of the current window" do
-          pos = driver.manage.window.position
-
-          expect(pos).to be_kind_of(Point)
-
-          expect(pos.x).to be >= 0
-          expect(pos.y).to be >= 0
+          new_size = window.size
+          expect(new_size.width).to eq(target_width)
+          expect(new_size.height).to eq(target_height)
         end
       end
 
-      not_compliant_on :browser => [:phantomjs, :marionette, :safari] do
-        it "sets the position of the current window" do
+      it 'gets the position of the current window' do
+        pos = driver.manage.window.position
+
+        expect(pos).to be_a(Point)
+
+        expect(pos.x).to be >= 0
+        expect(pos.y).to be >= 0
+      end
+
+      not_compliant_on browser: [:phantomjs, :safari] do
+        it 'sets the position of the current window' do
           pos = window.position
 
           target_x = pos.x + 10
@@ -67,7 +66,7 @@ module Selenium
 
           window.position = Point.new(target_x, target_y)
 
-          wait.until {window.position.x != pos.x && window.position.y != pos.y}
+          wait.until { window.position.x != pos.x && window.position.y != pos.y }
 
           new_pos = window.position
           expect(new_pos.x).to eq(target_x)
@@ -75,25 +74,28 @@ module Selenium
         end
       end
 
-      # TODO - Create Window Manager guard
-      not_compliant_on :platform => :linux do
-        it "can maximize the current window" do
-          window.size = old_size = Dimension.new(200, 200)
+      # TODO: - Create Window Manager guard
+      not_compliant_on platform: :linux do
+        not_compliant_on browser: :safari do
+           it 'can maximize the current window' do
+            window.size = old_size = Dimension.new(200, 200)
 
-          window.maximize
+            window.maximize
 
-          wait.until { window.size != old_size }
+            wait.until { window.size != old_size }
 
-          new_size = window.size
-          expect(new_size.width).to be > old_size.width
-          expect(new_size.height).to be > old_size.height
+            new_size = window.size
+            expect(new_size.width).to be > old_size.width
+            expect(new_size.height).to be > old_size.height
+           end
         end
       end
 
-      compliant_on :browser => [:marionette, :edge] do
+      compliant_on browser: [:ff_nightly, :firefox, :edge] do
+        # Firefox - https://bugzilla.mozilla.org/show_bug.cgi?id=1189749
         # Edge: Not Yet - https://dev.windows.com/en-us/microsoft-edge/platform/status/webdriver/details/
-        not_compliant_on :browser => [:marionette, :edge] do
-          it "can make window full screen" do
+        not_compliant_on browser: [:firefox, :ff_nightly, :edge] do
+          it 'can make window full screen' do
             window.maximize
             old_size = window.size
 
@@ -105,5 +107,5 @@ module Selenium
         end
       end
     end
-  end
-end
+  end # WebDriver
+end # Selenium

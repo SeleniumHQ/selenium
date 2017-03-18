@@ -311,7 +311,7 @@ class UnknownMethodError extends WebDriverError {
 
 
 /**
- * Reports an unsupport operation.
+ * Reports an unsupported operation.
  */
 class UnsupportedOperationError extends WebDriverError {
   /** @param {string=} opt_error the error message, if any. */
@@ -462,17 +462,29 @@ function checkResponse(data) {
   return data;
 }
 
+/**
+ * Tests if the given value is a valid error response object according to the
+ * W3C WebDriver spec.
+ *
+ * @param {?} data The value to test.
+ * @return {boolean} Whether the given value data object is a valid error
+ *     response.
+ * @see https://w3c.github.io/webdriver/webdriver-spec.html#protocol
+ */
+function isErrorResponse(data) {
+  return data && typeof data === 'object' && typeof data.error === 'string';
+}
 
 /**
  * Throws an error coded from the W3C protocol. A generic error will be thrown
- * if the privded `data` is not a valid encoded error.
+ * if the provided `data` is not a valid encoded error.
  *
  * @param {{error: string, message: string}} data The error data to decode.
  * @throws {WebDriverError} the decoded error.
  * @see https://w3c.github.io/webdriver/webdriver-spec.html#protocol
  */
 function throwDecodedError(data) {
-  if (data && typeof data === 'object' && typeof data.error === 'string') {
+  if (isErrorResponse(data)) {
     let ctor = ERROR_CODE_TO_TYPE.get(data.error) || WebDriverError;
     throw new ctor(data.message);
   }
@@ -551,5 +563,6 @@ module.exports = {
   checkResponse: checkResponse,
   checkLegacyResponse: checkLegacyResponse,
   encodeError: encodeError,
+  isErrorResponse: isErrorResponse,
   throwDecodedError: throwDecodedError,
 };

@@ -20,10 +20,8 @@
 module Selenium
   module WebDriver
     module Remote
-
       # @api private
       class Response
-
         attr_reader :code, :payload
         attr_writer :payload
 
@@ -49,9 +47,10 @@ module Selenium
 
           case val
           when Hash
-            msg = val['message'] or return "unknown error"
-            msg << ": #{val['alert']['text'].inspect}" if val['alert'].kind_of?(Hash) && val['alert']['text']
-            msg << " (#{ val['class'] })" if val['class']
+            msg = val['message']
+            return 'unknown error' unless msg
+            msg << ": #{val['alert']['text'].inspect}" if val['alert'].is_a?(Hash) && val['alert']['text']
+            msg << " (#{val['class']})" if val['class']
             msg
           when String
             val
@@ -67,34 +66,28 @@ module Selenium
         private
 
         def assert_ok
-          if e = error()
-            raise e
-          elsif @code.nil? || @code >= 400
-            raise Error::ServerError, self
-          end
+          e = error
+          raise e if e
+          return unless @code.nil? || @code >= 400
+          raise Error::ServerError, self
         end
 
         def add_backtrace(ex)
-          unless value.kind_of?(Hash) && value['stackTrace']
-            return
-          end
+          return unless value.is_a?(Hash) && value['stackTrace']
 
           server_trace = value['stackTrace']
 
           backtrace = server_trace.map do |frame|
-            next unless frame.kind_of?(Hash)
+            next unless frame.is_a?(Hash)
 
             file = frame['fileName']
             line = frame['lineNumber']
             meth = frame['methodName']
 
-            if class_name = frame['className']
-              file = "#{class_name}(#{file})"
-            end
+            class_name = frame['className']
+            file = "#{class_name}(#{file})" if class_name
 
-            if meth.nil? || meth.empty?
-              meth = 'unknown'
-            end
+            meth = 'unknown' if meth.nil? || meth.empty?
 
             "[remote server] #{file}:#{line}:in `#{meth}'"
           end.compact
@@ -102,14 +95,21 @@ module Selenium
           ex.set_backtrace(backtrace + ex.backtrace)
         end
 
+        def error_payload
+          # Even errors are wrapped in 'value' for w3c
+          # Grab 'value' key for error, leave original payload alone and let the bridge process
+          @error_payload ||= !@payload.key?('sessionId') ? @payload['value'] : @payload
+        end
+
         def status
-          @payload['status'] || @payload['error']
+          return unless error_payload.is_a? Hash
+          @status ||= error_payload['status'] || error_payload['error']
         end
 
         def value
-          @payload['value'] || @payload['message']
+          return unless error_payload.is_a? Hash
+          @value ||= error_payload['value'] || error_payload['message']
         end
-
       end # Response
     end # Remote
   end # WebDriver

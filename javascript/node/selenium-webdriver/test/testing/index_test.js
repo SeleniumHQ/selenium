@@ -17,8 +17,10 @@
 
 'use strict';
 
-var assert = require('assert');
-var promise = require('../..').promise;
+const assert = require('assert');
+const promise = require('../..').promise;
+const {enablePromiseManager} = require('../../lib/test/promise');
+
 
 var test = require('../../testing');
 
@@ -42,137 +44,181 @@ describe('Mocha Integration', function() {
     afterEach(function() { assert.equal(this.x, 2); });
   });
 
-  describe('timeout handling', function() {
-    describe('it does not reset the control flow on a non-timeout', function() {
-      var flowReset = false;
+  enablePromiseManager(function() {
+    describe('timeout handling', function() {
+      describe('it does not reset the control flow on a non-timeout', function() {
+        var flowReset = false;
 
-      beforeEach(function() {
-        flowReset = false;
-        test.controlFlow().once(promise.ControlFlow.EventType.RESET, onreset);
-      });
+        beforeEach(function() {
+          flowReset = false;
+          test.controlFlow().once(promise.ControlFlow.EventType.RESET, onreset);
+        });
 
-      test.it('', function() {
-        this.timeout(100);
-        return promise.delayed(50);
-      });
+        test.it('', function() {
+          this.timeout(100);
+          return promise.delayed(50);
+        });
 
-      afterEach(function() {
-        assert.ok(!flowReset);
-        test.controlFlow().removeListener(
-            promise.ControlFlow.EventType.RESET, onreset);
-      });
-
-      function onreset() {
-        flowReset = true;
-      }
-    });
-
-    describe('it resets the control flow after a timeout' ,function() {
-      var timeoutErr, flowReset;
-
-      beforeEach(function() {
-        flowReset = false;
-        test.controlFlow().once(promise.ControlFlow.EventType.RESET, onreset);
-      });
-
-      test.it('', function() {
-        var callback = this.runnable().callback;
-        var test = this;
-        this.runnable().callback = function(err) {
-          timeoutErr = err;
-          // Reset our timeout to 0 so Mocha does not fail the test.
-          test.timeout(0);
-          // When we invoke the real callback, do not pass along the error so
-          // Mocha does not fail the test.
-          return callback.call(this);
-        };
-
-        test.timeout(50);
-        return promise.defer().promise;
-      });
-
-      afterEach(function() {
-        return Promise.resolve().then(function() {
+        afterEach(function() {
+          assert.ok(!flowReset);
           test.controlFlow().removeListener(
               promise.ControlFlow.EventType.RESET, onreset);
-          assert.ok(flowReset, 'control flow was not reset after a timeout');
         });
+
+        function onreset() {
+          flowReset = true;
+        }
       });
 
-      function onreset() {
-        flowReset = true;
-      }
+      describe('it resets the control flow after a timeout' ,function() {
+        var timeoutErr, flowReset;
+
+        beforeEach(function() {
+          flowReset = false;
+          test.controlFlow().once(promise.ControlFlow.EventType.RESET, onreset);
+        });
+
+        test.it('', function() {
+          var callback = this.runnable().callback;
+          var test = this;
+          this.runnable().callback = function(err) {
+            timeoutErr = err;
+            // Reset our timeout to 0 so Mocha does not fail the test.
+            test.timeout(0);
+            // When we invoke the real callback, do not pass along the error so
+            // Mocha does not fail the test.
+            return callback.call(this);
+          };
+
+          test.timeout(50);
+          return promise.defer().promise;
+        });
+
+        afterEach(function() {
+          return Promise.resolve().then(function() {
+            test.controlFlow().removeListener(
+                promise.ControlFlow.EventType.RESET, onreset);
+            assert.ok(flowReset, 'control flow was not reset after a timeout');
+          });
+        });
+
+        function onreset() {
+          flowReset = true;
+        }
+      });
+    });
+
+    describe('async "done" support', function() {
+       this.timeout(2*1000);
+
+       var waited = false;
+       var DELAY = 100; // ms enough to notice
+
+       // Each test asynchronously sets waited to true, so clear/check waited
+       // before/after:
+       beforeEach(function() {
+          waited = false;
+       });
+
+       afterEach(function() {
+          assert.strictEqual(waited, true);
+       });
+
+       // --- First, vanilla mocha "it" should support the "done" callback correctly.
+
+       // This 'it' should block until 'done' is invoked
+       it('vanilla delayed', function(done) {
+          setTimeout(function delayedVanillaTimeout() {
+             waited = true;
+             done();
+          }, DELAY);
+       });
+
+       // --- Now with the webdriver wrappers for 'it' should support the "done" callback:
+
+       test.it('delayed', function(done) {
+          assert(done);
+          assert.strictEqual(typeof done, 'function');
+          setTimeout(function delayedTimeoutCallback() {
+             waited = true;
+             done();
+          }, DELAY);
+       });
+
+       // --- And test that the webdriver wrapper for 'it' works with a returned promise, too:
+
+       test.it('delayed by promise', function() {
+          var defer = promise.defer();
+          setTimeout(function delayedPromiseCallback() {
+             waited = true;
+             defer.fulfill('ignored');
+          });
+          return defer.promise;
+       });
+    });
+
+    describe('ControlFlow and "done" work together', function() {
+       var flow, order;
+       before(function() {
+          order = [];
+          flow = test.controlFlow();
+          flow.execute(function() { order.push(1); });
+       });
+
+       test.it('control flow updates and async done', function(done) {
+          flow.execute(function() { order.push(2); });
+          flow.execute(function() { order.push(3); }).then(function() {
+             order.push(4);
+          });
+          done();
+       });
+
+       after(function() {
+          assert.deepEqual([1, 2, 3, 4], order);
+       });
     });
   });
-});
 
-describe('Mocha async "done" support', function() {
-   this.timeout(2*1000);
+  describe('generator support', function() {
+    let arr;
 
-   var waited = false;
-   var DELAY = 100; // ms enough to notice
+    beforeEach(() => arr = []);
+    afterEach(() => assert.deepEqual(arr, [0, 1, 2, 3]));
 
-   // Each test asynchronously sets waited to true, so clear/check waited
-   // before/after:
-   beforeEach(function() {
-      waited = false;
-   });
+    test.it('sync generator', function* () {
+      arr.push(yield arr.length);
+      arr.push(yield arr.length);
+      arr.push(yield arr.length);
+      arr.push(yield arr.length);
+    });
 
-   afterEach(function() {
-      assert.strictEqual(waited, true);
-   });
+    test.it('async generator', function* () {
+      arr.push(yield Promise.resolve(arr.length));
+      arr.push(yield Promise.resolve(arr.length));
+      arr.push(yield Promise.resolve(arr.length));
+      arr.push(yield Promise.resolve(arr.length));
+    });
 
-   // --- First, vanilla mocha "it" should support the "done" callback correctly.
+    test.it('generator returns promise', function*() {
+      arr.push(yield Promise.resolve(arr.length));
+      arr.push(yield Promise.resolve(arr.length));
+      arr.push(yield Promise.resolve(arr.length));
+      setTimeout(_ => arr.push(arr.length), 10);
+      return new Promise((resolve) => setTimeout(_ => resolve(), 25));
+    });
 
-   // This 'it' should block until 'done' is invoked
-   it('vanilla delayed', function(done) {
-      setTimeout(function delayedVanillaTimeout() {
-         waited = true;
-         done();
-      }, DELAY);
-   });
-
-   // --- Now with the webdriver wrappers for 'it' should support the "done" callback:
-
-   test.it('delayed', function(done) {
-      assert(done);
-      assert.strictEqual(typeof done, 'function');
-      setTimeout(function delayedTimeoutCallback() {
-         waited = true;
-         done();
-      }, DELAY);
-   });
-
-   // --- And test that the webdriver wrapper for 'it' works with a returned promise, too:
-
-   test.it('delayed by promise', function() {
-      var defer = promise.defer();
-      setTimeout(function delayedPromiseCallback() {
-         waited = true;
-         defer.fulfill('ignored');
+    describe('generator runs with proper "this" context', () => {
+      before(function() { this.values = [0, 1, 2, 3]; });
+      test.it('', function*() {
+        arr = this.values;
       });
-      return defer.promise;
-   });
+    });
 
-});
-
-describe('ControlFlow and "done" work together', function() {
-   var flow, order;
-   before(function() {
-      order = [];
-      flow = test.controlFlow();
-      flow.execute(function() { order.push(1); });
-   });
-
-   test.it('control flow updates and async done', function(done) {
-      flow.execute(function() { order.push(2); });
-      flow.execute(function() { order.push(3); }).then(function() {
-         order.push(4);
-      });
-      done();
-   })
-
-   after(function() {
-      assert.deepEqual([1, 2, 3, 4], order);
-   })
+    it('generator function must not take a callback', function() {
+      arr = [0, 1, 2, 3];  // For teardown hook.
+      assert.throws(_ => {
+        test.it('', function*(done){});
+      }, TypeError);
+    });
+  });
 });

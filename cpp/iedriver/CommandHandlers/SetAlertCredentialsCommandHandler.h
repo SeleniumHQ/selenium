@@ -17,68 +17,19 @@
 #ifndef WEBDRIVER_IE_SETALERTCREDENTIALSCOMMANDHANDLER_H_
 #define WEBDRIVER_IE_SETALERTCREDENTIALSCOMMANDHANDLER_H_
 
-#include "../Alert.h"
-#include "../Browser.h"
 #include "../IECommandHandler.h"
-#include "../IECommandExecutor.h"
 
 namespace webdriver {
 
 class SetAlertCredentialsCommandHandler : public IECommandHandler {
  public:
-  SetAlertCredentialsCommandHandler(void) {
-  }
-
-  virtual ~SetAlertCredentialsCommandHandler(void) {
-  }
+  SetAlertCredentialsCommandHandler(void);
+  virtual ~SetAlertCredentialsCommandHandler(void);
 
  protected:
   void ExecuteInternal(const IECommandExecutor& executor,
                        const ParametersMap& command_parameters,
-                       Response* response) {
-    ParametersMap::const_iterator username_parameter_iterator = command_parameters.find("username");
-    if (username_parameter_iterator == command_parameters.end()) {
-      response->SetErrorResponse(400, "Missing parameter: username");
-      return;
-    }
-    std::string username = username_parameter_iterator->second.asString();
-
-    ParametersMap::const_iterator password_parameter_iterator = command_parameters.find("password");
-    if (password_parameter_iterator == command_parameters.end()) {
-      response->SetErrorResponse(400, "Missing parameter: password");
-      return;
-    }
-    std::string password = password_parameter_iterator->second.asString();
-
-    BrowserHandle browser_wrapper;
-    int status_code = executor.GetCurrentBrowser(&browser_wrapper);
-    if (status_code != WD_SUCCESS) {
-      response->SetErrorResponse(status_code, "Unable to get current browser");
-      return;
-    }
-    // This sleep is required to give IE time to draw the dialog.
-    ::Sleep(100);
-    HWND alert_handle = browser_wrapper->GetActiveDialogWindowHandle();
-    if (alert_handle == NULL) {
-      response->SetErrorResponse(ENOSUCHALERT, "No alert is active");
-    } else {
-      Alert dialog(browser_wrapper, alert_handle);
-      status_code = dialog.SetUserName(username);
-      if (status_code != WD_SUCCESS) {
-        response->SetErrorResponse(status_code,
-                                   "Could not set user name");
-        return;
-      }
-      status_code = dialog.SetPassword(password);
-      if (status_code != WD_SUCCESS) {
-        response->SetErrorResponse(status_code,
-                                   "Could not set password");
-        return;
-      }
-      response->SetSuccessResponse(Json::Value::null);
-    }
-  }
-
+                       Response* response);
 };
 
 } // namespace webdriver

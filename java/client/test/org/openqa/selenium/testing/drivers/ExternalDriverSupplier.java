@@ -19,8 +19,6 @@ package org.openqa.selenium.testing.drivers;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 
-import com.google.common.base.Optional;
-import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
 import com.google.common.base.Throwables;
 
@@ -35,6 +33,8 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Optional;
+import java.util.function.Supplier;
 import java.util.logging.Logger;
 
 /**
@@ -79,7 +79,7 @@ class ExternalDriverSupplier implements Supplier<WebDriver> {
         desiredCapabilities, requiredCapabilities);
     delegate = createForExternalServer(desiredCapabilities, requiredCapabilities, delegate);
 
-    return delegate.or(Suppliers.<WebDriver>ofInstance(null)).get();
+    return delegate.orElse(Suppliers.ofInstance(null)).get();
   }
 
   private static Optional<Supplier<WebDriver>> createForExternalServer(
@@ -97,7 +97,7 @@ class ExternalDriverSupplier implements Supplier<WebDriver> {
       Supplier<WebDriver> defaultSupplier = new DefaultRemoteSupplier(
           url, desiredCapabilities, requiredCapabilities);
       Supplier<WebDriver> supplier = new ExternalServerDriverSupplier(
-          url, delegate.or(defaultSupplier));
+          url, delegate.orElse(defaultSupplier));
       return Optional.of(supplier);
     }
     return delegate;
@@ -121,7 +121,7 @@ class ExternalDriverSupplier implements Supplier<WebDriver> {
         throw Throwables.propagate(e);
       }
     }
-    return Optional.absent();
+    return Optional.empty();
   }
 
   @SuppressWarnings("unchecked")
@@ -132,12 +132,12 @@ class ExternalDriverSupplier implements Supplier<WebDriver> {
         logger.info("Loading custom supplier: " + delegateClassName);
         Class<? extends Supplier> clazz =
             (Class<? extends Supplier>) Class.forName(delegateClassName);
-        return Optional.<Class<? extends Supplier>>of(clazz);
+        return Optional.of(clazz);
       } catch (Exception e) {
         throw Throwables.propagate(e);
       }
     }
-    return Optional.absent();
+    return Optional.empty();
   }
 
   /**

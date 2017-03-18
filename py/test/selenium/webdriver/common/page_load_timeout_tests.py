@@ -15,48 +15,27 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import unittest
 import pytest
+
 from selenium.common.exceptions import TimeoutException
 
 
-def not_available_on_remote(func):
-    def testMethod(self):
-        print(self.driver)
-        if type(self.driver) == 'remote':
-            return lambda x: None
-        else:
-            return func(self)
-    return testMethod
+@pytest.mark.xfail_marionette(
+    reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1309231')
+@pytest.mark.xfail_phantomjs(
+    reason='PhantomJS does not implement page load timeouts')
+def testShouldTimeoutOnPageLoadTakingTooLong(driver, pages):
+    driver.set_page_load_timeout(0.01)
+    with pytest.raises(TimeoutException):
+        pages.load("simpleTest.html")
 
-class PageLoadTimeoutTest(unittest.TestCase):
 
-    def testShouldTimeoutOnPageLoadTakingTooLong(self):
-        if self.driver.capabilities['browserName'] == 'phantomjs':
-            pytest.xfail("phantomjs driver does not implement page load timeouts")
-        self.driver.set_page_load_timeout(0.01)
-        try:
-            self._loadSimplePage()
-            self.fail("Expected a timeout on page load")
-        except TimeoutException as e:
-            pass
-
-    def testClickShouldTimeout(self):
-        if self.driver.capabilities['browserName'] == 'phantomjs':
-            pytest.xfail("phantomjs driver does not implement page load timeouts")
-        self._loadSimplePage()
-        self.driver.set_page_load_timeout(0.01)
-        try:
-            self.driver.find_element_by_id("multilinelink").click()
-            self.fail("Expected a timeout on page load after clicking")
-        except TimeoutException as e:
-            pass
-
-    def _pageURL(self, name):
-        return self.webserver.where_is(name + '.html')
-
-    def _loadSimplePage(self):
-        self._loadPage("simpleTest")
-
-    def _loadPage(self, name):
-        self.driver.get(self._pageURL(name))
+@pytest.mark.xfail_marionette(
+    reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1309231')
+@pytest.mark.xfail_phantomjs(
+    reason='PhantomJS does not implement page load timeouts')
+def testClickShouldTimeout(driver, pages):
+    pages.load("simpleTest.html")
+    driver.set_page_load_timeout(0.01)
+    with pytest.raises(TimeoutException):
+        driver.find_element_by_id("multilinelink").click()

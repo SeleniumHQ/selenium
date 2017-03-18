@@ -1,7 +1,0 @@
-prebuilt_jar(
-  name = 'mx4j',
-  binary_jar = 'mx4j-tools-3.0.1.jar',
-  visibility = [
-    '//third_party/java/jetty:jetty-for-rc',
-  ],
-)

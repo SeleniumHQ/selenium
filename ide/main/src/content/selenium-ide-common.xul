@@ -217,6 +217,8 @@ limitations under the License.
       <menuitem label="&speedSliderFaster.label;" command="cmd_selenium_speed_faster" accesskey="-"/>
       <menuitem label="&speedSliderSlower.label;" command="cmd_selenium_speed_slower" accesskey="+"/>
       <menuitem label="&speedSliderSlowest.label;" command="cmd_selenium_speed_slowest" accesskey="9"/>
+      <menuseparator/>
+      <menuitem label="Close webdriver session" oncommand="window.editor.selDebugger.closeWebDriverSession()"/>
     </menupopup>
   </menu>
   <menu id="optionsMenu" label="&optionsMenu.label;" accesskey="O">
@@ -251,7 +253,7 @@ limitations under the License.
       <menuitem label="&helpSubmitDiagInfo.label;" oncommand="window.editor.submitDiagInfo();"/>
       <menuseparator/>
       <menuitem label="&helpReleaseNotes.label;" oncommand="openTabOrWindow('https://github.com/SeleniumHQ/selenium/wiki/SeIDE-Release-Notes')"/>
-      <menuitem label="&helpBlog.label;" oncommand="openTabOrWindow('http://seleniumhq.wordpress.com/')"/>
+      <menuitem label="&helpBlog.label;" oncommand="openTabOrWindow('https://seleniumhq.wordpress.com/')"/>
       <menuitem label="&helpWebsite.label;" oncommand="openTabOrWindow('http://seleniumhq.org/')"/>
     </menupopup>
   </menu>
@@ -276,6 +278,15 @@ limitations under the License.
       </stack>
     </vbox>
   </stack>
+
+  <toolbarbutton id="browser-button" type="menu-button" label="WebDriver" class="toolbar2 toolbarbutton-1" tooltiptext="Webdriver playback is off. Turn on in the options.">
+    <menupopup id="webdriverPopup">
+      <menuitem label="Firefox" value="firefox" oncommand="window.editor.setWebdriverBrowser(event.target.getAttribute('value'));" />
+      <menuitem label="Google Chrome" value="chrome" oncommand="window.editor.setWebdriverBrowser(event.target.getAttribute('value'));" />
+      <menuitem label="Internet Explorer" value="internet explorer" oncommand="window.editor.setWebdriverBrowser(event.target.getAttribute('value'));" />
+      <menuitem label="Safari" value="safari" oncommand="window.editor.setWebdriverBrowser(event.target.getAttribute('value'));" />
+    </menupopup>
+  </toolbarbutton>
   <toolbarbutton id="schedule-button" type="menu-button" label="Scheduler" class="toolbar2 toolbarbutton-1" tooltiptext="Click to turn scheduler on" command="cmd_selenium_schedule">
     <menupopup id="schedulerPopup">
       <menuitem label="Play test suites periodically" oncommand="window.editor.openSeleniumIDEScheduler(event);" />

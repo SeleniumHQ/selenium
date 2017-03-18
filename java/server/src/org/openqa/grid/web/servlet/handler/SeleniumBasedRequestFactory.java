@@ -18,6 +18,7 @@
 package org.openqa.grid.web.servlet.handler;
 
 import org.openqa.grid.internal.Registry;
+
 import javax.servlet.http.HttpServletRequest;
 
 public interface SeleniumBasedRequestFactory {

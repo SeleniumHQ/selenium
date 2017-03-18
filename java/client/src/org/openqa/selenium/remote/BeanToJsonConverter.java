@@ -22,8 +22,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.google.gson.JsonParseException;
+import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 
 import org.openqa.selenium.Cookie;
@@ -35,7 +35,6 @@ import org.openqa.selenium.logging.SessionLogs;
 
 import java.io.File;
 import java.lang.reflect.Array;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Date;
@@ -187,27 +186,7 @@ public class BeanToJsonConverter {
     if (toMap != null) {
       try {
         return convertObject(toMap.invoke(toConvert), maxDepth - 1);
-      } catch (IllegalArgumentException e) {
-        throw new WebDriverException(e);
-      } catch (IllegalAccessException e) {
-        throw new WebDriverException(e);
-      } catch (InvocationTargetException e) {
-        throw new WebDriverException(e);
-      }
-    }
-
-    Method toList = getMethod(toConvert, "toList");
-    if (toList == null) {
-      toList = getMethod(toConvert, "asList");
-    }
-    if (toList != null) {
-      try {
-        return convertObject(toList.invoke(toConvert), maxDepth - 1);
-      } catch (IllegalArgumentException e) {
-        throw new WebDriverException(e);
-      } catch (IllegalAccessException e) {
-        throw new WebDriverException(e);
-      } catch (InvocationTargetException e) {
+      } catch (ReflectiveOperationException e) {
         throw new WebDriverException(e);
       }
     }
@@ -219,16 +198,19 @@ public class BeanToJsonConverter {
         if (res instanceof JsonElement) {
           return (JsonElement) res;
         }
-        try {
-          return new JsonParser().parse((String) res);
-        } catch (JsonParseException e) {
-          return new JsonPrimitive((String) res);
+
+        if (res instanceof Map) {
+          return convertObject(res);
+        } else if (res instanceof Collection) {
+          return convertObject(res);
+        } else if (res instanceof String) {
+          try {
+            return new JsonParser().parse((String) res);
+          } catch (JsonParseException e) {
+            return new JsonPrimitive((String) res);
+          }
         }
-      } catch (IllegalArgumentException e) {
-        throw new WebDriverException(e);
-      } catch (IllegalAccessException e) {
-        throw new WebDriverException(e);
-      } catch (InvocationTargetException e) {
+      } catch (ReflectiveOperationException e) {
         throw new WebDriverException(e);
       }
     }
@@ -243,9 +225,7 @@ public class BeanToJsonConverter {
   private Method getMethod(Object toConvert, String methodName) {
     try {
       return toConvert.getClass().getMethod(methodName);
-    } catch (SecurityException e) {
-      // fall through
-    } catch (NoSuchMethodException e) {
+    } catch (NoSuchMethodException | SecurityException e) {
       // fall through
     }
 

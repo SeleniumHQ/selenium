@@ -669,7 +669,25 @@ nsCommandProcessor.prototype.getStatus = function(response) {
   var xulRuntime = Components.classes['@mozilla.org/xre/app-info;1'].
       getService(Components.interfaces.nsIXULRuntime);
 
+  var sessionStore = Components.
+      classes['@googlecode.com/webdriver/wdsessionstoreservice;1'].
+      getService(Components.interfaces.nsISupports).
+      wrappedJSObject;
+
+  var allSessions = sessionStore.getSessions();
+  var readyState = false;
+  var message = '';
+  if (goog.array.isEmpty(allSessions)) {
+    readyState = true;
+    message = 'No currently active sessions';
+  } else {
+    readyState = false;
+    message = 'Currently active sessions: ' + allSessions;
+  }
+
   response.value = {
+    'ready': readyState,
+    'message': message,
     'os': {
       'arch': (function() {
         try {
@@ -727,6 +745,7 @@ nsCommandProcessor.prototype.newSession = function(response, parameters) {
     goog.log.info(nsCommandProcessor.LOG_,
         'Created a new session with id: ' + session.getId());
     this.getSessionCapabilities(response);
+    return;  // Response already sent
   }
 
   response.send();

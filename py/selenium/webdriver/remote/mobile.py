@@ -16,19 +16,23 @@
 # under the License.
 
 from .command import Command
-from selenium.common.exceptions import WebDriverException
+
 
 class Mobile(object):
 
     class ConnectionType(object):
+
         def __init__(self, mask):
             self.mask = mask
+
         @property
         def airplane_mode(self):
             return self.mask % 2 == 1
+
         @property
         def wifi(self):
             return (self.mask / 2) % 2 == 1
+
         @property
         def data(self):
             return (self.mask / 4) > 0
@@ -48,13 +52,17 @@ class Mobile(object):
     def set_network_connection(self, network):
         """
         Set the network connection for the remote device.
-        Example of setting airplane mode:
+
+        Example of setting airplane mode::
+
             driver.mobile.set_network_connection(driver.mobile.AIRPLANE_MODE)
         """
         mode = network.mask if isinstance(network, self.ConnectionType) else network
-        return self.ConnectionType(self._driver.execute(Command.SET_NETWORK_CONNECTION,
-                                                        {'name':'network_connection',
-                                                         'parameters':{'type': mode}})['value'])
+        return self.ConnectionType(self._driver.execute(
+            Command.SET_NETWORK_CONNECTION, {
+                'name': 'network_connection',
+                'parameters': {'type': mode}})['value'])
+
     @property
     def context(self):
         """

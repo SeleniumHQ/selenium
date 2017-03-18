@@ -17,7 +17,7 @@
 
 import pytest
 from selenium import webdriver
-from selenium.test.selenium.common import utils
+from test.selenium.common import utils
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 
@@ -35,7 +35,7 @@ def capabilities():
     return DesiredCapabilities.FIREFOX.copy()
 
 
-@pytest.yield_fixture
+@pytest.fixture
 def driver(capabilities, profile):
     driver = webdriver.Remote(
         desired_capabilities=capabilities,

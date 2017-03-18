@@ -22,6 +22,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
+import static org.openqa.selenium.support.ui.ExpectedConditions.attributeToBe;
 import static org.openqa.selenium.support.ui.ExpectedConditions.not;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.testing.Driver.CHROME;
@@ -36,10 +37,8 @@ import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.testing.NeedsFreshDriver;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.Point;
-import org.openqa.selenium.testing.SwitchToTopAfterTest;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.Color;
@@ -48,7 +47,9 @@ import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
+import org.openqa.selenium.testing.NeedsFreshDriver;
 import org.openqa.selenium.testing.NotYetImplemented;
+import org.openqa.selenium.testing.SwitchToTopAfterTest;
 
 import java.util.Map;
 
@@ -328,7 +329,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Ignore(
-      value = {SAFARI, MARIONETTE},
+      value = {SAFARI, MARIONETTE, HTMLUNIT},
       issues = {4136})
   @Test
   @NotYetImplemented(HTMLUNIT) // broken in 2.20
@@ -349,7 +350,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Ignore(
-      value = {SAFARI, MARIONETTE},
+      value = {SAFARI, MARIONETTE, HTMLUNIT},
       issues = {4136})
   @Test
   @NotYetImplemented(HTMLUNIT) // broken in 2.20
@@ -385,7 +386,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
     driver.get(pages.mouseTrackerPage);
 
     WebElement trackerDiv = driver.findElement(By.id("mousetracker"));
-    new Actions(driver).moveToElement(trackerDiv).build().perform();
+    new Actions(driver).moveToElement(trackerDiv).perform();
 
     WebElement reporter = driver.findElement(By.id("status"));
 
@@ -406,8 +407,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
     driver.get(pages.mouseTrackerPage);
 
     WebElement trackerDiv = driver.findElement(By.id("mousetracker"));
-    new Actions(driver).moveToElement(trackerDiv, 95, 195).build()
-        .perform();
+    new Actions(driver).moveToElement(trackerDiv, 95, 195).perform();
 
     WebElement reporter = driver.findElement(By.id("status"));
 
@@ -424,8 +424,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
     driver.get(pages.mouseTrackerPage);
 
     WebElement trackerDiv = driver.findElement(By.id("mousetracker"));
-    new Actions(driver).moveToElement(trackerDiv, 0, 0).build()
-        .perform();
+    new Actions(driver).moveToElement(trackerDiv, 0, 0).perform();
 
     WebElement reporter = driver.findElement(By.id("status"));
 
@@ -443,13 +442,13 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
     try {
       driver.get(pages.mouseTrackerPage);
 
-      new Actions(driver).moveByOffset(50, 100).build().perform();
+      new Actions(driver).moveByOffset(50, 100).perform();
 
       WebElement reporter = driver.findElement(By.id("status"));
 
       wait.until(fuzzyMatchingOfCoordinates(reporter, 40, 20));
     } finally {
-      new Actions(driver).moveByOffset(-50, -100).build().perform();
+      new Actions(driver).moveByOffset(-50, -100).perform();
     }
   }
 
@@ -470,19 +469,17 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
 
     new Actions(driver).moveToElement(greenbox, 2, 2).perform();
 
-    assertEquals(
-      Colors.GREEN.getColorValue(), Color.fromString(redbox.getCssValue("background-color")));
+    shortWait.until(attributeToBe(redbox, "background-color", Colors.GREEN.getColorValue().asRgba()));
 
     new Actions(driver).moveToElement(greenbox, 2, 2)
       .moveByOffset(shiftX, shiftY).perform();
-    assertEquals(
-      Colors.RED.getColorValue(), Color.fromString(redbox.getCssValue("background-color")));
+    shortWait.until(attributeToBe(redbox, "background-color", Colors.RED.getColorValue().asRgba()));
 
     new Actions(driver).moveToElement(greenbox, 2, 2)
       .moveByOffset(shiftX, shiftY)
       .moveByOffset(-shiftX, -shiftY).perform();
-    assertEquals(
-      Colors.GREEN.getColorValue(), Color.fromString(redbox.getCssValue("background-color")));
+
+    shortWait.until(attributeToBe(redbox, "background-color", Colors.GREEN.getColorValue().asRgba()));
   }
 
   @JavascriptEnabled
@@ -511,8 +508,8 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
     // would be happy with 1.
     new Actions(driver).moveToElement(redbox, size.getWidth() + 2, size.getHeight() + 2)
         .perform();
-    assertEquals(
-        Colors.GREEN.getColorValue(), Color.fromString(redbox.getCssValue("background-color")));
+
+    wait.until(attributeToBe(redbox, "background-color", Colors.GREEN.getColorValue().asRgba()));
   }
 
   private boolean fuzzyPositionMatching(int expectedX, int expectedY, String locationTouple) {

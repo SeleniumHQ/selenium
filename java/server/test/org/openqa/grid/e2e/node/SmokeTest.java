@@ -19,14 +19,8 @@ package org.openqa.grid.e2e.node;
 
 import static org.junit.Assert.assertEquals;
 
-import com.thoughtworks.selenium.DefaultSelenium;
-import com.thoughtworks.selenium.Selenium;
-
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openqa.grid.common.GridRole;
 import org.openqa.grid.common.RegistrationRequest;
@@ -41,7 +35,6 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.server.SeleniumServer;
 
 import java.net.MalformedURLException;
-import java.net.URL;
 
 public class SmokeTest {
 
@@ -56,11 +49,10 @@ public class SmokeTest {
         GridTestHelper.getRemoteWithoutCapabilities(hub.getUrl(), GridRole.NODE);
     remote.addBrowser(GridTestHelper.getDefaultBrowserCapability(), 1);
 
-    DesiredCapabilities firefoxOnSeleniumCapability = new DesiredCapabilities();
-    firefoxOnSeleniumCapability.setBrowserName("*firefox");
-    firefoxOnSeleniumCapability.setCapability(RegistrationRequest.SELENIUM_PROTOCOL,SeleniumProtocol.Selenium);
+    DesiredCapabilities capabilities = DesiredCapabilities.htmlUnit();
+    capabilities.setCapability(RegistrationRequest.SELENIUM_PROTOCOL,SeleniumProtocol.WebDriver);
 
-    remote.addBrowser(firefoxOnSeleniumCapability, 1);
+    remote.addBrowser(capabilities, 1);
 
     remote.setRemoteServer(new SeleniumServer(remote.getConfiguration()));
     remote.startRemoteServer();
@@ -71,10 +63,10 @@ public class SmokeTest {
   }
 
   @Test
-  public void firefoxOnWebDriver() throws MalformedURLException {
+  public void browserOnWebDriver() throws MalformedURLException {
     WebDriver driver = null;
     try {
-      DesiredCapabilities caps = GridTestHelper.getDefaultBrowserCapability();
+      DesiredCapabilities caps = DesiredCapabilities.htmlUnit();
       driver = new RemoteWebDriver(hub.getWebDriverHubRequestURL(), caps);
       driver.get(hub.getConsoleURL().toString());
       assertEquals(driver.getTitle(), "Grid Console");

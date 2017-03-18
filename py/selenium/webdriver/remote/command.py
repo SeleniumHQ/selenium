@@ -15,6 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
+
 class Command(object):
     """
     Defines constants for the standard WebDriver commands.
@@ -58,14 +59,17 @@ class Command(object):
     GET_WINDOW_HANDLES = "getWindowHandles"
     GET_WINDOW_SIZE = "getWindowSize"
     W3C_GET_WINDOW_SIZE = "w3cGetWindowSize"
+    W3C_GET_WINDOW_POSITION = "w3cGetWindowPosition"
     GET_WINDOW_POSITION = "getWindowPosition"
     SET_WINDOW_SIZE = "setWindowSize"
     W3C_SET_WINDOW_SIZE = "w3cSetWindowSize"
     SET_WINDOW_POSITION = "setWindowPosition"
+    W3C_SET_WINDOW_POSITION = "w3cSetWindowPosition"
     SWITCH_TO_WINDOW = "switchToWindow"
     SWITCH_TO_FRAME = "switchToFrame"
     SWITCH_TO_PARENT_FRAME = "switchToParentFrame"
     GET_ACTIVE_ELEMENT = "getActiveElement"
+    W3C_GET_ACTIVE_ELEMENT = "w3cGetActiveElement"
     GET_CURRENT_URL = "getCurrentUrl"
     GET_PAGE_SOURCE = "getPageSource"
     GET_TITLE = "getTitle"
@@ -82,6 +86,7 @@ class Command(object):
     GET_ELEMENT_SIZE = "getElementSize"
     GET_ELEMENT_RECT = "getElementRect"
     GET_ELEMENT_ATTRIBUTE = "getElementAttribute"
+    GET_ELEMENT_PROPERTY = "getElementProperty"
     GET_ELEMENT_VALUE_OF_CSS_PROPERTY = "getElementValueOfCssProperty"
     ELEMENT_EQUALS = "elementEquals"
     SCREENSHOT = "screenshot"
@@ -95,7 +100,7 @@ class Command(object):
     GET_LOG = "getLog"
     GET_AVAILABLE_LOG_TYPES = "getAvailableLogTypes"
 
-    #Alerts
+    # Alerts
     DISMISS_ALERT = "dismissAlert"
     ACCEPT_ALERT = "acceptAlert"
     SET_ALERT_VALUE = "setAlertValue"
@@ -103,6 +108,8 @@ class Command(object):
     SET_ALERT_CREDENTIALS = "setAlertCredentials"
 
     # Advanced user interactions
+    W3C_ACTIONS = "actions"
+    W3C_CLEAR_ACTIONS = "clearActionState"
     CLICK = "mouseClick"
     DOUBLE_CLICK = "mouseDoubleClick"
     MOUSE_DOWN = "mouseButtonDown"
@@ -123,7 +130,7 @@ class Command(object):
     LONG_PRESS = "touchLongPress"
     FLICK = "touchFlick"
 
-    #HTML 5
+    # HTML 5
     EXECUTE_SQL = "executeSql"
 
     GET_LOCATION = "getLocation"

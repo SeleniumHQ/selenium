@@ -1,7 +1,10 @@
-prebuilt_jar(name = 'cglib',
-  binary_jar = 'cglib-nodep-2.1_3.jar',
+prebuilt_jar(
+  name = 'cglib',
+  maven_coords = 'cglib:cglib-nodep:jar:3.2.4',
+  binary_jar = 'cglib-nodep-3.2.4.jar',
+  source_jar = 'cglib-nodep-3.2.4-sources.jar',
   visibility = [
-    '//java/client/src/org/openqa/selenium/remote:augmenter',
+    '//java/client/src/org/openqa/selenium/remote:remote',
   ],
 )
 

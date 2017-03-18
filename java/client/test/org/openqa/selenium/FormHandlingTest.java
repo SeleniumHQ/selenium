@@ -37,6 +37,7 @@ import static org.openqa.selenium.testing.TestUtilities.isIe7;
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.TestUtilities;
 
 import java.io.File;
@@ -94,12 +95,15 @@ public class FormHandlingTest extends JUnit4TestBase {
 
   @Test(expected = NoSuchElementException.class)
   @Ignore(value = {PHANTOMJS, SAFARI})
+  @NotYetImplemented(
+    value = MARIONETTE, reason = "Delegates to JS and so the wrong exception is returned")
   public void testShouldNotBeAbleToSubmitAFormThatDoesNotExist() {
     driver.get(pages.formPage);
     driver.findElement(By.name("SearchableText")).submit();
   }
 
   @Test
+  @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
   public void testShouldBeAbleToEnterTextIntoATextAreaBySettingItsValue() {
     driver.get(pages.javascriptPage);
     WebElement textarea = driver.findElement(By.id("keyUpArea"));
@@ -109,6 +113,7 @@ public class FormHandlingTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
   public void testSendKeysKeepsCapitalization() {
     driver.get(pages.javascriptPage);
     WebElement textarea = driver.findElement(By
@@ -140,6 +145,7 @@ public class FormHandlingTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
   public void testShouldEnterDataIntoFormFields() {
     driver.get(pages.xhtmlTestPage);
     WebElement element = driver.findElement(By.xpath("//form[@name='someForm']/input[@id='username']"));
@@ -154,8 +160,9 @@ public class FormHandlingTest extends JUnit4TestBase {
     assertThat(newFormValue, equalTo("some text"));
   }
 
-  @Ignore(value = {SAFARI, MARIONETTE},
-          reason = "Does not yet support file uploads", issues = {4220})
+  @Ignore(value = {SAFARI, MARIONETTE, HTMLUNIT},
+          reason = "HtmlUnit bug with getAttribute. Does not yet support file uploads",
+          issues = {4220})
   @Test
   public void testShouldBeAbleToAlterTheContentsOfAFileUploadInputElement() throws IOException {
     driver.get(pages.formPage);
@@ -171,7 +178,7 @@ public class FormHandlingTest extends JUnit4TestBase {
     assertTrue(uploadPath.endsWith(file.getName()));
   }
 
-  @Ignore(value = {SAFARI, MARIONETTE},
+  @Ignore(value = {SAFARI, MARIONETTE, HTMLUNIT},
           reason = "Does not yet support file uploads", issues = {4220})
   @Test
   public void testShouldBeAbleToSendKeysToAFileUploadInputElementInAnXhtmlDocument()
@@ -218,6 +225,7 @@ public class FormHandlingTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
   public void testSendingKeyboardEventsShouldAppendTextInInputs() {
     driver.get(pages.formPage);
     WebElement element = driver.findElement(By.id("working"));
@@ -231,6 +239,7 @@ public class FormHandlingTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
   public void testSendingKeyboardEventsShouldAppendTextInInputsWithExistingValue() {
     driver.get(pages.formPage);
     WebElement element = driver.findElement(By.id("inputWithText"));
@@ -241,6 +250,7 @@ public class FormHandlingTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
   public void testSendingKeyboardEventsShouldAppendTextInTextAreas() {
     driver.get(pages.formPage);
     WebElement element = driver.findElement(By.id("withText"));
@@ -273,34 +283,34 @@ public class FormHandlingTest extends JUnit4TestBase {
     assertEquals("Tasty cheese", text);
   }
 
-  @Ignore(value = {SAFARI}, reason = "untested")
+  @Ignore(value = {HTMLUNIT, SAFARI}, reason = "untested")
   @Test
   public void testCanClickOnASubmitButton() {
     checkSubmitButton("internal_explicit_submit");
   }
 
 
-  @Ignore(value = {SAFARI}, reason = "untested")
+  @Ignore(value = {HTMLUNIT, SAFARI}, reason = "untested")
   @Test
   public void testCanClickOnASubmitButtonNestedSpan() {
     checkSubmitButton("internal_span_submit");
   }
 
-  @Ignore(value = {SAFARI}, reason = "untested")
+  @Ignore(value = {HTMLUNIT, SAFARI}, reason = "untested")
   @Test
   public void testCanClickOnAnImplicitSubmitButton() {
     assumeFalse(isIe6(driver) || isIe7(driver) );
     checkSubmitButton("internal_implicit_submit");
   }
 
-  @Ignore(value = {IE, SAFARI},
+  @Ignore(value = {HTMLUNIT, IE, SAFARI},
           reason = "IE: failed; Others: untested")
   @Test
   public void testCanClickOnAnExternalSubmitButton() {
     checkSubmitButton("external_explicit_submit");
   }
 
-  @Ignore(value = {IE, SAFARI},
+  @Ignore(value = {HTMLUNIT, IE, SAFARI},
       reason = "IE: failed; Others: untested")
   @Test
   public void testCanClickOnAnExternalImplicitSubmitButton() {

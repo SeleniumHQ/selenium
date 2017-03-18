@@ -25,9 +25,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.google.common.base.Function;
-import com.google.common.base.Supplier;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,6 +38,7 @@ import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 
 @RunWith(JUnit4.class)
 public class FluentWaitTest {
@@ -205,12 +203,7 @@ public class FluentWaitTest {
 
     Wait<WebDriver> wait = new FluentWait<>(mockDriver, mockClock, mockSleeper)
       .withTimeout(0, TimeUnit.MILLISECONDS)
-      .withMessage(new Supplier<String>() {
-        @Override
-        public String get() {
-          return state;
-        }
-      });
+      .withMessage(() -> state);
 
     state = "external state";
 

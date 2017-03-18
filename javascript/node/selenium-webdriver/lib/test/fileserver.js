@@ -28,8 +28,7 @@ var serveIndex = require('serve-index');
 
 var Server = require('./httpserver').Server,
     resources = require('./resources'),
-    isDevMode = require('../devmode'),
-    promise = require('../promise');
+    isDevMode = require('../devmode');
 
 var WEB_ROOT = '/common';
 var JS_ROOT = '/javascript';
@@ -194,15 +193,18 @@ function sendDelayedResponse(request, response) {
 }
 
 
-function handleUpload(request, response, next) {
-  multer({
-    inMemory: true,
-    onFileUploadComplete: function(file) {
+function handleUpload(request, response) {
+  let upload = multer({storage: multer.memoryStorage()}).any();
+  upload(request, response, function(err) {
+    if (err) {
+      response.writeHead(500);
+      response.end(err + '');
+    } else {
       response.writeHead(200);
-      response.write(file.buffer);
+      response.write(request.files[0].buffer);
       response.end('<script>window.top.window.onUploadDone();</script>');
     }
-  })(request, response, function() {});
+  });
 }
 
 
@@ -269,7 +271,7 @@ function sendIndex(request, response) {
 /**
  * Starts the server on the specified port.
  * @param {number=} opt_port The port to use, or 0 for any free port.
- * @return {!webdriver.promise.Promise.<Host>} A promise that will resolve
+ * @return {!Promise<Host>} A promise that will resolve
  *     with the server host when it has fully started.
  */
 exports.start = server.start.bind(server);
@@ -277,7 +279,7 @@ exports.start = server.start.bind(server);
 
 /**
  * Stops the server.
- * @return {!webdriver.promise.Promise} A promise that will resolve when the
+ * @return {!Promise} A promise that will resolve when the
  *     server has closed all connections.
  */
 exports.stop = server.stop.bind(server);

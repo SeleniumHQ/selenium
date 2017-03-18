@@ -28,8 +28,22 @@
 const cmd = require('./command');
 const error = require('./error');
 const logging = require('./logging');
+const promise = require('./promise');
 const Session = require('./session').Session;
 const WebElement = require('./webdriver').WebElement;
+
+const {getAttribute, isDisplayed} = (function() {
+  try {
+    return {
+      getAttribute: require('./atoms/getAttribute.js'),
+      isDisplayed: require('./atoms/is-displayed.js')
+    };
+  } catch (ex) {
+    throw Error(
+        'Failed to import atoms modules. If running in devmode, you need to run'
+            + ' `./go node:atoms` from the project root: ' + ex);
+  }
+})();
 
 
 /**
@@ -109,13 +123,58 @@ class Response {
 }
 
 
+const DEV_ROOT = '../../../../buck-out/gen/javascript/';
+
+/** @enum {!Function} */
+const Atom = {
+  GET_ATTRIBUTE: getAttribute,
+  IS_DISPLAYED: isDisplayed
+};
+
+
+const LOG = logging.getLogger('webdriver.http');
+
+
 function post(path) { return resource('POST', path); }
 function del(path)  { return resource('DELETE', path); }
 function get(path)  { return resource('GET', path); }
 function resource(method, path) { return {method: method, path: path}; }
 
 
-/** @const {!Map<string, {method: string, path: string}>} */
+/** @typedef {{method: string, path: string}} */
+var CommandSpec;
+
+
+/** @typedef {function(!cmd.Command): !Promise<!cmd.Command>} */
+var CommandTransformer;
+
+
+class InternalTypeError extends TypeError {}
+
+
+/**
+ * @param {!cmd.Command} command The initial command.
+ * @param {Atom} atom The name of the atom to execute.
+ * @return {!Promise<!cmd.Command>} The transformed command to execute.
+ */
+function toExecuteAtomCommand(command, atom, ...params) {
+  return new Promise((resolve, reject) => {
+    if (typeof atom !== 'function') {
+      reject(new InternalTypeError('atom is not a function: ' + typeof atom));
+      return;
+    }
+
+    let newCmd = new cmd.Command(cmd.Name.EXECUTE_SCRIPT)
+        .setParameter('sessionId', command.getParameter('sessionId'))
+        .setParameter('script', `return (${atom}).apply(null, arguments)`)
+        .setParameter('args', params.map(param => command.getParameter(param)));
+    resolve(newCmd);
+  });
+}
+
+
+
+/** @const {!Map<string, CommandSpec>} */
 const COMMAND_MAP = new Map([
     [cmd.Name.GET_SERVER_STATUS, get('/status')],
     [cmd.Name.NEW_SESSION, post('/session')],
@@ -166,6 +225,7 @@ const COMMAND_MAP = new Map([
     [cmd.Name.EXECUTE_SCRIPT, post('/session/:sessionId/execute')],
     [cmd.Name.EXECUTE_ASYNC_SCRIPT, post('/session/:sessionId/execute_async')],
     [cmd.Name.SCREENSHOT, get('/session/:sessionId/screenshot')],
+    [cmd.Name.GET_TIMEOUT, get('/session/:sessionId/timeouts')],
     [cmd.Name.SET_TIMEOUT, post('/session/:sessionId/timeouts')],
     [cmd.Name.MOVE_TO, post('/session/:sessionId/moveto')],
     [cmd.Name.CLICK, post('/session/:sessionId/click')],
@@ -194,11 +254,30 @@ const COMMAND_MAP = new Map([
 ]);
 
 
-/** @const {!Map<string, {method: string, path: string}>} */
+/** @const {!Map<string, (CommandSpec|CommandTransformer)>} */
 const W3C_COMMAND_MAP = new Map([
+  [cmd.Name.GET_ACTIVE_ELEMENT, get('/session/:sessionId/element/active')],
+  [cmd.Name.GET_ALERT_TEXT, get('/session/:sessionId/alert/text')],
+  [cmd.Name.SET_ALERT_TEXT, post('/session/:sessionId/alert/text')],
+  [cmd.Name.ACCEPT_ALERT, post('/session/:sessionId/alert/accept')],
+  [cmd.Name.DISMISS_ALERT, post('/session/:sessionId/alert/dismiss')],
+  [cmd.Name.GET_ELEMENT_ATTRIBUTE, (cmd) => {
+    return toExecuteAtomCommand(cmd, Atom.GET_ATTRIBUTE, 'id', 'name');
+  }],
+  [cmd.Name.GET_ELEMENT_LOCATION, get('/session/:sessionId/element/:id/rect')],
+  [cmd.Name.GET_ELEMENT_SIZE, get('/session/:sessionId/element/:id/rect')],
+  [cmd.Name.IS_ELEMENT_DISPLAYED, (cmd) => {
+    return toExecuteAtomCommand(cmd, Atom.IS_DISPLAYED, 'id');
+  }],
+  [cmd.Name.EXECUTE_SCRIPT, post('/session/:sessionId/execute/sync')],
+  [cmd.Name.EXECUTE_ASYNC_SCRIPT, post('/session/:sessionId/execute/async')],
+  [cmd.Name.MAXIMIZE_WINDOW, post('/session/:sessionId/window/maximize')],
+  [cmd.Name.GET_WINDOW_POSITION, get('/session/:sessionId/window/position')],
+  [cmd.Name.SET_WINDOW_POSITION, post('/session/:sessionId/window/position')],
   [cmd.Name.GET_WINDOW_SIZE, get('/session/:sessionId/window/size')],
   [cmd.Name.SET_WINDOW_SIZE, post('/session/:sessionId/window/size')],
-  [cmd.Name.MAXIMIZE_WINDOW, post('/session/:sessionId/window/maximize')],
+  [cmd.Name.GET_CURRENT_WINDOW_HANDLE, get('/session/:sessionId/window')],
+  [cmd.Name.GET_WINDOW_HANDLES, get('/session/:sessionId/window/handles')],
 ]);
 
 
@@ -222,6 +301,76 @@ class Client {
 }
 
 
+const CLIENTS =
+    /** !WeakMap<!Executor, !(Client|IThenable<!Client>)> */new WeakMap;
+
+
+/**
+ * Sends a request using the given executor.
+ * @param {!Executor} executor
+ * @param {!Request} request
+ * @return {!Promise<Response>}
+ */
+function doSend(executor, request) {
+  const client = CLIENTS.get(executor);
+  if (promise.isPromise(client)) {
+    return client.then(client => {
+      CLIENTS.set(executor, client);
+      return client.send(request);
+    });
+  } else {
+    return client.send(request);
+  }
+}
+
+
+/**
+ * @param {Map<string, CommandSpec>} customCommands
+ *     A map of custom command definitions.
+ * @param {boolean} w3c Whether to use W3C command mappings.
+ * @param {!cmd.Command} command The command to resolve.
+ * @return {!Promise<!Request>} A promise that will resolve with the
+ *     command to execute.
+ */
+function buildRequest(customCommands, w3c, command) {
+  LOG.finest(() => `Translating command: ${command.getName()}`);
+  let spec = customCommands && customCommands.get(command.getName());
+  if (spec) {
+    return toHttpRequest(spec);
+  }
+
+  if (w3c) {
+    spec = W3C_COMMAND_MAP.get(command.getName());
+    if (typeof spec === 'function') {
+      LOG.finest(() => `Transforming command for W3C: ${command.getName()}`);
+      return spec(command)
+          .then(newCommand => buildRequest(customCommands, w3c, newCommand));
+    } else if (spec) {
+      return toHttpRequest(spec);
+    }
+  }
+
+  spec = COMMAND_MAP.get(command.getName());
+  if (spec) {
+    return toHttpRequest(spec);
+  }
+  return Promise.reject(
+      new error.UnknownCommandError(
+          'Unrecognized command: ' + command.getName()));
+
+  /**
+   * @param {CommandSpec} resource
+   * @return {!Promise<!Request>}
+   */
+  function toHttpRequest(resource) {
+    LOG.finest(() => `Building HTTP request: ${JSON.stringify(resource)}`);
+    let parameters = command.getParameters();
+    let path = buildPath(resource.path, parameters);
+    return Promise.resolve(new Request(resource.method, path, parameters));
+  }
+}
+
+
 /**
  * A command executor that communicates with the server using JSON over HTTP.
  *
@@ -237,12 +386,12 @@ class Client {
  */
 class Executor {
   /**
-   * @param {!Client} client The client to use for sending requests to the
-   *     server.
+   * @param {!(Client|IThenable<!Client>)} client The client to use for sending
+   *     requests to the server, or a promise-like object that will resolve to
+   *     to the client.
    */
   constructor(client) {
-    /** @private {!Client} */
-    this.client_ = client;
+    CLIENTS.set(this, client);
 
     /**
      * Whether this executor should use the W3C wire protocol. The executor
@@ -253,7 +402,7 @@ class Executor {
      */
     this.w3c = false;
 
-    /** @private {Map<string, {method: string, path: string}>} */
+    /** @private {Map<string, CommandSpec>} */
     this.customCommands_ = null;
 
     /** @private {!logging.Logger} */
@@ -282,49 +431,36 @@ class Executor {
 
   /** @override */
   execute(command) {
-    let resource =
-        (this.customCommands_ && this.customCommands_.get(command.getName()))
-        || (this.w3c && W3C_COMMAND_MAP.get(command.getName()))
-        || COMMAND_MAP.get(command.getName());
-    if (!resource) {
-      throw new error.UnknownCommandError(
-          'Unrecognized command: ' + command.getName());
-    }
+    let request = buildRequest(this.customCommands_, this.w3c, command);
+    return request.then(request => {
+      this.log_.finer(() => `>>> ${request.method} ${request.path}`);
+      return doSend(this, request).then(response => {
+        this.log_.finer(() => `>>>\n${request}\n<<<\n${response}`);
 
-    let parameters = command.getParameters();
-    let path = buildPath(resource.path, parameters);
-    let request = new Request(resource.method, path, parameters);
+        let httpResponse = /** @type {!Response} */(response);
+        let {isW3C, value} = parseHttpResponse(command, httpResponse);
 
-    let log = this.log_;
-    log.finer(() => '>>>\n' + request);
-    return this.client_.send(request).then(response => {
-      log.finer(() => '<<<\n' + response);
+        if (command.getName() === cmd.Name.NEW_SESSION
+            || command.getName() === cmd.Name.DESCRIBE_SESSION) {
+          if (!value || !value.sessionId) {
+            throw new error.WebDriverError(
+                `Unable to parse new session response: ${response.body}`);
+          }
 
-      let parsed =
-          parseHttpResponse(/** @type {!Response} */ (response), this.w3c);
+          // The remote end is a W3C compliant server if there is no `status`
+          // field in the response. This is not applicable for the DESCRIBE_SESSION
+          // command, which is not defined in the W3C spec.
+          if (command.getName() === cmd.Name.NEW_SESSION) {
+            this.w3c = this.w3c || isW3C;
+          }
 
-      if (command.getName() === cmd.Name.NEW_SESSION
-          || command.getName() === cmd.Name.DESCRIBE_SESSION) {
-        if (!parsed || !parsed['sessionId']) {
-          throw new error.WebDriverError(
-              'Unable to parse new session response: ' + response.body);
+          // No implementations use the `capabilities` key yet...
+          let capabilities = value.capabilities || value.value;
+          return new Session(value.sessionId, capabilities);
         }
 
-        // The remote end is a W3C compliant server if there is no `status`
-        // field in the response. This is not appliable for the DESCRIBE_SESSION
-        // command, which is not defined in the W3C spec.
-        if (command.getName() === cmd.Name.NEW_SESSION) {
-          this.w3c = this.w3c || !('status' in parsed);
-        }
-
-        return new Session(parsed['sessionId'], parsed['value']);
-      }
-
-      if (parsed) {
-        let value = parsed['value'];
         return typeof value === 'undefined' ? null : value;
-      }
-      return parsed;
+      });
     });
   }
 }
@@ -346,34 +482,48 @@ function tryParse(str) {
 /**
  * Callback used to parse {@link Response} objects from a
  * {@link HttpClient}.
+ *
+ * @param {!cmd.Command} command The command the response is for.
  * @param {!Response} httpResponse The HTTP response to parse.
- * @param {boolean} w3c Whether the response should be processed using the
- *     W3C wire protocol.
- * @return {{value: ?}} The parsed response.
+ * @return {{isW3C: boolean, value: ?}} An object describing the parsed
+ *     response. This object will have two fields: `isW3C` indicates whether
+ *     the response looks like it came from a remote end that conforms with the
+ *     W3C WebDriver spec, and `value`, the actual response value.
  * @throws {WebDriverError} If the HTTP response is an error.
  */
-function parseHttpResponse(httpResponse, w3c) {
+function parseHttpResponse(command, httpResponse) {
+  if (httpResponse.status < 200) {
+    // This should never happen, but throw the raw response so users report it.
+    throw new error.WebDriverError(
+        `Unexpected HTTP response:\n${httpResponse}`);
+  }
+
   let parsed = tryParse(httpResponse.body);
-  if (parsed !== undefined) {
-    if (w3c) {
-      if (httpResponse.status > 399) {
-        error.throwDecodedError(parsed);
-      }
+  if (parsed && typeof parsed === 'object') {
+    let value = parsed.value;
+    let isW3C =
+        value !== null && typeof value === 'object'
+            && typeof parsed.status === 'undefined';
 
-      if (httpResponse.status < 200) {
-        // This should never happen, but throw the raw response so
-        // users report it.
-        throw new error.WebDriverError(
-            `Unexpected HTTP response:\n${httpResponse}`);
-      }
-    } else {
+    if (!isW3C) {
       error.checkLegacyResponse(parsed);
+
+      // Adjust legacy new session responses to look like W3C to simplify
+      // later processing.
+      if (command.getName() === cmd.Name.NEW_SESSION
+          || command.getName() == cmd.Name.DESCRIBE_SESSION) {
+        value = parsed;
+      }
+
+    } else if (httpResponse.status > 399) {
+      error.throwDecodedError(value);
     }
 
-    if (!parsed || typeof parsed !== 'object') {
-      parsed = {value: parsed};
-    }
-    return parsed
+    return {isW3C, value};
+  }
+
+  if (parsed !== undefined) {
+    return {isW3C: false, value: parsed};
   }
 
   let value = httpResponse.body.replace(/\r\n/g, '\n');
@@ -386,7 +536,7 @@ function parseHttpResponse(httpResponse, w3c) {
     throw new error.WebDriverError(value);
   }
 
-  return {value: value || null};
+  return {isW3C: false, value: value || null};
 }
 
 

@@ -24,8 +24,8 @@ import static org.junit.Assert.assertTrue;
 import com.google.common.base.Function;
 import com.google.common.base.Throwables;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.openqa.grid.common.GridRole;
 import org.openqa.grid.e2e.utils.GridTestHelper;
@@ -43,14 +43,14 @@ import java.util.concurrent.Callable;
 
 public class DefaultProxyIsUnregisteredIfDownForTooLongTest {
 
-  private static Hub hub;
-  private static Registry registry;
-  private static SelfRegisteringRemote remote;
+  private Hub hub;
+  private Registry registry;
+  private SelfRegisteringRemote remote;
 
-  private static String proxyId;
+  private String proxyId;
 
-  @BeforeClass
-  public static void prepare() throws Exception {
+  @Before
+  public void prepare() throws Exception {
     hub = GridTestHelper.getHub();
     registry = hub.getRegistry();
 
@@ -122,7 +122,7 @@ public class DefaultProxyIsUnregisteredIfDownForTooLongTest {
     };
   }
 
-  private static String getProxyId() throws Exception {
+  private String getProxyId() throws Exception {
     RemoteProxy p = null;
     Iterator<RemoteProxy> it = registry.getAllProxies().iterator();
     while(it.hasNext()) {
@@ -138,8 +138,8 @@ public class DefaultProxyIsUnregisteredIfDownForTooLongTest {
     return proxyId;
   }
 
-  @AfterClass
-  public static void tearDown() throws Exception {
+  @After
+  public void tearDown() throws Exception {
     hub.stop();
   }
 

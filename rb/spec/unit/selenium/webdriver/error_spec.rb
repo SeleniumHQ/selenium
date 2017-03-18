@@ -22,39 +22,37 @@ require_relative 'spec_helper'
 module Selenium
   module WebDriver
     describe Error do
-
-      context "backwards compatibility" do
-        it "aliases StaleElementReferenceError as ObsoleteElementError" do
-          expect {
+      context 'backwards compatibility' do
+        it 'aliases StaleElementReferenceError as ObsoleteElementError' do
+          expect do
             raise Error::StaleElementReferenceError
-          }.to raise_error(Error::ObsoleteElementError)
+          end.to raise_error(Error::ObsoleteElementError)
         end
 
-        it "aliases UnknownError as UnhandledError" do
-          expect {
+        it 'aliases UnknownError as UnhandledError' do
+          expect do
             raise Error::UnknownError
-          }.to raise_error(Error::UnhandledError)
+          end.to raise_error(Error::UnhandledError)
         end
 
-        it "aliases JavascriptError as UnexpectedJavascriptError" do
-          expect {
+        it 'aliases JavascriptError as UnexpectedJavascriptError' do
+          expect do
             raise Error::JavascriptError
-          }.to raise_error(Error::UnexpectedJavascriptError)
+          end.to raise_error(Error::UnexpectedJavascriptError)
         end
 
-        it "aliases NoAlertPresentError as NoAlertOpenError" do
-          expect {
+        it 'aliases NoAlertPresentError as NoAlertOpenError' do
+          expect do
             raise Error::NoAlertPresentError
-          }.to raise_error(Error::NoAlertOpenError)
+          end.to raise_error(Error::NoAlertOpenError)
         end
 
-        it "aliases ElementNotVisibleError as ElementNotDisplayedError" do
-          expect {
+        it 'aliases ElementNotVisibleError as ElementNotDisplayedError' do
+          expect do
             raise Error::ElementNotVisibleError
-          }.to raise_error(Error::ElementNotDisplayedError)
+          end.to raise_error(Error::ElementNotDisplayedError)
         end
       end
-
     end
-  end
-end
+  end # WebDriver
+end # Selenium

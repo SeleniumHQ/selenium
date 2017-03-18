@@ -16,7 +16,7 @@
 // under the License.
 
 /**
- * @fileoverview Defines functions for configuring a webdriver proxy:
+ * @fileoverview Proxy module alias.
  *
  *     var webdriver = require('selenium-webdriver'),
  *         proxy = require('selenium-webdriver/proxy');
@@ -29,77 +29,4 @@
 
 'use strict';
 
-var util = require('util');
-
-var ProxyConfig = require('./lib/capabilities').ProxyConfig;
-
-
-
-// PUBLIC API
-
-
-/**
- * Configures WebDriver to bypass all browser proxies.
- * @return {!ProxyConfig} A new proxy configuration object.
- */
-exports.direct = function() {
-  return {proxyType: 'direct'};
-};
-
-
-/**
- * Manually configures the browser proxy.  The following options are
- * supported:
- *
- * - `ftp`: Proxy host to use for FTP requests
- * - `http`: Proxy host to use for HTTP requests
- * - `https`: Proxy host to use for HTTPS requests
- * - `bypass`: A list of hosts requests should directly connect to,
- *     bypassing any other proxies for that request. May be specified as a
- *     comma separated string, or a list of strings.
- *
- * Behavior is undefined for FTP, HTTP, and HTTPS requests if the
- * corresponding key is omitted from the configuration options.
- *
- * @param {{ftp: (string|undefined),
- *          http: (string|undefined),
- *          https: (string|undefined),
- *          bypass: (string|!Array.<string>|undefined)}} options Proxy
- *     configuration options.
- * @return {!ProxyConfig} A new proxy configuration object.
- */
-exports.manual = function(options) {
-  // TODO(jleyba): Figure out why the Closure compiler does not think this is
-  // a ProxyConfig record without the cast.
-  return /** @type {!ProxyConfig} */({
-    proxyType: 'manual',
-    ftpProxy: options.ftp,
-    httpProxy: options.http,
-    sslProxy: options.https,
-    noProxy: util.isArray(options.bypass) ?
-        options.bypass.join(',') : options.bypass
-  });
-};
-
-
-/**
- * Configures WebDriver to configure the browser proxy using the PAC file at
- * the given URL.
- * @param {string} url URL for the PAC proxy to use.
- * @return {!ProxyConfig} A new proxy configuration object.
- */
-exports.pac = function(url) {
-  return {
-    proxyType: 'pac',
-    proxyAutoconfigUrl: url
-  };
-};
-
-
-/**
- * Configures WebDriver to use the current system's proxy.
- * @return {!ProxyConfig} A new proxy configuration object.
- */
-exports.system = function() {
-  return {proxyType: 'system'};
-};
+module.exports = require('./lib/proxy');

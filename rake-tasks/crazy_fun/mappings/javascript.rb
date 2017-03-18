@@ -1,6 +1,5 @@
 require 'rake-tasks/crazy_fun/mappings/common'
 require 'rake-tasks/crazy_fun/mappings/common'
-require 'rake-tasks/crazy_fun/mappings/java'
 require 'pathname'
 require 'set'
 
@@ -173,19 +172,6 @@ class JavascriptMappings
     fun.add_mapping("js_fragment_csharp", Javascript::AddDependencies.new)
     fun.add_mapping("js_fragment_csharp", Javascript::ConcatenateCSharp.new)
 
-    # Executes JavaScript tests in the browser.
-    #
-    # Arguments:
-    #  srcs: List of test files.
-    #  path: Path, relative to the client root, that the test files can be
-    #      located.
-    #  deps: A list of test dependencies.
-    fun.add_mapping("js_test", Javascript::CheckPreconditions.new)
-    fun.add_mapping("js_test", Javascript::CreateTask.new)
-    fun.add_mapping("js_test", Javascript::CreateTaskShortName.new)
-    fun.add_mapping("js_test", Javascript::AddDependencies.new)
-    fun.add_mapping("js_test", Javascript::RunTests.new)
-
     fun.add_mapping("node_module", Javascript::CheckPreconditions.new)
     fun.add_mapping("node_module", Javascript::Node::CreateTask.new)
     fun.add_mapping("node_module", Javascript::CreateTaskShortName.new)
@@ -194,9 +180,6 @@ class JavascriptMappings
 end
 
 module Javascript
-  # CrazyFunJava.ant.taskdef :name      => "jscomp",
-  #                          :classname => "com.google.javascript.jscomp.ant.CompileTask",
-  #                          :classpath => "third_party/closure/bin/compiler-20130603.jar"
 
   class ClosureDeps
 
@@ -574,25 +557,25 @@ module Javascript
 
         flags.push("--js_output_file=#{output}")
 
-        cmd = "" <<
-           flags.join(" ") <<
+        expanded_flags = flags.join(" ") <<
            " --js='" <<
            all_deps.join("' --js='") << "'"
 
         if (args[:externs])
           args[:externs].each do |extern|
-            cmd << " --externs=#{File.join(dir, extern)} "
+            expanded_flags << " --externs=#{File.join(dir, extern)} "
           end
         end
 
         mkdir_p File.dirname(output)
 
-        CrazyFunJava.ant.java :classname => "com.google.javascript.jscomp.CommandLineRunner", :failonerror => true do
-          classpath do
-            pathelement :path =>  "third_party/closure/bin/compiler.jar"
-          end
-          arg :line => cmd
-        end
+        flag_file = File.join(File.dirname(output), "closure_flags.txt")
+        File.open(flag_file, 'w') {|f| f.write(expanded_flags)}    
+
+        cmd = "java -cp third_party/closure/bin/compiler.jar com.google.javascript.jscomp.CommandLineRunner --flagfile " << flag_file
+        sh cmd
+
+        rm_rf flag_file
       end
     end
   end
@@ -756,12 +739,10 @@ module Javascript
 
         mkdir_p Platform.path_for folder
 
-        CrazyFunJava.ant.java :classname => "com.google.javascript.jscomp.CommandLineRunner", :failonerror => true do
-          classpath do
-            pathelement :path =>  "third_party/closure/bin/compiler.jar"
-          end
-          arg :line => flags.join(" ")
-        end
+        cmd = "java -cp third_party/closure/bin/compiler.jar com.google.javascript.jscomp.CommandLineRunner " <<
+          flags.join(" ")
+
+        sh cmd
       end
     end
   end
@@ -843,9 +824,9 @@ module Javascript
         formatting =
             (ENV['pretty_print'] == 'true') ?  "--formatting=PRETTY_PRINT" : ""
 
-        cmd = "" <<
+        cmd = "java -cp third_party/closure/bin/compiler.jar com.google.javascript.jscomp.CommandLineRunner " <<
             "--js_output_file=#{output} " <<
-            "--output_wrapper='#{wrapper}' " <<
+            "--output_wrapper=\"#{wrapper}\" " <<
             "--compilation_level=#{compilation_level(minify)} " <<
             "--define=goog.NATIVE_ARRAY_PROTOTYPES=false " <<
             "--define=bot.json.NATIVE_JSON=false " <<
@@ -881,12 +862,7 @@ module Javascript
 
         mkdir_p File.dirname(output)
 
-        CrazyFunJava.ant.java :classname => "com.google.javascript.jscomp.CommandLineRunner", :fork => false, :failonerror => true do
-          classpath do
-            pathelement :path =>  "third_party/closure/bin/compiler.jar"
-          end
-          arg :line => cmd
-        end
+        sh cmd
       end
 
       output_task = Rake::Task[output]
@@ -1292,78 +1268,6 @@ module Javascript
       task_name = task_name(dir, args[:name]) + ":header"
       generate_header(dir, args[:name], task_name, out, [js], false, false)
       task task_name => [out]
-    end
-  end
-
-  class RunTests < BaseJs
-    def handle(fun, dir, args)
-      task_name = task_name(dir, args[:name])
-
-      java_browsers = BROWSERS.find_all { |k,v| v.has_key?(:java) }
-      available_browsers = java_browsers.find_all { |k,v| [nil, true].include?(v[:available]) }
-      listed_browsers = args[:browsers] ? Hash[*(args[:browsers]).collect { |b| [b, BROWSERS[b]]}.flatten].find_all { |k,v| !v.nil? } : java_browsers
-
-      listed_browsers.each do |browser, all_browser_data|
-        browser_data = all_browser_data[:java]
-        browser_task_name = "#{task_name}_#{browser}"
-        deps = [task_name]
-        deps.concat(browser_data[:deps]) if browser_data[:deps]
-
-        desc "Run the tests for #{browser_task_name}"
-        task "#{browser_task_name}:run" => deps do
-          puts "Testing: #{browser_task_name} " +
-              (ENV['log'] == 'true' ? 'Log: build/test_logs/TEST-' + browser_task_name.gsub(/[\/:]+/, '-') : '')
-
-          cp = CrazyFunJava::ClassPath.new("#{browser_task_name}:run")
-          puts cp
-          mkdir_p 'build/test_logs'
-
-          CrazyFunJava.ant.project.getBuildListeners().get(0).setMessageOutputLevel(2) if ENV['log']
-          CrazyFunJava.ant.junit(:fork => true, :forkmode =>  'once', :showoutput => true,
-                                 :printsummary => 'on', :haltonerror => halt_on_error?, :haltonfailure => halt_on_failure?) do |ant|
-            ant.classpath do |ant_cp|
-              cp.all.each do |jar|
-                ant_cp.pathelement(:location => jar)
-              end
-            end
-
-            sysprops = args[:sysproperties] || []
-
-            ant.sysproperty :key => "selenium.browser", :value => browser #browser_data[:class]
-
-            sysprops.each do |map|
-              map.each do |key, value|
-                ant.sysproperty :key => key, :value => value
-              end
-            end
-
-            if ($DEBUG)
-              ant.jvmarg(:line => "-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005")
-            end
-
-            test_dir = args[:test_dir] ? File.join(dir, args[:test_dir]) : File.join(dir, 'test')
-            ant.sysproperty :key => 'js.test.dir', :value => test_dir
-
-            if !args[:exclude].nil?
-              excludes = File.join(dir, args[:exclude])
-              excludes = FileList[excludes].to_a.collect do |f|
-                f[test_dir.length + 1..-1]
-              end
-              ant.sysproperty :key => 'js.test.excludes', :value => excludes.join(',')
-            end
-
-            ant.formatter(:type => 'plain')
-            ant.formatter(:type => 'xml')
-
-            ant.test(:name => "org.openqa.selenium.javascript.ClosureTestSuite",
-                     :outfile => "TEST-" + browser_task_name.gsub(/[\/:]+/, "-"),
-                     :todir => 'build/test_logs')
-          end
-          CrazyFunJava.ant.project.getBuildListeners().get(0).setMessageOutputLevel($DEBUG ? 2 : 0)
-        end
-      end
-
-      task "#{task_name}:run" => (listed_browsers & available_browsers).map { |browser,_| "#{task_name}_#{browser}:run" }
     end
   end
 

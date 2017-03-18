@@ -189,8 +189,17 @@ WebElement.clearElement = function(respond, parameters) {
   var element = Utils.getElementAt(parameters.id,
                                    respond.session.getDocument());
   bot.setWindow(respond.session.getWindow());
-  bot.action.clear(element);
-  respond.send();
+  try {
+    bot.action.clear(element);
+    respond.send();
+  } catch (e) {
+    var code = e.code;
+    if (code) {
+      respond.sendError(new WebDriverError(code, e.message));
+    } else {
+      throw e;
+    }
+  }
 };
 WebElement.clearElement.preconditions =
     [fxdriver.preconditions.visible, fxdriver.preconditions.enabled, fxdriver.preconditions.writable];

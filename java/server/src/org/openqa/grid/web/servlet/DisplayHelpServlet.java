@@ -18,28 +18,43 @@
 package org.openqa.grid.web.servlet;
 
 import com.google.common.io.ByteStreams;
+import com.google.gson.GsonBuilder;
 
-import java.io.ByteArrayInputStream;
+import org.openqa.grid.common.GridRole;
+import org.openqa.grid.web.servlet.beta.ConsoleServlet;
+import org.openqa.selenium.internal.BuildInfo;
+
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Properties;
-import java.util.logging.Logger;
+import java.io.InputStreamReader;
+import java.util.stream.Collectors;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * Displays a somewhat useful help signpost page. Expects {@link #HELPER_TYPE_PARAMETER} to be
+ * set as a servlet context init parameter with a value of "hub", "node", or "standalone"
+ */
 public class DisplayHelpServlet extends HttpServlet {
   private static final long serialVersionUID = 8484071790930378855L;
-  private static final Logger log = Logger.getLogger(DisplayHelpServlet.class.getName());
-  private static String coreVersion;
-  private static String coreRevision;
+  public static final String HELPER_TYPE_PARAMETER = "webdriver.server.displayhelpservlet.type";
 
-  public DisplayHelpServlet() {
-    getVersion();
+  private static final String HELPER_SERVLET_TEMPLATE = "displayhelpservlet.html";
+  private static final String HELPER_SERVLET_ASSET_PATH_PREFIX = "/assets/";
+  private static final String HELPER_SERVLET_RESOURCE_PATH = "org/openqa/grid/images/";
+  private static final String HELPER_SERVLET_TEMPLATE_CONFIG_JSON_VAR = "${servletConfigJson}";
+
+  private final class DisplayHelpServletConfig {
+    String version;
+    String type;
+    String consoleLink;
   }
 
+  private final DisplayHelpServletConfig servletConfig = new DisplayHelpServletConfig();
 
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -55,56 +70,99 @@ public class DisplayHelpServlet extends HttpServlet {
 
   protected void process(HttpServletRequest request, HttpServletResponse response)
       throws IOException {
-    response.setContentType("text/html");
-    response.setCharacterEncoding("UTF-8");
-    response.setStatus(200);
 
-    StringBuilder builder = new StringBuilder();
+    initServletConfig();
 
-    builder.append("<html>");
-    builder.append("<head>");
+    String resource = request.getPathInfo();
+    InputStream in;
+    if (resource.contains(HELPER_SERVLET_ASSET_PATH_PREFIX) &&
+        !resource.replace(HELPER_SERVLET_ASSET_PATH_PREFIX, "").contains("/") &&
+        !resource.replace(HELPER_SERVLET_ASSET_PATH_PREFIX, "").equals("")) {
+      // request is for an asset of the help page
+      resource = resource.replace(HELPER_SERVLET_ASSET_PATH_PREFIX, "");
+      in = getResourceInputStream(resource);
+      if (in == null) {
+        response.sendError(HttpServletResponse.SC_NOT_FOUND);
+      } else {
+        response.setStatus(200);
+        ByteStreams.copy(in, response.getOutputStream());
+      }
+    } else {
+      // request is for an unknown entity. show the help page
+      in = getResourceInputStream(HELPER_SERVLET_TEMPLATE);
+      if (in == null) {
+        response.sendError(HttpServletResponse.SC_NOT_FOUND);
+      } else {
+        final String json = new GsonBuilder().serializeNulls().create().toJson(servletConfig);
+        final String jsonUtf8 = new String(json.getBytes(), "UTF-8");
+        final String htmlTemplate =
+          new BufferedReader(new InputStreamReader(in, "UTF-8")).lines().collect(Collectors.joining("\n"));
+        final String updatedTemplate =
+          htmlTemplate.replace(HELPER_SERVLET_TEMPLATE_CONFIG_JSON_VAR, jsonUtf8);
 
-    builder.append("<title>Selenium Grid2.0 help</title>");
+        response.setContentType("text/html");
+        response.setCharacterEncoding("UTF-8");
+        response.setStatus(200);
+        response.getOutputStream().print(updatedTemplate);
+      }
+    }
 
+    response.flushBuffer();
+  }
 
-    builder.append("</head>");
-
-    builder.append("<body>");
-    builder.append("You are using grid ").append(coreVersion).append(coreRevision);
-    builder
-        .append("<br>Find help on the official selenium wiki : <a href='https://github.com/SeleniumHQ/selenium/wiki/Grid2' >more help here</a>");
-    builder.append("<br>default monitoring page : <a href='/grid/console' >console</a>");
-
-    builder.append("</body>");
-    builder.append("</html>");
-
-    InputStream in = new ByteArrayInputStream(builder.toString().getBytes("UTF-8"));
-    try {
-      ByteStreams.copy(in, response.getOutputStream());
-    } finally {
-      in.close();
-      response.flushBuffer();
+  private void initServletConfig() {
+    if (servletConfig.version == null) {
+      servletConfig.version = new BuildInfo().getReleaseLabel();
+    }
+    if (servletConfig.type == null) {
+      servletConfig.type = getHelperType();
+    }
+    if (servletConfig.consoleLink == null) {
+      // a hub may not have a console attached, in which case it will not set this parameter
+      // so we default to "".
+      servletConfig.consoleLink = getInitParameter(ConsoleServlet.CONSOLE_PATH_PARAMETER, "");
     }
   }
 
-  private void getVersion() {
-    final Properties p = new Properties();
+  private String getHelperType() {
+    GridRole role = GridRole.get(getInitParameter(HELPER_TYPE_PARAMETER, "standalone"));
+    String type = "Standalone";
+    switch (role) {
+      case HUB: {
+        type = "Grid Hub";
+        break;
+      }
+      case NODE: {
+        type = "Grid Node";
+        break;
+      }
+      default: {
+        break;
+      }
+    }
+    return type;
+  }
 
-    InputStream stream =
-        Thread.currentThread().getContextClassLoader().getResourceAsStream("VERSION.txt");
-    if (stream == null) {
-      log.severe("Couldn't determine version number");
-      return;
+  @Override
+  public String getInitParameter(String param) {
+    return getServletContext().getInitParameter(param);
+  }
+
+  private String getInitParameter(String param, String defaultValue) {
+    final String value = getInitParameter(param);
+    if (value == null || value.trim().isEmpty()) {
+      return defaultValue;
     }
-    try {
-      p.load(stream);
-    } catch (IOException e) {
-      log.severe("Cannot load version from VERSION.txt" + e.getMessage());
+    return value;
+  }
+
+  private InputStream getResourceInputStream(String resource)
+    throws IOException {
+    InputStream in = Thread.currentThread().getContextClassLoader()
+      .getResourceAsStream(HELPER_SERVLET_RESOURCE_PATH + resource);
+    if (in == null) {
+      return null;
     }
-    coreVersion = p.getProperty("selenium.core.version");
-    coreRevision = p.getProperty("selenium.core.revision");
-    if (coreVersion == null) {
-      log.severe("Cannot load selenium.core.version from VERSION.txt");
-    }
+    return in;
   }
 }

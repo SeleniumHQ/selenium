@@ -20,7 +20,7 @@ package org.openqa.selenium.firefox.internal;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.io.TemporaryFilesystem;
-
+import org.openqa.selenium.io.Zip;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
@@ -79,7 +79,7 @@ public class FileExtension implements Extension {
       BufferedInputStream bis =
           new BufferedInputStream(new FileInputStream(extensionToInstall));
       try {
-        root = FileHandler.unzip(bis);
+        root = Zip.unzipToTempDir(bis, "unzip", "stream");
       } finally {
         bis.close();
       }

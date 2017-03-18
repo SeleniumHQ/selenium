@@ -1,6 +1,6 @@
 js_fragment(name = "get_attribute",
-  module = "webdriver.atoms.element",
-  function = "webdriver.atoms.element.getAttribute",
+  module = "webdriver.atoms.element.attribute",
+  function = "webdriver.atoms.element.attribute.get",
   deps = [ "//javascript/webdriver/atoms:all_js" ])
 
 js_fragment(name = "get_text",

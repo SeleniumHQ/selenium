@@ -11,6 +11,9 @@
       java/client/build, \
       java/server/build
 
+[cache]
+  mode = dir
+
 [test]
   # Maximum timeout of 10 minutes per test (since each suite counts as a test)
   timeout = 600000
@@ -30,7 +33,7 @@
   rc-server     = //java/server/src/org/openqa/selenium/server:rc
   selenium-java = //java/client/src/org/openqa/selenium:selenium-java
 
-  se3-server    = //java/server/src/org/openqa/selenium/remote/server:standalone-server
+  selenium-server-standalone = //java/server/src/org/openqa/grid/selenium:selenium
 
   # Tests
   firefox-test  = //java/client/test/org/openqa/selenium/firefox:test-synthesized

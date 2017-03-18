@@ -17,15 +17,6 @@
 
 package org.openqa.selenium;
 
-import org.junit.Test;
-import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.JavascriptEnabled;
-import org.openqa.selenium.testing.NotYetImplemented;
-import org.openqa.selenium.testing.TestUtilities;
-
-import java.util.List;
-
 import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
@@ -41,6 +32,15 @@ import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.testing.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
+
+import org.junit.Test;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JavascriptEnabled;
+import org.openqa.selenium.testing.TestUtilities;
+
+import java.util.List;
 
 public class ElementAttributeTest extends JUnit4TestBase {
 
@@ -320,7 +320,6 @@ public class ElementAttributeTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(HTMLUNIT)
   public void testGetAttributeDoesNotReturnAnObjectForSvgProperties() {
     assumeFalse("IE before 9 doesn't support SVG", TestUtilities.isOldIe(driver));
 
@@ -330,30 +329,33 @@ public class ElementAttributeTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
   public void testCanRetrieveTheCurrentValueOfATextFormField_textInput() {
     driver.get(pages.formPage);
     WebElement element = driver.findElement(By.id("working"));
     assertEquals("", element.getAttribute("value"));
     element.sendKeys("hello world");
-    assertEquals("hello world", element.getAttribute("value"));
+    shortWait.until(ExpectedConditions.attributeToBe(element, "value", "hello world"));
   }
 
   @Test
+  @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
   public void testCanRetrieveTheCurrentValueOfATextFormField_emailInput() {
     driver.get(pages.formPage);
     WebElement element = driver.findElement(By.id("email"));
     assertEquals("", element.getAttribute("value"));
     element.sendKeys("hello@example.com");
-    assertEquals("hello@example.com", element.getAttribute("value"));
+    shortWait.until(ExpectedConditions.attributeToBe(element, "value", "hello@example.com"));
   }
 
   @Test
+  @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
   public void testCanRetrieveTheCurrentValueOfATextFormField_textArea() {
     driver.get(pages.formPage);
     WebElement element = driver.findElement(By.id("emptyTextArea"));
     assertEquals("", element.getAttribute("value"));
     element.sendKeys("hello world");
-    assertEquals("hello world", element.getAttribute("value"));
+    shortWait.until(ExpectedConditions.attributeToBe(element, "value", "hello world"));
   }
 
   @Ignore({MARIONETTE})

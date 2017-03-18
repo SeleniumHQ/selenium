@@ -20,38 +20,45 @@
 module Selenium
   module WebDriver
     module IE
-
       #
       # @api private
       #
 
       class Bridge < Remote::Bridge
-
         def initialize(opts = {})
-          caps           = opts.delete(:desired_capabilities) { Remote::Capabilities.internet_explorer }
-          port           = opts.delete(:port) { Service::DEFAULT_PORT }
-          http_client    = opts.delete(:http_client)
-          ignore_mode    = opts.delete(:introduce_flakiness_by_ignoring_security_domains)
-          native_events  = opts.delete(:native_events) != false
+          opts[:desired_capabilities] ||= Remote::Capabilities.internet_explorer
 
-          @service = Service.new(IE.driver_path, port, *extract_service_args(opts))
+          unless opts.key?(:url)
+            driver_path = opts.delete(:driver_path) || IE.driver_path
+            port = opts.delete(:port) || Service::DEFAULT_PORT
 
-          unless opts.empty?
-            raise ArgumentError, "unknown option#{'s' if opts.size != 1}: #{opts.inspect}"
+            opts[:driver_opts] ||= {}
+            if opts.key? :service_args
+              WebDriver.logger.warn <<-DEPRECATE.gsub(/\n +| {2,}/, ' ').freeze
+            [DEPRECATION] `:service_args` is deprecated. Pass switches using `driver_opts`
+              DEPRECATE
+              opts[:driver_opts][:args] = opts.delete(:service_args)
+            end
+
+            %i[log_level log_file implementation].each do |method|
+              next unless opts.key? method
+              WebDriver.logger.warn <<-DEPRECATE.gsub(/\n +| {2,}/, ' ').freeze
+            [DEPRECATION] `#{method}` is deprecated. Pass switches using `driver_opts`
+              DEPRECATE
+              opts[:driver_opts][method] = opts.delete(method)
+            end
+
+            @service = Service.new(driver_path, port, opts.delete(:driver_opts))
+            @service.start
+            opts[:url] = @service.uri
           end
 
-          @service.start
+          if opts.delete(:introduce_flakiness_by_ignoring_security_domains)
+            opts[:desired_capabilities][:ignore_protected_mode_settings] = true
+          end
+          opts[:desired_capabilities][:native_events] = opts.delete(:native_events) != false
 
-          caps['ignoreProtectedModeSettings'] = true if ignore_mode
-          caps['nativeEvents'] = native_events
-
-          remote_opts = {
-            :url => @service.uri,
-            :desired_capabilities => caps
-          }
-          remote_opts[:http_client] = http_client if http_client
-
-          super(remote_opts)
+          super(opts)
         end
 
         def browser
@@ -59,7 +66,7 @@ module Selenium
         end
 
         def driver_extensions
-          [DriverExtensions::TakesScreenshot, DriverExtensions::HasInputDevices]
+          [DriverExtensions::TakesScreenshot]
         end
 
         def quit
@@ -67,17 +74,6 @@ module Selenium
         ensure
           @service.stop if @service
         end
-
-        private
-
-        def extract_service_args(opts)
-          args = []
-          args << "--log-level=#{opts.delete(:log_level).to_s.upcase}" if opts[:log_level]
-          args << "--log-file=#{opts.delete(:log_file)}" if opts[:log_file]
-          args << "--implementation=#{opts.delete(:implementation).to_s.upcase}" if opts[:implementation]
-          args
-        end
-
       end # Bridge
     end # IE
   end # WebDriver

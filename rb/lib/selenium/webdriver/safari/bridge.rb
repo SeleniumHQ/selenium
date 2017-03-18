@@ -20,115 +20,36 @@
 module Selenium
   module WebDriver
     module Safari
-
+      # @api private
       class Bridge < Remote::Bridge
-        COMMAND_TIMEOUT = 60
-
         def initialize(opts = {})
-          command_timeout = Integer(opts[:timeout] || COMMAND_TIMEOUT)
-          safari_options  = opts.delete(:options) || Safari::Options.new(opts)
-          capabilities    = merge_capabilities(opts, safari_options)
+          opts[:desired_capabilities] ||= Remote::Capabilities.safari
 
-          @command_id ||= 0
+          unless opts.key?(:url)
+            driver_path = opts.delete(:driver_path) || Safari.driver_path
+            port = opts.delete(:port) || Service::DEFAULT_PORT
 
-          # TODO: handle safari_opts['cleanSession']
-          @server = Server.new(safari_options.port, command_timeout)
-          @server.start
+            opts[:driver_opts] ||= {}
+            if opts.key? :service_args
+              WebDriver.logger.warn <<-DEPRECATE.gsub(/\n +| {2,}/, ' ').freeze
+            [DEPRECATION] `:service_args` is deprecated. Pass switches using `driver_opts`
+              DEPRECATE
+              opts[:driver_opts][:args] = opts.delete(:service_args)
+            end
 
-          @safari = Browser.new
-          @safari.start(prepare_connect_file)
+            @service = Service.new(driver_path, port, opts.delete(:driver_opts))
+            @service.start
+            opts[:url] = @service.uri
+          end
 
-          @server.wait_for_connection
-
-          super(desired_capabilities: capabilities)
+          super(opts)
         end
 
         def quit
           super
-
-          @server.stop
-          @safari.stop
+        ensure
+          @service.stop if @service
         end
-
-        def driver_extensions
-          [
-            DriverExtensions::TakesScreenshot,
-            DriverExtensions::HasInputDevices
-          ]
-        end
-
-        private
-
-        def create_session(desired_capabilities)
-          resp = raw_execute :newSession, {}, :desiredCapabilities => desired_capabilities
-          Remote::Capabilities.json_create resp.fetch('value')
-        end
-
-        def raw_execute(command, opts = {}, command_hash = nil)
-          @command_id += 1
-
-          params = {}
-          opts.each do |key, value|
-            params[camel_case(key.to_s)] = value
-          end
-
-          params.merge!(command_hash) if command_hash
-
-          @server.send(
-            :origin  => "webdriver",
-            :type    => "command",
-            :command => { :id => @command_id.to_s, :name => command, :parameters => params}
-          )
-
-          raw = @server.receive
-          response = raw.fetch('response')
-
-          status_code = response['status']
-          if status_code != 0
-            raise Error.for_code(status_code), response['value']['message']
-          end
-
-          if raw['id'].to_s != @command_id.to_s
-            raise Error::WebDriverError, "response id does not match command id: #{raw['id']} != #{@command_id}"
-          end
-
-          response
-        end
-
-        def camel_case(str)
-          parts = str.split('_')
-          parts[1..-1].map { |e| e.capitalize! }
-
-          parts.join
-        end
-
-        def prepare_connect_file
-          # TODO: use tempfile?
-          path = File.join(Dir.tmpdir, "safaridriver-#{Time.now.usec}.html")
-
-          File.open(path, 'w') do |io|
-            io << "<!DOCTYPE html><script>window.location = '#{@server.uri}';</script>"
-          end
-
-          FileReaper << path
-          path.gsub! "/", "\\" if Platform.windows?
-
-          path
-        end
-
-        def merge_capabilities(opts, safari_options)
-          caps  = safari_options.to_capabilities
-          other = opts[:desired_capabilities]
-
-          if other
-            other = opts[:desired_capabilities].as_json
-            caps['safari.options'].merge!(other.delete('safari.options') || {})
-            caps.merge!(other)
-          end
-
-          caps
-        end
-
       end # Bridge
     end # Safari
   end # WebDriver

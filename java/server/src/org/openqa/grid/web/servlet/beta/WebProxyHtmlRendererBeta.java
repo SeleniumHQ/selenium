@@ -29,8 +29,6 @@ import org.openqa.grid.internal.utils.HtmlRenderer;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.CapabilityType;
 
-import java.util.Map;
-
 public class WebProxyHtmlRendererBeta implements HtmlRenderer {
 
   private RemoteProxy proxy;

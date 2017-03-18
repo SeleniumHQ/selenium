@@ -18,12 +18,9 @@
 
 package org.openqa.selenium.internal;
 
-import org.openqa.selenium.StandardSeleniumTests;
-import org.openqa.selenium.testing.drivers.Browser;
-import org.openqa.selenium.testing.drivers.TestIgnorance;
-
 import com.google.common.collect.ImmutableSet;
 import com.google.common.io.Files;
+
 import org.junit.internal.runners.model.ReflectiveCallable;
 import org.junit.runner.Description;
 import org.junit.runner.notification.Failure;
@@ -32,6 +29,9 @@ import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.Suite;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
+import org.openqa.selenium.StandardSeleniumTests;
+import org.openqa.selenium.testing.drivers.Browser;
+import org.openqa.selenium.testing.drivers.TestIgnorance;
 
 import java.io.File;
 import java.util.HashSet;

@@ -34,6 +34,7 @@ import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Driver.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.getFirefoxVersion;
+import static org.openqa.selenium.testing.TestUtilities.isChrome;
 import static org.openqa.selenium.testing.TestUtilities.isFirefox;
 
 import org.junit.Before;
@@ -49,7 +50,8 @@ import org.openqa.selenium.testing.SwitchToTopAfterTest;
 
 import java.util.Set;
 
-@Ignore({PHANTOMJS, SAFARI})
+@Ignore(value = {CHROME, PHANTOMJS, SAFARI},
+    reason = "chrome: https://bugs.chromium.org/p/chromedriver/issues/detail?id=1500")
 public class AlertsTest extends JUnit4TestBase {
 
   @Before
@@ -111,7 +113,6 @@ public class AlertsTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore(value = CHROME, reason = "ChromeDriver issue 764")
   public void testShouldAllowUsersToDismissAnAlertManually() {
     wait.until(presenceOfElementLocated(By.id("alert"))).click();
 
@@ -165,8 +166,8 @@ public class AlertsTest extends JUnit4TestBase {
     wait.until(textInElementLocated(By.id("text"), "cheese"));
   }
 
-  @Ignore(value = {CHROME},
-    reason = "Marionette: https://github.com/jgraham/wires/issues/17")
+  @Ignore(value = {MARIONETTE, CHROME},
+    reason = "Marionette: https://github.com/mozilla/geckodriver/issues/274")
   @JavascriptEnabled
   @Test
   public void testSettingTheValueOfAnAlertThrows() {
@@ -226,6 +227,7 @@ public class AlertsTest extends JUnit4TestBase {
   @JavascriptEnabled
   @SwitchToTopAfterTest
   @Test
+  @Ignore(value = MARIONETTE)
   public void testShouldAllowUsersToAcceptAnAlertInAFrame() {
     driver.switchTo().frame("iframeWithAlert");
 
@@ -241,6 +243,8 @@ public class AlertsTest extends JUnit4TestBase {
   @JavascriptEnabled
   @SwitchToTopAfterTest
   @Test
+  @Ignore(value = MARIONETTE,
+    reason = "Marionette: https://bugzilla.mozilla.org/show_bug.cgi?id=1279211")
   public void testShouldAllowUsersToAcceptAnAlertInANestedFrame() {
     driver.switchTo().frame("iframeWithIframe").switchTo().frame("iframeWithAlert");
 
@@ -394,13 +398,12 @@ public class AlertsTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {CHROME})
   @Test
-  @NotYetImplemented(value = HTMLUNIT,
-    reason = "HtmlUnit: runs on the same test thread, and .back() already changs the current window.")
   public void testShouldHandleAlertOnPageUnload() {
     assumeFalse("Firefox 27 does not trigger alerts on unload",
         isFirefox(driver) && getFirefoxVersion(driver) >= 27);
+    assumeFalse("Chrome does not trigger alerts on unload",
+        isChrome(driver));
     driver.findElement(By.id("open-page-with-onunload-alert")).click();
     driver.navigate().back();
 
@@ -448,13 +451,12 @@ public class AlertsTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {CHROME})
   @Test
-  @NotYetImplemented(value = HTMLUNIT,
-    reason = "HtmlUnit: runs on the same test thread.")
   public void testShouldHandleAlertOnWindowClose() {
     assumeFalse("Firefox 27 does not trigger alerts on unload",
         isFirefox(driver) && getFirefoxVersion(driver) >= 27);
+    assumeFalse("Chrome does not trigger alerts on unload",
+        isChrome(driver));
     String mainWindow = driver.getWindowHandle();
     try {
       driver.findElement(By.id("open-window-with-onclose-alert")).click();

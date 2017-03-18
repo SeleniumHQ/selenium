@@ -40,11 +40,11 @@ import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.mock.GridHelper;
 import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
-import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
 import org.openqa.grid.web.Hub;
 import org.openqa.grid.web.servlet.handler.RequestHandler;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.internal.HttpClientFactory;
 
 import java.io.BufferedReader;
@@ -52,6 +52,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -94,14 +95,13 @@ public class StatusServletTests {
         RemoteProxyFactory.getNewBasicRemoteProxy("app1", "http://machine4:4444", registry);
 
     RegistrationRequest req = new RegistrationRequest();
+    req.getConfiguration().capabilities.clear();
     Map<String, Object> capability = new HashMap<>();
     capability.put(CapabilityType.BROWSER_NAME, "custom app");
-    req.addDesiredCapability(capability);
+    req.getConfiguration().capabilities.add(new DesiredCapabilities(capability));
+    req.getConfiguration().host = "machine5";
+    req.getConfiguration().port = 4444;
 
-    GridNodeConfiguration config = new GridNodeConfiguration();
-    config.host = "machine5";
-    config.port = 4444;
-    req.setConfiguration(config);
     RemoteProxy customProxy = new MyCustomProxy(req, registry);
 
     registry.add(p1);
@@ -117,7 +117,6 @@ public class StatusServletTests {
     newSessionRequest.process();
     session = newSessionRequest.getSession();
     session.setExternalKey(ExternalSessionKey.fromString("ext. key"));
-
   }
 
   @Test
@@ -270,9 +269,36 @@ public class StatusServletTests {
     assertNull(o.get("I'm not a valid key"));
     assertTrue(o.getAsJsonArray("servlets").size() == 0);
     assertFalse(o.has("capabilityMatcher"));
-
   }
 
+  /**
+   * if a certain set of parameters are requested to the hub, only those params are returned.
+   * @throws IOException
+   */
+  @Test
+  public void testHubGetSpecifiedConfigWithQueryString() throws IOException {
+
+    HttpClient client = httpClientFactory.getHttpClient();
+
+    ArrayList<String> keys = new ArrayList<>();
+    keys.add(URLEncoder.encode("timeout", "UTF-8"));
+    keys.add(URLEncoder.encode("I'm not a valid key", "UTF-8"));
+    keys.add(URLEncoder.encode("servlets", "UTF-8"));
+
+    String query = "?configuration=" + String.join(",",keys);
+    String url = hubApi.toExternalForm() + query ;
+    BasicHttpEntityEnclosingRequest r = new BasicHttpEntityEnclosingRequest("GET", url);
+
+    HttpResponse response = client.execute(host, r);
+    assertEquals(200, response.getStatusLine().getStatusCode());
+    JsonObject o = extractObject(response);
+
+    assertTrue(o.get("success").getAsBoolean());
+    assertEquals(12345, o.get("timeout").getAsInt());
+    assertNull(o.get("I'm not a valid key"));
+    assertTrue(o.getAsJsonArray("servlets").size() == 0);
+    assertFalse(o.has("capabilityMatcher"));
+  }
 
   /**
    * when no param is specified, a call to the hub API returns all the config params the hub

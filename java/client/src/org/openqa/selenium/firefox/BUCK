@@ -2,8 +2,11 @@ include_defs('//SELENIUM_VERSION')
 
 java_library(name = 'firefox',
   maven_coords = 'org.seleniumhq.selenium:selenium-firefox-driver:jar:' + SE_VERSION,
+  maven_pom_template = '//java/client/src/org/openqa/selenium:template-pom',
   srcs = glob(['*.java', 'internal/*.java']),
   resources = [
+    ':amd64',
+    ':i386',
     ':prefs',
     ':webdriver.xpi',
   ],
@@ -11,6 +14,7 @@ java_library(name = 'firefox',
     ':prefs',
     '//java/client/src/org/openqa/selenium:selenium',
     '//java/client/src/org/openqa/selenium/remote:remote',
+    '//third_party/java/gson:gson',
     '//third_party/java/guava:guava',
   ],
   visibility = [ 'PUBLIC' ],
@@ -23,4 +27,16 @@ export_file(name = 'prefs',
 
 export_file(name = 'webdriver.xpi',
   src = '//javascript/firefox-driver:webdriver',
+)
+
+export_file(
+  name = 'i386',
+  src = '//cpp/prebuilt:noblur32',
+  out = 'x86/x_ignore_nofocus.so'
+)
+
+export_file(
+  name = 'amd64',
+  src = '//cpp/prebuilt:noblur64',
+  out = 'amd64/x_ignore_nofocus.so'
 )

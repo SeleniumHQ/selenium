@@ -17,6 +17,9 @@
 #ifndef WEBDRIVER_HOOKPROCESSOR_H_
 #define WEBDRIVER_HOOKPROCESSOR_H_
 
+#include <string>
+#include <vector>
+
 namespace webdriver {
 
 enum HookCommunicationType {

@@ -17,49 +17,19 @@
 #ifndef WEBDRIVER_IE_GOTOURLCOMMANDHANDLER_H_
 #define WEBDRIVER_IE_GOTOURLCOMMANDHANDLER_H_
 
-#include "../Browser.h"
 #include "../IECommandHandler.h"
-#include "../IECommandExecutor.h"
 
 namespace webdriver {
 
 class GoToUrlCommandHandler : public IECommandHandler {
  public:
-  GoToUrlCommandHandler(void) {
-  }
-
-  virtual ~GoToUrlCommandHandler(void) {
-  }
+  GoToUrlCommandHandler(void);
+  virtual ~GoToUrlCommandHandler(void);
 
  protected:
   void ExecuteInternal(const IECommandExecutor& executor,
                        const ParametersMap& command_parameters,
-                       Response* response) {
-    ParametersMap::const_iterator url_parameter_iterator = command_parameters.find("url");
-    if (url_parameter_iterator == command_parameters.end()) {
-      response->SetErrorResponse(400, "Missing parameter: url");
-      return;
-    } else {
-      BrowserHandle browser_wrapper;
-      int status_code = executor.GetCurrentBrowser(&browser_wrapper);
-      if (status_code != WD_SUCCESS) {
-        response->SetErrorResponse(status_code, "Unable to get browser");
-        return;
-      }
-
-      // TODO: check result for error
-      std::string url = url_parameter_iterator->second.asString();
-      status_code = browser_wrapper->NavigateToUrl(url);
-      if (status_code != WD_SUCCESS) {
-        response->SetErrorResponse(status_code, "Failed to navigate to "
-                                                    + url
-                                                    + ". This usually means that a call to the COM method IWebBrowser2::Navigate2() failed.");
-        return;
-      }
-      browser_wrapper->SetFocusedFrameByElement(NULL);
-      response->SetSuccessResponse(Json::Value::null);
-    }
-  }
+                       Response* response);
 };
 
 } // namespace webdriver

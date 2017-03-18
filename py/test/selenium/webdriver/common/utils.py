@@ -15,45 +15,6 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import logging
-import socket
-import sys
-import unittest
-
-
-def run_tests(test_case, driver, webserver):
-    logging.basicConfig(level=logging.WARN)
-
-    webserver.start()
-    try:
-        testLoader = unittest.TestLoader()
-        testRunner = unittest.TextTestRunner()
-        test_case_name = "selenium.test.selenium.webdriver.common.%s" % test_case
-        if len(sys.argv) > 1:
-            testMethod = sys.argv[1]
-            testRunner.run(
-                testLoader.loadTestsFromName(
-                    "%s.%s" % (test_case_name, testMethod)))
-        else:
-            testRunner.run(testLoader.loadTestsFromName(test_case_name))
-        driver.quit()
-    finally:
-        webserver.stop()
-
-
-def require_online(func):
-    """Only exucte the test method if the internet is accessible."""
-    def testMethod(self):
-        socket_ = socket.socket()
-        try:
-            socket_.settimeout(1)
-            socket_.connect(("www.google.com", 80))
-            return func(self)
-        except socket.error:
-            return lambda x: None
-    testMethod.func_name = func.func_name
-    return testMethod
-
 
 def convert_cookie_to_json(cookie):
     cookie_dict = {}

@@ -29,143 +29,148 @@ var test = require('../lib/test'),
 test.suite(function(env) {
   var driver;
 
-  test.before(function() {
-    driver = env.builder().build();
+  test.before(function*() {
+    driver = yield env.builder().build();
   });
 
   test.after(function() {
-    driver.quit();
+    return driver.quit();
   });
 
-  test.ignore(env.browsers(Browser.SAFARI)).  // Cookie handling is broken.
+  // Cookie handling is broken.
+  test.ignore(env.browsers(Browser.PHANTOM_JS, Browser.SAFARI)).
   describe('Cookie Management;', function() {
 
-    test.beforeEach(function() {
-      driver.get(fileserver.Pages.ajaxyPage);
-      driver.manage().deleteAllCookies();
-      assertHasCookies();
+    test.beforeEach(function*() {
+      yield driver.get(fileserver.Pages.ajaxyPage);
+      yield driver.manage().deleteAllCookies();
+      return assertHasCookies();
     });
 
-    test.it('can add new cookies', function() {
+    test.it('can add new cookies', function*() {
       var cookie = createCookieSpec();
 
-      driver.manage().addCookie(cookie);
-      driver.manage().getCookie(cookie.name).then(function(actual) {
+      yield driver.manage().addCookie(cookie);
+      yield driver.manage().getCookie(cookie.name).then(function(actual) {
         assert.equal(actual.value, cookie.value);
       });
     });
 
-    test.it('can get all cookies', function() {
+    test.it('can get all cookies', function*() {
       var cookie1 = createCookieSpec();
       var cookie2 = createCookieSpec();
 
-      driver.manage().addCookie(cookie1);
-      driver.manage().addCookie(cookie2);
+      yield driver.manage().addCookie(cookie1);
+      yield driver.manage().addCookie(cookie2);
 
-      assertHasCookies(cookie1, cookie2);
+      return assertHasCookies(cookie1, cookie2);
     });
 
     test.ignore(env.browsers(Browser.IE)).
-    it('only returns cookies visible to the current page', function() {
+    it('only returns cookies visible to the current page', function*() {
       var cookie1 = createCookieSpec();
 
-      driver.manage().addCookie(cookie1);
+      yield driver.manage().addCookie(cookie1);
 
       var pageUrl = fileserver.whereIs('page/1');
       var cookie2 = createCookieSpec({
         path: url.parse(pageUrl).pathname
       });
-      driver.get(pageUrl);
-      driver.manage().addCookie(cookie2);
-      assertHasCookies(cookie1, cookie2);
+      yield driver.get(pageUrl);
+      yield driver.manage().addCookie(cookie2);
+      yield assertHasCookies(cookie1, cookie2);
 
-      driver.get(fileserver.Pages.ajaxyPage);
-      assertHasCookies(cookie1);
+      yield driver.get(fileserver.Pages.ajaxyPage);
+      yield assertHasCookies(cookie1);
 
-      driver.get(pageUrl);
-      assertHasCookies(cookie1, cookie2);
+      yield driver.get(pageUrl);
+      yield assertHasCookies(cookie1, cookie2);
     });
 
-    test.it('can delete all cookies', function() {
+    test.it('can delete all cookies', function*() {
       var cookie1 = createCookieSpec();
       var cookie2 = createCookieSpec();
 
-      driver.executeScript(
+      yield driver.executeScript(
           'document.cookie = arguments[0] + "=" + arguments[1];' +
           'document.cookie = arguments[2] + "=" + arguments[3];',
           cookie1.name, cookie1.value, cookie2.name, cookie2.value);
-      assertHasCookies(cookie1, cookie2);
+      yield assertHasCookies(cookie1, cookie2);
 
-      driver.manage().deleteAllCookies();
-      assertHasCookies();
+      yield driver.manage().deleteAllCookies();
+      yield assertHasCookies();
     });
 
-    test.it('can delete cookies by name', function() {
+    test.it('can delete cookies by name', function*() {
       var cookie1 = createCookieSpec();
       var cookie2 = createCookieSpec();
 
-      driver.executeScript(
+      yield driver.executeScript(
           'document.cookie = arguments[0] + "=" + arguments[1];' +
           'document.cookie = arguments[2] + "=" + arguments[3];',
           cookie1.name, cookie1.value, cookie2.name, cookie2.value);
-      assertHasCookies(cookie1, cookie2);
+      yield assertHasCookies(cookie1, cookie2);
 
-      driver.manage().deleteCookie(cookie1.name);
-      assertHasCookies(cookie2);
+      yield driver.manage().deleteCookie(cookie1.name);
+      yield assertHasCookies(cookie2);
     });
 
-    test.it('should only delete cookie with exact name', function() {
+    test.it('should only delete cookie with exact name', function*() {
       var cookie1 = createCookieSpec();
       var cookie2 = createCookieSpec();
       var cookie3 = {name: cookie1.name + 'xx', value: cookie1.value};
 
-      driver.executeScript(
+      yield driver.executeScript(
           'document.cookie = arguments[0] + "=" + arguments[1];' +
           'document.cookie = arguments[2] + "=" + arguments[3];' +
           'document.cookie = arguments[4] + "=" + arguments[5];',
           cookie1.name, cookie1.value, cookie2.name, cookie2.value,
           cookie3.name, cookie3.value);
-      assertHasCookies(cookie1, cookie2, cookie3);
+      yield assertHasCookies(cookie1, cookie2, cookie3);
 
-      driver.manage().deleteCookie(cookie1.name);
-      assertHasCookies(cookie2, cookie3);
+      yield driver.manage().deleteCookie(cookie1.name);
+      yield assertHasCookies(cookie2, cookie3);
     });
 
-    test.it('can delete cookies set higher in the path', function() {
+    test.it('can delete cookies set higher in the path', function*() {
       var cookie = createCookieSpec();
       var childUrl = fileserver.whereIs('child/childPage.html');
       var grandchildUrl = fileserver.whereIs(
           'child/grandchild/grandchildPage.html');
 
-      driver.get(childUrl);
-      driver.manage().addCookie(cookie);
-      assertHasCookies(cookie);
+      yield driver.get(childUrl);
+      yield driver.manage().addCookie(cookie);
+      yield assertHasCookies(cookie);
 
-      driver.get(grandchildUrl);
-      assertHasCookies(cookie);
+      yield driver.get(grandchildUrl);
+      yield assertHasCookies(cookie);
 
-      driver.manage().deleteCookie(cookie.name);
-      assertHasCookies();
+      yield driver.manage().deleteCookie(cookie.name);
+      yield assertHasCookies();
 
-      driver.get(childUrl);
-      assertHasCookies();
+      yield driver.get(childUrl);
+      yield assertHasCookies();
     });
 
-    test.ignore(env.browsers(Browser.ANDROID, Browser.FIREFOX, Browser.IE)).
-    it('should retain cookie expiry', function() {
+    test.ignore(env.browsers(
+        Browser.ANDROID,
+        Browser.FIREFOX,
+        'legacy-' + Browser.FIREFOX,
+        Browser.IE)).
+    it('should retain cookie expiry', function*() {
       let expirationDelay = 5 * 1000;
       let expiry = new Date(Date.now() + expirationDelay);
       let cookie = createCookieSpec({expiry});
 
-      driver.manage().addCookie(cookie);
-      driver.manage().getCookie(cookie.name).then(function(actual) {
+      yield driver.manage().addCookie(cookie);
+      yield driver.manage().getCookie(cookie.name).then(function(actual) {
         assert.equal(actual.value, cookie.value);
         // expiry times are exchanged in seconds since January 1, 1970 UTC.
         assert.equal(actual.expiry, Math.floor(expiry.getTime() / 1000));
       });
 
-      driver.sleep(expirationDelay);
-      assertHasCookies();
+      yield driver.sleep(expirationDelay);
+      yield assertHasCookies();
     });
   });
 
@@ -188,9 +193,8 @@ test.suite(function(env) {
     return map;
   }
 
-  function assertHasCookies(var_args) {
-    var expected = Array.prototype.slice.call(arguments, 0);
-    driver.manage().getCookies().then(function(cookies) {
+  function assertHasCookies(...expected) {
+    return driver.manage().getCookies().then(function(cookies) {
       assert.equal(cookies.length, expected.length,
           'Wrong # of cookies.' +
           '\n  Expected: ' + JSON.stringify(expected) +

@@ -17,56 +17,93 @@
 
 package org.openqa.grid.internal.utils.configuration;
 
-import com.beust.jcommander.IStringConverter;
+import com.google.gson.annotations.Expose;
+
 import com.beust.jcommander.Parameter;
 
+import org.openqa.grid.internal.utils.configuration.converters.CustomConverter;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class GridConfiguration extends StandaloneConfiguration {
+import javax.servlet.Servlet;
 
+class GridConfiguration extends StandaloneConfiguration {
+  /*
+   * config parameters which serialize and deserialize to/from json
+   */
+
+  /**
+   * Clean up cycle for remote proxies. Default determined by configuration type.
+   */
+  @Expose
   @Parameter(
     names = "-cleanUpCycle",
-    description = "<Integer> in ms. How often a proxy on the hub will check for timed out thread. Must have timeout option specified also"
+    description = "<Integer> in ms : specifies how often the hub will poll running proxies for timed-out (i.e. hung) threads. Must also specify \"timeout\" option"
   )
+  // initially defaults to null from type
   public Integer cleanUpCycle;
 
+  /**
+   * Custom key/value pairs for the hub registry. Default empty.
+   */
+  @Expose
   @Parameter(
     names = "-custom",
-    description = "comma separated parameters for custom grid extensions. example: -custom myParamA=Value1,myParamB=Value2",
+    description = "<String> : comma separated key=value pairs for custom grid extensions. NOT RECOMMENDED -- may be deprecated in a future revision. Example: -custom myParamA=Value1,myParamB=Value2",
     converter = CustomConverter.class
   )
   public Map<String, String> custom = new HashMap<>();
 
+  /**
+   * Hostname or IP to use. Defaults to {@code null}. Automatically determined when {@code null}.
+   */
+  @Expose
   @Parameter(
     names = "-host",
-    description =  "<IP | hostname> : usually not needed and determined automatically. For exotic network configuration, network with VPN, specifying the host might be necessary."
+    description =  "<String> IP or hostname : usually determined automatically. Most commonly useful in exotic network configurations (e.g. network with VPN)"
   )
+  // initially defaults to null from type
   public String host;
 
+  /**
+   * Max "browser" sessions a node can handle. Default determined by configuration type.
+   */
+  @Expose
   @Parameter(
     names = "-maxSession",
-    description = "<Integer> max number of tests that can run at the same time on the node, independently of the browser used."
+    description = "<Integer> max number of tests that can run at the same time on the node, irrespective of the browser used"
   )
-  public Integer maxSession = 1;
+  // initially defaults to null from type
+  public Integer maxSession;
 
+  /**
+   * Extra servlets to initialize/use on the hub or node. Default empty.
+   */
+  @Expose
   @Parameter(
     names = {"-servlet", "-servlets"},
-    description = "list of extra servlets this hub will display. Allows to present custom view of the hub for monitoring and management purpose. Specify multiple on the command line: -servlet tld.company.ServletA -servlet tld.company.ServletB. The servlet will accessible under the path  /grid/admin/ServletA /grid/admin/ServletB"
+    description = "<String> : list of extra servlets the grid (hub or node) will make available. Specify multiple on the command line: -servlet tld.company.ServletA -servlet tld.company.ServletB. The servlet must exist in the path: /grid/admin/ServletA /grid/admin/ServletB"
   )
-  public List<String> servlets;
+  public List<String> servlets = new ArrayList<>();
 
-  private class CustomConverter implements IStringConverter<Map<String,String>> {
-    @Override
-    public Map<String,String> convert(String value) {
-      Map<String,String> custom = new HashMap<>();
-      for (String pair : value.split(",")) {
-        String[] pieces = pair.split("=");
-        custom.put(pieces[0], pieces[1]);
-      }
-      return custom;
-    }
+  /**
+   * Default servlets to exclude on the hub or node. Default empty.
+   */
+  @Expose
+  @Parameter(
+    names = {"-withoutServlet", "-withoutServlets"},
+    description = "<String> : list of default (hub or node) servlets to disable. Advanced use cases only. Not all default servlets can be disabled. Specify multiple on the command line: -withoutServlet tld.company.ServletA -withoutServlet tld.company.ServletB"
+  )
+  public List<String> withoutServlets = new ArrayList<>();
+
+  /**
+   * Creates a new configuration with default values
+   */
+  GridConfiguration() {
+    // defeats instantiation outside of this package
   }
 
   /**
@@ -74,18 +111,41 @@ public class GridConfiguration extends StandaloneConfiguration {
    * @param other
    */
   public void merge(GridConfiguration other) {
+    if (other == null) {
+      return;
+    }
     super.merge(other);
+
     // don't merge 'host'
-    if (other.cleanUpCycle != null) {
+    if (isMergeAble(other.cleanUpCycle, cleanUpCycle)) {
       cleanUpCycle = other.cleanUpCycle;
     }
-    custom.putAll(other.custom);
-    if (other.maxSession != 1) {
+    if (isMergeAble(other.custom, custom)) {
+      if (custom == null) {
+        custom = new HashMap<>();
+      }
+      custom.putAll(other.custom);
+    }
+    if (isMergeAble(other.maxSession, maxSession) &&
+        other.maxSession.intValue() > 0) {
       maxSession = other.maxSession;
     }
-    if (other.servlets != null) {
+    if (isMergeAble(other.servlets, servlets)) {
       servlets = other.servlets;
     }
+    if (isMergeAble(other.withoutServlets, withoutServlets)) {
+      withoutServlets = other.withoutServlets;
+    }
+  }
+
+  /**
+   * @param servlet the {@link Servlet} to look for
+   * @return whether this configuration requests a 'default' servlet to be omitted
+   */
+  public boolean isWithOutServlet(Class <? extends Servlet> servlet) {
+    return withoutServlets != null &&
+           servlet != null &&
+           withoutServlets.contains(servlet.getCanonicalName());
   }
 
   @Override
@@ -97,6 +157,7 @@ public class GridConfiguration extends StandaloneConfiguration {
     sb.append(toString(format, "host", host));
     sb.append(toString(format, "maxSession", maxSession));
     sb.append(toString(format, "servlets", servlets));
+    sb.append(toString(format, "withoutServlets", withoutServlets));
     return sb.toString();
   }
 }

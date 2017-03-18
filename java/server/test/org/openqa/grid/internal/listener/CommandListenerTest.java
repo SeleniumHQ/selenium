@@ -30,7 +30,7 @@ import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
 import org.apache.http.client.HttpClient;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -45,6 +45,7 @@ import org.openqa.grid.web.servlet.handler.RequestHandler;
 import org.openqa.grid.web.servlet.handler.SeleniumBasedRequest;
 import org.openqa.grid.web.servlet.handler.SeleniumBasedResponse;
 import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.internal.HttpClientFactory;
 
 import java.io.IOException;
@@ -133,16 +134,15 @@ public class CommandListenerTest {
     }
   }
 
-  static RegistrationRequest req = null;
-  static Map<String, Object> app1 = new HashMap<>();
+  private RegistrationRequest req = null;
+  private Map<String, Object> app1 = new HashMap<>();
 
-  @BeforeClass
-  public static void prepare() {
+  @Before
+  public void prepare() {
     app1.put(CapabilityType.APPLICATION_NAME, "app1");
     GridNodeConfiguration config = new GridNodeConfiguration();
-    req = new RegistrationRequest();
-    req.addDesiredCapability(app1);
-    req.setConfiguration(config);
+    config.capabilities.add(new DesiredCapabilities(app1));
+    req = new RegistrationRequest(config);
   }
 
   @Test

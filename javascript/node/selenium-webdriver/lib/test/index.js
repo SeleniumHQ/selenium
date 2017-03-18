@@ -23,6 +23,9 @@ var build = require('./build'),
     isDevMode = require('../devmode'),
     webdriver = require('../../'),
     flow = webdriver.promise.controlFlow(),
+    firefox = require('../../firefox'),
+    logging = require('../../lib/logging'),
+    safari = require('../../safari'),
     remote = require('../../remote'),
     testing = require('../../testing'),
     fileserver = require('./fileserver');
@@ -47,12 +50,18 @@ var NATIVE_BROWSERS = [
 ];
 
 
+var noBuild = /^1|true$/i.test(process.env['SELENIUM_NO_BUILD']);
 var serverJar = process.env['SELENIUM_SERVER_JAR'];
 var remoteUrl = process.env['SELENIUM_REMOTE_URL'];
 var useLoopback = process.env['SELENIUM_USE_LOOP_BACK'] == '1';
 var noMarionette = /^0|false$/i.test(process.env['SELENIUM_GECKODRIVER']);
 var startServer = !!serverJar && !remoteUrl;
 var nativeRun = !serverJar && !remoteUrl;
+
+if (/^1|true$/i.test(process.env['SELENIUM_VERBOSE'])) {
+  logging.installConsoleHandler();
+  logging.getLogger('webdriver.http').setLevel(logging.Level.ALL);
+}
 
 var browsersToTest = (function() {
   var permitRemoteBrowsers = !!remoteUrl || !!serverJar;
@@ -112,6 +121,8 @@ var browsersToTest = (function() {
       console.log('Running tests using loopback address')
     }
   }
+  console.log(
+      'Promise manager is enabled? ' + webdriver.promise.USE_PROMISE_MANAGER);
 
   return browsers;
 })();
@@ -146,6 +157,10 @@ function TestEnvironment(browserName, server) {
     return server || remoteUrl;
   };
 
+  this.isMarionette = function() {
+    return !noMarionette;
+  };
+
   this.browsers = function(var_args) {
     var browsersToIgnore = Array.prototype.slice.apply(arguments, [0]);
     return browsers(browserName, browsersToIgnore);
@@ -159,6 +174,10 @@ function TestEnvironment(browserName, server) {
       var parts = browserName.split(/:/, 3);
 
       if (parts[0] === LEGACY_FIREFOX) {
+        var options = builder.getFirefoxOptions() || new firefox.Options();
+        options.useGeckoDriver(false);
+        builder.setFirefoxOptions(options);
+
         parts[0] = webdriver.Browser.FIREFOX;
       }
 
@@ -168,6 +187,7 @@ function TestEnvironment(browserName, server) {
       } else if (remoteUrl) {
         builder.usingServer(remoteUrl);
       }
+
       builder.disableEnvironmentOverrides();
       return realBuild.call(builder);
     };
@@ -205,25 +225,29 @@ function suite(fn, opt_options) {
 
   try {
 
+    before(function() {
+      if (isDevMode && !noBuild) {
+        return build.of(
+            '//javascript/atoms/fragments:is-displayed',
+            '//javascript/webdriver/atoms:getAttribute')
+            .onlyOnce().go();
+      }
+    });
+
     // Server is only started if required for a specific config.
-    testing.after(function() {
+    after(function() {
       if (seleniumServer) {
         return seleniumServer.stop();
       }
     });
 
     browsers.forEach(function(browser) {
-      testing.describe('[' + browser + ']', function() {
+      describe('[' + browser + ']', function() {
 
         if (isDevMode && nativeRun) {
           if (browser === LEGACY_FIREFOX) {
-            testing.before(function() {
+            before(function() {
               return build.of('//javascript/firefox-driver:webdriver')
-                  .onlyOnce().go();
-            });
-          } else if (browser === webdriver.Browser.SAFARI) {
-            testing.before(function() {
-              return build.of('//javascript/safari-driver:client')
                   .onlyOnce().go();
             });
           }
@@ -237,7 +261,7 @@ function suite(fn, opt_options) {
                 serverJar, {loopback: useLoopback});
           }
 
-          testing.before(function() {
+          before(function() {
             this.timeout(0);
             return seleniumServer.start(60 * 1000);
           });
@@ -253,14 +277,14 @@ function suite(fn, opt_options) {
 
 // GLOBAL TEST SETUP
 
-testing.before(function() {
+before(function() {
    // Do not pass register fileserver.start directly with testing.before,
    // as start takes an optional port, which before assumes is an async
    // callback.
    return fileserver.start();
 });
 
-testing.after(function() {
+after(function() {
    return fileserver.stop();
 });
 

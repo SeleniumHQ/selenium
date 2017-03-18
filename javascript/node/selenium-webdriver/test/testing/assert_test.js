@@ -178,9 +178,8 @@ describe('assert', function() {
     });
 
     it('waits for promised values', function() {
-      let d = Promise.defer();
-      setTimeout(() => d.resolve(123), 10);
-      return assert(d.promise).closeTo(124, 1);
+      let p = new Promise(resolve => setTimeout(() => resolve(123), 10));
+      return assert(p).closeTo(124, 1);
     });
   });
 

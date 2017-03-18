@@ -20,41 +20,32 @@
 module Selenium
   module WebDriver
     module Firefox
-
       # @api private
       class Bridge < Remote::Bridge
-
         def initialize(opts = {})
-          port        = opts.delete(:port) || DEFAULT_PORT
-          profile     = opts.delete(:profile)
-          http_client = opts.delete(:http_client)
-          proxy       = opts.delete(:proxy)
+          opts[:desired_capabilities] ||= Remote::Capabilities.firefox
 
-          caps = opts.delete(:desired_capabilities) { Remote::Capabilities.firefox }
-
-          Binary.path = caps[:firefox_binary] if caps[:firefox_binary]
-
-          @launcher = create_launcher(port, profile)
-
-          unless opts.empty?
-            raise ArgumentError, "unknown option#{'s' if opts.size != 1}: #{opts.inspect}"
+          if opts.key? :proxy
+            WebDriver.logger.warn <<-DEPRECATE.gsub(/\n +| {2,}/, ' ').freeze
+            [DEPRECATION] `:proxy` is deprecated. Pass in as capability: `Remote::Capabilities.firefox(proxy: #{opts[:proxy]})`
+            DEPRECATE
+            opts[:desired_capabilities].proxy = opts.delete(:proxy)
           end
 
-          @launcher.launch
+          unless opts.key?(:url)
+            port = opts.delete(:port) || DEFAULT_PORT
+            profile = opts.delete(:profile)
 
-          caps.proxy = proxy if proxy
-
-          remote_opts = {
-            :url                  => @launcher.url,
-            :desired_capabilities => caps
-          }
-
-          remote_opts.merge!(:http_client => http_client) if http_client
+            Binary.path = opts[:desired_capabilities][:firefox_binary] if opts[:desired_capabilities][:firefox_binary]
+            @launcher = Launcher.new Binary.new, port, profile
+            @launcher.launch
+            opts[:url] = @launcher.url
+          end
 
           begin
-            super(remote_opts)
+            super(opts)
           rescue
-            @launcher.quit
+            @launcher.quit if @launcher
             raise
           end
         end
@@ -64,10 +55,7 @@ module Selenium
         end
 
         def driver_extensions
-          [
-            DriverExtensions::TakesScreenshot,
-            DriverExtensions::HasInputDevices
-          ]
+          [DriverExtensions::TakesScreenshot]
         end
 
         def quit
@@ -76,13 +64,6 @@ module Selenium
         ensure
           @launcher.quit
         end
-
-        private
-
-        def create_launcher(port, profile)
-          Launcher.new Binary.new, port, profile
-        end
-
       end # Bridge
     end # Firefox
   end # WebDriver

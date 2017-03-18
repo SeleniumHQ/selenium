@@ -15,83 +15,59 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import unittest
+import pytest
+
 from selenium.common.exceptions import NoSuchElementException
 
 
-def not_available_on_remote(func):
-    def testMethod(self):
-        print(self.driver)
-        if type(self.driver) == 'remote':
-            return lambda x: None
-        else:
-            return func(self)
-    return testMethod
+def testShouldImplicitlyWaitForASingleElement(driver, pages):
+    pages.load("dynamic.html")
+    add = driver.find_element_by_id("adder")
+    driver.implicitly_wait(3)
+    add.click()
+    driver.find_element_by_id("box0")  # All is well if this doesn't throw.
 
-class ImplicitWaitTest(unittest.TestCase):
 
-    def testShouldImplicitlyWaitForASingleElement(self):
-        self._loadPage("dynamic")
-        add = self.driver.find_element_by_id("adder")
-        self.driver.implicitly_wait(3)
-        add.click();
-        self.driver.find_element_by_id("box0")  # All is well if this doesn't throw.
+def testShouldStillFailToFindAnElementWhenImplicitWaitsAreEnabled(driver, pages):
+    pages.load("dynamic.html")
+    driver.implicitly_wait(0.5)
+    with pytest.raises(NoSuchElementException):
+        driver.find_element_by_id("box0")
 
-    def testShouldStillFailToFindAnElementWhenImplicitWaitsAreEnabled(self):
-        self._loadPage("dynamic")
-        self.driver.implicitly_wait(0.5)
-        try:
-            self.driver.find_element_by_id("box0")
-            self.fail("Expected NoSuchElementException to have been thrown")
-        except NoSuchElementException as e:
-            pass
-        except Exception as e:
-            self.fail("Expected NoSuchElementException but got " + str(e))
 
-    def testShouldReturnAfterFirstAttemptToFindOneAfterDisablingImplicitWaits(self):
-        self._loadPage("dynamic")
-        self.driver.implicitly_wait(3)
-        self.driver.implicitly_wait(0)
-        try:
-            self.driver.find_element_by_id("box0")
-            self.fail("Expected NoSuchElementException to have been thrown")
-        except NoSuchElementException as e:
-            pass
-        except Exception as e:
-            self.fail("Expected NoSuchElementException but got " + str(e))
+def testShouldReturnAfterFirstAttemptToFindOneAfterDisablingImplicitWaits(driver, pages):
+    pages.load("dynamic.html")
+    driver.implicitly_wait(3)
+    driver.implicitly_wait(0)
+    with pytest.raises(NoSuchElementException):
+        driver.find_element_by_id("box0")
 
-    def testShouldImplicitlyWaitUntilAtLeastOneElementIsFoundWhenSearchingForMany(self):
-        self._loadPage("dynamic")
-        add = self.driver.find_element_by_id("adder")
 
-        self.driver.implicitly_wait(2)
-        add.click();
-        add.click();
+def testShouldImplicitlyWaitUntilAtLeastOneElementIsFoundWhenSearchingForMany(driver, pages):
+    pages.load("dynamic.html")
+    add = driver.find_element_by_id("adder")
 
-        elements = self.driver.find_elements_by_class_name("redbox")
-        self.assertTrue(len(elements) >= 1)
+    driver.implicitly_wait(2)
+    add.click()
+    add.click()
 
-    def testShouldStillFailToFindAnElemenstWhenImplicitWaitsAreEnabled(self):
-        self._loadPage("dynamic")
+    elements = driver.find_elements_by_class_name("redbox")
+    assert len(elements) >= 1
 
-        self.driver.implicitly_wait(0.5)
-        elements = self.driver.find_elements_by_class_name("redbox")
-        self.assertEqual(0, len(elements))
 
-    def testShouldReturnAfterFirstAttemptToFindManyAfterDisablingImplicitWaits(self):
-        self._loadPage("dynamic")
-        add = self.driver.find_element_by_id("adder")
-        self.driver.implicitly_wait(1.1)
-        self.driver.implicitly_wait(0)
-        add.click()
-        elements = self.driver.find_elements_by_class_name("redbox")
-        self.assertEqual(0, len(elements))
+def testShouldStillFailToFindAnElemenstWhenImplicitWaitsAreEnabled(driver, pages):
+    pages.load("dynamic.html")
 
-    def _pageURL(self, name):
-        return self.webserver.where_is(name + '.html')
+    driver.implicitly_wait(0.5)
+    elements = driver.find_elements_by_class_name("redbox")
+    assert 0 == len(elements)
 
-    def _loadSimplePage(self):
-        self._loadPage("simpleTest")
 
-    def _loadPage(self, name):
-        self.driver.get(self._pageURL(name))
+def testShouldReturnAfterFirstAttemptToFindManyAfterDisablingImplicitWaits(driver, pages):
+    pages.load("dynamic.html")
+    add = driver.find_element_by_id("adder")
+    driver.implicitly_wait(1.1)
+    driver.implicitly_wait(0)
+    add.click()
+    elements = driver.find_elements_by_class_name("redbox")
+    assert 0 == len(elements)

@@ -15,10 +15,15 @@
 // limitations under the License.
 
 #include "Script.h"
-#include "AsyncScriptExecutor.h"
-#include "IECommandExecutor.h"
+
+#include "errorcodes.h"
 #include "logging.h"
+
+#include "AsyncScriptExecutor.h"
+#include "Element.h"
+#include "IECommandExecutor.h"
 #include "VariantUtilities.h"
+#include "StringUtilities.h"
 
 namespace webdriver {
 

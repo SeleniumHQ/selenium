@@ -20,7 +20,6 @@
 module Selenium
   module WebDriver
     class Timeouts
-
       def initialize(bridge)
         @bridge = bridge
       end
@@ -30,7 +29,7 @@ module Selenium
       #
 
       def implicit_wait=(seconds)
-        @bridge.setImplicitWaitTimeout Integer(seconds * 1000)
+        @bridge.implicit_wait_timeout = Integer(seconds * 1000)
       end
 
       #
@@ -40,7 +39,7 @@ module Selenium
       #
 
       def script_timeout=(seconds)
-        @bridge.setScriptTimeout Integer(seconds * 1000)
+        @bridge.script_timeout = Integer(seconds * 1000)
       end
 
       #
@@ -49,9 +48,8 @@ module Selenium
       #
 
       def page_load=(seconds)
-        @bridge.setTimeout 'page load', Integer(seconds * 1000)
+        @bridge.timeout 'page load', Integer(seconds * 1000)
       end
-
     end # Timeouts
   end # WebDriver
 end # Selenium

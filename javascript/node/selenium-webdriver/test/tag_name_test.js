@@ -24,11 +24,13 @@ var By = require('..').By,
 
 test.suite(function(env) {
   var driver;
-  test.after(function() { driver.quit(); });
+  test.after(function() { return driver.quit(); });
 
-  test.it('should return lower case tag name', function() {
-    driver = env.builder().build();
-    driver.get(test.Pages.formPage);
-    assert(driver.findElement(By.id('cheese')).getTagName()).equalTo('input');
+  test.it('should return lower case tag name', function*() {
+    driver = yield env.builder().build();
+    yield driver.get(test.Pages.formPage);
+
+    let el = yield driver.findElement(By.id('cheese'));
+    return assert(el.getTagName()).equalTo('input');
   });
 });

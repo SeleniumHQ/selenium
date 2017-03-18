@@ -17,8 +17,8 @@
 
 package org.openqa.grid.e2e.misc;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.openqa.grid.common.GridRole;
 import org.openqa.grid.e2e.utils.GridTestHelper;
@@ -30,11 +30,10 @@ import org.openqa.selenium.remote.server.SeleniumServer;
 
 public class GridSerializeExceptionTest {
 
-  private static Hub hub;
+  private Hub hub;
 
-  @BeforeClass
-  public static void prepare() throws Exception {
-
+  @Before
+  public void prepare() throws Exception {
     hub = GridTestHelper.getHub();
 
     SelfRegisteringRemote remote =
@@ -51,8 +50,8 @@ public class GridSerializeExceptionTest {
     GridTestHelper.getRemoteWebDriver(GridTestHelper.getDefaultBrowserCapability(), hub);
   }
 
-  @AfterClass
-  public static void stop() throws Exception {
+  @After
+  public void stop() throws Exception {
     hub.stop();
   }
 }

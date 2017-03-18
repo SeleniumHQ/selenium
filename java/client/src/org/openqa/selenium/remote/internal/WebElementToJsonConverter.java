@@ -24,6 +24,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import org.openqa.selenium.internal.WrapsElement;
+import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.RemoteWebElement;
 
 import java.util.Collection;
@@ -50,8 +51,9 @@ public class WebElementToJsonConverter implements Function<Object, Object> {
     }
 
     if (arg instanceof RemoteWebElement) {
-      return ImmutableMap.of("ELEMENT", ((RemoteWebElement) arg).getId(),
-                             "element-6066-11e4-a52e-4f735466cecf", ((RemoteWebElement) arg).getId());
+      return ImmutableMap.of(
+        Dialect.OSS.getEncodedElementKey(), ((RemoteWebElement) arg).getId(),
+        Dialect.W3C.getEncodedElementKey(), ((RemoteWebElement) arg).getId());
     }
 
     if (arg.getClass().isArray()) {

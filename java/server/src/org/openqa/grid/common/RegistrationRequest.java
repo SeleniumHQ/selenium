@@ -17,34 +17,27 @@
 
 package org.openqa.grid.common;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
+import com.google.common.reflect.TypeToken;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
 import org.openqa.grid.common.exception.GridConfigurationException;
 import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
+import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration.CollectionOfDesiredCapabilitiesDeSerializer;
+import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration.CollectionOfDesiredCapabilitiesSerializer;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.JsonToBeanConverter;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
- * helper to register to the grid. Using JSON to exchange the object between the node and grid.
+ * Helper to register to the grid. Using JSON to exchange the object between the node and the hub.
  */
 public class RegistrationRequest {
-
-  private String name;
-  private String description;
-
-  private GridRole role;
-  private List<DesiredCapabilities> capabilities = new ArrayList<>();
-  private GridNodeConfiguration configuration = new GridNodeConfiguration();
 
   // some special param for capability
   public static final String MAX_INSTANCES = "maxInstances";
@@ -52,217 +45,222 @@ public class RegistrationRequest {
   public static final String SELENIUM_PROTOCOL = "seleniumProtocol";
   public static final String PATH = "path";
 
+  @SerializedName( "class" )
+  @Expose( deserialize = false)
+  private final String clazz = RegistrationRequest.class.getCanonicalName();
+  @Expose
+  private String name;
+  @Expose
+  private String description;
+  @Expose
+  private GridNodeConfiguration configuration;
+
+  /**
+   * Create a new registration request using the default values of a
+   * {@link GridNodeConfiguration}
+   */
   public RegistrationRequest() {
+    this(new GridNodeConfiguration());
+  }
+
+  /**
+   * Create a new registration request using the supplied {@link GridNodeConfiguration}
+   *
+   * @param configuration the {@link GridNodeConfiguration} to use. Internally calls {@code new
+   *                      GridNodeConfiguration()} if a {@code null} value is provided since a
+   *                      request without configuration is not valid.
+   */
+  public RegistrationRequest(GridNodeConfiguration configuration) {
+    this(configuration, null, null);
+  }
+
+  /**
+   * Create a new registration request using the supplied {@link GridNodeConfiguration}, and name
+   *
+   * @param configuration the {@link GridNodeConfiguration} to use. Internally calls {@code new
+   *                      GridNodeConfiguration()} if a {@code null} value is provided since a
+   *                      request without configuration is not valid.
+   * @param name          the name for the remote
+   */
+  public RegistrationRequest(GridNodeConfiguration configuration, String name) {
+    this(configuration, name, null);
+  }
+
+  /**
+   * Create a new registration request using the supplied {@link GridNodeConfiguration}, name, and
+   * description
+   *
+   * @param configuration the {@link GridNodeConfiguration} to use. Internally calls {@code new
+   *                      GridNodeConfiguration()} if a {@code null} value is provided since a
+   *                      request without configuration is not valid.
+   * @param name          the name for the remote
+   * @param description   the description for the remote host
+   */
+  public RegistrationRequest(GridNodeConfiguration configuration, String name, String description) {
+    this.configuration = (configuration == null) ? new GridNodeConfiguration() : configuration;
+    this.name = name;
+    this.description = description;
+
+    // make sure we have something that looks like a valid host
+    fixUpHost();
+    // make sure the capabilities are updated with required fields
+    fixUpCapabilities();
   }
 
   public String getName() {
     return name;
   }
 
-  public void setName(String name) {
-    this.name = name;
-  }
-
   public String getDescription() {
     return description;
-  }
-
-  public void setDescription(String description) {
-    this.description = description;
-  }
-
-  public List<DesiredCapabilities> getCapabilities() {
-    return capabilities;
-  }
-
-  public void addDesiredCapability(DesiredCapabilities c) {
-    this.capabilities.add(c);
-  }
-
-  public void addDesiredCapability(Map<String, Object> c) {
-    this.capabilities.add(new DesiredCapabilities(c));
-  }
-
-  public void setCapabilities(List<DesiredCapabilities> capabilities) {
-    this.capabilities = capabilities;
   }
 
   public GridNodeConfiguration getConfiguration() {
     return configuration;
   }
 
-  public void setConfiguration(GridNodeConfiguration configuration) {
-    this.configuration = configuration;
+  public JsonObject toJson() {
+    GsonBuilder builder = new GsonBuilder();
+    builder.registerTypeAdapter(new TypeToken<List<DesiredCapabilities>>(){}.getType(),
+                                new CollectionOfDesiredCapabilitiesSerializer());
+
+    // note: it's very important that nulls are serialized for this type.
+    return builder.serializeNulls().excludeFieldsWithoutExposeAnnotation().create()
+      .toJsonTree(this, RegistrationRequest.class).getAsJsonObject();
   }
-
-  public String toJSON() {
-    return new Gson().toJson(getAssociatedJSON());
-  }
-
-  public JsonObject getAssociatedJSON() {
-    JsonObject res = new JsonObject();
-
-    res.addProperty("class", getClass().getCanonicalName());
-    res.addProperty("id", configuration.id);
-    res.addProperty("name", name);
-    res.addProperty("description", description);
-    res.add("configuration", new Gson().toJsonTree(configuration));
-    JsonArray caps = new JsonArray();
-    for (DesiredCapabilities c : capabilities) {
-      caps.add(new Gson().toJsonTree(c.asMap()));
-    }
-    res.add("capabilities", caps);
-
-    return res;
-  }
-
 
   /**
-   * Create an object from a registration request formatted as a json string.
+   * Create an object from a registration request formatted as a JsonObject
    *
-   * @param json JSON
-   * @return create a request from the JSON request received.
+   * @param json JsonObject
+   * @return
    */
-  @SuppressWarnings("unchecked")
-  // JSON lib
-  public static RegistrationRequest getNewInstance(String json) throws JsonSyntaxException {
-    RegistrationRequest request = new RegistrationRequest();
-    JsonObject o = new JsonParser().parse(json).getAsJsonObject();
+  public static RegistrationRequest fromJson(JsonObject json) throws JsonSyntaxException {
+    GsonBuilder builder = new GsonBuilder();
+    builder.registerTypeAdapter(new TypeToken<List<DesiredCapabilities>>(){}.getType(),
+                                new CollectionOfDesiredCapabilitiesDeSerializer());
 
-    if (o.has("name")) {
-      request.setName(o.get("name").getAsString());
-    }
-    if (o.has("description")) {
-      request.setDescription(o.get("description").getAsString());
-    }
+    RegistrationRequest request = builder.excludeFieldsWithoutExposeAnnotation().create()
+      .fromJson(json, RegistrationRequest.class);
 
-    JsonObject config = o.get("configuration").getAsJsonObject();
-    GridNodeConfiguration
-      configuration =
-      new Gson().fromJson(config, GridNodeConfiguration.class);
-    request.setConfiguration(configuration);
-
-    if (o.has("id")) {
-      request.configuration.id = o.get("id").getAsString();
-    }
-
-    JsonArray capabilities = o.get("capabilities").getAsJsonArray();
-
-    for (int i = 0; i < capabilities.size(); i++) {
-      DesiredCapabilities cap = new JsonToBeanConverter()
-        .convert(DesiredCapabilities.class, capabilities.get(i));
-      request.capabilities.add(cap);
-    }
     return request;
   }
 
   /**
-   * if a PROXY_CLASS is specified in the request, the proxy created following this request will be
-   * of that type. If nothing is specified, it will use RemoteProxy
+   * Create an object from a registration request formatted as a json string.
    *
-   * @return null if no class was specified.
+   * @param json JSON String
+   * @return
    */
-  public String getRemoteProxyClass() {
-    return configuration.proxy;
+  public static RegistrationRequest fromJson(String json) throws JsonSyntaxException {
+    GsonBuilder builder = new GsonBuilder();
+    builder.registerTypeAdapter(new TypeToken<List<DesiredCapabilities>>(){}.getType(),
+                                new CollectionOfDesiredCapabilitiesDeSerializer());
+
+    RegistrationRequest request = builder.excludeFieldsWithoutExposeAnnotation().create()
+      .fromJson(json, RegistrationRequest.class);
+
+    return request;
   }
 
+  /**
+   * Build a RegistrationRequest.
+   * @return
+   */
+  public static RegistrationRequest build() {
+    return RegistrationRequest.build(new GridNodeConfiguration(), null, null);
+  }
+
+  /**
+   * Build a RegistrationRequest from the provided {@link GridNodeConfiguration}. This is different
+   * than {@code new RegistrationRequest(GridNodeConfiguration)} because it will first load any
+   * specified {@link GridNodeConfiguration#nodeConfigFile} and then merge the provided
+   * configuration onto it.
+   *
+   * @param configuration the {@link GridNodeConfiguration} to use. Internally calls {@code new
+   *                      GridNodeConfiguration()} if a {@code null} value is provided since a
+   *                      request without configuration is not valid.
+   */
   public static RegistrationRequest build(GridNodeConfiguration configuration) {
-    RegistrationRequest res = newFromJSON("defaults/DefaultNodeWebDriver.json");
+    return RegistrationRequest.build(configuration, null, null);
+  }
 
-    if (configuration.nodeConfigFile != null) {
-      res.loadFromJSON(configuration.nodeConfigFile);
+  /**
+   * Build a RegistrationRequest from the provided {@link GridNodeConfiguration}, use the provided
+   * name. This is different than {@code new RegistrationRequest(GridNodeConfiguration, String)}
+   * because it will first load any specified {@link GridNodeConfiguration#nodeConfigFile} and then
+   * merge the provided configuration onto it.
+   *
+   * @param configuration the {@link GridNodeConfiguration} to use. Internally calls {@code new
+   *                      GridNodeConfiguration()} if a {@code null} value is provided since a
+   *                      request without configuration is not valid.
+   * @param name          the name for the remote
+   */
+  public static RegistrationRequest build(GridNodeConfiguration configuration, String name) {
+    return RegistrationRequest.build(configuration, name, null);
+  }
+
+  /**
+   * Build a RegistrationRequest from the provided {@link GridNodeConfiguration}, use the provided
+   * name and description. This is different than {@code new RegistrationRequest(GridNodeConfiguration,
+   * String, String)} because it will first load any specified {@link
+   * GridNodeConfiguration#nodeConfigFile} and then merge the provided configuration onto it.
+   *
+   * @param configuration the {@link GridNodeConfiguration} to use. Internally calls {@code new
+   *                      GridNodeConfiguration()} if a {@code null} value is provided since a
+   *                      request without configuration is not valid.
+   * @param name          the name for the remote
+   * @param description   the description for the remote host
+   */
+  public static RegistrationRequest build(GridNodeConfiguration configuration, String name, String description) {
+    RegistrationRequest pendingRequest = new RegistrationRequest(configuration, name, description);
+    GridNodeConfiguration pendingConfiguration = pendingRequest.configuration;
+
+    if (pendingConfiguration.nodeConfigFile != null) {
+      pendingRequest.configuration = GridNodeConfiguration.loadFromJSON(pendingConfiguration.nodeConfigFile);
     }
 
-    res.configuration.merge(configuration);
-    if (configuration.host != null) {
-      res.configuration.host = configuration.host;
+    pendingRequest.configuration.merge(pendingConfiguration);
+    //update important merge protected values for the pendingRequest we are building.
+    if (pendingConfiguration.host != null) {
+      pendingRequest.configuration.host = pendingConfiguration.host;
     }
-    res.configuration.host = guessHost(res.configuration.host);
-    if (configuration.port != null) {
-      res.configuration.port = configuration.port;
+    if (pendingConfiguration.port != null) {
+      pendingRequest.configuration.port = pendingConfiguration.port;
     }
 
-    res.role = GridRole.get(configuration.role);
-    res.addPlatformInfoToCapabilities();
+    // make sure we have a valid host
+    pendingRequest.fixUpHost();
+    // make sure the capabilities are updated with required fields
+    pendingRequest.fixUpCapabilities();
 
-    for (DesiredCapabilities cap : res.capabilities) {
+    return pendingRequest;
+  }
+
+  private void fixUpCapabilities() {
+    if (configuration.capabilities == null) {
+      return; // assumes the caller set it/wants it this way
+    }
+
+    Platform current = Platform.getCurrent();
+    for (DesiredCapabilities cap : configuration.capabilities) {
+      if (cap.getPlatform() == null) {
+        cap.setPlatform(current);
+      }
       if (cap.getCapability(SELENIUM_PROTOCOL) == null) {
         cap.setCapability(SELENIUM_PROTOCOL, SeleniumProtocol.WebDriver.toString());
       }
     }
-
-    return res;
   }
 
-  private void addPlatformInfoToCapabilities() {
-    Platform current = Platform.getCurrent();
-    for (DesiredCapabilities cap : capabilities) {
-      if (cap.getPlatform() == null) {
-        cap.setPlatform(current);
-      }
-    }
-  }
-
-  private static String guessHost(String host) {
-    if (host == null || "ip".equalsIgnoreCase(host)) {
+  private void fixUpHost() {
+    if (configuration.host == null || "ip".equalsIgnoreCase(configuration.host)) {
       NetworkUtils util = new NetworkUtils();
-      return util.getIp4NonLoopbackAddressOfThisMachine().getHostAddress();
-    } else if ("host".equalsIgnoreCase(host)) {
+      configuration.host = util.getIp4NonLoopbackAddressOfThisMachine().getHostAddress();
+    } else if ("host".equalsIgnoreCase(configuration.host)) {
       NetworkUtils util = new NetworkUtils();
-      return util.getIp4NonLoopbackAddressOfThisMachine().getHostName();
-    } else {
-      return host;
+      configuration.host = util.getIp4NonLoopbackAddressOfThisMachine().getHostName();
     }
-  }
-
-  /**
-   * add config, but overwrite capabilities.
-   *
-   * @param resource resource
-   */
-  public void loadFromJSON(String resource) {
-    try {
-      JsonObject base = JSONConfigurationUtils.loadJSON(resource);
-
-      if (base.has("capabilities")) {
-        capabilities = new ArrayList<>();
-        JsonArray a = base.get("capabilities").getAsJsonArray();
-        for (int i = 0; i < a.size(); i++) {
-          DesiredCapabilities c = new JsonToBeanConverter()
-              .convert(DesiredCapabilities.class, a.get(i));
-          capabilities.add(c);
-        }
-        addPlatformInfoToCapabilities();
-      }
-
-      GridNodeConfiguration loadedConfiguration = new Gson().fromJson(base.get("configuration"), GridNodeConfiguration.class);
-      configuration.merge(loadedConfiguration);
-      if (loadedConfiguration.host != null) {
-        configuration.host = loadedConfiguration.host;
-      }
-      if (loadedConfiguration.port != null) {
-        configuration.port = loadedConfiguration.port;
-      }
-
-
-    } catch (Throwable e) {
-      throw new GridConfigurationException("Error with the JSON of the config : " + e.getMessage(),
-          e);
-    }
-  }
-
-  public static RegistrationRequest newFromJSON(String resource) {
-    RegistrationRequest req = new RegistrationRequest();
-    req.loadFromJSON(resource);
-    return req;
-  }
-
-  public GridRole getRole() {
-    return role;
-  }
-
-  public void setRole(GridRole role) {
-    this.role = role;
   }
 
   /**
@@ -271,11 +269,12 @@ public class RegistrationRequest {
    * @throws GridConfigurationException grid configuration
    */
   public void validate() throws GridConfigurationException {
-    String hub = configuration.getHubHost();
-    Integer port = configuration.getHubPort();
-    if (hub == null || port == null) {
-      throw new GridConfigurationException("You need to specify a hub to register to using -hubHost X -hubPort 5555."
-          + "The specified config was -hubHost" + hub + " -hubPort " + port);
+    // validations occur here in the getters called on the configuration.
+    try {
+      configuration.getHubHost();
+      configuration.getHubPort();
+    } catch (RuntimeException e) {
+      throw new GridConfigurationException(e.getMessage());
     }
   }
 

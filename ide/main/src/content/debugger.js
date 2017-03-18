@@ -27,6 +27,7 @@ function Debugger(editor) {
     }
 
     this.log.debug("init");
+    this.editor.health.addEvent('debugger', 'initializing');
 
     this.setState(Debugger.STOPPED);
 
@@ -129,6 +130,7 @@ function Debugger(editor) {
       }
       return false;
     };
+    this.editor.health.addEvent('debugger', 'initialized');
   }
 }
 
@@ -187,6 +189,11 @@ Debugger.prototype.doContinue = function (step) {
   this.stepContinue = step;
   this.setState(Debugger.PLAYING);
   this.runner.continueCurrentTest();
+};
+
+Debugger.prototype.closeWebDriverSession = function () {
+  this.init();
+  this.runner.closeSession();
 };
 
 Debugger.prototype.showElement = function (locator) {

@@ -14,7 +14,7 @@ class RubyMappings
 
   class RubyLibrary < Tasks
 
-    def handle(fun, dir, args)
+    def handle(_fun, dir, args)
       desc "Build #{args[:name]} in build/#{dir}"
       task_name = task_name(dir, args[:name])
 
@@ -54,14 +54,14 @@ class RubyMappings
   end
 
   class CheckTestArgs
-    def handle(fun, dir, args)
+    def handle(_fun, dir, args)
       raise "no :srcs specified for #{dir}" unless args.has_key? :srcs
       raise "no :name specified for #{dir}" unless args.has_key? :name
     end
   end
 
   class AddTestDefaults
-    def handle(fun, dir, args)
+    def handle(_fun, dir, args)
       args[:include] = Array(args[:include])
       args[:include] << "#{dir}/spec"
 
@@ -76,7 +76,7 @@ class RubyMappings
   end
 
   class AddTestDependencies < Tasks
-    def handle(fun, dir, args)
+    def handle(_fun, dir, args)
       task = Rake::Task[task_name(dir, "#{args[:name]}-test")]
 
       if args.has_key?(:deps)
@@ -86,17 +86,19 @@ class RubyMappings
   end
 
   class RubyTest < Tasks
-    def handle(fun, dir, args)
+    def handle(_fun, dir, args)
       desc "Run ruby tests for #{args[:name]}"
       task task_name(dir, "#{args[:name]}-test") => %W[//#{dir}:bundle] do
         STDOUT.sync = true
         puts "Running: #{args[:name]} ruby tests"
 
         if args[:name].match /^remote-(.*)/
-          ENV['WD_REMOTE_BROWSER'] = $1
+          puts $1
+          ENV['WD_REMOTE_BROWSER'] = $1.tr('-', '_')
+          puts ENV['WD_REMOTE_BROWSER']
           ENV['WD_SPEC_DRIVER'] = 'remote'
         else
-          ENV['WD_SPEC_DRIVER'] = args[:name]
+          ENV['WD_SPEC_DRIVER'] = args[:name].tr('-', '_')
         end
 
         ENV['CI_REPORTS']     = "build/test_logs"
@@ -113,7 +115,7 @@ class RubyMappings
   end
 
   class RubyDocs < Tasks
-    def handle(fun, dir, args)
+    def handle(_fun, dir, args)
       files = args[:files] || raise("no :files specified for rubydocs")
       output_dir = args[:output_dir] || raise("no :output_dir specified for rubydocs")
       readme = args[:readme] || raise("no :readme specified for rubydocs")
@@ -124,10 +126,12 @@ class RubyMappings
         yard_args += ["--output-dir", output_dir]
         yard_args += ["--readme", readme]
 
-        ruby :command => "yard",
-             :args    => yard_args,
-             :files   => files,
-             :gemfile => "build/rb/Gemfile"
+        Dir.chdir(File.join('build', 'rb')) do
+          ruby :command => "yard",
+               :args    => yard_args,
+               :files   => files,
+               :gemfile => "Gemfile"
+        end
       end
 
       add_dependencies t, dir, args[:deps]
@@ -135,7 +139,7 @@ class RubyMappings
   end # RubyDocs
 
   class RubyGem
-    def handle(fun, dir, args)
+    def handle(_fun, dir, args)
       raise "no :gemspec for rubygem" unless args[:gemspec]
 
       define_clean_task     dir, args
@@ -163,14 +167,14 @@ class RubyMappings
       end
     end
 
-    def define_clean_task(dir, args)
+    def define_clean_task(dir, _args)
       desc 'Clean rubygem artifacts'
       task "//#{dir}:gem:clean" do
         rm_rf "build/*.gem"
       end
     end
 
-    def define_release_task(dir, args)
+    def define_release_task(dir, _args)
       desc 'Build and release the ruby gem to Gemcutter'
       task "//#{dir}:gem:release" => %W[//#{dir}:gem:clean //#{dir}:gem:build] do
         gem = Dir['build/*.gem'].first # safe as long as :clean does its job
@@ -178,7 +182,7 @@ class RubyMappings
       end
     end
 
-    def define_gem_install_task(dir, args)
+    def define_gem_install_task(dir, _args)
       desc 'Install gem dependencies for the current Ruby'
       task "//#{dir}:bundle" do
         ENV['BUNDLE_GEMFILE'] = 'rb/Gemfile'

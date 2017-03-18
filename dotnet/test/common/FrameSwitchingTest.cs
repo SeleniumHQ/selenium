@@ -25,9 +25,9 @@ namespace OpenQA.Selenium
         public void ShouldNotAutomaticallySwitchFocusToAnIFrameWhenAPageContainingThemIsLoaded()
         {
             driver.Url = iframePage;
-            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(1));
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(1);
             IWebElement element = driver.FindElement(By.Id("iframe_page_heading"));
-            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(0));
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(0);
             Assert.IsNotNull(element);
         }
 

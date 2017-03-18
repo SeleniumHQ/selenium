@@ -20,36 +20,34 @@
 module Selenium
   module WebDriver
     module PhantomJS
-
       #
       # @api private
       #
 
       class Bridge < Remote::Bridge
-
         def initialize(opts = {})
-          http_client = opts.delete(:http_client)
-          caps        = opts.delete(:desired_capabilities) { Remote::Capabilities.phantomjs }
+          opts[:desired_capabilities] ||= Remote::Capabilities.phantomjs
 
-          if opts.has_key?(:url)
-            url = opts.delete(:url)
-          else
-            args = opts.delete(:args) || caps['phantomjs.cli.args']
+          unless opts.key?(:url)
+            driver_path = opts.delete(:driver_path) || PhantomJS.driver_path
+            port = opts.delete(:port) || Service::DEFAULT_PORT
 
-            @service = Service.new(PhantomJS.path, Service::DEFAULT_PORT, *args)
+            opts[:driver_opts] ||= {}
+            if opts.key? :args
+              WebDriver.logger.warn <<-DEPRECATE.gsub(/\n +| {2,}/, ' ').freeze
+            [DEPRECATION] `:args` is deprecated. Pass switches using `driver_opts`
+              DEPRECATE
+              opts[:driver_opts][:args] = opts.delete(:args)
+            elsif opts[:desired_capabilities]['phantomjs.cli.args']
+              opts[:driver_opts][:args] = opts[:desired_capabilities]['phantomjs.cli.args']
+            end
+
+            @service = Service.new(driver_path, port, opts.delete(:driver_opts))
             @service.start
-
-            url = @service.uri
+            opts[:url] = @service.uri
           end
 
-          remote_opts = {
-            :url                  => url,
-            :desired_capabilities => caps
-          }
-
-          remote_opts.merge!(:http_client => http_client) if http_client
-
-          super(remote_opts)
+          super(opts)
         end
 
         def browser
@@ -57,10 +55,7 @@ module Selenium
         end
 
         def driver_extensions
-          [
-            DriverExtensions::TakesScreenshot,
-            DriverExtensions::HasInputDevices
-          ]
+          [DriverExtensions::TakesScreenshot]
         end
 
         def capabilities
@@ -72,7 +67,6 @@ module Selenium
         ensure
           @service.stop if @service
         end
-
       end # Bridge
     end # PhantomJS
   end # WebDriver

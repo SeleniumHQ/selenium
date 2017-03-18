@@ -34,34 +34,34 @@ test.suite(function(env) {
 
   var driver;
 
-  test.before(function() {
-    driver = env.builder().build();
+  test.before(function*() {
+    driver = yield env.builder().build();
   });
 
-  test.after(function() {
-    driver.quit();
+  after(function() {
+    return driver.quit();
   });
 
   describe('finding elements', function() {
     test.it(
         'should work after loading multiple pages in a row',
-        function() {
-          driver.get(Pages.formPage);
-          driver.get(Pages.xhtmlTestPage);
-          driver.findElement(By.linkText('click me')).click();
-          driver.wait(until.titleIs('We Arrive Here'), 5000);
+        function*() {
+          yield driver.get(Pages.formPage);
+          yield driver.get(Pages.xhtmlTestPage);
+          yield driver.findElement(By.linkText('click me')).click();
+          yield driver.wait(until.titleIs('We Arrive Here'), 5000);
         });
 
     describe('By.id()', function() {
-      test.it('should work', function() {
-        driver.get(Pages.xhtmlTestPage);
-        driver.findElement(By.id('linkId')).click();
-        driver.wait(until.titleIs('We Arrive Here'), 5000);
+      test.it('should work', function*() {
+        yield driver.get(Pages.xhtmlTestPage);
+        yield driver.findElement(By.id('linkId')).click();
+        yield driver.wait(until.titleIs('We Arrive Here'), 5000);
       });
 
-      test.it('should fail if ID not present on page', function() {
-        driver.get(Pages.formPage);
-        driver.findElement(By.id('nonExistantButton')).
+      test.it('should fail if ID not present on page', function*() {
+        yield driver.get(Pages.formPage);
+        return driver.findElement(By.id('nonExistantButton')).
             then(fail, function(e) {
               assert(e).instanceOf(error.NoSuchElementError);
             });
@@ -70,180 +70,178 @@ test.suite(function(env) {
       test.it(
           'should find multiple elements by ID even though that is ' +
               'malformed HTML',
-          function() {
-            driver.get(Pages.nestedPage);
-            driver.findElements(By.id('2')).then(function(elements) {
-              assert(elements.length).equalTo(8);
-            });
+          function*() {
+            yield driver.get(Pages.nestedPage);
+
+            let elements = yield driver.findElements(By.id('2'));
+            assert(elements.length).equalTo(8);
           });
     });
 
     describe('By.linkText()', function() {
-      test.it('should be able to click on link identified by text', function() {
-        driver.get(Pages.xhtmlTestPage);
-        driver.findElement(By.linkText('click me')).click();
-        driver.wait(until.titleIs('We Arrive Here'), 5000);
+      test.it('should be able to click on link identified by text', function*() {
+        yield driver.get(Pages.xhtmlTestPage);
+        yield driver.findElement(By.linkText('click me')).click();
+        yield driver.wait(until.titleIs('We Arrive Here'), 5000);
       });
 
       test.it(
           'should be able to find elements by partial link text',
-          function() {
-            driver.get(Pages.xhtmlTestPage);
-            driver.findElement(By.partialLinkText('ick me')).click();
-            driver.wait(until.titleIs('We Arrive Here'), 5000);
+          function*() {
+            yield driver.get(Pages.xhtmlTestPage);
+            yield driver.findElement(By.partialLinkText('ick me')).click();
+            yield driver.wait(until.titleIs('We Arrive Here'), 5000);
           });
 
-      test.it('should work when link text contains equals sign', function() {
-        driver.get(Pages.xhtmlTestPage);
-        var id = driver.findElement(By.linkText('Link=equalssign')).
-            getAttribute('id');
+      test.it('should work when link text contains equals sign', function*() {
+        yield driver.get(Pages.xhtmlTestPage);
+        let el = yield driver.findElement(By.linkText('Link=equalssign'));
+
+        let id = yield el.getAttribute('id');
         assert(id).equalTo('linkWithEqualsSign');
       });
 
       test.it('matches by partial text when containing equals sign',
-        function() {
-          driver.get(Pages.xhtmlTestPage);
-          var id = driver.findElement(By.partialLinkText('Link=')).
-              getAttribute('id');
+        function*() {
+          yield driver.get(Pages.xhtmlTestPage);
+          let link = yield driver.findElement(By.partialLinkText('Link='));
+
+          let id = yield link.getAttribute('id');
           assert(id).equalTo('linkWithEqualsSign');
         });
 
       test.it('works when searching for multiple and text contains =',
-          function() {
-            driver.get(Pages.xhtmlTestPage);
-            driver.findElements(By.linkText('Link=equalssign')).
-                then(function(elements) {
-                  assert(elements.length).equalTo(1);
-                  return elements[0].getAttribute('id');
-                }).
-                then(function(id) {
-                  assert(id).equalTo('linkWithEqualsSign');
-                });
+          function*() {
+            yield driver.get(Pages.xhtmlTestPage);
+            let elements =
+                yield driver.findElements(By.linkText('Link=equalssign'));
+
+            assert(elements.length).equalTo(1);
+
+            let id = yield elements[0].getAttribute('id');
+            assert(id).equalTo('linkWithEqualsSign');
           });
 
       test.it(
           'works when searching for multiple with partial text containing =',
-          function() {
-            driver.get(Pages.xhtmlTestPage);
-            driver.findElements(By.partialLinkText('Link=')).
-                then(function(elements) {
-                  assert(elements.length).equalTo(1);
-                  return elements[0].getAttribute('id');
-                }).
-                then(function(id) {
-                  assert(id).equalTo('linkWithEqualsSign');
-                });
-      });
+          function*() {
+            yield driver.get(Pages.xhtmlTestPage);
+            let elements =
+                yield driver.findElements(By.partialLinkText('Link='));
+
+            assert(elements.length).equalTo(1);
+
+            let id = yield elements[0].getAttribute('id');
+            assert(id).equalTo('linkWithEqualsSign');
+          });
 
       test.it('should be able to find multiple exact matches',
-          function() {
-            driver.get(Pages.xhtmlTestPage);
-            driver.findElements(By.linkText('click me')).
-                then(function(elements) {
-                  assert(elements.length).equalTo(2);
-                });
+          function*() {
+            yield driver.get(Pages.xhtmlTestPage);
+            let elements = yield driver.findElements(By.linkText('click me'));
+            assert(elements.length).equalTo(2);
           });
 
       test.it('should be able to find multiple partial matches',
-          function() {
-            driver.get(Pages.xhtmlTestPage);
-            driver.findElements(By.partialLinkText('ick me')).
-                then(function(elements) {
-                  assert(elements.length).equalTo(2);
-                });
+          function*() {
+            yield driver.get(Pages.xhtmlTestPage);
+            let elements =
+                yield driver.findElements(By.partialLinkText('ick me'));
+            assert(elements.length).equalTo(2);
           });
 
-      test.it('works on XHTML pages', function() {
-        driver.get(test.whereIs('actualXhtmlPage.xhtml'));
+      test.ignore(browsers(Browser.SAFARI)).
+      it('works on XHTML pages', function*() {
+        yield driver.get(test.whereIs('actualXhtmlPage.xhtml'));
 
-        var el = driver.findElement(By.linkText('Foo'));
-        assert(el.getText()).equalTo('Foo');
+        let el = yield driver.findElement(By.linkText('Foo'));
+        return assert(el.getText()).equalTo('Foo');
       });
     });
 
     describe('By.name()', function() {
-      test.it('should work', function() {
-        driver.get(Pages.formPage);
+      test.it('should work', function*() {
+        yield driver.get(Pages.formPage);
 
-        var el = driver.findElement(By.name('checky'));
-        assert(el.getAttribute('value')).equalTo('furrfu');
+        let el = yield driver.findElement(By.name('checky'));
+        yield assert(el.getAttribute('value')).equalTo('furrfu');
       });
 
-      test.it('should find multiple elements with same name', function() {
-        driver.get(Pages.nestedPage);
-        driver.findElements(By.name('checky')).then(function(elements) {
-          assert(elements.length).greaterThan(1);
-        });
+      test.it('should find multiple elements with same name', function*() {
+        yield driver.get(Pages.nestedPage);
+
+        let elements = yield driver.findElements(By.name('checky'));
+        assert(elements.length).greaterThan(1);
       });
 
       test.it(
           'should be able to find elements that do not support name property',
-          function() {
-            driver.get(Pages.nestedPage);
-            driver.findElement(By.name('div1'));
+          function*() {
+            yield driver.get(Pages.nestedPage);
+            yield driver.findElement(By.name('div1'));
             // Pass if this does not return an error.
           });
 
-      test.it('shoudl be able to find hidden elements by name', function() {
-        driver.get(Pages.formPage);
-        driver.findElement(By.name('hidden'));
+      test.it('shoudl be able to find hidden elements by name', function*() {
+        yield driver.get(Pages.formPage);
+        yield driver.findElement(By.name('hidden'));
         // Pass if this does not return an error.
       });
     });
 
     describe('By.className()', function() {
-      test.it('should work', function() {
-        driver.get(Pages.xhtmlTestPage);
+      test.it('should work', function*() {
+        yield driver.get(Pages.xhtmlTestPage);
 
-        var el = driver.findElement(By.className('extraDiv'));
-        assert(el.getText()).startsWith('Another div starts here.');
+        let el = yield driver.findElement(By.className('extraDiv'));
+        yield assert(el.getText()).startsWith('Another div starts here.');
       });
 
-      test.it('should work when name is first name among many', function() {
-        driver.get(Pages.xhtmlTestPage);
+      test.it('should work when name is first name among many', function*() {
+        yield driver.get(Pages.xhtmlTestPage);
 
-        var el = driver.findElement(By.className('nameA'));
-        assert(el.getText()).equalTo('An H2 title');
+        let el = yield driver.findElement(By.className('nameA'));
+        yield assert(el.getText()).equalTo('An H2 title');
       });
 
-      test.it('should work when name is last name among many', function() {
-        driver.get(Pages.xhtmlTestPage);
+      test.it('should work when name is last name among many', function*() {
+        yield driver.get(Pages.xhtmlTestPage);
 
-        var el = driver.findElement(By.className('nameC'));
-        assert(el.getText()).equalTo('An H2 title');
+        let el = yield driver.findElement(By.className('nameC'));
+        yield assert(el.getText()).equalTo('An H2 title');
       });
 
-      test.it('should work when name is middle of many', function() {
-        driver.get(Pages.xhtmlTestPage);
+      test.it('should work when name is middle of many', function*() {
+        yield driver.get(Pages.xhtmlTestPage);
 
-        var el = driver.findElement(By.className('nameBnoise'));
-        assert(el.getText()).equalTo('An H2 title');
+        let el = yield driver.findElement(By.className('nameBnoise'));
+        yield assert(el.getText()).equalTo('An H2 title');
       });
 
-      test.it('should work when name surrounded by whitespace', function() {
-        driver.get(Pages.xhtmlTestPage);
+      test.it('should work when name surrounded by whitespace', function*() {
+        yield driver.get(Pages.xhtmlTestPage);
 
-        var el = driver.findElement(By.className('spaceAround'));
-        assert(el.getText()).equalTo('Spaced out');
+        let el = yield driver.findElement(By.className('spaceAround'));
+        yield assert(el.getText()).equalTo('Spaced out');
       });
 
-      test.it('should fail if queried name only partially matches', function() {
-        driver.get(Pages.xhtmlTestPage);
-        driver.findElement(By.className('nameB')).
+      test.it('should fail if queried name only partially matches', function*() {
+        yield driver.get(Pages.xhtmlTestPage);
+        return driver.findElement(By.className('nameB')).
             then(fail, function(e) {
               assert(e).instanceOf(error.NoSuchElementError);
             });
       });
 
-      test.it('should implicitly wait', function() {
+      test.it('should implicitly wait', function*() {
         var TIMEOUT_IN_MS = 1000;
         var EPSILON = TIMEOUT_IN_MS / 2;
 
-        driver.manage().timeouts().implicitlyWait(TIMEOUT_IN_MS);
-        driver.get(Pages.formPage);
+        yield driver.manage().timeouts().implicitlyWait(TIMEOUT_IN_MS);
+        yield driver.get(Pages.formPage);
 
         var start = new Date();
-        driver.findElement(By.id('nonExistantButton')).
+        return driver.findElement(By.id('nonExistantButton')).
             then(fail, function(e) {
               var end = new Date();
               assert(e).instanceOf(error.NoSuchElementError);
@@ -251,11 +249,11 @@ test.suite(function(env) {
             });
       });
 
-      test.it('should be able to find multiple matches', function() {
-        driver.get(Pages.xhtmlTestPage);
-        driver.findElements(By.className('nameC')).then(function(elements) {
-          assert(elements.length).greaterThan(1);
-        });
+      test.it('should be able to find multiple matches', function*() {
+        yield driver.get(Pages.xhtmlTestPage);
+
+        let elements = yield driver.findElements(By.className('nameC'));
+        assert(elements.length).greaterThan(1);
       });
 
       test.it('permits compound class names', function() {
@@ -267,133 +265,136 @@ test.suite(function(env) {
     });
 
     describe('By.xpath()', function() {
-      test.it('should work with multiple matches', function() {
-        driver.get(Pages.xhtmlTestPage);
-        driver.findElements(By.xpath('//div')).then(function(elements) {
-          assert(elements.length).greaterThan(1);
-        });
+      test.it('should work with multiple matches', function*() {
+        yield driver.get(Pages.xhtmlTestPage);
+        let elements = yield driver.findElements(By.xpath('//div'));
+        assert(elements.length).greaterThan(1);
       });
 
-      test.it('should work for selectors using contains keyword', function() {
-        driver.get(Pages.nestedPage);
-        driver.findElement(By.xpath('//a[contains(., "hello world")]'));
+      test.it('should work for selectors using contains keyword', function*() {
+        yield driver.get(Pages.nestedPage);
+        yield driver.findElement(By.xpath('//a[contains(., "hello world")]'));
         // Pass if no error.
       });
     });
 
     describe('By.tagName()', function() {
-      test.it('works', function() {
-        driver.get(Pages.formPage);
+      test.it('works', function*() {
+        yield driver.get(Pages.formPage);
 
-        var el = driver.findElement(By.tagName('input'));
-        assert(el.getTagName()).equalTo('input');
+        let el = yield driver.findElement(By.tagName('input'));
+        yield assert(el.getTagName()).equalTo('input');
       });
 
-      test.it('can find multiple elements', function() {
-        driver.get(Pages.formPage);
-        driver.findElements(By.tagName('input')).then(function(elements) {
-          assert(elements.length).greaterThan(1);
-        });
+      test.it('can find multiple elements', function*() {
+        yield driver.get(Pages.formPage);
+
+        let elements = yield driver.findElements(By.tagName('input'));
+        assert(elements.length).greaterThan(1);
       });
     });
 
     describe('By.css()', function() {
-      test.it('works', function() {
-        driver.get(Pages.xhtmlTestPage);
-        driver.findElement(By.css('div.content'));
+      test.it('works', function*() {
+        yield driver.get(Pages.xhtmlTestPage);
+        yield driver.findElement(By.css('div.content'));
         // Pass if no error.
       });
 
-      test.it('can find multiple elements', function() {
-        driver.get(Pages.xhtmlTestPage);
-        driver.findElements(By.css('p')).then(function(elements) {
-          assert(elements.length).greaterThan(1);
-        });
+      test.it('can find multiple elements', function*() {
+        yield driver.get(Pages.xhtmlTestPage);
+
+        let elements = yield driver.findElements(By.css('p'));
+        assert(elements.length).greaterThan(1);
         // Pass if no error.
       });
 
       test.it(
           'should find first matching element when searching by ' +
               'compound CSS selector',
-          function() {
-            driver.get(Pages.xhtmlTestPage);
-            var el = driver.findElement(By.css('div.extraDiv, div.content'));
-            assert(el.getAttribute('class')).equalTo('content');
+          function*() {
+            yield driver.get(Pages.xhtmlTestPage);
+
+            let el =
+                yield driver.findElement(By.css('div.extraDiv, div.content'));
+            yield assert(el.getAttribute('class')).equalTo('content');
           });
 
       test.it('should be able to find multiple elements by compound selector',
-          function() {
-            driver.get(Pages.xhtmlTestPage);
-            driver.findElements(By.css('div.extraDiv, div.content')).
-                then(function(elements) {
-                  assertClassIs(elements[0], 'content');
-                  assertClassIs(elements[1], 'extraDiv');
+          function*() {
+            yield driver.get(Pages.xhtmlTestPage);
+            let elements =
+                yield driver.findElements(By.css('div.extraDiv, div.content'));
 
-                  function assertClassIs(el, expected) {
-                    assert(el.getAttribute('class')).equalTo(expected);
-                  }
-                });
+            return Promise.all([
+              assertClassIs(elements[0], 'content'),
+              assertClassIs(elements[1], 'extraDiv')
+            ]);
+
+            function assertClassIs(el, expected) {
+              return assert(el.getAttribute('class')).equalTo(expected);
+            }
           });
 
       // IE only supports short version option[selected].
       test.ignore(browsers(Browser.IE)).
-      it('should be able to find element by boolean attribute', function() {
-        driver.get(test.whereIs(
+      it('should be able to find element by boolean attribute', function*() {
+        yield driver.get(test.whereIs(
             'locators_tests/boolean_attribute_selected.html'));
 
-        var el = driver.findElement(By.css('option[selected="selected"]'));
-        assert(el.getAttribute('value')).equalTo('two');
+        let el = yield driver.findElement(By.css('option[selected="selected"]'));
+        yield assert(el.getAttribute('value')).equalTo('two');
       });
 
       test.it(
           'should be able to find element with short ' +
               'boolean attribute selector',
-          function() {
-            driver.get(test.whereIs(
+          function*() {
+            yield driver.get(test.whereIs(
                 'locators_tests/boolean_attribute_selected.html'));
 
-            var el = driver.findElement(By.css('option[selected]'));
-            assert(el.getAttribute('value')).equalTo('two');
+            let el = yield driver.findElement(By.css('option[selected]'));
+            yield assert(el.getAttribute('value')).equalTo('two');
           });
 
       test.it(
           'should be able to find element with short boolean attribute ' +
               'selector on HTML4 page',
-          function() {
-            driver.get(test.whereIs(
+          function*() {
+            yield driver.get(test.whereIs(
                 'locators_tests/boolean_attribute_selected_html4.html'));
 
-            var el = driver.findElement(By.css('option[selected]'));
-            assert(el.getAttribute('value')).equalTo('two');
+            let el = yield driver.findElement(By.css('option[selected]'));
+            yield assert(el.getAttribute('value')).equalTo('two');
           });
     });
 
     describe('by custom locator', function() {
-      test.it('handles single element result', function() {
-        driver.get(Pages.javascriptPage);
+      test.it('handles single element result', function*() {
+        yield driver.get(Pages.javascriptPage);
 
-        let link = driver.findElement(function(driver) {
+        let link = yield driver.findElement(function(driver) {
           let links = driver.findElements(By.tagName('a'));
           return promise.filter(links, function(link) {
             return link.getAttribute('id').then(id => id === 'updatediv');
           }).then(links => links[0]);
         });
 
-        assert(link.getText()).isEqualTo('Update a div');
+        yield assert(link.getText()).matches(/Update\s+a\s+div/);
       });
 
-      test.it('uses first element if locator resolves to list', function() {
-        driver.get(Pages.javascriptPage);
+      test.it('uses first element if locator resolves to list', function*() {
+        yield driver.get(Pages.javascriptPage);
 
-        let link = driver.findElement(function() {
+        let link = yield driver.findElement(function() {
           return driver.findElements(By.tagName('a'));
         });
 
-        assert(link.getText()).isEqualTo('Change the page title!');
+        yield assert(link.getText()).isEqualTo('Change the page title!');
       });
 
-      test.it('fails if locator returns non-webelement value', function() {
-        driver.get(Pages.javascriptPage);
+      test.it('fails if locator returns non-webelement value', function*() {
+        yield driver.get(Pages.javascriptPage);
 
         let link = driver.findElement(function() {
           return driver.getTitle();
@@ -402,6 +403,23 @@ test.suite(function(env) {
         return link.then(
             () => fail('Should have failed'),
             (e) => assert(e).instanceOf(TypeError));
+      });
+    });
+
+    describe('switchTo().activeElement()', function() {
+      // SAFARI's new session response does not identify it as a W3C browser,
+      // so the command is sent in the unsupported wire protocol format.
+      test.ignore(browsers(Browser.SAFARI)).
+      it('returns document.activeElement', function*() {
+        yield driver.get(Pages.formPage);
+
+        let email = yield driver.findElement(By.css('#email'));
+        yield driver.executeScript('arguments[0].focus()', email);
+
+        let ae = yield driver.switchTo().activeElement();
+        let equal = yield driver.executeScript(
+            'return arguments[0] === arguments[1]', email, ae);
+        assert(equal).isTrue();
       });
     });
   });

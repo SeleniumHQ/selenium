@@ -76,7 +76,7 @@ public class UploadFileTest {
     Session session = DefaultSession.createSession(driverFactory, tempFs, new SystemClock(), sessionId, DesiredCapabilities.firefox());
 
     File tempFile = touch(null, "foo");
-    String encoded = new Zip().zipFile(tempFile.getParentFile(), tempFile);
+    String encoded = Zip.zip(tempFile);
 
     UploadFile uploadFile = new UploadFile(session);
     Map<String, Object> args = ImmutableMap.of("file", (Object) encoded);
@@ -94,7 +94,7 @@ public class UploadFileTest {
 
     touch(baseDir, "example");
     touch(baseDir, "unwanted");
-    String encoded = new Zip().zip(baseDir);
+    String encoded = Zip.zip(baseDir);
 
     UploadFile uploadFile = new UploadFile(session);
     Map<String, Object> args = ImmutableMap.of("file", (Object) encoded);

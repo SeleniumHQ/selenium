@@ -19,6 +19,7 @@
 package org.openqa.selenium.chrome;
 
 import com.google.common.collect.ImmutableMap;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
@@ -27,10 +28,15 @@ import org.openqa.selenium.html5.Location;
 import org.openqa.selenium.html5.LocationContext;
 import org.openqa.selenium.html5.SessionStorage;
 import org.openqa.selenium.html5.WebStorage;
+import org.openqa.selenium.interactions.HasTouchScreen;
+import org.openqa.selenium.interactions.TouchScreen;
+import org.openqa.selenium.mobile.NetworkConnection;
 import org.openqa.selenium.remote.FileDetector;
+import org.openqa.selenium.remote.RemoteTouchScreen;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.html5.RemoteLocationContext;
 import org.openqa.selenium.remote.html5.RemoteWebStorage;
+import org.openqa.selenium.remote.mobile.RemoteNetworkConnection;
 
 /**
  * A {@link WebDriver} implementation that controls a Chrome browser running on the local machine.
@@ -101,10 +107,12 @@ import org.openqa.selenium.remote.html5.RemoteWebStorage;
  * @see ChromeDriverService#createDefaultService
  */
 public class ChromeDriver extends RemoteWebDriver
-    implements LocationContext, WebStorage {
+    implements LocationContext, WebStorage, HasTouchScreen, NetworkConnection {
 
   private RemoteLocationContext locationContext;
   private RemoteWebStorage webStorage;
+  private TouchScreen touchScreen;
+  private RemoteNetworkConnection networkConnection;
 
   /**
    * Creates a new ChromeDriver using the {@link ChromeDriverService#createDefaultService default}
@@ -121,8 +129,10 @@ public class ChromeDriver extends RemoteWebDriver
    * and shutdown upon calling {@link #quit()}.
    *
    * @param service The service to use.
-   * @see #ChromeDriver(ChromeDriverService, ChromeOptions)
+   * @see RemoteWebDriver#RemoteWebDriver(org.openqa.selenium.remote.CommandExecutor, Capabilities)
+   * @deprecated Use {@link RemoteWebDriver#RemoteWebDriver(org.openqa.selenium.remote.CommandExecutor, Capabilities)}
    */
+  @Deprecated
   public ChromeDriver(ChromeDriverService service) {
     this(service, new ChromeOptions());
   }
@@ -154,7 +164,9 @@ public class ChromeDriver extends RemoteWebDriver
    *
    * @param service The service to use.
    * @param options The options to use.
+   * @deprecated Use {@link RemoteWebDriver#RemoteWebDriver(org.openqa.selenium.remote.CommandExecutor, Capabilities)}
    */
+  @Deprecated
   public ChromeDriver(ChromeDriverService service, ChromeOptions options) {
     this(service, options.toCapabilities());
   }
@@ -165,11 +177,15 @@ public class ChromeDriver extends RemoteWebDriver
    *
    * @param service The service to use.
    * @param capabilities The capabilities required from the ChromeDriver.
+   * @deprecated Use {@link RemoteWebDriver#RemoteWebDriver(org.openqa.selenium.remote.CommandExecutor, Capabilities)}
    */
+  @Deprecated
   public ChromeDriver(ChromeDriverService service, Capabilities capabilities) {
     super(new ChromeDriverCommandExecutor(service), capabilities);
     locationContext = new RemoteLocationContext(getExecuteMethod());
     webStorage = new  RemoteWebStorage(getExecuteMethod());
+    touchScreen = new RemoteTouchScreen(getExecuteMethod());
+    networkConnection = new RemoteNetworkConnection(getExecuteMethod());
   }
 
   @Override
@@ -199,6 +215,21 @@ public class ChromeDriver extends RemoteWebDriver
     locationContext.setLocation(location);
   }
 
+  @Override
+  public TouchScreen getTouch() {
+    return touchScreen;
+  }
+
+  @Override
+  public ConnectionType getNetworkConnection() {
+    return networkConnection.getNetworkConnection();
+  }
+
+  @Override
+  public ConnectionType setNetworkConnection(ConnectionType type) {
+    return networkConnection.setNetworkConnection(type);
+  }
+
   /**
    * Launches Chrome app specified by id.
    *
@@ -207,4 +238,5 @@ public class ChromeDriver extends RemoteWebDriver
   public void launchApp(String id) {
     execute(ChromeDriverCommand.LAUNCH_APP, ImmutableMap.of("id", id));
   }
+  
 }

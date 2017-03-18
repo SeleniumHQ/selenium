@@ -26,7 +26,6 @@ public class MyCapabilityMatcher implements CapabilityMatcher{
 
   public boolean matches(Map<String, Object> currentCapability,
       Map<String, Object> requestedCapability) {
-    // TODO Auto-generated method stub
     return false;
   }
 

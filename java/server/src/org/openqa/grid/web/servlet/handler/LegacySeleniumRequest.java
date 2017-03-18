@@ -19,10 +19,7 @@ package org.openqa.grid.web.servlet.handler;
 
 import org.openqa.grid.internal.ExternalSessionKey;
 import org.openqa.grid.internal.Registry;
-import org.openqa.grid.internal.TestSession;
-import org.openqa.grid.internal.exception.NewSessionException;
 import org.openqa.grid.web.utils.BrowserNameUtils;
-import org.openqa.selenium.remote.CapabilityType;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -91,30 +88,6 @@ public class LegacySeleniumRequest extends SeleniumBasedRequest {
     }
 
     throw new RuntimeException("Error");
-  }
-
-  @Override
-  public String getNewSessionRequestedCapability(TestSession session) {
-    try {
-      String body = getBody();
-      String[] pieces = body.split("&");
-      StringBuilder builder = new StringBuilder();
-
-      for (String piece : pieces) {
-        if (piece.startsWith("1=")) {
-          piece = URLDecoder.decode(piece, "UTF-8");
-          String parts[] = piece.split("1=");
-          piece =
-            (String) BrowserNameUtils.parseGrid2Environment(piece).get(CapabilityType.BROWSER_NAME);
-        }
-        builder.append(piece).append("&");
-      }
-      return builder.toString();
-    } catch (UnsupportedEncodingException ignore) {
-
-    }
-    throw new NewSessionException("Error with the request ");
-
   }
 
   @Override

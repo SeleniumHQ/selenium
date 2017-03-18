@@ -19,13 +19,11 @@
 
 module Selenium
   module WebDriver
-
     #
     # @api beta This API may be changed or removed in a future release.
     #
 
     class Window
-
       #
       # @api private
       #
@@ -42,11 +40,11 @@ module Selenium
 
       def size=(dimension)
         unless dimension.respond_to?(:width) && dimension.respond_to?(:height)
-          raise ArgumentError, "expected #{dimension.inspect}:#{dimension.class}" +
-                                " to respond to #width and #height"
+          raise ArgumentError, "expected #{dimension.inspect}:#{dimension.class}" \
+                               ' to respond to #width and #height'
         end
 
-        @bridge.setWindowSize dimension.width, dimension.height
+        @bridge.resize_window dimension.width, dimension.height
       end
 
       #
@@ -56,7 +54,7 @@ module Selenium
       #
 
       def size
-        @bridge.getWindowSize
+        @bridge.window_size
       end
 
       #
@@ -67,11 +65,11 @@ module Selenium
 
       def position=(point)
         unless point.respond_to?(:x) && point.respond_to?(:y)
-          raise ArgumentError, "expected #{point.inspect}:#{point.class}" +
-                                " to respond to #x and #y"
+          raise ArgumentError, "expected #{point.inspect}:#{point.class}" \
+                               ' to respond to #x and #y'
         end
 
-        @bridge.setWindowPosition point.x, point.y
+        @bridge.reposition_window point.x, point.y
       end
 
       #
@@ -81,7 +79,7 @@ module Selenium
       #
 
       def position
-        @bridge.getWindowPosition
+        @bridge.window_position
       end
 
       #
@@ -94,7 +92,7 @@ module Selenium
       #
 
       def resize_to(width, height)
-        @bridge.setWindowSize Integer(width), Integer(height)
+        @bridge.resize_window Integer(width), Integer(height)
       end
 
       #
@@ -106,7 +104,7 @@ module Selenium
       #
 
       def move_to(x, y)
-        @bridge.setWindowPosition Integer(x), Integer(y)
+        @bridge.reposition_window Integer(x), Integer(y)
       end
 
       #
@@ -114,7 +112,7 @@ module Selenium
       #
 
       def maximize
-        @bridge.maximizeWindow
+        @bridge.maximize_window
       end
 
       #
@@ -122,9 +120,8 @@ module Selenium
       #
 
       def full_screen
-        @bridge.fullscreenWindow
+        @bridge.full_screen_window
       end
-
     end # Window
   end # WebDriver
 end # Selenium

@@ -20,39 +20,87 @@ package org.openqa.grid.internal.utils;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
-import org.openqa.grid.common.GridRole;
 import org.openqa.grid.common.RegistrationRequest;
+import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
+import org.openqa.grid.internal.utils.configuration.StandaloneConfiguration;
 import org.openqa.grid.shared.GridNodeServer;
+import org.openqa.grid.web.servlet.DisplayHelpServlet;
+import org.openqa.grid.web.servlet.ResourceServlet;
 
 import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.Map;
+
+import javax.servlet.Servlet;
 
 public class SelfRegisteringRemoteTest {
 
+  private final class DummyGridNodeServer implements GridNodeServer {
+    public Map<String, Class<? extends Servlet>> extraServlets;
+
+    @Override
+    public void boot() throws Exception { }
+
+    @Override
+    public void stop() { }
+
+    @Override
+    public int getRealPort() {
+      return 1234;
+    }
+
+    @Override
+    public void setConfiguration(StandaloneConfiguration configuration) { }
+
+    @Override
+    public void setExtraServlets(Map<String, Class<? extends Servlet>> extraServlets) {
+      this.extraServlets = extraServlets;
+    }
+  }
+
+
   @Test
   public void testHubRegistrationWhenPortExplicitlyZeroedOut() throws MalformedURLException {
-    GridNodeServer server = new GridNodeServer() {
-      @Override
-      public void boot() throws Exception {}
-
-      @Override
-      public void stop() {}
-
-      @Override
-      public int getRealPort() {
-        return 1234;
-      }
-    };
-    RegistrationRequest config = new RegistrationRequest();
-    config.setRole(GridRole.NODE);
-    config.getConfiguration().port = 0;
-    config.getConfiguration().hub = "http://locahost:4444";
-    SelfRegisteringRemote remote = new SelfRegisteringRemote(config);
+    GridNodeServer server = new DummyGridNodeServer();
+    RegistrationRequest request = new RegistrationRequest();
+    request.getConfiguration().port = 0;
+    request.getConfiguration().hub = "http://locahost:4444";
+    SelfRegisteringRemote remote = new SelfRegisteringRemote(request);
     remote.setRemoteServer(server);
     remote.updateConfigWithRealPort();
-    String host = (String) remote.getConfiguration().getRemoteHost();
+    String remoteHost = remote.getConfiguration().getRemoteHost();
     assertEquals("Ensure that the remote host is updated properly",
-                 "http://localhost:" + server.getRealPort(), host);
+                 "http://" + request.getConfiguration().host + ":" + server.getRealPort(), remoteHost);
 
   }
 
+  @Test
+  public void testSetExtraServlets() throws Exception {
+    GridNodeServer server = new DummyGridNodeServer();
+
+    GridNodeConfiguration configuration = new GridNodeConfiguration();
+    configuration.servlets = new ArrayList<>();
+    configuration.servlets.add("org.openqa.grid.web.servlet.DisplayHelpServlet");
+
+    RegistrationRequest registrationRequest = RegistrationRequest.build(configuration);
+    SelfRegisteringRemote remote = new SelfRegisteringRemote(registrationRequest);
+
+    // there should be three servlets on the remote's map -- The resource servlet, the
+    // help servlet, and the one we added above.
+    assertEquals(3, remote.getNodeServlets().size());
+    assertEquals(ResourceServlet.class, remote.getNodeServlets().get("/resources/*"));
+    assertEquals(DisplayHelpServlet.class,
+                 remote.getNodeServlets().get("/extra/DisplayHelpServlet/*"));
+
+    // set the sever and make sure it gets the extra servlets
+    remote.setRemoteServer(server);
+    remote.startRemoteServer(); // does not actually start anything.
+
+    // verify the expected extra servlets also made it to the server instance
+    assertEquals(3, ((DummyGridNodeServer) server).extraServlets.size());
+    assertEquals(ResourceServlet.class,
+                 ((DummyGridNodeServer) server).extraServlets.get("/resources/*"));
+    assertEquals(DisplayHelpServlet.class,
+                 ((DummyGridNodeServer) server).extraServlets.get("/extra/DisplayHelpServlet/*"));
+  }
 }

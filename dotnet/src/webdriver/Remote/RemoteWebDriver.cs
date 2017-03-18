@@ -23,6 +23,7 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using OpenQA.Selenium.Html5;
+using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.Remote
@@ -60,7 +61,7 @@ namespace OpenQA.Selenium.Remote
     /// }
     /// </code>
     /// </example>
-    public class RemoteWebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFindsById, IFindsByClassName, IFindsByLinkText, IFindsByName, IFindsByTagName, IFindsByXPath, IFindsByPartialLinkText, IFindsByCssSelector, ITakesScreenshot, IHasInputDevices, IHasCapabilities, IHasWebStorage, IHasLocationContext, IHasApplicationCache, IAllowsFileDetection, IHasSessionId
+    public class RemoteWebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFindsById, IFindsByClassName, IFindsByLinkText, IFindsByName, IFindsByTagName, IFindsByXPath, IFindsByPartialLinkText, IFindsByCssSelector, ITakesScreenshot, IHasInputDevices, IHasCapabilities, IHasWebStorage, IHasLocationContext, IHasApplicationCache, IAllowsFileDetection, IHasSessionId, IActionExecutor
     {
         /// <summary>
         /// The default command timeout for HTTP requests in a RemoteWebDriver instance.
@@ -387,6 +388,14 @@ namespace OpenQA.Selenium.Remote
         public SessionId SessionId
         {
             get { return this.sessionId; }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether this object is a valid action executor.
+        /// </summary>
+        bool IActionExecutor.IsActionExecutor
+        {
+            get { return this.IsSpecificationCompliant; }
         }
 
         /// <summary>
@@ -906,6 +915,37 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
+        /// Performs the specified list of actions with this action executor.
+        /// </summary>
+        /// <param name="actionSequenceList">The list of action sequences to perform.</param>
+        void IActionExecutor.PerformActions(List<ActionSequence> actionSequenceList)
+        {
+            if (this.IsSpecificationCompliant)
+            {
+                List<object> objectList = new List<object>();
+                foreach (ActionSequence sequence in actionSequenceList)
+                {
+                    objectList.Add(sequence.ToDictionary());
+                }
+
+                Dictionary<string, object> parameters = new Dictionary<string, object>();
+                parameters["actions"] = objectList;
+                this.Execute(DriverCommand.Actions, parameters);
+            }
+        }
+
+        /// <summary>
+        /// Resets the input state of the action executor.
+        /// </summary>
+        void IActionExecutor.ResetInputState()
+        {
+            if (this.IsSpecificationCompliant)
+            {
+                this.Execute(DriverCommand.CancelActions, null);
+            }
+        }
+
+        /// <summary>
         /// Escapes invalid characters in a CSS selector.
         /// </summary>
         /// <param name="selector">The selector to escape.</param>
@@ -1034,6 +1074,8 @@ namespace OpenQA.Selenium.Remote
         {
             DesiredCapabilities capabilitiesObject = desiredCapabilities as DesiredCapabilities;
             Dictionary<string, object> parameters = new Dictionary<string, object>();
+            Dictionary<string, object> capabilitiesParameter = new Dictionary<string, object>();
+            capabilitiesParameter["desiredCapabilities"] = capabilitiesObject.CapabilitiesDictionary;
             parameters.Add("desiredCapabilities", capabilitiesObject.CapabilitiesDictionary);
             Response response = this.Execute(DriverCommand.NewSession, parameters);
 
@@ -1158,13 +1200,13 @@ namespace OpenQA.Selenium.Remote
         private static object ConvertObjectToJavaScriptObject(object arg)
         {
             IWrapsElement argAsWrapsElement = arg as IWrapsElement;
-            RemoteWebElement argAsElement = arg as RemoteWebElement;
+            IWebElementReference argAsElementReference = arg as IWebElementReference;
             IEnumerable argAsEnumerable = arg as IEnumerable;
             IDictionary argAsDictionary = arg as IDictionary;
 
-            if (argAsElement == null && argAsWrapsElement != null)
+            if (argAsElementReference == null && argAsWrapsElement != null)
             {
-                argAsElement = argAsWrapsElement.WrappedElement as RemoteWebElement;
+                argAsElementReference = argAsWrapsElement.WrappedElement as IWebElementReference;
             }
 
             object converted = null;
@@ -1173,12 +1215,11 @@ namespace OpenQA.Selenium.Remote
             {
                 converted = arg;
             }
-            else if (argAsElement != null)
+            else if (argAsElementReference != null)
             {
-                // TODO: Remove addition of 'id' key when spec is changed.
-                Dictionary<string, object> elementDictionary = new Dictionary<string, object>();
-                elementDictionary.Add("ELEMENT", argAsElement.InternalElementId);
-                elementDictionary.Add("element-6066-11e4-a52e-4f735466cecf", argAsElement.InternalElementId);
+                // TODO: Remove "ELEMENT" addition when all remote ends are spec-compliant.
+                Dictionary<string, object> elementDictionary = argAsElementReference.ToDictionary();
+                elementDictionary.Add("ELEMENT", argAsElementReference.ElementReferenceId);
                 converted = elementDictionary;
             }
             else if (argAsDictionary != null)
@@ -1296,6 +1337,14 @@ namespace OpenQA.Selenium.Remote
                                     alertText = alertDescription["text"].ToString();
                                 }
                             }
+                            else if (errorAsDictionary.ContainsKey("data"))
+                            {
+                                Dictionary<string, object> alertData = errorAsDictionary["data"] as Dictionary<string, object>;
+                                if (alertData != null && alertData.ContainsKey("text"))
+                                {
+                                    alertText = alertData["text"].ToString();
+                                }
+                            }
 
                             throw new UnhandledAlertException(errorMessage, alertText);
 
@@ -1304,6 +1353,9 @@ namespace OpenQA.Selenium.Remote
 
                         case WebDriverResult.InvalidSelector:
                             throw new InvalidSelectorException(errorMessage);
+
+                        case WebDriverResult.NoSuchDriver:
+                            throw new WebDriverException(errorMessage);
 
                         default:
                             throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, "{0} ({1})", errorMessage, errorResponse.Status));

@@ -29,6 +29,8 @@ const Key = require('../../lib/input').Key;
 const logging = require('../../lib/logging');
 const Session = require('../../lib/session').Session;
 const promise = require('../../lib/promise');
+const {enablePromiseManager, promiseManagerSuite} = require('../../lib/test/promise');
+const until = require('../../lib/until');
 const Alert = require('../../lib/webdriver').Alert;
 const AlertPromise = require('../../lib/webdriver').AlertPromise;
 const UnhandledAlertError = require('../../lib/webdriver').UnhandledAlertError;
@@ -73,6 +75,9 @@ describe('WebDriver', function() {
   });
 
   afterEach(function tearDown() {
+    if (!promise.USE_PROMISE_MANAGER) {
+      return;
+    }
     return waitForIdle(flow).then(function() {
       assert.deepEqual([], uncaughtExceptions);
       flow.reset();
@@ -83,7 +88,19 @@ describe('WebDriver', function() {
     uncaughtExceptions.push(e);
   }
 
+  function defer() {
+    let d = {};
+    let promise = new Promise((resolve, reject) => {
+      Object.assign(d, {resolve, reject});
+    });
+    d.promise = promise;
+    return d;
+  }
+
   function waitForIdle(opt_flow) {
+    if (!promise.USE_PROMISE_MANAGER) {
+      return Promise.resolve();
+    }
     var theFlow = opt_flow || flow;
     return new Promise(function(fulfill, reject) {
       if (theFlow.isIdle()) {
@@ -300,19 +317,21 @@ describe('WebDriver', function() {
       return waitForIdle(driver.controlFlow());
     });
 
-    it('canAttachInCustomFlow', function() {
-      let executor = new FakeExecutor().
-          expect(CName.DESCRIBE_SESSION).
-          withParameters({'sessionId': SESSION_ID}).
-          andReturnSuccess({}).
-          end();
+    enablePromiseManager(() => {
+      it('canAttachInCustomFlow', function() {
+        let executor = new FakeExecutor().
+            expect(CName.DESCRIBE_SESSION).
+            withParameters({'sessionId': SESSION_ID}).
+            andReturnSuccess({}).
+            end();
 
-      var otherFlow = new promise.ControlFlow();
-      var driver = WebDriver.attachToSession(executor, SESSION_ID, otherFlow);
-      assert.equal(otherFlow, driver.controlFlow());
-      assert.notEqual(otherFlow, promise.controlFlow());
+        var otherFlow = new promise.ControlFlow();
+        var driver = WebDriver.attachToSession(executor, SESSION_ID, otherFlow);
+        assert.equal(otherFlow, driver.controlFlow());
+        assert.notEqual(otherFlow, promise.controlFlow());
 
-      return waitForIdle(otherFlow);
+        return waitForIdle(otherFlow);
+      });
     });
   });
 
@@ -345,6 +364,23 @@ describe('WebDriver', function() {
       return driver.getSession().then(v => assert.strictEqual(v, aSession));
     });
 
+    it('handles desired and required capabilities', function() {
+      let aSession = new Session(SESSION_ID, {'browserName': 'firefox'});
+      let executor = new FakeExecutor().
+          expect(CName.NEW_SESSION).
+          withParameters({
+            'desiredCapabilities': {'foo': 'bar'},
+            'requiredCapabilities': {'bim': 'baz'}
+          }).
+          andReturnSuccess(aSession).
+          end();
+
+      let desired = new Capabilities().set('foo', 'bar');
+      let required = new Capabilities().set('bim', 'baz');
+      var driver = WebDriver.createSession(executor, {desired, required});
+      return driver.getSession().then(v => assert.strictEqual(v, aSession));
+    });
+
     it('failsToCreateSession', function() {
       let executor = new FakeExecutor().
           expect(CName.NEW_SESSION).
@@ -355,6 +391,23 @@ describe('WebDriver', function() {
       var driver =
           WebDriver.createSession(executor, {'browserName': 'firefox'});
       return driver.getSession().then(fail, assertIsStubError);
+    });
+
+    it('invokes quit callback if it fails to create a session', function() {
+      let called = false;
+      let executor = new FakeExecutor()
+          .expect(CName.NEW_SESSION)
+          .withParameters({'desiredCapabilities': {'browserName': 'firefox'}})
+          .andReturnError(new StubError())
+          .end();
+
+      var driver =
+          WebDriver.createSession(executor, {'browserName': 'firefox'},
+              null, null, () => called = true);
+      return driver.getSession().then(fail, err => {
+        assert.ok(called);
+        assertIsStubError(err);
+      });
     });
 
     it('usesActiveFlowByDefault', function() {
@@ -370,26 +423,60 @@ describe('WebDriver', function() {
       return waitForIdle(driver.controlFlow());
     });
 
-    it('canCreateInCustomFlow', function() {
-      let executor = new FakeExecutor().
-          expect(CName.NEW_SESSION).
-          withParameters({'desiredCapabilities': {}}).
-          andReturnSuccess({}).
-          end();
+    enablePromiseManager(() => {
+      it('canCreateInCustomFlow', function() {
+        let executor = new FakeExecutor().
+            expect(CName.NEW_SESSION).
+            withParameters({'desiredCapabilities': {}}).
+            andReturnSuccess({}).
+            end();
 
-      var otherFlow = new promise.ControlFlow();
-      var driver = WebDriver.createSession(executor, {}, otherFlow);
-      assert.equal(otherFlow, driver.controlFlow());
-      assert.notEqual(otherFlow, promise.controlFlow());
+        var otherFlow = new promise.ControlFlow();
+        var driver = WebDriver.createSession(executor, {}, otherFlow);
+        assert.equal(otherFlow, driver.controlFlow());
+        assert.notEqual(otherFlow, promise.controlFlow());
 
-      return waitForIdle(otherFlow);
+        return waitForIdle(otherFlow);
+      });
+
+      describe('creation failures bubble up in control flow', function() {
+        function runTest(...args) {
+          let executor = new FakeExecutor()
+              .expect(CName.NEW_SESSION)
+              .withParameters({'desiredCapabilities': {'browserName': 'firefox'}})
+              .andReturnError(new StubError())
+              .end();
+
+          WebDriver.createSession(
+              executor, {'browserName': 'firefox'}, ...args);
+          return waitForAbort().then(assertIsStubError);
+        }
+
+        it('no onQuit callback', () => runTest());
+        it('has onQuit callback', () => runTest(null, null, function() {}));
+
+        it('onQuit callback failure suppress creation failure', function() {
+          let e = new Error('hi!');
+          let executor = new FakeExecutor()
+              .expect(CName.NEW_SESSION)
+              .withParameters({'desiredCapabilities': {'browserName': 'firefox'}})
+              .andReturnError(new StubError())
+              .end();
+
+          WebDriver.createSession(
+              executor, {'browserName': 'firefox'}, null, null,
+              () => {throw e});
+          return waitForAbort().then(err => assert.strictEqual(err, e));
+        });
+      });
     });
   });
 
   it('testDoesNotExecuteCommandIfSessionDoesNotResolve', function() {
     var session = Promise.reject(new StubError);
-    new FakeExecutor().createDriver(session).getTitle();
-    return waitForAbort().then(assertIsStubError);
+    return new FakeExecutor().createDriver(session)
+        .getTitle()
+        .then(_ => assert.fail('should have failed'), assertIsStubError);
   });
 
   it('testCommandReturnValuesArePassedToFirstCallback', function() {
@@ -398,31 +485,36 @@ describe('WebDriver', function() {
         end();
 
     var driver = executor.createDriver();
-    return driver.getTitle().then(function(title) {
-      assert.equal('Google Search', title);
-    });
+    return driver.getTitle()
+        .then(title => assert.equal('Google Search', title));
   });
 
   it('testStopsCommandExecutionWhenAnErrorOccurs', function() {
     let e = new error.NoSuchWindowError('window not found');
     let executor = new FakeExecutor().
         expect(CName.SWITCH_TO_WINDOW).
-        withParameters({'name': 'foo'}).
+        withParameters({
+          'name': 'foo',
+          'handle': 'foo'
+        }).
         andReturnError(e).
         end();
 
-    var driver = executor.createDriver();
-    driver.switchTo().window('foo');
-    driver.getTitle();  // mock should blow if this gets executed
-
-    return waitForAbort().then(v => assert.strictEqual(v, e));
+    let driver = executor.createDriver();
+    return driver.switchTo().window('foo')
+        .then(
+            _ => driver.getTitle(),  // mock should blow if this gets executed
+            v => assert.strictEqual(v, e));
   });
 
   it('testCanSuppressCommandFailures', function() {
     let e = new error.NoSuchWindowError('window not found');
     let executor = new FakeExecutor().
         expect(CName.SWITCH_TO_WINDOW).
-            withParameters({'name': 'foo'}).
+            withParameters({
+              'name': 'foo',
+              'handle': 'foo'
+            }).
             andReturnError(e).
         expect(CName.GET_TITLE).
             andReturnSuccess('Google Search').
@@ -439,55 +531,47 @@ describe('WebDriver', function() {
     let e = new error.NoSuchWindowError('window not found');
     let executor = new FakeExecutor().
         expect(CName.SWITCH_TO_WINDOW).
-            withParameters({'name':'foo'}).
+            withParameters({
+              'name': 'foo',
+              'handle': 'foo'
+            }).
             andReturnError(e).
         end();
 
-    executor.createDriver().switchTo().window('foo');
-    return waitForAbort().then(v => assert.strictEqual(v, e));
+    return executor.createDriver()
+        .switchTo().window('foo')
+        .then(_ => assert.fail(), v => assert.strictEqual(v, e));
   });
 
   it('testErrbacksThatReturnErrorsStillSwitchToCallbackChain', function() {
     let executor = new FakeExecutor().
         expect(CName.SWITCH_TO_WINDOW).
-            withParameters({'name':'foo'}).
+            withParameters({
+              'name': 'foo',
+              'handle': 'foo'
+            }).
             andReturnError(new error.NoSuchWindowError('window not found')).
         end();
 
     var driver = executor.createDriver();
     return driver.switchTo().window('foo').
         catch(function() { return new StubError; });
-        then(assertIsStubError);
+        then(assertIsStubError, () => assert.fail());
   });
 
   it('testErrbacksThrownCanOverrideOriginalError', function() {
     let executor = new FakeExecutor().
-        expect(CName.SWITCH_TO_WINDOW, {'name': 'foo'}).
+        expect(CName.SWITCH_TO_WINDOW, {
+          'name': 'foo',
+          'handle': 'foo'
+        }).
         andReturnError(new error.NoSuchWindowError('window not found')).
         end();
 
     var driver = executor.createDriver();
-    driver.switchTo().window('foo').catch(throwStubError);
-
-    return waitForAbort().then(assertIsStubError);
-  });
-
-  it('testCannotScheduleCommandsIfTheSessionIdHasBeenDeleted', function() {
-    var driver = new FakeExecutor().createDriver();
-    delete driver.session_;
-    assert.throws(() => driver.get('http://www.google.com'));
-  });
-
-  it('testDeletesSessionIdAfterQuitting', function() {
-    var driver;
-    let executor = new FakeExecutor().
-        expect(CName.QUIT).
-        end();
-
-    driver = executor.createDriver();
-    return driver.quit().then(function() {
-      assert.equal(void 0, driver.session_);
-    });
+    return driver.switchTo().window('foo')
+        .catch(throwStubError)
+        .then(assert.fail, assertIsStubError);
   });
 
   it('testReportsErrorWhenExecutingCommandsAfterExecutingAQuit', function() {
@@ -495,14 +579,15 @@ describe('WebDriver', function() {
         expect(CName.QUIT).
         end();
 
-    var driver = executor.createDriver();
-    driver.quit();
-    driver.get('http://www.google.com');
-    return waitForAbort().
-        then(expectedError(
-            error.NoSuchSessionError,
-            'This driver instance does not have a valid session ID ' +
-            '(did you call WebDriver.quit()?) and may no longer be used.'));
+    let verifyError = expectedError(
+        error.NoSuchSessionError,
+        'This driver instance does not have a valid session ID ' +
+        '(did you call WebDriver.quit()?) and may no longer be used.');
+
+    let driver = executor.createDriver();
+    return driver.quit()
+        .then(_ => driver.get('http://www.google.com'))
+        .then(assert.fail, verifyError);
   });
 
   it('testCallbackCommandsExecuteBeforeNextCommand', function() {
@@ -524,102 +609,29 @@ describe('WebDriver', function() {
     return waitForIdle();
   });
 
-  it('testEachCallbackFrameRunsToCompletionBeforeTheNext', function() {
-    let executor = new FakeExecutor().
-        expect(CName.GET_TITLE).
-        expect(CName.GET_CURRENT_URL).
-        expect(CName.GET_CURRENT_WINDOW_HANDLE).
-        expect(CName.CLOSE).
-        expect(CName.QUIT).
-        end();
-
-    var driver = executor.createDriver();
-    driver.getTitle().
-        // Everything in this callback...
-        then(function() {
-          driver.getCurrentUrl();
-          driver.getWindowHandle();
-        }).
-        // ...should execute before everything in this callback.
-        then(function() {
-          driver.close();
-        });
-    // This should execute after everything above
-    driver.quit();
-
-    return waitForIdle();
-  });
-
-  describe('nestedCommandFailures', function() {
-    it('bubbleUpToGlobalHandlerIfUnsuppressed', function() {
-      let e = new error.NoSuchWindowError('window not found');
+  enablePromiseManager(() => {
+    it('testEachCallbackFrameRunsToCompletionBeforeTheNext', function() {
       let executor = new FakeExecutor().
           expect(CName.GET_TITLE).
-          expect(CName.SWITCH_TO_WINDOW, {'name': 'foo'}).
-          andReturnError(e).
-          end();
-
-      var driver = executor.createDriver();
-      driver.getTitle().then(function() {
-        driver.switchTo().window('foo');
-      });
-
-      return waitForAbort().then(v => assert.strictEqual(v, e));
-    });
-
-    it('canBeSuppressWhenTheyOccur', function() {
-      let executor = new FakeExecutor().
-          expect(CName.GET_TITLE).
-          expect(CName.SWITCH_TO_WINDOW, {'name':'foo'}).
-              andReturnError(new error.NoSuchWindowError('window not found')).
+          expect(CName.GET_CURRENT_URL).
+          expect(CName.GET_CURRENT_WINDOW_HANDLE).
           expect(CName.CLOSE).
-          end();
-
-      var driver = executor.createDriver();
-      driver.getTitle().then(function() {
-        driver.switchTo().window('foo').catch(function() {});
-      });
-      driver.close();
-
-      return waitForIdle();
-    });
-
-    it('bubbleUpThroughTheFrameStack', function() {
-      let e = new error.NoSuchWindowError('window not found');
-      let executor = new FakeExecutor().
-          expect(CName.GET_TITLE).
-          expect(CName.SWITCH_TO_WINDOW, {'name':'foo'}).
-          andReturnError(e).
+          expect(CName.QUIT).
           end();
 
       var driver = executor.createDriver();
       driver.getTitle().
+          // Everything in this callback...
           then(function() {
-            return driver.switchTo().window('foo');
+            driver.getCurrentUrl();
+            driver.getWindowHandle();
           }).
-          catch(v => assert.strictEqual(v, e));
-
-      return waitForIdle();
-    });
-
-    it('canBeCaughtAndSuppressed', function() {
-      let executor = new FakeExecutor().
-          expect(CName.GET_TITLE).
-          expect(CName.GET_CURRENT_URL).
-          expect(CName.SWITCH_TO_WINDOW, {'name':'foo'}).
-              andReturnError(new StubError()).
-          expect(CName.CLOSE).
-          end();
-
-      var driver = executor.createDriver();
-      driver.getTitle().then(function() {
-        driver.getCurrentUrl().
-            then(function() {
-              return driver.switchTo().window('foo');
-            }).
-            catch(function() {});
-        driver.close();
-      });
+          // ...should execute before everything in this callback.
+          then(function() {
+            driver.close();
+          });
+      // This should execute after everything above
+      driver.quit();
 
       return waitForIdle();
     });
@@ -634,39 +646,33 @@ describe('WebDriver', function() {
           end();
 
       var driver = executor.createDriver();
-      driver.getTitle().
+      return driver.getTitle().
           then(function() {
             return driver.getCurrentUrl();
           }).
           then(function(value) {
             assert.equal('http://www.google.com', value);
           });
-      return waitForIdle();
     });
 
     it('fromAnErrbackSuppressesTheError', function() {
-      var count = 0;
       let executor = new FakeExecutor().
-          expect(CName.SWITCH_TO_WINDOW, {'name':'foo'}).
+          expect(CName.SWITCH_TO_WINDOW, {
+            'name': 'foo',
+            'handle': 'foo'
+          }).
               andReturnError(new StubError()).
           expect(CName.GET_CURRENT_URL).
               andReturnSuccess('http://www.google.com').
           end();
 
       var driver = executor.createDriver();
-      driver.switchTo().window('foo').
+      return driver.switchTo().window('foo').
           catch(function(e) {
             assertIsStubError(e);
-            count += 1;
             return driver.getCurrentUrl();
           }).
-          then(function(url) {
-            count += 1;
-            assert.equal('http://www.google.com', url);
-          });
-      return waitForIdle().then(function() {
-        assert.equal(2, count);
-      });
+          then(url => assert.equal('http://www.google.com', url));
     });
   });
 
@@ -678,23 +684,25 @@ describe('WebDriver', function() {
       });
     });
 
-    it('executionOrderWithCustomFunctions', function() {
-      var msg = [];
-      let executor = new FakeExecutor().
-          expect(CName.GET_TITLE).andReturnSuccess('cheese ').
-          expect(CName.GET_CURRENT_URL).andReturnSuccess('tasty').
-          end();
+    enablePromiseManager(() => {
+      it('executionOrderWithCustomFunctions', function() {
+        var msg = [];
+        let executor = new FakeExecutor().
+            expect(CName.GET_TITLE).andReturnSuccess('cheese ').
+            expect(CName.GET_CURRENT_URL).andReturnSuccess('tasty').
+            end();
 
-      var driver = executor.createDriver();
+        var driver = executor.createDriver();
 
-      var pushMsg = msg.push.bind(msg);
-      driver.getTitle().then(pushMsg);
-      driver.call(() => 'is ').then(pushMsg);
-      driver.getCurrentUrl().then(pushMsg);
-      driver.call(() => '!').then(pushMsg);
+        var pushMsg = msg.push.bind(msg);
+        driver.getTitle().then(pushMsg);
+        driver.call(() => 'is ').then(pushMsg);
+        driver.getCurrentUrl().then(pushMsg);
+        driver.call(() => '!').then(pushMsg);
 
-      return waitForIdle().then(function() {
-        assert.equal('cheese is tasty!', msg.join(''));
+        return waitForIdle().then(function() {
+          assert.equal('cheese is tasty!', msg.join(''));
+        });
       });
     });
 
@@ -709,7 +717,7 @@ describe('WebDriver', function() {
     });
 
     it('passingPromisedArgumentsToACustomFunction', function() {
-      var promisedArg = promise.fulfilled(2);
+      var promisedArg = Promise.resolve(2);
       var add = function(a, b) {
         return a + b;
       };
@@ -774,8 +782,11 @@ describe('WebDriver', function() {
 
     it('hasANestedCommandThatFails', function() {
       let executor = new FakeExecutor().
-          expect(CName.SWITCH_TO_WINDOW, {'name': 'foo'}).
-              andReturnError(new StubError()).
+          expect(CName.SWITCH_TO_WINDOW, {
+            'name': 'foo',
+            'handle': 'foo'
+          }).
+          andReturnError(new StubError()).
           end();
 
       var driver = executor.createDriver();
@@ -784,30 +795,32 @@ describe('WebDriver', function() {
       }).then(fail, assertIsStubError);
     });
 
-    it('doesNotCompleteUntilReturnedPromiseIsResolved', function() {
-      var order = [];
-      var driver = new FakeExecutor().createDriver();
+    enablePromiseManager(() => {
+      it('doesNotCompleteUntilReturnedPromiseIsResolved', function() {
+        var order = [];
+        var driver = new FakeExecutor().createDriver();
 
-      var d = promise.defer();
-      d.promise.then(function() {
-        order.push('b');
-      });
+        var d = promise.defer();
+        d.promise.then(function() {
+          order.push('b');
+        });
 
-      driver.call(function() {
-        order.push('a');
-        return d.promise;
-      });
-      driver.call(function() {
-        order.push('c');
-      });
+        driver.call(function() {
+          order.push('a');
+          return d.promise;
+        });
+        driver.call(function() {
+          order.push('c');
+        });
 
-      // timeout to ensure the first function starts its execution before we
-      // trigger d's callbacks.
-      return new Promise(f => setTimeout(f, 0)).then(function() {
-        assert.deepEqual(['a'], order);
-        d.fulfill();
-        return waitForIdle().then(function() {
-          assert.deepEqual(['a', 'b', 'c'], order);
+        // timeout to ensure the first function starts its execution before we
+        // trigger d's callbacks.
+        return new Promise(f => setTimeout(f, 0)).then(function() {
+          assert.deepEqual(['a'], order);
+          d.fulfill();
+          return waitForIdle().then(function() {
+            assert.deepEqual(['a', 'b', 'c'], order);
+          });
         });
       });
     });
@@ -828,36 +841,58 @@ describe('WebDriver', function() {
   });
 
   describe('nestedCommands', function() {
-    it('commandExecutionOrder', function() {
-      var msg = [];
-      var driver = new FakeExecutor().createDriver();
-      driver.call(msg.push, msg, 'a');
-      driver.call(function() {
-        driver.call(msg.push, msg, 'c');
+    enablePromiseManager(() => {
+      it('commandExecutionOrder', function() {
+        var msg = [];
+        var driver = new FakeExecutor().createDriver();
+        driver.call(msg.push, msg, 'a');
         driver.call(function() {
-          driver.call(msg.push, msg, 'e');
-          driver.call(msg.push, msg, 'f');
+          driver.call(msg.push, msg, 'c');
+          driver.call(function() {
+            driver.call(msg.push, msg, 'e');
+            driver.call(msg.push, msg, 'f');
+          });
+          driver.call(msg.push, msg, 'd');
         });
-        driver.call(msg.push, msg, 'd');
+        driver.call(msg.push, msg, 'b');
+        return waitForIdle().then(function() {
+          assert.equal('acefdb', msg.join(''));
+        });
       });
-      driver.call(msg.push, msg, 'b');
-      return waitForIdle().then(function() {
-        assert.equal('acefdb', msg.join(''));
-      });
-    });
 
-    it('basicUsage', function() {
-      var msg = [];
-      var driver = new FakeExecutor().createDriver();
-      var pushMsg = msg.push.bind(msg);
-      driver.call(() => 'cheese ').then(pushMsg);
-      driver.call(function() {
-        driver.call(() => 'is ').then(pushMsg);
-        driver.call(() => 'tasty').then(pushMsg);
+      it('basicUsage', function() {
+        var msg = [];
+        var driver = new FakeExecutor().createDriver();
+        var pushMsg = msg.push.bind(msg);
+        driver.call(() => 'cheese ').then(pushMsg);
+        driver.call(function() {
+          driver.call(() => 'is ').then(pushMsg);
+          driver.call(() => 'tasty').then(pushMsg);
+        });
+        driver.call(() => '!').then(pushMsg);
+        return waitForIdle().then(function() {
+          assert.equal('cheese is tasty!', msg.join(''));
+        });
       });
-      driver.call(() => '!').then(pushMsg);
-      return waitForIdle().then(function() {
-        assert.equal('cheese is tasty!', msg.join(''));
+
+      it('normalCommandAfterNestedCommandThatReturnsAnAction', function() {
+        var msg = [];
+        let executor = new FakeExecutor().
+            expect(CName.CLOSE).
+            end();
+        var driver = executor.createDriver();
+        driver.call(function() {
+          return driver.call(function() {
+            msg.push('a');
+            return driver.call(() => 'foobar');
+          });
+        });
+        driver.close().then(function() {
+          msg.push('b');
+        });
+        return waitForIdle().then(function() {
+          assert.equal('ab', msg.join(''));
+        });
       });
     });
 
@@ -869,26 +904,6 @@ describe('WebDriver', function() {
         });
       }).then(function(value) {
         assert.equal('foobar', value);
-      });
-    });
-
-    it('normalCommandAfterNestedCommandThatReturnsAnAction', function() {
-      var msg = [];
-      let executor = new FakeExecutor().
-          expect(CName.CLOSE).
-          end();
-      var driver = executor.createDriver();
-      driver.call(function() {
-        return driver.call(function() {
-          msg.push('a');
-          return driver.call(() => 'foobar');
-        });
-      });
-      driver.close().then(function() {
-        msg.push('b');
-      });
-      return waitForIdle().then(function() {
-        assert.equal('ab', msg.join(''));
       });
     });
 
@@ -904,12 +919,12 @@ describe('WebDriver', function() {
 
     it('errorsBubbleUp_uncaught', function() {
       var driver = new FakeExecutor().createDriver();
-      driver.call(function() {
+      return driver.call(function() {
         return driver.call(function() {
           return driver.call(throwStubError);
         });
-      });
-      return waitForAbort().then(assertIsStubError);
+      })
+      .then(_ => assert.fail('should have failed'), assertIsStubError);
     });
 
     it('canScheduleCommands', function() {
@@ -930,29 +945,27 @@ describe('WebDriver', function() {
   });
 
   describe('WebElementPromise', function() {
+    let driver = new FakeExecutor().createDriver();
+
     it('resolvesWhenUnderlyingElementDoes', function() {
-      var el = new WebElement({}, {'ELEMENT': 'foo'});
-      return new WebElementPromise({}, promise.fulfilled(el)).then(function(e) {
-        assert.strictEqual(e, el);
-      });
+      let el = new WebElement(driver, {'ELEMENT': 'foo'});
+      return new WebElementPromise(driver, Promise.resolve(el))
+          .then(e => assert.strictEqual(e, el));
     });
 
     it('resolvesBeforeCallbacksOnWireValueTrigger', function() {
-      var el = new promise.Deferred();
+      var el = defer();
 
-      var element = new WebElementPromise({}, el.promise);
+      var element = new WebElementPromise(driver, el.promise);
       var messages = [];
 
-      element.then(function() {
-        messages.push('element resolved');
-      });
-      element.getId().then(function() {
-        messages.push('wire value resolved');
-      });
+      let steps = [
+        element.then(_ => messages.push('element resolved')),
+        element.getId().then(_ => messages.push('wire value resolved'))
+      ];
 
-      assert.deepEqual([], messages);
-      el.fulfill(new WebElement({}, {'ELEMENT': 'foo'}));
-      return waitForIdle().then(function() {
+      el.resolve(new WebElement(driver, {'ELEMENT': 'foo'}));
+      return Promise.all(steps).then(function() {
         assert.deepEqual([
           'element resolved',
           'wire value resolved'
@@ -961,7 +974,8 @@ describe('WebDriver', function() {
     });
 
     it('isRejectedIfUnderlyingIdIsRejected', function() {
-      var element = new WebElementPromise({}, promise.rejected(new StubError));
+      let element =
+          new WebElementPromise(driver, Promise.reject(new StubError));
       return element.then(fail, assertIsStubError);
     });
   });
@@ -1157,7 +1171,7 @@ describe('WebDriver', function() {
     it('failsIfArgumentIsARejectedPromise', function() {
       let executor = new FakeExecutor();
 
-      var arg = promise.rejected(new StubError);
+      var arg = Promise.reject(new StubError);
       arg.catch(function() {});  // Suppress default handler.
 
       var driver = executor.createDriver();
@@ -1168,7 +1182,7 @@ describe('WebDriver', function() {
 
   describe('executeAsyncScript', function() {
     it('failsIfArgumentIsARejectedPromise', function() {
-      var arg = promise.rejected(new StubError);
+      var arg = Promise.reject(new StubError);
       arg.catch(function() {});  // Suppress default handler.
 
       var driver = new FakeExecutor().createDriver();
@@ -1186,9 +1200,8 @@ describe('WebDriver', function() {
           end();
 
       var driver = executor.createDriver();
-      var element = driver.findElement(By.id('foo'));
-      element.click();  // This should never execute.
-      return waitForAbort().then(assertIsStubError);
+      return driver.findElement(By.id('foo'))
+          .then(assert.fail, assertIsStubError);
     });
 
     it('elementNotFoundInACallback', function() {
@@ -1199,11 +1212,9 @@ describe('WebDriver', function() {
           end();
 
       var driver = executor.createDriver();
-      promise.fulfilled().then(function() {
-        var element = driver.findElement(By.id('foo'));
-        return element.click();  // Should not execute.
-      });
-      return waitForAbort().then(assertIsStubError);
+      return Promise.resolve()
+          .then(_ => driver.findElement(By.id('foo')))
+          .then(assert.fail, assertIsStubError);
     });
 
     it('elementFound', function() {
@@ -1211,7 +1222,7 @@ describe('WebDriver', function() {
           expect(CName.FIND_ELEMENT,
                  {using: 'css selector', value: '*[id="foo"]'}).
               andReturnSuccess(WebElement.buildId('bar')).
-          expect(CName.CLICK_ELEMENT, {'id': 'bar'}).
+          expect(CName.CLICK_ELEMENT, {'id': WebElement.buildId('bar')}).
               andReturnSuccess().
           end();
 
@@ -1226,7 +1237,7 @@ describe('WebDriver', function() {
           expect(CName.FIND_ELEMENT,
                  {using: 'css selector', value: '*[id="foo"]'}).
               andReturnSuccess(WebElement.buildId('bar')).
-          expect(CName.CLICK_ELEMENT, {'id': 'bar'}).
+          expect(CName.CLICK_ELEMENT, {'id': WebElement.buildId('bar')}).
               andReturnSuccess().
           end();
 
@@ -1244,7 +1255,7 @@ describe('WebDriver', function() {
             'args': []
           }).
           andReturnSuccess(WebElement.buildId('bar')).
-          expect(CName.CLICK_ELEMENT, {'id': 'bar'}).
+          expect(CName.CLICK_ELEMENT, {'id': WebElement.buildId('bar')}).
           end();
 
       var driver = executor.createDriver();
@@ -1260,12 +1271,12 @@ describe('WebDriver', function() {
           end();
 
       var driver = executor.createDriver();
-      var element = driver.findElement(By.js('return 123'));
-      element.click();  // Should not execute.
-      return waitForAbort().then(function(e) {
-        assertIsInstance(TypeError, e);
-        assert.equal('Custom locator did not return a WebElement', e.message);
-      });
+      return driver.findElement(By.js('return 123'))
+          .then(assert.fail, function(e) {
+            assertIsInstance(TypeError, e);
+            assert.equal(
+                'Custom locator did not return a WebElement', e.message);
+          });
     });
 
     it('byJs_canPassArguments', function() {
@@ -1275,7 +1286,7 @@ describe('WebDriver', function() {
             'script': script,
             'args': ['div']
           }).
-          andReturnSuccess({'ELEMENT':'one'}).
+          andReturnSuccess(WebElement.buildId('one')).
           end();
       var driver = executor.createDriver();
       driver.findElement(By.js(script, 'div'));
@@ -1288,7 +1299,7 @@ describe('WebDriver', function() {
               andReturnSuccess([
                   WebElement.buildId('foo'),
                   WebElement.buildId('bar')]).
-          expect(CName.CLICK_ELEMENT, {'id': 'foo'}).
+          expect(CName.CLICK_ELEMENT, {'id': WebElement.buildId('foo')}).
           andReturnSuccess().
           end();
 
@@ -1297,19 +1308,17 @@ describe('WebDriver', function() {
         assert.equal(driver, d);
         return d.findElements(By.tagName('a'));
       });
-      element.click();
-      return waitForIdle();
+      return element.click();
     });
 
     it('customLocatorThrowsIfresultIsNotAWebElement', function() {
       var driver = new FakeExecutor().createDriver();
-      driver.findElement(function() {
-        return 1;
-      });
-      return waitForAbort().then(function(e) {
-        assertIsInstance(TypeError, e);
-        assert.equal('Custom locator did not return a WebElement', e.message);
-      });
+      return driver.findElement(_ => 1)
+          .then(assert.fail, function(e) {
+            assertIsInstance(TypeError, e);
+            assert.equal(
+              'Custom locator did not return a WebElement', e.message);
+          });
     });
   });
 
@@ -1436,7 +1445,8 @@ describe('WebDriver', function() {
     it('convertsVarArgsIntoStrings_simpleArgs', function() {
       let executor = new FakeExecutor().
           expect(CName.SEND_KEYS_TO_ELEMENT,
-                 {'id': 'one', 'value':'12abc3'.split('')}).
+                 {'id': WebElement.buildId('one'),
+                  'value':'12abc3'.split('')}).
               andReturnSuccess().
           end();
 
@@ -1452,16 +1462,17 @@ describe('WebDriver', function() {
                  {'using':'css selector', 'value':'*[id="foo"]'}).
               andReturnSuccess(WebElement.buildId('one')).
           expect(CName.SEND_KEYS_TO_ELEMENT,
-                 {'id':'one', 'value':'abc123def'.split('')}).
+                 {'id':WebElement.buildId('one'),
+                  'value':'abc123def'.split('')}).
               andReturnSuccess().
           end();
 
       var driver = executor.createDriver();
       var element = driver.findElement(By.id('foo'));
-      element.sendKeys(
-          promise.fulfilled('abc'), 123,
-          promise.fulfilled('def'));
-      return waitForIdle();
+      return element.sendKeys(
+          Promise.resolve('abc'),
+          123,
+          Promise.resolve('def'));
     });
 
     it('sendKeysWithAFileDetector', function() {
@@ -1469,8 +1480,9 @@ describe('WebDriver', function() {
           expect(CName.FIND_ELEMENT,
                  {'using':'css selector', 'value':'*[id="foo"]'}).
               andReturnSuccess(WebElement.buildId('one')).
-          expect(CName.SEND_KEYS_TO_ELEMENT, {'id': 'one',
-                                              'value':['modified/path']}).
+          expect(CName.SEND_KEYS_TO_ELEMENT,
+                 {'id': WebElement.buildId('one'),
+                  'value':'modified/path'.split('')}).
               andReturnSuccess().
           end();
 
@@ -1478,25 +1490,56 @@ describe('WebDriver', function() {
       let handleFile = function(d, path) {
         assert.strictEqual(driver, d);
         assert.equal(path, 'original/path');
-        return promise.fulfilled('modified/path');
+        return Promise.resolve('modified/path');
       };
       driver.setFileDetector({handleFile});
 
-      var element = driver.findElement(By.id('foo'));
-      element.sendKeys('original/', 'path');
-      return waitForIdle();
+      return driver.findElement(By.id('foo')).sendKeys('original/', 'path');
+    });
+  });
+
+  describe("switchTo()", function() {
+    describe("window", function() {
+      it('should return a resolved promise when the window is found', function() {
+        let executor = new FakeExecutor().
+            expect(CName.SWITCH_TO_WINDOW).
+                withParameters({
+                  'name': 'foo',
+                  'handle': 'foo'
+                }).
+                andReturnSuccess().
+            end();
+
+        executor.createDriver().switchTo().window('foo');
+        return waitForIdle();
+      });
+
+      it('should propagate exceptions', function() {
+        let e = new error.NoSuchWindowError('window not found');
+        let executor = new FakeExecutor().
+            expect(CName.SWITCH_TO_WINDOW).
+                withParameters({
+                  'name': 'foo',
+                  'handle': 'foo'
+                }).
+                andReturnError(e).
+            end();
+
+        return executor.createDriver()
+            .switchTo().window('foo')
+            .then(assert.fail, v => assert.strictEqual(v, e));
+      });
     });
   });
 
   describe('elementEquality', function() {
     it('isReflexive', function() {
-      var a = new WebElement({}, 'foo');
+      var a = new WebElement(new FakeExecutor().createDriver(), 'foo');
       return WebElement.equals(a, a).then(assert.ok);
     });
 
     it('failsIfAnInputElementCouldNotBeFound', function() {
-      var id = promise.rejected(new StubError);
-      id.catch(function() {});  // Suppress default handler.
+      let id = Promise.reject(new StubError);
 
       var driver = new FakeExecutor().createDriver();
       var a = new WebElement(driver, 'foo');
@@ -1507,71 +1550,134 @@ describe('WebDriver', function() {
   });
 
   describe('waiting', function() {
-    it('waitSucceeds', function() {
-      let executor = new FakeExecutor().
-          expect(CName.FIND_ELEMENTS,
-                 {using: 'css selector', value: '*[id="foo"]'}).
-              andReturnSuccess([]).
-              times(2).
-          expect(CName.FIND_ELEMENTS,
-                 {using: 'css selector', value: '*[id="foo"]'}).
-              andReturnSuccess([WebElement.buildId('bar')]).
-          end();
+    describe('supports custom wait functions', function() {
+      it('waitSucceeds', function() {
+        let executor = new FakeExecutor().
+            expect(CName.FIND_ELEMENTS,
+                   {using: 'css selector', value: '*[id="foo"]'}).
+                andReturnSuccess([]).
+                times(2).
+            expect(CName.FIND_ELEMENTS,
+                   {using: 'css selector', value: '*[id="foo"]'}).
+                andReturnSuccess([WebElement.buildId('bar')]).
+            end();
 
-      var driver = executor.createDriver();
-      driver.wait(function() {
-        return driver.findElements(By.id('foo')).then(els => els.length > 0);
-      }, 200);
-      return waitForIdle();
-    });
+        var driver = executor.createDriver();
+        driver.wait(function() {
+          return driver.findElements(By.id('foo')).then(els => els.length > 0);
+        }, 200);
+        return waitForIdle();
+      });
 
-    it('waitTimesout_timeoutCaught', function() {
-      let executor = new FakeExecutor().
-          expect(CName.FIND_ELEMENTS,
-                 {using: 'css selector', value: '*[id="foo"]'}).
-              andReturnSuccess([]).
-              anyTimes().
-          end();
+      it('waitTimesout_timeoutCaught', function() {
+        let executor = new FakeExecutor().
+            expect(CName.FIND_ELEMENTS,
+                   {using: 'css selector', value: '*[id="foo"]'}).
+                andReturnSuccess([]).
+                anyTimes().
+            end();
 
-      var driver = executor.createDriver();
-      return driver.wait(function() {
-        return driver.findElements(By.id('foo')).then(els => els.length > 0);
-      }, 25).then(fail, function(e) {
-        assert.equal('Wait timed out after ',
-            e.message.substring(0, 'Wait timed out after '.length));
+        var driver = executor.createDriver();
+        return driver.wait(function() {
+          return driver.findElements(By.id('foo')).then(els => els.length > 0);
+        }, 25).then(fail, function(e) {
+          assert.equal('Wait timed out after ',
+              e.message.substring(0, 'Wait timed out after '.length));
+        });
+      });
+
+      enablePromiseManager(() => {
+        it('waitTimesout_timeoutNotCaught', function() {
+          let executor = new FakeExecutor().
+              expect(CName.FIND_ELEMENTS,
+                     {using: 'css selector', value: '*[id="foo"]'}).
+                  andReturnSuccess([]).
+                  anyTimes().
+              end();
+
+          var driver = executor.createDriver();
+          driver.wait(function() {
+            return driver.findElements(By.id('foo')).then(els => els.length > 0);
+          }, 25);
+          return waitForAbort().then(function(e) {
+            assert.equal('Wait timed out after ',
+                e.message.substring(0, 'Wait timed out after '.length));
+          });
+        });
       });
     });
 
-    it('waitTimesout_timeoutNotCaught', function() {
-      let executor = new FakeExecutor().
-          expect(CName.FIND_ELEMENTS,
-                 {using: 'css selector', value: '*[id="foo"]'}).
-              andReturnSuccess([]).
-              anyTimes().
-          end();
+    describe('supports condition objects', function() {
+      it('wait succeeds', function() {
+        let executor = new FakeExecutor()
+            .expect(CName.FIND_ELEMENTS,
+                    {using: 'css selector', value: '*[id="foo"]'})
+                .andReturnSuccess([])
+                .times(2)
+            .expect(CName.FIND_ELEMENTS,
+                    {using: 'css selector', value: '*[id="foo"]'})
+                .andReturnSuccess([WebElement.buildId('bar')])
+            .end();
 
-      var driver = executor.createDriver();
-      driver.wait(function() {
-        return driver.findElements(By.id('foo')).then(els => els.length > 0);
-      }, 25);
-      return waitForAbort().then(function(e) {
-        assert.equal('Wait timed out after ',
-            e.message.substring(0, 'Wait timed out after '.length));
+        let driver = executor.createDriver();
+        return driver.wait(until.elementLocated(By.id('foo')), 200);
       });
+
+      it('wait times out', function() {
+        let executor = new FakeExecutor()
+            .expect(CName.FIND_ELEMENTS,
+                    {using: 'css selector', value: '*[id="foo"]'})
+            .andReturnSuccess([])
+            .anyTimes()
+            .end();
+
+        let driver = executor.createDriver();
+        return driver.wait(until.elementLocated(By.id('foo')), 5)
+            .then(fail, err => assert.ok(err instanceof error.TimeoutError));
+      });
+    });
+
+    describe('supports promise objects', function() {
+      it('wait succeeds', function() {
+        let promise = new Promise(resolve => {
+          setTimeout(() => resolve(1), 10);
+        });
+
+        let driver = new FakeExecutor().createDriver();
+        return driver.wait(promise, 200).then(v => assert.equal(v, 1));
+      });
+
+      it('wait times out', function() {
+        let promise = new Promise(resolve => {/* never resolves */});
+
+        let driver = new FakeExecutor().createDriver();
+        return driver.wait(promise, 5)
+            .then(fail, err => assert.ok(err instanceof error.TimeoutError));
+      });
+
+      it('wait fails if promise is rejected', function() {
+        let err = Error('boom');
+        let driver = new FakeExecutor().createDriver();
+        return driver.wait(Promise.reject(err), 5)
+            .then(fail, e => assert.strictEqual(e, err));
+      });
+    });
+
+    it('fails if not supported condition type provided', function() {
+      let driver = new FakeExecutor().createDriver();
+      assert.throws(() => driver.wait({}, 5), TypeError);
     });
   });
 
   describe('alert handling', function() {
     it('alertResolvesWhenPromisedTextResolves', function() {
-      var deferredText = new promise.Deferred();
+      let driver = new FakeExecutor().createDriver();
+      let deferredText = defer();
 
-      var alert = new AlertPromise({}, deferredText.promise);
-      assert.ok(alert.isPending());
+      let alert = new AlertPromise(driver, deferredText.promise);
 
-      deferredText.fulfill(new Alert({}, 'foo'));
-      return alert.getText().then(function(text) {
-        assert.equal('foo', text);
-      });
+      deferredText.resolve(new Alert(driver, 'foo'));
+      return alert.getText().then(text => assert.equal(text, 'foo'));
     });
 
     it('cannotSwitchToAlertThatIsNotPresent', function() {
@@ -1581,32 +1687,33 @@ describe('WebDriver', function() {
           .andReturnError(e)
           .end();
 
-      var driver = executor.createDriver();
-      var alert = driver.switchTo().alert();
-      alert.dismiss();  // Should never execute.
-      return waitForAbort().then(v => assert.strictEqual(v, e));
+      return executor.createDriver()
+          .switchTo().alert()
+          .then(assert.fail, v => assert.strictEqual(v, e));
     });
 
-    it('alertsBelongToSameFlowAsParentDriver', function() {
-      let executor = new FakeExecutor()
-          .expect(CName.GET_ALERT_TEXT).andReturnSuccess('hello')
-          .end();
+    enablePromiseManager(() => {
+      it('alertsBelongToSameFlowAsParentDriver', function() {
+        let executor = new FakeExecutor()
+            .expect(CName.GET_ALERT_TEXT).andReturnSuccess('hello')
+            .end();
 
-      var driver = executor.createDriver();
-      var otherFlow = new promise.ControlFlow();
-      otherFlow.execute(function() {
-        driver.switchTo().alert().then(function() {
-          assert.strictEqual(
-              driver.controlFlow(), promise.controlFlow(),
-              'Alert should belong to the same flow as its parent driver');
+        var driver = executor.createDriver();
+        var otherFlow = new promise.ControlFlow();
+        otherFlow.execute(function() {
+          driver.switchTo().alert().then(function() {
+            assert.strictEqual(
+                driver.controlFlow(), promise.controlFlow(),
+                'Alert should belong to the same flow as its parent driver');
+          });
         });
-      });
 
-      assert.notEqual(otherFlow, driver.controlFlow);
-      return Promise.all([
-        waitForIdle(otherFlow),
-        waitForIdle(driver.controlFlow())
-      ]);
+        assert.notEqual(otherFlow, driver.controlFlow);
+        return Promise.all([
+          waitForIdle(otherFlow),
+          waitForIdle(driver.controlFlow())
+        ]);
+      });
     });
 
     it('commandsFailIfAlertNotPresent', function() {
@@ -1632,26 +1739,28 @@ describe('WebDriver', function() {
     });
   });
 
-  it('testWebElementsBelongToSameFlowAsParentDriver', function() {
-    let executor = new FakeExecutor()
-        .expect(CName.FIND_ELEMENT,
-                {using: 'css selector', value: '*[id="foo"]'})
-        .andReturnSuccess(WebElement.buildId('abc123'))
-        .end();
+  enablePromiseManager(() => {
+    it('testWebElementsBelongToSameFlowAsParentDriver', function() {
+      let executor = new FakeExecutor()
+          .expect(CName.FIND_ELEMENT,
+                  {using: 'css selector', value: '*[id="foo"]'})
+          .andReturnSuccess(WebElement.buildId('abc123'))
+          .end();
 
-    var driver = executor.createDriver();
-    var otherFlow = new promise.ControlFlow();
-    otherFlow.execute(function() {
-      driver.findElement({id: 'foo'}).then(function() {
-        assert.equal(driver.controlFlow(), promise.controlFlow());
+      var driver = executor.createDriver();
+      var otherFlow = new promise.ControlFlow();
+      otherFlow.execute(function() {
+        driver.findElement({id: 'foo'}).then(function() {
+          assert.equal(driver.controlFlow(), promise.controlFlow());
+        });
       });
-    });
 
-    assert.notEqual(otherFlow, driver.controlFlow);
-    return Promise.all([
-      waitForIdle(otherFlow),
-      waitForIdle(driver.controlFlow())
-    ]);
+      assert.notEqual(otherFlow, driver.controlFlow);
+      return Promise.all([
+        waitForIdle(otherFlow),
+        waitForIdle(driver.controlFlow())
+      ]);
+    });
   });
 
   it('testFetchingLogs', function() {
@@ -1680,7 +1789,7 @@ describe('WebDriver', function() {
   });
 
   it('testCommandsFailIfInitialSessionCreationFailed', function() {
-    var session = promise.rejected(new StubError);
+    var session = Promise.reject(new StubError);
 
     var driver = new FakeExecutor().createDriver(session);
     var navigateResult = driver.get('some-url').then(fail, assertIsStubError);
@@ -1728,10 +1837,10 @@ describe('WebDriver', function() {
 
   describe('actions()', function() {
     it('failsIfInitialDriverCreationFailed', function() {
-      let session = promise.rejected(new StubError);
-      session.catch(function() {});
-      return new FakeExecutor().
-          createDriver(session).
+      let session = Promise.reject(new StubError('no session for you'));
+      let driver = new FakeExecutor().createDriver(session);
+      driver.getSession().catch(function() {});
+      return driver.
           actions().
           mouseDown().
           mouseUp().
@@ -1817,10 +1926,10 @@ describe('WebDriver', function() {
 
   describe('touchActions()', function() {
     it('failsIfInitialDriverCreationFailed', function() {
-      let session = promise.rejected(new StubError);
-      session.catch(function() {});
-      return new FakeExecutor().
-          createDriver(session).
+      let session = Promise.reject(new StubError);
+      let driver = new FakeExecutor().createDriver(session);
+      driver.getSession().catch(function() {});
+      return driver.
           touchActions().
           scroll({x: 3, y: 4}).
           perform().
@@ -1843,6 +1952,108 @@ describe('WebDriver', function() {
     });
   });
 
+  describe('manage()', function() {
+    describe('setTimeouts()', function() {
+      describe('throws if no timeouts are specified', function() {
+        let driver;
+        before(() => driver = new FakeExecutor().createDriver());
+
+        it('; no arguments', function() {
+          assert.throws(() => driver.manage().setTimeouts(), TypeError);
+        });
+
+        it('; ignores unrecognized timeout keys', function() {
+          assert.throws(
+              () => driver.manage().setTimeouts({foo: 123}), TypeError);
+        });
+
+        it('; ignores positional arguments', function() {
+          assert.throws(
+              () => driver.manage().setTimeouts(1234, 56), TypeError);
+        });
+      });
+
+      describe('throws timeout is not a number, null, or undefined', () => {
+        let driver;
+        before(() => driver = new FakeExecutor().createDriver());
+
+        function checkError(e) {
+          return e instanceof TypeError
+              && /expected "(script|pageLoad|implicit)" to be a number/.test(
+                  e.message);
+        }
+
+        it('script', function() {
+          assert.throws(
+              () => driver.manage().setTimeouts({script: 'abc'}),
+              checkError);
+        });
+
+        it('pageLoad', function() {
+          assert.throws(
+              () => driver.manage().setTimeouts({pageLoad: 'abc'}),
+              checkError);
+        });
+
+        it('implicit', function() {
+          assert.throws(
+              () => driver.manage().setTimeouts({implicit: 'abc'}),
+              checkError);
+        });
+      });
+
+      it('can set multiple timeouts', function() {
+        let executor = new FakeExecutor()
+            .expect(CName.SET_TIMEOUT, {script:1, pageLoad: 2, implicit: 3})
+            .andReturnSuccess()
+            .end();
+        let driver = executor.createDriver();
+        return driver.manage()
+            .setTimeouts({script: 1, pageLoad: 2, implicit: 3});
+      });
+
+      it('falls back to legacy wire format if W3C version fails', () => {
+        let executor = new FakeExecutor()
+            .expect(CName.SET_TIMEOUT, {implicit: 3})
+            .andReturnError(Error('oops'))
+            .expect(CName.SET_TIMEOUT, {type: 'implicit', ms: 3})
+            .andReturnSuccess()
+            .end();
+        let driver = executor.createDriver();
+        return driver.manage().setTimeouts({implicit: 3});
+      });
+
+      describe('deprecated API calls setTimeouts()', function() {
+        it('implicitlyWait()', function() {
+          let executor = new FakeExecutor()
+              .expect(CName.SET_TIMEOUT, {implicit: 3})
+              .andReturnSuccess()
+              .end();
+          let driver = executor.createDriver();
+          return driver.manage().timeouts().implicitlyWait(3);
+        });
+
+        it('setScriptTimeout()', function() {
+          let executor = new FakeExecutor()
+              .expect(CName.SET_TIMEOUT, {script: 3})
+              .andReturnSuccess()
+              .end();
+          let driver = executor.createDriver();
+          return driver.manage().timeouts().setScriptTimeout(3);
+        });
+
+        it('pageLoadTimeout()', function() {
+          let executor = new FakeExecutor()
+              .expect(CName.SET_TIMEOUT, {pageLoad: 3})
+              .andReturnSuccess()
+              .end();
+          let driver = executor.createDriver();
+          return driver.manage().timeouts().pageLoadTimeout(3);
+        });
+      });
+    });
+  });
+
   describe('generator support', function() {
     var driver;
 
@@ -1854,8 +2065,8 @@ describe('WebDriver', function() {
 
     it('canUseGeneratorsWithWebDriverCall', function() {
       return driver.call(function* () {
-        var x = yield promise.fulfilled(1);
-        var y = yield promise.fulfilled(2);
+        var x = yield Promise.resolve(1);
+        var y = yield Promise.resolve(2);
         return x + y;
       }).then(function(value) {
         assert.deepEqual(3, value);
@@ -1864,7 +2075,7 @@ describe('WebDriver', function() {
 
     it('canDefineScopeOnGeneratorCall', function() {
       return driver.call(function* () {
-        var x = yield promise.fulfilled(1);
+        var x = yield Promise.resolve(1);
         return this.name + x;
       }, {name: 'Bob'}).then(function(value) {
         assert.deepEqual('Bob1', value);
@@ -1873,8 +2084,8 @@ describe('WebDriver', function() {
 
     it('canSpecifyArgsOnGeneratorCall', function() {
       return driver.call(function* (a, b) {
-        var x = yield promise.fulfilled(1);
-        var y = yield promise.fulfilled(2);
+        var x = yield Promise.resolve(1);
+        var y = yield Promise.resolve(2);
         return [x + y, a, b];
       }, null, 'abc', 123).then(function(value) {
         assert.deepEqual([3, 'abc', 123], value);
@@ -1909,6 +2120,8 @@ describe('WebDriver', function() {
   });
 
   describe('wire format', function() {
+    const FAKE_DRIVER = new FakeExecutor().createDriver();
+
     describe('can serialize', function() {
       function runSerializeTest(input, want) {
         let executor = new FakeExecutor().
@@ -1952,14 +2165,15 @@ describe('WebDriver', function() {
 
       it('WebElement', function() {
         return runSerializeTest(
-            new WebElement({}, 'fefifofum'),
+            new WebElement(FAKE_DRIVER, 'fefifofum'),
             WebElement.buildId('fefifofum'));
       });
 
       it('WebElementPromise', function() {
         return runSerializeTest(
             new WebElementPromise(
-                {}, promise.fulfilled(new WebElement({}, 'fefifofum'))),
+                FAKE_DRIVER,
+                Promise.resolve(new WebElement(FAKE_DRIVER, 'fefifofum'))),
             WebElement.buildId('fefifofum'));
       });
 
@@ -1970,14 +2184,15 @@ describe('WebDriver', function() {
 
         it('with WebElement', function() {
           return runSerializeTest(
-              [new WebElement({}, 'fefifofum')],
+              [new WebElement(FAKE_DRIVER, 'fefifofum')],
               [WebElement.buildId('fefifofum')]);
         });
 
         it('with WebElementPromise', function() {
           return runSerializeTest(
               [new WebElementPromise(
-                  {}, promise.fulfilled(new WebElement({}, 'fefifofum')))],
+                  FAKE_DRIVER,
+                  Promise.resolve(new WebElement(FAKE_DRIVER, 'fefifofum')))],
               [WebElement.buildId('fefifofum')]);
         });
 
@@ -1987,7 +2202,7 @@ describe('WebDriver', function() {
             [123, {'foo': 'bar'}]
           ];
 
-          var element = new WebElement({}, 'fefifofum');
+          var element = new WebElement(FAKE_DRIVER, 'fefifofum');
           var input = ['abc', 123, true, element, [123, {'foo': 'bar'}]];
           return runSerializeTest(input, expected);
         });
@@ -2031,7 +2246,7 @@ describe('WebDriver', function() {
             'sessionId': 'foo'
           };
 
-          var element = new WebElement({}, 'fefifofum');
+          var element = new WebElement(FAKE_DRIVER, 'fefifofum');
           var parameters = {
             'script': 'return 1',
             'args':['abc', 123, true, element, [123, {'foo': 'bar'}]],

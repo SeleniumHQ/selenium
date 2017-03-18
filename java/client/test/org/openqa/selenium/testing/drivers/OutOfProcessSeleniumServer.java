@@ -19,9 +19,7 @@ package org.openqa.selenium.testing.drivers;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 
-import com.google.common.io.Files;
-
-import org.openqa.selenium.Build;
+import org.openqa.selenium.BuckBuild;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.net.PortProber;
@@ -30,11 +28,10 @@ import org.openqa.selenium.os.CommandLine;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.testing.InProject;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.charset.Charset;
+import java.nio.file.Path;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -56,14 +53,14 @@ public class OutOfProcessSeleniumServer {
    *
    * @return The new server.
    */
-  public OutOfProcessSeleniumServer start() {
+  public OutOfProcessSeleniumServer start() throws IOException {
     log.info("Got a request to start a new selenium server");
     if (command != null) {
       log.info("Server already started");
       throw new RuntimeException("Server already started");
     }
 
-    String classPath = buildServerAndClasspath();
+    String serverJar = buildServerAndClasspath();
 
     int port = PortProber.findFreePort();
     String localAddress = new NetworkUtils().getPrivateLocalAddress();
@@ -71,31 +68,30 @@ public class OutOfProcessSeleniumServer {
 
     List<String> cmdLine = new LinkedList<>();
     cmdLine.add("java");
-    cmdLine.add("-cp");
-    cmdLine.add(classPath);
-    cmdLine.add("org.openqa.grid.selenium.GridLauncher");
+    cmdLine.add("-jar");
+    cmdLine.add(serverJar);
     cmdLine.add("-port");
     cmdLine.add(String.valueOf(port));
-    cmdLine.add("-browserSideLog");
-    if (captureLogs) {
-      cmdLine.add("-captureLogsOnQuit");
-    }
     command = new CommandLine(cmdLine.toArray(new String[cmdLine.size()]));
 
     if (Boolean.getBoolean("webdriver.development")) {
       command.copyOutputTo(System.err);
     }
-    command.setWorkingDirectory(InProject.locate("Rakefile").getParentFile().getAbsolutePath());
+    command.setWorkingDirectory(
+      InProject.locate("Rakefile").getParent().toAbsolutePath().toString());
     log.info("Starting selenium server: " + command.toString());
     command.executeAsync();
 
     try {
       URL url = new URL(baseUrl + "/wd/hub/status");
       log.info("Waiting for server status on URL " + url);
-      new UrlChecker().waitUntilAvailable(60, SECONDS, url);
+      new UrlChecker().waitUntilAvailable(30, SECONDS, url);
       log.info("Server is ready");
     } catch (UrlChecker.TimeoutException e) {
       log.severe("Server failed to start: " + e.getMessage());
+      command.destroy();
+      log.severe(command.getStdOut());
+      command = null;
       throw new RuntimeException(e);
     } catch (MalformedURLException e) {
       throw new RuntimeException(e);
@@ -122,18 +118,9 @@ public class OutOfProcessSeleniumServer {
     command = null;
   }
 
-  private String buildServerAndClasspath() {
-    new Build().of("//java/server/src/org/openqa/grid/selenium:selenium")
-        .of("//java/server/src/org/openqa/grid/selenium:selenium:classpath")
-        .go();
-
-    String classpathFile = InProject.locate(
-        "build/java/server/src/org/openqa/grid/selenium/selenium.classpath").getAbsolutePath();
-    try {
-      return Files.readFirstLine(new File(classpathFile), Charset.defaultCharset());
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
+  private String buildServerAndClasspath() throws IOException {
+    Path serverJar = new BuckBuild().of("//java/server/src/org/openqa/grid/selenium:selenium").go();
+    return serverJar.toAbsolutePath().toString();
   }
 
   public URL getWebDriverUrl() {

@@ -18,6 +18,9 @@
 package org.openqa.selenium.os;
 
 
+import static org.openqa.selenium.Platform.MAC;
+import static org.openqa.selenium.Platform.WINDOWS;
+
 import com.google.common.annotations.VisibleForTesting;
 
 import org.openqa.selenium.Platform;
@@ -26,9 +29,6 @@ import org.openqa.selenium.WebDriverException;
 import java.io.File;
 import java.io.OutputStream;
 import java.util.Map;
-
-import static org.openqa.selenium.Platform.WINDOWS;
-import static org.openqa.selenium.Platform.MAC;
 
 public class CommandLine {
 
@@ -82,6 +82,14 @@ public class CommandLine {
     }
   }
 
+  public void updateDynamicLibraryPath(String extraPath) {
+    if (extraPath != null) {
+      String existing = System.getenv(getLibraryPathPropertyName());
+      String ldPath = existing != null ? existing + File.separator + extraPath : extraPath;
+      setEnvironmentVariable(getLibraryPathPropertyName(), ldPath);
+    }
+  }
+
   /**
    * @return The platform specific env property name which contains the library path.
    */
@@ -97,16 +105,6 @@ public class CommandLine {
     } else {
       return "LD_LIBRARY_PATH";
     }
-  }
-
-  /**
-   * @param executable executable name to be found
-   * @return string of the path of the executable
-   * @deprecated Use the commandline itself to execute your command.
-   */
-  @Deprecated
-  public static String find(String executable) {
-    return new ExecutableFinder().find(executable);
   }
 
   public void executeAsync() {

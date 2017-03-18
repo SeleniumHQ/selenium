@@ -25,7 +25,6 @@ import com.google.common.io.ByteStreams;
 import org.openqa.grid.common.exception.GridException;
 import org.openqa.grid.internal.ExternalSessionKey;
 import org.openqa.grid.internal.Registry;
-import org.openqa.grid.internal.TestSession;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -130,10 +129,6 @@ public abstract class SeleniumBasedRequest extends HttpServletRequestWrapper {
    * @return the desired capabilities requested by the client.
    */
   public abstract Map<String, Object> extractDesiredCapability();
-
-  // TODO freynaud remove the TestSession parameter.The listener can modify the
-  // original request instead.
-  public abstract String getNewSessionRequestedCapability(TestSession session);
 
   public RequestType getRequestType() {
     return type;

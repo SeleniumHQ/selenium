@@ -29,8 +29,10 @@ test.suite(function(env) {
   //   - does not return proper log level for "browser" messages.
   //   - does not delete logs after retrieval
   // Logging API is not supported in IE.
+  // Logging API not supported in Marionette.
   // Tests depend on opening data URLs, which is broken in Safari (issue 7586)
-  test.ignore(env.browsers(Browser.PHANTOM_JS, Browser.IE, Browser.SAFARI)).
+  test.ignore(env.browsers(
+      Browser.PHANTOM_JS, Browser.IE, Browser.SAFARI, Browser.FIREFOX)).
   describe('logging', function() {
     var driver;
 
@@ -38,125 +40,123 @@ test.suite(function(env) {
       driver = null;
     });
 
-    test.afterEach(function() {
+    test.afterEach(function*() {
       if (driver) {
-        driver.quit();
+        return driver.quit();
       }
     });
 
-    test.it('can be disabled', function() {
+    test.it('can be disabled', function*() {
       var prefs = new logging.Preferences();
       prefs.setLevel(logging.Type.BROWSER, logging.Level.OFF);
 
-      driver = env.builder()
+      driver = yield env.builder()
           .setLoggingPrefs(prefs)
           .build();
 
-      driver.get(dataUrl(
+      yield driver.get(dataUrl(
           '<!DOCTYPE html><script>',
           'console.info("hello");',
           'console.warn("this is a warning");',
           'console.error("and this is an error");',
           '</script>'));
-      driver.manage().logs().get(logging.Type.BROWSER).then(function(entries) {
-        assert(entries.length).equalTo(0);
-      });
+      return driver.manage().logs().get(logging.Type.BROWSER)
+          .then(entries => assert(entries.length).equalTo(0));
     });
 
     // Firefox does not capture JS error console log messages.
-    test.ignore(env.browsers(Browser.FIREFOX)).
-    it('can be turned down', function() {
+    test.ignore(env.browsers(Browser.FIREFOX, 'legacy-firefox')).
+    it('can be turned down', function*() {
       var prefs = new logging.Preferences();
       prefs.setLevel(logging.Type.BROWSER, logging.Level.SEVERE);
 
-      driver = env.builder()
+      driver = yield env.builder()
           .setLoggingPrefs(prefs)
           .build();
 
-      driver.get(dataUrl(
+      yield driver.get(dataUrl(
           '<!DOCTYPE html><script>',
           'console.info("hello");',
           'console.warn("this is a warning");',
           'console.error("and this is an error");',
           '</script>'));
-      driver.manage().logs().get(logging.Type.BROWSER).then(function(entries) {
-        assert(entries.length).equalTo(1);
-        assert(entries[0].level.name).equalTo('SEVERE');
-        assert(entries[0].message).endsWith('and this is an error');
-      });
+      return driver.manage().logs().get(logging.Type.BROWSER)
+          .then(function(entries) {
+            assert(entries.length).equalTo(1);
+            assert(entries[0].level.name).equalTo('SEVERE');
+            assert(entries[0].message).matches(/.*\"?and this is an error\"?/);
+          });
     });
 
     // Firefox does not capture JS error console log messages.
-    test.ignore(env.browsers(Browser.FIREFOX)).
-    it('can be made verbose', function() {
+    test.ignore(env.browsers(Browser.FIREFOX, 'legacy-firefox')).
+    it('can be made verbose', function*() {
       var prefs = new logging.Preferences();
       prefs.setLevel(logging.Type.BROWSER, logging.Level.DEBUG);
 
-      driver = env.builder()
+      driver = yield env.builder()
           .setLoggingPrefs(prefs)
           .build();
 
-      driver.get(dataUrl(
+      yield driver.get(dataUrl(
           '<!DOCTYPE html><script>',
           'console.debug("hello");',
           'console.warn("this is a warning");',
           'console.error("and this is an error");',
           '</script>'));
-      driver.manage().logs().get(logging.Type.BROWSER).then(function(entries) {
-        assert(entries.length).equalTo(3);
-        assert(entries[0].level.name).equalTo('DEBUG');
-        assert(entries[0].message).endsWith('hello');
+      return driver.manage().logs().get(logging.Type.BROWSER)
+          .then(function(entries) {
+            assert(entries.length).equalTo(3);
+            assert(entries[0].level.name).equalTo('DEBUG');
+            assert(entries[0].message).matches(/.*\"?hello\"?/);
 
-        assert(entries[1].level.name).equalTo('WARNING');
-        assert(entries[1].message).endsWith('this is a warning');
+            assert(entries[1].level.name).equalTo('WARNING');
+            assert(entries[1].message).matches(/.*\"?this is a warning\"?/);
 
-        assert(entries[2].level.name).equalTo('SEVERE');
-        assert(entries[2].message).endsWith('and this is an error');
-      });
+            assert(entries[2].level.name).equalTo('SEVERE');
+            assert(entries[2].message).matches(/.*\"?and this is an error\"?/);
+          });
     });
 
     // Firefox does not capture JS error console log messages.
-    test.ignore(env.browsers(Browser.FIREFOX)).
-    it('clears records after retrieval', function() {
+    test.ignore(env.browsers(Browser.FIREFOX, 'legacy-firefox')).
+    it('clears records after retrieval', function*() {
       var prefs = new logging.Preferences();
       prefs.setLevel(logging.Type.BROWSER, logging.Level.DEBUG);
 
-      driver = env.builder()
+      driver = yield env.builder()
           .setLoggingPrefs(prefs)
           .build();
 
-      driver.get(dataUrl(
+      yield driver.get(dataUrl(
           '<!DOCTYPE html><script>',
           'console.debug("hello");',
           'console.warn("this is a warning");',
           'console.error("and this is an error");',
           '</script>'));
-      driver.manage().logs().get(logging.Type.BROWSER).then(function(entries) {
-        assert(entries.length).equalTo(3);
-      });
-      driver.manage().logs().get(logging.Type.BROWSER).then(function(entries) {
-        assert(entries.length).equalTo(0);
-      });
+      yield driver.manage().logs().get(logging.Type.BROWSER)
+          .then(entries => assert(entries.length).equalTo(3));
+      return driver.manage().logs().get(logging.Type.BROWSER)
+          .then(entries => assert(entries.length).equalTo(0));
     });
 
-    test.it('does not mix log types', function() {
+    test.it('does not mix log types', function*() {
       var prefs = new logging.Preferences();
       prefs.setLevel(logging.Type.BROWSER, logging.Level.DEBUG);
       prefs.setLevel(logging.Type.DRIVER, logging.Level.SEVERE);
 
-      driver = env.builder()
+      driver = yield env.builder()
           .setLoggingPrefs(prefs)
           .build();
 
-      driver.get(dataUrl(
+      yield driver.get(dataUrl(
           '<!DOCTYPE html><script>',
           'console.debug("hello");',
           'console.warn("this is a warning");',
           'console.error("and this is an error");',
           '</script>'));
-      driver.manage().logs().get(logging.Type.DRIVER).then(function(entries) {
-        assert(entries.length).equalTo(0);
-      });
+      return driver.manage().logs().get(logging.Type.DRIVER)
+          .then(entries => assert(entries.length).equalTo(0));
     });
   });
 

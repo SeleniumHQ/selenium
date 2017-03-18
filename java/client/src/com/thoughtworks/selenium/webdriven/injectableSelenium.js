@@ -68,7 +68,7 @@ var browserbot = {
 
 
     triggerEvent : function(element, eventType, canBubble, controlKeyDown, altKeyDown, shiftKeyDown, metaKeyDown) {
-        canBubble = (typeof(canBubble) == undefined) ? true : canBubble;
+        canBubble = (typeof(canBubble) == 'undefined') ? true : canBubble;
         if (element.fireEvent && element.ownerDocument && element.ownerDocument.createEventObject) { // IE
             var evt = this.createEventObject(element, controlKeyDown, altKeyDown, shiftKeyDown, metaKeyDown);
             element.fireEvent('on' + eventType, evt);
@@ -91,7 +91,7 @@ var browserbot = {
 
     triggerKeyEvent : function(element, eventType, keySequence, canBubble, controlKeyDown, altKeyDown, shiftKeyDown, metaKeyDown) {
         var keycode = this.getKeyCodeFromKeySequence(keySequence);
-        canBubble = (typeof(canBubble) == undefined) ? true : canBubble;
+        canBubble = (typeof(canBubble) == 'undefined') ? true : canBubble;
         if (element.fireEvent && element.ownerDocument && element.ownerDocument.createEventObject) { // IE
             var keyEvent = this.createEventObject(element, controlKeyDown, altKeyDown, shiftKeyDown, metaKeyDown);
             keyEvent.keyCode = keycode;
@@ -125,7 +125,7 @@ var browserbot = {
         var screenX = 0;
         var screenY = 0;
 
-        canBubble = (typeof(canBubble) == undefined) ? true : canBubble;
+        canBubble = (typeof(canBubble) == 'undefined') ? true : canBubble;
         if (element.fireEvent && element.ownerDocument && element.ownerDocument.createEventObject && this.getInternetExplorerVersion() < 9) { //IE
             var evt = this.createEventObject(element, this.controlKeyDown, this.altKeyDown, this.shiftKeyDown, this.metaKeyDown);
             evt.detail = 0;

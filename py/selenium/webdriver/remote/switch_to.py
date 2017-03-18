@@ -17,6 +17,14 @@
 
 from .command import Command
 from selenium.webdriver.common.alert import Alert
+from selenium.webdriver.common.by import By
+from selenium.common.exceptions import NoSuchElementException, NoSuchFrameException
+
+try:
+    basestring
+except NameError:
+    basestring = str
+
 
 class SwitchTo:
     def __init__(self, driver):
@@ -30,7 +38,10 @@ class SwitchTo:
         :Usage:
             element = driver.switch_to.active_element
         """
-        return self._driver.execute(Command.GET_ACTIVE_ELEMENT)['value']
+        if self._driver.w3c:
+            return self._driver.execute(Command.W3C_GET_ACTIVE_ELEMENT)
+        else:
+            return self._driver.execute(Command.GET_ACTIVE_ELEMENT)['value']
 
     @property
     def alert(self):
@@ -64,6 +75,15 @@ class SwitchTo:
             driver.switch_to.frame(1)
             driver.switch_to.frame(driver.find_elements_by_tag_name("iframe")[0])
         """
+        if isinstance(frame_reference, basestring) and self._driver.w3c:
+            try:
+                frame_reference = self._driver.find_element(By.ID, frame_reference)
+            except NoSuchElementException:
+                try:
+                    frame_reference = self._driver.find_element(By.NAME, frame_reference)
+                except NoSuchElementException:
+                    raise NoSuchFrameException(frame_reference)
+
         self._driver.execute(Command.SWITCH_TO_FRAME, {'id': frame_reference})
 
     def parent_frame(self):

@@ -19,8 +19,8 @@ package org.openqa.grid.internal;
 
 import static org.junit.Assert.assertEquals;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.openqa.grid.internal.mock.GridHelper;
 import org.openqa.grid.internal.mock.MockedRequestHandler;
@@ -42,16 +42,16 @@ import java.util.Map;
 
 public class ConcurrencyLockTest {
 
-  private static Registry registry;
+  private Registry registry;
 
-  private static Map<String, Object> ie = new HashMap<>();
-  private static Map<String, Object> ff = new HashMap<>();
+  private Map<String, Object> ie = new HashMap<>();
+  private Map<String, Object> ff = new HashMap<>();
 
   /**
    * create a hub with 1 IE and 1 FF
    */
-  @BeforeClass
-  public static void setup() throws Exception {
+  @Before
+  public void setup() throws Exception {
     registry = Registry.newInstance();
     ie.put(CapabilityType.APPLICATION_NAME, "IE");
     ff.put(CapabilityType.APPLICATION_NAME, "FF");
@@ -62,7 +62,6 @@ public class ConcurrencyLockTest {
     registry.add(p2);
 
   }
-
 
   private List<String> results = Collections.synchronizedList(new ArrayList<String>());
 
@@ -124,8 +123,8 @@ public class ConcurrencyLockTest {
   }
 
 
-  @AfterClass
-  public static void teardown() {
+  @After
+  public void teardown() {
     registry.stop();
   }
 

@@ -15,10 +15,14 @@
 // limitations under the License.
 
 #include "HookProcessor.h"
+
 #include <ctime>
 #include <vector>
 #include <Sddl.h>
+
 #include "logging.h"
+
+#include "StringUtilities.h"
 
 #define MAX_BUFFER_SIZE 32768
 #define NAMED_PIPE_BUFFER_SIZE 1024

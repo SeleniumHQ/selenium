@@ -1,9 +1,13 @@
+include_defs('//SELENIUM_VERSION')
+
 java_library(name = 'support',
   srcs = [
     'Color.java',
     'Colors.java',
     'ThreadGuard.java',
   ],
+  maven_coords = 'org.seleniumhq.selenium:selenium-support:' + SE_VERSION,
+  maven_pom_template = '//java/client/src/org/openqa/selenium:template-pom',
   deps = [
     ':page-factory',
     '//java/client/src/org/openqa/selenium:selenium',

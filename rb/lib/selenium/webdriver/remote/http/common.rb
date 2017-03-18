@@ -23,8 +23,8 @@ module Selenium
       module Http
         class Common
           MAX_REDIRECTS   = 20 # same as chromium/gecko
-          CONTENT_TYPE    = "application/json"
-          DEFAULT_HEADERS = { "Accept" => CONTENT_TYPE }
+          CONTENT_TYPE    = 'application/json'.freeze
+          DEFAULT_HEADERS = {'Accept' => CONTENT_TYPE}.freeze
 
           attr_accessor :timeout
           attr_writer :server_url
@@ -33,27 +33,29 @@ module Selenium
             @timeout = nil
           end
 
+          def quit_errors
+            [IOError]
+          end
+
           def close
             # hook for subclasses - will be called on Driver#quit
           end
 
           def call(verb, url, command_hash)
-            url      = server_url.merge(url) unless url.kind_of?(URI)
+            url      = server_url.merge(url) unless url.is_a?(URI)
             headers  = DEFAULT_HEADERS.dup
-            headers['Cache-Control'] = "no-cache" if verb == :get
+            headers['Cache-Control'] = 'no-cache' if verb == :get
 
             if command_hash
               payload                   = JSON.generate(command_hash)
-              headers["Content-Type"]   = "#{CONTENT_TYPE}; charset=utf-8"
-              headers["Content-Length"] = payload.bytesize.to_s if [:post, :put].include?(verb)
+              headers['Content-Type']   = "#{CONTENT_TYPE}; charset=utf-8"
+              headers['Content-Length'] = payload.bytesize.to_s if [:post, :put].include?(verb)
 
-              if $DEBUG
-                puts "   >>> #{url} | #{payload}"
-                puts "     > #{headers.inspect}"
-              end
+              WebDriver.logger.info("   >>> #{url} | #{payload}")
+              WebDriver.logger.debug("     > #{headers.inspect}")
             elsif verb == :post
-              payload = "{}"
-              headers["Content-Length"] = "2"
+              payload = '{}'
+              headers['Content-Length'] = '2'
             end
 
             request verb, url, headers, payload
@@ -62,16 +64,19 @@ module Selenium
           private
 
           def server_url
-            @server_url or raise Error::WebDriverError, "server_url not set"
+            return @server_url if @server_url
+            raise Error::WebDriverError, 'server_url not set'
           end
 
-          def request(verb, url, headers, payload)
-            raise NotImplementedError, "subclass responsibility"
+          def request(*)
+            raise NotImplementedError, 'subclass responsibility'
           end
 
           def create_response(code, body, content_type)
-            code, body, content_type = code.to_i, body.to_s.strip, content_type.to_s
-            puts "<- #{body}\n" if $DEBUG
+            code = code.to_i
+            body = body.to_s.strip
+            content_type = content_type.to_s
+            WebDriver.logger.info("<- #{body}")
 
             if content_type.include? CONTENT_TYPE
               raise Error::WebDriverError, "empty body: #{content_type.inspect} (#{code})\n#{body}" if body.empty?
@@ -85,7 +90,6 @@ module Selenium
               raise Error::WebDriverError, msg
             end
           end
-
         end # Common
       end # Http
     end # Remote

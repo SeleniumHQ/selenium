@@ -30,28 +30,33 @@ var Browser = require('..').Browser,
 
 test.suite(function(env) {
   var driver;
-  test.before(function() { driver = env.builder().build(); });
-  test.after(function() { driver.quit(); });
+  test.before(function*() { driver = yield env.builder().build(); });
+  test.after(function() { return driver.quit(); });
 
-  test.it(
+  // Element never goes stale in Safari.
+  test.ignore(env.browsers(Browser.SAFARI)).
+  it(
       'dynamically removing elements from the DOM trigger a ' +
           'StaleElementReferenceError',
-      function() {
-        driver.get(Pages.javascriptPage);
+      function*() {
+        yield driver.get(Pages.javascriptPage);
 
-        var toBeDeleted = driver.findElement(By.id('deleted'));
-        assert(toBeDeleted.isDisplayed()).isTrue();
+        var toBeDeleted = yield driver.findElement(By.id('deleted'));
+        yield assert(toBeDeleted.getTagName()).isEqualTo('p');
 
-        driver.findElement(By.id('delete')).click();
-        driver.wait(until.stalenessOf(toBeDeleted), 5000);
+        yield driver.findElement(By.id('delete')).click();
+        yield driver.wait(until.stalenessOf(toBeDeleted), 5000);
       });
 
-  test.it('an element found in a different frame is stale', function() {
-    driver.get(Pages.missedJsReferencePage);
-    driver.switchTo().frame('inner');
-    var el = driver.findElement(By.id('oneline'));
-    driver.switchTo().defaultContent();
-    el.getText().then(fail, function(e) {
+  test.it('an element found in a different frame is stale', function*() {
+    yield driver.get(Pages.missedJsReferencePage);
+
+    var frame = yield driver.findElement(By.css('iframe[name="inner"]'));
+    yield driver.switchTo().frame(frame);
+
+    var el = yield driver.findElement(By.id('oneline'));
+    yield driver.switchTo().defaultContent();
+    return el.getText().then(fail, function(e) {
       assert(e).instanceOf(error.StaleElementReferenceError);
     });
   });

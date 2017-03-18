@@ -78,7 +78,6 @@ public class ProxyStatusServlet extends RegistryBasedServlet {
     } catch (JsonSyntaxException e) {
       throw new GridException(e.getMessage());
     }
-
   }
 
   private JsonObject getResponse(HttpServletRequest request) throws IOException {
@@ -95,7 +94,6 @@ public class ProxyStatusServlet extends RegistryBasedServlet {
       if (!"".equals(json)) {
         requestJSON = new JsonParser().parse(json).getAsJsonObject();
       }
-
     }
 
     JsonObject res = new JsonObject();
@@ -108,13 +106,12 @@ public class ProxyStatusServlet extends RegistryBasedServlet {
     } else {
       if (!requestJSON.has("id")) {
         res.addProperty("msg",
-                        "you need to specify at least an id when call the node  status service.");
+                        "you need to specify at least an id when call the node status service.");
         return res;
       }
       id = requestJSON.get("id").getAsString();
     }
 
-    // see RegistrationRequest.ensureBackwardCompatibility()
     try {
       URL u = new URL(id);
       id = "http://" + u.getHost() + ":" + u.getPort();
@@ -125,11 +122,11 @@ public class ProxyStatusServlet extends RegistryBasedServlet {
     if (proxy == null) {
       res.addProperty("msg", "Cannot find proxy with ID =" + id + " in the registry.");
       return res;
-    } 
+    }
     res.addProperty("msg", "proxy found !");
     res.addProperty("success", true);
     res.addProperty("id", proxy.getId());
-    res.add("request", proxy.getOriginalRegistrationRequest().getAssociatedJSON());
+    res.add("request", proxy.getOriginalRegistrationRequest().toJson());
 
     // maybe the request was for more info
     if (requestJSON != null) {

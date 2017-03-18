@@ -1,3 +1,5 @@
+include_defs('//javascript/JAVASCRIPT_DEFS')
+
 js_fragment(name = 'clear',
   function = 'bot.action.clear',
   module = 'bot.action',
@@ -17,3 +19,14 @@ js_fragment(name = 'execute_script',
   ],
 )
 
+js_fragment(name = 'is-displayed',
+  function = 'bot.dom.isShown',
+  module = 'bot.dom',
+  deps = [
+    '//javascript/atoms:dom',
+  ],
+  visibility = [
+    '//java/client/src/org/openqa/selenium/remote:is-displayed',
+    '//javascript/chrome-driver:is_element_displayed',
+  ],
+)

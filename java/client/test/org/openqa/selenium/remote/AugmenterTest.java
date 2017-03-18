@@ -17,15 +17,14 @@
 
 package org.openqa.selenium.remote;
 
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.openqa.selenium.remote.DriverCommand.FIND_ELEMENT;
-
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.sameInstance;
 
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableMap;

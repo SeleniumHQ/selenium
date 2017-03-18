@@ -17,12 +17,13 @@
 
 package org.openqa.selenium.testing.drivers;
 
-import com.google.common.base.Supplier;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.LocalFileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
+
+import java.io.IOException;
+import java.util.function.Supplier;
 
 public class RemoteSupplier implements Supplier<WebDriver> {
 
@@ -57,7 +58,11 @@ public class RemoteSupplier implements Supplier<WebDriver> {
       return;
     }
 
-    server.start();
+    try {
+      server.start();
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
     started = true;
   }
 }

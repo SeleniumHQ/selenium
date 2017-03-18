@@ -1,8 +1,13 @@
-prebuilt_jar(name = 'junit',
+prebuilt_jar(
+  name = 'junit',
+  maven_coords = 'junit:junit:jar:4.12',
   binary_jar = 'junit-4.12.jar',
   source_jar = 'junit-4.12-sources.jar',
   deps = [
-    '//third_party/java/hamcrest:hamcrest',
+    '//third_party/java/hamcrest:hamcrest-core'
   ],
-  visibility = ['PUBLIC'],
+  visibility = [
+    'PUBLIC',
+  ],
 )
+

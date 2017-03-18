@@ -17,11 +17,10 @@
 
 'use strict';
 
-var assert = require('assert'),
-    net = require('net');
+const assert = require('assert');
+const net = require('net');
 
-var promise = require('../..').promise,
-    portprober = require('../../net/portprober');
+const portprober = require('../../net/portprober');
 
 describe('isFree', function() {
 
@@ -42,12 +41,12 @@ describe('isFree', function() {
     server.listen(0, function() {
       var port = server.address().port;
       assertPortNotfree(port).then(function() {
-        var done = promise.defer();
-        server.close(function() {
-          server = null;
-          done.fulfill(assertPortIsFree(port));
+        return new Promise(resolve => {
+          server.close(function() {
+            server = null;
+            resolve(assertPortIsFree(port));
+          });
         });
-        return done.promise;
       }).then(function() { done(); }, done);
     });
   });
@@ -57,12 +56,12 @@ describe('isFree', function() {
     server.listen(0, host, function() {
       var port = server.address().port;
       assertPortNotfree(port, host).then(function() {
-        var done = promise.defer();
-        server.close(function() {
-          server = null;
-          done.fulfill(assertPortIsFree(port, host));
+        return new Promise(resolve => {
+          server.close(function() {
+            server = null;
+            resolve(assertPortIsFree(port, host));
+          });
         });
-        return done.promise;
       }).then(function() { done(); }, done);
     });
   });
@@ -86,12 +85,12 @@ describe('findFreePort', function() {
     portprober.findFreePort().then(function(port) {
       server.listen(port, function() {
         assertPortNotfree(port).then(function() {
-          var done = promise.defer();
-          server.close(function() {
-            server = null;
-            done.fulfill(assertPortIsFree(port));
+          return new Promise(resolve => {
+            server.close(function() {
+              server = null;
+              resolve(assertPortIsFree(port));
+            });
           });
-          return done.promise;
         }).then(function() { done(); }, done);
       });
     });
@@ -102,12 +101,12 @@ describe('findFreePort', function() {
     portprober.findFreePort(host).then(function(port) {
       server.listen(port, host, function() {
         assertPortNotfree(port, host).then(function() {
-          var done = promise.defer();
-          server.close(function() {
-            server = null;
-            done.fulfill(assertPortIsFree(port, host));
+          return new Promise(resolve => {
+            server.close(function() {
+              server = null;
+              resolve(assertPortIsFree(port, host));
+            });
           });
-          return done.promise;
         }).then(function() { done(); }, done);
       });
     });

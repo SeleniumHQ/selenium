@@ -260,7 +260,7 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore(value = {CHROME, IE, PHANTOMJS, SAFARI})
+  @Ignore(value = {IE, PHANTOMJS, SAFARI})
   @Test
   public void testShouldBeAbleToSwitchToParentFrame() {
     driver.get(pages.framesetPage);
@@ -269,7 +269,7 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     assertThat(driver.findElement(By.id("pageNumber")).getText(), equalTo("1"));
   }
 
-  @Ignore(value = {CHROME, IE, PHANTOMJS, SAFARI})
+  @Ignore(value = {IE, PHANTOMJS, SAFARI})
   @Test
   public void testShouldBeAbleToSwitchToParentFrameFromASecondLevelFrame() {
     driver.get(pages.framesetPage);
@@ -279,7 +279,7 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     assertThat(driver.findElement(By.id("pageNumber")).getText(), equalTo("11"));
   }
 
-  @Ignore(value = {CHROME, IE, PHANTOMJS, SAFARI})
+  @Ignore(value = {IE, PHANTOMJS, SAFARI})
   @Test
   public void testSwitchingToParentFrameFromDefaultContextIsNoOp() {
     driver.get(pages.xhtmlTestPage);
@@ -287,7 +287,7 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     assertEquals(driver.getTitle(), "XHTML Test Page");
   }
 
-  @Ignore(value = {CHROME, IE, PHANTOMJS, SAFARI})
+  @Ignore(value = {IE, PHANTOMJS, SAFARI})
   @Test
   public void testShouldBeAbleToSwitchToParentFromAnIframe() {
     driver.get(pages.iframePage);
@@ -412,7 +412,7 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     assertNotNull(element);
   }
 
-  @Ignore({CHROME, HTMLUNIT, IE, PHANTOMJS, SAFARI})
+  @Ignore({HTMLUNIT, IE, PHANTOMJS, SAFARI})
   @Test
   public void testGetCurrentUrlReturnsTopLevelBrowsingContextUrl() {
     driver.get(pages.framesetPage);
@@ -422,7 +422,7 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     assertThat(driver.getCurrentUrl(), equalTo(pages.framesetPage));
   }
 
-  @Ignore({CHROME, HTMLUNIT, IE, PHANTOMJS, SAFARI})
+  @Ignore({HTMLUNIT, IE, PHANTOMJS, SAFARI})
   @Test
   public void testGetCurrentUrlReturnsTopLevelBrowsingContextUrlForIframes() {
     driver.get(pages.iframePage);

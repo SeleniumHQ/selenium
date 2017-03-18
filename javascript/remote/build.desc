@@ -46,13 +46,3 @@ export_file(name = "hub",
 
 export_file(name = "style",
   srcs = [ "style.css" ])
-
-js_test(name = "test",
-  srcs = [ "test/**/*_test.html" ],
-  deps = [
-    "./**/*.js",
-    "//javascript/atoms:all_js",
-    "//javascript/webdriver:http",
-    "//java/client/test/org/openqa/selenium/javascript",
-    "//java/server/test/org/openqa/selenium:server-with-tests",
-  ])

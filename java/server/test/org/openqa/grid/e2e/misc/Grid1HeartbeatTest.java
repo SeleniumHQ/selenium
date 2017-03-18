@@ -24,11 +24,10 @@ import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.openqa.grid.common.GridRole;
-import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.e2e.utils.GridTestHelper;
 import org.openqa.grid.e2e.utils.RegistryTestHelper;
 import org.openqa.grid.internal.utils.SelfRegisteringRemote;
@@ -42,10 +41,10 @@ import java.net.URL;
 
 public class Grid1HeartbeatTest {
 
-  private static Hub hub;
+  private Hub hub;
 
-  @BeforeClass
-  public static void setup() throws Exception {
+  @Before
+  public void setup() throws Exception {
     hub = GridTestHelper.getHub();
   }
 
@@ -113,8 +112,8 @@ public class Grid1HeartbeatTest {
     }
   }
 
-  @AfterClass
-  public static void teardown() throws Exception {
+  @After
+  public void teardown() throws Exception {
     hub.stop();
   }
 }

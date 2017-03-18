@@ -15,11 +15,17 @@
 // limitations under the License.
 
 #include "Browser.h"
-#include "logging.h"
+
 #include <comutil.h>
 #include <ShlGuid.h>
+
+#include "errorcodes.h"
+#include "logging.h"
+
 #include "Alert.h"
 #include "BrowserFactory.h"
+#include "messages.h"
+#include "StringUtilities.h"
 
 namespace webdriver {
 

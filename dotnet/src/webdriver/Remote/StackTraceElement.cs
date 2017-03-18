@@ -60,7 +60,11 @@ namespace OpenQA.Selenium.Remote
 
                 if (elementAttributes.ContainsKey("lineNumber"))
                 {
-                    this.lineNumber = Convert.ToInt32(elementAttributes["lineNumber"], CultureInfo.InvariantCulture);
+                    int line = 0;
+                    if (int.TryParse(elementAttributes["lineNumber"].ToString(), out line))
+                    {
+                        this.lineNumber = line;
+                    }
                 }
 
                 if (elementAttributes.ContainsKey("fileName") && elementAttributes["fileName"] != null)

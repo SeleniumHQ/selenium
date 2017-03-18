@@ -9,6 +9,41 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v3.3.0.0
+========
+ * Release to synchronize with release of Selenium project.
+
+v3.2.0.0
+========
+ * Release to synchronize with release of Selenium project.
+
+v3.1.0.1
+========
+ * Code reorganization and cleanup, mostly reorganizing header files.
+ * Removing support for the Microsoft IE driver implementation. This
+   implementation has been entirely abandoned by Microsoft, and is
+   unlikely to ever receive more attention.
+
+v3.1.0.0
+========
+ * Release to synchronize with release of Selenium project.
+ * Updates to JavaScript automation atoms.
+
+v3.0.0.0
+========
+ * Release to synchronize with release of Selenium project.
+
+v2.53.1.1
+=========
+ * Updates to JavaScript automation atoms.
+ * Fall back to using browser instead of document to get current URL. To 
+   maintain compatibility with other WebDriver implementations, the IE
+   driver uses the IHTMLDocument2 interface to get the current URL, so
+   that the proper URL is returned even when an embedded frame has the
+   focus. However, when browsing a non-HTML document (like a PDF), the
+   driver cannot get an IHTMLDocument2. In that case, fall back to the
+   IWebBrowser2 interface.
+
 v2.53.1.0
 =========
  * Updates to JavaScript automation atoms, including update to wgxpath.

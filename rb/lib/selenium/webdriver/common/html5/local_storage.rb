@@ -20,7 +20,6 @@
 module Selenium
   module WebDriver
     module HTML5
-
       class LocalStorage
         include SharedWebStorage
 
@@ -32,29 +31,28 @@ module Selenium
         end
 
         def [](key)
-          @bridge.getLocalStorageItem key
+          @bridge.local_storage_item key
         end
 
         def []=(key, value)
-          @bridge.setLocalStorageItem key, value
+          @bridge.local_storage_item key, value
         end
 
         def delete(key)
-          @bridge.removeLocalStorageItem key
+          @bridge.remove_local_storage_item key
         end
 
         def clear
-          @bridge.clearLocalStorage
+          @bridge.clear_local_storage
         end
 
         def size
-          @bridge.getLocalStorageSize
+          @bridge.local_storage_size
         end
 
         def keys
-          @bridge.getLocalStorageKeys.reverse
+          @bridge.local_storage_keys.reverse
         end
-
       end # LocalStorage
     end # HTML5
   end # WebDriver

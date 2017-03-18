@@ -452,8 +452,14 @@ bot.Device.prototype.clickElement = function(coord, button, opt_force,
  * @protected
  */
 bot.Device.prototype.focusOnElement = function() {
-  // Focusing on an <option> always focuses on the parent <select>.
-  var elementToFocus = this.select_ || this.element_;
+  var elementToFocus = goog.dom.getAncestor(
+      this.element_,
+      function (node) {
+        return !!node && bot.dom.isElement(node) &&
+            bot.dom.isFocusable(/** @type {!Element} */ (node));
+      },
+      true /* Return this.element_ if it is focusable. */);
+  elementToFocus = elementToFocus || this.element_;
 
   var activeElement = bot.dom.getActiveElement(elementToFocus);
   if (elementToFocus == activeElement) {

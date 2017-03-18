@@ -10,7 +10,6 @@
 
 py_test(
   name = "firefox_test",
-  ff_specific_tests = [ "test/selenium/webdriver/firefox/ff_*_tests.py" ],
   deps = [ ":test_ff" ],
   resources = [
     { "//javascript/firefox-driver:webdriver_prefs" : "selenium/webdriver/firefox/webdriver_prefs.json" },
@@ -20,13 +19,11 @@ py_test(
 
 py_test(
   name = "marionette_test",
-  marionette_specific_tests = [ "test/selenium/webdriver/firefox/mn_*_tests.py" ],
   deps = [ ":test_marionette" ],
   browsers = [ "marionette" ])
 
 py_test(
   name = "phantomjs_test",
-  gd_specific_tests = [ "test/selenium/webdriver/phantomjs/*_tests.py" ],
   deps = [ ":test_phantomjs" ],
   browsers = [ "phantomjs" ])
 
@@ -37,7 +34,6 @@ py_test(
 
 py_test(
   name = "chrome_test",
-  chrome_specific_tests = [ "test/selenium/webdriver/chrome/*_tests.py" ],
   deps = [ ":test_chrome" ],
   browsers = [ "chrome" ])
 
@@ -53,7 +49,6 @@ py_test(
 
 py_test(
   name = "remote_firefox_test",
-  remote_firefox_specific_tests = [ "test/selenium/webdriver/remote/*_tests.py" ],
   deps = [ ":test_remote_firefox" ],
   browsers = [ "remote_firefox" ])
 
@@ -62,20 +57,8 @@ py_test(
   deps = [ ":test_safari" ],
   browsers = [ "safari" ])
 
-py_env(
-  name = "test_env",
-  packages = [
-    "third_party/py/py-1.4.31-py2.py3-none-any.whl",
-    "third_party/py/pytest-2.8.6-py2.py3-none-any.whl",
-  ],
-  dest = "build/python")
-
 py_test(
   name = "test",
-  common_tests = [
-    "test/selenium/webdriver/common/*_tests.py",
-    "test/selenium/webdriver/support/*_tests.py"
-  ],
   browsers = [
     "chrome",
     "ff",
@@ -89,23 +72,7 @@ py_test(
   ])
 
 py_docs(
-  name = "docs",
-  source_folder = "py/docs/source",
-  target_folder = "build/docs/api/py",
-  deps = [ "//py:test_env_docs" ]
-)
-
-py_env(
-  name = "test_env_docs",
-  packages = [
-    "third_party/py/py-1.4.31-py2.py3-none-any.whl",
-    "third_party/py/docutils-0.11.tar.gz",
-    "third_party/py/Jinja2-2.7.tar.gz",
-    "third_party/py/MarkupSafe-0.18.tar.gz",
-    "third_party/py/Pygments-1.6.tar.gz",
-    "third_party/py/Sphinx-1.2b1.tar.gz",
-  ],
-  dest = "build/python"
+  name = "docs"
 )
 
 py_install(
@@ -113,5 +80,12 @@ py_install(
 )
 
 py_prep(
-  name = "prep"
-)
+  name = "prep",
+  deps = [
+    "//cpp:noblur",
+    "//cpp:noblur64",
+    "//javascript/atoms/fragments:is-displayed",
+    "//javascript/firefox-driver:webdriver",
+    "//javascript/firefox-driver:webdriver_prefs",
+    "//javascript/webdriver/atoms:getAttribute"
+  ])

@@ -35,8 +35,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class JsonToBeanConverter {
+
+  private ErrorCodes errorCodes = new ErrorCodes();
 
   public <T> T convert(Class<T> clazz, Object source) throws JsonException {
     try {
@@ -116,23 +119,23 @@ public class JsonToBeanConverter {
       if (json.has("error") && ! json.get("error").isJsonNull()) {
         String state = json.get("error").getAsString();
         response.setState(state);
-        response.setStatus(ErrorCodes.toStatus(state));
+        response.setStatus(errorCodes.toStatus(state, Optional.empty()));
         response.setValue(convert(Object.class, json.get("message")));
       }
       if (json.has("state") && ! json.get("state").isJsonNull()) {
         String state = json.get("state").getAsString();
         response.setState(state);
-        response.setStatus(ErrorCodes.toStatus(state));
+        response.setStatus(errorCodes.toStatus(state, Optional.empty()));
       }
       if (json.has("status") && ! json.get("status").isJsonNull()) {
         JsonElement status = json.get("status");
         if (status.getAsJsonPrimitive().isString()) {
           String state = status.getAsString();
           response.setState(state);
-          response.setStatus(ErrorCodes.toStatus(state));
+          response.setStatus(errorCodes.toStatus(state, Optional.empty()));
         } else {
           int intStatus = status.getAsInt();
-          response.setState(ErrorCodes.toState(intStatus));
+          response.setState(errorCodes.toState(intStatus));
           response.setStatus(intStatus);
         }
       }

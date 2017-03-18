@@ -16,12 +16,11 @@
 // under the License.
 package org.openqa.selenium;
 
-import com.google.common.collect.Lists;
-
-import static org.openqa.selenium.Platform.WINDOWS;
-
 import static org.junit.Assert.fail;
+import static org.openqa.selenium.Platform.WINDOWS;
 import static org.openqa.selenium.testing.DevMode.isInDevMode;
+
+import com.google.common.collect.Lists;
 
 import org.openqa.selenium.testing.InProject;
 
@@ -75,7 +74,7 @@ public class Build {
     }
     command.addAll(targets);
     ProcessBuilder builder = new ProcessBuilder(command);
-    builder.directory(InProject.locate("Rakefile").getParentFile());
+    builder.directory(InProject.locate("Rakefile").getParent().toFile());
     builder.redirectErrorStream(true);
     return builder;
   }

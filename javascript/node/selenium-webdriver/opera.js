@@ -62,7 +62,7 @@
  *     var options = new opera.Options();
  *     // configure browser options ...
  *
- *     var driver = new opera.Driver(options, service);
+ *     var driver = opera.Driver.createSession(options, service);
  *
  * Users should only instantiate the {@link Driver} class directly when they
  * need a custom driver service configuration (as shown above). For normal
@@ -74,7 +74,7 @@
 
 const fs = require('fs');
 
-const executors = require('./executors'),
+const http = require('./http'),
     io = require('./io'),
     capabilities = require('./lib/capabilities'),
     promise = require('./lib/promise'),
@@ -98,7 +98,7 @@ const OPERADRIVER_EXE =
  * [OperaDriver](https://github.com/operasoftware/operachromiumdriver)
  * server in a child process.
  */
-class ServiceBuilder {
+class ServiceBuilder extends remote.DriverService.Builder {
   /**
    * @param {string=} opt_exe Path to the server executable to use. If omitted,
    *     the builder will attempt to locate the operadriver on the current
@@ -116,39 +116,8 @@ class ServiceBuilder {
           'ensure it can be found on your PATH.');
     }
 
-    /** @private {string} */
-    this.exe_ = /** @type {string} */(exe);
-    if (!fs.existsSync(this.exe_)) {
-      throw Error('File does not exist: ' + this.exe_);
-    }
-
-    /** @private {!Array.<string>} */
-    this.args_ = [];
-
-    /** @private {number} */
-    this.port_ = 0;
-
-    /**
-     * @private {(string|!Array<string|number|!stream.Stream|null|undefined>)}
-     */
-    this.stdio_ = 'ignore';
-
-    /** @private {Object.<string, string>} */
-    this.env_ = null;
-  }
-
-  /**
-   * Sets the port to start the OperaDriver on.
-   * @param {number} port The port to use, or 0 for any free port.
-   * @return {!ServiceBuilder} A self reference.
-   * @throws {Error} If the port is invalid.
-   */
-  usingPort(port) {
-    if (port < 0) {
-      throw Error('port must be >= 0: ' + port);
-    }
-    this.port_ = port;
-    return this;
+    super(exe);
+    this.setLoopback(true);
   }
 
   /**
@@ -158,8 +127,7 @@ class ServiceBuilder {
    * @return {!ServiceBuilder} A self reference.
    */
   loggingTo(path) {
-    this.args_.push('--log-path=' + path);
-    return this;
+    return this.addArguments('--log-path=' + path);
   }
 
   /**
@@ -167,8 +135,7 @@ class ServiceBuilder {
    * @return {!ServiceBuilder} A self reference.
    */
   enableVerboseLogging() {
-    this.args_.push('--verbose');
-    return this;
+    return this.addArguments('--verbose');
   }
 
   /**
@@ -176,54 +143,8 @@ class ServiceBuilder {
    * @return {!ServiceBuilder} A self reference.
    */
   silent() {
-    this.args_.push('--silent');
-    return this;
+    return this.addArguments('--silent');
   }
-
-  /**
-   * Defines the stdio configuration for the driver service. See
-   * {@code child_process.spawn} for more information.
-   * @param {(string|!Array<string|number|!stream.Stream|null|undefined>)}
-   *     config The configuration to use.
-   * @return {!ServiceBuilder} A self reference.
-   */
-  setStdio(config) {
-    this.stdio_ = config;
-    return this;
-  }
-
-  /**
-   * Defines the environment to start the server under. This settings will be
-   * inherited by every browser session started by the server.
-   * @param {!Object.<string, string>} env The environment to use.
-   * @return {!ServiceBuilder} A self reference.
-   */
-  withEnvironment(env) {
-    this.env_ = env;
-    return this;
-  }
-
-  /**
-   * Creates a new DriverService using this instance's current configuration.
-   * @return {!remote.DriverService} A new driver service using this instance's
-   *     current configuration.
-   * @throws {Error} If the driver exectuable was not specified and a default
-   *     could not be found on the current PATH.
-   */
-  build() {
-    var port = this.port_ || portprober.findFreePort();
-    var args = this.args_.concat();  // Defensive copy.
-
-    return new remote.DriverService(this.exe_, {
-      loopback: true,
-      port: port,
-      args: Promise.resolve(port).then(function(port) {
-        return args.concat('--port=' + port);
-      }),
-      env: this.env_,
-      stdio: this.stdio_
-    });
-  };
 }
 
 
@@ -427,16 +348,20 @@ class Options {
  */
 class Driver extends webdriver.WebDriver {
   /**
+   * Creates a new session for Opera.
+   *
    * @param {(capabilities.Capabilities|Options)=} opt_config The configuration
    *     options.
    * @param {remote.DriverService=} opt_service The session to use; will use
    *     the {@link getDefaultService default service} by default.
    * @param {promise.ControlFlow=} opt_flow The control flow to use,
    *     or {@code null} to use the currently active flow.
+   * @return {!Driver} A new driver instance.
    */
-  constructor(opt_config, opt_service, opt_flow) {
+  static createSession(opt_config, opt_service, opt_flow) {
     var service = opt_service || getDefaultService();
-    var executor = executors.createExecutor(service.start());
+    var client = service.start().then(url => new http.HttpClient(url));
+    var executor = new http.Executor(client);
 
     var caps =
         opt_config instanceof Options ? opt_config.toCapabilities() :
@@ -457,8 +382,8 @@ class Driver extends webdriver.WebDriver {
       caps = options.toCapabilities(caps);
     }
 
-    var driver = webdriver.WebDriver.createSession(executor, caps, opt_flow);
-    super(driver.getSession(), executor, driver.controlFlow());
+    return /** @type {!Driver} */(
+        webdriver.WebDriver.createSession(executor, caps, opt_flow, this));
   }
 
   /**

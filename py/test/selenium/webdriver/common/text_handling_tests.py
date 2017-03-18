@@ -16,187 +16,188 @@
 # under the License.
 
 import pytest
-import unittest
+
 from selenium.webdriver.common.by import By
 
-class TextHandlingTests(unittest.TestCase):
 
-    newLine = "\n"
+newLine = "\n"
 
-    def testShouldReturnTheTextContentOfASingleElementWithNoChildren(self):
-        self._loadSimplePage()
-        selectText = self.driver.find_element(by=By.ID, value="oneline").text
-        self.assertEqual(selectText, "A single line of text")
 
-        getText = self.driver.find_element(by=By.ID, value="oneline").text
-        self.assertEqual(getText, "A single line of text")
+def testShouldReturnTheTextContentOfASingleElementWithNoChildren(driver, pages):
+    pages.load("simpleTest.html")
+    selectText = driver.find_element(by=By.ID, value="oneline").text
+    assert selectText == "A single line of text"
 
-    def testShouldReturnTheEntireTextContentOfChildElements(self):
-        self._loadSimplePage()
-        text = self.driver.find_element(by=By.ID, value="multiline").text
+    getText = driver.find_element(by=By.ID, value="oneline").text
+    assert getText == "A single line of text"
 
-        self.assertTrue("A div containing" in text)
-        self.assertTrue("More than one line of text" in text)
-        self.assertTrue("and block level elements" in text)
 
-    #@Ignore(SELENESE)
-    def testShouldIgnoreScriptElements(self):
-        self._loadPage("javascriptEnhancedForm")
-        labelForUsername = self.driver.find_element(by=By.ID, value="labelforusername")
-        text = labelForUsername.text
+def testShouldReturnTheEntireTextContentOfChildElements(driver, pages):
+    pages.load("simpleTest.html")
+    text = driver.find_element(by=By.ID, value="multiline").text
 
-        self.assertEqual(len(labelForUsername.find_elements(by=By.TAG_NAME, value="script")), 1)
-        self.assertTrue("document.getElementById" not in text)
-        self.assertEqual(text, "Username:")
+    assert "A div containing" in text
+    assert "More than one line of text" in text
+    assert "and block level elements" in text
 
-    def testShouldRepresentABlockLevelElementAsANewline(self):
-        self._loadSimplePage()
-        text = self.driver.find_element(by=By.ID, value="multiline").text
 
-        self.assertTrue(text.startswith("A div containing" + self.newLine))
-        self.assertTrue("More than one line of text" + self.newLine in text)
-        self.assertTrue(text.endswith("and block level elements"))
+def testShouldIgnoreScriptElements(driver, pages):
+    pages.load("javascriptEnhancedForm.html")
+    labelForUsername = driver.find_element(by=By.ID, value="labelforusername")
+    text = labelForUsername.text
 
-    def testShouldCollapseMultipleWhitespaceCharactersIntoASingleSpace(self):
-        self._loadSimplePage()
-        text = self.driver.find_element(by=By.ID, value="lotsofspaces").text
+    assert len(labelForUsername.find_elements(by=By.TAG_NAME, value="script")) == 1
+    assert "document.getElementById" not in text
+    assert text == "Username:"
 
-        self.assertEqual(text, "This line has lots of spaces.")
 
-    def testShouldTrimText(self):
-        self._loadSimplePage()
-        text = self.driver.find_element(by=By.ID, value="multiline").text
+def testShouldRepresentABlockLevelElementAsANewline(driver, pages):
+    pages.load("simpleTest.html")
+    text = driver.find_element(by=By.ID, value="multiline").text
 
-        self.assertTrue(text.startswith("A div containing"))
-        self.assertTrue(text.endswith("block level elements"))
+    assert text.startswith("A div containing" + newLine)
+    assert "More than one line of text" + newLine in text
+    assert text.endswith("and block level elements")
 
-    def testShouldConvertANonBreakingSpaceIntoANormalSpaceCharacter(self):
-        self._loadSimplePage()
-        text = self.driver.find_element(by=By.ID, value="nbsp").text
 
-        self.assertEqual(text, "This line has a non-breaking space")
+def testShouldCollapseMultipleWhitespaceCharactersIntoASingleSpace(driver, pages):
+    pages.load("simpleTest.html")
+    text = driver.find_element(by=By.ID, value="lotsofspaces").text
 
-      #@Ignore({IPHONE, SELENESE})
-    def testShouldTreatANonBreakingSpaceAsAnyOtherWhitespaceCharacterWhenCollapsingWhitespace(self):
-        if self.driver.capabilities['browserName'] == 'chrome' and int(self.driver.capabilities['version'].split('.')[0]) < 16:
-            pytest.skip("only works on chrome >= 16")
-        self._loadSimplePage()
-        element = self.driver.find_element(by=By.ID, value="nbspandspaces")
-        text = element.text
+    assert text == "This line has lots of spaces."
 
-        self.assertEqual(text, "This line has a   non-breaking space and spaces")
 
-    #@Ignore(IPHONE)
-    def testHavingInlineElementsShouldNotAffectHowTextIsReturned(self):
-        self._loadSimplePage()
-        text = self.driver.find_element(by=By.ID, value="inline").text
+def testShouldTrimText(driver, pages):
+    pages.load("simpleTest.html")
+    text = driver.find_element(by=By.ID, value="multiline").text
 
-        self.assertEqual(text,
-               "This line has text within elements that are meant to be displayed inline")
+    assert text.startswith("A div containing")
+    assert text.endswith("block level elements")
 
-    def testShouldReturnTheEntireTextOfInlineElements(self):
-        self._loadSimplePage()
-        text = self.driver.find_element(by=By.ID, value="span").text
 
-        self.assertEqual(text, "An inline element")
+def testShouldConvertANonBreakingSpaceIntoANormalSpaceCharacter(driver, pages):
+    pages.load("simpleTest.html")
+    text = driver.find_element(by=By.ID, value="nbsp").text
 
-    #@Ignore(value = {SELENESE, IPHONE, IE}, reason = "iPhone: sendKeys is broken")
-    def testShouldBeAbleToSetMoreThanOneLineOfTextInATextArea(self):
-        self._loadPage("formPage")
-        textarea = self.driver.find_element(by=By.ID, value="withText")
-        textarea.clear()
+    assert text == "This line has a non-breaking space"
 
-        expectedText = "I like cheese" + self.newLine + self.newLine + "It's really nice"
 
-        textarea.send_keys(expectedText)
+def testShouldTreatANonBreakingSpaceAsAnyOtherWhitespaceCharacterWhenCollapsingWhitespace(driver, pages):
+    pages.load("simpleTest.html")
+    element = driver.find_element(by=By.ID, value="nbspandspaces")
+    text = element.text
 
-        seenText = textarea.get_attribute("value")
-        self.assertEqual(seenText, expectedText)
+    assert text == "This line has a   non-breaking space and spaces"
 
-    def testShouldBeAbleToEnterDatesAfterFillingInOtherValuesFirst(self):
-        self._loadPage("formPage")
-        input_ = self.driver.find_element(by=By.ID, value="working")
-        expectedValue = "10/03/2007 to 30/07/1993"
-        input_.send_keys(expectedValue)
-        seenValue = input_.get_attribute("value")
 
-        self.assertEqual(seenValue, expectedValue)
+def testHavingInlineElementsShouldNotAffectHowTextIsReturned(driver, pages):
+    pages.load("simpleTest.html")
+    text = driver.find_element(by=By.ID, value="inline").text
 
-    def testShouldReturnEmptyStringWhenTextIsOnlySpaces(self):
-        self._loadPage("xhtmlTest")
+    assert text == "This line has text within elements that are meant to be displayed inline"
 
-        text = self.driver.find_element(by=By.ID, value="spaces").text
-        self.assertEqual(text, "")
 
-    def testShouldReturnEmptyStringWhenTextIsEmpty(self):
-        self._loadPage("xhtmlTest")
+def testShouldReturnTheEntireTextOfInlineElements(driver, pages):
+    pages.load("simpleTest.html")
+    text = driver.find_element(by=By.ID, value="span").text
 
-        text = self.driver.find_element(by=By.ID, value="empty").text
-        self.assertEqual(text, "")
+    assert text == "An inline element"
 
-    def testShouldReturnEmptyStringWhenTagIsSelfClosing(self):
-        pytest.skip("Skipping till issue 1225 is fixed")
-        self._loadPage("xhtmlTest")
 
-        text = self.driver.find_element(by=By.ID, value="self-closed").text
-        self.assertEqual(text, "")
+def testShouldBeAbleToSetMoreThanOneLineOfTextInATextArea(driver, pages):
+    pages.load("formPage.html")
+    textarea = driver.find_element(by=By.ID, value="withText")
+    textarea.clear()
 
-    def testShouldHandleSiblingBlockLevelElements(self):
-        self._loadSimplePage()
+    expectedText = "I like cheese" + newLine + newLine + "It's really nice"
 
-        text = self.driver.find_element(by=By.ID, value="twoblocks").text
+    textarea.send_keys(expectedText)
 
-        self.assertEqual(text, "Some text" + self.newLine + "Some more text")
+    seenText = textarea.get_attribute("value")
+    assert seenText == expectedText
 
-    def testShouldHandleWhitespaceInInlineElements(self):
-        self._loadSimplePage()
 
-        text = self.driver.find_element(by=By.ID, value="inlinespan").text
+def testShouldBeAbleToEnterDatesAfterFillingInOtherValuesFirst(driver, pages):
+    pages.load("formPage.html")
+    input_ = driver.find_element(by=By.ID, value="working")
+    expectedValue = "10/03/2007 to 30/07/1993"
+    input_.send_keys(expectedValue)
+    seenValue = input_.get_attribute("value")
 
-        self.assertEqual(text, "line has text")
+    assert seenValue == expectedValue
 
-    #@Ignore(value = {SELENESE, IPHONE})
-    def testReadALargeAmountOfData(self):
-        self._loadPage("macbeth")
-        source = self.driver.page_source.strip().lower()
 
-        self.assertTrue(source.endswith("</html>"))
+def testShouldReturnEmptyStringWhenTextIsOnlySpaces(driver, pages):
+    pages.load("xhtmlTest.html")
 
-    #@Ignore({SELENESE, IPHONE})
-    def testShouldOnlyIncludeVisibleText(self):
-        self._loadPage("javascriptPage")
+    text = driver.find_element(by=By.ID, value="spaces").text
+    assert text == ""
 
-        empty = self.driver.find_element(by=By.ID, value="suppressedParagraph").text
-        explicit = self.driver.find_element(by=By.ID, value="outer").text
 
-        self.assertEqual("", empty)
-        self.assertEqual("sub-element that is explicitly visible", explicit)
+def testShouldReturnEmptyStringWhenTextIsEmpty(driver, pages):
+    pages.load("xhtmlTest.html")
 
-    def testShouldGetTextFromTableCells(self):
-        self._loadPage("tables")
+    text = driver.find_element(by=By.ID, value="empty").text
+    assert text == ""
 
-        tr = self.driver.find_element(by=By.ID, value="hidden_text")
-        text = tr.text
 
-        self.assertTrue("some text" in text)
-        self.assertFalse("some more text" in text)
+@pytest.mark.xfail
+def testShouldReturnEmptyStringWhenTagIsSelfClosing(driver, pages):
+    pages.load("xhtmlFormPage.xhtml")
 
-    def testShouldGetTextWhichIsAValidJSONObject(self):
-        self._loadSimplePage()
-        element = self.driver.find_element(by=By.ID, value="simpleJsonText")
-        self.assertEqual("{a=\"b\", c=1, d=true}", element.text)
-        # self.assertEqual("{a=\"b\", \"c\"=d, e=true, f=\\123\\\\g\\\\\"\"\"\\\'}", element.text)
+    text = driver.find_element(by=By.ID, value="self-closed").text
+    assert text == ""
 
-    def testShouldGetTextWhichIsAValidComplexJSONObject(self):
-        self._loadSimplePage()
-        element = self.driver.find_element(by=By.ID, value="complexJsonText")
-        self.assertEqual("""{a=\"\\\\b\\\\\\\"\'\\\'\"}""", element.text)
 
-    def _pageURL(self, name):
-        return self.webserver.where_is(name + '.html')
+def testShouldHandleSiblingBlockLevelElements(driver, pages):
+    pages.load("simpleTest.html")
 
-    def _loadSimplePage(self):
-        self._loadPage("simpleTest")
+    text = driver.find_element(by=By.ID, value="twoblocks").text
+    assert text == "Some text" + newLine + "Some more text"
 
-    def _loadPage(self, name):
-        self.driver.get(self._pageURL(name))
+
+def testShouldHandleWhitespaceInInlineElements(driver, pages):
+    pages.load("simpleTest.html")
+
+    text = driver.find_element(by=By.ID, value="inlinespan").text
+    assert text == "line has text"
+
+
+def testReadALargeAmountOfData(driver, pages):
+    pages.load("macbeth.html")
+    source = driver.page_source.strip().lower()
+
+    assert source.endswith("</html>")
+
+
+def testShouldOnlyIncludeVisibleText(driver, pages):
+    pages.load("javascriptPage.html")
+
+    empty = driver.find_element(by=By.ID, value="suppressedParagraph").text
+    explicit = driver.find_element(by=By.ID, value="outer").text
+
+    assert "" == empty
+    assert "sub-element that is explicitly visible" == explicit
+
+
+def testShouldGetTextFromTableCells(driver, pages):
+    pages.load("tables.html")
+
+    tr = driver.find_element(by=By.ID, value="hidden_text")
+    text = tr.text
+
+    assert "some text" in text
+    assert "some more text" not in text
+
+
+def testShouldGetTextWhichIsAValidJSONObject(driver, pages):
+    pages.load("simpleTest.html")
+    element = driver.find_element(by=By.ID, value="simpleJsonText")
+    assert "{a=\"b\", c=1, d=true}" == element.text
+    # assert "{a=\"b\", \"c\"=d, e=true, f=\\123\\\\g\\\\\"\"\"\\\'}", element.text)
+
+
+def testShouldGetTextWhichIsAValidComplexJSONObject(driver, pages):
+    pages.load("simpleTest.html")
+    element = driver.find_element(by=By.ID, value="complexJsonText")
+    assert """{a=\"\\\\b\\\\\\\"\'\\\'\"}""" == element.text

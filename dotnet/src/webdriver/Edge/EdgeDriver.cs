@@ -105,7 +105,6 @@ namespace OpenQA.Selenium.Edge
         public EdgeDriver(EdgeDriverService service, EdgeOptions options, TimeSpan commandTimeout)
             : base(new DriverServiceCommandExecutor(service, commandTimeout), ConvertOptionsToCapabilities(options))
         {
-            System.Threading.Thread.Sleep(1000);
         }
 
         private static ICapabilities ConvertOptionsToCapabilities(EdgeOptions options)

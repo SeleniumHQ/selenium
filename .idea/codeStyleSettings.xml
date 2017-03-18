@@ -289,9 +289,15 @@
         <option name="DOWHILE_BRACE_FORCE" value="3" />
         <option name="WHILE_BRACE_FORCE" value="3" />
         <option name="FOR_BRACE_FORCE" value="3" />
+        <MarkdownNavigatorCodeStyleSettings>
+          <option name="RIGHT_MARGIN" value="72" />
+        </MarkdownNavigatorCodeStyleSettings>
         <XML>
           <option name="XML_LEGACY_SETTINGS_IMPORTED" value="true" />
         </XML>
+        <editorconfig>
+          <option name="ENABLED" value="false" />
+        </editorconfig>
         <codeStyleSettings language="CFML">
           <option name="KEEP_BLANK_LINES_IN_CODE" value="1" />
           <option name="ALIGN_MULTILINE_PARAMETERS_IN_CALLS" value="true" />

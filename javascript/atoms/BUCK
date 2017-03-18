@@ -1,4 +1,3 @@
-
 js_library(name = 'action',
   srcs = [
     'action.js',
@@ -56,12 +55,28 @@ js_library(name = 'devices',
 )
 
 
+js_library(name = 'domcore',
+  srcs = [
+    "domcore.js",
+  ],
+  deps = [
+    ':errors',
+    ':useragent',
+    '//third_party/closure:closure',
+  ],
+  visibility = [
+    '//javascript/...',
+  ],
+)
+
+
 js_library(name = 'dom',
   srcs = [
     "dom.js",
   ],
   deps = [
     ':bot',
+    ':domcore',
     ':color',
     ':json',
     ':xpath',
@@ -160,6 +175,19 @@ js_library(name = 'locators',
 )
 
 
+js_library(name = 'useragent',
+  srcs = [
+    'userAgent.js',
+  ],
+  deps = [
+    '//third_party/closure:closure',
+  ],
+  visibility = [
+    '//javascript/...',
+  ],
+)
+
+
 js_library(name = 'window',
   srcs = [
     'frame.js',
@@ -190,3 +218,28 @@ js_library(name = 'xpath',
     '//third_party/js/wgxpath:wgxpath',
   ],
 )
+
+browsers = {
+  'firefox': 'ff',
+  'chrome': 'chrome',
+  'ie': 'ie'}
+for browser in browsers.keys():
+  java_test(
+    name = 'atoms-%s' % browser,
+    vm_args = [
+      '-Dselenium.browser=%s' % browsers[browser],
+      '-Dwebdriver.firefox.marionette=false',
+      '-Djs.test.timeout=20',
+      '-Djs.test.dir=%s' % get_base_path(),
+    ],
+    test_classes = [
+      'org.openqa.selenium.javascript.ClosureTestSuite',
+    ],
+    deps = [
+      '//java/client/test/org/openqa/selenium/javascript:javascript',
+      '//java/client/src/org/openqa/selenium/chrome:chrome',
+      '//java/client/src/org/openqa/selenium/edge:edge',
+      '//java/client/src/org/openqa/selenium/ie:ie',
+      '//java/client/src/org/openqa/selenium/firefox:firefox',
+    ],
+  )

@@ -18,11 +18,11 @@
 
 package org.openqa.selenium.testing.drivers;
 
-import com.google.common.base.Supplier;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
+
+import java.util.function.Supplier;
 
 public class TestInternetExplorerSupplier implements Supplier<WebDriver> {
   private Capabilities caps;

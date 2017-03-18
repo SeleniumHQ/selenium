@@ -5,6 +5,18 @@ namespace OpenQA.Selenium.Interactions
     [TestFixture]
     public class BasicKeyboardInterfaceTest : DriverTestFixture
     {
+        [SetUp]
+        public void Setup()
+        {
+            new Actions(driver).SendKeys(Keys.Null).Perform();
+        }
+
+        [TearDown]
+        public void ReleaseModifierKeys()
+        {
+            new Actions(driver).SendKeys(Keys.Null).Perform();
+        }
+
         [Test]
         [IgnoreBrowser(Browser.IPhone, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Remote, "API not implemented in driver")]
@@ -27,7 +39,6 @@ namespace OpenQA.Selenium.Interactions
 
         [Test]
         [IgnoreBrowser(Browser.Firefox, "API not implemented in driver")]
-        [IgnoreBrowser(Browser.Chrome, "API not implemented in driver")]
         [IgnoreBrowser(Browser.IPhone, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Remote, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Android, "API not implemented in driver")]
@@ -64,8 +75,7 @@ namespace OpenQA.Selenium.Interactions
             driver.Url = javascriptPage;
             IWebElement keysEventInput = driver.FindElement(By.Id("theworks"));
 
-            Actions actionProvider = new Actions(driver);
-            IAction pressShift = actionProvider.KeyDown(keysEventInput, Keys.Shift).Build();
+            IAction pressShift = new Actions(driver).KeyDown(keysEventInput, Keys.Shift).Build();
             pressShift.Perform();
 
             IWebElement keyLoggingElement = driver.FindElement(By.Id("result"));
@@ -73,7 +83,7 @@ namespace OpenQA.Selenium.Interactions
             string eventsText = keyLoggingElement.Text;
             Assert.IsTrue(keyLoggingElement.Text.EndsWith("keydown"), "Key down should be isolated for this test to be meaningful. Event text should end with 'keydown', got events: " + eventsText);
 
-            IAction releaseShift = actionProvider.KeyUp(keysEventInput, Keys.Shift).Build();
+            IAction releaseShift = new Actions(driver).KeyUp(keysEventInput, Keys.Shift).Build();
 
             releaseShift.Perform();
 
@@ -96,14 +106,13 @@ namespace OpenQA.Selenium.Interactions
 
             keysEventInput.Click();
 
-            Actions actionProvider = new Actions(driver);
-            IAction pressShift = actionProvider.KeyDown(keysEventInput, Keys.Shift).Build();
+            IAction pressShift = new Actions(driver).KeyDown(Keys.Shift).Build();
             pressShift.Perform();
 
-            IAction sendLowercase = actionProvider.SendKeys(keysEventInput, "ab").Build();
+            IAction sendLowercase = new Actions(driver).SendKeys("ab").Build();
             sendLowercase.Perform();
 
-            IAction releaseShift = actionProvider.KeyUp(keysEventInput, Keys.Shift).Build();
+            IAction releaseShift = new Actions(driver).KeyUp(Keys.Shift).Build();
             releaseShift.Perform();
 
             AssertThatFormEventsFiredAreExactly("focus keydown keydown keypress keyup keydown keypress keyup keyup"); 

@@ -1,4 +1,5 @@
-﻿// <copyright file="AssemblyInfo.cs" company="WebDriver Committers">// Copyright 2007-2011 WebDriver committers
+﻿// <copyright file="AssemblyInfo.cs" company="WebDriver Committers">
+// Copyright 2007-2011 WebDriver committers
 // Copyright 2007-2011 Google Inc.
 // Portions copyright 2011 Software Freedom Conservancy
 //
@@ -48,5 +49,6 @@ using System.Runtime.InteropServices;
 //      Minor Version
 //      Build Number
 //      Revision
-[assembly: AssemblyVersion("2.53.0.0")]
-[assembly: AssemblyFileVersion("2.53.0.0")]
+[assembly: AssemblyVersion("3.3.0.0")]
+[assembly: AssemblyFileVersion("3.3.0.0")]
+[assembly: AssemblyInformationalVersion("3.3.0")]

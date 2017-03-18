@@ -1,3 +1,4 @@
+include_defs('//javascript/JAVASCRIPT_DEFS')
 
 js_library(name = 'deps',
   srcs = glob(['*.js']),
@@ -105,9 +106,41 @@ js_fragment(name = 'isVisible',
   visibility = [ '//java/client/src/com/thoughtworks/selenium/webdriven:isVisible' ],
 )
 
+js_fragment(name = 'setCursorPosition',
+  module = 'core.text',
+  function = 'core.text.setCursorPosition',
+  deps = [':deps'],
+  visibility = [ '//java/client/src/com/thoughtworks/selenium/webdriven:setCursorPosition' ],
+)
+
 js_fragment(name = 'type',
   module = 'core.events',
   function = 'core.events.setValue',
   deps = [':deps'],
   visibility = [ '//java/client/src/com/thoughtworks/selenium/webdriven:type' ],
 )
+
+browsers = {
+  'firefox': 'ff',
+  'chrome': 'chrome',
+  'ie': 'ie'}
+for browser in browsers.keys():
+  java_test(
+    name = 'selenium-atoms-%s' % browser,
+    vm_args = [
+      '-Dselenium.browser=%s' % browsers[browser],
+      '-Dwebdriver.firefox.marionette=false',
+      '-Djs.test.timeout=120',
+      '-Djs.test.dir=%s' % get_base_path(),
+    ],
+    test_classes = [
+     'org.openqa.selenium.javascript.ClosureTestSuite',
+    ],
+    deps = [
+      '//java/client/test/org/openqa/selenium/javascript:javascript',
+      '//java/client/src/org/openqa/selenium/chrome:chrome',
+      '//java/client/src/org/openqa/selenium/edge:edge',
+      '//java/client/src/org/openqa/selenium/ie:ie',
+      '//java/client/src/org/openqa/selenium/firefox:firefox',
+    ],
+  )

@@ -15,35 +15,24 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import unittest
 import pytest
 
 from selenium.webdriver.support.wait import WebDriverWait
 
 
-class WindowTests(unittest.TestCase):
-    @pytest.mark.ignore_chrome
-    @pytest.mark.ignore_ie
-    def testShouldMaximizeTheWindow(self):
-        resize_timeout = 5
-        wait = WebDriverWait(self.driver, resize_timeout)
-        old_size = self.driver.get_window_size()
-        self.driver.set_window_size(200, 200)
-        wait.until(
-            lambda dr: dr.get_window_size() != old_size if old_size["width"] != 200 and old_size["height"] != 200 \
-                else True)
-        size = self.driver.get_window_size()
-        self.driver.maximize_window()
-        wait.until(lambda dr: dr.get_window_size() != size)
-        new_size = self.driver.get_window_size()
-        assert new_size["width"] > size["width"]
-        assert new_size["height"] > size["height"]
-
-    def _pageURL(self, name):
-        return self.webserver.where_is(name + '.html')
-
-    def _loadSimplePage(self):
-        self._loadPage("simpleTest")
-
-    def _loadPage(self, name):
-        self.driver.get(self._pageURL(name))
+@pytest.mark.xfail_ie
+@pytest.mark.xfail_chrome(reason="Fails on Travis")
+@pytest.mark.xfail_marionette(reason="Fails on Travis")
+def testShouldMaximizeTheWindow(driver):
+    resize_timeout = 5
+    wait = WebDriverWait(driver, resize_timeout)
+    old_size = driver.get_window_size()
+    driver.set_window_size(200, 200)
+    wait.until(
+        lambda dr: dr.get_window_size() != old_size if old_size["width"] != 200 and old_size["height"] != 200 else True)
+    size = driver.get_window_size()
+    driver.maximize_window()
+    wait.until(lambda dr: dr.get_window_size() != size)
+    new_size = driver.get_window_size()
+    assert new_size["width"] > size["width"]
+    assert new_size["height"] > size["height"]

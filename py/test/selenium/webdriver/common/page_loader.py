@@ -22,6 +22,7 @@ before the call is invoked.
 This pattern is also useful for waiting for certain asynchronous events
 to happen before excuting certain actions."""
 
+
 def require_loaded(func):
     def load_page(page, *params, **kwds):
         if not page.is_loaded():
@@ -29,4 +30,3 @@ def require_loaded(func):
         assert page.is_loaded(), "page should be loaded by now"
         return func(page, *params, **kwds)
     return load_page
-

@@ -17,10 +17,6 @@
 
 package com.thoughtworks.selenium;
 
-import com.thoughtworks.selenium.InternalSelenseTestBase;
-import com.thoughtworks.selenium.SeleniumException;
-import com.thoughtworks.selenium.SeleniumLogLevels;
-
 import org.junit.Test;
 
 public class RealDealIntegrationTest extends InternalSelenseTestBase {

@@ -18,14 +18,12 @@
 package org.openqa.selenium.safari;
 
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.OutputType;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.FileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
-
-import java.io.IOException;
+import org.openqa.selenium.remote.service.DriverCommandExecutor;
 
 /**
  * A WebDriver implementation that controls Safari using a browser extension
@@ -59,7 +57,22 @@ public class SafariDriver extends RemoteWebDriver {
    * @param safariOptions safari specific options / capabilities for the driver
    */
   public SafariDriver(SafariOptions safariOptions) {
-    super(new SafariDriverCommandExecutor(safariOptions), safariOptions.toCapabilities());
+    super(getExecutor(safariOptions), safariOptions.toCapabilities(), requiredCapabilities(safariOptions));
+  }
+
+  /**
+   * Ensure the new safaridriver receives non null required capabilities.
+   */
+  private static Capabilities requiredCapabilities(SafariOptions options) {
+    return new DesiredCapabilities();
+  }
+
+  private static CommandExecutor getExecutor(SafariOptions options) {
+    SafariDriverService service = SafariDriverService.createDefaultService(options);
+    if (service == null) {
+      throw new WebDriverException("SafariDriver requires Safari 10 running on OSX El Capitan or greater.");
+    }
+    return new DriverCommandExecutor(service);
   }
 
   @Override
@@ -67,29 +80,5 @@ public class SafariDriver extends RemoteWebDriver {
     throw new WebDriverException(
         "Setting the file detector only works on remote webdriver instances obtained " +
         "via RemoteWebDriver");
-  }
-
-  @Override
-  protected void startClient() {
-    SafariDriverCommandExecutor executor = (SafariDriverCommandExecutor) this.getCommandExecutor();
-    try {
-      executor.start();
-    } catch (IOException e) {
-      throw new WebDriverException(e);
-    }
-  }
-
-  @Override
-  protected void stopClient() {
-    SafariDriverCommandExecutor executor = (SafariDriverCommandExecutor) this.getCommandExecutor();
-    executor.stop();
-  }
-
-  @Override
-  public <X> X getScreenshotAs(OutputType<X> target) throws WebDriverException {
-    // Get the screenshot as base64.
-    String base64 = (String) execute(DriverCommand.SCREENSHOT).getValue();
-    // ... and convert it.
-    return target.convertFromBase64Png(base64);
   }
 }

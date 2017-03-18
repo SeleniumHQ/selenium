@@ -103,7 +103,7 @@ const Capability = {
    */
   PROXY: 'proxy',
 
-  /** Whether the driver supports changing the brower's orientation. */
+  /** Whether the driver supports changing the browser's orientation. */
   ROTATABLE: 'rotatable',
 
   /**
@@ -130,7 +130,7 @@ const Capability = {
 
   /**
    * Defines how the driver should handle unexpected alerts. The value should
-   * be one of "accept", "dismiss", or "ignore.
+   * be one of "accept", "dismiss", or "ignore".
    */
   UNEXPECTED_ALERT_BEHAVIOR: 'unexpectedAlertBehavior',
 
@@ -367,7 +367,7 @@ class Capabilities extends Map {
 
   /**
    * Sets the logging preferences. Preferences may be specified as a
-   * {@link ./logging.Preferences} instance, or a as a map of log-type to
+   * {@link ./logging.Preferences} instance, or as a map of log-type to
    * log-level.
    * @param {!(./logging.Preferences|Object<string>)} prefs The logging
    *     preferences.
@@ -408,7 +408,7 @@ class Capabilities extends Map {
   /**
    * Sets the default action to take with an unexpected alert before returning
    * an error.
-   * @param {string} behavior The desired behavior; should be "accept",
+   * @param {string} behavior The desired behavior should be "accept",
    *     "dismiss", or "ignore". Defaults to "dismiss".
    * @return {!Capabilities} A self reference.
    */

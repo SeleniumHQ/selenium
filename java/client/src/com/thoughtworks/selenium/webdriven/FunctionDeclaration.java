@@ -18,8 +18,6 @@
 
 package com.thoughtworks.selenium.webdriven;
 
-import com.thoughtworks.selenium.webdriven.ScriptMutator;
-
 import java.util.regex.Pattern;
 
 /**

@@ -1,0 +1,78 @@
+body {
+  background:
+    url("/assets/blue-background-gradient.png")
+    repeat-x scroll left top white;
+  color: #000000;
+  font-family: verdana, sans-serif;
+  font-size: small;
+  margin-top: 20px;
+  min-width: 900px;
+}
+
+#help-heading {
+  background-color: #455372;
+  border-radius: 10px;
+  height: 3em;
+  min-height: 39px;
+  padding: 15px 0;
+  position: relative;
+}
+
+#help-heading h1 {
+  border: none;
+  font-size: 2px;
+  height: 8px;
+  left: 0;
+  margin: 0;
+  position: absolute;
+  top: 0;
+  z-index: 100;
+}
+
+#help-heading h2 {
+  border: none;
+  color: white;
+  margin-left: 75px;
+  font-weight: bold;
+  font-size: 150%;
+  font-family: verdana, sans-serif;
+}
+
+#help-heading #logo  {
+  background: url("/assets/selenium.png")
+  no-repeat scroll 0 0 transparent;
+  display: block;
+  height: 64px;
+  text-decoration: none;
+  text-indent: 200em;
+  width: 100px;
+}
+
+#content {
+  width: 90%;
+  margin-left: 5%;
+  margin-right: 5%;
+}
+
+#content-body {
+  padding-top: 20px;
+  margin-left: 5px;
+  margin-right: 5px;
+  padding-bottom: 10px;
+}
+
+#console-item {
+  visibility: hidden;
+  font-size: 0px;
+}
+
+p {
+  padding-top: 5px;
+}
+
+footer {
+  font-size: x-small;
+  border-top: 1px solid black;
+  margin-top: 20px;
+  padding-top: 5px;
+}

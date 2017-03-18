@@ -20,25 +20,27 @@
 module Selenium
   module WebDriver
     module IE
-
       #
       # @api private
       #
 
       class Service < WebDriver::Service
         DEFAULT_PORT = 5555
+        @executable = 'IEDriverServer'.freeze
+        @missing_text = <<-ERROR.gsub(/\n +| {2,}/, ' ').freeze
+          Unable to find IEDriverServer. Please download the server from
+          http://selenium-release.storage.googleapis.com/index.html and place it somewhere on your PATH.
+          More info at https://github.com/SeleniumHQ/selenium/wiki/InternetExplorerDriver.
+        ERROR
 
         private
 
-        def stop_server
-          # server can only be stopped as process
-        end
-
         def start_process
           server_command = [@executable_path, "--port=#{@port}", *@extra_args]
-          @process       = ChildProcess.new(*server_command)
+          @process = ChildProcess.new(*server_command)
+          WebDriver.logger.debug("Executing Process #{server_command}")
 
-          @process.io.inherit! if $DEBUG
+          @process.io.stdout = @process.io.stderr = WebDriver.logger.io
           @process.start
         end
 
@@ -46,6 +48,16 @@ module Selenium
           "unable to connect to IE server #{@host}:#{@port}"
         end
 
+        def extract_service_args(driver_opts)
+          driver_args = super
+          driver_args << "--log-level=#{driver_opts.delete(:log_level).to_s.upcase}" if driver_opts.key?(:log_level)
+          driver_args << "--log-file=#{driver_opts.delete(:log_file)}" if driver_opts.key?(:log_file)
+          driver_args << "--implementation=#{driver_opts.delete(:implementation).to_s.upcase}" if driver_opts.key?(:implementation)
+          driver_args << "--host=#{driver_opts.delete(:host)}" if driver_opts.key?(:host)
+          driver_args << "--extract_path=#{driver_opts.delete(:extract_path)}" if driver_opts.key?(:extract_path)
+          driver_args << "--silent" if driver_opts[:silent] == true
+          driver_args
+        end
       end # Server
     end # IE
   end # WebDriver

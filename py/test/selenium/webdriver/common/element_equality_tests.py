@@ -15,40 +15,29 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import unittest
-
 from selenium.webdriver.common.by import By
 
 
-class ElementEqualityTests(unittest.TestCase):
+def testSameElementLookedUpDifferentWaysShouldBeEqual(driver, pages):
+    pages.load("simpleTest.html")
+    body = driver.find_element(By.TAG_NAME, "body")
+    xbody = driver.find_elements(By.XPATH, "//body")[0]
 
-    def testSameElementLookedUpDifferentWaysShouldBeEqual(self):
-        self._loadSimplePage()
-        body = self.driver.find_element(By.TAG_NAME, "body")
-        xbody = self.driver.find_elements(By.XPATH, "//body")[0]
+    assert body == xbody
 
-        self.assertEqual(body, xbody)
 
-    def testDifferentElementsAreNotEqual(self):
-        self._loadSimplePage()
-        body = self.driver.find_element(By.TAG_NAME, "body")
-        div = self.driver.find_element(By.TAG_NAME, "div")
+def testDifferentElementsAreNotEqual(driver, pages):
+    pages.load("simpleTest.html")
+    body = driver.find_element(By.TAG_NAME, "body")
+    div = driver.find_element(By.TAG_NAME, "div")
 
-        self.assertNotEqual(body, div)
+    assert body != div
 
-    def testSameElementsFoundDifferentWaysShouldNotBeDuplicatedInASet(self):
-        self._loadSimplePage()
-        body = self.driver.find_element(By.TAG_NAME, "body")
-        xbody = self.driver.find_elements(By.XPATH, "//body")
-        s = set(xbody)
-        s.add(body)
-        self.assertEqual(1, len(s))
 
-    def _pageURL(self, name):
-        return self.webserver.where_is(name + '.html')
-
-    def _loadSimplePage(self):
-        self._loadPage("simpleTest")
-
-    def _loadPage(self, name):
-        self.driver.get(self._pageURL(name))
+def testSameElementsFoundDifferentWaysShouldNotBeDuplicatedInASet(driver, pages):
+    pages.load("simpleTest.html")
+    body = driver.find_element(By.TAG_NAME, "body")
+    xbody = driver.find_elements(By.XPATH, "//body")
+    s = set(xbody)
+    s.add(body)
+    assert 1 == len(s)

@@ -43,8 +43,6 @@ mozilla_extension(name = "webdriver",
     ":synthetic-mouse",
   ],
   resources = [
-    { "../../cpp/prebuilt/Win32/Release/imehandler.dll" : "platform/WINNT_x86-msvc/components/imehandler.dll" },
-    { "../../cpp/prebuilt/nsINativeIME.xpt" : "components/nsINativeIME.xpt" },
     { ":web-element-cache" : "resource/modules/web-element-cache.js" },
     { "js/timer.js" : "resource/modules/timer.js" },
     { "js/evaluate.js" : "resource/evaluate.js" },

@@ -17,18 +17,20 @@
 #ifndef WEBDRIVER_ALERT_H_
 #define WEBDRIVER_ALERT_H_
 
+#include <memory>
 #include <string>
 #include <vector>
-#include "DocumentHost.h"
-#include "ErrorCodes.h"
 
 #define INVALID_CONTROL_ID -1
 
 namespace webdriver {
 
+// Forward declaration of classes.
+class DocumentHost;
+
 class Alert {
  public:
-  Alert(BrowserHandle browser, HWND handle);
+  Alert(std::tr1::shared_ptr<DocumentHost> browser, HWND handle);
   virtual ~Alert(void);
 
   int Accept(void);
@@ -43,7 +45,7 @@ class Alert {
 
  private:
   typedef bool (__cdecl *ISBUTTONMATCHPROC)(HWND); 
-  typedef bool (__cdecl *ISEDITMATCHPROC)(HWND); 
+  typedef bool (__cdecl *ISEDITMATCHPROC)(HWND);
 
   struct DialogButtonInfo {
     HWND button_handle;
@@ -94,7 +96,7 @@ class Alert {
   static BOOL CALLBACK FindTextBoxes(HWND hwnd, LPARAM arg);
 
   HWND alert_handle_;
-  BrowserHandle browser_;
+  std::tr1::shared_ptr<DocumentHost> browser_;
   bool is_standard_alert_;
   bool is_security_alert_;
 };

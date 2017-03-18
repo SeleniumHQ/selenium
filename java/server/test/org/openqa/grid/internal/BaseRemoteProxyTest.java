@@ -25,14 +25,16 @@ import com.google.gson.Gson;
 
 import com.beust.jcommander.JCommander;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.common.exception.GridException;
+import org.openqa.grid.internal.mock.GridHelper;
 import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
+import org.openqa.grid.web.servlet.handler.RequestHandler;
 import org.openqa.selenium.remote.CapabilityType;
-import org.openqa.selenium.remote.JsonToBeanConverter;
+import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,33 +42,30 @@ import java.util.List;
 import java.util.Map;
 
 public class BaseRemoteProxyTest {
+  private Registry registry;
 
-  private static RemoteProxy p1 = null;
-  private static RemoteProxy p2 = null;
+  @Before
+  public void before() {
+    registry = Registry.newInstance();
+  }
 
-  private static Map<String, Object> app1Capability = new HashMap<>();
-  private static Map<String, Object> app2Capability = new HashMap<>();
-  private static Registry registry = Registry.newInstance();
-
-  @BeforeClass
-  public static void setup() throws Exception {
-
+  @Test
+  public void testEqual() throws Exception {
+    final Map<String, Object> app1Capability = new HashMap<>();
+    final Map<String, Object> app2Capability = new HashMap<>();
     app1Capability.put(CapabilityType.APPLICATION_NAME, "app1");
     app2Capability.put(CapabilityType.APPLICATION_NAME, "app2");
 
-    p1 =
-        RemoteProxyFactory
-            .getNewBasicRemoteProxy(app1Capability, "http://machine1:4444/", registry);
+    final RemoteProxy p1 =
+        RemoteProxyFactory.getNewBasicRemoteProxy(app1Capability, "http://machine1:4444/", registry);
+
     List<Map<String, Object>> caps = new ArrayList<>();
     caps.add(app1Capability);
     caps.add(app2Capability);
-    p2 = RemoteProxyFactory.getNewBasicRemoteProxy(caps, "http://machine4:4444/", registry);
+    final RemoteProxy p2 =
+        RemoteProxyFactory.getNewBasicRemoteProxy(caps, "http://machine4:4444/", registry);
 
-  }
 
-
-  @Test
-  public void testEqual() {
     assertTrue(p1.equals(p1));
     assertFalse(p1.equals(p2));
   }
@@ -77,10 +76,8 @@ public class BaseRemoteProxyTest {
     cap.put(CapabilityType.APPLICATION_NAME, "corrupted");
 
     GridNodeConfiguration config = new Gson().fromJson("{\"remoteHost\":\"ebay.com\"}", GridNodeConfiguration.class);
-
-    RegistrationRequest request = new RegistrationRequest();
-    request.addDesiredCapability(cap);
-    request.setConfiguration(config);
+    config.capabilities.add(new DesiredCapabilities(cap));
+    RegistrationRequest request = new RegistrationRequest(config);
 
     new BaseRemoteProxy(request, registry);
   }
@@ -89,17 +86,37 @@ public class BaseRemoteProxyTest {
   public void proxyConfigIsInheritedFromRegistry() {
     Registry registry = Registry.newInstance();
     registry.getConfiguration().cleanUpCycle = 42;
-    registry.getConfiguration().timeout = 4200;
 
     GridNodeConfiguration nodeConfiguration = new GridNodeConfiguration();
-    new JCommander(nodeConfiguration, "-role", "webdriver", "-timeout", "100", "-cleanUpCycle", "100");
+    new JCommander(nodeConfiguration, "-role", "webdriver");
     RegistrationRequest req = RegistrationRequest.build(nodeConfiguration);
     req.getConfiguration().proxy = null;
 
     RemoteProxy p = BaseRemoteProxy.getNewInstance(req, registry);
 
-    assertEquals(42, p.getConfig().cleanUpCycle.longValue());
-    assertEquals(4200, p.getConfig().timeout.longValue());
+    // values which are not present in the registration request need to come
+    // from the registry
+    assertEquals(registry.getConfiguration().cleanUpCycle.longValue(),
+                 p.getConfig().cleanUpCycle.longValue());
+  }
+
+  @Test
+  public void proxyConfigOverwritesRegistryConfig() {
+    Registry registry = Registry.newInstance();
+    registry.getConfiguration().cleanUpCycle = 42;
+    registry.getConfiguration().maxSession = 1;
+
+    GridNodeConfiguration nodeConfiguration = new GridNodeConfiguration();
+    new JCommander(nodeConfiguration, "-role", "webdriver", "-cleanUpCycle", "100", "-maxSession", "50");
+    RegistrationRequest req = RegistrationRequest.build(nodeConfiguration);
+    req.getConfiguration().proxy = null;
+
+    RemoteProxy p = BaseRemoteProxy.getNewInstance(req, registry);
+
+    // values which are present in both the registration request and the registry need to
+    // come from the registration request
+    assertEquals(100L, p.getConfig().cleanUpCycle.longValue());
+    assertEquals(50L, p.getConfig().maxSession.longValue());
   }
 
   @Test
@@ -141,9 +158,33 @@ public class BaseRemoteProxyTest {
     assertEquals(23000, p.getTimeOut());
   }
 
+  @Test
+  public void proxyWithCustomTestSlot() {
+    GridNodeConfiguration nodeConfiguration = new GridNodeConfiguration();
+    RegistrationRequest req = RegistrationRequest.build(nodeConfiguration);
+    DesiredCapabilities caps = new DesiredCapabilities();
+    caps.setCapability(CapabilityType.APPLICATION_NAME, "app1");
+    caps.setCapability(RegistrationRequest.PATH, "/foo/bar/baz");
+    req.getConfiguration().capabilities.add(caps);
+    req.getConfiguration().proxy = MyCustomProxy.class.getName();
+    RemoteProxy p = BaseRemoteProxy.getNewInstance(req,registry);
+    Map<String, Object> app1 = new HashMap<>();
+    app1.put(CapabilityType.APPLICATION_NAME, "app1");
+    app1.put("slotName", "CrazySlot");
 
-  @AfterClass
-  public static void teardown() {
+    registry.add(p);
+    RequestHandler newSessionRequest = GridHelper.createNewSessionHandler(registry, app1);
+
+    newSessionRequest.process();
+    TestSession session = newSessionRequest.getSession();
+    TestSlot slot = session.getSlot();
+    assertTrue(slot instanceof MyTestSlot);
+    assertTrue(slot.toString().contains("CrazySlot"));
+    assertEquals("/foo/bar/baz", slot.getPath());
+  }
+
+  @After
+  public void teardown() {
     registry.stop();
   }
 

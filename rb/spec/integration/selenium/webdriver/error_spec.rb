@@ -19,32 +19,37 @@
 
 require_relative 'spec_helper'
 
-describe Selenium::WebDriver::Error do
+module Selenium
+  module WebDriver
+    # https://github.com/SeleniumHQ/selenium/issues/3338
+    not_compliant_on driver: :remote, platform: :macosx do
+      describe Error do
+        it 'should raise an appropriate error' do
+          driver.navigate.to url_for('xhtmlTest.html')
 
-  it "should raise an appropriate error" do
-    driver.navigate.to url_for("xhtmlTest.html")
+          expect do
+            driver.find_element(id: 'nonexistant')
+          end.to raise_error(WebDriver::Error::NoSuchElementError)
+        end
 
-    expect {
-      driver.find_element(:id, "nonexistant")
-    }.to raise_error(WebDriver::Error::NoSuchElementError)
-  end
+        compliant_on browser: :ff_esr do
+          it 'should show stack trace information' do
+            driver.navigate.to url_for('xhtmlTest.html')
 
-  compliant_on({:browser => :firefox},
-               {:driver => :remote, :browser => :marionette}) do
-    it "should show stack trace information" do
-      driver.navigate.to url_for("xhtmlTest.html")
+            rescued = false
+            ex = nil
 
-      rescued = false
-      ex = nil
+            begin
+              driver.find_element(id: 'nonexistant')
+            rescue => ex
+              rescued = true
+            end
 
-      begin
-        driver.find_element(:id, "nonexistant")
-      rescue => ex
-        rescued = true
+            expect(rescued).to be true
+            expect(ex.backtrace.first).to include('[remote server]')
+          end
+        end
       end
-
-      expect(rescued).to be true
-      expect(ex.backtrace.first).to include("[remote server]")
     end
-  end
-end
+  end # WebDriver
+end # Selenium

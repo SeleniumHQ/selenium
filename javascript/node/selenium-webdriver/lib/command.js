@@ -150,6 +150,8 @@ const Name = {
   TAKE_ELEMENT_SCREENSHOT: 'takeElementScreenshot',
   IMPLICITLY_WAIT: 'implicitlyWait',
   SET_SCRIPT_TIMEOUT: 'setScriptTimeout',
+
+  GET_TIMEOUT: 'getTimeout',
   SET_TIMEOUT: 'setTimeout',
 
   ACCEPT_ALERT: 'acceptAlert',
@@ -232,26 +234,6 @@ class Executor {
 }
 
 
-/**
- * Wraps a promised {@link Executor}, ensuring no commands are executed until
- * the wrapped executor has been fully resolved.
- * @implements {Executor}
- */
-class DeferredExecutor {
-  /**
-   * @param {!Promise<Executor>} delegate The promised delegate, which
-   *     may be provided by any promise-like thenable object.
-   */
-  constructor(delegate) {
-
-    /** @override */
-    this.execute = function(command) {
-      return delegate.then(executor => executor.execute(command));
-    };
-  }
-}
-
-
 
 // PUBLIC API
 
@@ -259,6 +241,5 @@ class DeferredExecutor {
 module.exports = {
   Command: Command,
   Name: Name,
-  Executor: Executor,
-  DeferredExecutor: DeferredExecutor
+  Executor: Executor
 };

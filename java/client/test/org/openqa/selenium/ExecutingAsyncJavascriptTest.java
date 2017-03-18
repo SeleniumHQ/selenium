@@ -17,18 +17,6 @@
 
 package org.openqa.selenium;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.JavascriptEnabled;
-import org.openqa.selenium.testing.NeedsLocalEnvironment;
-import org.openqa.selenium.testing.NotYetImplemented;
-
-import java.util.Iterator;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.instanceOf;
@@ -48,6 +36,18 @@ import static org.openqa.selenium.testing.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Driver.SAFARI;
 
 import com.google.common.base.Throwables;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JavascriptEnabled;
+import org.openqa.selenium.testing.NeedsLocalEnvironment;
+import org.openqa.selenium.testing.NotYetImplemented;
+
+import java.util.Iterator;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Ignore(value = {PHANTOMJS})
 public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
@@ -161,27 +161,27 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore(value = {MARIONETTE})
+  @Ignore(value = {HTMLUNIT, MARIONETTE})
   public void shouldTimeoutIfScriptDoesNotInvokeCallback() {
     driver.get(pages.ajaxyPage);
     try {
       // Script is expected to be async and explicitly callback, so this should timeout.
       executor.executeAsyncScript("return 1 + 2;");
       fail("Should have thrown a TimeOutException!");
-    } catch (TimeoutException exception) {
+    } catch (ScriptTimeoutException exception) {
       // Do nothing.
     }
   }
 
   @JavascriptEnabled
   @Test
-  @Ignore(value = {MARIONETTE})
+  @Ignore(value = {HTMLUNIT, MARIONETTE})
   public void shouldTimeoutIfScriptDoesNotInvokeCallbackWithAZeroTimeout() {
     driver.get(pages.ajaxyPage);
     try {
       executor.executeAsyncScript("window.setTimeout(function() {}, 0);");
       fail("Should have thrown a TimeOutException!");
-    } catch (TimeoutException exception) {
+    } catch (ScriptTimeoutException exception) {
       // Do nothing.
     }
   }
@@ -198,7 +198,7 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore(value = {MARIONETTE})
+  @Ignore(value = {HTMLUNIT, MARIONETTE})
   public void shouldTimeoutIfScriptDoesNotInvokeCallbackWithLongTimeout() {
     driver.manage().timeouts().setScriptTimeout(500, TimeUnit.MILLISECONDS);
     driver.get(pages.ajaxyPage);
@@ -207,7 +207,7 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
           "var callback = arguments[arguments.length - 1];" +
           "window.setTimeout(callback, 1500);");
       fail("Should have thrown a TimeOutException!");
-    } catch (TimeoutException exception) {
+    } catch (ScriptTimeoutException exception) {
       // Do nothing.
     }
   }

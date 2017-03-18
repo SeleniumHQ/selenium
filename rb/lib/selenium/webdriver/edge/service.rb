@@ -20,25 +20,27 @@
 module Selenium
   module WebDriver
     module Edge
-
       #
       # @api private
       #
 
       class Service < WebDriver::Service
         DEFAULT_PORT = 17556
+        @executable = 'MicrosoftWebDriver'.freeze
+        @missing_text = <<-ERROR.gsub(/\n +| {2,}/, ' ').freeze
+          Unable to find MicrosoftWebDriver. Please download the server from
+          https://www.microsoft.com/en-us/download/details.aspx?id=48212 and place it somewhere on your PATH.
+          More info at https://github.com/SeleniumHQ/selenium/wiki/MicrosoftWebDriver.
+        ERROR
 
         private
 
-        def stop_server
-          connect_to_server { |http| http.head("/shutdown") }
-        end
-
         def start_process
           server_command = [@executable_path, "--port=#{@port}", *@extra_args]
-          @process       = ChildProcess.build(*server_command)
+          @process = ChildProcess.build(*server_command)
+          WebDriver.logger.debug("Executing Process #{server_command}")
 
-          @process.io.inherit! if $DEBUG == true
+          @process.io.stdout = @process.io.stderr = WebDriver.logger.io
           @process.start
         end
 
@@ -46,6 +48,13 @@ module Selenium
           "unable to connect to MicrosoftWebDriver #{@host}:#{@port}"
         end
 
+        def extract_service_args(driver_opts)
+          driver_args = super
+          driver_args << "–host=#{driver_opts[:host]}" if driver_opts.key? :host
+          driver_args << "–package=#{driver_opts[:package]}" if driver_opts.key? :package
+          driver_args << "-verbose" if driver_opts[:verbose] == true
+          driver_args
+        end
       end # Service
     end # Edge
   end # WebDriver

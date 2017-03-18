@@ -26,8 +26,7 @@ var promise = require('../..').promise,
     Profile = require('../../firefox/profile').Profile,
     decode = require('../../firefox/profile').decode,
     loadUserPrefs = require('../../firefox/profile').loadUserPrefs,
-    io = require('../../io'),
-    it = require('../../testing').it;
+    io = require('../../io');
 
 
 var JETPACK_EXTENSION = path.join(__dirname,
@@ -53,7 +52,6 @@ describe('Profile', function() {
 
     it('allows overriding mutable properties', function() {
       var profile = new Profile();
-      assert.equal('about:blank', profile.getPreference('browser.newtab.url'));
 
       profile.setPreference('browser.newtab.url', 'http://www.example.com');
       assert.equal('http://www.example.com',

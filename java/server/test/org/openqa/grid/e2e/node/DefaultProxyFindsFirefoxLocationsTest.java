@@ -20,8 +20,8 @@ package org.openqa.grid.e2e.node;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.openqa.grid.common.GridRole;
 import org.openqa.grid.e2e.utils.GridTestHelper;
@@ -51,18 +51,18 @@ import javax.servlet.http.HttpServletRequest;
 
 public class DefaultProxyFindsFirefoxLocationsTest {
 
-  private static final String locationFF7 = "/home/ff7";
-  private static final String locationFF3 = "c:\\program files\\ff3";
+  private static final String LOCATION_FF_7 = "/home/ff7";
+  private static final String LOCATION_FF_3 = "c:\\program files\\ff3";
 
-  private static final String locationChrome27 = "/home/chrome27";
-  private static final String locationChrome29 = "c:\\program files\\Chrome29.exe";
+  private static final String LOCATION_CHROME_27 = "/home/chrome27";
+  private static final String LOCATION_CHROME_29 = "c:\\program files\\Chrome29.exe";
 
-  private static Hub hub;
-  private static Registry registry;
-  private static SelfRegisteringRemote remote;
+  private Hub hub;
+  private Registry registry;
+  private SelfRegisteringRemote remote;
 
-  @BeforeClass
-  public static void prepare() throws Exception {
+  @Before
+  public void prepare() throws Exception {
 
     hub = GridTestHelper.getHub();
     registry = hub.getRegistry();
@@ -76,11 +76,11 @@ public class DefaultProxyFindsFirefoxLocationsTest {
     // firefox
 
     caps = DesiredCapabilities.firefox();
-    caps.setCapability(FirefoxDriver.BINARY, locationFF7);
+    caps.setCapability(FirefoxDriver.BINARY, LOCATION_FF_7);
     caps.setVersion("7");
     remote.addBrowser(caps, 1);
     caps = DesiredCapabilities.firefox();
-    caps.setCapability(FirefoxDriver.BINARY, locationFF3);
+    caps.setCapability(FirefoxDriver.BINARY, LOCATION_FF_3);
     caps.setVersion("3");
     remote.addBrowser(caps, 1);
     caps = DesiredCapabilities.firefox();
@@ -91,11 +91,11 @@ public class DefaultProxyFindsFirefoxLocationsTest {
     // chrome
 
     caps = DesiredCapabilities.chrome();
-    caps.setCapability("chrome_binary", locationChrome27);
+    caps.setCapability("chrome_binary", LOCATION_CHROME_27);
     caps.setVersion("27");
     remote.addBrowser(caps, 1);
     caps = DesiredCapabilities.chrome();
-    caps.setCapability("chrome_binary", locationChrome29);
+    caps.setCapability("chrome_binary", LOCATION_CHROME_29);
     caps.setVersion("29");
     remote.addBrowser(caps, 2);
     caps = DesiredCapabilities.chrome();
@@ -121,7 +121,7 @@ public class DefaultProxyFindsFirefoxLocationsTest {
     req_caps.put(CapabilityType.VERSION, "7");
     newSessionRequest = new MockedRequestHandler(getNewRequest(req_caps));
     newSessionRequest.process();
-    assertEquals(locationFF7,
+    assertEquals(LOCATION_FF_7,
                  newSessionRequest.getSession().getRequestedCapabilities()
                      .get(FirefoxDriver.BINARY));
 
@@ -130,7 +130,7 @@ public class DefaultProxyFindsFirefoxLocationsTest {
     req_caps.put(CapabilityType.VERSION, "3");
     newSessionRequest = new MockedRequestHandler(getNewRequest(req_caps));
     newSessionRequest.process();
-    assertEquals(locationFF3,
+    assertEquals(LOCATION_FF_3,
                  newSessionRequest.getSession().getRequestedCapabilities()
                      .get(FirefoxDriver.BINARY));
 
@@ -153,7 +153,7 @@ public class DefaultProxyFindsFirefoxLocationsTest {
     newSessionRequest.process();
 
     Map<String, Object> json = (Map<String, Object>) newSessionRequest.getSession().getRequestedCapabilities().get(ChromeOptions.CAPABILITY);
-    assertEquals(locationChrome27, json.get("binary"));
+    assertEquals(LOCATION_CHROME_27, json.get("binary"));
 
     req_caps = new HashMap<>();
     req_caps.put(CapabilityType.BROWSER_NAME, BrowserType.CHROME);
@@ -162,7 +162,7 @@ public class DefaultProxyFindsFirefoxLocationsTest {
     newSessionRequest.process();
 
     json = (Map<String, Object>) newSessionRequest.getSession().getRequestedCapabilities().get(ChromeOptions.CAPABILITY);
-    assertEquals(locationChrome29, json.get("binary"));
+    assertEquals(LOCATION_CHROME_29, json.get("binary"));
 
     req_caps = new HashMap<>();
     req_caps.put(CapabilityType.BROWSER_NAME, BrowserType.CHROME);
@@ -174,7 +174,7 @@ public class DefaultProxyFindsFirefoxLocationsTest {
     newSessionRequest.process();
 
     json = (Map<String, Object>) newSessionRequest.getSession().getRequestedCapabilities().get(ChromeOptions.CAPABILITY);
-    assertEquals(locationChrome29, json.get("binary"));
+    assertEquals(LOCATION_CHROME_29, json.get("binary"));
     assertEquals("test2", json.get("test1"));
 
     req_caps = new HashMap<>();
@@ -192,8 +192,8 @@ public class DefaultProxyFindsFirefoxLocationsTest {
     assertEquals("test22", json.get("test11"));
   }
 
-  @AfterClass
-  public static void teardown() throws Exception {
+  @After
+  public void teardown() throws Exception {
     remote.stopRemoteServer();
     hub.stop();
   }
@@ -201,10 +201,6 @@ public class DefaultProxyFindsFirefoxLocationsTest {
   private SeleniumBasedRequest getNewRequest(Map<String, Object> desiredCapability) {
     HttpServletRequest httpreq = mock(HttpServletRequest.class);
     return new SeleniumBasedRequest(httpreq, registry, RequestType.START_SESSION, desiredCapability) {
-
-      public String getNewSessionRequestedCapability(TestSession session) {
-        return null;
-      }
 
       public ExternalSessionKey extractSession() {
         return null;
