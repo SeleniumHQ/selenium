@@ -62,7 +62,7 @@ public:
     const Json::Value& sequence);
   bool SetFocusToBrowser(BrowserHandle browser_wrapper);
 
-  void SetPersistentEvents(bool is_firing);
+  void StartPersistentEvents(void);
   void StopPersistentEvents(void);
 
   bool enable_native_events(void) const { return this->use_native_events_; }
@@ -73,6 +73,11 @@ public:
   bool require_window_focus(void) const { return this->require_window_focus_; }
   void set_require_window_focus(const bool require_window_focus) {
     this->require_window_focus_ = require_window_focus;
+  }
+
+  bool use_persistent_hover(void) const { return this->use_persistent_hover_; }
+  void set_use_persistent_hover(const bool use_persistent_hover) {
+    this->use_persistent_hover_ = use_persistent_hover;
   }
 
   ElementScrollBehavior scroll_behavior(void) const {
@@ -143,6 +148,7 @@ public:
   int PerformInputWithSendMessage(BrowserHandle browser_wrapper);
 
   bool use_native_events_;
+  bool use_persistent_hover_;
   bool require_window_focus_;
   long last_known_mouse_x_;
   long last_known_mouse_y_;

@@ -39,6 +39,7 @@ namespace webdriver {
 InputManager::InputManager() {
   LOG(TRACE) << "Entering InputManager::InputManager";
   this->use_native_events_ = true;
+  this->use_persistent_hover_ = false;
   this->require_window_focus_ = true;
   this->scroll_behavior_ = TOP;
   this->is_alt_pressed_ = false;
@@ -749,8 +750,10 @@ int InputManager::Pause(BrowserHandle browser_wrapper, const Json::Value & pause
   return status_code;
 }
 
-void InputManager::SetPersistentEvents(bool is_firing) {
-  this->interactions_manager_->setEnablePersistentHover(is_firing);
+void InputManager::StartPersistentEvents() {
+  if (this->use_persistent_hover_) {
+    this->interactions_manager_->setEnablePersistentHover(true);
+  }
 }
 
 void InputManager::StopPersistentEvents() {

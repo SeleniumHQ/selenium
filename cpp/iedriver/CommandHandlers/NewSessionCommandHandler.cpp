@@ -39,7 +39,7 @@ void NewSessionCommandHandler::ExecuteInternal(
   IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
   ParametersMap::const_iterator it = command_parameters.find("desiredCapabilities");
   if (it != command_parameters.end()) {
-    Json::Value unexpected_alert_behavior = this->GetCapability(it->second, UNEXPECTED_ALERT_BEHAVIOR_CAPABILITY, Json::stringValue, DISMISS_UNEXPECTED_ALERTS);
+    Json::Value unexpected_alert_behavior = this->GetCapability(it->second, UNHANDLED_PROMPT_BEHAVIOR_CAPABILITY, Json::stringValue, DISMISS_UNEXPECTED_ALERTS);
     mutable_executor.set_unexpected_alert_behavior(this->GetUnexpectedAlertBehaviorValue(unexpected_alert_behavior.asString()));
 
     Json::Value page_load_strategy = this->GetCapability(it->second, PAGE_LOAD_STRATEGY_CAPABILITY, Json::stringValue, NORMAL_PAGE_LOAD_STRATEGY);
@@ -58,9 +58,6 @@ void NewSessionCommandHandler::ExecuteInternal(
 
     Json::Value resize_on_screenshot = this->GetCapability(ie_specific_options, ENABLE_FULL_PAGE_SCREENSHOT_CAPABILITY, Json::booleanValue, true);
     mutable_executor.set_enable_full_page_screenshot(resize_on_screenshot.asBool());
-
-    Json::Value enable_element_cache_cleanup = this->GetCapability(ie_specific_options, ENABLE_ELEMENT_CACHE_CLEANUP_CAPABILITY, Json::booleanValue, true);
-    mutable_executor.set_enable_element_cache_cleanup(enable_element_cache_cleanup.asBool());
 
     Json::Value use_per_process_proxy_capability = this->GetCapability(ie_specific_options, USE_PER_PROCESS_PROXY_CAPABILITY, Json::booleanValue, false);
     bool use_per_process_proxy = use_per_process_proxy_capability.asBool();
@@ -81,7 +78,7 @@ void NewSessionCommandHandler::ExecuteInternal(
   }
   
   Json::Value returned_capabilities = this->CreateReturnedCapabilities(executor);
-  response->SetNewSessionResponse(executor.session_id(), returned_capabilities);
+  response->SetSuccessResponse(returned_capabilities);
 }
 
 void NewSessionCommandHandler::SetBrowserFactorySettings(const IECommandExecutor& executor, const Json::Value& capabilities) {
@@ -181,12 +178,10 @@ Json::Value NewSessionCommandHandler::CreateReturnedCapabilities(const IECommand
   Json::Value capabilities;
   capabilities[BROWSER_NAME_CAPABILITY] = "internet explorer";
   capabilities[BROWSER_VERSION_CAPABILITY] = std::to_string(static_cast<long long>(executor.browser_factory()->browser_version()));
-  capabilities[PLATFORM_CAPABILITY] = "WINDOWS";
-  capabilities[JAVASCRIPT_ENABLED_CAPABILITY] = true;
   capabilities[PAGE_LOAD_STRATEGY_CAPABILITY] = executor.page_load_strategy();
 
   if (executor.unexpected_alert_behavior().size() > 0) {
-    capabilities[UNEXPECTED_ALERT_BEHAVIOR_CAPABILITY] = executor.unexpected_alert_behavior();
+    capabilities[UNHANDLED_PROMPT_BEHAVIOR_CAPABILITY] = executor.unexpected_alert_behavior();
   }
 
   Json::Value ie_options;
@@ -203,7 +198,6 @@ Json::Value NewSessionCommandHandler::CreateReturnedCapabilities(const IECommand
   ie_options[ELEMENT_SCROLL_BEHAVIOR_CAPABILITY] = executor.input_manager()->scroll_behavior();
   ie_options[REQUIRE_WINDOW_FOCUS_CAPABILITY] = executor.input_manager()->require_window_focus();
   ie_options[FILE_UPLOAD_DIALOG_TIMEOUT_CAPABILITY] = executor.file_upload_dialog_timeout();
-  ie_options[ENABLE_ELEMENT_CACHE_CLEANUP_CAPABILITY] = executor.enable_element_cache_cleanup();
   ie_options[ENABLE_FULL_PAGE_SCREENSHOT_CAPABILITY] = executor.enable_full_page_screenshot();
 
   if (executor.proxy_manager()->is_proxy_set()) {
@@ -216,10 +210,10 @@ Json::Value NewSessionCommandHandler::CreateReturnedCapabilities(const IECommand
 }
 
 Json::Value NewSessionCommandHandler::GetCapability(
-    Json::Value capabilities,
-    std::string capability_name,
-    Json::ValueType expected_capability_type,
-    Json::Value default_value) {
+    const Json::Value& capabilities,
+    const std::string& capability_name,
+    const Json::ValueType& expected_capability_type,
+    const Json::Value& default_value) {
   Json::Value capability_value = capabilities.get(capability_name, default_value);
   if (!this->IsEquivalentType(capability_value.type(), expected_capability_type)) {
     LOG(WARN) << "Invalid capability setting: " << capability_name
@@ -232,8 +226,8 @@ Json::Value NewSessionCommandHandler::GetCapability(
 }
 
 bool NewSessionCommandHandler::IsEquivalentType(
-    Json::ValueType actual_type,
-    Json::ValueType expected_type) {
+    const Json::ValueType& actual_type,
+    const Json::ValueType& expected_type) {
   if (expected_type == actual_type) {
     return true;
   }
@@ -246,7 +240,7 @@ bool NewSessionCommandHandler::IsEquivalentType(
 }
 
 std::string NewSessionCommandHandler::GetJsonTypeDescription(
-    Json::ValueType type) {
+    const Json::ValueType& type) {
   switch(type) {
     case Json::booleanValue:
       return "boolean";
@@ -273,7 +267,7 @@ std::string NewSessionCommandHandler::GetUnexpectedAlertBehaviorValue(
     value = desired_value;
   } else {
     LOG(WARN) << "Desired value of " << desired_value << " for "
-              << UNEXPECTED_ALERT_BEHAVIOR_CAPABILITY << " is not"
+              << UNHANDLED_PROMPT_BEHAVIOR_CAPABILITY << " is not"
               << " a valid value. Using default of " << value;
   }
   return value;

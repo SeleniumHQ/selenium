@@ -71,8 +71,6 @@ LRESULT IECommandExecutor::OnCreate(UINT uMsg,
   this->PopulateElementFinderMethods();
   this->current_browser_id_ = "";
   this->serialized_response_ = "";
-  this->enable_element_cache_cleanup_ = true;
-  this->enable_persistent_hover_ = true;
   this->unexpected_alert_behavior_ = IGNORE_UNEXPECTED_ALERTS;
   this->implicit_wait_timeout_ = 0;
   this->async_script_timeout_ = -1;
@@ -80,7 +78,6 @@ LRESULT IECommandExecutor::OnCreate(UINT uMsg,
   this->is_waiting_ = false;
   this->page_load_strategy_ = "normal";
   this->file_upload_dialog_timeout_ = DEFAULT_FILE_UPLOAD_DIALOG_TIMEOUT_IN_MILLISECONDS;
-  this->enable_full_page_screenshot_ = true;
 
   this->managed_elements_ = new ElementRepository();
   this->input_manager_ = new InputManager();
@@ -356,9 +353,7 @@ LRESULT IECommandExecutor::OnRefreshManagedElements(UINT uMsg,
                                                     WPARAM wParam,
                                                     LPARAM lParam,
                                                     BOOL& bHandled) {
-  if (this->enable_element_cache_cleanup_) {
-    this->managed_elements_->ClearCache();
-  }
+  this->managed_elements_->ClearCache();
   return 0;
 }
 
@@ -643,13 +638,10 @@ int IECommandExecutor::CreateNewBrowser(std::string* error_message) {
     this->is_waiting_ = false;
     return ENOSUCHDRIVER;
   }
+
   // Set persistent hover functionality in the interactions implementation. 
-  this->input_manager_->SetPersistentEvents(this->enable_persistent_hover_);
-  LOG(INFO) << "Persistent hovering set to: " << this->enable_persistent_hover_;
-  if (!this->enable_persistent_hover_) {
-    LOG(INFO) << "Stopping previously-running persistent event thread.";
-    this->input_manager_->StopPersistentEvents();
-  }
+  this->input_manager_->StartPersistentEvents();
+  LOG(INFO) << "Persistent hovering set to: " << this->input_manager_->use_persistent_hover();
 
   this->proxy_manager_->SetProxySettings(process_window_info.hwndBrowser);
   BrowserHandle wrapper(new Browser(process_window_info.pBrowser,

@@ -155,20 +155,6 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor> {
     this->is_quitting_ = session_is_quitting; 
   }
 
-  bool enable_element_cache_cleanup(void) const {
-    return this->enable_element_cache_cleanup_;
-  }
-  void set_enable_element_cache_cleanup(const bool enable_element_cache_cleanup) {
-    this->enable_element_cache_cleanup_ = enable_element_cache_cleanup;
-  }
-
-  bool enable_persistent_hover(void) const {
-    return this->enable_persistent_hover_;
-  }
-  void set_enable_persistent_hover(const bool enable_persistent_hover) {
-    this->enable_persistent_hover_ = enable_persistent_hover;
-  }
-
   std::string unexpected_alert_behavior(void) const {
     return this->unexpected_alert_behavior_;
   }
@@ -188,13 +174,6 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor> {
   }
   void set_file_upload_dialog_timeout(const int file_upload_dialog_timeout) {
     this->file_upload_dialog_timeout_ = file_upload_dialog_timeout;
-  }
-
-  bool enable_full_page_screenshot(void) const {
-    return this->enable_full_page_screenshot_;
-  }
-  void set_enable_full_page_screenshot(const bool enable_full_page_screenshot) {
-    this->enable_full_page_screenshot_ = enable_full_page_screenshot;
   }
 
   ElementFinder* element_finder(void) const { return this->element_finder_; }
@@ -239,14 +218,11 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor> {
 
   std::string session_id_;
   int port_;
-  bool enable_persistent_hover_;
-  bool enable_element_cache_cleanup_;
   bool ignore_zoom_setting_;
   std::string initial_browser_url_;
   std::string unexpected_alert_behavior_;
   std::string page_load_strategy_;
   int file_upload_dialog_timeout_;
-  bool enable_full_page_screenshot_;
 
   Command current_command_;
   std::string serialized_response_;
