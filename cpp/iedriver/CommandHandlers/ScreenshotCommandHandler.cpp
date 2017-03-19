@@ -48,16 +48,11 @@ void ScreenshotCommandHandler::ExecuteInternal(
   HRESULT hr;
   int i = 0;
   int tries = 4;
-  const bool should_resize_window = executor.enable_full_page_screenshot();
   do {
     this->ClearImage();
 
     this->image_ = new CImage();
-    if (should_resize_window) {
-      hr = this->CaptureFullPage(browser_wrapper);
-    } else {
-      hr = this->CaptureViewport(browser_wrapper);
-    }
+    hr = this->CaptureViewport(browser_wrapper);
     if (FAILED(hr)) {
       LOGHR(WARN, hr) << "Failed to capture browser image at " << i << " try";
       this->ClearImage();
@@ -95,134 +90,6 @@ void ScreenshotCommandHandler::ClearImage() {
   }
 }
 
-HRESULT ScreenshotCommandHandler::CaptureFullPage(BrowserHandle browser) {
-  LOG(TRACE) << "Entering ScreenshotCommandHandler::CaptureFullPage";
-
-  HWND ie_window_handle = browser->GetTopLevelWindowHandle();
-  HWND content_window_handle = browser->GetContentWindowHandle();
-
-  CComPtr<IHTMLDocument2> document;
-  browser->GetDocument(true, &document);
-  if (!document) {
-    LOG(WARN) << "Unable to get document from browser. Are you viewing a non-HTML document?";
-    return E_ABORT;
-  }
-
-  LocationInfo document_info;
-  bool result = DocumentHost::GetDocumentDimensions(document, &document_info);
-  if (!result) {
-    LOG(DEBUG) << "Unable to get document dimensions";
-    return E_FAIL;
-  }
-  LOG(DEBUG) << "Initial document sizes (scrollWidth, scrollHeight) are (w, h): "
-              << document_info.width << ", " << document_info.height;
-
-  int chrome_width(0);
-  int chrome_height(0);
-  this->GetBrowserChromeDimensions(ie_window_handle,
-                                    content_window_handle,
-                                    &chrome_width,
-                                    &chrome_height);
-  LOG(DEBUG) << "Initial chrome sizes are (w, h): "
-              << chrome_width << ", " << chrome_height;
-
-  int target_window_width = document_info.width + chrome_width;
-  int target_window_height = document_info.height + chrome_height;
-
-  // For some reason, this technique does not allow the user to resize
-  // the browser window to greater than SIZE_LIMIT x SIZE_LIMIT. This is
-  // pretty big, so we'll cap the allowable screenshot size to that.
-  //
-  // GDI+ limit after which it may report Generic error for some image types
-  int SIZE_LIMIT = 65534; 
-  if (target_window_height > SIZE_LIMIT) {
-    LOG(WARN) << "Required height is greater than limit. Truncating screenshot height.";
-    target_window_height = SIZE_LIMIT;
-    document_info.height = target_window_height - chrome_height;
-  }
-  if (target_window_width > SIZE_LIMIT) {
-    LOG(WARN) << "Required width is greater than limit. Truncating screenshot width.";
-    target_window_width = SIZE_LIMIT;
-    document_info.width = target_window_width - chrome_width;
-  }
-
-  long original_width = browser->GetWidth();
-  long original_height = browser->GetHeight();
-  LOG(DEBUG) << "Initial browser window sizes are (w, h): "
-              << original_width << ", " << original_height;
-
-  // If the window is already wide enough to accomodate
-  // the document, don't resize that dimension. Otherwise,
-  // the window will display a horizontal scroll bar, and
-  // we need to retain the scrollbar to avoid rerendering
-  // during the resize, so reduce the target window width
-  // by two pixels.
-  if (original_width > target_window_width) {
-    target_window_width = original_width;
-  } else {
-    target_window_width -= 2;
-  }
-
-  // If the window is already tall enough to accomodate
-  // the document, don't resize that dimension. Otherwise,
-  // the window will display a vertical scroll bar, and
-  // we need to retain the scrollbar to avoid rerendering
-  // during the resize, so reduce the target window height
-  // by two pixels.
-  if (original_height > target_window_height) {
-    target_window_height = original_height;
-  } else {
-    target_window_height -= 2;
-  }
-
-  BOOL is_maximized = ::IsZoomed(ie_window_handle);
-  bool requires_resize = original_width < target_window_width ||
-                          original_height < target_window_height;
-
-  if (requires_resize) {
-    // The resize message is being ignored if the window appears to be
-    // maximized.  There's likely a way to bypass that. The kludgy way 
-    // is to unmaximize the window, then move on with setting the window
-    // to the dimensions we really want.  This is okay because we revert
-    // back to the original dimensions afterward.
-    if (is_maximized) {
-      LOG(DEBUG) << "Window is maximized currently. Demaximizing.";
-      ::ShowWindow(ie_window_handle, SW_SHOWNORMAL);
-    }
-
-    // NOTE: There is a *very* slight chance that resizing the window
-    // so there are no longer scroll bars to be displayed *might* cause
-    // layout redraws such that the screenshot does not show the entire
-    // DOM after the resize. Since we should always be expanding the
-    // window size, never contracting it, this is a corner case that
-    // explicitly will *not* be fixed. Any issue reports describing this
-    // corner case will be closed without action.
-    RECT ie_window_rect;
-    ::GetWindowRect(ie_window_handle, &ie_window_rect);
-    ::SetWindowPos(ie_window_handle,
-                    NULL, 
-                    ie_window_rect.left,
-                    ie_window_rect.top,
-                    target_window_width,
-                    target_window_height,
-                    SWP_NOSENDCHANGING);
-  }
-
-  CaptureWindow(content_window_handle, document_info.width, document_info.height);
-
-  if (requires_resize) {
-    // Restore the browser to the original dimensions.
-    if (is_maximized) {
-      ::ShowWindow(ie_window_handle, SW_MAXIMIZE);
-    } else {
-      browser->SetHeight(original_height);
-      browser->SetWidth(original_width);
-    }
-  }
-
-  return S_OK;
-}
-
 HRESULT ScreenshotCommandHandler::CaptureViewport(BrowserHandle browser) {
   LOG(TRACE) << "Entering ScreenshotCommandHandler::CaptureViewport";
 
@@ -230,7 +97,7 @@ HRESULT ScreenshotCommandHandler::CaptureViewport(BrowserHandle browser) {
   int content_width = 0, content_height = 0;
 
   this->GetWindowDimensions(content_window_handle, &content_width, &content_height);
-  CaptureWindow(content_window_handle, content_width, content_height);
+  this->CaptureWindow(content_window_handle, content_width, content_height);
 
   return S_OK;
 }
@@ -344,33 +211,6 @@ HRESULT ScreenshotCommandHandler::GetBase64Data(std::string& data) {
   ::GlobalUnlock(global_memory_handle);
 
   return S_OK;
-}
-
-void ScreenshotCommandHandler::GetBrowserChromeDimensions(
-    HWND top_level_window_handle,
-    HWND content_window_handle,
-    int* width,
-    int* height) {
-  LOG(TRACE) << "Entering ScreenshotCommandHandler::GetBrowserChromeDimensions";
-
-  int top_level_window_width = 0;
-  int top_level_window_height = 0;
-  this->GetWindowDimensions(top_level_window_handle,
-                            &top_level_window_width,
-                            &top_level_window_height);
-  LOG(TRACE) << "Top level window dimensions are (w, h): "
-              << top_level_window_width << "," << top_level_window_height;
-
-  int content_window_width = 0;
-  int content_window_height = 0;
-  this->GetWindowDimensions(content_window_handle,
-                            &content_window_width,
-                            &content_window_height);
-  LOG(TRACE) << "Content window dimensions are (w, h): "
-              << content_window_width << "," << content_window_height;
-
-  *width = top_level_window_width - content_window_width;
-  *height = top_level_window_height - content_window_height;
 }
 
 void ScreenshotCommandHandler::GetWindowDimensions(HWND window_handle,
