@@ -166,9 +166,19 @@ module Selenium
           expect(size.width).to be > 0
           expect(size.height).to be > 0
         end
+
+        it 'should get rect' do
+          driver.navigate.to url_for('xhtmlTest.html')
+          rect = driver.find_element(class: 'header').rect
+
+          expect(rect.x).to be > 0
+          expect(rect.y).to be > 0
+          expect(rect.width).to be > 0
+          expect(rect.height).to be > 0
+        end
       end
 
-      # Firefox - "Actions Endpoint Not Yet Implemented"
+      # Firefox - Pointer actions not in firefox stable yet
       not_compliant_on browser: [:safari, :firefox, :ff_nightly] do
         it 'should drag and drop' do
           driver.navigate.to url_for('dragAndDropTest.html')

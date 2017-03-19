@@ -7,6 +7,64 @@ env:
     - FF_ESR_BINARY=$HOME/firefox-latest-esr/firefox/firefox-bin
     - FF_NIGHTLY_BINARY=$HOME/firefox-latest-nightly/firefox/firefox-bin
 matrix:
+  exclude:
+    - language: java
+      jdk: oraclejdk8
+      env: CHROME=1 TASK="calcdeps //javascript/selenium-core:selenium-core-chrome:run"
+      addons:
+        apt:
+          packages:
+            - google-chrome-stable
+    - language: java
+      jdk: oraclejdk8
+      env: CHROME=1 TASK="calcdeps //javascript/webdriver:webdriver-chrome:run"
+      addons:
+        apt:
+          packages:
+            - google-chrome-stable
+    - language: java
+      jdk: oraclejdk8
+      env: CHROME=1 TASK=test_chrome
+      addons:
+        apt:
+          packages:
+            - google-chrome-stable
+    - language: java
+      jdk: oraclejdk8
+      env: CHROME=1 TASK=//java/client/test/com/thoughtworks/selenium:chrome-rc-test:run
+      addons:
+        apt:
+          packages:
+            - google-chrome-stable
+    - language: python
+      python: 2.7
+      env: CHROME=1 TOXENV=py27-chrome
+      addons:
+        apt:
+          packages:
+            - google-chrome-stable
+    - language: python
+      python: 3.6
+      env: CHROME=1 TOXENV=py36-chrome
+      addons:
+        apt:
+          packages:
+            - google-chrome-stable
+    - language: java
+      jdk: oraclejdk8
+      env: MARIONETTE=1 TASK=//java/client/test/com/thoughtworks/selenium:firefox-rc-test:run
+      addons:
+        firefox: latest-nightly
+    - language: python
+      python: 2.7
+      env: MARIONETTE=1 TOXENV=py27-marionette
+      addons:
+        firefox: latest-nightly
+    - language: python
+      python: 3.6
+      env: MARIONETTE=1 TOXENV=py36-marionette
+      addons:
+        firefox: latest-nightly
   include:
     - language: java
       jdk: oraclejdk8
@@ -38,21 +96,7 @@ matrix:
             - google-chrome-stable
     - language: java
       jdk: oraclejdk8
-      env: CHROME=1 TASK="calcdeps //javascript/webdriver:webdriver-chrome:run"
-      addons:
-        apt:
-          packages:
-            - google-chrome-stable
-    - language: java
-      jdk: oraclejdk8
       env: CHROME=1 TASK="calcdeps //javascript/selenium-atoms:selenium-atoms-chrome:run"
-      addons:
-        apt:
-          packages:
-            - google-chrome-stable
-    - language: java
-      jdk: oraclejdk8
-      env: CHROME=1 TASK="calcdeps //javascript/selenium-core:selenium-core-chrome:run"
       addons:
         apt:
           packages:
@@ -64,7 +108,7 @@ matrix:
         firefox: latest-esr
     - language: java
       jdk: oraclejdk8
-      env: TASK="calcdeps //javascript/webdriver:webdriver-firefox:run"
+      env: MARIONETTE=1 TASK="calcdeps //javascript/webdriver:webdriver-firefox:run"
       addons:
         firefox: latest-esr
     - language: java
@@ -79,20 +123,6 @@ matrix:
         firefox: latest-esr
     - language: java
       jdk: oraclejdk8
-      env: CHROME=1 TASK=test_chrome
-      addons:
-        apt:
-          packages:
-            - google-chrome-stable
-    - language: java
-      jdk: oraclejdk8
-      env: CHROME=1 TASK=//java/client/test/com/thoughtworks/selenium:chrome-rc-test:run
-      addons:
-        apt:
-          packages:
-            - google-chrome-stable
-    - language: java
-      jdk: oraclejdk8
       env: TASK=test_firefox
       addons:
         firefox: latest-esr
@@ -103,19 +133,12 @@ matrix:
         firefox: latest-nightly
     - language: java
       jdk: oraclejdk8
-      env: MARIONETTE=1 TASK=//java/client/test/com/thoughtworks/selenium:firefox-rc-test:run
-      addons:
-        firefox: latest-nightly
-    - language: java
-      jdk: oraclejdk8
       env: TASK=test_java_small_tests
     - language: java
       jdk: oraclejdk8
-      env: CHROME=1 TASK=test_grid
+      env: TASK=test_grid
       addons:
-        apt:
-          packages:
-            - google-chrome-stable
+        firefox: latest-nightly
     - language: java
       jdk: oraclejdk8
       env: TASK=test_htmlunit
@@ -130,21 +153,12 @@ matrix:
       env: TOXENV=docs
     - language: python
       python: 2.7
-      env: CHROME=1 TOXENV=py27-chrome
-      addons:
-        apt:
-          packages:
-            - google-chrome-stable
+      env: TOXENV=py27-unit
     - language: python
       python: 2.7
       env: TOXENV=py27-firefox
       addons:
         firefox: latest-esr
-    - language: python
-      python: 2.7
-      env: MARIONETTE=1 TOXENV=py27-marionette
-      addons:
-        firefox: latest-nightly
     - language: python
       python: 2.7
       env: PHANTOMJS=1 TOXENV=py27-phantomjs
@@ -154,6 +168,15 @@ matrix:
       addons:
         firefox: latest
     - language: python
+      python: 3.3
+      env: TOXENV=py33-unit
+    - language: python
+      python: 3.4
+      env: TOXENV=py34-unit
+    - language: python
+      python: 3.5
+      env: TOXENV=py35-unit
+    - language: python
       python: 3.6
       env: TOXENV=flake8
     - language: python
@@ -161,21 +184,12 @@ matrix:
       env: TOXENV=docs
     - language: python
       python: 3.6
-      env: CHROME=1 TOXENV=py36-chrome
-      addons:
-        apt:
-          packages:
-            - google-chrome-stable
+      env: TOXENV=py36-unit
     - language: python
       python: 3.6
       env: TOXENV=py36-firefox
       addons:
         firefox: latest-esr
-    - language: python
-      python: 3.6
-      env: MARIONETTE=1 TOXENV=py36-marionette
-      addons:
-        firefox: latest-nightly
     - language: python
       python: 3.6
       env: PHANTOMJS=1 TOXENV=py36-phantomjs
@@ -254,7 +268,6 @@ matrix:
       env: TASK=//rb:docs
   fast_finish: true
   allow_failures:
-    - env: TASK="calcdeps //javascript/webdriver:webdriver-firefox:run"
     - env: CHROME=1 TASK=//java/client/test/com/thoughtworks/selenium:chrome-rc-test:run
     - env: MARIONETTE=1 TASK=//java/client/test/com/thoughtworks/selenium:firefox-rc-test:run
     - env: TOXENV=py27-firefox
@@ -263,6 +276,8 @@ matrix:
     - env: TOXENV=py36-firefox
     - env: MARIONETTE=1 TOXENV=py36-marionette
     - env: TOXENV=py36-remote
+    - env: PHANTOMJS=1 TOXENV=py27-phantomjs
+    - env: PHANTOMJS=1 TOXENV=py36-phantomjs
 before_install: ./scripts/travis/before_install.sh
 install: ./scripts/travis/install.sh
 before_script: ./scripts/travis/before_script.sh

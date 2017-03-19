@@ -140,6 +140,8 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
+        [IgnoreBrowser(Browser.IE, "Clicking without context is perfectly valid for W3C-compliant remote ends.")]
+        [IgnoreBrowser(Browser.Firefox, "Clicking without context is perfectly valid for W3C-compliant remote ends.")]
         [IgnoreBrowser(Browser.IPhone, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Remote, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Android, "API not implemented in driver")]
@@ -148,10 +150,9 @@ namespace OpenQA.Selenium.Interactions
         {
             driver.Url = javascriptPage;
 
-            Actions actionProvider = new Actions(driver);
             try
             {
-                IAction contextClick = actionProvider.MoveToElement(null).Build();
+                IAction contextClick = new Actions(driver).MoveToElement(null).Build();
 
                 contextClick.Perform();
                 Assert.Fail("Shouldn't be allowed to click on null element.");
@@ -163,7 +164,7 @@ namespace OpenQA.Selenium.Interactions
 
             try
             {
-                actionProvider.Click().Build().Perform();
+                new Actions(driver).Click().Build().Perform();
                 Assert.Fail("Shouldn't be allowed to click without a context.");
             }
             catch (Exception)
@@ -330,14 +331,13 @@ namespace OpenQA.Selenium.Interactions
             IWebElement toDrag = driver.FindElement(By.Id("rightitem-3"));
             IWebElement dragInto = driver.FindElement(By.Id("sortable1"));
 
-            Actions actionProvider = new Actions(driver);
-            IAction holdItem = actionProvider.ClickAndHold(toDrag).Build();
+            IAction holdItem = new Actions(driver).ClickAndHold(toDrag).Build();
 
-            IAction moveToSpecificItem = actionProvider.MoveToElement(driver.FindElement(By.Id("leftitem-4"))).Build();
+            IAction moveToSpecificItem = new Actions(driver).MoveToElement(driver.FindElement(By.Id("leftitem-4"))).Build();
 
-            IAction moveToOtherList = actionProvider.MoveToElement(dragInto).Build();
+            IAction moveToOtherList = new Actions(driver).MoveToElement(dragInto).Build();
 
-            IAction drop = actionProvider.Release(dragInto).Build();
+            IAction drop = new Actions(driver).Release(dragInto).Build();
 
             Assert.AreEqual("Nothing happened.", dragReporter.Text);
 

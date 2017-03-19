@@ -398,6 +398,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   @Ignore(value = {HTMLUNIT, SAFARI, PHANTOMJS, FIREFOX},
           reason = "Safari: see issue 687, comment 41; PHANTOMJS: not tested", issues = {687})
   @NeedsLocalEnvironment
+  @NotYetImplemented(MARIONETTE)
   @NoDriverAfterTest
   @Test
   public void testPageLoadTimeoutCanBeChanged() {
@@ -539,8 +540,8 @@ public class PageLoadingTest extends JUnit4TestBase {
 
     long start = System.currentTimeMillis();
     try {
-      driver
-          .get(appServer.whereIs("sleep?time=" + (webDriverPageLoadTimeout + pageLoadTimeBuffer)));
+      driver.get(appServer.whereIs(
+          "sleep?time=" + (webDriverPageLoadTimeout + pageLoadTimeBuffer)));
       fail("I should have timed out after " + webDriverPageLoadTimeout + " seconds");
     } catch (RuntimeException e) {
       long end = System.currentTimeMillis();

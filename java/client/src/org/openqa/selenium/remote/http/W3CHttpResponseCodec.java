@@ -22,6 +22,7 @@ import static com.google.common.net.HttpHeaders.CONTENT_TYPE;
 import static java.net.HttpURLConnection.HTTP_OK;
 
 import com.google.common.base.Strings;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -77,6 +78,11 @@ public class W3CHttpResponseCodec extends AbstractHttpResponseCodec {
     if (HTTP_OK != encodedResponse.getStatus()) {
       log.fine("Processing an error");
       JsonObject obj = new JsonParser().parse(content).getAsJsonObject();
+
+      JsonElement w3cWrappedValue = obj.get("value");
+      if (w3cWrappedValue instanceof JsonObject && ((JsonObject) w3cWrappedValue).has("error")) {
+        obj = (JsonObject) w3cWrappedValue;
+      }
 
       String message = "An unknown error has occurred";
       if (obj.has("message")) {

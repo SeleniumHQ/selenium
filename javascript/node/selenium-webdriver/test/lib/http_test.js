@@ -293,7 +293,14 @@ describe('http', function() {
         });
 
         it('auto-upgrades on W3C response', function() {
-          var rawResponse = {sessionId: 's123', value: {name: 'Bob'}};
+          let rawResponse = {
+            value: {
+              sessionId: 's123',
+              value: {
+                name: 'Bob'
+              }
+            }
+          };
 
           send.returns(Promise.resolve(
               new http.Response(200, {}, JSON.stringify(rawResponse))));
@@ -344,7 +351,8 @@ describe('http', function() {
         });
 
         it('handles w3c new session failures', function() {
-          let rawResponse = {error: 'no such element', message: 'oops'};
+          let rawResponse =
+              {value: {error: 'no such element', message: 'oops'}};
 
           send.returns(Promise.resolve(
               new http.Response(500, {}, JSON.stringify(rawResponse))));
@@ -429,7 +437,7 @@ describe('http', function() {
         });
 
         it('does not auto-upgrade on W3C response', function() {
-          var rawResponse = {sessionId: 's123', value: {name: 'Bob'}};
+          var rawResponse = {value: {sessionId: 's123', value: {name: 'Bob'}}};
 
           send.returns(Promise.resolve(
               new http.Response(200, {}, JSON.stringify(rawResponse))));

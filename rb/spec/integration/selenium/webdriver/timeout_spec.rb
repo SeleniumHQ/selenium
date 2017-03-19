@@ -91,8 +91,11 @@ module Selenium
         # w3c default is 300,000
         after { driver.manage.timeouts.page_load = 300000 }
 
-        it 'should be able to set the page load timeout' do
-          expect { driver.manage.timeouts.page_load = 2 }.to_not raise_exception
+        # The pageLoad change is currently only in Nightly
+        not_compliant_on driver: :firefox do
+          it 'should be able to set the page load timeout' do
+            expect { driver.manage.timeouts.page_load = 2 }.to_not raise_exception
+          end
         end
       end
     end

@@ -17,17 +17,37 @@
 
 package org.openqa.selenium.firefox;
 
+import static java.nio.file.StandardOpenOption.DELETE_ON_CLOSE;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.junit.Assume.assumeNotNull;
+import static org.junit.Assume.assumeThat;
+import static org.openqa.selenium.firefox.FirefoxDriver.SystemProperty.BROWSER_BINARY;
+import static org.openqa.selenium.firefox.FirefoxDriver.SystemProperty.BROWSER_PROFILE;
+import static org.openqa.selenium.firefox.FirefoxDriver.SystemProperty.DRIVER_USE_MARIONETTE;
 
+import com.google.common.collect.ImmutableSet;
 import com.google.gson.JsonObject;
 
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.firefox.internal.ProfilesIni;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.testing.JreSystemProperty;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.attribute.PosixFilePermission;
+import java.util.Optional;
 
 public class FirefoxOptionsTest {
 
@@ -41,17 +61,18 @@ public class FirefoxOptionsTest {
   }
 
   @Test
-  public void canSetBinaryThroughOptions() throws IOException {
+  public void canSetBinaryThroughOptions() {
     FirefoxOptions options = new FirefoxOptions().setBinary("some/path");
-
     Capabilities caps = options.addTo(new DesiredCapabilities());
 
     assertEquals("some/path", caps.getCapability(FirefoxDriver.BINARY));
   }
 
   @Test
-  public void shouldKeepAFirefoxBinaryAsABinaryIfSetAsOne() {
-    FirefoxBinary binary = new FirefoxBinary();
+  public void shouldKeepAFirefoxBinaryAsABinaryIfSetAsOne() throws IOException {
+    File fakeExecutable = Files.createTempFile("firefox", ".exe").toFile();
+    fakeExecutable.deleteOnExit();
+    FirefoxBinary binary = new FirefoxBinary(fakeExecutable);
     FirefoxOptions options = new FirefoxOptions().setBinary(binary);
 
     Capabilities caps = options.addTo(new DesiredCapabilities());
@@ -71,5 +92,100 @@ public class FirefoxOptionsTest {
     JsonObject json = new FirefoxOptions().setBinary(Paths.get("/i/like/cheese")).toJson();
 
     assertEquals("/i/like/cheese", json.getAsJsonPrimitive("binary").getAsString());
+  }
+
+  @Test
+  public void shouldPickUpBinaryFromSystemPropertyIfSet() throws IOException {
+    JreSystemProperty property = new JreSystemProperty(BROWSER_BINARY);
+    String resetValue = property.get();
+
+    Path binary = Files.createTempFile("firefox", ".exe");
+    try (OutputStream ignored = Files.newOutputStream(binary, DELETE_ON_CLOSE)) {
+      Files.write(binary, "".getBytes());
+      Files.setPosixFilePermissions(binary, ImmutableSet.of(PosixFilePermission.OWNER_EXECUTE));
+      property.set(binary.toString());
+      FirefoxOptions options = new FirefoxOptions();
+
+      FirefoxBinary firefoxBinary =
+          options.getBinaryOrNull().orElseThrow(() -> new AssertionError("No binary"));
+
+      assertEquals(binary.toString(), firefoxBinary.getPath());
+    } finally {
+      property.set(resetValue);
+    }
+  }
+
+  @Test
+  public void shouldPickUpLegacyValueFromSystemProperty() throws IOException {
+    JreSystemProperty property = new JreSystemProperty(DRIVER_USE_MARIONETTE);
+    String resetValue = property.get();
+
+    try {
+      // No value should default to using Marionette
+      property.set(null);
+      FirefoxOptions options = new FirefoxOptions();
+      assertFalse(options.isLegacy());
+
+      property.set("false");
+      options = new FirefoxOptions();
+      assertTrue(options.isLegacy());
+
+      property.set("true");
+      options = new FirefoxOptions();
+      assertFalse(options.isLegacy());
+    } finally {
+      property.set(resetValue);
+    }
+  }
+
+  @Test
+  public void settingMarionetteToFalseAsASystemPropertyDoesNotPrecedence() {
+    JreSystemProperty property = new JreSystemProperty(DRIVER_USE_MARIONETTE);
+    String resetValue = property.get();
+
+    try {
+      DesiredCapabilities caps = new DesiredCapabilities();
+      caps.setCapability(FirefoxDriver.MARIONETTE, true);
+
+      property.set("false");
+      FirefoxOptions options = new FirefoxOptions().addDesiredCapabilities(caps);
+      assertFalse(options.isLegacy());
+    } finally {
+      property.set(resetValue);
+    }
+  }
+
+  @Test
+  public void shouldPickUpProfileFromSystemProperty() throws IOException {
+    FirefoxProfile defaultProfile = new ProfilesIni().getProfile("default");
+    assumeNotNull(defaultProfile);
+
+    JreSystemProperty property = new JreSystemProperty(BROWSER_PROFILE);
+    String resetValue = property.get();
+    try {
+      property.set("default");
+      FirefoxOptions options = new FirefoxOptions();
+      Optional<FirefoxProfile> profile = options.getProfileOrNull();
+
+      assertTrue(profile.isPresent());
+    } finally {
+      property.set(resetValue);
+    }
+  }
+
+  @Test(expected = WebDriverException.class)
+  public void shouldThrowAnExceptionIfSystemPropertyProfileDoesNotExist() {
+    String unlikelyProfileName = "this-profile-does-not-exist-also-cheese";
+    FirefoxProfile foundProfile = new ProfilesIni().getProfile(unlikelyProfileName);
+    assumeThat(foundProfile, is(nullValue()));
+
+    JreSystemProperty property = new JreSystemProperty(BROWSER_PROFILE);
+    String resetValue = property.get();
+    try {
+      property.set(unlikelyProfileName);
+      new FirefoxOptions();
+    } finally {
+      property.set(resetValue);
+    }
   }
 }

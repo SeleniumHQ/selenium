@@ -50,7 +50,8 @@ import org.openqa.selenium.testing.SwitchToTopAfterTest;
 
 import java.util.Set;
 
-@Ignore({PHANTOMJS, SAFARI})
+@Ignore(value = {CHROME, PHANTOMJS, SAFARI},
+    reason = "chrome: https://bugs.chromium.org/p/chromedriver/issues/detail?id=1500")
 public class AlertsTest extends JUnit4TestBase {
 
   @Before

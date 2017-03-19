@@ -571,6 +571,13 @@ module Selenium
           Point.new data['x'], data['y']
         end
 
+        def element_rect(element)
+          loc = execute :get_element_location, id: element
+          size = execute :get_element_size, id: element
+
+          Rectangle.new loc['x'], loc['y'], size['width'], size['height']
+        end
+
         def element_location_once_scrolled_into_view(element)
           data = execute :get_element_location_once_scrolled_into_view, id: element
 

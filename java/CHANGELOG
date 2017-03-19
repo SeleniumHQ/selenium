@@ -1,3 +1,12 @@
+v3.3.1
+======
+
+* Better support for geckodriver v0.15.0. Notably, exceptions returned
+  from the remote end are now unwrapped properly.
+* Fix a bug with the status page of the standalone server.
+* Deprecated `Capabilities.isJavascriptEnabled`
+
+
 v3.3.0
 ======
 

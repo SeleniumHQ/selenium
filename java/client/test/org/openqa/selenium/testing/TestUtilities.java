@@ -164,7 +164,7 @@ public class TestUtilities {
     } else if (tridentMatcher.find()) {
       versionMatcher = Pattern.compile("rv:(\\d+)").matcher(userAgent);
     } else {
-      return 0;
+      return Integer.MAX_VALUE;  // Because people check to see if we're at this version or less
     }
 
     // extract version string

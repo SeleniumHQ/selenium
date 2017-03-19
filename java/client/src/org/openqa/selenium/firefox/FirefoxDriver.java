@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.firefox;
 
+import static org.openqa.selenium.firefox.FirefoxDriver.SystemProperty.DRIVER_USE_MARIONETTE;
 import static org.openqa.selenium.firefox.FirefoxOptions.FIREFOX_OPTIONS;
 import static org.openqa.selenium.remote.CapabilityType.PROXY;
 
@@ -26,7 +27,6 @@ import com.google.common.collect.Sets;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.NoSuchSessionException;
-import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.internal.NewProfileExtensionConnection;
@@ -51,6 +51,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 /**
  * An implementation of the {#link WebDriver} interface that drives Firefox.
@@ -103,6 +104,8 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
     public static final String DRIVER_USE_MARIONETTE = "webdriver.firefox.marionette";
   }
 
+  private static final Logger LOG = Logger.getLogger(FirefoxDriver.class.getName());
+
   public static final String BINARY = "firefox_binary";
   public static final String PROFILE = "firefox_profile";
   public static final String MARIONETTE = "marionette";
@@ -117,8 +120,118 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
 
   protected FirefoxBinary binary;
 
+  public FirefoxDriver() {
+    this(new FirefoxOptions());
+  }
+
   public FirefoxDriver(FirefoxOptions options) {
     this(toExecutor(options), options.toDesiredCapabilities(), options.toRequiredCapabilities());
+  }
+
+  /**
+   * @deprecated Prefer {@link FirefoxOptions#setBinary(FirefoxBinary)}.
+   */
+  @Deprecated
+  public FirefoxDriver(FirefoxBinary binary) {
+    this(new FirefoxOptions().setBinary(binary));
+    warnAboutDeprecatedConstructor("FirefoxBinary", "setBinary(binary)");
+  }
+
+  public FirefoxDriver(FirefoxProfile profile) {
+    this(new FirefoxOptions().setProfile(profile));
+  }
+
+  /**
+   * @deprecated Prefer {@link FirefoxOptions#setBinary(FirefoxBinary)}, and
+   *   {@link FirefoxOptions#setProfile(FirefoxProfile)}.
+   */
+  @Deprecated
+  public FirefoxDriver(FirefoxBinary binary, FirefoxProfile profile) {
+    this(new FirefoxOptions().setBinary(binary).setProfile(profile));
+    warnAboutDeprecatedConstructor(
+        "FirefoxBinary and FirefoxProfile",
+        "setBinary(binary).setProfile(profile)");
+  }
+
+  public FirefoxDriver(Capabilities desiredCapabilities) {
+    this(getFirefoxOptions(desiredCapabilities).addDesiredCapabilities(desiredCapabilities));
+  }
+
+  public FirefoxDriver(Capabilities desiredCapabilities, Capabilities requiredCapabilities) {
+    this(getFirefoxOptions(desiredCapabilities)
+             .addDesiredCapabilities(desiredCapabilities)
+             .addRequiredCapabilities(requiredCapabilities));
+  }
+
+  /**
+   * @deprecated Prefer {@link FirefoxOptions#setBinary(FirefoxBinary)},
+   *   {@link FirefoxOptions#setProfile(FirefoxProfile)}
+   */
+  @Deprecated
+  public FirefoxDriver(FirefoxBinary binary, FirefoxProfile profile, Capabilities capabilities) {
+    this(getFirefoxOptions(capabilities)
+             .setBinary(binary)
+             .setProfile(profile)
+             .addDesiredCapabilities(capabilities));
+    warnAboutDeprecatedConstructor(
+        "FirefoxBinary, FirefoxProfile, Capabilities",
+        "setBinary(binary).setProfile(profile).addDesiredCapabilities(capabilities)");
+  }
+
+  /**
+   * @deprecated Prefer {@link FirefoxOptions#setBinary(FirefoxBinary)},
+   *   {@link FirefoxOptions#setProfile(FirefoxProfile)}
+   */
+  @Deprecated
+  public FirefoxDriver(
+      FirefoxBinary binary,
+      FirefoxProfile profile,
+      Capabilities desiredCapabilities,
+      Capabilities requiredCapabilities) {
+    this(getFirefoxOptions(desiredCapabilities)
+             .setBinary(binary).setProfile(profile)
+             .addDesiredCapabilities(desiredCapabilities)
+             .addRequiredCapabilities(requiredCapabilities));
+    warnAboutDeprecatedConstructor(
+        "FirefoxBinary, FirefoxProfile, Capabilities",
+        "setBinary(binary).setProfile(profile).addDesiredCapabilities(desired)" +
+        ".addRequiredCapabilities(required)");
+  }
+
+  /**
+   * @deprecated No replacement.
+   */
+  @Deprecated
+  public FirefoxDriver(GeckoDriverService driverService) {
+    this(new DriverCommandExecutor(driverService), null, null);
+  }
+
+  /**
+   * @deprecated No replacement.
+   */
+  @Deprecated
+  public FirefoxDriver(GeckoDriverService driverService, Capabilities desiredCapabilities) {
+    this(new DriverCommandExecutor(driverService), desiredCapabilities, null);
+  }
+
+  /**
+   * @deprecated No replacement.
+   */
+  @Deprecated
+  public FirefoxDriver(
+      GeckoDriverService driverService,
+      Capabilities desiredCapabilities,
+      Capabilities requiredCapabilities) {
+    this(new DriverCommandExecutor(driverService), desiredCapabilities, requiredCapabilities);
+  }
+
+  private FirefoxDriver(
+      CommandExecutor executor,
+      Capabilities desiredCapabilities,
+      Capabilities requiredCapabilities) {
+    super(executor,
+          dropCapabilities(desiredCapabilities),
+          dropCapabilities(requiredCapabilities));
   }
 
   private static CommandExecutor toExecutor(FirefoxOptions options) {
@@ -133,35 +246,6 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
       }
       return new DriverCommandExecutor(builder.build());
     }
-  }
-
-  public FirefoxDriver() {
-    this(new FirefoxOptions());
-  }
-
-  /**
-   * @deprecated Prefer {@link FirefoxOptions#setBinary(FirefoxBinary)}.
-   */
-  @Deprecated
-  public FirefoxDriver(FirefoxBinary binary) {
-    this(new FirefoxOptions().setBinary(binary));
-  }
-
-  public FirefoxDriver(FirefoxProfile profile) {
-    this(new FirefoxOptions().setProfile(profile));
-  }
-
-  /**
-   * @deprecated Prefer {@link FirefoxOptions#setBinary(FirefoxBinary)}, and
-   *   {@link FirefoxOptions#setProfile(FirefoxProfile)}.
-   */
-  @Deprecated
-  public FirefoxDriver(FirefoxBinary binary, FirefoxProfile profile) {
-    this(new FirefoxOptions().setBinary(binary).setProfile(profile));
-  }
-
-  public FirefoxDriver(Capabilities desiredCapabilities) {
-    this(getFirefoxOptions(desiredCapabilities).addDesiredCapabilities(desiredCapabilities));
   }
 
   private static FirefoxOptions getFirefoxOptions(Capabilities capabilities) {
@@ -188,65 +272,22 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
       }
       options = (FirefoxOptions) rawOptions;
     }
+
+    Object marionette = capabilities.getCapability(MARIONETTE);
+
+    if (marionette instanceof Boolean) {
+      options.setLegacy(!(Boolean) marionette);
+    }
     return options;
   }
 
-  public FirefoxDriver(Capabilities desiredCapabilities, Capabilities requiredCapabilities) {
-    this(getFirefoxOptions(desiredCapabilities).addDesiredCapabilities(desiredCapabilities)
-             .addRequiredCapabilities(requiredCapabilities));
-  }
-
-  /**
-   * @deprecated Prefer {@link FirefoxOptions#setBinary(FirefoxBinary)},
-   *   {@link FirefoxOptions#setProfile(FirefoxProfile)}
-   */
-  @Deprecated
-  public FirefoxDriver(FirefoxBinary binary, FirefoxProfile profile, Capabilities capabilities) {
-    this(getFirefoxOptions(capabilities).setBinary(binary).setProfile(profile)
-             .addDesiredCapabilities(capabilities));
-  }
-
-  /**
-   * @deprecated Prefer {@link FirefoxOptions#setBinary(FirefoxBinary)},
-   *   {@link FirefoxOptions#setProfile(FirefoxProfile)}
-   */
-  @Deprecated
-  public FirefoxDriver(FirefoxBinary binary, FirefoxProfile profile,
-                       Capabilities desiredCapabilities, Capabilities requiredCapabilities) {
-    this(getFirefoxOptions(desiredCapabilities).setBinary(binary).setProfile(profile)
-             .addDesiredCapabilities(desiredCapabilities).addRequiredCapabilities(requiredCapabilities));
-  }
-
-  /**
-   * @deprecated No replacement.
-   */
-  @Deprecated
-  public FirefoxDriver(GeckoDriverService driverService) {
-    this(new DriverCommandExecutor(driverService), null, null);
-  }
-
-  /**
-   * @deprecated No replacement.
-   */
-  @Deprecated
-  public FirefoxDriver(GeckoDriverService driverService, Capabilities desiredCapabilities) {
-    this(new DriverCommandExecutor(driverService), desiredCapabilities, null);
-  }
-
-  /**
-   * @deprecated No replacement.
-   */
-  @Deprecated
-  public FirefoxDriver(GeckoDriverService driverService, Capabilities desiredCapabilities,
-      Capabilities requiredCapabilities) {
-    this(new DriverCommandExecutor(driverService), desiredCapabilities, requiredCapabilities);
-  }
-
-  private FirefoxDriver(CommandExecutor executor, Capabilities desiredCapabilities,
-      Capabilities requiredCapabilities) {
-    super(executor,
-          dropCapabilities(desiredCapabilities),
-          dropCapabilities(requiredCapabilities));
+  private void warnAboutDeprecatedConstructor(String arguments, String alternative) {
+    LOG.warning(String.format(
+        "The FirefoxDriver constructor taking %s has been deprecated. Please use the " +
+        "FirefoxDriver(FirefoxOptions) constructor, configuring the FirefoxOptions like this: " +
+        "new FirefoxOptions().%s",
+        arguments,
+        alternative));
   }
 
   @Override
@@ -300,7 +341,7 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
   }
 
   private static Boolean forceMarionetteFromSystemProperty() {
-    String useMarionette = System.getProperty(SystemProperty.DRIVER_USE_MARIONETTE);
+    String useMarionette = System.getProperty(DRIVER_USE_MARIONETTE);
     if (useMarionette == null) {
       return null;
     }
@@ -375,13 +416,6 @@ public class FirefoxDriver extends RemoteWebDriver implements Killable {
     }
 
     return caps;
-  }
-
-  public <X> X getScreenshotAs(OutputType<X> target) {
-    // Get the screenshot as base64.
-    String base64 = execute(DriverCommand.SCREENSHOT).getValue().toString();
-    // ... and convert it.
-    return target.convertFromBase64Png(base64);
   }
 
   public static class LazyCommandExecutor implements CommandExecutor, NeedsLocalLogs {
