@@ -256,8 +256,14 @@ public class AnnotationsTest {
                equalTo(By.id("cheese")));
   }
 
+  /*
+   * Example of how teams making their own @FinyBy alikes would experience a general purpose
+   * capability.
+   *
+   * @See @FindByXXXX (above)
+   */
   @Test
-  public void findBySomethingOutsideSeleniumsWorld() throws Exception {
+  public void findBySomethingElse() throws Exception {
     assertThat(new Annotations(getClass().getField("findBy_xxx")).buildBy().toString(),
                equalTo("FindByXXXX's By"));
   }
