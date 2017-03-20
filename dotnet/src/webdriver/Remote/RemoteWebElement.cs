@@ -901,6 +901,7 @@ namespace OpenQA.Selenium.Remote
             }
 
             Dictionary<string, object> parameters = new Dictionary<string, object>();
+            parameters.Add("id", this.Id);
             parameters.Add("other", otherAsElement.Id);
 
             Response response = this.Execute(DriverCommand.ElementEquals, parameters);
