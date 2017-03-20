@@ -9,6 +9,23 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v3.3.0.1
+========
+ * Updates to JavaScript automation atoms.
+ * Implementing IE driver custom capabilities in sub-object. As of this 
+   version, all IE-only capabilities should be put in a JSON object and
+   that object assigned to a property named "se:ieOptions" in the
+   capabilities object passed to the driver when starting a new session.
+   The only top-level capabilities that the driver will now recognize are
+   "browserName", "unexpectedAlertBehaviour", "pageLoadStrategy", and
+   "proxy". As has always been the case, with the IE driver unknown
+   capability names will be ignored. For the moment, this change is backward
+   compatible with language bindings that do not use the new capability
+   format, but this will change in the future, and IE-only capabilities that
+   are set at the top level of the capabilities object (i.e., not in a
+   sub-object that is the value of a property named "se:ieOptions") will
+   eventually be ignored.
+
 v3.3.0.0
 ========
  * Release to synchronize with release of Selenium project.
