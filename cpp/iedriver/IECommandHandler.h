@@ -52,6 +52,7 @@
 #define FORCE_SHELL_WINDOWS_API_CAPABILITY "ie.forceShellWindowsApi"
 #define FILE_UPLOAD_DIALOG_TIMEOUT_CAPABILITY "ie.fileUploadDialogTimeout"
 #define ENABLE_FULL_PAGE_SCREENSHOT_CAPABILITY "ie.enableFullPageScreenshot"
+#define IE_DRIVER_EXTENSIONS_CAPABILITY "se:ieOptions"
 
 namespace webdriver {
 

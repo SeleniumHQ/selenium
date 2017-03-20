@@ -45,6 +45,15 @@ class NewSessionCommandHandler : public IECommandHandler {
   std::string GetUnexpectedAlertBehaviorValue(const std::string& desired_value);
 
   std::string GetPageLoadStrategyValue(const std::string& desired_value);
+
+  void SetBrowserFactorySettings(const IECommandExecutor& executor,
+                                 const Json::Value& capabilities);
+  void SetInputSettings(const IECommandExecutor& executor,
+                        const Json::Value& capabilities);
+  void SetProxySettings(const IECommandExecutor& executor,
+                        const Json::Value& proxy_capability,
+                        const bool use_per_process_proxy);
+  Json::Value CreateReturnedCapabilities(const IECommandExecutor& executor);
 };
 
 } // namespace webdriver
