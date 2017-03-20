@@ -114,6 +114,12 @@ namespace OpenQA.Selenium.IE
     /// </example>
     public class InternetExplorerOptions : DriverOptions
     {
+        /// <summary>
+        /// Gets the name of the capability used to store IE options in
+        /// a <see cref="DesiredCapabilities"/> object.
+        /// </summary>
+        public static readonly string Capability = "se:ieOptions";
+
         private const string IgnoreProtectedModeSettingsCapability = "ignoreProtectedModeSettings";
         private const string IgnoreZoomSettingCapability = "ignoreZoomSetting";
         private const string InitialBrowserUrlCapability = "initialBrowserUrl";
@@ -150,6 +156,7 @@ namespace OpenQA.Selenium.IE
         private InternetExplorerPageLoadStrategy pageLoadStrategy = InternetExplorerPageLoadStrategy.Default;
         private Proxy proxy;
         private Dictionary<string, object> additionalCapabilities = new Dictionary<string, object>();
+        private Dictionary<string, object> additionalInternetExplorerOptions = new Dictionary<string, object>();
 
         /// <summary>
         /// Gets or sets a value indicating whether to ignore the settings of the Internet Explorer Protected Mode.
@@ -363,9 +370,34 @@ namespace OpenQA.Selenium.IE
         /// thrown when attempting to add a capability for which there is already a type safe option, or
         /// when <paramref name="capabilityName"/> is <see langword="null"/> or the empty string.
         /// </exception>
-        /// <remarks>Calling <see cref="AddAdditionalCapability"/> where <paramref name="capabilityName"/>
-        /// has already been added will overwrite the existing value with the new value in <paramref name="capabilityValue"/></remarks>
+        /// <remarks>Calling <see cref="AddAdditionalCapability(string, object)"/>
+        /// where <paramref name="capabilityName"/> has already been added will overwrite the
+        /// existing value with the new value in <paramref name="capabilityValue"/>.
+        /// Also, by default, calling this method adds capabilities to the options object passed to
+        /// IEDriverServer.exe.</remarks>
         public override void AddAdditionalCapability(string capabilityName, object capabilityValue)
+        {
+            // Add the capability to the ieOptions object by default. This is to handle
+            // the 80% case where the IE driver adds a new option in IEDriverServer.exe
+            // and the bindings have not yet had a type safe option added.
+            this.AddAdditionalCapability(capabilityName, capabilityValue, false);
+        }
+
+        /// <summary>
+        /// Provides a means to add additional capabilities not yet added as type safe options
+        /// for the Internet Explorer driver.
+        /// </summary>
+        /// <param name="capabilityName">The name of the capability to add.</param>
+        /// <param name="capabilityValue">The value of the capability to add.</param>
+        /// <param name="isGlobalCapability">Indicates whether the capability is to be set as a global
+        /// capability for the driver instead of a IE-specific option.</param>
+        /// <exception cref="ArgumentException">
+        /// thrown when attempting to add a capability for which there is already a type safe option, or
+        /// when <paramref name="capabilityName"/> is <see langword="null"/> or the empty string.
+        /// </exception>
+        /// <remarks>Calling <see cref="AddAdditionalCapability(string, object, bool)"/> where <paramref name="capabilityName"/>
+        /// has already been added will overwrite the existing value with the new value in <paramref name="capabilityValue"/></remarks>
+        public void AddAdditionalCapability(string capabilityName, object capabilityValue, bool isGlobalCapability)
         {
             if (capabilityName == IgnoreProtectedModeSettingsCapability ||
                 capabilityName == IgnoreZoomSettingCapability ||
@@ -396,7 +428,14 @@ namespace OpenQA.Selenium.IE
                 throw new ArgumentException("Capability name may not be null an empty string.", "capabilityName");
             }
 
-            this.additionalCapabilities[capabilityName] = capabilityValue;
+            if (isGlobalCapability)
+            {
+                this.additionalCapabilities[capabilityName] = capabilityValue;
+            }
+            else
+            {
+                this.additionalInternetExplorerOptions[capabilityName] = capabilityValue;
+            }
         }
 
         /// <summary>
@@ -408,32 +447,22 @@ namespace OpenQA.Selenium.IE
         public override ICapabilities ToCapabilities()
         {
             DesiredCapabilities capabilities = DesiredCapabilities.InternetExplorer();
-            capabilities.SetCapability(CapabilityType.HasNativeEvents, this.enableNativeEvents);
-            capabilities.SetCapability(EnablePersistentHoverCapability, this.enablePersistentHover);
 
-            if (this.requireWindowFocus)
+            if (this.pageLoadStrategy != InternetExplorerPageLoadStrategy.Default)
             {
-                capabilities.SetCapability(RequireWindowFocusCapability, true);
-            }
+                string pageLoadStrategySetting = "normal";
+                switch (this.pageLoadStrategy)
+                {
+                    case InternetExplorerPageLoadStrategy.Eager:
+                        pageLoadStrategySetting = "eager";
+                        break;
 
-            if (this.ignoreProtectedModeSettings)
-            {
-                capabilities.SetCapability(IgnoreProtectedModeSettingsCapability, true);
-            }
+                    case InternetExplorerPageLoadStrategy.None:
+                        pageLoadStrategySetting = "none";
+                        break;
+                }
 
-            if (this.ignoreZoomLevel)
-            {
-                capabilities.SetCapability(IgnoreZoomSettingCapability, true);
-            }
-
-            if (!string.IsNullOrEmpty(this.initialBrowserUrl))
-            {
-                capabilities.SetCapability(InitialBrowserUrlCapability, this.initialBrowserUrl);
-            }
-
-            if (this.elementScrollBehavior == InternetExplorerElementScrollBehavior.Bottom)
-            {
-                capabilities.SetCapability(ElementScrollBehaviorCapability, 1);
+                capabilities.SetCapability(CapabilityType.PageLoadStrategy, pageLoadStrategySetting);
             }
 
             if (this.unexpectedAlertBehavior != InternetExplorerUnexpectedAlertBehavior.Default)
@@ -453,62 +482,13 @@ namespace OpenQA.Selenium.IE
                 capabilities.SetCapability(CapabilityType.UnexpectedAlertBehavior, unexpectedAlertBehaviorSetting);
             }
 
-            if (this.pageLoadStrategy != InternetExplorerPageLoadStrategy.Default)
-            {
-                string pageLoadStrategySetting = "normal";
-                switch (this.pageLoadStrategy)
-                {
-                    case InternetExplorerPageLoadStrategy.Eager:
-                        pageLoadStrategySetting = "eager";
-                        break;
-
-                    case InternetExplorerPageLoadStrategy.None:
-                        pageLoadStrategySetting = "none";
-                        break;
-                }
-
-                capabilities.SetCapability(CapabilityType.PageLoadStrategy, pageLoadStrategySetting);
-            }
-
-            if (this.browserAttachTimeout != TimeSpan.MinValue)
-            {
-                capabilities.SetCapability(BrowserAttachTimeoutCapability, Convert.ToInt32(this.browserAttachTimeout.TotalMilliseconds));
-            }
-
-            if (this.fileUploadDialogTimeout != TimeSpan.MinValue)
-            {
-                capabilities.SetCapability(FileUploadDialogTimeoutCapability, Convert.ToInt32(this.fileUploadDialogTimeout.TotalMilliseconds));
-            }
-
-            if (this.forceCreateProcessApi)
-            {
-                capabilities.SetCapability(ForceCreateProcessApiCapability, true);
-                if (!string.IsNullOrEmpty(this.browserCommandLineArguments))
-                {
-                    capabilities.SetCapability(BrowserCommandLineSwitchesCapability, this.browserCommandLineArguments);
-                }
-            }
-
-            if (this.forceShellWindowsApi)
-            {
-                capabilities.SetCapability(ForceShellWindowsApiCapability, true);
-            }
-
             if (this.proxy != null)
             {
                 capabilities.SetCapability(CapabilityType.Proxy, this.proxy);
-                capabilities.SetCapability(UsePerProcessProxyCapability, this.usePerProcessProxy);
             }
 
-            if (this.ensureCleanSession)
-            {
-                capabilities.SetCapability(EnsureCleanSessionCapability, true);
-            }
-
-            if (!this.enableFullPageScreenshot)
-            {
-                capabilities.SetCapability(EnableFullPageScreenshotCapability, false);
-            }
+            Dictionary<string, object> internetExplorerOptions = this.BuildInternetExplorerOptionsDictionary();
+            capabilities.SetCapability(InternetExplorerOptions.Capability, internetExplorerOptions);
 
             foreach (KeyValuePair<string, object> pair in this.additionalCapabilities)
             {
@@ -516,6 +496,84 @@ namespace OpenQA.Selenium.IE
             }
 
             return capabilities;
+        }
+
+        private Dictionary<string, object> BuildInternetExplorerOptionsDictionary()
+        {
+            Dictionary<string, object> internetExplorerOptionsDictionary = new Dictionary<string, object>();
+            internetExplorerOptionsDictionary[CapabilityType.HasNativeEvents] = this.enableNativeEvents;
+            internetExplorerOptionsDictionary[EnablePersistentHoverCapability] = this.enablePersistentHover;
+
+            if (this.requireWindowFocus)
+            {
+                internetExplorerOptionsDictionary[RequireWindowFocusCapability] = true;
+            }
+
+            if (this.ignoreProtectedModeSettings)
+            {
+                internetExplorerOptionsDictionary[IgnoreProtectedModeSettingsCapability] = true;
+            }
+
+            if (this.ignoreZoomLevel)
+            {
+                internetExplorerOptionsDictionary[IgnoreZoomSettingCapability] = true;
+            }
+
+            if (!string.IsNullOrEmpty(this.initialBrowserUrl))
+            {
+                internetExplorerOptionsDictionary[InitialBrowserUrlCapability] = this.initialBrowserUrl;
+            }
+
+            if (this.elementScrollBehavior == InternetExplorerElementScrollBehavior.Bottom)
+            {
+                internetExplorerOptionsDictionary[ElementScrollBehaviorCapability] = 1;
+            }
+
+            if (this.browserAttachTimeout != TimeSpan.MinValue)
+            {
+                internetExplorerOptionsDictionary[BrowserAttachTimeoutCapability] = Convert.ToInt32(this.browserAttachTimeout.TotalMilliseconds);
+            }
+
+            if (this.fileUploadDialogTimeout != TimeSpan.MinValue)
+            {
+                internetExplorerOptionsDictionary[FileUploadDialogTimeoutCapability] = Convert.ToInt32(this.fileUploadDialogTimeout.TotalMilliseconds);
+            }
+
+            if (this.forceCreateProcessApi)
+            {
+                internetExplorerOptionsDictionary[ForceCreateProcessApiCapability] = true;
+                if (!string.IsNullOrEmpty(this.browserCommandLineArguments))
+                {
+                    internetExplorerOptionsDictionary[BrowserCommandLineSwitchesCapability] = this.browserCommandLineArguments;
+                }
+            }
+
+            if (this.forceShellWindowsApi)
+            {
+                internetExplorerOptionsDictionary[ForceShellWindowsApiCapability] = true;
+            }
+
+            if (this.proxy != null)
+            {
+                internetExplorerOptionsDictionary[UsePerProcessProxyCapability] = this.usePerProcessProxy;
+            }
+
+            if (this.ensureCleanSession)
+            {
+                internetExplorerOptionsDictionary[EnsureCleanSessionCapability] = true;
+            }
+
+            if (!this.enableFullPageScreenshot)
+            {
+                internetExplorerOptionsDictionary[EnableFullPageScreenshotCapability] = false;
+            }
+
+            foreach (KeyValuePair<string, object> pair in this.additionalInternetExplorerOptions)
+            {
+                internetExplorerOptionsDictionary[pair.Key] = pair.Value;
+            }
+
+            return internetExplorerOptionsDictionary;
         }
     }
 }
