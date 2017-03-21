@@ -35,16 +35,14 @@ void GetSessionCapabilitiesCommandHandler::ExecuteInternal(
     Response* response) {
   Json::Value capabilities;
   capabilities[BROWSER_NAME_CAPABILITY] = "internet explorer";
-  capabilities[VERSION_CAPABILITY] = std::to_string(static_cast<long long>(executor.browser_factory()->browser_version()));
-  capabilities[JAVASCRIPT_ENABLED_CAPABILITY] = true;
-  capabilities[PLATFORM_CAPABILITY] = "WINDOWS";
+  capabilities[BROWSER_VERSION_CAPABILITY] = std::to_string(static_cast<long long>(executor.browser_factory()->browser_version()));
+  capabilities[PLATFORM_NAME_CAPABILITY] = "windows";
   capabilities[NATIVE_EVENTS_CAPABILITY] = executor.input_manager()->enable_native_events();
-  capabilities[CSS_SELECTOR_ENABLED_CAPABILITY] = true;
   if (executor.proxy_manager()->is_proxy_set()) {
     capabilities[PROXY_CAPABILITY] = executor.proxy_manager()->GetProxyAsJson();
   }
   capabilities[ENABLE_PERSISTENT_HOVER_CAPABILITY] = executor.input_manager()->use_persistent_hover();
-  capabilities[UNEXPECTED_ALERT_BEHAVIOR_CAPABILITY] = executor.unexpected_alert_behavior();
+  capabilities[UNHANDLED_PROMPT_BEHAVIOR_CAPABILITY] = executor.unexpected_alert_behavior();
   capabilities[PAGE_LOAD_STRATEGY_CAPABILITY] = executor.page_load_strategy();
   capabilities[ELEMENT_SCROLL_BEHAVIOR_CAPABILITY] = executor.input_manager()->scroll_behavior();
   capabilities[IGNORE_PROTECTED_MODE_CAPABILITY] = executor.browser_factory()->ignore_protected_mode_settings();

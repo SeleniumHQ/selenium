@@ -72,7 +72,9 @@ class NewSessionCommandHandler : public IECommandHandler {
                          const Json::Value& secondary_capabilities,
                          Json::Value* merged_capabilities,
                          std::string* error_message);
-  bool MatchCapabilities(const IECommandExecutor& executor, const Json::Value& merged_capabilities, std::string* error_message);
+  bool MatchCapabilities(const IECommandExecutor& executor,
+                         const Json::Value& merged_capabilities,
+                         std::string* error_message);
 
   Json::Value CreateReturnedCapabilities(const IECommandExecutor& executor);
 };
