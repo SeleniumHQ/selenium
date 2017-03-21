@@ -219,7 +219,7 @@ public class ErrorCodes {
     .add(new KnownError(ELEMENT_NOT_VISIBLE, "element not visible", 400, ElementNotVisibleException.class, true, true))
     .add(new KnownError(IME_ENGINE_ACTIVATION_FAILED, "unsupported operation", 500, ImeActivationFailedException.class, true, false))
     .add(new KnownError(IME_NOT_AVAILABLE, "unsupported operation", 500, ImeNotAvailableException.class, true, false))
-    .add(new KnownError(INTERCEPTING_ELEMENT_ERROR, "element intercepting click", 500, InterceptingElementException.class, true, false))
+    .add(new KnownError(INTERCEPTING_ELEMENT_ERROR, "element click intercepted", 400, InterceptingElementException.class, true, false))
     .add(new KnownError(INVALID_ARGUMENT, "invalid argument", 400, InvalidArgumentException.class, true, true))
     .add(new KnownError(INVALID_COOKIE_DOMAIN, "invalid cookie domain", 400, InvalidCookieDomainException.class, true, true))
     .add(new KnownError(INVALID_ELEMENT_COORDINATES, "invalid element coordinates", 400, InvalidCoordinatesException.class, true, true))
