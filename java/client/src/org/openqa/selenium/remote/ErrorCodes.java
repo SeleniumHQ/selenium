@@ -106,7 +106,6 @@ public class ErrorCodes {
   public static final int METHOD_NOT_ALLOWED = 405;
 
   private static final Logger log = Logger.getLogger(ErrorCodes.class.getName());
-      .put(INTERCEPTING_ELEMENT_ERROR, "element intercepting click")
 
   public String toState(Integer status) {
     if (status == null) {
@@ -162,8 +161,6 @@ public class ErrorCodes {
   public Class<? extends WebDriverException> getExceptionType(int statusCode) {
     if (SUCCESS == statusCode) {
       return null;
-      case INTERCEPTING_ELEMENT_ERROR:
-        return InterceptingElementException.class;
     }
 
     // We know that the tuple of (status code, exception) is distinct.
@@ -188,10 +185,7 @@ public class ErrorCodes {
   public int toStatusCode(Throwable e) {
     if (e == null) {
       return SUCCESS;
-    } else if (thrown instanceof InterceptingElementException) {
-      return INTERCEPTING_ELEMENT_ERROR;
-    }
-
+    } 
     Set<Integer> possibleMatches = KNOWN_ERRORS.stream()
       .filter(knownError -> knownError.getException().equals(e.getClass()))
       .filter(knownError -> knownError.isCanonicalJsonCodeForException)
@@ -225,7 +219,8 @@ public class ErrorCodes {
     .add(new KnownError(ELEMENT_NOT_VISIBLE, "element not visible", 400, ElementNotVisibleException.class, true, true))
     .add(new KnownError(IME_ENGINE_ACTIVATION_FAILED, "unsupported operation", 500, ImeActivationFailedException.class, true, false))
     .add(new KnownError(IME_NOT_AVAILABLE, "unsupported operation", 500, ImeNotAvailableException.class, true, false))
-    .add(new KnownError(INVALID_ARGUMENT, "invalid argument", 400, InvalidArgumentException.class, true, true))
+	.add(new KnownError(INTERCEPTING_ELEMENT_ERROR, "elemnet intercepting click", 500, InterceptingElementException.class, true, false))
+	.add(new KnownError(INVALID_ARGUMENT, "invalid argument", 400, InvalidArgumentException.class, true, true))
     .add(new KnownError(INVALID_COOKIE_DOMAIN, "invalid cookie domain", 400, InvalidCookieDomainException.class, true, true))
     .add(new KnownError(INVALID_ELEMENT_COORDINATES, "invalid element coordinates", 400, InvalidCoordinatesException.class, true, true))
     .add(new KnownError(INVALID_ELEMENT_STATE, "invalid element state", 400, InvalidElementStateException.class, true, true))
