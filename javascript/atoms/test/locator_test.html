@@ -229,11 +229,16 @@ limitations under the License.
         var els = bot.locators.findElements({id: id});
         assertEquals("Expected exactly one element with ID " + id, 1, els.length);
         assertEquals(expectedName, els[0].getAttribute('name'));
+
+        var el = bot.locators.findElement({id: id});
+        assertNotNullNorUndefined("Expected element with ID " + id, el);
+        assertEquals(expectedName, el.getAttribute('name'));
       }
 
       findById("'", 'apóstrofo');
       findById('"', 'comilla');
       findById('\\', 'barra_invertida');
+      findById('s p a c e', 'space');
       findById('#.:;,!?+<>=~*^$|%&@`{}-/[]()', 'remaining_css_special_symbols');
     }
 
@@ -396,6 +401,7 @@ limitations under the License.
   <div name="apóstrofo" id="'">apóstrofo</div>
   <div name="comilla" id='"'>comilla</div>
   <div name="barra_invertida" id="\">barra invertida</div>
+  <div name="space" id="s p a c e">space</div>
   <div name="remaining_css_special_symbols" id="#.:;,!?+<>=~*^$|%&@`{}-/[]()">queso!</div>
 
   <a id="link" href="#">this is a link</a>
