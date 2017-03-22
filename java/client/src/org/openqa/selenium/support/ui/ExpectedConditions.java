@@ -1412,7 +1412,7 @@ public class ExpectedConditions {
   /**
    * An expectation with the logical or condition of the given list of conditions.
    *
-   * Each condition is checked until at leas one of them returns true or not null
+   * Each condition is checked until at least one of them returns true or not null.
    *
    * @param conditions ExpectedCondition is a list of alternative conditions
    * @return true once one of conditions is satisfied
@@ -1421,7 +1421,9 @@ public class ExpectedConditions {
     return new ExpectedCondition<Boolean>() {
       @Override
       public Boolean apply(WebDriver driver) {
+        RuntimeException lastException = null;
         for (ExpectedCondition<?> condition : conditions) {
+          try {
             Object result = condition.apply(driver);
             if (result != null) {
               if (result instanceof Boolean) {
@@ -1432,6 +1434,12 @@ public class ExpectedConditions {
                 return true;
               }
             }
+          } catch (RuntimeException e) {
+            lastException = e;
+          }
+        }
+        if (lastException != null) {
+          throw lastException;
         }
         return false;
       }
