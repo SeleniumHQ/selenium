@@ -23,6 +23,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
+import static org.openqa.selenium.testing.Driver.CHROME;
+import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.REMOTE;
 
 import org.junit.Test;
@@ -122,6 +124,19 @@ public class ChildrenFindingTest extends JUnit4TestBase {
     assertThat(child.getText(), is("inside"));
   }
 
+  @Ignore(
+      value = {CHROME, IE},
+      reason = "Need to recompile drivers with atoms from 6c55320d3f0eb23de56270a55c74602fc8d63c8a")
+  @Test
+  public void testFindElementByIdWhenIdContainsNonAlphanumericCharacters() {
+    driver.get(pages.nestedPage);
+    WebElement element = driver.findElement(By.id("test_special_chars"));
+    WebElement childWithSpaces = element.findElement(By.id("white space"));
+    assertThat(childWithSpaces.getText(), is("space"));
+    WebElement childWithCssChars = element.findElement(By.id("css#.chars"));
+    assertThat(childWithCssChars.getText(), is("css escapes"));
+  }
+
   @Test
   public void testFindElementByIdWhenNoMatchInContext() {
     driver.get(pages.nestedPage);
@@ -140,6 +155,19 @@ public class ChildrenFindingTest extends JUnit4TestBase {
     WebElement element = driver.findElement(By.name("form2"));
     List<WebElement> children = element.findElements(By.id("2"));
     assertThat(children.size(), is(2));
+  }
+
+  @Ignore(
+      value = {CHROME, IE},
+      reason = "Need to recompile drivers with atoms from 6c55320d3f0eb23de56270a55c74602fc8d63c8a")
+  @Test
+  public void testFindElementsByIdWithNonAlphanumericCharacters() {
+    driver.get(pages.nestedPage);
+    WebElement element = driver.findElement(By.id("test_special_chars"));
+    List<WebElement> children = element.findElements(By.id("white space"));
+    assertThat(children.size(), is(1));
+    List<WebElement> children2 = element.findElements(By.id("css#.chars"));
+    assertThat(children2.size(), is(1));
   }
 
   @Test

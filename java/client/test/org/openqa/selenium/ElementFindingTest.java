@@ -62,6 +62,18 @@ public class ElementFindingTest extends JUnit4TestBase {
     assertThat(element.getAttribute("id"), is("2"));
   }
 
+  @Ignore(
+      value = {CHROME, IE},
+      reason = "Need to recompile drivers with atoms from 6c55320d3f0eb23de56270a55c74602fc8d63c8a")
+  @Test
+  public void testShouldBeAbleToFindASingleElementByIdWithNonAlphanumericCharacters() {
+    driver.get(pages.nestedPage);
+    WebElement element = driver.findElement(By.id("white space"));
+    assertThat(element.getText(), is("space"));
+    WebElement element2 = driver.findElement(By.id("css#.chars"));
+    assertThat(element2.getText(), is("css escapes"));
+  }
+
   @Test
   public void testShouldBeAbleToFindMultipleElementsById() {
     driver.get(pages.nestedPage);
@@ -74,6 +86,18 @@ public class ElementFindingTest extends JUnit4TestBase {
     driver.get(pages.nestedPage);
     List<WebElement> elements = driver.findElements(By.id("2"));
     assertThat(elements.size(), is(8));
+  }
+
+  @Ignore(
+      value = {CHROME, IE},
+      reason = "Need to recompile drivers with atoms from 6c55320d3f0eb23de56270a55c74602fc8d63c8a")
+  @Test
+  public void testShouldBeAbleToFindMultipleElementsByIdWithNonAlphanumericCharacters() {
+    driver.get(pages.nestedPage);
+    List<WebElement> elements = driver.findElements(By.id("white space"));
+    assertThat(elements.size(), is(2));
+    List<WebElement> elements2 = driver.findElements(By.id("css#.chars"));
+    assertThat(elements2.size(), is(2));
   }
 
   // By.id negative
