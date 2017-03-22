@@ -415,7 +415,9 @@ module Selenium
 
         # TODO: - Implement file verification
         def send_keys_to_element(element, keys)
-          execute :element_send_keys, {id: element}, {value: keys.join('').split(//)}
+          # Keep .split(//) for backward compatibility for now
+          text = keys.join('')
+          execute :element_send_keys, {id: element}, {value: text.split(//), text: text}
         end
 
         def clear_element(element)
