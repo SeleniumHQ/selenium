@@ -348,9 +348,13 @@ public class ProtocolHandshake {
     // Pull that out if it exists.
     if (value != null && value instanceof Map) {
       Map<?, ?> mappedValue = (Map<?, ?>) value;
-      if (mappedValue.containsKey("value") && mappedValue.containsKey("sessionId")) {
-        value = mappedValue.get("value");
+      if (mappedValue.containsKey("sessionId")) {
         sessionId = mappedValue.get("sessionId");
+      }
+      if (mappedValue.containsKey("capabilities")) {
+        value = mappedValue.get("capabilities");
+      } else if (mappedValue.containsKey("value")) {
+        value = mappedValue.get("value");
       }
       if (mappedValue.containsKey("error")) {
         w3cError = mappedValue.get("error");
