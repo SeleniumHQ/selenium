@@ -25,26 +25,28 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-
+import java.io.IOException;
+import java.util.Map;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-import java.io.IOException;
-import java.util.Map;
-
 @SuppressWarnings("unchecked")
+@RunWith(JUnit4.class)
 public class ProtocolHandshakeTest {
 
   @Test
-  public void shouldIncludeJsonWireProtocolCapabilities() throws IOException {
+  public void requestShouldIncludeJsonWireProtocolCapabilities() throws IOException {
     Map<String, Object> params = ImmutableMap.of("desiredCapabilities", new DesiredCapabilities());
     Command command = new Command(null, DriverCommand.NEW_SESSION, params);
 
     HttpResponse response = new HttpResponse();
     response.setStatus(HTTP_OK);
-    response.setContent("{\"value\": {\"sessionId\": \"23456789\", \"value\": {}}}".getBytes(UTF_8));
+    response.setContent(
+        "{\"value\": {\"sessionId\": \"23456789\", \"capabilities\": {}}}".getBytes(UTF_8));
     RecordingHttpClient client = new RecordingHttpClient(response);
 
     new ProtocolHandshake().createSession(client, command);
@@ -58,13 +60,14 @@ public class ProtocolHandshakeTest {
   }
 
   @Test
-  public void shouldIncludeOlderGeckoDriverCapabilities() throws IOException {
+  public void requestShouldIncludeOlderGeckoDriverCapabilities() throws IOException {
     Map<String, Object> params = ImmutableMap.of("desiredCapabilities", new DesiredCapabilities());
     Command command = new Command(null, DriverCommand.NEW_SESSION, params);
 
     HttpResponse response = new HttpResponse();
     response.setStatus(HTTP_OK);
-    response.setContent("{\"value\": {\"sessionId\": \"23456789\", \"value\": {}}}".getBytes(UTF_8));
+    response.setContent(
+        "{\"value\": {\"sessionId\": \"23456789\", \"capabilities\": {}}}".getBytes(UTF_8));
     RecordingHttpClient client = new RecordingHttpClient(response);
 
     new ProtocolHandshake().createSession(client, command);
@@ -79,13 +82,14 @@ public class ProtocolHandshakeTest {
   }
 
   @Test
-  public void shouldIncludeSpecCompliantW3CCapabilities() throws IOException {
+  public void requestShouldIncludeSpecCompliantW3CCapabilities() throws IOException {
     Map<String, Object> params = ImmutableMap.of("desiredCapabilities", new DesiredCapabilities());
     Command command = new Command(null, DriverCommand.NEW_SESSION, params);
 
     HttpResponse response = new HttpResponse();
     response.setStatus(HTTP_OK);
-    response.setContent("{\"value\": {\"sessionId\": \"23456789\", \"value\": {}}}".getBytes(UTF_8));
+    response.setContent(
+        "{\"value\": {\"sessionId\": \"23456789\", \"capabilities\": {}}}".getBytes(UTF_8));
     RecordingHttpClient client = new RecordingHttpClient(response);
 
     new ProtocolHandshake().createSession(client, command);
@@ -96,6 +100,54 @@ public class ProtocolHandshakeTest {
 
     assertEquals(ImmutableMap.of(), json.get("alwaysMatch"));
     assertEquals(ImmutableList.of(), json.get("firstMatch"));
+  }
+
+  @Test
+  public void shouldParseW3CNewSessionResponse() throws IOException {
+    Map<String, Object> params = ImmutableMap.of("desiredCapabilities", new DesiredCapabilities());
+    Command command = new Command(null, DriverCommand.NEW_SESSION, params);
+
+    HttpResponse response = new HttpResponse();
+    response.setStatus(HTTP_OK);
+    response.setContent(
+        "{\"value\": {\"sessionId\": \"23456789\", \"capabilities\": {}}}".getBytes(UTF_8));
+    RecordingHttpClient client = new RecordingHttpClient(response);
+
+    ProtocolHandshake.Result result = new ProtocolHandshake().createSession(client, command);
+    assertEquals(result.getDialect(), Dialect.W3C);
+  }
+
+  @Test
+  public void shouldParseOlderW3CNewSessionResponse() throws IOException {
+    Map<String, Object> params = ImmutableMap.of("desiredCapabilities", new DesiredCapabilities());
+    Command command = new Command(null, DriverCommand.NEW_SESSION, params);
+
+    HttpResponse response = new HttpResponse();
+    response.setStatus(HTTP_OK);
+    // Some drivers (e.g., GeckoDriver 0.15.0) return the capabilities in a key named "value",
+    // rather than "capabilities"; essentially this is the old Wire Protocol format, wrapped in a
+    // "value" key.
+    response.setContent(
+        "{\"value\": {\"sessionId\": \"23456789\", \"value\": {}}}".getBytes(UTF_8));
+    RecordingHttpClient client = new RecordingHttpClient(response);
+
+    ProtocolHandshake.Result result = new ProtocolHandshake().createSession(client, command);
+    assertEquals(result.getDialect(), Dialect.W3C);
+  }
+
+  @Test
+  public void shouldParseWireProtocolNewSessionResponse() throws IOException {
+    Map<String, Object> params = ImmutableMap.of("desiredCapabilities", new DesiredCapabilities());
+    Command command = new Command(null, DriverCommand.NEW_SESSION, params);
+
+    HttpResponse response = new HttpResponse();
+    response.setStatus(HTTP_OK);
+    response.setContent(
+        "{\"sessionId\": \"23456789\", \"status\": 0, \"value\": {}}".getBytes(UTF_8));
+    RecordingHttpClient client = new RecordingHttpClient(response);
+
+    ProtocolHandshake.Result result = new ProtocolHandshake().createSession(client, command);
+    assertEquals(result.getDialect(), Dialect.OSS);
   }
 
   class RecordingHttpClient implements HttpClient {
