@@ -39,6 +39,7 @@ public interface CapabilityType {
   String APPLICATION_NAME = "applicationName";
   // Enable this capability to accept all SSL certs by defaults.
   String ACCEPT_SSL_CERTS = "acceptSslCerts";
+  String ACCEPT_INSECURE_CERTS = "acceptInsecureCerts";
   String HAS_NATIVE_EVENTS = "nativeEvents";
   String UNEXPECTED_ALERT_BEHAVIOUR = "unexpectedAlertBehaviour";
   String ELEMENT_SCROLL_BEHAVIOR = "elementScrollBehavior";

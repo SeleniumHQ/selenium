@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.remote;
 
+import static org.openqa.selenium.remote.CapabilityType.ACCEPT_INSECURE_CERTS;
 import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 import static org.openqa.selenium.remote.CapabilityType.LOGGING_PREFS;
 import static org.openqa.selenium.remote.CapabilityType.PLATFORM;
@@ -137,6 +138,22 @@ public class DesiredCapabilities implements Serializable, Capabilities {
     setCapability(SUPPORTS_JAVASCRIPT, javascriptEnabled);
   }
 
+  public boolean acceptInsecureCerts() {
+    if (capabilities.containsKey(ACCEPT_INSECURE_CERTS)) {
+      Object raw = capabilities.get(ACCEPT_INSECURE_CERTS);
+      if (raw instanceof String) {
+        return Boolean.parseBoolean((String) raw);
+      } else if (raw instanceof Boolean) {
+        return ((Boolean) raw).booleanValue();
+      }
+    }
+    return true;
+  }
+
+  public void setAcceptInsecureCerts(boolean acceptInsecureCerts) {
+    setCapability(ACCEPT_INSECURE_CERTS, acceptInsecureCerts);
+  }
+
   public Object getCapability(String capabilityName) {
     return capabilities.get(capabilityName);
   }
@@ -206,7 +223,11 @@ public class DesiredCapabilities implements Serializable, Capabilities {
   }
 
   public static DesiredCapabilities firefox() {
-    return new DesiredCapabilities(BrowserType.FIREFOX, "", Platform.ANY);
+    DesiredCapabilities capabilities = new DesiredCapabilities(BrowserType.FIREFOX,
+                                                               "", Platform.ANY);
+    capabilities.setCapability(CapabilityType.ACCEPT_INSECURE_CERTS, true);
+
+    return capabilities;
   }
 
   public static DesiredCapabilities htmlUnit() {
