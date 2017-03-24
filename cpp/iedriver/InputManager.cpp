@@ -139,7 +139,7 @@ int InputManager::PerformInputSequence(BrowserHandle browser_wrapper, const Json
       if (ticks.size() <= j) {
         Json::Value tick(Json::arrayValue);
         ticks.append(tick);
-        tick_durations.push_back(j);
+        tick_durations.push_back(static_cast<int>(j));
       }
       Json::UInt action_index = static_cast<Json::UInt>(j);
       Json::Value action = actions[action_index];
@@ -244,7 +244,7 @@ int InputManager::PerformInputWithSendInput(BrowserHandle browser_wrapper) {
   std::vector<size_t>::const_iterator it = sleep_indexes.begin();
   for (; it != sleep_indexes.end(); ++it) {
     INPUT sleep_input = this->inputs_[*it];
-    int number_of_inputs = *it - next_input_index;
+    int number_of_inputs = static_cast<int>(*it) - next_input_index;
     if (number_of_inputs > 0) {
       this->SetFocusToBrowser(browser_wrapper);
       HookProcessor::ResetEventCount();
@@ -255,7 +255,7 @@ int InputManager::PerformInputWithSendInput(BrowserHandle browser_wrapper) {
     next_input_index = *it + 1;
   }
   // Now send any inputs after the last sleep, if any.
-  int last_inputs = this->inputs_.size() - next_input_index;
+  int last_inputs = static_cast<int>(this->inputs_.size()) - next_input_index;
   if (last_inputs > 0) {
     this->SetFocusToBrowser(browser_wrapper);
     HookProcessor::ResetEventCount();

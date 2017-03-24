@@ -310,7 +310,7 @@ void InteractionsManager::SendKeyUpMessage(HWND window_handle, bool shift_presse
 
 void InteractionsManager::SendMouseMoveMessage(HWND window_handle, bool shift_pressed, bool control_pressed, bool left_pressed, bool right_pressed, int x, int y) {
   LRESULT message_timeout = 0;
-  DWORD send_message_result = 0;
+  DWORD_PTR send_message_result = 0;
   WPARAM button_value = 0;
   if (left_pressed) {
     button_value |= MK_LBUTTON;

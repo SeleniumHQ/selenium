@@ -207,7 +207,7 @@ Json::Value NewSessionCommandHandler::ProcessCapabilities(const IECommandExecuto
       Json::Value validated_first_match_candidates(Json::arrayValue);
       for (size_t i = 0; i < first_match_candidates.size(); ++i) {
         std::string first_match_validation_error = "";
-        Json::Value first_match_candidate = first_match_candidates[i];
+        Json::Value first_match_candidate = first_match_candidates[static_cast<int>(i)];
         if (this->ValidateCapabilities(first_match_candidate, "firstMatch element " + std::to_string(i), &first_match_validation_error)) {
           validated_first_match_candidates.append(first_match_candidate);
         } else {
@@ -217,7 +217,7 @@ Json::Value NewSessionCommandHandler::ProcessCapabilities(const IECommandExecuto
 
       for (size_t i = 0; i < validated_first_match_candidates.size(); ++i) {
         Json::Value merged_capabilities(Json::objectValue);
-        Json::Value first_match = validated_first_match_candidates[i];
+        Json::Value first_match = validated_first_match_candidates[static_cast<int>(i)];
         if (!this->MergeCapabilities(always_match, first_match, &merged_capabilities, error_message)) {
           // If any of the capabilities can't be merged, this is a failure
           // condition according to the spec, so we fail here.

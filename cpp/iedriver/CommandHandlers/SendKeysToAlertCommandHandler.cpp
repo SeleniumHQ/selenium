@@ -56,8 +56,9 @@ void SendKeysToAlertCommandHandler::ExecuteInternal(
     }
     Json::Value character_array = text_parameter_iterator->second;
     std::string value = "";
+    Json::Value::ArrayIndex x;
     for (size_t i = 0; i < character_array.size(); ++i) {
-      value.append(character_array[i].asString());
+      value.append(character_array[static_cast<int>(i)].asString());
     }
     status_code = dialog.SendKeys(value);
     if (status_code != WD_SUCCESS) {
