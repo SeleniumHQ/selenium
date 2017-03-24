@@ -83,6 +83,34 @@ module Selenium
       end
 
       #
+      # Sets the current window rect to the given point and position.
+      #
+      # @param [Selenium::WebDriver::Rectangle, #x, #y, #width, #height] rectangle The new rect.
+      #
+
+      def rect=(rectangle)
+        unless %w[x y width height].all? { |val| rectangle.respond_to? val }
+          raise ArgumentError, "expected #{rectangle.inspect}:#{rectangle.class}" \
+                               ' to respond to #x, #y, #width, and #height'
+        end
+
+        @bridge.set_window_rect(x: rectangle.x,
+                                y: rectangle.y,
+                                width: rectangle.width,
+                                height: rectangle.height)
+      end
+
+      #
+      # Get the rect of the current window.
+      #
+      # @return [Selenium::WebDriver::Rectangle] The rectangle.
+      #
+
+      def rect
+        @bridge.window_rect
+      end
+
+      #
       # Equivalent to #size=, but accepts width and height arguments.
       #
       # @example Maximize the window.
@@ -113,6 +141,14 @@ module Selenium
 
       def maximize
         @bridge.maximize_window
+      end
+
+      #
+      # Minimize the current window
+      #
+
+      def minimize
+        @bridge.minimize_window
       end
 
       #

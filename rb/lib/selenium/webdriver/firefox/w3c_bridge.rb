@@ -60,6 +60,32 @@ module Selenium
           @service.stop if @service
         end
 
+        # Firefox doesn't implement rect yet
+        def resize_window(width, height, handle = :current)
+          unless handle == :current
+            raise Error::WebDriverError, 'Switch to desired window before changing its size'
+          end
+          execute :set_window_size, {}, {width: width, height: height}
+        end
+
+        def window_size(handle = :current)
+          unless handle == :current
+            raise Error::UnsupportedOperationError, 'Switch to desired window before getting its size'
+          end
+          data = execute :get_window_size
+
+          Dimension.new data['width'], data['height']
+        end
+
+        def reposition_window(x, y)
+          execute :set_window_position, {}, {x: x, y: y}
+        end
+
+        def window_position
+          data = execute :get_window_position
+          Point.new data['x'], data['y']
+        end
+
         private
 
         def create_capabilities(opts)
