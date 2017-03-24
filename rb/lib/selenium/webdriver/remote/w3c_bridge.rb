@@ -113,7 +113,7 @@ module Selenium
         def create_session(desired_capabilities)
           resp = execute :new_session, {}, {desiredCapabilities: desired_capabilities}
           @session_id = resp['sessionId']
-          return W3CCapabilities.json_create resp['value'] if @session_id
+          return W3CCapabilities.json_create(resp['capabilities'] || resp['value']) if @session_id
 
           raise Error::WebDriverError, 'no sessionId in returned payload'
         end
