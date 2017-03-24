@@ -124,9 +124,11 @@ public class FirefoxOptions {
           options.addPreference(entry.getKey(), (Integer) value);
         } else if (value instanceof String) {
           options.addPreference(entry.getKey(), (String) value);
+        }else if (value instanceof Long) {
+          options.addPreference(entry.getKey(), ((Number)value).intValue());
         } else {
-          throw new WebDriverException(
-              "Invalid Firefox preference value: " + entry.getKey() + "=" + value);
+           throw new WebDriverException(
+               "Invalid Firefox preference value: " + entry.getKey() + "=" + value);
         }
       });
     }
