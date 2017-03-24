@@ -32,18 +32,18 @@ void Response::Deserialize(const std::string& json) {
   Json::Value response_object;
   Json::Reader reader;
   reader.parse(json, response_object);
-  if (response_object.isMember("error")) {
-    this->error_ = response_object["error"].asString();
-    this->value_ = response_object["message"].asString();
-  } else {
-    this->error_ = "";
-    if (response_object.isMember("sessionId")) {
-      this->value_ = response_object;
-    } else if (response_object.isMember("value")) {
-      this->value_ = response_object["value"];
+  Json::Value value_object;
+  if (response_object.isMember("value")) {
+    value_object = response_object["value"];
+    if (value_object.isObject() && value_object.isMember("error")) {
+      this->error_ = value_object["error"].asString();
+      this->value_ = value_object["message"].asString();
     } else {
-      this->value_ = Json::Value::null;
+      this->error_ = "";
+      this->value_ = value_object;
     }
+  } else {
+    this->value_ = Json::Value::null;
   }
 }
 
@@ -52,12 +52,14 @@ std::string Response::Serialize(void) {
 
   Json::Value json_object;
   if (this->error_.size() > 0) {
-    json_object["error"] = this->error_;
-    json_object["message"] = this->value_.asString();
-    json_object["stacktrace"] = "";
+    Json::Value error_object;
+    error_object["error"] = this->error_;
+    error_object["message"] = this->value_.asString();
+    error_object["stacktrace"] = "";
     if (!this->value_.isNull()) {
-      json_object["data"] = this->additional_data_;
+      error_object["data"] = this->additional_data_;
     }
+    json_object["value"] = error_object;
   } else {
     json_object["value"] = this->value_;
   }
@@ -102,7 +104,10 @@ void Response::AddAdditionalData(const std::string& data_name,
 }
 
 std::string Response::GetSessionId(void) {
-  return this->value_.get("sessionId", "").asString();
+  if (this->error_.size() == 0) {
+    return this->value_.get("sessionId", "").asString();
+  }
+  return "";
 }
 
 int Response::GetHttpResponseCode(void) {
