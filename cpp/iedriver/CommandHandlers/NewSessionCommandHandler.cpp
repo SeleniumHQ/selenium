@@ -159,9 +159,16 @@ std::string NewSessionCommandHandler::GetPageLoadStrategyValue(
 }
 
 Json::Value NewSessionCommandHandler::ProcessLegacyCapabilities(const IECommandExecutor& executor, const Json::Value& capabilities, std::string* error_message) {
-  this->SetBrowserFactorySettings(executor, capabilities);
+  Json::Value ie_options;
+  if (capabilities.isMember(IE_DRIVER_EXTENSIONS_CAPABILITY)) {
+    ie_options = capabilities[IE_DRIVER_EXTENSIONS_CAPABILITY];
+  } else {
+    ie_options = capabilities;
+  }
 
-  this->SetInputSettings(executor, capabilities);
+  this->SetBrowserFactorySettings(executor, ie_options);
+
+  this->SetInputSettings(executor, ie_options);
 
   IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
 
