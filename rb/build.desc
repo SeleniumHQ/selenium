@@ -158,6 +158,15 @@ ruby_test(name = "ie",
   deps = [ ":ie" ]
 )
 
+ruby_test(name = "ie-w3c",
+  srcs = [
+    "spec/integration/selenium/webdriver/*_spec.rb",
+    "spec/integration/selenium/webdriver/ie/**/*_spec.rb"
+  ],
+  include = ["rb/spec/integration", "build/rb/lib"],
+  deps = [ ":ie" ]
+)
+
 ruby_library(name = "phantomjs",
   srcs = [
     "lib/selenium/webdriver/phantomjs/**/*.rb",

@@ -136,7 +136,7 @@ module Selenium
         end
       end
 
-      not_compliant_on browser: [:ie, :safari] do
+      not_compliant_on browser: [:ie, :ie_w3c, :safari] do
         context 'with more than two windows' do
           it 'should close current window when more than two windows exist' do
             driver.navigate.to url_for('xhtmlTest.html')
@@ -311,7 +311,7 @@ module Selenium
 
           # https://github.com/SeleniumHQ/selenium/issues/3340
           not_compliant_on driver: :remote, platform: :macosx do
-            not_compliant_on browser: :ie do
+            not_compliant_on browser: [:ie, :ie_w3c] do
               it 'raises NoAlertOpenError if no alert is present' do
                 expect { driver.switch_to.alert }.to raise_error(Selenium::WebDriver::Error::NoSuchAlertError, /alert|modal/i)
               end
@@ -327,13 +327,15 @@ module Selenium
                 driver.find_element(id: 'alert').click
                 wait_for_alert
 
-                expect { driver.title }.to raise_error(Selenium::WebDriver::Error::UnhandledAlertError)
+                expect { driver.title }
+                  .to raise_error(Selenium::WebDriver::Error::UnhandledAlertError)
+                  .or raise_error(Selenium::WebDriver::Error::UnexpectedAlertOpenError)
 
                 not_compliant_on browser: [:ff_esr, :ie] do
                   driver.switch_to.alert.accept
                 end
 
-                compliant_on browser: :ff_esr do
+                compliant_on browser: [:ff_esr, :ie_w3c] do
                   reset_driver!
                 end
               end
@@ -342,9 +344,9 @@ module Selenium
         end
       end
 
-      compliant_on browser: :ie do
+      compliant_on browser: [:ie, :ie_w3c] do
         # Windows 10 changed the auth alert
-        not_compliant_on browser: :ie do
+        not_compliant_on browser: [:ie, :ie_w3c] do
           describe 'basic auth alerts' do
             after { reset_driver! }
 

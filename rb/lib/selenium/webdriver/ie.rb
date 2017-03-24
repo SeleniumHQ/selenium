@@ -19,6 +19,7 @@
 
 require 'selenium/webdriver/ie/bridge'
 require 'selenium/webdriver/ie/service'
+require 'selenium/webdriver/ie/w3c_bridge'
 
 module Selenium
   module WebDriver

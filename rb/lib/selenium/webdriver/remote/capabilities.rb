@@ -105,7 +105,8 @@ module Selenium
               platform: :windows,
               takes_screenshot: true,
               css_selectors_enabled: true,
-              native_events: true
+              native_events: true,
+              w3c: false
             }.merge(opts))
           end
           alias_method :ie, :internet_explorer

@@ -99,7 +99,7 @@ module Selenium
         end
 
         def start_windows
-          if %w[ie internet_explorer].include? ENV['WD_SPEC_DRIVER']
+          if %w[ie ie_w3c internet_explorer].include? ENV['WD_SPEC_DRIVER']
             # For IE, the combination of Windows + FFI + MRI seems to cause a
             # deadlock with the get() call and the server thread.
             # Workaround by running this file in a subprocess.
