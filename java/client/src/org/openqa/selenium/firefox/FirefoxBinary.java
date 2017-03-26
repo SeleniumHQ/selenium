@@ -134,30 +134,6 @@ public class FirefoxBinary {
             String.format("Cannot find firefox binary for channel '%s' in PATH", channel)));
   }
 
-  /**
-   * @deprecated Perform the version check by taking a look at the version that comes back from the
-   *   remote end in the returned {@link org.openqa.selenium.Capabilities}.
-   */
-  @Deprecated
-  public FirefoxBinary(String version) {
-    Executable systemBinary = locateFirefoxBinaryFromSystemProperty();
-    if (systemBinary != null) {
-      if (systemBinary.getVersion().startsWith(version)) {
-        executable = systemBinary;
-        return;
-      } else {
-        throw new WebDriverException(
-          "Firefox executable specified by system property " + FirefoxDriver.SystemProperty.BROWSER_BINARY +
-          " has version '" + systemBinary.getVersion() + "', that does not match '" + version + "'");
-      }
-    }
-
-    executable = locateFirefoxBinariesFromPlatform()
-        .filter(e -> e.getVersion().startsWith(version))
-        .findFirst().orElseThrow(() -> new WebDriverException(
-            String.format("Cannot find firefox binary version '%s' in PATH", version)));
-  }
-
   public FirefoxBinary(File pathToFirefoxBinary) {
     executable = new Executable(pathToFirefoxBinary);
   }

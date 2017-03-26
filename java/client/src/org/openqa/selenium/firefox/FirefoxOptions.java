@@ -246,13 +246,8 @@ public class FirefoxOptions {
 
     Object rawVersion = caps.getCapability(VERSION);
     if (rawVersion != null && !"".equals(rawVersion)) {
-      try {
-        FirefoxBinary.Channel channel =
-            FirefoxBinary.Channel.fromString(String.valueOf(rawVersion));
-        return Optional.of(new FirefoxBinary(channel));
-      } catch (WebDriverException ex) {
-        return Optional.of(new FirefoxBinary(String.valueOf(rawVersion)));
-      }
+      FirefoxBinary.Channel channel = FirefoxBinary.Channel.fromString(String.valueOf(rawVersion));
+      return Optional.of(new FirefoxBinary(channel));
     }
 
     return Optional.empty();
