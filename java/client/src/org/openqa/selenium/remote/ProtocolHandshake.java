@@ -100,8 +100,12 @@ public class ProtocolHandshake {
       out.beginObject();
 
       streamJsonWireProtocolParameters(out, gson, des, req);
+
+      out.name("capabilities");
+      out.beginObject();
       streamGeckoDriver013Parameters(out, gson, des, req);
       streamW3CProtocolParameters(out, gson, des, req);
+      out.endObject();
 
       out.endObject();
       out.flush();
@@ -382,13 +386,10 @@ public class ProtocolHandshake {
       Gson gson,
       JsonObject des,
       JsonObject req) throws IOException {
-    out.name("capabilities");
-    out.beginObject();
     out.name("desiredCapabilities");
     gson.toJson(des, out);
     out.name("requiredCapabilities");
     gson.toJson(req, out);
-    out.endObject();  // End "capabilities"
   }
 
   public class Result {

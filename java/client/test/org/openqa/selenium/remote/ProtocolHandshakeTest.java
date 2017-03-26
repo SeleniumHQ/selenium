@@ -20,19 +20,22 @@ package org.openqa.selenium.remote;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import java.io.IOException;
-import java.util.Map;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+
+import java.io.IOException;
+import java.util.Map;
 
 @SuppressWarnings("unchecked")
 @RunWith(JUnit4.class)
@@ -97,9 +100,10 @@ public class ProtocolHandshakeTest {
     HttpRequest request = client.getRequest();
     Map<String, Object> json = new Gson()
         .fromJson(request.getContentString(), new TypeToken<Map<String, Object>>(){}.getType());
+    Map<String, Object> caps = (Map<String, Object>) json.get("capabilities");
 
-    assertEquals(ImmutableMap.of(), json.get("alwaysMatch"));
-    assertEquals(ImmutableList.of(), json.get("firstMatch"));
+    assertEquals(ImmutableMap.of(), caps.get("alwaysMatch"));
+    assertEquals(ImmutableList.of(), caps.get("firstMatch"));
   }
 
   @Test
@@ -148,6 +152,39 @@ public class ProtocolHandshakeTest {
 
     ProtocolHandshake.Result result = new ProtocolHandshake().createSession(client, command);
     assertEquals(result.getDialect(), Dialect.OSS);
+  }
+
+  @Test
+  public void shouldAddBothGeckoDriverAndW3CCapabilitiesToRootCapabilitiesProperty()
+      throws IOException {
+    Map<String, Object> params = ImmutableMap.of("desiredCapabilities", new DesiredCapabilities());
+    Command command = new Command(null, DriverCommand.NEW_SESSION, params);
+
+    HttpResponse response = new HttpResponse();
+    response.setStatus(HTTP_OK);
+    response.setContent(
+        "{\"sessionId\": \"23456789\", \"status\": 0, \"value\": {}}".getBytes(UTF_8));
+    RecordingHttpClient client = new RecordingHttpClient(response);
+
+    new ProtocolHandshake().createSession(client, command);
+
+    HttpRequest request = client.getRequest();
+    Map<String, Object> handshakeRequest = new Gson().fromJson(
+        request.getContentString(),
+        new TypeToken<Map<String, Object>>() {}.getType());
+
+    Object rawCaps = handshakeRequest.get("capabilities");
+    assertTrue(rawCaps instanceof Map);
+
+    Map<?, ?> capabilities = (Map<?, ?>) rawCaps;
+
+    // GeckoDriver
+    assertTrue(capabilities.containsKey("desiredCapabilities"));
+    assertTrue(capabilities.containsKey("requiredCapabilities"));
+
+    // W3C
+    assertTrue(capabilities.containsKey("alwaysMatch"));
+    assertTrue(capabilities.containsKey("firstMatch"));
   }
 
   class RecordingHttpClient implements HttpClient {
