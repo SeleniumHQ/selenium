@@ -241,20 +241,27 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
       case SEND_KEYS_TO_ACTIVE_ELEMENT:
       case SEND_KEYS_TO_ELEMENT:
         return ImmutableMap.<String, Object>builder()
-          .putAll(
-            parameters.entrySet().stream()
-              .filter(e -> !"value".equals(e.getKey()))
-              .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)))
-          .put(
-            "value",
-            stringToUtf8Array(
-              Stream.of((CharSequence[]) parameters.get("value"))
-                .flatMap(Stream::of)
-                .collect(Collectors.joining())))
+            .putAll(
+                parameters.entrySet().stream()
+                    .filter(e -> !"value".equals(e.getKey()))
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)))
+            .put(
+                "text",
+                stringToUtf8Array(
+                    Stream.of((CharSequence[]) parameters.get("value"))
+                        .flatMap(Stream::of)
+                        .collect(Collectors.joining())))
+            .put(
+                "value",
+                stringToUtf8Array(
+                    Stream.of((CharSequence[]) parameters.get("value"))
+                        .flatMap(Stream::of)
+                        .collect(Collectors.joining())))
           .build();
 
       case SET_ALERT_VALUE:
         return ImmutableMap.<String, Object>builder()
+          .put("text", stringToUtf8Array((String) parameters.get("text")))
           .put("value", stringToUtf8Array((String) parameters.get("text")))
           .build();
 
