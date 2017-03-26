@@ -202,8 +202,7 @@ Json::Value NewSessionCommandHandler::ProcessCapabilities(const IECommandExecuto
     }
     if (!first_match_candidates.isArray()) {
       *error_message = "firstMatch must be a JSON list";
-    }
-    else {
+    } else {
       Json::Value validated_first_match_candidates(Json::arrayValue);
       for (size_t i = 0; i < first_match_candidates.size(); ++i) {
         std::string first_match_validation_error = "";
@@ -211,45 +210,59 @@ Json::Value NewSessionCommandHandler::ProcessCapabilities(const IECommandExecuto
         if (this->ValidateCapabilities(first_match_candidate, "firstMatch element " + std::to_string(i), &first_match_validation_error)) {
           validated_first_match_candidates.append(first_match_candidate);
         } else {
+          if (error_message->size() > 0) {
+            error_message->append("All firstMatch elements failed validation\n");
+          }
+          error_message->append(first_match_validation_error);
           LOG(WARN) << "Error validating capabilities: " << first_match_validation_error;
         }
       }
 
-      for (size_t i = 0; i < validated_first_match_candidates.size(); ++i) {
-        Json::Value merged_capabilities(Json::objectValue);
-        Json::Value first_match = validated_first_match_candidates[static_cast<int>(i)];
-        if (!this->MergeCapabilities(always_match, first_match, &merged_capabilities, error_message)) {
-          // If any of the capabilities can't be merged, this is a failure
-          // condition according to the spec, so we fail here.
-          break;
-        }
-        std::string match_error = "";
-        if (this->MatchCapabilities(executor, merged_capabilities, &match_error)) {
-          Json::Value ie_options(Json::nullValue);
-          if (merged_capabilities.isMember(IE_DRIVER_EXTENSIONS_CAPABILITY)) {
-            ie_options = merged_capabilities[IE_DRIVER_EXTENSIONS_CAPABILITY];
-          }
+      // Because we seed the list of "firstMatch" values with an empty value
+      // if none were passed in, we should always have at least one element
+      // in the array of firstMatch candidates. If we don't then every one
+      // has failed validation, and we need to return back out.
+      if (validated_first_match_candidates.size() > 0) {
+        // Reset the error message in the event any of the firstMatch
+        // candidates failed validation.
+        *error_message = "";
 
-          std::string default_initial_url = "http://localhost:" + std::to_string(static_cast<long long>(executor.port())) + "/";
-          this->SetBrowserFactorySettings(executor, ie_options);
-
-          this->SetInputSettings(executor, ie_options);
-
-          if (merged_capabilities.isMember(PROXY_CAPABILITY)) {
-            Json::Value use_per_process_proxy_capability = this->GetCapability(ie_options, USE_PER_PROCESS_PROXY_CAPABILITY, Json::booleanValue, false);
-            bool use_per_process_proxy = use_per_process_proxy_capability.asBool();
-            this->SetProxySettings(executor, merged_capabilities[PROXY_CAPABILITY], use_per_process_proxy);
+        for (size_t i = 0; i < validated_first_match_candidates.size(); ++i) {
+          Json::Value merged_capabilities(Json::objectValue);
+          Json::Value first_match = validated_first_match_candidates[static_cast<int>(i)];
+          if (!this->MergeCapabilities(always_match, first_match, &merged_capabilities, error_message)) {
+            // If any of the capabilities can't be merged, this is a failure
+            // condition according to the spec, so we fail here.
+            break;
           }
-          // Use CreateReturnedCapabilities to fill in unspecified capabilities values.
-          return this->CreateReturnedCapabilities(executor);
-        } else {
-          if (error_message->size() > 0) {
-            error_message->append("No matching capability sets found.\n");
+          std::string match_error = "";
+          if (this->MatchCapabilities(executor, merged_capabilities, &match_error)) {
+            Json::Value ie_options(Json::nullValue);
+            if (merged_capabilities.isMember(IE_DRIVER_EXTENSIONS_CAPABILITY)) {
+              ie_options = merged_capabilities[IE_DRIVER_EXTENSIONS_CAPABILITY];
+            }
+
+            std::string default_initial_url = "http://localhost:" + std::to_string(static_cast<long long>(executor.port())) + "/";
+            this->SetBrowserFactorySettings(executor, ie_options);
+
+            this->SetInputSettings(executor, ie_options);
+
+            if (merged_capabilities.isMember(PROXY_CAPABILITY)) {
+              Json::Value use_per_process_proxy_capability = this->GetCapability(ie_options, USE_PER_PROCESS_PROXY_CAPABILITY, Json::booleanValue, false);
+              bool use_per_process_proxy = use_per_process_proxy_capability.asBool();
+              this->SetProxySettings(executor, merged_capabilities[PROXY_CAPABILITY], use_per_process_proxy);
+            }
+            // Use CreateReturnedCapabilities to fill in unspecified capabilities values.
+            return this->CreateReturnedCapabilities(executor);
+          } else {
+            if (error_message->size() > 0) {
+              error_message->append("No matching capability sets found.\n");
+            }
+            error_message->append("Unable to match capability set ");
+            error_message->append(std::to_string(i));
+            error_message->append(": ");
+            error_message->append(match_error);
           }
-          error_message->append("Unable to match capability set ");
-          error_message->append(std::to_string(i));
-          error_message->append(": ");
-          error_message->append(match_error);
         }
       }
     }
