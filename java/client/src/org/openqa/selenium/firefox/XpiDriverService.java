@@ -31,6 +31,7 @@ import org.openqa.selenium.firefox.internal.FileExtension;
 import org.openqa.selenium.remote.service.DriverService;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Optional;
@@ -61,6 +62,16 @@ public class XpiDriverService extends DriverService {
     this.port = port;
     this.binary = binary;
     this.profile = profile;
+
+    String firefoxLogFile = System.getProperty(FirefoxDriver.SystemProperty.BROWSER_LOGFILE);
+
+    if (firefoxLogFile !=  null) {
+      if ("/dev/stdout".equals(firefoxLogFile)) {
+        sendOutputTo(System.out);
+      } else {
+        sendOutputTo(new FileOutputStream(firefoxLogFile));
+      }
+    }
   }
 
   @Override
@@ -74,8 +85,10 @@ public class XpiDriverService extends DriverService {
     try {
       profile.setPreference(PORT_PREFERENCE, port);
       addWebDriverExtension(profile);
-
       profileDir = profile.layoutOnDisk();
+
+      binary.setOutputWatcher(getOutputStream());
+
       binary.startProfile(profile, profileDir, "-foreground");
 
       waitUntilAvailable();
