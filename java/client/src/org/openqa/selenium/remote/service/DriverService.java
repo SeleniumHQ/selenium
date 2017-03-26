@@ -22,6 +22,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
@@ -174,7 +175,7 @@ public class DriverService {
       }
       process = new CommandLine(this.executable, args.toArray(new String[] {}));
       process.setEnvironmentVariables(environment);
-      process.copyOutputTo(outputStream);
+      process.copyOutputTo(getOutputStream());
       process.executeAsync();
 
       waitUntilAvailable();
@@ -229,7 +230,11 @@ public class DriverService {
   }
 
   public void sendOutputTo(OutputStream outputStream) {
-    this.outputStream = outputStream;
+    this.outputStream = Preconditions.checkNotNull(outputStream);
+  }
+
+  protected OutputStream getOutputStream() {
+    return outputStream;
   }
 
   public static abstract class Builder<DS extends DriverService, B extends Builder> {
