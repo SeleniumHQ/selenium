@@ -174,6 +174,7 @@ namespace OpenQA.Selenium.Remote
               {
                 acceptSSLCerts = (bool)capabilityValue;
               }
+
               return acceptSSLCerts;
             }
 
@@ -197,7 +198,7 @@ namespace OpenQA.Selenium.Remote
         /// <returns>New instance of DesiredCapabilities for use with Firefox</returns>
         public static DesiredCapabilities Firefox()
         {
-            DesiredCapabilities dc = new DesiredCapabilities("firefox", string.Empty, new Platform(PlatformType.Any))
+            DesiredCapabilities dc = new DesiredCapabilities("firefox", string.Empty, new Platform(PlatformType.Any));
             dc.AcceptInsecureCerts = true;
             return dc;
         }
