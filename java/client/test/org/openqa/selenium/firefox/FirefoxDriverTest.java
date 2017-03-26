@@ -40,7 +40,6 @@ import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import com.google.common.base.Throwables;
 
 import org.junit.After;
-import org.junit.Assume;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.openqa.selenium.By;
@@ -199,21 +198,6 @@ public class FirefoxDriverTest extends JUnit4TestBase {
 
     localDriver = new FirefoxDriver(options);
     wait.until($ -> "Testing Javascript".equals(localDriver.getTitle()));
-  }
-
-  private static class ConnectionCapturingDriver extends FirefoxDriver {
-    public ExtensionConnection keptConnection;
-
-    public ConnectionCapturingDriver() {
-      super();
-    }
-
-    @Override
-    protected ExtensionConnection connectTo(FirefoxBinary binary, FirefoxProfile profile, String host) {
-      this.keptConnection = super.connectTo(binary, profile, host);
-
-      return keptConnection;
-    }
   }
 
   @Test
