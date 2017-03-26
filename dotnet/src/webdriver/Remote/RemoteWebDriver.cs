@@ -67,6 +67,9 @@ namespace OpenQA.Selenium.Remote
         /// The default command timeout for HTTP requests in a RemoteWebDriver instance.
         /// </summary>
         protected static readonly TimeSpan DefaultCommandTimeout = TimeSpan.FromSeconds(60);
+
+        private static readonly string DefaultRemoteServerUrl = "http://127.0.0.1:4444/wd/hub";
+
         private ICommandExecutor executor;
         private ICapabilities capabilities;
         private IMouse mouse;
@@ -80,9 +83,28 @@ namespace OpenQA.Selenium.Remote
         /// <summary>
         /// Initializes a new instance of the <see cref="RemoteWebDriver"/> class. This constructor defaults proxy to http://127.0.0.1:4444/wd/hub
         /// </summary>
+        /// <param name="options">An <see cref="DriverOptions"/> object containing the desired capabilities of the browser.</param>
+        public RemoteWebDriver(DriverOptions options)
+            : this(options.ToCapabilities())
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RemoteWebDriver"/> class. This constructor defaults proxy to http://127.0.0.1:4444/wd/hub
+        /// </summary>
         /// <param name="desiredCapabilities">An <see cref="ICapabilities"/> object containing the desired capabilities of the browser.</param>
         public RemoteWebDriver(ICapabilities desiredCapabilities)
-            : this(new Uri("http://127.0.0.1:4444/wd/hub"), desiredCapabilities)
+            : this(new Uri(DefaultRemoteServerUrl), desiredCapabilities)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RemoteWebDriver"/> class. This constructor defaults proxy to http://127.0.0.1:4444/wd/hub
+        /// </summary>
+        /// <param name="remoteAddress">URI containing the address of the WebDriver remote server (e.g. http://127.0.0.1:4444/wd/hub).</param>
+        /// <param name="options">An <see cref="DriverOptions"/> object containing the desired capabilities of the browser.</param>
+        public RemoteWebDriver(Uri remoteAddress, DriverOptions options)
+            : this(remoteAddress, options.ToCapabilities())
         {
         }
 
@@ -1074,9 +1096,29 @@ namespace OpenQA.Selenium.Remote
         {
             DesiredCapabilities capabilitiesObject = desiredCapabilities as DesiredCapabilities;
             Dictionary<string, object> parameters = new Dictionary<string, object>();
-            Dictionary<string, object> capabilitiesParameter = new Dictionary<string, object>();
-            capabilitiesParameter["desiredCapabilities"] = capabilitiesObject.CapabilitiesDictionary;
             parameters.Add("desiredCapabilities", capabilitiesObject.CapabilitiesDictionary);
+
+            // Must remove "platform" and "version" capabilities, which are not
+            // supported by W3C compliant remote ends. Note that this block is
+            // temporary and will change soon.
+            Dictionary<string, object> firstMatchCapabilities = capabilitiesObject.CapabilitiesDictionary;
+            if (firstMatchCapabilities.ContainsKey(CapabilityType.Version))
+            {
+                firstMatchCapabilities.Remove(CapabilityType.Version);
+            }
+
+            if (firstMatchCapabilities.ContainsKey(CapabilityType.Platform))
+            {
+                firstMatchCapabilities.Remove(CapabilityType.Platform);
+            }
+
+            List<object> firstMatchCapabilitiesList = new List<object>();
+            firstMatchCapabilitiesList.Add(firstMatchCapabilities);
+
+            Dictionary<string, object> specCompliantCapabilities = new Dictionary<string, object>();
+            specCompliantCapabilities["firstMatch"] = firstMatchCapabilitiesList;
+            parameters.Add("capabilities", specCompliantCapabilities);
+
             Response response = this.Execute(DriverCommand.NewSession, parameters);
 
             Dictionary<string, object> rawCapabilities = (Dictionary<string, object>)response.Value;
