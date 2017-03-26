@@ -195,20 +195,30 @@ public class DriverService {
    */
   public void stop() {
     lock.lock();
+
+    WebDriverException toThrow = null;
     try {
       if (process == null) {
         return;
       }
-      URL killUrl = new URL(url.toString() + "/shutdown");
-      new UrlChecker().waitUntilUnavailable(3, SECONDS, killUrl);
+
+      try {
+        URL killUrl = new URL(url.toString() + "/shutdown");
+        new UrlChecker().waitUntilUnavailable(3, SECONDS, killUrl);
+      } catch (MalformedURLException e) {
+        toThrow = new WebDriverException(e);
+      } catch (UrlChecker.TimeoutException e) {
+        toThrow = new WebDriverException("Timed out waiting for driver server to shutdown.", e);
+      }
+
       process.destroy();
-    } catch (MalformedURLException e) {
-      throw new WebDriverException(e);
-    } catch (UrlChecker.TimeoutException e) {
-      throw new WebDriverException("Timed out waiting for driver server to shutdown.", e);
     } finally {
       process = null;
       lock.unlock();
+    }
+
+    if (toThrow != null) {
+      throw toThrow;
     }
   }
 
