@@ -113,7 +113,7 @@ module Selenium
         def create_session(desired_capabilities)
           resp = execute :new_session, {}, {desiredCapabilities: desired_capabilities}
           @session_id = resp['sessionId']
-          return W3CCapabilities.json_create resp['value'] if @session_id
+          return W3CCapabilities.json_create(resp['capabilities'] || resp['value']) if @session_id
 
           raise Error::WebDriverError, 'no sessionId in returned payload'
         end
@@ -415,7 +415,9 @@ module Selenium
 
         # TODO: - Implement file verification
         def send_keys_to_element(element, keys)
-          execute :element_send_keys, {id: element}, {value: keys.join('').split(//)}
+          # Keep .split(//) for backward compatibility for now
+          text = keys.join('')
+          execute :element_send_keys, {id: element}, {value: text.split(//), text: text}
         end
 
         def clear_element(element)

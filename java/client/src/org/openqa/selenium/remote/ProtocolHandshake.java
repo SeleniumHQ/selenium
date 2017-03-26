@@ -100,8 +100,12 @@ public class ProtocolHandshake {
       out.beginObject();
 
       streamJsonWireProtocolParameters(out, gson, des, req);
+
+      out.name("capabilities");
+      out.beginObject();
       streamGeckoDriver013Parameters(out, gson, des, req);
       streamW3CProtocolParameters(out, gson, des, req);
+      out.endObject();
 
       out.endObject();
       out.flush();
@@ -314,11 +318,32 @@ public class ProtocolHandshake {
       jsonBlob = new HashMap<>();
     }
 
-    // If the result looks positive, return the result.
-    Object sessionId = jsonBlob.get("sessionId");
     Object value = jsonBlob.get("value");
     Object w3cError = jsonBlob.get("error");
     Object ossStatus = jsonBlob.get("status");
+
+    // If the result was an error that we believe has to do with the remote end failing to start the
+    // session, create an exception and throw it.
+    Response tempResponse = null;
+    if (response.getStatus() != HttpURLConnection.HTTP_OK) {
+      tempResponse = new Response(null);
+      tempResponse.setStatus(ErrorCodes.SESSION_NOT_CREATED);
+      tempResponse.setValue(value);
+    } else if ("session not created".equals(w3cError)) {
+      tempResponse = new Response(null);
+      tempResponse.setStatus(ErrorCodes.SESSION_NOT_CREATED);
+      tempResponse.setValue(value);
+    } else if (ossStatus instanceof Number && ((Number) ossStatus).intValue() != 0) {
+      tempResponse = new Response(null);
+      tempResponse.setStatus(ErrorCodes.SESSION_NOT_CREATED);
+      tempResponse.setValue(value);
+    }
+
+    if (tempResponse != null) {
+      new ErrorHandler().throwIfResponseFailed(tempResponse, 0);
+    }
+
+    Object sessionId = jsonBlob.get("sessionId");
     Map<String, ?> capabilities = null;
 
     // The old geckodriver prior to 0.14 returned "value" as the thing containing the session id.
@@ -327,9 +352,13 @@ public class ProtocolHandshake {
     // Pull that out if it exists.
     if (value != null && value instanceof Map) {
       Map<?, ?> mappedValue = (Map<?, ?>) value;
-      if (mappedValue.containsKey("value") && mappedValue.containsKey("sessionId")) {
-        value = mappedValue.get("value");
+      if (mappedValue.containsKey("sessionId")) {
         sessionId = mappedValue.get("sessionId");
+      }
+      if (mappedValue.containsKey("capabilities")) {
+        value = mappedValue.get("capabilities");
+      } else if (mappedValue.containsKey("value")) {
+        value = mappedValue.get("value");
       }
       if (mappedValue.containsKey("error")) {
         w3cError = mappedValue.get("error");
@@ -342,29 +371,10 @@ public class ProtocolHandshake {
       capabilities = ((Capabilities) capabilities).asMap();
     }
 
-    if (response.getStatus() == HttpURLConnection.HTTP_OK) {
-      if (sessionId != null && capabilities != null) {
-        Dialect dialect = ossStatus == null ? Dialect.W3C : Dialect.OSS;
-        return Optional.of(
-          new Result(dialect, String.valueOf(sessionId), capabilities));
-      }
-    }
-
-    // If the result was an error that we believe has to do with the remote end failing to start the
-    // session, create an exception and throw it.
-    Response tempResponse = null;
-    if ("session not created".equals(w3cError)) {
-      tempResponse = new Response(null);
-      tempResponse.setStatus(ErrorCodes.SESSION_NOT_CREATED);
-      tempResponse.setValue(jsonBlob);
-    } else if (ossStatus instanceof Number) {
-      tempResponse = new Response(null);
-      tempResponse.setStatus(ErrorCodes.SESSION_NOT_CREATED);
-      tempResponse.setValue(jsonBlob);
-    }
-
-    if (tempResponse != null) {
-      new ErrorHandler().throwIfResponseFailed(tempResponse, 0);
+    // If the result looks positive, return the result.
+    if (sessionId != null && capabilities != null) {
+      Dialect dialect = ossStatus == null ? Dialect.W3C : Dialect.OSS;
+      return Optional.of(new Result(dialect, String.valueOf(sessionId), capabilities));
     }
 
     // Otherwise, just return empty.
@@ -376,13 +386,10 @@ public class ProtocolHandshake {
       Gson gson,
       JsonObject des,
       JsonObject req) throws IOException {
-    out.name("capabilities");
-    out.beginObject();
     out.name("desiredCapabilities");
     gson.toJson(des, out);
     out.name("requiredCapabilities");
     gson.toJson(req, out);
-    out.endObject();  // End "capabilities"
   }
 
   public class Result {

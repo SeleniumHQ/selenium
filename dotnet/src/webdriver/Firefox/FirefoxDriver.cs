@@ -159,7 +159,7 @@ namespace OpenQA.Selenium.Firefox
         /// </summary>
         /// <param name="options">The <see cref="FirefoxOptions"/> to be used with the Firefox driver.</param>
         public FirefoxDriver(FirefoxOptions options)
-            : this(FirefoxDriverService.CreateDefaultService(), options, RemoteWebDriver.DefaultCommandTimeout)
+            : this(CreateService(options), options, RemoteWebDriver.DefaultCommandTimeout)
         {
         }
 
@@ -381,6 +381,16 @@ namespace OpenQA.Selenium.Firefox
             }
 
             return profile;
+        }
+
+        private static FirefoxDriverService CreateService(FirefoxOptions options)
+        {
+            if (options != null && options.UseLegacyImplementation)
+            {
+                return null;
+            }
+
+            return FirefoxDriverService.CreateDefaultService();
         }
     }
 }

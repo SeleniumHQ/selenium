@@ -96,8 +96,8 @@ bot.locators.id.many = function(target, root) {
  * Given a string, escapes all the characters that have special meaning in CSS.
  * https://mathiasbynens.be/notes/css-escapes
  *
- * An ID can contain anything but spaces, but we also escape spaces because some
- * webpages use spaces, and getElementById allows spaces in every browser.
+ * An ID can contain anything but spaces, but we also escape whitespace because
+ * some webpages use spaces, and getElementById allows spaces in every browser.
  * http://www.w3.org/TR/html5/dom.html#the-id-attribute
  *
  * This could be further improved, perhaps by using
@@ -110,5 +110,5 @@ bot.locators.id.many = function(target, root) {
  */
 bot.locators.id.cssEscape_ = function(s) {
   // One backslash escapes things in a regex statement; we need two in a string.
-  return s.replace(/([ '"\\#.:;,!?+<>=~*^$|%&@`{}\-\/\[\]\(\)])/g, '\\$1');
+  return s.replace(/([\s'"\\#.:;,!?+<>=~*^$|%&@`{}\-\/\[\]\(\)])/g, '\\$1');
 };

@@ -344,7 +344,8 @@ class WebElement(object):
             if local_file is not None:
                 value = self._upload(local_file)
 
-        self._execute(Command.SEND_KEYS_TO_ELEMENT, {'value': keys_to_typing(value)})
+        self._execute(Command.SEND_KEYS_TO_ELEMENT,
+                      {'text': keys_to_typing(value), 'value': keys_to_typing(value)})
 
     # RenderedWebElement Items
     def is_displayed(self):

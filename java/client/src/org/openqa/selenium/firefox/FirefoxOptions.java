@@ -120,8 +120,8 @@ public class FirefoxOptions {
         Object value = entry.getValue();
         if (value instanceof Boolean) {
           options.addPreference(entry.getKey(), (Boolean) value);
-        } else if (value instanceof Integer) {
-          options.addPreference(entry.getKey(), (Integer) value);
+        } else if (value instanceof Integer || value instanceof Long) {
+          options.addPreference(entry.getKey(), ((Number) value).intValue());
         } else if (value instanceof String) {
           options.addPreference(entry.getKey(), (String) value);
         } else {
@@ -212,7 +212,7 @@ public class FirefoxOptions {
    * useful when actually starting firefox.
    */
   public FirefoxBinary getBinary() {
-    return getBinaryOrNull().orElseGet(() -> new FirefoxBinary());
+    return getBinaryOrNull().orElseGet(FirefoxBinary::new);
   }
 
   public Optional<FirefoxBinary> getBinaryOrNull() {
@@ -246,13 +246,8 @@ public class FirefoxOptions {
 
     Object rawVersion = caps.getCapability(VERSION);
     if (rawVersion != null && !"".equals(rawVersion)) {
-      try {
-        FirefoxBinary.Channel channel =
-            FirefoxBinary.Channel.fromString(String.valueOf(rawVersion));
-        return Optional.of(new FirefoxBinary(channel));
-      } catch (WebDriverException ex) {
-        return Optional.of(new FirefoxBinary(String.valueOf(rawVersion)));
-      }
+      FirefoxBinary.Channel channel = FirefoxBinary.Channel.fromString(String.valueOf(rawVersion));
+      return Optional.of(new FirefoxBinary(channel));
     }
 
     return Optional.empty();

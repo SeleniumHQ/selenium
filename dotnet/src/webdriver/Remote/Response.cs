@@ -119,13 +119,6 @@ namespace OpenQA.Selenium.Remote
                         this.responseStatus = WebDriverError.ResultFromError(valueDictionary["error"].ToString());
                     }
                 }
-
-                // Check for an error response by looking for an "error" property,
-                // and if found, convert to a numeric status code.
-                if (rawResponse.ContainsKey("error"))
-                {
-                    this.responseStatus = WebDriverError.ResultFromError(rawResponse["error"].ToString());
-                }
             }
         }
 

@@ -74,6 +74,11 @@ namespace OpenQA.Selenium.Remote
         public static readonly string AcceptSslCertificates = "acceptSslCerts";
 
         /// <summary>
+        /// Capability name used to indicate whether the browser accepts SSL certificates on W3C Endpoints
+        /// </summary>
+        public static readonly string AcceptInsecureCertificates = "acceptInsecureCerts";
+
+        /// <summary>
         /// Capability name used to indicate whether the browser uses native events.
         /// </summary>
         public static readonly string HasNativeEvents = "nativeEvents";
