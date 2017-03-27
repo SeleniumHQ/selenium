@@ -17,6 +17,7 @@
 
 package org.openqa.selenium;
 
+import java.util.HashMap;
 import java.util.Map;
 
 
@@ -56,4 +57,16 @@ public interface Capabilities {
    * @return Whether or not the value is not null and not false.
    */
   boolean is(String capabilityName);
+
+  /**
+   * Merge two {@link Capabilities} together and return the union of the two as a new
+   * {@link Capabilities} instance. Capabilities from {@code other} will override those in
+   * {@code this}.
+   */
+  default Capabilities merge(Capabilities other) {
+    HashMap<String, Object> map = new HashMap<>();
+    map.putAll(asMap());
+    map.putAll(other.asMap());
+    return new ImmutableCapabilities(map);
+  }
 }
