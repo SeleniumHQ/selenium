@@ -16,6 +16,7 @@
 // limitations under the License.
 // </copyright>
 
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 
@@ -141,6 +142,7 @@ namespace OpenQA.Selenium.Remote
         /// <summary>
         /// Gets or sets a value indicating whether the browser is JavaScript enabled
         /// </summary>
+        [Obsolete("Capability is not allowed by the W3C specification, and will be removed in a future version of the bindings.")]
         public bool IsJavaScriptEnabled
         {
             get
