@@ -56,7 +56,7 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
   private LocalLogs logs = LocalLogs.getNullLogger();
 
   public HttpCommandExecutor(URL addressOfRemoteServer) {
-    this(ImmutableMap.<String, CommandInfo>of(), addressOfRemoteServer);
+    this(ImmutableMap.of(), addressOfRemoteServer);
   }
 
   /**
@@ -67,7 +67,8 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
    * @param addressOfRemoteServer URL of remote end Selenium server
    */
   public HttpCommandExecutor(
-      Map<String, CommandInfo> additionalCommands, URL addressOfRemoteServer) {
+      Map<String, CommandInfo> additionalCommands,
+      URL addressOfRemoteServer) {
     this(additionalCommands, addressOfRemoteServer, getDefaultClientFactory());
   }
 
