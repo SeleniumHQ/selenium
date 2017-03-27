@@ -35,6 +35,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.internal.ProfilesIni;
@@ -85,7 +86,6 @@ public class FirefoxOptions {
   private Level logLevel = null;
   private boolean legacy;
   private DesiredCapabilities desiredCapabilities = new DesiredCapabilities();
-  private DesiredCapabilities requiredCapabilities = new DesiredCapabilities();
 
   /** INTERNAL ONLY: DO NOT USE */
   static FirefoxOptions fromJsonMap(Map<String, Object> map) throws IOException {
@@ -172,7 +172,6 @@ public class FirefoxOptions {
   public FirefoxOptions setLegacy(boolean legacy) {
     this.legacy = legacy;
     desiredCapabilities.setCapability(MARIONETTE, !legacy);
-    requiredCapabilities.setCapability(MARIONETTE, !legacy);
     return this;
   }
 
@@ -223,7 +222,7 @@ public class FirefoxOptions {
       return Optional.of(new FirefoxBinary(new File(binaryPath)));
     }
 
-    return Stream.of(requiredCapabilities, desiredCapabilities)
+    return Stream.of(desiredCapabilities)
         .map(this::determineBinaryFromCapabilities)
         .filter(Optional::isPresent)
         .findFirst()
@@ -276,9 +275,6 @@ public class FirefoxOptions {
   Optional<FirefoxProfile> getProfileOrNull() {
     FirefoxProfile profileToUse = profile;
     if (profileToUse == null) {
-      profileToUse = extractProfile(requiredCapabilities);
-    }
-    if (profileToUse == null) {
       profileToUse = extractProfile(desiredCapabilities);
     }
     if (profileToUse == null) {
@@ -290,7 +286,6 @@ public class FirefoxOptions {
 
   private FirefoxProfile fullyPopulateProfile(FirefoxProfile profile) {
     populateProfile(profile, desiredCapabilities);
-    populateProfile(profile, requiredCapabilities);
 
     booleanPrefs.entrySet().forEach(pref -> profile.setPreference(pref.getKey(), pref.getValue()));
     intPrefs.entrySet().forEach(pref -> profile.setPreference(pref.getKey(), pref.getValue()));
@@ -362,12 +357,24 @@ public class FirefoxOptions {
     return this;
   }
 
+  /**
+   * @deprecated Use {@link #addCapabilities(Capabilities)}
+   */
+  @Deprecated
   public FirefoxOptions addDesiredCapabilities(Capabilities desiredCapabilities) {
-    return validateAndAmendUsing(this.desiredCapabilities, desiredCapabilities);
+    return addCapabilities(desiredCapabilities);
   }
 
+  /**
+   * @deprecated Use {@link #addCapabilities(Capabilities)}
+   */
+  @Deprecated
   public FirefoxOptions addRequiredCapabilities(Capabilities requiredCapabilities) {
-    return validateAndAmendUsing(this.requiredCapabilities, requiredCapabilities);
+    return addCapabilities(requiredCapabilities);
+  }
+
+  public FirefoxOptions addCapabilities(Capabilities capabilities) {
+    return validateAndAmendUsing(this.desiredCapabilities, capabilities);
   }
 
   private FirefoxOptions validateAndAmendUsing(DesiredCapabilities existing, Capabilities caps) {
@@ -432,22 +439,32 @@ public class FirefoxOptions {
     return null;
   }
 
+  /**
+   * @deprecated Use {@link #toCapabilities()}.
+   */
   public Capabilities toDesiredCapabilities() {
     return toCapabilities(desiredCapabilities);
   }
 
+  /**
+   * @deprecated Use {@link #toCapabilities()}.
+   */
   public Capabilities toRequiredCapabilities() {
-    return toCapabilities(requiredCapabilities);
+    return toCapabilities(desiredCapabilities);
+  }
+
+  public Capabilities toCapabilities() {
+    return toCapabilities(desiredCapabilities);
   }
 
   private Capabilities toCapabilities(Capabilities source) {
-    DesiredCapabilities capabilities = new DesiredCapabilities(source);
+    HashMap<String, Object> caps = new HashMap<>();
 
     if (isLegacy()) {
-      capabilities.setCapability(FirefoxDriver.MARIONETTE, false);
+      caps.put(FirefoxDriver.MARIONETTE, false);
     }
 
-    Object priorBinary = capabilities.getCapability(BINARY);
+    Object priorBinary = source.getCapability(BINARY);
     if (priorBinary instanceof Path) {
       // Again, unix-style path
       priorBinary = asUnixPath((Path) priorBinary);
@@ -467,14 +484,14 @@ public class FirefoxOptions {
           priorBinary));
     }
     if (actualBinary != null && binaryPath == null) {
-      capabilities.setCapability(BINARY, actualBinary);
+      caps.put(BINARY, actualBinary);
     } else if (binaryPath != null && actualBinary == null) {
       if (Files.exists(Paths.get(binaryPath))) {
-        capabilities.setCapability(BINARY, new FirefoxBinary(new File(binaryPath)));
+        caps.put(BINARY, new FirefoxBinary(new File(binaryPath)));
       }
     }
 
-    Object priorProfile = capabilities.getCapability(PROFILE);
+    Object priorProfile = source.getCapability(PROFILE);
     if (priorProfile instanceof String) {
       try {
         priorProfile = FirefoxProfile.fromJson((String) priorProfile);
@@ -500,27 +517,25 @@ public class FirefoxOptions {
         }
       }
     }
-    capabilities.setCapability(FIREFOX_OPTIONS, this);
+    caps.put(FIREFOX_OPTIONS, this);
 
     if (actualBinary != null) {
       actualBinary.addCommandLineOptions(args.toArray(new String[args.size()]));
-      capabilities.setCapability(BINARY, actualBinary);
+      caps.put(BINARY, actualBinary);
     }
     if (binaryPath != null) {
-      capabilities.setCapability(BINARY, binaryPath);
+      caps.put(BINARY, binaryPath);
     }
 
     if (profile != null) {
-      capabilities.setCapability(PROFILE, profile);
+      caps.put(PROFILE, profile);
     }
 
-    return capabilities;
+    return new ImmutableCapabilities(caps);
   }
 
   public DesiredCapabilities addTo(DesiredCapabilities capabilities) {
-    capabilities.merge(toDesiredCapabilities());
-    capabilities.merge(toRequiredCapabilities());
-    return capabilities;
+    return capabilities.merge(toCapabilities());
   }
 
   public JsonObject toJson() throws IOException {
