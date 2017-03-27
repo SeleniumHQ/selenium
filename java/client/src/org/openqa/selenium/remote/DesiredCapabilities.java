@@ -24,8 +24,6 @@ import static org.openqa.selenium.remote.CapabilityType.PLATFORM;
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_JAVASCRIPT;
 import static org.openqa.selenium.remote.CapabilityType.VERSION;
 
-import com.google.common.collect.Maps;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
@@ -174,8 +172,8 @@ public class DesiredCapabilities implements Serializable, Capabilities {
    * @param extraCapabilities Additional capabilities to be added.
    * @return DesiredCapabilities after the merge
    */
-  public DesiredCapabilities merge(
-      org.openqa.selenium.Capabilities extraCapabilities) {
+  @Override
+  public DesiredCapabilities merge(Capabilities extraCapabilities) {
     if (extraCapabilities != null) {
       capabilities.putAll(extraCapabilities.asMap());
     }
@@ -286,7 +284,7 @@ public class DesiredCapabilities implements Serializable, Capabilities {
   }
 
   private Map<String, Object> shortenMapValues(Map<String, Object> map) {
-    Map<String, Object> newMap = Maps.newHashMap();
+    Map<String, Object> newMap = new HashMap<>();
 
     for (Map.Entry<String, Object> entry : map.entrySet()) {
       if (entry.getValue() instanceof Map) {
