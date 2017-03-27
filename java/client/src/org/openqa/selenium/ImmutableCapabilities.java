@@ -23,13 +23,17 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-class ImmutableCapabilities implements Capabilities, Serializable {
+public class ImmutableCapabilities implements Capabilities, Serializable {
 
   private static final long serialVersionUID = 665766108972704060L;
 
   private final Map<String, Object> caps = new HashMap<>();
 
-  ImmutableCapabilities(Map<String, Object> capabilities) {
+  public ImmutableCapabilities(Capabilities other) {
+    this(other.asMap());
+  }
+
+  public ImmutableCapabilities(Map<String, ?> capabilities) {
     capabilities.forEach((key, value) -> {
       if (value != null) {
         caps.put(key, value);
