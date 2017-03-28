@@ -345,7 +345,8 @@ class WebElement(object):
                 value = self._upload(local_file)
 
         self._execute(Command.SEND_KEYS_TO_ELEMENT,
-                      {'text': keys_to_typing(value), 'value': keys_to_typing(value)})
+                      {'text': "".join(keys_to_typing(value)),
+                       'value': keys_to_typing(value)})
 
     # RenderedWebElement Items
     def is_displayed(self):
