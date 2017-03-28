@@ -23,45 +23,83 @@ module Selenium
   module WebDriver
     module Firefox
       describe Bridge do
-        let(:launcher) { double(Launcher, launch: nil, quit: nil, url: 'http://localhost:4444/wd/hub') }
-        let(:resp) { {'sessionId' => 'foo', 'value' => @default_capabilities} }
-        let(:http) { double(Remote::Http::Default, call: resp).as_null_object }
-        let(:caps) { Remote::Capabilities.chrome }
+        let(:launcher) { double(Launcher, launch: true, url: 'http://example.com') }
 
-        before do
-          @default_capabilities = Remote::Capabilities.firefox.as_json
-          allow(Remote::Capabilities).to receive(:firefox).and_return(caps)
-          allow(Launcher).to receive(:new).and_return(launcher)
+        before { allow_any_instance_of(Bridge).to receive(:create_session) }
+
+        context 'when URL is provided' do
+          it 'does not start Launcher when URL set' do
+            expect(Launcher).not_to receive(:new)
+
+            Bridge.new(url: 'http://example.com:4321')
+          end
         end
 
-        it 'accepts server URL' do
-          expect(Launcher).not_to receive(:new)
-          expect(http).to receive(:server_url=).with(URI.parse('http://example.com:4321'))
+        context 'when URL is not provided' do
+          before { allow(Launcher).to receive(:new).and_return(launcher) }
 
-          Bridge.new(http_client: http, url: 'http://example.com:4321')
-        end
+          it 'starts Launcher with default path and port when URL not set' do
+            expect(Launcher).to receive(:new).with(instance_of(Binary), Firefox::DEFAULT_PORT, nil).and_return(launcher)
 
-        it 'sets the proxy capability' do
-          proxy = Proxy.new(http: 'localhost:9090')
-          expect(caps).to receive(:proxy=).with proxy
-
-          Bridge.new(http_client: http, proxy: proxy)
-        end
-
-        it 'raises ArgumentError if passed invalid options' do
-          expect { Bridge.new(foo: 'bar') }.to raise_error(ArgumentError)
-        end
-
-        it 'takes desired capabilities' do
-          custom_caps = Remote::Capabilities.new
-          custom_caps['foo'] = 'bar'
-
-          expect(http).to receive(:call) do |_, _, payload|
-            expect(payload[:desiredCapabilities]['foo']).to eq('bar')
-            resp
+            Bridge.new
           end
 
-          Bridge.new(http_client: http, desired_capabilities: custom_caps)
+          it 'passes arguments to Launcher' do
+            driver_port = 1234
+            profile = Profile.new
+            expect(Launcher).to receive(:new).with(instance_of(Binary), driver_port, profile).and_return(launcher)
+
+            Bridge.new(port: driver_port, profile: profile)
+          end
+
+          it 'uses default firefox capabilities when not set' do
+            expect_any_instance_of(Bridge).to receive(:create_session).with(Remote::Capabilities.firefox)
+
+            Bridge.new
+          end
+
+          it 'uses provided capabilities' do
+            capabilities = Remote::Capabilities.firefox(version: '47')
+            expect_any_instance_of(Bridge).to receive(:create_session).with(capabilities)
+
+            Bridge.new(desired_capabilities: capabilities)
+          end
+
+          it 'passes through any value added to capabilities' do
+            capabilities = Remote::Capabilities.firefox(random: {'foo' => 'bar'})
+            expect_any_instance_of(Bridge).to receive(:create_session).with(capabilities)
+
+            Bridge.new(desired_capabilities: capabilities)
+          end
+
+          it 'treats capabilities keys with symbols and camel case strings as equivalent' do
+            capabilities_in = Remote::Capabilities.chrome(foo_bar: {'foo' => 'bar'})
+            capabilities_out = Remote::Capabilities.chrome('fooBar' => {'foo' => 'bar'})
+            expect_any_instance_of(Bridge).to receive(:create_session).with(capabilities_out)
+
+            Bridge.new(desired_capabilities: capabilities_in)
+          end
+
+          it 'accepts custom path' do
+            allow(Platform).to receive(:assert_executable)
+            firefox_path = 'path/to/firefox'
+            expect(Binary).to receive(:path=).with(firefox_path)
+
+            capabilities = Remote::Capabilities.firefox(firefox_binary: firefox_path)
+
+            expect_any_instance_of(Bridge).to receive(:create_session).with(capabilities)
+
+            Bridge.new(desired_capabilities: capabilities)
+          end
+
+          it 'sets the proxy capability' do
+            proxy = Proxy.new(http: 'localhost:1234')
+
+            capabilities = Remote::Capabilities.firefox(proxy: proxy)
+            expect_any_instance_of(Bridge).to receive(:create_session).with(capabilities)
+
+            Bridge.new(proxy: proxy)
+          end
         end
       end
     end # Firefox
