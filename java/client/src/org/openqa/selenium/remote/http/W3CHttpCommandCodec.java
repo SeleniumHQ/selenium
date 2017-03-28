@@ -247,10 +247,9 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
                     .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)))
             .put(
                 "text",
-                stringToUtf8Array(
-                    Stream.of((CharSequence[]) parameters.get("value"))
-                        .flatMap(Stream::of)
-                        .collect(Collectors.joining())))
+                Stream.of((CharSequence[]) parameters.get("value"))
+                    .flatMap(Stream::of)
+                    .collect(Collectors.joining()))
             .put(
                 "value",
                 stringToUtf8Array(
