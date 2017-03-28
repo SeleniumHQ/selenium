@@ -17,7 +17,10 @@
 
 package org.openqa.selenium.ie;
 
+import com.google.common.base.Preconditions;
+
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
@@ -29,6 +32,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.service.DriverCommandExecutor;
 
 import java.io.File;
+import java.util.HashMap;
 
 public class InternetExplorerDriver extends RemoteWebDriver {
 
@@ -128,7 +132,13 @@ public class InternetExplorerDriver extends RemoteWebDriver {
    * Capability that defines setting the proxy information for a single IE process
    * without affecting the proxy settings of other instances of IE.
    */
-  public final static String IE_USE_PRE_PROCESS_PROXY = "ie.usePerProcessProxy";
+  public final static String IE_USE_PER_PROCESS_PROXY = "ie.usePerProcessProxy";
+
+  /**
+   * @deprecated Use {@link #IE_USE_PER_PROCESS_PROXY} (the one without the typo);
+   */
+  @Deprecated
+  public final static String IE_USE_PRE_PROCESS_PROXY = IE_USE_PER_PROCESS_PROXY;
 
   /**
    * Capability that defines used IE CLI switches when {@link #FORCE_CREATE_PROCESS} is enabled.
@@ -191,6 +201,10 @@ public class InternetExplorerDriver extends RemoteWebDriver {
     if (capabilities == null) {
       capabilities = DesiredCapabilities.internetExplorer();
     }
+
+    Preconditions.checkNotNull(capabilities);
+    capabilities = new InternetExplorerOptions(capabilities)
+        .merge(new ImmutableCapabilities(new HashMap<>()));
 
     if (service == null) {
       service = setupService(capabilities, port);
