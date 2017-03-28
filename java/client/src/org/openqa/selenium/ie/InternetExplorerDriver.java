@@ -141,25 +141,41 @@ public class InternetExplorerDriver extends RemoteWebDriver {
   private final static int DEFAULT_PORT = 0;
 
   public InternetExplorerDriver() {
-    this(null, null, DEFAULT_PORT);
+    this(null, new InternetExplorerOptions(), DEFAULT_PORT);
   }
 
+  public InternetExplorerDriver(InternetExplorerOptions options) {
+    this(null, options, DEFAULT_PORT);
+  }
+
+  @Deprecated
   public InternetExplorerDriver(Capabilities capabilities) {
     this(null, capabilities, DEFAULT_PORT);
   }
 
   public InternetExplorerDriver(int port) {
-    this(null, null, port);
+    this(null, new InternetExplorerOptions(), port);
   }
 
   public InternetExplorerDriver(InternetExplorerDriverService service) {
-    this(service, null, DEFAULT_PORT);
+    this(service, new InternetExplorerOptions(), DEFAULT_PORT);
   }
 
+  public InternetExplorerDriver(InternetExplorerDriverService service, InternetExplorerOptions options) {
+    this(service, options, DEFAULT_PORT);
+  }
+
+  @Deprecated
   public InternetExplorerDriver(InternetExplorerDriverService service, Capabilities capabilities) {
     this(service, capabilities, DEFAULT_PORT);
   }
 
+  public InternetExplorerDriver(InternetExplorerDriverService service, InternetExplorerOptions options,
+      int port) {
+    this(service, options.toCapabilities(), DEFAULT_PORT);
+  }
+  
+  @Deprecated
   public InternetExplorerDriver(InternetExplorerDriverService service, Capabilities capabilities,
       int port) {
     if (capabilities == null) {
