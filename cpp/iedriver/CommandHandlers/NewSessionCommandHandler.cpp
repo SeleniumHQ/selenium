@@ -203,6 +203,12 @@ Json::Value NewSessionCommandHandler::ProcessCapabilities(const IECommandExecuto
     if (!first_match_candidates.isArray()) {
       *error_message = "firstMatch must be a JSON list";
     } else {
+      // If the user passed a "firstMatch" array, but it was empty,
+      // seed the firstMatch array with an empty object for merging
+      // purposes.
+      if (first_match_candidates.size() == 0) {
+        first_match_candidates.append(empty_capabilities);
+      }
       Json::Value validated_first_match_candidates(Json::arrayValue);
       for (size_t i = 0; i < first_match_candidates.size(); ++i) {
         std::string first_match_validation_error = "";
@@ -237,7 +243,7 @@ Json::Value NewSessionCommandHandler::ProcessCapabilities(const IECommandExecuto
           }
           std::string match_error = "";
           if (this->MatchCapabilities(executor, merged_capabilities, &match_error)) {
-            Json::Value ie_options(Json::nullValue);
+            Json::Value ie_options(Json::objectValue);
             if (merged_capabilities.isMember(IE_DRIVER_EXTENSIONS_CAPABILITY)) {
               ie_options = merged_capabilities[IE_DRIVER_EXTENSIONS_CAPABILITY];
             }
