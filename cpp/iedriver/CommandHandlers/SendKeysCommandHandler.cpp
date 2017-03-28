@@ -62,6 +62,9 @@ void SendKeysCommandHandler::ExecuteInternal(
   } else {
     std::string element_id = id_parameter_iterator->second.asString();
 
+    if (!value_parameter_iterator->second.isString()) {
+      response->SetErrorResponse(ERROR_INVALID_ARGUMENT, "parameter 'text' must be a string");
+    }
     std::wstring keys = StringUtilities::ToWString(value_parameter_iterator->second.asString());
 
     BrowserHandle browser_wrapper;
