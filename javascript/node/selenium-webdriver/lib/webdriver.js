@@ -2202,7 +2202,7 @@ class WebElement {
       }).then(function(keys) {
         return element.schedule_(
             new command.Command(command.Name.SEND_KEYS_TO_ELEMENT).
-                setParameter('text', keys.split('')).
+                setParameter('text', keys).
                 setParameter('value', keys.split('')),
             'WebElement.sendKeys()');
       });
