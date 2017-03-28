@@ -20,6 +20,7 @@ package org.openqa.selenium.remote;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import com.google.common.collect.ImmutableList;
@@ -33,9 +34,15 @@ import org.junit.runners.JUnit4;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.http.W3CHttpCommandCodec;
 
 import java.io.IOException;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @SuppressWarnings("unchecked")
 @RunWith(JUnit4.class)
@@ -185,6 +192,49 @@ public class ProtocolHandshakeTest {
     // W3C
     assertTrue(capabilities.containsKey("alwaysMatch"));
     assertTrue(capabilities.containsKey("firstMatch"));
+  }
+
+  @Test
+  public void shouldNotIncludeNonProtocolExtensionKeys() throws IOException {
+    DesiredCapabilities caps = new DesiredCapabilities();
+    caps.setCapability("se:option", "cheese");
+    caps.setCapability("option", "I like sausages");
+    caps.setCapability("browserName", "amazing cake browser");
+
+    Map<String, Object> params = ImmutableMap.of("desiredCapabilities", caps);
+    Command command = new Command(null, DriverCommand.NEW_SESSION, params);
+
+    HttpResponse response = new HttpResponse();
+    response.setStatus(HTTP_OK);
+    response.setContent(
+        "{\"sessionId\": \"23456789\", \"status\": 0, \"value\": {}}".getBytes(UTF_8));
+    RecordingHttpClient client = new RecordingHttpClient(response);
+
+    new ProtocolHandshake().createSession(client, command);
+
+    HttpRequest request = client.getRequest();
+    Map<String, Object> handshakeRequest = new Gson().fromJson(
+        request.getContentString(),
+        new TypeToken<Map<String, Object>>() {}.getType());
+
+    Object rawCaps = handshakeRequest.get("capabilities");
+    assertTrue(rawCaps instanceof Map);
+
+    Map<?, ?> capabilities = (Map<?, ?>) rawCaps;
+
+    Map<?, ?> always = (Map<?, ?>) capabilities.get("alwaysMatch");
+    List<Map<?, ?>> first = (List<Map<?, ?>>) capabilities.get("firstMatch");
+
+    // We don't care where they are, but we want to see "se:option" and not "option"
+    Set<String> keys = new HashSet(always.keySet());
+    keys.addAll(first.stream()
+                    .map(Map::keySet)
+                    .flatMap(Collection::stream)
+                    .map(String::valueOf)
+                    .collect(Collectors.toSet()));
+    assertTrue(keys.contains("browserName"));
+    assertTrue(keys.contains("se:option"));
+    assertFalse(keys.contains("options"));
   }
 
   class RecordingHttpClient implements HttpClient {

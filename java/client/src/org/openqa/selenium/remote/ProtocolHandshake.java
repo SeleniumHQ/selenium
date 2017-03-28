@@ -56,8 +56,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -67,13 +69,22 @@ public class ProtocolHandshake {
   private final static Logger LOG = Logger.getLogger(ProtocolHandshake.class.getName());
 
   /**
-   * Capability names that should never be sent across the wire to a w3c compliant remote end.
+   * Patterns that are acceptable to send to a w3c remote end.
    */
-  private final Set<String> UNUSED_W3C_NAMES = ImmutableSet.<String>builder()
-      .add("firefox_binary")
-      .add("firefox_profile")
-      .add("marionette")
-      .build();
+  private final Predicate<String> ACCEPTED_W3C_PATTERNS = Stream.of(
+      "^[\\w-]+:.*$",
+      "^acceptInsecureCerts$",
+      "^browserName$",
+      "^browserVersion$",
+      "^platformName$",
+      "^pageLoadStrategy$",
+      "^proxy$",
+      "^setWindowRect$",
+      "^timeouts$",
+      "^unhandledPromptBehavior$")
+      .map(Pattern::compile)
+      .map(Pattern::asPredicate)
+      .reduce(identity -> false, Predicate::or);
 
   public Result createSession(HttpClient client, Command command)
     throws IOException {
@@ -246,7 +257,7 @@ public class ProtocolHandshake {
         .flatMap(Collection::stream)
         .filter(entry -> !excludedKeys.contains(entry.getKey()))
         .filter(entry -> entry.getValue() != null)
-        .filter(entry -> !UNUSED_W3C_NAMES.contains(entry.getKey()))  // We never want to send this
+        .filter(entry -> ACCEPTED_W3C_PATTERNS.test(entry.getKey()))
         .distinct()
         .collect(Collector.of(
             JsonObject::new,
@@ -264,7 +275,7 @@ public class ProtocolHandshake {
         .map(map -> {
           JsonObject json = new JsonObject();
           for (Map.Entry<String, ?> entry : map.entrySet()) {
-            if (!UNUSED_W3C_NAMES.contains(entry.getKey())) {
+            if (ACCEPTED_W3C_PATTERNS.test(entry.getKey())) {
               json.add(entry.getKey(), gson.toJsonTree(entry.getValue()));
             }
           }
