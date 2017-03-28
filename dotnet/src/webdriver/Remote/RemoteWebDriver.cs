@@ -1094,23 +1094,10 @@ namespace OpenQA.Selenium.Remote
         /// <param name="desiredCapabilities">Capabilities of the browser</param>
         protected void StartSession(ICapabilities desiredCapabilities)
         {
-            DesiredCapabilities capabilitiesObject = desiredCapabilities as DesiredCapabilities;
             Dictionary<string, object> parameters = new Dictionary<string, object>();
-            parameters.Add("desiredCapabilities", capabilitiesObject.CapabilitiesDictionary);
+            parameters.Add("desiredCapabilities", this.GetLegacyCapabilitiesDictionary(desiredCapabilities));
 
-            // Must remove "platform" and "version" capabilities, which are not
-            // supported by W3C compliant remote ends. Note that this block is
-            // temporary and will change soon.
-            Dictionary<string, object> firstMatchCapabilities = capabilitiesObject.CapabilitiesDictionary;
-            if (firstMatchCapabilities.ContainsKey(CapabilityType.Version))
-            {
-                firstMatchCapabilities.Remove(CapabilityType.Version);
-            }
-
-            if (firstMatchCapabilities.ContainsKey(CapabilityType.Platform))
-            {
-                firstMatchCapabilities.Remove(CapabilityType.Platform);
-            }
+            Dictionary<string, object> firstMatchCapabilities = this.GetCapabilitiesDictionary(desiredCapabilities);
 
             List<object> firstMatchCapabilitiesList = new List<object>();
             firstMatchCapabilitiesList.Add(firstMatchCapabilities);
@@ -1125,6 +1112,47 @@ namespace OpenQA.Selenium.Remote
             DesiredCapabilities returnedCapabilities = new DesiredCapabilities(rawCapabilities);
             this.capabilities = returnedCapabilities;
             this.sessionId = new SessionId(response.SessionId);
+        }
+
+        /// <summary>
+        /// Gets the capabilities as a dictionary supporting legacy drivers.
+        /// </summary>
+        /// <param name="capabilities">The dictionary to return.</param>
+        /// <returns>A Dictionary consisting of the capabilities requested.</returns>
+        /// <remarks>This method is only transitional. Do not rely on it. It will be removed
+        /// once browser driver capability formats stabilize.</remarks>
+        protected virtual Dictionary<string, object> GetLegacyCapabilitiesDictionary(ICapabilities capabilities)
+        {
+            Dictionary<string, object> capabilitiesDictionary = new Dictionary<string, object>();
+            DesiredCapabilities capabilitiesObject = capabilities as DesiredCapabilities;
+            foreach (KeyValuePair<string, object> entry in capabilitiesObject.CapabilitiesDictionary)
+            {
+                capabilitiesDictionary.Add(entry.Key, entry.Value);
+            }
+
+            return capabilitiesDictionary;
+        }
+
+        /// <summary>
+        /// Gets the capabilities as a dictionary.
+        /// </summary>
+        /// <param name="capabilities">The dictionary to return.</param>
+        /// <returns>A Dictionary consisting of the capabilities requested.</returns>
+        /// <remarks>This method is only transitional. Do not rely on it. It will be removed
+        /// once browser driver capability formats stabilize.</remarks>
+        protected virtual Dictionary<string, object> GetCapabilitiesDictionary(ICapabilities capabilities)
+        {
+            Dictionary<string, object> capabilitiesDictionary = new Dictionary<string, object>();
+            DesiredCapabilities capabilitiesObject = capabilities as DesiredCapabilities;
+            foreach (KeyValuePair<string, object> entry in capabilitiesObject.CapabilitiesDictionary)
+            {
+                if (entry.Key != CapabilityType.Version && entry.Key != CapabilityType.Platform)
+                {
+                    capabilitiesDictionary.Add(entry.Key, entry.Value);
+                }
+            }
+
+            return capabilitiesDictionary;
         }
 
         /// <summary>

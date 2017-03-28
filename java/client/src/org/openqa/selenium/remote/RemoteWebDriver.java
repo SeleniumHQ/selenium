@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.remote;
 
+import static org.openqa.selenium.remote.CapabilityType.LOGGING_PREFS;
+
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
@@ -102,24 +104,27 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
   // For cglib
   protected RemoteWebDriver() {
-    init(new DesiredCapabilities(), null);
+    init(new DesiredCapabilities());
   }
 
-  public RemoteWebDriver(CommandExecutor executor, Capabilities desiredCapabilities,
-      Capabilities requiredCapabilities) {
+  public RemoteWebDriver(Capabilities desiredCapabilities) {
+    this(new HttpCommandExecutor(null), desiredCapabilities);
+  }
+
+  public RemoteWebDriver(CommandExecutor executor, Capabilities desiredCapabilities) {
     this.executor = executor;
 
-    init(desiredCapabilities, requiredCapabilities);
+    init(desiredCapabilities);
 
     if (executor instanceof NeedsLocalLogs) {
       ((NeedsLocalLogs)executor).setLocalLogs(localLogs);
     }
 
     try {
-      startClient(desiredCapabilities, requiredCapabilities);
+      startClient(desiredCapabilities);
     } catch (RuntimeException e) {
       try {
-        stopClient(desiredCapabilities, requiredCapabilities);
+        stopClient(desiredCapabilities);
       } catch (Exception ignored) {
         // Ignore the clean-up exception. We'll propagate the original failure.
       }
@@ -128,7 +133,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     }
 
     try {
-      startSession(desiredCapabilities, requiredCapabilities);
+      startSession(desiredCapabilities);
     } catch (RuntimeException e) {
       try {
         quit();
@@ -140,25 +145,41 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     }
   }
 
-  public RemoteWebDriver(CommandExecutor executor, Capabilities desiredCapabilities) {
-    this(executor, desiredCapabilities, null);
+  /**
+   * @deprecated Use {@link RemoteWebDriver(CommandExecutor, Capabilities)}.
+   */
+  @Deprecated
+  public RemoteWebDriver(
+      CommandExecutor executor,
+      Capabilities desiredCapabilities,
+      Capabilities requiredCapabilities) {
+    this(executor, desiredCapabilities.merge(requiredCapabilities));
   }
 
-  public RemoteWebDriver(Capabilities desiredCapabilities) {
-    this((URL) null, desiredCapabilities);
-  }
-
-  public RemoteWebDriver(URL remoteAddress, Capabilities desiredCapabilities,
+  /**
+   * @deprecated Use {@link RemoteWebDriver(CommandExecutor, Capabilities)}, creating a new
+   *   {@link HttpCommandExecutor}.
+   */
+  @Deprecated
+  public RemoteWebDriver(
+      URL remoteAddress,
+      Capabilities desiredCapabilities,
       Capabilities requiredCapabilities) {
     this(new HttpCommandExecutor(remoteAddress), desiredCapabilities,
         requiredCapabilities);
   }
 
+  /**
+   * @deprecated Use {@link RemoteWebDriver(CommandExecutor, Capabilities)}, creating a new
+   *   {@link HttpCommandExecutor}.
+   */
   public RemoteWebDriver(URL remoteAddress, Capabilities desiredCapabilities) {
-    this(new HttpCommandExecutor(remoteAddress), desiredCapabilities, null);
+    this(new HttpCommandExecutor(remoteAddress), desiredCapabilities);
   }
 
-  private void init(Capabilities desiredCapabilities, Capabilities requiredCapabilities) {
+  private void init(Capabilities capabilities) {
+    capabilities = capabilities == null ? new DesiredCapabilities() : capabilities;
+
     logger.addHandler(LoggingHandler.getInstance());
 
     converter = new JsonToWebElementConverter(this);
@@ -168,28 +189,16 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
     ImmutableSet.Builder<String> builder = new ImmutableSet.Builder<>();
 
-    boolean isProfilingEnabled = desiredCapabilities != null &&
-        desiredCapabilities.is(CapabilityType.ENABLE_PROFILING_CAPABILITY);
-    if (requiredCapabilities != null && requiredCapabilities.getCapability(
-        CapabilityType.ENABLE_PROFILING_CAPABILITY) != null) {
-      isProfilingEnabled = requiredCapabilities.is(CapabilityType.ENABLE_PROFILING_CAPABILITY);
-    }
+    boolean isProfilingEnabled = capabilities.is(CapabilityType.ENABLE_PROFILING_CAPABILITY);
     if (isProfilingEnabled) {
       builder.add(LogType.PROFILER);
     }
 
     LoggingPreferences mergedLoggingPrefs = new LoggingPreferences();
-    if (desiredCapabilities != null) {
-      mergedLoggingPrefs.addPreferences((LoggingPreferences)desiredCapabilities.getCapability(
-          CapabilityType.LOGGING_PREFS));
-    }
-    if (requiredCapabilities != null) {
-      mergedLoggingPrefs.addPreferences((LoggingPreferences)requiredCapabilities.getCapability(
-          CapabilityType.LOGGING_PREFS));
-    }
-    if ((mergedLoggingPrefs.getEnabledLogTypes().contains(LogType.CLIENT) &&
-        mergedLoggingPrefs.getLevel(LogType.CLIENT) != Level.OFF) ||
-        !mergedLoggingPrefs.getEnabledLogTypes().contains(LogType.CLIENT)) {
+    mergedLoggingPrefs.addPreferences((LoggingPreferences) capabilities.getCapability(LOGGING_PREFS));
+
+    if (!mergedLoggingPrefs.getEnabledLogTypes().contains(LogType.CLIENT) ||
+        mergedLoggingPrefs.getLevel(LogType.CLIENT) != Level.OFF) {
       builder.add(LogType.CLIENT);
     }
 
@@ -282,8 +291,19 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
    * Method called before {@link #startSession(Capabilities) starting a new session}. The default
    * implementation is a no-op, but subtypes should override this method to define custom behavior.
    */
-  protected void startClient(Capabilities desiredCapabilities, Capabilities requiredCapabilities) {
+  protected void startClient(Capabilities desiredCapabilities) {
     startClient();
+  }
+
+  /**
+   * Method called before {@link #startSession(Capabilities) starting a new session}. The default
+   * implementation is a no-op, but subtypes should override this method to define custom behavior.
+   *
+   * @deprecated Use {@link #startClient(Capabilities)}
+   */
+  @Deprecated
+  protected void startClient(Capabilities desiredCapabilities, Capabilities requiredCapabilities) {
+    startClient(desiredCapabilities.merge(requiredCapabilities));
   }
 
   /**
@@ -297,8 +317,19 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
    * Method called after executing a {@link #quit()} command. The default implementation is a no-op,
    * but subtypes should override this method to define custom behavior.
    */
-  protected void stopClient(Capabilities desiredCapabilities, Capabilities requiredCapabilities) {
+  protected void stopClient(Capabilities desiredCapbilities) {
     stopClient();
+  }
+
+  /**
+   * Method called after executing a {@link #quit()} command. The default implementation is a no-op,
+   * but subtypes should override this method to define custom behavior.
+   *
+   * @deprecated Use {@link #stopClient(Capabilities)}
+   */
+  @Deprecated
+  protected void stopClient(Capabilities desiredCapabilities, Capabilities requiredCapabilities) {
+    stopClient(desiredCapabilities.merge(requiredCapabilities));
   }
 
   public ErrorHandler getErrorHandler() {
