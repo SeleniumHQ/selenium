@@ -23,90 +23,157 @@ module Selenium
   module WebDriver
     module Chrome
       describe Bridge do
-        let(:resp)    { {'sessionId' => 'foo', 'value' => @default_capabilities} }
         let(:service) { double(Service, start: true, uri: 'http://example.com') }
-        let(:caps)    { {} }
-        let(:http)    { double(Remote::Http::Default, call: resp).as_null_object }
 
-        before do
-          @default_capabilities = Remote::Capabilities.chrome.as_json
+        before { allow_any_instance_of(Bridge).to receive(:create_session) }
 
-          allow(Remote::Capabilities).to receive(:chrome).and_return(caps)
-          allow(Service).to receive(:binary_path).and_return('/foo')
-          allow(Service).to receive(:new).and_return(service)
+        context 'when URL is provided' do
+          it 'does not start Service when URL set' do
+            expect(Service).not_to receive(:new)
+
+            Bridge.new(url: 'http://example.com:4321')
+          end
         end
 
-        it 'sets the args capability' do
-          Bridge.new(http_client: http, args: %w[--foo=bar])
+        context 'when URL is not provided' do
+          before { allow(Service).to receive(:new).and_return(service) }
 
-          expect(caps[:chrome_options]['args']).to eq(%w[--foo=bar])
-        end
+          it 'starts Service with default path and port when URL not set' do
+            expect(Service).to receive(:new).with(Chrome.driver_path, Service::DEFAULT_PORT, {}).and_return(service)
 
-        it 'sets the proxy capabilitiy' do
-          proxy = Proxy.new(http: 'localhost:1234')
-          Bridge.new(http_client: http, proxy: proxy)
-
-          expect(caps[:proxy]).to eq(proxy)
-        end
-
-        it 'does not set the chrome.detach capability by default' do
-          Bridge.new(http_client: http)
-
-          expect(caps[:chrome_options]).to be nil
-          expect(caps['chrome.detach']).to be nil
-        end
-
-        it 'sets the prefs capability' do
-          Bridge.new(http_client: http, prefs: {foo: 'bar'})
-
-          expect(caps[:chrome_options]['prefs']).to eq(foo: 'bar')
-        end
-
-        it 'lets the user override chrome.detach' do
-          Bridge.new(http_client: http, detach: true)
-
-          expect(caps[:chrome_options]['detach']).to be true
-        end
-
-        it 'raises an ArgumentError if args is not an Array' do
-          expect { Bridge.new(args: '--foo=bar') }.to raise_error(ArgumentError)
-        end
-
-        it 'uses the given profile' do
-          profile = Profile.new
-
-          profile['some_pref'] = true
-          profile.add_extension(__FILE__)
-
-          Bridge.new(http_client: http, profile: profile)
-
-          profile_data = profile.as_json
-          expect(caps[:chrome_options]['args'].first).to include(profile_data[:directory])
-          expect(caps[:chrome_options]['extensions']).to eq(profile_data[:extensions])
-        end
-
-        it 'takes desired capabilities' do
-          custom_caps = Remote::Capabilities.new
-          custom_caps[:chrome_options] = {'foo' => 'bar'}
-
-          expect(http).to receive(:call) do |_, _, payload|
-            expect(payload[:desiredCapabilities][:chrome_options]).to include('foo' => 'bar')
-            resp
+            Bridge.new
           end
 
-          Bridge.new(http_client: http, desired_capabilities: custom_caps)
-        end
+          it 'passes arguments to Service' do
+            driver_path = '/path/to/driver'
+            driver_port = 1234
+            driver_opts = {foo: 'bar',
+                           bar: ['--foo', '--bar']}
+            expect(Service).to receive(:new).with(driver_path, driver_port, driver_opts).and_return(service)
 
-        it 'lets direct arguments take presedence over capabilities' do
-          custom_caps = Remote::Capabilities.new
-          custom_caps[:chrome_options] = {'args' => %w[foo bar]}
-
-          expect(http).to receive(:call) do |_, _, payload|
-            expect(payload[:desiredCapabilities][:chrome_options]['args']).to eq(['baz'])
-            resp
+            Bridge.new(driver_path: driver_path, port: driver_port, driver_opts: driver_opts)
           end
 
-          Bridge.new(http_client: http, desired_capabilities: custom_caps, args: %w[baz])
+          it ':service_log_path is passed in to Service as a deprecated parameter' do
+            log_path = '/path/to/log'
+
+            expect(Service).to receive(:new).with(Chrome.driver_path, Service::DEFAULT_PORT, {log_path: log_path}).and_return(service)
+
+            message = "`:service_log_path` is deprecated. Use `driver_opts: {log_path: /path/to/log}`"
+            expect { Bridge.new(service_log_path: log_path) }.to output(/#{message}/).to_stdout_from_any_process
+          end
+
+          it ':service_args are passed in to Service as a deprecated parameter' do
+            service_args = ['--foo', '--bar']
+
+            expect(Service).to receive(:new).with(Chrome.driver_path, Service::DEFAULT_PORT, args: service_args).and_return(service)
+
+            message = "`:service_args` is deprecated. Pass switches using `driver_opts`"
+            expect { Bridge.new(service_args: service_args) }.to output(/#{message}/).to_stdout_from_any_process
+          end
+
+          it 'uses default chrome capabilities when not set' do
+            expect_any_instance_of(Bridge).to receive(:create_session).with(Remote::Capabilities.chrome)
+
+            Bridge.new
+          end
+
+          it 'uses provided capabilities' do
+            capabilities = Remote::Capabilities.chrome(version: '47')
+            expect_any_instance_of(Bridge).to receive(:create_session).with(capabilities)
+
+            Bridge.new(desired_capabilities: capabilities)
+          end
+
+          it 'passes through any value added to capabilities' do
+            capabilities = Remote::Capabilities.chrome(random: {'foo' => 'bar'})
+            expect_any_instance_of(Bridge).to receive(:create_session).with(capabilities)
+
+            Bridge.new(desired_capabilities: capabilities)
+          end
+
+          it 'treats capabilities keys with symbols and camel case strings as equivalent' do
+            capabilities_in = Remote::Capabilities.chrome(foo_bar: {'foo' => 'bar'})
+            capabilities_out = Remote::Capabilities.chrome('fooBar' => {'foo' => 'bar'})
+            expect_any_instance_of(Bridge).to receive(:create_session).with(capabilities_out)
+
+            Bridge.new(desired_capabilities: capabilities_in)
+          end
+
+          it 'accepts Chrome#path' do
+            allow(Platform).to receive(:assert_executable)
+            chrome_path = 'path/to/chrome'
+            allow(Chrome).to receive(:path).and_return(chrome_path)
+
+            capabilities = Remote::Capabilities.chrome(chrome_options: {'binary' => chrome_path})
+
+            expect_any_instance_of(Bridge).to receive(:create_session).with(capabilities)
+
+            Bridge.new
+          end
+
+          it 'sets args in chrome options with args parameter' do
+            args = %w[--foo=bar]
+            capabilities = Remote::Capabilities.chrome(chrome_options: {'args' => args})
+            expect_any_instance_of(Bridge).to receive(:create_session).with(capabilities)
+
+            Bridge.new(args: args)
+          end
+
+          it 'sets args in chrome options with switches parameter' do
+            args = %w[--foo=bar]
+            capabilities = Remote::Capabilities.chrome(chrome_options: {'args' => args})
+            expect_any_instance_of(Bridge).to receive(:create_session).with(capabilities)
+
+            Bridge.new(switches: args)
+          end
+
+          it 'raises an ArgumentError if args is not an Array' do
+            expect { Bridge.new(args: '--foo=bar') }.to raise_error(ArgumentError)
+          end
+
+          it 'translates profile into correct chrome_options' do
+            profile_path = 'path/to/profile'
+            extension = 'foo'
+            opts = {'args' => ["--user-data-dir=#{profile_path}"], 'extensions' => [extension]}
+
+            allow(Base64).to receive(:strict_encode64).and_return('foo')
+            allow_any_instance_of(Profile).to receive(:verify_model).and_return(profile_path)
+
+            profile = Profile.new
+            allow(profile).to receive(:layout_on_disk).and_return(profile_path)
+
+            profile.add_extension(__FILE__)
+
+            capabilities = Remote::Capabilities.chrome(chrome_options: opts)
+            expect_any_instance_of(Bridge).to receive(:create_session).with(capabilities)
+
+            Bridge.new(profile: profile)
+          end
+
+          it 'sets chrome to detach from chromedriver' do
+            capabilities = Remote::Capabilities.chrome(chrome_options: {'detach' => true})
+            expect_any_instance_of(Bridge).to receive(:create_session).with(capabilities)
+
+            Bridge.new(detach: true)
+          end
+
+          it 'sets chrome prefs' do
+            prefs = {foo: 'bar'}
+            capabilities = Remote::Capabilities.chrome(chrome_options: {'prefs' => prefs})
+            expect_any_instance_of(Bridge).to receive(:create_session).with(capabilities)
+
+            Bridge.new(prefs: prefs)
+          end
+
+          it 'sets the proxy capabilitiy' do
+            proxy = Proxy.new(http: 'localhost:1234')
+
+            capabilities = Remote::Capabilities.chrome(proxy: proxy)
+            expect_any_instance_of(Bridge).to receive(:create_session).with(capabilities)
+
+            Bridge.new(proxy: proxy)
+          end
         end
       end
     end # Chrome
