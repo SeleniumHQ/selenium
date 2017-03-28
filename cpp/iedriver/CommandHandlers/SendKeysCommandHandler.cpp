@@ -64,6 +64,7 @@ void SendKeysCommandHandler::ExecuteInternal(
 
     if (!value_parameter_iterator->second.isString()) {
       response->SetErrorResponse(ERROR_INVALID_ARGUMENT, "parameter 'text' must be a string");
+      return;
     }
     std::wstring keys = StringUtilities::ToWString(value_parameter_iterator->second.asString());
 
