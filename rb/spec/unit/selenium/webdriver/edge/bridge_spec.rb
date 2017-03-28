@@ -23,26 +23,78 @@ module Selenium
   module WebDriver
     module Edge
       describe Bridge do
-        let(:resp)    { {'sessionId' => 'foo', 'value' => @default_capabilities.as_json} }
-        let(:service) { double(Service, start: nil, uri: 'http://example.com') }
-        let(:caps)    { {} }
-        let(:http)    { double(Remote::Http::Default, call: resp).as_null_object }
+        let(:service) { double(Service, host: 'localhost', start: true, uri: 'http://example.com') }
 
-        before do
-          @default_capabilities = Remote::Capabilities.internet_explorer
+        before { allow_any_instance_of(Bridge).to receive(:create_session) }
 
-          allow(Remote::Capabilities).to receive(:internet_explorer).and_return(caps)
-          allow(Service).to receive(:binary_path).and_return('/foo')
-          allow(Service).to receive(:new).and_return(service)
+        context 'when URL is provided' do
+          it 'does not start Service when URL set' do
+            expect(Service).not_to receive(:new)
+
+            Bridge.new(url: 'http://example.com:4321')
+          end
         end
 
-        it 'accepts server URL' do
-          expect(Service).not_to receive(:new)
-          expect(http).to receive(:server_url=).with(URI.parse('http://example.com:4321'))
+        context 'when URL is not provided' do
+          before { allow(Service).to receive(:new).and_return(service) }
 
-          Bridge.new(http_client: http, url: 'http://example.com:4321')
+          it 'starts Service with default path and port when URL not set' do
+            expect(Service).to receive(:new).with(Edge.driver_path, Service::DEFAULT_PORT, {}).and_return(service)
+
+            Bridge.new
+          end
+
+          it 'passes arguments to Service' do
+            driver_path = '/path/to/driver'
+            driver_port = 1234
+            driver_opts = {foo: 'bar',
+                           bar: ['--foo', '--bar']}
+            expect(Service).to receive(:new).with(driver_path, driver_port, driver_opts).and_return(service)
+
+            Bridge.new(driver_path: driver_path, port: driver_port, driver_opts: driver_opts)
+          end
+
+          it ':service_args are passed in to Service as a deprecated parameter' do
+            service_args = ['--foo', '--bar']
+
+            expect(Service).to receive(:new).with(Edge.driver_path, Service::DEFAULT_PORT, args: service_args).and_return(service)
+
+            message = "`:service_args` is deprecated. Pass switches using `driver_opts`"
+            expect { Bridge.new(service_args: service_args) }.to output(/#{message}/).to_stdout_from_any_process
+          end
+
+          it 'uses default edge capabilities when not set' do
+            expect_any_instance_of(Bridge).to receive(:create_session).with(Remote::W3CCapabilities.edge)
+
+            Bridge.new
+          end
+
+          it 'uses provided capabilities' do
+            capabilities = Remote::W3CCapabilities.edge(version: '47')
+            expect_any_instance_of(Bridge).to receive(:create_session).with(capabilities)
+
+            Bridge.new(desired_capabilities: capabilities)
+          end
+
+          it 'passes through any value added to capabilities' do
+            capabilities = Remote::W3CCapabilities.edge(random: {'foo' => 'bar'})
+            expect_any_instance_of(Bridge).to receive(:create_session).with(capabilities)
+
+            Bridge.new(desired_capabilities: capabilities)
+          end
+
+          it 'treats capabilities keys with symbols and camel case strings as equivalent' do
+            capabilities_in = Remote::W3CCapabilities.edge(foo_bar: {'foo' => 'bar'})
+            capabilities_out = Remote::W3CCapabilities.edge('fooBar' => {'foo' => 'bar'})
+            expect_any_instance_of(Bridge).to receive(:create_session).with(capabilities_out)
+
+            Bridge.new(desired_capabilities: capabilities_in)
+          end
+
+          it 'raises an ArgumentError if args is not an Array' do
+            expect { Bridge.new(args: '--foo=bar') }.to raise_error(ArgumentError)
+          end
         end
-
       end
     end # Edge
   end # WebDriver
