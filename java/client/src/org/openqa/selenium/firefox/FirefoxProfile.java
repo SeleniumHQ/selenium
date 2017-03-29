@@ -308,18 +308,18 @@ public class FirefoxProfile {
     }
   }
 
-  @Deprecated
   /**
    * @deprecated "Native" events are not supported in FirefoxDriver anymore
    */
+  @Deprecated
   public boolean areNativeEventsEnabled() {
     return false;
   }
 
-  @Deprecated
   /**
    * @deprecated "Native" events are not supported in FirefoxDriver anymore
    */
+  @Deprecated
   public void setEnableNativeEvents(boolean enableNativeEvents) {
   }
 

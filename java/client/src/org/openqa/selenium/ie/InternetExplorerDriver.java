@@ -160,7 +160,7 @@ public class InternetExplorerDriver extends RemoteWebDriver {
 
   /**
    * @deprecated Create an {@link InternetExplorerDriverService} and then use that to create a
-   *   {@link RemoteWebDriver(org.openqa.selenium.remote.CommandExecutor, Capabilities)} with a
+   *   {@link RemoteWebDriver#RemoteWebDriver(org.openqa.selenium.remote.CommandExecutor, Capabilities)} with a
    *   {@link DriverCommandExecutor}.
    */
   @Deprecated
@@ -170,7 +170,7 @@ public class InternetExplorerDriver extends RemoteWebDriver {
 
   /**
    * @deprecated Create an {@link InternetExplorerDriverService} and then use that to create a
-   *   {@link RemoteWebDriver(org.openqa.selenium.remote.CommandExecutor, Capabilities)} with a
+   *   {@link RemoteWebDriver#RemoteWebDriver(org.openqa.selenium.remote.CommandExecutor, Capabilities)} with a
    *   {@link DriverCommandExecutor}.
    */
   @Deprecated
@@ -180,7 +180,7 @@ public class InternetExplorerDriver extends RemoteWebDriver {
 
   /**
    * @deprecated Create an {@link InternetExplorerDriverService} and then use that to create a
-   *   {@link RemoteWebDriver(org.openqa.selenium.remote.CommandExecutor, Capabilities)} with a
+   *   {@link RemoteWebDriver#RemoteWebDriver(org.openqa.selenium.remote.CommandExecutor, Capabilities)} with a
    *   {@link DriverCommandExecutor}.
    */
   @Deprecated
@@ -190,7 +190,7 @@ public class InternetExplorerDriver extends RemoteWebDriver {
 
   /**
    * @deprecated Create an {@link InternetExplorerDriverService} and then use that to create a
-   *   {@link RemoteWebDriver(org.openqa.selenium.remote.CommandExecutor, Capabilities)} with a
+   *   {@link RemoteWebDriver#RemoteWebDriver(org.openqa.selenium.remote.CommandExecutor, Capabilities)} with a
    *   {@link DriverCommandExecutor}.
    */
   @Deprecated
