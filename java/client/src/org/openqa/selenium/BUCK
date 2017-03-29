@@ -64,6 +64,7 @@ java_library(name = 'core',
     '//java/client/src/org/openqa/selenium/interactions:exceptions',
     '//java/client/src/org/openqa/selenium/logging:api',
     '//java/client/src/org/openqa/selenium/security:security',
+    '//third_party/java/gson:gson',
   ],
   visibility = [
     '//java/client/src/org/openqa/selenium/interactions:interactions',
