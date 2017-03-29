@@ -114,7 +114,7 @@ public class FirefoxDriver extends RemoteWebDriver {
   }
 
   public FirefoxDriver(FirefoxOptions options) {
-    this(toExecutor(options), options.toDesiredCapabilities(), options.toRequiredCapabilities());
+    this(toExecutor(options), options.toCapabilities(), options.toCapabilities());
   }
 
   /**
@@ -143,13 +143,20 @@ public class FirefoxDriver extends RemoteWebDriver {
   }
 
   public FirefoxDriver(Capabilities desiredCapabilities) {
-    this(getFirefoxOptions(desiredCapabilities).addDesiredCapabilities(desiredCapabilities));
+    this(getFirefoxOptions(desiredCapabilities).addCapabilities(desiredCapabilities));
   }
 
+  /**
+   * @deprecated Prefer {@link FirefoxDriver#FirefoxDriver(FirefoxOptions)}
+   */
+  @Deprecated
   public FirefoxDriver(Capabilities desiredCapabilities, Capabilities requiredCapabilities) {
     this(getFirefoxOptions(desiredCapabilities)
-             .addDesiredCapabilities(desiredCapabilities)
-             .addRequiredCapabilities(requiredCapabilities));
+             .addCapabilities(desiredCapabilities)
+             .addCapabilities(requiredCapabilities));
+    warnAboutDeprecatedConstructor(
+        "Capabilities",
+        "addCapabilities(capabilities)");
   }
 
   /**
@@ -161,10 +168,10 @@ public class FirefoxDriver extends RemoteWebDriver {
     this(getFirefoxOptions(capabilities)
              .setBinary(binary)
              .setProfile(profile)
-             .addDesiredCapabilities(capabilities));
+             .addCapabilities(capabilities));
     warnAboutDeprecatedConstructor(
         "FirefoxBinary, FirefoxProfile, Capabilities",
-        "setBinary(binary).setProfile(profile).addDesiredCapabilities(capabilities)");
+        "setBinary(binary).setProfile(profile).addCapabilities(capabilities)");
   }
 
   /**
@@ -179,12 +186,11 @@ public class FirefoxDriver extends RemoteWebDriver {
       Capabilities requiredCapabilities) {
     this(getFirefoxOptions(desiredCapabilities)
              .setBinary(binary).setProfile(profile)
-             .addDesiredCapabilities(desiredCapabilities)
-             .addRequiredCapabilities(requiredCapabilities));
+             .addCapabilities(desiredCapabilities)
+             .addCapabilities(requiredCapabilities));
     warnAboutDeprecatedConstructor(
         "FirefoxBinary, FirefoxProfile, Capabilities",
-        "setBinary(binary).setProfile(profile).addDesiredCapabilities(desired)" +
-        ".addRequiredCapabilities(required)");
+        "setBinary(binary).setProfile(profile).addCapabilities(capabilities)");
   }
 
   private FirefoxDriver(
@@ -192,8 +198,7 @@ public class FirefoxDriver extends RemoteWebDriver {
       Capabilities desiredCapabilities,
       Capabilities requiredCapabilities) {
     super(executor,
-          dropCapabilities(desiredCapabilities),
-          dropCapabilities(requiredCapabilities));
+          dropCapabilities(desiredCapabilities).merge(dropCapabilities(requiredCapabilities)));
   }
 
   private static CommandExecutor toExecutor(FirefoxOptions options) {
