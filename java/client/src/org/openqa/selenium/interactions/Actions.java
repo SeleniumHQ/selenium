@@ -478,7 +478,7 @@ public class Actions {
 
     return moveInTicks(source, 0, 0)
         .tick(defaultMouse.createPointerDown(LEFT.asArg()))
-        .moveInTicks(source, 0, 0)
+        .moveInTicks(target, 0, 0)
         .tick(defaultMouse.createPointerUp(LEFT.asArg()));
   }
 
