@@ -40,6 +40,7 @@ import org.junit.runners.JUnit4;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.Proxy;
 import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.logging.LoggingPreferences;
 
@@ -429,6 +430,12 @@ public class JsonToBeanConverterTest {
     Response response = new JsonToBeanConverter()
       .convert(Response.class, "{\"value\":\"cheese\"}");
     assertNull(response.getStatus());
+  }
+
+  @Test
+  public void canConvertAnEnumWithALowerCaseValue() {
+    Proxy.ProxyType type = new JsonToBeanConverter().convert(Proxy.ProxyType.class, "pac");
+    assertEquals(Proxy.ProxyType.PAC, type);
   }
 
   public static class SimpleBean {
