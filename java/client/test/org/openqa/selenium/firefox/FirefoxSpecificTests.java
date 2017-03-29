@@ -24,7 +24,6 @@ import org.openqa.selenium.firefox.internal.SocketLockTest;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-    FirefoxCapabilitiesTest.class,
     FirefoxDriverTest.class,
     FirefoxOptionsTest.class,
     FirefoxProfileTest.class,
