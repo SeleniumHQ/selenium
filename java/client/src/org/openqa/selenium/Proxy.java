@@ -17,6 +17,9 @@
 
 package org.openqa.selenium;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -90,6 +93,41 @@ public class Proxy {
     if (raw.containsKey("autodetect") && raw.get("autodetect") != null) {
       setAutodetect((Boolean) raw.get("autodetect"));
     }
+  }
+
+  public JsonElement toJson() {
+    Map<String, String> m = new HashMap<>();
+    if (proxyType != ProxyType.UNSPECIFIED) {
+      m.put("proxyType", proxyType.toString().toLowerCase());
+    }
+    if (ftpProxy != null) {
+      m.put("ftpProxy", ftpProxy);
+    }
+    if (httpProxy != null) {
+      m.put("httpProxy", httpProxy);
+    }
+    if (noProxy != null) {
+      m.put("noProxy", noProxy);
+    }
+    if (sslProxy != null) {
+      m.put("sslProxy", sslProxy);
+    }
+    if (socksProxy != null) {
+      m.put("socksProxy", socksProxy);
+    }
+    if (socksUsername != null) {
+      m.put("socksUsername", socksUsername);
+    }
+    if (socksPassword != null) {
+      m.put("socksPassword", socksPassword);
+    }
+    if (proxyAutoconfigUrl != null) {
+      m.put("proxyAutoconfigUrl", proxyAutoconfigUrl);
+    }
+    if (autodetect) {
+      m.put("autodetect", "true");
+    }
+    return new Gson().toJsonTree(m);
   }
 
   /**

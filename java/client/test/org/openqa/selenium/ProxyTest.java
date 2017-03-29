@@ -24,6 +24,9 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import java.util.Set;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -204,7 +207,7 @@ public class ProxyTest {
 
 
   @Test
-  public void testInitializationManualProxy() {
+  public void manualProxyFromMap() {
     Map<String, String> proxyData = new HashMap<>();
     proxyData.put("proxyType", "manual");
     proxyData.put("httpProxy", "http.proxy:1234");
@@ -231,7 +234,32 @@ public class ProxyTest {
   }
 
   @Test
-  public void testInitializationPACProxy() {
+  public void manualProxyToJson() {
+    Proxy proxy = new Proxy();
+    proxy.setProxyType(ProxyType.MANUAL);
+    proxy.setHttpProxy("http.proxy:1234");
+    proxy.setFtpProxy("ftp.proxy");
+    proxy.setSslProxy("ssl.proxy");
+    proxy.setNoProxy("localhost,127.0.0.*");
+    proxy.setSocksProxy("socks.proxy:65555");
+    proxy.setSocksUsername("test1");
+    proxy.setSocksPassword("test2");
+
+    JsonObject json = proxy.toJson().getAsJsonObject();
+
+    assertEquals("manual", json.getAsJsonPrimitive("proxyType").getAsString());
+    assertEquals("ftp.proxy", json.getAsJsonPrimitive("ftpProxy").getAsString());
+    assertEquals("http.proxy:1234", json.getAsJsonPrimitive("httpProxy").getAsString());
+    assertEquals("ssl.proxy", json.getAsJsonPrimitive("sslProxy").getAsString());
+    assertEquals("socks.proxy:65555", json.getAsJsonPrimitive("socksProxy").getAsString());
+    assertEquals("test1", json.getAsJsonPrimitive("socksUsername").getAsString());
+    assertEquals("test2", json.getAsJsonPrimitive("socksPassword").getAsString());
+    assertEquals("localhost,127.0.0.*", json.getAsJsonPrimitive("noProxy").getAsString());
+    assertEquals(8, json.entrySet().size());
+  }
+
+  @Test
+  public void pacProxyFromMap() {
     Map<String, String> proxyData = new HashMap<>();
     proxyData.put("proxyType", "PAC");
     proxyData.put("proxyAutoconfigUrl", "http://aaa/bbb.pac");
@@ -252,7 +280,20 @@ public class ProxyTest {
   }
 
   @Test
-  public void testInitializationAutodetectProxy() {
+  public void pacProxyToJson() {
+    Proxy proxy = new Proxy();
+    proxy.setProxyType(ProxyType.PAC);
+    proxy.setProxyAutoconfigUrl("http://aaa/bbb.pac");
+
+    JsonObject json = proxy.toJson().getAsJsonObject();
+
+    assertEquals("pac", json.getAsJsonPrimitive("proxyType").getAsString());
+    assertEquals("http://aaa/bbb.pac", json.getAsJsonPrimitive("proxyAutoconfigUrl").getAsString());
+    assertEquals(2, json.entrySet().size());
+  }
+
+  @Test
+  public void autodetectProxyFromMap() {
     Map<String, Object> proxyData = new HashMap<>();
     proxyData.put("proxyType", "AUTODETECT");
     proxyData.put("autodetect", true);
@@ -273,7 +314,20 @@ public class ProxyTest {
   }
 
   @Test
-  public void testInitializationSystemProxy() {
+  public void autodetectProxyToJson() {
+    Proxy proxy = new Proxy();
+    proxy.setProxyType(ProxyType.AUTODETECT);
+    proxy.setAutodetect(true);
+
+    JsonObject json = proxy.toJson().getAsJsonObject();
+
+    assertEquals("autodetect", json.getAsJsonPrimitive("proxyType").getAsString());
+    assertTrue(json.getAsJsonPrimitive("autodetect").getAsBoolean());
+    assertEquals(2, json.entrySet().size());
+  }
+
+  @Test
+  public void systemProxyFromMap() {
     Map<String, String> proxyData = new HashMap<>();
     proxyData.put("proxyType", "system");
 
@@ -293,7 +347,18 @@ public class ProxyTest {
   }
 
   @Test
-  public void testInitializationDirectProxy() {
+  public void systemProxyToJson() {
+    Proxy proxy = new Proxy();
+    proxy.setProxyType(ProxyType.SYSTEM);
+
+    JsonObject json = proxy.toJson().getAsJsonObject();
+
+    assertEquals("system", json.getAsJsonPrimitive("proxyType").getAsString());
+    assertEquals(1, json.entrySet().size());
+  }
+
+  @Test
+  public void directProxyFromMap() {
     Map<String, String> proxyData = new HashMap<>();
     proxyData.put("proxyType", "DIRECT");
 
@@ -310,6 +375,17 @@ public class ProxyTest {
     assertNull(proxy.getNoProxy());
     assertFalse(proxy.isAutodetect());
     assertNull(proxy.getProxyAutoconfigUrl());
+  }
+
+  @Test
+  public void directProxyToJson() {
+    Proxy proxy = new Proxy();
+    proxy.setProxyType(ProxyType.DIRECT);
+
+    JsonObject json = proxy.toJson().getAsJsonObject();
+
+    assertEquals("direct", json.getAsJsonPrimitive("proxyType").getAsString());
+    assertEquals(1, json.entrySet().size());
   }
 
   @Test
