@@ -27,7 +27,6 @@ import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_WEB_STORAGE;
 import static org.openqa.selenium.remote.CapabilityType.VERSION;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonArray;
@@ -189,7 +188,7 @@ public class FirefoxOptions {
 
   public FirefoxOptions setBinary(Path path) {
     // Default to UNIX-style paths, even on Windows.
-    this.binaryPath = asUnixPath(path);
+    this.binaryPath = absolute(path);
     this.actualBinary = null;
     if (Files.exists(path)) {
       desiredCapabilities.setCapability(BINARY, new FirefoxBinary(path.toFile()));
@@ -197,9 +196,8 @@ public class FirefoxOptions {
     return this;
   }
 
-  private String asUnixPath(Path path) {
-    StringBuilder builder = new StringBuilder(path.isAbsolute() ? "/" : "");
-    return Joiner.on("/").appendTo(builder, path).toString();
+  private String absolute(Path path) {
+    return path.toAbsolutePath().toString();
   }
 
   public FirefoxOptions setBinary(String path) {
@@ -467,13 +465,13 @@ public class FirefoxOptions {
     Object priorBinary = source.getCapability(BINARY);
     if (priorBinary instanceof Path) {
       // Again, unix-style path
-      priorBinary = asUnixPath((Path) priorBinary);
+      priorBinary = absolute((Path) priorBinary);
     }
     if (priorBinary instanceof String) {
-      priorBinary = asUnixPath(Paths.get((String) priorBinary));
+      priorBinary = absolute(Paths.get((String) priorBinary));
     }
     if (priorBinary instanceof FirefoxBinary) {
-      priorBinary = asUnixPath(((FirefoxBinary) priorBinary).getFile().toPath());
+      priorBinary = absolute(((FirefoxBinary) priorBinary).getFile().toPath());
     }
 
     if ((actualBinary != null && !actualBinary.getFile().toPath().equals(priorBinary)) ||
