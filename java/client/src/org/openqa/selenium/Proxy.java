@@ -17,8 +17,6 @@
 
 package org.openqa.selenium;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -95,8 +93,9 @@ public class Proxy {
     }
   }
 
-  public JsonElement toJson() {
-    Map<String, String> m = new HashMap<>();
+  public Map<String, Object> toJson() {
+    Map<String, Object> m = new HashMap<>();
+
     if (proxyType != ProxyType.UNSPECIFIED) {
       m.put("proxyType", proxyType.toString().toLowerCase());
     }
@@ -125,9 +124,9 @@ public class Proxy {
       m.put("proxyAutoconfigUrl", proxyAutoconfigUrl);
     }
     if (autodetect) {
-      m.put("autodetect", "true");
+      m.put("autodetect", true);
     }
-    return new Gson().toJsonTree(m);
+    return m;
   }
 
   /**

@@ -23,16 +23,21 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.openqa.selenium.remote.CapabilityType.PROXY;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import java.util.Set;
+
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.openqa.selenium.Proxy.ProxyType;
+import org.openqa.selenium.remote.BeanToJsonConverter;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.JsonToBeanConverter;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -245,16 +250,16 @@ public class ProxyTest {
     proxy.setSocksUsername("test1");
     proxy.setSocksPassword("test2");
 
-    JsonObject json = proxy.toJson().getAsJsonObject();
+    Map<String, Object> json = proxy.toJson();
 
-    assertEquals("manual", json.getAsJsonPrimitive("proxyType").getAsString());
-    assertEquals("ftp.proxy", json.getAsJsonPrimitive("ftpProxy").getAsString());
-    assertEquals("http.proxy:1234", json.getAsJsonPrimitive("httpProxy").getAsString());
-    assertEquals("ssl.proxy", json.getAsJsonPrimitive("sslProxy").getAsString());
-    assertEquals("socks.proxy:65555", json.getAsJsonPrimitive("socksProxy").getAsString());
-    assertEquals("test1", json.getAsJsonPrimitive("socksUsername").getAsString());
-    assertEquals("test2", json.getAsJsonPrimitive("socksPassword").getAsString());
-    assertEquals("localhost,127.0.0.*", json.getAsJsonPrimitive("noProxy").getAsString());
+    assertEquals("manual", json.get("proxyType"));
+    assertEquals("ftp.proxy", json.get("ftpProxy"));
+    assertEquals("http.proxy:1234", json.get("httpProxy"));
+    assertEquals("ssl.proxy", json.get("sslProxy"));
+    assertEquals("socks.proxy:65555", json.get("socksProxy"));
+    assertEquals("test1", json.get("socksUsername"));
+    assertEquals("test2", json.get("socksPassword"));
+    assertEquals("localhost,127.0.0.*", json.get("noProxy"));
     assertEquals(8, json.entrySet().size());
   }
 
@@ -285,10 +290,10 @@ public class ProxyTest {
     proxy.setProxyType(ProxyType.PAC);
     proxy.setProxyAutoconfigUrl("http://aaa/bbb.pac");
 
-    JsonObject json = proxy.toJson().getAsJsonObject();
+    Map<String, Object> json = proxy.toJson();
 
-    assertEquals("pac", json.getAsJsonPrimitive("proxyType").getAsString());
-    assertEquals("http://aaa/bbb.pac", json.getAsJsonPrimitive("proxyAutoconfigUrl").getAsString());
+    assertEquals("pac", json.get("proxyType"));
+    assertEquals("http://aaa/bbb.pac", json.get("proxyAutoconfigUrl"));
     assertEquals(2, json.entrySet().size());
   }
 
@@ -319,10 +324,10 @@ public class ProxyTest {
     proxy.setProxyType(ProxyType.AUTODETECT);
     proxy.setAutodetect(true);
 
-    JsonObject json = proxy.toJson().getAsJsonObject();
+    Map<String, ?> json = proxy.toJson();
 
-    assertEquals("autodetect", json.getAsJsonPrimitive("proxyType").getAsString());
-    assertTrue(json.getAsJsonPrimitive("autodetect").getAsBoolean());
+    assertEquals("autodetect", json.get("proxyType"));
+    assertTrue((Boolean) json.get("autodetect"));
     assertEquals(2, json.entrySet().size());
   }
 
@@ -351,9 +356,9 @@ public class ProxyTest {
     Proxy proxy = new Proxy();
     proxy.setProxyType(ProxyType.SYSTEM);
 
-    JsonObject json = proxy.toJson().getAsJsonObject();
+    Map<String, Object> json = proxy.toJson();
 
-    assertEquals("system", json.getAsJsonPrimitive("proxyType").getAsString());
+    assertEquals("system", json.get("proxyType"));
     assertEquals(1, json.entrySet().size());
   }
 
@@ -382,9 +387,9 @@ public class ProxyTest {
     Proxy proxy = new Proxy();
     proxy.setProxyType(ProxyType.DIRECT);
 
-    JsonObject json = proxy.toJson().getAsJsonObject();
+    Map<String, Object> json = proxy.toJson();
 
-    assertEquals("direct", json.getAsJsonPrimitive("proxyType").getAsString());
+    assertEquals("direct", json.get("proxyType"));
     assertEquals(1, json.entrySet().size());
   }
 
@@ -395,12 +400,28 @@ public class ProxyTest {
     rawProxy.put("httpProxy", "http://www.example.com");
     rawProxy.put("autodetect", null);
     DesiredCapabilities caps = new DesiredCapabilities();
-    caps.setCapability(CapabilityType.PROXY, rawProxy);
+    caps.setCapability(PROXY, rawProxy);
 
     Proxy proxy = Proxy.extractFrom(caps);
 
     assertNull(proxy.getFtpProxy());
     assertFalse(proxy.isAutodetect());
     assertEquals("http://www.example.com", proxy.getHttpProxy());
+  }
+
+  @Test
+  @Ignore
+  public void serialiazesAndDeserializesWithoutError() {
+    Proxy proxy = new Proxy();
+    proxy.setProxyAutoconfigUrl("http://www.example.com/config.pac");
+
+    DesiredCapabilities caps = new DesiredCapabilities();
+    caps.setCapability(PROXY, proxy);
+
+    String rawJson = new BeanToJsonConverter().convert(caps);
+    Capabilities converted = new JsonToBeanConverter().convert(Capabilities.class, rawJson);
+
+    Object returnedProxy = converted.getCapability(PROXY);
+    assertTrue(returnedProxy instanceof Proxy);
   }
 }
