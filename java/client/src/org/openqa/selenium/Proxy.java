@@ -19,6 +19,7 @@ package org.openqa.selenium;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Configuration parameters for using proxies in WebDriver. Generally you should pass an object of
@@ -380,5 +381,82 @@ public class Proxy {
       }
     }
     return proxy;
+  }
+
+  @Override
+  public String toString() {
+    StringBuilder builder = new StringBuilder("Proxy(");
+
+    switch (getProxyType()) {
+      case AUTODETECT:
+      case DIRECT:
+      case MANUAL:
+      case SYSTEM:
+        builder.append(getProxyType().toString().toLowerCase());
+        break;
+
+      case PAC:
+        builder.append("pac: ").append(getProxyAutoconfigUrl());
+        break;
+
+      case UNSPECIFIED:
+        break;
+    }
+
+    String p = getFtpProxy();
+    if (p != null) {
+      builder.append(", ftp=").append(p);
+    }
+    p = getHttpProxy();
+    if (p != null) {
+      builder.append(", http=").append(p);
+    }
+    p = getSocksProxy();
+    if (p != null) {
+      builder.append(", socks=").append(p);
+    }
+    p = getSslProxy();
+    if (p != null) {
+      builder.append(", ssl=").append(p);
+    }
+
+    builder.append(")");
+    return builder.toString();
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    Proxy proxy = (Proxy) o;
+    return isAutodetect() == proxy.isAutodetect() &&
+           getProxyType() == proxy.getProxyType() &&
+           Objects.equals(getFtpProxy(), proxy.getFtpProxy()) &&
+           Objects.equals(getHttpProxy(), proxy.getHttpProxy()) &&
+           Objects.equals(getNoProxy(), proxy.getNoProxy()) &&
+           Objects.equals(getSslProxy(), proxy.getSslProxy()) &&
+           Objects.equals(getSocksProxy(), proxy.getSocksProxy()) &&
+           Objects.equals(getSocksUsername(), proxy.getSocksUsername()) &&
+           Objects.equals(getSocksPassword(), proxy.getSocksPassword()) &&
+           Objects.equals(getProxyAutoconfigUrl(), proxy.getProxyAutoconfigUrl());
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+        getProxyType(),
+        isAutodetect(),
+        getFtpProxy(),
+        getHttpProxy(),
+        getNoProxy(),
+        getSslProxy(),
+        getSocksProxy(),
+        getSocksUsername(),
+        getSocksPassword(),
+        getProxyAutoconfigUrl());
   }
 }
