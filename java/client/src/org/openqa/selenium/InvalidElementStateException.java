@@ -17,6 +17,11 @@
 
 package org.openqa.selenium;
 
+/**
+ * Indicates that a {@link WebElement} is in a state that means actions cannot be performed with it.
+ * Examples would include an element being obscured by another when clicking, or perhaps not being
+ * visible on the DOM. Subclasses of this provide more detailed information.
+ */
 public class InvalidElementStateException extends WebDriverException {
   public InvalidElementStateException() {
     super();
