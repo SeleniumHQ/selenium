@@ -115,17 +115,16 @@ public class FirefoxOptions {
     if (map.containsKey("prefs")) {
       @SuppressWarnings("unchecked")  // #YOLO
       Map<String, Object> prefs = (Map) getOption(map, "prefs", Map.class);
-      prefs.entrySet().forEach(entry -> {
-        Object value = entry.getValue();
+      prefs.forEach((key, value) -> {
         if (value instanceof Boolean) {
-          options.addPreference(entry.getKey(), (Boolean) value);
+          options.addPreference(key, (Boolean) value);
         } else if (value instanceof Integer || value instanceof Long) {
-          options.addPreference(entry.getKey(), ((Number) value).intValue());
+          options.addPreference(key, ((Number) value).intValue());
         } else if (value instanceof String) {
-          options.addPreference(entry.getKey(), (String) value);
+          options.addPreference(key, (String) value);
         } else {
           throw new WebDriverException(
-              "Invalid Firefox preference value: " + entry.getKey() + "=" + value);
+              "Invalid Firefox preference value: " + key + "=" + value);
         }
       });
     }
@@ -255,9 +254,9 @@ public class FirefoxOptions {
 
     if (!booleanPrefs.isEmpty() || !intPrefs.isEmpty() || !stringPrefs.isEmpty()) {
       LOG.info("Will update profile with preferences from these options.");
-      booleanPrefs.entrySet().forEach(e -> profile.setPreference(e.getKey(), e.getValue()));
-      intPrefs.entrySet().forEach(e -> profile.setPreference(e.getKey(), e.getValue()));
-      stringPrefs.entrySet().forEach(e -> profile.setPreference(e.getKey(), e.getValue()));
+      booleanPrefs.forEach(profile::setPreference);
+      intPrefs.forEach(profile::setPreference);
+      stringPrefs.forEach(profile::setPreference);
     }
 
     desiredCapabilities.setCapability(PROFILE, profile);
@@ -285,9 +284,9 @@ public class FirefoxOptions {
   private FirefoxProfile fullyPopulateProfile(FirefoxProfile profile) {
     populateProfile(profile, desiredCapabilities);
 
-    booleanPrefs.entrySet().forEach(pref -> profile.setPreference(pref.getKey(), pref.getValue()));
-    intPrefs.entrySet().forEach(pref -> profile.setPreference(pref.getKey(), pref.getValue()));
-    stringPrefs.entrySet().forEach(pref -> profile.setPreference(pref.getKey(), pref.getValue()));
+    booleanPrefs.forEach(profile::setPreference);
+    intPrefs.forEach(profile::setPreference);
+    stringPrefs.forEach(profile::setPreference);
 
     return profile;
   }
