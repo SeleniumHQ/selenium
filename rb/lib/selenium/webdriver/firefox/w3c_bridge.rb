@@ -60,22 +60,49 @@ module Selenium
           @service.stop if @service
         end
 
+        # Firefox doesn't implement rect yet
+        def resize_window(width, height, handle = :current)
+          unless handle == :current
+            raise Error::WebDriverError, 'Switch to desired window before changing its size'
+          end
+          execute :set_window_size, {}, {width: width, height: height}
+        end
+
+        def window_size(handle = :current)
+          unless handle == :current
+            raise Error::UnsupportedOperationError, 'Switch to desired window before getting its size'
+          end
+          data = execute :get_window_size
+
+          Dimension.new data['width'], data['height']
+        end
+
+        def reposition_window(x, y)
+          execute :set_window_position, {}, {x: x, y: y}
+        end
+
+        def window_position
+          data = execute :get_window_position
+          Point.new data['x'], data['y']
+        end
+
         private
 
         def create_capabilities(opts)
           caps = Remote::W3CCapabilities.firefox
           caps.merge!(opts.delete(:desired_capabilities)) if opts.key? :desired_capabilities
-          firefox_options_caps = caps[:firefox_options] || {}
-          caps[:firefox_options] = firefox_options_caps.merge(opts[:firefox_options] || {})
+          firefox_options = caps[:firefox_options] || {}
+          firefox_options = firefox_options_caps.merge(opts[:firefox_options]) if opts.key?(:firefox_options)
           if opts.key?(:profile)
             profile = opts.delete(:profile)
             unless profile.is_a?(Profile)
               profile = Profile.from_name(profile)
             end
-            caps[:firefox_options][:profile] = profile.encoded
+            firefox_options[:profile] = profile.encoded
           end
 
-          Binary.path = caps[:firefox_options][:binary] if caps[:firefox_options].key?(:binary)
+          Binary.path = firefox_options[:binary] if firefox_options.key?(:binary)
+          caps[:firefox_options] = firefox_options unless firefox_options.empty?
           caps
         end
       end # W3CBridge

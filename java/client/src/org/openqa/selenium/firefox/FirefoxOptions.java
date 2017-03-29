@@ -458,7 +458,7 @@ public class FirefoxOptions {
   }
 
   private Capabilities toCapabilities(Capabilities source) {
-    HashMap<String, Object> caps = new HashMap<>();
+    HashMap<String, Object> caps = new HashMap<>(source.asMap());
 
     if (isLegacy()) {
       caps.put(FirefoxDriver.MARIONETTE, false);

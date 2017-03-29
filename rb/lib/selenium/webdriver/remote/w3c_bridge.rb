@@ -234,8 +234,20 @@ module Selenium
           unless handle == :current
             raise Error::WebDriverError, 'Switch to desired window before changing its size'
           end
-          execute :set_window_size, {}, {width: width,
-                                       height: height}
+          execute :set_window_rect, {}, {width: width, height: height}
+        end
+
+        def window_size(handle = :current)
+          unless handle == :current
+            raise Error::UnsupportedOperationError, 'Switch to desired window before getting its size'
+          end
+          data = execute :get_window_rect
+
+          Dimension.new data['width'], data['height']
+        end
+
+        def minimize_window
+          execute :minimize_window
         end
 
         def maximize_window(handle = :current)
@@ -249,22 +261,22 @@ module Selenium
           execute :fullscreen_window
         end
 
-        def window_size(handle = :current)
-          unless handle == :current
-            raise Error::UnsupportedOperationError, 'Switch to desired window before getting its size'
-          end
-          data = execute :get_window_size
-
-          Dimension.new data['width'], data['height']
-        end
-
         def reposition_window(x, y)
-          execute :set_window_position, {}, {x: x, y: y}
+          execute :set_window_rect, {}, {x: x, y: y}
         end
 
         def window_position
-          data = execute :get_window_position
+          data = execute :get_window_rect
           Point.new data['x'], data['y']
+        end
+
+        def set_window_rect(width: nil, height: nil, x: nil, y: nil)
+          execute :set_window_rect, {}, {width: width, height: height, x: x, y: y}
+        end
+
+        def window_rect
+          data = execute :get_window_rect
+          Rectangle.new data['x'], data['y'], data['width'], data['height']
         end
 
         def screenshot
