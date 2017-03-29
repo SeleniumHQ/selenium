@@ -39,12 +39,14 @@ module Selenium
         def initialize(opts = {})
           opts = opts.dup
 
-          if opts.key?(:port)
-            WebDriver.logger.warn <<-DEPRECATE.gsub(/\n +| {2,}/, ' ').freeze
-            [DEPRECATION] `:port` is deprecated. Use `:url` with full path
-            DEPRECATE
-          end
-          port = opts.delete(:port) || 4444
+          port = if opts.key?(:port)
+                   WebDriver.logger.warn <<-DEPRECATE.gsub(/\n +| {2,}/, ' ').freeze
+                   [DEPRECATION] `:port` is deprecated. Use `:url` with full path
+                   DEPRECATE
+                   opts.delete(:port)
+                 else
+                   4444
+                 end
 
           http_client = opts.delete(:http_client) { Http::Default.new }
           desired_capabilities = opts.delete(:desired_capabilities) { Capabilities.firefox }
