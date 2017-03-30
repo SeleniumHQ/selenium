@@ -277,6 +277,17 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     }
     returnedCapabilities.setPlatform(platform);
 
+    if (rawCapabilities.containsKey(SUPPORTS_JAVASCRIPT)) {
+      Object raw = rawCapabilities.get(SUPPORTS_JAVASCRIPT);
+      if (raw instanceof String) {
+        returnedCapabilities.setCapability(SUPPORTS_JAVASCRIPT, Boolean.parseBoolean((String) raw));
+      } else if (raw instanceof Boolean) {
+        returnedCapabilities.setCapability(SUPPORTS_JAVASCRIPT, ((Boolean) raw).booleanValue());
+      }
+    } else {
+      returnedCapabilities.setCapability(SUPPORTS_JAVASCRIPT, true);
+    }
+
     capabilities = returnedCapabilities;
     sessionId = new SessionId(response.getSessionId());
   }
