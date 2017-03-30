@@ -242,6 +242,7 @@ public class FirefoxDriver extends RemoteWebDriver {
     if (marionette instanceof Boolean) {
       options.setLegacy(!(Boolean) marionette);
     }
+
     return options;
   }
 
@@ -302,7 +303,7 @@ public class FirefoxDriver extends RemoteWebDriver {
     // Ensure that the proxy is in a state fit to be sent to the extension
     Proxy proxy = Proxy.extractFrom(capabilities);
     if (proxy != null) {
-      caps.setCapability(PROXY, new BeanToJsonConverter().convert(proxy));
+      caps.setCapability(PROXY, proxy);
     }
 
     return caps;
