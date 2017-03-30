@@ -61,11 +61,43 @@ public class FirefoxOptionsTest {
   }
 
   @Test
-  public void canSetBinaryThroughOptions() {
+  public void shouldKeepRelativePathToBinaryAsIs() {
     FirefoxOptions options = new FirefoxOptions().setBinary("some/path");
     Capabilities caps = options.addTo(new DesiredCapabilities());
 
     assertEquals("some/path", caps.getCapability(FirefoxDriver.BINARY));
+  }
+
+  @Test
+  public void shouldConvertPathToBinaryToUseForwardSlashes() {
+    FirefoxOptions options = new FirefoxOptions().setBinary("some\\path");
+    Capabilities caps = options.addTo(new DesiredCapabilities());
+
+    assertEquals("some/path", caps.getCapability(FirefoxDriver.BINARY));
+  }
+
+  @Test
+  public void shouldKeepWindowsDriveLetterInPathToBinary() {
+    FirefoxOptions options = new FirefoxOptions().setBinary("F:\\some\\path");
+    Capabilities caps = options.addTo(new DesiredCapabilities());
+
+    assertEquals("F:/some/path", caps.getCapability(FirefoxDriver.BINARY));
+  }
+
+  @Test
+  public void canUseForwardSlashesInWindowsPaths() {
+    FirefoxOptions options = new FirefoxOptions().setBinary("F:\\some\\path");
+    Capabilities caps = options.addTo(new DesiredCapabilities());
+
+    assertEquals("F:/some/path", caps.getCapability(FirefoxDriver.BINARY));
+  }
+
+  @Test
+  public void shouldKeepWindowsNetworkFileSystemRootInPathToBinary() {
+    FirefoxOptions options = new FirefoxOptions().setBinary("\\\\server\\share\\some\\path");
+    Capabilities caps = options.addTo(new DesiredCapabilities());
+
+    assertEquals("//server/share/some/path", caps.getCapability(FirefoxDriver.BINARY));
   }
 
   @Test
