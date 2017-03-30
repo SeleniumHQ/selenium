@@ -27,7 +27,6 @@ import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_WEB_STORAGE;
 import static org.openqa.selenium.remote.CapabilityType.VERSION;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonArray;
@@ -197,12 +196,7 @@ public class FirefoxOptions {
   }
 
   private String toForwardSlashes(Path path) {
-    Path root = path.getRoot();
-    if (root != null) {
-      return root.toString().replace('\\', '/') + Joiner.on("/").join(path);
-    } else {
-      return Joiner.on("/").join(path);
-    }
+    return Preconditions.checkNotNull(path).toString().replace('\\', '/');
   }
 
   public FirefoxOptions setBinary(String path) {
