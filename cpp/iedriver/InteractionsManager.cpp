@@ -358,6 +358,10 @@ void InteractionsManager::SendMouseDownMessage(HWND window_handle, bool shift_pr
   // the posted message has been processed.
   ::PostMessage(window_handle, msg, button_value, coordinates);
   ::SendMessage(window_handle, WM_USER, 0, 0);
+
+  // This 5 millisecond sleep is important for the click element scenario,
+  // as it allows the element to register and respond to the focus event. 
+  ::Sleep(5);
 }
 
 
