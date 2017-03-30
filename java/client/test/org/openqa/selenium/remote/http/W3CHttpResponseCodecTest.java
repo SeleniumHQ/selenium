@@ -24,14 +24,17 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.remote.ErrorCodes.METHOD_NOT_ALLOWED;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 
 import org.junit.Test;
+import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.Response;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -87,6 +90,22 @@ public class W3CHttpResponseCodecTest {
 
     assertTrue(decoded.getValue() instanceof UnsupportedCommandException);
     assertTrue(((WebDriverException) decoded.getValue()).getMessage().contains("I like peas"));
+  }
+
+  @Test
+  public void shouldPopulateTheAlertTextIfThrowingAnUnhandledAlertException() {
+    ImmutableMap<String, ImmutableMap<String, Serializable>> data = ImmutableMap.of(
+        "value", ImmutableMap.of(
+            "error", "unexpected alert open",
+            "message", "Modal dialog present",
+            "stacktrace", "",
+            "data", ImmutableMap.of("text", "cheese")));
+
+    HttpResponse response = createValidResponse(500, data);
+    Response decoded = new W3CHttpResponseCodec().decode(response);
+
+    UnhandledAlertException ex = (UnhandledAlertException) decoded.getValue();
+    assertEquals("cheese", ex.getAlertText());
   }
 
   private HttpResponse createValidResponse(int statusCode, Map<String, ?> data) {

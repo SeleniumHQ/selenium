@@ -19,6 +19,7 @@ package org.openqa.selenium.remote.http;
 
 import static com.google.common.base.Strings.nullToEmpty;
 import static com.google.common.net.HttpHeaders.CONTENT_TYPE;
+import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.net.HttpURLConnection.HTTP_OK;
 
 import com.google.common.base.Strings;
@@ -26,6 +27,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.JsonToBeanConverter;
@@ -96,7 +98,22 @@ public class W3CHttpResponseCodec extends AbstractHttpResponseCodec {
 
       response.setState(error);
       response.setStatus(errorCodes.toStatus(error, Optional.of(encodedResponse.getStatus())));
-      response.setValue(createException(error, message));
+
+      // For now, we'll inelegantly special case unhandled alerts.
+      if ("unexpected alert open".equals(error) &&
+          HTTP_INTERNAL_ERROR == encodedResponse.getStatus()) {
+        String text = "";
+        JsonElement data = obj.get("data");
+        if (data != null) {
+          JsonElement rawText = data.getAsJsonObject().get("text");
+          if (rawText != null) {
+            text = rawText.getAsString();
+          }
+        }
+        response.setValue(new UnhandledAlertException(message, text));
+      } else {
+        response.setValue(createException(error, message));
+      }
       return response;
     }
 
