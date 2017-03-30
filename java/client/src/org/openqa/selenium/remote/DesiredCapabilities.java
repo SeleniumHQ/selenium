@@ -86,50 +86,16 @@ public class DesiredCapabilities implements Serializable, Capabilities {
     }
   }
 
-  public String getBrowserName() {
-    Object browserName = capabilities.get(BROWSER_NAME);
-    return browserName == null ? "" : browserName.toString();
-  }
-
   public void setBrowserName(String browserName) {
     setCapability(BROWSER_NAME, browserName);
-  }
-
-  public String getVersion() {
-    Object version = capabilities.get(VERSION);
-    return version == null ? "" : version.toString();
   }
 
   public void setVersion(String version) {
     setCapability(VERSION, version);
   }
 
-  public Platform getPlatform() {
-    if (capabilities.containsKey(PLATFORM)) {
-      Object raw = capabilities.get(PLATFORM);
-      if (raw instanceof String) {
-        return Platform.valueOf((String) raw);
-      } else if (raw instanceof Platform) {
-        return (Platform) raw;
-      }
-    }
-    return null;
-  }
-
   public void setPlatform(Platform platform) {
     setCapability(PLATFORM, platform);
-  }
-
-  public boolean isJavascriptEnabled() {
-    if (capabilities.containsKey(SUPPORTS_JAVASCRIPT)) {
-      Object raw = capabilities.get(SUPPORTS_JAVASCRIPT);
-      if (raw instanceof String) {
-        return Boolean.parseBoolean((String) raw);
-      } else if (raw instanceof Boolean) {
-        return ((Boolean) raw).booleanValue();
-      }
-    }
-    return true;
   }
 
   public void setJavascriptEnabled(boolean javascriptEnabled) {
@@ -154,14 +120,6 @@ public class DesiredCapabilities implements Serializable, Capabilities {
 
   public Object getCapability(String capabilityName) {
     return capabilities.get(capabilityName);
-  }
-
-  public boolean is(String capabilityName) {
-    Object cap = getCapability(capabilityName);
-    if (cap == null) {
-      return false;
-    }
-    return cap instanceof Boolean ? (Boolean) cap : Boolean.parseBoolean(String.valueOf(cap));
   }
 
   /**

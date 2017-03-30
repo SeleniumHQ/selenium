@@ -42,56 +42,8 @@ public class ImmutableCapabilities implements Capabilities, Serializable {
   }
 
   @Override
-  public String getBrowserName() {
-    return String.valueOf(caps.getOrDefault("browserName", ""));
-  }
-
-  @Override
-  public Platform getPlatform() {
-    Object rawPlatform = caps.get("platform");
-
-    if (rawPlatform == null) {
-      return null;
-    }
-
-    if (rawPlatform instanceof String) {
-      return Platform.valueOf((String) rawPlatform);
-    } else if (rawPlatform instanceof Platform) {
-      return (Platform) rawPlatform;
-    }
-
-    throw new IllegalStateException("Platform was neither a string or a Platform: " + rawPlatform);
-  }
-
-  @Override
-  public String getVersion() {
-    return String.valueOf(caps.getOrDefault("version", ""));
-  }
-
-  @Override
-  public boolean isJavascriptEnabled() {
-    Object raw = caps.getOrDefault("javascriptEnabled", true);
-    if (raw instanceof String) {
-      return Boolean.parseBoolean((String) raw);
-    } else if (raw instanceof Boolean) {
-      return (Boolean) raw;
-    }
-
-    throw new IllegalStateException("Javascript-enabled capability was of invalid type: " + raw);
-  }
-
-  @Override
   public Object getCapability(String capabilityName) {
     return caps.get(capabilityName);
-  }
-
-  @Override
-  public boolean is(String capabilityName) {
-    Object cap = getCapability(capabilityName);
-    if (cap == null) {
-      return false;
-    }
-    return cap instanceof Boolean ? (Boolean) cap : Boolean.parseBoolean(String.valueOf(cap));
   }
 
   @Override
