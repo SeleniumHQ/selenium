@@ -243,6 +243,14 @@ Json::Value NewSessionCommandHandler::ProcessCapabilities(const IECommandExecuto
           }
           std::string match_error = "";
           if (this->MatchCapabilities(executor, merged_capabilities, &match_error)) {
+            IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
+
+            Json::Value unexpected_alert_behavior = this->GetCapability(capabilities, UNHANDLED_PROMPT_BEHAVIOR_CAPABILITY, Json::stringValue, DISMISS_UNEXPECTED_ALERTS);
+            mutable_executor.set_unexpected_alert_behavior(unexpected_alert_behavior.asString());
+
+            Json::Value page_load_strategy = this->GetCapability(capabilities, PAGE_LOAD_STRATEGY_CAPABILITY, Json::stringValue, NORMAL_PAGE_LOAD_STRATEGY);
+            mutable_executor.set_page_load_strategy(this->GetPageLoadStrategyValue(page_load_strategy.asString()));
+
             Json::Value ie_options(Json::objectValue);
             if (merged_capabilities.isMember(IE_DRIVER_EXTENSIONS_CAPABILITY)) {
               ie_options = merged_capabilities[IE_DRIVER_EXTENSIONS_CAPABILITY];
@@ -258,6 +266,7 @@ Json::Value NewSessionCommandHandler::ProcessCapabilities(const IECommandExecuto
               bool use_per_process_proxy = use_per_process_proxy_capability.asBool();
               this->SetProxySettings(executor, merged_capabilities[PROXY_CAPABILITY], use_per_process_proxy);
             }
+
             // Use CreateReturnedCapabilities to fill in unspecified capabilities values.
             return this->CreateReturnedCapabilities(executor);
           } else {
@@ -560,7 +569,7 @@ bool NewSessionCommandHandler::ValidateCapabilities(
       else {
         std::string unhandled_prompt_behavior = capabilities[capability_name].asString();
         if (unhandled_prompt_behavior != "accept" &&
-            unhandled_prompt_behavior != "dismiss") {
+            unhandled_prompt_behavior != "dismiss" && unhandled_prompt_behavior != "ignore") {
           *error_message = "Invalid capabilities in " +
                            capability_set_name + ": " + 
                            "unhandledPromptBehavior is " + 
