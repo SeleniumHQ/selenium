@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.testing.drivers;
 
+import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_JAVASCRIPT;
 import static org.openqa.selenium.testing.DevMode.isInDevMode;
 
 import com.google.common.base.Throwables;
@@ -82,7 +83,7 @@ public class ReflectionBackedDriverSupplier implements Supplier<WebDriver> {
         className = "org.openqa.selenium.firefox.FirefoxDriver";
       }
     } else if (DesiredCapabilities.htmlUnit().getBrowserName().equals(name)) {
-      if (caps.isJavascriptEnabled()) {
+      if (caps.is(SUPPORTS_JAVASCRIPT)) {
         className = "org.openqa.selenium.htmlunit.JavascriptEnabledHtmlUnitDriverTests$HtmlUnitDriverForTest";
       } else {
         className = "org.openqa.selenium.htmlunit.HtmlUnitDriver";

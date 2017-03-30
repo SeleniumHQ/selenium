@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.remote.server;
 
+import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_JAVASCRIPT;
+
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
@@ -34,7 +36,7 @@ import java.util.Comparator;
  * <ol>
  *   <li>{@link Capabilities#getBrowserName() browser name},
  *   <li>{@link Capabilities#getVersion() browser version},
- *   <li>{@link Capabilities#isJavascriptEnabled() whether JavaScript is enabled},
+ *   <li>{@link Capabilities#is(String)} whether JavaScript is enabled},
  *   <li>and {@link Capabilities#getPlatform() platform}
  * </ol>
  * For all comparisons, if the capability is missing, that particular criteria shall not factor
@@ -71,11 +73,11 @@ class CapabilitiesComparator implements Comparator<Capabilities> {
     };
 
     final CapabilityScorer<Boolean> jsScorer = CapabilityScorer.scoreAgainst(
-        desiredCapabilities.isJavascriptEnabled());
+        desiredCapabilities.is(SUPPORTS_JAVASCRIPT));
     Comparator<Capabilities> byJavaScript = new Comparator<Capabilities>() {
       public int compare(Capabilities c1, Capabilities c2) {
-        return jsScorer.score(c1.isJavascriptEnabled())
-            - jsScorer.score(c2.isJavascriptEnabled());
+        return jsScorer.score(c1.is(SUPPORTS_JAVASCRIPT))
+            - jsScorer.score(c2.is(SUPPORTS_JAVASCRIPT));
       }
     };
 

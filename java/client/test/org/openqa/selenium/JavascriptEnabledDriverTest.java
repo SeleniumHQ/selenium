@@ -27,6 +27,7 @@ import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
 import static org.openqa.selenium.WaitingConditions.windowToBeSwitchedToWithName;
+import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_JAVASCRIPT;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.SAFARI;
@@ -215,7 +216,7 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
   @Test
   public void testShouldBeAbleToGetTheLocationOfAnElement() {
     assumeTrue(driver instanceof JavascriptExecutor);
-    assumeTrue(((HasCapabilities) driver).getCapabilities().isJavascriptEnabled());
+    assumeTrue(((HasCapabilities) driver).getCapabilities().is(SUPPORTS_JAVASCRIPT));
 
     driver.get(pages.javascriptPage);
 
