@@ -33,8 +33,9 @@ public interface Capabilities {
   String getVersion();
 
   /**
-   * @deprecated All browsers are JS enabled except
-   *  {@link org.openqa.selenium.htmlunit.HtmlUnitDriver} and it's not meaningful to disable JS execution.
+   * @deprecated Use is(SUPPORTS_JAVASCRIPT) instead
+   * @see #is(String)
+   * @see org.openqa.selenium.remote.CapabilityType#SUPPORTS_JAVASCRIPT
    */
   @Deprecated
   boolean isJavascriptEnabled();

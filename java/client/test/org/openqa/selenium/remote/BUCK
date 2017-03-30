@@ -7,6 +7,7 @@ java_test(name = 'common-tests',
     'RemoteCommonTests.java',
     'http/JsonHttpCommandCodecTest.java',
     'http/JsonHttpResponseCodecTest.java',
+    'http/W3CHttpResponseCodecTest.java',
   ],
   deps = [
    '//java/client/src/org/openqa/selenium:selenium',

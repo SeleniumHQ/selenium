@@ -17,6 +17,8 @@
 
 package com.thoughtworks.selenium.webdriven;
 
+import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_JAVASCRIPT;
+
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Maps;
 
@@ -28,6 +30,7 @@ import org.openqa.selenium.HasCapabilities;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.internal.WrapsDriver;
+import org.openqa.selenium.remote.CapabilityType;
 
 import java.util.Map;
 import java.util.function.Supplier;
@@ -175,7 +178,7 @@ public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver 
       return;
     }
 
-    if (!((HasCapabilities) driver).getCapabilities().isJavascriptEnabled()) {
+    if (!((HasCapabilities) driver).getCapabilities().is(SUPPORTS_JAVASCRIPT)) {
       throw new IllegalStateException("JS support must be enabled.");
     }
   }

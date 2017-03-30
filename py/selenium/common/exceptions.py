@@ -240,3 +240,10 @@ class ImeActivationFailedException(WebDriverException):
     Thrown when activating an IME engine has failed.
     """
     pass
+
+
+class InvalidArgumentException(WebDriverException):
+    """
+    The arguments passed to a command are either invalid or malformed.
+    """
+    pass

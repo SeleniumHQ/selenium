@@ -63,6 +63,8 @@ class Command(object):
     GET_WINDOW_POSITION = "getWindowPosition"
     SET_WINDOW_SIZE = "setWindowSize"
     W3C_SET_WINDOW_SIZE = "w3cSetWindowSize"
+    SET_WINDOW_RECT = "setWindowRect"
+    GET_WINDOW_RECT = "getWindowRect"
     SET_WINDOW_POSITION = "setWindowPosition"
     W3C_SET_WINDOW_POSITION = "w3cSetWindowPosition"
     SWITCH_TO_WINDOW = "switchToWindow"

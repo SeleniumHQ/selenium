@@ -348,6 +348,10 @@ class RemoteConnection(object):
                 ('GET', '/session/$sessionId/window/position'),
             Command.W3C_SET_WINDOW_POSITION:
                 ('POST', '/session/$sessionId/window/position'),
+            Command.SET_WINDOW_RECT:
+                ('POST', '/session/$sessionId/window/rect'),
+            Command.GET_WINDOW_RECT:
+                ('GET', '/session/$sessionId/window/rect'),
             Command.MAXIMIZE_WINDOW:
                 ('POST', '/session/$sessionId/window/$windowHandle/maximize'),
             Command.W3C_MAXIMIZE_WINDOW:

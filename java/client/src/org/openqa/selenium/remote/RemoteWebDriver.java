@@ -18,6 +18,7 @@
 package org.openqa.selenium.remote;
 
 import static org.openqa.selenium.remote.CapabilityType.LOGGING_PREFS;
+import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_JAVASCRIPT;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -545,7 +546,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
   }
 
   public Object executeScript(String script, Object... args) {
-    if (!capabilities.isJavascriptEnabled()) {
+    if (!capabilities.is(SUPPORTS_JAVASCRIPT)) {
       throw new UnsupportedOperationException(
           "You must be using an underlying instance of WebDriver that supports executing javascript");
     }
@@ -582,7 +583,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
   }
 
   private boolean isJavascriptEnabled() {
-    return capabilities.isJavascriptEnabled();
+    return capabilities.is(SUPPORTS_JAVASCRIPT);
   }
 
   public TargetLocator switchTo() {

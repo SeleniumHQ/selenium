@@ -22,6 +22,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.openqa.selenium.remote.http.JsonHttpCommandCodecTest;
 import org.openqa.selenium.remote.http.JsonHttpResponseCodecTest;
+import org.openqa.selenium.remote.http.W3CHttpResponseCodecTest;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
@@ -29,7 +30,8 @@ import org.openqa.selenium.remote.http.JsonHttpResponseCodecTest;
     DesiredCapabilitiesTest.class,
     JsonToBeanConverterTest.class,
     JsonHttpCommandCodecTest.class,
-    JsonHttpResponseCodecTest.class
+    JsonHttpResponseCodecTest.class,
+    W3CHttpResponseCodecTest.class
 })
 public class RemoteCommonTests {
 }
