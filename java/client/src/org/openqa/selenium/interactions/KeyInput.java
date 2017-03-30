@@ -29,8 +29,8 @@ public class KeyInput implements InputSource, Encodable {
 
   private final String name;
 
-  public KeyInput(Optional<String> name) {
-    this.name = name.orElse(UUID.randomUUID().toString());
+  public KeyInput(String name) {
+    this.name = Optional.ofNullable(name).orElse(UUID.randomUUID().toString());
   }
 
   @Override

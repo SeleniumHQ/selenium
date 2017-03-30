@@ -37,7 +37,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.function.IntConsumer;
 import java.util.logging.Logger;
@@ -56,10 +55,8 @@ public class Actions {
 
   // W3C
   private final Map<InputSource, Sequence> sequences = new HashMap<>();
-  private final PointerInput defaultMouse = new PointerInput(
-      MOUSE,
-      Optional.of("default mouse"));
-  private final KeyInput defaultKeyboard = new KeyInput(Optional.of("default keyboard"));
+  private final PointerInput defaultMouse = new PointerInput(MOUSE, "default mouse");
+  private final KeyInput defaultKeyboard = new KeyInput("default keyboard");
 
   // JSON-wire protocol
   private final Keyboard jsonKeyboard;

@@ -36,9 +36,9 @@ public class PointerInput implements InputSource, Encodable {
   private final Kind kind;
   private final String name;
 
-  public PointerInput(Kind kind, Optional<String> name) {
+  public PointerInput(Kind kind, String name) {
     this.kind = Preconditions.checkNotNull(kind, "Must set kind of pointer device");
-    this.name = name.orElse(UUID.randomUUID().toString());
+    this.name = Optional.ofNullable(name).orElse(UUID.randomUUID().toString());
   }
 
   @Override
