@@ -44,7 +44,7 @@ import org.openqa.selenium.testing.TestUtilities;
 /**
  * Tests interaction through the advanced gestures API of keyboard handling.
  */
-@Ignore(value = {SAFARI, MARIONETTE},
+@Ignore(value = {SAFARI},
     reason = "Safari: not implemented (issue 4136)",
     issues = {4136})
 public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
@@ -55,6 +55,7 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
+  @Ignore(MARIONETTE)
   public void testBasicKeyboardInput() {
     driver.get(pages.javascriptPage);
 
@@ -170,7 +171,7 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
     shortWait.until(ExpectedConditions.attributeToBe(keyReporter, "value", "abc def"));
   }
 
-  @Ignore(value = {HTMLUNIT, IE, SAFARI}, reason = "untested")
+  @Ignore(MARIONETTE)
   @NotYetImplemented(HTMLUNIT)
   @JavascriptEnabled
   @Test
@@ -196,7 +197,7 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
 
   @Test
   @NotYetImplemented(HTMLUNIT)
-  @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
+  @Ignore(MARIONETTE)
   public void testSelectionSelectBySymbol() {
     driver.get(pages.javascriptPage);
 
@@ -218,7 +219,7 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(IE)
+  @Ignore({IE, MARIONETTE})
   @JavascriptEnabled
   public void testSelectionSelectByWord() {
     assumeFalse(
@@ -247,7 +248,7 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(IE)
+  @Ignore({IE, MARIONETTE})
   @JavascriptEnabled
   public void testSelectionSelectAll() {
     assumeFalse(

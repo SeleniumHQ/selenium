@@ -57,7 +57,7 @@ import java.util.List;
 /**
  * Tests combined input actions.
  */
-@Ignore(value = {SAFARI, MARIONETTE},
+@Ignore(value = {SAFARI},
     reason = "Safari: not implemented (issue 4136)",
     issues = {4136})
 public class CombinedInputActionsTest extends JUnit4TestBase {
@@ -89,7 +89,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore({CHROME, IE, FIREFOX})
+  @Ignore({CHROME, IE, FIREFOX, MARIONETTE})
   @NotYetImplemented(HTMLUNIT)
   public void testShiftClickingOnMultiSelectionList() {
     driver.get(pages.formSelectionPage);
@@ -115,7 +115,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore({CHROME, IE, FIREFOX, PHANTOMJS})
+  @Ignore({CHROME, IE, FIREFOX, PHANTOMJS, MARIONETTE})
   @NotYetImplemented(HTMLUNIT)
   public void testControlClickingOnMultiSelectionList() {
     driver.get(pages.formSelectionPage);
@@ -140,7 +140,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({IE, REMOTE, PHANTOMJS})
+  @Ignore({IE, REMOTE, PHANTOMJS, MARIONETTE})
   @Test
   public void testControlClickingOnCustomMultiSelectionList() {
     driver.get(pages.selectableItemsPage);
@@ -182,7 +182,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
     wait.until(titleIs("XHTML Test Page"));
   }
 
-  @Ignore(value = {PHANTOMJS, SAFARI}, reason = "Not tested")
+  @Ignore(value = {PHANTOMJS, SAFARI, MARIONETTE})
   @SwitchToTopAfterTest
   @Test
   public void canMoveMouseToAnElementInAnIframeAndClick() {
@@ -208,6 +208,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
 
   @NotYetImplemented(HTMLUNIT)
   @Test
+  @Ignore(MARIONETTE)
   public void testCanClickOnLinksWithAnOffset() {
     driver.get(pages.clicksPage);
 
@@ -224,6 +225,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
 
   @NotYetImplemented(HTMLUNIT)
   @Test
+  @Ignore(MARIONETTE)
   public void testClickAfterMoveToAnElementWithAnOffsetShouldUseLastMousePosition() {
     driver.get(pages.clickEventPage);
 
@@ -264,6 +266,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
    */
   @NotYetImplemented(HTMLUNIT)
   @Test
+  @Ignore(MARIONETTE)
   public void testMouseMovementWorksWhenNavigatingToAnotherPage() {
     navigateToClicksPageAndClickLink();
 
@@ -277,7 +280,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(HTMLUNIT)
+  @Ignore({HTMLUNIT, MARIONETTE})
   public void testChordControlCutAndPaste() {
     assumeFalse("FIXME: macs don't have CONRTROL key", getEffectivePlatform().is(Platform.MAC));
     assumeFalse("Windows: native events library  does not support storing modifiers state yet",
@@ -315,7 +318,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
     wait.until(elementValueToEqual(element, "abc defabc def"));
   }
 
-  @Ignore(IE)
+  @Ignore({IE, MARIONETTE})
   @NotYetImplemented(HTMLUNIT)
   @Test
   public void testCombiningShiftAndClickResultsInANewWindow() {
@@ -336,7 +339,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
     assertEquals("Should not have navigated away.", originalTitle, driver.getTitle());
   }
 
-  @Ignore({IE, HTMLUNIT})
+  @Ignore({IE, HTMLUNIT, MARIONETTE})
   @Test
   public void testHoldingDownShiftKeyWhileClicking() {
     driver.get(pages.clickEventPage);
