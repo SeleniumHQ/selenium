@@ -35,6 +35,7 @@ java_library(name = 'webdriven',
   deps = [
     '//java/client/src/com/thoughtworks/selenium:selenium',
     '//java/client/src/org/openqa/selenium:selenium',
+    '//java/client/src/org/openqa/selenium/remote:remote',
     '//third_party/java/guava:guava',
   ],
   visibility = [
