@@ -54,64 +54,40 @@ class CapabilitiesComparator implements Comparator<Capabilities> {
 
   public CapabilitiesComparator(final Capabilities desiredCapabilities,
                                 final Platform currentPlatform) {
-    final CapabilityScorer<String> browserNameScorer = CapabilityScorer.scoreAgainst(
-        desiredCapabilities.getBrowserName());
-    Comparator<Capabilities> byBrowserName = new Comparator<Capabilities>() {
-      public int compare(Capabilities c1, Capabilities c2) {
-        return browserNameScorer.score(c1.getBrowserName())
-            - browserNameScorer.score(c2.getBrowserName());
-      }
-    };
+    final CapabilityScorer<String> browserNameScorer =
+        new CapabilityScorer<>(desiredCapabilities.getBrowserName());
+    Comparator<Capabilities> byBrowserName =
+        Comparator.comparingInt(c -> browserNameScorer.score(c.getBrowserName()));
 
-    final CapabilityScorer<String> versionScorer = new VersionScorer(
-        desiredCapabilities.getVersion());
-    Comparator<Capabilities> byVersion = new Comparator<Capabilities>() {
-      public int compare(Capabilities c1, Capabilities c2) {
-        return versionScorer.score(c1.getVersion())
-            - versionScorer.score(c2.getVersion());
-      }
-    };
+    final CapabilityScorer<String> versionScorer =
+        new VersionScorer(desiredCapabilities.getVersion());
+    Comparator<Capabilities> byVersion =
+        Comparator.comparingInt(c -> versionScorer.score(c.getVersion()));
 
-    final CapabilityScorer<Boolean> jsScorer = CapabilityScorer.scoreAgainst(
-        desiredCapabilities.is(SUPPORTS_JAVASCRIPT));
-    Comparator<Capabilities> byJavaScript = new Comparator<Capabilities>() {
-      public int compare(Capabilities c1, Capabilities c2) {
-        return jsScorer.score(c1.is(SUPPORTS_JAVASCRIPT))
-            - jsScorer.score(c2.is(SUPPORTS_JAVASCRIPT));
-      }
-    };
+    final CapabilityScorer<Boolean> jsScorer =
+        new CapabilityScorer<>(desiredCapabilities.is(SUPPORTS_JAVASCRIPT));
+    Comparator<Capabilities> byJavaScript =
+        Comparator.comparingInt(c -> jsScorer.score(c.is(SUPPORTS_JAVASCRIPT)));
 
     Platform desiredPlatform = desiredCapabilities.getPlatform();
     if (desiredPlatform == null) {
       desiredPlatform = Platform.ANY;
     }
 
-    final CapabilityScorer<Platform> currentPlatformScorer = new CurrentPlatformScorer(
-        currentPlatform, desiredPlatform);
-    Comparator<Capabilities> byCurrentPlatform = new Comparator<Capabilities>() {
-      public int compare(Capabilities c1, Capabilities c2) {
-        return currentPlatformScorer.score(c1.getPlatform())
-            - currentPlatformScorer.score(c2.getPlatform());
-      }
-    };
+    final CapabilityScorer<Platform> currentPlatformScorer =
+        new CurrentPlatformScorer(currentPlatform, desiredPlatform);
+    Comparator<Capabilities> byCurrentPlatform =
+        Comparator.comparingInt(c -> currentPlatformScorer.score(c.getPlatform()));
 
-    final CapabilityScorer<Platform> strictPlatformScorer = CapabilityScorer.scoreAgainst(
-        desiredPlatform);
-    Comparator<Capabilities> byStrictPlatform = new Comparator<Capabilities>() {
-      public int compare(Capabilities c1, Capabilities c2) {
-        return strictPlatformScorer.score(c1.getPlatform())
-            - strictPlatformScorer.score(c2.getPlatform());
-      }
-    };
+    final CapabilityScorer<Platform> strictPlatformScorer =
+        new CapabilityScorer<>(desiredPlatform);
+    Comparator<Capabilities> byStrictPlatform =
+        Comparator.comparingInt(c -> strictPlatformScorer.score(c.getPlatform()));
 
-    final CapabilityScorer<Platform> fuzzyPlatformScorer = new FuzzyPlatformScorer(
-        desiredPlatform);
-    Comparator<Capabilities> byFuzzyPlatform = new Comparator<Capabilities>() {
-      public int compare(Capabilities c1, Capabilities c2) {
-        return fuzzyPlatformScorer.score(c1.getPlatform())
-            - fuzzyPlatformScorer.score(c2.getPlatform());
-      }
-    };
+    final CapabilityScorer<Platform> fuzzyPlatformScorer =
+        new FuzzyPlatformScorer(desiredPlatform);
+    Comparator<Capabilities> byFuzzyPlatform =
+        Comparator.comparingInt(c -> fuzzyPlatformScorer.score(c.getPlatform()));
 
     compareWith = Ordering.compound(Lists.newArrayList(
         byBrowserName,
@@ -155,10 +131,6 @@ class CapabilitiesComparator implements Comparator<Capabilities> {
         return 1;
       }
       return -1;
-    }
-
-    static <T> CapabilityScorer<T> scoreAgainst(T value) {
-      return new CapabilityScorer<>(value);
     }
   }
 
