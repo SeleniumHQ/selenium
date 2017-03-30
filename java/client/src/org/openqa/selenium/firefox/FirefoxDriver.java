@@ -99,14 +99,6 @@ public class FirefoxDriver extends RemoteWebDriver {
   public static final String PROFILE = "firefox_profile";
   public static final String MARIONETTE = "marionette";
 
-  // Accept untrusted SSL certificates.
-  @Deprecated
-  public static final boolean ACCEPT_UNTRUSTED_CERTIFICATES = true;
-  // Assume that the untrusted certificates will come from untrusted issuers
-  // or will be self signed.
-  @Deprecated
-  public static final boolean ASSUME_UNTRUSTED_ISSUER = true;
-
   protected FirefoxBinary binary;
 
   public FirefoxDriver() {
