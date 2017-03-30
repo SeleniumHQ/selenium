@@ -99,14 +99,6 @@ public class FirefoxDriver extends RemoteWebDriver {
   public static final String PROFILE = "firefox_profile";
   public static final String MARIONETTE = "marionette";
 
-  // Accept untrusted SSL certificates.
-  @Deprecated
-  public static final boolean ACCEPT_UNTRUSTED_CERTIFICATES = true;
-  // Assume that the untrusted certificates will come from untrusted issuers
-  // or will be self signed.
-  @Deprecated
-  public static final boolean ASSUME_UNTRUSTED_ISSUER = true;
-
   protected FirefoxBinary binary;
 
   public FirefoxDriver() {
@@ -250,6 +242,7 @@ public class FirefoxDriver extends RemoteWebDriver {
     if (marionette instanceof Boolean) {
       options.setLegacy(!(Boolean) marionette);
     }
+
     return options;
   }
 
@@ -310,7 +303,7 @@ public class FirefoxDriver extends RemoteWebDriver {
     // Ensure that the proxy is in a state fit to be sent to the extension
     Proxy proxy = Proxy.extractFrom(capabilities);
     if (proxy != null) {
-      caps.setCapability(PROXY, new BeanToJsonConverter().convert(proxy));
+      caps.setCapability(PROXY, proxy);
     }
 
     return caps;

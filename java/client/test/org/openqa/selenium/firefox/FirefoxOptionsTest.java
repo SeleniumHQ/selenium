@@ -35,10 +35,12 @@ import com.google.gson.JsonObject;
 
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.internal.ProfilesIni;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.testing.JreSystemProperty;
+import org.openqa.selenium.testing.TestUtilities;
 
 import java.io.File;
 import java.io.IOException;
@@ -61,11 +63,43 @@ public class FirefoxOptionsTest {
   }
 
   @Test
-  public void canSetBinaryThroughOptions() {
+  public void shouldKeepRelativePathToBinaryAsIs() {
     FirefoxOptions options = new FirefoxOptions().setBinary("some/path");
     Capabilities caps = options.addTo(new DesiredCapabilities());
 
     assertEquals("some/path", caps.getCapability(FirefoxDriver.BINARY));
+  }
+
+  @Test
+  public void shouldConvertPathToBinaryToUseForwardSlashes() {
+    FirefoxOptions options = new FirefoxOptions().setBinary("some\\path");
+    Capabilities caps = options.addTo(new DesiredCapabilities());
+
+    assertEquals("some/path", caps.getCapability(FirefoxDriver.BINARY));
+  }
+
+  @Test
+  public void shouldKeepWindowsDriveLetterInPathToBinary() {
+    FirefoxOptions options = new FirefoxOptions().setBinary("F:\\some\\path");
+    Capabilities caps = options.addTo(new DesiredCapabilities());
+
+    assertEquals("F:/some/path", caps.getCapability(FirefoxDriver.BINARY));
+  }
+
+  @Test
+  public void canUseForwardSlashesInWindowsPaths() {
+    FirefoxOptions options = new FirefoxOptions().setBinary("F:\\some\\path");
+    Capabilities caps = options.addTo(new DesiredCapabilities());
+
+    assertEquals("F:/some/path", caps.getCapability(FirefoxDriver.BINARY));
+  }
+
+  @Test
+  public void shouldKeepWindowsNetworkFileSystemRootInPathToBinary() {
+    FirefoxOptions options = new FirefoxOptions().setBinary("\\\\server\\share\\some\\path");
+    Capabilities caps = options.addTo(new DesiredCapabilities());
+
+    assertEquals("//server/share/some/path", caps.getCapability(FirefoxDriver.BINARY));
   }
 
   @Test
@@ -102,7 +136,9 @@ public class FirefoxOptionsTest {
     Path binary = Files.createTempFile("firefox", ".exe");
     try (OutputStream ignored = Files.newOutputStream(binary, DELETE_ON_CLOSE)) {
       Files.write(binary, "".getBytes());
-      Files.setPosixFilePermissions(binary, ImmutableSet.of(PosixFilePermission.OWNER_EXECUTE));
+      if (! TestUtilities.getEffectivePlatform().is(Platform.WINDOWS)) {
+        Files.setPosixFilePermissions(binary, ImmutableSet.of(PosixFilePermission.OWNER_EXECUTE));
+      }
       property.set(binary.toString());
       FirefoxOptions options = new FirefoxOptions();
 
@@ -148,7 +184,7 @@ public class FirefoxOptionsTest {
       caps.setCapability(FirefoxDriver.MARIONETTE, true);
 
       property.set("false");
-      FirefoxOptions options = new FirefoxOptions().addDesiredCapabilities(caps);
+      FirefoxOptions options = new FirefoxOptions().addCapabilities(caps);
       assertFalse(options.isLegacy());
     } finally {
       property.set(resetValue);

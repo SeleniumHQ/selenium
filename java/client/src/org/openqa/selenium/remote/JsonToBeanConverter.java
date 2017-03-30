@@ -36,6 +36,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 
 public class JsonToBeanConverter {
 
@@ -261,20 +262,26 @@ public class JsonToBeanConverter {
 
   @SuppressWarnings("unchecked")
   private Enum convertEnum(Class clazz, Object text) {
-    if (clazz.isEnum()) {
-      if (text instanceof JsonElement) {
-        return Enum.valueOf(clazz, (String) convertJsonPrimitive((JsonElement) text));
+    String toConvert = text instanceof JsonElement ?
+                       ((JsonElement) text).getAsString() : String.valueOf(text);
+
+    Function<Class, Enum<?>> asEnum = (c) -> {
+      for (Object value : c.getEnumConstants()) {
+        if (value.toString().equalsIgnoreCase(toConvert)) {
+          return (Enum<?>) value;
+        }
       }
-      return Enum.valueOf(clazz, String.valueOf(text));
+      throw new IllegalArgumentException("Unable to map to enum: " + clazz + ", " + text);
+    };
+
+    if (clazz.isEnum()) {
+      return asEnum.apply(clazz);
     }
 
     Class[] allClasses = clazz.getClasses();
     for (Class current : allClasses) {
       if (current.isEnum()) {
-        if (text instanceof JsonElement) {
-          return Enum.valueOf(current, (String) convertJsonPrimitive((JsonElement) text));
-        }
-        return Enum.valueOf(current, String.valueOf(text));
+        return asEnum.apply(current);
       }
     }
 
