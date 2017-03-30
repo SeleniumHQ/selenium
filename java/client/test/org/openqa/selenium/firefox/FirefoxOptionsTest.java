@@ -35,10 +35,12 @@ import com.google.gson.JsonObject;
 
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.internal.ProfilesIni;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.testing.JreSystemProperty;
+import org.openqa.selenium.testing.TestUtilities;
 
 import java.io.File;
 import java.io.IOException;
@@ -134,7 +136,9 @@ public class FirefoxOptionsTest {
     Path binary = Files.createTempFile("firefox", ".exe");
     try (OutputStream ignored = Files.newOutputStream(binary, DELETE_ON_CLOSE)) {
       Files.write(binary, "".getBytes());
-      Files.setPosixFilePermissions(binary, ImmutableSet.of(PosixFilePermission.OWNER_EXECUTE));
+      if (! TestUtilities.getEffectivePlatform().is(Platform.WINDOWS)) {
+        Files.setPosixFilePermissions(binary, ImmutableSet.of(PosixFilePermission.OWNER_EXECUTE));
+      }
       property.set(binary.toString());
       FirefoxOptions options = new FirefoxOptions();
 
@@ -180,7 +184,7 @@ public class FirefoxOptionsTest {
       caps.setCapability(FirefoxDriver.MARIONETTE, true);
 
       property.set("false");
-      FirefoxOptions options = new FirefoxOptions().addDesiredCapabilities(caps);
+      FirefoxOptions options = new FirefoxOptions().addCapabilities(caps);
       assertFalse(options.isLegacy());
     } finally {
       property.set(resetValue);
