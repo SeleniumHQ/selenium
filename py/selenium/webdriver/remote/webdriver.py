@@ -28,7 +28,8 @@ from .errorhandler import ErrorHandler
 from .switch_to import SwitchTo
 from .mobile import Mobile
 from .file_detector import FileDetector, LocalFileDetector
-from selenium.common.exceptions import WebDriverException
+from selenium.common.exceptions import (InvalidArgumentException,
+                                        WebDriverException)
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.html5.application_cache import ApplicationCache
 
@@ -903,6 +904,32 @@ class WebDriver(object):
             return self.execute(Command.GET_WINDOW_POSITION, {
                 'windowHandle': windowHandle})['value']
 
+    def get_window_rect(self):
+        """
+        Gets the x, y coordinates of the window as well as height and width of
+        the current window.
+
+        :Usage:
+            driver.get_window_rect()
+        """
+        return self.execute(Command.GET_WINDOW_RECT)['value']
+
+    def set_window_rect(self, x=None, y=None, width=None, height=None):
+        """
+        Sets the x, y coordinates of the window as well as height and width of
+        the current window.
+
+        :Usage:
+            driver.set_window_rect(x=10, y=10)
+            driver.set_window_rect(width=100, height=200)
+            driver.set_window_rect(x=10, y=10, width=100, height=200)
+        """
+        if (x is None and y is None) and (height is None and width is None):
+            raise InvalidArgumentException("x and y or height and width need values")
+
+        return self.execute(Command.SET_WINDOW_RECT, {"x": x, "y": y,
+                                                      "width": width,
+                                                      "height": height})['value']
     @property
     def file_detector(self):
         return self._file_detector
