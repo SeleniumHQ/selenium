@@ -196,7 +196,6 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(HTMLUNIT)
   @Ignore(MARIONETTE)
   public void testSelectionSelectBySymbol() {
     driver.get(pages.javascriptPage);
