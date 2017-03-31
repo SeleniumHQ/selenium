@@ -56,7 +56,7 @@ import java.util.Map;
 /**
  * Tests operations that involve mouse and keyboard.
  */
-@Ignore(value = {SAFARI, MARIONETTE},
+@Ignore(value = {SAFARI},
     reason = "Safari: not implemented (issue 4136)",
     issues = {4136})
 public class BasicMouseInterfaceTest extends JUnit4TestBase {
@@ -180,6 +180,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
+  @Ignore(MARIONETTE)
   public void testDoubleClick() {
     driver.get(pages.javascriptPage);
 
@@ -195,6 +196,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
+  @Ignore(MARIONETTE)
   public void testContextClick() {
     driver.get(pages.javascriptPage);
 
@@ -241,7 +243,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({CHROME, IE, FIREFOX})
+  @Ignore({CHROME, IE, FIREFOX, MARIONETTE})
   @NotYetImplemented(HTMLUNIT)
   @Test
   public void testMousePositionIsNotPreservedInActionsChain() {
@@ -260,7 +262,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore(value = {FIREFOX, IE, REMOTE, CHROME},
+  @Ignore(value = {FIREFOX, IE, REMOTE, CHROME, MARIONETTE},
           reason = "Behaviour not finalized yet regarding linked images.")
   @NotYetImplemented(HTMLUNIT)
   @Test
@@ -286,7 +288,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
     return (int) Double.parseDouble(sizeRect.get(fieldName).toString());
   }
 
-  @Ignore(value = {IE, CHROME, FIREFOX}, reason = "Not implemented yet.")
+  @Ignore(value = {IE, CHROME, FIREFOX, MARIONETTE}, reason = "Not implemented yet.")
   @NotYetImplemented(HTMLUNIT)
   @Test
   public void testMovingMouseBackAndForthPastViewPort() {
@@ -329,7 +331,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Ignore(
-      value = {SAFARI, MARIONETTE, HTMLUNIT},
+      value = {SAFARI, HTMLUNIT},
       issues = {4136})
   @Test
   @NotYetImplemented(HTMLUNIT) // broken in 2.20
@@ -350,7 +352,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Ignore(
-      value = {SAFARI, MARIONETTE, HTMLUNIT},
+      value = {SAFARI, HTMLUNIT},
       issues = {4136})
   @Test
   @NotYetImplemented(HTMLUNIT) // broken in 2.20
@@ -377,7 +379,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {SAFARI, MARIONETTE},
+  @Ignore(value = {SAFARI},
           reason = "Advanced mouse actions only implemented in rendered browsers",
           issues = {4136})
   @NotYetImplemented(HTMLUNIT)

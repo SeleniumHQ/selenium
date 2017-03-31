@@ -51,14 +51,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Ignore(
-    value = {HTMLUNIT, MARIONETTE},
-    reason = "HtmlUnit: Advanced mouse actions only implemented in rendered browsers" +
-             "Safari: not implemented (issue 4136)",
-    issues = {4136})
+    value = {HTMLUNIT},
+    reason = "HtmlUnit: Advanced mouse actions only implemented in rendered browsers")
 public class DragAndDropTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
+  @Ignore(MARIONETTE)
   public void testDragAndDropRelative() {
     assumeFalse("See issue 2281", TestUtilities.getEffectivePlatform().is(Platform.MAC));
     assumeFalse(Browser.detect() == Browser.opera &&
@@ -79,6 +78,7 @@ public class DragAndDropTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
+  @Ignore(MARIONETTE)
   public void testDragAndDropToElement() {
     driver.get(pages.dragAndDropPage);
     WebElement img1 = driver.findElement(By.id("test1"));
@@ -120,7 +120,7 @@ public class DragAndDropTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {IE}, reason = "IE fails this test if requireWindowFocus=true")
+  @Ignore(value = {IE, MARIONETTE}, reason = "IE fails this test if requireWindowFocus=true")
   @Test
   @NeedsFreshDriver // fails in Sauce if run in a dirty state; to be investigated
   public void testDragAndDropElementWithOffsetInScrolledDiv() {
@@ -230,7 +230,8 @@ public class DragAndDropTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore(value = {IE, PHANTOMJS, SAFARI}, reason = "IE fails this test if requireWindowFocus=true")
+  @Ignore(value = {IE, PHANTOMJS, SAFARI, MARIONETTE},
+      reason = "IE fails this test if requireWindowFocus=true")
   public void canDragAnElementNotVisibleInTheCurrentViewportDueToAParentOverflow() {
     driver.get(pages.dragDropOverflow);
 

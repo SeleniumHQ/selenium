@@ -19,6 +19,7 @@ package org.openqa.selenium;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 
 /**
@@ -26,11 +27,29 @@ import java.util.Map;
  */
 public interface Capabilities {
 
-  String getBrowserName();
+  default String getBrowserName() {
+    return String.valueOf(Optional.ofNullable(getCapability("browserName")).orElse(""));
+  }
 
-  Platform getPlatform();
+  default Platform getPlatform() {
+    Object rawPlatform = getCapability("platform");
 
-  String getVersion();
+    if (rawPlatform == null) {
+      return null;
+    }
+
+    if (rawPlatform instanceof String) {
+      return Platform.valueOf((String) rawPlatform);
+    } else if (rawPlatform instanceof Platform) {
+      return (Platform) rawPlatform;
+    }
+
+    throw new IllegalStateException("Platform was neither a string or a Platform: " + rawPlatform);
+  }
+
+  default String getVersion() {
+    return String.valueOf(Optional.ofNullable(getCapability("version")).orElse(""));
+  }
 
   /**
    * @deprecated Use is(SUPPORTS_JAVASCRIPT) instead
@@ -38,7 +57,9 @@ public interface Capabilities {
    * @see org.openqa.selenium.remote.CapabilityType#SUPPORTS_JAVASCRIPT
    */
   @Deprecated
-  boolean isJavascriptEnabled();
+  default boolean isJavascriptEnabled() {
+    return is("javascriptEnabled");
+  }
 
   /**
    * @return The capabilities as a Map
@@ -57,7 +78,14 @@ public interface Capabilities {
    * @param capabilityName The capability to check.
    * @return Whether or not the value is not null and not false.
    */
-  boolean is(String capabilityName);
+  default boolean is(String capabilityName) {
+    Object cap = getCapability(capabilityName);
+    if (cap == null) {
+      // javascriptEnabled is true if not set explicitly
+      return "javascriptEnabled".equals(capabilityName);
+    }
+    return cap instanceof Boolean ? (Boolean) cap : Boolean.parseBoolean(String.valueOf(cap));
+  }
 
   /**
    * Merge two {@link Capabilities} together and return the union of the two as a new

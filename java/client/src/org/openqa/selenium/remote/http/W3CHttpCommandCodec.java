@@ -112,10 +112,10 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
     alias(GET_SESSION_STORAGE_SIZE, EXECUTE_SCRIPT);
 
     defineCommand(MAXIMIZE_CURRENT_WINDOW, post("/session/:sessionId/window/maximize"));
-    alias(GET_CURRENT_WINDOW_POSITION, EXECUTE_SCRIPT);
-    alias(SET_CURRENT_WINDOW_POSITION, EXECUTE_SCRIPT);
-    defineCommand(GET_CURRENT_WINDOW_SIZE, get("/session/:sessionId/window/size"));
-    defineCommand(SET_CURRENT_WINDOW_SIZE, post("/session/:sessionId/window/size"));
+    defineCommand(GET_CURRENT_WINDOW_SIZE, get("/session/:sessionId/window/rect"));
+    defineCommand(SET_CURRENT_WINDOW_SIZE, post("/session/:sessionId/window/rect"));
+    alias(GET_CURRENT_WINDOW_POSITION, GET_CURRENT_WINDOW_SIZE);
+    alias(SET_CURRENT_WINDOW_POSITION, SET_CURRENT_WINDOW_SIZE);
     defineCommand(GET_CURRENT_WINDOW_HANDLE, get("/session/:sessionId/window"));
     defineCommand(GET_WINDOW_HANDLES, get("/session/:sessionId/window/handles"));
 
@@ -187,7 +187,7 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
 
       case GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW:
         return toScript(
-          "return arguments[0].getBoundingClientRect()",
+          "var rect = arguments[0].getBoundingClientRect(); return {'x': rect.left, 'y': rect.top};",
           asElement(parameters.get("id")));
 
       case GET_PAGE_SOURCE:
