@@ -12,11 +12,13 @@ install:
   - 'set RUBY_HOME=C:\Ruby22-x64\bin'
   - 'set PATH=%RUBY_HOME%;%PATH%'
 before_test:
+  - copy cpp\prebuilt\Win32\Release\IEDriverServer.exe C:\Tools\WebDriver
   - ruby -v
   - gem -v
   - bundle -v
-  - curl -fsS -o C:\Tools\WebDriver\IEServerDriver.zip http://selenium-release.storage.googleapis.com/3.1/IEDriverServer_Win32_3.1.0.zip
-  - 7z e C:\Tools\WebDriver\IEServerDriver.zip -oC:\Tools\WebDriver -aoa
+  - chromedriver.exe --version
+  - geckodriver.exe --version
+  - IEDriverServer.exe --version
   - dir C:\Tools\WebDriver
 
 test_script:
