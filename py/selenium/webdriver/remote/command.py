@@ -76,6 +76,8 @@ class Command(object):
     GET_PAGE_SOURCE = "getPageSource"
     GET_TITLE = "getTitle"
     EXECUTE_SCRIPT = "executeScript"
+    W3C_EXECUTE_SCRIPT = "executeScript"
+    W3C_EXECUTE_SCRIPT_ASYNC = "executeScriptAsync"
     GET_ELEMENT_TEXT = "getElementText"
     GET_ELEMENT_VALUE = "getElementValue"
     GET_ELEMENT_TAG_NAME = "getElementTagName"
