@@ -240,6 +240,10 @@ class RemoteConnection(object):
             Command.GO_BACK: ('POST', '/session/$sessionId/back'),
             Command.REFRESH: ('POST', '/session/$sessionId/refresh'),
             Command.EXECUTE_SCRIPT: ('POST', '/session/$sessionId/execute'),
+            Command.W3C_EXECUTE_SCRIPT:
+                ('POST', '/session/$sessionId/execute/sync'),
+            Command.W3C_EXECUTE_SCRIPT_ASYNC:
+                ('POST', '/session/$sessionId/execute/async'),
             Command.GET_CURRENT_URL: ('GET', '/session/$sessionId/url'),
             Command.GET_TITLE: ('GET', '/session/$sessionId/title'),
             Command.GET_PAGE_SOURCE: ('GET', '/session/$sessionId/source'),

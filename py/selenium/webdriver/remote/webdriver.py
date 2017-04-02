@@ -473,7 +473,13 @@ class WebDriver(object):
             driver.execute_script('document.title')
         """
         converted_args = list(args)
-        return self.execute(Command.EXECUTE_SCRIPT, {
+        command = None
+        if self.w3c:
+            command = Command.W3C_EXECUTE_SCRIPT
+        else:
+            command = Command.EXECUTE_SCRIPT
+
+        return self.execute(command, {
             'script': script,
             'args': converted_args})['value']
 
@@ -489,7 +495,12 @@ class WebDriver(object):
             driver.execute_async_script('document.title')
         """
         converted_args = list(args)
-        return self.execute(Command.EXECUTE_ASYNC_SCRIPT, {
+        if self.w3c:
+            command = Command.W3C_EXECUTE_SCRIPT_ASYNC
+        else:
+            command = Command.EXECUTE_ASYNC_SCRIPT
+
+        return self.execute(command, {
             'script': script,
             'args': converted_args})['value']
 
