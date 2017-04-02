@@ -56,7 +56,6 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
   private String foundBy;
   protected String id;
   protected RemoteWebDriver parent;
-  protected RemoteMouse mouse;
   protected FileDetector fileDetector;
 
   protected void setFoundBy(SearchContext foundFrom, String locator, String term) {
@@ -65,7 +64,6 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
 
   public void setParent(RemoteWebDriver parent) {
     this.parent = parent;
-    mouse = (RemoteMouse) parent.getMouse();
   }
 
   public String getId() {
