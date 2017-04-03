@@ -163,6 +163,24 @@ namespace OpenQA.Selenium.Support.UI
         }
 
         [Test]
+        public void ShouldAllowOptionsToBeSelectedByPartialText()
+        {
+            IWebElement element = driver.FindElement(By.Name("select_empty_multiple"));
+            SelectElement elementWrapper = new SelectElement(element);
+            elementWrapper.SelectByText("4", true);
+            IWebElement firstSelected = elementWrapper.AllSelectedOptions[0];
+            Assert.AreEqual("select_4", firstSelected.Text);
+        }
+
+        [Test]
+        public void ShouldThrowExceptionOnSelectByTextExactMatchIfOptionDoesNotExist()
+        {
+            IWebElement element = driver.FindElement(By.Name("select_empty_multiple"));
+            SelectElement elementWrapper = new SelectElement(element);
+            Assert.Throws<NoSuchElementException>(() => elementWrapper.SelectByText("4"));
+        }
+
+        [Test]
         public void ShouldNotAllowInvisibleOptionsToBeSelectedByVisibleText()
         {
             IWebElement element = driver.FindElement(By.Name("invisi_select"));
