@@ -110,7 +110,7 @@ public class VisibilityTest extends JUnit4TestBase {
     try {
       element.click();
       fail("You should not be able to click on an invisible element");
-    } catch (ElementNotVisibleException e) {
+    } catch (ElementNotInteractableException e) {
       // This is expected
     }
   }
@@ -124,7 +124,7 @@ public class VisibilityTest extends JUnit4TestBase {
     try {
       element.sendKeys("You don't see me");
       fail("You should not be able to send keyboard input to an invisible element");
-    } catch (ElementNotVisibleException e) {
+    } catch (ElementNotInteractableException e) {
       // This is expected
     }
 

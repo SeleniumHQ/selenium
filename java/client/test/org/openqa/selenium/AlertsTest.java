@@ -177,7 +177,7 @@ public class AlertsTest extends JUnit4TestBase {
     try {
       alert.sendKeys("cheese");
       fail("Expected exception");
-    } catch (ElementNotVisibleException expected) {
+    } catch (ElementNotInteractableException expected) {
     } finally {
       alert.accept();
     }
