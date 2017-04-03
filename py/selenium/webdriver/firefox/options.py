@@ -14,7 +14,8 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-
+from selenium.common.exceptions import InvalidArgumentException
+from selenium.webdriver.common.proxy import Proxy
 from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
 
@@ -36,6 +37,7 @@ class Options(object):
         self._binary = None
         self._preferences = {}
         self._profile = None
+        self._proxy = None
         self._arguments = []
         self.log = Log()
 
@@ -70,6 +72,17 @@ class Options(object):
     def set_preference(self, name, value):
         """Sets a preference."""
         self._preferences[name] = value
+
+    @property
+    def proxy(self):
+        """ returns Proxy if set otherwise None."""
+        return self._proxy
+
+    @proxy.setter
+    def proxy(self, value):
+        if not isinstance(value, Proxy):
+            raise InvalidArgumentException("Only Proxy objects can be passed in.")
+        self._proxy = value
 
     @property
     def profile(self):
@@ -112,6 +125,8 @@ class Options(object):
             opts["binary"] = self._binary._start_cmd
         if len(self._preferences) > 0:
             opts["prefs"] = self._preferences
+        if self._proxy is not None:
+            self._proxy.add_to_capabilities(opts)
         if self._profile is not None:
             opts["profile"] = self._profile.encoded
         if len(self._arguments) > 0:
