@@ -30,6 +30,7 @@ namespace OpenQA.Selenium.Support.UI
         [Test]
         public void ShouldThrowAnExceptionIfTheElementIsNotASelectElement()
         {
+           // driver.Url = formsPage;
             IWebElement element = driver.FindElement(By.Name("checky"));
             Assert.Throws<UnexpectedTagNameException>(() => { SelectElement elementWrapper = new SelectElement(element); });
         }
@@ -160,6 +161,16 @@ namespace OpenQA.Selenium.Support.UI
             elementWrapper.SelectByText("select_2");
             IWebElement firstSelected = elementWrapper.AllSelectedOptions[0];
             Assert.AreEqual("select_2", firstSelected.Text);
+        }
+
+        [Test]
+        public void ShouldAllowOptionsToBeSelectedByPartialText()
+        {
+            IWebElement element = driver.FindElement(By.Name("select_empty_multiple"));
+            SelectElement elementWrapper = new SelectElement(element);
+            elementWrapper.SelectByText("4", true);
+            IWebElement firstSelected = elementWrapper.AllSelectedOptions[0];
+            Assert.AreEqual("select_4", firstSelected.Text);
         }
 
         [Test]

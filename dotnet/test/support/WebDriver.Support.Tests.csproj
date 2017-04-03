@@ -117,6 +117,7 @@
     </PostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
+    <None Include="App.config" />
     <None Include="WebDriver.Support.Tests.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
