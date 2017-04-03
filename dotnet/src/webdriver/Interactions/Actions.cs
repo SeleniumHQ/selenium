@@ -79,14 +79,16 @@ namespace OpenQA.Selenium.Interactions
             this.actionExecutor = actionExecutor;
         }
 
-        /// <summary>
-        /// Sends a modifier key down message to the browser.
-        /// </summary>
-        /// <param name="theKey">The key to be sent.</param>
-        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
-        /// <exception cref="ArgumentException">If the key sent is not is not one
-        /// of <see cref="Keys.Shift"/>, <see cref="Keys.Control"/>, or <see cref="Keys.Alt"/>.</exception>
-        public Actions KeyDown(string theKey)
+    /// <summary>
+    /// Sends a modifier key down message to the browser.
+    /// </summary>
+    /// <param name="theKey">The key to be sent.</param>
+    /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
+    /// <exception cref="ArgumentException">If the key sent is not is not one
+    /// of <see cref="Keys.Shift"/>, <see cref="Keys.Control"/>, <see cref="Keys.Alt"/>,
+    /// <see cref="Keys.Meta"/>, <see cref="Keys.Command"/>,<see cref="Keys.LeftAlt"/>,
+    /// <see cref="Keys.LeftControl"/>,<see cref="Keys.LeftShift"/>.</exception>
+    public Actions KeyDown(string theKey)
         {
             return this.KeyDown(null, theKey);
         }
@@ -98,7 +100,9 @@ namespace OpenQA.Selenium.Interactions
         /// <param name="theKey">The key to be sent.</param>
         /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         /// <exception cref="ArgumentException">If the key sent is not is not one
-        /// of <see cref="Keys.Shift"/>, <see cref="Keys.Control"/>, or <see cref="Keys.Alt"/>.</exception>
+        /// of <see cref="Keys.Shift"/>, <see cref="Keys.Control"/>, <see cref="Keys.Alt"/>,
+        /// <see cref="Keys.Meta"/>, <see cref="Keys.Command"/>,<see cref="Keys.LeftAlt"/>,
+        /// <see cref="Keys.LeftControl"/>,<see cref="Keys.LeftShift"/>.</exception>
         public Actions KeyDown(IWebElement element, string theKey)
         {
             if (string.IsNullOrEmpty(theKey))
@@ -120,14 +124,16 @@ namespace OpenQA.Selenium.Interactions
             return this;
         }
 
-        /// <summary>
-        /// Sends a modifier key up message to the browser.
-        /// </summary>
-        /// <param name="theKey">The key to be sent.</param>
-        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
-        /// <exception cref="ArgumentException">If the key sent is not is not one
-        /// of <see cref="Keys.Shift"/>, <see cref="Keys.Control"/>, or <see cref="Keys.Alt"/>.</exception>
-        public Actions KeyUp(string theKey)
+    /// <summary>
+    /// Sends a modifier key up message to the browser.
+    /// </summary>
+    /// <param name="theKey">The key to be sent.</param>
+    /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
+    /// <exception cref="ArgumentException">If the key sent is not is not one
+    /// of <see cref="Keys.Shift"/>, <see cref="Keys.Control"/>, <see cref="Keys.Alt"/>,
+    /// <see cref="Keys.Meta"/>, <see cref="Keys.Command"/>,<see cref="Keys.LeftAlt"/>,
+    /// <see cref="Keys.LeftControl"/>,<see cref="Keys.LeftShift"/>.</exception>
+    public Actions KeyUp(string theKey)
         {
             return this.KeyUp(null, theKey);
         }
@@ -139,7 +145,9 @@ namespace OpenQA.Selenium.Interactions
         /// <param name="theKey">The key to be sent.</param>
         /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         /// <exception cref="ArgumentException">If the key sent is not is not one
-        /// of <see cref="Keys.Shift"/>, <see cref="Keys.Control"/>, or <see cref="Keys.Alt"/>.</exception>
+        /// of <see cref="Keys.Shift"/>, <see cref="Keys.Control"/>, <see cref="Keys.Alt"/>,
+        /// <see cref="Keys.Meta"/>, <see cref="Keys.Command"/>,<see cref="Keys.LeftAlt"/>,
+        /// <see cref="Keys.LeftControl"/>,<see cref="Keys.LeftShift"/>.</exception>
         public Actions KeyUp(IWebElement element, string theKey)
         {
             if (string.IsNullOrEmpty(theKey))
