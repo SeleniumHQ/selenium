@@ -81,6 +81,8 @@ class WebDriver(object):
         if not isinstance(desired_capabilities, dict):
             raise WebDriverException("Desired Capabilities must be a dictionary")
         if proxy is not None:
+            warnings.warn("Please use FirefoxOptions to set proxy",
+                          DeprecationWarning)
             proxy.add_to_capabilities(desired_capabilities)
         self.command_executor = command_executor
         if type(self.command_executor) is bytes or isinstance(self.command_executor, str):
