@@ -172,7 +172,6 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
   }
 
   @Ignore(MARIONETTE)
-  @NotYetImplemented(HTMLUNIT)
   @JavascriptEnabled
   @Test
   public void canGenerateKeyboardShortcuts() {
