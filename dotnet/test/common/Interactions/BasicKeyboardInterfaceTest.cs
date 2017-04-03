@@ -65,7 +65,6 @@ namespace OpenQA.Selenium.Interactions
 
         [Test]
         [IgnoreBrowser(Browser.Firefox, "API not implemented in driver")]
-        [IgnoreBrowser(Browser.Chrome, "API not implemented in driver")]
         [IgnoreBrowser(Browser.IPhone, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Remote, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Android, "API not implemented in driver")]
@@ -93,41 +92,11 @@ namespace OpenQA.Selenium.Interactions
 
         [Test]
         [IgnoreBrowser(Browser.Firefox, "API not implemented in driver")]
-        [IgnoreBrowser(Browser.Chrome, "API not implemented in driver")]
         [IgnoreBrowser(Browser.IPhone, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Remote, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Android, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Safari, "API not implemented in driver")]
         public void ShouldAllowSendingKeysWithShiftPressed()
-        {
-            driver.Url = javascriptPage;
-
-            IWebElement keysEventInput = driver.FindElement(By.Id("theworks"));
-
-            keysEventInput.Click();
-
-            IAction pressShift = new Actions(driver).KeyDown(Keys.Shift).Build();
-            pressShift.Perform();
-
-            IAction sendLowercase = new Actions(driver).SendKeys("ab").Build();
-            sendLowercase.Perform();
-
-            IAction releaseShift = new Actions(driver).KeyUp(Keys.Shift).Build();
-            releaseShift.Perform();
-
-            AssertThatFormEventsFiredAreExactly("focus keydown keydown keypress keyup keydown keypress keyup keyup"); 
-
-            Assert.AreEqual("AB", keysEventInput.GetAttribute("value"));
-        }
-
-        [Test]
-        [IgnoreBrowser(Browser.Firefox, "API not implemented in driver")]
-        [IgnoreBrowser(Browser.Chrome, "API not implemented in driver")]
-        [IgnoreBrowser(Browser.IPhone, "API not implemented in driver")]
-        [IgnoreBrowser(Browser.Remote, "API not implemented in driver")]
-        [IgnoreBrowser(Browser.Android, "API not implemented in driver")]
-        [IgnoreBrowser(Browser.Safari, "API not implemented in driver")]
-        public void ShouldAllowSendingKeysWithLeftShiftPressed()
         {
             driver.Url = javascriptPage;
 
@@ -148,6 +117,7 @@ namespace OpenQA.Selenium.Interactions
 
             Assert.AreEqual("AB", keysEventInput.GetAttribute("value"));
         }
+
 
         [Test]
         [IgnoreBrowser(Browser.IPhone, "API not implemented in driver")]
