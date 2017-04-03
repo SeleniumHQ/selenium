@@ -23,6 +23,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeFalse;
+import static org.openqa.selenium.WaitingConditions.newWindowIsOpened;
 import static org.openqa.selenium.support.ui.ExpectedConditions.alertIsPresent;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
@@ -516,11 +517,4 @@ public class AlertsTest extends JUnit4TestBase {
     return driver -> driver.switchTo().window(name);
   }
 
-  private static ExpectedCondition<String> newWindowIsOpened(final Set<String> originalHandles) {
-    return driver -> {
-      Set<String> currentWindowHandles = driver.getWindowHandles();
-      currentWindowHandles.removeAll(originalHandles);
-      return currentWindowHandles.isEmpty() ? null : currentWindowHandles.iterator().next();
-    };
-  }
 }

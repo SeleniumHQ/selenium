@@ -211,39 +211,24 @@ public class WindowTest extends JUnit4TestBase {
   private ExpectedCondition<Boolean> windowSizeEqual(final Dimension size) {
     return driver -> {
       Dimension newSize = driver.manage().window().getSize();
-
-      return newSize.height == size.height &&
-             newSize.width == size.width;
+      return newSize.height == size.height && newSize.width == size.width;
     };
   }
 
   private ExpectedCondition<Boolean> windowWidthToBeGreaterThan(final Dimension size) {
-    return driver -> {
-      Dimension newSize = driver.manage().window().getSize();
-      log.info("waiting for width, Current dimensions are " + newSize);
-      return newSize.width != size.width;
-    };
+    return driver -> driver.manage().window().getSize().width != size.width;
   }
 
   private ExpectedCondition<Boolean> windowHeightToBeGreaterThan(final Dimension size) {
-    return driver -> {
-      Dimension newSize = driver.manage().window().getSize();
-      log.info("waiting for height, Current dimensions are " + newSize);
-      return newSize.height != size.height;
-    };
+    return driver -> driver.manage().window().getSize().height != size.height;
   }
+
   private ExpectedCondition<Boolean> xEqual(final Point targetPosition) {
-    return driver -> {
-      Point newPosition = driver.manage().window().getPosition();
-      return newPosition.x == targetPosition.x;
-    };
+    return driver -> driver.manage().window().getPosition().x == targetPosition.x;
   }
 
   private ExpectedCondition<Boolean> yEqual(final Point targetPosition) {
-    return driver -> {
-      Point newPosition = driver.manage().window().getPosition();
-      return newPosition.y == targetPosition.y;
-    };
+    return driver -> driver.manage().window().getPosition().y == targetPosition.y;
   }
 
   private void assumeNotLinuxAtSauce() {
