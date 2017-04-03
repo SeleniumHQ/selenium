@@ -317,7 +317,6 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore(MARIONETTE)
   public void testShouldBeAbleToCallFunctionsDefinedOnThePage() {
     driver.get(pages.javascriptPage);
     executeScript("displayMessage('I like cheese');");

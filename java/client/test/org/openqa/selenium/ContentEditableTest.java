@@ -110,7 +110,7 @@ public class ContentEditableTest extends JUnit4TestBase {
     assertThat(editable.getText(), equalTo(initialText + ", edited"));
   }
 
-  @Ignore(value = {IE, SAFARI, HTMLUNIT, MARIONETTE},
+  @Ignore(value = {IE, SAFARI, HTMLUNIT},
           reason = "Untested browsers;" +
                    " Safari: cannot type on contentEditable with synthetic events",
           issues = {3127})

@@ -19,7 +19,6 @@ package org.openqa.selenium;
 
 import static org.junit.Assert.assertEquals;
 import static org.openqa.selenium.testing.Driver.IE;
-import static org.openqa.selenium.testing.Driver.MARIONETTE;
 
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
@@ -39,7 +38,7 @@ public class ErrorsTest extends JUnit4TestBase {
    * Explorer).
    */
   @JavascriptEnabled
-  @Ignore(value = {IE, MARIONETTE}, reason = "IE does not support onerror")
+  @Ignore(value = {IE}, reason = "IE does not support onerror")
   @Test
   public void testShouldNotGenerateErrorsWhenOpeningANewPage() {
     driver.get(pages.errorsPage);
