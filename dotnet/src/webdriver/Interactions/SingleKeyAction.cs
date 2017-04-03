@@ -26,7 +26,8 @@ namespace OpenQA.Selenium.Interactions.Internal
     /// </summary>
     internal class SingleKeyAction : KeyboardAction
     {
-        private static readonly List<string> ModifierKeys = new List<string>() { Keys.Shift, Keys.Control, Keys.Alt };
+        private static readonly List<string> ModifierKeys = new List<string>() { Keys.Shift, Keys.Control, Keys.Alt, Keys.Meta,
+                                                                                 Keys.Command, Keys.LeftAlt, Keys.LeftControl, Keys.LeftShift};
         private string key;
 
         /// <summary>
@@ -41,7 +42,7 @@ namespace OpenQA.Selenium.Interactions.Internal
         {
             if (!ModifierKeys.Contains(key))
             {
-                throw new ArgumentException("key must be a modifier key (Keys.Shift, Keys.Control, or Keys.Alt)", "key");
+                throw new ArgumentException("key must be a modifier key (Keys.Shift, Keys.Control, Keys.Alt, Keys.Meta, Keys.Command, Keys.LeftAlt, Keys.LeftControl, Keys.LeftShift)", "key");
             }
 
             this.key = key;
