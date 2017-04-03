@@ -1047,7 +1047,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
       execute(DriverCommand.SET_ALERT_VALUE, ImmutableMap.of("text", keysToSend));
     }
 
-    @Beta
+    @Deprecated
     public void setCredentials(Credentials credentials) {
       if (!(credentials instanceof UserAndPassword)) {
         throw new RuntimeException("Unsupported credentials: " + credentials);
@@ -1069,7 +1069,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
      *        "secretGouda"));
      * @param credentials credentials to pass to Auth prompt
      */
-    @Beta
+    @Deprecated
     public void authenticateUsing(Credentials credentials) {
       this.setCredentials(credentials);
       this.accept();
