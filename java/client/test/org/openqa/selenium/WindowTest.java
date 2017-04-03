@@ -40,8 +40,6 @@ import java.util.logging.Logger;
 
 public class WindowTest extends JUnit4TestBase {
 
-  private static Logger log = Logger.getLogger(WindowTest.class.getName());
-
   @Test
   public void testGetsTheSizeOfTheCurrentWindow() {
     assumeFalse(
