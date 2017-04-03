@@ -28,11 +28,12 @@ public class WaitingConditions {
     // utility class
   }
 
-  private static abstract class ElementTextComperator implements ExpectedCondition<String> {
+  private static abstract class ElementTextComparator implements ExpectedCondition<String> {
     private String lastText = "";
     private WebElement element;
     private String expectedValue;
-    ElementTextComperator(WebElement element, String expectedValue) {
+
+    ElementTextComparator(WebElement element, String expectedValue) {
       this.element = element;
       this.expectedValue = expectedValue;
     }
@@ -56,7 +57,7 @@ public class WaitingConditions {
 
   public static ExpectedCondition<String> elementTextToEqual(
       final WebElement element, final String value) {
-    return new ElementTextComperator(element, value) {
+    return new ElementTextComparator(element, value) {
 
       @Override
       boolean compareText(String expectedValue, String actualValue) {
@@ -67,7 +68,7 @@ public class WaitingConditions {
 
   public static ExpectedCondition<String> elementTextToContain(
       final WebElement element, final String value) {
-    return new ElementTextComperator(element, value) {
+    return new ElementTextComparator(element, value) {
 
       @Override
       boolean compareText(String expectedValue, String actualValue) {
@@ -188,19 +189,8 @@ public class WaitingConditions {
   }
 
   public static ExpectedCondition<String> newWindowIsOpened(final Set<String> originalHandles) {
-    return new ExpectedCondition<String>() {
-
-      @Override
-      public String apply(WebDriver driver) {
-        Set<String> currentWindowHandles = driver.getWindowHandles();
-        if (currentWindowHandles.size() > originalHandles.size()) {
-          currentWindowHandles.removeAll(originalHandles);
-          return currentWindowHandles.iterator().next();
-        }
-        return null;
-      }
-    };
-
+    return driver -> driver.getWindowHandles().stream()
+        .filter(originalHandles::contains).findFirst().orElse(null);
   }
 
   public static ExpectedCondition<WebDriver> windowToBeSwitchedToWithName(final String windowName) {
