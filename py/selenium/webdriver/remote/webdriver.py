@@ -158,7 +158,7 @@ class WebDriver(object):
         """
         pass
 
-    def start_session(self, desired_capabilities, browser_profile=None):
+    def start_session(self, capabilities, browser_profile=None):
         """
         Creates a new session with the desired capabilities.
 
@@ -169,21 +169,26 @@ class WebDriver(object):
          - javascript_enabled - Whether the new session should support JavaScript.
          - browser_profile - A selenium.webdriver.firefox.firefox_profile.FirefoxProfile object. Only used if Firefox is requested.
         """
-        capabilities = {'desiredCapabilities': {}, 'requiredCapabilities': {}}
-        for k, v in desired_capabilities.items():
-            if k not in ('desiredCapabilities', 'requiredCapabilities'):
-                capabilities['desiredCapabilities'][k] = v
-            else:
-                capabilities[k].update(v)
+        if not isinstance(capabilities, dict):
+            raise InvalidArgumentException("Capabilities must be a dictionary")
+        w3c_caps = {"firstMatch": [], "alwaysMatch": {}}
+        w3c_caps.update(capabilities)
         if browser_profile:
-            capabilities['desiredCapabilities']['firefox_profile'] = browser_profile.encoded
-        response = self.execute(Command.NEW_SESSION, capabilities)
+            w3c_caps["firstMatch"].append({"firefox_profile": browser_profile.encoded})
+        parameters = {"capabilities": w3c_caps,
+                      "desiredCapabilities": capabilities}
+        response = self.execute(Command.NEW_SESSION, parameters)
         if 'sessionId' not in response:
             response = response['value']
         self.session_id = response['sessionId']
-        self.capabilities = response['value']
+        self.capabilities = response.get('value')
 
-        # Quick check to see if we have a W3C Compliant browser
+        # if capabilities is none we are probably speaking to
+        # a W3C endpoint
+        if self.capabilities is None:
+            self.capabilities = response.get('capabilities')
+
+        # Double check to see if we have a W3C Compliant browser
         self.w3c = response.get('status') is None
 
     def _wrap_value(self, value):
