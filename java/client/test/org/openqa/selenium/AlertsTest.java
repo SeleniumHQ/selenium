@@ -152,7 +152,6 @@ public class AlertsTest extends JUnit4TestBase {
     assertEquals("Testing Alerts", driver.getTitle());
   }
 
-  @Ignore(value = MARIONETTE, reason = "https://github.com/jgraham/wires/issues/17")
   @JavascriptEnabled
   @Test
   @NotYetImplemented(value = {HTMLUNIT},
@@ -228,7 +227,6 @@ public class AlertsTest extends JUnit4TestBase {
   @JavascriptEnabled
   @SwitchToTopAfterTest
   @Test
-  @Ignore(value = MARIONETTE)
   public void testShouldAllowUsersToAcceptAnAlertInAFrame() {
     driver.switchTo().frame("iframeWithAlert");
 
@@ -244,8 +242,6 @@ public class AlertsTest extends JUnit4TestBase {
   @JavascriptEnabled
   @SwitchToTopAfterTest
   @Test
-  @Ignore(value = MARIONETTE,
-    reason = "Marionette: https://bugzilla.mozilla.org/show_bug.cgi?id=1279211")
   public void testShouldAllowUsersToAcceptAnAlertInANestedFrame() {
     driver.switchTo().frame("iframeWithIframe").switchTo().frame("iframeWithAlert");
 
@@ -269,7 +265,6 @@ public class AlertsTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore(MARIONETTE)
   @JavascriptEnabled
   @Test
   public void testSwitchingToMissingAlertInAClosedWindowThrows() throws Exception {
@@ -319,7 +314,6 @@ public class AlertsTest extends JUnit4TestBase {
     wait.until(textInElementLocated(By.id("text"), "null"));
   }
 
-  @Ignore(MARIONETTE)
   @JavascriptEnabled
   @Test
   @NotYetImplemented(value = HTMLUNIT,
@@ -480,7 +474,8 @@ public class AlertsTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Ignore(value = {CHROME})
   @Test
-  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/jgraham/wires/issues/21")
+  @NotYetImplemented(value = MARIONETTE,
+      reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1279211")
   public void testIncludesAlertTextInUnhandledAlertException() {
     driver.findElement(By.id("alert")).click();
     wait.until(alertIsPresent());

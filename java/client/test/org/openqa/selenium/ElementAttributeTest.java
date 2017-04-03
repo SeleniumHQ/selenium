@@ -83,7 +83,6 @@ public class ElementAttributeTest extends JUnit4TestBase {
     assertThat(body.getAttribute("style"), equalTo(""));
   }
 
-  @Ignore({MARIONETTE})
   @Test
   public void testShouldReturnTheValueOfTheDisabledAttributeAsNullIfNotSet() {
     driver.get(pages.formPage);
@@ -358,7 +357,6 @@ public class ElementAttributeTest extends JUnit4TestBase {
     shortWait.until(ExpectedConditions.attributeToBe(element, "value", "hello world"));
   }
 
-  @Ignore({MARIONETTE})
   @Test
   public void testShouldReturnNullForNonPresentBooleanAttributes() {
     driver.get(pages.booleanAttributes);
@@ -383,7 +381,6 @@ public class ElementAttributeTest extends JUnit4TestBase {
     assertEquals("true", element5.getAttribute("nowrap"));
   }
 
-  @Ignore({MARIONETTE})
   @Test
   public void testMultipleAttributeShouldBeNullWhenNotSet() {
     driver.get(pages.selectPage);
@@ -421,7 +418,6 @@ public class ElementAttributeTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore(MARIONETTE)
   public void testGetAttributeOfUserDefinedProperty() {
     driver.get(pages.userDefinedProperty);
     WebElement element = driver.findElement(By.id("d"));

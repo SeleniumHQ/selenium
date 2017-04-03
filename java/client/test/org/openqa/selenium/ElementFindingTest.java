@@ -629,7 +629,6 @@ public class ElementFindingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore({MARIONETTE})
   public void findsByLinkTextOnXhtmlPage() {
     assumeFalse("Old IE doesn't render XHTML pages, don't try loading XHTML pages in it",
                 isOldIe(driver));
@@ -651,7 +650,6 @@ public class ElementFindingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(MARIONETTE)
   public void testDriverCanGetLinkByLinkTestIgnoringTrailingWhitespace() {
     driver.get(pages.simpleTestPage);
     WebElement link = driver.findElement(By.linkText("link with trailing space"));

@@ -79,7 +79,6 @@ public class ClickTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = {MARIONETTE}, reason = "getPageSource issue")
   @SwitchToTopAfterTest
   public void testCanClickOnALinkThatUpdatesAnotherFrame() {
     driver.switchTo().frame("source");
@@ -92,7 +91,6 @@ public class ClickTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore(value = {MARIONETTE}, reason = "getPageSource issue")
   @SwitchToTopAfterTest
   public void testElementsFoundByJsCanLoadUpdatesInAnotherFrame() {
     driver.switchTo().frame("source");
@@ -108,7 +106,6 @@ public class ClickTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore(value = {MARIONETTE})
   @SwitchToTopAfterTest
   public void testJsLocatedElementsCanUpdateFramesIfFoundSomehowElse() {
     driver.switchTo().frame("source");
@@ -216,7 +213,6 @@ public class ClickTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = MARIONETTE)
   public void testCanClickOnALinkThatContainsEmbeddedBlockElements() {
     assumeFalse(
         "Fails on Android phones: https://code.google.com/p/chromedriver/issues/detail?id=1022",
@@ -255,7 +251,7 @@ public class ClickTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = {IE, MARIONETTE}, reason = "IE: failed, others: not tested")
+  @Ignore(value = {IE, MARIONETTE})
   public void testCanClickAnImageMapArea() {
     driver.get(appServer.whereIs("click_tests/google_map.html"));
     driver.findElement(By.id("rectG")).click();
