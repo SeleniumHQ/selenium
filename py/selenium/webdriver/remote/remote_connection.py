@@ -314,12 +314,20 @@ class RemoteConnection(object):
                 ('POST', '/session/$sessionId/timeouts'),
             Command.DISMISS_ALERT:
                 ('POST', '/session/$sessionId/dismiss_alert'),
+            Command.W3C_DISMISS_ALERT:
+                ('POST', '/session/$sessionId/alert/dismiss'),
             Command.ACCEPT_ALERT:
                 ('POST', '/session/$sessionId/accept_alert'),
+            Command.W3C_ACCEPT_ALERT:
+                ('POST', '/session/$sessionId/alert/accept'),
             Command.SET_ALERT_VALUE:
                 ('POST', '/session/$sessionId/alert_text'),
+            Command.W3C_SET_ALERT_VALUE:
+                ('POST', '/session/$sessionId/alert/text'),
             Command.GET_ALERT_TEXT:
                 ('GET', '/session/$sessionId/alert_text'),
+            Command.W3C_GET_ALERT_TEXT:
+                ('GET', '/session/$sessionId/alert/text'),
             Command.SET_ALERT_CREDENTIALS:
                 ('POST', '/session/$sessionId/alert/credentials'),
             Command.CLICK:

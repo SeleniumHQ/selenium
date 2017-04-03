@@ -106,9 +106,13 @@ class Command(object):
 
     # Alerts
     DISMISS_ALERT = "dismissAlert"
+    W3C_DISMISS_ALERT = "w3cDismissAlert"
     ACCEPT_ALERT = "acceptAlert"
+    W3C_ACCEPT_ALERT = "w3cAcceptAlert"
     SET_ALERT_VALUE = "setAlertValue"
+    W3C_SET_ALERT_VALUE = "w3cSetAlertValue"
     GET_ALERT_TEXT = "getAlertText"
+    W3C_GET_ALERT_TEXT = "w3cGetAlertText"
     SET_ALERT_CREDENTIALS = "setAlertCredentials"
 
     # Advanced user interactions
