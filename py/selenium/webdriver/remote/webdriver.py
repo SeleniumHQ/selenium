@@ -90,6 +90,9 @@ class WebDriver(object):
         self.capabilities = {}
         self.error_handler = ErrorHandler()
         self.start_client()
+        if browser_profile is not None:
+            warnings.warn("Please use FirefoxOptions to set browser profile",
+                          DeprecationWarning)
         self.start_session(desired_capabilities, browser_profile)
         self._switch_to = SwitchTo(self)
         self._mobile = Mobile(self)
