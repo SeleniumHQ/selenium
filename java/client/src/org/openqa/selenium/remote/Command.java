@@ -27,7 +27,7 @@ public class Command {
   private Map<String, ?> parameters;
 
   public Command(SessionId sessionId, String name) {
-    this(sessionId, name, new HashMap<String, Object>());
+    this(sessionId, name, new HashMap<>());
   }
 
   public Command(SessionId sessionId, String name, Map<String, ?> parameters) {
@@ -45,7 +45,7 @@ public class Command {
   }
 
   public Map<String, ?> getParameters() {
-    return parameters == null ? new HashMap<String, Object>() : parameters;
+    return parameters == null ? new HashMap<>() : parameters;
   }
 
   @Override
