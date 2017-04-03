@@ -53,12 +53,10 @@ public class JsonToWebElementConverter implements Function<Object, Object> {
       if (resultAsMap.containsKey(Dialect.OSS.getEncodedElementKey())) {
         RemoteWebElement element = newRemoteWebElement();
         element.setId(String.valueOf(resultAsMap.get(Dialect.OSS.getEncodedElementKey())));
-        element.setFileDetector(driver.getFileDetector());
         return element;
       } else if (resultAsMap.containsKey(Dialect.W3C.getEncodedElementKey())) {
         RemoteWebElement element = newRemoteWebElement();
         element.setId(String.valueOf(resultAsMap.get(Dialect.W3C.getEncodedElementKey())));
-        element.setFileDetector(driver.getFileDetector());
         return element;
       } else {
         return Maps.transformValues(resultAsMap, this);
@@ -75,9 +73,10 @@ public class JsonToWebElementConverter implements Function<Object, Object> {
     return result;
   }
 
-  protected RemoteWebElement newRemoteWebElement() {
+  private RemoteWebElement newRemoteWebElement() {
     RemoteWebElement toReturn = new RemoteWebElement();
     toReturn.setParent(driver);
+    toReturn.setFileDetector(driver.getFileDetector());
     return toReturn;
   }
 }
