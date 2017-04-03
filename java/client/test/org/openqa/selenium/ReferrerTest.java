@@ -383,16 +383,8 @@ public class ReferrerTest extends JUnit4TestBase {
     wait.until(titleIs("Page 3"));
   }
 
-  private static String buildPage1Url(String nextUrl) {
-    return "/page1.html?next=" + encode(nextUrl);
-  }
-
   private static String buildPage1Url(ServerResource server, String nextUrl) {
     return server.getBaseUrl() + "/page1.html?next=" + encode(nextUrl);
-  }
-
-  private static String buildPage2Url(String nextUrl) {
-    return "/page2.html?next=" + encode(nextUrl);
   }
 
   private static String buildPage2Url(String server, String nextUrl) {
@@ -409,10 +401,6 @@ public class ReferrerTest extends JUnit4TestBase {
 
   private static String buildPage2Url(ServerResource server) {
     return server.getBaseUrl() + "/page2.html";  // Nothing special here.
-  }
-
-  private static String buildPage3Url() {
-    return "/page3.html";  // Nothing special here.
   }
 
   private static String buildPage3Url(ServerResource server) {
