@@ -505,40 +505,22 @@ public class AlertsTest extends JUnit4TestBase {
 
   private static ExpectedCondition<Boolean> textInElementLocated(
       final By locator, final String text) {
-    return new ExpectedCondition<Boolean>() {
-      @Override
-      public Boolean apply(WebDriver driver) {
-        return text.equals(driver.findElement(locator).getText());
-      }
-    };
+    return driver -> text.equals(driver.findElement(locator).getText());
   }
 
   private static ExpectedCondition<Boolean> windowCountIs(final int count) {
-    return new ExpectedCondition<Boolean>() {
-      @Override
-      public Boolean apply(WebDriver driver) {
-        return driver.getWindowHandles().size() == count;
-      }
-    };
+    return driver -> driver.getWindowHandles().size() == count;
   }
 
   private static ExpectedCondition<WebDriver> ableToSwitchToWindow(final String name) {
-    return new ExpectedCondition<WebDriver>() {
-      @Override
-      public WebDriver apply(WebDriver driver) {
-        return driver.switchTo().window(name);
-      }
-    };
+    return driver -> driver.switchTo().window(name);
   }
 
   private static ExpectedCondition<String> newWindowIsOpened(final Set<String> originalHandles) {
-    return new ExpectedCondition<String>() {
-      @Override
-      public String apply(WebDriver driver) {
-        Set<String> currentWindowHandles = driver.getWindowHandles();
-        currentWindowHandles.removeAll(originalHandles);
-        return currentWindowHandles.isEmpty() ? null : currentWindowHandles.iterator().next();
-      }
+    return driver -> {
+      Set<String> currentWindowHandles = driver.getWindowHandles();
+      currentWindowHandles.removeAll(originalHandles);
+      return currentWindowHandles.isEmpty() ? null : currentWindowHandles.iterator().next();
     };
   }
 }
