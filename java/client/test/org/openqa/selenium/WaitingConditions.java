@@ -190,7 +190,7 @@ public class WaitingConditions {
 
   public static ExpectedCondition<String> newWindowIsOpened(final Set<String> originalHandles) {
     return driver -> driver.getWindowHandles().stream()
-        .filter(originalHandles::contains).findFirst().orElse(null);
+        .filter(handle -> ! originalHandles.contains(handle)).findFirst().orElse(null);
   }
 
   public static ExpectedCondition<WebDriver> windowToBeSwitchedToWithName(final String windowName) {
