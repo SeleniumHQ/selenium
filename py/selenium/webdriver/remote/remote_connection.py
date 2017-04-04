@@ -233,8 +233,12 @@ class RemoteConnection(object):
             Command.QUIT: ('DELETE', '/session/$sessionId'),
             Command.GET_CURRENT_WINDOW_HANDLE:
                 ('GET', '/session/$sessionId/window_handle'),
+            Command.W3C_GET_CURRENT_WINDOW_HANDLE:
+                ('GET', '/session/$sessionId/window'),
             Command.GET_WINDOW_HANDLES:
                 ('GET', '/session/$sessionId/window_handles'),
+            Command.W3C_GET_WINDOW_HANDLES:
+                ('GET', '/session/$sessionId/window/handles'),
             Command.GET: ('POST', '/session/$sessionId/url'),
             Command.GO_FORWARD: ('POST', '/session/$sessionId/forward'),
             Command.GO_BACK: ('POST', '/session/$sessionId/back'),

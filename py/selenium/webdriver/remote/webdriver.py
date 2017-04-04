@@ -553,7 +553,10 @@ class WebDriver(object):
         :Usage:
             driver.current_window_handle
         """
-        return self.execute(Command.GET_CURRENT_WINDOW_HANDLE)['value']
+        if self.w3c:
+            return self.execute(Command.W3C_GET_CURRENT_WINDOW_HANDLE)['value']
+        else:
+            return self.execute(Command.GET_CURRENT_WINDOW_HANDLE)['value']
 
     @property
     def window_handles(self):
@@ -563,7 +566,10 @@ class WebDriver(object):
         :Usage:
             driver.window_handles
         """
-        return self.execute(Command.GET_WINDOW_HANDLES)['value']
+        if self.w3c:
+            return self.execute(Command.W3C_GET_WINDOW_HANDLES)['value']
+        else:
+            return self.execute(Command.GET_WINDOW_HANDLES)['value']
 
     def maximize_window(self):
         """
