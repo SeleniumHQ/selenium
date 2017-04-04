@@ -36,8 +36,6 @@ import org.openqa.selenium.testing.SwitchToTopAfterTest;
 import org.openqa.selenium.testing.TestUtilities;
 import org.openqa.selenium.testing.drivers.SauceDriver;
 
-import java.util.logging.Logger;
-
 public class WindowTest extends JUnit4TestBase {
 
   @Test
