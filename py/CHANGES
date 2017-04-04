@@ -1,3 +1,22 @@
+Selenium 3.3.2
+
+* Update window commands to use W3C End points
+* Update Alert when in W3C mode to use W3C Endpoints
+* Update to new W3C Execute Script end points
+* Add setting/getting proxy details to Firefox Options
+* Deprecate the use of browser profile when instantiating a session
+* Update start session to handle the W3C New Session
+* Add get/set window rect commands
+* Add InvalidArgumentException
+* When passing in `text` to send_keys, make sure we send a string not array
+* Fix string decoding in remote connection (#3663)
+* Fix indentation to satisfy PEP8
+* Try use old way of setting page load timeout if new way fails. Fixes #3654
+* fix file uploads for Firefox
+* Run unit tests on Python 3.3, 3.4, and 3.5 (#3638)
+* Fix indentation in double_click.
+* Fix non-W3C page load timeout setting.
+
 Selenium 3.3.1
 * Fix encoding of basic auth header when using Python 3 Fixes #3622
 * Add initial unit test suite
