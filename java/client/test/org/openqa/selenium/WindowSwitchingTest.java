@@ -20,7 +20,6 @@ package org.openqa.selenium;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assume.assumeFalse;
@@ -34,9 +33,11 @@ import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.REMOTE;
 import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 
-import com.google.common.collect.Sets;
-
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestRule;
+import org.junit.rules.TestWatcher;
+import org.junit.runner.Description;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
@@ -47,8 +48,32 @@ import org.openqa.selenium.testing.TestUtilities;
 import org.openqa.selenium.testing.drivers.Browser;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class WindowSwitchingTest extends JUnit4TestBase {
+
+  @Rule
+  public final TestRule switchToMainWindow = new TestWatcher() {
+    private String mainWindow;
+
+    @Override
+    protected void starting(Description description) {
+      super.starting(description);
+      mainWindow = driver.getWindowHandle();
+    }
+
+    @Override
+    protected void finished(Description description) {
+      try {
+        if (! mainWindow.equals(driver.getWindowHandle())) {
+          driver.close();
+        }
+      } catch (Exception ignore) {
+      }
+      driver.switchTo().window(mainWindow);
+      super.finished(description);
+    }
+  };
 
   @SwitchToTopAfterTest
   @NoDriverAfterTest(failedOnly = true)
@@ -58,7 +83,6 @@ public class WindowSwitchingTest extends JUnit4TestBase {
                 TestUtilities.getEffectivePlatform().is(Platform.WINDOWS));
 
     driver.get(pages.xhtmlTestPage);
-    String current = driver.getWindowHandle();
     Set<String> currentWindowHandles = driver.getWindowHandles();
 
     driver.findElement(By.linkText("Open new window")).click();
@@ -75,22 +99,13 @@ public class WindowSwitchingTest extends JUnit4TestBase {
     driver.findElement(By.id("iframe_page_heading"));
     driver.switchTo().frame("iframe1");
     assertThat(driver.getWindowHandle(), equalTo(handle));
-
-    driver.close();
-    driver.switchTo().window(current);
   }
 
   @Test
   public void testShouldThrowNoSuchWindowException() {
     driver.get(pages.xhtmlTestPage);
-    String current = driver.getWindowHandle();
-
-    try {
-      Throwable t = catchThrowable(() -> driver.switchTo().window("invalid name"));
-      assertThat(t, instanceOf(NoSuchWindowException.class));
-    } finally {
-      driver.switchTo().window(current);
-    }
+    Throwable t = catchThrowable(() -> driver.switchTo().window("invalid name"));
+    assertThat(t, instanceOf(NoSuchWindowException.class));
   }
 
   @NoDriverAfterTest(failedOnly = true)
@@ -98,7 +113,6 @@ public class WindowSwitchingTest extends JUnit4TestBase {
   @Test
   public void testShouldThrowNoSuchWindowExceptionOnAnAttemptToGetItsHandle() {
     driver.get(pages.xhtmlTestPage);
-    String current = driver.getWindowHandle();
     Set<String> currentWindowHandles = driver.getWindowHandles();
 
     driver.findElement(By.linkText("Open new window")).click();
@@ -108,12 +122,8 @@ public class WindowSwitchingTest extends JUnit4TestBase {
     driver.switchTo().window("result");
     driver.close();
 
-    try {
-      Throwable t = catchThrowable(driver::getWindowHandle);
-      assertThat(t, instanceOf(NoSuchWindowException.class));
-    } finally {
-      driver.switchTo().window(current);
-    }
+    Throwable t = catchThrowable(driver::getWindowHandle);
+    assertThat(t, instanceOf(NoSuchWindowException.class));
   }
 
   @NoDriverAfterTest(failedOnly = true)
@@ -121,7 +131,6 @@ public class WindowSwitchingTest extends JUnit4TestBase {
   @Test
   public void testShouldThrowNoSuchWindowExceptionOnAnyOperationIfAWindowIsClosed() {
     driver.get(pages.xhtmlTestPage);
-    String current = driver.getWindowHandle();
     Set<String> currentWindowHandles = driver.getWindowHandles();
 
     driver.findElement(By.linkText("Open new window")).click();
@@ -131,15 +140,11 @@ public class WindowSwitchingTest extends JUnit4TestBase {
     driver.switchTo().window("result");
     driver.close();
 
-    try {
-      Throwable t = catchThrowable(driver::getTitle);
-      assertThat(t, instanceOf(NoSuchWindowException.class));
+    Throwable t = catchThrowable(driver::getTitle);
+    assertThat(t, instanceOf(NoSuchWindowException.class));
 
-      Throwable t2 = catchThrowable(() -> driver.findElement(By.tagName("body")));
-      assertThat(t2, instanceOf(NoSuchWindowException.class));
-    } finally {
-      driver.switchTo().window(current);
-    }
+    Throwable t2 = catchThrowable(() -> driver.findElement(By.tagName("body")));
+    assertThat(t2, instanceOf(NoSuchWindowException.class));
   }
 
   @NoDriverAfterTest(failedOnly = true)
@@ -147,7 +152,6 @@ public class WindowSwitchingTest extends JUnit4TestBase {
   @Test
   public void testShouldThrowNoSuchWindowExceptionOnAnyElementOperationIfAWindowIsClosed() {
     driver.get(pages.xhtmlTestPage);
-    String current = driver.getWindowHandle();
     Set<String> currentWindowHandles = driver.getWindowHandles();
 
     driver.findElement(By.linkText("Open new window")).click();
@@ -158,12 +162,8 @@ public class WindowSwitchingTest extends JUnit4TestBase {
     WebElement body = driver.findElement(By.tagName("body"));
     driver.close();
 
-    try {
-      Throwable t = catchThrowable(body::getText);
-      assertThat(t, instanceOf(NoSuchWindowException.class));
-    } finally {
-      driver.switchTo().window(current);
-    }
+    Throwable t = catchThrowable(body::getText);
+    assertThat(t, instanceOf(NoSuchWindowException.class));
   }
 
   @NoDriverAfterTest
@@ -181,14 +181,13 @@ public class WindowSwitchingTest extends JUnit4TestBase {
     Set<String> allWindowHandles = driver.getWindowHandles();
 
     // There should be three windows. We should also see each of the window titles at least once.
-    Set<String> seenHandles = Sets.newHashSet();
-    for (String handle : allWindowHandles) {
-      assertFalse(seenHandles.contains(handle));
+    Set<String> allWindowTitles = allWindowHandles.stream().map(handle -> {
       driver.switchTo().window(handle);
-      seenHandles.add(handle);
-    }
+      return driver.getTitle();
+    }).collect(Collectors.toSet());
 
     assertEquals(3, allWindowHandles.size());
+    assertEquals(3, allWindowTitles.size());
   }
 
   @JavascriptEnabled
@@ -202,7 +201,6 @@ public class WindowSwitchingTest extends JUnit4TestBase {
     driver.get(pages.xhtmlTestPage);
     Boolean isIEDriver = TestUtilities.isInternetExplorer(driver);
     Boolean isIE6 = TestUtilities.isIe6(driver);
-    String currentHandle = driver.getWindowHandle();
     Set<String> currentWindowHandles = driver.getWindowHandles();
 
     driver.findElement(By.name("windowThree")).click();
@@ -215,20 +213,15 @@ public class WindowSwitchingTest extends JUnit4TestBase {
     if (TestUtilities.isChrome(driver) && TestUtilities.getEffectivePlatform(driver).is(ANDROID)) {
       Thread.sleep(1000);
     }
-    try {
-      wait.until(ExpectedConditions.presenceOfElementLocated(By.id("close")));
-      driver.findElement(By.id("close")).click();
 
-      if (isIEDriver && !isIE6) {
-        Alert alert = wait.until(alertIsPresent());
-        alert.accept();
-      }
+    wait.until(ExpectedConditions.presenceOfElementLocated(By.id("close"))).click();
 
-      // If we make it this far, we're all good.
-    } finally {
-      driver.switchTo().window(currentHandle);
-      driver.findElement(By.id("linkId"));
+    if (isIEDriver && !isIE6) {
+      Alert alert = wait.until(alertIsPresent());
+      alert.accept();
     }
+
+    // If we make it this far, we're all good.
   }
 
   @JavascriptEnabled
@@ -242,7 +235,6 @@ public class WindowSwitchingTest extends JUnit4TestBase {
 
     Boolean isIEDriver = TestUtilities.isInternetExplorer(driver);
     Boolean isIE6 = TestUtilities.isIe6(driver);
-    String currentHandle = driver.getWindowHandle();
     Set<String> currentWindowHandles = driver.getWindowHandles();
 
     driver.findElement(By.name("windowThree")).click();
@@ -256,29 +248,23 @@ public class WindowSwitchingTest extends JUnit4TestBase {
     if (TestUtilities.isChrome(driver) && TestUtilities.getEffectivePlatform(driver).is(ANDROID)) {
       Thread.sleep(1000);
     }
-    try {
-      wait.until(ExpectedConditions.presenceOfElementLocated(By.id("close"))).click();
 
-      if (isIEDriver && !isIE6) {
-        Alert alert = wait.until(alertIsPresent());
-        alert.accept();
-      }
+    wait.until(ExpectedConditions.presenceOfElementLocated(By.id("close"))).click();
 
-      Set<String> allHandles = wait.until(windowHandleCountToBe(allWindowHandles - 1));
-
-      assertEquals(currentWindowHandles.size(), allHandles.size());
-    } finally {
-      driver.switchTo().window(currentHandle);
+    if (isIEDriver && !isIE6) {
+      Alert alert = wait.until(alertIsPresent());
+      alert.accept();
     }
+
+    Set<String> allHandles = wait.until(windowHandleCountToBe(allWindowHandles - 1));
+
+    assertEquals(currentWindowHandles.size(), allHandles.size());
   }
 
   @Test
   public void testCanObtainAWindowHandle() {
     driver.get(pages.xhtmlTestPage);
-
-    String currentHandle = driver.getWindowHandle();
-
-    assertNotNull(currentHandle);
+    assertNotNull(driver.getWindowHandle());
   }
 
   @Test
@@ -310,17 +296,12 @@ public class WindowSwitchingTest extends JUnit4TestBase {
     // There should be two windows. We should also see each of the window titles at least once.
     assertEquals(2, allWindowHandles.size());
 
-    for (String handle : allWindowHandles) {
-      if (! handle.equals(mainHandle)) {
-        driver.switchTo().window(handle);
-        driver.close();
-        break;
-      }
-    }
+    allWindowHandles.stream().filter(anObject -> ! mainHandle.equals(anObject)).forEach(handle -> {
+      driver.switchTo().window(handle);
+      driver.close();
+    });
 
     assertEquals(1, driver.getWindowHandles().size());
-
-    driver.switchTo().window(mainHandle);
   }
 
   @NoDriverAfterTest(failedOnly = true)
@@ -340,13 +321,10 @@ public class WindowSwitchingTest extends JUnit4TestBase {
     // There should be two windows. We should also see each of the window titles at least once.
     assertEquals(2, allWindowHandles.size());
 
-    for (String handle : allWindowHandles) {
-      if (! handle.equals(mainHandle)) {
-        driver.switchTo().window(handle);
-        driver.close();
-        break;
-      }
-    }
+    allWindowHandles.stream().filter(anObject -> ! mainHandle.equals(anObject)).forEach(handle -> {
+      driver.switchTo().window(handle);
+      driver.close();
+    });
 
     driver.switchTo().window(mainHandle);
 

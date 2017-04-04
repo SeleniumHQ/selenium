@@ -50,11 +50,10 @@ public class VisibilityTest extends JUnit4TestBase {
   public void testShouldAllowTheUserToTellIfAnElementIsDisplayedOrNot() {
     driver.get(pages.javascriptPage);
 
-    assertThat(driver.findElement(By.id("displayed")).isDisplayed(),
-               is(true));
-    assertThat(driver.findElement(By.id("none")).isDisplayed(), is(false));
-    assertThat(driver.findElement(By.id("suppressedParagraph")).isDisplayed(), is(false));
-    assertThat(driver.findElement(By.id("hidden")).isDisplayed(), is(false));
+    assertTrue(driver.findElement(By.id("displayed")).isDisplayed());
+    assertFalse(driver.findElement(By.id("none")).isDisplayed());
+    assertFalse(driver.findElement(By.id("suppressedParagraph")).isDisplayed());
+    assertFalse(driver.findElement(By.id("hidden")).isDisplayed());
   }
 
   @Test

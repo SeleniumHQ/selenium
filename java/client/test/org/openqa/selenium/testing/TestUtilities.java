@@ -26,7 +26,6 @@ import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.testing.drivers.SauceDriver;
 
-import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -96,13 +95,11 @@ public class TestUtilities {
   }
 
   public static boolean isOldChromedriver(WebDriver driver) {
-    Capabilities caps;
-    try {
-      caps = ((HasCapabilities) driver).getCapabilities();
-    } catch (ClassCastException e) {
+    if (!(driver instanceof HasCapabilities)) {
       // Driver does not support capabilities -- not a chromedriver at all.
       return false;
     }
+    Capabilities caps = ((HasCapabilities) driver).getCapabilities();
     String chromedriverVersion = (String) caps.getCapability("chrome.chromedriverVersion");
     if (chromedriverVersion != null) {
       String[] versionMajorMinor = chromedriverVersion.split("\\.", 2);
