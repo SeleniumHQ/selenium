@@ -1,3 +1,7 @@
+Selenium 3.3.3
+
+* make w3c execute_script commands unique
+
 Selenium 3.3.2
 
 * Update window commands to use W3C End points
