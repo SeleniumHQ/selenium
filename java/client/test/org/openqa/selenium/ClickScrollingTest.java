@@ -18,11 +18,11 @@
 package org.openqa.selenium;
 
 import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.testing.Driver.CHROME;
 import static org.openqa.selenium.testing.Driver.HTMLUNIT;
@@ -30,6 +30,7 @@ import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Driver.SAFARI;
+import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 
 import org.junit.Test;
 import org.openqa.selenium.interactions.MoveTargetOutOfBoundsException;
@@ -57,8 +58,7 @@ public class ClickScrollingTest extends JUnit4TestBase {
 
     driver.findElement(By.partialLinkText("last speech")).click();
 
-    long yOffset = (Long) ((JavascriptExecutor) driver)
-        .executeScript(scrollScript);
+    long yOffset = (Long) ((JavascriptExecutor) driver).executeScript(scrollScript);
 
     // Focusing on to click, but not actually following,
     // the link will scroll it in to view, which is a few pixels further than 0
@@ -71,11 +71,7 @@ public class ClickScrollingTest extends JUnit4TestBase {
     driver.get(url);
 
     WebElement link = driver.findElement(By.id("link"));
-    try {
-      link.click();
-    } catch (MoveTargetOutOfBoundsException e) {
-      fail("Should not be out of bounds: " + e.getMessage());
-    }
+    link.click();
   }
 
   @Test
@@ -172,13 +168,14 @@ public class ClickScrollingTest extends JUnit4TestBase {
   }
 
   @SwitchToTopAfterTest
-  @Test(expected = MoveTargetOutOfBoundsException.class)
+  @Test
   @Ignore(reason = "All tested browses scroll non-scrollable frames")
   public void testShouldNotBeAbleToClickElementThatIsOutOfViewInANonScrollableFrame() {
     driver.get(appServer.whereIs("scrolling_tests/page_with_non_scrolling_frame.html"));
     driver.switchTo().frame("scrolling_frame");
     WebElement element = driver.findElement(By.name("scroll_checkbox"));
-    element.click();
+    Throwable t = catchThrowable(element::click);
+    assertThat(t, instanceOf(MoveTargetOutOfBoundsException.class));
   }
 
   @SwitchToTopAfterTest

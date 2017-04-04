@@ -17,7 +17,10 @@
 
 package org.openqa.selenium;
 
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.startsWith;
 import static org.junit.Assert.assertEquals;
@@ -37,6 +40,7 @@ import static org.openqa.selenium.testing.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.SAFARI;
+import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 import static org.openqa.selenium.testing.TestUtilities.isOldIe;
 
 import org.junit.Test;
@@ -204,11 +208,9 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     WebElement bar = allOptions.get(1);
 
     foo.click();
-    assertThat(driver.findElement(By.id("result")).getText(),
-               equalTo(initialTextValue));
+    assertThat(driver.findElement(By.id("result")).getText(), equalTo(initialTextValue));
     bar.click();
-    assertThat(driver.findElement(By.id("result")).getText(),
-        equalTo("bar"));
+    assertThat(driver.findElement(By.id("result")).getText(), equalTo("bar"));
   }
 
   @JavascriptEnabled
@@ -222,11 +224,9 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     WebElement bar = allOptions.get(1);
 
     foo.click();
-    assertThat(driver.findElement(By.id("result")).getText(),
-               equalTo("foo"));
+    assertThat(driver.findElement(By.id("result")).getText(), equalTo("foo"));
     bar.click();
-    assertThat(driver.findElement(By.id("result")).getText(),
-               equalTo("bar"));
+    assertThat(driver.findElement(By.id("result")).getText(), equalTo("bar"));
   }
 
   @JavascriptEnabled
@@ -439,15 +439,10 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   public void testClickOverlappingElements() {
     assumeFalse(isOldIe(driver));
     driver.get(appServer.whereIs("click_tests/overlapping_elements.html"));
-    try {
-      driver.findElement(By.id("under")).click();
-    } catch (WebDriverException expected) {
-      if (expected.getMessage().contains("Other element would receive the click")) {
-        return;
-      }
-      expected.printStackTrace();
-    }
-    fail("Should have thrown Exception with 'Other element would receive the click' in the message");
+    WebElement element = driver.findElement(By.id("under"));
+    Throwable t = catchThrowable(element::click);
+    assertThat(t, instanceOf(WebDriverException.class));
+    assertThat(t.getMessage(), containsString("Other element would receive the click"));
   }
 
   @JavascriptEnabled

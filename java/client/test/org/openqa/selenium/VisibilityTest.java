@@ -17,13 +17,13 @@
 
 package org.openqa.selenium;
 
+import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.Platform.ANDROID;
 import static org.openqa.selenium.support.ui.ExpectedConditions.not;
@@ -33,6 +33,7 @@ import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Driver.SAFARI;
+import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
@@ -107,12 +108,8 @@ public class VisibilityTest extends JUnit4TestBase {
     driver.get(pages.javascriptPage);
     WebElement element = driver.findElement(By.id("unclickable"));
 
-    try {
-      element.click();
-      fail("You should not be able to click on an invisible element");
-    } catch (ElementNotInteractableException e) {
-      // This is expected
-    }
+    Throwable t = catchThrowable(element::click);
+    assertThat(t, instanceOf(ElementNotInteractableException.class));
   }
 
   @Test
@@ -121,13 +118,8 @@ public class VisibilityTest extends JUnit4TestBase {
     driver.get(pages.javascriptPage);
     WebElement element = driver.findElement(By.id("unclickable"));
 
-    try {
-      element.sendKeys("You don't see me");
-      fail("You should not be able to send keyboard input to an invisible element");
-    } catch (ElementNotInteractableException e) {
-      // This is expected
-    }
-
+    Throwable t = catchThrowable(() -> element.sendKeys("You don't see me"));
+    assertThat(t, instanceOf(ElementNotInteractableException.class));
     assertThat(element.getAttribute("value"), is(not("You don't see me")));
   }
 

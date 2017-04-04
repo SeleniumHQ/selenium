@@ -18,11 +18,11 @@
 package org.openqa.selenium;
 
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.Platform.ANDROID;
 import static org.openqa.selenium.WaitingConditions.newWindowIsOpened;
@@ -32,6 +32,7 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.alertIsPresent;
 import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.REMOTE;
+import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 
 import com.google.common.collect.Sets;
 
@@ -85,13 +86,11 @@ public class WindowSwitchingTest extends JUnit4TestBase {
     String current = driver.getWindowHandle();
 
     try {
-      driver.switchTo().window("invalid name");
-      fail("NoSuchWindowException expected");
-    } catch (NoSuchWindowException e) {
-      // Expected.
+      Throwable t = catchThrowable(() -> driver.switchTo().window("invalid name"));
+      assertThat(t, instanceOf(NoSuchWindowException.class));
+    } finally {
+      driver.switchTo().window(current);
     }
-
-    driver.switchTo().window(current);
   }
 
   @NoDriverAfterTest(failedOnly = true)
@@ -110,10 +109,8 @@ public class WindowSwitchingTest extends JUnit4TestBase {
     driver.close();
 
     try {
-      driver.getWindowHandle();
-      fail("NoSuchWindowException expected");
-    } catch (NoSuchWindowException e) {
-      // Expected.
+      Throwable t = catchThrowable(driver::getWindowHandle);
+      assertThat(t, instanceOf(NoSuchWindowException.class));
     } finally {
       driver.switchTo().window(current);
     }
@@ -135,19 +132,11 @@ public class WindowSwitchingTest extends JUnit4TestBase {
     driver.close();
 
     try {
-      try {
-        driver.getTitle();
-        fail("NoSuchWindowException expected");
-      } catch (NoSuchWindowException e) {
-        // Expected.
-      }
+      Throwable t = catchThrowable(driver::getTitle);
+      assertThat(t, instanceOf(NoSuchWindowException.class));
 
-      try {
-        driver.findElement(By.tagName("body"));
-        fail("NoSuchWindowException expected");
-      } catch (NoSuchWindowException e) {
-        // Expected.
-      }
+      Throwable t2 = catchThrowable(() -> driver.findElement(By.tagName("body")));
+      assertThat(t2, instanceOf(NoSuchWindowException.class));
     } finally {
       driver.switchTo().window(current);
     }
@@ -170,10 +159,8 @@ public class WindowSwitchingTest extends JUnit4TestBase {
     driver.close();
 
     try {
-      body.getText();
-      fail("NoSuchWindowException expected");
-    } catch (NoSuchWindowException e) {
-      // Expected.
+      Throwable t = catchThrowable(body::getText);
+      assertThat(t, instanceOf(NoSuchWindowException.class));
     } finally {
       driver.switchTo().window(current);
     }
@@ -299,15 +286,10 @@ public class WindowSwitchingTest extends JUnit4TestBase {
     driver.get(pages.xhtmlTestPage);
     String current = driver.getWindowHandle();
 
-    try {
-      driver.switchTo().window("i will never exist");
-      fail("Should not be ablt to change to a non-existant window");
-    } catch (NoSuchWindowException e) {
-      // expected
-    }
+    Throwable t = catchThrowable(() -> driver.switchTo().window("i will never exist"));
+    assertThat(t, instanceOf(NoSuchWindowException.class));
 
     String newHandle = driver.getWindowHandle();
-
     assertEquals(current, newHandle);
   }
 

@@ -17,13 +17,15 @@
 
 package org.openqa.selenium;
 
+import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.assertThat;
 import static org.openqa.selenium.testing.Driver.CHROME;
 import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Driver.SAFARI;
+import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -54,12 +56,8 @@ public class TextPagesTest extends JUnit4TestBase {
   public void testFindingAnElementOnAPlainTextPageWillNeverWork() {
     driver.get(textPage);
 
-    try {
-      driver.findElement(By.id("foo"));
-      fail("This shouldn't work");
-    } catch (NoSuchElementException e) {
-      // this is expected
-    }
+    Throwable t = catchThrowable(() -> driver.findElement(By.id("foo")));
+    assertThat(t, instanceOf(NoSuchElementException.class));
   }
 
   @Ignore(value = {CHROME, IE, SAFARI, PHANTOMJS},
@@ -69,11 +67,7 @@ public class TextPagesTest extends JUnit4TestBase {
     driver.get(textPage);
 
     Cookie cookie = new Cookie.Builder("hello", "goodbye").build();
-    try {
-      driver.manage().addCookie(cookie);
-      fail("Should throw exception when adding cookie to non existing domain");
-    } catch (WebDriverException e) {
-      // This is expected
-    }
+    Throwable t = catchThrowable(() -> driver.manage().addCookie(cookie));
+    assertThat(t, instanceOf(WebDriverException.class));
   }
 }

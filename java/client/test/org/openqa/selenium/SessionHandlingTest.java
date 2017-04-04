@@ -17,11 +17,14 @@
 
 package org.openqa.selenium;
 
+import static org.hamcrest.Matchers.instanceOf;
+import static org.junit.Assert.assertThat;
 import static org.openqa.selenium.testing.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Driver.REMOTE;
 import static org.openqa.selenium.testing.Driver.SAFARI;
+import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,13 +41,7 @@ public class SessionHandlingTest {
     WebDriver driver = new WebDriverBuilder().get();
 
     driver.quit();
-
-    try {
-      driver.quit();
-    } catch (RuntimeException e) {
-      throw new RuntimeException(
-          "It should be possible to quit a session more than once, got exception:", e);
-    }
+    driver.quit();
   }
 
   @Test
@@ -53,24 +50,19 @@ public class SessionHandlingTest {
     WebDriver driver = new WebDriverBuilder().get();
 
     driver.close();
-
-    try {
-      driver.quit();
-    } catch (RuntimeException e) {
-      throw new RuntimeException(
-          "It should be possible to quit a session more than once, got exception:", e);
-    }
+    driver.quit();
   }
 
-  @Test(expected = NoSuchSessionException.class)
+  @Test
   @Ignore(value = {SAFARI}, reason = "Safari: throws UnreachableBrowserException")
   public void callingAnyOperationAfterQuitShouldThrowAnException() {
     WebDriver driver = new WebDriverBuilder().get();
     driver.quit();
-    driver.getCurrentUrl();
+    Throwable t = catchThrowable(driver::getCurrentUrl);
+    assertThat(t, instanceOf(NoSuchSessionException.class));
   }
 
-  @Test(expected = NoSuchSessionException.class)
+  @Test
   @Ignore(value = {FIREFOX, PHANTOMJS, SAFARI, MARIONETTE}, reason =
       "Firefox: can perform an operation after closing the last window,"
       + "PhantomJS: throws NoSuchWindowException,"
@@ -78,7 +70,8 @@ public class SessionHandlingTest {
   public void callingAnyOperationAfterClosingTheLastWindowShouldThrowAnException() {
     WebDriver driver = new WebDriverBuilder().get();
     driver.close();
-    driver.getCurrentUrl();
+    Throwable t = catchThrowable(driver::getCurrentUrl);
+    assertThat(t, instanceOf(NoSuchSessionException.class));
   }
 
 }

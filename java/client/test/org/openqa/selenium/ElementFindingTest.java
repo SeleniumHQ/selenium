@@ -19,11 +19,11 @@ package org.openqa.selenium;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.startsWith;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.testing.Driver.CHROME;
 import static org.openqa.selenium.testing.Driver.HTMLUNIT;
@@ -31,6 +31,7 @@ import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.REMOTE;
 import static org.openqa.selenium.testing.Driver.SAFARI;
+import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 import static org.openqa.selenium.testing.TestUtilities.isOldIe;
 
 import org.junit.Test;
@@ -102,10 +103,11 @@ public class ElementFindingTest extends JUnit4TestBase {
 
   // By.id negative
 
-  @Test(expected = NoSuchElementException.class)
+  @Test
   public void testShouldNotBeAbleToLocateByIdASingleElementThatDoesNotExist() {
     driver.get(pages.formPage);
-    driver.findElement(By.id("nonExistentButton"));
+    Throwable t = catchThrowable(() -> driver.findElement(By.id("nonExistentButton")));
+    assertThat(t, instanceOf(NoSuchElementException.class));
   }
 
   @Test
@@ -115,10 +117,11 @@ public class ElementFindingTest extends JUnit4TestBase {
     assertThat(elements.size(), is(0));
   }
 
-  @Test(expected = NoSuchElementException.class)
+  @Test
   public void testFindingASingleElementByEmptyIdShouldThrow() {
     driver.get(pages.formPage);
-    driver.findElement(By.id(""));
+    Throwable t = catchThrowable(() -> driver.findElement(By.id("")));
+    assertThat(t, instanceOf(NoSuchElementException.class));
   }
 
   @Test
@@ -129,10 +132,11 @@ public class ElementFindingTest extends JUnit4TestBase {
     assertThat(elements.size(), is(0));
   }
 
-  @Test(expected = NoSuchElementException.class)
+  @Test
   public void testFindingASingleElementByIdWithSpaceShouldThrow() {
     driver.get(pages.formPage);
-    driver.findElement(By.id("nonexistent button"));
+    Throwable t = catchThrowable(() -> driver.findElement(By.id("nonexistent button")));
+    assertThat(t, instanceOf(NoSuchElementException.class));
   }
 
   @Test
@@ -167,10 +171,11 @@ public class ElementFindingTest extends JUnit4TestBase {
 
   // By.name negative
 
-  @Test(expected = NoSuchElementException.class)
+  @Test
   public void testShouldNotBeAbleToLocateByNameASingleElementThatDoesNotExist() {
     driver.get(pages.formPage);
-    driver.findElement(By.name("nonExistentButton"));
+    Throwable t = catchThrowable(() -> driver.findElement(By.name("nonExistentButton")));
+    assertThat(t, instanceOf(NoSuchElementException.class));
   }
 
   @Test
@@ -180,10 +185,11 @@ public class ElementFindingTest extends JUnit4TestBase {
     assertThat(elements.size(), is(0));
   }
 
-  @Test(expected = NoSuchElementException.class)
+  @Test
   public void testFindingASingleElementByEmptyNameShouldThrow() {
     driver.get(pages.formPage);
-    driver.findElement(By.name(""));
+    Throwable t = catchThrowable(() -> driver.findElement(By.name("")));
+    assertThat(t, instanceOf(NoSuchElementException.class));
   }
 
   @Test
@@ -193,10 +199,11 @@ public class ElementFindingTest extends JUnit4TestBase {
     assertThat(elements.size(), is(0));
   }
 
-  @Test(expected = NoSuchElementException.class)
+  @Test
   public void testFindingASingleElementByNameWithSpaceShouldThrow() {
     driver.get(pages.formPage);
-    driver.findElement(By.name("nonexistent button"));
+    Throwable t = catchThrowable(() -> driver.findElement(By.name("nonexistent button")));
+    assertThat(t, instanceOf(NoSuchElementException.class));
   }
 
   @Test
@@ -224,10 +231,11 @@ public class ElementFindingTest extends JUnit4TestBase {
 
   // By.tagName negative
 
-  @Test(expected = NoSuchElementException.class)
+  @Test
   public void testShouldNotBeAbleToLocateByTagNameASingleElementThatDoesNotExist() {
     driver.get(pages.formPage);
-    driver.findElement(By.tagName("nonExistentButton"));
+    Throwable t = catchThrowable(() -> driver.findElement(By.tagName("nonExistentButton")));
+    assertThat(t, instanceOf(NoSuchElementException.class));
   }
 
   @Test
@@ -237,22 +245,25 @@ public class ElementFindingTest extends JUnit4TestBase {
     assertThat(elements.size(), is(0));
   }
 
-  @Test(expected = NoSuchElementException.class)
+  @Test
   public void testFindingASingleElementByEmptyTagNameShouldThrow() {
     driver.get(pages.formPage);
-    driver.findElement(By.tagName(""));
+    Throwable t = catchThrowable(() -> driver.findElement(By.tagName("")));
+    assertThat(t, instanceOf(NoSuchElementException.class));
   }
 
-  @Test(expected = NoSuchElementException.class)
+  @Test
   public void testFindingMultipleElementsByEmptyTagNameShouldThrow() {
     driver.get(pages.formPage);
-    driver.findElements(By.tagName(""));
+    Throwable t = catchThrowable(() -> driver.findElements(By.tagName("")));
+    assertThat(t, instanceOf(NoSuchElementException.class));
   }
 
-  @Test(expected = NoSuchElementException.class)
+  @Test
   public void testFindingASingleElementByTagNameWithSpaceShouldThrow() {
     driver.get(pages.formPage);
-    driver.findElement(By.tagName("nonexistent button"));
+    Throwable t = catchThrowable(() -> driver.findElement(By.tagName("nonexistent button")));
+    assertThat(t, instanceOf(NoSuchElementException.class));
   }
 
   @Test
@@ -316,48 +327,55 @@ public class ElementFindingTest extends JUnit4TestBase {
 
   // By.className negative
 
-  @Test(expected = NoSuchElementException.class)
+  @Test
   public void testShouldNotFindElementByClassWhenTheNameQueriedIsShorterThanCandidateName() {
     driver.get(pages.xhtmlTestPage);
-    driver.findElement(By.className("nameB"));
+    Throwable t = catchThrowable(() -> driver.findElement(By.className("nameB")));
+    assertThat(t, instanceOf(NoSuchElementException.class));
   }
 
-  @Test(expected = NoSuchElementException.class)
+  @Test
   public void testFindingASingleElementByEmptyClassNameShouldThrow() {
     driver.get(pages.xhtmlTestPage);
-    driver.findElement(By.className(""));
+    Throwable t = catchThrowable(() -> driver.findElement(By.className("")));
+    assertThat(t, instanceOf(NoSuchElementException.class));
   }
 
-  @Test(expected = NoSuchElementException.class)
+  @Test
   public void testFindingMultipleElementsByEmptyClassNameShouldThrow() {
     driver.get(pages.xhtmlTestPage);
-    driver.findElements(By.className(""));
+    Throwable t = catchThrowable(() -> driver.findElements(By.className("")));
+    assertThat(t, instanceOf(NoSuchElementException.class));
   }
 
-  @Test(expected = NoSuchElementException.class)
+  @Test
   public void testFindingASingleElementByCompoundClassNameShouldThrow() {
     driver.get(pages.xhtmlTestPage);
-    driver.findElement(By.className("a b"));
+    Throwable t = catchThrowable(() -> driver.findElement(By.className("a b")));
+    assertThat(t, instanceOf(NoSuchElementException.class));
   }
 
+  @Test
   @Ignore(value = {MARIONETTE})
-  @Test(expected = NoSuchElementException.class)
   public void testFindingMultipleElementsByCompoundClassNameShouldThrow() {
     driver.get(pages.xhtmlTestPage);
-    driver.findElements(By.className("a b"));
+    Throwable t = catchThrowable(() -> driver.findElements(By.className("a b")));
+    assertThat(t, instanceOf(NoSuchElementException.class));
   }
 
-  @Test(expected = NoSuchElementException.class)
+  @Test
   public void testFindingASingleElementByInvalidClassNameShouldThrow() {
     driver.get(pages.xhtmlTestPage);
-    driver.findElement(By.className("!@#$%^&*"));
+    Throwable t = catchThrowable(() -> driver.findElement(By.className("!@#$%^&*")));
+    assertThat(t, instanceOf(NoSuchElementException.class));
   }
 
+  @Test
   @Ignore(value = {MARIONETTE})
-  @Test(expected = NoSuchElementException.class)
   public void testFindingMultipleElementsByInvalidClassNameShouldThrow() {
     driver.get(pages.xhtmlTestPage);
-    driver.findElements(By.className("!@#$%^&*"));
+    Throwable t = catchThrowable(() -> driver.findElements(By.className("!@#$%^&*")));
+    assertThat(t, instanceOf(NoSuchElementException.class));
   }
 
   // By.xpath positive
@@ -435,71 +453,80 @@ public class ElementFindingTest extends JUnit4TestBase {
 
   // By.xpath negative
 
-  @Test(expected = NoSuchElementException.class)
+  @Test
   public void testShouldThrowAnExceptionWhenThereIsNoLinkToClick() {
     driver.get(pages.xhtmlTestPage);
-    driver.findElement(By.xpath("//a[@id='Not here']"));
+    Throwable t = catchThrowable(() -> driver.findElement(By.xpath("//a[@id='Not here']")));
+    assertThat(t, instanceOf(NoSuchElementException.class));
   }
 
-  @Test(expected = InvalidSelectorException.class)
+  @Test
   public void testShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInDriverFindElement() {
     driver.get(pages.formPage);
-    driver.findElement(By.xpath("this][isnot][valid"));
+    Throwable t = catchThrowable(() -> driver.findElement(By.xpath("this][isnot][valid")));
+    assertThat(t, instanceOf(InvalidSelectorException.class));
   }
 
-  @Test(expected = InvalidSelectorException.class)
+  @Test
   public void testShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInDriverFindElements() {
     assumeFalse("Ignoring xpath error test in IE6", TestUtilities.isIe6(driver));
 
     driver.get(pages.formPage);
-    driver.findElements(By.xpath("this][isnot][valid"));
+    Throwable t = catchThrowable(() -> driver.findElements(By.xpath("this][isnot][valid")));
+    assertThat(t, instanceOf(InvalidSelectorException.class));
   }
 
-  @Test(expected = InvalidSelectorException.class)
+  @Test
   public void testShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInElementFindElement() {
     driver.get(pages.formPage);
     WebElement body = driver.findElement(By.tagName("body"));
-    body.findElement(By.xpath("this][isnot][valid"));
+    Throwable t = catchThrowable(() -> body.findElement(By.xpath("this][isnot][valid")));
+    assertThat(t, instanceOf(InvalidSelectorException.class));
   }
 
-  @Test(expected = InvalidSelectorException.class)
+  @Test
   public void testShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInElementFindElements() {
     assumeFalse("Ignoring xpath error test in IE6", TestUtilities.isIe6(driver));
 
     driver.get(pages.formPage);
     WebElement body = driver.findElement(By.tagName("body"));
-    body.findElements(By.xpath("this][isnot][valid"));
+    Throwable t = catchThrowable(() -> body.findElements(By.xpath("this][isnot][valid")));
+    assertThat(t, instanceOf(InvalidSelectorException.class));
   }
 
-  @Test(expected = InvalidSelectorException.class)
+  @Test
   public void testShouldThrowInvalidSelectorExceptionWhenXPathReturnsWrongTypeInDriverFindElement() {
     driver.get(pages.formPage);
-    driver.findElement(By.xpath("count(//input)"));
+    Throwable t = catchThrowable(() -> driver.findElement(By.xpath("count(//input)")));
+    assertThat(t, instanceOf(InvalidSelectorException.class));
   }
 
-  @Test(expected = InvalidSelectorException.class)
+  @Test
   public void testShouldThrowInvalidSelectorExceptionWhenXPathReturnsWrongTypeInDriverFindElements() {
     assumeFalse("Ignoring xpath error test in IE6", TestUtilities.isIe6(driver));
 
     driver.get(pages.formPage);
-    driver.findElements(By.xpath("count(//input)"));
+    Throwable t = catchThrowable(() -> driver.findElements(By.xpath("count(//input)")));
+    assertThat(t, instanceOf(InvalidSelectorException.class));
   }
 
-  @Test(expected = InvalidSelectorException.class)
+  @Test
   public void testShouldThrowInvalidSelectorExceptionWhenXPathReturnsWrongTypeInElementFindElement() {
     driver.get(pages.formPage);
 
     WebElement body = driver.findElement(By.tagName("body"));
-    body.findElement(By.xpath("count(//input)"));
+    Throwable t = catchThrowable(() -> body.findElement(By.xpath("count(//input)")));
+    assertThat(t, instanceOf(InvalidSelectorException.class));
   }
 
-  @Test(expected = InvalidSelectorException.class)
+  @Test
   public void testShouldThrowInvalidSelectorExceptionWhenXPathReturnsWrongTypeInElementFindElements() {
     assumeFalse("Ignoring xpath error test in IE6", TestUtilities.isIe6(driver));
 
     driver.get(pages.formPage);
     WebElement body = driver.findElement(By.tagName("body"));
-    body.findElements(By.xpath("count(//input)"));
+    Throwable t = catchThrowable(() -> body.findElements(By.xpath("count(//input)")));
+    assertThat(t, instanceOf(InvalidSelectorException.class));
   }
 
   // By.cssSelector positive
@@ -560,41 +587,47 @@ public class ElementFindingTest extends JUnit4TestBase {
 
   // By.cssSelector negative
 
-  @Test(expected = NoSuchElementException.class)
+  @Test
   public void testShouldNotFindElementByCssSelectorWhenThereIsNoSuchElement() {
     driver.get(pages.xhtmlTestPage);
-    driver.findElement(By.cssSelector(".there-is-no-such-class"));
+    Throwable t = catchThrowable(() -> driver.findElement(By.cssSelector(".there-is-no-such-class")));
+    assertThat(t, instanceOf(NoSuchElementException.class));
   }
 
+  @Test
   public void testShouldNotFindElementsByCssSelectorWhenThereIsNoSuchElement() {
     driver.get(pages.xhtmlTestPage);
     List<WebElement> elements = driver.findElements(By.cssSelector(".there-is-no-such-class"));
     assertThat(elements.size(), is(0));
   }
 
-  @Test(expected = NoSuchElementException.class)
+  @Test
   public void testFindingASingleElementByEmptyCssSelectorShouldThrow() {
     driver.get(pages.xhtmlTestPage);
-    driver.findElement(By.cssSelector(""));
+    Throwable t = catchThrowable(() -> driver.findElement(By.cssSelector("")));
+    assertThat(t, instanceOf(NoSuchElementException.class));
   }
 
-  @Test(expected = NoSuchElementException.class)
+  @Test
   public void testFindingMultipleElementsByEmptyCssSelectorShouldThrow() {
     driver.get(pages.xhtmlTestPage);
-    driver.findElements(By.cssSelector(""));
+    Throwable t = catchThrowable(() -> driver.findElements(By.cssSelector("")));
+    assertThat(t, instanceOf(NoSuchElementException.class));
   }
 
-  @Test(expected = NoSuchElementException.class)
+  @Test
   public void testFindingASingleElementByInvalidCssSelectorShouldThrow() {
     driver.get(pages.xhtmlTestPage);
-    driver.findElement(By.cssSelector("//a/b/c[@id='1']"));
+    Throwable t = catchThrowable(() -> driver.findElement(By.cssSelector("//a/b/c[@id='1']")));
+    assertThat(t, instanceOf(NoSuchElementException.class));
   }
 
-  @Test(expected = NoSuchElementException.class)
+  @Test
   public void testFindingMultipleElementsByInvalidCssSelectorShouldThrow() {
     assumeFalse("Ignoring test for lack of error in CSS in IE6", TestUtilities.isIe6(driver));
     driver.get(pages.xhtmlTestPage);
-    driver.findElements(By.cssSelector("//a/b/c[@id='1']"));
+    Throwable t = catchThrowable(() -> driver.findElements(By.cssSelector("//a/b/c[@id='1']")));
+    assertThat(t, instanceOf(NoSuchElementException.class));
   }
 
   // By.linkText positive
@@ -659,10 +692,11 @@ public class ElementFindingTest extends JUnit4TestBase {
 
   // By.linkText negative
 
-  @Test(expected = NoSuchElementException.class)
+  @Test
   public void testShouldNotBeAbleToLocateByLinkTextASingleElementThatDoesNotExist() {
     driver.get(pages.xhtmlTestPage);
-    driver.findElement(By.linkText("Not here either"));
+    Throwable t = catchThrowable(() -> driver.findElement(By.linkText("Not here either")));
+    assertThat(t, instanceOf(NoSuchElementException.class));
   }
 
   @Test
@@ -758,12 +792,8 @@ public class ElementFindingTest extends JUnit4TestBase {
     driver.switchTo().frame("inner");
     WebElement element = driver.findElement(By.id("oneline"));
     driver.switchTo().defaultContent();
-    try {
-      element.getText();
-      fail("Expected exception");
-    } catch (StaleElementReferenceException expected) {
-      // Expected
-    }
+    Throwable t = catchThrowable(element::getText);
+    assertThat(t, instanceOf(StaleElementReferenceException.class));
   }
 
   @JavascriptEnabled

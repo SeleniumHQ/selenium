@@ -19,13 +19,15 @@ package org.openqa.selenium;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Driver.SAFARI;
+import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 
 import org.junit.After;
 import org.junit.Before;
@@ -71,11 +73,8 @@ public class ImplicitWaitTest extends JUnit4TestBase {
   public void testShouldStillFailToFindAnElementWhenImplicitWaitsAreEnabled() {
     driver.get(pages.dynamicPage);
     driver.manage().timeouts().implicitlyWait(500, MILLISECONDS);
-    try {
-      driver.findElement(By.id("box0"));
-      fail("Expected to throw.");
-    } catch (NoSuchElementException expected) {
-    }
+    Throwable t = catchThrowable(() -> driver.findElement(By.id("box0")));
+    assertThat(t, instanceOf(NoSuchElementException.class));
   }
 
   @Test
@@ -84,11 +83,8 @@ public class ImplicitWaitTest extends JUnit4TestBase {
     driver.get(pages.dynamicPage);
     driver.manage().timeouts().implicitlyWait(3000, MILLISECONDS);
     driver.manage().timeouts().implicitlyWait(0, MILLISECONDS);
-    try {
-      driver.findElement(By.id("box0"));
-      fail("Expected to throw.");
-    } catch (NoSuchElementException expected) {
-    }
+    Throwable t = catchThrowable(() -> driver.findElement(By.id("box0")));
+    assertThat(t, instanceOf(NoSuchElementException.class));
   }
 
   @Test
@@ -149,13 +145,7 @@ public class ImplicitWaitTest extends JUnit4TestBase {
 
     assertFalse("revealed should not be visible", revealed.isDisplayed());
     reveal.click();
-
-    try {
-      revealed.sendKeys("hello world");
-      // This is what we want
-    } catch (ElementNotVisibleException e) {
-      fail("Element should have been visible");
-    }
+    revealed.sendKeys("hello world");
   }
 
 
@@ -168,7 +158,7 @@ public class ImplicitWaitTest extends JUnit4TestBase {
     driver.findElement(By.name("windowOne")).click();
 
     Wait<WebDriver> wait = new WebDriverWait(driver, 1);
-    wait.until(ExpectedConditions.numberOfwindowsToBe(2));
+    wait.until(ExpectedConditions.numberOfWindowsToBe(2));
     String handle = (String)driver.getWindowHandles().toArray()[1];
 
     WebDriver newWindow = driver.switchTo().window(handle);

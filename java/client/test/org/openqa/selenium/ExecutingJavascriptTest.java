@@ -21,6 +21,8 @@ import static java.nio.charset.StandardCharsets.US_ASCII;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.startsWith;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -35,6 +37,7 @@ import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Driver.SAFARI;
+import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
@@ -276,13 +279,9 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   public void testShouldThrowAnExceptionWhenTheJavascriptIsBad() {
     driver.get(pages.xhtmlTestPage);
 
-    try {
-      executeScript("return squiggle();");
-      fail("Expected an exception");
-    } catch (WebDriverException e) {
-      // This is expected
-      assertFalse(e.getMessage(), e.getMessage().startsWith("null "));
-    }
+    Throwable t = catchThrowable(() -> executeScript("return squiggle();"));
+    assertThat(t, instanceOf(WebDriverException.class));
+    assertThat(t.getMessage(), not(startsWith("null ")));
   }
 
   @JavascriptEnabled
@@ -295,24 +294,21 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
     String js = "function functionB() { throw Error('errormessage'); };"
                 + "function functionA() { functionB(); };"
                 + "functionA();";
-    try {
-      executeScript(js);
-      fail("Expected an exception");
-    } catch (WebDriverException e) {
-      assertThat(e.getMessage(), containsString("errormessage"));
+    Throwable t = catchThrowable(() -> executeScript(js));
+    assertThat(t, instanceOf(WebDriverException.class));
+    assertThat(t.getMessage(), containsString("errormessage"));
 
-      Throwable rootCause = Throwables.getRootCause(e);
-      assertThat(rootCause.getMessage(), containsString("errormessage"));
+    Throwable rootCause = Throwables.getRootCause(t);
+    assertThat(rootCause.getMessage(), containsString("errormessage"));
 
-      StackTraceElement [] st = rootCause.getStackTrace();
-      boolean seen = false;
-      for (StackTraceElement s: st) {
-        if (s.getMethodName().equals("functionB")) {
-          seen = true;
-        }
+    StackTraceElement [] st = rootCause.getStackTrace();
+    boolean seen = false;
+    for (StackTraceElement s: st) {
+      if (s.getMethodName().equals("functionB")) {
+        seen = true;
       }
-      assertTrue("Stacktrace has not js method info", seen);
     }
+    assertTrue("Stacktrace has not js method info", seen);
   }
 
   @JavascriptEnabled
@@ -408,12 +404,8 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   @Test
   public void testShouldThrowAnExceptionIfAnArgumentIsNotValid() {
     driver.get(pages.javascriptPage);
-    try {
-      executeScript("return arguments[0];", driver);
-      fail("Exception should have been thrown");
-    } catch (IllegalArgumentException e) {
-      // this is expected
-    }
+    Throwable t = catchThrowable(() -> executeScript("return arguments[0];", driver));
+    assertThat(t, instanceOf(IllegalArgumentException.class));
   }
 
   @JavascriptEnabled
@@ -496,13 +488,8 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
       " test suite. Really needs a timeout set.")
   @Test
   public void testShouldThrowExceptionIfExecutingOnNoPage() {
-    try {
-      executeScript("return 1;");
-    } catch (WebDriverException e) {
-      // Expected
-      return;
-    }
-    fail("Expected exception to be thrown");
+    Throwable t = catchThrowable(() -> executeScript("return 1;"));
+    assertThat(t, instanceOf(WebDriverException.class));
   }
 
   @JavascriptEnabled
@@ -559,14 +546,8 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
       }
     };
 
-    try {
-      executeScript("return undefined;", args);
-      fail("Expected an exception");
-    } catch (StaleElementReferenceException e) {
-      // This is expected
-    } catch (Exception ex) {
-      fail("Expected an StaleElementReferenceException exception, got " + ex);
-    }
+    Throwable t = catchThrowable(() -> executeScript("return undefined;", args));
+    assertThat(t, instanceOf(StaleElementReferenceException.class));
   }
 
   @JavascriptEnabled

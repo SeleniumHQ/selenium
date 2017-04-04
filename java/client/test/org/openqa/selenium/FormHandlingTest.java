@@ -19,11 +19,11 @@ package org.openqa.selenium;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.testing.Driver.HTMLUNIT;
@@ -31,6 +31,7 @@ import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Driver.SAFARI;
+import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 import static org.openqa.selenium.testing.TestUtilities.isIe6;
 import static org.openqa.selenium.testing.TestUtilities.isIe7;
 
@@ -56,12 +57,7 @@ public class FormHandlingTest extends JUnit4TestBase {
   @Test
   public void testClickingOnUnclickableElementsDoesNothing() {
     driver.get(pages.formPage);
-    try {
-      driver.findElement(By.xpath("//body")).click();
-    } catch (Exception e) {
-      e.printStackTrace();
-      fail("Clicking on the unclickable should be a no-op");
-    }
+    driver.findElement(By.xpath("//body")).click();
   }
 
   @Test
@@ -93,13 +89,15 @@ public class FormHandlingTest extends JUnit4TestBase {
     wait.until(titleIs("We Arrive Here"));
   }
 
-  @Test(expected = NoSuchElementException.class)
+  @Test
   @Ignore(value = {PHANTOMJS, SAFARI})
   @NotYetImplemented(
     value = MARIONETTE, reason = "Delegates to JS and so the wrong exception is returned")
   public void testShouldNotBeAbleToSubmitAFormThatDoesNotExist() {
     driver.get(pages.formPage);
-    driver.findElement(By.name("SearchableText")).submit();
+    WebElement element = driver.findElement(By.name("SearchableText"));
+    Throwable t = catchThrowable(element::submit);
+    assertThat(t, instanceOf(NoSuchElementException.class));
   }
 
   @Test

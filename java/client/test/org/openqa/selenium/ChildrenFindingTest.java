@@ -18,21 +18,21 @@
 package org.openqa.selenium;
 
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
 import static org.openqa.selenium.testing.Driver.CHROME;
 import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.REMOTE;
+import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 
 import java.util.List;
-
 
 public class ChildrenFindingTest extends JUnit4TestBase {
   @Test
@@ -64,14 +64,9 @@ public class ChildrenFindingTest extends JUnit4TestBase {
   @Test
   public void testFindElementByXPathWhenNoMatch() {
     driver.get(pages.nestedPage);
-
     WebElement element = driver.findElement(By.name("form2"));
-    try {
-      element.findElement(By.xpath(".//select/x"));
-      fail("Did not expect to find element");
-    } catch (NoSuchElementException ignored) {
-      // this is expected
-    }
+    Throwable t = catchThrowable(() -> element.findElement(By.xpath(".//select/x")));
+    assertThat(t, instanceOf(NoSuchElementException.class));
   }
 
   @Test
@@ -141,12 +136,8 @@ public class ChildrenFindingTest extends JUnit4TestBase {
   public void testFindElementByIdWhenNoMatchInContext() {
     driver.get(pages.nestedPage);
     WebElement element = driver.findElement(By.id("test_id_div"));
-    try {
-      element.findElement(By.id("test_id_out"));
-      fail();
-    } catch (NoSuchElementException e) {
-      // This is expected
-    }
+    Throwable t = catchThrowable(() -> element.findElement(By.id("test_id_out")));
+    assertThat(t, instanceOf(NoSuchElementException.class));
   }
 
   @Test
@@ -290,11 +281,8 @@ public class ChildrenFindingTest extends JUnit4TestBase {
   public void testShouldNotFindElementOutSideTree() {
     driver.get(pages.formPage);
     WebElement element = driver.findElement(By.name("login"));
-    try {
-      element.findElement(By.name("x"));
-    } catch (NoSuchElementException e) {
-      // this is expected
-    }
+    Throwable t = catchThrowable(() -> element.findElement(By.name("x")));
+    assertThat(t, instanceOf(NoSuchElementException.class));
   }
 
   @Test
@@ -321,8 +309,7 @@ public class ChildrenFindingTest extends JUnit4TestBase {
     driver.get(pages.simpleTestPage);
     WebElement elem = driver.findElement(By.id("links"));
 
-    List<WebElement> elements =
-        elem.findElements(By.partialLinkText("link"));
+    List<WebElement> elements = elem.findElements(By.partialLinkText("link"));
     assertNotNull(elements);
     assertEquals(6, elements.size());
   }
@@ -352,12 +339,7 @@ public class ChildrenFindingTest extends JUnit4TestBase {
     driver.get(pages.simpleTestPage);
     WebElement elem = driver.findElement(By.id("links"));
 
-    WebElement link = null;
-    try {
-      link = elem.findElement(By.linkText("link with trailing space"));
-    } catch (NoSuchElementException e) {
-      fail("Should have found link");
-    }
+    WebElement link = elem.findElement(By.linkText("link with trailing space"));
     assertEquals("linkWithTrailingSpace", link.getAttribute("id"));
   }
 
