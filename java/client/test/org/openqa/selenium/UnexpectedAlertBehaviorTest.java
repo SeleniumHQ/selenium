@@ -17,7 +17,8 @@
 
 package org.openqa.selenium;
 
-import static org.junit.Assert.fail;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.remote.CapabilityType.UNEXPECTED_ALERT_BEHAVIOUR;
@@ -27,6 +28,7 @@ import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Driver.SAFARI;
+import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 
 import org.junit.After;
 import org.junit.Test;
@@ -76,12 +78,9 @@ public class UnexpectedAlertBehaviorTest extends JUnit4TestBase {
   @NotYetImplemented(HTMLUNIT)
   @Test
   public void canIgnoreUnhandledAlert() {
-    try {
-      runScenarioWithUnhandledAlert(UnexpectedAlertBehaviour.IGNORE, "Text ignored");
-      fail("Exception not thrown");
-    } catch (UnhandledAlertException ex) {
-      // this is expected
-    }
+    Throwable t = catchThrowable(
+        () -> runScenarioWithUnhandledAlert(UnexpectedAlertBehaviour.IGNORE, "Text ignored"));
+    assertThat(t, instanceOf(UnhandledAlertException.class));
     driver2.switchTo().alert().dismiss();
   }
 

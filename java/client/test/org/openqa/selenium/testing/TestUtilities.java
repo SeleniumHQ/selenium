@@ -26,6 +26,7 @@ import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.testing.drivers.SauceDriver;
 
+import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -197,5 +198,14 @@ public class TestUtilities {
 
   public static boolean isLocal() {
     return !Boolean.getBoolean("selenium.browser.remote") && !SauceDriver.shouldUseSauce();
+  }
+
+  public static Throwable catchThrowable(Runnable f) {
+    try {
+      f.run();
+    } catch (Throwable throwable) {
+      return throwable;
+    }
+    return null;
   }
 }

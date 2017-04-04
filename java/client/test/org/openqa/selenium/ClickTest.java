@@ -35,7 +35,6 @@ import static org.openqa.selenium.testing.TestUtilities.isChrome;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.openqa.selenium.interactions.MoveTargetOutOfBoundsException;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
@@ -235,12 +234,7 @@ public class ClickTest extends JUnit4TestBase {
 
     driver.get(url);
     WebElement button = driver.findElement(By.id("button"));
-
-    try {
-      button.click();
-    } catch (MoveTargetOutOfBoundsException e) {
-      fail("Should not be out of bounds: " + e.getMessage());
-    }
+    button.click();
   }
 
   @Test

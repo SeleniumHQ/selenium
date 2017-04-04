@@ -202,22 +202,16 @@ public class ProxySettingTest extends JUnit4TestBase {
   }
 
   private void registerDriverTeardown(final WebDriver driver) {
-    tearDowns.add(new Callable<Object>() {
-      @Override
-      public Object call() {
-        driver.quit();
-        return null;
-      }
+    tearDowns.add(() -> {
+      driver.quit();
+      return null;
     });
   }
 
   private void registerProxyTeardown(final ProxyServer proxy) {
-    tearDowns.add(new Callable<Object>() {
-      @Override
-      public Object call() {
-        proxy.destroy();
-        return null;
-      }
+    tearDowns.add(() -> {
+      proxy.destroy();
+      return null;
     });
   }
 
@@ -258,16 +252,13 @@ public class ProxySettingTest extends JUnit4TestBase {
 
     server.setHandler(handler);
 
-    tearDowns.add(new Callable<Object>() {
-      @Override
-      public Object call() {
-        try {
-          server.stop();
-        } catch (Exception e) {
-          throw new RuntimeException(e);
-        }
-        return null;
+    tearDowns.add(() -> {
+      try {
+        server.stop();
+      } catch (Exception e) {
+        throw new RuntimeException(e);
       }
+      return null;
     });
 
     try {

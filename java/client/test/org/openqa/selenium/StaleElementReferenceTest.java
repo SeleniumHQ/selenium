@@ -17,9 +17,11 @@
 
 package org.openqa.selenium;
 
+import static org.hamcrest.Matchers.instanceOf;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static org.openqa.selenium.support.ui.ExpectedConditions.stalenessOf;
+import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 
 import org.junit.Test;
 import org.openqa.selenium.testing.JUnit4TestBase;
@@ -32,12 +34,8 @@ public class StaleElementReferenceTest extends JUnit4TestBase {
     driver.get(pages.simpleTestPage);
     WebElement elem = driver.findElement(By.id("links"));
     driver.get(pages.xhtmlTestPage);
-    try {
-      elem.click();
-      fail();
-    } catch (StaleElementReferenceException e) {
-      // do nothing. this is what we expected.
-    }
+    Throwable t = catchThrowable(elem::click);
+    assertThat(t, instanceOf(StaleElementReferenceException.class));
   }
 
   @JavascriptEnabled
@@ -46,12 +44,8 @@ public class StaleElementReferenceTest extends JUnit4TestBase {
     driver.get(pages.simpleTestPage);
     WebElement elem = driver.findElement(By.id("links"));
     driver.get(pages.xhtmlTestPage);
-    try {
-      elem.getSize();
-      fail();
-    } catch (StaleElementReferenceException e) {
-      // do nothing. this is what we expected.
-    }
+    Throwable t = catchThrowable(elem::getSize);
+    assertThat(t, instanceOf(StaleElementReferenceException.class));
   }
 
   @JavascriptEnabled
@@ -60,12 +54,8 @@ public class StaleElementReferenceTest extends JUnit4TestBase {
     driver.get(pages.xhtmlTestPage);
     WebElement heading = driver.findElement(By.xpath("//h1"));
     driver.get(pages.simpleTestPage);
-    try {
-      heading.getAttribute("class");
-      fail();
-    } catch (StaleElementReferenceException e) {
-      // do nothing. this is what we expected.
-    }
+    Throwable t = catchThrowable(() -> heading.getAttribute("class"));
+    assertThat(t, instanceOf(StaleElementReferenceException.class));
   }
 
   @JavascriptEnabled

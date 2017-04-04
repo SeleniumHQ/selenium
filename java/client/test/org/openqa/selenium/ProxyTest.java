@@ -18,16 +18,14 @@
 
 package org.openqa.selenium;
 
+import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static org.openqa.selenium.remote.CapabilityType.PROXY;
-
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import java.util.Set;
+import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -35,7 +33,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.openqa.selenium.Proxy.ProxyType;
 import org.openqa.selenium.remote.BeanToJsonConverter;
-import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.JsonToBeanConverter;
 
@@ -64,88 +61,44 @@ public class ProxyTest {
 
   @Test
   public void testCanNotChangeAlreadyInitializedProxyType() {
-    Proxy proxy = new Proxy();
+    final Proxy proxy = new Proxy();
     proxy.setProxyType(ProxyType.DIRECT);
 
-    try {
-      proxy.setAutodetect(true);
-      fail("Didn't throw expected assertion");
-    } catch (IllegalStateException e) {
-      // Success - expected.
-    }
+    Throwable t = catchThrowable(() -> proxy.setAutodetect(true));
+    assertThat(t, instanceOf(IllegalStateException.class));
 
-    try {
-      proxy.setSocksPassword("");
-      fail("Didn't throw expected assertion");
-    } catch (IllegalStateException e) {
-      // Success - expected.
-    }
+    Throwable t2 = catchThrowable(() -> proxy.setSocksPassword(""));
+    assertThat(t2, instanceOf(IllegalStateException.class));
 
-    try {
-      proxy.setSocksUsername("");
-      fail("Didn't throw expected assertion");
-    } catch (IllegalStateException e) {
-      // Success - expected.
-    }
+    Throwable t3 = catchThrowable(() -> proxy.setSocksUsername(""));
+    assertThat(t3, instanceOf(IllegalStateException.class));
 
-    try {
-      proxy.setSocksProxy("");
-      fail("Didn't throw expected assertion");
-    } catch (IllegalStateException e) {
-      // Success - expected.
-    }
+    Throwable t4 = catchThrowable(() -> proxy.setSocksProxy(""));
+    assertThat(t4, instanceOf(IllegalStateException.class));
 
-    try {
-      proxy.setFtpProxy("");
-      fail("Didn't throw expected assertion");
-    } catch (IllegalStateException e) {
-      // Success - expected.
-    }
+    Throwable t5 = catchThrowable(() -> proxy.setFtpProxy(""));
+    assertThat(t5, instanceOf(IllegalStateException.class));
 
-    try {
-      proxy.setHttpProxy("");
-      fail("Didn't throw expected assertion");
-    } catch (IllegalStateException e) {
-      // Success - expected.
-    }
+    Throwable t6 = catchThrowable(() -> proxy.setHttpProxy(""));
+    assertThat(t6, instanceOf(IllegalStateException.class));
 
-    try {
-      proxy.setNoProxy("");
-      fail("Didn't throw expected assertion");
-    } catch (IllegalStateException e) {
-      // Success - expected.
-    }
+    Throwable t7 = catchThrowable(() -> proxy.setNoProxy(""));
+    assertThat(t7, instanceOf(IllegalStateException.class));
 
-    try {
-      proxy.setProxyAutoconfigUrl("");
-      fail("Didn't throw expected assertion");
-    } catch (IllegalStateException e) {
-      // Success - expected.
-    }
+    Throwable t8 = catchThrowable(() -> proxy.setProxyAutoconfigUrl(""));
+    assertThat(t8, instanceOf(IllegalStateException.class));
 
-    try {
-      proxy.setProxyType(ProxyType.SYSTEM);
-      fail("Didn't throw expected assertion");
-    } catch (IllegalStateException e) {
-      // Success - expected.
-    }
+    Throwable t9 = catchThrowable(() -> proxy.setProxyType(ProxyType.SYSTEM));
+    assertThat(t9, instanceOf(IllegalStateException.class));
 
-    try {
-      proxy.setSslProxy("");
-      fail("Didn't throw expected assertion");
-    } catch (IllegalStateException e) {
-      // Success - expected.
-    }
+    Throwable t10 = catchThrowable(() -> proxy.setSslProxy(""));
+    assertThat(t10, instanceOf(IllegalStateException.class));
 
-    proxy = new Proxy();
-    proxy.setProxyType(ProxyType.AUTODETECT);
+    final Proxy proxy2 = new Proxy();
+    proxy2.setProxyType(ProxyType.AUTODETECT);
 
-    try {
-      proxy.setProxyType(ProxyType.SYSTEM);
-      fail("Didn't throw expected assertion");
-    } catch (IllegalStateException e) {
-      // Success - expected.
-    }
+    Throwable t11 = catchThrowable(() -> proxy2.setProxyType(ProxyType.SYSTEM));
+    assertThat(t11, instanceOf(IllegalStateException.class));
   }
 
   @Test

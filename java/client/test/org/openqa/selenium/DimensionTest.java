@@ -52,5 +52,4 @@ public class DimensionTest {
     assertEquals(d1.hashCode(), d1copy.hashCode());
   }
 
-
 }

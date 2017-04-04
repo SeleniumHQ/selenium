@@ -18,10 +18,10 @@
 package org.openqa.selenium;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.WaitingConditions.newWindowIsOpened;
 import static org.openqa.selenium.support.ui.ExpectedConditions.alertIsPresent;
@@ -34,6 +34,7 @@ import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Driver.SAFARI;
+import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 import static org.openqa.selenium.testing.TestUtilities.getFirefoxVersion;
 import static org.openqa.selenium.testing.TestUtilities.isChrome;
 import static org.openqa.selenium.testing.TestUtilities.isFirefox;
@@ -175,9 +176,8 @@ public class AlertsTest extends JUnit4TestBase {
 
     Alert alert = wait.until(alertIsPresent());
     try {
-      alert.sendKeys("cheese");
-      fail("Expected exception");
-    } catch (ElementNotInteractableException expected) {
+      Throwable t = catchThrowable(() -> alert.sendKeys("cheese"));
+      assertThat(t, instanceOf(ElementNotInteractableException.class));
     } finally {
       alert.accept();
     }
@@ -216,12 +216,8 @@ public class AlertsTest extends JUnit4TestBase {
     Alert alert = wait.until(alertIsPresent());
     alert.accept();
 
-    try {
-      alert.getText();
-    } catch (NoAlertPresentException expected) {
-      return;
-    }
-    fail("Expected NoAlertPresentException");
+    Throwable t = catchThrowable(alert::getText);
+    assertThat(t, instanceOf(NoAlertPresentException.class));
   }
 
   @JavascriptEnabled
@@ -257,12 +253,8 @@ public class AlertsTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Test
   public void testSwitchingToMissingAlertThrows() throws Exception {
-    try {
-      driver.switchTo().alert();
-      fail("Expected exception");
-    } catch (NoAlertPresentException expected) {
-      // Expected
-    }
+    Throwable t = catchThrowable(() -> driver.switchTo().alert());
+    assertThat(t, instanceOf(NoAlertPresentException.class));
   }
 
   @JavascriptEnabled
@@ -275,12 +267,8 @@ public class AlertsTest extends JUnit4TestBase {
       wait.until(ableToSwitchToWindow("newwindow"));
       driver.close();
 
-      try {
-        driver.switchTo().alert();
-        fail("Expected exception");
-      } catch (NoSuchWindowException expected) {
-        // Expected
-      }
+      Throwable t = catchThrowable(() -> driver.switchTo().alert());
+      assertThat(t, instanceOf(NoSuchWindowException.class));
 
     } finally {
       driver.switchTo().window(mainWindow);
@@ -374,14 +362,8 @@ public class AlertsTest extends JUnit4TestBase {
       driver.findElement(By.id("open-window-with-onload-alert")).click();
       onloadWindow = wait.until(newWindowIsOpened(currentWindowHandles));
 
-      boolean gotException = false;
-      try {
-        wait.until(alertIsPresent());
-      } catch (AssertionError expected) {
-        // Expected
-        gotException = true;
-      }
-      assertTrue(gotException);
+      Throwable t = catchThrowable(() -> wait.until(alertIsPresent()));
+      assertThat(t, instanceOf(TimeoutException.class));
 
     } finally {
       driver.switchTo().window(onloadWindow);
@@ -479,13 +461,11 @@ public class AlertsTest extends JUnit4TestBase {
   public void testIncludesAlertTextInUnhandledAlertException() {
     driver.findElement(By.id("alert")).click();
     wait.until(alertIsPresent());
-    try {
-      driver.getTitle();
-      fail("Expected UnhandledAlertException");
-    } catch (UnhandledAlertException e) {
-      assertEquals("cheese", e.getAlertText());
-      assertThat(e.getMessage(), containsString("cheese"));
-    }
+
+    Throwable t = catchThrowable(driver::getTitle);
+    assertThat(t, instanceOf(UnhandledAlertException.class));
+    assertThat(((UnhandledAlertException) t).getAlertText(), is("cheese"));
+    assertThat(t.getMessage(), containsString("cheese"));
   }
 
   @NoDriverAfterTest

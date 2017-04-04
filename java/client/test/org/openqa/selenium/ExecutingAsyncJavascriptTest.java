@@ -20,13 +20,13 @@ package org.openqa.selenium;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.testing.Driver.CHROME;
 import static org.openqa.selenium.testing.Driver.HTMLUNIT;
@@ -34,6 +34,7 @@ import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Driver.SAFARI;
+import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 
 import com.google.common.base.Throwables;
 
@@ -164,13 +165,9 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
   @Ignore(value = {HTMLUNIT})
   public void shouldTimeoutIfScriptDoesNotInvokeCallback() {
     driver.get(pages.ajaxyPage);
-    try {
-      // Script is expected to be async and explicitly callback, so this should timeout.
-      executor.executeAsyncScript("return 1 + 2;");
-      fail("Should have thrown a TimeOutException!");
-    } catch (ScriptTimeoutException exception) {
-      // Do nothing.
-    }
+    // Script is expected to be async and explicitly callback, so this should timeout.
+    Throwable t = catchThrowable(() -> executor.executeAsyncScript("return 1 + 2;"));
+    assertThat(t, instanceOf(ScriptTimeoutException.class));
   }
 
   @JavascriptEnabled
@@ -178,12 +175,9 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
   @Ignore(value = {HTMLUNIT})
   public void shouldTimeoutIfScriptDoesNotInvokeCallbackWithAZeroTimeout() {
     driver.get(pages.ajaxyPage);
-    try {
-      executor.executeAsyncScript("window.setTimeout(function() {}, 0);");
-      fail("Should have thrown a TimeOutException!");
-    } catch (ScriptTimeoutException exception) {
-      // Do nothing.
-    }
+    Throwable t = catchThrowable(
+        () -> executor.executeAsyncScript("window.setTimeout(function() {}, 0);"));
+    assertThat(t, instanceOf(ScriptTimeoutException.class));
   }
 
   @JavascriptEnabled
@@ -201,14 +195,10 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
   public void shouldTimeoutIfScriptDoesNotInvokeCallbackWithLongTimeout() {
     driver.manage().timeouts().setScriptTimeout(500, TimeUnit.MILLISECONDS);
     driver.get(pages.ajaxyPage);
-    try {
-      executor.executeAsyncScript(
-          "var callback = arguments[arguments.length - 1];" +
-          "window.setTimeout(callback, 1500);");
-      fail("Should have thrown a TimeOutException!");
-    } catch (ScriptTimeoutException exception) {
-      // Do nothing.
-    }
+    Throwable t = catchThrowable(() -> executor.executeAsyncScript(
+        "var callback = arguments[arguments.length - 1];" +
+        "window.setTimeout(callback, 1500);"));
+    assertThat(t, instanceOf(ScriptTimeoutException.class));
   }
 
   @JavascriptEnabled
@@ -217,22 +207,18 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
   public void shouldDetectPageLoadsWhileWaitingOnAnAsyncScriptAndReturnAnError() {
     driver.get(pages.ajaxyPage);
     driver.manage().timeouts().setScriptTimeout(100, TimeUnit.MILLISECONDS);
-    try {
-      executor.executeAsyncScript("window.location = '" + pages.dynamicPage + "';");
-      fail();
-    } catch (WebDriverException expected) {
-    }
+    Throwable t = catchThrowable(
+        () -> executor.executeAsyncScript("window.location = '" + pages.dynamicPage + "';"));
+    assertThat(t, instanceOf(WebDriverException.class));
   }
 
   @JavascriptEnabled
   @Test
   public void shouldCatchErrorsWhenExecutingInitialScript() {
     driver.get(pages.ajaxyPage);
-    try {
-      executor.executeAsyncScript("throw Error('you should catch this!');");
-      fail();
-    } catch (WebDriverException expected) {
-    }
+    Throwable t = catchThrowable(
+        () -> executor.executeAsyncScript("throw Error('you should catch this!');"));
+    assertThat(t, instanceOf(WebDriverException.class));
   }
 
   @JavascriptEnabled
@@ -254,24 +240,21 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
     String js = "function functionB() { throw Error('errormessage'); };"
                 + "function functionA() { functionB(); };"
                 + "functionA();";
-    try {
-      executor.executeAsyncScript(js);
-      fail("Expected an exception");
-    } catch (WebDriverException e) {
-      assertThat(e.getMessage(), containsString("errormessage"));
+    Throwable t = catchThrowable(() -> executor.executeAsyncScript(js));
+    assertThat(t, instanceOf(WebDriverException.class));
+    assertThat(t.getMessage(), containsString("errormessage"));
 
-      Throwable rootCause = Throwables.getRootCause(e);
-      assertThat(rootCause.getMessage(), containsString("errormessage"));
+    Throwable rootCause = Throwables.getRootCause(t);
+    assertThat(rootCause.getMessage(), containsString("errormessage"));
 
-      StackTraceElement [] st = rootCause.getStackTrace();
-      boolean seen = false;
-      for (StackTraceElement s: st) {
-        if (s.getMethodName().equals("functionB")) {
-          seen = true;
-        }
+    StackTraceElement [] st = rootCause.getStackTrace();
+    boolean seen = false;
+    for (StackTraceElement s: st) {
+      if (s.getMethodName().equals("functionB")) {
+        seen = true;
       }
-      assertTrue("Stacktrace has not js method info", seen);
     }
+    assertTrue("Stacktrace has not js method info", seen);
   }
 
   @JavascriptEnabled
@@ -304,8 +287,8 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
   @Test
   public void shouldBeAbleToPassMultipleArgumentsToAsyncScripts() {
     driver.get(pages.ajaxyPage);
-    Number result = (Number) ((JavascriptExecutor) driver)
-        .executeAsyncScript("arguments[arguments.length - 1](arguments[0] + arguments[1]);", 1, 2);
+    Number result = (Number) executor.executeAsyncScript(
+        "arguments[arguments.length - 1](arguments[0] + arguments[1]);", 1, 2);
     assertEquals(3, result.intValue());
   }
 
@@ -338,8 +321,7 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
 
     driver.get(pages.ajaxyPage);
     driver.manage().timeouts().setScriptTimeout(3, TimeUnit.SECONDS);
-    String response = (String) ((JavascriptExecutor) driver)
-        .executeAsyncScript(script, pages.sleepingPage + "?time=2");
+    String response = (String) executor.executeAsyncScript(script, pages.sleepingPage + "?time=2");
     assertThat(response.trim(),
                equalTo("<html><head><title>Done</title></head><body>Slept for 2s</body></html>"));
   }
@@ -352,13 +334,9 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
   public void throwsIfScriptTriggersAlert() {
     driver.get(pages.simpleTestPage);
     driver.manage().timeouts().setScriptTimeout(5000, TimeUnit.MILLISECONDS);
-    try {
-      ((JavascriptExecutor) driver).executeAsyncScript(
-          "setTimeout(arguments[0], 200) ; setTimeout(function() { window.alert('Look! An alert!'); }, 50);");
-      fail("Expected UnhandledAlertException");
-    } catch (UnhandledAlertException expected) {
-      // Expected exception
-    }
+    Throwable t = catchThrowable(() -> executor.executeAsyncScript(
+        "setTimeout(arguments[0], 200) ; setTimeout(function() { window.alert('Look! An alert!'); }, 50);"));
+    assertThat(t, instanceOf(UnhandledAlertException.class));
     // Shouldn't throw
     driver.getTitle();
   }
@@ -371,12 +349,8 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
   public void throwsIfAlertHappensDuringScript() {
     driver.get(pages.slowLoadingAlertPage);
     driver.manage().timeouts().setScriptTimeout(5000, TimeUnit.MILLISECONDS);
-    try {
-      ((JavascriptExecutor) driver).executeAsyncScript("setTimeout(arguments[0], 1000);");
-      fail("Expected UnhandledAlertException");
-    } catch (UnhandledAlertException expected) {
-      //Expected exception
-    }
+    Throwable t = catchThrowable(() -> executor.executeAsyncScript("setTimeout(arguments[0], 1000);"));
+    assertThat(t, instanceOf(UnhandledAlertException.class));
     // Shouldn't throw
     driver.getTitle();
   }
@@ -388,13 +362,9 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
   public void throwsIfScriptTriggersAlertWhichTimesOut() {
     driver.get(pages.simpleTestPage);
     driver.manage().timeouts().setScriptTimeout(5000, TimeUnit.MILLISECONDS);
-    try {
-      ((JavascriptExecutor) driver)
-          .executeAsyncScript("setTimeout(function() { window.alert('Look! An alert!'); }, 50);");
-      fail("Expected UnhandledAlertException");
-    } catch (UnhandledAlertException expected) {
-      // Expected exception
-    }
+    Throwable t = catchThrowable(() -> executor.executeAsyncScript(
+        "setTimeout(function() { window.alert('Look! An alert!'); }, 50);"));
+    assertThat(t, instanceOf(UnhandledAlertException.class));
     // Shouldn't throw
     driver.getTitle();
   }
@@ -407,12 +377,8 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
   public void throwsIfAlertHappensDuringScriptWhichTimesOut() {
     driver.get(pages.slowLoadingAlertPage);
     driver.manage().timeouts().setScriptTimeout(5000, TimeUnit.MILLISECONDS);
-    try {
-      ((JavascriptExecutor) driver).executeAsyncScript("");
-      fail("Expected UnhandledAlertException");
-    } catch (UnhandledAlertException expected) {
-      //Expected exception
-    }
+    Throwable t = catchThrowable(() -> executor.executeAsyncScript(""));
+    assertThat(t, instanceOf(UnhandledAlertException.class));
     // Shouldn't throw
     driver.getTitle();
   }
@@ -425,14 +391,11 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
   public void includesAlertTextInUnhandledAlertException() {
     driver.manage().timeouts().setScriptTimeout(5000, TimeUnit.MILLISECONDS);
     String alertText = "Look! An alert!";
-    try {
-      ((JavascriptExecutor) driver).executeAsyncScript(
-          "setTimeout(arguments[0], 200) ; setTimeout(function() { window.alert('" + alertText
-          + "'); }, 50);");
-      fail("Expected UnhandledAlertException");
-    } catch (UnhandledAlertException e) {
-      assertEquals(alertText, e.getAlertText());
-    }
+    Throwable t = catchThrowable(() -> executor.executeAsyncScript(
+        "setTimeout(arguments[0], 200) ; setTimeout(function() { window.alert('" + alertText
+        + "'); }, 50);"));
+    assertThat(t, instanceOf(UnhandledAlertException.class));
+    assertThat(((UnhandledAlertException) t).getAlertText(), is(alertText));
   }
 
   private long getNumDivElements() {

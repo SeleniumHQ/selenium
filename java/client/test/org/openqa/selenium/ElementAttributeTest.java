@@ -20,6 +20,7 @@ package org.openqa.selenium;
 import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertEquals;
@@ -28,10 +29,10 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.testing.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
+import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 
 import org.junit.Test;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -133,21 +134,13 @@ public class ElementAttributeTest extends JUnit4TestBase {
   public void testShouldThrowExceptionIfSendingKeysToElementDisabledUsingRandomDisabledStrings() {
     driver.get(pages.formPage);
     WebElement disabledTextElement1 = driver.findElement(By.id("disabledTextElement1"));
-    try {
-      disabledTextElement1.sendKeys("foo");
-      fail("Should have thrown exception");
-    } catch (InvalidElementStateException e) {
-      // Expected
-    }
+    Throwable t = catchThrowable(() -> disabledTextElement1.sendKeys("foo"));
+    assertThat(t, instanceOf(InvalidElementStateException.class));
     assertThat(disabledTextElement1.getText(), is(""));
 
     WebElement disabledTextElement2 = driver.findElement(By.id("disabledTextElement2"));
-    try {
-      disabledTextElement2.sendKeys("bar");
-      fail("Should have thrown exception");
-    } catch (InvalidElementStateException e) {
-      // Expected
-    }
+    Throwable t2 = catchThrowable(() -> disabledTextElement2.sendKeys("bar"));
+    assertThat(t2, instanceOf(InvalidElementStateException.class));
     assertThat(disabledTextElement2.getText(), is(""));
   }
 
@@ -286,8 +279,7 @@ public class ElementAttributeTest extends JUnit4TestBase {
     try {
       Thread.sleep(1000);
     } catch (InterruptedException e) {
-      e.printStackTrace(); // To change body of catch statement use File | Settings | File
-      // Templates.
+      e.printStackTrace();
     }
 
     WebElement th1 = driver.findElement(By.id("th1"));

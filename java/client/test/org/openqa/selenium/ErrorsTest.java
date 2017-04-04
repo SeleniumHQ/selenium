@@ -25,9 +25,6 @@ import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
 
-/**
- * @author jmleyba@gmail.com (Jason Leyba)
- */
 public class ErrorsTest extends JUnit4TestBase {
 
   /**
