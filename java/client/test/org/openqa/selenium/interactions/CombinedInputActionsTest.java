@@ -202,6 +202,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(MARIONETTE)
   public void testCanClickOnLinks() {
     navigateToClicksPageAndClickLink();
   }

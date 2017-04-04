@@ -25,6 +25,7 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.not;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 import static org.openqa.selenium.testing.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Driver.IE;
+import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Driver.SAFARI;
 
@@ -60,7 +61,7 @@ public class UploadTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @SwitchToTopAfterTest
-  @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
+  @Ignore(value = {HTMLUNIT, MARIONETTE}, reason = "Possible bug in getAttribute?")
   @Test
   public void testFileUploading() throws Exception {
     assumeFalse(
@@ -82,7 +83,7 @@ public class UploadTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = {IE, PHANTOMJS, SAFARI})
+  @Ignore(value = {IE, PHANTOMJS, SAFARI, MARIONETTE})
   public void testCleanFileInput() throws Exception {
     driver.get(pages.uploadPage);
     WebElement element = driver.findElement(By.id("upload"));
