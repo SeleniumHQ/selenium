@@ -198,7 +198,7 @@ public class FormHandlingTest extends JUnit4TestBase {
     assertTrue(uploadPath.endsWith(file.getName()));
   }
 
-  @Ignore(value = {SAFARI},
+  @Ignore(value = {SAFARI, MARIONETTE},
           reason = "Does not yet support file uploads", issues = {4220})
   @Test
   public void testShouldBeAbleToUploadTheSameFileTwice() throws IOException {
