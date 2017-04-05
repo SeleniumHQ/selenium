@@ -957,6 +957,7 @@ class WebDriver(object):
         return self.execute(Command.SET_WINDOW_RECT, {"x": x, "y": y,
                                                       "width": width,
                                                       "height": height})['value']
+
     @property
     def file_detector(self):
         return self._file_detector
