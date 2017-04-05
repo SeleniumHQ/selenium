@@ -221,11 +221,11 @@ public class ProtocolHandshakeTest {
 
     Map<?, ?> capabilities = (Map<?, ?>) rawCaps;
 
-    Map<?, ?> always = (Map<?, ?>) capabilities.get("alwaysMatch");
+    Map<String, ?> always = (Map<String, ?>) capabilities.get("alwaysMatch");
     List<Map<?, ?>> first = (List<Map<?, ?>>) capabilities.get("firstMatch");
 
     // We don't care where they are, but we want to see "se:option" and not "option"
-    Set<String> keys = new HashSet(always.keySet());
+    Set<String> keys = new HashSet<>(always.keySet());
     keys.addAll(first.stream()
                     .map(Map::keySet)
                     .flatMap(Collection::stream)
