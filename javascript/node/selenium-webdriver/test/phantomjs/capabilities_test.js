@@ -38,7 +38,6 @@ test.suite(function(env) {
     test.it('sends --ignore-ssl-errors=true into the DriverService',
        function() {
         var _start = remote.DriverService.prototype.start;
-        var argsAdded;
         sandbox.stub(
           remote.DriverService.prototype,
           'start',
