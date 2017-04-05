@@ -19,6 +19,7 @@ package org.openqa.selenium;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.remote.CapabilityType.PROXY;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
@@ -329,6 +330,8 @@ public class ReferrerTest extends JUnit4TestBase {
   @Test
   @NeedsLocalEnvironment
   public void navigationWhenProxyInterceptsASpecificUrl() {
+    assumeFalse(Boolean.valueOf(System.getenv().getOrDefault("TRAVIS", "false")));
+
     testServer1.start();
     proxyServer.start();
 
