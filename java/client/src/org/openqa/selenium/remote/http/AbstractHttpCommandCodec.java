@@ -119,7 +119,7 @@ public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpReque
   private static final Splitter PATH_SPLITTER = Splitter.on('/').omitEmptyStrings();
   private static final String SESSION_ID_PARAM = "sessionId";
 
-  private final ConcurrentHashMap<String, CommandSpec> nameToSpec = new ConcurrentHashMap();
+  private final ConcurrentHashMap<String, CommandSpec> nameToSpec = new ConcurrentHashMap<>();
   private final Map<String, String> aliases = new HashMap<>();
   private final BeanToJsonConverter beanToJsonConverter = new BeanToJsonConverter();
   private final JsonToBeanConverter jsonToBeanConverter = new JsonToBeanConverter();

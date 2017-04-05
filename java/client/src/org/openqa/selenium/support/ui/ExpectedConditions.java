@@ -1509,7 +1509,7 @@ public class ExpectedConditions {
           Object value = ((JavascriptExecutor) driver).executeScript(javaScript);
 
           if (value instanceof List) {
-            return ((List) value).isEmpty() ? null : value;
+            return ((List<?>) value).isEmpty() ? null : value;
           }
           if (value instanceof String) {
             return ((String) value).isEmpty() ? null : value;
