@@ -223,6 +223,7 @@ public class AlertsTest extends JUnit4TestBase {
   @JavascriptEnabled
   @SwitchToTopAfterTest
   @Test
+  @Ignore(MARIONETTE)
   public void testShouldAllowUsersToAcceptAnAlertInAFrame() {
     driver.switchTo().frame("iframeWithAlert");
 
