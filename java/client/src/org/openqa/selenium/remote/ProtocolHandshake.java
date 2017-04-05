@@ -379,7 +379,7 @@ public class ProtocolHandshake {
     if (value != null && value instanceof Map) {
       capabilities = (Map<String, ?>) value;
     } else if (value != null && value instanceof Capabilities) {
-      capabilities = ((Capabilities) capabilities).asMap();
+      capabilities = ((Capabilities) value).asMap();
     }
 
     // If the result looks positive, return the result.
