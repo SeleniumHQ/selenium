@@ -213,7 +213,7 @@ public class FakeHttpServletRequest extends HeaderContainer
     return attributes.get(s);
   }
 
-  public Enumeration getAttributeNames() {
+  public Enumeration<String> getAttributeNames() {
     return Collections.enumeration(attributes.keySet());
   }
 
@@ -258,6 +258,7 @@ public class FakeHttpServletRequest extends HeaderContainer
     return values.toArray(new String[values.size()]);
   }
 
+  @SuppressWarnings({"unchecked", "rawtypes"})
   public Map getParameterMap() {
     return Collections.unmodifiableMap(parameters);
   }
@@ -308,7 +309,7 @@ public class FakeHttpServletRequest extends HeaderContainer
     throw new UnsupportedOperationException();
   }
 
-  public Enumeration getLocales() {
+  public Enumeration<Locale> getLocales() {
     throw new UnsupportedOperationException();
   }
 

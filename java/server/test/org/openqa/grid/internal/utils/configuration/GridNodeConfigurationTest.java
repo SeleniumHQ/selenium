@@ -262,7 +262,7 @@ public class GridNodeConfigurationTest {
     GridNodeConfiguration other = new GridNodeConfiguration();
     other.id = "myid";
     DesiredCapabilities dc =
-      new DesiredCapabilities(new ImmutableMap.Builder().put("chrome", "foo").build());
+      new DesiredCapabilities(new ImmutableMap.Builder<String, String>().put("chrome", "foo").build());
     other.capabilities = Arrays.asList(dc);
     other.downPollingLimit = 50;
     other.hub = "http://dummyhost";

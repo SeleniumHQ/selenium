@@ -208,7 +208,7 @@ public class JsonHttpCommandCodecTest {
     codec.defineCommand("pick", GET, "/fruit/:fruit/size/:size");
 
     Command decoded = codec.decode(request);
-    assertThat(decoded.getParameters(), is((Map) ImmutableMap.of(
+    assertThat(decoded.getParameters(), is((Map<String, String>) ImmutableMap.of(
         "fruit", "apple",
         "size", "large")));
   }
@@ -228,7 +228,7 @@ public class JsonHttpCommandCodecTest {
 
     Command decoded = codec.decode(request);
     assertThat(decoded.getSessionId(), is(new SessionId("sessionX")));
-    assertThat(decoded.getParameters(), is((Map) ImmutableMap.of(
+    assertThat(decoded.getParameters(), is((Map<String, String>) ImmutableMap.of(
         "fruit", "apple", "size", "large", "color", "red")));
   }
 
@@ -247,7 +247,7 @@ public class JsonHttpCommandCodecTest {
 
     Command decoded = codec.decode(request);
     assertThat(decoded.getSessionId(), is(nullValue()));
-    assertThat(decoded.getParameters(), is((Map) ImmutableMap.of(
+    assertThat(decoded.getParameters(), is((Map<String, String>) ImmutableMap.of(
         "fruit", "apple", "size", "large", "color", "red")));
   }
 
@@ -290,7 +290,7 @@ public class JsonHttpCommandCodecTest {
 
     assertThat(decoded.getName(), is(original.getName()));
     assertThat(decoded.getSessionId(), is(original.getSessionId()));
-    assertThat(decoded.getParameters(), is((Map) original.getParameters()));
+    assertThat(decoded.getParameters(), is((Map<?, ?>) original.getParameters()));
   }
 
   @Test

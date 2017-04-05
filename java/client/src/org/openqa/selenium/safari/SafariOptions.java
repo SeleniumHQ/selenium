@@ -90,7 +90,7 @@ public class SafariOptions {
       return (SafariOptions) cap;
     } else if (cap instanceof Map) {
       try {
-        return SafariOptions.fromJsonMap((Map) cap);
+        return SafariOptions.fromJsonMap((Map<?, ?>) cap);
       } catch (IOException e) {
         throw new WebDriverException(e);
       }

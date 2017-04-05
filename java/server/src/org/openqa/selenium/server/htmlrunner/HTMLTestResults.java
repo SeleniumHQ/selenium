@@ -158,7 +158,7 @@ public class HTMLTestResults {
     return numTestPasses;
   }
 
-  public Collection getTestTables() {
+  public Collection<String> getTestTables() {
     return testTables;
   }
 
@@ -239,11 +239,11 @@ public class HTMLTestResults {
       }
     }
 
-    public List decodeListOfStrings(List list) {
+    public List<String> decodeListOfStrings(List<String> list) {
       List<String> decodedList = new LinkedList<>();
 
-      for (Object o : list) {
-        decodedList.add(decode((String) o));
+      for (String o : list) {
+        decodedList.add(decode(o));
       }
 
       return decodedList;

@@ -273,11 +273,11 @@ public class StandaloneConfiguration {
     }
 
     if (target instanceof Collection) {
-      return !((Collection) other).isEmpty();
+      return !((Collection<?>) other).isEmpty();
     }
 
     if (target instanceof Map) {
-      return !((Map) other).isEmpty();
+      return !((Map<?, ?>) other).isEmpty();
     }
 
     return true;
@@ -303,16 +303,16 @@ public class StandaloneConfiguration {
 
   public StringBuilder toString(String format, String name, Object value) {
     StringBuilder sb = new StringBuilder();
-    List iterator;
+    List<?> iterator;
     if (value instanceof List) {
-      iterator = (List)value;
+      iterator = (List<?>)value;
     } else {
       iterator = Arrays.asList(value);
     }
     for (Object v : iterator) {
       if (v != null &&
-          !(v instanceof Map && ((Map) v).isEmpty()) &&
-          !(v instanceof Collection && ((Collection) v).isEmpty())) {
+          !(v instanceof Map && ((Map<?, ?>) v).isEmpty()) &&
+          !(v instanceof Collection && ((Collection<?>) v).isEmpty())) {
         sb.append(String.format(format, name, v));
       }
     }

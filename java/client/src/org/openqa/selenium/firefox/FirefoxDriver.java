@@ -193,7 +193,7 @@ public class FirefoxDriver extends RemoteWebDriver {
   }
 
   private static CommandExecutor toExecutor(FirefoxOptions options) {
-    DriverService.Builder builder;
+    DriverService.Builder<?, ?> builder;
 
     if (options.isLegacy()) {
       builder = XpiDriverService.builder()

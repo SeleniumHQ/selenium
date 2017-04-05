@@ -223,7 +223,7 @@ public class ResultConfig {
   }
 
   private static Constructor<? extends RestishHandler<?>> getConstructor(
-      Class<? extends RestishHandler<?>> handlerClazz, Class... types) {
+      Class<? extends RestishHandler<?>> handlerClazz, Class<?>... types) {
     try {
       return handlerClazz.getConstructor(types);
     } catch (NoSuchMethodException e) {
