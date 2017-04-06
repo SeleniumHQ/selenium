@@ -129,7 +129,7 @@ public class ElementAttributeTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = MARIONETTE, reason = "sendKeys does not determine whether the element is disabled")
+  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/579")
   public void testShouldThrowExceptionIfSendingKeysToElementDisabledUsingRandomDisabledStrings() {
     driver.get(pages.formPage);
     WebElement disabledTextElement1 = driver.findElement(By.id("disabledTextElement1"));
