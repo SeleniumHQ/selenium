@@ -36,6 +36,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JavascriptEnabled;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.TestUtilities;
@@ -63,12 +64,14 @@ public class UnexpectedAlertBehaviorTest extends JUnit4TestBase {
     runScenarioWithUnhandledAlert(UnexpectedAlertBehaviour.ACCEPT, "This is a default value");
   }
 
+  @JavascriptEnabled
   @Test
   @Ignore(value = CHROME, reason = "Unstable Chrome behavior")
   public void canDismissUnhandledAlert() {
     runScenarioWithUnhandledAlert(UnexpectedAlertBehaviour.DISMISS, "null");
   }
 
+  @JavascriptEnabled
   @Test
   @Ignore(value = CHROME, reason = "Chrome uses IGNORE mode by default")
   public void dismissUnhandledAlertsByDefault() {

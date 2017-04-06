@@ -354,6 +354,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
     assertEquals("Should not have navigated away.", originalTitle, driver.getTitle());
   }
 
+  @JavascriptEnabled
   @Test
   @Ignore(MARIONETTE)
   @Ignore(IE)
