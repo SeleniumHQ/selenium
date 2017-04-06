@@ -74,10 +74,42 @@ module Selenium
         end
       end
 
+      compliant_on browser: :ff_nightly do
+        it 'gets the rect of the current window' do
+          rect = driver.manage.window.rect
+
+          expect(rect).to be_a(Rectangle)
+
+          expect(rect.x).to be >= 0
+          expect(rect.y).to be >= 0
+          expect(rect.width).to be >= 0
+          expect(rect.height).to be >= 0
+        end
+
+        it 'sets the rect of the current window' do
+          rect = window.rect
+
+          target_x = rect.x + 10
+          target_y = rect.y + 10
+          target_width = rect.width + 10
+          target_height = rect.height + 10
+
+          window.rect = Rectangle.new(target_x, target_y, target_width, target_height)
+
+          wait.until { window.rect.x != rect.x && window.rect.y != rect.y }
+
+          new_rect = window.rect
+          expect(new_rect.x).to eq(target_x)
+          expect(new_rect.y).to eq(target_y)
+          expect(new_rect.width).to eq(target_width)
+          expect(new_rect.height).to eq(target_height)
+        end
+      end
+
       # TODO: - Create Window Manager guard
       not_compliant_on platform: :linux do
         not_compliant_on browser: :safari do
-           it 'can maximize the current window' do
+          it 'can maximize the current window' do
             window.size = old_size = Dimension.new(200, 200)
 
             window.maximize
@@ -87,7 +119,7 @@ module Selenium
             new_size = window.size
             expect(new_size.width).to be > old_size.width
             expect(new_size.height).to be > old_size.height
-           end
+          end
         end
       end
 
@@ -103,6 +135,18 @@ module Selenium
 
             new_size = window.size
             expect(new_size.height).to be > old_size.height
+          end
+        end
+      end
+
+      compliant_on browser: [:ff_nightly, :firefox, :edge] do
+        # Firefox - Not implemented yet, no bug to track
+        # Edge: Not Yet - https://dev.windows.com/en-us/microsoft-edge/platform/status/webdriver/details/
+        not_compliant_on browser: [:ff_nightly, :firefox, :edge] do
+          it 'can minimize the window' do
+            driver.execute_script('window.minimized = false; window.onblur = function(){ window.minimized = true };')
+            window.minimize
+            expect(driver.execute_script('return window.minimized;')).to be true
           end
         end
       end
