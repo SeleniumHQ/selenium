@@ -215,7 +215,6 @@ public class ClickTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/594")
   public void testCanClickOnALinkThatContainsEmbeddedBlockElements() {
     assumeFalse(
         "Fails on Android phones: https://code.google.com/p/chromedriver/issues/detail?id=1022",
