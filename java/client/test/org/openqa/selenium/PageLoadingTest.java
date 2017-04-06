@@ -159,6 +159,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   @Ignore(CHROME)
   @Ignore(SAFARI)
   @Ignore(PHANTOMJS)
+  @Ignore(MARIONETTE)
   @NeedsLocalEnvironment
   public void testEagerStrategyShouldNotWaitForResourcesOnRefresh() {
     initLocalDriver("eager");

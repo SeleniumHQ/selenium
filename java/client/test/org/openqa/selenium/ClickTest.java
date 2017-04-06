@@ -125,6 +125,7 @@ public class ClickTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
+  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/594")
   public void testCanClickOnAnElementWithTopSetToANegativeNumber() {
     String page = appServer.whereIs("styledPage.html");
     driver.get(page);
@@ -214,6 +215,7 @@ public class ClickTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/594")
   public void testCanClickOnALinkThatContainsEmbeddedBlockElements() {
     assumeFalse(
         "Fails on Android phones: https://code.google.com/p/chromedriver/issues/detail?id=1022",

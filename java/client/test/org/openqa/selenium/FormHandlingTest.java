@@ -103,6 +103,7 @@ public class FormHandlingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
+  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/594")
   public void testShouldBeAbleToEnterTextIntoATextAreaBySettingItsValue() {
     driver.get(pages.javascriptPage);
     WebElement textarea = driver.findElement(By.id("keyUpArea"));
@@ -113,6 +114,7 @@ public class FormHandlingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
+  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/594")
   public void testSendKeysKeepsCapitalization() {
     driver.get(pages.javascriptPage);
     WebElement textarea = driver.findElement(By
@@ -134,6 +136,7 @@ public class FormHandlingTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/594")
   public void testShouldSubmitAFormUsingTheEnterKey() {
     driver.get(pages.formPage);
     WebElement nestedForm = driver.findElement(By.id("nested_form"));
@@ -145,6 +148,7 @@ public class FormHandlingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
+  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/594")
   public void testShouldEnterDataIntoFormFields() {
     driver.get(pages.xhtmlTestPage);
     WebElement element = driver.findElement(By.xpath("//form[@name='someForm']/input[@id='username']"));
@@ -240,6 +244,7 @@ public class FormHandlingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
+  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/594")
   public void testSendingKeyboardEventsShouldAppendTextInInputsWithExistingValue() {
     driver.get(pages.formPage);
     WebElement element = driver.findElement(By.id("inputWithText"));
@@ -251,6 +256,7 @@ public class FormHandlingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
+  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/594")
   public void testSendingKeyboardEventsShouldAppendTextInTextAreas() {
     driver.get(pages.formPage);
     WebElement element = driver.findElement(By.id("withText"));
@@ -288,6 +294,7 @@ public class FormHandlingTest extends JUnit4TestBase {
   @Test
   @Ignore(SAFARI)
   @Ignore(HTMLUNIT)
+  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/594")
   public void testCanClickOnASubmitButton() {
     checkSubmitButton("internal_explicit_submit");
   }
@@ -296,6 +303,7 @@ public class FormHandlingTest extends JUnit4TestBase {
   @Test
   @Ignore(SAFARI)
   @Ignore(HTMLUNIT)
+  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/594")
   public void testCanClickOnASubmitButtonNestedSpan() {
     checkSubmitButton("internal_span_submit");
   }
@@ -303,6 +311,7 @@ public class FormHandlingTest extends JUnit4TestBase {
   @Test
   @Ignore(SAFARI)
   @Ignore(HTMLUNIT)
+  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/594")
   public void testCanClickOnAnImplicitSubmitButton() {
     assumeFalse(isIe6(driver) || isIe7(driver) );
     checkSubmitButton("internal_implicit_submit");
@@ -312,6 +321,7 @@ public class FormHandlingTest extends JUnit4TestBase {
   @Ignore(IE)
   @Ignore(SAFARI)
   @Ignore(HTMLUNIT)
+  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/594")
   public void testCanClickOnAnExternalSubmitButton() {
     checkSubmitButton("external_explicit_submit");
   }
@@ -320,6 +330,7 @@ public class FormHandlingTest extends JUnit4TestBase {
   @Ignore(IE)
   @Ignore(SAFARI)
   @Ignore(HTMLUNIT)
+  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/594")
   public void testCanClickOnAnExternalImplicitSubmitButton() {
     checkSubmitButton("external_implicit_submit");
   }
