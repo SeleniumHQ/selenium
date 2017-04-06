@@ -474,6 +474,7 @@ public class AlertsTest extends JUnit4TestBase {
     assertThat(t.getMessage(), containsString("cheese"));
   }
 
+  @JavascriptEnabled
   @NoDriverAfterTest
   @Test
   public void testCanQuitWhenAnAlertIsPresent() {

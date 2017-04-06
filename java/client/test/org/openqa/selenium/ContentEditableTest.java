@@ -110,6 +110,7 @@ public class ContentEditableTest extends JUnit4TestBase {
     assertThat(editable.getText(), equalTo(initialText + ", edited"));
   }
 
+  @JavascriptEnabled
   @Test
   @Ignore(IE)
   @Ignore(value = SAFARI, reason = "cannot type on contentEditable with synthetic events, issue 3127")
@@ -126,6 +127,7 @@ public class ContentEditableTest extends JUnit4TestBase {
     assertThat(editable.getText(), equalTo("cheese"));
   }
 
+  @JavascriptEnabled
   @Test
   @Ignore(CHROME)
   @Ignore(IE)
