@@ -26,7 +26,6 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
-import static org.openqa.selenium.testing.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.PHANTOMJS;
@@ -102,7 +101,6 @@ public class FormHandlingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
   @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/594")
   public void testShouldBeAbleToEnterTextIntoATextAreaBySettingItsValue() {
     driver.get(pages.javascriptPage);
@@ -113,7 +111,6 @@ public class FormHandlingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
   @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/594")
   public void testSendKeysKeepsCapitalization() {
     driver.get(pages.javascriptPage);
@@ -147,7 +144,6 @@ public class FormHandlingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
   @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/594")
   public void testShouldEnterDataIntoFormFields() {
     driver.get(pages.xhtmlTestPage);
@@ -166,7 +162,6 @@ public class FormHandlingTest extends JUnit4TestBase {
   @Test
   @Ignore(value = SAFARI, reason = "issue 4220")
   @Ignore(MARIONETTE)
-  @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
   public void testShouldBeAbleToAlterTheContentsOfAFileUploadInputElement() throws IOException {
     driver.get(pages.formPage);
     WebElement uploadElement = driver.findElement(By.id("upload"));
@@ -184,7 +179,6 @@ public class FormHandlingTest extends JUnit4TestBase {
   @Test
   @Ignore(value = SAFARI, reason = "issue 4220")
   @Ignore(MARIONETTE)
-  @Ignore(HTMLUNIT)
   public void testShouldBeAbleToSendKeysToAFileUploadInputElementInAnXhtmlDocument()
       throws IOException {
     assumeFalse("IE before 9 doesn't handle pages served with an XHTML content type,"
@@ -229,7 +223,7 @@ public class FormHandlingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
+  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/594")
   public void testSendingKeyboardEventsShouldAppendTextInInputs() {
     driver.get(pages.formPage);
     WebElement element = driver.findElement(By.id("working"));
@@ -243,7 +237,6 @@ public class FormHandlingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
   @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/594")
   public void testSendingKeyboardEventsShouldAppendTextInInputsWithExistingValue() {
     driver.get(pages.formPage);
@@ -255,7 +248,6 @@ public class FormHandlingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
   @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/594")
   public void testSendingKeyboardEventsShouldAppendTextInTextAreas() {
     driver.get(pages.formPage);
@@ -278,7 +270,6 @@ public class FormHandlingTest extends JUnit4TestBase {
   @Ignore(PHANTOMJS)
   @Ignore(SAFARI)
   @Ignore(MARIONETTE)
-  @Ignore(HTMLUNIT)
   public void handleFormWithJavascriptAction() {
     String url = appServer.whereIs("form_handling_js_submit.html");
     driver.get(url);
@@ -293,7 +284,6 @@ public class FormHandlingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(SAFARI)
-  @Ignore(HTMLUNIT)
   @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/594")
   public void testCanClickOnASubmitButton() {
     checkSubmitButton("internal_explicit_submit");
@@ -302,7 +292,6 @@ public class FormHandlingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(SAFARI)
-  @Ignore(HTMLUNIT)
   @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/594")
   public void testCanClickOnASubmitButtonNestedSpan() {
     checkSubmitButton("internal_span_submit");
@@ -310,7 +299,6 @@ public class FormHandlingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(SAFARI)
-  @Ignore(HTMLUNIT)
   @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/594")
   public void testCanClickOnAnImplicitSubmitButton() {
     assumeFalse(isIe6(driver) || isIe7(driver) );
@@ -320,7 +308,6 @@ public class FormHandlingTest extends JUnit4TestBase {
   @Test
   @Ignore(IE)
   @Ignore(SAFARI)
-  @Ignore(HTMLUNIT)
   @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/594")
   public void testCanClickOnAnExternalSubmitButton() {
     checkSubmitButton("external_explicit_submit");
@@ -329,7 +316,6 @@ public class FormHandlingTest extends JUnit4TestBase {
   @Test
   @Ignore(IE)
   @Ignore(SAFARI)
-  @Ignore(HTMLUNIT)
   @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/594")
   public void testCanClickOnAnExternalImplicitSubmitButton() {
     checkSubmitButton("external_implicit_submit");

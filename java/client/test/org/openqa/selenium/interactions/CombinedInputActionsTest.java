@@ -295,7 +295,6 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
 
   @Test
   @Ignore(MARIONETTE)
-  @Ignore(HTMLUNIT)
   public void testChordControlCutAndPaste() {
     assumeFalse("FIXME: macs don't have CONRTROL key", getEffectivePlatform().is(Platform.MAC));
     assumeFalse("Windows: native events library  does not support storing modifiers state yet",
@@ -358,7 +357,6 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   @Test
   @Ignore(MARIONETTE)
   @Ignore(IE)
-  @Ignore(HTMLUNIT)
   public void testHoldingDownShiftKeyWhileClicking() {
     driver.get(pages.clickEventPage);
 

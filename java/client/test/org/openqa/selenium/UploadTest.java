@@ -62,7 +62,6 @@ public class UploadTest extends JUnit4TestBase {
   @JavascriptEnabled
   @SwitchToTopAfterTest
   @Test
-  @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
   @Ignore(MARIONETTE)
   public void testFileUploading() throws Exception {
     assumeFalse(

@@ -68,6 +68,7 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Test
   @Ignore(IE)
+  @Ignore(MARIONETTE)
   public void testSendingKeyDownOnly() {
     driver.get(pages.javascriptPage);
 
@@ -90,6 +91,7 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Test
   @Ignore(IE)
+  @Ignore(MARIONETTE)
   public void testSendingKeyUp() {
     driver.get(pages.javascriptPage);
     WebElement keysEventInput = driver.findElement(By.id("theworks"));
@@ -115,7 +117,7 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Test
   @Ignore(IE)
-  @Ignore(HTMLUNIT)
+  @Ignore(MARIONETTE)
   public void testSendingKeysWithShiftPressed() {
     driver.get(pages.javascriptPage);
 
@@ -154,7 +156,6 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
   public void testBasicKeyboardInputOnActiveElement() {
     driver.get(pages.javascriptPage);
 

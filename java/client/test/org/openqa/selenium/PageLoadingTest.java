@@ -425,7 +425,6 @@ public class PageLoadingTest extends JUnit4TestBase {
   // if @NoDriverAfterTest can be removed from some other tests in this class.
   @NoDriverAfterTest
   @Test
-  @Ignore(HTMLUNIT)
   @Ignore(PHANTOMJS)
   @Ignore(FIREFOX)
   @Ignore(value = SAFARI, reason = "issue 687, comment 41")

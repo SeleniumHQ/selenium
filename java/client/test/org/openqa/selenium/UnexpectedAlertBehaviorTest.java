@@ -64,14 +64,12 @@ public class UnexpectedAlertBehaviorTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(HTMLUNIT)
   @Ignore(value = CHROME, reason = "Unstable Chrome behavior")
   public void canDismissUnhandledAlert() {
     runScenarioWithUnhandledAlert(UnexpectedAlertBehaviour.DISMISS, "null");
   }
 
   @Test
-  @Ignore(HTMLUNIT)
   @Ignore(value = CHROME, reason = "Chrome uses IGNORE mode by default")
   public void dismissUnhandledAlertsByDefault() {
     runScenarioWithUnhandledAlert(null, "null");

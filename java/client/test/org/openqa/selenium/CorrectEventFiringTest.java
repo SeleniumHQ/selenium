@@ -231,7 +231,6 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Test
   @Ignore(value = IE, reason = "Only fires the onchange event when the checkbox loses the focus")
-  @Ignore(value = HTMLUNIT, reason = "HtmlUnit: default mode is IE8 now")
   public void testShouldEmitOnChangeEventsWhenChangingTheStateOfACheckbox() {
     driver.get(pages.javascriptPage);
     WebElement checkbox = driver.findElement(By.id("checkbox"));
@@ -385,7 +384,6 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   @Test
   @Ignore(value = SAFARI, reason = "Does not yet support file uploads, issue 4220")
   @Ignore(MARIONETTE)
-  @Ignore(HTMLUNIT)
   public void testUploadingFileShouldFireOnChangeEvent() throws IOException {
     driver.get(pages.formPage);
     WebElement uploadElement = driver.findElement(By.id("upload"));

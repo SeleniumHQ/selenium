@@ -476,7 +476,6 @@ public class AlertsTest extends JUnit4TestBase {
 
   @NoDriverAfterTest
   @Test
-  @Ignore(HTMLUNIT)
   public void testCanQuitWhenAnAlertIsPresent() {
     driver.get(pages.alertsPage);
     driver.findElement(By.id("alert")).click();

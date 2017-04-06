@@ -99,7 +99,6 @@ public class ProxySettingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(HTMLUNIT)
   @Ignore(SAFARI)
   @Ignore(PHANTOMJS)
   @NeedsLocalEnvironment
@@ -126,7 +125,6 @@ public class ProxySettingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(HTMLUNIT)
   @Ignore(SAFARI)
   @Ignore(PHANTOMJS)
   @NeedsLocalEnvironment
