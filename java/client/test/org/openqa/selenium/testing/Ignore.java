@@ -28,10 +28,11 @@ import java.lang.annotation.Target;
 @Repeatable(IgnoreList.class)
 public @interface Ignore {
 
-  Driver value();
+  Driver value() default Driver.ALL;
 
   String reason() default ("Unknown");
 
   String issue() default "";
 
+  boolean travis() default false;
 }

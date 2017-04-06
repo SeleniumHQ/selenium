@@ -44,15 +44,19 @@ public class IgnoreComparator {
   public boolean shouldIgnore(IgnoreList ignoreList) {
     return ignoreList != null && ignoreList.value().length > 0 &&
            shouldIgnore(Stream.of(ignoreList.value()));
-
   }
 
   public boolean shouldIgnore(Ignore ignore) {
     return ignore != null && shouldIgnore(Stream.of(ignore));
   }
 
-  private boolean shouldIgnore(Stream<Ignore> ignoreIn) {
-    return ignoreIn.anyMatch(
-        driver -> ignored.contains(driver.value()) || driver.value() == Driver.ALL);
+  private boolean shouldIgnore(Stream<Ignore> ignoreList) {
+    return ignoreList.anyMatch(
+        driver -> (ignored.contains(driver.value()) || driver.value() == Driver.ALL)
+                  && (driver.travis() && isOnTravis()));
+  }
+
+  private boolean isOnTravis() {
+    return Boolean.valueOf(System.getenv().getOrDefault("TRAVIS", "false"));
   }
 }

@@ -23,7 +23,6 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.Platform.ANDROID;
-import static org.openqa.selenium.Platform.ANY;
 import static org.openqa.selenium.Platform.LINUX;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.PHANTOMJS;
@@ -144,13 +143,13 @@ public class WindowTest extends JUnit4TestBase {
 
   @Test
   @Ignore(PHANTOMJS)
+  @Ignore(travis = true)
   @NotYetImplemented(value = MARIONETTE, reason = "/window/rect")
   public void testCanMaximizeTheWindow() throws InterruptedException {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
     assumeNotLinuxAtSauce();
-    assumeNotLinuxOnTravis();
 
     changeSizeTo(new Dimension(450, 273));
     maximize();
@@ -159,13 +158,13 @@ public class WindowTest extends JUnit4TestBase {
   @SwitchToTopAfterTest
   @Test
   @Ignore(PHANTOMJS)
+  @Ignore(travis = true)
   @NotYetImplemented(value = MARIONETTE, reason = "/window/rect")
   public void testCanMaximizeTheWindowFromFrame() throws InterruptedException {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
     assumeNotLinuxAtSauce();
-    assumeNotLinuxOnTravis();
 
     driver.get(pages.framesetPage);
     changeSizeTo(new Dimension(450, 274));
@@ -177,13 +176,13 @@ public class WindowTest extends JUnit4TestBase {
   @SwitchToTopAfterTest
   @Test
   @Ignore(PHANTOMJS)
+  @Ignore(travis = true)
   @NotYetImplemented(value = MARIONETTE, reason = "/window/rect")
   public void testCanMaximizeTheWindowFromIframe() throws InterruptedException {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
     assumeNotLinuxAtSauce();
-    assumeNotLinuxOnTravis();
 
     driver.get(pages.iframePage);
     changeSizeTo(new Dimension(450, 275));
@@ -246,14 +245,6 @@ public class WindowTest extends JUnit4TestBase {
     // Firefox/Linux: FirefoxDriver finally report a changed window size 22 seconds after replying
     // the maximize command, but video never shows the maximized window.
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(LINUX) && SauceDriver.shouldUseSauce());
-  }
-
-  private void assumeNotLinuxOnTravis() {
-    Platform effectivePlatform = TestUtilities.getEffectivePlatform(driver);
-    if (effectivePlatform == ANY) {
-      effectivePlatform = TestUtilities.getEffectivePlatform();
-    }
-    assumeFalse(effectivePlatform.is(LINUX) && Boolean.valueOf(System.getenv().getOrDefault("TRAVIS", "false")));
   }
 
 }

@@ -23,6 +23,7 @@ import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.remote.CapabilityType.PROXY;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
+import static org.openqa.selenium.testing.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
@@ -320,10 +321,9 @@ public class ReferrerTest extends JUnit4TestBase {
       reason = "IEDriver does not disable automatic proxy caching, causing this test to fail, issue 6629")
   @Ignore(HTMLUNIT)
   @Ignore(MARIONETTE)
+  @Ignore(value = FIREFOX, travis=true)
   @NeedsLocalEnvironment
   public void navigationWhenProxyInterceptsASpecificUrl() {
-    assumeFalse(Boolean.valueOf(System.getenv().getOrDefault("TRAVIS", "false")));
-
     testServer1.start();
     proxyServer.start();
 
