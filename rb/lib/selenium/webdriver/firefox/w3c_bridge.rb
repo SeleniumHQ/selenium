@@ -60,30 +60,33 @@ module Selenium
           @service.stop if @service
         end
 
-        # Firefox doesn't implement rect yet
+        # Support for geckodriver < 0.15
         def resize_window(width, height, handle = :current)
-          unless handle == :current
-            raise Error::WebDriverError, 'Switch to desired window before changing its size'
-          end
+          super
+        rescue Error::UnknownCommandError
           execute :set_window_size, {}, {width: width, height: height}
         end
 
         def window_size(handle = :current)
-          unless handle == :current
-            raise Error::UnsupportedOperationError, 'Switch to desired window before getting its size'
-          end
+          data = super
+        rescue Error::UnknownCommandError
           data = execute :get_window_size
-
-          Dimension.new data['width'], data['height']
+        ensure
+          return Dimension.new data['width'], data['height']
         end
 
         def reposition_window(x, y)
+          super
+        rescue Error::UnknownCommandError
           execute :set_window_position, {}, {x: x, y: y}
         end
 
         def window_position
+          data = super
+        rescue Error::UnknownCommandError
           data = execute :get_window_position
-          Point.new data['x'], data['y']
+        ensure
+          return Point.new data['x'], data['y']
         end
 
         private

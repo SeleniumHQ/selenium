@@ -270,8 +270,8 @@ module Selenium
           Point.new data['x'], data['y']
         end
 
-        def set_window_rect(width: nil, height: nil, x: nil, y: nil)
-          execute :set_window_rect, {}, {width: width, height: height, x: x, y: y}
+        def set_window_rect(x: nil, y: nil, width: nil, height: nil)
+          execute :set_window_rect, {}, {x: x, y: y, width: width, height: height}
         end
 
         def window_rect
