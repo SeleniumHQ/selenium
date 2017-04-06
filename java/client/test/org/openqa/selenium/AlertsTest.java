@@ -156,6 +156,7 @@ public class AlertsTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
+  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/607")
   @NotYetImplemented(value = {HTMLUNIT},
     reason = "HtmlUnit: click()/prompt need to run in different threads")
   public void testShouldAllowAUserToSetTheValueOfAPrompt() {
@@ -307,6 +308,7 @@ public class AlertsTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
+  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/607")
   @NotYetImplemented(value = HTMLUNIT,
     reason = "HtmlUnit: click()/prompt need to run in different threads.")
   public void testHandlesTwoAlertsFromOneInteraction() {

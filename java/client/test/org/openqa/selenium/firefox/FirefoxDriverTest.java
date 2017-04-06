@@ -232,6 +232,7 @@ public class FirefoxDriverTest extends JUnit4TestBase {
   @NeedsFreshDriver
   @NoDriverAfterTest
   @Test
+  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/594")
   public void shouldWaitUntilBrowserHasClosedProperly() throws Exception {
     driver.get(pages.simpleTestPage);
     driver.quit();
@@ -345,6 +346,7 @@ public class FirefoxDriverTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(value = MARIONETTE, reason = "/window/rect")
   public void shouldBeAbleToPassCommandLineOptions() {
     FirefoxBinary binary = new FirefoxBinary();
     binary.addCommandLineOptions("-width", "800", "-height", "600");
@@ -474,6 +476,7 @@ public class FirefoxDriverTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/594")
   public void multipleFirefoxDriversRunningConcurrently() throws Exception {
     int numThreads;
     if (!SauceDriver.shouldUseSauce()) {

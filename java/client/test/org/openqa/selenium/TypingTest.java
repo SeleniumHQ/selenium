@@ -43,6 +43,7 @@ import org.openqa.selenium.testing.JavascriptEnabled;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.drivers.Browser;
 
+@Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/594")
 public class TypingTest extends JUnit4TestBase {
 
   @JavascriptEnabled

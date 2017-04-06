@@ -88,6 +88,7 @@ public class ContentEditableTest extends JUnit4TestBase {
   @Test
   @Ignore(value = SAFARI, reason = "cannot type on contentEditable with synthetic events, issue 3127")
   @Ignore(HTMLUNIT)
+  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/594")
   public void testShouldBeAbleToTypeIntoEmptyContentEditableElement() {
     driver.get(pages.readOnlyPage);
     WebElement editable = driver.findElement(By.id("content-editable-blank"));
@@ -117,6 +118,7 @@ public class ContentEditableTest extends JUnit4TestBase {
   @Ignore(IE)
   @Ignore(value = SAFARI, reason = "cannot type on contentEditable with synthetic events, issue 3127")
   @Ignore(HTMLUNIT)
+  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/594")
   public void testShouldBeAbleToTypeIntoTinyMCE() {
     driver.get(appServer.whereIs("tinymce.html"));
     driver.switchTo().frame("mce_0_ifr");

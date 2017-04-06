@@ -320,6 +320,7 @@ public class ElementAttributeTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
+  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/594")
   public void testCanRetrieveTheCurrentValueOfATextFormField_textInput() {
     driver.get(pages.formPage);
     WebElement element = driver.findElement(By.id("working"));
@@ -330,6 +331,7 @@ public class ElementAttributeTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
+  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/594")
   public void testCanRetrieveTheCurrentValueOfATextFormField_emailInput() {
     driver.get(pages.formPage);
     WebElement element = driver.findElement(By.id("email"));
@@ -340,6 +342,7 @@ public class ElementAttributeTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
+  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/594")
   public void testCanRetrieveTheCurrentValueOfATextFormField_textArea() {
     driver.get(pages.formPage);
     WebElement element = driver.findElement(By.id("emptyTextArea"));
