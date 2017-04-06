@@ -407,7 +407,7 @@ public class FirefoxDriverTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/519")
+  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/273")
   public void canAccessUrlProtectedByBasicAuth() {
     driver.get(appServer.whereIsWithCredentials("basicAuth", "test", "test"));
     assertEquals("authorized", driver.findElement(By.tagName("h1")).getText());

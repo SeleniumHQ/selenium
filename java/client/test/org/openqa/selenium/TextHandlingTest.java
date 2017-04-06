@@ -191,7 +191,6 @@ public class TextHandlingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = IE, reason = "IE: inserts \r\n instead of \n")
-  @Ignore(HTMLUNIT)
   @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/594")
   public void testShouldBeAbleToSetMoreThanOneLineOfTextInATextArea() {
     driver.get(pages.formPage);
@@ -209,7 +208,6 @@ public class TextHandlingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
   @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/594")
   public void testShouldBeAbleToEnterDatesAfterFillingInOtherValuesFirst() {
     driver.get(pages.formPage);

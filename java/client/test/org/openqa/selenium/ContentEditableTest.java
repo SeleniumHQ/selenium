@@ -23,7 +23,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.testing.Driver.CHROME;
-import static org.openqa.selenium.testing.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.SAFARI;
@@ -35,7 +34,6 @@ import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
-import org.openqa.selenium.testing.NotYetImplemented;
 
 public class ContentEditableTest extends JUnit4TestBase {
 
@@ -87,7 +85,6 @@ public class ContentEditableTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = SAFARI, reason = "cannot type on contentEditable with synthetic events, issue 3127")
-  @Ignore(HTMLUNIT)
   @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/594")
   public void testShouldBeAbleToTypeIntoEmptyContentEditableElement() {
     driver.get(pages.readOnlyPage);
@@ -102,7 +99,6 @@ public class ContentEditableTest extends JUnit4TestBase {
   @Ignore(CHROME)
   @Ignore(IE)
   @Ignore(SAFARI)
-  @Ignore(HTMLUNIT)
   @Ignore(MARIONETTE)
   public void testShouldBeAbleToTypeIntoContentEditableElementWithExistingValue() {
     driver.get(pages.readOnlyPage);
@@ -117,7 +113,6 @@ public class ContentEditableTest extends JUnit4TestBase {
   @Test
   @Ignore(IE)
   @Ignore(value = SAFARI, reason = "cannot type on contentEditable with synthetic events, issue 3127")
-  @Ignore(HTMLUNIT)
   @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/594")
   public void testShouldBeAbleToTypeIntoTinyMCE() {
     driver.get(appServer.whereIs("tinymce.html"));
@@ -135,7 +130,6 @@ public class ContentEditableTest extends JUnit4TestBase {
   @Ignore(CHROME)
   @Ignore(IE)
   @Ignore(value = SAFARI, reason = "cannot type on contentEditable with synthetic events, issue 3127")
-  @Ignore(HTMLUNIT)
   @Ignore(MARIONETTE)
   public void testShouldAppendToTinyMCE() {
     driver.get(appServer.whereIs("tinymce.html"));

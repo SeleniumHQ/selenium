@@ -83,7 +83,6 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
   public void testShouldTypeLowerCaseLetters() {
     driver.get(pages.javascriptPage);
 
@@ -94,7 +93,6 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
   public void testShouldBeAbleToTypeCapitalLetters() {
     driver.get(pages.javascriptPage);
 
@@ -105,7 +103,6 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
   public void testShouldBeAbleToTypeQuoteMarks() {
     driver.get(pages.javascriptPage);
 
@@ -116,7 +113,6 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
   public void testShouldBeAbleToTypeTheAtCharacter() {
     // simon: I tend to use a US/UK or AUS keyboard layout with English
     // as my primary language. There are consistent reports that we're
@@ -133,7 +129,6 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
   public void testShouldBeAbleToMixUpperAndLowerCaseLetters() {
     driver.get(pages.javascriptPage);
 
@@ -155,7 +150,6 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
   public void testShouldBeAbleToUseArrowKeys() {
     driver.get(pages.javascriptPage);
 
@@ -266,7 +260,6 @@ public class TypingTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore(HTMLUNIT)
   @Ignore(IE)
   @Ignore(PHANTOMJS)
   public void testShouldReportKeyCodeOfArrowKeys() {
@@ -296,7 +289,6 @@ public class TypingTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
   public void testShouldReportKeyCodeOfArrowKeysUpDownEvents() {
     assumeFalse(Browser.detect() == Browser.opera &&
                 getEffectivePlatform().is(Platform.WINDOWS));
@@ -403,7 +395,6 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
   public void testArrowKeysAndPageUpAndDown() {
     driver.get(pages.javascriptPage);
 
@@ -432,7 +423,6 @@ public class TypingTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
   public void testDeleteAndBackspaceKeys() {
     driver.get(pages.javascriptPage);
 
@@ -654,7 +644,6 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = HTMLUNIT, reason = "inconsistent test")
   public void testShouldBeAbleToTypeOnANumberInputField() {
     driver.get(pages.formPage);
     WebElement email = driver.findElement(By.id("age"));
@@ -694,7 +683,6 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = HTMLUNIT, reason = "Failed with JS enabled, passed otherwise")
   @Ignore(MARIONETTE)
   public void canClearNumberInputAfterTypingInvalidInput() {
     driver.get(pages.formPage);

@@ -66,7 +66,6 @@ public class I18nTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
   @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/594")
   public void testEnteringHebrewTextFromLeftToRight() {
     driver.get(pages.chinesePage);
@@ -78,7 +77,6 @@ public class I18nTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
   @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/594")
   public void testEnteringHebrewTextFromRightToLeft() {
     driver.get(pages.chinesePage);
@@ -91,7 +89,6 @@ public class I18nTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = MARIONETTE, reason = "Doesn't handle first codepoint correctly.")
-  @Ignore(HTMLUNIT)
   @Ignore(value = CHROME, reason = "ChromeDriver only supports characters in the BMP")
   public void testEnteringSupplementaryCharacters() {
     assumeFalse("IE: versions less thank 10 have issue 5069",

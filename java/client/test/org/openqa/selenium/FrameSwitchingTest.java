@@ -392,7 +392,6 @@ public class FrameSwitchingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(HTMLUNIT)
   @Ignore(IE)
   @Ignore(PHANTOMJS)
   @Ignore(SAFARI)
@@ -405,7 +404,6 @@ public class FrameSwitchingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(HTMLUNIT)
   @Ignore(IE)
   @Ignore(PHANTOMJS)
   @Ignore(SAFARI)

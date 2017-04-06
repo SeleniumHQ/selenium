@@ -120,7 +120,6 @@ public class ReferrerTest extends JUnit4TestBase {
    * does not have a proxy configured.
    */
   @Test
-  @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
   @NeedsLocalEnvironment
   public void basicHistoryNavigationWithoutAProxy() {
     testServer1.start();
@@ -143,7 +142,6 @@ public class ReferrerTest extends JUnit4TestBase {
    * Tests navigation across multiple domains when the browser does not have a proxy configured.
    */
   @Test
-  @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
   @NeedsLocalEnvironment
   public void crossDomainHistoryNavigationWithoutAProxy() {
 
@@ -174,7 +172,6 @@ public class ReferrerTest extends JUnit4TestBase {
    * configured to use a proxy that permits direct access to that domain.
    */
   @Test
-  @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
   @NeedsLocalEnvironment
   public void basicHistoryNavigationWithADirectProxy() {
     testServer1.start();
@@ -203,7 +200,6 @@ public class ReferrerTest extends JUnit4TestBase {
    * permits direct access to those domains.
    */
   @Test
-  @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
   @NeedsLocalEnvironment
   public void crossDomainHistoryNavigationWithADirectProxy() {
     testServer1.start();
@@ -238,7 +234,6 @@ public class ReferrerTest extends JUnit4TestBase {
    * redirects the second domain to another host.
    */
   @Test
-  @Ignore(HTMLUNIT)
   @Ignore(MARIONETTE)
   @NeedsLocalEnvironment
   public void crossDomainHistoryNavigationWithAProxiedHost() {
@@ -279,7 +274,6 @@ public class ReferrerTest extends JUnit4TestBase {
    * to connect directly to the target server.
    */
   @Test
-  @Ignore(HTMLUNIT)
   @Ignore(MARIONETTE)
   @NeedsLocalEnvironment
   public void crossDomainHistoryNavigationWhenProxyInterceptsHostRequests() {
@@ -319,7 +313,6 @@ public class ReferrerTest extends JUnit4TestBase {
   @Test
   @Ignore(value = IE,
       reason = "IEDriver does not disable automatic proxy caching, causing this test to fail, issue 6629")
-  @Ignore(HTMLUNIT)
   @Ignore(MARIONETTE)
   @Ignore(value = FIREFOX, travis=true)
   @NeedsLocalEnvironment
