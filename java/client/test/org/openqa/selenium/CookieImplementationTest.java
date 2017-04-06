@@ -371,7 +371,7 @@ public class CookieImplementationTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/463")
+  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/463")
   public void testRetainsCookieExpiry() {
     Cookie addedCookie =
         new Cookie.Builder("fish", "cod")

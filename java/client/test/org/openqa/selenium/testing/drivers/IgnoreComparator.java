@@ -20,12 +20,20 @@ package org.openqa.selenium.testing.drivers;
 
 import com.google.common.collect.Sets;
 
+import org.eclipse.egit.github.core.Issue;
+import org.eclipse.egit.github.core.Repository;
+import org.eclipse.egit.github.core.client.GitHubClient;
+import org.eclipse.egit.github.core.service.IssueService;
+import org.eclipse.egit.github.core.service.RepositoryService;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.testing.Driver;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.IgnoreList;
 
+import java.io.IOException;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 public class IgnoreComparator {
@@ -51,12 +59,44 @@ public class IgnoreComparator {
   }
 
   private boolean shouldIgnore(Stream<Ignore> ignoreList) {
-    return ignoreList.anyMatch(
-        driver -> (ignored.contains(driver.value()) || driver.value() == Driver.ALL)
-                  && (driver.travis() && isOnTravis()));
+    return ignoreList.anyMatch(driver ->
+        (ignored.contains(driver.value()) || driver.value() == Driver.ALL)
+        && (!driver.travis() || isOnTravis())
+        && isOpen(driver.issue()));
   }
 
   private boolean isOnTravis() {
     return Boolean.valueOf(System.getenv().getOrDefault("TRAVIS", "false"));
+  }
+
+  private boolean isOpen(String issue) {
+    if ("".equals(issue)) {
+      return true; // unknown issue, suppose it's open
+    }
+    Matcher m = Pattern.compile("#?(\\d+)").matcher(issue);
+    if (m.matches()) {
+      return isOpenGitHubIssue("SeleniumHQ", "selenium", m.group(1));
+    }
+    m = Pattern.compile("https?://github.com/(\\w+)/(\\w+)/issues/(\\d+)").matcher(issue);
+    if (m.matches()) {
+      return isOpenGitHubIssue(m.group(1), m.group(2), m.group(3));
+    }
+    return true; // unknown issue, suppose it's open
+  }
+
+  private boolean isOpenGitHubIssue(String owner, String repo, String issueId) {
+    String gitHubToken = System.getenv("GITHUB_TOKEN");
+    if (gitHubToken == null) {
+      return true;
+    }
+    IssueService service = new IssueService();
+    service.getClient().setOAuth2Token(gitHubToken);
+    try {
+      Issue issue = service.getIssue(owner, repo, issueId);
+      return "open".equals(issue.getState());
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return true;
   }
 }

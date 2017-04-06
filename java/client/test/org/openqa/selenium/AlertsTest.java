@@ -171,7 +171,7 @@ public class AlertsTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Test
   @Ignore(CHROME)
-  @Ignore(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/274")
+  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/274")
   public void testSettingTheValueOfAnAlertThrows() {
     driver.findElement(By.id("alert")).click();
 

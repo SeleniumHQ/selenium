@@ -47,6 +47,7 @@
     <orderEntry type="library" name="commons-httpclient" level="project" />
     <orderEntry type="library" scope="TEST" name="websocket" level="project" />
     <orderEntry type="library" scope="TEST" name="jetty-util" level="project" />
+    <orderEntry type="library" scope="TEST" name="github" level="project" />
   </component>
   <component name="sonarModuleSettings">
     <option name="alternativeWorkingDirPath" value="" />
