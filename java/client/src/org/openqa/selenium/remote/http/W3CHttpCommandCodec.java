@@ -260,7 +260,7 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
 
       case SET_ALERT_VALUE:
         return ImmutableMap.<String, Object>builder()
-          .put("text", stringToUtf8Array((String) parameters.get("text")))
+          .put("text", parameters.get("text"))
           .put("value", stringToUtf8Array((String) parameters.get("text")))
           .build();
 
