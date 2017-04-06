@@ -59,7 +59,7 @@ public class ElementSelectingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore({MARIONETTE})
+  @Ignore(MARIONETTE)
   public void testShouldNotBeAbleToSelectADisabledRadioButton() {
     driver.get(pages.formPage);
     assertCannotSelect(disabledUnselectedRadioButton());
@@ -111,8 +111,8 @@ public class ElementSelectingTest extends JUnit4TestBase {
     assertTrue(button.isSelected());
   }
 
-  @Ignore(value = {MARIONETTE})
   @Test
+  @Ignore(MARIONETTE)
   public void testShouldBeAbleToToggleEnabledMultiSelectOption() {
     driver.get(pages.formPage);
     assertCanToggle(selectedMultipleSelectOption());

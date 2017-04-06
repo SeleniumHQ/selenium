@@ -31,6 +31,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeTrue;
+import static org.openqa.selenium.testing.Driver.ALL;
 import static org.openqa.selenium.testing.Driver.CHROME;
 import static org.openqa.selenium.testing.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Driver.IE;
@@ -221,8 +222,8 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
 
   @SuppressWarnings("unchecked")
   @JavascriptEnabled
-  @Ignore({IE})
   @Test
+  @Ignore(IE)
   public void testShouldBeAbleToExecuteSimpleJavascriptAndReturnAComplexObject() {
     driver.get(pages.javascriptPage);
 
@@ -286,7 +287,11 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore(value = {CHROME, IE, PHANTOMJS, SAFARI, MARIONETTE})
+  @Ignore(CHROME)
+  @Ignore(IE)
+  @Ignore(PHANTOMJS)
+  @Ignore(SAFARI)
+  @Ignore(MARIONETTE)
   @NotYetImplemented(HTMLUNIT)
   public void testShouldThrowAnExceptionWithMessageAndStacktraceWhenTheJavascriptIsBad() {
     driver.get(pages.xhtmlTestPage);
@@ -484,9 +489,9 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   @JavascriptEnabled
   @NeedsFreshDriver
   @NoDriverAfterTest
-  @Ignore(reason = "Failure indicates hang condition, which would break the" +
-      " test suite. Really needs a timeout set.")
   @Test
+  @Ignore(value = ALL, reason = "Failure indicates hang condition, which would break the" +
+                                " test suite. Really needs a timeout set.")
   public void testShouldThrowExceptionIfExecutingOnNoPage() {
     Throwable t = catchThrowable(() -> executeScript("return 1;"));
     assertThat(t, instanceOf(WebDriverException.class));
@@ -552,7 +557,11 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore(value = {CHROME, IE, PHANTOMJS, SAFARI, MARIONETTE})
+  @Ignore(CHROME)
+  @Ignore(IE)
+  @Ignore(PHANTOMJS)
+  @Ignore(SAFARI)
+  @Ignore(MARIONETTE)
   @NotYetImplemented(HTMLUNIT)
   public void testShouldBeAbleToReturnADateObject() {
     driver.get(pages.simpleTestPage);
@@ -568,7 +577,11 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test(timeout = 10000)
-  @Ignore(value = {CHROME, IE, PHANTOMJS, SAFARI, MARIONETTE})
+  @Ignore(CHROME)
+  @Ignore(IE)
+  @Ignore(PHANTOMJS)
+  @Ignore(SAFARI)
+  @Ignore(MARIONETTE)
   public void shouldReturnDocumentElementIfDocumentIsReturned() {
     driver.get(pages.simpleTestPage);
 

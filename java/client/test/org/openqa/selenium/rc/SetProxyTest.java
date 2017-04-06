@@ -47,9 +47,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 
-@Ignore(value = {IE},
-        reason = "Not tested on these browsers yet.")
 @RunWith(SeleniumTestRunner.class)
+@Ignore(IE)
 public class SetProxyTest {
 
   private static Pages pages;

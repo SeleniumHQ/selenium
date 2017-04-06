@@ -153,9 +153,8 @@ public class TypingTest extends JUnit4TestBase {
     assertThat(keyReporter.getAttribute("value"), is(""));
   }
 
-  @NotYetImplemented(HTMLUNIT)
-  @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
   @Test
+  @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
   public void testShouldBeAbleToUseArrowKeys() {
     driver.get(pages.javascriptPage);
 
@@ -246,8 +245,8 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {IE})
   @Test
+  @Ignore(IE)
   public void testShouldFireFocusKeyEventsInTheRightOrder() {
     driver.get(pages.javascriptPage);
 
@@ -265,9 +264,10 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT, IE, PHANTOMJS})
-  @NotYetImplemented(HTMLUNIT)
   @Test
+  @Ignore(HTMLUNIT)
+  @Ignore(IE)
+  @Ignore(PHANTOMJS)
   public void testShouldReportKeyCodeOfArrowKeys() {
     assumeFalse(Browser.detect() == Browser.opera &&
                 getEffectivePlatform().is(Platform.WINDOWS));
@@ -294,9 +294,8 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @NotYetImplemented(HTMLUNIT)
-  @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
   @Test
+  @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
   public void testShouldReportKeyCodeOfArrowKeysUpDownEvents() {
     assumeFalse(Browser.detect() == Browser.opera &&
                 getEffectivePlatform().is(Platform.WINDOWS));
@@ -402,9 +401,8 @@ public class TypingTest extends JUnit4TestBase {
     assertThat(result.getText().trim(), containsString(" up: 16"));
   }
 
-  @NotYetImplemented(HTMLUNIT)
-  @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
   @Test
+  @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
   public void testArrowKeysAndPageUpAndDown() {
     driver.get(pages.javascriptPage);
 
@@ -432,9 +430,8 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @NotYetImplemented(HTMLUNIT)
-  @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
   @Test
+  @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
   public void testDeleteAndBackspaceKeys() {
     driver.get(pages.javascriptPage);
 
@@ -451,9 +448,8 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @NotYetImplemented(HTMLUNIT)
   @Test
-  @Ignore({HTMLUNIT, MARIONETTE})
+  @Ignore(MARIONETTE)
   public void testSpecialSpaceKeys() {
     driver.get(pages.javascriptPage);
 
@@ -464,9 +460,8 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @NotYetImplemented(HTMLUNIT)
   @Test
-  @Ignore({HTMLUNIT, MARIONETTE})
+  @Ignore(MARIONETTE)
   public void testNumberpadKeys() {
     driver.get(pages.javascriptPage);
 
@@ -480,8 +475,8 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {IE}, reason = "IE: F4 triggers address bar")
   @Test
+  @Ignore(value = IE, reason = "F4 triggers address bar")
   public void testFunctionKeys() {
     driver.get(pages.javascriptPage);
 
@@ -493,9 +488,8 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT, SAFARI}, reason = "Safari: issue 4221", issues = {4221})
-  @NotYetImplemented(HTMLUNIT)
   @Test
+  @Ignore(value = SAFARI, reason = "issue 4221")
   public void testShiftSelectionDeletes() {
     driver.get(pages.javascriptPage);
 
@@ -635,9 +629,9 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {PHANTOMJS, MARIONETTE, HTMLUNIT})
-  @NotYetImplemented(HTMLUNIT)
   @Test
+  @Ignore(PHANTOMJS)
+  @Ignore(MARIONETTE)
   public void testGenerateKeyPressEventEvenWhenElementPreventsDefault() {
     assumeFalse(isFirefox(driver) && getFirefoxVersion(driver) < 25);
     driver.get(pages.javascriptPage);
@@ -658,8 +652,8 @@ public class TypingTest extends JUnit4TestBase {
     assertThat(email.getAttribute("value"), equalTo("foobar"));
   }
 
-  @Ignore(value = {HTMLUNIT}, reason = "inconsistent test")
   @Test
+  @Ignore(value = HTMLUNIT, reason = "inconsistent test")
   public void testShouldBeAbleToTypeOnANumberInputField() {
     driver.get(pages.formPage);
     WebElement email = driver.findElement(By.id("age"));
@@ -668,8 +662,8 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {SAFARI}, reason = "Untested")
   @Test
+  @Ignore(SAFARI)
   public void canSafelyTypeOnElementThatIsRemovedFromTheDomOnKeyPress() {
     driver.get(appServer.whereIs("key_tests/remove_on_keypress.html"));
 
@@ -699,7 +693,8 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = {HTMLUNIT, MARIONETTE}, reason = "Failed with JS enabled, passed otherwise")
+  @Ignore(value = HTMLUNIT, reason = "Failed with JS enabled, passed otherwise")
+  @Ignore(MARIONETTE)
   public void canClearNumberInputAfterTypingInvalidInput() {
     driver.get(pages.formPage);
     WebElement input = driver.findElement(By.id("age"));

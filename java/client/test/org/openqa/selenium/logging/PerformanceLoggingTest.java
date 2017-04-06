@@ -47,7 +47,12 @@ import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 import java.util.Arrays;
 
-@Ignore({CHROME, HTMLUNIT, IE, PHANTOMJS, SAFARI, MARIONETTE})
+@Ignore(CHROME)
+@Ignore(HTMLUNIT)
+@Ignore(IE)
+@Ignore(PHANTOMJS)
+@Ignore(SAFARI)
+@Ignore(MARIONETTE)
 public class PerformanceLoggingTest extends JUnit4TestBase {
 
   private WebDriver loggingDriver;

@@ -25,6 +25,7 @@ import static org.openqa.selenium.Platform.ANDROID;
 import static org.openqa.selenium.WaitingConditions.newWindowIsOpened;
 import static org.openqa.selenium.WaitingConditions.pageSourceToContain;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
+import static org.openqa.selenium.testing.Driver.ALL;
 import static org.openqa.selenium.testing.Driver.CHROME;
 import static org.openqa.selenium.testing.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Driver.IE;
@@ -77,8 +78,8 @@ public class ClickTest extends JUnit4TestBase {
     assertEquals("Latch was reset", Boolean.TRUE, samePage);
   }
 
-  @Test
   @SwitchToTopAfterTest
+  @Test
   public void testCanClickOnALinkThatUpdatesAnotherFrame() {
     driver.switchTo().frame("source");
 
@@ -89,8 +90,8 @@ public class ClickTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Test
   @SwitchToTopAfterTest
+  @Test
   public void testElementsFoundByJsCanLoadUpdatesInAnotherFrame() {
     driver.switchTo().frame("source");
 
@@ -104,8 +105,8 @@ public class ClickTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Test
   @SwitchToTopAfterTest
+  @Test
   public void testJsLocatedElementsCanUpdateFramesIfFoundSomehowElse() {
     driver.switchTo().frame("source");
 
@@ -135,16 +136,16 @@ public class ClickTest extends JUnit4TestBase {
     assertEquals("click", log);
   }
 
-  @Ignore(value = {SAFARI}, reason = "Not tested")
   @Test
+  @Ignore(SAFARI)
   public void testShouldClickOnFirstBoundingClientRectWithNonZeroSize() {
     driver.findElement(By.id("twoClientRects")).click();
     wait.until(titleIs("XHTML Test Page"));
   }
 
   @JavascriptEnabled
-  @Ignore(value = {MARIONETTE}, reason = "Not implemented")
   @Test
+  @Ignore(MARIONETTE)
   public void testShouldSetRelatedTargetForMouseOver() {
     driver.get(pages.javascriptPage);
 
@@ -157,8 +158,8 @@ public class ClickTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @NoDriverAfterTest
-  @Ignore(value = {SAFARI}, reason = "Safari: issue 3693")
   @Test
+  @Ignore(value = SAFARI, reason = "issue 3693")
   public void testShouldOnlyFollowHrefOnce() {
     driver.get(pages.clicksPage);
     String current = driver.getWindowHandle();
@@ -174,7 +175,8 @@ public class ClickTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore
+  @Test
+  @Ignore(ALL)
   public void testShouldSetRelatedTargetForMouseOut() {
     fail("Must. Write. Meaningful. Test (but we don't fire mouse outs synthetically");
   }
@@ -245,7 +247,8 @@ public class ClickTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = {IE, MARIONETTE})
+  @Ignore(IE)
+  @Ignore(MARIONETTE)
   public void testCanClickAnImageMapArea() {
     driver.get(appServer.whereIs("click_tests/google_map.html"));
     driver.findElement(By.id("rectG")).click();
@@ -261,7 +264,8 @@ public class ClickTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = {FIREFOX, MARIONETTE})
+  @Ignore(FIREFOX)
+  @Ignore(MARIONETTE)
   public void testShouldBeAbleToClickOnAnElementGreaterThanTwoViewports() {
     String url = appServer.whereIs("click_too_big.html");
     driver.get(url);
@@ -273,9 +277,9 @@ public class ClickTest extends JUnit4TestBase {
     wait.until(titleIs("clicks"));
   }
 
-  @Test
-  @Ignore(value = {MARIONETTE})
   @SwitchToTopAfterTest
+  @Test
+  @Ignore(MARIONETTE)
   public void testShouldBeAbleToClickOnAnElementInFrameGreaterThanTwoViewports() {
     String url = appServer.whereIs("click_too_big_in_frame.html");
     driver.get(url);
@@ -355,7 +359,10 @@ public class ClickTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore(value = {CHROME, IE, MARIONETTE, SAFARI})
+  @Ignore(CHROME)
+  @Ignore(IE)
+  @Ignore(MARIONETTE)
+  @Ignore(SAFARI)
   public void testShouldBeAbleToClickOnAPartiallyOverlappedLinkThatWrapsToTheNextLine() {
     driver.get(appServer.whereIs("click_tests/wrapped_overlapping_elements.html"));
 

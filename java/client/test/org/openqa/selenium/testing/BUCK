@@ -2,6 +2,7 @@ java_library(name = 'annotations',
   srcs = [
     'Driver.java',
     'Ignore.java',
+    'IgnoreList.java',
     'JavascriptEnabled.java',
     'NativeEventsRequired.java',
     'NeedsLocalEnvironment.java',

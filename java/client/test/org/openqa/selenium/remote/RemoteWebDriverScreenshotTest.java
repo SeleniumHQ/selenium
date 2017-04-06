@@ -34,6 +34,7 @@ import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 @Ignore(HTMLUNIT)
 public class RemoteWebDriverScreenshotTest extends JUnit4TestBase {
+
   @Test
   public void testShouldBeAbleToGrabASnapshotOnException() {
     if (!(driver instanceof RemoteWebDriver)) {

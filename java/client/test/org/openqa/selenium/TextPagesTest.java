@@ -42,9 +42,12 @@ public class TextPagesTest extends JUnit4TestBase {
     textPage = GlobalTestEnvironment.get().getAppServer().whereIs("plain.txt");
   }
 
-  @Ignore(value = {IE, CHROME, SAFARI, PHANTOMJS, MARIONETTE},
-      reason = "IE, Firefox: adds HTML tags.")
   @Test
+  @Ignore(value = IE, reason = "adds HTML tags")
+  @Ignore(CHROME)
+  @Ignore(SAFARI)
+  @Ignore(PHANTOMJS)
+  @Ignore(MARIONETTE)
   public void testShouldBeAbleToLoadASimplePageOfText() {
     driver.get(textPage);
 
@@ -60,9 +63,11 @@ public class TextPagesTest extends JUnit4TestBase {
     assertThat(t, instanceOf(NoSuchElementException.class));
   }
 
-  @Ignore(value = {CHROME, IE, SAFARI, PHANTOMJS},
-      reason = "Safari, IE, Firefox: creates DOM for displaying text pages")
   @Test
+  @Ignore(value = IE, reason = "creates DOM for displaying text pages")
+  @Ignore(value = SAFARI, reason = "creates DOM for displaying text pages")
+  @Ignore(CHROME)
+  @Ignore(PHANTOMJS)
   public void testShouldThrowExceptionWhenAddingCookieToAPageThatIsNotHtml() {
     driver.get(textPage);
 

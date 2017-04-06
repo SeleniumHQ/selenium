@@ -75,8 +75,8 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {MARIONETTE})
   @Test
+  @Ignore(MARIONETTE)
   public void testShouldWaitForLoadsToCompleteAfterJavascriptCausesANewPageToLoad() {
     driver.get(pages.formPage);
 
@@ -87,8 +87,8 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {MARIONETTE})
   @Test
+  @Ignore(MARIONETTE)
   public void testShouldBeAbleToFindElementAfterJavascriptCausesANewPageToLoad() {
     driver.get(pages.formPage);
 
@@ -172,8 +172,8 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {SAFARI}, reason = " Safari: issue 4061. Other platforms: not properly tested")
   @Test
+  @Ignore(value = SAFARI, reason = "issue 4061")
   public void testChangeEventIsFiredAppropriatelyWhenFocusIsLost() {
     driver.get(pages.javascriptPage);
 
@@ -238,10 +238,10 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
    * running: "ImplicitWaitTest", "TemporaryFilesystemTest", "JavascriptEnabledDriverTest".
    * SimonStewart 2010-10-04
    */
-  @Ignore(value = {SAFARI}, reason = "Safari: issue 3693")
   @JavascriptEnabled
   @NeedsFreshDriver
   @Test
+  @Ignore(value = SAFARI, reason = "issue 3693")
   public void testShouldBeAbleToClickALinkThatClosesAWindow() throws Exception {
     driver.get(pages.javascriptPage);
 

@@ -46,7 +46,7 @@ import java.io.IOException;
 /**
  * Demonstrates how to use WebDriver with a file input element.
  */
-@Ignore(value = {SAFARI}, issues = {4220})
+@Ignore(value = SAFARI, reason = "issue 4220")
 public class UploadTest extends JUnit4TestBase {
 
   private static final String LOREM_IPSUM_TEXT = "lorem ipsum dolor sit amet";
@@ -61,8 +61,9 @@ public class UploadTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @SwitchToTopAfterTest
-  @Ignore(value = {HTMLUNIT, MARIONETTE}, reason = "Possible bug in getAttribute?")
   @Test
+  @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
+  @Ignore(MARIONETTE)
   public void testFileUploading() throws Exception {
     assumeFalse(
         "This test as written assumes a file on local disk is accessible to the browser. "
@@ -83,7 +84,10 @@ public class UploadTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = {IE, PHANTOMJS, SAFARI, MARIONETTE})
+  @Ignore(IE)
+  @Ignore(PHANTOMJS)
+  @Ignore(SAFARI)
+  @Ignore(MARIONETTE)
   public void testCleanFileInput() throws Exception {
     driver.get(pages.uploadPage);
     WebElement element = driver.findElement(By.id("upload"));

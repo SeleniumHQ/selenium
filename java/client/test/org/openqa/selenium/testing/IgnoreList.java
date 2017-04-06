@@ -18,20 +18,12 @@
 package org.openqa.selenium.testing;
 
 import java.lang.annotation.ElementType;
-import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.METHOD})
-@Repeatable(IgnoreList.class)
-public @interface Ignore {
-
-  Driver value();
-
-  String reason() default ("Unknown");
-
-  String issue() default "";
-
+public @interface IgnoreList {
+  Ignore[] value();
 }

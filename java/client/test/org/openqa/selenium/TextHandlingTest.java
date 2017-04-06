@@ -29,6 +29,7 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeFalse;
+import static org.openqa.selenium.testing.Driver.ALL;
 import static org.openqa.selenium.testing.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Driver.IE;
 
@@ -187,8 +188,9 @@ public class TextHandlingTest extends JUnit4TestBase {
         "after pre"));
   }
 
-  @Ignore(value = {HTMLUNIT, IE}, reason = "IE: inserts \r\n instead of \n")
   @Test
+  @Ignore(value = IE, reason = "IE: inserts \r\n instead of \n")
+  @Ignore(HTMLUNIT)
   public void testShouldBeAbleToSetMoreThanOneLineOfTextInATextArea() {
     driver.get(pages.formPage);
     WebElement textarea = driver.findElement(By.id("withText"));
@@ -349,8 +351,7 @@ public class TextHandlingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = {HTMLUNIT, IE})
-  @NotYetImplemented(HTMLUNIT)
+  @Ignore(IE)
   public void testTextOfATextAreaShouldBeEqualToItsDefaultTextEvenAfterTyping() {
     driver.get(pages.formPage);
     WebElement area = driver.findElement(By.id("withText"));
@@ -359,10 +360,9 @@ public class TextHandlingTest extends JUnit4TestBase {
     assertEquals(oldText, area.getText());
   }
 
-  @Test
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT, IE})
-  @NotYetImplemented(HTMLUNIT)
+  @Test
+  @Ignore(IE)
   public void testTextOfATextAreaShouldBeEqualToItsDefaultTextEvenAfterChangingTheValue() {
     driver.get(pages.formPage);
     WebElement area = driver.findElement(By.id("withText"));
@@ -387,8 +387,8 @@ public class TextHandlingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(reason = "Hidden LTR Unicode marks are currently returned by WebDriver but shouldn't.",
-    issues = {4473})
+  @Ignore(value = ALL,
+      reason = "Hidden LTR Unicode marks are currently returned by WebDriver but shouldn't, issue 4473")
   public void testShouldNotReturnLtrMarks() {
     driver.get(pages.unicodeLtrPage);
     WebElement element = driver.findElement(By.id("EH")).findElement(By.tagName("nobr"));
@@ -402,7 +402,7 @@ public class TextHandlingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(reason = "Not all unicode whitespace characters are trimmed", issues = {6072})
+  @Ignore(value = ALL, reason = "Not all unicode whitespace characters are trimmed, issue 6072")
   public void testShouldTrimTextWithMultiByteWhitespaces() {
     driver.get(pages.simpleTestPage);
     String text = driver.findElement(By.id("trimmedSpace")).getText();

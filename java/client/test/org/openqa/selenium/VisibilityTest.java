@@ -123,8 +123,8 @@ public class VisibilityTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled // element.getSize() requires Javascript in HtmlUnit
-  @Ignore(IE)
   @Test
+  @Ignore(IE)
   public void testZeroSizedDivIsShownIfDescendantHasSize() {
     driver.get(pages.javascriptPage);
 
@@ -145,9 +145,11 @@ public class VisibilityTest extends JUnit4TestBase {
     assertTrue(element.isDisplayed());
   }
 
-  @Ignore({IE, PHANTOMJS, SAFARI})
-  @NotYetImplemented(HTMLUNIT)
   @Test
+  @Ignore(IE)
+  @Ignore(PHANTOMJS)
+  @Ignore(SAFARI)
+  @NotYetImplemented(HTMLUNIT)
   public void testElementHiddenByOverflowXIsNotVisible() {
     String[] pages = new String[]{
         "overflow/x_hidden_y_hidden.html",
@@ -163,9 +165,9 @@ public class VisibilityTest extends JUnit4TestBase {
     }
   }
 
+  @Test
   @Ignore(PHANTOMJS)
   @NotYetImplemented(HTMLUNIT)
-  @Test
   public void testElementHiddenByOverflowYIsNotVisible() {
     String[] pages = new String[]{
         "overflow/x_hidden_y_hidden.html",
@@ -181,8 +183,8 @@ public class VisibilityTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore({IE})
   @Test
+  @Ignore(IE)
   public void testElementScrollableByOverflowXIsVisible() {
     String[] pages = new String[]{
         "overflow/x_scroll_y_hidden.html",
@@ -199,8 +201,9 @@ public class VisibilityTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore({IE, SAFARI})
   @Test
+  @Ignore(IE)
+  @Ignore(SAFARI)
   public void testElementScrollableByOverflowYIsVisible() {
     String[] pages = new String[]{
         "overflow/x_hidden_y_scroll.html",
@@ -279,9 +282,10 @@ public class VisibilityTest extends JUnit4TestBase {
    * @see <a href="http://code.google.com/p/selenium/issues/detail?id=1610">
    *      http://code.google.com/p/selenium/issues/detail?id=1610</a>
    */
-  @Ignore({IE, MARIONETTE})
   @JavascriptEnabled // element.getCssValue() requires Javascript in HtmlUnit
   @Test
+  @Ignore(IE)
+  @Ignore(MARIONETTE)
   public void testShouldBeAbleToClickOnElementsWithOpacityZero() {
     driver.get(pages.clickJacker);
 
@@ -292,8 +296,8 @@ public class VisibilityTest extends JUnit4TestBase {
     assertEquals("1", element.getCssValue("opacity"));
   }
 
-  @Ignore(MARIONETTE)
   @Test
+  @Ignore(MARIONETTE)
   public void testShouldBeAbleToSelectOptionsFromAnInvisibleSelect() {
     driver.get(pages.formPage);
 

@@ -91,7 +91,7 @@ public class TestUtilities {
   }
 
   public static boolean isChrome(WebDriver driver) {
-    return getUserAgent(driver).contains("Chrome");
+    return !(driver instanceof HtmlUnitDriver) && getUserAgent(driver).contains("Chrome");
   }
 
   public static boolean isOldChromedriver(WebDriver driver) {

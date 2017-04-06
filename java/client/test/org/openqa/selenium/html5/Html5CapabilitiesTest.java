@@ -43,7 +43,10 @@ import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.TestUtilities;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
-@Ignore({HTMLUNIT, IE, SAFARI, MARIONETTE})
+@Ignore(HTMLUNIT)
+@Ignore(IE)
+@Ignore(SAFARI)
+@Ignore(MARIONETTE)
 public class Html5CapabilitiesTest extends JUnit4TestBase {
 
   private WebDriver localDriver;
