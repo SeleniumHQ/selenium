@@ -90,7 +90,8 @@ public class FormHandlingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = {PHANTOMJS, SAFARI})
+  @Ignore(PHANTOMJS)
+  @Ignore(SAFARI)
   @NotYetImplemented(
     value = MARIONETTE, reason = "Delegates to JS and so the wrong exception is returned")
   public void testShouldNotBeAbleToSubmitAFormThatDoesNotExist() {
@@ -158,10 +159,10 @@ public class FormHandlingTest extends JUnit4TestBase {
     assertThat(newFormValue, equalTo("some text"));
   }
 
-  @Ignore(value = {SAFARI, MARIONETTE, HTMLUNIT},
-          reason = "HtmlUnit bug with getAttribute. Does not yet support file uploads",
-          issues = {4220})
   @Test
+  @Ignore(value = SAFARI, reason = "issue 4220")
+  @Ignore(MARIONETTE)
+  @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
   public void testShouldBeAbleToAlterTheContentsOfAFileUploadInputElement() throws IOException {
     driver.get(pages.formPage);
     WebElement uploadElement = driver.findElement(By.id("upload"));
@@ -176,9 +177,10 @@ public class FormHandlingTest extends JUnit4TestBase {
     assertTrue(uploadPath.endsWith(file.getName()));
   }
 
-  @Ignore(value = {SAFARI, MARIONETTE, HTMLUNIT},
-          reason = "Does not yet support file uploads", issues = {4220})
   @Test
+  @Ignore(value = SAFARI, reason = "issue 4220")
+  @Ignore(MARIONETTE)
+  @Ignore(HTMLUNIT)
   public void testShouldBeAbleToSendKeysToAFileUploadInputElementInAnXhtmlDocument()
       throws IOException {
     assumeFalse("IE before 9 doesn't handle pages served with an XHTML content type,"
@@ -198,9 +200,9 @@ public class FormHandlingTest extends JUnit4TestBase {
     assertTrue(uploadPath.endsWith(file.getName()));
   }
 
-  @Ignore(value = {SAFARI, MARIONETTE},
-          reason = "Does not yet support file uploads", issues = {4220})
   @Test
+  @Ignore(value = SAFARI, reason = "issue 4220")
+  @Ignore(MARIONETTE)
   public void testShouldBeAbleToUploadTheSameFileTwice() throws IOException {
     File file = File.createTempFile("test", "txt");
     file.deleteOnExit();
@@ -267,8 +269,10 @@ public class FormHandlingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = {PHANTOMJS, SAFARI, HTMLUNIT, MARIONETTE},
-          reason = "HtmlUnit: error; others: untested")
+  @Ignore(PHANTOMJS)
+  @Ignore(SAFARI)
+  @Ignore(MARIONETTE)
+  @Ignore(HTMLUNIT)
   public void handleFormWithJavascriptAction() {
     String url = appServer.whereIs("form_handling_js_submit.html");
     driver.get(url);
@@ -281,36 +285,41 @@ public class FormHandlingTest extends JUnit4TestBase {
     assertEquals("Tasty cheese", text);
   }
 
-  @Ignore(value = {HTMLUNIT, SAFARI}, reason = "untested")
   @Test
+  @Ignore(SAFARI)
+  @Ignore(HTMLUNIT)
   public void testCanClickOnASubmitButton() {
     checkSubmitButton("internal_explicit_submit");
   }
 
 
-  @Ignore(value = {HTMLUNIT, SAFARI}, reason = "untested")
   @Test
+  @Ignore(SAFARI)
+  @Ignore(HTMLUNIT)
   public void testCanClickOnASubmitButtonNestedSpan() {
     checkSubmitButton("internal_span_submit");
   }
 
-  @Ignore(value = {HTMLUNIT, SAFARI}, reason = "untested")
   @Test
+  @Ignore(SAFARI)
+  @Ignore(HTMLUNIT)
   public void testCanClickOnAnImplicitSubmitButton() {
     assumeFalse(isIe6(driver) || isIe7(driver) );
     checkSubmitButton("internal_implicit_submit");
   }
 
-  @Ignore(value = {HTMLUNIT, IE, SAFARI},
-          reason = "IE: failed; Others: untested")
   @Test
+  @Ignore(IE)
+  @Ignore(SAFARI)
+  @Ignore(HTMLUNIT)
   public void testCanClickOnAnExternalSubmitButton() {
     checkSubmitButton("external_explicit_submit");
   }
 
-  @Ignore(value = {HTMLUNIT, IE, SAFARI},
-      reason = "IE: failed; Others: untested")
   @Test
+  @Ignore(IE)
+  @Ignore(SAFARI)
+  @Ignore(HTMLUNIT)
   public void testCanClickOnAnExternalImplicitSubmitButton() {
     checkSubmitButton("external_implicit_submit");
   }

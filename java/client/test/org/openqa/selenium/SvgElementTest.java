@@ -32,8 +32,8 @@ import java.util.List;
 
 public class SvgElementTest extends JUnit4TestBase {
 
-  @NotYetImplemented(HTMLUNIT)
   @Test
+  @NotYetImplemented(HTMLUNIT)
   public void testShouldClickOnGraphVisualElements() {
     assumeFalse("IE version < 9 doesn't support SVG", isOldIe(driver));
 
@@ -66,8 +66,8 @@ public class SvgElementTest extends JUnit4TestBase {
     return null;
   }
 
-  @NotYetImplemented(HTMLUNIT)
   @Test
+  @NotYetImplemented(HTMLUNIT)
   public void testShouldClickOnGraphTextElements() {
     assumeFalse("IE version < 9 doesn't support SVG", isOldIe(driver));
 

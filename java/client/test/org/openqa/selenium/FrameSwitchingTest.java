@@ -235,8 +235,10 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     assertThat(t, instanceOf(NoSuchFrameException.class));
   }
 
-  @Ignore(value = {IE, PHANTOMJS, SAFARI})
   @Test
+  @Ignore(IE)
+  @Ignore(PHANTOMJS)
+  @Ignore(SAFARI)
   public void testShouldBeAbleToSwitchToParentFrame() {
     driver.get(pages.framesetPage);
 
@@ -244,8 +246,10 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     assertThat(driver.findElement(By.id("pageNumber")).getText(), equalTo("1"));
   }
 
-  @Ignore(value = {IE, PHANTOMJS, SAFARI})
   @Test
+  @Ignore(IE)
+  @Ignore(PHANTOMJS)
+  @Ignore(SAFARI)
   public void testShouldBeAbleToSwitchToParentFrameFromASecondLevelFrame() {
     driver.get(pages.framesetPage);
 
@@ -254,16 +258,20 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     assertThat(driver.findElement(By.id("pageNumber")).getText(), equalTo("11"));
   }
 
-  @Ignore(value = {IE, PHANTOMJS, SAFARI})
   @Test
+  @Ignore(IE)
+  @Ignore(PHANTOMJS)
+  @Ignore(SAFARI)
   public void testSwitchingToParentFrameFromDefaultContextIsNoOp() {
     driver.get(pages.xhtmlTestPage);
     driver.switchTo().parentFrame();
     assertEquals(driver.getTitle(), "XHTML Test Page");
   }
 
-  @Ignore(value = {IE, PHANTOMJS, SAFARI})
   @Test
+  @Ignore(IE)
+  @Ignore(PHANTOMJS)
+  @Ignore(SAFARI)
   public void testShouldBeAbleToSwitchToParentFromAnIframe() {
     driver.get(pages.iframePage);
     driver.switchTo().frame(0);
@@ -293,8 +301,8 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     wait.until(WaitingConditions.elementTextToEqual(By.xpath("//p"), "Success!"));
   }
 
-  @Ignore(value = {MARIONETTE})
   @Test
+  @Ignore(MARIONETTE)
   public void testShouldFocusOnTheReplacementWhenAFrameFollowsALinkToA_TopTargetedPage()
       throws Exception {
     driver.get(pages.framesetPage);
@@ -383,8 +391,11 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     assertNotNull(element);
   }
 
-  @Ignore({HTMLUNIT, IE, PHANTOMJS, SAFARI})
   @Test
+  @Ignore(HTMLUNIT)
+  @Ignore(IE)
+  @Ignore(PHANTOMJS)
+  @Ignore(SAFARI)
   public void testGetCurrentUrlReturnsTopLevelBrowsingContextUrl() {
     driver.get(pages.framesetPage);
     assertThat(driver.getCurrentUrl(), equalTo(pages.framesetPage));
@@ -393,8 +404,11 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     assertThat(driver.getCurrentUrl(), equalTo(pages.framesetPage));
   }
 
-  @Ignore({HTMLUNIT, IE, PHANTOMJS, SAFARI})
   @Test
+  @Ignore(HTMLUNIT)
+  @Ignore(IE)
+  @Ignore(PHANTOMJS)
+  @Ignore(SAFARI)
   public void testGetCurrentUrlReturnsTopLevelBrowsingContextUrlForIframes() {
     driver.get(pages.iframePage);
     assertThat(driver.getCurrentUrl(), equalTo(pages.iframePage));
@@ -403,9 +417,9 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     assertThat(driver.getCurrentUrl(), equalTo(pages.iframePage));
   }
 
-  @Ignore(value = {PHANTOMJS})
   @JavascriptEnabled
   @Test
+  @Ignore(PHANTOMJS)
   public void testShouldBeAbleToSwitchToTheTopIfTheFrameIsDeletedFromUnderUs() {
     driver.get(appServer.whereIs("frame_switching_tests/deletingFrame.html"));
 
@@ -426,9 +440,9 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     wait.until(presenceOfElementLocated(By.id("success")));
   }
 
-  @Ignore(value = {PHANTOMJS})
   @JavascriptEnabled
   @Test
+  @Ignore(PHANTOMJS)
   public void testShouldBeAbleToSwitchToTheTopIfTheFrameIsDeletedFromUnderUsWithFrameIndex() {
     driver.get(appServer.whereIs("frame_switching_tests/deletingFrame.html"));
     int iframe = 0;
@@ -446,9 +460,9 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     wait.until(presenceOfElementLocated(By.id("success")));
   }
 
-  @Ignore(value = {PHANTOMJS})
   @JavascriptEnabled
   @Test
+  @Ignore(PHANTOMJS)
   public void testShouldBeAbleToSwitchToTheTopIfTheFrameIsDeletedFromUnderUsWithWebelement() {
     driver.get(appServer.whereIs("frame_switching_tests/deletingFrame.html"));
     WebElement iframe = driver.findElement(By.id("iframe1"));
@@ -467,9 +481,14 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     wait.until(presenceOfElementLocated(By.id("success")));
   }
 
-  @Ignore(value = {CHROME, HTMLUNIT, IE, MARIONETTE, PHANTOMJS, SAFARI}, reason = "not tested")
   @JavascriptEnabled
   @Test
+  @Ignore(CHROME)
+  @Ignore(HTMLUNIT)
+  @Ignore(IE)
+  @Ignore(MARIONETTE)
+  @Ignore(PHANTOMJS)
+  @Ignore(SAFARI)
   public void testShouldNotBeAbleToDoAnythingTheFrameIsDeletedFromUnderUs() {
     driver.get(appServer.whereIs("frame_switching_tests/deletingFrame.html"));
 

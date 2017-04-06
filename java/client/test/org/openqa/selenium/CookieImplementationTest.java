@@ -208,9 +208,11 @@ public class CookieImplementationTest extends JUnit4TestBase {
     assertCookieIsNotPresentWithName(cookie1.getName());
   }
 
-  @Ignore(value = {CHROME, PHANTOMJS, SAFARI})
   @SwitchToTopAfterTest
   @Test
+  @Ignore(CHROME)
+  @Ignore(PHANTOMJS)
+  @Ignore(SAFARI)
   public void testGetCookiesInAFrame() {
     driver.get(domainHelper.getUrlForFirstValidHostname("/common/animals"));
     Cookie cookie1 = new Cookie.Builder("fish", "cod").path("/common/animals").build();
@@ -223,8 +225,8 @@ public class CookieImplementationTest extends JUnit4TestBase {
     assertCookieIsPresentWithName(cookie1.getName());
   }
 
-  @Ignore({CHROME})
   @Test
+  @Ignore(CHROME)
   public void testCannotGetCookiesWithPathDifferingOnlyInCase() {
     String cookieName = "fish";
     Cookie cookie = new Cookie.Builder(cookieName, "cod").path("/Common/animals").build();
@@ -247,8 +249,8 @@ public class CookieImplementationTest extends JUnit4TestBase {
     assertCookieIsNotPresentWithName(cookieName);
   }
 
-  @Ignore(value = {CHROME})
   @Test
+  @Ignore(CHROME)
   public void testShouldBeAbleToAddToADomainWhichIsRelatedToTheCurrentDomain() {
     String cookieName = "name";
     assertCookieIsNotPresentWithName(cookieName);
@@ -260,8 +262,8 @@ public class CookieImplementationTest extends JUnit4TestBase {
     assertCookieIsPresentWithName(cookieName);
   }
 
-  @Ignore(value = {ALL})
   @Test
+  @Ignore(ALL)
   public void testsShouldNotGetCookiesRelatedToCurrentDomainWithoutLeadingPeriod() {
     String cookieName = "name";
     assertCookieIsNotPresentWithName(cookieName);
@@ -272,8 +274,8 @@ public class CookieImplementationTest extends JUnit4TestBase {
     assertCookieIsNotPresentWithName(cookieName);
   }
 
-  @Ignore({REMOTE})
   @Test
+  @Ignore(REMOTE)
   public void testShouldBeAbleToIncludeLeadingPeriodInDomainName() throws Exception {
     String cookieName = "name";
     assertCookieIsNotPresentWithName(cookieName);
@@ -368,8 +370,8 @@ public class CookieImplementationTest extends JUnit4TestBase {
     assertEquals(addedCookie, retrievedCookie);
   }
 
-  @Ignore(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/463")
   @Test
+  @Ignore(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/463")
   public void testRetainsCookieExpiry() {
     Cookie addedCookie =
         new Cookie.Builder("fish", "cod")
@@ -383,8 +385,10 @@ public class CookieImplementationTest extends JUnit4TestBase {
     assertEquals(addedCookie.getExpiry(), retrieved.getExpiry());
   }
 
-  @Ignore(value = {IE, PHANTOMJS, SAFARI})
   @Test
+  @Ignore(IE)
+  @Ignore(PHANTOMJS)
+  @Ignore(SAFARI)
   public void canHandleSecureCookie() {
     driver.get(domainHelper.getSecureUrlForFirstValidHostname("animals"));
 
@@ -401,8 +405,10 @@ public class CookieImplementationTest extends JUnit4TestBase {
     assertNotNull(retrieved);
   }
 
-  @Ignore(value = {IE, PHANTOMJS, SAFARI})
   @Test
+  @Ignore(IE)
+  @Ignore(PHANTOMJS)
+  @Ignore(SAFARI)
   public void testRetainsCookieSecure() {
     driver.get(domainHelper.getSecureUrlForFirstValidHostname("animals"));
 
@@ -420,8 +426,8 @@ public class CookieImplementationTest extends JUnit4TestBase {
     assertTrue(retrieved.isSecure());
   }
 
-  @Ignore(SAFARI)
   @Test
+  @Ignore(SAFARI)
   public void canHandleHttpOnlyCookie() {
     Cookie addedCookie =
       new Cookie.Builder("fish", "cod")
@@ -436,8 +442,9 @@ public class CookieImplementationTest extends JUnit4TestBase {
     assertNotNull(retrieved);
   }
 
-  @Ignore({CHROME, SAFARI})
   @Test
+  @Ignore(CHROME)
+  @Ignore(SAFARI)
   public void testRetainsHttpOnlyFlag() {
     Cookie addedCookie =
         new Cookie.Builder("fish", "cod")
@@ -484,8 +491,12 @@ public class CookieImplementationTest extends JUnit4TestBase {
     driver.manage().deleteCookieNamed(key);
   }
 
-  @Ignore(value = {CHROME, FIREFOX, IE, PHANTOMJS, SAFARI})
   @Test
+  @Ignore(CHROME)
+  @Ignore(FIREFOX)
+  @Ignore(IE)
+  @Ignore(PHANTOMJS)
+  @Ignore(SAFARI)
   public void testShouldDeleteOneOfTheCookiesWithTheSameName() {
     driver.get(domainHelper.getUrlForFirstValidHostname("/common/animals"));
     Cookie cookie1 = new Cookie.Builder("fish", "cod")

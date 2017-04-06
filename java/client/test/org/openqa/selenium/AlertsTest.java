@@ -36,7 +36,6 @@ import static org.openqa.selenium.testing.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Driver.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 import static org.openqa.selenium.testing.TestUtilities.getFirefoxVersion;
-import static org.openqa.selenium.testing.TestUtilities.isChrome;
 import static org.openqa.selenium.testing.TestUtilities.isFirefox;
 
 import org.junit.Before;
@@ -52,8 +51,9 @@ import org.openqa.selenium.testing.SwitchToTopAfterTest;
 
 import java.util.Set;
 
-@Ignore(value = {CHROME, PHANTOMJS, SAFARI},
-    reason = "chrome: https://bugs.chromium.org/p/chromedriver/issues/detail?id=1500")
+@Ignore(value = CHROME, reason = "https://bugs.chromium.org/p/chromedriver/issues/detail?id=1500")
+@Ignore(PHANTOMJS)
+@Ignore(SAFARI)
 public class AlertsTest extends JUnit4TestBase {
 
   @Before
@@ -62,8 +62,8 @@ public class AlertsTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Test
   @NoDriverAfterTest
+  @Test
   public void testShouldBeAbleToOverrideTheWindowAlertMethod() {
     ((JavascriptExecutor) driver).executeScript(
         "window.alert = function(msg) { document.getElementById('text').innerHTML = msg; }");
@@ -94,10 +94,11 @@ public class AlertsTest extends JUnit4TestBase {
     assertEquals("Testing Alerts", driver.getTitle());
   }
 
-  @Ignore({CHROME, MARIONETTE})
   @JavascriptEnabled
   @NeedsLocalEnvironment(reason = "Carefully timing based")
   @Test
+  @Ignore(CHROME)
+  @Ignore(MARIONETTE)
   @NotYetImplemented(HTMLUNIT)
   public void testShouldGetTextOfAlertOpenedInSetTimeout() throws Exception {
     driver.findElement(By.id("slow-alert")).click();
@@ -128,7 +129,7 @@ public class AlertsTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Test
   @NotYetImplemented(value = HTMLUNIT,
-    reason = "HtmlUnit: click()/prompt need to run in different threads.")
+      reason = "HtmlUnit: click()/prompt need to run in different threads.")
   public void testShouldAllowAUserToAcceptAPrompt() {
     driver.findElement(By.id("prompt")).click();
 
@@ -167,10 +168,10 @@ public class AlertsTest extends JUnit4TestBase {
     wait.until(textInElementLocated(By.id("text"), "cheese"));
   }
 
-  @Ignore(value = {MARIONETTE, CHROME},
-    reason = "Marionette: https://github.com/mozilla/geckodriver/issues/274")
   @JavascriptEnabled
   @Test
+  @Ignore(CHROME)
+  @Ignore(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/274")
   public void testSettingTheValueOfAnAlertThrows() {
     driver.findElement(By.id("alert")).click();
 
@@ -325,7 +326,7 @@ public class AlertsTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore({CHROME})
+  @Ignore(CHROME)
   public void testShouldHandleAlertOnPageLoad() {
     driver.findElement(By.id("open-page-with-onload-alert")).click();
 
@@ -352,8 +353,11 @@ public class AlertsTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {CHROME, FIREFOX, IE, MARIONETTE}, reason = "IE: fails in versions 6 and 7")
   @Test
+  @Ignore(CHROME)
+  @Ignore(FIREFOX)
+  @Ignore(value = IE, reason = "Fails in versions 6 and 7")
+  @Ignore(MARIONETTE)
   public void testShouldNotHandleAlertInAnotherWindow() {
     String mainWindow = driver.getWindowHandle();
     Set<String> currentWindowHandles = driver.getWindowHandles();
@@ -376,11 +380,11 @@ public class AlertsTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
+  @Ignore(value = CHROME, reason = "Chrome does not trigger alerts on unload")
+  @NotYetImplemented(HTMLUNIT)
   public void testShouldHandleAlertOnPageUnload() {
     assumeFalse("Firefox 27 does not trigger alerts on unload",
         isFirefox(driver) && getFirefoxVersion(driver) >= 27);
-    assumeFalse("Chrome does not trigger alerts on unload",
-        isChrome(driver));
     driver.findElement(By.id("open-page-with-onunload-alert")).click();
     driver.navigate().back();
 
@@ -429,11 +433,11 @@ public class AlertsTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
+  @Ignore(value = CHROME, reason = "Chrome does not trigger alerts on unload")
+  @NotYetImplemented(HTMLUNIT)
   public void testShouldHandleAlertOnWindowClose() {
     assumeFalse("Firefox 27 does not trigger alerts on unload",
         isFirefox(driver) && getFirefoxVersion(driver) >= 27);
-    assumeFalse("Chrome does not trigger alerts on unload",
-        isChrome(driver));
     String mainWindow = driver.getWindowHandle();
     try {
       driver.findElement(By.id("open-window-with-onclose-alert")).click();
@@ -454,8 +458,8 @@ public class AlertsTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {CHROME})
   @Test
+  @Ignore(CHROME)
   @NotYetImplemented(value = MARIONETTE,
       reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1279211")
   public void testIncludesAlertTextInUnhandledAlertException() {

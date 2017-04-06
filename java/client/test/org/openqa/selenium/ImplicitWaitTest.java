@@ -56,8 +56,8 @@ public class ImplicitWaitTest extends JUnit4TestBase {
     driver.manage().timeouts().implicitlyWait(0, MILLISECONDS);
   }
 
-  @Test
   @JavascriptEnabled
+  @Test
   public void testShouldImplicitlyWaitForASingleElement() {
     driver.get(pages.dynamicPage);
     WebElement add = driver.findElement(By.id("adder"));
@@ -68,8 +68,8 @@ public class ImplicitWaitTest extends JUnit4TestBase {
     driver.findElement(By.id("box0")); // All is well if this doesn't throw.
   }
 
-  @Test
   @JavascriptEnabled
+  @Test
   public void testShouldStillFailToFindAnElementWhenImplicitWaitsAreEnabled() {
     driver.get(pages.dynamicPage);
     driver.manage().timeouts().implicitlyWait(500, MILLISECONDS);
@@ -77,8 +77,8 @@ public class ImplicitWaitTest extends JUnit4TestBase {
     assertThat(t, instanceOf(NoSuchElementException.class));
   }
 
-  @Test
   @JavascriptEnabled
+  @Test
   public void testShouldReturnAfterFirstAttemptToFindOneAfterDisablingImplicitWaits() {
     driver.get(pages.dynamicPage);
     driver.manage().timeouts().implicitlyWait(3000, MILLISECONDS);
@@ -87,8 +87,8 @@ public class ImplicitWaitTest extends JUnit4TestBase {
     assertThat(t, instanceOf(NoSuchElementException.class));
   }
 
-  @Test
   @JavascriptEnabled
+  @Test
   public void testShouldImplicitlyWaitUntilAtLeastOneElementIsFoundWhenSearchingForMany() {
     driver.get(pages.dynamicPage);
     WebElement add = driver.findElement(By.id("adder"));
@@ -101,8 +101,8 @@ public class ImplicitWaitTest extends JUnit4TestBase {
     assertFalse(elements.isEmpty());
   }
 
-  @Test
   @JavascriptEnabled
+  @Test
   public void testShouldStillFailToFindElementsWhenImplicitWaitsAreEnabled() {
     driver.get(pages.dynamicPage);
     driver.manage().timeouts().implicitlyWait(500, MILLISECONDS);
@@ -110,8 +110,8 @@ public class ImplicitWaitTest extends JUnit4TestBase {
     assertTrue(elements.isEmpty());
   }
 
-  @Test
   @JavascriptEnabled
+  @Test
   public void testShouldStillFailToFindElementsByIdWhenImplicitWaitsAreEnabled() {
     driver.get(pages.dynamicPage);
     driver.manage().timeouts().implicitlyWait(500, MILLISECONDS);
@@ -119,8 +119,8 @@ public class ImplicitWaitTest extends JUnit4TestBase {
     assertTrue(elements.toString(), elements.isEmpty());
   }
 
-  @Test
   @JavascriptEnabled
+  @Test
   public void testShouldReturnAfterFirstAttemptToFindManyAfterDisablingImplicitWaits() {
     driver.get(pages.dynamicPage);
     WebElement add = driver.findElement(By.id("adder"));
@@ -133,9 +133,12 @@ public class ImplicitWaitTest extends JUnit4TestBase {
     assertTrue(elements.isEmpty());
   }
 
-  @Test
   @JavascriptEnabled
-  @Ignore({IE, MARIONETTE, PHANTOMJS, SAFARI})
+  @Test
+  @Ignore(IE)
+  @Ignore(MARIONETTE)
+  @Ignore(PHANTOMJS)
+  @Ignore(SAFARI)
   public void testShouldImplicitlyWaitForAnElementToBeVisibleBeforeInteracting() {
     driver.get(pages.dynamicPage);
 
@@ -149,9 +152,11 @@ public class ImplicitWaitTest extends JUnit4TestBase {
   }
 
 
-  @Test
   @JavascriptEnabled
-  @Ignore({IE, PHANTOMJS, SAFARI})
+  @Test
+  @Ignore(IE)
+  @Ignore(PHANTOMJS)
+  @Ignore(SAFARI)
   public void testShouldRetainImplicitlyWaitFromTheReturnedWebDriverOfFrameSwitchTo() {
     driver.manage().timeouts().implicitlyWait(1, SECONDS);
     driver.get(pages.xhtmlTestPage);

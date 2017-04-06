@@ -31,8 +31,8 @@ import org.openqa.selenium.testing.JavascriptEnabled;
 public class CssValueTest extends JUnit4TestBase {
 
   @JavascriptEnabled
-  @Ignore(MARIONETTE)
   @Test
+  @Ignore(MARIONETTE)
   public void testShouldPickUpStyleOfAnElement() {
     driver.get(pages.javascriptPage);
 
@@ -48,8 +48,8 @@ public class CssValueTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(MARIONETTE)
   @Test
+  @Ignore(MARIONETTE)
   public void testGetCssValueShouldReturnStandardizedColour() {
     driver.get(pages.colorPage);
 

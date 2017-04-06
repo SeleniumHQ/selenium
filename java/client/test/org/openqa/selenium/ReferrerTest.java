@@ -50,7 +50,6 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
-import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 import org.seleniumhq.jetty9.server.Handler;
 import org.seleniumhq.jetty9.server.Request;
@@ -94,10 +93,8 @@ import javax.servlet.http.HttpServletResponse;
  * <p>Note: depending on the condition under test, the various pages may or may
  * not be served by the same server.
  */
-@Ignore(
-    value = {PHANTOMJS, SAFARI},
-    reason = "Opera/PhantomJS - not tested, " +
-             "Safari - not implemented")
+@Ignore(PHANTOMJS)
+@Ignore(SAFARI)
 public class ReferrerTest extends JUnit4TestBase {
 
   private static String page1;
@@ -122,7 +119,6 @@ public class ReferrerTest extends JUnit4TestBase {
    * does not have a proxy configured.
    */
   @Test
-  @NotYetImplemented(HTMLUNIT)
   @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
   @NeedsLocalEnvironment
   public void basicHistoryNavigationWithoutAProxy() {
@@ -146,7 +142,6 @@ public class ReferrerTest extends JUnit4TestBase {
    * Tests navigation across multiple domains when the browser does not have a proxy configured.
    */
   @Test
-  @NotYetImplemented(HTMLUNIT)
   @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
   @NeedsLocalEnvironment
   public void crossDomainHistoryNavigationWithoutAProxy() {
@@ -178,7 +173,6 @@ public class ReferrerTest extends JUnit4TestBase {
    * configured to use a proxy that permits direct access to that domain.
    */
   @Test
-  @NotYetImplemented(HTMLUNIT)
   @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
   @NeedsLocalEnvironment
   public void basicHistoryNavigationWithADirectProxy() {
@@ -208,7 +202,6 @@ public class ReferrerTest extends JUnit4TestBase {
    * permits direct access to those domains.
    */
   @Test
-  @NotYetImplemented(HTMLUNIT)
   @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
   @NeedsLocalEnvironment
   public void crossDomainHistoryNavigationWithADirectProxy() {
@@ -243,9 +236,9 @@ public class ReferrerTest extends JUnit4TestBase {
    * Tests navigation across multiple domains when the browser is configured to use a proxy that
    * redirects the second domain to another host.
    */
-  @Ignore({HTMLUNIT, MARIONETTE})
-  @NotYetImplemented(HTMLUNIT)
   @Test
+  @Ignore(HTMLUNIT)
+  @Ignore(MARIONETTE)
   @NeedsLocalEnvironment
   public void crossDomainHistoryNavigationWithAProxiedHost() {
     testServer1.start();
@@ -284,9 +277,9 @@ public class ReferrerTest extends JUnit4TestBase {
    * intercepts requests to a specific host (www.example.com) - all other requests are permitted
    * to connect directly to the target server.
    */
-  @Ignore({HTMLUNIT, MARIONETTE})
-  @NotYetImplemented(HTMLUNIT)
   @Test
+  @Ignore(HTMLUNIT)
+  @Ignore(MARIONETTE)
   @NeedsLocalEnvironment
   public void crossDomainHistoryNavigationWhenProxyInterceptsHostRequests() {
     testServer1.start();
@@ -322,12 +315,11 @@ public class ReferrerTest extends JUnit4TestBase {
    * Tests navigation on a single domain where the browser is configured to use a proxy that
    * intercepts requests for page 2.
    */
-  @Ignore(
-      value = {HTMLUNIT, IE, MARIONETTE},
-      reason = "IEDriver does not disable automatic proxy caching, causing this test to fail.",
-      issues = 6629)
-  @NotYetImplemented(HTMLUNIT)
   @Test
+  @Ignore(value = IE,
+      reason = "IEDriver does not disable automatic proxy caching, causing this test to fail, issue 6629")
+  @Ignore(HTMLUNIT)
+  @Ignore(MARIONETTE)
   @NeedsLocalEnvironment
   public void navigationWhenProxyInterceptsASpecificUrl() {
     assumeFalse(Boolean.valueOf(System.getenv().getOrDefault("TRAVIS", "false")));

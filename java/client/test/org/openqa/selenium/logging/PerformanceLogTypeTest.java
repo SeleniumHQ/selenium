@@ -26,7 +26,6 @@ import static org.openqa.selenium.testing.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.PHANTOMJS;
-import static org.openqa.selenium.testing.Driver.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.isChrome;
 import static org.openqa.selenium.testing.TestUtilities.isOldChromedriver;
 
@@ -44,8 +43,10 @@ import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 import java.util.Set;
 import java.util.logging.Level;
 
-
-@Ignore({HTMLUNIT, IE, PHANTOMJS, SAFARI})
+@Ignore(HTMLUNIT)
+@Ignore(IE)
+@Ignore(PHANTOMJS)
+@Ignore(MARIONETTE)
 public class PerformanceLogTypeTest extends JUnit4TestBase {
 
   private WebDriver localDriver;
@@ -58,7 +59,6 @@ public class PerformanceLogTypeTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore(MARIONETTE)
   @Test
   public void performanceLogShouldBeDisabledByDefault() {
     assumeFalse(isOldChromedriver(driver));

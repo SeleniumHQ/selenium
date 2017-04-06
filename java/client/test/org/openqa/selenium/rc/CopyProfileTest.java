@@ -20,6 +20,7 @@ package org.openqa.selenium.rc;
 
 import static org.junit.Assert.assertEquals;
 import static org.openqa.selenium.firefox.FirefoxDriver.PROFILE;
+import static org.openqa.selenium.testing.Driver.ALL;
 
 import org.junit.After;
 import org.junit.Before;
@@ -37,7 +38,7 @@ import org.openqa.selenium.testing.drivers.OutOfProcessSeleniumServer;
 
 // TODO(reorg): This test is never run. It must be.
 // Firefox specific test, but needs to be in remote
-@Ignore
+@Ignore(ALL)
 public class CopyProfileTest {
   private OutOfProcessSeleniumServer selenium;
   private TestEnvironment env;

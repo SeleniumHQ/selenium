@@ -27,6 +27,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.IgnoreList;
 
 import java.lang.reflect.Method;
 import java.util.Set;
@@ -94,12 +95,12 @@ public class IgnoreCollector implements IgnoredTestCallback {
       json.addProperty("className", clazz.getName());
       json.addProperty("testName", method.getName());
 
-      Ignore methodIgnore = method.getAnnotation(Ignore.class);
+      IgnoreList methodIgnore = method.getAnnotation(IgnoreList.class);
       if (methodIgnore != null) {
         json.add("method", getIgnoreInfo(methodIgnore));
       }
 
-      Ignore classIgnore = clazz.getAnnotation(Ignore.class);
+      IgnoreList classIgnore = clazz.getAnnotation(IgnoreList.class);
       if (classIgnore != null) {
         json.add("class", getIgnoreInfo(classIgnore));
       }
@@ -107,13 +108,14 @@ public class IgnoreCollector implements IgnoredTestCallback {
       return json;
     }
 
-    private static JsonObject getIgnoreInfo(Ignore annotation) {
+    private static JsonObject getIgnoreInfo(IgnoreList annotation) {
       JsonObject json = new JsonObject();
       Gson gson = new Gson();
       json.add("drivers", gson.toJsonTree(annotation.value()));
-      json.add("issues", gson.toJsonTree(annotation.issues()));
-      json.add("platforms", gson.toJsonTree(annotation.platforms()));
-      json.addProperty("reason", annotation.reason());
+      // TODO: rework
+      //json.add("issues", gson.toJsonTree(annotation.issues()));
+      //json.add("platforms", gson.toJsonTree(annotation.platforms()));
+      //json.addProperty("reason", annotation.reason());
       return json;
     }
   }

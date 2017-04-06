@@ -30,8 +30,8 @@ import java.util.List;
 
 public class SelectElementHandlingTest extends JUnit4TestBase {
 
-  @Ignore({MARIONETTE})
   @Test
+  @Ignore(MARIONETTE)
   public void testShouldBePossibleToDeselectASingleOptionFromASelectWhichAllowsMultipleChoices() {
     driver.get(pages.formPage);
 
@@ -49,8 +49,8 @@ public class SelectElementHandlingTest extends JUnit4TestBase {
     assertThat(option.isSelected(), is(true));
   }
 
-  @Ignore({MARIONETTE})
   @Test
+  @Ignore(MARIONETTE)
   public void testShouldBeAbleToChangeTheSelectedOptionInASelect() {
     driver.get(pages.formPage);
     WebElement selectBox = driver.findElement(By.xpath("//select[@name='selectomatic']"));
@@ -65,8 +65,8 @@ public class SelectElementHandlingTest extends JUnit4TestBase {
     assertThat(two.isSelected(), is(true));
   }
 
-  @Ignore({MARIONETTE})
   @Test
+  @Ignore(MARIONETTE)
   public void testShouldBeAbleToSelectMoreThanOneOptionFromASelectWhichAllowsMultipleChoices() {
     driver.get(pages.formPage);
 
@@ -85,8 +85,8 @@ public class SelectElementHandlingTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore({MARIONETTE})
   @Test
+  @Ignore(MARIONETTE)
   public void testShouldSelectFirstOptionByDefaultIfNoneIsSelected() {
     driver.get(pages.formPage);
     WebElement selectBox = driver.findElement(By.xpath("//select[@name='select-default']"));

@@ -33,7 +33,7 @@ import org.openqa.selenium.testing.SeleniumTestRunner;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 @RunWith(SeleniumTestRunner.class)
-@Ignore(value = {REMOTE}, reason = "Not tested")
+@Ignore(REMOTE)
 public class SessionHandlingTest {
 
   @Test
@@ -45,7 +45,7 @@ public class SessionHandlingTest {
   }
 
   @Test
-  @Ignore(value = {PHANTOMJS})
+  @Ignore(PHANTOMJS)
   public void callingQuitAfterClosingTheLastWindowIsANoOp() {
     WebDriver driver = new WebDriverBuilder().get();
 
@@ -54,7 +54,7 @@ public class SessionHandlingTest {
   }
 
   @Test
-  @Ignore(value = {SAFARI}, reason = "Safari: throws UnreachableBrowserException")
+  @Ignore(value = SAFARI, reason = "Safari: throws UnreachableBrowserException")
   public void callingAnyOperationAfterQuitShouldThrowAnException() {
     WebDriver driver = new WebDriverBuilder().get();
     driver.quit();
@@ -63,10 +63,10 @@ public class SessionHandlingTest {
   }
 
   @Test
-  @Ignore(value = {FIREFOX, PHANTOMJS, SAFARI, MARIONETTE}, reason =
-      "Firefox: can perform an operation after closing the last window,"
-      + "PhantomJS: throws NoSuchWindowException,"
-      + "Safari: throws NullPointerException")
+  @Ignore(value = FIREFOX, reason = "can perform an operation after closing the last window")
+  @Ignore(value = PHANTOMJS, reason = "throws NoSuchWindowException")
+  @Ignore(value = SAFARI, reason = "throws NullPointerException")
+  @Ignore(MARIONETTE)
   public void callingAnyOperationAfterClosingTheLastWindowShouldThrowAnException() {
     WebDriver driver = new WebDriverBuilder().get();
     driver.close();

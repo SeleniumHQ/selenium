@@ -111,9 +111,10 @@ public class WindowTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = {SAFARI, PHANTOMJS},
-      reason = "Safari: getPosition after setPosition doesn't match up exactly, " +
+  @Ignore(value = SAFARI,
+      reason = "getPosition after setPosition doesn't match up exactly, " +
           "as expected - probably due to nuances in Mac OSX window manager.")
+  @Ignore(PHANTOMJS)
   @NotYetImplemented(value = MARIONETTE, reason = "/window/rect")
   public void testSetsThePositionOfTheCurrentWindow() throws InterruptedException {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
@@ -141,9 +142,9 @@ public class WindowTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore(value = {PHANTOMJS}, reason = "Not yet implemented.")
-  @NotYetImplemented(value = MARIONETTE, reason = "/window/rect")
   @Test
+  @Ignore(PHANTOMJS)
+  @NotYetImplemented(value = MARIONETTE, reason = "/window/rect")
   public void testCanMaximizeTheWindow() throws InterruptedException {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
@@ -156,8 +157,8 @@ public class WindowTest extends JUnit4TestBase {
   }
 
   @SwitchToTopAfterTest
-  @Ignore(value = {PHANTOMJS}, reason = "Not yet implemented.")
   @Test
+  @Ignore(PHANTOMJS)
   @NotYetImplemented(value = MARIONETTE, reason = "/window/rect")
   public void testCanMaximizeTheWindowFromFrame() throws InterruptedException {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
@@ -173,9 +174,9 @@ public class WindowTest extends JUnit4TestBase {
     maximize();
   }
 
-  @Ignore(value = {PHANTOMJS}, reason = "Not yet implemented.")
   @SwitchToTopAfterTest
   @Test
+  @Ignore(PHANTOMJS)
   @NotYetImplemented(value = MARIONETTE, reason = "/window/rect")
   public void testCanMaximizeTheWindowFromIframe() throws InterruptedException {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms

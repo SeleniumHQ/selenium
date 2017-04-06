@@ -55,7 +55,10 @@ import java.net.URL;
 import java.util.Map;
 import java.util.Set;
 
-@Ignore({CHROME, HTMLUNIT, IE, SAFARI})
+@Ignore(HTMLUNIT)
+@Ignore(IE)
+@Ignore(CHROME)
+@Ignore(SAFARI)
 public class SessionLogsTest extends JUnit4TestBase {
 
   private static OutOfProcessSeleniumServer server;

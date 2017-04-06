@@ -35,6 +35,7 @@ import org.openqa.selenium.testing.JUnit4TestBase;
 import java.util.List;
 
 public class ChildrenFindingTest extends JUnit4TestBase {
+
   @Test
   public void testFindElementByXPath() {
     driver.get(pages.nestedPage);
@@ -119,10 +120,10 @@ public class ChildrenFindingTest extends JUnit4TestBase {
     assertThat(child.getText(), is("inside"));
   }
 
-  @Ignore(
-      value = {CHROME, IE},
-      reason = "Need to recompile drivers with atoms from 6c55320d3f0eb23de56270a55c74602fc8d63c8a")
   @Test
+  @Ignore(value = CHROME,
+      reason = "Need to recompile drivers with atoms from 6c55320d3f0eb23de56270a55c74602fc8d63c8a")
+  @Ignore(IE)
   public void testFindElementByIdWhenIdContainsNonAlphanumericCharacters() {
     driver.get(pages.nestedPage);
     WebElement element = driver.findElement(By.id("test_special_chars"));
@@ -148,10 +149,10 @@ public class ChildrenFindingTest extends JUnit4TestBase {
     assertThat(children.size(), is(2));
   }
 
-  @Ignore(
-      value = {CHROME, IE},
-      reason = "Need to recompile drivers with atoms from 6c55320d3f0eb23de56270a55c74602fc8d63c8a")
   @Test
+  @Ignore(value = CHROME,
+      reason = "Need to recompile drivers with atoms from 6c55320d3f0eb23de56270a55c74602fc8d63c8a")
+  @Ignore(IE)
   public void testFindElementsByIdWithNonAlphanumericCharacters() {
     driver.get(pages.nestedPage);
     WebElement element = driver.findElement(By.id("test_special_chars"));
@@ -303,8 +304,8 @@ public class ChildrenFindingTest extends JUnit4TestBase {
     assertEquals("child", child.getAttribute("id"));
   }
 
-  @Ignore({REMOTE})
   @Test
+  @Ignore(REMOTE)
   public void testFindMultipleElements() {
     driver.get(pages.simpleTestPage);
     WebElement elem = driver.findElement(By.id("links"));
@@ -314,8 +315,8 @@ public class ChildrenFindingTest extends JUnit4TestBase {
     assertEquals(6, elements.size());
   }
 
-  @Ignore({REMOTE})
   @Test
+  @Ignore(REMOTE)
   public void testLinkWithLeadingSpaces() {
     driver.get(pages.simpleTestPage);
     WebElement elem = driver.findElement(By.id("links"));
@@ -324,8 +325,8 @@ public class ChildrenFindingTest extends JUnit4TestBase {
     assertEquals("link with leading space", res.getText());
   }
 
-  @Ignore({REMOTE})
   @Test
+  @Ignore(REMOTE)
   public void testLinkWithTrailingSpace() {
     driver.get(pages.simpleTestPage);
     WebElement elem = driver.findElement(By.id("links"));

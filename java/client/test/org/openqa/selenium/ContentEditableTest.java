@@ -45,8 +45,9 @@ public class ContentEditableTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {SAFARI, MARIONETTE}, reason = "Safari: cannot type on contentEditable with synthetic events")
   @Test
+  @Ignore(value = SAFARI, reason = "cannot type on contentEditable with synthetic events")
+  @Ignore(MARIONETTE)
   public void testTypingIntoAnIFrameWithContentEditableOrDesignModeSet() {
     driver.get(pages.richTextPage);
 
@@ -67,9 +68,8 @@ public class ContentEditableTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @NotYetImplemented(HTMLUNIT)
   @Test
-  @Ignore({HTMLUNIT, MARIONETTE})
+  @Ignore(MARIONETTE)
   public void testNonPrintableCharactersShouldWorkWithContentEditableOrDesignModeSet() {
     assumeFalse("FIXME: Fails in Firefox on Linux with synthesized events",
                 isFirefox(driver) &&
@@ -85,10 +85,9 @@ public class ContentEditableTest extends JUnit4TestBase {
     assertEquals("Fishee!", element.getText());
   }
 
-  @Ignore(value = {SAFARI, HTMLUNIT}, reason = "Untested browsers;" +
-      " Safari: cannot type on contentEditable with synthetic events",
-      issues = {3127})
   @Test
+  @Ignore(value = SAFARI, reason = "cannot type on contentEditable with synthetic events, issue 3127")
+  @Ignore(HTMLUNIT)
   public void testShouldBeAbleToTypeIntoEmptyContentEditableElement() {
     driver.get(pages.readOnlyPage);
     WebElement editable = driver.findElement(By.id("content-editable-blank"));
@@ -98,8 +97,12 @@ public class ContentEditableTest extends JUnit4TestBase {
     assertThat(editable.getText(), equalTo("cheese"));
   }
 
-  @Ignore(value = {CHROME, IE, SAFARI, HTMLUNIT, MARIONETTE})
   @Test
+  @Ignore(CHROME)
+  @Ignore(IE)
+  @Ignore(SAFARI)
+  @Ignore(HTMLUNIT)
+  @Ignore(MARIONETTE)
   public void testShouldBeAbleToTypeIntoContentEditableElementWithExistingValue() {
     driver.get(pages.readOnlyPage);
     WebElement editable = driver.findElement(By.id("content-editable"));
@@ -110,11 +113,10 @@ public class ContentEditableTest extends JUnit4TestBase {
     assertThat(editable.getText(), equalTo(initialText + ", edited"));
   }
 
-  @Ignore(value = {IE, SAFARI, HTMLUNIT},
-          reason = "Untested browsers;" +
-                   " Safari: cannot type on contentEditable with synthetic events",
-          issues = {3127})
   @Test
+  @Ignore(IE)
+  @Ignore(value = SAFARI, reason = "cannot type on contentEditable with synthetic events, issue 3127")
+  @Ignore(HTMLUNIT)
   public void testShouldBeAbleToTypeIntoTinyMCE() {
     driver.get(appServer.whereIs("tinymce.html"));
     driver.switchTo().frame("mce_0_ifr");
@@ -127,11 +129,12 @@ public class ContentEditableTest extends JUnit4TestBase {
     assertThat(editable.getText(), equalTo("cheese"));
   }
 
-  @Ignore(value = {CHROME, IE, SAFARI, HTMLUNIT, MARIONETTE},
-    reason = "Untested browsers;" +
-             " Safari: cannot type on contentEditable with synthetic events",
-    issues = {3127})
   @Test
+  @Ignore(CHROME)
+  @Ignore(IE)
+  @Ignore(value = SAFARI, reason = "cannot type on contentEditable with synthetic events, issue 3127")
+  @Ignore(HTMLUNIT)
+  @Ignore(MARIONETTE)
   public void testShouldAppendToTinyMCE() {
     driver.get(appServer.whereIs("tinymce.html"));
     driver.switchTo().frame("mce_0_ifr");

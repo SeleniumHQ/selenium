@@ -42,8 +42,8 @@ import org.openqa.selenium.testing.JavascriptEnabled;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
 import org.openqa.selenium.testing.TestUtilities;
 
-@Ignore(value = {HTMLUNIT},
-        reason = "HtmlUnit: Getting coordinates requires rendering, others: not tested")
+@Ignore(value = HTMLUNIT,
+          reason = "Getting coordinates requires rendering, others: not tested")
 public class PositionAndSizeTest extends JUnit4TestBase {
 
   @Test
@@ -93,8 +93,9 @@ public class PositionAndSizeTest extends JUnit4TestBase {
     assertThat(getLocationOnPage(By.id("box")), is(new Point(0, 0)));
   }
 
-  @Ignore(value = {SAFARI, MARIONETTE})
   @Test
+  @Ignore(SAFARI)
+  @Ignore(MARIONETTE)
   public void testShouldScrollPageAndGetCoordinatesOfAnElementThatIsOutOfViewPort() {
     assumeFalse(
         "window().getSize() is not implemented for Chrome for Android. "
@@ -119,9 +120,10 @@ public class PositionAndSizeTest extends JUnit4TestBase {
     assertThat(getLocationOnPage(By.id("box")), is(new Point(10, 10)));
   }
 
-  @Ignore({SAFARI, MARIONETTE})
   @SwitchToTopAfterTest
   @Test
+  @Ignore(SAFARI)
+  @Ignore(MARIONETTE)
   public void testShouldGetCoordinatesInViewPortOfAnElementInAFrame() {
     driver.get(appServer.whereIs("coordinates_tests/element_in_frame.html"));
     driver.switchTo().frame("ifr");
@@ -129,9 +131,10 @@ public class PositionAndSizeTest extends JUnit4TestBase {
     assertThat(getLocationOnPage(By.id("box")), is(new Point(10, 10)));
   }
 
-  @Ignore({SAFARI, MARIONETTE})
   @SwitchToTopAfterTest
   @Test
+  @Ignore(SAFARI)
+  @Ignore(MARIONETTE)
   public void testShouldGetCoordinatesInViewPortOfAnElementInANestedFrame() {
     driver.get(appServer.whereIs("coordinates_tests/element_in_nested_frame.html"));
     driver.switchTo().frame("ifr");
@@ -140,8 +143,9 @@ public class PositionAndSizeTest extends JUnit4TestBase {
     assertThat(getLocationOnPage(By.id("box")), is(new Point(10, 10)));
   }
 
-  @Ignore({FIREFOX, SAFARI})
   @Test
+  @Ignore(FIREFOX)
+  @Ignore(SAFARI)
   public void testShouldGetCoordinatesOfAnElementWithFixedPosition() {
     assumeFalse("Ignoring fixed-position elements in IE6", TestUtilities.isIe6(driver));
     driver.get(appServer.whereIs("coordinates_tests/page_with_fixed_element.html"));
@@ -168,9 +172,12 @@ public class PositionAndSizeTest extends JUnit4TestBase {
   // should handle sub-pixel rendering, and every browser seems to be different anyhow:
   // http://ejohn.org/blog/sub-pixel-problems-in-css/
   @JavascriptEnabled
-  @Ignore({IE, CHROME, SAFARI, PHANTOMJS, MARIONETTE})
-  // Reason for Chrome: WebKit bug 28804
   @Test
+  @Ignore(IE)
+  @Ignore(value = CHROME, reason = "WebKit bug 28804")
+  @Ignore(SAFARI)
+  @Ignore(PHANTOMJS)
+  @Ignore(MARIONETTE)
   public void testShouldHandleNonIntegerPositionAndSize() {
     driver.get(pages.rectanglesPage);
 

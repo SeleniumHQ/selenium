@@ -50,7 +50,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-@Ignore(value = {PHANTOMJS})
+@Ignore(PHANTOMJS)
 public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
 
   private JavascriptExecutor executor;
@@ -162,7 +162,7 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore(value = {HTMLUNIT})
+  @Ignore(HTMLUNIT)
   public void shouldTimeoutIfScriptDoesNotInvokeCallback() {
     driver.get(pages.ajaxyPage);
     // Script is expected to be async and explicitly callback, so this should timeout.
@@ -172,7 +172,7 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore(value = {HTMLUNIT})
+  @Ignore(HTMLUNIT)
   public void shouldTimeoutIfScriptDoesNotInvokeCallbackWithAZeroTimeout() {
     driver.get(pages.ajaxyPage);
     Throwable t = catchThrowable(
@@ -191,7 +191,7 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore(value = {HTMLUNIT})
+  @Ignore(HTMLUNIT)
   public void shouldTimeoutIfScriptDoesNotInvokeCallbackWithLongTimeout() {
     driver.manage().timeouts().setScriptTimeout(500, TimeUnit.MILLISECONDS);
     driver.get(pages.ajaxyPage);
@@ -203,7 +203,7 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore(value = {IE})
+  @Ignore(IE)
   public void shouldDetectPageLoadsWhileWaitingOnAnAsyncScriptAndReturnAnError() {
     driver.get(pages.ajaxyPage);
     driver.manage().timeouts().setScriptTimeout(100, TimeUnit.MILLISECONDS);
@@ -233,7 +233,10 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore(value = {CHROME, IE, PHANTOMJS, SAFARI, MARIONETTE})
+  @Ignore(CHROME)
+  @Ignore(IE)
+  @Ignore(SAFARI)
+  @Ignore(MARIONETTE)
   @NotYetImplemented(HTMLUNIT)
   public void shouldCatchErrorsWithMessageAndStacktraceWhenExecutingInitialScript() {
     driver.get(pages.ajaxyPage);
@@ -328,7 +331,9 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore(value = {CHROME, IE, MARIONETTE})
+  @Ignore(CHROME)
+  @Ignore(IE)
+  @Ignore(MARIONETTE)
   @NotYetImplemented(HTMLUNIT)
   @NeedsLocalEnvironment(reason = "Relies on timing")
   public void throwsIfScriptTriggersAlert() {
@@ -343,7 +348,9 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore(value = {CHROME, IE, MARIONETTE})
+  @Ignore(CHROME)
+  @Ignore(IE)
+  @Ignore(MARIONETTE)
   @NotYetImplemented(HTMLUNIT)
   @NeedsLocalEnvironment(reason = "Relies on timing")
   public void throwsIfAlertHappensDuringScript() {
@@ -356,7 +363,9 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = {CHROME, IE, MARIONETTE})
+  @Ignore(CHROME)
+  @Ignore(IE)
+  @Ignore(MARIONETTE)
   @NotYetImplemented(HTMLUNIT)
   @NeedsLocalEnvironment(reason = "Relies on timing")
   public void throwsIfScriptTriggersAlertWhichTimesOut() {
@@ -371,7 +380,9 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore(value = {CHROME, IE, MARIONETTE})
+  @Ignore(CHROME)
+  @Ignore(IE)
+  @Ignore(MARIONETTE)
   @NotYetImplemented(HTMLUNIT)
   @NeedsLocalEnvironment(reason = "Relies on timing")
   public void throwsIfAlertHappensDuringScriptWhichTimesOut() {
@@ -385,7 +396,9 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore(value = {CHROME, IE, MARIONETTE})
+  @Ignore(CHROME)
+  @Ignore(IE)
+  @Ignore(MARIONETTE)
   @NotYetImplemented(HTMLUNIT)
   @NeedsLocalEnvironment(reason = "Relies on timing")
   public void includesAlertTextInUnhandledAlertException() {

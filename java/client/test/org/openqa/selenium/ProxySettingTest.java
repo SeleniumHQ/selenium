@@ -82,10 +82,10 @@ public class ProxySettingTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore(value = {PHANTOMJS, SAFARI},
-          reason = "PhantomJS - not tested, Safari - not implemented")
-  @NeedsLocalEnvironment
   @Test
+  @Ignore(SAFARI)
+  @Ignore(PHANTOMJS)
+  @NeedsLocalEnvironment
   public void canConfigureManualHttpProxy() {
     Proxy proxyToUse = proxyServer.asProxy();
     DesiredCapabilities caps = new DesiredCapabilities();
@@ -98,10 +98,11 @@ public class ProxySettingTest extends JUnit4TestBase {
     assertTrue("Proxy should have been called", proxyServer.hasBeenCalled("simpleTest.html"));
   }
 
-  @Ignore(value = {PHANTOMJS, SAFARI, HTMLUNIT},
-          reason = "PhantomJS - not tested, Safari - not implemented")
-  @NeedsLocalEnvironment
   @Test
+  @Ignore(HTMLUNIT)
+  @Ignore(SAFARI)
+  @Ignore(PHANTOMJS)
+  @NeedsLocalEnvironment
   public void canConfigureProxyThroughPACFile() {
     Server helloServer = createSimpleHttpServer(
         "<!DOCTYPE html><title>Hello</title><h3>Hello, world!</h3>");
@@ -124,10 +125,11 @@ public class ProxySettingTest extends JUnit4TestBase {
         "Hello, world!", driver.findElement(By.tagName("h3")).getText());
   }
 
-  @Ignore(value = {PHANTOMJS, SAFARI, HTMLUNIT},
-          reason = "PhantomJS - not tested, Safari - not implemented")
-  @NeedsLocalEnvironment
   @Test
+  @Ignore(HTMLUNIT)
+  @Ignore(SAFARI)
+  @Ignore(PHANTOMJS)
+  @NeedsLocalEnvironment
   public void canUsePACThatOnlyProxiesCertainHosts() throws Exception {
     Server helloServer = createSimpleHttpServer(
         "<!DOCTYPE html><title>Hello</title><h3>Hello, world!</h3>");
@@ -159,9 +161,13 @@ public class ProxySettingTest extends JUnit4TestBase {
         "Heading", driver.findElement(By.tagName("h1")).getText());
   }
 
-  @Ignore({CHROME, IE, PHANTOMJS, REMOTE, SAFARI})
-  @NeedsLocalEnvironment
   @Test
+  @Ignore(CHROME)
+  @Ignore(IE)
+  @Ignore(SAFARI)
+  @Ignore(PHANTOMJS)
+  @Ignore(REMOTE)
+  @NeedsLocalEnvironment
   public void canConfigureProxyWithRequiredCapability() {
     Proxy proxyToUse = proxyServer.asProxy();
     DesiredCapabilities requiredCaps = new DesiredCapabilities();
@@ -174,9 +180,13 @@ public class ProxySettingTest extends JUnit4TestBase {
     assertTrue("Proxy should have been called", proxyServer.hasBeenCalled("simpleTest.html"));
   }
 
-  @Ignore({CHROME, IE, PHANTOMJS, REMOTE, SAFARI})
-  @NeedsLocalEnvironment
   @Test
+  @Ignore(CHROME)
+  @Ignore(IE)
+  @Ignore(SAFARI)
+  @Ignore(PHANTOMJS)
+  @Ignore(REMOTE)
+  @NeedsLocalEnvironment
   public void requiredProxyCapabilityShouldHavePriority() {
     ProxyServer desiredProxyServer = new ProxyServer();
     registerProxyTeardown(desiredProxyServer);

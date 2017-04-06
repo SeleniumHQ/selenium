@@ -128,9 +128,8 @@ public class ElementAttributeTest extends JUnit4TestBase {
     assertThat(disabledSubmitElement.isEnabled(), is(false));
   }
 
-  @Ignore(value = {MARIONETTE},
-          reason = "sendKeys does not determine whether the element is disabled")
   @Test
+  @Ignore(value = MARIONETTE, reason = "sendKeys does not determine whether the element is disabled")
   public void testShouldThrowExceptionIfSendingKeysToElementDisabledUsingRandomDisabledStrings() {
     driver.get(pages.formPage);
     WebElement disabledTextElement1 = driver.findElement(By.id("disabledTextElement1"));

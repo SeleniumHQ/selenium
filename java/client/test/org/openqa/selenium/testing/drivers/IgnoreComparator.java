@@ -23,8 +23,10 @@ import com.google.common.collect.Sets;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.testing.Driver;
 import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.IgnoreList;
 
 import java.util.Set;
+import java.util.stream.Stream;
 
 public class IgnoreComparator {
   private Set<Driver> ignored = Sets.newHashSet();
@@ -39,25 +41,18 @@ public class IgnoreComparator {
     currentPlatform = platform;
   }
 
-  public boolean shouldIgnore(Ignore ignoreAnnotation) {
-    if (ignoreAnnotation == null) {
-      return false;
-    }
+  public boolean shouldIgnore(IgnoreList ignoreList) {
+    return ignoreList != null && ignoreList.value().length > 0 &&
+           shouldIgnore(Stream.of(ignoreList.value()));
 
-    if (ignoreAnnotation.value().length == 0) {
-      return true;
-    }
+  }
 
-    for (Driver value : ignoreAnnotation.value()) {
-      if (ignored.contains(value) || value == Driver.ALL) {
-        for (Platform platform : ignoreAnnotation.platforms()) {
-          if (currentPlatform.is(platform)) {
-            return true;
-          }
-        }
-      }
-    }
+  public boolean shouldIgnore(Ignore ignore) {
+    return ignore != null && shouldIgnore(Stream.of(ignore));
+  }
 
-    return false;
+  private boolean shouldIgnore(Stream<Ignore> ignoreIn) {
+    return ignoreIn.anyMatch(
+        driver -> ignored.contains(driver.value()) || driver.value() == Driver.ALL);
   }
 }

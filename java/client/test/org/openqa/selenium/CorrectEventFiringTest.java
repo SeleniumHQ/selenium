@@ -17,7 +17,6 @@
 
 package org.openqa.selenium;
 
-import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.instanceOf;
@@ -195,8 +194,8 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {MARIONETTE})
   @Test
+  @Ignore(MARIONETTE)
   public void testShouldEmitOnChangeEventsWhenSelectingElements() {
     driver.get(pages.javascriptPage);
     // Intentionally not looking up the select tag. See selenium r7937 for details.
@@ -230,10 +229,9 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {IE, HTMLUNIT},
-      reason = "IE: Only fires the onchange event when the checkbox loses the focus, "
-             + "HtmlUnit: default mode is IE8 now")
   @Test
+  @Ignore(value = IE, reason = "Only fires the onchange event when the checkbox loses the focus")
+  @Ignore(value = HTMLUNIT, reason = "HtmlUnit: default mode is IE8 now")
   public void testShouldEmitOnChangeEventsWhenChangingTheStateOfACheckbox() {
     driver.get(pages.javascriptPage);
     WebElement checkbox = driver.findElement(By.id("checkbox"));
@@ -335,8 +333,9 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {SAFARI, HTMLUNIT})
   @Test
+  @Ignore(SAFARI)
+  @Ignore(HTMLUNIT)
   public void testClickingAnUnfocusableChildShouldNotBlurTheParent() {
     assumeFalse(isOldIe(driver));
     driver.get(pages.javascriptPage);
@@ -383,9 +382,10 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {SAFARI, MARIONETTE, HTMLUNIT},
-      reason = "Does not yet support file uploads", issues = {4220})
   @Test
+  @Ignore(value = SAFARI, reason = "Does not yet support file uploads, issue 4220")
+  @Ignore(MARIONETTE)
+  @Ignore(HTMLUNIT)
   public void testUploadingFileShouldFireOnChangeEvent() throws IOException {
     driver.get(pages.formPage);
     WebElement uploadElement = driver.findElement(By.id("upload"));
@@ -434,8 +434,11 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {IE, MARIONETTE, SAFARI, HTMLUNIT})
   @Test
+  @Ignore(IE)
+  @Ignore(MARIONETTE)
+  @Ignore(SAFARI)
+  @Ignore(HTMLUNIT)
   public void testClickOverlappingElements() {
     assumeFalse(isOldIe(driver));
     driver.get(appServer.whereIs("click_tests/overlapping_elements.html"));
@@ -446,8 +449,12 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {CHROME, IE, MARIONETTE, SAFARI, HTMLUNIT})
   @Test
+  @Ignore(CHROME)
+  @Ignore(IE)
+  @Ignore(MARIONETTE)
+  @Ignore(SAFARI)
+  @Ignore(HTMLUNIT)
   public void testClickPartiallyOverlappingElements() {
     assumeFalse(isOldIe(driver));
     for (int i = 1; i < 6; i++) {
@@ -467,8 +474,11 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {CHROME, FIREFOX, SAFARI, HTMLUNIT})
   @Test
+  @Ignore(CHROME)
+  @Ignore(FIREFOX)
+  @Ignore(SAFARI)
+  @Ignore(HTMLUNIT)
   public void testNativelyClickOverlappingElements() {
     assumeFalse(isOldIe(driver));
     driver.get(appServer.whereIs("click_tests/overlapping_elements.html"));
@@ -484,8 +494,9 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {SAFARI, HTMLUNIT})
   @Test
+  @Ignore(SAFARI)
+  @Ignore(HTMLUNIT)
   public void testClickAnElementThatDisappear() {
     assumeFalse(isOldIe(driver));
     driver.get(appServer.whereIs("click_tests/disappearing_element.html"));

@@ -112,8 +112,8 @@ public class WindowSwitchingTest extends JUnit4TestBase {
   }
 
   @NoDriverAfterTest(failedOnly = true)
-  @Ignore({MARIONETTE})
   @Test
+  @Ignore(MARIONETTE)
   public void testShouldThrowNoSuchWindowExceptionOnAnAttemptToGetItsHandle() {
     driver.get(pages.xhtmlTestPage);
     Set<String> currentWindowHandles = driver.getWindowHandles();
@@ -130,8 +130,8 @@ public class WindowSwitchingTest extends JUnit4TestBase {
   }
 
   @NoDriverAfterTest(failedOnly = true)
-  @Ignore({MARIONETTE})
   @Test
+  @Ignore(MARIONETTE)
   public void testShouldThrowNoSuchWindowExceptionOnAnyOperationIfAWindowIsClosed() {
     driver.get(pages.xhtmlTestPage);
     Set<String> currentWindowHandles = driver.getWindowHandles();
@@ -151,8 +151,8 @@ public class WindowSwitchingTest extends JUnit4TestBase {
   }
 
   @NoDriverAfterTest(failedOnly = true)
-  @Ignore({MARIONETTE})
   @Test
+  @Ignore(MARIONETTE)
   public void testShouldThrowNoSuchWindowExceptionOnAnyElementOperationIfAWindowIsClosed() {
     driver.get(pages.xhtmlTestPage);
     Set<String> currentWindowHandles = driver.getWindowHandles();
@@ -170,8 +170,9 @@ public class WindowSwitchingTest extends JUnit4TestBase {
   }
 
   @NoDriverAfterTest
-  @Ignore({IE, REMOTE})
   @Test
+  @Ignore(IE)
+  @Ignore(REMOTE)
   public void testShouldBeAbleToIterateOverAllOpenWindows() {
     driver.get(pages.xhtmlTestPage);
     String original = driver.getWindowHandle();

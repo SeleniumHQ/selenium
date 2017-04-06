@@ -35,8 +35,8 @@ public class ErrorsTest extends JUnit4TestBase {
    * Explorer).
    */
   @JavascriptEnabled
-  @Ignore(value = {IE}, reason = "IE does not support onerror")
   @Test
+  @Ignore(value = IE, reason = "IE does not support onerror")
   public void testShouldNotGenerateErrorsWhenOpeningANewPage() {
     driver.get(pages.errorsPage);
     Object result = ((JavascriptExecutor) driver).
