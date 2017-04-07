@@ -506,6 +506,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
    *
    * @param im image
    */
+  @SuppressWarnings("unused")
   private void saveImageToTmpFile(BufferedImage im) {
 
     File outputfile = new File( testName.getMethodName() + "_image.png");

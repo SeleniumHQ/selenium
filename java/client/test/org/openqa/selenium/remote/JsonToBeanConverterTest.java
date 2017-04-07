@@ -388,7 +388,6 @@ public class JsonToBeanConverterTest {
 
     assertEquals(0, response.getStatus().intValue());
     assertEquals(new ErrorCodes().toState(0), response.getState());
-    @SuppressWarnings("unchecked")
     String value = (String) response.getValue();
     assertEquals("cheese", value);
   }
@@ -400,7 +399,6 @@ public class JsonToBeanConverterTest {
 
     assertEquals(0, response.getStatus().intValue());
     assertEquals(new ErrorCodes().toState(0), response.getState());
-    @SuppressWarnings("unchecked")
     String value = (String) response.getValue();
     assertEquals("cheese", value);
   }
@@ -420,7 +418,6 @@ public class JsonToBeanConverterTest {
 
     assertEquals("success", response.getState());
     assertEquals(0, response.getStatus().intValue());
-    @SuppressWarnings("unchecked")
     String value = (String) response.getValue();
     assertEquals("cheese", value);
   }

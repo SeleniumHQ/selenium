@@ -92,7 +92,6 @@ public class WebElementToJsonConverterTest {
     assertIsWebElementObject(value, "abc123");
   }
 
-  @SuppressWarnings("unchecked")
   @Test
   public void convertsSimpleCollections() {
     Object converted = CONVERTER.apply(Lists.newArrayList(null, "abc", true, 123, Math.PI));
@@ -102,7 +101,6 @@ public class WebElementToJsonConverterTest {
     assertContentsInOrder(list, null, "abc", true, 123, Math.PI);
   }
 
-  @SuppressWarnings("unchecked")
   @Test
   public void convertsNestedCollections_simpleValues() {
     List<?> innerList = Lists.newArrayList(123, "abc");

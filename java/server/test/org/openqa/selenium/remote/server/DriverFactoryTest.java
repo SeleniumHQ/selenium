@@ -202,9 +202,11 @@ public class DriverFactoryTest {
   private static class CapabilitiesDriver extends StubDriver {
     private Capabilities caps;
 
+    @SuppressWarnings("unused")
     public CapabilitiesDriver() {
     }
 
+    @SuppressWarnings("unused")
     public CapabilitiesDriver(Capabilities caps) {
       this.caps = caps;
     }
