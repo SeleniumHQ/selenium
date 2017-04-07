@@ -113,6 +113,7 @@ public class WebDriverBuilder implements Supplier<WebDriver> {
     WARNING("WARNING", Level.WARNING),
     ERROR("ERROR", Level.SEVERE);
 
+    @SuppressWarnings("unused")
     private final String value;
     private final Level level;
 

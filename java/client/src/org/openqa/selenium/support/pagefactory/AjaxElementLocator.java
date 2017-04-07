@@ -134,7 +134,6 @@ public class AjaxElementLocator extends DefaultElementLocator {
   }
 
   private class SlowLoadingElement extends SlowLoadableComponent<SlowLoadingElement> {
-    private NoSuchElementException lastException;
     private WebElement element;
 
     public SlowLoadingElement(Clock clock, int timeOutInSeconds) {
@@ -159,14 +158,9 @@ public class AjaxElementLocator extends DefaultElementLocator {
           throw new NoSuchElementException("Element is not usable");
         }
       } catch (NoSuchElementException e) {
-        lastException = e;
         // Should use JUnit's AssertionError, but it may not be present
         throw new NoSuchElementError("Unable to locate the element", e);
       }
-    }
-
-    public NoSuchElementException getLastException() {
-      return lastException;
     }
 
     public WebElement getElement() {
@@ -175,7 +169,6 @@ public class AjaxElementLocator extends DefaultElementLocator {
   }
 
   private class SlowLoadingElementList extends SlowLoadableComponent<SlowLoadingElementList> {
-    private NoSuchElementException lastException;
     private List<WebElement> elements;
 
     public SlowLoadingElementList(Clock clock, int timeOutInSeconds) {
@@ -205,14 +198,9 @@ public class AjaxElementLocator extends DefaultElementLocator {
           }
         }
       } catch (NoSuchElementException e) {
-        lastException = e;
         // Should use JUnit's AssertionError, but it may not be present
         throw new NoSuchElementError("Unable to locate the element", e);
       }
-    }
-
-    public NoSuchElementException getLastException() {
-      return lastException;
     }
 
     public List<WebElement> getElements() {

@@ -238,6 +238,7 @@ public class BeanToJsonConverterTest {
   @Test
   public void toJsonMethodCanConvertibleReturnedMap() {
     class ToJsonReturnsMap {
+      @SuppressWarnings("unused")
       public Map<String, Object> toJson() {
         return ImmutableMap.of("cheese", "peas");
       }
@@ -253,6 +254,7 @@ public class BeanToJsonConverterTest {
   @Test
   public void toJsonMethodCanConvertReturnedCollection() {
     class ToJsonReturnsCollection {
+      @SuppressWarnings("unused")
       public Set<String> toJson() {
         return ImmutableSortedSet.of("cheese", "peas");
       }
@@ -377,6 +379,7 @@ public class BeanToJsonConverterTest {
         this.date = date;
       }
 
+      @SuppressWarnings("unused")
       public Date getDate() {
         return date;
       }

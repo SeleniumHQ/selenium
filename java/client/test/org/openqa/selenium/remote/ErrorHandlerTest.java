@@ -214,7 +214,7 @@ public class ErrorHandlerTest {
     }
   }
 
-  @SuppressWarnings({"unchecked", "ThrowableInstanceNeverThrown"})
+  @SuppressWarnings("ThrowableInstanceNeverThrown")
   @Test
   public void testShouldBeAbleToRebuildASerializedException() throws Exception {
     RuntimeException serverError = new RuntimeException("foo bar baz!\nCommand duration or timeout: 123 milliseconds");
@@ -238,7 +238,7 @@ public class ErrorHandlerTest {
     }
   }
 
-  @SuppressWarnings({"unchecked", "ThrowableInstanceNeverThrown"})
+  @SuppressWarnings("ThrowableInstanceNeverThrown")
   @Test
   public void testShouldIncludeScreenshotIfProvided() throws Exception {
     RuntimeException serverError = new RuntimeException("foo bar baz!");
@@ -266,7 +266,7 @@ public class ErrorHandlerTest {
     }
   }
 
-  @SuppressWarnings({"unchecked", "ThrowableInstanceNeverThrown"})
+  @SuppressWarnings("ThrowableInstanceNeverThrown")
   @Test
   public void testShouldDefaultToWebDriverExceptionIfClassIsNotSpecified()
       throws Exception {
@@ -291,7 +291,7 @@ public class ErrorHandlerTest {
     }
   }
 
-  @SuppressWarnings({"unchecked", "ThrowableInstanceNeverThrown"})
+  @SuppressWarnings("ThrowableInstanceNeverThrown")
   @Test
   public void testShouldStillTryToBuildWebDriverExceptionIfClassIsNotProvidedAndStackTraceIsNotForJava() {
     Map<String, ?> data = ImmutableMap.of(
@@ -326,7 +326,7 @@ public class ErrorHandlerTest {
     }
   }
 
-  @SuppressWarnings({"unchecked", "ThrowableInstanceNeverThrown"})
+  @SuppressWarnings("ThrowableInstanceNeverThrown")
   @Test
   public void testToleratesNonNumericLineNumber() {
     Map<String, ?> data = ImmutableMap.of(
@@ -361,7 +361,7 @@ public class ErrorHandlerTest {
     }
   }
 
-  @SuppressWarnings({"unchecked", "ThrowableInstanceNeverThrown"})
+  @SuppressWarnings("ThrowableInstanceNeverThrown")
   @Test
   public void testToleratesNumericLineNumberAsString() {
     Map<String, ?> data = ImmutableMap.of(
@@ -396,7 +396,7 @@ public class ErrorHandlerTest {
     }
   }
 
-  @SuppressWarnings({"unchecked", "ThrowableInstanceNeverThrown"})
+  @SuppressWarnings("ThrowableInstanceNeverThrown")
   @Test
   public void testShouldIndicateWhenTheServerReturnedAnExceptionThatWasSuppressed()
       throws Exception {
@@ -415,7 +415,7 @@ public class ErrorHandlerTest {
     }
   }
 
-  @SuppressWarnings({"unchecked", "ThrowableInstanceNeverThrown"})
+  @SuppressWarnings("ThrowableInstanceNeverThrown")
   @Test
   public void testShouldStillIncludeScreenshotEvenIfServerSideExceptionsAreDisabled()
       throws Exception {

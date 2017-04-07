@@ -114,14 +114,6 @@ public class DefaultProxyIsUnregisteredIfDownForTooLongTest {
     };
   }
 
-  private Callable<Boolean> isDown(final DefaultRemoteProxy proxy) {
-    return new Callable<Boolean>() {
-      public Boolean call() throws Exception {
-        return proxy.isDown();
-      }
-    };
-  }
-
   private String getProxyId() throws Exception {
     RemoteProxy p = null;
     Iterator<RemoteProxy> it = registry.getAllProxies().iterator();
