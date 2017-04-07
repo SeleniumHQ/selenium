@@ -42,6 +42,7 @@ public interface CapabilityType {
   String ACCEPT_INSECURE_CERTS = "acceptInsecureCerts";
   String HAS_NATIVE_EVENTS = "nativeEvents";
   String UNEXPECTED_ALERT_BEHAVIOUR = "unexpectedAlertBehaviour";
+  String UNHANDLED_PROMPT_BEHAVIOUR = "unhandledPromptBehavior";
   String ELEMENT_SCROLL_BEHAVIOR = "elementScrollBehavior";
   String HAS_TOUCHSCREEN = "hasTouchScreen";
   String OVERLAPPING_CHECK_DISABLED = "overlappingCheckDisabled";
