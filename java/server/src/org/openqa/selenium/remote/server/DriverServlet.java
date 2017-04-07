@@ -233,10 +233,8 @@ public class DriverServlet extends HttpServlet {
         HttpMethod.valueOf(servletRequest.getMethod().toUpperCase()),
         path);
 
-    @SuppressWarnings("unchecked")
     Enumeration<String> headerNames = servletRequest.getHeaderNames();
     for (String name : list(headerNames)) {
-      @SuppressWarnings("unchecked")
       Enumeration<String> headerValues = servletRequest.getHeaders(name);
       for (String value : list(headerValues)) {
         request.setHeader(name, value);

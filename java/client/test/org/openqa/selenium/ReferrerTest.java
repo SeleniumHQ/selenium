@@ -19,12 +19,10 @@ package org.openqa.selenium;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.remote.CapabilityType.PROXY;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.testing.Driver.FIREFOX;
-import static org.openqa.selenium.testing.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.PHANTOMJS;
@@ -439,7 +437,6 @@ public class ReferrerTest extends JUnit4TestBase {
    */
   private abstract static class ServerResource extends ExternalResource {
     protected final Server server;
-    private final int port;
     private final HostAndPort hostAndPort;
 
     ServerResource() {
@@ -450,7 +447,6 @@ public class ReferrerTest extends JUnit4TestBase {
       http.setPort(port);
       http.setIdleTimeout(500000);
 
-      this.port = port;
       this.server.addConnector(http);
       this.hostAndPort = HostAndPort.fromParts("localhost", port);
     }

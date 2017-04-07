@@ -160,10 +160,6 @@ public enum Platform {
   },
 
   ANDROID("android", "dalvik") {
-    public String getLineEnding() {
-      return "\n";
-    }
-
     @Override
     public Platform family() {
       return LINUX;

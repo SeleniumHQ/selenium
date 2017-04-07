@@ -174,25 +174,6 @@ public class BaseRemoteProxy implements RemoteProxy {
     }
   }
 
-  /**
-   * merge the param from config 1 and 2. If a param is present in both, config2 value is used.
-   *
-   * @param configuration1 The first configuration to merge (recessive)
-   * @param configuration2 The second configuration to merge (dominant)
-   * @return The merged collection
-   */
-  private Map<String, Object> mergeConfig(Map<String, Object> configuration1,
-                                          Map<String, Object> configuration2) {
-    Map<String, Object> res = new HashMap<>();
-    res.putAll(configuration1);
-
-    for (String key : configuration2.keySet()) {
-      res.put(key, configuration2.get(key));
-    }
-
-    return res;
-  }
-
   public String getId() {
     if (id == null) {
       throw new RuntimeException("Bug. Trying to use the id on a proxy but it hasn't been set.");

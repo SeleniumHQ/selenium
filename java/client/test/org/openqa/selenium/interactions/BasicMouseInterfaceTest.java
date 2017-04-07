@@ -442,7 +442,6 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
 
     WebElement greenbox = driver.findElement(By.id("greenbox"));
     WebElement redbox = driver.findElement(By.id("redbox"));
-    Dimension size = redbox.getSize();
     Point greenboxPosition = greenbox.getLocation();
     Point redboxPosition = redbox.getLocation();
     int shiftX = redboxPosition.getX() - greenboxPosition.getX();

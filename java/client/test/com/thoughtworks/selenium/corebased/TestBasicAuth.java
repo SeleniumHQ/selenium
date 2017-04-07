@@ -19,14 +19,10 @@
 package com.thoughtworks.selenium.corebased;
 
 import static org.junit.Assume.assumeFalse;
-import static org.junit.Assume.assumeTrue;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
 
-import org.junit.Assume;
 import org.junit.Test;
-import org.openqa.selenium.HasCapabilities;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.internal.WrapsDriver;

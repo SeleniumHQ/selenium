@@ -34,7 +34,6 @@ import org.junit.runners.JUnit4;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.remote.http.W3CHttpCommandCodec;
 
 import java.io.IOException;
 import java.util.Collection;

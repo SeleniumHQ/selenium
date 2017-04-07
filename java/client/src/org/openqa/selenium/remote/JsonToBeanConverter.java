@@ -241,10 +241,6 @@ public class JsonToBeanConverter {
     return null;
   }
 
-  private Object convertJsonPrimitive(JsonElement json) {
-    return convertJsonPrimitive(json.getAsJsonPrimitive());
-  }
-
   private Object convertJsonPrimitive(JsonPrimitive json) {
     if (json.isBoolean()) {
       return json.getAsBoolean();
@@ -260,7 +256,6 @@ public class JsonToBeanConverter {
     }
   }
 
-  @SuppressWarnings("unchecked")
   private Enum convertEnum(Class clazz, Object text) {
     String toConvert = text instanceof JsonElement ?
                        ((JsonElement) text).getAsString() : String.valueOf(text);
