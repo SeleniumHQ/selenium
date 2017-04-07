@@ -28,6 +28,7 @@ import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.SeleniumTestRunner;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
@@ -41,37 +42,52 @@ public class SessionHandlingTest {
     WebDriver driver = new WebDriverBuilder().get();
 
     driver.quit();
+    sleepTight(3000);
     driver.quit();
   }
 
   @Test
+  @Ignore(value = FIREFOX, issue = "https://github.com/SeleniumHQ/selenium/issues/3792")
   @Ignore(PHANTOMJS)
   public void callingQuitAfterClosingTheLastWindowIsANoOp() {
     WebDriver driver = new WebDriverBuilder().get();
 
     driver.close();
+    sleepTight(3000);
     driver.quit();
+  }
+
+  @Test
+  @Ignore(value = FIREFOX, issue = "3792")
+  @Ignore(value = PHANTOMJS, reason = "throws NoSuchWindowException")
+  @Ignore(value = SAFARI, reason = "throws NullPointerException")
+  @Ignore(MARIONETTE)
+  public void callingAnyOperationAfterClosingTheLastWindowShouldThrowAnException() {
+    WebDriver driver = new WebDriverBuilder().get();
+
+    driver.close();
+    sleepTight(3000);
+    Throwable t = catchThrowable(driver::getCurrentUrl);
+    assertThat(t, instanceOf(NoSuchSessionException.class));
   }
 
   @Test
   @Ignore(value = SAFARI, reason = "Safari: throws UnreachableBrowserException")
   public void callingAnyOperationAfterQuitShouldThrowAnException() {
     WebDriver driver = new WebDriverBuilder().get();
+
     driver.quit();
+    sleepTight(3000);
     Throwable t = catchThrowable(driver::getCurrentUrl);
     assertThat(t, instanceOf(NoSuchSessionException.class));
   }
 
-  @Test
-  @Ignore(value = FIREFOX, reason = "can perform an operation after closing the last window")
-  @Ignore(value = PHANTOMJS, reason = "throws NoSuchWindowException")
-  @Ignore(value = SAFARI, reason = "throws NullPointerException")
-  @Ignore(MARIONETTE)
-  public void callingAnyOperationAfterClosingTheLastWindowShouldThrowAnException() {
-    WebDriver driver = new WebDriverBuilder().get();
-    driver.close();
-    Throwable t = catchThrowable(driver::getCurrentUrl);
-    assertThat(t, instanceOf(NoSuchSessionException.class));
+  private void sleepTight(long duration) {
+    try {
+      Thread.sleep(duration);
+    } catch (InterruptedException e) {
+      e.printStackTrace();
+    }
   }
 
 }
