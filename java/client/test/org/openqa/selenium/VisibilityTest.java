@@ -285,7 +285,6 @@ public class VisibilityTest extends JUnit4TestBase {
   @JavascriptEnabled // element.getCssValue() requires Javascript in HtmlUnit
   @Test
   @Ignore(IE)
-  @Ignore(MARIONETTE)
   public void testShouldBeAbleToClickOnElementsWithOpacityZero() {
     driver.get(pages.clickJacker);
 
@@ -297,7 +296,6 @@ public class VisibilityTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(MARIONETTE)
   public void testShouldBeAbleToSelectOptionsFromAnInvisibleSelect() {
     driver.get(pages.formPage);
 

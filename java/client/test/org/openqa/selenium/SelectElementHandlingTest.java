@@ -20,10 +20,8 @@ package org.openqa.selenium;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.openqa.selenium.testing.Driver.MARIONETTE;
 
 import org.junit.Test;
-import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 
 import java.util.List;
@@ -31,7 +29,6 @@ import java.util.List;
 public class SelectElementHandlingTest extends JUnit4TestBase {
 
   @Test
-  @Ignore(MARIONETTE)
   public void testShouldBePossibleToDeselectASingleOptionFromASelectWhichAllowsMultipleChoices() {
     driver.get(pages.formPage);
 
@@ -50,7 +47,6 @@ public class SelectElementHandlingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(MARIONETTE)
   public void testShouldBeAbleToChangeTheSelectedOptionInASelect() {
     driver.get(pages.formPage);
     WebElement selectBox = driver.findElement(By.xpath("//select[@name='selectomatic']"));
@@ -66,7 +62,6 @@ public class SelectElementHandlingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(MARIONETTE)
   public void testShouldBeAbleToSelectMoreThanOneOptionFromASelectWhichAllowsMultipleChoices() {
     driver.get(pages.formPage);
 
@@ -86,7 +81,6 @@ public class SelectElementHandlingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(MARIONETTE)
   public void testShouldSelectFirstOptionByDefaultIfNoneIsSelected() {
     driver.get(pages.formPage);
     WebElement selectBox = driver.findElement(By.xpath("//select[@name='select-default']"));
@@ -102,7 +96,6 @@ public class SelectElementHandlingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(MARIONETTE)
   public void testCanSelectElementsInOptGroups() {
     driver.get(pages.selectPage);
     WebElement element = driver.findElement(By.id("two-in-group"));
@@ -127,7 +120,6 @@ public class SelectElementHandlingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(MARIONETTE)
   public void testCanSelectFromMultipleSelectWhereValueIsBelowVisibleRange() {
     driver.get(pages.selectPage);
     WebElement option = driver.findElements(By.cssSelector("#selectWithMultipleLongList option")).get(4);
