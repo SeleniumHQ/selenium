@@ -22,6 +22,8 @@ import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 import static org.openqa.selenium.remote.CapabilityType.LOGGING_PREFS;
 import static org.openqa.selenium.remote.CapabilityType.PLATFORM;
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_JAVASCRIPT;
+import static org.openqa.selenium.remote.CapabilityType.UNEXPECTED_ALERT_BEHAVIOUR;
+import static org.openqa.selenium.remote.CapabilityType.UNHANDLED_PROMPT_BEHAVIOUR;
 import static org.openqa.selenium.remote.CapabilityType.VERSION;
 
 import org.openqa.selenium.Capabilities;
@@ -51,6 +53,9 @@ public class DesiredCapabilities implements Serializable, Capabilities {
 
   public DesiredCapabilities(Map<String, ?> rawMap) {
     capabilities.putAll(rawMap);
+    if (rawMap.containsKey(UNEXPECTED_ALERT_BEHAVIOUR)) {
+      capabilities.put(UNHANDLED_PROMPT_BEHAVIOUR, rawMap.get(UNEXPECTED_ALERT_BEHAVIOUR));
+    }
 
     if (rawMap.containsKey(LOGGING_PREFS) && rawMap.get(LOGGING_PREFS) instanceof Map) {
       LoggingPreferences prefs = new LoggingPreferences();
@@ -135,6 +140,9 @@ public class DesiredCapabilities implements Serializable, Capabilities {
     if (extraCapabilities != null) {
       capabilities.putAll(extraCapabilities.asMap());
     }
+    if (extraCapabilities.getCapability(UNEXPECTED_ALERT_BEHAVIOUR) != null) {
+      capabilities.put(UNHANDLED_PROMPT_BEHAVIOUR, extraCapabilities.getCapability(UNEXPECTED_ALERT_BEHAVIOUR));
+    }
     return this;
   }
 
@@ -150,6 +158,9 @@ public class DesiredCapabilities implements Serializable, Capabilities {
         capabilities.put(capabilityName, value);
       }
     } else {
+      if (UNEXPECTED_ALERT_BEHAVIOUR.equals(capabilityName)) {
+        capabilities.put(UNHANDLED_PROMPT_BEHAVIOUR, value);
+      }
       capabilities.put(capabilityName, value);
     }
   }
