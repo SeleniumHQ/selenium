@@ -105,19 +105,6 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     assertEventFired("mouseover");
   }
 
-  // TODO: this is a bad test: mousemove should not fire in a perfect click (e.g. mouse did not move
-  // while doing down, up, click
-  @JavascriptEnabled
-  @Test
-  @Ignore(MARIONETTE)
-  public void testShouldFireMouseMoveEventWhenClicking() {
-    driver.get(pages.javascriptPage);
-
-    clickOnElementWhichRecordsEvents();
-
-    assertEventFired("mousemove");
-  }
-
   @JavascriptEnabled
   @Test
   public void testShouldNotThrowIfEventHandlerThrows() {
