@@ -10,9 +10,23 @@ matrix:
   exclude:
     - language: java
       jdk: oraclejdk8
+      env: CHROME=1 TASK="calcdeps //javascript/atoms:atoms-chrome:run"
+      addons:
+        apt:
+          packages:
+            - google-chrome-stable
+    - language: java
+      jdk: oraclejdk8
       env: MARIONETTE=1 TASK=//java/client/test/com/thoughtworks/selenium:firefox-rc-test:run
       addons:
         firefox: latest-nightly
+    - language: java
+      jdk: oraclejdk8
+      env: CHROME=1 TASK=//java/client/test/com/thoughtworks/selenium:chrome-rc-test:run
+      addons:
+        apt:
+          packages:
+            - google-chrome-stable
     - language: python
       python: 2.7
       env: CHROME=1 TOXENV=py27-chrome
@@ -59,13 +73,6 @@ matrix:
     - language: java
       jdk: oraclejdk8
       env: TASK=//java/client/test/org/openqa/selenium/atoms:test:run
-    - language: java
-      jdk: oraclejdk8
-      env: CHROME=1 TASK="calcdeps //javascript/atoms:atoms-chrome:run"
-      addons:
-        apt:
-          packages:
-            - google-chrome-stable
     - language: java
       jdk: oraclejdk8
       env: CHROME=1 TASK="calcdeps //javascript/selenium-atoms:selenium-atoms-chrome:run"
@@ -120,13 +127,6 @@ matrix:
     - language: java
       jdk: oraclejdk8
       env: CHROME=1 TASK=test_chrome
-      addons:
-        apt:
-          packages:
-            - google-chrome-stable
-    - language: java
-      jdk: oraclejdk8
-      env: CHROME=1 TASK=//java/client/test/com/thoughtworks/selenium:chrome-rc-test:run
       addons:
         apt:
           packages:
