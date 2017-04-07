@@ -191,7 +191,7 @@ public class TextHandlingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = IE, reason = "IE: inserts \r\n instead of \n")
-  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/594")
+  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testShouldBeAbleToSetMoreThanOneLineOfTextInATextArea() {
     driver.get(pages.formPage);
     WebElement textarea = driver.findElement(By.id("withText"));
@@ -208,7 +208,7 @@ public class TextHandlingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/594")
+  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testShouldBeAbleToEnterDatesAfterFillingInOtherValuesFirst() {
     driver.get(pages.formPage);
     WebElement input = driver.findElement(By.id("working"));
@@ -353,7 +353,7 @@ public class TextHandlingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(IE)
-  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/594")
+  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testTextOfATextAreaShouldBeEqualToItsDefaultTextEvenAfterTyping() {
     driver.get(pages.formPage);
     WebElement area = driver.findElement(By.id("withText"));
