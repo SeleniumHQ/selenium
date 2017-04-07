@@ -45,7 +45,7 @@ import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 @NeedsLocalEnvironment(reason = "Requires local browser launching environment")
 @Ignore(PHANTOMJS)
 @Ignore(value = SAFARI, reason = "issue 3862")
-@Ignore(MARIONETTE)
+@Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/617")
 public class UnexpectedAlertBehaviorTest extends JUnit4TestBase {
 
   private WebDriver driver2;
