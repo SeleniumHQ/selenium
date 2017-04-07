@@ -76,7 +76,6 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore(MARIONETTE)
   public void testShouldWaitForLoadsToCompleteAfterJavascriptCausesANewPageToLoad() {
     driver.get(pages.formPage);
 
@@ -88,7 +87,6 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore(MARIONETTE)
   public void testShouldBeAbleToFindElementAfterJavascriptCausesANewPageToLoad() {
     driver.get(pages.formPage);
 

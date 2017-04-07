@@ -123,7 +123,7 @@ public class FormHandlingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(MARIONETTE)
+  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/594")
   public void testShouldSubmitAFormUsingTheNewlineLiteral() {
     driver.get(pages.formPage);
     WebElement nestedForm = driver.findElement(By.id("nested_form"));
@@ -162,7 +162,7 @@ public class FormHandlingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = SAFARI, reason = "issue 4220")
-  @Ignore(MARIONETTE)
+  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/594")
   public void testShouldBeAbleToAlterTheContentsOfAFileUploadInputElement() throws IOException {
     driver.get(pages.formPage);
     WebElement uploadElement = driver.findElement(By.id("upload"));
@@ -179,7 +179,7 @@ public class FormHandlingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = SAFARI, reason = "issue 4220")
-  @Ignore(MARIONETTE)
+  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/594")
   public void testShouldBeAbleToSendKeysToAFileUploadInputElementInAnXhtmlDocument()
       throws IOException {
     assumeFalse("IE before 9 doesn't handle pages served with an XHTML content type,"
@@ -201,7 +201,7 @@ public class FormHandlingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = SAFARI, reason = "issue 4220")
-  @Ignore(MARIONETTE)
+  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/594")
   public void testShouldBeAbleToUploadTheSameFileTwice() throws IOException {
     File file = File.createTempFile("test", "txt");
     file.deleteOnExit();
@@ -271,7 +271,6 @@ public class FormHandlingTest extends JUnit4TestBase {
   @Test
   @Ignore(PHANTOMJS)
   @Ignore(SAFARI)
-  @Ignore(MARIONETTE)
   public void handleFormWithJavascriptAction() {
     String url = appServer.whereIs("form_handling_js_submit.html");
     driver.get(url);

@@ -302,7 +302,7 @@ public class FrameSwitchingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(MARIONETTE)
+  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/614")
   public void testShouldFocusOnTheReplacementWhenAFrameFollowsALinkToA_TopTargetedPage()
       throws Exception {
     driver.get(pages.framesetPage);
@@ -484,16 +484,14 @@ public class FrameSwitchingTest extends JUnit4TestBase {
   @Ignore(CHROME)
   @Ignore(HTMLUNIT)
   @Ignore(IE)
-  @Ignore(MARIONETTE)
+  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/614")
   @Ignore(PHANTOMJS)
   @Ignore(SAFARI)
   public void testShouldNotBeAbleToDoAnythingTheFrameIsDeletedFromUnderUs() {
     driver.get(appServer.whereIs("frame_switching_tests/deletingFrame.html"));
 
     driver.switchTo().frame("iframe1");
-
-    WebElement killIframe = driver.findElement(By.id("killIframe"));
-    killIframe.click();
+    driver.findElement(By.id("killIframe")).click();
 
     Throwable t = catchThrowable(() -> driver.findElement(By.id("killIframe")));
     assertThat(t, instanceOf(NoSuchFrameException.class));

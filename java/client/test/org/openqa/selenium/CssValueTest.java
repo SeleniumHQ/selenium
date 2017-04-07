@@ -32,7 +32,7 @@ public class CssValueTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore(MARIONETTE)
+  @Ignore(value = MARIONETTE, issue = "3795")
   public void testShouldPickUpStyleOfAnElement() {
     driver.get(pages.javascriptPage);
 
@@ -49,7 +49,7 @@ public class CssValueTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore(MARIONETTE)
+  @Ignore(value = MARIONETTE, issue = "3795")
   public void testGetCssValueShouldReturnStandardizedColour() {
     driver.get(pages.colorPage);
 
