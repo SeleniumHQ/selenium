@@ -17,6 +17,7 @@
 
 package org.openqa.selenium;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
@@ -43,24 +44,10 @@ public class TextPagesTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = IE, reason = "adds HTML tags")
-  @Ignore(CHROME)
-  @Ignore(SAFARI)
-  @Ignore(PHANTOMJS)
-  @Ignore(MARIONETTE)
   public void testShouldBeAbleToLoadASimplePageOfText() {
     driver.get(textPage);
-
     String source = driver.getPageSource();
-    assertEquals("Test", source);
-  }
-
-  @Test
-  public void testFindingAnElementOnAPlainTextPageWillNeverWork() {
-    driver.get(textPage);
-
-    Throwable t = catchThrowable(() -> driver.findElement(By.id("foo")));
-    assertThat(t, instanceOf(NoSuchElementException.class));
+    assertThat(source, containsString("Test"));
   }
 
   @Test
