@@ -27,8 +27,8 @@ module Buck
       out_dir = File.dirname out
       FileUtils.mkdir_p(out_dir) unless File.exist?(out_dir)
 
-      require "third_party/java/httpcomponents/httpcore-4.4.4"
-      require "third_party/java/httpcomponents/httpclient-4.5.2"
+      require "third_party/java/httpcomponents/httpcore-4.4.6"
+      require "third_party/java/httpcomponents/httpclient-4.5.3"
       require "third_party/java/commons-logging/commons-logging-1.2"
       require "third_party/java/commons-io/commons-io-2.5"
 
