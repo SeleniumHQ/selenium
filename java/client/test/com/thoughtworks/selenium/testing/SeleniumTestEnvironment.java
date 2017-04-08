@@ -122,16 +122,6 @@ public class SeleniumTestEnvironment implements TestEnvironment {
       public void stop() {
         command.destroy();
       }
-
-      @Override
-      public void listenOn(int port) {
-        throw new UnsupportedOperationException("listenOn");
-      }
-
-      @Override
-      public void listenSecurelyOn(int port) {
-        throw new UnsupportedOperationException("listenSecurelyOn");
-      }
     };
   }
 

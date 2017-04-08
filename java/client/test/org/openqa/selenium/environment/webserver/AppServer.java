@@ -34,8 +34,4 @@ public interface AppServer {
   void start();
 
   void stop();
-
-  void listenOn(int port);
-
-  void listenSecurelyOn(int port);
 }

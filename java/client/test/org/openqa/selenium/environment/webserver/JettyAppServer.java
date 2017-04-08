@@ -22,6 +22,7 @@ import static org.openqa.selenium.testing.InProject.locate;
 
 import com.google.common.collect.ImmutableList;
 
+import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.testing.InProject;
 import org.seleniumhq.jetty9.http.HttpVersion;
@@ -42,6 +43,7 @@ import org.seleniumhq.jetty9.servlet.ServletContextHandler;
 import org.seleniumhq.jetty9.servlet.ServletHolder;
 import org.seleniumhq.jetty9.util.ssl.SslContextFactory;
 
+import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.EnumSet;
@@ -74,7 +76,7 @@ public class JettyAppServer implements AppServer {
   private final String hostName;
 
   public JettyAppServer() {
-    this(detectHostname());
+    this(detectHostname(), getHttpPort(), getHttpsPort());
   }
 
   public static String detectHostname() {
@@ -82,8 +84,11 @@ public class JettyAppServer implements AppServer {
     return hostnameFromProperty == null ? "localhost" : hostnameFromProperty;
   }
 
-  public JettyAppServer(String hostName) {
+  public JettyAppServer(String hostName, int httpPort, int httpsPort) {
     this.hostName = hostName;
+    this.port = httpPort;
+    this.securePort = httpsPort;
+
     // Be quiet. Unless we want things to be chatty
     if (!Boolean.getBoolean("webdriver.debug")) {
       new NullLogger().disableLogging();
@@ -116,17 +121,14 @@ public class JettyAppServer implements AppServer {
     addServlet(defaultContext, "/quitquitquit", KillSwitchServlet.class);
     addServlet(defaultContext, "/basicAuth", BasicAuth.class);
     addServlet(defaultContext, "/generated/*", GeneratedJsTestServlet.class);
-
-    listenOn(getHttpPort());
-    listenSecurelyOn(getHttpsPort());
   }
 
-  private int getHttpPort() {
+  private static int getHttpPort() {
     String port = System.getenv(FIXED_HTTP_PORT_ENV_NAME);
     return port == null ? findFreePort() : Integer.parseInt(port);
   }
 
-  private int getHttpsPort() {
+  private static int getHttpsPort() {
     String port = System.getenv(FIXED_HTTPS_PORT_ENV_NAME);
     return port == null ? findFreePort() : Integer.parseInt(port);
   }
@@ -219,16 +221,6 @@ public class JettyAppServer implements AppServer {
   }
 
   @Override
-  public void listenOn(int port) {
-    this.port = port;
-  }
-
-  @Override
-  public void listenSecurelyOn(int port) {
-    this.securePort = port;
-  }
-
-  @Override
   public void stop() {
     try {
       server.stop();
@@ -291,15 +283,11 @@ public class JettyAppServer implements AppServer {
   }
 
   public static void main(String[] args) {
-    JettyAppServer server = new JettyAppServer(detectHostname());
-
-    server.listenOn(getHttpPortFromEnv());
-    System.out.println(String.format("Starting server on port %d", getHttpPortFromEnv()));
-
-    server.listenSecurelyOn(getHttpsPortFromEnv());
-    System.out.println(String.format("HTTPS on %d", getHttpsPortFromEnv()));
-
-    server.start();
+    int httpPort = getHttpPortFromEnv();
+    int httpsPort = getHttpsPortFromEnv();
+    System.out.println(String.format("Starting server on HTTPS port %d and HTTPS port %d",
+                                     httpPort, httpsPort));
+    new JettyAppServer(detectHostname(), httpPort, httpsPort).start();
   }
 
 }
