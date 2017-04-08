@@ -23,6 +23,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
+//import org.apache.commons.io.output.NullOutputStream;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.service.DriverService;
@@ -30,6 +31,7 @@ import org.openqa.selenium.remote.service.DriverService;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.MalformedURLException;
 
 /**
@@ -139,10 +141,18 @@ public class GeckoDriverService extends DriverService {
           if (firefoxLogFile != null) {
             if ("/dev/stdout".equals(firefoxLogFile)) {
               service.sendOutputTo(System.out);
+            } else if ("/dev/stderr".equals(firefoxLogFile)) {
+              service.sendOutputTo(System.err);
+            } else if ("/dev/null".equals(firefoxLogFile)) {
+              service.sendOutputTo(new OutputStream() {
+                @Override
+                public void write(int b) throws IOException {
+                }
+              });
+            } else {
+              service.sendOutputTo(new FileOutputStream(firefoxLogFile));
             }
-            service.sendOutputTo(new FileOutputStream(firefoxLogFile));
           }
-
         }
         return service;
       } catch (IOException e) {
