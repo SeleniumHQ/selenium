@@ -205,10 +205,6 @@ public class FirefoxDriver extends RemoteWebDriver {
           .usingFirefoxBinary(options.getBinaryOrNull().orElseGet(FirefoxBinary::new));
     }
 
-    if (System.getProperty(BROWSER_LOGFILE) != null) {
-      builder.withLogFile(new File(System.getProperty(System.getProperty(BROWSER_LOGFILE))));
-    }
-
     return new DriverCommandExecutor(builder.build());
   }
 
