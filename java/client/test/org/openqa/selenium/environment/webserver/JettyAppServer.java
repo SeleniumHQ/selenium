@@ -44,6 +44,9 @@ import org.seleniumhq.jetty9.servlet.ServletHolder;
 import org.seleniumhq.jetty9.util.ssl.SslContextFactory;
 
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.EnumSet;
@@ -63,6 +66,7 @@ public class JettyAppServer implements AppServer {
   private static final int DEFAULT_HTTPS_PORT = 2410;
   private static final String DEFAULT_CONTEXT_PATH = "/common";
   private static final String JS_SRC_CONTEXT_PATH = "/javascript";
+  private static final String TEMP_SRC_CONTEXT_PATH = "/temp";
   private static final String CLOSURE_CONTEXT_PATH = "/third_party/closure/goog";
   private static final String THIRD_PARTY_JS_CONTEXT_PATH = "/third_party/js";
 
@@ -74,6 +78,7 @@ public class JettyAppServer implements AppServer {
 
   private ContextHandlerCollection handlers;
   private final String hostName;
+  private File tempPagesDir;
 
   public JettyAppServer() {
     this(detectHostname(), getHttpPort(), getHttpsPort());
@@ -102,6 +107,10 @@ public class JettyAppServer implements AppServer {
         DEFAULT_CONTEXT_PATH, locate("common/src/web"));
     ServletContextHandler jsContext = addResourceHandler(
         JS_SRC_CONTEXT_PATH, locate("javascript"));
+    TemporaryFilesystem tempFs = TemporaryFilesystem.getDefaultTmpFS();
+    tempPagesDir = tempFs.createTempDir("pages", "test");
+    ServletContextHandler tempContext = addResourceHandler(
+        TEMP_SRC_CONTEXT_PATH, tempPagesDir.toPath());
     addResourceHandler(CLOSURE_CONTEXT_PATH, locate("third_party/closure/goog"));
     addResourceHandler(THIRD_PARTY_JS_CONTEXT_PATH, locate("third_party/js"));
 
@@ -167,6 +176,20 @@ public class JettyAppServer implements AppServer {
   public String whereIsWithCredentials(String relativeUrl, String user, String pass) {
     relativeUrl = getMainContextPath(relativeUrl);
     return "http://" + user + ":" + pass + "@" + getHostName() + ":" + port + relativeUrl;
+  }
+
+  @Override
+  public String create(Page page) {
+    try {
+      Path target = Files.createTempFile(tempPagesDir.toPath(), "page", ".html");
+      try (Writer out = new FileWriter(target.toFile())) {
+        out.write(page.toString());
+      }
+      return String.format("http://%s:%d%s/%s",
+                           getHostName(), port, TEMP_SRC_CONTEXT_PATH, target.getFileName());
+    } catch (IOException e) {
+      throw new RuntimeException("Can't create page on test server",  e);
+    }
   }
 
   protected String getMainContextPath(String relativeUrl) {

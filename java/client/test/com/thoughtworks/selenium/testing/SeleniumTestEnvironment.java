@@ -22,6 +22,7 @@ import com.google.common.collect.Lists;
 import org.openqa.selenium.BuckBuild;
 import org.openqa.selenium.environment.TestEnvironment;
 import org.openqa.selenium.environment.webserver.AppServer;
+import org.openqa.selenium.environment.webserver.Page;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.net.UrlChecker;
 import org.openqa.selenium.os.CommandLine;
@@ -111,6 +112,11 @@ public class SeleniumTestEnvironment implements TestEnvironment {
       @Override
       public String whereIsWithCredentials(String relativeUrl, String user, String password) {
         throw new UnsupportedOperationException("whereIsWithCredentials");
+      }
+
+      @Override
+      public String create(Page page) {
+        throw new UnsupportedOperationException("create");
       }
 
       @Override
