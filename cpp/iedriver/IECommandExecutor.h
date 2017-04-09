@@ -190,6 +190,13 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor> {
     this->file_upload_dialog_timeout_ = file_upload_dialog_timeout;
   }
 
+  bool use_legacy_file_upload_dialog_handling(void) const {
+    return this->use_legacy_file_upload_dialog_handling_;
+  }
+  void set_use_legacy_file_upload_dialog_handling(const bool use_legacy_file_upload_dialog_handling) {
+    this->use_legacy_file_upload_dialog_handling_ = use_legacy_file_upload_dialog_handling;
+  }
+
   bool enable_full_page_screenshot(void) const {
     return this->enable_full_page_screenshot_;
   }
@@ -246,6 +253,7 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor> {
   std::string unexpected_alert_behavior_;
   std::string page_load_strategy_;
   int file_upload_dialog_timeout_;
+  bool use_legacy_file_upload_dialog_handling_;
   bool enable_full_page_screenshot_;
 
   Command current_command_;

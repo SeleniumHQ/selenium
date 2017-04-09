@@ -9,6 +9,28 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v3.3.0.2
+========
+ * Updates to JavaScript automation atoms.
+ * Rewriting file upload dialog handling code. Previously, the IE driver
+   would use simple window handling and Windows APIs to find and manipulate
+   the IE file selection dialog for the file upload case. With this change,
+   the driver now uses the Windows UI Automation library that ships as part
+   of the Windows operating system to detect and manipulate the dialog.
+   Unfortunately, since handling native dialogs this way is highly OS-
+   dependent, there may be changes in behavior based on different versions
+   of Windows, or different versions of IE. At the moment, this change
+   has been tested against Windows 10, and IE 11. Other versions may not
+   work exactly the same. Temporarily, to retain backward compatibility,
+   it's possible to use the legacy handling with the file upload dialog
+   box. This can be set by setting a capability of
+   "ie.useLegacyFileUploadDialogHandling" to true. This capability is only
+   intended to be provided temporarily, and will be removed as soon as is
+   practical. As such, the capability is not documented, and its presence
+   should not be relied on over the long term. It should be pointed out
+   that, as has been the case since July 2016, the driver now only supports
+   IE versions 9, 10, and 11, and only supports Windows Vista and above.
+
 v3.3.0.1
 ========
  * Updates to JavaScript automation atoms.

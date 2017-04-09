@@ -134,6 +134,9 @@ void NewSessionCommandHandler::SetInputSettings(const IECommandExecutor& executo
     mutable_executor.set_file_upload_dialog_timeout(file_upload_dialog_timeout.asInt());
   }
 
+  Json::Value use_legacy_file_upload_dialog_handling = this->GetCapability(capabilities, USE_LEGACY_FILE_UPLOAD_DIALOG_HANDLING_CAPABILITY, Json::booleanValue, false);
+  mutable_executor.set_use_legacy_file_upload_dialog_handling(use_legacy_file_upload_dialog_handling.asBool());
+
   Json::Value enable_persistent_hover = this->GetCapability(capabilities, ENABLE_PERSISTENT_HOVER_CAPABILITY, Json::booleanValue, true);
   if (require_window_focus.asBool() || !enable_native_events.asBool()) {
     // Setting "require_window_focus" implies SendInput() API, and does not therefore require
@@ -203,6 +206,7 @@ Json::Value NewSessionCommandHandler::CreateReturnedCapabilities(const IECommand
   ie_options[ELEMENT_SCROLL_BEHAVIOR_CAPABILITY] = executor.input_manager()->scroll_behavior();
   ie_options[REQUIRE_WINDOW_FOCUS_CAPABILITY] = executor.input_manager()->require_window_focus();
   ie_options[FILE_UPLOAD_DIALOG_TIMEOUT_CAPABILITY] = executor.file_upload_dialog_timeout();
+  ie_options[USE_LEGACY_FILE_UPLOAD_DIALOG_HANDLING_CAPABILITY] = executor.use_legacy_file_upload_dialog_handling();
   ie_options[ENABLE_ELEMENT_CACHE_CLEANUP_CAPABILITY] = executor.enable_element_cache_cleanup();
   ie_options[ENABLE_FULL_PAGE_SCREENSHOT_CAPABILITY] = executor.enable_full_page_screenshot();
 
