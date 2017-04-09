@@ -95,7 +95,9 @@ public interface Capabilities {
   default Capabilities merge(Capabilities other) {
     HashMap<String, Object> map = new HashMap<>();
     map.putAll(asMap());
-    map.putAll(other.asMap());
+    if (other != null) {
+      map.putAll(other.asMap());
+    }
     return new ImmutableCapabilities(map);
   }
 }

@@ -139,9 +139,9 @@ public class DesiredCapabilities implements Serializable, Capabilities {
   public DesiredCapabilities merge(Capabilities extraCapabilities) {
     if (extraCapabilities != null) {
       capabilities.putAll(extraCapabilities.asMap());
-    }
-    if (extraCapabilities.getCapability(UNEXPECTED_ALERT_BEHAVIOUR) != null) {
-      capabilities.put(UNHANDLED_PROMPT_BEHAVIOUR, extraCapabilities.getCapability(UNEXPECTED_ALERT_BEHAVIOUR));
+      if (extraCapabilities.getCapability(UNEXPECTED_ALERT_BEHAVIOUR) != null) {
+        capabilities.put(UNHANDLED_PROMPT_BEHAVIOUR, extraCapabilities.getCapability(UNEXPECTED_ALERT_BEHAVIOUR));
+      }
     }
     return this;
   }
