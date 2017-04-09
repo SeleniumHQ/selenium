@@ -27,6 +27,13 @@ matrix:
         apt:
           packages:
             - google-chrome-stable
+    - language: java
+      jdk: oraclejdk8
+      env: CHROME=1 TASK=test_chrome
+      addons:
+        apt:
+          packages:
+            - google-chrome-stable
     - language: python
       python: 2.7
       env: CHROME=1 TOXENV=py27-chrome
@@ -124,13 +131,6 @@ matrix:
       env: MARIONETTE=1 TASK=//java/client/test/org/openqa/selenium/firefox:marionette:run
       addons:
         firefox: latest-nightly
-    - language: java
-      jdk: oraclejdk8
-      env: CHROME=1 TASK=test_chrome
-      addons:
-        apt:
-          packages:
-            - google-chrome-stable
     - language: java
       jdk: oraclejdk8
       env: TASK=test_java_small_tests
