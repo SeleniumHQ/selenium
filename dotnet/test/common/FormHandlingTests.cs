@@ -202,19 +202,16 @@ namespace OpenQA.Selenium
             inputFileWriter.WriteLine("Hello world");
             inputFileWriter.Close();
 
-            driver.Url = formsPage;
-            IWebElement uploadElement = driver.FindElement(By.Id("upload"));
-            Assert.IsTrue(string.IsNullOrEmpty(uploadElement.GetAttribute("value")));
+            for (int i = 0; i < 2; ++i)
+            {
+                driver.Url = formsPage;
+                IWebElement uploadElement = driver.FindElement(By.Id("upload"));
+                Assert.IsTrue(string.IsNullOrEmpty(uploadElement.GetAttribute("value")));
 
-            uploadElement.SendKeys(inputFile.FullName);
-            uploadElement.Submit();
+                uploadElement.SendKeys(inputFile.FullName);
+                uploadElement.Submit();
+            }
 
-            driver.Url = formsPage;
-            uploadElement = driver.FindElement(By.Id("upload"));
-            Assert.IsTrue(string.IsNullOrEmpty(uploadElement.GetAttribute("value")));
-
-            uploadElement.SendKeys(inputFile.FullName);
-            uploadElement.Submit();
             // If we get this far, then we're all good.
         }
 
