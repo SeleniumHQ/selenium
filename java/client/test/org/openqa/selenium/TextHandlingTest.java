@@ -30,7 +30,6 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.testing.Driver.ALL;
-import static org.openqa.selenium.testing.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
 
@@ -38,6 +37,7 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 import org.junit.Test;
+import org.openqa.selenium.environment.webserver.Page;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
@@ -410,6 +410,18 @@ public class TextHandlingTest extends JUnit4TestBase {
     String text = driver.findElement(By.id("trimmedSpace")).getText();
 
     assertEquals("test", text);
+  }
+
+  @Test
+  public void canHandleTextThatLooksLikeANumber() {
+    driver.get(appServer.create(new Page()
+        .withBody("<div id='point'>12.345</div>",
+                  "<div id='comma'>12,345</div>",
+                  "<div id='space'>12 345</div>")));
+
+    assertThat(driver.findElement(By.id("point")).getText(), is("12.345"));
+    assertThat(driver.findElement(By.id("comma")).getText(), is("12,345"));
+    assertThat(driver.findElement(By.id("space")).getText(), is("12 345"));
   }
 
 }
