@@ -25,6 +25,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeFalse;
+import static org.openqa.selenium.support.ui.ExpectedConditions.alertIsPresent;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
@@ -272,12 +273,13 @@ public class FormHandlingTest extends JUnit4TestBase {
   @Test
   @Ignore(PHANTOMJS)
   @Ignore(SAFARI)
+  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/620")
   public void handleFormWithJavascriptAction() {
     String url = appServer.whereIs("form_handling_js_submit.html");
     driver.get(url);
     WebElement element = driver.findElement(By.id("theForm"));
     element.submit();
-    Alert alert = driver.switchTo().alert();
+    Alert alert = wait.until(alertIsPresent());
     String text = alert.getText();
     alert.accept();
 

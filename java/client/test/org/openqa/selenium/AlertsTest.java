@@ -597,6 +597,24 @@ public class AlertsTest extends JUnit4TestBase {
     driver.quit();
   }
 
+  @JavascriptEnabled
+  @Test
+  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/620")
+  public void shouldHandleAlertOnFormSubmit() {
+    driver.get(appServer.create(new Page().withTitle("Testing Alerts").withBody(
+        "<form id='theForm' action='javascript:alert(\"Tasty cheese\");'>",
+        "<input id='unused' type='submit' value='Submit'>",
+        "</form>")));
+
+    driver.findElement(By.id("theForm")).submit();
+    Alert alert = wait.until(alertIsPresent());
+    String value = alert.getText();
+    alert.accept();
+
+    assertEquals("Tasty cheese", value);
+    assertEquals("Testing Alerts", driver.getTitle());
+  }
+
   private static ExpectedCondition<Boolean> textInElementLocated(
       final By locator, final String text) {
     return driver -> text.equals(driver.findElement(locator).getText());
