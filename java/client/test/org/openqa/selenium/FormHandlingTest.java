@@ -35,6 +35,7 @@ import static org.openqa.selenium.testing.TestUtilities.isIe6;
 import static org.openqa.selenium.testing.TestUtilities.isIe7;
 
 import org.junit.Test;
+import org.openqa.selenium.environment.webserver.Page;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
@@ -320,6 +321,32 @@ public class FormHandlingTest extends JUnit4TestBase {
   @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testCanClickOnAnExternalImplicitSubmitButton() {
     checkSubmitButton("external_implicit_submit");
+  }
+
+  @Test
+  @Ignore(value = MARIONETTE, issue = "3398")
+  public void canSubmitFormWithSubmitButtonIdEqualToSubmit() {
+    String blank = appServer.create(new Page().withTitle("Submitted Successfully!"));
+    driver.get(appServer.create(new Page().withBody(
+        String.format("<form action='%s'>", blank),
+        "  <input type='submit' id='submit' value='Submit'>",
+        "</form>")));
+
+    driver.findElement(By.id("submit")).submit();
+    wait.until(titleIs("Submitted Successfully!"));
+  }
+
+  @Test
+  @Ignore(value = MARIONETTE, issue = "3398")
+  public void canSubmitFormWithSubmitButtonNameEqualToSubmit() {
+    String blank = appServer.create(new Page().withTitle("Submitted Successfully!"));
+    driver.get(appServer.create(new Page().withBody(
+        String.format("<form action='%s'>", blank),
+        "  <input type='submit' name='submit' value='Submit'>",
+        "</form>")));
+
+    driver.findElement(By.name("submit")).submit();
+    wait.until(titleIs("Submitted Successfully!"));
   }
 
   private void checkSubmitButton(String buttonId) {
