@@ -106,7 +106,7 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
   protected void defineCommand(String commandName, CommandInfo info) {
     checkNotNull(commandName);
     checkNotNull(info);
-    commandCodec.defineCommand(commandName, info.getMethod(), info.getUrl());
+    getCommandCodec().defineCommand(commandName, info.getMethod(), info.getUrl());
   }
 
   public void setLocalLogs(LocalLogs logs) {
@@ -134,34 +134,34 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
     }
 
     if (NEW_SESSION.equals(command.getName())) {
-      if (commandCodec != null) {
+      if (getCommandCodec() != null) {
         throw new SessionNotCreatedException("Session already exists");
       }
       ProtocolHandshake handshake = new ProtocolHandshake();
       log(LogType.PROFILER, new HttpProfilerLogEntry(command.getName(), true));
-      ProtocolHandshake.Result result = handshake.createSession(client, command);
+      ProtocolHandshake.Result result = handshake.createSession(getClient(), command);
       Dialect dialect = result.getDialect();
-      commandCodec = dialect.getCommandCodec();
+      setCommandCodec(dialect.getCommandCodec());
       for (Map.Entry<String, CommandInfo> entry : additionalCommands.entrySet()) {
         defineCommand(entry.getKey(), entry.getValue());
       }
-      responseCodec = dialect.getResponseCodec();
+      setResponseCodec(dialect.getResponseCodec());
       log(LogType.PROFILER, new HttpProfilerLogEntry(command.getName(), false));
       return result.createResponse();
     }
 
-    if (commandCodec == null || responseCodec == null) {
+    if (getCommandCodec() == null || getResponseCodec() == null) {
       throw new WebDriverException(
         "No command or response codec has been defined. Unable to proceed");
     }
 
-    HttpRequest httpRequest = commandCodec.encode(command);
+    HttpRequest httpRequest = getCommandCodec().encode(command);
     try {
       log(LogType.PROFILER, new HttpProfilerLogEntry(command.getName(), true));
-      HttpResponse httpResponse = client.execute(httpRequest, true);
+      HttpResponse httpResponse = getClient().execute(httpRequest, true);
       log(LogType.PROFILER, new HttpProfilerLogEntry(command.getName(), false));
 
-      Response response = responseCodec.decode(httpResponse);
+      Response response = getResponseCodec().decode(httpResponse);
       if (response.getSessionId() == null) {
         if (httpResponse.getTargetHost() != null) {
           response.setSessionId(HttpSessionId.getSessionId(httpResponse.getTargetHost()));
@@ -171,7 +171,7 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
         }
       }
       if (QUIT.equals(command.getName())) {
-    	  client.close();
+    	  getClient().close();
       }
       return response;
     } catch (UnsupportedCommandException e) {
@@ -183,4 +183,25 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
       throw e;
     }
   }
+
+  protected HttpClient getClient() {
+    return client;
+  }
+
+  protected CommandCodec<HttpRequest> getCommandCodec() {
+    return commandCodec;
+  }
+
+  protected void setCommandCodec(CommandCodec<HttpRequest> commandCodec) {
+    this.commandCodec = commandCodec;
+  }
+
+  protected ResponseCodec<HttpResponse> getResponseCodec() {
+    return responseCodec;
+  }
+
+  protected void setResponseCodec(ResponseCodec<HttpResponse> responseCodec) {
+    this.responseCodec = responseCodec;
+  }
+
 }

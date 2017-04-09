@@ -364,6 +364,10 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     return capabilities;
   }
 
+  protected void setCapabilities(Capabilities capabilities) {
+    this.capabilities = capabilities;
+  }
+
   public void get(String url) {
     execute(DriverCommand.GET, ImmutableMap.of("url", url));
   }
@@ -559,7 +563,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
   }
 
   public Object executeScript(String script, Object... args) {
-    if (!capabilities.is(SUPPORTS_JAVASCRIPT)) {
+    if (!getCapabilities().is(SUPPORTS_JAVASCRIPT)) {
       throw new UnsupportedOperationException(
           "You must be using an underlying instance of WebDriver that supports executing javascript");
     }
@@ -596,7 +600,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
   }
 
   private boolean isJavascriptEnabled() {
-    return capabilities.is(SUPPORTS_JAVASCRIPT);
+    return getCapabilities().is(SUPPORTS_JAVASCRIPT);
   }
 
   public TargetLocator switchTo() {
