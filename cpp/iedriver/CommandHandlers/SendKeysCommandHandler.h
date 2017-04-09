@@ -19,6 +19,10 @@
 
 #include "../IECommandHandler.h"
 
+struct IUIAutomation;
+struct IUIAutomationElement;
+struct IUIAutomationElementArray;
+
 namespace webdriver {
 
 class SendKeysCommandHandler : public IECommandHandler {
@@ -28,6 +32,7 @@ class SendKeysCommandHandler : public IECommandHandler {
     HWND hwnd;
     DWORD ieProcId;
     DWORD dialogTimeout;
+    bool useLegacyDialogHandling;
     const wchar_t* text;
   };
 
@@ -40,13 +45,24 @@ class SendKeysCommandHandler : public IECommandHandler {
                        Response* response);
  private:
   static unsigned int WINAPI SetFileValue(void *file_data);
-  static bool SendKeysToFileUploadAlert(HWND dialog_window_handle,
-                                        const wchar_t* value);
+  static bool SendFileNameKeys(FileNameData* file_data);
+  static bool GetFileSelectionDialogCandidates(HWND ie_window_handle, IUIAutomation* ui_automation, IUIAutomationElementArray** dialog_candidates);
+  static bool FillFileName(const wchar_t* file_name, IUIAutomation* ui_automation, IUIAutomationElement* file_selection_dialog);
+  static bool AcceptFileSelection(IUIAutomation* ui_automation, IUIAutomationElement* file_selection_dialog);
+  static bool WaitForFileSelectionDialogClose(const int timeout, IUIAutomationElement* file_selection_dialog);
+  static bool FindFileSelectionErrorDialog(IUIAutomation* ui_automation, IUIAutomationElement* file_selection_dialog, IUIAutomationElement** error_dialog);
+  static bool DismissFileSelectionErrorDialog(IUIAutomation* ui_automation, IUIAutomationElement* error_dialog);
+  static bool DismissFileSelectionDialog(IUIAutomation* ui_automation, IUIAutomationElement* file_selection_dialog);
+
+  static bool LegacySelectFile(FileNameData* file_data);
+  static bool LegacySendKeysToFileUploadAlert(HWND dialog_window_handle, const wchar_t* value);
 
   bool VerifyPageHasFocus(HWND top_level_window_handle,
                           HWND browser_pane_window_handle);
   bool WaitUntilElementFocused(IHTMLElement *element);
   bool SetInsertionPoint(IHTMLElement* element);
+
+  static std::wstring error_text;
 };
 
 } // namespace webdriver
