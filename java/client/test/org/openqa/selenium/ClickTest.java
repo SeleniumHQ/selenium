@@ -216,6 +216,7 @@ public class ClickTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(value = MARIONETTE, travis = true) // TODO: why???
   public void testCanClickOnALinkThatContainsEmbeddedBlockElements() {
     assumeFalse(
         "Fails on Android phones: https://code.google.com/p/chromedriver/issues/detail?id=1022",
