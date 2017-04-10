@@ -31,7 +31,6 @@ import static org.openqa.selenium.testing.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.PHANTOMJS;
-import static org.openqa.selenium.testing.Driver.REMOTE;
 import static org.openqa.selenium.testing.Driver.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
 import static org.openqa.selenium.testing.TestUtilities.getIEVersion;
@@ -150,7 +149,6 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Test
   @Ignore(IE)
-  @Ignore(REMOTE)
   @Ignore(PHANTOMJS)
   @Ignore(MARIONETTE)
   public void testControlClickingOnCustomMultiSelectionList() {

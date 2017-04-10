@@ -25,7 +25,6 @@ import static org.openqa.selenium.testing.Driver.CHROME;
 import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.PHANTOMJS;
-import static org.openqa.selenium.testing.Driver.REMOTE;
 import static org.openqa.selenium.testing.Driver.SAFARI;
 
 import com.google.common.base.Joiner;
@@ -163,7 +162,6 @@ public class ProxySettingTest extends JUnit4TestBase {
   @Ignore(IE)
   @Ignore(SAFARI)
   @Ignore(PHANTOMJS)
-  @Ignore(REMOTE)
   @NeedsLocalEnvironment
   public void canConfigureProxyWithRequiredCapability() {
     Proxy proxyToUse = proxyServer.asProxy();
@@ -182,7 +180,6 @@ public class ProxySettingTest extends JUnit4TestBase {
   @Ignore(IE)
   @Ignore(SAFARI)
   @Ignore(PHANTOMJS)
-  @Ignore(REMOTE)
   @NeedsLocalEnvironment
   public void requiredProxyCapabilityShouldHavePriority() {
     ProxyServer desiredProxyServer = new ProxyServer();

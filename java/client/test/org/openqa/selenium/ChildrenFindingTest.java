@@ -25,7 +25,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.openqa.selenium.testing.Driver.CHROME;
 import static org.openqa.selenium.testing.Driver.IE;
-import static org.openqa.selenium.testing.Driver.REMOTE;
 import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 
 import org.junit.Test;
@@ -305,7 +304,6 @@ public class ChildrenFindingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(REMOTE)
   public void testFindMultipleElements() {
     driver.get(pages.simpleTestPage);
     WebElement elem = driver.findElement(By.id("links"));
@@ -316,7 +314,6 @@ public class ChildrenFindingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(REMOTE)
   public void testLinkWithLeadingSpaces() {
     driver.get(pages.simpleTestPage);
     WebElement elem = driver.findElement(By.id("links"));
@@ -326,7 +323,6 @@ public class ChildrenFindingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(REMOTE)
   public void testLinkWithTrailingSpace() {
     driver.get(pages.simpleTestPage);
     WebElement elem = driver.findElement(By.id("links"));

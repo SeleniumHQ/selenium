@@ -33,7 +33,6 @@ import static org.openqa.selenium.testing.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.PHANTOMJS;
-import static org.openqa.selenium.testing.Driver.REMOTE;
 import static org.openqa.selenium.testing.Driver.SAFARI;
 
 import org.junit.Before;
@@ -275,7 +274,6 @@ public class CookieImplementationTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(REMOTE)
   public void testShouldBeAbleToIncludeLeadingPeriodInDomainName() throws Exception {
     String cookieName = "name";
     assertCookieIsNotPresentWithName(cookieName);
