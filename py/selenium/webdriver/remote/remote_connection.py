@@ -513,7 +513,7 @@ class RemoteConnection(object):
             else:
                 request = Request(url, data=body.encode('utf-8'), method=method)
 
-            for key, val in headers.iteritems():
+            for key, val in headers.items():
                 request.add_header(key, val)
 
             if password_manager:
