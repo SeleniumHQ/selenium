@@ -9,6 +9,7 @@ java_library(name = 'annotations',
     'NeedsFreshDriver.java',
     'NoDriverAfterTest.java',
     'NotYetImplemented.java',
+    'NotYetImplementedList.java',
     'SwitchToTopAfterTest.java',
   ],
   deps = [

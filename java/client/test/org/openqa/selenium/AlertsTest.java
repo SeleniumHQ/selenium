@@ -190,9 +190,8 @@ public class AlertsTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @NotYetImplemented(value = {HTMLUNIT, MARIONETTE},
-    reason = "HtmlUnit: click()/prompt need to run in different threads" +
-             "Marionette: https://github.com/mozilla/geckodriver/issues/607")
+  @NotYetImplemented(value = HTMLUNIT, reason = "click()/prompt need to run in different threads")
+  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/607")
   public void testShouldAllowAUserToSetTheValueOfAPrompt() {
     driver.get(promptPage(null));
 
@@ -366,9 +365,8 @@ public class AlertsTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @NotYetImplemented(value = {HTMLUNIT, MARIONETTE},
-    reason = "HtmlUnit: click()/prompt need to run in different threads." +
-             "Marionette: https://github.com/mozilla/geckodriver/issues/607")
+  @NotYetImplemented(value = HTMLUNIT, reason = "click()/prompt need to run in different threads")
+  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/607")
   public void testHandlesTwoAlertsFromOneInteraction() {
     driver.get(appServer.create(new Page()
         .withScripts(
