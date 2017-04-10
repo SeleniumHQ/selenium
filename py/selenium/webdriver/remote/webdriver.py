@@ -837,7 +837,18 @@ class WebDriver(object):
             del png
         return True
 
-    save_screenshot = get_screenshot_as_file
+    def save_screenshot(self, filename):
+        """
+        Gets the screenshot of the current window. Returns False if there is
+           any IOError, else returns True. Use full paths in your filename.
+
+        :Args:
+         - filename: The full path you wish to save your screenshot to.
+
+        :Usage:
+            driver.save_screenshot('/Screenshots/foo.png')
+        """
+        return self.get_screenshot_as_file(filename)
 
     def get_screenshot_as_png(self):
         """
