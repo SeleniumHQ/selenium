@@ -29,9 +29,10 @@ const webdriver = require('../..'),
 
 
 test.suite(function(env) {
-
+  var driver;
   test.afterEach(function(){
     sandbox.restore();
+    return driver.quit();
   });
 
   describe("capabilities.set('acceptSslCerts', true)", function() {
@@ -42,11 +43,10 @@ test.suite(function(env) {
           remote.DriverService.prototype,
           'start',
           function(options){
-            that = this;
-            return that.args_
+            return this.args_
             .then( args => {
               assert(args).contains('--ignore-ssl-errors=true');
-              return _start.bind(that).call(options);
+              return _start.call(this,options);
             });
           }
         );
@@ -54,9 +54,11 @@ test.suite(function(env) {
          var capabilities = webdriver.Capabilities.phantomjs();
          capabilities.set('acceptSslCerts', true);
 
-         return new webdriver.Builder()
+          driver = new webdriver.Builder()
          .withCapabilities(capabilities)
          .build();
+
+          return driver;
       });
    });
 
