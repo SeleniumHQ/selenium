@@ -43,6 +43,12 @@ namespace webdriver {
 
 std::wstring SendKeysCommandHandler::error_text = L"";
 
+struct DialogParentWindowInfo {
+  DWORD process_id;
+  const wchar_t* class_name;
+  HWND window_handle;
+};
+
 SendKeysCommandHandler::SendKeysCommandHandler(void) {
 }
 
@@ -185,40 +191,52 @@ void SendKeysCommandHandler::ExecuteInternal(
   }
 }
 
-bool SendKeysCommandHandler::GetFileSelectionDialogCandidates(HWND ie_window_handle, IUIAutomation* ui_automation, IUIAutomationElementArray** dialog_candidates) {
-  CComPtr<IUIAutomationElement> ie_uiautomation_pointer;
-  HRESULT hr = ui_automation->ElementFromHandle(ie_window_handle, &ie_uiautomation_pointer);
-  if (FAILED(hr)) {
-    LOGHR(WARN, hr) << "Did not get IE UI Automation object";
-    return false;
-  }
-
+bool SendKeysCommandHandler::GetFileSelectionDialogCandidates(std::vector<HWND> parent_window_handles, IUIAutomation* ui_automation, IUIAutomationElementArray** dialog_candidates) {
   CComVariant dialog_control_type(UIA_WindowControlTypeId);
   CComPtr<IUIAutomationCondition> dialog_condition;
-  hr = ui_automation->CreatePropertyCondition(UIA_ControlTypePropertyId, dialog_control_type, &dialog_condition);
+  HRESULT hr = ui_automation->CreatePropertyCondition(UIA_ControlTypePropertyId, dialog_control_type, &dialog_condition);
   if (FAILED(hr)) {
     LOGHR(WARN, hr) << "Could not create condition to look for dialog";
     return false;
   }
 
+  bool found_candidate_dialogs = false;
   int window_array_length = 0;
-  hr = ie_uiautomation_pointer->FindAll(TreeScope::TreeScope_Children, dialog_condition, dialog_candidates);
-  if (FAILED(hr)) {
-    LOGHR(WARN, hr) << "Process of finding child dialogs of IE main window failed";
-    return false;
-  }
-  hr = (*dialog_candidates)->get_Length(&window_array_length);
-  if (FAILED(hr)) {
-    LOGHR(WARN, hr) << "Could not get length of list of child dialogs of IE main window";
-    return false;
+  std::vector<HWND>::const_iterator handle_iterator = parent_window_handles.begin();
+  for (; handle_iterator != parent_window_handles.end(); ++handle_iterator) {
+    CComPtr<IUIAutomationElement> parent_window;
+    hr = ui_automation->ElementFromHandle(*handle_iterator, &parent_window);
+    if (FAILED(hr)) {
+      LOGHR(WARN, hr) << "Did not get parent window UI Automation object";
+      continue;
+    }
+    CComPtr<IUIAutomationElementArray> current_dialog_candidates;
+    hr = parent_window->FindAll(TreeScope::TreeScope_Children, dialog_condition, &current_dialog_candidates);
+    if (FAILED(hr)) {
+      LOGHR(WARN, hr) << "Process of finding child dialogs of parent window failed";
+      continue;
+    }
+    hr = current_dialog_candidates->get_Length(&window_array_length);
+    if (FAILED(hr)) {
+      LOGHR(WARN, hr) << "Could not get length of list of child dialogs of parent window";
+      continue;
+    }
+
+    if (window_array_length == 0) {
+      LOG(WARN) << "Found no dialogs as children of parent window";
+      continue;
+    } else {
+      // Use CComPtr::CopyTo() to increment the refcount, because when the
+      // current dialog candidates pointer goes out of scope, it will decrement
+      // the refcount, which will free the object when the refcount equals
+      // zero.
+      current_dialog_candidates.CopyTo(dialog_candidates);
+      found_candidate_dialogs = true;
+      break;
+    }
   }
 
-  if (window_array_length == 0) {
-    LOG(WARN) << "Did not find any dialogs after dialog timeout";
-    return false;
-  }
-
-  return true;
+  return found_candidate_dialogs;
 }
 
 bool SendKeysCommandHandler::FillFileName(const wchar_t* file_name, IUIAutomation* ui_automation, IUIAutomationElement* file_selection_dialog) {
@@ -423,12 +441,12 @@ bool SendKeysCommandHandler::DismissFileSelectionDialog(IUIAutomation* ui_automa
 }
 
 bool SendKeysCommandHandler::SendFileNameKeys(FileNameData* file_data) {
-  CComPtr<IUIAutomation> ui_automation_lib_pointer;
+  CComPtr<IUIAutomation> ui_automation;
   HRESULT hr = ::CoCreateInstance(CLSID_CUIAutomation,
                                   NULL,
                                   CLSCTX_INPROC_SERVER,
                                   IID_IUIAutomation,
-                                  reinterpret_cast<void**>(&ui_automation_lib_pointer));
+                                  reinterpret_cast<void**>(&ui_automation));
 
   if (FAILED(hr)) {
     LOGHR(WARN, hr) << "Unable to create global UI Automation object";
@@ -436,14 +454,32 @@ bool SendKeysCommandHandler::SendFileNameKeys(FileNameData* file_data) {
     return false;
   }
 
+  // Find a dialog parent window with a class name of "Alternate
+  // Modal Top Most" belonging to the same process as the IE
+  // content process. If we find one, add it to the list of 
+  // window handles that might be the file selection dialog's
+  // direct parent.
+  DialogParentWindowInfo window_info;
+  window_info.process_id = file_data->ieProcId;
+  window_info.class_name = L"Alternate Modal Top Most";
+  window_info.window_handle = NULL;
+  ::EnumWindows(&SendKeysCommandHandler::FindWindowWithClassNameAndProcess,
+                reinterpret_cast<LPARAM>(&window_info));
+  
+  std::vector<HWND> window_handles;
+  if (window_info.window_handle != NULL) {
+    window_handles.push_back(window_info.window_handle);
+  }
+  window_handles.push_back(file_data->main);
+
   // Find all candidates for the file selection dialog. Retry until timeout.
   int max_retries = file_data->dialogTimeout / 100;
   CComPtr<IUIAutomationElementArray> dialog_candidates;
-  bool dialog_candidates_found = GetFileSelectionDialogCandidates(file_data->main, ui_automation_lib_pointer, &dialog_candidates);
+  bool dialog_candidates_found = GetFileSelectionDialogCandidates(window_handles, ui_automation, &dialog_candidates);
   while (!dialog_candidates_found && --max_retries) {
     dialog_candidates.Release();
     ::Sleep(100);
-    dialog_candidates_found = GetFileSelectionDialogCandidates(file_data->main, ui_automation_lib_pointer, &dialog_candidates);
+    dialog_candidates_found = GetFileSelectionDialogCandidates(window_handles, ui_automation, &dialog_candidates);
   }
 
   if (!dialog_candidates_found) {
@@ -464,10 +500,10 @@ bool SendKeysCommandHandler::SendFileNameKeys(FileNameData* file_data) {
       LOGHR(WARN, hr) << "Failed to get element " << i << " from list of child dialogs of IE main window, trying next dialog";
       continue;
     }
-    if (!FillFileName(file_data->text, ui_automation_lib_pointer, file_selection_dialog)) {
+    if (!FillFileName(file_data->text, ui_automation, file_selection_dialog)) {
       continue;
     }
-    if (!AcceptFileSelection(ui_automation_lib_pointer, file_selection_dialog)) {
+    if (!AcceptFileSelection(ui_automation, file_selection_dialog)) {
       continue;
     }
     if (WaitForFileSelectionDialogClose(file_data->dialogTimeout, file_selection_dialog)) {
@@ -481,16 +517,16 @@ bool SendKeysCommandHandler::SendFileNameKeys(FileNameData* file_data) {
     // browser. Check for an error dialog, and if one is found, dismiss it and the file
     // selection dialog so as not to hang the driver.
     CComPtr<IUIAutomationElement> error_dialog;
-    if (!FindFileSelectionErrorDialog(ui_automation_lib_pointer, file_selection_dialog, &error_dialog)) {
+    if (!FindFileSelectionErrorDialog(ui_automation, file_selection_dialog, &error_dialog)) {
       error_text = L"The driver found the file selection dialog, set the file information, and clicked the open button, but the dialog did not close in a timely manner.";
       return false;
     }
 
-    if (!DismissFileSelectionErrorDialog(ui_automation_lib_pointer, error_dialog)) {
+    if (!DismissFileSelectionErrorDialog(ui_automation, error_dialog)) {
       return false;
     }
 
-    if (!DismissFileSelectionDialog(ui_automation_lib_pointer, file_selection_dialog)) {
+    if (!DismissFileSelectionDialog(ui_automation, file_selection_dialog)) {
       return false;
     }
   }
@@ -498,6 +534,30 @@ bool SendKeysCommandHandler::SendFileNameKeys(FileNameData* file_data) {
   return true;
 }
 
+BOOL CALLBACK SendKeysCommandHandler::FindWindowWithClassNameAndProcess(HWND hwnd, LPARAM arg) {
+  DialogParentWindowInfo* process_win_info = reinterpret_cast<DialogParentWindowInfo*>(arg);
+  size_t number_of_characters = wcsnlen(process_win_info->class_name, 255);
+  std::vector<wchar_t> class_name(number_of_characters + 1);
+  if (::GetClassName(hwnd, &class_name[0], class_name.size()) == 0) {
+    // No match found. Skip
+    return TRUE;
+  }
+
+  if (wcscmp(process_win_info->class_name, &class_name[0]) != 0) {
+    return TRUE;
+  } else {
+    DWORD process_id = NULL;
+    ::GetWindowThreadProcessId(hwnd, &process_id);
+    if (process_win_info->process_id == process_id) {
+      // Once we've found the first dialog (#32770) window
+      // for the process we want, we can stop.
+      process_win_info->window_handle = hwnd;
+      return FALSE;
+    }
+  }
+
+  return TRUE;
+}
 unsigned int WINAPI SendKeysCommandHandler::SetFileValue(void *file_data) {
   FileNameData* data = reinterpret_cast<FileNameData*>(file_data);
   ::Sleep(100);

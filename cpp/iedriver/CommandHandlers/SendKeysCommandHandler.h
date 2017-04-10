@@ -46,7 +46,7 @@ class SendKeysCommandHandler : public IECommandHandler {
  private:
   static unsigned int WINAPI SetFileValue(void *file_data);
   static bool SendFileNameKeys(FileNameData* file_data);
-  static bool GetFileSelectionDialogCandidates(HWND ie_window_handle, IUIAutomation* ui_automation, IUIAutomationElementArray** dialog_candidates);
+  static bool GetFileSelectionDialogCandidates(std::vector<HWND> parent_window_handles, IUIAutomation* ui_automation, IUIAutomationElementArray** dialog_candidates);
   static bool FillFileName(const wchar_t* file_name, IUIAutomation* ui_automation, IUIAutomationElement* file_selection_dialog);
   static bool AcceptFileSelection(IUIAutomation* ui_automation, IUIAutomationElement* file_selection_dialog);
   static bool WaitForFileSelectionDialogClose(const int timeout, IUIAutomationElement* file_selection_dialog);
@@ -56,6 +56,8 @@ class SendKeysCommandHandler : public IECommandHandler {
 
   static bool LegacySelectFile(FileNameData* file_data);
   static bool LegacySendKeysToFileUploadAlert(HWND dialog_window_handle, const wchar_t* value);
+
+  static BOOL CALLBACK FindWindowWithClassNameAndProcess(HWND hwnd, LPARAM arg);
 
   bool VerifyPageHasFocus(HWND top_level_window_handle,
                           HWND browser_pane_window_handle);
