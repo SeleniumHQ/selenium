@@ -848,7 +848,7 @@ class WebDriver(object):
         :Usage:
             driver.save_screenshot('/Screenshots/foo.png')
         """
-        return self.get_screenshot_as_file(self, filename)
+        return self.get_screenshot_as_file(filename)
 
     def get_screenshot_as_png(self):
         """
