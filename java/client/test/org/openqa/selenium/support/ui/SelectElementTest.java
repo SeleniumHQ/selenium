@@ -21,7 +21,6 @@ package org.openqa.selenium.support.ui;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.openqa.selenium.testing.Driver.MARIONETTE;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -206,7 +205,6 @@ public class SelectElementTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(MARIONETTE)
   public void shouldAllowUserToDeselectAllWhenSelectSupportsMultipleSelections() {
     WebElement selectElement = driver.findElement(By.name("multi"));
     Select select = new Select(selectElement);
