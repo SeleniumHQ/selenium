@@ -15,7 +15,8 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from selenium.common.exceptions import (ElementNotSelectableException,
+from selenium.common.exceptions import (ElementNotInteractableException,
+                                        ElementNotSelectableException,
                                         ElementNotVisibleException,
                                         ErrorInResponseException,
                                         InvalidElementStateException,
@@ -29,6 +30,7 @@ from selenium.common.exceptions import (ElementNotSelectableException,
                                         NoAlertPresentException,
                                         StaleElementReferenceException,
                                         TimeoutException,
+                                        UnexpectedAlertPresentException,
                                         WebDriverException)
 
 try:
@@ -50,6 +52,7 @@ class ErrorCode(object):
     ELEMENT_NOT_VISIBLE = [11, 'element not visible']
     INVALID_ELEMENT_STATE = [12, 'invalid element state']
     UNKNOWN_ERROR = [13, 'unknown error']
+    ELEMENT_NOT_INTERACTABLE = ["element not interactable"]
     ELEMENT_IS_NOT_SELECTABLE = [15, 'element not selectable']
     JAVASCRIPT_ERROR = [17, 'javascript error']
     XPATH_LOOKUP_ERROR = [19, 'invalid selector']
@@ -133,6 +136,8 @@ class ErrorHandler(object):
             exception_class = InvalidSelectorException
         elif status in ErrorCode.ELEMENT_IS_NOT_SELECTABLE:
             exception_class = ElementNotSelectableException
+        elif status in ErrorCode.ELEMENT_NOT_INTERACTABLE:
+            exception_class = ElementNotInteractableException
         elif status in ErrorCode.INVALID_COOKIE_DOMAIN:
             exception_class = WebDriverException
         elif status in ErrorCode.UNABLE_TO_SET_COOKIE:
