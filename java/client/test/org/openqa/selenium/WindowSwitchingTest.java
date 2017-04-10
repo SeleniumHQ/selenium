@@ -30,7 +30,6 @@ import static org.openqa.selenium.WaitingConditions.windowHandleCountToBeGreater
 import static org.openqa.selenium.support.ui.ExpectedConditions.alertIsPresent;
 import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Driver.REMOTE;
 import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 
 import org.junit.Rule;
@@ -168,7 +167,6 @@ public class WindowSwitchingTest extends JUnit4TestBase {
   @NoDriverAfterTest
   @Test
   @Ignore(IE)
-  @Ignore(REMOTE)
   public void testShouldBeAbleToIterateOverAllOpenWindows() {
     driver.get(pages.xhtmlTestPage);
     String original = driver.getWindowHandle();
