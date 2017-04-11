@@ -22,26 +22,24 @@ require File.expand_path('../../spec_helper', __FILE__)
 module Selenium
   module WebDriver
     module IE
-      describe Bridge do
-        let(:resp)    { {'sessionId' => 'foo', 'value' => @default_capabilities.as_json} }
-        let(:service) { double(Service, start: nil, uri: 'http://example.com') }
-        let(:caps)    { {} }
-        let(:http)    { double(Remote::Http::Default, call: resp).as_null_object }
+      describe Driver do
+        let(:resp)    { {'sessionId' => 'foo', 'value' => Remote::Capabilities.internet_explorer.as_json} }
+        let(:service) { instance_double(Service, start: nil, uri: 'http://example.com') }
+        let(:caps)    { Remote::Capabilities.internet_explorer }
+        let(:http)    { instance_double(Remote::Http::Default, call: resp).as_null_object }
 
         before do
-          @default_capabilities = Remote::Capabilities.internet_explorer
-
           allow(Remote::Capabilities).to receive(:internet_explorer).and_return(caps)
           allow(Service).to receive(:binary_path).and_return('/foo')
           allow(Service).to receive(:new).and_return(service)
         end
 
         it 'raises ArgumentError if passed invalid options' do
-          expect { Bridge.new(foo: 'bar') }.to raise_error(ArgumentError)
+          expect { Driver.new(foo: 'bar') }.to raise_error(ArgumentError)
         end
 
         it 'accepts the :introduce_flakiness_by_ignoring_security_domains option' do
-          Bridge.new(
+          Driver.new(
             introduce_flakiness_by_ignoring_security_domains: true,
             http_client: http
           )
@@ -50,13 +48,13 @@ module Selenium
         end
 
         it 'has native events enabled by default' do
-          Bridge.new(http_client: http)
+          Driver.new(http_client: http)
 
           expect(caps[:native_events]).to be true
         end
 
         it 'can disable native events' do
-          Bridge.new(
+          Driver.new(
             native_events: false,
             http_client: http
           )
@@ -73,7 +71,7 @@ module Selenium
             resp
           end
 
-          Bridge.new(http_client: http, desired_capabilities: custom_caps)
+          Driver.new(http_client: http, desired_capabilities: custom_caps)
         end
 
         it 'can override desired capabilities through direct arguments' do
@@ -85,7 +83,7 @@ module Selenium
             resp
           end
 
-          Bridge.new(
+          Driver.new(
             http_client: http,
             desired_capabilities: custom_caps,
             introduce_flakiness_by_ignoring_security_domains: true

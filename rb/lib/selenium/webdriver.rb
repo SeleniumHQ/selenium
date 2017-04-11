@@ -57,19 +57,17 @@ module Selenium
     # @overload for(browser, opts)
     #   @param [:ie, :internet_explorer, :edge, :remote, :chrome, :firefox, :ff, :phantomjs, :safari] browser The browser to
     #     create the driver for
-    #   @param [Hash] opts Options passed to Bridge.new
+    #   @param [Hash] opts Options passed to Driver.new
     #
     # @return [Driver]
     #
-    # @see Selenium::WebDriver::Remote::Bridge
-    # @see Selenium::WebDriver::Remote::W3CBridge
-    # @see Selenium::WebDriver::Firefox::Bridge
-    # @see Selenium::WebDriver::Firefox::W3CBridge
-    # @see Selenium::WebDriver::IE::Bridge
-    # @see Selenium::WebDriver::Edge::Bridge
-    # @see Selenium::WebDriver::Chrome::Bridge
-    # @see Selenium::WebDriver::PhantomJS::Bridge
-    # @see Selenium::WebDriver::Safari::Bridge
+    # @see Selenium::WebDriver::Remote::Driver
+    # @see Selenium::WebDriver::Firefox::Driver
+    # @see Selenium::WebDriver::IE::Driver
+    # @see Selenium::WebDriver::Edge::Driver
+    # @see Selenium::WebDriver::Chrome::Driver
+    # @see Selenium::WebDriver::PhantomJS::Driver
+    # @see Selenium::WebDriver::Safari::Driver
     #
     # @example
     #

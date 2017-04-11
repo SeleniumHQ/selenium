@@ -20,7 +20,7 @@
 require 'net/http'
 
 require 'selenium/webdriver/chrome/service'
-require 'selenium/webdriver/chrome/bridge'
+require 'selenium/webdriver/chrome/driver'
 require 'selenium/webdriver/chrome/profile'
 
 module Selenium

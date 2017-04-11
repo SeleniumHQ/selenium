@@ -22,54 +22,52 @@ require File.expand_path('../../spec_helper', __FILE__)
 module Selenium
   module WebDriver
     module Chrome
-      describe Bridge do
-        let(:resp)    { {'sessionId' => 'foo', 'value' => @default_capabilities} }
-        let(:service) { double(Service, start: true, uri: 'http://example.com') }
-        let(:caps)    { {} }
-        let(:http)    { double(Remote::Http::Default, call: resp).as_null_object }
+      describe Driver do
+        let(:resp)    { {'sessionId' => 'foo', 'value' => Remote::Capabilities.chrome.as_json} }
+        let(:service) { instance_double(Service, start: true, uri: 'http://example.com') }
+        let(:caps)    { Remote::Capabilities.new }
+        let(:http)    { instance_double(Remote::Http::Default, call: resp).as_null_object }
 
         before do
-          @default_capabilities = Remote::Capabilities.chrome.as_json
-
           allow(Remote::Capabilities).to receive(:chrome).and_return(caps)
           allow(Service).to receive(:binary_path).and_return('/foo')
           allow(Service).to receive(:new).and_return(service)
         end
 
         it 'sets the args capability' do
-          Bridge.new(http_client: http, args: %w[--foo=bar])
+          Driver.new(http_client: http, args: %w[--foo=bar])
 
           expect(caps[:chrome_options]['args']).to eq(%w[--foo=bar])
         end
 
         it 'sets the proxy capabilitiy' do
           proxy = Proxy.new(http: 'localhost:1234')
-          Bridge.new(http_client: http, proxy: proxy)
+          Driver.new(http_client: http, proxy: proxy)
 
           expect(caps[:proxy]).to eq(proxy)
         end
 
         it 'does not set the chrome.detach capability by default' do
-          Bridge.new(http_client: http)
+          Driver.new(http_client: http)
 
           expect(caps[:chrome_options]).to be nil
           expect(caps['chrome.detach']).to be nil
         end
 
         it 'sets the prefs capability' do
-          Bridge.new(http_client: http, prefs: {foo: 'bar'})
+          Driver.new(http_client: http, prefs: {foo: 'bar'})
 
           expect(caps[:chrome_options]['prefs']).to eq(foo: 'bar')
         end
 
         it 'lets the user override chrome.detach' do
-          Bridge.new(http_client: http, detach: true)
+          Driver.new(http_client: http, detach: true)
 
           expect(caps[:chrome_options]['detach']).to be true
         end
 
         it 'raises an ArgumentError if args is not an Array' do
-          expect { Bridge.new(args: '--foo=bar') }.to raise_error(ArgumentError)
+          expect { Driver.new(args: '--foo=bar') }.to raise_error(ArgumentError)
         end
 
         it 'uses the given profile' do
@@ -78,7 +76,7 @@ module Selenium
           profile['some_pref'] = true
           profile.add_extension(__FILE__)
 
-          Bridge.new(http_client: http, profile: profile)
+          Driver.new(http_client: http, profile: profile)
 
           profile_data = profile.as_json
           expect(caps[:chrome_options]['args'].first).to include(profile_data[:directory])
@@ -94,7 +92,7 @@ module Selenium
             resp
           end
 
-          Bridge.new(http_client: http, desired_capabilities: custom_caps)
+          Driver.new(http_client: http, desired_capabilities: custom_caps)
         end
 
         it 'lets direct arguments take presedence over capabilities' do
@@ -106,7 +104,12 @@ module Selenium
             resp
           end
 
-          Bridge.new(http_client: http, desired_capabilities: custom_caps, args: %w[baz])
+          Driver.new(http_client: http, desired_capabilities: custom_caps, args: %w[baz])
+        end
+
+        it 'handshakes protocol' do
+          expect(Remote::Bridge).to receive(:handshake)
+          Driver.new(http_client: http)
         end
       end
     end # Chrome

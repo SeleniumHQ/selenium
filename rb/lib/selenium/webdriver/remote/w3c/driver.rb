@@ -17,21 +17,25 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require 'uri'
+module Selenium
+  module WebDriver
+    module Remote
+      module W3C
 
-require 'selenium/webdriver/remote/bridge'
-require 'selenium/webdriver/remote/driver'
-require 'selenium/webdriver/remote/response'
-require 'selenium/webdriver/remote/server_error'
-require 'selenium/webdriver/remote/http/common'
-require 'selenium/webdriver/remote/http/default'
+        #
+        # Driver implementation for remote server talking W3C dialect.
+        # @api private
+        #
 
-require 'selenium/webdriver/remote/capabilities'
-require 'selenium/webdriver/remote/oss/bridge'
-require 'selenium/webdriver/remote/oss/commands'
-require 'selenium/webdriver/remote/oss/driver'
-
-require 'selenium/webdriver/remote/w3c/bridge'
-require 'selenium/webdriver/remote/w3c/capabilities'
-require 'selenium/webdriver/remote/w3c/commands'
-require 'selenium/webdriver/remote/w3c/driver'
+        class Driver < WebDriver::Driver
+          include DriverExtensions::UploadsFiles
+          include DriverExtensions::TakesScreenshot
+          include DriverExtensions::HasSessionId
+          include DriverExtensions::Rotatable
+          include DriverExtensions::HasRemoteStatus
+          include DriverExtensions::HasWebStorage
+        end # Driver
+      end # W3C
+    end # Remote
+  end # WebDriver
+end # Selenium

@@ -20,12 +20,15 @@
 module Selenium
   module WebDriver
     module Remote
-      class W3CBridge
+      module W3C
+
         #
         # http://www.w3.org/TR/2015/WD-webdriver-20150918/#list-of-endpoints
+        # @api private
         #
 
-        COMMANDS = {
+        class Bridge
+          COMMANDS = {
 
             #
             # session handling
@@ -138,8 +141,10 @@ module Selenium
 
             take_screenshot: [:get, 'session/:session_id/screenshot'.freeze],
             take_element_screenshot: [:get, 'session/:session_id/element/:id/screenshot'.freeze]
-        }.freeze
-      end
+          }.freeze
+
+        end # Bridge
+      end # W3C
     end # Remote
   end # WebDriver
 end # Selenium

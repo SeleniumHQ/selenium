@@ -20,14 +20,16 @@
 module Selenium
   module WebDriver
     module Remote
-      class Bridge
+      module OSS
+
         #
         # https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-reference
+        # @api private
         #
 
-        COMMANDS = {
+        class Bridge
 
-            new_session: [:post, 'session'.freeze],
+          COMMANDS = {
             get_capabilities: [:get, 'session/:session_id'.freeze],
             status: [:get, 'status'.freeze],
 
@@ -212,8 +214,10 @@ module Selenium
 
             get_available_log_types: [:get, 'session/:session_id/log/types'.freeze],
             get_log: [:post, 'session/:session_id/log'.freeze]
-        }.freeze
-      end
+          }.freeze
+
+        end # Bridge
+      end # OSS
     end # Remote
   end # WebDriver
 end # Selenium

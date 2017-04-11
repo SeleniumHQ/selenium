@@ -23,13 +23,12 @@ module Selenium
   module WebDriver
     module Chrome
       describe Service do
-        let(:resp) { {'sessionId' => 'foo', 'value' => @default_capabilities} }
-        let(:service) { double(Service, start: true, uri: 'http://example.com') }
-        let(:caps) { {} }
-        let(:http) { double(Remote::Http::Default, call: resp).as_null_object }
+        let(:resp) { {'sessionId' => 'foo', 'value' => Remote::Capabilities.chrome.as_json} }
+        let(:service) { instance_double(Service, start: true, uri: 'http://example.com') }
+        let(:caps) { Remote::Capabilities.chrome }
+        let(:http) { instance_double(Remote::Http::Default, call: resp).as_null_object }
 
         before do
-          @default_capabilities = Remote::Capabilities.chrome.as_json
           allow(Remote::Capabilities).to receive(:chrome).and_return(caps)
           allow_any_instance_of(Service).to receive(:start)
           allow_any_instance_of(Service).to receive(:binary_path)
@@ -39,13 +38,13 @@ module Selenium
           expect(Service).not_to receive(:new)
           expect(http).to receive(:server_url=).with(URI.parse('http://example.com:4321'))
 
-          Bridge.new(http_client: http, url: 'http://example.com:4321')
+          Driver.new(http_client: http, url: 'http://example.com:4321')
         end
 
         it 'defaults to desired path and port' do
           expect(Service).to receive(:new).with(Chrome.driver_path, Service::DEFAULT_PORT, {}).and_return(service)
 
-          Bridge.new(http_client: http)
+          Driver.new(http_client: http)
         end
 
         it 'accepts a driver path & port' do
@@ -53,7 +52,7 @@ module Selenium
           port = '1234'
           expect(Service).to receive(:new).with(path, '1234', {}).and_return(service)
 
-          Bridge.new(http_client: http, driver_path: path, port: port)
+          Driver.new(http_client: http, driver_path: path, port: port)
         end
 
         it 'accepts driver options' do
@@ -67,8 +66,8 @@ module Selenium
                   "--whitelisted-ips=#{driver_opts[:whitelisted_ips]}",
                   "--silent"]
 
-          bridge = Bridge.new(http_client: http, driver_opts: driver_opts)
-          expect(bridge.instance_variable_get("@service").instance_variable_get("@extra_args")).to eq args
+          driver = Driver.new(http_client: http, driver_opts: driver_opts)
+          expect(driver.instance_variable_get("@service").instance_variable_get("@extra_args")).to eq args
         end
 
         it 'deprecates `service_args`' do
@@ -79,15 +78,15 @@ module Selenium
 
           message = /\[DEPRECATION\] `:service_args` is deprecated. Pass switches using `driver_opts`/
 
-          expect { @bridge = Bridge.new(http_client: http, service_args: args) }.to output(message).to_stdout_from_any_process
-          expect(@bridge.instance_variable_get("@service").instance_variable_get("@extra_args")).to eq args
+          expect { @driver = Driver.new(http_client: http, service_args: args) }.to output(message).to_stdout_from_any_process
+          expect(@driver.instance_variable_get("@service").instance_variable_get("@extra_args")).to eq args
         end
 
         it 'deprecates `service_log_path`' do
           message = /\[DEPRECATION\] `:service_log_path` is deprecated. Use `driver_opts: {log_path: \/path\/to\/log}`/
 
-          expect { @bridge = Bridge.new(http_client: http, service_log_path: "/path/to/log") }.to output(message).to_stdout_from_any_process
-          expect(@bridge.instance_variable_get("@service").instance_variable_get("@extra_args")).to eq ["--log-path=/path/to/log"]
+          expect { @driver = Driver.new(http_client: http, service_log_path: "/path/to/log") }.to output(message).to_stdout_from_any_process
+          expect(@driver.instance_variable_get("@service").instance_variable_get("@extra_args")).to eq ["--log-path=/path/to/log"]
         end
       end
     end # Chrome

@@ -38,8 +38,7 @@ module Selenium
                   @opt[:profile] = profile
                   driver2 = Selenium::WebDriver.for :firefox, @opt
 
-                  stored_profile = driver2.instance_variable_get('@bridge')
-                                          .instance_variable_get('@launcher')
+                  stored_profile = driver2.instance_variable_get('@launcher')
                                           .instance_variable_get('@profile')
                   expect(stored_profile).to be == profile
                 ensure

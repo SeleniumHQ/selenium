@@ -139,7 +139,7 @@ module Selenium
             caps = new
             caps.browser_name          = data.delete('browserName')
             caps.version               = data.delete('version')
-            caps.platform              = data.delete('platform').downcase.tr(' ','_').to_sym if data.key?('platform')
+            caps.platform              = data.delete('platform').downcase.tr(' ', '_').to_sym if data.key?('platform')
             caps.javascript_enabled    = data.delete('javascriptEnabled')
             caps.css_selectors_enabled = data.delete('cssSelectorsEnabled')
             caps.takes_screenshot      = data.delete('takesScreenshot')
@@ -154,6 +154,7 @@ module Selenium
           end
         end
 
+        #
         # @option :browser_name           [String] required browser name
         # @option :version                [String] required browser version number
         # @option :platform               [Symbol] one of :any, :win, :mac, or :x
@@ -208,6 +209,7 @@ module Selenium
           end
         end
 
+        #
         # @api private
         #
 
