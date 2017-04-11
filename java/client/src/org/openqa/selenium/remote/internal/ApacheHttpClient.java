@@ -43,6 +43,7 @@ import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.IOException;
 import java.net.BindException;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -98,9 +99,7 @@ public class ApacheHttpClient implements org.openqa.selenium.remote.http.HttpCli
 
     internalResponse.setStatus(response.getStatusLine().getStatusCode());
     for (Header header : response.getAllHeaders()) {
-      for (HeaderElement headerElement : header.getElements()) {
-        internalResponse.addHeader(header.getName(), headerElement.getValue());
-      }
+      internalResponse.addHeader(header.getName(), header.getValue());
     }
 
     HttpEntity entity = response.getEntity();
@@ -257,5 +256,19 @@ public class ApacheHttpClient implements org.openqa.selenium.remote.http.HttpCli
 	public void close() throws IOException {
 	  client.getConnectionManager().closeIdleConnections(0, TimeUnit.SECONDS);		
 	}
+
+  public static void main(String[] args) throws IOException {
+    org.openqa.selenium.remote.http.HttpClient client = new Factory().createClient(new URL("http://www.google.com/"));
+
+    HttpRequest request = new HttpRequest(HttpMethod.GET, "/");
+    HttpResponse response = client.execute(request, true);
+
+    for (String names : response.getHeaderNames()) {
+      Iterable<String> header = response.getHeaders(names);
+      for (String h : header) {
+        System.out.println(names + ": " + h);
+      }
+    }
+  }
   
 }
