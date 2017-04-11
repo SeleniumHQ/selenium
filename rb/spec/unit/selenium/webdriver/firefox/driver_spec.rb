@@ -21,28 +21,28 @@ require File.expand_path('../../spec_helper', __FILE__)
 
 module Selenium
   module WebDriver
-    module PhantomJS
-      describe Bridge do
-        let(:resp)    { {'sessionId' => 'foo', 'value' => Remote::Capabilities.phantomjs.as_json} }
-        let(:service) { double(Service, start: true, uri: 'http://example.com') }
-        let(:http)    { double(Remote::Http::Default, call: resp).as_null_object }
+    module Firefox
+      describe Driver do
+        let(:bridge) { instance_double(Remote::Bridge).as_null_object }
+        let(:launcher) { instance_double(Launcher).as_null_object }
+        let(:service) { instance_double(Service).as_null_object }
 
         before do
-          allow(Service).to receive(:binary_path).and_return('/foo')
+          allow(Remote::Bridge).to receive(:new).and_return(bridge)
+          allow(Launcher).to receive(:new).and_return(launcher)
           allow(Service).to receive(:new).and_return(service)
         end
 
-        it 'takes desired capabilities' do
-          custom_caps = Remote::Capabilities.new(browser_name: 'foo')
+        it 'is marionette driver by default' do
+          driver = Driver.new
+          expect(driver).to be_a(Marionette::Driver)
+        end
 
-          expect(http).to receive(:call) do |_verb, _post, payload|
-            expect(payload[:desiredCapabilities]).to eq(custom_caps)
-            resp
-          end
-
-          Bridge.new(http_client: http, desired_capabilities: custom_caps)
+        it 'is legacy driver when asked for' do
+          driver = Driver.new(marionette: false)
+          expect(driver).to be_a(Legacy::Driver)
         end
       end
-    end # PhantomJS
+    end # Firefox
   end # WebDriver
 end # Selenium

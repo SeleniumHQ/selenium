@@ -64,7 +64,10 @@ module Selenium
               end
 
               expect(caps.remote_session_id).to be_nil
-              expect(caps.rotatable).to be == false
+
+              compliant_on browser: :ff_esr do
+                expect(caps.rotatable).to be == false
+              end
             ensure
               driver1.quit
             end

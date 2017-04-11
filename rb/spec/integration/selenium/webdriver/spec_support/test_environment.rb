@@ -161,7 +161,7 @@ module Selenium
 
           caps = WebDriver::Remote::Capabilities.send(browser_name, opt)
 
-          unless caps.is_a? WebDriver::Remote::W3CCapabilities
+          unless caps.is_a? WebDriver::Remote::W3C::Capabilities
             caps.javascript_enabled = true
             caps.css_selectors_enabled = true
           end

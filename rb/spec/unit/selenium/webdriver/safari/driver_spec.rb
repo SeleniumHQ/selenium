@@ -22,15 +22,13 @@ require File.expand_path('../../spec_helper', __FILE__)
 module Selenium
   module WebDriver
     module Safari
-      describe Bridge do
-        let(:http)    { double(Remote::Http::Default, call: resp).as_null_object }
-        let(:resp)    { {'sessionId' => 'foo', 'value' => @default_capabilities} }
-        let(:service) { double(Service, start: true, uri: 'http://example.com') }
-        let(:caps)    { {} }
+      describe Driver do
+        let(:http)    { instance_double(Remote::Http::Default, call: resp).as_null_object }
+        let(:resp)    { {'sessionId' => 'foo', 'value' => Remote::Capabilities.safari.as_json} }
+        let(:service) { instance_double(Service, start: true, uri: 'http://example.com') }
+        let(:caps)    { Remote::Capabilities.safari }
 
         before do
-          @default_capabilities = Remote::Capabilities.safari.as_json
-
           allow(Remote::Capabilities).to receive(:safari).and_return(caps)
           allow(Service).to receive(:binary_path).and_return('/foo')
           allow(Service).to receive(:new).and_return(service)
@@ -40,7 +38,7 @@ module Selenium
           expect(Service).not_to receive(:new)
           expect(http).to receive(:server_url=).with(URI.parse('http://example.com:4321'))
 
-          Bridge.new(http_client: http, url: 'http://example.com:4321')
+          Driver.new(http_client: http, url: 'http://example.com:4321')
         end
 
         it 'takes desired capabilities' do
@@ -52,9 +50,8 @@ module Selenium
             resp
           end
 
-          Bridge.new(http_client: http, desired_capabilities: custom_caps)
+          Driver.new(http_client: http, desired_capabilities: custom_caps)
         end
-
       end
     end # Safari
   end # WebDriver

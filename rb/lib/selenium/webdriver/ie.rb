@@ -17,7 +17,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require 'selenium/webdriver/ie/bridge'
+require 'selenium/webdriver/ie/driver'
 require 'selenium/webdriver/ie/service'
 
 module Selenium

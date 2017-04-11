@@ -17,30 +17,27 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require File.expand_path('../../spec_helper', __FILE__)
-
 module Selenium
   module WebDriver
     module Remote
-      describe W3CBridge do
-        describe '#create_session' do
-          it 'supports responses with "value" capabilities' do
-            http_client = WebDriver::Remote::Http::Default.new
-            allow(http_client).to receive(:request).and_return('value' => {'sessionId' => true, 'value' => {}})
 
-            bridge = W3CBridge.new(http_client: http_client)
-            expect { bridge.create_session({}) }.not_to raise_error
-          end
+      #
+      # Driver implementation for remote server.
+      # @api private
+      #
 
-          it 'supports responses with "capabilities" capabilities' do
-            http_client = WebDriver::Remote::Http::Default.new
-            allow(http_client).to receive(:request).and_return('value' => {'sessionId' => true, 'capabilities' => {}})
+      module Driver
 
-            bridge = W3CBridge.new(http_client: http_client)
-            expect { bridge.create_session({}) }.not_to raise_error
+        def self.new(**opts)
+          bridge = Bridge.handshake(opts)
+          if bridge.dialect == :w3c
+            W3C::Driver.new(bridge, listener: opts[:listener])
+          else
+            OSS::Driver.new(bridge, listener: opts[:listener])
           end
         end
-      end # W3CBridge
+
+      end # Driver
     end # Remote
   end # WebDriver
 end # Selenium

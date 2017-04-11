@@ -17,26 +17,29 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require 'net/http'
-
-require 'selenium/webdriver/phantomjs/service'
-require 'selenium/webdriver/phantomjs/driver'
+require File.expand_path('../../../spec_helper', __FILE__)
 
 module Selenium
   module WebDriver
-    module PhantomJS
-      class << self
-        def path=(path)
-          Platform.assert_executable path
-          @path = path
-        end
-        alias_method :driver_path=, :path=
+    module Firefox
+      module Marionette
+        describe Driver do
+          let(:resp) { {'value' => {'sessionId' => 'foo', 'capabilities' => Remote::Capabilities.firefox.as_json}} }
+          let(:http) { instance_double(Remote::Http::Default, call: resp).as_null_object }
+          let(:caps) { Remote::Capabilities.firefox }
 
-        def path
-          @path ||= nil
+          before do
+            allow(Remote::Capabilities).to receive(:firefox).and_return(caps)
+          end
+
+          it 'accepts server URL' do
+            expect(Service).not_to receive(:new)
+            expect(http).to receive(:server_url=).with(URI.parse('http://example.com:4321'))
+
+            Driver.new(http_client: http, url: 'http://example.com:4321')
+          end
         end
-        alias_method :driver_path, :path
-      end
-    end # PhantomJS
+      end # Marionette
+    end # Firefox
   end # WebDriver
 end # Selenium

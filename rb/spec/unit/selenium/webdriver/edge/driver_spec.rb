@@ -22,15 +22,13 @@ require File.expand_path('../../spec_helper', __FILE__)
 module Selenium
   module WebDriver
     module Edge
-      describe Bridge do
-        let(:resp)    { {'sessionId' => 'foo', 'value' => @default_capabilities.as_json} }
-        let(:service) { double(Service, start: nil, uri: 'http://example.com') }
-        let(:caps)    { {} }
-        let(:http)    { double(Remote::Http::Default, call: resp).as_null_object }
+      describe Driver do
+        let(:resp)    { {'sessionId' => 'foo', 'value' => Remote::Capabilities.internet_explorer.as_json} }
+        let(:service) { instance_double(Service, start: nil, uri: 'http://example.com') }
+        let(:caps)    { Remote::Capabilities.internet_explorer }
+        let(:http)    { instance_double(Remote::Http::Default, call: resp).as_null_object }
 
         before do
-          @default_capabilities = Remote::Capabilities.internet_explorer
-
           allow(Remote::Capabilities).to receive(:internet_explorer).and_return(caps)
           allow(Service).to receive(:binary_path).and_return('/foo')
           allow(Service).to receive(:new).and_return(service)
@@ -40,9 +38,8 @@ module Selenium
           expect(Service).not_to receive(:new)
           expect(http).to receive(:server_url=).with(URI.parse('http://example.com:4321'))
 
-          Bridge.new(http_client: http, url: 'http://example.com:4321')
+          Driver.new(http_client: http, url: 'http://example.com:4321')
         end
-
       end
     end # Edge
   end # WebDriver

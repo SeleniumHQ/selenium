@@ -41,40 +41,24 @@ module Selenium
         #
 
         def for(browser, opts = {})
-          listener = opts.delete(:listener)
-
-          bridge = case browser
-                   when :firefox, :ff
-                     if Remote::W3CCapabilities.w3c?(opts)
-                       if opts[:desired_capabilities].is_a? Remote::Capabilities
-                         opts[:desired_capabilities] = Remote::W3CCapabilities.new(opts[:desired_capabilities].send(:capabilities))
-                       end
-                       Firefox::W3CBridge.new(opts)
-                     else
-                       Firefox::Bridge.new(opts)
-                     end
-                   when :remote
-                     Remote::Bridge.new(opts)
-                   when :ie, :internet_explorer
-                     IE::Bridge.new(opts)
-                   when :chrome
-                     Chrome::Bridge.new(opts)
-                   when :edge
-                     if opts[:desired_capabilities]
-                       opts[:desired_capabilities] = Remote::W3CCapabilities.new(opts[:desired_capabilities].send(:capabilities))
-                     end
-                     Edge::Bridge.new(opts)
-                   when :phantomjs
-                     PhantomJS::Bridge.new(opts)
-                   when :safari
-                     Safari::Bridge.new(opts)
-                   else
-                     raise ArgumentError, "unknown driver: #{browser.inspect}"
-                   end
-
-          bridge = Support::EventFiringBridge.new(bridge, listener) if listener
-
-          new(bridge)
+          case browser
+          when :chrome
+            Chrome::Driver.new(opts)
+          when :internet_explorer, :ie
+            IE::Driver.new(opts)
+          when :safari
+            Safari::Driver.new(opts)
+          when :phantomjs
+            PhantomJS::Driver.new(opts)
+          when :firefox, :ff
+            Firefox::Driver.new(opts)
+          when :edge
+            Edge::Driver.new(opts)
+          when :remote
+            Remote::Driver.new(opts)
+          else
+            raise ArgumentError, "unknown driver: #{browser.inspect}"
+          end
         end
       end
 
@@ -85,12 +69,9 @@ module Selenium
       # @api private
       #
 
-      def initialize(bridge)
+      def initialize(bridge, listener: nil)
         @bridge = bridge
-
-        # TODO: refactor this away
-        return if bridge.driver_extensions.empty?
-        extend(*bridge.driver_extensions)
+        @bridge = Support::EventFiringBridge.new(bridge, listener) if listener
       end
 
       def inspect

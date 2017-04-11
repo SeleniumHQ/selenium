@@ -19,22 +19,31 @@
 
 module Selenium
   module WebDriver
-    module Safari
+    module PhantomJS
+
+      #
+      # Driver implementation for PhantomJS.
       # @api private
-      class Bridge < Remote::Bridge
+      #
+
+      class Driver < WebDriver::Driver
+        include DriverExtensions::TakesScreenshot
+
         def initialize(opts = {})
-          opts[:desired_capabilities] ||= Remote::Capabilities.safari
+          opts[:desired_capabilities] ||= Remote::Capabilities.phantomjs
 
           unless opts.key?(:url)
-            driver_path = opts.delete(:driver_path) || Safari.driver_path
+            driver_path = opts.delete(:driver_path) || PhantomJS.driver_path
             port = opts.delete(:port) || Service::DEFAULT_PORT
 
             opts[:driver_opts] ||= {}
-            if opts.key? :service_args
+            if opts.key? :args
               WebDriver.logger.warn <<-DEPRECATE.gsub(/\n +| {2,}/, ' ').freeze
-            [DEPRECATION] `:service_args` is deprecated. Pass switches using `driver_opts`
+            [DEPRECATION] `:args` is deprecated. Pass switches using `driver_opts`
               DEPRECATE
-              opts[:driver_opts][:args] = opts.delete(:service_args)
+              opts[:driver_opts][:args] = opts.delete(:args)
+            elsif opts[:desired_capabilities]['phantomjs.cli.args']
+              opts[:driver_opts][:args] = opts[:desired_capabilities]['phantomjs.cli.args']
             end
 
             @service = Service.new(driver_path, port, opts.delete(:driver_opts))
@@ -42,7 +51,12 @@ module Selenium
             opts[:url] = @service.uri
           end
 
-          super(opts)
+          @bridge = Remote::Bridge.handshake(opts)
+          super(@bridge, listener: opts[:listener])
+        end
+
+        def browser
+          :phantomjs
         end
 
         def quit
@@ -50,7 +64,8 @@ module Selenium
         ensure
           @service.stop if @service
         end
+
       end # Bridge
-    end # Safari
+    end # PhantomJS
   end # WebDriver
 end # Selenium

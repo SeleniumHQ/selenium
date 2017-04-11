@@ -17,8 +17,12 @@
 # specific language governing permissions and limitations
 # under the License.
 
+# TODO (alex): remove code for legacy safaridriver (e.g. websocket)
 require 'websocket'
 require 'pathname'
+
+require 'selenium/webdriver/safari/driver'
+require 'selenium/webdriver/safari/service'
 
 module Selenium
   module WebDriver
@@ -56,6 +60,3 @@ module Selenium
     end # Safari
   end # WebDriver
 end # Selenium
-
-require 'selenium/webdriver/safari/bridge'
-require 'selenium/webdriver/safari/service'

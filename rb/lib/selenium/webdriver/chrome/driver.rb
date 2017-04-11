@@ -20,8 +20,16 @@
 module Selenium
   module WebDriver
     module Chrome
+
+      #
+      # Driver implementation for Chrome.
       # @api private
-      class Bridge < Remote::Bridge
+      #
+
+      class Driver < WebDriver::Driver
+        include DriverExtensions::HasWebStorage
+        include DriverExtensions::TakesScreenshot
+
         def initialize(opts = {})
           opts[:desired_capabilities] = create_capabilities(opts)
 
@@ -49,20 +57,12 @@ module Selenium
             opts[:url] = @service.uri
           end
 
-          super(opts)
+          @bridge = Remote::Bridge.handshake(opts)
+          super(@bridge, listener: opts[:listener])
         end
 
         def browser
           :chrome
-        end
-
-        def driver_extensions
-          [DriverExtensions::TakesScreenshot,
-           DriverExtensions::HasWebStorage]
-        end
-
-        def capabilities
-          @capabilities ||= Remote::Capabilities.chrome
         end
 
         def quit
@@ -102,7 +102,7 @@ module Selenium
 
           caps
         end
-      end # Bridge
+      end # Driver
     end # Chrome
   end # WebDriver
 end # Selenium

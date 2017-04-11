@@ -23,48 +23,76 @@ module Selenium
   module WebDriver
     module Remote
       describe Bridge do
-        it 'raises ArgumentError if passed invalid options' do
-          expect { Bridge.new(foo: 'bar') }.to raise_error(ArgumentError)
-        end
+        describe '.handshake' do
+          let(:http) { WebDriver::Remote::Http::Default.new }
 
-        it 'raises WebDriverError if uploading non-files' do
-          request_body = JSON.generate(sessionId: '11123', value: {})
-          headers = {'Content-Type' => 'application/json'}
-          stub_request(:post, 'http://127.0.0.1:4444/wd/hub/session').to_return(
-            status: 200, body: request_body, headers: headers
-          )
-
-          bridge = Bridge.new
-          expect { bridge.upload('NotAFile') }.to raise_error(Error::WebDriverError)
-        end
-
-        it 'respects quit_errors' do
-          http_client = WebDriver::Remote::Http::Default.new
-          allow(http_client).to receive(:request).and_return({'sessionId' => true, 'value' => {}})
-
-          bridge = Bridge.new(http_client: http_client)
-          allow(bridge).to receive(:execute).with(:quit).and_raise(IOError)
-
-          expect {bridge.quit}.to_not raise_error
-        end
-
-        context 'when using a deprecated method' do
-          before(:each) do
-            request_body = JSON.generate(sessionId: '11123', value: {})
-            headers = {'Content-Type' => 'application/json'}
-            stub_request(:post, 'http://127.0.0.1:4444/wd/hub/session').to_return(
-                status: 200, body: request_body, headers: headers
+          it 'sends merged capabilities' do
+            payload = JSON.generate(
+              desiredCapabilities: {
+                browserName: 'internet explorer',
+                version: '',
+                platform: 'WINDOWS',
+                javascriptEnabled: false,
+                cssSelectorsEnabled: true,
+                takesScreenshot: true,
+                nativeEvents: true,
+                rotatable: false
+              },
+              capabilities: {
+                firstMatch: [{
+                  browserName: 'internet explorer',
+                  platformName: 'windows'
+                }]
+              }
             )
+
+            expect(http).to receive(:request)
+              .with(any_args, payload)
+              .and_return('status' => 200, 'sessionId' => 'foo', 'value' => {})
+
+            Bridge.handshake(http_client: http, desired_capabilities: Capabilities.ie)
           end
 
-          it 'warns that #mouse is deprecated' do
-            message = /\[DEPRECATION\] `Driver#mouse` is deprecated with w3c implementation\./
-            expect { Bridge.new.mouse }.to output(message).to_stdout_from_any_process
+          it 'uses OSS bridge when necessary' do
+            allow(http).to receive(:request)
+              .and_return('status' => 200, 'sessionId' => 'foo', 'value' => {})
+
+            bridge = Bridge.handshake(http_client: http, desired_capabilities: Capabilities.new)
+            expect(bridge).to be_a(OSS::Bridge)
+            expect(bridge.session_id).to eq('foo')
           end
 
-          it 'warns that #keyboard is deprecated' do
-            message = /\[DEPRECATION\] `Driver#keyboard` is deprecated with w3c implementation\./
-            expect { Bridge.new.keyboard }.to output(message).to_stdout_from_any_process
+          it 'uses W3C bridge when necessary' do
+            allow(http).to receive(:request)
+              .and_return('value' => {'sessionId' => 'foo', 'value' => {}})
+
+            bridge = Bridge.handshake(http_client: http, desired_capabilities: Capabilities.new)
+            expect(bridge).to be_a(W3C::Bridge)
+            expect(bridge.session_id).to eq('foo')
+          end
+
+          it 'supports responses with "value" capabilities' do
+            allow(http).to receive(:request)
+              .and_return({'status' => 200, 'sessionId' => '', 'value' => {'browserName' => 'firefox'}})
+
+            bridge = Bridge.handshake(http_client: http, desired_capabilities: Capabilities.new)
+            expect(bridge.capabilities[:browser_name]).to eq('firefox')
+          end
+
+          it 'supports responses with "value" -> "value" capabilities' do
+            allow(http).to receive(:request)
+              .and_return('value' => {'sessionId' => '', 'value' => {'browserName' => 'firefox'}})
+
+            bridge = Bridge.handshake(http_client: http, desired_capabilities: Capabilities.new)
+            expect(bridge.capabilities[:browser_name]).to eq('firefox')
+          end
+
+          it 'supports responses with "value" -> "capabilities" capabilities' do
+            allow(http).to receive(:request)
+              .and_return('value' => {'sessionId' => '', 'capabilities' => {'browserName' => 'firefox'}})
+
+            bridge = Bridge.handshake(http_client: http, desired_capabilities: Capabilities.new)
+            expect(bridge.capabilities[:browser_name]).to eq('firefox')
           end
         end
       end

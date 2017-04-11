@@ -312,7 +312,11 @@ module Selenium
       #
 
       def as_json(*)
-        key = bridge.is_a?(Remote::W3CBridge) ? 'element-6066-11e4-a52e-4f735466cecf' : 'ELEMENT'
+        key = if bridge.dialect == :w3c
+                'element-6066-11e4-a52e-4f735466cecf'
+              else
+                'ELEMENT'
+              end
         @id.is_a?(Hash) ? @id : {key => @id}
       end
 

@@ -40,7 +40,8 @@ ruby_library(name = "common",
     "README.md"
   ],
   resources = [
-    { "../LICENSE" : "rb/LICENSE" }
+    { "../LICENSE" : "rb/LICENSE" },
+    { "//javascript/webdriver/atoms:getAttribute": "rb/lib/selenium/webdriver/atoms/getAttribute.js"}
   ]
 )
 
@@ -72,9 +73,6 @@ ruby_library(name = "edge",
   srcs = [
     "lib/selenium/webdriver/edge/**/*.rb",
     "lib/selenium/webdriver/edge.rb"
-  ],
-  resources = [
-    { "//javascript/webdriver/atoms:getAttribute": "rb/lib/selenium/webdriver/atoms/getAttribute.js"}
   ],
   deps = [":common"]
 )
@@ -117,7 +115,6 @@ ruby_library(name = "firefox",
     "lib/selenium/webdriver/firefox.rb"
   ],
   resources = [
-    { "//javascript/webdriver/atoms:getAttribute": "rb/lib/selenium/webdriver/atoms/getAttribute.js"},
     { "//javascript/firefox-driver:webdriver_prefs" : "rb/lib/selenium/webdriver/firefox/extension/prefs.json" }
   ],
   deps = [":common"]
