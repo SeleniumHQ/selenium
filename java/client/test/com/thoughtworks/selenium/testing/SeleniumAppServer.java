@@ -27,6 +27,10 @@ public class SeleniumAppServer extends JettyAppServer {
 
   private static final String RC_CONTEXT_PATH = "/selenium-server";
 
+  public SeleniumAppServer() {
+    this(detectHostname(), getHttpPortFromEnv(), getHttpsPortFromEnv());
+  }
+
   public SeleniumAppServer(String hostname, int httpPort, int httpsPort) {
     super(hostname, httpPort, httpsPort);
     ServletContextHandler context = addResourceHandler(RC_CONTEXT_PATH, findRootOfRcTestPages());
