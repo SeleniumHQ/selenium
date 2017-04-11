@@ -22,6 +22,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.io.ByteStreams;
 
 //import org.apache.commons.io.output.NullOutputStream;
 import org.openqa.selenium.WebDriverException;
@@ -135,6 +136,7 @@ public class GeckoDriverService extends DriverService {
       try {
         GeckoDriverService service = new GeckoDriverService(exe, port, args, environment);
         if (getLogFile() !=  null) {
+          // TODO: This stream is leaked.
           service.sendOutputTo(new FileOutputStream(getLogFile()));
         } else {
           String firefoxLogFile = System.getProperty(FirefoxDriver.SystemProperty.BROWSER_LOGFILE);
@@ -144,12 +146,9 @@ public class GeckoDriverService extends DriverService {
             } else if ("/dev/stderr".equals(firefoxLogFile)) {
               service.sendOutputTo(System.err);
             } else if ("/dev/null".equals(firefoxLogFile)) {
-              service.sendOutputTo(new OutputStream() {
-                @Override
-                public void write(int b) throws IOException {
-                }
-              });
+              service.sendOutputTo(ByteStreams.nullOutputStream());
             } else {
+              // TODO: The stream is leaked.
               service.sendOutputTo(new FileOutputStream(firefoxLogFile));
             }
           }
