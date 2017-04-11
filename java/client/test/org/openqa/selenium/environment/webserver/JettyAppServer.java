@@ -18,7 +18,6 @@
 package org.openqa.selenium.environment.webserver;
 
 import static com.google.common.base.Charsets.UTF_8;
-import static com.google.common.net.HttpHeaders.CONTENT_LENGTH;
 import static com.google.common.net.HttpHeaders.CONTENT_TYPE;
 import static com.google.common.net.MediaType.JSON_UTF_8;
 import static org.openqa.selenium.net.PortProber.findFreePort;
@@ -27,13 +26,14 @@ import static org.openqa.selenium.testing.InProject.locate;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonObject;
 
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ByteArrayEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.net.NetworkUtils;
-import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.http.HttpMethod;
-import org.openqa.selenium.remote.http.HttpRequest;
-import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.remote.internal.ApacheHttpClient;
 import org.openqa.selenium.testing.InProject;
 import org.seleniumhq.jetty9.http.HttpVersion;
 import org.seleniumhq.jetty9.http.MimeTypes;
@@ -54,10 +54,7 @@ import org.seleniumhq.jetty9.servlet.ServletHolder;
 import org.seleniumhq.jetty9.util.ssl.SslContextFactory;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.Writer;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.EnumSet;
@@ -200,16 +197,14 @@ public class JettyAppServer implements AppServer {
     try {
       JsonObject converted = new JsonObject();
       converted.addProperty("content", page.toString());
-      HttpClient
-          client =
-          new ApacheHttpClient.Factory().createClient(new URL(whereIs("/")));
-      HttpRequest request = new HttpRequest(HttpMethod.POST, "/common/createPage");
       byte[] data = converted.toString().getBytes(UTF_8);
-      request.setHeader(CONTENT_LENGTH, String.valueOf(data.length));
+
+      CloseableHttpClient client = HttpClients.createDefault();
+      HttpPost request = new HttpPost(whereIs("/common/createPage"));
+      request.setEntity(new ByteArrayEntity(data));
       request.setHeader(CONTENT_TYPE, JSON_UTF_8.toString());
-      request.setContent(data);
-      HttpResponse response = client.execute(request, true);
-      return response.getContentString();
+      CloseableHttpResponse response = client.execute(request);
+      return EntityUtils.toString(response.getEntity());
     } catch (IOException ex) {
       throw new RuntimeException(ex);
     }
