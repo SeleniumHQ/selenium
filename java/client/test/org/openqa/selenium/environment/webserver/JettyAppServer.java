@@ -17,13 +17,23 @@
 
 package org.openqa.selenium.environment.webserver;
 
+import static com.google.common.base.Charsets.UTF_8;
+import static com.google.common.net.HttpHeaders.CONTENT_LENGTH;
+import static com.google.common.net.HttpHeaders.CONTENT_TYPE;
+import static com.google.common.net.MediaType.JSON_UTF_8;
 import static org.openqa.selenium.net.PortProber.findFreePort;
 import static org.openqa.selenium.testing.InProject.locate;
 
 import com.google.common.collect.ImmutableList;
+import com.google.gson.JsonObject;
 
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.net.NetworkUtils;
+import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpMethod;
+import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.internal.ApacheHttpClient;
 import org.openqa.selenium.testing.InProject;
 import org.seleniumhq.jetty9.http.HttpVersion;
 import org.seleniumhq.jetty9.http.MimeTypes;
@@ -47,6 +57,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.EnumSet;
@@ -78,7 +89,7 @@ public class JettyAppServer implements AppServer {
 
   private ContextHandlerCollection handlers;
   private final String hostName;
-  private File tempPagesDir;
+  private File tempPageDir;
 
   public JettyAppServer() {
     this(detectHostname(), getHttpPort(), getHttpsPort());
@@ -107,12 +118,17 @@ public class JettyAppServer implements AppServer {
         DEFAULT_CONTEXT_PATH, locate("common/src/web"));
     ServletContextHandler jsContext = addResourceHandler(
         JS_SRC_CONTEXT_PATH, locate("javascript"));
-    TemporaryFilesystem tempFs = TemporaryFilesystem.getDefaultTmpFS();
-    tempPagesDir = tempFs.createTempDir("pages", "test");
-    ServletContextHandler tempContext = addResourceHandler(
-        TEMP_SRC_CONTEXT_PATH, tempPagesDir.toPath());
     addResourceHandler(CLOSURE_CONTEXT_PATH, locate("third_party/closure/goog"));
     addResourceHandler(THIRD_PARTY_JS_CONTEXT_PATH, locate("third_party/js"));
+
+    TemporaryFilesystem tempFs = TemporaryFilesystem.getDefaultTmpFS();
+    tempPageDir = tempFs.createTempDir("pages", "test");
+    ServletContextHandler tempContext = addResourceHandler(
+        TEMP_SRC_CONTEXT_PATH, tempPageDir.toPath());
+    defaultContext.setInitParameter("tempPageDir", tempPageDir.getAbsolutePath());
+    defaultContext.setInitParameter("hostname", hostName);
+    defaultContext.setInitParameter("port", ""+port);
+    defaultContext.setInitParameter("path", TEMP_SRC_CONTEXT_PATH);
 
     server.setHandler(handlers);
 
@@ -130,6 +146,7 @@ public class JettyAppServer implements AppServer {
     addServlet(defaultContext, "/quitquitquit", KillSwitchServlet.class);
     addServlet(defaultContext, "/basicAuth", BasicAuth.class);
     addServlet(defaultContext, "/generated/*", GeneratedJsTestServlet.class);
+    addServlet(defaultContext, "/createPage", CreatePageServlet.class);
   }
 
   private static int getHttpPort() {
@@ -181,14 +198,20 @@ public class JettyAppServer implements AppServer {
   @Override
   public String create(Page page) {
     try {
-      Path target = Files.createTempFile(tempPagesDir.toPath(), "page", ".html");
-      try (Writer out = new FileWriter(target.toFile())) {
-        out.write(page.toString());
-      }
-      return String.format("http://%s:%d%s/%s",
-                           getHostName(), port, TEMP_SRC_CONTEXT_PATH, target.getFileName());
-    } catch (IOException e) {
-      throw new RuntimeException("Can't create page on test server",  e);
+      JsonObject converted = new JsonObject();
+      converted.addProperty("content", page.toString());
+      HttpClient
+          client =
+          new ApacheHttpClient.Factory().createClient(new URL(whereIs("/")));
+      HttpRequest request = new HttpRequest(HttpMethod.POST, "/common/createPage");
+      byte[] data = converted.toString().getBytes(UTF_8);
+      request.setHeader(CONTENT_LENGTH, String.valueOf(data.length));
+      request.setHeader(CONTENT_TYPE, JSON_UTF_8.toString());
+      request.setContent(data);
+      HttpResponse response = client.execute(request, true);
+      return response.getContentString();
+    } catch (IOException ex) {
+      throw new RuntimeException(ex);
     }
   }
 
