@@ -63,7 +63,8 @@ class MockResponse:
 
 
 def test_remote_connection_adds_connection_headers_from_get_remote_connection_headers(mocker):
-    test_headers = {'FOO': 'bar'}
+    test_headers = {'FOO': 'bar', 'Content-Type': 'json'}
+    expected_request_headers = {'Foo': 'bar', 'Content-type': 'json'}
 
     # Stub out the get_remote_connection_headers method to return something testable
     mocker.patch(
@@ -77,7 +78,7 @@ def test_remote_connection_adds_connection_headers_from_get_remote_connection_he
         mock_open = mocker.patch('urllib2.OpenerDirector.open')
 
     def assert_header_added(request, timeout):
-        assert request.headers == test_headers
+        assert request.headers == expected_request_headers
         return MockResponse()
 
     mock_open.side_effect = assert_header_added
