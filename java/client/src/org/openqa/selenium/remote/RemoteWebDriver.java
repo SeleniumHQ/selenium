@@ -288,7 +288,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
       returnedCapabilities.setCapability(SUPPORTS_JAVASCRIPT, true);
     }
 
-    capabilities = returnedCapabilities;
+    setCapabilities(returnedCapabilities);
     sessionId = new SessionId(response.getSessionId());
   }
 
