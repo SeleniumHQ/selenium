@@ -1,8 +1,8 @@
 prebuilt_jar(
   name = 'cssparser',
-  maven_coords = 'net.sourceforge.cssparser:cssparser:jar:0.9.21',
-  binary_jar = 'cssparser-0.9.21.jar',
-  source_jar = 'cssparser-0.9.21-sources.jar',
+  maven_coords = 'net.sourceforge.cssparser:cssparser:jar:0.9.22',
+  binary_jar = 'cssparser-0.9.22.jar',
+  source_jar = 'cssparser-0.9.22-sources.jar',
   deps = [
     '//third_party/java/css:sac'
   ],

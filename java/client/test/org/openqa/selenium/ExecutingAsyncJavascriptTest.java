@@ -332,7 +332,6 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
   @Ignore(CHROME)
   @Ignore(IE)
   @Ignore(MARIONETTE)
-  @NotYetImplemented(HTMLUNIT)
   @NeedsLocalEnvironment(reason = "Relies on timing")
   public void throwsIfScriptTriggersAlert() {
     driver.get(pages.simpleTestPage);
@@ -349,7 +348,6 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
   @Ignore(CHROME)
   @Ignore(IE)
   @Ignore(MARIONETTE)
-  @NotYetImplemented(HTMLUNIT)
   @NeedsLocalEnvironment(reason = "Relies on timing")
   public void throwsIfAlertHappensDuringScript() {
     driver.get(pages.slowLoadingAlertPage);
@@ -364,7 +362,7 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
   @Ignore(CHROME)
   @Ignore(IE)
   @Ignore(MARIONETTE)
-  @NotYetImplemented(HTMLUNIT)
+  @Ignore(value = HTMLUNIT, reason="test should enable JavaScript")
   @NeedsLocalEnvironment(reason = "Relies on timing")
   public void throwsIfScriptTriggersAlertWhichTimesOut() {
     driver.get(pages.simpleTestPage);
@@ -381,7 +379,6 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
   @Ignore(CHROME)
   @Ignore(IE)
   @Ignore(MARIONETTE)
-  @NotYetImplemented(HTMLUNIT)
   @NeedsLocalEnvironment(reason = "Relies on timing")
   public void throwsIfAlertHappensDuringScriptWhichTimesOut() {
     driver.get(pages.slowLoadingAlertPage);
@@ -397,7 +394,6 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
   @Ignore(CHROME)
   @Ignore(IE)
   @Ignore(MARIONETTE)
-  @NotYetImplemented(HTMLUNIT)
   @NeedsLocalEnvironment(reason = "Relies on timing")
   public void includesAlertTextInUnhandledAlertException() {
     driver.manage().timeouts().setScriptTimeout(5000, TimeUnit.MILLISECONDS);

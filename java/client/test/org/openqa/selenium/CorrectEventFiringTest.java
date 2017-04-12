@@ -322,7 +322,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Test
   @Ignore(SAFARI)
-  @Ignore(HTMLUNIT)
+  @NotYetImplemented(HTMLUNIT)
   public void testClickingAnUnfocusableChildShouldNotBlurTheParent() {
     assumeFalse(isOldIe(driver));
     driver.get(pages.javascriptPage);

@@ -123,7 +123,6 @@ public class AlertsTest extends JUnit4TestBase {
   @Test
   @Ignore(CHROME)
   @Ignore(MARIONETTE)
-  @NotYetImplemented(HTMLUNIT)
   public void testShouldGetTextOfAlertOpenedInSetTimeout() throws Exception {
     driver.get(appServer.create(new Page()
         .withTitle("Testing Alerts")
@@ -160,8 +159,6 @@ public class AlertsTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @NotYetImplemented(value = HTMLUNIT,
-      reason = "HtmlUnit: click()/prompt need to run in different threads.")
   public void testShouldAllowAUserToAcceptAPrompt() {
     driver.get(promptPage(null));
 
@@ -175,8 +172,6 @@ public class AlertsTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @NotYetImplemented(value = HTMLUNIT,
-    reason = "HtmlUnit: click()/prompt need to run in different threads.")
   public void testShouldAllowAUserToDismissAPrompt() {
     driver.get(promptPage(null));
 
@@ -189,8 +184,6 @@ public class AlertsTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Test
-  @NotYetImplemented(value = HTMLUNIT, reason = "click()/prompt need to run in different threads")
   @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/607")
   public void testShouldAllowAUserToSetTheValueOfAPrompt() {
     driver.get(promptPage(null));
@@ -235,8 +228,7 @@ public class AlertsTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(value = HTMLUNIT,
-    reason = "HtmlUnit: click()/prompt need to run in different threads.")
+  @Ignore(value = HTMLUNIT, reason="test should enable JavaScript")
   public void testShouldAllowTheUserToGetTheTextOfAPrompt() {
     driver.get(promptPage(null));
 
@@ -337,8 +329,6 @@ public class AlertsTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @NotYetImplemented(value = HTMLUNIT,
-    reason = "HtmlUnit: runs on the same test thread.")
   public void testPromptShouldUseDefaultValueIfNoKeysSent() {
     driver.get(promptPage("This is a default value"));
 
@@ -351,8 +341,6 @@ public class AlertsTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @NotYetImplemented(value = HTMLUNIT,
-    reason = "HtmlUnit: click()/prompt need to run in different threads.")
   public void testPromptShouldHaveNullValueIfDismissed() {
     driver.get(promptPage("This is a default value"));
 
@@ -365,7 +353,6 @@ public class AlertsTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @NotYetImplemented(value = HTMLUNIT, reason = "click()/prompt need to run in different threads")
   @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/607")
   public void testHandlesTwoAlertsFromOneInteraction() {
     driver.get(appServer.create(new Page()
@@ -436,6 +423,7 @@ public class AlertsTest extends JUnit4TestBase {
   @Ignore(FIREFOX)
   @Ignore(value = IE, reason = "Fails in versions 6 and 7")
   @Ignore(MARIONETTE)
+  @NotYetImplemented(HTMLUNIT)
   public void testShouldNotHandleAlertInAnotherWindow() {
     String pageWithOnLoad = appServer.create(new Page()
         .withOnLoad("javascript:alert(\"onload\")")
@@ -489,8 +477,6 @@ public class AlertsTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @NotYetImplemented(value = HTMLUNIT,
-    reason = "HtmlUnit: runs on the same test thread, and .click() already changs the current window.")
   public void testShouldHandleAlertOnPageBeforeUnload() {
     String blank = appServer.create(new Page().withTitle("Success"));
     driver.get(appServer.create(new Page()
@@ -515,8 +501,7 @@ public class AlertsTest extends JUnit4TestBase {
 
   @NoDriverAfterTest
   @Test
-  @NotYetImplemented(value = HTMLUNIT,
-    reason = "HtmlUnit: runs on the same test thread.")
+  @Ignore(value = HTMLUNIT, reason="test should enable JavaScript")
   public void testShouldHandleAlertOnPageBeforeUnloadAtQuit() {
     String blank = appServer.create(new Page().withTitle("Success"));
     driver.get(appServer.create(new Page()
