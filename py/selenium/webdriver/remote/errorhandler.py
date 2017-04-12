@@ -108,10 +108,7 @@ class ErrorHandler(object):
                         message = value["value"]
                         if not isinstance(message, basestring):
                             value = message
-                            try:
-                                message = message['message']
-                            except KeyError:
-                                message = None
+                            message = message.get('message', None)
                     else:
                         message = value.get('message', None)
                 except ValueError:
