@@ -86,7 +86,6 @@ public class PageLoadingTest extends JUnit4TestBase {
   @Ignore(SAFARI)
   @Ignore(MARIONETTE)
   @Ignore(PHANTOMJS)
-  @NotYetImplemented(HTMLUNIT)
   @NeedsLocalEnvironment
   public void testNoneStrategyShouldNotWaitForPageToLoad() {
     initLocalDriver("none");
@@ -108,7 +107,6 @@ public class PageLoadingTest extends JUnit4TestBase {
   @Ignore(SAFARI)
   @Ignore(MARIONETTE)
   @Ignore(PHANTOMJS)
-  @NotYetImplemented(HTMLUNIT)
   @NeedsLocalEnvironment
   public void testNoneStrategyShouldNotWaitForPageToRefresh() {
     initLocalDriver("none");
@@ -373,7 +371,6 @@ public class PageLoadingTest extends JUnit4TestBase {
   @Ignore(SAFARI)
   @Ignore(PHANTOMJS)
   @Ignore(MARIONETTE)
-  @NotYetImplemented(HTMLUNIT)
   public void shouldBeAbleToDisableAcceptOfInsecureSslCertsWithRequiredCapability() {
     // TODO: Resolve why this test doesn't work on the remote server
     assumeTrue(isLocal());
@@ -456,13 +453,14 @@ public class PageLoadingTest extends JUnit4TestBase {
   @Test
   @Ignore(MARIONETTE)
   @Ignore(value = SAFARI, reason = "issue 687, comment 41")
-  @NotYetImplemented(HTMLUNIT)
   @NeedsLocalEnvironment
   public void testShouldTimeoutIfAPageTakesTooLongToLoadAfterClick() {
     // Fails on Chrome 44 (and higher?) https://code.google.com/p/chromedriver/issues/detail?id=1125
     assumeFalse(
         "chrome".equals(((HasCapabilities) driver).getCapabilities().getBrowserName())
         && "44".compareTo(((HasCapabilities) driver).getCapabilities().getVersion()) <= 0);
+    assumeFalse(
+        "htmlunit".equals(((HasCapabilities) driver).getCapabilities().getBrowserName()));
 
     driver.manage().timeouts().pageLoadTimeout(2, SECONDS);
 

@@ -483,11 +483,11 @@ public class FrameSwitchingTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Test
   @Ignore(CHROME)
-  @Ignore(HTMLUNIT)
   @Ignore(IE)
   @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/614")
   @Ignore(PHANTOMJS)
   @Ignore(SAFARI)
+  @NotYetImplemented(HTMLUNIT)
   public void testShouldNotBeAbleToDoAnythingTheFrameIsDeletedFromUnderUs() {
     driver.get(appServer.whereIs("frame_switching_tests/deletingFrame.html"));
 

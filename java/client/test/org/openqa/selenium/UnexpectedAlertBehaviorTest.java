@@ -38,7 +38,6 @@ import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
-import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.TestUtilities;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
@@ -59,7 +58,7 @@ public class UnexpectedAlertBehaviorTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(HTMLUNIT)
+  @Ignore(value = HTMLUNIT, reason="test should enable JavaScript")
   public void canAcceptUnhandledAlert() {
     runScenarioWithUnhandledAlert(UnexpectedAlertBehaviour.ACCEPT, "This is a default value");
   }
@@ -80,7 +79,7 @@ public class UnexpectedAlertBehaviorTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = CHROME, reason = "Unstable Chrome behavior")
-  @NotYetImplemented(HTMLUNIT)
+  @Ignore(value = HTMLUNIT, reason = "test should enable JavaScript")
   public void canIgnoreUnhandledAlert() {
     Throwable t = catchThrowable(
         () -> runScenarioWithUnhandledAlert(UnexpectedAlertBehaviour.IGNORE, "Text ignored"));
@@ -89,7 +88,7 @@ public class UnexpectedAlertBehaviorTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(HTMLUNIT)
+  @Ignore(value = HTMLUNIT, reason="test should enable JavaScript")
   public void canSpecifyUnhandledAlertBehaviourUsingCapabilities() {
     desiredCaps.setCapability(UNEXPECTED_ALERT_BEHAVIOUR, UnexpectedAlertBehaviour.ACCEPT);
     driver2 = new WebDriverBuilder().setDesiredCapabilities(desiredCaps).get();
@@ -100,7 +99,7 @@ public class UnexpectedAlertBehaviorTest extends JUnit4TestBase {
   @Test
   @Ignore(value = IE, reason = "required capabilities not implemented")
   @Ignore(value = CHROME, reason = "required capabilities not implemented")
-  @NotYetImplemented(HTMLUNIT)
+  @Ignore(value = HTMLUNIT, reason = "test should enable JavaScript")
   public void requiredUnhandledAlertCapabilityHasPriorityOverDesired() {
     // TODO: Resolve why this test doesn't work on the remote server
     assumeTrue(TestUtilities.isLocal());

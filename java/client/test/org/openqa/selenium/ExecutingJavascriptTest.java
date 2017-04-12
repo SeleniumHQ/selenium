@@ -562,7 +562,6 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   @Ignore(PHANTOMJS)
   @Ignore(SAFARI)
   @Ignore(MARIONETTE)
-  @NotYetImplemented(HTMLUNIT)
   public void testShouldBeAbleToReturnADateObject() {
     driver.get(pages.simpleTestPage);
 
