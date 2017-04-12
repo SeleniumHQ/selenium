@@ -513,7 +513,8 @@ class RemoteConnection(object):
             else:
                 request = Request(url, data=body.encode('utf-8'), method=method)
 
-            request.headers.update(headers)
+            for key, val in headers.items():
+                request.add_header(key, val)
 
             if password_manager:
                 opener = url_request.build_opener(url_request.HTTPRedirectHandler(),
