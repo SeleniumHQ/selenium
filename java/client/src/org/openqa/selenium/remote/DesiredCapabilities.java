@@ -190,9 +190,11 @@ public class DesiredCapabilities implements Serializable, Capabilities {
   }
 
   public static DesiredCapabilities firefox() {
-    DesiredCapabilities capabilities = new DesiredCapabilities(BrowserType.FIREFOX,
-                                                               "", Platform.ANY);
-    capabilities.setCapability(CapabilityType.ACCEPT_INSECURE_CERTS, true);
+    DesiredCapabilities capabilities = new DesiredCapabilities(
+        BrowserType.FIREFOX,
+        "",
+        Platform.ANY);
+    capabilities.setCapability("acceptInsecureCerts", true);
 
     return capabilities;
   }
