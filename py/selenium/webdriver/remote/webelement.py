@@ -370,7 +370,7 @@ class WebElement(object):
 
         """
         if self._w3c:
-            old_loc = self._execute(Command.EXECUTE_SCRIPT, {
+            old_loc = self._execute(Command.W3C_EXECUTE_SCRIPT, {
                 'script': "arguments[0].scrollIntoView(true); return arguments[0].getBoundingClientRect()",
                 'args': [self]})['value']
             return {"x": round(old_loc['x']),
