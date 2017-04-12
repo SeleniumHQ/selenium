@@ -286,7 +286,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
   @Ignore(IE)
   @Ignore(FIREFOX)
   @Ignore(MARIONETTE)
-  @NotYetImplemented(HTMLUNIT)
+  @Ignore(value = HTMLUNIT, reason="test should enable JavaScript")
   public void testMovingMouseBackAndForthPastViewPort() {
     driver.get(pages.veryLargeCanvas);
 

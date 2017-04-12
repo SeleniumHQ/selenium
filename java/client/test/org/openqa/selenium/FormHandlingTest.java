@@ -293,7 +293,6 @@ public class FormHandlingTest extends JUnit4TestBase {
     checkSubmitButton("internal_explicit_submit");
   }
 
-
   @Test
   @Ignore(SAFARI)
   @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")

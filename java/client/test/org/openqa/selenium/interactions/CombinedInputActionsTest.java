@@ -65,7 +65,6 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   @Ignore(IE)
   @Ignore(FIREFOX)
   @Ignore(PHANTOMJS)
-  @NotYetImplemented(HTMLUNIT)
   public void testPlainClickingOnMultiSelectionList() {
     driver.get(pages.formSelectionPage);
 
@@ -93,7 +92,6 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   @Ignore(IE)
   @Ignore(FIREFOX)
   @Ignore(MARIONETTE)
-  @NotYetImplemented(HTMLUNIT)
   public void testShiftClickingOnMultiSelectionList() {
     driver.get(pages.formSelectionPage);
 
@@ -123,7 +121,6 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   @Ignore(FIREFOX)
   @Ignore(PHANTOMJS)
   @Ignore(MARIONETTE)
-  @NotYetImplemented(HTMLUNIT)
   public void testControlClickingOnMultiSelectionList() {
     driver.get(pages.formSelectionPage);
 
@@ -333,7 +330,6 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   @Test
   @Ignore(MARIONETTE)
   @Ignore(IE)
-  @NotYetImplemented(HTMLUNIT)
   public void testCombiningShiftAndClickResultsInANewWindow() {
     driver.get(pages.linkedImage);
     WebElement link = driver.findElement(By.id("link"));
