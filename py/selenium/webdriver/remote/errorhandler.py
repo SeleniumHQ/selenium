@@ -110,7 +110,7 @@ class ErrorHandler(object):
                             value = message
                             try:
                                 message = message['message']
-                            except TypeError:
+                            except KeyError:
                                 message = None
                     else:
                         message = value.get('message', None)
