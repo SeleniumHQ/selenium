@@ -21,7 +21,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static org.apache.http.protocol.HttpCoreContext.HTTP_TARGET_HOST;
 
 import org.apache.http.Header;
-import org.apache.http.HeaderElement;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
 import org.apache.http.NoHttpResponseException;
@@ -43,7 +42,6 @@ import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.IOException;
 import java.net.BindException;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -251,24 +249,9 @@ public class ApacheHttpClient implements org.openqa.selenium.remote.http.HttpCli
       return defaultClientFactory;
     }
   }
-  
+
   @Override
-	public void close() throws IOException {
-	  client.getConnectionManager().closeIdleConnections(0, TimeUnit.SECONDS);		
-	}
-
-  public static void main(String[] args) throws IOException {
-    org.openqa.selenium.remote.http.HttpClient client = new Factory().createClient(new URL("http://www.google.com/"));
-
-    HttpRequest request = new HttpRequest(HttpMethod.GET, "/");
-    HttpResponse response = client.execute(request, true);
-
-    for (String names : response.getHeaderNames()) {
-      Iterable<String> header = response.getHeaders(names);
-      for (String h : header) {
-        System.out.println(names + ": " + h);
-      }
-    }
+  public void close() throws IOException {
+    client.getConnectionManager().closeIdleConnections(0, TimeUnit.SECONDS);
   }
-  
 }
