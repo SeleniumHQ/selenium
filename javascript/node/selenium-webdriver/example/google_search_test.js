@@ -41,7 +41,7 @@ test.describe('Google Search', function() {
 
   // You can write tests either using traditional promises.
   it('works with promises', function() {
-    return driver.get('http://www.google.com')
+    return driver.get('http://www.google.com/ncr')
         .then(_ => driver.findElement(By.name('q')).sendKeys('webdriver'))
         .then(_ => driver.findElement(By.name('btnG')).click())
         .then(_ => driver.wait(until.titleIs('webdriver - Google Search'), 1000));
