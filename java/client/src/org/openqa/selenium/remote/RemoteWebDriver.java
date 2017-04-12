@@ -908,8 +908,8 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
         return new Dimension(width, height);
       }
 
-      @SuppressWarnings({"unchecked"})
       Map<String, Object> rawPoint;
+      @SuppressWarnings("unchecked")
       public Point getPosition() {
         Response response = execute(DriverCommand.GET_CURRENT_WINDOW_POSITION,
                                     ImmutableMap.of("windowHandle", "current"));

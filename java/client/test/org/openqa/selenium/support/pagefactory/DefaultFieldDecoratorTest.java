@@ -50,8 +50,6 @@ import org.openqa.selenium.support.PageFactory;
 import java.lang.reflect.Field;
 import java.util.List;
 
-/**
- */
 @RunWith(JUnit4.class)
 public class DefaultFieldDecoratorTest {
 

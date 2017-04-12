@@ -34,7 +34,6 @@ public class FindChildElement extends WebElementHandler<Map<String, String>> imp
     super(session);
   }
 
-  @SuppressWarnings("unchecked")
   public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
     by = newBySelector().pickFromJsonParameters(allParameters);
   }

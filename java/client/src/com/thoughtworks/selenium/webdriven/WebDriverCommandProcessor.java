@@ -30,7 +30,6 @@ import org.openqa.selenium.HasCapabilities;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.internal.WrapsDriver;
-import org.openqa.selenium.remote.CapabilityType;
 
 import java.util.Map;
 import java.util.function.Supplier;

@@ -42,6 +42,7 @@ public class OutOfProcessSeleniumServer {
 
   private String baseUrl;
   private CommandLine command;
+  @SuppressWarnings("unused")
   private boolean captureLogs = false;
 
   public void enableLogCapture() {
