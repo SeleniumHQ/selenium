@@ -96,7 +96,7 @@ public class FirefoxOptions {
 
     if (map.containsKey("args")) {
       @SuppressWarnings("unchecked")  // #YOLO
-      List<String> list = (List) getOption(map, "args", List.class);
+      List<String> list = (List<String>) getOption(map, "args", List.class);
       options.addArguments(list);
     }
 
@@ -114,7 +114,7 @@ public class FirefoxOptions {
 
     if (map.containsKey("prefs")) {
       @SuppressWarnings("unchecked")  // #YOLO
-      Map<String, Object> prefs = (Map) getOption(map, "prefs", Map.class);
+      Map<String, Object> prefs = (Map<String, Object>) getOption(map, "prefs", Map.class);
       prefs.forEach((key, value) -> {
         if (value instanceof Boolean) {
           options.addPreference(key, (Boolean) value);

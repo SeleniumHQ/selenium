@@ -261,11 +261,11 @@ public class JsonToBeanConverter {
   }
 
   @SuppressWarnings("unchecked")
-  private Enum convertEnum(Class clazz, Object text) {
+  private Enum<?> convertEnum(Class<?> clazz, Object text) {
     String toConvert = text instanceof JsonElement ?
                        ((JsonElement) text).getAsString() : String.valueOf(text);
 
-    Function<Class, Enum<?>> asEnum = (c) -> {
+    Function<Class<?>, Enum<?>> asEnum = (c) -> {
       for (Object value : c.getEnumConstants()) {
         if (value.toString().equalsIgnoreCase(toConvert)) {
           return (Enum<?>) value;
@@ -278,8 +278,8 @@ public class JsonToBeanConverter {
       return asEnum.apply(clazz);
     }
 
-    Class[] allClasses = clazz.getClasses();
-    for (Class current : allClasses) {
+    Class<?>[] allClasses = clazz.getClasses();
+    for (Class<?> current : allClasses) {
       if (current.isEnum()) {
         return asEnum.apply(current);
       }
