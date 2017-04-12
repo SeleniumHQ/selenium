@@ -99,7 +99,8 @@ class Alert(object):
 
         """
         if self.driver.w3c:
-            self.driver.execute(Command.W3C_SET_ALERT_VALUE, {'value': keys_to_typing(keysToSend)})
+            self.driver.execute(Command.W3C_SET_ALERT_VALUE, {'value': keys_to_typing(keysToSend),
+                                                              'text': keysToSend})
         else:
             self.driver.execute(Command.SET_ALERT_VALUE, {'text': keysToSend})
 
