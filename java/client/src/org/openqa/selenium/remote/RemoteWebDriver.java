@@ -170,10 +170,6 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
         requiredCapabilities);
   }
 
-  /**
-   * @deprecated Use {@link RemoteWebDriver(CommandExecutor, Capabilities)}, creating a new
-   *   {@link HttpCommandExecutor}.
-   */
   public RemoteWebDriver(URL remoteAddress, Capabilities desiredCapabilities) {
     this(new HttpCommandExecutor(remoteAddress), desiredCapabilities);
   }
