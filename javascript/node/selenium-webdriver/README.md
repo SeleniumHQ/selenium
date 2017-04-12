@@ -193,7 +193,7 @@ the issue tracker
 - __Do not__ post empty "I see this too" or "Any updates?" comments. These
     provide no additional information and clutter the log.
 - __Do not__ report regressions on closed bugs as they are not actively
-    monitored for upates (especially bugs that are >6 months old). Please open a
+    monitored for updates (especially bugs that are >6 months old). Please open a
     new issue and reference the original bug in your report.
 
 ## License
