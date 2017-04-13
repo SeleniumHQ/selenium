@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>selenium.webdriver.remote.remote_connection &mdash; Selenium 3.2 documentation</title>
+    <title>selenium.webdriver.remote.remote_connection &mdash; Selenium 3.3 documentation</title>
     
     <link rel="stylesheet" href="../../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '3.2',
+        VERSION:     '3.3',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../../_static/doctools.js"></script>
-    <link rel="top" title="Selenium 3.2 documentation" href="../../../../index.html" />
+    <link rel="top" title="Selenium 3.3 documentation" href="../../../../index.html" />
     <link rel="up" title="Module code" href="../../../index.html" /> 
   </head>
   <body>
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">Selenium 3.2 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">Selenium 3.3 documentation</a> &raquo;</li>
           <li><a href="../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -520,10 +520,6 @@
             <span class="n">request</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="s">&#39;Accept&#39;</span><span class="p">,</span> <span class="s">&#39;application/json&#39;</span><span class="p">)</span>
             <span class="n">request</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="s">&#39;Content-Type&#39;</span><span class="p">,</span> <span class="s">&#39;application/json;charset=UTF-8&#39;</span><span class="p">)</span>
 
-            <span class="k">if</span> <span class="n">parsed_url</span><span class="o">.</span><span class="n">username</span><span class="p">:</span>
-                <span class="n">base64string</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">:</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">parsed_url</span><span class="o">.</span><span class="n">username</span><span class="p">,</span> <span class="n">parsed_url</span><span class="o">.</span><span class="n">password</span><span class="p">))</span>
-                <span class="n">request</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="s">&quot;Authorization&quot;</span><span class="p">,</span> <span class="s">&quot;Basic </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">base64string</span><span class="p">)</span>
-
             <span class="k">if</span> <span class="n">password_manager</span><span class="p">:</span>
                 <span class="n">opener</span> <span class="o">=</span> <span class="n">url_request</span><span class="o">.</span><span class="n">build_opener</span><span class="p">(</span><span class="n">url_request</span><span class="o">.</span><span class="n">HTTPRedirectHandler</span><span class="p">(),</span>
                                                   <span class="n">HttpErrorHandler</span><span class="p">(),</span>
@@ -605,7 +601,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">Selenium 3.2 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">Selenium 3.3 documentation</a> &raquo;</li>
           <li><a href="../../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>

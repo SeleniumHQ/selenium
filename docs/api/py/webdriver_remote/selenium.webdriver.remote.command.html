@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>selenium.webdriver.remote.command &mdash; Selenium 3.2 documentation</title>
+    <title>selenium.webdriver.remote.command &mdash; Selenium 3.3 documentation</title>
     
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '3.2',
+        VERSION:     '3.3',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="Selenium 3.2 documentation" href="../index.html" /> 
+    <link rel="top" title="Selenium 3.3 documentation" href="../index.html" /> 
   </head>
   <body>
     <div class="related">
@@ -35,7 +35,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../index.html">Selenium 3.2 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">Selenium 3.3 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -366,6 +366,11 @@ remote wire protocol:</p>
 <dd></dd></dl>
 
 <dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.GET_WINDOW_RECT">
+<tt class="descname">GET_WINDOW_RECT</tt><em class="property"> = 'getWindowRect'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_WINDOW_RECT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
 <dt id="selenium.webdriver.remote.command.Command.GET_WINDOW_SIZE">
 <tt class="descname">GET_WINDOW_SIZE</tt><em class="property"> = 'getWindowSize'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.GET_WINDOW_SIZE" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -521,6 +526,11 @@ remote wire protocol:</p>
 <dd></dd></dl>
 
 <dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.SET_WINDOW_RECT">
+<tt class="descname">SET_WINDOW_RECT</tt><em class="property"> = 'setWindowRect'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.SET_WINDOW_RECT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
 <dt id="selenium.webdriver.remote.command.Command.SET_WINDOW_SIZE">
 <tt class="descname">SET_WINDOW_SIZE</tt><em class="property"> = 'setWindowSize'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.SET_WINDOW_SIZE" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -586,8 +596,53 @@ remote wire protocol:</p>
 <dd></dd></dl>
 
 <dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.W3C_ACCEPT_ALERT">
+<tt class="descname">W3C_ACCEPT_ALERT</tt><em class="property"> = 'w3cAcceptAlert'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.W3C_ACCEPT_ALERT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.W3C_ACTIONS">
+<tt class="descname">W3C_ACTIONS</tt><em class="property"> = 'actions'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.W3C_ACTIONS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.W3C_CLEAR_ACTIONS">
+<tt class="descname">W3C_CLEAR_ACTIONS</tt><em class="property"> = 'clearActionState'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.W3C_CLEAR_ACTIONS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.W3C_DISMISS_ALERT">
+<tt class="descname">W3C_DISMISS_ALERT</tt><em class="property"> = 'w3cDismissAlert'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.W3C_DISMISS_ALERT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.W3C_EXECUTE_SCRIPT">
+<tt class="descname">W3C_EXECUTE_SCRIPT</tt><em class="property"> = 'w3cExecuteScript'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.W3C_EXECUTE_SCRIPT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.W3C_EXECUTE_SCRIPT_ASYNC">
+<tt class="descname">W3C_EXECUTE_SCRIPT_ASYNC</tt><em class="property"> = 'w3cExecuteScriptAsync'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.W3C_EXECUTE_SCRIPT_ASYNC" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
 <dt id="selenium.webdriver.remote.command.Command.W3C_GET_ACTIVE_ELEMENT">
 <tt class="descname">W3C_GET_ACTIVE_ELEMENT</tt><em class="property"> = 'w3cGetActiveElement'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.W3C_GET_ACTIVE_ELEMENT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.W3C_GET_ALERT_TEXT">
+<tt class="descname">W3C_GET_ALERT_TEXT</tt><em class="property"> = 'w3cGetAlertText'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.W3C_GET_ALERT_TEXT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.W3C_GET_CURRENT_WINDOW_HANDLE">
+<tt class="descname">W3C_GET_CURRENT_WINDOW_HANDLE</tt><em class="property"> = 'w3cGetCurrentWindowHandle'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.W3C_GET_CURRENT_WINDOW_HANDLE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.W3C_GET_WINDOW_HANDLES">
+<tt class="descname">W3C_GET_WINDOW_HANDLES</tt><em class="property"> = 'w3cGetWindowHandles'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.W3C_GET_WINDOW_HANDLES" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -603,6 +658,11 @@ remote wire protocol:</p>
 <dl class="attribute">
 <dt id="selenium.webdriver.remote.command.Command.W3C_MAXIMIZE_WINDOW">
 <tt class="descname">W3C_MAXIMIZE_WINDOW</tt><em class="property"> = 'w3cMaximizeWindow'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.W3C_MAXIMIZE_WINDOW" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.remote.command.Command.W3C_SET_ALERT_VALUE">
+<tt class="descname">W3C_SET_ALERT_VALUE</tt><em class="property"> = 'w3cSetAlertValue'</em><a class="headerlink" href="#selenium.webdriver.remote.command.Command.W3C_SET_ALERT_VALUE" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -656,7 +716,7 @@ remote wire protocol:</p>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../index.html">Selenium 3.2 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">Selenium 3.3 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

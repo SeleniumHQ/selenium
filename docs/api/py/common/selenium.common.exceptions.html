@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>selenium.common.exceptions &mdash; Selenium 3.2 documentation</title>
+    <title>selenium.common.exceptions &mdash; Selenium 3.3 documentation</title>
     
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '3.2',
+        VERSION:     '3.3',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="Selenium 3.2 documentation" href="../index.html" /> 
+    <link rel="top" title="Selenium 3.3 documentation" href="../index.html" /> 
   </head>
   <body>
     <div class="related">
@@ -35,7 +35,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../index.html">Selenium 3.2 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">Selenium 3.3 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -47,6 +47,13 @@
   <div class="section" id="module-selenium.common.exceptions">
 <span id="selenium-common-exceptions"></span><h1>selenium.common.exceptions<a class="headerlink" href="#module-selenium.common.exceptions" title="Permalink to this headline">¶</a></h1>
 <p>Exceptions that may happen in all the webdriver code.</p>
+<dl class="exception">
+<dt id="selenium.common.exceptions.ElementNotInteractableException">
+<em class="property">exception </em><tt class="descclassname">selenium.common.exceptions.</tt><tt class="descname">ElementNotInteractableException</tt><big>(</big><em>msg=None</em>, <em>screen=None</em>, <em>stacktrace=None</em><big>)</big><a class="headerlink" href="#selenium.common.exceptions.ElementNotInteractableException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Thrown when an element is present in the DOM but interactions
+with that element will hit another element do to paint order</p>
+</dd></dl>
+
 <dl class="exception">
 <dt id="selenium.common.exceptions.ElementNotSelectableException">
 <em class="property">exception </em><tt class="descclassname">selenium.common.exceptions.</tt><tt class="descname">ElementNotSelectableException</tt><big>(</big><em>msg=None</em>, <em>screen=None</em>, <em>stacktrace=None</em><big>)</big><a class="reference internal" href="../_modules/selenium/common/exceptions.html#ElementNotSelectableException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.ElementNotSelectableException" title="Permalink to this definition">¶</a></dt>
@@ -82,6 +89,12 @@ or the remote driver server.</p>
 <em class="property">exception </em><tt class="descclassname">selenium.common.exceptions.</tt><tt class="descname">ImeNotAvailableException</tt><big>(</big><em>msg=None</em>, <em>screen=None</em>, <em>stacktrace=None</em><big>)</big><a class="reference internal" href="../_modules/selenium/common/exceptions.html#ImeNotAvailableException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.common.exceptions.ImeNotAvailableException" title="Permalink to this definition">¶</a></dt>
 <dd><p>Thrown when IME support is not available. This exception is thrown for every IME-related
 method call if IME support is not available on the machine.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="selenium.common.exceptions.InvalidArgumentException">
+<em class="property">exception </em><tt class="descclassname">selenium.common.exceptions.</tt><tt class="descname">InvalidArgumentException</tt><big>(</big><em>msg=None</em>, <em>screen=None</em>, <em>stacktrace=None</em><big>)</big><a class="headerlink" href="#selenium.common.exceptions.InvalidArgumentException" title="Permalink to this definition">¶</a></dt>
+<dd><p>The arguments passed to a command are either invalid or malformed.</p>
 </dd></dl>
 
 <dl class="exception">
@@ -164,8 +177,7 @@ for how to write a wait wrapper to wait for an element to appear.</li>
 <dd><p>Thrown when window target to be switched doesn&#8217;t exist.</p>
 <p>To find the current set of active window handles, you can get a list
 of the active window handles in the following way:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="k">print</span> <span class="n">driver</span><span class="o">.</span><span class="n">window_handles</span>
-</pre></div>
+<div class="highlight-python"><pre>print driver.window_handles</pre>
 </div>
 </dd></dl>
 
@@ -265,7 +277,7 @@ more commands.</p>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../index.html">Selenium 3.2 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">Selenium 3.3 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
