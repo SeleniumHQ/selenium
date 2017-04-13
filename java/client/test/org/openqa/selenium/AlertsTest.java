@@ -227,8 +227,8 @@ public class AlertsTest extends JUnit4TestBase {
     assertEquals("cheese", value);
   }
 
+  @JavascriptEnabled
   @Test
-  @Ignore(value = HTMLUNIT, reason="test should enable JavaScript")
   public void testShouldAllowTheUserToGetTheTextOfAPrompt() {
     driver.get(promptPage(null));
 
@@ -499,9 +499,9 @@ public class AlertsTest extends JUnit4TestBase {
     wait.until(titleIs("Success"));
   }
 
+  @JavascriptEnabled
   @NoDriverAfterTest
   @Test
-  @Ignore(value = HTMLUNIT, reason="test should enable JavaScript")
   public void testShouldHandleAlertOnPageBeforeUnloadAtQuit() {
     String blank = appServer.create(new Page().withTitle("Success"));
     driver.get(appServer.create(new Page()

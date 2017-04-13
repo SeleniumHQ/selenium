@@ -358,11 +358,11 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
     driver.getTitle();
   }
 
+  @JavascriptEnabled
   @Test
   @Ignore(CHROME)
   @Ignore(IE)
   @Ignore(MARIONETTE)
-  @Ignore(value = HTMLUNIT, reason="test should enable JavaScript")
   @NeedsLocalEnvironment(reason = "Relies on timing")
   public void throwsIfScriptTriggersAlertWhichTimesOut() {
     driver.get(pages.simpleTestPage);
