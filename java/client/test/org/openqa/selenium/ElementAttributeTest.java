@@ -37,7 +37,6 @@ import org.junit.Test;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.JavascriptEnabled;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.TestUtilities;
 
@@ -407,7 +406,6 @@ public class ElementAttributeTest extends JUnit4TestBase {
     assertEquals("true", element.getAttribute("multiple"));
   }
 
-  @JavascriptEnabled
   @Test
   public void testGetAttributeOfUserDefinedProperty() {
     driver.get(pages.userDefinedProperty);

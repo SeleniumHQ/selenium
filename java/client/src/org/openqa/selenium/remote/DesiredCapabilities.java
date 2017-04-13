@@ -203,13 +203,6 @@ public class DesiredCapabilities implements Serializable, Capabilities {
     return new DesiredCapabilities(BrowserType.HTMLUNIT, "", Platform.ANY);
   }
 
-  public static DesiredCapabilities htmlUnitWithJs() {
-    DesiredCapabilities capabilities = new DesiredCapabilities(BrowserType.HTMLUNIT,
-                                                               "", Platform.ANY);
-    capabilities.setCapability(CapabilityType.SUPPORTS_JAVASCRIPT, true);
-    return capabilities;
-  }
-
   public static DesiredCapabilities edge() {
     return new DesiredCapabilities(BrowserType.EDGE, "", Platform.WINDOWS);
   }

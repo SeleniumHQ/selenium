@@ -40,7 +40,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.JavascriptEnabled;
 import org.openqa.selenium.testing.NoDriverAfterTest;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
@@ -68,7 +67,6 @@ public class ClickTest extends JUnit4TestBase {
     wait.until(titleIs("XHTML Test Page"));
   }
 
-  @JavascriptEnabled
   @Test
   public void testCanClickOnAnAnchorAndNotReloadThePage() {
     ((JavascriptExecutor) driver).executeScript("document.latch = true");
@@ -92,7 +90,6 @@ public class ClickTest extends JUnit4TestBase {
     wait.until(pageSourceToContain("Hello WebDriver"));
   }
 
-  @JavascriptEnabled
   @SwitchToTopAfterTest
   @Test
   public void testElementsFoundByJsCanLoadUpdatesInAnotherFrame() {
@@ -107,7 +104,6 @@ public class ClickTest extends JUnit4TestBase {
     wait.until(pageSourceToContain("Hello WebDriver"));
   }
 
-  @JavascriptEnabled
   @SwitchToTopAfterTest
   @Test
   public void testJsLocatedElementsCanUpdateFramesIfFoundSomehowElse() {
@@ -126,7 +122,6 @@ public class ClickTest extends JUnit4TestBase {
     wait.until(pageSourceToContain("Hello WebDriver"));
   }
 
-  @JavascriptEnabled
   @Test
   @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testCanClickOnAnElementWithTopSetToANegativeNumber() {
@@ -147,7 +142,6 @@ public class ClickTest extends JUnit4TestBase {
     wait.until(titleIs("XHTML Test Page"));
   }
 
-  @JavascriptEnabled
   @Test
   @Ignore(MARIONETTE)
   public void testShouldSetRelatedTargetForMouseOver() {
@@ -160,7 +154,6 @@ public class ClickTest extends JUnit4TestBase {
     assertEquals("parent matches? true", log);
   }
 
-  @JavascriptEnabled
   @NoDriverAfterTest
   @Test
   @Ignore(value = SAFARI, reason = "issue 3693")
@@ -331,7 +324,6 @@ public class ClickTest extends JUnit4TestBase {
     wait.until(titleIs("XHTML Test Page"));
   }
 
-  @JavascriptEnabled
   @Test
   public void testShouldBeAbleToClickOnLinksWithNoHrefAttribute() {
     driver.get(pages.javascriptPage);
@@ -342,7 +334,6 @@ public class ClickTest extends JUnit4TestBase {
     wait.until(titleIs("Changed"));
   }
 
-  @JavascriptEnabled
   @Test
   public void testShouldBeAbleToClickOnALinkThatWrapsToTheNextLine() {
     driver.get(appServer.whereIs("click_tests/link_that_wraps.html"));
@@ -352,7 +343,6 @@ public class ClickTest extends JUnit4TestBase {
     wait.until(titleIs("Submitted Successfully!"));
   }
 
-  @JavascriptEnabled
   @Test
   public void testShouldBeAbleToClickOnASpanThatWrapsToTheNextLine() {
     driver.get(appServer.whereIs("click_tests/span_that_wraps.html"));
@@ -362,7 +352,6 @@ public class ClickTest extends JUnit4TestBase {
     wait.until(titleIs("Submitted Successfully!"));
   }
 
-  @JavascriptEnabled
   @Test
   @Ignore(CHROME)
   @Ignore(IE)

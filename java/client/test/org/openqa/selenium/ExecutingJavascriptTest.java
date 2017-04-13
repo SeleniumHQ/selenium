@@ -49,7 +49,6 @@ import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.InProject;
 import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.JavascriptEnabled;
 import org.openqa.selenium.testing.NeedsFreshDriver;
 import org.openqa.selenium.testing.NoDriverAfterTest;
 import org.openqa.selenium.testing.NotYetImplemented;
@@ -78,7 +77,6 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
     return ((JavascriptExecutor) driver).executeScript(script, args);
   }
 
-  @JavascriptEnabled
   @Test
   public void testShouldBeAbleToExecuteSimpleJavascriptAndReturnAString() {
     driver.get(pages.xhtmlTestPage);
@@ -89,7 +87,6 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
     assertEquals("XHTML Test Page", result);
   }
 
-  @JavascriptEnabled
   @Test
   public void testShouldBeAbleToExecuteSimpleJavascriptAndReturnALong() {
     driver.get(pages.nestedPage);
@@ -100,7 +97,6 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
     assertTrue((Long) result > 1);
   }
 
-  @JavascriptEnabled
   @Test
   public void testShouldBeAbleToExecuteSimpleJavascriptAndReturnAWebElement() {
     driver.get(pages.xhtmlTestPage);
@@ -112,7 +108,6 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
     assertEquals("a", ((WebElement) result).getTagName().toLowerCase());
   }
 
-  @JavascriptEnabled
   @Test
   public void testShouldBeAbleToExecuteSimpleJavascriptAndReturnABoolean() {
     driver.get(pages.xhtmlTestPage);
@@ -125,7 +120,6 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   }
 
   @SuppressWarnings("unchecked")
-  @JavascriptEnabled
   @Test
   public void testShouldBeAbleToExecuteSimpleJavascriptAndReturnAStringsArray() {
     driver.get(pages.javascriptPage);
@@ -140,7 +134,6 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   }
 
   @SuppressWarnings("unchecked")
-  @JavascriptEnabled
   @Test
   public void testShouldBeAbleToExecuteSimpleJavascriptAndReturnAnArray() {
     driver.get(pages.javascriptPage);
@@ -159,7 +152,6 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
 
 
   @SuppressWarnings("unchecked")
-  @JavascriptEnabled
   @Test
   public void testShouldBeAbleToExecuteJavascriptAndReturnABasicObjectLiteral() {
     driver.get(pages.javascriptPage);
@@ -183,7 +175,6 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   }
 
   @SuppressWarnings("unchecked")
-  @JavascriptEnabled
   @Test
   public void testShouldBeAbleToExecuteSimpleJavascriptAndReturnAnObjectLiteral() {
     driver.get(pages.javascriptPage);
@@ -221,7 +212,6 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   }
 
   @SuppressWarnings("unchecked")
-  @JavascriptEnabled
   @Test
   @Ignore(IE)
   public void testShouldBeAbleToExecuteSimpleJavascriptAndReturnAComplexObject() {
@@ -253,7 +243,6 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
     return true;
   }
 
-  @JavascriptEnabled
   @Test
   public void testPassingAndReturningALongShouldReturnAWholeNumber() {
     driver.get(pages.javascriptPage);
@@ -264,7 +253,6 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
     assertEquals(expectedResult, result);
   }
 
-  @JavascriptEnabled
   @Test
   public void testPassingAndReturningADoubleShouldReturnADecimal() {
     driver.get(pages.javascriptPage);
@@ -275,7 +263,6 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
     assertEquals(expectedResult, result);
   }
 
-  @JavascriptEnabled
   @Test
   public void testShouldThrowAnExceptionWhenTheJavascriptIsBad() {
     driver.get(pages.xhtmlTestPage);
@@ -285,7 +272,6 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
     assertThat(t.getMessage(), not(startsWith("null ")));
   }
 
-  @JavascriptEnabled
   @Test
   @Ignore(CHROME)
   @Ignore(IE)
@@ -316,7 +302,6 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
     assertTrue("Stacktrace has not js method info", seen);
   }
 
-  @JavascriptEnabled
   @Test
   public void testShouldBeAbleToCallFunctionsDefinedOnThePage() {
     driver.get(pages.javascriptPage);
@@ -326,7 +311,6 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
     assertEquals("I like cheese", text.trim());
   }
 
-  @JavascriptEnabled
   @Test
   public void testShouldBeAbleToPassAStringAnAsArgument() {
     driver.get(pages.javascriptPage);
@@ -336,7 +320,6 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
     assertEquals("fish", value);
   }
 
-  @JavascriptEnabled
   @Test
   public void testShouldBeAbleToPassABooleanAsArgument() {
     driver.get(pages.javascriptPage);
@@ -345,7 +328,6 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
     assertTrue(value);
   }
 
-  @JavascriptEnabled
   @Test
   public void testShouldBeAbleToPassANumberAnAsArgument() {
     driver.get(pages.javascriptPage);
@@ -354,7 +336,6 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
     assertTrue(value);
   }
 
-  @JavascriptEnabled
   @Test
   public void testShouldBeAbleToPassAWebElementAsArgument() {
     driver.get(pages.javascriptPage);
@@ -367,7 +348,6 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
     assertEquals("plainButton", value);
   }
 
-  @JavascriptEnabled
   @Test
   public void testPassingArrayAsOnlyArgumentFlattensArray() {
     driver.get(pages.javascriptPage);
@@ -376,7 +356,6 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
     assertEquals(array[0], value);
   }
 
-  @JavascriptEnabled
   @Test
   public void testShouldBeAbleToPassAnArrayAsAdditionalArgument() {
     driver.get(pages.javascriptPage);
@@ -385,7 +364,6 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
     assertEquals(array.length, length);
   }
 
-  @JavascriptEnabled
   @Test
   public void testShouldBeAbleToPassACollectionAsArgument() {
     driver.get(pages.javascriptPage);
@@ -405,7 +383,6 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
     assertEquals(collection.size(), length);
   }
 
-  @JavascriptEnabled
   @Test
   public void testShouldThrowAnExceptionIfAnArgumentIsNotValid() {
     driver.get(pages.javascriptPage);
@@ -413,7 +390,6 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
     assertThat(t, instanceOf(IllegalArgumentException.class));
   }
 
-  @JavascriptEnabled
   @Test
   public void testShouldBeAbleToPassInMoreThanOneArgument() {
     driver.get(pages.javascriptPage);
@@ -422,7 +398,6 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
     assertEquals("onetwo", result);
   }
 
-  @JavascriptEnabled
   @Test
   public void testShouldBeAbleToGrabTheBodyOfFrameOnceSwitchedTo() {
     driver.get(pages.richTextPage);
@@ -436,7 +411,6 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   }
 
   @SuppressWarnings("unchecked")
-  @JavascriptEnabled
   @Test
   public void testShouldBeAbleToReturnAnArrayOfWebElements() {
     driver.get(pages.formPage);
@@ -447,7 +421,6 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
     assertFalse(items.isEmpty());
   }
 
-  @JavascriptEnabled
   @Test
   public void testJavascriptStringHandlingShouldWorkAsExpected() {
     driver.get(pages.javascriptPage);
@@ -462,7 +435,6 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
     assertEquals(" ", value);
   }
 
-  @JavascriptEnabled
   @Test
   public void testShouldBeAbleToExecuteABigChunkOfJavascriptCode() throws IOException {
     driver.get(pages.javascriptPage);
@@ -475,7 +447,6 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   }
 
   @SuppressWarnings("unchecked")
-  @JavascriptEnabled
   @Test
   public void testShouldBeAbleToExecuteScriptAndReturnElementsList() {
     driver.get(pages.formPage);
@@ -486,7 +457,6 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
     assertFalse(resultsList.isEmpty());
   }
 
-  @JavascriptEnabled
   @NeedsFreshDriver
   @NoDriverAfterTest
   @Test
@@ -497,7 +467,6 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
     assertThat(t, instanceOf(WebDriverException.class));
   }
 
-  @JavascriptEnabled
   @Test
   public void testShouldBeAbleToCreateAPersistentValue() {
     driver.get(pages.formPage);
@@ -509,7 +478,6 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
     assertEquals("hello world", text);
   }
 
-  @JavascriptEnabled
   @Test
   public void testCanHandleAnArrayOfElementsAsAnObjectArray() {
     driver.get(pages.formPage);
@@ -523,7 +491,6 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
     assertEquals("form", name.toLowerCase());
   }
 
-  @JavascriptEnabled
   @Test
   public void testCanPassAMapAsAParameter() {
     driver.get(pages.simpleTestPage);
@@ -536,7 +503,6 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
     assertEquals(2, ((Number) res).intValue());
   }
 
-  @JavascriptEnabled
   @Test
   public void testShouldThrowAnExceptionWhenArgumentsWithStaleElementPassed() {
     driver.get(pages.simpleTestPage);
@@ -555,7 +521,6 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
     assertThat(t, instanceOf(StaleElementReferenceException.class));
   }
 
-  @JavascriptEnabled
   @Test
   @Ignore(CHROME)
   @Ignore(IE)
@@ -574,7 +539,6 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
     }
   }
 
-  @JavascriptEnabled
   @Test(timeout = 10000)
   @Ignore(CHROME)
   @Ignore(IE)

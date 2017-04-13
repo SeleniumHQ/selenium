@@ -39,7 +39,6 @@ import org.junit.Test;
 import org.openqa.selenium.environment.webserver.Page;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.JavascriptEnabled;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.TestUtilities;
 
@@ -269,7 +268,6 @@ public class FormHandlingTest extends JUnit4TestBase {
     assertEquals(emptyTextBox.getAttribute("value"), "");
   }
 
-  @JavascriptEnabled
   @Test
   @Ignore(PHANTOMJS)
   @Ignore(SAFARI)

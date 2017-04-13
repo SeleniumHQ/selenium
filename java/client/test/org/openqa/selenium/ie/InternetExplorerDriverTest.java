@@ -30,7 +30,6 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.JavascriptEnabled;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
 import org.openqa.selenium.testing.NoDriverAfterTest;
 import org.openqa.selenium.testing.TestUtilities;
@@ -64,7 +63,6 @@ public class InternetExplorerDriverTest extends JUnit4TestBase {
     }
   }
 
-  @JavascriptEnabled
   @NoDriverAfterTest
   @NeedsLocalEnvironment
   @Test

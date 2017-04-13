@@ -38,7 +38,6 @@ import org.junit.Test;
 import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.JavascriptEnabled;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
 import org.openqa.selenium.testing.TestUtilities;
@@ -158,7 +157,6 @@ public class PositionAndSizeTest extends JUnit4TestBase {
     assertThat(getLocationOnPage(By.id("fixed")).getY(), greaterThan(0));
   }
 
-  @JavascriptEnabled
   @Test
   public void testShouldCorrectlyIdentifyThatAnElementHasWidthAndHeight() {
     driver.get(pages.xhtmlTestPage);
@@ -172,7 +170,6 @@ public class PositionAndSizeTest extends JUnit4TestBase {
   // TODO: This test's value seems dubious at best. The CSS spec does not define how browsers
   // should handle sub-pixel rendering, and every browser seems to be different anyhow:
   // http://ejohn.org/blog/sub-pixel-problems-in-css/
-  @JavascriptEnabled
   @Test
   @Ignore(IE)
   @Ignore(value = CHROME, reason = "WebKit bug 28804")
