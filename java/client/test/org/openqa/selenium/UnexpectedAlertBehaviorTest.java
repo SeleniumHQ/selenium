@@ -57,8 +57,8 @@ public class UnexpectedAlertBehaviorTest extends JUnit4TestBase {
     }
   }
 
+  @JavascriptEnabled
   @Test
-  @Ignore(value = HTMLUNIT, reason="test should enable JavaScript")
   public void canAcceptUnhandledAlert() {
     runScenarioWithUnhandledAlert(UnexpectedAlertBehaviour.ACCEPT, "This is a default value");
   }
@@ -77,9 +77,9 @@ public class UnexpectedAlertBehaviorTest extends JUnit4TestBase {
     runScenarioWithUnhandledAlert(null, "null");
   }
 
+  @JavascriptEnabled
   @Test
   @Ignore(value = CHROME, reason = "Unstable Chrome behavior")
-  @Ignore(value = HTMLUNIT, reason = "test should enable JavaScript")
   public void canIgnoreUnhandledAlert() {
     Throwable t = catchThrowable(
         () -> runScenarioWithUnhandledAlert(UnexpectedAlertBehaviour.IGNORE, "Text ignored"));
@@ -87,8 +87,8 @@ public class UnexpectedAlertBehaviorTest extends JUnit4TestBase {
     driver2.switchTo().alert().dismiss();
   }
 
+  @JavascriptEnabled
   @Test
-  @Ignore(value = HTMLUNIT, reason="test should enable JavaScript")
   public void canSpecifyUnhandledAlertBehaviourUsingCapabilities() {
     desiredCaps.setCapability(UNEXPECTED_ALERT_BEHAVIOUR, UnexpectedAlertBehaviour.ACCEPT);
     driver2 = new WebDriverBuilder().setDesiredCapabilities(desiredCaps).get();
@@ -96,10 +96,10 @@ public class UnexpectedAlertBehaviorTest extends JUnit4TestBase {
     runScenarioWithUnhandledAlert("This is a default value");
   }
 
+  @JavascriptEnabled
   @Test
   @Ignore(value = IE, reason = "required capabilities not implemented")
   @Ignore(value = CHROME, reason = "required capabilities not implemented")
-  @Ignore(value = HTMLUNIT, reason = "test should enable JavaScript")
   public void requiredUnhandledAlertCapabilityHasPriorityOverDesired() {
     // TODO: Resolve why this test doesn't work on the remote server
     assumeTrue(TestUtilities.isLocal());
