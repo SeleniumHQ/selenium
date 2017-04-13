@@ -71,7 +71,7 @@ def testShouldNotBeAbleToClickOnAnElementThatIsNotDisplayed(driver, pages):
     try:
         element.click()
         assert 1 == 0, "should have thrown an exception"
-    except (ElementNotVisibleException, ElementNotInteractableException) as e:
+    except (ElementNotVisibleException, ElementNotInteractableException):
         pass
 
 
@@ -81,7 +81,7 @@ def testShouldNotBeAbleToToggleAnElementThatIsNotDisplayed(driver, pages):
     try:
         element.click()
         assert 1 == 0, "should have thrown an exception"
-    except (ElementNotVisibleException, ElementNotInteractableException) as e:
+    except (ElementNotVisibleException, ElementNotInteractableException):
         pass
 
 
@@ -91,7 +91,7 @@ def testShouldNotBeAbleToSelectAnElementThatIsNotDisplayed(driver, pages):
     try:
         element.click()
         assert 1 == 0, "should have thrown an exception"
-    except (ElementNotVisibleException, ElementNotInteractableException) as e:
+    except (ElementNotVisibleException, ElementNotInteractableException):
         pass
 
 
@@ -102,7 +102,7 @@ def testShouldNotBeAbleToTypeAnElementThatIsNotDisplayed(driver, pages):
     try:
         element.send_keys("You don't see me")
         assert 1 == 0, "should have thrown an exception"
-    except (ElementNotVisibleException, ElementNotInteractableException) as e:
+    except (ElementNotVisibleException, ElementNotInteractableException):
         pass
     assert element.get_attribute("value") != "You don't see me"
 
