@@ -25,7 +25,6 @@ import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 
 import org.junit.Test;
 import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.JavascriptEnabled;
 
 public class StaleElementReferenceTest extends JUnit4TestBase {
 
@@ -38,7 +37,6 @@ public class StaleElementReferenceTest extends JUnit4TestBase {
     assertThat(t, instanceOf(StaleElementReferenceException.class));
   }
 
-  @JavascriptEnabled
   @Test
   public void testShouldNotCrashWhenCallingGetSizeOnAnObsoleteElement() {
     driver.get(pages.simpleTestPage);
@@ -48,7 +46,6 @@ public class StaleElementReferenceTest extends JUnit4TestBase {
     assertThat(t, instanceOf(StaleElementReferenceException.class));
   }
 
-  @JavascriptEnabled
   @Test
   public void testShouldNotCrashWhenQueryingTheAttributeOfAStaleElement() {
     driver.get(pages.xhtmlTestPage);
@@ -58,7 +55,6 @@ public class StaleElementReferenceTest extends JUnit4TestBase {
     assertThat(t, instanceOf(StaleElementReferenceException.class));
   }
 
-  @JavascriptEnabled
   @Test
   public void testRemovingAnElementDynamicallyFromTheDomShouldCauseAStaleRefException() {
     driver.get(pages.javascriptPage);

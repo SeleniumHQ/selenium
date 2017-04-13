@@ -46,7 +46,6 @@ import org.openqa.selenium.support.Colors;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.JavascriptEnabled;
 import org.openqa.selenium.testing.NeedsFreshDriver;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
@@ -93,7 +92,6 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
     }
   }
 
-  @JavascriptEnabled
   @Test
   public void testDraggingElementWithMouseMovesItToAnotherList() {
     performDragAndDropWithMouse();
@@ -101,7 +99,6 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
     assertEquals(6, dragInto.findElements(By.tagName("li")).size());
   }
 
-  @JavascriptEnabled
   // This test is very similar to testDraggingElementWithMouse. The only
   // difference is that this test also verifies the correct events were fired.
   @Test
@@ -123,7 +120,6 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
     }
   }
 
-  @JavascriptEnabled
   @Test
   public void testDoubleClickThenGet() {
     // Fails in ff3 if WebLoadingListener removes browser listener
@@ -137,7 +133,6 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
     driver.get(pages.droppableItems);
   }
 
-  @JavascriptEnabled
   @Test
   public void testDragAndDrop() throws InterruptedException {
     driver.get(pages.droppableItems);
@@ -173,7 +168,6 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
     assertEquals("Dropped!", text);
   }
 
-  @JavascriptEnabled
   @Test
   @Ignore(MARIONETTE)
   public void testDoubleClick() {
@@ -189,7 +183,6 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
                  testFieldContent);
   }
 
-  @JavascriptEnabled
   @Test
   @Ignore(MARIONETTE)
   public void testContextClick() {
@@ -204,7 +197,6 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
                  toContextClick.getAttribute("value"));
   }
 
-  @JavascriptEnabled
   @Test
   public void testMoveAndClick() {
     driver.get(pages.javascriptPage);
@@ -221,7 +213,6 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
                  toClick.getAttribute("value"));
   }
 
-  @JavascriptEnabled
   @Test
   @Ignore(CHROME)
   @Ignore(IE)
@@ -238,7 +229,6 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
     }
   }
 
-  @JavascriptEnabled
   @Test
   @Ignore(CHROME)
   @Ignore(IE)
@@ -325,7 +315,6 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
     wait.until(elementTextToEqual(By.id("span"), "An inline element"));
   }
 
-  @JavascriptEnabled
   @Test
   public void testShouldAllowUsersToHoverOverElements() {
     driver.get(pages.javascriptPage);
@@ -342,7 +331,6 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
     assertEquals("Item 1", item.getText());
   }
 
-  @JavascriptEnabled
   @Test
   public void testHoverPersists() throws Exception {
     driver.get(pages.javascriptPage);
@@ -366,7 +354,6 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
     assertEquals("Item 1", item.getText());
   }
 
-  @JavascriptEnabled
   @Test
   @NotYetImplemented(HTMLUNIT)
   public void testMovingMouseByRelativeOffset() {
@@ -384,7 +371,6 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
     wait.until(fuzzyMatchingOfCoordinates(reporter, 60, 220));
   }
 
-  @JavascriptEnabled
   @Test
   @Ignore(MARIONETTE)
   @NotYetImplemented(HTMLUNIT)
@@ -399,7 +385,6 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
     wait.until(fuzzyMatchingOfCoordinates(reporter, 95, 195));
   }
 
-  @JavascriptEnabled
   @Test
   @Ignore(MARIONETTE)
   @NotYetImplemented(HTMLUNIT)
@@ -414,7 +399,6 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
     wait.until(fuzzyMatchingOfCoordinates(reporter, 0, 0));
   }
 
-  @JavascriptEnabled
   @NeedsFreshDriver({IE, CHROME})
   @Test
   @Ignore(MARIONETTE)
@@ -433,7 +417,6 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
     }
   }
 
-  @JavascriptEnabled
   @Test
   @Ignore(MARIONETTE)
   @NotYetImplemented(HTMLUNIT)
@@ -462,7 +445,6 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
     shortWait.until(attributeToBe(redbox, "background-color", Colors.GREEN.getColorValue().asRgba()));
   }
 
-  @JavascriptEnabled
   @Test
   @Ignore(MARIONETTE)
   @NotYetImplemented(HTMLUNIT)

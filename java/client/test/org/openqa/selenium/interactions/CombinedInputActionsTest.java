@@ -47,7 +47,6 @@ import org.openqa.selenium.WaitingConditions;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.JavascriptEnabled;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
 
@@ -59,7 +58,6 @@ import java.util.List;
 @Ignore(value = SAFARI, reason = "Safari: not implemented (issue 4136)")
 public class CombinedInputActionsTest extends JUnit4TestBase {
 
-  @JavascriptEnabled
   @Test
   @Ignore(CHROME)
   @Ignore(IE)
@@ -86,7 +84,6 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
                  resultElement.getText());
   }
 
-  @JavascriptEnabled
   @Test
   @Ignore(CHROME)
   @Ignore(IE)
@@ -114,7 +111,6 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
         resultElement.getText());
   }
 
-  @JavascriptEnabled
   @Test
   @Ignore(CHROME)
   @Ignore(IE)
@@ -143,7 +139,6 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
                  resultElement.getText());
   }
 
-  @JavascriptEnabled
   @Test
   @Ignore(IE)
   @Ignore(PHANTOMJS)
@@ -348,7 +343,6 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
     assertEquals("Should not have navigated away.", originalTitle, driver.getTitle());
   }
 
-  @JavascriptEnabled
   @Test
   @Ignore(MARIONETTE)
   @Ignore(IE)
@@ -364,7 +358,6 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
     assertThat(shiftInfo.getText(), equalTo("true"));
   }
 
-  @JavascriptEnabled
   @Test
   @Ignore(MARIONETTE)
   public void canClickOnASuckerFishStyleMenu() throws InterruptedException {
@@ -391,7 +384,6 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
     wait.until(WaitingConditions.elementTextToContain(result, "item 1"));
   }
 
-  @JavascriptEnabled
   @Test
   @Ignore(MARIONETTE)
   public void testCanClickOnSuckerFishMenuItem() throws Exception {

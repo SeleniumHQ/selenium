@@ -37,13 +37,11 @@ import org.junit.Test;
 import org.openqa.selenium.interactions.MoveTargetOutOfBoundsException;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.JavascriptEnabled;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
 
 @Ignore(value = HTMLUNIT, reason = "Scrolling requires rendering")
 public class ClickScrollingTest extends JUnit4TestBase {
 
-  @JavascriptEnabled
   @Test
   public void testClickingOnAnchorScrollsPage() {
     String scrollScript = "";
@@ -86,7 +84,6 @@ public class ClickScrollingTest extends JUnit4TestBase {
     assertEquals("line8", driver.findElement(By.id("clicked")).getText());
   }
 
-  @JavascriptEnabled
   @Test
   @Ignore(value = CHROME, reason = "failed")
   public void testShouldBeAbleToClickOnAnElementHiddenByDoubleOverflow() {
@@ -96,7 +93,6 @@ public class ClickScrollingTest extends JUnit4TestBase {
     wait.until(titleIs("Clicked Successfully!"));
   }
 
-  @JavascriptEnabled
   @Test
   @Ignore(value = SAFARI, reason = "failed")
   public void testShouldBeAbleToClickOnAnElementHiddenByYOverflow() {
@@ -106,7 +102,6 @@ public class ClickScrollingTest extends JUnit4TestBase {
     wait.until(titleIs("Clicked Successfully!"));
   }
 
-  @JavascriptEnabled
   @Test
   public void testShouldNotScrollOverflowElementsWhichAreVisible() {
     driver.get(appServer.whereIs("scroll2.html"));
@@ -118,7 +113,6 @@ public class ClickScrollingTest extends JUnit4TestBase {
     assertEquals("Should not have scrolled", 0, yOffset);
   }
 
-  @JavascriptEnabled
   @Test
   @Ignore(CHROME)
   @Ignore(PHANTOMJS)
@@ -219,7 +213,6 @@ public class ClickScrollingTest extends JUnit4TestBase {
     assertTrue(element.isSelected());
   }
 
-  @JavascriptEnabled
   @Test
   public void testShouldNotScrollWhenGettingElementSize() {
     driver.get(appServer.whereIs("scroll3.html"));

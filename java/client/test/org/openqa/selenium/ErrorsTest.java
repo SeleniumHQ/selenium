@@ -23,7 +23,6 @@ import static org.openqa.selenium.testing.Driver.IE;
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.JavascriptEnabled;
 
 public class ErrorsTest extends JUnit4TestBase {
 
@@ -34,7 +33,6 @@ public class ErrorsTest extends JUnit4TestBase {
    * This will trivially pass on browsers that do not support the onerror handler (e.g. Internet
    * Explorer).
    */
-  @JavascriptEnabled
   @Test
   @Ignore(value = IE, reason = "IE does not support onerror")
   public void testShouldNotGenerateErrorsWhenOpeningANewPage() {

@@ -42,7 +42,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.JavascriptEnabled;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
 import org.openqa.selenium.testing.NotYetImplemented;
 
@@ -62,7 +61,6 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
     driver.manage().timeouts().setScriptTimeout(0, TimeUnit.MILLISECONDS);
   }
 
-  @JavascriptEnabled
   @Test
   public void shouldNotTimeoutIfCallbackInvokedImmediately() {
     driver.get(pages.ajaxyPage);
@@ -71,7 +69,6 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
     assertEquals(123, ((Number) result).intValue());
   }
 
-  @JavascriptEnabled
   @Test
   public void shouldBeAbleToReturnJavascriptPrimitivesFromAsyncScripts_NeitherNullNorUndefined() {
     driver.get(pages.ajaxyPage);
@@ -82,7 +79,6 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
     assertTrue((Boolean) executor.executeAsyncScript("arguments[arguments.length - 1](true);"));
   }
 
-  @JavascriptEnabled
   @Test
   public void shouldBeAbleToReturnJavascriptPrimitivesFromAsyncScripts_NullAndUndefined() {
     driver.get(pages.ajaxyPage);
@@ -90,7 +86,6 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
     assertNull(executor.executeAsyncScript("arguments[arguments.length - 1]()"));
   }
 
-  @JavascriptEnabled
   @Test
   public void shouldBeAbleToReturnAnArrayLiteralFromAnAsyncScript() {
     driver.get(pages.ajaxyPage);
@@ -101,7 +96,6 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
     assertTrue(((List<?>) result).isEmpty());
   }
 
-  @JavascriptEnabled
   @Test
   public void shouldBeAbleToReturnAnArrayObjectFromAnAsyncScript() {
     driver.get(pages.ajaxyPage);
@@ -112,7 +106,6 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
     assertTrue(((List<?>) result).isEmpty());
   }
 
-  @JavascriptEnabled
   @Test
   public void shouldBeAbleToReturnArraysOfPrimitivesFromAsyncScripts() {
     driver.get(pages.ajaxyPage);
@@ -132,7 +125,6 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
     assertFalse(results.hasNext());
   }
 
-  @JavascriptEnabled
   @Test
   public void shouldBeAbleToReturnWebElementsFromAsyncScripts() {
     driver.get(pages.ajaxyPage);
@@ -142,7 +134,6 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
     assertEquals("body", ((WebElement) result).getTagName().toLowerCase());
   }
 
-  @JavascriptEnabled
   @Test
   public void shouldBeAbleToReturnArraysOfWebElementsFromAsyncScripts() {
     driver.get(pages.ajaxyPage);
@@ -160,7 +151,6 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
     assertEquals(list.get(0), list.get(1));
   }
 
-  @JavascriptEnabled
   @Test
   public void shouldTimeoutIfScriptDoesNotInvokeCallback() {
     driver.get(pages.ajaxyPage);
@@ -169,7 +159,6 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
     assertThat(t, instanceOf(ScriptTimeoutException.class));
   }
 
-  @JavascriptEnabled
   @Test
   public void shouldTimeoutIfScriptDoesNotInvokeCallbackWithAZeroTimeout() {
     driver.get(pages.ajaxyPage);
@@ -178,7 +167,6 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
     assertThat(t, instanceOf(ScriptTimeoutException.class));
   }
 
-  @JavascriptEnabled
   @Test
   public void shouldNotTimeoutIfScriptCallsbackInsideAZeroTimeout() {
     driver.get(pages.ajaxyPage);
@@ -187,7 +175,6 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
         "window.setTimeout(function() { callback(123); }, 0)");
   }
 
-  @JavascriptEnabled
   @Test
   public void shouldTimeoutIfScriptDoesNotInvokeCallbackWithLongTimeout() {
     driver.manage().timeouts().setScriptTimeout(500, TimeUnit.MILLISECONDS);
@@ -198,7 +185,6 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
     assertThat(t, instanceOf(ScriptTimeoutException.class));
   }
 
-  @JavascriptEnabled
   @Test
   @Ignore(IE)
   public void shouldDetectPageLoadsWhileWaitingOnAnAsyncScriptAndReturnAnError() {
@@ -209,7 +195,6 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
     assertThat(t, instanceOf(WebDriverException.class));
   }
 
-  @JavascriptEnabled
   @Test
   public void shouldCatchErrorsWhenExecutingInitialScript() {
     driver.get(pages.ajaxyPage);
@@ -218,7 +203,6 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
     assertThat(t, instanceOf(WebDriverException.class));
   }
 
-  @JavascriptEnabled
   @Test
   public void shouldNotTimeoutWithMultipleCallsTheFirstOneBeingSynchronous() {
     driver.get(pages.ajaxyPage);
@@ -228,7 +212,6 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
         "var cb = arguments[arguments.length - 1]; window.setTimeout(function(){cb(true);}, 9);"));
   }
 
-  @JavascriptEnabled
   @Test
   @Ignore(CHROME)
   @Ignore(IE)
@@ -257,7 +240,6 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
     assertTrue("Stacktrace has not js method info", seen);
   }
 
-  @JavascriptEnabled
   @Test
   @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void shouldBeAbleToExecuteAsynchronousScripts() {
@@ -284,7 +266,6 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
                  2, getNumDivElements());
   }
 
-  @JavascriptEnabled
   @Test
   public void shouldBeAbleToPassMultipleArgumentsToAsyncScripts() {
     driver.get(pages.ajaxyPage);
@@ -293,7 +274,6 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
     assertEquals(3, result.intValue());
   }
 
-  @JavascriptEnabled
   @Test
   @NeedsLocalEnvironment(reason = "Relies on timing")
   public void shouldBeAbleToMakeXMLHttpRequestsAndWaitForTheResponse() {
@@ -327,7 +307,6 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
                equalTo("<html><head><title>Done</title></head><body>Slept for 2s</body></html>"));
   }
 
-  @JavascriptEnabled
   @Test
   @Ignore(CHROME)
   @Ignore(IE)
@@ -343,7 +322,6 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
     driver.getTitle();
   }
 
-  @JavascriptEnabled
   @Test
   @Ignore(CHROME)
   @Ignore(IE)
@@ -358,7 +336,6 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
     driver.getTitle();
   }
 
-  @JavascriptEnabled
   @Test
   @Ignore(CHROME)
   @Ignore(IE)
@@ -374,7 +351,6 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
     driver.getTitle();
   }
 
-  @JavascriptEnabled
   @Test
   @Ignore(CHROME)
   @Ignore(IE)
@@ -389,7 +365,6 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
     driver.getTitle();
   }
 
-  @JavascriptEnabled
   @Test
   @Ignore(CHROME)
   @Ignore(IE)

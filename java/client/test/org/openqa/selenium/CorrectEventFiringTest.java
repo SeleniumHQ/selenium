@@ -45,7 +45,6 @@ import static org.openqa.selenium.testing.TestUtilities.isOldIe;
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.JavascriptEnabled;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.TestUtilities;
 import org.openqa.selenium.testing.drivers.SauceDriver;
@@ -56,7 +55,6 @@ import java.util.List;
 
 public class CorrectEventFiringTest extends JUnit4TestBase {
 
-  @JavascriptEnabled
   @Test
   public void testShouldFireFocusEventWhenClicking() {
     driver.get(pages.javascriptPage);
@@ -66,7 +64,6 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     assertEventFired("focus");
   }
 
-  @JavascriptEnabled
   @Test
   public void testShouldFireClickEventWhenClicking() {
     driver.get(pages.javascriptPage);
@@ -76,7 +73,6 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     assertEventFired("click");
   }
 
-  @JavascriptEnabled
   @Test
   public void testShouldFireMouseDownEventWhenClicking() {
     driver.get(pages.javascriptPage);
@@ -86,7 +82,6 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     assertEventFired("mousedown");
   }
 
-  @JavascriptEnabled
   @Test
   public void testShouldFireMouseUpEventWhenClicking() {
     driver.get(pages.javascriptPage);
@@ -96,7 +91,6 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     assertEventFired("mouseup");
   }
 
-  @JavascriptEnabled
   @Test
   public void testShouldFireMouseOverEventWhenClicking() {
     driver.get(pages.javascriptPage);
@@ -106,7 +100,6 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     assertEventFired("mouseover");
   }
 
-  @JavascriptEnabled
   @Test
   public void testShouldNotThrowIfEventHandlerThrows() {
     driver.get(pages.javascriptPage);
@@ -118,7 +111,6 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     }
   }
 
-  @JavascriptEnabled
   @Test
   public void testShouldFireEventsInTheRightOrder() {
     driver.get(pages.javascriptPage);
@@ -137,7 +129,6 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     }
   }
 
-  @JavascriptEnabled
   @Test
   public void testsShouldIssueMouseDownEvents() {
     driver.get(pages.javascriptPage);
@@ -148,7 +139,6 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     assertThat(result, equalTo("mouse down"));
   }
 
-  @JavascriptEnabled
   @Test
   public void testShouldIssueClickEvents() {
     driver.get(pages.javascriptPage);
@@ -159,7 +149,6 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     assertThat(result.getText(), equalTo("mouse click"));
   }
 
-  @JavascriptEnabled
   @Test
   public void testShouldIssueMouseUpEvents() {
     driver.get(pages.javascriptPage);
@@ -170,7 +159,6 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     assertThat(result.getText(), equalTo("mouse up"));
   }
 
-  @JavascriptEnabled
   @Test
   public void testMouseEventsShouldBubbleUpToContainingElements() {
     driver.get(pages.javascriptPage);
@@ -181,7 +169,6 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     assertThat(result.getText(), equalTo("mouse down"));
   }
 
-  @JavascriptEnabled
   @Test
   @Ignore(MARIONETTE)
   public void testShouldEmitOnChangeEventsWhenSelectingElements() {
@@ -200,7 +187,6 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     assertThat(driver.findElement(By.id("result")).getText(), equalTo("bar"));
   }
 
-  @JavascriptEnabled
   @Test
   public void testShouldEmitOnClickEventsWhenSelectingElements() {
     driver.get(pages.javascriptPage);
@@ -216,7 +202,6 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     assertThat(driver.findElement(By.id("result")).getText(), equalTo("bar"));
   }
 
-  @JavascriptEnabled
   @Test
   @Ignore(value = IE, reason = "Only fires the onchange event when the checkbox loses the focus")
   public void testShouldEmitOnChangeEventsWhenChangingTheStateOfACheckbox() {
@@ -228,7 +213,6 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     wait.until(elementTextToEqual(result, "checkbox thing"));
   }
 
-  @JavascriptEnabled
   @Test
   public void testShouldEmitClickEventWhenClickingOnATextInputElement() {
     driver.get(pages.javascriptPage);
@@ -240,7 +224,6 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     assertThat(clicker.getAttribute("value"), equalTo("Clicked"));
   }
 
-  @JavascriptEnabled
   @Test
   public void testShouldFireTwoClickEventsWhenClickingOnALabel() {
     driver.get(pages.javascriptPage);
@@ -251,7 +234,6 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     assertNotNull(wait.until(elementTextToContain(result, "labelclick chboxclick")));
   }
 
-  @JavascriptEnabled
   @Test
   public void testClearingAnElementShouldCauseTheOnChangeHandlerToFire() {
     driver.get(pages.javascriptPage);
@@ -263,7 +245,6 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     assertThat(result.getText(), equalTo("Cleared"));
   }
 
-  @JavascriptEnabled
   @Test
   public void testSendingKeysToAnotherElementShouldCauseTheBlurEventToFire() {
     assumeFalse(browserNeedsFocusOnThisOs(driver));
@@ -276,7 +257,6 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     assertEventFired("blur");
   }
 
-  @JavascriptEnabled
   @Test
   public void testSendingKeysToAnElementShouldCauseTheFocusEventToFire() {
     assumeFalse(browserNeedsFocusOnThisOs(driver));
@@ -287,7 +267,6 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     assertEventFired("focus");
   }
 
-  @JavascriptEnabled
   @Test
   public void testSendingKeysToAFocusedElementShouldNotBlurThatElement() {
     assumeFalse(browserNeedsFocusOnThisOs(driver));
@@ -319,7 +298,6 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     assertEventNotFired("blur");
   }
 
-  @JavascriptEnabled
   @Test
   @Ignore(SAFARI)
   @NotYetImplemented(HTMLUNIT)
@@ -340,7 +318,6 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     assertEventFired("blur");
   }
 
-  @JavascriptEnabled
   @Test
   public void testSubmittingFormFromFormElementShouldFireOnSubmitForThatForm() {
     driver.get(pages.javascriptPage);
@@ -349,7 +326,6 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     assertEventFired("form-onsubmit");
   }
 
-  @JavascriptEnabled
   @Test
   public void testSubmittingFormFromFormInputSubmitElementShouldFireOnSubmitForThatForm() {
     driver.get(pages.javascriptPage);
@@ -358,7 +334,6 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     assertEventFired("form-onsubmit");
   }
 
-  @JavascriptEnabled
   @Test
   public void testSubmittingFormFromFormInputTextElementShouldFireOnSubmitForThatFormAndNotClickOnThatInput() {
     driver.get(pages.javascriptPage);
@@ -368,7 +343,6 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     assertEventNotFired("text-onclick");
   }
 
-  @JavascriptEnabled
   @Test
   @Ignore(value = SAFARI, reason = "Does not yet support file uploads, issue 4220")
   @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
@@ -392,7 +366,6 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     return wait.until(visibilityOfElementLocated(By.id(elementId))).getText();
   }
 
-  @JavascriptEnabled
   @Test
   public void testShouldReportTheXAndYCoordinatesWhenClicking() {
     assumeFalse("Skipping test which fails in IE on Sauce",
@@ -410,7 +383,6 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     assertThat(clientY, not(equalTo("0")));
   }
 
-  @JavascriptEnabled
   @Test
   public void testClickEventsShouldBubble() {
     driver.get(pages.clicksPage);
@@ -419,7 +391,6 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     assertTrue("Event didn't bubble up", eventBubbled);
   }
 
-  @JavascriptEnabled
   @Test
   @Ignore(IE)
   @Ignore(MARIONETTE)
@@ -434,7 +405,6 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     assertThat(t.getMessage(), containsString("Other element would receive the click"));
   }
 
-  @JavascriptEnabled
   @Test
   @Ignore(CHROME)
   @Ignore(IE)
@@ -459,7 +429,6 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     }
   }
 
-  @JavascriptEnabled
   @Test
   @Ignore(CHROME)
   @Ignore(FIREFOX)
@@ -479,7 +448,6 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
                  + "click in over (handled by body)");
   }
 
-  @JavascriptEnabled
   @Test
   @Ignore(SAFARI)
   @Ignore(HTMLUNIT)

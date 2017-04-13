@@ -26,11 +26,9 @@ import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.JavascriptEnabled;
 
 public class CssValueTest extends JUnit4TestBase {
 
-  @JavascriptEnabled
   @Test
   @Ignore(value = MARIONETTE, issue = "3795")
   public void testShouldPickUpStyleOfAnElement() {
@@ -47,7 +45,6 @@ public class CssValueTest extends JUnit4TestBase {
     assertEquals("rgba(255, 0, 0, 1)", backgroundColour);
   }
 
-  @JavascriptEnabled
   @Test
   @Ignore(value = MARIONETTE, issue = "3795")
   public void testGetCssValueShouldReturnStandardizedColour() {
@@ -63,7 +60,6 @@ public class CssValueTest extends JUnit4TestBase {
 
   }
 
-  @JavascriptEnabled
   @Test
   public void testShouldAllowInheritedStylesToBeUsed() {
     driver.get(pages.javascriptPage);

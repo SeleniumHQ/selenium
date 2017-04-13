@@ -38,7 +38,6 @@ import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.JavascriptEnabled;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.TestUtilities;
 
@@ -76,7 +75,6 @@ public class VisibilityTest extends JUnit4TestBase {
     assertTrue(shown.isDisplayed());
   }
 
-  @JavascriptEnabled
   @Test
   public void testShouldModifyTheVisibilityOfAnElementDynamically() {
     driver.get(pages.javascriptPage);
@@ -122,7 +120,6 @@ public class VisibilityTest extends JUnit4TestBase {
     assertThat(element.getAttribute("value"), is(not("You don't see me")));
   }
 
-  @JavascriptEnabled // element.getSize() requires Javascript in HtmlUnit
   @Test
   @Ignore(IE)
   public void testZeroSizedDivIsShownIfDescendantHasSize() {
@@ -282,7 +279,6 @@ public class VisibilityTest extends JUnit4TestBase {
    * @see <a href="http://code.google.com/p/selenium/issues/detail?id=1610">
    *      http://code.google.com/p/selenium/issues/detail?id=1610</a>
    */
-  @JavascriptEnabled // element.getCssValue() requires Javascript in HtmlUnit
   @Test
   @Ignore(IE)
   public void testShouldBeAbleToClickOnElementsWithOpacityZero() {

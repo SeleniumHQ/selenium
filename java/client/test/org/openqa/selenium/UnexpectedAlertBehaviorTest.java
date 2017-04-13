@@ -36,7 +36,6 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.JavascriptEnabled;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
 import org.openqa.selenium.testing.TestUtilities;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
@@ -57,27 +56,23 @@ public class UnexpectedAlertBehaviorTest extends JUnit4TestBase {
     }
   }
 
-  @JavascriptEnabled
   @Test
   public void canAcceptUnhandledAlert() {
     runScenarioWithUnhandledAlert(UnexpectedAlertBehaviour.ACCEPT, "This is a default value");
   }
 
-  @JavascriptEnabled
   @Test
   @Ignore(value = CHROME, reason = "Unstable Chrome behavior")
   public void canDismissUnhandledAlert() {
     runScenarioWithUnhandledAlert(UnexpectedAlertBehaviour.DISMISS, "null");
   }
 
-  @JavascriptEnabled
   @Test
   @Ignore(value = CHROME, reason = "Chrome uses IGNORE mode by default")
   public void dismissUnhandledAlertsByDefault() {
     runScenarioWithUnhandledAlert(null, "null");
   }
 
-  @JavascriptEnabled
   @Test
   @Ignore(value = CHROME, reason = "Unstable Chrome behavior")
   public void canIgnoreUnhandledAlert() {
@@ -87,7 +82,6 @@ public class UnexpectedAlertBehaviorTest extends JUnit4TestBase {
     driver2.switchTo().alert().dismiss();
   }
 
-  @JavascriptEnabled
   @Test
   public void canSpecifyUnhandledAlertBehaviourUsingCapabilities() {
     desiredCaps.setCapability(UNEXPECTED_ALERT_BEHAVIOUR, UnexpectedAlertBehaviour.ACCEPT);
@@ -96,7 +90,6 @@ public class UnexpectedAlertBehaviorTest extends JUnit4TestBase {
     runScenarioWithUnhandledAlert("This is a default value");
   }
 
-  @JavascriptEnabled
   @Test
   @Ignore(value = IE, reason = "required capabilities not implemented")
   @Ignore(value = CHROME, reason = "required capabilities not implemented")

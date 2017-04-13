@@ -35,7 +35,6 @@ import static org.openqa.selenium.testing.TestUtilities.isOldIe;
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.JavascriptEnabled;
 import org.openqa.selenium.testing.NeedsFreshDriver;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
 import org.openqa.selenium.testing.TestUtilities;
@@ -797,7 +796,6 @@ public class ElementFindingTest extends JUnit4TestBase {
     assertThat(t, instanceOf(StaleElementReferenceException.class));
   }
 
-  @JavascriptEnabled
   @SwitchToTopAfterTest
   @Test
   public void testAnElementFoundInADifferentFrameViaJsCanBeUsed() {

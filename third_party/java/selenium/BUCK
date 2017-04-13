@@ -10,7 +10,6 @@ prebuilt_jar(
   visibility = [
     '//java/client/src/org/openqa/selenium:client-combined',
     '//java/client/test/org/openqa/selenium/htmlunit:htmlunit',
-    '//java/client/test/org/openqa/selenium/htmlunit:htmlunit-no-js',
     '//java/client/test/org/openqa/selenium/testing:test-base',
     '//java/server/src/org/openqa/selenium/remote/server:standalone-server-lib',
     '//java/server/test/org/openqa/grid/e2e:tests',

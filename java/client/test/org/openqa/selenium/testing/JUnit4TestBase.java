@@ -293,7 +293,7 @@ public abstract class JUnit4TestBase implements WrapsDriver {
           break;
 
         case HTMLUNIT:
-          if (browser == Browser.htmlunit || browser == Browser.htmlunit_js) {
+          if (browser == Browser.htmlunit) {
             return true;
           }
           break;
