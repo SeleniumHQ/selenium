@@ -40,7 +40,6 @@ import org.junit.Test;
 import org.openqa.selenium.environment.DomainHelper;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.JavascriptEnabled;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
 
 import java.net.URI;
@@ -79,7 +78,6 @@ public class CookieImplementationTest extends JUnit4TestBase {
     assertNoCookiesArePresent();
   }
 
-  @JavascriptEnabled
   @Test
   public void testShouldGetCookieByName() {
     String key = generateUniqueKey();
@@ -92,7 +90,6 @@ public class CookieImplementationTest extends JUnit4TestBase {
     assertEquals(value, cookie.getValue());
   }
 
-  @JavascriptEnabled
   @Test
   public void testShouldBeAbleToAddCookie() {
     String key = generateUniqueKey();
@@ -133,7 +130,6 @@ public class CookieImplementationTest extends JUnit4TestBase {
     assertTrue(cookies.contains(two));
   }
 
-  @JavascriptEnabled
   @Test
   public void testDeleteAllCookies() {
     addCookieOnServerSide(new Cookie("foo", "set"));
@@ -147,7 +143,6 @@ public class CookieImplementationTest extends JUnit4TestBase {
     assertNoCookiesArePresent();
   }
 
-  @JavascriptEnabled
   @Test
   public void testDeleteCookieWithName() {
     String key1 = generateUniqueKey();

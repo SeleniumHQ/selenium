@@ -136,7 +136,6 @@ task :all => [
 task :all_zip => [:'selenium-java_zip']
 task :tests => [
   "//java/client/test/org/openqa/selenium/htmlunit:htmlunit",
-  "//java/client/test/org/openqa/selenium/htmlunit:htmlunit-no-js",
   "//java/client/test/org/openqa/selenium/firefox:test-synthesized",
   "//java/client/test/org/openqa/selenium/ie:ie",
   "//java/client/test/org/openqa/selenium/chrome:chrome",
@@ -188,7 +187,6 @@ task :test_chrome_atoms => [
   '//javascript/chrome-driver:test:run',
   '//javascript/webdriver:test_chrome:run']
 task :test_htmlunit => [
-  "//java/client/test/org/openqa/selenium/htmlunit:htmlunit-no-js:run",
   "//java/client/test/org/openqa/selenium/htmlunit:htmlunit:run"
 ]
 task :test_grid => [

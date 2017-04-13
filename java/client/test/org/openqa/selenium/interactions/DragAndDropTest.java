@@ -40,7 +40,6 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.JavascriptEnabled;
 import org.openqa.selenium.testing.NeedsFreshDriver;
 import org.openqa.selenium.testing.NoDriverAfterTest;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
@@ -53,7 +52,6 @@ import java.util.regex.Pattern;
 @Ignore(value = HTMLUNIT, reason = "Advanced mouse actions only implemented in rendered browsers")
 public class DragAndDropTest extends JUnit4TestBase {
 
-  @JavascriptEnabled
   @Test
   @Ignore(MARIONETTE)
   public void testDragAndDropRelative() {
@@ -74,7 +72,6 @@ public class DragAndDropTest extends JUnit4TestBase {
     wait.until(elementLocationToBe(img, expectedLocation));
   }
 
-  @JavascriptEnabled
   @Test
   @Ignore(MARIONETTE)
   public void testDragAndDropToElement() {
@@ -85,7 +82,6 @@ public class DragAndDropTest extends JUnit4TestBase {
     assertEquals(img1.getLocation(), img2.getLocation());
   }
 
-  @JavascriptEnabled
   @SwitchToTopAfterTest
   @Test
   public void testDragAndDropToElementInIframe() {
@@ -100,7 +96,6 @@ public class DragAndDropTest extends JUnit4TestBase {
     assertEquals(img1.getLocation(), img2.getLocation());
   }
 
-  @JavascriptEnabled
   @SwitchToTopAfterTest
   @Test
   public void testDragAndDropElementWithOffsetInIframeAtBottom() {
@@ -117,7 +112,6 @@ public class DragAndDropTest extends JUnit4TestBase {
     assertEquals(initial.moveBy(20, 20), img1.getLocation());
   }
 
-  @JavascriptEnabled
   @NeedsFreshDriver // fails in Sauce if run in a dirty state; to be investigated
   @Test
   @Ignore(value = IE, reason = "IE fails this test if requireWindowFocus=true")
@@ -133,7 +127,6 @@ public class DragAndDropTest extends JUnit4TestBase {
     assertEquals(initial.moveBy(3700, 3700), el.getLocation());
   }
 
-  @JavascriptEnabled
   @Test
   public void testElementInDiv() {
     assumeFalse("See issue 2281", TestUtilities.getEffectivePlatform().is(Platform.MAC));
@@ -145,7 +138,6 @@ public class DragAndDropTest extends JUnit4TestBase {
     assertEquals(expectedLocation, img.getLocation());
   }
 
-  @JavascriptEnabled
   @Test
   @Ignore(CHROME)
   @Ignore(IE)
@@ -168,7 +160,6 @@ public class DragAndDropTest extends JUnit4TestBase {
     }
   }
 
-  @JavascriptEnabled
   @NoDriverAfterTest
   // We can't reliably resize the window back afterwards, cross-browser, so have to kill the
   // window, otherwise we are stuck with a small window for the rest of the tests.
@@ -195,7 +186,6 @@ public class DragAndDropTest extends JUnit4TestBase {
     expectedLocation.move(expectedLocation.x + moveRightBy, expectedLocation.y + moveDownBy);
   }
 
-  @JavascriptEnabled
   @Test
   public void testDragAndDropOnJQueryItems() {
     driver.get(pages.droppableItems);
@@ -230,7 +220,6 @@ public class DragAndDropTest extends JUnit4TestBase {
     assertTrue("Reporter text:" + reporterText, matcher.matches());
   }
 
-  @JavascriptEnabled
   @Test
   @Ignore(value = IE, reason = "IE fails this test if requireWindowFocus=true")
   @Ignore(PHANTOMJS)

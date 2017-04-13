@@ -57,7 +57,6 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.JavascriptEnabled;
 import org.openqa.selenium.testing.NeedsFreshDriver;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
 import org.openqa.selenium.testing.NoDriverAfterTest;
@@ -286,7 +285,6 @@ public class PageLoadingTest extends JUnit4TestBase {
     assertThat(pageNumber.getText().trim(), equalTo("2"));
   }
 
-  @JavascriptEnabled
   @NeedsFreshDriver
   @NoDriverAfterTest
   @Test
@@ -404,7 +402,6 @@ public class PageLoadingTest extends JUnit4TestBase {
    * @see <a href="http://code.google.com/p/selenium/issues/detail?id=2282">Issue 2282</a>
    */
   @NoDriverAfterTest
-  @JavascriptEnabled
   @Test
   @Ignore(IE)
   @Ignore(MARIONETTE)

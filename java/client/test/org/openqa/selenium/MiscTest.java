@@ -30,7 +30,6 @@ import static org.openqa.selenium.testing.Driver.SAFARI;
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.JavascriptEnabled;
 
 public class MiscTest extends JUnit4TestBase {
 
@@ -59,7 +58,6 @@ public class MiscTest extends JUnit4TestBase {
     assertThat(selectBox.getTagName().toLowerCase(), is("input"));
   }
 
-  @JavascriptEnabled
   @Test
   public void testShouldReturnTheSourceOfAPage() {
     driver.get(pages.simpleTestPage);
@@ -74,7 +72,6 @@ public class MiscTest extends JUnit4TestBase {
     assertThat(source.contains("with document.write and with document.write again"), is(true));
   }
 
-  @JavascriptEnabled
   @Test
   @Ignore(value = CHROME, reason = "returns XML content formatted for display as HTML document")
   @Ignore(value = SAFARI, reason = "returns XML content formatted for display as HTML document")
@@ -99,7 +96,6 @@ public class MiscTest extends JUnit4TestBase {
     driver.findElement(By.id("links"));
   }
 
-  @JavascriptEnabled
   @Test
   public void testClickingShouldNotTrampleWOrHInGlobalScope() throws Throwable {
     driver.get(appServer.whereIs("globalscope.html"));

@@ -41,7 +41,6 @@ import org.junit.After;
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.JavascriptEnabled;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
 import org.openqa.selenium.testing.NoDriverAfterTest;
 import org.openqa.selenium.testing.NotYetImplemented;
@@ -354,7 +353,6 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     assertThat(getTextOfGreetingElement(), equalTo("Success!"));
   }
 
-  @JavascriptEnabled
   @Test
   public void testShouldBeAbleToClickInAFrameThatRewritesTopWindowLocation() {
     driver.get(appServer.whereIs("click_tests/issue5237.html"));
@@ -416,7 +414,6 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     assertThat(driver.getCurrentUrl(), equalTo(pages.iframePage));
   }
 
-  @JavascriptEnabled
   @Test
   @Ignore(PHANTOMJS)
   public void testShouldBeAbleToSwitchToTheTopIfTheFrameIsDeletedFromUnderUs() {
@@ -439,7 +436,6 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     wait.until(presenceOfElementLocated(By.id("success")));
   }
 
-  @JavascriptEnabled
   @Test
   @Ignore(PHANTOMJS)
   public void testShouldBeAbleToSwitchToTheTopIfTheFrameIsDeletedFromUnderUsWithFrameIndex() {
@@ -459,7 +455,6 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     wait.until(presenceOfElementLocated(By.id("success")));
   }
 
-  @JavascriptEnabled
   @Test
   @Ignore(PHANTOMJS)
   public void testShouldBeAbleToSwitchToTheTopIfTheFrameIsDeletedFromUnderUsWithWebelement() {
@@ -480,7 +475,6 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     wait.until(presenceOfElementLocated(By.id("success")));
   }
 
-  @JavascriptEnabled
   @Test
   @Ignore(CHROME)
   @Ignore(IE)
@@ -505,7 +499,6 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     assertEquals("Unique title", driver.getTitle());
   }
 
-  @JavascriptEnabled
   @Test
   public void testJavaScriptShouldExecuteInTheContextOfTheCurrentFrame() {
     JavascriptExecutor executor = (JavascriptExecutor) driver;
@@ -516,7 +509,6 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     assertTrue((Boolean) executor.executeScript("return window != window.top"));
   }
 
-  @JavascriptEnabled
   @Test
   @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testShouldNotSwitchMagicallyToTheTopWindow() {

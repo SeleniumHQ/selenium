@@ -33,7 +33,6 @@ import org.junit.After;
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.JavascriptEnabled;
 import org.openqa.selenium.testing.NotYetImplemented;
 
 public class ContentEditableTest extends JUnit4TestBase {
@@ -43,7 +42,6 @@ public class ContentEditableTest extends JUnit4TestBase {
     driver.switchTo().defaultContent();
   }
 
-  @JavascriptEnabled
   @Test
   @Ignore(value = SAFARI, reason = "cannot type on contentEditable with synthetic events")
   @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
@@ -66,7 +64,6 @@ public class ContentEditableTest extends JUnit4TestBase {
     assertThat(id.getText(), anyOf(equalTo("[frameHtml]"), equalTo("[theBody]")));
   }
 
-  @JavascriptEnabled
   @Test
   @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testNonPrintableCharactersShouldWorkWithContentEditableOrDesignModeSet() {
@@ -111,7 +108,6 @@ public class ContentEditableTest extends JUnit4TestBase {
     assertThat(editable.getText(), equalTo(initialText + ", edited"));
   }
 
-  @JavascriptEnabled
   @Test
   @Ignore(IE)
   @Ignore(value = SAFARI, reason = "cannot type on contentEditable with synthetic events, issue 3127")
@@ -128,7 +124,6 @@ public class ContentEditableTest extends JUnit4TestBase {
     assertThat(editable.getText(), equalTo("cheese"));
   }
 
-  @JavascriptEnabled
   @Test
   @Ignore(CHROME)
   @Ignore(IE)

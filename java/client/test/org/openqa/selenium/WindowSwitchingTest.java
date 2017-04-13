@@ -40,7 +40,6 @@ import org.junit.runner.Description;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.JavascriptEnabled;
 import org.openqa.selenium.testing.NoDriverAfterTest;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
 import org.openqa.selenium.testing.TestUtilities;
@@ -188,7 +187,6 @@ public class WindowSwitchingTest extends JUnit4TestBase {
     assertEquals(3, allWindowTitles.size());
   }
 
-  @JavascriptEnabled
   @Test
   @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/611")
   public void testClickingOnAButtonThatClosesAnOpenWindowDoesNotCauseTheBrowserToHang()
@@ -222,7 +220,6 @@ public class WindowSwitchingTest extends JUnit4TestBase {
     // If we make it this far, we're all good.
   }
 
-  @JavascriptEnabled
   @Test
   @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/611")
   public void testCanCallGetWindowHandlesAfterClosingAWindow() throws Exception {

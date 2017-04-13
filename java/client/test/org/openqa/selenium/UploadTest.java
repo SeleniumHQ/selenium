@@ -35,7 +35,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.JavascriptEnabled;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
 import org.openqa.selenium.testing.TestUtilities;
@@ -59,7 +58,6 @@ public class UploadTest extends JUnit4TestBase {
     testFile = createTmpFile(FILE_HTML);
   }
 
-  @JavascriptEnabled
   @SwitchToTopAfterTest
   @Test
   @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")

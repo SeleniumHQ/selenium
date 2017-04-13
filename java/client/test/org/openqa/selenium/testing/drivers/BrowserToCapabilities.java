@@ -45,12 +45,6 @@ public class BrowserToCapabilities {
 
       case htmlunit:
         caps = DesiredCapabilities.htmlUnit();
-        caps.setJavascriptEnabled(false);
-        break;
-
-      case htmlunit_js:
-        caps = DesiredCapabilities.htmlUnit();
-        caps.setJavascriptEnabled(true);
         break;
 
       case ie:
