@@ -178,6 +178,19 @@ module Selenium
 
       class UnsupportedOperationError < WebDriverError; end
 
+      #
+      # Indicates that the Element Click command could not be completed because the element receiving the events
+      # is obscuring the element that was requested clicked.
+      #
+
+      class ElementClickIntercepted < WebDriverError; end
+
+      #
+      # Indicates that a command could not be completed because the element is not pointer or keyboard interactable.
+      #
+
+      class ElementNotInteractable < WebDriverError; end
+
       # aliased for backwards compatibility
       NoAlertPresentError       = NoSuchAlertError
       ScriptTimeOutError        = ScriptTimeoutError
