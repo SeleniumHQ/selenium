@@ -2,6 +2,7 @@
 using NUnit.Framework;
 using System.Text.RegularExpressions;
 using System.Drawing;
+using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.Interactions
 {
@@ -9,6 +10,16 @@ namespace OpenQA.Selenium.Interactions
     [IgnoreBrowser(Browser.Safari, "Not implemented (issue 4136)")]
     public class BasicMouseInterfaceTest : DriverTestFixture
     {
+        [SetUp]
+        public void SetupTest()
+        {
+            IActionExecutor actionExecutor = driver as IActionExecutor;
+            if (actionExecutor != null)
+            {
+                actionExecutor.ResetInputState();
+            }
+        }
+
         [Test]
         [IgnoreBrowser(Browser.IPhone, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Android, "API not implemented in driver")]

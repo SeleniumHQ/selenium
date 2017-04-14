@@ -3,12 +3,23 @@ using NUnit.Framework;
 using System.Drawing;
 using System.Text.RegularExpressions;
 using OpenQA.Selenium.Environment;
+using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.Interactions
 {
     [TestFixture]
     public class DragAndDropTest : DriverTestFixture
     {
+        [SetUp]
+        public void SetupTest()
+        {
+            IActionExecutor actionExecutor = driver as IActionExecutor;
+            if (actionExecutor != null)
+            {
+                actionExecutor.ResetInputState();
+            }
+        }
+
         [Test]
         [Category("Javascript")]
         [IgnoreBrowser(Browser.HtmlUnit)]
