@@ -27,7 +27,7 @@ namespace OpenQA.Selenium.Internal
     /// <summary>
     /// Interface allowing execution of W3C Specification-compliant actions.
     /// </summary>
-    internal interface IActionExecutor
+    public interface IActionExecutor
     {
         /// <summary>
         /// Gets a value indicating whether this object is a valid action executor.
@@ -38,7 +38,7 @@ namespace OpenQA.Selenium.Internal
         /// Performs the specified list of actions with this action executor.
         /// </summary>
         /// <param name="actionSequenceList">The list of action sequences to perform.</param>
-        void PerformActions(List<ActionSequence> actionSequenceList);
+        void PerformActions(IList<ActionSequence> actionSequenceList);
 
         /// <summary>
         /// Resets the input state of the action executor.
