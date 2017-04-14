@@ -164,15 +164,15 @@ namespace OpenQA.Selenium.IE
         /// <summary>
         /// Gets the capabilities as a dictionary supporting legacy drivers.
         /// </summary>
-        /// <param name="capabilities">The dictionary to return.</param>
+        /// <param name="legacyCapabilities">The dictionary to return.</param>
         /// <returns>A Dictionary consisting of the capabilities requested.</returns>
         /// <remarks>This method is only transitional. Do not rely on it. It will be removed
         /// once browser driver capability formats stabilize.</remarks>
-        protected override Dictionary<string, object> GetLegacyCapabilitiesDictionary(ICapabilities capabilities)
+        protected override Dictionary<string, object> GetLegacyCapabilitiesDictionary(ICapabilities legacyCapabilities)
         {
             // Flatten the dictionary, if required to support old versions of the IE driver.
             Dictionary<string, object> capabilitiesDictionary = new Dictionary<string, object>();
-            DesiredCapabilities capabilitiesObject = capabilities as DesiredCapabilities;
+            DesiredCapabilities capabilitiesObject = legacyCapabilities as DesiredCapabilities;
             foreach (KeyValuePair<string, object> entry in capabilitiesObject.CapabilitiesDictionary)
             {
                 if (entry.Key == InternetExplorerOptions.Capability)
