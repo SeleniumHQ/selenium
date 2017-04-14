@@ -22,7 +22,7 @@ import static org.junit.Assert.assertEquals;
 import static org.openqa.selenium.remote.CapabilityType.PROXY;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
-import static org.openqa.selenium.testing.Driver.HTMLUNIT;
+import static org.openqa.selenium.testing.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.PHANTOMJS;
@@ -38,8 +38,6 @@ import com.google.common.collect.Lists;
 import com.google.common.net.HostAndPort;
 import com.google.common.net.HttpHeaders;
 
-import com.sun.corba.se.impl.orbutil.HexOutputStream;
-
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -50,8 +48,8 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JavascriptEnabled;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
-import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 import org.seleniumhq.jetty9.server.Handler;
 import org.seleniumhq.jetty9.server.Request;
@@ -61,7 +59,6 @@ import org.seleniumhq.jetty9.server.handler.AbstractHandler;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.URI;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.file.Files;
@@ -96,10 +93,8 @@ import javax.servlet.http.HttpServletResponse;
  * <p>Note: depending on the condition under test, the various pages may or may
  * not be served by the same server.
  */
-@Ignore(
-    value = {PHANTOMJS, SAFARI},
-    reason = "Opera/PhantomJS - not tested, " +
-             "Safari - not implemented")
+@Ignore(PHANTOMJS)
+@Ignore(SAFARI)
 public class ReferrerTest extends JUnit4TestBase {
 
   private static String page1;
@@ -123,9 +118,8 @@ public class ReferrerTest extends JUnit4TestBase {
    * Tests navigation when all of the files are hosted on the same domain and the browser
    * does not have a proxy configured.
    */
+  @JavascriptEnabled
   @Test
-  @NotYetImplemented(HTMLUNIT)
-  @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
   @NeedsLocalEnvironment
   public void basicHistoryNavigationWithoutAProxy() {
     testServer1.start();
@@ -147,9 +141,8 @@ public class ReferrerTest extends JUnit4TestBase {
   /**
    * Tests navigation across multiple domains when the browser does not have a proxy configured.
    */
+  @JavascriptEnabled
   @Test
-  @NotYetImplemented(HTMLUNIT)
-  @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
   @NeedsLocalEnvironment
   public void crossDomainHistoryNavigationWithoutAProxy() {
 
@@ -179,9 +172,8 @@ public class ReferrerTest extends JUnit4TestBase {
    * Tests navigation when all of the files are hosted on the same domain and the browser is
    * configured to use a proxy that permits direct access to that domain.
    */
+  @JavascriptEnabled
   @Test
-  @NotYetImplemented(HTMLUNIT)
-  @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
   @NeedsLocalEnvironment
   public void basicHistoryNavigationWithADirectProxy() {
     testServer1.start();
@@ -209,9 +201,8 @@ public class ReferrerTest extends JUnit4TestBase {
    * Tests navigation across multiple domains when the browser is configured to use a proxy that
    * permits direct access to those domains.
    */
+  @JavascriptEnabled
   @Test
-  @NotYetImplemented(HTMLUNIT)
-  @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
   @NeedsLocalEnvironment
   public void crossDomainHistoryNavigationWithADirectProxy() {
     testServer1.start();
@@ -245,9 +236,9 @@ public class ReferrerTest extends JUnit4TestBase {
    * Tests navigation across multiple domains when the browser is configured to use a proxy that
    * redirects the second domain to another host.
    */
-  @Ignore({HTMLUNIT, MARIONETTE})
-  @NotYetImplemented(HTMLUNIT)
+  @JavascriptEnabled
   @Test
+  @Ignore(MARIONETTE)
   @NeedsLocalEnvironment
   public void crossDomainHistoryNavigationWithAProxiedHost() {
     testServer1.start();
@@ -286,9 +277,9 @@ public class ReferrerTest extends JUnit4TestBase {
    * intercepts requests to a specific host (www.example.com) - all other requests are permitted
    * to connect directly to the target server.
    */
-  @Ignore({HTMLUNIT, MARIONETTE})
-  @NotYetImplemented(HTMLUNIT)
+  @JavascriptEnabled
   @Test
+  @Ignore(MARIONETTE)
   @NeedsLocalEnvironment
   public void crossDomainHistoryNavigationWhenProxyInterceptsHostRequests() {
     testServer1.start();
@@ -324,12 +315,12 @@ public class ReferrerTest extends JUnit4TestBase {
    * Tests navigation on a single domain where the browser is configured to use a proxy that
    * intercepts requests for page 2.
    */
-  @Ignore(
-      value = {HTMLUNIT, IE, MARIONETTE},
-      reason = "IEDriver does not disable automatic proxy caching, causing this test to fail.",
-      issues = 6629)
-  @NotYetImplemented(HTMLUNIT)
+  @JavascriptEnabled
   @Test
+  @Ignore(value = IE,
+      reason = "IEDriver does not disable automatic proxy caching, causing this test to fail, issue 6629")
+  @Ignore(MARIONETTE)
+  @Ignore(value = FIREFOX, travis=true)
   @NeedsLocalEnvironment
   public void navigationWhenProxyInterceptsASpecificUrl() {
     testServer1.start();
@@ -383,16 +374,8 @@ public class ReferrerTest extends JUnit4TestBase {
     wait.until(titleIs("Page 3"));
   }
 
-  private static String buildPage1Url(String nextUrl) {
-    return "/page1.html?next=" + encode(nextUrl);
-  }
-
   private static String buildPage1Url(ServerResource server, String nextUrl) {
     return server.getBaseUrl() + "/page1.html?next=" + encode(nextUrl);
-  }
-
-  private static String buildPage2Url(String nextUrl) {
-    return "/page2.html?next=" + encode(nextUrl);
   }
 
   private static String buildPage2Url(String server, String nextUrl) {
@@ -409,10 +392,6 @@ public class ReferrerTest extends JUnit4TestBase {
 
   private static String buildPage2Url(ServerResource server) {
     return server.getBaseUrl() + "/page2.html";  // Nothing special here.
-  }
-
-  private static String buildPage3Url() {
-    return "/page3.html";  // Nothing special here.
   }
 
   private static String buildPage3Url(ServerResource server) {
@@ -458,7 +437,6 @@ public class ReferrerTest extends JUnit4TestBase {
    */
   private abstract static class ServerResource extends ExternalResource {
     protected final Server server;
-    private final int port;
     private final HostAndPort hostAndPort;
 
     ServerResource() {
@@ -469,7 +447,6 @@ public class ReferrerTest extends JUnit4TestBase {
       http.setPort(port);
       http.setIdleTimeout(500000);
 
-      this.port = port;
       this.server.addConnector(http);
       this.hostAndPort = HostAndPort.fromParts("localhost", port);
     }

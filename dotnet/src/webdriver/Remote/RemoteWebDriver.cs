@@ -68,7 +68,7 @@ namespace OpenQA.Selenium.Remote
         /// </summary>
         protected static readonly TimeSpan DefaultCommandTimeout = TimeSpan.FromSeconds(60);
 
-        private static readonly string DefaultRemoteServerUrl = "http://127.0.0.1:4444/wd/hub";
+        private const string DefaultRemoteServerUrl = "http://127.0.0.1:4444/wd/hub";
 
         private ICommandExecutor executor;
         private ICapabilities capabilities;
@@ -85,7 +85,7 @@ namespace OpenQA.Selenium.Remote
         /// </summary>
         /// <param name="options">An <see cref="DriverOptions"/> object containing the desired capabilities of the browser.</param>
         public RemoteWebDriver(DriverOptions options)
-            : this(options.ToCapabilities())
+            : this(ConvertOptionsToCapabilities(options))
         {
         }
 
@@ -104,7 +104,7 @@ namespace OpenQA.Selenium.Remote
         /// <param name="remoteAddress">URI containing the address of the WebDriver remote server (e.g. http://127.0.0.1:4444/wd/hub).</param>
         /// <param name="options">An <see cref="DriverOptions"/> object containing the desired capabilities of the browser.</param>
         public RemoteWebDriver(Uri remoteAddress, DriverOptions options)
-            : this(remoteAddress, options.ToCapabilities())
+            : this(remoteAddress, ConvertOptionsToCapabilities(options))
         {
         }
 
@@ -415,7 +415,7 @@ namespace OpenQA.Selenium.Remote
         /// <summary>
         /// Gets a value indicating whether this object is a valid action executor.
         /// </summary>
-        bool IActionExecutor.IsActionExecutor
+        public bool IsActionExecutor
         {
             get { return this.IsSpecificationCompliant; }
         }
@@ -940,8 +940,13 @@ namespace OpenQA.Selenium.Remote
         /// Performs the specified list of actions with this action executor.
         /// </summary>
         /// <param name="actionSequenceList">The list of action sequences to perform.</param>
-        void IActionExecutor.PerformActions(List<ActionSequence> actionSequenceList)
+        public void PerformActions(IList<ActionSequence> actionSequenceList)
         {
+            if (actionSequenceList == null)
+            {
+                throw new ArgumentNullException("actionSequenceList", "List of action sequences must not be null");
+            }
+
             if (this.IsSpecificationCompliant)
             {
                 List<object> objectList = new List<object>();
@@ -959,7 +964,7 @@ namespace OpenQA.Selenium.Remote
         /// <summary>
         /// Resets the input state of the action executor.
         /// </summary>
-        void IActionExecutor.ResetInputState()
+        public void ResetInputState()
         {
             if (this.IsSpecificationCompliant)
             {
@@ -1117,14 +1122,14 @@ namespace OpenQA.Selenium.Remote
         /// <summary>
         /// Gets the capabilities as a dictionary supporting legacy drivers.
         /// </summary>
-        /// <param name="capabilities">The dictionary to return.</param>
+        /// <param name="legacyCapabilities">The dictionary to return.</param>
         /// <returns>A Dictionary consisting of the capabilities requested.</returns>
         /// <remarks>This method is only transitional. Do not rely on it. It will be removed
         /// once browser driver capability formats stabilize.</remarks>
-        protected virtual Dictionary<string, object> GetLegacyCapabilitiesDictionary(ICapabilities capabilities)
+        protected virtual Dictionary<string, object> GetLegacyCapabilitiesDictionary(ICapabilities legacyCapabilities)
         {
             Dictionary<string, object> capabilitiesDictionary = new Dictionary<string, object>();
-            DesiredCapabilities capabilitiesObject = capabilities as DesiredCapabilities;
+            DesiredCapabilities capabilitiesObject = legacyCapabilities as DesiredCapabilities;
             foreach (KeyValuePair<string, object> entry in capabilitiesObject.CapabilitiesDictionary)
             {
                 capabilitiesDictionary.Add(entry.Key, entry.Value);
@@ -1136,14 +1141,14 @@ namespace OpenQA.Selenium.Remote
         /// <summary>
         /// Gets the capabilities as a dictionary.
         /// </summary>
-        /// <param name="capabilities">The dictionary to return.</param>
+        /// <param name="capabilitiesToConvert">The dictionary to return.</param>
         /// <returns>A Dictionary consisting of the capabilities requested.</returns>
         /// <remarks>This method is only transitional. Do not rely on it. It will be removed
         /// once browser driver capability formats stabilize.</remarks>
-        protected virtual Dictionary<string, object> GetCapabilitiesDictionary(ICapabilities capabilities)
+        protected virtual Dictionary<string, object> GetCapabilitiesDictionary(ICapabilities capabilitiesToConvert)
         {
             Dictionary<string, object> capabilitiesDictionary = new Dictionary<string, object>();
-            DesiredCapabilities capabilitiesObject = capabilities as DesiredCapabilities;
+            DesiredCapabilities capabilitiesObject = capabilitiesToConvert as DesiredCapabilities;
             foreach (KeyValuePair<string, object> entry in capabilitiesObject.CapabilitiesDictionary)
             {
                 if (entry.Key != CapabilityType.Version && entry.Key != CapabilityType.Platform)
@@ -1436,6 +1441,16 @@ namespace OpenQA.Selenium.Remote
                     throw new WebDriverException("Unexpected error. " + errorResponse.Value.ToString());
                 }
             }
+        }
+
+        private static ICapabilities ConvertOptionsToCapabilities(DriverOptions options)
+        {
+            if (options == null)
+            {
+                throw new ArgumentNullException("options", "Driver options must not be null");
+            }
+
+            return options.ToCapabilities();
         }
 
         private object ParseJavaScriptReturnValue(object responseValue)

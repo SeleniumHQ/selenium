@@ -21,7 +21,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static org.apache.http.protocol.HttpCoreContext.HTTP_TARGET_HOST;
 
 import org.apache.http.Header;
-import org.apache.http.HeaderElement;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
 import org.apache.http.NoHttpResponseException;
@@ -98,9 +97,7 @@ public class ApacheHttpClient implements org.openqa.selenium.remote.http.HttpCli
 
     internalResponse.setStatus(response.getStatusLine().getStatusCode());
     for (Header header : response.getAllHeaders()) {
-      for (HeaderElement headerElement : header.getElements()) {
-        internalResponse.addHeader(header.getName(), headerElement.getValue());
-      }
+      internalResponse.addHeader(header.getName(), header.getValue());
     }
 
     HttpEntity entity = response.getEntity();
@@ -252,10 +249,9 @@ public class ApacheHttpClient implements org.openqa.selenium.remote.http.HttpCli
       return defaultClientFactory;
     }
   }
-  
+
   @Override
-	public void close() throws IOException {
-	  client.getConnectionManager().closeIdleConnections(0, TimeUnit.SECONDS);		
-	}
-  
+  public void close() throws IOException {
+    client.getConnectionManager().closeIdleConnections(0, TimeUnit.SECONDS);
+  }
 }

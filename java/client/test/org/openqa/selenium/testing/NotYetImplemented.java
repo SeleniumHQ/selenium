@@ -18,18 +18,18 @@
 package org.openqa.selenium.testing;
 
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
+@Repeatable(NotYetImplementedList.class)
 public @interface NotYetImplemented {
 
-  Driver[] value() default {Driver.ALL};
+  Driver value() default Driver.ALL;
 
   String reason() default ("Not implemented in driver yet");
-
-  int[] issues() default {};
 
 }

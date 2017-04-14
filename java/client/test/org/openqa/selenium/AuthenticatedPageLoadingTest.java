@@ -34,7 +34,13 @@ import org.openqa.selenium.security.UserAndPassword;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 
-@Ignore({CHROME, FIREFOX, HTMLUNIT, IE, MARIONETTE, PHANTOMJS, SAFARI})
+@Ignore(CHROME)
+@Ignore(FIREFOX)
+@Ignore(HTMLUNIT)
+@Ignore(IE)
+@Ignore(MARIONETTE)
+@Ignore(PHANTOMJS)
+@Ignore(SAFARI)
 public class AuthenticatedPageLoadingTest extends JUnit4TestBase {
 
   @Test

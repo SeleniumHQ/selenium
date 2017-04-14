@@ -17,12 +17,23 @@
 
 package org.openqa.selenium.environment.webserver;
 
+import static com.google.common.base.Charsets.UTF_8;
+import static com.google.common.net.HttpHeaders.CONTENT_LENGTH;
+import static com.google.common.net.HttpHeaders.CONTENT_TYPE;
+import static com.google.common.net.MediaType.JSON_UTF_8;
 import static org.openqa.selenium.net.PortProber.findFreePort;
 import static org.openqa.selenium.testing.InProject.locate;
 
 import com.google.common.collect.ImmutableList;
+import com.google.gson.JsonObject;
 
+import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.net.NetworkUtils;
+import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpMethod;
+import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.internal.ApacheHttpClient;
 import org.openqa.selenium.testing.InProject;
 import org.seleniumhq.jetty9.http.HttpVersion;
 import org.seleniumhq.jetty9.http.MimeTypes;
@@ -42,6 +53,11 @@ import org.seleniumhq.jetty9.servlet.ServletContextHandler;
 import org.seleniumhq.jetty9.servlet.ServletHolder;
 import org.seleniumhq.jetty9.util.ssl.SslContextFactory;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.EnumSet;
@@ -61,6 +77,7 @@ public class JettyAppServer implements AppServer {
   private static final int DEFAULT_HTTPS_PORT = 2410;
   private static final String DEFAULT_CONTEXT_PATH = "/common";
   private static final String JS_SRC_CONTEXT_PATH = "/javascript";
+  private static final String TEMP_SRC_CONTEXT_PATH = "/temp";
   private static final String CLOSURE_CONTEXT_PATH = "/third_party/closure/goog";
   private static final String THIRD_PARTY_JS_CONTEXT_PATH = "/third_party/js";
 
@@ -72,9 +89,10 @@ public class JettyAppServer implements AppServer {
 
   private ContextHandlerCollection handlers;
   private final String hostName;
+  private File tempPageDir;
 
   public JettyAppServer() {
-    this(detectHostname());
+    this(detectHostname(), getHttpPort(), getHttpsPort());
   }
 
   public static String detectHostname() {
@@ -82,8 +100,11 @@ public class JettyAppServer implements AppServer {
     return hostnameFromProperty == null ? "localhost" : hostnameFromProperty;
   }
 
-  public JettyAppServer(String hostName) {
+  public JettyAppServer(String hostName, int httpPort, int httpsPort) {
     this.hostName = hostName;
+    this.port = httpPort;
+    this.securePort = httpsPort;
+
     // Be quiet. Unless we want things to be chatty
     if (!Boolean.getBoolean("webdriver.debug")) {
       new NullLogger().disableLogging();
@@ -99,6 +120,15 @@ public class JettyAppServer implements AppServer {
         JS_SRC_CONTEXT_PATH, locate("javascript"));
     addResourceHandler(CLOSURE_CONTEXT_PATH, locate("third_party/closure/goog"));
     addResourceHandler(THIRD_PARTY_JS_CONTEXT_PATH, locate("third_party/js"));
+
+    TemporaryFilesystem tempFs = TemporaryFilesystem.getDefaultTmpFS();
+    tempPageDir = tempFs.createTempDir("pages", "test");
+    ServletContextHandler tempContext = addResourceHandler(
+        TEMP_SRC_CONTEXT_PATH, tempPageDir.toPath());
+    defaultContext.setInitParameter("tempPageDir", tempPageDir.getAbsolutePath());
+    defaultContext.setInitParameter("hostname", hostName);
+    defaultContext.setInitParameter("port", ""+port);
+    defaultContext.setInitParameter("path", TEMP_SRC_CONTEXT_PATH);
 
     server.setHandler(handlers);
 
@@ -116,17 +146,15 @@ public class JettyAppServer implements AppServer {
     addServlet(defaultContext, "/quitquitquit", KillSwitchServlet.class);
     addServlet(defaultContext, "/basicAuth", BasicAuth.class);
     addServlet(defaultContext, "/generated/*", GeneratedJsTestServlet.class);
-
-    listenOn(getHttpPort());
-    listenSecurelyOn(getHttpsPort());
+    addServlet(defaultContext, "/createPage", CreatePageServlet.class);
   }
 
-  private int getHttpPort() {
+  private static int getHttpPort() {
     String port = System.getenv(FIXED_HTTP_PORT_ENV_NAME);
     return port == null ? findFreePort() : Integer.parseInt(port);
   }
 
-  private int getHttpsPort() {
+  private static int getHttpsPort() {
     String port = System.getenv(FIXED_HTTPS_PORT_ENV_NAME);
     return port == null ? findFreePort() : Integer.parseInt(port);
   }
@@ -165,6 +193,24 @@ public class JettyAppServer implements AppServer {
   public String whereIsWithCredentials(String relativeUrl, String user, String pass) {
     relativeUrl = getMainContextPath(relativeUrl);
     return "http://" + user + ":" + pass + "@" + getHostName() + ":" + port + relativeUrl;
+  }
+
+  @Override
+  public String create(Page page) {
+    try {
+      JsonObject converted = new JsonObject();
+      converted.addProperty("content", page.toString());
+      byte[] data = converted.toString().getBytes(UTF_8);
+
+      HttpClient client = new ApacheHttpClient.Factory().createClient(new URL(whereIs("/")));
+      HttpRequest request = new HttpRequest(HttpMethod.POST, "/common/createPage");
+      request.setHeader(CONTENT_TYPE, JSON_UTF_8.toString());
+      request.setContent(data);
+      HttpResponse response = client.execute(request, true);
+      return response.getContentString();
+    } catch (IOException ex) {
+      throw new RuntimeException(ex);
+    }
   }
 
   protected String getMainContextPath(String relativeUrl) {
@@ -216,16 +262,6 @@ public class JettyAppServer implements AppServer {
 
   protected Path getKeyStore() {
     return InProject.locate("java/client/test/org/openqa/selenium/environment/webserver/keystore");
-  }
-
-  @Override
-  public void listenOn(int port) {
-    this.port = port;
-  }
-
-  @Override
-  public void listenSecurelyOn(int port) {
-    this.securePort = port;
   }
 
   @Override
@@ -291,15 +327,11 @@ public class JettyAppServer implements AppServer {
   }
 
   public static void main(String[] args) {
-    JettyAppServer server = new JettyAppServer(detectHostname());
-
-    server.listenOn(getHttpPortFromEnv());
-    System.out.println(String.format("Starting server on port %d", getHttpPortFromEnv()));
-
-    server.listenSecurelyOn(getHttpsPortFromEnv());
-    System.out.println(String.format("HTTPS on %d", getHttpsPortFromEnv()));
-
-    server.start();
+    int httpPort = getHttpPortFromEnv();
+    int httpsPort = getHttpsPortFromEnv();
+    System.out.println(String.format("Starting server on HTTPS port %d and HTTPS port %d",
+                                     httpPort, httpsPort));
+    new JettyAppServer(detectHostname(), httpPort, httpsPort).start();
   }
 
 }

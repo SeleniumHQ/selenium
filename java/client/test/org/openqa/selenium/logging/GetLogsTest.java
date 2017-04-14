@@ -42,7 +42,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 
-@Ignore({HTMLUNIT, IE, PHANTOMJS, MARIONETTE})
+@Ignore(HTMLUNIT)
+@Ignore(IE)
+@Ignore(PHANTOMJS)
+@Ignore(MARIONETTE)
 public class GetLogsTest extends JUnit4TestBase {
 
   private WebDriver localDriver;

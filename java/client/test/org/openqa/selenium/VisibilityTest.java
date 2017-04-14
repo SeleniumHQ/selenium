@@ -17,13 +17,13 @@
 
 package org.openqa.selenium;
 
+import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.Platform.ANDROID;
 import static org.openqa.selenium.support.ui.ExpectedConditions.not;
@@ -33,6 +33,7 @@ import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Driver.SAFARI;
+import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
@@ -49,11 +50,10 @@ public class VisibilityTest extends JUnit4TestBase {
   public void testShouldAllowTheUserToTellIfAnElementIsDisplayedOrNot() {
     driver.get(pages.javascriptPage);
 
-    assertThat(driver.findElement(By.id("displayed")).isDisplayed(),
-               is(true));
-    assertThat(driver.findElement(By.id("none")).isDisplayed(), is(false));
-    assertThat(driver.findElement(By.id("suppressedParagraph")).isDisplayed(), is(false));
-    assertThat(driver.findElement(By.id("hidden")).isDisplayed(), is(false));
+    assertTrue(driver.findElement(By.id("displayed")).isDisplayed());
+    assertFalse(driver.findElement(By.id("none")).isDisplayed());
+    assertFalse(driver.findElement(By.id("suppressedParagraph")).isDisplayed());
+    assertFalse(driver.findElement(By.id("hidden")).isDisplayed());
   }
 
   @Test
@@ -102,38 +102,29 @@ public class VisibilityTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/579")
+  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/579")
   public void testShouldNotBeAbleToClickOnAnElementThatIsNotDisplayed() {
     driver.get(pages.javascriptPage);
     WebElement element = driver.findElement(By.id("unclickable"));
 
-    try {
-      element.click();
-      fail("You should not be able to click on an invisible element");
-    } catch (ElementNotVisibleException e) {
-      // This is expected
-    }
+    Throwable t = catchThrowable(element::click);
+    assertThat(t, instanceOf(ElementNotInteractableException.class));
   }
 
   @Test
-  @Ignore(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/579")
+  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/579")
   public void testShouldNotBeAbleToTypeToAnElementThatIsNotDisplayed() {
     driver.get(pages.javascriptPage);
     WebElement element = driver.findElement(By.id("unclickable"));
 
-    try {
-      element.sendKeys("You don't see me");
-      fail("You should not be able to send keyboard input to an invisible element");
-    } catch (ElementNotVisibleException e) {
-      // This is expected
-    }
-
+    Throwable t = catchThrowable(() -> element.sendKeys("You don't see me"));
+    assertThat(t, instanceOf(ElementNotInteractableException.class));
     assertThat(element.getAttribute("value"), is(not("You don't see me")));
   }
 
   @JavascriptEnabled // element.getSize() requires Javascript in HtmlUnit
-  @Ignore(IE)
   @Test
+  @Ignore(IE)
   public void testZeroSizedDivIsShownIfDescendantHasSize() {
     driver.get(pages.javascriptPage);
 
@@ -154,9 +145,11 @@ public class VisibilityTest extends JUnit4TestBase {
     assertTrue(element.isDisplayed());
   }
 
-  @Ignore({IE, PHANTOMJS, SAFARI})
-  @NotYetImplemented(HTMLUNIT)
   @Test
+  @Ignore(IE)
+  @Ignore(PHANTOMJS)
+  @Ignore(SAFARI)
+  @NotYetImplemented(HTMLUNIT)
   public void testElementHiddenByOverflowXIsNotVisible() {
     String[] pages = new String[]{
         "overflow/x_hidden_y_hidden.html",
@@ -172,9 +165,9 @@ public class VisibilityTest extends JUnit4TestBase {
     }
   }
 
+  @Test
   @Ignore(PHANTOMJS)
   @NotYetImplemented(HTMLUNIT)
-  @Test
   public void testElementHiddenByOverflowYIsNotVisible() {
     String[] pages = new String[]{
         "overflow/x_hidden_y_hidden.html",
@@ -190,8 +183,8 @@ public class VisibilityTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore({IE})
   @Test
+  @Ignore(IE)
   public void testElementScrollableByOverflowXIsVisible() {
     String[] pages = new String[]{
         "overflow/x_scroll_y_hidden.html",
@@ -208,8 +201,9 @@ public class VisibilityTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore({IE, SAFARI})
   @Test
+  @Ignore(IE)
+  @Ignore(SAFARI)
   public void testElementScrollableByOverflowYIsVisible() {
     String[] pages = new String[]{
         "overflow/x_hidden_y_scroll.html",
@@ -242,6 +236,7 @@ public class VisibilityTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(value = MARIONETTE, reason = "/window/rect")
   public void tooSmallAWindowWithOverflowHiddenIsNotAProblem() {
     // Browser window cannot be resized on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
@@ -287,9 +282,9 @@ public class VisibilityTest extends JUnit4TestBase {
    * @see <a href="http://code.google.com/p/selenium/issues/detail?id=1610">
    *      http://code.google.com/p/selenium/issues/detail?id=1610</a>
    */
-  @Ignore({IE, MARIONETTE})
   @JavascriptEnabled // element.getCssValue() requires Javascript in HtmlUnit
   @Test
+  @Ignore(IE)
   public void testShouldBeAbleToClickOnElementsWithOpacityZero() {
     driver.get(pages.clickJacker);
 
@@ -300,7 +295,6 @@ public class VisibilityTest extends JUnit4TestBase {
     assertEquals("1", element.getCssValue("opacity"));
   }
 
-  @Ignore(MARIONETTE)
   @Test
   public void testShouldBeAbleToSelectOptionsFromAnInvisibleSelect() {
     driver.get(pages.formPage);

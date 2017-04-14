@@ -170,10 +170,6 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
         requiredCapabilities);
   }
 
-  /**
-   * @deprecated Use {@link RemoteWebDriver(CommandExecutor, Capabilities)}, creating a new
-   *   {@link HttpCommandExecutor}.
-   */
   public RemoteWebDriver(URL remoteAddress, Capabilities desiredCapabilities) {
     this(new HttpCommandExecutor(remoteAddress), desiredCapabilities);
   }
@@ -426,7 +422,9 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
   protected void setFoundBy(SearchContext context, WebElement element, String by, String using) {
     if (element instanceof RemoteWebElement) {
-      ((RemoteWebElement) element).setFoundBy(context, by, using);
+      RemoteWebElement remoteElement = (RemoteWebElement) element;
+      remoteElement.setFoundBy(context, by, using);
+      remoteElement.setFileDetector(getFileDetector());
     }
   }
 
@@ -910,8 +908,8 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
         return new Dimension(width, height);
       }
 
-      @SuppressWarnings({"unchecked"})
       Map<String, Object> rawPoint;
+      @SuppressWarnings("unchecked")
       public Point getPosition() {
         Response response = execute(DriverCommand.GET_CURRENT_WINDOW_POSITION,
                                     ImmutableMap.of("windowHandle", "current"));

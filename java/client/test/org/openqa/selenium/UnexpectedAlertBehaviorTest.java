@@ -17,7 +17,8 @@
 
 package org.openqa.selenium;
 
-import static org.junit.Assert.fail;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.remote.CapabilityType.UNEXPECTED_ALERT_BEHAVIOUR;
@@ -27,6 +28,7 @@ import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Driver.SAFARI;
+import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 
 import org.junit.After;
 import org.junit.Test;
@@ -34,14 +36,15 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JavascriptEnabled;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
-import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.TestUtilities;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 @NeedsLocalEnvironment(reason = "Requires local browser launching environment")
-@Ignore(value = {PHANTOMJS, SAFARI, MARIONETTE},
-        issues = {3862})
+@Ignore(PHANTOMJS)
+@Ignore(value = SAFARI, reason = "issue 3862")
+@Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/617")
 public class UnexpectedAlertBehaviorTest extends JUnit4TestBase {
 
   private WebDriver driver2;
@@ -54,38 +57,37 @@ public class UnexpectedAlertBehaviorTest extends JUnit4TestBase {
     }
   }
 
-  @NotYetImplemented(HTMLUNIT)
+  @JavascriptEnabled
   @Test
   public void canAcceptUnhandledAlert() {
     runScenarioWithUnhandledAlert(UnexpectedAlertBehaviour.ACCEPT, "This is a default value");
   }
 
-  @Ignore(value = {HTMLUNIT, CHROME}, reason = "Unstable Chrome behavior")
+  @JavascriptEnabled
   @Test
+  @Ignore(value = CHROME, reason = "Unstable Chrome behavior")
   public void canDismissUnhandledAlert() {
     runScenarioWithUnhandledAlert(UnexpectedAlertBehaviour.DISMISS, "null");
   }
 
-  @Ignore(value = {CHROME, HTMLUNIT}, reason = "Chrome uses IGNORE mode by default")
+  @JavascriptEnabled
   @Test
+  @Ignore(value = CHROME, reason = "Chrome uses IGNORE mode by default")
   public void dismissUnhandledAlertsByDefault() {
     runScenarioWithUnhandledAlert(null, "null");
   }
 
-  @Ignore(value = CHROME, reason = "Unstable")
-  @NotYetImplemented(HTMLUNIT)
+  @JavascriptEnabled
   @Test
+  @Ignore(value = CHROME, reason = "Unstable Chrome behavior")
   public void canIgnoreUnhandledAlert() {
-    try {
-      runScenarioWithUnhandledAlert(UnexpectedAlertBehaviour.IGNORE, "Text ignored");
-      fail("Exception not thrown");
-    } catch (UnhandledAlertException ex) {
-      // this is expected
-    }
+    Throwable t = catchThrowable(
+        () -> runScenarioWithUnhandledAlert(UnexpectedAlertBehaviour.IGNORE, "Text ignored"));
+    assertThat(t, instanceOf(UnhandledAlertException.class));
     driver2.switchTo().alert().dismiss();
   }
 
-  @NotYetImplemented(HTMLUNIT)
+  @JavascriptEnabled
   @Test
   public void canSpecifyUnhandledAlertBehaviourUsingCapabilities() {
     desiredCaps.setCapability(UNEXPECTED_ALERT_BEHAVIOUR, UnexpectedAlertBehaviour.ACCEPT);
@@ -94,9 +96,10 @@ public class UnexpectedAlertBehaviorTest extends JUnit4TestBase {
     runScenarioWithUnhandledAlert("This is a default value");
   }
 
+  @JavascriptEnabled
   @Test
-  @Ignore(value = {IE, CHROME}, reason = "IE, Chrome: required capabilities not implemented")
-  @NotYetImplemented(HTMLUNIT)
+  @Ignore(value = IE, reason = "required capabilities not implemented")
+  @Ignore(value = CHROME, reason = "required capabilities not implemented")
   public void requiredUnhandledAlertCapabilityHasPriorityOverDesired() {
     // TODO: Resolve why this test doesn't work on the remote server
     assumeTrue(TestUtilities.isLocal());

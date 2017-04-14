@@ -51,7 +51,7 @@ public class Annotations extends AbstractAnnotations {
    * Looks for one of {@link org.openqa.selenium.support.FindBy},
    * {@link org.openqa.selenium.support.FindBys} or
    * {@link org.openqa.selenium.support.FindAll} field annotations. In case
-   * no annotaions provided for field, uses field name as 'id' or 'name'.
+   * no annotations provided for field, uses field name as 'id' or 'name'.
    * @throws IllegalArgumentException when more than one annotation on a field provided
    */
   public By buildBy() {

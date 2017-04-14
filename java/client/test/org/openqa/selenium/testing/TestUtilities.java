@@ -91,17 +91,15 @@ public class TestUtilities {
   }
 
   public static boolean isChrome(WebDriver driver) {
-    return getUserAgent(driver).contains("Chrome");
+    return !(driver instanceof HtmlUnitDriver) && getUserAgent(driver).contains("Chrome");
   }
 
   public static boolean isOldChromedriver(WebDriver driver) {
-    Capabilities caps;
-    try {
-      caps = ((HasCapabilities) driver).getCapabilities();
-    } catch (ClassCastException e) {
+    if (!(driver instanceof HasCapabilities)) {
       // Driver does not support capabilities -- not a chromedriver at all.
       return false;
     }
+    Capabilities caps = ((HasCapabilities) driver).getCapabilities();
     String chromedriverVersion = (String) caps.getCapability("chrome.chromedriverVersion");
     if (chromedriverVersion != null) {
       String[] versionMajorMinor = chromedriverVersion.split("\\.", 2);
@@ -197,5 +195,14 @@ public class TestUtilities {
 
   public static boolean isLocal() {
     return !Boolean.getBoolean("selenium.browser.remote") && !SauceDriver.shouldUseSauce();
+  }
+
+  public static Throwable catchThrowable(Runnable f) {
+    try {
+      f.run();
+    } catch (Throwable throwable) {
+      return throwable;
+    }
+    return null;
   }
 }

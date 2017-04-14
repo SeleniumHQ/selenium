@@ -11,11 +11,16 @@ This release requires [geckodriver 0.15.0](https://github.com/mozilla/geckodrive
   WebDriver implementations.
 * Deprecated the `Timeouts` class in favor of `Options#setTimeouts()`, which
   supports setting multiple timeouts at once.
+* Added support for emulating different network conditions (e.g., offline, 2G, WiFi) on Chrome.
 
 ### Changes for W3C WebDriver Spec Compliance
 
-* Fix W3C response parsing, which expects response data to always be a JSON
+* Fixed W3C response parsing, which expects response data to always be a JSON
   object with a `value` key.
+* Added W3C endpoints for interacting with various types of 
+  [user prompts](https://w3c.github.io/webdriver/webdriver-spec.html#user-prompts).
+* Added W3C endpoints for remotely executing scripts.
+* Added W3C endpoints to get current window handle and all windows handles.
 
 
 ## v3.3.0

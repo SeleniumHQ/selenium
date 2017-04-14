@@ -40,6 +40,7 @@ import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
 import org.openqa.selenium.testing.NeedsFreshDriver;
+import org.openqa.selenium.testing.NotYetImplemented;
 
 /**
  * Test case for browsers that support using Javascript
@@ -75,7 +76,6 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {MARIONETTE})
   @Test
   public void testShouldWaitForLoadsToCompleteAfterJavascriptCausesANewPageToLoad() {
     driver.get(pages.formPage);
@@ -87,7 +87,6 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {MARIONETTE})
   @Test
   public void testShouldBeAbleToFindElementAfterJavascriptCausesANewPageToLoad() {
     driver.get(pages.formPage);
@@ -100,7 +99,7 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore(MARIONETTE)
+  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testShouldFireOnChangeEventWhenSettingAnElementsValue() {
     driver.get(pages.javascriptPage);
     driver.findElement(By.id("change")).sendKeys("foo");
@@ -153,7 +152,6 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore(MARIONETTE)
   public void testShouldBeAbleToSwitchToFocusedElement() {
     driver.get(pages.javascriptPage);
 
@@ -165,7 +163,6 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore(MARIONETTE)
   public void testIfNoElementHasFocusTheActiveElementIsTheBody() {
     driver.get(pages.simpleTestPage);
 
@@ -175,8 +172,9 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {SAFARI, MARIONETTE}, reason = " Safari: issue 4061. Other platforms: not properly tested")
   @Test
+  @Ignore(value = SAFARI, reason = "issue 4061")
+  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testChangeEventIsFiredAppropriatelyWhenFocusIsLost() {
     driver.get(pages.javascriptPage);
 
@@ -241,10 +239,10 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
    * running: "ImplicitWaitTest", "TemporaryFilesystemTest", "JavascriptEnabledDriverTest".
    * SimonStewart 2010-10-04
    */
-  @Ignore(value = {SAFARI, MARIONETTE}, reason = "Safari: issue 3693")
   @JavascriptEnabled
   @NeedsFreshDriver
   @Test
+  @Ignore(value = SAFARI, reason = "issue 3693")
   public void testShouldBeAbleToClickALinkThatClosesAWindow() throws Exception {
     driver.get(pages.javascriptPage);
 

@@ -164,6 +164,14 @@ class ElementNotVisibleException(InvalidElementStateException):
     pass
 
 
+class ElementNotInteractableException(InvalidElementStateException):
+    """
+    Thrown when an element is present in the DOM but interactions
+    with that element will hit another element do to paint order
+    """
+    pass
+
+
 class ElementNotSelectableException(InvalidElementStateException):
     """
     Thrown when trying to select an unselectable element.

@@ -31,11 +31,10 @@ public interface AppServer {
 
   String whereIsWithCredentials(String relativeUrl, String user, String password);
 
+  String create(Page page);
+
   void start();
 
   void stop();
 
-  void listenOn(int port);
-
-  void listenSecurelyOn(int port);
 }

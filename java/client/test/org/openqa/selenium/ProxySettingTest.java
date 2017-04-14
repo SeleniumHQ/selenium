@@ -22,11 +22,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.remote.CapabilityType.PROXY;
 import static org.openqa.selenium.testing.Driver.CHROME;
-import static org.openqa.selenium.testing.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.PHANTOMJS;
-import static org.openqa.selenium.testing.Driver.REMOTE;
 import static org.openqa.selenium.testing.Driver.SAFARI;
 
 import com.google.common.base.Joiner;
@@ -82,10 +80,10 @@ public class ProxySettingTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore(value = {PHANTOMJS, SAFARI},
-          reason = "PhantomJS - not tested, Safari - not implemented")
-  @NeedsLocalEnvironment
   @Test
+  @Ignore(SAFARI)
+  @Ignore(PHANTOMJS)
+  @NeedsLocalEnvironment
   public void canConfigureManualHttpProxy() {
     Proxy proxyToUse = proxyServer.asProxy();
     DesiredCapabilities caps = new DesiredCapabilities();
@@ -98,10 +96,10 @@ public class ProxySettingTest extends JUnit4TestBase {
     assertTrue("Proxy should have been called", proxyServer.hasBeenCalled("simpleTest.html"));
   }
 
-  @Ignore(value = {PHANTOMJS, SAFARI, HTMLUNIT},
-          reason = "PhantomJS - not tested, Safari - not implemented")
-  @NeedsLocalEnvironment
   @Test
+  @Ignore(SAFARI)
+  @Ignore(PHANTOMJS)
+  @NeedsLocalEnvironment
   public void canConfigureProxyThroughPACFile() {
     Server helloServer = createSimpleHttpServer(
         "<!DOCTYPE html><title>Hello</title><h3>Hello, world!</h3>");
@@ -124,10 +122,10 @@ public class ProxySettingTest extends JUnit4TestBase {
         "Hello, world!", driver.findElement(By.tagName("h3")).getText());
   }
 
-  @Ignore(value = {PHANTOMJS, SAFARI, HTMLUNIT},
-          reason = "PhantomJS - not tested, Safari - not implemented")
-  @NeedsLocalEnvironment
   @Test
+  @Ignore(SAFARI)
+  @Ignore(PHANTOMJS)
+  @NeedsLocalEnvironment
   public void canUsePACThatOnlyProxiesCertainHosts() throws Exception {
     Server helloServer = createSimpleHttpServer(
         "<!DOCTYPE html><title>Hello</title><h3>Hello, world!</h3>");
@@ -159,9 +157,12 @@ public class ProxySettingTest extends JUnit4TestBase {
         "Heading", driver.findElement(By.tagName("h1")).getText());
   }
 
-  @Ignore({CHROME, IE, PHANTOMJS, REMOTE, SAFARI})
-  @NeedsLocalEnvironment
   @Test
+  @Ignore(CHROME)
+  @Ignore(IE)
+  @Ignore(SAFARI)
+  @Ignore(PHANTOMJS)
+  @NeedsLocalEnvironment
   public void canConfigureProxyWithRequiredCapability() {
     Proxy proxyToUse = proxyServer.asProxy();
     DesiredCapabilities requiredCaps = new DesiredCapabilities();
@@ -174,9 +175,12 @@ public class ProxySettingTest extends JUnit4TestBase {
     assertTrue("Proxy should have been called", proxyServer.hasBeenCalled("simpleTest.html"));
   }
 
-  @Ignore({CHROME, IE, PHANTOMJS, REMOTE, SAFARI})
-  @NeedsLocalEnvironment
   @Test
+  @Ignore(CHROME)
+  @Ignore(IE)
+  @Ignore(SAFARI)
+  @Ignore(PHANTOMJS)
+  @NeedsLocalEnvironment
   public void requiredProxyCapabilityShouldHavePriority() {
     ProxyServer desiredProxyServer = new ProxyServer();
     registerProxyTeardown(desiredProxyServer);
@@ -202,22 +206,16 @@ public class ProxySettingTest extends JUnit4TestBase {
   }
 
   private void registerDriverTeardown(final WebDriver driver) {
-    tearDowns.add(new Callable<Object>() {
-      @Override
-      public Object call() {
-        driver.quit();
-        return null;
-      }
+    tearDowns.add(() -> {
+      driver.quit();
+      return null;
     });
   }
 
   private void registerProxyTeardown(final ProxyServer proxy) {
-    tearDowns.add(new Callable<Object>() {
-      @Override
-      public Object call() {
-        proxy.destroy();
-        return null;
-      }
+    tearDowns.add(() -> {
+      proxy.destroy();
+      return null;
     });
   }
 
@@ -258,16 +256,13 @@ public class ProxySettingTest extends JUnit4TestBase {
 
     server.setHandler(handler);
 
-    tearDowns.add(new Callable<Object>() {
-      @Override
-      public Object call() {
-        try {
-          server.stop();
-        } catch (Exception e) {
-          throw new RuntimeException(e);
-        }
-        return null;
+    tearDowns.add(() -> {
+      try {
+        server.stop();
+      } catch (Exception e) {
+        throw new RuntimeException(e);
       }
+      return null;
     });
 
     try {

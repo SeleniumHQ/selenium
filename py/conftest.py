@@ -84,7 +84,6 @@ def driver(request):
         kwargs.update({'capabilities': {'marionette': False}})
     if driver_class == 'Marionette':
         driver_class = 'Firefox'
-        kwargs.update({'capabilities': {'marionette': True}})
     if driver_class == 'Remote':
         capabilities = DesiredCapabilities.FIREFOX.copy()
         kwargs.update({'desired_capabilities': capabilities})

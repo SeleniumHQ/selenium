@@ -25,7 +25,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
-import static org.openqa.selenium.testing.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.PHANTOMJS;
@@ -47,6 +46,7 @@ public class TypingTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
+  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testShouldFireKeyPressEvents() {
     driver.get(pages.javascriptPage);
 
@@ -59,6 +59,7 @@ public class TypingTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
+  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testShouldFireKeyDownEvents() {
     driver.get(pages.javascriptPage);
 
@@ -71,6 +72,7 @@ public class TypingTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
+  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testShouldFireKeyUpEvents() {
     driver.get(pages.javascriptPage);
 
@@ -82,7 +84,7 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
+  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testShouldTypeLowerCaseLetters() {
     driver.get(pages.javascriptPage);
 
@@ -93,7 +95,7 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
+  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testShouldBeAbleToTypeCapitalLetters() {
     driver.get(pages.javascriptPage);
 
@@ -104,7 +106,7 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
+  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testShouldBeAbleToTypeQuoteMarks() {
     driver.get(pages.javascriptPage);
 
@@ -115,7 +117,7 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
+  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testShouldBeAbleToTypeTheAtCharacter() {
     // simon: I tend to use a US/UK or AUS keyboard layout with English
     // as my primary language. There are consistent reports that we're
@@ -132,7 +134,7 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
+  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testShouldBeAbleToMixUpperAndLowerCaseLetters() {
     driver.get(pages.javascriptPage);
 
@@ -144,6 +146,7 @@ public class TypingTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
+  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testArrowKeysShouldNotBePrintable() {
     driver.get(pages.javascriptPage);
 
@@ -153,9 +156,8 @@ public class TypingTest extends JUnit4TestBase {
     assertThat(keyReporter.getAttribute("value"), is(""));
   }
 
-  @NotYetImplemented(HTMLUNIT)
-  @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
   @Test
+  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testShouldBeAbleToUseArrowKeys() {
     driver.get(pages.javascriptPage);
 
@@ -167,6 +169,7 @@ public class TypingTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
+  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testWillSimulateAKeyUpWhenEnteringTextIntoInputElements() {
     driver.get(pages.javascriptPage);
 
@@ -179,6 +182,7 @@ public class TypingTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
+  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testWillSimulateAKeyDownWhenEnteringTextIntoInputElements() {
     driver.get(pages.javascriptPage);
 
@@ -193,6 +197,7 @@ public class TypingTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
+  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testWillSimulateAKeyPressWhenEnteringTextIntoInputElements() {
     driver.get(pages.javascriptPage);
 
@@ -207,6 +212,7 @@ public class TypingTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
+  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testWillSimulateAKeyUpWhenEnteringTextIntoTextAreas() {
     driver.get(pages.javascriptPage);
 
@@ -219,6 +225,7 @@ public class TypingTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
+  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testWillSimulateAKeyDownWhenEnteringTextIntoTextAreas() {
     driver.get(pages.javascriptPage);
 
@@ -233,6 +240,7 @@ public class TypingTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
+  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testWillSimulateAKeyPressWhenEnteringTextIntoTextAreas() {
     driver.get(pages.javascriptPage);
 
@@ -246,8 +254,9 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {IE})
   @Test
+  @Ignore(IE)
+  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testShouldFireFocusKeyEventsInTheRightOrder() {
     driver.get(pages.javascriptPage);
 
@@ -265,9 +274,10 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT, IE, PHANTOMJS})
-  @NotYetImplemented(HTMLUNIT)
   @Test
+  @Ignore(IE)
+  @Ignore(PHANTOMJS)
+  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testShouldReportKeyCodeOfArrowKeys() {
     assumeFalse(Browser.detect() == Browser.opera &&
                 getEffectivePlatform().is(Platform.WINDOWS));
@@ -294,9 +304,8 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @NotYetImplemented(HTMLUNIT)
-  @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
   @Test
+  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testShouldReportKeyCodeOfArrowKeysUpDownEvents() {
     assumeFalse(Browser.detect() == Browser.opera &&
                 getEffectivePlatform().is(Platform.WINDOWS));
@@ -328,6 +337,7 @@ public class TypingTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
+  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testNumericNonShiftKeys() {
     driver.get(pages.javascriptPage);
 
@@ -341,7 +351,7 @@ public class TypingTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore(MARIONETTE)
+  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testNumericShiftKeys() {
     driver.get(pages.javascriptPage);
 
@@ -357,6 +367,7 @@ public class TypingTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
+  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testLowerCaseAlphaKeys() {
     driver.get(pages.javascriptPage);
 
@@ -370,7 +381,7 @@ public class TypingTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore(MARIONETTE)
+  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testUppercaseAlphaKeys() {
     driver.get(pages.javascriptPage);
 
@@ -386,7 +397,7 @@ public class TypingTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore(MARIONETTE)
+  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testAllPrintableKeys() {
     driver.get(pages.javascriptPage);
 
@@ -402,9 +413,8 @@ public class TypingTest extends JUnit4TestBase {
     assertThat(result.getText().trim(), containsString(" up: 16"));
   }
 
-  @NotYetImplemented(HTMLUNIT)
-  @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
   @Test
+  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testArrowKeysAndPageUpAndDown() {
     driver.get(pages.javascriptPage);
 
@@ -417,6 +427,7 @@ public class TypingTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
+  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testHomeAndEndAndPageUpAndPageDownKeys() {
     assumeFalse("FIXME: macs don't have HOME keys, would PGUP work?",
                 getEffectivePlatform().is(Platform.MAC));
@@ -432,9 +443,8 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @NotYetImplemented(HTMLUNIT)
-  @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
   @Test
+  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testDeleteAndBackspaceKeys() {
     driver.get(pages.javascriptPage);
 
@@ -451,9 +461,8 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @NotYetImplemented(HTMLUNIT)
   @Test
-  @Ignore({HTMLUNIT, MARIONETTE})
+  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testSpecialSpaceKeys() {
     driver.get(pages.javascriptPage);
 
@@ -464,9 +473,8 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @NotYetImplemented(HTMLUNIT)
   @Test
-  @Ignore({HTMLUNIT, MARIONETTE})
+  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testNumberpadKeys() {
     driver.get(pages.javascriptPage);
 
@@ -480,8 +488,9 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {IE}, reason = "IE: F4 triggers address bar")
   @Test
+  @Ignore(value = IE, reason = "F4 triggers address bar")
+  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testFunctionKeys() {
     driver.get(pages.javascriptPage);
 
@@ -493,9 +502,9 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT, SAFARI}, reason = "Safari: issue 4221", issues = {4221})
-  @NotYetImplemented(HTMLUNIT)
   @Test
+  @Ignore(value = SAFARI, reason = "issue 4221")
+  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testShiftSelectionDeletes() {
     driver.get(pages.javascriptPage);
 
@@ -512,6 +521,7 @@ public class TypingTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Test
   @Ignore(MARIONETTE)
+  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testChordControlHomeShiftEndDelete() {
     assumeFalse("FIXME: macs don't have HOME keys, would PGUP work?",
                 getEffectivePlatform().is(Platform.MAC));
@@ -533,7 +543,7 @@ public class TypingTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore(MARIONETTE)
+  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testChordReveseShiftHomeSelectionDeletes() {
     assumeFalse("FIXME: macs don't have HOME keys, would PGUP work?",
                 getEffectivePlatform().is(Platform.MAC));
@@ -566,7 +576,7 @@ public class TypingTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore(MARIONETTE)
+  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testChordControlCutAndPaste() {
     assumeFalse("FIXME: macs don't have HOME keys, would PGUP work?",
                 getEffectivePlatform().is(Platform.MAC));
@@ -614,6 +624,7 @@ public class TypingTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
+  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testShouldTypeIntoInputElementsThatHaveNoTypeAttribute() {
     driver.get(pages.formPage);
 
@@ -625,6 +636,7 @@ public class TypingTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
+  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testShouldNotTypeIntoElementsThatPreventKeyDownEvents() {
     driver.get(pages.javascriptPage);
 
@@ -635,9 +647,9 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {PHANTOMJS, MARIONETTE, HTMLUNIT})
-  @NotYetImplemented(HTMLUNIT)
   @Test
+  @Ignore(PHANTOMJS)
+  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testGenerateKeyPressEventEvenWhenElementPreventsDefault() {
     assumeFalse(isFirefox(driver) && getFirefoxVersion(driver) < 25);
     driver.get(pages.javascriptPage);
@@ -651,6 +663,7 @@ public class TypingTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
+  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testShouldBeAbleToTypeOnAnEmailInputField() {
     driver.get(pages.formPage);
     WebElement email = driver.findElement(By.id("email"));
@@ -658,8 +671,8 @@ public class TypingTest extends JUnit4TestBase {
     assertThat(email.getAttribute("value"), equalTo("foobar"));
   }
 
-  @Ignore(value = {HTMLUNIT}, reason = "inconsistent test")
   @Test
+  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testShouldBeAbleToTypeOnANumberInputField() {
     driver.get(pages.formPage);
     WebElement email = driver.findElement(By.id("age"));
@@ -668,8 +681,9 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {SAFARI}, reason = "Untested")
   @Test
+  @Ignore(SAFARI)
+  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void canSafelyTypeOnElementThatIsRemovedFromTheDomOnKeyPress() {
     driver.get(appServer.whereIs("key_tests/remove_on_keypress.html"));
 
@@ -699,7 +713,7 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = {HTMLUNIT, MARIONETTE}, reason = "Failed with JS enabled, passed otherwise")
+  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void canClearNumberInputAfterTypingInvalidInput() {
     driver.get(pages.formPage);
     WebElement input = driver.findElement(By.id("age"));

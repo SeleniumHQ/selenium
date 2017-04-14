@@ -233,13 +233,21 @@ class RemoteConnection(object):
             Command.QUIT: ('DELETE', '/session/$sessionId'),
             Command.GET_CURRENT_WINDOW_HANDLE:
                 ('GET', '/session/$sessionId/window_handle'),
+            Command.W3C_GET_CURRENT_WINDOW_HANDLE:
+                ('GET', '/session/$sessionId/window'),
             Command.GET_WINDOW_HANDLES:
                 ('GET', '/session/$sessionId/window_handles'),
+            Command.W3C_GET_WINDOW_HANDLES:
+                ('GET', '/session/$sessionId/window/handles'),
             Command.GET: ('POST', '/session/$sessionId/url'),
             Command.GO_FORWARD: ('POST', '/session/$sessionId/forward'),
             Command.GO_BACK: ('POST', '/session/$sessionId/back'),
             Command.REFRESH: ('POST', '/session/$sessionId/refresh'),
             Command.EXECUTE_SCRIPT: ('POST', '/session/$sessionId/execute'),
+            Command.W3C_EXECUTE_SCRIPT:
+                ('POST', '/session/$sessionId/execute/sync'),
+            Command.W3C_EXECUTE_SCRIPT_ASYNC:
+                ('POST', '/session/$sessionId/execute/async'),
             Command.GET_CURRENT_URL: ('GET', '/session/$sessionId/url'),
             Command.GET_TITLE: ('GET', '/session/$sessionId/title'),
             Command.GET_PAGE_SOURCE: ('GET', '/session/$sessionId/source'),
@@ -310,12 +318,20 @@ class RemoteConnection(object):
                 ('POST', '/session/$sessionId/timeouts'),
             Command.DISMISS_ALERT:
                 ('POST', '/session/$sessionId/dismiss_alert'),
+            Command.W3C_DISMISS_ALERT:
+                ('POST', '/session/$sessionId/alert/dismiss'),
             Command.ACCEPT_ALERT:
                 ('POST', '/session/$sessionId/accept_alert'),
+            Command.W3C_ACCEPT_ALERT:
+                ('POST', '/session/$sessionId/alert/accept'),
             Command.SET_ALERT_VALUE:
                 ('POST', '/session/$sessionId/alert_text'),
+            Command.W3C_SET_ALERT_VALUE:
+                ('POST', '/session/$sessionId/alert/text'),
             Command.GET_ALERT_TEXT:
                 ('GET', '/session/$sessionId/alert_text'),
+            Command.W3C_GET_ALERT_TEXT:
+                ('GET', '/session/$sessionId/alert/text'),
             Command.SET_ALERT_CREDENTIALS:
                 ('POST', '/session/$sessionId/alert/credentials'),
             Command.CLICK:
@@ -497,7 +513,8 @@ class RemoteConnection(object):
             else:
                 request = Request(url, data=body.encode('utf-8'), method=method)
 
-            request.headers.update(headers)
+            for key, val in headers.items():
+                request.add_header(key, val)
 
             if password_manager:
                 opener = url_request.build_opener(url_request.HTTPRedirectHandler(),

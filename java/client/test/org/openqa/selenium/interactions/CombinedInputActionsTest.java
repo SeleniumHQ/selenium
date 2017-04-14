@@ -31,7 +31,6 @@ import static org.openqa.selenium.testing.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.PHANTOMJS;
-import static org.openqa.selenium.testing.Driver.REMOTE;
 import static org.openqa.selenium.testing.Driver.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
 import static org.openqa.selenium.testing.TestUtilities.getIEVersion;
@@ -57,15 +56,15 @@ import java.util.List;
 /**
  * Tests combined input actions.
  */
-@Ignore(value = {SAFARI},
-    reason = "Safari: not implemented (issue 4136)",
-    issues = {4136})
+@Ignore(value = SAFARI, reason = "Safari: not implemented (issue 4136)")
 public class CombinedInputActionsTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore({CHROME, IE, FIREFOX, PHANTOMJS})
-  @NotYetImplemented(HTMLUNIT)
+  @Ignore(CHROME)
+  @Ignore(IE)
+  @Ignore(FIREFOX)
+  @Ignore(PHANTOMJS)
   public void testPlainClickingOnMultiSelectionList() {
     driver.get(pages.formSelectionPage);
 
@@ -89,8 +88,10 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore({CHROME, IE, FIREFOX, MARIONETTE})
-  @NotYetImplemented(HTMLUNIT)
+  @Ignore(CHROME)
+  @Ignore(IE)
+  @Ignore(FIREFOX)
+  @Ignore(MARIONETTE)
   public void testShiftClickingOnMultiSelectionList() {
     driver.get(pages.formSelectionPage);
 
@@ -115,8 +116,11 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore({CHROME, IE, FIREFOX, PHANTOMJS, MARIONETTE})
-  @NotYetImplemented(HTMLUNIT)
+  @Ignore(CHROME)
+  @Ignore(IE)
+  @Ignore(FIREFOX)
+  @Ignore(PHANTOMJS)
+  @Ignore(MARIONETTE)
   public void testControlClickingOnMultiSelectionList() {
     driver.get(pages.formSelectionPage);
 
@@ -140,8 +144,10 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({IE, REMOTE, PHANTOMJS, MARIONETTE})
   @Test
+  @Ignore(IE)
+  @Ignore(PHANTOMJS)
+  @Ignore(MARIONETTE)
   public void testControlClickingOnCustomMultiSelectionList() {
     driver.get(pages.selectableItemsPage);
 
@@ -182,9 +188,11 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
     wait.until(titleIs("XHTML Test Page"));
   }
 
-  @Ignore(value = {PHANTOMJS, SAFARI, MARIONETTE})
   @SwitchToTopAfterTest
   @Test
+  @Ignore(SAFARI)
+  @Ignore(PHANTOMJS)
+  @Ignore(MARIONETTE)
   public void canMoveMouseToAnElementInAnIframeAndClick() {
     driver.get(appServer.whereIs("click_tests/click_in_iframe.html"));
 
@@ -202,13 +210,14 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(MARIONETTE)
   public void testCanClickOnLinks() {
     navigateToClicksPageAndClickLink();
   }
 
-  @NotYetImplemented(HTMLUNIT)
   @Test
   @Ignore(MARIONETTE)
+  @NotYetImplemented(HTMLUNIT)
   public void testCanClickOnLinksWithAnOffset() {
     driver.get(pages.clicksPage);
 
@@ -223,9 +232,9 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
     wait.until(titleIs("XHTML Test Page"));
   }
 
-  @NotYetImplemented(HTMLUNIT)
   @Test
   @Ignore(MARIONETTE)
+  @NotYetImplemented(HTMLUNIT)
   public void testClickAfterMoveToAnElementWithAnOffsetShouldUseLastMousePosition() {
     driver.get(pages.clickEventPage);
 
@@ -264,9 +273,9 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
    * the mouse in the driver keeps the wrong state, mouse movement will end
    * up at the wrong coordinates.
    */
-  @NotYetImplemented(HTMLUNIT)
   @Test
   @Ignore(MARIONETTE)
+  @NotYetImplemented(HTMLUNIT)
   public void testMouseMovementWorksWhenNavigatingToAnotherPage() {
     navigateToClicksPageAndClickLink();
 
@@ -280,7 +289,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore({HTMLUNIT, MARIONETTE})
+  @Ignore(MARIONETTE)
   public void testChordControlCutAndPaste() {
     assumeFalse("FIXME: macs don't have CONRTROL key", getEffectivePlatform().is(Platform.MAC));
     assumeFalse("Windows: native events library  does not support storing modifiers state yet",
@@ -318,9 +327,9 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
     wait.until(elementValueToEqual(element, "abc defabc def"));
   }
 
-  @Ignore({IE, MARIONETTE})
-  @NotYetImplemented(HTMLUNIT)
   @Test
+  @Ignore(MARIONETTE)
+  @Ignore(IE)
   public void testCombiningShiftAndClickResultsInANewWindow() {
     driver.get(pages.linkedImage);
     WebElement link = driver.findElement(By.id("link"));
@@ -339,8 +348,10 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
     assertEquals("Should not have navigated away.", originalTitle, driver.getTitle());
   }
 
-  @Ignore({IE, HTMLUNIT, MARIONETTE})
+  @JavascriptEnabled
   @Test
+  @Ignore(MARIONETTE)
+  @Ignore(IE)
   public void testHoldingDownShiftKeyWhileClicking() {
     driver.get(pages.clickEventPage);
 
@@ -355,8 +366,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore(value = {SAFARI, MARIONETTE, HTMLUNIT}, issues = {4136})
-  @NotYetImplemented(HTMLUNIT) // broken in 2.20
+  @Ignore(MARIONETTE)
   public void canClickOnASuckerFishStyleMenu() throws InterruptedException {
     driver.get(pages.javascriptPage);
 
@@ -383,8 +393,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore(value = {SAFARI, MARIONETTE, HTMLUNIT}, issues = {4136})
-  @NotYetImplemented(HTMLUNIT) // broken in 2.20
+  @Ignore(MARIONETTE)
   public void testCanClickOnSuckerFishMenuItem() throws Exception {
     driver.get(pages.javascriptPage);
 

@@ -56,7 +56,9 @@ class Command(object):
     SUBMIT_ELEMENT = "submitElement"
     UPLOAD_FILE = "uploadFile"
     GET_CURRENT_WINDOW_HANDLE = "getCurrentWindowHandle"
+    W3C_GET_CURRENT_WINDOW_HANDLE = "w3cGetCurrentWindowHandle"
     GET_WINDOW_HANDLES = "getWindowHandles"
+    W3C_GET_WINDOW_HANDLES = "w3cGetWindowHandles"
     GET_WINDOW_SIZE = "getWindowSize"
     W3C_GET_WINDOW_SIZE = "w3cGetWindowSize"
     W3C_GET_WINDOW_POSITION = "w3cGetWindowPosition"
@@ -76,6 +78,8 @@ class Command(object):
     GET_PAGE_SOURCE = "getPageSource"
     GET_TITLE = "getTitle"
     EXECUTE_SCRIPT = "executeScript"
+    W3C_EXECUTE_SCRIPT = "w3cExecuteScript"
+    W3C_EXECUTE_SCRIPT_ASYNC = "w3cExecuteScriptAsync"
     GET_ELEMENT_TEXT = "getElementText"
     GET_ELEMENT_VALUE = "getElementValue"
     GET_ELEMENT_TAG_NAME = "getElementTagName"
@@ -104,9 +108,13 @@ class Command(object):
 
     # Alerts
     DISMISS_ALERT = "dismissAlert"
+    W3C_DISMISS_ALERT = "w3cDismissAlert"
     ACCEPT_ALERT = "acceptAlert"
+    W3C_ACCEPT_ALERT = "w3cAcceptAlert"
     SET_ALERT_VALUE = "setAlertValue"
+    W3C_SET_ALERT_VALUE = "w3cSetAlertValue"
     GET_ALERT_TEXT = "getAlertText"
+    W3C_GET_ALERT_TEXT = "w3cGetAlertText"
     SET_ALERT_CREDENTIALS = "setAlertCredentials"
 
     # Advanced user interactions

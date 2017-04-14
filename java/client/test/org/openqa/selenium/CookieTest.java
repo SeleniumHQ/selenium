@@ -18,10 +18,11 @@
 package org.openqa.selenium;
 
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -45,23 +46,15 @@ public class CookieTest {
   @Test
   public void testShouldThrowAnExceptionWhenSemiColonExistsInTheCookieAttribute() {
     Cookie cookie = new Cookie("hi;hi", "value", null, null, null, false);
-    try {
-      cookie.validate();
-      fail();
-    } catch (IllegalArgumentException e) {
-      // Expected
-    }
+    Throwable t = catchThrowable(cookie::validate);
+    assertThat(t, instanceOf(IllegalArgumentException.class));
   }
 
   @Test
   public void testShouldThrowAnExceptionTheNameIsNull() {
     Cookie cookie = new Cookie(null, "value", null, null, null, false);
-    try {
-      cookie.validate();
-      fail();
-    } catch (IllegalArgumentException e) {
-      // expected
-    }
+    Throwable t = catchThrowable(cookie::validate);
+    assertThat(t, instanceOf(IllegalArgumentException.class));
   }
 
   @Test

@@ -22,7 +22,7 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
+import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -53,12 +53,8 @@ public class KeysTest {
 
   @Test
   public void invalidSubSequenceThrows() {
-    try {
-      Keys.LEFT.subSequence(-1, 10);
-      fail("Expected IndexOutOfBoundsException");
-    } catch (RuntimeException e) {
-      assertThat(e, is(instanceOf(IndexOutOfBoundsException.class)));
-    }
+    Throwable t = catchThrowable(() -> Keys.LEFT.subSequence(-1, 10));
+    assertThat(t, instanceOf(IndexOutOfBoundsException.class));
   }
 
   @Test

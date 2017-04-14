@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using OpenQA.Selenium.Internal;
 using System.Collections.ObjectModel;
 
 namespace OpenQA.Selenium.Interactions
@@ -10,12 +11,22 @@ namespace OpenQA.Selenium.Interactions
         public void Setup()
         {
             new Actions(driver).SendKeys(Keys.Null).Perform();
+            IActionExecutor actionExecutor = driver as IActionExecutor;
+            if (actionExecutor != null)
+            {
+                actionExecutor.ResetInputState();
+            }
         }
 
         [TearDown]
         public void ReleaseModifierKeys()
         {
             new Actions(driver).SendKeys(Keys.Null).Perform();
+            IActionExecutor actionExecutor = driver as IActionExecutor;
+            if (actionExecutor != null)
+            {
+                actionExecutor.ResetInputState();
+            }
         }
 
         [Test]

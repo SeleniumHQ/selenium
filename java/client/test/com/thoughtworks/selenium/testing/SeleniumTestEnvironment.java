@@ -22,6 +22,7 @@ import com.google.common.collect.Lists;
 import org.openqa.selenium.BuckBuild;
 import org.openqa.selenium.environment.TestEnvironment;
 import org.openqa.selenium.environment.webserver.AppServer;
+import org.openqa.selenium.environment.webserver.Page;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.net.UrlChecker;
 import org.openqa.selenium.os.CommandLine;
@@ -114,6 +115,11 @@ public class SeleniumTestEnvironment implements TestEnvironment {
       }
 
       @Override
+      public String create(Page page) {
+        throw new UnsupportedOperationException("create");
+      }
+
+      @Override
       public void start() {
         // no-op
       }
@@ -121,16 +127,6 @@ public class SeleniumTestEnvironment implements TestEnvironment {
       @Override
       public void stop() {
         command.destroy();
-      }
-
-      @Override
-      public void listenOn(int port) {
-        throw new UnsupportedOperationException("listenOn");
-      }
-
-      @Override
-      public void listenSecurelyOn(int port) {
-        throw new UnsupportedOperationException("listenSecurelyOn");
       }
     };
   }

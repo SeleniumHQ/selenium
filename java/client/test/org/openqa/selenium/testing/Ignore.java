@@ -17,23 +17,22 @@
 
 package org.openqa.selenium.testing;
 
-import org.openqa.selenium.Platform;
-
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.METHOD})
+@Repeatable(IgnoreList.class)
 public @interface Ignore {
 
-  Driver[] value() default {Driver.ALL};
+  Driver value() default Driver.ALL;
 
-  Platform[] platforms() default {Platform.ANY};
+  String reason() default ("Unknown");
 
-  String reason() default ("Not implemented in driver yet");
+  String issue() default "";
 
-  int[] issues() default {};
-
+  boolean travis() default false;
 }

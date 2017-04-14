@@ -26,7 +26,7 @@ namespace OpenQA.Selenium.Interactions
     /// <summary>
     /// Represents a single interaction for a given input device.
     /// </summary>
-    internal abstract class Interaction
+    public abstract class Interaction
     {
         private InputDevice sourceDevice;
 

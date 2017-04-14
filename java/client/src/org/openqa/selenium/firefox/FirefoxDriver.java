@@ -28,7 +28,6 @@ import com.google.common.collect.Sets;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.remote.BeanToJsonConverter;
 import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.FileDetector;
@@ -194,7 +193,7 @@ public class FirefoxDriver extends RemoteWebDriver {
   }
 
   private static CommandExecutor toExecutor(FirefoxOptions options) {
-    DriverService.Builder builder;
+    DriverService.Builder<?, ?> builder;
 
     if (options.isLegacy()) {
       builder = XpiDriverService.builder()
@@ -203,10 +202,6 @@ public class FirefoxDriver extends RemoteWebDriver {
     } else {
       builder = new GeckoDriverService.Builder()
           .usingFirefoxBinary(options.getBinaryOrNull().orElseGet(FirefoxBinary::new));
-    }
-
-    if (System.getProperty(BROWSER_LOGFILE) != null) {
-      builder.withLogFile(new File(System.getProperty(System.getProperty(BROWSER_LOGFILE))));
     }
 
     return new DriverCommandExecutor(builder.build());

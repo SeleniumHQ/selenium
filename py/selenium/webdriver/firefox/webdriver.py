@@ -104,7 +104,6 @@ class WebDriver(RemoteWebDriver):
         self.binary = None
         self.profile = None
         self.service = None
-        self._w3c = False
 
         if capabilities is None:
             capabilities = DesiredCapabilities.FIREFOX.copy()
@@ -138,8 +137,7 @@ class WebDriver(RemoteWebDriver):
         # TODO(ato): Perform conformance negotiation
 
         if capabilities.get("marionette"):
-            self._w3c = True
-
+            capabilities.pop("marionette")
             self.service = Service(executable_path, log_path=log_path)
             self.service.start()
 
@@ -186,7 +184,7 @@ class WebDriver(RemoteWebDriver):
             # the socket.
             pass
 
-        if self._w3c:
+        if self.w3c:
             self.service.stop()
         else:
             self.binary.kill()

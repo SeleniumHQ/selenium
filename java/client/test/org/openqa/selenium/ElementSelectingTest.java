@@ -45,28 +45,28 @@ public class ElementSelectingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(MARIONETTE)
+  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/615")
   public void testShouldNotBeAbleToSelectADisabledCheckbox() {
     driver.get(pages.formPage);
     assertCannotSelect(disabledUnselectedCheckbox());
   }
 
   @Test
-  @Ignore(MARIONETTE)
+  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/615")
   public void testShouldNotBeAbleToSelectADisabledCheckboxDisabledWithRandomString() {
     driver.get(pages.formPage);
     assertCannotSelect(randomlyDisabledSelectedCheckbox());
   }
 
   @Test
-  @Ignore({MARIONETTE})
+  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/615")
   public void testShouldNotBeAbleToSelectADisabledRadioButton() {
     driver.get(pages.formPage);
     assertCannotSelect(disabledUnselectedRadioButton());
   }
 
   @Test
-  @Ignore(MARIONETTE)
+  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/615")
   public void testShouldNotBeAbleToSelectADisabledRadioButtonDisabledWithRandomString() {
     driver.get(pages.formPage);
     assertCannotSelect(randomlyDisabledUnselectedRadioButton());
@@ -111,7 +111,6 @@ public class ElementSelectingTest extends JUnit4TestBase {
     assertTrue(button.isSelected());
   }
 
-  @Ignore(value = {MARIONETTE})
   @Test
   public void testShouldBeAbleToToggleEnabledMultiSelectOption() {
     driver.get(pages.formPage);
@@ -147,21 +146,21 @@ public class ElementSelectingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(MARIONETTE)
+  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/615")
   public void testClickingDisabledSelectedCheckboxShouldBeNoop() {
     driver.get(pages.formPage);
     assertClickingPreservesCurrentlySelectedStatus(randomlyDisabledSelectedCheckbox());
   }
 
   @Test
-  @Ignore(MARIONETTE)
+  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/615")
   public void testClickingDisabledUnselectedCheckboxShouldBeNoop() {
     driver.get(pages.formPage);
     assertClickingPreservesCurrentlySelectedStatus(disabledUnselectedCheckbox());
   }
 
   @Test
-  @Ignore(MARIONETTE)
+  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/615")
   public void testClickingDisabledSelectedRadioButtonShouldBeNoop() {
     driver.get(pages.formPage);
     assertClickingPreservesCurrentlySelectedStatus(disabledSelectedRadioButton());

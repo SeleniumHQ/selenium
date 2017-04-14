@@ -51,6 +51,7 @@
 #define ENSURE_CLEAN_SESSION_CAPABILITY "ie.ensureCleanSession"
 #define FORCE_SHELL_WINDOWS_API_CAPABILITY "ie.forceShellWindowsApi"
 #define FILE_UPLOAD_DIALOG_TIMEOUT_CAPABILITY "ie.fileUploadDialogTimeout"
+#define USE_LEGACY_FILE_UPLOAD_DIALOG_HANDLING_CAPABILITY "ie.useLegacyFileUploadDialogHandling"
 #define ENABLE_FULL_PAGE_SCREENSHOT_CAPABILITY "ie.enableFullPageScreenshot"
 #define IE_DRIVER_EXTENSIONS_CAPABILITY "se:ieOptions"
 

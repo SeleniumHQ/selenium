@@ -176,6 +176,20 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor> {
     this->file_upload_dialog_timeout_ = file_upload_dialog_timeout;
   }
 
+  bool use_legacy_file_upload_dialog_handling(void) const {
+    return this->use_legacy_file_upload_dialog_handling_;
+  }
+  void set_use_legacy_file_upload_dialog_handling(const bool use_legacy_file_upload_dialog_handling) {
+    this->use_legacy_file_upload_dialog_handling_ = use_legacy_file_upload_dialog_handling;
+  }
+
+  bool enable_full_page_screenshot(void) const {
+    return this->enable_full_page_screenshot_;
+  }
+  void set_enable_full_page_screenshot(const bool enable_full_page_screenshot) {
+    this->enable_full_page_screenshot_ = enable_full_page_screenshot;
+  }
+
   ElementFinder* element_finder(void) const { return this->element_finder_; }
   InputManager* input_manager(void) const { return this->input_manager_; }
   ProxyManager* proxy_manager(void) const { return this->proxy_manager_; }
@@ -223,6 +237,8 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor> {
   std::string unexpected_alert_behavior_;
   std::string page_load_strategy_;
   int file_upload_dialog_timeout_;
+  bool use_legacy_file_upload_dialog_handling_;
+  bool enable_full_page_screenshot_;
 
   Command current_command_;
   std::string serialized_response_;

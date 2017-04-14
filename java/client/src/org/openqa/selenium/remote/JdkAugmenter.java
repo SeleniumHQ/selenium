@@ -56,7 +56,7 @@ public class JdkAugmenter extends BaseAugmenter {
     } else if (Proxy.isProxyClass(driver.getClass())) {
       InvocationHandler handler = Proxy.getInvocationHandler(driver);
       if (handler instanceof JdkHandler) {
-        return ((JdkHandler) handler).driver;
+        return ((JdkHandler<?>) handler).driver;
       }
     }
     return null;

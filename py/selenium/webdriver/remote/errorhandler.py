@@ -15,22 +15,23 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from selenium.common.exceptions import ElementNotSelectableException
-from selenium.common.exceptions import ElementNotVisibleException
-from selenium.common.exceptions import InvalidElementStateException
-from selenium.common.exceptions import InvalidSelectorException
-from selenium.common.exceptions import ImeNotAvailableException
-from selenium.common.exceptions import ImeActivationFailedException
-from selenium.common.exceptions import NoSuchElementException
-from selenium.common.exceptions import NoSuchFrameException
-from selenium.common.exceptions import NoSuchWindowException
-from selenium.common.exceptions import StaleElementReferenceException
-from selenium.common.exceptions import UnexpectedAlertPresentException
-from selenium.common.exceptions import NoAlertPresentException
-from selenium.common.exceptions import ErrorInResponseException
-from selenium.common.exceptions import TimeoutException
-from selenium.common.exceptions import WebDriverException
-from selenium.common.exceptions import MoveTargetOutOfBoundsException
+from selenium.common.exceptions import (ElementNotInteractableException,
+                                        ElementNotSelectableException,
+                                        ElementNotVisibleException,
+                                        ErrorInResponseException,
+                                        InvalidElementStateException,
+                                        InvalidSelectorException,
+                                        ImeNotAvailableException,
+                                        ImeActivationFailedException,
+                                        MoveTargetOutOfBoundsException,
+                                        NoSuchElementException,
+                                        NoSuchFrameException,
+                                        NoSuchWindowException,
+                                        NoAlertPresentException,
+                                        StaleElementReferenceException,
+                                        TimeoutException,
+                                        UnexpectedAlertPresentException,
+                                        WebDriverException)
 
 try:
     basestring
@@ -51,6 +52,7 @@ class ErrorCode(object):
     ELEMENT_NOT_VISIBLE = [11, 'element not visible']
     INVALID_ELEMENT_STATE = [12, 'invalid element state']
     UNKNOWN_ERROR = [13, 'unknown error']
+    ELEMENT_NOT_INTERACTABLE = ["element not interactable"]
     ELEMENT_IS_NOT_SELECTABLE = [15, 'element not selectable']
     JAVASCRIPT_ERROR = [17, 'javascript error']
     XPATH_LOOKUP_ERROR = [19, 'invalid selector']
@@ -106,10 +108,7 @@ class ErrorHandler(object):
                         message = value["value"]
                         if not isinstance(message, basestring):
                             value = message
-                            try:
-                                message = message['message']
-                            except TypeError:
-                                message = None
+                            message = message.get('message')
                     else:
                         message = value.get('message', None)
                 except ValueError:
@@ -134,6 +133,8 @@ class ErrorHandler(object):
             exception_class = InvalidSelectorException
         elif status in ErrorCode.ELEMENT_IS_NOT_SELECTABLE:
             exception_class = ElementNotSelectableException
+        elif status in ErrorCode.ELEMENT_NOT_INTERACTABLE:
+            exception_class = ElementNotInteractableException
         elif status in ErrorCode.INVALID_COOKIE_DOMAIN:
             exception_class = WebDriverException
         elif status in ErrorCode.UNABLE_TO_SET_COOKIE:
