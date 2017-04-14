@@ -27,7 +27,7 @@ namespace OpenQA.Selenium.Interactions
     /// Provides methods that allow the creation of action sequences to enable
     /// advanced user interactions.
     /// </summary>
-    internal class ActionBuilder
+    public class ActionBuilder
     {
         private Dictionary<InputDevice, ActionSequence> sequences = new Dictionary<InputDevice, ActionSequence>();
 

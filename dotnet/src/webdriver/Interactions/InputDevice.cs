@@ -25,7 +25,7 @@ namespace OpenQA.Selenium.Interactions
     /// <summary>
     /// Base class for all input devices for actions.
     /// </summary>
-    internal abstract class InputDevice
+    public abstract class InputDevice
     {
         private string deviceName;
 

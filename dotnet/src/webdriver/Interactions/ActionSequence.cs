@@ -27,7 +27,7 @@ namespace OpenQA.Selenium.Interactions
     /// <summary>
     /// Represents a sequence of actions to be performed in the target browser.
     /// </summary>
-    internal class ActionSequence
+    public class ActionSequence
     {
         private List<Interaction> interactions = new List<Interaction>();
         private InputDevice device;
