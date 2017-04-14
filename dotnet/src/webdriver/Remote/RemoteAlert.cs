@@ -80,6 +80,7 @@ namespace OpenQA.Selenium.Remote
             if (this.driver.IsSpecificationCompliant)
             {
                 parameters.Add("value", keysToSend.ToCharArray());
+                parameters.Add("text", keysToSend);
             }
             else
             {
