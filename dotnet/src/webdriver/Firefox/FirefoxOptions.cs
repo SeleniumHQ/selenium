@@ -305,8 +305,6 @@ namespace OpenQA.Selenium.Firefox
         public override ICapabilities ToCapabilities()
         {
             DesiredCapabilities capabilities = DesiredCapabilities.Firefox();
-            capabilities.SetCapability(IsMarionetteCapability, this.isMarionette);
-
             if (this.isMarionette)
             {
                 Dictionary<string, object> firefoxOptions = this.GenerateFirefoxOptionsDictionary();
@@ -314,6 +312,7 @@ namespace OpenQA.Selenium.Firefox
             }
             else
             {
+                capabilities.SetCapability(IsMarionetteCapability, this.isMarionette);
                 if (this.profile != null)
                 {
                     capabilities.SetCapability(FirefoxProfileCapability, this.profile.ToBase64String());
