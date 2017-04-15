@@ -556,7 +556,7 @@ class RemoteConnection(object):
                 # Some of the drivers incorrectly return a response
                 # with no 'value' field when they should return null.
                 if 'value' not in data:
-                    data['value'] = None
+                    data['value'] = eval(body.strip())
                 return data
             else:
                 data = {'status': 0, 'value': body.strip()}
