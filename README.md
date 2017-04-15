@@ -31,6 +31,10 @@ API documentation:
 * [Python](http://seleniumhq.github.io/selenium/docs/api/py/)
 * [Ruby](http://seleniumhq.github.io/selenium/docs/api/rb/)
 
+Books:
+
+* [Selenium WebDriver in Practice](http://www.manning.com/liang/) - A hands-on guide to dozens of specific techniques you can use to get the most of WebDriver in your test automation development. 
+
 ## Pull Requests
 
 Please read [CONTRIBUTING.md](https://github.com/SeleniumHQ/selenium/blob/master/CONTRIBUTING.md)
