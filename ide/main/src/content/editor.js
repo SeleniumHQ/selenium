@@ -893,6 +893,12 @@ Editor.prototype.appendWaitForPageToLoad = function (window) {
     if (this.app.getCurrentFormat().getFormatter().remoteControl) {
       this.addCommand("waitForPageToLoad", this.getOptions().timeout, null, window);
     } else {
+      if (lastCommandIndex > 0 && lastCommand.command == 'type' && this.getTestCase().commands[lastCommandIndex-1].command == 'click') {
+        var beforeLast = this.getTestCase().commands[lastCommandIndex - 1];
+        this.getTestCase().commands[lastCommandIndex - 1] = lastCommand;
+        this.getTestCase().commands[lastCommandIndex] = beforeLast;
+        lastCommand = beforeLast;
+      }
       lastCommand.command = lastCommand.command + "AndWait";
       this.view.rowUpdated(lastCommandIndex);
     }
