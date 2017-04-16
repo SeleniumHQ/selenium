@@ -17,9 +17,6 @@
 
 package org.openqa.selenium.firefox;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Maps;
 import com.google.common.io.CharStreams;
@@ -221,11 +218,14 @@ class Preferences {
   }
 
   private void checkPreference(String key, Object value) {
-    checkNotNull(value);
-    checkArgument(!immutablePrefs.containsKey(key) ||
-                  (immutablePrefs.containsKey(key) && value.equals(immutablePrefs.get(key))),
-                  "Preference %s may not be overridden: frozen value=%s, requested value=%s",
-                  key, immutablePrefs.get(key), value);
+	Object frozenValue = immutablePrefs.get(key);
+	boolean changingFrozenValue = (frozenValue != null && !value.equals(frozenValue)); 
+    if (changingFrozenValue) {
+      throw new IllegalArgumentException("Preference " + key + 
+          " may not be overridden: frozen value=" + frozenValue + 
+          ", requested value=" + value);
+    }
+    
     if (MAX_SCRIPT_RUN_TIME_KEY.equals(key)) {
       int n;
       if (value instanceof String) {
@@ -233,13 +233,15 @@ class Preferences {
       } else if (value instanceof Integer) {
         n = (Integer) value;
       } else {
-        throw new IllegalArgumentException(String.format(
-            "%s value must be a number: %s", MAX_SCRIPT_RUN_TIME_KEY, value.getClass().getName()));
+        throw new IllegalArgumentException(MAX_SCRIPT_RUN_TIME_KEY +
+            " value must be a number: " + value.getClass().getName());
       }
-      checkArgument(n == 0 || n >= DEFAULT_MAX_SCRIPT_RUN_TIME,
-                    "%s must be == 0 || >= %s",
-                    MAX_SCRIPT_RUN_TIME_KEY,
-                    DEFAULT_MAX_SCRIPT_RUN_TIME);
+      
+      boolean badRuntimeValue = !(n == 0 || n >= DEFAULT_MAX_SCRIPT_RUN_TIME);
+      if (badRuntimeValue) {
+        throw new IllegalArgumentException(MAX_SCRIPT_RUN_TIME_KEY + 
+            " must be == 0 || >= " + DEFAULT_MAX_SCRIPT_RUN_TIME);
+      }
     }
   }
 
