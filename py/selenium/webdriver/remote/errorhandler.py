@@ -39,6 +39,12 @@ except NameError:  # Python 3.x
     basestring = str
 
 
+try:
+    basestring
+except NameError:  # Python 3.x
+    basestring = str
+
+
 class ErrorCode(object):
     """
     Error codes defined in the WebDriver wire protocol.
