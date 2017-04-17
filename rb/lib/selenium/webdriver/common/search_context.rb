@@ -91,6 +91,9 @@ module Selenium
           args
         when 1
           arg = args.first
+          unless arg.size == 1
+            raise ArgumentError, "expected only one clause in #{arg} but found #{arg.size}"
+          end
 
           unless arg.respond_to?(:shift)
             raise ArgumentError, "expected #{arg.inspect}:#{arg.class} to respond to #shift"
