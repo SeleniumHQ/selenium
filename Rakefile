@@ -114,6 +114,7 @@ JAVA_RELEASE_TARGETS = [
   '//java/client/src/org/openqa/selenium/edge:edge',
   '//java/client/src/org/openqa/selenium/firefox:firefox',
   '//java/client/src/org/openqa/selenium/ie:ie',
+  '//java/client/src/org/openqa/selenium/lift:lift',
   '//java/client/src/org/openqa/selenium/opera:opera',
   '//java/client/src/org/openqa/selenium/remote:remote',
   '//java/client/src/org/openqa/selenium/safari:safari',
