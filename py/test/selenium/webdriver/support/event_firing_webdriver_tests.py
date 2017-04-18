@@ -193,3 +193,11 @@ def test_should_be_able_to_access_wrapped_instance_from_event_calls(driver):
     ef_driver = EventFiringWebDriver(driver, EventListener())
     wrapped_driver = ef_driver.wrapped_driver
     assert driver is wrapped_driver
+
+
+def test_using_kwargs(driver, pages):
+    ef_driver = EventFiringWebDriver(driver, AbstractEventListener())
+    ef_driver.get(pages.url("javascriptPage.html"))
+    ef_driver.get_cookie(name="cookie_name")
+    element = ef_driver.find_element_by_id("plainButton")
+    element.get_attribute(name="id")
