@@ -19,11 +19,14 @@ package org.openqa.selenium.support.pagefactory;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import org.junit.Test;
+import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -84,6 +87,17 @@ public class UsingPageFactoryTest extends JUnit4TestBase {
     assertEquals(expected, seen);
   }
 
+  @Test
+  public void locatingWithSearchContextDoesOnlyIncludeElementsWithinThatContext() throws Exception {
+    driver.get(pages.xhtmlTestPage);
+
+    WebElement contentDiv = driver.findElement(By.className("content"));
+
+    Page page = PageFactory.initElements(contentDiv, Page.class);
+
+    assertNotNull(page.formElement);
+    assertTrue(page.divs.isEmpty());
+  }
 
   public class PublicPage {
     public WebElement element;
