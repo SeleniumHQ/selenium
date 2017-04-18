@@ -1,3 +1,20 @@
+/**
+ * @license
+ * Copyright 2014 Software Freedom Conservancy
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -249,6 +266,20 @@ bot.dom.TEXTUAL_INPUT_TYPES_ = [
   'number'
 ];
 
+/**
+ * List of non textual mutable input types.
+ * @private {!Array.<string>}
+ * @const
+ * @see http://www.whatwg.org/specs/web-apps/current-work/multipage/the-input-element.html#attr-input-type
+ */
+bot.dom.NONTEXTUAL_INPUT_TYPES_ = [
+  'date',
+  'datetime',
+  'datetime-local',
+  'time',
+  'week',
+  'month'
+];
 
 /**
  * TODO: Add support for designMode elements.
@@ -273,6 +304,19 @@ bot.dom.isTextual = function(element) {
   return false;
 };
 
+/**
+ * @param {!Element} element The element to check.
+ * @return {boolean} Whether the element is a non textual input.
+ * @private
+ */
+bot.dom.isNonTextualInput_ = function(element) {
+  if (bot.dom.isElement(element, goog.dom.TagName.INPUT)) {
+    var type = element.type.toLowerCase();
+    return goog.array.contains(bot.dom.NONTEXTUAL_INPUT_TYPES_, type);
+  }
+
+  return false;
+};
 
 /**
  * @param {!Element} element The element to check.
@@ -329,7 +373,8 @@ bot.dom.isContentEditable = function(element) {
  * @return {boolean} Whether the element accepts user-typed text.
  */
 bot.dom.isEditable = function(element) {
-  return (bot.dom.isTextual(element) || bot.dom.isFileInput(element)) &&
+  return (bot.dom.isTextual(element) || bot.dom.isNonTextualInput_(element) ||
+      bot.dom.isFileInput(element)) &&
       !bot.dom.getProperty(element, 'readOnly');
 };
 

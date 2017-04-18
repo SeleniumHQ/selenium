@@ -183,10 +183,32 @@
 
     function testClearingNumberInputWithInvalidData() {
       var e = goog.dom.getElement('numberField');
-      bot.action.type(e, "e");
+      bot.action.type(e, 'e');
       bot.action.clear(e);
-      bot.action.type(e, "3");
-      assertEquals("3", goog.dom.forms.getValue(e));
+      bot.action.type(e, '3');
+      assertEquals('3', goog.dom.forms.getValue(e));
+    }
+
+    function testClearingAEnterableControlInput() {
+      var e = goog.dom.getElement('weekField');
+      e.value = '2016-W09';
+      assertNotEquals('', e.value);
+      bot.action.clear(e);
+      assertEquals('', e.value);
+    }
+
+    function testClearingACheckbox() {
+      var e = goog.dom.getElement('checkedchecky');
+      assertTrue(e.checked);
+      bot.action.clear(e);
+      assertFalse(e.checked);
+    }
+
+    function testClearingARadioButton() {
+      var e = goog.dom.getElement('checkedradio');
+      assertTrue(e.checked);
+      bot.action.clear(e);
+      assertFalse(e.checked);
     }
 
     function testSubmittingANonFormElementShouldResultInAnError() {
@@ -278,6 +300,18 @@
     <div>
       <label for="numberField">Number field</label>
       <input type="number" id="numberField">
+    </div>
+    <div>
+      <label for="checkedradio">Radio button</label>
+      <input type="radio" id="checkedradio" checked>
+    </div>
+    <div>
+      <label for="checkedchecky">Check box</label>
+      <input type="checkbox" id="checkedchecky" checked>
+    </div>
+    <div>
+      <label for="weekField">Week field</label>
+      <input type="week" id="weekField">
     </div>
   </form>
 
