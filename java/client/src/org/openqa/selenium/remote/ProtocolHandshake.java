@@ -38,6 +38,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonWriter;
 
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.Proxy;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpMethod;
@@ -377,7 +378,7 @@ public class ProtocolHandshake {
     }
 
     if (value != null && value instanceof Map) {
-      capabilities = (Map<String, ?>) value;
+      capabilities = (Map<String, Object>) value;
     } else if (value != null && value instanceof Capabilities) {
       capabilities = ((Capabilities) capabilities).asMap();
     }
@@ -385,6 +386,16 @@ public class ProtocolHandshake {
     // If the result looks positive, return the result.
     if (sessionId != null && capabilities != null) {
       Dialect dialect = ossStatus == null ? Dialect.W3C : Dialect.OSS;
+
+      // Massage the Proxy if it's here.
+      Object existingProxy = capabilities.get(CapabilityType.PROXY);
+      if (existingProxy instanceof Map) {
+        // Forget you, java generics. Forget you.
+        ((Map<String, Object>)capabilities).put(
+            CapabilityType.PROXY,
+            new Proxy((Map<String, ?>) existingProxy));
+      }
+
       return Optional.of(new Result(dialect, String.valueOf(sessionId), capabilities));
     }
 
