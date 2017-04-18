@@ -276,6 +276,10 @@ public class RegistrationRequest {
     } catch (RuntimeException e) {
       throw new GridConfigurationException(e.getMessage());
     }
+    
+    if(port==-1){
+    	throw new GridConfigurationException("No port was specified in -hub parameter. Example - http://"+hub+":4444/grid/register");
+    }
   }
 
 }
