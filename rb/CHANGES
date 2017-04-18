@@ -10,6 +10,8 @@ Firefox:
 Ruby:
   * Support ElementClickIntercepted error from W3C spec
   * Support ElementNotInteractable error from W3C spec
+  * Implement window rect commands
+  * Implement window minimize command
 
 3.3.0 (2017-03-07)
 ===================
