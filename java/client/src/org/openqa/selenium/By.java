@@ -69,15 +69,15 @@ public abstract class By {
   }
 
   /**
-   * @param linkText The text to match against
+   * @param partialLinkText The text to match against
    * @return a By which locates A elements that contain the given link text
    */
-  public static By partialLinkText(final String linkText) {
-    if (linkText == null)
+  public static By partialLinkText(final String partialLinkText) {
+    if (partialLinkText == null)
       throw new IllegalArgumentException(
-          "Cannot find elements when link text is null.");
+          "Cannot find elements when partial link text is null.");
 
-    return new ByPartialLinkText(linkText);
+    return new ByPartialLinkText(partialLinkText);
   }
 
   /**
@@ -93,15 +93,15 @@ public abstract class By {
   }
 
   /**
-   * @param name The element's tagName
-   * @return a By which locates elements by their tag name
+   * @param tagName The element's tagName
+   * @return a By which locates elements by their tagName
    */
-  public static By tagName(final String name) {
-    if (name == null)
+  public static By tagName(final String tagName) {
+    if (tagName == null)
       throw new IllegalArgumentException(
-          "Cannot find elements when name tag name is null.");
+          "Cannot find elements when tagName is null.");
 
-    return new ByTagName(name);
+    return new ByTagName(tagName);
   }
 
   /**
@@ -137,15 +137,15 @@ public abstract class By {
    * implement the Selector API, a best effort is made to emulate the API. In this case, we strive
    * for at least CSS2 support, but offer no guarantees.
    *
-   * @param selector css expression
+   * @param cssSelector css expression
    * @return a By which locates elements by CSS.
    */
-  public static By cssSelector(final String selector) {
-    if (selector == null)
+  public static By cssSelector(final String cssSelector) {
+    if (cssSelector == null)
       throw new IllegalArgumentException(
-          "Cannot find elements when the selector is null");
+          "Cannot find elements when the cssSelector is null");
 
-    return new ByCssSelector(selector);
+    return new ByCssSelector(cssSelector);
 
   }
 
@@ -256,26 +256,26 @@ public abstract class By {
 
     private static final long serialVersionUID = 1163955344140679054L;
 
-    private final String linkText;
+    private final String partialLinkText;
 
-    public ByPartialLinkText(String linkText) {
-      this.linkText = linkText;
+    public ByPartialLinkText(String partialLinkText) {
+      this.partialLinkText = partialLinkText;
     }
 
     @Override
     public List<WebElement> findElements(SearchContext context) {
       return ((FindsByLinkText) context)
-          .findElementsByPartialLinkText(linkText);
+          .findElementsByPartialLinkText(partialLinkText);
     }
 
     @Override
     public WebElement findElement(SearchContext context) {
-      return ((FindsByLinkText) context).findElementByPartialLinkText(linkText);
+      return ((FindsByLinkText) context).findElementByPartialLinkText(partialLinkText);
     }
 
     @Override
     public String toString() {
-      return "By.partialLinkText: " + linkText;
+      return "By.partialLinkText: " + partialLinkText;
     }
   }
 
@@ -315,29 +315,29 @@ public abstract class By {
 
     private static final long serialVersionUID = 4699295846984948351L;
 
-    private final String name;
+    private final String tagName;
 
-    public ByTagName(String name) {
-      this.name = name;
+    public ByTagName(String tagName) {
+      this.tagName = tagName;
     }
 
     @Override
     public List<WebElement> findElements(SearchContext context) {
       if (context instanceof FindsByTagName)
-        return ((FindsByTagName) context).findElementsByTagName(name);
-      return ((FindsByXPath) context).findElementsByXPath(".//" + name);
+        return ((FindsByTagName) context).findElementsByTagName(tagName);
+      return ((FindsByXPath) context).findElementsByXPath(".//" + tagName);
     }
 
     @Override
     public WebElement findElement(SearchContext context) {
       if (context instanceof FindsByTagName)
-        return ((FindsByTagName) context).findElementByTagName(name);
-      return ((FindsByXPath) context).findElementByXPath(".//" + name);
+        return ((FindsByTagName) context).findElementByTagName(tagName);
+      return ((FindsByXPath) context).findElementByXPath(".//" + tagName);
     }
 
     @Override
     public String toString() {
-      return "By.tagName: " + name;
+      return "By.tagName: " + tagName;
     }
   }
 
@@ -417,37 +417,38 @@ public abstract class By {
 
     private static final long serialVersionUID = -3910258723099459239L;
 
-    private final String selector;
+    private final String cssSelector;
 
-    public ByCssSelector(String selector) {
-      this.selector = selector;
+    public ByCssSelector(String cssSelector) {
+      this.cssSelector = cssSelector;
     }
 
     @Override
     public WebElement findElement(SearchContext context) {
       if (context instanceof FindsByCssSelector) {
         return ((FindsByCssSelector) context)
-            .findElementByCssSelector(selector);
+            .findElementByCssSelector(cssSelector);
       }
 
       throw new WebDriverException(
-          "Driver does not support finding an element by selector: " + selector);
+          "Driver does not support finding an element by cssSelector: " + cssSelector);
     }
 
     @Override
     public List<WebElement> findElements(SearchContext context) {
       if (context instanceof FindsByCssSelector) {
         return ((FindsByCssSelector) context)
-            .findElementsByCssSelector(selector);
+            .findElementsByCssSelector(cssSelector);
       }
 
       throw new WebDriverException(
-          "Driver does not support finding elements by selector: " + selector);
+          "Driver does not support finding elements by cssSelector: " + cssSelector);
     }
 
     @Override
     public String toString() {
-      return "By.cssSelector: " + selector;
+      return "By.cssSelector: " + cssSelector;
     }
   }
 }
+
