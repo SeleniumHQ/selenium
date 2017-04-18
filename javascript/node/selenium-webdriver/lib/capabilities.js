@@ -132,7 +132,7 @@ const Capability = {
    * Defines how the driver should handle unexpected alerts. The value should
    * be one of "accept", "dismiss", or "ignore".
    */
-  UNEXPECTED_ALERT_BEHAVIOUR: 'unexpectedAlertBehaviour',
+  UNEXPECTED_ALERT_BEHAVIOR: 'unexpectedAlertBehaviour',
 
   /** Defines the browser version. */
   VERSION: 'version'
@@ -412,8 +412,8 @@ class Capabilities extends Map {
    *     "dismiss", or "ignore". Defaults to "dismiss".
    * @return {!Capabilities} A self reference.
    */
-  setAlertBehaviour(behaviour) {
-    return this.set(Capability.UNEXPECTED_ALERT_BEHAVIOUR, behaviour);
+  setAlertBehavior(behavior) {
+    return this.set(Capability.UNEXPECTED_ALERT_BEHAVIOR, behavior);
   }
 }
 
