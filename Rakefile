@@ -497,7 +497,7 @@ task :'publish-maven' do
   creds = read_user_pass_from_m2_settings()
   JAVA_RELEASE_TARGETS.each do |p|
     if JAVA_RELEASE_TARGETS.include?(p)
-      Buck::buck_cmd.call('publish', ['--remote-repo', 'https://oss.sonatype.org/service/local/staging/deploy/maven2', '--include-source', '--include-javadoc', '-u', creds[0], '-p', creds[1], '--signing-passphrase', passphrase, p])
+      Buck::buck_cmd.call('publish', ['--remote-repo', 'https://oss.sonatype.org/service/local/staging/deploy/maven2', '--include-source', '--include-docs', '-u', creds[0], '-p', creds[1], '--signing-passphrase', passphrase, p])
     end
   end
 end
