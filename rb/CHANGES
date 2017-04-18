@@ -1,3 +1,16 @@
+3.4.0 (Unreleased)
+===================
+
+Edge:
+  * Fix bug when response is not wrapped with "value"
+
+Firefox:
+  * Support geckodriver v0.16
+
+Ruby:
+  * Support ElementClickIntercepted error from W3C spec
+  * Support ElementNotInteractable error from W3C spec
+
 3.3.0 (2017-03-07)
 ===================
 
