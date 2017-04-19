@@ -15,7 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package org.openqa.grid.e2e.node;
 
 import org.openqa.grid.internal.Registry;

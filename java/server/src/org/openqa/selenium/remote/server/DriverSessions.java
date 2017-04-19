@@ -16,7 +16,6 @@
 // under the License.
 
 
-
 package org.openqa.selenium.remote.server;
 
 import org.openqa.selenium.Capabilities;
