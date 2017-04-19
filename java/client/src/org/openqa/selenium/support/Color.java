@@ -114,9 +114,9 @@ public class Color {
   public int hashCode() {
     int result;
     long temp;
-    result = (int) red;
-    result = 31 * result + (int) green;
-    result = 31 * result + (int) blue;
+    result = red;
+    result = 31 * result + green;
+    result = 31 * result + blue;
     temp = alpha != +0.0d ? Double.doubleToLongBits(alpha) : 0L;
     result = 31 * result + (int) (temp ^ (temp >>> 32));
     return result;
