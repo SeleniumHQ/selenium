@@ -90,6 +90,28 @@ def testShouldFailToFindVisibleElementsWhenExplicitWaiting(driver, pages):
         WebDriverWait(driver, 0.7).until(EC.visibility_of_any_elements_located((By.CLASS_NAME, "redbox")))
 
 
+def testShouldWaitUntilAllVisibleElementsAreFoundWhenSearchingForMany(driver, pages):
+    pages.load("hidden_partially.html")
+    add_visible = driver.find_element_by_id("addVisible")
+
+    add_visible.click()
+    add_visible.click()
+
+    elements = WebDriverWait(driver, 2).until(EC.visibility_of_all_elements_located((By.CLASS_NAME, "redbox")))
+    assert len(elements) == 2
+
+
+def testShouldFailIfNotAllElementsAreVisible(driver, pages):
+    pages.load("hidden_partially.html")
+    add_visible = driver.find_element_by_id("addVisible")
+    add_hidden = driver.find_element_by_id("addHidden")
+
+    add_visible.click()
+    add_hidden.click()
+    with pytest.raises(TimeoutException):
+        WebDriverWait(driver, 0.7).until(EC.visibility_of_all_elements_located((By.CLASS_NAME, "redbox")))
+
+
 def testShouldWaitOnlyAsLongAsTimeoutSpecifiedWhenImplicitWaitsAreSet(driver, pages):
     pages.load("dynamic.html")
     driver.implicitly_wait(0.5)
