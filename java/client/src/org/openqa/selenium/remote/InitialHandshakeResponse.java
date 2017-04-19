@@ -15,24 +15,33 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package org.openqa.selenium.remote;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.openqa.selenium.remote.internal.CircularOutputStreamTest;
+import com.google.common.base.Preconditions;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-    AugmenterTest.class,
-    ErrorHandlerTest.class,
-    CircularOutputStreamTest.class,
-    Gecko013ProtocolResponseTest.class,
-    JsonWireProtocolResponseTest.class,
-    ProtocolHandshakeTest.class,
-    RemoteLogsTest.class,
-    RemoteWebDriverInitializationTest.class,
-    W3CHandshakeResponseTest.class
-})
-public class RemoteClientTests {
+import java.time.Duration;
+import java.util.Map;
+
+class InitialHandshakeResponse {
+  private final Duration requestDuration;
+  private final int httpStatusCode;
+  private final Map<?, ?> data;
+
+  public InitialHandshakeResponse(long millis, int statusCode, Map<?, ?> data) {
+    this.requestDuration = Duration.ofMillis(millis);
+    this.httpStatusCode = statusCode;
+    this.data = Preconditions.checkNotNull(data);
+  }
+
+  public Duration getRequestDuration() {
+    return requestDuration;
+  }
+
+  public int getStatusCode() {
+    return httpStatusCode;
+  }
+
+  public Map<?, ?> getData() {
+    return data;
+  }
 }
