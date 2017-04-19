@@ -28,6 +28,7 @@ import static org.openqa.selenium.remote.BrowserType.IE;
 import static org.openqa.selenium.remote.BrowserType.OPERA;
 import static org.openqa.selenium.remote.BrowserType.OPERA_BLINK;
 import static org.openqa.selenium.remote.BrowserType.SAFARI;
+import static org.openqa.selenium.remote.CapabilityType.PROXY;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
@@ -35,11 +36,14 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonWriter;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.SessionNotCreatedException;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -49,16 +53,16 @@ import java.io.BufferedInputStream;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.HttpURLConnection;
+import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Duration;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import java.util.stream.Collector;
@@ -86,6 +90,32 @@ public class ProtocolHandshake {
       .map(Pattern::compile)
       .map(Pattern::asPredicate)
       .reduce(identity -> false, Predicate::or);
+
+  private final static Type MAP_TYPE = new TypeToken<Map<?, ?>>(){}.getType();
+
+  private static class ResponseCodeAndJson {
+    public final Duration duration;
+    public final int statusCode;
+    public final Map<?, ?> blob;
+
+    public ResponseCodeAndJson(long timeInMillis, int statusCode, Map<?, ?> blob) {
+      this.duration = Duration.ofMillis(timeInMillis);
+      this.statusCode = statusCode;
+      this.blob = blob;
+    }
+  }
+
+  private Function<HttpResponse, ResponseCodeAndJson> ensureJson = res -> {
+    // Ignore the content type. It may not have been set. Strictly speaking we're not following the
+    // W3C spec properly. Oh well.
+    try {
+      Map<?, ?> blob = new Gson().fromJson(res.getContentString(), MAP_TYPE);
+      return new ResponseCodeAndJson(0, res.getStatus(), blob);
+    } catch (JsonParseException e) {
+      throw new WebDriverException("Unable to parse remote response: " + res.getContentString());
+    }
+  };
+
 
   public Result createSession(HttpClient client, Command command)
     throws IOException {
@@ -309,98 +339,33 @@ public class ProtocolHandshake {
     request.setHeader(CONTENT_LENGTH, String.valueOf(size));
     request.setHeader(CONTENT_TYPE, JSON_UTF_8.toString());
     request.setContent(newSessionBlob);
+    long start = System.currentTimeMillis();
     HttpResponse response = client.execute(request, true);
+    long time = System.currentTimeMillis() - start;
 
-    Map<?, ?> jsonBlob = null;
-    String resultString = response.getContentString();
+    // Ignore the content type. It may not have been set. Strictly speaking we're not following the
+    // W3C spec properly. Oh well.
+    Map<?, ?> blob;
     try {
-      jsonBlob = new JsonToBeanConverter().convert(Map.class, resultString);
-    } catch (ClassCastException e) {
-      LOG.info("Unable to parse response from server: " + resultString);
-      return Optional.empty();
-    } catch (JsonException e) {
-      // Fine. Handle that below
-      LOG.log(
-          Level.FINE,
-          "Unable to parse json response. Will continue but diagnostic follows",
-          e);
+      blob = new Gson().fromJson(response.getContentString(), MAP_TYPE);
+    } catch (JsonParseException e) {
+      throw new WebDriverException(
+          "Unable to parse remote response: " + response.getContentString());
     }
 
-    if (jsonBlob == null) {
-      jsonBlob = new HashMap<>();
-    }
+    InitialHandshakeResponse initialResponse = new InitialHandshakeResponse(
+        time,
+        response.getStatus(),
+        blob);
 
-    Object value = jsonBlob.get("value");
-    Object w3cError = jsonBlob.get("error");
-    Object ossStatus = jsonBlob.get("status");
-
-    // If the result was an error that we believe has to do with the remote end failing to start the
-    // session, create an exception and throw it.
-    Response tempResponse = null;
-    if (response.getStatus() != HttpURLConnection.HTTP_OK) {
-      tempResponse = new Response(null);
-      tempResponse.setStatus(ErrorCodes.SESSION_NOT_CREATED);
-      tempResponse.setValue(value);
-    } else if ("session not created".equals(w3cError)) {
-      tempResponse = new Response(null);
-      tempResponse.setStatus(ErrorCodes.SESSION_NOT_CREATED);
-      tempResponse.setValue(value);
-    } else if (ossStatus instanceof Number && ((Number) ossStatus).intValue() != 0) {
-      tempResponse = new Response(null);
-      tempResponse.setStatus(ErrorCodes.SESSION_NOT_CREATED);
-      tempResponse.setValue(value);
-    }
-
-    if (tempResponse != null) {
-      new ErrorHandler().throwIfResponseFailed(tempResponse, 0);
-    }
-
-    Object sessionId = jsonBlob.get("sessionId");
-    Map<String, ?> capabilities = null;
-
-    // The old geckodriver prior to 0.14 returned "value" as the thing containing the session id.
-    // Later versions follow the (amended) w3c spec and return the capabilities in a field called
-    // "value". The most recent versions of the spec contain any errors wrapped in a value object.
-    // Pull that out if it exists.
-    if (value != null && value instanceof Map) {
-      Map<?, ?> mappedValue = (Map<?, ?>) value;
-      if (mappedValue.containsKey("sessionId")) {
-        sessionId = mappedValue.get("sessionId");
-      }
-      if (mappedValue.containsKey("capabilities")) {
-        value = mappedValue.get("capabilities");
-      } else if (mappedValue.containsKey("value")) {
-        value = mappedValue.get("value");
-      }
-      if (mappedValue.containsKey("error")) {
-        w3cError = mappedValue.get("error");
-      }
-    }
-
-    if (value != null && value instanceof Map) {
-      capabilities = (Map<String, Object>) value;
-    } else if (value != null && value instanceof Capabilities) {
-      capabilities = ((Capabilities) capabilities).asMap();
-    }
-
-    // If the result looks positive, return the result.
-    if (sessionId != null && capabilities != null) {
-      Dialect dialect = ossStatus == null ? Dialect.W3C : Dialect.OSS;
-
-      // Massage the Proxy if it's here.
-      Object existingProxy = capabilities.get(CapabilityType.PROXY);
-      if (existingProxy instanceof Map) {
-        // Forget you, java generics. Forget you.
-        ((Map<String, Object>)capabilities).put(
-            CapabilityType.PROXY,
-            new Proxy((Map<String, ?>) existingProxy));
-      }
-
-      return Optional.of(new Result(dialect, String.valueOf(sessionId), capabilities));
-    }
-
-    // Otherwise, just return empty.
-    return Optional.empty();
+    return Stream.of(
+        new JsonWireProtocolResponse().getResponseFunction(),
+        new Gecko013ProtocolResponse().getResponseFunction(),
+        new W3CHandshakeResponse().getResponseFunction())
+        .map(func -> func.apply(initialResponse))
+        .filter(Optional::isPresent)
+        .map(Optional::get)
+        .findFirst();
   }
 
   private void streamGeckoDriver013Parameters(
@@ -414,15 +379,42 @@ public class ProtocolHandshake {
     gson.toJson(req, out);
   }
 
-  public class Result {
+  public static class Result {
+    private static Function<Object, Proxy> massageProxy = obj -> {
+      if (obj instanceof Proxy) {
+        return (Proxy) obj;
+      }
+
+      if (!(obj instanceof Map)) {
+        return null;
+      }
+
+      Map<?, ?> rawMap = (Map<?, ?>) obj;
+      for (Object key : rawMap.keySet()) {
+        if (!(key instanceof String)) {
+          return null;
+        }
+      }
+
+      // This cast is now safe.
+      //noinspection unchecked
+      return new Proxy((Map<String, ?>) obj);
+    };
+
+
     private final Dialect dialect;
     private final Map<String, ?> capabilities;
     private final SessionId sessionId;
 
-    private Result(Dialect dialect, String sessionId, Map<String, ?> capabilities) {
+    Result(Dialect dialect, String sessionId, Map<String, ?> capabilities) {
       this.dialect = dialect;
       this.sessionId = new SessionId(Preconditions.checkNotNull(sessionId));
       this.capabilities = capabilities;
+
+      if (capabilities.containsKey(PROXY)) {
+        //noinspection unchecked
+        ((Map<String, Object>)capabilities).put(PROXY, massageProxy.apply(capabilities.get(PROXY)));
+      }
     }
 
     public Dialect getDialect() {
@@ -433,6 +425,7 @@ public class ProtocolHandshake {
       Response response = new Response(sessionId);
       response.setValue(capabilities);
       response.setStatus(ErrorCodes.SUCCESS);
+      response.setState(ErrorCodes.SUCCESS_STRING);
       return response;
     }
 
