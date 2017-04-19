@@ -51,6 +51,9 @@ def return_value_if_exists(resp):
 
 
 def get_root_parent(elem):
+    import warnings
+    warnings.warn("get_root_parent(WebElement) is a deprecated alias, use WebElement.parent",
+                  DeprecationWarning, 2)
     parent = elem.parent
     while True:
         try:
