@@ -131,6 +131,7 @@ public class IgnoreComparatorUnitTest {
     final Ignore[] list = drivers.stream().map(driver -> {
       Ignore ig = mock(Ignore.class);
       when(ig.value()).thenReturn(driver);
+      when(ig.issue()).thenReturn("");
       return ig;
     }).collect(Collectors.toList()).toArray(new Ignore[drivers.size()]);
 
