@@ -15,7 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package org.openqa.selenium.remote;
 
 import static org.openqa.selenium.remote.ErrorCodes.SUCCESS;

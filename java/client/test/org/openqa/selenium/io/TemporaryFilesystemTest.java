@@ -15,7 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package org.openqa.selenium.io;
 
 import static org.junit.Assert.assertFalse;

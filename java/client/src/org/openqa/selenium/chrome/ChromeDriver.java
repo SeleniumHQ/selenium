@@ -15,7 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package org.openqa.selenium.chrome;
 
 import com.google.common.collect.ImmutableMap;
