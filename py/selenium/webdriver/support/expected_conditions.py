@@ -20,7 +20,6 @@ from selenium.common.exceptions import NoSuchFrameException
 from selenium.common.exceptions import StaleElementReferenceException
 from selenium.common.exceptions import WebDriverException
 from selenium.common.exceptions import NoAlertPresentException
-from selenium.common.exceptions import ElementNotVisibleException
 
 """
  * Canned "Expected Conditions" which are generally useful within webdriver
