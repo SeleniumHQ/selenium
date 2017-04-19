@@ -32,10 +32,15 @@ import org.openqa.selenium.logging.LogLevelMapping;
 import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.logging.Logs;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -44,10 +49,18 @@ public class RemoteLogs implements Logs {
   private static final String LEVEL = "level";
   private static final String TIMESTAMP= "timestamp";
   private static final String MESSAGE = "message";
+  private static final DateFormat ISO_8601_DATE_FORMAT = getIso8601DateFormat();
 
   private static final Logger logger = Logger.getLogger(RemoteLogs.class.getName());
 
   protected ExecuteMethod executeMethod;
+
+  private static DateFormat getIso8601DateFormat() {
+    TimeZone utcTimeZone = TimeZone.getTimeZone("UTC");
+    DateFormat isoDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+    isoDateFormat.setTimeZone(utcTimeZone);
+    return isoDateFormat;
+  }
 
   @VisibleForTesting public static final String TYPE_KEY = "type";
   private final LocalLogs localLogs;
@@ -84,8 +97,22 @@ public class RemoteLogs implements Logs {
     List<LogEntry> remoteEntries = Lists.newArrayListWithCapacity(rawList.size());
 
     for (Map<String, Object> obj : rawList) {
+      Object rawTimestamp = obj.get(TIMESTAMP);
+      long timestamp;
+      if (rawTimestamp instanceof String) {
+        try {
+          Date date = ISO_8601_DATE_FORMAT.parse((String) rawTimestamp);
+          timestamp = date.getTime();
+        } catch (ParseException e) {
+          throw new IncorrectDateFormatException("Incorrect date format. Expected ISO 8601, got: " + rawTimestamp, e);
+        }
+      } else if (rawTimestamp instanceof Date) {
+        timestamp = ((Date) rawTimestamp).getTime();
+      } else {
+        timestamp = (Long) rawTimestamp;
+      }
       remoteEntries.add(new LogEntry(LogLevelMapping.toLevel((String)obj.get(LEVEL)),
-          (Long) obj.get(TIMESTAMP),
+          timestamp,
           (String) obj.get(MESSAGE)));
     }
     return new LogEntries(remoteEntries);
