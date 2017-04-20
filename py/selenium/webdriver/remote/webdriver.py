@@ -177,9 +177,9 @@ class WebDriver(object):
         if not isinstance(capabilities, dict):
             raise InvalidArgumentException("Capabilities must be a dictionary")
         w3c_caps = {"firstMatch": [], "alwaysMatch": {}}
-        w3c_caps.update(capabilities)
         if browser_profile:
-            w3c_caps["firstMatch"].append({"firefox_profile": browser_profile.encoded})
+            capabilities["moz:firefoxOptions"]["profile"] = browser_profile.encoded
+        w3c_caps["alwaysMatch"].update(capabilities)
         parameters = {"capabilities": w3c_caps,
                       "desiredCapabilities": capabilities}
         response = self.execute(Command.NEW_SESSION, parameters)
