@@ -31,10 +31,13 @@ var extension = require('../../firefox/extension'),
 var JETPACK_EXTENSION = path.join(__dirname,
     '../../lib/test/data/firefox/jetpack-sample.xpi');
 var NORMAL_EXTENSION = path.join(__dirname,
-    '../../lib/test/data/firefox/sample.xpi');
+  '../../lib/test/data/firefox/sample.xpi');
+var WEBEXTENSION_EXTENSION = path.join(__dirname,
+  '../../lib/test/data/firefox/webextension.xpi');
 
 var JETPACK_EXTENSION_ID = 'jid1-EaXX7k0wwiZR7w@jetpack';
 var NORMAL_EXTENSION_ID = 'sample@seleniumhq.org';
+var WEBEXTENSION_EXTENSION_ID = 'webextensions-selenium-example@example.com';
 
 
 describe('extension', function() {
@@ -71,6 +74,27 @@ describe('extension', function() {
         assert.ok(fs.existsSync(path.join(file, 'content/overlay.xul')));
         assert.ok(fs.existsSync(path.join(file, 'content/overlay.js')));
         assert.ok(fs.existsSync(path.join(file, 'install.rdf')));
+      });
+    });
+  });
+
+  it('can install a webextension xpi file', function() {
+    return io.tmpDir().then(function(dir) {
+      return extension.install(WEBEXTENSION_EXTENSION, dir).then(function(id) {
+        assert.equal(WEBEXTENSION_EXTENSION_ID, id);
+        var file = path.join(dir, id + '.xpi');
+        assert.ok(fs.existsSync(file), 'no such file: ' + file);
+        assert.ok(!fs.statSync(file).isDirectory());
+
+        var copiedSha1 = crypto.createHash('sha1')
+          .update(fs.readFileSync(file))
+          .digest('hex');
+
+        var goldenSha1 = crypto.createHash('sha1')
+          .update(fs.readFileSync(WEBEXTENSION_EXTENSION))
+          .digest('hex');
+
+        assert.equal(copiedSha1, goldenSha1);
       });
     });
   });
