@@ -229,6 +229,7 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
   @NeedsFreshDriver
   @Test
   @Ignore(value = SAFARI, reason = "issue 3693")
+  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/611")
   public void testShouldBeAbleToClickALinkThatClosesAWindow() throws Exception {
     driver.get(pages.javascriptPage);
 
