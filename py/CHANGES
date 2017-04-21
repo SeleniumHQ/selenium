@@ -1,3 +1,21 @@
+Selenium 3.4.0
+* Correct usage of newSession around `firstMatch` and `alwaysMatch`
+* Remove superfluous capabilities that are not needed
+* Add expected condition that waits for all found elements to be visible (#3532)
+* Allow methods wrapped by EventFiringWebDriver and EventFiringWebElement (#806)
+* Dropping `javascriptEnabled` capability for real browsers
+* Use W3C check from parent object instead of assuming from capabilities
+* Bump example source distribution to match latest release.
+* Replace TypeError with KeyError in remote webdriver error handler code (#3826)
+* When testing Marionette use default capabilities in testing
+* Conform to the api of urllib2 for adding header for a request (#3803)
+* Add `text` key to alert#sendKeys parameters for W3C Endpoint
+* Location once scrolled into view should use W3C executeScript endpoint not JSONWP
+* Fixed the usage information in documentation of "save_screenshot". (#3804)
+* Add Element Not Interactable exception
+* Clean up imports in error handler
+* flake8 cleanup
+
 Selenium 3.3.3
 
 * make w3c execute_script commands unique
