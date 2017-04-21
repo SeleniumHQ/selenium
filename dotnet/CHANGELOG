@@ -1,3 +1,36 @@
+v3.4.0
+======
+ * Exposed new Interactions framework. This release introduces a new 
+   Interactions framework using the ActionBuilder class for creating advanced
+   user interaction sequences in the .NET bindings. This framework is only
+   designed to be used with remote ends that understand the W3C WebDriver
+   Specification actions end point, and as such, there is no documentation
+   or guidance for its use at present. Most users will continue to use the
+   Actions class for now,bwhich works with both protocol dialects. Once most
+   remote ends use the W3C dialect of the wire protocol, these classes will
+   become more useful.
+ * Fixed IAlert.SendKeys to send a string instead of a character array when
+   communicating with remote ends that use the in the W3C Specification
+   dialect of the wire protocol.
+ * Now the "marionette" capability is only set for the case where the user
+   wants to use the legacy Firefox driver. Starting with Geckodriver 0.16,
+   this capability is not recognized as valid, since it violates the spec,
+   and will not create a session if it's specified.
+ * Updated InternetExplorerOptions to send IE-specific capabilities in a 
+   property named "se:ieOptions". This is the correct method for passing
+   browser-specific capabilities according to the W3C WebDriver spec. This
+   should be transparent for most users, but beginning with 3.4.0.0 of the
+   IE driver, this is the preferred mechanism for passing IE-specific
+   capabilities.
+ * Added "acceptInsecureCerts" capability  for use with remote ends that
+   adhere to the W3C WebDriver Specification. The default for the capability
+   is true.
+ * Updated FirefoxDriver(FirefoxOptions) constructor to allow the user to
+   specify `UseLegacyImplementation = true` in the FirefoxOptions passed
+   to the constructor and not be forced to have a copy of geckodriver
+   available. Fixes issue #3597.
+ * Updated bindings to properly use the W3C WebDriver Specification.
+
 v3.3.0
 ======
  * Fixed error return values from W3C spec-compliant remote ends
