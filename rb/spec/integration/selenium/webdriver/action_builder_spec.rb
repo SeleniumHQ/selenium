@@ -38,19 +38,22 @@ module Selenium
               expect(driver.find_element(id: 'result').text.strip).to be_empty
             end
 
-            it 'can send keys with shift pressed' do
-              driver.navigate.to url_for('javascriptPage.html')
+            # https://github.com/mozilla/geckodriver/issues/646
+            not_compliant_on browser: [:firefox, :ff_nightly] do
+              it 'can send keys with shift pressed' do
+                driver.navigate.to url_for('javascriptPage.html')
 
-              event_input = driver.find_element(id: 'theworks')
-              keylogger = driver.find_element(id: 'result')
+                event_input = driver.find_element(id: 'theworks')
+                keylogger = driver.find_element(id: 'result')
 
-              event_input.click
+                event_input.click
 
-              driver.action.key_down(:shift).send_keys('ab').key_up(:shift).perform
-              wait.until { event_input.attribute(:value).length == 2 }
+                driver.action.key_down(:shift).send_keys('ab').key_up(:shift).perform
+                wait.until { event_input.attribute(:value).length == 2 }
 
-              expect(event_input.attribute(:value)).to eq('AB')
-              expect(keylogger.text.strip).to match(/^(focus )?keydown keydown keypress keyup keydown keypress keyup keyup$/)
+                expect(event_input.attribute(:value)).to eq('AB')
+                expect(keylogger.text.strip).to match(/^(focus )?keydown keydown keypress keyup keydown keypress keyup keyup$/)
+              end
             end
 
             it 'can press and release modifier keys' do
