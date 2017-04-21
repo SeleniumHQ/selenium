@@ -40,7 +40,6 @@ import org.openqa.selenium.testing.drivers.SauceDriver;
 public class WindowTest extends JUnit4TestBase {
 
   @Test
-  @NotYetImplemented(value = MARIONETTE, reason = "/window/rect")
   public void testGetsTheSizeOfTheCurrentWindow() {
     assumeFalse(
         "window().getSize() is not implemented for Chrome for Android. "
@@ -53,7 +52,6 @@ public class WindowTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(value = MARIONETTE, reason = "/window/rect")
   public void testSetsTheSizeOfTheCurrentWindow() {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
@@ -67,7 +65,6 @@ public class WindowTest extends JUnit4TestBase {
 
   @SwitchToTopAfterTest
   @Test
-  @NotYetImplemented(value = MARIONETTE, reason = "/window/rect")
   public void testSetsTheSizeOfTheCurrentWindowFromFrame() {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
@@ -83,7 +80,6 @@ public class WindowTest extends JUnit4TestBase {
 
   @SwitchToTopAfterTest
   @Test
-  @NotYetImplemented(value = MARIONETTE, reason = "/window/rect")
   public void testSetsTheSizeOfTheCurrentWindowFromIframe() {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
@@ -98,7 +94,6 @@ public class WindowTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(value = MARIONETTE, reason = "/window/rect")
   public void testGetsThePositionOfTheCurrentWindow() {
     // Window position is undefined on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
@@ -144,7 +139,6 @@ public class WindowTest extends JUnit4TestBase {
   @Test
   @Ignore(PHANTOMJS)
   @Ignore(travis = true)
-  @NotYetImplemented(value = MARIONETTE, reason = "/window/rect")
   public void testCanMaximizeTheWindow() throws InterruptedException {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
@@ -159,7 +153,6 @@ public class WindowTest extends JUnit4TestBase {
   @Test
   @Ignore(PHANTOMJS)
   @Ignore(travis = true)
-  @NotYetImplemented(value = MARIONETTE, reason = "/window/rect")
   public void testCanMaximizeTheWindowFromFrame() throws InterruptedException {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
@@ -177,7 +170,6 @@ public class WindowTest extends JUnit4TestBase {
   @Test
   @Ignore(PHANTOMJS)
   @Ignore(travis = true)
-  @NotYetImplemented(value = MARIONETTE, reason = "/window/rect")
   public void testCanMaximizeTheWindowFromIframe() throws InterruptedException {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
