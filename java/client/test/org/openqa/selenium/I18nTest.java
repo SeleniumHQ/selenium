@@ -174,7 +174,6 @@ public class I18nTest extends JUnit4TestBase {
   @Ignore(IE)
   @Ignore(CHROME)
   @Ignore(FIREFOX)
-  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testShouldBeAbleToInputJapanese() {
     assumeTrue("IME is supported on Linux only.",
                TestUtilities.getEffectivePlatform().is(Platform.LINUX));

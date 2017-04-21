@@ -228,7 +228,6 @@ public class TypingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(IE)
-  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testShouldFireFocusKeyEventsInTheRightOrder() {
     driver.get(pages.javascriptPage);
 
@@ -316,7 +315,7 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
+  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/646")
   public void testNumericShiftKeys() {
     driver.get(pages.javascriptPage);
 
@@ -343,7 +342,7 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
+  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/646")
   public void testUppercaseAlphaKeys() {
     driver.get(pages.javascriptPage);
 
@@ -358,7 +357,7 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
+  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/646")
   public void testAllPrintableKeys() {
     driver.get(pages.javascriptPage);
 
@@ -386,7 +385,6 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testHomeAndEndAndPageUpAndPageDownKeys() {
     assumeFalse("FIXME: macs don't have HOME keys, would PGUP work?",
                 getEffectivePlatform().is(Platform.MAC));
@@ -418,7 +416,7 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
+  @NotYetImplemented(value = MARIONETTE)
   public void testSpecialSpaceKeys() {
     driver.get(pages.javascriptPage);
 
@@ -429,7 +427,7 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
+  @NotYetImplemented(value = MARIONETTE)
   public void testNumberpadKeys() {
     driver.get(pages.javascriptPage);
 
@@ -471,7 +469,7 @@ public class TypingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(MARIONETTE)
-  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
+  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/646")
   public void testChordControlHomeShiftEndDelete() {
     assumeFalse("FIXME: macs don't have HOME keys, would PGUP work?",
                 getEffectivePlatform().is(Platform.MAC));
@@ -492,7 +490,7 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
+  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/646")
   public void testChordReveseShiftHomeSelectionDeletes() {
     assumeFalse("FIXME: macs don't have HOME keys, would PGUP work?",
                 getEffectivePlatform().is(Platform.MAC));
@@ -524,7 +522,7 @@ public class TypingTest extends JUnit4TestBase {
   // and linux, but not on the MAC.
 
   @Test
-  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
+  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/646")
   public void testChordControlCutAndPaste() {
     assumeFalse("FIXME: macs don't have HOME keys, would PGUP work?",
                 getEffectivePlatform().is(Platform.MAC));
@@ -650,7 +648,7 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
+  @NotYetImplemented(value = MARIONETTE)
   public void canClearNumberInputAfterTypingInvalidInput() {
     driver.get(pages.formPage);
     WebElement input = driver.findElement(By.id("age"));

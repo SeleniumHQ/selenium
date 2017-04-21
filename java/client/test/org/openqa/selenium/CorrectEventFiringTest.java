@@ -345,7 +345,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = SAFARI, reason = "Does not yet support file uploads, issue 4220")
-  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
+  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/644")
   public void testUploadingFileShouldFireOnChangeEvent() throws IOException {
     driver.get(pages.formPage);
     WebElement uploadElement = driver.findElement(By.id("upload"));
