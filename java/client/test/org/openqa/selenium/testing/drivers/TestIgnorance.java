@@ -181,7 +181,8 @@ public class TestIgnorance {
         break;
 
       case ff:
-        if (Boolean.getBoolean("webdriver.firefox.marionette")) {
+        if (System.getProperty("webdriver.firefox.marionette") == null ||
+            Boolean.getBoolean("webdriver.firefox.marionette")) {
           comparator.addDriver(MARIONETTE);
         } else {
           comparator.addDriver(FIREFOX);
