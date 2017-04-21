@@ -305,10 +305,14 @@ public abstract class JUnit4TestBase implements WrapsDriver {
           break;
 
         case MARIONETTE:
-          if (browser == Browser.ff && Boolean.getBoolean("webdriver.firefox.marionette")) {
-            return true;
+          if (browser != Browser.ff) {
+            return false;
           }
-          break;
+          if (System.getProperty("webdriver.firefox.marionette") == null ||
+              Boolean.getBoolean("webdriver.firefox.marionette")) {
+          return true;
+        }
+        break;
 
         case PHANTOMJS:
           if (browser == Browser.phantomjs) {
