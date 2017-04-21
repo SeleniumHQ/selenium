@@ -294,7 +294,7 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
           "if (!form.ownerDocument) { throw Error('Unable to find owning document'); }\n" +
           "var e = form.ownerDocument.createEvent('Event');\n" +
           "e.initEvent('submit', true, true);\n" +
-          "if (form.dispatchEvent(e)) { form.submit() }\n",
+          "if (form.dispatchEvent(e)) { HTMLFormElement.prototype.submit.call(form) }\n",
           asElement(parameters.get("id")));
 
       default:
