@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10};
+var methods = {"i0":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -48,7 +48,7 @@ var activeTableTab = "activeTableTab";
 <div class="subNav">
 <ul class="navList">
 <li><a href="../../../../org/openqa/selenium/firefox/FirefoxBinary.Channel.html" title="enum in org.openqa.selenium.firefox"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
-<li><a href="../../../../org/openqa/selenium/firefox/FirefoxDriver.LazyCommandExecutor.html" title="class in org.openqa.selenium.firefox"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
+<li><a href="../../../../org/openqa/selenium/firefox/FirefoxDriver.SystemProperty.html" title="class in org.openqa.selenium.firefox"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../../index.html?org/openqa/selenium/firefox/FirefoxDriver.html" target="_top">Frames</a></li>
@@ -112,15 +112,22 @@ var activeTableTab = "activeTableTab";
 <li class="blockList">
 <dl>
 <dt>All Implemented Interfaces:</dt>
-<dd><a href="../../../../org/openqa/selenium/HasCapabilities.html" title="interface in org.openqa.selenium">HasCapabilities</a>, <a href="../../../../org/openqa/selenium/interactions/HasInputDevices.html" title="interface in org.openqa.selenium.interactions">HasInputDevices</a>, <a href="../../../../org/openqa/selenium/interactions/Interactive.html" title="interface in org.openqa.selenium.interactions">Interactive</a>, <a href="../../../../org/openqa/selenium/internal/FindsByClassName.html" title="interface in org.openqa.selenium.internal">FindsByClassName</a>, <a href="../../../../org/openqa/selenium/internal/FindsByCssSelector.html" title="interface in org.openqa.selenium.internal">FindsByCssSelector</a>, <a href="../../../../org/openqa/selenium/internal/FindsById.html" title="interface in org.openqa.selenium.internal">FindsById</a>, <a href="../../../../org/openqa/selenium/internal/FindsByLinkText.html" title="interface in org.openqa.selenium.internal">FindsByLinkText</a>, <a href="../../../../org/openqa/selenium/internal/FindsByName.html" title="interface in org.openqa.selenium.internal">FindsByName</a>, <a href="../../../../org/openqa/selenium/internal/FindsByTagName.html" title="interface in org.openqa.selenium.internal">FindsByTagName</a>, <a href="../../../../org/openqa/selenium/internal/FindsByXPath.html" title="interface in org.openqa.selenium.internal">FindsByXPath</a>, <a href="../../../../org/openqa/selenium/internal/Killable.html" title="interface in org.openqa.selenium.internal">Killable</a>, <a href="../../../../org/openqa/selenium/JavascriptExecutor.html" title="interface in org.openqa.selenium">JavascriptExecutor</a>, <a href="../../../../org/openqa/selenium/SearchContext.html" title="interface in org.openqa.selenium">SearchContext</a>, <a href="../../../../org/openqa/selenium/TakesScreenshot.html" title="interface in org.openqa.selenium">TakesScreenshot</a>, <a href="../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a></dd>
+<dd><a href="../../../../org/openqa/selenium/HasCapabilities.html" title="interface in org.openqa.selenium">HasCapabilities</a>, <a href="../../../../org/openqa/selenium/interactions/HasInputDevices.html" title="interface in org.openqa.selenium.interactions">HasInputDevices</a>, <a href="../../../../org/openqa/selenium/interactions/Interactive.html" title="interface in org.openqa.selenium.interactions">Interactive</a>, <a href="../../../../org/openqa/selenium/internal/FindsByClassName.html" title="interface in org.openqa.selenium.internal">FindsByClassName</a>, <a href="../../../../org/openqa/selenium/internal/FindsByCssSelector.html" title="interface in org.openqa.selenium.internal">FindsByCssSelector</a>, <a href="../../../../org/openqa/selenium/internal/FindsById.html" title="interface in org.openqa.selenium.internal">FindsById</a>, <a href="../../../../org/openqa/selenium/internal/FindsByLinkText.html" title="interface in org.openqa.selenium.internal">FindsByLinkText</a>, <a href="../../../../org/openqa/selenium/internal/FindsByName.html" title="interface in org.openqa.selenium.internal">FindsByName</a>, <a href="../../../../org/openqa/selenium/internal/FindsByTagName.html" title="interface in org.openqa.selenium.internal">FindsByTagName</a>, <a href="../../../../org/openqa/selenium/internal/FindsByXPath.html" title="interface in org.openqa.selenium.internal">FindsByXPath</a>, <a href="../../../../org/openqa/selenium/JavascriptExecutor.html" title="interface in org.openqa.selenium">JavascriptExecutor</a>, <a href="../../../../org/openqa/selenium/SearchContext.html" title="interface in org.openqa.selenium">SearchContext</a>, <a href="../../../../org/openqa/selenium/TakesScreenshot.html" title="interface in org.openqa.selenium">TakesScreenshot</a>, <a href="../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a></dd>
 </dl>
 <hr>
 <br>
 <pre>public class <span class="typeNameLabel">FirefoxDriver</span>
-extends <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html" title="class in org.openqa.selenium.remote">RemoteWebDriver</a>
-implements <a href="../../../../org/openqa/selenium/internal/Killable.html" title="interface in org.openqa.selenium.internal">Killable</a></pre>
-<div class="block">An implementation of the {#link WebDriver} interface that drives Firefox. This works through a
- firefox extension, which gets installed automatically if necessary.</div>
+extends <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html" title="class in org.openqa.selenium.remote">RemoteWebDriver</a></pre>
+<div class="block">An implementation of the {#link WebDriver} interface that drives Firefox.
+ <p>
+ The best way to construct a <code>FirefoxDriver</code> with various options is to make use of the
+ <a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html" title="class in org.openqa.selenium.firefox"><code>FirefoxOptions</code></a>, like so:
+
+ <pre>
+FirefoxOptions options = new FirefoxOptions()
+    .setProfile(new FirefoxProfile());
+WebDriver driver = new FirefoxDriver(options);
+ </pre></div>
 </li>
 </ul>
 </div>
@@ -140,10 +147,6 @@ implements <a href="../../../../org/openqa/selenium/internal/Killable.html" titl
 <th class="colLast" scope="col">Class and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code>static class&nbsp;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxDriver.LazyCommandExecutor.html" title="class in org.openqa.selenium.firefox">FirefoxDriver.LazyCommandExecutor</a></span></code>&nbsp;</td>
-</tr>
-<tr class="rowColor">
 <td class="colFirst"><code>static class&nbsp;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxDriver.SystemProperty.html" title="class in org.openqa.selenium.firefox">FirefoxDriver.SystemProperty</a></span></code>&nbsp;</td>
 </tr>
@@ -175,18 +178,6 @@ implements <a href="../../../../org/openqa/selenium/internal/Killable.html" titl
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colLast" scope="col">Field and Description</th>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>static boolean</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxDriver.html#ACCEPT_UNTRUSTED_CERTIFICATES">ACCEPT_UNTRUSTED_CERTIFICATES</a></span></code>
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
-</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code>static boolean</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxDriver.html#ASSUME_UNTRUSTED_ISSUER">ASSUME_UNTRUSTED_ISSUER</a></span></code>
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
-</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>protected <a href="../../../../org/openqa/selenium/firefox/FirefoxBinary.html" title="class in org.openqa.selenium.firefox">FirefoxBinary</a></code></td>
@@ -226,37 +217,54 @@ implements <a href="../../../../org/openqa/selenium/internal/Killable.html" titl
 </tr>
 <tr class="altColor">
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxDriver.html#FirefoxDriver-org.openqa.selenium.Capabilities-org.openqa.selenium.Capabilities-">FirefoxDriver</a></span>(<a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;desiredCapabilities,
-             <a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;requiredCapabilities)</code>&nbsp;</td>
+             <a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;requiredCapabilities)</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
+<div class="block"><span class="deprecationComment">Prefer <a href="../../../../org/openqa/selenium/firefox/FirefoxDriver.html#FirefoxDriver-org.openqa.selenium.firefox.FirefoxOptions-"><code>FirefoxDriver(FirefoxOptions)</code></a></span></div>
+</div>
+</td>
 </tr>
 <tr class="rowColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxDriver.html#FirefoxDriver-org.openqa.selenium.firefox.FirefoxBinary-org.openqa.selenium.firefox.FirefoxProfile-">FirefoxDriver</a></span>(<a href="../../../../org/openqa/selenium/firefox/FirefoxBinary.html" title="class in org.openqa.selenium.firefox">FirefoxBinary</a>&nbsp;binary,
-             <a href="../../../../org/openqa/selenium/firefox/FirefoxProfile.html" title="class in org.openqa.selenium.firefox">FirefoxProfile</a>&nbsp;profile)</code>&nbsp;</td>
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxDriver.html#FirefoxDriver-org.openqa.selenium.firefox.FirefoxBinary-">FirefoxDriver</a></span>(<a href="../../../../org/openqa/selenium/firefox/FirefoxBinary.html" title="class in org.openqa.selenium.firefox">FirefoxBinary</a>&nbsp;binary)</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
+<div class="block"><span class="deprecationComment">Prefer <a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html#setBinary-org.openqa.selenium.firefox.FirefoxBinary-"><code>FirefoxOptions.setBinary(FirefoxBinary)</code></a>.</span></div>
+</div>
+</td>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxDriver.html#FirefoxDriver-org.openqa.selenium.firefox.FirefoxBinary-org.openqa.selenium.firefox.FirefoxProfile-org.openqa.selenium.Capabilities-">FirefoxDriver</a></span>(<a href="../../../../org/openqa/selenium/firefox/FirefoxBinary.html" title="class in org.openqa.selenium.firefox">FirefoxBinary</a>&nbsp;binary,
-             <a href="../../../../org/openqa/selenium/firefox/FirefoxProfile.html" title="class in org.openqa.selenium.firefox">FirefoxProfile</a>&nbsp;profile,
-             <a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</code>&nbsp;</td>
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxDriver.html#FirefoxDriver-org.openqa.selenium.firefox.FirefoxBinary-org.openqa.selenium.firefox.FirefoxProfile-">FirefoxDriver</a></span>(<a href="../../../../org/openqa/selenium/firefox/FirefoxBinary.html" title="class in org.openqa.selenium.firefox">FirefoxBinary</a>&nbsp;binary,
+             <a href="../../../../org/openqa/selenium/firefox/FirefoxProfile.html" title="class in org.openqa.selenium.firefox">FirefoxProfile</a>&nbsp;profile)</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
+<div class="block"><span class="deprecationComment">Prefer <a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html#setBinary-org.openqa.selenium.firefox.FirefoxBinary-"><code>FirefoxOptions.setBinary(FirefoxBinary)</code></a>, and
+   <a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html#setProfile-org.openqa.selenium.firefox.FirefoxProfile-"><code>FirefoxOptions.setProfile(FirefoxProfile)</code></a>.</span></div>
+</div>
+</td>
 </tr>
 <tr class="rowColor">
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxDriver.html#FirefoxDriver-org.openqa.selenium.firefox.FirefoxBinary-org.openqa.selenium.firefox.FirefoxProfile-org.openqa.selenium.Capabilities-">FirefoxDriver</a></span>(<a href="../../../../org/openqa/selenium/firefox/FirefoxBinary.html" title="class in org.openqa.selenium.firefox">FirefoxBinary</a>&nbsp;binary,
+             <a href="../../../../org/openqa/selenium/firefox/FirefoxProfile.html" title="class in org.openqa.selenium.firefox">FirefoxProfile</a>&nbsp;profile,
+             <a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
+<div class="block"><span class="deprecationComment">Prefer <a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html#setBinary-org.openqa.selenium.firefox.FirefoxBinary-"><code>FirefoxOptions.setBinary(FirefoxBinary)</code></a>,
+   <a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html#setProfile-org.openqa.selenium.firefox.FirefoxProfile-"><code>FirefoxOptions.setProfile(FirefoxProfile)</code></a></span></div>
+</div>
+</td>
+</tr>
+<tr class="altColor">
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxDriver.html#FirefoxDriver-org.openqa.selenium.firefox.FirefoxBinary-org.openqa.selenium.firefox.FirefoxProfile-org.openqa.selenium.Capabilities-org.openqa.selenium.Capabilities-">FirefoxDriver</a></span>(<a href="../../../../org/openqa/selenium/firefox/FirefoxBinary.html" title="class in org.openqa.selenium.firefox">FirefoxBinary</a>&nbsp;binary,
              <a href="../../../../org/openqa/selenium/firefox/FirefoxProfile.html" title="class in org.openqa.selenium.firefox">FirefoxProfile</a>&nbsp;profile,
              <a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;desiredCapabilities,
-             <a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;requiredCapabilities)</code>&nbsp;</td>
+             <a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;requiredCapabilities)</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
+<div class="block"><span class="deprecationComment">Prefer <a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html#setBinary-org.openqa.selenium.firefox.FirefoxBinary-"><code>FirefoxOptions.setBinary(FirefoxBinary)</code></a>,
+   <a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html#setProfile-org.openqa.selenium.firefox.FirefoxProfile-"><code>FirefoxOptions.setProfile(FirefoxProfile)</code></a></span></div>
+</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxDriver.html#FirefoxDriver-org.openqa.selenium.firefox.FirefoxOptions-">FirefoxDriver</a></span>(<a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a>&nbsp;options)</code>&nbsp;</td>
 </tr>
 <tr class="altColor">
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxDriver.html#FirefoxDriver-org.openqa.selenium.firefox.FirefoxProfile-">FirefoxDriver</a></span>(<a href="../../../../org/openqa/selenium/firefox/FirefoxProfile.html" title="class in org.openqa.selenium.firefox">FirefoxProfile</a>&nbsp;profile)</code>&nbsp;</td>
-</tr>
-<tr class="rowColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxDriver.html#FirefoxDriver-org.openqa.selenium.firefox.GeckoDriverService-">FirefoxDriver</a></span>(<a href="../../../../org/openqa/selenium/firefox/GeckoDriverService.html" title="class in org.openqa.selenium.firefox">GeckoDriverService</a>&nbsp;driverService)</code>&nbsp;</td>
-</tr>
-<tr class="altColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxDriver.html#FirefoxDriver-org.openqa.selenium.firefox.GeckoDriverService-org.openqa.selenium.Capabilities-">FirefoxDriver</a></span>(<a href="../../../../org/openqa/selenium/firefox/GeckoDriverService.html" title="class in org.openqa.selenium.firefox">GeckoDriverService</a>&nbsp;driverService,
-             <a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;desiredCapabilities)</code>&nbsp;</td>
-</tr>
-<tr class="rowColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxDriver.html#FirefoxDriver-org.openqa.selenium.firefox.GeckoDriverService-org.openqa.selenium.Capabilities-org.openqa.selenium.Capabilities-">FirefoxDriver</a></span>(<a href="../../../../org/openqa/selenium/firefox/GeckoDriverService.html" title="class in org.openqa.selenium.firefox">GeckoDriverService</a>&nbsp;driverService,
-             <a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;desiredCapabilities,
-             <a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;requiredCapabilities)</code>&nbsp;</td>
 </tr>
 </table>
 </li>
@@ -274,50 +282,9 @@ implements <a href="../../../../org/openqa/selenium/internal/Killable.html" titl
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr id="i0" class="altColor">
-<td class="colFirst"><code>protected <a href="../../../../org/openqa/selenium/firefox/ExtensionConnection.html" title="interface in org.openqa.selenium.firefox">ExtensionConnection</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxDriver.html#connectTo-org.openqa.selenium.firefox.FirefoxBinary-org.openqa.selenium.firefox.FirefoxProfile-java.lang.String-">connectTo</a></span>(<a href="../../../../org/openqa/selenium/firefox/FirefoxBinary.html" title="class in org.openqa.selenium.firefox">FirefoxBinary</a>&nbsp;binary,
-         <a href="../../../../org/openqa/selenium/firefox/FirefoxProfile.html" title="class in org.openqa.selenium.firefox">FirefoxProfile</a>&nbsp;profile,
-         java.lang.String&nbsp;host)</code>&nbsp;</td>
-</tr>
-<tr id="i1" class="rowColor">
-<td class="colFirst"><code>&lt;X&gt;&nbsp;X</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxDriver.html#getScreenshotAs-org.openqa.selenium.OutputType-">getScreenshotAs</a></span>(<a href="../../../../org/openqa/selenium/OutputType.html" title="interface in org.openqa.selenium">OutputType</a>&lt;X&gt;&nbsp;target)</code>
-<div class="block">Capture the screenshot and store it in the specified location.</div>
-</td>
-</tr>
-<tr id="i2" class="altColor">
-<td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxDriver.html#kill--">kill</a></span>()</code>
-<div class="block">Attempt to forcibly kill this Killable at the OS level.</div>
-</td>
-</tr>
-<tr id="i3" class="rowColor">
-<td class="colFirst"><code><a href="../../../../org/openqa/selenium/WebDriver.Options.html" title="interface in org.openqa.selenium">WebDriver.Options</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxDriver.html#manage--">manage</a></span>()</code>
-<div class="block">Gets the Option interface</div>
-</td>
-</tr>
-<tr id="i4" class="altColor">
-<td class="colFirst"><code>protected <a href="../../../../org/openqa/selenium/internal/Lock.html" title="interface in org.openqa.selenium.internal">Lock</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxDriver.html#obtainLock-org.openqa.selenium.firefox.FirefoxProfile-">obtainLock</a></span>(<a href="../../../../org/openqa/selenium/firefox/FirefoxProfile.html" title="class in org.openqa.selenium.firefox">FirefoxProfile</a>&nbsp;profile)</code>&nbsp;</td>
-</tr>
-<tr id="i5" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxDriver.html#setFileDetector-org.openqa.selenium.remote.FileDetector-">setFileDetector</a></span>(<a href="../../../../org/openqa/selenium/remote/FileDetector.html" title="interface in org.openqa.selenium.remote">FileDetector</a>&nbsp;detector)</code>
 <div class="block">Set the file detector to be used when sending keyboard input.</div>
-</td>
-</tr>
-<tr id="i6" class="altColor">
-<td class="colFirst"><code>protected void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxDriver.html#startClient-org.openqa.selenium.Capabilities-org.openqa.selenium.Capabilities-">startClient</a></span>(<a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;desiredCapabilities,
-           <a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;requiredCapabilities)</code>
-<div class="block">Method called before <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#startSession-org.openqa.selenium.Capabilities-"><code>starting a new session</code></a>.</div>
-</td>
-</tr>
-<tr id="i7" class="rowColor">
-<td class="colFirst"><code>protected void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxDriver.html#stopClient--">stopClient</a></span>()</code>
-<div class="block">Method called after executing a <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#quit--"><code>RemoteWebDriver.quit()</code></a> command.</div>
 </td>
 </tr>
 </table>
@@ -326,7 +293,7 @@ implements <a href="../../../../org/openqa/selenium/internal/Killable.html" titl
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;org.openqa.selenium.remote.<a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html" title="class in org.openqa.selenium.remote">RemoteWebDriver</a></h3>
-<code><a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#close--">close</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#execute-java.lang.String-">execute</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#execute-java.lang.String-java.util.Map-">execute</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#executeAsyncScript-java.lang.String-java.lang.Object...-">executeAsyncScript</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#executeScript-java.lang.String-java.lang.Object...-">executeScript</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElement-org.openqa.selenium.By-">findElement</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElement-java.lang.String-java.lang.String-">findElement</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementByClassName-java.lang.String-">findElementByClassName</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementByCssSelector-java.lang.String-">findElementByCssSelector</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementById-java.lang.String-">findElementById</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementByLinkText-java.lang.String-">findElementByLinkText</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementByName-java.lang.String-">findElementByName</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementByPartialLinkText-java.lang.String-">findElementByPartialLinkText</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementByTagName-java.lang.String-">findElementByTagName</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementByXPath-java.lang.String-">findElementByXPath</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElements-org.openqa.selenium.By-">findElements</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElements-java.lang.String-java.lang.String-">findElements</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementsByClassName-java.lang.String-">findElementsByClassName</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementsByCssSelector-java.lang.String-">findElementsByCssSelector</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementsById-java.lang.String-">findElementsById</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementsByLinkText-java.lang.String-">findElementsByLinkText</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementsByName-java.lang.String-">findElementsByName</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementsByPartialLinkText-java.lang.String-">findElementsByPartialLinkText</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementsByTagName-java.lang.String-">findElementsByTagName</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementsByXPath-java.lang.String-">findElementsByXPath</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#get-java.lang.String-">get</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getCapabilities--">getCapabilities</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getCommandExecutor--">getCommandExecutor</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getCurrentUrl--">getCurrentUrl</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getElementConverter--">getElementConverter</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getErrorHandler--">getErrorHandler</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getExecuteMethod--">getExecuteMethod</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getFileDetector--">getFileDetector</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getKeyboard--">getKeyboard</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getMouse--">getMouse</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getPageSource--">getPageSource</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getSessionId--">getSessionId</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getTitle--">getTitle</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getWindowHandle--">getWindowHandle</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getWindowHandles--">getWindowHandles</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#log-org.openqa.selenium.remote.SessionId-java.lang.String-java.lang.Object-org.openqa.selenium.remote.RemoteWebDriver.When-">log</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#navigate--">navigate</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#perform-java.util.Collection-">perform</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#quit--">quit</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#resetInputState--">resetInputState</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#setCommandExecutor-org.openqa.selenium.remote.CommandExecutor-">setCommandExecutor</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#setElementConverter-org.openqa.selenium.remote.internal.JsonToWebElementConverter-">setElementConverter</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#setErrorHandler-org.openqa.selenium.remote.ErrorHandler-">setErrorHandler</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#setFoundBy-org.openqa.selenium.SearchContext-org.openqa.selenium.WebElement-java.lang.String-java.lang.String-">setFoundBy</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#setLogLevel-java.util.logging.Level-">setLogLevel</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#setSessionId-java.lang.String-">setSessionId</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#startClient--">startClient</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#startSession-org.openqa.selenium.Capabilities-">startSession</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#startSession-org.openqa.selenium.Capabilities-org.openqa.selenium.Capabilities-">startSession</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#stopClient-org.openqa.selenium.Capabilities-org.openqa.selenium.Capabilities-">stopClient</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#switchTo--">switchTo</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#toString--">toString</a></code></li>
+<code><a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#close--">close</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#execute-java.lang.String-">execute</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#execute-java.lang.String-java.util.Map-">execute</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#executeAsyncScript-java.lang.String-java.lang.Object...-">executeAsyncScript</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#executeScript-java.lang.String-java.lang.Object...-">executeScript</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElement-org.openqa.selenium.By-">findElement</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElement-java.lang.String-java.lang.String-">findElement</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementByClassName-java.lang.String-">findElementByClassName</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementByCssSelector-java.lang.String-">findElementByCssSelector</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementById-java.lang.String-">findElementById</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementByLinkText-java.lang.String-">findElementByLinkText</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementByName-java.lang.String-">findElementByName</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementByPartialLinkText-java.lang.String-">findElementByPartialLinkText</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementByTagName-java.lang.String-">findElementByTagName</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementByXPath-java.lang.String-">findElementByXPath</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElements-org.openqa.selenium.By-">findElements</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElements-java.lang.String-java.lang.String-">findElements</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementsByClassName-java.lang.String-">findElementsByClassName</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementsByCssSelector-java.lang.String-">findElementsByCssSelector</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementsById-java.lang.String-">findElementsById</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementsByLinkText-java.lang.String-">findElementsByLinkText</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementsByName-java.lang.String-">findElementsByName</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementsByPartialLinkText-java.lang.String-">findElementsByPartialLinkText</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementsByTagName-java.lang.String-">findElementsByTagName</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementsByXPath-java.lang.String-">findElementsByXPath</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#get-java.lang.String-">get</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getCapabilities--">getCapabilities</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getCommandExecutor--">getCommandExecutor</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getCurrentUrl--">getCurrentUrl</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getElementConverter--">getElementConverter</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getErrorHandler--">getErrorHandler</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getExecuteMethod--">getExecuteMethod</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getFileDetector--">getFileDetector</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getKeyboard--">getKeyboard</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getMouse--">getMouse</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getPageSource--">getPageSource</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getScreenshotAs-org.openqa.selenium.OutputType-">getScreenshotAs</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getSessionId--">getSessionId</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getTitle--">getTitle</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getWindowHandle--">getWindowHandle</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getWindowHandles--">getWindowHandles</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#log-org.openqa.selenium.remote.SessionId-java.lang.String-java.lang.Object-org.openqa.selenium.remote.RemoteWebDriver.When-">log</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#manage--">manage</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#navigate--">navigate</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#perform-java.util.Collection-">perform</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#quit--">quit</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#resetInputState--">resetInputState</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#setCommandExecutor-org.openqa.selenium.remote.CommandExecutor-">setCommandExecutor</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#setElementConverter-org.openqa.selenium.remote.internal.JsonToWebElementConverter-">setElementConverter</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#setErrorHandler-org.openqa.selenium.remote.ErrorHandler-">setErrorHandler</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#setFoundBy-org.openqa.selenium.SearchContext-org.openqa.selenium.WebElement-java.lang.String-java.lang.String-">setFoundBy</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#setLogLevel-java.util.logging.Level-">setLogLevel</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#setSessionId-java.lang.String-">setSessionId</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#startClient--">startClient</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#startClient-org.openqa.selenium.Capabilities-">startClient</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#startClient-org.openqa.selenium.Capabilities-org.openqa.selenium.Capabilities-">startClient</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#startSession-org.openqa.selenium.Capabilities-">startSession</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#startSession-org.openqa.selenium.Capabilities-org.openqa.selenium.Capabilities-">startSession</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#stopClient--">stopClient</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#stopClient-org.openqa.selenium.Capabilities-">stopClient</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#stopClient-org.openqa.selenium.Capabilities-org.openqa.selenium.Capabilities-">stopClient</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#switchTo--">switchTo</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#toString--">toString</a></code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a name="methods.inherited.from.class.java.lang.Object">
@@ -388,36 +355,6 @@ implements <a href="../../../../org/openqa/selenium/internal/Killable.html" titl
 </dl>
 </li>
 </ul>
-<a name="ACCEPT_UNTRUSTED_CERTIFICATES">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>ACCEPT_UNTRUSTED_CERTIFICATES</h4>
-<pre>@Deprecated
-public static final&nbsp;boolean ACCEPT_UNTRUSTED_CERTIFICATES</pre>
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
-<dl>
-<dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="../../../../constant-values.html#org.openqa.selenium.firefox.FirefoxDriver.ACCEPT_UNTRUSTED_CERTIFICATES">Constant Field Values</a></dd>
-</dl>
-</li>
-</ul>
-<a name="ASSUME_UNTRUSTED_ISSUER">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>ASSUME_UNTRUSTED_ISSUER</h4>
-<pre>@Deprecated
-public static final&nbsp;boolean ASSUME_UNTRUSTED_ISSUER</pre>
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
-<dl>
-<dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="../../../../constant-values.html#org.openqa.selenium.firefox.FirefoxDriver.ASSUME_UNTRUSTED_ISSUER">Constant Field Values</a></dd>
-</dl>
-</li>
-</ul>
 <a name="binary">
 <!--   -->
 </a>
@@ -444,6 +381,26 @@ public static final&nbsp;boolean ASSUME_UNTRUSTED_ISSUER</pre>
 <pre>public&nbsp;FirefoxDriver()</pre>
 </li>
 </ul>
+<a name="FirefoxDriver-org.openqa.selenium.firefox.FirefoxOptions-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>FirefoxDriver</h4>
+<pre>public&nbsp;FirefoxDriver(<a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a>&nbsp;options)</pre>
+</li>
+</ul>
+<a name="FirefoxDriver-org.openqa.selenium.firefox.FirefoxBinary-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>FirefoxDriver</h4>
+<pre>@Deprecated
+public&nbsp;FirefoxDriver(<a href="../../../../org/openqa/selenium/firefox/FirefoxBinary.html" title="class in org.openqa.selenium.firefox">FirefoxBinary</a>&nbsp;binary)</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;<span class="deprecationComment">Prefer <a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html#setBinary-org.openqa.selenium.firefox.FirefoxBinary-"><code>FirefoxOptions.setBinary(FirefoxBinary)</code></a>.</span></div>
+</li>
+</ul>
 <a name="FirefoxDriver-org.openqa.selenium.firefox.FirefoxProfile-">
 <!--   -->
 </a>
@@ -451,6 +408,19 @@ public static final&nbsp;boolean ASSUME_UNTRUSTED_ISSUER</pre>
 <li class="blockList">
 <h4>FirefoxDriver</h4>
 <pre>public&nbsp;FirefoxDriver(<a href="../../../../org/openqa/selenium/firefox/FirefoxProfile.html" title="class in org.openqa.selenium.firefox">FirefoxProfile</a>&nbsp;profile)</pre>
+</li>
+</ul>
+<a name="FirefoxDriver-org.openqa.selenium.firefox.FirefoxBinary-org.openqa.selenium.firefox.FirefoxProfile-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>FirefoxDriver</h4>
+<pre>@Deprecated
+public&nbsp;FirefoxDriver(<a href="../../../../org/openqa/selenium/firefox/FirefoxBinary.html" title="class in org.openqa.selenium.firefox">FirefoxBinary</a>&nbsp;binary,
+                                 <a href="../../../../org/openqa/selenium/firefox/FirefoxProfile.html" title="class in org.openqa.selenium.firefox">FirefoxProfile</a>&nbsp;profile)</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;<span class="deprecationComment">Prefer <a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html#setBinary-org.openqa.selenium.firefox.FirefoxBinary-"><code>FirefoxOptions.setBinary(FirefoxBinary)</code></a>, and
+   <a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html#setProfile-org.openqa.selenium.firefox.FirefoxProfile-"><code>FirefoxOptions.setProfile(FirefoxProfile)</code></a>.</span></div>
 </li>
 </ul>
 <a name="FirefoxDriver-org.openqa.selenium.Capabilities-">
@@ -468,18 +438,10 @@ public static final&nbsp;boolean ASSUME_UNTRUSTED_ISSUER</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>FirefoxDriver</h4>
-<pre>public&nbsp;FirefoxDriver(<a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;desiredCapabilities,
-                     <a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;requiredCapabilities)</pre>
-</li>
-</ul>
-<a name="FirefoxDriver-org.openqa.selenium.firefox.FirefoxBinary-org.openqa.selenium.firefox.FirefoxProfile-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>FirefoxDriver</h4>
-<pre>public&nbsp;FirefoxDriver(<a href="../../../../org/openqa/selenium/firefox/FirefoxBinary.html" title="class in org.openqa.selenium.firefox">FirefoxBinary</a>&nbsp;binary,
-                     <a href="../../../../org/openqa/selenium/firefox/FirefoxProfile.html" title="class in org.openqa.selenium.firefox">FirefoxProfile</a>&nbsp;profile)</pre>
+<pre>@Deprecated
+public&nbsp;FirefoxDriver(<a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;desiredCapabilities,
+                                 <a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;requiredCapabilities)</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;<span class="deprecationComment">Prefer <a href="../../../../org/openqa/selenium/firefox/FirefoxDriver.html#FirefoxDriver-org.openqa.selenium.firefox.FirefoxOptions-"><code>FirefoxDriver(FirefoxOptions)</code></a></span></div>
 </li>
 </ul>
 <a name="FirefoxDriver-org.openqa.selenium.firefox.FirefoxBinary-org.openqa.selenium.firefox.FirefoxProfile-org.openqa.selenium.Capabilities-">
@@ -488,51 +450,27 @@ public static final&nbsp;boolean ASSUME_UNTRUSTED_ISSUER</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>FirefoxDriver</h4>
-<pre>public&nbsp;FirefoxDriver(<a href="../../../../org/openqa/selenium/firefox/FirefoxBinary.html" title="class in org.openqa.selenium.firefox">FirefoxBinary</a>&nbsp;binary,
-                     <a href="../../../../org/openqa/selenium/firefox/FirefoxProfile.html" title="class in org.openqa.selenium.firefox">FirefoxProfile</a>&nbsp;profile,
-                     <a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</pre>
+<pre>@Deprecated
+public&nbsp;FirefoxDriver(<a href="../../../../org/openqa/selenium/firefox/FirefoxBinary.html" title="class in org.openqa.selenium.firefox">FirefoxBinary</a>&nbsp;binary,
+                                 <a href="../../../../org/openqa/selenium/firefox/FirefoxProfile.html" title="class in org.openqa.selenium.firefox">FirefoxProfile</a>&nbsp;profile,
+                                 <a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;<span class="deprecationComment">Prefer <a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html#setBinary-org.openqa.selenium.firefox.FirefoxBinary-"><code>FirefoxOptions.setBinary(FirefoxBinary)</code></a>,
+   <a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html#setProfile-org.openqa.selenium.firefox.FirefoxProfile-"><code>FirefoxOptions.setProfile(FirefoxProfile)</code></a></span></div>
 </li>
 </ul>
 <a name="FirefoxDriver-org.openqa.selenium.firefox.FirefoxBinary-org.openqa.selenium.firefox.FirefoxProfile-org.openqa.selenium.Capabilities-org.openqa.selenium.Capabilities-">
 <!--   -->
 </a>
-<ul class="blockList">
-<li class="blockList">
-<h4>FirefoxDriver</h4>
-<pre>public&nbsp;FirefoxDriver(<a href="../../../../org/openqa/selenium/firefox/FirefoxBinary.html" title="class in org.openqa.selenium.firefox">FirefoxBinary</a>&nbsp;binary,
-                     <a href="../../../../org/openqa/selenium/firefox/FirefoxProfile.html" title="class in org.openqa.selenium.firefox">FirefoxProfile</a>&nbsp;profile,
-                     <a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;desiredCapabilities,
-                     <a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;requiredCapabilities)</pre>
-</li>
-</ul>
-<a name="FirefoxDriver-org.openqa.selenium.firefox.GeckoDriverService-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>FirefoxDriver</h4>
-<pre>public&nbsp;FirefoxDriver(<a href="../../../../org/openqa/selenium/firefox/GeckoDriverService.html" title="class in org.openqa.selenium.firefox">GeckoDriverService</a>&nbsp;driverService)</pre>
-</li>
-</ul>
-<a name="FirefoxDriver-org.openqa.selenium.firefox.GeckoDriverService-org.openqa.selenium.Capabilities-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>FirefoxDriver</h4>
-<pre>public&nbsp;FirefoxDriver(<a href="../../../../org/openqa/selenium/firefox/GeckoDriverService.html" title="class in org.openqa.selenium.firefox">GeckoDriverService</a>&nbsp;driverService,
-                     <a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;desiredCapabilities)</pre>
-</li>
-</ul>
-<a name="FirefoxDriver-org.openqa.selenium.firefox.GeckoDriverService-org.openqa.selenium.Capabilities-org.openqa.selenium.Capabilities-">
-<!--   -->
-</a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>FirefoxDriver</h4>
-<pre>public&nbsp;FirefoxDriver(<a href="../../../../org/openqa/selenium/firefox/GeckoDriverService.html" title="class in org.openqa.selenium.firefox">GeckoDriverService</a>&nbsp;driverService,
-                     <a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;desiredCapabilities,
-                     <a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;requiredCapabilities)</pre>
+<pre>@Deprecated
+public&nbsp;FirefoxDriver(<a href="../../../../org/openqa/selenium/firefox/FirefoxBinary.html" title="class in org.openqa.selenium.firefox">FirefoxBinary</a>&nbsp;binary,
+                                 <a href="../../../../org/openqa/selenium/firefox/FirefoxProfile.html" title="class in org.openqa.selenium.firefox">FirefoxProfile</a>&nbsp;profile,
+                                 <a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;desiredCapabilities,
+                                 <a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;requiredCapabilities)</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;<span class="deprecationComment">Prefer <a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html#setBinary-org.openqa.selenium.firefox.FirefoxBinary-"><code>FirefoxOptions.setBinary(FirefoxBinary)</code></a>,
+   <a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html#setProfile-org.openqa.selenium.firefox.FirefoxProfile-"><code>FirefoxOptions.setProfile(FirefoxProfile)</code></a></span></div>
 </li>
 </ul>
 </li>
@@ -546,7 +484,7 @@ public static final&nbsp;boolean ASSUME_UNTRUSTED_ISSUER</pre>
 <a name="setFileDetector-org.openqa.selenium.remote.FileDetector-">
 <!--   -->
 </a>
-<ul class="blockList">
+<ul class="blockListLast">
 <li class="blockList">
 <h4>setFileDetector</h4>
 <pre>public&nbsp;void&nbsp;setFileDetector(<a href="../../../../org/openqa/selenium/remote/FileDetector.html" title="interface in org.openqa.selenium.remote">FileDetector</a>&nbsp;detector)</pre>
@@ -562,132 +500,6 @@ public static final&nbsp;boolean ASSUME_UNTRUSTED_ISSUER</pre>
 <dd><a href="../../../../org/openqa/selenium/remote/FileDetector.html" title="interface in org.openqa.selenium.remote"><code>FileDetector</code></a>, 
 <a href="../../../../org/openqa/selenium/remote/LocalFileDetector.html" title="class in org.openqa.selenium.remote"><code>LocalFileDetector</code></a>, 
 <a href="../../../../org/openqa/selenium/remote/UselessFileDetector.html" title="class in org.openqa.selenium.remote"><code>UselessFileDetector</code></a></dd>
-</dl>
-</li>
-</ul>
-<a name="kill--">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>kill</h4>
-<pre>public&nbsp;void&nbsp;kill()</pre>
-<div class="block">Attempt to forcibly kill this Killable at the OS level. Useful where the extension has
- stopped responding, and you don't want to leak resources. Should not ordinarily be called.</div>
-<dl>
-<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../../../org/openqa/selenium/internal/Killable.html#kill--">kill</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../org/openqa/selenium/internal/Killable.html" title="interface in org.openqa.selenium.internal">Killable</a></code></dd>
-</dl>
-</li>
-</ul>
-<a name="manage--">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>manage</h4>
-<pre>public&nbsp;<a href="../../../../org/openqa/selenium/WebDriver.Options.html" title="interface in org.openqa.selenium">WebDriver.Options</a>&nbsp;manage()</pre>
-<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../../../../org/openqa/selenium/WebDriver.html#manage--">WebDriver</a></code></span></div>
-<div class="block">Gets the Option interface</div>
-<dl>
-<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../../../org/openqa/selenium/WebDriver.html#manage--">manage</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a></code></dd>
-<dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
-<dd><code><a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#manage--">manage</a></code>&nbsp;in class&nbsp;<code><a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html" title="class in org.openqa.selenium.remote">RemoteWebDriver</a></code></dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>An option interface</dd>
-<dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="../../../../org/openqa/selenium/WebDriver.Options.html" title="interface in org.openqa.selenium"><code>WebDriver.Options</code></a></dd>
-</dl>
-</li>
-</ul>
-<a name="startClient-org.openqa.selenium.Capabilities-org.openqa.selenium.Capabilities-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>startClient</h4>
-<pre>protected&nbsp;void&nbsp;startClient(<a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;desiredCapabilities,
-                           <a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;requiredCapabilities)</pre>
-<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#startClient-org.openqa.selenium.Capabilities-org.openqa.selenium.Capabilities-">RemoteWebDriver</a></code></span></div>
-<div class="block">Method called before <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#startSession-org.openqa.selenium.Capabilities-"><code>starting a new session</code></a>. The default
- implementation is a no-op, but subtypes should override this method to define custom behavior.</div>
-<dl>
-<dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
-<dd><code><a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#startClient-org.openqa.selenium.Capabilities-org.openqa.selenium.Capabilities-">startClient</a></code>&nbsp;in class&nbsp;<code><a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html" title="class in org.openqa.selenium.remote">RemoteWebDriver</a></code></dd>
-</dl>
-</li>
-</ul>
-<a name="connectTo-org.openqa.selenium.firefox.FirefoxBinary-org.openqa.selenium.firefox.FirefoxProfile-java.lang.String-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>connectTo</h4>
-<pre>protected&nbsp;<a href="../../../../org/openqa/selenium/firefox/ExtensionConnection.html" title="interface in org.openqa.selenium.firefox">ExtensionConnection</a>&nbsp;connectTo(<a href="../../../../org/openqa/selenium/firefox/FirefoxBinary.html" title="class in org.openqa.selenium.firefox">FirefoxBinary</a>&nbsp;binary,
-                                        <a href="../../../../org/openqa/selenium/firefox/FirefoxProfile.html" title="class in org.openqa.selenium.firefox">FirefoxProfile</a>&nbsp;profile,
-                                        java.lang.String&nbsp;host)</pre>
-</li>
-</ul>
-<a name="obtainLock-org.openqa.selenium.firefox.FirefoxProfile-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>obtainLock</h4>
-<pre>protected&nbsp;<a href="../../../../org/openqa/selenium/internal/Lock.html" title="interface in org.openqa.selenium.internal">Lock</a>&nbsp;obtainLock(<a href="../../../../org/openqa/selenium/firefox/FirefoxProfile.html" title="class in org.openqa.selenium.firefox">FirefoxProfile</a>&nbsp;profile)</pre>
-</li>
-</ul>
-<a name="stopClient--">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>stopClient</h4>
-<pre>protected&nbsp;void&nbsp;stopClient()</pre>
-<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#stopClient--">RemoteWebDriver</a></code></span></div>
-<div class="block">Method called after executing a <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#quit--"><code>RemoteWebDriver.quit()</code></a> command. The default implementation is a no-op,
- but subtypes should override this method to define custom behavior.</div>
-<dl>
-<dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
-<dd><code><a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#stopClient--">stopClient</a></code>&nbsp;in class&nbsp;<code><a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html" title="class in org.openqa.selenium.remote">RemoteWebDriver</a></code></dd>
-</dl>
-</li>
-</ul>
-<a name="getScreenshotAs-org.openqa.selenium.OutputType-">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>getScreenshotAs</h4>
-<pre>public&nbsp;&lt;X&gt;&nbsp;X&nbsp;getScreenshotAs(<a href="../../../../org/openqa/selenium/OutputType.html" title="interface in org.openqa.selenium">OutputType</a>&lt;X&gt;&nbsp;target)</pre>
-<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../../../../org/openqa/selenium/TakesScreenshot.html#getScreenshotAs-org.openqa.selenium.OutputType-">TakesScreenshot</a></code></span></div>
-<div class="block">Capture the screenshot and store it in the specified location.
-
- <p>For WebDriver extending TakesScreenshot, this makes a best effort
- depending on the browser to return the following in order of preference:
- <ul>
-   <li>Entire page</li>
-   <li>Current window</li>
-   <li>Visible portion of the current frame</li>
-   <li>The screenshot of the entire display containing the browser</li>
- </ul>
-
- <p>For WebElement extending TakesScreenshot, this makes a best effort
- depending on the browser to return the following in order of preference:
-   - The entire content of the HTML element
-   - The visible portion of the HTML element</div>
-<dl>
-<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../../../org/openqa/selenium/TakesScreenshot.html#getScreenshotAs-org.openqa.selenium.OutputType-">getScreenshotAs</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../org/openqa/selenium/TakesScreenshot.html" title="interface in org.openqa.selenium">TakesScreenshot</a></code></dd>
-<dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
-<dd><code><a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getScreenshotAs-org.openqa.selenium.OutputType-">getScreenshotAs</a></code>&nbsp;in class&nbsp;<code><a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html" title="class in org.openqa.selenium.remote">RemoteWebDriver</a></code></dd>
-<dt><span class="paramLabel">Type Parameters:</span></dt>
-<dd><code>X</code> - Return type for getScreenshotAs.</dd>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>target</code> - target type, @see OutputType</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>Object in which is stored information about the screenshot.</dd>
 </dl>
 </li>
 </ul>
@@ -719,7 +531,7 @@ public static final&nbsp;boolean ASSUME_UNTRUSTED_ISSUER</pre>
 <div class="subNav">
 <ul class="navList">
 <li><a href="../../../../org/openqa/selenium/firefox/FirefoxBinary.Channel.html" title="enum in org.openqa.selenium.firefox"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
-<li><a href="../../../../org/openqa/selenium/firefox/FirefoxDriver.LazyCommandExecutor.html" title="class in org.openqa.selenium.firefox"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
+<li><a href="../../../../org/openqa/selenium/firefox/FirefoxDriver.SystemProperty.html" title="class in org.openqa.selenium.firefox"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../../index.html?org/openqa/selenium/firefox/FirefoxDriver.html" target="_top">Frames</a></li>

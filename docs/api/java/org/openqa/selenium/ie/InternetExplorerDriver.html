@@ -216,62 +216,70 @@ extends <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html" ti
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/ie/InternetExplorerDriver.html#IE_USE_PRE_PROCESS_PROXY">IE_USE_PRE_PROCESS_PROXY</a></span></code>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/ie/InternetExplorerDriver.html#IE_USE_PER_PROCESS_PROXY">IE_USE_PER_PROCESS_PROXY</a></span></code>
 <div class="block">Capability that defines setting the proxy information for a single IE process
  without affecting the proxy settings of other instances of IE.</div>
 </td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/ie/InternetExplorerDriver.html#IE_USE_PRE_PROCESS_PROXY">IE_USE_PRE_PROCESS_PROXY</a></span></code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
+<div class="block"><span class="deprecationComment">Use <a href="../../../../org/openqa/selenium/ie/InternetExplorerDriver.html#IE_USE_PER_PROCESS_PROXY"><code>IE_USE_PER_PROCESS_PROXY</code></a> (the one without the typo);</span></div>
+</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/ie/InternetExplorerDriver.html#IGNORE_ZOOM_SETTING">IGNORE_ZOOM_SETTING</a></span></code>
 <div class="block">Capability that defines whether to ignore the browser zoom level or not.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/ie/InternetExplorerDriver.html#INITIAL_BROWSER_URL">INITIAL_BROWSER_URL</a></span></code>
 <div class="block">Capability that defines the initial URL to be used when IE is launched.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/ie/InternetExplorerDriver.html#INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS">INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS</a></span></code>
 <div class="block">Capability that defines to ignore ot not browser
  protected mode settings during starting by IEDriverServer.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/ie/InternetExplorerDriver.html#LOG_FILE">LOG_FILE</a></span></code>
 <div class="block">Capability that defines the location of the file where IEDriverServer
  should write log messages to.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/ie/InternetExplorerDriver.html#LOG_LEVEL">LOG_LEVEL</a></span></code>
 <div class="block">Capability that defines the detalization level the IEDriverServer logs.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/ie/InternetExplorerDriver.html#NATIVE_EVENTS">NATIVE_EVENTS</a></span></code>
 <div class="block">Capability that defines to use whether to use native or javascript events during operations.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/ie/InternetExplorerDriver.html#REQUIRE_WINDOW_FOCUS">REQUIRE_WINDOW_FOCUS</a></span></code>
 <div class="block">Capability that defines to focus to browser window or not before operation.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/ie/InternetExplorerDriver.html#SILENT">SILENT</a></span></code>
 <div class="block">Capability that defines suppress or not diagnostic output of the IEDriverServer.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/ie/InternetExplorerDriver.html#UNEXPECTED_ALERT_BEHAVIOR">UNEXPECTED_ALERT_BEHAVIOR</a></span></code>
 <div class="block">Capability that defines which behaviour will be used if an unexpected Alert is found.</div>
@@ -298,19 +306,43 @@ extends <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html" ti
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/ie/InternetExplorerDriver.html#InternetExplorerDriver-org.openqa.selenium.Capabilities-">InternetExplorerDriver</a></span>(<a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</code>&nbsp;</td>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/ie/InternetExplorerDriver.html#InternetExplorerDriver-int-">InternetExplorerDriver</a></span>(int&nbsp;port)</code>&nbsp;</td>
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/ie/InternetExplorerDriver.html#InternetExplorerDriver-int-">InternetExplorerDriver</a></span>(int&nbsp;port)</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
+<div class="block"><span class="deprecationComment">Create an <a href="../../../../org/openqa/selenium/ie/InternetExplorerDriverService.html" title="class in org.openqa.selenium.ie"><code>InternetExplorerDriverService</code></a> and then use that to create a
+   <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#RemoteWebDriver-org.openqa.selenium.remote.CommandExecutor-org.openqa.selenium.Capabilities-"><code>RemoteWebDriver.RemoteWebDriver(org.openqa.selenium.remote.CommandExecutor, Capabilities)</code></a> with a
+   <a href="../../../../org/openqa/selenium/remote/service/DriverCommandExecutor.html" title="class in org.openqa.selenium.remote.service"><code>DriverCommandExecutor</code></a>.</span></div>
+</div>
+</td>
 </tr>
 <tr class="rowColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/ie/InternetExplorerDriver.html#InternetExplorerDriver-org.openqa.selenium.ie.InternetExplorerDriverService-">InternetExplorerDriver</a></span>(<a href="../../../../org/openqa/selenium/ie/InternetExplorerDriverService.html" title="class in org.openqa.selenium.ie">InternetExplorerDriverService</a>&nbsp;service)</code>&nbsp;</td>
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/ie/InternetExplorerDriver.html#InternetExplorerDriver-org.openqa.selenium.ie.InternetExplorerDriverService-">InternetExplorerDriver</a></span>(<a href="../../../../org/openqa/selenium/ie/InternetExplorerDriverService.html" title="class in org.openqa.selenium.ie">InternetExplorerDriverService</a>&nbsp;service)</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
+<div class="block"><span class="deprecationComment">Create an <a href="../../../../org/openqa/selenium/ie/InternetExplorerDriverService.html" title="class in org.openqa.selenium.ie"><code>InternetExplorerDriverService</code></a> and then use that to create a
+   <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#RemoteWebDriver-org.openqa.selenium.remote.CommandExecutor-org.openqa.selenium.Capabilities-"><code>RemoteWebDriver.RemoteWebDriver(org.openqa.selenium.remote.CommandExecutor, Capabilities)</code></a> with a
+   <a href="../../../../org/openqa/selenium/remote/service/DriverCommandExecutor.html" title="class in org.openqa.selenium.remote.service"><code>DriverCommandExecutor</code></a>.</span></div>
+</div>
+</td>
 </tr>
 <tr class="altColor">
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/ie/InternetExplorerDriver.html#InternetExplorerDriver-org.openqa.selenium.ie.InternetExplorerDriverService-org.openqa.selenium.Capabilities-">InternetExplorerDriver</a></span>(<a href="../../../../org/openqa/selenium/ie/InternetExplorerDriverService.html" title="class in org.openqa.selenium.ie">InternetExplorerDriverService</a>&nbsp;service,
-                      <a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</code>&nbsp;</td>
+                      <a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
+<div class="block"><span class="deprecationComment">Create an <a href="../../../../org/openqa/selenium/ie/InternetExplorerDriverService.html" title="class in org.openqa.selenium.ie"><code>InternetExplorerDriverService</code></a> and then use that to create a
+   <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#RemoteWebDriver-org.openqa.selenium.remote.CommandExecutor-org.openqa.selenium.Capabilities-"><code>RemoteWebDriver.RemoteWebDriver(org.openqa.selenium.remote.CommandExecutor, Capabilities)</code></a> with a
+   <a href="../../../../org/openqa/selenium/remote/service/DriverCommandExecutor.html" title="class in org.openqa.selenium.remote.service"><code>DriverCommandExecutor</code></a>.</span></div>
+</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/ie/InternetExplorerDriver.html#InternetExplorerDriver-org.openqa.selenium.ie.InternetExplorerDriverService-org.openqa.selenium.Capabilities-int-">InternetExplorerDriver</a></span>(<a href="../../../../org/openqa/selenium/ie/InternetExplorerDriverService.html" title="class in org.openqa.selenium.ie">InternetExplorerDriverService</a>&nbsp;service,
                       <a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities,
-                      int&nbsp;port)</code>&nbsp;</td>
+                      int&nbsp;port)</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
+<div class="block"><span class="deprecationComment">Create an <a href="../../../../org/openqa/selenium/ie/InternetExplorerDriverService.html" title="class in org.openqa.selenium.ie"><code>InternetExplorerDriverService</code></a> and then use that to create a
+   <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#RemoteWebDriver-org.openqa.selenium.remote.CommandExecutor-org.openqa.selenium.Capabilities-"><code>RemoteWebDriver.RemoteWebDriver(org.openqa.selenium.remote.CommandExecutor, Capabilities)</code></a> with a
+   <a href="../../../../org/openqa/selenium/remote/service/DriverCommandExecutor.html" title="class in org.openqa.selenium.remote.service"><code>DriverCommandExecutor</code></a>.</span></div>
+</div>
+</td>
 </tr>
 </table>
 </li>
@@ -349,7 +381,7 @@ extends <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html" ti
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;org.openqa.selenium.remote.<a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html" title="class in org.openqa.selenium.remote">RemoteWebDriver</a></h3>
-<code><a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#close--">close</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#execute-java.lang.String-">execute</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#execute-java.lang.String-java.util.Map-">execute</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#executeAsyncScript-java.lang.String-java.lang.Object...-">executeAsyncScript</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#executeScript-java.lang.String-java.lang.Object...-">executeScript</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElement-org.openqa.selenium.By-">findElement</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElement-java.lang.String-java.lang.String-">findElement</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementByClassName-java.lang.String-">findElementByClassName</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementByCssSelector-java.lang.String-">findElementByCssSelector</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementById-java.lang.String-">findElementById</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementByLinkText-java.lang.String-">findElementByLinkText</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementByName-java.lang.String-">findElementByName</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementByPartialLinkText-java.lang.String-">findElementByPartialLinkText</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementByTagName-java.lang.String-">findElementByTagName</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementByXPath-java.lang.String-">findElementByXPath</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElements-org.openqa.selenium.By-">findElements</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElements-java.lang.String-java.lang.String-">findElements</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementsByClassName-java.lang.String-">findElementsByClassName</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementsByCssSelector-java.lang.String-">findElementsByCssSelector</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementsById-java.lang.String-">findElementsById</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementsByLinkText-java.lang.String-">findElementsByLinkText</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementsByName-java.lang.String-">findElementsByName</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementsByPartialLinkText-java.lang.String-">findElementsByPartialLinkText</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementsByTagName-java.lang.String-">findElementsByTagName</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementsByXPath-java.lang.String-">findElementsByXPath</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#get-java.lang.String-">get</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getCapabilities--">getCapabilities</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getCommandExecutor--">getCommandExecutor</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getCurrentUrl--">getCurrentUrl</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getElementConverter--">getElementConverter</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getErrorHandler--">getErrorHandler</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getExecuteMethod--">getExecuteMethod</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getFileDetector--">getFileDetector</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getKeyboard--">getKeyboard</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getMouse--">getMouse</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getPageSource--">getPageSource</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getSessionId--">getSessionId</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getTitle--">getTitle</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getWindowHandle--">getWindowHandle</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getWindowHandles--">getWindowHandles</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#log-org.openqa.selenium.remote.SessionId-java.lang.String-java.lang.Object-org.openqa.selenium.remote.RemoteWebDriver.When-">log</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#manage--">manage</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#navigate--">navigate</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#perform-java.util.Collection-">perform</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#quit--">quit</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#resetInputState--">resetInputState</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#setCommandExecutor-org.openqa.selenium.remote.CommandExecutor-">setCommandExecutor</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#setElementConverter-org.openqa.selenium.remote.internal.JsonToWebElementConverter-">setElementConverter</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#setErrorHandler-org.openqa.selenium.remote.ErrorHandler-">setErrorHandler</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#setFoundBy-org.openqa.selenium.SearchContext-org.openqa.selenium.WebElement-java.lang.String-java.lang.String-">setFoundBy</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#setLogLevel-java.util.logging.Level-">setLogLevel</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#setSessionId-java.lang.String-">setSessionId</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#startClient--">startClient</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#startClient-org.openqa.selenium.Capabilities-org.openqa.selenium.Capabilities-">startClient</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#startSession-org.openqa.selenium.Capabilities-">startSession</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#startSession-org.openqa.selenium.Capabilities-org.openqa.selenium.Capabilities-">startSession</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#stopClient--">stopClient</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#stopClient-org.openqa.selenium.Capabilities-org.openqa.selenium.Capabilities-">stopClient</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#switchTo--">switchTo</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#toString--">toString</a></code></li>
+<code><a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#close--">close</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#execute-java.lang.String-">execute</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#execute-java.lang.String-java.util.Map-">execute</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#executeAsyncScript-java.lang.String-java.lang.Object...-">executeAsyncScript</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#executeScript-java.lang.String-java.lang.Object...-">executeScript</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElement-org.openqa.selenium.By-">findElement</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElement-java.lang.String-java.lang.String-">findElement</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementByClassName-java.lang.String-">findElementByClassName</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementByCssSelector-java.lang.String-">findElementByCssSelector</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementById-java.lang.String-">findElementById</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementByLinkText-java.lang.String-">findElementByLinkText</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementByName-java.lang.String-">findElementByName</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementByPartialLinkText-java.lang.String-">findElementByPartialLinkText</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementByTagName-java.lang.String-">findElementByTagName</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementByXPath-java.lang.String-">findElementByXPath</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElements-org.openqa.selenium.By-">findElements</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElements-java.lang.String-java.lang.String-">findElements</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementsByClassName-java.lang.String-">findElementsByClassName</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementsByCssSelector-java.lang.String-">findElementsByCssSelector</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementsById-java.lang.String-">findElementsById</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementsByLinkText-java.lang.String-">findElementsByLinkText</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementsByName-java.lang.String-">findElementsByName</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementsByPartialLinkText-java.lang.String-">findElementsByPartialLinkText</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementsByTagName-java.lang.String-">findElementsByTagName</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#findElementsByXPath-java.lang.String-">findElementsByXPath</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#get-java.lang.String-">get</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getCapabilities--">getCapabilities</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getCommandExecutor--">getCommandExecutor</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getCurrentUrl--">getCurrentUrl</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getElementConverter--">getElementConverter</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getErrorHandler--">getErrorHandler</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getExecuteMethod--">getExecuteMethod</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getFileDetector--">getFileDetector</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getKeyboard--">getKeyboard</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getMouse--">getMouse</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getPageSource--">getPageSource</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getSessionId--">getSessionId</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getTitle--">getTitle</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getWindowHandle--">getWindowHandle</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#getWindowHandles--">getWindowHandles</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#log-org.openqa.selenium.remote.SessionId-java.lang.String-java.lang.Object-org.openqa.selenium.remote.RemoteWebDriver.When-">log</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#manage--">manage</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#navigate--">navigate</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#perform-java.util.Collection-">perform</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#quit--">quit</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#resetInputState--">resetInputState</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#setCommandExecutor-org.openqa.selenium.remote.CommandExecutor-">setCommandExecutor</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#setElementConverter-org.openqa.selenium.remote.internal.JsonToWebElementConverter-">setElementConverter</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#setErrorHandler-org.openqa.selenium.remote.ErrorHandler-">setErrorHandler</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#setFoundBy-org.openqa.selenium.SearchContext-org.openqa.selenium.WebElement-java.lang.String-java.lang.String-">setFoundBy</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#setLogLevel-java.util.logging.Level-">setLogLevel</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#setSessionId-java.lang.String-">setSessionId</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#startClient--">startClient</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#startClient-org.openqa.selenium.Capabilities-">startClient</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#startClient-org.openqa.selenium.Capabilities-org.openqa.selenium.Capabilities-">startClient</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#startSession-org.openqa.selenium.Capabilities-">startSession</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#startSession-org.openqa.selenium.Capabilities-org.openqa.selenium.Capabilities-">startSession</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#stopClient--">stopClient</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#stopClient-org.openqa.selenium.Capabilities-">stopClient</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#stopClient-org.openqa.selenium.Capabilities-org.openqa.selenium.Capabilities-">stopClient</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#switchTo--">switchTo</a>, <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#toString--">toString</a></code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a name="methods.inherited.from.class.java.lang.Object">
@@ -616,15 +648,30 @@ extends <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html" ti
 </dl>
 </li>
 </ul>
+<a name="IE_USE_PER_PROCESS_PROXY">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>IE_USE_PER_PROCESS_PROXY</h4>
+<pre>public static final&nbsp;java.lang.String IE_USE_PER_PROCESS_PROXY</pre>
+<div class="block">Capability that defines setting the proxy information for a single IE process
+ without affecting the proxy settings of other instances of IE.</div>
+<dl>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../../constant-values.html#org.openqa.selenium.ie.InternetExplorerDriver.IE_USE_PER_PROCESS_PROXY">Constant Field Values</a></dd>
+</dl>
+</li>
+</ul>
 <a name="IE_USE_PRE_PROCESS_PROXY">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>IE_USE_PRE_PROCESS_PROXY</h4>
-<pre>public static final&nbsp;java.lang.String IE_USE_PRE_PROCESS_PROXY</pre>
-<div class="block">Capability that defines setting the proxy information for a single IE process
- without affecting the proxy settings of other instances of IE.</div>
+<pre>@Deprecated
+public static final&nbsp;java.lang.String IE_USE_PRE_PROCESS_PROXY</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;<span class="deprecationComment">Use <a href="../../../../org/openqa/selenium/ie/InternetExplorerDriver.html#IE_USE_PER_PROCESS_PROXY"><code>IE_USE_PER_PROCESS_PROXY</code></a> (the one without the typo);</span></div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../constant-values.html#org.openqa.selenium.ie.InternetExplorerDriver.IE_USE_PRE_PROCESS_PROXY">Constant Field Values</a></dd>
@@ -677,7 +724,11 @@ extends <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html" ti
 <ul class="blockList">
 <li class="blockList">
 <h4>InternetExplorerDriver</h4>
-<pre>public&nbsp;InternetExplorerDriver(int&nbsp;port)</pre>
+<pre>@Deprecated
+public&nbsp;InternetExplorerDriver(int&nbsp;port)</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;<span class="deprecationComment">Create an <a href="../../../../org/openqa/selenium/ie/InternetExplorerDriverService.html" title="class in org.openqa.selenium.ie"><code>InternetExplorerDriverService</code></a> and then use that to create a
+   <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#RemoteWebDriver-org.openqa.selenium.remote.CommandExecutor-org.openqa.selenium.Capabilities-"><code>RemoteWebDriver.RemoteWebDriver(org.openqa.selenium.remote.CommandExecutor, Capabilities)</code></a> with a
+   <a href="../../../../org/openqa/selenium/remote/service/DriverCommandExecutor.html" title="class in org.openqa.selenium.remote.service"><code>DriverCommandExecutor</code></a>.</span></div>
 </li>
 </ul>
 <a name="InternetExplorerDriver-org.openqa.selenium.ie.InternetExplorerDriverService-">
@@ -686,7 +737,11 @@ extends <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html" ti
 <ul class="blockList">
 <li class="blockList">
 <h4>InternetExplorerDriver</h4>
-<pre>public&nbsp;InternetExplorerDriver(<a href="../../../../org/openqa/selenium/ie/InternetExplorerDriverService.html" title="class in org.openqa.selenium.ie">InternetExplorerDriverService</a>&nbsp;service)</pre>
+<pre>@Deprecated
+public&nbsp;InternetExplorerDriver(<a href="../../../../org/openqa/selenium/ie/InternetExplorerDriverService.html" title="class in org.openqa.selenium.ie">InternetExplorerDriverService</a>&nbsp;service)</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;<span class="deprecationComment">Create an <a href="../../../../org/openqa/selenium/ie/InternetExplorerDriverService.html" title="class in org.openqa.selenium.ie"><code>InternetExplorerDriverService</code></a> and then use that to create a
+   <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#RemoteWebDriver-org.openqa.selenium.remote.CommandExecutor-org.openqa.selenium.Capabilities-"><code>RemoteWebDriver.RemoteWebDriver(org.openqa.selenium.remote.CommandExecutor, Capabilities)</code></a> with a
+   <a href="../../../../org/openqa/selenium/remote/service/DriverCommandExecutor.html" title="class in org.openqa.selenium.remote.service"><code>DriverCommandExecutor</code></a>.</span></div>
 </li>
 </ul>
 <a name="InternetExplorerDriver-org.openqa.selenium.ie.InternetExplorerDriverService-org.openqa.selenium.Capabilities-">
@@ -695,8 +750,12 @@ extends <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html" ti
 <ul class="blockList">
 <li class="blockList">
 <h4>InternetExplorerDriver</h4>
-<pre>public&nbsp;InternetExplorerDriver(<a href="../../../../org/openqa/selenium/ie/InternetExplorerDriverService.html" title="class in org.openqa.selenium.ie">InternetExplorerDriverService</a>&nbsp;service,
-                              <a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</pre>
+<pre>@Deprecated
+public&nbsp;InternetExplorerDriver(<a href="../../../../org/openqa/selenium/ie/InternetExplorerDriverService.html" title="class in org.openqa.selenium.ie">InternetExplorerDriverService</a>&nbsp;service,
+                                          <a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;<span class="deprecationComment">Create an <a href="../../../../org/openqa/selenium/ie/InternetExplorerDriverService.html" title="class in org.openqa.selenium.ie"><code>InternetExplorerDriverService</code></a> and then use that to create a
+   <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#RemoteWebDriver-org.openqa.selenium.remote.CommandExecutor-org.openqa.selenium.Capabilities-"><code>RemoteWebDriver.RemoteWebDriver(org.openqa.selenium.remote.CommandExecutor, Capabilities)</code></a> with a
+   <a href="../../../../org/openqa/selenium/remote/service/DriverCommandExecutor.html" title="class in org.openqa.selenium.remote.service"><code>DriverCommandExecutor</code></a>.</span></div>
 </li>
 </ul>
 <a name="InternetExplorerDriver-org.openqa.selenium.ie.InternetExplorerDriverService-org.openqa.selenium.Capabilities-int-">
@@ -705,9 +764,13 @@ extends <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html" ti
 <ul class="blockListLast">
 <li class="blockList">
 <h4>InternetExplorerDriver</h4>
-<pre>public&nbsp;InternetExplorerDriver(<a href="../../../../org/openqa/selenium/ie/InternetExplorerDriverService.html" title="class in org.openqa.selenium.ie">InternetExplorerDriverService</a>&nbsp;service,
-                              <a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities,
-                              int&nbsp;port)</pre>
+<pre>@Deprecated
+public&nbsp;InternetExplorerDriver(<a href="../../../../org/openqa/selenium/ie/InternetExplorerDriverService.html" title="class in org.openqa.selenium.ie">InternetExplorerDriverService</a>&nbsp;service,
+                                          <a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities,
+                                          int&nbsp;port)</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;<span class="deprecationComment">Create an <a href="../../../../org/openqa/selenium/ie/InternetExplorerDriverService.html" title="class in org.openqa.selenium.ie"><code>InternetExplorerDriverService</code></a> and then use that to create a
+   <a href="../../../../org/openqa/selenium/remote/RemoteWebDriver.html#RemoteWebDriver-org.openqa.selenium.remote.CommandExecutor-org.openqa.selenium.Capabilities-"><code>RemoteWebDriver.RemoteWebDriver(org.openqa.selenium.remote.CommandExecutor, Capabilities)</code></a> with a
+   <a href="../../../../org/openqa/selenium/remote/service/DriverCommandExecutor.html" title="class in org.openqa.selenium.remote.service"><code>DriverCommandExecutor</code></a>.</span></div>
 </li>
 </ul>
 </li>

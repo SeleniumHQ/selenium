@@ -17,8 +17,8 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":6,"i1":6,"i2":6,"i3":6,"i4":6,"i5":6,"i6":6};
-var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"]};
+var methods = {"i0":6,"i1":18,"i2":6,"i3":18,"i4":18,"i5":18,"i6":50,"i7":18};
+var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"],16:["t5","Default Methods"],32:["t6","Deprecated Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -99,7 +99,7 @@ var activeTableTab = "activeTableTab";
 <li class="blockList">
 <dl>
 <dt>All Known Implementing Classes:</dt>
-<dd><a href="../../../org/openqa/selenium/remote/DesiredCapabilities.html" title="class in org.openqa.selenium.remote">DesiredCapabilities</a></dd>
+<dd><a href="../../../org/openqa/selenium/remote/DesiredCapabilities.html" title="class in org.openqa.selenium.remote">DesiredCapabilities</a>, <a href="../../../org/openqa/selenium/ImmutableCapabilities.html" title="class in org.openqa.selenium">ImmutableCapabilities</a></dd>
 </dl>
 <hr>
 <br>
@@ -118,7 +118,7 @@ var activeTableTab = "activeTableTab";
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Method Summary table, listing methods, and an explanation">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t3" class="tableTab"><span><a href="javascript:show(4);">Abstract Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t3" class="tableTab"><span><a href="javascript:show(4);">Abstract Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t5" class="tableTab"><span><a href="javascript:show(16);">Default Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t6" class="tableTab"><span><a href="javascript:show(32);">Deprecated Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colLast" scope="col">Method and Description</th>
@@ -128,7 +128,7 @@ var activeTableTab = "activeTableTab";
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/openqa/selenium/Capabilities.html#asMap--">asMap</a></span>()</code>&nbsp;</td>
 </tr>
 <tr id="i1" class="rowColor">
-<td class="colFirst"><code>java.lang.String</code></td>
+<td class="colFirst"><code>default java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/openqa/selenium/Capabilities.html#getBrowserName--">getBrowserName</a></span>()</code>&nbsp;</td>
 </tr>
 <tr id="i2" class="altColor">
@@ -136,20 +136,31 @@ var activeTableTab = "activeTableTab";
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/openqa/selenium/Capabilities.html#getCapability-java.lang.String-">getCapability</a></span>(java.lang.String&nbsp;capabilityName)</code>&nbsp;</td>
 </tr>
 <tr id="i3" class="rowColor">
-<td class="colFirst"><code><a href="../../../org/openqa/selenium/Platform.html" title="enum in org.openqa.selenium">Platform</a></code></td>
+<td class="colFirst"><code>default <a href="../../../org/openqa/selenium/Platform.html" title="enum in org.openqa.selenium">Platform</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/openqa/selenium/Capabilities.html#getPlatform--">getPlatform</a></span>()</code>&nbsp;</td>
 </tr>
 <tr id="i4" class="altColor">
-<td class="colFirst"><code>java.lang.String</code></td>
+<td class="colFirst"><code>default java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/openqa/selenium/Capabilities.html#getVersion--">getVersion</a></span>()</code>&nbsp;</td>
 </tr>
 <tr id="i5" class="rowColor">
-<td class="colFirst"><code>boolean</code></td>
+<td class="colFirst"><code>default boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/openqa/selenium/Capabilities.html#is-java.lang.String-">is</a></span>(java.lang.String&nbsp;capabilityName)</code>&nbsp;</td>
 </tr>
 <tr id="i6" class="altColor">
-<td class="colFirst"><code>boolean</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../org/openqa/selenium/Capabilities.html#isJavascriptEnabled--">isJavascriptEnabled</a></span>()</code>&nbsp;</td>
+<td class="colFirst"><code>default boolean</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../org/openqa/selenium/Capabilities.html#isJavascriptEnabled--">isJavascriptEnabled</a></span>()</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
+<div class="block"><span class="deprecationComment">Use is(SUPPORTS_JAVASCRIPT) instead</span></div>
+</div>
+</td>
+</tr>
+<tr id="i7" class="rowColor">
+<td class="colFirst"><code>default <a href="../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../org/openqa/selenium/Capabilities.html#merge-org.openqa.selenium.Capabilities-">merge</a></span>(<a href="../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;other)</code>
+<div class="block">Merge two <a href="../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a> together and return the union of the two as a new
+ <a href="../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a> instance.</div>
+</td>
 </tr>
 </table>
 </li>
@@ -172,7 +183,7 @@ var activeTableTab = "activeTableTab";
 <ul class="blockList">
 <li class="blockList">
 <h4>getBrowserName</h4>
-<pre>java.lang.String&nbsp;getBrowserName()</pre>
+<pre>default&nbsp;java.lang.String&nbsp;getBrowserName()</pre>
 </li>
 </ul>
 <a name="getPlatform--">
@@ -181,7 +192,7 @@ var activeTableTab = "activeTableTab";
 <ul class="blockList">
 <li class="blockList">
 <h4>getPlatform</h4>
-<pre><a href="../../../org/openqa/selenium/Platform.html" title="enum in org.openqa.selenium">Platform</a>&nbsp;getPlatform()</pre>
+<pre>default&nbsp;<a href="../../../org/openqa/selenium/Platform.html" title="enum in org.openqa.selenium">Platform</a>&nbsp;getPlatform()</pre>
 </li>
 </ul>
 <a name="getVersion--">
@@ -190,7 +201,7 @@ var activeTableTab = "activeTableTab";
 <ul class="blockList">
 <li class="blockList">
 <h4>getVersion</h4>
-<pre>java.lang.String&nbsp;getVersion()</pre>
+<pre>default&nbsp;java.lang.String&nbsp;getVersion()</pre>
 </li>
 </ul>
 <a name="isJavascriptEnabled--">
@@ -199,7 +210,14 @@ var activeTableTab = "activeTableTab";
 <ul class="blockList">
 <li class="blockList">
 <h4>isJavascriptEnabled</h4>
-<pre>boolean&nbsp;isJavascriptEnabled()</pre>
+<pre>@Deprecated
+default&nbsp;boolean&nbsp;isJavascriptEnabled()</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;<span class="deprecationComment">Use is(SUPPORTS_JAVASCRIPT) instead</span></div>
+<dl>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../org/openqa/selenium/Capabilities.html#is-java.lang.String-"><code>is(String)</code></a>, 
+<a href="../../../org/openqa/selenium/remote/CapabilityType.html#SUPPORTS_JAVASCRIPT"><code>CapabilityType.SUPPORTS_JAVASCRIPT</code></a></dd>
+</dl>
 </li>
 </ul>
 <a name="asMap--">
@@ -235,10 +253,10 @@ var activeTableTab = "activeTableTab";
 <a name="is-java.lang.String-">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>is</h4>
-<pre>boolean&nbsp;is(java.lang.String&nbsp;capabilityName)</pre>
+<pre>default&nbsp;boolean&nbsp;is(java.lang.String&nbsp;capabilityName)</pre>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>capabilityName</code> - The capability to check.</dd>
@@ -247,6 +265,18 @@ var activeTableTab = "activeTableTab";
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../org/openqa/selenium/remote/CapabilityType.html" title="interface in org.openqa.selenium.remote"><code>CapabilityType</code></a></dd>
 </dl>
+</li>
+</ul>
+<a name="merge-org.openqa.selenium.Capabilities-">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>merge</h4>
+<pre>default&nbsp;<a href="../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;merge(<a href="../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;other)</pre>
+<div class="block">Merge two <a href="../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a> together and return the union of the two as a new
+ <a href="../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a> instance. Capabilities from <code>other</code> will override those in
+ <code>this</code>.</div>
 </li>
 </ul>
 </li>

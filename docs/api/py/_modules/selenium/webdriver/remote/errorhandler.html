@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>selenium.webdriver.remote.errorhandler &mdash; Selenium 3.3 documentation</title>
+    <title>selenium.webdriver.remote.errorhandler &mdash; Selenium 3.4 documentation</title>
     
     <link rel="stylesheet" href="../../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '3.3',
+        VERSION:     '3.4',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../../_static/doctools.js"></script>
-    <link rel="top" title="Selenium 3.3 documentation" href="../../../../index.html" />
+    <link rel="top" title="Selenium 3.4 documentation" href="../../../../index.html" />
     <link rel="up" title="Module code" href="../../../index.html" /> 
   </head>
   <body>
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">Selenium 3.3 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">Selenium 3.4 documentation</a> &raquo;</li>
           <li><a href="../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -64,22 +64,23 @@
 <span class="c"># specific language governing permissions and limitations</span>
 <span class="c"># under the License.</span>
 
-<span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">ElementNotSelectableException</span>
-<span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">ElementNotVisibleException</span>
-<span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">InvalidElementStateException</span>
-<span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">InvalidSelectorException</span>
-<span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">ImeNotAvailableException</span>
-<span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">ImeActivationFailedException</span>
-<span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">NoSuchElementException</span>
-<span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">NoSuchFrameException</span>
-<span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">NoSuchWindowException</span>
-<span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">StaleElementReferenceException</span>
-<span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">UnexpectedAlertPresentException</span>
-<span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">NoAlertPresentException</span>
-<span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">ErrorInResponseException</span>
-<span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">TimeoutException</span>
-<span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">WebDriverException</span>
-<span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">MoveTargetOutOfBoundsException</span>
+<span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="p">(</span><span class="n">ElementNotInteractableException</span><span class="p">,</span>
+                                        <span class="n">ElementNotSelectableException</span><span class="p">,</span>
+                                        <span class="n">ElementNotVisibleException</span><span class="p">,</span>
+                                        <span class="n">ErrorInResponseException</span><span class="p">,</span>
+                                        <span class="n">InvalidElementStateException</span><span class="p">,</span>
+                                        <span class="n">InvalidSelectorException</span><span class="p">,</span>
+                                        <span class="n">ImeNotAvailableException</span><span class="p">,</span>
+                                        <span class="n">ImeActivationFailedException</span><span class="p">,</span>
+                                        <span class="n">MoveTargetOutOfBoundsException</span><span class="p">,</span>
+                                        <span class="n">NoSuchElementException</span><span class="p">,</span>
+                                        <span class="n">NoSuchFrameException</span><span class="p">,</span>
+                                        <span class="n">NoSuchWindowException</span><span class="p">,</span>
+                                        <span class="n">NoAlertPresentException</span><span class="p">,</span>
+                                        <span class="n">StaleElementReferenceException</span><span class="p">,</span>
+                                        <span class="n">TimeoutException</span><span class="p">,</span>
+                                        <span class="n">UnexpectedAlertPresentException</span><span class="p">,</span>
+                                        <span class="n">WebDriverException</span><span class="p">)</span>
 
 <span class="k">try</span><span class="p">:</span>
     <span class="nb">basestring</span>
@@ -100,6 +101,7 @@
     <span class="n">ELEMENT_NOT_VISIBLE</span> <span class="o">=</span> <span class="p">[</span><span class="mi">11</span><span class="p">,</span> <span class="s">&#39;element not visible&#39;</span><span class="p">]</span>
     <span class="n">INVALID_ELEMENT_STATE</span> <span class="o">=</span> <span class="p">[</span><span class="mi">12</span><span class="p">,</span> <span class="s">&#39;invalid element state&#39;</span><span class="p">]</span>
     <span class="n">UNKNOWN_ERROR</span> <span class="o">=</span> <span class="p">[</span><span class="mi">13</span><span class="p">,</span> <span class="s">&#39;unknown error&#39;</span><span class="p">]</span>
+    <span class="n">ELEMENT_NOT_INTERACTABLE</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;element not interactable&quot;</span><span class="p">]</span>
     <span class="n">ELEMENT_IS_NOT_SELECTABLE</span> <span class="o">=</span> <span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="s">&#39;element not selectable&#39;</span><span class="p">]</span>
     <span class="n">JAVASCRIPT_ERROR</span> <span class="o">=</span> <span class="p">[</span><span class="mi">17</span><span class="p">,</span> <span class="s">&#39;javascript error&#39;</span><span class="p">]</span>
     <span class="n">XPATH_LOOKUP_ERROR</span> <span class="o">=</span> <span class="p">[</span><span class="mi">19</span><span class="p">,</span> <span class="s">&#39;invalid selector&#39;</span><span class="p">]</span>
@@ -137,7 +139,6 @@
         <span class="n">status</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;status&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">status</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="n">status</span> <span class="o">==</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">SUCCESS</span><span class="p">:</span>
             <span class="k">return</span>
-
         <span class="n">value</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="n">message</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;message&quot;</span><span class="p">,</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
         <span class="n">screen</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;screen&quot;</span><span class="p">,</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
@@ -148,16 +149,15 @@
                 <span class="kn">import</span> <span class="nn">json</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="n">value</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">value_json</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                        <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="p">[</span><span class="s">&#39;value&#39;</span><span class="p">]</span>
                     <span class="n">status</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;error&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
                     <span class="k">if</span> <span class="n">status</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
                         <span class="n">status</span> <span class="o">=</span> <span class="n">value</span><span class="p">[</span><span class="s">&quot;status&quot;</span><span class="p">]</span>
                         <span class="n">message</span> <span class="o">=</span> <span class="n">value</span><span class="p">[</span><span class="s">&quot;value&quot;</span><span class="p">]</span>
                         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="nb">basestring</span><span class="p">):</span>
                             <span class="n">value</span> <span class="o">=</span> <span class="n">message</span>
-                            <span class="k">try</span><span class="p">:</span>
-                                <span class="n">message</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="s">&#39;message&#39;</span><span class="p">]</span>
-                            <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
-                                <span class="n">message</span> <span class="o">=</span> <span class="bp">None</span>
+                            <span class="n">message</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;message&#39;</span><span class="p">)</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="n">message</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;message&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
                 <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
@@ -182,6 +182,8 @@
             <span class="n">exception_class</span> <span class="o">=</span> <span class="n">InvalidSelectorException</span>
         <span class="k">elif</span> <span class="n">status</span> <span class="ow">in</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">ELEMENT_IS_NOT_SELECTABLE</span><span class="p">:</span>
             <span class="n">exception_class</span> <span class="o">=</span> <span class="n">ElementNotSelectableException</span>
+        <span class="k">elif</span> <span class="n">status</span> <span class="ow">in</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">ELEMENT_NOT_INTERACTABLE</span><span class="p">:</span>
+            <span class="n">exception_class</span> <span class="o">=</span> <span class="n">ElementNotInteractableException</span>
         <span class="k">elif</span> <span class="n">status</span> <span class="ow">in</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">INVALID_COOKIE_DOMAIN</span><span class="p">:</span>
             <span class="n">exception_class</span> <span class="o">=</span> <span class="n">WebDriverException</span>
         <span class="k">elif</span> <span class="n">status</span> <span class="ow">in</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">UNABLE_TO_SET_COOKIE</span><span class="p">:</span>
@@ -275,7 +277,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">Selenium 3.3 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">Selenium 3.4 documentation</a> &raquo;</li>
           <li><a href="../../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>

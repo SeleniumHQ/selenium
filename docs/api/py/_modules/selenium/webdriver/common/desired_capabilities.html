@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>selenium.webdriver.common.desired_capabilities &mdash; Selenium 3.3 documentation</title>
+    <title>selenium.webdriver.common.desired_capabilities &mdash; Selenium 3.4 documentation</title>
     
     <link rel="stylesheet" href="../../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '3.3',
+        VERSION:     '3.4',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../../_static/doctools.js"></script>
-    <link rel="top" title="Selenium 3.3 documentation" href="../../../../index.html" />
+    <link rel="top" title="Selenium 3.4 documentation" href="../../../../index.html" />
     <link rel="up" title="Module code" href="../../../index.html" /> 
   </head>
   <body>
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">Selenium 3.3 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">Selenium 3.4 documentation</a> &raquo;</li>
           <li><a href="../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -98,17 +98,14 @@
 
     <span class="n">FIREFOX</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s">&quot;browserName&quot;</span><span class="p">:</span> <span class="s">&quot;firefox&quot;</span><span class="p">,</span>
-        <span class="s">&quot;version&quot;</span><span class="p">:</span> <span class="s">&quot;&quot;</span><span class="p">,</span>
-        <span class="s">&quot;platform&quot;</span><span class="p">:</span> <span class="s">&quot;ANY&quot;</span><span class="p">,</span>
-        <span class="s">&quot;javascriptEnabled&quot;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
         <span class="s">&quot;marionette&quot;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+        <span class="s">&quot;acceptInsecureCerts&quot;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
     <span class="p">}</span>
 
     <span class="n">INTERNETEXPLORER</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s">&quot;browserName&quot;</span><span class="p">:</span> <span class="s">&quot;internet explorer&quot;</span><span class="p">,</span>
         <span class="s">&quot;version&quot;</span><span class="p">:</span> <span class="s">&quot;&quot;</span><span class="p">,</span>
         <span class="s">&quot;platform&quot;</span><span class="p">:</span> <span class="s">&quot;WINDOWS&quot;</span><span class="p">,</span>
-        <span class="s">&quot;javascriptEnabled&quot;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
     <span class="p">}</span>
 
     <span class="n">EDGE</span> <span class="o">=</span> <span class="p">{</span>
@@ -121,21 +118,18 @@
         <span class="s">&quot;browserName&quot;</span><span class="p">:</span> <span class="s">&quot;chrome&quot;</span><span class="p">,</span>
         <span class="s">&quot;version&quot;</span><span class="p">:</span> <span class="s">&quot;&quot;</span><span class="p">,</span>
         <span class="s">&quot;platform&quot;</span><span class="p">:</span> <span class="s">&quot;ANY&quot;</span><span class="p">,</span>
-        <span class="s">&quot;javascriptEnabled&quot;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
     <span class="p">}</span>
 
     <span class="n">OPERA</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s">&quot;browserName&quot;</span><span class="p">:</span> <span class="s">&quot;opera&quot;</span><span class="p">,</span>
         <span class="s">&quot;version&quot;</span><span class="p">:</span> <span class="s">&quot;&quot;</span><span class="p">,</span>
         <span class="s">&quot;platform&quot;</span><span class="p">:</span> <span class="s">&quot;ANY&quot;</span><span class="p">,</span>
-        <span class="s">&quot;javascriptEnabled&quot;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
     <span class="p">}</span>
 
     <span class="n">SAFARI</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s">&quot;browserName&quot;</span><span class="p">:</span> <span class="s">&quot;safari&quot;</span><span class="p">,</span>
         <span class="s">&quot;version&quot;</span><span class="p">:</span> <span class="s">&quot;&quot;</span><span class="p">,</span>
         <span class="s">&quot;platform&quot;</span><span class="p">:</span> <span class="s">&quot;MAC&quot;</span><span class="p">,</span>
-        <span class="s">&quot;javascriptEnabled&quot;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
     <span class="p">}</span>
 
     <span class="n">HTMLUNIT</span> <span class="o">=</span> <span class="p">{</span>
@@ -155,21 +149,18 @@
         <span class="s">&quot;browserName&quot;</span><span class="p">:</span> <span class="s">&quot;iPhone&quot;</span><span class="p">,</span>
         <span class="s">&quot;version&quot;</span><span class="p">:</span> <span class="s">&quot;&quot;</span><span class="p">,</span>
         <span class="s">&quot;platform&quot;</span><span class="p">:</span> <span class="s">&quot;MAC&quot;</span><span class="p">,</span>
-        <span class="s">&quot;javascriptEnabled&quot;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
     <span class="p">}</span>
 
     <span class="n">IPAD</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s">&quot;browserName&quot;</span><span class="p">:</span> <span class="s">&quot;iPad&quot;</span><span class="p">,</span>
         <span class="s">&quot;version&quot;</span><span class="p">:</span> <span class="s">&quot;&quot;</span><span class="p">,</span>
         <span class="s">&quot;platform&quot;</span><span class="p">:</span> <span class="s">&quot;MAC&quot;</span><span class="p">,</span>
-        <span class="s">&quot;javascriptEnabled&quot;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
     <span class="p">}</span>
 
     <span class="n">ANDROID</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s">&quot;browserName&quot;</span><span class="p">:</span> <span class="s">&quot;android&quot;</span><span class="p">,</span>
         <span class="s">&quot;version&quot;</span><span class="p">:</span> <span class="s">&quot;&quot;</span><span class="p">,</span>
         <span class="s">&quot;platform&quot;</span><span class="p">:</span> <span class="s">&quot;ANDROID&quot;</span><span class="p">,</span>
-        <span class="s">&quot;javascriptEnabled&quot;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
     <span class="p">}</span>
 
     <span class="n">PHANTOMJS</span> <span class="o">=</span> <span class="p">{</span>
@@ -211,7 +202,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">Selenium 3.3 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">Selenium 3.4 documentation</a> &raquo;</li>
           <li><a href="../../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>

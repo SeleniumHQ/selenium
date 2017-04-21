@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>selenium.webdriver.remote.webdriver &mdash; Selenium 3.3 documentation</title>
+    <title>selenium.webdriver.remote.webdriver &mdash; Selenium 3.4 documentation</title>
     
     <link rel="stylesheet" href="../../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '3.3',
+        VERSION:     '3.4',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../../_static/doctools.js"></script>
-    <link rel="top" title="Selenium 3.3 documentation" href="../../../../index.html" />
+    <link rel="top" title="Selenium 3.4 documentation" href="../../../../index.html" />
     <link rel="up" title="Module code" href="../../../index.html" /> 
   </head>
   <body>
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">Selenium 3.3 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">Selenium 3.4 documentation</a> &raquo;</li>
           <li><a href="../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -77,7 +77,8 @@
 <span class="kn">from</span> <span class="nn">.switch_to</span> <span class="kn">import</span> <span class="n">SwitchTo</span>
 <span class="kn">from</span> <span class="nn">.mobile</span> <span class="kn">import</span> <span class="n">Mobile</span>
 <span class="kn">from</span> <span class="nn">.file_detector</span> <span class="kn">import</span> <span class="n">FileDetector</span><span class="p">,</span> <span class="n">LocalFileDetector</span>
-<span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">WebDriverException</span>
+<span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="p">(</span><span class="n">InvalidArgumentException</span><span class="p">,</span>
+                                        <span class="n">WebDriverException</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">selenium.webdriver.common.by</span> <span class="kn">import</span> <span class="n">By</span>
 <span class="kn">from</span> <span class="nn">selenium.webdriver.common.html5.application_cache</span> <span class="kn">import</span> <span class="n">ApplicationCache</span>
 
@@ -129,6 +130,8 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">desired_capabilities</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="s">&quot;Desired Capabilities must be a dictionary&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">proxy</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&quot;Please use FirefoxOptions to set proxy&quot;</span><span class="p">,</span>
+                          <span class="ne">DeprecationWarning</span><span class="p">)</span>
             <span class="n">proxy</span><span class="o">.</span><span class="n">add_to_capabilities</span><span class="p">(</span><span class="n">desired_capabilities</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">command_executor</span> <span class="o">=</span> <span class="n">command_executor</span>
         <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">command_executor</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">bytes</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">command_executor</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
@@ -138,6 +141,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">capabilities</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">error_handler</span> <span class="o">=</span> <span class="n">ErrorHandler</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">start_client</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">browser_profile</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&quot;Please use FirefoxOptions to set browser profile&quot;</span><span class="p">,</span>
+                          <span class="ne">DeprecationWarning</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">start_session</span><span class="p">(</span><span class="n">desired_capabilities</span><span class="p">,</span> <span class="n">browser_profile</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_switch_to</span> <span class="o">=</span> <span class="n">SwitchTo</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_mobile</span> <span class="o">=</span> <span class="n">Mobile</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
@@ -206,7 +212,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span>
 </div>
-<div class="viewcode-block" id="WebDriver.start_session"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver.start_session">[docs]</a>    <span class="k">def</span> <span class="nf">start_session</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">desired_capabilities</span><span class="p">,</span> <span class="n">browser_profile</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="WebDriver.start_session"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver.start_session">[docs]</a>    <span class="k">def</span> <span class="nf">start_session</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">capabilities</span><span class="p">,</span> <span class="n">browser_profile</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Creates a new session with the desired capabilities.</span>
 
@@ -217,19 +223,26 @@
 <span class="sd">         - javascript_enabled - Whether the new session should support JavaScript.</span>
 <span class="sd">         - browser_profile - A selenium.webdriver.firefox.firefox_profile.FirefoxProfile object. Only used if Firefox is requested.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">capabilities</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;desiredCapabilities&#39;</span><span class="p">:</span> <span class="p">{},</span> <span class="s">&#39;requiredCapabilities&#39;</span><span class="p">:</span> <span class="p">{}}</span>
-        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">desired_capabilities</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;desiredCapabilities&#39;</span><span class="p">,</span> <span class="s">&#39;requiredCapabilities&#39;</span><span class="p">):</span>
-                <span class="n">capabilities</span><span class="p">[</span><span class="s">&#39;desiredCapabilities&#39;</span><span class="p">][</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">capabilities</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">capabilities</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">InvalidArgumentException</span><span class="p">(</span><span class="s">&quot;Capabilities must be a dictionary&quot;</span><span class="p">)</span>
+        <span class="n">w3c_caps</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;firstMatch&quot;</span><span class="p">:</span> <span class="p">[],</span> <span class="s">&quot;alwaysMatch&quot;</span><span class="p">:</span> <span class="p">{}}</span>
         <span class="k">if</span> <span class="n">browser_profile</span><span class="p">:</span>
-            <span class="n">capabilities</span><span class="p">[</span><span class="s">&#39;desiredCapabilities&#39;</span><span class="p">][</span><span class="s">&#39;firefox_profile&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">browser_profile</span><span class="o">.</span><span class="n">encoded</span>
-        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">NEW_SESSION</span><span class="p">,</span> <span class="n">capabilities</span><span class="p">)</span>
+            <span class="n">capabilities</span><span class="p">[</span><span class="s">&quot;moz:firefoxOptions&quot;</span><span class="p">][</span><span class="s">&quot;profile&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">browser_profile</span><span class="o">.</span><span class="n">encoded</span>
+        <span class="n">w3c_caps</span><span class="p">[</span><span class="s">&quot;alwaysMatch&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">capabilities</span><span class="p">)</span>
+        <span class="n">parameters</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;capabilities&quot;</span><span class="p">:</span> <span class="n">w3c_caps</span><span class="p">,</span>
+                      <span class="s">&quot;desiredCapabilities&quot;</span><span class="p">:</span> <span class="n">capabilities</span><span class="p">}</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">NEW_SESSION</span><span class="p">,</span> <span class="n">parameters</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s">&#39;sessionId&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">response</span><span class="p">:</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="n">response</span><span class="p">[</span><span class="s">&#39;value&#39;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">session_id</span> <span class="o">=</span> <span class="n">response</span><span class="p">[</span><span class="s">&#39;sessionId&#39;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">capabilities</span> <span class="o">=</span> <span class="n">response</span><span class="p">[</span><span class="s">&#39;value&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">capabilities</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;value&#39;</span><span class="p">)</span>
 
-        <span class="c"># Quick check to see if we have a W3C Compliant browser</span>
+        <span class="c"># if capabilities is none we are probably speaking to</span>
+        <span class="c"># a W3C endpoint</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">capabilities</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">capabilities</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;capabilities&#39;</span><span class="p">)</span>
+
+        <span class="c"># Double check to see if we have a W3C Compliant browser</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">w3c</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;status&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="bp">None</span>
 </div>
     <span class="k">def</span> <span class="nf">_wrap_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
@@ -509,7 +522,13 @@
 <span class="sd">            driver.execute_script(&#39;document.title&#39;)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">converted_args</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">EXECUTE_SCRIPT</span><span class="p">,</span> <span class="p">{</span>
+        <span class="n">command</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">w3c</span><span class="p">:</span>
+            <span class="n">command</span> <span class="o">=</span> <span class="n">Command</span><span class="o">.</span><span class="n">W3C_EXECUTE_SCRIPT</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">command</span> <span class="o">=</span> <span class="n">Command</span><span class="o">.</span><span class="n">EXECUTE_SCRIPT</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">command</span><span class="p">,</span> <span class="p">{</span>
             <span class="s">&#39;script&#39;</span><span class="p">:</span> <span class="n">script</span><span class="p">,</span>
             <span class="s">&#39;args&#39;</span><span class="p">:</span> <span class="n">converted_args</span><span class="p">})[</span><span class="s">&#39;value&#39;</span><span class="p">]</span>
 </div>
@@ -525,7 +544,12 @@
 <span class="sd">            driver.execute_async_script(&#39;document.title&#39;)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">converted_args</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">EXECUTE_ASYNC_SCRIPT</span><span class="p">,</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">w3c</span><span class="p">:</span>
+            <span class="n">command</span> <span class="o">=</span> <span class="n">Command</span><span class="o">.</span><span class="n">W3C_EXECUTE_SCRIPT_ASYNC</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">command</span> <span class="o">=</span> <span class="n">Command</span><span class="o">.</span><span class="n">EXECUTE_ASYNC_SCRIPT</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">command</span><span class="p">,</span> <span class="p">{</span>
             <span class="s">&#39;script&#39;</span><span class="p">:</span> <span class="n">script</span><span class="p">,</span>
             <span class="s">&#39;args&#39;</span><span class="p">:</span> <span class="n">converted_args</span><span class="p">})[</span><span class="s">&#39;value&#39;</span><span class="p">]</span>
 </div>
@@ -578,7 +602,10 @@
 <span class="sd">        :Usage:</span>
 <span class="sd">            driver.current_window_handle</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">GET_CURRENT_WINDOW_HANDLE</span><span class="p">)[</span><span class="s">&#39;value&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">w3c</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">W3C_GET_CURRENT_WINDOW_HANDLE</span><span class="p">)[</span><span class="s">&#39;value&#39;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">GET_CURRENT_WINDOW_HANDLE</span><span class="p">)[</span><span class="s">&#39;value&#39;</span><span class="p">]</span>
 </div>
     <span class="nd">@property</span>
 <div class="viewcode-block" id="WebDriver.window_handles"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver.window_handles">[docs]</a>    <span class="k">def</span> <span class="nf">window_handles</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -588,7 +615,10 @@
 <span class="sd">        :Usage:</span>
 <span class="sd">            driver.window_handles</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">GET_WINDOW_HANDLES</span><span class="p">)[</span><span class="s">&#39;value&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">w3c</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">W3C_GET_WINDOW_HANDLES</span><span class="p">)[</span><span class="s">&#39;value&#39;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">GET_WINDOW_HANDLES</span><span class="p">)[</span><span class="s">&#39;value&#39;</span><span class="p">]</span>
 </div>
 <div class="viewcode-block" id="WebDriver.maximize_window"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver.maximize_window">[docs]</a>    <span class="k">def</span> <span class="nf">maximize_window</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -735,8 +765,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">w3c</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">SET_TIMEOUTS</span><span class="p">,</span> <span class="p">{</span>
-                <span class="s">&#39;ms&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">time_to_wait</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">,</span>
-                <span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="s">&#39;implicit&#39;</span><span class="p">})</span>
+                <span class="s">&#39;implicit&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">time_to_wait</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">)})</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">IMPLICIT_WAIT</span><span class="p">,</span> <span class="p">{</span>
                 <span class="s">&#39;ms&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">time_to_wait</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">})</span>
@@ -754,8 +783,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">w3c</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">SET_TIMEOUTS</span><span class="p">,</span> <span class="p">{</span>
-                <span class="s">&#39;ms&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">time_to_wait</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">,</span>
-                <span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="s">&#39;script&#39;</span><span class="p">})</span>
+                <span class="s">&#39;script&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">time_to_wait</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">)})</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">SET_SCRIPT_TIMEOUT</span><span class="p">,</span> <span class="p">{</span>
                 <span class="s">&#39;ms&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">time_to_wait</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">})</span>
@@ -771,9 +799,13 @@
 <span class="sd">        :Usage:</span>
 <span class="sd">            driver.set_page_load_timeout(30)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">SET_TIMEOUTS</span><span class="p">,</span> <span class="p">{</span>
-            <span class="s">&#39;ms&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">time_to_wait</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">,</span>
-            <span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="s">&#39;page load&#39;</span><span class="p">})</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">SET_TIMEOUTS</span><span class="p">,</span> <span class="p">{</span>
+                <span class="s">&#39;pageLoad&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">time_to_wait</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">)})</span>
+        <span class="k">except</span> <span class="n">WebDriverException</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">SET_TIMEOUTS</span><span class="p">,</span> <span class="p">{</span>
+                <span class="s">&#39;ms&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">time_to_wait</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">,</span>
+                <span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="s">&#39;page load&#39;</span><span class="p">})</span>
 </div>
 <div class="viewcode-block" id="WebDriver.find_element"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver.find_element">[docs]</a>    <span class="k">def</span> <span class="nf">find_element</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">by</span><span class="o">=</span><span class="n">By</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -854,8 +886,19 @@
             <span class="k">del</span> <span class="n">png</span>
         <span class="k">return</span> <span class="bp">True</span>
 </div>
-    <span class="n">save_screenshot</span> <span class="o">=</span> <span class="n">get_screenshot_as_file</span>
+<div class="viewcode-block" id="WebDriver.save_screenshot"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver.save_screenshot">[docs]</a>    <span class="k">def</span> <span class="nf">save_screenshot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gets the screenshot of the current window. Returns False if there is</span>
+<span class="sd">           any IOError, else returns True. Use full paths in your filename.</span>
 
+<span class="sd">        :Args:</span>
+<span class="sd">         - filename: The full path you wish to save your screenshot to.</span>
+
+<span class="sd">        :Usage:</span>
+<span class="sd">            driver.save_screenshot(&#39;/Screenshots/foo.png&#39;)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_screenshot_as_file</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+</div>
 <div class="viewcode-block" id="WebDriver.get_screenshot_as_png"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver.get_screenshot_as_png">[docs]</a>    <span class="k">def</span> <span class="nf">get_screenshot_as_png</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Gets the screenshot of the current window as a binary data.</span>
@@ -943,10 +986,37 @@
 <span class="sd">            driver.get_window_position()</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">w3c</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">W3C_GET_WINDOW_POSITION</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">W3C_GET_WINDOW_POSITION</span><span class="p">)[</span><span class="s">&#39;value&#39;</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">GET_WINDOW_POSITION</span><span class="p">,</span> <span class="p">{</span>
                 <span class="s">&#39;windowHandle&#39;</span><span class="p">:</span> <span class="n">windowHandle</span><span class="p">})[</span><span class="s">&#39;value&#39;</span><span class="p">]</span>
+</div>
+<div class="viewcode-block" id="WebDriver.get_window_rect"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver.get_window_rect">[docs]</a>    <span class="k">def</span> <span class="nf">get_window_rect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gets the x, y coordinates of the window as well as height and width of</span>
+<span class="sd">        the current window.</span>
+
+<span class="sd">        :Usage:</span>
+<span class="sd">            driver.get_window_rect()</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">GET_WINDOW_RECT</span><span class="p">)[</span><span class="s">&#39;value&#39;</span><span class="p">]</span>
+</div>
+<div class="viewcode-block" id="WebDriver.set_window_rect"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver.set_window_rect">[docs]</a>    <span class="k">def</span> <span class="nf">set_window_rect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the x, y coordinates of the window as well as height and width of</span>
+<span class="sd">        the current window.</span>
+
+<span class="sd">        :Usage:</span>
+<span class="sd">            driver.set_window_rect(x=10, y=10)</span>
+<span class="sd">            driver.set_window_rect(width=100, height=200)</span>
+<span class="sd">            driver.set_window_rect(x=10, y=10, width=100, height=200)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">x</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">y</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">height</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">width</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">InvalidArgumentException</span><span class="p">(</span><span class="s">&quot;x and y or height and width need values&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">SET_WINDOW_RECT</span><span class="p">,</span> <span class="p">{</span><span class="s">&quot;x&quot;</span><span class="p">:</span> <span class="n">x</span><span class="p">,</span> <span class="s">&quot;y&quot;</span><span class="p">:</span> <span class="n">y</span><span class="p">,</span>
+                                                      <span class="s">&quot;width&quot;</span><span class="p">:</span> <span class="n">width</span><span class="p">,</span>
+                                                      <span class="s">&quot;height&quot;</span><span class="p">:</span> <span class="n">height</span><span class="p">})[</span><span class="s">&#39;value&#39;</span><span class="p">]</span>
 </div>
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">file_detector</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1060,7 +1130,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">Selenium 3.3 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">Selenium 3.4 documentation</a> &raquo;</li>
           <li><a href="../../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>

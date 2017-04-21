@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>selenium.webdriver.remote.remote_connection &mdash; Selenium 3.3 documentation</title>
+    <title>selenium.webdriver.remote.remote_connection &mdash; Selenium 3.4 documentation</title>
     
     <link rel="stylesheet" href="../../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '3.3',
+        VERSION:     '3.4',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../../_static/doctools.js"></script>
-    <link rel="top" title="Selenium 3.3 documentation" href="../../../../index.html" />
+    <link rel="top" title="Selenium 3.4 documentation" href="../../../../index.html" />
     <link rel="up" title="Module code" href="../../../index.html" /> 
   </head>
   <body>
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">Selenium 3.3 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">Selenium 3.4 documentation</a> &raquo;</li>
           <li><a href="../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -211,6 +211,35 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">cls</span><span class="o">.</span><span class="n">_timeout</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">_GLOBAL_DEFAULT_TIMEOUT</span>
 </div>
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="RemoteConnection.get_remote_connection_headers"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.remote_connection.html#selenium.webdriver.remote.remote_connection.RemoteConnection.get_remote_connection_headers">[docs]</a>    <span class="k">def</span> <span class="nf">get_remote_connection_headers</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">parsed_url</span><span class="p">,</span> <span class="n">keep_alive</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get headers for remote request.</span>
+
+<span class="sd">        :Args:</span>
+<span class="sd">         - parsed_url - The parsed url</span>
+<span class="sd">         - keep_alive (Boolean) - Is this a keep-alive connection (default: False)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s">&#39;Accept&#39;</span><span class="p">:</span> <span class="s">&#39;application/json&#39;</span><span class="p">,</span>
+            <span class="s">&#39;Content-Type&#39;</span><span class="p">:</span> <span class="s">&#39;application/json;charset=UTF-8&#39;</span><span class="p">,</span>
+            <span class="s">&#39;User-Agent&#39;</span><span class="p">:</span> <span class="s">&#39;Python http auth&#39;</span>
+        <span class="p">}</span>
+
+        <span class="k">if</span> <span class="n">parsed_url</span><span class="o">.</span><span class="n">username</span><span class="p">:</span>
+            <span class="n">base64string</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">(</span><span class="s">&#39;{0.username}:{0.password}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">parsed_url</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+            <span class="n">headers</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
+                <span class="s">&#39;Authorization&#39;</span><span class="p">:</span> <span class="s">&#39;Basic {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">base64string</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span>
+            <span class="p">})</span>
+
+        <span class="k">if</span> <span class="n">keep_alive</span><span class="p">:</span>
+            <span class="n">headers</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
+                <span class="s">&#39;Connection&#39;</span><span class="p">:</span> <span class="s">&#39;keep-alive&#39;</span>
+            <span class="p">})</span>
+
+        <span class="k">return</span> <span class="n">headers</span>
+</div>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">remote_server_addr</span><span class="p">,</span> <span class="n">keep_alive</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">resolve_ip</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
         <span class="c"># Attempt to resolve the hostname and get an IP address.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">keep_alive</span> <span class="o">=</span> <span class="n">keep_alive</span>
@@ -253,13 +282,21 @@
             <span class="n">Command</span><span class="o">.</span><span class="n">QUIT</span><span class="p">:</span> <span class="p">(</span><span class="s">&#39;DELETE&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId&#39;</span><span class="p">),</span>
             <span class="n">Command</span><span class="o">.</span><span class="n">GET_CURRENT_WINDOW_HANDLE</span><span class="p">:</span>
                 <span class="p">(</span><span class="s">&#39;GET&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/window_handle&#39;</span><span class="p">),</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">W3C_GET_CURRENT_WINDOW_HANDLE</span><span class="p">:</span>
+                <span class="p">(</span><span class="s">&#39;GET&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/window&#39;</span><span class="p">),</span>
             <span class="n">Command</span><span class="o">.</span><span class="n">GET_WINDOW_HANDLES</span><span class="p">:</span>
                 <span class="p">(</span><span class="s">&#39;GET&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/window_handles&#39;</span><span class="p">),</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">W3C_GET_WINDOW_HANDLES</span><span class="p">:</span>
+                <span class="p">(</span><span class="s">&#39;GET&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/window/handles&#39;</span><span class="p">),</span>
             <span class="n">Command</span><span class="o">.</span><span class="n">GET</span><span class="p">:</span> <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/url&#39;</span><span class="p">),</span>
             <span class="n">Command</span><span class="o">.</span><span class="n">GO_FORWARD</span><span class="p">:</span> <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/forward&#39;</span><span class="p">),</span>
             <span class="n">Command</span><span class="o">.</span><span class="n">GO_BACK</span><span class="p">:</span> <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/back&#39;</span><span class="p">),</span>
             <span class="n">Command</span><span class="o">.</span><span class="n">REFRESH</span><span class="p">:</span> <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/refresh&#39;</span><span class="p">),</span>
             <span class="n">Command</span><span class="o">.</span><span class="n">EXECUTE_SCRIPT</span><span class="p">:</span> <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/execute&#39;</span><span class="p">),</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">W3C_EXECUTE_SCRIPT</span><span class="p">:</span>
+                <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/execute/sync&#39;</span><span class="p">),</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">W3C_EXECUTE_SCRIPT_ASYNC</span><span class="p">:</span>
+                <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/execute/async&#39;</span><span class="p">),</span>
             <span class="n">Command</span><span class="o">.</span><span class="n">GET_CURRENT_URL</span><span class="p">:</span> <span class="p">(</span><span class="s">&#39;GET&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/url&#39;</span><span class="p">),</span>
             <span class="n">Command</span><span class="o">.</span><span class="n">GET_TITLE</span><span class="p">:</span> <span class="p">(</span><span class="s">&#39;GET&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/title&#39;</span><span class="p">),</span>
             <span class="n">Command</span><span class="o">.</span><span class="n">GET_PAGE_SOURCE</span><span class="p">:</span> <span class="p">(</span><span class="s">&#39;GET&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/source&#39;</span><span class="p">),</span>
@@ -330,16 +367,28 @@
                 <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/timeouts&#39;</span><span class="p">),</span>
             <span class="n">Command</span><span class="o">.</span><span class="n">DISMISS_ALERT</span><span class="p">:</span>
                 <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/dismiss_alert&#39;</span><span class="p">),</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">W3C_DISMISS_ALERT</span><span class="p">:</span>
+                <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/alert/dismiss&#39;</span><span class="p">),</span>
             <span class="n">Command</span><span class="o">.</span><span class="n">ACCEPT_ALERT</span><span class="p">:</span>
                 <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/accept_alert&#39;</span><span class="p">),</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">W3C_ACCEPT_ALERT</span><span class="p">:</span>
+                <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/alert/accept&#39;</span><span class="p">),</span>
             <span class="n">Command</span><span class="o">.</span><span class="n">SET_ALERT_VALUE</span><span class="p">:</span>
                 <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/alert_text&#39;</span><span class="p">),</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">W3C_SET_ALERT_VALUE</span><span class="p">:</span>
+                <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/alert/text&#39;</span><span class="p">),</span>
             <span class="n">Command</span><span class="o">.</span><span class="n">GET_ALERT_TEXT</span><span class="p">:</span>
                 <span class="p">(</span><span class="s">&#39;GET&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/alert_text&#39;</span><span class="p">),</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">W3C_GET_ALERT_TEXT</span><span class="p">:</span>
+                <span class="p">(</span><span class="s">&#39;GET&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/alert/text&#39;</span><span class="p">),</span>
             <span class="n">Command</span><span class="o">.</span><span class="n">SET_ALERT_CREDENTIALS</span><span class="p">:</span>
                 <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/alert/credentials&#39;</span><span class="p">),</span>
             <span class="n">Command</span><span class="o">.</span><span class="n">CLICK</span><span class="p">:</span>
                 <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/click&#39;</span><span class="p">),</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">W3C_ACTIONS</span><span class="p">:</span>
+                <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/actions&#39;</span><span class="p">),</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">W3C_CLEAR_ACTIONS</span><span class="p">:</span>
+                <span class="p">(</span><span class="s">&#39;DELETE&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/actions&#39;</span><span class="p">),</span>
             <span class="n">Command</span><span class="o">.</span><span class="n">DOUBLE_CLICK</span><span class="p">:</span>
                 <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/doubleclick&#39;</span><span class="p">),</span>
             <span class="n">Command</span><span class="o">.</span><span class="n">MOUSE_DOWN</span><span class="p">:</span>
@@ -364,6 +413,10 @@
                 <span class="p">(</span><span class="s">&#39;GET&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/window/position&#39;</span><span class="p">),</span>
             <span class="n">Command</span><span class="o">.</span><span class="n">W3C_SET_WINDOW_POSITION</span><span class="p">:</span>
                 <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/window/position&#39;</span><span class="p">),</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">SET_WINDOW_RECT</span><span class="p">:</span>
+                <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/window/rect&#39;</span><span class="p">),</span>
+            <span class="n">Command</span><span class="o">.</span><span class="n">GET_WINDOW_RECT</span><span class="p">:</span>
+                <span class="p">(</span><span class="s">&#39;GET&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/window/rect&#39;</span><span class="p">),</span>
             <span class="n">Command</span><span class="o">.</span><span class="n">MAXIMIZE_WINDOW</span><span class="p">:</span>
                 <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&#39;/session/$sessionId/window/$windowHandle/maximize&#39;</span><span class="p">),</span>
             <span class="n">Command</span><span class="o">.</span><span class="n">W3C_MAXIMIZE_WINDOW</span><span class="p">:</span>
@@ -474,17 +527,9 @@
         <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s"> </span><span class="si">%s</span><span class="s"> </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">method</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">body</span><span class="p">))</span>
 
         <span class="n">parsed_url</span> <span class="o">=</span> <span class="n">parse</span><span class="o">.</span><span class="n">urlparse</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+        <span class="n">headers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_remote_connection_headers</span><span class="p">(</span><span class="n">parsed_url</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">keep_alive</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">keep_alive</span><span class="p">:</span>
-            <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;Connection&quot;</span><span class="p">:</span> <span class="s">&#39;keep-alive&#39;</span><span class="p">,</span> <span class="n">method</span><span class="p">:</span> <span class="n">parsed_url</span><span class="o">.</span><span class="n">path</span><span class="p">,</span>
-                       <span class="s">&quot;User-Agent&quot;</span><span class="p">:</span> <span class="s">&quot;Python http auth&quot;</span><span class="p">,</span>
-                       <span class="s">&quot;Content-type&quot;</span><span class="p">:</span> <span class="s">&quot;application/json;charset=</span><span class="se">\&quot;</span><span class="s">UTF-8</span><span class="se">\&quot;</span><span class="s">&quot;</span><span class="p">,</span>
-                       <span class="s">&quot;Accept&quot;</span><span class="p">:</span> <span class="s">&quot;application/json&quot;</span><span class="p">}</span>
-            <span class="k">if</span> <span class="n">parsed_url</span><span class="o">.</span><span class="n">username</span><span class="p">:</span>
-                <span class="n">auth</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">standard_b64encode</span><span class="p">((</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">:</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span>
-                    <span class="n">parsed_url</span><span class="o">.</span><span class="n">username</span><span class="p">,</span>
-                    <span class="n">parsed_url</span><span class="o">.</span><span class="n">password</span><span class="p">))</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s">&#39;ascii&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s">&#39;ascii&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">)</span>
-                <span class="n">headers</span><span class="p">[</span><span class="s">&quot;Authorization&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&quot;Basic </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">auth</span>
             <span class="k">if</span> <span class="n">body</span> <span class="ow">and</span> <span class="n">method</span> <span class="o">!=</span> <span class="s">&#39;POST&#39;</span> <span class="ow">and</span> <span class="n">method</span> <span class="o">!=</span> <span class="s">&#39;PUT&#39;</span><span class="p">:</span>
                 <span class="n">body</span> <span class="o">=</span> <span class="bp">None</span>
             <span class="k">try</span><span class="p">:</span>
@@ -517,8 +562,8 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">request</span> <span class="o">=</span> <span class="n">Request</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">body</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s">&#39;utf-8&#39;</span><span class="p">),</span> <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">)</span>
 
-            <span class="n">request</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="s">&#39;Accept&#39;</span><span class="p">,</span> <span class="s">&#39;application/json&#39;</span><span class="p">)</span>
-            <span class="n">request</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="s">&#39;Content-Type&#39;</span><span class="p">,</span> <span class="s">&#39;application/json;charset=UTF-8&#39;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">headers</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">request</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="n">password_manager</span><span class="p">:</span>
                 <span class="n">opener</span> <span class="o">=</span> <span class="n">url_request</span><span class="o">.</span><span class="n">build_opener</span><span class="p">(</span><span class="n">url_request</span><span class="o">.</span><span class="n">HTTPRedirectHandler</span><span class="p">(),</span>
@@ -601,7 +646,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">Selenium 3.3 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">Selenium 3.4 documentation</a> &raquo;</li>
           <li><a href="../../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>

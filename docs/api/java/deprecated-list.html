@@ -210,20 +210,19 @@
 </tr>
 <tbody>
 <tr class="altColor">
-<td class="colOne"><a href="org/openqa/selenium/firefox/FirefoxDriver.html#ACCEPT_UNTRUSTED_CERTIFICATES">org.openqa.selenium.firefox.FirefoxDriver.ACCEPT_UNTRUSTED_CERTIFICATES</a></td>
-</tr>
-<tr class="rowColor">
-<td class="colOne"><a href="org/openqa/selenium/firefox/FirefoxDriver.html#ASSUME_UNTRUSTED_ISSUER">org.openqa.selenium.firefox.FirefoxDriver.ASSUME_UNTRUSTED_ISSUER</a></td>
-</tr>
-<tr class="altColor">
 <td class="colOne"><a href="org/openqa/selenium/remote/CapabilityType.html#ENABLE_PERSISTENT_HOVERING">org.openqa.selenium.remote.CapabilityType.ENABLE_PERSISTENT_HOVERING</a></td>
 </tr>
 <tr class="rowColor">
+<td class="colOne"><a href="org/openqa/selenium/ie/InternetExplorerDriver.html#IE_USE_PRE_PROCESS_PROXY">org.openqa.selenium.ie.InternetExplorerDriver.IE_USE_PRE_PROCESS_PROXY</a>
+<div class="block"><span class="deprecationComment">Use <a href="org/openqa/selenium/ie/InternetExplorerDriver.html#IE_USE_PER_PROCESS_PROXY"><code>InternetExplorerDriver.IE_USE_PER_PROCESS_PROXY</code></a> (the one without the typo);</span></div>
+</td>
+</tr>
+<tr class="altColor">
 <td class="colOne"><a href="org/openqa/selenium/remote/BrowserType.html#OPERA">org.openqa.selenium.remote.BrowserType.OPERA</a>
 <div class="block"><span class="deprecationComment">Use OPERA_BLINK</span></div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colOne"><a href="org/openqa/selenium/remote/CapabilityType.html#PAGE_LOADING_STRATEGY">org.openqa.selenium.remote.CapabilityType.PAGE_LOADING_STRATEGY</a>
 <div class="block"><span class="deprecationComment">Use PAGE_LOAD_STRATEGY instead</span></div>
 </td>
@@ -244,7 +243,19 @@
 </tr>
 <tbody>
 <tr class="altColor">
-<td class="colOne"><a href="org/openqa/selenium/firefox/FirefoxProfile.html#areNativeEventsEnabled--">org.openqa.selenium.firefox.FirefoxProfile.areNativeEventsEnabled()</a></td>
+<td class="colOne"><a href="org/openqa/selenium/firefox/FirefoxOptions.html#addDesiredCapabilities-org.openqa.selenium.Capabilities-">org.openqa.selenium.firefox.FirefoxOptions.addDesiredCapabilities(Capabilities)</a>
+<div class="block"><span class="deprecationComment">Use <a href="org/openqa/selenium/firefox/FirefoxOptions.html#addCapabilities-org.openqa.selenium.Capabilities-"><code>FirefoxOptions.addCapabilities(Capabilities)</code></a></span></div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colOne"><a href="org/openqa/selenium/firefox/FirefoxOptions.html#addRequiredCapabilities-org.openqa.selenium.Capabilities-">org.openqa.selenium.firefox.FirefoxOptions.addRequiredCapabilities(Capabilities)</a>
+<div class="block"><span class="deprecationComment">Use <a href="org/openqa/selenium/firefox/FirefoxOptions.html#addCapabilities-org.openqa.selenium.Capabilities-"><code>FirefoxOptions.addCapabilities(Capabilities)</code></a></span></div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colOne"><a href="org/openqa/selenium/firefox/FirefoxProfile.html#areNativeEventsEnabled--">org.openqa.selenium.firefox.FirefoxProfile.areNativeEventsEnabled()</a>
+<div class="block"><span class="deprecationComment">"Native" events are not supported in FirefoxDriver anymore</span></div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colOne"><a href="org/openqa/selenium/remote/server/DriverFactory.html#hasMappingFor-org.openqa.selenium.Capabilities-">org.openqa.selenium.remote.server.DriverFactory.hasMappingFor(Capabilities)</a>
@@ -252,26 +263,51 @@
 </td>
 </tr>
 <tr class="altColor">
+<td class="colOne"><a href="org/openqa/selenium/Capabilities.html#isJavascriptEnabled--">org.openqa.selenium.Capabilities.isJavascriptEnabled()</a>
+<div class="block"><span class="deprecationComment">Use is(SUPPORTS_JAVASCRIPT) instead</span></div>
+</td>
+</tr>
+<tr class="rowColor">
 <td class="colOne"><a href="org/openqa/selenium/support/ui/ExpectedConditions.html#numberOfwindowsToBe-int-">org.openqa.selenium.support.ui.ExpectedConditions.numberOfwindowsToBe(int)</a>
 <div class="block"><span class="deprecationComment">please use <a href="org/openqa/selenium/support/ui/ExpectedConditions.html#numberOfWindowsToBe-int-"><code>ExpectedConditions.numberOfWindowsToBe(int)</code></a> instead</span></div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colOne"><a href="org/openqa/selenium/remote/DesiredCapabilities.html#opera--">org.openqa.selenium.remote.DesiredCapabilities.opera()</a>
 <div class="block"><span class="deprecationComment">Use #operaBlink</span></div>
 </td>
 </tr>
+<tr class="rowColor">
+<td class="colOne"><a href="org/openqa/selenium/interactions/Actions.html#pause-long-">org.openqa.selenium.interactions.Actions.pause(long)</a></td>
+</tr>
 <tr class="altColor">
-<td class="colOne"><a href="org/openqa/selenium/interactions/Actions.html#pause-long-">org.openqa.selenium.interactions.Actions.pause(long)</a>
-<div class="block"><span class="deprecationComment">'Pause' is considered to be a bad design practice.</span></div>
+<td class="colOne"><a href="org/openqa/selenium/firefox/FirefoxProfile.html#setEnableNativeEvents-boolean-">org.openqa.selenium.firefox.FirefoxProfile.setEnableNativeEvents(boolean)</a>
+<div class="block"><span class="deprecationComment">"Native" events are not supported in FirefoxDriver anymore</span></div>
 </td>
 </tr>
 <tr class="rowColor">
-<td class="colOne"><a href="org/openqa/selenium/firefox/FirefoxProfile.html#setEnableNativeEvents-boolean-">org.openqa.selenium.firefox.FirefoxProfile.setEnableNativeEvents(boolean)</a></td>
+<td class="colOne"><a href="org/openqa/selenium/remote/RemoteWebDriver.html#startClient-org.openqa.selenium.Capabilities-org.openqa.selenium.Capabilities-">org.openqa.selenium.remote.RemoteWebDriver.startClient(Capabilities, Capabilities)</a>
+<div class="block"><span class="deprecationComment">Use <a href="org/openqa/selenium/remote/RemoteWebDriver.html#startClient-org.openqa.selenium.Capabilities-"><code>RemoteWebDriver.startClient(Capabilities)</code></a></span></div>
+</td>
 </tr>
 <tr class="altColor">
+<td class="colOne"><a href="org/openqa/selenium/remote/RemoteWebDriver.html#stopClient-org.openqa.selenium.Capabilities-org.openqa.selenium.Capabilities-">org.openqa.selenium.remote.RemoteWebDriver.stopClient(Capabilities, Capabilities)</a>
+<div class="block"><span class="deprecationComment">Use <a href="org/openqa/selenium/remote/RemoteWebDriver.html#stopClient-org.openqa.selenium.Capabilities-"><code>RemoteWebDriver.stopClient(Capabilities)</code></a></span></div>
+</td>
+</tr>
+<tr class="rowColor">
 <td class="colOne"><a href="org/openqa/selenium/support/ui/ExpectedConditions.html#textToBePresentInElement-org.openqa.selenium.By-java.lang.String-">org.openqa.selenium.support.ui.ExpectedConditions.textToBePresentInElement(By, String)</a>
 <div class="block"><span class="deprecationComment">Use <a href="org/openqa/selenium/support/ui/ExpectedConditions.html#textToBePresentInElementLocated-org.openqa.selenium.By-java.lang.String-"><code>ExpectedConditions.textToBePresentInElementLocated(By, String)</code></a> instead</span></div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colOne"><a href="org/openqa/selenium/firefox/FirefoxOptions.html#toDesiredCapabilities--">org.openqa.selenium.firefox.FirefoxOptions.toDesiredCapabilities()</a>
+<div class="block"><span class="deprecationComment">Use <a href="org/openqa/selenium/firefox/FirefoxOptions.html#toCapabilities--"><code>FirefoxOptions.toCapabilities()</code></a>.</span></div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colOne"><a href="org/openqa/selenium/firefox/FirefoxOptions.html#toRequiredCapabilities--">org.openqa.selenium.firefox.FirefoxOptions.toRequiredCapabilities()</a>
+<div class="block"><span class="deprecationComment">Use <a href="org/openqa/selenium/firefox/FirefoxOptions.html#toCapabilities--"><code>FirefoxOptions.toCapabilities()</code></a>.</span></div>
 </td>
 </tr>
 </tbody>
@@ -302,6 +338,88 @@
 <tr class="altColor">
 <td class="colOne"><a href="org/openqa/selenium/firefox/GeckoDriverService.Builder.html#Builder-org.openqa.selenium.firefox.FirefoxBinary-">org.openqa.selenium.firefox.GeckoDriverService.Builder(FirefoxBinary)</a>
 <div class="block"><span class="deprecationComment">Use method usingFirefoxBinary instead</span></div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colOne"><a href="org/openqa/selenium/chrome/ChromeDriver.html#ChromeDriver-org.openqa.selenium.chrome.ChromeDriverService-">org.openqa.selenium.chrome.ChromeDriver(ChromeDriverService)</a>
+<div class="block"><span class="deprecationComment">Use <a href="org/openqa/selenium/remote/RemoteWebDriver.html#RemoteWebDriver-org.openqa.selenium.remote.CommandExecutor-org.openqa.selenium.Capabilities-"><code>RemoteWebDriver.RemoteWebDriver(org.openqa.selenium.remote.CommandExecutor, Capabilities)</code></a></span></div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colOne"><a href="org/openqa/selenium/chrome/ChromeDriver.html#ChromeDriver-org.openqa.selenium.chrome.ChromeDriverService-org.openqa.selenium.Capabilities-">org.openqa.selenium.chrome.ChromeDriver(ChromeDriverService, Capabilities)</a>
+<div class="block"><span class="deprecationComment">Use <a href="org/openqa/selenium/remote/RemoteWebDriver.html#RemoteWebDriver-org.openqa.selenium.remote.CommandExecutor-org.openqa.selenium.Capabilities-"><code>RemoteWebDriver.RemoteWebDriver(org.openqa.selenium.remote.CommandExecutor, Capabilities)</code></a></span></div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colOne"><a href="org/openqa/selenium/chrome/ChromeDriver.html#ChromeDriver-org.openqa.selenium.chrome.ChromeDriverService-org.openqa.selenium.chrome.ChromeOptions-">org.openqa.selenium.chrome.ChromeDriver(ChromeDriverService, ChromeOptions)</a>
+<div class="block"><span class="deprecationComment">Use <a href="org/openqa/selenium/remote/RemoteWebDriver.html#RemoteWebDriver-org.openqa.selenium.remote.CommandExecutor-org.openqa.selenium.Capabilities-"><code>RemoteWebDriver.RemoteWebDriver(org.openqa.selenium.remote.CommandExecutor, Capabilities)</code></a></span></div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colOne"><a href="org/openqa/selenium/firefox/FirefoxDriver.html#FirefoxDriver-org.openqa.selenium.Capabilities-org.openqa.selenium.Capabilities-">org.openqa.selenium.firefox.FirefoxDriver(Capabilities, Capabilities)</a>
+<div class="block"><span class="deprecationComment">Prefer <a href="org/openqa/selenium/firefox/FirefoxDriver.html#FirefoxDriver-org.openqa.selenium.firefox.FirefoxOptions-"><code>FirefoxDriver.FirefoxDriver(FirefoxOptions)</code></a></span></div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colOne"><a href="org/openqa/selenium/firefox/FirefoxDriver.html#FirefoxDriver-org.openqa.selenium.firefox.FirefoxBinary-">org.openqa.selenium.firefox.FirefoxDriver(FirefoxBinary)</a>
+<div class="block"><span class="deprecationComment">Prefer <a href="org/openqa/selenium/firefox/FirefoxOptions.html#setBinary-org.openqa.selenium.firefox.FirefoxBinary-"><code>FirefoxOptions.setBinary(FirefoxBinary)</code></a>.</span></div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colOne"><a href="org/openqa/selenium/firefox/FirefoxDriver.html#FirefoxDriver-org.openqa.selenium.firefox.FirefoxBinary-org.openqa.selenium.firefox.FirefoxProfile-">org.openqa.selenium.firefox.FirefoxDriver(FirefoxBinary, FirefoxProfile)</a>
+<div class="block"><span class="deprecationComment">Prefer <a href="org/openqa/selenium/firefox/FirefoxOptions.html#setBinary-org.openqa.selenium.firefox.FirefoxBinary-"><code>FirefoxOptions.setBinary(FirefoxBinary)</code></a>, and
+   <a href="org/openqa/selenium/firefox/FirefoxOptions.html#setProfile-org.openqa.selenium.firefox.FirefoxProfile-"><code>FirefoxOptions.setProfile(FirefoxProfile)</code></a>.</span></div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colOne"><a href="org/openqa/selenium/firefox/FirefoxDriver.html#FirefoxDriver-org.openqa.selenium.firefox.FirefoxBinary-org.openqa.selenium.firefox.FirefoxProfile-org.openqa.selenium.Capabilities-">org.openqa.selenium.firefox.FirefoxDriver(FirefoxBinary, FirefoxProfile, Capabilities)</a>
+<div class="block"><span class="deprecationComment">Prefer <a href="org/openqa/selenium/firefox/FirefoxOptions.html#setBinary-org.openqa.selenium.firefox.FirefoxBinary-"><code>FirefoxOptions.setBinary(FirefoxBinary)</code></a>,
+   <a href="org/openqa/selenium/firefox/FirefoxOptions.html#setProfile-org.openqa.selenium.firefox.FirefoxProfile-"><code>FirefoxOptions.setProfile(FirefoxProfile)</code></a></span></div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colOne"><a href="org/openqa/selenium/firefox/FirefoxDriver.html#FirefoxDriver-org.openqa.selenium.firefox.FirefoxBinary-org.openqa.selenium.firefox.FirefoxProfile-org.openqa.selenium.Capabilities-org.openqa.selenium.Capabilities-">org.openqa.selenium.firefox.FirefoxDriver(FirefoxBinary, FirefoxProfile, Capabilities, Capabilities)</a>
+<div class="block"><span class="deprecationComment">Prefer <a href="org/openqa/selenium/firefox/FirefoxOptions.html#setBinary-org.openqa.selenium.firefox.FirefoxBinary-"><code>FirefoxOptions.setBinary(FirefoxBinary)</code></a>,
+   <a href="org/openqa/selenium/firefox/FirefoxOptions.html#setProfile-org.openqa.selenium.firefox.FirefoxProfile-"><code>FirefoxOptions.setProfile(FirefoxProfile)</code></a></span></div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colOne"><a href="org/openqa/selenium/ie/InternetExplorerDriver.html#InternetExplorerDriver-int-">org.openqa.selenium.ie.InternetExplorerDriver(int)</a>
+<div class="block"><span class="deprecationComment">Create an <a href="org/openqa/selenium/ie/InternetExplorerDriverService.html" title="class in org.openqa.selenium.ie"><code>InternetExplorerDriverService</code></a> and then use that to create a
+   <a href="org/openqa/selenium/remote/RemoteWebDriver.html#RemoteWebDriver-org.openqa.selenium.remote.CommandExecutor-org.openqa.selenium.Capabilities-"><code>RemoteWebDriver.RemoteWebDriver(org.openqa.selenium.remote.CommandExecutor, Capabilities)</code></a> with a
+   <a href="org/openqa/selenium/remote/service/DriverCommandExecutor.html" title="class in org.openqa.selenium.remote.service"><code>DriverCommandExecutor</code></a>.</span></div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colOne"><a href="org/openqa/selenium/ie/InternetExplorerDriver.html#InternetExplorerDriver-org.openqa.selenium.ie.InternetExplorerDriverService-">org.openqa.selenium.ie.InternetExplorerDriver(InternetExplorerDriverService)</a>
+<div class="block"><span class="deprecationComment">Create an <a href="org/openqa/selenium/ie/InternetExplorerDriverService.html" title="class in org.openqa.selenium.ie"><code>InternetExplorerDriverService</code></a> and then use that to create a
+   <a href="org/openqa/selenium/remote/RemoteWebDriver.html#RemoteWebDriver-org.openqa.selenium.remote.CommandExecutor-org.openqa.selenium.Capabilities-"><code>RemoteWebDriver.RemoteWebDriver(org.openqa.selenium.remote.CommandExecutor, Capabilities)</code></a> with a
+   <a href="org/openqa/selenium/remote/service/DriverCommandExecutor.html" title="class in org.openqa.selenium.remote.service"><code>DriverCommandExecutor</code></a>.</span></div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colOne"><a href="org/openqa/selenium/ie/InternetExplorerDriver.html#InternetExplorerDriver-org.openqa.selenium.ie.InternetExplorerDriverService-org.openqa.selenium.Capabilities-">org.openqa.selenium.ie.InternetExplorerDriver(InternetExplorerDriverService, Capabilities)</a>
+<div class="block"><span class="deprecationComment">Create an <a href="org/openqa/selenium/ie/InternetExplorerDriverService.html" title="class in org.openqa.selenium.ie"><code>InternetExplorerDriverService</code></a> and then use that to create a
+   <a href="org/openqa/selenium/remote/RemoteWebDriver.html#RemoteWebDriver-org.openqa.selenium.remote.CommandExecutor-org.openqa.selenium.Capabilities-"><code>RemoteWebDriver.RemoteWebDriver(org.openqa.selenium.remote.CommandExecutor, Capabilities)</code></a> with a
+   <a href="org/openqa/selenium/remote/service/DriverCommandExecutor.html" title="class in org.openqa.selenium.remote.service"><code>DriverCommandExecutor</code></a>.</span></div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colOne"><a href="org/openqa/selenium/ie/InternetExplorerDriver.html#InternetExplorerDriver-org.openqa.selenium.ie.InternetExplorerDriverService-org.openqa.selenium.Capabilities-int-">org.openqa.selenium.ie.InternetExplorerDriver(InternetExplorerDriverService, Capabilities, int)</a>
+<div class="block"><span class="deprecationComment">Create an <a href="org/openqa/selenium/ie/InternetExplorerDriverService.html" title="class in org.openqa.selenium.ie"><code>InternetExplorerDriverService</code></a> and then use that to create a
+   <a href="org/openqa/selenium/remote/RemoteWebDriver.html#RemoteWebDriver-org.openqa.selenium.remote.CommandExecutor-org.openqa.selenium.Capabilities-"><code>RemoteWebDriver.RemoteWebDriver(org.openqa.selenium.remote.CommandExecutor, Capabilities)</code></a> with a
+   <a href="org/openqa/selenium/remote/service/DriverCommandExecutor.html" title="class in org.openqa.selenium.remote.service"><code>DriverCommandExecutor</code></a>.</span></div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colOne"><a href="org/openqa/selenium/remote/RemoteWebDriver.html#RemoteWebDriver-org.openqa.selenium.remote.CommandExecutor-org.openqa.selenium.Capabilities-org.openqa.selenium.Capabilities-">org.openqa.selenium.remote.RemoteWebDriver(CommandExecutor, Capabilities, Capabilities)</a>
+<div class="block"><span class="deprecationComment">Use <a href="org/openqa/selenium/remote/RemoteWebDriver.html#RemoteWebDriver-org.openqa.selenium.remote.CommandExecutor-org.openqa.selenium.Capabilities-"><code>RemoteWebDriver.RemoteWebDriver(CommandExecutor, Capabilities)</code></a>.</span></div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colOne"><a href="org/openqa/selenium/remote/RemoteWebDriver.html#RemoteWebDriver-java.net.URL-org.openqa.selenium.Capabilities-org.openqa.selenium.Capabilities-">org.openqa.selenium.remote.RemoteWebDriver(URL, Capabilities, Capabilities)</a>
+<div class="block"><span class="deprecationComment">Use <a href="org/openqa/selenium/remote/RemoteWebDriver.html#RemoteWebDriver-org.openqa.selenium.remote.CommandExecutor-org.openqa.selenium.Capabilities-"><code>RemoteWebDriver.RemoteWebDriver(CommandExecutor, Capabilities)</code></a>, creating a new
+   <a href="org/openqa/selenium/remote/HttpCommandExecutor.html" title="class in org.openqa.selenium.remote"><code>HttpCommandExecutor</code></a>.</span></div>
 </td>
 </tr>
 </tbody>
