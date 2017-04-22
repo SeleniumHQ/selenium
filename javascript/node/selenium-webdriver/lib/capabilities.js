@@ -132,7 +132,7 @@ const Capability = {
    * Defines how the driver should handle unexpected alerts. The value should
    * be one of "accept", "dismiss", or "ignore".
    */
-  UNEXPECTED_ALERT_BEHAVIOR: 'unexpectedAlertBehavior',
+  UNEXPECTED_ALERT_BEHAVIOR: 'unexpectedAlertBehaviour',
 
   /** Defines the browser version. */
   VERSION: 'version'
