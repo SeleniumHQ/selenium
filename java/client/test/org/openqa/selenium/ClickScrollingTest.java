@@ -37,7 +37,6 @@ import org.junit.Test;
 import org.openqa.selenium.interactions.MoveTargetOutOfBoundsException;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
 
 @Ignore(value = HTMLUNIT, reason = "Scrolling requires rendering")
@@ -87,7 +86,7 @@ public class ClickScrollingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = CHROME, reason = "failed")
-  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/662")
+  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/662")
   public void testShouldBeAbleToClickOnAnElementHiddenByDoubleOverflow() {
     driver.get(appServer.whereIs("scrolling_tests/page_with_double_overflow_auto.html"));
 
@@ -194,7 +193,7 @@ public class ClickScrollingTest extends JUnit4TestBase {
   @SwitchToTopAfterTest
   @Test
   @Ignore(SAFARI)
-  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/651")
+  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/651")
   public void testShouldBeAbleToClickElementThatIsOutOfViewInANestedFrame() {
     driver.get(appServer.whereIs("scrolling_tests/page_with_nested_scrolling_frames.html"));
     driver.switchTo().frame("scrolling_frame");
@@ -207,7 +206,7 @@ public class ClickScrollingTest extends JUnit4TestBase {
   @SwitchToTopAfterTest
   @Test
   @Ignore(SAFARI)
-  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/651")
+  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/651")
   public void testShouldBeAbleToClickElementThatIsOutOfViewInANestedFrameThatIsOutOfView() {
     driver.get(appServer.whereIs("scrolling_tests/page_with_nested_scrolling_frames_out_of_view.html"));
     driver.switchTo().frame("scrolling_frame");
