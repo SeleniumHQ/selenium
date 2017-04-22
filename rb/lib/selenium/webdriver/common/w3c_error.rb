@@ -183,13 +183,13 @@ module Selenium
       # is obscuring the element that was requested clicked.
       #
 
-      class ElementClickIntercepted < WebDriverError; end
+      class ElementClickInterceptedError < WebDriverError; end
 
       #
       # Indicates that a command could not be completed because the element is not pointer or keyboard interactable.
       #
 
-      class ElementNotInteractable < WebDriverError; end
+      class ElementNotInteractableError < WebDriverError; end
 
       # aliased for backwards compatibility
       NoAlertPresentError       = NoSuchAlertError
