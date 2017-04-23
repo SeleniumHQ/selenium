@@ -137,7 +137,12 @@ test.suite(function(env) {
         let options = new firefox.Options().setProfile(profile);
 
         return runWithFirefoxDev(options, function*() {
-          yield driver.get('data:text/html,<html><div>content</div></html>');
+          yield driver.get(test.Pages.echoPage);
+
+          let footer =
+            yield driver.findElement({id: 'webextensions-selenium-example'});
+          let text = yield footer.getText();
+          assert(text).equalTo('Content injected by webextensions-selenium-example');
         });
       });
 
