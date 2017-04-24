@@ -17,6 +17,7 @@
 
 package org.openqa.grid.internal.utils.configuration;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -43,26 +44,31 @@ public class StandaloneConfiguration {
   /**
    * Default client timeout
    */
+  @VisibleForTesting
   static final Integer DEFAULT_TIMEOUT = 1800;
 
   /**
    * Default browser timeout
    */
+  @VisibleForTesting
   static final Integer DEFAULT_BROWSER_TIMEOUT = 0;
 
   /**
    * Default standalone role
    */
+  @VisibleForTesting
   static final String DEFAULT_ROLE = "standalone";
 
   /**
    * Default standalone port
    */
+  @VisibleForTesting
   static final Integer DEFAULT_PORT = 4444;
 
   /**
    * Default state of LogeLevel.FINE log output toggle
    */
+  @VisibleForTesting
   static final Boolean DEFAULT_DEBUG_TOGGLE = false;
 
   /*
@@ -140,8 +146,7 @@ public class StandaloneConfiguration {
   @Expose
   @Parameter(
     names = "-debug",
-    description = "<Boolean> : enables LogLevel.FINE.",
-    arity = 1
+    description = "<Boolean> : enables LogLevel.FINE."
   )
   public Boolean debug = DEFAULT_DEBUG_TOGGLE;
 
