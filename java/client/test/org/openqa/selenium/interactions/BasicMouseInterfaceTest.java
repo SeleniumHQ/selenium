@@ -169,7 +169,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(MARIONETTE)
+  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/661")
   public void testDoubleClick() {
     driver.get(pages.javascriptPage);
 
@@ -184,7 +184,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(MARIONETTE)
+  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/660")
   public void testContextClick() {
     driver.get(pages.javascriptPage);
 

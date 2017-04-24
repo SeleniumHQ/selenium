@@ -49,7 +49,6 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(MARIONETTE)
   public void testBasicKeyboardInput() {
     driver.get(pages.javascriptPage);
 
@@ -64,7 +63,6 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
 
   @Test
   @Ignore(IE)
-  @Ignore(MARIONETTE)
   public void testSendingKeyDownOnly() {
     driver.get(pages.javascriptPage);
 
@@ -86,7 +84,6 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
 
   @Test
   @Ignore(IE)
-  @Ignore(MARIONETTE)
   public void testSendingKeyUp() {
     driver.get(pages.javascriptPage);
     WebElement keysEventInput = driver.findElement(By.id("theworks"));
@@ -111,7 +108,7 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
 
   @Test
   @Ignore(IE)
-  @Ignore(MARIONETTE)
+  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/646")
   public void testSendingKeysWithShiftPressed() {
     driver.get(pages.javascriptPage);
 
@@ -164,7 +161,6 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(MARIONETTE)
   public void canGenerateKeyboardShortcuts() {
     driver.get(appServer.whereIs("keyboard_shortcut.html"));
 
@@ -186,7 +182,6 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(MARIONETTE)
   public void testSelectionSelectBySymbol() {
     driver.get(pages.javascriptPage);
 
@@ -209,7 +204,6 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
 
   @Test
   @Ignore(IE)
-  @Ignore(MARIONETTE)
   public void testSelectionSelectByWord() {
     assumeFalse(
         "MacOS has alternative keyboard",
@@ -238,7 +232,6 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
 
   @Test
   @Ignore(IE)
-  @Ignore(MARIONETTE)
   public void testSelectionSelectAll() {
     assumeFalse(
         "MacOS has alternative keyboard",
