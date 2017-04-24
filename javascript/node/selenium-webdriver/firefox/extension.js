@@ -154,9 +154,7 @@ function parseInstallRdf(rdf) {
  * @param {!Object} json JSON representation of the manifest.
  * @return {!AddonDetails} The add-on details.
  */
-function parseManifestJson(json) {
-  const {name, version, applications} = json;
-
+function parseManifestJson({name, version, applications}) {
   if (!(applications && applications.gecko && applications.gecko.id)) {
     throw new AddonFormatError('Could not find add-on ID for ' + addonPath);
   }
