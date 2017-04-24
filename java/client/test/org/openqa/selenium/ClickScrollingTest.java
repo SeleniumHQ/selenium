@@ -23,6 +23,7 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.testing.Driver.ALL;
 import static org.openqa.selenium.testing.Driver.CHROME;
@@ -38,6 +39,7 @@ import org.openqa.selenium.interactions.MoveTargetOutOfBoundsException;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
+import org.openqa.selenium.testing.drivers.Browser;
 
 @Ignore(value = HTMLUNIT, reason = "Scrolling requires rendering")
 public class ClickScrollingTest extends JUnit4TestBase {
@@ -86,12 +88,11 @@ public class ClickScrollingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = CHROME, reason = "failed")
-  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/662")
   public void testShouldBeAbleToClickOnAnElementHiddenByDoubleOverflow() {
     driver.get(appServer.whereIs("scrolling_tests/page_with_double_overflow_auto.html"));
 
     driver.findElement(By.id("link")).click();
-    wait.until(titleIs("Clicked Successfully!"));
+    onlyPassIfNotOnMac(662, () -> wait.until(titleIs("Clicked Successfully!")));
   }
 
   @Test
@@ -193,27 +194,40 @@ public class ClickScrollingTest extends JUnit4TestBase {
   @SwitchToTopAfterTest
   @Test
   @Ignore(SAFARI)
-  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/651")
   public void testShouldBeAbleToClickElementThatIsOutOfViewInANestedFrame() {
     driver.get(appServer.whereIs("scrolling_tests/page_with_nested_scrolling_frames.html"));
     driver.switchTo().frame("scrolling_frame");
     driver.switchTo().frame("nested_scrolling_frame");
     WebElement element = driver.findElement(By.name("scroll_checkbox"));
     element.click();
-    assertTrue(element.isSelected());
+    onlyPassIfNotOnMac(651, () -> assertTrue(element.isSelected()));
   }
 
   @SwitchToTopAfterTest
   @Test
   @Ignore(SAFARI)
-  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/651")
   public void testShouldBeAbleToClickElementThatIsOutOfViewInANestedFrameThatIsOutOfView() {
     driver.get(appServer.whereIs("scrolling_tests/page_with_nested_scrolling_frames_out_of_view.html"));
     driver.switchTo().frame("scrolling_frame");
     driver.switchTo().frame("nested_scrolling_frame");
     WebElement element = driver.findElement(By.name("scroll_checkbox"));
     element.click();
-    assertTrue(element.isSelected());
+
+    onlyPassIfNotOnMac(651, () -> assertTrue(element.isSelected()));
+  }
+
+  private void onlyPassIfNotOnMac(int mozIssue, Runnable toCheck) {
+    try {
+      toCheck.run();
+      assumeFalse(
+          "It appears https://github.com/mozilla/geckodriver/issues/" + mozIssue + " is fixed",
+          Platform.getCurrent() == Platform.MAC && Browser.detect() == Browser.ff);
+    } catch (Throwable e) {
+      // Swallow the exception, as this is expected for Firefox on OS X
+      if (!(Platform.getCurrent() == Platform.MAC && Browser.detect() == Browser.ff)) {
+        throw e;
+      }
+    }
   }
 
   @Test
