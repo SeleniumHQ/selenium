@@ -33,6 +33,8 @@ var JETPACK_EXTENSION = path.join(__dirname,
     '../../lib/test/data/firefox/jetpack-sample.xpi');
 var NORMAL_EXTENSION = path.join(__dirname,
     '../../lib/test/data/firefox/sample.xpi');
+var WEBEXTENSION_EXTENSION = path.join(__dirname,
+  '../../lib/test/data/firefox/webextension.xpi');
 
 
 test.suite(function(env) {
@@ -125,6 +127,22 @@ test.suite(function(env) {
               yield driver.findElement({id: 'sample-extension-footer'});
           let text = yield footer.getText();
           assert(text).equalTo('Goodbye');
+        });
+      });
+
+      test.it('can start Firefox with a webextension extension', function() {
+        let profile = new firefox.Profile();
+        profile.addExtension(WEBEXTENSION_EXTENSION);
+
+        let options = new firefox.Options().setProfile(profile);
+
+        return runWithFirefoxDev(options, function*() {
+          yield driver.get(test.Pages.echoPage);
+
+          let footer =
+            yield driver.findElement({id: 'webextensions-selenium-example'});
+          let text = yield footer.getText();
+          assert(text).equalTo('Content injected by webextensions-selenium-example');
         });
       });
 
