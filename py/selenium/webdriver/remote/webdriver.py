@@ -178,7 +178,10 @@ class WebDriver(object):
             raise InvalidArgumentException("Capabilities must be a dictionary")
         w3c_caps = {"firstMatch": [], "alwaysMatch": {}}
         if browser_profile:
-            capabilities["moz:firefoxOptions"]["profile"] = browser_profile.encoded
+            if "moz:firefoxOptions" in capabilities:
+                capabilities["moz:firefoxOptions"]["profile"] = browser_profile.encoded
+            else:
+                capabilities['desiredCapabilities'] = {'firefox_profile': browser_profile.encoded}
         w3c_caps["alwaysMatch"].update(capabilities)
         parameters = {"capabilities": w3c_caps,
                       "desiredCapabilities": capabilities}
