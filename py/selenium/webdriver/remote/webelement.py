@@ -36,7 +36,7 @@ try:
     from StringIO import StringIO as IOStream
 except ImportError:  # 3+
     from io import BytesIO as IOStream
-
+__package__ = 'selenium.webdriver.remote'
 getAttribute_js = pkgutil.get_data(__package__, 'getAttribute.js').decode('utf8')
 isDisplayed_js = pkgutil.get_data(__package__, 'isDisplayed.js').decode('utf8')
 
