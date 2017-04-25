@@ -109,7 +109,6 @@ public class WindowTest extends JUnit4TestBase {
       reason = "getPosition after setPosition doesn't match up exactly, " +
           "as expected - probably due to nuances in Mac OSX window manager.")
   @Ignore(PHANTOMJS)
-  @NotYetImplemented(value = MARIONETTE, reason = "/window/rect")
   public void testSetsThePositionOfTheCurrentWindow() throws InterruptedException {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
