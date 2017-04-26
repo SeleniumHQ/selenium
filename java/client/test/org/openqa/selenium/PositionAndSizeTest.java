@@ -95,7 +95,6 @@ public class PositionAndSizeTest extends JUnit4TestBase {
 
   @Test
   @Ignore(SAFARI)
-  @NotYetImplemented(value = MARIONETTE, reason = "/window/rect")
   public void testShouldScrollPageAndGetCoordinatesOfAnElementThatIsOutOfViewPort() {
     assumeFalse(
         "window().getSize() is not implemented for Chrome for Android. "
