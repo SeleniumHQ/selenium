@@ -232,9 +232,6 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
       case GET_SESSION_STORAGE_SIZE:
         return toScript("return sessionStorage.length");
 
-      case GET_CURRENT_WINDOW_POSITION:
-        return toScript("return {x: window.screenX, y: window.screenY}");
-
       case IS_ELEMENT_DISPLAYED:
         return executeAtom("isDisplayed.js", asElement(parameters.get("id")));
 
@@ -263,12 +260,6 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
           .put("text", parameters.get("text"))
           .put("value", stringToUtf8Array((String) parameters.get("text")))
           .build();
-
-      case SET_CURRENT_WINDOW_POSITION:
-        return toScript(
-          "window.screenX = arguments[0]; window.screenY = arguments[1]",
-          parameters.get("x"),
-          parameters.get("y"));
 
       case SET_TIMEOUT:
         String timeoutType = (String) parameters.get("type");
