@@ -58,7 +58,7 @@ public class SessionHandlingTest {
   @Ignore(value = FIREFOX, issue = "3792")
   @Ignore(value = PHANTOMJS, reason = "throws NoSuchWindowException")
   @Ignore(value = SAFARI, reason = "throws NullPointerException")
-  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/613")
+  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/689")
   public void callingAnyOperationAfterClosingTheLastWindowShouldThrowAnException() {
     WebDriver driver = new WebDriverBuilder().get();
 
