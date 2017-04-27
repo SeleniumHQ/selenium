@@ -1,0 +1,262 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>selenium.webdriver.chrome.options &mdash; Selenium 3.4 documentation</title>
+    
+    <link rel="stylesheet" href="../../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../',
+        VERSION:     '3.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <link rel="top" title="Selenium 3.4 documentation" href="../../../../index.html" />
+    <link rel="up" title="Module code" href="../../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../../index.html">Selenium 3.4 documentation</a> &raquo;</li>
+          <li><a href="../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for selenium.webdriver.chrome.options</h1><div class="highlight"><pre>
+<span class="c"># Licensed to the Software Freedom Conservancy (SFC) under one</span>
+<span class="c"># or more contributor license agreements.  See the NOTICE file</span>
+<span class="c"># distributed with this work for additional information</span>
+<span class="c"># regarding copyright ownership.  The SFC licenses this file</span>
+<span class="c"># to you under the Apache License, Version 2.0 (the</span>
+<span class="c"># &quot;License&quot;); you may not use this file except in compliance</span>
+<span class="c"># with the License.  You may obtain a copy of the License at</span>
+<span class="c">#</span>
+<span class="c">#   http://www.apache.org/licenses/LICENSE-2.0</span>
+<span class="c">#</span>
+<span class="c"># Unless required by applicable law or agreed to in writing,</span>
+<span class="c"># software distributed under the License is distributed on an</span>
+<span class="c"># &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY</span>
+<span class="c"># KIND, either express or implied.  See the License for the</span>
+<span class="c"># specific language governing permissions and limitations</span>
+<span class="c"># under the License.</span>
+
+<span class="kn">import</span> <span class="nn">base64</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">from</span> <span class="nn">selenium.webdriver.common.desired_capabilities</span> <span class="kn">import</span> <span class="n">DesiredCapabilities</span>
+
+
+<div class="viewcode-block" id="Options"><a class="viewcode-back" href="../../../../webdriver_chrome/selenium.webdriver.chrome.options.html#selenium.webdriver.chrome.options.Options">[docs]</a><span class="k">class</span> <span class="nc">Options</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_binary_location</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_arguments</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_extension_files</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_extensions</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_experimental_options</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_debugger_address</span> <span class="o">=</span> <span class="bp">None</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">binary_location</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the location of the binary otherwise an empty string</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_binary_location</span>
+
+    <span class="nd">@binary_location.setter</span>
+<div class="viewcode-block" id="Options.binary_location"><a class="viewcode-back" href="../../../../webdriver_chrome/selenium.webdriver.chrome.options.html#selenium.webdriver.chrome.options.Options.binary_location">[docs]</a>    <span class="k">def</span> <span class="nf">binary_location</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Allows you to set where the chromium binary lives</span>
+
+<span class="sd">        :Args:</span>
+<span class="sd">         - value: path to the Chromium binary</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_binary_location</span> <span class="o">=</span> <span class="n">value</span>
+</div>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">debugger_address</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the address of the remote devtools instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_debugger_address</span>
+
+    <span class="nd">@debugger_address.setter</span>
+<div class="viewcode-block" id="Options.debugger_address"><a class="viewcode-back" href="../../../../webdriver_chrome/selenium.webdriver.chrome.options.html#selenium.webdriver.chrome.options.Options.debugger_address">[docs]</a>    <span class="k">def</span> <span class="nf">debugger_address</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Allows you to set the address of the remote devtools instance</span>
+<span class="sd">        that the ChromeDriver instance will try to connect to during an</span>
+<span class="sd">        active wait.</span>
+
+<span class="sd">        :Args:</span>
+<span class="sd">         - value: address of remote devtools instance if any (hostname[:port])</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_debugger_address</span> <span class="o">=</span> <span class="n">value</span>
+</div>
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="Options.arguments"><a class="viewcode-back" href="../../../../webdriver_chrome/selenium.webdriver.chrome.options.html#selenium.webdriver.chrome.options.Options.arguments">[docs]</a>    <span class="k">def</span> <span class="nf">arguments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a list of arguments needed for the browser</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arguments</span>
+</div>
+<div class="viewcode-block" id="Options.add_argument"><a class="viewcode-back" href="../../../../webdriver_chrome/selenium.webdriver.chrome.options.html#selenium.webdriver.chrome.options.Options.add_argument">[docs]</a>    <span class="k">def</span> <span class="nf">add_argument</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">argument</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds an argument to the list</span>
+
+<span class="sd">        :Args:</span>
+<span class="sd">         - Sets the arguments</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">argument</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_arguments</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">argument</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;argument can not be null&quot;</span><span class="p">)</span>
+</div>
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="Options.extensions"><a class="viewcode-back" href="../../../../webdriver_chrome/selenium.webdriver.chrome.options.html#selenium.webdriver.chrome.options.Options.extensions">[docs]</a>    <span class="k">def</span> <span class="nf">extensions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a list of encoded extensions that will be loaded into chrome</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">encoded_extensions</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">ext</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extension_files</span><span class="p">:</span>
+            <span class="n">file_</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">ext</span><span class="p">,</span> <span class="s">&#39;rb&#39;</span><span class="p">)</span>
+            <span class="c"># Should not use base64.encodestring() which inserts newlines every</span>
+            <span class="c"># 76 characters (per RFC 1521).  Chromedriver has to remove those</span>
+            <span class="c"># unnecessary newlines before decoding, causing performance hit.</span>
+            <span class="n">encoded_extensions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">(</span><span class="n">file_</span><span class="o">.</span><span class="n">read</span><span class="p">())</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s">&#39;UTF-8&#39;</span><span class="p">))</span>
+
+            <span class="n">file_</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">encoded_extensions</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extensions</span>
+</div>
+<div class="viewcode-block" id="Options.add_extension"><a class="viewcode-back" href="../../../../webdriver_chrome/selenium.webdriver.chrome.options.html#selenium.webdriver.chrome.options.Options.add_extension">[docs]</a>    <span class="k">def</span> <span class="nf">add_extension</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">extension</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds the path to the extension to a list that will be used to extract it</span>
+<span class="sd">        to the ChromeDriver</span>
+
+<span class="sd">        :Args:</span>
+<span class="sd">         - extension: path to the \*.crx file</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">extension</span><span class="p">:</span>
+            <span class="n">extension_to_add</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="n">extension</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">extension_to_add</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_extension_files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">extension_to_add</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s">&quot;Path to the extension doesn&#39;t exist&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;argument can not be null&quot;</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Options.add_encoded_extension"><a class="viewcode-back" href="../../../../webdriver_chrome/selenium.webdriver.chrome.options.html#selenium.webdriver.chrome.options.Options.add_encoded_extension">[docs]</a>    <span class="k">def</span> <span class="nf">add_encoded_extension</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">extension</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds Base64 encoded string with extension data to a list that will be used to extract it</span>
+<span class="sd">        to the ChromeDriver</span>
+
+<span class="sd">        :Args:</span>
+<span class="sd">         - extension: Base64 encoded string with extension data</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">extension</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_extensions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">extension</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;argument can not be null&quot;</span><span class="p">)</span>
+</div>
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="Options.experimental_options"><a class="viewcode-back" href="../../../../webdriver_chrome/selenium.webdriver.chrome.options.html#selenium.webdriver.chrome.options.Options.experimental_options">[docs]</a>    <span class="k">def</span> <span class="nf">experimental_options</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a dictionary of experimental options for chrome.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_experimental_options</span>
+</div>
+<div class="viewcode-block" id="Options.add_experimental_option"><a class="viewcode-back" href="../../../../webdriver_chrome/selenium.webdriver.chrome.options.html#selenium.webdriver.chrome.options.Options.add_experimental_option">[docs]</a>    <span class="k">def</span> <span class="nf">add_experimental_option</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds an experimental option which is passed to chrome.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">          name: The experimental option name.</span>
+<span class="sd">          value: The option value.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_experimental_options</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+</div>
+<div class="viewcode-block" id="Options.to_capabilities"><a class="viewcode-back" href="../../../../webdriver_chrome/selenium.webdriver.chrome.options.html#selenium.webdriver.chrome.options.Options.to_capabilities">[docs]</a>    <span class="k">def</span> <span class="nf">to_capabilities</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Creates a capabilities with all the options that have been set and</span>
+
+<span class="sd">            returns a dictionary with everything</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">chrome</span> <span class="o">=</span> <span class="n">DesiredCapabilities</span><span class="o">.</span><span class="n">CHROME</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="n">chrome_options</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">experimental_options</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">chrome_options</span><span class="p">[</span><span class="s">&quot;extensions&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extensions</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">binary_location</span><span class="p">:</span>
+            <span class="n">chrome_options</span><span class="p">[</span><span class="s">&quot;binary&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">binary_location</span>
+        <span class="n">chrome_options</span><span class="p">[</span><span class="s">&quot;args&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">arguments</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">debugger_address</span><span class="p">:</span>
+            <span class="n">chrome_options</span><span class="p">[</span><span class="s">&quot;debuggerAddress&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">debugger_address</span>
+
+        <span class="n">chrome</span><span class="p">[</span><span class="s">&quot;chromeOptions&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">chrome_options</span>
+
+        <span class="k">return</span> <span class="n">chrome</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../../index.html">Selenium 3.4 documentation</a> &raquo;</li>
+          <li><a href="../../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, plightbo, simon.m.stewart, hbchai, jrhuggins, et al..
+    </div>
+  </body>
+</html>

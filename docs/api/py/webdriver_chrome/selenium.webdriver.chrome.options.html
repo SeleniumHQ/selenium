@@ -1,0 +1,201 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>selenium.webdriver.chrome.options &mdash; Selenium 3.4 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '3.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Selenium 3.4 documentation" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../index.html">Selenium 3.4 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-selenium.webdriver.chrome.options">
+<span id="selenium-webdriver-chrome-options"></span><h1>selenium.webdriver.chrome.options<a class="headerlink" href="#module-selenium.webdriver.chrome.options" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="selenium.webdriver.chrome.options.Options">
+<em class="property">class </em><tt class="descclassname">selenium.webdriver.chrome.options.</tt><tt class="descname">Options</tt><a class="reference internal" href="../_modules/selenium/webdriver/chrome/options.html#Options"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.chrome.options.Options" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="selenium.webdriver.chrome.options.Options.add_argument">
+<tt class="descname">add_argument</tt><big>(</big><em>argument</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/chrome/options.html#Options.add_argument"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.chrome.options.Options.add_argument" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds an argument to the list</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first last simple">
+<li>Sets the arguments</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.chrome.options.Options.add_encoded_extension">
+<tt class="descname">add_encoded_extension</tt><big>(</big><em>extension</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/chrome/options.html#Options.add_encoded_extension"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.chrome.options.Options.add_encoded_extension" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds Base64 encoded string with extension data to a list that will be used to extract it
+to the ChromeDriver</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first last simple">
+<li>extension: Base64 encoded string with extension data</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.chrome.options.Options.add_experimental_option">
+<tt class="descname">add_experimental_option</tt><big>(</big><em>name</em>, <em>value</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/chrome/options.html#Options.add_experimental_option"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.chrome.options.Options.add_experimental_option" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds an experimental option which is passed to chrome.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>name: The experimental option name.
+value: The option value.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.chrome.options.Options.add_extension">
+<tt class="descname">add_extension</tt><big>(</big><em>extension</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/chrome/options.html#Options.add_extension"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.chrome.options.Options.add_extension" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds the path to the extension to a list that will be used to extract it
+to the ChromeDriver</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first last simple">
+<li>extension: path to the *.crx file</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.chrome.options.Options.arguments">
+<tt class="descname">arguments</tt><a class="reference internal" href="../_modules/selenium/webdriver/chrome/options.html#Options.arguments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.chrome.options.Options.arguments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of arguments needed for the browser</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.chrome.options.Options.binary_location">
+<tt class="descname">binary_location</tt><a class="reference internal" href="../_modules/selenium/webdriver/chrome/options.html#Options.binary_location"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.chrome.options.Options.binary_location" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the location of the binary otherwise an empty string</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.chrome.options.Options.debugger_address">
+<tt class="descname">debugger_address</tt><a class="reference internal" href="../_modules/selenium/webdriver/chrome/options.html#Options.debugger_address"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.chrome.options.Options.debugger_address" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the address of the remote devtools instance</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.chrome.options.Options.experimental_options">
+<tt class="descname">experimental_options</tt><a class="reference internal" href="../_modules/selenium/webdriver/chrome/options.html#Options.experimental_options"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.chrome.options.Options.experimental_options" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a dictionary of experimental options for chrome.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.chrome.options.Options.extensions">
+<tt class="descname">extensions</tt><a class="reference internal" href="../_modules/selenium/webdriver/chrome/options.html#Options.extensions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.chrome.options.Options.extensions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of encoded extensions that will be loaded into chrome</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.chrome.options.Options.to_capabilities">
+<tt class="descname">to_capabilities</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/chrome/options.html#Options.to_capabilities"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.chrome.options.Options.to_capabilities" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a capabilities with all the options that have been set and</p>
+<p>returns a dictionary with everything</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/webdriver_chrome/selenium.webdriver.chrome.options.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../index.html">Selenium 3.4 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, plightbo, simon.m.stewart, hbchai, jrhuggins, et al..
+    </div>
+  </body>
+</html>
