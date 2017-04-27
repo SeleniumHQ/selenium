@@ -3,6 +3,7 @@ projectFilesBackup/
 .DS_Store
 .svn
 .buckd
+.buckconfig.local
 .nobuckcheck
 .credentials.dat
 buck-out
