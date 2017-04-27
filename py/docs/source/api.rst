@@ -61,6 +61,7 @@ Webdriver.chrome
 .. autosummary::
    :toctree: webdriver_chrome
 
+   selenium.webdriver.chrome.options
    selenium.webdriver.chrome.service
    selenium.webdriver.chrome.webdriver
 
