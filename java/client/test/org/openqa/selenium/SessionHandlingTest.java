@@ -46,6 +46,7 @@ public class SessionHandlingTest {
   @Test
   @Ignore(value = FIREFOX, issue = "https://github.com/SeleniumHQ/selenium/issues/3792")
   @Ignore(PHANTOMJS)
+  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/689")
   public void callingQuitAfterClosingTheLastWindowIsANoOp() {
     WebDriver driver = new WebDriverBuilder().get();
 
