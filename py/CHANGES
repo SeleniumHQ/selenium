@@ -1,3 +1,6 @@
+Selenium 3.4.1
+* Add back the ability to set profile when using Firefox 45ESR. Fixes #3897
+
 Selenium 3.4.0
 * Correct usage of newSession around `firstMatch` and `alwaysMatch`
 * Remove superfluous capabilities that are not needed
