@@ -99,7 +99,7 @@ module Selenium
 
         def remote_server_jar
           if ENV['DOWNLOAD_SERVER']
-            @remote_server_jar ||= "#{root.join('rb/selenium-server-standalone').to_s}-#{Selenium::Server.latest}.jar".to_s
+            @remote_server_jar ||= "#{root.join('rb/selenium-server-standalone').to_s}-#{Selenium::Server.latest}.jar"
             @remote_server_jar = root.join("rb/#{Selenium::Server.download(:latest)}").to_s unless File.exist? @remote_server_jar
           else
             @remote_server_jar ||= root.join('buck-out/gen/java/server/src/org/openqa/grid/selenium/selenium.jar').to_s
@@ -130,7 +130,9 @@ module Selenium
         end
 
         def root
-          @root ||= Pathname.new('../../../../../../../').expand_path(__FILE__)
+          # prefer #realpath over #expand_path to avoid problems with UNC
+          # see https://bugs.ruby-lang.org/issues/13515
+          @root ||= Pathname.new('../../../../../../../').realpath(__FILE__)
         end
 
         def remote_capabilities
