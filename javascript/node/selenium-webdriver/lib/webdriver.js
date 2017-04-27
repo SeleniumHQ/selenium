@@ -2186,7 +2186,7 @@ class WebElement {
     if (!this.driver_.fileDetector_) {
       return this.schedule_(
           new command.Command(command.Name.SEND_KEYS_TO_ELEMENT).
-              setParameter('text', keys).
+              setParameter('text', keys.then(keys => keys.join(''))).
               setParameter('value', keys),
           'WebElement.sendKeys()');
     }
