@@ -364,8 +364,8 @@ public class ClickTest extends JUnit4TestBase {
     wait.until(titleIs("Submitted Successfully!"));
   }
 
-  @NotYetImplemented(MARIONETTE)
   @Test
+  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/615")
   public void clickingOnADisabledElementIsANoOp() {
     driver.get(appServer.whereIs("click_tests/disabled_element.html"));
 

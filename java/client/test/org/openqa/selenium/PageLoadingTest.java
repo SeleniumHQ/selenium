@@ -46,6 +46,7 @@ import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Driver.SAFARI;
+import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
 import static org.openqa.selenium.testing.TestUtilities.isChrome;
 import static org.openqa.selenium.testing.TestUtilities.isLocal;
@@ -83,7 +84,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   @Test
   @Ignore(CHROME)
   @Ignore(SAFARI)
-  @Ignore(MARIONETTE)
+  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/693")
   @Ignore(PHANTOMJS)
   @NeedsLocalEnvironment
   public void testNoneStrategyShouldNotWaitForPageToLoad() {
@@ -104,7 +105,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   @Test
   @Ignore(CHROME)
   @Ignore(SAFARI)
-  @Ignore(MARIONETTE)
+  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/693")
   @Ignore(PHANTOMJS)
   @NeedsLocalEnvironment
   public void testNoneStrategyShouldNotWaitForPageToRefresh() {
@@ -130,7 +131,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   @Ignore(IE)
   @Ignore(CHROME)
   @Ignore(SAFARI)
-  @Ignore(MARIONETTE)
+  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/693")
   @Ignore(PHANTOMJS)
   @NeedsLocalEnvironment
   public void testEagerStrategyShouldNotWaitForResources() {
@@ -156,7 +157,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   @Ignore(CHROME)
   @Ignore(SAFARI)
   @Ignore(PHANTOMJS)
-  @Ignore(MARIONETTE)
+  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/693")
   @NeedsLocalEnvironment
   public void testEagerStrategyShouldNotWaitForResourcesOnRefresh() {
     initLocalDriver("eager");
@@ -211,7 +212,6 @@ public class PageLoadingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(MARIONETTE)
   public void testShouldBeAbleToGetAFragmentOnTheCurrentPage() {
     driver.get(pages.xhtmlTestPage);
     driver.get(pages.xhtmlTestPage + "#text");
@@ -232,25 +232,26 @@ public class PageLoadingTest extends JUnit4TestBase {
     }
   }
 
-  @Test(expected = WebDriverException.class)
+  @Test
   @Ignore(IE)
   @Ignore(SAFARI)
   @Ignore(PHANTOMJS)
   @NeedsFreshDriver
   public void testShouldThrowIfUrlIsMalformed() {
     assumeFalse("Fails in Sauce Cloud", SauceDriver.shouldUseSauce());
-    driver.get("www.test.com");
+    Throwable t = catchThrowable(() -> driver.get("www.test.com"));
+    assertThat(t, instanceOf(WebDriverException.class));
   }
 
-  @Test(expected = WebDriverException.class)
+  @Test
   @Ignore(IE)
   @Ignore(SAFARI)
   @Ignore(PHANTOMJS)
-  @Ignore(MARIONETTE)
   @NeedsFreshDriver
   public void testShouldThrowIfUrlIsMalformedInPortPart() {
     assumeFalse("Fails in Sauce Cloud", SauceDriver.shouldUseSauce());
-    driver.get("http://localhost:3001bla");
+    Throwable t = catchThrowable(() -> driver.get("http://localhost:3001bla"));
+    assertThat(t, instanceOf(WebDriverException.class));
   }
 
   @Test
@@ -272,7 +273,6 @@ public class PageLoadingTest extends JUnit4TestBase {
 
   @SwitchToTopAfterTest
   @Test
-  @Ignore(MARIONETTE)
   public void testShouldBeAbleToLoadAPageWithFramesetsAndWaitUntilAllFramesAreLoaded() {
     driver.get(pages.framesetPage);
 
@@ -289,7 +289,6 @@ public class PageLoadingTest extends JUnit4TestBase {
   @NoDriverAfterTest
   @Test
   @Ignore(value = SAFARI, reason = "issue 3771")
-  @Ignore(MARIONETTE)
   @NotYetImplemented(value = HTMLUNIT,
       reason = "HtmlUnit: can't execute JavaScript before a page is loaded")
   public void testShouldDoNothingIfThereIsNothingToGoBackTo() {
@@ -354,7 +353,6 @@ public class PageLoadingTest extends JUnit4TestBase {
   @Test
   @Ignore(IE)
   @Ignore(PHANTOMJS)
-  @Ignore(MARIONETTE)
   @Ignore(value = SAFARI, reason = "does not support insecure SSL")
   public void testShouldBeAbleToAccessPagesWithAnInsecureSslCertificate() {
     // TODO(user): Set the SSL capability to true.
@@ -404,7 +402,6 @@ public class PageLoadingTest extends JUnit4TestBase {
   @NoDriverAfterTest
   @Test
   @Ignore(IE)
-  @Ignore(MARIONETTE)
   @Ignore(value = SAFARI, reason = "issue 4062")
   public void testShouldNotHangIfDocumentOpenCallIsNeverFollowedByDocumentCloseCall()
       throws Exception {
@@ -422,7 +419,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   @Ignore(PHANTOMJS)
   @Ignore(FIREFOX)
   @Ignore(value = SAFARI, reason = "issue 687, comment 41")
-  @NotYetImplemented(MARIONETTE)
+  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/694")
   @NeedsLocalEnvironment
   public void testPageLoadTimeoutCanBeChanged() {
     testPageLoadTimeoutIsEnforced(2);
@@ -431,7 +428,7 @@ public class PageLoadingTest extends JUnit4TestBase {
 
   @NoDriverAfterTest // Subsequent tests sometimes fail on Firefox.
   @Test
-  @Ignore(MARIONETTE)
+  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/694")
   @Ignore(value = SAFARI, reason = "issue 687, comment 41")
   @NeedsLocalEnvironment
   public void testShouldTimeoutIfAPageTakesTooLongToLoad() {
@@ -448,7 +445,7 @@ public class PageLoadingTest extends JUnit4TestBase {
 
   @NoDriverAfterTest // Subsequent tests sometimes fail on Firefox.
   @Test
-  @Ignore(MARIONETTE)
+  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/694")
   @Ignore(value = SAFARI, reason = "issue 687, comment 41")
   @NeedsLocalEnvironment
   public void testShouldTimeoutIfAPageTakesTooLongToLoadAfterClick() {
@@ -487,7 +484,7 @@ public class PageLoadingTest extends JUnit4TestBase {
 
   @NoDriverAfterTest // Subsequent tests sometimes fail on Firefox.
   @Test
-  @Ignore(MARIONETTE)
+  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/694")
   @Ignore(value = SAFARI, reason = "issue 687, comment 41")
   @NeedsLocalEnvironment
   public void testShouldTimeoutIfAPageTakesTooLongToRefresh() {
@@ -522,7 +519,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   @NoDriverAfterTest // Subsequent tests sometimes fail on Firefox.
   @Test
   @Ignore(CHROME)
-  @Ignore(MARIONETTE)
+  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/694")
   @Ignore(value = SAFARI, reason = "issue 687, comment 41")
   @NotYetImplemented(HTMLUNIT)
   @NeedsLocalEnvironment
