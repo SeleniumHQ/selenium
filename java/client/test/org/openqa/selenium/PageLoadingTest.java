@@ -419,7 +419,6 @@ public class PageLoadingTest extends JUnit4TestBase {
   @Ignore(PHANTOMJS)
   @Ignore(FIREFOX)
   @Ignore(value = SAFARI, reason = "issue 687, comment 41")
-  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/694")
   @NeedsLocalEnvironment
   public void testPageLoadTimeoutCanBeChanged() {
     testPageLoadTimeoutIsEnforced(2);
@@ -428,7 +427,6 @@ public class PageLoadingTest extends JUnit4TestBase {
 
   @NoDriverAfterTest // Subsequent tests sometimes fail on Firefox.
   @Test
-  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/694")
   @Ignore(value = SAFARI, reason = "issue 687, comment 41")
   @NeedsLocalEnvironment
   public void testShouldTimeoutIfAPageTakesTooLongToLoad() {
@@ -445,7 +443,7 @@ public class PageLoadingTest extends JUnit4TestBase {
 
   @NoDriverAfterTest // Subsequent tests sometimes fail on Firefox.
   @Test
-  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/694")
+  @Ignore(value = MARIONETTE)
   @Ignore(value = SAFARI, reason = "issue 687, comment 41")
   @NeedsLocalEnvironment
   public void testShouldTimeoutIfAPageTakesTooLongToLoadAfterClick() {
@@ -484,7 +482,6 @@ public class PageLoadingTest extends JUnit4TestBase {
 
   @NoDriverAfterTest // Subsequent tests sometimes fail on Firefox.
   @Test
-  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/694")
   @Ignore(value = SAFARI, reason = "issue 687, comment 41")
   @NeedsLocalEnvironment
   public void testShouldTimeoutIfAPageTakesTooLongToRefresh() {
@@ -519,7 +516,6 @@ public class PageLoadingTest extends JUnit4TestBase {
   @NoDriverAfterTest // Subsequent tests sometimes fail on Firefox.
   @Test
   @Ignore(CHROME)
-  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/694")
   @Ignore(value = SAFARI, reason = "issue 687, comment 41")
   @NotYetImplemented(HTMLUNIT)
   @NeedsLocalEnvironment
