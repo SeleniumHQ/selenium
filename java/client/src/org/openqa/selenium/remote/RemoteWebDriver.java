@@ -878,7 +878,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
       public Timeouts pageLoadTimeout(long time, TimeUnit unit) {
         execute(DriverCommand.SET_TIMEOUT, ImmutableMap.of(
-            "page load", TimeUnit.MILLISECONDS.convert(time, unit)));
+            "pageLoad", TimeUnit.MILLISECONDS.convert(time, unit)));
         return this;
       }
     } // timeouts class.
