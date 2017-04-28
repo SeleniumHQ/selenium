@@ -24,6 +24,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeFalse;
+import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.testing.Driver.ALL;
 import static org.openqa.selenium.testing.Driver.CHROME;
@@ -239,6 +240,7 @@ public class ClickScrollingTest extends JUnit4TestBase {
   }
 
   private long getScrollTop() {
+    wait.until(presenceOfElementLocated(By.tagName("body")));
     return (Long)((JavascriptExecutor)driver).executeScript("return document.body.scrollTop;");
   }
 
