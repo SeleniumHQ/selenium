@@ -291,3 +291,10 @@ notifications:
     on_failure: always
     use_notice: true
     skip_join: true
+  webhooks:
+    urls: https://selenium-ci-dashboard.herokuapp.com/rest/travis
+    on_success: always # default: always
+    on_failure: always # default: always
+    on_start: always   # default: never
+    on_cancel: always # default: always
+    on_error: always # default: always
