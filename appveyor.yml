@@ -11,6 +11,7 @@ install:
   - 'set PATH=%JAVA_HOME%;%PATH%'
   - 'set RUBY_HOME=C:\Ruby22-x64\bin'
   - 'set PATH=%RUBY_HOME%;%PATH%'
+  - 'set BUCK_EXTRA_JAVA_ARGS=-Djna.nosys=true'
 before_test:
   - copy cpp\prebuilt\Win32\Release\IEDriverServer.exe C:\Tools\WebDriver
   - ruby -v
