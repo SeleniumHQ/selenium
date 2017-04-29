@@ -84,6 +84,7 @@ public abstract class JUnit4TestBase implements WrapsDriver {
   @Rule
   public TestRule chain = RuleChain
     .outerRule(new TraceMethodNameRule())
+    .around(new NotificationRule())
     .around(new ManageDriverRule())
     .around(new SwitchToTopRule())
     .around(new NotYetImplementedRule())
