@@ -110,7 +110,6 @@ public class NotificationRule extends TestWatcher {
       CloseableHttpResponse response = httpClient.execute(httpPost);
       String body = EntityUtils.toString(response.getEntity());
       return Long.parseLong(body);
-
     } catch (Throwable t) {
       t.printStackTrace();
       return null;
