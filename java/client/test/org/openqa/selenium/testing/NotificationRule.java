@@ -19,7 +19,7 @@ import java.util.Map;
 public class NotificationRule extends TestWatcher {
 
   private String notificationUrl = System.getenv("DASHBOARD_URL");
-  private String jobId = System.getenv("JOB_ID");
+  private String jobId = System.getenv("TRAVIS_JOB_ID");
 
   private Long id;
   private long startedAt;
