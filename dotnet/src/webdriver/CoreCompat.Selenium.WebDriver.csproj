@@ -4,7 +4,7 @@
     <TargetFrameworks>netstandard1.5;net40;net45</TargetFrameworks>
     <DisableImplicitFrameworkDefines>true</DisableImplicitFrameworkDefines>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <PackageVersion>3.2.0-beta003</PackageVersion>
+    <PackageVersion>3.4.0-beta001</PackageVersion>
     <Description>Selenium is a set of different software tools each with a different approach to supporting browser automation. These tools are highly flexible, allowing many options for locating and manipulating elements within a browser, and one of its key features is the support for automating multiple browser platforms. This package contains the .NET bindings for the newer, more concise and object-based Selenium WebDriver API, which uses native OS-level events to manipulate the browser, bypassing the JavaScript sandbox, and does not require the Selenium Server to automate the browser.</Description>
     <PackageTags>Selenium WebDriver browser automation</PackageTags>
     <PackageProjectUrl>https://github.com/SeleniumHQ/selenium</PackageProjectUrl>
