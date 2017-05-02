@@ -62,6 +62,7 @@ module Selenium
           desired_capabilities = W3CCapabilities.send(desired_capabilities) if desired_capabilities.is_a? Symbol
 
           desired_capabilities[:marionette] = opts.delete(:marionette) unless opts[:marionette].nil?
+          desired_capabilities[:w3c] = opts.delete(:w3c) unless opts[:w3c].nil?
 
           unless opts.empty?
             raise ArgumentError, "unknown option#{'s' if opts.size != 1}: #{opts.inspect}"

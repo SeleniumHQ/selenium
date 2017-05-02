@@ -52,6 +52,8 @@ module Selenium
           desired_capabilities = opts.delete(:desired_capabilities) { Capabilities.firefox }
           url = opts.delete(:url) { "http://#{Platform.localhost}:#{port}/wd/hub" }
 
+          desired_capabilities[:w3c] = opts.delete(:w3c) unless opts[:w3c].nil?
+
           unless opts.empty?
             raise ArgumentError, "unknown option#{'s' if opts.size != 1}: #{opts.inspect}"
           end
@@ -386,7 +388,7 @@ module Selenium
 
         def mouse
           WebDriver.logger.warn <<-DEPRECATE.gsub(/\n +| {2,}/, ' ').freeze
-            [DEPRECATION] `Driver#mouse` is deprecated with w3c implementation. Instead use 
+            [DEPRECATION] `Driver#mouse` is deprecated with w3c implementation. Instead use
             driver.action.<command>.perform
           DEPRECATE
           Mouse.new self
@@ -394,7 +396,7 @@ module Selenium
 
         def keyboard
           WebDriver.logger.warn <<-DEPRECATE.gsub(/\n +| {2,}/, ' ').freeze
-            [DEPRECATION] `Driver#keyboard` is deprecated with w3c implementation. Instead use 
+            [DEPRECATION] `Driver#keyboard` is deprecated with w3c implementation. Instead use
             driver.action.<command>.perform
           DEPRECATE
           Keyboard.new self

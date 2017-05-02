@@ -231,6 +231,13 @@ module Selenium
           WebDriver::Driver.for :ie, opt
         end
 
+        def create_ie_w3c_driver(opt = {})
+          opt[:desired_capabilities] ||= WebDriver::Remote::W3CCapabilities.ie
+          opt[:desired_capabilities]['requireWindowFocus'] = true
+
+          WebDriver::Driver.for :ie, opt
+        end
+
         def create_ff_nightly_driver(opt = {})
           unless ENV['FF_NIGHTLY_BINARY']
             raise StandardError, "ENV['FF_NIGHTLY_BINARY'] must be set to test Nightly Firefox"

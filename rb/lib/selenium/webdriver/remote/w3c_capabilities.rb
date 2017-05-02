@@ -85,12 +85,28 @@ module Selenium
             opts[:timeouts]['script'] = opts.delete(:script_timeout) if opts.key?(:script_timeout)
             new({browser_name: 'firefox', marionette: true}.merge(opts))
           end
-
           alias_method :ff, :firefox
 
-          def w3c?(opts = {})
+          def internet_explorer(opts = {})
+            new({
+              browser_name: 'internet explorer',
+              platform: :windows,
+              takes_screenshot: true,
+              css_selectors_enabled: true,
+              native_events: true,
+              w3c: true
+            }.merge(opts))
+          end
+          alias_method :ie, :internet_explorer
+
+          def marionette?(opts)
             opts[:marionette] != false &&
-                (!opts[:desired_capabilities] || opts[:desired_capabilities][:marionette] != false)
+              (!opts[:desired_capabilities] || opts[:desired_capabilities][:marionette] != false)
+          end
+
+          def ie_beta?(opts)
+            opts[:w3c] == true ||
+              (opts[:desired_capabilities] && opts[:desired_capabilities][:w3c] == true)
           end
 
           #

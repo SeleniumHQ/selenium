@@ -23,7 +23,7 @@ module Selenium
   module WebDriver
     not_compliant_on browser: :safari do
       describe Options do
-        not_compliant_on browser: [:firefox, :ie, :edge, :ff_nightly] do
+        not_compliant_on browser: [:firefox, :ie, :ie_w3c, :edge, :ff_nightly] do
           describe 'logs' do
             compliant_on driver: :remote do
               it 'can fetch remote log types' do
