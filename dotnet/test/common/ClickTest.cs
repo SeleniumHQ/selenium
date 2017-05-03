@@ -146,6 +146,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.WindowsPhone, "Doesn't support multiple windows")]
         [IgnoreBrowser(Browser.Opera, "Doesn't support multiple windows")]
         [IgnoreBrowser(Browser.Safari, "Doesn't support multiple windows; Safari: issue 3693")]
+        [IgnoreBrowser(Browser.Edge, "Hangs browser")]
         public void ShouldOnlyFollowHrefOnce()
         {
             driver.Url = clicksPage;

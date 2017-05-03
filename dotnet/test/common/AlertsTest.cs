@@ -7,6 +7,7 @@ using OpenQA.Selenium.Remote;
 namespace OpenQA.Selenium
 {
     [TestFixture]
+    [IgnoreBrowser(Browser.Edge)]
     public class AlertsTest : DriverTestFixture
     {
         [Test]
@@ -424,6 +425,7 @@ namespace OpenQA.Selenium
         [Test]
         [Category("JavaScript")]
         [IgnoreBrowser(Browser.Android)]
+        [IgnoreBrowser(Browser.Edge, "Hangs browser")]
         [IgnoreBrowser(Browser.HtmlUnit)]
         [IgnoreBrowser(Browser.IPhone)]
         [IgnoreBrowser(Browser.PhantomJS, "Alert commands not yet implemented in GhostDriver")]
