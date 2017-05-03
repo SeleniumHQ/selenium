@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
 using System.Net;
 
 namespace OpenQA.Selenium.Environment
@@ -7,7 +8,7 @@ namespace OpenQA.Selenium.Environment
     public class RemoteSeleniumServer
     {
         private Process webserverProcess;
-        private string serverJarName = @"buck-out\gen\java\server\src\org\openqa\grid\selenium\selenium.jar";
+        private string serverJarName = @"buck-out/gen/java/server/src/org/openqa/grid/selenium/selenium.jar";
         private string projectRootPath;
         private bool autoStart;
 
@@ -21,11 +22,21 @@ namespace OpenQA.Selenium.Environment
         {
             if (autoStart && (webserverProcess == null || webserverProcess.HasExited))
             {
+                serverJarName = serverJarName.Replace('/', Path.DirectorySeparatorChar);
+                if (!File.Exists(Path.Combine(projectRootPath, serverJarName)))
+                {
+                    throw new FileNotFoundException(
+                        string.Format(
+                            "Selenium server jar at {0} didn't exist - please build it using something like {1}",
+                            serverJarName,
+                            "go //java/server/src/org/openqa/grid/selenium:selenium"));
+                }
+
                 string currentDirectory = EnvironmentManager.Instance.CurrentDirectory;
-                string ieDriverExe = System.IO.Path.Combine(currentDirectory, "IEDriverServer.exe");
+                string ieDriverExe = System.IO.Path.Combine(currentDirectory, "chromedriver.exe");
                 webserverProcess = new Process();
                 webserverProcess.StartInfo.FileName = "java.exe";
-                webserverProcess.StartInfo.Arguments = "-Dwebdriver.ie.driver=" + ieDriverExe + " -jar " + serverJarName + " -port 6000";
+                webserverProcess.StartInfo.Arguments = "-Dwebdriver.chrome.driver=" + ieDriverExe + " -jar " + serverJarName + " -port 6000";
                 webserverProcess.StartInfo.WorkingDirectory = projectRootPath;
                 webserverProcess.Start();
                 DateTime timeout = DateTime.Now.Add(TimeSpan.FromSeconds(30));
@@ -49,7 +60,7 @@ namespace OpenQA.Selenium.Environment
 
                 if (!isRunning)
                 {
-                    throw new TimeoutException("Could not start the test web server in 15 seconds");
+                    throw new TimeoutException("Could not start the remote selenium server in 30 seconds");
                 }
             }
         }
