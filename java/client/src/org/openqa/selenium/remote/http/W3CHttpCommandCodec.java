@@ -187,7 +187,7 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
 
       case GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW:
         return toScript(
-          "var e = arguments[0]; e.scrollIntoView(behavior: 'instant', block: 'end', inline: 'nearest'); var rect = e.getBoundingClientRect(); return {'x': rect.left, 'y': rect.top};",
+          "var e = arguments[0]; e.scrollIntoView({behavior: 'instant', block: 'end', inline: 'nearest'}); var rect = e.getBoundingClientRect(); return {'x': rect.left, 'y': rect.top};",
           asElement(parameters.get("id")));
 
       case GET_PAGE_SOURCE:
