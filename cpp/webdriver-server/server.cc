@@ -679,7 +679,6 @@ void Server::PopulateCommandRepository() {
   this->AddCommand("/session/:sessionid/element/:id/css/:propertyName", "GET",  webdriver::CommandType::GetElementValueOfCssProperty);
   this->AddCommand("/session/:sessionid/element/:id/attribute/:name", "GET",  webdriver::CommandType::GetElementAttribute);
   this->AddCommand("/session/:sessionid/element/:id/equals/:other", "GET",  webdriver::CommandType::ElementEquals);
-  this->AddCommand("/session/:sessionid/screenshot", "GET",  webdriver::CommandType::Screenshot);
   this->AddCommand("/session/:sessionid/orientation", "GET",  webdriver::CommandType::GetOrientation);
   this->AddCommand("/session/:sessionid/orientation", "POST",  webdriver::CommandType::SetOrientation);
 
