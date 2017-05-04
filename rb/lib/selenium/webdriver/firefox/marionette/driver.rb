@@ -74,7 +74,7 @@ module Selenium
             caps = Remote::W3C::Capabilities.firefox
             caps.merge!(opts.delete(:desired_capabilities)) if opts.key? :desired_capabilities
             firefox_options = caps[:firefox_options] || {}
-            firefox_options = firefox_options_caps.merge(opts[:firefox_options]) if opts.key?(:firefox_options)
+            firefox_options = firefox_options.merge(opts[:firefox_options]) if opts.key?(:firefox_options)
             if opts.key?(:profile)
               profile = opts.delete(:profile)
               profile = Profile.from_name(profile) unless profile.is_a?(Profile)
