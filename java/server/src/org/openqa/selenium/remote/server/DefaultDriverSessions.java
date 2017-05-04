@@ -18,10 +18,12 @@
 package org.openqa.selenium.remote.server;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.io.Files;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.SessionId;
 
@@ -30,7 +32,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.Set;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
@@ -127,12 +128,15 @@ public class DefaultDriverSessions implements DriverSessions {
   }
 
   public SessionId newSession(Capabilities desiredCapabilities) throws Exception {
-    SessionId sessionId = new SessionId(UUID.randomUUID().toString());
-    Session session = DefaultSession.createSession(factory, clock, sessionId, desiredCapabilities);
+    Session session = DefaultSession.createSession(
+        factory,
+        TemporaryFilesystem.getTmpFsBasedOn(Files.createTempDir()),
+        clock,
+        desiredCapabilities);
 
-    sessionIdToDriver.put(sessionId, session);
+    sessionIdToDriver.put(session.getSessionId(), session);
 
-    return sessionId;
+    return session.getSessionId();
   }
 
   public Session get(SessionId sessionId) {

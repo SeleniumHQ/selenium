@@ -39,7 +39,10 @@ public class DefaultSessionTest {
     when(factory.newInstance(any(Capabilities.class))).thenReturn(mock(WebDriver.class));
     final TemporaryFilesystem tempFs = mock(TemporaryFilesystem.class);
 
-    Session session = DefaultSession.createSession(factory, tempFs, new SystemClock(), null, DesiredCapabilities.firefox());
+    Session session = DefaultSession.createSession(
+        factory, tempFs,
+        new SystemClock(),
+        DesiredCapabilities.firefox());
 
     session.close();
     verify(tempFs).deleteTemporaryFiles();
