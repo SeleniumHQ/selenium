@@ -76,9 +76,8 @@ module Selenium
         it 'deprecates `args`' do
           args = ["--foo", "--bar"]
 
-          message = /\[DEPRECATION\] `:args` is deprecated. Pass switches using `driver_opts`/
-
-          expect { @driver = Driver.new(http_client: http, args: args) }.to output(message).to_stdout_from_any_process
+          expect(WebDriver.logger).to receive(:deprecate).with(':args', "driver_opts: {args: #{args}}")
+          @driver = Driver.new(http_client: http, args: args)
           expect(@driver.instance_variable_get("@service").instance_variable_get("@extra_args")).to eq args
         end
       end

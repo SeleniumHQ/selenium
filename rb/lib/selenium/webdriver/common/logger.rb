@@ -104,6 +104,16 @@ module Selenium
         end
       end
 
+      #
+      # Marks code as deprecated with replacement.
+      #
+      # @param [String] old
+      # @param [String] new
+      #
+      def deprecate(old, new)
+        warn "[DEPRECATION] #{old} is deprecated. Use #{new} instead."
+      end
+
       private
 
       def create_logger(output)

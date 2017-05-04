@@ -68,11 +68,7 @@ module Selenium
         def initialize(opts = {})
           opts = opts.dup
 
-          if opts.key?(:port)
-            WebDriver.logger.warn <<-DEPRECATE.gsub(/\n +| {2,}/, ' ').freeze
-            [DEPRECATION] `:port` is deprecated. Use full url desired.
-            DEPRECATE
-          end
+          WebDriver.logger.deprecate ':port', 'full URL' if opts.key?(:port)
           port = opts.delete(:port) || 4444
 
           http_client = opts.delete(:http_client) { Http::Default.new }

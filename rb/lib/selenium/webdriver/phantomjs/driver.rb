@@ -38,9 +38,7 @@ module Selenium
 
             opts[:driver_opts] ||= {}
             if opts.key? :args
-              WebDriver.logger.warn <<-DEPRECATE.gsub(/\n +| {2,}/, ' ').freeze
-            [DEPRECATION] `:args` is deprecated. Pass switches using `driver_opts`
-              DEPRECATE
+              WebDriver.logger.deprecate ':args', "driver_opts: {args: #{opts[:args]}}"
               opts[:driver_opts][:args] = opts.delete(:args)
             elsif opts[:desired_capabilities]['phantomjs.cli.args']
               opts[:driver_opts][:args] = opts[:desired_capabilities]['phantomjs.cli.args']

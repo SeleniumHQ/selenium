@@ -57,6 +57,11 @@ module Selenium
           File.delete('test.log')
         end
       end
+
+      it 'allows to deprecate functionality' do
+        message = /WARN Selenium \[DEPRECATION\] #old is deprecated\. Use #new instead\./
+        expect { WebDriver.logger.deprecate('#old', '#new') }.to output(message).to_stdout
+      end
     end
   end # WebDriver
 end # Selenium
