@@ -41,13 +41,13 @@ module Selenium
 
           context 'when using a deprecated method' do
             it 'warns that #mouse is deprecated' do
-              message = /\[DEPRECATION\] `Driver#mouse` is deprecated with w3c implementation\./
-              expect { bridge.mouse }.to output(message).to_stdout_from_any_process
+              expect(WebDriver.logger).to receive(:deprecate).with('Driver#mouse', "driver.action.<command>.perform")
+              bridge.mouse
             end
 
             it 'warns that #keyboard is deprecated' do
-              message = /\[DEPRECATION\] `Driver#keyboard` is deprecated with w3c implementation\./
-              expect { bridge.keyboard }.to output(message).to_stdout_from_any_process
+              expect(WebDriver.logger).to receive(:deprecate).with('Driver#keyboard', "driver.action.<command>.perform")
+              bridge.keyboard
             end
           end
         end

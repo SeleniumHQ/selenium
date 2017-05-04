@@ -315,18 +315,12 @@ module Selenium
           end
 
           def mouse
-            WebDriver.logger.warn <<-DEPRECATE.gsub(/\n +| {2,}/, ' ').freeze
-              [DEPRECATION] `Driver#mouse` is deprecated with w3c implementation. Instead use
-              driver.action.<command>.perform
-            DEPRECATE
+            WebDriver.logger.deprecate 'Driver#mouse', 'driver.action.<command>.perform'
             Mouse.new self
           end
 
           def keyboard
-            WebDriver.logger.warn <<-DEPRECATE.gsub(/\n +| {2,}/, ' ').freeze
-              [DEPRECATION] `Driver#keyboard` is deprecated with w3c implementation. Instead use
-              driver.action.<command>.perform
-            DEPRECATE
+            WebDriver.logger.deprecate 'Driver#keyboard', 'driver.action.<command>.perform'
             Keyboard.new self
           end
 

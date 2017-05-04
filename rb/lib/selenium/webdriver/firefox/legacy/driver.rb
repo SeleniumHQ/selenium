@@ -34,9 +34,7 @@ module Selenium
             opts[:desired_capabilities] ||= Remote::Capabilities.firefox
 
             if opts.key? :proxy
-              WebDriver.logger.warn <<-DEPRECATE.gsub(/\n +| {2,}/, ' ').freeze
-              [DEPRECATION] `:proxy` is deprecated. Pass in as capability: `Remote::Capabilities.firefox(proxy: #{opts[:proxy]})`
-              DEPRECATE
+              WebDriver.logger.deprecate ':proxy', "Selenium::WebDriver::Remote::Capabilities.firefox(proxy: #{opts[:proxy]})"
               opts[:desired_capabilities].proxy = opts.delete(:proxy)
             end
 

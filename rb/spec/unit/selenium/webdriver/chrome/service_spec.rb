@@ -76,16 +76,16 @@ module Selenium
                   "--silent",
                   "--log-path=/path/to/log"]
 
-          message = /\[DEPRECATION\] `:service_args` is deprecated. Pass switches using `driver_opts`/
-
-          expect { @driver = Driver.new(http_client: http, service_args: args) }.to output(message).to_stdout_from_any_process
+          expect(WebDriver.logger).to receive(:deprecate).with(':service_args', "driver_opts: {args: #{args}}")
+          @driver = Driver.new(http_client: http, service_args: args)
           expect(@driver.instance_variable_get("@service").instance_variable_get("@extra_args")).to eq args
         end
 
         it 'deprecates `service_log_path`' do
           message = /\[DEPRECATION\] `:service_log_path` is deprecated. Use `driver_opts: {log_path: \/path\/to\/log}`/
 
-          expect { @driver = Driver.new(http_client: http, service_log_path: "/path/to/log") }.to output(message).to_stdout_from_any_process
+          expect(WebDriver.logger).to receive(:deprecate).with(':service_log_path', "driver_opts: {log_path: '/path/to/log'}")
+          @driver = Driver.new(http_client: http, service_log_path: "/path/to/log")
           expect(@driver.instance_variable_get("@service").instance_variable_get("@extra_args")).to eq ["--log-path=/path/to/log"]
         end
       end

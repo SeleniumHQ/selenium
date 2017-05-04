@@ -39,17 +39,13 @@ module Selenium
 
             opts[:driver_opts] ||= {}
             if opts.key? :service_args
-              WebDriver.logger.warn <<-DEPRECATE.gsub(/\n +| {2,}/, ' ').freeze
-            [DEPRECATION] `:service_args` is deprecated. Pass switches using `driver_opts`
-              DEPRECATE
+              WebDriver.logger.deprecate ':service_args', "driver_opts: {args: #{opts[:service_args]}}"
               opts[:driver_opts][:args] = opts.delete(:service_args)
             end
 
             %i[log_level log_file implementation].each do |method|
               next unless opts.key? method
-              WebDriver.logger.warn <<-DEPRECATE.gsub(/\n +| {2,}/, ' ').freeze
-            [DEPRECATION] `#{method}` is deprecated. Pass switches using `driver_opts`
-              DEPRECATE
+              WebDriver.logger.deprecate ":#{method}", "driver_opts: {#{method}: '#{opts[method]}'}"
               opts[:driver_opts][method] = opts.delete(method)
             end
 
