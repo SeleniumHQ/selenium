@@ -22,6 +22,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.openqa.selenium.Proxy.ProxyType.AUTODETECT;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -31,6 +32,7 @@ import com.google.gson.reflect.TypeToken;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.openqa.selenium.Proxy;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
@@ -234,6 +236,42 @@ public class ProtocolHandshakeTest {
     assertTrue(keys.contains("browserName"));
     assertTrue(keys.contains("se:option"));
     assertFalse(keys.contains("options"));
+  }
+
+  @Test
+  public void shouldLowerCaseProxyTypeForW3CRequest() throws IOException {
+    DesiredCapabilities caps = new DesiredCapabilities();
+    Proxy proxy = new Proxy();
+    proxy.setProxyType(AUTODETECT);
+    caps.setCapability(CapabilityType.PROXY, proxy);
+    Map<String, Object> params = ImmutableMap.of("desiredCapabilities", caps);
+    Command command = new Command(null, DriverCommand.NEW_SESSION, params);
+
+    HttpResponse response = new HttpResponse();
+    response.setStatus(HTTP_OK);
+    response.setContent(
+        "{\"sessionId\": \"23456789\", \"status\": 0, \"value\": {}}".getBytes(UTF_8));
+    RecordingHttpClient client = new RecordingHttpClient(response);
+
+    new ProtocolHandshake().createSession(client, command);
+
+    HttpRequest request = client.getRequest();
+    Map<String, Object> handshakeRequest = new Gson().fromJson(
+        request.getContentString(),
+        new TypeToken<Map<String, Object>>() {}.getType());
+
+    Object rawCaps = handshakeRequest.get("capabilities");
+    assertTrue(rawCaps instanceof Map);
+
+    Map<?, ?> capabilities = (Map<?, ?>) rawCaps;
+
+    Map<String, ?> always = (Map<String, ?>) capabilities.get("alwaysMatch");
+    Map<String, ?> seenProxy = (Map<String, ?>) always.get("proxy");
+    assertEquals("autodetect", seenProxy.get("proxyType"));
+
+    Map<String, ?> jsonCaps = (Map<String, ?>) capabilities.get("desiredCapabilities");
+    seenProxy = (Map<String, ?>) jsonCaps.get("proxy");
+    assertEquals("AUTODETECT", seenProxy.get("proxyType"));
   }
 
   class RecordingHttpClient implements HttpClient {

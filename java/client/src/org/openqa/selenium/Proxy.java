@@ -98,7 +98,7 @@ public class Proxy {
     Map<String, Object> m = new HashMap<>();
 
     if (proxyType != ProxyType.UNSPECIFIED) {
-      m.put("proxyType", proxyType.toString().toLowerCase());
+      m.put("proxyType", proxyType.toString());
     }
     if (ftpProxy != null) {
       m.put("ftpProxy", ftpProxy);

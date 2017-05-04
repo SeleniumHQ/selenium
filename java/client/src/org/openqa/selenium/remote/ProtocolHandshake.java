@@ -37,6 +37,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import com.google.gson.JsonPrimitive;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonWriter;
 
@@ -68,6 +69,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 public class ProtocolHandshake {
 
@@ -324,6 +326,18 @@ public class ProtocolHandshake {
         ));
 
     // TODO(simon): transform some capabilities that changed in the spec (timeout's "pageLoad")
+    Stream.concat(Stream.of(alwaysMatch), StreamSupport.stream(firstMatch.spliterator(), false))
+        .map(el -> (JsonObject) el)
+        .forEach(obj -> {
+          if (obj.has("proxy")) {
+            JsonObject proxy = obj.getAsJsonObject("proxy");
+            if (proxy.has("proxyType")) {
+              proxy.add(
+                  "proxyType",
+                  new JsonPrimitive(proxy.get("proxyType").getAsString().toLowerCase()));
+            }
+          }
+        });
 
     out.name("alwaysMatch");
     gson.toJson(alwaysMatch, out);
