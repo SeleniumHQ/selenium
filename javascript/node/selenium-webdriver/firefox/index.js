@@ -325,8 +325,8 @@ function findGeckoDriver() {
     throw Error(
       'The ' + GECKO_DRIVER_EXE + ' executable could not be found on the current ' +
       'PATH. Please download the latest version from ' +
-      'https://github.com/mozilla/geckodriver/releases/' +
-      'WebDriver and ensure it can be found on your PATH.');
+      'https://github.com/mozilla/geckodriver/releases/ ' +
+      'and ensure it can be found on your PATH.');
   }
   return exe;
 }
