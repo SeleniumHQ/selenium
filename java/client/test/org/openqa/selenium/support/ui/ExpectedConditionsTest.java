@@ -234,7 +234,7 @@ public class ExpectedConditionsTest {
 
   @Test
   public void invertingAConditionThatReturnsFalse() {
-    when(mockCondition.apply(mockDriver)).thenReturn(false);
+    when(mockCondition.apply(mockDriver)).thenReturn(new Boolean(false));
 
     assertTrue(wait.until(not(mockCondition)));
     verifyZeroInteractions(mockSleeper);
@@ -252,7 +252,7 @@ public class ExpectedConditionsTest {
   public void invertingAConditionThatAlwaysReturnsTrueTimesout() throws InterruptedException {
     when(mockClock.laterBy(1000L)).thenReturn(3000L);
     when(mockClock.isNowBefore(3000L)).thenReturn(true, false);
-    when(mockCondition.apply(mockDriver)).thenReturn(true);
+    when(mockCondition.apply(mockDriver)).thenReturn(new Boolean(true));
 
     try {
       wait.until(not(mockCondition));
