@@ -859,7 +859,7 @@ public class ExpectedConditions {
       @Override
       public Boolean apply(WebDriver driver) {
         Object result = condition.apply(driver);
-        return result == null || result == Boolean.FALSE;
+        return result == null || result.equals(Boolean.FALSE);
       }
 
       @Override
