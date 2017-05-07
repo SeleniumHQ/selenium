@@ -15,13 +15,17 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from selenium.webdriver.remote.remote_connection import RemoteConnection
+from selenium.webdriver import Chrome
 
 
-class ChromeRemoteConnection(RemoteConnection):
-
-    def __init__(self, remote_server_addr, keep_alive=True):
-        RemoteConnection.__init__(self, remote_server_addr, keep_alive)
-        self._commands["launchApp"] = ('POST', '/session/$sessionId/chromium/launch_app')
-        self._commands["setNetworkConditions"] = ('POST', '/session/$sessionId/chromium/network_conditions')
-        self._commands["getNetworkConditions"] = ('GET', '/session/$sessionId/chromium/network_conditions')
+def test_network_conditions_emulation():
+    driver = Chrome()
+    driver.set_network_conditions(
+        offline=False,
+        latency=56,  # additional latency (ms)
+        throughput=789)
+    conditions = driver.get_network_conditions()
+    assert conditions['offline'] is False
+    assert conditions['latency'] == 56
+    assert conditions['download_throughput'] == 789
+    assert conditions['upload_throughput'] == 789
