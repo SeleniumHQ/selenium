@@ -332,7 +332,7 @@ class WebDriver(object):
         """
         return self.find_element(by=By.LINK_TEXT, value=link_text)
 
-    def find_elements_by_link_text(self, text):
+    def find_elements_by_link_text(self, link_text):
         """
         Finds elements by link text.
 
@@ -342,7 +342,7 @@ class WebDriver(object):
         :Usage:
             driver.find_elements_by_link_text('Sign In')
         """
-        return self.find_elements(by=By.LINK_TEXT, value=text)
+        return self.find_elements(by=By.LINK_TEXT, value=link_text)
 
     def find_element_by_partial_link_text(self, link_text):
         """
