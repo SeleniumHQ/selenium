@@ -202,6 +202,26 @@ module Selenium
       end
 
       #
+      # Is the element invisible or not present on the page?
+      #
+      # @return [Boolean]
+      #
+
+      def not_present?
+        begin
+          dis = @id.displayed?
+        rescue Selenium::WebDriver::Error::NoSuchElementError
+          return true
+        else # if element is in DOM
+          if dis # visible element in DOM
+            return false
+          else # invisible element in DOM
+            return true
+          end
+        end
+      end
+
+      #
       # Submit this element
       #
 
