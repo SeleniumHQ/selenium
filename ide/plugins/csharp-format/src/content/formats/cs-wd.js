@@ -352,6 +352,15 @@ this.options = {
           "            }\n" +
           "        }\n" +
           '        \n' +
+  	      "        private void windowSwitch(string title)\n" +
+          "        {\n" +
+          "            var windows = driver.WindowHandles;\n"+
+          "            foreach (var window in windows)\n" +
+          "                if (driver.SwitchTo().Window(window).Title == title)\n"+
+          "                    return;\n"+
+		      "            Assert.Fail(\"Cannot find window: \"+title);\n"+
+          "        }\n" +
+          '        \n' +
           "        private bool IsAlertPresent()\n" +
           "        {\n" +
           "            try\n" +
