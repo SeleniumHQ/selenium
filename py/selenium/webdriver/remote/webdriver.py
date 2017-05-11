@@ -759,7 +759,7 @@ class WebDriver(object):
         except WebDriverException:
             self.execute(Command.SET_TIMEOUTS, {
                 'ms': float(time_to_wait) * 1000,
-                'type': 'page load'})
+                'type': 'pageLoad'})
 
     def find_element(self, by=By.ID, value=None):
         """
