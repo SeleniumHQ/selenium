@@ -74,6 +74,7 @@ import org.openqa.selenium.remote.internal.WebElementToJsonConverter;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -237,23 +238,28 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
 
       case SEND_KEYS_TO_ACTIVE_ELEMENT:
       case SEND_KEYS_TO_ELEMENT:
+        // When converted from JSON, this is a list, not an array
+        Object rawValue = parameters.get("value");
+        Stream<CharSequence> source;
+        if (rawValue instanceof Collection) {
+          //noinspection unchecked
+          source = ((Collection<CharSequence>) rawValue).stream();
+        } else {
+          source = Stream.of((CharSequence[]) rawValue);
+        }
+
+        String text = source
+            .flatMap(Stream::of)
+            .collect(Collectors.joining());
         return ImmutableMap.<String, Object>builder()
             .putAll(
                 parameters.entrySet().stream()
+                    .filter(e -> !"text".equals(e.getKey()))
                     .filter(e -> !"value".equals(e.getKey()))
                     .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)))
-            .put(
-                "text",
-                Stream.of((CharSequence[]) parameters.get("value"))
-                    .flatMap(Stream::of)
-                    .collect(Collectors.joining()))
-            .put(
-                "value",
-                stringToUtf8Array(
-                    Stream.of((CharSequence[]) parameters.get("value"))
-                        .flatMap(Stream::of)
-                        .collect(Collectors.joining())))
-          .build();
+            .put("text", text)
+            .put("value", stringToUtf8Array(text))
+            .build();
 
       case SET_ALERT_VALUE:
         return ImmutableMap.<String, Object>builder()
