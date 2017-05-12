@@ -48,8 +48,6 @@ public interface Session {
      */
   boolean isInUse();
 
-  void interrupt();
-
   void updateLastAccessTime();
 
   SessionId getSessionId();

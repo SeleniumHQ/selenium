@@ -112,12 +112,4 @@ public class TestSession implements Session {
     return inUseWithThread != null;
   }
 
-  public void interrupt() {
-    Thread threadToStop = inUseWithThread;
-    if (threadToStop != null) {
-      synchronized (threadToStop) {
-        threadToStop.interrupt();
-      }
-    }
-  }
 }
