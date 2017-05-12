@@ -265,10 +265,14 @@ class ActionChains(object):
          - xoffset: X offset to move to, as a positive or negative integer.
          - yoffset: Y offset to move to, as a positive or negative integer.
         """
-        self._actions.append(lambda: self._driver.execute(
-            Command.MOVE_TO, {
-                'xoffset': int(xoffset),
-                'yoffset': int(yoffset)}))
+        if self._driver.w3c:
+            self.w3c_actions.pointer_action.move_by(xoffset, yoffset)
+            self.w3c_actions.key_action.pause()
+        else:
+            self._actions.append(lambda: self._driver.execute(
+                Command.MOVE_TO, {
+                    'xoffset': int(xoffset),
+                    'yoffset': int(yoffset)}))
         return self
 
     def move_to_element(self, to_element):
