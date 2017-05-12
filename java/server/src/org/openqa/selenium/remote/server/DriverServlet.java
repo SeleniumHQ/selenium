@@ -28,6 +28,7 @@ import com.google.common.io.Files;
 import com.google.common.net.HttpHeaders;
 import com.google.common.net.MediaType;
 
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.logging.LoggingHandler;
 import org.openqa.selenium.remote.server.log.LoggingManager;
 import org.openqa.selenium.remote.server.log.PerSessionLogHandler;
@@ -236,7 +237,10 @@ public class DriverServlet extends HttpServlet {
     public DriverSessions get() {
       Object attribute = getServletContext().getAttribute(SESSIONS_KEY);
       if (attribute == null) {
-        attribute = new DefaultDriverSessions();
+        attribute = new DefaultDriverSessions(
+            Platform.getCurrent(),
+            new DefaultDriverFactory(),
+            new SystemClock());
       }
       return (DriverSessions) attribute;
     }

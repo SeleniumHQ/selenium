@@ -66,19 +66,7 @@ public class DefaultDriverSessions implements DriverSessions {
                                      "org.openqa.selenium.htmlunit.HtmlUnitDriver"))
       .build();
 
-  public DefaultDriverSessions() {
-    this(Platform.getCurrent(), new DefaultDriverFactory());
-  }
-
-  public DefaultDriverSessions(DriverFactory factory) {
-    this(Platform.getCurrent(), factory);
-  }
-
-  protected DefaultDriverSessions(Platform runningOn, DriverFactory factory) {
-    this(runningOn, factory, new SystemClock());
-  }
-
-  protected DefaultDriverSessions(Platform runningOn, DriverFactory factory, Clock clock) {
+  public DefaultDriverSessions(Platform runningOn, DriverFactory factory, Clock clock) {
     this.factory = factory;
     this.clock = clock;
     registerDefaults(runningOn);

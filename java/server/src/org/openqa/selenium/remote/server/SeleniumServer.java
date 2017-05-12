@@ -23,6 +23,7 @@ import org.openqa.grid.internal.utils.configuration.StandaloneConfiguration;
 import org.openqa.grid.shared.GridNodeServer;
 import org.openqa.grid.web.servlet.DisplayHelpServlet;
 import org.openqa.grid.web.servlet.beta.ConsoleServlet;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.server.handler.DeleteSession;
 import org.seleniumhq.jetty9.server.Connector;
@@ -109,14 +110,6 @@ public class SeleniumServer implements GridNodeServer {
 
     ServletContextHandler handler = new ServletContextHandler();
 
-    driverSessions = new DefaultDriverSessions();
-    handler.setAttribute(DriverServlet.SESSIONS_KEY, driverSessions);
-    handler.setContextPath("/");
-    handler.addServlet(DriverServlet.class, "/wd/hub/*");
-    handler.setInitParameter(ConsoleServlet.CONSOLE_PATH_PARAMETER, "/wd/hub");
-
-    handler.setInitParameter(DisplayHelpServlet.HELPER_TYPE_PARAMETER, configuration.role);
-
     if (configuration.browserTimeout != null && configuration.browserTimeout >= 0) {
       handler.setInitParameter(DriverServlet.BROWSER_TIMEOUT_PARAMETER,
                                String.valueOf(configuration.browserTimeout));
@@ -125,6 +118,17 @@ public class SeleniumServer implements GridNodeServer {
       handler.setInitParameter(DriverServlet.SESSION_TIMEOUT_PARAMETER,
                                String.valueOf(configuration.timeout));
     }
+
+    driverSessions = new DefaultDriverSessions(
+        Platform.getCurrent(),
+        new DefaultDriverFactory(),
+        new SystemClock());
+    handler.setAttribute(DriverServlet.SESSIONS_KEY, driverSessions);
+    handler.setContextPath("/");
+    handler.addServlet(DriverServlet.class, "/wd/hub/*");
+    handler.setInitParameter(ConsoleServlet.CONSOLE_PATH_PARAMETER, "/wd/hub");
+
+    handler.setInitParameter(DisplayHelpServlet.HELPER_TYPE_PARAMETER, configuration.role);
 
     addRcSupport(handler);
     addExtraServlets(handler);

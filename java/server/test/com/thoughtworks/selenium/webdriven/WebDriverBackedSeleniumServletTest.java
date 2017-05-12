@@ -27,13 +27,16 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.Pages;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.environment.InProcessTestEnvironment;
 import org.openqa.selenium.environment.TestEnvironment;
 import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.net.PortProber;
+import org.openqa.selenium.remote.server.DefaultDriverFactory;
 import org.openqa.selenium.remote.server.DefaultDriverSessions;
 import org.openqa.selenium.remote.server.DriverServlet;
+import org.openqa.selenium.remote.server.SystemClock;
 import org.seleniumhq.jetty9.server.Connector;
 import org.seleniumhq.jetty9.server.HttpConfiguration;
 import org.seleniumhq.jetty9.server.HttpConnectionFactory;
@@ -55,7 +58,10 @@ public class WebDriverBackedSeleniumServletTest {
     // Register the emulator
     ServletContextHandler handler = new ServletContextHandler();
 
-    DefaultDriverSessions webdriverSessions = new DefaultDriverSessions();
+    DefaultDriverSessions webdriverSessions = new DefaultDriverSessions(
+        Platform.getCurrent(),
+        new DefaultDriverFactory(),
+        new SystemClock());
     handler.setAttribute(DriverServlet.SESSIONS_KEY, webdriverSessions);
     handler.setContextPath("/");
     handler.addServlet(WebDriverBackedSeleniumServlet.class, "/selenium-server/driver/");
