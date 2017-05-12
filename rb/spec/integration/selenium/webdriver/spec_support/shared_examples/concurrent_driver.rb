@@ -31,7 +31,6 @@ shared_examples_for 'driver that can be started concurrently' do |browser_name|
       threads = []
       drivers = []
 
-
       5.times do
         threads << Thread.new do
           drivers << GlobalTestEnv.send(:create_driver)
