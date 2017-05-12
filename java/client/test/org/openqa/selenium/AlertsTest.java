@@ -38,6 +38,7 @@ import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 import static org.openqa.selenium.testing.TestUtilities.getFirefoxVersion;
 import static org.openqa.selenium.testing.TestUtilities.isFirefox;
 
+import org.junit.After;
 import org.junit.Test;
 import org.openqa.selenium.environment.webserver.Page;
 import org.openqa.selenium.support.ui.ExpectedCondition;
@@ -54,6 +55,14 @@ import java.util.Set;
 @Ignore(PHANTOMJS)
 @Ignore(SAFARI)
 public class AlertsTest extends JUnit4TestBase {
+
+  @After
+  public void closeAlertIfPresent() {
+    try {
+      driver.switchTo().alert().dismiss();
+    } catch (WebDriverException ignore) {
+    }
+  }
 
   private String alertPage(String alertText) {
     return appServer.create(new Page()
