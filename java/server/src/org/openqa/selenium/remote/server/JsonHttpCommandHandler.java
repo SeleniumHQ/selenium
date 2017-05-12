@@ -181,7 +181,8 @@ public class JsonHttpCommandHandler {
   }
 
   public void addNewMapping(
-      String commandName, Class<? extends RestishHandler<?>> implementationClass) {
+      String commandName,
+      Class<? extends RestishHandler<?>> implementationClass) {
     ResultConfig config = new ResultConfig(commandName, implementationClass, sessions, log);
     configs.put(commandName, config);
   }
