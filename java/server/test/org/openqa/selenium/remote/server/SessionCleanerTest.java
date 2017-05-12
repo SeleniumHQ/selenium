@@ -54,7 +54,12 @@ public class SessionCleanerTest {
     defaultDriverSessions.newSession(DesiredCapabilities.firefox());
     defaultDriverSessions.newSession(DesiredCapabilities.firefox());
     assertEquals(2, defaultDriverSessions.getSessions().size());
-    SessionCleaner sessionCleaner = new SessionCleaner(defaultDriverSessions, log, 10, 10);
+    SessionCleaner sessionCleaner = new SessionCleaner(
+        defaultDriverSessions,
+        log,
+        new SystemClock(),
+        10,
+        10);
     waitForAllSessionsToExpire(11);
     sessionCleaner.checkExpiry();
     assertEquals(0, defaultDriverSessions.getSessions().size());
@@ -75,7 +80,7 @@ public class SessionCleanerTest {
     started.await();
 
     assertTrue(session.isInUse());
-    SessionCleaner sessionCleaner = new SessionCleaner(testSessions, log, 10, 10);
+    SessionCleaner sessionCleaner = new SessionCleaner(testSessions, log, new SystemClock(), 10, 10);
     waitForAllSessionsToExpire(11);
     sessionCleaner.checkExpiry();
     assertEquals(0, testSessions.getSessions().size());
@@ -130,7 +135,7 @@ public class SessionCleanerTest {
 
   class TestSessionCleaner extends SessionCleaner {
     TestSessionCleaner(DriverSessions driverSessions, Logger log, int sessionTimeOutInMs) {
-      super(driverSessions, log, sessionTimeOutInMs, sessionTimeOutInMs);
+      super(driverSessions, log, new SystemClock(), sessionTimeOutInMs, sessionTimeOutInMs);
     }
 
     @Override

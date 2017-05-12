@@ -112,7 +112,8 @@ public class DriverServlet extends HttpServlet {
   @VisibleForTesting
   protected void createSessionCleaner(Logger logger, DriverSessions driverSessions,
                                     long sessionTimeOutInMs, long browserTimeoutInMs) {
-    sessionCleaner = new SessionCleaner(driverSessions, logger, sessionTimeOutInMs, browserTimeoutInMs);
+    sessionCleaner = new SessionCleaner(driverSessions, logger, new SystemClock(),
+                                        sessionTimeOutInMs, browserTimeoutInMs);
     sessionCleaner.start();
   }
 
