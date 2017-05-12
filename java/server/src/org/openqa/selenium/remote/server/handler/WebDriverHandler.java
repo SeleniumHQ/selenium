@@ -73,10 +73,6 @@ public abstract class WebDriverHandler<T> implements RestishHandler<T>, Callable
     return getSession().getKnownElements();
   }
 
-  protected SessionId getRealSessionId() {
-    return session == null ? new SessionId("unknown") : session.getSessionId();
-  }
-
   protected BySelector newBySelector() {
     return new BySelector();
   }
