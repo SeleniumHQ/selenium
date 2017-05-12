@@ -20,6 +20,9 @@ package org.openqa.selenium.remote.server;
 import static org.openqa.selenium.remote.DriverCommand.*;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
+import com.google.common.base.Strings;
+import com.google.common.io.ByteStreams;
+
 import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.CommandCodec;
@@ -27,6 +30,7 @@ import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.ResponseCodec;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.JsonHttpCommandCodec;
@@ -142,11 +146,18 @@ import org.openqa.selenium.remote.server.log.PerSessionLogHandler;
 import org.openqa.selenium.remote.server.rest.RestishHandler;
 import org.openqa.selenium.remote.server.rest.ResultConfig;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Enumeration;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 public class JsonHttpCommandHandler {
 
@@ -175,8 +186,9 @@ public class JsonHttpCommandHandler {
     configs.put(commandName, config);
   }
 
-  public HttpResponse handleRequest(HttpRequest request) {
+  public void handleRequest(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     LoggingManager.perSessionLogHandler().clearThreadTempLogs();
+    HttpRequest request = createInternalRequest(req);
     log.fine(String.format("Handling: %s %s", request.getMethod(), request.getUri()));
 
     Command command = null;
@@ -206,7 +218,7 @@ public class JsonHttpCommandHandler {
       handler.attachToCurrentThread(new SessionId(response.getSessionId()));
     }
     try {
-      return responseCodec.encode(response);
+      this.sendResponse(responseCodec.encode(response), resp);
     } finally {
       handler.detachFromCurrentThread();
     }
@@ -225,6 +237,46 @@ public class JsonHttpCommandHandler {
       throw lastException;
     }
     throw new UnsupportedOperationException("Cannot find command for: " + request.getUri());
+  }
+
+  private HttpRequest createInternalRequest(HttpServletRequest servletRequest) throws IOException {
+    String path = servletRequest.getPathInfo();
+    if (Strings.isNullOrEmpty(path)) {
+      path = "/";
+    }
+    HttpRequest request = new HttpRequest(
+        HttpMethod.valueOf(servletRequest.getMethod().toUpperCase()),
+        path);
+
+    Enumeration<String> headerNames = servletRequest.getHeaderNames();
+    while (headerNames.hasMoreElements()) {
+      String name = headerNames.nextElement();
+      Enumeration<String> headerValues = servletRequest.getHeaders(name);
+      while (headerValues.hasMoreElements()) {
+        String value = headerValues.nextElement();
+        request.setHeader(name, value);
+      }
+    }
+
+    try (InputStream stream = servletRequest.getInputStream()) {
+      request.setContent(ByteStreams.toByteArray(stream));
+    }
+
+    return request;
+  }
+
+  private void sendResponse(HttpResponse response, HttpServletResponse servletResponse)
+      throws IOException {
+    servletResponse.setStatus(response.getStatus());
+    for (String name : response.getHeaderNames()) {
+      for (String value : response.getHeaders(name)) {
+        servletResponse.addHeader(name, value);
+      }
+    }
+
+    try (OutputStream output = servletResponse.getOutputStream()) {
+      output.write(response.getContent());
+    }
   }
 
   private void setUpMappings() {

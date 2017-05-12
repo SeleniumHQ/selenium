@@ -21,7 +21,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Strings.nullToEmpty;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Strings;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.io.ByteStreams;
 import com.google.common.io.Files;
@@ -29,27 +29,27 @@ import com.google.common.net.HttpHeaders;
 import com.google.common.net.MediaType;
 
 import org.openqa.selenium.logging.LoggingHandler;
-import org.openqa.selenium.remote.http.HttpMethod;
-import org.openqa.selenium.remote.http.HttpRequest;
-import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.server.log.LoggingManager;
 import org.openqa.selenium.remote.server.log.PerSessionLogHandler;
 import org.openqa.selenium.remote.server.xdrpc.CrossDomainRpc;
 import org.openqa.selenium.remote.server.xdrpc.CrossDomainRpcLoader;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
-import java.util.Enumeration;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 import java.util.logging.Handler;
 import java.util.logging.Logger;
 
+import javax.servlet.ReadListener;
 import javax.servlet.ServletException;
+import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 
 public class DriverServlet extends HttpServlet {
@@ -204,63 +204,32 @@ public class DriverServlet extends HttpServlet {
       return;
     }
 
-    HttpRequest request = new HttpRequest(
-        HttpMethod.valueOf(rpc.getMethod()),
-        rpc.getPath());
-    request.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.JSON_UTF_8.toString());
-    request.setContent(rpc.getContent());
+    servletRequest.setAttribute(HttpHeaders.CONTENT_TYPE, MediaType.JSON_UTF_8.toString());
+    HttpServletRequestWrapper wrapper = new HttpServletRequestWrapper(servletRequest) {
+      @Override
+      public String getMethod() {
+        return rpc.getMethod();
+      }
 
-    HttpResponse response = commandHandler.handleRequest(request);
-    sendResponse(response, servletResponse);
+      @Override
+      public String getPathInfo() {
+        return rpc.getPath();
+      }
+
+      @Override
+      public ServletInputStream getInputStream() throws IOException {
+        return new InputStreamWrappingServletInputStream(
+            new ByteArrayInputStream(rpc.getContent()));
+      }
+    };
+
+    commandHandler.handleRequest(wrapper, servletResponse);
   }
 
   protected void handleRequest(
       HttpServletRequest servletRequest, HttpServletResponse servletResponse)
       throws ServletException, IOException {
-    HttpRequest request = createInternalRequest(servletRequest);
-    HttpResponse response = commandHandler.handleRequest(request);
-    sendResponse(response, servletResponse);
-  }
-
-  private static HttpRequest createInternalRequest(HttpServletRequest servletRequest)
-      throws IOException {
-    String path = servletRequest.getPathInfo();
-    if (Strings.isNullOrEmpty(path)) {
-      path = "/";
-    }
-    HttpRequest request = new HttpRequest(
-        HttpMethod.valueOf(servletRequest.getMethod().toUpperCase()),
-        path);
-
-    Enumeration<String> headerNames = servletRequest.getHeaderNames();
-    while (headerNames.hasMoreElements()) {
-      String name = headerNames.nextElement();
-      Enumeration<String> headerValues = servletRequest.getHeaders(name);
-      while (headerValues.hasMoreElements()) {
-        String value = headerValues.nextElement();
-        request.setHeader(name, value);
-      }
-    }
-
-    try (InputStream stream = servletRequest.getInputStream()) {
-      request.setContent(ByteStreams.toByteArray(stream));
-    }
-
-    return request;
-  }
-
-  private void sendResponse(HttpResponse response, HttpServletResponse servletResponse)
-      throws IOException {
-    servletResponse.setStatus(response.getStatus());
-    for (String name : response.getHeaderNames()) {
-      for (String value : response.getHeaders(name)) {
-        servletResponse.addHeader(name, value);
-      }
-    }
-
-    try (OutputStream output = servletResponse.getOutputStream()) {
-      output.write(response.getContent());
-    }
+    commandHandler.handleRequest(servletRequest, servletResponse);
   }
 
   private class DriverSessionsSupplier implements Supplier<DriverSessions> {
@@ -326,6 +295,54 @@ public class DriverServlet extends HttpServlet {
       try (InputStream stream = url.openStream()) {
         return ByteStreams.toByteArray(stream);
       }
+    }
+  }
+
+  private static class InputStreamWrappingServletInputStream extends ServletInputStream {
+
+    private final InputStream delegate;
+    private int lastRead;
+
+    public InputStreamWrappingServletInputStream(InputStream delegate) {
+      this.delegate = Preconditions.checkNotNull(delegate);
+
+    }
+
+    @Override
+    public int available() throws IOException {
+      return delegate.available();
+    }
+
+    @Override
+    public void close() throws IOException {
+      delegate.close();
+      lastRead = -1;
+    }
+
+    @Override
+    public boolean isFinished() {
+      return lastRead != -1;
+    }
+
+    @Override
+    public boolean isReady() {
+      return !isFinished();
+    }
+
+    @Override
+    public void setReadListener(ReadListener readListener) {
+      throw new UnsupportedOperationException("setReadListener");
+    }
+
+    @Override
+    public int read() throws IOException {
+      lastRead = delegate.read();
+      return lastRead;
+    }
+
+    @Override
+    public boolean markSupported() {
+      return false;
     }
   }
 }
