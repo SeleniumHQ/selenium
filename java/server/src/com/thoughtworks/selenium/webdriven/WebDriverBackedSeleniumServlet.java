@@ -28,12 +28,15 @@ import com.google.common.cache.RemovalListener;
 import com.thoughtworks.selenium.CommandProcessor;
 import com.thoughtworks.selenium.SeleniumException;
 
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.server.DefaultDriverFactory;
 import org.openqa.selenium.remote.server.DefaultDriverSessions;
 import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.Session;
+import org.openqa.selenium.remote.server.SystemClock;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -74,7 +77,10 @@ public class WebDriverBackedSeleniumServlet extends HttpServlet {
     this.sessionsSupplier = () -> {
       Object attribute = getServletContext().getAttribute(SESSIONS_KEY);
       if (attribute == null) {
-        attribute = new DefaultDriverSessions();
+        attribute = new DefaultDriverSessions(
+            Platform.getCurrent(),
+            new DefaultDriverFactory(),
+            new SystemClock());
       }
       return (DriverSessions) attribute;
     };

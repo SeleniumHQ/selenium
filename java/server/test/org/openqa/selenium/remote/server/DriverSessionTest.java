@@ -33,7 +33,7 @@ public class DriverSessionTest {
   @Test
   public void testShouldRegisterCorrectDefaultsOnMac() {
     DriverFactory factory = new DefaultDriverFactory();
-    new DefaultDriverSessions(Platform.MAC, factory);
+    new DefaultDriverSessions(Platform.MAC, factory, new SystemClock());
 
     assertTrue(factory.hasMappingFor(DesiredCapabilities.chrome()));
     assertTrue(factory.hasMappingFor(DesiredCapabilities.firefox()));
@@ -43,7 +43,7 @@ public class DriverSessionTest {
   @Test
   public void testShouldRegisterCorrectDefaultsOnLinux() {
     DriverFactory factory = new DefaultDriverFactory();
-    new DefaultDriverSessions(Platform.LINUX, factory);
+    new DefaultDriverSessions(Platform.LINUX, factory, new SystemClock());
 
     assertTrue(factory.hasMappingFor(DesiredCapabilities.chrome()));
     assertTrue(factory.hasMappingFor(DesiredCapabilities.firefox()));
@@ -53,7 +53,7 @@ public class DriverSessionTest {
   @Test
   public void testShouldRegisterCorrectDefaultsOnWindows() {
     DriverFactory factory = new DefaultDriverFactory();
-    new DefaultDriverSessions(Platform.VISTA, factory);
+    new DefaultDriverSessions(Platform.VISTA, factory, new SystemClock());
 
     assertTrue(factory.hasMappingFor(DesiredCapabilities.chrome()));
     assertTrue(factory.hasMappingFor(DesiredCapabilities.firefox()));
@@ -63,7 +63,7 @@ public class DriverSessionTest {
   @Test
   public void testShouldBeAbleToRegisterOwnDriver() {
     DriverFactory factory = new DefaultDriverFactory();
-    DriverSessions sessions = new DefaultDriverSessions(Platform.VISTA, factory);
+    DriverSessions sessions = new DefaultDriverSessions(Platform.VISTA, factory, new SystemClock());
 
     Capabilities capabilities = new DesiredCapabilities("foo", "1", Platform.ANY);
     sessions.registerDriver(capabilities, AbstractDriver.class);
