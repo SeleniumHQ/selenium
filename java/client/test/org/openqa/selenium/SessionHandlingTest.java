@@ -47,7 +47,7 @@ public class SessionHandlingTest {
   @Test
   @Ignore(value = FIREFOX, issue = "https://github.com/SeleniumHQ/selenium/issues/3792")
   @Ignore(PHANTOMJS)
-  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/689")
+  @Ignore(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/689")
   public void callingQuitAfterClosingTheLastWindowIsANoOp() {
     WebDriver driver = new WebDriverBuilder().get();
 
@@ -60,7 +60,7 @@ public class SessionHandlingTest {
   @Ignore(value = FIREFOX, issue = "3792")
   @Ignore(value = PHANTOMJS, reason = "throws NoSuchWindowException")
   @Ignore(value = SAFARI, reason = "throws NullPointerException")
-  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/689")
+  @Ignore(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/689")
   public void callingAnyOperationAfterClosingTheLastWindowShouldThrowAnException() {
     WebDriver driver = new WebDriverBuilder().get();
 
