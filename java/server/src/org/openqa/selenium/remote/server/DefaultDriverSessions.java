@@ -17,7 +17,11 @@
 
 package org.openqa.selenium.remote.server;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.RemovalListener;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.io.Files;
 
 import org.openqa.selenium.Capabilities;
@@ -27,12 +31,9 @@ import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.SessionId;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
 public class DefaultDriverSessions implements DriverSessions {
@@ -42,8 +43,7 @@ public class DefaultDriverSessions implements DriverSessions {
   private final DriverFactory factory;
   private final Clock clock;
 
-  private final Map<SessionId, Session> sessionIdToDriver =
-      new ConcurrentHashMap<>();
+  private final Cache<SessionId, Session> sessionIdToDriver;
 
   private static List<DriverProvider> defaultDriverProviders =
     new ImmutableList.Builder<DriverProvider>()
@@ -71,6 +71,12 @@ public class DefaultDriverSessions implements DriverSessions {
     this.clock = clock;
     registerDefaults(runningOn);
     registerServiceLoaders(runningOn);
+
+    RemovalListener<SessionId, Session> listener = notification -> notification.getValue().close();
+
+    this.sessionIdToDriver = CacheBuilder.newBuilder()
+        .removalListener(listener)
+        .build();
   }
 
   private void registerDefaults(Platform current) {
@@ -128,17 +134,14 @@ public class DefaultDriverSessions implements DriverSessions {
   }
 
   public Session get(SessionId sessionId) {
-    return sessionIdToDriver.get(sessionId);
+    return sessionIdToDriver.getIfPresent(sessionId);
   }
 
   public void deleteSession(SessionId sessionId) {
-    final Session removedSession = sessionIdToDriver.remove(sessionId);
-    if (removedSession != null) {
-      removedSession.close();
-    }
+    sessionIdToDriver.invalidate(sessionId);
   }
 
   public Set<SessionId> getSessions() {
-    return Collections.unmodifiableSet(sessionIdToDriver.keySet());
+    return ImmutableSet.copyOf(sessionIdToDriver.asMap().keySet());
   }
 }

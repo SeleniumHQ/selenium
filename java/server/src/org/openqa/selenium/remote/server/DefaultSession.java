@@ -148,6 +148,7 @@ public class DefaultSession implements Session {
     if (tempFs != null) {
       tempFs.deleteTemporaryFiles();
       tempFs.deleteBaseDir();
+      tempFs = null;
     }
   }
 
