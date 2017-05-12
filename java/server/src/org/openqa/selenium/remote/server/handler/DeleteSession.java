@@ -66,6 +66,6 @@ public class DeleteSession extends WebDriverHandler<Void> {
 
   @Override
   public String toString() {
-    return String.format("[delete session: %s]", getRealSessionId());
+    return String.format("[delete session: %s]", getSessionId());
   }
 }
