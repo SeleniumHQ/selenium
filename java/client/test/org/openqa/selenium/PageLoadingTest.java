@@ -84,7 +84,6 @@ public class PageLoadingTest extends JUnit4TestBase {
   @Test
   @Ignore(CHROME)
   @Ignore(SAFARI)
-  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/693")
   @Ignore(PHANTOMJS)
   @NeedsLocalEnvironment
   public void testNoneStrategyShouldNotWaitForPageToLoad() {
@@ -105,7 +104,6 @@ public class PageLoadingTest extends JUnit4TestBase {
   @Test
   @Ignore(CHROME)
   @Ignore(SAFARI)
-  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/693")
   @Ignore(PHANTOMJS)
   @NeedsLocalEnvironment
   public void testNoneStrategyShouldNotWaitForPageToRefresh() {
@@ -131,7 +129,6 @@ public class PageLoadingTest extends JUnit4TestBase {
   @Ignore(IE)
   @Ignore(CHROME)
   @Ignore(SAFARI)
-  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/693")
   @Ignore(PHANTOMJS)
   @NeedsLocalEnvironment
   public void testEagerStrategyShouldNotWaitForResources() {
@@ -157,7 +154,6 @@ public class PageLoadingTest extends JUnit4TestBase {
   @Ignore(CHROME)
   @Ignore(SAFARI)
   @Ignore(PHANTOMJS)
-  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/693")
   @NeedsLocalEnvironment
   public void testEagerStrategyShouldNotWaitForResourcesOnRefresh() {
     initLocalDriver("eager");
