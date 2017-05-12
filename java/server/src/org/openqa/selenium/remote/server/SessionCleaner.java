@@ -38,11 +38,12 @@ class SessionCleaner extends Thread {   // Thread safety reviewed
   private final Clock clock;
   private volatile boolean running = true;
 
-  SessionCleaner(DriverSessions driverSessions, Logger log, long clientGoneTimeout, long insideBrowserTimeout) {
-    this(driverSessions, log, new SystemClock(), clientGoneTimeout, insideBrowserTimeout);
-  }
-
-  SessionCleaner(DriverSessions driverSessions, Logger log, Clock clock, long clientGoneTimeout, long insideBrowserTimeout) {
+  SessionCleaner(
+      DriverSessions driverSessions,
+      Logger log,
+      Clock clock,
+      long clientGoneTimeout,
+      long insideBrowserTimeout) {
     super("DriverServlet Session Cleaner");
     this.log = log;
     this.clock = clock;
