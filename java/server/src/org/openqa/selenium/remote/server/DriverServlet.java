@@ -19,7 +19,6 @@ package org.openqa.selenium.remote.server;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Strings.nullToEmpty;
-import static java.util.Collections.list;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
@@ -234,25 +233,17 @@ public class DriverServlet extends HttpServlet {
         path);
 
     Enumeration<String> headerNames = servletRequest.getHeaderNames();
-    for (String name : list(headerNames)) {
+    while (headerNames.hasMoreElements()) {
+      String name = headerNames.nextElement();
       Enumeration<String> headerValues = servletRequest.getHeaders(name);
-      for (String value : list(headerValues)) {
+      while (headerValues.hasMoreElements()) {
+        String value = headerValues.nextElement();
         request.setHeader(name, value);
       }
     }
 
-    InputStream stream = null;
-    try {
-      stream = servletRequest.getInputStream();
+    try (InputStream stream = servletRequest.getInputStream()) {
       request.setContent(ByteStreams.toByteArray(stream));
-    } finally {
-      if (stream != null) {
-        try {
-          stream.close();
-        } catch (IOException ignored) {
-          // Do nothing.
-        }
-      }
     }
 
     return request;
@@ -266,10 +257,10 @@ public class DriverServlet extends HttpServlet {
         servletResponse.addHeader(name, value);
       }
     }
-    OutputStream output = servletResponse.getOutputStream();
-    output.write(response.getContent());
-    output.flush();
-    output.close();
+
+    try (OutputStream output = servletResponse.getOutputStream()) {
+      output.write(response.getContent());
+    }
   }
 
   private class DriverSessionsSupplier implements Supplier<DriverSessions> {
@@ -326,21 +317,14 @@ public class DriverServlet extends HttpServlet {
       byte[] data = getResourceData(url);
       response.setContentLength(data.length);
 
-      OutputStream output = response.getOutputStream();
-      output.write(data);
-      output.flush();
-      output.close();
+      try (OutputStream output = response.getOutputStream()) {
+        output.write(data);
+      }
     }
 
     private byte[] getResourceData(URL url) throws IOException {
-      InputStream stream = null;
-      try {
-        stream = url.openStream();
+      try (InputStream stream = url.openStream()) {
         return ByteStreams.toByteArray(stream);
-      } finally {
-        if (stream != null) {
-          stream.close();
-        }
       }
     }
   }
