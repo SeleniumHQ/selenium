@@ -17,10 +17,6 @@
 # specific language governing permissions and limitations
 # under the License.
 
-# TODO (alex): remove code for legacy safaridriver (e.g. websocket)
-require 'websocket'
-require 'pathname'
-
 require 'selenium/webdriver/safari/driver'
 require 'selenium/webdriver/safari/service'
 
@@ -44,7 +40,7 @@ module Selenium
         def path
           @path ||= '/Applications/Safari.app/Contents/MacOS/Safari'
           return @path if File.file?(@path) && File.executable?(@path)
-          raise Error::WebDriverError, 'Safari is only supported on Mac' unless Platform.os == :macosx
+          raise Error::WebDriverError, 'Safari is only supported on Mac' unless Platform.os.mac?
           raise Error::WebDriverError, 'Unable to find Safari'
         end
 

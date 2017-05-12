@@ -24,7 +24,6 @@ HTML of the application.'
 
   s.add_runtime_dependency 'rubyzip', ['~> 1.0']
   s.add_runtime_dependency 'childprocess', ['~> 0.5']
-  s.add_runtime_dependency 'websocket', ['~> 1.0']
 
   s.add_development_dependency 'rspec', ['~> 3.0']
   s.add_development_dependency 'rack', ['~> 1.0']
