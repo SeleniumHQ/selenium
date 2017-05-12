@@ -75,35 +75,38 @@ module Selenium
       end
 
       compliant_on browser: :ff_nightly do
-        it 'gets the rect of the current window' do
-          rect = driver.manage.window.rect
+        # remote responds to OSS protocol which doesn't support rect commands
+        not_compliant_on driver: :remote do
+          it 'gets the rect of the current window' do
+            rect = driver.manage.window.rect
 
-          expect(rect).to be_a(Rectangle)
+            expect(rect).to be_a(Rectangle)
 
-          expect(rect.x).to be >= 0
-          expect(rect.y).to be >= 0
-          expect(rect.width).to be >= 0
-          expect(rect.height).to be >= 0
-        end
+            expect(rect.x).to be >= 0
+            expect(rect.y).to be >= 0
+            expect(rect.width).to be >= 0
+            expect(rect.height).to be >= 0
+          end
 
-        it 'sets the rect of the current window' do
-          rect = window.rect
+          it 'sets the rect of the current window' do
+            rect = window.rect
 
-          target_x = rect.x + 10
-          target_y = rect.y + 10
-          target_width = rect.width + 10
-          target_height = rect.height + 10
+            target_x = rect.x + 10
+            target_y = rect.y + 10
+            target_width = rect.width + 10
+            target_height = rect.height + 10
 
-          window.rect = Rectangle.new(target_x, target_y, target_width, target_height)
+            window.rect = Rectangle.new(target_x, target_y, target_width, target_height)
 
-          wait.until { window.rect.x != rect.x && window.rect.y != rect.y }
+            wait.until { window.rect.x != rect.x && window.rect.y != rect.y }
 
-          new_rect = window.rect
-          expect(new_rect.x).to eq(target_x)
-          expect(new_rect.y).to eq(target_y)
-          expect(new_rect.width).to eq(target_width)
-          expect(new_rect.height).to eq(target_height)
-        end
+            new_rect = window.rect
+            expect(new_rect.x).to eq(target_x)
+            expect(new_rect.y).to eq(target_y)
+            expect(new_rect.width).to eq(target_width)
+            expect(new_rect.height).to eq(target_height)
+          end
+      end
       end
 
       # TODO: - Create Window Manager guard
