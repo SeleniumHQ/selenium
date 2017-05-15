@@ -17,6 +17,7 @@
 
 package org.openqa.grid.web.servlet;
 
+import com.google.common.base.Throwables;
 import com.google.common.io.ByteStreams;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -84,7 +85,8 @@ public class DriverServlet extends RegistryBasedServlet {
 
     } catch (Throwable e) {
       if (r instanceof WebDriverRequest && !response.isCommitted()) {
-        // https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#error-handling
+        // Format the exception for both the JSON wire protocol and the W3C spec compliant version.
+
         response.reset();
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
@@ -92,6 +94,7 @@ public class DriverServlet extends RegistryBasedServlet {
 
         JsonObject resp = new JsonObject();
 
+        // https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#error-handling
         final ExternalSessionKey serverSession = req.getServerSession();
         resp.addProperty("sessionId", serverSession != null ? serverSession.getKey() : null);
         resp.addProperty("status", ErrorCodes.UNHANDLED_ERROR);
@@ -109,17 +112,23 @@ public class DriverServlet extends RegistryBasedServlet {
           stacktrace.add(st);
         }
         value.add("stackTrace", stacktrace);
+
+        // https://w3c.github.io/webdriver/webdriver-spec.html#dfn-send-an-error
+        value.addProperty("error", "unknown error");
+        // Already done above, but kept here for when we retire the original protocol
+        value.addProperty("message", e.getMessage());
+        // Let's hope nothing ever looks at these strings case insensitively.
+        value.addProperty("stacktrace", Throwables.getStackTraceAsString(e));
+
         resp.add("value", value);
 
         String json = new Gson().toJson(resp);
 
         byte[] bytes = json.getBytes("UTF-8");
-        InputStream in = new ByteArrayInputStream(bytes);
-        try {
-            response.setHeader("Content-Length", Integer.toString(bytes.length));
-            ByteStreams.copy(in, response.getOutputStream());
+        try (InputStream in = new ByteArrayInputStream(bytes)) {
+          response.setHeader("Content-Length", Integer.toString(bytes.length));
+          ByteStreams.copy(in, response.getOutputStream());
         } finally {
-          in.close();
           response.flushBuffer();
         }
       } else {
