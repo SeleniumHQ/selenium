@@ -17,6 +17,7 @@
 
 package org.openqa.grid.web.servlet;
 
+import com.google.common.io.CharStreams;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
@@ -30,6 +31,7 @@ import org.openqa.grid.internal.TestSession;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.Reader;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -77,18 +79,13 @@ public class TestSessionStatusServlet extends RegistryBasedServlet {
   private JsonObject getResponse(HttpServletRequest request) throws IOException {
     JsonObject requestJSON = null;
     if (request.getInputStream() != null) {
-      BufferedReader rd = new BufferedReader(new InputStreamReader(request.getInputStream()));
-      StringBuilder s = new StringBuilder();
-      String line;
-      while ((line = rd.readLine()) != null) {
-        s.append(line);
+      String json;
+      try (Reader rd = new BufferedReader(new InputStreamReader(request.getInputStream()))) {
+        json = CharStreams.toString(rd);
       }
-      rd.close();
-      String json = s.toString();
       if (!"".equals(json)) {
         requestJSON = new JsonParser().parse(json).getAsJsonObject();
       }
-
     }
 
     JsonObject res = new JsonObject();
