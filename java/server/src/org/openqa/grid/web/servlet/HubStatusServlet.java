@@ -18,6 +18,7 @@
 
 package org.openqa.grid.web.servlet;
 
+import com.google.common.io.CharStreams;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -147,17 +148,15 @@ public class HubStatusServlet extends RegistryBasedServlet {
   }
 
   private JsonObject getRequestJSON(HttpServletRequest request) throws IOException {
-    JsonObject requestJSON = null;
-    BufferedReader rd = new BufferedReader(new InputStreamReader(request.getInputStream()));
-    StringBuilder s = new StringBuilder();
-    String line;
-    while ((line = rd.readLine()) != null) {
-      s.append(line);
-    }
-    rd.close();
-    String json = s.toString();
-    if (!"".equals(json)) {
-      requestJSON = new JsonParser().parse(json).getAsJsonObject();
+    JsonObject requestJSON = new JsonObject();
+
+    try (BufferedReader rd = new BufferedReader(new InputStreamReader(request.getInputStream()))) {
+      StringBuilder s = new StringBuilder();
+      CharStreams.copy(rd, s);
+      String json = s.toString();
+      if (!"".equals(json)) {
+        requestJSON = new JsonParser().parse(json).getAsJsonObject();
+      }
     }
     return requestJSON;
   }
