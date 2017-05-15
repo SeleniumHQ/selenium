@@ -105,6 +105,7 @@ import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.CommandCodec;
 import org.openqa.selenium.remote.JsonToBeanConverter;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.internal.JsonToWebElementConverter;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -123,6 +124,7 @@ public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpReque
   private final Map<String, String> aliases = new HashMap<>();
   private final BeanToJsonConverter beanToJsonConverter = new BeanToJsonConverter();
   private final JsonToBeanConverter jsonToBeanConverter = new JsonToBeanConverter();
+  private final JsonToWebElementConverter elementConverter = new JsonToWebElementConverter(null);
 
   public AbstractHttpCommandCodec() {
     defineCommand(STATUS, get("/status"));
@@ -268,7 +270,9 @@ public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpReque
     String content = encodedCommand.getContentString();
     if (!content.isEmpty()) {
       @SuppressWarnings("unchecked")
-      HashMap<String, ?> tmp = jsonToBeanConverter.convert(HashMap.class, content);
+      Map<String, ?> tmp = jsonToBeanConverter.convert(HashMap.class, content);
+      //noinspection unchecked
+      tmp = (Map<String, ?>) elementConverter.apply(tmp);
       parameters.putAll(tmp);
     }
 

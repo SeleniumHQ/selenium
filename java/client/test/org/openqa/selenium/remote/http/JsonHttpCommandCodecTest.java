@@ -27,12 +27,15 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.startsWith;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
+import static org.openqa.selenium.remote.Dialect.OSS;
 import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
@@ -42,9 +45,12 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.remote.Command;
+import org.openqa.selenium.remote.DriverCommand;
+import org.openqa.selenium.remote.RemoteWebElement;
 import org.openqa.selenium.remote.SessionId;
 
 import java.net.URISyntaxException;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -355,5 +361,25 @@ public class JsonHttpCommandCodecTest {
     } catch (UnsupportedCommandException expected) {
       // Do nothing.
     }
+  }
+
+  @Test
+  public void whenDecodingAnHttpRequestRecreateWebElements() {
+    Command command = new Command(
+        new SessionId("1234567"),
+        DriverCommand.EXECUTE_SCRIPT,
+        ImmutableMap.of(
+            "script", "",
+            "args", ImmutableList.of(ImmutableMap.of(OSS.getEncodedElementKey(), "67890"))));
+
+    HttpRequest request = codec.encode(command);
+
+    Command decoded = codec.decode(request);
+
+    List<?> args = (List<?>) decoded.getParameters().get("args");
+    assertEquals(RemoteWebElement.class, args.get(0).getClass());
+
+    RemoteWebElement element = (RemoteWebElement) args.get(0);
+    assertEquals("67890", element.getId());
   }
 }
