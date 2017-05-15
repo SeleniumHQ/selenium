@@ -63,6 +63,10 @@ public class JsonToWebElementConverter implements Function<Object, Object> {
       }
     }
 
+    if (result instanceof RemoteWebElement) {
+      return setOwner((RemoteWebElement) result);
+    }
+
     if (result instanceof Number) {
       if (result instanceof Float || result instanceof Double) {
         return ((Number) result).doubleValue();
@@ -74,9 +78,14 @@ public class JsonToWebElementConverter implements Function<Object, Object> {
   }
 
   private RemoteWebElement newRemoteWebElement() {
-    RemoteWebElement toReturn = new RemoteWebElement();
-    toReturn.setParent(driver);
-    toReturn.setFileDetector(driver.getFileDetector());
-    return toReturn;
+    return setOwner(new RemoteWebElement());
+  }
+
+  private RemoteWebElement setOwner(RemoteWebElement element) {
+    if (driver != null) {
+      element.setParent(driver);
+      element.setFileDetector(driver.getFileDetector());
+    }
+    return element;
   }
 }

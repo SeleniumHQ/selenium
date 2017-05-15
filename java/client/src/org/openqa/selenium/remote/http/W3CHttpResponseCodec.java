@@ -32,9 +32,11 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.JsonToBeanConverter;
 import org.openqa.selenium.remote.Response;
+import org.openqa.selenium.remote.internal.JsonToWebElementConverter;
 
 import java.lang.reflect.Constructor;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.logging.Logger;
 
 /**
@@ -63,6 +65,7 @@ public class W3CHttpResponseCodec extends AbstractHttpResponseCodec {
 
   private final ErrorCodes errorCodes = new ErrorCodes();
   private final JsonToBeanConverter jsonToBeanConverter = new JsonToBeanConverter();
+  private final Function<Object, Object> elementConverter = new JsonToWebElementConverter(null);
 
   @Override
   public Response decode(HttpResponse encodedResponse) {
@@ -139,6 +142,11 @@ public class W3CHttpResponseCodec extends AbstractHttpResponseCodec {
       response.setValue(((String) response.getValue()).replace("\r\n", "\n"));
     }
 
+    return response;
+  }
+
+  protected Response reconstructValue(Response response) {
+    response.setValue(elementConverter.apply(response.getValue()));
     return response;
   }
 
