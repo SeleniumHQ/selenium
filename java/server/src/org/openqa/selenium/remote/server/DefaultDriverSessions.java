@@ -30,6 +30,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.server.log.LoggingManager;
+import org.openqa.selenium.remote.server.log.PerSessionLogHandler;
 
 import java.util.List;
 import java.util.ServiceLoader;
@@ -72,7 +74,14 @@ public class DefaultDriverSessions implements DriverSessions {
     registerDefaults(runningOn);
     registerServiceLoaders(runningOn);
 
-    RemovalListener<SessionId, Session> listener = notification -> notification.getValue().close();
+    RemovalListener<SessionId, Session> listener = notification -> {
+      Session session = notification.getValue();
+
+      session.close();
+      PerSessionLogHandler logHandler = LoggingManager.perSessionLogHandler();
+      logHandler.transferThreadTempLogsToSessionLogs(session.getSessionId());
+      logHandler.removeSessionLogs(session.getSessionId());
+    };
 
     this.sessionIdToDriver = CacheBuilder.newBuilder()
         .removalListener(listener)
