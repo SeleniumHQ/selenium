@@ -17,6 +17,7 @@
 
 package org.openqa.grid.internal.utils;
 
+import com.google.common.io.CharStreams;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -43,6 +44,7 @@ import org.openqa.selenium.remote.server.log.LoggingManager;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.InvalidParameterException;
@@ -370,14 +372,11 @@ public class SelfRegisteringRemote {
   }
 
   private static JsonObject extractObject(HttpResponse resp) throws IOException {
-    BufferedReader rd = new BufferedReader(new InputStreamReader(resp.getEntity().getContent()));
-    StringBuilder s = new StringBuilder();
-    String line;
-    while ((line = rd.readLine()) != null) {
-      s.append(line);
+    try (Reader rd = new BufferedReader(new InputStreamReader(resp.getEntity().getContent()))) {
+      StringBuilder s = new StringBuilder();
+      CharStreams.copy(rd, s);
+      return new JsonParser().parse(s.toString()).getAsJsonObject();
     }
-    rd.close();
-    return new JsonParser().parse(s.toString()).getAsJsonObject();
   }
 
 }

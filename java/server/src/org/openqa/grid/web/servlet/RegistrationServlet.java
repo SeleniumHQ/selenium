@@ -18,6 +18,7 @@
 package org.openqa.grid.web.servlet;
 
 import com.google.common.collect.Lists;
+import com.google.common.io.CharStreams;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -71,17 +72,15 @@ public class RegistrationServlet extends RegistryBasedServlet {
 
   protected void process(HttpServletRequest request, HttpServletResponse response)
       throws IOException {
-    BufferedReader rd = new BufferedReader(new InputStreamReader(request.getInputStream()));
-    StringBuilder requestJsonString = new StringBuilder();
-    String line;
-    while ((line = rd.readLine()) != null) {
-      requestJsonString.append(line);
+    String requestJsonString;
+
+    try (BufferedReader rd = new BufferedReader(new InputStreamReader(request.getInputStream()))) {
+      requestJsonString = CharStreams.toString(rd);
     }
-    rd.close();
-    log.fine("getting the following registration request  : " + requestJsonString.toString());
+    log.fine("getting the following registration request  : " + requestJsonString);
 
     // getting the settings from the registration
-    JsonObject json = new JsonParser().parse(requestJsonString.toString()).getAsJsonObject();
+    JsonObject json = new JsonParser().parse(requestJsonString).getAsJsonObject();
 
     if (!json.has("configuration")) {
       // bad request. there must be a configuration for the proxy
