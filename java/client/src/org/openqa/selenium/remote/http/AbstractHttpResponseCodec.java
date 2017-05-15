@@ -76,7 +76,7 @@ public abstract class AbstractHttpResponseCodec implements ResponseCodec<HttpRes
     String contentType = nullToEmpty(encodedResponse.getHeader(CONTENT_TYPE));
     String content = encodedResponse.getContentString().trim();
     try {
-      return jsonToBeanConverter.convert(Response.class, content);
+      return reconstructValue(jsonToBeanConverter.convert(Response.class, content));
     } catch (JsonException e) {
       if (contentType.startsWith("application/json")) {
         throw new IllegalArgumentException(
@@ -136,4 +136,6 @@ public abstract class AbstractHttpResponseCodec implements ResponseCodec<HttpRes
     }
     return response;
   }
+
+  protected abstract Response reconstructValue(Response response);
 }

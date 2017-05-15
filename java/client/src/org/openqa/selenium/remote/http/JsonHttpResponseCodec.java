@@ -17,11 +17,33 @@
 
 package org.openqa.selenium.remote.http;
 
+import org.openqa.selenium.remote.ErrorHandler;
+import org.openqa.selenium.remote.Response;
+import org.openqa.selenium.remote.internal.JsonToWebElementConverter;
+
+import java.util.function.Function;
+
 /**
  * A response codec that adheres to the Selenium project's JSON/HTTP wire protocol.
  *
- * @see <a href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol">
- *   JSON wire protocol</a>
+ * @see <a href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol"> JSON wire
+ * protocol</a>
  */
 public class JsonHttpResponseCodec extends AbstractHttpResponseCodec {
+
+  private final ErrorHandler errorHandler = new ErrorHandler(true);
+  private final Function<Object, Object> elementConverter = new JsonToWebElementConverter(null);
+
+  @Override
+  protected Response reconstructValue(Response response) {
+    try {
+      errorHandler.throwIfResponseFailed(response, 0);
+    } catch (Exception e) {
+      response.setValue(e);
+    }
+
+    response.setValue(elementConverter.apply(response.getValue()));
+
+    return response;
+  }
 }
