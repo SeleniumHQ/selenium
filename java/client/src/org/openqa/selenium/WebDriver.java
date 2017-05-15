@@ -20,6 +20,7 @@ package org.openqa.selenium;
 import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.logging.Logs;
 
+import java.io.Closeable;
 import java.net.URL;
 import java.util.List;
 import java.util.Set;
@@ -46,7 +47,7 @@ import java.util.concurrent.TimeUnit;
  * Note that all methods that use XPath to locate elements will throw a {@link RuntimeException}
  * should there be an error thrown by the underlying XPath engine.
  */
-public interface WebDriver extends SearchContext {
+public interface WebDriver extends SearchContext, Closeable {
   // Navigation
 
   /**
