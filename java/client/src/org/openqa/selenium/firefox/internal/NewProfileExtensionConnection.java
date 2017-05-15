@@ -47,6 +47,10 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Optional;
 
+/**
+ * @deprecated No longer used within the code base. Will be delete in Selenium 3.6
+ */
+@Deprecated
 public class NewProfileExtensionConnection implements ExtensionConnection, NeedsLocalLogs {
 
   private static final NetworkUtils networkUtils = new NetworkUtils();
