@@ -31,7 +31,7 @@ namespace OpenQA.Selenium.Support.PageObjects
     /// </summary>
     public class DefaultPageObjectMemberDecorator : IPageObjectMemberDecorator
     {
-        private static List<Type> interfacesToBeProxied;
+        private static Lazy<List<Type>> interfacesToBeProxied;
         private static Type interfaceProxyType;
 
         private static List<Type> InterfacesToBeProxied
@@ -40,13 +40,17 @@ namespace OpenQA.Selenium.Support.PageObjects
             {
                 if (interfacesToBeProxied == null)
                 {
-                    interfacesToBeProxied = new List<Type>();
-                    interfacesToBeProxied.Add(typeof(IWebElement));
-                    interfacesToBeProxied.Add(typeof(ILocatable));
-                    interfacesToBeProxied.Add(typeof(IWrapsElement));
+                  interfacesToBeProxied = new Lazy<List<Type>>(() =>
+                  {
+                    var list = new List<Type>();
+                    list.Add(typeof(IWebElement));
+                    list.Add(typeof(ILocatable));
+                    list.Add(typeof(IWrapsElement));
+                    return list;
+                  });
                 }
 
-                return interfacesToBeProxied;
+                return interfacesToBeProxied.Value;
             }
         }
 
