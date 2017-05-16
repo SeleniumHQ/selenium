@@ -153,8 +153,15 @@ public class GridNodeConfiguration extends GridConfiguration {
    * config parameters which do not serialize to json
    */
 
-  // remoteHost is a generated value based on host / port specified, or read from JSON.
-  @Expose( serialize = false )
+  /**
+   * The address to report to the hub. By default it's generated based on the host and port specified.
+   * Setting a value overrides the default (http://<host>:<port>).
+   */
+  @Expose
+  @Parameter(
+    names = "-remoteHost",
+    description = "<String> URL: Address to report to the hub. Used to override default (http://<host>:<port>)."
+  )
   String remoteHost;
 
   // used to read a Selenium 2.x nodeConfig.json file and throw a friendly exception

@@ -230,11 +230,20 @@ public class GridNodeConfigurationTest {
   }
 
   @Test
-  public void tetGetRemoteHost() {
+  public void testGetRemoteHost() {
     GridNodeConfiguration gnc = new GridNodeConfiguration();
     gnc.host = "dummyhost";
     gnc.port = 1234;
     assertEquals("http://dummyhost:1234", gnc.getRemoteHost());
+  }
+
+  @Test
+  public void testGetRemoteHostOverride() {
+    GridNodeConfiguration gnc = new GridNodeConfiguration();
+    gnc.host = "containerHost";
+    gnc.port = 1234;
+    gnc.remoteHost = "http://hostNode:32657";
+    assertEquals("http://hostNode:32657", gnc.getRemoteHost());
   }
 
   @Test(expected = RuntimeException.class)
@@ -252,7 +261,7 @@ public class GridNodeConfigurationTest {
   }
 
   @Test
-  public void tetGetRemoteHost_forNullConfig() {
+  public void testGetRemoteHost_forNullConfig() {
     GridNodeConfiguration gnc = new GridNodeConfiguration();
     assertEquals("http://localhost:5555", gnc.getRemoteHost());
   }
