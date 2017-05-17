@@ -59,8 +59,9 @@ module Selenium
           end
           opts[:desired_capabilities][:native_events] = opts.delete(:native_events) != false
 
+          listener = opts.delete(:listener)
           @bridge = Remote::Bridge.handshake(opts)
-          super(@bridge, listener: opts[:listener])
+          super(@bridge, listener: listener)
         end
 
         def browser
