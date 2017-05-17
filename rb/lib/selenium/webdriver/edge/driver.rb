@@ -48,6 +48,8 @@ module Selenium
             opts[:url] = @service.uri
           end
 
+          listener = opts.delete(:listener)
+
           # Edge is mostly using W3C dialect, but a request to
           # create session responds with OSS-like body,
           # so we need to force W3C implementation.
@@ -59,7 +61,7 @@ module Selenium
           @bridge = Remote::W3C::Bridge.new(capabilities, bridge.session_id, opts)
           @bridge.extend Edge::Bridge
 
-          super(@bridge, listener: opts[:listener])
+          super(@bridge, listener: listener)
         end
 
         def browser

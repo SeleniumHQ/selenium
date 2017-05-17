@@ -47,8 +47,9 @@ module Selenium
             opts[:url] = @service.uri
           end
 
+          listener = opts.delete(:listener)
           @bridge = Remote::Bridge.handshake(opts)
-          super(@bridge, listener: opts[:listener])
+          super(@bridge, listener: listener)
         end
 
         def quit

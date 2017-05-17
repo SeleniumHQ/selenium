@@ -17,28 +17,19 @@
 # specific language governing permissions and limitations
 # under the License.
 
+require_relative 'spec_helper'
+
 module Selenium
   module WebDriver
-    module Remote
-
-      #
-      # Driver implementation for remote server.
-      # @api private
-      #
-
-      module Driver
-
-        def self.new(**opts)
-          listener = opts.delete(:listener)
-          bridge = Bridge.handshake(opts)
-          if bridge.dialect == :w3c
-            W3C::Driver.new(bridge, listener: listener)
-          else
-            OSS::Driver.new(bridge, listener: listener)
-          end
+    describe Driver do
+      it 'supports listener' do
+        begin
+          listener = Selenium::WebDriver::Support::AbstractEventListener.new
+          driver = GlobalTestEnv.send(:create_driver, listener: listener)
+        ensure
+          driver.quit if driver
         end
-
-      end # Driver
-    end # Remote
+      end
+    end
   end # WebDriver
 end # Selenium
