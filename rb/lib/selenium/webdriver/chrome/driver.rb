@@ -109,7 +109,8 @@ module Selenium
             end
           end
 
-          caps['chromeOptions'] = options.as_json
+          options = options.as_json
+          caps[:chrome_options] = options unless options.empty?
 
           caps[:proxy] = opts.delete(:proxy) if opts.key?(:proxy)
           caps[:proxy] ||= opts.delete('proxy') if opts.key?('proxy')

@@ -22,7 +22,7 @@ require File.expand_path('../../spec_helper', __FILE__)
 module Selenium
   module WebDriver
     module Chrome
-      describe Driver do
+      fdescribe Driver do
         let(:resp)    { {'sessionId' => 'foo', 'value' => Remote::Capabilities.chrome.as_json} }
         let(:service) { instance_double(Service, start: true, uri: 'http://example.com') }
         let(:caps)    { Remote::Capabilities.new }
@@ -37,7 +37,7 @@ module Selenium
         it 'sets the args capability' do
           Driver.new(http_client: http, args: %w[--foo=bar])
 
-          expect(caps[:chrome_options]['args']).to eq(%w[--foo=bar])
+          expect(caps[:chrome_options][:args]).to eq(%w[--foo=bar])
         end
 
         it 'sets the proxy capabilitiy' do
@@ -57,13 +57,13 @@ module Selenium
         it 'sets the prefs capability' do
           Driver.new(http_client: http, prefs: {foo: 'bar'})
 
-          expect(caps[:chrome_options]['prefs']).to eq(foo: 'bar')
+          expect(caps[:chrome_options][:prefs]).to eq(foo: 'bar')
         end
 
         it 'lets the user override chrome.detach' do
           Driver.new(http_client: http, detach: true)
 
-          expect(caps[:chrome_options]['detach']).to be true
+          expect(caps[:chrome_options][:detach]).to be true
         end
 
         it 'raises an ArgumentError if args is not an Array' do
@@ -79,8 +79,8 @@ module Selenium
           Driver.new(http_client: http, profile: profile)
 
           profile_data = profile.as_json
-          expect(caps[:chrome_options]['args'].first).to include(profile_data[:directory])
-          expect(caps[:chrome_options]['extensions']).to eq(profile_data[:extensions])
+          expect(caps[:chrome_options][:args].first).to include(profile_data[:directory])
+          expect(caps[:chrome_options][:extensions]).to eq(profile_data[:extensions])
         end
 
         it 'takes desired capabilities' do
@@ -100,7 +100,7 @@ module Selenium
           custom_caps[:chrome_options] = {'args' => %w[foo bar]}
 
           expect(http).to receive(:call) do |_, _, payload|
-            expect(payload[:desiredCapabilities][:chrome_options]['args']).to eq(['baz'])
+            expect(payload[:desiredCapabilities][:chrome_options][:args]).to eq(['baz'])
             resp
           end
 
