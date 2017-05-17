@@ -22,7 +22,7 @@ require File.expand_path('../../spec_helper', __FILE__)
 module Selenium
   module WebDriver
     module Chrome
-      fdescribe Driver do
+      describe Driver do
         let(:resp)    { {'sessionId' => 'foo', 'value' => Remote::Capabilities.chrome.as_json} }
         let(:service) { instance_double(Service, start: true, uri: 'http://example.com') }
         let(:caps)    { Remote::Capabilities.new }
