@@ -48,6 +48,7 @@ module Selenium
               opts[:url] = @launcher.url
             end
 
+            listener = opts.delete(:listener)
             WebDriver.logger.info 'Skipping handshake as we know it is OSS.'
             desired_capabilities = opts.delete(:desired_capabilities)
             bridge = Remote::Bridge.new(opts)
@@ -55,7 +56,7 @@ module Selenium
             @bridge = Remote::OSS::Bridge.new(capabilities, bridge.session_id, opts)
 
             begin
-              super(@bridge, listener: opts[:listener])
+              super(@bridge, listener: listener)
             rescue
               @launcher.quit if @launcher
               raise
