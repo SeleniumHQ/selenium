@@ -247,7 +247,9 @@ module Selenium
           server = ENV['CHROMEDRIVER'] || ENV['chrome_server']
           WebDriver::Chrome.driver_path = server if server
 
-          opt[:args] ||= ENV['TRAVIS'] ? ['--no-sandbox'] : []
+          options = WebDriver::Chrome::Options.new
+          options.add_argument('--no-sandbox') if ENV['TRAVIS']
+          opt[:options] = options
 
           WebDriver::Driver.for :chrome, opt
         end
