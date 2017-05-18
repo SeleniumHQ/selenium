@@ -60,6 +60,29 @@ java_library(name = 'server',
   ],
 )
 
+java_library(
+  name = 'webdriver-servlet',
+  srcs = [
+    'ActiveSession.java',
+    'BeginSession.java',
+    'AllHandlers.java',
+    'CommandHandler.java',
+    'ExceptionHandler.java',
+    'InMemorySession.java',
+    'WebDriverServlet.java',
+  ],
+  provided_deps = [
+    '//third_party/java/servlet:servlet-api',
+  ],
+  deps = [
+    ':server',
+    ':sessions',
+    '//java/client/src/org/openqa/selenium/remote:remote',
+    '//third_party/java/gson:gson',
+    '//third_party/java/guava:guava',
+  ]
+)
+
 export_file(name = 'client',
   src = '//javascript/remote:client',
   out = 'client.js',
@@ -82,6 +105,7 @@ java_library(name = 'standalone-server-lib',
   deps = [
     ':server',
     ':sessions',
+    ':webdriver-servlet',
     '//java/client/src/org/openqa/selenium/chrome:chrome',
     '//java/client/src/org/openqa/selenium/edge:edge',
     '//java/client/src/org/openqa/selenium/firefox:firefox',
