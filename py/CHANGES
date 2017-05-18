@@ -1,3 +1,10 @@
+Selenium 3.4.2
+
+* translate move_by_offset command to w3c
+* Update capabilities properly instead of assuming dict structure. Fixes #3927
+* Add missing file for Chrome options to API docs.
+* Add Chrome options module to API docs.
+
 Selenium 3.4.1
 * Add back the ability to set profile when using Firefox 45ESR. Fixes #3897
 
