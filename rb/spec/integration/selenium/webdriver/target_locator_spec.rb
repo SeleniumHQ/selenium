@@ -327,7 +327,13 @@ module Selenium
                 driver.find_element(id: 'alert').click
                 wait_for_alert
 
-                expect { driver.title }.to raise_error(Selenium::WebDriver::Error::UnhandledAlertError)
+                not_compliant_on browser: :ie do
+                  expect { driver.title }.to raise_error(Selenium::WebDriver::Error::UnhandledAlertError)
+                end
+
+                compliant_on browser: :ie do
+                  expect { driver.title }.to raise_error(Selenium::WebDriver::Error::UnexpectedAlertOpenError)
+                end
 
                 not_compliant_on browser: [:ff_esr, :ie] do
                   driver.switch_to.alert.accept
