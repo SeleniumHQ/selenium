@@ -14,7 +14,7 @@ prebuilt_jar(name = 'servlet-api',
 
     # Everything under grid
     '//java/server/src/org/openqa/grid/...',
-    '//java/server/src/org/openqa/selenium/remote/server:server',
+    '//java/server/src/org/openqa/selenium/remote/...',
 
     # Including the tests
     '//java/server/test/org/openqa/...',
