@@ -22,7 +22,7 @@ require_relative 'spec_helper'
 module Selenium
   module WebDriver
     # Firefox - "Actions Endpoint Not Yet Implemented"
-    not_compliant_on browser: [:safari, :ff_nightly, :firefox] do
+    not_compliant_on browser: [:safari, :ff_nightly, :firefox, :ie] do
       describe Keyboard do
         # Edge - https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/8339952
         not_compliant_on browser: :edge do

@@ -22,7 +22,7 @@ require_relative 'spec_helper'
 module Selenium
   module WebDriver
     # Firefox - "Actions Endpoint Not Yet Implemented"
-    not_compliant_on browser: [:safari, :firefox, :ff_nightly] do
+    not_compliant_on browser: [:safari, :firefox, :ff_nightly, :ie] do
       describe Mouse do
         it 'clicks an element' do
           allow($stderr).to receive(:write)
