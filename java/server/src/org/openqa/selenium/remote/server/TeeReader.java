@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
 
-public class TeeReader extends Reader {
+class TeeReader extends Reader {
 
   private final Reader source;
   private final Writer[] sinks;
