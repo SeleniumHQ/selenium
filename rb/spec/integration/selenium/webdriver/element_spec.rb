@@ -181,7 +181,8 @@ module Selenium
       end
 
       # Firefox - Pointer actions not in firefox stable yet
-      not_compliant_on browser: [:safari, :firefox, :ff_nightly] do
+      # IE - https://github.com/SeleniumHQ/selenium/pull/4043
+      not_compliant_on browser: [:safari, :firefox, :ff_nightly, :ie] do
         it 'should drag and drop' do
           driver.navigate.to url_for('dragAndDropTest.html')
 
