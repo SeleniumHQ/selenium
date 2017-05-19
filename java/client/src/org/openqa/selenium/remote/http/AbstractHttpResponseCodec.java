@@ -58,7 +58,7 @@ public abstract class AbstractHttpResponseCodec implements ResponseCodec<HttpRes
                  ? HTTP_OK
                  : HTTP_INTERNAL_ERROR;
 
-    byte[] data = beanToJsonConverter.convert(response).getBytes(UTF_8);
+    byte[] data = beanToJsonConverter.convert(getValueToEncode(response)).getBytes(UTF_8);
 
     HttpResponse httpResponse = new HttpResponse();
     httpResponse.setStatus(status);
@@ -70,6 +70,8 @@ public abstract class AbstractHttpResponseCodec implements ResponseCodec<HttpRes
 
     return httpResponse;
   }
+
+  protected abstract Object getValueToEncode(Response response);
 
   @Override
   public Response decode(HttpResponse encodedResponse) {

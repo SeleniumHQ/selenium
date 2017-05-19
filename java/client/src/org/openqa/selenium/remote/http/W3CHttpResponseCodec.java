@@ -23,6 +23,7 @@ import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.net.HttpURLConnection.HTTP_OK;
 
 import com.google.common.base.Strings;
+import com.google.common.base.Throwables;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -35,6 +36,7 @@ import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.internal.JsonToWebElementConverter;
 
 import java.lang.reflect.Constructor;
+import java.util.HashMap;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.logging.Logger;
@@ -143,6 +145,31 @@ public class W3CHttpResponseCodec extends AbstractHttpResponseCodec {
     }
 
     return response;
+  }
+
+  @Override
+  protected Object getValueToEncode(Response response) {
+    HashMap<Object, Object> toReturn = new HashMap<>();
+    Object value = response.getValue();
+    if (value instanceof WebDriverException) {
+      HashMap<Object, Object> exception = new HashMap<>();
+      exception.put(
+          "error",
+          response.getState() != null ?
+          response.getState() :
+          errorCodes.toState(response.getStatus()));
+      exception.put("message", ((WebDriverException) value).getMessage());
+      exception.put("stacktrace", Throwables.getStackTraceAsString((WebDriverException) value));
+      if (value instanceof UnhandledAlertException) {
+        HashMap<String, Object> data = new HashMap<>();
+        data.put("text", ((UnhandledAlertException) value).getAlertText());
+        exception.put("data", data);
+      }
+
+      value = exception;
+    }
+    toReturn.put("value", value);
+    return toReturn;
   }
 
   protected Response reconstructValue(Response response) {

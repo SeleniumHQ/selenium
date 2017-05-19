@@ -12,10 +12,13 @@ import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 import static org.openqa.selenium.remote.DesiredCapabilities.chrome;
 import static org.openqa.selenium.remote.DesiredCapabilities.firefox;
 import static org.openqa.selenium.remote.DesiredCapabilities.htmlUnit;
+import static org.openqa.selenium.remote.Dialect.OSS;
+import static org.openqa.selenium.remote.Dialect.W3C;
 
 import com.google.common.cache.Cache;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonReader;
@@ -23,6 +26,7 @@ import com.google.gson.stream.JsonToken;
 
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.remote.BeanToJsonConverter;
+import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.SessionId;
 
 import java.io.BufferedInputStream;
@@ -54,7 +58,7 @@ class BeginSession implements CommandHandler {
 
   private final Cache<SessionId, ActiveSession> allSessions;
   private final DriverSessions legacySessions;
-  private final Map<String, Function<Path, ActiveSession>> factories;
+  private final Map<String, SessionFactory> factories;
   private final Function<Path, ActiveSession> defaultFactory;
 
   public BeginSession(Cache<SessionId, ActiveSession> allSessions, DriverSessions legacySessions) {
@@ -62,8 +66,8 @@ class BeginSession implements CommandHandler {
     this.legacySessions = legacySessions;
 
     this.factories = ImmutableMap.of(
-        chrome().getBrowserName(), new InMemorySession.Factory(legacySessions),
-        firefox().getBrowserName(), new InMemorySession.Factory(legacySessions),
+        chrome().getBrowserName(), new ServicedSession.Factory("org.openqa.selenium.chrome.ChromeDriverService"),
+        firefox().getBrowserName(), new ServicedSession.Factory("org.openqa.selenium.firefox.GeckoDriverService"),
         htmlUnit().getBrowserName(), new InMemorySession.Factory(legacySessions));
 
     defaultFactory = null;
@@ -80,15 +84,24 @@ class BeginSession implements CommandHandler {
       List<Map<String, Object>> firstMatch = new LinkedList<>();
 
       readCapabilities(allCaps, req, ossKeys, alwaysMatch, firstMatch);
-      List<Function<Path, ActiveSession>> browserGenerators = determineBrowser(
+      List<SessionFactory> browserGenerators = determineBrowser(
           ossKeys,
           alwaysMatch,
           firstMatch);
 
+      ImmutableSet.Builder<Dialect> downstreamDialects = ImmutableSet.builder();
+      // Favour OSS for now
+      if (!ossKeys.isEmpty()) {
+        downstreamDialects.add(OSS);
+      }
+      if (!alwaysMatch.isEmpty() || !firstMatch.isEmpty()) {
+        downstreamDialects.add(W3C);
+      }
+
       ActiveSession session = browserGenerators.stream()
             .map(func -> {
               try {
-                return func.apply(allCaps);
+                return func.apply(allCaps, downstreamDialects.build());
               } catch (Exception e) {
                 LOG.log(Level.INFO, "Unable to start session.", e);
               }
@@ -192,7 +205,7 @@ class BeginSession implements CommandHandler {
     }
   }
 
-  private List<Function<Path, ActiveSession>> determineBrowser(
+  private List<SessionFactory> determineBrowser(
       Map<String, Object> ossKeys,
       Map<String, Object> alwaysMatchKeys,
       List<Map<String, Object>> firstMatchKeys) {
@@ -203,7 +216,7 @@ class BeginSession implements CommandHandler {
     allCapabilities.add(ossKeys);
 
     // Can we figure out the browser from any of these?
-    ImmutableList.Builder<Function<Path, ActiveSession>> builder = ImmutableList.builder();
+    ImmutableList.Builder<SessionFactory> builder = ImmutableList.builder();
     for (Map<String, Object> caps : allCapabilities) {
       caps.entrySet().stream()
           .map(entry -> guessBrowserName(entry.getKey(), entry.getValue()))

@@ -46,4 +46,9 @@ public class JsonHttpResponseCodec extends AbstractHttpResponseCodec {
 
     return response;
   }
+
+  @Override
+  protected Object getValueToEncode(Response response) {
+    return response;
+  }
 }

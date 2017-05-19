@@ -8,6 +8,7 @@ import com.google.common.io.CharStreams;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
+import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.JsonToBeanConverter;
 import org.openqa.selenium.remote.SessionId;
 
@@ -17,7 +18,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Function;
+import java.util.Set;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -42,14 +43,6 @@ class InMemorySession implements ActiveSession {
   }
 
   @Override
-  public String getDescription() {
-    return String.format(
-        "%s: Legacy Session -> %s",
-        id,
-        session.getCapabilities().getBrowserName());
-  }
-
-  @Override
   public SessionId getId() {
     return id;
   }
@@ -70,7 +63,7 @@ class InMemorySession implements ActiveSession {
     commandHandler.handleRequest(req, resp);
   }
 
-  public static class Factory implements Function<Path, ActiveSession> {
+  public static class Factory implements SessionFactory {
 
     private final DriverSessions legacySessions;
     private final JsonHttpCommandHandler jsonHttpCommandHandler;
@@ -83,7 +76,7 @@ class InMemorySession implements ActiveSession {
     }
 
     @Override
-    public ActiveSession apply(Path path) {
+    public ActiveSession apply(Path path, Set<Dialect> downstreamDialects) {
       try (BufferedReader reader = Files.newBufferedReader(path, UTF_8)) {
         Map<?, ?> blob = new JsonToBeanConverter().convert(Map.class, CharStreams.toString(reader));
 
