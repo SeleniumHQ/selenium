@@ -58,6 +58,22 @@ namespace OpenQA.Selenium.Interactions
 
         [Test]
         [Category("Javascript")]
+        [IgnoreBrowser(Browser.HtmlUnit)]
+        [IgnoreBrowser(Browser.Android, "Mobile browser does not support drag-and-drop")]
+        [IgnoreBrowser(Browser.IPhone, "Mobile browser does not support drag-and-drop")]
+        [IgnoreBrowser(Browser.Safari, "Advanced User Interactions not implmented on Safari")]
+        public void DragAndDropRelativeAndToElement()
+        {
+            driver.Url = dragAndDropPage;
+            IWebElement img1 = driver.FindElement(By.Id("test1"));
+            IWebElement img2 = driver.FindElement(By.Id("test2"));
+            Actions actionProvider = new Actions(driver);
+            actionProvider.DragAndDropToOffset(img1, 100, 100).DragAndDrop(img2, img1).Perform();
+            Assert.AreEqual(img1.Location, img2.Location);
+        }
+
+        [Test]
+        [Category("Javascript")]
         [IgnoreBrowser(Browser.Safari, "Advanced User Interactions not implmented on Safari")]
         public void DragAndDropToElementInIframe()
         {
