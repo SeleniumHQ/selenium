@@ -113,7 +113,7 @@ class Command {
 module.exports = function exec(command, opt_options) {
   var options = opt_options || {};
 
-  var proc = childProcess.spawn(command, options.args || [], {
+  var proc = childProcess.exec([command].concat(options.args || []).join(" "), {
     env: options.env || process.env,
     stdio: options.stdio || 'ignore'
   });
