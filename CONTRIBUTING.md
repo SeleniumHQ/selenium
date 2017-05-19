@@ -27,6 +27,14 @@ This means asking the right questions, procuring the right information
 to properly debug and verify the issue, and bisecting a commit range if
 the issue is a regression.
 
+## Feature Requests
+
+If you find that Selenium is missing something, feel free to open an issue
+with details describing what feature(s) you'd like added or changed.  
+
+If you'd like a hand at trying to implement the feature yourself, please refer to the [Code Contributions](#code-contributions) section of the document.
+
+
 ## Documentation
 
 Selenium is a big software project and documentation is key to
