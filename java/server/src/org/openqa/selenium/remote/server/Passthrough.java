@@ -41,7 +41,7 @@ import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class Passthrough implements SessionCodec {
+class Passthrough implements SessionCodec {
 
   private final static Logger LOG = Logger.getLogger(Passthrough.class.getName());
 
