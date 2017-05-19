@@ -345,7 +345,7 @@ public class ProtocolHandshake {
     gson.toJson(firstMatch, out);
   }
 
-  private Optional<Result> createSession(HttpClient client, InputStream newSessionBlob, long size)
+  public Optional<Result> createSession(HttpClient client, InputStream newSessionBlob, long size)
     throws IOException {
     // Create the http request and send it
     HttpRequest request = new HttpRequest(HttpMethod.POST, "/session");

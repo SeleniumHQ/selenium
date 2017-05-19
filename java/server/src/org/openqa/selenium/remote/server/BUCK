@@ -69,6 +69,12 @@ java_library(
     'CommandHandler.java',
     'ExceptionHandler.java',
     'InMemorySession.java',
+    'Passthrough.java',
+    'ProtocolConverter.java',
+    'ServicedSession.java',
+    'SessionCodec.java',
+    'SessionFactory.java',
+    'TeeReader.java',
     'WebDriverServlet.java',
   ],
   provided_deps = [
@@ -80,7 +86,10 @@ java_library(
     '//java/client/src/org/openqa/selenium/remote:remote',
     '//third_party/java/gson:gson',
     '//third_party/java/guava:guava',
-  ]
+  ],
+  visibility = [
+    '//java/server/test/org/openqa/selenium/remote/server:tests',
+  ],
 )
 
 export_file(name = 'client',

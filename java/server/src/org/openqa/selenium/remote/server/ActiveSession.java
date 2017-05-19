@@ -6,11 +6,6 @@ import java.util.Map;
 
 interface ActiveSession extends CommandHandler {
 
-  /**
-   * Used to provide logging information and thread names.
-   */
-  String getDescription();
-
   SessionId getId();
 
   /**

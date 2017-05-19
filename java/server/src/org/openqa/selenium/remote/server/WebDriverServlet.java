@@ -1,6 +1,7 @@
 package org.openqa.selenium.remote.server;
 
 import static java.util.concurrent.TimeUnit.MINUTES;
+import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -96,10 +97,20 @@ public class WebDriverServlet extends HttpServlet {
     Future<?> execution = executor.submit(() -> {
       try {
         if (handler instanceof ActiveSession) {
-          Thread.currentThread().setName(((ActiveSession) handler).getDescription());
+          ActiveSession session = (ActiveSession) handler;
+          Thread.currentThread().setName(String.format(
+              "Handler thread for session %s (%s)",
+              session.getId(),
+              session.getCapabilities().get(BROWSER_NAME)));
         } else {
           Thread.currentThread().setName(req.getPathInfo());
         }
+        log(String.format(
+            "%s: Executing %s on %s (handler: %s)",
+            Thread.currentThread().getName(),
+            req.getMethod(),
+            req.getPathInfo(),
+            handler.getClass().getSimpleName()));
         handler.execute(req, resp);
       } catch (IOException e) {
         resp.reset();

@@ -107,7 +107,7 @@ public class FakeHttpServletResponse extends HeaderContainer
   }
 
   public String getContentType() {
-    throw new UnsupportedOperationException();
+    return getHeader("Content-Type");
   }
 
   public ServletOutputStream getOutputStream() throws IOException {
