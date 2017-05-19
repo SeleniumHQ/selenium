@@ -140,19 +140,22 @@ module Selenium
                 expect(element.attribute(:value)).to eq('Clicked')
               end
 
-              it 'can drag and drop' do
-                driver.navigate.to url_for('droppableItems.html')
+              # IE - https://github.com/SeleniumHQ/selenium/pull/4043
+              not_compliant_on browser: :ie do
+                it 'can drag and drop' do
+                  driver.navigate.to url_for('droppableItems.html')
 
-                draggable = long_wait.until do
-                  driver.find_element(id: 'draggable')
+                  draggable = long_wait.until do
+                    driver.find_element(id: 'draggable')
+                  end
+
+                  droppable = driver.find_element(id: 'droppable')
+
+                  driver.action.drag_and_drop(draggable, droppable).perform
+
+                  text = droppable.find_element(tag_name: 'p').text
+                  expect(text).to eq('Dropped!')
                 end
-
-                droppable = driver.find_element(id: 'droppable')
-
-                driver.action.drag_and_drop(draggable, droppable).perform
-
-                text = droppable.find_element(tag_name: 'p').text
-                expect(text).to eq('Dropped!')
               end
 
               # Pending bug with Firefox
