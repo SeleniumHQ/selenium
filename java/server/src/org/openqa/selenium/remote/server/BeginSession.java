@@ -165,8 +165,14 @@ class BeginSession implements CommandHandler {
       Map<String, Object> ossKeys,
       Map<String, Object> alwaysMatch,
       List<Map<String, Object>> firstMatch) throws IOException {
+    String reqEncoding = req.getCharacterEncoding();
+    if (reqEncoding == null) {
+      // Assume utf8
+      reqEncoding = UTF_8.toString();
+    }
+
     try (InputStream rawIn = new BufferedInputStream(req.getInputStream());
-         Reader reader = new InputStreamReader(rawIn, req.getCharacterEncoding());
+         Reader reader = new InputStreamReader(rawIn, reqEncoding);
          Writer writer = Files.newBufferedWriter(allCaps, UTF_8);
          Reader in = new TeeReader(reader, writer);
          JsonReader json = new JsonReader(in)) {
