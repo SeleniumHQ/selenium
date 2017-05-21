@@ -32,6 +32,7 @@ java_library(name = 'server',
     'JsonParametersAware.java',
     'SessionCleaner.java',
     'SnapshotScreenListener.java',
+    'StaticResourceHandler.java',
     'SystemClock.java',
   ] + glob([
     'handler/**/*.java',
