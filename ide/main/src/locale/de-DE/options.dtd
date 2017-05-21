@@ -1,32 +1,32 @@
-<!ENTITY options.title "Selenium IDE Options">
-<!ENTITY options.encoding.description "Encoding of test files">
-<!ENTITY options.timeout.description "Default timeout value of recorded command in milliseconds (30s = 30000ms)">
-<!ENTITY options.userExtensionsPaths.description "Selenium Core extensions (user-extensions.js)">
-<!ENTITY options.ideExtensionsPaths.description "Selenium IDE extensions">
-<!ENTITY options.extensions.tip "Tips for extensions: Close and reopen Selenium IDE window to make changes effect. You can specify multiple files separated by commas.">
-<!ENTITY options.rememberBaseURL.description "Remember base URL">
-<!ENTITY options.recordAssertTitle.description "Record assertTitle automatically">
-<!ENTITY options.recordAbsoluteURL.description "Record absolute URL">
-<!ENTITY options.browse "Browse...">
+<!ENTITY options.title "Selenium IDE Einstellungen">
+<!ENTITY options.encoding.description "Encoding der Testdateien">
+<!ENTITY options.timeout.description "Standardwert für Time-out für die Befehlsaufzeichnung in Millisekunden (30s = 30000ms)">
+<!ENTITY options.userExtensionsPaths.description "Selenium Core Extensions (user-extensions.js)">
+<!ENTITY options.ideExtensionsPaths.description "Selenium IDE Extensions">
+<!ENTITY options.extensions.tip "Tipps für die Extensions: Starten Sie das Selenium IDE Fenster neu, um die Änderungen zu nutzen. Sie können mehrere Dateien, abgetrennt durch Kommata, auswählen.">
+<!ENTITY options.rememberBaseURL.description "Übernehme Base-URL">
+<!ENTITY options.recordAssertTitle.description "Automatische Aufzeichnung von assertTitle">
+<!ENTITY options.recordAbsoluteURL.description "Aufzeichnung der absoluten URL">
+<!ENTITY options.browse "Durchsuchen...">
 
-<!ENTITY options.resetOptions "Reset Options">
-<!ENTITY options.general.label "General">
-<!ENTITY options.formats.label "Formats">
-<!ENTITY options.formats.add-button.label "Add">
-<!ENTITY options.formats.rename-button.label "Rename">
-<!ENTITY options.formats.delete-button.label "Delete">
-<!ENTITY options.formats.source-button.label "Source">
+<!ENTITY options.resetOptions "Zurücksetzen">
+<!ENTITY options.general.label "Algemein">
+<!ENTITY options.formats.label "Formate">
+<!ENTITY options.formats.add-button.label "Hinzufügen">
+<!ENTITY options.formats.rename-button.label "Umbenennen">
+<!ENTITY options.formats.delete-button.label "Löschen">
+<!ENTITY options.formats.source-button.label "Quelle">
 
-<!ENTITY options.disableBadPluginCode.label "Automatically disable plugin provided code on plugin errors">
-<!ENTITY options.disableBadPluginAddon.label "Disabling plugin should completely disable the addon in Firefox">
+<!ENTITY options.disableBadPluginCode.label "Automatisch deaktiviertes Plugin liefert Code mit Plugin Fehlern">
+<!ENTITY options.disableBadPluginAddon.label "Deaktivierung des Plugin sollte das Add-On im Firefox komplett deaktivieren.">
 
-<!ENTITY options.enableUIElement.description "Enable UI-Element (experimental, requires IDE restart)">
-<!ENTITY options.enableUIElement.about "About UI-Element">
+<!ENTITY options.enableUIElement.description "Aktiviere UI-Element (experimental, benötigt den Neustart der IDE) ">
+<!ENTITY options.enableUIElement.about "Über die UI-Element">
 
-<!ENTITY options.user-ext.reload.label "Reload">
-<!ENTITY options.user-ext.reload.tooltip "Reload Selenium Core and its extensions">
-<!ENTITY options.showDeveloperTools.description "Activate developer tools">
-<!ENTITY options.enableExperimentalFeatures.label "Enable experimental features">
-<!ENTITY options.disableFormatChangeMsg.label "Disable format change warning messages">
+<!ENTITY options.user-ext.reload.label "Neuladen">
+<!ENTITY options.user-ext.reload.tooltip "Selenium Core und seine Extensions neuladen">
+<!ENTITY options.showDeveloperTools.description "Aktiviert die Entwicklertools">
+<!ENTITY options.enableExperimentalFeatures.label "Aktivert experimentale Funktionen">
+<!ENTITY options.disableFormatChangeMsg.label "Deaktiviere Warnungen über Formatanderungen">
 
-<!ENTITY options.recordOnOpen.description "Start recording immediately on open">
+<!ENTITY options.recordOnOpen.description "Startet die Aufzeichnung beim Öffnen des Programms">
