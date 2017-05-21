@@ -23,10 +23,15 @@ import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.RemovalListener;
+import com.google.common.net.HttpHeaders;
+import com.google.common.net.MediaType;
 
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.server.xdrpc.CrossDomainRpc;
+import org.openqa.selenium.remote.server.xdrpc.CrossDomainRpcLoader;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -35,14 +40,18 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeoutException;
 
 import javax.servlet.ServletException;
+import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 
 public class WebDriverServlet extends HttpServlet {
 
   public static final String SESSIONS_KEY = DriverServlet.class.getName() + ".sessions";
   public static final String ACTIVE_SESSIONS_KEY = WebDriverServlet.class.getName() + ".sessions";
+
+  private static final String CROSS_DOMAIN_RPC_PATH = "/xdrpc";
 
   private final ExecutorService executor = Executors.newCachedThreadPool();
   private Cache<SessionId, ActiveSession> allSessions;
@@ -98,7 +107,47 @@ public class WebDriverServlet extends HttpServlet {
   @Override
   protected void doPost(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
-    handle(req, resp);
+    if (CROSS_DOMAIN_RPC_PATH.equalsIgnoreCase(req.getPathInfo())) {
+      handleCrossDomainRpc(req, resp);
+    } else {
+      handle(req, resp);
+    }
+  }
+
+  private void handleCrossDomainRpc(
+      HttpServletRequest servletRequest, HttpServletResponse servletResponse)
+      throws ServletException, IOException {
+    CrossDomainRpc rpc;
+
+    try {
+      rpc = new CrossDomainRpcLoader().loadRpc(servletRequest);
+    } catch (IllegalArgumentException e) {
+      servletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+      servletResponse.getOutputStream().println(e.getMessage());
+      servletResponse.getOutputStream().flush();
+      return;
+    }
+
+    servletRequest.setAttribute(HttpHeaders.CONTENT_TYPE, MediaType.JSON_UTF_8.toString());
+    HttpServletRequestWrapper wrapper = new HttpServletRequestWrapper(servletRequest) {
+      @Override
+      public String getMethod() {
+        return rpc.getMethod();
+      }
+
+      @Override
+      public String getPathInfo() {
+        return rpc.getPath();
+      }
+
+      @Override
+      public ServletInputStream getInputStream() throws IOException {
+        return new InputStreamWrappingServletInputStream(
+            new ByteArrayInputStream(rpc.getContent()));
+      }
+    };
+
+    handle(wrapper, servletResponse);
   }
 
   private void handle(HttpServletRequest req, HttpServletResponse resp) {
