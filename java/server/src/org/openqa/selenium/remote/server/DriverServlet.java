@@ -21,7 +21,6 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Strings.nullToEmpty;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.io.ByteStreams;
 import com.google.common.io.Files;
@@ -45,7 +44,6 @@ import java.util.function.Supplier;
 import java.util.logging.Handler;
 import java.util.logging.Logger;
 
-import javax.servlet.ReadListener;
 import javax.servlet.ServletException;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServlet;
@@ -303,51 +301,4 @@ public class DriverServlet extends HttpServlet {
     }
   }
 
-  private static class InputStreamWrappingServletInputStream extends ServletInputStream {
-
-    private final InputStream delegate;
-    private int lastRead;
-
-    public InputStreamWrappingServletInputStream(InputStream delegate) {
-      this.delegate = Preconditions.checkNotNull(delegate);
-
-    }
-
-    @Override
-    public int available() throws IOException {
-      return delegate.available();
-    }
-
-    @Override
-    public void close() throws IOException {
-      delegate.close();
-      lastRead = -1;
-    }
-
-    @Override
-    public boolean isFinished() {
-      return lastRead != -1;
-    }
-
-    @Override
-    public boolean isReady() {
-      return !isFinished();
-    }
-
-    @Override
-    public void setReadListener(ReadListener readListener) {
-      throw new UnsupportedOperationException("setReadListener");
-    }
-
-    @Override
-    public int read() throws IOException {
-      lastRead = delegate.read();
-      return lastRead;
-    }
-
-    @Override
-    public boolean markSupported() {
-      return false;
-    }
-  }
 }
