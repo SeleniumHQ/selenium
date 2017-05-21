@@ -53,6 +53,7 @@ public class WebDriverServlet extends HttpServlet {
 
   private static final String CROSS_DOMAIN_RPC_PATH = "/xdrpc";
 
+  private final StaticResourceHandler staticResourceHandler = new StaticResourceHandler();
   private final ExecutorService executor = Executors.newCachedThreadPool();
   private Cache<SessionId, ActiveSession> allSessions;
   private DriverSessions legacyDriverSessions;
@@ -93,6 +94,31 @@ public class WebDriverServlet extends HttpServlet {
   }
 
   @Override
+  protected void service(HttpServletRequest request, HttpServletResponse response)
+      throws IOException, ServletException {
+    if (request.getHeader("Origin") != null) {
+      setAccessControlHeaders(response);
+    }
+    // Make sure our browser-clients never cache responses.
+    response.setHeader("Expires", "Thu, 01 Jan 1970 00:00:00 GMT");
+    response.setHeader("Cache-Control", "no-cache");
+    super.service(request, response);
+  }
+
+  /**
+   * Sets access control headers to allow cross-origin resource sharing from
+   * any origin.
+   *
+   * @param response The response to modify.
+   * @see <a href="http://www.w3.org/TR/cors/">http://www.w3.org/TR/cors/</a>
+   */
+  private void setAccessControlHeaders(HttpServletResponse response) {
+    response.setHeader("Access-Control-Allow-Origin", "*");  // Real safe.
+    response.setHeader("Access-Control-Allow-Methods", "DELETE,GET,HEAD,POST");
+    response.setHeader("Access-Control-Allow-Headers", "Accept,Content-Type");
+  }
+
+  @Override
   protected void doDelete(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
     handle(req, resp);
@@ -101,7 +127,13 @@ public class WebDriverServlet extends HttpServlet {
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
-    handle(req, resp);
+    if (req.getPathInfo() == null || "/".equals(req.getPathInfo())) {
+      staticResourceHandler.redirectToHub(req, resp);
+    } else if (staticResourceHandler.isStaticResourceRequest(req)) {
+      staticResourceHandler.service(req, resp);
+    } else {
+      handle(req, resp);
+    }
   }
 
   @Override
