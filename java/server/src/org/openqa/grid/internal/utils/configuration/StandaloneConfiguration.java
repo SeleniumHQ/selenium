@@ -200,6 +200,14 @@ public class StandaloneConfiguration {
   )
   public Integer timeout = DEFAULT_TIMEOUT;
 
+  @Expose
+  @Parameter(
+      names = "-enablePassThrough",
+      description = "<Boolean>: Whether or not to use the experimental passthrough mode. Defaults to false."
+  )
+  public boolean newHandler = false;
+
+
   /**
    * Creates a new configuration using the default values.
    */

@@ -254,11 +254,10 @@ public class RegistrationRequest {
   }
 
   private void fixUpHost() {
+    NetworkUtils util = new NetworkUtils();
     if (configuration.host == null || "ip".equalsIgnoreCase(configuration.host)) {
-      NetworkUtils util = new NetworkUtils();
       configuration.host = util.getIp4NonLoopbackAddressOfThisMachine().getHostAddress();
     } else if ("host".equalsIgnoreCase(configuration.host)) {
-      NetworkUtils util = new NetworkUtils();
       configuration.host = util.getIp4NonLoopbackAddressOfThisMachine().getHostName();
     }
   }
