@@ -90,6 +90,7 @@ java_library(
     '//third_party/java/guava:guava',
   ],
   visibility = [
+    '//java/server/src/org/openqa/grid:grid',
     '//java/server/test/org/openqa/selenium/remote/server:tests',
   ],
 )

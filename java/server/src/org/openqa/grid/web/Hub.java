@@ -33,6 +33,7 @@ import org.openqa.grid.web.servlet.TestSessionStatusServlet;
 import org.openqa.grid.web.servlet.beta.ConsoleServlet;
 import org.openqa.grid.web.utils.ExtraServletUtil;
 import org.openqa.selenium.net.NetworkUtils;
+import org.openqa.selenium.remote.server.WebDriverServlet;
 import org.seleniumhq.jetty9.server.HttpConfiguration;
 import org.seleniumhq.jetty9.server.HttpConnectionFactory;
 import org.seleniumhq.jetty9.server.Server;
@@ -103,8 +104,15 @@ public class Hub {
     // add mandatory default servlets
     handler.addServlet(RegistrationServlet.class.getName(), "/grid/register/*");
 
-    handler.addServlet(DriverServlet.class.getName(), "/wd/hub/*");
-    handler.addServlet(DriverServlet.class.getName(), "/selenium-server/driver/*");
+    if (config.newHandler) {
+      log.info("Using the experimental passthrough mode");
+      handler.addServlet(DriverServlet.class.getName(), "/wd/hub/*");
+      handler.addServlet(DriverServlet.class.getName(), "/selenium-server/driver/*");
+    } else {
+      handler.addServlet(WebDriverServlet.class.getName(), "/wd/hub/*");
+      handler.addServlet(WebDriverServlet.class.getName(), "/selenium-server/driver/*");
+    }
+
 
     handler.addServlet(ProxyStatusServlet.class.getName(), "/grid/api/proxy/*");
 

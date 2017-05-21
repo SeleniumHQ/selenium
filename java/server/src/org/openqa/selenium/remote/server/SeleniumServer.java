@@ -35,6 +35,7 @@ import org.seleniumhq.jetty9.servlet.ServletContextHandler;
 import org.seleniumhq.jetty9.util.thread.QueuedThreadPool;
 
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.servlet.Servlet;
 
@@ -42,6 +43,8 @@ import javax.servlet.Servlet;
  * Provides a server that can launch and manage selenium sessions.
  */
 public class SeleniumServer implements GridNodeServer {
+
+  private final static Logger LOG = Logger.getLogger(SeleniumServer.class.getName());
 
   private Server server;
   private DefaultDriverSessions driverSessions;
@@ -125,8 +128,14 @@ public class SeleniumServer implements GridNodeServer {
         new SystemClock());
     handler.setAttribute(DriverServlet.SESSIONS_KEY, driverSessions);
     handler.setContextPath("/");
-    handler.addServlet(DriverServlet.class, "/wd/hub/*");
-    handler.addServlet(WebDriverServlet.class, "/webdriver/*");
+    if (configuration.newHandler) {
+      LOG.info("Using the experimental passthrough mode handler");
+      handler.addServlet(WebDriverServlet.class, "/wd/hub/*");
+      handler.addServlet(WebDriverServlet.class, "/webdriver/*");
+    } else {
+      handler.addServlet(DriverServlet.class, "/wd/hub/*");
+      handler.addServlet(DriverServlet.class, "/webdriver/*");
+    }
     handler.setInitParameter(ConsoleServlet.CONSOLE_PATH_PARAMETER, "/wd/hub");
 
     handler.setInitParameter(DisplayHelpServlet.HELPER_TYPE_PARAMETER, configuration.role);
