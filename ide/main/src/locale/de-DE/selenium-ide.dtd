@@ -5,89 +5,89 @@
 
 <!ENTITY firefox.sidebar.view-menu.label "&selenium-ide.name;">
 
-<!ENTITY newTestCmd.label "New Test Case">
-<!ENTITY addTestCmd.label "Add Test Case...">
-<!ENTITY openCmd.label "Open...">
-<!ENTITY saveTestCmd.label "Save Test Case">
-<!ENTITY saveTestAsCmd.label "Save Test Case As...">
-<!ENTITY exportCmd.label "Export Test Case As...">
-<!ENTITY optionsCmd.label "Options...">
+<!ENTITY newTestCmd.label "Neuer Testfall">
+<!ENTITY addTestCmd.label "Testfall hinzufügen...">
+<!ENTITY openCmd.label "Öffnen...">
+<!ENTITY saveTestCmd.label "Testfall speichern">
+<!ENTITY saveTestAsCmd.label "Testfall speichern unter...">
+<!ENTITY exportCmd.label "Testfall exportieren als...">
+<!ENTITY optionsCmd.label "Einstellungen...">
 <!ENTITY formatCmd.label "Format">
-<!ENTITY clipboardFormatCmd.label "Clipboard Format">
-<!ENTITY tableTab.label "Table">
-<!ENTITY sourceTab.label "Source">
-<!ENTITY runRadio.label "Run">
-<!ENTITY walkRadio.label "Walk">
-<!ENTITY stepRadio.label "Step">
-<!ENTITY playSuiteButton.tooltip "Play entire test suite">
-<!ENTITY playButton.tooltip "Play current test case">
-<!ENTITY pauseButton.tooltip "Pause / Resume">
-<!ENTITY stepButton.tooltip "Step">
-<!ENTITY speedSliderFast.label "Fast">
-<!ENTITY speedSliderFaster.label "Faster">
-<!ENTITY speedSliderFastest.label "Fastest">
-<!ENTITY speedSliderSlowest.label "Slowest">
-<!ENTITY speedSliderSlower.label "Slower">
-<!ENTITY speedSliderSlow.label "Slow">
-<!ENTITY recordButton.tooltip "Record">
-<!ENTITY baseURL.label "Base URL">
-<!ENTITY baseURLTextbox.tooltip "Enter the URL of the website you are testing. Used for playing &quot;open&quot; command.">
-<!ENTITY resetWindowCmd.label "Reset IDE Window">
+<!ENTITY clipboardFormatCmd.label "Zwischenablagenformat">
+<!ENTITY tableTab.label "Tabelle">
+<!ENTITY sourceTab.label "Quelle">
+<!ENTITY runRadio.label "Laufen">
+<!ENTITY walkRadio.label "Gehen">
+<!ENTITY stepRadio.label "Schrittweise">
+<!ENTITY playSuiteButton.tooltip "Gesamtes Testpaket abspielen">
+<!ENTITY playButton.tooltip "aktuellen Testfall abspielen">
+<!ENTITY pauseButton.tooltip "Pause / Weiter">
+<!ENTITY stepButton.tooltip "Schritt">
+<!ENTITY speedSliderFast.label "Schnell">
+<!ENTITY speedSliderFaster.label "Schneller">
+<!ENTITY speedSliderFastest.label "Am schnellsten">
+<!ENTITY speedSliderSlowest.label "Am langsamsten">
+<!ENTITY speedSliderSlower.label "Langsamer">
+<!ENTITY speedSliderSlow.label "Langsam">
+<!ENTITY recordButton.tooltip "Aufzeichnen">
+<!ENTITY baseURL.label "Basis-URL">
+<!ENTITY baseURLTextbox.tooltip "Geben Sie die URL der Website ein, die Sie testen. Zum Abspielen nutzen Sie das Kommando &quot;Öffnen&quot;.">
+<!ENTITY resetWindowCmd.label "IDE-Fenster zurücksetzen">
 
-<!ENTITY fileMenu.label "File">
-<!ENTITY runMenu.label "Actions">
-<!ENTITY optionsMenu.label "Options">
+<!ENTITY fileMenu.label "Datei">
+<!ENTITY runMenu.label "Aktionen">
+<!ENTITY optionsMenu.label "Einstellungen">
 
-<!ENTITY command.label "Command">
-<!ENTITY target.label "Target">
-<!ENTITY value.label "Value">
-<!ENTITY findTarget.label "Find">
+<!ENTITY command.label "Kommando">
+<!ENTITY target.label "Ziel">
+<!ENTITY value.label "Wert">
+<!ENTITY findTarget.label "Finden">
 
-<!ENTITY helpDocumentation.label "Documentation">
-<!ENTITY helpReportIssue.label "Report Issue">
-<!ENTITY helpSearchIssues.label "Search Issues">
-<!ENTITY helpSubmitDiagInfo.label "Submit Diagnostic Information">
+<!ENTITY helpDocumentation.label "Dokumentation">
+<!ENTITY helpReportIssue.label "Fehler berichten">
+<!ENTITY helpSearchIssues.label "Fehler suchen">
+<!ENTITY helpSubmitDiagInfo.label "Diagnostik-Informationen einreichen">
 <!ENTITY helpReleaseNotes.label "Release Notes">
-<!ENTITY helpBlog.label "Official Selenium Blog">
-<!ENTITY helpWebsite.label "Official Selenium Website">
+<!ENTITY helpBlog.label "Offizieller Selenium Blog">
+<!ENTITY helpWebsite.label "Offizielle Selenium Website">
 
 <!ENTITY logConsole.label "Log">
 <!ENTITY logFilter.debug.label "Debug">
 <!ENTITY logFilter.info.label "Info">
-<!ENTITY logFilter.warn.label "Warn">
-<!ENTITY logFilter.error.label "Error">
-<!ENTITY logClear.label "Clear">
-<!ENTITY reference.label "Reference">
+<!ENTITY logFilter.warn.label "Warnung">
+<!ENTITY logFilter.error.label "Fehler">
+<!ENTITY logClear.label "Löschen">
+<!ENTITY reference.label "Referenz">
 
-<!ENTITY contextMenu.cut.label "Cut">
-<!ENTITY contextMenu.copy.label "Copy">
-<!ENTITY contextMenu.paste.label "Paste">
-<!ENTITY contextMenu.delete.label "Delete">
-<!ENTITY contextMenu.insertCommand.label "Insert New Command">
-<!ENTITY contextMenu.insertComment.label "Insert New Comment">
-<!ENTITY contextMenu.clear.label "Clear All">
-<!ENTITY contextMenu.breakpoint.label "Toggle Breakpoint">
-<!ENTITY contextMenu.startpoint.label "Set / Clear Start Point">
-<!ENTITY contextMenu.execCommand.label "Execute this command">
-<!ENTITY contextMenu.playSuiteHere.label "Play test suite from here">
+<!ENTITY contextMenu.cut.label "Ausschneiden">
+<!ENTITY contextMenu.copy.label "Kopieren">
+<!ENTITY contextMenu.paste.label "Einfügen">
+<!ENTITY contextMenu.delete.label "Löschen">
+<!ENTITY contextMenu.insertCommand.label "Neues Kommando eingeben">
+<!ENTITY contextMenu.insertComment.label "Neuen Kommentar eingeben">
+<!ENTITY contextMenu.clear.label "Alles löschen">
+<!ENTITY contextMenu.breakpoint.label "Haltepunkt einschalten">
+<!ENTITY contextMenu.startpoint.label "Startpunkt setzen / löschen">
+<!ENTITY contextMenu.execCommand.label "Dieses Kommando ausführen">
+<!ENTITY contextMenu.playSuiteHere.label "Testpaket ab hier starten">
 
-<!ENTITY uiReference.label "UI-Element">
+<!ENTITY uiReference.label "UI-Elemente">
 <!ENTITY rollupReference.label "Rollup">
 <!ENTITY rollupButton.tooltip "Apply rollup rules">
 
-<!ENTITY suiteTree.testCase.label "Test Case">
-<!ENTITY newSuiteCmd.label "New Test Suite">
-<!ENTITY openSuiteCmd.label "Open Test Suite...">
-<!ENTITY saveSuiteCmd.label "Save Test Suite">
-<!ENTITY saveSuiteAsCmd.label "Save Test Suite As...">
-<!ENTITY exportSuiteCmd.label "Export Test Suite As...">
-<!ENTITY recentSuiteCmd.label "Recent Test Suites">
-<!ENTITY recentTestCmd.label "Recent Test Cases">
+<!ENTITY suiteTree.testCase.label "Testfall">
+<!ENTITY newSuiteCmd.label "Neues Testpaket">
+<!ENTITY openSuiteCmd.label "Testpaket öffnen...">
+<!ENTITY saveSuiteCmd.label "Testpaket speichern">
+<!ENTITY saveSuiteAsCmd.label "Testpaket speichern unter...">
+<!ENTITY exportSuiteCmd.label "Testpaket exportieren als...">
+<!ENTITY recentSuiteCmd.label "Letzte Testpakete">
+<!ENTITY recentTestCmd.label "Letzte Testfälle">
 
-<!ENTITY testCaseProperties.label "Properties...">
+<!ENTITY testCaseProperties.label "Eigenschaften...">
 
-<!ENTITY reloadExtButton.tooltip "Reload">
-<!ENTITY tableViewUnavailable.label "Table view is not available with this format.">
-<!ENTITY suiteProgressRuns.label "Runs:">
-<!ENTITY suiteProgressFailures.label "Failures:">
-<!ENTITY internalTestsMenu.label "Test Selenium IDE">
+<!ENTITY reloadExtButton.tooltip "Neu Laden">
+<!ENTITY tableViewUnavailable.label "Tabellenansicht ist in diesem Format nicht verfügbar.">
+<!ENTITY suiteProgressRuns.label "Läufe:">
+<!ENTITY suiteProgressFailures.label "Fehlschläge:">
+<!ENTITY internalTestsMenu.label "Selenium-IDE Test">
