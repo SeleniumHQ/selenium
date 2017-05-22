@@ -77,9 +77,12 @@ class FirefoxBinary(object):
 
         This is useful when the browser is stuck.
         """
-        if self.process:
-            self.process.kill()
-            self.process.wait()
+        try:
+            if self.process:
+                self.process.kill()
+                self.process.wait()
+        except OSError:
+            pass
 
     def _start_from_profile_path(self, path):
         self._firefox_env["XRE_PROFILE_PATH"] = path
