@@ -21,11 +21,14 @@ import org.openqa.selenium.Alert;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
+import org.openqa.selenium.DeviceRotation;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.Rectangle;
+import org.openqa.selenium.Rotatable;
+import org.openqa.selenium.ScreenOrientation;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
@@ -64,7 +67,7 @@ import java.util.concurrent.TimeUnit;
  * {@link WebDriverEventListener}, e&#46;g&#46; for logging purposes.
  */
 public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, TakesScreenshot,
-    WrapsDriver, HasInputDevices, HasTouchScreen {
+    WrapsDriver, HasInputDevices, HasTouchScreen, Rotatable {
 
   private final WebDriver driver;
 
@@ -313,6 +316,26 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
     throw new UnsupportedOperationException("Underlying driver does not implement advanced"
         + " user interactions yet.");
  }
+
+  public void rotate(ScreenOrientation orientation) {
+    dispatcher.beforeRotation(driver, orientation);
+    ((Rotatable) driver).rotate(orientation);
+    dispatcher.afterRotation(driver, orientation);
+  }
+
+  public ScreenOrientation getOrientation() {
+    return ((Rotatable) driver).getOrientation();
+  }
+
+  public void rotate(DeviceRotation rotation) {
+    dispatcher.beforeRotation(driver, rotation);
+    ((Rotatable) driver).rotate(rotation);
+    dispatcher.afterRotation(driver, rotation);
+  }
+
+  public DeviceRotation rotation() {
+    return ((Rotatable) driver).rotation();
+  }
 
   private class EventFiringWebElement implements WebElement, WrapsElement, WrapsDriver, Locatable {
 

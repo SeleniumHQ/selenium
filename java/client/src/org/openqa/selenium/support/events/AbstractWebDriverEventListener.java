@@ -18,6 +18,8 @@
 package org.openqa.selenium.support.events;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.DeviceRotation;
+import org.openqa.selenium.ScreenOrientation;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
@@ -97,6 +99,22 @@ public abstract class AbstractWebDriverEventListener implements WebDriverEventLi
 
   public void afterChangeValueOf(WebElement element, WebDriver driver, CharSequence[] keysToSend) {
     // Do nothing.
+  }
+
+  public void beforeRotation(WebDriver driver, ScreenOrientation orientation) {
+    // Do nothing
+  }
+
+  public void afterRotation(WebDriver driver, ScreenOrientation orientation) {
+    // Do nothing
+  }
+
+  public void beforeRotation(WebDriver driver, DeviceRotation rotation) {
+    // Do nothing
+  }
+
+  public void afterRotation(WebDriver driver, DeviceRotation rotation) {
+    // Do nothing
   }
 
   public void beforeScript(String script, WebDriver driver) {

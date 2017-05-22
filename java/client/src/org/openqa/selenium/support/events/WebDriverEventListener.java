@@ -19,6 +19,8 @@ package org.openqa.selenium.support.events;
 
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
+import org.openqa.selenium.DeviceRotation;
+import org.openqa.selenium.ScreenOrientation;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
@@ -172,6 +174,38 @@ public interface WebDriverEventListener {
    * @param element the WebElement being used for the action
    */
   void afterChangeValueOf(WebElement element, WebDriver driver, CharSequence[] keysToSend);
+
+  /**
+   * Called before {@link org.openqa.selenium.Rotatable#rotate(ScreenOrientation)}
+   *
+   * @param driver WebDriver
+   * @param orientation the possible screen orientation to rotate
+   */
+  void beforeRotation(WebDriver driver, ScreenOrientation orientation);
+
+  /**
+   * Called after {@link org.openqa.selenium.Rotatable#rotate(ScreenOrientation)}
+   *
+   * @param driver WebDriver
+   * @param orientation the possible screen orientation to rotate
+   */
+  void afterRotation(WebDriver driver, ScreenOrientation orientation);
+
+  /**
+   * Called before {@link org.openqa.selenium.Rotatable#rotate(DeviceRotation)}
+   *
+   * @param driver WebDriver
+   * @param rotation the possible rotation axis to rotate the device
+   */
+  void beforeRotation(WebDriver driver, DeviceRotation rotation);
+
+  /**
+   * Called after {@link org.openqa.selenium.Rotatable#rotate(DeviceRotation)}
+   *
+   * @param driver WebDriver
+   * @param rotation the possible rotation axis to rotate the device
+   */
+  void afterRotation(WebDriver driver, DeviceRotation rotation);
 
   /**
    * Called before {@link org.openqa.selenium.remote.RemoteWebDriver#executeScript(java.lang.String, java.lang.Object[]) }
