@@ -489,7 +489,7 @@ class SeleniumServer extends DriverService {
           let port = resolved[0];
           let jvmArgs = resolved[1];
           let args = resolved[2];
-          return jvmArgs.concat('-jar', jar, '-port', port).concat(args);
+          return jvmArgs.concat(args).concat('-jar', jar, '-port', port);
         });
 
     let java = 'java';
