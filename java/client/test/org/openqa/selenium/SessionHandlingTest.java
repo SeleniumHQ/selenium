@@ -28,53 +28,50 @@ import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.NoDriverAfterTest;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.SeleniumTestRunner;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
-@RunWith(SeleniumTestRunner.class)
-public class SessionHandlingTest {
+public class SessionHandlingTest extends JUnit4TestBase {
 
+  @NoDriverAfterTest
   @Test
   public void callingQuitMoreThanOnceOnASessionIsANoOp() {
-    WebDriver driver = new WebDriverBuilder().get();
-
     driver.quit();
     sleepTight(3000);
     driver.quit();
   }
 
+  @NoDriverAfterTest
   @Test
   @Ignore(value = FIREFOX, issue = "https://github.com/SeleniumHQ/selenium/issues/3792")
   @Ignore(PHANTOMJS)
-  @Ignore(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/689")
+  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/689")
   public void callingQuitAfterClosingTheLastWindowIsANoOp() {
-    WebDriver driver = new WebDriverBuilder().get();
-
     driver.close();
     sleepTight(3000);
     driver.quit();
   }
 
+  @NoDriverAfterTest
   @Test
   @Ignore(value = FIREFOX, issue = "3792")
   @Ignore(value = PHANTOMJS, reason = "throws NoSuchWindowException")
   @Ignore(value = SAFARI, reason = "throws NullPointerException")
-  @Ignore(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/689")
+  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/689")
   public void callingAnyOperationAfterClosingTheLastWindowShouldThrowAnException() {
-    WebDriver driver = new WebDriverBuilder().get();
-
     driver.close();
     sleepTight(3000);
     Throwable t = catchThrowable(driver::getCurrentUrl);
     assertThat(t, instanceOf(NoSuchSessionException.class));
   }
 
+  @NoDriverAfterTest
   @Test
   @Ignore(value = SAFARI, reason = "Safari: throws UnreachableBrowserException")
   public void callingAnyOperationAfterQuitShouldThrowAnException() {
-    WebDriver driver = new WebDriverBuilder().get();
-
     driver.quit();
     sleepTight(3000);
     Throwable t = catchThrowable(driver::getCurrentUrl);
