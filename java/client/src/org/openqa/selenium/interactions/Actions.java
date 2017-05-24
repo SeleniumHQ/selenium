@@ -627,6 +627,12 @@ public class Actions {
 
     @Override
     public void perform() {
+      if (driver == null) {
+        // One of the deprecated constructors was used. Fall back to the old way for now.
+        fallBack.perform();
+        return;
+      }
+
       try {
         ((Interactive) driver).perform(sequences.values());
       } catch (ClassCastException | UnsupportedCommandException e) {
