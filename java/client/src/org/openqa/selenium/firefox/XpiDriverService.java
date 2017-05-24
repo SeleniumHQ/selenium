@@ -171,7 +171,10 @@ public class XpiDriverService extends DriverService {
 
     @Override
     protected File findDefaultExecutable() {
-      return new FirefoxBinary().getFile();
+      if (binary == null) {
+        return new FirefoxBinary().getFile();
+      }
+      return binary.getFile();
     }
 
     @Override
