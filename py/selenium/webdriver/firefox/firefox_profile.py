@@ -254,7 +254,7 @@ class FirefoxProfile(object):
         if addon.endswith('.xpi'):
             tmpdir = tempfile.mkdtemp(suffix='.' + os.path.split(addon)[-1])
             compressed_file = zipfile.ZipFile(addon, 'r')
-            for name in compressed_file.namelist():
+            for name in sorted(compressed_file.namelist()):
                 if name.endswith('/'):
                     if not os.path.isdir(os.path.join(tmpdir, name)):
                         os.makedirs(os.path.join(tmpdir, name))
