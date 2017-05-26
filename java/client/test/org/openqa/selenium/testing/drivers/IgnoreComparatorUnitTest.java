@@ -31,6 +31,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.mockito.Mockito;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.testing.Driver;
 import org.openqa.selenium.testing.Ignore;
@@ -127,9 +128,9 @@ public class IgnoreComparatorUnitTest {
 
   private IgnoreList ignoreForDriver(final Set<Driver> drivers,
                                     final Set<Platform> platforms) {
-    final IgnoreList ignore = mock(IgnoreList.class);
+    final IgnoreList ignore = mock(IgnoreList.class, Mockito.RETURNS_SMART_NULLS);
     final Ignore[] list = drivers.stream().map(driver -> {
-      Ignore ig = mock(Ignore.class);
+      Ignore ig = mock(Ignore.class, Mockito.RETURNS_SMART_NULLS);
       when(ig.value()).thenReturn(driver);
       return ig;
     }).collect(Collectors.toList()).toArray(new Ignore[drivers.size()]);
