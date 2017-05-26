@@ -53,6 +53,71 @@ def testShouldBeAbleToExecuteSimpleJavascriptAndReturnAWebElement(driver, pages)
     assert "a" == result.tag_name.lower()
 
 
+def testShouldBeAbleToExecuteSimpleJavascriptAndReturnAListOfWebElements(driver, pages):
+    pages.load("xhtmlTest.html")
+
+    result = driver.execute_script("return document.querySelectorAll('div.navigation a')")
+
+    assert result is not None
+    assert isinstance(result, list)
+    assert all(isinstance(item, WebElement) for item in result)
+    assert all('a' == item.tag_name.lower() for item in result)
+
+
+def testShouldBeAbleToExecuteSimpleJavascriptAndReturnWebElementsInsideAList(driver, pages):
+    pages.load("xhtmlTest.html")
+
+    result = driver.execute_script("return [document.body]")
+
+    assert result is not None
+    assert isinstance(result, list)
+    assert isinstance(result[0], WebElement)
+
+
+def testShouldBeAbleToExecuteSimpleJavascriptAndReturnWebElementsInsideANestedList(driver, pages):
+    pages.load("xhtmlTest.html")
+
+    result = driver.execute_script("return [document.body, [document.getElementById('id1')]]")
+
+    assert result is not None
+    assert isinstance(result, list)
+    assert isinstance(result[0], WebElement)
+    assert isinstance(result[1][0], WebElement)
+
+
+def testShouldBeAbleToExecuteSimpleJavascriptAndReturnWebElementsInsideADict(driver, pages):
+    pages.load("xhtmlTest.html")
+
+    result = driver.execute_script("return {el1: document.body}")
+
+    assert result is not None
+    assert isinstance(result, dict)
+    assert isinstance(result.get('el1'), WebElement)
+
+
+def testShouldBeAbleToExecuteSimpleJavascriptAndReturnWebElementsInsideANestedDict(driver, pages):
+    pages.load("xhtmlTest.html")
+
+    result = driver.execute_script("return {el1: document.body, "
+                                   "nested: {el2: document.getElementById('id1')}}")
+
+    assert result is not None
+    assert isinstance(result, dict)
+    assert isinstance(result.get('el1'), WebElement)
+    assert isinstance(result.get('nested').get('el2'), WebElement)
+
+
+def testShouldBeAbleToExecuteSimpleJavascriptAndReturnWebElementsInsideAListInsideADict(driver, pages):
+    pages.load("xhtmlTest.html")
+
+    result = driver.execute_script("return {el1: [document.body]}")
+
+    assert result is not None
+    assert isinstance(result, dict)
+    assert isinstance(result.get('el1'), list)
+    assert isinstance(result.get('el1')[0], WebElement)
+
+
 def testShouldBeAbleToExecuteSimpleJavascriptAndReturnABoolean(driver, pages):
     pages.load("xhtmlTest.html")
 
