@@ -205,7 +205,7 @@ public class ProxyTest {
 
     Map<String, Object> json = proxy.toJson();
 
-    assertEquals("manual", json.get("proxyType"));
+    assertEquals("MANUAL", json.get("proxyType"));
     assertEquals("ftp.proxy", json.get("ftpProxy"));
     assertEquals("http.proxy:1234", json.get("httpProxy"));
     assertEquals("ssl.proxy", json.get("sslProxy"));
@@ -245,7 +245,7 @@ public class ProxyTest {
 
     Map<String, Object> json = proxy.toJson();
 
-    assertEquals("pac", json.get("proxyType"));
+    assertEquals("PAC", json.get("proxyType"));
     assertEquals("http://aaa/bbb.pac", json.get("proxyAutoconfigUrl"));
     assertEquals(2, json.entrySet().size());
   }
@@ -279,7 +279,7 @@ public class ProxyTest {
 
     Map<String, ?> json = proxy.toJson();
 
-    assertEquals("autodetect", json.get("proxyType"));
+    assertEquals("AUTODETECT", json.get("proxyType"));
     assertTrue((Boolean) json.get("autodetect"));
     assertEquals(2, json.entrySet().size());
   }
@@ -311,7 +311,7 @@ public class ProxyTest {
 
     Map<String, Object> json = proxy.toJson();
 
-    assertEquals("system", json.get("proxyType"));
+    assertEquals("SYSTEM", json.get("proxyType"));
     assertEquals(1, json.entrySet().size());
   }
 
@@ -342,7 +342,7 @@ public class ProxyTest {
 
     Map<String, Object> json = proxy.toJson();
 
-    assertEquals("direct", json.get("proxyType"));
+    assertEquals("DIRECT", json.get("proxyType"));
     assertEquals(1, json.entrySet().size());
   }
 
