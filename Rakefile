@@ -246,7 +246,7 @@ end
 
 task :test_java => [
   "//java/client/test/org/openqa/selenium/atoms:test:run",
-  "//java/client/test/org/openqa/selenium:small-tests:run",
+  :test_java_small_tests,
   :test_support,
   :test_java_webdriver,
   :test_selenium,
@@ -254,6 +254,7 @@ task :test_java => [
 ]
 
 task :test_java_small_tests => [
+  "//java/client/test/org/openqa/selenium:small-tests:run",
   "//java/client/test/org/openqa/selenium/support:small-tests:run",
   "//java/client/test/org/openqa/selenium/remote:common-tests:run",
   "//java/client/test/org/openqa/selenium/remote:client-tests:run",
