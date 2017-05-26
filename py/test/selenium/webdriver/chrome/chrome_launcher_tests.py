@@ -23,14 +23,11 @@ def test_launch_and_close_browser():
     driver = Chrome()
     driver.quit()
 
-
-def test_we_can_launch_multiple_chrome_instances():
-    driver1 = Chrome()
-    driver2 = Chrome()
-    driver3 = Chrome()
-    driver1.quit()
-    driver2.quit()
-    driver3.quit()
+def test_multiple_driver_instance_launch():
+    for i in range(0,2):
+        i = Chrome()
+    for i in range(0,2):
+        i.quit()
 
 
 def test_launch_chrome_do_not_affect_default_capabilities():
