@@ -32,7 +32,10 @@ import org.openqa.selenium.remote.SessionId;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -80,16 +83,21 @@ class AllHandlers {
     public void execute(HttpServletRequest req, HttpServletResponse resp) throws IOException {
       resp.reset();
 
-      byte[] payload = new GsonBuilder().serializeNulls().create().toJson(ImmutableMap.of(
-          "sessionId", null,
-          "status", UNKNOWN_COMMAND,
-          "value", ImmutableMap.of(
-              "error", "unknown command",
-              "message", String.format(
-                  "Unable to find command matching %s to %s",
-                  req.getMethod(),
-                  req.getPathInfo()),
-              "stacktrace", ""))).getBytes(UTF_8);
+      // We're not using ImmutableMap for the outer map because it disallows null values.
+      Map<String, Object> responseMap = new HashMap<>();
+      responseMap.put("sessionId", null);
+      responseMap.put("status", UNKNOWN_COMMAND);
+      responseMap.put("value", ImmutableMap.of(
+          "error", "unknown command",
+          "message", String.format(
+              "Unable to find command matching %s to %s",
+              req.getMethod(),
+              req.getPathInfo()),
+          "stacktrace", ""));
+      responseMap = Collections.unmodifiableMap(responseMap);
+
+      byte[] payload = new GsonBuilder().serializeNulls().create().toJson(responseMap)
+          .getBytes(UTF_8);
 
       resp.setStatus(HTTP_NOT_FOUND);
       resp.setContentType(JAVASCRIPT_UTF_8.toString());
