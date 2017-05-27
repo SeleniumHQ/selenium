@@ -221,9 +221,7 @@ TestSuite.prototype = {
 					i++;
 
 				}
-				alert(i + " start")
 				content += "<tr><td><a isSuit=true href=\"" + this.tests[i].parent_suit_address + "\">" + this.tests[i].parent + "</a></td></tr>\n"
-				alert(i+" finished")
 			} else {
 				content += this.tests[i].format();
 			}
