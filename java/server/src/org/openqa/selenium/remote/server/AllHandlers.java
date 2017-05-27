@@ -19,6 +19,7 @@ package org.openqa.selenium.remote.server;
 
 import static com.google.common.net.MediaType.JAVASCRIPT_UTF_8;
 import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
+import static java.net.HttpURLConnection.HTTP_OK;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.openqa.selenium.remote.ErrorCodes.UNKNOWN_COMMAND;
 
@@ -74,6 +75,10 @@ class AllHandlers {
       return new BeginSession(allSessions, legacySessions);
     }
 
+    if ("GET".equalsIgnoreCase(req.getMethod()) && "/status".equals(path)) {
+      return new StatusHandler();
+    }
+
     return new NoHandler();
   }
 
@@ -100,6 +105,28 @@ class AllHandlers {
           .getBytes(UTF_8);
 
       resp.setStatus(HTTP_NOT_FOUND);
+      resp.setContentType(JAVASCRIPT_UTF_8.toString());
+      resp.setContentLengthLong(payload.length);
+
+      try (OutputStream out = resp.getOutputStream()) {
+        out.write(payload);
+      }
+    }
+  }
+
+  private static class StatusHandler implements CommandHandler {
+
+    @Override
+    public void execute(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+      resp.reset();
+
+      // Write out a minimal W3C status response.
+      byte[] payload = new GsonBuilder().create().toJson(ImmutableMap.of(
+          "ready", true,
+          "message", "Server is running"
+      )).getBytes(UTF_8);
+
+      resp.setStatus(HTTP_OK);
       resp.setContentType(JAVASCRIPT_UTF_8.toString());
       resp.setContentLengthLong(payload.length);
 
