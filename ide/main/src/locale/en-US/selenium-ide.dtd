@@ -1,5 +1,5 @@
 <!ENTITY selenium-ide.name "Selenium IDE">
-<!ENTITY selenium-ide.version "2.9.0">
+<!ENTITY selenium-ide.version "2.9.1">
 <!ENTITY selenium-ide.sidebar.title "&selenium-ide.name; &selenium-ide.version;">
 <!ENTITY selenium-ide.standalone.title "&selenium-ide.name; &selenium-ide.version;">
 
@@ -7,6 +7,7 @@
 
 <!ENTITY newTestCmd.label "New Test Case">
 <!ENTITY addTestCmd.label "Add Test Case...">
+<!ENTITY addTestSuitCmd.label "Add Test Suit...">
 <!ENTITY openCmd.label "Open...">
 <!ENTITY saveTestCmd.label "Save Test Case">
 <!ENTITY saveTestAsCmd.label "Save Test Case As...">

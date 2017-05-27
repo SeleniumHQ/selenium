@@ -30,12 +30,55 @@ TestSuite.load = function() {
 }
 
 TestSuite.loadFile = function(file) {
-    var suite = this.loadInputStream(FileUtils.openFileInputStream(file));
+    var suite = this.loadInputStream(FileUtils.openFileInputStream(file),file);
     suite.file = file;
     return suite;
 }
 
-TestSuite.loadInputStream = function(input) {
+TestSuite.getFullPath = function(from, to , isSuit) {
+	if (from.indexOf("\\") !== -1){
+		var fromArray = from.split("\\");
+	}
+	else{
+		var fromArray = from.split("/");	
+	}
+	if ( to.indexOf("\\") !== -1){
+		var toArray = to.split("\\");
+		var joiner = "\\"
+	}
+	else{
+		var toArray = to.split("/");
+		var joiner = "/"
+	}
+	var result = "";
+	if (isSuit){
+		toArray.push("suit");
+	}
+	var d = toArray.length - 1;
+	var g = fromArray.length - 1;
+	for( var c = g ; c >=0 ;c--){
+		//if (fromArray[c] == toArray[d] && fromArray[c-1] == ".." ) {
+		if (fromArray[c-1] == ".." ) {
+			for (var e = 0; e < d ; e++){
+				result += toArray[e] + joiner
+			}
+			for (var f = c ; f <= fromArray.length - 1 ; f++){
+				result += fromArray[f] + joiner
+			}
+			break;
+		}
+		d--	
+	}
+	if (result == ""){
+		return from
+	}
+	else{
+		return result;
+	}
+}
+
+
+TestSuite.loadInputStream = function(input,file) {
     var content = FileUtils.getUnicodeConverter("UTF-8").ConvertToUnicode(input.read(input.available()));
     input.close();
     if (/(<table[\s>][\s\S]*?<\/table>)/i.test(content)) {
@@ -43,11 +86,30 @@ TestSuite.loadInputStream = function(input) {
         var tableContent = RegExp.$1;
         var pattern = /<tr[\s>][\s\S]*?<\/tr>/i;
         var linkPattern = /<a\s[^>]*href=['"]([^'"]+)['"][^>]*>([\s\S]+)<\/a>/i;
+		var suitPattern = /<a\s[^>]*isSuit=true\s[^>]*href=['"]([^'"]+)['"][^>]*>([\s\S]+)<\/a>/i;
         var rest = tableContent;
         var r;
         while ((r = pattern.exec(rest)) != null) {
             var row = r[0];
-            if (linkPattern.test(row)) {
+			if (suitPattern.test(row)){
+				var file_address = row.split("href=\"")[1].split("\"")[0]
+				if (file_address.indexOf("\\") !== -1){
+					var inner_suit_name = file_address.split("\\suit")[0].split("\\")
+					}
+				else {
+					var inner_suit_name = file_address.split("/suit")[0].split("/")
+				}
+				inner_suit_name = inner_suit_name[inner_suit_name.length-1]
+				file_address = this.getFullPath(file_address , file.parent.path , true);
+				var innerSuit = this.loadFile(FileUtils.getFile(file_address));
+				for( var i = 0; i < innerSuit.tests.length;i++ ) {
+					innerSuit.tests[i].parent = inner_suit_name
+					innerSuit.tests[i].parent_suit_address = file_address
+					innerSuit.tests[i].title = innerSuit.tests[i].title + ":" + innerSuit.tests[i].parent
+					suite.tests.push(innerSuit.tests[i]);
+				}	
+			}
+            else if (linkPattern.test(row)) {
                 var filename = decodeURIComponent(RegExp.$1);
                 var title = RegExp.$2;
                 suite.tests.push(new TestSuite.TestCase(suite, filename, title));
@@ -148,7 +210,23 @@ TestSuite.prototype = {
         var content = "<table id=\"suiteTable\" cellpadding=\"1\" cellspacing=\"1\" border=\"1\" class=\"selenium\"><tbody>\n";
         content += "<tr><td><b>Test Suite</b></td></tr>\n";
         for (var i = 0; i < this.tests.length; i++) {
-            content += this.tests[i].format();
+			if (this.tests[i].parent){
+				while(true){
+					if (!this.tests[i+1]){
+						break;
+					}
+					if (!this.tests[i+1].parent){
+						break;
+					}
+					i++;
+
+				}
+				alert(i + " start")
+				content += "<tr><td><a isSuit=true href=\"" + this.tests[i].parent_suit_address + "\">" + this.tests[i].parent + "</a></td></tr>\n"
+				alert(i+" finished")
+			} else {
+				content += this.tests[i].format();
+			}
         }
         content += "</tbody></table>\n";
         return content;
@@ -196,6 +274,8 @@ TestSuite.TestCase = function(testSuite, filename, title) {
     this.filename = filename;
     this.title = title;
     this.testResult = null;
+	this.parent = null;
+	this.parent_suit_address = null;
 }
 
 TestSuite.TestCase.prototype = {

@@ -153,8 +153,9 @@ Application.prototype = {
         if (this.testSuite) {
             this.notify("testSuiteUnloaded", this.testSuite);
         }
-        this.testSuite = testSuite;
+		this.testSuite = testSuite;
         this.notify("testSuiteChanged", testSuite);
+        
     },
     
     getTestSuite: function() {
@@ -237,6 +238,7 @@ Application.prototype = {
 			var files = fp.files;
 			while (files.hasMoreElements()) {
 				try {
+				
           testCase = this._loadTestCase(files.getNext().QueryInterface(Components.interfaces.nsILocalFile));
 					if (testCase) {
 					    this.testSuite.addTestCaseFromContent(testCase);
@@ -249,6 +251,31 @@ Application.prototype = {
 		}
 	}
     },
+	
+	addTestSuit: function() {
+		try {
+            testSuite = TestSuite.load();
+			if (testSuite.file.parent.path.indexOf("\\") !== -1){
+					joiner = "\\"
+					var suit_name =  testSuite.file.parent.path.split("\\")
+					}
+				else {
+					joiner = "/"
+					var suit_name =  testSuite.file.parent.path.split("/")
+				}
+				suit_name = suit_name[suit_name.length-1]
+				for (var i=0 ; i <= testSuite.tests.length-1 ; i++){
+				testSuite.tests[i].parent = suit_name;
+				testSuite.tests[i].parent_suit_address = testSuite.file.parent.path + joiner + "suit";
+				this.testSuite.tests.push(testSuite.tests[i]);
+				this.notify("testSuiteChanged", testSuite);	
+				}
+		}catch(error) {
+						this.log.error("AddTestSuit: "+error);
+		}
+			
+		
+	},
 
     loadTestCaseWithNewSuite: function(path) {
         var file = null;
@@ -346,15 +373,16 @@ Application.prototype = {
             } else {
                 testSuite = TestSuite.load();
             }
-            if (testSuite) {
-                this.setTestSuite(testSuite);
-                this.addRecentTestSuite(testSuite);
-                //Samit: Fix: Switch to the first testcase in the newly loaded suite
-                if (testSuite.tests.length > 0) {
-                    var testCase = testSuite.tests[0];
-                    if (testCase) this.showTestCaseFromSuite(testCase);
-                }
-            }
+			if (testSuite) {
+				this.setTestSuite(testSuite);
+				this.addRecentTestSuite(testSuite);
+				//Samit: Fix: Switch to the first testcase in the newly loaded suite
+				if (testSuite.tests.length > 0) {
+					var testCase = testSuite.tests[0];
+					if (testCase) this.showTestCaseFromSuite(testCase);
+				}
+			}
+
         } catch (error) {
             if (noErrorAlert) {   //Samit: Enh: allow error messages to be supressed, so caller can make intelligent ux decisions
                 throw error;
