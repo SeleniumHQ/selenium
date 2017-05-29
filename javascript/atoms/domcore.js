@@ -68,7 +68,7 @@ bot.dom.core.getAttribute = function(element, attributeName) {
   // In IE doc mode < 8, the "value" attribute of an <input> is only accessible
   // as a property.
   if (bot.userAgent.IE_DOC_PRE8 && attributeName == 'value' &&
-      bot.dom.core.isElement(element, goog.dom.TagName.INPUT)) {
+      bot.dom.core.isElement(element, goog.dom.TagName.INPUT.toString())) {
     return element['value'];
   }
 
@@ -145,7 +145,7 @@ bot.dom.core.getProperty = function(element, propertyName) {
   // its text content, but IE < 8 does not adhere to that behavior, so fix it.
   // http://www.w3.org/TR/1999/REC-html401-19991224/interact/forms.html#adef-value-OPTION
   if (bot.userAgent.IE_DOC_PRE8 && propertyName == 'value' &&
-      bot.dom.core.isElement(element, goog.dom.TagName.OPTION) &&
+      bot.dom.core.isElement(element, goog.dom.TagName.OPTION.toString()) &&
       goog.isNull(bot.dom.core.getAttribute(element, 'value'))) {
     return goog.dom.getRawTextContent(element);
   }
@@ -176,11 +176,11 @@ bot.dom.core.isElement = function(node, opt_tagName) {
  * @return {boolean} Whether the element could be checked or selected.
  */
 bot.dom.core.isSelectable = function(element) {
-  if (bot.dom.core.isElement(element, goog.dom.TagName.OPTION)) {
+  if (bot.dom.core.isElement(element, goog.dom.TagName.OPTION.toString())) {
     return true;
   }
 
-  if (bot.dom.core.isElement(element, goog.dom.TagName.INPUT)) {
+  if (bot.dom.core.isElement(element, goog.dom.TagName.INPUT.toString())) {
     var type = element.type.toLowerCase();
     return type == 'checkbox' || type == 'radio';
   }

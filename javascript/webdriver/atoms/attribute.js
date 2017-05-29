@@ -122,8 +122,8 @@ exports.get = function(element, attribute) {
   // Our tests suggest that returning the attribute is desirable for
   // the href attribute of <a> tags and the src attribute of <img> tags,
   // but we normally attempt to get the property value before the attribute.
-  var isLink = domCore.isElement(element, TagName.A);
-  var isImg = domCore.isElement(element, TagName.IMG);
+  var isLink = domCore.isElement(element, TagName.A.toString());
+  var isImg = domCore.isElement(element, TagName.IMG.toString());
 
   // Although the attribute matters, the property is consistent. Return that in
   // preference to the attribute for links and images.
