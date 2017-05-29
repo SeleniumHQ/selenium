@@ -45,6 +45,10 @@ public interface OutputType<T> {
     public String toString() {
       return "OutputType.BASE64";
     }
+
+    public String toString() {
+      return "OutputType.BASE64";
+    }
   };
 
   /**
