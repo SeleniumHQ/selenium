@@ -1,0 +1,57 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.openqa.grid</groupId>
+    <artifactId>selenium-grid-parent</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0</version>
+    <name>Selenium Grid Refactor Parent Pom</name>
+
+    <modules>
+        <module>selenium_grid_remote_server</module>
+        <module>selenium_grid_server</module>
+        <module>selenium_grid_commons</module>
+        
+        <module>selenium_grid_console_servlet</module>
+        <module>selenium_grid_console_servlet_beta</module>
+        <module>selenium_grid_display_help_servlet</module>
+        <module>selenium_grid_driver_servlet</module>
+        <module>selenium_grid_grid_1_heartbeat_servlet</module>
+        <module>selenium_grid_hub_status_servlet</module>
+        <module>selenium_grid_lifecycle_servlet</module>
+        <module>selenium_grid_proxy_status_servlet</module>
+        <module>selenium_grid_registration_servlet</module>
+        <module>selenium_grid_resource_servlet</module>
+        <module>selenium_grid_test_session_status_servlet</module>
+
+        <module>selenium_grid_node</module>
+        <module>selenium_grid_hub</module>
+     </modules>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <configuration>
+                        <source>1.7</source>
+                        <target>1.7</target>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>3.8.1</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>

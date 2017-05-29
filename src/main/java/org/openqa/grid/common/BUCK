@@ -1,0 +1,25 @@
+java_library(name = 'common',
+  srcs = glob(['**/*.java']),
+  deps = [
+    ':defaults',
+    '//java/client/src/org/openqa/selenium:platform',
+    '//java/client/src/org/openqa/selenium/net:net',
+    '//java/client/src/org/openqa/selenium/remote:remote',
+    '//java/server/src/org/openqa/selenium/server:server',
+    '//third_party/java/gson:gson',
+    '//third_party/java/guava-libraries:guava-libraries',
+  ],
+  visibility = [
+    '//java/server/src/org/openqa/grid:grid',
+    '//java/server/src/org/openqa/grid/selenium:classes',
+  ],
+)
+
+prebuilt_jar(name = 'defaults',
+  binary_jar = ':defaults-zip',
+)
+
+zip(name = 'defaults-zip',
+  srcs = glob(['defaults/*']),
+  out = 'defaults.jar',
+)

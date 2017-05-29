@@ -1,0 +1,11 @@
+
+java_binary(name = "selenium",
+  main_class = "org.openqa.grid.selenium.GridLauncher",
+  srcs = [ "**/*.java" ],
+  deps = [
+    "//java/client/src/com/thoughtworks/selenium/webdriven:webdriven",
+    "//java/client/src/org/openqa/selenium/firefox",
+    "//java/server/src/org/openqa/selenium/remote/server",
+    "//java/server/src/org/openqa/selenium/server",
+    "//java/server/src/org/openqa/grid",
+  ])
