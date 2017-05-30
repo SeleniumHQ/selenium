@@ -63,6 +63,7 @@ class Service(service.Service):
         return "http://localhost:%d/wd/hub" % self.port
 
     def send_remote_shutdown_command(self):
+        super(Service, self).send_remote_shutdown_command()
         if self._cookie_temp_file:
             os.close(self._cookie_temp_file_handle)
             os.remove(self._cookie_temp_file)
