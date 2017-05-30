@@ -1,3 +1,7 @@
+Selenium 3.4.3
+* Fix EventFiringWebdriver and WebElement to raise AttributeError on missing attributes. (#4107)
+* unwrap WebElements inside dicts
+
 Selenium 3.4.2
 
 * translate move_by_offset command to w3c
