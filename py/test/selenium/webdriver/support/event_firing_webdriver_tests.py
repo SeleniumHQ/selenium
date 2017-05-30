@@ -201,3 +201,13 @@ def test_using_kwargs(driver, pages):
     ef_driver.get_cookie(name="cookie_name")
     element = ef_driver.find_element_by_id("plainButton")
     element.get_attribute(name="id")
+
+
+def test_missing_attributes_raise_error(driver, pages):
+    ef_driver = EventFiringWebDriver(driver, AbstractEventListener())
+    with pytest.raises(AttributeError):
+        ef_driver.attribute_should_not_exist
+
+    element = ef_driver.get(pages.url("readOnlyPage.html"))
+    with pytest.raises(AttributeError):
+        element.attribute_should_not_exist
