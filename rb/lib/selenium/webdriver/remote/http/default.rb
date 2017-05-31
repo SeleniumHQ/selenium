@@ -26,6 +26,8 @@ module Selenium
       module Http
         # @api private
         class Default < Common
+          include MonitorMixin
+
           attr_accessor :proxy
 
           attr_accessor :open_timeout
@@ -121,7 +123,9 @@ module Selenium
           end
 
           def response_for(request)
-            http.request request
+            synchronize do
+              http.request request
+            end
           end
 
           def new_http_client
