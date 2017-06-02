@@ -41,7 +41,6 @@ goog.require('goog.dom');
 goog.require('goog.dom.NodeType');
 goog.require('goog.userAgent');
 goog.require('goog.userAgent.product');
-goog.require('wgxpath');
 
 /**
  * XPathResult enum values. These are defined separately since
@@ -93,12 +92,6 @@ bot.locators.xpath.evaluate_ = function(node, path, resultType) {
   if (!doc.documentElement) {
     // document is not loaded yet
     return null;
-  }
-
-  // Let the wgxpath library be compiled away unless we are on IE or Android.
-  // TODO: Restrict this to just IE when we drop support for Froyo.
-  if (goog.userAgent.IE || goog.userAgent.product.ANDROID) {
-    wgxpath.install(goog.dom.getWindow(doc));
   }
 
   try {

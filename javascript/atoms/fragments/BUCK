@@ -30,3 +30,11 @@ js_fragment(name = 'is-displayed',
     '//javascript/chrome-driver:is_element_displayed',
   ],
 )
+
+js_fragment(name = 'get-text',
+  function = 'bot.dom.getVisibleText',
+  module = 'bot.dom',
+  deps = [
+    '//javascript/atoms:dom',
+  ],
+)
