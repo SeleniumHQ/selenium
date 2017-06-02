@@ -47,14 +47,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-class ServicedSession implements ActiveSession {
+public class ServicedSession implements ActiveSession {
 
   private final static Logger LOG = Logger.getLogger(ActiveSession.class.getName());
 
@@ -63,11 +62,8 @@ class ServicedSession implements ActiveSession {
   private final SessionCodec codec;
   private final Map<String, Object> capabilities;
 
-  public ServicedSession(
-      DriverService service,
-      SessionCodec codec,
-      SessionId id,
-      Map<String, Object> capabilities) {
+  ServicedSession(
+      DriverService service, SessionCodec codec, SessionId id, Map<String, Object> capabilities) {
     this.service = service;
     this.codec = codec;
     this.id = id;
@@ -118,6 +114,10 @@ class ServicedSession implements ActiveSession {
       } catch (ReflectiveOperationException e) {
         throw new SessionNotCreatedException("Cannot find service factory method", e);
       }
+    }
+
+    public Factory(Supplier<DriverService> serviceSupplier) {
+      this.createService = serviceSupplier;
     }
 
     @Override

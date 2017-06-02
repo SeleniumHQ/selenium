@@ -50,12 +50,15 @@ public class WebDriverServlet extends HttpServlet {
 
   public static final String SESSIONS_KEY = DriverServlet.class.getName() + ".sessions";
   public static final String ACTIVE_SESSIONS_KEY = WebDriverServlet.class.getName() + ".sessions";
+  public static final String SESSION_FACTORIES_KEY =
+      WebDriverServlet.class.getName() + ".sessionFactories";
 
   private static final String CROSS_DOMAIN_RPC_PATH = "/xdrpc";
 
   private final StaticResourceHandler staticResourceHandler = new StaticResourceHandler();
   private final ExecutorService executor = Executors.newCachedThreadPool();
   private Cache<SessionId, ActiveSession> allSessions;
+  private SessionFactories sessionFactories;
   private DriverSessions legacyDriverSessions;
   private AllHandlers handlers;
 
@@ -69,6 +72,11 @@ public class WebDriverServlet extends HttpServlet {
           new DefaultDriverFactory(),
           new SystemClock());
       getServletContext().setAttribute(SESSIONS_KEY, legacyDriverSessions);
+    }
+
+    sessionFactories = (SessionFactories) getServletContext().getAttribute(SESSION_FACTORIES_KEY);
+    if (sessionFactories == null) {
+      sessionFactories = new DefaultSessionFactories(legacyDriverSessions);
     }
 
     allSessions = (Cache<SessionId, ActiveSession>) getServletContext().getAttribute(ACTIVE_SESSIONS_KEY);
@@ -90,7 +98,7 @@ public class WebDriverServlet extends HttpServlet {
       getServletContext().setAttribute(ACTIVE_SESSIONS_KEY, allSessions);
     }
 
-    handlers = new AllHandlers(allSessions, legacyDriverSessions);
+    handlers = new AllHandlers(allSessions, sessionFactories);
   }
 
   @Override

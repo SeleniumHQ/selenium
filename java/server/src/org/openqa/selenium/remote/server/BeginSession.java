@@ -20,15 +20,7 @@ package org.openqa.selenium.remote.server;
 import static com.google.common.net.MediaType.JAVASCRIPT_UTF_8;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.openqa.selenium.remote.BrowserType.CHROME;
-import static org.openqa.selenium.remote.BrowserType.EDGE;
-import static org.openqa.selenium.remote.BrowserType.FIREFOX;
-import static org.openqa.selenium.remote.BrowserType.IE;
-import static org.openqa.selenium.remote.BrowserType.SAFARI;
 import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
-import static org.openqa.selenium.remote.DesiredCapabilities.chrome;
-import static org.openqa.selenium.remote.DesiredCapabilities.firefox;
-import static org.openqa.selenium.remote.DesiredCapabilities.htmlUnit;
 import static org.openqa.selenium.remote.Dialect.OSS;
 import static org.openqa.selenium.remote.Dialect.W3C;
 
@@ -43,6 +35,7 @@ import com.google.gson.stream.JsonToken;
 
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.remote.BeanToJsonConverter;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.SessionId;
 
@@ -60,6 +53,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -74,20 +68,12 @@ class BeginSession implements CommandHandler {
   private final static Gson gson = new GsonBuilder().serializeNulls().create();
 
   private final Cache<SessionId, ActiveSession> allSessions;
-  private final DriverSessions legacySessions;
-  private final Map<String, SessionFactory> factories;
-  private final Function<Path, ActiveSession> defaultFactory;
+  private final SessionFactories sessionFactories;
 
-  public BeginSession(Cache<SessionId, ActiveSession> allSessions, DriverSessions legacySessions) {
+  public BeginSession(
+      Cache<SessionId, ActiveSession> allSessions, SessionFactories sessionFactories) {
     this.allSessions = allSessions;
-    this.legacySessions = legacySessions;
-
-    this.factories = ImmutableMap.of(
-        chrome().getBrowserName(), new ServicedSession.Factory("org.openqa.selenium.chrome.ChromeDriverService"),
-        firefox().getBrowserName(), new ServicedSession.Factory("org.openqa.selenium.firefox.GeckoDriverService"),
-        htmlUnit().getBrowserName(), new InMemorySession.Factory(legacySessions));
-
-    defaultFactory = null;
+    this.sessionFactories = sessionFactories;
   }
 
   @Override
@@ -238,40 +224,12 @@ class BeginSession implements CommandHandler {
         .collect(Collectors.toList());
     allCapabilities.add(ossKeys);
 
-    // Can we figure out the browser from any of these?
-    ImmutableList.Builder<SessionFactory> builder = ImmutableList.builder();
-    for (Map<String, Object> caps : allCapabilities) {
-      caps.entrySet().stream()
-          .map(entry -> guessBrowserName(entry.getKey(), entry.getValue()))
-          .filter(factories.keySet()::contains)
-          .map(factories::get)
-          .findFirst()
-          .ifPresent(builder::add);
-    }
-
-    return builder.build();
-  }
-
-  private String guessBrowserName(String capabilityKey, Object value) {
-    if (BROWSER_NAME.equals(capabilityKey)) {
-      return (String) value;
-    }
-    if ("chromeOptions".equals(capabilityKey)) {
-      return CHROME;
-    }
-    if ("edgeOptions".equals(capabilityKey)) {
-      return EDGE;
-    }
-    if (capabilityKey.startsWith("moz:")) {
-      return FIREFOX;
-    }
-    if (capabilityKey.startsWith("safari.")) {
-      return SAFARI;
-    }
-    if ("se:ieOptions".equals(capabilityKey)) {
-      return IE;
-    }
-    return null;
+    return allCapabilities
+        .stream()
+        .map(caps -> sessionFactories.getFactoryFor(new DesiredCapabilities(caps)))
+        .filter(Optional::isPresent)
+        .map(Optional::get)
+        .collect(ImmutableList.toImmutableList());
   }
 
   private Map<String, Object> sparseCapabilities(JsonReader json) throws IOException {
