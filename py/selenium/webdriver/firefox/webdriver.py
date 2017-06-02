@@ -41,6 +41,12 @@ from .remote_connection import FirefoxRemoteConnection
 from .service import Service
 from .webelement import FirefoxWebElement
 
+try:
+    basestring
+except NameError:
+    # Python 3
+    basestring = str
+    
 
 class WebDriver(RemoteWebDriver):
 
