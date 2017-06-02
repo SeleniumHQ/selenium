@@ -97,7 +97,7 @@ namespace OpenQA.Selenium
                 string levelValue = entryDictionary["level"].ToString();
                 try
                 {
-                    entry.level = (LogLevel)Enum.Parse(typeof(LogEntry), levelValue, true);
+                    entry.level = (LogLevel)Enum.Parse(typeof(LogLevel), levelValue, true);
                 }
                 catch (ArgumentException)
                 {
