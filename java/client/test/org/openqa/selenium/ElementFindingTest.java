@@ -735,6 +735,38 @@ public class ElementFindingTest extends JUnit4TestBase {
     assertThat(elements.get(0).getAttribute("id"), is("linkWithEqualsSign"));
   }
 
+  // By.linkTextPattern negative
+
+  @Test(expected = NoSuchElementException.class)
+  public void testShouldNotBeAbleToLocateByLinkTextPatternASingleElementThatDoesNotExist() {
+    driver.get(pages.xhtmlTestPage);
+    driver.findElement(By.linkTextPattern("Not here either"));
+  }
+
+  @Test
+  public void testShouldNotBeAbleToLocateByLinkTextPatternMultipleElementsThatDoNotExist() {
+    driver.get(pages.xhtmlTestPage);
+    List<WebElement> elements = driver.findElements(By.linkText("Not here either"));
+    assertThat(elements.size(), is(0));
+  }
+  
+  // By.linkTextPattern positive
+
+  @Test
+  public void testShouldBeAbleToFindMultipleElementsByLinkTextPattern() {
+    driver.get(pages.xhtmlTestPage);
+    List<WebElement> elements = driver.findElements(By.linkTextPattern("Link with p.*gina pattern"));
+    assertThat(elements.size(), is(2));
+  }
+  
+  @Test
+  public void testShouldBeAbleToElementByLinkTextPattern() {
+    driver.get(pages.xhtmlTestPage);
+    List<WebElement> elements = driver.findElements(By.linkTextPattern("Link with pagina pattern"));
+    assertThat(elements.size(), is(1));
+    assertThat(elements.get(0).getAttribute("id"), is("linkWithSignificativePattern2"));
+  }
+
   // Misc tests
 
   @Test
