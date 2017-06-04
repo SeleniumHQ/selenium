@@ -61,15 +61,6 @@ class WebDriver(RemoteWebDriver):
             raise
 
         self._is_remote = False
-    """ 
-    In order for the python with statement to work __enter__ and __exit__ methods must be deffined in the object.
-    https://docs.python.org/3/reference/compound_stmts.html#with
-    """
-    def __enter__(self):
-        return self 
-
-    def __exit__(self, *args):
-        self.quit()   
 
     def quit(self):
         """
