@@ -35,13 +35,9 @@ module Selenium
       #
 
       def locked
-        lock
-
-        begin
-          yield
-        ensure
-          release
-        end
+        yield
+      ensure
+        release
       end
 
       private
