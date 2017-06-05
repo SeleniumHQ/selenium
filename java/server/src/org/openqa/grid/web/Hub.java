@@ -104,7 +104,7 @@ public class Hub {
     // add mandatory default servlets
     handler.addServlet(RegistrationServlet.class.getName(), "/grid/register/*");
 
-    if (config.newHandler) {
+    if (config.enablePassThrough) {
       log.info("Using the experimental passthrough mode");
       handler.addServlet(DriverServlet.class.getName(), "/wd/hub/*");
       handler.addServlet(DriverServlet.class.getName(), "/selenium-server/driver/*");
