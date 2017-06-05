@@ -200,7 +200,7 @@ public class TestSession {
 
 
   private HttpClient getClient() {
-    Registry reg = slot.getProxy().getRegistry();
+    GridRegistry reg = slot.getProxy().getRegistry();
     long browserTimeout = TimeUnit.SECONDS.toMillis(reg.getConfiguration().browserTimeout);
     if (browserTimeout > 0) {
       final long selenium_server_cleanup_cycle = browserTimeout / 10;

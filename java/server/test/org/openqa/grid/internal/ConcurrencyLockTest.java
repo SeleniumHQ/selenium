@@ -42,7 +42,7 @@ import java.util.Map;
 
 public class ConcurrencyLockTest {
 
-  private Registry registry;
+  private GridRegistry registry;
 
   private Map<String, Object> ie = new HashMap<>();
   private Map<String, Object> ff = new HashMap<>();
@@ -52,7 +52,7 @@ public class ConcurrencyLockTest {
    */
   @Before
   public void setup() throws Exception {
-    registry = Registry.newInstance();
+    registry = DefaultGridRegistry.newInstance();
     ie.put(CapabilityType.APPLICATION_NAME, "IE");
     ff.put(CapabilityType.APPLICATION_NAME, "FF");
 
@@ -100,7 +100,7 @@ public class ConcurrencyLockTest {
 
   private void runTests2(Map<String, Object> cap) throws InterruptedException {
 
-    MockedRequestHandler newSessionHandler =GridHelper.createNewSessionHandler(registry, cap);
+    MockedRequestHandler newSessionHandler = GridHelper.createNewSessionHandler(registry, cap);
 
     if (cap.get(CapabilityType.APPLICATION_NAME).equals("FF")) {
       // start the FF right away
@@ -108,7 +108,7 @@ public class ConcurrencyLockTest {
       TestSession s = newSessionHandler.getSession();
       Thread.sleep(2000);
       results.add("FF");
-      registry.terminateSynchronousFOR_TEST_ONLY(s);
+      ((DefaultGridRegistry) registry).terminateSynchronousFOR_TEST_ONLY(s);
     } else {
       // wait for 1 sec before starting IE to make sure the FF proxy is
       // busy with the 3 FF requests.

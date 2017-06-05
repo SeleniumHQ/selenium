@@ -30,7 +30,7 @@ public class MyCustomProxy extends BaseRemoteProxy {
   public static URL MY_URL;
   public static boolean MY_BOOLEAN = true;
 
-  public MyCustomProxy(RegistrationRequest request, Registry registry) {
+  public MyCustomProxy(RegistrationRequest request, GridRegistry registry) {
 
     super(request, registry);
     try {

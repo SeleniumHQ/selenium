@@ -35,7 +35,7 @@ import java.util.Map;
 
 public class PriorityTest {
 
-  private Registry registry;
+  private GridRegistry registry;
 
   // priority rule : the request with the highest priority goes first.
   private static Prioritizer highestNumberHasPriority = new Prioritizer() {
@@ -64,7 +64,7 @@ public class PriorityTest {
    */
   @Before
   public void setup() throws Exception {
-    registry = Registry.newInstance();
+    registry = DefaultGridRegistry.newInstance();
     registry.getConfiguration().prioritizer = highestNumberHasPriority;
     ff.put(CapabilityType.APPLICATION_NAME, "FF");
     p1 = RemoteProxyFactory.getNewBasicRemoteProxy(ff, "http://machine1:4444", registry);
@@ -123,7 +123,7 @@ public class PriorityTest {
 
     // free the grid : the queue is consumed, and the test with the highest
     // priority should be processed.
-    registry.terminateSynchronousFOR_TEST_ONLY(session);
+    ((DefaultGridRegistry) registry).terminateSynchronousFOR_TEST_ONLY(session);
 
   }
 

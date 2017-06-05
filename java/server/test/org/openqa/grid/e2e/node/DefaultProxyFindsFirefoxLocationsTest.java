@@ -27,7 +27,7 @@ import org.openqa.grid.common.GridRole;
 import org.openqa.grid.e2e.utils.GridTestHelper;
 import org.openqa.grid.e2e.utils.RegistryTestHelper;
 import org.openqa.grid.internal.ExternalSessionKey;
-import org.openqa.grid.internal.Registry;
+import org.openqa.grid.internal.GridRegistry;
 import org.openqa.grid.internal.TestSession;
 import org.openqa.grid.internal.exception.NewSessionException;
 import org.openqa.grid.internal.utils.SelfRegisteringRemote;
@@ -58,7 +58,7 @@ public class DefaultProxyFindsFirefoxLocationsTest {
   private static final String LOCATION_CHROME_29 = "c:\\program files\\Chrome29.exe";
 
   private Hub hub;
-  private Registry registry;
+  private GridRegistry registry;
   private SelfRegisteringRemote remote;
 
   @Before

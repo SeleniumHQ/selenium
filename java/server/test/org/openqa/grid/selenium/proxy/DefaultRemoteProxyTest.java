@@ -25,7 +25,8 @@ import com.beust.jcommander.JCommander;
 import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.BaseRemoteProxy;
-import org.openqa.grid.internal.Registry;
+import org.openqa.grid.internal.DefaultGridRegistry;
+import org.openqa.grid.internal.GridRegistry;
 import org.openqa.grid.internal.TestSession;
 import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
 
@@ -36,7 +37,7 @@ public class DefaultRemoteProxyTest {
 
   @Test
   public void proxyTimeout() throws InterruptedException {
-    Registry registry = Registry.newInstance();
+    GridRegistry registry = DefaultGridRegistry.newInstance();
     registry.getConfiguration().timeout = 1;
     GridNodeConfiguration nodeConfiguration = new GridNodeConfiguration();
     new JCommander(nodeConfiguration, "-role", "webdriver");

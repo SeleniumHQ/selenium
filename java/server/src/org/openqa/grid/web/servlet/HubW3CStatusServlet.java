@@ -24,7 +24,7 @@ import static org.openqa.selenium.remote.ErrorCodes.SUCCESS;
 
 import com.google.common.collect.ImmutableMap;
 
-import org.openqa.grid.internal.Registry;
+import org.openqa.grid.internal.GridRegistry;
 import org.openqa.grid.internal.RemoteProxy;
 import org.openqa.selenium.internal.BuildInfo;
 import org.openqa.selenium.json.Json;
@@ -46,9 +46,9 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class HubW3CStatusServlet extends HttpServlet {
 
-  private final Registry registry;
+  private final GridRegistry registry;
 
-  public HubW3CStatusServlet(Registry registry) {
+  public HubW3CStatusServlet(GridRegistry registry) {
     this.registry = Objects.requireNonNull(registry);
   }
 

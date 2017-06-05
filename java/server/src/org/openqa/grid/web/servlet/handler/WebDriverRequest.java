@@ -19,7 +19,7 @@ package org.openqa.grid.web.servlet.handler;
 
 import org.openqa.grid.common.exception.GridException;
 import org.openqa.grid.internal.ExternalSessionKey;
-import org.openqa.grid.internal.Registry;
+import org.openqa.grid.internal.GridRegistry;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.remote.NewSessionPayload;
 
@@ -32,7 +32,7 @@ import javax.servlet.http.HttpServletRequest;
 
 public class WebDriverRequest extends SeleniumBasedRequest {
 
-  public WebDriverRequest(HttpServletRequest httpServletRequest, Registry registry) {
+  public WebDriverRequest(HttpServletRequest httpServletRequest, GridRegistry registry) {
     super(httpServletRequest, registry);
   }
 

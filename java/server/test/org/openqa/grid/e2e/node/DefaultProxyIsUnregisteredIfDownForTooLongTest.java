@@ -29,7 +29,7 @@ import org.junit.Test;
 import org.openqa.grid.common.GridRole;
 import org.openqa.grid.e2e.utils.GridTestHelper;
 import org.openqa.grid.e2e.utils.RegistryTestHelper;
-import org.openqa.grid.internal.Registry;
+import org.openqa.grid.internal.GridRegistry;
 import org.openqa.grid.internal.RemoteProxy;
 import org.openqa.grid.internal.utils.SelfRegisteringRemote;
 import org.openqa.grid.selenium.proxy.DefaultRemoteProxy;
@@ -43,7 +43,7 @@ import java.util.concurrent.Callable;
 public class DefaultProxyIsUnregisteredIfDownForTooLongTest {
 
   private Hub hub;
-  private Registry registry;
+  private GridRegistry registry;
   private SelfRegisteringRemote remote;
 
   private String proxyId;

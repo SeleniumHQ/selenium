@@ -57,7 +57,7 @@ public class SessionTimesOutTest {
 
   class MyRemoteProxyTimeout extends DetachedRemoteProxy implements TimeoutListener {
 
-    public MyRemoteProxyTimeout(RegistrationRequest request, Registry registry) {
+    public MyRemoteProxyTimeout(RegistrationRequest request, GridRegistry registry) {
       super(request, registry);
     }
 
@@ -71,7 +71,7 @@ public class SessionTimesOutTest {
   @Test(timeout = 10000)
   public void testTimeout() throws InterruptedException {
 
-    Registry registry = Registry.newInstance();
+    GridRegistry registry = DefaultGridRegistry.newInstance();
     RemoteProxy p1 = new MyRemoteProxyTimeout(req, registry);
     p1.setupTimeoutListener();
 
@@ -98,7 +98,7 @@ public class SessionTimesOutTest {
 
   class MyRemoteProxyTimeoutSlow extends DetachedRemoteProxy implements TimeoutListener {
 
-    public MyRemoteProxyTimeoutSlow(RegistrationRequest request, Registry registry) {
+    public MyRemoteProxyTimeoutSlow(RegistrationRequest request, GridRegistry registry) {
       super(request, registry);
     }
 
@@ -115,7 +115,7 @@ public class SessionTimesOutTest {
   @Ignore(value = "flaky in travis CI")
   @Test(timeout = 20000)
   public void testTimeoutSlow() throws InterruptedException {
-    Registry registry = Registry.newInstance();
+    GridRegistry registry = DefaultGridRegistry.newInstance();
     registry.getConfiguration().timeout = 1800;
     registry.getConfiguration().cleanUpCycle = null;
     RemoteProxy p1 = new MyRemoteProxyTimeoutSlow(req, registry);
@@ -155,7 +155,7 @@ public class SessionTimesOutTest {
 
   class MyBuggyRemoteProxyTimeout extends DetachedRemoteProxy implements TimeoutListener {
 
-    public MyBuggyRemoteProxyTimeout(RegistrationRequest request, Registry registry) {
+    public MyBuggyRemoteProxyTimeout(RegistrationRequest request, GridRegistry registry) {
       super(request, registry);
     }
 
@@ -167,7 +167,7 @@ public class SessionTimesOutTest {
   // a proxy throwing an exception will end up not releasing the resources.
   @Test(timeout = 5000)
   public void testTimeoutBug() throws InterruptedException {
-    final Registry registry = Registry.newInstance();
+    final GridRegistry registry = DefaultGridRegistry.newInstance();
     RemoteProxy p1 = new MyBuggyRemoteProxyTimeout(req, registry);
     p1.setupTimeoutListener();
 
@@ -198,7 +198,7 @@ public class SessionTimesOutTest {
 
   class MyStupidConfig extends DetachedRemoteProxy implements TimeoutListener {
 
-    public MyStupidConfig(RegistrationRequest request, Registry registry) {
+    public MyStupidConfig(RegistrationRequest request, GridRegistry registry) {
       super(request, registry);
     }
 
@@ -216,13 +216,13 @@ public class SessionTimesOutTest {
         {1, 5},
         // and invalid ones
         {-1, 5}, {5, -1}, {-1, -1}, {0, 0}};
-    java.util.List<Registry> registryList = new ArrayList<>();
+    java.util.List<GridRegistry> registryList = new ArrayList<>();
     try {
       for (Object[] c : configs) {
         // timeout is in seconds
         int timeout = (Integer) c[0];
         int cycle = (Integer) c[1];
-        Registry registry = Registry.newInstance();
+        GridRegistry registry = DefaultGridRegistry.newInstance();
         registryList.add(registry);
 
         RegistrationRequest req = new RegistrationRequest();
@@ -256,7 +256,7 @@ public class SessionTimesOutTest {
         }
       }
     } finally {
-      for (Registry registry : registryList) {
+      for (GridRegistry registry : registryList) {
         registry.stop();
       }
     }

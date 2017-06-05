@@ -22,7 +22,7 @@ import com.google.common.collect.ImmutableMap;
 import org.openqa.grid.common.exception.ClientGoneException;
 import org.openqa.grid.common.exception.GridException;
 import org.openqa.grid.internal.ExternalSessionKey;
-import org.openqa.grid.internal.Registry;
+import org.openqa.grid.internal.GridRegistry;
 import org.openqa.grid.internal.RemoteProxy;
 import org.openqa.grid.internal.SessionTerminationReason;
 import org.openqa.grid.internal.TestSession;
@@ -53,7 +53,7 @@ public class RequestHandler implements Comparable<RequestHandler> {
 
   private static final Logger log = Logger.getLogger(RequestHandler.class.getName());
 
-  private final Registry registry;
+  private final GridRegistry registry;
   private final SeleniumBasedRequest request;
   private final HttpServletResponse response;
 
@@ -65,7 +65,7 @@ public class RequestHandler implements Comparable<RequestHandler> {
   public  RequestHandler(
       SeleniumBasedRequest request,
       HttpServletResponse response,
-      Registry registry) {
+      GridRegistry registry) {
     this.request = request;
     this.response = response;
     this.registry = registry;
@@ -303,7 +303,7 @@ public class RequestHandler implements Comparable<RequestHandler> {
     return true;
   }
 
-  public Registry getRegistry() {
+  public GridRegistry getRegistry() {
     return registry;
   }
 }

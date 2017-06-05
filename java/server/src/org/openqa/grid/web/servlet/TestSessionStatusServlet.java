@@ -24,7 +24,7 @@ import com.google.gson.JsonSyntaxException;
 
 import org.openqa.grid.common.exception.GridException;
 import org.openqa.grid.internal.ExternalSessionKey;
-import org.openqa.grid.internal.Registry;
+import org.openqa.grid.internal.GridRegistry;
 import org.openqa.grid.internal.RemoteProxy;
 import org.openqa.grid.internal.TestSession;
 
@@ -45,7 +45,7 @@ public class TestSessionStatusServlet extends RegistryBasedServlet {
     super(null);
   }
 
-  public TestSessionStatusServlet(Registry registry) {
+  public TestSessionStatusServlet(GridRegistry registry) {
     super(registry);
   }
 

@@ -33,10 +33,10 @@ import java.util.logging.Logger;
  * The queue of all incoming "new session" requests to the grid.
  *
  * Currently still uses the readerwriterlock/condition model that is used in the
- * Registry and is tightly coupled to the registry
+ * GridRegistry and is tightly coupled to the registry
  */
 @ThreadSafe
-class NewSessionRequestQueue {
+public class NewSessionRequestQueue {
 
   private static final Logger log = Logger.getLogger(NewSessionRequestQueue.class.getName());
 

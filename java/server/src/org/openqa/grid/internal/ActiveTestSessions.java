@@ -34,7 +34,7 @@ import java.util.logging.Logger;
  * The set of active test sessions.
  */
 @ThreadSafe
-class ActiveTestSessions {
+public class ActiveTestSessions {
 
   private static final Logger log = Logger.getLogger(ActiveTestSessions.class.getName());
 

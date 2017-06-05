@@ -38,7 +38,7 @@ public class RemoteProxyFactory {
    * @param registry
    * @return
    */
-  public static RemoteProxy getNewBasicRemoteProxy(String browser, String url, Registry registry) throws MalformedURLException {
+  public static RemoteProxy getNewBasicRemoteProxy(String browser, String url, GridRegistry registry) throws MalformedURLException {
 
     GridNodeConfiguration config = new GridNodeConfiguration();
     URL u = new URL(url);
@@ -66,7 +66,7 @@ public class RemoteProxyFactory {
    * @return
    */
   public static RemoteProxy getNewBasicRemoteProxy(Map<String, Object> cap, String url,
-                                                   Registry registry) throws MalformedURLException {
+                                                   GridRegistry registry) throws MalformedURLException {
     GridNodeConfiguration configuration = new GridNodeConfiguration();
     configuration.role = "webdriver";
     URL u = new URL(url);
@@ -90,7 +90,7 @@ public class RemoteProxyFactory {
    * @return
    */
   public static RemoteProxy getNewBasicRemoteProxy(List<Map<String, Object>> caps, String url,
-      Registry registry) throws MalformedURLException {
+      GridRegistry registry) throws MalformedURLException {
 
     GridNodeConfiguration configuration = new GridNodeConfiguration();
     configuration.role = "webdriver";
@@ -107,7 +107,7 @@ public class RemoteProxyFactory {
 
   }
 
-  private static RemoteProxy createProxy(Registry registry, RegistrationRequest req) {
+  private static RemoteProxy createProxy(GridRegistry registry, RegistrationRequest req) {
     final RemoteProxy remoteProxy = new DetachedRemoteProxy(req, registry);
     remoteProxy.setupTimeoutListener();
     return remoteProxy;

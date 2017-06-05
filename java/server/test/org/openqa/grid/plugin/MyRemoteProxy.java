@@ -19,14 +19,14 @@ package org.openqa.grid.plugin;
 
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.BaseRemoteProxy;
-import org.openqa.grid.internal.Registry;
+import org.openqa.grid.internal.GridRegistry;
 
 
 public class MyRemoteProxy extends BaseRemoteProxy {
   private String custom1;
   private String custom2;
 
-  public MyRemoteProxy(RegistrationRequest request, Registry registry) {
+  public MyRemoteProxy(RegistrationRequest request, GridRegistry registry) {
     super(request, registry);
     custom1 = request.getConfiguration().custom.get("Custom1");
     custom2 = request.getConfiguration().custom.get("Custom2");

@@ -18,7 +18,7 @@
 package org.openqa.grid.web.servlet.handler;
 
 import org.openqa.grid.internal.ExternalSessionKey;
-import org.openqa.grid.internal.Registry;
+import org.openqa.grid.internal.GridRegistry;
 import org.openqa.grid.web.utils.BrowserNameUtils;
 
 import java.io.UnsupportedEncodingException;
@@ -30,7 +30,7 @@ import javax.servlet.http.HttpServletRequest;
 
 public class LegacySeleniumRequest extends SeleniumBasedRequest {
 
-  public LegacySeleniumRequest(HttpServletRequest httpServletRequest, Registry registry) {
+  public LegacySeleniumRequest(HttpServletRequest httpServletRequest, GridRegistry registry) {
     super(httpServletRequest, registry);
 
   }

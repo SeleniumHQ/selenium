@@ -19,7 +19,8 @@ package org.openqa.grid.web;
 
 import com.google.common.collect.Maps;
 
-import org.openqa.grid.internal.Registry;
+import org.openqa.grid.common.exception.GridConfigurationException;
+import org.openqa.grid.internal.GridRegistry;
 import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
 import org.openqa.grid.web.servlet.DisplayHelpServlet;
 import org.openqa.grid.web.servlet.DriverServlet;
@@ -58,7 +59,7 @@ public class Hub {
   private static final Logger log = Logger.getLogger(Hub.class.getName());
 
   private GridHubConfiguration config;
-  private final Registry registry;
+  private final GridRegistry registry;
   private final Map<String, Class<? extends Servlet>> extraServlet = Maps.newHashMap();
 
   private Server server;
@@ -72,14 +73,21 @@ public class Hub {
    *
    * @return The registry
    */
-  public Registry getRegistry() {
+  public GridRegistry getRegistry() {
     return registry;
   }
 
   public Hub(GridHubConfiguration gridHubConfiguration) {
-    registry = Registry.newInstance(this, gridHubConfiguration);
-
     config = gridHubConfiguration;
+
+    try {
+      registry = (GridRegistry) Class.forName(config.registry).newInstance();
+      registry.setHub(this);
+    } catch (Throwable e) {
+      throw new GridConfigurationException("Error creating class with " + config.registry +
+                                           " : " + e.getMessage(), e);
+    }
+
     if (config.host == null) {
       NetworkUtils utils = new NetworkUtils();
       config.host = utils.getIp4NonLoopbackAddressOfThisMachine().getHostAddress();
@@ -99,6 +107,9 @@ public class Hub {
         }
       }
     }
+
+    // start the registry, now that 'config' is all setup
+    registry.start();
   }
 
   private void addDefaultServlets(ServletContextHandler handler) {
@@ -167,7 +178,7 @@ public class Hub {
       root.setContextPath("/");
       server.setHandler(root);
 
-      root.setAttribute(Registry.KEY, registry);
+      root.setAttribute(GridRegistry.KEY, registry);
 
       addDefaultServlets(root);
 
@@ -191,6 +202,7 @@ public class Hub {
   }
 
   public void stop() throws Exception {
+    registry.stop();
     server.stop();
   }
 

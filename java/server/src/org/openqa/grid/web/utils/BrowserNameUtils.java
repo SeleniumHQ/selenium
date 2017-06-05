@@ -19,7 +19,7 @@ package org.openqa.grid.web.utils;
 
 import com.google.common.collect.Maps;
 
-import org.openqa.grid.internal.Registry;
+import org.openqa.grid.internal.GridRegistry;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
@@ -52,7 +52,7 @@ public class BrowserNameUtils {
     return ret;
   }
 
-  public static String consoleIconName(DesiredCapabilities cap, Registry registry) {
+  public static String consoleIconName(DesiredCapabilities cap, GridRegistry registry) {
     String browserString = cap.getBrowserName();
     if (browserString == null || "".equals(browserString)) {
       return "missingBrowserName";
@@ -96,11 +96,11 @@ public class BrowserNameUtils {
    * null.
    *
    * @param cap - Capability
-   * @param registry - Registry
+   * @param registry - GridRegistry
    * @return String with path to icon image file.  Can be <i>null</i> if no icon
    *         file if available.
    */
-  public static String getConsoleIconPath(DesiredCapabilities cap, Registry registry) {
+  public static String getConsoleIconPath(DesiredCapabilities cap, GridRegistry registry) {
     String name = consoleIconName(cap, registry);
     String path = "org/openqa/grid/images/";
     InputStream in =

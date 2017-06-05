@@ -21,7 +21,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 
 import com.google.common.base.Function;
 
-import org.openqa.grid.internal.Registry;
+import org.openqa.grid.internal.GridRegistry;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
 
@@ -34,7 +34,7 @@ public class RegistryTestHelper {
   /**
    * Wait for the registry to have exactly nodeNumber nodes registered.
    */
-  public static void waitForNode(final Registry r, final int nodeNumber) {
+  public static void waitForNode(final GridRegistry r, final int nodeNumber) {
     newWait().until(new Function<Object, Integer>() {
       @Override
       public Integer apply(Object input) {
@@ -48,7 +48,7 @@ public class RegistryTestHelper {
   }
 
 
-  public static void waitForActiveTestSessionCount(final Registry r, final int activeTestSessions) {
+  public static void waitForActiveTestSessionCount(final GridRegistry r, final int activeTestSessions) {
     newWait().until(new Function<Object, Integer>() {
       @Override
       public Integer apply(Object input) {
@@ -61,7 +61,7 @@ public class RegistryTestHelper {
     });
   }
 
-  public static void waitForNewSessionRequestCount(final Registry r, final int newSessionRequestCount) {
+  public static void waitForNewSessionRequestCount(final GridRegistry r, final int newSessionRequestCount) {
     newWait().until(new Function<Object, Integer>() {
       @Override
       public Integer apply(Object input) {

@@ -21,7 +21,7 @@ import static org.mockito.Mockito.mock;
 
 import org.openqa.grid.common.SeleniumProtocol;
 import org.openqa.grid.internal.ExternalSessionKey;
-import org.openqa.grid.internal.Registry;
+import org.openqa.grid.internal.GridRegistry;
 import org.openqa.grid.internal.TestSession;
 import org.openqa.grid.web.servlet.handler.RequestType;
 import org.openqa.grid.web.servlet.handler.SeleniumBasedRequest;
@@ -38,7 +38,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class GridHelper {
 
-  public static MockedRequestHandler createNewSessionHandler(Registry registry,
+  public static MockedRequestHandler createNewSessionHandler(GridRegistry registry,
       Map<String, Object> desiredCapability) {
     SeleniumBasedRequest request =
         createNewSessionRequest(registry, SeleniumProtocol.WebDriver, desiredCapability);
@@ -47,7 +47,7 @@ public class GridHelper {
   }
 
 
-  public static MockedRequestHandler createStopSessionHandler(Registry registry, TestSession session) {
+  public static MockedRequestHandler createStopSessionHandler(GridRegistry registry, TestSession session) {
     SeleniumBasedRequest request =
         createMockedRequest(registry, SeleniumProtocol.WebDriver, RequestType.STOP_SESSION, null);
     MockedRequestHandler handler = new MockedRequestHandler(request, null, registry);
@@ -55,7 +55,7 @@ public class GridHelper {
     return handler;
   }
 
-  public static SeleniumBasedRequest createMockedRequest(Registry registry,
+  public static SeleniumBasedRequest createMockedRequest(GridRegistry registry,
       SeleniumProtocol protocol, RequestType type, Map<String, Object> desiredCapability) {
     HttpServletRequest request = mock(HttpServletRequest.class);
     return new SeleniumBasedRequest(request, registry, type, desiredCapability) {
@@ -77,7 +77,7 @@ public class GridHelper {
     };
   }
 
-  public static SeleniumBasedRequest createNewSessionRequest(Registry registry,
+  public static SeleniumBasedRequest createNewSessionRequest(GridRegistry registry,
       SeleniumProtocol protocol, Map<String, Object> desiredCapability) {
     return createMockedRequest(registry, protocol, RequestType.START_SESSION, desiredCapability);
   }

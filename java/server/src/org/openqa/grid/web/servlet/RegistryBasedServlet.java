@@ -16,20 +16,20 @@
 // under the License.
 package org.openqa.grid.web.servlet;
 
-import org.openqa.grid.internal.Registry;
+import org.openqa.grid.internal.GridRegistry;
 
 import javax.servlet.http.HttpServlet;
 
 public abstract class RegistryBasedServlet extends HttpServlet {
-  private Registry registry;
+  private GridRegistry registry;
 
-  public RegistryBasedServlet(Registry registry) {
+  public RegistryBasedServlet(GridRegistry registry) {
     this.registry = registry;
   }
 
-  protected Registry getRegistry() {
+  protected GridRegistry getRegistry() {
     if (registry == null) {
-      registry = (Registry) getServletContext().getAttribute(Registry.KEY);
+      registry = (GridRegistry) getServletContext().getAttribute(GridRegistry.KEY);
     }
 
     return registry;

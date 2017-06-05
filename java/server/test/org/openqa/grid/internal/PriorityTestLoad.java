@@ -41,7 +41,7 @@ public class PriorityTestLoad {
 
   private final static int MAX = 100;
 
-  private Registry registry;
+  private GridRegistry registry;
 
   // priority rule : the request with the highest priority goes first.
   private Prioritizer highestNumberHasPriority = new Prioritizer() {
@@ -64,7 +64,7 @@ public class PriorityTestLoad {
    */
   @Before
   public void setup() throws Exception {
-    registry = Registry.newInstance();
+    registry = DefaultGridRegistry.newInstance();
     registry.getConfiguration().prioritizer = highestNumberHasPriority;
     ff.put(CapabilityType.APPLICATION_NAME, "FF");
     RemoteProxy
@@ -102,7 +102,7 @@ public class PriorityTestLoad {
     }
 
     // release the initial request.
-    registry.terminateSynchronousFOR_TEST_ONLY(session);
+    ((DefaultGridRegistry) registry).terminateSynchronousFOR_TEST_ONLY(session);
   }
 
   // validate that the one with priority MAX has been assigned a proxy

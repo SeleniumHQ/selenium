@@ -65,7 +65,7 @@ public interface RemoteProxy extends Comparable<RemoteProxy> {
    *
    * @return the registry.
    */
-  Registry getRegistry();
+  <T extends GridRegistry> T getRegistry();
 
   /**
    * Returns the capability matcher that will be used to by the remote proxy

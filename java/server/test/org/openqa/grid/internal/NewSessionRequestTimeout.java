@@ -29,7 +29,7 @@ import java.util.Map;
 
 public class NewSessionRequestTimeout {
 
-  private Registry registry;
+  private GridRegistry registry;
   private Map<String, Object> ff = new HashMap<>();
   private RemoteProxy p1;
 
@@ -38,7 +38,7 @@ public class NewSessionRequestTimeout {
    */
   @Before
   public void setup() throws Exception {
-    registry = Registry.newInstance();
+    registry = DefaultGridRegistry.newInstance();
     ff.put(CapabilityType.APPLICATION_NAME, "FF");
 
     p1 = RemoteProxyFactory.getNewBasicRemoteProxy(ff, "http://machine1:4444", registry);

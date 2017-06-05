@@ -22,7 +22,7 @@ import org.openqa.grid.common.exception.RemoteException;
 import org.openqa.grid.common.exception.RemoteNotReachableException;
 import org.openqa.grid.common.exception.RemoteUnregisterException;
 import org.openqa.grid.internal.BaseRemoteProxy;
-import org.openqa.grid.internal.Registry;
+import org.openqa.grid.internal.GridRegistry;
 import org.openqa.grid.internal.TestSession;
 import org.openqa.grid.internal.listeners.CommandListener;
 import org.openqa.grid.internal.listeners.SelfHealingProxy;
@@ -58,7 +58,7 @@ public class DefaultRemoteProxy extends BaseRemoteProxy
   private volatile int unregisterDelay = DEFAULT_UNREGISTER_DELAY;
   private volatile int downPollingLimit = DEFAULT_DOWN_POLLING_LIMIT;
 
-  public DefaultRemoteProxy(RegistrationRequest request, Registry registry) {
+  public DefaultRemoteProxy(RegistrationRequest request, GridRegistry registry) {
     super(request, registry);
 
     pollingInterval = config.nodePolling != null ? config.nodePolling : DEFAULT_POLLING_INTERVAL;
@@ -174,7 +174,7 @@ public class DefaultRemoteProxy extends BaseRemoteProxy
       }
       if (e instanceof RemoteUnregisterException) {
         LOG.info(e.getMessage());
-        Registry registry = this.getRegistry();
+        GridRegistry registry = this.getRegistry();
         registry.removeIfPresent(this);
       }
     }

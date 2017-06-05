@@ -28,7 +28,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.common.exception.GridConfigurationException;
-import org.openqa.grid.internal.Registry;
+import org.openqa.grid.internal.DefaultGridRegistry;
+import org.openqa.grid.internal.GridRegistry;
 import org.openqa.grid.internal.RemoteProxy;
 import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -73,7 +74,7 @@ public class RegistrationServletTest extends BaseServletTest {
       @Override
       public ServletContext getServletContext() {
         final ContextHandler.Context servletContext = new ContextHandler().getServletContext();
-        servletContext.setAttribute(Registry.KEY, Registry.newInstance());
+        servletContext.setAttribute(GridRegistry.KEY, DefaultGridRegistry.newInstance());
         return servletContext;
       }
     };

@@ -31,7 +31,9 @@ import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.common.exception.GridException;
 import org.openqa.grid.internal.mock.GridHelper;
+import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
 import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
+import org.openqa.grid.web.Hub;
 import org.openqa.grid.web.servlet.handler.RequestHandler;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -42,11 +44,11 @@ import java.util.List;
 import java.util.Map;
 
 public class BaseRemoteProxyTest {
-  private Registry registry;
+  private GridRegistry registry;
 
   @Before
   public void before() {
-    registry = Registry.newInstance();
+    registry = DefaultGridRegistry.newInstance();
   }
 
   @Test
@@ -84,8 +86,8 @@ public class BaseRemoteProxyTest {
 
   @Test
   public void proxyConfigIsInheritedFromRegistry() {
-    Registry registry = Registry.newInstance();
-    registry.getConfiguration().cleanUpCycle = 42;
+    GridRegistry registry = DefaultGridRegistry.newInstance(new Hub(new GridHubConfiguration()));
+    registry.getHub().getConfiguration().cleanUpCycle = 42;
 
     GridNodeConfiguration nodeConfiguration = new GridNodeConfiguration();
     new JCommander(nodeConfiguration, "-role", "webdriver");
@@ -96,13 +98,13 @@ public class BaseRemoteProxyTest {
 
     // values which are not present in the registration request need to come
     // from the registry
-    assertEquals(registry.getConfiguration().cleanUpCycle.longValue(),
+    assertEquals(registry.getHub().getConfiguration().cleanUpCycle.longValue(),
                  p.getConfig().cleanUpCycle.longValue());
   }
 
   @Test
   public void proxyConfigOverwritesRegistryConfig() {
-    Registry registry = Registry.newInstance();
+    GridRegistry registry = DefaultGridRegistry.newInstance();
     registry.getConfiguration().cleanUpCycle = 42;
     registry.getConfiguration().maxSession = 1;
 
@@ -122,7 +124,7 @@ public class BaseRemoteProxyTest {
   @Test
   public void proxyTakesRemoteAsIdIfIdNotSpecified() {
     String remoteHost ="http://machine1:5555";
-    Registry registry = Registry.newInstance();
+    GridRegistry registry = DefaultGridRegistry.newInstance();
 
     GridNodeConfiguration nodeConfiguration = new GridNodeConfiguration();
     new JCommander(nodeConfiguration, "-role", "webdriver","-host", "machine1", "-port", "5555");
@@ -136,7 +138,7 @@ public class BaseRemoteProxyTest {
 
   @Test
   public void proxyWithIdSpecified() {
-    Registry registry = Registry.newInstance();
+    GridRegistry registry = DefaultGridRegistry.newInstance();
     GridNodeConfiguration nodeConfiguration = new GridNodeConfiguration();
     new JCommander(nodeConfiguration, "-role", "webdriver","-host", "machine1", "-port", "5555","-id", "abc");
     RegistrationRequest req = RegistrationRequest.build(nodeConfiguration);
@@ -149,7 +151,7 @@ public class BaseRemoteProxyTest {
 
   @Test
   public void timeouts() {
-    Registry registry = Registry.newInstance();
+    GridRegistry registry = DefaultGridRegistry.newInstance();
     GridNodeConfiguration nodeConfiguration = new GridNodeConfiguration();
     new JCommander(nodeConfiguration, "-role", "webdriver","-host", "machine1", "-port", "5555","-id", "abc","-timeout", "23", "-browserTimeout", "12");
     RegistrationRequest req = RegistrationRequest.build(nodeConfiguration);

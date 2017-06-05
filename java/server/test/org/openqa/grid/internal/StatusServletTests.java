@@ -76,7 +76,7 @@ public class StatusServletTests {
     c.port = PortProber.findFreePort();
     c.host = "localhost";
     hub = new Hub(c);
-    Registry registry = hub.getRegistry();
+    GridRegistry registry = hub.getRegistry();
     httpClientFactory = new HttpClientFactory();
     hubApi = hub.getUrl("/grid/api/hub");
     proxyApi = hub.getUrl("/grid/api/proxy");

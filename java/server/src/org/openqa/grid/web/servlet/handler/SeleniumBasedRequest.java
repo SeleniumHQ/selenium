@@ -23,7 +23,7 @@ import com.google.common.io.ByteStreams;
 
 import org.openqa.grid.common.exception.GridException;
 import org.openqa.grid.internal.ExternalSessionKey;
-import org.openqa.grid.internal.Registry;
+import org.openqa.grid.internal.GridRegistry;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -56,7 +56,7 @@ import javax.servlet.http.HttpServletRequestWrapper;
 public abstract class SeleniumBasedRequest extends HttpServletRequestWrapper {
 
   private byte[] body;
-  private final Registry registry;
+  private final GridRegistry registry;
   private final RequestType type;
   private final String encoding = "UTF-8";
   private final Map<String, Object> desiredCapability;
@@ -68,7 +68,7 @@ public abstract class SeleniumBasedRequest extends HttpServletRequestWrapper {
       .add(new LegacySeleniumRequestFactory())
       .build();
 
-  public static SeleniumBasedRequest createFromRequest(HttpServletRequest request, Registry registry) {
+  public static SeleniumBasedRequest createFromRequest(HttpServletRequest request, GridRegistry registry) {
     for (SeleniumBasedRequestFactory factory : requestFactories) {
       SeleniumBasedRequest sbr = factory.createFromRequest(request, registry);
       if (sbr != null) {
@@ -79,15 +79,15 @@ public abstract class SeleniumBasedRequest extends HttpServletRequestWrapper {
   }
 
   @VisibleForTesting
-  public SeleniumBasedRequest(HttpServletRequest request, Registry registry, RequestType type,
-      Map<String, Object> desiredCapability) {
+  public SeleniumBasedRequest(HttpServletRequest request, GridRegistry registry, RequestType type,
+                              Map<String, Object> desiredCapability) {
     super(request);
     this.registry = registry;
     this.type = type;
     this.desiredCapability = desiredCapability;
   }
 
-  public SeleniumBasedRequest(HttpServletRequest httpServletRequest, Registry registry) {
+  public SeleniumBasedRequest(HttpServletRequest httpServletRequest, GridRegistry registry) {
     super(httpServletRequest);
     try {
       InputStream is = super.getInputStream();
@@ -105,7 +105,7 @@ public abstract class SeleniumBasedRequest extends HttpServletRequestWrapper {
     }
   }
 
-  public Registry getRegistry() {
+  public GridRegistry getRegistry() {
     return registry;
   }
 
