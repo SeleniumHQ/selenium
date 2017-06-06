@@ -18,8 +18,10 @@
 package org.openqa.selenium.remote.server;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.openqa.selenium.remote.Dialect.OSS;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Iterables;
 import com.google.common.io.CharStreams;
 
 import org.openqa.selenium.Capabilities;
@@ -54,16 +56,32 @@ class InMemorySession implements ActiveSession {
   private final SessionId id;
   private final Session session;
   private JsonHttpCommandHandler commandHandler;
+  private Dialect downstreamDialect;
 
-  public InMemorySession(SessionId id, Session session, JsonHttpCommandHandler commandHandler) {
+  public InMemorySession(
+      SessionId id,
+      Session session,
+      JsonHttpCommandHandler commandHandler,
+      Dialect downstreamDialect) {
     this.id = id;
     this.session = session;
     this.commandHandler = commandHandler;
+    this.downstreamDialect = downstreamDialect;
   }
 
   @Override
   public SessionId getId() {
     return id;
+  }
+
+  @Override
+  public Dialect getUpstreamDialect() {
+    return OSS;
+  }
+
+  @Override
+  public Dialect getDownstreamDialect() {
+    return downstreamDialect;
   }
 
   @Override
@@ -108,7 +126,12 @@ class InMemorySession implements ActiveSession {
         SessionId sessionId = legacySessions.newSession(caps);
         Session session = legacySessions.get(sessionId);
 
-        return new InMemorySession(sessionId, session, jsonHttpCommandHandler);
+        // Force OSS dialect if downstream speaks it
+        Dialect downstream = downstreamDialects.contains(OSS) ?
+                             OSS :
+                             Iterables.getFirst(downstreamDialects, null);
+
+        return new InMemorySession(sessionId, session, jsonHttpCommandHandler, downstream);
       } catch (Exception e) {
         throw new SessionNotCreatedException("Unable to create session", e);
       }

@@ -60,15 +60,21 @@ class ServicedSession implements ActiveSession {
 
   private final DriverService service;
   private final SessionId id;
+  private Dialect downstream;
+  private Dialect upstream;
   private final SessionCodec codec;
   private final Map<String, Object> capabilities;
 
   public ServicedSession(
       DriverService service,
+      Dialect downstream,
+      Dialect upstream,
       SessionCodec codec,
       SessionId id,
       Map<String, Object> capabilities) {
     this.service = service;
+    this.downstream = downstream;
+    this.upstream = upstream;
     this.codec = codec;
     this.id = id;
     this.capabilities = capabilities;
@@ -83,6 +89,16 @@ class ServicedSession implements ActiveSession {
   @Override
   public SessionId getId() {
     return id;
+  }
+
+  @Override
+  public Dialect getUpstreamDialect() {
+    return upstream;
+  }
+
+  @Override
+  public Dialect getDownstreamDialect() {
+    return downstream;
   }
 
   @Override
@@ -138,24 +154,28 @@ class ServicedSession implements ActiveSession {
             .orElseThrow(() -> new SessionNotCreatedException("Unable to create session"));
 
         SessionCodec codec;
+        Dialect upstream = result.getDialect();
+        Dialect downstream;
         if (downstreamDialects.contains(result.getDialect())) {
           codec = new Passthrough(url);
+          downstream = upstream;
         } else {
-
-          Dialect dialact = downstreamDialects.iterator().next();
+          downstream = downstreamDialects.iterator().next();
 
           codec = new ProtocolConverter(
               url,
-              getCommandCodec(dialact),
-              getResponseCodec(dialact),
-              getCommandCodec(result.getDialect()),
-              getResponseCodec(result.getDialect()));
+              getCommandCodec(downstream),
+              getResponseCodec(downstream),
+              getCommandCodec(upstream),
+              getResponseCodec(upstream));
         }
 
         Response response = result.createResponse();
         //noinspection unchecked
         return new ServicedSession(
             service,
+            downstream,
+            upstream,
             codec,
             new SessionId(response.getSessionId()),
             (Map<String, Object>) response.getValue());

@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.remote.server;
 
+import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.SessionId;
 
 import java.util.Map;
@@ -24,6 +25,10 @@ import java.util.Map;
 interface ActiveSession extends CommandHandler {
 
   SessionId getId();
+
+  Dialect getUpstreamDialect();
+
+  Dialect getDownstreamDialect();
 
   /**
    * Desribe the current webdriver session's capabilities.
