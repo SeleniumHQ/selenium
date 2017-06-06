@@ -109,7 +109,7 @@ public class ExternalSessionKey {
       if (json.has("value") && json.get("value").isJsonObject()) {
         JsonObject value = json.getAsJsonObject("value");
         if (value.has("sessionId") && !value.get("sessionId").isJsonNull()) {
-          return new ExternalSessionKey(json.get("sessionId").getAsString());
+          return new ExternalSessionKey(value.get("sessionId").getAsString());
         }
       }
     } catch (JsonSyntaxException e) {
