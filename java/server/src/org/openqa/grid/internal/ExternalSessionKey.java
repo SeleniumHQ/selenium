@@ -101,13 +101,22 @@ public class ExternalSessionKey {
   public static ExternalSessionKey fromJsonResponseBody(String responseBody) {
     try {
       JsonObject json = new JsonParser().parse(responseBody).getAsJsonObject();
-      if (!json.has("sessionId") || json.get("sessionId").isJsonNull()) {
-        return null;
+      if (json.has("sessionId") && !json.get("sessionId").isJsonNull()) {
+        return new ExternalSessionKey(json.get("sessionId").getAsString());
       }
-      return new ExternalSessionKey(json.get("sessionId").getAsString());
+
+      // W3C response
+      if (json.has("value") && json.get("value").isJsonObject()) {
+        JsonObject value = json.getAsJsonObject("value");
+        if (value.has("sessionId") && !value.get("sessionId").isJsonNull()) {
+          return new ExternalSessionKey(json.get("sessionId").getAsString());
+        }
+      }
     } catch (JsonSyntaxException e) {
       return null;
     }
+
+    return null;
   }
 
   /**

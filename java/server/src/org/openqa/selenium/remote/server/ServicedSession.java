@@ -76,7 +76,7 @@ class ServicedSession implements ActiveSession {
 
 
   @Override
-  public void execute(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+  public void execute(HttpRequest req, HttpResponse resp) throws IOException {
     codec.handle(req, resp);
   }
 

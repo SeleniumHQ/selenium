@@ -28,6 +28,8 @@ import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.JsonToBeanConverter;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -76,7 +78,7 @@ class InMemorySession implements ActiveSession {
   }
 
   @Override
-  public void execute(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+  public void execute(HttpRequest req, HttpResponse resp) throws IOException {
     commandHandler.handleRequest(req, resp);
   }
 

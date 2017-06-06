@@ -18,11 +18,14 @@
 package org.openqa.selenium.remote.server;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
-import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.io.CharStreams;
 import com.google.common.net.MediaType;
+
+import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,12 +37,9 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Enumeration;
+import java.nio.charset.Charset;
 import java.util.Objects;
 import java.util.logging.Logger;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 class Passthrough implements SessionCodec {
 
@@ -64,37 +64,28 @@ class Passthrough implements SessionCodec {
   }
 
   @Override
-  public void handle(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-    String suffix = req.getPathInfo();
-    if (Strings.isNullOrEmpty(suffix)) {
-      suffix = "/";
-    }
-
-    URL target = new URL(upstream.toExternalForm() + suffix);
+  public void handle(HttpRequest req, HttpResponse resp) throws IOException {
+    URL target = new URL(upstream.toExternalForm() + req.getUri());
     HttpURLConnection connection = (HttpURLConnection) target.openConnection();
     connection.setInstanceFollowRedirects(true);
-    connection.setRequestMethod(req.getMethod());
+    connection.setRequestMethod(req.getMethod().toString());
     connection.setDoInput(true);
     connection.setDoOutput(true);
     connection.setUseCaches(false);
 
-    Enumeration<String> allHeaders = req.getHeaderNames();
-    while (allHeaders.hasMoreElements()) {
-      String name = allHeaders.nextElement();
+    for (String name : req.getHeaderNames()) {
       if (IGNORED_REQ_HEADERS.contains(name.toLowerCase())) {
         continue;
       }
 
-      Enumeration<String> allValues = req.getHeaders(name);
-      while (allValues.hasMoreElements()) {
-        String value = allValues.nextElement();
+      for (String value : req.getHeaders(name)) {
         connection.addRequestProperty(name, value);
       }
     }
     // None of this "keep alive" nonsense.
     connection.setRequestProperty("Connection", "close");
 
-    if ("POST".equalsIgnoreCase(req.getMethod()) || "PUT".equalsIgnoreCase(req.getMethod())) {
+    if (POST == req.getMethod()) {
       // We always transform to UTF-8 on the way up.
       String contentType = req.getHeader("Content-Type");
       contentType = contentType == null ? MediaType.JAVASCRIPT_UTF_8.toString() : contentType;
@@ -102,13 +93,11 @@ class Passthrough implements SessionCodec {
       MediaType type = MediaType.parse(contentType);
       connection.setRequestProperty("Content-Type", type.withCharset(UTF_8).toString());
 
-      String charSet = req.getCharacterEncoding() != null ?
-                       req.getCharacterEncoding() :
-                       UTF_8.name();
+      Charset charSet = req.getContentEncoding();
 
       StringWriter logWriter = new StringWriter();
       try (
-          InputStream is = req.getInputStream();
+          InputStream is = req.consumeContentStream();
           Reader reader = new InputStreamReader(is, charSet);
           Reader in = new TeeReader(reader, logWriter);
           OutputStream os = connection.getOutputStream();
@@ -140,16 +129,12 @@ class Passthrough implements SessionCodec {
 
     String charSet = connection.getContentEncoding() != null ? connection.getContentEncoding() : UTF_8.name();
     StringWriter logWriter = new StringWriter();
-    try (
-        Reader reader = new InputStreamReader(in, charSet);
-        Reader tee = new TeeReader(reader, logWriter);
-        OutputStream os = resp.getOutputStream();
-        Writer out = new OutputStreamWriter(os, UTF_8)) {
-      CharStreams.copy(tee, out);
+    try (Reader reader = new InputStreamReader(in, charSet)) {
+      String content = CharStreams.toString(reader);
+      LOG.info("To downstream: " + logWriter.toString());
+      resp.setContent(content.getBytes(charSet));
     } finally {
       in.close();
     }
-
-    LOG.info("To downstream: " + logWriter.toString());
   }
 }

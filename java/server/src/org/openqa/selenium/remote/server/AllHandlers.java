@@ -30,16 +30,16 @@ import com.google.common.collect.ImmutableMap;
 import com.google.gson.GsonBuilder;
 
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 
 class AllHandlers {
@@ -85,9 +85,7 @@ class AllHandlers {
   private static class NoHandler implements CommandHandler {
 
     @Override
-    public void execute(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-      resp.reset();
-
+    public void execute(HttpRequest req, HttpResponse resp) throws IOException {
       // We're not using ImmutableMap for the outer map because it disallows null values.
       Map<String, Object> responseMap = new HashMap<>();
       responseMap.put("sessionId", null);
@@ -97,7 +95,7 @@ class AllHandlers {
           "message", String.format(
               "Unable to find command matching %s to %s",
               req.getMethod(),
-              req.getPathInfo()),
+              req.getUri()),
           "stacktrace", ""));
       responseMap = Collections.unmodifiableMap(responseMap);
 
@@ -105,21 +103,17 @@ class AllHandlers {
           .getBytes(UTF_8);
 
       resp.setStatus(HTTP_NOT_FOUND);
-      resp.setContentType(JAVASCRIPT_UTF_8.toString());
-      resp.setContentLengthLong(payload.length);
+      resp.setHeader("Content-Type", JAVASCRIPT_UTF_8.toString());
+      resp.setHeader("Content-Length", String.valueOf(payload.length));
 
-      try (OutputStream out = resp.getOutputStream()) {
-        out.write(payload);
-      }
+      resp.setContent(payload);
     }
   }
 
   private static class StatusHandler implements CommandHandler {
 
     @Override
-    public void execute(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-      resp.reset();
-
+    public void execute(HttpRequest req, HttpResponse resp) throws IOException {
       // Write out a minimal W3C status response.
       byte[] payload = new GsonBuilder().create().toJson(ImmutableMap.of(
           "ready", true,
@@ -127,12 +121,10 @@ class AllHandlers {
       )).getBytes(UTF_8);
 
       resp.setStatus(HTTP_OK);
-      resp.setContentType(JAVASCRIPT_UTF_8.toString());
-      resp.setContentLengthLong(payload.length);
+      resp.setHeader("Content-Type", JAVASCRIPT_UTF_8.toString());
+      resp.setHeader("Content-Length", String.valueOf(payload.length));
 
-      try (OutputStream out = resp.getOutputStream()) {
-        out.write(payload);
-      }
+      resp.setContent(payload);
     }
   }
 }

@@ -92,6 +92,20 @@ class HttpMessage {
     headers.removeAll(name);
   }
 
+  public Charset getContentEncoding() {
+    Charset charset = UTF_8;
+    try {
+      String contentType = getHeader(CONTENT_TYPE);
+      if (contentType != null) {
+        MediaType mediaType = MediaType.parse(contentType);
+        charset = mediaType.charset().or(UTF_8);
+      }
+    } catch (IllegalArgumentException ignored) {
+      // Do nothing.
+    }
+    return charset;
+  }
+
   public void setContent(byte[] data) {
     this.content = new ByteArrayInputStream(data);
   }
@@ -105,7 +119,7 @@ class HttpMessage {
       synchronized (this) {
         if (readContent == null) {
           try (ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
-            ByteStreams.copy(content, bos);
+            ByteStreams.copy(consumeContentStream(), bos);
             readContent = bos.toByteArray();
           } catch (IOException e) {
             throw new WebDriverException(e);
@@ -117,16 +131,14 @@ class HttpMessage {
   }
 
   public String getContentString() {
-    Charset charset = UTF_8;
-    try {
-      String contentType = getHeader(CONTENT_TYPE);
-      if (contentType != null) {
-        MediaType mediaType = MediaType.parse(contentType);
-        charset = mediaType.charset().or(UTF_8);
-      }
-    } catch (IllegalArgumentException ignored) {
-      // Do nothing.
-    }
-    return new String(getContent(), charset);
+    return new String(getContent(), getContentEncoding());
+  }
+
+  /**
+   * Get the underlying content stream, bypassing the caching mechanisms that allow it to be read
+   * again.
+   */
+  public InputStream consumeContentStream() {
+    return content;
   }
 }

@@ -209,7 +209,9 @@ public class WebDriverServlet extends HttpServlet {
             req.getMethod(),
             req.getPathInfo(),
             handler.getClass().getSimpleName()));
-        handler.execute(req, resp);
+        handler.execute(
+            new ServletRequestWrappingHttpRequest(req),
+            new ServletResponseWrappingHttpResponse(resp));
       } catch (IOException e) {
         resp.reset();
         throw new RuntimeException(e);
@@ -222,7 +224,9 @@ public class WebDriverServlet extends HttpServlet {
       execution.get(1, MINUTES);
     } catch (ExecutionException e) {
       resp.reset();
-      new ExceptionHandler(e).execute(req, resp);
+      new ExceptionHandler(e).execute(
+          new ServletRequestWrappingHttpRequest(req),
+          new ServletResponseWrappingHttpResponse(resp));
     } catch (InterruptedException e) {
       log("Unexpectedly interrupted: " + e.getMessage(), e);
       invalidateSession = true;
