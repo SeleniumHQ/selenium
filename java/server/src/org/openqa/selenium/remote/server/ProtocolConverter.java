@@ -18,30 +18,19 @@
 package org.openqa.selenium.remote.server;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.io.ByteSource;
-import com.google.common.io.ByteStreams;
 
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.CommandCodec;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.ResponseCodec;
 import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.internal.ApacheHttpClient;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.URL;
-import java.util.Enumeration;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 class ProtocolConverter implements SessionCodec {
 
@@ -78,10 +67,8 @@ class ProtocolConverter implements SessionCodec {
   }
 
   @Override
-  public void handle(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-    HttpRequest fromDownstream = createRequest(req);
-
-    Command command = downstream.decode(fromDownstream);
+  public void handle(HttpRequest req, HttpResponse resp) throws IOException {
+    Command command = downstream.decode(req);
     HttpRequest request = upstream.encode(command);
 
     HttpResponse res = makeRequest(request);
@@ -97,7 +84,7 @@ class ProtocolConverter implements SessionCodec {
     return client.execute(request, true);
   }
 
-  private void copyToServletResponse(HttpResponse response, HttpServletResponse resp)
+  private void copyToServletResponse(HttpResponse response, HttpResponse resp)
       throws IOException {
     resp.setStatus(response.getStatus());
 
@@ -111,42 +98,6 @@ class ProtocolConverter implements SessionCodec {
       }
     }
 
-    try (OutputStream out = resp.getOutputStream()) {
-      ByteSource.wrap(response.getContent()).copyTo(out);
-    }
-  }
-
-  private HttpRequest createRequest(HttpServletRequest req) throws IOException {
-    HttpMethod method = HttpMethod.valueOf(req.getMethod().toUpperCase());
-    String url = req.getPathInfo();
-    if (Strings.isNullOrEmpty(url)) {
-      url = "/";
-    }
-    HttpRequest request = new HttpRequest(method, url);
-
-    Enumeration<String> names = req.getHeaderNames();
-    while (names.hasMoreElements()) {
-      String name = names.nextElement();
-
-      if (name == null || IGNORED_REQ_HEADERS.contains(name.toLowerCase())) {
-        continue;
-      }
-
-      Enumeration<String> values = req.getHeaders(name);
-      while (values.hasMoreElements()) {
-        String value = values.nextElement();
-        if (value != null) {
-          request.addHeader(name, value);
-        }
-      }
-    }
-
-    try (InputStream in = req.getInputStream();
-         ByteArrayOutputStream out = new ByteArrayOutputStream()) {
-      ByteStreams.copy(in, out);
-      request.setContent(out.toByteArray());
-    }
-
-    return request;
+    resp.setContent(response.consumeContentStream());
   }
 }

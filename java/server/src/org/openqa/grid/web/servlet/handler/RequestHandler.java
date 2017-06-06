@@ -109,6 +109,7 @@ public class RequestHandler implements Comparable<RequestHandler> {
           forwardNewSessionRequestAndUpdateRegistry(session);
         } catch (Exception e) {
           cleanup();
+          log.log(Level.INFO, "Error forwarding the new session " + e.getMessage(), e);
           throw new GridException("Error forwarding the new session " + e.getMessage(), e);
         }
         break;

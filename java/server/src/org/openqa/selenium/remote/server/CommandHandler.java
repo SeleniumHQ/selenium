@@ -17,11 +17,11 @@
 
 package org.openqa.selenium.remote.server;
 
+import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.http.HttpResponse;
+
 import java.io.IOException;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 interface CommandHandler {
-  void execute(HttpServletRequest req, HttpServletResponse resp) throws IOException;
+  void execute(HttpRequest req, HttpResponse resp) throws IOException;
 }

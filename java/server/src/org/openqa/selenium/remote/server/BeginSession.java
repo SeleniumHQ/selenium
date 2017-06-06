@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.remote.server;
 
+import static com.google.common.net.HttpHeaders.CONTENT_TYPE;
 import static com.google.common.net.MediaType.JAVASCRIPT_UTF_8;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -32,10 +33,12 @@ import static org.openqa.selenium.remote.DesiredCapabilities.htmlUnit;
 import static org.openqa.selenium.remote.Dialect.OSS;
 import static org.openqa.selenium.remote.Dialect.W3C;
 
+import com.google.common.base.Charsets;
 import com.google.common.cache.Cache;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.net.MediaType;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonReader;
@@ -45,14 +48,16 @@ import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.remote.BeanToJsonConverter;
 import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -64,9 +69,6 @@ import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 class BeginSession implements CommandHandler {
 
@@ -91,7 +93,7 @@ class BeginSession implements CommandHandler {
   }
 
   @Override
-  public void execute(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+  public void execute(HttpRequest req, HttpResponse resp) throws IOException {
     // Copy the capabilities to disk
     Path allCaps = Files.createTempFile("selenium", ".json");
 
@@ -149,11 +151,11 @@ class BeginSession implements CommandHandler {
 
       resp.setStatus(HTTP_OK);
       resp.setHeader("Cache-Control", "no-cache");
-      resp.setContentType(JAVASCRIPT_UTF_8.toString());
-      resp.setContentLengthLong(payload.length);
-      try (OutputStream out = resp.getOutputStream()) {
-        out.write(payload);
-      }
+
+      resp.setHeader("Content-Type", JAVASCRIPT_UTF_8.toString());
+      resp.setHeader("Content-Length", String.valueOf(payload.length));
+
+      resp.setContent(payload);
     } finally {
       Files.delete(allCaps);
     }
@@ -161,18 +163,24 @@ class BeginSession implements CommandHandler {
 
   private void readCapabilities(
       Path allCaps,
-      HttpServletRequest req,
+      HttpRequest req,
       Map<String, Object> ossKeys,
       Map<String, Object> alwaysMatch,
       List<Map<String, Object>> firstMatch) throws IOException {
-    String reqEncoding = req.getCharacterEncoding();
-    if (reqEncoding == null) {
-      // Assume utf8
-      reqEncoding = UTF_8.toString();
+
+    Charset charset = Charsets.UTF_8;
+    try {
+      String contentType = req.getHeader(CONTENT_TYPE);
+      if (contentType != null) {
+        MediaType mediaType = MediaType.parse(contentType);
+        charset = mediaType.charset().or(Charsets.UTF_8);
+      }
+    } catch (IllegalArgumentException ignored) {
+      // Do nothing.
     }
 
-    try (InputStream rawIn = new BufferedInputStream(req.getInputStream());
-         Reader reader = new InputStreamReader(rawIn, reqEncoding);
+    try (InputStream rawIn = new BufferedInputStream(req.consumeContentStream());
+         Reader reader = new InputStreamReader(rawIn, charset);
          Writer writer = Files.newBufferedWriter(allCaps, UTF_8);
          Reader in = new TeeReader(reader, writer);
          JsonReader json = new JsonReader(in)) {

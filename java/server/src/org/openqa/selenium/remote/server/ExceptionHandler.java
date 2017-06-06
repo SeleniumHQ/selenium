@@ -17,20 +17,18 @@
 
 package org.openqa.selenium.remote.server;
 
+import static com.google.common.net.MediaType.JAVASCRIPT_UTF_8;
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 import com.google.common.base.Throwables;
-import com.google.common.net.MediaType;
 import com.google.gson.Gson;
 
-import java.io.IOException;
-import java.io.OutputStream;
+import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.http.HttpResponse;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * Takes an exception and formats it for a local end that speaks either the OSS or W3C dialect of
@@ -46,9 +44,7 @@ class ExceptionHandler implements CommandHandler {
   }
 
   @Override
-  public void execute(HttpServletRequest req, HttpServletResponse resp) {
-    resp.reset();
-
+  public void execute(HttpRequest req, HttpResponse resp) {
     Map<String, Object> value = new HashMap<>();
     value.put("message", exception.getMessage());
     value.put("stacktrace", Throwables.getStackTraceAsString(exception));
@@ -59,12 +55,10 @@ class ExceptionHandler implements CommandHandler {
 
     byte[] bytes = new Gson().toJson(value).getBytes(UTF_8);
     resp.setStatus(HTTP_INTERNAL_ERROR);
-    resp.setContentType(MediaType.JAVASCRIPT_UTF_8.toString());
-    resp.setContentLengthLong(bytes.length);
-    try (OutputStream out = resp.getOutputStream()) {
-      out.write(bytes);
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
+
+    resp.setHeader("Content-Type", JAVASCRIPT_UTF_8.toString());
+    resp.setHeader("Content-Length", String.valueOf(bytes.length));
+
+    resp.setContent(bytes);
   }
 }
