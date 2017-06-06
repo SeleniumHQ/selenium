@@ -39,8 +39,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.net.MediaType;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 
@@ -73,23 +71,17 @@ import java.util.stream.Collectors;
 class BeginSession implements CommandHandler {
 
   private final static Logger LOG = Logger.getLogger(BeginSession.class.getName());
-  private final static Gson gson = new GsonBuilder().serializeNulls().create();
 
   private final Cache<SessionId, ActiveSession> allSessions;
-  private final DriverSessions legacySessions;
   private final Map<String, SessionFactory> factories;
-  private final Function<Path, ActiveSession> defaultFactory;
 
   public BeginSession(Cache<SessionId, ActiveSession> allSessions, DriverSessions legacySessions) {
     this.allSessions = allSessions;
-    this.legacySessions = legacySessions;
 
     this.factories = ImmutableMap.of(
         chrome().getBrowserName(), new ServicedSession.Factory("org.openqa.selenium.chrome.ChromeDriverService"),
         firefox().getBrowserName(), new ServicedSession.Factory("org.openqa.selenium.firefox.GeckoDriverService"),
         htmlUnit().getBrowserName(), new InMemorySession.Factory(legacySessions));
-
-    defaultFactory = null;
   }
 
   @Override
@@ -133,18 +125,24 @@ class BeginSession implements CommandHandler {
       allSessions.put(session.getId(), session);
 
       Object toConvert;
-      if (firstMatch.isEmpty() && alwaysMatch.isEmpty()) {
-        // JSON Wire Protocol response
-        toConvert = ImmutableMap.of(
-            "status", 0,
-            "sessionId", session.getId().toString(),
-            "value", session.getCapabilities());
-      } else {
-        // W3C protocol response
-        toConvert = ImmutableMap.of(
-            "value", ImmutableMap.of(
-                "sessionId", session.getId().toString(),
-                "capabilities", session.getCapabilities()));
+      switch (session.getDownstreamDialect()) {
+        case OSS:
+          toConvert = ImmutableMap.of(
+              "status", 0,
+              "sessionId", session.getId().toString(),
+              "value", session.getCapabilities());
+          break;
+
+        case W3C:
+          toConvert = ImmutableMap.of(
+              "value", ImmutableMap.of(
+                  "sessionId", session.getId().toString(),
+                  "capabilities", session.getCapabilities()));
+          break;
+
+          default:
+            throw new SessionNotCreatedException(
+                "Unrecognized downstream dialect: " + session.getDownstreamDialect());
       }
 
       byte[] payload = new BeanToJsonConverter().convert(toConvert).getBytes(UTF_8);
