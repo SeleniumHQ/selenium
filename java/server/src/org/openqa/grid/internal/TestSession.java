@@ -322,9 +322,9 @@ public class TestSession {
       Header h = proxyResponse.getFirstHeader("Location");
       if (h == null) {
         if (isSuccessJsonResponse(proxyResponse) && proxyResponse.getEntity() != null) {
-          InputStream stream = proxyResponse.getEntity().getContent();
-          consumedData = ByteStreams.toByteArray(stream);
-          stream.close();
+          try (InputStream stream = proxyResponse.getEntity().getContent()) {
+            consumedData = ByteStreams.toByteArray(stream);
+          }
 
           String contentString = new String(consumedData, Charsets.UTF_8);
           ExternalSessionKey key = ExternalSessionKey.fromJsonResponseBody(contentString);
@@ -355,7 +355,7 @@ public class TestSession {
           continue;
         }
 
-        if (MediaType.JSON_UTF_8.is(type)) {
+        if (MediaType.JSON_UTF_8.is(type) || MediaType.JAVASCRIPT_UTF_8.is(type)) {
           return true;
         }
       }
