@@ -51,7 +51,25 @@ class WebElement(object):
     reference is still valid.  This essentially determines whether or not the
     element is still attached to the DOM.  If this test fails, then an
     ``StaleElementReferenceException`` is thrown, and all future calls to this
-    instance will fail."""
+    instance will fail.
+
+    If an element is no longer part of the DOM a StaleElementReferenceException
+    will be thrown. An element is most often no longer part of the DOM because
+    the DOM has been destroyed. The DOM is destroyed when a new web page is loaded.
+    This even includes refreshing the same web page.
+
+    In order to handle a StaleElementReferenceException you must re-find the WebElement.
+
+    For Example:
+
+        try:
+            element = driver.find_element_by_css_selector(css_selector)
+            element.click()
+        except StaleElementReferenceException:
+            driver.get(url)
+            element = driver.find_element_by_css_selector(css_selector)
+            element.click()
+    """
 
     def __init__(self, parent, id_, w3c=False):
         self._parent = parent
