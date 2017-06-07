@@ -189,7 +189,9 @@ public class DriverService {
       URL status = new URL(url.toString() + "/status");
       new UrlChecker().waitUntilAvailable(20, SECONDS, status);
     } catch (UrlChecker.TimeoutException e) {
-      process.checkForError();
+      if (process != null) {
+        process.checkForError();
+      }
       throw new WebDriverException("Timed out waiting for driver server to start.", e);
     }
   }
