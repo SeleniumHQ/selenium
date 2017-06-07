@@ -32,7 +32,7 @@ module Selenium
         partial_link_text: 'partial link text',
         tag_name: 'tag name',
         xpath: 'xpath'
-      }.freeze
+      }
 
       #
       # Find the first element matching the given arguments
