@@ -836,6 +836,9 @@ class WebDriver(object):
         :Usage:
             driver.get_screenshot_as_file('/Screenshots/foo.png')
         """
+        if not filename.lower().endswith('.png'):
+            warnings.warn("name used for saved screenshot does not match file "
+                "type. It should end with a `.png` extension", UserWarning)
         png = self.get_screenshot_as_png()
         try:
             with open(filename, 'wb') as f:
@@ -844,9 +847,6 @@ class WebDriver(object):
             return False
         finally:
             del png
-        if not filename.lower().endswith('.png'):
-            warnings.warn("name used for saved screenshot does not match file "
-                "type.  It should end with a `.png` extension", UserWarning)
         return True
 
     def save_screenshot(self, filename):

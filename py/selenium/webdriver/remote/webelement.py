@@ -444,6 +444,9 @@ class WebElement(object):
         :Usage:
             element.screenshot('/Screenshots/foo.png')
         """
+        if not filename.lower().endswith('.png'):
+            warnings.warn("name used for saved screenshot does not match file "
+                "type. It should end with a `.png` extension", UserWarning)
         png = self.screenshot_as_png
         try:
             with open(filename, 'wb') as f:
@@ -452,9 +455,6 @@ class WebElement(object):
             return False
         finally:
             del png
-        if not filename.lower().endswith('.png'):
-            warnings.warn("name used for saved screenshot does not match file "
-                "type.  It should end with a `.png` extension", UserWarning)
         return True
 
     @property
