@@ -140,9 +140,9 @@ class BeginSession implements CommandHandler {
                   "capabilities", session.getCapabilities()));
           break;
 
-          default:
-            throw new SessionNotCreatedException(
-                "Unrecognized downstream dialect: " + session.getDownstreamDialect());
+        default:
+          throw new SessionNotCreatedException(
+              "Unrecognized downstream dialect: " + session.getDownstreamDialect());
       }
 
       byte[] payload = new BeanToJsonConverter().convert(toConvert).getBytes(UTF_8);
