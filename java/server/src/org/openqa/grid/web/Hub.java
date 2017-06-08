@@ -30,6 +30,7 @@ import org.openqa.grid.web.servlet.ProxyStatusServlet;
 import org.openqa.grid.web.servlet.RegistrationServlet;
 import org.openqa.grid.web.servlet.ResourceServlet;
 import org.openqa.grid.web.servlet.TestSessionStatusServlet;
+import org.openqa.grid.web.servlet.api.v1.APIEndpointRegistry;
 import org.openqa.grid.web.servlet.beta.ConsoleServlet;
 import org.openqa.grid.web.utils.ExtraServletUtil;
 import org.openqa.selenium.net.NetworkUtils;
@@ -111,6 +112,11 @@ public class Hub {
     handler.addServlet(HubStatusServlet.class.getName(), "/grid/api/hub/*");
 
     handler.addServlet(TestSessionStatusServlet.class.getName(), "/grid/api/testsession/*");
+
+    //User facing API V1 end points
+    for (APIEndpointRegistry.EndPoint endpoint : APIEndpointRegistry.getEndpoints()) {
+      handler.addServlet(endpoint.getClassName(), endpoint.getServerRegistrationPermalink());
+    }
 
     // add optional default servlets
     if (!config.isWithOutServlet(ResourceServlet.class)) {
