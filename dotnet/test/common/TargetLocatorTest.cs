@@ -90,6 +90,27 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        public void ShouldSwitchIntoNestedFramesByNameAndBackToDefaultContent()
+        {
+            driver.Url = framesetPage;
+
+            driver.SwitchTo().Frame("sixth", "iframe1-name");
+
+            Assert.AreEqual(driver.FindElement(By.Id("killIFrame")).Text, "Kill containing iframe");
+
+            driver.SwitchTo().DefaultContent();
+            try
+            {
+                // DefaultContent should not have the element in it.
+                Assert.AreEqual(driver.FindElement(By.Id("killIFrame")).Text, "Kill containing iframe");
+                Assert.Fail("Should not be able to get element in frame from DefaultContent");
+            }
+            catch (NoSuchElementException)
+            {
+            }
+        }
+
+        [Test]
         public void ShouldSwitchToFrameByIndexAndBackToDefaultContent()
         {
             driver.Url = framesPage;
@@ -122,6 +143,5 @@ namespace OpenQA.Selenium
             {
             }
         }
-
     }
 }
