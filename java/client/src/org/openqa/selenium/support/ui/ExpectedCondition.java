@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.support.ui;
 
-import com.google.common.base.Function;
+import java.util.function.Function;
 
 import org.openqa.selenium.WebDriver;
 
