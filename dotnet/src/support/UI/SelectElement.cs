@@ -124,25 +124,34 @@ namespace OpenQA.Selenium.Support.UI
         /// <summary>
         /// Select all options by the text displayed.
         /// </summary>
-        /// <param name="text">The text of the option to be selected. If an exact match is not found,
-        /// this method will perform a substring match.</param>
+        /// <param name="text">The text of the option to be selected.</param>
+        /// <param name="partialMatch">Default value is false. If true a partial match on the Options list will be performed, otherwise exact match.</param>
         /// <remarks>When given "Bar" this method would select an option like:
         /// <para>
         /// &lt;option value="foo"&gt;Bar&lt;/option&gt;
         /// </para>
         /// </remarks>
         /// <exception cref="NoSuchElementException">Thrown if there is no element with the given text present.</exception>
-        public void SelectByText(string text)
+        public void SelectByText(string text, bool partialMatch = false)
         {
             if (text == null)
             {
                 throw new ArgumentNullException("text", "text must not be null");
             }
 
-            // try to find the option via XPATH ...
-            IList<IWebElement> options = this.element.FindElements(By.XPath(".//option[normalize-space(.) = " + EscapeQuotes(text) + "]"));
-
             bool matched = false;
+            IList<IWebElement> options;
+
+            if (!partialMatch)
+            {
+                // try to find the option via XPATH ...
+                options = this.element.FindElements(By.XPath(".//option[normalize-space(.) = " + EscapeQuotes(text) + "]"));
+            }
+            else
+            {
+                options = this.element.FindElements(By.XPath(".//option[contains(normalize-space(.),  " + EscapeQuotes(text) + ")]"));
+            }
+
             foreach (IWebElement option in options)
             {
                 SetSelected(option, true);
