@@ -96,6 +96,8 @@ module Selenium
 
           yield http
         end
+      rescue *(SocketPoller::NOT_CONNECTED_ERRORS + Remote::Http::Default::EPHEMERAL_PORTS_ERRORS)
+        # ignore
       end
 
       def find_free_port

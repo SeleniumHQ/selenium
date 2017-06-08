@@ -26,6 +26,8 @@ module Selenium
       module Http
         # @api private
         class Default < Common
+          EPHEMERAL_PORTS_ERRORS = [Errno::ECONNABORTED, Errno::ECONNRESET, Errno::EADDRINUSE]
+
           attr_accessor :proxy
 
           attr_accessor :open_timeout
@@ -76,7 +78,7 @@ module Selenium
             begin
               request = new_request_for(verb, url, headers, payload)
               response = response_for(request)
-            rescue Errno::ECONNABORTED, Errno::ECONNRESET, Errno::EADDRINUSE
+            rescue *EPHEMERAL_PORTS_ERRORS
               # a retry is sometimes needed on Windows XP where we may quickly
               # run out of ephemeral ports
               #

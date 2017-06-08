@@ -23,6 +23,9 @@ require 'socket'
 module Selenium
   module WebDriver
     class SocketPoller
+      NOT_CONNECTED_ERRORS = [Errno::ECONNREFUSED, Errno::ENOTCONN, SocketError]
+      NOT_CONNECTED_ERRORS << Errno::EPERM if Platform.cygwin?
+
       def initialize(host, port, timeout = 0, interval = 0.25)
         @host     = host
         @port     = Integer(port)
@@ -55,9 +58,6 @@ module Selenium
       private
 
       CONNECT_TIMEOUT = 5
-
-      NOT_CONNECTED_ERRORS = [Errno::ECONNREFUSED, Errno::ENOTCONN, SocketError]
-      NOT_CONNECTED_ERRORS << Errno::EPERM if Platform.cygwin?
 
       CONNECTED_ERRORS = [Errno::EISCONN]
       CONNECTED_ERRORS << Errno::EINVAL if Platform.windows?
