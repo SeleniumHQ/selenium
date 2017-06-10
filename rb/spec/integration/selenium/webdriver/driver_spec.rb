@@ -44,15 +44,27 @@ module Selenium
       context 'screenshots' do
         it 'should save' do
           driver.navigate.to url_for('xhtmlTest.html')
-          path = 'screenshot_tmp.png'
+          path = "#{Dir.tmpdir}/test#{SecureRandom.urlsafe_base64}.png"
 
-          begin
-            driver.save_screenshot path
-            expect(File.exist?(path)).to be true # sic
-            expect(File.size(path)).to be > 0
-          ensure
-            File.delete(path) if File.exist?(path)
-          end
+          save_screenshot_and_assert(path)
+        end
+
+        it 'should warn if extension of provided path is not png' do
+          driver.navigate.to url_for('xhtmlTest.html')
+          path = "#{Dir.tmpdir}/test#{SecureRandom.urlsafe_base64}.jpg"
+          message = "name used for saved screenshot does match file type. "\
+                    "It should end with .png extension"
+          expect(WebDriver.logger).to receive(:warn).with(message)
+
+          save_screenshot_and_assert(path)
+        end
+
+        it 'should not warn if extension of provided path is png' do
+          driver.navigate.to url_for('xhtmlTest.html')
+          path = "#{Dir.tmpdir}/test#{SecureRandom.urlsafe_base64}.PNG"
+          expect(WebDriver.logger).not_to receive(:warn)
+
+          save_screenshot_and_assert(path)
         end
 
         it 'should return in the specified format' do
@@ -65,6 +77,16 @@ module Selenium
 
         it 'raises an error when given an unknown format' do
           expect { driver.screenshot_as(:jpeg) }.to raise_error(WebDriver::Error::UnsupportedOperationError)
+        end
+
+        def save_screenshot_and_assert(path)
+          begin
+            driver.save_screenshot path
+            expect(File.exist?(path)).to be true
+            expect(File.size(path)).to be > 0
+          ensure
+            File.delete(path) if File.exist?(path)
+          end
         end
       end
 
