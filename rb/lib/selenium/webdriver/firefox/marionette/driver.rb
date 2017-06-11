@@ -72,21 +72,28 @@ module Selenium
           private
 
           def create_capabilities(opts)
-            caps = Remote::W3C::Capabilities.firefox
-            caps.merge!(opts.delete(:desired_capabilities)) if opts.key? :desired_capabilities
-            firefox_options = caps[:firefox_options] || {}
-            firefox_options = firefox_options.merge(opts[:firefox_options]) if opts.key?(:firefox_options)
-            if opts.key?(:profile)
-              profile = opts.delete(:profile)
-              profile = Profile.from_name(profile) unless profile.is_a?(Profile)
-              firefox_options[:profile] = profile.encoded
+            caps = opts.delete(:desired_capabilities) { Remote::W3C::Capabilities.firefox }
+            options = opts.delete(:options) { Options.new }
+
+            firefox_options = opts.delete(:firefox_options)
+            if firefox_options
+              WebDriver.logger.deprecate ':firefox_options', 'Selenium::WebDriver::Firefox::Options'
+              firefox_options.each do |key, value|
+                options.add_option(key, value)
+              end
             end
 
-            Binary.path = firefox_options[:binary] if firefox_options.key?(:binary)
-            caps[:firefox_options] = firefox_options unless firefox_options.empty?
+            profile = opts.delete(:profile)
+            if profile
+              WebDriver.logger.deprecate ':profile', 'Selenium::WebDriver::Firefox::Options#profile='
+              options.profile = profile
+            end
+
+            options = options.as_json
+            caps.merge!(options) unless options.empty?
+
             caps
           end
-
         end # Driver
       end # Marionette
     end # Firefox
