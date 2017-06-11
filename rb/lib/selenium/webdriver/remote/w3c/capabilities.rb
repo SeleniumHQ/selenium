@@ -47,7 +47,7 @@ module Selenium
             :script_timeout,
           ].freeze
 
-          BROWSER_SPECIFIC = [WebDriver::Firefox::Options::KEY].freeze
+          BROWSER_SPECIFIC = ['moz:firefoxOptions'].freeze
 
           KNOWN.each do |key|
             define_method key do
