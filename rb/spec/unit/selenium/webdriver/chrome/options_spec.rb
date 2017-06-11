@@ -113,8 +113,8 @@ module Selenium
 
         describe '#add_emulation' do
           it 'add an emulated device by name' do
-            subject.add_emulation(device_name: 'Google Nexus 6')
-            expect(subject.emulation).to eq(deviceName: 'Google Nexus 6')
+            subject.add_emulation(device_name: 'iPhone 6')
+            expect(subject.emulation).to eq(deviceName: 'iPhone 6')
           end
 
           it 'adds emulated device metrics' do
