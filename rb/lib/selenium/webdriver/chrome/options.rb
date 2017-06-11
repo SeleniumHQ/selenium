@@ -129,7 +129,7 @@ module Selenium
         #
         # @example Start Chrome in mobile emulation mode by device name
         #   options = Selenium::WebDriver::Chrome::Options.new
-        #   options.add_emulated_device(device_name: 'Google Nexus 6')
+        #   options.add_emulated_device(device_name: 'iPhone 6')
         #
         # @example Start Chrome in mobile emulation mode by device metrics
         #   options = Selenium::WebDriver::Chrome::Options.new

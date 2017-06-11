@@ -24,25 +24,23 @@ module Selenium
     module Chrome
       compliant_on browser: :chrome do
         describe Options do
-          subject(:options) { Selenium::WebDriver::Chrome::Options.new }
-
           it 'passes emulated device correctly' do
-            options.add_emulation(device_name: 'Google Nexus 6')
+            subject.add_emulation(device_name: 'Nexus 5')
 
             begin
-              driver = Selenium::WebDriver.for(:chrome, options: options)
+              driver = Selenium::WebDriver.for(:chrome, options: subject)
               ua = driver.execute_script 'return window.navigator.userAgent'
-              expect(ua).to include('Nexus 6')
+              expect(ua).to include('Nexus 5')
             ensure
               driver.quit if driver
             end
           end
 
           it 'passes emulated user agent correctly' do
-            options.add_emulation(user_agent: 'foo;bar')
+            subject.add_emulation(user_agent: 'foo;bar')
 
             begin
-              driver = Selenium::WebDriver.for(:chrome, options: options)
+              driver = Selenium::WebDriver.for(:chrome, options: subject)
               ua = driver.execute_script 'return window.navigator.userAgent'
               expect(ua).to eq('foo;bar')
             ensure
@@ -51,10 +49,10 @@ module Selenium
           end
 
           it 'passes args correctly' do
-            options.add_argument('--user-agent=foo;bar')
+            subject.add_argument('--user-agent=foo;bar')
 
             begin
-              driver = Selenium::WebDriver.for(:chrome, options: options)
+              driver = Selenium::WebDriver.for(:chrome, options: subject)
               ua = driver.execute_script 'return window.navigator.userAgent'
               expect(ua).to eq('foo;bar')
             ensure
