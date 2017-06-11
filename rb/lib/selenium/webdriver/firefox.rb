@@ -32,6 +32,7 @@ require 'selenium/webdriver/firefox/launcher'
 require 'selenium/webdriver/firefox/legacy/driver'
 
 require 'selenium/webdriver/firefox/marionette/driver'
+require 'selenium/webdriver/firefox/options'
 require 'selenium/webdriver/firefox/service'
 
 module Selenium

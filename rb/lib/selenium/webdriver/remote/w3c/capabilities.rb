@@ -45,8 +45,9 @@ module Selenium
             :implicit_timeout,
             :page_load_timeout,
             :script_timeout,
-            :firefox_options, # TODO (alex): firefox should be handled somehow differently
           ].freeze
+
+          BROWSER_SPECIFIC = [WebDriver::Firefox::Options::KEY].freeze
 
           KNOWN.each do |key|
             define_method key do
@@ -140,9 +141,13 @@ module Selenium
               oss_capabilties.each do |name, value|
                 next if value.nil?
                 next if value.is_a?(String) && value.empty?
-                next unless w3c_capabilties.respond_to?("#{name}=")
 
-                w3c_capabilties.__send__("#{name}=", value)
+                if w3c_capabilties.respond_to?("#{name}=")
+                  w3c_capabilties.__send__("#{name}=", value)
+                elsif BROWSER_SPECIFIC.include?(name)
+                  w3c_capabilties.merge!(name => value)
+                end
+
               end
 
               w3c_capabilties
@@ -212,8 +217,6 @@ module Selenium
                 hash['platform'] = value.to_s.upcase
               when :proxy
                 hash['proxy'] = value.as_json if value
-              when :firefox_options
-                hash['moz:firefoxOptions'] = value
               when String, :firefox_binary
                 hash[key.to_s] = value
               when Symbol

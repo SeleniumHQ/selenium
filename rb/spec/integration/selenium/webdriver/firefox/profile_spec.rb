@@ -41,7 +41,10 @@ module Selenium
               opt[:url] = GlobalTestEnv.remote_server.webdriver_url if GlobalTestEnv.remote_server?
               opt
             else
-              {profile: profile}
+              options = Options.new
+              options.profile = profile
+
+              {options: options}
             end
           end
 
@@ -163,7 +166,7 @@ module Selenium
 
               it 'should instantiate the browser with the correct profile' do
                 begin
-                  driver1 = GlobalTestEnv.send(:create_driver, profile_opts.dup)
+                  driver1 = GlobalTestEnv.send(:create_driver, profile_opts)
                   expect { wait(5).until { driver1.find_element(id: 'oneline') } }.to_not raise_error
                 ensure
                   driver1.quit
@@ -172,9 +175,9 @@ module Selenium
 
               it 'should be able to use the same profile more than once' do
                 begin
-                  driver1 = GlobalTestEnv.send(:create_driver, profile_opts.dup)
+                  driver1 = GlobalTestEnv.send(:create_driver, profile_opts)
                   expect { wait(5).until { driver1.find_element(id: 'oneline') } }.to_not raise_error
-                  driver2 = GlobalTestEnv.send(:create_driver, profile_opts.dup)
+                  driver2 = GlobalTestEnv.send(:create_driver, profile_opts)
                   expect { wait(5).until { driver2.find_element(id: 'oneline') } }.to_not raise_error
                 ensure
                   driver1.quit if driver1

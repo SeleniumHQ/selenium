@@ -23,8 +23,6 @@ module Selenium
   module WebDriver
     module Chrome
       describe Options do
-        subject(:options) { Options.new }
-
         describe '#initialize' do
           it 'sets passed args' do
             opt = Options.new(args: %w[foo bar])
@@ -61,83 +59,83 @@ module Selenium
           it 'adds an extension' do
             allow(File).to receive(:file?).with('/foo/bar.crx').and_return(true)
 
-            options.add_extension('/foo/bar.crx')
-            expect(options.extensions).to include('/foo/bar.crx')
+            subject.add_extension('/foo/bar.crx')
+            expect(subject.extensions).to include('/foo/bar.crx')
           end
 
           it 'raises error when the extension file is missing' do
             allow(File).to receive(:file?).with('/foo/bar').and_return false
 
-            expect { options.add_extension('/foo/bar') }.to raise_error(Error::WebDriverError)
+            expect { subject.add_extension('/foo/bar') }.to raise_error(Error::WebDriverError)
           end
 
           it 'raises error when the extension file is not .crx' do
             allow(File).to receive(:file?).with('/foo/bar').and_return true
 
-            expect { options.add_extension('/foo/bar') }.to raise_error(Error::WebDriverError)
+            expect { subject.add_extension('/foo/bar') }.to raise_error(Error::WebDriverError)
           end
         end
 
         describe '#add_encoded_extension' do
           it 'adds an encoded extension' do
-            options.add_encoded_extension('foo')
-            expect(options.encoded_extensions).to include('foo')
+            subject.add_encoded_extension('foo')
+            expect(subject.encoded_extensions).to include('foo')
           end
         end
 
         describe '#binary=' do
           it 'sets the binary path' do
-            options.binary = '/foo/bar'
-            expect(options.binary).to eq('/foo/bar')
+            subject.binary = '/foo/bar'
+            expect(subject.binary).to eq('/foo/bar')
           end
         end
 
         describe '#add_argument' do
           it 'adds a command-line argument' do
-            options.add_argument('foo')
-            expect(options.args).to include('foo')
+            subject.add_argument('foo')
+            expect(subject.args).to include('foo')
           end
         end
 
         describe '#add_option' do
           it 'adds an option' do
-            options.add_option(:foo, 'bar')
-            expect(options.options[:foo]).to eq('bar')
+            subject.add_option(:foo, 'bar')
+            expect(subject.options[:foo]).to eq('bar')
           end
         end
 
         describe '#add_preference' do
           it 'adds a preference' do
-            options.add_preference(:foo, 'bar')
-            expect(options.prefs[:foo]).to eq('bar')
+            subject.add_preference(:foo, 'bar')
+            expect(subject.prefs[:foo]).to eq('bar')
           end
         end
 
         describe '#add_emulation' do
           it 'add an emulated device by name' do
-            options.add_emulation(device_name: 'Google Nexus 6')
-            expect(options.emulation).to eq(deviceName: 'Google Nexus 6')
+            subject.add_emulation(device_name: 'Google Nexus 6')
+            expect(subject.emulation).to eq(deviceName: 'Google Nexus 6')
           end
 
           it 'adds emulated device metrics' do
-            options.add_emulation(device_metrics: {width: 400})
-            expect(options.emulation).to eq(deviceMetrics: {width: 400})
+            subject.add_emulation(device_metrics: {width: 400})
+            expect(subject.emulation).to eq(deviceMetrics: {width: 400})
           end
 
           it 'adds emulated user agent' do
-            options.add_emulation(user_agent: 'foo')
-            expect(options.emulation).to eq(userAgent: 'foo')
+            subject.add_emulation(user_agent: 'foo')
+            expect(subject.emulation).to eq(userAgent: 'foo')
           end
         end
 
         describe '#as_json' do
           it 'encodes extensions to base64' do
             allow(File).to receive(:file?).and_return(true)
-            options.add_extension('/foo.crx')
+            subject.add_extension('/foo.crx')
 
             allow(File).to receive(:open).and_yield(instance_double(File, read: :foo))
             expect(Base64).to receive(:strict_encode64).with(:foo)
-            options.as_json
+            subject.as_json
           end
 
           it 'returns a JSON hash' do
