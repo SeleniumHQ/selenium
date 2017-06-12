@@ -52,7 +52,7 @@ module Selenium
         it 'should warn if extension of provided path is not png' do
           driver.navigate.to url_for('xhtmlTest.html')
           path = "#{Dir.tmpdir}/test#{SecureRandom.urlsafe_base64}.jpg"
-          message = "name used for saved screenshot does match file type. "\
+          message = "name used for saved screenshot does not match file type. "\
                     "It should end with .png extension"
           expect(WebDriver.logger).to receive(:warn).with(message)
 
