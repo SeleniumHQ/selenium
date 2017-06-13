@@ -196,7 +196,7 @@ public class GridNodeConfiguration extends GridConfiguration {
   public String id;
 
   /**
-   * The capabilties of this node. Defaults from the capabilities specified in the
+   * The capabilities of this node. Defaults from the capabilities specified in the
    * {@link #DEFAULT_NODE_CONFIG_FILE} or an empty list if the {@link #DEFAULT_NODE_CONFIG_FILE}
    * can not be loaded.
    */

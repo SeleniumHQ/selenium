@@ -144,22 +144,22 @@ module Selenium
             #
 
             def from_oss(capabilities)
-              w3c_capabilties = new
+              w3c_capabilities = new
               # TODO (alex): make capabilities enumerable?
-              oss_capabilties = capabilities.__send__(:capabilities)
-              oss_capabilties.each do |name, value|
+              oss_capabilities = capabilities.__send__(:capabilities)
+              oss_capabilities.each do |name, value|
                 next if value.nil?
                 next if value.is_a?(String) && value.empty?
 
-                if w3c_capabilties.respond_to?("#{name}=")
-                  w3c_capabilties.__send__("#{name}=", value)
+                if w3c_capabilities.respond_to?("#{name}=")
+                  w3c_capabilities.__send__("#{name}=", value)
                 elsif BROWSER_SPECIFIC.include?(name)
-                  w3c_capabilties.merge!(name => value)
+                  w3c_capabilities.merge!(name => value)
                 end
 
               end
 
-              w3c_capabilties
+              w3c_capabilities
             end
           end
 
