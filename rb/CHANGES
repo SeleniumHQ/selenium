@@ -1,4 +1,38 @@
-3.4.0 (Unreleased)
+3.4.1 (2017-06-13)
+==================
+
+Ruby:
+  * Implemented a new dual-dialect mechanism for communication with drivers
+    (a.k.a. protocol handshake). There shouldn't be any noticeable differences
+    but since this is a significant refactoring of internal APIs, some bugs
+    could slip into the release.
+  * Renamed ElementClickIntercepted to ElementClickInterceptedError.
+  * Renamed ElementNotInteractable to ElementNotInteractableError.
+  * Deprecated W3CCapabilities in favor of Capabilities (it was meant to be private API).
+  * Added a warning when trying to save screenshot without .png extension (thanks @abotalov).
+
+IE:
+  * Added support for both old IEDriver which uses OSS dialect of JSON wire
+    protocol (<= 3.4.0) and new IEDriver which uses W3C dialect (not yet released).
+
+Safari:
+  * Removed runtime dependencies used for old SafariDriver (u.g. websocket).
+
+Chrome:
+  * Added new Chrome::Options class that should be used to customize browser
+    behavior (command line arguments, extensions, preferences, mobile emulation, etc.).
+    The instance of options class can be passed to driver initialization using
+    :options key. Old way of passing these customization directly to driver
+    initialization is deprecated.
+
+Firefox:
+  * Added new Firefox::Options class that should be used to customize browser
+    behavior (command line arguments, profile, preferences, Firefox binary, etc.).
+    The instance of options class can be passed to driver initialization using
+    :options key. Old way of passing these customization directly to driver
+    initialization is deprecated.
+
+3.4.0 (2017-04-21)
 ===================
 
 Edge:
