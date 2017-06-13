@@ -23,9 +23,9 @@ def test_command_line_args():
 
     args = service.command_line_args()
 
-    for idx in xrange(len(args) - 1):
+    for idx in range(len(args) - 1):
         if args[idx] == "--log" and args[idx + 1] == "trace":
             found = True
             break
 
-    assert found, "Provided arguments exist in array"
+    assert found, "Provided arguments do not exist in array"
