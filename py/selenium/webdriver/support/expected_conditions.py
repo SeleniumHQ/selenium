@@ -63,6 +63,55 @@ class presence_of_element_located(object):
         return _find_element(driver, self.locator)
 
 
+class url_contains(object):
+    """ An expectation for checking that the current url contains a
+    case-sensitive substring.
+    url is the fragment of url expected,
+    returns True when the title matches, False otherwise
+    """
+    def __init__(self, url):
+        self.url = url
+
+    def __call__(self, driver):
+        return self.url in driver.current_url
+
+
+class url_matches(object):
+    """An expectation for checking the current url.
+    pattern is the expected pattern, which must be an exact match
+    returns True if the title matches, false otherwise."""
+    def __init__(self, pattern):
+        self.pattern = pattern
+
+    def __call__(self, driver):
+        import re
+        match = re.search(self.pattern, driver.current_url)
+
+        return match != None
+
+
+class url_to_be(object):
+    """An expectation for checking the current url.
+    url is the expected url, which must be an exact match
+    returns True if the title matches, false otherwise."""
+    def __init__(self, url):
+        self.url = url
+
+    def __call__(self, driver):
+        return self.url == driver.current_url
+
+
+class url_changes(object):
+    """An expectation for checking the current url.
+    url is the expected url, which must not be an exact match
+    returns True if the url is different, false otherwise."""
+    def __init__(self, url):
+        self.url = url
+
+    def __call__(self, driver):
+        return self.url != driver.current_url
+
+
 class visibility_of_element_located(object):
     """ An expectation for checking that an element is present on the DOM of a
     page and visible. Visibility means that the element is not only displayed
