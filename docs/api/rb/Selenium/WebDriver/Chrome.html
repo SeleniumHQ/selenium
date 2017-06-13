@@ -80,7 +80,7 @@
   
     <dt class="r1 last">Defined in:</dt>
     <dd class="r1 last">lib/selenium/webdriver/chrome.rb<span class="defines">,<br />
-  lib/selenium/webdriver/chrome/bridge.rb,<br /> lib/selenium/webdriver/chrome/service.rb,<br /> lib/selenium/webdriver/chrome/profile.rb</span>
+  lib/selenium/webdriver/chrome/driver.rb,<br /> lib/selenium/webdriver/chrome/profile.rb,<br /> lib/selenium/webdriver/chrome/service.rb,<br /> lib/selenium/webdriver/chrome/options.rb</span>
 </dd>
   
 </dl>
@@ -92,7 +92,7 @@
     
   
     
-      <strong class="classes">Classes:</strong> <span class='object_link'><a href="Chrome/Bridge.html" title="Selenium::WebDriver::Chrome::Bridge (class)">Bridge</a></span>, <span class='object_link'><a href="Chrome/Profile.html" title="Selenium::WebDriver::Chrome::Profile (class)">Profile</a></span>, <span class='object_link'><a href="Chrome/Service.html" title="Selenium::WebDriver::Chrome::Service (class)">Service</a></span>
+      <strong class="classes">Classes:</strong> <span class='object_link'><a href="Chrome/Driver.html" title="Selenium::WebDriver::Chrome::Driver (class)">Driver</a></span>, <span class='object_link'><a href="Chrome/Options.html" title="Selenium::WebDriver::Chrome::Options (class)">Options</a></span>, <span class='object_link'><a href="Chrome/Profile.html" title="Selenium::WebDriver::Chrome::Profile (class)">Profile</a></span>, <span class='object_link'><a href="Chrome/Service.html" title="Selenium::WebDriver::Chrome::Service (class)">Service</a></span>
     
   
 </p>
@@ -223,12 +223,12 @@
       <pre class="lines">
 
 
-34
 35
-36</pre>
+36
+37</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/chrome.rb', line 34</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/chrome.rb', line 35</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_driver_path'>driver_path</span>
   <span class='ivar'>@driver_path</span> <span class='op'>||=</span> <span class='kw'>nil</span>
@@ -253,13 +253,13 @@
       <pre class="lines">
 
 
-29
 30
 31
-32</pre>
+32
+33</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/chrome.rb', line 29</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/chrome.rb', line 30</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_driver_path='>driver_path=</span><span class='lparen'>(</span><span class='id identifier rubyid_path'>path</span><span class='rparen'>)</span>
   <span class='const'>Platform</span><span class='period'>.</span><span class='id identifier rubyid_assert_executable'>assert_executable</span> <span class='id identifier rubyid_path'>path</span>
@@ -285,12 +285,12 @@
       <pre class="lines">
 
 
-43
 44
-45</pre>
+45
+46</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/chrome.rb', line 43</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/chrome.rb', line 44</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_path'>path</span>
   <span class='ivar'>@path</span> <span class='op'>||=</span> <span class='kw'>nil</span>
@@ -315,13 +315,13 @@
       <pre class="lines">
 
 
-38
 39
 40
-41</pre>
+41
+42</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/chrome.rb', line 38</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/chrome.rb', line 39</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_path='>path=</span><span class='lparen'>(</span><span class='id identifier rubyid_path'>path</span><span class='rparen'>)</span>
   <span class='const'>Platform</span><span class='period'>.</span><span class='id identifier rubyid_assert_executable'>assert_executable</span> <span class='id identifier rubyid_path'>path</span>
@@ -337,7 +337,7 @@
 </div>
 
     <div id="footer">
-  Generated on Fri Apr 21 08:06:44 2017 by
+  Generated on Tue Jun 13 07:39:25 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.8.7.6 (ruby-2.4.0).
 </div>

@@ -127,7 +127,11 @@
     
   </ul>
 
+</div><div id="subclasses">
+  <h2>Direct Known Subclasses</h2>
+  <p class="children"><span class='object_link'><a href="Chrome/Driver.html" title="Selenium::WebDriver::Chrome::Driver (class)">Chrome::Driver</a></span>, <span class='object_link'><a href="Edge/Driver.html" title="Selenium::WebDriver::Edge::Driver (class)">Edge::Driver</a></span>, <span class='object_link'><a href="Firefox/Legacy/Driver.html" title="Selenium::WebDriver::Firefox::Legacy::Driver (class)">Firefox::Legacy::Driver</a></span>, <span class='object_link'><a href="Firefox/Marionette/Driver.html" title="Selenium::WebDriver::Firefox::Marionette::Driver (class)">Firefox::Marionette::Driver</a></span>, <span class='object_link'><a href="IE/Driver.html" title="Selenium::WebDriver::IE::Driver (class)">IE::Driver</a></span>, <span class='object_link'><a href="PhantomJS/Driver.html" title="Selenium::WebDriver::PhantomJS::Driver (class)">PhantomJS::Driver</a></span>, <span class='object_link'><a href="Remote/OSS/Driver.html" title="Selenium::WebDriver::Remote::OSS::Driver (class)">Remote::OSS::Driver</a></span>, <span class='object_link'><a href="Remote/W3C/Driver.html" title="Selenium::WebDriver::Remote::W3C::Driver (class)">Remote::W3C::Driver</a></span>, <span class='object_link'><a href="Safari/Driver.html" title="Selenium::WebDriver::Safari::Driver (class)">Safari::Driver</a></span></p>
 </div>
+
   <h2>Constant Summary</h2>
   
 
@@ -398,7 +402,7 @@ selected frame or window.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#initialize-instance_method" title="#initialize (instance method)">- (Driver) <strong>initialize</strong>(bridge) </a>
+      <a href="#initialize-instance_method" title="#initialize (instance method)">- (Driver) <strong>initialize</strong>(bridge, listener: nil) </a>
     
 
     
@@ -715,7 +719,7 @@ selected frame or window.</p>
     <div class="method_details first">
   <h3 class="signature first" id="initialize-instance_method">
   
-    - (<tt><span class='object_link'><a href="" title="Selenium::WebDriver::Driver (class)">Driver</a></span></tt>) <strong>initialize</strong>(bridge) 
+    - (<tt><span class='object_link'><a href="" title="Selenium::WebDriver::Driver (class)">Driver</a></span></tt>) <strong>initialize</strong>(bridge, listener: nil) 
   
 
   
@@ -743,23 +747,17 @@ Selenium::WebDriver.for instead of using this directly.</p>
       <pre class="lines">
 
 
-88
-89
-90
-91
-92
-93
-94</pre>
+72
+73
+74
+75</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/driver.rb', line 88</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/driver.rb', line 72</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_bridge'>bridge</span><span class='rparen'>)</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_bridge'>bridge</span><span class='comma'>,</span> <span class='label'>listener:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='ivar'>@bridge</span> <span class='op'>=</span> <span class='id identifier rubyid_bridge'>bridge</span>
-
-  <span class='comment'># TODO: refactor this away
-</span>  <span class='kw'>return</span> <span class='kw'>if</span> <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_driver_extensions'>driver_extensions</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span>
-  <span class='id identifier rubyid_extend'>extend</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_driver_extensions'>driver_extensions</span><span class='rparen'>)</span>
+  <span class='ivar'>@bridge</span> <span class='op'>=</span> <span class='const'>Support</span><span class='op'>::</span><span class='const'>EventFiringBridge</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_bridge'>bridge</span><span class='comma'>,</span> <span class='id identifier rubyid_listener'>listener</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id identifier rubyid_listener'>listener</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -840,62 +838,30 @@ Selenium::WebDriver.for instead of using this directly.</p>
 59
 60
 61
-62
-63
-64
-65
-66
-67
-68
-69
-70
-71
-72
-73
-74
-75
-76
-77
-78</pre>
+62</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/driver.rb', line 43</span>
 
 <span class='kw'>def</span> <span class='kw'>for</span><span class='lparen'>(</span><span class='id identifier rubyid_browser'>browser</span><span class='comma'>,</span> <span class='id identifier rubyid_opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_listener'>listener</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:listener</span><span class='rparen'>)</span>
-
-  <span class='id identifier rubyid_bridge'>bridge</span> <span class='op'>=</span> <span class='kw'>case</span> <span class='id identifier rubyid_browser'>browser</span>
-           <span class='kw'>when</span> <span class='symbol'>:firefox</span><span class='comma'>,</span> <span class='symbol'>:ff</span>
-             <span class='kw'>if</span> <span class='const'>Remote</span><span class='op'>::</span><span class='const'>W3CCapabilities</span><span class='period'>.</span><span class='id identifier rubyid_w3c?'>w3c?</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
-               <span class='kw'>if</span> <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:desired_capabilities</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span> <span class='const'>Remote</span><span class='op'>::</span><span class='const'>Capabilities</span>
-                 <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:desired_capabilities</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='const'>Remote</span><span class='op'>::</span><span class='const'>W3CCapabilities</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:desired_capabilities</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_send'>send</span><span class='lparen'>(</span><span class='symbol'>:capabilities</span><span class='rparen'>)</span><span class='rparen'>)</span>
-               <span class='kw'>end</span>
-               <span class='const'>Firefox</span><span class='op'>::</span><span class='const'>W3CBridge</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
-             <span class='kw'>else</span>
-               <span class='const'>Firefox</span><span class='op'>::</span><span class='const'>Bridge</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
-             <span class='kw'>end</span>
-           <span class='kw'>when</span> <span class='symbol'>:remote</span>
-             <span class='const'>Remote</span><span class='op'>::</span><span class='const'>Bridge</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
-           <span class='kw'>when</span> <span class='symbol'>:ie</span><span class='comma'>,</span> <span class='symbol'>:internet_explorer</span>
-             <span class='const'>IE</span><span class='op'>::</span><span class='const'>Bridge</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
-           <span class='kw'>when</span> <span class='symbol'>:chrome</span>
-             <span class='const'>Chrome</span><span class='op'>::</span><span class='const'>Bridge</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
-           <span class='kw'>when</span> <span class='symbol'>:edge</span>
-             <span class='kw'>if</span> <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:desired_capabilities</span><span class='rbracket'>]</span>
-               <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:desired_capabilities</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='const'>Remote</span><span class='op'>::</span><span class='const'>W3CCapabilities</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:desired_capabilities</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_send'>send</span><span class='lparen'>(</span><span class='symbol'>:capabilities</span><span class='rparen'>)</span><span class='rparen'>)</span>
-             <span class='kw'>end</span>
-             <span class='const'>Edge</span><span class='op'>::</span><span class='const'>Bridge</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
-           <span class='kw'>when</span> <span class='symbol'>:phantomjs</span>
-             <span class='const'>PhantomJS</span><span class='op'>::</span><span class='const'>Bridge</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
-           <span class='kw'>when</span> <span class='symbol'>:safari</span>
-             <span class='const'>Safari</span><span class='op'>::</span><span class='const'>Bridge</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
-           <span class='kw'>else</span>
-             <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>unknown driver: </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_browser'>browser</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
-           <span class='kw'>end</span>
-
-  <span class='id identifier rubyid_bridge'>bridge</span> <span class='op'>=</span> <span class='const'>Support</span><span class='op'>::</span><span class='const'>EventFiringBridge</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_bridge'>bridge</span><span class='comma'>,</span> <span class='id identifier rubyid_listener'>listener</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id identifier rubyid_listener'>listener</span>
-
-  <span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_bridge'>bridge</span><span class='rparen'>)</span>
+  <span class='kw'>case</span> <span class='id identifier rubyid_browser'>browser</span>
+  <span class='kw'>when</span> <span class='symbol'>:chrome</span>
+    <span class='const'>Chrome</span><span class='op'>::</span><span class='const'>Driver</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
+  <span class='kw'>when</span> <span class='symbol'>:internet_explorer</span><span class='comma'>,</span> <span class='symbol'>:ie</span>
+    <span class='const'>IE</span><span class='op'>::</span><span class='const'>Driver</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
+  <span class='kw'>when</span> <span class='symbol'>:safari</span>
+    <span class='const'>Safari</span><span class='op'>::</span><span class='const'>Driver</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
+  <span class='kw'>when</span> <span class='symbol'>:phantomjs</span>
+    <span class='const'>PhantomJS</span><span class='op'>::</span><span class='const'>Driver</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
+  <span class='kw'>when</span> <span class='symbol'>:firefox</span><span class='comma'>,</span> <span class='symbol'>:ff</span>
+    <span class='const'>Firefox</span><span class='op'>::</span><span class='const'>Driver</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
+  <span class='kw'>when</span> <span class='symbol'>:edge</span>
+    <span class='const'>Edge</span><span class='op'>::</span><span class='const'>Driver</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
+  <span class='kw'>when</span> <span class='symbol'>:remote</span>
+    <span class='const'>Remote</span><span class='op'>::</span><span class='const'>Driver</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
+  <span class='kw'>else</span>
+    <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>unknown driver: </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_browser'>browser</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
+  <span class='kw'>end</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -974,14 +940,14 @@ Symbol, it will be used as the id of the element.</p>
       <pre class="lines">
 
 
-286
-287
-288
-289
-290</pre>
+267
+268
+269
+270
+271</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/driver.rb', line 286</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/driver.rb', line 267</span>
 
 <span class='kw'>def</span> <span class='op'>[]</span><span class='lparen'>(</span><span class='id identifier rubyid_sel'>sel</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_sel'>sel</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='label'>id:</span> <span class='id identifier rubyid_sel'>sel</span><span class='rbrace'>}</span> <span class='kw'>if</span> <span class='id identifier rubyid_sel'>sel</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>String</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='id identifier rubyid_sel'>sel</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Symbol</span><span class='rparen'>)</span>
@@ -1037,12 +1003,12 @@ Symbol, it will be used as the id of the element.</p>
       <pre class="lines">
 
 
-132
-133
-134</pre>
+113
+114
+115</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/driver.rb', line 132</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/driver.rb', line 113</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_action'>action</span>
   <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_action'>action</span>
@@ -1067,12 +1033,12 @@ Symbol, it will be used as the id of the element.</p>
       <pre class="lines">
 
 
-292
-293
-294</pre>
+273
+274
+275</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/driver.rb', line 292</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/driver.rb', line 273</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_browser'>browser</span>
   <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_browser'>browser</span>
@@ -1097,12 +1063,12 @@ Symbol, it will be used as the id of the element.</p>
       <pre class="lines">
 
 
-296
-297
-298</pre>
+277
+278
+279</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/driver.rb', line 296</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/driver.rb', line 277</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_capabilities'>capabilities</span>
   <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_capabilities'>capabilities</span>
@@ -1138,12 +1104,12 @@ Symbol, it will be used as the id of the element.</p>
       <pre class="lines">
 
 
-194
-195
-196</pre>
+175
+176
+177</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/driver.rb', line 194</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/driver.rb', line 175</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_close'>close</span>
   <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_close'>close</span>
@@ -1192,12 +1158,12 @@ Symbol, it will be used as the id of the element.</p>
       <pre class="lines">
 
 
-158
-159
-160</pre>
+139
+140
+141</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/driver.rb', line 158</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/driver.rb', line 139</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_current_url'>current_url</span>
   <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_url'>url</span>
@@ -1286,12 +1252,12 @@ injected into the executed function as the last argument.</p>
       <pre class="lines">
 
 
-250
-251
-252</pre>
+231
+232
+233</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/driver.rb', line 250</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/driver.rb', line 231</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_execute_async_script'>execute_async_script</span><span class='lparen'>(</span><span class='id identifier rubyid_script'>script</span><span class='comma'>,</span> <span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_execute_async_script'>execute_async_script</span><span class='lparen'>(</span><span class='id identifier rubyid_script'>script</span><span class='comma'>,</span> <span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
@@ -1386,12 +1352,12 @@ pseudo-array.</p>
       <pre class="lines">
 
 
-231
-232
-233</pre>
+212
+213
+214</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/driver.rb', line 231</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/driver.rb', line 212</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_execute_script'>execute_script</span><span class='lparen'>(</span><span class='id identifier rubyid_script'>script</span><span class='comma'>,</span> <span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_execute_script'>execute_script</span><span class='lparen'>(</span><span class='id identifier rubyid_script'>script</span><span class='comma'>,</span> <span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
@@ -1427,12 +1393,12 @@ pseudo-array.</p>
       <pre class="lines">
 
 
-148
-149
-150</pre>
+129
+130
+131</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/driver.rb', line 148</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/driver.rb', line 129</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_get'>get</span><span class='lparen'>(</span><span class='id identifier rubyid_url'>url</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_navigate'>navigate</span><span class='period'>.</span><span class='id identifier rubyid_to'>to</span><span class='lparen'>(</span><span class='id identifier rubyid_url'>url</span><span class='rparen'>)</span>
@@ -1457,12 +1423,12 @@ pseudo-array.</p>
       <pre class="lines">
 
 
-96
-97
-98</pre>
+77
+78
+79</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/driver.rb', line 96</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/driver.rb', line 77</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_inspect'>inspect</span>
   <span class='id identifier rubyid_format'>format</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>#&lt;%s:0x%x browser=%s&gt;</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='comma'>,</span> <span class='id identifier rubyid_hash'>hash</span> <span class='op'>*</span> <span class='int'>2</span><span class='comma'>,</span> <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_browser'>browser</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span>
@@ -1487,12 +1453,12 @@ pseudo-array.</p>
       <pre class="lines">
 
 
-140
-141
-142</pre>
+121
+122
+123</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/driver.rb', line 140</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/driver.rb', line 121</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_keyboard'>keyboard</span>
   <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_keyboard'>keyboard</span>
@@ -1546,12 +1512,12 @@ pseudo-array.</p>
       <pre class="lines">
 
 
-123
-124
-125</pre>
+104
+105
+106</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/driver.rb', line 123</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/driver.rb', line 104</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_manage'>manage</span>
   <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_options'>options</span>
@@ -1576,12 +1542,12 @@ pseudo-array.</p>
       <pre class="lines">
 
 
-136
-137
-138</pre>
+117
+118
+119</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/driver.rb', line 136</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/driver.rb', line 117</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_mouse'>mouse</span>
   <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_mouse'>mouse</span>
@@ -1635,12 +1601,12 @@ pseudo-array.</p>
       <pre class="lines">
 
 
-105
-106
-107</pre>
+86
+87
+88</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/driver.rb', line 105</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/driver.rb', line 86</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_navigate'>navigate</span>
   <span class='ivar'>@navigate</span> <span class='op'>||=</span> <span class='const'>WebDriver</span><span class='op'>::</span><span class='const'>Navigation</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_bridge'>bridge</span><span class='rparen'>)</span>
@@ -1689,12 +1655,12 @@ pseudo-array.</p>
       <pre class="lines">
 
 
-178
-179
-180</pre>
+159
+160
+161</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/driver.rb', line 178</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/driver.rb', line 159</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_page_source'>page_source</span>
   <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_page_source'>page_source</span>
@@ -1730,12 +1696,12 @@ pseudo-array.</p>
       <pre class="lines">
 
 
-186
-187
-188</pre>
+167
+168
+169</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/driver.rb', line 186</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/driver.rb', line 167</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_quit'>quit</span>
   <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_quit'>quit</span>
@@ -1780,12 +1746,12 @@ pseudo-array.</p>
       <pre class="lines">
 
 
-305
-306
-307</pre>
+286
+287
+288</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/driver.rb', line 305</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/driver.rb', line 286</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_ref'>ref</span>
   <span class='kw'>nil</span>
@@ -1839,12 +1805,12 @@ pseudo-array.</p>
       <pre class="lines">
 
 
-114
-115
-116</pre>
+95
+96
+97</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/driver.rb', line 114</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/driver.rb', line 95</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_switch_to'>switch_to</span>
   <span class='ivar'>@switch_to</span> <span class='op'>||=</span> <span class='const'>WebDriver</span><span class='op'>::</span><span class='const'>TargetLocator</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_bridge'>bridge</span><span class='rparen'>)</span>
@@ -1893,12 +1859,12 @@ pseudo-array.</p>
       <pre class="lines">
 
 
-168
-169
-170</pre>
+149
+150
+151</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/driver.rb', line 168</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/driver.rb', line 149</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_title'>title</span>
   <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_title'>title</span>
@@ -1947,12 +1913,12 @@ pseudo-array.</p>
       <pre class="lines">
 
 
-215
-216
-217</pre>
+196
+197
+198</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/driver.rb', line 215</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/driver.rb', line 196</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_window_handle'>window_handle</span>
   <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_window_handle'>window_handle</span>
@@ -2008,12 +1974,12 @@ pseudo-array.</p>
       <pre class="lines">
 
 
-205
-206
-207</pre>
+186
+187
+188</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/driver.rb', line 205</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/driver.rb', line 186</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_window_handles'>window_handles</span>
   <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_window_handles'>window_handles</span>
@@ -2028,7 +1994,7 @@ pseudo-array.</p>
 </div>
 
     <div id="footer">
-  Generated on Fri Apr 21 08:06:45 2017 by
+  Generated on Tue Jun 13 07:39:27 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.8.7.6 (ruby-2.4.0).
 </div>

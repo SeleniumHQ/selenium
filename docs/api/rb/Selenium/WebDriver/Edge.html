@@ -80,7 +80,7 @@
   
     <dt class="r1 last">Defined in:</dt>
     <dd class="r1 last">lib/selenium/webdriver/edge.rb<span class="defines">,<br />
-  lib/selenium/webdriver/edge/bridge.rb,<br /> lib/selenium/webdriver/edge/service.rb</span>
+  lib/selenium/webdriver/edge/driver.rb,<br /> lib/selenium/webdriver/edge/bridge.rb,<br /> lib/selenium/webdriver/edge/service.rb</span>
 </dd>
   
 </dl>
@@ -90,9 +90,11 @@
 <p class="children">
   
     
+      <strong class="modules">Modules:</strong> <span class='object_link'><a href="Edge/Bridge.html" title="Selenium::WebDriver::Edge::Bridge (module)">Bridge</a></span>
+    
   
     
-      <strong class="classes">Classes:</strong> <span class='object_link'><a href="Edge/Bridge.html" title="Selenium::WebDriver::Edge::Bridge (class)">Bridge</a></span>, <span class='object_link'><a href="Edge/Service.html" title="Selenium::WebDriver::Edge::Service (class)">Service</a></span>
+      <strong class="classes">Classes:</strong> <span class='object_link'><a href="Edge/Driver.html" title="Selenium::WebDriver::Edge::Driver (class)">Driver</a></span>, <span class='object_link'><a href="Edge/Service.html" title="Selenium::WebDriver::Edge::Service (class)">Service</a></span>
     
   
 </p>
@@ -179,12 +181,12 @@
       <pre class="lines">
 
 
-33
 34
-35</pre>
+35
+36</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/edge.rb', line 33</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/edge.rb', line 34</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_driver_path'>driver_path</span><span class='lparen'>(</span><span class='id identifier rubyid_warning'>warning</span> <span class='op'>=</span> <span class='kw'>true</span><span class='rparen'>)</span>
   <span class='ivar'>@driver_path</span> <span class='op'>||=</span> <span class='kw'>nil</span>
@@ -209,13 +211,13 @@
       <pre class="lines">
 
 
-28
 29
 30
-31</pre>
+31
+32</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/edge.rb', line 28</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/edge.rb', line 29</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_driver_path='>driver_path=</span><span class='lparen'>(</span><span class='id identifier rubyid_path'>path</span><span class='rparen'>)</span>
   <span class='const'>Platform</span><span class='period'>.</span><span class='id identifier rubyid_assert_executable'>assert_executable</span> <span class='id identifier rubyid_path'>path</span>
@@ -231,7 +233,7 @@
 </div>
 
     <div id="footer">
-  Generated on Fri Apr 21 08:06:44 2017 by
+  Generated on Tue Jun 13 07:39:25 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.8.7.6 (ruby-2.4.0).
 </div>

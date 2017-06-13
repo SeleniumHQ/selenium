@@ -80,7 +80,7 @@
   
     <dt class="r1 last">Defined in:</dt>
     <dd class="r1 last">lib/selenium/webdriver/firefox.rb<span class="defines">,<br />
-  lib/selenium/webdriver/firefox/util.rb,<br /> lib/selenium/webdriver/firefox/bridge.rb,<br /> lib/selenium/webdriver/firefox/binary.rb,<br /> lib/selenium/webdriver/firefox/profile.rb,<br /> lib/selenium/webdriver/firefox/service.rb,<br /> lib/selenium/webdriver/firefox/launcher.rb,<br /> lib/selenium/webdriver/firefox/extension.rb,<br /> lib/selenium/webdriver/firefox/w3c_bridge.rb,<br /> lib/selenium/webdriver/firefox/profiles_ini.rb</span>
+  lib/selenium/webdriver/firefox/util.rb,<br /> lib/selenium/webdriver/firefox/driver.rb,<br /> lib/selenium/webdriver/firefox/binary.rb,<br /> lib/selenium/webdriver/firefox/service.rb,<br /> lib/selenium/webdriver/firefox/options.rb,<br /> lib/selenium/webdriver/firefox/profile.rb,<br /> lib/selenium/webdriver/firefox/launcher.rb,<br /> lib/selenium/webdriver/firefox/extension.rb,<br /> lib/selenium/webdriver/firefox/profiles_ini.rb,<br /> lib/selenium/webdriver/firefox/legacy/driver.rb,<br /> lib/selenium/webdriver/firefox/marionette/driver.rb</span>
 </dd>
   
 </dl>
@@ -90,11 +90,11 @@
 <p class="children">
   
     
-      <strong class="modules">Modules:</strong> <span class='object_link'><a href="Firefox/Util.html" title="Selenium::WebDriver::Firefox::Util (module)">Util</a></span>
+      <strong class="modules">Modules:</strong> <span class='object_link'><a href="Firefox/Driver.html" title="Selenium::WebDriver::Firefox::Driver (module)">Driver</a></span>, <span class='object_link'><a href="Firefox/Legacy.html" title="Selenium::WebDriver::Firefox::Legacy (module)">Legacy</a></span>, <span class='object_link'><a href="Firefox/Marionette.html" title="Selenium::WebDriver::Firefox::Marionette (module)">Marionette</a></span>, <span class='object_link'><a href="Firefox/Util.html" title="Selenium::WebDriver::Firefox::Util (module)">Util</a></span>
     
   
     
-      <strong class="classes">Classes:</strong> <span class='object_link'><a href="Firefox/Binary.html" title="Selenium::WebDriver::Firefox::Binary (class)">Binary</a></span>, <span class='object_link'><a href="Firefox/Bridge.html" title="Selenium::WebDriver::Firefox::Bridge (class)">Bridge</a></span>, <span class='object_link'><a href="Firefox/Extension.html" title="Selenium::WebDriver::Firefox::Extension (class)">Extension</a></span>, <span class='object_link'><a href="Firefox/Launcher.html" title="Selenium::WebDriver::Firefox::Launcher (class)">Launcher</a></span>, <span class='object_link'><a href="Firefox/Profile.html" title="Selenium::WebDriver::Firefox::Profile (class)">Profile</a></span>, <span class='object_link'><a href="Firefox/ProfilesIni.html" title="Selenium::WebDriver::Firefox::ProfilesIni (class)">ProfilesIni</a></span>, <span class='object_link'><a href="Firefox/Service.html" title="Selenium::WebDriver::Firefox::Service (class)">Service</a></span>, <span class='object_link'><a href="Firefox/W3CBridge.html" title="Selenium::WebDriver::Firefox::W3CBridge (class)">W3CBridge</a></span>
+      <strong class="classes">Classes:</strong> <span class='object_link'><a href="Firefox/Binary.html" title="Selenium::WebDriver::Firefox::Binary (class)">Binary</a></span>, <span class='object_link'><a href="Firefox/Extension.html" title="Selenium::WebDriver::Firefox::Extension (class)">Extension</a></span>, <span class='object_link'><a href="Firefox/Launcher.html" title="Selenium::WebDriver::Firefox::Launcher (class)">Launcher</a></span>, <span class='object_link'><a href="Firefox/Options.html" title="Selenium::WebDriver::Firefox::Options (class)">Options</a></span>, <span class='object_link'><a href="Firefox/Profile.html" title="Selenium::WebDriver::Firefox::Profile (class)">Profile</a></span>, <span class='object_link'><a href="Firefox/ProfilesIni.html" title="Selenium::WebDriver::Firefox::ProfilesIni (class)">ProfilesIni</a></span>, <span class='object_link'><a href="Firefox/Service.html" title="Selenium::WebDriver::Firefox::Service (class)">Service</a></span>
     
   
 </p>
@@ -235,12 +235,12 @@
       <pre class="lines">
 
 
-49
-50
-51</pre>
+52
+53
+54</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox.rb', line 49</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox.rb', line 52</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_driver_path'>driver_path</span>
   <span class='ivar'>@driver_path</span> <span class='op'>||=</span> <span class='kw'>nil</span>
@@ -265,13 +265,13 @@
       <pre class="lines">
 
 
-44
-45
-46
-47</pre>
+47
+48
+49
+50</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox.rb', line 44</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox.rb', line 47</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_driver_path='>driver_path=</span><span class='lparen'>(</span><span class='id identifier rubyid_path'>path</span><span class='rparen'>)</span>
   <span class='const'>Platform</span><span class='period'>.</span><span class='id identifier rubyid_assert_executable'>assert_executable</span> <span class='id identifier rubyid_path'>path</span>
@@ -297,12 +297,12 @@
       <pre class="lines">
 
 
-53
-54
-55</pre>
+56
+57
+58</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox.rb', line 53</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox.rb', line 56</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_path='>path=</span><span class='lparen'>(</span><span class='id identifier rubyid_path'>path</span><span class='rparen'>)</span>
   <span class='const'>Binary</span><span class='period'>.</span><span class='id identifier rubyid_path'>path</span> <span class='op'>=</span> <span class='id identifier rubyid_path'>path</span>
@@ -317,7 +317,7 @@
 </div>
 
     <div id="footer">
-  Generated on Fri Apr 21 08:06:44 2017 by
+  Generated on Tue Jun 13 07:39:25 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.8.7.6 (ruby-2.4.0).
 </div>

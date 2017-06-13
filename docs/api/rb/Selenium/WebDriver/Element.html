@@ -824,13 +824,21 @@ href="http://jonathanjulian.com/2010/04/rails-to_json-or-as_json">jonathanjulian
 314
 315
 316
-317</pre>
+317
+318
+319
+320
+321</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/element.rb', line 314</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_as_json'>as_json</span><span class='lparen'>(</span><span class='op'>*</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_key'>key</span> <span class='op'>=</span> <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Remote</span><span class='op'>::</span><span class='const'>W3CBridge</span><span class='rparen'>)</span> <span class='op'>?</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>element-6066-11e4-a52e-4f735466cecf</span><span class='tstring_end'>&#39;</span></span> <span class='op'>:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>ELEMENT</span><span class='tstring_end'>&#39;</span></span>
+  <span class='id identifier rubyid_key'>key</span> <span class='op'>=</span> <span class='kw'>if</span> <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_dialect'>dialect</span> <span class='op'>==</span> <span class='symbol'>:w3c</span>
+          <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>element-6066-11e4-a52e-4f735466cecf</span><span class='tstring_end'>&#39;</span></span>
+        <span class='kw'>else</span>
+          <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>ELEMENT</span><span class='tstring_end'>&#39;</span></span>
+        <span class='kw'>end</span>
   <span class='ivar'>@id</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Hash</span><span class='rparen'>)</span> <span class='op'>?</span> <span class='ivar'>@id</span> <span class='op'>:</span> <span class='lbrace'>{</span><span class='id identifier rubyid_key'>key</span> <span class='op'>=&gt;</span> <span class='ivar'>@id</span><span class='rbrace'>}</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -2001,7 +2009,7 @@ the value is not set, nil is returned.</p>
 </div>
 
     <div id="footer">
-  Generated on Fri Apr 21 08:06:46 2017 by
+  Generated on Tue Jun 13 07:39:27 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.8.7.6 (ruby-2.4.0).
 </div>

@@ -66,7 +66,7 @@
     <div id="content"><h1>Module: Selenium::WebDriver::Remote
   
   
-  <span class="private note title">Private</span>
+  
 </h1>
 
 <dl class="box">
@@ -79,35 +79,22 @@
   
   
     <dt class="r1 last">Defined in:</dt>
-    <dd class="r1 last">lib/selenium/webdriver/remote.rb<span class="defines">,<br />
-  lib/selenium/webdriver/remote/bridge.rb,<br /> lib/selenium/webdriver/remote/response.rb,<br /> lib/selenium/webdriver/remote/commands.rb,<br /> lib/selenium/webdriver/remote/http/curb.rb,<br /> lib/selenium/webdriver/remote/w3c_bridge.rb,<br /> lib/selenium/webdriver/remote/http/common.rb,<br /> lib/selenium/webdriver/remote/capabilities.rb,<br /> lib/selenium/webdriver/remote/http/default.rb,<br /> lib/selenium/webdriver/remote/w3c_commands.rb,<br /> lib/selenium/webdriver/remote/http/persistent.rb,<br /> lib/selenium/webdriver/remote/w3c_capabilities.rb</span>
+    <dd class="r1 last">lib/selenium/webdriver/remote/driver.rb<span class="defines">,<br />
+  lib/selenium/webdriver/remote/bridge.rb,<br /> lib/selenium/webdriver/remote/response.rb,<br /> lib/selenium/webdriver/remote/http/curb.rb,<br /> lib/selenium/webdriver/remote/w3c/driver.rb,<br /> lib/selenium/webdriver/remote/oss/bridge.rb,<br /> lib/selenium/webdriver/remote/w3c/bridge.rb,<br /> lib/selenium/webdriver/remote/oss/driver.rb,<br /> lib/selenium/webdriver/remote/http/common.rb,<br /> lib/selenium/webdriver/remote/http/default.rb,<br /> lib/selenium/webdriver/remote/w3c/commands.rb,<br /> lib/selenium/webdriver/remote/capabilities.rb,<br /> lib/selenium/webdriver/remote/oss/commands.rb,<br /> lib/selenium/webdriver/remote/http/persistent.rb,<br /> lib/selenium/webdriver/remote/w3c/capabilities.rb</span>
 </dd>
   
 </dl>
 <div class="clear"></div>
 
-<div class="docstring">
-  <div class="discussion">
-    <p class="note private">
-  <strong>This module is part of a private API.</strong>
-  You should avoid using this module if possible, as it may be removed or be changed in the future.
-</p>
-
-
-  </div>
-</div>
-<div class="tags">
-  
-
-</div><h2>Defined Under Namespace</h2>
+<h2>Defined Under Namespace</h2>
 <p class="children">
   
     
-      <strong class="modules">Modules:</strong> <span class='object_link'><a href="Remote/Http.html" title="Selenium::WebDriver::Remote::Http (module)">Http</a></span>
+      <strong class="modules">Modules:</strong> <span class='object_link'><a href="Remote/Driver.html" title="Selenium::WebDriver::Remote::Driver (module)">Driver</a></span>, <span class='object_link'><a href="Remote/Http.html" title="Selenium::WebDriver::Remote::Http (module)">Http</a></span>, <span class='object_link'><a href="Remote/OSS.html" title="Selenium::WebDriver::Remote::OSS (module)">OSS</a></span>, <span class='object_link'><a href="Remote/W3C.html" title="Selenium::WebDriver::Remote::W3C (module)">W3C</a></span>
     
   
     
-      <strong class="classes">Classes:</strong> <span class='object_link'><a href="Remote/Bridge.html" title="Selenium::WebDriver::Remote::Bridge (class)">Bridge</a></span>, <span class='object_link'><a href="Remote/Capabilities.html" title="Selenium::WebDriver::Remote::Capabilities (class)">Capabilities</a></span>, <span class='object_link'><a href="Remote/Response.html" title="Selenium::WebDriver::Remote::Response (class)">Response</a></span>, <span class='object_link'><a href="Remote/W3CBridge.html" title="Selenium::WebDriver::Remote::W3CBridge (class)">W3CBridge</a></span>, <span class='object_link'><a href="Remote/W3CCapabilities.html" title="Selenium::WebDriver::Remote::W3CCapabilities (class)">W3CCapabilities</a></span>
+      <strong class="classes">Classes:</strong> <span class='object_link'><a href="Remote/Bridge.html" title="Selenium::WebDriver::Remote::Bridge (class)">Bridge</a></span>, <span class='object_link'><a href="Remote/Capabilities.html" title="Selenium::WebDriver::Remote::Capabilities (class)">Capabilities</a></span>, <span class='object_link'><a href="Remote/Response.html" title="Selenium::WebDriver::Remote::Response (class)">Response</a></span>
     
   
 </p>
@@ -118,12 +105,85 @@
 
 
 
+  
+    <h2>
+      Class Method Summary
+      <small>(<a href="#" class="summary_toggle">collapse</a>)</small>
+    </h2>
 
+    <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#const_missing-class_method" title="const_missing (class method)">+ (Object) <strong>const_missing</strong>(const_name) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+    </ul>
+  
+
+
+
+  <div id="class_method_details" class="method_details_list">
+    <h2>Class Method Details</h2>
+
+    
+      <div class="method_details first">
+  <h3 class="signature first" id="const_missing-class_method">
+  
+    + (<tt>Object</tt>) <strong>const_missing</strong>(const_name) 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+23
+24
+25
+26
+27</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/capabilities.rb', line 23</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_const_missing'>const_missing</span><span class='lparen'>(</span><span class='id identifier rubyid_const_name'>const_name</span><span class='rparen'>)</span>
+  <span class='kw'>super</span> <span class='kw'>unless</span> <span class='id identifier rubyid_const_name'>const_name</span> <span class='op'>==</span> <span class='symbol'>:W3CCapabilities</span>
+  <span class='const'>WebDriver</span><span class='period'>.</span><span class='id identifier rubyid_logger'>logger</span><span class='period'>.</span><span class='id identifier rubyid_deprecate'>deprecate</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Selenium::WebDriver::Remote::W3CCapabilities</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Selenium::WebDriver::Remote::Capabilities</span><span class='tstring_end'>&#39;</span></span>
+  <span class='const'>W3C</span><span class='op'>::</span><span class='const'>Capabilities</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
 
 </div>
 
     <div id="footer">
-  Generated on Fri Apr 21 08:06:44 2017 by
+  Generated on Tue Jun 13 07:39:25 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.8.7.6 (ruby-2.4.0).
 </div>
