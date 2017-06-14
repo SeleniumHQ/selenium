@@ -54,6 +54,7 @@ module Selenium
             :implicit_timeout,
             :page_load_timeout,
             :script_timeout,
+            :unhandled_prompt_behavior,
           ].freeze
 
           BROWSER_SPECIFIC = ['moz:firefoxOptions'].freeze
