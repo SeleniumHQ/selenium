@@ -57,6 +57,7 @@ module Selenium
             :page_load_timeout,
             :script_timeout,
             :unhandled_prompt_behavior,
+            :timeouts,
           ].freeze
 
           KNOWN.each do |key|
