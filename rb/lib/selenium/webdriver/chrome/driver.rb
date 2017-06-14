@@ -74,7 +74,7 @@ module Selenium
           caps = opts.delete(:desired_capabilities) { Remote::Capabilities.chrome }
           options = opts.delete(:options) { Options.new }
 
-          args = opts.delete(:args)|| opts.delete(:switches) || []
+          args = opts.delete(:args) || opts.delete(:switches)
           if args
             WebDriver.logger.deprecate ':args or :switches', 'Selenium::WebDriver::Chrome::Options#add_argument'
             raise ArgumentError, ':args must be an Array of Strings' unless args.is_a? Array

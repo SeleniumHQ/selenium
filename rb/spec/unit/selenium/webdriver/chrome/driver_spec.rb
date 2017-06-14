@@ -40,6 +40,12 @@ module Selenium
           expect(caps[:chrome_options][:args]).to eq(%w[--foo=bar])
         end
 
+        it 'sets the args capability from switches' do
+          Driver.new(http_client: http, switches: %w[--foo=bar])
+
+          expect(caps[:chrome_options][:args]).to eq(%w[--foo=bar])
+        end
+
         it 'sets the proxy capabilitiy' do
           proxy = Proxy.new(http: 'localhost:1234')
           Driver.new(http_client: http, proxy: proxy)
