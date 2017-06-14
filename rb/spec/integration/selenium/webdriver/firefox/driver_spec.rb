@@ -72,6 +72,15 @@ module Selenium
               driver1.quit
             end
           end
+
+
+          it 'accepts a Hash for desired capabilities' do
+            begin
+              driver1 = Selenium::WebDriver.for(@browser, @opt.merge({desired_capabilities: {javascript_enabled: true}}))
+            ensure
+              driver1.quit
+            end
+          end
         end
 
         # Remote needs to implement firefox options

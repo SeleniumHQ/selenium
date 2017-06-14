@@ -92,7 +92,7 @@ module Selenium
         #
 
         def create_session(desired_capabilities)
-          response = execute(:new_session, {}, merged_capabilties(desired_capabilities))
+          response = execute(:new_session, {}, merged_capabilities(desired_capabilities))
 
           @session_id = response['sessionId']
           oss_status = response['status']
@@ -171,13 +171,13 @@ module Selenium
           COMMANDS[command]
         end
 
-        def merged_capabilties(oss_capabilities)
-          w3c_capabilties = W3C::Capabilities.from_oss(oss_capabilities)
+        def merged_capabilities(oss_capabilities)
+          w3c_capabilities = W3C::Capabilities.from_oss(oss_capabilities)
 
           {
             desiredCapabilities: oss_capabilities,
             capabilities: {
-              firstMatch: [w3c_capabilties]
+              firstMatch: [w3c_capabilities]
             }
           }
         end
