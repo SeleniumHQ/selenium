@@ -19,8 +19,14 @@ package org.openqa.selenium.remote;
 
 import static java.net.HttpURLConnection.HTTP_OK;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.hasEntry;
+import static org.hamcrest.Matchers.hasKey;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.Proxy.ProxyType.AUTODETECT;
 
@@ -236,6 +242,82 @@ public class ProtocolHandshakeTest {
     assertTrue(keys.contains("browserName"));
     assertTrue(keys.contains("se:option"));
     assertFalse(keys.contains("options"));
+  }
+
+  @Test
+  public void firstMatchSeparatesCapsForDifferentBrowsers() throws IOException {
+    DesiredCapabilities caps = new DesiredCapabilities();
+    caps.setCapability("moz:firefoxOptions", ImmutableMap.of());
+    caps.setCapability("browserName", "chrome");
+
+    Map<String, Object> params = ImmutableMap.of("desiredCapabilities", caps);
+    Command command = new Command(null, DriverCommand.NEW_SESSION, params);
+
+    HttpResponse response = new HttpResponse();
+    response.setStatus(HTTP_OK);
+    response.setContent(
+        "{\"sessionId\": \"23456789\", \"status\": 0, \"value\": {}}".getBytes(UTF_8));
+    RecordingHttpClient client = new RecordingHttpClient(response);
+
+    new ProtocolHandshake().createSession(client, command);
+
+    HttpRequest request = client.getRequest();
+    Map<String, Object> handshakeRequest = new Gson().fromJson(
+        request.getContentString(),
+        new TypeToken<Map<String, Object>>() {}.getType());
+
+    Object rawCaps = handshakeRequest.get("capabilities");
+    assertTrue(rawCaps instanceof Map);
+
+    Map<?, ?> capabilities = (Map<?, ?>) rawCaps;
+
+    Map<String, ?> always = (Map<String, ?>) capabilities.get("alwaysMatch");
+    List<Map<?, ?>> first = (List<Map<?, ?>>) capabilities.get("firstMatch");
+
+    assertTrue(always.isEmpty());
+    assertThat(first, containsInAnyOrder(
+        hasKey("moz:firefoxOptions"),
+        hasEntry("browserName", "chrome")));
+  }
+
+  @Test
+  public void doesNotCreateFirstMatchForNonW3CCaps() throws IOException {
+    DesiredCapabilities caps = new DesiredCapabilities();
+    caps.setCapability("chromeOptions", ImmutableMap.of());
+    caps.setCapability("moz:firefoxOptions", ImmutableMap.of());
+    caps.setCapability("browserName", "firefox");
+
+    Map<String, Object> params = ImmutableMap.of("desiredCapabilities", caps);
+    Command command = new Command(null, DriverCommand.NEW_SESSION, params);
+
+    HttpResponse response = new HttpResponse();
+    response.setStatus(HTTP_OK);
+    response.setContent(
+        "{\"sessionId\": \"23456789\", \"status\": 0, \"value\": {}}".getBytes(UTF_8));
+    RecordingHttpClient client = new RecordingHttpClient(response);
+
+    new ProtocolHandshake().createSession(client, command);
+
+    HttpRequest request = client.getRequest();
+    Map<String, Object> handshakeRequest = new Gson().fromJson(
+        request.getContentString(),
+        new TypeToken<Map<String, Object>>() {}.getType());
+
+    Object rawCaps = handshakeRequest.get("capabilities");
+    assertTrue(rawCaps instanceof Map);
+
+    Map<?, ?> capabilities = (Map<?, ?>) rawCaps;
+
+    Map<String, ?> always = (Map<String, ?>) capabilities.get("alwaysMatch");
+    List<Map<?, ?>> first = (List<Map<?, ?>>) capabilities.get("firstMatch");
+
+    assertTrue(always.isEmpty());
+    // firstMatch should not contain an object for Chrome-specific capabilities. Because
+    // "chromeOptions" is not a W3C capability name, it is stripped from any firstMatch objects.
+    // The resulting empty object should be omitted from firstMatch; if it is present, then the
+    // Firefox-specific capabilities might be ignored.
+    assertThat(first, contains(
+        allOf(hasKey("moz:firefoxOptions"), hasEntry("browserName", "firefox"))));
   }
 
   @Test

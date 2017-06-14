@@ -304,7 +304,6 @@ public class ProtocolHandshake {
 
     // Now, hopefully we're left with just the browser-specific pieces. Skip the empty ones.
     JsonArray firstMatch = Stream.of(chrome, edge, firefox, ie, opera, safari)
-        .filter(map -> !map.isEmpty())
         .map(map -> {
           JsonObject json = new JsonObject();
           for (Map.Entry<String, ?> entry : map.entrySet()) {
@@ -314,6 +313,7 @@ public class ProtocolHandshake {
           }
           return json;
         })
+        .filter(obj -> !obj.entrySet().isEmpty())
         .collect(Collector.of(
             JsonArray::new,
             JsonArray::add,
