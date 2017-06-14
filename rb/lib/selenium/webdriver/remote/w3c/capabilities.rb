@@ -154,11 +154,15 @@ module Selenium
                 next if value.nil?
                 next if value.is_a?(String) && value.empty?
 
-                if w3c_capabilities.respond_to?("#{name}=")
-                  w3c_capabilities.__send__("#{name}=", value)
-                elsif name.is_a?(String) && name.match(EXTENSION_CAPABILITY_PATTERN)
-                  w3c_capabilities.merge!(name => value)
-                end
+                capability_name = name.to_s
+                snake_cased_capability_names = KNOWN.map(&:to_s)
+                camel_cased_capability_names = snake_cased_capability_names.map(&w3c_capabilities.method(:camel_case))
+
+                next unless snake_cased_capability_names.include?(capability_name) ||
+                            camel_cased_capability_names.include?(capability_name) ||
+                            capability_name.match(EXTENSION_CAPABILITY_PATTERN)
+
+                w3c_capabilities[name] = value
               end
 
               w3c_capabilities
