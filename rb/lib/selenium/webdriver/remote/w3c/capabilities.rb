@@ -39,6 +39,8 @@ module Selenium
         # https://bugzilla.mozilla.org/show_bug.cgi?id=1326397
         class Capabilities
 
+          EXTENSION_CAPABILITY_PATTERN = /\A[\w-]+:.*\z/
+
           # TODO (alex): compare with spec
           KNOWN = [
             :browser_name,
@@ -56,8 +58,6 @@ module Selenium
             :script_timeout,
             :unhandled_prompt_behavior,
           ].freeze
-
-          BROWSER_SPECIFIC = ['moz:firefoxOptions'].freeze
 
           KNOWN.each do |key|
             define_method key do
@@ -155,7 +155,7 @@ module Selenium
 
                 if w3c_capabilities.respond_to?("#{name}=")
                   w3c_capabilities.__send__("#{name}=", value)
-                elsif BROWSER_SPECIFIC.include?(name)
+                elsif name.is_a?(String) && name.match(EXTENSION_CAPABILITY_PATTERN)
                   w3c_capabilities.merge!(name => value)
                 end
               end
