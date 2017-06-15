@@ -1,3 +1,18 @@
+3.4.2 (2017-06-14)
+==================
+
+Ruby:
+  * Added unhandledPromptBehavior to the list of known capabilities.
+  * Added timeouts to the list of known capabilities.
+  * Fixed a regression when passing hash as :desired_capabilities caused NoMethodError (issue 4172, thanks Thomas Walpole).
+  * Fixed a regression when extension capabilities (the ones that have ":" inside)
+    were filtered out when doing protocol handshake.
+  * Improved handling of capability names passed as plain camelCased strings
+    vs Rubyish snake_cased symbols when doing protocol handshake.
+
+Chrome:
+  * Fixed a regression when passing :switches to driver initialization was ignored.
+
 3.4.1 (2017-06-13)
 ==================
 
