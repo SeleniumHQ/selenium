@@ -97,7 +97,7 @@ public class PassthroughTest {
     public Server() throws IOException {
       int port = PortProber.findFreePort();
       String address = new NetworkUtils().getPrivateLocalAddress();
-      url = new URL(String.format("http://%s:%d/ok", address, port));
+      url = new URL("http", address, port, "/ok");
 
       server = HttpServer.create(new InetSocketAddress(address, port), 0);
       server.createContext("/ok", ex -> {
