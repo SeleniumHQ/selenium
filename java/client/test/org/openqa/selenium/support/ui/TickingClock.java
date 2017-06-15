@@ -15,7 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package org.openqa.selenium.support.ui;
 
 import java.util.concurrent.TimeUnit;
