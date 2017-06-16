@@ -42,6 +42,14 @@ module Selenium
         #
         def self.handshake(**opts)
           desired_capabilities = opts.delete(:desired_capabilities)
+
+          if desired_capabilities.is_a?(Symbol)
+            unless Remote::Capabilities.respond_to?(desired_capabilities)
+              raise Error::WebDriverError, "invalid desired capability: #{desired_capabilities.inspect}"
+            end
+            desired_capabilities = Remote::Capabilities.__send__(desired_capabilities)
+          end
+
           bridge = new(opts)
           capabilities = bridge.create_session(desired_capabilities)
 
