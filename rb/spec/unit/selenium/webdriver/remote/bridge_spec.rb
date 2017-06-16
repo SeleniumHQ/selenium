@@ -40,8 +40,7 @@ module Selenium
               },
               capabilities: {
                 firstMatch: [{
-                  browserName: 'internet explorer',
-                  platformName: 'windows'
+                  browserName: 'internet explorer'
                 }]
               }
             )
