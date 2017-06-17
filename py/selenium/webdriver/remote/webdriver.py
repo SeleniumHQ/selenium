@@ -18,6 +18,7 @@
 """The WebDriver implementation."""
 
 import base64
+import copy
 import warnings
 from contextlib import contextmanager
 
@@ -58,13 +59,25 @@ def _make_w3c_caps(caps):
   Filters out capability names that are not in the W3C spec. Spec-compliant
   drivers will reject requests containing unknown capability names.
 
+  Moves the Firefox profile, if present, from the old location to the new Firefox
+  options object.
+
   :Args:
    - caps - A dictionary of capabilities requested by the caller.
   """
+  profile = caps.get('firefox_profile')
   always_match = {}
   for k, v in caps.iteritems():
     if k in _W3C_CAPABILITY_NAMES or ':' in k:
       always_match[k] = v
+  if profile:
+    moz_opts = always_match.get('moz:firefoxOptions', {})
+    # If it's already present, assume the caller did that intentionally.
+    if 'profile' not in moz_opts:
+      # Don't mutate the original capabilities.
+      new_opts = copy.deepcopy(moz_opts)
+      new_opts['profile'] = profile
+      always_match['moz:firefoxOptions'] = new_opts
   return {"firstMatch": [{}], "alwaysMatch": always_match}
 
 
