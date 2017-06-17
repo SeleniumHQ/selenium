@@ -39,6 +39,35 @@ except NameError:
     pass
 
 
+_W3C_CAPABILITY_NAMES = frozenset([
+    'acceptInsecureCerts',
+    'browserName',
+    'browserVersion',
+    'platformName',
+    'pageLoadStrategy',
+    'proxy',
+    'setWindowRect',
+    'timeouts',
+    'unhandledPromptBehavior',
+])
+
+
+def _make_w3c_caps(caps):
+  """Makes a W3C alwaysMatch capabilities object.
+
+  Filters out capability names that are not in the W3C spec. Spec-compliant
+  drivers will reject requests containing unknown capability names.
+
+  :Args:
+   - caps - A dictionary of capabilities requested by the caller.
+  """
+  always_match = {}
+  for k, v in caps.iteritems():
+    if k in _W3C_CAPABILITY_NAMES or ':' in k:
+      always_match[k] = v
+  return {"firstMatch": [{}], "alwaysMatch": always_match}
+
+
 class WebDriver(object):
     """
     Controls a browser by sending commands to a remote server.
@@ -176,13 +205,12 @@ class WebDriver(object):
         """
         if not isinstance(capabilities, dict):
             raise InvalidArgumentException("Capabilities must be a dictionary")
-        w3c_caps = {"firstMatch": [], "alwaysMatch": {}}
         if browser_profile:
             if "moz:firefoxOptions" in capabilities:
                 capabilities["moz:firefoxOptions"]["profile"] = browser_profile.encoded
             else:
                 capabilities.update({'firefox_profile': browser_profile.encoded})
-        w3c_caps["alwaysMatch"].update(capabilities)
+        w3c_caps = _make_w3c_caps(capabilities)
         parameters = {"capabilities": w3c_caps,
                       "desiredCapabilities": capabilities}
         response = self.execute(Command.NEW_SESSION, parameters)
