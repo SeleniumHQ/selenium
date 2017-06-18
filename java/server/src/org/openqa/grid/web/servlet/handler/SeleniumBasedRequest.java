@@ -136,6 +136,7 @@ public abstract class SeleniumBasedRequest extends HttpServletRequestWrapper {
 
   @Override
   public ServletInputStream getInputStream() throws IOException {
+    setBody(getBody());
     return new ServletInputStreamImpl(new ByteArrayInputStream(body));
   }
 
