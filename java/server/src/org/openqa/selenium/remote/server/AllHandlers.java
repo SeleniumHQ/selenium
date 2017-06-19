@@ -18,6 +18,7 @@
 package org.openqa.selenium.remote.server;
 
 //import static com.google.common.net.MediaType.JAVASCRIPT_UTF_8;
+
 import static com.google.common.net.MediaType.JSON_UTF_8;
 import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
 import static java.net.HttpURLConnection.HTTP_OK;
@@ -26,7 +27,6 @@ import static org.openqa.selenium.remote.ErrorCodes.UNKNOWN_COMMAND;
 
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
-import com.google.common.cache.Cache;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.GsonBuilder;
 
@@ -45,10 +45,10 @@ import javax.servlet.http.HttpServletRequest;
 
 class AllHandlers {
 
-  private final Cache<SessionId, ActiveSession> allSessions;
+  private final ActiveSessions allSessions;
   private final DriverSessions legacySessions;
 
-  public AllHandlers(Cache<SessionId, ActiveSession> allSessions, DriverSessions legacySessions) {
+  public AllHandlers(ActiveSessions allSessions, DriverSessions legacySessions) {
     this.allSessions = allSessions;
     this.legacySessions = legacySessions;
   }
@@ -66,7 +66,7 @@ class AllHandlers {
     }
 
     if (id != null) {
-      ActiveSession session = allSessions.getIfPresent(id);
+      ActiveSession session = allSessions.get(id);
       if (session != null) {
         return session;
       }

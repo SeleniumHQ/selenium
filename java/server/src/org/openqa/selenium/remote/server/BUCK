@@ -68,6 +68,7 @@ java_library(
   name = 'webdriver-servlet',
   srcs = [
     'ActiveSession.java',
+    'ActiveSessions.java',
     'BeginSession.java',
     'AllHandlers.java',
     'CommandHandler.java',
