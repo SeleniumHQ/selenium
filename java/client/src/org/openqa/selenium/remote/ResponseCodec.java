@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.remote;
 
+import java.util.function.Supplier;
+
 /**
  * Converts {@link Response} objects to and from another representation.
  *
@@ -27,11 +29,12 @@ public interface ResponseCodec<T> {
   /**
    * Encodes a response.
    *
+   * @param factory creates a new instance of {@code T}.
    * @param response the response to encode.
    * @return the encoded response.
    * @throws IllegalArgumentException If the object cannot be encoded.
    */
-  T encode(Response response);
+  T encode(Supplier<T> factory, Response response);
 
   /**
    * Decodes a response.
