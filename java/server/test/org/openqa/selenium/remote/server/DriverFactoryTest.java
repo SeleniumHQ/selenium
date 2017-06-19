@@ -20,7 +20,6 @@ package org.openqa.selenium.remote.server;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -40,12 +39,12 @@ public class DriverFactoryTest {
 
   @Before
   public void setUp() throws Exception {
-    factory = new DefaultDriverFactory();
+    factory = new DefaultDriverFactory(Platform.getCurrent());
   }
 
   @Test
   public void testShouldBeAbleToRegisterNewDrivers() {
-    Capabilities capabilities = DesiredCapabilities.htmlUnit();
+    DesiredCapabilities capabilities = new DesiredCapabilities("cheese", null, Platform.ANY);
     assertFalse(factory.hasMappingFor(capabilities));
 
     factory.registerDriverProvider(mockDriverProviderFor(capabilities));
@@ -160,15 +159,6 @@ public class DriverFactoryTest {
     assertEquals(provider, factory.getProviderMatching(anyWindows));
     assertEquals("Should always get a match if a driver has been registered",
                  provider, factory.getProviderMatching(windowsXp));
-  }
-
-  @Test
-  public void testShouldFailFastWhenMatchingAndNoDriversHaveBeenRegistered() {
-    try {
-      factory.getProviderMatching(DesiredCapabilities.chrome());
-      fail("Should have thrown.");
-    } catch (IllegalStateException expected) {
-    }
   }
 
   @Test

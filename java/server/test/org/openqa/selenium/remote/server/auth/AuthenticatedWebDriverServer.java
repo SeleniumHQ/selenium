@@ -75,8 +75,7 @@ public class AuthenticatedWebDriverServer {
     context.setAttribute(
         DriverServlet.SESSIONS_KEY,
         new DefaultDriverSessions(
-            Platform.getCurrent(),
-            new DefaultDriverFactory(),
+            new DefaultDriverFactory(Platform.getCurrent()),
             new SystemClock()));
     context.addServlet(new ServletHolder(DriverServlet.class), "/*");
     context.setSecurityHandler(securityHandler);

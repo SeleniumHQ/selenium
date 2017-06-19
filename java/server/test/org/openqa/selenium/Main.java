@@ -65,8 +65,7 @@ public class Main {
 
     ServletContextHandler driverContext = new ServletContextHandler();
     DriverSessions driverSessions = new DefaultDriverSessions(
-        Platform.getCurrent(),
-        new DefaultDriverFactory(),
+        new DefaultDriverFactory(Platform.getCurrent()),
         new SystemClock());
     driverContext.setAttribute(DriverServlet.SESSIONS_KEY, driverSessions);
     driverContext.setContextPath("/");
