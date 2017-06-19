@@ -34,7 +34,6 @@ import static org.openqa.selenium.remote.Dialect.OSS;
 import static org.openqa.selenium.remote.Dialect.W3C;
 
 import com.google.common.base.Charsets;
-import com.google.common.cache.Cache;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -45,7 +44,6 @@ import com.google.gson.stream.JsonToken;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.remote.BeanToJsonConverter;
 import org.openqa.selenium.remote.Dialect;
-import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
@@ -72,10 +70,10 @@ class BeginSession implements CommandHandler {
 
   private final static Logger LOG = Logger.getLogger(BeginSession.class.getName());
 
-  private final Cache<SessionId, ActiveSession> allSessions;
+  private final ActiveSessions allSessions;
   private final Map<String, SessionFactory> factories;
 
-  public BeginSession(Cache<SessionId, ActiveSession> allSessions, DriverSessions legacySessions) {
+  public BeginSession(ActiveSessions allSessions, DriverSessions legacySessions) {
     this.allSessions = allSessions;
 
     this.factories = ImmutableMap.of(
@@ -122,7 +120,7 @@ class BeginSession implements CommandHandler {
             .findFirst()
             .orElseThrow(() -> new SessionNotCreatedException("Unable to create a new session"));
 
-      allSessions.put(session.getId(), session);
+      allSessions.put(session);
 
       Object toConvert;
       switch (session.getDownstreamDialect()) {

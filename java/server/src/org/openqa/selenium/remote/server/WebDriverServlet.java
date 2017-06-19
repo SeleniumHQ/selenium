@@ -20,14 +20,10 @@ package org.openqa.selenium.remote.server;
 import static java.util.concurrent.TimeUnit.MINUTES;
 import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.RemovalListener;
 import com.google.common.net.HttpHeaders;
 import com.google.common.net.MediaType;
 
 import org.openqa.selenium.Platform;
-import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.server.xdrpc.CrossDomainRpc;
 import org.openqa.selenium.remote.server.xdrpc.CrossDomainRpcLoader;
 
@@ -55,7 +51,7 @@ public class WebDriverServlet extends HttpServlet {
 
   private final StaticResourceHandler staticResourceHandler = new StaticResourceHandler();
   private final ExecutorService executor = Executors.newCachedThreadPool();
-  private Cache<SessionId, ActiveSession> allSessions;
+  private ActiveSessions allSessions;
   private DriverSessions legacyDriverSessions;
   private AllHandlers handlers;
 
@@ -71,22 +67,9 @@ public class WebDriverServlet extends HttpServlet {
       getServletContext().setAttribute(SESSIONS_KEY, legacyDriverSessions);
     }
 
-    allSessions = (Cache<SessionId, ActiveSession>) getServletContext().getAttribute(ACTIVE_SESSIONS_KEY);
+    allSessions = (ActiveSessions) getServletContext().getAttribute(ACTIVE_SESSIONS_KEY);
     if (allSessions == null) {
-      RemovalListener<SessionId, ActiveSession> listener = notification -> {
-        log(String.format("Removing session %s: %s", notification.getKey(), notification.getCause()));
-        ActiveSession session = notification.getValue();
-        session.stop();
-        legacyDriverSessions.deleteSession(notification.getKey());
-
-        log(String.format("Post removal: %s and %s", allSessions.asMap(), legacyDriverSessions.getSessions()));
-      };
-
-      allSessions = CacheBuilder.newBuilder()
-          .expireAfterAccess(10, MINUTES)
-          .removalListener(listener)
-          .build();
-
+      allSessions = new ActiveSessions();
       getServletContext().setAttribute(ACTIVE_SESSIONS_KEY, allSessions);
     }
 
