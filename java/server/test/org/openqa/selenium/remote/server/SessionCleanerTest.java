@@ -167,6 +167,6 @@ public class SessionCleanerTest {
   private DriverSessions getDriverSessions(Clock clock) {
     DriverFactory factory = mock(DriverFactory.class);
     when(factory.newInstance(any(Capabilities.class))).thenReturn(mock(WebDriver.class));
-    return new DefaultDriverSessions(Platform.LINUX, factory, clock);
+    return new DefaultDriverSessions(factory, clock);
   }
 }

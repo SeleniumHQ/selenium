@@ -20,12 +20,17 @@ package org.openqa.selenium.remote.server;
 import static com.google.common.base.Preconditions.checkState;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.ImmutableList;
 
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.remote.DesiredCapabilities;
 
+import java.util.List;
 import java.util.Map;
+import java.util.ServiceLoader;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
@@ -33,8 +38,34 @@ public class DefaultDriverFactory implements DriverFactory {
 
   private static final Logger LOG = Logger.getLogger(DefaultDriverFactory.class.getName());
 
+  private static List<DriverProvider> defaultDriverProviders =
+      new ImmutableList.Builder<DriverProvider>()
+          .add(new FirefoxDriverProvider())
+          .add(new DefaultDriverProvider(DesiredCapabilities.chrome(),
+                                         "org.openqa.selenium.chrome.ChromeDriver"))
+          .add(new DefaultDriverProvider(DesiredCapabilities.internetExplorer(),
+                                         "org.openqa.selenium.ie.InternetExplorerDriver"))
+          .add(new DefaultDriverProvider(DesiredCapabilities.edge(),
+                                         "org.openqa.selenium.edge.EdgeDriver"))
+          .add(new DefaultDriverProvider(DesiredCapabilities.opera(),
+                                         "com.opera.core.systems.OperaDriver"))
+          .add(new DefaultDriverProvider(DesiredCapabilities.operaBlink(),
+                                         "org.openqa.selenium.opera.OperaDriver"))
+          .add(new DefaultDriverProvider(DesiredCapabilities.safari(),
+                                         "org.openqa.selenium.safari.SafariDriver"))
+          .add(new DefaultDriverProvider(DesiredCapabilities.phantomjs(),
+                                         "org.openqa.selenium.phantomjs.PhantomJSDriver"))
+          .add(new DefaultDriverProvider(DesiredCapabilities.htmlUnit(),
+                                         "org.openqa.selenium.htmlunit.HtmlUnitDriver"))
+          .build();
+
   private Map<Capabilities, DriverProvider> capabilitiesToDriverProvider =
       new ConcurrentHashMap<>();
+
+  public DefaultDriverFactory(Platform runningOn) {
+    registerDefaults(runningOn);
+    registerServiceLoaders(runningOn);
+  }
 
   public void registerDriverProvider(DriverProvider driverProvider) {
     if (driverProvider.canCreateDriverInstances()) {
@@ -66,5 +97,43 @@ public class DefaultDriverFactory implements DriverFactory {
 
   public boolean hasMappingFor(Capabilities capabilities) {
     return capabilitiesToDriverProvider.containsKey(capabilities);
+  }
+
+  private void registerDefaults(Platform current) {
+    for (DriverProvider provider : defaultDriverProviders) {
+      registerDriverProvider(current, provider);
+    }
+  }
+
+  private void registerServiceLoaders(Platform current) {
+    for (DriverProvider provider : ServiceLoader.load(DriverProvider.class)) {
+      registerDriverProvider(current, provider);
+    }
+  }
+
+  private void registerDriverProvider(Platform current, DriverProvider provider) {
+    Capabilities caps = provider.getProvidedCapabilities();
+    if (!platformMatches(current, caps)) {
+      LOG.info(String.format(
+          "Driver provider %s registration is skipped:%n" +
+          " registration capabilities %s does not match the current platform %s",
+          provider, caps, current));
+      return;
+    }
+
+    if (!provider.canCreateDriverInstances()) {
+      LOG.info(String.format(
+          "Driver provider %s registration is skipped:%n" +
+          "Unable to create new instances on this machine.",
+          provider));
+    }
+
+    registerDriverProvider(provider);
+  }
+
+  private boolean platformMatches(Platform current, Capabilities caps) {
+    return caps.getPlatform() == null
+           || caps.getPlatform() == Platform.ANY
+           || current.is(caps.getPlatform());
   }
 }

@@ -59,8 +59,7 @@ public class WebDriverBackedSeleniumServletTest {
     ServletContextHandler handler = new ServletContextHandler();
 
     DefaultDriverSessions webdriverSessions = new DefaultDriverSessions(
-        Platform.getCurrent(),
-        new DefaultDriverFactory(),
+        new DefaultDriverFactory(Platform.getCurrent()),
         new SystemClock());
     handler.setAttribute(DriverServlet.SESSIONS_KEY, webdriverSessions);
     handler.setContextPath("/");
