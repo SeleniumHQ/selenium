@@ -17,7 +17,8 @@
 
 package org.openqa.selenium.remote.server;
 
-import static com.google.common.net.MediaType.JAVASCRIPT_UTF_8;
+//import static com.google.common.net.MediaType.JAVASCRIPT_UTF_8;
+import static com.google.common.net.MediaType.JSON_UTF_8;
 import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -103,7 +104,7 @@ class AllHandlers {
           .getBytes(UTF_8);
 
       resp.setStatus(HTTP_NOT_FOUND);
-      resp.setHeader("Content-Type", JAVASCRIPT_UTF_8.toString());
+      resp.setHeader("Content-Type", JSON_UTF_8.toString());
       resp.setHeader("Content-Length", String.valueOf(payload.length));
 
       resp.setContent(payload);
@@ -121,7 +122,7 @@ class AllHandlers {
       )).getBytes(UTF_8);
 
       resp.setStatus(HTTP_OK);
-      resp.setHeader("Content-Type", JAVASCRIPT_UTF_8.toString());
+      resp.setHeader("Content-Type", JSON_UTF_8.toString());
       resp.setHeader("Content-Length", String.valueOf(payload.length));
 
       resp.setContent(payload);
