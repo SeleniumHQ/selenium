@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.remote.server;
 
-import static com.google.common.base.Preconditions.checkArgument;
-
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.net.HttpHeaders;
 import com.google.common.net.MediaType;
