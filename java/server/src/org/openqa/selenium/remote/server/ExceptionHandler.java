@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.remote.server;
 
-import static com.google.common.net.MediaType.JAVASCRIPT_UTF_8;
+import static com.google.common.net.MediaType.JSON_UTF_8;
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -56,7 +56,7 @@ class ExceptionHandler implements CommandHandler {
     byte[] bytes = new Gson().toJson(value).getBytes(UTF_8);
     resp.setStatus(HTTP_INTERNAL_ERROR);
 
-    resp.setHeader("Content-Type", JAVASCRIPT_UTF_8.toString());
+    resp.setHeader("Content-Type", JSON_UTF_8.toString());
     resp.setHeader("Content-Length", String.valueOf(bytes.length));
 
     resp.setContent(bytes);

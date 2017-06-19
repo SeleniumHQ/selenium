@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.remote.server;
 
+import static com.google.common.net.MediaType.JSON_UTF_8;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
@@ -91,7 +92,7 @@ class Passthrough implements SessionCodec {
     if (POST == req.getMethod()) {
       // We always transform to UTF-8 on the way up.
       String contentType = req.getHeader("Content-Type");
-      contentType = contentType == null ? MediaType.JAVASCRIPT_UTF_8.toString() : contentType;
+      contentType = contentType == null ? JSON_UTF_8.toString() : contentType;
 
       MediaType type = MediaType.parse(contentType);
       connection.setRequestProperty("Content-Type", type.withCharset(UTF_8).toString());
