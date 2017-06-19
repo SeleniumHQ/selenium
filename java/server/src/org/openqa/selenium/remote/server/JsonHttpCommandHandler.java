@@ -217,7 +217,7 @@ public class JsonHttpCommandHandler {
       handler.attachToCurrentThread(new SessionId(response.getSessionId()));
     }
     try {
-      responseCodec.encode(response);
+      responseCodec.encode(() -> resp, response);
     } finally {
       handler.detachFromCurrentThread();
     }

@@ -74,7 +74,7 @@ class ProtocolConverter implements SessionCodec {
     HttpResponse res = makeRequest(request);
 
     Response decoded = upstreamResponse.decode(res);
-    HttpResponse response = downstreamResponse.encode(decoded);
+    HttpResponse response = downstreamResponse.encode(HttpResponse::new, decoded);
 
     copyToServletResponse(response, resp);
   }

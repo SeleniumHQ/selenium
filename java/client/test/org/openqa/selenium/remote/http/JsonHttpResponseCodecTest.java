@@ -57,7 +57,7 @@ public class JsonHttpResponseCodecTest {
     response.setStatus(ErrorCodes.SUCCESS);
     response.setValue(ImmutableMap.of("color", "red"));
 
-    HttpResponse converted = codec.encode(response);
+    HttpResponse converted = codec.encode(HttpResponse::new, response);
     assertThat(converted.getStatus(), is(HTTP_OK));
     assertThat(converted.getHeader(CONTENT_TYPE), is(JSON_UTF_8.toString()));
 
@@ -76,7 +76,7 @@ public class JsonHttpResponseCodecTest {
     response.setStatus(ErrorCodes.NO_SUCH_ELEMENT);
     response.setValue(ImmutableMap.of("color", "red"));
 
-    HttpResponse converted = codec.encode(response);
+    HttpResponse converted = codec.encode(HttpResponse::new, response);
     assertThat(converted.getStatus(), is(HTTP_INTERNAL_ERROR));
     assertThat(converted.getHeader(CONTENT_TYPE), is(JSON_UTF_8.toString()));
 
@@ -95,7 +95,7 @@ public class JsonHttpResponseCodecTest {
     response.setStatus(ErrorCodes.SUCCESS);
     response.setValue(ImmutableMap.of("color", "red"));
 
-    HttpResponse httpResponse = codec.encode(response);
+    HttpResponse httpResponse = codec.encode(HttpResponse::new, response);
     Response decoded = codec.decode(httpResponse);
 
     assertEquals(response.getStatus(), decoded.getStatus());
