@@ -545,14 +545,6 @@
       <pre class="lines">
 
 
-68
-69
-70
-71
-72
-73
-74
-75
 76
 77
 78
@@ -565,10 +557,18 @@
 85
 86
 87
-88</pre>
+88
+89
+90
+91
+92
+93
+94
+95
+96</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 68</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 76</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_opts'>opts</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_dup'>dup</span>
@@ -879,13 +879,29 @@
 53
 54
 55
-56</pre>
+56
+57
+58
+59
+60
+61
+62
+63
+64</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 43</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_handshake'>handshake</span><span class='lparen'>(</span><span class='op'>**</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_desired_capabilities'>desired_capabilities</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:desired_capabilities</span><span class='rparen'>)</span>
+
+  <span class='kw'>if</span> <span class='id identifier rubyid_desired_capabilities'>desired_capabilities</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Symbol</span><span class='rparen'>)</span>
+    <span class='kw'>unless</span> <span class='const'>Remote</span><span class='op'>::</span><span class='const'>Capabilities</span><span class='period'>.</span><span class='id identifier rubyid_respond_to?'>respond_to?</span><span class='lparen'>(</span><span class='id identifier rubyid_desired_capabilities'>desired_capabilities</span><span class='rparen'>)</span>
+      <span class='id identifier rubyid_raise'>raise</span> <span class='const'>Error</span><span class='op'>::</span><span class='const'>WebDriverError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>invalid desired capability: </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_desired_capabilities'>desired_capabilities</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
+    <span class='kw'>end</span>
+    <span class='id identifier rubyid_desired_capabilities'>desired_capabilities</span> <span class='op'>=</span> <span class='const'>Remote</span><span class='op'>::</span><span class='const'>Capabilities</span><span class='period'>.</span><span class='id identifier rubyid___send__'>__send__</span><span class='lparen'>(</span><span class='id identifier rubyid_desired_capabilities'>desired_capabilities</span><span class='rparen'>)</span>
+  <span class='kw'>end</span>
+
   <span class='id identifier rubyid_bridge'>bridge</span> <span class='op'>=</span> <span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_capabilities'>capabilities</span> <span class='op'>=</span> <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_create_session'>create_session</span><span class='lparen'>(</span><span class='id identifier rubyid_desired_capabilities'>desired_capabilities</span><span class='rparen'>)</span>
 
@@ -924,15 +940,15 @@
       <pre class="lines">
 
 
-134
-135
-136
-137
-138
-139</pre>
+142
+143
+144
+145
+146
+147</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 134</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 142</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_browser'>browser</span>
   <span class='ivar'>@browser</span> <span class='op'>||=</span> <span class='kw'>begin</span>
@@ -971,14 +987,6 @@
       <pre class="lines">
 
 
-94
-95
-96
-97
-98
-99
-100
-101
 102
 103
 104
@@ -1001,13 +1009,21 @@
 121
 122
 123
-124</pre>
+124
+125
+126
+127
+128
+129
+130
+131
+132</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 94</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 102</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_create_session'>create_session</span><span class='lparen'>(</span><span class='id identifier rubyid_desired_capabilities'>desired_capabilities</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_response'>response</span> <span class='op'>=</span> <span class='id identifier rubyid_execute'>execute</span><span class='lparen'>(</span><span class='symbol'>:new_session</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='id identifier rubyid_merged_capabilties'>merged_capabilties</span><span class='lparen'>(</span><span class='id identifier rubyid_desired_capabilities'>desired_capabilities</span><span class='rparen'>)</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_response'>response</span> <span class='op'>=</span> <span class='id identifier rubyid_execute'>execute</span><span class='lparen'>(</span><span class='symbol'>:new_session</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='id identifier rubyid_merged_capabilities'>merged_capabilities</span><span class='lparen'>(</span><span class='id identifier rubyid_desired_capabilities'>desired_capabilities</span><span class='rparen'>)</span><span class='rparen'>)</span>
 
   <span class='ivar'>@session_id</span> <span class='op'>=</span> <span class='id identifier rubyid_response'>response</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>sessionId</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span>
   <span class='id identifier rubyid_oss_status'>oss_status</span> <span class='op'>=</span> <span class='id identifier rubyid_response'>response</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>status</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span>
@@ -1068,12 +1084,12 @@
       <pre class="lines">
 
 
-130
-131
-132</pre>
+138
+139
+140</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 130</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/bridge.rb', line 138</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_session_id'>session_id</span>
   <span class='ivar'>@session_id</span> <span class='op'>||</span> <span class='id identifier rubyid_raise'>raise</span><span class='lparen'>(</span><span class='const'>Error</span><span class='op'>::</span><span class='const'>WebDriverError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>no current session exists</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
@@ -1088,7 +1104,7 @@
 </div>
 
     <div id="footer">
-  Generated on Tue Jun 13 07:39:27 2017 by
+  Generated on Tue Jun 20 07:17:50 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.8.7.6 (ruby-2.4.0).
 </div>

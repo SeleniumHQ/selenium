@@ -116,6 +116,11 @@ href="https://bugzilla.mozilla.org/show_bug.cgi?id=1326397">bugzilla.mozilla.org
   
     <dl class="constants">
       
+        <dt id="EXTENSION_CAPABILITY_PATTERN-constant" class="">EXTENSION_CAPABILITY_PATTERN =
+          
+        </dt>
+        <dd><pre class="code"><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>\A[\w-]+:.*\z</span><span class='regexp_end'>/</span></span></pre></dd>
+      
         <dt id="KNOWN-constant" class="">KNOWN =
           <div class="docstring">
   <div class="discussion">
@@ -144,12 +149,9 @@ href="https://bugzilla.mozilla.org/show_bug.cgi?id=1326397">bugzilla.mozilla.org
   <span class='symbol'>:implicit_timeout</span><span class='comma'>,</span>
   <span class='symbol'>:page_load_timeout</span><span class='comma'>,</span>
   <span class='symbol'>:script_timeout</span><span class='comma'>,</span>
+  <span class='symbol'>:unhandled_prompt_behavior</span><span class='comma'>,</span>
+  <span class='symbol'>:timeouts</span><span class='comma'>,</span>
 <span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
-      
-        <dt id="BROWSER_SPECIFIC-constant" class="">BROWSER_SPECIFIC =
-          
-        </dt>
-        <dd><pre class="code"><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>moz:firefoxOptions</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
       
     </dl>
   
@@ -217,7 +219,7 @@ href="https://bugzilla.mozilla.org/show_bug.cgi?id=1326397">bugzilla.mozilla.org
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#from_oss-class_method" title="from_oss (class method)">+ (Object) <strong>from_oss</strong>(capabilities) </a>
+      <a href="#from_oss-class_method" title="from_oss (class method)">+ (Object) <strong>from_oss</strong>(oss_capabilities) </a>
     
 
     
@@ -602,13 +604,13 @@ href="https://bugzilla.mozilla.org/show_bug.cgi?id=1326397">bugzilla.mozilla.org
       <pre class="lines">
 
 
-178
-179
-180
-181</pre>
+184
+185
+186
+187</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/capabilities.rb', line 178</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/capabilities.rb', line 184</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='ivar'>@capabilities</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span>
@@ -641,15 +643,15 @@ href="https://bugzilla.mozilla.org/show_bug.cgi?id=1326397">bugzilla.mozilla.org
       <pre class="lines">
 
 
-85
-86
 87
 88
 89
-90</pre>
+90
+91
+92</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/capabilities.rb', line 85</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/capabilities.rb', line 87</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_edge'>edge</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='lbrace'>{</span>
@@ -681,18 +683,18 @@ href="https://bugzilla.mozilla.org/show_bug.cgi?id=1326397">bugzilla.mozilla.org
       <pre class="lines">
 
 
-92
-93
 94
 95
 96
 97
 98
 99
-100</pre>
+100
+101
+102</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/capabilities.rb', line 92</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/capabilities.rb', line 94</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_firefox'>firefox</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:browser_version</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:version</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_key?'>key?</span><span class='lparen'>(</span><span class='symbol'>:version</span><span class='rparen'>)</span>
@@ -711,7 +713,7 @@ href="https://bugzilla.mozilla.org/show_bug.cgi?id=1326397">bugzilla.mozilla.org
       <div class="method_details ">
   <h3 class="signature " id="from_oss-class_method">
   
-    + (<tt>Object</tt>) <strong>from_oss</strong>(capabilities) 
+    + (<tt>Object</tt>) <strong>from_oss</strong>(oss_capabilities) 
   
 
   
@@ -731,10 +733,10 @@ href="https://bugzilla.mozilla.org/show_bug.cgi?id=1326397">bugzilla.mozilla.org
   
     <li>
       
-        <span class='name'>capabilities</span>
+        <span class='name'></span>
       
       
-        <span class='type'>(<tt><span class='object_link'><a href="../Capabilities.html" title="Selenium::WebDriver::Remote::Capabilities (class)">Remote::Capabilities</a></span></tt>)</span>
+        <span class='type'>(<tt>Hash</tt>, <tt><span class='object_link'><a href="../Capabilities.html" title="Selenium::WebDriver::Remote::Capabilities (class)">Remote::Capabilities</a></span></tt>)</span>
       
       
       
@@ -749,8 +751,6 @@ href="https://bugzilla.mozilla.org/show_bug.cgi?id=1326397">bugzilla.mozilla.org
       <pre class="lines">
 
 
-146
-147
 148
 149
 150
@@ -766,28 +766,38 @@ href="https://bugzilla.mozilla.org/show_bug.cgi?id=1326397">bugzilla.mozilla.org
 160
 161
 162
-163</pre>
+163
+164
+165
+166
+167
+168
+169</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/capabilities.rb', line 146</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/capabilities.rb', line 148</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_from_oss'>from_oss</span><span class='lparen'>(</span><span class='id identifier rubyid_capabilities'>capabilities</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_w3c_capabilties'>w3c_capabilties</span> <span class='op'>=</span> <span class='id identifier rubyid_new'>new</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_from_oss'>from_oss</span><span class='lparen'>(</span><span class='id identifier rubyid_oss_capabilities'>oss_capabilities</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_w3c_capabilities'>w3c_capabilities</span> <span class='op'>=</span> <span class='id identifier rubyid_new'>new</span>
+
   <span class='comment'># TODO (alex): make capabilities enumerable?
-</span>  <span class='id identifier rubyid_oss_capabilties'>oss_capabilties</span> <span class='op'>=</span> <span class='id identifier rubyid_capabilities'>capabilities</span><span class='period'>.</span><span class='id identifier rubyid___send__'>__send__</span><span class='lparen'>(</span><span class='symbol'>:capabilities</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_oss_capabilties'>oss_capabilties</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_value'>value</span><span class='op'>|</span>
+</span>  <span class='id identifier rubyid_oss_capabilities'>oss_capabilities</span> <span class='op'>=</span> <span class='id identifier rubyid_oss_capabilities'>oss_capabilities</span><span class='period'>.</span><span class='id identifier rubyid___send__'>__send__</span><span class='lparen'>(</span><span class='symbol'>:capabilities</span><span class='rparen'>)</span> <span class='kw'>unless</span> <span class='id identifier rubyid_oss_capabilities'>oss_capabilities</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Hash</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_oss_capabilities'>oss_capabilities</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_value'>value</span><span class='op'>|</span>
     <span class='kw'>next</span> <span class='kw'>if</span> <span class='id identifier rubyid_value'>value</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
     <span class='kw'>next</span> <span class='kw'>if</span> <span class='id identifier rubyid_value'>value</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>String</span><span class='rparen'>)</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_value'>value</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span>
 
-    <span class='kw'>if</span> <span class='id identifier rubyid_w3c_capabilties'>w3c_capabilties</span><span class='period'>.</span><span class='id identifier rubyid_respond_to?'>respond_to?</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_name'>name</span><span class='embexpr_end'>}</span><span class='tstring_content'>=</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
-      <span class='id identifier rubyid_w3c_capabilties'>w3c_capabilties</span><span class='period'>.</span><span class='id identifier rubyid___send__'>__send__</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_name'>name</span><span class='embexpr_end'>}</span><span class='tstring_content'>=</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
-    <span class='kw'>elsif</span> <span class='const'>BROWSER_SPECIFIC</span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
-      <span class='id identifier rubyid_w3c_capabilties'>w3c_capabilties</span><span class='period'>.</span><span class='id identifier rubyid_merge!'>merge!</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
-    <span class='kw'>end</span>
+    <span class='id identifier rubyid_capability_name'>capability_name</span> <span class='op'>=</span> <span class='id identifier rubyid_name'>name</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span>
+    <span class='id identifier rubyid_snake_cased_capability_names'>snake_cased_capability_names</span> <span class='op'>=</span> <span class='const'>KNOWN</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:to_s</span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_camel_cased_capability_names'>camel_cased_capability_names</span> <span class='op'>=</span> <span class='id identifier rubyid_snake_cased_capability_names'>snake_cased_capability_names</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='id identifier rubyid_w3c_capabilities'>w3c_capabilities</span><span class='period'>.</span><span class='id identifier rubyid_method'>method</span><span class='lparen'>(</span><span class='symbol'>:camel_case</span><span class='rparen'>)</span><span class='rparen'>)</span>
 
+    <span class='kw'>next</span> <span class='kw'>unless</span> <span class='id identifier rubyid_snake_cased_capability_names'>snake_cased_capability_names</span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span><span class='lparen'>(</span><span class='id identifier rubyid_capability_name'>capability_name</span><span class='rparen'>)</span> <span class='op'>||</span>
+                <span class='id identifier rubyid_camel_cased_capability_names'>camel_cased_capability_names</span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span><span class='lparen'>(</span><span class='id identifier rubyid_capability_name'>capability_name</span><span class='rparen'>)</span> <span class='op'>||</span>
+                <span class='id identifier rubyid_capability_name'>capability_name</span><span class='period'>.</span><span class='id identifier rubyid_match'>match</span><span class='lparen'>(</span><span class='const'>EXTENSION_CAPABILITY_PATTERN</span><span class='rparen'>)</span>
+
+    <span class='id identifier rubyid_w3c_capabilities'>w3c_capabilities</span><span class='lbracket'>[</span><span class='id identifier rubyid_name'>name</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_value'>value</span>
   <span class='kw'>end</span>
 
-  <span class='id identifier rubyid_w3c_capabilties'>w3c_capabilties</span>
+  <span class='id identifier rubyid_w3c_capabilities'>w3c_capabilities</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -822,8 +832,6 @@ href="https://bugzilla.mozilla.org/show_bug.cgi?id=1326397">bugzilla.mozilla.org
       <pre class="lines">
 
 
-108
-109
 110
 111
 112
@@ -853,10 +861,12 @@ href="https://bugzilla.mozilla.org/show_bug.cgi?id=1326397">bugzilla.mozilla.org
 136
 137
 138
-139</pre>
+139
+140
+141</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/capabilities.rb', line 108</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/capabilities.rb', line 110</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_json_create'>json_create</span><span class='lparen'>(</span><span class='id identifier rubyid_data'>data</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_data'>data</span> <span class='op'>=</span> <span class='id identifier rubyid_data'>data</span><span class='period'>.</span><span class='id identifier rubyid_dup'>dup</span>
@@ -920,13 +930,13 @@ href="https://bugzilla.mozilla.org/show_bug.cgi?id=1326397">bugzilla.mozilla.org
       <pre class="lines">
 
 
-245
-246
-247
-248</pre>
+251
+252
+253
+254</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/capabilities.rb', line 245</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/capabilities.rb', line 251</span>
 
 <span class='kw'>def</span> <span class='op'>==</span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='kw'>false</span> <span class='kw'>unless</span> <span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span>
@@ -952,12 +962,12 @@ href="https://bugzilla.mozilla.org/show_bug.cgi?id=1326397">bugzilla.mozilla.org
       <pre class="lines">
 
 
-191
-192
-193</pre>
+197
+198
+199</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/capabilities.rb', line 191</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/capabilities.rb', line 197</span>
 
 <span class='kw'>def</span> <span class='op'>[]</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='rparen'>)</span>
   <span class='ivar'>@capabilities</span><span class='lbracket'>[</span><span class='id identifier rubyid_key'>key</span><span class='rbracket'>]</span>
@@ -993,12 +1003,12 @@ href="https://bugzilla.mozilla.org/show_bug.cgi?id=1326397">bugzilla.mozilla.org
       <pre class="lines">
 
 
-187
-188
-189</pre>
+193
+194
+195</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/capabilities.rb', line 187</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/capabilities.rb', line 193</span>
 
 <span class='kw'>def</span> <span class='op'>[]=</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='comma'>,</span> <span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
   <span class='ivar'>@capabilities</span><span class='lbracket'>[</span><span class='id identifier rubyid_key'>key</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_value'>value</span>
@@ -1036,12 +1046,6 @@ href="https://bugzilla.mozilla.org/show_bug.cgi?id=1326397">bugzilla.mozilla.org
       <pre class="lines">
 
 
-220
-221
-222
-223
-224
-225
 226
 227
 228
@@ -1055,10 +1059,16 @@ href="https://bugzilla.mozilla.org/show_bug.cgi?id=1326397">bugzilla.mozilla.org
 236
 237
 238
-239</pre>
+239
+240
+241
+242
+243
+244
+245</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/capabilities.rb', line 220</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/capabilities.rb', line 226</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_as_json'>as_json</span><span class='lparen'>(</span><span class='op'>*</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_hash'>hash</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
@@ -1100,18 +1110,18 @@ href="https://bugzilla.mozilla.org/show_bug.cgi?id=1326397">bugzilla.mozilla.org
       <pre class="lines">
 
 
-195
-196
-197
-198
-199
-200
 201
 202
-203</pre>
+203
+204
+205
+206
+207
+208
+209</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/capabilities.rb', line 195</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/capabilities.rb', line 201</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_merge!'>merge!</span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
   <span class='kw'>if</span> <span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_respond_to?'>respond_to?</span><span class='lparen'>(</span><span class='symbol'>:capabilities</span><span class='comma'>,</span> <span class='kw'>true</span><span class='rparen'>)</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_capabilities'>capabilities</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Hash</span><span class='rparen'>)</span>
@@ -1142,19 +1152,19 @@ href="https://bugzilla.mozilla.org/show_bug.cgi?id=1326397">bugzilla.mozilla.org
       <pre class="lines">
 
 
-205
-206
-207
-208
-209
-210
 211
 212
 213
-214</pre>
+214
+215
+216
+217
+218
+219
+220</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/capabilities.rb', line 205</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/capabilities.rb', line 211</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_proxy='>proxy=</span><span class='lparen'>(</span><span class='id identifier rubyid_proxy'>proxy</span><span class='rparen'>)</span>
   <span class='kw'>case</span> <span class='id identifier rubyid_proxy'>proxy</span>
@@ -1186,12 +1196,12 @@ href="https://bugzilla.mozilla.org/show_bug.cgi?id=1326397">bugzilla.mozilla.org
       <pre class="lines">
 
 
-241
-242
-243</pre>
+247
+248
+249</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/capabilities.rb', line 241</span>
+      <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/w3c/capabilities.rb', line 247</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_to_json'>to_json</span><span class='lparen'>(</span><span class='op'>*</span><span class='rparen'>)</span>
   <span class='const'>JSON</span><span class='period'>.</span><span class='id identifier rubyid_generate'>generate</span> <span class='id identifier rubyid_as_json'>as_json</span>
@@ -1206,7 +1216,7 @@ href="https://bugzilla.mozilla.org/show_bug.cgi?id=1326397">bugzilla.mozilla.org
 </div>
 
     <div id="footer">
-  Generated on Tue Jun 13 07:39:29 2017 by
+  Generated on Tue Jun 20 07:17:53 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.8.7.6 (ruby-2.4.0).
 </div>
