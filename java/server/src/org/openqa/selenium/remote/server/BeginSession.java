@@ -28,8 +28,13 @@ import static org.openqa.selenium.remote.BrowserType.IE;
 import static org.openqa.selenium.remote.BrowserType.SAFARI;
 import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 import static org.openqa.selenium.remote.DesiredCapabilities.chrome;
+import static org.openqa.selenium.remote.DesiredCapabilities.edge;
 import static org.openqa.selenium.remote.DesiredCapabilities.firefox;
 import static org.openqa.selenium.remote.DesiredCapabilities.htmlUnit;
+import static org.openqa.selenium.remote.DesiredCapabilities.internetExplorer;
+import static org.openqa.selenium.remote.DesiredCapabilities.opera;
+import static org.openqa.selenium.remote.DesiredCapabilities.operaBlink;
+import static org.openqa.selenium.remote.DesiredCapabilities.safari;
 import static org.openqa.selenium.remote.Dialect.OSS;
 import static org.openqa.selenium.remote.Dialect.W3C;
 
@@ -76,10 +81,16 @@ class BeginSession implements CommandHandler {
   public BeginSession(ActiveSessions allSessions, DriverSessions legacySessions) {
     this.allSessions = allSessions;
 
-    this.factories = ImmutableMap.of(
-        chrome().getBrowserName(), new ServicedSession.Factory("org.openqa.selenium.chrome.ChromeDriverService"),
-        firefox().getBrowserName(), new ServicedSession.Factory("org.openqa.selenium.firefox.GeckoDriverService"),
-        htmlUnit().getBrowserName(), new InMemorySession.Factory(legacySessions));
+    this.factories = ImmutableMap.<String, SessionFactory>builder()
+        .put(chrome().getBrowserName(), new ServicedSession.Factory("org.openqa.selenium.chrome.ChromeDriverService"))
+        .put(edge().getBrowserName(), new ServicedSession.Factory("org.openqa.selenium.edge.EdgeDriverService"))
+        .put(firefox().getBrowserName(), new ServicedSession.Factory("org.openqa.selenium.firefox.GeckoDriverService"))
+        .put(htmlUnit().getBrowserName(), new InMemorySession.Factory(legacySessions))
+        .put(internetExplorer().getBrowserName(), new ServicedSession.Factory("org.openqa.selenium.ie.InternetExplorerDriverService"))
+        .put(opera().getBrowserName(), new ServicedSession.Factory("org.openqa.selenium.ie.OperaDriverService"))
+        .put(operaBlink().getBrowserName(), new ServicedSession.Factory("org.openqa.selenium.ie.OperaDriverService"))
+        .put(safari().getBrowserName(), new ServicedSession.Factory("org.openqa.selenium.ie.OperaDriverService"))
+        .build();
   }
 
   @Override
