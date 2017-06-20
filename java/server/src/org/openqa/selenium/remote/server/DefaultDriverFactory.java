@@ -18,6 +18,7 @@
 package org.openqa.selenium.remote.server;
 
 import static com.google.common.base.Preconditions.checkState;
+import static org.openqa.selenium.remote.server.DefaultDriverProvider.createProvider;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
@@ -30,36 +31,31 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.ServiceLoader;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
+import java.util.stream.Stream;
 
 public class DefaultDriverFactory implements DriverFactory {
 
   private static final Logger LOG = Logger.getLogger(DefaultDriverFactory.class.getName());
 
-  private static List<DriverProvider> defaultDriverProviders =
-      new ImmutableList.Builder<DriverProvider>()
-          .add(new FirefoxDriverProvider())
-          .add(new DefaultDriverProvider(DesiredCapabilities.chrome(),
-                                         "org.openqa.selenium.chrome.ChromeDriver"))
-          .add(new DefaultDriverProvider(DesiredCapabilities.internetExplorer(),
-                                         "org.openqa.selenium.ie.InternetExplorerDriver"))
-          .add(new DefaultDriverProvider(DesiredCapabilities.edge(),
-                                         "org.openqa.selenium.edge.EdgeDriver"))
-          .add(new DefaultDriverProvider(DesiredCapabilities.opera(),
-                                         "com.opera.core.systems.OperaDriver"))
-          .add(new DefaultDriverProvider(DesiredCapabilities.operaBlink(),
-                                         "org.openqa.selenium.opera.OperaDriver"))
-          .add(new DefaultDriverProvider(DesiredCapabilities.safari(),
-                                         "org.openqa.selenium.safari.SafariDriver"))
-          .add(new DefaultDriverProvider(DesiredCapabilities.phantomjs(),
-                                         "org.openqa.selenium.phantomjs.PhantomJSDriver"))
-          .add(new DefaultDriverProvider(DesiredCapabilities.htmlUnit(),
-                                         "org.openqa.selenium.htmlunit.HtmlUnitDriver"))
-          .build();
+  private static final List<DriverProvider> DEFAULT_DRIVER_PROVIDERS =
+      Stream.of(
+          createProvider(DesiredCapabilities.firefox(), "org.openqa.selenium.firefox.FirefoxDriver"),
+          createProvider(DesiredCapabilities.chrome(), "org.openqa.selenium.chrome.ChromeDriver"),
+          createProvider(DesiredCapabilities.internetExplorer(), "org.openqa.selenium.ie.InternetExplorerDriver"),
+          createProvider(DesiredCapabilities.edge(), "org.openqa.selenium.edge.EdgeDriver"),
+          createProvider(DesiredCapabilities.opera(), "com.opera.core.systems.OperaDriver"),
+          createProvider(DesiredCapabilities.operaBlink(), "org.openqa.selenium.opera.OperaDriver"),
+          createProvider(DesiredCapabilities.safari(), "org.openqa.selenium.safari.SafariDriver"),
+          createProvider(DesiredCapabilities.phantomjs(), "org.openqa.selenium.phantomjs.PhantomJSDriver"),
+          createProvider(DesiredCapabilities.htmlUnit(), "org.openqa.selenium.htmlunit.HtmlUnitDriver"))
+          .filter(Objects::nonNull)
+          .collect(ImmutableList.toImmutableList());
 
-  private Map<Capabilities, DriverProvider> capabilitiesToDriverProvider =
+  private final Map<Capabilities, DriverProvider> capabilitiesToDriverProvider =
       new ConcurrentHashMap<>();
 
   public DefaultDriverFactory(Platform runningOn) {
@@ -100,7 +96,7 @@ public class DefaultDriverFactory implements DriverFactory {
   }
 
   private void registerDefaults(Platform current) {
-    for (DriverProvider provider : defaultDriverProviders) {
+    for (DriverProvider provider : DEFAULT_DRIVER_PROVIDERS) {
       registerDriverProvider(current, provider);
     }
   }

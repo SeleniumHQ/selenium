@@ -28,7 +28,9 @@ import java.util.logging.Logger;
 
 /**
  * This driver provider that instantiates FirefoxDriver.
+ * @deprecated No longer used.
  */
+@Deprecated
 public class FirefoxDriverProvider implements DriverProvider {
 
   private static final Logger LOG = Logger.getLogger(FirefoxDriverProvider.class.getName());

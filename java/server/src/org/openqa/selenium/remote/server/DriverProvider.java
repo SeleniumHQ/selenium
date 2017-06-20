@@ -37,7 +37,7 @@ import org.openqa.selenium.WebDriver;
 public interface DriverProvider {
 
   /**
-   * The provider "promices" that created driver instances will have (at least) this set of
+   * The provider "promises" that created driver instances will have (at least) this set of
    * capabilities. The grid uses this information to match the capabilites requested by the client
    * against the capabilities provided by all registered providers to pick the "best" one.
    * @return capabilities provided
@@ -48,7 +48,9 @@ public interface DriverProvider {
    * Checks if the provider can create driver instances "in general".
    *
    * @return true if the provider can create driver instances.
+   * @deprecated All providers should be able to create driver instances.
    */
+  @Deprecated
   boolean canCreateDriverInstances();
 
   /**
