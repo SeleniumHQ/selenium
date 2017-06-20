@@ -23,6 +23,7 @@ import static com.google.common.net.MediaType.JSON_UTF_8;
 import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.openqa.selenium.remote.ErrorCodes.NO_SUCH_SESSION;
 import static org.openqa.selenium.remote.ErrorCodes.UNKNOWN_COMMAND;
 
 import com.google.common.base.Splitter;
@@ -67,9 +68,10 @@ class AllHandlers {
 
     if (id != null) {
       ActiveSession session = allSessions.get(id);
-      if (session != null) {
-        return session;
+      if (session == null) {
+        return new NoSessionHandler(id);
       }
+      return session;
     }
 
     if ("POST".equalsIgnoreCase(req.getMethod()) && "/session".equals(path)) {
@@ -97,6 +99,37 @@ class AllHandlers {
               "Unable to find command matching %s to %s",
               req.getMethod(),
               req.getUri()),
+          "stacktrace", ""));
+      responseMap = Collections.unmodifiableMap(responseMap);
+
+      byte[] payload = new GsonBuilder().serializeNulls().create().toJson(responseMap)
+          .getBytes(UTF_8);
+
+      resp.setStatus(HTTP_NOT_FOUND);
+      resp.setHeader("Content-Type", JSON_UTF_8.toString());
+      resp.setHeader("Content-Length", String.valueOf(payload.length));
+
+      resp.setContent(payload);
+    }
+  }
+
+  private static class NoSessionHandler implements CommandHandler {
+
+    private final SessionId sessionId;
+
+    public NoSessionHandler(SessionId sessionId) {
+      this.sessionId = sessionId;
+    }
+
+    @Override
+    public void execute(HttpRequest req, HttpResponse resp) throws IOException {
+      // We're not using ImmutableMap for the outer map because it disallows null values.
+      Map<String, Object> responseMap = new HashMap<>();
+      responseMap.put("sessionId", sessionId.toString());
+      responseMap.put("status", NO_SUCH_SESSION);
+      responseMap.put("value", ImmutableMap.of(
+          "error", "invalid session id",
+          "message", String.format("No active session with ID %s", sessionId),
           "stacktrace", ""));
       responseMap = Collections.unmodifiableMap(responseMap);
 
