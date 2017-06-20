@@ -41,6 +41,10 @@ public class SafariDriverService extends DriverService {
     super(executable, port, args, environment);
   }
 
+  public static SafariDriverService createDefaultService() {
+    return createDefaultService(new SafariOptions());
+  }
+
   public static SafariDriverService createDefaultService(SafariOptions options) {
     File exe = options.getUseTechnologyPreview() ?
                TP_SAFARI_DRIVER_EXECUTABLE : SAFARI_DRIVER_EXECUTABLE;
