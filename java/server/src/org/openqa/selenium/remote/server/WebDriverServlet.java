@@ -203,7 +203,7 @@ public class WebDriverServlet extends HttpServlet {
     });
 
     try {
-      execution.get(1, MINUTES);
+      execution.get(10, MINUTES);
     } catch (ExecutionException e) {
       resp.reset();
       new ExceptionHandler(e).execute(
