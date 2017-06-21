@@ -39,7 +39,7 @@ public class CircularOutputStream extends OutputStream {
   }
 
   @Override
-  public void write(int b) throws IOException {
+  public synchronized void write(int b) throws IOException {
     if (end == buffer.length) {
       filled = true;
       end = 0;
