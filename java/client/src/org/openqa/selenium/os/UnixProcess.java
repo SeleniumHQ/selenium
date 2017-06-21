@@ -55,6 +55,7 @@ class UnixProcess implements OsProcess {
   private volatile OutputStream drainTo;
   private SeleniumWatchDog executeWatchdog = new SeleniumWatchDog(
       ExecuteWatchdog.INFINITE_TIMEOUT);
+  private PumpStreamHandler streamHandler;
 
   private final org.apache.commons.exec.CommandLine cl;
   private final Map<String, String> env = new ConcurrentHashMap<>();
@@ -97,8 +98,8 @@ class UnixProcess implements OsProcess {
       final OutputStream outputStream = getOutputStream();
       executeWatchdog.reset();
       executor.setWatchdog(executeWatchdog);
-      executor.setStreamHandler(new PumpStreamHandler(
-          outputStream, outputStream, getInputStream()));
+      streamHandler = new PumpStreamHandler(outputStream, outputStream, getInputStream());
+      executor.setStreamHandler(streamHandler);
       executor.execute(cl, getMergedEnv(), handler);
     } catch (IOException e) {
       throw new WebDriverException(e);
@@ -113,6 +114,17 @@ class UnixProcess implements OsProcess {
   public int destroy() {
     SeleniumWatchDog watchdog = executeWatchdog;
     watchdog.waitForProcessStarted();
+
+    if (streamHandler != null) {
+      // Stop trying to read the output stream so that we don't race with the stream being closed
+      // when the process is destroyed.
+      streamHandler.setStopTimeout(2000);
+      try {
+        streamHandler.stop();
+      } catch (IOException e) {
+        // Ignore and destroy the process anyway.
+      }
+    }
 
     if (!thisIsWindows()) {
       watchdog.destroyProcess();
