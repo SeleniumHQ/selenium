@@ -21,6 +21,7 @@ import org.junit.runners.Suite;
 import org.openqa.selenium.interactions.CompositeActionTest;
 import org.openqa.selenium.interactions.IndividualKeyboardActionsTest;
 import org.openqa.selenium.interactions.IndividualMouseActionsTest;
+import org.openqa.selenium.interactions.PointerInputTest;
 import org.openqa.selenium.io.FileHandlerTest;
 import org.openqa.selenium.io.TemporaryFilesystemTest;
 import org.openqa.selenium.io.ZipTest;
@@ -51,6 +52,7 @@ import org.openqa.selenium.testing.drivers.IgnoreComparatorUnitTest;
     PerformanceLoggingMockTest.class,
     PlatformTest.class,
     PointTest.class,
+    PointerInputTest.class,
     ProxyTest.class,
     TemporaryFilesystemTest.class,
     WebDriverExceptionTest.class,
