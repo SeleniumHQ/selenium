@@ -20,6 +20,7 @@ package org.openqa.selenium.interactions;
 import com.google.common.base.Preconditions;
 
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.internal.WrapsElement;
 
 import java.time.Duration;
 import java.util.HashMap;
@@ -213,7 +214,11 @@ public class PointerInput implements InputSource, Encodable {
     }
 
     public static Origin fromElement(WebElement element) {
-      return new Origin(Preconditions.checkNotNull(element));
+      Preconditions.checkNotNull(element);
+      while (element instanceof WrapsElement) {
+        element = ((WrapsElement) element).getWrappedElement();
+      }
+      return new Origin(element);
     }
   }
 

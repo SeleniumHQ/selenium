@@ -35,6 +35,7 @@ java_library(name = 'helpers',
     'ParallelTestRunner.java',
     'StubDriver.java',
     'WaitingConditions.java',
+    'WrappedWebElement.java',
   ],
   deps = [
     '//java/client/src/org/openqa/selenium:selenium',
