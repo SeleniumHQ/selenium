@@ -227,8 +227,8 @@ public class WebDriverBackedSeleniumServlet extends HttpServlet {
 
     Session session = sessionsSupplier.get().get(sessionId);
     if (session == null) {
-      getServletContext().log("Attempt to use non-existant session: " + sessionId);
-      sendError(resp, "Attempt to use non-existant session: " + sessionId);
+      getServletContext().log("Attempt to use non-existent session: " + sessionId);
+      sendError(resp, "Attempt to use non-existent session: " + sessionId);
       return;
     }
     WebDriver driver = session.getDriver();
