@@ -87,7 +87,7 @@ class url_matches(object):
         import re
         match = re.search(self.pattern, driver.current_url)
 
-        return match != None
+        return match is not None
 
 
 class url_to_be(object):
