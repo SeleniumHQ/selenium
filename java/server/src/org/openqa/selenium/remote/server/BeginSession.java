@@ -66,7 +66,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -75,22 +74,13 @@ class BeginSession implements CommandHandler {
 
   private final static Logger LOG = Logger.getLogger(BeginSession.class.getName());
 
+  private final ActiveSessionFactory sessionFactory;
   private final ActiveSessions allSessions;
-  private final Map<String, SessionFactory> factories;
 
   public BeginSession(ActiveSessions allSessions, DriverSessions legacySessions) {
     this.allSessions = allSessions;
 
-    this.factories = ImmutableMap.<String, SessionFactory>builder()
-        .put(chrome().getBrowserName(), new ServicedSession.Factory("org.openqa.selenium.chrome.ChromeDriverService"))
-        .put(edge().getBrowserName(), new ServicedSession.Factory("org.openqa.selenium.edge.EdgeDriverService"))
-        .put(firefox().getBrowserName(), new ServicedSession.Factory("org.openqa.selenium.firefox.GeckoDriverService"))
-        .put(htmlUnit().getBrowserName(), new InMemorySession.Factory(legacySessions))
-        .put(internetExplorer().getBrowserName(), new ServicedSession.Factory("org.openqa.selenium.ie.InternetExplorerDriverService"))
-        .put(opera().getBrowserName(), new ServicedSession.Factory("org.openqa.selenium.ie.OperaDriverService"))
-        .put(operaBlink().getBrowserName(), new ServicedSession.Factory("org.openqa.selenium.ie.OperaDriverService"))
-        .put(safari().getBrowserName(), new ServicedSession.Factory("org.openqa.selenium.ie.OperaDriverService"))
-        .build();
+    this.sessionFactory = new ActiveSessionFactory(legacySessions);
   }
 
   @Override
@@ -104,33 +94,12 @@ class BeginSession implements CommandHandler {
       List<Map<String, Object>> firstMatch = new LinkedList<>();
 
       readCapabilities(allCaps, req, ossKeys, alwaysMatch, firstMatch);
-      List<SessionFactory> browserGenerators = determineBrowser(
+
+      ActiveSession session = sessionFactory.createSession(
+          allCaps,
           ossKeys,
           alwaysMatch,
           firstMatch);
-
-      ImmutableSet.Builder<Dialect> downstreamDialects = ImmutableSet.builder();
-      // Favour OSS for now
-      if (!ossKeys.isEmpty()) {
-        downstreamDialects.add(OSS);
-      }
-      if (!alwaysMatch.isEmpty() || !firstMatch.isEmpty()) {
-        downstreamDialects.add(W3C);
-      }
-
-      ActiveSession session = browserGenerators.stream()
-            .map(func -> {
-              try {
-                return func.apply(allCaps, downstreamDialects.build());
-              } catch (Exception e) {
-                LOG.log(Level.INFO, "Unable to start session.", e);
-              }
-              return null;
-            })
-            .filter(Objects::nonNull)
-            .findFirst()
-            .orElseThrow(() -> new SessionNotCreatedException("Unable to create a new session"));
-
       allSessions.put(session);
 
       Object toConvert;
@@ -243,52 +212,6 @@ class BeginSession implements CommandHandler {
     }
   }
 
-  private List<SessionFactory> determineBrowser(
-      Map<String, Object> ossKeys,
-      Map<String, Object> alwaysMatchKeys,
-      List<Map<String, Object>> firstMatchKeys) {
-    List<Map<String, Object>> allCapabilities = firstMatchKeys.stream()
-        // remove null keys
-        .map(caps -> ImmutableMap.<String, Object>builder().putAll(caps).putAll(alwaysMatchKeys).build())
-        .collect(Collectors.toList());
-    allCapabilities.add(ossKeys);
-
-    // Can we figure out the browser from any of these?
-    ImmutableList.Builder<SessionFactory> builder = ImmutableList.builder();
-    for (Map<String, Object> caps : allCapabilities) {
-      caps.entrySet().stream()
-          .map(entry -> guessBrowserName(entry.getKey(), entry.getValue()))
-          .filter(factories.keySet()::contains)
-          .map(factories::get)
-          .findFirst()
-          .ifPresent(builder::add);
-    }
-
-    return builder.build();
-  }
-
-  private String guessBrowserName(String capabilityKey, Object value) {
-    if (BROWSER_NAME.equals(capabilityKey)) {
-      return (String) value;
-    }
-    if ("chromeOptions".equals(capabilityKey)) {
-      return CHROME;
-    }
-    if ("edgeOptions".equals(capabilityKey)) {
-      return EDGE;
-    }
-    if (capabilityKey.startsWith("moz:")) {
-      return FIREFOX;
-    }
-    if (capabilityKey.startsWith("safari.")) {
-      return SAFARI;
-    }
-    if ("se:ieOptions".equals(capabilityKey)) {
-      return IE;
-    }
-    return null;
-  }
-
   private Map<String, Object> sparseCapabilities(JsonReader json) throws IOException {
     Map<String, Object> caps = new HashMap<>();
 
@@ -324,10 +247,99 @@ class BeginSession implements CommandHandler {
     return caps;
   }
 
-  private static class ServicedSessionFactory implements Function<Path, ActiveSession> {
+  public static class ActiveSessionFactory {
+    private final Map<String, SessionFactory> factories;
 
-    @Override
-    public ActiveSession apply(Path path) {
+    public ActiveSessionFactory(DriverSessions legacySessions) {
+      this.factories = ImmutableMap.<String, SessionFactory>builder()
+          .put(chrome().getBrowserName(), new ServicedSession.Factory("org.openqa.selenium.chrome.ChromeDriverService"))
+          .put(edge().getBrowserName(), new ServicedSession.Factory("org.openqa.selenium.edge.EdgeDriverService"))
+          .put(firefox().getBrowserName(), new ServicedSession.Factory("org.openqa.selenium.firefox.GeckoDriverService"))
+          .put(htmlUnit().getBrowserName(), new InMemorySession.Factory(legacySessions))
+          .put(internetExplorer().getBrowserName(), new ServicedSession.Factory("org.openqa.selenium.ie.InternetExplorerDriverService"))
+          .put(opera().getBrowserName(), new ServicedSession.Factory("org.openqa.selenium.ie.OperaDriverService"))
+          .put(operaBlink().getBrowserName(), new ServicedSession.Factory("org.openqa.selenium.ie.OperaDriverService"))
+          .put(safari().getBrowserName(), new ServicedSession.Factory("org.openqa.selenium.ie.OperaDriverService"))
+          .build();
+    }
+
+
+    public ActiveSession createSession(
+        Path rawCapabilitiesBlob,
+        Map<String, Object> ossKeys,
+        Map<String, Object> alwaysMatch,
+        List<Map<String, Object>> firstMatch) {
+      List<SessionFactory> browserGenerators = determineBrowser(
+          ossKeys,
+          alwaysMatch,
+          firstMatch);
+
+      ImmutableSet.Builder<Dialect> downstreamDialects = ImmutableSet.builder();
+      // Favour OSS for now
+      if (!ossKeys.isEmpty()) {
+        downstreamDialects.add(OSS);
+      }
+      if (!alwaysMatch.isEmpty() || !firstMatch.isEmpty()) {
+        downstreamDialects.add(W3C);
+      }
+
+      return browserGenerators.stream()
+          .map(func -> {
+            try {
+              return func.apply(rawCapabilitiesBlob, downstreamDialects.build());
+            } catch (Exception e) {
+              LOG.log(Level.INFO, "Unable to start session.", e);
+            }
+            return null;
+          })
+          .filter(Objects::nonNull)
+          .findFirst()
+          .orElseThrow(() -> new SessionNotCreatedException("Unable to create a new session"));
+    }
+
+    private List<SessionFactory> determineBrowser(
+        Map<String, Object> ossKeys,
+        Map<String, Object> alwaysMatchKeys,
+        List<Map<String, Object>> firstMatchKeys) {
+      List<Map<String, Object>> allCapabilities = firstMatchKeys.stream()
+          // remove null keys
+          .map(caps -> ImmutableMap.<String, Object>builder().putAll(caps).putAll(alwaysMatchKeys).build())
+          .collect(Collectors.toList());
+      allCapabilities.add(ossKeys);
+
+      // Can we figure out the browser from any of these?
+      ImmutableList.Builder<SessionFactory> builder = ImmutableList.builder();
+      for (Map<String, Object> caps : allCapabilities) {
+        caps.entrySet().stream()
+            .map(entry -> guessBrowserName(entry.getKey(), entry.getValue()))
+            .filter(factories.keySet()::contains)
+            .map(factories::get)
+            .findFirst()
+            .ifPresent(builder::add);
+      }
+
+      return builder.build();
+    }
+
+    private String guessBrowserName(String capabilityKey, Object value) {
+      if (BROWSER_NAME.equals(capabilityKey)) {
+        return (String) value;
+      }
+      if ("chromeOptions".equals(capabilityKey)) {
+        return CHROME;
+      }
+      if ("edgeOptions".equals(capabilityKey)) {
+        return EDGE;
+      }
+      if (capabilityKey.startsWith("moz:")) {
+        return FIREFOX;
+      }
+      if (capabilityKey.startsWith("safari.")) {
+        return SAFARI;
+      }
+      if ("se:ieOptions".equals(capabilityKey)) {
+        return IE;
+      }
       return null;
     }
   }
