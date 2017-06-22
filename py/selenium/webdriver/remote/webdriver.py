@@ -54,31 +54,31 @@ _W3C_CAPABILITY_NAMES = frozenset([
 
 
 def _make_w3c_caps(caps):
-  """Makes a W3C alwaysMatch capabilities object.
+    """Makes a W3C alwaysMatch capabilities object.
 
-  Filters out capability names that are not in the W3C spec. Spec-compliant
-  drivers will reject requests containing unknown capability names.
+    Filters out capability names that are not in the W3C spec. Spec-compliant
+    drivers will reject requests containing unknown capability names.
 
-  Moves the Firefox profile, if present, from the old location to the new Firefox
-  options object.
+    Moves the Firefox profile, if present, from the old location to the new Firefox
+    options object.
 
-  :Args:
-   - caps - A dictionary of capabilities requested by the caller.
-  """
-  profile = caps.get('firefox_profile')
-  always_match = {}
-  for k, v in caps.iteritems():
-    if k in _W3C_CAPABILITY_NAMES or ':' in k:
-      always_match[k] = v
-  if profile:
-    moz_opts = always_match.get('moz:firefoxOptions', {})
-    # If it's already present, assume the caller did that intentionally.
-    if 'profile' not in moz_opts:
-      # Don't mutate the original capabilities.
-      new_opts = copy.deepcopy(moz_opts)
-      new_opts['profile'] = profile
-      always_match['moz:firefoxOptions'] = new_opts
-  return {"firstMatch": [{}], "alwaysMatch": always_match}
+    :Args:
+     - caps - A dictionary of capabilities requested by the caller.
+    """
+    profile = caps.get('firefox_profile')
+    always_match = {}
+    for k, v in caps.iteritems():
+        if k in _W3C_CAPABILITY_NAMES or ':' in k:
+            always_match[k] = v
+    if profile:
+        moz_opts = always_match.get('moz:firefoxOptions', {})
+        # If it's already present, assume the caller did that intentionally.
+        if 'profile' not in moz_opts:
+            # Don't mutate the original capabilities.
+            new_opts = copy.deepcopy(moz_opts)
+            new_opts['profile'] = profile
+            always_match['moz:firefoxOptions'] = new_opts
+    return {"firstMatch": [{}], "alwaysMatch": always_match}
 
 
 class WebDriver(object):
@@ -879,7 +879,7 @@ class WebDriver(object):
         """
         if not filename.lower().endswith('.png'):
             warnings.warn("name used for saved screenshot does not match file "
-                "type. It should end with a `.png` extension", UserWarning)
+                          "type. It should end with a `.png` extension", UserWarning)
         png = self.get_screenshot_as_png()
         try:
             with open(filename, 'wb') as f:

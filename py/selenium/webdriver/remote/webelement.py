@@ -17,14 +17,15 @@
 
 import base64
 import hashlib
-import pkgutil
 import os
+import pkgutil
+import warnings
 import zipfile
 
-from .command import Command
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.utils import keys_to_typing
+from .command import Command
 
 # Python 3 imports
 try:
@@ -446,7 +447,7 @@ class WebElement(object):
         """
         if not filename.lower().endswith('.png'):
             warnings.warn("name used for saved screenshot does not match file "
-                "type. It should end with a `.png` extension", UserWarning)
+                          "type. It should end with a `.png` extension", UserWarning)
         png = self.screenshot_as_png
         try:
             with open(filename, 'wb') as f:
