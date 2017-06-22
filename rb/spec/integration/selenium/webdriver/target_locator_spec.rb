@@ -136,7 +136,8 @@ module Selenium
         end
       end
 
-      not_compliant_on browser: [:ie, :safari] do
+      # only an issue with FF 54 and linux (passing on nightly), remove FF guard when stable is 55
+      not_compliant_on browser: [:ie, :safari, :firefox] do
         context 'with more than two windows' do
           it 'should close current window when more than two windows exist' do
             driver.navigate.to url_for('xhtmlTest.html')
