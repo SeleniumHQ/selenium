@@ -214,13 +214,15 @@ public class DriverServlet extends HttpServlet {
       }
     };
 
-    commandHandler.handleRequest(wrapper, servletResponse);
+    handleRequest(wrapper, servletResponse);
   }
 
   protected void handleRequest(
       HttpServletRequest servletRequest, HttpServletResponse servletResponse)
       throws ServletException, IOException {
-    commandHandler.handleRequest(servletRequest, servletResponse);
+    commandHandler.handleRequest(
+        new ServletRequestWrappingHttpRequest(servletRequest),
+        new ServletResponseWrappingHttpResponse(servletResponse));
   }
 
   private class DriverSessionsSupplier implements Supplier<DriverSessions> {

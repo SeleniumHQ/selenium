@@ -149,9 +149,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 public class JsonHttpCommandHandler {
 
   private static final String ADD_CONFIG_COMMAND_NAME = "-selenium-add-config";
@@ -178,12 +175,6 @@ public class JsonHttpCommandHandler {
       Class<? extends RestishHandler<?>> implementationClass) {
     ResultConfig config = new ResultConfig(commandName, implementationClass, sessions, log);
     configs.put(commandName, config);
-  }
-
-  public void handleRequest(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-    handleRequest(
-        new ServletRequestWrappingHttpRequest(req),
-        new ServletResponseWrappingHttpResponse(resp));
   }
 
   public void handleRequest(HttpRequest request, HttpResponse resp) throws IOException {
