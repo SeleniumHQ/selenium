@@ -57,7 +57,6 @@ import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.Duration;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
@@ -94,29 +93,6 @@ public class ProtocolHandshake {
       .reduce(identity -> false, Predicate::or);
 
   private final static Type MAP_TYPE = new TypeToken<Map<?, ?>>(){}.getType();
-
-  private static class ResponseCodeAndJson {
-    public final Duration duration;
-    public final int statusCode;
-    public final Map<?, ?> blob;
-
-    public ResponseCodeAndJson(long timeInMillis, int statusCode, Map<?, ?> blob) {
-      this.duration = Duration.ofMillis(timeInMillis);
-      this.statusCode = statusCode;
-      this.blob = blob;
-    }
-  }
-
-  private Function<HttpResponse, ResponseCodeAndJson> ensureJson = res -> {
-    // Ignore the content type. It may not have been set. Strictly speaking we're not following the
-    // W3C spec properly. Oh well.
-    try {
-      Map<?, ?> blob = new Gson().fromJson(res.getContentString(), MAP_TYPE);
-      return new ResponseCodeAndJson(0, res.getStatus(), blob);
-    } catch (JsonParseException e) {
-      throw new WebDriverException("Unable to parse remote response: " + res.getContentString());
-    }
-  };
 
 
   public Result createSession(HttpClient client, Command command)
