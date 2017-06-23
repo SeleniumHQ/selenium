@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.remote.server;
 
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.MINUTES;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
@@ -35,6 +36,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import javax.servlet.ServletException;
@@ -60,12 +62,15 @@ public class WebDriverServlet extends HttpServlet {
   @Override
   public void init() throws ServletException {
     log("Initialising WebDriverServlet");
+
+    String value = getInitParameter(SESSION_TIMEOUT_PARAMETER);
+    long inactiveSessionTimeout = value != null ?
+                                  SECONDS.toMillis(Long.parseLong(value)) :
+                                  Long.MAX_VALUE;
+
+
     legacyDriverSessions = (DriverSessions) getServletContext().getAttribute(SESSIONS_KEY);
     if (legacyDriverSessions == null) {
-      String value = getInitParameter(SESSION_TIMEOUT_PARAMETER);
-      long inactiveSessionTimeout = value != null ?
-                                    SECONDS.toMillis(Long.parseLong(value)) :
-                                    Long.MAX_VALUE;
 
       legacyDriverSessions = new DefaultDriverSessions(
           new DefaultDriverFactory(Platform.getCurrent()),
@@ -75,7 +80,7 @@ public class WebDriverServlet extends HttpServlet {
 
     allSessions = (ActiveSessions) getServletContext().getAttribute(ACTIVE_SESSIONS_KEY);
     if (allSessions == null) {
-      allSessions = new ActiveSessions();
+      allSessions = new ActiveSessions(inactiveSessionTimeout, MILLISECONDS);
       getServletContext().setAttribute(ACTIVE_SESSIONS_KEY, allSessions);
     }
 
