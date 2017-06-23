@@ -64,30 +64,24 @@ public class DefaultSession implements Session {
    */
   private final KnownElements knownElements;
   private final Capabilities capabilities; // todo: Investigate memory model implications of map
-  private final Clock clock;
   // elements inside capabilities.
   private volatile String base64EncodedImage;
-  private volatile long lastAccess;
-  private volatile Thread inUseWithThread = null;
   private TemporaryFilesystem tempFs;
 
   public static Session createSession(
       DriverFactory factory,
       TemporaryFilesystem tempFs,
-      Clock clock,
       Capabilities capabilities)
       throws Exception {
-    return new DefaultSession(factory, tempFs, clock, capabilities);
+    return new DefaultSession(factory, tempFs, capabilities);
   }
 
   private DefaultSession(
       final DriverFactory factory,
       TemporaryFilesystem tempFs,
-      Clock clock,
       final Capabilities capabilities) throws Exception {
     this.knownElements = new KnownElements();
     this.tempFs = tempFs;
-    this.clock = clock;
     final BrowserCreator browserCreator = new BrowserCreator(factory, capabilities);
 
     // Ensure that the browser is created on the single thread.
@@ -101,8 +95,6 @@ public class DefaultSession implements Session {
     this.driver = initialDriver;
     this.capabilities = browserCreator.getCapabilityDescription();
     this.sessionId = browserCreator.getSessionId();
-
-    updateLastAccessTime();
   }
 
   private static boolean isQuietModeEnabled(
@@ -121,17 +113,6 @@ public class DefaultSession implements Session {
     Object cap = capabilities.asMap().get(QUIET_EXCEPTIONS_KEY);
     boolean isExplicitlyDisabledByCapability = cap != null && "false".equalsIgnoreCase(cap.toString());
     return propertySaysQuiet && !isExplicitlyDisabledByCapability;
-  }
-
-  /**
-   * Touches the session.
-   */
-  public void updateLastAccessTime() {
-    lastAccess = clock.now();
-  }
-
-  public boolean isTimedOut(long timeout) {
-    return timeout > 0 && (lastAccess + timeout) < clock.now();
   }
 
   public void close() {
@@ -154,7 +135,6 @@ public class DefaultSession implements Session {
   }
 
   public WebDriver getDriver() {
-    updateLastAccessTime();
     return driver;
   }
 
@@ -254,10 +234,6 @@ public class DefaultSession implements Session {
 
   public TemporaryFilesystem getTemporaryFileSystem() {
     return tempFs;
-  }
-
-  public boolean isInUse() {
-    return inUseWithThread != null;
   }
 
 }

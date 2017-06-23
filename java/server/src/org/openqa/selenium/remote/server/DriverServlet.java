@@ -323,7 +323,6 @@ public class DriverServlet extends HttpServlet {
       if (attribute == null) {
         attribute = new DefaultDriverSessions(
             new DefaultDriverFactory(Platform.getCurrent()),
-            new SystemClock(),
             getInactiveSessionTimeout());
       }
       return (DriverSessions) attribute;

@@ -36,16 +36,6 @@ public interface Session {
 
   String getAndClearScreenshot();
 
-  boolean isTimedOut(long timeout);
-
-    /**
-     * Indicates that the session is in use at this moment (being forwarded to browser)
-     * @return  true if the session is active inside the browser
-     */
-  boolean isInUse();
-
-  void updateLastAccessTime();
-
   SessionId getSessionId();
 
   TemporaryFilesystem getTemporaryFileSystem();

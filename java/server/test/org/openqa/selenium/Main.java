@@ -25,7 +25,6 @@ import org.openqa.selenium.remote.server.DefaultDriverFactory;
 import org.openqa.selenium.remote.server.DefaultDriverSessions;
 import org.openqa.selenium.remote.server.DriverServlet;
 import org.openqa.selenium.remote.server.DriverSessions;
-import org.openqa.selenium.remote.server.SystemClock;
 import org.seleniumhq.jetty9.server.Connector;
 import org.seleniumhq.jetty9.server.Server;
 import org.seleniumhq.jetty9.server.ServerConnector;
@@ -66,7 +65,6 @@ public class Main {
     ServletContextHandler driverContext = new ServletContextHandler();
     DriverSessions driverSessions = new DefaultDriverSessions(
         new DefaultDriverFactory(Platform.getCurrent()),
-        new SystemClock(),
         18000);
     driverContext.setAttribute(DriverServlet.SESSIONS_KEY, driverSessions);
     driverContext.setContextPath("/");

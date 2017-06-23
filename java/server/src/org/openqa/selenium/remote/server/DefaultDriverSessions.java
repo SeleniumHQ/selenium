@@ -37,16 +37,13 @@ import java.util.Set;
 public class DefaultDriverSessions implements DriverSessions {
 
   private final DriverFactory factory;
-  private final Clock clock;
 
   private final Cache<SessionId, Session> sessionIdToDriver;
 
   public DefaultDriverSessions(
       DriverFactory factory,
-      Clock clock,
       long inactiveSessionTimeoutMs) {
     this.factory = factory;
-    this.clock = clock;
 
     RemovalListener<SessionId, Session> listener = notification -> {
       Session session = notification.getValue();
@@ -71,7 +68,6 @@ public class DefaultDriverSessions implements DriverSessions {
     Session session = DefaultSession.createSession(
         factory,
         TemporaryFilesystem.getTmpFsBasedOn(Files.createTempDir()),
-        clock,
         desiredCapabilities);
 
     sessionIdToDriver.put(session.getSessionId(), session);
