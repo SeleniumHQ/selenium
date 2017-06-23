@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.remote.server;
 
+import static java.util.concurrent.TimeUnit.MINUTES;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
@@ -24,12 +25,14 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.openqa.selenium.remote.SessionId;
 
+import java.util.concurrent.TimeUnit;
+
 
 public class ActiveSessionsTest {
 
   @Test
   public void shouldReturnNullWhenSessionIsNotPresent() {
-    ActiveSessions sessions = new ActiveSessions();
+    ActiveSessions sessions = new ActiveSessions(10, MINUTES);
     ActiveSession session = sessions.get(new SessionId("1234567890"));
 
     assertNull(session);
@@ -37,7 +40,7 @@ public class ActiveSessionsTest {
 
   @Test
   public void canAddNewSessionAndRetrieveById() {
-    ActiveSessions sessions = new ActiveSessions();
+    ActiveSessions sessions = new ActiveSessions(10, MINUTES);
 
     ActiveSession session = Mockito.mock(ActiveSession.class);
     SessionId id = new SessionId("1234567890");
@@ -50,7 +53,7 @@ public class ActiveSessionsTest {
 
   @Test
   public void shouldBeAbleToInvalidateASession() {
-    ActiveSessions sessions = new ActiveSessions();
+    ActiveSessions sessions = new ActiveSessions(10, MINUTES);
 
     ActiveSession session = Mockito.mock(ActiveSession.class);
     SessionId id = new SessionId("1234567890");

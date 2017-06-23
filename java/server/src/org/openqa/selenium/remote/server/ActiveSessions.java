@@ -25,6 +25,7 @@ import com.google.common.cache.RemovalListener;
 
 import org.openqa.selenium.remote.SessionId;
 
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -36,7 +37,7 @@ class ActiveSessions {
 
   private final Cache<SessionId, ActiveSession> allSessions;
 
-  public ActiveSessions() {
+  public ActiveSessions(long inactiveSessionTimeout, TimeUnit unit) {
     RemovalListener<SessionId, ActiveSession> listener = notification -> {
       log("Removing session %s: %s", notification.getKey(), notification.getCause());
       ActiveSession session = notification.getValue();
