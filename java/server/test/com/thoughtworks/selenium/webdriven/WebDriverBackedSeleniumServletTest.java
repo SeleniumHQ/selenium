@@ -60,7 +60,8 @@ public class WebDriverBackedSeleniumServletTest {
 
     DefaultDriverSessions webdriverSessions = new DefaultDriverSessions(
         new DefaultDriverFactory(Platform.getCurrent()),
-        new SystemClock());
+        new SystemClock(),
+        18000);
     handler.setAttribute(DriverServlet.SESSIONS_KEY, webdriverSessions);
     handler.setContextPath("/");
     handler.addServlet(WebDriverBackedSeleniumServlet.class, "/selenium-server/driver/");

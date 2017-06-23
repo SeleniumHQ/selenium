@@ -35,6 +35,7 @@ import org.seleniumhq.jetty9.servlet.ServletContextHandler;
 import org.seleniumhq.jetty9.util.thread.QueuedThreadPool;
 
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 import javax.servlet.Servlet;
@@ -117,6 +118,9 @@ public class SeleniumServer implements GridNodeServer {
       handler.setInitParameter(DriverServlet.BROWSER_TIMEOUT_PARAMETER,
                                String.valueOf(configuration.browserTimeout));
     }
+
+    long inactiveSessionTimeoutSeconds = configuration.timeout == null ?
+                                   Long.MAX_VALUE /1000 : configuration.timeout;
     if (configuration.timeout != null && configuration.timeout >= 0) {
       handler.setInitParameter(DriverServlet.SESSION_TIMEOUT_PARAMETER,
                                String.valueOf(configuration.timeout));
@@ -124,7 +128,8 @@ public class SeleniumServer implements GridNodeServer {
 
     driverSessions = new DefaultDriverSessions(
         new DefaultDriverFactory(Platform.getCurrent()),
-        new SystemClock());
+        new SystemClock(),
+        TimeUnit.SECONDS.toMillis(inactiveSessionTimeoutSeconds));
     handler.setAttribute(DriverServlet.SESSIONS_KEY, driverSessions);
     handler.setContextPath("/");
     if (configuration.enablePassThrough) {

@@ -18,7 +18,9 @@
 package org.openqa.selenium.remote.server;
 
 import static java.util.concurrent.TimeUnit.MINUTES;
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
+import static org.openqa.selenium.remote.server.DriverServlet.SESSION_TIMEOUT_PARAMETER;
 
 import com.google.common.net.HttpHeaders;
 import com.google.common.net.MediaType;
@@ -60,9 +62,15 @@ public class WebDriverServlet extends HttpServlet {
     log("Initialising WebDriverServlet");
     legacyDriverSessions = (DriverSessions) getServletContext().getAttribute(SESSIONS_KEY);
     if (legacyDriverSessions == null) {
+      String value = getInitParameter(SESSION_TIMEOUT_PARAMETER);
+      long inactiveSessionTimeout = value != null ?
+                                    SECONDS.toMillis(Long.parseLong(value)) :
+                                    Long.MAX_VALUE;
+
       legacyDriverSessions = new DefaultDriverSessions(
           new DefaultDriverFactory(Platform.getCurrent()),
-          new SystemClock());
+          new SystemClock(),
+          inactiveSessionTimeout);
       getServletContext().setAttribute(SESSIONS_KEY, legacyDriverSessions);
     }
 
