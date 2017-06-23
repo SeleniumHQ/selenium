@@ -29,6 +29,7 @@ import org.openqa.selenium.html5.LocationContext;
 import org.openqa.selenium.html5.WebStorage;
 import org.openqa.selenium.interactions.HasTouchScreen;
 import org.openqa.selenium.internal.FindsByCssSelector;
+import org.openqa.selenium.internal.Killable;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.mobile.NetworkConnection;
 import org.openqa.selenium.remote.CapabilityType;
@@ -39,10 +40,6 @@ import org.openqa.selenium.support.events.EventFiringWebDriver;
 
 import java.util.UUID;
 import java.util.concurrent.Callable;
-import java.util.concurrent.FutureTask;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 /**
  * The default session implementation.
@@ -66,7 +63,6 @@ public class DefaultSession implements Session {
    * Happens-before the exexutor and is thereafter thread-confined to the executor thread.
    */
   private final KnownElements knownElements;
-  private final ThreadPoolExecutor executor;
   private final Capabilities capabilities; // todo: Investigate memory model implications of map
   private final Clock clock;
   // elements inside capabilities.
@@ -93,14 +89,9 @@ public class DefaultSession implements Session {
     this.tempFs = tempFs;
     this.clock = clock;
     final BrowserCreator browserCreator = new BrowserCreator(factory, capabilities);
-    final FutureTask<EventFiringWebDriver> webDriverFutureTask =
-        new FutureTask<>(browserCreator);
-    executor = new ThreadPoolExecutor(1, 1,
-                                      600L, TimeUnit.SECONDS,
-                                      new LinkedBlockingQueue<>());
 
     // Ensure that the browser is created on the single thread.
-    EventFiringWebDriver initialDriver = execute(webDriverFutureTask);
+    EventFiringWebDriver initialDriver = browserCreator.call();
 
     if (!isQuietModeEnabled(browserCreator, capabilities)) {
       // Memo to self; this is not a constructor escape of "this" - probably ;)
@@ -144,27 +135,22 @@ public class DefaultSession implements Session {
   }
 
   public void close() {
-    executor.shutdown();
+    try {
+      WebDriver driver = getDriver();
+      if (driver instanceof Killable) {
+        ((Killable) driver).kill();
+      } else if (driver != null) {
+        driver.close();
+      }
+    } catch (RuntimeException e) {
+      // At least we tried.
+    }
+
     if (tempFs != null) {
       tempFs.deleteTemporaryFiles();
       tempFs.deleteBaseDir();
       tempFs = null;
     }
-  }
-
-
-  public <X> X execute(final FutureTask<X> future) throws Exception {
-    executor.execute(() -> {
-      inUseWithThread = Thread.currentThread();
-      inUseWithThread.setName("Session " + sessionId + " processing inside browser");
-      try {
-        future.run();
-      } finally {
-        inUseWithThread = null;
-        Thread.currentThread().setName("Session " + sessionId + " awaiting client");
-      }
-    });
-    return future.get();
   }
 
   public WebDriver getDriver() {

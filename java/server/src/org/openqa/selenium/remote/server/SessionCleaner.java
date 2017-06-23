@@ -19,6 +19,7 @@ package org.openqa.selenium.remote.server;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.internal.Killable;
+import org.openqa.selenium.internal.WrapsDriver;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.server.handler.DeleteSession;
 import org.openqa.selenium.remote.server.log.LoggingManager;
@@ -96,7 +97,7 @@ class SessionCleaner extends Thread {   // Thread safety reviewed
         }
         if (inUse && session.isTimedOut(insideBrowserTimeout)) {
           WebDriver driver = session.getDriver();
-          if (driver instanceof EventFiringWebDriver) {
+          if (driver instanceof WrapsDriver) {
             driver = ((EventFiringWebDriver)driver).getWrappedDriver();
           }
           if (driver instanceof Killable) {

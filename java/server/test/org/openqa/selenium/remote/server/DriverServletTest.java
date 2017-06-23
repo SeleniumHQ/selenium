@@ -225,8 +225,8 @@ public class DriverServletTest {
 
   @Test
   public void timeouts() throws IOException, ServletException {
-    assertEquals(2000, browserTimeout);
-    assertEquals(18000, clientTimeout);
+    assertEquals(2000, driverServlet.getIndividualCommandTimeoutMs());
+    assertEquals(18000, driverServlet.getInactiveSessionTimeout());
   }
 
 }
