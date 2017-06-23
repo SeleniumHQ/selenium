@@ -37,7 +37,6 @@ import org.openqa.selenium.remote.server.DefaultDriverFactory;
 import org.openqa.selenium.remote.server.DefaultDriverSessions;
 import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.Session;
-import org.openqa.selenium.remote.server.SystemClock;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -79,7 +78,6 @@ public class WebDriverBackedSeleniumServlet extends HttpServlet {
       if (attribute == null) {
         attribute = new DefaultDriverSessions(
             new DefaultDriverFactory(Platform.getCurrent()),
-            new SystemClock(),
             MINUTES.toMillis(5));
       }
       return (DriverSessions) attribute;

@@ -69,7 +69,6 @@ public class WebDriverServlet extends HttpServlet {
 
       legacyDriverSessions = new DefaultDriverSessions(
           new DefaultDriverFactory(Platform.getCurrent()),
-          new SystemClock(),
           inactiveSessionTimeout);
       getServletContext().setAttribute(SESSIONS_KEY, legacyDriverSessions);
     }

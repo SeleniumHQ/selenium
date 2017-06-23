@@ -41,7 +41,6 @@ public class DefaultSessionTest {
 
     Session session = DefaultSession.createSession(
         factory, tempFs,
-        new SystemClock(),
         DesiredCapabilities.firefox());
 
     session.close();

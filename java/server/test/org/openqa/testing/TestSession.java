@@ -92,11 +92,7 @@ public class TestSession implements Session {
     return null;
   }
 
-  public boolean isTimedOut(long timeout) {
-    return timeout > 0 && (lastAccess + timeout) < System.currentTimeMillis();
-  }
-
-  public void updateLastAccessTime() {
+  private void updateLastAccessTime() {
     lastAccess = System.currentTimeMillis();
   }
 
@@ -106,10 +102,6 @@ public class TestSession implements Session {
 
   public TemporaryFilesystem getTemporaryFileSystem() {
     return null;
-  }
-
-  public boolean isInUse() {
-    return inUseWithThread != null;
   }
 
 }

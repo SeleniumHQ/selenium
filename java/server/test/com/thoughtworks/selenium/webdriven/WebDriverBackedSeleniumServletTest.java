@@ -36,7 +36,6 @@ import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.server.DefaultDriverFactory;
 import org.openqa.selenium.remote.server.DefaultDriverSessions;
 import org.openqa.selenium.remote.server.DriverServlet;
-import org.openqa.selenium.remote.server.SystemClock;
 import org.seleniumhq.jetty9.server.Connector;
 import org.seleniumhq.jetty9.server.HttpConfiguration;
 import org.seleniumhq.jetty9.server.HttpConnectionFactory;
@@ -60,7 +59,6 @@ public class WebDriverBackedSeleniumServletTest {
 
     DefaultDriverSessions webdriverSessions = new DefaultDriverSessions(
         new DefaultDriverFactory(Platform.getCurrent()),
-        new SystemClock(),
         18000);
     handler.setAttribute(DriverServlet.SESSIONS_KEY, webdriverSessions);
     handler.setContextPath("/");

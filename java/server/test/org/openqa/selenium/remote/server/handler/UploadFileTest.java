@@ -41,7 +41,6 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.server.DefaultSession;
 import org.openqa.selenium.remote.server.DriverFactory;
 import org.openqa.selenium.remote.server.Session;
-import org.openqa.selenium.remote.server.SystemClock;
 
 import java.io.File;
 import java.io.IOException;
@@ -73,7 +72,6 @@ public class UploadFileTest {
     Session session = DefaultSession.createSession(
         driverFactory,
         tempFs,
-        new SystemClock(),
         DesiredCapabilities.firefox());
 
     File tempFile = touch(null, "foo");
@@ -93,7 +91,6 @@ public class UploadFileTest {
     Session session = DefaultSession.createSession(
         driverFactory,
         tempFs,
-        new SystemClock(),
         DesiredCapabilities.firefox());
     File baseDir = Files.createTempDir();
 

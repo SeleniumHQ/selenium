@@ -128,7 +128,6 @@ public class SeleniumServer implements GridNodeServer {
 
     driverSessions = new DefaultDriverSessions(
         new DefaultDriverFactory(Platform.getCurrent()),
-        new SystemClock(),
         TimeUnit.SECONDS.toMillis(inactiveSessionTimeoutSeconds));
     handler.setAttribute(DriverServlet.SESSIONS_KEY, driverSessions);
     handler.setContextPath("/");

@@ -22,7 +22,6 @@ import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.server.DefaultDriverFactory;
 import org.openqa.selenium.remote.server.DefaultDriverSessions;
 import org.openqa.selenium.remote.server.DriverServlet;
-import org.openqa.selenium.remote.server.SystemClock;
 import org.seleniumhq.jetty9.security.AbstractLoginService;
 import org.seleniumhq.jetty9.security.ConstraintMapping;
 import org.seleniumhq.jetty9.security.ConstraintSecurityHandler;
@@ -76,7 +75,6 @@ public class AuthenticatedWebDriverServer {
         DriverServlet.SESSIONS_KEY,
         new DefaultDriverSessions(
             new DefaultDriverFactory(Platform.getCurrent()),
-            new SystemClock(),
             18000));
     context.addServlet(new ServletHolder(DriverServlet.class), "/*");
     context.setSecurityHandler(securityHandler);
