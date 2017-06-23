@@ -41,8 +41,9 @@ class Service(object):
         if self.port == 0:
             self.port = utils.free_port()
 
-        if not _HAS_NATIVE_DEVNULL and log_file == DEVNULL:
-            log_file = open(os.devnull, 'wb')
+        self._devnull = DEVNULL if _HAS_NATIVE_DEVNULL else open(os.devnull, 'r+b')
+        if log_file == DEVNULL:
+            log_file = self._devnull
 
         self.start_error_message = start_error_message
         self.log_file = log_file
@@ -69,9 +70,10 @@ class Service(object):
         try:
             cmd = [self.path]
             cmd.extend(self.command_line_args())
-            self.process = subprocess.Popen(cmd, env=self.env,
-                                            close_fds=platform.system() != 'Windows',
-                                            stdout=self.log_file, stderr=self.log_file)
+            self.process = subprocess.Popen(
+                cmd, env=self.env, close_fds=platform.system() != 'Windows',
+                stdout=self.log_file, stderr=self.log_file, stdin=self._devnull
+            )
         except TypeError:
             raise
         except OSError as err:
