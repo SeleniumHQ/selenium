@@ -38,7 +38,6 @@ import org.openqa.selenium.remote.server.xdrpc.CrossDomainRpcLoaderTest;
     ProtocolConverterTest.class,
     ResultConfigTest.class,
     SendKeyToActiveElementTest.class,
-    SessionCleanerTest.class,
     SessionLogsTest.class,
     TeeReaderTest.class,
     UploadFileTest.class,
