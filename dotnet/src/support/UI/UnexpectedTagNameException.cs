@@ -26,7 +26,9 @@ namespace OpenQA.Selenium.Support.UI
     /// The exception thrown when using the Select class on a tag that
     /// does not support the HTML select element's selection semantics.
     /// </summary>
+    #if !NETSTANDARD1_5
     [Serializable]
+    #endif
     public class UnexpectedTagNameException : WebDriverException
     {
         /// <summary>
@@ -77,9 +79,11 @@ namespace OpenQA.Selenium.Support.UI
         /// object data about the exception being thrown.</param>
         /// <param name="context">The <see cref="StreamingContext"/> that contains contextual
         /// information about the source or destination.</param>
+        #if !NETSTANDARD1_5
         protected UnexpectedTagNameException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
         }
+        #endif
     }
 }

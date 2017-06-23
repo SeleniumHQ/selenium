@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading;
+using System.Reflection;
 
 namespace OpenQA.Selenium.Support.UI
 {
@@ -147,7 +148,11 @@ namespace OpenQA.Selenium.Support.UI
             }
 
             var resultType = typeof(TResult);
+            #if !NETSTANDARD1_5
             if ((resultType.IsValueType && resultType != typeof(bool)) || !typeof(object).IsAssignableFrom(resultType))
+            #else
+            if ((resultType.GetTypeInfo().IsValueType && resultType != typeof(bool)) || !typeof(object).IsAssignableFrom(resultType))
+            #endif
             {
                 throw new ArgumentException("Can only wait on an object or boolean response, tried to use type: " + resultType.ToString(), "condition");
             }
