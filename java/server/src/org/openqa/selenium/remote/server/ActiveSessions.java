@@ -17,13 +17,13 @@
 
 package org.openqa.selenium.remote.server;
 
-import static java.util.concurrent.TimeUnit.MINUTES;
-
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.RemovalListener;
 
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.server.log.LoggingManager;
+import org.openqa.selenium.remote.server.log.PerSessionLogHandler;
 
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -42,6 +42,10 @@ class ActiveSessions {
       log("Removing session %s: %s", notification.getKey(), notification.getCause());
       ActiveSession session = notification.getValue();
       session.stop();
+
+      PerSessionLogHandler logHandler = LoggingManager.perSessionLogHandler();
+      logHandler.transferThreadTempLogsToSessionLogs(session.getId());
+      logHandler.removeSessionLogs(session.getId());
     };
 
     allSessions = CacheBuilder.newBuilder()
