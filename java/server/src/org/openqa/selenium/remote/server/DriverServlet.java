@@ -74,7 +74,6 @@ public class DriverServlet extends HttpServlet {
   private final Supplier<DriverSessions> sessionsSupplier;
   private final ErrorCodes errorCodes = new ErrorCodes();
 
-  private SessionCleaner sessionCleaner;
   private JsonHttpCommandHandler commandHandler;
   private long individualCommandTimeoutMs;
   private long inactiveSessionTimeoutMs;
@@ -100,14 +99,6 @@ public class DriverServlet extends HttpServlet {
 
     inactiveSessionTimeoutMs = getValueToUseInMs(SESSION_TIMEOUT_PARAMETER, 1800);
     individualCommandTimeoutMs = getValueToUseInMs(BROWSER_TIMEOUT_PARAMETER, 0);
-
-    if (inactiveSessionTimeoutMs > 0 || individualCommandTimeoutMs > 0) {
-      createSessionCleaner(
-          logger,
-          driverSessions,
-          inactiveSessionTimeoutMs,
-          individualCommandTimeoutMs);
-    }
 
     // Alright. It's nonsense that the individualCommandTimeout isn't a sensible value.
     if (individualCommandTimeoutMs == 0) {
@@ -141,17 +132,6 @@ public class DriverServlet extends HttpServlet {
     return logger;
   }
 
-  @VisibleForTesting
-  protected void createSessionCleaner(
-      Logger logger,
-      DriverSessions driverSessions,
-      long sessionTimeOutInMs,
-      long browserTimeoutInMs) {
-    sessionCleaner = new SessionCleaner(driverSessions, logger, new SystemClock(),
-                                        sessionTimeOutInMs, browserTimeoutInMs);
-    sessionCleaner.start();
-  }
-
   private long getValueToUseInMs(String propertyName, long defaultValue) {
     long time = defaultValue;
     final String property = getServletContext().getInitParameter(propertyName);
@@ -165,9 +145,6 @@ public class DriverServlet extends HttpServlet {
   @Override
   public void destroy() {
     getLogger().removeHandler(LoggingHandler.getInstance());
-    if (sessionCleaner != null) {
-      sessionCleaner.stopCleaner();
-    }
   }
 
   protected Logger getLogger() {
