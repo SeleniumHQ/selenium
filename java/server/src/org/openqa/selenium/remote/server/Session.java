@@ -22,13 +22,9 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.remote.SessionId;
 
-import java.util.concurrent.FutureTask;
-
 public interface Session {
 
   void close();
-
-  <X> X execute(FutureTask<X> future) throws Exception;
 
   WebDriver getDriver();
 

@@ -65,53 +65,6 @@ public class SessionCleanerTest {
     assertEquals(0, defaultDriverSessions.getSessions().size());
   }
 
-  @Test
-  public void testCleanupWithTimedOutKillableDriver() throws Exception {
-    Capabilities capabilities = new DesiredCapabilities("foo", "1", Platform.ANY);
-    WebDriver killableDriver = mock(WebDriver.class,
-                                    withSettings().extraInterfaces(Killable.class));
-    DriverSessions testSessions = new StaticTestSessions(capabilities, killableDriver);
-
-    final Session session = testSessions.get(testSessions.newSession(capabilities));
-    final CountDownLatch started = new CountDownLatch(1);
-    final CountDownLatch testDone = new CountDownLatch(1);
-    Runnable runnable = getRunnableThatMakesSessionBusy(session, started, testDone);
-    new Thread( runnable).start();
-    started.await();
-
-    assertTrue(session.isInUse());
-    SessionCleaner sessionCleaner = new SessionCleaner(testSessions, log, new SystemClock(), 10, 10);
-    waitForAllSessionsToExpire(11);
-    sessionCleaner.checkExpiry();
-    assertEquals(0, testSessions.getSessions().size());
-    verify((Killable) killableDriver).kill();
-    testDone.countDown();
-  }
-
-  private Runnable getRunnableThatMakesSessionBusy(final Session session,
-                                                   final CountDownLatch started,
-                                                   final CountDownLatch testDone) {
-    return new Runnable() {
-      public void run() {
-        try {
-          session.execute(new FutureTask<>(new Callable<Object>()
-         {
-          public Object call() {
-            try {
-              started.countDown();
-              testDone.await();
-            } catch (InterruptedException e) {
-              throw new RuntimeException(e);
-            }
-            return "yo";
-          }
-        }));
-        } catch (Exception e) {
-          throw new RuntimeException(e);
-        }
-      }
-    };
-  }
 
   @Test
   public void testCleanupWithThread() throws Exception {

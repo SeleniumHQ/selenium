@@ -17,12 +17,23 @@
 
 package org.openqa.selenium.remote.server;
 
+import static com.google.common.net.MediaType.JSON_UTF_8;
+import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Throwables;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.net.HttpHeaders;
 import com.google.common.net.MediaType;
+import com.google.gson.Gson;
 
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.logging.LoggingHandler;
+import org.openqa.selenium.remote.ErrorCodes;
+import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.server.log.LoggingManager;
 import org.openqa.selenium.remote.server.log.PerSessionLogHandler;
 import org.openqa.selenium.remote.server.xdrpc.CrossDomainRpc;
@@ -30,10 +41,18 @@ import org.openqa.selenium.remote.server.xdrpc.CrossDomainRpcLoader;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.function.Supplier;
 import java.util.logging.Handler;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletInputStream;
@@ -51,10 +70,15 @@ public class DriverServlet extends HttpServlet {
 
   private final StaticResourceHandler staticResourceHandler = new StaticResourceHandler();
 
+  private final ExecutorService executor = Executors.newCachedThreadPool();
   private final Supplier<DriverSessions> sessionsSupplier;
+  private final ErrorCodes errorCodes = new ErrorCodes();
 
   private SessionCleaner sessionCleaner;
   private JsonHttpCommandHandler commandHandler;
+  private long individualCommandTimeoutMs;
+  private long inactiveSessionTimeoutMs;
+
 
   public DriverServlet() {
     this.sessionsSupplier = new DriverSessionsSupplier();
@@ -74,12 +98,26 @@ public class DriverServlet extends HttpServlet {
     DriverSessions driverSessions = sessionsSupplier.get();
     commandHandler = new JsonHttpCommandHandler(driverSessions, logger);
 
-    long sessionTimeOutInMs = getValueToUseInMs(SESSION_TIMEOUT_PARAMETER, 1800);
-    long browserTimeoutInMs = getValueToUseInMs(BROWSER_TIMEOUT_PARAMETER, 0);
+    inactiveSessionTimeoutMs = getValueToUseInMs(SESSION_TIMEOUT_PARAMETER, 1800);
+    individualCommandTimeoutMs = getValueToUseInMs(BROWSER_TIMEOUT_PARAMETER, 0);
 
-    if (sessionTimeOutInMs > 0 || browserTimeoutInMs > 0) {
-      createSessionCleaner(logger, driverSessions, sessionTimeOutInMs, browserTimeoutInMs);
+    if (inactiveSessionTimeoutMs > 0 || individualCommandTimeoutMs > 0) {
+      createSessionCleaner(
+          logger,
+          driverSessions,
+          inactiveSessionTimeoutMs,
+          individualCommandTimeoutMs);
     }
+  }
+
+  @VisibleForTesting
+  long getInactiveSessionTimeout() {
+    return inactiveSessionTimeoutMs;
+  }
+
+  @VisibleForTesting
+  long getIndividualCommandTimeoutMs() {
+    return individualCommandTimeoutMs;
   }
 
   private synchronized Logger configureLogging() {
@@ -99,8 +137,11 @@ public class DriverServlet extends HttpServlet {
   }
 
   @VisibleForTesting
-  protected void createSessionCleaner(Logger logger, DriverSessions driverSessions,
-                                    long sessionTimeOutInMs, long browserTimeoutInMs) {
+  protected void createSessionCleaner(
+      Logger logger,
+      DriverSessions driverSessions,
+      long sessionTimeOutInMs,
+      long browserTimeoutInMs) {
     sessionCleaner = new SessionCleaner(driverSessions, logger, new SystemClock(),
                                         sessionTimeOutInMs, browserTimeoutInMs);
     sessionCleaner.start();
@@ -220,9 +261,79 @@ public class DriverServlet extends HttpServlet {
   protected void handleRequest(
       HttpServletRequest servletRequest, HttpServletResponse servletResponse)
       throws ServletException, IOException {
-    commandHandler.handleRequest(
-        new ServletRequestWrappingHttpRequest(servletRequest),
-        new ServletResponseWrappingHttpResponse(servletResponse));
+    // Attempt to determine the session ID, should it exist. We'll need this to kill it later if
+    // something goes awry. This is a bit of a hack, but it works for every command in the official
+    // server.
+    String sessionId = "unknown";
+    String info = servletRequest.getPathInfo();
+    Matcher matcher = Pattern.compile("^.*/session/([^/]+)").matcher(info == null ? "" : info);
+    if (matcher.find()) {
+      sessionId = matcher.group(1);
+    }
+
+    // Execute the command on a background thread so we can cancel it if necessary
+    Future<?> future = executor.submit(() -> {
+      String originalThreadName = Thread.currentThread().getName();
+      Thread.currentThread().setName("Selenium Server handling " + servletRequest.getPathInfo());
+      try {
+        commandHandler.handleRequest(
+            new ServletRequestWrappingHttpRequest(servletRequest),
+            new ServletResponseWrappingHttpResponse(servletResponse));
+      } catch (IOException e) {
+        servletResponse.reset();
+        throw new RuntimeException(e);
+      } catch (Throwable e) {
+        writeThrowable(servletResponse, e);
+      } finally {
+        Thread.currentThread().setName(originalThreadName);
+      }
+    });
+    try {
+      long timeout = individualCommandTimeoutMs == 0 ? Long.MAX_VALUE : individualCommandTimeoutMs;
+      future.get(timeout, MILLISECONDS);
+    } catch (InterruptedException e) {
+      writeThrowable(servletResponse, e);
+    } catch (ExecutionException e) {
+      writeThrowable(servletResponse, Throwables.getRootCause(e));
+    } catch (TimeoutException e) {
+      writeThrowable(
+          servletResponse,
+          new org.openqa.selenium.TimeoutException(
+              "Command timed out in client when executing: " + servletRequest.getPathInfo()));
+      sessionsSupplier.get().deleteSession(new SessionId(sessionId));
+    }
+  }
+
+  private void writeThrowable(HttpServletResponse resp, Throwable e) {
+    int errorCode = errorCodes.toStatusCode(e);
+    String error = errorCodes.toState(errorCode);
+    ImmutableMap<String, Object> value = ImmutableMap.of(
+        "status", errorCode,
+        "value", ImmutableMap.of(
+            "error", error,
+            "message", e.getMessage() == null ? "" : e.getMessage(),
+            "stacktrace", Throwables.getStackTraceAsString(e),
+            "stackTrace", Stream.of(e.getStackTrace())
+                .map(element -> ImmutableMap.of(
+                    "fileName", element.getFileName(),
+                    "className", element.getClassName(),
+                    "methodName", element.getMethodName(),
+                    "lineNumber", element.getLineNumber()))
+                .collect(ImmutableList.toImmutableList())));
+
+    byte[] bytes = new Gson().toJson(value).getBytes(UTF_8);
+
+    try {
+      resp.setStatus(HTTP_INTERNAL_ERROR);
+
+      resp.setHeader("Content-Type", JSON_UTF_8.toString());
+      resp.setHeader("Content-Length", String.valueOf(bytes.length));
+
+      resp.getOutputStream().write(bytes);
+    } catch (RuntimeException | IOException e2) {
+      // Swallow. We've done all we can
+      log("Unable to send response", e2);
+    }
   }
 
   private class DriverSessionsSupplier implements Supplier<DriverSessions> {

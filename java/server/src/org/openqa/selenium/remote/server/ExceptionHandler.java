@@ -45,6 +45,8 @@ class ExceptionHandler implements CommandHandler {
 
   @Override
   public void execute(HttpRequest req, HttpResponse resp) {
+
+
     Map<String, Object> value = new HashMap<>();
     value.put("message", exception.getMessage());
     value.put("stacktrace", Throwables.getStackTraceAsString(exception));
@@ -53,7 +55,7 @@ class ExceptionHandler implements CommandHandler {
     Map<String, Object> toSerialise = new HashMap<>();
     toSerialise.put("value", value);
 
-    byte[] bytes = new Gson().toJson(value).getBytes(UTF_8);
+    byte[] bytes = new Gson().toJson(toSerialise).getBytes(UTF_8);
     resp.setStatus(HTTP_INTERNAL_ERROR);
 
     resp.setHeader("Content-Type", JSON_UTF_8.toString());

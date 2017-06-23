@@ -27,8 +27,6 @@ import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.rest.RestishHandler;
 
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.FutureTask;
 
 public abstract class WebDriverHandler<T> implements RestishHandler<T>, Callable<T> {
 
@@ -40,15 +38,7 @@ public abstract class WebDriverHandler<T> implements RestishHandler<T>, Callable
 
   @Override
   public final T handle() throws Exception {
-    FutureTask<T> future = new FutureTask<>(this);
-    try {
-      return getSession().execute(future);
-    } catch (ExecutionException e) {
-      Throwable cause = e.getCause();
-      if (cause instanceof Exception)
-        throw (Exception) cause;
-      throw e;
-    }
+    return call();
   }
 
   public SessionId getSessionId() {
