@@ -47,11 +47,9 @@ import javax.servlet.http.HttpServletRequest;
 class AllHandlers {
 
   private final ActiveSessions allSessions;
-  private final DriverSessions legacySessions;
 
-  public AllHandlers(ActiveSessions allSessions, DriverSessions legacySessions) {
+  public AllHandlers(ActiveSessions allSessions) {
     this.allSessions = allSessions;
-    this.legacySessions = legacySessions;
   }
 
   public CommandHandler match(HttpServletRequest req) {
@@ -75,7 +73,7 @@ class AllHandlers {
     }
 
     if ("POST".equalsIgnoreCase(req.getMethod()) && "/session".equals(path)) {
-      return new BeginSession(allSessions, legacySessions);
+      return new BeginSession(allSessions);
     }
 
     if ("GET".equalsIgnoreCase(req.getMethod()) && "/status".equals(path)) {
