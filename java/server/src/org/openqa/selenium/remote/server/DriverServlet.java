@@ -108,6 +108,11 @@ public class DriverServlet extends HttpServlet {
           inactiveSessionTimeoutMs,
           individualCommandTimeoutMs);
     }
+
+    // Alright. It's nonsense that the individualCommandTimeout isn't a sensible value.
+    if (individualCommandTimeoutMs == 0) {
+      individualCommandTimeoutMs = Math.min(inactiveSessionTimeoutMs, Long.MAX_VALUE);
+    }
   }
 
   @VisibleForTesting
@@ -289,8 +294,7 @@ public class DriverServlet extends HttpServlet {
       }
     });
     try {
-      long timeout = individualCommandTimeoutMs == 0 ? Long.MAX_VALUE : individualCommandTimeoutMs;
-      future.get(timeout, MILLISECONDS);
+      future.get(getIndividualCommandTimeoutMs(), MILLISECONDS);
     } catch (InterruptedException e) {
       writeThrowable(servletResponse, e);
     } catch (ExecutionException e) {
