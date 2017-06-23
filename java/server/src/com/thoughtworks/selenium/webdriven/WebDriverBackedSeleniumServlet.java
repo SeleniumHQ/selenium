@@ -17,6 +17,7 @@
 
 package com.thoughtworks.selenium.webdriven;
 
+import static java.util.concurrent.TimeUnit.MINUTES;
 import static org.openqa.selenium.remote.server.DriverServlet.SESSIONS_KEY;
 
 import com.google.common.base.Joiner;
@@ -42,7 +43,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
 import javax.servlet.ServletException;
@@ -58,7 +58,7 @@ public class WebDriverBackedSeleniumServlet extends HttpServlet {
 
   // Prepare the shared set of thingies
   static Cache<SessionId, CommandProcessor> SESSIONS = CacheBuilder.newBuilder()
-    .expireAfterAccess(5, TimeUnit.MINUTES)
+    .expireAfterAccess(5, MINUTES)
     .removalListener((RemovalListener<SessionId, CommandProcessor>) notification -> {
       CommandProcessor holder = notification.getValue();
       if (holder != null) {
@@ -79,7 +79,8 @@ public class WebDriverBackedSeleniumServlet extends HttpServlet {
       if (attribute == null) {
         attribute = new DefaultDriverSessions(
             new DefaultDriverFactory(Platform.getCurrent()),
-            new SystemClock());
+            new SystemClock(),
+            MINUTES.toMillis(5));
       }
       return (DriverSessions) attribute;
     };

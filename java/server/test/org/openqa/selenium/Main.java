@@ -66,7 +66,8 @@ public class Main {
     ServletContextHandler driverContext = new ServletContextHandler();
     DriverSessions driverSessions = new DefaultDriverSessions(
         new DefaultDriverFactory(Platform.getCurrent()),
-        new SystemClock());
+        new SystemClock(),
+        18000);
     driverContext.setAttribute(DriverServlet.SESSIONS_KEY, driverSessions);
     driverContext.setContextPath("/");
     driverContext.addServlet(DriverServlet.class, "/wd/hub/*");

@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.remote.server;
 
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.RemovalListener;
@@ -31,18 +33,18 @@ import org.openqa.selenium.remote.server.log.LoggingManager;
 import org.openqa.selenium.remote.server.log.PerSessionLogHandler;
 
 import java.util.Set;
-import java.util.logging.Logger;
 
 public class DefaultDriverSessions implements DriverSessions {
-
-  private static final Logger LOG = Logger.getLogger(DefaultDriverSessions.class.getName());
 
   private final DriverFactory factory;
   private final Clock clock;
 
   private final Cache<SessionId, Session> sessionIdToDriver;
 
-  public DefaultDriverSessions(DriverFactory factory, Clock clock) {
+  public DefaultDriverSessions(
+      DriverFactory factory,
+      Clock clock,
+      long inactiveSessionTimeoutMs) {
     this.factory = factory;
     this.clock = clock;
 
@@ -57,6 +59,7 @@ public class DefaultDriverSessions implements DriverSessions {
 
     this.sessionIdToDriver = CacheBuilder.newBuilder()
         .removalListener(listener)
+        .expireAfterAccess(inactiveSessionTimeoutMs, MILLISECONDS)
         .build();
   }
 
