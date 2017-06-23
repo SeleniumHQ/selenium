@@ -45,7 +45,7 @@ class ActiveSessions {
     };
 
     allSessions = CacheBuilder.newBuilder()
-        .expireAfterAccess(10, MINUTES)
+        .expireAfterAccess(inactiveSessionTimeout, unit)
         .removalListener(listener)
         .build();
   }
