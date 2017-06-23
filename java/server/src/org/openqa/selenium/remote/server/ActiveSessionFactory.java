@@ -43,7 +43,7 @@ public class ActiveSessionFactory {
 
   private final Map<String, SessionFactory> factories;
 
-  public ActiveSessionFactory(DriverSessions legacySessions) {
+  public ActiveSessionFactory() {
     this.factories = ImmutableMap.<String, SessionFactory>builder()
         .put(chrome().getBrowserName(), new ServicedSession.Factory("org.openqa.selenium.chrome.ChromeDriverService"))
         .put(edge().getBrowserName(), new ServicedSession.Factory("org.openqa.selenium.edge.EdgeDriverService"))
@@ -54,7 +54,7 @@ public class ActiveSessionFactory {
         .put(phantomjs().getBrowserName(), new ServicedSession.Factory("org.openqa.selenium.phantomjs.PhantomJSDriverService"))
         .put(safari().getBrowserName(), new ServicedSession.Factory("org.openqa.selenium.safari.SafariDriverService"))
         // We put htmlunit last because the factories will always succeed. Which is nice, but tricky.
-        .put(htmlUnit().getBrowserName(), new InMemorySession.Factory(legacySessions))
+        .put(htmlUnit().getBrowserName(), new InMemorySession.Factory(new DefaultDriverFactory(Platform.getCurrent())))
         .build();
   }
 

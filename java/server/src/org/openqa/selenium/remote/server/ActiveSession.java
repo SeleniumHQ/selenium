@@ -31,7 +31,7 @@ interface ActiveSession extends CommandHandler {
   Dialect getDownstreamDialect();
 
   /**
-   * Desribe the current webdriver session's capabilities.
+   * Describe the current webdriver session's capabilities.
    */
   Map<String, Object> getCapabilities();
 

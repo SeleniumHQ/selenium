@@ -53,10 +53,9 @@ class BeginSession implements CommandHandler {
   private final ActiveSessionFactory sessionFactory;
   private final ActiveSessions allSessions;
 
-  public BeginSession(ActiveSessions allSessions, DriverSessions legacySessions) {
+  public BeginSession(ActiveSessions allSessions) {
     this.allSessions = allSessions;
-
-    this.sessionFactory = new ActiveSessionFactory(legacySessions);
+    this.sessionFactory = new ActiveSessionFactory();
   }
 
   @Override
