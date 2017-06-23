@@ -38,6 +38,7 @@ module Selenium
         driver.find_element(id: 'updatediv').click
         expect(driver.find_element(id: 'dynamo').text).to eq('Fish and chips!')
         driver.navigate.refresh
+        wait_for_element(id: 'dynamo')
         expect(driver.find_element(id: 'dynamo').text).to eq("What's for dinner?")
       end
 
