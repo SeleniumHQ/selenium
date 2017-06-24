@@ -227,3 +227,27 @@ class WebDriver(RemoteWebDriver):
             yield
         finally:
             self.set_context(initial_context)
+
+    def install_addon(self, path, temporary=None):
+        """
+        Installs Firefox addon.
+
+        Returns identifier of installed addon. This identifier can later
+        be used to uninstall addon.
+
+        :Usage:
+            driver.install_addon('firebug.xpi')
+        """
+        payload = {"path": path}
+        if temporary is not None:
+            payload["temporary"] = temporary
+        return self.execute("INSTALL_ADDON", payload)["value"]
+
+    def uninstall_addon(self, identifier):
+        """
+        Uninstalls Firefox addon using its identifier.
+
+        :Usage:
+            driver.uninstall_addon('addon@foo.com')
+        """
+        self.execute("UNINSTALL_ADDON", {"id": identifier})

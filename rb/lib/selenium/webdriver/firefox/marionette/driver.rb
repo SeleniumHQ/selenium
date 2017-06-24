@@ -28,6 +28,7 @@ module Selenium
         #
 
         class Driver < WebDriver::Driver
+          include DriverExtensions::HasAddons
           include DriverExtensions::HasWebStorage
           include DriverExtensions::TakesScreenshot
 
@@ -55,6 +56,7 @@ module Selenium
             bridge = Remote::Bridge.new(opts)
             capabilities = bridge.create_session(desired_capabilities)
             @bridge = Remote::W3C::Bridge.new(capabilities, bridge.session_id, opts)
+            @bridge.extend Marionette::Bridge
 
             super(@bridge, listener: listener)
           end
