@@ -132,7 +132,7 @@ var browserbot = {
             evt.button = button ? button : 1;
             // default will be the left mouse click ( http://www.javascriptkit.com/jsref/event.shtml )
             evt.relatedTarget = null;
-            if (!screenX && !screenY && !clientX && !clientY) {
+            if (!clientX && !clientY) {
                 element.fireEvent('on' + eventType);
             } else {
                 evt.screenX = screenX;

@@ -268,7 +268,7 @@ BrowserBot.prototype.triggerMouseEvent = function(element, eventType, canBubble,
         evt.detail = 0;
         evt.button = button ? button : 1; // default will be the left mouse click ( http://www.javascriptkit.com/jsref/event.shtml )
         evt.relatedTarget = null;
-        if (!screenX && !screenY && !clientX && !clientY && !this.controlKeyDown && !this.altKeyDown && !this.shiftKeyDown && !this.metaKeyDown) {
+        if (!clientX && !clientY && !this.controlKeyDown && !this.altKeyDown && !this.shiftKeyDown && !this.metaKeyDown) {
             element.fireEvent('on' + eventType);
         }
         else {
