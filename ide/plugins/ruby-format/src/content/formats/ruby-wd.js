@@ -114,7 +114,7 @@ RegexpMatch.patternAsRegEx = function(pattern) {
     str = str.replace(/\n/g, '\\n');
     return '/' + str + '/m';
   } else {
-    return str = '/' + str + '/';
+    return '/' + str + '/';
   }
 };
 
