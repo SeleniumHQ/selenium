@@ -261,7 +261,7 @@ BrowserBot.prototype.triggerMouseEvent = function(element, eventType, canBubble,
     var screenX = 0;
     var screenY = 0;
 
-    canBubble = (typeof(canBubble) == undefined) ? true : canBubble;
+    canBubble = (typeof(canBubble) === "undefined") ? true : canBubble;
     var evt;
     if (element.fireEvent && element.ownerDocument && element.ownerDocument.createEventObject) { //IE
         evt = createEventObject(element, this.controlKeyDown, this.altKeyDown, this.shiftKeyDown, this.metaKeyDown);
@@ -2001,7 +2001,7 @@ BrowserBot.prototype.getAllLinks = function() {
 };
 
 function isDefined(value) {
-    return typeof(value) != undefined;
+    return typeof(value) !== "undefined";
 };
 
 BrowserBot.prototype.goBack = function() {

@@ -2484,7 +2484,7 @@ Selenium.prototype.getCursorPosition = function(locator) {
         return answer;
     } else {
         if (typeof(element.selectionStart) != "undefined") {
-            if (win.getSelection && typeof(win.getSelection().rangeCount) != undefined && win.getSelection().rangeCount == 0) {
+            if (win.getSelection && typeof(win.getSelection().rangeCount) !== "undefined" && win.getSelection().rangeCount == 0) {
                 Assert.fail("There is no cursor on this page!");
             }
             return element.selectionStart;
