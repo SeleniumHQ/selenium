@@ -971,7 +971,7 @@ BrowserBot.prototype.pollForLoad = function(loadFunction, windowObject, original
             }
             return;
         }
-        LOG.debug("pollForLoad continue (" + marker + "): " + currentHref);
+        LOG.debug("pollForLoad continue (" + marker + ")");
         this.reschedulePoller(loadFunction, windowObject, originalDocument, originalLocation, originalHref, marker);
     } catch (e) {
         LOG.debug("Exception during pollForLoad; this should get noticed soon (" + e.message + ")!");
