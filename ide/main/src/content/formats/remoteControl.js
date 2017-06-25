@@ -167,7 +167,7 @@ function xlateArgument(value) {
 		}
 		parts.push(string(prefix + js));
 		return new CallSelenium("getEval", [concatString(parts)]);
-	} else if ((r = /\$\{/.exec(value))) {
+	} else if (/\$\{/.exec(value)) {
 		var regexp = /\$\{(.*?)\}/g;
 		var lastIndex = 0;
 		while (r2 = regexp.exec(value)) {

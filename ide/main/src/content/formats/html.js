@@ -225,16 +225,12 @@ function matchTemplateAndExtractVars(doc, template) {
 }
 
 function getSourceForCommand(commandObj) {
-	var command = null;
-	var comment = null;
 	var template = '';
 	if (commandObj.type == 'command') {
-		command = commandObj;
-		command = command.createCopy();
+		var command = commandObj.createCopy();
 		convertText(command, this.encodeText);
 		template = options.commandTemplate;
 	} else if (commandObj.type == 'comment') {
-		comment = commandObj;
 		template = options.commentTemplate;
 	}
 	var result;

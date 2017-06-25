@@ -2361,10 +2361,8 @@ IEBrowserBot.prototype.pollForLoad = function(loadFunction, windowObject, origin
     LOG.debug("IEBrowserBot.pollForLoad: " + marker);
     if (!this.permDeniedCount[marker]) this.permDeniedCount[marker] = 0;
     BrowserBot.prototype.pollForLoad.call(this, loadFunction, windowObject, originalDocument, originalLocation, originalHref, marker);
-    var self;
     if (this.pageLoadError) {
         if (this.pageUnloading) {
-            self = this;
             LOG.debug("pollForLoad UNLOADING (" + marker + "): caught exception while firing events on unloading page: " + this.pageLoadError.message);
             this.reschedulePoller(loadFunction, windowObject, originalDocument, originalLocation, originalHref, marker);
             this.pageLoadError = null;
@@ -2390,7 +2388,6 @@ IEBrowserBot.prototype.pollForLoad = function(loadFunction, windowObject, origin
                 }
             }
 
-            self = this;
             LOG.debug("pollForLoad (" + marker + "): " + this.pageLoadError.message + " (" + this.permDeniedCount[marker] + "), waiting to see if it goes away");
             this.reschedulePoller(loadFunction, windowObject, originalDocument, originalLocation, originalHref, marker);
             this.pageLoadError = null;
