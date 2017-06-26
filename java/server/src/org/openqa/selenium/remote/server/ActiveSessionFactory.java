@@ -44,15 +44,31 @@ public class ActiveSessionFactory {
   private final Map<String, SessionFactory> factories;
 
   public ActiveSessionFactory() {
+    Map<String, ServicedSession.Factory> servicedFactories = ImmutableMap.<String, String>builder()
+        .put(chrome().getBrowserName(), "org.openqa.selenium.chrome.ChromeDriverService")
+        .put(edge().getBrowserName(), "org.openqa.selenium.edge.EdgeDriverService")
+        .put(firefox().getBrowserName(), "org.openqa.selenium.firefox.GeckoDriverService")
+        .put(internetExplorer().getBrowserName(), "org.openqa.selenium.ie.InternetExplorerDriverService")
+        .put(opera().getBrowserName(), "org.openqa.selenium.opera.OperaDriverService")
+        .put(operaBlink().getBrowserName(), "org.openqa.selenium.ie.OperaDriverService")
+        .put(phantomjs().getBrowserName(), "org.openqa.selenium.phantomjs.PhantomJSDriverService")
+        .put(safari().getBrowserName(), "org.openqa.selenium.safari.SafariDriverService")
+        .build()
+        .entrySet().stream()
+        .filter(e -> {
+          try {
+            Class.forName(e.getValue());
+            return true;
+          } catch (ClassNotFoundException cnfe) {
+            return false;
+          }
+        })
+        .collect(Collectors.toMap(
+            Map.Entry::getKey,
+            e -> new ServicedSession.Factory(e.getValue())));
+
     this.factories = ImmutableMap.<String, SessionFactory>builder()
-        .put(chrome().getBrowserName(), new ServicedSession.Factory("org.openqa.selenium.chrome.ChromeDriverService"))
-        .put(edge().getBrowserName(), new ServicedSession.Factory("org.openqa.selenium.edge.EdgeDriverService"))
-        .put(firefox().getBrowserName(), new ServicedSession.Factory("org.openqa.selenium.firefox.GeckoDriverService"))
-        .put(internetExplorer().getBrowserName(), new ServicedSession.Factory("org.openqa.selenium.ie.InternetExplorerDriverService"))
-        .put(opera().getBrowserName(), new ServicedSession.Factory("org.openqa.selenium.opera.OperaDriverService"))
-        .put(operaBlink().getBrowserName(), new ServicedSession.Factory("org.openqa.selenium.ie.OperaDriverService"))
-        .put(phantomjs().getBrowserName(), new ServicedSession.Factory("org.openqa.selenium.phantomjs.PhantomJSDriverService"))
-        .put(safari().getBrowserName(), new ServicedSession.Factory("org.openqa.selenium.safari.SafariDriverService"))
+        .putAll(servicedFactories)
         // We put htmlunit last because the factories will always succeed. Which is nice, but tricky.
         .put(htmlUnit().getBrowserName(), new InMemorySession.Factory(new DefaultDriverFactory(Platform.getCurrent())))
         .build();
