@@ -146,7 +146,7 @@ public class FirefoxDriver extends RemoteWebDriver {
              .addCapabilities(desiredCapabilities)
              .addCapabilities(requiredCapabilities));
     warnAboutDeprecatedConstructor(
-        "Capabilities",
+        "Capabilities, Capabilities",
         "addCapabilities(capabilities)");
   }
 
