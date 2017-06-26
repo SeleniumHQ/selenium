@@ -42,6 +42,15 @@ def testShouldSwitchFocusToANewWindowWhenItIsOpenedAndNotStopFutureOperations(dr
     assert driver.current_window_handle == handle
 
 
+def testCanSwitchToWindowByName(driver, pages):
+    pages.load("xhtmlTest.html")
+    handles = driver.window_handles
+    driver.find_element(By.LINK_TEXT, "Open new window").click()
+    WebDriverWait(driver, 3).until(EC.new_window_is_opened(handles))
+    driver.switch_to.window("result")
+    assert driver.title == "We Arrive Here"
+
+
 def testShouldThrowNoSuchWindowException(driver, pages):
     pages.load("xhtmlTest.html")
     with pytest.raises(NoSuchWindowException):
