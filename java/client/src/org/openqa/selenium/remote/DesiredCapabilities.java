@@ -52,6 +52,10 @@ public class DesiredCapabilities implements Serializable, Capabilities {
   }
 
   public DesiredCapabilities(Map<String, ?> rawMap) {
+    if (rawMap == null) {
+      return;
+    }
+
     capabilities.putAll(rawMap);
     if (rawMap.containsKey(UNEXPECTED_ALERT_BEHAVIOUR)) {
       capabilities.put(UNHANDLED_PROMPT_BEHAVIOUR, rawMap.get(UNEXPECTED_ALERT_BEHAVIOUR));
@@ -137,41 +141,36 @@ public class DesiredCapabilities implements Serializable, Capabilities {
    */
   @Override
   public DesiredCapabilities merge(Capabilities extraCapabilities) {
-    if (extraCapabilities != null) {
-      capabilities.putAll(extraCapabilities.asMap());
-      if (extraCapabilities.getCapability(UNEXPECTED_ALERT_BEHAVIOUR) != null) {
-        capabilities.put(UNHANDLED_PROMPT_BEHAVIOUR, extraCapabilities.getCapability(UNEXPECTED_ALERT_BEHAVIOUR));
-      }
+    if (extraCapabilities == null) {
+      return this;
     }
+
+    extraCapabilities.asMap().forEach(this::setCapability);
+
     return this;
   }
 
   public void setCapability(String capabilityName, boolean value) {
-    capabilities.put(capabilityName, value);
+    setCapability(capabilityName, (Object) value);
   }
 
   public void setCapability(String capabilityName, String value) {
-    if (PLATFORM.equals(capabilityName)) {
-      try {
-        capabilities.put(capabilityName, Platform.fromString(value));
-      } catch (WebDriverException ex) {
-        capabilities.put(capabilityName, value);
-      }
-    } else {
-      if (UNEXPECTED_ALERT_BEHAVIOUR.equals(capabilityName)) {
-        capabilities.put(UNHANDLED_PROMPT_BEHAVIOUR, value);
-      }
-      capabilities.put(capabilityName, value);
-    }
+    setCapability(capabilityName, (Object) value);
   }
 
   public void setCapability(String capabilityName, Platform value) {
-    capabilities.put(capabilityName, value);
+    setCapability(capabilityName, (Object) value);
   }
 
   public void setCapability(String key, Object value) {
     if (PLATFORM.equals(key) && value instanceof String) {
-      capabilities.put(key, Platform.fromString((String) value));
+      try {
+        capabilities.put(key, Platform.fromString((String) value));
+      } catch (WebDriverException e) {
+        capabilities.put(key, value);
+      }
+    } else if (UNEXPECTED_ALERT_BEHAVIOUR.equals(key)) {
+      capabilities.put(UNHANDLED_PROMPT_BEHAVIOUR, value);
     } else {
       capabilities.put(key, value);
     }
