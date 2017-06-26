@@ -107,8 +107,8 @@ class SwitchTo:
             driver.switch_to.window('main')
         """
         if self._driver.w3c:
-           self._w3c_window(window_name)
-           return
+            self._w3c_window(window_name)
+            return
         data = {'name': window_name}
         self._driver.execute(Command.SWITCH_TO_WINDOW, data)
 
