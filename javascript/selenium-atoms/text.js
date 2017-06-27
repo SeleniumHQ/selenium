@@ -78,7 +78,7 @@ core.text.getTextContent_ = function(element, preformatted) {
         if (child.nodeName == 'CONTENT') {
           shadowChildren = child.getDistributedNodes();
         } else {
-          shadowChildren = child.getAssignedNodes();
+          shadowChildren = child.assignedNodes();
         }
         for (var j = 0; j < shadowChildren.length; j++) {
           var shadowChild = shadowChildren[j];
