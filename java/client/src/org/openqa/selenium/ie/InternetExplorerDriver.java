@@ -20,7 +20,6 @@ package org.openqa.selenium.ie;
 import com.google.common.base.Preconditions;
 
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
@@ -32,7 +31,6 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.service.DriverCommandExecutor;
 
 import java.io.File;
-import java.util.HashMap;
 
 public class InternetExplorerDriver extends RemoteWebDriver {
 
@@ -203,8 +201,7 @@ public class InternetExplorerDriver extends RemoteWebDriver {
     }
 
     Preconditions.checkNotNull(capabilities);
-    capabilities = new InternetExplorerOptions(capabilities)
-        .merge(new ImmutableCapabilities(new HashMap<>()));
+    capabilities = new InternetExplorerOptions(capabilities);
 
     if (service == null) {
       service = setupService(capabilities, port);

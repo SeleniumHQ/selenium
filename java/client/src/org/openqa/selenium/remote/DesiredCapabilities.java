@@ -56,42 +56,16 @@ public class DesiredCapabilities implements Serializable, Capabilities {
       return;
     }
 
-    capabilities.putAll(rawMap);
-    if (rawMap.containsKey(UNEXPECTED_ALERT_BEHAVIOUR)) {
-      capabilities.put(UNHANDLED_PROMPT_BEHAVIOUR, rawMap.get(UNEXPECTED_ALERT_BEHAVIOUR));
-    }
-
-    if (rawMap.containsKey(LOGGING_PREFS) && rawMap.get(LOGGING_PREFS) instanceof Map) {
-      LoggingPreferences prefs = new LoggingPreferences();
-      Map<String, String> prefsMap = (Map<String, String>) rawMap.get(LOGGING_PREFS);
-
-      for (String logType : prefsMap.keySet()) {
-        prefs.enable(logType, LogLevelMapping.toLevel(prefsMap.get(logType)));
-      }
-      capabilities.put(LOGGING_PREFS, prefs);
-    }
-
-    Object value = capabilities.get(PLATFORM);
-    if (value instanceof String) {
-      try {
-        capabilities.put(PLATFORM, Platform.fromString((String) value));
-      } catch (WebDriverException ex) {
-        // unrecognized platform, fallback to string
-      }
-    }
+    rawMap.forEach(this::setCapability);
   }
 
   public DesiredCapabilities(Capabilities other) {
-    if (other != null) {
-      merge(other);
-    }
+    merge(other);
   }
 
   public DesiredCapabilities(Capabilities... others) {
     for (Capabilities caps : others) {
-      if (caps != null) {
-        merge(caps);
-      }
+      merge(caps);
     }
   }
 
@@ -163,7 +137,15 @@ public class DesiredCapabilities implements Serializable, Capabilities {
   }
 
   public void setCapability(String key, Object value) {
-    if (PLATFORM.equals(key) && value instanceof String) {
+    if (LOGGING_PREFS.equals(key) && value instanceof Map) {
+      LoggingPreferences prefs = new LoggingPreferences();
+      Map<String, String> prefsMap = (Map<String, String>) value;
+
+      for (String logType : prefsMap.keySet()) {
+        prefs.enable(logType, LogLevelMapping.toLevel(prefsMap.get(logType)));
+      }
+      capabilities.put(LOGGING_PREFS, prefs);
+    } else if (PLATFORM.equals(key) && value instanceof String) {
       try {
         capabilities.put(key, Platform.fromString((String) value));
       } catch (WebDriverException e) {
