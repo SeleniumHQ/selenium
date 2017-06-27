@@ -18,6 +18,7 @@
  * @author mkretzschmar@google.com (Martin Kretzschmar)
  */
 
+goog.setTestOnly('goog.testing.ui.rendererasserts');
 goog.provide('goog.testing.ui.rendererasserts');
 
 goog.require('goog.testing.asserts');
@@ -48,7 +49,8 @@ goog.testing.ui.rendererasserts.assertNoGetCssClassCallsInConstructor =
     return TestControlRenderer.superClass_.getCssClass.call(this);
   };
 
-  var testControlRenderer = new TestControlRenderer();
+  // Looking for the side-effects caused by the construction here:
+  new TestControlRenderer();
 
   assertEquals(
       'Constructors should not call getCssClass, ' +

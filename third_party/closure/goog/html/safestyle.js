@@ -84,7 +84,7 @@ goog.require('goog.string.TypedString');
  * appended to {@code background:url("}, the resulting string may result in
  * the execution of a malicious script.
  *
- * TODO(user): Consider whether we should implement UTF-8 interchange
+ * TODO(mlourenco): Consider whether we should implement UTF-8 interchange
  * validity checks and blacklisting of newlines (including Unicode ones) and
  * other whitespace characters (\t, \f). Document here if so and also update
  * SafeStyle.fromConstant().
@@ -126,7 +126,7 @@ goog.html.SafeStyle = function() {
   /**
    * A type marker used to implement additional run-time type checking.
    * @see goog.html.SafeStyle#unwrap
-   * @const
+   * @const {!Object}
    * @private
    */
   this.SAFE_STYLE_TYPE_MARKER_GOOG_HTML_SECURITY_PRIVATE_ =

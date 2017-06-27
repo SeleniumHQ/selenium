@@ -27,7 +27,6 @@ goog.provide('goog.labs.structs.Map');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
-goog.require('goog.labs.object');
 goog.require('goog.object');
 
 
@@ -215,7 +214,7 @@ goog.labs.structs.Map.prototype.containsKey = function(key) {
  */
 goog.labs.structs.Map.prototype.containsValue = function(value) {
   var found = goog.object.some(this.map_, function(v, k) {
-    return this.hasKeyInPrimaryStore_(k) && goog.labs.object.is(v, value);
+    return this.hasKeyInPrimaryStore_(k) && goog.object.is(v, value);
   }, this);
   return found || goog.array.contains(this.secondaryStoreValues_, value);
 };

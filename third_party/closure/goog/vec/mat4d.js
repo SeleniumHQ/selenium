@@ -303,7 +303,7 @@ goog.vec.mat4d.getDiagonal = function(mat, vec, opt_diagonal) {
 /**
  * Sets the specified column with the supplied values.
  *
- * @param {!goog.vec.mat4d.Type} mat The matrix to recieve the values.
+ * @param {!goog.vec.mat4d.Type} mat The matrix to receive the values.
  * @param {number} column The column index to set the values on.
  * @param {number} v0 The value for row 0.
  * @param {number} v1 The value for row 1.
@@ -1401,7 +1401,7 @@ goog.vec.mat4d.makeFrustum = function(
 
 
 /**
- * Makse the given 4x4 matrix  perspective projection matrix given a
+ * Makes the given 4x4 matrix  perspective projection matrix given a
  * field of view and aspect ratio.
  *
  * @param {!goog.vec.mat4d.Type} mat The matrix.

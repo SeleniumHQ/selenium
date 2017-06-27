@@ -27,6 +27,7 @@ goog.provide('goog.labs.net.webChannel.WireV8');
 goog.require('goog.asserts');
 goog.require('goog.json');
 goog.require('goog.json.NativeJsonProcessor');
+goog.require('goog.labs.net.webChannel.Wire');
 goog.require('goog.structs');
 
 
@@ -89,6 +90,7 @@ WireV8.prototype.encodeMessage = function(message, buffer, opt_prefix) {
  *     V8 only support JS objects.
  * @param {number} count The number of messages to be encoded.
  * @param {?function(!Object)} badMapHandler Callback for bad messages.
+ * @return {string} the encoded messages
  */
 WireV8.prototype.encodeMessageQueue = function(
     messageQueue, count, badMapHandler) {

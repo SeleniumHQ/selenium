@@ -33,7 +33,10 @@ goog.require('goog.object');
 goog.require('goog.string');
 goog.require('goog.style');
 goog.require('goog.ui.Component');
+goog.require('goog.ui.ControlContent');
 goog.require('goog.userAgent');
+
+goog.forwardDeclare('goog.ui.Control');  // circular
 
 
 
@@ -675,7 +678,7 @@ goog.ui.ControlRenderer.prototype.setContent = function(element, content) {
           // length attribute but is not array like. The nodes have to be cloned
           // because childHandler removes them from the list during iteration.
           goog.array.forEach(
-              goog.array.clone(/** @type {!NodeList} */ (content)),
+              goog.array.clone(/** @type {!NodeList<?>} */ (content)),
               childHandler);
         } else {
           // Node or string.
@@ -810,7 +813,7 @@ goog.ui.ControlRenderer.prototype.getClassNames = function(control) {
  * If opt_includedClass is provided, return only the combined classes that have
  * all members contained in classes AND include opt_includedClass as well.
  * opt_includedClass is added to classes as well.
- * @param {goog.array.ArrayLike<string>} classes Array-like thing of classes to
+ * @param {IArrayLike<string>} classes Array-like thing of classes to
  *     return matching combined classes for.
  * @param {?string=} opt_includedClass If provided, get only the combined
  *     classes that include this one.

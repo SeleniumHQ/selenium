@@ -13,7 +13,7 @@
 // limitations under the License.
 
 /**
- * @fileoverview Similiar functionality of {@link goog.ui.ButtonRenderer},
+ * @fileoverview Similar functionality of {@link goog.ui.ButtonRenderer},
  * but uses a <div> element instead of a <button> or <input> element.
  *
  */

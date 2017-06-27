@@ -29,6 +29,7 @@ goog.require('goog.events');
 goog.require('goog.events.EventHandler');
 goog.require('goog.events.EventType');
 goog.require('goog.graphics.AbstractGraphics');
+goog.require('goog.graphics.Font');
 goog.require('goog.graphics.LinearGradient');
 goog.require('goog.graphics.Path');
 goog.require('goog.graphics.SolidFill');
@@ -543,7 +544,7 @@ goog.graphics.VmlGraphics.prototype.createDom = function() {
   }
 
   // Outer a DIV with overflow hidden for clipping.
-  // All inner elements are absolutly positioned on-top of this div.
+  // All inner elements are absolutely positioned on-top of this div.
   var pixelWidth = this.width;
   var pixelHeight = this.height;
   var divElement = this.dom_.createDom(goog.dom.TagName.DIV, {
@@ -558,7 +559,7 @@ goog.graphics.VmlGraphics.prototype.createDom = function() {
   var style = group.style;
 
   style.position = 'absolute';
-  style.left = style.top = 0;
+  style.left = style.top = '0';
   style.width = this.width;
   style.height = this.height;
   if (this.coordWidth) {
@@ -924,7 +925,7 @@ goog.graphics.VmlGraphics.prototype.createGroup = function(opt_group) {
  * Measure and return the width (in pixels) of a given text string.
  * Text measurement is needed to make sure a text can fit in the allocated
  * area. The way text length is measured is by writing it into a div that is
- * after the visible area, measure the div width, and immediatly erase the
+ * after the visible area, measure the div width, and immediately erase the
  * written value.
  *
  * @param {string} text The text string to measure.

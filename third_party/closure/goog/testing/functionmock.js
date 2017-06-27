@@ -20,6 +20,7 @@
  *
  */
 
+goog.setTestOnly('goog.testing');
 goog.provide('goog.testing');
 goog.provide('goog.testing.FunctionMock');
 goog.provide('goog.testing.GlobalFunctionMock');
@@ -82,11 +83,39 @@ goog.testing.MethodMock = function(scope, functionName, opt_strictness) {
 
 
 /**
+ * Mocks an existing function. Creates a goog.testing.FunctionMock
+ * and registers it according to scopeFunctionName.
+ * @param {!goog.testing.ObjectPropertyString} scopeFunctionName Scope and
+ *     function name.
+ * @param {number=} opt_strictness One of goog.testing.Mock.LOOSE or
+ *     goog.testing.Mock.STRICT. The default is STRICT.
+ * @return {!goog.testing.MockInterface} The mocked method.
+ */
+goog.testing.MethodMock.fromObjectPropertyString = function(
+    scopeFunctionName, opt_strictness) {
+  return goog.testing.MethodMock(
+      scopeFunctionName.getObject(), scopeFunctionName.getPropertyString(),
+      opt_strictness);
+};
+
+
+/**
+ * @private
+ * @record @extends {goog.testing.MockInterface}
+ */
+goog.testing.MethodMock.MockInternalInterface_ = function() {};
+
+/** @const {!goog.testing.PropertyReplacer} */
+goog.testing.MethodMock.MockInternalInterface_.prototype.$propertyReplacer_;
+
+
+/**
  * Resets the global function that we mocked back to its original state.
  * @this {goog.testing.MockInterface}
  */
 goog.testing.MethodMock.$tearDown = function() {
-  this.$propertyReplacer_.reset();
+  /** @type {!goog.testing.MethodMock.MockInternalInterface_} */ (this)
+      .$propertyReplacer_.reset();
 };
 
 

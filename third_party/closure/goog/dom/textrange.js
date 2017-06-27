@@ -343,19 +343,29 @@ goog.dom.TextRange.prototype.containsRange = function(
         otherRange.getBrowserRangeWrapper_(), opt_allowPartial);
   } else if (otherRangeType == goog.dom.RangeType.CONTROL) {
     var elements = otherRange.getElements();
-    /**
-     * @param {!Array<!Element>} array
-     * @param {function(this: T, !Element)} fn
-     * @param {T} scope
-     * @template T
-     */
     var fn = opt_allowPartial ? goog.array.some : goog.array.every;
-    return fn(elements, function(el) {
-      return this.containsNode(el, opt_allowPartial);
-    }, this);
+    return fn(
+        elements,
+        /**
+         * @this {goog.dom.TextRange}
+         * @param {!Element} el
+         * @return {boolean}
+         */
+        function(el) {
+          return this.containsNode(el, opt_allowPartial);
+        },
+        this);
   }
   return false;
 };
+
+
+/** @override */
+goog.dom.TextRange.prototype.containsNode = function(node, opt_allowPartial) {
+  return this.containsRange(
+      goog.dom.TextRange.createFromNodeContents(node), opt_allowPartial);
+};
+
 
 
 /**
@@ -366,7 +376,7 @@ goog.dom.TextRange.prototype.containsRange = function(
 goog.dom.TextRange.isAttachedNode = function(node) {
   if (goog.userAgent.IE && !goog.userAgent.isDocumentModeOrHigher(9)) {
     var returnValue = false;
-    /** @preserveTry */
+
     try {
       returnValue = node.parentNode;
     } catch (e) {

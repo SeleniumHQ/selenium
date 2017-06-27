@@ -54,14 +54,14 @@ goog.a11y.aria.ROLE_ATTRIBUTE_ = 'role';
  * they don't contain content to be made accessible.
  * @private
  */
-goog.a11y.aria.TAGS_WITH_ASSUMED_ROLES_ = [
+goog.a11y.aria.TAGS_WITH_ASSUMED_ROLES_ = goog.object.createSet([
   goog.dom.TagName.A, goog.dom.TagName.AREA, goog.dom.TagName.BUTTON,
   goog.dom.TagName.HEAD, goog.dom.TagName.INPUT, goog.dom.TagName.LINK,
   goog.dom.TagName.MENU, goog.dom.TagName.META, goog.dom.TagName.OPTGROUP,
   goog.dom.TagName.OPTION, goog.dom.TagName.PROGRESS, goog.dom.TagName.STYLE,
   goog.dom.TagName.SELECT, goog.dom.TagName.SOURCE, goog.dom.TagName.TEXTAREA,
   goog.dom.TagName.TITLE, goog.dom.TagName.TRACK
-];
+]);
 
 
 /**
@@ -70,7 +70,7 @@ goog.a11y.aria.TAGS_WITH_ASSUMED_ROLES_ = [
  * to manage their active descendants or children. See
  * {@link http://www.w3.org/TR/wai-aria/states_and_properties
  * #aria-activedescendant} for more information.
- * @private @const
+ * @private @const {!Array<goog.a11y.aria.Role>}
  */
 goog.a11y.aria.CONTAINER_ROLES_ = [
   goog.a11y.aria.Role.COMBOBOX, goog.a11y.aria.Role.GRID,
@@ -113,7 +113,7 @@ goog.a11y.aria.setRole = function(element, roleName) {
 /**
  * Gets role of an element.
  * @param {!Element} element DOM element to get role of.
- * @return {goog.a11y.aria.Role} ARIA Role name.
+ * @return {?goog.a11y.aria.Role} ARIA Role name.
  */
 goog.a11y.aria.getRole = function(element) {
   var role = element.getAttribute(goog.a11y.aria.ROLE_ATTRIBUTE_);
@@ -275,12 +275,11 @@ goog.a11y.aria.setLabel = function(element, label) {
  * semantics is well supported by most screen readers.
  * Only to be used internally by the ARIA library in goog.a11y.aria.*.
  * @param {!Element} element The element to assert an ARIA role set.
- * @param {!goog.array.ArrayLike<string>} allowedRoles The child roles of
+ * @param {!IArrayLike<string>} allowedRoles The child roles of
  * the roles.
  */
 goog.a11y.aria.assertRoleIsSetInternalUtil = function(element, allowedRoles) {
-  if (goog.array.contains(
-          goog.a11y.aria.TAGS_WITH_ASSUMED_ROLES_, element.tagName)) {
+  if (goog.a11y.aria.TAGS_WITH_ASSUMED_ROLES_[element.tagName]) {
     return;
   }
   var elementRole = /** @type {string}*/ (goog.a11y.aria.getRole(element));
@@ -359,7 +358,7 @@ goog.a11y.aria.getStateString = function(element, stateName) {
  * Only to be used internally by the ARIA library in goog.a11y.aria.*.
  * @param {!Element} element DOM node to get state from.
  * @param {!goog.a11y.aria.State} stateName State name.
- * @return {!goog.array.ArrayLike<string>} string Array
+ * @return {!IArrayLike<string>} string Array
  *     value of the state attribute.
  */
 goog.a11y.aria.getStringArrayStateInternalUtil = function(element, stateName) {
@@ -398,7 +397,7 @@ goog.a11y.aria.isContainerRole = function(element) {
 /**
  * Splits the input stringValue on whitespace.
  * @param {string} stringValue The value of the string to split.
- * @return {!goog.array.ArrayLike<string>} string Array
+ * @return {!IArrayLike<string>} string Array
  *     value as result of the split.
  * @private
  */

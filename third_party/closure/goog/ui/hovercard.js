@@ -239,7 +239,7 @@ goog.ui.HoverCard.prototype.triggerForElement = function(
     this.onCancelTrigger();
     return;
   }
-  var pos = opt_pos || this.position_;
+  var pos = opt_pos || this.getPosition();
   this.startShowTimer(
       anchorElement,
       /** @type {goog.positioning.AbstractPosition} */ (pos));

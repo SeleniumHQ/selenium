@@ -130,6 +130,9 @@ goog.editor.plugins.AbstractDialogPlugin.EventType = {
 /**
  * Creates a new instance of this plugin's dialog. Must be overridden by
  * subclasses.
+ * Implementations should expect that the editor is inactive and cannot be
+ * focused, nor will its caret position (or selection) be determinable until
+ * after the dialogs goog.ui.PopupBase.EventType.HIDE event has been handled.
  * @param {!goog.dom.DomHelper} dialogDomHelper The dom helper to be used to
  *     create the dialog.
  * @param {*=} opt_arg The dialog specific argument. Concrete subclasses should

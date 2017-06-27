@@ -33,6 +33,7 @@ goog.require('goog.events.EventHandler');
 goog.require('goog.events.EventTarget');
 goog.require('goog.events.EventType');
 goog.require('goog.events.KeyCodes');
+goog.require('goog.events.KeyHandler');
 goog.require('goog.style');
 
 
@@ -128,6 +129,13 @@ goog.ui.Zippy = function(
   this.keyboardEventHandler_ = new goog.events.EventHandler(this);
 
   /**
+   * The keyhandler used for listening on most key events. This takes care of
+   * abstracting away some of the browser differences.
+   * @private {!goog.events.KeyHandler}
+   */
+  this.keyHandler_ = new goog.events.KeyHandler();
+
+  /**
    * A mouse events handler. If there are two headers it is shared for both.
    * @type {goog.events.EventHandler<!goog.ui.Zippy>}
    * @private
@@ -189,6 +197,7 @@ goog.ui.Zippy.prototype.handleKeyEvents_ = true;
 goog.ui.Zippy.prototype.disposeInternal = function() {
   goog.ui.Zippy.base(this, 'disposeInternal');
   goog.dispose(this.keyboardEventHandler_);
+  goog.dispose(this.keyHandler_);
   goog.dispose(this.mouseEventHandler_);
 };
 
@@ -346,6 +355,7 @@ goog.ui.Zippy.prototype.setHandleKeyboardEvents = function(enable) {
       this.enableKeyboardEventsHandling_(this.elExpandedHeader_);
     } else {
       this.keyboardEventHandler_.removeAll();
+      this.keyHandler_.detach();
     }
   }
 };
@@ -375,8 +385,10 @@ goog.ui.Zippy.prototype.setHandleMouseEvents = function(enable) {
  */
 goog.ui.Zippy.prototype.enableKeyboardEventsHandling_ = function(header) {
   if (header) {
+    this.keyHandler_.attach(header);
     this.keyboardEventHandler_.listen(
-        header, goog.events.EventType.KEYDOWN, this.onHeaderKeyDown_);
+        this.keyHandler_, goog.events.KeyHandler.EventType.KEY,
+        this.onHeaderKeyDown_);
   }
 };
 

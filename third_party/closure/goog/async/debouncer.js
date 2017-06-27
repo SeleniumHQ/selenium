@@ -47,29 +47,26 @@ goog.async.Debouncer = function(listener, interval, opt_handler) {
 
   /**
    * Function to callback
-   * @private {function(this: T, ...?)}
+   * @const @private {function(this: T, ...?)}
    */
   this.listener_ =
       opt_handler != null ? goog.bind(listener, opt_handler) : listener;
 
   /**
    * Interval for the debounce time
-   * @type {number}
-   * @private
+   * @const @private {number}
    */
   this.interval_ = interval;
 
   /**
    * Cached callback function invoked after the debounce timeout completes
-   * @type {!Function}
-   * @private
+   * @const @private {!Function}
    */
   this.callback_ = goog.bind(this.onTimer_, this);
 
   /**
    * Indicates that the action is pending and needs to be fired.
-   * @type {boolean}
-   * @private
+   * @private {boolean}
    */
   this.shouldFire_ = false;
 
@@ -77,21 +74,26 @@ goog.async.Debouncer = function(listener, interval, opt_handler) {
    * Indicates the count of nested pauses currently in effect on the debouncer.
    * When this count is not zero, fired actions will be postponed until the
    * debouncer is resumed enough times to drop the pause count to zero.
-   * @type {number}
-   * @private
+   * @private {number}
    */
   this.pauseCount_ = 0;
 
   /**
    * Timer for scheduling the next callback
-   * @type {?number}
-   * @private
+   * @private {?number}
    */
   this.timer_ = null;
 
   /**
+   * When set this is a timestamp. On the onfire we want to reschedule the
+   * callback so it ends up at this time.
+   * @private {?number}
+   */
+  this.refireAt_ = null;
+
+  /**
    * The last arguments passed into {@code fire}.
-   * @private {!Array|!IArrayLike}
+   * @private {!IArrayLike}
    */
   this.args_ = [];
 };
@@ -107,8 +109,17 @@ goog.inherits(goog.async.Debouncer, goog.Disposable);
  * @param {...?} var_args Arguments to pass on to the debounced function.
  */
 goog.async.Debouncer.prototype.fire = function(var_args) {
-  this.stop();
   this.args_ = arguments;
+  // When this method is called, we need to prevent fire() calls from within the
+  // previous interval from calling the callback. The simplest way of doing this
+  // is to call this.stop() which calls clearTimeout, and then reschedule the
+  // timeout. However clearTimeout and setTimeout are expensive, so we just
+  // leave them untouched and when they do happen we potentially reschedule.
+  this.shouldFire_ = false;
+  if (this.timer_) {
+    this.refireAt_ = goog.now() + this.interval_;
+    return;
+  }
   this.timer_ = goog.Timer.callOnce(this.callback_, this.interval_);
 };
 
@@ -122,6 +133,7 @@ goog.async.Debouncer.prototype.stop = function() {
     goog.Timer.clear(this.timer_);
     this.timer_ = null;
   }
+  this.refireAt_ = null;
   this.shouldFire_ = false;
   this.args_ = [];
 };
@@ -166,6 +178,14 @@ goog.async.Debouncer.prototype.disposeInternal = function() {
  * @private
  */
 goog.async.Debouncer.prototype.onTimer_ = function() {
+  // There is a newer call to fire() within the debounce interval.
+  // Reschedule the callback and return.
+  if (this.refireAt_) {
+    this.timer_ =
+        goog.Timer.callOnce(this.callback_, this.refireAt_ - goog.now());
+    this.refireAt_ = null;
+    return;
+  }
   this.timer_ = null;
 
   if (!this.pauseCount_) {

@@ -48,10 +48,8 @@
  *   mp3.setSelected(true);
  * </pre>
  *
+ * Requires flash to actually work.
  *
- * @supported IE6, FF2+, Safari. Requires flash to actually work.
- *
- * TODO(user): test on other browsers
  */
 
 goog.provide('goog.ui.media.Mp3');

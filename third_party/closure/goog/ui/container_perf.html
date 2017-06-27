@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<!--
+Copyright 2009 The Closure Library Authors. All Rights Reserved.
+
+Use of this source code is governed by the Apache License, Version 2.0.
+See the COPYING file for details.
+-->
+<!--
+-->
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Closure Performance Tests - goog.ui.Container</title>
+  <link rel="stylesheet" type="text/css" href="../testing/performancetable.css"/>
+  <script src="../base.js"></script>
+  <script>
+    goog.require('goog.testing.PerformanceTable');
+    goog.require('goog.testing.jsunit');
+    goog.require('goog.ui.Container');
+    goog.require('goog.ui.Control');
+  </script>
+</head>
+<body>
+  <h1>goog.ui.Container Performance Tests</h1>
+  <p>
+    <strong>User-agent:</strong>
+    <script>document.write(navigator.userAgent);</script>
+  </p>
+  <div id="perfTable"></div>
+  <hr>
+
+  <script>
+    var table = new goog.testing.PerformanceTable(
+        goog.dom.getElement('perfTable'));
+
+    // Number of controls to add to the container per test run.
+    var SAMPLES_PER_RUN = 500;
+
+    function testContainerAddChild() {
+      var description = 'Add ' + SAMPLES_PER_RUN +
+          ' child controls to the container with immediate rendering';
+      table.run(function() {
+        var container = new goog.ui.Container();
+        for (var i = 0; i < SAMPLES_PER_RUN; i++) {
+          container.addChild(new goog.ui.Control(), true);
+        }
+        container.render();
+        assertEquals('container child count', SAMPLES_PER_RUN,
+              container.getChildCount());
+        container.dispose();
+      }, description);
+    }
+  </script>
+</body>
+</html>

@@ -473,7 +473,7 @@ goog.editor.plugins.BasicTextFormatter.prototype.prepareContentsHtml = function(
  */
 goog.editor.plugins.BasicTextFormatter.prototype.cleanContentsDom = function(
     fieldCopy) {
-  var images = fieldCopy.getElementsByTagName(goog.dom.TagName.IMG);
+  var images = goog.dom.getElementsByTagName(goog.dom.TagName.IMG, fieldCopy);
   for (var i = 0, image; image = images[i]; i++) {
     if (goog.editor.BrowserFeature.SHOWS_CUSTOM_ATTRS_IN_INNER_HTML) {
       // Only need to remove these attributes in IE because
@@ -484,7 +484,7 @@ goog.editor.plugins.BasicTextFormatter.prototype.cleanContentsDom = function(
 
       // Declare oldTypeIndex for the compiler. The associated plugin may not be
       // included in the compiled bundle.
-      /** @type {string} */ image.oldTabIndex;
+      /** @type {number} */ image.oldTabIndex;
 
       // oldTabIndex will only be set if
       // goog.editor.BrowserFeature.TABS_THROUGH_IMAGES is true and we're in
@@ -513,7 +513,8 @@ goog.editor.plugins.BasicTextFormatter.prototype.cleanContentsHtml = function(
     // i starts at 1 so we don't copy in the original, legitimate <head>.
     var numHeads = heads.length;
     for (var i = 1; i < numHeads; ++i) {
-      var styles = heads[i].getElementsByTagName(goog.dom.TagName.STYLE);
+      var styles =
+          goog.dom.getElementsByTagName(goog.dom.TagName.STYLE, heads[i]);
       var numStyles = styles.length;
       for (var j = 0; j < numStyles; ++j) {
         stylesHtmlArr.push(styles[j].outerHTML);
@@ -593,6 +594,7 @@ goog.editor.plugins.BasicTextFormatter.prototype.convertBreaksToDivs_ =
   var range = this.getRange_();
   var parent = range.getContainerElement();
   var doc = this.getDocument_();
+  var dom = this.getFieldDomHelper();
 
   goog.editor.plugins.BasicTextFormatter.BR_REGEXP_.lastIndex = 0;
   // Only mess with the HTML/selection if it contains a BR.
@@ -621,8 +623,8 @@ goog.editor.plugins.BasicTextFormatter.prototype.convertBreaksToDivs_ =
           '<p$1 ' + attribute + '="' + value + '">');
       goog.editor.node.replaceInnerHtml(parent, newHtml);
 
-      var paragraphs =
-          goog.array.toArray(parent.getElementsByTagName(goog.dom.TagName.P));
+      var paragraphs = goog.array.toArray(
+          goog.dom.getElementsByTagName(goog.dom.TagName.P, parent));
       goog.iter.forEach(paragraphs, function(paragraph) {
         if (paragraph.getAttribute(attribute) == value) {
           paragraph.removeAttribute(attribute);
@@ -636,7 +638,7 @@ goog.editor.plugins.BasicTextFormatter.prototype.convertBreaksToDivs_ =
             // &nbsp; in IE.
             var child = goog.userAgent.IE ?
                 doc.createTextNode(goog.string.Unicode.NBSP) :
-                doc.createElement(goog.dom.TagName.BR);
+                dom.createElement(goog.dom.TagName.BR);
             paragraph.appendChild(child);
           }
           goog.editor.plugins.BasicTextFormatter.convertParagraphToDiv_(
@@ -1024,7 +1026,7 @@ goog.editor.plugins.BasicTextFormatter.prototype.createLink_ = function(
     var uniqueId = goog.string.createUniqueString();
     this.execCommandHelper_('CreateLink', uniqueId);
     var setHrefAndLink = function(element, index, arr) {
-      // We can't do straight comparision since the href can contain the
+      // We can't do straight comparison since the href can contain the
       // absolute url.
       if (goog.string.endsWith(element.href, uniqueId)) {
         anchors.push(element);
@@ -1032,8 +1034,9 @@ goog.editor.plugins.BasicTextFormatter.prototype.createLink_ = function(
     };
 
     goog.array.forEach(
-        this.getFieldObject().getElement().getElementsByTagName(
-            goog.dom.TagName.A),
+        goog.dom.getElementsByTagName(
+            goog.dom.TagName.A,
+            /** @type {!Element} */ (this.getFieldObject().getElement())),
         setHrefAndLink);
     if (anchors.length) {
       anchor = anchors.pop();
@@ -1397,13 +1400,11 @@ goog.editor.plugins.BasicTextFormatter.prototype.fixIELists_ = function() {
     container = container.parentNode;
   }
   if (!container) return;
-  var lists = goog.array.toArray(
-      /** @type {!Element} */ (container).getElementsByTagName(
-          goog.dom.TagName.UL));
+  var lists = goog.array.toArray(goog.dom.getElementsByTagName(
+      goog.dom.TagName.UL, /** @type {!Element} */ (container)));
   goog.array.extend(
-      lists, goog.array.toArray(
-                 /** @type {!Element} */ (container).getElementsByTagName(
-                     goog.dom.TagName.OL)));
+      lists, goog.array.toArray(goog.dom.getElementsByTagName(
+                 goog.dom.TagName.OL, /** @type {!Element} */ (container))));
   // Fix the lists
   goog.array.forEach(lists, function(node) {
     var type = node.type;
@@ -1717,7 +1718,7 @@ goog.editor.plugins.BasicTextFormatter.getNodeJustification_ = function(
  * Returns true if a selection contained in the node should set the appropriate
  * toolbar state for the given nodeName, e.g. if the node is contained in a
  * strong element and nodeName is "strong", then it will return true.
- * @param {string} nodeName The type of node to check for.
+ * @param {!goog.dom.TagName} nodeName The type of node to check for.
  * @return {boolean} Whether the user's selection is in the given state.
  * @private
  */

@@ -215,7 +215,7 @@ goog.result.waitOnError = function(result, handler, opt_scope) {
  * // transformed result to use returned JSON.
  * var transformedResult = goog.result.transform(result, processJson);
  *
- * // Attach success and failure handlers to the tranformed result.
+ * // Attach success and failure handlers to the transformed result.
  * goog.result.waitOnSuccess(transformedResult, function(resultValue, result) {
  *   var jsonData = resultValue;
  *   assertEquals('ok', jsonData['stat']);

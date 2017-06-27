@@ -45,7 +45,7 @@ goog.crypt.Hash.prototype.reset = goog.abstractMethod;
 
 
 /**
- * Adds a byte array (array with values in [0-255] range) or a string (might
+ * Adds a byte array (array with values in [0-255] range) or a string (must
  * only contain 8-bit, i.e., Latin1 characters) to the internal accumulator.
  *
  * Many hash functions operate on blocks of data and implement optimizations

@@ -23,6 +23,7 @@ goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.NodeType');
 goog.require('goog.dom.TagName');
+goog.require('goog.html.legacyconversions');
 goog.require('goog.soy.data.SanitizedContent');
 goog.require('goog.soy.data.SanitizedContentKind');
 goog.require('goog.string');
@@ -38,6 +39,24 @@ goog.require('goog.string');
  * returns plain text -- indicating it is a non-strict template.
  */
 goog.define('goog.soy.REQUIRE_STRICT_AUTOESCAPE', false);
+
+
+/**
+ * Type definition for strict Soy templates. Very useful when passing a template
+ * as an argument.
+ * @typedef {function(?, null=, ?Object<string, *>=):
+ *     !goog.soy.data.SanitizedContent}
+ */
+goog.soy.StrictTemplate;
+
+
+/**
+ * Type definition for strict Soy HTML templates. Very useful when passing
+ * a template as an argument.
+ * @typedef {function(?, null=, ?Object<string, *>=):
+ *     !goog.soy.data.SanitizedHtml}
+ */
+goog.soy.StrictHtmlTemplate;
 
 
 /**
@@ -63,7 +82,8 @@ goog.soy.renderHtml = function(element, templateResult) {
  * will be easier to audit the code for cross-site scripting vulnerabilities.
  *
  * @param {Element} element The element whose content we are rendering into.
- * @param {null|function(ARG_TYPES, null=, Object<string, *>=):*} template
+ * @param {?function(ARG_TYPES, Object<string, *>=):*|
+ *     ?function(ARG_TYPES, null=, Object<string, *>=):*} template
  *     The Soy template defining the element's content.
  * @param {ARG_TYPES=} opt_templateData The data for the template.
  * @param {Object=} opt_injectedData The injected data for the template.
@@ -87,7 +107,8 @@ goog.soy.renderElement = function(
  * the method). Otherwise a document fragment is returned containing the
  * rendered nodes.
  *
- * @param {null|function(ARG_TYPES, null=, Object<string, *>=):*} template
+ * @param {?function(ARG_TYPES, Object<string, *>=):*|
+ *     ?function(ARG_TYPES, null=, Object<string, *>=):*} template
  *     The Soy template defining the element's content.
  * @param {ARG_TYPES=} opt_templateData The data for the template.
  * @param {Object=} opt_injectedData The injected data for the template.
@@ -101,12 +122,15 @@ goog.soy.renderAsFragment = function(
   // Soy template parameter is only nullable for historical reasons.
   goog.asserts.assert(template, 'Soy template may not be null.');
   var dom = opt_domHelper || goog.dom.getDomHelper();
-  var html = goog.soy.ensureTemplateOutputHtml_(
-      template(
-          opt_templateData || goog.soy.defaultTemplateData_, undefined,
-          opt_injectedData));
+  var output = template(
+      opt_templateData || goog.soy.defaultTemplateData_, undefined,
+      opt_injectedData);
+  var html = goog.soy.ensureTemplateOutputHtml_(output);
   goog.soy.assertFirstTagValid_(html);
-  return dom.htmlToDocumentFragment(html);
+  var safeHtml = output instanceof goog.soy.data.SanitizedContent ?
+      output.toSafeHtml() :
+      goog.html.legacyconversions.safeHtmlFromString(html);
+  return dom.safeHtmlToNode(safeHtml);
 };
 
 
@@ -115,7 +139,8 @@ goog.soy.renderAsFragment = function(
  * HTML string represents a single node, then that node is returned. Otherwise,
  * a DIV element is returned containing the rendered nodes.
  *
- * @param {null|function(ARG_TYPES, null=, Object<string, *>=):*} template
+ * @param {?function(ARG_TYPES, Object<string, *>=):*|
+ *     ?function(ARG_TYPES, null=, Object<string, *>=):*} template
  *     The Soy template defining the element's content.
  * @param {ARG_TYPES=} opt_templateData The data for the template.
  * @param {Object=} opt_injectedData The injected data for the template.

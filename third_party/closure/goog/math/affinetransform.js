@@ -21,8 +21,6 @@
 
 goog.provide('goog.math.AffineTransform');
 
-goog.require('goog.math');
-
 
 
 /**
@@ -408,7 +406,7 @@ goog.math.AffineTransform.prototype.preConcatenate = function(tx) {
  *     point pairs.
  * @param {number} dstOff The offset of the location of the first transformed
  *     point in the destination array.
- * @param {number} numPts The number of points to tranform.
+ * @param {number} numPts The number of points to transform.
  */
 goog.math.AffineTransform.prototype.transform = function(
     src, srcOff, dst, dstOff, numPts) {
@@ -440,8 +438,8 @@ goog.math.AffineTransform.prototype.getDeterminant = function() {
  */
 goog.math.AffineTransform.prototype.isInvertible = function() {
   var det = this.getDeterminant();
-  return goog.math.isFiniteNumber(det) && goog.math.isFiniteNumber(this.m02_) &&
-      goog.math.isFiniteNumber(this.m12_) && det != 0;
+  return isFinite(det) && isFinite(this.m02_) && isFinite(this.m12_) &&
+      det != 0;
 };
 
 

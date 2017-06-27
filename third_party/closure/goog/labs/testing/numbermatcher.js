@@ -17,7 +17,7 @@
  * greaterThan, etc.
  */
 
-
+goog.provide('goog.labs.testing.AnyNumberMatcher');
 goog.provide('goog.labs.testing.CloseToMatcher');
 goog.provide('goog.labs.testing.EqualToMatcher');
 goog.provide('goog.labs.testing.GreaterThanEqualToMatcher');
@@ -25,9 +25,29 @@ goog.provide('goog.labs.testing.GreaterThanMatcher');
 goog.provide('goog.labs.testing.LessThanEqualToMatcher');
 goog.provide('goog.labs.testing.LessThanMatcher');
 
-
 goog.require('goog.asserts');
 goog.require('goog.labs.testing.Matcher');
+
+
+
+/**
+ * Matches any number value.
+ *
+ * @constructor @struct @implements {goog.labs.testing.Matcher} @final
+ */
+goog.labs.testing.AnyNumberMatcher = function() {};
+
+
+/** @override */
+goog.labs.testing.AnyNumberMatcher.prototype.matches = function(actualValue) {
+  return goog.isNumber(actualValue);
+};
+
+
+/** @override */
+goog.labs.testing.AnyNumberMatcher.prototype.describe = function(actualValue) {
+  return '<' + actualValue + '> is not a number';
+};
 
 
 
@@ -279,6 +299,12 @@ goog.labs.testing.CloseToMatcher.prototype.describe = function(actualValue) {
   goog.asserts.assertNumber(actualValue);
   return actualValue + ' is not close to(' + this.range_ + ') ' + this.value_;
 };
+
+
+/** @return {!goog.labs.testing.AnyNumberMatcher} */
+function anyNumber() {
+  return new goog.labs.testing.AnyNumberMatcher();
+}
 
 
 /**

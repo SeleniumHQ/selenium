@@ -205,6 +205,7 @@ goog.ui.ac.InputHandler = function(
   this.lastKeyCode_ = -1;  // Initialize to a non-existent value.
 };
 goog.inherits(goog.ui.ac.InputHandler, goog.Disposable);
+goog.tagUnsealableClass(goog.ui.ac.InputHandler);
 
 
 /**
@@ -1086,7 +1087,7 @@ goog.ui.ac.InputHandler.prototype.onKeyDownOnInactiveElement_ = function(e) {
 
 /**
  * Handles typing in the active input element.  Checks if the key is a special
- * key and does the relevent action as appropriate.
+ * key and does the relevant action as appropriate.
  * @param {goog.events.BrowserEvent} e Browser event object.
  * @private
  */
@@ -1292,7 +1293,7 @@ goog.ui.ac.InputHandler.prototype.getTokenIndex_ = function(text, caret) {
 
 
 /**
- * Splits an input string of text at the occurance of a character in
+ * Splits an input string of text at the occurrence of a character in
  * {@link goog.ui.ac.InputHandler.prototype.separators_} and creates
  * an array of tokens.  Each token may contain additional whitespace and
  * formatting marks.  If necessary use

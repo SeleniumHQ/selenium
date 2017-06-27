@@ -238,7 +238,7 @@ goog.debug.DevCss.prototype.getVersionNumberFromSelectorText_ = function(
  */
 goog.debug.DevCss.prototype.getRuleVersionAndCompare_ = function(
     cssRule, token) {
-  if (!cssRule.selectorText.match(token)) {
+  if (!cssRule.selectorText || !cssRule.selectorText.match(token)) {
     return;
   }
   var ruleVersion =
@@ -265,7 +265,8 @@ goog.debug.DevCss.prototype.replaceBrowserSpecificClassNames_ = function(
     cssRule) {
 
   // If we don't match the browser token, we can stop now.
-  if (!cssRule.selectorText.match(this.userAgentTokens_.ANY)) {
+  if (!cssRule.selectorText ||
+      !cssRule.selectorText.match(this.userAgentTokens_.ANY)) {
     return;
   }
 
@@ -359,7 +360,7 @@ goog.debug.DevCss.prototype.replaceBrowserSpecificClassNames_ = function(
 goog.debug.DevCss.prototype.replaceIe6CombinedSelectors_ = function(cssRule) {
   // This match only ever works in IE because other UA's won't have our
   // IE6_SELECTOR_TEXT in the cssText property.
-  if (cssRule.style.cssText &&
+  if (cssRule.style && cssRule.style.cssText &&
       cssRule.style.cssText.match(
           goog.debug.DevCss.CssToken_.IE6_SELECTOR_TEXT)) {
     var cssText = goog.cssom.getCssTextFromCssRule(cssRule);

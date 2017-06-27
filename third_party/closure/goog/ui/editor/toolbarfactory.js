@@ -184,7 +184,7 @@ goog.ui.editor.ToolbarFactory.LEGACY_SIZE_TO_PX_MAP_ =
  *       'H4')
  * </ul>
  * @param {!goog.ui.Select} button "Format block" menu button.
- * @param {!Array<{caption: string, command: goog.dom.TagName}>} formats Array
+ * @param {!Array<{caption: string, command: !goog.dom.TagName}>} formats Array
  *     of format option descriptors.
  */
 goog.ui.editor.ToolbarFactory.addFormatOptions = function(button, formats) {
@@ -199,7 +199,7 @@ goog.ui.editor.ToolbarFactory.addFormatOptions = function(button, formats) {
  * Adds a menu item to the given "Format block" menu button.
  * @param {!goog.ui.Select} button "Format block" menu button.
  * @param {string} caption Caption to show in the menu.
- * @param {goog.dom.TagName} tag Corresponding block format tag.
+ * @param {!goog.dom.TagName} tag Corresponding block format tag.
  */
 goog.ui.editor.ToolbarFactory.addFormatOption = function(button, caption, tag) {
   // Construct the option, and add it to the button.
@@ -207,7 +207,7 @@ goog.ui.editor.ToolbarFactory.addFormatOption = function(button, caption, tag) {
   var buttonDom = button.getDomHelper();
   var option = new goog.ui.Option(
       buttonDom.createDom(goog.dom.TagName.DIV, null, caption), tag, buttonDom);
-  option.setId(tag);
+  option.setId(String(tag));
   button.addItem(option);
 };
 

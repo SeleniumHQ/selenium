@@ -191,7 +191,7 @@ goog.i18n.uChar.fromCharCode = function(code) {
  * trailing surrogate is returned when it is not preceded by a leading
  * surrogate.
  *
- * @param {!string} string The string.
+ * @param {string} string The string.
  * @param {number} index The index from which the code point is to be retrieved.
  * @return {number} The code point at the given index. If the given index is
  * that of the start (i.e. lead surrogate) of a surrogate pair, returns the code

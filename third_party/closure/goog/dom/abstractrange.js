@@ -315,11 +315,8 @@ goog.dom.AbstractRange.prototype.containsRange = goog.abstractMethod;
  *     entirely contained in the selection for this function to return true.
  * @return {boolean} Whether this range contains the given node.
  */
-goog.dom.AbstractRange.prototype.containsNode = function(
-    node, opt_allowPartial) {
-  return this.containsRange(
-      goog.dom.Range.createFromNodeContents(node), opt_allowPartial);
-};
+goog.dom.AbstractRange.prototype.containsNode = goog.abstractMethod;
+
 
 
 /**

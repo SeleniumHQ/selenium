@@ -25,8 +25,8 @@
 goog.provide('goog.labs.structs.Multimap');
 
 goog.require('goog.array');
-goog.require('goog.labs.object');
 goog.require('goog.labs.structs.Map');
+goog.require('goog.object');
 
 
 
@@ -155,7 +155,7 @@ goog.labs.structs.Multimap.prototype.remove = function(key, value) {
   }
 
   var removed = goog.array.removeIf(
-      values, function(v) { return goog.labs.object.is(value, v); });
+      values, function(v) { return goog.object.is(value, v); });
 
   if (removed) {
     this.count_--;
@@ -214,7 +214,7 @@ goog.labs.structs.Multimap.prototype.containsEntry = function(key, value) {
   }
 
   var index = goog.array.findIndex(
-      values, function(v) { return goog.labs.object.is(v, value); });
+      values, function(v) { return goog.object.is(v, value); });
   return index >= 0;
 };
 
@@ -237,7 +237,7 @@ goog.labs.structs.Multimap.prototype.containsKey = function(key) {
 goog.labs.structs.Multimap.prototype.containsValue = function(value) {
   return goog.array.some(this.map_.getValues(), function(values) {
     return goog.array.some(/** @type {Array<?>} */ (values), function(v) {
-      return goog.labs.object.is(v, value);
+      return goog.object.is(v, value);
     });
   });
 };

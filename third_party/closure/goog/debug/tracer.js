@@ -321,7 +321,7 @@ goog.debug.Trace_.prototype.setStartTime = function(startTime) {
 /**
  * Initializes and resets the current trace
  * @param {number} defaultThreshold The default threshold below which the
- * tracer output will be supressed. Can be overridden on a per-Tracer basis.
+ * tracer output will be suppressed. Can be overridden on a per-Tracer basis.
  */
 goog.debug.Trace_.prototype.initCurrentTrace = function(defaultThreshold) {
   this.reset(defaultThreshold);
@@ -339,20 +339,12 @@ goog.debug.Trace_.prototype.clearCurrentTrace = function() {
 /**
  * Resets the trace.
  * @param {number} defaultThreshold The default threshold below which the
- * tracer output will be supressed. Can be overridden on a per-Tracer basis.
+ * tracer output will be suppressed. Can be overridden on a per-Tracer basis.
  */
 goog.debug.Trace_.prototype.reset = function(defaultThreshold) {
   this.defaultThreshold_ = defaultThreshold;
 
-  for (var i = 0; i < this.events_.length; i++) {
-    var id = /** @type {?} */ (this.eventPool_).id;
-    if (id) {
-      this.idPool_.releaseObject(id);
-    }
-    this.eventPool_.releaseObject(this.events_[i]);
-  }
-
-  this.events_.length = 0;
+  this.releaseEvents_();
   this.outstandingEvents_.clear();
   this.startTime_ = goog.debug.Trace_.now();
   this.tracerOverheadStart_ = 0;
@@ -371,6 +363,21 @@ goog.debug.Trace_.prototype.reset = function(defaultThreshold) {
     this.statPool_.releaseObject(/** @type {Object} */ (stat));
   }
   this.stats_.clear();
+};
+
+
+/**
+ * @private
+ */
+goog.debug.Trace_.prototype.releaseEvents_ = function() {
+  for (var i = 0; i < this.events_.length; i++) {
+    var event = this.events_[i];
+    if (event.id) {
+      this.idPool_.releaseObject(event.id);
+    }
+    this.eventPool_.releaseObject(event);
+  }
+  this.events_.length = 0;
 };
 
 
@@ -399,14 +406,7 @@ goog.debug.Trace_.prototype.startTracer = function(comment, opt_type) {
     // either forgot to clear the trace or else we are performing a
     // very large number of events
     if (this.events_.length > this.MAX_TRACE_SIZE / 2) {
-      for (var i = 0; i < this.events_.length; i++) {
-        var event = this.events_[i];
-        if (event.id) {
-          this.idPool_.releaseObject(event.id);
-        }
-        this.eventPool_.releaseObject(event);
-      }
-      this.events_.length = 0;
+      this.releaseEvents_();
     }
 
     // This is less likely and probably indicates that a lot of traces
@@ -419,8 +419,9 @@ goog.debug.Trace_.prototype.startTracer = function(comment, opt_type) {
 
   goog.debug.Logger.logToProfilers('Start : ' + comment);
 
+  /** @const */
   var event =
-      /** @type {goog.debug.Trace_.Event_} */ (this.eventPool_.getObject());
+      /** @type {!goog.debug.Trace_.Event_} */ (this.eventPool_.getObject());
   event.totalVarAlloc = varAlloc;
   event.eventType = goog.debug.Trace_.EventType.START;
   event.id = Number(this.idPool_.getObject());

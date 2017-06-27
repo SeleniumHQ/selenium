@@ -27,6 +27,7 @@ goog.require('goog.dom.Range');
 goog.require('goog.dom.TagName');
 goog.require('goog.editor.BrowserFeature');
 goog.require('goog.editor.Command');
+goog.require('goog.editor.Field');
 goog.require('goog.editor.node');
 goog.require('goog.editor.range');
 goog.require('goog.string');

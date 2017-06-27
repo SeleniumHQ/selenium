@@ -17,12 +17,23 @@
  *
  */
 
+goog.provide('goog.fs.DOMErrorLike');
 goog.provide('goog.fs.Error');
 goog.provide('goog.fs.Error.ErrorCode');
 
+goog.require('goog.asserts');
 goog.require('goog.debug.Error');
 goog.require('goog.object');
 goog.require('goog.string');
+
+/** @record */
+goog.fs.DOMErrorLike = function() {};
+
+/** @type {string|undefined} */
+goog.fs.DOMErrorLike.prototype.name;
+
+/** @type {goog.fs.Error.ErrorCode|undefined} */
+goog.fs.DOMErrorLike.prototype.code;
 
 
 
@@ -31,7 +42,7 @@ goog.require('goog.string');
  * are less useful for identifying where errors come from, so this includes a
  * large amount of metadata in the message.
  *
- * @param {!DOMError} error
+ * @param {!DOMError|!goog.fs.DOMErrorLike} error
  * @param {string} action The action being undertaken when the error was raised.
  * @constructor
  * @extends {goog.debug.Error}
@@ -54,7 +65,7 @@ goog.fs.Error = function(error, action) {
     /** @suppress {deprecated} */
     this.code = goog.fs.Error.getCodeFromName_(error.name);
   } else {
-    this.code = error.code;
+    this.code = goog.asserts.assertNumber(error.code);
     this.name = goog.fs.Error.getNameFromCode_(error.code);
   }
   goog.fs.Error.base(
@@ -112,7 +123,7 @@ goog.fs.Error.ErrorCode = {
 
 
 /**
- * @param {goog.fs.Error.ErrorCode} code
+ * @param {goog.fs.Error.ErrorCode|undefined} code
  * @return {string} name
  * @private
  */

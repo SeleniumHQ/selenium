@@ -314,7 +314,7 @@ goog.editor.plugins.LinkBubble.prototype.getTargetUrl = function() {
 
 /** @override */
 goog.editor.plugins.LinkBubble.prototype.getBubbleType = function() {
-  return goog.dom.TagName.A;
+  return String(goog.dom.TagName.A);
 };
 
 

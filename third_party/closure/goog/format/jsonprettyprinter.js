@@ -50,25 +50,23 @@ goog.require('goog.string.format');
  *     ]
  *   }
  * }</code>
- * @param {goog.format.JsonPrettyPrinter.TextDelimiters} delimiters Container
- *     for the various strings to use to delimit objects, arrays, newlines, and
- *     other pieces of the output.
+ * @param {?goog.format.JsonPrettyPrinter.TextDelimiters=} opt_delimiters
+ *     Container for the various strings to use to delimit objects, arrays,
+ *     newlines, and other pieces of the output.
  * @constructor
  */
-goog.format.JsonPrettyPrinter = function(delimiters) {
+goog.format.JsonPrettyPrinter = function(opt_delimiters) {
 
   /**
    * The set of characters to use as delimiters.
-   * @type {goog.format.JsonPrettyPrinter.TextDelimiters}
-   * @private
+   * @private @const {!goog.format.JsonPrettyPrinter.TextDelimiters}
    */
   this.delimiters_ =
-      delimiters || new goog.format.JsonPrettyPrinter.TextDelimiters();
+      opt_delimiters || new goog.format.JsonPrettyPrinter.TextDelimiters();
 
   /**
    * Used to serialize property names and values.
-   * @type {goog.json.Serializer}
-   * @private
+   * @private @const {!goog.json.Serializer}
    */
   this.jsonSerializer_ = new goog.json.Serializer();
 };

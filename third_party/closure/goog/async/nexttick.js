@@ -143,6 +143,7 @@ goog.async.nextTick.setImmediate_;
 goog.async.nextTick.getSetImmediateEmulator_ = function() {
   // Create a private message channel and use it to postMessage empty messages
   // to ourselves.
+  /** @type {!Function|undefined} */
   var Channel = goog.global['MessageChannel'];
   // If MessageChannel is not available and we are in a browser, implement
   // an iframe based polyfill in browsers that have postMessage and
@@ -157,7 +158,7 @@ goog.async.nextTick.getSetImmediateEmulator_ = function() {
     Channel = function() {
       // Make an empty, invisible iframe.
       var iframe = /** @type {!HTMLIFrameElement} */ (
-          document.createElement(goog.dom.TagName.IFRAME));
+          document.createElement(String(goog.dom.TagName.IFRAME)));
       iframe.style.display = 'none';
       iframe.src = '';
       document.documentElement.appendChild(iframe);
@@ -193,7 +194,7 @@ goog.async.nextTick.getSetImmediateEmulator_ = function() {
       };
     };
   }
-  if (typeof Channel !== 'undefined' && (!goog.labs.userAgent.browser.isIE())) {
+  if (typeof Channel !== 'undefined' && !goog.labs.userAgent.browser.isIE()) {
     // Exclude all of IE due to
     // http://codeforhire.com/2013/09/21/setimmediate-and-messagechannel-broken-on-internet-explorer-10/
     // which allows starving postMessage with a busy setTimeout loop.
@@ -220,9 +221,10 @@ goog.async.nextTick.getSetImmediateEmulator_ = function() {
   // Implementation for IE6 to IE10: Script elements fire an asynchronous
   // onreadystatechange event when inserted into the DOM.
   if (typeof document !== 'undefined' &&
-      'onreadystatechange' in document.createElement(goog.dom.TagName.SCRIPT)) {
+      'onreadystatechange' in
+          document.createElement(String(goog.dom.TagName.SCRIPT))) {
     return function(cb) {
-      var script = document.createElement(goog.dom.TagName.SCRIPT);
+      var script = document.createElement(String(goog.dom.TagName.SCRIPT));
       script.onreadystatechange = function() {
         // Clean up and call the callback.
         script.onreadystatechange = null;
@@ -237,7 +239,9 @@ goog.async.nextTick.getSetImmediateEmulator_ = function() {
   // Fall back to setTimeout with 0. In browsers this creates a delay of 5ms
   // or more.
   // NOTE(user): This fallback is used for IE11.
-  return function(cb) { goog.global.setTimeout(cb, 0); };
+  return function(cb) {
+    goog.global.setTimeout(/** @type {function()} */ (cb), 0);
+  };
 };
 
 

@@ -26,7 +26,7 @@
 
 goog.provide('goog.net.BrowserTestChannel');
 
-goog.require('goog.json.EvalJsonProcessor');
+goog.require('goog.json.NativeJsonProcessor');
 goog.require('goog.net.ChannelRequest');
 goog.require('goog.net.ChannelRequest.Error');
 goog.require('goog.net.tmpnetwork');
@@ -60,12 +60,11 @@ goog.net.BrowserTestChannel = function(channel, channelDebug) {
   this.channelDebug_ = channelDebug;
 
   /**
-   * Parser for a response payload. Defaults to use
-   * {@code goog.json.unsafeParse}. The parser should return an array.
+   * Parser for a response payload. The parser should return an array.
    * @type {goog.string.Parser}
    * @private
    */
-  this.parser_ = new goog.json.EvalJsonProcessor(null, true);
+  this.parser_ = new goog.json.NativeJsonProcessor();
 };
 
 
@@ -239,9 +238,7 @@ goog.net.BrowserTestChannel.prototype.setExtraHeaders = function(extraHeaders) {
 
 
 /**
- * Sets a new parser for the response payload. A custom parser may be set to
- * avoid using eval(), for example.
- * By default, the parser uses {@code goog.json.unsafeParse}.
+ * Sets a new parser for the response payload.
  * @param {!goog.string.Parser} parser Parser.
  */
 goog.net.BrowserTestChannel.prototype.setParser = function(parser) {
@@ -346,6 +343,7 @@ goog.net.BrowserTestChannel.prototype.checkBlockedCallback_ = function(
  * sending the second chunk containing the content '2'. Depending on how we
  * receive the content, we can tell if we're behind a buffering proxy.
  * @private
+ * @suppress {missingRequire} goog.net.BrowserChannel
  */
 goog.net.BrowserTestChannel.prototype.connectStage2_ = function() {
   this.channelDebug_.debug('TestConnection: starting stage 2');
@@ -371,6 +369,7 @@ goog.net.BrowserTestChannel.prototype.connectStage2_ = function() {
     }
     return;  // Skip the test
   }
+  /** @private @suppress {missingRequire} Circular dep. */
   this.request_ =
       goog.net.BrowserChannel.createChannelRequest(this, this.channelDebug_);
   this.request_.setExtraHeaders(this.extraHeaders_);
@@ -444,7 +443,7 @@ goog.net.BrowserTestChannel.prototype.onRequestData = function(
           this, goog.net.ChannelRequest.Error.BAD_DATA);
       return;
     }
-    /** @preserveTry */
+
     try {
       var respArray = this.parser_.parse(responseText);
     } catch (e) {
@@ -495,6 +494,8 @@ goog.net.BrowserTestChannel.prototype.onRequestData = function(
  * Callback from ChannelRequest that indicates a request has completed.
  *
  * @param {goog.net.ChannelRequest} req  The request object.
+ * @suppress {missingRequire} Cannot depend on goog.net.BrowserChannel because
+ *     it creates a circular dependency.
  */
 goog.net.BrowserTestChannel.prototype.onRequestComplete = function(req) {
   this.lastStatusCode_ = this.request_.getLastStatusCode();
@@ -554,6 +555,7 @@ goog.net.BrowserTestChannel.prototype.onRequestComplete = function(req) {
       this.channel_.testConnectionFinished(this, true);
     } else {
       this.channelDebug_.debug('Test connection failed; not using streaming');
+      /** @suppress {missingRequire} Circular dep */
       goog.net.BrowserChannel.notifyStatEvent(
           goog.net.BrowserChannel.Stat.PROXY);
       this.channel_.testConnectionFinished(this, false);

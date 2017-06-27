@@ -23,6 +23,7 @@ goog.require('goog.Timer');
 goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
+goog.require('goog.dom.animationFrame');
 goog.require('goog.dom.classlist');
 goog.require('goog.dom.iframe');
 goog.require('goog.events');
@@ -78,6 +79,15 @@ goog.ui.ModalPopup = function(opt_useIframeMask, opt_domHelper) {
    * @private
    */
   this.lastFocus_ = null;
+
+  /**
+   * The animation task that resizes the background, scheduled to run in the
+   * next animation frame.
+   * @type {function(...?)}
+   * @private
+   */
+  this.resizeBackgroundTask_ = goog.dom.animationFrame.createTask(
+      {mutate: this.resizeBackground_}, this);
 };
 goog.inherits(goog.ui.ModalPopup, goog.ui.Component);
 goog.tagUnsealableClass(goog.ui.ModalPopup);
@@ -449,9 +459,13 @@ goog.ui.ModalPopup.prototype.show_ = function() {
   this.reposition();
 
   // Listen for keyboard and resize events while the modal popup is visible.
-  this.getHandler().listen(
-      this.getDomHelper().getWindow(), goog.events.EventType.RESIZE,
-      this.resizeBackground_);
+  this.getHandler()
+      .listen(
+          this.getDomHelper().getWindow(), goog.events.EventType.RESIZE,
+          this.resizeBackground_)
+      .listen(
+          this.getDomHelper().getWindow(),
+          goog.events.EventType.ORIENTATIONCHANGE, this.resizeBackgroundTask_);
 
   this.showPopupElement_(true);
   this.focus();
@@ -480,9 +494,13 @@ goog.ui.ModalPopup.prototype.hide_ = function() {
 
   // Stop listening for keyboard and resize events while the modal
   // popup is hidden.
-  this.getHandler().unlisten(
-      this.getDomHelper().getWindow(), goog.events.EventType.RESIZE,
-      this.resizeBackground_);
+  this.getHandler()
+      .unlisten(
+          this.getDomHelper().getWindow(), goog.events.EventType.RESIZE,
+          this.resizeBackground_)
+      .unlisten(
+          this.getDomHelper().getWindow(),
+          goog.events.EventType.ORIENTATIONCHANGE, this.resizeBackgroundTask_);
 
   // Set visibility to hidden even if there is a transition. This
   // reduces complexity in subclasses who may want to override

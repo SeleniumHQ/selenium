@@ -57,7 +57,7 @@ goog.dom.Range.createFromBrowserSelection = function(selection) {
   var range;
   var isReversed = false;
   if (selection.createRange) {
-    /** @preserveTry */
+
     try {
       range = selection.createRange();
     } catch (e) {
@@ -151,7 +151,7 @@ goog.dom.Range.clearSelection = function(opt_win) {
     return;
   }
   if (sel.empty) {
-    // We can't just check that the selection is empty, becuase IE
+    // We can't just check that the selection is empty, because IE
     // sometimes gets confused.
     try {
       sel.empty();

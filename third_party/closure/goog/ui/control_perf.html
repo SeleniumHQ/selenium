@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<!--
+Copyright 2008 The Closure Library Authors. All Rights Reserved.
+
+Use of this source code is governed by the Apache License, Version 2.0.
+See the COPYING file for details.
+-->
+<!--
+Author:  attila@google.com (Attila Bodis)
+-->
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Closure Performance Tests - goog.ui.Control</title>
+  <link rel="stylesheet" type="text/css" href="../testing/performancetable.css" />
+  <script src="../base.js"></script>
+  <script>
+    goog.require('goog.dom');
+    goog.require('goog.testing.PerformanceTable');
+    goog.require('goog.testing.jsunit');
+    goog.require('goog.ui.Control');
+    goog.require('goog.dom.TagName');
+  </script>
+</head>
+<body>
+  <h1>goog.ui.Control Performance Tests</h1>
+  <p>
+    <b>User-agent:</b> <script>document.write(navigator.userAgent);</script>
+  </p>
+  <div id="perfTable"></div>
+  <hr>
+  <div id="renderSandbox"></div>
+  <div id="decorateSandbox"></div>
+  <script>
+    // The sandboxen.
+    var renderSandbox = goog.dom.getElement('renderSandbox');
+    var decorateSandbox = goog.dom.getElement('decorateSandbox');
+
+    // Arrays of rendered/decorated controls (so we can dispose of them).
+    var renderedControls;
+    var decoratedControls;
+
+    // 0-based index of the control currently being rendered/decorated.
+    var renderIndex;
+    var decorateIndex;
+
+    // Element currently being decorated.
+    var elementToDecorate;
+
+    // Number of controls to create/decorate per test run.
+    var SAMPLES_PER_RUN = 100;
+
+    // The performance table.
+    var table;
+
+    // Sets up a render test.
+    function setUpRenderTest() {
+      renderedControls = [];
+      renderIndex = 0;
+    }
+
+    // Cleans up after a render test.
+    function cleanUpAfterRenderTest() {
+      for (var i = 0, count = renderedControls.length; i < count; i++) {
+        renderedControls[i].dispose();
+      }
+      renderedControls = null;
+      goog.dom.removeChildren(renderSandbox);
+    }
+
+    // Sets up a decorate test.
+    function setUpDecorateTest(opt_count) {
+      var count = opt_count || 1000;
+      for (var i = 0; i < count; i++) {
+        decorateSandbox.appendChild(goog.dom.createDom(goog.dom.TagName.DIV, 'goog-control',
+            'W00t!'));
+      }
+      elementToDecorate = decorateSandbox.firstChild;
+      decoratedControls = [];
+      decorateIndex = 0;
+    }
+
+    // Cleans up after a decorate test.
+    function cleanUpAfterDecorateTest() {
+      for (var i = 0, count = decoratedControls.length; i < count; i++) {
+        decoratedControls[i].dispose();
+      }
+      decoratedControls = null;
+      goog.dom.removeChildren(decorateSandbox);
+    }
+
+    // Renders the given number of controls.  Since children are appended to
+    // the same parent element in each performance test run, we keep track of
+    // the current index via the global renderIndex variable.
+    function renderControls(count, autoDetectBiDi) {
+      for (var i = 0; i < count; i++) {
+        var control = new goog.ui.Control('W00t!');
+        if (!autoDetectBiDi) {
+          control.setRightToLeft(false);
+        }
+        control.render(renderSandbox);
+        renderedControls[renderIndex++] = control;
+      }
+    }
+
+    // Decorates "count" controls.  The decorate sandbox contains enough child
+    // elements for the whole test, but we only decorate up to "count" elements
+    // per test run, so we need to keep track of where we are via the global
+    // decorateIndex and elementToDecorate variables.
+    function decorateControls(count, autoDetectBiDi) {
+      for (var i = 0; i < count; i++) {
+        var next = elementToDecorate.nextSibling;
+        var control = new goog.ui.Control();
+        if (!autoDetectBiDi) {
+          control.setRightToLeft(false);
+        }
+        control.decorate(elementToDecorate);
+        decoratedControls[decorateIndex++] = control;
+        elementToDecorate = next;
+      }
+    }
+
+    function setUpPage() {
+      table = new goog.testing.PerformanceTable(
+          goog.dom.getElement('perfTable'));
+    }
+
+    function testRender() {
+      setUpRenderTest();
+      table.run(goog.partial(renderControls, SAMPLES_PER_RUN, true),
+          'Render ' + SAMPLES_PER_RUN + ' controls (default)');
+      cleanUpAfterRenderTest();
+      assertEquals('The expected number of controls must have been rendered',
+          SAMPLES_PER_RUN * table.getTimer().getNumSamples(), renderIndex);
+    }
+
+    function testDecorate() {
+      setUpDecorateTest(SAMPLES_PER_RUN * table.getTimer().getNumSamples());
+      table.run(goog.partial(decorateControls, SAMPLES_PER_RUN, true),
+          'Decorate ' + SAMPLES_PER_RUN + ' controls (default)');
+      cleanUpAfterDecorateTest();
+      assertEquals('The expected number of controls must have been decorated',
+          SAMPLES_PER_RUN * table.getTimer().getNumSamples(), decorateIndex);
+      assertNull('All controls must have been decorated', elementToDecorate);
+    }
+
+    function testRenderNoBiDiAutoDetect() {
+      setUpRenderTest();
+      table.run(goog.partial(renderControls, SAMPLES_PER_RUN, false),
+          'Render ' + SAMPLES_PER_RUN + ' controls (no BiDi auto-detect)');
+      cleanUpAfterRenderTest();
+      assertEquals('The expected number of controls must have been rendered',
+          SAMPLES_PER_RUN * table.getTimer().getNumSamples(), renderIndex);
+    }
+
+    function testDecorateNoBiDiAutoDetect() {
+      setUpDecorateTest(SAMPLES_PER_RUN * table.getTimer().getNumSamples());
+      table.run(goog.partial(decorateControls, SAMPLES_PER_RUN, false),
+          'Decorate ' + SAMPLES_PER_RUN + ' controls (no BiDi auto-detect)');
+      cleanUpAfterDecorateTest();
+      assertEquals('The expected number of controls must have been decorated',
+          SAMPLES_PER_RUN * table.getTimer().getNumSamples(), decorateIndex);
+      assertNull('All controls must have been decorated', elementToDecorate);
+    }
+  </script>
+</body>
+</html>

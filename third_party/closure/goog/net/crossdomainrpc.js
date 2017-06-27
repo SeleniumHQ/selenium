@@ -74,7 +74,6 @@ goog.require('goog.events');
 goog.require('goog.events.EventTarget');
 goog.require('goog.events.EventType');
 goog.require('goog.html.SafeHtml');
-goog.require('goog.json');
 goog.require('goog.log');
 goog.require('goog.net.EventType');
 goog.require('goog.net.HttpStatus');
@@ -268,7 +267,7 @@ goog.net.CrossDomainRpc.getDummyResourceUri_ = function() {
 
   // find a style sheet if not on IE, which will attempt to save style sheet
   if (goog.userAgent.GECKO) {
-    var links = document.getElementsByTagName(goog.dom.TagName.LINK);
+    var links = goog.dom.getElementsByTagName(goog.dom.TagName.LINK);
     for (var i = 0; i < links.length; i++) {
       var link = links[i];
       // find a link which is on the same domain as this page
@@ -282,7 +281,7 @@ goog.net.CrossDomainRpc.getDummyResourceUri_ = function() {
     }
   }
 
-  var images = document.getElementsByTagName(goog.dom.TagName.IMG);
+  var images = goog.dom.getElementsByTagName(goog.dom.TagName.IMG);
   for (var i = 0; i < images.length; i++) {
     var image = images[i];
     // find a link which is on the same domain as this page
@@ -397,8 +396,8 @@ goog.net.CrossDomainRpc.REQUEST_MARKER_ = 'xdrq';
 goog.net.CrossDomainRpc.prototype.sendRequest = function(
     uri, opt_method, opt_params, opt_headers) {
   // create request frame
-  var requestFrame = this.requestFrame_ = /** @type {!HTMLIFrameElement} */ (
-      document.createElement(goog.dom.TagName.IFRAME));
+  var requestFrame = this.requestFrame_ =
+      goog.dom.createElement(goog.dom.TagName.IFRAME);
   var requestId = goog.net.CrossDomainRpc.nextRequestId_++;
   requestFrame.id = goog.net.CrossDomainRpc.REQUEST_MARKER_ + '-' + requestId;
   if (!goog.net.CrossDomainRpc.debugMode_) {
@@ -553,8 +552,8 @@ goog.net.CrossDomainRpc.prototype.detectResponse_ = function(
     this.status = Number(params.get('status'));
     this.responseText = responseData;
     this.responseTextIsJson_ = params.get('isDataJson') == 'true';
-    this.responseHeaders = goog.json.unsafeParse(
-        /** @type {string} */ (params.get('headers')));
+    this.responseHeaders = /** @type {?Object} */ (JSON.parse(
+        /** @type {string} */ (params.get('headers'))));
 
     this.dispatchEvent(goog.net.EventType.READY);
     this.dispatchEvent(goog.net.EventType.COMPLETE);
@@ -589,7 +588,7 @@ goog.net.CrossDomainRpc.prototype.detectResponse_ = function(
  * @private
  */
 goog.net.CrossDomainRpc.isResponseInfoFrame_ = function(frame) {
-  /** @preserveTry */
+
   try {
     return goog.net.CrossDomainRpc.getFramePayload_(frame).indexOf(
                goog.net.CrossDomainRpc.RESPONSE_INFO_MARKER_) == 1;
@@ -627,8 +626,9 @@ goog.net.CrossDomainRpc.getFramePayload_ = function(frame) {
  *     or undefined.
  */
 goog.net.CrossDomainRpc.prototype.getResponseJson = function() {
-  return this.responseTextIsJson_ ? goog.json.unsafeParse(this.responseText) :
-                                    undefined;
+  return this.responseTextIsJson_ ?
+      /** @type {?Object} */ (JSON.parse(this.responseText)) :
+      undefined;
 };
 
 
@@ -785,7 +785,7 @@ goog.net.CrossDomainRpc.sendResponse = function(
       var chunk = chunkEnd > data.length ? data.substring(chunkStart) :
                                            data.substring(chunkStart, chunkEnd);
 
-      var responseFrame = document.createElement(goog.dom.TagName.IFRAME);
+      var responseFrame = goog.dom.createElement(goog.dom.TagName.IFRAME);
       responseFrame.src = dummyUri +
           goog.net.CrossDomainRpc.getPayloadDelimiter_(dummyUri) +
           goog.net.CrossDomainRpc.CHUNK_PREFIX_ + chunk;
@@ -813,7 +813,7 @@ goog.net.CrossDomainRpc.sendResponse = function(
  */
 goog.net.CrossDomainRpc.createResponseInfo_ = function(
     dummyUri, numChunks, isDataJson, status, headers) {
-  var responseInfoFrame = document.createElement(goog.dom.TagName.IFRAME);
+  var responseInfoFrame = goog.dom.createElement(goog.dom.TagName.IFRAME);
   document.body.appendChild(responseInfoFrame);
   responseInfoFrame.src = dummyUri +
       goog.net.CrossDomainRpc.getPayloadDelimiter_(dummyUri) +

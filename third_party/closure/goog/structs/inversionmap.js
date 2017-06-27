@@ -21,6 +21,7 @@
 goog.provide('goog.structs.InversionMap');
 
 goog.require('goog.array');
+goog.require('goog.asserts');
 
 
 
@@ -40,10 +41,9 @@ goog.structs.InversionMap = function(rangeArray, valueArray, opt_delta) {
    */
   this.rangeArray = null;
 
-  if (rangeArray.length != valueArray.length) {
-    // rangeArray and valueArray has to match in number of entries.
-    return null;
-  }
+  goog.asserts.assert(
+      rangeArray.length == valueArray.length,
+      'rangeArray and valueArray must have the same length.');
   this.storeInversion_(rangeArray, opt_delta);
 
   /** @protected {Array<T>} */

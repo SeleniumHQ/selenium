@@ -25,7 +25,7 @@ goog.require('goog.events.ListenableKey');
 
 /**
  * Simple class that stores information about a listener
- * @param {!Function} listener Callback function.
+ * @param {function(?):?} listener Callback function.
  * @param {Function} proxy Wrapper for the listener that patches the event.
  * @param {EventTarget|goog.events.Listenable} src Source object for
  *     the event.
@@ -41,10 +41,7 @@ goog.events.Listener = function(
     this.creationStack = new Error().stack;
   }
 
-  /**
-   * Callback function.
-   * @type {Function}
-   */
+  /** @override */
   this.listener = listener;
 
   /**

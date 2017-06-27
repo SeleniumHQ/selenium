@@ -91,9 +91,9 @@ goog.string.caseInsensitiveStartsWith = function(str, prefix) {
  *     case).
  */
 goog.string.caseInsensitiveEndsWith = function(str, suffix) {
-  return goog.string.caseInsensitiveCompare(
-             suffix, str.substr(str.length - suffix.length, suffix.length)) ==
-      0;
+  return (
+      goog.string.caseInsensitiveCompare(
+          suffix, str.substr(str.length - suffix.length, suffix.length)) == 0);
 };
 
 
@@ -175,11 +175,9 @@ goog.string.isEmptyString = function(str) {
 /**
  * Checks if a string is empty or contains only whitespaces.
  *
- * TODO(user): Deprecate this when clients have been switched over to
- * goog.string.isEmptyOrWhitespace.
- *
  * @param {string} str The string to check.
  * @return {boolean} Whether {@code str} is empty or whitespace only.
+ * @deprecated Use goog.string.isEmptyOrWhitespace instead.
  */
 goog.string.isEmpty = goog.string.isEmptyOrWhitespace;
 
@@ -200,12 +198,10 @@ goog.string.isEmptyOrWhitespaceSafe = function(str) {
 /**
  * Checks if a string is null, undefined, empty or contains only whitespaces.
  *
- * TODO(user): Deprecate this when clients have been switched over to
- * goog.string.isEmptyOrWhitespaceSafe.
- *
  * @param {*} str The string to check.
  * @return {boolean} Whether {@code str} is null, undefined, empty, or
  *     whitespace only.
+ * @deprecated Use goog.string.isEmptyOrWhitespace instead.
  */
 goog.string.isEmptySafe = goog.string.isEmptyOrWhitespaceSafe;
 
@@ -1105,15 +1101,14 @@ goog.string.removeAt = function(s, index, stringLength) {
 
 
 /**
- *  Removes the first occurrence of a substring from a string.
- *  @param {string} s The base string from which to remove.
- *  @param {string} ss The string to remove.
- *  @return {string} A copy of {@code s} with {@code ss} removed or the full
- *      string if nothing is removed.
+ * Removes the first occurrence of a substring from a string.
+ * @param {string} str The base string from which to remove.
+ * @param {string} substr The string to remove.
+ * @return {string} A copy of {@code str} with {@code substr} removed or the
+ *     full string if nothing is removed.
  */
-goog.string.remove = function(s, ss) {
-  var re = new RegExp(goog.string.regExpEscape(ss), '');
-  return s.replace(re, '');
+goog.string.remove = function(str, substr) {
+  return str.replace(substr, '');
 };
 
 
@@ -1127,6 +1122,20 @@ goog.string.remove = function(s, ss) {
 goog.string.removeAll = function(s, ss) {
   var re = new RegExp(goog.string.regExpEscape(ss), 'g');
   return s.replace(re, '');
+};
+
+
+/**
+ *  Replaces all occurrences of a substring of a string with a new substring.
+ *  @param {string} s The base string from which to remove.
+ *  @param {string} ss The string to replace.
+ *  @param {string} replacement The replacement string.
+ *  @return {string} A copy of {@code s} with {@code ss} replaced by
+ *      {@code replacement} or the original string if nothing is replaced.
+ */
+goog.string.replaceAll = function(s, ss, replacement) {
+  var re = new RegExp(goog.string.regExpEscape(ss), 'g');
+  return s.replace(re, replacement.replace(/\$/g, '$$$$'));
 };
 
 
@@ -1251,14 +1260,12 @@ goog.string.compareVersions = function(version1, version2) {
     var v1Sub = v1Subs[subIdx] || '';
     var v2Sub = v2Subs[subIdx] || '';
 
-    // Split the subversions into pairs of numbers and qualifiers (like 'b').
-    // Two different RegExp objects are needed because they are both using
-    // the 'g' flag.
-    var v1CompParser = new RegExp('(\\d*)(\\D*)', 'g');
-    var v2CompParser = new RegExp('(\\d*)(\\D*)', 'g');
     do {
-      var v1Comp = v1CompParser.exec(v1Sub) || ['', '', ''];
-      var v2Comp = v2CompParser.exec(v2Sub) || ['', '', ''];
+      // Split the subversions into pairs of numbers and qualifiers (like 'b').
+      // Two different RegExp objects are use to make it clear the code
+      // is side-effect free
+      var v1Comp = /(\d*)(\D*)(.*)/.exec(v1Sub) || ['', '', '', ''];
+      var v2Comp = /(\d*)(\D*)(.*)/.exec(v2Sub) || ['', '', '', ''];
       // Break if there are no more matches.
       if (v1Comp[0].length == 0 && v2Comp[0].length == 0) {
         break;
@@ -1278,6 +1285,9 @@ goog.string.compareVersions = function(version1, version2) {
               v1Comp[2].length == 0, v2Comp[2].length == 0) ||
           goog.string.compareElements_(v1Comp[2], v2Comp[2]);
       // Stop as soon as an inequality is discovered.
+
+      v1Sub = v1Comp[3];
+      v2Sub = v2Comp[3];
     } while (order == 0);
   }
 
@@ -1533,7 +1543,6 @@ goog.string.parseInt = function(value) {
  *     as zero.
  * @return {!Array<string>} The string, split.
  */
-
 goog.string.splitLimit = function(str, separator, limit) {
   var parts = str.split(separator);
   var returnVal = [];
@@ -1551,6 +1560,43 @@ goog.string.splitLimit = function(str, separator, limit) {
   }
 
   return returnVal;
+};
+
+
+/**
+ * Finds the characters to the right of the last instance of any separator
+ *
+ * This function is similar to goog.string.path.baseName, except it can take a
+ * list of characters to split the string on. It will return the rightmost
+ * grouping of characters to the right of any separator as a left-to-right
+ * oriented string.
+ *
+ * @see goog.string.path.baseName
+ * @param {string} str The string
+ * @param {string|!Array<string>} separators A list of separator characters
+ * @return {string} The last part of the string with respect to the separators
+ */
+goog.string.lastComponent = function(str, separators) {
+  if (!separators) {
+    return str;
+  } else if (typeof separators == 'string') {
+    separators = [separators];
+  }
+
+  var lastSeparatorIndex = -1;
+  for (var i = 0; i < separators.length; i++) {
+    if (separators[i] == '') {
+      continue;
+    }
+    var currentSeparatorIndex = str.lastIndexOf(separators[i]);
+    if (currentSeparatorIndex > lastSeparatorIndex) {
+      lastSeparatorIndex = currentSeparatorIndex;
+    }
+  }
+  if (lastSeparatorIndex == -1) {
+    return str;
+  }
+  return str.slice(lastSeparatorIndex + 1);
 };
 
 

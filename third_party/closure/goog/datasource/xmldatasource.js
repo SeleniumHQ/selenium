@@ -29,6 +29,7 @@ goog.require('goog.ds.DataManager');
 goog.require('goog.ds.DataNode');
 goog.require('goog.ds.LoadState');
 goog.require('goog.ds.logger');
+goog.require('goog.log');
 goog.require('goog.net.XhrIo');
 goog.require('goog.string');
 
