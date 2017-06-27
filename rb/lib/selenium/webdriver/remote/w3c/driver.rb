@@ -34,6 +34,7 @@ module Selenium
           include DriverExtensions::Rotatable
           include DriverExtensions::HasRemoteStatus
           include DriverExtensions::HasWebStorage
+          include DriverExtensions::HasAddons
         end # Driver
       end # W3C
     end # Remote
