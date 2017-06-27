@@ -37,7 +37,6 @@ module Selenium
           include DriverExtensions::HasNetworkConnection
           include DriverExtensions::HasRemoteStatus
           include DriverExtensions::HasWebStorage
-          include DriverExtensions::HasAddons
         end # Driver
       end # OSS
     end # Remote
