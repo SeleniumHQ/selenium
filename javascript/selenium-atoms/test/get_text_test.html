@@ -27,9 +27,22 @@
         }
 
         function testShadowDom() {
+          if (typeof ShadowRoot !== 'function') {
+            // TODO: Remove when all browsers support shadow dom
+            return;
+          }
+
           var element = document.createElement('div');
-          var shadow = element.attachShadow({ mode: 'open' });
-          shadow.innerHTML = '<p>shadow</p><slot></slot>';
+          var shadow;
+
+          if (element.attachShadow) {
+            shadow = element.attachShadow({ mode: 'open' });
+            shadow.innerHTML = '<p>shadow</p><slot></slot>';
+          } else {
+            shadow = element.createShadowRoot();
+            shadow.innerHTML = '<p>shadow</p><content></content>';
+          }
+
           element.innerHTML = '<p>light</p>';
 
           assertEquals('shadow\nlight', core.text.getText(element));
