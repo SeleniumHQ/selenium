@@ -21,7 +21,10 @@ package org.openqa.selenium.internal;
  * killing the process at the OS level. This is interface is a last-ditch
  * mechanism used by selenium-server and other servers trying to maintain
  * a consistent runtime environment when facing hanging processes.
+ *
+ * @deprecated Nothing implements this interface, and it will be removed
  */
+@Deprecated
 public interface Killable {
 
   /**
