@@ -221,7 +221,7 @@ module Javascript
       IO.read(file).each_line do |line|
         if data = @@ADD_DEP_REGEX.match(line)
           info = Info.new(File.expand_path(data[1], @closure_dir))
-          info.is_module = data[4] == "true"
+          info.is_module = (data[4] != "false" and data[4] != "{}")
           @@DEPS_FILES[file].push(info)
           @@FILES[file] = info
 
@@ -334,7 +334,7 @@ module Javascript
         "\\s*,\\s*",
         "\\[([^\\]]+)?\\]",        # Required symbols
         "\\s*",
-        "(?:,\\s*(true|false))?",  # Module flag.
+        "(?:,\\s*(true|false|(?:\\{[^\\}]*\\})))?",  # Module flag.
         "\\s*\\)"
     ].each {|r| r.to_s}.join('')
     @@MODULE_REGEX = /^goog\.module\s*\(\s*['"]([^'"]+)['"]\s*\)/
@@ -570,7 +570,7 @@ module Javascript
         mkdir_p File.dirname(output)
 
         flag_file = File.join(File.dirname(output), "closure_flags.txt")
-        File.open(flag_file, 'w') {|f| f.write(expanded_flags)}    
+        File.open(flag_file, 'w') {|f| f.write(expanded_flags)}
 
         cmd = "java -cp third_party/closure/bin/compiler.jar com.google.javascript.jscomp.CommandLineRunner --flagfile " << flag_file
         sh cmd
@@ -865,7 +865,7 @@ module Javascript
         mkdir_p File.dirname(output)
 
         flag_file = File.join(File.dirname(output), "closure_flags.txt")
-        File.open(flag_file, 'w') {|f| f.write(expanded_flags)}    
+        File.open(flag_file, 'w') {|f| f.write(expanded_flags)}
 
         cmd = "java -cp third_party/closure/bin/compiler.jar com.google.javascript.jscomp.CommandLineRunner " <<
             "--flagfile " << flag_file
