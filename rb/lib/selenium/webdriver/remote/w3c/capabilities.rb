@@ -155,6 +155,12 @@ module Selenium
                 next if value.is_a?(String) && value.empty?
 
                 capability_name = name.to_s
+
+                if capability_name == 'firefox_options'
+                  msg = ':firefox_options is no longer a valid parameter for Remote::Capabilities, use Firefox::Options instead'
+                  raise Error::WebDriverError msg
+                end
+
                 snake_cased_capability_names = KNOWN.map(&:to_s)
                 camel_cased_capability_names = snake_cased_capability_names.map(&w3c_capabilities.method(:camel_case))
 
