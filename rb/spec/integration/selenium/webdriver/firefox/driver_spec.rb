@@ -86,31 +86,9 @@ module Selenium
               expect { driver1.capabilities.browser_version }.to_not raise_exception
               driver1.quit
 
-              caps = Remote::Capabilities.firefox(firefox_options: {binary: ENV['ALT_FIREFOX_BINARY']})
-              @opt[:desired_capabilities] = caps
-              driver2 = Selenium::WebDriver.for @browser, @opt
+              options = Selenium::WebDriver::Firefox::Options.new(binary: ENV['ALT_FIREFOX_BINARY'])
+              @opt[:options] = options
 
-              expect(driver2.capabilities.version).to_not eql(default_version)
-              expect { driver2.capabilities.browser_version }.to_not raise_exception
-              driver2.quit
-            ensure
-              Firefox::Binary.path = @path
-            end
-          end
-
-          it 'gives precedence to firefox options versus argument switch' do
-            pending "Set ENV['ALT_FIREFOX_BINARY'] to test this" unless ENV['ALT_FIREFOX_BINARY']
-            begin
-              @path = Firefox::Binary.path
-              driver1 = Selenium::WebDriver.for @browser, @opt.dup
-
-              default_path = Firefox::Binary.path
-              default_version = driver1.capabilities.version
-              driver1.quit
-
-              caps = Remote::Capabilities.firefox(firefox_options: {binary: ENV['ALT_FIREFOX_BINARY']},
-                                                  service_args: {binary: default_path})
-              @opt[:desired_capabilities] = caps
               driver2 = Selenium::WebDriver.for @browser, @opt
 
               expect(driver2.capabilities.version).to_not eql(default_version)
