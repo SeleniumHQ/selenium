@@ -17,8 +17,6 @@
 
 package org.openqa.grid.internal;
 
-import com.google.common.base.Predicate;
-
 import net.jcip.annotations.ThreadSafe;
 
 import org.openqa.grid.internal.listeners.RegistrationListener;
@@ -243,11 +241,7 @@ public class Registry {
       try {
         testSessionAvailable.await(5, TimeUnit.SECONDS);
 
-        newSessionQueue.processQueue(new Predicate<RequestHandler>() {
-          public boolean apply(RequestHandler input) {
-            return takeRequestHandler(input);
-          }
-        }, configuration.prioritizer);
+        newSessionQueue.processQueue(this::takeRequestHandler, configuration.prioritizer);
         // Just make sure we delete anything that is logged on this thread from memory
         LoggingManager.perSessionLogHandler().clearThreadTempLogs();
       } catch (InterruptedException e) {

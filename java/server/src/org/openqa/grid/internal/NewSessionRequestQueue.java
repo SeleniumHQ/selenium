@@ -17,8 +17,6 @@
 
 package org.openqa.grid.internal;
 
-import com.google.common.base.Predicate;
-
 import net.jcip.annotations.ThreadSafe;
 
 import org.openqa.grid.internal.listeners.Prioritizer;
@@ -28,6 +26,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.logging.Logger;
 
 /**
@@ -59,8 +58,9 @@ class NewSessionRequestQueue {
    * @param prioritizer     The prioritizer to use
    */
 
-  public synchronized void processQueue(Predicate<RequestHandler> handlerConsumer,
-                                        Prioritizer prioritizer) {
+  public synchronized void processQueue(
+      Predicate<RequestHandler> handlerConsumer,
+      Prioritizer prioritizer) {
 
     final List<RequestHandler> copy;
     if (prioritizer != null) {
@@ -72,7 +72,7 @@ class NewSessionRequestQueue {
 
     List<RequestHandler> matched = new ArrayList<>();
     for (RequestHandler request : copy) {
-      if (handlerConsumer.apply(request)) {
+      if (handlerConsumer.test(request)) {
         matched.add(request);
       }
     }
