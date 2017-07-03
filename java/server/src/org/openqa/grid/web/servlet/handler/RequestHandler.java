@@ -48,29 +48,26 @@ import javax.servlet.http.HttpServletResponse;
 @SuppressWarnings("JavaDoc")
 public class RequestHandler implements Comparable<RequestHandler> {
 
+  private static final Logger log = Logger.getLogger(RequestHandler.class.getName());
+
   private final Registry registry;
   private final SeleniumBasedRequest request;
   private final HttpServletResponse response;
 
-  private volatile TestSession session = null;
-
-
   private final CountDownLatch sessionAssigned = new CountDownLatch(1);
-
-  private static final Logger log = Logger.getLogger(RequestHandler.class.getName());
   private final Thread waitingThread;
 
+  private volatile TestSession session = null;
 
-
-
-  public  RequestHandler(SeleniumBasedRequest request, HttpServletResponse response,
+  public  RequestHandler(
+      SeleniumBasedRequest request,
+      HttpServletResponse response,
       Registry registry) {
     this.request = request;
     this.response = response;
     this.registry = registry;
     this.waitingThread = Thread.currentThread();
   }
-
 
 
   /**
