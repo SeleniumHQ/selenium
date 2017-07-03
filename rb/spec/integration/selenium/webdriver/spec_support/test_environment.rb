@@ -21,7 +21,6 @@ module Selenium
   module WebDriver
     module SpecSupport
       class TestEnvironment
-        attr_accessor :unguarded
         attr_reader :driver
 
         def initialize
@@ -29,6 +28,19 @@ module Selenium
           @create_driver_error_count = 0
 
           @driver = (ENV['WD_SPEC_DRIVER'] || :chrome).to_sym
+        end
+
+        def print_env
+          puts "\nRunning Ruby specs:\n\n"
+
+          env = current_env.merge(ruby: defined?(RUBY_DESCRIPTION) ? RUBY_DESCRIPTION : "ruby-#{RUBY_VERSION}")
+
+          just = current_env.keys.map { |e| e.to_s.size }.max
+          env.each do |key, value|
+            puts "#{key.to_s.rjust(just)}: #{value}"
+          end
+
+          puts "\n"
         end
 
         def browser
@@ -40,13 +52,13 @@ module Selenium
         end
 
         def driver_instance
-          @driver_instance ||= new_driver_instance
+          @driver_instance ||= create_driver!
         end
 
         def reset_driver!(time = 0)
           quit_driver
           sleep time
-          @driver_instance = new_driver_instance
+          @driver_instance = create_driver!
         end
 
         def ensure_single_window
@@ -61,11 +73,6 @@ module Selenium
           return unless @driver_instance
           @driver_instance.quit
           @driver_instance = nil
-        end
-
-        def new_driver_instance
-          check_for_previous_error
-          create_driver
         end
 
         def app_server
@@ -113,12 +120,6 @@ module Selenium
           @remote_server.stop if defined? @remote_server
 
           @driver_instance = @app_server = @remote_server = nil
-        ensure
-          Guards.report
-        end
-
-        def unguarded?
-          @unguarded ||= false
         end
 
         def native_events?
@@ -169,21 +170,41 @@ module Selenium
           caps
         end
 
-        private
+        def create_driver!(**opts, &block)
+          check_for_previous_error
 
-        def create_driver(opt = {})
           method = "create_#{driver}_driver".to_sym
           instance = if private_methods.include?(method)
-                       send method, opt
+                       send method, opts
                      else
-                       WebDriver::Driver.for(driver, opt)
+                       WebDriver::Driver.for(driver, opts)
                      end
           @create_driver_error_count -= 1 unless @create_driver_error_count == 0
-          instance
+          if block
+            begin
+              yield(instance)
+            ensure
+              instance.quit
+            end
+          else
+            instance
+          end
         rescue => ex
           @create_driver_error = ex
           @create_driver_error_count += 1
           raise ex
+        end
+
+        private
+
+        def current_env
+          {
+            browser: browser,
+            driver: driver,
+            platform: Platform.os,
+            native: native_events?,
+            ci: Platform.ci
+          }
         end
 
         MAX_ERRORS = 4
@@ -246,10 +267,6 @@ module Selenium
 
           server = ENV['CHROMEDRIVER'] || ENV['chrome_server']
           WebDriver::Chrome.driver_path = server if server
-
-          options = WebDriver::Chrome::Options.new
-          options.add_argument('--no-sandbox') if ENV['TRAVIS']
-          opt[:options] = options
 
           WebDriver::Driver.for :chrome, opt
         end

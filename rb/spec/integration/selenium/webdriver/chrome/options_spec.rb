@@ -22,42 +22,31 @@ require_relative '../spec_helper'
 module Selenium
   module WebDriver
     module Chrome
-      compliant_on browser: :chrome do
-        describe Options do
-          it 'passes emulated device correctly' do
-            subject.add_emulation(device_name: 'Nexus 5')
+      describe Options, only: {driver: :chrome} do
+        it 'passes emulated device correctly' do
+          subject.add_emulation(device_name: 'Nexus 5')
 
-            begin
-              driver = Selenium::WebDriver.for(:chrome, options: subject)
-              ua = driver.execute_script 'return window.navigator.userAgent'
-              expect(ua).to include('Nexus 5')
-            ensure
-              driver.quit if driver
-            end
+          create_driver!(options: subject) do |driver|
+            ua = driver.execute_script 'return window.navigator.userAgent'
+            expect(ua).to include('Nexus 5')
           end
+        end
 
-          it 'passes emulated user agent correctly' do
-            subject.add_emulation(user_agent: 'foo;bar')
+        it 'passes emulated user agent correctly' do
+          subject.add_emulation(user_agent: 'foo;bar')
 
-            begin
-              driver = Selenium::WebDriver.for(:chrome, options: subject)
-              ua = driver.execute_script 'return window.navigator.userAgent'
-              expect(ua).to eq('foo;bar')
-            ensure
-              driver.quit if driver
-            end
+          create_driver!(options: subject) do |driver|
+            ua = driver.execute_script 'return window.navigator.userAgent'
+            expect(ua).to eq('foo;bar')
           end
+        end
 
-          it 'passes args correctly' do
-            subject.add_argument('--user-agent=foo;bar')
+        it 'passes args correctly' do
+          subject.add_argument('--user-agent=foo;bar')
 
-            begin
-              driver = Selenium::WebDriver.for(:chrome, options: subject)
-              ua = driver.execute_script 'return window.navigator.userAgent'
-              expect(ua).to eq('foo;bar')
-            ensure
-              driver.quit if driver
-            end
+          create_driver!(options: subject) do |driver|
+            ua = driver.execute_script 'return window.navigator.userAgent'
+            expect(ua).to eq('foo;bar')
           end
         end
       end

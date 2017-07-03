@@ -17,15 +17,8 @@
 # specific language governing permissions and limitations
 # under the License.
 
-shared_examples_for 'driver that can be started concurrently' do |browser_name|
-  it 'is started sequentially' do
-    caps_opt = {}
-    if browser_name == :ff_esr
-      caps_opt[:firefox_binary] = ENV['FF_ESR_BINARY']
-      caps_opt[:marionette] = false
-      browser_name = :firefox
-    end
-
+shared_examples_for 'driver that can be started concurrently' do
+  it 'is started sequentially', except: {browser: %i[edge safari]} do
     expect do
       # start 5 drivers concurrently
       threads = []
@@ -33,7 +26,7 @@ shared_examples_for 'driver that can be started concurrently' do |browser_name|
 
       5.times do
         threads << Thread.new do
-          drivers << GlobalTestEnv.send(:create_driver)
+          drivers << create_driver!
         end
       end
 

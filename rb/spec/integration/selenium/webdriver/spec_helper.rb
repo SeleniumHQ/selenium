@@ -28,12 +28,9 @@ include Selenium
 
 GlobalTestEnv = WebDriver::SpecSupport::TestEnvironment.new
 
-class Object
-  include WebDriver::SpecSupport::Guards
-end
-
 RSpec.configure do |c|
   c.include(WebDriver::SpecSupport::Helpers)
+
   c.before(:suite) do
     $DEBUG ||= ENV['DEBUG'] == 'true'
     GlobalTestEnv.remote_server.start if GlobalTestEnv.driver == :remote
@@ -44,10 +41,16 @@ RSpec.configure do |c|
   end
 
   c.filter_run focus: true if ENV['focus']
+
+  c.before do |example|
+    guards = WebDriver::SpecSupport::Guards.new(example)
+    if guards.except.satisfied.any? || guards.only.unsatisfied.any?
+      pending 'Guarded.'
+    end
+  end
 end
 
 WebDriver::Platform.exit_hook { GlobalTestEnv.quit }
 
 $stdout.sync = true
-GlobalTestEnv.unguarded = ENV['noguards'] == 'true'
-WebDriver::SpecSupport::Guards.print_env
+GlobalTestEnv.print_env

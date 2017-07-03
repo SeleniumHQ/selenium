@@ -33,6 +33,10 @@ module Selenium
           GlobalTestEnv.quit_driver
         end
 
+        def create_driver!(**opts, &block)
+          GlobalTestEnv.create_driver!(opts, &block)
+        end
+
         def ensure_single_window
           GlobalTestEnv.ensure_single_window
         end
@@ -42,7 +46,7 @@ module Selenium
         end
 
         def fix_windows_path(path)
-          return path unless WebDriver::Platform.os == :windows
+          return path unless WebDriver::Platform.os.windows?
 
           if GlobalTestEnv.browser == :ie
             path = path[%r{file://(.*)}, 1]

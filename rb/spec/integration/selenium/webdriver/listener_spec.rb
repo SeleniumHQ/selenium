@@ -23,11 +23,8 @@ module Selenium
   module WebDriver
     describe Driver do
       it 'supports listener' do
-        begin
-          listener = Selenium::WebDriver::Support::AbstractEventListener.new
-          driver = GlobalTestEnv.send(:create_driver, listener: listener)
-        ensure
-          driver.quit if driver
+        create_driver!(listener: Selenium::WebDriver::Support::AbstractEventListener.new) do
+          # do nothing
         end
       end
     end
