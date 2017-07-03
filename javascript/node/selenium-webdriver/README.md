@@ -17,16 +17,13 @@ be placed on your system [PATH]. Apple's safaridriver is shipped with
 Safari 10 for OS X El Capitan and macOS Sierra. You will need to enable Remote
 Automation in the Develop menu of Safari 10 before testing.
 
-> **NOTE:**  Mozilla's [geckodriver] is only required for Firefox 47+.
-> Everything you need for Firefox 38-46 is included with this package.
-
 
 | Browser           | Component                          |
 | ----------------- | ---------------------------------- |
 | Chrome            | [chromedriver(.exe)][chrome]       |
 | Internet Explorer | [IEDriverServer.exe][release]      |
 | Edge              | [MicrosoftWebDriver.msi][edge]     |
-| Firefox 47+       | [geckodriver(.exe)][geckodriver]   |
+| Firefox           | [geckodriver(.exe)][geckodriver]   |
 | PhantomJS         | [phantomjs(.exe)][phantomjs]       |
 | Opera             | [operadriver(.exe)][opera]         |
 | Safari            | [safaridriver]                     |

@@ -38,7 +38,6 @@ var WEBEXTENSION_EXTENSION = path.join(__dirname,
 
 var JETPACK_EXTENSION_ID = 'jid1-EaXX7k0wwiZR7w@jetpack.xpi';
 var NORMAL_EXTENSION_ID = 'sample@seleniumhq.org';
-var WEBDRIVER_EXTENSION_ID = 'fxdriver@googlecode.com';
 var WEBEXTENSION_EXTENSION_ID = 'webextensions-selenium-example@example.com';
 
 
@@ -59,13 +58,6 @@ describe('Profile', function() {
       profile.setPreference('browser.newtab.url', 'http://www.example.com');
       assert.equal('http://www.example.com',
           profile.getPreference('browser.newtab.url'));
-    });
-
-    it('throws if setting a frozen preference', function() {
-      var profile = new Profile();
-      assert.throws(function() {
-        profile.setPreference('app.update.auto', true);
-      });
     });
   });
 
@@ -107,20 +99,6 @@ describe('Profile', function() {
     });
 
     describe('user.js', function() {
-
-      it('writes defaults', function() {
-        return new Profile().writeToDisk().then(function(dir) {
-          return loadUserPrefs(path.join(dir, 'user.js'));
-        }).then(function(prefs) {
-          // Just check a few.
-          assert.equal(false, prefs['app.update.auto']);
-          assert.equal(true, prefs['browser.EULA.override']);
-          assert.equal(false, prefs['extensions.update.enabled']);
-          assert.equal('about:blank', prefs['browser.newtab.url']);
-          assert.equal(30, prefs['dom.max_script_run_time']);
-        });
-      });
-
       it('merges template user.js into preferences', function() {
         return io.tmpDir().then(function(dir) {
           fs.writeFileSync(path.join(dir, 'user.js'), [
@@ -136,19 +114,6 @@ describe('Profile', function() {
           assert.equal(1234, prefs['dom.max_script_run_time']);
         });
       });
-
-      it('ignores frozen preferences when merging template user.js',
-        function() {
-          return io.tmpDir().then(function(dir) {
-            fs.writeFileSync(path.join(dir, 'user.js'),
-                'user_pref("app.update.auto", true)');
-            return new Profile(dir).writeToDisk();
-          }).then(function(profile) {
-            return loadUserPrefs(path.join(profile, 'user.js'));
-          }).then(function(prefs) {
-            assert.equal(false, prefs['app.update.auto']);
-          });
-        });
     });
 
     describe('extensions', function() {
@@ -160,30 +125,16 @@ describe('Profile', function() {
 
         return profile.writeToDisk().then(function(dir) {
           dir = path.join(dir, 'extensions');
-          assert.ok(fs.existsSync(path.join(dir, JETPACK_EXTENSION_ID)));
-          assert.ok(fs.existsSync(path.join(dir, NORMAL_EXTENSION_ID)));
-          assert.ok(fs.existsSync(path.join(dir, WEBDRIVER_EXTENSION_ID)));
-          assert.ok(fs.existsSync(path.join(dir, WEBEXTENSION_EXTENSION_ID + '.xpi')));
-        });
-      });
-    });
-  });
+          assertExists(JETPACK_EXTENSION_ID);
+          assertExists(NORMAL_EXTENSION_ID);
+          assertExists(WEBEXTENSION_EXTENSION_ID + '.xpi');
 
-  describe('encode', function() {
-    it('excludes the bundled WebDriver extension', function() {
-      return new Profile().encode().then(function(data) {
-        return decode(data);
-      }).then(function(dir) {
-        assert.ok(fs.existsSync(path.join(dir, 'user.js')));
-        assert.ok(fs.existsSync(path.join(dir, 'extensions')));
-        return loadUserPrefs(path.join(dir, 'user.js'));
-      }).then(function(prefs) {
-        // Just check a few.
-        assert.equal(false, prefs['app.update.auto']);
-        assert.equal(true, prefs['browser.EULA.override']);
-        assert.equal(false, prefs['extensions.update.enabled']);
-        assert.equal('about:blank', prefs['browser.newtab.url']);
-        assert.equal(30, prefs['dom.max_script_run_time']);
+          function assertExists(file) {
+            assert.ok(
+                fs.existsSync(path.join(dir, file)),
+                `expected ${file} to exist`);
+          }
+        });
       });
     });
   });

@@ -114,16 +114,6 @@
  *         .setFirefoxOptions(options)
  *         .build();
  *
- * __Testing Older Versions of Firefox__
- *
- * To test versions of Firefox prior to Firefox 47, you must disable the use of
- * the geckodriver using the {@link Options} class.
- *
- *     let options = new firefox.Options().useGeckoDriver(false);
- *
- * Alternatively, you may disable the geckodriver at runtime by setting the
- * environment variable `SELENIUM_MARIONETTE=false`.
- *
  * [geckodriver release]: https://github.com/mozilla/geckodriver/releases/
  * [PATH]: http://en.wikipedia.org/wiki/PATH_%28variable%29
  */
@@ -163,8 +153,8 @@ const Capability = {
   BINARY: 'firefox_binary',
 
   /**
-   * Specifies whether to use Mozilla's Marionette, or the legacy FirefoxDriver
-   * from the Selenium project. Defaults to false.
+   * @deprecated This will be removed in a future release. There is no
+   *     replacement.
    */
   MARIONETTE: 'marionette',
 
@@ -193,9 +183,6 @@ class Options {
 
     /** @private {?capabilities.ProxyConfig} */
     this.proxy_ = null;
-
-    /** @private {boolean} */
-    this.marionette_ = true;
   }
 
   /**
@@ -259,14 +246,10 @@ class Options {
   }
 
   /**
-   * Sets whether to use Mozilla's geckodriver to drive the browser. This option
-   * is enabled by default and required for Firefox 47+.
-   *
-   * @param {boolean} enable Whether to enable the geckodriver.
-   * @see https://github.com/mozilla/geckodriver
+   * @deprecated This method has been deprecated and will be removed in the next
+   *     release. It is a no-op.
    */
   useGeckoDriver(enable) {
-    this.marionette_ = enable;
     return this;
   }
 
@@ -289,7 +272,6 @@ class Options {
     if (this.profile_) {
       caps.set(Capability.PROFILE, this.profile_);
     }
-    caps.set(Capability.MARIONETTE, this.marionette_);
     return caps;
   }
 }
@@ -329,26 +311,6 @@ function findGeckoDriver() {
       'and ensure it can be found on your PATH.');
   }
   return exe;
-}
-
-
-/**
- * @param {(Profile|string)} profile The profile to prepare.
- * @param {number} port The port the FirefoxDriver should listen on.
- * @return {!Promise<string>} a promise for the path to the profile directory.
- */
-function prepareProfile(profile, port) {
-  if (typeof profile === 'string') {
-    return decodeProfile(/** @type {string} */(profile)).then(dir => {
-      profile = new Profile(dir);
-      profile.setPreference('webdriver_firefox_port', port);
-      return profile.writeToDisk();
-    });
-  }
-
-  profile = profile || new Profile;
-  profile.setPreference('webdriver_firefox_port', port);
-  return profile.writeToDisk();
 }
 
 
@@ -557,47 +519,6 @@ function createGeckoDriver(executor, caps, profile, binary) {
 
 
 /**
- * @param {!capabilities.Capabilities} caps
- * @param {Profile} profile
- * @param {!Binary} binary
- * @return {DriverSpec}
- */
-function createLegacyDriver(caps, profile, binary, flow) {
-  profile = profile || new Profile;
-
-  let freePort = portprober.findFreePort();
-  let preparedProfile =
-      freePort.then(port => prepareProfile(profile, port));
-  let command = preparedProfile.then(dir => binary.launch(dir));
-
-  let serverUrl = command.then(() => freePort)
-      .then(function(/** number */port) {
-        let serverUrl = url.format({
-          protocol: 'http',
-          hostname: net.getLoopbackAddress(),
-          port: port + '',
-          pathname: '/hub'
-        });
-        let ready = httpUtil.waitForServer(serverUrl, 45 * 1000);
-        return ready.then(() => serverUrl);
-      });
-
-  return {
-    executor: createExecutor(serverUrl),
-    capabilities: caps,
-    onQuit: function() {
-      return command.then(command => {
-        command.kill();
-        return preparedProfile.then(io.rmDir)
-            .then(() => command.result(),
-                  () => command.result());
-      });
-    }
-  };
-}
-
-
-/**
  * A WebDriver client for Firefox.
  */
 class Driver extends webdriver.WebDriver {
@@ -646,24 +567,7 @@ class Driver extends webdriver.WebDriver {
       caps.delete(Capability.PROFILE);
     }
 
-    // Users must now explicitly disable marionette to use the legacy
-    // FirefoxDriver.
-    let noMarionette =
-        caps.get(Capability.MARIONETTE) === false
-            || /^0|false$/i.test(process.env['SELENIUM_MARIONETTE']);
-    let useMarionette = !noMarionette;
-
-    let spec;
-    if (useMarionette) {
-      spec = createGeckoDriver(opt_executor, caps, profile, binary);
-    } else {
-      if (opt_executor) {
-        throw Error('You may not use a custom command executor with the legacy'
-            + ' FirefoxDriver');
-      }
-      spec = createLegacyDriver(caps, profile, binary, opt_flow);
-    }
-
+    let spec = createGeckoDriver(opt_executor, caps, profile, binary);
     return /** @type {!Driver} */(webdriver.WebDriver.createSession(
         spec.executor, spec.capabilities, opt_flow, this, spec.onQuit));
   }

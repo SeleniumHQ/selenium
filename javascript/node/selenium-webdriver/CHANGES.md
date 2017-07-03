@@ -1,3 +1,18 @@
+## v.next
+
+### Notice
+
+Native support for Firefox 45 (ESR) has been removed. Users will have to connect
+to a remote Selenium server that supports Firefox 45.
+
+### Changes
+
+* Removed native support for Firefox 46 and older.
+  - The `SELENIUM_MARIONETTE` enviornment variable no longer has an effect.
+  - `selenium-webdriver/firefox.Capability.MARIONETTE` is deprecated.
+  - `selenium-webdriver/firefox.Options#useGeckoDriver()` is deprecated and now a no-op.
+
+
 ## v3.4.0
 
 ### Notice
