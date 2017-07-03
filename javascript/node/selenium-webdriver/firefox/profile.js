@@ -38,17 +38,6 @@ const WEBDRIVER_PREFERENCES_PATH = isDevMode
     ? path.join(__dirname, '../../../firefox-driver/webdriver.json')
     : path.join(__dirname, '../lib/firefox/webdriver.json');
 
-/** @const */
-const WEBDRIVER_EXTENSION_PATH = isDevMode
-    ? path.join(__dirname,
-        '../../../../build/javascript/firefox-driver/webdriver.xpi')
-    : path.join(__dirname, '../lib/firefox/webdriver.xpi');
-
-/** @const */
-const WEBDRIVER_EXTENSION_NAME = 'fxdriver@googlecode.com';
-
-
-
 /** @type {Object} */
 var defaultPreferences = null;
 
@@ -130,13 +119,10 @@ function writeUserPrefs(prefs, dir) {
  * @param {!Array.<string>} extensions The extensions to install, as a
  *     path to an unpacked extension directory or a path to a xpi file.
  * @param {string} dir The profile directory to install to.
- * @param {boolean=} opt_excludeWebDriverExt Whether to skip installation of
- *     the default WebDriver extension.
  * @return {!Promise<string>} A promise for the main profile directory
  *     once all extensions have been installed.
  */
-function installExtensions(extensions, dir, opt_excludeWebDriverExt) {
-  var hasWebDriver = !!opt_excludeWebDriverExt;
+function installExtensions(extensions, dir) {
   var next = 0;
   var extensionDir = path.join(dir, 'extensions');
 
@@ -145,11 +131,7 @@ function installExtensions(extensions, dir, opt_excludeWebDriverExt) {
 
     function installNext() {
       if (next >= extensions.length) {
-        if (hasWebDriver) {
-          fulfill(dir);
-        } else {
-          install(WEBDRIVER_EXTENSION_PATH);
-        }
+        fulfill(dir);
       } else {
         install(extensions[next++]);
       }
@@ -157,7 +139,6 @@ function installExtensions(extensions, dir, opt_excludeWebDriverExt) {
 
     function install(ext) {
       extension.install(ext, extensionDir).then(function(id) {
-        hasWebDriver = hasWebDriver || (id === WEBDRIVER_EXTENSION_NAME);
         installNext();
       }, reject);
     }
@@ -353,14 +334,10 @@ class Profile {
 
   /**
    * Writes this profile to disk.
-   * @param {boolean=} opt_excludeWebDriverExt Whether to exclude the WebDriver
-   *     extension from the generated profile. Used to reduce the size of an
-   *     {@link #encode() encoded profile} since the server will always install
-   *     the extension itself.
    * @return {!Promise<string>} A promise for the path to the new profile
    *     directory.
    */
-  writeToDisk(opt_excludeWebDriverExt) {
+  writeToDisk() {
     var profileDir = io.tmpDir();
     if (this.template_) {
       profileDir = profileDir.then(function(dir) {
@@ -382,7 +359,7 @@ class Profile {
     return profileDir.then(function(dir) {
       return writeUserPrefs(prefs, dir);
     }).then(function(dir) {
-      return installExtensions(extensions, dir, !!opt_excludeWebDriverExt);
+      return installExtensions(extensions, dir);
     });
   }
 
@@ -395,7 +372,7 @@ class Profile {
    *
    */
   encode() {
-    return this.writeToDisk(true).then(function(dir) {
+    return this.writeToDisk().then(function(dir) {
       var zip = new AdmZip();
       zip.addLocalFolder(dir, '');
       // Stored compression, see https://en.wikipedia.org/wiki/Zip_(file_format)

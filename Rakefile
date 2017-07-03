@@ -559,7 +559,6 @@ namespace :node do
         " --resource=LICENSE:/LICENSE" <<
         " --resource=NOTICE:/NOTICE" <<
         " --resource=javascript/firefox-driver/webdriver.json:firefox/webdriver.json" <<
-        " --resource=build/javascript/firefox-driver/webdriver.xpi:firefox/webdriver.xpi" <<
         " --resource=common/src/web/:test/data/" <<
         " --exclude_resource=common/src/web/Bin" <<
         " --exclude_resource=.gitignore" <<

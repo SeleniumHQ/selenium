@@ -40,13 +40,13 @@ var WEBEXTENSION_EXTENSION = path.join(__dirname,
 test.suite(function(env) {
   describe('firefox', function() {
     describe('Options', function() {
-      var driver;
+      let driver;
 
-      test.beforeEach(function() {
+      beforeEach(function() {
         driver = null;
       });
 
-      test.afterEach(function() {
+      afterEach(function() {
         if (driver) {
           return driver.quit();
         }
@@ -216,13 +216,11 @@ test.suite(function(env) {
         }
       });
 
-      test.ignore(() => !env.isMarionette).
-      it('can get context', function() {
+      test.it('can get context', function() {
         return assert(driver.getContext()).equalTo(Context.CONTENT);
       });
 
-      test.ignore(() => !env.isMarionette).
-      it('can set context', function*() {
+      test.it('can set context', function*() {
         yield driver.setContext(Context.CHROME);
         let ctxt = yield driver.getContext();
         assert(ctxt).equalTo(Context.CHROME);
@@ -232,8 +230,7 @@ test.suite(function(env) {
         assert(ctxt).equalTo(Context.CONTENT);
       });
 
-      test.ignore(() => !env.isMarionette).
-      it('throws on unknown context', function() {
+      test.it('throws on unknown context', function() {
         return driver.setContext("foo").then(assert.fail, function(e) {
           assert(e).instanceOf(error.InvalidArgumentError);
         });

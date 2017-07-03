@@ -44,6 +44,14 @@ describe('HttpClient', function() {
       res.writeHead(200, {'content-type': 'text/plain'});
       res.end('hello, world!');
 
+    } else if (req.method == 'GET' && req.url == '/chunked') {
+      res.writeHead(200, {
+        'content-type': 'text/html; charset=utf-8',
+        'transfer-encoding': 'chunked'
+      });
+      res.write('<!DOCTYPE html>');
+      setTimeout(() => res.end('<h1>Hello, world!</h1>'), 20);
+
     } else if (req.method == 'GET' && req.url == '/badredirect') {
       res.writeHead(303, {});
       res.end();
@@ -118,6 +126,16 @@ describe('HttpClient', function() {
       assert.equal(request.headers.get('Foo'), 'Bar');
       assert.equal(
           request.headers.get('Accept'), 'application/json; charset=utf-8');
+    });
+  });
+
+  it('handles chunked responses', function() {
+    let request = new HttpRequest('GET', '/chunked');
+
+    let client = new HttpClient(server.url());
+    return client.send(request).then(response => {
+      assert.equal(200, response.status);
+      assert.equal(response.body, '<!DOCTYPE html><h1>Hello, world!</h1>');
     });
   });
 
