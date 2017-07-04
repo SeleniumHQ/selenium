@@ -368,6 +368,10 @@ class RemoteConnection(object):
                 ('POST', '/session/$sessionId/window/rect'),
             Command.GET_WINDOW_RECT:
                 ('GET', '/session/$sessionId/window/rect'),
+            Command.MINIMIZE_WINDOW:
+                ('POST', '/session/$sessionId/window/$windowHandle/minimize'),
+            Command.W3C_MINIMIZE_WINDOW:
+                ('POST', '/session/$sessionId/window/minimize'),
             Command.MAXIMIZE_WINDOW:
                 ('POST', '/session/$sessionId/window/$windowHandle/maximize'),
             Command.W3C_MAXIMIZE_WINDOW:
