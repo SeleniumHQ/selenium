@@ -79,89 +79,6 @@ var AddonDetails;
 var RdfRoot;
 
 
-
-/**
- * Parse an install.rdf for a Firefox add-on.
- * @param {string} rdf The contents of install.rdf for the add-on.
- * @return {!Promise<!AddonDetails>} A promise for the add-on details.
- */
-function parseInstallRdf(rdf) {
-  return parseXml(rdf).then(function(doc) {
-    var em = getNamespaceId(doc, 'http://www.mozilla.org/2004/em-rdf#');
-    var rdf = getNamespaceId(
-        doc, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#');
-
-    var description = doc[rdf + 'RDF'][rdf + 'Description'][0];
-    var details = {
-      id: getNodeText(description, em + 'id'),
-      name: getNodeText(description, em + 'name'),
-      version: getNodeText(description, em + 'version'),
-      unpack: getNodeText(description, em + 'unpack') || false
-    };
-
-    if (typeof details.unpack === 'string') {
-      details.unpack = details.unpack.toLowerCase() === 'true';
-    }
-
-    if (!details.id) {
-      throw new AddonFormatError('Could not find add-on ID for ' + addonPath);
-    }
-
-    return details;
-  });
-
-  function parseXml(text) {
-    return new Promise((resolve, reject) => {
-      xml.parseString(text, (err, data) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(data);
-        }
-      });
-    });
-  }
-
-  function getNodeText(node, name) {
-    return node[name] && node[name][0] || '';
-  }
-
-  function getNamespaceId(doc, url) {
-    var keys = Object.keys(doc);
-    if (keys.length !== 1) {
-      throw new AddonFormatError('Malformed manifest for add-on ' + addonPath);
-    }
-
-    var namespaces = /** @type {!RdfRoot} */(doc[keys[0]]).$;
-    var id = '';
-    Object.keys(namespaces).some(function(ns) {
-      if (namespaces[ns] !== url) {
-        return false;
-      }
-
-      if (ns.indexOf(':') != -1) {
-        id = ns.split(':')[1] + ':';
-      }
-      return true;
-    });
-    return id;
-  }
-}
-
-
-/**
- * Parse a manifest for a Firefox WebExtension.
- * @param {!Object} json JSON representation of the manifest.
- * @return {!AddonDetails} The add-on details.
- */
-function parseManifestJson({name, version, applications}) {
-  if (!(applications && applications.gecko && applications.gecko.id)) {
-    throw new AddonFormatError('Could not find add-on ID for ' + addonPath);
-  }
-
-  return {id: applications.gecko.id, name, version, unpack: false};
-}
-
 /**
  * Extracts the details needed to install an add-on.
  * @param {string} addonPath Path to the extension directory.
@@ -177,6 +94,87 @@ function getDetails(addonPath) {
       throw Error('Add-on path is not an xpi or a directory: ' + addonPath);
     }
   });
+
+  /**
+   * Parse an install.rdf for a Firefox add-on.
+   * @param {string} rdf The contents of install.rdf for the add-on.
+   * @return {!Promise<!AddonDetails>} A promise for the add-on details.
+   */
+  function parseInstallRdf(rdf) {
+    return parseXml(rdf).then(function(doc) {
+      var em = getNamespaceId(doc, 'http://www.mozilla.org/2004/em-rdf#');
+      var rdf = getNamespaceId(
+          doc, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#');
+
+      var description = doc[rdf + 'RDF'][rdf + 'Description'][0];
+      var details = {
+        id: getNodeText(description, em + 'id'),
+        name: getNodeText(description, em + 'name'),
+        version: getNodeText(description, em + 'version'),
+        unpack: getNodeText(description, em + 'unpack') || false
+      };
+
+      if (typeof details.unpack === 'string') {
+        details.unpack = details.unpack.toLowerCase() === 'true';
+      }
+
+      if (!details.id) {
+        throw new AddonFormatError('Could not find add-on ID for ' + addonPath);
+      }
+
+      return details;
+    });
+
+    function parseXml(text) {
+      return new Promise((resolve, reject) => {
+        xml.parseString(text, (err, data) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(data);
+          }
+        });
+      });
+    }
+
+    function getNodeText(node, name) {
+      return node[name] && node[name][0] || '';
+    }
+
+    function getNamespaceId(doc, url) {
+      var keys = Object.keys(doc);
+      if (keys.length !== 1) {
+        throw new AddonFormatError('Malformed manifest for add-on ' + addonPath);
+      }
+
+      var namespaces = /** @type {!RdfRoot} */(doc[keys[0]]).$;
+      var id = '';
+      Object.keys(namespaces).some(function(ns) {
+        if (namespaces[ns] !== url) {
+          return false;
+        }
+
+        if (ns.indexOf(':') != -1) {
+          id = ns.split(':')[1] + ':';
+        }
+        return true;
+      });
+      return id;
+    }
+  }
+
+  /**
+   * Parse a manifest for a Firefox WebExtension.
+   * @param {!Object} json JSON representation of the manifest.
+   * @return {!AddonDetails} The add-on details.
+   */
+  function parseManifestJson({name, version, applications}) {
+    if (!(applications && applications.gecko && applications.gecko.id)) {
+      throw new AddonFormatError('Could not find add-on ID for ' + addonPath);
+    }
+
+    return {id: applications.gecko.id, name, version, unpack: false};
+  }
 
   function parseXpiFile(filePath) {
     const zip = new AdmZip(filePath);
