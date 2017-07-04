@@ -28,6 +28,14 @@ class WebDriverError extends Error {
 
     /** @override */
     this.name = this.constructor.name;
+
+    /**
+     * A stacktrace reported by the remote webdriver endpoint that initially
+     * reported this error. This property will be an empty string if the remote
+     * end did not provide a stacktrace.
+     * @type {string}
+     */
+    this.remoteStacktrace = '';
   }
 }
 
@@ -486,7 +494,11 @@ function isErrorResponse(data) {
 function throwDecodedError(data) {
   if (isErrorResponse(data)) {
     let ctor = ERROR_CODE_TO_TYPE.get(data.error) || WebDriverError;
-    throw new ctor(data.message);
+    let err = new ctor(data.message);
+    if (typeof data.stacktrace === 'string') {
+      err.remoteStacktrace = data.stacktrace;
+    }
+    throw err;
   }
   throw new WebDriverError('Unknown error: ' + JSON.stringify(data));
 }

@@ -187,13 +187,32 @@ describe('error', function() {
     test('unknown method', error.UnknownMethodError);
     test('unsupported operation', error.UnsupportedOperationError);
 
+    it('leaves remoteStacktrace empty if not in encoding', function() {
+      assert.throws(
+          () => error.throwDecodedError({
+            error: 'session not created',
+            message: 'oops'
+          }),
+          (e) => {
+            assert.strictEqual(e.constructor, error.SessionNotCreatedError);
+            assert.strictEqual(e.message, 'oops');
+            assert.strictEqual(e.remoteStacktrace, '');
+            return true;
+          });
+    });
+
     function test(status, expectedType) {
       it(`"${status}" => ${expectedType.name}`, function() {
         assert.throws(
-            () => error.throwDecodedError({error: status, message: 'oops'}),
+            () => error.throwDecodedError({
+              error: status,
+              message: 'oops',
+              stacktrace: 'some-stacktrace'
+            }),
             (e) => {
               assert.strictEqual(e.constructor, expectedType);
               assert.strictEqual(e.message, 'oops');
+              assert.strictEqual(e.remoteStacktrace, 'some-stacktrace');
               return true;
             });
       });
