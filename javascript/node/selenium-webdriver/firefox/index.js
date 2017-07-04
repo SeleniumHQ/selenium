@@ -446,7 +446,7 @@ var DriverSpec;
  * @return {DriverSpec}
  */
 function createGeckoDriver(executor, caps, profile, binary) {
-  let firefoxOptions = {};
+  let firefoxOptions = caps.get('moz:firefoxOptions') || {};
   caps.set('moz:firefoxOptions', firefoxOptions);
 
   if (binary) {

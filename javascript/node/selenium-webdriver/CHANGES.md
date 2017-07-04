@@ -11,7 +11,9 @@ to a remote Selenium server that supports Firefox 45.
   - The `SELENIUM_MARIONETTE` enviornment variable no longer has an effect.
   - `selenium-webdriver/firefox.Capability.MARIONETTE` is deprecated.
   - `selenium-webdriver/firefox.Options#useGeckoDriver()` is deprecated and now a no-op.
-
+* `firefox.Options` will no longer discard the `"moz:firefoxOptions"` set in
+  user provided capabilities (via `Builder.withCapabilities({})`). When both
+  are used, the settings in `firefox.Options` will be applied _last_.
 
 ## v3.4.0
 

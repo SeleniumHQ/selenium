@@ -168,6 +168,26 @@ test.suite(function(env) {
         });
       });
 
+      test.it('can be used alongside preset capabilities', function*() {
+        let binary = yield firefox.Channel.AURORA.locate();
+
+        let profile = new firefox.Profile();
+        profile.addExtension(JETPACK_EXTENSION);
+        profile.setPreference('general.useragent.override', 'foo;bar');
+
+        driver = yield env.builder()
+            .withCapabilities({'moz:firefoxOptions': {binary}})
+            .setFirefoxOptions(new firefox.Options().setProfile(profile))
+            .build();
+
+        yield loadJetpackPage(driver,
+            'data:text/html;charset=UTF-8,<html><div>content</div></html>');
+
+        let text =
+            yield driver.findElement({id: 'jetpack-sample-banner'}).getText();
+        assert(text).equalTo('Hello, world!');
+      });
+
       function loadJetpackPage(driver, url) {
         // On linux the jetpack extension does not always run the first time
         // we load a page. If this happens, just reload the page (a simple
