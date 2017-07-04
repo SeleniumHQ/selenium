@@ -15,6 +15,11 @@ to a remote Selenium server that supports Firefox 45.
   user provided capabilities (via `Builder.withCapabilities({})`). When both
   are used, the settings in `firefox.Options` will be applied _last_.
 
+### Changes for W3C WebDriver Spec Compliance
+
+* Added `error.WebDriverError#remoteStacktrace` to capture the stacktrace
+  reported by a remote WebDriver endpoint (if any).
+
 ## v3.4.0
 
 ### Notice
