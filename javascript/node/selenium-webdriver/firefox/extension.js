@@ -161,7 +161,11 @@ function getDetails(addonPath) {
 
   /**
    * Parse a manifest for a Firefox WebExtension.
-   * @param {!Object} json JSON representation of the manifest.
+   * @param {{
+   *   name: string,
+   *   version: string,
+   *   applications: {gecko:{id:string}}
+   * }} json JSON representation of the manifest.
    * @return {!AddonDetails} The add-on details.
    */
   function parseManifestJson({name, version, applications}) {
@@ -176,35 +180,40 @@ function getDetails(addonPath) {
     return zip.load(filePath).then(archive => {
       if (archive.has('install.rdf')) {
         return archive.getFile('install.rdf')
-            .then(buf => buf.toString('utf8'))
-            .then(parseInstallRdf);
+            .then(buf => parseInstallRdf(buf.toString('utf8')));
       }
 
       if (archive.has('manifest.json')) {
         return archive.getFile('manifest.json')
-            .then(buf => buf.toString('utf8'))
-            .then(JSON.parse)
+            .then(buf => JSON.parse(buf.toString('utf8')))
             .then(parseManifestJson);
       }
 
-      throw new AddonFormatError('Couldn\'t find install.rdf or manifest.json in ' + filePath);
+      throw new AddonFormatError(
+          `Couldn't find install.rdf or manifest.json in ${filePath}`);
     });
   }
 
   function parseDirectory(dirPath) {
     const rdfPath = path.join(dirPath, 'install.rdf');
     const jsonPath = path.join(dirPath, 'manifest.json');
-
-    return Promise.all([io.exists(rdfPath), io.exists(jsonPath)])
-      .then(([rdfExists, jsonExists]) => {
-        if (rdfExists) {
-          return io.read(rdfPath).then(parseInstallRdf);
-        } else if (jsonExists) {
-          return io.read(jsonPath).then(JSON.parse).then(parseManifestJson);
-        } else {
-          throw new AddonFormatError('Couldn\'t find install.rdf or manifest.json in ' + dirPath);
-        }
-      });
+    return io.exists(rdfPath)
+        .then(rdfExists => {
+          if (rdfExists) {
+            return io.read(rdfPath)
+                .then(buf => parseInstallRdf(buf.toString('utf8')));
+          }
+          return io.exists(jsonPath)
+              .then(jsonExists => {
+                if (jsonExists) {
+                  return io.read(jsonPath)
+                      .then(buf => JSON.parse(buf.toString('utf8')))
+                      .then(parseManifestJson);
+                }
+                throw new AddonFormatError(
+                    `Couldn't find install.rdf or manifest.json in ${dirPath}`);
+              });
+        })
   }
 }
 
