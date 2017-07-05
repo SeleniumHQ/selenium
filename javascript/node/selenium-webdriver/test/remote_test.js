@@ -83,7 +83,7 @@ describe('FileDetector', function() {
   }
 
   it('returns the original path if the file does not exist', function() {
-    return io.tmpDir(dir => {
+    return io.tmpDir().then(dir => {
       let theFile = path.join(dir, 'not-there');
       return (new remote.FileDetector)
           .handleFile(new ExplodingDriver, theFile)
@@ -92,7 +92,7 @@ describe('FileDetector', function() {
   });
 
   it('returns the original path if it is a directory', function() {
-    return io.tmpDir(dir => {
+    return io.tmpDir().then(dir => {
       return (new remote.FileDetector)
           .handleFile(new ExplodingDriver, dir)
           .then(f => assert.equal(f, dir));
@@ -100,7 +100,7 @@ describe('FileDetector', function() {
   });
 
   it('attempts to upload valid files', function() {
-    return io.tmpFile(theFile => {
+    return io.tmpFile().then(theFile => {
       return (new remote.FileDetector)
           .handleFile(
               new (class FakeDriver {

@@ -17,14 +17,14 @@
 
 'use strict';
 
-var AdmZip = require('adm-zip'),
-    assert = require('assert'),
+var assert = require('assert'),
     crypto = require('crypto'),
     fs = require('fs'),
     path = require('path');
 
 var extension = require('../../firefox/extension'),
     io = require('../../io'),
+    zip = require('../../io/zip'),
     it = require('../../testing').it;
 
 
@@ -101,20 +101,20 @@ describe('extension', function() {
 
   it('can install an extension from a directory', function() {
     return io.tmpDir().then(function(srcDir) {
-      var buf = fs.readFileSync(NORMAL_EXTENSION);
-      new AdmZip(buf).extractAllTo(srcDir, true);
-      return io.tmpDir().then(function(dstDir) {
-        return extension.install(srcDir, dstDir).then(function(id) {
-          assert.equal(NORMAL_EXTENSION_ID, id);
+      return zip.unzip(NORMAL_EXTENSION, srcDir)
+          .then(() => io.tmpDir())
+          .then(dstDir => {
+            return extension.install(srcDir, dstDir).then(function(id) {
+              assert.equal(NORMAL_EXTENSION_ID, id);
 
-          var dir = path.join(dstDir, NORMAL_EXTENSION_ID);
+              var dir = path.join(dstDir, NORMAL_EXTENSION_ID);
 
-          assert.ok(fs.existsSync(path.join(dir, 'chrome.manifest')));
-          assert.ok(fs.existsSync(path.join(dir, 'content/overlay.xul')));
-          assert.ok(fs.existsSync(path.join(dir, 'content/overlay.js')));
-          assert.ok(fs.existsSync(path.join(dir, 'install.rdf')));
-        });
-      });
+              assert.ok(fs.existsSync(path.join(dir, 'chrome.manifest')));
+              assert.ok(fs.existsSync(path.join(dir, 'content/overlay.xul')));
+              assert.ok(fs.existsSync(path.join(dir, 'content/overlay.js')));
+              assert.ok(fs.existsSync(path.join(dir, 'install.rdf')));
+            });
+          });
     });
   });
 });

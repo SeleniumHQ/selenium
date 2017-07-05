@@ -19,12 +19,12 @@
 
 'use strict';
 
-const AdmZip = require('adm-zip'),
-    fs = require('fs'),
+const fs = require('fs'),
     path = require('path'),
     xml = require('xml2js');
 
 const io = require('../io');
+const zip = require('../io/zip');
 
 
 /**
@@ -56,11 +56,7 @@ function install(extension, dir) {
       if (!details.unpack) {
         return io.copy(extension, dst + '.xpi').then(() => details.id);
       } else {
-        return Promise.resolve().then(function() {
-          // TODO: find an async library for inflating a zip archive.
-          new AdmZip(extension).extractAllTo(dst, true);
-          return details.id;
-        });
+        return zip.unzip(extension, dst).then(() => details.id);
       }
     } else {
       return io.copyDir(extension, dst).then(() => details.id);
@@ -177,15 +173,22 @@ function getDetails(addonPath) {
   }
 
   function parseXpiFile(filePath) {
-    const zip = new AdmZip(filePath);
+    return zip.load(filePath).then(archive => {
+      if (archive.has('install.rdf')) {
+        return archive.getFile('install.rdf')
+            .then(buf => buf.toString('utf8'))
+            .then(parseInstallRdf);
+      }
 
-    if (zip.getEntry('install.rdf')) {
-      return unzip(zip, 'install.rdf').then(parseInstallRdf);
-    } else if (zip.getEntry('manifest.json')) {
-      return unzip(zip, 'manifest.json').then(JSON.parse).then(parseManifestJson);
-    } else {
+      if (archive.has('manifest.json')) {
+        return archive.getFile('manifest.json')
+            .then(buf => buf.toString('utf8'))
+            .then(JSON.parse)
+            .then(parseManifestJson);
+      }
+
       throw new AddonFormatError('Couldn\'t find install.rdf or manifest.json in ' + filePath);
-    }
+    });
   }
 
   function parseDirectory(dirPath) {
@@ -202,17 +205,6 @@ function getDetails(addonPath) {
           throw new AddonFormatError('Couldn\'t find install.rdf or manifest.json in ' + dirPath);
         }
       });
-  }
-
-  function unzip(zip, file) {
-    return new Promise((resolve, reject) => {
-      return zip.readAsTextAsync(file, (data, err) => {
-        if (data)
-          return resolve(data);
-        else
-          return reject(err);
-      });
-    });
   }
 }
 

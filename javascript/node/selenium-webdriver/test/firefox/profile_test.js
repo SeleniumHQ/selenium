@@ -17,8 +17,7 @@
 
 'use strict';
 
-var AdmZip = require('adm-zip'),
-    assert = require('assert'),
+var assert = require('assert'),
     fs = require('fs'),
     path = require('path');
 
