@@ -22,14 +22,14 @@
 
 'use strict';
 
-const AdmZip = require('adm-zip'),
-    fs = require('fs'),
+const fs = require('fs'),
     path = require('path'),
     vm = require('vm');
 
 const isDevMode = require('../lib/devmode'),
     Symbols = require('../lib/symbols'),
     io = require('../io'),
+    {Zip} = require('../io/zip'),
     extension = require('./extension');
 
 
@@ -154,14 +154,10 @@ function installExtensions(extensions, dir) {
  */
 function decode(data) {
   return io.tmpFile().then(function(file) {
-    var buf = new Buffer(data, 'base64');
+    let buf = new Buffer(data, 'base64');
     return io.write(file, buf)
         .then(io.tmpDir)
-        .then(function(dir) {
-          var zip = new AdmZip(file);
-          zip.extractAllTo(dir);  // Sync only? Why?? :-(
-          return dir;
-        });
+        .then(dir => io.unzip(file, dir));
   });
 }
 
@@ -373,19 +369,10 @@ class Profile {
    */
   encode() {
     return this.writeToDisk().then(function(dir) {
-      var zip = new AdmZip();
-      zip.addLocalFolder(dir, '');
-      // Stored compression, see https://en.wikipedia.org/wiki/Zip_(file_format)
-      zip.getEntries().forEach(function(entry) {
-        entry.header.method = 0;
-      });
-
-      return io.tmpFile().then(function(file) {
-        zip.writeZip(file);  // Sync! Why oh why :-(
-        return io.read(file);
-      });
-    }).then(function(data) {
-      return data.toString('base64');
+      let zip = new Zip;
+      return zip.addDir(dir)
+          .then(() => zip.toBuffer())
+          .then(buf => buf.toString('base64'));
     });
   }
 

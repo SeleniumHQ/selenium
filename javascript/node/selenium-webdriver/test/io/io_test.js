@@ -22,7 +22,7 @@ var assert = require('assert'),
     path = require('path'),
     tmp = require('tmp');
 
-var io = require('../io');
+var io = require('../../io');
 
 
 describe('io', function() {
@@ -318,4 +318,43 @@ describe('io', function() {
                 (e) => assert.equal('ENOENT', e.code));
     });
   });
+
+  describe('mkdirp', function() {
+    it('recursively creates entire directory path', function() {
+      return io.tmpDir().then(root => {
+        let dst = path.join(root, 'foo/bar/baz');
+        return io.mkdirp(dst).then(d => {
+          assert.strictEqual(d, dst);
+          return io.stat(d).then(stats => {
+            assert.ok(stats.isDirectory());
+          });
+        });
+      });
+    });
+
+    it('does nothing if the directory already exists', function() {
+      return io.tmpDir()
+          .then(dir => io.mkdirp(dir).then(d => assert.strictEqual(d, dir)));
+    });
+  });
+
+  describe('walkDir', function() {
+    it('walk directory', function() {
+      return io.tmpDir().then(dir => {
+        fs.writeFileSync(path.join(dir, 'file1'), 'hello');
+        fs.mkdirSync(path.join(dir, 'sub'));
+        fs.mkdirSync(path.join(dir, 'sub/folder'));
+        fs.writeFileSync(path.join(dir, 'sub/folder/file2'), 'goodbye');
+
+        return io.walkDir(dir).then(seen => {
+          assert.deepStrictEqual(
+              seen,
+              [{path: 'file1', dir: false},
+               {path: 'sub', dir: true},
+               {path: 'sub/folder', dir: true},
+               {path: 'sub/folder/file2', dir: false}]);
+        });
+      });
+    });
+  })
 });
