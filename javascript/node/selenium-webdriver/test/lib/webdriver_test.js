@@ -1446,6 +1446,7 @@ describe('WebDriver', function() {
       let executor = new FakeExecutor().
           expect(CName.SEND_KEYS_TO_ELEMENT,
                  {'id': WebElement.buildId('one'),
+                  'text': '12abc3',
                   'value':'12abc3'.split('')}).
               andReturnSuccess().
           end();
@@ -1463,6 +1464,7 @@ describe('WebDriver', function() {
               andReturnSuccess(WebElement.buildId('one')).
           expect(CName.SEND_KEYS_TO_ELEMENT,
                  {'id':WebElement.buildId('one'),
+                  'text': 'abc123def',
                   'value':'abc123def'.split('')}).
               andReturnSuccess().
           end();
@@ -1482,6 +1484,7 @@ describe('WebDriver', function() {
               andReturnSuccess(WebElement.buildId('one')).
           expect(CName.SEND_KEYS_TO_ELEMENT,
                  {'id': WebElement.buildId('one'),
+                  'text': 'modified/path',
                   'value':'modified/path'.split('')}).
               andReturnSuccess().
           end();
