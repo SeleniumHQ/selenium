@@ -371,6 +371,17 @@ public class Actions {
   }
 
   /**
+   * Alias of {@link #moveToElement(WebElement)}.
+   *
+   * @see #moveToElement(WebElement)
+   *
+   * @since 3.4.XX TODO
+   */
+  public Actions hoverMouseOver(WebElement target) {
+    return moveToElement(target);
+  }
+
+  /**
    * Moves the mouse to the middle of the element. The element is scrolled into view and its
    * location is calculated using getBoundingClientRect.
    * @param target element to move to.
@@ -382,6 +393,17 @@ public class Actions {
     }
 
     return moveInTicks(target, 0, 0);
+  }
+
+  /**
+   * Alias of {@link #moveToElement(WebElement, int, int)}.
+   *
+   * @see #moveToElement(WebElement, int, int)
+   *
+   * @since 3.4.XX TODO
+   */
+  public Actions hoverMouseOver(WebElement target, int xOffset, int yOffset) {
+    return moveToElement(target, xOffset, yOffset);
   }
 
   /**
@@ -411,6 +433,17 @@ public class Actions {
         Origin.fromElement(target),
         xOffset,
         yOffset));
+  }
+
+  /**
+   * Alias of {@link #moveByOffset(int, int)}.
+   *
+   * @see #moveByOffset(int, int)
+   *
+   * @since 3.4.XX TODO
+   */
+  public Actions hoverMouseOver(int xOffset, int yOffset) {
+    return moveByOffset(xOffset, yOffset);
   }
 
   /**
