@@ -24,6 +24,7 @@ java_library(name = 'core',
   srcs = [
     'Alert.java',
     'By.java',
+    'BrowserOptions.java',
     'Capabilities.java',
     'Cookie.java',
     'ContextAware.java',

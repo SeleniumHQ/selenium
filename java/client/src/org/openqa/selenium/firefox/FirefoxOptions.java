@@ -33,6 +33,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
+import org.openqa.selenium.BrowserOptions;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
@@ -59,7 +60,7 @@ import java.util.stream.Stream;
 
 /**
  * Manage firefox specific settings in a way that geckodriver can understand. Use {@link
- * #addTo(DesiredCapabilities)} to also add settings to a {@link DesiredCapabilities} object.
+ * #addTo(Capabilities)} to also add settings to a {@link Capabilities} object.
  * <p>
  * An example of usage:
  * <pre>
@@ -68,8 +69,17 @@ import java.util.stream.Stream;
  *      .addPreference("browser.startup.homepage", "https://www.google.co.uk");
  *    WebDriver driver = new FirefoxDriver(options);
  * </pre>
+ * <p>
+ * An example for remote session:
+ * <pre>
+ *   FirefoxOptions options = new FirefoxOptions()
+ *      .addPreference("browser.startup.page", 1)
+ *      .addPreference("browser.startup.homepage", "https://www.google.co.uk");
+ *   DesiredCapabilities caps = options.addTo(DesiredCapabilities.firefox());
+ *   WebDriver remoteDriver = new RemoteDriver(remoteUrl, caps);
+ * </pre>
  */
-public class FirefoxOptions {
+public class FirefoxOptions implements BrowserOptions {
 
   public final static String FIREFOX_OPTIONS = "moz:firefoxOptions";
   private final static Logger LOG = Logger.getLogger(FirefoxOptions.class.getName());
@@ -86,7 +96,9 @@ public class FirefoxOptions {
   private boolean legacy;
   private DesiredCapabilities desiredCapabilities = new DesiredCapabilities();
 
-  /** INTERNAL ONLY: DO NOT USE */
+  /**
+   * INTERNAL ONLY: DO NOT USE
+   */
   static FirefoxOptions fromJsonMap(Map<String, Object> map) throws IOException {
     FirefoxOptions options = new FirefoxOptions();
 
@@ -96,7 +108,7 @@ public class FirefoxOptions {
 
     if (map.containsKey("args")) {
       @SuppressWarnings("unchecked")  // #YOLO
-      List<String> list = (List<String>) getOption(map, "args", List.class);
+          List<String> list = (List<String>) getOption(map, "args", List.class);
       options.addArguments(list);
     }
 
@@ -114,7 +126,7 @@ public class FirefoxOptions {
 
     if (map.containsKey("prefs")) {
       @SuppressWarnings("unchecked")  // #YOLO
-      Map<String, Object> prefs = (Map<String, Object>) getOption(map, "prefs", Map.class);
+          Map<String, Object> prefs = (Map<String, Object>) getOption(map, "prefs", Map.class);
       prefs.forEach((key, value) -> {
         if (value instanceof Boolean) {
           options.addPreference(key, (Boolean) value);
@@ -531,7 +543,8 @@ public class FirefoxOptions {
     return new ImmutableCapabilities(caps);
   }
 
-  public DesiredCapabilities addTo(DesiredCapabilities capabilities) {
+  @Override
+  public Capabilities addTo(Capabilities capabilities) {
     return capabilities.merge(toCapabilities());
   }
 
@@ -611,6 +624,48 @@ public class FirefoxOptions {
 
     // something else?  ¯\_(ツ)_/¯
     return "debug";
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+
+    FirefoxOptions that = (FirefoxOptions) o;
+
+    return legacy == that.legacy && (binaryPath != null ? binaryPath.equals(that.binaryPath)
+                                                        : that.binaryPath == null) && (
+               actualBinary != null ? actualBinary.equals(that.actualBinary)
+                                    : that.actualBinary == null) && (profile != null ? profile
+        .equals(that.profile) : that.profile == null) && (args != null ? args.equals(that.args)
+                                                                       : that.args == null) && (
+               booleanPrefs != null ? booleanPrefs.equals(that.booleanPrefs)
+                                    : that.booleanPrefs == null) && (intPrefs != null ? intPrefs
+        .equals(that.intPrefs) : that.intPrefs == null) && (stringPrefs != null ? stringPrefs
+        .equals(that.stringPrefs) : that.stringPrefs == null) && (logLevel != null ? logLevel
+        .equals(that.logLevel) : that.logLevel == null) && (desiredCapabilities != null
+                                                            ? desiredCapabilities
+                                                                .equals(that.desiredCapabilities)
+                                                            : that.desiredCapabilities == null);
+  }
+
+  @Override
+  public int hashCode() {
+    int result = binaryPath != null ? binaryPath.hashCode() : 0;
+    result = 31 * result + (actualBinary != null ? actualBinary.hashCode() : 0);
+    result = 31 * result + (profile != null ? profile.hashCode() : 0);
+    result = 31 * result + (args != null ? args.hashCode() : 0);
+    result = 31 * result + (booleanPrefs != null ? booleanPrefs.hashCode() : 0);
+    result = 31 * result + (intPrefs != null ? intPrefs.hashCode() : 0);
+    result = 31 * result + (stringPrefs != null ? stringPrefs.hashCode() : 0);
+    result = 31 * result + (logLevel != null ? logLevel.hashCode() : 0);
+    result = 31 * result + (legacy ? 1 : 0);
+    result = 31 * result + (desiredCapabilities != null ? desiredCapabilities.hashCode() : 0);
+    return result;
   }
 
   @Override

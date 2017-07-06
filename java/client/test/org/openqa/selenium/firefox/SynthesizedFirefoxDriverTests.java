@@ -26,7 +26,8 @@ import org.openqa.selenium.testing.JUnit4TestBase;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
     StandardSeleniumTests.class,
-    FirefoxSpecificTests.class
+    FirefoxSpecificTests.class,
+    FirefoxOptionsTest.class
 })
 public class SynthesizedFirefoxDriverTests {
   @AfterClass

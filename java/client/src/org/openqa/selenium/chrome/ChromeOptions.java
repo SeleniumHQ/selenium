@@ -28,6 +28,8 @@ import com.google.common.io.Files;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 
+import org.openqa.selenium.BrowserOptions;
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.io.File;
@@ -55,14 +57,14 @@ import java.util.Map;
  *
  * // For use with RemoteWebDriver:
  * DesiredCapabilities capabilities = DesiredCapabilities.chrome();
- * capabilities.setCapability(ChromeOptions.CAPABILITY, options);
+ * options.addTo(capabilities);
  * RemoteWebDriver driver = new RemoteWebDriver(
  *     new URL("http://localhost:4444/wd/hub"), capabilities);
  * </code></pre>
  *
  * @since Since chromedriver v17.0.963.0
  */
-public class ChromeOptions {
+public class ChromeOptions implements BrowserOptions {
 
   /**
    * Key used to store a set of ChromeOptions in a {@link DesiredCapabilities}
@@ -224,6 +226,11 @@ public class ChromeOptions {
     return new Gson().toJsonTree(options);
   }
 
+  @Override
+  public Capabilities addTo(Capabilities capabilities) {
+    return capabilities.merge(this.toCapabilities());
+  }
+
   /**
    * Returns DesiredCapabilities for Chrome with these options included as
    * capabilities. This does not copy the options. Further changes will be
@@ -254,5 +261,16 @@ public class ChromeOptions {
   public int hashCode() {
     return Objects.hashCode(this.binary, this.args, this.extensionFiles, this.experimentalOptions,
         this.extensions);
+  }
+
+  @Override
+  public String toString() {
+    return "ChromeOptions{" +
+           "binary='" + binary + '\'' +
+           ", args=" + args +
+           ", extensionFiles=" + extensionFiles +
+           ", extensions=" + extensions +
+           ", experimentalOptions=" + experimentalOptions +
+           '}';
   }
 }

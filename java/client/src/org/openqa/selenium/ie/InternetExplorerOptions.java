@@ -36,6 +36,7 @@ import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.Streams;
 
 import org.openqa.selenium.Beta;
+import org.openqa.selenium.BrowserOptions;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.internal.ElementScrollBehavior;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -55,11 +56,22 @@ import java.util.stream.Stream;
  *   .requireWindowFocus();
  *
  *new InternetExplorerDriver(options);</pre>
+ *
+ * <p>Example usage with RemoteWebDriver::
+ * <pre><code>
+ * InternetExplorer options = new InternetExplorerOptions()
+ * options.withAttachTimeout(10L, TimeUnit.SECONDS);
+ *
+ * DesiredCapabilities capabilities = DesiredCapabilities.internetExplorer();
+ * options.addTo(capabilities);
+ * RemoteWebDriver driver = new RemoteWebDriver(
+ *     new URL("http://localhost:4444/wd/hub"), capabilities);
+ * </code></pre>
  */
 @Beta
-public class InternetExplorerOptions extends DesiredCapabilities {
+public class InternetExplorerOptions extends DesiredCapabilities implements BrowserOptions {
 
-  private final static String IE_OPTIONS = "se:ieOptions";
+  public final static String IE_OPTIONS = "se:ieOptions";
 
   private static final String FULL_PAGE_SCREENSHOT = "ie.enableFullPageScreenshot";
   private static final String UPLOAD_DIALOG_TIMEOUT = "ie.fileUploadDialogTimeout";
@@ -237,6 +249,11 @@ public class InternetExplorerOptions extends DesiredCapabilities {
           .filter(e -> e.getValue() != null)
           .forEach(e -> setCapability((String) e.getKey(), e.getValue()));
     }
+  }
+
+  @Override
+  public Capabilities addTo(Capabilities capabilities) {
+    return this.merge(capabilities);
   }
 
   public DesiredCapabilities merge(Capabilities other) {
