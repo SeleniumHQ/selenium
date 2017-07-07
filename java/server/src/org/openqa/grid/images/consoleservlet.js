@@ -34,5 +34,15 @@
       show(currentProxy, type);
     });
     showDefaults();
+    
+    (function () {
+        var tmp = location.search.match(/refresh=(\d+)/);
+        if (tmp[1]) {
+        setTimeout(function () {
+            location.reload();
+        }, parseInt(tmp[1], 10));
+        }
+    }());
+    
   });
 }());
