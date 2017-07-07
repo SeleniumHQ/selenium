@@ -29,10 +29,8 @@ import org.openqa.grid.internal.Registry;
 import org.openqa.selenium.remote.BeanToJsonConverter;
 import org.openqa.selenium.remote.JsonToBeanConverter;
 
-import java.io.IOException;
 import java.util.Map;
 
-import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 
 public class WebDriverRequest extends SeleniumBasedRequest {
@@ -110,9 +108,4 @@ public class WebDriverRequest extends SeleniumBasedRequest {
     }
   }
 
-  @Override
-  public ServletInputStream getInputStream() throws IOException {
-    setBody(getBody());
-    return super.getInputStream();
-  }
 }
