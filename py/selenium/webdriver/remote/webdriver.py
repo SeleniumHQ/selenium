@@ -619,6 +619,15 @@ class WebDriver(object):
         else:
             return self.execute(Command.GET_WINDOW_HANDLES)['value']
 
+    def minimize_window(self):
+        """
+        Miniimizes the current window that webdriver is using
+        """
+        command = Command.MINIMIZE_WINDOW
+        if self.w3c:
+            command = Command.W3C_MINIMIZE_WINDOW
+        self.execute(command, {"windowHandle": "current"})
+
     def maximize_window(self):
         """
         Maximizes the current window that webdriver is using
