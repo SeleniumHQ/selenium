@@ -198,7 +198,11 @@ public class PointerInput implements InputSource, Encodable {
     private final Object originObject;
 
     public Object asArg() {
-      return originObject;
+      Object arg = originObject;
+      while (arg instanceof WrapsElement) {
+        arg = ((WrapsElement) arg).getWrappedElement();
+      }
+      return arg;
     }
 
     private Origin(Object originObject) {
@@ -214,11 +218,7 @@ public class PointerInput implements InputSource, Encodable {
     }
 
     public static Origin fromElement(WebElement element) {
-      Preconditions.checkNotNull(element);
-      while (element instanceof WrapsElement) {
-        element = ((WrapsElement) element).getWrappedElement();
-      }
-      return new Origin(element);
+      return new Origin(Preconditions.checkNotNull(element));
     }
   }
 
