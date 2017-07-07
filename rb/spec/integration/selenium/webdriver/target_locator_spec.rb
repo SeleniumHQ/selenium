@@ -239,7 +239,7 @@ module Selenium
           expect(driver.title).to eq('Testing Alerts')
         end
 
-        it 'allows the user to dismiss an alert', except: {browser: :chrome, platform: :macosx} do
+        it 'allows the user to dismiss an alert' do
           driver.navigate.to url_for('alerts.html')
           driver.find_element(id: 'alert').click
 
@@ -307,7 +307,7 @@ module Selenium
             expect { driver.title }.to raise_error(Selenium::WebDriver::Error::UnhandledAlertError)
           end
 
-          it 'raises an UnhandledAlertError if an alert has not been dealt with', only: {browser: :ff_esr} do
+          it 'raises an UnhandledAlertError if an alert has not been dealt with', only: {browser: %i[chrome ff_esr]} do
             driver.navigate.to url_for('alerts.html')
             driver.find_element(id: 'alert').click
             wait_for_alert
