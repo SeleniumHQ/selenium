@@ -50,14 +50,11 @@ public class JsonToWebElementConverter implements Function<Object, Object> {
 
     if (result instanceof Map<?, ?>) {
       Map<?, ?> resultAsMap = (Map<?, ?>) result;
-      if (resultAsMap.containsKey(Dialect.OSS.getEncodedElementKey())) {
-        RemoteWebElement element = newRemoteWebElement();
-        element.setId(String.valueOf(resultAsMap.get(Dialect.OSS.getEncodedElementKey())));
-        return element;
-      } else if (resultAsMap.containsKey(Dialect.W3C.getEncodedElementKey())) {
-        RemoteWebElement element = newRemoteWebElement();
-        element.setId(String.valueOf(resultAsMap.get(Dialect.W3C.getEncodedElementKey())));
-        return element;
+      String elementKey = getElementKey(resultAsMap);
+		  if (null!=elementKey) {
+			  RemoteWebElement element = newRemoteWebElement();
+			  element.setId(String.valueOf(resultAsMap.get(elementKey)));
+			  return element;
       } else {
         return Maps.transformValues(resultAsMap, this);
       }
@@ -77,7 +74,7 @@ public class JsonToWebElementConverter implements Function<Object, Object> {
     return result;
   }
 
-  private RemoteWebElement newRemoteWebElement() {
+  protected RemoteWebElement newRemoteWebElement() {
     return setOwner(new RemoteWebElement());
   }
 
@@ -88,4 +85,13 @@ public class JsonToWebElementConverter implements Function<Object, Object> {
     }
     return element;
   }
+  private static String getElementKey(Map<?, ?> resultAsMap) {
+		for (Dialect d : Dialect.values()) {
+			String elementKeyForDialect = d.getEncodedElementKey();
+			if (resultAsMap.containsKey(elementKeyForDialect)) {
+				return elementKeyForDialect;
+			}
+		}
+		return null;
+	}
 }
