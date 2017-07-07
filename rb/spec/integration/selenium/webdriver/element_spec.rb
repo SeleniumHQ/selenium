@@ -178,9 +178,8 @@ module Selenium
         end
       end
 
-      # Firefox - Pointer actions not in firefox stable yet
       # IE - https://github.com/SeleniumHQ/selenium/pull/4043
-      it 'should drag and drop', except: {browser: %i[safari firefox ff_nightly ie]} do
+      it 'should drag and drop', except: {browser: %i[safari firefox ie]} do
         driver.navigate.to url_for('dragAndDropTest.html')
 
         img1 = driver.find_element(id: 'test1')
