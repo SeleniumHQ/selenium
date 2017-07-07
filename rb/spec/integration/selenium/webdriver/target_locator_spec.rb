@@ -177,8 +177,7 @@ module Selenium
           expect(driver.title).to eq('We Arrive Here')
         end
 
-        # https://github.com/SeleniumHQ/selenium/issues/3339
-        it 'should iterate over open windows when current window is closed', except: {driver: :remote} do
+        it 'should iterate over open windows when current window is closed' do
           driver.navigate.to url_for('xhtmlTest.html')
           wait_for_element(link: 'Create a new anonymous window')
           driver.find_element(link: 'Create a new anonymous window').click
@@ -199,8 +198,7 @@ module Selenium
         end
       end
 
-      # https://github.com/SeleniumHQ/selenium/issues/3339
-      it 'should switch to a window and execute a block when current window is closed', except: [{browser: :safari}, {driver: :remote}] do
+      it 'should switch to a window and execute a block when current window is closed', except: {browser: :safari} do
         driver.navigate.to url_for('xhtmlTest.html')
         driver.find_element(link: 'Open new window').click
         wait.until { driver.window_handles.size == 2 }
@@ -275,8 +273,7 @@ module Selenium
           wait_for_no_alert
         end
 
-        # https://github.com/SeleniumHQ/selenium/issues/3340
-        it 'raises when calling #text on a closed alert', except: {driver: :remote, platform: :macosx} do
+        it 'raises when calling #text on a closed alert' do
           driver.navigate.to url_for('alerts.html')
           wait_for_element(id: 'alert')
 
@@ -289,8 +286,7 @@ module Selenium
           expect { alert.text }.to raise_error(Selenium::WebDriver::Error::NoSuchAlertError)
         end
 
-        # https://github.com/SeleniumHQ/selenium/issues/3340
-        it 'raises NoAlertOpenError if no alert is present', except: [{driver: :remote, platform: :macosx}, {browser: :ie}] do
+        it 'raises NoAlertOpenError if no alert is present', except: {browser: :ie} do
           expect { driver.switch_to.alert }.to raise_error(Selenium::WebDriver::Error::NoSuchAlertError, /alert|modal/i)
         end
 

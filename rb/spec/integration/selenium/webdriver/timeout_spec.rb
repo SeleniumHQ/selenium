@@ -37,14 +37,12 @@ module Selenium
           driver.find_element(id: 'box0')
         end
 
-        # https://github.com/SeleniumHQ/selenium/issues/3338
-        it 'should still fail to find an element with implicit waits enabled', except: {driver: :remote, platform: :macosx} do
+        it 'should still fail to find an element with implicit waits enabled' do
           driver.manage.timeouts.implicit_wait = 0.5
           expect { driver.find_element(id: 'box0') }.to raise_error(WebDriver::Error::NoSuchElementError)
         end
 
-        # https://github.com/SeleniumHQ/selenium/issues/3338
-        it 'should return after first attempt to find one after disabling implicit waits', except: {driver: :remote, platform: :macosx} do
+        it 'should return after first attempt to find one after disabling implicit waits' do
           driver.manage.timeouts.implicit_wait = 3
           driver.manage.timeouts.implicit_wait = 0
 

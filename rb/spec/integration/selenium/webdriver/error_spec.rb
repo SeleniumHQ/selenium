@@ -21,8 +21,7 @@ require_relative 'spec_helper'
 
 module Selenium
   module WebDriver
-    # https://github.com/SeleniumHQ/selenium/issues/3338
-    describe Error, except: {driver: :remote, platform: :macosx} do
+    describe Error do
       it 'should raise an appropriate error' do
         driver.navigate.to url_for('xhtmlTest.html')
 
