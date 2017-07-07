@@ -22,7 +22,7 @@ class Service(service.Service):
     """Object that manages the starting and stopping of the
     GeckoDriver."""
 
-    def __init__(self, executable_path, port=0, service_args=None,
+    def __init__(self, executable_path, port=0, mport=None, service_args=None,
                  log_path="geckodriver.log", env=None):
         """Creates a new instance of the GeckoDriver remote service proxy.
 
@@ -33,6 +33,8 @@ class Service(service.Service):
         :param port: Run the remote service on a specified port.
             Defaults to 0, which binds to a random open port of the
             system's choosing.
+        :param mport: The marionette port to use.
+            Defaults to a random open port of the system's choosing.
         :param service_args: Optional list of arguments to pass to the
             GeckoDriver binary.
         :param log_path: Optional path for the GeckoDriver to log to.
@@ -43,12 +45,17 @@ class Service(service.Service):
         """
         log_file = open(log_path, "a+") if log_path is not None and log_path != "" else None
 
+        self.mport = mport
+
         service.Service.__init__(
             self, executable_path, port=port, log_file=log_file, env=env)
         self.service_args = service_args or []
 
     def command_line_args(self):
-        return ["--port", "%d" % self.port] + self.service_args
+        args = ["--port", "%d" % self.port]
+        if self.mport:
+            args += ["--marionette-port", "%d" % self.mport]
+        return args + self.service_args
 
     def send_remote_shutdown_command(self):
         pass
