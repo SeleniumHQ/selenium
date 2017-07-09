@@ -45,6 +45,12 @@ module Selenium
           @process.start
         end
 
+        def stop_server
+          @process.io.stdout.close unless @process.io.stdout.closed?
+          return if process_exited?
+          connect_to_server { |http| http.get('/shutdown') }
+        end
+
         def cannot_connect_error_text
           "unable to connect to chromedriver #{@host}:#{@port}"
         end
