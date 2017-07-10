@@ -89,6 +89,14 @@ module Selenium
 
       private
 
+      def build_process(*command)
+        WebDriver.logger.debug("Executing Process #{command}")
+        @process = ChildProcess.build(*command)
+        @process.io.stdout = @process.io.stderr = WebDriver.logger.io if WebDriver.logger.debug?
+
+        @process
+      end
+
       def connect_to_server
         Net::HTTP.start(@host, @port) do |http|
           http.open_timeout = STOP_TIMEOUT / 2
