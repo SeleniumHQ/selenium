@@ -25,6 +25,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.lang.reflect.Field;
 
 /**
  * Used to mark a field on a Page Object to indicate that lookup should use a series of @FindBy tags
@@ -47,7 +48,7 @@ public @interface FindAll {
   FindBy[] value();
 
   public static class FindByBuilder extends AbstractFindByBuilder {
-    public By buildIt(Object annotation) {
+    public By buildIt(Object annotation, Field field) {
       FindAll findBys = (FindAll) annotation;
       assertValidFindAll(findBys);
 

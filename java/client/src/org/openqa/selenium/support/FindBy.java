@@ -24,6 +24,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.lang.reflect.Field;
 
 /**
  * <p>Used to mark a field on a Page Object to indicate an alternative mechanism for locating the
@@ -77,7 +78,7 @@ public @interface FindBy {
   String xpath() default "";
 
   public static class FindByBuilder extends AbstractFindByBuilder {
-    public By buildIt(Object annotation) {
+    public By buildIt(Object annotation, Field field) {
       FindBy findBy = (FindBy) annotation;
       assertValidFindBy(findBy);
 
