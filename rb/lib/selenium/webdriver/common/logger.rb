@@ -97,11 +97,7 @@ module Selenium
       # @api private
       #
       def io
-        if debug?
-          @logger.instance_variable_get(:@logdev).instance_variable_get(:@dev)
-        else
-          File.new(Platform.null_device, 'w')
-        end
+        @logger.instance_variable_get(:@logdev).instance_variable_get(:@dev)
       end
 
       #
