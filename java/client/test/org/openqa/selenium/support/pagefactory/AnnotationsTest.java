@@ -40,6 +40,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.lang.reflect.Field;
 import java.util.List;
 
 @RunWith(JUnit4.class)
@@ -109,7 +110,7 @@ public class AnnotationsTest {
     public static class FindByXXXXBuilder extends AbstractFindByBuilder {
 
       @Override
-      public By buildIt(Object annotation) {
+      public By buildIt(Object annotation, Field field) {
         return new By() {
           @Override
           public List<WebElement> findElements(SearchContext context) {

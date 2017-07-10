@@ -19,12 +19,13 @@ package org.openqa.selenium.support;
 
 import org.openqa.selenium.By;
 
+import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.Set;
 
 public abstract class AbstractFindByBuilder {
 
-  public abstract By buildIt(Object annotation);
+  public abstract By buildIt(Object annotation, Field field);
 
   protected By buildByFromFindBy(FindBy findBy) {
     assertValidFindBy(findBy);
@@ -38,29 +39,37 @@ public abstract class AbstractFindByBuilder {
   }
 
   protected By buildByFromShortFindBy(FindBy findBy) {
-    if (!"".equals(findBy.className()))
+    if (!"".equals(findBy.className())) {
       return By.className(findBy.className());
+    }
 
-    if (!"".equals(findBy.css()))
+    if (!"".equals(findBy.css())) {
       return By.cssSelector(findBy.css());
+    }
 
-    if (!"".equals(findBy.id()))
+    if (!"".equals(findBy.id())) {
       return By.id(findBy.id());
+    }
 
-    if (!"".equals(findBy.linkText()))
+    if (!"".equals(findBy.linkText())) {
       return By.linkText(findBy.linkText());
+    }
 
-    if (!"".equals(findBy.name()))
+    if (!"".equals(findBy.name())) {
       return By.name(findBy.name());
+    }
 
-    if (!"".equals(findBy.partialLinkText()))
+    if (!"".equals(findBy.partialLinkText())) {
       return By.partialLinkText(findBy.partialLinkText());
+    }
 
-    if (!"".equals(findBy.tagName()))
+    if (!"".equals(findBy.tagName())) {
       return By.tagName(findBy.tagName());
+    }
 
-    if (!"".equals(findBy.xpath()))
+    if (!"".equals(findBy.xpath())) {
       return By.xpath(findBy.xpath());
+    }
 
     // Fall through
     return null;

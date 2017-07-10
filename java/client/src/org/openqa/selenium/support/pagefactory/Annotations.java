@@ -69,15 +69,14 @@ public class Annotations extends AbstractAnnotations {
           builder = annotation.annotationType()
               .getAnnotation(PageFactoryFinder.class).value()
               .newInstance();
-        } catch (InstantiationException e) {
-        } catch (IllegalAccessException e) {
+        } catch (ReflectiveOperationException e) {
+          // Fall through.
         }
       }
       if (builder != null) {
-        ans = builder.buildIt(annotation);
+        ans = builder.buildIt(annotation, field);
         break;
       }
-
     }
 
     if (ans == null) {
