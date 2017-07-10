@@ -133,6 +133,21 @@ function createDriver(ctor, ...args) {
   if (!thenableWebDriverProxy) {
     /** @implements {ThenableWebDriver} */
     thenableWebDriverProxy = class extends ctor {
+      static createSession(
+        executor,
+        capabilities,
+        opt_flow,
+        opt_ctor,
+        opt_onQuit
+      ) {
+        return super.createSession(
+          executor,
+          capabilities,
+          opt_flow,
+          opt_ctor || this,
+          opt_onQuit
+        );
+      }
       /**
        * @param {!IThenable<!Session>} session
        * @param {...?} rest
