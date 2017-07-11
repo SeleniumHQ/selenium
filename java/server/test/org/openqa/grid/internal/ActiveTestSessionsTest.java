@@ -97,7 +97,7 @@ public class ActiveTestSessionsTest {
 
   private TestSession createTestSession() {
     final HashMap<String, Object> capabilities = new HashMap<>();
-    final TestSessionTest.TestTimeSource timeSource = new TestSessionTest.TestTimeSource();
+    final TestSessionTest.TestClock timeSource = new TestSessionTest.TestClock();
     // Luckily we can pass null for TestSlot
     TestSession testSession = new TestSession(null, capabilities, timeSource);
     testSession.setExternalKey(new ExternalSessionKey("w00t!"));

@@ -27,6 +27,7 @@ import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.InvalidParameterException;
+import java.time.Clock;
 import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.locks.Lock;
@@ -128,7 +129,7 @@ public class TestSlot {
       }
       if (matches(desiredCapabilities)) {
         log.info("Trying to create a new session on test slot " + this.capabilities);
-        TestSession session = new TestSession(this, desiredCapabilities, new DefaultTimeSource());
+        TestSession session = new TestSession(this, desiredCapabilities, Clock.systemUTC());
         currentSession = session;
         lastSessionStart = System.currentTimeMillis();
         return session;
