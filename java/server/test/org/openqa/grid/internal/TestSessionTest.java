@@ -24,6 +24,9 @@ import org.junit.Test;
 import org.openqa.grid.common.SeleniumProtocol;
 import org.openqa.selenium.remote.CapabilityType;
 
+import java.time.Clock;
+import java.time.Instant;
+import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,7 +45,7 @@ public class TestSessionTest {
 
       final HashMap<String, Object> capabilities = new HashMap<>();
       TestSlot testSlot = new TestSlot(p1, SeleniumProtocol.Selenium, "", capabilities);
-      final TestTimeSource timeSource = new TestTimeSource();
+      final TestClock timeSource = new TestClock();
       TestSession testSession = new TestSession(testSlot, capabilities, timeSource);
       testSession.setExternalKey(new ExternalSessionKey("testKey"));
       assertFalse(testSession.isOrphaned());
@@ -68,7 +71,7 @@ public class TestSessionTest {
       final HashMap<String, Object> capabilities = new HashMap<>();
       TestSlot testSlot = new TestSlot(p1, SeleniumProtocol.WebDriver, "", capabilities
       );
-      final TestTimeSource timeSource = new TestTimeSource();
+      final TestClock timeSource = new TestClock();
       TestSession testSession = new TestSession(testSlot, capabilities, timeSource);
       testSession.setExternalKey(new ExternalSessionKey("testKey"));
       assertFalse(testSession.isOrphaned());
@@ -81,16 +84,27 @@ public class TestSessionTest {
   }
 
 
-  public static class TestTimeSource implements TimeSource {
+  public static class TestClock extends Clock {
 
     private long time = 17;
 
-    public long currentTimeInMillis() {
-      return time;
-    }
-
     public void ensureElapsed(long requiredElapsed) {
       time += (requiredElapsed + 1);
+    }
+
+    @Override
+    public Instant instant() {
+      return Instant.ofEpochMilli(time);
+    }
+
+    @Override
+    public ZoneId getZone() {
+      return ZoneId.systemDefault();
+    }
+
+    @Override
+    public Clock withZone(ZoneId zone) {
+      return this;
     }
   }
 }

@@ -53,6 +53,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DateFormat;
+import java.time.Clock;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -84,7 +85,7 @@ public class TestSession {
   private final Map<String, Object> requestedCapabilities;
   private Map<String, Object> objects = Collections.synchronizedMap(new HashMap<String, Object>());
   private volatile boolean ignoreTimeout = false;
-  private final TimeSource timeSource;
+  private final Clock clock;
   private volatile boolean forwardingRequest;
   private final int MAX_NETWORK_LATENCY = 1000;
 
@@ -95,13 +96,15 @@ public class TestSession {
   /*
    * Creates a test session on the specified testSlot.
    */
-  public TestSession(TestSlot slot, Map<String, Object> requestedCapabilities,
-                     TimeSource timeSource) {
+  public TestSession(
+      TestSlot slot,
+      Map<String, Object> requestedCapabilities,
+      Clock clock) {
     internalKey = UUID.randomUUID().toString();
     this.slot = slot;
     this.requestedCapabilities = requestedCapabilities;
-    this.timeSource = timeSource;
-    lastActivity = this.timeSource.currentTimeInMillis();
+    this.clock = clock;
+    lastActivity = this.clock.millis();
   }
 
   /**
@@ -142,11 +145,11 @@ public class TestSession {
     if (ignoreTimeout) {
       return 0;
     }
-    return timeSource.currentTimeInMillis() - lastActivity;
+    return clock.millis() - lastActivity;
   }
 
   public boolean isOrphaned() {
-    final long elapsedSinceCreation = timeSource.currentTimeInMillis() - sessionCreatedAt;
+    final long elapsedSinceCreation = clock.millis() - sessionCreatedAt;
 
     // The session needs to have been open for at least the time interval and we need to have not
     // seen any new commands during that time frame.
@@ -220,12 +223,12 @@ public class TestSession {
         ((CommandListener) slot.getProxy()).beforeCommand(this, request, response);
       }
 
-      lastActivity = timeSource.currentTimeInMillis();
+      lastActivity = clock.millis();
 
       HttpRequest proxyRequest = prepareProxyRequest(request/*, config*/);
 
       HttpResponse proxyResponse = sendRequestToNode(proxyRequest);
-      lastActivity = timeSource.currentTimeInMillis();
+      lastActivity = clock.millis();
       HttpEntity responseBody = proxyResponse.getEntity();
       try {
         final int statusCode = proxyResponse.getStatusLine().getStatusCode();
@@ -580,7 +583,7 @@ public class TestSession {
    */
   public void setIgnoreTimeout(boolean ignore) {
     if (!ignore) {
-      lastActivity = timeSource.currentTimeInMillis();
+      lastActivity = clock.millis();
     }
     this.ignoreTimeout = ignore;
 
