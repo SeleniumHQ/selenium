@@ -77,7 +77,7 @@ public class ProtocolHandshake {
   /**
    * Patterns that are acceptable to send to a w3c remote end.
    */
-  private final Predicate<String> ACCEPTED_W3C_PATTERNS = Stream.of(
+  private final static Predicate<String> ACCEPTED_W3C_PATTERNS = Stream.of(
       "^[\\w-]+:.*$",
       "^acceptInsecureCerts$",
       "^browserName$",
