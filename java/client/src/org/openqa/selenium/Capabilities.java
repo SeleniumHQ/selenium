@@ -35,6 +35,10 @@ public interface Capabilities {
     Object rawPlatform = getCapability("platform");
 
     if (rawPlatform == null) {
+      rawPlatform = getCapability("platformName");
+    }
+
+    if (rawPlatform == null) {
       return null;
     }
 
