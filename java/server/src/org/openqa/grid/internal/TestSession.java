@@ -209,9 +209,10 @@ public class TestSession {
   /*
    * forwards the request to the node.
    */
-  public String forward(SeleniumBasedRequest request, HttpServletResponse response,
-                        boolean newSessionRequest)
-      throws IOException {
+  public String forward(
+      SeleniumBasedRequest request,
+      HttpServletResponse response,
+      boolean newSessionRequest) throws IOException {
     String res = null;
 
     String currentThreadName = Thread.currentThread().getName();
@@ -225,7 +226,7 @@ public class TestSession {
 
       lastActivity = clock.millis();
 
-      HttpRequest proxyRequest = prepareProxyRequest(request/*, config*/);
+      HttpRequest proxyRequest = prepareProxyRequest(request);
 
       HttpResponse proxyResponse = sendRequestToNode(proxyRequest);
       lastActivity = clock.millis();
@@ -366,8 +367,7 @@ public class TestSession {
     return false;
   }
 
-  private HttpResponse sendRequestToNode(HttpRequest proxyRequest) throws ClientProtocolException,
-                                                                          IOException {
+  private HttpResponse sendRequestToNode(HttpRequest proxyRequest) throws IOException {
     HttpClient client = getClient();
     URL remoteURL = slot.getRemoteURL();
     HttpHost host = new HttpHost(remoteURL.getHost(), remoteURL.getPort(), remoteURL.getProtocol());
@@ -375,16 +375,14 @@ public class TestSession {
     return client.execute(host, proxyRequest);
   }
 
-  private HttpRequest prepareProxyRequest(HttpServletRequest request
-/*, ForwardConfiguration config*/)
-      throws IOException {
+  private HttpRequest prepareProxyRequest(HttpServletRequest request) throws IOException {
     URL remoteURL = slot.getRemoteURL();
 
     String pathSpec = request.getServletPath() + request.getContextPath();
     String path = request.getRequestURI();
     if (!path.startsWith(pathSpec)) {
-      throw new IllegalStateException("Expected path " + path + " to start with pathSpec "
-                                      + pathSpec);
+      throw new IllegalStateException(
+          "Expected path " + path + " to start with pathSpec " + pathSpec);
     }
     String end = path.substring(pathSpec.length());
     String ok = remoteURL + end;
