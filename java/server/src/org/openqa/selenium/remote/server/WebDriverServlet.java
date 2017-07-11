@@ -26,7 +26,6 @@ import static org.openqa.selenium.remote.server.DriverServlet.SESSION_TIMEOUT_PA
 import com.google.common.net.HttpHeaders;
 import com.google.common.net.MediaType;
 
-import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.server.xdrpc.CrossDomainRpc;
 import org.openqa.selenium.remote.server.xdrpc.CrossDomainRpcLoader;
 
@@ -47,7 +46,6 @@ import javax.servlet.http.HttpServletResponse;
 
 public class WebDriverServlet extends HttpServlet {
 
-  public static final String SESSIONS_KEY = DriverServlet.class.getName() + ".sessions";
   public static final String ACTIVE_SESSIONS_KEY = WebDriverServlet.class.getName() + ".sessions";
 
   private static final String CROSS_DOMAIN_RPC_PATH = "/xdrpc";
@@ -55,7 +53,6 @@ public class WebDriverServlet extends HttpServlet {
   private final StaticResourceHandler staticResourceHandler = new StaticResourceHandler();
   private final ExecutorService executor = Executors.newCachedThreadPool();
   private ActiveSessions allSessions;
-  private DriverSessions legacyDriverSessions;
   private AllHandlers handlers;
 
   @Override
@@ -66,16 +63,6 @@ public class WebDriverServlet extends HttpServlet {
     long inactiveSessionTimeout = value != null ?
                                   SECONDS.toMillis(Long.parseLong(value)) :
                                   Long.MAX_VALUE;
-
-
-    legacyDriverSessions = (DriverSessions) getServletContext().getAttribute(SESSIONS_KEY);
-    if (legacyDriverSessions == null) {
-
-      legacyDriverSessions = new DefaultDriverSessions(
-          new DefaultDriverFactory(Platform.getCurrent()),
-          inactiveSessionTimeout);
-      getServletContext().setAttribute(SESSIONS_KEY, legacyDriverSessions);
-    }
 
     allSessions = (ActiveSessions) getServletContext().getAttribute(ACTIVE_SESSIONS_KEY);
     if (allSessions == null) {
