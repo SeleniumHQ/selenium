@@ -20,6 +20,8 @@ package org.openqa.grid.internal;
 import com.google.common.base.Charsets;
 import com.google.common.io.ByteStreams;
 import com.google.common.net.MediaType;
+import com.google.common.collect.Maps;
+import com.google.gson.Gson;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -28,6 +30,7 @@ import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.message.BasicHttpEntityEnclosingRequest;
 import org.apache.http.message.BasicHttpRequest;
@@ -64,6 +67,8 @@ import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+
 
 /**
  * Represent a running test for the hub/registry. A test session is created when a TestSlot becomes
@@ -400,7 +405,21 @@ public class TestSession {
     if (body != null) {
       BasicHttpEntityEnclosingRequest r =
           new BasicHttpEntityEnclosingRequest(request.getMethod(), uri);
-      r.setEntity(new InputStreamEntity(body, request.getContentLength()));
+      final HttpEntity entity;
+      final WebDriverRequest wdRequest = request instanceof WebDriverRequest 
+	      ? (WebDriverRequest) request : null ;
+      if(wdRequest != null && wdRequest.getDesiredCapabilities() != null){
+		  // new Session should pass matched capabilities ( respect nodeConfig,not just client capabilities )
+		  final Map<String, Object> capabilities = slot.getCapabilities();
+		  final Map<String, Object>  jsonMap = Maps.newHashMap();
+		  jsonMap.put("desiredCapabilities", capabilities);
+		  jsonMap.put("capabilities", capabilities);
+		  final Gson gson = new Gson();
+		  entity = new StringEntity(gson.toJson(jsonMap));		  
+      }else{
+          entity = new InputStreamEntity(body, request.getContentLength());
+      }
+      r.setEntity(entity);
       proxyRequest = r;
     } else {
       proxyRequest = new BasicHttpRequest(request.getMethod(), uri);
