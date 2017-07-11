@@ -236,6 +236,10 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     startSession(desiredCapabilities, null);
   }
 
+  /**
+   * @deprecated Use {@link #startSession(Capabilities)} instead.
+   */
+  @Deprecated
   @SuppressWarnings({"unchecked"})
   protected void startSession(Capabilities desiredCapabilities,
       Capabilities requiredCapabilities) {
