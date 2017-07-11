@@ -114,8 +114,10 @@ class ServicedSession implements ActiveSession {
   public static class Factory implements SessionFactory {
 
     private final Supplier<? extends DriverService> createService;
+    private final String serviceClassName;
 
     public Factory(String serviceClassName) {
+      this.serviceClassName = serviceClassName;
       try {
         Class<? extends DriverService> driverClazz =
             Class.forName(serviceClassName).asSubclass(DriverService.class);
@@ -182,6 +184,11 @@ class ServicedSession implements ActiveSession {
       } catch (IOException e) {
         throw new SessionNotCreatedException("Cannot establish new session", e);
       }
+    }
+
+    @Override
+    public String toString() {
+      return getClass() + " (provider: " + serviceClassName + ")";
     }
 
     private CommandCodec<HttpRequest> getCommandCodec(Dialect dialect) {
