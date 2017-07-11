@@ -22,17 +22,20 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
-import org.openqa.selenium.Platform;
 import org.openqa.selenium.SessionNotCreatedException;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.Dialect;
 
 import java.nio.file.Path;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.ServiceLoader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 /**
  * Used to create new {@link ActiveSession} instances as required.
@@ -44,7 +47,9 @@ public class ActiveSessionFactory {
   private final Map<String, SessionFactory> factories;
 
   public ActiveSessionFactory() {
-    Map<String, ServicedSession.Factory> servicedFactories = ImmutableMap.<String, String>builder()
+    Map<String, SessionFactory> builder = new LinkedHashMap<>();
+
+    ImmutableMap.<String, String>builder()
         .put(chrome().getBrowserName(), "org.openqa.selenium.chrome.ChromeDriverService")
         .put(edge().getBrowserName(), "org.openqa.selenium.edge.EdgeDriverService")
         .put(firefox().getBrowserName(), "org.openqa.selenium.firefox.GeckoDriverService")
@@ -63,15 +68,24 @@ public class ActiveSessionFactory {
             return false;
           }
         })
-        .collect(Collectors.toMap(
-            Map.Entry::getKey,
-            e -> new ServicedSession.Factory(e.getValue())));
+        .forEach(e -> builder.put(e.getKey(), new ServicedSession.Factory(e.getValue())));
 
-    this.factories = ImmutableMap.<String, SessionFactory>builder()
-        .putAll(servicedFactories)
-        // We put htmlunit last because the factories will always succeed. Which is nice, but tricky.
-        .put(htmlUnit().getBrowserName(), new InMemorySession.Factory(new DefaultDriverFactory(Platform.getCurrent())))
-        .build();
+    // Attempt to bind the htmlunitdriver if it's present.
+    try {
+      Class<? extends WebDriver> clazz = Class.forName("org.openqa.selenium.htmlunit.HtmlUnitDriver")
+              .asSubclass(WebDriver.class);
+      builder.put(
+          htmlUnit().getBrowserName(),
+          new InMemorySession.Factory(new DefaultDriverProvider(htmlUnit(), clazz)));
+    } catch (ReflectiveOperationException ignored) {
+      // Just carry on. Everything is fine.
+    }
+
+    // Allow user-defined factories to override default ones
+    StreamSupport.stream(ServiceLoader.load(DriverProvider.class).spliterator(), false)
+        .forEach(p -> builder.put(p.getProvidedCapabilities().getBrowserName(), new InMemorySession.Factory(p)));
+
+    this.factories = ImmutableMap.copyOf(builder);
   }
 
   public ActiveSession createSession(
@@ -104,7 +118,8 @@ public class ActiveSessionFactory {
         })
         .filter(Objects::nonNull)
         .findFirst()
-        .orElseThrow(() -> new SessionNotCreatedException("Unable to create a new session"));
+        .orElseThrow(() -> new SessionNotCreatedException(
+            "Unable to create a new session because of no configuration."));
   }
 
   private List<SessionFactory> determineBrowser(

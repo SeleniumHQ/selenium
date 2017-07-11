@@ -115,10 +115,10 @@ class InMemorySession implements ActiveSession {
 
     private static final Type MAP_TYPE = new TypeToken<Map<String, Object>>(){}.getType();
     private final Gson gson;
-    private final DriverFactory factory;
+    private final DriverProvider provider;
 
-    public Factory(DriverFactory factory) {
-      this.factory = factory;
+    public Factory(DriverProvider provider) {
+      this.provider = provider;
       gson = new GsonBuilder().setLenient().create();
     }
 
@@ -127,8 +127,20 @@ class InMemorySession implements ActiveSession {
       // Assume the blob fits in the available memory.
       try (Reader reader = Files.newBufferedReader(capabilitiesBlob, UTF_8)) {
         Map<String, Object> raw = gson.fromJson(reader, MAP_TYPE);
-        ImmutableCapabilities caps = new ImmutableCapabilities(raw);
-        WebDriver driver = factory.newInstance(caps);
+        Object desired = raw.get("desiredCapabilities");
+
+        if (!(desired instanceof Map)) {
+          return null;
+        }
+
+        @SuppressWarnings("unchecked") ImmutableCapabilities caps =
+            new ImmutableCapabilities((Map<String, ?>) desired);
+
+        if (!provider.canCreateDriverInstanceFor(caps)) {
+          return null;
+        }
+
+        WebDriver driver = provider.newInstance(caps);
 
         // Prefer the OSS dialect.
         Dialect downstream = downstreamDialects.contains(Dialect.OSS) ?
@@ -139,6 +151,12 @@ class InMemorySession implements ActiveSession {
         throw new UncheckedIOException(e);
       }
     }
+
+    @Override
+    public String toString() {
+      return getClass() + " (provider: " + provider + ")";
+    }
+
   }
 
   private class PretendDriverSessions implements DriverSessions {
@@ -161,7 +179,7 @@ class InMemorySession implements ActiveSession {
 
     @Override
     public void deleteSession(SessionId sessionId) {
-      throw new UnsupportedOperationException("deleteSession");
+      // no-op
     }
 
     @Override
