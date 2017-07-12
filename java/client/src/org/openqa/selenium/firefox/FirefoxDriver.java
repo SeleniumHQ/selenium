@@ -117,6 +117,10 @@ public class FirefoxDriver extends RemoteWebDriver {
     warnAboutDeprecatedConstructor("FirefoxBinary", "setBinary(binary)");
   }
 
+  /**
+   * @deprecated Prefer {@link FirefoxOptions#setProfile(FirefoxProfile)}.
+   */
+  @Deprecated
   public FirefoxDriver(FirefoxProfile profile) {
     this(new FirefoxOptions().setProfile(profile));
   }
