@@ -1100,7 +1100,8 @@ namespace OpenQA.Selenium.Remote
         protected void StartSession(ICapabilities desiredCapabilities)
         {
             Dictionary<string, object> parameters = new Dictionary<string, object>();
-            parameters.Add("desiredCapabilities", this.GetLegacyCapabilitiesDictionary(desiredCapabilities));
+            var desiredCapabilitiesDict = this.GetLegacyCapabilitiesDictionary(desiredCapabilities);
+            parameters.Add("desiredCapabilities", desiredCapabilitiesDict);
 
             Dictionary<string, object> firstMatchCapabilities = this.GetCapabilitiesDictionary(desiredCapabilities);
 
@@ -1109,7 +1110,7 @@ namespace OpenQA.Selenium.Remote
 
             Dictionary<string, object> specCompliantCapabilities = new Dictionary<string, object>();
             specCompliantCapabilities["firstMatch"] = firstMatchCapabilitiesList;
-            parameters.Add("capabilities", specCompliantCapabilities);
+            desiredCapabilitiesDict.Add("capabilities", specCompliantCapabilities);
 
             Response response = this.Execute(DriverCommand.NewSession, parameters);
 
