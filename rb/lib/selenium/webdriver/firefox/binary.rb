@@ -79,7 +79,7 @@ module Selenium
           @process = ChildProcess.build(*args)
           WebDriver.logger.debug("Executing Process #{args}")
 
-          @process.io.stdout = @process.io.stderr = WebDriver.logger.io
+          @process.io.stdout = @process.io.stderr = WebDriver.logger.io if WebDriver.logger.debug?
           @process.start
         end
 
