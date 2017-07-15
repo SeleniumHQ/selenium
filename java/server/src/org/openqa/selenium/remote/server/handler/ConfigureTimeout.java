@@ -26,6 +26,9 @@ import java.util.concurrent.TimeUnit;
 
 public class ConfigureTimeout extends WebDriverHandler<Void> implements JsonParametersAware {
 
+  private static final String IMPLICIT = "implicit";
+  private static final String PAGE_LOAD = "page load";
+  private static final String SCRIPT = "script";
   private volatile String type;
   private volatile long millis;
 
@@ -34,21 +37,35 @@ public class ConfigureTimeout extends WebDriverHandler<Void> implements JsonPara
   }
 
   public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
+    String key = "ms";
     type = (String) allParameters.get("type");
+    if (null == type || type.trim().isEmpty()) {
+      //We got the parameters as per the w3c spec
+      if (allParameters.containsKey(IMPLICIT)) {
+        type = IMPLICIT;
+      } else if (allParameters.containsKey(PAGE_LOAD)) {
+        type = PAGE_LOAD;
+      } else if (allParameters.containsKey(SCRIPT)) {
+        type = SCRIPT;
+      } else {
+        throw new WebDriverException("Unknown wait type");
+      }
+      key = type;
+    }
     try {
-      millis = ((Number) allParameters.get("ms")).longValue();
+      millis = ((Number) allParameters.get(key)).longValue();
     } catch (ClassCastException ex) {
-      throw new WebDriverException("Illegal (non-numeric) timeout value passed: " + allParameters.get("ms"), ex);
+      throw new WebDriverException("Illegal (non-numeric) timeout value passed: " + allParameters.get(key), ex);
     }
   }
 
   @Override
   public Void call() throws Exception {
-    if ("implicit".equals(type)) {
+    if (IMPLICIT.equals(type)) {
       getDriver().manage().timeouts().implicitlyWait(millis, TimeUnit.MILLISECONDS);
-    } else if ("page load".equals(type)) {
+    } else if (PAGE_LOAD.equals(type)) {
       getDriver().manage().timeouts().pageLoadTimeout(millis, TimeUnit.MILLISECONDS);
-    } else if ("script".equals(type)) {
+    } else if (SCRIPT.equals(type)) {
       getDriver().manage().timeouts().setScriptTimeout(millis, TimeUnit.MILLISECONDS);
     } else {
       throw new WebDriverException("Unknown wait type: " + type);
