@@ -19,6 +19,7 @@ package org.openqa.selenium.remote.server;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
+import org.openqa.selenium.remote.server.handler.ConfigureTimeoutTest;
 import org.openqa.selenium.remote.server.handler.UploadFileTest;
 import org.openqa.selenium.remote.server.handler.html5.UtilsTest;
 import org.openqa.selenium.remote.server.handler.interactions.SendKeyToActiveElementTest;
@@ -43,6 +44,7 @@ import org.openqa.selenium.remote.server.xdrpc.CrossDomainRpcLoaderTest;
     SessionLogsTest.class,
     TeeReaderTest.class,
     UploadFileTest.class,
+    ConfigureTimeoutTest.class,
     UrlTemplateTest.class,
     UtilsTest.class
 })
