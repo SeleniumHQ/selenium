@@ -168,7 +168,6 @@ want to build a single driver, then you can run one of these targets:
 ```sh
 ./go chrome
 ./go firefox
-./go htmlunit
 ./go ie
 ```
 
