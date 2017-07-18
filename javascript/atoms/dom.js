@@ -1030,7 +1030,8 @@ bot.dom.appendVisibleTextLinesFromElementCommon_ = function(
         bot.dom.getEffectiveStyle(elem, 'cssFloat') ||
         bot.dom.getEffectiveStyle(elem, 'styleFloat');
     var runIntoThis = prevDisplay == 'run-in' && thisFloat == 'none';
-    if (isBlock && !runIntoThis && !goog.string.isEmpty(currLine())) {
+    if (isBlock && !runIntoThis &&
+        !goog.string.isEmptyOrWhitespace(currLine())) {
       lines.push('');
     }
 
@@ -1065,7 +1066,8 @@ bot.dom.appendVisibleTextLinesFromElementCommon_ = function(
 
     // Add a newline after block elems when there is text on the current line,
     // and the current element isn't marked as run-in.
-    if (isBlock && display != 'run-in' && !goog.string.isEmpty(line)) {
+    if (isBlock && display != 'run-in' &&
+        !goog.string.isEmptyOrWhitespace(line)) {
       lines.push('');
     }
   }
