@@ -199,12 +199,23 @@ position: relative; top:25px;">Red</div>
     mouse.move(redDiv, coords);
     mouse.releaseButton();
 
+    // In https://chromium.googlesource.com/chromium/src/+/bafc23e1920cc799c03159c39e29878e26071db0
+    // Chrome adopted the same values as IE and FF.
+    var expectUninitializedButtons =
+        goog.userAgent.product.CHROME && goog.userAgent.product.isVersion(60);
+    var wkButtonData;
+    if (expectUninitializedButtons) {
+      wkButtonData = 0;
+    } else {
+      wkButtonData = 2;
+    }
+
     // Right click triggers contextmenu even when released over another element.
     assertEvents(
       mouseoverAndMoveEvents(greenDiv, 0),
       mousedownEvents(greenDiv, 2),
-      mouseoutEvents(greenDiv, b({ie: 0, wk: 2, ff: 0})),
-      mouseoverAndMoveEvents(redDiv, b({ie: 2, wk: 2, ff: 0})),
+      mouseoutEvents(greenDiv, b({ie: 2, wk: wkButtonData, ff: 0})),
+      mouseoverAndMoveEvents(redDiv, b({ie: 2, wk: wkButtonData, ff: 0})),
       mouseupEvents(redDiv, 2),
       goog.events.EventType.CONTEXTMENU, redDiv, b({ie: 0, wk: 2, ff: 2})
     );
