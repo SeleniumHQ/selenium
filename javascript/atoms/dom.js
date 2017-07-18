@@ -569,13 +569,13 @@ bot.dom.isShown = function(elem, opt_ignoreOpacity) {
           } else {
             parent = parent.host;
           }
-        } else if (parent.nodeType == goog.dom.NodeType.DOCUMENT ||
-            parent.nodeType == goog.dom.NodeType.DOCUMENT_FRAGMENT) {
+        } else if (parent && (parent.nodeType == goog.dom.NodeType.DOCUMENT ||
+            parent.nodeType == goog.dom.NodeType.DOCUMENT_FRAGMENT)) {
           parent = null;
         }
       } while (elem && elem.nodeType != goog.dom.NodeType.ELEMENT);
       return !parent || displayed(parent);
-    }
+    };
   } else {
     // Any element with a display style equal to 'none' or that has an ancestor
     // with display style equal to 'none' is not shown.
@@ -585,7 +585,7 @@ bot.dom.isShown = function(elem, opt_ignoreOpacity) {
       }
       var parent = bot.dom.getParentElement(e);
       return !parent || displayed(parent);
-    }
+    };
   }
   return bot.dom.isShown_(elem, !!opt_ignoreOpacity, displayed);
 };
