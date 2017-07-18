@@ -181,7 +181,7 @@ module Selenium
           # @option :browser_version          [String] required browser version number
           # @option :platform_name            [Symbol] one of :any, :win, :mac, or :x
           # @option :platform_version         [String] required platform version number
-          # @option :accept_insecure_certs    [Boolean] does the driver accept SSL Cerfifications?
+          # @option :accept_insecure_certs    [Boolean] does the driver accept insecure SSL certifications?
           # @option :proxy                    [Selenium::WebDriver::Proxy, Hash] proxy configuration
           #
           # @api public
