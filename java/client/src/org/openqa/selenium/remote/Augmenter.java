@@ -69,7 +69,7 @@ public class Augmenter extends BaseAugmenter {
 
     }
     logger.warning("Augmenter should be applied to the instances of @Augmentable classes " +
-        "or previously augmented instances only");
+        "or previously augmented instances only (instance class was: " + driver.getClass() + ")");
     return null;
   }
 
