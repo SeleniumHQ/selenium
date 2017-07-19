@@ -228,7 +228,6 @@ for browser in browsers.keys():
     name = 'atoms-%s' % browser,
     vm_args = [
       '-Dselenium.browser=%s' % browsers[browser],
-      '-Dwebdriver.firefox.marionette=false',
       '-Djs.test.timeout=20',
       '-Djs.test.dir=%s' % get_base_path(),
     ],
