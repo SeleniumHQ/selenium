@@ -22,6 +22,7 @@ import static org.mockito.Mockito.mock;
 import com.google.common.collect.Maps;
 
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.server.DriverSessions;
@@ -31,29 +32,37 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Stream;
 
 public class TestSessions implements DriverSessions {
 
   private final AtomicLong sessionKeyFactory = new AtomicLong(0);
   private final Map<SessionId, Session> sessionIdToDriver = Maps.newHashMap();
 
-  public SessionId newSession(Capabilities desiredCapabilities)
+  @Override
+  public SessionId newSession(Stream<Capabilities> desiredCapabilities)
       throws Exception {
     SessionId sessionId = new SessionId(String.valueOf(
         sessionKeyFactory.getAndIncrement()));
 
     WebDriver driver = mock(WebDriver.class, "webdriver(" + sessionId + ")");
 
-    Session session = new TestSession(sessionId, driver, desiredCapabilities);
+    Session session = new TestSession(
+        sessionId,
+        driver,
+        desiredCapabilities.findFirst()
+            .orElseThrow(() -> new NoSuchSessionException("Unable to find capabilities")));
     sessionIdToDriver.put(sessionId, session);
 
     return sessionId;
   }
 
+  @Override
   public Session get(SessionId sessionId) {
     return sessionIdToDriver.get(sessionId);
   }
 
+  @Override
   public void deleteSession(SessionId sessionId) {
     Session session = sessionIdToDriver.remove(sessionId);
     if (session != null) {
@@ -61,11 +70,13 @@ public class TestSessions implements DriverSessions {
     }
   }
 
+  @Override
   public void registerDriver(Capabilities capabilities,
       Class<? extends WebDriver> implementation) {
     throw new UnsupportedOperationException();
   }
 
+  @Override
   public Set<SessionId> getSessions() {
     return Collections.unmodifiableSet(sessionIdToDriver.keySet());
   }

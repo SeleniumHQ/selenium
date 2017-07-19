@@ -24,9 +24,10 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.SessionId;
 
 import java.util.Set;
+import java.util.stream.Stream;
 
 public interface DriverSessions {
-  SessionId newSession(Capabilities desiredCapabilities) throws Exception;
+  SessionId newSession(Stream<Capabilities> desiredCapabilities) throws Exception;
 
   Session get(SessionId sessionId);
 
