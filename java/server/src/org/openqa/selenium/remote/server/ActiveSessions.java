@@ -25,6 +25,8 @@ import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.server.log.LoggingManager;
 import org.openqa.selenium.remote.server.log.PerSessionLogHandler;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -36,22 +38,35 @@ class ActiveSessions {
   private final static Logger LOG = Logger.getLogger(ActiveSessions.class.getName());
 
   private final Cache<SessionId, ActiveSession> allSessions;
+  private final List<ActiveSessionListener> listeners = new LinkedList<>();
 
   public ActiveSessions(long inactiveSessionTimeout, TimeUnit unit) {
     RemovalListener<SessionId, ActiveSession> listener = notification -> {
-      log("Removing session %s: %s", notification.getKey(), notification.getCause());
       ActiveSession session = notification.getValue();
+      listeners.forEach(l -> l.onStop(session));
       session.stop();
-
-      PerSessionLogHandler logHandler = LoggingManager.perSessionLogHandler();
-      logHandler.transferThreadTempLogsToSessionLogs(session.getId());
-      logHandler.removeSessionLogs(session.getId());
     };
 
     allSessions = CacheBuilder.newBuilder()
         .expireAfterAccess(inactiveSessionTimeout, unit)
         .removalListener(listener)
         .build();
+
+    addListener(new ActiveSessionListener() {
+      @Override
+      public void onStop(ActiveSession session) {
+        log("Removing session %s", session);
+      }
+    });
+
+    addListener(new ActiveSessionListener() {
+      @Override
+      public void onStop(ActiveSession session) {
+        PerSessionLogHandler logHandler = LoggingManager.perSessionLogHandler();
+        logHandler.transferThreadTempLogsToSessionLogs(session.getId());
+        logHandler.removeSessionLogs(session.getId());
+      }
+    });
   }
 
   public void put(ActiveSession session) {
@@ -59,11 +74,23 @@ class ActiveSessions {
   }
 
   public ActiveSession get(SessionId id) {
-    return allSessions.getIfPresent(id);
+    ActiveSession session = allSessions.getIfPresent(id);
+    if (session != null) {
+      listeners.forEach(l -> l.onAccess(session));
+    }
+    return session;
   }
 
   public void invalidate(SessionId id) {
     allSessions.invalidate(id);
+  }
+
+  public void addListener(ActiveSessionListener listener) {
+    listeners.add(listener);
+  }
+
+  public void removeListener(ActiveSessionListener listener) {
+    listeners.remove(listener);
   }
 
   @Override
