@@ -66,6 +66,7 @@ java_library(
   srcs = [
     'ActiveSession.java',
     'ActiveSessionFactory.java',
+    'ActiveSessionListener.java',
     'ActiveSessions.java',
     'BeginSession.java',
     'AllHandlers.java',
