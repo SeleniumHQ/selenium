@@ -55,7 +55,7 @@ class WebDriver(RemoteWebDriver):
     def __init__(self, firefox_profile=None, firefox_binary=None,
                  timeout=30, capabilities=None, proxy=None,
                  executable_path="geckodriver", firefox_options=None,
-                 log_path="geckodriver.log", port=0, service_args=None):
+                 log_path="geckodriver.log", service_args=None):
         """Starts a new local session of Firefox.
 
         Based on the combination and specificity of the various keyword
@@ -99,9 +99,6 @@ class WebDriver(RemoteWebDriver):
             defaults to picking up the binary from the system path.
         :param firefox_options: Instance of ``options.Options``.
         :param log_path: Where to log information from the driver.
-        :param port: Run the remote service on a specified port.
-            Defaults to 0, which binds to a random open port of the
-            system's choosing.
         :param service_args: Optional list of arguments to pass to the
             GeckoDriver binary.
 
@@ -143,7 +140,7 @@ class WebDriver(RemoteWebDriver):
 
         if capabilities.get("marionette"):
             capabilities.pop("marionette")
-            self.service = Service(executable_path, log_path=log_path, port=port, service_args=service_args)
+            self.service = Service(executable_path, log_path=log_path, service_args=service_args)
             self.service.start()
 
             capabilities.update(firefox_options.to_capabilities())
