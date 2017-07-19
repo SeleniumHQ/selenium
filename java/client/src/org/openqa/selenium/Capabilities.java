@@ -43,7 +43,7 @@ public interface Capabilities {
     }
 
     if (rawPlatform instanceof String) {
-      return Platform.valueOf((String) rawPlatform);
+      return Platform.fromString((String) rawPlatform);
     } else if (rawPlatform instanceof Platform) {
       return (Platform) rawPlatform;
     }

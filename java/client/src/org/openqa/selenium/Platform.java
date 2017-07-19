@@ -124,7 +124,7 @@ public enum Platform {
       return "OS X 10.10";
     }
   },
-  
+
   EL_CAPITAN("el capitan", "os x 10.11") {
     @Override
     public Platform family() {
@@ -284,18 +284,20 @@ public enum Platform {
    * @return the Platform enum value matching the parameter
    */
   public static Platform fromString(String name) {
-    try {
-      return Platform.valueOf(name);
-    } catch (IllegalArgumentException ex) {
-      for (Platform os : Platform.values()) {
-        for (String matcher : os.partOfOsName) {
-          if (name.toLowerCase().equals(matcher.toLowerCase())) {
-            return os;
-          }
+    for (Platform platform : values()) {
+      if (platform.toString().equalsIgnoreCase(name)) {
+        return platform;
+      }
+    }
+
+    for (Platform os : Platform.values()) {
+      for (String matcher : os.partOfOsName) {
+        if (name.toLowerCase().equals(matcher.toLowerCase())) {
+          return os;
         }
       }
-      throw new WebDriverException("Unrecognized platform: " + name);
     }
+    throw new WebDriverException("Unrecognized platform: " + name);
   }
 
   /**

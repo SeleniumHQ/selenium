@@ -42,6 +42,27 @@ public class ImmutableCapabilities implements Capabilities, Serializable {
         caps.put(key, value);
       }
     });
+
+    // Normalise the "platform" value for both OSS and W3C.
+    Object value = caps.getOrDefault("platform", caps.get("platformName"));
+    if (value != null) {
+      Object platform;
+      if (value instanceof Platform) {
+        platform = (Platform) value;
+      } else if (value instanceof String) {
+        try {
+          platform = Platform.fromString((String) value);
+        } catch (WebDriverException ignored) {
+          // Just use the string we were given.
+          platform = value;
+        }
+      } else {
+        throw new IllegalStateException("Platform was neither a string or a Platform: " + value);
+      }
+
+      caps.put("platform", platform);
+      caps.put("platformName", platform);
+    }
   }
 
   @Override
