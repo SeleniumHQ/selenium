@@ -19,9 +19,13 @@ package org.openqa.selenium;
 
 
 import java.io.Serializable;
+import java.lang.reflect.Array;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.Map;
+import java.util.Stack;
 
 public class ImmutableCapabilities implements Capabilities, Serializable {
 
@@ -68,5 +72,80 @@ public class ImmutableCapabilities implements Capabilities, Serializable {
   @Override
   public int hashCode() {
     return caps.hashCode();
+  }
+
+  public String toString() {
+    Map<Object, String> seen = new IdentityHashMap<>();
+    Stack<Object> toVisit = new Stack<>();
+    toVisit.push(caps);
+
+    StringBuilder builder = new StringBuilder("Capabilities ");
+    abbreviate(seen, builder, caps);
+    return builder.toString();
+  }
+
+  private void abbreviate(
+      Map<Object, String> seen,
+      StringBuilder builder,
+      Object stringify) {
+
+    if (stringify == null) {
+      builder.append("null");
+      return;
+    }
+
+    StringBuilder value = new StringBuilder();
+
+    if (stringify.getClass().isArray()) {
+      Array ary = (Array) stringify;
+      value.append("[");
+      int length = Array.getLength(ary);
+      for (int i = 0; i < length; i++) {
+        abbreviate(seen, value, Array.get(ary, i));
+        if (i < length - 1) {
+          value.append(", ");
+        }
+      }
+      value.append("]");
+    } else if (stringify instanceof Collection) {
+      Collection<?> c = (Collection<?>) stringify;
+      value.append("[");
+      int length = c.size();
+      int i = 0;
+
+      for (Object o : c) {
+        abbreviate(seen, value, o);
+        if (i < length - 1) {
+          value.append(", ");
+        }
+        i++;
+      }
+      value.append("]");
+    } else if (stringify instanceof Map) {
+      value.append("{");
+
+      Map<?, ?> m = (Map<?, ?>) stringify;
+      int length = m.size();
+      int i = 0;
+      for (Map.Entry entry : m.entrySet()) {
+        abbreviate(seen, value, entry.getKey());
+        value.append("=");
+        abbreviate(seen, value, entry.getValue());
+        if (i < length - 1) {
+          value.append(", ");
+        }
+      }
+      value.append("}");
+    } else {
+      String s = String.valueOf(stringify);
+      if (s.length() > 30) {
+        value.append(s.substring(0, 27)).append("...");
+      } else {
+        value.append(s);
+      }
+    }
+
+    seen.put(stringify, value.toString());
+    builder.append(value.toString());
   }
 }
