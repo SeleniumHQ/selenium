@@ -43,6 +43,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -214,7 +215,7 @@ public class WebDriverBackedSeleniumServlet extends HttpServlet {
       }
 
       try {
-        sessionId = sessionsSupplier.get().newSession(caps);
+        sessionId = sessionsSupplier.get().newSession(Stream.of(caps));
       } catch (Exception e) {
         getServletContext().log("Unable to start session", e);
         sendError(

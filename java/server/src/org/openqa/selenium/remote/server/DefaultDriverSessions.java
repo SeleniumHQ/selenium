@@ -26,6 +26,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.io.Files;
 
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.remote.SessionId;
@@ -33,6 +34,7 @@ import org.openqa.selenium.remote.server.log.LoggingManager;
 import org.openqa.selenium.remote.server.log.PerSessionLogHandler;
 
 import java.util.Set;
+import java.util.stream.Stream;
 
 public class DefaultDriverSessions implements DriverSessions {
 
@@ -60,29 +62,35 @@ public class DefaultDriverSessions implements DriverSessions {
         .build();
   }
 
+  @Override
   public void registerDriver(Capabilities capabilities, Class<? extends WebDriver> driverClass) {
     factory.registerDriverProvider(new DefaultDriverProvider(capabilities, driverClass));
   }
 
-  public SessionId newSession(Capabilities desiredCapabilities) throws Exception {
+  @Override
+  public SessionId newSession(Stream<Capabilities> desiredCapabilities) throws Exception {
     Session session = DefaultSession.createSession(
         factory,
         TemporaryFilesystem.getTmpFsBasedOn(Files.createTempDir()),
-        desiredCapabilities);
+        desiredCapabilities.findFirst().orElseThrow(
+            () -> new SessionNotCreatedException("Unable to determine capabilities for session")));
 
     sessionIdToDriver.put(session.getSessionId(), session);
 
     return session.getSessionId();
   }
 
+  @Override
   public Session get(SessionId sessionId) {
     return sessionIdToDriver.getIfPresent(sessionId);
   }
 
+  @Override
   public void deleteSession(SessionId sessionId) {
     sessionIdToDriver.invalidate(sessionId);
   }
 
+  @Override
   public Set<SessionId> getSessions() {
     return ImmutableSet.copyOf(sessionIdToDriver.asMap().keySet());
   }

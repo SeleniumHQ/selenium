@@ -47,6 +47,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Logger;
+import java.util.stream.Stream;
 
 class InMemorySession implements ActiveSession {
 
@@ -168,7 +169,7 @@ class InMemorySession implements ActiveSession {
     }
 
     @Override
-    public SessionId newSession(Capabilities desiredCapabilities) throws Exception {
+    public SessionId newSession(Stream<Capabilities> desiredCapabilities) throws Exception {
       throw new UnsupportedOperationException("newSession");
     }
 
