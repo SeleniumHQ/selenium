@@ -77,7 +77,6 @@ goog.inherits(goog.proto2.TextFormatSerializer, goog.proto2.Serializer);
  */
 goog.proto2.TextFormatSerializer.prototype.deserializeTo = function(
     message, data) {
-  var descriptor = message.getDescriptor();
   var textData = data.toString();
   var parser = new goog.proto2.TextFormatSerializer.Parser();
   if (!parser.parse(message, textData, this.ignoreMissingFields_)) {
@@ -677,7 +676,7 @@ goog.proto2.TextFormatSerializer.Parser.prototype.consumeFieldValue_ = function(
 /**
  * Attempts to convert a string to a number.
  * @param {string} num in hexadecimal or float format.
- * @return {!number} The converted number or null on error.
+ * @return {number} The converted number or null on error.
  * @private
  */
 goog.proto2.TextFormatSerializer.Parser.getNumberFromString_ = function(num) {

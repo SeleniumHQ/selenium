@@ -39,6 +39,7 @@ goog.require('goog.editor.icontent.FieldStyleInfo');
 goog.require('goog.editor.node');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
+goog.require('goog.html.legacyconversions');
 goog.require('goog.html.uncheckedconversions');
 goog.require('goog.log');
 goog.require('goog.string.Const');
@@ -430,7 +431,8 @@ goog.editor.SeamlessField.prototype.inheritBlendedCSS = function() {
   // we're applying the 'blend' for the first time, or because we
   // *need* to recompute the blend.
   var newCSS = this.getIframeableCss(true);
-  goog.style.installStyles(newCSS, field);
+  goog.style.installSafeStyleSheet(
+      goog.html.legacyconversions.safeStyleSheetFromString(newCSS), field);
 };
 
 
@@ -558,7 +560,10 @@ goog.editor.SeamlessField.prototype.installStyles = function() {
   if (!this.usesIframe()) {
     if (!goog.editor.SeamlessField.haveInstalledCss_) {
       if (this.cssStyles) {
-        goog.style.installStyles(this.cssStyles, this.getElement());
+        goog.style.installSafeStyleSheet(
+            goog.html.legacyconversions.safeStyleSheetFromString(
+                this.cssStyles),
+            this.getElement());
       }
 
       // TODO(user): this should be reset to false when the editor is quit.

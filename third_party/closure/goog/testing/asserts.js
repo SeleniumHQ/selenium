@@ -11,20 +11,14 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-goog.provide('goog.testing.JsUnitException');
-goog.provide('goog.testing.asserts');
-goog.provide('goog.testing.asserts.ArrayLike');
 
-goog.require('goog.testing.stacktrace');
+goog.provide('goog.testing.asserts');
+goog.setTestOnly();
+
+goog.require('goog.testing.JsUnitException');
 
 // TODO(user): Copied from JsUnit with some small modifications, we should
 // reimplement the asserters.
-
-
-/**
- * @typedef {Array|NodeList|Arguments|{length: number}}
- */
-goog.testing.asserts.ArrayLike;
 
 var DOUBLE_EQUALITY_PREDICATE = function(var1, var2) {
   return var1 == var2;
@@ -668,16 +662,47 @@ goog.testing.asserts.findDifferences = function(
         failures.push(
             path + ': Expected ' + var1.length + '-element array ' +
             'but got a ' + var2.length + '-element array');
+      } else if (typeOfVar1 == 'String') {
+        if (var1 != var2) {
+          failures.push(
+              path + ': Expected String "' + var1 + '" ' +
+              'but got "' + var2 + '"');
+        }
       } else {
         var childPath = path + (isArray ? '[%s]' : (path ? '.%s' : '%s'));
+        // These type checks do not use _trueTypeOf because that does not work
+        // for polyfilled Map/Set. Note that these checks may potentially fail
+        // if var1 comes from a different window.
+        if ((typeof Map != 'undefined' && var1 instanceof Map) ||
+            (typeof Set != 'undefined' && var1 instanceof Set)) {
+          var1.forEach(function(value, key) {
+            if (var2.has(key)) {
+              // For a map, the values must be compared, but with Set, checking
+              // that the second set contains the first set's "keys" is
+              // sufficient.
+              if (var2.get) {
+                innerAssertWithCycleCheck(
+                    value, var2.get(key), childPath.replace('%s', key));
+              }
+            } else {
+              failures.push(
+                  key + ' not present in actual ' + (path || typeOfVar2));
+            }
+          });
 
-        // if an object has an __iterator__ property, we have no way of
-        // actually inspecting its raw properties, and JS 1.7 doesn't
-        // overload [] to make it possible for someone to generically
-        // use what the iterator returns to compare the object-managed
-        // properties. This gets us into deep poo with things like
-        // goog.structs.Map, at least on systems that support iteration.
-        if (!var1['__iterator__']) {
+          var2.forEach(function(value, key) {
+            if (!var1.has(key)) {
+              failures.push(
+                  key + ' not present in expected ' + (path || typeOfVar1));
+            }
+          });
+        } else if (!var1['__iterator__']) {
+          // if an object has an __iterator__ property, we have no way of
+          // actually inspecting its raw properties, and JS 1.7 doesn't
+          // overload [] to make it possible for someone to generically
+          // use what the iterator returns to compare the object-managed
+          // properties. This gets us into deep poo with things like
+          // goog.structs.Map, at least on systems that support iteration.
           for (var prop in var1) {
             if (isArray && goog.testing.asserts.isArrayIndexProp_(prop)) {
               // Skip array indices for now. We'll handle them later.
@@ -936,11 +961,11 @@ var assertElementsRoughlyEqual = function(a, b, c, opt_d) {
 
 /**
  * Compares two array-like objects without taking their order into account.
- * @param {string|goog.testing.asserts.ArrayLike} a Assertion message or the
+ * @param {string|IArrayLike} a Assertion message or the
  *     expected elements.
- * @param {goog.testing.asserts.ArrayLike} b Expected elements or the actual
+ * @param {IArrayLike} b Expected elements or the actual
  *     elements.
- * @param {goog.testing.asserts.ArrayLike=} opt_c Actual elements.
+ * @param {IArrayLike=} opt_c Actual elements.
  */
 var assertSameElements = function(a, b, opt_c) {
   _validateArguments(2, arguments);
@@ -1172,7 +1197,7 @@ var assertRegExp = function(a, b, opt_c) {
 
 /**
  * Converts an array like object to array or clones it if it's already array.
- * @param {goog.testing.asserts.ArrayLike} arrayLike The collection.
+ * @param {IArrayLike} arrayLike The collection.
  * @return {!Array<?>} Copy of the collection as array.
  * @private
  */
@@ -1187,7 +1212,7 @@ goog.testing.asserts.toArray_ = function(arrayLike) {
 
 /**
  * Finds the position of the first occurrence of an element in a container.
- * @param {goog.testing.asserts.ArrayLike} container
+ * @param {IArrayLike} container
  *     The array to find the element in.
  * @param {*} contained Element to find.
  * @return {number} Index of the first occurrence or -1 if not found.
@@ -1210,7 +1235,7 @@ goog.testing.asserts.indexOf_ = function(container, contained) {
 
 /**
  * Tells whether the array contains the given element.
- * @param {goog.testing.asserts.ArrayLike} container The array to
+ * @param {IArrayLike} container The array to
  *     find the element in.
  * @param {*} contained Element to find.
  * @return {boolean} Whether the element is in the array.
@@ -1276,39 +1301,6 @@ goog.testing.asserts.raiseException = function(comment, opt_message) {
  */
 goog.testing.asserts.isArrayIndexProp_ = function(prop) {
   return (prop | 0) == prop;
-};
-
-
-
-/**
- * @param {string} comment A summary for the exception.
- * @param {?string=} opt_message A description of the exception.
- * @constructor
- * @extends {Error}
- * @final
- */
-goog.testing.JsUnitException = function(comment, opt_message) {
-  this.isJsUnitException = true;
-  this.message = (comment ? comment : '') +
-      (comment && opt_message ? '\n' : '') + (opt_message ? opt_message : '');
-  this.stackTrace = goog.testing.stacktrace.get();
-  // These fields are for compatibility with jsUnitTestManager.
-  this.comment = comment || null;
-  this.jsUnitMessage = opt_message || '';
-
-  // Ensure there is a stack trace.
-  if (Error.captureStackTrace) {
-    Error.captureStackTrace(this, goog.testing.JsUnitException);
-  } else {
-    this.stack = new Error().stack || '';
-  }
-};
-goog.inherits(goog.testing.JsUnitException, Error);
-
-
-/** @override */
-goog.testing.JsUnitException.prototype.toString = function() {
-  return this.message;
 };
 
 

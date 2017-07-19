@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html>
+<!--
+Copyright 2011 The Closure Library Authors. All Rights Reserved.
+
+Use of this source code is governed by the Apache License, Version 2.0.
+See the COPYING file for details.
+
+-->
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Closure Performance Tests - Vector Array math</title>
+  <link rel="stylesheet" type="text/css"
+        href="../testing/performancetable.css"/>
+  <script type="text/javascript" src="../base.js"></script>
+  <script type="text/javascript">
+    goog.require('goog.testing.jsunit');
+    goog.require('goog.testing.PerformanceTable');
+    goog.require('goog.vec.Vec4');
+    goog.require('goog.vec.Mat4');
+  </script>
+</head>
+<body>
+  <h1>Closure Performance Tests - Vector Array Math</h1>
+  <p>
+    <strong>User-agent:</strong>
+    <script type="text/javascript">document.write(navigator.userAgent);</script>
+  </p>
+  <p>
+    These tests compare various methods of performing vector operations on
+    arrays of vectors.
+  </p>
+  <div id="perfTable"></div>
+  <hr>
+ <script type="text/javascript">
+
+var table = new goog.testing.PerformanceTable(
+    goog.dom.getElement('perfTable'));
+
+function createRandomFloat32Array(length) {
+  var array = new Float32Array(length);
+  for (var i = 0; i < length; i++) {
+    array[i] = Math.random();
+  }
+  return array;
+}
+
+function createRandomIndexArray(length) {
+  var array = [];
+  for (var i = 0; i < length; i++) {
+    array[i] = Math.floor(Math.random() * length);
+    array[i] = Math.min(length - 1, array[i]);
+  }
+  return array;
+}
+
+function createRandomVec4Array(length) {
+  var a = [];
+  for (var i = 0; i < length; i++) {
+    a[i] = goog.vec.Vec4.createFromValues(
+        Math.random(), Math.random(), Math.random(), Math.random());
+  }
+  return a;
+}
+
+function createRandomMat4() {
+  var m = goog.vec.Mat4.createFromValues(
+      Math.random(), Math.random(), Math.random(), Math.random(),
+      Math.random(), Math.random(), Math.random(), Math.random(),
+      Math.random(), Math.random(), Math.random(), Math.random(),
+      Math.random(), Math.random(), Math.random(), Math.random());
+  return m;
+}
+
+function createRandomMat4Array(length) {
+  var m = [];
+  for (var i = 0; i < length; i++) {
+    m[i] = createRandomMat4();
+  }
+  return m;
+}
+
+/**
+ * Vec4Object is a 4-vector object with x,y,z,w components.
+ * @param {number} x The x component.
+ * @param {number} y The y component.
+ * @param {number} z The z component.
+ * @param {number} w The w component.
+ * @constructor
+ */
+Vec4Object = function(x, y, z, w) {
+  this.x = x;
+  this.y = y;
+  this.z = z;
+  this.w = w;
+};
+
+/**
+ * Add two vectors.
+ * @param {Vec4Object} v0 A vector.
+ * @param {Vec4Object} v1 Another vector.
+ * @param {Vec4Object} r The result.
+ */
+Vec4Object.add = function(v0, v1, r) {
+  r.x = v0.x + v1.x;
+  r.y = v0.y + v1.y;
+  r.z = v0.z + v1.z;
+  r.w = v0.w + v1.w;
+};
+
+function createRandomVec4ObjectArray(length) {
+  var a = [];
+  for (var i = 0; i < length; i++) {
+    a[i] = new Vec4Object(
+        Math.random(), Math.random(), Math.random(), Math.random());
+  }
+  return a;
+}
+
+function setVec4FromArray(v, a, o) {
+  v[0] = a[o + 0];
+  v[1] = a[o + 1];
+  v[2] = a[o + 2];
+  v[3] = a[o + 3];
+}
+
+function setArrayFromVec4(a, o, v) {
+  a[o + 0] = v[0];
+  a[o + 1] = v[1];
+  a[o + 2] = v[2];
+  a[o + 3] = v[3];
+}
+
+/**
+ * This is the same as goog.vec.Vec4.add().  Use this to avoid namespace lookup
+ * overheads.
+ * @param {goog.vec.Vec4.Vec4Like} v0 A vector.
+ * @param {goog.vec.Vec4.Vec4Like} v1 Another vector.
+ * @param {goog.vec.Vec4.Vec4Like} r The result.
+ */
+function addVec4(v0, v1, r) {
+  r[0] = v0[0] + v1[0];
+  r[1] = v0[1] + v1[1];
+  r[2] = v0[2] + v1[2];
+  r[3] = v0[3] + v1[3];
+}
+
+function addVec4ByOffset(v0Buf, v0Off, v1Buf, v1Off, rBuf, rOff) {
+  rBuf[rOff + 0] = v0Buf[v0Off + 0] + v1Buf[v1Off + 0];
+  rBuf[rOff + 1] = v0Buf[v0Off + 1] + v1Buf[v1Off + 1];
+  rBuf[rOff + 2] = v0Buf[v0Off + 2] + v1Buf[v1Off + 2];
+  rBuf[rOff + 3] = v0Buf[v0Off + 3] + v1Buf[v1Off + 3];
+}
+
+function addVec4ByOptionalOffset(v0, v1, r, opt_v0Off, opt_v1Off, opt_rOff) {
+  if (opt_v0Off && opt_v1Off && opt_rOff) {
+    r[opt_rOff + 0] = v0[opt_v0Off + 0] + v1[opt_v1Off + 0];
+    r[opt_rOff + 1] = v0[opt_v0Off + 1] + v1[opt_v1Off + 1];
+    r[opt_rOff + 2] = v0[opt_v0Off + 2] + v1[opt_v1Off + 2];
+    r[opt_rOff + 3] = v0[opt_v0Off + 3] + v1[opt_v1Off + 3];
+  } else {
+    r[0] = v0[0] + v1[0];
+    r[1] = v0[1] + v1[1];
+    r[2] = v0[2] + v1[2];
+    r[3] = v0[3] + v1[3];
+  }
+}
+
+function mat4MultVec4ByOffset(mBuf, mOff, vBuf, vOff, rBuf, rOff) {
+  var x = vBuf[vOff + 0], y = vBuf[vOff + 1],
+      z = vBuf[vOff + 2], w = vBuf[vOff + 3];
+  rBuf[rOff + 0] = x * mBuf[mOff + 0] + y * mBuf[mOff + 4] +
+      z * mBuf[mOff + 8] + w * mBuf[mOff + 12];
+  rBuf[rOff + 1] = x * mBuf[mOff + 1] + y * mBuf[mOff + 5] +
+      z * mBuf[mOff + 9] + w * mBuf[mOff + 13];
+  rBuf[rOff + 2] = x * mBuf[mOff + 2] + y * mBuf[mOff + 6] +
+      z * mBuf[mOff + 10] + w * mBuf[mOff + 14];
+  rBuf[rOff + 3] = x * mBuf[mOff + 3] + y * mBuf[mOff + 7] +
+      z * mBuf[mOff + 11] + w * mBuf[mOff + 15];
+}
+
+var NUM_ITERATIONS = 200000;
+
+function testAddVec4ByOffset() {
+  var nVecs = NUM_ITERATIONS;
+  var nVals = nVecs * 4;
+  var a0 = createRandomFloat32Array(nVals);
+  var a1 = createRandomFloat32Array(nVals);
+  var a2 = new Float32Array(nVals);
+
+  table.run(
+      function() {
+        for (var i = 0; i < nVecs; i++) {
+          addVec4ByOffset(a0, i * 4, a1, i * 4, a2, i * 4);
+        }
+      },
+      'Add vectors using offsets');
+}
+
+function testAddVec4ByOptionalOffset() {
+  var nVecs = NUM_ITERATIONS;
+  var nVals = nVecs * 4;
+  var a0 = createRandomFloat32Array(nVals);
+  var a1 = createRandomFloat32Array(nVals);
+  var a2 = new Float32Array(nVals);
+
+  table.run(
+      function() {
+        for (var i = 0; i < nVecs; i++) {
+          addVec4ByOptionalOffset(a0, a1, a2, i * 4, i * 4, i * 4);
+        }
+      },
+      'Add vectors with optional offsets (requires branch)');
+}
+
+/**
+ * Check the overhead of using an array of individual
+ * Vec4s (Float32Arrays of length 4).
+ */
+function testAddVec4ByVec4s() {
+  var nVecs = NUM_ITERATIONS;
+  var a0 = createRandomVec4Array(nVecs);
+  var a1 = createRandomVec4Array(nVecs);
+  var a2 = createRandomVec4Array(nVecs);
+
+  table.run(
+      function() {
+        for (var i = 0; i < nVecs; i++) {
+          addVec4(a0[i], a1[i], a2[i]);
+        }
+      },
+      'Add vectors using an array of Vec4s (Float32Arrays of length 4)');
+}
+
+function testAddVec4ByTmp() {
+  var nVecs = NUM_ITERATIONS;
+  var nVals = nVecs * 4;
+  var a0 = createRandomFloat32Array(nVals);
+  var a1 = createRandomFloat32Array(nVals);
+  var a2 = new Float32Array(nVals);
+
+  table.run(
+      function() {
+        var t0 = new Float32Array(4);
+        var t1 = new Float32Array(4);
+        for (var i = 0; i < nVecs; i++) {
+          setVec4FromArray(t0, a0, i * 4);
+          setVec4FromArray(t1, a1, i * 4);
+          addVec4(t0, t1, t0);
+          setArrayFromVec4(a2, i * 4, t0);
+        }
+      },
+      'Add vectors using tmps');
+}
+
+/**
+ * Check the overhead of using an array of Objects with the implicit hash
+ * lookups for the x,y,z,w components.
+ */
+function testAddVec4ByObjects() {
+  var nVecs = NUM_ITERATIONS;
+  var a0 = createRandomVec4ObjectArray(nVecs);
+  var a1 = createRandomVec4ObjectArray(nVecs);
+  var a2 = createRandomVec4ObjectArray(nVecs);
+
+  table.run(
+      function() {
+        for (var i = 0; i < nVecs; i++) {
+          Vec4Object.add(a0[i], a1[i], a2[i]);
+        }
+      },
+      'Add vectors using an array of Objects ' +
+      '(with implicit hash lookups for the x,y,z,w components)');
+}
+
+function testAddVec4BySubarray() {
+  var nVecs = NUM_ITERATIONS;
+  var nVals = nVecs * 4;
+  var a0 = createRandomFloat32Array(nVals);
+  var a1 = createRandomFloat32Array(nVals);
+  var a2 = new Float32Array(nVals);
+
+  table.run(
+      function() {
+        for (var i = 0; i < nVecs; i++) {
+          var t0 = a0.subarray(i * 4 * 4);
+          var t1 = a1.subarray(i * 4 * 4);
+          var t2 = a2.subarray(i * 4 * 4);
+          addVec4(t0, t1, t2);
+        }
+      },
+      'Add vectors using Float32Array.subarray()');
+}
+
+function testAddVec4ByView() {
+  var nVecs = NUM_ITERATIONS;
+  var nVals = nVecs * 4;
+  var a0 = createRandomFloat32Array(nVals);
+  var a1 = createRandomFloat32Array(nVals);
+  var a2 = new Float32Array(nVals);
+
+  table.run(
+      function() {
+        for (var i = 0; i < nVecs; i++) {
+          var t0 = new Float32Array(a0.buffer, i * 4 * 4);
+          var t1 = new Float32Array(a1.buffer, i * 4 * 4);
+          var t2 = new Float32Array(a2.buffer, i * 4 * 4);
+          addVec4(t0, t1, t2);
+        }
+      },
+      'Add vectors using Float32 view');
+}
+
+function testMat4MultVec4ByOffset() {
+  var nVecs = NUM_ITERATIONS;
+  var nVecVals = nVecs * 4;
+  var nMatVals = nVecs * 16;
+  var m = createRandomFloat32Array(nMatVals);
+  var a0 = createRandomFloat32Array(nVecVals);
+  var a1 = new Float32Array(nVecVals);
+
+  table.run(
+      function() {
+        for (var i = 0; i < nVecs; i++) {
+          mat4MultVec4ByOffset(m, i * 16, a0, i * 4, a1, i * 4);
+        }
+      },
+      'vec4 = mat4 * vec4 using offsets.');
+}
+
+/**
+ * Check the overhead of using an array of individual
+ * Vec4s (Float32Arrays of length 4).
+ */
+function testMat4MultVec4ByVec4s() {
+  var nVecs = NUM_ITERATIONS;
+  var a0 = createRandomVec4Array(nVecs);
+  var a1 = createRandomVec4Array(nVecs);
+  var m = createRandomMat4Array(nVecs);
+
+  table.run(
+      function() {
+        for (var i = 0; i < nVecs; i++) {
+          goog.vec.Mat4.multVec4(m[i], a0[i], a1[i]);
+        }
+      },
+      'vec4 = mat4 * vec4  using arrays of Vec4s and Mat4s');
+}
+
+/**
+ * Do 10x as many for the one vector tests.
+ * @type {number}
+ */
+var NUM_ONE_ITERATIONS = NUM_ITERATIONS * 10;
+
+function testAddOneVec4ByOffset() {
+  var a0 = createRandomFloat32Array(4);
+  var a1 = createRandomFloat32Array(4);
+  var a2 = new Float32Array(4);
+
+  table.run(
+      function() {
+        for (var i = 0; i < NUM_ONE_ITERATIONS; i++) {
+          addVec4ByOffset(a0, 0, a1, 0, a2, 0);
+        }
+      },
+      'Add one vector using offset of 0');
+}
+
+function testAddOneVec4() {
+  var a0 = createRandomFloat32Array(4);
+  var a1 = createRandomFloat32Array(4);
+  var a2 = new Float32Array(4);
+
+  table.run(
+      function() {
+        for (var i = 0; i < NUM_ONE_ITERATIONS; i++) {
+          addVec4(a0, a1, a2);
+        }
+      },
+      'Add one vector');
+}
+
+function testAddOneVec4ByOptionalOffset() {
+  var a0 = createRandomFloat32Array(4);
+  var a1 = createRandomFloat32Array(4);
+  var a2 = new Float32Array(4);
+
+  table.run(
+      function() {
+        for (var i = 0; i < NUM_ONE_ITERATIONS; i++) {
+          addVec4ByOptionalOffset(a0, a1, a2);
+        }
+      },
+      'Add one vector with optional offsets (requires branch)');
+}
+
+function testAddRandomVec4ByOffset() {
+  var nVecs = NUM_ITERATIONS;
+  var nVals = nVecs * 4;
+  var a0 = createRandomFloat32Array(nVals);
+  var a1 = createRandomFloat32Array(nVals);
+  var a2 = new Float32Array(nVals);
+  var i0 = createRandomIndexArray(nVecs);
+  var i1 = createRandomIndexArray(nVecs);
+  var i2 = createRandomIndexArray(nVecs);
+
+  table.run(
+      function() {
+        for (var i = 0; i < nVecs; i++) {
+          addVec4ByOffset(a0, i0[i] * 4, a1, i1[i] * 4, a2, i2[i] * 4);
+        }
+      },
+      'Add random vectors using offsets');
+}
+
+function testAddRandomVec4ByVec4s() {
+  var nVecs = NUM_ITERATIONS;
+  var a0 = createRandomVec4Array(nVecs);
+  var a1 = createRandomVec4Array(nVecs);
+  var a2 = createRandomVec4Array(nVecs);
+  var i0 = createRandomIndexArray(nVecs);
+  var i1 = createRandomIndexArray(nVecs);
+  var i2 = createRandomIndexArray(nVecs);
+
+  table.run(
+      function() {
+        for (var i = 0; i < nVecs; i++) {
+          addVec4(a0[i0[i]], a1[i1[i]], a2[i2[i]]);
+        }
+      },
+      'Add random vectors using an array of Vec4s');
+}
+
+// Make sure the tests are run in the order they are defined.
+var testCase = new goog.testing.TestCase(document.title);
+testCase.order = goog.testing.TestCase.Order.NATURAL;
+testCase.autoDiscoverTests();
+G_testRunner.initialize(testCase);
+
+ </script>
+</body>
+</html>

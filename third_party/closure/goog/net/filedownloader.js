@@ -377,7 +377,7 @@ goog.net.FileDownloader.prototype.fileSuccess_ = function(download, file) {
 
 
 /**
- * The callback called when a file writer is succesfully created for writing a
+ * The callback called when a file writer is successfully created for writing a
  * file to the filesystem.
  *
  * @param {!goog.net.FileDownloader.Download_} download The download object for

@@ -23,6 +23,7 @@ goog.provide('goog.db.Index');
 goog.require('goog.async.Deferred');
 goog.require('goog.db.Cursor');
 goog.require('goog.db.Error');
+goog.require('goog.db.KeyRange');
 goog.require('goog.debug');
 
 
@@ -58,7 +59,7 @@ goog.db.Index.prototype.getName = function() {
 
 
 /**
- * @return {string} Key path of the index.
+ * @return {*} Key path of the index.
  */
 goog.db.Index.prototype.getKeyPath = function() {
   return this.index_.keyPath;

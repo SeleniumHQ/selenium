@@ -89,7 +89,7 @@ goog.structs.Heap.prototype.insertAll = function(heap) {
     // If it is a heap and the current heap is empty, I can rely on the fact
     // that the keys/values are in the correct order to put in the underlying
     // structure.
-    if (heap.getCount() <= 0) {
+    if (this.getCount() <= 0) {
       var nodes = this.nodes_;
       for (var i = 0; i < keys.length; i++) {
         nodes.push(new goog.structs.Node(keys[i], values[i]));

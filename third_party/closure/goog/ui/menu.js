@@ -137,7 +137,7 @@ goog.ui.Menu.prototype.allowAutoFocus_ = true;
 
 
 /**
- * Whether the menu should use windows syle behavior and allow disabled menu
+ * Whether the menu should use windows style behavior and allow disabled menu
  * items to be highlighted (though not selectable).  Defaults to false
  * @type {boolean}
  * @private
@@ -344,6 +344,9 @@ goog.ui.Menu.prototype.getAllowHighlightDisabled = function() {
 
 /**
  * @override
+ * @param {boolean} show Whether to show or hide the menu.
+ * @param {boolean=} opt_force If true, doesn't check whether the menu
+ *     already has the requested visibility, and doesn't dispatch any events.
  * @param {goog.events.Event=} opt_e Mousedown event that caused this menu to
  *     be made visible (ignored if show is false).
  */

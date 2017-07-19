@@ -81,6 +81,12 @@ goog.net.XhrManager = function(
       goog.isDef(opt_timeoutInterval) ? Math.max(0, opt_timeoutInterval) : 0;
 
   /**
+   * Add credentials to every request.
+   * @private {boolean}
+   */
+  this.withCredentials_ = !!opt_withCredentials;
+
+  /**
    * The pool of XhrIo's to use.
    * @type {goog.net.XhrIoPool}
    * @private
@@ -199,7 +205,9 @@ goog.net.XhrManager.prototype.send = function(
       url, goog.bind(this.handleEvent_, this, id), opt_method, opt_content,
       opt_headers, opt_callback,
       goog.isDef(opt_maxRetries) ? opt_maxRetries : this.maxRetries_,
-      opt_responseType, opt_withCredentials);
+      opt_responseType,
+      goog.isDef(opt_withCredentials) ? opt_withCredentials :
+                                        this.withCredentials_);
   this.requests_.set(id, request);
 
   // Setup the callback for the pool.

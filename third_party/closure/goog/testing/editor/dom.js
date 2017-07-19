@@ -17,6 +17,7 @@
  *
  */
 
+goog.setTestOnly('goog.testing.editor.dom');
 goog.provide('goog.testing.editor.dom');
 
 goog.require('goog.dom.NodeType');

@@ -45,7 +45,6 @@ goog.require('goog.events.EventType');
 goog.require('goog.events.KeyCodes');
 goog.require('goog.fx.Dragger');
 goog.require('goog.html.SafeHtml');
-goog.require('goog.html.legacyconversions');
 goog.require('goog.math.Rect');
 goog.require('goog.string');
 goog.require('goog.structs.Map');
@@ -262,16 +261,6 @@ goog.ui.Dialog.prototype.setTitle = function(title) {
  */
 goog.ui.Dialog.prototype.getTitle = function() {
   return this.title_;
-};
-
-
-/**
- * Allows arbitrary HTML to be set in the content element.
- * @param {string} html Content HTML.
- * @deprecated Use setSafeHtmlContent or setTextContent.
- */
-goog.ui.Dialog.prototype.setContent = function(html) {
-  this.setSafeHtmlContent(goog.html.legacyconversions.safeHtmlFromString(html));
 };
 
 
@@ -1304,7 +1293,8 @@ goog.ui.Dialog.ButtonSet.prototype.decorate = function(element) {
   }
 
   this.element_ = element;
-  var buttons = this.element_.getElementsByTagName(goog.dom.TagName.BUTTON);
+  var buttons =
+      goog.dom.getElementsByTagName(goog.dom.TagName.BUTTON, this.element_);
   for (var i = 0, button, key, caption; button = buttons[i]; i++) {
     // Buttons should have a "name" attribute and have their caption defined by
     // their innerHTML, but not everyone knows this, and we should play nice.
@@ -1396,10 +1386,11 @@ goog.ui.Dialog.ButtonSet.prototype.getButton = function(key) {
 
 /**
  * Returns all the HTML Button elements in the button set container.
- * @return {!NodeList} A live NodeList of the buttons.
+ * @return {!IArrayLike<!Element>} A live NodeList of the buttons.
  */
 goog.ui.Dialog.ButtonSet.prototype.getAllButtons = function() {
-  return this.element_.getElementsByTagName(goog.dom.TagName.BUTTON);
+  return goog.dom.getElementsByTagName(
+      goog.dom.TagName.BUTTON, goog.asserts.assert(this.element_));
 };
 
 

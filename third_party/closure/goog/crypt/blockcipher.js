@@ -31,6 +31,13 @@ goog.provide('goog.crypt.BlockCipher');
  */
 goog.crypt.BlockCipher = function() {};
 
+/**
+ * Block size, in bytes.
+ * @type {number}
+ * @const
+ * @public
+ */
+goog.crypt.BlockCipher.prototype.BLOCK_SIZE;
 
 /**
  * Encrypt a plaintext block.  The implementation may expect (and assert)

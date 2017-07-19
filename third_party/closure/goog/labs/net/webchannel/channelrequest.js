@@ -29,6 +29,8 @@ goog.provide('goog.labs.net.webChannel.ChannelRequest');
 goog.require('goog.Timer');
 goog.require('goog.async.Throttle');
 goog.require('goog.events.EventHandler');
+goog.require('goog.labs.net.webChannel.Channel');
+goog.require('goog.labs.net.webChannel.WebChannelDebug');
 goog.require('goog.labs.net.webChannel.requestStats');
 goog.require('goog.labs.net.webChannel.requestStats.ServerReachability');
 goog.require('goog.labs.net.webChannel.requestStats.Stat');
@@ -527,7 +529,7 @@ ChannelRequest.prototype.readyStateChangeHandler_ = function(evt) {
 ChannelRequest.prototype.xmlHttpHandler_ = function(xmlhttp) {
   requestStats.onStartExecution();
 
-  /** @preserveTry */
+
   try {
     if (xmlhttp == this.xmlHttp_) {
       this.onXmlHttpReadyStateChanged_();
@@ -622,10 +624,6 @@ ChannelRequest.prototype.onXmlHttpReadyStateChanged_ = function() {
     return;
   }
 
-  if (readyState == goog.net.XmlHttp.ReadyState.COMPLETE) {
-    this.cleanup_();
-  }
-
   if (this.decodeChunks_) {
     this.decodeNextChunks_(readyState, responseText);
     if (goog.userAgent.OPERA && this.successful_ &&
@@ -636,6 +634,10 @@ ChannelRequest.prototype.onXmlHttpReadyStateChanged_ = function() {
     this.channelDebug_.xmlHttpChannelResponseText(
         this.rid_, responseText, null);
     this.safeOnRequestData_(responseText);
+  }
+
+  if (readyState == goog.net.XmlHttp.ReadyState.COMPLETE) {
+    this.cleanup_();
   }
 
   if (!this.successful_) {
@@ -1049,7 +1051,7 @@ ChannelRequest.prototype.getRequestStartTime = function() {
  * @private
  */
 ChannelRequest.prototype.safeOnRequestData_ = function(data) {
-  /** @preserveTry */
+
   try {
     this.channel_.onRequestData(this, data);
     var stats = requestStats.ServerReachability;

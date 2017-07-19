@@ -27,7 +27,7 @@ goog.require('goog.string');
 goog.require('goog.structs.Set');
 
 goog.scope(function() {
-// type checking only (no require)
+/** @suppress {missingRequire} type checking only */
 var ChannelRequest = goog.labs.net.webChannel.ChannelRequest;
 
 
@@ -120,7 +120,8 @@ ForwardChannelRequestPool.prototype.applyClientProtocol = function(
   }
 
   if (goog.string.contains(clientProtocol, 'spdy') ||
-      goog.string.contains(clientProtocol, 'quic')) {
+      goog.string.contains(clientProtocol, 'quic') ||
+      goog.string.contains(clientProtocol, 'h2')) {
     this.maxSize_ = this.maxPoolSizeConfigured_;
     this.requestPool_ = new goog.structs.Set();
     if (this.request_) {
@@ -256,7 +257,7 @@ ForwardChannelRequestPool.prototype.hasPendingRequest = function() {
  * Need go through the standard onRequestComplete logic to expose the max-retry
  * failure in the standard way.
  *
- * @param {!function(!ChannelRequest)} onComplete The completion callback.
+ * @param {function(!ChannelRequest)} onComplete The completion callback.
  * @return {boolean} true if any request has been forced to complete.
  */
 ForwardChannelRequestPool.prototype.forceComplete = function(onComplete) {

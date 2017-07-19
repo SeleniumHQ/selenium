@@ -25,6 +25,7 @@ goog.provide('goog.crypt.Cbc');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.crypt');
+goog.require('goog.crypt.BlockCipher');
 
 
 
@@ -34,13 +35,11 @@ goog.require('goog.crypt');
  * #Cipher-block_chaining_.28CBC.29
  *
  * @param {!goog.crypt.BlockCipher} cipher The block cipher to use.
- * @param {number=} opt_blockSize The block size of the cipher in bytes.
- *     Defaults to 16 bytes.
  * @constructor
  * @final
  * @struct
  */
-goog.crypt.Cbc = function(cipher, opt_blockSize) {
+goog.crypt.Cbc = function(cipher) {
 
   /**
    * Block cipher.
@@ -48,13 +47,6 @@ goog.crypt.Cbc = function(cipher, opt_blockSize) {
    * @private
    */
   this.cipher_ = cipher;
-
-  /**
-   * Block size in bytes.
-   * @type {number}
-   * @private
-   */
-  this.blockSize_ = opt_blockSize || 16;
 };
 
 
@@ -70,11 +62,11 @@ goog.crypt.Cbc = function(cipher, opt_blockSize) {
 goog.crypt.Cbc.prototype.encrypt = function(plainText, initialVector) {
 
   goog.asserts.assert(
-      plainText.length % this.blockSize_ == 0,
+      plainText.length % this.cipher_.BLOCK_SIZE == 0,
       'Data\'s length must be multiple of block size.');
 
   goog.asserts.assert(
-      initialVector.length == this.blockSize_,
+      initialVector.length == this.cipher_.BLOCK_SIZE,
       'Initial vector must be size of one block.');
 
   // Implementation of
@@ -85,10 +77,10 @@ goog.crypt.Cbc.prototype.encrypt = function(plainText, initialVector) {
 
   // Generate each block of the encrypted cypher text.
   for (var blockStartIndex = 0; blockStartIndex < plainText.length;
-       blockStartIndex += this.blockSize_) {
+       blockStartIndex += this.cipher_.BLOCK_SIZE) {
     // Takes one block from the input message.
     var plainTextBlock = goog.array.slice(
-        plainText, blockStartIndex, blockStartIndex + this.blockSize_);
+        plainText, blockStartIndex, blockStartIndex + this.cipher_.BLOCK_SIZE);
 
     var input = goog.crypt.xorByteArray(plainTextBlock, vector);
     var resultBlock = this.cipher_.encrypt(input);
@@ -113,11 +105,11 @@ goog.crypt.Cbc.prototype.encrypt = function(plainText, initialVector) {
 goog.crypt.Cbc.prototype.decrypt = function(cipherText, initialVector) {
 
   goog.asserts.assert(
-      cipherText.length % this.blockSize_ == 0,
+      cipherText.length % this.cipher_.BLOCK_SIZE == 0,
       'Data\'s length must be multiple of block size.');
 
   goog.asserts.assert(
-      initialVector.length == this.blockSize_,
+      initialVector.length == this.cipher_.BLOCK_SIZE,
       'Initial vector must be size of one block.');
 
   // Implementation of
@@ -131,7 +123,7 @@ goog.crypt.Cbc.prototype.decrypt = function(cipherText, initialVector) {
   while (blockStartIndex < cipherText.length) {
     // Takes one block.
     var cipherTextBlock = goog.array.slice(
-        cipherText, blockStartIndex, blockStartIndex + this.blockSize_);
+        cipherText, blockStartIndex, blockStartIndex + this.cipher_.BLOCK_SIZE);
 
     var resultBlock = this.cipher_.decrypt(cipherTextBlock);
     var plainTextBlock = goog.crypt.xorByteArray(vector, resultBlock);
@@ -139,7 +131,7 @@ goog.crypt.Cbc.prototype.decrypt = function(cipherText, initialVector) {
     goog.array.extend(plainText, plainTextBlock);
     vector = cipherTextBlock;
 
-    blockStartIndex += this.blockSize_;
+    blockStartIndex += this.cipher_.BLOCK_SIZE;
   }
 
   return plainText;

@@ -239,14 +239,14 @@ goog.ui.editor.ToolbarController.prototype.disposeInternal = function() {
  * @protected
  */
 goog.ui.editor.ToolbarController.prototype.updateToolbar = function(e) {
-  if (!this.toolbar_.isEnabled() ||
+  if (!this.toolbar_.isEnabled() || !this.field_.isSelectionEditable() ||
       !this.dispatchEvent(goog.ui.Component.EventType.CHANGE)) {
     return;
   }
 
   var state;
 
-  /** @preserveTry */
+
   try {
     /** @type {Array<string>} */
     e.commands;  // Added by dispatchEvent.

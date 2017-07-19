@@ -36,6 +36,7 @@
  */
 
 
+goog.setTestOnly('goog.testing.MockClassFactory');
 goog.provide('goog.testing.MockClassFactory');
 goog.provide('goog.testing.MockClassRecord');
 
@@ -396,7 +397,7 @@ goog.testing.MockClassFactory.prototype.createProxy_ = function(
  * @param {Object} namespace A javascript namespace (e.g. goog.testing).
  * @param {Function} classToMock The class that will be mocked.
  * @param {boolean} isStrict Whether or not the mock should be strict.
- * @param {goog.array.ArrayLike} ctorArgs The arguments associated with this
+ * @param {IArrayLike<?>} ctorArgs The arguments associated with this
  *     instance's constructor.
  * @return {!goog.testing.StrictMock|!goog.testing.LooseMock} The mock created
  *     for the provided class.

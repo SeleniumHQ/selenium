@@ -179,21 +179,15 @@ goog.ui.CheckboxRenderer.prototype.getCssClass = function() {
  * @param {goog.ui.Checkbox.State} state Checkbox state.
  * @return {string} CSS class representing the given state.
  * @protected
+ * @suppress {missingRequire} goog.ui.Checkbox
  */
 goog.ui.CheckboxRenderer.prototype.getClassForCheckboxState = function(state) {
   var baseClass = this.getStructuralCssClass();
-  if (state ==
-      /** @suppress {missingRequire} */ goog.ui.Checkbox.State.CHECKED) {
+  if (state == goog.ui.Checkbox.State.CHECKED) {
     return goog.getCssName(baseClass, 'checked');
-  } else if (
-      state ==
-      /** @suppress {missingRequire} */
-      goog.ui.Checkbox.State.UNCHECKED) {
+  } else if (state == goog.ui.Checkbox.State.UNCHECKED) {
     return goog.getCssName(baseClass, 'unchecked');
-  } else if (
-      state ==
-      /** @suppress {missingRequire} */
-      goog.ui.Checkbox.State.UNDETERMINED) {
+  } else if (state == goog.ui.Checkbox.State.UNDETERMINED) {
     return goog.getCssName(baseClass, 'undetermined');
   }
   throw Error('Invalid checkbox state: ' + state);

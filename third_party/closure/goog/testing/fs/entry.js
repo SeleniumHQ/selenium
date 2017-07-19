@@ -18,6 +18,7 @@
  *
  */
 
+goog.setTestOnly('goog.testing.fs.DirectoryEntry');
 goog.provide('goog.testing.fs.DirectoryEntry');
 goog.provide('goog.testing.fs.Entry');
 goog.provide('goog.testing.fs.FileEntry');
@@ -145,7 +146,8 @@ goog.testing.fs.Entry.prototype.copyTo = function(parent, opt_newName) {
   return this.checkNotDeleted(msg).addCallback(function() {
     var name = opt_newName || self.getName();
     var entry = self.clone();
-    parent.children[name] = entry;
+    /** @type {!goog.testing.fs.DirectoryEntry} */ (parent).children[name] =
+        entry;
     parent.lastModifiedTimestamp_ = goog.now();
     entry.name_ = name;
     entry.parent = /** @type {!goog.testing.fs.DirectoryEntry} */ (parent);
@@ -211,8 +213,7 @@ goog.testing.fs.Entry.prototype.checkNotDeleted = function(action) {
   var d = new goog.async.Deferred(undefined, this);
   goog.Timer.callOnce(function() {
     if (this.deleted) {
-      var err = new goog.fs.Error(
-          /** @type {!FileError} */ ({'name': 'NotFoundError'}), action);
+      var err = new goog.fs.Error({'name': 'NotFoundError'}, action);
       d.errback(err);
     } else {
       d.callback();
@@ -311,10 +312,9 @@ goog.testing.fs.DirectoryEntry.prototype.remove = function() {
   if (!goog.object.isEmpty(this.children)) {
     var d = new goog.async.Deferred();
     goog.Timer.callOnce(function() {
-      d.errback(
-          new goog.fs.Error(
-              /** @type {!FileError} */ ({'name': 'InvalidModificationError'}),
-              'removing ' + this.getFullPath()));
+      d.errback(new goog.fs.Error(
+          {'name': 'InvalidModificationError'},
+          'removing ' + this.getFullPath()));
     }, 0, this);
     return d;
   } else if (this != this.getFileSystem().getRoot()) {
@@ -456,8 +456,8 @@ goog.testing.fs.DirectoryEntry.prototype.getEntry_ = function(
     var subdir = dir.children[p];
     if (!subdir) {
       throw new goog.fs.Error(
-          /** @type {!FileError} */ ({'name': 'NotFoundError'}), 'loading ' +
-              path + ' from ' + this.getFullPath() + ' (directory ' +
+          {'name': 'NotFoundError'},
+          'loading ' + path + ' from ' + this.getFullPath() + ' (directory ' +
               dir.getFullPath() + '/' + p + ')');
     }
     dir = subdir;
@@ -469,7 +469,7 @@ goog.testing.fs.DirectoryEntry.prototype.getEntry_ = function(
   if (!entry) {
     if (behavior == goog.fs.DirectoryEntry.Behavior.DEFAULT) {
       throw new goog.fs.Error(
-          /** @type {!FileError} */ ({'name': 'NotFoundError'}),
+          {'name': 'NotFoundError'},
           'loading ' + path + ' from ' + this.getFullPath());
     } else {
       goog.asserts.assert(
@@ -482,11 +482,11 @@ goog.testing.fs.DirectoryEntry.prototype.getEntry_ = function(
     }
   } else if (behavior == goog.fs.DirectoryEntry.Behavior.CREATE_EXCLUSIVE) {
     throw new goog.fs.Error(
-        /** @type {!FileError} */ ({'name': 'InvalidModificationError'}),
+        {'name': 'InvalidModificationError'},
         'loading ' + path + ' from ' + this.getFullPath());
   } else if (entry.isFile() != isFile) {
     throw new goog.fs.Error(
-        /** @type {!FileError} */ ({'name': 'TypeMismatchError'}),
+        {'name': 'TypeMismatchError'},
         'loading ' + path + ' from ' + this.getFullPath());
   } else {
     if (behavior == goog.fs.DirectoryEntry.Behavior.CREATE) {

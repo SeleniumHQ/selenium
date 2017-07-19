@@ -22,10 +22,12 @@
 goog.provide('goog.dom.iframe');
 
 goog.require('goog.dom');
+goog.require('goog.dom.TagName');
 goog.require('goog.dom.safe');
 goog.require('goog.html.SafeHtml');
 goog.require('goog.html.SafeStyle');
-goog.require('goog.html.legacyconversions');
+goog.require('goog.html.TrustedResourceUrl');
+goog.require('goog.string.Const');
 goog.require('goog.userAgent');
 
 
@@ -37,10 +39,21 @@ goog.require('goog.userAgent');
  * Security Policy (CSP). According to http://www.w3.org/TR/CSP/ CSP does not
  * allow inline javascript by default.
  *
- * @type {string}
+ * @const {!goog.html.TrustedResourceUrl}
+ */
+goog.dom.iframe.BLANK_SOURCE_URL = goog.userAgent.IE ?
+    goog.html.TrustedResourceUrl.fromConstant(
+        goog.string.Const.from('javascript:""')) :
+    goog.html.TrustedResourceUrl.fromConstant(
+        goog.string.Const.from('about:blank'));
+
+
+/**
+ * Legacy version of goog.dom.iframe.BLANK_SOURCE_URL.
+ * @const {string}
  */
 goog.dom.iframe.BLANK_SOURCE =
-    goog.userAgent.IE ? 'javascript:""' : 'about:blank';
+    goog.html.TrustedResourceUrl.unwrap(goog.dom.iframe.BLANK_SOURCE_URL);
 
 
 /**
@@ -69,15 +82,26 @@ goog.dom.iframe.BLANK_SOURCE =
  * throws an error with 'javascript:undefined'. Webkit browsers will reload the
  * iframe when setting this source on an existing iframe.
  *
- * @type {string}
+ * @const {!goog.html.TrustedResourceUrl}
  */
-goog.dom.iframe.BLANK_SOURCE_NEW_FRAME =
-    goog.userAgent.IE ? 'javascript:""' : 'javascript:undefined';
+goog.dom.iframe.BLANK_SOURCE_NEW_FRAME_URL = goog.userAgent.IE ?
+    goog.html.TrustedResourceUrl.fromConstant(
+        goog.string.Const.from('javascript:""')) :
+    goog.html.TrustedResourceUrl.fromConstant(
+        goog.string.Const.from('javascript:undefined'));
+
+
+/**
+ * Legacy version of goog.dom.iframe.BLANK_SOURCE_NEW_FRAME_URL.
+ * @const {string}
+ */
+goog.dom.iframe.BLANK_SOURCE_NEW_FRAME = goog.html.TrustedResourceUrl.unwrap(
+    goog.dom.iframe.BLANK_SOURCE_NEW_FRAME_URL);
 
 
 /**
  * Styles to help ensure an undecorated iframe.
- * @type {string}
+ * @const {string}
  * @private
  */
 goog.dom.iframe.STYLES_ = 'border:0;vertical-align:bottom;';
@@ -95,47 +119,25 @@ goog.dom.iframe.STYLES_ = 'border:0;vertical-align:bottom;';
  * in quirks mode.
  *
  * @param {goog.dom.DomHelper} domHelper The dom helper to use.
- * @param {!goog.html.SafeStyle|string=} opt_styles CSS styles for the
- *     iframe. If possible pass a SafeStyle; string is supported for
- *     backwards-compatibility only and uses goog.html.legacyconversions.
+ * @param {!goog.html.SafeStyle=} opt_styles CSS styles for the iframe.
  * @return {!HTMLIFrameElement} A completely blank iframe.
  */
 goog.dom.iframe.createBlank = function(domHelper, opt_styles) {
   var styles;
-  if (goog.isString(opt_styles)) {
-    styles = goog.html.legacyconversions.safeStyleFromString(opt_styles)
-                 .getTypedStringValue();
-  } else if (opt_styles instanceof goog.html.SafeStyle) {
+  if (opt_styles) {
     // SafeStyle has to be converted back to a string for now, since there's
     // no safe alternative to createDom().
     styles = goog.html.SafeStyle.unwrap(opt_styles);
   } else {  // undefined.
     styles = '';
   }
-  return /** @type {!HTMLIFrameElement} */ (domHelper.createDom('iframe', {
+  return domHelper.createDom(goog.dom.TagName.IFRAME, {
     'frameborder': 0,
     // Since iframes are inline elements, we must align to bottom to
     // compensate for the line descent.
     'style': goog.dom.iframe.STYLES_ + styles,
     'src': goog.dom.iframe.BLANK_SOURCE
-  }));
-};
-
-
-/**
- * Writes the contents of a blank iframe that has already been inserted
- * into the document. If possible use {@link #writeSafeContent},
- * this function exists for backwards-compatibility only and uses
- * goog.html.legacyconversions.
- * @param {!HTMLIFrameElement} iframe An iframe with no contents, such as
- *     one created by goog.dom.iframe.createBlank, but already appended to
- *     a parent document.
- * @param {string} content Content to write to the iframe, from doctype to
- *     the HTML close tag.
- */
-goog.dom.iframe.writeContent = function(iframe, content) {
-  goog.dom.iframe.writeSafeContent(
-      iframe, goog.html.legacyconversions.safeHtmlFromString(content));
+  });
 };
 
 
@@ -170,34 +172,18 @@ goog.dom.iframe.writeSafeContent = function(iframe, content) {
  *
  * @param {!Element} parentElement The parent element in which to append the
  *     iframe.
- * @param {!goog.html.SafeHtml|string=} opt_headContents Contents to go into
- *     the iframe's head. If possible pass a SafeHtml; string is supported for
- *     backwards-compatibility only and uses goog.html.legacyconversions.
- * @param {!goog.html.SafeHtml|string=} opt_bodyContents Contents to go into
- *     the iframe's body. If possible pass a SafeHtml; string is supported for
- *     backwards-compatibility only and uses goog.html.legacyconversions.
- * @param {!goog.html.SafeStyle|string=} opt_styles CSS styles for the iframe
- *     itself, before adding to the parent element. If possible pass a
- *     SafeStyle; string is supported for backwards-compatibility only and
- *     uses goog.html.legacyconversions.
+ * @param {!goog.html.SafeHtml=} opt_headContents Contents to go into the
+ *     iframe's head.
+ * @param {!goog.html.SafeHtml=} opt_bodyContents Contents to go into the
+ *     iframe's body.
+ * @param {!goog.html.SafeStyle=} opt_styles CSS styles for the iframe itself,
+ *     before adding to the parent element.
  * @param {boolean=} opt_quirks Whether to use quirks mode (false by default).
  * @return {!HTMLIFrameElement} An iframe that has the specified contents.
  */
 goog.dom.iframe.createWithContent = function(
     parentElement, opt_headContents, opt_bodyContents, opt_styles, opt_quirks) {
   var domHelper = goog.dom.getDomHelper(parentElement);
-
-  if (goog.isString(opt_headContents)) {
-    opt_headContents =
-        goog.html.legacyconversions.safeHtmlFromString(opt_headContents);
-  }
-  if (goog.isString(opt_bodyContents)) {
-    opt_bodyContents =
-        goog.html.legacyconversions.safeHtmlFromString(opt_bodyContents);
-  }
-  if (goog.isString(opt_styles)) {
-    opt_styles = goog.html.legacyconversions.safeStyleFromString(opt_styles);
-  }
 
   var content = goog.html.SafeHtml.create(
       'html', {}, goog.html.SafeHtml.concat(

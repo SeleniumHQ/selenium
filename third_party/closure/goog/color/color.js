@@ -563,7 +563,7 @@ goog.color.hsvArrayToRgb = function(hsv) {
 /**
  * Converts a hex representation of a color to HSL.
  * @param {string} hex Color to convert.
- * @return {!goog.color.Hsv} hsv representation of the color.
+ * @return {!goog.color.Hsl} hsl representation of the color.
  */
 goog.color.hexToHsl = function(hex) {
   var rgb = goog.color.hexToRgb(hex);

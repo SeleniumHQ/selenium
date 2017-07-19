@@ -272,7 +272,7 @@ goog.format.EmailAddress.prototype.toStringInternal = function(specialChars) {
 
 
 /**
- * Determines is the current object is a valid email address.
+ * Determines if the current object is a valid email address.
  * @return {boolean} Whether the email address is valid.
  */
 goog.format.EmailAddress.prototype.isValid = function() {

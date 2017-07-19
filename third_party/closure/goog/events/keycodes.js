@@ -171,7 +171,15 @@ goog.events.KeyCodes = {
 
 
 /**
- * Returns true if the event contains a text modifying key.
+ * Returns false if the event does not contain a text modifying key.
+ *
+ * When it returns true, the event might be text modifying. It is infeasible to
+ * say for sure because of the many different keyboard layouts, so this method
+ * errs on the side of assuming a key event is text-modifiable if we cannot be
+ * certain it is not. As an example, it will return true for ctrl+a, though in
+ * many standard keyboard layouts that key combination would mean "select all",
+ * and not actually modify the text.
+ *
  * @param {goog.events.BrowserEvent} e A key event.
  * @return {boolean} Whether it's a text modifying key.
  */
@@ -247,10 +255,12 @@ goog.events.KeyCodes.isTextModifyingKeyEvent = function(e) {
  * @param {boolean=} opt_shiftKey Whether the shift key is held down.
  * @param {boolean=} opt_ctrlKey Whether the control key is held down.
  * @param {boolean=} opt_altKey Whether the alt key is held down.
+ * @param {boolean=} opt_metaKey Whether the meta key is held down.
  * @return {boolean} Whether it's a key that fires a keypress event.
  */
 goog.events.KeyCodes.firesKeyPressEvent = function(
-    keyCode, opt_heldKeyCode, opt_shiftKey, opt_ctrlKey, opt_altKey) {
+    keyCode, opt_heldKeyCode, opt_shiftKey, opt_ctrlKey, opt_altKey,
+    opt_metaKey) {
   if (!goog.userAgent.IE && !goog.userAgent.EDGE &&
       !(goog.userAgent.WEBKIT && goog.userAgent.isVersionOrHigher('525'))) {
     return true;
@@ -271,10 +281,14 @@ goog.events.KeyCodes.firesKeyPressEvent = function(
   if (goog.isNumber(opt_heldKeyCode)) {
     opt_heldKeyCode = goog.events.KeyCodes.normalizeKeyCode(opt_heldKeyCode);
   }
-  if (!opt_shiftKey &&
-      (opt_heldKeyCode == goog.events.KeyCodes.CTRL ||
-       opt_heldKeyCode == goog.events.KeyCodes.ALT ||
-       goog.userAgent.MAC && opt_heldKeyCode == goog.events.KeyCodes.META)) {
+  var heldKeyIsModifier = opt_heldKeyCode == goog.events.KeyCodes.CTRL ||
+      opt_heldKeyCode == goog.events.KeyCodes.ALT ||
+      goog.userAgent.MAC && opt_heldKeyCode == goog.events.KeyCodes.META;
+  // The Shift key blocks keypresses on Mac iff accompanied by another modifier.
+  var modifiedShiftKey = opt_heldKeyCode == goog.events.KeyCodes.SHIFT &&
+      (opt_ctrlKey || opt_metaKey);
+  if ((!opt_shiftKey || goog.userAgent.MAC) && heldKeyIsModifier ||
+      goog.userAgent.MAC && modifiedShiftKey) {
     return false;
   }
 

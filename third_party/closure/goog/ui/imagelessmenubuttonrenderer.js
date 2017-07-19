@@ -52,14 +52,6 @@ goog.ui.ImagelessMenuButtonRenderer = function() {
   goog.ui.MenuButtonRenderer.call(this);
 };
 goog.inherits(goog.ui.ImagelessMenuButtonRenderer, goog.ui.MenuButtonRenderer);
-
-
-/**
- * The singleton instance of this renderer class.
- * @type {goog.ui.ImagelessMenuButtonRenderer?}
- * @private
- */
-goog.ui.ImagelessMenuButtonRenderer.instance_ = null;
 goog.addSingletonGetter(goog.ui.ImagelessMenuButtonRenderer);
 
 
@@ -100,20 +92,21 @@ goog.ui.ImagelessMenuButtonRenderer.prototype.canDecorate = function(element) {
 /**
  * Takes a text caption or existing DOM structure, and returns the content
  * wrapped in a pseudo-rounded-corner box.  Creates the following DOM structure:
- *  <div class="goog-inline-block goog-imageless-button">
- *    <div class="goog-inline-block goog-imageless-button-outer-box">
- *      <div class="goog-imageless-button-inner-box">
- *        <div class="goog-imageless-button-pos-box">
- *          <div class="goog-imageless-button-top-shadow">&nbsp;</div>
- *          <div class="goog-imageless-button-content
- *                      goog-imageless-menubutton-caption">Contents...
+ *
+ *    <div class="goog-inline-block goog-imageless-button">
+ *      <div class="goog-inline-block goog-imageless-button-outer-box">
+ *        <div class="goog-imageless-button-inner-box">
+ *          <div class="goog-imageless-button-pos-box">
+ *            <div class="goog-imageless-button-top-shadow">&nbsp;</div>
+ *            <div class="goog-imageless-button-content
+ *                        goog-imageless-menubutton-caption">Contents...
+ *            </div>
+ *            <div class="goog-imageless-menubutton-dropdown"></div>
  *          </div>
- *          <div class="goog-imageless-menubutton-dropdown"></div>
  *        </div>
  *      </div>
  *    </div>
- *  </div>
-
+ *
  * Used by both {@link #createDom} and {@link #decorate}.  To be overridden
  * by subclasses.
  * @param {goog.ui.ControlContent} content Text caption or DOM structure to wrap

@@ -57,7 +57,7 @@ goog.style.bidi.getScrollLeft = function(element) {
 
 
 /**
- * Returns the "offsetStart" of an element, analagous to offsetLeft but
+ * Returns the "offsetStart" of an element, analogous to offsetLeft but
  * normalized for right-to-left environments and various browser
  * inconsistencies. This value returned can always be passed to setScrollOffset
  * to scroll to an element's left edge in a left-to-right offsetParent or

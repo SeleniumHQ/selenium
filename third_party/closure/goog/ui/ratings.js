@@ -36,6 +36,7 @@ goog.require('goog.a11y.aria');
 goog.require('goog.a11y.aria.Role');
 goog.require('goog.a11y.aria.State');
 goog.require('goog.asserts');
+goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.dom.classlist');
 goog.require('goog.events.EventType');
@@ -142,7 +143,8 @@ goog.ui.Ratings.EventType = {
  * @override
  */
 goog.ui.Ratings.prototype.decorateInternal = function(el) {
-  var select = el.getElementsByTagName(goog.dom.TagName.SELECT)[0];
+  var select = goog.dom.getElementsByTagName(
+      goog.dom.TagName.SELECT, goog.asserts.assert(el))[0];
   if (!select) {
     throw Error(
         'Can not decorate ' + el + ', with Ratings. Must ' +

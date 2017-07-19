@@ -33,7 +33,6 @@ goog.require('goog.dom.safe');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('goog.events.FocusHandler');
-goog.require('goog.html.legacyconversions');
 goog.require('goog.math.Box');
 goog.require('goog.math.Coordinate');
 goog.require('goog.positioning');
@@ -383,16 +382,6 @@ goog.ui.Tooltip.prototype.setText = function(str) {
 
 /**
  * Sets tooltip message as HTML markup.
- * @param {string} str HTML message to display in tooltip.
- * @deprecated Use setSafeHtml.
- */
-goog.ui.Tooltip.prototype.setHtml = function(str) {
-  this.setSafeHtml(goog.html.legacyconversions.safeHtmlFromString(str));
-};
-
-
-/**
- * Sets tooltip message as HTML markup.
  * @param {!goog.html.SafeHtml} html HTML message to display in tooltip.
  */
 goog.ui.Tooltip.prototype.setSafeHtml = function(html) {
@@ -669,7 +658,7 @@ goog.ui.Tooltip.prototype.positionAndShow_ = function(el, opt_pos) {
 /**
  * Called by timer from mouse out handler. Hides tooltip if cursor is still
  * outside element and tooltip, or if a child of tooltip has the focus.
- * @param {Element} el Tooltip's anchor when hide timer was started.
+ * @param {?Element|undefined} el Tooltip's anchor when hide timer was started.
  */
 goog.ui.Tooltip.prototype.maybeHide = function(el) {
   this.hideTimer = undefined;

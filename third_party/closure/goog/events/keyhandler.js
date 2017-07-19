@@ -327,7 +327,8 @@ goog.events.KeyHandler.prototype.handleKeyDown_ = function(e) {
 
   if (goog.events.KeyHandler.USES_KEYDOWN_ &&
       !goog.events.KeyCodes.firesKeyPressEvent(
-          e.keyCode, this.lastKey_, e.shiftKey, e.ctrlKey, e.altKey)) {
+          e.keyCode, this.lastKey_, e.shiftKey, e.ctrlKey, e.altKey,
+          e.metaKey)) {
     this.handleEvent(e);
   } else {
     this.keyCode_ = goog.events.KeyCodes.normalizeKeyCode(e.keyCode);
@@ -341,7 +342,7 @@ goog.events.KeyHandler.prototype.handleKeyDown_ = function(e) {
 /**
  * Resets the stored previous values. Needed to be called for webkit which will
  * not generate a key up for meta key operations. This should only be called
- * when having finished with repeat key possiblities.
+ * when having finished with repeat key possibilities.
  */
 goog.events.KeyHandler.prototype.resetState = function() {
   this.lastKey_ = -1;
@@ -414,7 +415,6 @@ goog.events.KeyHandler.prototype.handleEvent = function(e) {
 
   keyCode = goog.events.KeyCodes.normalizeKeyCode(keyCode);
   var key = keyCode;
-  var keyIdentifier = be.keyIdentifier;
 
   // Correct the key value for certain browser-specific quirks.
   if (keyCode) {
@@ -429,10 +429,11 @@ goog.events.KeyHandler.prototype.handleEvent = function(e) {
       }
     }
   } else if (
-      keyIdentifier && keyIdentifier in goog.events.KeyHandler.keyIdentifier_) {
+      be.keyIdentifier &&
+      be.keyIdentifier in goog.events.KeyHandler.keyIdentifier_) {
     // This is needed for Safari Windows because it currently doesn't give a
     // keyCode/which for non printable keys.
-    key = goog.events.KeyHandler.keyIdentifier_[keyIdentifier];
+    key = goog.events.KeyHandler.keyIdentifier_[be.keyIdentifier];
   }
 
   // If we get the same keycode as a keydown/keypress without having seen a

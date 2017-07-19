@@ -217,7 +217,8 @@ goog.tagUnsealableClass(goog.fx.Dragger);
  */
 goog.fx.Dragger.HAS_SET_CAPTURE_ = goog.global.document &&
     goog.global.document.documentElement &&
-    !!goog.global.document.documentElement.setCapture;
+    !!goog.global.document.documentElement.setCapture &&
+    !!goog.global.document.releaseCapture;
 
 
 /**
@@ -230,26 +231,28 @@ goog.fx.Dragger.HAS_SET_CAPTURE_ = goog.global.document &&
  */
 goog.fx.Dragger.cloneNode = function(sourceEl) {
   var clonedEl = sourceEl.cloneNode(true),
-      origTexts = sourceEl.getElementsByTagName(goog.dom.TagName.TEXTAREA),
-      dragTexts = clonedEl.getElementsByTagName(goog.dom.TagName.TEXTAREA);
+      origTexts =
+          goog.dom.getElementsByTagName(goog.dom.TagName.TEXTAREA, sourceEl),
+      dragTexts =
+          goog.dom.getElementsByTagName(goog.dom.TagName.TEXTAREA, clonedEl);
   // Cloning does not copy the current value of textarea elements, so correct
   // this manually.
   for (var i = 0; i < origTexts.length; i++) {
     dragTexts[i].value = origTexts[i].value;
   }
   switch (sourceEl.tagName) {
-    case goog.dom.TagName.TR:
+    case String(goog.dom.TagName.TR):
       return goog.dom.createDom(
           goog.dom.TagName.TABLE, null,
           goog.dom.createDom(goog.dom.TagName.TBODY, null, clonedEl));
-    case goog.dom.TagName.TD:
-    case goog.dom.TagName.TH:
+    case String(goog.dom.TagName.TD):
+    case String(goog.dom.TagName.TH):
       return goog.dom.createDom(
           goog.dom.TagName.TABLE, null,
           goog.dom.createDom(
               goog.dom.TagName.TBODY, null,
               goog.dom.createDom(goog.dom.TagName.TR, null, clonedEl)));
-    case goog.dom.TagName.TEXTAREA:
+    case String(goog.dom.TagName.TEXTAREA):
       clonedEl.value = sourceEl.value;
     default:
       return clonedEl;
@@ -428,14 +431,14 @@ goog.fx.Dragger.prototype.startDrag = function(e) {
     if (this.hysteresisDistanceSquared_ == 0) {
       if (this.fireDragStart_(e)) {
         this.dragging_ = true;
-        if (this.preventMouseDown_) {
+        if (this.preventMouseDown_ && isMouseDown) {
           e.preventDefault();
         }
       } else {
         // If the start drag is cancelled, don't setup for a drag.
         return;
       }
-    } else if (this.preventMouseDown_) {
+    } else if (this.preventMouseDown_ && isMouseDown) {
       // Need to preventDefault for hysteresis to prevent page getting selected.
       e.preventDefault();
     }

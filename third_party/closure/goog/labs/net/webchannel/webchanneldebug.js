@@ -179,9 +179,9 @@ WebChannelDebug.prototype.redactResponse_ = function(responseText) {
   if (!responseText) {
     return null;
   }
-  /** @preserveTry */
+
   try {
-    var responseArray = goog.json.unsafeParse(responseText);
+    var responseArray = JSON.parse(responseText);
     if (responseArray) {
       for (var i = 0; i < responseArray.length; i++) {
         if (goog.isArray(responseArray[i])) {
@@ -216,7 +216,7 @@ WebChannelDebug.prototype.maybeRedactArray_ = function(array) {
   }
 
   var type = dataPart[0];
-  if (type != 'noop' && type != 'stop') {
+  if (type != 'noop' && type != 'stop' && type != 'close') {
     // redact all fields in the array
     for (var i = 1; i < dataPart.length; i++) {
       dataPart[i] = '';

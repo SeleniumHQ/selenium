@@ -64,6 +64,13 @@ goog.inherits(goog.dom.pattern.Sequence, goog.dom.pattern.AbstractPattern);
 
 
 /**
+ * Regular expression for breaking text nodes.
+ * @private {!RegExp}
+ */
+goog.dom.pattern.Sequence.BREAKING_TEXTNODE_RE_ = /^\s*$/;
+
+
+/**
  * Test whether the given token starts, continues, or finishes the sequence
  * of patterns given in the constructor.
  *
@@ -77,7 +84,7 @@ goog.inherits(goog.dom.pattern.Sequence, goog.dom.pattern.AbstractPattern);
 goog.dom.pattern.Sequence.prototype.matchToken = function(token, type) {
   // If the option is set, ignore any whitespace only text nodes
   if (this.ignoreWhitespace_ && token.nodeType == goog.dom.NodeType.TEXT &&
-      goog.dom.pattern.BREAKING_TEXTNODE_RE.test(token.nodeValue)) {
+      goog.dom.pattern.Sequence.BREAKING_TEXTNODE_RE_.test(token.nodeValue)) {
     return goog.dom.pattern.MatchType.MATCHING;
   }
 

@@ -523,7 +523,7 @@ goog.ui.ScrollFloater.prototype.float_ = function(floatMode) {
       elem.style.bottom = 'auto';
     } else {
       elem.style.top = 'auto';
-      elem.style.bottom = 0;
+      elem.style.bottom = '0';
     }
   }
 
@@ -604,7 +604,7 @@ goog.ui.ScrollFloater.prototype.storeOriginalStyles_ = function() {
         this.originalStyles_[property] = elem.style[property];
       }, this);
 
-  // Copy relevant styles to placeholder so it will be layed out the same
+  // Copy relevant styles to placeholder so it will be laid out the same
   // as the element that's about to be floated.
   goog.array.forEach(
       goog.ui.ScrollFloater.PLACEHOLDER_STYLE_PROPS_, function(property) {

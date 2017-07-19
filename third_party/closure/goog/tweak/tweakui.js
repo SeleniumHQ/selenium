@@ -127,7 +127,6 @@ goog.tweak.TweakUi.STYLE_SHEET_INSTALLED_MARKER_ = '__closure_tweak_installed_';
 goog.tweak.TweakUi.CSS_STYLES_ = (function() {
   var MOBILE = goog.userAgent.MOBILE;
   var IE = goog.userAgent.IE;
-  var ENTRY_CLASS = '.' + goog.tweak.TweakUi.ENTRY_CSS_CLASS_;
   var ROOT_PANEL_CLASS = '.' + goog.tweak.TweakUi.ROOT_PANEL_CLASS_;
   var GOOG_INLINE_BLOCK_CLASS = '.' + goog.getCssName('goog-inline-block');
   var ret = ROOT_PANEL_CLASS + '{background:#ffc; padding:0 4px}';
@@ -462,13 +461,15 @@ goog.tweak.EntriesPanel.prototype.getRootElement = function() {
 /**
  * Creates and returns the expanded element.
  * The markup looks like:
- * <div>
- *   <a>Show Descriptions</a>
- *   <div>
- *      ...
- *      {endElement}
- *   </div>
- * </div>
+ *
+ *    <div>
+ *      <a>Show Descriptions</a>
+ *      <div>
+ *         ...
+ *         {endElement}
+ *      </div>
+ *    </div>
+ *
  * @param {Element|DocumentFragment=} opt_endElement Element to insert after all
  *     tweak entries.
  * @return {!Element} The root element for the panel.
@@ -655,9 +656,11 @@ goog.tweak.EntriesPanel.prototype.createComboBoxDom_ = function(
   ret.appendChild(selectElem);
 
   // Set the value and add a callback.
-  selectElem.value = tweak.getNewValue();
+  selectElem.value = String(tweak.getNewValue());
   selectElem.onchange = onchangeFunc;
-  tweak.addCallback(function() { selectElem.value = tweak.getNewValue(); });
+  tweak.addCallback(function() {
+    selectElem.value = String(tweak.getNewValue());
+  });
   return ret;
 };
 
@@ -743,13 +746,15 @@ goog.tweak.EntriesPanel.prototype.createTextBoxDom_ = function(
   var ret = dh.getDocument().createDocumentFragment();
   ret.appendChild(dh.createTextNode(label + ': '));
   var textBox = dh.createDom(goog.dom.TagName.INPUT, {
-    value: tweak.getNewValue(),
+    value: String(tweak.getNewValue()),
     // TODO(agrieve): Make size configurable or autogrow.
     size: 5,
     onblur: onchangeFunc
   });
   ret.appendChild(textBox);
-  tweak.addCallback(function() { textBox.value = tweak.getNewValue(); });
+  tweak.addCallback(function() {
+    textBox.value = String(tweak.getNewValue());
+  });
   return ret;
 };
 

@@ -22,6 +22,7 @@
  */
 
 
+goog.setTestOnly('goog.testing.mockmatchers');
 goog.provide('goog.testing.mockmatchers');
 goog.provide('goog.testing.mockmatchers.ArgumentMatcher');
 goog.provide('goog.testing.mockmatchers.IgnoreArgument');
@@ -33,8 +34,9 @@ goog.provide('goog.testing.mockmatchers.TypeOf');
 
 goog.require('goog.array');
 goog.require('goog.dom');
-goog.require('goog.testing.TestCase');
 goog.require('goog.testing.asserts');
+
+goog.forwardDeclare('goog.testing.MockExpectation'); // circular
 
 
 
@@ -184,10 +186,8 @@ goog.inherits(
  * @extends {goog.testing.mockmatchers.ArgumentMatcher}
  */
 goog.testing.mockmatchers.ObjectEquals = function(expectedObject) {
-  goog.testing.mockmatchers.ArgumentMatcher.call(this, function(matchObject) {
-    assertObjectEquals('Expected equal objects', expectedObject, matchObject);
-    return true;
-  }, 'objectEquals(' + expectedObject + ')');
+  /** @private */
+  this.expectedObject_ = expectedObject;
 };
 goog.inherits(
     goog.testing.mockmatchers.ObjectEquals,
@@ -197,20 +197,17 @@ goog.inherits(
 /** @override */
 goog.testing.mockmatchers.ObjectEquals.prototype.matches = function(
     toVerify, opt_expectation) {
-  // Override the default matches implementation to capture the exception thrown
-  // by assertObjectEquals (if any) and add that message to the expectation.
-  try {
-    return goog.testing.mockmatchers.ObjectEquals.superClass_.matches.call(
-        this, toVerify, opt_expectation);
-  } catch (e) {
+  // Override the default matches implementation to provide a custom error
+  // message to opt_expectation if it exists.
+  var differences =
+      goog.testing.asserts.findDifferences(this.expectedObject_, toVerify);
+  if (differences) {
     if (opt_expectation) {
-      opt_expectation.addErrorMessage(e.message);
+      opt_expectation.addErrorMessage('Expected equal objects\n' + differences);
     }
-    // The mock will report the error when validated, so ignore the caught
-    // assertion exception.
-    goog.testing.TestCase.invalidateAssertionException(e);
     return false;
   }
+  return true;
 };
 
 

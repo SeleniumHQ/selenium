@@ -49,7 +49,7 @@ public class GeneratedJsTestServlet extends HttpServlet {
          + "    var path = '../../.." + req.getPathInfo() + "';\n"
          + "    goog.addDependency(path, ['" + symbol + "'],\n"
          + "        goog.dependencies_.requires['../../.." + req.getPathInfo() + "'] || [],\n"
-         + "        !!goog.dependencies_.pathIsModule[path]);\n"
+         + "        !!goog.dependencies_.loadFlags[path]);\n"
          + "    goog.require('" + symbol + "');\n"
          + "  })()\n"
          + "</script></head><body></body></html>").getBytes(Charsets.UTF_8);

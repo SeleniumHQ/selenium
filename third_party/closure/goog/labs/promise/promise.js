@@ -54,26 +54,31 @@ var Promise = goog.require('goog.Promise');
  *   });
  *
  * @param {function(this: CONTEXT):TYPE} generatorFunc A function which is
- *     called immediately and returns an iterator.
+ *     called immediately and returns a generator.
  * @param {CONTEXT=} opt_context The context in which generatorFunc should be
  *     called.
- * @return {!goog.Promise<TYPE>} A promise that is resolved when the iterator
- *     returned from generatorFunc is exhaused, or rejected if an error occurs.
+ * @return {!goog.Promise<TYPE>} A promise that is resolved when the generator
+ *     returned from generatorFunc is exhausted, or rejected if an error occurs.
  *     If the generator function returns, this promise resolves to the returned
  *     value.
  * @template CONTEXT, TYPE
  */
 exports.run = function(generatorFunc, opt_context) {
-  var iterator = generatorFunc.call(opt_context);
-  function loop(previousResolvedValue) {
-    var it = iterator.next(previousResolvedValue);
-    if (!it.done) {
-      // Wrap it.value in a promise in case it isn't a promise already.
-      return Promise.resolve(it.value).then(function(resolvedValue) {
-        return loop(resolvedValue);
-      });
+  var generator = generatorFunc.call(opt_context);
+  /**
+   * @param {*} previousResolvedValue
+   * @param {boolean=} opt_isRejected
+   */
+  function loop(previousResolvedValue, opt_isRejected) {
+    var gen = opt_isRejected ? generator['throw'](previousResolvedValue) :
+                               generator.next(previousResolvedValue);
+    if (!gen.done) {
+      // Wrap gen.value in a promise in case it isn't a promise already.
+      return Promise.resolve(gen.value).then(
+          function(resolvedValue) { return loop(resolvedValue); },
+          function(rejectValue) { return loop(rejectValue, true); });
     }
-    return it.value;
+    return gen.value;
   }
   // Call loop() from then() to ensure exceptions are captured.
   return Promise.resolve().then(loop);

@@ -78,6 +78,11 @@ goog.net.WebChannel = function() {};
  * server. This object is mutable, and custom headers may be changed, removed,
  * or added during the runtime after a channel has been opened.
  *
+ * initMessageHeaders: similar to messageHeaders, but any custom headers will
+ * be sent only once when the channel is opened. Typical usage is to send
+ * an auth header to the server, which only checks the auth header at the time
+ * when the channel is opened.
+ *
  * messageUrlParams: custom url query parameters to be added to every message
  * sent to the server. This object is mutable, and custom parameters may be
  * changed, removed or added during the runtime after a channel has been opened.
@@ -102,14 +107,35 @@ goog.net.WebChannel = function() {};
  * deprecated after v9 wire protocol is introduced. Only safe to set if the
  * server is known to support this feature.
  *
+ * httpSessionIdParam: the URL parameter name that contains the session id (
+ * for sticky routing of HTTP requests). When this param is specified, a server
+ * that supports this option will respond with an opaque session id as part of
+ * the initial handshake (via the X-HTTP-Session-Id header); and all the
+ * subsequent requests will contain the httpSessionIdParam. This option will
+ * take precedence over any duplicated parameter specified with
+ * messageUrlParams, whose value will be ignored.
+ *
+ * httpHeadersOverwriteParam: the URL parameter name to allow custom HTTP
+ * headers to be overwritten as a URL param to bypass CORS preflight.
+ * goog.net.rpc.HttpCors is used to encode the HTTP headers.
+ *
+ * backgroundChannelTest: whether to run the channel test (detecting networking
+ * conditions) as a background process so the OPEN event will be fired sooner
+ * to reduce the initial handshake delay. This option defaults to false now.
+ * Eventually we may turn this flag on by default.
+ *
  * @typedef {{
  *   messageHeaders: (!Object<string, string>|undefined),
+ *   initMessageHeaders: (!Object<string, string>|undefined),
  *   messageUrlParams: (!Object<string, string>|undefined),
  *   clientProtocolHeaderRequired: (boolean|undefined),
  *   concurrentRequestLimit: (number|undefined),
  *   supportsCrossDomainXhr: (boolean|undefined),
  *   testUrl: (string|undefined),
- *   sendRawJson: (boolean|undefined)
+ *   sendRawJson: (boolean|undefined),
+ *   httpSessionIdParam: (string|undefined),
+ *   httpHeadersOverwriteParam: (string|undefined),
+ *   backgroundChannelTest: (boolean|undefined)
  * }}
  */
 goog.net.WebChannel.Options;
@@ -193,6 +219,41 @@ goog.net.WebChannel.MessageEvent.prototype.data;
 
 /**
  * WebChannel level error conditions.
+ *
+ * Summary of error debugging and reporting in WebChannel:
+ *
+ * Network Error
+ * 1. By default the webchannel library will set the error status to
+ *    NETWORK_ERROR when a channel has to be aborted or closed. NETWORK_ERROR
+ *    may be recovered by the application by retrying and opening a new channel.
+ * 2. There may be lost messages (not acked by the server) when a channel is
+ *    aborted. Currently we don't have a public API to retrieve messages that
+ *    are waiting to be acked on the client side. File a bug if you think it
+ *    is useful to expose such an API.
+ * 3. Details of why a channel fails are available via closure debug logs,
+ *    and stats events (see webchannel/requeststats.js). Those are internal
+ *    stats and are subject to change. File a bug if you think it's useful to
+ *    version and expose such stats as part of the WebChannel API.
+ *
+ * Server Error
+ * 1. SERVER_ERROR is intended to indicate a non-recoverable condition, e.g.
+ *    when auth fails.
+ * 2. We don't currently generate any such errors, because most of the time
+ *    it's the responsibility of upper-layer frameworks or the application
+ *    itself to indicate to the client why a webchannel has been failed
+ *    by the server.
+ * 3. When a channel is failed by the server explicitly, we still signal
+ *    NETWORK_ERROR to the client. Explicit server failure may happen when the
+ *    server does a fail-over, or becomes overloaded, or conducts a forced
+ *    shutdown etc.
+ * 4. We use some heuristic to decide if the network (aka cloud) is down
+ *    v.s. the actual server is down.
+ *
+ *  RuntimeProperties.getLastStatusCode is a useful state that we expose to
+ *  the client to indicate the HTTP response status code of the last HTTP
+ *  request initiated by the WebChannel client library, for debugging
+ *  purposes only.
+ *
  * @enum {number}
  */
 goog.net.WebChannel.ErrorStatus = {
@@ -202,7 +263,7 @@ goog.net.WebChannel.ErrorStatus = {
   /** Communication to the server has failed. */
   NETWORK_ERROR: 1,
 
-  /** The server fails to accept the WebChannel. */
+  /** The server fails to accept or process the WebChannel. */
   SERVER_ERROR: 2
 };
 
@@ -274,25 +335,89 @@ goog.net.WebChannel.RuntimeProperties.prototype.isSpdyEnabled =
 
 
 /**
- * This method may be used by the application to stop ack of received messages
- * as a means of enabling or disabling flow-control on the server-side.
+ * For applications to query the current HTTP session id, sent by the server
+ * during the initial handshake.
  *
- * @param {boolean} enabled If true, enable flow-control behavior on the
- * server side. Setting it to false will cancel ay previous enabling action.
+ * @return {?string} the HTTP session id or null if no HTTP session is in use.
  */
-goog.net.WebChannel.RuntimeProperties.prototype.setServerFlowControl =
+goog.net.WebChannel.RuntimeProperties.prototype.getHttpSessionId =
     goog.abstractMethod;
 
 
 /**
- * This method may be used by the application to throttle the rate of outgoing
- * messages, as a means of sender initiated flow-control.
+ * This method generates an in-band commit request to the server, which will
+ * ack the commit request as soon as all messages sent prior to this commit
+ * request have been committed by the application.
+ *
+ * Committing a message has a stronger semantics than delivering a message
+ * to the application. Detail spec:
+ * https://github.com/bidiweb/webchannel/blob/master/commit.md
+ *
+ * Timeout or cancellation is not supported and the application may have to
+ * abort the channel if the commit-ack fails to arrive in time.
+ *
+ * @param {function()} callback The callback will be invoked once an
+ * ack has been received for the current commit or any newly issued commit.
+ */
+goog.net.WebChannel.RuntimeProperties.prototype.commit = goog.abstractMethod;
+
+
+/**
+ * This method may be used by the application to recover from a peer failure
+ * or to enable sender-initiated flow-control.
+ *
+ * Detail spec: https://github.com/bidiweb/webchannel/blob/master/commit.md
  *
  * @return {number} The total number of messages that have not received
- * ack from the server and therefore remain in the buffer.
+ * commit-ack from the server; or if no commit has been issued, the number
+ * of messages that have not been delivered to the server application.
  */
 goog.net.WebChannel.RuntimeProperties.prototype.getNonAckedMessageCount =
     goog.abstractMethod;
+
+
+/**
+ * A low water-mark message count to notify the application when the
+ * flow-control condition is cleared, that is, when the application is
+ * able to send more messages.
+ *
+ * We expect the application to configure a high water-mark message count,
+ * which is checked via getNonAckedMessageCount(). When the high water-mark
+ * is exceeded, the application should install a callback via this method
+ * to be notified when to start to send new messages.
+ *
+ * @param {number} count The low water-mark count. It is an error to pass
+ * a non-positive value.
+ * @param {!function()} callback The call back to notify the application
+ * when NonAckedMessageCount is below the specified low water-mark count.
+ * Any previously registered callback is cleared. This new callback will
+ * be cleared once it has been fired, or when the channel is closed or aborted.
+ */
+goog.net.WebChannel.RuntimeProperties.prototype.notifyNonAckedMessageCount =
+    goog.abstractMethod;
+
+
+/**
+ * This method registers a callback to handle the commit request sent
+ * by the server. Commit protocol spec:
+ * https://github.com/bidiweb/webchannel/blob/master/commit.md
+ *
+ * @param {function(!Object)} callback The callback will take an opaque
+ * commitId which needs be passed back to the server when an ack-commit
+ * response is generated by the client application, via ackCommit().
+ */
+goog.net.WebChannel.RuntimeProperties.prototype.onCommit = goog.abstractMethod;
+
+
+/**
+ * This method is used by the application to generate an ack-commit response
+ * for the given commitId. Commit protocol spec:
+ * https://github.com/bidiweb/webchannel/blob/master/commit.md
+ *
+ * @param {!Object} commitId The commitId which denotes the commit request
+ * from the server that needs be ack'ed.
+ */
+goog.net.WebChannel.RuntimeProperties.prototype.ackCommit = goog.abstractMethod;
 
 
 /**
@@ -303,7 +428,7 @@ goog.net.WebChannel.RuntimeProperties.prototype.getLastStatusCode =
 
 
 /**
- * A special header to indicate to the server what messaging protocol
+ * A request header to indicate to the server the messaging protocol
  * each HTTP message is speaking.
  *
  * @type {string}
@@ -317,3 +442,24 @@ goog.net.WebChannel.X_CLIENT_PROTOCOL = 'X-Client-Protocol';
  * @type {string}
  */
 goog.net.WebChannel.X_CLIENT_PROTOCOL_WEB_CHANNEL = 'webchannel';
+
+
+/**
+ * A response header for the server to signal the wire-protocol that
+ * the browser establishes with the server (or proxy), e.g. "spdy" (aka http/2)
+ * "quic". This information avoids the need to use private APIs to decide if
+ * HTTP requests are multiplexed etc.
+ *
+ * @type {string}
+ */
+goog.net.WebChannel.X_CLIENT_WIRE_PROTOCOL = 'X-Client-Wire-Protocol';
+
+
+/**
+ * A response header for the server to send back the HTTP session id as part of
+ * the initial handshake. The value of the HTTP session id is opaque to the
+ * WebChannel protocol.
+ *
+ * @type {string}
+ */
+goog.net.WebChannel.X_HTTP_SESSION_ID = 'X-HTTP-Session-Id';

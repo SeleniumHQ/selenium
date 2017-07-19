@@ -27,6 +27,9 @@ goog.require('goog.debug');
 goog.require('goog.debug.Logger');
 goog.require('goog.debug.RelativeTimeProvider');
 goog.require('goog.html.SafeHtml');
+goog.require('goog.html.SafeUrl');
+goog.require('goog.html.uncheckedconversions');
+goog.require('goog.string.Const');
 
 
 
@@ -217,6 +220,79 @@ goog.inherits(goog.debug.HtmlFormatter, goog.debug.Formatter);
 
 
 /**
+ * Exposes an exception that has been caught by a try...catch and outputs the
+ * error as HTML with a stack trace.
+ *
+ * @param {*} err Error object or string.
+ * @param {?Function=} fn If provided, when collecting the stack trace all
+ *     frames above the topmost call to this function, including that call,
+ *     will be left out of the stack trace.
+ * @return {string} Details of exception, as HTML.
+ */
+goog.debug.HtmlFormatter.exposeException = function(err, fn) {
+  var html = goog.debug.HtmlFormatter.exposeExceptionAsHtml(err, fn);
+  return goog.html.SafeHtml.unwrap(html);
+};
+
+
+/**
+ * Exposes an exception that has been caught by a try...catch and outputs the
+ * error with a stack trace.
+ *
+ * @param {*} err Error object or string.
+ * @param {?Function=} fn If provided, when collecting the stack trace all
+ *     frames above the topmost call to this function, including that call,
+ *     will be left out of the stack trace.
+ * @return {!goog.html.SafeHtml} Details of exception.
+ */
+goog.debug.HtmlFormatter.exposeExceptionAsHtml = function(err, fn) {
+  try {
+    var e = goog.debug.normalizeErrorObject(err);
+    // Create the error message
+    var viewSourceUrl =
+        goog.debug.HtmlFormatter.createViewSourceUrl_(e.fileName);
+    var error = goog.html.SafeHtml.concat(
+        goog.html.SafeHtml.htmlEscapePreservingNewlinesAndSpaces(
+            'Message: ' + e.message + '\nUrl: '),
+        goog.html.SafeHtml.create(
+            'a', {href: viewSourceUrl, target: '_new'}, e.fileName),
+        goog.html.SafeHtml.htmlEscapePreservingNewlinesAndSpaces(
+            '\nLine: ' + e.lineNumber + '\n\nBrowser stack:\n' + e.stack +
+            '-> ' +
+            '[end]\n\nJS stack traversal:\n' + goog.debug.getStacktrace(fn) +
+            '-> '));
+    return error;
+  } catch (e2) {
+    return goog.html.SafeHtml.htmlEscapePreservingNewlinesAndSpaces(
+        'Exception trying to expose exception! You win, we lose. ' + e2);
+  }
+};
+
+
+/**
+ * @param {?string=} fileName
+ * @return {!goog.html.SafeUrl} SafeUrl with view-source scheme, pointing at
+ *     fileName.
+ * @private
+ */
+goog.debug.HtmlFormatter.createViewSourceUrl_ = function(fileName) {
+  if (!goog.isDefAndNotNull(fileName)) {
+    fileName = '';
+  }
+  if (!/^https?:\/\//i.test(fileName)) {
+    return goog.html.SafeUrl.fromConstant(
+        goog.string.Const.from('sanitizedviewsrc'));
+  }
+  var sanitizedFileName = goog.html.SafeUrl.sanitize(fileName);
+  return goog.html.uncheckedconversions
+      .safeUrlFromStringKnownToSatisfyTypeContract(
+          goog.string.Const.from('view-source scheme plus HTTP/HTTPS URL'),
+          'view-source:' + goog.html.SafeUrl.unwrap(sanitizedFileName));
+};
+
+
+
+/**
  * Whether to show the logger exception text
  * @type {boolean}
  * @override
@@ -296,7 +372,8 @@ goog.debug.HtmlFormatter.prototype.formatRecordAsHtml = function(logRecord) {
   if (this.showExceptionText && logRecord.getException()) {
     exceptionHtml = goog.html.SafeHtml.concat(
         goog.html.SafeHtml.BR,
-        goog.debug.exposeExceptionAsHtml(logRecord.getException()));
+        goog.debug.HtmlFormatter.exposeExceptionAsHtml(
+            logRecord.getException()));
   }
   var logRecordHtml = goog.html.SafeHtml.htmlEscapePreservingNewlinesAndSpaces(
       logRecord.getMessage());

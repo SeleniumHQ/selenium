@@ -253,4 +253,4 @@ goog.net.streams.XhrNodeReadableStream.prototype.doStatus_ = function(
 goog.net.streams.XhrNodeReadableStream.prototype.handleError_ = function(
     message) {
   goog.log.error(this.logger_, message);
-}
+};

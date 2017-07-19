@@ -73,10 +73,6 @@ goog.fs.url.getUrlObject_ = function() {
  *
  * @return {?goog.fs.url.UrlObject_} The object for this browser or null if the
  *     browser does not support Object Urls.
- * @suppress {unnecessaryCasts} Depending on how the code is compiled, casting
- *     goog.global to UrlObject_ may result in unnecessary cast warning.
- *     However, the cast cannot be removed because with different set of
- *     compiler flags, the cast is indeed necessary.  As such, silencing it.
  * @private
  */
 goog.fs.url.findUrlObject_ = function() {

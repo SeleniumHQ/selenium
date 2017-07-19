@@ -524,7 +524,7 @@ goog.ui.DragDropDetector.prototype.handleNodeInserted_ = function(e) {
   }
 
   if (!uri) {
-    var imgs = this.body_.getElementsByTagName(goog.dom.TagName.IMG);
+    var imgs = goog.dom.getElementsByTagName(goog.dom.TagName.IMG, this.body_);
     if (imgs && imgs.length) {
       // TODO(robbyw): Grab all the images, instead of just the first.
       var img = imgs[0];
@@ -552,7 +552,7 @@ goog.ui.DragDropDetector.prototype.handleNodeInserted_ = function(e) {
     }
   }
 
-  var links = this.body_.getElementsByTagName(goog.dom.TagName.A);
+  var links = goog.dom.getElementsByTagName(goog.dom.TagName.A, this.body_);
   if (links) {
     for (i = 0, len = links.length; i < len; i++) {
       this.dispatchEvent(

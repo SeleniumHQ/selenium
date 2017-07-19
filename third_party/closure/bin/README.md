@@ -9,12 +9,13 @@ The [Closure Compiler](https://developers.google.com/closure/compiler/) is a too
  * [Download a specific version](https://github.com/google/closure-compiler/wiki/Binary-Downloads). Also available via:
    - [Maven](https://github.com/google/closure-compiler/wiki/Maven)
    - [NPM](https://www.npmjs.com/package/google-closure-compiler)
+ * [Use the JavaScript version](https://github.com/google/closure-compiler-js), with no Java dependency
  * See the [Google Developers Site](https://developers.google.com/closure/compiler/docs/gettingstarted_app) for documentation including instructions for running the compiler from the command line.
 
 ## Options for Getting Help
-1. Post in the [Closure Compiler Discuss Group](https://groups.google.com/forum/#!forum/closure-compiler-discuss)
-2. Ask a question on [Stack Overflow](http://stackoverflow.com/questions/tagged/google-closure-compiler)
-3. Consult the [FAQ](https://github.com/google/closure-compiler/wiki/FAQ)
+1. Post in the [Closure Compiler Discuss Group](https://groups.google.com/forum/#!forum/closure-compiler-discuss).
+2. Ask a question on [Stack Overflow](http://stackoverflow.com/questions/tagged/google-closure-compiler).
+3. Consult the [FAQ](https://github.com/google/closure-compiler/wiki/FAQ).
 
 ## Building it Yourself
 
@@ -40,21 +41,29 @@ Note: The Closure Compiler requires [Java 7 or higher](http://www.java.com/).
    </profile>
    ```
 
-3. Run `mvn -DskipTests` (omit the `-DskipTests` if you want to run all the
+3. On the command line, at the root of this project, run `mvn -DskipTests` (omit the `-DskipTests` if you want to run all the
 unit tests too).
 
-    This will produce a jar file called `target/closure-compiler-1.0-SNAPSHOT.jar`.
+    This will produce a jar file called `target/closure-compiler-1.0-SNAPSHOT.jar`. You can run this jar
+    as per the [Running section](#running) of this Readme. If you want to depend on the compiler via
+    Maven in another Java project, use the `com.google.javascript/closure-compiler-unshaded` artifact.
+
+    Running `mvn -DskipTests -pl externs/pom.xml,pom-main.xml,pom-main-shaded.xml`
+    will skip building the GWT version of the compiler. This can speed up the build process significantly.
 
 ### Using [Eclipse](http://www.eclipse.org/)
 
 1. Download and open the [Eclipse IDE](http://www.eclipse.org/).
-2. Navigate to `File > New > Project ...` and create a Java Project. Give
-   the project a name.
-3. Select `Create project from existing source` and choose the root of the
-   checked-out source tree as the existing directory.
-3. Navigate to the `build.xml` file. You will see all the build rules in
-   the Outline pane. Run the `jar` rule to build the compiler in
-   `build/compiler.jar`.
+2. On the command line, at the root of this project, run `mvn eclipse:eclipse -DdownloadSources=true` to download JARs and build Eclipse project configuration.
+3. Navigate to `File > Import > Maven > Existing Maven Projects` and browse to closure-compiler inside of Eclipse.
+4. Import both closure-compiler and the nested externs project.
+5. Disregard the warnings about maven-antrun-plugin and build errors.
+6. In Package Explorer, remove from the build path:
+    - `src/com/google/javascript/jscomp/debugger/DebuggerGwtMain.java`
+    - `src/com/google/javascript/jscomp/gwt/`
+7. [Exclude the files](http://stackoverflow.com/questions/1187868/how-can-i-exclude-some-folders-from-my-eclipse-project) in the directory `src/com/google/debugging/sourcemap/super` from the project.
+8. Build project in Eclipse (right click on the project `closure-compiler-parent` and select `Build Project`).
+9. See *Using Maven* above to build the JAR.
 
 ## Running
 
@@ -87,6 +96,14 @@ java -jar compiler.jar --help
 
 More detailed information about running the Closure Compiler is available in the
 [documentation](http://code.google.com/closure/compiler/docs/gettingstarted_app.html).
+
+
+### Run using Eclipse
+
+1. Open the class `src/com/google/javascript/jscomp/CommandLineRunner.java` or create your own extended version of the class.
+2. Run the class in Eclipse.
+3. See the instructions above on how to use the interactive mode - but beware of the [bug](http://stackoverflow.com/questions/4711098/passing-end-of-transmission-ctrl-d-character-in-eclipse-cdt-console) regarding passing "End of Transmission" in the Eclipse console.
+
 
 ## Compiling Multiple Scripts
 
@@ -147,7 +164,9 @@ will re-order the inputs automatically.
    signed for them.
 2. To make sure your changes are of the type that will be accepted, ask about your patch on the [Closure Compiler Discuss Group](https://groups.google.com/forum/#!forum/closure-compiler-discuss)
 3. Fork the repository.
-4. Make your changes.
+4. Make your changes. Check out our
+   [coding conventions](https://github.com/google/closure-compiler/wiki/Contributors#coding-conventions)
+   for details on making sure your code is in correct style.
 5. Submit a pull request for your changes. A project developer will review your work and then merge your request into the project.
 
 ## Closure Compiler License
@@ -211,18 +230,13 @@ system have been added.</td>
 
 <table>
   <tr>
-    <td>Code Path</td>
-    <td><code>lib/args4j.jar</code></td>
-  </tr>
-
-  <tr>
     <td>URL</td>
     <td>https://args4j.dev.java.net/</td>
   </tr>
 
   <tr>
     <td>Version</td>
-    <td>2.0.26</td>
+    <td>2.33</td>
   </tr>
 
   <tr>
@@ -245,11 +259,6 @@ options/arguments in your CUI application.</td>
 ### Guava Libraries
 
 <table>
-  <tr>
-    <td>Code Path</td>
-    <td><code>lib/guava.jar</code></td>
-  </tr>
-
   <tr>
     <td>URL</td>
     <td>https://github.com/google/guava</td>
@@ -280,18 +289,13 @@ options/arguments in your CUI application.</td>
 
 <table>
   <tr>
-    <td>Code Path</td>
-    <td><code>lib/jsr305.jar</code></td>
-  </tr>
-
-  <tr>
     <td>URL</td>
-    <td>http://code.google.com/p/jsr-305/</td>
+    <td>https://github.com/findbugsproject/findbugs</td>
   </tr>
 
   <tr>
     <td>Version</td>
-    <td>svn revision 47</td>
+    <td>3.0.1</td>
   </tr>
 
   <tr>
@@ -314,18 +318,13 @@ options/arguments in your CUI application.</td>
 
 <table>
   <tr>
-    <td>Code Path</td>
-    <td><code>lib/junit.jar</code></td>
-  </tr>
-
-  <tr>
     <td>URL</td>
     <td>http://sourceforge.net/projects/junit/</td>
   </tr>
 
   <tr>
     <td>Version</td>
-    <td>4.11</td>
+    <td>4.12</td>
   </tr>
 
   <tr>
@@ -348,18 +347,13 @@ options/arguments in your CUI application.</td>
 
 <table>
   <tr>
-    <td>Code Path</td>
-    <td><code>lib/protobuf-java.jar</code></td>
-  </tr>
-
-  <tr>
     <td>URL</td>
     <td>https://github.com/google/protobuf</td>
   </tr>
 
   <tr>
     <td>Version</td>
-    <td>2.5.0</td>
+    <td>3.0.2</td>
   </tr>
 
   <tr>
@@ -383,18 +377,13 @@ an encoding of structured data.</td>
 
 <table>
   <tr>
-    <td>Code Path</td>
-    <td><code>lib/truth.jar</code></td>
-  </tr>
-
-  <tr>
     <td>URL</td>
     <td>https://github.com/google/truth</td>
   </tr>
 
   <tr>
     <td>Version</td>
-    <td>0.24</td>
+    <td>0.32</td>
   </tr>
 
   <tr>
@@ -417,20 +406,13 @@ an encoding of structured data.</td>
 
 <table>
   <tr>
-    <td>Code Path</td>
-    <td>
-      <code>lib/ant.jar</code>, <code>lib/ant-launcher.jar</code>
-    </td>
-  </tr>
-
-  <tr>
     <td>URL</td>
     <td>http://ant.apache.org/bindownload.cgi</td>
   </tr>
 
   <tr>
     <td>Version</td>
-    <td>1.8.1</td>
+    <td>1.9.7</td>
   </tr>
 
   <tr>
@@ -454,18 +436,13 @@ without make's wrinkles and with the full portability of pure java code.</td>
 
 <table>
   <tr>
-    <td>Code Path</td>
-    <td><code>lib/gson.jar</code></td>
-  </tr>
-
-  <tr>
     <td>URL</td>
     <td>https://github.com/google/gson</td>
   </tr>
 
   <tr>
     <td>Version</td>
-    <td>2.2.4</td>
+    <td>2.7</td>
   </tr>
 
   <tr>

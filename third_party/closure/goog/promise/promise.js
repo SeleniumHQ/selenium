@@ -25,6 +25,14 @@ goog.require('goog.promise.Resolver');
 
 
 /**
+ * NOTE: This class was created in anticipation of the built-in Promise type
+ * being standardized and implemented across browsers. Now that Promise is
+ * available in modern browsers, and is automatically polyfilled by the Closure
+ * Compiler, by default, most new code should use native {@code Promise}
+ * instead of {@code goog.Promise}. However, {@code goog.Promise} has the
+ * concept of cancellation which native Promises do not yet have. So code
+ * needing cancellation may still want to use {@code goog.Promise}.
+ *
  * Promises provide a result that may be resolved asynchronously. A Promise may
  * be resolved by being fulfilled with a fulfillment value, rejected with a
  * rejection reason, or blocked by another Promise. A Promise is said to be
@@ -657,7 +665,7 @@ goog.Promise.prototype.thenAlways = function(onSettled, opt_context) {
  * Adds a callback that will be invoked only if the Promise is rejected. This
  * is equivalent to {@code then(null, onRejected)}.
  *
- * @param {!function(this:THIS, *): *} onRejected A function that will be
+ * @param {function(this:THIS, *): *} onRejected A function that will be
  *     invoked with the rejection reason if the Promise is rejected.
  * @param {THIS=} opt_context An optional context object that will be the
  *     execution context for the callbacks. By default, functions are executed
@@ -798,7 +806,7 @@ goog.Promise.prototype.addCallbackEntry_ = function(callbackEntry) {
  *
  * @param {?function(this:THIS, TYPE):
  *          (RESULT|goog.Promise<RESULT>|Thenable)} onFulfilled A callback that
- *     will be invoked if the Promise is fullfilled, or null.
+ *     will be invoked if the Promise is fulfilled, or null.
  * @param {?function(this:THIS, *): *} onRejected A callback that will be
  *     invoked if the Promise is rejected, or null.
  * @param {THIS=} opt_context An optional execution context for the callbacks.
@@ -895,7 +903,7 @@ goog.Promise.prototype.resolve_ = function(state, x) {
     return;
   }
 
-  if (this == x) {
+  if (this === x) {
     state = goog.Promise.State_.REJECTED;
     x = new TypeError('Promise cannot resolve to itself');
   }

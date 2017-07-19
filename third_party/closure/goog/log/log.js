@@ -34,7 +34,7 @@ goog.require('goog.debug.Logger');
 goog.define('goog.log.ENABLED', goog.debug.LOGGING_ENABLED);
 
 
-/** @const */
+/** @const {string} */
 goog.log.ROOT_LOGGER_NAME = goog.debug.Logger.ROOT_LOGGER_NAME;
 
 

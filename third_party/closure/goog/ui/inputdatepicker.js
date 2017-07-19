@@ -26,6 +26,7 @@ goog.require('goog.date.DateTime');
 goog.require('goog.dom');
 goog.require('goog.dom.InputType');
 goog.require('goog.dom.TagName');
+goog.require('goog.i18n.DateTimeParse');
 goog.require('goog.string');
 goog.require('goog.ui.Component');
 goog.require('goog.ui.DatePicker');

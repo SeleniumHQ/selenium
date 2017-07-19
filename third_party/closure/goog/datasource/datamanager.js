@@ -476,7 +476,7 @@ goog.ds.DataManager.prototype.removeListenersByFunction_ = function(
  * @return {number} Number of listeners.
  */
 goog.ds.DataManager.prototype.getListenerCount = function() {
-  var count = 0;
+  var /** number */ count = 0;
   goog.object.forEach(this.listenerMap_, function(matchingListeners) {
     count += goog.structs.getCount(matchingListeners);
   });

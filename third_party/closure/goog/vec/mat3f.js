@@ -37,6 +37,7 @@ goog.provide('goog.vec.mat3f');
 goog.provide('goog.vec.mat3f.Type');
 
 goog.require('goog.vec');
+goog.require('goog.vec.vec3f.Type');
 
 
 /** @typedef {goog.vec.Float32} */ goog.vec.mat3f.Type;
@@ -232,7 +233,7 @@ goog.vec.mat3f.setDiagonal = function(mat, vec) {
 /**
  * Sets the specified column with the supplied values.
  *
- * @param {!goog.vec.mat3f.Type} mat The matrix to recieve the values.
+ * @param {!goog.vec.mat3f.Type} mat The matrix to receive the values.
  * @param {number} column The column index to set the values on.
  * @param {number} v0 The value for row 0.
  * @param {number} v1 The value for row 1.

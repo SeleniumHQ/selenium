@@ -31,6 +31,7 @@ goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.dom.safe');
 goog.require('goog.graphics.EllipseElement');
+goog.require('goog.graphics.Font');
 goog.require('goog.graphics.GroupElement');
 goog.require('goog.graphics.ImageElement');
 goog.require('goog.graphics.Path');

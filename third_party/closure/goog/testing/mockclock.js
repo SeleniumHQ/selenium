@@ -21,9 +21,13 @@
  *
  */
 
+goog.setTestOnly('goog.testing.MockClock');
 goog.provide('goog.testing.MockClock');
 
 goog.require('goog.Disposable');
+/** @suppress {extraRequire} */
+goog.require('goog.Promise');
+goog.require('goog.Thenable');
 goog.require('goog.async.run');
 goog.require('goog.testing.PropertyReplacer');
 goog.require('goog.testing.events');
@@ -107,11 +111,21 @@ goog.testing.MockClock.nextId = Math.round(Math.random() * 10000);
 
 
 /**
- * Count of the number of timeouts made by this instance.
+ * Count of the number of setTimeout/setInterval/etc. calls received by this
+ * instance.
  * @type {number}
  * @private
  */
 goog.testing.MockClock.prototype.timeoutsMade_ = 0;
+
+
+/**
+ * Count of the number of timeout/interval/etc. callbacks triggered by this
+ * instance.
+ * @type {number}
+ * @private
+ */
+goog.testing.MockClock.prototype.callbacksTriggered_ = 0;
 
 
 /**
@@ -259,6 +273,7 @@ goog.testing.MockClock.prototype.reset = function() {
   this.deletedKeys_ = {};
   this.nowMillis_ = 0;
   this.timeoutsMade_ = 0;
+  this.callbacksTriggered_ = 0;
   this.timeoutDelay_ = 0;
 
   this.resetAsyncQueue_();
@@ -352,10 +367,20 @@ goog.testing.MockClock.prototype.tickPromise = function(promise, opt_millis) {
 
 
 /**
- * @return {number} The number of timeouts that have been scheduled.
+ * @return {number} The number of timeouts or intervals that have been
+ * scheduled. A setInterval call is only counted once.
  */
 goog.testing.MockClock.prototype.getTimeoutsMade = function() {
   return this.timeoutsMade_;
+};
+
+
+/**
+ * @return {number} The number of timeout or interval callbacks that have been
+ * triggered. For setInterval, each callback is counted separately.
+ */
+goog.testing.MockClock.prototype.getCallbacksTriggered = function() {
+  return this.callbacksTriggered_;
 };
 
 
@@ -402,6 +427,7 @@ goog.testing.MockClock.prototype.runFunctionsWithinRange_ = function(endTime) {
       this.nowMillis_ =
           Math.max(this.nowMillis_, timeout.runAtMillis + this.timeoutDelay_);
       // Call timeout in global scope and pass the timeout key as the argument.
+      this.callbacksTriggered_++;
       timeout.funcToCall.call(goog.global, timeout.timeoutKey);
       // In case the interval was cleared in the funcToCall
       if (timeout.recurring) {

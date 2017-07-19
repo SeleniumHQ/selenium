@@ -55,10 +55,8 @@ goog.ui.emoji.ProgressiveEmojiPaletteRenderer.prototype
   var y = spriteInfo.getYOffsetCssValue();
   // Need this extra div for proper vertical centering.
   var inner = dom.createDom(goog.dom.TagName.IMG, {'src': displayUrl});
-  var el = /** @type {!HTMLDivElement} */ (
-      dom.createDom(
-          goog.dom.TagName.DIV, goog.getCssName('goog-palette-cell-extra'),
-          inner));
+  var el = dom.createDom(
+      goog.dom.TagName.DIV, goog.getCssName('goog-palette-cell-extra'), inner);
   goog.style.setStyle(el, {
     'width': width,
     'height': height,

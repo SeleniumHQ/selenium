@@ -25,6 +25,7 @@ goog.require('goog.dom');
 goog.require('goog.events.EventHandler');
 goog.require('goog.events.EventType');
 goog.require('goog.graphics.AbstractGraphics');
+goog.require('goog.graphics.Font');
 goog.require('goog.graphics.LinearGradient');
 goog.require('goog.graphics.Path');
 goog.require('goog.graphics.SolidFill');
@@ -726,20 +727,19 @@ goog.graphics.SvgGraphics.prototype.createGroup = function(opt_group) {
  * Measure and return the width (in pixels) of a given text string.
  * Text measurement is needed to make sure a text can fit in the allocated area.
  * The way text length is measured is by writing it into a div that is after
- * the visible area, measure the div width, and immediatly erase the written
+ * the visible area, measure the div width, and immediately erase the written
  * value.
  *
- * @param {string} text The text string to measure.
- * @param {goog.graphics.Font} font The font object describing the font style.
  * @override
  */
 goog.graphics.SvgGraphics.prototype.getTextWidth = function(text, font) {
   // TODO(user) Implement
+  throw new Error("unimplemented method");
 };
 
 
 /**
- * Adds a defintion of an element to the global definitions.
+ * Adds a definition of an element to the global definitions.
  * @param {string} defKey This is a key that should be unique in a way that
  *     if two definitions are equal the should have the same key.
  * @param {Element} defElement DOM element to add as a definition. It must

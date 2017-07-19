@@ -59,6 +59,7 @@
 goog.provide('goog.ui.media.GoogleVideo');
 goog.provide('goog.ui.media.GoogleVideoModel');
 
+goog.require('goog.html.uncheckedconversions');
 goog.require('goog.string');
 goog.require('goog.ui.media.FlashObject');
 goog.require('goog.ui.media.Media');
@@ -257,12 +258,16 @@ goog.ui.media.GoogleVideoModel.buildUrl = function(videoId) {
  * @param {string} videoId The GoogleVideo video ID.
  * @param {boolean=} opt_autoplay Whether the flash movie should start playing
  *     as soon as it is shown, or if it should show a 'play' button.
- * @return {string} The flash URL to be embedded on the page.
+ * @return {!goog.html.TrustedResourceUrl} The flash URL to be embedded on the
+ *     page.
  */
 goog.ui.media.GoogleVideoModel.buildFlashUrl = function(videoId, opt_autoplay) {
   var autoplay = opt_autoplay ? '&autoplay=1' : '';
-  return 'http://video.google.com/googleplayer.swf?docid=' +
-      goog.string.urlEncode(videoId) + '&hl=en&fs=true' + autoplay;
+    return goog.html.uncheckedconversions.
+      trustedResourceUrlFromStringKnownToSatisfyTypeContract(
+          goog.string.Const.from('Fixed domain, encoded path.'),
+          'http://video.google.com/googleplayer.swf?docid=' +
+              goog.string.urlEncode(videoId) + '&hl=en&fs=true' + autoplay);
 };
 
 

@@ -27,6 +27,7 @@ goog.provide('goog.fx.AnimationSerialQueue');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.events');
+goog.require('goog.fx.Animation');
 goog.require('goog.fx.Transition');
 goog.require('goog.fx.TransitionBase');
 

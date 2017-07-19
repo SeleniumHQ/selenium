@@ -124,7 +124,7 @@ goog.ui.tree.TreeControl = function(content, opt_config, opt_domHelper) {
   this.showRootLines_ = true;
 
   if (goog.userAgent.IE) {
-    /** @preserveTry */
+
     try {
       // works since IE6SP1
       document.execCommand('BackgroundImageCache', false, true);

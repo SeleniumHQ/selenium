@@ -24,6 +24,7 @@ goog.require('goog.async.Deferred');
 goog.require('goog.db.Cursor');
 goog.require('goog.db.Error');
 goog.require('goog.db.Index');
+goog.require('goog.db.KeyRange');
 goog.require('goog.debug');
 goog.require('goog.events');
 
@@ -98,7 +99,9 @@ goog.db.ObjectStore.prototype.insert_ = function(fn, msg, value, opt_key) {
     d.errback(goog.db.Error.fromException(ex, msg));
     return d;
   }
-  request.onsuccess = function(ev) { d.callback(); };
+  request.onsuccess = function(ev) {
+    d.callback(ev.target.result);
+  };
   request.onerror = function(ev) {
     msg += goog.debug.deepExpose(value);
     if (opt_key) {
@@ -146,17 +149,20 @@ goog.db.ObjectStore.prototype.add = function(value, opt_key) {
  * Removes an object from the store. No-op if there is no object present with
  * the given key.
  *
- * @param {IDBKeyType} key The key to remove objects under.
+ * @param {IDBKeyType|!goog.db.KeyRange} keyOrRange The key or range to remove
+ *     objects under.
  * @return {!goog.async.Deferred} The deferred remove request.
  */
-goog.db.ObjectStore.prototype.remove = function(key) {
+goog.db.ObjectStore.prototype.remove = function(keyOrRange) {
   var d = new goog.async.Deferred();
   var request;
   try {
-    request = this.store_['delete'](key);
+    request = this.store_['delete'](
+        keyOrRange instanceof goog.db.KeyRange ? keyOrRange.range() :
+                                                 keyOrRange);
   } catch (err) {
     var msg = 'removing from ' + this.getName() + ' with key ' +
-        goog.debug.deepExpose(key);
+        goog.debug.deepExpose(keyOrRange);
     d.errback(goog.db.Error.fromException(err, msg));
     return d;
   }
@@ -164,7 +170,7 @@ goog.db.ObjectStore.prototype.remove = function(key) {
   var self = this;
   request.onerror = function(ev) {
     var msg = 'removing from ' + self.getName() + ' with key ' +
-        goog.debug.deepExpose(key);
+        goog.debug.deepExpose(keyOrRange);
     d.errback(goog.db.Error.fromRequest(ev.target, msg));
   };
   return d;
@@ -220,11 +226,10 @@ goog.db.ObjectStore.prototype.getAll = function(opt_range, opt_direction) {
   }
 
   var result = [];
-  var key =
-      goog.events.listen(cursor, goog.db.Cursor.EventType.NEW_DATA, function() {
-        result.push(cursor.getValue());
-        cursor.next();
-      });
+  goog.events.listen(cursor, goog.db.Cursor.EventType.NEW_DATA, function() {
+    result.push(cursor.getValue());
+    cursor.next();
+  });
 
   goog.events.listenOnce(
       cursor,

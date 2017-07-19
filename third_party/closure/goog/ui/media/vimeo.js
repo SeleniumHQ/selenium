@@ -51,15 +51,13 @@
  *   video.setSelected(true);
  * </pre>
  *
- *
- * @supported IE6, FF2+, Safari. Requires flash to actually work.
- *
- * TODO(user): test on other browsers
+ * Requires flash to actually work.
  */
 
 goog.provide('goog.ui.media.Vimeo');
 goog.provide('goog.ui.media.VimeoModel');
 
+goog.require('goog.html.uncheckedconversions');
 goog.require('goog.string');
 goog.require('goog.ui.media.FlashObject');
 goog.require('goog.ui.media.Media');
@@ -252,14 +250,17 @@ goog.ui.media.VimeoModel.buildUrl = function(videoId) {
  * @param {string} videoId The vimeo video ID.
  * @param {boolean=} opt_autoplay Whether the flash movie should start playing
  *     as soon as it is shown, or if it should show a 'play' button.
- * @return {string} The vimeo flash URL.
+ * @return {!goog.html.TrustedResourceUrl} The vimeo flash URL.
  */
 goog.ui.media.VimeoModel.buildFlashUrl = function(videoId, opt_autoplay) {
   var autoplay = opt_autoplay ? '&autoplay=1' : '';
-  return 'http://vimeo.com/moogaloop.swf?clip_id=' +
-      goog.string.urlEncode(videoId) +
-      '&server=vimeo.com&show_title=1&show_byline=1&show_portrait=0color=&' +
-      'fullscreen=1' + autoplay;
+  return goog.html.uncheckedconversions.
+      trustedResourceUrlFromStringKnownToSatisfyTypeContract(
+          goog.string.Const.from('Fixed domain, encoded parameters.'),
+          'http://vimeo.com/moogaloop.swf?clip_id=' +
+              goog.string.urlEncode(videoId) +
+              '&server=vimeo.com&show_title=1&show_byline=1&' +
+              'show_portrait=0color=&fullscreen=1' + autoplay);
 };
 
 

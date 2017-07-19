@@ -28,6 +28,8 @@ goog.require('goog.ui.ButtonSide');
 goog.require('goog.ui.Component');
 goog.require('goog.ui.ControlRenderer');
 
+goog.forwardDeclare('goog.ui.Button');  // circular
+
 
 
 /**

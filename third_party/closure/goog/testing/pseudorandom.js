@@ -14,11 +14,12 @@
 
 /**
  * @fileoverview PseudoRandom provides a mechanism for generating deterministic
- * psuedo random numbers based on a seed. Based on the Park-Miller algorithm.
+ * pseudo random numbers based on a seed. Based on the Park-Miller algorithm.
  * See http://dx.doi.org/10.1145%2F63039.63042 for details.
  *
  */
 
+goog.setTestOnly('goog.testing.PseudoRandom');
 goog.provide('goog.testing.PseudoRandom');
 
 goog.require('goog.Disposable');
@@ -153,10 +154,10 @@ goog.testing.PseudoRandom.prototype.uninstall = function() {
 /**
  * Seed the generator.
  *
- * @param {number=} seed The seed to use.
+ * @param {number=} opt_seed The seed to use.
  */
-goog.testing.PseudoRandom.prototype.seed = function(seed) {
-  this.seed_ = seed % (goog.testing.PseudoRandom.M - 1);
+goog.testing.PseudoRandom.prototype.seed = function(opt_seed) {
+  this.seed_ = opt_seed % (goog.testing.PseudoRandom.M - 1);
   if (this.seed_ <= 0) {
     this.seed_ += goog.testing.PseudoRandom.M - 1;
   }

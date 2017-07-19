@@ -29,15 +29,12 @@ goog.require('goog.events.EventTarget');
 goog.require('goog.events.EventType');
 goog.require('goog.memoize');
 
-goog.scope(function() {
-var dom = goog.labs.dom;
-
 
 /**
  * The different visibility states.
  * @enum {string}
  */
-dom.PageVisibilityState = {
+goog.labs.dom.PageVisibilityState = {
   HIDDEN: 'hidden',
   VISIBLE: 'visible',
   PRERENDER: 'prerender',
@@ -53,8 +50,8 @@ dom.PageVisibilityState = {
  * @extends {goog.events.EventTarget}
  * @final
  */
-dom.PageVisibilityMonitor = function(opt_domHelper) {
-  dom.PageVisibilityMonitor.base(this, 'constructor');
+goog.labs.dom.PageVisibilityMonitor = function(opt_domHelper) {
+  goog.labs.dom.PageVisibilityMonitor.base(this, 'constructor');
 
   /**
    * @private {!goog.dom.DomHelper}
@@ -77,7 +74,7 @@ dom.PageVisibilityMonitor = function(opt_domHelper) {
         goog.bind(this.handleChange_, this));
   }
 };
-goog.inherits(dom.PageVisibilityMonitor, goog.events.EventTarget);
+goog.inherits(goog.labs.dom.PageVisibilityMonitor, goog.events.EventTarget);
 
 
 /**
@@ -85,20 +82,22 @@ goog.inherits(dom.PageVisibilityMonitor, goog.events.EventTarget);
  *     Memoized for performance.
  * @private
  */
-dom.PageVisibilityMonitor.prototype.getBrowserEventType_ =
-    goog.memoize(function() {
-      var isSupported = this.isSupported();
-      var isPrefixed = this.isPrefixed_();
+goog.labs.dom.PageVisibilityMonitor.prototype
+    .getBrowserEventType_ = goog.memoize(function() {
+  var isSupported =
+      /** @type {!goog.labs.dom.PageVisibilityMonitor} */ (this).isSupported();
+  var isPrefixed =
+      /** @type {!goog.labs.dom.PageVisibilityMonitor} */ (this).isPrefixed_();
 
-      if (isSupported) {
-        return isPrefixed ?
-            goog.dom.vendor.getPrefixedEventType(
-                goog.events.EventType.VISIBILITYCHANGE) :
-            goog.events.EventType.VISIBILITYCHANGE;
-      } else {
-        return null;
-      }
-    });
+  if (isSupported) {
+    return isPrefixed ?
+        goog.dom.vendor.getPrefixedEventType(
+            goog.events.EventType.VISIBILITYCHANGE) :
+        goog.events.EventType.VISIBILITYCHANGE;
+  } else {
+    return null;
+  }
+});
 
 
 /**
@@ -106,10 +105,12 @@ dom.PageVisibilityMonitor.prototype.getBrowserEventType_ =
  *     for performance.
  * @private
  */
-dom.PageVisibilityMonitor.prototype.getHiddenPropertyName_ =
+goog.labs.dom.PageVisibilityMonitor.prototype.getHiddenPropertyName_ =
     goog.memoize(function() {
       return goog.dom.vendor.getPrefixedPropertyName(
-          'hidden', this.domHelper_.getDocument());
+          'hidden',
+          /** @type {!goog.labs.dom.PageVisibilityMonitor} */
+          (this).domHelper_.getDocument());
     });
 
 
@@ -117,7 +118,7 @@ dom.PageVisibilityMonitor.prototype.getHiddenPropertyName_ =
  * @return {boolean} Whether the visibility API is prefixed.
  * @private
  */
-dom.PageVisibilityMonitor.prototype.isPrefixed_ = function() {
+goog.labs.dom.PageVisibilityMonitor.prototype.isPrefixed_ = function() {
   return this.getHiddenPropertyName_() != 'hidden';
 };
 
@@ -127,17 +128,19 @@ dom.PageVisibilityMonitor.prototype.isPrefixed_ = function() {
  *     Memoized for performance.
  * @private
  */
-dom.PageVisibilityMonitor.prototype.getVisibilityStatePropertyName_ =
+goog.labs.dom.PageVisibilityMonitor.prototype.getVisibilityStatePropertyName_ =
     goog.memoize(function() {
       return goog.dom.vendor.getPrefixedPropertyName(
-          'visibilityState', this.domHelper_.getDocument());
+          'visibilityState',
+          /** @type {!goog.labs.dom.PageVisibilityMonitor} */
+          (this).domHelper_.getDocument());
     });
 
 
 /**
  * @return {boolean} Whether the visibility API is supported.
  */
-dom.PageVisibilityMonitor.prototype.isSupported = function() {
+goog.labs.dom.PageVisibilityMonitor.prototype.isSupported = function() {
   return !!this.getHiddenPropertyName_();
 };
 
@@ -145,16 +148,16 @@ dom.PageVisibilityMonitor.prototype.isSupported = function() {
 /**
  * @return {boolean} Whether the page is visible.
  */
-dom.PageVisibilityMonitor.prototype.isHidden = function() {
+goog.labs.dom.PageVisibilityMonitor.prototype.isHidden = function() {
   return !!this.domHelper_.getDocument()[this.getHiddenPropertyName_()];
 };
 
 
 /**
- * @return {?dom.PageVisibilityState} The page visibility state, or null if
- *     not supported.
+ * @return {?goog.labs.dom.PageVisibilityState} The page visibility state, or
+ *     null if not supported.
  */
-dom.PageVisibilityMonitor.prototype.getVisibilityState = function() {
+goog.labs.dom.PageVisibilityMonitor.prototype.getVisibilityState = function() {
   if (!this.isSupported()) {
     return null;
   }
@@ -167,18 +170,19 @@ dom.PageVisibilityMonitor.prototype.getVisibilityState = function() {
  * @param {goog.events.BrowserEvent} e The underlying browser event.
  * @private
  */
-dom.PageVisibilityMonitor.prototype.handleChange_ = function(e) {
+goog.labs.dom.PageVisibilityMonitor.prototype.handleChange_ = function(e) {
   var state = this.getVisibilityState();
-  var visibilityEvent = new dom.PageVisibilityEvent(
-      this.isHidden(), /** @type {dom.PageVisibilityState} */ (state));
+  var visibilityEvent = new goog.labs.dom.PageVisibilityEvent(
+      this.isHidden(),
+      /** @type {goog.labs.dom.PageVisibilityState} */ (state));
   this.dispatchEvent(visibilityEvent);
 };
 
 
 /** @override */
-dom.PageVisibilityMonitor.prototype.disposeInternal = function() {
+goog.labs.dom.PageVisibilityMonitor.prototype.disposeInternal = function() {
   goog.events.unlistenByKey(this.eventKey_);
-  dom.PageVisibilityMonitor.base(this, 'disposeInternal');
+  goog.labs.dom.PageVisibilityMonitor.base(this, 'disposeInternal');
 };
 
 
@@ -192,8 +196,8 @@ dom.PageVisibilityMonitor.prototype.disposeInternal = function() {
  * @extends {goog.events.Event}
  * @final
  */
-dom.PageVisibilityEvent = function(hidden, visibilityState) {
-  dom.PageVisibilityEvent.base(
+goog.labs.dom.PageVisibilityEvent = function(hidden, visibilityState) {
+  goog.labs.dom.PageVisibilityEvent.base(
       this, 'constructor', goog.events.EventType.VISIBILITYCHANGE);
 
   /**
@@ -204,10 +208,8 @@ dom.PageVisibilityEvent = function(hidden, visibilityState) {
 
   /**
    * A more detailed visibility state.
-   * @type {dom.PageVisibilityState}
+   * @type {goog.labs.dom.PageVisibilityState}
    */
   this.visibilityState = visibilityState;
 };
-goog.inherits(dom.PageVisibilityEvent, goog.events.Event);
-
-});  // goog.scope
+goog.inherits(goog.labs.dom.PageVisibilityEvent, goog.events.Event);

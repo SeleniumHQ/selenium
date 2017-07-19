@@ -301,7 +301,8 @@ goog.ui.DimensionPickerRenderer.prototype.setHighlightedSize = function(
    * dimension picker, as text that can be spoken by a screen reader.
    */
   var MSG_DIMENSION_PICKER_HIGHLIGHTED_DIMENSIONS = goog.getMsg(
-      '{$numCols} by {$numRows}', {'numCols': columns, 'numRows': rows});
+      '{$numCols} by {$numRows}',
+      {'numCols': String(columns), 'numRows': String(rows)});
   this.announcer_.say(
       MSG_DIMENSION_PICKER_HIGHLIGHTED_DIMENSIONS,
       goog.a11y.aria.LivePriority.ASSERTIVE);

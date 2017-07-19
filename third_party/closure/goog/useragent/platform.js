@@ -48,7 +48,8 @@ goog.userAgent.platform.determineVersion_ = function() {
     re = /Android\s+([^\);]+)(\)|;)/;
     var match = re.exec(goog.userAgent.getUserAgentString());
     return match ? match[1] : '';
-  } else if (goog.userAgent.IPHONE || goog.userAgent.IPAD) {
+  } else if (
+      goog.userAgent.IPHONE || goog.userAgent.IPAD || goog.userAgent.IPOD) {
     re = /(?:iPhone|CPU)\s+OS\s+(\S+)/;
     var match = re.exec(goog.userAgent.getUserAgentString());
     // Report the version as x.y.z and not x_y_z

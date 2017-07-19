@@ -53,7 +53,7 @@ goog.dom.xml.hasActiveXObjectSupport_ = function() {
   try {
     // Due to lot of changes in IE 9, 10 & 11 behaviour and ActiveX being
     // totally disableable using MSIE's security level, trying to create the
-    // ActiveXOjbect is a lot more reliable than testing for the existance of
+    // ActiveXOjbect is a lot more reliable than testing for the existence of
     // window.ActiveXObject
     new ActiveXObject('MSXML2.DOMDocument');
     return true;
@@ -185,8 +185,8 @@ goog.dom.xml.selectSingleNode = function(node, path) {
  * Selects multiple nodes using an Xpath expression and a root node
  * @param {Node} node The root node.
  * @param {string} path Xpath selector.
- * @return {(NodeList|Array<Node>)} The selected nodes, or empty array if no
- *     matching nodes.
+ * @return {(!NodeList<!Node>|!Array<!Node>)} The selected nodes, or empty array
+ *     if no matching nodes.
  */
 goog.dom.xml.selectNodes = function(node, path) {
   if (typeof node.selectNodes != 'undefined') {

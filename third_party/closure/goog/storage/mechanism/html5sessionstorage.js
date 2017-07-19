@@ -34,7 +34,7 @@ goog.require('goog.storage.mechanism.HTML5WebStorage');
  */
 goog.storage.mechanism.HTML5SessionStorage = function() {
   var storage = null;
-  /** @preserveTry */
+
   try {
     // May throw an exception in cases where the session storage object is
     // visible but access to it is disabled. For example, accessing the file

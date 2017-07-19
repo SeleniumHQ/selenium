@@ -58,7 +58,7 @@ goog.inherits(
  * @param {goog.positioning.Corner} movableCorner The corner of the movable
  *     element that should be positioned at the specified position.
  * @param {goog.math.Box=} opt_margin A margin specified in pixels.
- * @param {goog.math.Size=} opt_preferredSize Prefered size of the
+ * @param {goog.math.Size=} opt_preferredSize Preferred size of the
  *     movableElement.
  * @override
  */

@@ -33,6 +33,8 @@ goog.require('goog.ui.Control');
 goog.require('goog.ui.MenuItemRenderer');
 goog.require('goog.ui.registry');
 
+goog.forwardDeclare('goog.ui.Menu'); // circular
+
 
 
 /**

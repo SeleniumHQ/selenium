@@ -138,7 +138,7 @@ goog.module.ModuleLoader.prototype.setDebugMode = function(debugMode) {
  * When enabled, we will add a sourceURL comment to the end of all scripts
  * to mark their origin.
  *
- * On WebKit, stack traces will refect the sourceURL comment, so this is
+ * On WebKit, stack traces will reflect the sourceURL comment, so this is
  * useful for debugging webkit stack traces in production.
  *
  * Notice that in debug mode, we will use source url injection + eval rather
@@ -212,7 +212,7 @@ goog.module.ModuleLoader.prototype.evaluateCode_ = function(moduleIds) {
     if (this.usingSourceUrlInjection_()) {
       for (var i = 0; i < uris.length; i++) {
         var uri = uris[i];
-        goog.globalEval(texts[i] + ' //@ sourceURL=' + uri);
+        goog.globalEval(texts[i] + ' //# sourceURL=' + uri);
       }
     } else {
       goog.globalEval(texts.join('\n'));

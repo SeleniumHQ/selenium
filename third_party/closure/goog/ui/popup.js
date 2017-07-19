@@ -22,6 +22,7 @@
 goog.provide('goog.ui.Popup');
 
 goog.require('goog.math.Box');
+goog.require('goog.positioning.AbstractPosition');
 goog.require('goog.positioning.Corner');
 goog.require('goog.style');
 goog.require('goog.ui.PopupBase');
@@ -56,9 +57,7 @@ goog.ui.Popup = function(opt_element, opt_position) {
   /**
    * Positioning helper object.
    *
-   * @type {goog.positioning.AbstractPosition|undefined}
-   * @protected
-   * @suppress {underscore|visibility}
+   * @private {goog.positioning.AbstractPosition|undefined}
    */
   this.position_ = opt_position || undefined;
   goog.ui.PopupBase.call(this, opt_element);

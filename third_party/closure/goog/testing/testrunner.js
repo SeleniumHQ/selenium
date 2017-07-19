@@ -31,8 +31,10 @@
  *
  */
 
+goog.setTestOnly('goog.testing.TestRunner');
 goog.provide('goog.testing.TestRunner');
 
+goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.testing.TestCase');
 
@@ -251,7 +253,7 @@ goog.testing.TestRunner.prototype.execute = function() {
 
   if (this.strict_ && this.testCase.getCount() == 0) {
     throw Error(
-        'No tests found in given test case: ' + this.testCase.getName() + ' ' +
+        'No tests found in given test case: ' + this.testCase.getName() + '. ' +
         'By default, the test runner fails if a test case has no tests. ' +
         'To modify this behavior, see goog.testing.TestRunner\'s ' +
         'setStrict() method, or G_testRunner.setStrict()');
@@ -276,6 +278,10 @@ goog.testing.TestRunner.shouldUsePromises_ = function(testCase) {
 };
 
 
+/** @const {string} The ID of the element to log output to. */
+goog.testing.TestRunner.TEST_LOG_ID = 'closureTestRunnerLog';
+
+
 /**
  * Writes the results to the document when the test case completes.
  * @private
@@ -287,9 +293,10 @@ goog.testing.TestRunner.prototype.onComplete_ = function() {
   }
 
   if (!this.logEl_) {
-    var el = document.getElementById('closureTestRunnerLog');
+    var el = document.getElementById(goog.testing.TestRunner.TEST_LOG_ID);
     if (el == null) {
-      el = document.createElement(goog.dom.TagName.DIV);
+      el = goog.dom.createElement(goog.dom.TagName.DIV);
+      el.id = goog.testing.TestRunner.TEST_LOG_ID;
       document.body.appendChild(el);
     }
     this.logEl_ = el;
@@ -299,7 +306,7 @@ goog.testing.TestRunner.prototype.onComplete_ = function() {
   this.writeLog(log);
 
   // TODO(chrishenry): Make this work with multiple test cases (b/8603638).
-  var runAgainLink = document.createElement(goog.dom.TagName.A);
+  var runAgainLink = goog.dom.createElement(goog.dom.TagName.A);
   runAgainLink.style.display = 'inline-block';
   runAgainLink.style.fontSize = 'small';
   runAgainLink.style.marginBottom = '16px';
@@ -322,15 +329,17 @@ goog.testing.TestRunner.prototype.writeLog = function(log) {
   for (var i = 0; i < lines.length; i++) {
     var line = lines[i];
     var color;
-    var isFailOrError = /FAILED/.test(line) || /ERROR/.test(line);
-    if (/PASSED/.test(line)) {
+    var isPassed = /PASSED/.test(line);
+    var isFailOrError =
+        /FAILED/.test(line) || /ERROR/.test(line) || /NO TESTS RUN/.test(line);
+    if (isPassed) {
       color = 'darkgreen';
     } else if (isFailOrError) {
       color = 'darkred';
     } else {
       color = '#333';
     }
-    var div = document.createElement(goog.dom.TagName.DIV);
+    var div = goog.dom.createElement(goog.dom.TagName.DIV);
     if (line.substr(0, 2) == '> ') {
       // The stack trace may contain links so it has to be interpreted as HTML.
       div.innerHTML = line;
@@ -365,7 +374,7 @@ goog.testing.TestRunner.prototype.writeLog = function(log) {
       href = href.split('#')[0].split('?')[0] + newSearch + hash;
 
       // Add the link.
-      var a = document.createElement(goog.dom.TagName.A);
+      var a = goog.dom.createElement(goog.dom.TagName.A);
       a.innerHTML = '(run individually)';
       a.style.fontSize = '0.8em';
       a.style.color = '#888';
@@ -381,12 +390,15 @@ goog.testing.TestRunner.prototype.writeLog = function(log) {
       // Highlight the first line as a header that indicates the test outcome.
       div.style.padding = '20px';
       div.style.marginBottom = '10px';
-      if (isFailOrError) {
+      if (isPassed) {
+        div.style.border = '1px solid ' + color;
+        div.style.backgroundColor = '#eeffee';
+      } else if (isFailOrError) {
         div.style.border = '5px solid ' + color;
         div.style.backgroundColor = '#ffeeee';
       } else {
         div.style.border = '1px solid black';
-        div.style.backgroundColor = '#eeffee';
+        div.style.backgroundColor = '#eeeeee';
       }
     }
 
@@ -420,12 +432,26 @@ goog.testing.TestRunner.prototype.log = function(s) {
 // TODO(nnaze): Properly handle serving test results when multiple test cases
 // are run.
 /**
- * @return {Object<string, !Array<string>>} A map of test names to a list of
- * test failures (if any) to provide formatted data for the test runner.
+ * @return {Object<string, !Array<!goog.testing.TestCase.IResult>>} A map of
+ * test names to a list of test failures (if any) to provide formatted data
+ * for the test runner.
  */
 goog.testing.TestRunner.prototype.getTestResults = function() {
   if (this.testCase) {
     return this.testCase.getTestResults();
+  }
+  return null;
+};
+
+
+/**
+ * Returns the test results as json.
+ * This is called by the testing infrastructure through G_testrunner.
+ * @return {?string} Tests results object.
+ */
+goog.testing.TestRunner.prototype.getTestResultsAsJson = function() {
+  if (this.testCase) {
+    return this.testCase.getTestResultsAsJson();
   }
   return null;
 };

@@ -18,6 +18,7 @@
  *
  */
 
+goog.setTestOnly('goog.testing.ObjectPropertyString');
 goog.provide('goog.testing.ObjectPropertyString');
 
 

@@ -169,7 +169,7 @@ goog.ui.ColorPalette.prototype.createColorNodes = function() {
  */
 goog.ui.ColorPalette.parseColor_ = function(color) {
   if (color) {
-    /** @preserveTry */
+
     try {
       return goog.color.parse(color).hex;
     } catch (ex) {

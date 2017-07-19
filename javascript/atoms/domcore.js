@@ -159,11 +159,16 @@ bot.dom.core.getProperty = function(element, propertyName) {
  * the given tag name. If the tag name is not provided, returns true if the node
  * is an element, regardless of the tag name.h
  *
+ * @template T
  * @param {Node} node The node to test.
- * @param {string=} opt_tagName Tag name to test the node for.
+ * @param {(goog.dom.TagName<!T>|string)=} opt_tagName Tag name to test the node for.
  * @return {boolean} Whether the node is an element with the given tag name.
  */
 bot.dom.core.isElement = function(node, opt_tagName) {
+  // because we call this with deprecated tags such as SHADOW
+  if (opt_tagName && (typeof opt_tagName !== 'string')) {
+    opt_tagName = opt_tagName.toString();
+  }
   return !!node && node.nodeType == goog.dom.NodeType.ELEMENT &&
       (!opt_tagName || node.tagName.toUpperCase() == opt_tagName);
 };

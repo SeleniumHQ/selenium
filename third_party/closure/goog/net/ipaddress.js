@@ -99,6 +99,18 @@ goog.net.IpAddress.prototype.toString = goog.abstractMethod;
 
 
 /**
+ * @return {boolean} Whether or not the address is site-local.
+ */
+goog.net.IpAddress.prototype.isSiteLocal = goog.abstractMethod;
+
+
+/**
+ * @return {boolean} Whether or not the address is link-local.
+ */
+goog.net.IpAddress.prototype.isLinkLocal = goog.abstractMethod;
+
+
+/**
  * Parses an IP Address in a string.
  * If the string is malformed, the function will simply return null
  * instead of raising an exception.
@@ -164,6 +176,13 @@ goog.net.IpAddress.fromUriString = function(address) {
  * @final
  */
 goog.net.Ipv4Address = function(address) {
+  /**
+   * The cached string representation of the IP Address.
+   * @type {?string}
+   * @private
+   */
+  this.ipStr_ = null;
+
   var ip = goog.math.Integer.ZERO;
   if (address instanceof goog.math.Integer) {
     if (address.getSign() != 0 || address.lessThan(goog.math.Integer.ZERO) ||
@@ -255,6 +274,27 @@ goog.net.Ipv4Address.prototype.toUriString = function() {
 };
 
 
+/**
+ * @override
+ */
+goog.net.Ipv4Address.prototype.isSiteLocal = function() {
+  // Check for prefix 10/8, 172.16/12, or 192.168/16.
+  var ipInt = this.ip_.toInt();
+  return (((ipInt >>> 24) & 0xff) == 10) ||
+      ((((ipInt >>> 24) & 0xff) == 172) && (((ipInt >>> 16) & 0xf0) == 16)) ||
+      ((((ipInt >>> 24) & 0xff) == 192) && (((ipInt >>> 16) & 0xff) == 168));
+};
+
+
+/**
+ * @override
+ */
+goog.net.Ipv4Address.prototype.isLinkLocal = function() {
+  // Check for prefix 169.254/16.
+  var ipInt = this.ip_.toInt();
+  return (((ipInt >>> 24) & 0xff) == 169) && (((ipInt >>> 16) & 0xff) == 254);
+};
+
 
 /**
  * Takes a string or a number and returns an IPv6 Address.
@@ -267,6 +307,13 @@ goog.net.Ipv4Address.prototype.toUriString = function() {
  * @final
  */
 goog.net.Ipv6Address = function(address) {
+  /**
+   * The cached string representation of the IP Address.
+   * @type {?string}
+   * @private
+   */
+  this.ipStr_ = null;
+
   var ip = goog.math.Integer.ZERO;
   if (address instanceof goog.math.Integer) {
     if (address.getSign() != 0 || address.lessThan(goog.math.Integer.ZERO) ||
@@ -386,6 +433,28 @@ goog.net.Ipv6Address.prototype.toString = function() {
  */
 goog.net.Ipv6Address.prototype.toUriString = function() {
   return '[' + this.toString() + ']';
+};
+
+
+/**
+ * @override
+ */
+goog.net.Ipv6Address.prototype.isSiteLocal = function() {
+  // Check for prefix fd00::/8.
+  var firstDWord = this.ip_.getBitsUnsigned(3);
+  var firstHextet = firstDWord >>> 16;
+  return (firstHextet & 0xff00) == 0xfd00;
+};
+
+
+/**
+ * @override
+ */
+goog.net.Ipv6Address.prototype.isLinkLocal = function() {
+  // Check for prefix fe80::/10.
+  var firstDWord = this.ip_.getBitsUnsigned(3);
+  var firstHextet = firstDWord >>> 16;
+  return (firstHextet & 0xffc0) == 0xfe80;
 };
 
 

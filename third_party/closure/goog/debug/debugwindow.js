@@ -538,7 +538,7 @@ goog.debug.DebugWindow.prototype.getCookie_ = function(key, opt_default) {
 
 /**
  * Creates a valid cookie key name which is scoped to the given identifier.
- * Substitutes all occurences of invalid cookie name characters (whitespace,
+ * Substitutes all occurrences of invalid cookie name characters (whitespace,
  * ';', and '=') with '_', which is a valid and readable alternative.
  * @see goog.net.Cookies#isValidName
  * @see <a href="http://tools.ietf.org/html/rfc2109">RFC 2109</a>

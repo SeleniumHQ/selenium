@@ -26,6 +26,8 @@ goog.provide('goog.ui.tree.TreeNode');
 
 goog.require('goog.ui.tree.BaseNode');
 
+goog.forwardDeclare('goog.ui.tree.TreeControl');  // circular
+
 
 
 /**

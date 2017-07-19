@@ -58,6 +58,7 @@
  * @see goog.testing.AsyncTestCase
  */
 
+goog.setTestOnly('goog.testing.DeferredTestCase');
 goog.provide('goog.testing.DeferredTestCase');
 
 goog.require('goog.testing.AsyncTestCase');
@@ -70,6 +71,8 @@ goog.require('goog.testing.TestCase');
  * @param {string=} opt_name A descriptive name for the test case.
  * @constructor
  * @extends {goog.testing.AsyncTestCase}
+ * @deprecated Use goog.testing.TestCase instead. goog.testing.TestCase now
+ *    supports async testing using promises.
  */
 goog.testing.DeferredTestCase = function(opt_name) {
   goog.testing.AsyncTestCase.call(this, opt_name);
@@ -126,7 +129,7 @@ goog.testing.DeferredTestCase.prototype.addWaitForAsync = function(msg, d) {
 /**
  * Wires up given Deferred object to the test case, then starts the
  * goog.async.Deferred object's callback.
- * @param {!string|goog.async.Deferred} a The wait status message or the
+ * @param {string|!goog.async.Deferred} a The wait status message or the
  *     deferred object to wait for.
  * @param {goog.async.Deferred=} opt_b The deferred object to wait for.
  */

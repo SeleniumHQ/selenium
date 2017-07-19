@@ -53,6 +53,10 @@ goog.userAgent.product.determineVersion_ = function() {
   }
 
   if (goog.userAgent.product.CHROME) {
+    if (goog.labs.userAgent.platform.isIos()) {
+      // CriOS/56.0.2924.79
+      return goog.userAgent.product.getFirstRegExpGroup_(/CriOS\/([0-9.]+)/);
+    }
     // Chrome/4.0.223.1
     return goog.userAgent.product.getFirstRegExpGroup_(/Chrome\/([0-9.]+)/);
   }
@@ -114,7 +118,7 @@ goog.userAgent.product.getFirstRegExpGroup_ = function(re) {
 /**
  * Run regexp's exec() on the userAgent string.
  * @param {!RegExp} re Regular expression.
- * @return {Array<?>} A result array, or null for no match.
+ * @return {?Array<?>} A result array, or null for no match.
  * @private
  */
 goog.userAgent.product.execRegExp_ = function(re) {

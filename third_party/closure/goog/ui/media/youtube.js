@@ -59,10 +59,8 @@
  *     'http://www.youtube.com/watch?v=ddl5f44spwQ');
  * </pre>
  *
+ * Requires flash to actually work.
  *
- * @supported IE6, FF2+, Safari. Requires flash to actually work.
- *
- * TODO(user): test on other browsers
  */
 
 
@@ -70,6 +68,7 @@ goog.provide('goog.ui.media.Youtube');
 goog.provide('goog.ui.media.YoutubeModel');
 
 goog.require('goog.dom.TagName');
+goog.require('goog.html.uncheckedconversions');
 goog.require('goog.string');
 goog.require('goog.ui.Component');
 goog.require('goog.ui.media.FlashObject');
@@ -95,7 +94,7 @@ goog.require('goog.ui.media.MediaRenderer');
  * goog.ui.media.Youtube currently supports all {@link goog.ui.Component.State}.
  * It will change its DOM structure between SELECTED and !SELECTED, and rely on
  * CSS definitions on the others. On !SELECTED, the renderer will render a
- * youtube static <img>, with a thumbnail of the video. On SELECTED, the
+ * youtube static `<img>`, with a thumbnail of the video. On SELECTED, the
  * renderer will append to the DOM a flash object, that contains the youtube
  * video.
  *
@@ -335,7 +334,8 @@ goog.ui.media.YoutubeModel.getThumbnailUrl = function(youtubeId) {
  * @param {string} videoId The youtube video ID.
  * @param {boolean=} opt_autoplay Whether the flash movie should start playing
  *     as soon as it is shown, or if it should show a 'play' button.
- * @return {string} The flash URL to be embedded on the page.
+ * @return {!goog.html.TrustedResourceUrl} The flash URL to be embedded on the
+ *     page.
  */
 goog.ui.media.YoutubeModel.getFlashUrl = function(videoId, opt_autoplay) {
   var autoplay = opt_autoplay ? '&autoplay=1' : '';
@@ -343,8 +343,11 @@ goog.ui.media.YoutubeModel.getFlashUrl = function(videoId, opt_autoplay) {
   // generated input. the video id is later used to embed a flash object,
   // which is generated through HTML construction. We goog.string.urlEncode
   // the video id to make sure the URL is safe to be embedded.
-  return 'http://www.youtube.com/v/' + goog.string.urlEncode(videoId) +
-      '&hl=en&fs=1' + autoplay;
+  return goog.html.uncheckedconversions.
+      trustedResourceUrlFromStringKnownToSatisfyTypeContract(
+          goog.string.Const.from('Fixed domain, encoded path.'),
+          'http://www.youtube.com/v/' + goog.string.urlEncode(videoId) +
+              '&hl=en&fs=1' + autoplay);
 };
 
 

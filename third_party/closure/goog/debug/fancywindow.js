@@ -27,6 +27,7 @@
 goog.provide('goog.debug.FancyWindow');
 
 goog.require('goog.array');
+goog.require('goog.asserts');
 goog.require('goog.debug.DebugWindow');
 goog.require('goog.debug.LogManager');
 goog.require('goog.debug.Logger');
@@ -42,7 +43,7 @@ goog.require('goog.userAgent');
 
 
 
-// TODO(user): Introduce goog.scope for goog.html.SafeHtml once b/12014412
+// TODO(mlourenco): Introduce goog.scope for goog.html.SafeHtml once b/12014412
 // is fixed.
 /**
  * Provides a Fancy extension to the DebugWindow class.  Allows filtering based
@@ -67,7 +68,7 @@ goog.inherits(goog.debug.FancyWindow, goog.debug.DebugWindow);
  * @type {boolean}
  */
 goog.debug.FancyWindow.HAS_LOCAL_STORE = (function() {
-  /** @preserveTry */
+
   try {
     return !!window['localStorage'].getItem;
   } catch (e) {

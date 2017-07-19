@@ -23,6 +23,7 @@ goog.provide('goog.math.Path.Segment');
 
 goog.require('goog.array');
 goog.require('goog.math');
+goog.require('goog.math.AffineTransform');
 
 
 
@@ -270,7 +271,7 @@ goog.math.Path.prototype.lineTo_ = function(coordinates) {
  * specified using 3 points (6 coordinates) - two control points and the end
  * point of the curve.
  *
- * @param {...number} var_args The coordinates specifiying each curve in sets of
+ * @param {...number} var_args The coordinates specifying each curve in sets of
  *     6 points: {@code [x1, y1]} the first control point, {@code [x2, y2]} the
  *     second control point and {@code [x, y]} the end point.
  * @return {!goog.math.Path} The path itself.
@@ -285,7 +286,7 @@ goog.math.Path.prototype.curveTo = function(var_args) {
  * specified using 3 points (6 coordinates) - two control points and the end
  * point of the curve.
  *
- * @param {!Array<number>} coordinates The coordinates specifiying
+ * @param {!Array<number>} coordinates The coordinates specifying
  *     each curve in sets of 6 points: {@code [x1, y1]} the first control point,
  *     {@code [x2, y2]} the second control point and {@code [x, y]} the end
  *     point.
@@ -301,7 +302,7 @@ goog.math.Path.prototype.curveToFromArray = function(coordinates) {
  * specified using 3 points (6 coordinates) - two control points and the end
  * point of the curve.
  *
- * @param {!Array<number>|Arguments} coordinates The coordinates specifiying
+ * @param {!Array<number>|Arguments} coordinates The coordinates specifying
  *     each curve in sets of 6 points: {@code [x1, y1]} the first control point,
  *     {@code [x2, y2]} the second control point and {@code [x, y]} the end
  *     point.
