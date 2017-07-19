@@ -32,6 +32,7 @@ goog.require('goog.dom.classlist');
 goog.require('goog.events');
 goog.require('goog.events.Event');
 goog.require('goog.events.EventHandler');
+goog.require('goog.events.EventId');
 goog.require('goog.events.EventTarget');
 goog.require('goog.events.EventType');
 goog.require('goog.fx.Dragger');
@@ -217,15 +218,15 @@ goog.fx.DragListDirection = {
 
 /**
  * Events dispatched by this class.
- * @const
+ * @enum {!goog.events.EventId<!goog.fx.DragListGroupEvent>}
  */
 goog.fx.DragListGroup.EventType = {
-  BEFOREDRAGSTART: 'beforedragstart',
-  DRAGSTART: 'dragstart',
-  BEFOREDRAGMOVE: 'beforedragmove',
-  DRAGMOVE: 'dragmove',
-  BEFOREDRAGEND: 'beforedragend',
-  DRAGEND: 'dragend'
+  BEFOREDRAGSTART: new goog.events.EventId('beforedragstart'),
+  DRAGSTART: new goog.events.EventId('dragstart'),
+  BEFOREDRAGMOVE: new goog.events.EventId('beforedragmove'),
+  DRAGMOVE: new goog.events.EventId('dragmove'),
+  BEFOREDRAGEND: new goog.events.EventId('beforedragend'),
+  DRAGEND: new goog.events.EventId('dragend')
 };
 
 
@@ -268,6 +269,12 @@ goog.fx.DragListGroup.prototype.getHysteresis = function() {
 };
 
 
+/** @return {boolean} true if the user is currently dragging an element. */
+goog.fx.DragListGroup.prototype.isDragging = function() {
+  return !!this.dragger_;
+};
+
+
 /**
  * Adds a drag list to this DragListGroup.
  * All calls to this method must happen before the call to init().
@@ -302,7 +309,7 @@ goog.fx.DragListGroup.prototype.addDragList = function(
  * If not set, the default implementation uses the whole drag item as the
  * handle.
  *
- * @param {function(Element): Element} getHandleForDragItemFn A function that,
+ * @param {function(!Element): Element} getHandleForDragItemFn A function that,
  *     given any drag item, returns a reference to its "handle" element
  *     (which may be the drag item element itself).
  */
@@ -316,7 +323,7 @@ goog.fx.DragListGroup.prototype.setFunctionToGetHandleForDragItem = function(
 /**
  * Sets a user-supplied CSS class to add to a drag item on hover (not during a
  * drag action).
- * @param {...!string} var_args The CSS class or classes.
+ * @param {...string} var_args The CSS class or classes.
  */
 goog.fx.DragListGroup.prototype.setDragItemHoverClass = function(var_args) {
   goog.asserts.assert(!this.isInitialized_);
@@ -327,7 +334,7 @@ goog.fx.DragListGroup.prototype.setDragItemHoverClass = function(var_args) {
 /**
  * Sets a user-supplied CSS class to add to a drag item handle on hover (not
  * during a drag action).
- * @param {...!string} var_args The CSS class or classes.
+ * @param {...string} var_args The CSS class or classes.
  */
 goog.fx.DragListGroup.prototype.setDragItemHandleHoverClass = function(
     var_args) {
@@ -345,7 +352,7 @@ goog.fx.DragListGroup.prototype.setDragItemHandleHoverClass = function(
  * If this class is set by the user, then the default behavior does not happen
  * (unless, of course, the class also contains visibility:hidden).
  *
- * @param {...!string} var_args The CSS class or classes.
+ * @param {...string} var_args The CSS class or classes.
  */
 goog.fx.DragListGroup.prototype.setCurrDragItemClass = function(var_args) {
   goog.asserts.assert(!this.isInitialized_);
@@ -469,7 +476,7 @@ goog.fx.DragListGroup.prototype.recacheListAndItemBounds_ = function(
  * Listens for drag events on the given drag item. This method is currently used
  * to initialize drag items.
  *
- * @param {Element} dragItem the element to initialize. This element has to be
+ * @param {!Element} dragItem the element to initialize. This element has to be
  * in one of the drag lists.
  * @protected
  */
@@ -842,7 +849,7 @@ goog.fx.DragListGroup.prototype.cleanupDragDom_ = function() {
  * drag item. By default, we use the whole drag item as the handle. Users can
  * change this by calling setFunctionToGetHandleForDragItem().
  *
- * @param {Element} dragItem The drag item to get the handle for.
+ * @param {!Element} dragItem The drag item to get the handle for.
  * @return {Element} The dragItem element itself.
  * @private
  */
@@ -1013,7 +1020,7 @@ goog.fx.DragListGroup.prototype.getHoverNextItem_ = function(
   // item in the hover drag list is not always the same. It changes based on
   // the growth direction of the hover drag list in question.
   /** @type {number} */
-  var relevantCoord;
+  var relevantCoord = 0;
   var getRelevantBoundFn;
   var isBeforeFn;
   var pickClosestRow = false;
@@ -1208,7 +1215,7 @@ goog.fx.DragListGroup.prototype.insertCurrDragItem_ = function(
  * The fields draggerElCenter, hoverList, and hoverNextItem are only available
  * for the BEFOREDRAGMOVE and DRAGMOVE events.
  *
- * @param {string} type The event type string.
+ * @param {goog.fx.DragListGroup.EventType} type
  * @param {goog.fx.DragListGroup} dragListGroup A reference to the associated
  *     DragListGroup object.
  * @param {goog.events.BrowserEvent|goog.fx.DragEvent} event The event fired

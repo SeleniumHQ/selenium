@@ -73,26 +73,25 @@ goog.ui.DatePicker = function(
 
   this.wdayNames_ = this.symbols_.STANDALONESHORTWEEKDAYS;
 
-  // The DateTimeFormat object uses the global goog.i18n.DateTimeSymbols
-  // for initialization. So we save the original value, the global object,
-  // create the formatters, then restore the original value.
-  var tempSymbols = goog.i18n.DateTimeSymbols;  // save
-  goog.i18n.DateTimeSymbols = this.symbols_;
-
   // Formatters for the various areas of the picker
-  this.i18nDateFormatterDay_ = new goog.i18n.DateTimeFormat('d');
-  this.i18nDateFormatterDay2_ = new goog.i18n.DateTimeFormat('dd');
-  this.i18nDateFormatterWeek_ = new goog.i18n.DateTimeFormat('w');
+  this.i18nDateFormatterDay_ = new goog.i18n.DateTimeFormat('d', this.symbols_);
+  this.i18nDateFormatterDay2_ =
+      new goog.i18n.DateTimeFormat('dd', this.symbols_);
+  this.i18nDateFormatterWeek_ =
+      new goog.i18n.DateTimeFormat('w', this.symbols_);
+  // Formatter for day grid aria label.
+  this.i18nDateFormatterDayAriaLabel_ =
+      new goog.i18n.DateTimeFormat('M d', this.symbols_);
 
   // Previous implementation did not use goog.i18n.DateTimePatterns,
   // so it is likely most developers did not set it.
   // This is why the fallback to a hard-coded string (just in case).
   var patYear = goog.i18n.DateTimePatterns.YEAR_FULL || 'y';
-  this.i18nDateFormatterYear_ = new goog.i18n.DateTimeFormat(patYear);
+  this.i18nDateFormatterYear_ =
+      new goog.i18n.DateTimeFormat(patYear, this.symbols_);
   var patMMMMy = goog.i18n.DateTimePatterns.YEAR_MONTH_FULL || 'MMMM y';
-  this.i18nDateFormatterMonthYear_ = new goog.i18n.DateTimeFormat(patMMMMy);
-
-  goog.i18n.DateTimeSymbols = tempSymbols;  // restore
+  this.i18nDateFormatterMonthYear_ =
+      new goog.i18n.DateTimeFormat(patMMMMy, this.symbols_);
 
   /**
    * @type {!goog.ui.DatePickerRenderer}
@@ -200,7 +199,7 @@ goog.ui.DatePicker.prototype.showOtherMonths_ = true;
 
 /**
  * Range of dates which are selectable by the user.
- * @type {goog.date.DateRange}
+ * @type {!goog.date.DateRange}
  * @private
  */
 goog.ui.DatePicker.prototype.userSelectableDateRange_ =
@@ -487,7 +486,7 @@ goog.ui.DatePicker.prototype.setShowOtherMonths = function(b) {
 /**
  * Sets the range of dates which may be selected by the user.
  *
- * @param {goog.date.DateRange} dateRange The range of selectable dates.
+ * @param {!goog.date.DateRange} dateRange The range of selectable dates.
  */
 goog.ui.DatePicker.prototype.setUserSelectableDateRange = function(dateRange) {
   this.userSelectableDateRange_ = dateRange;
@@ -495,9 +494,19 @@ goog.ui.DatePicker.prototype.setUserSelectableDateRange = function(dateRange) {
 
 
 /**
+ * Gets the range of dates which may be selected by the user.
+ *
+ * @return {!goog.date.DateRange} The range of selectable dates.
+ */
+goog.ui.DatePicker.prototype.getUserSelectableDateRange = function() {
+  return this.userSelectableDateRange_;
+};
+
+
+/**
  * Determine if a date may be selected by the user.
  *
- * @param {goog.date.Date} date The date to be tested.
+ * @param {!goog.date.Date} date The date to be tested.
  * @return {boolean} Whether the user may select this date.
  * @private
  */
@@ -779,6 +788,8 @@ goog.ui.DatePicker.prototype.setDate_ = function(date, fireSelection) {
   // Set current month
   if (date) {
     this.activeMonth_.set(this.date_);
+    // Set years with two digits to their full year, not 19XX.
+    this.activeMonth_.setFullYear(this.date_.getFullYear());
     this.activeMonth_.setDate(1);
   }
 
@@ -834,9 +845,27 @@ goog.ui.DatePicker.prototype.updateNavigationRow_ = function() {
     this.addPreventDefaultClickHandler_(
         row, goog.getCssName(this.getBaseCssClass(), 'previousMonth'),
         this.previousMonth);
+    var previousMonthElement = goog.dom.getElementByClass(
+        goog.getCssName(this.getBaseCssClass(), 'previousMonth'), row);
+    if (previousMonthElement) {
+      // Note: we're hiding the next and previous month buttons from screen
+      // readers because keyboard navigation doesn't currently work correctly
+      // with them. If that is fixed, we can show the buttons again.
+      goog.a11y.aria.setState(
+          previousMonthElement, goog.a11y.aria.State.HIDDEN, true);
+      previousMonthElement.tabIndex = -1;
+    }
+
     this.addPreventDefaultClickHandler_(
         row, goog.getCssName(this.getBaseCssClass(), 'nextMonth'),
         this.nextMonth);
+    var nextMonthElement = goog.dom.getElementByClass(
+        goog.getCssName(this.getBaseCssClass(), 'nextMonth'), row);
+    if (nextMonthElement) {
+      goog.a11y.aria.setState(
+          nextMonthElement, goog.a11y.aria.State.HIDDEN, true);
+      nextMonthElement.tabIndex = -1;
+    }
 
     this.elMonthYear_ = goog.dom.getElementByClass(
         goog.getCssName(this.getBaseCssClass(), 'monthyear'), row);
@@ -934,7 +963,7 @@ goog.ui.DatePicker.prototype.decorateInternal = function(el) {
   var tfoot = this.dom_.createElement(goog.dom.TagName.TFOOT);
 
   goog.a11y.aria.setRole(tbody, 'grid');
-  tbody.tabIndex = '0';
+  tbody.tabIndex = 0;
 
   // As per comment in colorpicker: table.tBodies and table.tFoot should not be
   // used because of a bug in Safari, hence using an instance variable
@@ -1386,7 +1415,16 @@ goog.ui.DatePicker.prototype.updateCalendarGrid_ = function() {
     this.grid_[y] = [];
     for (var x = 0; x < 7; x++) {  // Weekdays
       this.grid_[y][x] = date.clone();
+      // Date.add breaks dates before year 100 by adding 1900 to the year
+      // value. As a workaround we store the year before the add and reapply it
+      // after (with special handling for January 1st).
+      var year = date.getFullYear();
       date.add(dayInterval);
+      if (date.getMonth() == 0 && date.getDate() == 1) {
+        // Increase year on January 1st.
+        year++;
+      }
+      date.setFullYear(year);
     }
   }
 
@@ -1437,6 +1475,10 @@ goog.ui.DatePicker.prototype.redrawCalendarGrid_ = function() {
       }
       goog.asserts.assert(el, 'The table DOM element cannot be null.');
       goog.a11y.aria.setRole(el, 'gridcell');
+      // Set the aria label of the grid cell to the month plus the day.
+      goog.a11y.aria.setLabel(
+          el, this.i18nDateFormatterDayAriaLabel_.format(o));
+
       var classes = [goog.getCssName(this.getBaseCssClass(), 'date')];
       if (!this.isUserSelectableDate_(o)) {
         classes.push(

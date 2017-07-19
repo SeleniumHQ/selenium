@@ -45,11 +45,13 @@ goog.addSingletonGetter(goog.ui.ToolbarColorMenuButtonRenderer);
 /**
  * Overrides the superclass implementation by wrapping the caption text or DOM
  * structure in a color indicator element.  Creates the following DOM structure:
- *   <div class="goog-inline-block goog-toolbar-menu-button-caption">
- *     <div class="goog-color-menu-button-indicator">
- *       Contents...
- *     </div>
- *   </div>
+ *
+ *    <div class="goog-inline-block goog-toolbar-menu-button-caption">
+ *      <div class="goog-color-menu-button-indicator">
+ *        Contents...
+ *      </div>
+ *    </div>
+ *
  * @param {goog.ui.ControlContent} content Text caption or DOM structure.
  * @param {goog.dom.DomHelper} dom DOM helper, used for document interaction.
  * @return {!Element} Caption element.

@@ -105,22 +105,17 @@ goog.ui.CookieEditor.prototype.canDecorate = function() {
 /** @override */
 goog.ui.CookieEditor.prototype.createDom = function() {
   // Debug-only, so we don't need i18n.
-  this.clearButtonElem_ = /** @type {!HTMLButtonElement} */ (
-      goog.dom.createDom(
-          goog.dom.TagName.BUTTON, /* attributes */ null, 'Clear'));
-  this.updateButtonElem_ =
-      /** @type {!HTMLButtonElement} */ (
-          goog.dom.createDom(
-              goog.dom.TagName.BUTTON, /* attributes */ null, 'Update'));
+  this.clearButtonElem_ = goog.dom.createDom(
+      goog.dom.TagName.BUTTON, /* attributes */ null, 'Clear');
+  this.updateButtonElem_ = goog.dom.createDom(
+      goog.dom.TagName.BUTTON, /* attributes */ null, 'Update');
   var value = this.cookieKey_ && goog.net.cookies.get(this.cookieKey_);
-  this.textAreaElem_ = /** @type {!HTMLTextAreaElement} */ (
-      goog.dom.createDom(
-          goog.dom.TagName.TEXTAREA, /* attibutes */ null, value || ''));
-  this.valueWarningElem_ = /** @type {!HTMLSpanElement} */ (
-      goog.dom.createDom(
-          goog.dom.TagName.SPAN,
-          /* attibutes */ {'style': 'display:none;color:red'},
-          'Invalid cookie value.'));
+  this.textAreaElem_ = goog.dom.createDom(
+      goog.dom.TagName.TEXTAREA, /* attibutes */ null, value || '');
+  this.valueWarningElem_ = goog.dom.createDom(
+      goog.dom.TagName.SPAN,
+      /* attibutes */ {'style': 'display:none;color:red'},
+      'Invalid cookie value.');
   this.setElementInternal(
       goog.dom.createDom(
           goog.dom.TagName.DIV,

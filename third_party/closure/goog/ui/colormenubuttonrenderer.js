@@ -54,11 +54,13 @@ goog.ui.ColorMenuButtonRenderer.CSS_CLASS =
 /**
  * Overrides the superclass implementation by wrapping the caption text or DOM
  * structure in a color indicator element.  Creates the following DOM structure:
- *   <div class="goog-inline-block goog-menu-button-caption">
- *     <div class="goog-color-menu-button-indicator">
- *       Contents...
- *     </div>
- *   </div>
+ *
+ *    <div class="goog-inline-block goog-menu-button-caption">
+ *      <div class="goog-color-menu-button-indicator">
+ *        Contents...
+ *      </div>
+ *    </div>
+ *
  * The 'goog-color-menu-button-indicator' style should be defined to have a
  * bottom border of nonzero width and a default color that blends into its
  * background.

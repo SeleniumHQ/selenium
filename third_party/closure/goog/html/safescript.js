@@ -78,7 +78,7 @@ goog.html.SafeScript = function() {
   /**
    * A type marker used to implement additional run-time type checking.
    * @see goog.html.SafeScript#unwrap
-   * @const
+   * @const {!Object}
    * @private
    */
   this.SAFE_SCRIPT_TYPE_MARKER_GOOG_HTML_SECURITY_PRIVATE_ =

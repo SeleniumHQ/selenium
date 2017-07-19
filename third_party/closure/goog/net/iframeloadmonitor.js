@@ -162,7 +162,7 @@ goog.net.IframeLoadMonitor.prototype.disposeInternal = function() {
  */
 goog.net.IframeLoadMonitor.prototype.isLoadedHelper_ = function() {
   var isLoaded = false;
-  /** @preserveTry */
+
   try {
     if (!this.hasContent_ && goog.userAgent.IE &&
         !goog.userAgent.isVersionOrHigher('11')) {

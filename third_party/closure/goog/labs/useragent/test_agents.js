@@ -260,6 +260,12 @@ testAgents.WEBVIEW_IPAD =
 
 
 /** @const {string} */
+testAgents.OPERA_MINI =
+    'Opera/9.80 (Android; Opera Mini/7.6.35766/35.5706; U; en)' +
+    ' Presto/2.8.119 Version/11.10';
+
+
+/** @const {string} */
 testAgents.OPERA_10 = 'Opera/9.80 (S60; SymbOS; Opera Mobi/447; U; en) ' +
     'Presto/2.4.18 Version/10.00';
 

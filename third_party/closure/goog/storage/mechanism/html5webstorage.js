@@ -68,7 +68,7 @@ goog.storage.mechanism.HTML5WebStorage.prototype.isAvailable = function() {
   if (!this.storage_) {
     return false;
   }
-  /** @preserveTry */
+
   try {
     // setItem will throw an exception if we cannot access WebStorage (e.g.,
     // Safari in private mode).
@@ -85,7 +85,7 @@ goog.storage.mechanism.HTML5WebStorage.prototype.isAvailable = function() {
 
 /** @override */
 goog.storage.mechanism.HTML5WebStorage.prototype.set = function(key, value) {
-  /** @preserveTry */
+
   try {
     // May throw an exception if storage quota is exceeded.
     this.storage_.setItem(key, value);

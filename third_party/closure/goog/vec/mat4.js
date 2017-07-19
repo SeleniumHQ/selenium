@@ -515,7 +515,7 @@ goog.vec.Mat4.getDiagonal = function(mat, vec, opt_diagonal) {
 /**
  * Sets the specified column with the supplied values.
  *
- * @param {goog.vec.Mat4.AnyType} mat The matrix to recieve the values.
+ * @param {goog.vec.Mat4.AnyType} mat The matrix to receive the values.
  * @param {number} column The column index to set the values on.
  * @param {number} v0 The value for row 0.
  * @param {number} v1 The value for row 1.
@@ -1277,7 +1277,7 @@ goog.vec.Mat4.makeFrustum = function(mat, left, right, bottom, top, near, far) {
 
 
 /**
- * Makse the given 4x4 matrix  perspective projection matrix given a
+ * Makes the given 4x4 matrix  perspective projection matrix given a
  * field of view and aspect ratio.
  *
  * @param {goog.vec.Mat4.AnyType} mat The matrix.
@@ -1739,7 +1739,7 @@ goog.vec.Mat4.getTranslation = function(mat, translation) {
 
 
 /**
- * @type {!Array<!goog.vec.Vec3.Type>}
+ * @type {!Array<!goog.vec.Mat4.Float64>}
  * @private
  */
 goog.vec.Mat4.tmpVec3_ =
@@ -1747,7 +1747,7 @@ goog.vec.Mat4.tmpVec3_ =
 
 
 /**
- * @type {!Array<!goog.vec.Vec4.Type>}
+ * @type {!Array<!goog.vec.Mat4.Float64>}
  * @private
  */
 goog.vec.Mat4.tmpVec4_ = [
@@ -1757,7 +1757,7 @@ goog.vec.Mat4.tmpVec4_ = [
 
 
 /**
- * @type {!Array<!goog.vec.Mat4.Type>}
+ * @type {!Array<!goog.vec.Mat4.Float64>}
  * @private
  */
 goog.vec.Mat4.tmpMat4_ = [goog.vec.Mat4.createFloat64()];

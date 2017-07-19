@@ -101,7 +101,7 @@ goog.ui.LabelInput.prototype.formAttached_;
  * @type {?boolean}
  * @private
  */
-goog.ui.LabelInput.SUPPORTS_PLACEHOLDER_;
+goog.ui.LabelInput.supportsPlaceholder_;
 
 
 /**
@@ -110,11 +110,11 @@ goog.ui.LabelInput.SUPPORTS_PLACEHOLDER_;
  * @private
  */
 goog.ui.LabelInput.isPlaceholderSupported_ = function() {
-  if (!goog.isDefAndNotNull(goog.ui.LabelInput.SUPPORTS_PLACEHOLDER_)) {
-    goog.ui.LabelInput.SUPPORTS_PLACEHOLDER_ =
-        ('placeholder' in document.createElement(goog.dom.TagName.INPUT));
+  if (!goog.isDefAndNotNull(goog.ui.LabelInput.supportsPlaceholder_)) {
+    goog.ui.LabelInput.supportsPlaceholder_ =
+        ('placeholder' in goog.dom.createElement(goog.dom.TagName.INPUT));
   }
-  return goog.ui.LabelInput.SUPPORTS_PLACEHOLDER_;
+  return goog.ui.LabelInput.supportsPlaceholder_;
 };
 
 

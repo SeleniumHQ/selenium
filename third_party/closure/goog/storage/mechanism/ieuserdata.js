@@ -81,7 +81,7 @@ goog.storage.mechanism.IEUserData = function(storageKey, opt_storageNodeId) {
           storageKey, this.storageNode_);
     }
 
-    /** @preserveTry */
+
     try {
       // Availability check.
       this.loadNode_();
@@ -255,7 +255,7 @@ goog.storage.mechanism.IEUserData.prototype.loadNode_ = function() {
  * @private
  */
 goog.storage.mechanism.IEUserData.prototype.saveNode_ = function() {
-  /** @preserveTry */
+
   try {
     // This is a special IE-only method on Elements letting us persist data.
     // Do not try to assign this.storageNode_['save'] to a variable, it does

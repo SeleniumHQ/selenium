@@ -51,14 +51,6 @@ goog.ui.Css3MenuButtonRenderer = function() {
   goog.ui.MenuButtonRenderer.call(this);
 };
 goog.inherits(goog.ui.Css3MenuButtonRenderer, goog.ui.MenuButtonRenderer);
-
-
-/**
- * The singleton instance of this renderer class.
- * @type {goog.ui.Css3MenuButtonRenderer?}
- * @private
- */
-goog.ui.Css3MenuButtonRenderer.instance_ = null;
 goog.addSingletonGetter(goog.ui.Css3MenuButtonRenderer);
 
 
@@ -97,10 +89,11 @@ goog.ui.Css3MenuButtonRenderer.prototype.canDecorate = function(element) {
 /**
  * Takes a text caption or existing DOM structure, and returns the content
  * wrapped in a pseudo-rounded-corner box.  Creates the following DOM structure:
- *  <div class="goog-inline-block goog-css3-button goog-css3-menu-button">
- *    <div class="goog-css3-button-caption">Contents...</div>
- *    <div class="goog-css3-button-dropdown"></div>
- *  </div>
+ *
+ *    <div class="goog-inline-block goog-css3-button goog-css3-menu-button">
+ *      <div class="goog-css3-button-caption">Contents...</div>
+ *      <div class="goog-css3-button-dropdown"></div>
+ *    </div>
  *
  * Used by both {@link #createDom} and {@link #decorate}.  To be overridden
  * by subclasses.

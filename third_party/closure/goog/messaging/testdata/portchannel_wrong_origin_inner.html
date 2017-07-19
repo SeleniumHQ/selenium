@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<!--
+Copyright 2010 The Closure Library Authors. All Rights Reserved.
+
+Use of this source code is governed by the Apache License, Version 2.0.
+See the COPYING file for details.
+-->
+<!--
+-->
+<head>
+<title>PortChannel test inner document</title>
+<script src="../../base.js"></script>
+<script>
+goog.require('goog.messaging.PortChannel');
+</script>
+</head>
+<body>
+<script>
+
+var channel = goog.messaging.PortChannel.forGlobalWindow(
+    'http://somewhere-else.com');
+channel.registerService('ping', function(msg) {
+  channel.send('pong', msg);
+});
+
+</script>
+</body>
+</html>

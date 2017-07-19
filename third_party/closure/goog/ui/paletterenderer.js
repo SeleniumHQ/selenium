@@ -140,8 +140,8 @@ goog.ui.PaletteRenderer.prototype.createTable = function(rows, dom) {
       dom.createDom(
           goog.dom.TagName.TBODY, goog.getCssName(this.getCssClass(), 'body'),
           rows));
-  table.cellSpacing = 0;
-  table.cellPadding = 0;
+  table.cellSpacing = '0';
+  table.cellPadding = '0';
   return table;
 };
 

@@ -20,6 +20,7 @@
  * @author attila@google.com (Attila Bodis)
  */
 
+goog.setTestOnly('goog.testing.PerformanceTimer');
 goog.provide('goog.testing.PerformanceTimer');
 goog.provide('goog.testing.PerformanceTimer.Task');
 
@@ -194,6 +195,7 @@ goog.testing.PerformanceTimer.prototype.runTask = function(task) {
  * Finishes the run of a task by creating a result object from samples, in the
  * format described in {@code run}.
  * @see goog.testing.PerformanceTimer#run
+ * @param {!Array<number>} samples The samples to analyze.
  * @return {!Object} Object containing performance stats.
  * @private
  */
@@ -301,7 +303,7 @@ goog.testing.PerformanceTimer.prototype.handleOptionalDeferred_ = function(
 /**
  * Creates a performance timer results object by analyzing a given array of
  * sample timings.
- * @param {Array<number>} samples The samples to analyze.
+ * @param {!Array<number>} samples The samples to analyze.
  * @return {!Object} Object containing performance stats.
  */
 goog.testing.PerformanceTimer.createResults = function(samples) {

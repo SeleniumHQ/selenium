@@ -555,7 +555,7 @@ goog.ui.editor.DefaultToolbar.fontSizeFactory_ = function(
  */
 goog.ui.editor.DefaultToolbar.colorUpdateFromValue_ = function(button, color) {
   var value = color;
-  /** @preserveTry */
+
   try {
     if (goog.userAgent.IE) {
       // IE returns a number that, converted to hex, is a BGR color.

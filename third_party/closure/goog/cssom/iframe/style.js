@@ -785,7 +785,7 @@ goog.cssom.iframe.style.getElementContext = function(
       goog.cssom.iframe.style.isTransparentValue_(
           computedStyle['backgroundColor'])) {
     // opt_useAncestorBackgroundRules means that, if the original element
-    // has a transparent backgorund, background properties rules should be
+    // has a transparent background, background properties rules should be
     // added to explicitly make the body have the same background appearance
     // as in the original element, even if its positioned somewhere else
     // in the DOM.

@@ -17,8 +17,7 @@
  *     hasProperty, instanceOf, etc.
  */
 
-
-
+goog.provide('goog.labs.testing.AnyObjectMatcher');
 goog.provide('goog.labs.testing.HasPropertyMatcher');
 goog.provide('goog.labs.testing.InstanceOfMatcher');
 goog.provide('goog.labs.testing.IsNullMatcher');
@@ -26,8 +25,28 @@ goog.provide('goog.labs.testing.IsNullOrUndefinedMatcher');
 goog.provide('goog.labs.testing.IsUndefinedMatcher');
 goog.provide('goog.labs.testing.ObjectEqualsMatcher');
 
-
 goog.require('goog.labs.testing.Matcher');
+
+
+
+/**
+ * Matches any object value.
+ *
+ * @constructor @struct @implements {goog.labs.testing.Matcher} @final
+ */
+goog.labs.testing.AnyObjectMatcher = function() {};
+
+
+/** @override */
+goog.labs.testing.AnyObjectMatcher.prototype.matches = function(actualValue) {
+  return goog.isObject(actualValue);
+};
+
+
+/** @override */
+goog.labs.testing.AnyObjectMatcher.prototype.describe = function(actualValue) {
+  return '<' + actualValue + '> is not an object';
+};
 
 
 
@@ -240,6 +259,12 @@ goog.labs.testing.IsUndefinedMatcher.prototype.describe = function(
     actualValue) {
   return actualValue + ' is not undefined.';
 };
+
+
+/** @return {!goog.labs.testing.AnyObjectMatcher} */
+function anyObject() {
+  return new goog.labs.testing.AnyObjectMatcher();
+}
 
 
 /**

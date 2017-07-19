@@ -28,6 +28,7 @@ goog.require('goog.dom.NodeType');
 goog.require('goog.dom.TagName');
 goog.require('goog.dom.safe');
 goog.require('goog.html.SafeHtml');
+goog.require('goog.object');
 
 
 /**
@@ -84,11 +85,10 @@ goog.dom.annotate.MAX_RECURSION_ = 200;
 
 /**
  * The node types whose descendants should not be affected by annotation.
- * @private {Array<string>}
+ * @private {!Object<string, boolean>}
  */
-goog.dom.annotate.NODES_TO_SKIP_ = [
-  goog.dom.TagName.SCRIPT, goog.dom.TagName.STYLE, goog.dom.TagName.TEXTAREA
-];
+goog.dom.annotate.NODES_TO_SKIP_ = goog.object.createSet(
+    goog.dom.TagName.SCRIPT, goog.dom.TagName.STYLE, goog.dom.TagName.TEXTAREA);
 
 
 /**
@@ -130,7 +130,7 @@ goog.dom.annotate.annotateTermsInNode_ = function(
       // element as a side effect, we'll only actually use the temporary node's
       // children.
       var tempNode =
-          goog.dom.getOwnerDocument(node).createElement(goog.dom.TagName.SPAN);
+          goog.dom.getDomHelper(node).createElement(goog.dom.TagName.SPAN);
       goog.dom.safe.setInnerHtml(tempNode, html);
 
       var parentNode = node.parentNode;
@@ -146,9 +146,8 @@ goog.dom.annotate.annotateTermsInNode_ = function(
     }
   } else if (
       node.hasChildNodes() &&
-      !goog.array.contains(
-          goog.dom.annotate.NODES_TO_SKIP_,
-          /** @type {!Element} */ (node).tagName)) {
+      !goog.dom.annotate
+           .NODES_TO_SKIP_[/** @type {!Element} */ (node).tagName]) {
     var classes = /** @type {!Element} */ (node).className.split(/\s+/);
     var skip = goog.array.some(classes, function(className) {
       return goog.array.contains(classesToSkip, className);

@@ -121,7 +121,7 @@ goog.ui.CustomColorPalette.prototype.promptForCustomColor = function() {
   }
 
   var color;
-  /** @preserveTry */
+
   try {
     color = goog.color.parse(response).hex;
   } catch (er) {

@@ -23,6 +23,7 @@ goog.provide('goog.userAgentTestUtil.UserAgents');
 goog.require('goog.labs.userAgent.browser');
 goog.require('goog.labs.userAgent.engine');
 goog.require('goog.labs.userAgent.platform');
+goog.require('goog.object');
 goog.require('goog.userAgent');
 goog.require('goog.userAgent.keyboard');
 goog.require('goog.userAgent.platform');
@@ -45,6 +46,7 @@ goog.userAgentTestUtil.reinitializeUserAgent = function() {
   goog.userAgent.OPERA = goog.labs.userAgent.browser.isOpera();
   goog.userAgent.IE = goog.labs.userAgent.browser.isIE();
   goog.userAgent.EDGE = goog.labs.userAgent.engine.isEdge();
+  goog.userAgent.EDGE_OR_IE = goog.userAgent.EDGE || goog.userAgent.IE;
   goog.userAgent.GECKO = goog.labs.userAgent.engine.isGecko();
   goog.userAgent.WEBKIT = goog.labs.userAgent.engine.isWebKit();
   goog.userAgent.MOBILE = goog.userAgent.isMobile_();
@@ -60,6 +62,7 @@ goog.userAgentTestUtil.reinitializeUserAgent = function() {
   goog.userAgent.ANDROID = goog.labs.userAgent.platform.isAndroid();
   goog.userAgent.IPAD = goog.labs.userAgent.platform.isIpad();
   goog.userAgent.IPHONE = goog.labs.userAgent.platform.isIphone();
+  goog.userAgent.IPOD = goog.labs.userAgent.platform.isIpod();
   goog.userAgent.VERSION = goog.userAgent.determineVersion_();
 
   // Platform in goog.userAgent.platform.
@@ -83,6 +86,9 @@ goog.userAgentTestUtil.reinitializeUserAgent = function() {
   // goog.userAgent.keyboard
   goog.userAgent.keyboard.MAC_KEYBOARD =
       goog.userAgent.keyboard.determineMacKeyboard_();
+
+  // Reset cache so calls to isVersionOrHigher don't use cached version.
+  goog.object.clear(goog.userAgent.isVersionOrHigherCache_);
 };
 
 

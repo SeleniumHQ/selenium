@@ -65,25 +65,25 @@ goog.ui.RoundedTabRenderer.prototype.getCssClass = function() {
  * Creates the tab's DOM structure, based on the containing tab bar's location
  * relative to tab contents.  For example, the DOM for a tab in a tab bar
  * located above tab contents would look like this:
- * <pre>
- *   <div class="goog-rounded-tab" title="...">
- *     <table class="goog-rounded-tab-table">
- *       <tbody>
- *         <tr>
- *           <td nowrap>
- *             <div class="goog-rounded-tab-outer-edge"></div>
- *             <div class="goog-rounded-tab-inner-edge"></div>
- *           </td>
- *         </tr>
- *         <tr>
- *           <td nowrap>
- *             <div class="goog-rounded-tab-caption">Hello, world</div>
- *           </td>
- *         </tr>
- *       </tbody>
- *     </table>
- *   </div>
- * </pre>
+ *
+ *    <div class="goog-rounded-tab" title="...">
+ *      <table class="goog-rounded-tab-table">
+ *        <tbody>
+ *          <tr>
+ *            <td nowrap>
+ *              <div class="goog-rounded-tab-outer-edge"></div>
+ *              <div class="goog-rounded-tab-inner-edge"></div>
+ *            </td>
+ *          </tr>
+ *          <tr>
+ *            <td nowrap>
+ *              <div class="goog-rounded-tab-caption">Hello, world</div>
+ *            </td>
+ *          </tr>
+ *        </tbody>
+ *      </table>
+ *    </div>
+ *
  * @param {goog.ui.Control} tab Tab to render.
  * @return {Element} Root element for the tab.
  * @override

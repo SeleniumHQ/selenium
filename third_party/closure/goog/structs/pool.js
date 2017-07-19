@@ -87,11 +87,6 @@ goog.structs.Pool = function(opt_minCount, opt_maxCount) {
 
   // Make sure that the minCount constraint is satisfied.
   this.adjustForMinMax();
-
-
-  // TODO(user): Remove once JSCompiler's undefined properties warnings
-  // don't error for guarded properties.
-  var magicProps = {canBeReused: 0};
 };
 goog.inherits(goog.structs.Pool, goog.Disposable);
 
@@ -136,7 +131,7 @@ goog.structs.Pool.prototype.setMinimumCount = function(min) {
 
 /**
  * Sets the maximum count of the pool.
- * If max is less than the max count of the pool, an error is thrown.
+ * If max is less than the min count of the pool, an error is thrown.
  * @param {number} max The maximum count of the pool.
  */
 goog.structs.Pool.prototype.setMaximumCount = function(max) {

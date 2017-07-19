@@ -22,7 +22,18 @@
 goog.provide('goog.graphics.AbstractGraphics');
 
 goog.require('goog.dom');
+goog.require('goog.graphics.AffineTransform');
+goog.require('goog.graphics.Element');
+goog.require('goog.graphics.EllipseElement');
+goog.require('goog.graphics.Fill');
+goog.require('goog.graphics.Font');
+goog.require('goog.graphics.GroupElement');
 goog.require('goog.graphics.Path');
+goog.require('goog.graphics.PathElement');
+goog.require('goog.graphics.RectElement');
+goog.require('goog.graphics.Stroke');
+goog.require('goog.graphics.StrokeAndFillElement');
+goog.require('goog.graphics.TextElement');
 goog.require('goog.math.Coordinate');
 goog.require('goog.math.Size');
 goog.require('goog.style');
@@ -56,7 +67,7 @@ goog.graphics.AbstractGraphics = function(
   this.width = width;
 
   /**
-   * Height of graphics in pixels or precentage points.
+   * Height of graphics in pixels or percentage points.
    * @type {number|string}
    * @protected
    */
@@ -417,7 +428,7 @@ goog.graphics.AbstractGraphics.prototype.createPath = function() {
  * Measure and return the width (in pixels) of a given text string.
  * Text measurement is needed to make sure a text can fit in the allocated
  * area. The way text length is measured is by writing it into a div that is
- * after the visible area, measure the div width, and immediatly erase the
+ * after the visible area, measure the div width, and immediately erase the
  * written value.
  *
  * @param {string} text The text string to measure.

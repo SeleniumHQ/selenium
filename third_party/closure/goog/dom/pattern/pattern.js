@@ -24,13 +24,6 @@ goog.provide('goog.dom.pattern.MatchType');
 
 
 /**
- * Regular expression for breaking text nodes.
- * @type {RegExp}
- */
-goog.dom.pattern.BREAKING_TEXTNODE_RE = /^\s*$/;
-
-
-/**
  * Utility function to match a string against either a string or a regular
  * expression.
  *

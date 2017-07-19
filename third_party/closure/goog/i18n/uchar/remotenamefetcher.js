@@ -34,9 +34,11 @@ goog.provide('goog.i18n.uChar.RemoteNameFetcher');
 
 goog.require('goog.Disposable');
 goog.require('goog.Uri');
+goog.require('goog.events');
 goog.require('goog.i18n.uChar');
 goog.require('goog.i18n.uChar.NameFetcher');
 goog.require('goog.log');
+goog.require('goog.net.EventType');
 goog.require('goog.net.XhrIo');
 goog.require('goog.structs.Map');
 
@@ -132,7 +134,8 @@ goog.i18n.uChar.RemoteNameFetcher.prototype.disposeInternal = function() {
 goog.i18n.uChar.RemoteNameFetcher.prototype.prefetch = function(characters) {
   // Abort the current request if there is one
   if (this.prefetchXhrIo_.isActive()) {
-    goog.i18n.uChar.RemoteNameFetcher.logger_.info(
+    goog.log.info(
+        goog.i18n.uChar.RemoteNameFetcher.logger_,
         'Aborted previous prefetch() call for new incoming request');
     this.prefetchXhrIo_.abort();
   }
@@ -174,7 +177,8 @@ goog.i18n.uChar.RemoteNameFetcher.prototype.getName = function(
 
   // Abort the current request if there is one
   if (this.getNameXhrIo_.isActive()) {
-    goog.i18n.uChar.RemoteNameFetcher.logger_.info(
+    goog.log.info(
+        goog.i18n.uChar.RemoteNameFetcher.logger_,
         'Aborted previous getName() call for new incoming request');
     this.getNameXhrIo_.abort();
   }

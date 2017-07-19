@@ -18,6 +18,7 @@
  * @author robbyw@google.com (Robby Walker)
  */
 
+goog.setTestOnly('goog.testing.dom');
 goog.provide('goog.testing.dom');
 
 goog.require('goog.array');
@@ -35,6 +36,8 @@ goog.require('goog.string');
 goog.require('goog.style');
 goog.require('goog.testing.asserts');
 goog.require('goog.userAgent');
+
+goog.forwardDeclare('goog.dom.AbstractRange');
 
 
 /**
@@ -466,7 +469,7 @@ goog.testing.dom.assertRangeEquals = function(
  */
 goog.testing.dom.getAttributeValue_ = function(node, name) {
   // These hacks avoid nondetermistic results in the following cases:
-  // IE7: document.createElement(goog.dom.TagName.INPUT).height returns
+  // IE7: goog.dom.createElement(goog.dom.TagName.INPUT).height returns
   //      a random number.
   // FF3: getAttribute('disabled') returns different value for <div disabled="">
   //      and <div disabled="disabled">

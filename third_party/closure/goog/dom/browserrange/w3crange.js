@@ -76,8 +76,8 @@ goog.dom.browserrange.W3cRange.getBrowserRangeForNode = function(node) {
       nodeRange.setStart(leaf, 0);
 
       leaf = node;
+      /** @suppress {missingRequire} Circular dep with browserrange */
       while ((tempNode = leaf.lastChild) &&
-             /** @suppress {missingRequire} */
              goog.dom.browserrange.canContainRangeEndpoint(tempNode)) {
         leaf = tempNode;
       }

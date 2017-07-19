@@ -178,4 +178,44 @@ Channel.prototype.testConnectionFailure = goog.abstractMethod;
  * @return {!goog.labs.net.webChannel.ConnectionState} The connectivity state.
  */
 Channel.prototype.getConnectionState = goog.abstractMethod;
+
+
+/**
+ * Sets the parameter name for the http session id.
+ *
+ * @param {?string} httpSessionIdParam The parameter name for http session id
+ */
+Channel.prototype.setHttpSessionIdParam = goog.abstractMethod;
+
+
+/**
+ * Gets the parameter name for the http session id.
+ *
+ * @return {?string} The parameter name for the http session id.
+ */
+Channel.prototype.getHttpSessionIdParam = goog.abstractMethod;
+
+
+/**
+ * Sets the http session id.
+ *
+ * @param {string} httpSessionId The http session id
+ */
+Channel.prototype.setHttpSessionId = goog.abstractMethod;
+
+
+/**
+ * Gets the http session id.
+ *
+ * @return {?string} The http session id if there is one in effect.
+ */
+Channel.prototype.getHttpSessionId = goog.abstractMethod;
+
+
+/**
+ * Returns true if the channel-test is done in background.
+ *
+ * @return {boolean} if the channel-test is done in background.
+ */
+Channel.prototype.getBackgroundChannelTest = goog.abstractMethod;
 });  // goog.scope

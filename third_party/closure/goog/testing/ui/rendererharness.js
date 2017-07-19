@@ -19,6 +19,7 @@
  * @author nicksantos@google.com (Nick Santos)
  */
 
+goog.setTestOnly('goog.testing.ui.RendererHarness');
 goog.provide('goog.testing.ui.RendererHarness');
 
 goog.require('goog.Disposable');
@@ -66,7 +67,7 @@ goog.testing.ui.RendererHarness = function(
   this.renderHtml_ = renderParent.innerHTML;
 
   /**
-   * Teh parent of the element where controls will be decorated.
+   * The parent of the element where controls will be decorated.
    * @type {Element}
    * @private
    */

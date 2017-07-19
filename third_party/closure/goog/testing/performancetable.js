@@ -21,8 +21,10 @@
  * @author nicksantos@google.com (Nick Santos)
  */
 
+goog.setTestOnly('goog.testing.PerformanceTable');
 goog.provide('goog.testing.PerformanceTable');
 
+goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.testing.PerformanceTimer');
@@ -110,7 +112,8 @@ goog.testing.PerformanceTable.prototype.initRoot_ = function() {
  * @private
  */
 goog.testing.PerformanceTable.prototype.getTableBody_ = function() {
-  return this.root_.getElementsByTagName(goog.dom.TagName.TBODY)[0];
+  return goog.dom.getElementsByTagName(
+      goog.dom.TagName.TBODY, goog.asserts.assert(this.root_))[0];
 };
 
 

@@ -17,16 +17,25 @@
  *
  */
 
+goog.setTestOnly('goog.testing.fs.Blob');
 goog.provide('goog.testing.fs.Blob');
 
+goog.require('goog.crypt');
 goog.require('goog.crypt.base64');
 
 
 
 /**
- * A mock Blob object. The data is stored as a string.
+ * A mock Blob object. The data is stored as an Array of bytes, a "byte" being a
+ * JS number in the range 0-255.
  *
- * @param {string=} opt_data The string data encapsulated by the blob.
+ * This blob simplifies writing test code because it has the toString() method
+ * that returns immediately, while the File API only provides asynchronous
+ * reads.
+ * @see https://www.w3.org/TR/FileAPI/#constructorBlob
+ *
+ * @param {(string|Array<(string|number|!Uint8Array)>)=} opt_data The data
+ *     encapsulated by the blob.
  * @param {string=} opt_type The mime type of the blob.
  * @constructor
  */
@@ -37,23 +46,21 @@ goog.testing.fs.Blob = function(opt_data, opt_type) {
    */
   this.type = opt_type || '';
 
+  /**
+   * The data encapsulated by the blob as an Array of bytes, a "byte" being a
+   * JS number in the range 0-255.
+   * @private {!Array<number>}
+   */
+  this.data_ = [];
+
+  /**
+   * @see http://www.w3.org/TR/FileAPI/#dfn-size
+   * @type {number}
+   */
+  this.size = 0;
+
   this.setDataInternal(opt_data || '');
 };
-
-
-/**
- * The string data encapsulated by the blob.
- * @type {string}
- * @private
- */
-goog.testing.fs.Blob.prototype.data_;
-
-
-/**
- * @see http://www.w3.org/TR/FileAPI/#dfn-size
- * @type {number}
- */
-goog.testing.fs.Blob.prototype.size;
 
 
 /**
@@ -70,43 +77,43 @@ goog.testing.fs.Blob.prototype.slice = function(
     opt_start, opt_end, opt_contentType) {
   var relativeStart;
   if (goog.isNumber(opt_start)) {
-    relativeStart = (opt_start < 0) ?
-        Math.max(this.data_.length + opt_start, 0) :
-        Math.min(opt_start, this.data_.length);
+    relativeStart = (opt_start < 0) ? Math.max(this.size + opt_start, 0) :
+                                      Math.min(opt_start, this.size);
   } else {
     relativeStart = 0;
   }
   var relativeEnd;
   if (goog.isNumber(opt_end)) {
-    relativeEnd = (opt_end < 0) ? Math.max(this.data_.length + opt_end, 0) :
-                                  Math.min(opt_end, this.data_.length);
+    relativeEnd = (opt_end < 0) ? Math.max(this.size + opt_end, 0) :
+                                  Math.min(opt_end, this.size);
   } else {
-    relativeEnd = this.data_.length;
+    relativeEnd = this.size;
   }
   var span = Math.max(relativeEnd - relativeStart, 0);
-  return new goog.testing.fs.Blob(
-      this.data_.substr(relativeStart, span), opt_contentType);
+  var blob = new goog.testing.fs.Blob(
+      this.data_.slice(relativeStart, relativeStart + span), opt_contentType);
+  return blob;
 };
 
 
 /**
- * @return {string} The string data encapsulated by the blob.
+ * @return {string} The data encapsulated by the blob as an UTF-8 string.
  * @override
  */
 goog.testing.fs.Blob.prototype.toString = function() {
-  return this.data_;
+  return goog.crypt.utf8ByteArrayToString(this.data_);
 };
 
 
 /**
- * @return {!ArrayBuffer} The string data encapsulated by the blob as an
+ * @return {!ArrayBuffer} The data encapsulated by the blob as an
  *     ArrayBuffer.
  */
 goog.testing.fs.Blob.prototype.toArrayBuffer = function() {
-  var buf = new ArrayBuffer(this.data_.length * 2);
-  var arr = new Uint16Array(buf);
+  var buf = new ArrayBuffer(this.data_.length);
+  var arr = new Uint8Array(buf);
   for (var i = 0; i < this.data_.length; i++) {
-    arr[i] = this.data_.charCodeAt(i);
+    arr[i] = this.data_[i];
   }
   return buf;
 };
@@ -117,17 +124,67 @@ goog.testing.fs.Blob.prototype.toArrayBuffer = function() {
  */
 goog.testing.fs.Blob.prototype.toDataUrl = function() {
   return 'data:' + this.type + ';base64,' +
-      goog.crypt.base64.encodeString(this.data_);
+      goog.crypt.base64.encodeByteArray(this.data_);
 };
 
 
 /**
- * Sets the internal contents of the blob. This should only be called by other
- * functions inside the {@code goog.testing.fs} namespace.
- *
- * @param {string} data The data for this Blob.
+ * Sets the internal contents of the blob to an Array of bytes. This should
+ *     only be called by other functions inside the {@code goog.testing.fs}
+ *     namespace.
+ * @param {string|Array<string|number|!Uint8Array>} data The data to write
+ *     into the blob.
+ * @package
  */
 goog.testing.fs.Blob.prototype.setDataInternal = function(data) {
-  this.data_ = data;
-  this.size = data.length;
+  this.data_ = [];
+  if (typeof data === 'string') {
+    this.appendString_(data);
+  } else if (data instanceof Array) {
+    for (var i = 0; i < data.length; i++) {
+      if (typeof data[i] === 'string') {
+        this.appendString_(data[i]);
+      } else if (typeof data[i] === 'number') {  // Assume Bytes array.
+        this.appendByte_(data[i]);
+      } else if (data[i] instanceof Uint8Array) {
+        this.appendUint8_(data[i]);
+      }
+    }
+  }
+  this.size = this.data_.length;
+};
+
+
+/**
+ * Converts the data from string to Array of bytes and appends to the blob
+ *     content.
+ * @param {string} data The string to append to the blob content.
+ * @private
+ */
+goog.testing.fs.Blob.prototype.appendString_ = function(data) {
+  Array.prototype.push.apply(
+      this.data_, goog.crypt.stringToUtf8ByteArray(data));
+};
+
+
+/**
+ * Appends a byte (as a number between 0 to 255) to the blob content.
+ * @param {number} data The byte to append.
+ * @private
+ */
+goog.testing.fs.Blob.prototype.appendByte_ = function(data) {
+  this.data_.push(data);
+};
+
+
+/**
+ * Converts the data from Uint8Array to Array of bytes and appends it to the
+ *     blob content.
+ * @param {!Uint8Array} data The array to append to the blob content.
+ * @private
+ */
+goog.testing.fs.Blob.prototype.appendUint8_ = function(data) {
+  for (var i = 0; i < data.length; i++) {
+    this.data_.push(data[i]);
+  }
 };

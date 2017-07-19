@@ -347,7 +347,7 @@ goog.ui.SplitPane.prototype.canDecorate = function(element) {
  * root element.
  * @param {Element} rootElement The root element from which to retrieve the
  *     element to be decorated.
- * @param {!string} className The target class name.
+ * @param {string} className The target class name.
  * @return {Element} The element to decorate.
  * @private
  */

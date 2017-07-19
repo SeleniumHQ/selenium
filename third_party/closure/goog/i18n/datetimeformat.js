@@ -152,7 +152,7 @@ goog.i18n.DateTimeFormat.Format = {
  */
 goog.i18n.DateTimeFormat.TOKENS_ = [
   // quote string
-  /^\'(?:[^\']|\'\')*\'/,
+  /^\'(?:[^\']|\'\')*(\'|$)/,
   // pattern chars
   /^(?:G+|y+|M+|k+|S+|E+|a+|h+|K+|H+|c+|L+|Q+|d+|m+|s+|v+|V+|w+|z+|Z+)/,
   // and all the other chars
@@ -174,6 +174,7 @@ goog.i18n.DateTimeFormat.PartTypes_ = {
 
 /**
  * @param {!goog.date.DateLike} date
+ * @return {number}
  * @private
  */
 goog.i18n.DateTimeFormat.getHours_ = function(date) {
@@ -193,6 +194,7 @@ goog.i18n.DateTimeFormat.prototype.applyPattern_ = function(pattern) {
   }
   // lex the pattern, once for all uses
   while (pattern) {
+    var previousPattern = pattern;
     for (var i = 0; i < goog.i18n.DateTimeFormat.TOKENS_.length; ++i) {
       var m = pattern.match(goog.i18n.DateTimeFormat.TOKENS_[i]);
       if (m) {
@@ -202,13 +204,19 @@ goog.i18n.DateTimeFormat.prototype.applyPattern_ = function(pattern) {
           if (part == "''") {
             part = "'";  // '' -> '
           } else {
-            part = part.substring(1, part.length - 1);  // strip quotes
-            part = part.replace(/\'\'/, "'");
+            part = part.substring(
+                1,
+                m[1] == '\'' ? part.length - 1 : part.length);  // strip quotes
+            part = part.replace(/\'\'/g, '\'');
           }
         }
         this.patternParts_.push({text: part, type: i});
         break;
       }
+    }
+    if (previousPattern === pattern) {
+      // On every iteration, part of the pattern string must be consumed.
+      throw new Error('Malformed pattern part: ' + pattern);
     }
   }
 };
