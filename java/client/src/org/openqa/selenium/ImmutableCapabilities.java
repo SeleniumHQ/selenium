@@ -25,7 +25,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Map;
-import java.util.Stack;
 
 public class ImmutableCapabilities implements Capabilities, Serializable {
 
@@ -74,11 +73,9 @@ public class ImmutableCapabilities implements Capabilities, Serializable {
     return caps.hashCode();
   }
 
+  @Override
   public String toString() {
     Map<Object, String> seen = new IdentityHashMap<>();
-    Stack<Object> toVisit = new Stack<>();
-    toVisit.push(caps);
-
     StringBuilder builder = new StringBuilder("Capabilities ");
     abbreviate(seen, builder, caps);
     return builder.toString();
