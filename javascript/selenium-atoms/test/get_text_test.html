@@ -26,6 +26,28 @@
           assertTrue(core.text.isTextPresent("exact:This is a test of"));
         }
 
+        function testShadowDom() {
+          if (typeof ShadowRoot !== 'function') {
+            // TODO: Remove when all browsers support shadow dom
+            return;
+          }
+
+          var element = document.createElement('div');
+          var shadow;
+
+          if (element.attachShadow) {
+            shadow = element.attachShadow({ mode: 'open' });
+            shadow.innerHTML = '<p>shadow</p><slot></slot>';
+          } else {
+            shadow = element.createShadowRoot();
+            shadow.innerHTML = '<p>shadow</p><content></content>';
+          }
+
+          element.innerHTML = '<p>light</p>';
+
+          assertEquals('shadow\nlight', core.text.getText(element));
+        }
+
         function testCanSearchByXPath() {
           if (!(document.documentElement['selectSingleNode'] || document['evaluate'])) {
             // TODO: Remove when all browsers [IE] support xpath
