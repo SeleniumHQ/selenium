@@ -74,10 +74,10 @@ public class WebDriverPriorityDemo {
     registry.getConfiguration().prioritizer = new Prioritizer() {
       public int compareTo(Map<String, Object> a, Map<String, Object> b) {
         boolean aImportant =
-            a.get("_important") == null ? false : Boolean.parseBoolean(a.get("_important")
+            a.get("grid:important") == null ? false : Boolean.parseBoolean(a.get("grid:important")
                                                                            .toString());
         boolean bImportant =
-            b.get("_important") == null ? false : Boolean.parseBoolean(b.get("_important")
+            b.get("grid:important") == null ? false : Boolean.parseBoolean(b.get("grid:important")
                                                                            .toString());
         if (aImportant == bImportant) {
           return 0;
@@ -93,7 +93,7 @@ public class WebDriverPriorityDemo {
 
     browser = GridTestHelper.getDefaultBrowserCapability();
     important_browser = GridTestHelper.getDefaultBrowserCapability();
-    important_browser.setCapability("_important", true);
+    important_browser.setCapability("grid:important", true);
 
     remote = GridTestHelper.getRemoteWithoutCapabilities(hubURL, GridRole.NODE);
     remote.addBrowser(browser, 1);
@@ -179,7 +179,6 @@ public class WebDriverPriorityDemo {
   @Test(timeout = 20000)
   public void test5ValidateStateAndPickTheImportantOne() throws InterruptedException {
     try {
-
       // closing the running test.
       runningOne.quit();
 
