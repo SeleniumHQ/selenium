@@ -202,11 +202,11 @@ public class FirefoxDriver extends RemoteWebDriver {
 
     if (options.isLegacy()) {
       builder = XpiDriverService.builder()
-          .withBinary(options.getBinaryOrNull().orElseGet(FirefoxBinary::new))
+          .withBinary(options.getBinary())
           .withProfile(options.getProfile());
     } else {
       builder = new GeckoDriverService.Builder()
-          .usingFirefoxBinary(options.getBinaryOrNull().orElseGet(FirefoxBinary::new));
+          .usingFirefoxBinary(options.getBinary());
     }
 
     return new DriverCommandExecutor(builder.build());
