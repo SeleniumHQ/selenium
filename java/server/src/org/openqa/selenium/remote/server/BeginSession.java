@@ -17,36 +17,22 @@
 
 package org.openqa.selenium.remote.server;
 
-import static com.google.common.net.HttpHeaders.CONTENT_TYPE;
 import static com.google.common.net.MediaType.JSON_UTF_8;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
-import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.net.MediaType;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonToken;
 
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.remote.BeanToJsonConverter;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-import java.io.BufferedInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.io.Writer;
-import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 
 class BeginSession implements CommandHandler {
 
@@ -63,21 +49,26 @@ class BeginSession implements CommandHandler {
     // Copy the capabilities to disk
     Path allCaps = Files.createTempFile("selenium", ".json");
 
-    try {
-      Map<String, Object> ossKeys = new HashMap<>();
-      Map<String, Object> alwaysMatch = new HashMap<>();
-      List<Map<String, Object>> firstMatch = new LinkedList<>();
+    String lengthString = req.getHeader("Content-Length");
+    long contentLength = Long.MAX_VALUE;
+    if (lengthString != null) {
+      try {
+        contentLength = Long.parseLong(lengthString);
+      } catch (NumberFormatException e) {
+        contentLength = Long.MAX_VALUE;
+      }
+    }
 
-      readCapabilities(allCaps, req, ossKeys, alwaysMatch, firstMatch);
-
-      ActiveSession session = sessionFactory.createSession(
-          allCaps,
-          ossKeys,
-          alwaysMatch,
-          firstMatch);
+    ActiveSession session;
+    try (Reader reader = new InputStreamReader(
+        req.consumeContentStream(),
+        req.getContentEncoding());
+         NewSessionPayload payload = new NewSessionPayload(contentLength, reader)) {
+      session = sessionFactory.createSession(payload);
       allSessions.put(session);
+    }
 
-      Object toConvert;
+    Object toConvert;
       switch (session.getDownstreamDialect()) {
         case OSS:
           toConvert = ImmutableMap.of(
@@ -107,119 +98,5 @@ class BeginSession implements CommandHandler {
       resp.setHeader("Content-Length", String.valueOf(payload.length));
 
       resp.setContent(payload);
-    } finally {
-      Files.delete(allCaps);
-    }
   }
-
-  private void readCapabilities(
-      Path allCaps,
-      HttpRequest req,
-      Map<String, Object> ossKeys,
-      Map<String, Object> alwaysMatch,
-      List<Map<String, Object>> firstMatch) throws IOException {
-
-    Charset charset = Charsets.UTF_8;
-    try {
-      String contentType = req.getHeader(CONTENT_TYPE);
-      if (contentType != null) {
-        MediaType mediaType = MediaType.parse(contentType);
-        charset = mediaType.charset().or(Charsets.UTF_8);
-      }
-    } catch (IllegalArgumentException ignored) {
-      // Do nothing.
-    }
-
-    try (InputStream rawIn = new BufferedInputStream(req.consumeContentStream());
-         Reader reader = new InputStreamReader(rawIn, charset);
-         Writer writer = Files.newBufferedWriter(allCaps, UTF_8);
-         Reader in = new TeeReader(reader, writer);
-         JsonReader json = new JsonReader(in)) {
-      json.beginObject();
-
-      while (json.hasNext()) {
-        String name = json.nextName();
-
-        switch (name) {
-          case "desiredCapabilities":
-            if (!ossKeys.isEmpty()) {
-              json.skipValue();
-            } else {
-              ossKeys.putAll(sparseCapabilities(json));
-            }
-            break;
-
-          case "capabilities":
-            json.beginObject();
-            while (json.hasNext()) {
-              String capabilityName = json.nextName();
-
-              switch (capabilityName) {
-                case "alwaysMatch":
-                  alwaysMatch.putAll(sparseCapabilities(json));
-                  break;
-
-                case "desiredCapabilities":
-                  ossKeys.putAll(sparseCapabilities(json));
-                  break;
-
-                case "firstMatch":
-                  json.beginArray();
-                  while (json.hasNext()) {
-                    firstMatch.add(sparseCapabilities(json));
-                  }
-                  json.endArray();
-                  break;
-
-                default:
-                  json.skipValue();
-                  break;
-              }
-            }
-            json.endObject();
-            break;
-
-          default:
-            json.skipValue();
-            break;
-        }
-      }
-    }
-  }
-
-  private Map<String, Object> sparseCapabilities(JsonReader json) throws IOException {
-    Map<String, Object> caps = new HashMap<>();
-
-    json.beginObject();
-
-    while (json.hasNext()) {
-      String key = json.nextName();
-
-      JsonToken token = json.peek();
-      switch (token) {
-        case NULL:
-          json.skipValue();
-          break;
-
-        case STRING:
-          if (BROWSER_NAME.equals(key)) {
-            caps.put(key, json.nextString());
-          } else {
-            caps.put(key, "");
-            json.skipValue();
-          }
-          break;
-
-        default:
-          caps.put(key, "");
-          json.skipValue();
-          break;
-      }
-    }
-
-    json.endObject();
-
-    return caps;
-  }
-
 }

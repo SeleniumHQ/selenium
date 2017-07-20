@@ -18,11 +18,6 @@
 package org.openqa.selenium.remote.server;
 
 
-import org.openqa.selenium.remote.Dialect;
-
-import java.nio.file.Path;
-import java.util.Set;
-
 interface SessionFactory {
-  ActiveSession apply(Path capabilitiesBlob, Set<Dialect> downstreamDialects);
+  ActiveSession apply(NewSessionPayload payload);
 }

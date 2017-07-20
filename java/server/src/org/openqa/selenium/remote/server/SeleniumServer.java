@@ -84,6 +84,7 @@ public class SeleniumServer implements GridNodeServer {
         getClass().getClassLoader())
         .asSubclass(Servlet.class);
       handler.addServlet(rcServlet, "/selenium-server/driver/");
+      LOG.info("Bound legacy RC support");
     } catch (ClassNotFoundException e) {
       // Do nothing.
     }

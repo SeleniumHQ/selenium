@@ -15,26 +15,19 @@ import static org.openqa.selenium.remote.DesiredCapabilities.opera;
 import static org.openqa.selenium.remote.DesiredCapabilities.operaBlink;
 import static org.openqa.selenium.remote.DesiredCapabilities.phantomjs;
 import static org.openqa.selenium.remote.DesiredCapabilities.safari;
-import static org.openqa.selenium.remote.Dialect.OSS;
-import static org.openqa.selenium.remote.Dialect.W3C;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.remote.Dialect;
 
-import java.nio.file.Path;
+import java.io.IOException;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.ServiceLoader;
-import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 /**
@@ -88,63 +81,24 @@ public class ActiveSessionFactory {
     this.factories = ImmutableMap.copyOf(builder);
   }
 
-  public ActiveSession createSession(
-      Path rawCapabilitiesBlob,
-      Map<String, Object> ossKeys,
-      Map<String, Object> alwaysMatch,
-      List<Map<String, Object>> firstMatch) {
-    List<SessionFactory> browserGenerators = determineBrowser(
-        ossKeys,
-        alwaysMatch,
-        firstMatch);
-
-    ImmutableSet.Builder<Dialect> downstreamDialects = ImmutableSet.builder();
-    // Favour OSS for now
-    if (!ossKeys.isEmpty()) {
-      downstreamDialects.add(OSS);
-    }
-    if (!alwaysMatch.isEmpty() || !firstMatch.isEmpty()) {
-      downstreamDialects.add(W3C);
-    }
-
-    return browserGenerators.stream()
-        .map(func -> {
-          try {
-            return func.apply(rawCapabilitiesBlob, downstreamDialects.build());
-          } catch (Exception e) {
-            LOG.log(Level.INFO, "Unable to start session.", e);
-          }
-          return null;
-        })
+  public ActiveSession createSession(NewSessionPayload newSessionPayload) throws IOException {
+    return newSessionPayload.stream()
+        .map(this::determineBrowser)
+        .filter(Objects::nonNull)
+        .map(factory -> factory.apply(newSessionPayload))
         .filter(Objects::nonNull)
         .findFirst()
         .orElseThrow(() -> new SessionNotCreatedException(
             "Unable to create a new session because of no configuration."));
   }
 
-  private List<SessionFactory> determineBrowser(
-      Map<String, Object> ossKeys,
-      Map<String, Object> alwaysMatchKeys,
-      List<Map<String, Object>> firstMatchKeys) {
-    List<Map<String, Object>> allCapabilities = firstMatchKeys.stream()
-        // remove null keys
-        .map(caps -> ImmutableMap.<String, Object>builder().putAll(caps).putAll(alwaysMatchKeys)
-            .build())
-        .collect(Collectors.toList());
-    allCapabilities.add(ossKeys);
-
-    // Can we figure out the browser from any of these?
-    ImmutableList.Builder<SessionFactory> builder = ImmutableList.builder();
-    for (Map<String, Object> caps : allCapabilities) {
-      caps.entrySet().stream()
+  private SessionFactory determineBrowser(Capabilities caps) {
+      return caps.asMap().entrySet().stream()
           .map(entry -> guessBrowserName(entry.getKey(), entry.getValue()))
           .filter(factories.keySet()::contains)
           .map(factories::get)
           .findFirst()
-          .ifPresent(builder::add);
-    }
-
-    return builder.build();
+          .orElse(null);
   }
 
   private String guessBrowserName(String capabilityKey, Object value) {

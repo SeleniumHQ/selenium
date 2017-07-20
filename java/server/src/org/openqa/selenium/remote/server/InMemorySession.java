@@ -37,7 +37,10 @@ import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UncheckedIOException;
 import java.lang.reflect.Type;
@@ -124,9 +127,12 @@ class InMemorySession implements ActiveSession {
     }
 
     @Override
-    public ActiveSession apply(Path capabilitiesBlob, Set<Dialect> downstreamDialects) {
+    public ActiveSession apply(NewSessionPayload payload) {
       // Assume the blob fits in the available memory.
-      try (Reader reader = Files.newBufferedReader(capabilitiesBlob, UTF_8)) {
+      try (
+          InputStream is = payload.getPayload().get();
+          Reader ir = new InputStreamReader(is, UTF_8);
+          Reader reader = new BufferedReader(ir)) {
         Map<String, Object> raw = gson.fromJson(reader, MAP_TYPE);
         Object desired = raw.get("desiredCapabilities");
 
@@ -144,9 +150,9 @@ class InMemorySession implements ActiveSession {
         WebDriver driver = provider.newInstance(caps);
 
         // Prefer the OSS dialect.
-        Dialect downstream = downstreamDialects.contains(Dialect.OSS) ?
+        Dialect downstream = payload.getDownstreamDialects().contains(Dialect.OSS) ?
                              Dialect.OSS :
-                             downstreamDialects.iterator().next();
+                             payload.getDownstreamDialects().iterator().next();
         return new InMemorySession(driver, caps, downstream);
       } catch (IOException e) {
         throw new UncheckedIOException(e);

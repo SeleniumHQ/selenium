@@ -38,21 +38,13 @@ import org.openqa.selenium.remote.http.W3CHttpResponseCodec;
 import org.openqa.selenium.remote.internal.ApacheHttpClient;
 import org.openqa.selenium.remote.service.DriverService;
 
-import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 class ServicedSession implements ActiveSession {
 
@@ -139,10 +131,10 @@ class ServicedSession implements ActiveSession {
     }
 
     @Override
-    public ActiveSession apply(Path path, Set<Dialect> downstreamDialects) {
+    public ActiveSession apply(NewSessionPayload payload) {
       DriverService service = createService.get();
 
-      try (InputStream in = new BufferedInputStream(Files.newInputStream(path))) {
+      try (InputStream in = payload.getPayload().get()) {
         service.start();
 
         PortProber.waitForPortUp(service.getUrl().getPort(), 30, SECONDS);
@@ -152,17 +144,17 @@ class ServicedSession implements ActiveSession {
         HttpClient client = new ApacheHttpClient.Factory().createClient(url);
 
         ProtocolHandshake.Result result = new ProtocolHandshake()
-            .createSession(client, in, Files.size(path))
+            .createSession(client, in, payload.getPayloadSize())
             .orElseThrow(() -> new SessionNotCreatedException("Unable to create session"));
 
         SessionCodec codec;
         Dialect upstream = result.getDialect();
         Dialect downstream;
-        if (downstreamDialects.contains(result.getDialect())) {
+        if (payload.getDownstreamDialects().contains(result.getDialect())) {
           codec = new Passthrough(url);
           downstream = upstream;
         } else {
-          downstream = downstreamDialects.iterator().next();
+          downstream = payload.getDownstreamDialects().iterator().next();
 
           codec = new ProtocolConverter(
               url,
