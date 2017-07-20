@@ -152,6 +152,7 @@ public class DesiredCapabilities implements Serializable, Capabilities {
         capabilities.put(key, value);
       }
     } else if (UNEXPECTED_ALERT_BEHAVIOUR.equals(key)) {
+      capabilities.put(UNEXPECTED_ALERT_BEHAVIOUR, value);
       capabilities.put(UNHANDLED_PROMPT_BEHAVIOUR, value);
     } else {
       capabilities.put(key, value);
