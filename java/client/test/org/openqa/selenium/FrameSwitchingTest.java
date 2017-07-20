@@ -28,6 +28,7 @@ import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.support.ui.ExpectedConditions.frameToBeAvailableAndSwitchToIt;
 import static org.openqa.selenium.support.ui.ExpectedConditions.not;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
+import static org.openqa.selenium.support.ui.ExpectedConditions.textToBe;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.testing.Driver.CHROME;
 import static org.openqa.selenium.testing.Driver.HTMLUNIT;
@@ -298,7 +299,7 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     // TODO(simon): this should not be needed, and is only here because IE's submit returns too
     // soon.
 
-    wait.until(WaitingConditions.elementTextToEqual(By.xpath("//p"), "Success!"));
+    wait.until(textToBe(By.xpath("//p"), "Success!"));
   }
 
   @Test
