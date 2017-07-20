@@ -262,7 +262,6 @@ public class VisibilityTest extends JUnit4TestBase {
 
   @Test
   @Ignore(IE)
-  @NotYetImplemented(HTMLUNIT)
   public void testShouldShowElementNotVisibleWhenParentElementHasHiddenAttribute() {
     String url = appServer.whereIs("hidden.html");
     driver.get(url);
