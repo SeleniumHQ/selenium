@@ -71,18 +71,18 @@ public class WebDriverBackedSeleniumServlet extends HttpServlet {
     })
     .build();
 
-  private final Supplier<DriverSessions> sessionsSupplier;
+  private DriverSessions sessions;
 
-  public WebDriverBackedSeleniumServlet() {
-    this.sessionsSupplier = () -> {
-      Object attribute = getServletContext().getAttribute(SESSIONS_KEY);
-      if (attribute == null) {
-        attribute = new DefaultDriverSessions(
-            new DefaultDriverFactory(Platform.getCurrent()),
-            MINUTES.toMillis(5));
-      }
-      return (DriverSessions) attribute;
-    };
+  @Override
+  public void init() throws ServletException {
+    super.init();
+    Object attribute = getServletContext().getAttribute(SESSIONS_KEY);
+    if (attribute == null) {
+      attribute = new DefaultDriverSessions(
+          new DefaultDriverFactory(Platform.getCurrent()),
+          MINUTES.toMillis(5));
+    }
+    sessions = (DriverSessions) attribute;
   }
 
   @Override
@@ -112,7 +112,7 @@ public class WebDriverBackedSeleniumServlet extends HttpServlet {
       startNewSession(resp, args[0], args[1], args.length == 4 ? args[3] : "");
       return;
     } else if ("testComplete".equals(cmd)) {
-      sessionsSupplier.get().deleteSession(sessionId);
+      sessions.deleteSession(sessionId);
 
       CommandProcessor commandProcessor = SESSIONS.getIfPresent(sessionId);
       if (commandProcessor == null) {
@@ -215,7 +215,7 @@ public class WebDriverBackedSeleniumServlet extends HttpServlet {
       }
 
       try {
-        sessionId = sessionsSupplier.get().newSession(Stream.of(caps));
+        sessionId = sessions.newSession(Stream.of(caps));
       } catch (Exception e) {
         getServletContext().log("Unable to start session", e);
         sendError(
@@ -225,7 +225,7 @@ public class WebDriverBackedSeleniumServlet extends HttpServlet {
       }
     }
 
-    Session session = sessionsSupplier.get().get(sessionId);
+    Session session = sessions.get(sessionId);
     if (session == null) {
       getServletContext().log("Attempt to use non-existent session: " + sessionId);
       sendError(resp, "Attempt to use non-existent session: " + sessionId);
