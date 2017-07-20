@@ -32,14 +32,16 @@ module Selenium
         expect(driver.page_source).to match(%r{<title>XHTML Test Page</title>}i)
       end
 
-      it 'should refresh the page' do
-        driver.navigate.to url_for('javascriptPage.html')
-        sleep 1 # javascript takes too long to load
-        driver.find_element(id: 'updatediv').click
-        expect(driver.find_element(id: 'dynamo').text).to eq('Fish and chips!')
-        driver.navigate.refresh
-        wait_for_element(id: 'dynamo')
-        expect(driver.find_element(id: 'dynamo').text).to eq("What's for dinner?")
+      not_compliant_on driver: :remote, browser: :phantomjs do
+        it 'should refresh the page' do
+          driver.navigate.to url_for('javascriptPage.html')
+          sleep 1 # javascript takes too long to load
+          driver.find_element(id: 'updatediv').click
+          expect(driver.find_element(id: 'dynamo').text).to eq('Fish and chips!')
+          driver.navigate.refresh
+          wait_for_element(id: 'dynamo')
+          expect(driver.find_element(id: 'dynamo').text).to eq("What's for dinner?")
+        end
       end
 
       context 'screenshots' do
