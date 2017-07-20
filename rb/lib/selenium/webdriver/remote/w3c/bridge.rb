@@ -167,7 +167,7 @@ module Selenium
             unless handle == :current
               raise Error::WebDriverError, 'Switch to desired window before changing its size'
             end
-            execute :set_window_rect, {}, {width: width, height: height}
+            set_window_rect(width: width, height: height)
           end
 
           def window_size(handle = :current)
@@ -195,7 +195,7 @@ module Selenium
           end
 
           def reposition_window(x, y)
-            execute :set_window_rect, {}, {x: x, y: y}
+            set_window_rect(x: x, y: y)
           end
 
           def window_position
@@ -204,7 +204,9 @@ module Selenium
           end
 
           def set_window_rect(x: nil, y: nil, width: nil, height: nil)
-            execute :set_window_rect, {}, {x: x, y: y, width: width, height: height}
+            params = {x: x, y: y, width: width, height: height}
+            params.update(params) { |k, v| Integer(v) unless v.nil? }
+            execute :set_window_rect, {}, params
           end
 
           def window_rect

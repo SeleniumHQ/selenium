@@ -111,7 +111,8 @@ module Selenium
 
       # TODO: - Create Window Manager guard
       not_compliant_on platform: :linux do
-        not_compliant_on browser: :safari do
+        # Geckodriver issue: https://github.com/mozilla/geckodriver/issues/820
+        not_compliant_on browser: [:safari, :firefox] do
           it 'can maximize the current window' do
             window.size = old_size = Dimension.new(200, 200)
 
