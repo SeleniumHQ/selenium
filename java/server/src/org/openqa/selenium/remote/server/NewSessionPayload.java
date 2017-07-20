@@ -9,6 +9,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.Ordering;
 import com.google.common.collect.Sets;
+import com.google.common.io.CharStreams;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -20,8 +21,10 @@ import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.remote.BeanToJsonConverter;
 import org.openqa.selenium.remote.Dialect;
 
+import java.io.ByteArrayInputStream;
 import java.io.Closeable;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.UncheckedIOException;
@@ -130,7 +133,11 @@ public class NewSessionPayload implements Closeable {
       }
     }
 
+    byte[] json = new BeanToJsonConverter().convert(source).getBytes(UTF_8);
+
     return new Sources(
+        () -> new ByteArrayInputStream(json),
+        json.length,
         () -> oss,
         () -> alwaysMatch,
         firstMatches,
@@ -140,7 +147,15 @@ public class NewSessionPayload implements Closeable {
   private Sources diskBackedSource(Reader source) throws IOException {
     LOG.fine("Disk-based payload for " + source);
 
-    try (JsonReader json = GSON.newJsonReader(source)) {
+    // Copy the original payload to disk
+    Path payload = root.resolve("original-payload.json");
+    try (Writer out = Files.newBufferedWriter(payload, UTF_8)) {
+      CharStreams.copy(source, out);
+    }
+
+    try (
+        Reader in = Files.newBufferedReader(payload);
+        JsonReader json = GSON.newJsonReader(in)) {
       Set<Dialect> dialects = new TreeSet<>();
       Supplier<Map<String, Object>> oss = null;
       Supplier<Map<String, Object>> always = ImmutableMap::of;
@@ -196,10 +211,18 @@ public class NewSessionPayload implements Closeable {
       }
 
       return new Sources(
-        oss,
-        always,
-        first,
-        dialects);
+          () -> {
+            try {
+              return Files.newInputStream(payload);
+            } catch (IOException e) {
+              throw new UncheckedIOException(e);
+            }
+          },
+          Files.size(payload),
+          oss,
+          always,
+          first,
+          dialects);
     } finally {
       source.close();
     }
@@ -273,6 +296,14 @@ public class NewSessionPayload implements Closeable {
            sources .getDialects();
   }
 
+  public Supplier<InputStream> getPayload() {
+    return sources.getOriginalPayload();
+  }
+
+  public long getPayloadSize() {
+    return sources.getPayloadSize();
+  }
+
   @Override
   public void close() {
     if (root != null) {
@@ -280,21 +311,32 @@ public class NewSessionPayload implements Closeable {
     }
   }
 
+
   private static class Sources {
+    private final Supplier<InputStream> originalPayload;
+    private final long payloadSizeInBytes;
     private final Supplier<Map<String, Object>> oss;
     private final Supplier<Map<String, Object>> alwaysMatch;
     private final List<Supplier<Map<String, Object>>> firstMatch;
     private final ImmutableSet<Dialect> dialects;
 
     Sources(
+        Supplier<InputStream> originalPayload,
+        long payloadSizeInBytes,
         Supplier<Map<String, Object>> oss,
         Supplier<Map<String, Object>> alwaysMatch,
         List<Supplier<Map<String, Object>>> firstMatch,
         Set<Dialect> dialects) {
+      this.originalPayload = originalPayload;
+      this.payloadSizeInBytes = payloadSizeInBytes;
       this.oss = oss;
       this.alwaysMatch = alwaysMatch;
       this.firstMatch = firstMatch;
       this.dialects = ImmutableSet.copyOf(dialects);
+    }
+
+    Supplier<InputStream> getOriginalPayload() {
+      return originalPayload;
     }
 
     Supplier<Map<String, Object>> getOss() {
@@ -311,6 +353,10 @@ public class NewSessionPayload implements Closeable {
 
     ImmutableSet<Dialect> getDialects() {
       return dialects;
+    }
+
+    public long getPayloadSize() {
+      return payloadSizeInBytes;
     }
   }
 }
