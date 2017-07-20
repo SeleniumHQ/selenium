@@ -1,3 +1,26 @@
+v3.5.0
+======
+
+* Add support for a new "pass through" mode. This allows a connection
+  from your test's RemoteWebDriver, through the Grid Hub, to a Grid
+  Node, and down to a DriverService and thence the browser to use the
+  same WebDriver protocol (the Json Wire Protocol or the W3C one) end
+  to end without translation. This mode can be disabled by starting
+  the standalone server or Grid node with `-enablePassThrough false`
+* Pin Guava to version 21+. This fixes problems with lambdas being
+  used as ExpectedConditions.
+* Start making *Option classes instances of Capabilities. This allows
+  the user to do:
+  `WebDriver driver = new RemoteWebDriver(new InternetExplorerOptions());`
+* Better handling of `getText` when confronted with a Shadow DOM
+* Better logging when using an Augmenter fails.
+* Make it easier to add new @FindBy annotations.
+* Attempt to kill processes before draining input, error, and output
+  streams. This should reduce apparent hanging when closing Firefox in
+  particular.
+* Grid will make use of W3C capabilities in prefernce to the JSON Wire
+  Protocol ones.
+
 v3.4.0
 ======
 
