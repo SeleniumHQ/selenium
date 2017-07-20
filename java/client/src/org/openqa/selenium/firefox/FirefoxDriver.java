@@ -123,6 +123,7 @@ public class FirefoxDriver extends RemoteWebDriver {
   @Deprecated
   public FirefoxDriver(FirefoxProfile profile) {
     this(new FirefoxOptions().setProfile(profile));
+    warnAboutDeprecatedConstructor("FirefoxProfile", "setProfile(profile)");
   }
 
   /**
