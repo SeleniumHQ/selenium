@@ -90,18 +90,18 @@ matrix:
     - env: CHROME=1 TASK="calcdeps //javascript/webdriver:webdriver-chrome:run"
       <<: *java
       <<: *chrome
-    - env: TASK="calcdeps //javascript/atoms:atoms-firefox:run"
+    - env: MARIONETTE=1 TASK="calcdeps //javascript/atoms:atoms-firefox:run"
       <<: *java
-      <<: *firefox-esr
+      <<: *firefox-latest
     - env: MARIONETTE=1 TASK="calcdeps //javascript/webdriver:webdriver-firefox:run"
       <<: *java
-      <<: *firefox-esr
-    - env: TASK="calcdeps //javascript/selenium-atoms:selenium-atoms-firefox:run"
+      <<: *firefox-latest
+    - env: MARIONETTE=1 TASK="calcdeps //javascript/selenium-atoms:selenium-atoms-firefox:run"
       <<: *java
-      <<: *firefox-esr
-    - env: TASK="calcdeps //javascript/selenium-core:selenium-core-firefox:run"
+      <<: *firefox-latest
+    - env: MARIONETTE=1 TASK="calcdeps //javascript/selenium-core:selenium-core-firefox:run"
       <<: *java
-      <<: *firefox-esr
+      <<: *firefox-latest
     - env: TASK=test_firefox
       <<: *java
       <<: *firefox-esr
