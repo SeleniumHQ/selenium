@@ -166,22 +166,10 @@ public class InternetExplorerDriver extends RemoteWebDriver {
     this(null, null, port);
   }
 
-  /**
-   * @deprecated Create an {@link InternetExplorerDriverService} and then use that to create a
-   *   {@link RemoteWebDriver#RemoteWebDriver(org.openqa.selenium.remote.CommandExecutor, Capabilities)} with a
-   *   {@link DriverCommandExecutor}.
-   */
-  @Deprecated
   public InternetExplorerDriver(InternetExplorerDriverService service) {
     this(service, null, DEFAULT_PORT);
   }
 
-  /**
-   * @deprecated Create an {@link InternetExplorerDriverService} and then use that to create a
-   *   {@link RemoteWebDriver#RemoteWebDriver(org.openqa.selenium.remote.CommandExecutor, Capabilities)} with a
-   *   {@link DriverCommandExecutor}.
-   */
-  @Deprecated
   public InternetExplorerDriver(InternetExplorerDriverService service, Capabilities capabilities) {
     this(service, capabilities, DEFAULT_PORT);
   }
