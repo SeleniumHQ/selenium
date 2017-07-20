@@ -17,9 +17,7 @@
 
 package org.openqa.selenium.firefox;
 
-import static org.openqa.selenium.firefox.FirefoxDriver.SystemProperty.BROWSER_LOGFILE;
 import static org.openqa.selenium.firefox.FirefoxDriver.SystemProperty.DRIVER_USE_MARIONETTE;
-import static org.openqa.selenium.firefox.FirefoxOptions.FIREFOX_OPTIONS;
 import static org.openqa.selenium.remote.CapabilityType.PROXY;
 
 import com.google.common.collect.Maps;
@@ -35,9 +33,6 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.service.DriverCommandExecutor;
 import org.openqa.selenium.remote.service.DriverService;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -139,7 +134,7 @@ public class FirefoxDriver extends RemoteWebDriver {
   }
 
   public FirefoxDriver(Capabilities desiredCapabilities) {
-    this(getFirefoxOptions(desiredCapabilities).addCapabilities(desiredCapabilities));
+    this(new FirefoxOptions(desiredCapabilities).addCapabilities(desiredCapabilities));
   }
 
   /**
@@ -147,7 +142,7 @@ public class FirefoxDriver extends RemoteWebDriver {
    */
   @Deprecated
   public FirefoxDriver(Capabilities desiredCapabilities, Capabilities requiredCapabilities) {
-    this(getFirefoxOptions(desiredCapabilities)
+    this(new FirefoxOptions(desiredCapabilities)
              .addCapabilities(desiredCapabilities)
              .addCapabilities(requiredCapabilities));
     warnAboutDeprecatedConstructor(
@@ -161,7 +156,7 @@ public class FirefoxDriver extends RemoteWebDriver {
    */
   @Deprecated
   public FirefoxDriver(FirefoxBinary binary, FirefoxProfile profile, Capabilities capabilities) {
-    this(getFirefoxOptions(capabilities)
+    this(new FirefoxOptions(capabilities)
              .setBinary(binary)
              .setProfile(profile)
              .addCapabilities(capabilities));
@@ -180,7 +175,7 @@ public class FirefoxDriver extends RemoteWebDriver {
       FirefoxProfile profile,
       Capabilities desiredCapabilities,
       Capabilities requiredCapabilities) {
-    this(getFirefoxOptions(desiredCapabilities)
+    this(new FirefoxOptions(desiredCapabilities)
              .setBinary(binary).setProfile(profile)
              .addCapabilities(desiredCapabilities)
              .addCapabilities(requiredCapabilities));
@@ -210,40 +205,6 @@ public class FirefoxDriver extends RemoteWebDriver {
     }
 
     return new DriverCommandExecutor(builder.build());
-  }
-
-  private static FirefoxOptions getFirefoxOptions(Capabilities capabilities) {
-    FirefoxOptions options = new FirefoxOptions();
-
-    if (capabilities == null) {
-      return options;
-    }
-
-    Object rawOptions = capabilities.getCapability(FIREFOX_OPTIONS);
-    if (rawOptions != null) {
-      if (rawOptions instanceof Map) {
-        try {
-          @SuppressWarnings("unchecked")
-          Map<String, Object> map = (Map<String, Object>) rawOptions;
-          rawOptions = FirefoxOptions.fromJsonMap(map);
-        } catch (IOException e) {
-          throw new WebDriverException(e);
-        }
-      }
-      if (rawOptions != null && !(rawOptions instanceof FirefoxOptions)) {
-        throw new WebDriverException(
-            "Firefox option was set, but is not a FirefoxOption: " + rawOptions);
-      }
-      options = (FirefoxOptions) rawOptions;
-    }
-
-    Object marionette = capabilities.getCapability(MARIONETTE);
-
-    if (marionette instanceof Boolean) {
-      options.setLegacy(!(Boolean) marionette);
-    }
-
-    return options;
   }
 
   private void warnAboutDeprecatedConstructor(String arguments, String alternative) {
