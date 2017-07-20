@@ -18,6 +18,7 @@
 package com.thoughtworks.selenium.webdriven;
 
 
+import static java.util.concurrent.TimeUnit.MINUTES;
 import static org.junit.Assert.assertTrue;
 
 import com.thoughtworks.selenium.DefaultSelenium;
@@ -33,15 +34,20 @@ import org.openqa.selenium.environment.InProcessTestEnvironment;
 import org.openqa.selenium.environment.TestEnvironment;
 import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.net.PortProber;
+import org.openqa.selenium.remote.server.ActiveSessionFactory;
+import org.openqa.selenium.remote.server.ActiveSessions;
 import org.openqa.selenium.remote.server.DefaultDriverFactory;
 import org.openqa.selenium.remote.server.DefaultDriverSessions;
 import org.openqa.selenium.remote.server.DriverServlet;
+import org.openqa.selenium.remote.server.WebDriverServlet;
 import org.seleniumhq.jetty9.server.Connector;
 import org.seleniumhq.jetty9.server.HttpConfiguration;
 import org.seleniumhq.jetty9.server.HttpConnectionFactory;
 import org.seleniumhq.jetty9.server.Server;
 import org.seleniumhq.jetty9.server.ServerConnector;
 import org.seleniumhq.jetty9.servlet.ServletContextHandler;
+
+import java.util.concurrent.TimeUnit;
 
 public class WebDriverBackedSeleniumServletTest {
 
@@ -57,10 +63,8 @@ public class WebDriverBackedSeleniumServletTest {
     // Register the emulator
     ServletContextHandler handler = new ServletContextHandler();
 
-    DefaultDriverSessions webdriverSessions = new DefaultDriverSessions(
-        new DefaultDriverFactory(Platform.getCurrent()),
-        18000);
-    handler.setAttribute(DriverServlet.SESSIONS_KEY, webdriverSessions);
+    ActiveSessions sessions = new ActiveSessions(3, MINUTES);
+    handler.setAttribute(WebDriverServlet.ACTIVE_SESSIONS_KEY, sessions);
     handler.setContextPath("/");
     handler.addServlet(WebDriverBackedSeleniumServlet.class, "/selenium-server/driver/");
     server.setHandler(handler);
@@ -94,7 +98,7 @@ public class WebDriverBackedSeleniumServletTest {
 
   @Test
   public void searchGoogle() {
-    Selenium selenium = new DefaultSelenium("localhost", port, "*firefox", appServer.whereIs("/"));
+    Selenium selenium = new DefaultSelenium("localhost", port, "*chrome", appServer.whereIs("/"));
     selenium.start();
 
     selenium.open(pages.simpleTestPage);

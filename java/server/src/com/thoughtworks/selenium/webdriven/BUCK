@@ -8,6 +8,7 @@ java_library(name = 'rc-emulation-servlet',
     '//java/client/src/org/openqa/selenium/remote:remote',
     '//java/server/src/org/openqa/selenium/remote/server:server',
     '//java/server/src/org/openqa/selenium/remote/server:sessions',
+    '//java/server/src/org/openqa/selenium/remote/server:webdriver-servlet',
     '//third_party/java/guava:guava',
   ],
   provided_deps = [

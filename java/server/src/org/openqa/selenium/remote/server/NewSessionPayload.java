@@ -4,6 +4,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.StandardOpenOption.CREATE;
 import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSortedSet;
@@ -75,6 +76,29 @@ public class NewSessionPayload implements Closeable {
 
   private final Path root;
   private final Sources sources;
+
+  public static NewSessionPayload create(Capabilities caps) throws IOException {
+    // We need to convert the capabilities into a new session payload. At this point we're dealing
+    // with references, so I'm Just Sure This Will Be Fine.
+
+    ImmutableMap.Builder<String, Object> builder = ImmutableMap.builder();
+
+    // OSS
+    builder.put("desiredCapabilities", caps.asMap());
+
+    // W3C Spec.
+    // TODO(simons): There's some serious overlap between ProtocolHandshake and this class.
+    ImmutableMap.Builder<String, Object> w3cCaps = ImmutableMap.builder();
+    caps.asMap().entrySet().stream()
+        .filter(e -> ACCEPTED_W3C_PATTERNS.test(e.getKey()))
+        .filter(e -> e.getValue() != null)
+        .forEach(e -> w3cCaps.put(e.getKey(), e.getValue()));
+    builder.put(
+        "capabilities", ImmutableMap.of(
+            "firstMatch", ImmutableList.of(w3cCaps.build())));
+
+    return new NewSessionPayload(builder.build());
+  }
 
   public NewSessionPayload(Map<String, ?> source) throws IOException {
     Objects.requireNonNull(source, "Payload must be set");
