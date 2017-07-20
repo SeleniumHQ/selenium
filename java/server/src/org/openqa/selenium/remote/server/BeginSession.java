@@ -31,8 +31,6 @@ import org.openqa.selenium.remote.http.HttpResponse;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.nio.file.Files;
-import java.nio.file.Path;
 
 class BeginSession implements CommandHandler {
 
@@ -46,9 +44,6 @@ class BeginSession implements CommandHandler {
 
   @Override
   public void execute(HttpRequest req, HttpResponse resp) throws IOException {
-    // Copy the capabilities to disk
-    Path allCaps = Files.createTempFile("selenium", ".json");
-
     String lengthString = req.getHeader("Content-Length");
     long contentLength = Long.MAX_VALUE;
     if (lengthString != null) {
