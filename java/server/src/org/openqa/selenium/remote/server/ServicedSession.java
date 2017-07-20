@@ -22,13 +22,16 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.net.PortProber;
+import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.CommandCodec;
 import org.openqa.selenium.remote.Dialect;
+import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.ProtocolHandshake;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.ResponseCodec;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.JsonHttpCommandCodec;
@@ -100,6 +103,15 @@ class ServicedSession implements ActiveSession {
 
   @Override
   public void stop() {
+    // Try and kill the running session. Both W3C and OSS use the same quit endpoint
+    try {
+      HttpRequest request = new HttpRequest(HttpMethod.DELETE, "/session/" + getId());
+      HttpResponse ignored = new HttpResponse();
+      execute(request, ignored);
+    } catch (IOException e) {
+      // This is fine.
+    }
+
     service.stop();
   }
 
