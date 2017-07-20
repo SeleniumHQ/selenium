@@ -209,8 +209,7 @@ public class StandaloneConfiguration {
       names = "-enablePassThrough",
       description = "<Boolean>: Whether or not to use the experimental passthrough mode. Defaults to false."
   )
-  // initially defaults to false from boolean primitive type
-  public boolean enablePassThrough;
+  public boolean enablePassThrough = true;
 
 
   /**
