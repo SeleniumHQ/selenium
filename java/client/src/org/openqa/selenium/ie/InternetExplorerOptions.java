@@ -37,6 +37,7 @@ import com.google.common.collect.Streams;
 
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.internal.ElementScrollBehavior;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
@@ -57,7 +58,7 @@ import java.util.stream.Stream;
  *new InternetExplorerDriver(options);</pre>
  */
 @Beta
-public class InternetExplorerOptions extends DesiredCapabilities {
+public class InternetExplorerOptions extends MutableCapabilities {
 
   private final static String IE_OPTIONS = "se:ieOptions";
 
@@ -237,12 +238,5 @@ public class InternetExplorerOptions extends DesiredCapabilities {
           .filter(e -> e.getValue() != null)
           .forEach(e -> setCapability((String) e.getKey(), e.getValue()));
     }
-  }
-
-  public DesiredCapabilities merge(Capabilities other) {
-    Map<String, Object> caps = new HashMap<>(other.asMap());
-    caps.forEach(this::setCapability);
-
-    return this;
   }
 }

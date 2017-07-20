@@ -23,17 +23,21 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ImmutableCapabilities implements Capabilities, Serializable {
+public class MutableCapabilities implements Capabilities, Serializable {
 
-  private static final long serialVersionUID = 665766108972704060L;
+  private static final long serialVersionUID = -112816287184979465L;
 
   private final Map<String, Object> caps = new HashMap<>();
 
-  public ImmutableCapabilities(Capabilities other) {
+  public MutableCapabilities() {
+    // no-arg constructor
+  }
+
+  public MutableCapabilities(Capabilities other) {
     this(other.asMap());
   }
 
-  public ImmutableCapabilities(Map<String, ?> capabilities) {
+  public MutableCapabilities(Map<String, ?> capabilities) {
     capabilities.forEach((key, value) -> {
       if (value != null) {
         caps.put(key, value);
@@ -69,4 +73,40 @@ public class ImmutableCapabilities implements Capabilities, Serializable {
   public int hashCode() {
     return caps.hashCode();
   }
+
+  /**
+   * Merges the extra capabilities provided into this DesiredCapabilities instance. If capabilities
+   * with the same name exist in this instance, they will be overridden by the values from the
+   * extraCapabilities object.
+   *
+   * @param extraCapabilities Additional capabilities to be added.
+   * @return DesiredCapabilities after the merge
+   */
+  @Override
+  public MutableCapabilities merge(Capabilities extraCapabilities) {
+    if (extraCapabilities == null) {
+      return this;
+    }
+
+    extraCapabilities.asMap().forEach(this::setCapability);
+
+    return this;
+  }
+
+  public void setCapability(String capabilityName, boolean value) {
+    setCapability(capabilityName, (Object) value);
+  }
+
+  public void setCapability(String capabilityName, String value) {
+    setCapability(capabilityName, (Object) value);
+  }
+
+  public void setCapability(String capabilityName, Platform value) {
+    setCapability(capabilityName, (Object) value);
+  }
+
+  public void setCapability(String key, Object value) {
+    caps.put(key, value);
+  }
+
 }

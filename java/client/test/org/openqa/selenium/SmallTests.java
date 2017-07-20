@@ -42,6 +42,7 @@ import org.openqa.selenium.testing.drivers.IgnoreComparatorUnitTest;
     DimensionTest.class,
     FileHandlerTest.class,
     IgnoreComparatorUnitTest.class,
+    ImmutableCapabilitiesTest.class,
     IndividualKeyboardActionsTest.class,
     IndividualMouseActionsTest.class,
     KeysTest.class,
