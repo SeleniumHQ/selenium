@@ -440,28 +440,24 @@ public class FirefoxOptions {
    * @deprecated Use {@link #toCapabilities()}.
    */
   public Capabilities toDesiredCapabilities() {
-    return toCapabilities(desiredCapabilities);
+    return toCapabilities();
   }
 
   /**
    * @deprecated Use {@link #toCapabilities()}.
    */
   public Capabilities toRequiredCapabilities() {
-    return toCapabilities(desiredCapabilities);
+    return toCapabilities();
   }
 
   public Capabilities toCapabilities() {
-    return toCapabilities(desiredCapabilities);
-  }
-
-  private Capabilities toCapabilities(Capabilities source) {
-    HashMap<String, Object> caps = new HashMap<>(source.asMap());
+    HashMap<String, Object> caps = new HashMap<>(desiredCapabilities.asMap());
 
     if (isLegacy()) {
       caps.put(FirefoxDriver.MARIONETTE, false);
     }
 
-    Object priorBinary = source.getCapability(BINARY);
+    Object priorBinary = desiredCapabilities.getCapability(BINARY);
     if (priorBinary instanceof Path) {
       // Again, unix-style path
       priorBinary = toForwardSlashes((Path) priorBinary);
@@ -488,7 +484,7 @@ public class FirefoxOptions {
       }
     }
 
-    Object priorProfile = source.getCapability(PROFILE);
+    Object priorProfile = desiredCapabilities.getCapability(PROFILE);
     if (priorProfile instanceof String) {
       try {
         priorProfile = FirefoxProfile.fromJson((String) priorProfile);
