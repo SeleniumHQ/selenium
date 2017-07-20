@@ -34,7 +34,7 @@ import java.util.logging.Logger;
 /**
  * All current {@link ActiveSession}s that we're aware of.
  */
-class ActiveSessions {
+public class ActiveSessions {
   private final static Logger LOG = Logger.getLogger(ActiveSessions.class.getName());
 
   private final Cache<SessionId, ActiveSession> allSessions;

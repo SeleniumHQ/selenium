@@ -22,7 +22,7 @@ import org.openqa.selenium.remote.SessionId;
 
 import java.util.Map;
 
-interface ActiveSession extends CommandHandler {
+public interface ActiveSession extends CommandHandler {
 
   SessionId getId();
 

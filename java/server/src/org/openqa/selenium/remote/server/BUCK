@@ -66,6 +66,7 @@ java_library(
   name = 'webdriver-servlet',
   srcs = [
     'ActiveSession.java',
+    'ActiveSessionCommandExecutor.java',
     'ActiveSessionFactory.java',
     'ActiveSessionListener.java',
     'ActiveSessions.java',
@@ -94,7 +95,9 @@ java_library(
     '//third_party/java/guava:guava',
   ],
   visibility = [
+    '//java/server/src/com/thoughtworks/selenium/webdriven:rc-emulation-servlet',
     '//java/server/src/org/openqa/grid:grid',
+    '//java/server/test/com/thoughtworks/selenium/webdriven:webdriven',
     '//java/server/test/org/openqa/selenium/remote/server:tests',
   ],
 )
