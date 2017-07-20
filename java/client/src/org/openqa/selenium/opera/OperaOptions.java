@@ -28,6 +28,8 @@ import com.google.common.io.Files;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 
+import org.openqa.selenium.BrowserOptions;
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.io.File;
@@ -55,12 +57,12 @@ import java.util.Map;
  *
  * // For use with RemoteWebDriver:
  * DesiredCapabilities capabilities = DesiredCapabilities.opera();
- * capabilities.setCapability(ChromeOptions.CAPABILITY, options);
+ * options.addTo(capabilities);
  * RemoteWebDriver driver = new RemoteWebDriver(
  *     new URL("http://localhost:4444/wd/hub"), capabilities);
  * </code></pre>
  */
-public class OperaOptions {
+public class OperaOptions implements BrowserOptions {
 
   /**
    * Key used to store a set of OperaOptions in a {@link DesiredCapabilities}
@@ -220,6 +222,11 @@ public class OperaOptions {
     options.put("extensions", encoded_extensions);
 
     return new Gson().toJsonTree(options);
+  }
+
+  @Override
+  public Capabilities addTo(Capabilities capabilities) {
+    return capabilities.merge(this.toCapabilities());
   }
 
   /**

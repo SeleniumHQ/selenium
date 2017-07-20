@@ -24,7 +24,8 @@ import org.openqa.selenium.StandardSeleniumTests;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
     StandardSeleniumTests.class,
-    ChromeOptionsFunctionalTest.class
+    ChromeOptionsFunctionalTest.class,
+    ChromeOptionsTest.class
 })
 public class ChromeDriverTests {
 }

@@ -20,6 +20,7 @@ package org.openqa.selenium.safari;
 import com.google.common.base.Objects;
 import com.google.gson.JsonObject;
 
+import org.openqa.selenium.BrowserOptions;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -40,12 +41,12 @@ import java.util.Map;
  *
  * // For use with RemoteWebDriver:
  * DesiredCapabilities capabilities = DesiredCapabilities.safari();
- * capabilities.setCapability(SafariOptions.CAPABILITY, options);
+ * options.addTo(capabilities);
  * RemoteWebDriver driver = new RemoteWebDriver(
  *     new URL("http://localhost:4444/wd/hub"), capabilities);
  * </code></pre>
  */
-public class SafariOptions {
+public class SafariOptions implements BrowserOptions {
 
   /**
    * Key used to store SafariOptions in a {@link DesiredCapabilities} object.
@@ -220,6 +221,11 @@ public class SafariOptions {
   }
 
   @Override
+  public Capabilities addTo(Capabilities capabilities) {
+    return capabilities.merge(this.toCapabilities());
+  }
+
+  @Override
   public boolean equals(Object other) {
     if (!(other instanceof SafariOptions)) {
       return false;
@@ -233,5 +239,14 @@ public class SafariOptions {
   @Override
   public int hashCode() {
     return Objects.hashCode(this.port, this.useCleanSession, this.useTechnologyPreview);
+  }
+
+  @Override
+  public String toString() {
+    return "SafariOptions{" +
+           "port=" + port +
+           ", useCleanSession=" + useCleanSession +
+           ", useTechnologyPreview=" + useTechnologyPreview +
+           '}';
   }
 }

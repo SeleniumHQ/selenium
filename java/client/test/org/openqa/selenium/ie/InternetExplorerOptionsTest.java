@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.ie;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.ie.InternetExplorerDriver.INITIAL_BROWSER_URL;
@@ -53,6 +55,21 @@ public class InternetExplorerOptionsTest {
         options.toString(),
         expected,
         ((Map<?, ?>) map.get("se:ieOptions")).get(INITIAL_BROWSER_URL));
+  }
+
+  @Test
+  public void givenDesiredCaps_whenAddIeOptions_thenTheyAreCombinedWithOriginal() {
+    DesiredCapabilities initialCaps = new DesiredCapabilities();
+    initialCaps.setCapability("jedi", "obi'wan");
+    initialCaps.setCapability("ent", "treebeard");
+    initialCaps.setCapability("cat", "sophia");
+
+    InternetExplorerOptions ieOptions = new InternetExplorerOptions();
+    Capabilities combined = ieOptions.addTo(initialCaps);
+    assertThat(combined.getCapability(InternetExplorerOptions.IE_OPTIONS), equalTo(ieOptions));
+    assertThat(combined.getCapability("jedi"), equalTo("obi'wan"));
+    assertThat(combined.getCapability("ent"), equalTo("treebeard"));
+    assertThat(combined.getCapability("cat"), equalTo("sophia"));
   }
 
   @Test

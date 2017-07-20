@@ -21,6 +21,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.gson.JsonObject;
 
+import org.openqa.selenium.BrowserOptions;
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
@@ -35,7 +37,7 @@ import java.io.IOException;
  * EdgeOptions options = new EdgeOptions()
 
  *
- * // For use with ChromeDriver:
+ * // For use with EdgeDriver:
  * EdgeDriver driver = new EdgeDriver(options);
  *
  * // or alternatively:
@@ -45,12 +47,12 @@ import java.io.IOException;
  *
  * // For use with RemoteWebDriver:
  * DesiredCapabilities capabilities = DesiredCapabilities.edge();
- * capabilities.setCapability(EdgeOptions.CAPABILITY, options);
+ * options.addTo(capabilities);
  * RemoteWebDriver driver = new RemoteWebDriver(
  *     new URL("http://localhost:4444/wd/hub"), capabilities);
  * </code></pre>
  */
-public class EdgeOptions {
+public class EdgeOptions implements BrowserOptions {
 
     /**
      * Key used to store a set of EdgeOptions in a {@link DesiredCapabilities}
@@ -101,4 +103,36 @@ public class EdgeOptions {
 
       return capabilities;
     }
+
+	@Override
+	public Capabilities addTo(Capabilities capabilities) {
+		return capabilities.merge(this.toCapabilities());
+	}
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+
+    EdgeOptions that = (EdgeOptions) o;
+
+    return pageLoadStrategy != null ? pageLoadStrategy.equals(that.pageLoadStrategy)
+                                    : that.pageLoadStrategy == null;
+  }
+
+  @Override
+  public int hashCode() {
+    return pageLoadStrategy != null ? pageLoadStrategy.hashCode() : 0;
+  }
+
+  @Override
+  public String toString() {
+    return "EdgeOptions{" +
+           "pageLoadStrategy='" + pageLoadStrategy + '\'' +
+           '}';
+  }
 }
