@@ -267,6 +267,10 @@ public class ProtocolHandshake {
         .filter(entry -> !excludedKeys.contains(entry.getKey()))
         .filter(entry -> entry.getValue() != null)
         .filter(entry -> ACCEPTED_W3C_PATTERNS.test(entry.getKey()))
+        .filter(entry ->
+                    !("platformName".equals(entry.getKey()) &&
+                    entry.getValue().isJsonPrimitive() &&
+                    "ANY".equalsIgnoreCase(entry.getValue().getAsString())))
         .distinct()
         .collect(Collector.of(
             JsonObject::new,

@@ -26,6 +26,7 @@ import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.hasKey;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.Proxy.ProxyType.AUTODETECT;
@@ -354,6 +355,40 @@ public class ProtocolHandshakeTest {
     Map<String, ?> jsonCaps = (Map<String, ?>) capabilities.get("desiredCapabilities");
     seenProxy = (Map<String, ?>) jsonCaps.get("proxy");
     assertEquals("AUTODETECT", seenProxy.get("proxyType"));
+  }
+
+  @Test
+  public void shouldNotIncludeMappingOfANYPlatform() throws IOException {
+    DesiredCapabilities caps = new DesiredCapabilities();
+    caps.setCapability("platform", "ANY");
+    caps.setCapability("platformName", "ANY");
+    caps.setBrowserName("cake");
+
+    Map<String, Object> params = ImmutableMap.of("desiredCapabilities", caps);
+    Command command = new Command(null, DriverCommand.NEW_SESSION, params);
+
+    HttpResponse response = new HttpResponse();
+    response.setStatus(HTTP_OK);
+    response.setContent(
+        "{\"sessionId\": \"23456789\", \"status\": 0, \"value\": {}}".getBytes(UTF_8));
+    RecordingHttpClient client = new RecordingHttpClient(response);
+
+    new ProtocolHandshake().createSession(client, command);
+
+    HttpRequest request = client.getRequest();
+    Map<String, Object> handshakeRequest = new Gson().fromJson(
+        request.getContentString(),
+        new TypeToken<Map<String, Object>>() {}.getType());
+
+    Object rawCaps = handshakeRequest.get("capabilities");
+    assertTrue(rawCaps instanceof Map);
+
+    Map<?, ?> capabilities = (Map<?, ?>) rawCaps;
+
+    Map<String, ?> always = (Map<String, ?>) capabilities.get("alwaysMatch");
+    assertEquals("cake", always.get("browserName"));
+    assertNull(capabilities.toString(), always.get("platformName"));
+    assertNull(capabilities.toString(), always.get("platform"));
   }
 
   class RecordingHttpClient implements HttpClient {
