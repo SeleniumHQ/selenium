@@ -86,26 +86,23 @@ public class FirefoxOptions {
   private boolean legacy;
   private DesiredCapabilities desiredCapabilities = new DesiredCapabilities();
 
-  /** INTERNAL ONLY: DO NOT USE */
-  static FirefoxOptions fromJsonMap(Map<String, Object> map) throws IOException {
-    FirefoxOptions options = new FirefoxOptions();
-
+  private void amend(Map<String, Object> map) throws IOException {
     if (map.containsKey("binary")) {
-      options.setBinary(getOption(map, "binary", String.class));
+      setBinary(getOption(map, "binary", String.class));
     }
 
     if (map.containsKey("args")) {
       @SuppressWarnings("unchecked")  // #YOLO
       List<String> list = (List<String>) getOption(map, "args", List.class);
-      options.addArguments(list);
+      addArguments(list);
     }
 
     if (map.containsKey("profile")) {
       Object value = map.get("profile");
       if (value instanceof String) {
-        options.setProfile(FirefoxProfile.fromJson((String) value));
+        setProfile(FirefoxProfile.fromJson((String) value));
       } else if (value instanceof FirefoxProfile) {
-        options.setProfile((FirefoxProfile) value);
+        setProfile((FirefoxProfile) value);
       } else {
         throw new WebDriverException(
             "In FirefoxOptions, don't know how to convert profile: " + map);
@@ -117,19 +114,17 @@ public class FirefoxOptions {
       Map<String, Object> prefs = (Map<String, Object>) getOption(map, "prefs", Map.class);
       prefs.forEach((key, value) -> {
         if (value instanceof Boolean) {
-          options.addPreference(key, (Boolean) value);
+          addPreference(key, (Boolean) value);
         } else if (value instanceof Integer || value instanceof Long) {
-          options.addPreference(key, ((Number) value).intValue());
+          addPreference(key, ((Number) value).intValue());
         } else if (value instanceof String) {
-          options.addPreference(key, (String) value);
+          addPreference(key, (String) value);
         } else {
           throw new WebDriverException(
               "Invalid Firefox preference value: " + key + "=" + value);
         }
       });
     }
-
-    return options;
   }
 
   private static <T> T getOption(Map<String, Object> map, String key, Class<T> type) {
@@ -140,6 +135,27 @@ public class FirefoxOptions {
     throw new WebDriverException(
         String.format(
             "In FirefoxOptions, expected key '%s' to be a %s: %s", key, type.getSimpleName(), map));
+  }
+
+  private void amend(FirefoxOptions source) {
+    if (source.actualBinary != null || source.binaryPath != null) {
+      setBinary(source.getBinary());
+    }
+    if (source.args != null) {
+      addArguments(source.args);
+    }
+    if (source.profile != null) {
+      setProfile(source.getProfile());
+    }
+    source.booleanPrefs.forEach(this::addPreference);
+    source.intPrefs.forEach(this::addPreference);
+    source.stringPrefs.forEach(this::addPreference);
+
+    if (source.logLevel != null) {
+      setLogLevel(source.logLevel);
+    }
+    setLegacy(source.isLegacy());
+    desiredCapabilities = new DesiredCapabilities(source.desiredCapabilities);
   }
 
   public FirefoxOptions() {
@@ -165,6 +181,34 @@ public class FirefoxOptions {
             profileName, FirefoxDriver.SystemProperty.BROWSER_PROFILE));
       }
     }
+  }
+
+  public FirefoxOptions(Capabilities source) {
+    this();
+
+    if (source == null) {
+      return;
+    }
+
+    Object rawOptions = source.getCapability(FIREFOX_OPTIONS);
+    if (rawOptions != null) {
+      if (rawOptions instanceof Map) {
+        try {
+          @SuppressWarnings("unchecked")
+          Map<String, Object> map = (Map<String, Object>) rawOptions;
+          amend(map);
+        } catch (IOException e) {
+          throw new WebDriverException(e);
+        }
+      } else if (rawOptions instanceof FirefoxOptions) {
+        amend((FirefoxOptions) rawOptions);
+      } else {
+        throw new WebDriverException(
+            "Firefox option was set, but is not a FirefoxOption or a Map: " + rawOptions);
+      }
+    }
+
+    validateAndAmendUsing(desiredCapabilities, source);
   }
 
   public FirefoxOptions setLegacy(boolean legacy) {
