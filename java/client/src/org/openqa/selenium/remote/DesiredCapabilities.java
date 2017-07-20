@@ -27,19 +27,16 @@ import static org.openqa.selenium.remote.CapabilityType.UNHANDLED_PROMPT_BEHAVIO
 import static org.openqa.selenium.remote.CapabilityType.VERSION;
 
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.logging.LogLevelMapping;
 import org.openqa.selenium.logging.LoggingPreferences;
 
-import java.io.Serializable;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-@SuppressWarnings("serial")
-public class DesiredCapabilities implements Serializable, Capabilities {
-  private final Map<String, Object> capabilities = new HashMap<>();
+public class DesiredCapabilities extends MutableCapabilities {
 
   public DesiredCapabilities(String browser, String version, Platform platform) {
     setCapability(BROWSER_NAME, browser);
@@ -86,8 +83,8 @@ public class DesiredCapabilities implements Serializable, Capabilities {
   }
 
   public boolean acceptInsecureCerts() {
-    if (capabilities.containsKey(ACCEPT_INSECURE_CERTS)) {
-      Object raw = capabilities.get(ACCEPT_INSECURE_CERTS);
+    if (getCapability(ACCEPT_INSECURE_CERTS) != null) {
+      Object raw = getCapability(ACCEPT_INSECURE_CERTS);
       if (raw instanceof String) {
         return Boolean.parseBoolean((String) raw);
       } else if (raw instanceof Boolean) {
@@ -101,10 +98,6 @@ public class DesiredCapabilities implements Serializable, Capabilities {
     setCapability(ACCEPT_INSECURE_CERTS, acceptInsecureCerts);
   }
 
-  public Object getCapability(String capabilityName) {
-    return capabilities.get(capabilityName);
-  }
-
   /**
    * Merges the extra capabilities provided into this DesiredCapabilities instance. If capabilities
    * with the same name exist in this instance, they will be overridden by the values from the
@@ -115,25 +108,8 @@ public class DesiredCapabilities implements Serializable, Capabilities {
    */
   @Override
   public DesiredCapabilities merge(Capabilities extraCapabilities) {
-    if (extraCapabilities == null) {
-      return this;
-    }
-
-    extraCapabilities.asMap().forEach(this::setCapability);
-
+    super.merge(extraCapabilities);
     return this;
-  }
-
-  public void setCapability(String capabilityName, boolean value) {
-    setCapability(capabilityName, (Object) value);
-  }
-
-  public void setCapability(String capabilityName, String value) {
-    setCapability(capabilityName, (Object) value);
-  }
-
-  public void setCapability(String capabilityName, Platform value) {
-    setCapability(capabilityName, (Object) value);
   }
 
   public void setCapability(String key, Object value) {
@@ -144,23 +120,22 @@ public class DesiredCapabilities implements Serializable, Capabilities {
       for (String logType : prefsMap.keySet()) {
         prefs.enable(logType, LogLevelMapping.toLevel(prefsMap.get(logType)));
       }
-      capabilities.put(LOGGING_PREFS, prefs);
+      super.setCapability(LOGGING_PREFS, prefs);
+
     } else if (PLATFORM.equals(key) && value instanceof String) {
       try {
-        capabilities.put(key, Platform.fromString((String) value));
+        super.setCapability(key, Platform.fromString((String) value));
       } catch (WebDriverException e) {
-        capabilities.put(key, value);
+        super.setCapability(key, value);
       }
-    } else if (UNEXPECTED_ALERT_BEHAVIOUR.equals(key)) {
-      capabilities.put(UNEXPECTED_ALERT_BEHAVIOUR, value);
-      capabilities.put(UNHANDLED_PROMPT_BEHAVIOUR, value);
-    } else {
-      capabilities.put(key, value);
-    }
-  }
 
-  public Map<String, ?> asMap() {
-    return Collections.unmodifiableMap(capabilities);
+    } else if (UNEXPECTED_ALERT_BEHAVIOUR.equals(key)) {
+      super.setCapability(UNEXPECTED_ALERT_BEHAVIOUR, value);
+      super.setCapability(UNHANDLED_PROMPT_BEHAVIOUR, value);
+
+    } else {
+      super.setCapability(key, value);
+    }
   }
 
   public static DesiredCapabilities android() {
@@ -226,16 +201,16 @@ public class DesiredCapabilities implements Serializable, Capabilities {
 
   @Override
   public String toString() {
-    return String.format("Capabilities [%s]", shortenMapValues(capabilities));
+    return String.format("Capabilities [%s]", shortenMapValues(asMap()));
   }
 
-  private Map<String, Object> shortenMapValues(Map<String, Object> map) {
+  private Map<String, ?> shortenMapValues(Map<String, ?> map) {
     Map<String, Object> newMap = new HashMap<>();
 
-    for (Map.Entry<String, Object> entry : map.entrySet()) {
+    for (Map.Entry<String, ?> entry : map.entrySet()) {
       if (entry.getValue() instanceof Map) {
-        newMap.put(entry.getKey(),
-                   shortenMapValues((Map<String, Object>) entry.getValue()));
+        newMap.put(entry.getKey(), shortenMapValues((Map<String, ?>) entry.getValue()));
+
       } else {
         String value = String.valueOf(entry.getValue());
         if (value.length() > 1024) {
@@ -248,22 +223,4 @@ public class DesiredCapabilities implements Serializable, Capabilities {
     return newMap;
   }
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (!(o instanceof DesiredCapabilities)) {
-      return false;
-    }
-
-    DesiredCapabilities that = (DesiredCapabilities) o;
-
-    return capabilities.equals(that.capabilities);
-  }
-
-  @Override
-  public int hashCode() {
-    return capabilities.hashCode();
-  }
 }

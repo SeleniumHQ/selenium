@@ -23,6 +23,8 @@ import static org.openqa.selenium.ie.InternetExplorerDriver.INITIAL_BROWSER_URL;
 import static org.openqa.selenium.ie.InternetExplorerDriver.INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.remote.BeanToJsonConverter;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -30,6 +32,7 @@ import org.openqa.selenium.remote.JsonToBeanConverter;
 
 import java.util.Map;
 
+@RunWith(JUnit4.class)
 public class InternetExplorerOptionsTest {
 
   @Test
