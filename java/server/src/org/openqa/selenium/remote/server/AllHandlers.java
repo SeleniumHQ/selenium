@@ -31,6 +31,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import org.openqa.selenium.internal.BuildInfo;
@@ -38,6 +39,7 @@ import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.server.commandhandler.GetLogTypes;
 
 import java.io.IOException;
 import java.lang.reflect.Constructor;
@@ -57,6 +59,7 @@ import javax.servlet.http.HttpServletRequest;
 
 class AllHandlers {
 
+  private final static Gson GSON = new GsonBuilder().setLenient().serializeNulls().create();
   private final ActiveSessions allSessions;
 
   private final Map<HttpMethod, ImmutableList<Function<String, CommandHandler>>> additionalHandlers;
@@ -67,39 +70,12 @@ class AllHandlers {
     additionalHandlers = ImmutableMap.of(
         HttpMethod.DELETE, ImmutableList.of(),
         HttpMethod.GET, ImmutableList.of(
+            handler("/session/{sessionId}/log/types", GetLogTypes.class),
             handler("/status", StatusHandler.class)
         ),
         HttpMethod.POST, ImmutableList.of(
-            handler("/session", BeginSession.class))
-        );
-  }
-
-  private <H extends CommandHandler> Function<String, CommandHandler> handler(
-      String template,
-      Class<H> handler) {
-    UrlTemplate urlTemplate = new UrlTemplate(template);
-    return path -> {
-      UrlTemplate.Match match = urlTemplate.match(path);
-      if (match == null) {
-        return null;
-      }
-
-      ImmutableSet.Builder<Object> args = ImmutableSet.builder();
-      args.add(allSessions);
-      if (match.getParameters().containsKey("sessionId")) {
-        SessionId id = new SessionId(match.getParameters().get("sessionId"));
-        args.add(id);
-        ActiveSession session = allSessions.get(id);
-        if (session != null) {
-          args.add(session);
-        }
-      }
-      match.getParameters().entrySet().stream()
-          .filter(e -> !"sessionId".equals(e.getKey()))
-          .forEach(e -> args.add(e.getValue()));
-
-      return create(handler, args.build());
-    };
+            handler("/session", BeginSession.class)
+        ));
   }
 
   public CommandHandler match(HttpServletRequest req) {
@@ -133,6 +109,35 @@ class AllHandlers {
     }
 
     return new NoHandler();
+  }
+
+  private <H extends CommandHandler> Function<String, CommandHandler> handler(
+      String template,
+      Class<H> handler) {
+    UrlTemplate urlTemplate = new UrlTemplate(template);
+    return path -> {
+      UrlTemplate.Match match = urlTemplate.match(path);
+      if (match == null) {
+        return null;
+      }
+
+      ImmutableSet.Builder<Object> args = ImmutableSet.builder();
+      args.add(allSessions);
+      args.add(GSON);
+      if (match.getParameters().containsKey("sessionId")) {
+        SessionId id = new SessionId(match.getParameters().get("sessionId"));
+        args.add(id);
+        ActiveSession session = allSessions.get(id);
+        if (session != null) {
+          args.add(session);
+        }
+      }
+      match.getParameters().entrySet().stream()
+          .filter(e -> !"sessionId".equals(e.getKey()))
+          .forEach(e -> args.add(e.getValue()));
+
+      return create(handler, args.build());
+    };
   }
 
   private static class NoHandler implements CommandHandler {
