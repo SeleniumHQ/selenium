@@ -552,7 +552,6 @@ namespace :node do
 
   task :deploy => [
     "node:atoms",
-    "//javascript/firefox-driver:webdriver",
   ] do
     cmd =  "node javascript/node/deploy.js" <<
         " --output=build/javascript/node/selenium-webdriver" <<
