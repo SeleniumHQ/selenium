@@ -23,19 +23,27 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 import static org.openqa.selenium.remote.server.DriverServlet.SESSION_TIMEOUT_PARAMETER;
 
+import com.google.common.base.Splitter;
 import com.google.common.net.HttpHeaders;
 import com.google.common.net.MediaType;
 
+import org.openqa.selenium.logging.LoggingHandler;
+import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.server.log.LoggingManager;
+import org.openqa.selenium.remote.server.log.PerSessionLogHandler;
 import org.openqa.selenium.remote.server.xdrpc.CrossDomainRpc;
 import org.openqa.selenium.remote.server.xdrpc.CrossDomainRpcLoader;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeoutException;
+import java.util.logging.Handler;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletInputStream;
@@ -46,6 +54,7 @@ import javax.servlet.http.HttpServletResponse;
 
 public class WebDriverServlet extends HttpServlet {
 
+  private static final Logger LOG = Logger.getLogger(WebDriverServlet.class.getName());
   public static final String ACTIVE_SESSIONS_KEY = WebDriverServlet.class.getName() + ".sessions";
 
   private static final String CROSS_DOMAIN_RPC_PATH = "/xdrpc";
@@ -57,6 +66,7 @@ public class WebDriverServlet extends HttpServlet {
 
   @Override
   public void init() throws ServletException {
+    configureLogging();
     log("Initialising WebDriverServlet");
 
     String value = getInitParameter(SESSION_TIMEOUT_PARAMETER);
@@ -71,6 +81,22 @@ public class WebDriverServlet extends HttpServlet {
     }
 
     handlers = new AllHandlers(allSessions);
+  }
+
+  private synchronized Logger configureLogging() {
+    Logger logger = Logger.getGlobal();
+    logger.addHandler(LoggingHandler.getInstance());
+
+    Logger rootLogger = Logger.getLogger("");
+    boolean sessionLoggerAttached = false;
+    for (Handler handler : rootLogger.getHandlers()) {
+      sessionLoggerAttached |= handler instanceof PerSessionLogHandler;
+    }
+    if (!sessionLoggerAttached) {
+      rootLogger.addHandler(LoggingManager.perSessionLogHandler());
+    }
+
+    return logger;
   }
 
   @Override
@@ -165,7 +191,7 @@ public class WebDriverServlet extends HttpServlet {
   private void handle(HttpServletRequest req, HttpServletResponse resp) {
     CommandHandler handler = handlers.match(req);
 
-    log("Found handler: " + handler);
+    LOG.info("Found handler: " + handler);
 
     boolean invalidateSession =
         handler instanceof ActiveSession &&
@@ -173,17 +199,30 @@ public class WebDriverServlet extends HttpServlet {
         req.getPathInfo().equals("/session/" + ((ActiveSession) handler).getId());
 
     Future<?> execution = executor.submit(() -> {
+      // Clear the logs
+      PerSessionLogHandler sessionLogHandler = LoggingManager.perSessionLogHandler();
+      sessionLogHandler.clearThreadTempLogs();
+
       try {
         if (handler instanceof ActiveSession) {
+          sessionLogHandler .attachToCurrentThread(((ActiveSession) handler).getId());
           ActiveSession session = (ActiveSession) handler;
           Thread.currentThread().setName(String.format(
               "Handler thread for session %s (%s)",
               session.getId(),
               session.getCapabilities().get(BROWSER_NAME)));
         } else {
+          // All commands that take a session id expect that as the path fragment immediately after "/session".
+          List<String> fragments = Splitter.on('/').limit(4).splitToList(req.getPathInfo());
+          if (fragments.size() > 2) {
+            if ("session".equals(fragments.get(1))) {
+              sessionLogHandler.attachToCurrentThread(new SessionId(fragments.get(2)));
+            }
+          }
+
           Thread.currentThread().setName(req.getPathInfo());
         }
-        log(String.format(
+        LOG.info(String.format(
             "%s: Executing %s on %s (handler: %s)",
             Thread.currentThread().getName(),
             req.getMethod(),
@@ -197,6 +236,7 @@ public class WebDriverServlet extends HttpServlet {
         throw new RuntimeException(e);
       } finally {
         Thread.currentThread().setName("Selenium WebDriver Servlet - Quiescent Thread");
+        sessionLogHandler.detachFromCurrentThread();
       }
     });
 
