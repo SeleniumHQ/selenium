@@ -1,6 +1,15 @@
 v3.5.0
 ======
 
+Important note:
+
+* The new standalone server and Grid Node feature a "pass through"
+  mode. If you see changes to the Selenium WebDriver "logging" APIs or
+  automatic capture of screenshots on error (or if you want the old
+  behaviour back) you can do so by executing:
+
+  `java -jar selenium-server-standalone-3.5.0.jar -enablePassThrough false`
+
 * Add support for a new "pass through" mode. This allows a connection
   from your test's RemoteWebDriver, through the Grid Hub, to a Grid
   Node, and down to a DriverService and thence the browser to use the
