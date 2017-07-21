@@ -17,13 +17,12 @@
 
 package org.openqa.selenium.remote.server;
 
-//import static com.google.common.net.MediaType.JAVASCRIPT_UTF_8;
-
 import static com.google.common.net.MediaType.JSON_UTF_8;
 import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.openqa.selenium.remote.ErrorCodes.NO_SUCH_SESSION;
+import static org.openqa.selenium.remote.ErrorCodes.SUCCESS;
 import static org.openqa.selenium.remote.ErrorCodes.UNKNOWN_COMMAND;
 
 import com.google.common.base.Splitter;
@@ -31,6 +30,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.GsonBuilder;
 
+import org.openqa.selenium.internal.BuildInfo;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
@@ -146,11 +146,36 @@ class AllHandlers {
 
     @Override
     public void execute(HttpRequest req, HttpResponse resp) throws IOException {
+      ImmutableMap.Builder<String, Object> value = ImmutableMap.builder();
+
+      // W3C spec
+      value.put("ready", true);
+      value.put("message", "Server is running");
+
+      // And now more information
+      BuildInfo buildInfo = new BuildInfo();
+      value.put("build", ImmutableMap.of(
+          // We need to fix the BuildInfo to properly fill out these values.
+//          "revision", buildInfo.getBuildRevision(),
+//          "time", buildInfo.getBuildTime(),
+          "version", buildInfo.getReleaseLabel()));
+
+      value.put("os", ImmutableMap.of(
+          "arch", System.getProperty("os.arch"),
+          "name", System.getProperty("os.name"),
+          "version", System.getProperty("os.version")));
+
+      value.put("java", ImmutableMap.of("version", System.getProperty("java.version")));
+
+      Map<String, Object> payloadObj = ImmutableMap.of(
+          "status", SUCCESS,
+          "value", value.build());
+
       // Write out a minimal W3C status response.
-      byte[] payload = new GsonBuilder().create().toJson(ImmutableMap.of(
-          "ready", true,
-          "message", "Server is running"
-      )).getBytes(UTF_8);
+      byte[] payload = new GsonBuilder()
+          .serializeNulls()
+          .create()
+          .toJson(payloadObj).getBytes(UTF_8);
 
       resp.setStatus(HTTP_OK);
       resp.setHeader("Content-Type", JSON_UTF_8.toString());
