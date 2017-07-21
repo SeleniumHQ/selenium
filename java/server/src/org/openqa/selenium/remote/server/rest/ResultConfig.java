@@ -53,7 +53,8 @@ public class ResultConfig {
 
   public ResultConfig(
       String commandName, Class<? extends RestishHandler<?>> handlerClazz,
-      DriverSessions sessions, Logger log) {
+      DriverSessions sessions,
+      Logger log) {
     if (commandName == null || handlerClazz == null) {
       throw new IllegalArgumentException("You must specify the handler and the command name");
     }
