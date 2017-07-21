@@ -30,6 +30,7 @@ import static org.openqa.selenium.firefox.FirefoxDriver.SystemProperty.BROWSER_B
 import static org.openqa.selenium.firefox.FirefoxDriver.SystemProperty.BROWSER_PROFILE;
 import static org.openqa.selenium.firefox.FirefoxDriver.SystemProperty.DRIVER_USE_MARIONETTE;
 
+import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableSet;
 import com.google.gson.JsonObject;
 
@@ -222,6 +223,18 @@ public class FirefoxOptionsTest {
       new FirefoxOptions();
     } finally {
       property.set(resetValue);
+    }
+  }
+
+  @Test
+  public void callingToStringWhenTheBinaryDoesNotExistShouldNotCauseAnException() {
+    FirefoxOptions options =
+        new FirefoxOptions().setBinary("there's nothing better in life than cake or peas.");
+    try {
+      options.toString();
+      // The binary does not exist on this machine, but could do elsewhere. Be chill.
+    } catch (Exception e) {
+      fail(Throwables.getStackTraceAsString(e));
     }
   }
 }
