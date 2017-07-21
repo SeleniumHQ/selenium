@@ -32,7 +32,7 @@ const promise = require('./promise');
 const Session = require('./session').Session;
 const WebElement = require('./webdriver').WebElement;
 
-const {getAttribute, isDisplayed} = (function() {
+const {getAttribute, isDisplayed} = /** @suppress {undefinedVars|uselessCode} */(function() {
   try {
     return {
       getAttribute: require('./atoms/getAttribute.js'),

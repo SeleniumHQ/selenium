@@ -29,7 +29,7 @@ const fs = require('fs'),
 const isDevMode = require('../lib/devmode'),
     Symbols = require('../lib/symbols'),
     io = require('../io'),
-    {Zip} = require('../io/zip'),
+    {Zip, unzip} = require('../io/zip'),
     extension = require('./extension');
 
 
@@ -157,7 +157,7 @@ function decode(data) {
     let buf = new Buffer(data, 'base64');
     return io.write(file, buf)
         .then(io.tmpDir)
-        .then(dir => io.unzip(file, dir));
+        .then(dir => unzip(file, dir));
   });
 }
 

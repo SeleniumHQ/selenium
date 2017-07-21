@@ -131,7 +131,10 @@ const THENABLE_DRIVERS = new Map;
 function createDriver(ctor, ...args) {
   let thenableWebDriverProxy = THENABLE_DRIVERS.get(ctor);
   if (!thenableWebDriverProxy) {
-    /** @implements {ThenableWebDriver} */
+    /**
+     * @extends {WebDriver}  // Needed since `ctor` is dynamically typed.
+     * @implements {ThenableWebDriver}
+     */
     thenableWebDriverProxy = class extends ctor {
       /**
        * @param {!IThenable<!Session>} session
