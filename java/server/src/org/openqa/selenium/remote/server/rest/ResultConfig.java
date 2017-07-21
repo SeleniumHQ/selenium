@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.remote.server.rest;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 
 import org.openqa.selenium.NoSuchSessionException;
@@ -41,6 +40,7 @@ import java.lang.reflect.UndeclaredThrowableException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -132,9 +132,9 @@ public class ResultConfig {
       Throwable toUse = getRootExceptionCause(e);
 
       log.warning("Exception: " + toUse.getMessage());
-      Optional<String> screenshot = Optional.absent();
+      Optional<String> screenshot = Optional.empty();
       if (handler instanceof WebDriverHandler) {
-        screenshot = Optional.fromNullable(((WebDriverHandler) handler).getScreenshot());
+        screenshot = Optional.ofNullable(((WebDriverHandler) handler).getScreenshot());
       }
       response = Responses.failure(sessionId, toUse, screenshot);
     } catch (Error e) {
