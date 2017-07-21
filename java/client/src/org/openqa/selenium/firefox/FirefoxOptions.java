@@ -23,7 +23,9 @@ import static org.openqa.selenium.firefox.FirefoxDriver.MARIONETTE;
 import static org.openqa.selenium.firefox.FirefoxDriver.PROFILE;
 import static org.openqa.selenium.remote.CapabilityType.ACCEPT_SSL_CERTS;
 import static org.openqa.selenium.remote.CapabilityType.LOGGING_PREFS;
+import static org.openqa.selenium.remote.CapabilityType.PAGE_LOAD_STRATEGY;
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_WEB_STORAGE;
+import static org.openqa.selenium.remote.CapabilityType.UNHANDLED_PROMPT_BEHAVIOUR;
 import static org.openqa.selenium.remote.CapabilityType.VERSION;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -35,7 +37,9 @@ import com.google.gson.JsonPrimitive;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.PageLoadStrategy;
 import org.openqa.selenium.SessionNotCreatedException;
+import org.openqa.selenium.UnexpectedAlertBehaviour;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.internal.ProfilesIni;
 import org.openqa.selenium.logging.LoggingPreferences;
@@ -395,6 +399,16 @@ public class FirefoxOptions {
 
   public FirefoxOptions setLogLevel(Level logLevel) {
     this.logLevel = logLevel;
+    return this;
+  }
+
+  public FirefoxOptions setPageLoadStrategy(PageLoadStrategy strategy) {
+    desiredCapabilities.setCapability(PAGE_LOAD_STRATEGY, strategy);
+    return this;
+  }
+
+  public FirefoxOptions setUnhandledPromptBehaviour(UnexpectedAlertBehaviour behaviour) {
+    desiredCapabilities.setCapability(UNHANDLED_PROMPT_BEHAVIOUR, behaviour);
     return this;
   }
 

@@ -29,6 +29,8 @@ import static org.openqa.selenium.ie.InternetExplorerDriver.INITIAL_BROWSER_URL;
 import static org.openqa.selenium.ie.InternetExplorerDriver.INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS;
 import static org.openqa.selenium.ie.InternetExplorerDriver.NATIVE_EVENTS;
 import static org.openqa.selenium.ie.InternetExplorerDriver.REQUIRE_WINDOW_FOCUS;
+import static org.openqa.selenium.remote.CapabilityType.PAGE_LOAD_STRATEGY;
+import static org.openqa.selenium.remote.CapabilityType.UNHANDLED_PROMPT_BEHAVIOUR;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
@@ -38,7 +40,10 @@ import com.google.common.collect.Streams;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.MutableCapabilities;
+import org.openqa.selenium.PageLoadStrategy;
+import org.openqa.selenium.UnexpectedAlertBehaviour;
 import org.openqa.selenium.internal.ElementScrollBehavior;
+import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.time.Duration;
@@ -201,6 +206,14 @@ public class InternetExplorerOptions extends MutableCapabilities {
 
   public InternetExplorerOptions takeFullPageScreenshot() {
     return amend(FULL_PAGE_SCREENSHOT, true);
+  }
+
+  public InternetExplorerOptions setPageLoadStrategy(PageLoadStrategy strategy) {
+    return amend(PAGE_LOAD_STRATEGY, strategy);
+  }
+
+  public InternetExplorerOptions setUnhandledPromptBehaviour(UnexpectedAlertBehaviour behaviour) {
+    return amend(UNHANDLED_PROMPT_BEHAVIOUR, behaviour);
   }
 
   private InternetExplorerOptions amend(String optionName, Object value) {
