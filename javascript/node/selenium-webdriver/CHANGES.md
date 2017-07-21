@@ -1,4 +1,4 @@
-## v.next
+## v3.5.0
 
 ### Notice
 
@@ -39,7 +39,7 @@ This release requires [geckodriver 0.15.0](https://github.com/mozilla/geckodrive
 
 * Fixed W3C response parsing, which expects response data to always be a JSON
   object with a `value` key.
-* Added W3C endpoints for interacting with various types of 
+* Added W3C endpoints for interacting with various types of
   [user prompts](https://w3c.github.io/webdriver/webdriver-spec.html#user-prompts).
 * Added W3C endpoints for remotely executing scripts.
 * Added W3C endpoints to get current window handle and all windows handles.
