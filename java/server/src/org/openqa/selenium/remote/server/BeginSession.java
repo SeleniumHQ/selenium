@@ -23,14 +23,20 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 import com.google.common.collect.ImmutableMap;
 
+import com.sun.javafx.util.Logging;
+
 import org.openqa.selenium.SessionNotCreatedException;
+import org.openqa.selenium.logging.LogType;
+import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.remote.BeanToJsonConverter;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.server.log.LoggingManager;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.logging.Level;
 
 class BeginSession implements CommandHandler {
 
@@ -62,6 +68,13 @@ class BeginSession implements CommandHandler {
       session = sessionFactory.createSession(payload);
       allSessions.put(session);
     }
+
+    // Force capture of server-side logs since we don't have easy access to the request from the
+    // local end.
+    LoggingPreferences loggingPrefs = new LoggingPreferences();
+    loggingPrefs.enable(LogType.SERVER, Level.INFO);
+    LoggingManager.perSessionLogHandler().configureLogging(loggingPrefs);
+    LoggingManager.perSessionLogHandler().attachToCurrentThread(session.getId());
 
     Object toConvert;
       switch (session.getDownstreamDialect()) {

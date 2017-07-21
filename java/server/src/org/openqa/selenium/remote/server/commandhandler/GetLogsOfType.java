@@ -17,6 +17,9 @@
 
 package org.openqa.selenium.remote.server.commandhandler;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.openqa.selenium.remote.http.HttpMethod.POST;
+
 import com.google.gson.Gson;
 
 import org.openqa.selenium.logging.LogEntries;
@@ -44,11 +47,15 @@ public class GetLogsOfType implements CommandHandler {
 
   @Override
   public void execute(HttpRequest req, HttpResponse resp) throws IOException {
-    Map<?, ?> args = gson.fromJson(req.getContentString(), Map.class);
+    String originalPayload = req.getContentString();
+
+    Map<?, ?> args = gson.fromJson(originalPayload, Map.class);
     String type = (String) args.get("type");
 
     if (!LogType.SERVER.equals(type)) {
-      session.execute(req, resp);
+      HttpRequest upReq = new HttpRequest(POST, String.format("/session/%s/log", session.getId()));
+      upReq.setContent(originalPayload.getBytes(UTF_8));
+      session.execute(upReq, resp);
       return;
     }
 
