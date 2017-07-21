@@ -20,10 +20,10 @@ package org.openqa.grid.e2e.node;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
-import com.google.common.base.Function;
+import com.google.common.base.Throwables;
 
 import org.junit.After;
 import org.junit.Before;
@@ -36,8 +36,11 @@ import org.openqa.grid.internal.RemoteProxy;
 import org.openqa.grid.internal.utils.SelfRegisteringRemote;
 import org.openqa.grid.selenium.proxy.DefaultRemoteProxy;
 import org.openqa.grid.web.Hub;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.server.SeleniumServer;
@@ -45,6 +48,7 @@ import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
 
 import java.net.MalformedURLException;
+import java.util.function.Function;
 
 
 public class CrashWhenStartingBrowserTest {
@@ -56,7 +60,7 @@ public class CrashWhenStartingBrowserTest {
 
   private String proxyId;
 
-  private static final String WRONG_PATH = "stupidPathUnliklyToExist";
+  private static final String WRONG_PATH = "stupidPathUnlikelyToExist";
 
   @Before
   public void prepareANodePointingToANonExistingFirefox() throws Exception {
@@ -86,28 +90,23 @@ public class CrashWhenStartingBrowserTest {
     // no active sessions
     assertEquals("active session is found on empty grid", 0, registry.getActiveSessions().size());
 
-    WebDriverException exception = null;
     try {
-      DesiredCapabilities ff = DesiredCapabilities.firefox();
-      ff.setCapability(FirefoxDriver.BINARY, WRONG_PATH);
+      Capabilities ff = new FirefoxOptions()
+          .setBinary(WRONG_PATH)
+          .addTo(DesiredCapabilities.firefox());
       new RemoteWebDriver(hub.getWebDriverHubRequestURL(), ff);
-    } catch (WebDriverException expected) {
-      exception = expected;
+      fail("Expected WebDriverException to be thrown");
+    } catch (SessionNotCreatedException expected) {
+      assertTrue(
+          "We'd like to assert the path is in the message, but the spec does not demand this",
+          true);
     }
-
-    assertNotNull(exception);
-    assertTrue(exception.getMessage().contains(WRONG_PATH));
 
     RegistryTestHelper.waitForActiveTestSessionCount(registry, 0);
   }
 
   private Function<Object, Boolean> isUp(final DefaultRemoteProxy proxy) {
-    return new Function<Object, Boolean>() {
-      @Override
-      public Boolean apply(Object input) {
-        return !proxy.isDown();
-      }
-    };
+    return input -> !proxy.isDown();
   }
 
   private String getProxyId() throws Exception {
