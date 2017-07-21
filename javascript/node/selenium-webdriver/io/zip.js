@@ -44,7 +44,8 @@ class Zip {
    * @return {!Promise<?>} a promise that will resolve when added.
    */
   addFile(filePath, zipPath = path.basename(filePath)) {
-    let add = io.read(filePath).then(buffer => this.z_.file(zipPath, buffer));
+    let add = io.read(filePath)
+        .then(buffer => this.z_.file(/** @type {string} */(zipPath), buffer));
     this.pendingAdds_.add(add);
     return add.then(
         () => this.pendingAdds_.delete(add),
