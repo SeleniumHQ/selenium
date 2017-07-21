@@ -133,7 +133,7 @@ public class SeleniumServer implements GridNodeServer {
     handler.setAttribute(DriverServlet.SESSIONS_KEY, driverSessions);
     handler.setContextPath("/");
     if (configuration.enablePassThrough) {
-      LOG.info("Using the experimental passthrough mode handler");
+      LOG.info("Using the passthrough mode handler");
       handler.addServlet(WebDriverServlet.class, "/wd/hub/*");
       handler.addServlet(WebDriverServlet.class, "/webdriver/*");
     } else {
