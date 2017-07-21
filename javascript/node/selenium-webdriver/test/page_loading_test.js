@@ -57,12 +57,6 @@ test.suite(function(env) {
     return assert(driver.getTitle()).equalTo('We Arrive Here');
   });
 
-  test.ignore(browsers(Browser.SAFARI)).
-  it('should follow meta redirects', function*() {
-    yield driver.get(Pages.metaRedirectPage);
-    return assert(driver.getTitle()).equalTo('We Arrive Here');
-  });
-
   // Skip Firefox; see https://bugzilla.mozilla.org/show_bug.cgi?id=1280300
   test.ignore(browsers(Browser.FIREFOX)).
   it('should be able to get a fragment on the current page', function*() {
