@@ -29,6 +29,7 @@ import com.google.gson.GsonBuilder;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.server.commandhandler.GetLogTypes;
+import org.openqa.selenium.remote.server.commandhandler.GetLogsOfType;
 import org.openqa.selenium.remote.server.commandhandler.NoHandler;
 import org.openqa.selenium.remote.server.commandhandler.NoSessionHandler;
 import org.openqa.selenium.remote.server.commandhandler.Status;
@@ -63,7 +64,8 @@ class AllHandlers {
             handler("/status", Status.class)
         ),
         HttpMethod.POST, ImmutableList.of(
-            handler("/session", BeginSession.class)
+            handler("/session", BeginSession.class),
+            handler("/session/{sessionId}/log", GetLogsOfType.class)
         ));
   }
 
