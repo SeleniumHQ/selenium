@@ -29,6 +29,7 @@ import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.remote.BeanToJsonConverter;
+import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.server.log.LoggingManager;
@@ -73,6 +74,11 @@ class BeginSession implements CommandHandler {
     // local end.
     LoggingPreferences loggingPrefs = new LoggingPreferences();
     loggingPrefs.enable(LogType.SERVER, Level.INFO);
+    Object raw = session.getCapabilities().get(CapabilityType.LOGGING_PREFS);
+    if (raw instanceof LoggingPreferences) {
+      loggingPrefs.addPreferences((LoggingPreferences) raw);
+    }
+
     LoggingManager.perSessionLogHandler().configureLogging(loggingPrefs);
     LoggingManager.perSessionLogHandler().attachToCurrentThread(session.getId());
 
