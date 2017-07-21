@@ -716,7 +716,7 @@ class Driver extends webdriver.WebDriver {
         (opt_config || Capabilities.chrome());
 
     return /** @type {!Driver} */(
-        webdriver.WebDriver.createSession(executor, caps, opt_flow, this));
+        super.createSession(executor, caps, opt_flow));
   }
 
   /**
@@ -737,7 +737,7 @@ class Driver extends webdriver.WebDriver {
         new command.Command(Command.LAUNCH_APP).setParameter('id', id),
         'Driver.launchApp()');
   }
-  
+
   /**
    * Schedules a command to get Chrome network emulation settings.
    * @return {!promise.Thenable<T>} A promise that will be resolved
@@ -751,16 +751,16 @@ class Driver extends webdriver.WebDriver {
 
   /**
    * Schedules a command to set Chrome network emulation settings.
-   * 
+   *
    * __Sample Usage:__
-   * 
+   *
    *  driver.setNetworkConditions({
    *    offline: false,
    *    latency: 5, // Additional latency (ms).
    *    download_throughput: 500 * 1024, // Maximal aggregated download throughput.
    *    upload_throughput: 500 * 1024 // Maximal aggregated upload throughput.
    * });
-   * 
+   *
    * @param {Object} spec Defines the network conditions to set
    * @return {!promise.Thenable<void>} A promise that will be resolved
    *     when network emulation settings are set.

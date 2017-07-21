@@ -383,7 +383,7 @@ class Driver extends webdriver.WebDriver {
     }
 
     return /** @type {!Driver} */(
-        webdriver.WebDriver.createSession(executor, caps, opt_flow, this));
+        super.createSession(executor, caps, opt_flow));
   }
 
   /**

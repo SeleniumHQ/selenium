@@ -217,8 +217,8 @@ class Driver extends webdriver.WebDriver {
     });
 
     var executor = createExecutor(service.start());
-    return /** @type {!Driver} */(webdriver.WebDriver.createSession(
-        executor, caps, opt_flow, this, () => service.kill()));
+    return /** @type {!Driver} */(super.createSession(
+        executor, caps, opt_flow, () => service.kill()));
   }
 
   /**

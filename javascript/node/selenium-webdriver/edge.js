@@ -278,8 +278,8 @@ class Driver extends webdriver.WebDriver {
         opt_config instanceof Options ? opt_config.toCapabilities() :
         (opt_config || capabilities.Capabilities.edge());
 
-    return /** @type {!Driver} */(webdriver.WebDriver.createSession(
-        executor, caps, opt_flow, this, () => service.kill()));
+    return /** @type {!Driver} */(super.createSession(
+        executor, caps, opt_flow, () => service.kill()));
   }
 
   /**

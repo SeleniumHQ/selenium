@@ -403,7 +403,7 @@ describe('WebDriver', function() {
 
       var driver =
           WebDriver.createSession(executor, {'browserName': 'firefox'},
-              null, null, () => called = true);
+              null, () => called = true);
       return driver.getSession().then(fail, err => {
         assert.ok(called);
         assertIsStubError(err);
@@ -464,8 +464,7 @@ describe('WebDriver', function() {
               .end();
 
           WebDriver.createSession(
-              executor, {'browserName': 'firefox'}, null, null,
-              () => {throw e});
+              executor, {'browserName': 'firefox'}, null, () => {throw e});
           return waitForAbort().then(err => assert.strictEqual(err, e));
         });
       });

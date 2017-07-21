@@ -17,38 +17,83 @@
 
 'use strict';
 
-var WebDriver = require('..').WebDriver,
-    assert = require('../testing/assert'),
-    test = require('../lib/test'),
-    Pages = test.Pages;
+const assert = require('../testing/assert');
+const chrome = require('../chrome');
+const edge = require('../edge');
+const firefox = require('../firefox');
+const ie = require('../ie');
+const opera = require('../opera');
+const phantomjs = require('../phantomjs');
+const safari = require('../safari');
+const test = require('../lib/test');
+const {Browser} = require('../lib/capabilities');
+const {Pages} = require('../lib/test');
+const {WebDriver} = require('..');
 
 
 test.suite(function(env) {
   var browsers = env.browsers;
 
-  var driver;
-  test.before(function*() {
-    driver = yield env.builder().build();
-  });
+  const BROWSER_MAP = new Map([
+    [Browser.CHROME, chrome.Driver],
+    [Browser.EDGE, edge.Driver],
+    [Browser.FIREFOX, firefox.Driver],
+    [Browser.INTERNET_EXPLORER, ie.Driver],
+    [Browser.OPERA, opera.Driver],
+    [Browser.PHANTOM_JS, phantomjs.Driver],
+    [Browser.SAFARI, safari.Driver],
+  ]);
 
-  test.after(function() {
-    return driver.quit();
-  });
+  if (BROWSER_MAP.has(env.currentBrowser())) {
+    describe('builder creates thenable driver instances', function() {
+      let driver;
 
-  test.it('can connect to an existing session', function*() {
-    yield driver.get(Pages.simpleTestPage);
-    yield assert(driver.getTitle()).equalTo('Hello WebDriver');
+      after(() => driver && driver.quit());
 
-    return driver.getSession().then(session1 => {
-      let driver2 = WebDriver.attachToSession(
-          driver.getExecutor(),
-          session1.getId());
+      it(env.currentBrowser(), function() {
+        driver = env.builder().build();
 
-      return assert(driver2.getTitle()).equalTo('Hello WebDriver')
-          .then(_ => {
-            let session2Id = driver2.getSession().then(s => s.getId());
-            return assert(session2Id).equalTo(session1.getId());
-          });
+        const want = BROWSER_MAP.get(env.currentBrowser());
+        assert(driver).instanceOf(want,
+            `want ${want.name}, but got ${driver.name}`);
+        assert(typeof driver.then).equalTo('function');
+
+        return driver
+            .then(
+                d => assert(d)
+                    .instanceOf(want, `want ${want.name}, but got ${d.name}`))
+            // Load something so the safari driver doesn't crash from starting and
+            // stopping in short time.
+            .then(() => driver.get(Pages.echoPage));
+      });
+    });
+  }
+
+  describe('session management', function() {
+    var driver;
+    test.before(function*() {
+      driver = yield env.builder().build();
+    });
+
+    test.after(function() {
+      return driver.quit();
+    });
+
+    test.it('can connect to an existing session', function*() {
+      yield driver.get(Pages.simpleTestPage);
+      yield assert(driver.getTitle()).equalTo('Hello WebDriver');
+
+      return driver.getSession().then(session1 => {
+        let driver2 = WebDriver.attachToSession(
+            driver.getExecutor(),
+            session1.getId());
+
+        return assert(driver2.getTitle()).equalTo('Hello WebDriver')
+            .then(_ => {
+              let session2Id = driver2.getSession().then(s => s.getId());
+              return assert(session2Id).equalTo(session1.getId());
+            });
+      });
     });
   });
 });
