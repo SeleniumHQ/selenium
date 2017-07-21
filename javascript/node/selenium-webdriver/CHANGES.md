@@ -19,6 +19,8 @@ to a remote Selenium server that supports Firefox 45.
 
 * Added `error.WebDriverError#remoteStacktrace` to capture the stacktrace
   reported by a remote WebDriver endpoint (if any).
+* Fixed `WebElement#sendKeys` to send text as a string instead of an array of
+  strings.
 
 ## v3.4.0
 
