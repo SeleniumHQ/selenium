@@ -22,6 +22,6 @@ import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.IOException;
 
-interface CommandHandler {
+public interface CommandHandler {
   void execute(HttpRequest req, HttpResponse resp) throws IOException;
 }
