@@ -28,6 +28,7 @@ import org.openqa.selenium.remote.server.xdrpc.CrossDomainRpcLoaderTest;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
     ActiveSessionsTest.class,
+    AllHandlersTest.class,
     CapabilitiesComparatorTest.class,
     CrossDomainRpcLoaderTest.class,
     DefaultSessionTest.class,
@@ -42,6 +43,7 @@ import org.openqa.selenium.remote.server.xdrpc.CrossDomainRpcLoaderTest;
     SessionLogsTest.class,
     TeeReaderTest.class,
     UploadFileTest.class,
+    UrlTemplateTest.class,
     UtilsTest.class
 })
 public class RemoteServerTests {
