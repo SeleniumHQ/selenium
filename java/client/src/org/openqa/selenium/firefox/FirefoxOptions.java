@@ -656,7 +656,7 @@ public class FirefoxOptions {
   @Override
   public String toString() {
     return "{" +
-           "binary=" + getBinaryOrNull() + ", " +
+           "binary=" + (actualBinary == null ? binaryPath : actualBinary) + ", " +
            "args=" + args + ", " +
            "legacy=" + legacy + ", " +
            "logLevel=" + logLevel + ", " +
