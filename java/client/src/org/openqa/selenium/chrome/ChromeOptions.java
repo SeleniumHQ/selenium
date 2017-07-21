@@ -19,6 +19,8 @@ package org.openqa.selenium.chrome;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static org.openqa.selenium.remote.CapabilityType.PAGE_LOAD_STRATEGY;
+import static org.openqa.selenium.remote.CapabilityType.UNHANDLED_PROMPT_BEHAVIOUR;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
@@ -28,6 +30,10 @@ import com.google.common.io.Files;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 
+import org.openqa.selenium.MutableCapabilities;
+import org.openqa.selenium.PageLoadStrategy;
+import org.openqa.selenium.UnexpectedAlertBehaviour;
+import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.io.File;
@@ -75,6 +81,7 @@ public class ChromeOptions {
   private List<File> extensionFiles = Lists.newArrayList();
   private List<String> extensions = Lists.newArrayList();
   private Map<String, Object> experimentalOptions = Maps.newHashMap();
+  private MutableCapabilities capabilities = new MutableCapabilities();
 
   /**
    * Sets the path to the Chrome executable. This path should exist on the
@@ -192,6 +199,14 @@ public class ChromeOptions {
     return experimentalOptions.get(checkNotNull(name));
   }
 
+  public void setPageLoadStrategy(PageLoadStrategy strategy) {
+    capabilities.setCapability(PAGE_LOAD_STRATEGY, strategy);
+  }
+
+  public void setUnhandledPromptBehaviour(UnexpectedAlertBehaviour behaviour) {
+    capabilities.setCapability(UNHANDLED_PROMPT_BEHAVIOUR, behaviour);
+  }
+
   /**
    * Converts this instance to its JSON representation.
    *
@@ -232,7 +247,7 @@ public class ChromeOptions {
    * @return DesiredCapabilities for Chrome with these options.
    */
   DesiredCapabilities toCapabilities() {
-    DesiredCapabilities capabilities = DesiredCapabilities.chrome();
+    DesiredCapabilities capabilities = DesiredCapabilities.chrome().merge(this.capabilities);
     capabilities.setCapability(CAPABILITY, this);
     return capabilities;
   }
