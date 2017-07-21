@@ -25,21 +25,32 @@ import static org.openqa.selenium.remote.ErrorCodes.NO_SUCH_SESSION;
 import static org.openqa.selenium.remote.ErrorCodes.SUCCESS;
 import static org.openqa.selenium.remote.ErrorCodes.UNKNOWN_COMMAND;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import com.google.gson.GsonBuilder;
 
 import org.openqa.selenium.internal.BuildInfo;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -48,12 +59,61 @@ class AllHandlers {
 
   private final ActiveSessions allSessions;
 
+  private final Map<HttpMethod, ImmutableList<Function<String, CommandHandler>>> additionalHandlers;
+
   public AllHandlers(ActiveSessions allSessions) {
     this.allSessions = allSessions;
+
+    additionalHandlers = ImmutableMap.of(
+        HttpMethod.DELETE, ImmutableList.of(),
+        HttpMethod.GET, ImmutableList.of(
+            handler("/status", StatusHandler.class)
+        ),
+        HttpMethod.POST, ImmutableList.of(
+            handler("/session", BeginSession.class))
+        );
+  }
+
+  private <H extends CommandHandler> Function<String, CommandHandler> handler(
+      String template,
+      Class<H> handler) {
+    UrlTemplate urlTemplate = new UrlTemplate(template);
+    return path -> {
+      UrlTemplate.Match match = urlTemplate.match(path);
+      if (match == null) {
+        return null;
+      }
+
+      ImmutableSet.Builder<Object> args = ImmutableSet.builder();
+      args.add(allSessions);
+      if (match.getParameters().containsKey("sessionId")) {
+        SessionId id = new SessionId(match.getParameters().get("sessionId"));
+        args.add(id);
+        ActiveSession session = allSessions.get(id);
+        if (session != null) {
+          args.add(session);
+        }
+      }
+      match.getParameters().entrySet().stream()
+          .filter(e -> !"sessionId".equals(e.getKey()))
+          .forEach(e -> args.add(e.getValue()));
+
+      return create(handler, args.build());
+    };
   }
 
   public CommandHandler match(HttpServletRequest req) {
     String path = Strings.isNullOrEmpty(req.getPathInfo()) ? "/" : req.getPathInfo();
+
+    Optional<? extends CommandHandler> additionalHandler = additionalHandlers.get(HttpMethod.valueOf(req.getMethod()))
+        .stream()
+        .map(bundle -> bundle.apply(req.getPathInfo()))
+        .filter(Objects::nonNull)
+        .findFirst();
+
+    if (additionalHandler.isPresent()) {
+      return additionalHandler.get();
+    }
 
     // All commands that take a session id expect that as the path fragment immediately after "/session".
     SessionId id = null;
@@ -70,14 +130,6 @@ class AllHandlers {
         return new NoSessionHandler(id);
       }
       return session;
-    }
-
-    if ("POST".equalsIgnoreCase(req.getMethod()) && "/session".equals(path)) {
-      return new BeginSession(allSessions);
-    }
-
-    if ("GET".equalsIgnoreCase(req.getMethod()) && "/status".equals(path)) {
-      return new StatusHandler();
     }
 
     return new NoHandler();
@@ -182,6 +234,36 @@ class AllHandlers {
       resp.setHeader("Content-Length", String.valueOf(payload.length));
 
       resp.setContent(payload);
+    }
+  }
+
+  @VisibleForTesting
+  <T extends CommandHandler> T create(Class<T> toCreate, Set<Object> args) {
+    Constructor<?> constructor = Stream.of(toCreate.getDeclaredConstructors())
+        .peek(c -> c.setAccessible(true))
+        .sorted((l, r) -> r.getParameterCount() - l.getParameterCount())
+        .filter(c ->
+                    Stream.of(c.getParameters())
+                        .map(p -> args.stream()
+                            .anyMatch(arg -> p.getType().isAssignableFrom(arg.getClass())))
+                        .reduce(Boolean::logicalAnd)
+                        .orElse(true))
+        .findFirst()
+        .orElseThrow(() -> new IllegalArgumentException("Cannot find constructor to populate"));
+
+    List<Object> parameters = Stream.of(constructor.getParameters())
+        .map(p -> args.stream()
+            .filter(arg -> p.getType().isAssignableFrom(arg.getClass()))
+            .findFirst()
+            .orElseThrow(() -> new IllegalArgumentException(
+                "Cannot find match for " + p + " in " + toCreate)))
+        .collect(Collectors.toList());
+
+    try {
+      Object[] objects = parameters.toArray();
+      return (T) constructor.newInstance(objects);
+    } catch (ReflectiveOperationException e) {
+      throw new IllegalArgumentException("Cannot invoke constructor", e);
     }
   }
 }

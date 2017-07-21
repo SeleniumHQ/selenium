@@ -81,6 +81,7 @@ java_library(
     'SessionCodec.java',
     'SessionFactory.java',
     'TeeReader.java',
+    'UrlTemplate.java',
     'WebDriverServlet.java',
   ],
   provided_deps = [
