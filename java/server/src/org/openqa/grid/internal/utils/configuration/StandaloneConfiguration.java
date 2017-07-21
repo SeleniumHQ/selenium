@@ -207,7 +207,8 @@ public class StandaloneConfiguration {
   @Expose
   @Parameter(
       names = "-enablePassThrough",
-      description = "<Boolean>: Whether or not to use the experimental passthrough mode. Defaults to false."
+      arity = 1,
+      description = "<Boolean>: Whether or not to use the experimental passthrough mode. Defaults to true."
   )
   public boolean enablePassThrough = true;
 
