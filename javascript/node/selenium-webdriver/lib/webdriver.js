@@ -750,20 +750,12 @@ class WebDriver {
    *     commands should execute under, including the initial session creation.
    *     Defaults to the {@link promise.controlFlow() currently active}
    *     control flow.
-   * @param {(function(new: WebDriver,
-   *                   !IThenable<!Session>,
-   *                   !command.Executor,
-   *                   promise.ControlFlow=))=} opt_ctor
-   *    A reference to the constructor of the specific type of WebDriver client
-   *    to instantiate. Will create a vanilla {@linkplain WebDriver} instance
-   *    if a constructor is not provided.
    * @param {(function(this: void): ?)=} opt_onQuit A callback to invoke when
    *    the newly created session is terminated. This should be used to clean
    *    up any resources associated with the session.
    * @return {!WebDriver} The driver for the newly created session.
    */
-  static createSession(
-        executor, capabilities, opt_flow, opt_ctor, opt_onQuit) {
+  static createSession(executor, capabilities, opt_flow, opt_onQuit) {
     let flow = opt_flow || promise.controlFlow();
     let cmd = new command.Command(command.Name.NEW_SESSION);
 
@@ -782,8 +774,7 @@ class WebDriver {
         return Promise.resolve(opt_onQuit.call(void 0)).then(_ => {throw err;});
       });
     }
-    const ctor = opt_ctor || WebDriver;
-    return new ctor(session, executor, flow, opt_onQuit);
+    return new this(session, executor, flow, opt_onQuit);
   }
 
   /** @override */

@@ -568,8 +568,8 @@ class Driver extends webdriver.WebDriver {
     }
 
     let spec = createGeckoDriver(opt_executor, caps, profile, binary);
-    return /** @type {!Driver} */(webdriver.WebDriver.createSession(
-        spec.executor, spec.capabilities, opt_flow, this, spec.onQuit));
+    return /** @type {!Driver} */(super.createSession(
+        spec.executor, spec.capabilities, opt_flow, spec.onQuit));
   }
 
   /**

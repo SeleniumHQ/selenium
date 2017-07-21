@@ -250,8 +250,8 @@ class Driver extends webdriver.WebDriver {
     let executor = new http.Executor(
         service.start().then(url => new http.HttpClient(url)));
 
-    return /** @type {!Driver} */(webdriver.WebDriver.createSession(
-        executor, caps, opt_flow, this, () => service.kill()));
+    return /** @type {!Driver} */(super.createSession(
+        executor, caps, opt_flow, () => service.kill()));
   }
 }
 

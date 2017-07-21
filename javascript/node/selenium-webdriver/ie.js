@@ -420,8 +420,8 @@ class Driver extends webdriver.WebDriver {
     var client = service.start().then(url => new http.HttpClient(url));
     var executor = new http.Executor(client);
 
-    return /** @type {!Driver} */(webdriver.WebDriver.createSession(
-        executor, caps, opt_flow, this, () => service.kill()));
+    return /** @type {!Driver} */(super.createSession(
+        executor, caps, opt_flow, () => service.kill()));
   }
 
   /**
