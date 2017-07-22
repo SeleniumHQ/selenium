@@ -183,6 +183,40 @@ rule /\/\/.*:zip/ => [ proc {|task_name| task_name[0..-5]} ] do |task|
   short = task.name[0..-5]
 
   task.enhance do
+    dir, target = short[2..-1].split(':', 2)
+    working_dir = "buck-out/crazy-fun/#{dir}/#{target}_zip"
+
+    # Build the source zip
+    Buck::buck_cmd.call('query', ["kind(java_library, deps(#{short}))"]) do |output|
+      # Collect all the targets
+      to_build = []
+      output.lines do |line|
+        line.chomp!
+        to_build.push(line + "#src")
+      end
+
+      src_dir = "buck-out/crazy-fun/#{dir}/#{target}_src_zip"
+      src_out = "#{working_dir}/#{target}-#{version}-nodeps-sources.zip"
+      mkdir_p File.dirname(src_out)
+      rm_f src_out
+      rm_rf src_dir
+
+      mkdir_p src_dir
+      mkdir_p "#{working_dir}/lib"
+      mkdir_p "#{working_dir}/uber"
+
+      Buck::buck_cmd.call('build', ['--show-output'] + to_build) do |built|
+        built.lines do |line|
+          line.chomp!
+          line.split[1].each do |file|
+            next unless File.exists? file
+            sh "cd #{src_dir} && jar xf #{File.expand_path(file)}"
+          end
+        end
+      end
+      sh "cd #{src_dir} && jar cMf #{File.expand_path(src_out)} *"
+    end
+
     # Figure out if this is an executable or a test target.
     Buck::buck_cmd.call('audit', ['classpath', short]) do |output|
       third_party = []
@@ -199,13 +233,6 @@ rule /\/\/.*:zip/ => [ proc {|task_name| task_name[0..-5]} ] do |task|
         end
       end
 
-      dir, target = short[2..-1].split(':', 2)
-      working_dir = "buck-out/crazy-fun/#{dir}/#{target}_zip"
-      out = "buck-out/crazy-fun/#{dir}/#{target}.zip"
-      rm_rf working_dir
-      mkdir_p "#{working_dir}/lib"
-      mkdir_p "#{working_dir}/uber"
-
       first_party.each do |jar|
         sh "cd #{working_dir}/uber && jar xf #{jar}"
       end
@@ -214,8 +241,9 @@ rule /\/\/.*:zip/ => [ proc {|task_name| task_name[0..-5]} ] do |task|
       version = File.open('SELENIUM_VERSION', &:gets).chomp
       version = eval(version)
 
+      out = "buck-out/crazy-fun/#{dir}/#{target}.zip"
+
       sh "cd #{working_dir}/uber && jar cMf ../#{target}-#{version}-nodeps.jar *"
-      # TODO: Get the sources of all deps too and build the -src.jar
       rm_rf "#{working_dir}/uber"
 
       third_party.each do |jar|
