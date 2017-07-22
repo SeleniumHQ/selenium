@@ -4,5 +4,5 @@
   "debug": false,
   "browserTimeout": 0,
   "timeout": 1800,
-  "enablePassThrough": false
+  "enablePassThrough": true
 }
