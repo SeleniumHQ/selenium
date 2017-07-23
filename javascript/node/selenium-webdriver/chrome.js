@@ -114,19 +114,19 @@
 
 'use strict';
 
-const fs = require('fs'),
-    util = require('util');
+const fs = require('fs');
+const util = require('util');
 
-const http = require('./http'),
-    io = require('./io'),
-    {Capabilities, Capability} = require('./lib/capabilities'),
-    command = require('./lib/command'),
-    logging = require('./lib/logging'),
-    promise = require('./lib/promise'),
-    Symbols = require('./lib/symbols'),
-    webdriver = require('./lib/webdriver'),
-    portprober = require('./net/portprober'),
-    remote = require('./remote');
+const http = require('./http');
+const io = require('./io');
+const {Capabilities, Capability} = require('./lib/capabilities');
+const command = require('./lib/command');
+const logging = require('./lib/logging');
+const promise = require('./lib/promise');
+const Symbols = require('./lib/symbols');
+const webdriver = require('./lib/webdriver');
+const portprober = require('./net/portprober');
+const remote = require('./remote');
 
 
 /**
@@ -293,11 +293,7 @@ function getDefaultService() {
 }
 
 
-/**
- * @type {string}
- * @const
- */
-let OPTIONS_CAPABILITY_KEY = 'chromeOptions';
+const OPTIONS_CAPABILITY_KEY = 'chromeOptions';
 
 
 /**
@@ -362,14 +358,14 @@ class Options {
    * browser.  Each argument may be specified with or without the "--" prefix
    * (e.g. "--foo" and "foo"). Arguments with an associated value should be
    * delimited by an "=": "foo=bar".
-   * @param {...(string|!Array<string>)} var_args The arguments to add.
+   *
+   * @param {...(string|!Array<string>)} args The arguments to add.
    * @return {!Options} A self reference.
    */
-  addArguments(var_args) {
-    let args = this.options_.args || [];
-    args = args.concat.apply(args, arguments);
-    if (args.length) {
-      this.options_.args = args;
+  addArguments(...args) {
+    let newArgs = (this.options_.args || []).concat(...args);
+    if (newArgs.length) {
+      this.options_.args = newArgs;
     }
     return this;
   }
@@ -378,12 +374,11 @@ class Options {
    * List of Chrome command line switches to exclude that ChromeDriver by default
    * passes when starting Chrome.  Do not prefix switches with "--".
    *
-   * @param {...(string|!Array<string>)} var_args The switches to exclude.
+   * @param {...(string|!Array<string>)} args The switches to exclude.
    * @return {!Options} A self reference.
    */
-  excludeSwitches(var_args) {
-    let switches = this.options_.excludeSwitches || [];
-    switches = switches.concat.apply(switches, arguments);
+  excludeSwitches(...args) {
+    let switches = (this.options_.excludeSwitches || []).concat(...args);
     if (switches.length) {
       this.options_.excludeSwitches = switches;
     }
@@ -394,13 +389,12 @@ class Options {
    * Add additional extensions to install when launching Chrome. Each extension
    * should be specified as the path to the packed CRX file, or a Buffer for an
    * extension.
-   * @param {...(string|!Buffer|!Array<(string|!Buffer)>)} var_args The
+   * @param {...(string|!Buffer|!Array<(string|!Buffer)>)} args The
    *     extensions to add.
    * @return {!Options} A self reference.
    */
-  addExtensions(var_args) {
-    this.extensions_ =
-        this.extensions_.concat.apply(this.extensions_, arguments);
+  addExtensions(...args) {
+    this.extensions_ = this.extensions_.concat(...args);
     return this;
   }
 
