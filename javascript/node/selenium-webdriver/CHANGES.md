@@ -14,6 +14,10 @@ to a remote Selenium server that supports Firefox 45.
 * `firefox.Options` will no longer discard the `"moz:firefoxOptions"` set in
   user provided capabilities (via `Builder.withCapabilities({})`). When both
   are used, the settings in `firefox.Options` will be applied _last_.
+* Added `chrome.Options#headless()` and `chrome.Options#windowSize()`, which
+  may be used to start Chrome in headless mode (requires Chrome 59+) and to set
+  the initial window size, respectively.
+
 
 ### Changes for W3C WebDriver Spec Compliance
 

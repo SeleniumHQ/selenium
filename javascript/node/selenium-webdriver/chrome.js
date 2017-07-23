@@ -36,6 +36,20 @@
  *     a unique browser session with a clean user profile (unless otherwise
  *     configured through the {@link Options} class).
  *
+ * __Headless Chrome__ <a id="headless"></a>
+ *
+ * To start Chrome in headless mode, simply call
+ * {@linkplain Options#headless Options.headless()}. Note, starting in headless
+ * mode currently also disables GPU acceleration.
+ *
+ *     let chrome = require('selenium-webdriver/chrome');
+ *     let {Builder} = require('selenium-webdriver');
+ *
+ *     let driver = new Builder()
+ *         .forBrowser('chrome')
+ *         .setChromeOptions(new chrome.Options().headless())
+ *         .build();
+ *
  * __Customizing the ChromeDriver Server__ <a id="custom-server"></a>
  *
  * By default, every Chrome session will use a single driver service, which is
@@ -368,6 +382,40 @@ class Options {
       this.options_.args = newArgs;
     }
     return this;
+  }
+
+  /**
+   * Configures the chromedriver to start Chrome in headless mode.
+   *
+   * > __NOTE:__ Resizing the browser window in headless mode is only supported
+   * > in Chrome 60. Users are encouraged to set an initial window size with
+   * > the {@link #windowSize windowSize({width, height})} option.
+   *
+   * @return {!Options} A self reference.
+   */
+  headless() {
+    // TODO(jleyba): Remove `disable-gpu` once head Chrome no longer requires
+    // that to be set.
+    return this.addArguments('headless', 'disable-gpu');
+  }
+
+  /**
+   * Sets the initial window size.
+   *
+   * @param {{width: number, height: number}} size The desired window size.
+   * @return {!Options} A self reference.
+   * @throws {TypeError} if width or height is unspecified, not a number, or
+   *     less than or equal to 0.
+   */
+  windowSize({width, height}) {
+    function checkArg(arg) {
+      if (typeof arg !== 'number' || arg <= 0) {
+        throw TypeError('Arguments must be {width, height} with numbers > 0');
+      }
+    }
+    checkArg(width);
+    checkArg(height);
+    return this.addArguments(`window-size=${width},${height}`);
   }
 
   /**
