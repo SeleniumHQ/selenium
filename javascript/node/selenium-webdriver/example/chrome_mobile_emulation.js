@@ -31,7 +31,7 @@ promise.consume(function* () {
     driver = yield new Builder()
         .forBrowser('chrome')
         .setChromeOptions(
-            new Options().setMobileEmulation({deviceName: 'Google Nexus 5'}))
+            new Options().setMobileEmulation({deviceName: 'Nexus 5X'}))
         .build();
     yield driver.get('http://www.google.com/ncr');
     yield driver.findElement(By.name('q')).sendKeys('webdriver');
