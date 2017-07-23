@@ -21,6 +21,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Net;
+using System.Security;
 using System.Security.Permissions;
 using OpenQA.Selenium.Internal;
 using OpenQA.Selenium.Remote;
@@ -37,6 +38,12 @@ namespace OpenQA.Selenium
         private int driverServicePort;
         private bool silent;
         private bool hideCommandPromptWindow;
+
+        private string startupDomain;
+        private string startupUserName;
+        private SecureString startupPassword;
+        private bool startupLoadUserProfile;
+
         private Process driverServiceProcess;
 
         /// <summary>
@@ -114,6 +121,42 @@ namespace OpenQA.Selenium
         {
             get { return this.hideCommandPromptWindow; }
             set { this.hideCommandPromptWindow = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets a value of "run as" user. The web driver process will be launched as using given user name.
+        /// </summary>
+        public string StartupUserName
+        {
+            get { return this.startupUserName; }
+            set { this.startupUserName = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets a value of "run as" domain. The web driver process will be launched as using given domain.
+        /// </summary>
+        public string StartupDomain
+        {
+            get { return this.startupDomain; }
+            set { this.startupDomain = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets a value of "run as" user password. The web driver process will be launched as given password.
+        /// </summary>
+        public SecureString StartupPassword
+        {
+            get { return this.startupPassword; }
+            set { this.startupPassword = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets a value of "run as" user password. The web driver process will be launched as given password.
+        /// </summary>
+        public bool StartupLoadUserProfile
+        {
+            get { return this.startupLoadUserProfile; }
+            set { this.startupLoadUserProfile = value; }
         }
 
         /// <summary>
@@ -225,6 +268,10 @@ namespace OpenQA.Selenium
             this.driverServiceProcess.StartInfo.Arguments = this.CommandLineArguments;
             this.driverServiceProcess.StartInfo.UseShellExecute = false;
             this.driverServiceProcess.StartInfo.CreateNoWindow = this.hideCommandPromptWindow;
+            this.driverServiceProcess.StartInfo.UserName = this.startupUserName;
+            this.driverServiceProcess.StartInfo.Domain = this.startupDomain;
+            this.driverServiceProcess.StartInfo.Password = this.startupPassword;
+            this.driverServiceProcess.StartInfo.LoadUserProfile = this.startupLoadUserProfile;
             this.driverServiceProcess.Start();
             bool serviceAvailable = this.WaitForServiceInitialization();
 
