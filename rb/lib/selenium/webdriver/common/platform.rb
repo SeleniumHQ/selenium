@@ -160,6 +160,8 @@ module Selenium
 
       def find_in_program_files(*binary_names)
         paths = [
+          #In case of windows(7 & 10) 64 bit,  ENV['PROGRAMFILES'] gives "C:\\Program Files (x86)" instead of C:\\Program Files 
+          ENV['ProgramW6432'] || '\\Program Files',
           ENV['PROGRAMFILES'] || '\\Program Files',
           ENV['ProgramFiles(x86)'] || '\\Program Files (x86)'
         ]
