@@ -122,7 +122,6 @@ public class GeckoDriverService extends DriverService {
     protected ImmutableList<String> createArgs() {
       ImmutableList.Builder<String> argsBuilder = ImmutableList.builder();
       argsBuilder.add(String.format("--port=%d", getPort()));
-      argsBuilder.add("-vv");
       if (firefoxBinary != null) {
         argsBuilder.add("-b");
         argsBuilder.add(firefoxBinary.getPath());
