@@ -142,7 +142,7 @@ module Selenium
 
             #
             # Creates W3C compliant capabilities from OSS ones.
-            # @param [Hash, Remote::Capabilities]
+            # @param oss_capabilities [Hash, Remote::Capabilities]
             #
 
             def from_oss(oss_capabilities)
