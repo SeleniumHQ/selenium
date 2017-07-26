@@ -28,5 +28,5 @@ HTML of the application.'
   s.add_development_dependency 'rspec', ['~> 3.0']
   s.add_development_dependency 'rack', ['~> 1.0']
   s.add_development_dependency 'webmock', ['~> 2.0']
-  s.add_development_dependency 'yard', ['~> 0.8.7']
+  s.add_development_dependency 'yard', ['~> 0.9.9']
 end
