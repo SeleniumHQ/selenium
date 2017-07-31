@@ -31,7 +31,7 @@ module Selenium
         include DriverExtensions::TakesScreenshot
 
         def initialize(opts = {})
-          opts[:desired_capabilities] ||= Remote::Capabilities.internet_explorer
+          opts[:desired_capabilities] = create_capabilities(opts)
 
           unless opts.key?(:url)
             driver_path = opts.delete(:driver_path) || IE.driver_path
@@ -54,11 +54,6 @@ module Selenium
             opts[:url] = @service.uri
           end
 
-          if opts.delete(:introduce_flakiness_by_ignoring_security_domains)
-            opts[:desired_capabilities][:ignore_protected_mode_settings] = true
-          end
-          opts[:desired_capabilities][:native_events] = opts.delete(:native_events) != false
-
           listener = opts.delete(:listener)
           @bridge = Remote::Bridge.handshake(opts)
           super(@bridge, listener: listener)
@@ -72,6 +67,34 @@ module Selenium
           super
         ensure
           @service.stop if @service
+        end
+
+        private
+
+        def create_capabilities(opts)
+          caps = opts.delete(:desired_capabilities) { Remote::Capabilities.internet_explorer }
+          options = opts.delete(:options) { Options.new }
+
+          if opts.delete(:introduce_flakiness_by_ignoring_security_domains)
+            WebDriver.logger.deprecate ':introduce_flakiness_by_ignoring_security_domains',
+                                       'Selenium::WebDriver::IE::Options#ignore_protected_mode_settings='
+            options.ignore_protected_mode_settings = true
+          end
+
+          native_events = opts.delete(:native_events)
+          unless native_events.nil?
+            WebDriver.logger.deprecate ':native_events', 'Selenium::WebDriver::IE::Options#native_events='
+            options.native_events = native_events
+          end
+
+          # Backward compatibility with older IEDriverServer versions
+          caps[:ignore_protected_mode_settings] = options.ignore_protected_mode_settings
+          caps[:native_events] = options.native_events
+
+          options = options.as_json
+          caps.merge!(options) unless options.empty?
+
+          caps
         end
 
       end # Driver

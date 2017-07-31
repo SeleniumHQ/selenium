@@ -133,7 +133,7 @@ module Selenium
 
           {KEY => opts}
         end
-      end # Profile
+      end # Options
     end # Firefox
   end # WebDriver
 end # Selenium
