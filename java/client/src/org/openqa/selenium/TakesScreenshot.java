@@ -51,6 +51,8 @@ public interface TakesScreenshot {
    * @param target target type, @see OutputType
    * @return Object in which is stored information about the screenshot.
    * @throws WebDriverException on failure.
+   * @throws UnsupportedOperationException if the underlying implementation does not support
+   * screenshot capturing.
    */
   <X> X getScreenshotAs(OutputType<X> target) throws WebDriverException;
 }
