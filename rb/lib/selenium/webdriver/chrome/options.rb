@@ -81,7 +81,7 @@ module Selenium
         end
 
         #
-        # Add a command-line argument to use when starting Chrome
+        # Add a command-line argument to use when starting Chrome.
         #
         # @example Start Chrome maximized
         #   options = Selenium::WebDriver::Chrome::Options.new
@@ -164,7 +164,7 @@ module Selenium
           opts[:prefs] = @prefs unless @prefs.empty?
           opts
         end
-      end # Profile
+      end # Options
     end # Chrome
   end # WebDriver
 end # Selenium
