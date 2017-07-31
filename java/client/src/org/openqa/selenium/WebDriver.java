@@ -28,7 +28,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * The main interface to use for testing, which represents an idealised web browser. The methods in
- * this class fall into three categories:
+ * this interface fall into three categories:
  * <ul>
  * <li>Control of the browser itself</li>
  * <li>Selection of {@link WebElement}s</li>
@@ -39,8 +39,8 @@ import java.util.concurrent.TimeUnit;
  * various methods similar to {@link WebDriver#findElement(By)}, which is used to find
  * {@link WebElement}s.
  * <p>
- * Currently, you will need to instantiate implementations of this class directly. It is hoped that
- * you write your tests against this interface so that you may "swap in" a more fully featured
+ * Currently, you will need to instantiate implementations of this interface directly. It is hoped
+ * that you write your tests against this interface so that you may "swap in" a more fully featured
  * browser when there is a requirement for one.
  * <p>
  * Note that all methods that use XPath to locate elements will throw a {@link RuntimeException}
