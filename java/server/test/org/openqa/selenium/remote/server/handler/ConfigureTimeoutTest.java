@@ -19,13 +19,14 @@ package org.openqa.selenium.remote.server.handler;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.io.Files;
 
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -43,7 +44,7 @@ import org.openqa.selenium.remote.server.Session;
 
 import java.io.File;
 import java.util.Map;
-import java.util.function.BiFunction;
+import java.util.concurrent.TimeUnit;
 
 @RunWith(JUnit4.class)
 public class ConfigureTimeoutTest {
@@ -51,15 +52,17 @@ public class ConfigureTimeoutTest {
   @Rule
   public ExpectedException expectedEx = ExpectedException.none();
 
-  private DriverFactory driverFactory;
+  private WebDriver.Timeouts timeouts;
   private TemporaryFilesystem tempFs;
   private File tempDir;
-  private DesiredCapabilities caps;
+  private Session session;
+
+  private String[] timeoutTypes = new String[]{"implicit", "page load", "script"};
 
   @Before
-  public void setUp() {
-    driverFactory = mock(DriverFactory.class);
-    WebDriver.Timeouts timeouts = mock(WebDriver.Timeouts.class);
+  public void setUp() throws Exception {
+    DriverFactory driverFactory = mock(DriverFactory.class);
+    timeouts = mock(WebDriver.Timeouts.class);
     WebDriver.Options options = mock(WebDriver.Options.class);
     WebDriver driver = mock(WebDriver.class);
     when(driverFactory.newInstance(any(Capabilities.class))).thenReturn(driver);
@@ -67,7 +70,8 @@ public class ConfigureTimeoutTest {
     when(driver.manage().timeouts()).thenReturn(timeouts);
     tempDir = Files.createTempDir();
     tempFs = TemporaryFilesystem.getTmpFsBasedOn(tempDir);
-    caps = DesiredCapabilities.firefox();
+    DesiredCapabilities caps = DesiredCapabilities.firefox();
+    session = DefaultSession.createSession(driverFactory, tempFs, caps);
   }
 
   @After
@@ -77,65 +81,73 @@ public class ConfigureTimeoutTest {
   }
 
   @Test
-  public void shouldAcceptW3cCompliantPayLoadForTimeouts() throws Exception {
-    runAssertions(ImmutableMap::of, 100);
+  public void shouldAcceptW3CCompliantPayLoadForTimeouts() throws Exception {
+    for (String timeoutType : timeoutTypes) {
+      runW3CAssertion(ImmutableMap.of(timeoutType, 100));
+    }
+    verify(timeouts).implicitlyWait(100, TimeUnit.MILLISECONDS);
+    verify(timeouts).pageLoadTimeout(100, TimeUnit.MILLISECONDS);
+    verify(timeouts).setScriptTimeout(100, TimeUnit.MILLISECONDS);
+    verifyNoMoreInteractions(timeouts);
+  }
+
+  @Test
+  public void shouldAcceptW3CCompliantPayLoadWithMultipleTimeouts() throws Exception {
+    runW3CAssertion(ImmutableMap.of("implicit", 100, "page load", 100, "script", 100));
+    verify(timeouts).implicitlyWait(100, TimeUnit.MILLISECONDS);
+    verify(timeouts).pageLoadTimeout(100, TimeUnit.MILLISECONDS);
+    verify(timeouts).setScriptTimeout(100, TimeUnit.MILLISECONDS);
+    verifyNoMoreInteractions(timeouts);
   }
 
   @Test
   public void shouldAcceptJsonWireProtocolCompliantPayLoadForTimeouts() throws Exception {
-    runAssertions((type, timeout) -> ImmutableMap.of("type", type, "ms", timeout), 200);
+    for (String timeoutType : timeoutTypes) {
+      runOSSAssertion(timeoutType, 100);
+    }
+    verify(timeouts).implicitlyWait(100, TimeUnit.MILLISECONDS);
+    verify(timeouts).pageLoadTimeout(100, TimeUnit.MILLISECONDS);
+    verify(timeouts).setScriptTimeout(100, TimeUnit.MILLISECONDS);
+    verifyNoMoreInteractions(timeouts);
   }
 
   @Test
   public void shouldThrowExceptionWhenIncorrectTimeoutTypeSpecifiedForJsonSpec() throws Exception {
     expectedEx.expect(WebDriverException.class);
     expectedEx.expectMessage("Unknown wait type: unknown");
-    runAssertion((type, timeout) -> ImmutableMap.of("type", type, "ms", timeout), "unknown");
+    runOSSAssertion("unknown", 100);
   }
 
   @Test
   public void shouldThrowExceptionWhenIncorrectTimeoutTypeSpecifiedForW3CSpec() throws Exception {
     expectedEx.expect(WebDriverException.class);
     expectedEx.expectMessage("Unknown wait type");
-    runAssertion(ImmutableMap::of, "unknown");
+    runW3CAssertion(ImmutableMap.of("unknown", 100));
   }
 
   @Test
   public void shouldThrowExceptionWhenInvalidTimeoutValueSpecifiedForJsonSpec() throws Exception {
     expectedEx.expect(WebDriverException.class);
     expectedEx.expectMessage("Illegal (non-numeric) timeout value passed: timeout");
-    runAssertion((type, timeout) -> ImmutableMap.of("type", type, "ms", "timeout"), "implicit");
+    runOSSAssertion("implicit", "timeout");
   }
 
   @Test
   public void shouldThrowExceptionWhenInvalidTimeoutValueSpecifiedForW3CSpec() throws Exception {
     expectedEx.expect(WebDriverException.class);
     expectedEx.expectMessage("Illegal (non-numeric) timeout value passed: timeout");
-    runAssertion((type, timeout)-> ImmutableMap.of(type, "timeout"), "implicit");
+    runW3CAssertion(ImmutableMap.of("implicit", "timeout"));
   }
 
-  private void runAssertions(BiFunction<String, Integer, Map<String, Object>> map, int timeout)
-      throws Exception {
-    String[] timeoutTypes = new String[]{"implicit", "page load", "script"};
-    Session session = DefaultSession.createSession(driverFactory, tempFs, caps);
-    for (String timeoutType : timeoutTypes) {
-      runAssertion(session, map, timeoutType, timeout);
-    }
-  }
-
-  private void runAssertion(BiFunction<String, Integer, Map<String, Object>> map,
-                            String timeoutType) throws Exception {
-    Session session = DefaultSession.createSession(driverFactory, tempFs, caps);
-    runAssertion(session, map, timeoutType, 100);
-  }
-
-  private void runAssertion(Session session, BiFunction<String, Integer, Map<String, Object>> map,
-                            String timeoutType, int timeout) throws Exception {
+  private void runW3CAssertion(Map<String, Object> args) throws Exception {
     ConfigureTimeout configureTimeout = new ConfigureTimeout(session);
-    Map<String, Object> args = map.apply(timeoutType, timeout);
     configureTimeout.setJsonParameters(args);
     configureTimeout.call();
-    String expected = String.format("[%s wait: %d]", timeoutType, timeout);
-    Assert.assertEquals(expected, configureTimeout.toString());
+  }
+
+  private void runOSSAssertion(String type, Object timeout) throws Exception {
+    ConfigureTimeout configureTimeout = new ConfigureTimeout(session);
+    configureTimeout.setJsonParameters(ImmutableMap.of("type", type, "ms", timeout));
+    configureTimeout.call();
   }
 }
