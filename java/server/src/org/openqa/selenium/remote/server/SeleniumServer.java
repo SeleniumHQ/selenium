@@ -26,12 +26,15 @@ import org.openqa.grid.web.servlet.beta.ConsoleServlet;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.server.handler.DeleteSession;
+import org.seleniumhq.jetty9.security.ConstraintMapping;
+import org.seleniumhq.jetty9.security.ConstraintSecurityHandler;
 import org.seleniumhq.jetty9.server.Connector;
 import org.seleniumhq.jetty9.server.HttpConfiguration;
 import org.seleniumhq.jetty9.server.HttpConnectionFactory;
 import org.seleniumhq.jetty9.server.Server;
 import org.seleniumhq.jetty9.server.ServerConnector;
 import org.seleniumhq.jetty9.servlet.ServletContextHandler;
+import org.seleniumhq.jetty9.util.security.Constraint;
 import org.seleniumhq.jetty9.util.thread.QueuedThreadPool;
 
 import java.util.Map;
@@ -113,7 +116,7 @@ public class SeleniumServer implements GridNodeServer {
       server = new Server();
     }
 
-    ServletContextHandler handler = new ServletContextHandler();
+    ServletContextHandler handler = new ServletContextHandler(ServletContextHandler.SECURITY);
 
     if (configuration.browserTimeout != null && configuration.browserTimeout >= 0) {
       handler.setInitParameter(DriverServlet.BROWSER_TIMEOUT_PARAMETER,
@@ -146,6 +149,18 @@ public class SeleniumServer implements GridNodeServer {
 
     addRcSupport(handler);
     addExtraServlets(handler);
+
+    Constraint constraint = new Constraint();
+    constraint.setName("Disable TRACE");
+    constraint.setAuthenticate(true);
+
+    ConstraintMapping mapping = new ConstraintMapping();
+    mapping.setConstraint(constraint);
+    mapping.setMethod("TRACE");
+    mapping.setPathSpec("/");
+
+    ConstraintSecurityHandler securityHandler = (ConstraintSecurityHandler) handler.getSecurityHandler();
+    securityHandler.addConstraintMapping(mapping);
 
     server.setHandler(handler);
 
