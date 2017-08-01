@@ -104,8 +104,9 @@ public class NewSessionPayloadTest {
         "capabilities", ImmutableMap.of(
             "alwaysMatch", ImmutableMap.of("browserName", "peas"))));
 
-    assertEquals(capabilities.toString(), 1, capabilities.size());
-    assertEquals("peas", capabilities.get(0).getBrowserName());
+    // We expect a synthetic w3c capability for the mismatching OSS capabilities
+    assertEquals(capabilities.toString(), 2, capabilities.size());
+    assertEquals("peas", capabilities.get(1).getBrowserName());
   }
 
   @Test

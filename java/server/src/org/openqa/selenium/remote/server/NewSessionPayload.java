@@ -4,6 +4,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.StandardOpenOption.CREATE;
 import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -38,6 +39,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -105,24 +107,118 @@ public class NewSessionPayload implements Closeable {
 
     String json = new BeanToJsonConverter().convert(source);
 
+    Sources sources;
     long size = json.length() * 2;  // Each character takes two bytes
     if (size > THRESHOLD || Runtime.getRuntime().freeMemory() < size) {
       this.root = Files.createTempDirectory("new-session");
-      this.sources = diskBackedSource(new StringReader(json));
+      sources = diskBackedSource(new StringReader(json));
     } else {
       this.root = null;
-      this.sources = memoryBackedSource(source);
+      sources = memoryBackedSource(source);
     }
+
+    validate(sources);
+    this.sources = rewrite(sources);
   }
 
   public NewSessionPayload(long size, Reader source) throws IOException {
+    Sources sources;
     if (size > THRESHOLD || Runtime.getRuntime().freeMemory() < size) {
       this.root = Files.createTempDirectory("new-session");
-      this.sources = diskBackedSource(source);
+      sources = diskBackedSource(source);
     } else {
       this.root = null;
-      this.sources = memoryBackedSource(GSON.fromJson(source, MAP_TYPE));
+      sources = memoryBackedSource(GSON.fromJson(source, MAP_TYPE));
     }
+
+    validate(sources);
+    this.sources = rewrite(sources);
+  }
+
+  private void validate(Sources sources) {
+    if (!sources.getDialects().contains(Dialect.W3C)) {
+      return;  // Nothing to do
+    }
+
+    // Ensure that the W3C payload looks okay
+    Map<String, Object> alwaysMatch = sources.getAlwaysMatch().get();
+    validateSpecCompliance(alwaysMatch);
+
+    Set<String> duplicateKeys = sources.getFirstMatch().stream()
+        .map(Supplier::get)
+        .peek(this::validateSpecCompliance)
+        .map(fragment -> Sets.intersection(alwaysMatch.keySet(), fragment.keySet()))
+        .flatMap(Collection::stream)
+        .collect(ImmutableSortedSet.toImmutableSortedSet(Ordering.natural()));
+
+    if (!duplicateKeys.isEmpty()) {
+      throw new IllegalArgumentException(
+          "W3C payload contained keys duplicated between the firstMatch and alwaysMatch items: " +
+          duplicateKeys);
+    }
+  }
+
+  private void validateSpecCompliance(Map<String, Object> fragment) {
+    ImmutableList<String> badKeys = fragment.keySet().stream()
+        .filter(ACCEPTED_W3C_PATTERNS.negate())
+        .collect(ImmutableList.toImmutableList());
+
+    if (!badKeys.isEmpty()) {
+      throw new IllegalArgumentException(
+          "W3C payload contained keys that do not comply with the spec: " + badKeys);
+    }
+  }
+
+  /**
+   * If the local end sent a request with a JSON Wire Protocol payload that does not have a matching
+   * W3C payload, then we need to synthesize one that matches.
+   */
+  private Sources rewrite(Sources sources) {
+    if (!sources.getDialects().contains(Dialect.OSS)) {
+      // Yay! Nothing to do!
+      return sources;
+    }
+
+    if (!sources.getDialects().contains(Dialect.W3C)) {
+      // Yay! Also nothing to do. I mean, we have an empty payload, but that's cool.
+      return sources;
+    }
+
+    Map<String, Object> ossPayload = sources.getOss().get().entrySet().stream()
+        .filter(e -> !("platform".equals(e.getKey()) && "ANY".equals(e.getValue())))
+        .filter(e -> !("version".equals(e.getKey()) && "".equals(e.getValue())))
+        .collect(ImmutableMap.toImmutableMap(Map.Entry::getKey, Map.Entry::getValue));
+    Map<String, Object> always = sources.getAlwaysMatch().get();
+    Optional<ImmutableMap<String, Object>> w3cMatch = sources.getFirstMatch().stream()
+        .map(Supplier::get)
+        .map(m -> ImmutableMap.<String, Object>builder().putAll(always).putAll(m).build())
+        .filter(m -> m.equals(ossPayload))
+        .findAny();
+    if (w3cMatch.isPresent()) {
+      // There's a w3c capability that matches the oss one. Nothing to do.
+      LOG.fine("Found a w3c capability that matches the oss one.");
+      return sources;
+    }
+
+    LOG.info( "Mismatched capabilities. Creating a synthetic w3c capability.");
+
+    ImmutableList.Builder<Supplier<Map<String, Object>>> newFirstMatches = ImmutableList.builder();
+    newFirstMatches.add(sources.getOss());
+    sources.getFirstMatch()
+        .forEach(m -> newFirstMatches.add(() -> {
+          ImmutableMap.Builder<String, Object> builder = ImmutableMap.builder();
+          builder.putAll(sources.getAlwaysMatch().get());
+          builder.putAll(m.get());
+          return builder.build();
+        }));
+
+    return new Sources(
+        sources.getOriginalPayload(),
+        sources.getPayloadSize(),
+        sources.getOss(),
+        ImmutableMap::of,
+        newFirstMatches.build(),
+        sources.getDialects());
   }
 
   private Sources memoryBackedSource(Map<String, ?> source) {
@@ -222,6 +318,7 @@ public class NewSessionPayload implements Closeable {
           case "desiredCapabilities":
             Path ossCaps = write("oss.json", json);
             oss = () -> read(ossCaps);
+            dialects.add(Dialect.OSS);
             break;
 
           default:
@@ -291,20 +388,7 @@ public class NewSessionPayload implements Closeable {
       Map<String, Object> always = sources.getAlwaysMatch().get();
       mapStream = sources.getFirstMatch().stream()
         .map(Supplier::get)
-        .peek(m -> {
-          Set<String> intersection = Sets.intersection(always.keySet(), m.keySet());
-          if (!intersection.isEmpty()) {
-            throw new IllegalArgumentException("Duplicate w3c capability keys: " + intersection);
-          }
-        })
-        .map(m -> ImmutableMap.<String, Object>builder().putAll(always).putAll(m).build())
-        .peek(m -> {
-          Set<String> illegalKeys = m.keySet().stream().filter(ACCEPTED_W3C_PATTERNS.negate())
-                  .collect(ImmutableSortedSet.toImmutableSortedSet( Ordering.natural()));
-          if (!illegalKeys.isEmpty()) {
-           throw new IllegalArgumentException("Illegal w3c capability keys: " + illegalKeys);
-          }
-        });
+        .map(m -> ImmutableMap.<String, Object>builder().putAll(always).putAll(m).build());
     } else if (getDownstreamDialects().contains(Dialect.OSS)) {
       mapStream = Stream.of(sources.getOss().get());
     } else {
