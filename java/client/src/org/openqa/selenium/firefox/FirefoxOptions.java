@@ -31,9 +31,7 @@ import static org.openqa.selenium.remote.CapabilityType.VERSION;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
+import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -589,13 +587,13 @@ public class FirefoxOptions {
     return capabilities.merge(toCapabilities());
   }
 
-  public JsonObject toJson() throws IOException {
-    JsonObject options = new JsonObject();
+  public Map<String, Object> toJson() throws IOException {
+    ImmutableMap.Builder<String, Object> options = ImmutableMap.builder();
 
     if (actualBinary != null) {
-      options.addProperty("binary", actualBinary.getPath());
+      options.put("binary", actualBinary.getPath());
     } else if (binaryPath != null) {
-      options.addProperty("binary", binaryPath);
+      options.put("binary", binaryPath);
     }
 
     if (profile != null) {
@@ -608,34 +606,22 @@ public class FirefoxOptions {
       for (Map.Entry<String, String> pref : stringPrefs.entrySet()) {
         profile.setPreference(pref.getKey(), pref.getValue());
       }
-      options.addProperty("profile", profile.toJson());
+      options.put("profile", profile.toJson());
     } else {
-      JsonObject allPrefs = new JsonObject();
-      for (Map.Entry<String, Boolean> pref : booleanPrefs.entrySet()) {
-        allPrefs.add(pref.getKey(), new JsonPrimitive(pref.getValue()));
-      }
-      for (Map.Entry<String, Integer> pref : intPrefs.entrySet()) {
-        allPrefs.add(pref.getKey(), new JsonPrimitive(pref.getValue()));
-      }
-      for (Map.Entry<String, String> pref : stringPrefs.entrySet()) {
-        allPrefs.add(pref.getKey(), new JsonPrimitive(pref.getValue()));
-      }
-      options.add("prefs", allPrefs);
+      ImmutableMap.Builder<String, Object> allPrefs = ImmutableMap.builder();
+      allPrefs.putAll(booleanPrefs);
+      allPrefs.putAll(intPrefs);
+      allPrefs.putAll(stringPrefs);
+      options.put("prefs", allPrefs.build());
     }
 
     if (logLevel != null) {
-      JsonObject level = new JsonObject();
-      level.add("level", new JsonPrimitive(logLevelToGeckoLevel()));
-      options.add("log", level);
+      options.put("log", ImmutableMap.of("level", logLevelToGeckoLevel()));
     }
 
-    JsonArray arguments = new JsonArray();
-    for (String arg : args) {
-      arguments.add(new JsonPrimitive(arg));
-    }
-    options.add("args", arguments);
+    options.put("args", args);
 
-    return options;
+    return options.build();
   }
 
   private String logLevelToGeckoLevel() {
