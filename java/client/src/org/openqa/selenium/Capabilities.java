@@ -32,10 +32,10 @@ public interface Capabilities {
   }
 
   default Platform getPlatform() {
-    Object rawPlatform = getCapability("platform");
+    Object rawPlatform = getCapability("platformName");
 
     if (rawPlatform == null) {
-      rawPlatform = getCapability("platformName");
+      rawPlatform = getCapability("platform");
     }
 
     if (rawPlatform == null) {
@@ -52,7 +52,8 @@ public interface Capabilities {
   }
 
   default String getVersion() {
-    return String.valueOf(Optional.ofNullable(getCapability("version")).orElse(""));
+    return String.valueOf(Optional.ofNullable(getCapability("browserVersion")).orElse(
+        Optional.ofNullable(getCapability("version")).orElse("")));
   }
 
   /**
