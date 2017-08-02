@@ -187,7 +187,7 @@ public class DriverService {
   protected void waitUntilAvailable() throws MalformedURLException {
     try {
       URL status = new URL(url.toString() + "/status");
-      new UrlChecker().waitUntilAvailable(20, SECONDS, status);
+      new UrlChecker().waitUntilAvailable(Long.getLong("webdriver.server.start.timeout", 20), SECONDS, status);
     } catch (UrlChecker.TimeoutException e) {
       if (process != null) {
         process.checkForError();
