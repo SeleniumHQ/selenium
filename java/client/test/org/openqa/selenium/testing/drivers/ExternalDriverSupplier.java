@@ -20,7 +20,6 @@ package org.openqa.selenium.testing.drivers;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 import com.google.common.base.Suppliers;
-import com.google.common.base.Throwables;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
@@ -116,9 +115,9 @@ class ExternalDriverSupplier implements Supplier<WebDriver> {
                 Capabilities.class, Capabilities.class);
         return Optional.of(ctor.newInstance(desiredCapabilities, requiredCapabilities));
       } catch (InvocationTargetException e) {
-        throw Throwables.propagate(e.getTargetException());
+        throw new RuntimeException(e.getTargetException());
       } catch (Exception e) {
-        throw Throwables.propagate(e);
+        throw new RuntimeException(e);
       }
     }
     return Optional.empty();
@@ -134,7 +133,7 @@ class ExternalDriverSupplier implements Supplier<WebDriver> {
             (Class<? extends Supplier>) Class.forName(delegateClassName);
         return Optional.of(clazz);
       } catch (Exception e) {
-        throw Throwables.propagate(e);
+        throw new RuntimeException(e);
       }
     }
     return Optional.empty();

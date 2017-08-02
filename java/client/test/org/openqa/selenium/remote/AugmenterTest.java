@@ -26,7 +26,6 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.openqa.selenium.remote.DriverCommand.FIND_ELEMENT;
 
-import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 
@@ -97,7 +96,7 @@ public class AugmenterTest extends BaseAugmenterTest {
             } catch (IllegalAccessException e) {
               throw new RuntimeException(e);
             } catch (InvocationTargetException e) {
-              throw Throwables.propagate(e.getTargetException());
+              throw new RuntimeException(e.getTargetException());
             }
           }
         };

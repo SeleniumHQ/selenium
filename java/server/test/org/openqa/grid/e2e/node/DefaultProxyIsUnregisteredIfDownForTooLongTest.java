@@ -143,7 +143,7 @@ public class DefaultProxyIsUnregisteredIfDownForTooLongTest {
         try {
           return thing.call();
         } catch (Exception e) {
-          throw Throwables.propagate(e);
+          throw new RuntimeException(e);
         }
       }
     });

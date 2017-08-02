@@ -20,8 +20,6 @@ package org.openqa.selenium.testing.drivers;
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_JAVASCRIPT;
 import static org.openqa.selenium.testing.DevMode.isInDevMode;
 
-import com.google.common.base.Throwables;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -61,9 +59,9 @@ public class ReflectionBackedDriverSupplier implements Supplier<WebDriver> {
 
       return driverClass.getConstructor(Capabilities.class).newInstance(desiredCapsToUse);
     } catch (InvocationTargetException e) {
-      throw Throwables.propagate(e.getTargetException());
+      throw new RuntimeException(e.getTargetException());
     } catch (Exception e) {
-      throw Throwables.propagate(e);
+      throw new RuntimeException(e);
     }
   }
 
