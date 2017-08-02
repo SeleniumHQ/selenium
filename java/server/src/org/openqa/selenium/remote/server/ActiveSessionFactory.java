@@ -21,6 +21,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.ServiceLoader;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
@@ -34,12 +35,11 @@ public class ActiveSessionFactory {
 
   private final static Logger LOG = Logger.getLogger(ActiveSessionFactory.class.getName());
 
-  private final static Predicate<String> CLASS_EXISTS = name -> {
+  private final static Function<String, Class<?>> CLASS_EXISTS = name -> {
     try {
-      Class.forName(name);
-      return true;
+      return Class.forName(name);
     } catch (ClassNotFoundException cnfe) {
-      return false;
+      return null;
     }
   };
 
@@ -47,6 +47,16 @@ public class ActiveSessionFactory {
 
   public ActiveSessionFactory() {
     Map<Predicate<Capabilities>, SessionFactory> builder = new LinkedHashMap<>();
+
+    bind(
+        builder,
+        "org.openqa.selenium.firefox.FirefoxDriver",
+        caps -> {
+          Object marionette = caps.getCapability("marionette");
+
+          return marionette instanceof Boolean && !(Boolean) marionette;
+        },
+        firefox());
 
     ImmutableMap.<Predicate<Capabilities>, String>builder()
         .put(browserName(chrome()), "org.openqa.selenium.chrome.ChromeDriverService")
@@ -64,21 +74,11 @@ public class ActiveSessionFactory {
         .put(containsKey(Pattern.compile("^safari\\..*")), "org.openqa.selenium.safari.SafariDriverService")
         .build()
         .entrySet().stream()
-        .filter(e -> CLASS_EXISTS.test(e.getValue()))
+        .filter(e -> CLASS_EXISTS.apply(e.getValue()) != null)
         .forEach(e -> builder.put(e.getKey(), new ServicedSession.Factory(e.getValue())));
 
     // Attempt to bind the htmlunitdriver if it's present.
-    try {
-      Class<? extends WebDriver>
-          clazz =
-          Class.forName("org.openqa.selenium.htmlunit.HtmlUnitDriver")
-              .asSubclass(WebDriver.class);
-      builder.put(
-          browserName(htmlUnit()),
-          new InMemorySession.Factory(new DefaultDriverProvider(htmlUnit(), clazz)));
-    } catch (ReflectiveOperationException ignored) {
-      // Just carry on. Everything is fine.
-    }
+    bind(builder, "org.openqa.selenium.htmlunit.HtmlUnitDriver", browserName(htmlUnit()), htmlUnit());
 
     // Allow user-defined factories to override default ones
     StreamSupport.stream(ServiceLoader.load(DriverProvider.class).spliterator(), false)
@@ -92,7 +92,7 @@ public class ActiveSessionFactory {
         "org.openqa.selenium.edge.EdgeDriverService",
         "org.openqa.selenium.ie.InternetExplorerDriverService",
         "org.openqa.selenium.safari.SafariDriverService")
-        .filter(CLASS_EXISTS)
+        .filter(name -> CLASS_EXISTS.apply(name) != null)
         .findFirst()
         .ifPresent(
             serviceName -> {
@@ -101,6 +101,26 @@ public class ActiveSessionFactory {
             });
 
     this.factories = ImmutableMap.copyOf(builder);
+  }
+
+  private void bind(
+      Map<Predicate<Capabilities>, SessionFactory> builder,
+      String className,
+      Predicate<Capabilities> predicate,
+      Capabilities capabilities) {
+    try {
+      Class<?> clazz = CLASS_EXISTS.apply(className);
+      if (clazz == null) {
+        return;
+      }
+
+      Class<? extends WebDriver> driverClass = clazz.asSubclass(WebDriver.class);
+      builder.put(
+          predicate,
+          new InMemorySession.Factory(new DefaultDriverProvider(capabilities, driverClass)));
+    } catch (ClassCastException ignored) {
+      // Just carry on. Everything is fine.
+    }
   }
 
   private static Predicate<Capabilities> browserName(Capabilities caps) {
