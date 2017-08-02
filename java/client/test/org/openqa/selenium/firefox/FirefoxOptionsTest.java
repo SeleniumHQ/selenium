@@ -32,7 +32,6 @@ import static org.openqa.selenium.firefox.FirefoxDriver.SystemProperty.DRIVER_US
 
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableSet;
-import com.google.gson.JsonObject;
 
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
@@ -50,6 +49,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.PosixFilePermission;
+import java.util.Map;
 import java.util.Optional;
 
 public class FirefoxOptionsTest {
@@ -117,16 +117,16 @@ public class FirefoxOptionsTest {
 
   @Test
   public void stringBasedBinaryRemainsAbsoluteIfSetAsAbsolute() throws IOException {
-    JsonObject json = new FirefoxOptions().setBinary("/i/like/cheese").toJson();
+    Map<String, Object> json = new FirefoxOptions().setBinary("/i/like/cheese").toJson();
 
-    assertEquals("/i/like/cheese", json.getAsJsonPrimitive("binary").getAsString());
+    assertEquals("/i/like/cheese", json.get("binary"));
   }
 
   @Test
   public void pathBasedBinaryRemainsAbsoluteIfSetAsAbsolute() throws IOException {
-    JsonObject json = new FirefoxOptions().setBinary(Paths.get("/i/like/cheese")).toJson();
+    Map<String, Object> json = new FirefoxOptions().setBinary(Paths.get("/i/like/cheese")).toJson();
 
-    assertEquals("/i/like/cheese", json.getAsJsonPrimitive("binary").getAsString());
+    assertEquals("/i/like/cheese", json.get("binary"));
   }
 
   @Test
