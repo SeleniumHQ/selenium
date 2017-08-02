@@ -10,6 +10,7 @@ Important note:
 
   `java -jar selenium-server-standalone-3.5.0.jar -enablePassThrough false`
 
+* Bump guava to version 22.
 * Add support for a new "pass through" mode. This allows a connection
   from your test's RemoteWebDriver, through the Grid Hub, to a Grid
   Node, and down to a DriverService and thence the browser to use the
