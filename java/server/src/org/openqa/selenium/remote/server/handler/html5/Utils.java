@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.remote.server.handler.html5;
 
-import com.google.common.base.Throwables;
-
 import org.openqa.selenium.HasCapabilities;
 import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.WebDriver;
@@ -77,13 +75,12 @@ public class Utils {
         return remoteImplementationClazz
             .getConstructor(ExecuteMethod.class)
             .newInstance((ExecuteMethod) driver);
-      } catch (InstantiationException e) {
-        throw new WebDriverException(e);
-      } catch (IllegalAccessException e) {
-        throw new WebDriverException(e);
       } catch (InvocationTargetException e) {
-        throw Throwables.propagate(e.getCause());
-      } catch (NoSuchMethodException e) {
+        Throwable cause = e.getCause();
+        throw cause instanceof RuntimeException ?
+              (RuntimeException) cause :
+              new RuntimeException(cause);
+      } catch (ReflectiveOperationException e) {
         throw new WebDriverException(e);
       }
     }

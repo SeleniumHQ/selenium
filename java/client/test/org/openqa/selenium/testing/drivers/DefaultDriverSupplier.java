@@ -19,8 +19,6 @@ package org.openqa.selenium.testing.drivers;
 
 import static org.openqa.selenium.testing.DevMode.isInDevMode;
 
-import com.google.common.base.Throwables;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 
@@ -60,7 +58,7 @@ public class DefaultDriverSupplier implements Supplier<WebDriver> {
       return driverClass.getConstructor(Capabilities.class, Capabilities.class).
           newInstance(desiredCapabilities, requiredCapabilities);
     } catch (InvocationTargetException e) {
-      throw Throwables.propagate(e.getTargetException());
+      throw new RuntimeException(e.getTargetException());
     } catch (ReflectiveOperationException e) {
       throw new RuntimeException(e);
     }
