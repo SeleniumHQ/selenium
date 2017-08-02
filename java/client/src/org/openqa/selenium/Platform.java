@@ -38,7 +38,7 @@ public enum Platform {
    * For versions of Windows that "feel like" Windows XP. These are ones that store files in
    * "\Program Files\" and documents under "\\documents and settings\\username"
    */
-  XP("Windows Server 2003", "xp", "windows", "winnt") {
+  XP("Windows Server 2003", "xp", "windows", "winnt", "windows_nt") {
     @Override
     public Platform family() {
       return WINDOWS;
