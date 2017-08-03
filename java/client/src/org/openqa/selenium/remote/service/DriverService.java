@@ -149,10 +149,7 @@ public class DriverService {
   public boolean isRunning() {
     lock.lock();
     try {
-      if (process == null) {
-        return false;
-      }
-      return process.isRunning();
+      return process != null && process.isRunning();
     } catch (IllegalThreadStateException e) {
       return true;
     } finally {
@@ -189,7 +186,7 @@ public class DriverService {
       URL status = new URL(url.toString() + "/status");
       new UrlChecker().waitUntilAvailable(20, SECONDS, status);
     } catch (UrlChecker.TimeoutException e) {
-      if (process != null) {
+      if (process != null && !process.isRunning()) {
         process.checkForError();
       }
       throw new WebDriverException("Timed out waiting for driver server to start.", e);

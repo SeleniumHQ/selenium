@@ -34,6 +34,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 
@@ -97,7 +98,7 @@ public class UrlChecker {
           sleepMillis = (sleepMillis >= MAX_POLL_INTERVAL_MS) ? sleepMillis : sleepMillis * 2;
         }
       }, timeout, unit);
-    } catch (UncheckedTimeoutException e) {
+    } catch (UncheckedTimeoutException | java.util.concurrent.TimeoutException e) {
       throw new TimeoutException(String.format(
           "Timed out waiting for %s to be available after %d ms",
           Arrays.toString(urls), MILLISECONDS.convert(System.nanoTime() - start, NANOSECONDS)), e);
