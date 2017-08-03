@@ -34,6 +34,7 @@
   selenium-java = //java/client/src/org/openqa/selenium:selenium-java
 
   selenium-server-standalone = //java/server/src/org/openqa/grid/selenium:selenium
+  htmlrunner = //java/server/src/org/openqa/selenium/server/htmlrunner:selenium-runner
 
   # Tests
   firefox-test  = //java/client/test/org/openqa/selenium/firefox:test-synthesized
