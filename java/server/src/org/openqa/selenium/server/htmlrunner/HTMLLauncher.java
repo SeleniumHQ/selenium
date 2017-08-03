@@ -31,6 +31,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.internal.SocketLock;
 import org.openqa.selenium.net.PortProber;
@@ -231,7 +232,8 @@ public class HTMLLauncher {
     boolean passed = true;
     for (String browser : browsers) {
       // Turns out that Windows doesn't like "*" in a path name
-      File results = resultsPath.resolve(browser.substring(1) + ".results.html").toFile();
+      String reportFileName = browser.contains(" ") ? browser.substring(0, browser.indexOf(' ')) : browser;
+      File results = resultsPath.resolve(reportFileName.substring(1) + ".results.html").toFile();
       String result = "FAILED";
 
       try {
@@ -274,15 +276,19 @@ public class HTMLLauncher {
   }
 
   private WebDriver createDriver(String browser) {
+    String[] parts = browser.split(" ", 2);
+    browser = parts[0];
     switch (browser) {
       case "*chrome":
       case "*firefox":
       case "*firefoxproxy":
       case "*firefoxchrome":
       case "*pifirefox":
-        DesiredCapabilities caps = new DesiredCapabilities();
-        caps.setCapability(MARIONETTE, true);
-        return new FirefoxDriver(caps);
+        FirefoxOptions options = new FirefoxOptions().setLegacy(false);
+        if (parts.length > 1) {
+          options.setBinary(parts[1]);
+        }
+        return new FirefoxDriver(options);
 
       case "*iehta":
       case "*iexplore":
@@ -314,7 +320,7 @@ public class HTMLLauncher {
       names = "-htmlSuite",
       required = true,
       arity = 4,
-      description = "Run an HTML Suite: '*browser' 'http://baseUrl.com' 'path\\to\\HTMLSuite.html' 'c:\\absolute\\path\\to\\my\\results.html'")
+      description = "Run an HTML Suite: \"*browser\" \"http://baseUrl.com\" \"path\\to\\HTMLSuite.html\" \"path\\to\\report\\dir\"")
     private List<String> htmlSuite;
 
     @Parameter(
