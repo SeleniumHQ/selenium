@@ -147,7 +147,7 @@ public class HTMLLauncher {
     }
 
     // Is the suiteURL a file?
-    Path path = Paths.get(suiteURL);
+    Path path = Paths.get(suiteURL).toAbsolutePath();
     if (Files.exists(path)) {
       // Not all drivers can read files from the disk, so we need to host the suite somewhere.
       try (SocketLock lock = new SocketLock()) {
