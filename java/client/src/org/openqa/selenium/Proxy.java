@@ -53,6 +53,7 @@ public class Proxy {
   private String noProxy;
   private String sslProxy;
   private String socksProxy;
+  private String socksVersion;
   private String socksUsername;
   private String socksPassword;
   private String proxyAutoconfigUrl;
@@ -79,6 +80,9 @@ public class Proxy {
     }
     if (raw.containsKey("socksProxy") && raw.get("socksProxy") != null) {
       setSocksProxy((String) raw.get("socksProxy"));
+    }
+    if (raw.containsKey("socksVersion") && raw.get("socksVersion") != null) {
+      setSocksProxy((String) raw.get("socksVersion"));
     }
     if (raw.containsKey("socksUsername") && raw.get("socksUsername") != null) {
       setSocksUsername((String) raw.get("socksUsername"));
@@ -114,6 +118,9 @@ public class Proxy {
     }
     if (socksProxy != null) {
       m.put("socksProxy", socksProxy);
+    }
+    if (socksVersion != null) {
+      m.put("socksProxyVersion", socksVersion);
     }
     if (socksUsername != null) {
       m.put("socksUsername", socksUsername);
@@ -290,6 +297,28 @@ public class Proxy {
     verifyProxyTypeCompatibility(ProxyType.MANUAL);
     this.proxyType = ProxyType.MANUAL;
     this.socksProxy = socksProxy;
+    return this;
+  }
+
+  /**
+   * Gets the SOCKS version (4 or 5).
+   *
+   * @return the SOCKS version if present, null otherwise
+   */
+  public String getSocksVersion() {
+    return socksVersion;
+  }
+
+  /**
+   * Specifies which version of SOCKS to use (4 or 5).
+   *
+   * @param socksVersion SOCKS version, 4 or 5
+   * @return reference to self
+   */
+  public Proxy setSocksVersion(String socksVersion) {
+    verifyProxyTypeCompatibility(ProxyType.MANUAL);
+    this.proxyType = ProxyType.MANUAL;
+    this.socksVersion = socksVersion;
     return this;
   }
 
