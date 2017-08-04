@@ -13,7 +13,7 @@
 	<classpathentry kind="lib" path="/third-party/java/junit/junit-4.12.jar" sourcepath="/third-party/java/junit/junit-4.12-sources.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/commons-logging/commons-logging-1.2.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/jcip_annotations/jcip-annotations-1.0.jar" sourcepath="/third-party/java/jcip_annotations/jcip-annotations-1.0-sources.jar"/>
-	<classpathentry kind="lib" path="/third-party/java/netty/netty-3.5.7.Final.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/netty/netty-all-4.1.14.Final.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/guava/guava-22.0.jar" sourcepath="/third-party/java/guava/guava-22.0-sources.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/mockito/mockito-core-1.9.5.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/jetty/jetty-repacked.jar"/>

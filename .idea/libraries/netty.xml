@@ -1,11 +1,11 @@
 <component name="libraryTable">
   <library name="netty">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/third_party/java/netty/netty-3.5.7.Final.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/netty/netty-all-4.1.14.Final.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
-      <root url="jar://$PROJECT_DIR$/third_party/java/netty/netty-3.5.7.Final-src.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/netty/netty-all-4.1.14.Final-sources.jar!/" />
     </SOURCES>
   </library>
 </component>
