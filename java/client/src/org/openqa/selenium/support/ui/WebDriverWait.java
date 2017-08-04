@@ -21,6 +21,7 @@ import org.openqa.selenium.NotFoundException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.internal.WrapsDriver;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
 import java.util.concurrent.TimeUnit;
@@ -77,10 +78,14 @@ public class WebDriverWait extends FluentWait<WebDriver> {
 
   @Override
   protected RuntimeException timeoutException(String message, Throwable lastException) {
+    WebDriver exceptionDriver = driver;
     TimeoutException ex = new TimeoutException(message, lastException);
-    ex.addInfo(WebDriverException.DRIVER_INFO, driver.getClass().getName());
-    if (driver instanceof RemoteWebDriver) {
-      RemoteWebDriver remote = (RemoteWebDriver) driver;
+    ex.addInfo(WebDriverException.DRIVER_INFO, exceptionDriver.getClass().getName());
+    while (exceptionDriver instanceof WrapsDriver) {
+      exceptionDriver = ((WrapsDriver) exceptionDriver).getWrappedDriver();
+    }
+    if (exceptionDriver instanceof RemoteWebDriver) {
+      RemoteWebDriver remote = (RemoteWebDriver) exceptionDriver;
       if (remote.getSessionId() != null) {
         ex.addInfo(WebDriverException.SESSION_ID, remote.getSessionId().toString());
       }
