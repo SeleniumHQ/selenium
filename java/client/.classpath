@@ -32,11 +32,11 @@
 	<classpathentry kind="lib" path="/third-party/java/xerces/xercesImpl-2.11.0.jar" sourcepath="/third-party/java/xerces/xercesImpl-2.11.0-sources.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/xalan/xalan-2.7.2.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/commons-fileupload/commons-fileupload-1.2.2.jar" sourcepath="/third-party/java/commons-fileupload/commons-fileupload-1.2.2-src.jar"/>
-	<classpathentry kind="lib" path="/third-party/java/little_proxy/littleproxy-0.5.3.jar" sourcepath="/third-party/java/little_proxy/littleproxy-0.5.3-sources.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/little_proxy/littleproxy-1.1.2.jar" sourcepath="/third-party/java/little_proxy/littleproxy-1.1.2-sources.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/websocket/websocket-api-9.4.5.v20170502.jar" sourcepath="/third-party/java/websocket/websocket-api-9.4.5.v20170502-sources.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/websocket/websocket-client-9.4.5.v20170502.jar" sourcepath="/third-party/java/websocket/websocket-client-9.4.5.v20170502-sources.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/websocket/websocket-common-9.4.5.v20170502.jar" sourcepath="/third-party/java/websocket/websocket-common-9.4.5.v20170502-sources.jar"/>
-	<classpathentry kind="lib" path="/third-party/java/netty/netty-3.5.7.Final.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/netty/netty-all-4.1.14.Final.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/xml-apis/xml-apis-1.4.01.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/mockito/mockito-core-1.9.5.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/objenesis/objenesis-1.0.jar"/>
