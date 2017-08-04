@@ -52,6 +52,7 @@ public class ProxyTest {
     assertNull(proxy.getHttpProxy());
     assertNull(proxy.getSslProxy());
     assertNull(proxy.getSocksProxy());
+    assertNull(proxy.getSocksVersion());
     assertNull(proxy.getSocksUsername());
     assertNull(proxy.getSocksPassword());
     assertNull(proxy.getNoProxy());
@@ -99,6 +100,9 @@ public class ProxyTest {
 
     Throwable t11 = catchThrowable(() -> proxy2.setProxyType(ProxyType.SYSTEM));
     assertThat(t11, instanceOf(IllegalStateException.class));
+
+    Throwable t12 = catchThrowable(() -> proxy.setSocksVersion(5));
+    assertThat(t12, instanceOf(IllegalStateException.class));
   }
 
   @Test
@@ -111,6 +115,7 @@ public class ProxyTest {
         setSslProxy("ssl.proxy").
         setNoProxy("localhost,127.0.0.*").
         setSocksProxy("socks.proxy:65555").
+        setSocksVersion(5).
         setSocksUsername("test1").
         setSocksPassword("test2");
 
@@ -119,6 +124,7 @@ public class ProxyTest {
     assertEquals("http.proxy:1234", proxy.getHttpProxy());
     assertEquals("ssl.proxy", proxy.getSslProxy());
     assertEquals("socks.proxy:65555", proxy.getSocksProxy());
+    assertEquals(Integer.valueOf(5), proxy.getSocksVersion());
     assertEquals("test1", proxy.getSocksUsername());
     assertEquals("test2", proxy.getSocksPassword());
     assertEquals("localhost,127.0.0.*", proxy.getNoProxy());
@@ -139,6 +145,7 @@ public class ProxyTest {
     assertNull(proxy.getHttpProxy());
     assertNull(proxy.getSslProxy());
     assertNull(proxy.getSocksProxy());
+    assertNull(proxy.getSocksVersion());
     assertNull(proxy.getSocksUsername());
     assertNull(proxy.getSocksPassword());
     assertNull(proxy.getNoProxy());
@@ -157,6 +164,7 @@ public class ProxyTest {
     assertNull(proxy.getHttpProxy());
     assertNull(proxy.getSslProxy());
     assertNull(proxy.getSocksProxy());
+    assertNull(proxy.getSocksVersion());
     assertNull(proxy.getSocksUsername());
     assertNull(proxy.getSocksPassword());
     assertNull(proxy.getNoProxy());
@@ -166,13 +174,14 @@ public class ProxyTest {
 
   @Test
   public void manualProxyFromMap() {
-    Map<String, String> proxyData = new HashMap<>();
+    Map<String, Object> proxyData = new HashMap<>();
     proxyData.put("proxyType", "manual");
     proxyData.put("httpProxy", "http.proxy:1234");
     proxyData.put("ftpProxy", "ftp.proxy");
     proxyData.put("sslProxy", "ssl.proxy");
     proxyData.put("noProxy", "localhost,127.0.0.*");
     proxyData.put("socksProxy", "socks.proxy:65555");
+    proxyData.put("socksVersion", 5);
     proxyData.put("socksUsername", "test1");
     proxyData.put("socksPassword", "test2");
 
@@ -183,6 +192,7 @@ public class ProxyTest {
     assertEquals("http.proxy:1234", proxy.getHttpProxy());
     assertEquals("ssl.proxy", proxy.getSslProxy());
     assertEquals("socks.proxy:65555", proxy.getSocksProxy());
+    assertEquals(Integer.valueOf(5), proxy.getSocksVersion());
     assertEquals("test1", proxy.getSocksUsername());
     assertEquals("test2", proxy.getSocksPassword());
     assertEquals("localhost,127.0.0.*", proxy.getNoProxy());
@@ -200,6 +210,7 @@ public class ProxyTest {
     proxy.setSslProxy("ssl.proxy");
     proxy.setNoProxy("localhost,127.0.0.*");
     proxy.setSocksProxy("socks.proxy:65555");
+    proxy.setSocksVersion(5);
     proxy.setSocksUsername("test1");
     proxy.setSocksPassword("test2");
 
@@ -210,10 +221,11 @@ public class ProxyTest {
     assertEquals("http.proxy:1234", json.get("httpProxy"));
     assertEquals("ssl.proxy", json.get("sslProxy"));
     assertEquals("socks.proxy:65555", json.get("socksProxy"));
+    assertEquals(5, json.get("socksVersion"));
     assertEquals("test1", json.get("socksUsername"));
     assertEquals("test2", json.get("socksPassword"));
     assertEquals("localhost,127.0.0.*", json.get("noProxy"));
-    assertEquals(8, json.entrySet().size());
+    assertEquals(9, json.entrySet().size());
   }
 
   @Test
@@ -231,6 +243,7 @@ public class ProxyTest {
     assertNull(proxy.getHttpProxy());
     assertNull(proxy.getSslProxy());
     assertNull(proxy.getSocksProxy());
+    assertNull(proxy.getSocksVersion());
     assertNull(proxy.getSocksUsername());
     assertNull(proxy.getSocksPassword());
     assertNull(proxy.getNoProxy());
@@ -265,6 +278,7 @@ public class ProxyTest {
     assertNull(proxy.getHttpProxy());
     assertNull(proxy.getSslProxy());
     assertNull(proxy.getSocksProxy());
+    assertNull(proxy.getSocksVersion());
     assertNull(proxy.getSocksUsername());
     assertNull(proxy.getSocksPassword());
     assertNull(proxy.getNoProxy());
@@ -297,6 +311,7 @@ public class ProxyTest {
     assertNull(proxy.getHttpProxy());
     assertNull(proxy.getSslProxy());
     assertNull(proxy.getSocksProxy());
+    assertNull(proxy.getSocksVersion());
     assertNull(proxy.getSocksUsername());
     assertNull(proxy.getSocksPassword());
     assertNull(proxy.getNoProxy());
@@ -328,6 +343,7 @@ public class ProxyTest {
     assertNull(proxy.getHttpProxy());
     assertNull(proxy.getSslProxy());
     assertNull(proxy.getSocksProxy());
+    assertNull(proxy.getSocksVersion());
     assertNull(proxy.getSocksUsername());
     assertNull(proxy.getSocksPassword());
     assertNull(proxy.getNoProxy());

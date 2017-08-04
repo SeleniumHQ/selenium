@@ -53,7 +53,7 @@ public class Proxy {
   private String noProxy;
   private String sslProxy;
   private String socksProxy;
-  private String socksVersion;
+  private Integer socksVersion;
   private String socksUsername;
   private String socksPassword;
   private String proxyAutoconfigUrl;
@@ -82,7 +82,7 @@ public class Proxy {
       setSocksProxy((String) raw.get("socksProxy"));
     }
     if (raw.containsKey("socksVersion") && raw.get("socksVersion") != null) {
-      setSocksProxy((String) raw.get("socksVersion"));
+      setSocksVersion((Integer) raw.get("socksVersion"));
     }
     if (raw.containsKey("socksUsername") && raw.get("socksUsername") != null) {
       setSocksUsername((String) raw.get("socksUsername"));
@@ -120,7 +120,7 @@ public class Proxy {
       m.put("socksProxy", socksProxy);
     }
     if (socksVersion != null) {
-      m.put("socksProxyVersion", socksVersion);
+      m.put("socksVersion", socksVersion);
     }
     if (socksUsername != null) {
       m.put("socksUsername", socksUsername);
@@ -305,7 +305,7 @@ public class Proxy {
    *
    * @return the SOCKS version if present, null otherwise
    */
-  public String getSocksVersion() {
+  public Integer getSocksVersion() {
     return socksVersion;
   }
 
@@ -315,7 +315,7 @@ public class Proxy {
    * @param socksVersion SOCKS version, 4 or 5
    * @return reference to self
    */
-  public Proxy setSocksVersion(String socksVersion) {
+  public Proxy setSocksVersion(Integer socksVersion) {
     verifyProxyTypeCompatibility(ProxyType.MANUAL);
     this.proxyType = ProxyType.MANUAL;
     this.socksVersion = socksVersion;
