@@ -108,6 +108,17 @@ namespace OpenQA.Selenium.Firefox
         }
 
         /// <summary>
+        /// Gets a value indicating whether the service has a shutdown API that can be called to terminate
+        /// it gracefully before forcing a termination.
+        /// </summary>
+        protected override bool HasShutdown
+        {
+            // The Firefox driver executable does not have a clean shutdown command,
+            // which means we have to kill the process.
+            get { return false; }
+        }
+
+        /// <summary>
         /// Gets the command-line arguments for the driver service.
         /// </summary>
         protected override string CommandLineArguments
