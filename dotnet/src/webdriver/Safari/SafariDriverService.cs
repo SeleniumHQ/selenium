@@ -44,6 +44,30 @@ namespace OpenQA.Selenium.Safari
         }
 
         /// <summary>
+        /// Gets a value indicating the time to wait for the service to terminate before forcing it to terminate.
+        /// For the Safari driver, there is no time for termination
+        /// </summary>
+        protected override TimeSpan TerminationTimeout
+        {
+            // Use a very small timeout for terminating the Safari driver,
+            // because the executable does not have a clean shutdown command,
+            // which means we have to kill the process. Using a short timeout
+            // gets us to the termination point much faster.
+            get { return TimeSpan.FromMilliseconds(100); }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the service has a shutdown API that can be called to terminate
+        /// it gracefully before forcing a termination.
+        /// </summary>
+        protected override bool HasShutdown
+        {
+            // The Safari driver executable does not have a clean shutdown command,
+            // which means we have to kill the process.
+            get { return false; }
+        }
+
+        /// <summary>
         /// Gets a value indicating whether the service is responding to HTTP requests.
         /// </summary>
         protected override bool IsInitialized
