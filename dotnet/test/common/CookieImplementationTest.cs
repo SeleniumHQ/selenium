@@ -624,6 +624,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Firefox)]
         public void ShouldNotShowCookieAddedToDifferentDomain()
         {
             if (!CheckIsOnValidHostNameForCookieTests())
