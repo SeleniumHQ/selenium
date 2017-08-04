@@ -303,6 +303,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.PhantomJS, "Untested")]
         [IgnoreBrowser(Browser.Safari, "Untested")]
         [IgnoreBrowser(Browser.WindowsPhone, "Does not yet support alert handling")]
+        [IgnoreBrowser(Browser.Firefox, "Dismissing alert causes entire window to close.")]
         public void HandleFormWithJavascriptAction()
         {
             string url = EnvironmentManager.Instance.UrlBuilder.WhereIs("form_handling_js_submit.html");
