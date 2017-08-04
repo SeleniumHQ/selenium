@@ -469,6 +469,7 @@ public class Proxy {
            Objects.equals(getNoProxy(), proxy.getNoProxy()) &&
            Objects.equals(getSslProxy(), proxy.getSslProxy()) &&
            Objects.equals(getSocksProxy(), proxy.getSocksProxy()) &&
+           Objects.equals(getSocksVersion(), proxy.getSocksVersion()) &&
            Objects.equals(getSocksUsername(), proxy.getSocksUsername()) &&
            Objects.equals(getSocksPassword(), proxy.getSocksPassword()) &&
            Objects.equals(getProxyAutoconfigUrl(), proxy.getProxyAutoconfigUrl());
@@ -484,6 +485,7 @@ public class Proxy {
         getNoProxy(),
         getSslProxy(),
         getSocksProxy(),
+        getSocksVersion(),
         getSocksUsername(),
         getSocksPassword(),
         getProxyAutoconfigUrl());
