@@ -1,11 +1,11 @@
 <component name="libraryTable">
   <library name="little_proxy">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/third_party/java/little_proxy/littleproxy-0.5.3.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/little_proxy/littleproxy-1.1.2.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
-      <root url="jar://$PROJECT_DIR$/third_party/java/little_proxy/littleproxy-0.5.3-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/little_proxy/littleproxy-1.1.2-sources.jar!/" />
     </SOURCES>
   </library>
 </component>
