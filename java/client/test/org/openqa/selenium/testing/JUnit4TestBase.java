@@ -22,6 +22,8 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
 
+import com.google.common.base.Throwables;
+
 import org.junit.AssumptionViolatedException;
 import org.junit.Before;
 import org.junit.Rule;
@@ -178,6 +180,7 @@ public abstract class JUnit4TestBase implements WrapsDriver {
           throw new RuntimeException("Sauce-related failure. Tried re-creating the driver, but that failed too.", t);
         }
       } else {
+        Throwables.throwIfUnchecked(t);
         throw new RuntimeException(t);
       }
     }
