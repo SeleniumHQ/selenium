@@ -1,5 +1,10 @@
 include_defs('//SELENIUM_VERSION')
 
+build_stamp(name = 'build-stamp',
+  kind = 'manifest',
+  source_control_system = 'git',
+)
+
 java_library(name = 'selenium',
   exported_deps = [
     ':beta',
@@ -76,8 +81,8 @@ java_library(name = 'core',
 
 genrule(name = 'manifest',
   out = 'manifest.mf',
-  bash = 'printf "\nName: Build-Info\nSelenium-Version: {}\n" > $OUT'.format(SE_VERSION),
-  cmd_exe = "(echo.\necho Name: Build-Info\necho Selenium-Version: {}\n) > %OUT%".format(SE_VERSION),
+  bash = 'cp $(location :build-stamp) $OUT && printf "Selenium-Version: {}\n\n" >> $OUT'.format(SE_VERSION),
+  cmd_exe = "copy $(location :build-stamp) %OUT% && (echo Selenium-Version: {}\n\n) >> %OUT%".format(SE_VERSION),
 )
 
 java_library(name = 'beta',

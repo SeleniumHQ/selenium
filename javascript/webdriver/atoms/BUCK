@@ -1,6 +1,6 @@
 include_defs('//javascript/JAVASCRIPT_DEFS')
 
-js_library(name = 'atoms-lib',
+closure_library(name = 'atoms-lib',
   srcs = glob(['*.js', 'storage/*.js']),
   deps = [
     '//javascript/atoms:action',
@@ -15,7 +15,7 @@ js_library(name = 'atoms-lib',
   ],
 )
 
-js_binary(name = 'inputs',
+closure_binary(name = 'inputs',
   srcs = [
     'inputs.js',
     'exports/inputs.js',
@@ -32,7 +32,7 @@ js_binary(name = 'inputs',
   ],
 )
 
-js_library(name = 'attribute-lib',
+closure_library(name = 'attribute-lib',
   srcs = ['attribute.js'],
   deps = [
     '//javascript/atoms:domcore',
@@ -40,7 +40,7 @@ js_library(name = 'attribute-lib',
   ],
 )
 
-js_fragment(name = 'getAttribute',
+closure_fragment(name = 'getAttribute',
   module = 'webdriver.atoms.element.attribute',
   function = 'webdriver.atoms.element.attribute.get',
   deps = [ ':attribute-lib' ],

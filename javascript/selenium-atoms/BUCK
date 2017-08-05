@@ -1,6 +1,6 @@
 include_defs('//javascript/JAVASCRIPT_DEFS')
 
-js_library(name = 'deps',
+closure_library(name = 'deps',
   srcs = glob(['*.js']),
   deps = [
     '//javascript/atoms:action',
@@ -15,7 +15,7 @@ js_library(name = 'deps',
 )
 
 
-js_binary(name = 'selenium-atoms',
+closure_binary(name = 'selenium-atoms',
   srcs = glob(['*.js']),
   deps = [
     ':deps',
@@ -29,91 +29,91 @@ js_binary(name = 'selenium-atoms',
 )
 
 
-js_fragment(name = 'findElement',
+closure_fragment(name = 'findElement',
   module = 'core.locators',
   function = 'core.locators.findElement',
   deps = [':deps'],
   visibility = [ '//java/client/src/com/thoughtworks/selenium/webdriven:findElement' ],
 )
 
-js_fragment(name = 'findOption',
+closure_fragment(name = 'findOption',
   module = 'core.select.option',
   function = 'core.select.option.findOption',
   deps = [':deps'],
   visibility = [ '//java/client/src/com/thoughtworks/selenium/webdriven:findOption' ],
 )
 
-js_fragment(name = 'fireEvent',
+closure_fragment(name = 'fireEvent',
   module = 'core.events',
   function = 'core.events.fire',
   deps = [':deps'],
   visibility = [ '//java/client/src/com/thoughtworks/selenium/webdriven:fireEvent' ],
 )
 
-js_fragment(name = 'fireEventAt',
+closure_fragment(name = 'fireEventAt',
   module = 'core.events',
   function = 'core.events.fireAt',
   deps = [':deps'],
   visibility = [ '//java/client/src/com/thoughtworks/selenium/webdriven:fireEventAt' ],
 )
 
-js_fragment(name = 'getAttribute',
+closure_fragment(name = 'getAttribute',
   module = 'core.element',
   function = 'core.element.getAttribute',
   deps = [':deps'],
   visibility = [ '//java/client/src/com/thoughtworks/selenium/webdriven:getAttribute' ],
 )
 
-js_fragment(name = 'getText',
+closure_fragment(name = 'getText',
   module = 'core.text.getText',
   function = 'core.text.getText',
   deps = [':deps'],
   visibility = [ '//java/client/src/com/thoughtworks/selenium/webdriven:getText' ],
 )
 
-js_fragment(name = 'linkLocator',
+closure_fragment(name = 'linkLocator',
   module = 'core.text',
   function = 'core.text.linkLocator',
   deps = [':deps'],
   visibility = [ '//java/client/src/com/thoughtworks/selenium/webdriven:linkLocator' ],
 )
 
-js_fragment(name = 'isSomethingSelected',
+closure_fragment(name = 'isSomethingSelected',
   module = 'core.select',
   function = 'core.select.isSomethingSelected',
   deps = [':deps'],
   visibility = [ '//java/client/src/com/thoughtworks/selenium/webdriven:isSomethingSelected' ],
 )
 
-js_fragment(name = 'isElementPresent',
+closure_fragment(name = 'isElementPresent',
   module = 'core.locators',
   function = 'core.locators.isElementPresent',
   deps = [':deps'],
   visibility = [ '//java/client/src/com/thoughtworks/selenium/webdriven:isElementPresent' ],
 )
 
-js_fragment(name = 'isTextPresent',
+closure_fragment(name = 'isTextPresent',
   module = 'core.text',
   function = 'core.text.isTextPresent',
   deps = [':deps'],
   visibility = [ '//java/client/src/com/thoughtworks/selenium/webdriven:isTextPresent' ],
 )
 
-js_fragment(name = 'isVisible',
+closure_fragment(name = 'isVisible',
   module = 'core.browserbot',
   function = 'core.browserbot.isVisible',
   deps = [':deps'],
   visibility = [ '//java/client/src/com/thoughtworks/selenium/webdriven:isVisible' ],
 )
 
-js_fragment(name = 'setCursorPosition',
+closure_fragment(name = 'setCursorPosition',
   module = 'core.text',
   function = 'core.text.setCursorPosition',
   deps = [':deps'],
   visibility = [ '//java/client/src/com/thoughtworks/selenium/webdriven:setCursorPosition' ],
 )
 
-js_fragment(name = 'type',
+closure_fragment(name = 'type',
   module = 'core.events',
   function = 'core.events.setValue',
   deps = [':deps'],
