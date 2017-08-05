@@ -399,6 +399,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   @Test
   @Ignore(IE)
   @Ignore(value = SAFARI, reason = "issue 4062")
+  @Ignore(MARIONETTE)
   public void testShouldNotHangIfDocumentOpenCallIsNeverFollowedByDocumentCloseCall()
       throws Exception {
     driver.get(pages.documentWrite);
