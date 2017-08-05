@@ -1,4 +1,4 @@
-js_library(name = 'action',
+closure_library(name = 'action',
   srcs = [
     'action.js',
   ],
@@ -15,7 +15,7 @@ js_library(name = 'action',
 )
 
 
-js_library(name = 'bot',
+closure_library(name = 'bot',
   srcs = [
     'bot.js',
   ],
@@ -25,7 +25,7 @@ js_library(name = 'bot',
 )
 
 
-js_library(name = 'color',
+closure_library(name = 'color',
   srcs = [
     'color.js',
   ],
@@ -35,7 +35,7 @@ js_library(name = 'color',
 )
 
 
-js_library(name = 'devices',
+closure_library(name = 'devices',
   srcs = [
     'device.js',
     'keyboard.js',
@@ -55,7 +55,7 @@ js_library(name = 'devices',
 )
 
 
-js_library(name = 'domcore',
+closure_library(name = 'domcore',
   srcs = [
     "domcore.js",
   ],
@@ -70,7 +70,7 @@ js_library(name = 'domcore',
 )
 
 
-js_library(name = 'dom',
+closure_library(name = 'dom',
   srcs = [
     "dom.js",
   ],
@@ -88,7 +88,7 @@ js_library(name = 'dom',
 )
 
 
-js_library(name = 'errors',
+closure_library(name = 'errors',
   srcs = [
     'error.js',
     'response.js',
@@ -99,7 +99,7 @@ js_library(name = 'errors',
 )
 
 
-js_library(name = 'events',
+closure_library(name = 'events',
   srcs = [
     'events.js',
   ],
@@ -116,7 +116,7 @@ js_library(name = 'events',
 )
 
 
-js_library(name = 'html5',
+closure_library(name = 'html5',
   srcs = glob(['html5/*.js']),
   deps = [
     ':bot',
@@ -130,7 +130,7 @@ js_library(name = 'html5',
 )
 
 
-js_library(name = 'inject',
+closure_library(name = 'inject',
   srcs = [
     'inject.js',
     'response.js',
@@ -147,7 +147,7 @@ js_library(name = 'inject',
 )
 
 
-js_library(name = 'json',
+closure_library(name = 'json',
   srcs = [
     'json.js',
     'userAgent.js'
@@ -161,7 +161,7 @@ js_library(name = 'json',
 )
 
 
-js_library(name = 'locators',
+closure_library(name = 'locators',
   srcs = glob(['locators/*.js'], excludes=['locators/xpath.js']),
   deps = [
     ':dom',
@@ -175,7 +175,7 @@ js_library(name = 'locators',
 )
 
 
-js_library(name = 'useragent',
+closure_library(name = 'useragent',
   srcs = [
     'userAgent.js',
   ],
@@ -188,7 +188,7 @@ js_library(name = 'useragent',
 )
 
 
-js_library(name = 'window',
+closure_library(name = 'window',
   srcs = [
     'frame.js',
     'window.js',
@@ -207,7 +207,7 @@ js_library(name = 'window',
 )
 
 
-js_library(name = 'xpath',
+closure_library(name = 'xpath',
   srcs = [
     'locators/xpath.js',
   ],

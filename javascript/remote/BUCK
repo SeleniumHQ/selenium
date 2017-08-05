@@ -39,7 +39,7 @@ for browser in browsers.keys():
   )
 
 
-js_binary(name = 'client',
+closure_binary(name = 'client',
   srcs = glob(['*.js', 'ui/*.js',]),
   deps = [
     '//javascript/atoms:errors',

@@ -1,7 +1,7 @@
-orig_js_fragment = js_fragment
+orig_closure_fragment = closure_fragment
 
-def js_fragment(name, **kwargs):
-    orig_js_fragment(name, **kwargs)
+def closure_fragment(name, **kwargs):
+    orig_closure_fragment(name, **kwargs)
 
     # Android
     defs = kwargs.get('defines', [])
@@ -11,7 +11,7 @@ def js_fragment(name, **kwargs):
     args = kwargs.copy();
     args['defines'] = defs
     fragment_name = name + '-android'
-    orig_js_fragment(fragment_name, **args)
+    orig_closure_fragment(fragment_name, **args)
 
     # Chrome
     defs = kwargs.get('defines', [])
@@ -22,7 +22,7 @@ def js_fragment(name, **kwargs):
     args = kwargs.copy();
     args['defines'] = defs
     fragment_name = name + '-chrome'
-    orig_js_fragment(fragment_name, **args)
+    orig_closure_fragment(fragment_name, **args)
 
     # Edge and IE
     defs = kwargs.get('defines', [])
@@ -32,7 +32,7 @@ def js_fragment(name, **kwargs):
     args = kwargs.copy();
     args['defines'] = defs
     fragment_name = name + '-ie'
-    orig_js_fragment(fragment_name, **args)
+    orig_closure_fragment(fragment_name, **args)
 
     # iOS
     defs = kwargs.get('defines', [])
@@ -44,7 +44,7 @@ def js_fragment(name, **kwargs):
     args = kwargs.copy();
     args['defines'] = defs
     fragment_name = name + '-ios'
-    orig_js_fragment(fragment_name, **args)
+    orig_closure_fragment(fragment_name, **args)
 
 
     # Firefox
@@ -56,4 +56,4 @@ def js_fragment(name, **kwargs):
     args = kwargs.copy();
     args['defines'] = defs
     fragment_name = name + '-firefox'
-    orig_js_fragment(fragment_name, **args)
+    orig_closure_fragment(fragment_name, **args)

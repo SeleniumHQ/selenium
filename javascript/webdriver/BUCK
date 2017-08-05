@@ -1,4 +1,4 @@
-js_library(name = 'http',
+closure_library(name = 'http',
   srcs = glob([
     'capabilities.js',
     'command.js',
@@ -15,7 +15,7 @@ js_library(name = 'http',
   ],
 )
 
-js_library(name = 'key',
+closure_library(name = 'key',
   srcs = [
     'key.js',
   ],
@@ -24,7 +24,7 @@ js_library(name = 'key',
   ],
 )
 
-js_library(name = 'logging',
+closure_library(name = 'logging',
   srcs = [
     'logging.js',
   ],
@@ -36,7 +36,7 @@ js_library(name = 'logging',
   ],
 )
 
-js_library(name = 'stacktrace',
+closure_library(name = 'stacktrace',
   srcs = [
     'stacktrace.js',
   ],
