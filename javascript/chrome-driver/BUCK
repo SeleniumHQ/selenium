@@ -1,4 +1,4 @@
-js_library(name = 'lib',
+closure_library(name = 'lib',
   srcs = glob(['*.js']),
   deps = [
     '//javascript/atoms:dom',
@@ -7,27 +7,27 @@ js_library(name = 'lib',
   ],
 )
 
-js_fragment(name = 'get_location_in_view',
+closure_fragment(name = 'get_location_in_view',
   module = 'webdriver.chrome',
   function = 'webdriver.chrome.getLocationInView',
   deps = [ ':lib' ])
 
-js_fragment(name = 'get_first_client_rect',
+closure_fragment(name = 'get_first_client_rect',
   module = 'webdriver.chrome',
   function = 'webdriver.chrome.getFirstClientRect',
   deps = [ ':lib' ])
 
-js_fragment(name = 'is_element_clickable',
+closure_fragment(name = 'is_element_clickable',
   module = 'webdriver.chrome',
   function = 'webdriver.chrome.isElementClickable',
   deps = [ ':lib' ])
 
-js_fragment(name = 'get_page_zoom',
+closure_fragment(name = 'get_page_zoom',
   module = 'webdriver.chrome',
   function = 'webdriver.chrome.getPageZoom',
   deps = [ ':lib' ])
 
-js_fragment(name = 'is_element_displayed',
+closure_fragment(name = 'is_element_displayed',
   module = 'webdriver.chrome',
   function = 'webdriver.chrome.isElementDisplayed',
   deps = [
@@ -35,7 +35,7 @@ js_fragment(name = 'is_element_displayed',
     '//javascript/atoms/fragments:is-displayed',
     ])
 
-js_fragment(name = 'find_element',
+closure_fragment(name = 'find_element',
   module = 'webdriver.chrome',
   function = 'webdriver.chrome.findElement',
   deps = [ ':lib' ])

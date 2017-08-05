@@ -1,6 +1,6 @@
 include_defs('//javascript/JAVASCRIPT_DEFS')
 
-js_fragment(name = 'clear',
+closure_fragment(name = 'clear',
   function = 'bot.action.clear',
   module = 'bot.action',
   deps = [
@@ -8,7 +8,7 @@ js_fragment(name = 'clear',
   ],
 )
 
-js_fragment(name = 'execute_script',
+closure_fragment(name = 'execute_script',
   function = 'bot.inject.executeScript',
   module = 'bot.inject',
   deps = [
@@ -19,7 +19,7 @@ js_fragment(name = 'execute_script',
   ],
 )
 
-js_fragment(name = 'is-displayed',
+closure_fragment(name = 'is-displayed',
   function = 'bot.dom.isShown',
   module = 'bot.dom',
   deps = [

@@ -1,4 +1,4 @@
-js_library(name = 'closure',
+closure_library(name = 'closure',
   srcs = glob(['**/*.js']),
   visibility = ['PUBLIC'],
 )

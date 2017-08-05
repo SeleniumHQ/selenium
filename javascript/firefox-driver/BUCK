@@ -116,7 +116,7 @@ mozilla_xpt(name = 'mouse-xpt',
 )
 
 
-js_binary(name = 'bad-cert-listener',
+closure_binary(name = 'bad-cert-listener',
   srcs = [
     'js/badCertListener.js',
   ],
@@ -134,7 +134,7 @@ js_binary(name = 'bad-cert-listener',
 )
 
 
-js_binary(name = 'command-processor',
+closure_binary(name = 'command-processor',
   srcs = [
     'js/nsCommandProcessor.js',
   ],
@@ -166,7 +166,7 @@ js_binary(name = 'command-processor',
 )
 
 
-js_binary(name = 'driver-component',
+closure_binary(name = 'driver-component',
   srcs = [
     'js/driver-component.js',
   ],
@@ -189,7 +189,7 @@ js_binary(name = 'driver-component',
 )
 
 
-js_binary(name = 'modifier-keys',
+closure_binary(name = 'modifier-keys',
   srcs = [
     'js/modifierKeys.js',
   ],
@@ -207,7 +207,7 @@ js_binary(name = 'modifier-keys',
 )
 
 
-js_binary(name = 'prompt-service',
+closure_binary(name = 'prompt-service',
   srcs = [
     'js/promptService.js',
   ],
@@ -226,7 +226,7 @@ js_binary(name = 'prompt-service',
 )
 
 
-js_binary(name = 'session',
+closure_binary(name = 'session',
   srcs = [
     'js/wdsession.js',
   ],
@@ -243,7 +243,7 @@ js_binary(name = 'session',
 )
 
 
-js_binary(name = 'session-store',
+closure_binary(name = 'session-store',
   srcs = [
     'js/sessionstore.js',
   ],
@@ -263,7 +263,7 @@ js_binary(name = 'session-store',
 )
 
 
-js_binary(name = 'synthetic-mouse',
+closure_binary(name = 'synthetic-mouse',
   srcs = [
     'js/syntheticMouse.js',
   ],
@@ -289,7 +289,7 @@ js_binary(name = 'synthetic-mouse',
 )
 
 
-js_binary(name = 'web-element-cache',
+closure_binary(name = 'web-element-cache',
   srcs = [
     'js/element_cache.js',
   ],
@@ -310,7 +310,7 @@ js_binary(name = 'web-element-cache',
 )
 
 
-js_library(name = 'dispatcher',
+closure_library(name = 'dispatcher',
   srcs = [
     'js/dispatcher.js'
   ],
@@ -325,14 +325,14 @@ js_library(name = 'dispatcher',
 )
 
 
-js_library(name = 'error',
+closure_library(name = 'error',
   srcs = [
     'js/error.js',
   ],
 )
 
 
-js_library(name = 'events',
+closure_library(name = 'events',
   srcs = [
     'js/events.js',
   ],
@@ -345,7 +345,7 @@ js_library(name = 'events',
 )
 
 
-js_library(name = 'files',
+closure_library(name = 'files',
   srcs = [
     'js/files.js',
   ],
@@ -357,7 +357,7 @@ js_library(name = 'files',
 )
 
 
-js_library(name = 'firefox-utils',
+closure_library(name = 'firefox-utils',
   srcs = [
     'js/firefox-utils.js',
   ],
@@ -370,7 +370,7 @@ js_library(name = 'firefox-utils',
 )
 
 
-js_library(name = 'firefoxdriver',
+closure_library(name = 'firefoxdriver',
   srcs = [
     'js/firefoxDriver.js'
   ],
@@ -394,7 +394,7 @@ js_library(name = 'firefoxdriver',
 )
 
 
-js_library(name = 'logging',
+closure_library(name = 'logging',
   srcs = [
     'js/logger.js',
     'js/profiler.js',
@@ -409,7 +409,7 @@ js_library(name = 'logging',
 )
 
 
-js_library(name = 'modals',
+closure_library(name = 'modals',
   srcs = [ 'js/modals.js' ],
   deps = [
     ':firefox-utils',
@@ -422,7 +422,7 @@ js_library(name = 'modals',
 )
 
 
-js_library(name = 'moz',
+closure_library(name = 'moz',
   srcs = [ 'js/moz.js' ],
   deps = [
     '//javascript/atoms:json',
@@ -431,7 +431,7 @@ js_library(name = 'moz',
 )
 
 
-js_library(name = 'preconditions',
+closure_library(name = 'preconditions',
   srcs = [
     'js/preconditions.js',
   ],
@@ -442,7 +442,7 @@ js_library(name = 'preconditions',
 )
 
 
-js_library(name = 'prefs',
+closure_library(name = 'prefs',
   srcs = [
     'js/prefs.js',
   ],
@@ -452,7 +452,7 @@ js_library(name = 'prefs',
 )
 
 
-js_library(name = 'proxy',
+closure_library(name = 'proxy',
   srcs = [ 'js/proxy.js' ],
   deps = [
     ':logging',
@@ -461,7 +461,7 @@ js_library(name = 'proxy',
 )
 
 
-js_library(name = 'request',
+closure_library(name = 'request',
   srcs = [
     'js/request.js',
   ],
@@ -471,14 +471,14 @@ js_library(name = 'request',
 )
 
 
-js_library(name = 'response',
+closure_library(name = 'response',
   srcs = [
     'js/response.js',
   ],
 )
 
 
-js_library(name = 'screenshooter',
+closure_library(name = 'screenshooter',
   srcs = [
     'js/screenshooter.js',
   ],
@@ -487,7 +487,7 @@ js_library(name = 'screenshooter',
   ],
 )
 
-js_library(name = 'timer',
+closure_library(name = 'timer',
   srcs = [
     ':timer.js',
   ],
@@ -497,7 +497,7 @@ export_file(name = 'timer.js',
   src = 'js/timer.js',
 )
 
-js_library(name = 'utils',
+closure_library(name = 'utils',
   srcs = [
     'js/utils.js',
   ],
@@ -513,7 +513,7 @@ js_library(name = 'utils',
 )
 
 
-js_library(name = 'webdriver-server',
+closure_library(name = 'webdriver-server',
   srcs = [
     'js/webdriverserver.js',
   ],
@@ -528,7 +528,7 @@ js_library(name = 'webdriver-server',
 )
 
 
-js_library(name = 'webelement',
+closure_library(name = 'webelement',
   srcs = [
     'js/wrappedElement.js',
   ],
@@ -547,7 +547,7 @@ js_library(name = 'webelement',
 )
 
 
-js_library(name = 'web-loading-listener',
+closure_library(name = 'web-loading-listener',
   srcs = [
     'js/webLoadingListener.js',
   ],
