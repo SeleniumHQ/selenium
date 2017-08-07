@@ -231,6 +231,7 @@ public class ProtocolHandshake {
                     "logFile".equals(entry.getKey()) ||
                     "logLevel".equals(entry.getKey()) ||
                     "requireWindowFocus".equals(entry.getKey()) ||
+                    "se:ieOptions".equals(entry.getKey()) ||
                     "silent".equals(entry.getKey()) ||
                     entry.getKey().startsWith("ie."))
         .distinct()
