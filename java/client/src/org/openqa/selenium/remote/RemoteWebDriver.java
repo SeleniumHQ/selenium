@@ -1043,7 +1043,15 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
       return (String) execute(DriverCommand.GET_ALERT_TEXT).getValue();
     }
 
+    /**
+     * @param keysToSend character sequence to send to the alert
+     *
+     * @throws IllegalArgumentException if keysToSend is null
+     */
     public void sendKeys(String keysToSend) {
+      if(keysToSend==null) {
+        throw new IllegalArgumentException("Keys to send should be a not null CharSequence");
+      }
       execute(DriverCommand.SET_ALERT_VALUE, ImmutableMap.of("text", keysToSend));
     }
 

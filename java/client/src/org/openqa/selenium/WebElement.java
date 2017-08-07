@@ -62,6 +62,8 @@ public interface WebElement extends SearchContext, TakesScreenshot {
    * Use this method to simulate typing into an element, which may set its value.
    *
    * @param keysToSend character sequence to send to the element
+   *
+   * @throws IllegalArgumentException if keysToSend is null
    */
   void sendKeys(CharSequence... keysToSend);
 

@@ -34,6 +34,7 @@ public interface Keyboard {
    *
    * @param keysToSend one or more sequences of characters or key representations to type on the
    *                   keyboard
+   * @throws IllegalArgumentException if keysToSend is null
    */
   void sendKeys(CharSequence... keysToSend);
 
