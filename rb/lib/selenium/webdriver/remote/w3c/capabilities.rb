@@ -156,11 +156,6 @@ module Selenium
 
                 capability_name = name.to_s
 
-                if capability_name == 'firefox_options'
-                  msg = ':firefox_options is no longer a valid parameter for Remote::Capabilities, use Firefox::Options instead'
-                  raise Error::WebDriverError msg
-                end
-
                 snake_cased_capability_names = KNOWN.map(&:to_s)
                 camel_cased_capability_names = snake_cased_capability_names.map(&w3c_capabilities.method(:camel_case))
 
@@ -169,6 +164,27 @@ module Selenium
                             capability_name.match(EXTENSION_CAPABILITY_PATTERN)
 
                 w3c_capabilities[name] = value
+              end
+
+              # User can pass :firefox_options or :firefox_profile.
+              #
+              # TODO (alex): Refactor this whole method into converter class.
+              firefox_options = oss_capabilities['firefoxOptions'] || oss_capabilities['firefox_options'] || oss_capabilities[:firefox_options]
+              firefox_profile = oss_capabilities['firefox_profile'] || oss_capabilities[:firefox_profile]
+              firefox_binary  = oss_capabilities['firefox_binary'] || oss_capabilities[:firefox_binary]
+
+              if firefox_profile && firefox_options
+                second_profile = firefox_options['profile'] || firefox_options[:profile]
+                if second_profile && firefox_profile != second_profile
+                  raise Error::WebDriverError, 'You cannot pass 2 different Firefox profiles'
+                end
+              end
+
+              if firefox_options || firefox_profile || firefox_binary
+                options = WebDriver::Firefox::Options.new(firefox_options || {})
+                options.binary = firefox_binary if firefox_binary
+                options.profile = firefox_profile if firefox_profile
+                w3c_capabilities.merge!(options.as_json)
               end
 
               w3c_capabilities
