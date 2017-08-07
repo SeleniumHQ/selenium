@@ -617,6 +617,13 @@ public class TypingTest extends JUnit4TestBase {
     assertThat(email.getAttribute("value"), equalTo("33"));
   }
 
+  @Test(expected = IllegalArgumentException.class)
+  public void testShouldThrowIllegalArgumentException() {
+    driver.get(pages.formPage);
+    WebElement email = driver.findElement(By.id("age"));
+    email.sendKeys(null);
+  }
+
   @Test
   @Ignore(SAFARI)
   public void canSafelyTypeOnElementThatIsRemovedFromTheDomOnKeyPress() {
