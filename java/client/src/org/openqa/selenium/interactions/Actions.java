@@ -184,6 +184,8 @@ public class Actions {
    *
    * @param keys The keys.
    * @return A self reference.
+   *
+   * @throws IllegalArgumentException if keys is null
    */
   public Actions sendKeys(CharSequence... keys) {
     if (isBuildingActions()) {
@@ -204,6 +206,8 @@ public class Actions {
    * @param target element to focus on.
    * @param keys The keys.
    * @return A self reference.
+   *
+   * @throws IllegalArgumentException if keys is null
    */
   public Actions sendKeys(WebElement target, CharSequence... keys) {
     if (isBuildingActions()) {
@@ -223,6 +227,9 @@ public class Actions {
   }
 
   private Actions sendKeysInTicks(CharSequence... keys) {
+    if (keys == null) {
+      throw new IllegalArgumentException("Keys should be a not null CharSequence");
+    }
     for (CharSequence key : keys) {
       key.codePoints().forEach(codePoint -> {
         tick(defaultKeyboard.createKeyDown(codePoint));
