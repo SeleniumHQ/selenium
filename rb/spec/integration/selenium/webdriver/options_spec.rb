@@ -26,15 +26,28 @@ module Selenium
         not_compliant_on browser: [:firefox, :ie, :edge, :ff_nightly] do
           describe 'logs' do
             compliant_on driver: :remote do
-              it 'can fetch remote log types' do
-                expect(driver.manage.logs.available_types).to include(:server, :client)
+              not_compliant_on browser: :phantomjs do
+                it 'can fetch remote log types' do
+                  expect(driver.manage.logs.available_types).to include(:server, :browser, :driver)
+                end
+              end
+
+              compliant_on browser: :phantomjs do
+                it 'can fetch remote log types' do
+                  expect(driver.manage.logs.available_types).to include(:server, :browser, :har)
+                end
               end
             end
 
-            # Phantomjs Returns har instead of driver
             not_compliant_on browser: :phantomjs do
               it 'can fetch available log types' do
                 expect(driver.manage.logs.available_types).to include(:browser, :driver)
+              end
+            end
+
+            compliant_on browser: :phantomjs do
+              it 'can fetch available log types' do
+                expect(driver.manage.logs.available_types).to include(:browser, :har)
               end
             end
 
