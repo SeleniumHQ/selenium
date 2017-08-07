@@ -67,7 +67,7 @@ def _make_w3c_caps(caps):
     """
     profile = caps.get('firefox_profile')
     always_match = {}
-    for k, v in caps.iteritems():
+    for k, v in caps.items():
         if k in _W3C_CAPABILITY_NAMES or ':' in k:
             always_match[k] = v
     if profile:
