@@ -70,6 +70,17 @@ public class ActionsTest {
     order.verifyNoMoreInteractions();
   }
 
+
+  @Test(expected = IllegalArgumentException.class)
+  public void throwsIllegalArgumentExceptionIfKeysNull() {
+    new Actions(driver).sendKeys(null).perform();
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void throwsIllegalArgumentExceptionOverridenIfKeysNull() {
+    new Actions(driver).sendKeys(dummyLocatableElement,null).perform();
+  }
+
   @Test
   public void providingAnElementToKeyboardActions() {
     new Actions(driver).keyDown(dummyLocatableElement, Keys.SHIFT).perform();
