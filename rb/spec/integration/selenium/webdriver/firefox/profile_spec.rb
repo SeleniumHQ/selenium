@@ -156,33 +156,30 @@ module Selenium
             expect(string).to include('user_pref("network.proxy.type", 4)')
           end
 
-          # https://github.com/SeleniumHQ/selenium/issues/3338
-          not_compliant_on driver: :remote, platform: :macosx do
-            describe 'with browser' do
-              before(:each) do
-                profile['browser.startup.homepage'] = url_for('simpleTest.html')
-                profile['browser.startup.page'] = 1
-              end
+          describe 'with browser' do
+            before(:each) do
+              profile['browser.startup.homepage'] = url_for('simpleTest.html')
+              profile['browser.startup.page'] = 1
+            end
 
-              it 'should instantiate the browser with the correct profile' do
-                begin
-                  driver1 = GlobalTestEnv.send(:create_driver, profile_opts)
-                  expect { wait(5).until { driver1.find_element(id: 'oneline') } }.to_not raise_error
-                ensure
-                  driver1.quit
-                end
+            it 'should instantiate the browser with the correct profile' do
+              begin
+                driver1 = GlobalTestEnv.send(:create_driver, profile_opts)
+                expect { wait(5).until { driver1.find_element(id: 'oneline') } }.to_not raise_error
+              ensure
+                driver1.quit
               end
+            end
 
-              it 'should be able to use the same profile more than once' do
-                begin
-                  driver1 = GlobalTestEnv.send(:create_driver, profile_opts)
-                  expect { wait(5).until { driver1.find_element(id: 'oneline') } }.to_not raise_error
-                  driver2 = GlobalTestEnv.send(:create_driver, profile_opts)
-                  expect { wait(5).until { driver2.find_element(id: 'oneline') } }.to_not raise_error
-                ensure
-                  driver1.quit if driver1
-                  driver2.quit if driver2
-                end
+            it 'should be able to use the same profile more than once' do
+              begin
+                driver1 = GlobalTestEnv.send(:create_driver, profile_opts)
+                expect { wait(5).until { driver1.find_element(id: 'oneline') } }.to_not raise_error
+                driver2 = GlobalTestEnv.send(:create_driver, profile_opts)
+                expect { wait(5).until { driver2.find_element(id: 'oneline') } }.to_not raise_error
+              ensure
+                driver1.quit if driver1
+                driver2.quit if driver2
               end
             end
           end
