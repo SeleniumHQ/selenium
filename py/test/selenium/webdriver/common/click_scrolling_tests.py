@@ -18,7 +18,7 @@
 import pytest
 
 from selenium.common.exceptions import (
-    ElementNotVisibleException,
+    ElementNotInteractableException,
     MoveTargetOutOfBoundsException,
     WebDriverException)
 from selenium.webdriver.common.by import By
@@ -95,6 +95,7 @@ def testShouldNotScrollOverflowElementsWhichAreVisible(driver, pages):
 
 @pytest.mark.xfail_chrome(
     reason='https://bugs.chromium.org/p/chromedriver/issues/detail?id=1542')
+@pytest.mark.xfail_marionette
 def testShouldNotScrollIfAlreadyScrolledAndElementIsInView(driver, pages):
     pages.load("scroll3.html")
     driver.find_element(By.ID, "button1").click()
@@ -111,7 +112,7 @@ def testShouldBeAbleToClickRadioButtonScrolledIntoView(driver, pages):
 
 @pytest.mark.xfail_marionette(
     reason='https://github.com/w3c/webdriver/issues/408',
-    raises=ElementNotVisibleException)
+    raises=ElementNotInteractableException)
 def testShouldScrollOverflowElementsIfClickPointIsOutOfViewButElementIsInView(driver, pages):
     pages.load("scroll5.html")
     driver.find_element(By.ID, "inner").click()

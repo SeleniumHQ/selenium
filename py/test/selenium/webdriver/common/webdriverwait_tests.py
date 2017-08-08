@@ -148,9 +148,6 @@ def testWaitUntilNotShouldNotFailIfProduceIgnoredException(driver, pages):
     assert WebDriverWait(driver, 1, 0.7, ignored_exceptions=ignored).until_not(throwSERE)
 
 
-@pytest.mark.xfail_marionette(
-    reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1297551',
-    raises=TimeoutException)
 def testExpectedConditionTitleIs(driver, pages):
     pages.load("blank.html")
     WebDriverWait(driver, 1).until(EC.title_is("blank"))
@@ -161,9 +158,6 @@ def testExpectedConditionTitleIs(driver, pages):
         WebDriverWait(driver, 0.7).until(EC.title_is("blank"))
 
 
-@pytest.mark.xfail_marionette(
-    reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1297551',
-    raises=TimeoutException)
 def testExpectedConditionTitleContains(driver, pages):
     pages.load("blank.html")
     driver.execute_script("setTimeout(function(){document.title='not blank'}, 200)")
@@ -192,9 +186,6 @@ def testExpectedConditionVisibilityOf(driver, pages):
     assert element.is_displayed() is True
 
 
-@pytest.mark.xfail_marionette(
-    reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1297551',
-    raises=TimeoutException)
 def testExpectedConditionTextToBePresentInElement(driver, pages):
     pages.load('booleanAttributes.html')
     with pytest.raises(TimeoutException):
@@ -213,9 +204,6 @@ def testExpectedConditionTextToBePresentInElementValue(driver, pages):
     assert 'Example Expected text' == driver.find_element_by_id('inputRequired').get_attribute('value')
 
 
-@pytest.mark.xfail_marionette(
-    reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1297551',
-    raises=TimeoutException)
 def testExpectedConditionFrameToBeAvailableAndSwitchToItByName(driver, pages):
     pages.load("blank.html")
     with pytest.raises(TimeoutException):
@@ -225,9 +213,6 @@ def testExpectedConditionFrameToBeAvailableAndSwitchToItByName(driver, pages):
     assert 'click me' == driver.find_element_by_id('alertInFrame').text
 
 
-@pytest.mark.xfail_marionette(
-    reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1297551',
-    raises=TimeoutException)
 def testExpectedConditionFrameToBeAvailableAndSwitchToItByLocator(driver, pages):
     pages.load("blank.html")
     with pytest.raises(TimeoutException):
@@ -237,8 +222,6 @@ def testExpectedConditionFrameToBeAvailableAndSwitchToItByLocator(driver, pages)
     assert 'click me' == driver.find_element_by_id('alertInFrame').text
 
 
-@pytest.mark.xfail_marionette(
-    reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1297551')
 def testExpectedConditionInvisiblityOfElementLocated(driver, pages):
     pages.load("javascriptPage.html")
     driver.execute_script("delayedShowHide(0, true)")
@@ -249,9 +232,6 @@ def testExpectedConditionInvisiblityOfElementLocated(driver, pages):
     assert element.is_displayed() is False
 
 
-@pytest.mark.xfail_marionette(
-    reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1297551',
-    raises=TimeoutException)
 def testExpectedConditionElementToBeClickable(driver, pages):
     pages.load("javascriptPage.html")
     with pytest.raises(TimeoutException):
@@ -276,9 +256,6 @@ def testExpectedConditionStalenessOf(driver, pages):
         element.text
 
 
-@pytest.mark.xfail_marionette(
-    reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1297551',
-    raises=TimeoutException)
 def testExpectedConditionElementToBeSelected(driver, pages):
     pages.load("formPage.html")
     element = driver.find_element_by_id('checky')
@@ -289,9 +266,6 @@ def testExpectedConditionElementToBeSelected(driver, pages):
     assert element.is_selected() is True
 
 
-@pytest.mark.xfail_marionette(
-    reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1297551',
-    raises=TimeoutException)
 def testExpectedConditionElementLocatedToBeSelected(driver, pages):
     pages.load("formPage.html")
     element = driver.find_element_by_id('checky')
@@ -302,9 +276,6 @@ def testExpectedConditionElementLocatedToBeSelected(driver, pages):
     assert element.is_selected() is True
 
 
-@pytest.mark.xfail_marionette(
-    reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1297551',
-    raises=TimeoutException)
 def testExpectedConditionElementSelectionStateToBe(driver, pages):
     pages.load("formPage.html")
     element = driver.find_element_by_id('checky')
@@ -317,9 +288,6 @@ def testExpectedConditionElementSelectionStateToBe(driver, pages):
     assert element.is_selected() is True
 
 
-@pytest.mark.xfail_marionette(
-    reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1297551',
-    raises=TimeoutException)
 def testExpectedConditionElementLocatedSelectionStateToBe(driver, pages):
     pages.load("formPage.html")
     element = driver.find_element_by_id('checky')
@@ -332,9 +300,6 @@ def testExpectedConditionElementLocatedSelectionStateToBe(driver, pages):
     assert element.is_selected() is True
 
 
-@pytest.mark.xfail_marionette(
-    reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1297551',
-    raises=TimeoutException)
 @pytest.mark.xfail_phantomjs(
     reason='https://github.com/detro/ghostdriver/issues/20',
     raises=WebDriverException)
