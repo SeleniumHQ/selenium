@@ -621,7 +621,7 @@ public class TypingTest extends JUnit4TestBase {
   public void testShouldThrowIllegalArgumentException() {
     driver.get(pages.formPage);
     WebElement email = driver.findElement(By.id("age"));
-    email.sendKeys(null);
+    email.sendKeys((CharSequence[]) null);
   }
 
   @Test

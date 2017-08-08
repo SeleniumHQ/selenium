@@ -29,7 +29,6 @@ import static org.openqa.selenium.testing.TestUtilities.isOldIe;
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.NotYetImplemented;
 
 @Ignore(value = SAFARI, reason = "SafariDriver cannot manipulate SVG documents")
 public class SvgDocumentTest extends JUnit4TestBase {

@@ -26,13 +26,10 @@ import static org.openqa.selenium.testing.Driver.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NoDriverAfterTest;
 import org.openqa.selenium.testing.NotYetImplemented;
-import org.openqa.selenium.testing.SeleniumTestRunner;
-import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 public class SessionHandlingTest extends JUnit4TestBase {
 
