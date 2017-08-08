@@ -154,7 +154,7 @@ public class InternetExplorerDriverService extends DriverService {
     /**
      * Configures silence in stdout of the driver server by unlogged messages.
      *
-     * @param silent To be silent in stdout ir not.
+     * @param silent To be silent in stdout or not.
      * @return A self reference.
      */
     public Builder withSilent(Boolean silent) {
