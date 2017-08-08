@@ -55,16 +55,9 @@ matrix:
     - env: CHROME=1 TOXENV=py27-chrome
       <<: *python
       <<: *chrome
-    - env: MARIONETTE=1 TOXENV=py27-marionette
-      <<: *python
-      <<: *firefox-nightly
     - env: CHROME=1 TOXENV=py36-chrome
       <<: *python
       <<: *chrome
-      python: 3.6
-    - env: MARIONETTE=1 TOXENV=py36-marionette
-      <<: *python
-      <<: *firefox-nightly
       python: 3.6
   include:
     - env: TASK=build
@@ -159,6 +152,13 @@ matrix:
     - env: TOXENV=py36-remote
       <<: *python
       <<: *firefox-latest
+      python: 3.6
+    - env: MARIONETTE=1 TOXENV=py27-marionette
+      <<: *python
+      <<: *firefox-nightly
+    - env: MARIONETTE=1 TOXENV=py36-marionette
+      <<: *python
+      <<: *firefox-nightly
       python: 3.6
     - env: TASK=//rb:unit-test
       <<: *ruby
