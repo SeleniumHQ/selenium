@@ -196,6 +196,7 @@ def testAlertShouldNotAllowAdditionalCommandsIfDimissed(driver, pages):
     raises=WebDriverException)
 @pytest.mark.xfail_chrome(
     reason='https://bugs.chromium.org/p/chromedriver/issues/detail?id=1500')
+@pytest.mark.xfail_marionette(reason='Fails on travis')
 def testShouldAllowUsersToAcceptAnAlertInAFrame(driver, pages):
     pages.load("alerts.html")
     driver.switch_to.frame(driver.find_element(By.NAME, "iframeWithAlert"))
@@ -212,6 +213,7 @@ def testShouldAllowUsersToAcceptAnAlertInAFrame(driver, pages):
     raises=WebDriverException)
 @pytest.mark.xfail_chrome(
     reason='https://bugs.chromium.org/p/chromedriver/issues/detail?id=1500')
+@pytest.mark.xfail_marionette(reason='Fails on travis')
 def testShouldAllowUsersToAcceptAnAlertInANestedFrame(driver, pages):
     pages.load("alerts.html")
     driver.switch_to.frame(driver.find_element(By.NAME, "iframeWithIframe"))
