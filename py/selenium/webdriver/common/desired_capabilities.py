@@ -120,3 +120,9 @@ class DesiredCapabilities(object):
         "platform": "ANY",
         "javascriptEnabled": True,
     }
+
+    WEBKITGTK = {
+        "browserName": "MiniBrowser",
+        "version": "",
+        "platform": "ANY",
+    }

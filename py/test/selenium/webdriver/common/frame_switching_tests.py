@@ -382,6 +382,7 @@ def testShouldBeAbleToSwitchToTheTopIfTheFrameIsDeletedFromUnderUsWithWebelement
 @pytest.mark.xfail_phantomjs(raises=BadStatusLine)
 @pytest.mark.xfail_marionette(raises=WebDriverException,
                               reason='https://github.com/mozilla/geckodriver/issues/614')
+@pytest.mark.xfail_webkitgtk(raises=NoSuchElementException)
 def testShouldNotBeAbleToDoAnythingTheFrameIsDeletedFromUnderUs(driver, pages):
     pages.load("frame_switching_tests/deletingFrame.html")
     driver.switch_to.frame(driver.find_element_by_id("iframe1"))
