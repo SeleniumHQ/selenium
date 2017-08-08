@@ -87,7 +87,7 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
   }
 
   public void sendKeys(CharSequence... keysToSend) {
-    if(keysToSend==null) {
+    if (keysToSend == null) {
       throw new IllegalArgumentException("Keys to send should be a not null CharSequence");
     }
     File localFile = fileDetector.getLocalFile(keysToSend);
