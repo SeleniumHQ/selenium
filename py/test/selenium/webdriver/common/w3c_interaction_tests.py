@@ -15,6 +15,8 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import pytest
+
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.actions.action_builder import ActionBuilder
 from selenium.webdriver.support.ui import WebDriverWait
@@ -29,6 +31,8 @@ def test_should_be_able_to_get_pointer_and_keyboard_inputs(driver, pages):
     assert keyboards is not None
 
 
+@pytest.mark.xfail_marionette(
+    reason = 'https://github.com/mozilla/geckodriver/issues/646')
 def testSendingKeysToActiveElementWithModifier(driver, pages):
     pages.load("formPage.html")
     e = driver.find_element_by_id("working")
@@ -126,6 +130,8 @@ def testDragAndDrop(driver, pages):
     assert "Dropped!" == text
 
 
+@pytest.mark.xfail_marionette(
+    reason = 'https://github.com/mozilla/geckodriver/issues/660')
 def test_context_click(driver, pages):
 
     pages.load("javascriptPage.html")
@@ -139,6 +145,8 @@ def test_context_click(driver, pages):
     assert "ContextClicked" == toContextClick.get_attribute('value')
 
 
+@pytest.mark.xfail_marionette(
+    reason = 'https://github.com/mozilla/geckodriver/issues/661')
 def test_double_click(driver, pages):
     """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
     pages.load("javascriptPage.html")

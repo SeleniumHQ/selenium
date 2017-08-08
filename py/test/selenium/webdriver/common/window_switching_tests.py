@@ -57,8 +57,6 @@ def testShouldThrowNoSuchWindowException(driver, pages):
         driver.switch_to.window("invalid name")
 
 
-@pytest.mark.xfail_marionette(
-    reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1309173')
 def testShouldThrowNoSuchWindowExceptionOnAnAttemptToGetItsHandle(driver, pages):
     pages.load("xhtmlTest.html")
     current = driver.current_window_handle
@@ -110,7 +108,6 @@ def testShouldThrowNoSuchWindowExceptionOnAnyElementOperationIfAWindowIsClosed(d
         element.text
 
 
-@pytest.mark.xfail_marionette(run=False)
 def testClickingOnAButtonThatClosesAnOpenWindowDoesNotCauseTheBrowserToHang(driver, pages):
     pages.load("xhtmlTest.html")
     current = driver.current_window_handle
@@ -125,7 +122,6 @@ def testClickingOnAButtonThatClosesAnOpenWindowDoesNotCauseTheBrowserToHang(driv
     driver.find_element_by_id("linkId")
 
 
-@pytest.mark.xfail_marionette(run=False)
 def testCanCallGetWindowHandlesAfterClosingAWindow(driver, pages):
     pages.load("xhtmlTest.html")
     current = driver.current_window_handle
@@ -155,7 +151,6 @@ def testFailingToSwitchToAWindowLeavesTheCurrentWindowAsIs(driver, pages):
     assert current == new_handle
 
 
-@pytest.mark.xfail_marionette(run=False)
 @pytest.mark.xfail_chrome(reason="Fails on Travis")
 def testThatAccessingFindingAnElementAfterWindowIsClosedAndHaventswitchedDoesntCrash(driver, pages):
     pages.load("xhtmlTest.html")
