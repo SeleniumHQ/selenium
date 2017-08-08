@@ -160,6 +160,12 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
     shortWait.until(ExpectedConditions.attributeToBe(keyReporter, "value", "abc def"));
   }
 
+  @Test(expected = IllegalArgumentException.class)
+  public void testThrowsIllegalArgumentExceptionWithNullKeys() {
+    driver.get(pages.javascriptPage);
+    driver.findElement(By.id("keyReporter")).sendKeys(null);
+  }
+
   @Test
   public void canGenerateKeyboardShortcuts() {
     driver.get(appServer.whereIs("keyboard_shortcut.html"));
