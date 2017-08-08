@@ -110,6 +110,8 @@ class WebDriver(RemoteWebDriver):
         if firefox_options is None:
             firefox_options = Options()
 
+        capabilities = dict(capabilities)
+
         if capabilities.get("binary"):
             self.binary = capabilities["binary"]
 
