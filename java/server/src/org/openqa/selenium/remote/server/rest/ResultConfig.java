@@ -70,7 +70,7 @@ public class ResultConfig {
     RestishHandler<?> createHandler(SessionId sessionId) throws Exception;
   }
 
-  protected RestishHandler populate(RestishHandler handler, Command command) {
+  protected RestishHandler<?> populate(RestishHandler<?> handler, Command command) {
     for (Map.Entry<String, ?> entry : command.getParameters().entrySet()) {
       try {
         PropertyMunger.set(entry.getKey(), handler, entry.getValue());
@@ -135,7 +135,7 @@ public class ResultConfig {
       log.warning("Exception: " + toUse.getMessage());
       Optional<String> screenshot = Optional.empty();
       if (handler instanceof WebDriverHandler) {
-        screenshot = Optional.ofNullable(((WebDriverHandler) handler).getScreenshot());
+        screenshot = Optional.ofNullable(((WebDriverHandler<?>) handler).getScreenshot());
       }
       response = Responses.failure(sessionId, toUse, screenshot);
     } catch (Error e) {
@@ -209,13 +209,13 @@ public class ResultConfig {
           sessionAware.newInstance(sessionId != null ? sessions.get(sessionId) : null);
     }
 
-    final Constructor<? extends RestishHandler> driverSessions =
+    final Constructor<? extends RestishHandler<?>> driverSessions =
         getConstructor(handlerClazz, DriverSessions.class);
     if (driverSessions != null) {
       return (sessionId) -> driverSessions.newInstance(sessions);
     }
 
-    final Constructor<? extends RestishHandler> noArgs = getConstructor(handlerClazz);
+    final Constructor<? extends RestishHandler<?>> noArgs = getConstructor(handlerClazz);
     if (noArgs != null) {
       return (sessionId) -> noArgs.newInstance();
     }

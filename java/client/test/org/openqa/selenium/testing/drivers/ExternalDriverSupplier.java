@@ -99,7 +99,7 @@ class ExternalDriverSupplier implements Supplier<WebDriver> {
   }
 
   private static Optional<Supplier<WebDriver>> createDelegate(Capabilities desiredCapabilities) {
-    Optional<Class<? extends Supplier>> supplierClass = getDelegateClass();
+    Optional<Class<? extends Supplier<WebDriver>>> supplierClass = getDelegateClass();
     if (supplierClass.isPresent()) {
       Class<? extends Supplier> clazz = supplierClass.get();
       logger.info("Using delegate supplier: " + clazz.getName());
@@ -118,13 +118,13 @@ class ExternalDriverSupplier implements Supplier<WebDriver> {
   }
 
   @SuppressWarnings("unchecked")
-  private static Optional<Class<? extends Supplier>> getDelegateClass() {
+  private static Optional<Class<? extends Supplier<WebDriver>>> getDelegateClass() {
     String delegateClassName = System.getProperty(DELEGATE_SUPPLIER_CLASS_PROPERTY);
     if (delegateClassName != null) {
       try {
         logger.info("Loading custom supplier: " + delegateClassName);
-        Class<? extends Supplier> clazz =
-            (Class<? extends Supplier>) Class.forName(delegateClassName);
+        Class<? extends Supplier<WebDriver>> clazz =
+            (Class<? extends Supplier<WebDriver>>) Class.forName(delegateClassName);
         return Optional.of(clazz);
       } catch (Exception e) {
         throw new RuntimeException(e);
