@@ -195,7 +195,6 @@ def testAlertShouldNotAllowAdditionalCommandsIfDimissed(driver, pages):
 @pytest.mark.xfail_phantomjs(
     reason='https://github.com/detro/ghostdriver/issues/20',
     raises=WebDriverException)
-@pytest.mark.xfail_marionette(reason="https://bugzilla.mozilla.org/show_bug.cgi?id=1314462")
 @pytest.mark.xfail_chrome(
     reason='https://bugs.chromium.org/p/chromedriver/issues/detail?id=1500')
 def testShouldAllowUsersToAcceptAnAlertInAFrame(driver, pages):
@@ -209,9 +208,6 @@ def testShouldAllowUsersToAcceptAnAlertInAFrame(driver, pages):
     assert "Testing Alerts" == driver.title
 
 
-@pytest.mark.xfail_marionette(
-    reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1279211',
-    raises=TimeoutException)
 @pytest.mark.xfail_phantomjs(
     reason='https://github.com/detro/ghostdriver/issues/20',
     raises=WebDriverException)
@@ -265,8 +261,6 @@ def testPromptShouldHaveNullValueIfDismissed(driver, pages):
     assert "null" == driver.find_element(By.ID, "text").text
 
 
-@pytest.mark.xfail_marionette(
-    reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1279211')
 @pytest.mark.xfail_phantomjs(
     reason='https://github.com/detro/ghostdriver/issues/20',
     raises=WebDriverException)
