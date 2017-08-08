@@ -229,7 +229,7 @@ def testShouldContinueToReferToTheSameFrameOnceItHasBeenSelected(driver, pages):
     WebDriverWait(driver, 3).until(EC.text_to_be_present_in_element((By.XPATH, '//p'), 'Success!'))
 
 
-@pytest.mark.xfail_marionette(raises=TimeoutException)
+@pytest.mark.xfail_marionette(raises=WebDriverException)
 def testShouldFocusOnTheReplacementWhenAFrameFollowsALinkToA_TopTargetedPage(driver, pages):
     pages.load("frameset.html")
     driver.switch_to.frame(0)
