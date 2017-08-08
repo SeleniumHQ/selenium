@@ -18,7 +18,6 @@
 """Tests for advanced user interactions."""
 import pytest
 
-from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support.ui import WebDriverWait
@@ -98,7 +97,7 @@ def testDragAndDrop(driver, pages):
 
 
 @pytest.mark.xfail_marionette(
-    reason = 'https://github.com/mozilla/geckodriver/issues/661')
+    reason='https://github.com/mozilla/geckodriver/issues/661')
 def testDoubleClick(driver, pages):
     """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
     pages.load("javascriptPage.html")
@@ -112,7 +111,7 @@ def testDoubleClick(driver, pages):
 
 
 @pytest.mark.xfail_marionette(
-    reason = 'https://github.com/mozilla/geckodriver/issues/660')
+    reason='https://github.com/mozilla/geckodriver/issues/660')
 @pytest.mark.xfail_phantomjs(
     reason='https://github.com/ariya/phantomjs/issues/14005')
 def testContextClick(driver, pages):
@@ -199,7 +198,7 @@ def testSelectingMultipleItems(driver, pages):
 
 
 @pytest.mark.xfail_marionette(
-    reason = 'https://github.com/mozilla/geckodriver/issues/646')
+    reason='https://github.com/mozilla/geckodriver/issues/646')
 def testSendingKeysToActiveElementWithModifier(driver, pages):
     pages.load("formPage.html")
     e = driver.find_element_by_id("working")

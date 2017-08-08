@@ -32,7 +32,7 @@ def test_should_be_able_to_get_pointer_and_keyboard_inputs(driver, pages):
 
 
 @pytest.mark.xfail_marionette(
-    reason = 'https://github.com/mozilla/geckodriver/issues/646')
+    reason='https://github.com/mozilla/geckodriver/issues/646')
 def testSendingKeysToActiveElementWithModifier(driver, pages):
     pages.load("formPage.html")
     e = driver.find_element_by_id("working")
@@ -69,7 +69,6 @@ def test_can_create_pause_action_on_keyboard(driver, pages):
 
 def test_can_create_pause_action_on_pointer(driver, pages):
     # If we don't get an error and takes less than 3 seconds to run, we are good
-
     import datetime
     start = datetime.datetime.now()
     actions1 = ActionBuilder(driver)
@@ -131,7 +130,7 @@ def testDragAndDrop(driver, pages):
 
 
 @pytest.mark.xfail_marionette(
-    reason = 'https://github.com/mozilla/geckodriver/issues/660')
+    reason='https://github.com/mozilla/geckodriver/issues/660')
 def test_context_click(driver, pages):
 
     pages.load("javascriptPage.html")
@@ -146,7 +145,7 @@ def test_context_click(driver, pages):
 
 
 @pytest.mark.xfail_marionette(
-    reason = 'https://github.com/mozilla/geckodriver/issues/661')
+    reason='https://github.com/mozilla/geckodriver/issues/661')
 def test_double_click(driver, pages):
     """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
     pages.load("javascriptPage.html")
