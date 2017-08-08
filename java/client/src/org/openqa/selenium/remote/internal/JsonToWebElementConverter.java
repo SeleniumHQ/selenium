@@ -51,7 +51,7 @@ public class JsonToWebElementConverter implements Function<Object, Object> {
     if (result instanceof Map<?, ?>) {
       Map<?, ?> resultAsMap = (Map<?, ?>) result;
       String elementKey = getElementKey(resultAsMap);
-		  if (null!=elementKey) {
+		  if (null != elementKey) {
 			  RemoteWebElement element = newRemoteWebElement();
 			  element.setId(String.valueOf(resultAsMap.get(elementKey)));
 			  return element;
@@ -85,7 +85,7 @@ public class JsonToWebElementConverter implements Function<Object, Object> {
     }
     return element;
   }
-  private static String getElementKey(Map<?, ?> resultAsMap) {
+  private String getElementKey(Map<?, ?> resultAsMap) {
 		for (Dialect d : Dialect.values()) {
 			String elementKeyForDialect = d.getEncodedElementKey();
 			if (resultAsMap.containsKey(elementKeyForDialect)) {
