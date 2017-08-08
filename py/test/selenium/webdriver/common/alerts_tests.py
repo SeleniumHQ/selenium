@@ -25,7 +25,6 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.common.exceptions import (
     InvalidElementStateException,
     NoAlertPresentException,
-    TimeoutException,
     UnexpectedAlertPresentException,
     WebDriverException)
 
