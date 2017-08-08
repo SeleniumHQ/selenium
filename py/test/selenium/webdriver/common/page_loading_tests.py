@@ -19,6 +19,8 @@ import pytest
 
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 
 def testShouldWaitForDocumentToBeLoaded(driver, pages):
@@ -38,7 +40,6 @@ def testShouldWaitForDocumentToBeLoaded(driver, pages):
 #    assert driver.title == "We Arrive Here"
 
 
-@pytest.mark.xfail_marionette(run=False)
 def testShouldBeAbleToGetAFragmentOnTheCurrentPage(driver, pages):
     pages.load("xhtmlTest.html")
     location = driver.current_url
@@ -78,18 +79,16 @@ def testShouldReturnWhenGettingAUrlThatDoesNotConnect(driver):
 #     self.assertEqual(driver.title, anyOf(equalTo(originalTitle), equalTo("We Leave From Here")));
 
 
-@pytest.mark.xfail_marionette(reason="https://bugzilla.mozilla.org/show_bug.cgi?id=1291320")
 def testShouldBeAbleToNavigateBackInTheBrowserHistory(driver, pages):
     pages.load("formPage.html")
 
     driver.find_element(by=By.ID, value="imageButton").submit()
-    assert driver.title == "We Arrive Here"
+    WebDriverWait(driver, 3).until(EC.title_is("We Arrive Here"))
 
     driver.back()
     assert driver.title == "We Leave From Here"
 
 
-@pytest.mark.xfail_marionette(reason="https://bugzilla.mozilla.org/show_bug.cgi?id=1291320")
 def testShouldBeAbleToNavigateBackInTheBrowserHistoryInPresenceOfIframes(driver, pages):
     pages.load("xhtmlTest.html")
 
@@ -101,12 +100,11 @@ def testShouldBeAbleToNavigateBackInTheBrowserHistoryInPresenceOfIframes(driver,
     assert driver.title == "XHTML Test Page"
 
 
-@pytest.mark.xfail_marionette(reason="https://bugzilla.mozilla.org/show_bug.cgi?id=1291320")
 def testShouldBeAbleToNavigateForwardsInTheBrowserHistory(driver, pages):
     pages.load("formPage.html")
 
     driver.find_element(by=By.ID, value="imageButton").submit()
-    assert driver.title == "We Arrive Here"
+    WebDriverWait(driver, 3).until(EC.title_is("We Arrive Here"))
 
     driver.back()
     assert driver.title == "We Leave From Here"
