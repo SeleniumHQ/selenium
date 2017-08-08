@@ -25,6 +25,7 @@ import pytest
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.events import EventFiringWebDriver, AbstractEventListener
+from selenium.webdriver.support.ui import WebDriverWait
 
 
 @pytest.fixture
@@ -59,6 +60,7 @@ def test_should_fire_navigation_events(driver, log, pages):
     ef_driver = EventFiringWebDriver(driver, EventListener())
     ef_driver.get(pages.url("formPage.html"))
     ef_driver.find_element(by=By.ID, value="imageButton").submit()
+    WebDriverWait(ef_driver, 5).until(lambda d: d.title == "We Arrive Here")
     assert ef_driver.title == "We Arrive Here"
 
     ef_driver.back()
