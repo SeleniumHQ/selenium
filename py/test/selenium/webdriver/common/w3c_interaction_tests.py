@@ -31,6 +31,8 @@ def test_should_be_able_to_get_pointer_and_keyboard_inputs(driver, pages):
     assert keyboards is not None
 
 
+@pytest.mark.xfail_marionette(
+    reason = 'https://github.com/mozilla/geckodriver/issues/646')
 def testSendingKeysToActiveElementWithModifier(driver, pages):
     pages.load("formPage.html")
     e = driver.find_element_by_id("working")
