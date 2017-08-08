@@ -182,7 +182,7 @@ class ReflectivelyDiscoveredSteps implements Supplier<ImmutableMap<String, CoreS
         factories.put(
           "waitFor" + shortName,
           (loc, val) -> (selenium, state) -> {
-            String[] args = buildArgs(method, state.expand(loc), state.expand(val));
+            Object[] args = buildArgs(method, state.expand(loc), state.expand(val));
 
             try {
               new Wait() {
@@ -211,7 +211,7 @@ class ReflectivelyDiscoveredSteps implements Supplier<ImmutableMap<String, CoreS
         factories.put(
           "waitFor" + negateName(shortName),
           (loc, val) -> (selenium, state) -> {
-            String[] args = buildArgs(method, state.expand(loc), state.expand(val));
+            Object[] args = buildArgs(method, state.expand(loc), state.expand(val));
 
             try {
               new Wait() {
@@ -306,7 +306,7 @@ class ReflectivelyDiscoveredSteps implements Supplier<ImmutableMap<String, CoreS
     String locator,
     String value,
     OnSuccess onSuccess) {
-    String[] args = buildArgs(method, locator, value);
+    Object[] args = buildArgs(method, locator, value);
     try {
       Object result = method.invoke(selenium, args);
       return onSuccess.handle(result);
