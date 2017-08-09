@@ -123,7 +123,7 @@ matrix:
       <<: *python
     - env: TOXENV=py27-remote
       <<: *python
-      <<: *firefox-latest
+      <<: *firefox-esr
     - env: TOXENV=py33-unit
       <<: *python
       python: 3.3
@@ -151,7 +151,7 @@ matrix:
       python: 3.6
     - env: TOXENV=py36-remote
       <<: *python
-      <<: *firefox-latest
+      <<: *firefox-esr
       python: 3.6
     - env: MARIONETTE=1 TOXENV=py27-marionette
       <<: *python
@@ -197,8 +197,6 @@ matrix:
     - env: MARIONETTE=1 TASK=//java/client/test/com/thoughtworks/selenium:firefox-rc-test:run
     - env: MARIONETTE=1 TOXENV=py27-marionette
     - env: MARIONETTE=1 TOXENV=py36-marionette
-    - env: TOXENV=py27-remote
-    - env: TOXENV=py36-remote
     - env: PHANTOMJS=1 TOXENV=py27-phantomjs
     - env: PHANTOMJS=1 TOXENV=py36-phantomjs
 before_install: ./scripts/travis/before_install.sh

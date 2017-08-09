@@ -86,6 +86,7 @@ def driver(request):
         driver_class = 'Firefox'
     if driver_class == 'Remote':
         capabilities = DesiredCapabilities.FIREFOX.copy()
+        capabilities['marionette'] = False
         kwargs.update({'desired_capabilities': capabilities})
     driver = getattr(webdriver, driver_class)(**kwargs)
     yield driver
@@ -115,7 +116,7 @@ def server(request):
 
     _host = 'localhost'
     _port = 4444
-    _path = 'buck-out/gen/java/server/src/org/openqa/grid/selenium/selenium.jar'
+    _path = '../buck-out/gen/java/server/src/org/openqa/grid/selenium/selenium.jar'
 
     def wait_for_server(url, timeout):
         start = time.time()
