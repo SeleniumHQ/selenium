@@ -195,8 +195,6 @@ matrix:
   allow_failures:
     - env: CHROME=1 TASK=//java/client/test/com/thoughtworks/selenium:chrome-rc-test:run
     - env: MARIONETTE=1 TASK=//java/client/test/com/thoughtworks/selenium:firefox-rc-test:run
-    - env: MARIONETTE=1 TOXENV=py27-marionette
-    - env: MARIONETTE=1 TOXENV=py36-marionette
     - env: PHANTOMJS=1 TOXENV=py27-phantomjs
     - env: PHANTOMJS=1 TOXENV=py36-phantomjs
 before_install: ./scripts/travis/before_install.sh
