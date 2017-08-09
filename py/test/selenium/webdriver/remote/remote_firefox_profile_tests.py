@@ -22,7 +22,9 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 @pytest.fixture
 def capabilities():
-    return DesiredCapabilities.FIREFOX.copy()
+    capabilities = DesiredCapabilities.FIREFOX.copy()
+    capabilities['marionette'] = False
+    return capabilities
 
 
 @pytest.fixture
