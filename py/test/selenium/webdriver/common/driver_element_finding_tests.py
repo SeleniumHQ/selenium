@@ -276,7 +276,6 @@ def test_Finding_ASingle_Element_By_Empty_Class_Name_Should_Throw(driver, pages)
         driver.find_element(By.CLASS_NAME, "")
 
 
-@pytest.mark.xfail_phantomjs(raises=NoSuchElementException)
 def test_Finding_Multiple_Elements_By_Empty_Class_Name_Should_Throw(driver, pages):
     pages.load("xhtmlTest.html")
     with pytest.raises(NoSuchElementException):
