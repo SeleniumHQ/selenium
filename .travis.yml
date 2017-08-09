@@ -195,11 +195,9 @@ matrix:
   allow_failures:
     - env: CHROME=1 TASK=//java/client/test/com/thoughtworks/selenium:chrome-rc-test:run
     - env: MARIONETTE=1 TASK=//java/client/test/com/thoughtworks/selenium:firefox-rc-test:run
-    - env: TOXENV=py27-firefox
     - env: MARIONETTE=1 TOXENV=py27-marionette
-    - env: TOXENV=py27-remote
-    - env: TOXENV=py36-firefox
     - env: MARIONETTE=1 TOXENV=py36-marionette
+    - env: TOXENV=py27-remote
     - env: TOXENV=py36-remote
     - env: PHANTOMJS=1 TOXENV=py27-phantomjs
     - env: PHANTOMJS=1 TOXENV=py36-phantomjs
