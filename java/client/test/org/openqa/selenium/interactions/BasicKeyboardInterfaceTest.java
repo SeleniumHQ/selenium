@@ -18,12 +18,14 @@
 package org.openqa.selenium.interactions;
 
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.SAFARI;
+import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 
 import org.junit.Test;
 import org.openqa.selenium.By;
@@ -160,10 +162,12 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
     shortWait.until(ExpectedConditions.attributeToBe(keyReporter, "value", "abc def"));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testThrowsIllegalArgumentExceptionWithNullKeys() {
     driver.get(pages.javascriptPage);
     driver.findElement(By.id("keyReporter")).sendKeys(null);
+    Throwable t = catchThrowable(() -> driver.findElement(By.id("keyReporter")).sendKeys(null));
+    assertThat(t, instanceOf(IllegalArgumentException.class));
   }
 
   @Test
