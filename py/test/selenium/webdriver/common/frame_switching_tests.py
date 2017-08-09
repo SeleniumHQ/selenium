@@ -38,6 +38,12 @@ from selenium.webdriver.support import expected_conditions as EC
 # ----------------------------------------------------------------------------------------------
 
 
+@pytest.fixture(autouse=True)
+def restore_default_context(driver):
+    yield
+    driver.switch_to.default_content()
+
+
 def testShouldAlwaysFocusOnTheTopMostFrameAfterANavigationEvent(driver, pages):
     pages.load("frameset.html")
     driver.find_element(By.TAG_NAME, "frameset")  # Test passes if this does not throw.
