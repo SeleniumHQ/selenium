@@ -29,6 +29,15 @@ from selenium.common.exceptions import (
     WebDriverException)
 
 
+@pytest.fixture(autouse=True)
+def close_alert(driver):
+    yield
+    try:
+        driver.switch_to.alert.dismiss()
+    except Exception:
+        pass
+
+
 @pytest.mark.xfail_chrome(
     reason='https://bugs.chromium.org/p/chromedriver/issues/detail?id=1500')
 def testShouldBeAbleToOverrideTheWindowAlertMethod(driver, pages):

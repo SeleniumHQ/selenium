@@ -24,6 +24,17 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
 
+@pytest.fixture(autouse=True)
+def close_windows(driver):
+    main_windows_handle = driver.current_window_handle
+    yield
+    for handle in driver.window_handles:
+        if handle != main_windows_handle:
+            driver.switch_to.window(handle)
+            driver.close()
+    driver.switch_to.window(main_windows_handle)
+
+
 def testShouldSwitchFocusToANewWindowWhenItIsOpenedAndNotStopFutureOperations(driver, pages):
     pages.load("xhtmlTest.html")
     current = driver.current_window_handle
