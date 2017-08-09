@@ -111,13 +111,19 @@ public class AlertsTest extends JUnit4TestBase {
     assertEquals("Testing Alerts", driver.getTitle());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
+  @NotYetImplemented(HTMLUNIT)
   public void testShouldThrowIllegalArgumentExceptionWhenKeysNull() {
     driver.get(alertPage("cheese"));
 
     driver.findElement(By.id("alert")).click();
     Alert alert = wait.until(alertIsPresent());
-    alert.sendKeys(null);
+    try {
+      Throwable t = catchThrowable(() -> alert.sendKeys(null));
+      assertThat(t, instanceOf(IllegalArgumentException.class));
+    } finally {
+      alert.accept();
+    }
   }
 
   @Test
