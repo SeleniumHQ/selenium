@@ -18,8 +18,8 @@
 import os
 import socket
 import subprocess
+import sys
 import time
-import urllib
 
 import pytest
 from _pytest.skipping import MarkEvaluator
@@ -28,6 +28,11 @@ from selenium import webdriver
 from selenium.webdriver import DesiredCapabilities
 from test.selenium.webdriver.common.webserver import SimpleWebServer
 from test.selenium.webdriver.common.network import get_lan_ip
+
+if sys.version_info[0] == 3:
+    from urllib.request import urlopen
+else:
+    from urllib import urlopen
 
 drivers = (
     'BlackBerry',
@@ -122,7 +127,7 @@ def server(request):
         start = time.time()
         while time.time() - start < timeout:
             try:
-                urllib.urlopen(url)
+                urlopen(url)
                 return 1
             except IOError:
                 time.sleep(0.2)
