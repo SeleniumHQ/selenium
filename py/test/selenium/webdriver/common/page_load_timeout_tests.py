@@ -20,6 +20,12 @@ import pytest
 from selenium.common.exceptions import TimeoutException
 
 
+@pytest.fixture(autouse=True)
+def reset_timeouts(driver):
+    yield
+    driver.set_page_load_timeout(300)
+
+
 @pytest.mark.xfail_phantomjs(
     reason='PhantomJS does not implement page load timeouts')
 def testShouldTimeoutOnPageLoadTakingTooLong(driver, pages):
