@@ -25,6 +25,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.openqa.selenium.testing.Driver.FIREFOX;
+import static org.openqa.selenium.testing.Driver.MARIONETTE;
 
 import org.junit.After;
 import org.junit.Test;
@@ -32,6 +33,7 @@ import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.NotYetImplemented;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -100,6 +102,7 @@ public class MarionetteTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(MARIONETTE)
   public void canPassCapabilities() {
     DesiredCapabilities capabilities = new DesiredCapabilities();
     capabilities.setCapability(CapabilityType.PAGE_LOAD_STRATEGY, "none");
