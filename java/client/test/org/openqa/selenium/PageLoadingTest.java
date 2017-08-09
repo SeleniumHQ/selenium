@@ -85,6 +85,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   @Ignore(CHROME)
   @Ignore(SAFARI)
   @Ignore(PHANTOMJS)
+  @NotYetImplemented(MARIONETTE)
   @NeedsLocalEnvironment
   public void testNoneStrategyShouldNotWaitForPageToLoad() {
     initLocalDriver("none");
@@ -105,6 +106,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   @Ignore(CHROME)
   @Ignore(SAFARI)
   @Ignore(PHANTOMJS)
+  @NotYetImplemented(MARIONETTE)
   @NeedsLocalEnvironment
   public void testNoneStrategyShouldNotWaitForPageToRefresh() {
     initLocalDriver("none");
@@ -130,6 +132,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   @Ignore(CHROME)
   @Ignore(SAFARI)
   @Ignore(PHANTOMJS)
+  @NotYetImplemented(MARIONETTE)
   @NeedsLocalEnvironment
   public void testEagerStrategyShouldNotWaitForResources() {
     initLocalDriver("eager");
@@ -154,6 +157,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   @Ignore(CHROME)
   @Ignore(SAFARI)
   @Ignore(PHANTOMJS)
+  @NotYetImplemented(MARIONETTE)
   @NeedsLocalEnvironment
   public void testEagerStrategyShouldNotWaitForResourcesOnRefresh() {
     initLocalDriver("eager");
@@ -350,6 +354,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   @Ignore(IE)
   @Ignore(PHANTOMJS)
   @Ignore(value = SAFARI, reason = "does not support insecure SSL")
+  @NotYetImplemented(MARIONETTE)
   public void testShouldBeAbleToAccessPagesWithAnInsecureSslCertificate() {
     // TODO(user): Set the SSL capability to true.
     driver.get(appServer.whereIsSecure("simpleTest.html"));

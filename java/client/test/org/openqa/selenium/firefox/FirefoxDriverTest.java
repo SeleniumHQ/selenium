@@ -119,6 +119,7 @@ public class FirefoxDriverTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(MARIONETTE)
   public void canPassCapabilities() {
     DesiredCapabilities capabilities = new DesiredCapabilities();
     capabilities.setCapability(CapabilityType.PAGE_LOAD_STRATEGY, "none");
