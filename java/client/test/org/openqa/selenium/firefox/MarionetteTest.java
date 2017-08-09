@@ -174,6 +174,7 @@ public class MarionetteTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(MARIONETTE)
   public void canPassCapabilitiesBinaryAndProfileSeparately() throws IOException {
     FirefoxBinary binary = spy(new FirefoxBinary());
 
