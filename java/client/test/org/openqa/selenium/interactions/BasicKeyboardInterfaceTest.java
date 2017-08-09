@@ -165,7 +165,6 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
   @Test
   public void testThrowsIllegalArgumentExceptionWithNullKeys() {
     driver.get(pages.javascriptPage);
-    driver.findElement(By.id("keyReporter")).sendKeys(null);
     Throwable t = catchThrowable(() -> driver.findElement(By.id("keyReporter")).sendKeys(null));
     assertThat(t, instanceOf(IllegalArgumentException.class));
   }
