@@ -45,6 +45,7 @@ def testSelectByIndexSingle(driver, pages):
 
 @pytest.mark.xfail_chrome
 @pytest.mark.xfail_firefox
+@pytest.mark.xfail_remote
 @pytest.mark.xfail_marionette(raises=InvalidElementStateException)
 @pytest.mark.xfail_phantomjs
 @pytest.mark.xfail_safari
@@ -67,6 +68,7 @@ def testSelectByValueSingle(driver, pages):
 
 @pytest.mark.xfail_chrome
 @pytest.mark.xfail_firefox
+@pytest.mark.xfail_remote
 @pytest.mark.xfail_marionette(raises=InvalidElementStateException)
 @pytest.mark.xfail_phantomjs
 @pytest.mark.xfail_safari
@@ -104,6 +106,7 @@ def testSelectByVisibleTextShouldNormalizeSpaces(driver, pages):
 
 @pytest.mark.xfail_chrome
 @pytest.mark.xfail_firefox
+@pytest.mark.xfail_remote
 @pytest.mark.xfail_marionette(raises=InvalidElementStateException)
 @pytest.mark.xfail_phantomjs
 @pytest.mark.xfail_safari
