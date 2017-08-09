@@ -200,7 +200,6 @@ public class AlertsTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/607")
   public void testShouldAllowAUserToSetTheValueOfAPrompt() {
     driver.get(promptPage(null));
 
