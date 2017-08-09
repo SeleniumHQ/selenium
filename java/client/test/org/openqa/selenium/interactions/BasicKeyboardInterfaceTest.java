@@ -22,6 +22,7 @@ import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeFalse;
+import static org.openqa.selenium.testing.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.SAFARI;
@@ -38,6 +39,7 @@ import org.openqa.selenium.support.Colors;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.TestUtilities;
 
 /**
@@ -163,6 +165,7 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(HTMLUNIT)
   public void testThrowsIllegalArgumentExceptionWithNullKeys() {
     driver.get(pages.javascriptPage);
     Throwable t = catchThrowable(() -> driver.findElement(By.id("keyReporter")).sendKeys(null));
