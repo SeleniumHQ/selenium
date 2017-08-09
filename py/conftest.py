@@ -107,6 +107,9 @@ def driver(request):
             kwargs.update({'desired_capabilities': capabilities})
         driver_instance = getattr(webdriver, driver_class)(**kwargs)
     yield driver_instance
+    if MarkEvaluator(request.node, 'no_driver_after_test').istrue():
+        driver_instance = None
+
 
 
 @pytest.fixture(scope='session', autouse=True)
