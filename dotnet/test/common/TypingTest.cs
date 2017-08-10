@@ -480,7 +480,6 @@ namespace OpenQA.Selenium
         [Test]
         [Category("Javascript")]
         [IgnoreBrowser(Browser.HtmlUnit, "untested user agents")]
-        [IgnoreBrowser(Browser.Safari, "Issue 4221")]
         public void ShiftSelectionDeletes()
         {
             driver.Url = javascriptPage;
@@ -650,7 +649,7 @@ namespace OpenQA.Selenium
         [Test]
         [Category("Javascript")]
         [IgnoreBrowser(Browser.HtmlUnit, "Cannot type on contentEditable with synthetic events")]
-        [IgnoreBrowser(Browser.Safari, "Cannot type on contentEditable with synthetic events")]
+        //[IgnoreBrowser(Browser.Safari, "Cannot type on contentEditable with synthetic events")]
         [IgnoreBrowser(Browser.PhantomJS, "Cannot type on contentEditable with synthetic events")]
         [IgnoreBrowser(Browser.Android, "Does not support contentEditable")]
         [IgnoreBrowser(Browser.IPhone, "Does not support contentEditable")]
@@ -732,7 +731,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.HtmlUnit, "Cannot type on contentEditable with synthetic events")]
-        [IgnoreBrowser(Browser.Safari, "Cannot type on contentEditable with synthetic events")]
         [IgnoreBrowser(Browser.PhantomJS, "Cannot type on contentEditable with synthetic events")]
         [IgnoreBrowser(Browser.Android, "Does not support contentEditable")]
         [IgnoreBrowser(Browser.IPhone, "Does not support contentEditable")]
@@ -757,8 +755,6 @@ namespace OpenQA.Selenium
 
         [IgnoreBrowser(Browser.Chrome, "ChromeDriver2 does not support contentEditable yet")]
         [IgnoreBrowser(Browser.IE, "IE places cursor at beginning of content")]
-        [IgnoreBrowser(Browser.Safari, "Cannot type on contentEditable with synthetic events")]
-        [IgnoreBrowser(Browser.HtmlUnit, "Cannot type on contentEditable with synthetic events")]
         [Test]
         public void ShouldBeAbleToTypeIntoContentEditableElementWithExistingValue()
         {
@@ -776,7 +772,6 @@ namespace OpenQA.Selenium
             Assert.AreEqual(initialText + ", edited", editable.Text);
         }
 
-        [IgnoreBrowser(Browser.Safari, "Cannot type on contentEditable with synthetic events")]
         [IgnoreBrowser(Browser.HtmlUnit, "Cannot type on contentEditable with synthetic events")]
         [IgnoreBrowser(Browser.IE, "Untested browser")]
         [NeedsFreshDriver(IsCreatedAfterTest = true)]
@@ -794,7 +789,6 @@ namespace OpenQA.Selenium
             Assert.AreEqual("cheese", editable.Text);
         }
 
-        [IgnoreBrowser(Browser.Safari, "Untested browser")]
         [Test]
         public void CanSafelyTypeOnElementThatIsRemovedFromTheDomOnKeyPress()
         {

@@ -9,7 +9,7 @@ namespace OpenQA.Selenium
     public class WindowSwitchingTest : DriverTestFixture
     {
         [Test]
-        [IgnoreBrowser(Browser.Safari, "Hangs Safari driver")]
+        //[IgnoreBrowser(Browser.Safari, "Hangs Safari driver")]
         [IgnoreBrowser(Browser.WindowsPhone, "Driver does not support multiple windows")]
         public void ShouldSwitchFocusToANewWindowWhenItIsOpenedAndNotStopFutureOperations()
         {
@@ -37,7 +37,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Safari, "Hangs Safari driver")]
+        //[IgnoreBrowser(Browser.Safari, "Hangs Safari driver")]
         public void ShouldThrowNoSuchWindowException() {
             driver.Url = xhtmlTestPage;
             String current = driver.CurrentWindowHandle;
@@ -172,7 +172,7 @@ namespace OpenQA.Selenium
         [Test]
         [NeedsFreshDriver(IsCreatedBeforeTest = true, IsCreatedAfterTest = true)]
         [IgnoreBrowser(Browser.IE)]
-        [IgnoreBrowser(Browser.Safari, "Hangs Safari driver")]
+        //[IgnoreBrowser(Browser.Safari, "Hangs Safari driver")]
         public void ShouldBeAbleToIterateOverAllOpenWindows()
         {
             driver.Url = xhtmlTestPage;
@@ -196,7 +196,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Safari, "Hangs Safari driver")]
+        //[IgnoreBrowser(Browser.Safari, "Hangs Safari driver")]
         public void ClickingOnAButtonThatClosesAnOpenWindowDoesNotCauseTheBrowserToHang()
         {
             bool isIEDriver = TestUtilities.IsInternetExplorer(driver);
@@ -236,7 +236,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.Safari, "Hangs Safari driver")]
+        //[IgnoreBrowser(Browser.Safari, "Hangs Safari driver")]
         public void CanCallGetWindowHandlesAfterClosingAWindow()
         {
             bool isIEDriver = TestUtilities.IsInternetExplorer(driver);
@@ -306,7 +306,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Safari, "Hangs Safari driver")]
+        //[IgnoreBrowser(Browser.Safari, "Hangs Safari driver")]
         [IgnoreBrowser(Browser.WindowsPhone, "Driver does not support multiple windows")]
         [NeedsFreshDriver(IsCreatedBeforeTest = true, IsCreatedAfterTest = true)]
         public void CanCloseWindowWhenMultipleWindowsAreOpen()
@@ -331,7 +331,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Safari, "Hangs Safari driver")]
+        //[IgnoreBrowser(Browser.Safari, "Hangs Safari driver")]
         [NeedsFreshDriver(IsCreatedBeforeTest = true, IsCreatedAfterTest = true)]
         public void ClosingOnlyWindowShouldNotCauseTheBrowserToHang()
         {
@@ -345,7 +345,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.WindowsPhone, "Driver does not support multiple windows")]
-        [IgnoreBrowser(Browser.Safari, "Hangs Safari driver")]
+        //[IgnoreBrowser(Browser.Safari, "Hangs Safari driver")]
         public void ShouldGetBrowserHandles()
         {
             driver.Url = xhtmlTestPage;

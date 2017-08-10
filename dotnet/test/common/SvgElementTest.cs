@@ -10,7 +10,6 @@ namespace OpenQA.Selenium
         [Test]
         [IgnoreBrowser(Browser.Opera, "Not tested")]
         [IgnoreBrowser(Browser.HtmlUnit, "SVG tests only in rendered browsers")]
-        [IgnoreBrowser(Browser.Safari, "Not supported by driver")]
         public void ShouldClickOnGraphVisualElements()
         {
             if (TestUtilities.IsOldIE(driver))
@@ -38,7 +37,6 @@ namespace OpenQA.Selenium
         [Test]
         [IgnoreBrowser(Browser.Opera, "Not tested")]
         [IgnoreBrowser(Browser.HtmlUnit, "SVG tests only in rendered browsers")]
-        [IgnoreBrowser(Browser.Safari, "Not supported by driver")]
         public void ShouldClickOnGraphTextElements()
         {
             if (TestUtilities.IsOldIE(driver))

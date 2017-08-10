@@ -328,7 +328,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.Safari, "Does not yet support file uploads")]
         [IgnoreBrowser(Browser.WindowsPhone, "Does not yet support file uploads")]
         public void UploadingFileShouldFireOnChangeEvent()
         {
@@ -381,7 +380,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.IE, "IE doesn't support detecting overlapped elements")]
-        [IgnoreBrowser(Browser.Safari)]
         public void ClickOverlappingElements()
         {
             if (TestUtilities.IsOldIE(driver))
@@ -397,7 +395,6 @@ namespace OpenQA.Selenium
         [Test]
         [IgnoreBrowser(Browser.IE, "IE doesn't support detecting overlapped elements")]
         [IgnoreBrowser(Browser.Chrome)]
-        [IgnoreBrowser(Browser.Safari)]
         public void ClickPartiallyOverlappingElements()
         {
             if (TestUtilities.IsOldIE(driver))
@@ -450,7 +447,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Safari)]
         public void ClickAnElementThatDisappear()
         {
             if (TestUtilities.IsOldIE(driver))

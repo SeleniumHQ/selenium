@@ -511,6 +511,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Android, "Android not tested")]
         [IgnoreBrowser(Browser.Opera, "Opera obeys the method contract.")]
         [IgnoreBrowser(Browser.HtmlUnit, "HtmlUnit obeys the method contract.")]
+        [IgnoreBrowser(Browser.Firefox)]
         public void ShouldBeAbleToPassADictionaryAsAParameter()
         {
             driver.Url = simpleTestPage;

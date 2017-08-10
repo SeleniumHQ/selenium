@@ -8,7 +8,8 @@ namespace OpenQA.Selenium.Html5
     {
         [Test]
         [IgnoreBrowser(Browser.Android, "Untested feature")]
-        public void TestAppCacheStatus()
+		[IgnoreBrowser(Browser.Safari, "Unimplemented feature")]
+		public void TestAppCacheStatus()
         {
             driver.Url = html5Page;
             driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromMilliseconds(2000);
