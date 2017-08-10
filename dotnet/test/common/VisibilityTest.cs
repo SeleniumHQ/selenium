@@ -129,7 +129,6 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.HtmlUnit)]
         [IgnoreBrowser(Browser.Opera)]
         [IgnoreBrowser(Browser.PhantomJS)]
-        [IgnoreBrowser(Browser.Safari)]
         public void ElementHiddenByOverflowXIsNotVisible()
         {
             string[] pages = new string[]{
@@ -189,7 +188,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Safari)]
         public void ElementScrollableByOverflowYIsVisible()
         {
             string[] pages = new string[]{
