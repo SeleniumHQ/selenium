@@ -1,4 +1,4 @@
-// <copyright file="TableRowElement.cs" company="WebDriver Committers">
+﻿// <copyright file="TableRowElement.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -17,45 +17,34 @@
 // </copyright>
 
 using System.Collections.Generic;
+using System.Linq;
 
 namespace OpenQA.Selenium.Support.UI
 {
+  /// <summary>
+  ///   Wraps an IWebElement into a user-friendly table-row-element
+  /// </summary>
+  public class TableRowElement
+  {
+    public readonly IWebElement WebElement;
+
     /// <summary>
-    ///     Wraps an IWebElement into a user-friendly table-row-element
+    ///   Initializes a new instance of the <see cref="TableRowElement" /> class.
     /// </summary>
-    public class TableRowElement
+    /// <param name="webElement">The IWebElement that is wrapped</param>
+    public TableRowElement(IWebElement webElement)
     {
-        private readonly IWebElement webElement;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="TableRowElement"/> class.
-        /// </summary>
-        /// <param name="webElement">The IWebElement that is wrapped</param>
-        public TableRowElement(OpenQA.Selenium.IWebElement webElement)
-        {
-            this.webElement = webElement;
-        }
-
-        /// <summary>
-        /// Gets the list of table header cells
-        /// </summary>
-        public IList<TableCellElement> HeaderCells => this.TheCells("th");
-
-        /// <summary>
-        /// Gets the list of table data cells
-        /// </summary>
-        public IList<TableCellElement> DataCells => this.TheCells("td");
-
-        private IList<TableCellElement> TheCells(string tagName)
-        {
-            var webElements = this.webElement.FindElements(By.TagName(tagName));
-            IList<TableCellElement> cellElements = new List<TableCellElement>(webElements.Count);
-            foreach (var webElement in webElements)
-            {
-                cellElements.Add(new TableCellElement(webElement));
-            }
-
-            return cellElements;
-        }
+      this.WebElement = webElement;
     }
+
+    public IList<TableCellElement> HeaderCells => this.TheCells("th");
+
+    public IList<TableCellElement> DataCells => this.TheCells("td");
+
+    private IList<TableCellElement> TheCells(string tagName)
+    {
+      var webElements = this.WebElement.FindElements(By.TagName(tagName));
+      return webElements.Select(e => new TableCellElement(e)).ToList();
+    }
+  }
 }
