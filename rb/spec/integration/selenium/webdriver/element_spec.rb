@@ -70,7 +70,8 @@ module Selenium
 
       # PhantomJS on windows issue: https://github.com/ariya/phantomjs/issues/10993
       # https://github.com/mozilla/geckodriver/issues/644
-      not_compliant_on browser: [:safari, :edge, :phantomjs, :ff_nightly] do
+      # https://github.com/mozilla/geckodriver/issues/858
+      not_compliant_on browser: [:safari, :edge, :phantomjs, :ff_nightly, :firefox] do
         it 'should handle file uploads' do
           driver.navigate.to url_for('formPage.html')
 
