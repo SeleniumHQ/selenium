@@ -105,6 +105,7 @@
     <Compile Include="UI\IWait{T}.cs" />
     <Compile Include="UI\LoadableComponent{T}.cs" />
     <Compile Include="UI\LoadableComponentException.cs" />
+    <Compile Include="UI\NotTableElementException.cs" />
     <Compile Include="UI\PopupWindowFinder.cs" />
     <Compile Include="UI\SelectElement.cs" />
     <Compile Include="UI\SlowLoadableComponent{T}.cs" />
