@@ -66,23 +66,23 @@ module Selenium
         #   options.element_scroll_behavior = Selenium::WebDriver::IE::Options::SCROLL_BOTTOM
         #   driver = Selenium::WebDriver.for(:ie, options: options)
         #
-        # @param [Hash] options the pre-defined options
-        # @option options [Array<String>] args
-        # @option options [Integer] browser_attach_timeout
-        # @option options [Integer] element_scroll_behavior Either SCROLL_TOP or SCROLL_BOTTOM
-        # @option options [Boolean] full_page_screenshot
-        # @option options [Boolean] ensure_clean_session
-        # @option options [Integer] file_upload_dialog_timeout
-        # @option options [Boolean] force_create_process_api
-        # @option options [Boolean] force_shell_windows_api
-        # @option options [Boolean] ignore_protected_mode_settings
-        # @option options [Boolean] ignore_zoom_level
-        # @option options [String] initial_browser_url
-        # @option options [Boolean] native_events
-        # @option options [Boolean] persistent_hover
-        # @option options [Boolean] require_window_focus
-        # @option options [Boolean] use_per_process_proxy
-        # @option options [Boolean] validate_cookie_document_type
+        # @param [Hash] opts the pre-defined options
+        # @option opts [Array<String>] args
+        # @option opts [Integer] browser_attach_timeout
+        # @option opts [Integer] element_scroll_behavior Either SCROLL_TOP or SCROLL_BOTTOM
+        # @option opts [Boolean] full_page_screenshot
+        # @option opts [Boolean] ensure_clean_session
+        # @option opts [Integer] file_upload_dialog_timeout
+        # @option opts [Boolean] force_create_process_api
+        # @option opts [Boolean] force_shell_windows_api
+        # @option opts [Boolean] ignore_protected_mode_settings
+        # @option opts [Boolean] ignore_zoom_level
+        # @option opts [String] initial_browser_url
+        # @option opts [Boolean] native_events
+        # @option opts [Boolean] persistent_hover
+        # @option opts [Boolean] require_window_focus
+        # @option opts [Boolean] use_per_process_proxy
+        # @option opts [Boolean] validate_cookie_document_type
         #
 
         def initialize(**opts)
