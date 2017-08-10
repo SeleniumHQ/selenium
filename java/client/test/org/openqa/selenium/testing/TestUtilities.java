@@ -197,6 +197,10 @@ public class TestUtilities {
     return !Boolean.getBoolean("selenium.browser.remote") && !SauceDriver.shouldUseSauce();
   }
 
+  public static boolean isOnTravis() {
+    return Boolean.valueOf(System.getenv("TRAVIS"));
+  }
+
   public static Throwable catchThrowable(Runnable f) {
     try {
       f.run();
