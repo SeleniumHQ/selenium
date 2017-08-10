@@ -9,6 +9,17 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v3.5.0.0
+========
+ * Release to synchronize with release of Selenium project.
+ * Updates to JavaScript automation atoms.
+ * To successfully use this version of the IE driver, you should be using
+   version 3.5 or above of the language bindings. Those are the only versions
+   of language bindings that will understand the payload required to be sent
+   during the creation of a new session. Earlier versions of the language
+   bindings are not guaranteed to be fully compatible with this release of
+   the IE driver.
+
 v3.4.0.1
 ========
  * This release adds the remote protocol end points and handling of commands
