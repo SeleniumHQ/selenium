@@ -1,4 +1,4 @@
-// <copyright file="TableCellElement.cs" company="WebDriver Committers">
+﻿// <copyright file="TableCellElement.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -16,37 +16,32 @@
 // limitations under the License.
 // </copyright>
 
-namespace OpenQA.Selenium.Support.UI
+﻿namespace OpenQA.Selenium.Support.UI
 {
     /// <summary>
     ///     Wraps an IWebElement into a user-friendly table-data-element
     /// </summary>
     public class TableCellElement
     {
-        private IWebElement cellElement;
-
         /// <summary>
-        /// Initializes a new instance of the <see cref="TableCellElement"/> class.
+        /// Access to the WebElement for further navigation through complex WebElements.
         /// </summary>
-        /// <param name="cell">The IWebElement that is wrapped</param>
-        public TableCellElement(IWebElement cell)
+        public readonly IWebElement WebElement;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="TableCellElement"/> class.
+    /// </summary>
+    /// <param name="webElement">The IWebElement that is wrapped</param>
+    public TableCellElement(IWebElement webElement)
         {
-            this.cellElement = cell;
+            this.WebElement = webElement;
         }
 
         /// <summary>
-        /// Gets the WebElement for further purpose and flexible interoperation
+        ///     The html tagname of the IWebElement
         /// </summary>
-        public IWebElement Cell => this.cellElement;
+        public string TagName => this.WebElement.TagName;
 
-        /// <summary>
-        /// Gets the html tagname of the IWebElement
-        /// </summary>
-        public string TagName => this.Cell.TagName;
-
-        /// <summary>
-        /// Gets the inner Text of the WebElement
-        /// </summary>
-        public string Text => this.Cell.Text;
+        public string Text => this.WebElement.Text;
     }
 }
