@@ -1,3 +1,19 @@
+3.5.0 (2017-08-10)
+==================
+
+Firefox:
+  * Firefox subprocess output is now only redirected when debug is set (issue #4311)
+  * Fixed a bug where non-integers could be sent when setting window rect
+  * Fixed Firefox location detection on Windows_x64 (thanks kamenlitchev)
+  * Fixed passing of profile with a W3C compatible remote end
+
+IE:
+  * Added new IE::Options class that should be used to customize browser
+    behavior (native events, element scroll behavior, etc).
+    The instance of options class can be passed to driver initialization using
+    :options key. Old way of passing these customization directly to driver
+    initialization is deprecated.
+
 3.4.4 (2017-07-13)
 ==================
 
