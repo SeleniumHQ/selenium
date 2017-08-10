@@ -45,4 +45,4 @@ def profile():
 
 
 def test_profile_is_used(driver):
-    assert 'about:blank' == driver.current_url
+    assert 'about:blank' == driver.current_url or 'about:' == driver.current_url
