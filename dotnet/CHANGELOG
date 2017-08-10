@@ -1,3 +1,13 @@
+v3.5.0
+======
+ * (on behalf of Matthew Lymer) Fixing the parsing of logging levels to match
+   the values in the LogLevel enum. Fixes issue #4121.
+ * Updated .NET DriverService to allow hard termination shutdown of
+   exectuable.s Some driver services (geckodriver, safaridriver) don't support
+   a shutdown HTTP end point. The base DriverSerivce class should allow for
+   that, and not attempt to use one if it's known the service doesn't provide
+   one.
+
 v3.4.0
 ======
  * Exposed new Interactions framework. This release introduces a new 
