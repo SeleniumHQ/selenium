@@ -1,3 +1,16 @@
+Selenium 3.5.0
+
+* Numerous test fixes
+*Iterate over capabilities in a way to support py2.7 and py3
+* Fix W3C switching to window by name.
+* Support GeckoDriver addon install/uninstall commands  #4215.
+* Move firefox_profile into moz:firefoxOptions.
+* Filter non-W3C capability names out of alwaysMatch.
+* Honor cmd line args passed to Service ctor (#4167)
+* Add expected conditions based on URL to Python Expected Conditions #4160
+* Add network emulation to Chrome Python bindings (#4011)
+* add warning when saving incorrectly named screenshot (#4141)
+
 Selenium 3.4.3
 * Fix EventFiringWebdriver and WebElement to raise AttributeError on missing attributes. (#4107)
 * unwrap WebElements inside dicts
@@ -540,3 +553,7 @@ Selenium 2 Beta 2
 * Improved IEDriver
 * Basic Authentication support for Selenium 2
 * Ability to have multiple Firefox instances
+commit 470eacc265d8d1e2aa2153a32131e80029989723
+Author: Alexei Barantsev <barancev@gmail.com>
+Date:   Thu Aug 10 12:26:45 2017 +0300
+
