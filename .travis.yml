@@ -122,15 +122,12 @@ matrix:
     - env: TOXENV=py27-remote
       <<: *python
       <<: *firefox-esr
+    - env: MARIONETTE=1 TOXENV=py27-marionette
+      <<: *python
+      <<: *firefox-nightly
     - env: TOXENV=py33-unit
       <<: *python
       python: 3.3
-    - language: python
-      python: 3.4
-      env: TOXENV=py34-unit
-    - env: TOXENV=py35-unit
-      <<: *python
-      python: 3.5
     - env: TOXENV=flake8
       <<: *python
       python: 3.6
@@ -148,9 +145,6 @@ matrix:
       <<: *python
       <<: *firefox-esr
       python: 3.6
-    - env: MARIONETTE=1 TOXENV=py27-marionette
-      <<: *python
-      <<: *firefox-nightly
     - env: MARIONETTE=1 TOXENV=py36-marionette
       <<: *python
       <<: *firefox-nightly
