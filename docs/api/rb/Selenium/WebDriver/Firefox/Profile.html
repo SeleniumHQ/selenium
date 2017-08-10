@@ -1,12 +1,12 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!DOCTYPE html>
+<html>
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>
   Class: Selenium::WebDriver::Firefox::Profile
   
-    &mdash; Documentation by YARD 0.8.7.6
+    &mdash; Documentation by YARD 0.9.9
   
 </title>
 
@@ -15,9 +15,8 @@
   <link rel="stylesheet" href="../../../css/common.css" type="text/css" charset="utf-8" />
 
 <script type="text/javascript" charset="utf-8">
-  hasFrames = window.top.frames.main ? true : false;
+  pathId = "Selenium::WebDriver::Firefox::Profile";
   relpath = '../../../';
-  framesUrl = "../../../frames.html#!Selenium/WebDriver/Firefox/Profile.html";
 </script>
 
 
@@ -28,51 +27,48 @@
 
   </head>
   <body>
-    <div id="header">
-      <div id="menu">
+    <div class="nav_wrap">
+      <iframe id="nav" src="../../../class_list.html?1"></iframe>
+      <div id="resizer"></div>
+    </div>
+
+    <div id="main" tabindex="-1">
+      <div id="header">
+        <div id="menu">
   
     <a href="../../../_index.html">Index (P)</a> &raquo;
     <span class='title'><span class='object_link'><a href="../../../Selenium.html" title="Selenium (module)">Selenium</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../Firefox.html" title="Selenium::WebDriver::Firefox (module)">Firefox</a></span></span>
      &raquo; 
     <span class="title">Profile</span>
   
-
-  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
 </div>
 
-      <div id="search">
+        <div id="search">
   
     <a class="full_list_link" id="class_list_link"
         href="../../../class_list.html">
-      Class List
-    </a>
-  
-    <a class="full_list_link" id="method_list_link"
-        href="../../../method_list.html">
-      Method List
-    </a>
-  
-    <a class="full_list_link" id="file_list_link"
-        href="../../../file_list.html">
-      File List
+
+        <svg width="24" height="24">
+          <rect x="0" y="4" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="12" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="20" width="24" height="4" rx="1" ry="1"></rect>
+        </svg>
     </a>
   
 </div>
-      <div class="clear"></div>
-    </div>
+        <div class="clear"></div>
+      </div>
 
-    <iframe id="search_frame"></iframe>
-
-    <div id="content"><h1>Class: Selenium::WebDriver::Firefox::Profile
+      <div id="content"><h1>Class: Selenium::WebDriver::Firefox::Profile
   
   
   
 </h1>
-
-<dl class="box">
+<div class="box_info">
   
-    <dt class="r1">Inherits:</dt>
-    <dd class="r1">
+  <dl>
+    <dt>Inherits:</dt>
+    <dd>
       <span class="inheritName">Object</span>
       
         <ul class="fullTree">
@@ -83,65 +79,68 @@
         </ul>
         <a href="#" class="inheritanceTree">show all</a>
       
-      </dd>
-    
+    </dd>
+  </dl>
   
-  
-    
-  
-    
-      <dt class="r2">Includes:</dt>
-      <dd class="r2"><span class='object_link'><a href="../ProfileHelper.html" title="Selenium::WebDriver::ProfileHelper (module)">ProfileHelper</a></span></dd>
-      
-    
+
   
   
   
-    <dt class="r1 last">Defined in:</dt>
-    <dd class="r1 last">lib/selenium/webdriver/firefox/profile.rb</dd>
   
-</dl>
-<div class="clear"></div>
+  <dl>
+      <dt>Includes:</dt>
+      <dd><span class='object_link'><a href="../ProfileHelper.html" title="Selenium::WebDriver::ProfileHelper (module)">ProfileHelper</a></span></dd>
+  </dl>
+  
+  
+
+  
+
+  
+  <dl>
+    <dt>Defined in:</dt>
+    <dd>lib/selenium/webdriver/firefox/profile.rb</dd>
+  </dl>
+  
+</div>
 
 
   <h2>Constant Summary</h2>
-  
-    <dl class="constants">
-      
-        <dt id="VALID_PREFERENCE_TYPES-constant" class="">VALID_PREFERENCE_TYPES =
-          
-        </dt>
-        <dd><pre class="code"><span class='lbracket'>[</span><span class='const'>TrueClass</span><span class='comma'>,</span> <span class='const'>FalseClass</span><span class='comma'>,</span> <span class='const'>Integer</span><span class='comma'>,</span> <span class='const'>Float</span><span class='comma'>,</span> <span class='const'>String</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
-      
-        <dt id="WEBDRIVER_EXTENSION_PATH-constant" class="">WEBDRIVER_EXTENSION_PATH =
-          
-        </dt>
-        <dd><pre class="code"><span class='const'>File</span><span class='period'>.</span><span class='id identifier rubyid_expand_path'>expand_path</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='const'>WebDriver</span><span class='period'>.</span><span class='id identifier rubyid_root'>root</span><span class='embexpr_end'>}</span><span class='tstring_content'>/selenium/webdriver/firefox/extension/webdriver.xpi</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span></pre></dd>
-      
-        <dt id="WEBDRIVER_PREFS-constant" class="">WEBDRIVER_PREFS =
-          
-        </dt>
-        <dd><pre class="code"><span class='lbrace'>{</span>
+  <dl class="constants">
+    
+      <dt id="VALID_PREFERENCE_TYPES-constant" class="">VALID_PREFERENCE_TYPES =
+        
+      </dt>
+      <dd><pre class="code"><span class='lbracket'>[</span><span class='const'>TrueClass</span><span class='comma'>,</span> <span class='const'>FalseClass</span><span class='comma'>,</span> <span class='const'>Integer</span><span class='comma'>,</span> <span class='const'>Float</span><span class='comma'>,</span> <span class='const'>String</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
+    
+      <dt id="WEBDRIVER_EXTENSION_PATH-constant" class="">WEBDRIVER_EXTENSION_PATH =
+        
+      </dt>
+      <dd><pre class="code"><span class='const'>File</span><span class='period'>.</span><span class='id identifier rubyid_expand_path'>expand_path</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='const'><span class='object_link'><a href="../../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span><span class='period'>.</span><span class='id identifier rubyid_root'><span class='object_link'><a href="../../WebDriver.html#root-class_method" title="Selenium::WebDriver.root (method)">root</a></span></span><span class='embexpr_end'>}</span><span class='tstring_content'>/selenium/webdriver/firefox/extension/webdriver.xpi</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span></pre></dd>
+    
+      <dt id="WEBDRIVER_PREFS-constant" class="">WEBDRIVER_PREFS =
+        
+      </dt>
+      <dd><pre class="code"><span class='lbrace'>{</span>
   <span class='label'>native_events:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>webdriver_enable_native_events</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
   <span class='label'>untrusted_certs:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>webdriver_accept_untrusted_certs</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
   <span class='label'>untrusted_issuer:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>webdriver_assume_untrusted_issuer</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
   <span class='label'>port:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>webdriver_firefox_port</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
   <span class='label'>log_file:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>webdriver.log.file</span><span class='tstring_end'>&#39;</span></span>
 <span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
-      
-    </dl>
-  
+    
+  </dl>
 
 
 
 
-  <h2>Instance Attribute Summary <small>(<a href="#" class="summary_toggle">collapse</a>)</small></h2>
+  <h2>Instance Attribute Summary <small><a href="#" class="summary_toggle">collapse</a></small></h2>
   <ul class="summary">
     
       <li class="public ">
   <span class="summary_signature">
     
-      <a href="#load_no_focus_lib%3D-instance_method" title="#load_no_focus_lib= (instance method)">- (Object) <strong>load_no_focus_lib</strong> </a>
+      <a href="#load_no_focus_lib=-instance_method" title="#load_no_focus_lib= (instance method)">#<strong>load_no_focus_lib</strong>  &#x21d2; Object </a>
     
 
     
@@ -170,7 +169,7 @@
       <li class="public ">
   <span class="summary_signature">
     
-      <a href="#log_file-instance_method" title="#log_file (instance method)">- (Object) <strong>log_file</strong> </a>
+      <a href="#log_file-instance_method" title="#log_file (instance method)">#<strong>log_file</strong>  &#x21d2; Object </a>
     
 
     
@@ -197,7 +196,7 @@
       <li class="public ">
   <span class="summary_signature">
     
-      <a href="#name-instance_method" title="#name (instance method)">- (Object) <strong>name</strong> </a>
+      <a href="#name-instance_method" title="#name (instance method)">#<strong>name</strong>  &#x21d2; Object </a>
     
 
     
@@ -226,7 +225,7 @@
       <li class="public ">
   <span class="summary_signature">
     
-      <a href="#native_events%3D-instance_method" title="#native_events= (instance method)">- (Object) <strong>native_events</strong> </a>
+      <a href="#native_events=-instance_method" title="#native_events= (instance method)">#<strong>native_events</strong>  &#x21d2; Object </a>
     
 
     
@@ -255,7 +254,7 @@
       <li class="public ">
   <span class="summary_signature">
     
-      <a href="#secure_ssl%3D-instance_method" title="#secure_ssl= (instance method)">- (Object) <strong>secure_ssl</strong> </a>
+      <a href="#secure_ssl=-instance_method" title="#secure_ssl= (instance method)">#<strong>secure_ssl</strong>  &#x21d2; Object </a>
     
 
     
@@ -289,7 +288,7 @@
   
     <h2>
       Class Method Summary
-      <small>(<a href="#" class="summary_toggle">collapse</a>)</small>
+      <small><a href="#" class="summary_toggle">collapse</a></small>
     </h2>
 
     <ul class="summary">
@@ -297,7 +296,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#default_preferences-class_method" title="default_preferences (class method)">+ (Object) <strong>default_preferences</strong> </a>
+      <a href="#default_preferences-class_method" title="default_preferences (class method)">.<strong>default_preferences</strong>  &#x21d2; Object </a>
     
 
     
@@ -319,7 +318,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#from_name-class_method" title="from_name (class method)">+ (Object) <strong>from_name</strong>(name) </a>
+      <a href="#from_name-class_method" title="from_name (class method)">.<strong>from_name</strong>(name)  &#x21d2; Object </a>
     
 
     
@@ -341,7 +340,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#ini-class_method" title="ini (class method)">+ (Object) <strong>ini</strong> </a>
+      <a href="#ini-class_method" title="ini (class method)">.<strong>ini</strong>  &#x21d2; Object </a>
     
 
     
@@ -364,7 +363,7 @@
   
     <h2>
       Instance Method Summary
-      <small>(<a href="#" class="summary_toggle">collapse</a>)</small>
+      <small><a href="#" class="summary_toggle">collapse</a></small>
     </h2>
 
     <ul class="summary">
@@ -372,7 +371,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#%5B%5D%3D-instance_method" title="#[]= (instance method)">- (Object) <strong>[]=</strong>(key, value) </a>
+      <a href="#[]=-instance_method" title="#[]= (instance method)">#<strong>[]=</strong>(key, value)  &#x21d2; Object </a>
     
 
     
@@ -396,7 +395,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#add_extension-instance_method" title="#add_extension (instance method)">- (Object) <strong>add_extension</strong>(path, name = extension_name_for(path)) </a>
+      <a href="#add_extension-instance_method" title="#add_extension (instance method)">#<strong>add_extension</strong>(path, name = extension_name_for(path))  &#x21d2; Object </a>
     
 
     
@@ -421,7 +420,7 @@ profile.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#add_webdriver_extension-instance_method" title="#add_webdriver_extension (instance method)">- (Object) <strong>add_webdriver_extension</strong> </a>
+      <a href="#add_webdriver_extension-instance_method" title="#add_webdriver_extension (instance method)">#<strong>add_webdriver_extension</strong>  &#x21d2; Object </a>
     
 
     
@@ -443,7 +442,7 @@ profile.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#assume_untrusted_certificate_issuer%3D-instance_method" title="#assume_untrusted_certificate_issuer= (instance method)">- (Object) <strong>assume_untrusted_certificate_issuer=</strong>(bool) </a>
+      <a href="#assume_untrusted_certificate_issuer=-instance_method" title="#assume_untrusted_certificate_issuer= (instance method)">#<strong>assume_untrusted_certificate_issuer=</strong>(bool)  &#x21d2; Object </a>
     
 
     
@@ -465,7 +464,7 @@ profile.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#assume_untrusted_certificate_issuer%3F-instance_method" title="#assume_untrusted_certificate_issuer? (instance method)">- (Boolean) <strong>assume_untrusted_certificate_issuer?</strong> </a>
+      <a href="#assume_untrusted_certificate_issuer%3F-instance_method" title="#assume_untrusted_certificate_issuer? (instance method)">#<strong>assume_untrusted_certificate_issuer?</strong>  &#x21d2; Boolean </a>
     
 
     
@@ -487,7 +486,7 @@ profile.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#encoded-instance_method" title="#encoded (instance method)">- (Object) <strong>encoded</strong> </a>
+      <a href="#encoded-instance_method" title="#encoded (instance method)">#<strong>encoded</strong>  &#x21d2; Object </a>
     
 
     
@@ -509,7 +508,7 @@ profile.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#initialize-instance_method" title="#initialize (instance method)">- (Profile) <strong>initialize</strong>(model = nil) </a>
+      <a href="#initialize-instance_method" title="#initialize (instance method)">#<strong>initialize</strong>(model = nil)  &#x21d2; Profile </a>
     
 
     
@@ -535,7 +534,7 @@ profile.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#layout_on_disk-instance_method" title="#layout_on_disk (instance method)">- (Object) <strong>layout_on_disk</strong> </a>
+      <a href="#layout_on_disk-instance_method" title="#layout_on_disk (instance method)">#<strong>layout_on_disk</strong>  &#x21d2; Object </a>
     
 
     
@@ -557,7 +556,7 @@ profile.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#load_no_focus_lib%3F-instance_method" title="#load_no_focus_lib? (instance method)">- (Boolean) <strong>load_no_focus_lib?</strong> </a>
+      <a href="#load_no_focus_lib%3F-instance_method" title="#load_no_focus_lib? (instance method)">#<strong>load_no_focus_lib?</strong>  &#x21d2; Boolean </a>
     
 
     
@@ -579,7 +578,7 @@ profile.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#native_events%3F-instance_method" title="#native_events? (instance method)">- (Boolean) <strong>native_events?</strong> </a>
+      <a href="#native_events%3F-instance_method" title="#native_events? (instance method)">#<strong>native_events?</strong>  &#x21d2; Boolean </a>
     
 
     
@@ -601,7 +600,7 @@ profile.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#port%3D-instance_method" title="#port= (instance method)">- (Object) <strong>port=</strong>(port) </a>
+      <a href="#port=-instance_method" title="#port= (instance method)">#<strong>port=</strong>(port)  &#x21d2; Object </a>
     
 
     
@@ -623,7 +622,7 @@ profile.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#proxy%3D-instance_method" title="#proxy= (instance method)">- (Object) <strong>proxy=</strong>(proxy) </a>
+      <a href="#proxy=-instance_method" title="#proxy= (instance method)">#<strong>proxy=</strong>(proxy)  &#x21d2; Object </a>
     
 
     
@@ -645,7 +644,7 @@ profile.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#secure_ssl%3F-instance_method" title="#secure_ssl? (instance method)">- (Boolean) <strong>secure_ssl?</strong> </a>
+      <a href="#secure_ssl%3F-instance_method" title="#secure_ssl? (instance method)">#<strong>secure_ssl?</strong>  &#x21d2; Boolean </a>
     
 
     
@@ -684,7 +683,7 @@ profile.</p>
     <div class="method_details first">
   <h3 class="signature first" id="initialize-instance_method">
   
-    - (<tt><span class='object_link'><a href="" title="Selenium::WebDriver::Firefox::Profile (class)">Profile</a></span></tt>) <strong>initialize</strong>(model = nil) 
+    #<strong>initialize</strong>(model = nil)  &#x21d2; <tt><span class='object_link'><a href="" title="Selenium::WebDriver::Firefox::Profile (class)">Profile</a></span></tt> 
   
 
   
@@ -709,11 +708,11 @@ profile.</p>
 </div></p>
       
       <pre class="example code"><code>
-<span class='id identifier rubyid_profile'>profile</span> <span class='op'>=</span> <span class='const'>Selenium</span><span class='op'>::</span><span class='const'>WebDriver</span><span class='op'>::</span><span class='const'>Firefox</span><span class='op'>::</span><span class='const'>Profile</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span>
+<span class='id identifier rubyid_profile'>profile</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="../../../Selenium.html" title="Selenium (module)">Selenium</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Firefox.html" title="Selenium::WebDriver::Firefox (module)">Firefox</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="" title="Selenium::WebDriver::Firefox::Profile (class)">Profile</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span>
 <span class='id identifier rubyid_profile'>profile</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>network.proxy.http</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>localhost</span><span class='tstring_end'>&#39;</span></span>
 <span class='id identifier rubyid_profile'>profile</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>network.proxy.http_port</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='int'>9090</span>
 
-<span class='id identifier rubyid_driver'>driver</span> <span class='op'>=</span> <span class='const'>Selenium</span><span class='op'>::</span><span class='const'>WebDriver</span><span class='period'>.</span><span class='id identifier rubyid_for'>for</span> <span class='symbol'>:firefox</span><span class='comma'>,</span> <span class='symbol'>:profile</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_profile'>profile</span></code></pre>
+<span class='id identifier rubyid_driver'>driver</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="../../../Selenium.html" title="Selenium (module)">Selenium</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span><span class='period'>.</span><span class='id identifier rubyid_for'><span class='object_link'><a href="../../WebDriver.html#for-class_method" title="Selenium::WebDriver.for (method)">for</a></span></span> <span class='symbol'>:firefox</span><span class='comma'>,</span> <span class='symbol'>:profile</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_profile'>profile</span></code></pre>
     
   </div>
 
@@ -758,19 +757,19 @@ profile.</p>
   <span class='id identifier rubyid_model_prefs'>model_prefs</span> <span class='op'>=</span> <span class='id identifier rubyid_read_model_prefs'>read_model_prefs</span>
 
   <span class='kw'>if</span> <span class='id identifier rubyid_model_prefs'>model_prefs</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span>
-    <span class='ivar'>@native_events</span>     <span class='op'>=</span> <span class='const'>DEFAULT_ENABLE_NATIVE_EVENTS</span>
-    <span class='ivar'>@secure_ssl</span>        <span class='op'>=</span> <span class='const'>DEFAULT_SECURE_SSL</span>
-    <span class='ivar'>@untrusted_issuer</span>  <span class='op'>=</span> <span class='const'>DEFAULT_ASSUME_UNTRUSTED_ISSUER</span>
-    <span class='ivar'>@load_no_focus_lib</span> <span class='op'>=</span> <span class='const'>DEFAULT_LOAD_NO_FOCUS_LIB</span>
+    <span class='ivar'>@native_events</span>     <span class='op'>=</span> <span class='const'><span class='object_link'><a href="../Firefox.html#DEFAULT_ENABLE_NATIVE_EVENTS-constant" title="Selenium::WebDriver::Firefox::DEFAULT_ENABLE_NATIVE_EVENTS (constant)">DEFAULT_ENABLE_NATIVE_EVENTS</a></span></span>
+    <span class='ivar'>@secure_ssl</span>        <span class='op'>=</span> <span class='const'><span class='object_link'><a href="../Firefox.html#DEFAULT_SECURE_SSL-constant" title="Selenium::WebDriver::Firefox::DEFAULT_SECURE_SSL (constant)">DEFAULT_SECURE_SSL</a></span></span>
+    <span class='ivar'>@untrusted_issuer</span>  <span class='op'>=</span> <span class='const'><span class='object_link'><a href="../Firefox.html#DEFAULT_ASSUME_UNTRUSTED_ISSUER-constant" title="Selenium::WebDriver::Firefox::DEFAULT_ASSUME_UNTRUSTED_ISSUER (constant)">DEFAULT_ASSUME_UNTRUSTED_ISSUER</a></span></span>
+    <span class='ivar'>@load_no_focus_lib</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="../Firefox.html#DEFAULT_LOAD_NO_FOCUS_LIB-constant" title="Selenium::WebDriver::Firefox::DEFAULT_LOAD_NO_FOCUS_LIB (constant)">DEFAULT_LOAD_NO_FOCUS_LIB</a></span></span>
 
     <span class='ivar'>@additional_prefs</span>  <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
   <span class='kw'>else</span>
     <span class='comment'># TODO: clean this up
-</span>    <span class='ivar'>@native_events</span>     <span class='op'>=</span> <span class='id identifier rubyid_model_prefs'>model_prefs</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='const'>WEBDRIVER_PREFS</span><span class='lbracket'>[</span><span class='symbol'>:native_events</span><span class='rbracket'>]</span><span class='rparen'>)</span> <span class='op'>==</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>true</span><span class='tstring_end'>&#39;</span></span>
-    <span class='ivar'>@secure_ssl</span>        <span class='op'>=</span> <span class='id identifier rubyid_model_prefs'>model_prefs</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='const'>WEBDRIVER_PREFS</span><span class='lbracket'>[</span><span class='symbol'>:untrusted_certs</span><span class='rbracket'>]</span><span class='rparen'>)</span> <span class='op'>!=</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>true</span><span class='tstring_end'>&#39;</span></span>
-    <span class='ivar'>@untrusted_issuer</span>  <span class='op'>=</span> <span class='id identifier rubyid_model_prefs'>model_prefs</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='const'>WEBDRIVER_PREFS</span><span class='lbracket'>[</span><span class='symbol'>:untrusted_issuer</span><span class='rbracket'>]</span><span class='rparen'>)</span> <span class='op'>==</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>true</span><span class='tstring_end'>&#39;</span></span>
+</span>    <span class='ivar'>@native_events</span>     <span class='op'>=</span> <span class='id identifier rubyid_model_prefs'>model_prefs</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="#WEBDRIVER_PREFS-constant" title="Selenium::WebDriver::Firefox::Profile::WEBDRIVER_PREFS (constant)">WEBDRIVER_PREFS</a></span></span><span class='lbracket'>[</span><span class='symbol'>:native_events</span><span class='rbracket'>]</span><span class='rparen'>)</span> <span class='op'>==</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>true</span><span class='tstring_end'>&#39;</span></span>
+    <span class='ivar'>@secure_ssl</span>        <span class='op'>=</span> <span class='id identifier rubyid_model_prefs'>model_prefs</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="#WEBDRIVER_PREFS-constant" title="Selenium::WebDriver::Firefox::Profile::WEBDRIVER_PREFS (constant)">WEBDRIVER_PREFS</a></span></span><span class='lbracket'>[</span><span class='symbol'>:untrusted_certs</span><span class='rbracket'>]</span><span class='rparen'>)</span> <span class='op'>!=</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>true</span><span class='tstring_end'>&#39;</span></span>
+    <span class='ivar'>@untrusted_issuer</span>  <span class='op'>=</span> <span class='id identifier rubyid_model_prefs'>model_prefs</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="#WEBDRIVER_PREFS-constant" title="Selenium::WebDriver::Firefox::Profile::WEBDRIVER_PREFS (constant)">WEBDRIVER_PREFS</a></span></span><span class='lbracket'>[</span><span class='symbol'>:untrusted_issuer</span><span class='rbracket'>]</span><span class='rparen'>)</span> <span class='op'>==</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>true</span><span class='tstring_end'>&#39;</span></span>
     <span class='comment'># not stored in profile atm, so will always be false.
-</span>    <span class='ivar'>@load_no_focus_lib</span> <span class='op'>=</span> <span class='id identifier rubyid_model_prefs'>model_prefs</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='const'>WEBDRIVER_PREFS</span><span class='lbracket'>[</span><span class='symbol'>:load_no_focus_lib</span><span class='rbracket'>]</span><span class='rparen'>)</span> <span class='op'>==</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>true</span><span class='tstring_end'>&#39;</span></span>
+</span>    <span class='ivar'>@load_no_focus_lib</span> <span class='op'>=</span> <span class='id identifier rubyid_model_prefs'>model_prefs</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="#WEBDRIVER_PREFS-constant" title="Selenium::WebDriver::Firefox::Profile::WEBDRIVER_PREFS (constant)">WEBDRIVER_PREFS</a></span></span><span class='lbracket'>[</span><span class='symbol'>:load_no_focus_lib</span><span class='rbracket'>]</span><span class='rparen'>)</span> <span class='op'>==</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>true</span><span class='tstring_end'>&#39;</span></span>
     <span class='ivar'>@additional_prefs</span>  <span class='op'>=</span> <span class='id identifier rubyid_model_prefs'>model_prefs</span>
   <span class='kw'>end</span>
 
@@ -791,7 +790,7 @@ profile.</p>
       <div class="method_details first">
   <h3 class="signature first" id="load_no_focus_lib=-instance_method">
   
-    - (<tt>Object</tt>) <strong>load_no_focus_lib=</strong>(value)  <span class="extras">(writeonly)</span>
+    #<strong>load_no_focus_lib=</strong>(value)  &#x21d2; <tt>Object</tt>  <span class="extras">(writeonly)</span>
   
 
   
@@ -854,7 +853,7 @@ profile.</p>
       <div class="method_details ">
   <h3 class="signature " id="log_file-instance_method">
   
-    - (<tt>Object</tt>) <strong>log_file</strong> 
+    #<strong>log_file</strong>  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -897,7 +896,7 @@ profile.</p>
       <div class="method_details ">
   <h3 class="signature " id="name-instance_method">
   
-    - (<tt>Object</tt>) <strong>name</strong>  <span class="extras">(readonly)</span>
+    #<strong>name</strong>  &#x21d2; <tt>Object</tt>  <span class="extras">(readonly)</span>
   
 
   
@@ -940,7 +939,7 @@ profile.</p>
       <div class="method_details ">
   <h3 class="signature " id="native_events=-instance_method">
   
-    - (<tt>Object</tt>) <strong>native_events=</strong>(value)  <span class="extras">(writeonly)</span>
+    #<strong>native_events=</strong>(value)  &#x21d2; <tt>Object</tt>  <span class="extras">(writeonly)</span>
   
 
   
@@ -1003,7 +1002,7 @@ profile.</p>
       <div class="method_details ">
   <h3 class="signature " id="secure_ssl=-instance_method">
   
-    - (<tt>Object</tt>) <strong>secure_ssl=</strong>(value)  <span class="extras">(writeonly)</span>
+    #<strong>secure_ssl=</strong>(value)  &#x21d2; <tt>Object</tt>  <span class="extras">(writeonly)</span>
   
 
   
@@ -1071,7 +1070,7 @@ profile.</p>
       <div class="method_details first">
   <h3 class="signature first" id="default_preferences-class_method">
   
-    + (<tt>Object</tt>) <strong>default_preferences</strong> 
+    .<strong>default_preferences</strong>  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -1094,7 +1093,7 @@ profile.</p>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_default_preferences'>default_preferences</span>
   <span class='ivar'>@default_preferences</span> <span class='op'>||=</span> <span class='const'>JSON</span><span class='period'>.</span><span class='id identifier rubyid_parse'>parse</span><span class='lparen'>(</span>
-    <span class='const'>File</span><span class='period'>.</span><span class='id identifier rubyid_read'>read</span><span class='lparen'>(</span><span class='const'>File</span><span class='period'>.</span><span class='id identifier rubyid_expand_path'>expand_path</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='const'>WebDriver</span><span class='period'>.</span><span class='id identifier rubyid_root'>root</span><span class='embexpr_end'>}</span><span class='tstring_content'>/selenium/webdriver/firefox/extension/prefs.json</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span><span class='rparen'>)</span>
+    <span class='const'>File</span><span class='period'>.</span><span class='id identifier rubyid_read'>read</span><span class='lparen'>(</span><span class='const'>File</span><span class='period'>.</span><span class='id identifier rubyid_expand_path'>expand_path</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='const'><span class='object_link'><a href="../../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span><span class='period'>.</span><span class='id identifier rubyid_root'><span class='object_link'><a href="../../WebDriver.html#root-class_method" title="Selenium::WebDriver.root (method)">root</a></span></span><span class='embexpr_end'>}</span><span class='tstring_content'>/selenium/webdriver/firefox/extension/prefs.json</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span><span class='rparen'>)</span>
   <span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -1105,7 +1104,7 @@ profile.</p>
       <div class="method_details ">
   <h3 class="signature " id="from_name-class_method">
   
-    + (<tt>Object</tt>) <strong>from_name</strong>(name) 
+    .<strong>from_name</strong>(name)  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -1151,7 +1150,7 @@ profile.</p>
 <span class='kw'>def</span> <span class='id identifier rubyid_from_name'>from_name</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_profile'>profile</span> <span class='op'>=</span> <span class='id identifier rubyid_ini'>ini</span><span class='lbracket'>[</span><span class='id identifier rubyid_name'>name</span><span class='rbracket'>]</span>
   <span class='kw'>return</span> <span class='id identifier rubyid_profile'>profile</span> <span class='kw'>if</span> <span class='id identifier rubyid_profile'>profile</span>
-  <span class='id identifier rubyid_raise'>raise</span> <span class='const'>Error</span><span class='op'>::</span><span class='const'>WebDriverError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>unable to find profile named: </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_name'>name</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
+  <span class='id identifier rubyid_raise'>raise</span> <span class='const'><span class='object_link'><a href="../Error.html" title="Selenium::WebDriver::Error (module)">Error</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Error/WebDriverError.html" title="Selenium::WebDriver::Error::WebDriverError (class)">WebDriverError</a></span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>unable to find profile named: </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_name'>name</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -1161,7 +1160,7 @@ profile.</p>
       <div class="method_details ">
   <h3 class="signature " id="ini-class_method">
   
-    + (<tt>Object</tt>) <strong>ini</strong> 
+    .<strong>ini</strong>  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -1181,7 +1180,7 @@ profile.</p>
       <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/profile.rb', line 40</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_ini'>ini</span>
-  <span class='ivar'>@ini</span> <span class='op'>||=</span> <span class='const'>ProfilesIni</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span>
+  <span class='ivar'>@ini</span> <span class='op'>||=</span> <span class='const'><span class='object_link'><a href="ProfilesIni.html" title="Selenium::WebDriver::Firefox::ProfilesIni (class)">ProfilesIni</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="ProfilesIni.html#initialize-instance_method" title="Selenium::WebDriver::Firefox::ProfilesIni#initialize (method)">new</a></span></span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -1197,7 +1196,7 @@ profile.</p>
       <div class="method_details first">
   <h3 class="signature first" id="[]=-instance_method">
   
-    - (<tt>Object</tt>) <strong>[]=</strong>(key, value) 
+    #<strong>[]=</strong>(key, value)  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -1245,11 +1244,11 @@ profile.</p>
       <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/profile.rb', line 113</span>
 
 <span class='kw'>def</span> <span class='op'>[]=</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='comma'>,</span> <span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
-  <span class='kw'>unless</span> <span class='const'>VALID_PREFERENCE_TYPES</span><span class='period'>.</span><span class='id identifier rubyid_any?'>any?</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_e'>e</span><span class='op'>|</span> <span class='id identifier rubyid_value'>value</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span> <span class='id identifier rubyid_e'>e</span> <span class='rbrace'>}</span>
-    <span class='id identifier rubyid_raise'>raise</span> <span class='const'>TypeError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>expected one of </span><span class='embexpr_beg'>#{</span><span class='const'>VALID_PREFERENCE_TYPES</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_content'>, got </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_value'>value</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_content'>:</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_value'>value</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
+  <span class='kw'>unless</span> <span class='const'><span class='object_link'><a href="#VALID_PREFERENCE_TYPES-constant" title="Selenium::WebDriver::Firefox::Profile::VALID_PREFERENCE_TYPES (constant)">VALID_PREFERENCE_TYPES</a></span></span><span class='period'>.</span><span class='id identifier rubyid_any?'>any?</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_e'>e</span><span class='op'>|</span> <span class='id identifier rubyid_value'>value</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span> <span class='id identifier rubyid_e'>e</span> <span class='rbrace'>}</span>
+    <span class='id identifier rubyid_raise'>raise</span> <span class='const'>TypeError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>expected one of </span><span class='embexpr_beg'>#{</span><span class='const'><span class='object_link'><a href="#VALID_PREFERENCE_TYPES-constant" title="Selenium::WebDriver::Firefox::Profile::VALID_PREFERENCE_TYPES (constant)">VALID_PREFERENCE_TYPES</a></span></span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_content'>, got </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_value'>value</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_content'>:</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_value'>value</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
   <span class='kw'>end</span>
 
-  <span class='kw'>if</span> <span class='id identifier rubyid_value'>value</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>String</span><span class='rparen'>)</span> <span class='op'>&amp;&amp;</span> <span class='const'>Util</span><span class='period'>.</span><span class='id identifier rubyid_stringified?'>stringified?</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
+  <span class='kw'>if</span> <span class='id identifier rubyid_value'>value</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>String</span><span class='rparen'>)</span> <span class='op'>&amp;&amp;</span> <span class='const'><span class='object_link'><a href="Util.html" title="Selenium::WebDriver::Firefox::Util (module)">Util</a></span></span><span class='period'>.</span><span class='id identifier rubyid_stringified?'><span class='object_link'><a href="Util.html#stringified%3F-class_method" title="Selenium::WebDriver::Firefox::Util.stringified? (method)">stringified?</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
     <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>preference values must be plain strings: </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_key'>key</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_content'> =&gt; </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_value'>value</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
   <span class='kw'>end</span>
 
@@ -1263,7 +1262,7 @@ profile.</p>
       <div class="method_details ">
   <h3 class="signature " id="add_extension-instance_method">
   
-    - (<tt>Object</tt>) <strong>add_extension</strong>(path, name = extension_name_for(path)) 
+    #<strong>add_extension</strong>(path, name = extension_name_for(path))  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -1295,7 +1294,7 @@ profile.</p>
       <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/profile.rb', line 143</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_add_extension'>add_extension</span><span class='lparen'>(</span><span class='id identifier rubyid_path'>path</span><span class='comma'>,</span> <span class='id identifier rubyid_name'>name</span> <span class='op'>=</span> <span class='id identifier rubyid_extension_name_for'>extension_name_for</span><span class='lparen'>(</span><span class='id identifier rubyid_path'>path</span><span class='rparen'>)</span><span class='rparen'>)</span>
-  <span class='ivar'>@extensions</span><span class='lbracket'>[</span><span class='id identifier rubyid_name'>name</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='const'>Extension</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_path'>path</span><span class='rparen'>)</span>
+  <span class='ivar'>@extensions</span><span class='lbracket'>[</span><span class='id identifier rubyid_name'>name</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="Extension.html" title="Selenium::WebDriver::Firefox::Extension (class)">Extension</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Extension.html#initialize-instance_method" title="Selenium::WebDriver::Firefox::Extension#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_path'>path</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -1305,7 +1304,7 @@ profile.</p>
       <div class="method_details ">
   <h3 class="signature " id="add_webdriver_extension-instance_method">
   
-    - (<tt>Object</tt>) <strong>add_webdriver_extension</strong> 
+    #<strong>add_webdriver_extension</strong>  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -1327,7 +1326,7 @@ profile.</p>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_add_webdriver_extension'>add_webdriver_extension</span>
   <span class='kw'>return</span> <span class='kw'>if</span> <span class='ivar'>@extensions</span><span class='period'>.</span><span class='id identifier rubyid_key?'>key?</span><span class='lparen'>(</span><span class='symbol'>:webdriver</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_add_extension'>add_extension</span><span class='lparen'>(</span><span class='const'>WEBDRIVER_EXTENSION_PATH</span><span class='comma'>,</span> <span class='symbol'>:webdriver</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_add_extension'>add_extension</span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="#WEBDRIVER_EXTENSION_PATH-constant" title="Selenium::WebDriver::Firefox::Profile::WEBDRIVER_EXTENSION_PATH (constant)">WEBDRIVER_EXTENSION_PATH</a></span></span><span class='comma'>,</span> <span class='symbol'>:webdriver</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -1337,7 +1336,7 @@ profile.</p>
       <div class="method_details ">
   <h3 class="signature " id="assume_untrusted_certificate_issuer=-instance_method">
   
-    - (<tt>Object</tt>) <strong>assume_untrusted_certificate_issuer=</strong>(bool) 
+    #<strong>assume_untrusted_certificate_issuer=</strong>(bool)  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -1367,7 +1366,7 @@ profile.</p>
       <div class="method_details ">
   <h3 class="signature " id="assume_untrusted_certificate_issuer?-instance_method">
   
-    - (<tt>Boolean</tt>) <strong>assume_untrusted_certificate_issuer?</strong> 
+    #<strong>assume_untrusted_certificate_issuer?</strong>  &#x21d2; <tt>Boolean</tt> 
   
 
   
@@ -1419,7 +1418,7 @@ profile.</p>
       <div class="method_details ">
   <h3 class="signature " id="encoded-instance_method">
   
-    - (<tt>Object</tt>) <strong>encoded</strong> 
+    #<strong>encoded</strong>  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -1439,7 +1438,7 @@ profile.</p>
       <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/profile.rb', line 198</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_encoded'>encoded</span>
-  <span class='const'>Zipper</span><span class='period'>.</span><span class='id identifier rubyid_zip'>zip</span><span class='lparen'>(</span><span class='id identifier rubyid_layout_on_disk'>layout_on_disk</span><span class='rparen'>)</span>
+  <span class='const'><span class='object_link'><a href="../Zipper.html" title="Selenium::WebDriver::Zipper (module)">Zipper</a></span></span><span class='period'>.</span><span class='id identifier rubyid_zip'><span class='object_link'><a href="../Zipper.html#zip-class_method" title="Selenium::WebDriver::Zipper.zip (method)">zip</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_layout_on_disk'>layout_on_disk</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -1449,7 +1448,7 @@ profile.</p>
       <div class="method_details ">
   <h3 class="signature " id="layout_on_disk-instance_method">
   
-    - (<tt>Object</tt>) <strong>layout_on_disk</strong> 
+    #<strong>layout_on_disk</strong>  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -1478,7 +1477,7 @@ profile.</p>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_layout_on_disk'>layout_on_disk</span>
   <span class='id identifier rubyid_profile_dir'>profile_dir</span> <span class='op'>=</span> <span class='ivar'>@model</span> <span class='op'>?</span> <span class='id identifier rubyid_create_tmp_copy'>create_tmp_copy</span><span class='lparen'>(</span><span class='ivar'>@model</span><span class='rparen'>)</span> <span class='op'>:</span> <span class='const'>Dir</span><span class='period'>.</span><span class='id identifier rubyid_mktmpdir'>mktmpdir</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>webdriver-profile</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
-  <span class='const'>FileReaper</span> <span class='op'>&lt;&lt;</span> <span class='id identifier rubyid_profile_dir'>profile_dir</span>
+  <span class='const'><span class='object_link'><a href="../FileReaper.html" title="Selenium::WebDriver::FileReaper (module)">FileReaper</a></span></span> <span class='op'>&lt;&lt;</span> <span class='id identifier rubyid_profile_dir'>profile_dir</span>
 
   <span class='id identifier rubyid_install_extensions'>install_extensions</span><span class='lparen'>(</span><span class='id identifier rubyid_profile_dir'>profile_dir</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_delete_lock_files'>delete_lock_files</span><span class='lparen'>(</span><span class='id identifier rubyid_profile_dir'>profile_dir</span><span class='rparen'>)</span>
@@ -1495,7 +1494,7 @@ profile.</p>
       <div class="method_details ">
   <h3 class="signature " id="load_no_focus_lib?-instance_method">
   
-    - (<tt>Boolean</tt>) <strong>load_no_focus_lib?</strong> 
+    #<strong>load_no_focus_lib?</strong>  &#x21d2; <tt>Boolean</tt> 
   
 
   
@@ -1547,7 +1546,7 @@ profile.</p>
       <div class="method_details ">
   <h3 class="signature " id="native_events?-instance_method">
   
-    - (<tt>Boolean</tt>) <strong>native_events?</strong> 
+    #<strong>native_events?</strong>  &#x21d2; <tt>Boolean</tt> 
   
 
   
@@ -1599,7 +1598,7 @@ profile.</p>
       <div class="method_details ">
   <h3 class="signature " id="port=-instance_method">
   
-    - (<tt>Object</tt>) <strong>port=</strong>(port) 
+    #<strong>port=</strong>(port)  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -1619,7 +1618,7 @@ profile.</p>
       <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/profile.rb', line 125</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_port='>port=</span><span class='lparen'>(</span><span class='id identifier rubyid_port'>port</span><span class='rparen'>)</span>
-  <span class='kw'>self</span><span class='lbracket'>[</span><span class='const'>WEBDRIVER_PREFS</span><span class='lbracket'>[</span><span class='symbol'>:port</span><span class='rbracket'>]</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_port'>port</span>
+  <span class='kw'>self</span><span class='lbracket'>[</span><span class='const'><span class='object_link'><a href="#WEBDRIVER_PREFS-constant" title="Selenium::WebDriver::Firefox::Profile::WEBDRIVER_PREFS (constant)">WEBDRIVER_PREFS</a></span></span><span class='lbracket'>[</span><span class='symbol'>:port</span><span class='rbracket'>]</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_port'>port</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -1629,7 +1628,7 @@ profile.</p>
       <div class="method_details ">
   <h3 class="signature " id="proxy=-instance_method">
   
-    - (<tt>Object</tt>) <strong>proxy=</strong>(proxy) 
+    #<strong>proxy=</strong>(proxy)  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -1676,8 +1675,8 @@ profile.</p>
       <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/profile.rb', line 167</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_proxy='>proxy=</span><span class='lparen'>(</span><span class='id identifier rubyid_proxy'>proxy</span><span class='rparen'>)</span>
-  <span class='kw'>unless</span> <span class='id identifier rubyid_proxy'>proxy</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span> <span class='const'>Proxy</span>
-    <span class='id identifier rubyid_raise'>raise</span> <span class='const'>TypeError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>expected </span><span class='embexpr_beg'>#{</span><span class='const'>Proxy</span><span class='period'>.</span><span class='id identifier rubyid_name'>name</span><span class='embexpr_end'>}</span><span class='tstring_content'>, got </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_proxy'>proxy</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_content'>:</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_proxy'>proxy</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
+  <span class='kw'>unless</span> <span class='id identifier rubyid_proxy'>proxy</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span> <span class='const'><span class='object_link'><a href="../Proxy.html" title="Selenium::WebDriver::Proxy (class)">Proxy</a></span></span>
+    <span class='id identifier rubyid_raise'>raise</span> <span class='const'>TypeError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>expected </span><span class='embexpr_beg'>#{</span><span class='const'><span class='object_link'><a href="../Proxy.html" title="Selenium::WebDriver::Proxy (class)">Proxy</a></span></span><span class='period'>.</span><span class='id identifier rubyid_name'>name</span><span class='embexpr_end'>}</span><span class='tstring_content'>, got </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_proxy'>proxy</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_content'>:</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_proxy'>proxy</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
   <span class='kw'>end</span>
 
   <span class='kw'>case</span> <span class='id identifier rubyid_proxy'>proxy</span><span class='period'>.</span><span class='id identifier rubyid_type'>type</span>
@@ -1713,7 +1712,7 @@ profile.</p>
       <div class="method_details ">
   <h3 class="signature " id="secure_ssl?-instance_method">
   
-    - (<tt>Boolean</tt>) <strong>secure_ssl?</strong> 
+    #<strong>secure_ssl?</strong>  &#x21d2; <tt>Boolean</tt> 
   
 
   
@@ -1766,11 +1765,12 @@ profile.</p>
 
 </div>
 
-    <div id="footer">
-  Generated on Tue Jun 20 07:17:51 2017 by
+      <div id="footer">
+  Generated on Thu Aug 10 10:15:57 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.7.6 (ruby-2.4.0).
+  0.9.9 (ruby-2.4.0).
 </div>
 
+    </div>
   </body>
 </html>

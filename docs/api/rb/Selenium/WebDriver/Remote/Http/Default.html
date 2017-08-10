@@ -1,12 +1,12 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!DOCTYPE html>
+<html>
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>
   Class: Selenium::WebDriver::Remote::Http::Default
   
-    &mdash; Documentation by YARD 0.8.7.6
+    &mdash; Documentation by YARD 0.9.9
   
 </title>
 
@@ -15,9 +15,8 @@
   <link rel="stylesheet" href="../../../../css/common.css" type="text/css" charset="utf-8" />
 
 <script type="text/javascript" charset="utf-8">
-  hasFrames = window.top.frames.main ? true : false;
+  pathId = "Selenium::WebDriver::Remote::Http::Default";
   relpath = '../../../../';
-  framesUrl = "../../../../frames.html#!Selenium/WebDriver/Remote/Http/Default.html";
 </script>
 
 
@@ -28,51 +27,48 @@
 
   </head>
   <body>
-    <div id="header">
-      <div id="menu">
+    <div class="nav_wrap">
+      <iframe id="nav" src="../../../../class_list.html?1"></iframe>
+      <div id="resizer"></div>
+    </div>
+
+    <div id="main" tabindex="-1">
+      <div id="header">
+        <div id="menu">
   
     <a href="../../../../_index.html">Index (D)</a> &raquo;
     <span class='title'><span class='object_link'><a href="../../../../Selenium.html" title="Selenium (module)">Selenium</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../../../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../../Remote.html" title="Selenium::WebDriver::Remote (module)">Remote</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../Http.html" title="Selenium::WebDriver::Remote::Http (module)">Http</a></span></span>
      &raquo; 
     <span class="title">Default</span>
   
-
-  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
 </div>
 
-      <div id="search">
+        <div id="search">
   
     <a class="full_list_link" id="class_list_link"
         href="../../../../class_list.html">
-      Class List
-    </a>
-  
-    <a class="full_list_link" id="method_list_link"
-        href="../../../../method_list.html">
-      Method List
-    </a>
-  
-    <a class="full_list_link" id="file_list_link"
-        href="../../../../file_list.html">
-      File List
+
+        <svg width="24" height="24">
+          <rect x="0" y="4" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="12" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="20" width="24" height="4" rx="1" ry="1"></rect>
+        </svg>
     </a>
   
 </div>
-      <div class="clear"></div>
-    </div>
+        <div class="clear"></div>
+      </div>
 
-    <iframe id="search_frame"></iframe>
-
-    <div id="content"><h1>Class: Selenium::WebDriver::Remote::Http::Default
+      <div id="content"><h1>Class: Selenium::WebDriver::Remote::Http::Default
   
   
   <span class="private note title">Private</span>
 </h1>
-
-<dl class="box">
+<div class="box_info">
   
-    <dt class="r1">Inherits:</dt>
-    <dd class="r1">
+  <dl>
+    <dt>Inherits:</dt>
+    <dd>
       <span class="inheritName"><span class='object_link'><a href="Common.html" title="Selenium::WebDriver::Remote::Http::Common (class)">Common</a></span></span>
       
         <ul class="fullTree">
@@ -85,21 +81,25 @@
         </ul>
         <a href="#" class="inheritanceTree">show all</a>
       
-      </dd>
-    
+    </dd>
+  </dl>
   
-  
-    
-  
-    
+
   
   
   
-    <dt class="r2 last">Defined in:</dt>
-    <dd class="r2 last">lib/selenium/webdriver/remote/http/default.rb</dd>
   
-</dl>
-<div class="clear"></div>
+  
+
+  
+
+  
+  <dl>
+    <dt>Defined in:</dt>
+    <dd>lib/selenium/webdriver/remote/http/default.rb</dd>
+  </dl>
+  
+</div>
 
 <div class="docstring">
   <div class="discussion">
@@ -119,9 +119,6 @@
   <p class="children"><span class='object_link'><a href="Persistent.html" title="Selenium::WebDriver::Remote::Http::Persistent (class)">Persistent</a></span></p>
 </div>
 
-  <h2>Constant Summary</h2>
-  
-
 
 
   <h2>Constant Summary</h2>
@@ -131,13 +128,13 @@
   <p class="inherited"><span class='object_link'><a href="Common.html#CONTENT_TYPE-constant" title="Selenium::WebDriver::Remote::Http::Common::CONTENT_TYPE (constant)">Common::CONTENT_TYPE</a></span>, <span class='object_link'><a href="Common.html#DEFAULT_HEADERS-constant" title="Selenium::WebDriver::Remote::Http::Common::DEFAULT_HEADERS (constant)">Common::DEFAULT_HEADERS</a></span>, <span class='object_link'><a href="Common.html#MAX_REDIRECTS-constant" title="Selenium::WebDriver::Remote::Http::Common::MAX_REDIRECTS (constant)">Common::MAX_REDIRECTS</a></span></p>
 
 
-  <h2>Instance Attribute Summary <small>(<a href="#" class="summary_toggle">collapse</a>)</small></h2>
+  <h2>Instance Attribute Summary <small><a href="#" class="summary_toggle">collapse</a></small></h2>
   <ul class="summary">
     
       <li class="public ">
   <span class="summary_signature">
     
-      <a href="#open_timeout-instance_method" title="#open_timeout (instance method)">- (Object) <strong>open_timeout</strong> </a>
+      <a href="#open_timeout-instance_method" title="#open_timeout (instance method)">#<strong>open_timeout</strong>  &#x21d2; Object </a>
     
 
     
@@ -162,7 +159,7 @@
       <li class="public ">
   <span class="summary_signature">
     
-      <a href="#proxy%3D-instance_method" title="#proxy= (instance method)">- (Object) <strong>proxy</strong> </a>
+      <a href="#proxy=-instance_method" title="#proxy= (instance method)">#<strong>proxy</strong>  &#x21d2; Object </a>
     
 
     
@@ -189,7 +186,7 @@
       <li class="public ">
   <span class="summary_signature">
     
-      <a href="#read_timeout-instance_method" title="#read_timeout (instance method)">- (Object) <strong>read_timeout</strong> </a>
+      <a href="#read_timeout-instance_method" title="#read_timeout (instance method)">#<strong>read_timeout</strong>  &#x21d2; Object </a>
     
 
     
@@ -224,7 +221,7 @@
   
     <h2>
       Instance Method Summary
-      <small>(<a href="#" class="summary_toggle">collapse</a>)</small>
+      <small><a href="#" class="summary_toggle">collapse</a></small>
     </h2>
 
     <ul class="summary">
@@ -232,7 +229,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#initialize-instance_method" title="#initialize (instance method)">- (Default) <strong>initialize</strong>(open_timeout: nil, read_timeout: nil) </a>
+      <a href="#initialize-instance_method" title="#initialize (instance method)">#<strong>initialize</strong>(open_timeout: nil, read_timeout: nil)  &#x21d2; Default </a>
     
 
     
@@ -258,7 +255,7 @@
         <li class="public deprecated">
   <span class="summary_signature">
     
-      <a href="#timeout%3D-instance_method" title="#timeout= (instance method)">- (Object) <strong>timeout=</strong>(value) </a>
+      <a href="#timeout=-instance_method" title="#timeout= (instance method)">#<strong>timeout=</strong>(value)  &#x21d2; Object </a>
     
 
     
@@ -300,7 +297,7 @@ directly.</p>
     <div class="method_details first">
   <h3 class="signature first" id="initialize-instance_method">
   
-    - (<tt><span class='object_link'><a href="" title="Selenium::WebDriver::Remote::Http::Default (class)">Default</a></span></tt>) <strong>initialize</strong>(open_timeout: nil, read_timeout: nil) 
+    #<strong>initialize</strong>(open_timeout: nil, read_timeout: nil)  &#x21d2; <tt><span class='object_link'><a href="" title="Selenium::WebDriver::Remote::Http::Default (class)">Default</a></span></tt> 
   
 
   
@@ -394,7 +391,7 @@ not be able to evaluate any operations if that happens.</p>
       <div class="method_details first">
   <h3 class="signature first" id="open_timeout-instance_method">
   
-    - (<tt>Object</tt>) <strong>open_timeout</strong> 
+    #<strong>open_timeout</strong>  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -439,7 +436,7 @@ not be able to evaluate any operations if that happens.</p>
       <div class="method_details ">
   <h3 class="signature " id="proxy=-instance_method">
   
-    - (<tt>Object</tt>) <strong>proxy=</strong>(value) 
+    #<strong>proxy=</strong>(value)  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -484,7 +481,7 @@ not be able to evaluate any operations if that happens.</p>
       <div class="method_details ">
   <h3 class="signature " id="read_timeout-instance_method">
   
-    - (<tt>Object</tt>) <strong>read_timeout</strong> 
+    #<strong>read_timeout</strong>  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -534,7 +531,7 @@ not be able to evaluate any operations if that happens.</p>
       <div class="method_details first">
   <h3 class="signature first" id="timeout=-instance_method">
   
-    - (<tt>Object</tt>) <strong>timeout=</strong>(value) 
+    #<strong>timeout=</strong>(value)  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -596,7 +593,7 @@ directly.</p>
       <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/remote/http/default.rb', line 47</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_timeout='>timeout=</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
-  <span class='const'>WebDriver</span><span class='period'>.</span><span class='id identifier rubyid_logger'>logger</span><span class='period'>.</span><span class='id identifier rubyid_deprecate'>deprecate</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>:timeout=</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>#read_timeout= and #open_timeout=</span><span class='tstring_end'>&#39;</span></span>
+  <span class='const'><span class='object_link'><a href="../../../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span><span class='period'>.</span><span class='id identifier rubyid_logger'><span class='object_link'><a href="../../../WebDriver.html#logger-class_method" title="Selenium::WebDriver.logger (method)">logger</a></span></span><span class='period'>.</span><span class='id identifier rubyid_deprecate'><span class='object_link'><a href="../../Logger.html#deprecate-instance_method" title="Selenium::WebDriver::Logger#deprecate (method)">deprecate</a></span></span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>:timeout=</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>#read_timeout= and #open_timeout=</span><span class='tstring_end'>&#39;</span></span>
   <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_open_timeout'>open_timeout</span> <span class='op'>=</span> <span class='id identifier rubyid_value'>value</span>
   <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_read_timeout'>read_timeout</span> <span class='op'>=</span> <span class='id identifier rubyid_value'>value</span>
 <span class='kw'>end</span></pre>
@@ -609,11 +606,12 @@ directly.</p>
 
 </div>
 
-    <div id="footer">
-  Generated on Tue Jun 20 07:17:52 2017 by
+      <div id="footer">
+  Generated on Thu Aug 10 10:15:59 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.7.6 (ruby-2.4.0).
+  0.9.9 (ruby-2.4.0).
 </div>
 
+    </div>
   </body>
 </html>

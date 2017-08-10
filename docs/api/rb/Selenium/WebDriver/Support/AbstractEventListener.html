@@ -1,12 +1,12 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!DOCTYPE html>
+<html>
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>
   Class: Selenium::WebDriver::Support::AbstractEventListener
   
-    &mdash; Documentation by YARD 0.8.7.6
+    &mdash; Documentation by YARD 0.9.9
   
 </title>
 
@@ -15,9 +15,8 @@
   <link rel="stylesheet" href="../../../css/common.css" type="text/css" charset="utf-8" />
 
 <script type="text/javascript" charset="utf-8">
-  hasFrames = window.top.frames.main ? true : false;
+  pathId = "Selenium::WebDriver::Support::AbstractEventListener";
   relpath = '../../../';
-  framesUrl = "../../../frames.html#!Selenium/WebDriver/Support/AbstractEventListener.html";
 </script>
 
 
@@ -28,51 +27,48 @@
 
   </head>
   <body>
-    <div id="header">
-      <div id="menu">
+    <div class="nav_wrap">
+      <iframe id="nav" src="../../../class_list.html?1"></iframe>
+      <div id="resizer"></div>
+    </div>
+
+    <div id="main" tabindex="-1">
+      <div id="header">
+        <div id="menu">
   
     <a href="../../../_index.html">Index (A)</a> &raquo;
     <span class='title'><span class='object_link'><a href="../../../Selenium.html" title="Selenium (module)">Selenium</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../Support.html" title="Selenium::WebDriver::Support (module)">Support</a></span></span>
      &raquo; 
     <span class="title">AbstractEventListener</span>
   
-
-  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
 </div>
 
-      <div id="search">
+        <div id="search">
   
     <a class="full_list_link" id="class_list_link"
         href="../../../class_list.html">
-      Class List
-    </a>
-  
-    <a class="full_list_link" id="method_list_link"
-        href="../../../method_list.html">
-      Method List
-    </a>
-  
-    <a class="full_list_link" id="file_list_link"
-        href="../../../file_list.html">
-      File List
+
+        <svg width="24" height="24">
+          <rect x="0" y="4" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="12" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="20" width="24" height="4" rx="1" ry="1"></rect>
+        </svg>
     </a>
   
 </div>
-      <div class="clear"></div>
-    </div>
+        <div class="clear"></div>
+      </div>
 
-    <iframe id="search_frame"></iframe>
-
-    <div id="content"><h1>Class: Selenium::WebDriver::Support::AbstractEventListener
+      <div id="content"><h1>Class: Selenium::WebDriver::Support::AbstractEventListener
   
   
   
 </h1>
-
-<dl class="box">
+<div class="box_info">
   
-    <dt class="r1">Inherits:</dt>
-    <dd class="r1">
+  <dl>
+    <dt>Inherits:</dt>
+    <dd>
       <span class="inheritName">Object</span>
       
         <ul class="fullTree">
@@ -83,21 +79,25 @@
         </ul>
         <a href="#" class="inheritanceTree">show all</a>
       
-      </dd>
-    
+    </dd>
+  </dl>
   
-  
-    
-  
-    
+
   
   
   
-    <dt class="r2 last">Defined in:</dt>
-    <dd class="r2 last">lib/selenium/webdriver/support/abstract_event_listener.rb</dd>
   
-</dl>
-<div class="clear"></div>
+  
+
+  
+
+  
+  <dl>
+    <dt>Defined in:</dt>
+    <dd>lib/selenium/webdriver/support/abstract_event_listener.rb</dd>
+  </dl>
+  
+</div>
 
 <h2>Overview</h2><div class="docstring">
   <div class="discussion">
@@ -115,7 +115,7 @@ listener.</p>
     
       
       <pre class="example code"><code>
-<span class='kw'>class</span> <span class='const'>NavigationListener</span> <span class='op'>&lt;</span> <span class='const'>Selenium</span><span class='op'>::</span><span class='const'>WebDriver</span><span class='op'>::</span><span class='const'>Support</span><span class='op'>::</span><span class='const'>AbstractEventListener</span>
+<span class='kw'>class</span> <span class='const'>NavigationListener</span> <span class='op'>&lt;</span> <span class='const'><span class='object_link'><a href="../../../Selenium.html" title="Selenium (module)">Selenium</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Support.html" title="Selenium::WebDriver::Support (module)">Support</a></span></span><span class='op'>::</span><span class='const'>AbstractEventListener</span>
   <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_log'>log</span><span class='rparen'>)</span>
     <span class='ivar'>@log</span> <span class='op'>=</span> <span class='id identifier rubyid_log'>log</span>
   <span class='kw'>end</span>
@@ -130,7 +130,7 @@ listener.</p>
 <span class='kw'>end</span>
 
 <span class='id identifier rubyid_listener'>listener</span> <span class='op'>=</span> <span class='const'>NavigationListener</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_logger'>logger</span><span class='rparen'>)</span>
-<span class='id identifier rubyid_driver'>driver</span> <span class='op'>=</span> <span class='const'>Selenium</span><span class='op'>::</span><span class='const'>WebDriver</span><span class='period'>.</span><span class='id identifier rubyid_for'>for</span> <span class='symbol'>:firefox</span><span class='comma'>,</span> <span class='symbol'>:listener</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_listener'>listener</span></code></pre>
+<span class='id identifier rubyid_driver'>driver</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="../../../Selenium.html" title="Selenium (module)">Selenium</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span><span class='period'>.</span><span class='id identifier rubyid_for'><span class='object_link'><a href="../../WebDriver.html#for-class_method" title="Selenium::WebDriver.for (method)">for</a></span></span> <span class='symbol'>:firefox</span><span class='comma'>,</span> <span class='symbol'>:listener</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_listener'>listener</span></code></pre>
     
   </div>
 
@@ -145,7 +145,7 @@ listener.</p>
   
     <h2>
       Instance Method Summary
-      <small>(<a href="#" class="summary_toggle">collapse</a>)</small>
+      <small><a href="#" class="summary_toggle">collapse</a></small>
     </h2>
 
     <ul class="summary">
@@ -153,7 +153,7 @@ listener.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#after_change_value_of-instance_method" title="#after_change_value_of (instance method)">- (Object) <strong>after_change_value_of</strong>(element, driver) </a>
+      <a href="#after_change_value_of-instance_method" title="#after_change_value_of (instance method)">#<strong>after_change_value_of</strong>(element, driver)  &#x21d2; Object </a>
     
 
     
@@ -175,7 +175,7 @@ listener.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#after_click-instance_method" title="#after_click (instance method)">- (Object) <strong>after_click</strong>(element, driver) </a>
+      <a href="#after_click-instance_method" title="#after_click (instance method)">#<strong>after_click</strong>(element, driver)  &#x21d2; Object </a>
     
 
     
@@ -197,7 +197,7 @@ listener.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#after_close-instance_method" title="#after_close (instance method)">- (Object) <strong>after_close</strong>(driver) </a>
+      <a href="#after_close-instance_method" title="#after_close (instance method)">#<strong>after_close</strong>(driver)  &#x21d2; Object </a>
     
 
     
@@ -219,7 +219,7 @@ listener.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#after_execute_script-instance_method" title="#after_execute_script (instance method)">- (Object) <strong>after_execute_script</strong>(script, driver) </a>
+      <a href="#after_execute_script-instance_method" title="#after_execute_script (instance method)">#<strong>after_execute_script</strong>(script, driver)  &#x21d2; Object </a>
     
 
     
@@ -241,7 +241,7 @@ listener.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#after_find-instance_method" title="#after_find (instance method)">- (Object) <strong>after_find</strong>(by, what, driver) </a>
+      <a href="#after_find-instance_method" title="#after_find (instance method)">#<strong>after_find</strong>(by, what, driver)  &#x21d2; Object </a>
     
 
     
@@ -263,7 +263,7 @@ listener.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#after_navigate_back-instance_method" title="#after_navigate_back (instance method)">- (Object) <strong>after_navigate_back</strong>(driver) </a>
+      <a href="#after_navigate_back-instance_method" title="#after_navigate_back (instance method)">#<strong>after_navigate_back</strong>(driver)  &#x21d2; Object </a>
     
 
     
@@ -285,7 +285,7 @@ listener.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#after_navigate_forward-instance_method" title="#after_navigate_forward (instance method)">- (Object) <strong>after_navigate_forward</strong>(driver) </a>
+      <a href="#after_navigate_forward-instance_method" title="#after_navigate_forward (instance method)">#<strong>after_navigate_forward</strong>(driver)  &#x21d2; Object </a>
     
 
     
@@ -307,7 +307,7 @@ listener.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#after_navigate_to-instance_method" title="#after_navigate_to (instance method)">- (Object) <strong>after_navigate_to</strong>(url, driver) </a>
+      <a href="#after_navigate_to-instance_method" title="#after_navigate_to (instance method)">#<strong>after_navigate_to</strong>(url, driver)  &#x21d2; Object </a>
     
 
     
@@ -329,7 +329,7 @@ listener.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#after_quit-instance_method" title="#after_quit (instance method)">- (Object) <strong>after_quit</strong>(driver) </a>
+      <a href="#after_quit-instance_method" title="#after_quit (instance method)">#<strong>after_quit</strong>(driver)  &#x21d2; Object </a>
     
 
     
@@ -351,7 +351,7 @@ listener.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#before_change_value_of-instance_method" title="#before_change_value_of (instance method)">- (Object) <strong>before_change_value_of</strong>(element, driver) </a>
+      <a href="#before_change_value_of-instance_method" title="#before_change_value_of (instance method)">#<strong>before_change_value_of</strong>(element, driver)  &#x21d2; Object </a>
     
 
     
@@ -373,7 +373,7 @@ listener.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#before_click-instance_method" title="#before_click (instance method)">- (Object) <strong>before_click</strong>(element, driver) </a>
+      <a href="#before_click-instance_method" title="#before_click (instance method)">#<strong>before_click</strong>(element, driver)  &#x21d2; Object </a>
     
 
     
@@ -395,7 +395,7 @@ listener.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#before_close-instance_method" title="#before_close (instance method)">- (Object) <strong>before_close</strong>(driver) </a>
+      <a href="#before_close-instance_method" title="#before_close (instance method)">#<strong>before_close</strong>(driver)  &#x21d2; Object </a>
     
 
     
@@ -417,7 +417,7 @@ listener.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#before_execute_script-instance_method" title="#before_execute_script (instance method)">- (Object) <strong>before_execute_script</strong>(script, driver) </a>
+      <a href="#before_execute_script-instance_method" title="#before_execute_script (instance method)">#<strong>before_execute_script</strong>(script, driver)  &#x21d2; Object </a>
     
 
     
@@ -439,7 +439,7 @@ listener.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#before_find-instance_method" title="#before_find (instance method)">- (Object) <strong>before_find</strong>(by, what, driver) </a>
+      <a href="#before_find-instance_method" title="#before_find (instance method)">#<strong>before_find</strong>(by, what, driver)  &#x21d2; Object </a>
     
 
     
@@ -461,7 +461,7 @@ listener.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#before_navigate_back-instance_method" title="#before_navigate_back (instance method)">- (Object) <strong>before_navigate_back</strong>(driver) </a>
+      <a href="#before_navigate_back-instance_method" title="#before_navigate_back (instance method)">#<strong>before_navigate_back</strong>(driver)  &#x21d2; Object </a>
     
 
     
@@ -483,7 +483,7 @@ listener.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#before_navigate_forward-instance_method" title="#before_navigate_forward (instance method)">- (Object) <strong>before_navigate_forward</strong>(driver) </a>
+      <a href="#before_navigate_forward-instance_method" title="#before_navigate_forward (instance method)">#<strong>before_navigate_forward</strong>(driver)  &#x21d2; Object </a>
     
 
     
@@ -505,7 +505,7 @@ listener.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#before_navigate_to-instance_method" title="#before_navigate_to (instance method)">- (Object) <strong>before_navigate_to</strong>(url, driver) </a>
+      <a href="#before_navigate_to-instance_method" title="#before_navigate_to (instance method)">#<strong>before_navigate_to</strong>(url, driver)  &#x21d2; Object </a>
     
 
     
@@ -527,7 +527,7 @@ listener.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#before_quit-instance_method" title="#before_quit (instance method)">- (Object) <strong>before_quit</strong>(driver) </a>
+      <a href="#before_quit-instance_method" title="#before_quit (instance method)">#<strong>before_quit</strong>(driver)  &#x21d2; Object </a>
     
 
     
@@ -558,7 +558,7 @@ listener.</p>
       <div class="method_details first">
   <h3 class="signature first" id="after_change_value_of-instance_method">
   
-    - (<tt>Object</tt>) <strong>after_change_value_of</strong>(element, driver) 
+    #<strong>after_change_value_of</strong>(element, driver)  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -584,7 +584,7 @@ listener.</p>
       <div class="method_details ">
   <h3 class="signature " id="after_click-instance_method">
   
-    - (<tt>Object</tt>) <strong>after_click</strong>(element, driver) 
+    #<strong>after_click</strong>(element, driver)  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -610,7 +610,7 @@ listener.</p>
       <div class="method_details ">
   <h3 class="signature " id="after_close-instance_method">
   
-    - (<tt>Object</tt>) <strong>after_close</strong>(driver) 
+    #<strong>after_close</strong>(driver)  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -636,7 +636,7 @@ listener.</p>
       <div class="method_details ">
   <h3 class="signature " id="after_execute_script-instance_method">
   
-    - (<tt>Object</tt>) <strong>after_execute_script</strong>(script, driver) 
+    #<strong>after_execute_script</strong>(script, driver)  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -662,7 +662,7 @@ listener.</p>
       <div class="method_details ">
   <h3 class="signature " id="after_find-instance_method">
   
-    - (<tt>Object</tt>) <strong>after_find</strong>(by, what, driver) 
+    #<strong>after_find</strong>(by, what, driver)  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -688,7 +688,7 @@ listener.</p>
       <div class="method_details ">
   <h3 class="signature " id="after_navigate_back-instance_method">
   
-    - (<tt>Object</tt>) <strong>after_navigate_back</strong>(driver) 
+    #<strong>after_navigate_back</strong>(driver)  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -714,7 +714,7 @@ listener.</p>
       <div class="method_details ">
   <h3 class="signature " id="after_navigate_forward-instance_method">
   
-    - (<tt>Object</tt>) <strong>after_navigate_forward</strong>(driver) 
+    #<strong>after_navigate_forward</strong>(driver)  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -740,7 +740,7 @@ listener.</p>
       <div class="method_details ">
   <h3 class="signature " id="after_navigate_to-instance_method">
   
-    - (<tt>Object</tt>) <strong>after_navigate_to</strong>(url, driver) 
+    #<strong>after_navigate_to</strong>(url, driver)  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -766,7 +766,7 @@ listener.</p>
       <div class="method_details ">
   <h3 class="signature " id="after_quit-instance_method">
   
-    - (<tt>Object</tt>) <strong>after_quit</strong>(driver) 
+    #<strong>after_quit</strong>(driver)  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -792,7 +792,7 @@ listener.</p>
       <div class="method_details ">
   <h3 class="signature " id="before_change_value_of-instance_method">
   
-    - (<tt>Object</tt>) <strong>before_change_value_of</strong>(element, driver) 
+    #<strong>before_change_value_of</strong>(element, driver)  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -818,7 +818,7 @@ listener.</p>
       <div class="method_details ">
   <h3 class="signature " id="before_click-instance_method">
   
-    - (<tt>Object</tt>) <strong>before_click</strong>(element, driver) 
+    #<strong>before_click</strong>(element, driver)  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -844,7 +844,7 @@ listener.</p>
       <div class="method_details ">
   <h3 class="signature " id="before_close-instance_method">
   
-    - (<tt>Object</tt>) <strong>before_close</strong>(driver) 
+    #<strong>before_close</strong>(driver)  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -870,7 +870,7 @@ listener.</p>
       <div class="method_details ">
   <h3 class="signature " id="before_execute_script-instance_method">
   
-    - (<tt>Object</tt>) <strong>before_execute_script</strong>(script, driver) 
+    #<strong>before_execute_script</strong>(script, driver)  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -896,7 +896,7 @@ listener.</p>
       <div class="method_details ">
   <h3 class="signature " id="before_find-instance_method">
   
-    - (<tt>Object</tt>) <strong>before_find</strong>(by, what, driver) 
+    #<strong>before_find</strong>(by, what, driver)  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -922,7 +922,7 @@ listener.</p>
       <div class="method_details ">
   <h3 class="signature " id="before_navigate_back-instance_method">
   
-    - (<tt>Object</tt>) <strong>before_navigate_back</strong>(driver) 
+    #<strong>before_navigate_back</strong>(driver)  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -948,7 +948,7 @@ listener.</p>
       <div class="method_details ">
   <h3 class="signature " id="before_navigate_forward-instance_method">
   
-    - (<tt>Object</tt>) <strong>before_navigate_forward</strong>(driver) 
+    #<strong>before_navigate_forward</strong>(driver)  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -974,7 +974,7 @@ listener.</p>
       <div class="method_details ">
   <h3 class="signature " id="before_navigate_to-instance_method">
   
-    - (<tt>Object</tt>) <strong>before_navigate_to</strong>(url, driver) 
+    #<strong>before_navigate_to</strong>(url, driver)  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -1000,7 +1000,7 @@ listener.</p>
       <div class="method_details ">
   <h3 class="signature " id="before_quit-instance_method">
   
-    - (<tt>Object</tt>) <strong>before_quit</strong>(driver) 
+    #<strong>before_quit</strong>(driver)  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -1027,11 +1027,12 @@ listener.</p>
 
 </div>
 
-    <div id="footer">
-  Generated on Tue Jun 20 07:17:53 2017 by
+      <div id="footer">
+  Generated on Thu Aug 10 10:16:00 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.7.6 (ruby-2.4.0).
+  0.9.9 (ruby-2.4.0).
 </div>
 
+    </div>
   </body>
 </html>

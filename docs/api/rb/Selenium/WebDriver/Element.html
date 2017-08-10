@@ -1,12 +1,12 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!DOCTYPE html>
+<html>
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>
   Class: Selenium::WebDriver::Element
   
-    &mdash; Documentation by YARD 0.8.7.6
+    &mdash; Documentation by YARD 0.9.9
   
 </title>
 
@@ -15,9 +15,8 @@
   <link rel="stylesheet" href="../../css/common.css" type="text/css" charset="utf-8" />
 
 <script type="text/javascript" charset="utf-8">
-  hasFrames = window.top.frames.main ? true : false;
+  pathId = "Selenium::WebDriver::Element";
   relpath = '../../';
-  framesUrl = "../../frames.html#!Selenium/WebDriver/Element.html";
 </script>
 
 
@@ -28,51 +27,48 @@
 
   </head>
   <body>
-    <div id="header">
-      <div id="menu">
+    <div class="nav_wrap">
+      <iframe id="nav" src="../../class_list.html?1"></iframe>
+      <div id="resizer"></div>
+    </div>
+
+    <div id="main" tabindex="-1">
+      <div id="header">
+        <div id="menu">
   
     <a href="../../_index.html">Index (E)</a> &raquo;
     <span class='title'><span class='object_link'><a href="../../Selenium.html" title="Selenium (module)">Selenium</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span>
      &raquo; 
     <span class="title">Element</span>
   
-
-  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
 </div>
 
-      <div id="search">
+        <div id="search">
   
     <a class="full_list_link" id="class_list_link"
         href="../../class_list.html">
-      Class List
-    </a>
-  
-    <a class="full_list_link" id="method_list_link"
-        href="../../method_list.html">
-      Method List
-    </a>
-  
-    <a class="full_list_link" id="file_list_link"
-        href="../../file_list.html">
-      File List
+
+        <svg width="24" height="24">
+          <rect x="0" y="4" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="12" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="20" width="24" height="4" rx="1" ry="1"></rect>
+        </svg>
     </a>
   
 </div>
-      <div class="clear"></div>
-    </div>
+        <div class="clear"></div>
+      </div>
 
-    <iframe id="search_frame"></iframe>
-
-    <div id="content"><h1>Class: Selenium::WebDriver::Element
+      <div id="content"><h1>Class: Selenium::WebDriver::Element
   
   
   
 </h1>
-
-<dl class="box">
+<div class="box_info">
   
-    <dt class="r1">Inherits:</dt>
-    <dd class="r1">
+  <dl>
+    <dt>Inherits:</dt>
+    <dd>
       <span class="inheritName">Object</span>
       
         <ul class="fullTree">
@@ -83,29 +79,31 @@
         </ul>
         <a href="#" class="inheritanceTree">show all</a>
       
-      </dd>
-    
+    </dd>
+  </dl>
   
-  
-    
-  
-    
-      <dt class="r2">Includes:</dt>
-      <dd class="r2"><span class='object_link'><a href="SearchContext.html" title="Selenium::WebDriver::SearchContext (module)">SearchContext</a></span></dd>
-      
-    
-  
-  
-  
-    <dt class="r1 last">Defined in:</dt>
-    <dd class="r1 last">lib/selenium/webdriver/common/element.rb</dd>
-  
-</dl>
-<div class="clear"></div>
 
-
-  <h2>Constant Summary</h2>
   
+  
+  
+  
+  <dl>
+      <dt>Includes:</dt>
+      <dd><span class='object_link'><a href="SearchContext.html" title="Selenium::WebDriver::SearchContext (module)">SearchContext</a></span></dd>
+  </dl>
+  
+  
+
+  
+
+  
+  <dl>
+    <dt>Defined in:</dt>
+    <dd>lib/selenium/webdriver/common/element.rb</dd>
+  </dl>
+  
+</div>
+
 
 
 
@@ -122,7 +120,7 @@
   
     <h2>
       Instance Method Summary
-      <small>(<a href="#" class="summary_toggle">collapse</a>)</small>
+      <small><a href="#" class="summary_toggle">collapse</a></small>
     </h2>
 
     <ul class="summary">
@@ -130,7 +128,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#%3D%3D-instance_method" title="#== (instance method)">- (Object) <strong>==</strong>(other) </a>
+      <a href="#==-instance_method" title="#== (instance method)">#<strong>==</strong>(other)  &#x21d2; Object </a>
     
 
     
@@ -154,7 +152,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#as_json-instance_method" title="#as_json (instance method)">- (Object) <strong>as_json</strong> </a>
+      <a href="#as_json-instance_method" title="#as_json (instance method)">#<strong>as_json</strong>  &#x21d2; Object </a>
     
 
     
@@ -179,7 +177,7 @@ href="http://jonathanjulian.com/2010/04/rails-to_json-or-as_json">jonathanjulian
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#attribute-instance_method" title="#attribute (instance method)">- (String<sup>?</sup>) <strong>attribute</strong>(name) </a>
+      <a href="#attribute-instance_method" title="#attribute (instance method)">#<strong>attribute</strong>(name)  &#x21d2; String<sup>?</sup> </a>
     
 
     
@@ -205,7 +203,7 @@ href="http://jonathanjulian.com/2010/04/rails-to_json-or-as_json">jonathanjulian
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#clear-instance_method" title="#clear (instance method)">- (Object) <strong>clear</strong> </a>
+      <a href="#clear-instance_method" title="#clear (instance method)">#<strong>clear</strong>  &#x21d2; Object </a>
     
 
     
@@ -229,7 +227,7 @@ href="http://jonathanjulian.com/2010/04/rails-to_json-or-as_json">jonathanjulian
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#click-instance_method" title="#click (instance method)">- (Object) <strong>click</strong> </a>
+      <a href="#click-instance_method" title="#click (instance method)">#<strong>click</strong>  &#x21d2; Object </a>
     
 
     
@@ -253,7 +251,7 @@ href="http://jonathanjulian.com/2010/04/rails-to_json-or-as_json">jonathanjulian
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#css_value-instance_method" title="#css_value (instance method)">- (Object) <strong>css_value</strong>(prop) </a>
+      <a href="#css_value-instance_method" title="#css_value (instance method)">#<strong>css_value</strong>(prop)  &#x21d2; Object </a>
     
 
     
@@ -279,7 +277,7 @@ href="http://jonathanjulian.com/2010/04/rails-to_json-or-as_json">jonathanjulian
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#displayed%3F-instance_method" title="#displayed? (instance method)">- (Boolean) <strong>displayed?</strong> </a>
+      <a href="#displayed%3F-instance_method" title="#displayed? (instance method)">#<strong>displayed?</strong>  &#x21d2; Boolean </a>
     
 
     
@@ -303,7 +301,7 @@ href="http://jonathanjulian.com/2010/04/rails-to_json-or-as_json">jonathanjulian
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#enabled%3F-instance_method" title="#enabled? (instance method)">- (Boolean) <strong>enabled?</strong> </a>
+      <a href="#enabled%3F-instance_method" title="#enabled? (instance method)">#<strong>enabled?</strong>  &#x21d2; Boolean </a>
     
 
     
@@ -327,7 +325,7 @@ href="http://jonathanjulian.com/2010/04/rails-to_json-or-as_json">jonathanjulian
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#hash-instance_method" title="#hash (instance method)">- (Object) <strong>hash</strong> </a>
+      <a href="#hash-instance_method" title="#hash (instance method)">#<strong>hash</strong>  &#x21d2; Object </a>
     
 
     
@@ -349,7 +347,7 @@ href="http://jonathanjulian.com/2010/04/rails-to_json-or-as_json">jonathanjulian
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#initialize-instance_method" title="#initialize (instance method)">- (Element) <strong>initialize</strong>(bridge, id) </a>
+      <a href="#initialize-instance_method" title="#initialize (instance method)">#<strong>initialize</strong>(bridge, id)  &#x21d2; Element </a>
     
 
     
@@ -375,7 +373,7 @@ href="http://jonathanjulian.com/2010/04/rails-to_json-or-as_json">jonathanjulian
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#inspect-instance_method" title="#inspect (instance method)">- (Object) <strong>inspect</strong> </a>
+      <a href="#inspect-instance_method" title="#inspect (instance method)">#<strong>inspect</strong>  &#x21d2; Object </a>
     
 
     
@@ -397,7 +395,7 @@ href="http://jonathanjulian.com/2010/04/rails-to_json-or-as_json">jonathanjulian
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#location-instance_method" title="#location (instance method)">- (WebDriver::Point) <strong>location</strong> </a>
+      <a href="#location-instance_method" title="#location (instance method)">#<strong>location</strong>  &#x21d2; WebDriver::Point </a>
     
 
     
@@ -421,7 +419,7 @@ href="http://jonathanjulian.com/2010/04/rails-to_json-or-as_json">jonathanjulian
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#location_once_scrolled_into_view-instance_method" title="#location_once_scrolled_into_view (instance method)">- (WebDriver::Point) <strong>location_once_scrolled_into_view</strong> </a>
+      <a href="#location_once_scrolled_into_view-instance_method" title="#location_once_scrolled_into_view (instance method)">#<strong>location_once_scrolled_into_view</strong>  &#x21d2; WebDriver::Point </a>
     
 
     
@@ -446,7 +444,7 @@ into view.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#property-instance_method" title="#property (instance method)">- (String<sup>?</sup>) <strong>property</strong>(name) </a>
+      <a href="#property-instance_method" title="#property (instance method)">#<strong>property</strong>(name)  &#x21d2; String<sup>?</sup> </a>
     
 
     
@@ -470,7 +468,7 @@ into view.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#rect-instance_method" title="#rect (instance method)">- (WebDriver::Rectangle) <strong>rect</strong> </a>
+      <a href="#rect-instance_method" title="#rect (instance method)">#<strong>rect</strong>  &#x21d2; WebDriver::Rectangle </a>
     
 
     
@@ -494,7 +492,7 @@ into view.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#ref-instance_method" title="#ref (instance method)">- (Object) <strong>ref</strong> </a>
+      <a href="#ref-instance_method" title="#ref (instance method)">#<strong>ref</strong>  &#x21d2; Object </a>
     
 
     
@@ -518,7 +516,7 @@ into view.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#selected%3F-instance_method" title="#selected? (instance method)">- (Boolean) <strong>selected?</strong> </a>
+      <a href="#selected%3F-instance_method" title="#selected? (instance method)">#<strong>selected?</strong>  &#x21d2; Boolean </a>
     
 
     
@@ -542,7 +540,7 @@ into view.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#send_keys-instance_method" title="#send_keys (instance method)">- (Object) <strong>send_keys</strong>(*args) </a>
+      <a href="#send_keys-instance_method" title="#send_keys (instance method)">#<strong>send_keys</strong>(*args)  &#x21d2; Object </a>
     
 
     
@@ -568,7 +566,7 @@ into view.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#size-instance_method" title="#size (instance method)">- (WebDriver::Dimension) <strong>size</strong> </a>
+      <a href="#size-instance_method" title="#size (instance method)">#<strong>size</strong>  &#x21d2; WebDriver::Dimension </a>
     
 
     
@@ -592,7 +590,7 @@ into view.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#submit-instance_method" title="#submit (instance method)">- (Object) <strong>submit</strong> </a>
+      <a href="#submit-instance_method" title="#submit (instance method)">#<strong>submit</strong>  &#x21d2; Object </a>
     
 
     
@@ -616,7 +614,7 @@ into view.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#tag_name-instance_method" title="#tag_name (instance method)">- (String) <strong>tag_name</strong> </a>
+      <a href="#tag_name-instance_method" title="#tag_name (instance method)">#<strong>tag_name</strong>  &#x21d2; String </a>
     
 
     
@@ -640,7 +638,7 @@ into view.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#text-instance_method" title="#text (instance method)">- (String) <strong>text</strong> </a>
+      <a href="#text-instance_method" title="#text (instance method)">#<strong>text</strong>  &#x21d2; String </a>
     
 
     
@@ -664,7 +662,7 @@ into view.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#to_json-instance_method" title="#to_json (instance method)">- (Object) <strong>to_json</strong> </a>
+      <a href="#to_json-instance_method" title="#to_json (instance method)">#<strong>to_json</strong>  &#x21d2; Object </a>
     
 
     
@@ -705,7 +703,7 @@ into view.</p>
     <div class="method_details first">
   <h3 class="signature first" id="initialize-instance_method">
   
-    - (<tt><span class='object_link'><a href="" title="Selenium::WebDriver::Element (class)">Element</a></span></tt>) <strong>initialize</strong>(bridge, id) 
+    #<strong>initialize</strong>(bridge, id)  &#x21d2; <tt><span class='object_link'><a href="" title="Selenium::WebDriver::Element (class)">Element</a></span></tt> 
   
 
   
@@ -759,7 +757,7 @@ into view.</p>
       <div class="method_details first">
   <h3 class="signature first" id="==-instance_method">
   
-    - (<tt>Object</tt>) <strong>==</strong>(other) 
+    #<strong>==</strong>(other)  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -793,7 +791,7 @@ into view.</p>
       <div class="method_details ">
   <h3 class="signature " id="as_json-instance_method">
   
-    - (<tt>Object</tt>) <strong>as_json</strong> 
+    #<strong>as_json</strong>  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -849,7 +847,7 @@ href="http://jonathanjulian.com/2010/04/rails-to_json-or-as_json">jonathanjulian
       <div class="method_details ">
   <h3 class="signature " id="attribute-instance_method">
   
-    - (<tt>String</tt><sup>?</sup>) <strong>attribute</strong>(name) 
+    #<strong>attribute</strong>(name)  &#x21d2; <tt>String</tt><sup>?</sup> 
   
 
   
@@ -951,7 +949,7 @@ are evaluated as expected:</p>
       <div class="method_details ">
   <h3 class="signature " id="clear-instance_method">
   
-    - (<tt>Object</tt>) <strong>clear</strong> 
+    #<strong>clear</strong>  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -1000,7 +998,7 @@ call to #send_keys with the tab key.</p>
       <div class="method_details ">
   <h3 class="signature " id="click-instance_method">
   
-    - (<tt>Object</tt>) <strong>click</strong> 
+    #<strong>click</strong>  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -1087,7 +1085,7 @@ must be visible and it must have a height and width greater then 0.</p>
       <div class="method_details ">
   <h3 class="signature " id="css_value-instance_method">
   
-    - (<tt>Object</tt>) <strong>css_value</strong>(prop) 
+    #<strong>css_value</strong>(prop)  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -1145,7 +1143,7 @@ background-color) to access the desired values.</p>
       <div class="method_details ">
   <h3 class="signature " id="displayed?-instance_method">
   
-    - (<tt>Boolean</tt>) <strong>displayed?</strong> 
+    #<strong>displayed?</strong>  &#x21d2; <tt>Boolean</tt> 
   
 
   
@@ -1199,7 +1197,7 @@ background-color) to access the desired values.</p>
       <div class="method_details ">
   <h3 class="signature " id="enabled?-instance_method">
   
-    - (<tt>Boolean</tt>) <strong>enabled?</strong> 
+    #<strong>enabled?</strong>  &#x21d2; <tt>Boolean</tt> 
   
 
   
@@ -1253,7 +1251,7 @@ background-color) to access the desired values.</p>
       <div class="method_details ">
   <h3 class="signature " id="hash-instance_method">
   
-    - (<tt>Object</tt>) <strong>hash</strong> 
+    #<strong>hash</strong>  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -1283,7 +1281,7 @@ background-color) to access the desired values.</p>
       <div class="method_details ">
   <h3 class="signature " id="inspect-instance_method">
   
-    - (<tt>Object</tt>) <strong>inspect</strong> 
+    #<strong>inspect</strong>  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -1313,7 +1311,7 @@ background-color) to access the desired values.</p>
       <div class="method_details ">
   <h3 class="signature " id="location-instance_method">
   
-    - (<tt><span class='object_link'><a href="Point.html" title="Selenium::WebDriver::Point (class)">WebDriver::Point</a></span></tt>) <strong>location</strong> 
+    #<strong>location</strong>  &#x21d2; <tt><span class='object_link'><a href="Point.html" title="Selenium::WebDriver::Point (class)">WebDriver::Point</a></span></tt> 
   
 
   
@@ -1367,7 +1365,7 @@ background-color) to access the desired values.</p>
       <div class="method_details ">
   <h3 class="signature " id="location_once_scrolled_into_view-instance_method">
   
-    - (<tt><span class='object_link'><a href="Point.html" title="Selenium::WebDriver::Point (class)">WebDriver::Point</a></span></tt>) <strong>location_once_scrolled_into_view</strong> 
+    #<strong>location_once_scrolled_into_view</strong>  &#x21d2; <tt><span class='object_link'><a href="Point.html" title="Selenium::WebDriver::Point (class)">WebDriver::Point</a></span></tt> 
   
 
   
@@ -1422,7 +1420,7 @@ into view.</p>
       <div class="method_details ">
   <h3 class="signature " id="property-instance_method">
   
-    - (<tt>String</tt><sup>?</sup>) <strong>property</strong>(name) 
+    #<strong>property</strong>(name)  &#x21d2; <tt>String</tt><sup>?</sup> 
   
 
   
@@ -1502,7 +1500,7 @@ the value is not set, nil is returned.</p>
       <div class="method_details ">
   <h3 class="signature " id="rect-instance_method">
   
-    - (<tt><span class='object_link'><a href="Rectangle.html" title="Selenium::WebDriver::Rectangle (class)">WebDriver::Rectangle</a></span></tt>) <strong>rect</strong> 
+    #<strong>rect</strong>  &#x21d2; <tt><span class='object_link'><a href="Rectangle.html" title="Selenium::WebDriver::Rectangle (class)">WebDriver::Rectangle</a></span></tt> 
   
 
   
@@ -1556,7 +1554,7 @@ the value is not set, nil is returned.</p>
       <div class="method_details ">
   <h3 class="signature " id="ref-instance_method">
   
-    - (<tt>Object</tt>) <strong>ref</strong> 
+    #<strong>ref</strong>  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -1601,7 +1599,7 @@ the value is not set, nil is returned.</p>
       <div class="method_details ">
   <h3 class="signature " id="selected?-instance_method">
   
-    - (<tt>Boolean</tt>) <strong>selected?</strong> 
+    #<strong>selected?</strong>  &#x21d2; <tt>Boolean</tt> 
   
 
   
@@ -1655,7 +1653,7 @@ the value is not set, nil is returned.</p>
       <div class="method_details ">
   <h3 class="signature " id="send_keys-instance_method">
   
-    - (<tt>Object</tt>) <strong>send_keys</strong>(*args) 
+    #<strong>send_keys</strong>(*args)  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -1724,7 +1722,7 @@ the value is not set, nil is returned.</p>
       <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/element.rb', line 155</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_send_keys'>send_keys</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_send_keys_to_element'>send_keys_to_element</span> <span class='ivar'>@id</span><span class='comma'>,</span> <span class='const'>Keys</span><span class='period'>.</span><span class='id identifier rubyid_encode'>encode</span><span class='lparen'>(</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_send_keys_to_element'>send_keys_to_element</span> <span class='ivar'>@id</span><span class='comma'>,</span> <span class='const'><span class='object_link'><a href="Keys.html" title="Selenium::WebDriver::Keys (module)">Keys</a></span></span><span class='period'>.</span><span class='id identifier rubyid_encode'><span class='object_link'><a href="Keys.html#encode-class_method" title="Selenium::WebDriver::Keys.encode (method)">encode</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -1734,7 +1732,7 @@ the value is not set, nil is returned.</p>
       <div class="method_details ">
   <h3 class="signature " id="size-instance_method">
   
-    - (<tt><span class='object_link'><a href="Dimension.html" title="Selenium::WebDriver::Dimension (class)">WebDriver::Dimension</a></span></tt>) <strong>size</strong> 
+    #<strong>size</strong>  &#x21d2; <tt><span class='object_link'><a href="Dimension.html" title="Selenium::WebDriver::Dimension (class)">WebDriver::Dimension</a></span></tt> 
   
 
   
@@ -1788,7 +1786,7 @@ the value is not set, nil is returned.</p>
       <div class="method_details ">
   <h3 class="signature " id="submit-instance_method">
   
-    - (<tt>Object</tt>) <strong>submit</strong> 
+    #<strong>submit</strong>  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -1829,7 +1827,7 @@ the value is not set, nil is returned.</p>
       <div class="method_details ">
   <h3 class="signature " id="tag_name-instance_method">
   
-    - (<tt>String</tt>) <strong>tag_name</strong> 
+    #<strong>tag_name</strong>  &#x21d2; <tt>String</tt> 
   
 
   
@@ -1901,7 +1899,7 @@ the value is not set, nil is returned.</p>
       <div class="method_details ">
   <h3 class="signature " id="text-instance_method">
   
-    - (<tt>String</tt>) <strong>text</strong> 
+    #<strong>text</strong>  &#x21d2; <tt>String</tt> 
   
 
   
@@ -1955,7 +1953,7 @@ the value is not set, nil is returned.</p>
       <div class="method_details ">
   <h3 class="signature " id="to_json-instance_method">
   
-    - (<tt>Object</tt>) <strong>to_json</strong> 
+    #<strong>to_json</strong>  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -2008,11 +2006,12 @@ the value is not set, nil is returned.</p>
 
 </div>
 
-    <div id="footer">
-  Generated on Tue Jun 20 07:17:51 2017 by
+      <div id="footer">
+  Generated on Thu Aug 10 10:15:56 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.7.6 (ruby-2.4.0).
+  0.9.9 (ruby-2.4.0).
 </div>
 
+    </div>
   </body>
 </html>

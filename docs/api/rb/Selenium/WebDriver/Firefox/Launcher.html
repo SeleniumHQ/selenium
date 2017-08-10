@@ -1,12 +1,12 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!DOCTYPE html>
+<html>
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>
   Class: Selenium::WebDriver::Firefox::Launcher
   
-    &mdash; Documentation by YARD 0.8.7.6
+    &mdash; Documentation by YARD 0.9.9
   
 </title>
 
@@ -15,9 +15,8 @@
   <link rel="stylesheet" href="../../../css/common.css" type="text/css" charset="utf-8" />
 
 <script type="text/javascript" charset="utf-8">
-  hasFrames = window.top.frames.main ? true : false;
+  pathId = "Selenium::WebDriver::Firefox::Launcher";
   relpath = '../../../';
-  framesUrl = "../../../frames.html#!Selenium/WebDriver/Firefox/Launcher.html";
 </script>
 
 
@@ -28,51 +27,48 @@
 
   </head>
   <body>
-    <div id="header">
-      <div id="menu">
+    <div class="nav_wrap">
+      <iframe id="nav" src="../../../class_list.html?1"></iframe>
+      <div id="resizer"></div>
+    </div>
+
+    <div id="main" tabindex="-1">
+      <div id="header">
+        <div id="menu">
   
     <a href="../../../_index.html">Index (L)</a> &raquo;
     <span class='title'><span class='object_link'><a href="../../../Selenium.html" title="Selenium (module)">Selenium</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../Firefox.html" title="Selenium::WebDriver::Firefox (module)">Firefox</a></span></span>
      &raquo; 
     <span class="title">Launcher</span>
   
-
-  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
 </div>
 
-      <div id="search">
+        <div id="search">
   
     <a class="full_list_link" id="class_list_link"
         href="../../../class_list.html">
-      Class List
-    </a>
-  
-    <a class="full_list_link" id="method_list_link"
-        href="../../../method_list.html">
-      Method List
-    </a>
-  
-    <a class="full_list_link" id="file_list_link"
-        href="../../../file_list.html">
-      File List
+
+        <svg width="24" height="24">
+          <rect x="0" y="4" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="12" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="20" width="24" height="4" rx="1" ry="1"></rect>
+        </svg>
     </a>
   
 </div>
-      <div class="clear"></div>
-    </div>
+        <div class="clear"></div>
+      </div>
 
-    <iframe id="search_frame"></iframe>
-
-    <div id="content"><h1>Class: Selenium::WebDriver::Firefox::Launcher
+      <div id="content"><h1>Class: Selenium::WebDriver::Firefox::Launcher
   
   
   <span class="private note title">Private</span>
 </h1>
-
-<dl class="box">
+<div class="box_info">
   
-    <dt class="r1">Inherits:</dt>
-    <dd class="r1">
+  <dl>
+    <dt>Inherits:</dt>
+    <dd>
       <span class="inheritName">Object</span>
       
         <ul class="fullTree">
@@ -83,21 +79,25 @@
         </ul>
         <a href="#" class="inheritanceTree">show all</a>
       
-      </dd>
-    
+    </dd>
+  </dl>
   
-  
-    
-  
-    
+
   
   
   
-    <dt class="r2 last">Defined in:</dt>
-    <dd class="r2 last">lib/selenium/webdriver/firefox/launcher.rb</dd>
   
-</dl>
-<div class="clear"></div>
+  
+
+  
+
+  
+  <dl>
+    <dt>Defined in:</dt>
+    <dd>lib/selenium/webdriver/firefox/launcher.rb</dd>
+  </dl>
+  
+</div>
 
 <div class="docstring">
   <div class="discussion">
@@ -114,11 +114,10 @@
 
 </div>
   <h2>Constant Summary</h2>
-  
-    <dl class="constants">
-      
-        <dt id="SOCKET_LOCK_TIMEOUT-constant" class="">SOCKET_LOCK_TIMEOUT =
-          <div class="docstring">
+  <dl class="constants">
+    
+      <dt id="SOCKET_LOCK_TIMEOUT-constant" class="">SOCKET_LOCK_TIMEOUT =
+        <div class="docstring">
   <div class="discussion">
     <p class="note private">
   <strong>This constant is part of a private API.</strong>
@@ -132,11 +131,11 @@
   
 
 </div>
-        </dt>
-        <dd><pre class="code"><span class='int'>45</span></pre></dd>
-      
-        <dt id="STABLE_CONNECTION_TIMEOUT-constant" class="">STABLE_CONNECTION_TIMEOUT =
-          <div class="docstring">
+      </dt>
+      <dd><pre class="code"><span class='int'>45</span></pre></dd>
+    
+      <dt id="STABLE_CONNECTION_TIMEOUT-constant" class="">STABLE_CONNECTION_TIMEOUT =
+        <div class="docstring">
   <div class="discussion">
     <p class="note private">
   <strong>This constant is part of a private API.</strong>
@@ -150,11 +149,10 @@
   
 
 </div>
-        </dt>
-        <dd><pre class="code"><span class='int'>60</span></pre></dd>
-      
-    </dl>
-  
+      </dt>
+      <dd><pre class="code"><span class='int'>60</span></pre></dd>
+    
+  </dl>
 
 
 
@@ -165,7 +163,7 @@
   
     <h2>
       Instance Method Summary
-      <small>(<a href="#" class="summary_toggle">collapse</a>)</small>
+      <small><a href="#" class="summary_toggle">collapse</a></small>
     </h2>
 
     <ul class="summary">
@@ -173,7 +171,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#assert_profile-instance_method" title="#assert_profile (instance method)">- (Object) <strong>assert_profile</strong> </a>
+      <a href="#assert_profile-instance_method" title="#assert_profile (instance method)">#<strong>assert_profile</strong>  &#x21d2; Object </a>
     
 
     
@@ -195,7 +193,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#connect_until_stable-instance_method" title="#connect_until_stable (instance method)">- (Object) <strong>connect_until_stable</strong> </a>
+      <a href="#connect_until_stable-instance_method" title="#connect_until_stable (instance method)">#<strong>connect_until_stable</strong>  &#x21d2; Object </a>
     
 
     
@@ -217,7 +215,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#create_profile-instance_method" title="#create_profile (instance method)">- (Object) <strong>create_profile</strong> </a>
+      <a href="#create_profile-instance_method" title="#create_profile (instance method)">#<strong>create_profile</strong>  &#x21d2; Object </a>
     
 
     
@@ -239,7 +237,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#fetch_profile-instance_method" title="#fetch_profile (instance method)">- (Object) <strong>fetch_profile</strong> </a>
+      <a href="#fetch_profile-instance_method" title="#fetch_profile (instance method)">#<strong>fetch_profile</strong>  &#x21d2; Object </a>
     
 
     
@@ -261,7 +259,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#find_free_port-instance_method" title="#find_free_port (instance method)">- (Object) <strong>find_free_port</strong> </a>
+      <a href="#find_free_port-instance_method" title="#find_free_port (instance method)">#<strong>find_free_port</strong>  &#x21d2; Object </a>
     
 
     
@@ -283,7 +281,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#initialize-instance_method" title="#initialize (instance method)">- (Launcher) <strong>initialize</strong>(binary, port, profile = nil) </a>
+      <a href="#initialize-instance_method" title="#initialize (instance method)">#<strong>initialize</strong>(binary, port, profile = nil)  &#x21d2; Launcher </a>
     
 
     
@@ -309,7 +307,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#launch-instance_method" title="#launch (instance method)">- (Object) <strong>launch</strong> </a>
+      <a href="#launch-instance_method" title="#launch (instance method)">#<strong>launch</strong>  &#x21d2; Object </a>
     
 
     
@@ -331,7 +329,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#quit-instance_method" title="#quit (instance method)">- (Object) <strong>quit</strong> </a>
+      <a href="#quit-instance_method" title="#quit (instance method)">#<strong>quit</strong>  &#x21d2; Object </a>
     
 
     
@@ -353,7 +351,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#socket_lock-instance_method" title="#socket_lock (instance method)">- (Object) <strong>socket_lock</strong> </a>
+      <a href="#socket_lock-instance_method" title="#socket_lock (instance method)">#<strong>socket_lock</strong>  &#x21d2; Object </a>
     
 
     
@@ -375,7 +373,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#start-instance_method" title="#start (instance method)">- (Object) <strong>start</strong> </a>
+      <a href="#start-instance_method" title="#start (instance method)">#<strong>start</strong>  &#x21d2; Object </a>
     
 
     
@@ -397,7 +395,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#url-instance_method" title="#url (instance method)">- (Object) <strong>url</strong> </a>
+      <a href="#url-instance_method" title="#url (instance method)">#<strong>url</strong>  &#x21d2; Object </a>
     
 
     
@@ -425,7 +423,7 @@
     <div class="method_details first">
   <h3 class="signature first" id="initialize-instance_method">
   
-    - (<tt><span class='object_link'><a href="" title="Selenium::WebDriver::Firefox::Launcher (class)">Launcher</a></span></tt>) <strong>initialize</strong>(binary, port, profile = nil) 
+    #<strong>initialize</strong>(binary, port, profile = nil)  &#x21d2; <tt><span class='object_link'><a href="" title="Selenium::WebDriver::Firefox::Launcher (class)">Launcher</a></span></tt> 
   
 
   
@@ -488,9 +486,9 @@
   <span class='ivar'>@binary</span> <span class='op'>=</span> <span class='id identifier rubyid_binary'>binary</span>
   <span class='ivar'>@port</span>   <span class='op'>=</span> <span class='const'>Integer</span><span class='lparen'>(</span><span class='id identifier rubyid_port'>port</span><span class='rparen'>)</span>
 
-  <span class='id identifier rubyid_raise'>raise</span> <span class='const'>Error</span><span class='op'>::</span><span class='const'>WebDriverError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>invalid port: </span><span class='embexpr_beg'>#{</span><span class='ivar'>@port</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='ivar'>@port</span> <span class='op'>&lt;</span> <span class='int'>1</span>
+  <span class='id identifier rubyid_raise'>raise</span> <span class='const'><span class='object_link'><a href="../Error.html" title="Selenium::WebDriver::Error (module)">Error</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Error/WebDriverError.html" title="Selenium::WebDriver::Error::WebDriverError (class)">WebDriverError</a></span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>invalid port: </span><span class='embexpr_beg'>#{</span><span class='ivar'>@port</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='ivar'>@port</span> <span class='op'>&lt;</span> <span class='int'>1</span>
 
-  <span class='kw'>if</span> <span class='id identifier rubyid_profile'>profile</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span> <span class='const'>Profile</span>
+  <span class='kw'>if</span> <span class='id identifier rubyid_profile'>profile</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span> <span class='const'><span class='object_link'><a href="Profile.html" title="Selenium::WebDriver::Firefox::Profile (class)">Profile</a></span></span>
     <span class='ivar'>@profile</span> <span class='op'>=</span> <span class='id identifier rubyid_profile'>profile</span>
   <span class='kw'>else</span>
     <span class='ivar'>@profile_name</span> <span class='op'>=</span> <span class='id identifier rubyid_profile'>profile</span>
@@ -514,7 +512,7 @@
       <div class="method_details first">
   <h3 class="signature first" id="assert_profile-instance_method">
   
-    - (<tt>Object</tt>) <strong>assert_profile</strong> 
+    #<strong>assert_profile</strong>  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -560,7 +558,7 @@
       <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/launcher.rb', line 100</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_assert_profile'>assert_profile</span>
-  <span class='id identifier rubyid_raise'>raise</span> <span class='const'>Error</span><span class='op'>::</span><span class='const'>WebDriverError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>must create_profile first</span><span class='tstring_end'>&#39;</span></span> <span class='kw'>unless</span> <span class='ivar'>@profile</span> <span class='op'>&amp;&amp;</span> <span class='ivar'>@profile_dir</span>
+  <span class='id identifier rubyid_raise'>raise</span> <span class='const'><span class='object_link'><a href="../Error.html" title="Selenium::WebDriver::Error (module)">Error</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Error/WebDriverError.html" title="Selenium::WebDriver::Error::WebDriverError (class)">WebDriverError</a></span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>must create_profile first</span><span class='tstring_end'>&#39;</span></span> <span class='kw'>unless</span> <span class='ivar'>@profile</span> <span class='op'>&amp;&amp;</span> <span class='ivar'>@profile_dir</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -570,7 +568,7 @@
       <div class="method_details ">
   <h3 class="signature " id="connect_until_stable-instance_method">
   
-    - (<tt>Object</tt>) <strong>connect_until_stable</strong> 
+    #<strong>connect_until_stable</strong>  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -621,12 +619,12 @@
       <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/launcher.rb', line 83</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_connect_until_stable'>connect_until_stable</span>
-  <span class='id identifier rubyid_poller'>poller</span> <span class='op'>=</span> <span class='const'>SocketPoller</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='ivar'>@host</span><span class='comma'>,</span> <span class='ivar'>@port</span><span class='comma'>,</span> <span class='const'>STABLE_CONNECTION_TIMEOUT</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_poller'>poller</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="../SocketPoller.html" title="Selenium::WebDriver::SocketPoller (class)">SocketPoller</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="../SocketPoller.html#initialize-instance_method" title="Selenium::WebDriver::SocketPoller#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='ivar'>@host</span><span class='comma'>,</span> <span class='ivar'>@port</span><span class='comma'>,</span> <span class='const'><span class='object_link'><a href="#STABLE_CONNECTION_TIMEOUT-constant" title="Selenium::WebDriver::Firefox::Launcher::STABLE_CONNECTION_TIMEOUT (constant)">STABLE_CONNECTION_TIMEOUT</a></span></span><span class='rparen'>)</span>
 
   <span class='kw'>return</span> <span class='kw'>if</span> <span class='id identifier rubyid_poller'>poller</span><span class='period'>.</span><span class='id identifier rubyid_connected?'>connected?</span>
   <span class='ivar'>@binary</span><span class='period'>.</span><span class='id identifier rubyid_quit'>quit</span>
-  <span class='id identifier rubyid_error'>error</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>unable to obtain stable firefox connection in </span><span class='embexpr_beg'>#{</span><span class='const'>STABLE_CONNECTION_TIMEOUT</span><span class='embexpr_end'>}</span><span class='tstring_content'> seconds (</span><span class='embexpr_beg'>#{</span><span class='ivar'>@host</span><span class='embexpr_end'>}</span><span class='tstring_content'>:</span><span class='embexpr_beg'>#{</span><span class='ivar'>@port</span><span class='embexpr_end'>}</span><span class='tstring_content'>)</span><span class='tstring_end'>&quot;</span></span>
-  <span class='id identifier rubyid_raise'>raise</span> <span class='const'>Error</span><span class='op'>::</span><span class='const'>WebDriverError</span><span class='comma'>,</span> <span class='id identifier rubyid_error'>error</span>
+  <span class='id identifier rubyid_error'>error</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>unable to obtain stable firefox connection in </span><span class='embexpr_beg'>#{</span><span class='const'><span class='object_link'><a href="#STABLE_CONNECTION_TIMEOUT-constant" title="Selenium::WebDriver::Firefox::Launcher::STABLE_CONNECTION_TIMEOUT (constant)">STABLE_CONNECTION_TIMEOUT</a></span></span><span class='embexpr_end'>}</span><span class='tstring_content'> seconds (</span><span class='embexpr_beg'>#{</span><span class='ivar'>@host</span><span class='embexpr_end'>}</span><span class='tstring_content'>:</span><span class='embexpr_beg'>#{</span><span class='ivar'>@port</span><span class='embexpr_end'>}</span><span class='tstring_content'>)</span><span class='tstring_end'>&quot;</span></span>
+  <span class='id identifier rubyid_raise'>raise</span> <span class='const'><span class='object_link'><a href="../Error.html" title="Selenium::WebDriver::Error (module)">Error</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Error/WebDriverError.html" title="Selenium::WebDriver::Error::WebDriverError (class)">WebDriverError</a></span></span><span class='comma'>,</span> <span class='id identifier rubyid_error'>error</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -636,7 +634,7 @@
       <div class="method_details ">
   <h3 class="signature " id="create_profile-instance_method">
   
-    - (<tt>Object</tt>) <strong>create_profile</strong> 
+    #<strong>create_profile</strong>  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -681,7 +679,7 @@
   <span class='ivar'>@profile</span><span class='period'>.</span><span class='id identifier rubyid_port'>port</span> <span class='op'>=</span> <span class='ivar'>@port</span>
 
   <span class='ivar'>@profile_dir</span> <span class='op'>=</span> <span class='ivar'>@profile</span><span class='period'>.</span><span class='id identifier rubyid_layout_on_disk'>layout_on_disk</span>
-  <span class='const'>FileReaper</span> <span class='op'>&lt;&lt;</span> <span class='ivar'>@profile_dir</span>
+  <span class='const'><span class='object_link'><a href="../FileReaper.html" title="Selenium::WebDriver::FileReaper (module)">FileReaper</a></span></span> <span class='op'>&lt;&lt;</span> <span class='ivar'>@profile_dir</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -691,7 +689,7 @@
       <div class="method_details ">
   <h3 class="signature " id="fetch_profile-instance_method">
   
-    - (<tt>Object</tt>) <strong>fetch_profile</strong> 
+    #<strong>fetch_profile</strong>  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -729,9 +727,9 @@
 
 <span class='kw'>def</span> <span class='id identifier rubyid_fetch_profile'>fetch_profile</span>
   <span class='kw'>if</span> <span class='ivar'>@profile_name</span>
-    <span class='ivar'>@profile</span> <span class='op'>=</span> <span class='const'>Profile</span><span class='period'>.</span><span class='id identifier rubyid_from_name'>from_name</span> <span class='ivar'>@profile_name</span>
+    <span class='ivar'>@profile</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="Profile.html" title="Selenium::WebDriver::Firefox::Profile (class)">Profile</a></span></span><span class='period'>.</span><span class='id identifier rubyid_from_name'><span class='object_link'><a href="Profile.html#from_name-class_method" title="Selenium::WebDriver::Firefox::Profile.from_name (method)">from_name</a></span></span> <span class='ivar'>@profile_name</span>
   <span class='kw'>else</span>
-    <span class='ivar'>@profile</span> <span class='op'>=</span> <span class='const'>Profile</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span>
+    <span class='ivar'>@profile</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="Profile.html" title="Selenium::WebDriver::Firefox::Profile (class)">Profile</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Profile.html#initialize-instance_method" title="Selenium::WebDriver::Firefox::Profile#initialize (method)">new</a></span></span>
   <span class='kw'>end</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -742,7 +740,7 @@
       <div class="method_details ">
   <h3 class="signature " id="find_free_port-instance_method">
   
-    - (<tt>Object</tt>) <strong>find_free_port</strong> 
+    #<strong>find_free_port</strong>  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -775,7 +773,7 @@
       <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/launcher.rb', line 64</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_find_free_port'>find_free_port</span>
-  <span class='ivar'>@port</span> <span class='op'>=</span> <span class='const'>PortProber</span><span class='period'>.</span><span class='id identifier rubyid_above'>above</span> <span class='ivar'>@port</span>
+  <span class='ivar'>@port</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="../PortProber.html" title="Selenium::WebDriver::PortProber (class)">PortProber</a></span></span><span class='period'>.</span><span class='id identifier rubyid_above'><span class='object_link'><a href="../PortProber.html#above-class_method" title="Selenium::WebDriver::PortProber.above (method)">above</a></span></span> <span class='ivar'>@port</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -785,7 +783,7 @@
       <div class="method_details ">
   <h3 class="signature " id="launch-instance_method">
   
-    - (<tt>Object</tt>) <strong>launch</strong> 
+    #<strong>launch</strong>  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -842,7 +840,7 @@
       <div class="method_details ">
   <h3 class="signature " id="quit-instance_method">
   
-    - (<tt>Object</tt>) <strong>quit</strong> 
+    #<strong>quit</strong>  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -877,7 +875,7 @@
 
 <span class='kw'>def</span> <span class='id identifier rubyid_quit'>quit</span>
   <span class='ivar'>@binary</span><span class='period'>.</span><span class='id identifier rubyid_quit'>quit</span>
-  <span class='const'>FileReaper</span><span class='period'>.</span><span class='id identifier rubyid_reap'>reap</span><span class='lparen'>(</span><span class='ivar'>@profile_dir</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='ivar'>@profile_dir</span>
+  <span class='const'><span class='object_link'><a href="../FileReaper.html" title="Selenium::WebDriver::FileReaper (module)">FileReaper</a></span></span><span class='period'>.</span><span class='id identifier rubyid_reap'><span class='object_link'><a href="../FileReaper.html#reap-class_method" title="Selenium::WebDriver::FileReaper.reap (method)">reap</a></span></span><span class='lparen'>(</span><span class='ivar'>@profile_dir</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='ivar'>@profile_dir</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -887,7 +885,7 @@
       <div class="method_details ">
   <h3 class="signature " id="socket_lock-instance_method">
   
-    - (<tt>Object</tt>) <strong>socket_lock</strong> 
+    #<strong>socket_lock</strong>  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -920,7 +918,7 @@
       <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/firefox/launcher.rb', line 104</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_socket_lock'>socket_lock</span>
-  <span class='ivar'>@socket_lock</span> <span class='op'>||=</span> <span class='const'>SocketLock</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='ivar'>@port</span> <span class='op'>-</span> <span class='int'>1</span><span class='comma'>,</span> <span class='const'>SOCKET_LOCK_TIMEOUT</span><span class='rparen'>)</span>
+  <span class='ivar'>@socket_lock</span> <span class='op'>||=</span> <span class='const'><span class='object_link'><a href="../SocketLock.html" title="Selenium::WebDriver::SocketLock (class)">SocketLock</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="../SocketLock.html#initialize-instance_method" title="Selenium::WebDriver::SocketLock#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='ivar'>@port</span> <span class='op'>-</span> <span class='int'>1</span><span class='comma'>,</span> <span class='const'><span class='object_link'><a href="#SOCKET_LOCK_TIMEOUT-constant" title="Selenium::WebDriver::Firefox::Launcher::SOCKET_LOCK_TIMEOUT (constant)">SOCKET_LOCK_TIMEOUT</a></span></span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -930,7 +928,7 @@
       <div class="method_details ">
   <h3 class="signature " id="start-instance_method">
   
-    - (<tt>Object</tt>) <strong>start</strong> 
+    #<strong>start</strong>  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -975,7 +973,7 @@
       <div class="method_details ">
   <h3 class="signature " id="url-instance_method">
   
-    - (<tt>Object</tt>) <strong>url</strong> 
+    #<strong>url</strong>  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -1019,11 +1017,12 @@
 
 </div>
 
-    <div id="footer">
-  Generated on Tue Jun 20 07:17:51 2017 by
+      <div id="footer">
+  Generated on Thu Aug 10 10:15:57 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.7.6 (ruby-2.4.0).
+  0.9.9 (ruby-2.4.0).
 </div>
 
+    </div>
   </body>
 </html>

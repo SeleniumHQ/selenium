@@ -1,12 +1,12 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!DOCTYPE html>
+<html>
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>
   Class: Selenium::WebDriver::Driver
   
-    &mdash; Documentation by YARD 0.8.7.6
+    &mdash; Documentation by YARD 0.9.9
   
 </title>
 
@@ -15,9 +15,8 @@
   <link rel="stylesheet" href="../../css/common.css" type="text/css" charset="utf-8" />
 
 <script type="text/javascript" charset="utf-8">
-  hasFrames = window.top.frames.main ? true : false;
+  pathId = "Selenium::WebDriver::Driver";
   relpath = '../../';
-  framesUrl = "../../frames.html#!Selenium/WebDriver/Driver.html";
 </script>
 
 
@@ -28,51 +27,48 @@
 
   </head>
   <body>
-    <div id="header">
-      <div id="menu">
+    <div class="nav_wrap">
+      <iframe id="nav" src="../../class_list.html?1"></iframe>
+      <div id="resizer"></div>
+    </div>
+
+    <div id="main" tabindex="-1">
+      <div id="header">
+        <div id="menu">
   
     <a href="../../_index.html">Index (D)</a> &raquo;
     <span class='title'><span class='object_link'><a href="../../Selenium.html" title="Selenium (module)">Selenium</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span>
      &raquo; 
     <span class="title">Driver</span>
   
-
-  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
 </div>
 
-      <div id="search">
+        <div id="search">
   
     <a class="full_list_link" id="class_list_link"
         href="../../class_list.html">
-      Class List
-    </a>
-  
-    <a class="full_list_link" id="method_list_link"
-        href="../../method_list.html">
-      Method List
-    </a>
-  
-    <a class="full_list_link" id="file_list_link"
-        href="../../file_list.html">
-      File List
+
+        <svg width="24" height="24">
+          <rect x="0" y="4" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="12" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="20" width="24" height="4" rx="1" ry="1"></rect>
+        </svg>
     </a>
   
 </div>
-      <div class="clear"></div>
-    </div>
+        <div class="clear"></div>
+      </div>
 
-    <iframe id="search_frame"></iframe>
-
-    <div id="content"><h1>Class: Selenium::WebDriver::Driver
+      <div id="content"><h1>Class: Selenium::WebDriver::Driver
   
   
   
 </h1>
-
-<dl class="box">
+<div class="box_info">
   
-    <dt class="r1">Inherits:</dt>
-    <dd class="r1">
+  <dl>
+    <dt>Inherits:</dt>
+    <dd>
       <span class="inheritName">Object</span>
       
         <ul class="fullTree">
@@ -83,25 +79,30 @@
         </ul>
         <a href="#" class="inheritanceTree">show all</a>
       
-      </dd>
-    
+    </dd>
+  </dl>
   
-  
-    
-  
-    
-      <dt class="r2">Includes:</dt>
-      <dd class="r2"><span class='object_link'><a href="SearchContext.html" title="Selenium::WebDriver::SearchContext (module)">SearchContext</a></span></dd>
-      
-    
+
   
   
   
-    <dt class="r1 last">Defined in:</dt>
-    <dd class="r1 last">lib/selenium/webdriver/common/driver.rb</dd>
   
-</dl>
-<div class="clear"></div>
+  <dl>
+      <dt>Includes:</dt>
+      <dd><span class='object_link'><a href="SearchContext.html" title="Selenium::WebDriver::SearchContext (module)">SearchContext</a></span></dd>
+  </dl>
+  
+  
+
+  
+
+  
+  <dl>
+    <dt>Defined in:</dt>
+    <dd>lib/selenium/webdriver/common/driver.rb</dd>
+  </dl>
+  
+</div>
 
 <h2>Overview</h2><div class="docstring">
   <div class="discussion">
@@ -129,11 +130,8 @@
 
 </div><div id="subclasses">
   <h2>Direct Known Subclasses</h2>
-  <p class="children"><span class='object_link'><a href="Chrome/Driver.html" title="Selenium::WebDriver::Chrome::Driver (class)">Chrome::Driver</a></span>, <span class='object_link'><a href="Edge/Driver.html" title="Selenium::WebDriver::Edge::Driver (class)">Edge::Driver</a></span>, <span class='object_link'><a href="Firefox/Legacy/Driver.html" title="Selenium::WebDriver::Firefox::Legacy::Driver (class)">Firefox::Legacy::Driver</a></span>, <span class='object_link'><a href="Firefox/Marionette/Driver.html" title="Selenium::WebDriver::Firefox::Marionette::Driver (class)">Firefox::Marionette::Driver</a></span>, <span class='object_link'><a href="IE/Driver.html" title="Selenium::WebDriver::IE::Driver (class)">IE::Driver</a></span>, <span class='object_link'><a href="PhantomJS/Driver.html" title="Selenium::WebDriver::PhantomJS::Driver (class)">PhantomJS::Driver</a></span>, <span class='object_link'><a href="Remote/OSS/Driver.html" title="Selenium::WebDriver::Remote::OSS::Driver (class)">Remote::OSS::Driver</a></span>, <span class='object_link'><a href="Remote/W3C/Driver.html" title="Selenium::WebDriver::Remote::W3C::Driver (class)">Remote::W3C::Driver</a></span>, <span class='object_link'><a href="Safari/Driver.html" title="Selenium::WebDriver::Safari::Driver (class)">Safari::Driver</a></span></p>
+  <p class="children"><span class='object_link'><a href="Chrome/Driver.html" title="Selenium::WebDriver::Chrome::Driver (class)">Chrome::Driver</a></span>, <span class='object_link'><a href="Edge/Driver.html" title="Selenium::WebDriver::Edge::Driver (class)">Edge::Driver</a></span>, <span class='object_link'><a href="Firefox/Legacy/Driver.html" title="Selenium::WebDriver::Firefox::Legacy::Driver (class)">Firefox::Legacy::Driver</a></span>, <span class='object_link'><a href="Firefox/Marionette/Driver.html" title="Selenium::WebDriver::Firefox::Marionette::Driver (class)">Firefox::Marionette::Driver</a></span>, <span class='object_link'><a href="IE/Driver.html" title="Selenium::WebDriver::IE::Driver (class)">IE::Driver</a></span>, <span class='object_link'><a href="PhantomJS/Driver.html" title="Selenium::WebDriver::PhantomJS::Driver (class)">PhantomJS::Driver</a></span>, <span class='object_link'><a href="Remote/Driver.html" title="Selenium::WebDriver::Remote::Driver (class)">Remote::Driver</a></span>, <span class='object_link'><a href="Safari/Driver.html" title="Selenium::WebDriver::Safari::Driver (class)">Safari::Driver</a></span></p>
 </div>
-
-  <h2>Constant Summary</h2>
-  
 
 
 
@@ -150,7 +148,7 @@
   
     <h2>
       Class Method Summary
-      <small>(<a href="#" class="summary_toggle">collapse</a>)</small>
+      <small><a href="#" class="summary_toggle">collapse</a></small>
     </h2>
 
     <ul class="summary">
@@ -158,7 +156,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#for-class_method" title="for (class method)">+ (Driver) <strong>for</strong>(browser, opts = {}) </a>
+      <a href="#for-class_method" title="for (class method)">.<strong>for</strong>(browser, opts = {})  &#x21d2; Driver </a>
     
 
     
@@ -181,7 +179,7 @@
   
     <h2>
       Instance Method Summary
-      <small>(<a href="#" class="summary_toggle">collapse</a>)</small>
+      <small><a href="#" class="summary_toggle">collapse</a></small>
     </h2>
 
     <ul class="summary">
@@ -189,7 +187,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#%5B%5D-instance_method" title="#[] (instance method)">- (WebDriver::Element) <strong>[]</strong>(sel) </a>
+      <a href="#[]-instance_method" title="#[] (instance method)">#<strong>[]</strong>(sel)  &#x21d2; WebDriver::Element </a>
     
 
     
@@ -213,7 +211,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#action-instance_method" title="#action (instance method)">- (ActionBuilder, W3CActionBuilder) <strong>action</strong> </a>
+      <a href="#action-instance_method" title="#action (instance method)">#<strong>action</strong>  &#x21d2; ActionBuilder, W3CActionBuilder </a>
     
 
     
@@ -235,7 +233,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#browser-instance_method" title="#browser (instance method)">- (Object) <strong>browser</strong> </a>
+      <a href="#browser-instance_method" title="#browser (instance method)">#<strong>browser</strong>  &#x21d2; Object </a>
     
 
     
@@ -257,7 +255,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#capabilities-instance_method" title="#capabilities (instance method)">- (Object) <strong>capabilities</strong> </a>
+      <a href="#capabilities-instance_method" title="#capabilities (instance method)">#<strong>capabilities</strong>  &#x21d2; Object </a>
     
 
     
@@ -279,7 +277,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#close-instance_method" title="#close (instance method)">- (Object) <strong>close</strong> </a>
+      <a href="#close-instance_method" title="#close (instance method)">#<strong>close</strong>  &#x21d2; Object </a>
     
 
     
@@ -303,7 +301,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#current_url-instance_method" title="#current_url (instance method)">- (String) <strong>current_url</strong> </a>
+      <a href="#current_url-instance_method" title="#current_url (instance method)">#<strong>current_url</strong>  &#x21d2; String </a>
     
 
     
@@ -327,7 +325,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#execute_async_script-instance_method" title="#execute_async_script (instance method)">- (WebDriver::Element, ...) <strong>execute_async_script</strong>(script, *args) </a>
+      <a href="#execute_async_script-instance_method" title="#execute_async_script (instance method)">#<strong>execute_async_script</strong>(script, *args)  &#x21d2; WebDriver::Element, ... </a>
     
 
     
@@ -352,7 +350,7 @@ selected frame or window.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#execute_script-instance_method" title="#execute_script (instance method)">- (WebDriver::Element, ...) <strong>execute_script</strong>(script, *args) </a>
+      <a href="#execute_script-instance_method" title="#execute_script (instance method)">#<strong>execute_script</strong>(script, *args)  &#x21d2; WebDriver::Element, ... </a>
     
 
     
@@ -378,7 +376,7 @@ selected frame or window.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#get-instance_method" title="#get (instance method)">- (Object) <strong>get</strong>(url) </a>
+      <a href="#get-instance_method" title="#get (instance method)">#<strong>get</strong>(url)  &#x21d2; Object </a>
     
 
     
@@ -402,7 +400,7 @@ selected frame or window.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#initialize-instance_method" title="#initialize (instance method)">- (Driver) <strong>initialize</strong>(bridge, listener: nil) </a>
+      <a href="#initialize-instance_method" title="#initialize (instance method)">#<strong>initialize</strong>(bridge, listener: nil)  &#x21d2; Driver </a>
     
 
     
@@ -428,7 +426,7 @@ selected frame or window.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#inspect-instance_method" title="#inspect (instance method)">- (Object) <strong>inspect</strong> </a>
+      <a href="#inspect-instance_method" title="#inspect (instance method)">#<strong>inspect</strong>  &#x21d2; Object </a>
     
 
     
@@ -450,7 +448,7 @@ selected frame or window.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#keyboard-instance_method" title="#keyboard (instance method)">- (Object) <strong>keyboard</strong> </a>
+      <a href="#keyboard-instance_method" title="#keyboard (instance method)">#<strong>keyboard</strong>  &#x21d2; Object </a>
     
 
     
@@ -472,7 +470,7 @@ selected frame or window.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#manage-instance_method" title="#manage (instance method)">- (Options) <strong>manage</strong> </a>
+      <a href="#manage-instance_method" title="#manage (instance method)">#<strong>manage</strong>  &#x21d2; Options </a>
     
 
     
@@ -494,7 +492,7 @@ selected frame or window.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#mouse-instance_method" title="#mouse (instance method)">- (Object) <strong>mouse</strong> </a>
+      <a href="#mouse-instance_method" title="#mouse (instance method)">#<strong>mouse</strong>  &#x21d2; Object </a>
     
 
     
@@ -516,7 +514,7 @@ selected frame or window.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#navigate-instance_method" title="#navigate (instance method)">- (Navigation) <strong>navigate</strong> </a>
+      <a href="#navigate-instance_method" title="#navigate (instance method)">#<strong>navigate</strong>  &#x21d2; Navigation </a>
     
 
     
@@ -538,7 +536,7 @@ selected frame or window.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#page_source-instance_method" title="#page_source (instance method)">- (String) <strong>page_source</strong> </a>
+      <a href="#page_source-instance_method" title="#page_source (instance method)">#<strong>page_source</strong>  &#x21d2; String </a>
     
 
     
@@ -562,7 +560,7 @@ selected frame or window.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#quit-instance_method" title="#quit (instance method)">- (Object) <strong>quit</strong> </a>
+      <a href="#quit-instance_method" title="#quit (instance method)">#<strong>quit</strong>  &#x21d2; Object </a>
     
 
     
@@ -586,7 +584,7 @@ selected frame or window.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#ref-instance_method" title="#ref (instance method)">- (Object) <strong>ref</strong> </a>
+      <a href="#ref-instance_method" title="#ref (instance method)">#<strong>ref</strong>  &#x21d2; Object </a>
     
 
     
@@ -608,7 +606,7 @@ selected frame or window.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#switch_to-instance_method" title="#switch_to (instance method)">- (TargetLocator) <strong>switch_to</strong> </a>
+      <a href="#switch_to-instance_method" title="#switch_to (instance method)">#<strong>switch_to</strong>  &#x21d2; TargetLocator </a>
     
 
     
@@ -630,7 +628,7 @@ selected frame or window.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#title-instance_method" title="#title (instance method)">- (String) <strong>title</strong> </a>
+      <a href="#title-instance_method" title="#title (instance method)">#<strong>title</strong>  &#x21d2; String </a>
     
 
     
@@ -654,7 +652,7 @@ selected frame or window.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#window_handle-instance_method" title="#window_handle (instance method)">- (String) <strong>window_handle</strong> </a>
+      <a href="#window_handle-instance_method" title="#window_handle (instance method)">#<strong>window_handle</strong>  &#x21d2; String </a>
     
 
     
@@ -678,7 +676,7 @@ selected frame or window.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#window_handles-instance_method" title="#window_handles (instance method)">- (Array) <strong>window_handles</strong> </a>
+      <a href="#window_handles-instance_method" title="#window_handles (instance method)">#<strong>window_handles</strong>  &#x21d2; Array </a>
     
 
     
@@ -719,7 +717,7 @@ selected frame or window.</p>
     <div class="method_details first">
   <h3 class="signature first" id="initialize-instance_method">
   
-    - (<tt><span class='object_link'><a href="" title="Selenium::WebDriver::Driver (class)">Driver</a></span></tt>) <strong>initialize</strong>(bridge, listener: nil) 
+    #<strong>initialize</strong>(bridge, listener: nil)  &#x21d2; <tt><span class='object_link'><a href="" title="Selenium::WebDriver::Driver (class)">Driver</a></span></tt> 
   
 
   
@@ -757,7 +755,7 @@ Selenium::WebDriver.for instead of using this directly.</p>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_bridge'>bridge</span><span class='comma'>,</span> <span class='label'>listener:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='ivar'>@bridge</span> <span class='op'>=</span> <span class='id identifier rubyid_bridge'>bridge</span>
-  <span class='ivar'>@bridge</span> <span class='op'>=</span> <span class='const'>Support</span><span class='op'>::</span><span class='const'>EventFiringBridge</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_bridge'>bridge</span><span class='comma'>,</span> <span class='id identifier rubyid_listener'>listener</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id identifier rubyid_listener'>listener</span>
+  <span class='ivar'>@bridge</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="Support.html" title="Selenium::WebDriver::Support (module)">Support</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Support/EventFiringBridge.html" title="Selenium::WebDriver::Support::EventFiringBridge (class)">EventFiringBridge</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Support/EventFiringBridge.html#initialize-instance_method" title="Selenium::WebDriver::Support::EventFiringBridge#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_bridge'>bridge</span><span class='comma'>,</span> <span class='id identifier rubyid_listener'>listener</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id identifier rubyid_listener'>listener</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -774,7 +772,7 @@ Selenium::WebDriver.for instead of using this directly.</p>
       <div class="method_details first">
   <h3 class="signature first" id="for-class_method">
   
-    + (<tt><span class='object_link'><a href="" title="Selenium::WebDriver::Driver (class)">Driver</a></span></tt>) <strong>for</strong>(browser, opts = {}) 
+    .<strong>for</strong>(browser, opts = {})  &#x21d2; <tt><span class='object_link'><a href="" title="Selenium::WebDriver::Driver (class)">Driver</a></span></tt> 
   
 
   
@@ -846,19 +844,19 @@ Selenium::WebDriver.for instead of using this directly.</p>
 <span class='kw'>def</span> <span class='kw'>for</span><span class='lparen'>(</span><span class='id identifier rubyid_browser'>browser</span><span class='comma'>,</span> <span class='id identifier rubyid_opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='kw'>case</span> <span class='id identifier rubyid_browser'>browser</span>
   <span class='kw'>when</span> <span class='symbol'>:chrome</span>
-    <span class='const'>Chrome</span><span class='op'>::</span><span class='const'>Driver</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
+    <span class='const'><span class='object_link'><a href="Chrome.html" title="Selenium::WebDriver::Chrome (module)">Chrome</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Chrome/Driver.html" title="Selenium::WebDriver::Chrome::Driver (class)">Driver</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Chrome/Driver.html#initialize-instance_method" title="Selenium::WebDriver::Chrome::Driver#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
   <span class='kw'>when</span> <span class='symbol'>:internet_explorer</span><span class='comma'>,</span> <span class='symbol'>:ie</span>
-    <span class='const'>IE</span><span class='op'>::</span><span class='const'>Driver</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
+    <span class='const'><span class='object_link'><a href="IE.html" title="Selenium::WebDriver::IE (module)">IE</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="IE/Driver.html" title="Selenium::WebDriver::IE::Driver (class)">Driver</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="IE/Driver.html#initialize-instance_method" title="Selenium::WebDriver::IE::Driver#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
   <span class='kw'>when</span> <span class='symbol'>:safari</span>
-    <span class='const'>Safari</span><span class='op'>::</span><span class='const'>Driver</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
+    <span class='const'><span class='object_link'><a href="Safari.html" title="Selenium::WebDriver::Safari (module)">Safari</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Safari/Driver.html" title="Selenium::WebDriver::Safari::Driver (class)">Driver</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Safari/Driver.html#initialize-instance_method" title="Selenium::WebDriver::Safari::Driver#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
   <span class='kw'>when</span> <span class='symbol'>:phantomjs</span>
-    <span class='const'>PhantomJS</span><span class='op'>::</span><span class='const'>Driver</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
+    <span class='const'><span class='object_link'><a href="PhantomJS.html" title="Selenium::WebDriver::PhantomJS (module)">PhantomJS</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="PhantomJS/Driver.html" title="Selenium::WebDriver::PhantomJS::Driver (class)">Driver</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="PhantomJS/Driver.html#initialize-instance_method" title="Selenium::WebDriver::PhantomJS::Driver#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
   <span class='kw'>when</span> <span class='symbol'>:firefox</span><span class='comma'>,</span> <span class='symbol'>:ff</span>
-    <span class='const'>Firefox</span><span class='op'>::</span><span class='const'>Driver</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
+    <span class='const'><span class='object_link'><a href="Firefox.html" title="Selenium::WebDriver::Firefox (module)">Firefox</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Firefox/Driver.html" title="Selenium::WebDriver::Firefox::Driver (module)">Driver</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Firefox/Driver.html#new-class_method" title="Selenium::WebDriver::Firefox::Driver.new (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
   <span class='kw'>when</span> <span class='symbol'>:edge</span>
-    <span class='const'>Edge</span><span class='op'>::</span><span class='const'>Driver</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
+    <span class='const'><span class='object_link'><a href="Edge.html" title="Selenium::WebDriver::Edge (module)">Edge</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Edge/Driver.html" title="Selenium::WebDriver::Edge::Driver (class)">Driver</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Edge/Driver.html#initialize-instance_method" title="Selenium::WebDriver::Edge::Driver#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
   <span class='kw'>when</span> <span class='symbol'>:remote</span>
-    <span class='const'>Remote</span><span class='op'>::</span><span class='const'>Driver</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
+    <span class='const'><span class='object_link'><a href="Remote.html" title="Selenium::WebDriver::Remote (module)">Remote</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Remote/Driver.html" title="Selenium::WebDriver::Remote::Driver (class)">Driver</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Remote/Driver.html#initialize-instance_method" title="Selenium::WebDriver::Remote::Driver#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
   <span class='kw'>else</span>
     <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>unknown driver: </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_browser'>browser</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
   <span class='kw'>end</span>
@@ -877,7 +875,7 @@ Selenium::WebDriver.for instead of using this directly.</p>
       <div class="method_details first">
   <h3 class="signature first" id="[]-instance_method">
   
-    - (<tt><span class='object_link'><a href="Element.html" title="Selenium::WebDriver::Element (class)">WebDriver::Element</a></span></tt>) <strong>[]</strong>(sel) 
+    #<strong>[]</strong>(sel)  &#x21d2; <tt><span class='object_link'><a href="Element.html" title="Selenium::WebDriver::Element (class)">WebDriver::Element</a></span></tt> 
   
 
   
@@ -962,7 +960,7 @@ Symbol, it will be used as the id of the element.</p>
       <div class="method_details ">
   <h3 class="signature " id="action-instance_method">
   
-    - (<tt><span class='object_link'><a href="ActionBuilder.html" title="Selenium::WebDriver::ActionBuilder (class)">ActionBuilder</a></span></tt>, <tt><span class='object_link'><a href="W3CActionBuilder.html" title="Selenium::WebDriver::W3CActionBuilder (class)">W3CActionBuilder</a></span></tt>) <strong>action</strong> 
+    #<strong>action</strong>  &#x21d2; <tt><span class='object_link'><a href="ActionBuilder.html" title="Selenium::WebDriver::ActionBuilder (class)">ActionBuilder</a></span></tt>, <tt><span class='object_link'><a href="W3CActionBuilder.html" title="Selenium::WebDriver::W3CActionBuilder (class)">W3CActionBuilder</a></span></tt> 
   
 
   
@@ -1021,7 +1019,7 @@ Symbol, it will be used as the id of the element.</p>
       <div class="method_details ">
   <h3 class="signature " id="browser-instance_method">
   
-    - (<tt>Object</tt>) <strong>browser</strong> 
+    #<strong>browser</strong>  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -1051,7 +1049,7 @@ Symbol, it will be used as the id of the element.</p>
       <div class="method_details ">
   <h3 class="signature " id="capabilities-instance_method">
   
-    - (<tt>Object</tt>) <strong>capabilities</strong> 
+    #<strong>capabilities</strong>  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -1081,7 +1079,7 @@ Symbol, it will be used as the id of the element.</p>
       <div class="method_details ">
   <h3 class="signature " id="close-instance_method">
   
-    - (<tt>Object</tt>) <strong>close</strong> 
+    #<strong>close</strong>  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -1122,7 +1120,7 @@ Symbol, it will be used as the id of the element.</p>
       <div class="method_details ">
   <h3 class="signature " id="current_url-instance_method">
   
-    - (<tt>String</tt>) <strong>current_url</strong> 
+    #<strong>current_url</strong>  &#x21d2; <tt>String</tt> 
   
 
   
@@ -1176,7 +1174,7 @@ Symbol, it will be used as the id of the element.</p>
       <div class="method_details ">
   <h3 class="signature " id="execute_async_script-instance_method">
   
-    - (<tt><span class='object_link'><a href="Element.html" title="Selenium::WebDriver::Element (class)">WebDriver::Element</a></span></tt>, ...) <strong>execute_async_script</strong>(script, *args) 
+    #<strong>execute_async_script</strong>(script, *args)  &#x21d2; <tt><span class='object_link'><a href="Element.html" title="Selenium::WebDriver::Element (class)">WebDriver::Element</a></span></tt>, ... 
   
 
   
@@ -1270,7 +1268,7 @@ injected into the executed function as the last argument.</p>
       <div class="method_details ">
   <h3 class="signature " id="execute_script-instance_method">
   
-    - (<tt><span class='object_link'><a href="Element.html" title="Selenium::WebDriver::Element (class)">WebDriver::Element</a></span></tt>, ...) <strong>execute_script</strong>(script, *args) 
+    #<strong>execute_script</strong>(script, *args)  &#x21d2; <tt><span class='object_link'><a href="Element.html" title="Selenium::WebDriver::Element (class)">WebDriver::Element</a></span></tt>, ... 
   
 
   
@@ -1370,7 +1368,7 @@ pseudo-array.</p>
       <div class="method_details ">
   <h3 class="signature " id="get-instance_method">
   
-    - (<tt>Object</tt>) <strong>get</strong>(url) 
+    #<strong>get</strong>(url)  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -1411,7 +1409,7 @@ pseudo-array.</p>
       <div class="method_details ">
   <h3 class="signature " id="inspect-instance_method">
   
-    - (<tt>Object</tt>) <strong>inspect</strong> 
+    #<strong>inspect</strong>  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -1441,7 +1439,7 @@ pseudo-array.</p>
       <div class="method_details ">
   <h3 class="signature " id="keyboard-instance_method">
   
-    - (<tt>Object</tt>) <strong>keyboard</strong> 
+    #<strong>keyboard</strong>  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -1471,7 +1469,7 @@ pseudo-array.</p>
       <div class="method_details ">
   <h3 class="signature " id="manage-instance_method">
   
-    - (<tt><span class='object_link'><a href="Options.html" title="Selenium::WebDriver::Options (class)">Options</a></span></tt>) <strong>manage</strong> 
+    #<strong>manage</strong>  &#x21d2; <tt><span class='object_link'><a href="Options.html" title="Selenium::WebDriver::Options (class)">Options</a></span></tt> 
   
 
   
@@ -1530,7 +1528,7 @@ pseudo-array.</p>
       <div class="method_details ">
   <h3 class="signature " id="mouse-instance_method">
   
-    - (<tt>Object</tt>) <strong>mouse</strong> 
+    #<strong>mouse</strong>  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -1560,7 +1558,7 @@ pseudo-array.</p>
       <div class="method_details ">
   <h3 class="signature " id="navigate-instance_method">
   
-    - (<tt><span class='object_link'><a href="Navigation.html" title="Selenium::WebDriver::Navigation (class)">Navigation</a></span></tt>) <strong>navigate</strong> 
+    #<strong>navigate</strong>  &#x21d2; <tt><span class='object_link'><a href="Navigation.html" title="Selenium::WebDriver::Navigation (class)">Navigation</a></span></tt> 
   
 
   
@@ -1609,7 +1607,7 @@ pseudo-array.</p>
       <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/driver.rb', line 86</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_navigate'>navigate</span>
-  <span class='ivar'>@navigate</span> <span class='op'>||=</span> <span class='const'>WebDriver</span><span class='op'>::</span><span class='const'>Navigation</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_bridge'>bridge</span><span class='rparen'>)</span>
+  <span class='ivar'>@navigate</span> <span class='op'>||=</span> <span class='const'><span class='object_link'><a href="../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Navigation.html" title="Selenium::WebDriver::Navigation (class)">Navigation</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Navigation.html#initialize-instance_method" title="Selenium::WebDriver::Navigation#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_bridge'>bridge</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -1619,7 +1617,7 @@ pseudo-array.</p>
       <div class="method_details ">
   <h3 class="signature " id="page_source-instance_method">
   
-    - (<tt>String</tt>) <strong>page_source</strong> 
+    #<strong>page_source</strong>  &#x21d2; <tt>String</tt> 
   
 
   
@@ -1673,7 +1671,7 @@ pseudo-array.</p>
       <div class="method_details ">
   <h3 class="signature " id="quit-instance_method">
   
-    - (<tt>Object</tt>) <strong>quit</strong> 
+    #<strong>quit</strong>  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -1714,7 +1712,7 @@ pseudo-array.</p>
       <div class="method_details ">
   <h3 class="signature " id="ref-instance_method">
   
-    - (<tt>Object</tt>) <strong>ref</strong> 
+    #<strong>ref</strong>  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -1764,7 +1762,7 @@ pseudo-array.</p>
       <div class="method_details ">
   <h3 class="signature " id="switch_to-instance_method">
   
-    - (<tt><span class='object_link'><a href="TargetLocator.html" title="Selenium::WebDriver::TargetLocator (class)">TargetLocator</a></span></tt>) <strong>switch_to</strong> 
+    #<strong>switch_to</strong>  &#x21d2; <tt><span class='object_link'><a href="TargetLocator.html" title="Selenium::WebDriver::TargetLocator (class)">TargetLocator</a></span></tt> 
   
 
   
@@ -1813,7 +1811,7 @@ pseudo-array.</p>
       <pre class="code"><span class="info file"># File 'lib/selenium/webdriver/common/driver.rb', line 95</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_switch_to'>switch_to</span>
-  <span class='ivar'>@switch_to</span> <span class='op'>||=</span> <span class='const'>WebDriver</span><span class='op'>::</span><span class='const'>TargetLocator</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_bridge'>bridge</span><span class='rparen'>)</span>
+  <span class='ivar'>@switch_to</span> <span class='op'>||=</span> <span class='const'><span class='object_link'><a href="../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="TargetLocator.html" title="Selenium::WebDriver::TargetLocator (class)">TargetLocator</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="TargetLocator.html#initialize-instance_method" title="Selenium::WebDriver::TargetLocator#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_bridge'>bridge</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -1823,7 +1821,7 @@ pseudo-array.</p>
       <div class="method_details ">
   <h3 class="signature " id="title-instance_method">
   
-    - (<tt>String</tt>) <strong>title</strong> 
+    #<strong>title</strong>  &#x21d2; <tt>String</tt> 
   
 
   
@@ -1877,7 +1875,7 @@ pseudo-array.</p>
       <div class="method_details ">
   <h3 class="signature " id="window_handle-instance_method">
   
-    - (<tt>String</tt>) <strong>window_handle</strong> 
+    #<strong>window_handle</strong>  &#x21d2; <tt>String</tt> 
   
 
   
@@ -1931,7 +1929,7 @@ pseudo-array.</p>
       <div class="method_details ">
   <h3 class="signature " id="window_handles-instance_method">
   
-    - (<tt>Array</tt>) <strong>window_handles</strong> 
+    #<strong>window_handles</strong>  &#x21d2; <tt>Array</tt> 
   
 
   
@@ -1993,11 +1991,12 @@ pseudo-array.</p>
 
 </div>
 
-    <div id="footer">
-  Generated on Tue Jun 20 07:17:50 2017 by
+      <div id="footer">
+  Generated on Thu Aug 10 10:15:56 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.7.6 (ruby-2.4.0).
+  0.9.9 (ruby-2.4.0).
 </div>
 
+    </div>
   </body>
 </html>

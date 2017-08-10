@@ -1,12 +1,12 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!DOCTYPE html>
+<html>
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>
   Class: Selenium::WebDriver::Remote::Http::Common
   
-    &mdash; Documentation by YARD 0.8.7.6
+    &mdash; Documentation by YARD 0.9.9
   
 </title>
 
@@ -15,9 +15,8 @@
   <link rel="stylesheet" href="../../../../css/common.css" type="text/css" charset="utf-8" />
 
 <script type="text/javascript" charset="utf-8">
-  hasFrames = window.top.frames.main ? true : false;
+  pathId = "Selenium::WebDriver::Remote::Http::Common";
   relpath = '../../../../';
-  framesUrl = "../../../../frames.html#!Selenium/WebDriver/Remote/Http/Common.html";
 </script>
 
 
@@ -28,51 +27,48 @@
 
   </head>
   <body>
-    <div id="header">
-      <div id="menu">
+    <div class="nav_wrap">
+      <iframe id="nav" src="../../../../class_list.html?1"></iframe>
+      <div id="resizer"></div>
+    </div>
+
+    <div id="main" tabindex="-1">
+      <div id="header">
+        <div id="menu">
   
     <a href="../../../../_index.html">Index (C)</a> &raquo;
     <span class='title'><span class='object_link'><a href="../../../../Selenium.html" title="Selenium (module)">Selenium</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../../../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../../Remote.html" title="Selenium::WebDriver::Remote (module)">Remote</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../Http.html" title="Selenium::WebDriver::Remote::Http (module)">Http</a></span></span>
      &raquo; 
     <span class="title">Common</span>
   
-
-  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
 </div>
 
-      <div id="search">
+        <div id="search">
   
     <a class="full_list_link" id="class_list_link"
         href="../../../../class_list.html">
-      Class List
-    </a>
-  
-    <a class="full_list_link" id="method_list_link"
-        href="../../../../method_list.html">
-      Method List
-    </a>
-  
-    <a class="full_list_link" id="file_list_link"
-        href="../../../../file_list.html">
-      File List
+
+        <svg width="24" height="24">
+          <rect x="0" y="4" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="12" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="20" width="24" height="4" rx="1" ry="1"></rect>
+        </svg>
     </a>
   
 </div>
-      <div class="clear"></div>
-    </div>
+        <div class="clear"></div>
+      </div>
 
-    <iframe id="search_frame"></iframe>
-
-    <div id="content"><h1>Class: Selenium::WebDriver::Remote::Http::Common
+      <div id="content"><h1>Class: Selenium::WebDriver::Remote::Http::Common
   
   
   
 </h1>
-
-<dl class="box">
+<div class="box_info">
   
-    <dt class="r1">Inherits:</dt>
-    <dd class="r1">
+  <dl>
+    <dt>Inherits:</dt>
+    <dd>
       <span class="inheritName">Object</span>
       
         <ul class="fullTree">
@@ -83,21 +79,25 @@
         </ul>
         <a href="#" class="inheritanceTree">show all</a>
       
-      </dd>
-    
+    </dd>
+  </dl>
   
-  
-    
-  
-    
+
   
   
   
-    <dt class="r2 last">Defined in:</dt>
-    <dd class="r2 last">lib/selenium/webdriver/remote/http/common.rb</dd>
   
-</dl>
-<div class="clear"></div>
+  
+
+  
+
+  
+  <dl>
+    <dt>Defined in:</dt>
+    <dd>lib/selenium/webdriver/remote/http/common.rb</dd>
+  </dl>
+  
+</div>
 
 <div id="subclasses">
   <h2>Direct Known Subclasses</h2>
@@ -105,11 +105,10 @@
 </div>
 
   <h2>Constant Summary</h2>
-  
-    <dl class="constants">
-      
-        <dt id="MAX_REDIRECTS-constant" class="">MAX_REDIRECTS =
-          <div class="docstring">
+  <dl class="constants">
+    
+      <dt id="MAX_REDIRECTS-constant" class="">MAX_REDIRECTS =
+        <div class="docstring">
   <div class="discussion">
     
 <p>same as chromium/gecko</p>
@@ -121,32 +120,31 @@
   
 
 </div>
-        </dt>
-        <dd><pre class="code"><span class='int'>20</span></pre></dd>
-      
-        <dt id="CONTENT_TYPE-constant" class="">CONTENT_TYPE =
-          
-        </dt>
-        <dd><pre class="code"><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>application/json</span><span class='tstring_end'>&#39;</span></span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
-      
-        <dt id="DEFAULT_HEADERS-constant" class="">DEFAULT_HEADERS =
-          
-        </dt>
-        <dd><pre class="code"><span class='lbrace'>{</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Accept</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='const'>CONTENT_TYPE</span><span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
-      
-    </dl>
-  
+      </dt>
+      <dd><pre class="code"><span class='int'>20</span></pre></dd>
+    
+      <dt id="CONTENT_TYPE-constant" class="">CONTENT_TYPE =
+        
+      </dt>
+      <dd><pre class="code"><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>application/json</span><span class='tstring_end'>&#39;</span></span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
+    
+      <dt id="DEFAULT_HEADERS-constant" class="">DEFAULT_HEADERS =
+        
+      </dt>
+      <dd><pre class="code"><span class='lbrace'>{</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Accept</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='const'><span class='object_link'><a href="#CONTENT_TYPE-constant" title="Selenium::WebDriver::Remote::Http::Common::CONTENT_TYPE (constant)">CONTENT_TYPE</a></span></span><span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
+    
+  </dl>
 
 
 
 
-  <h2>Instance Attribute Summary <small>(<a href="#" class="summary_toggle">collapse</a>)</small></h2>
+  <h2>Instance Attribute Summary <small><a href="#" class="summary_toggle">collapse</a></small></h2>
   <ul class="summary">
     
       <li class="public ">
   <span class="summary_signature">
     
-      <a href="#server_url%3D-instance_method" title="#server_url= (instance method)">- (Object) <strong>server_url</strong> </a>
+      <a href="#server_url=-instance_method" title="#server_url= (instance method)">#<strong>server_url</strong>  &#x21d2; Object </a>
     
 
     
@@ -175,7 +173,7 @@
       <li class="public ">
   <span class="summary_signature">
     
-      <a href="#timeout-instance_method" title="#timeout (instance method)">- (Object) <strong>timeout</strong> </a>
+      <a href="#timeout-instance_method" title="#timeout (instance method)">#<strong>timeout</strong>  &#x21d2; Object </a>
     
 
     
@@ -207,7 +205,7 @@
   
     <h2>
       Instance Method Summary
-      <small>(<a href="#" class="summary_toggle">collapse</a>)</small>
+      <small><a href="#" class="summary_toggle">collapse</a></small>
     </h2>
 
     <ul class="summary">
@@ -215,7 +213,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#call-instance_method" title="#call (instance method)">- (Object) <strong>call</strong>(verb, url, command_hash) </a>
+      <a href="#call-instance_method" title="#call (instance method)">#<strong>call</strong>(verb, url, command_hash)  &#x21d2; Object </a>
     
 
     
@@ -237,7 +235,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#close-instance_method" title="#close (instance method)">- (Object) <strong>close</strong> </a>
+      <a href="#close-instance_method" title="#close (instance method)">#<strong>close</strong>  &#x21d2; Object </a>
     
 
     
@@ -259,7 +257,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#initialize-instance_method" title="#initialize (instance method)">- (Common) <strong>initialize</strong> </a>
+      <a href="#initialize-instance_method" title="#initialize (instance method)">#<strong>initialize</strong>  &#x21d2; Common </a>
     
 
     
@@ -285,7 +283,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#quit_errors-instance_method" title="#quit_errors (instance method)">- (Object) <strong>quit_errors</strong> </a>
+      <a href="#quit_errors-instance_method" title="#quit_errors (instance method)">#<strong>quit_errors</strong>  &#x21d2; Object </a>
     
 
     
@@ -313,7 +311,7 @@
     <div class="method_details first">
   <h3 class="signature first" id="initialize-instance_method">
   
-    - (<tt><span class='object_link'><a href="" title="Selenium::WebDriver::Remote::Http::Common (class)">Common</a></span></tt>) <strong>initialize</strong> 
+    #<strong>initialize</strong>  &#x21d2; <tt><span class='object_link'><a href="" title="Selenium::WebDriver::Remote::Http::Common (class)">Common</a></span></tt> 
   
 
   
@@ -361,7 +359,7 @@
       <div class="method_details first">
   <h3 class="signature first" id="server_url=-instance_method">
   
-    - (<tt>Object</tt>) <strong>server_url=</strong>(value) 
+    #<strong>server_url=</strong>(value)  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -424,7 +422,7 @@
       <div class="method_details ">
   <h3 class="signature " id="timeout-instance_method">
   
-    - (<tt>Object</tt>) <strong>timeout</strong> 
+    #<strong>timeout</strong>  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -472,7 +470,7 @@
       <div class="method_details first">
   <h3 class="signature first" id="call-instance_method">
   
-    - (<tt>Object</tt>) <strong>call</strong>(verb, url, command_hash) 
+    #<strong>call</strong>(verb, url, command_hash)  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -509,16 +507,16 @@
 
 <span class='kw'>def</span> <span class='id identifier rubyid_call'>call</span><span class='lparen'>(</span><span class='id identifier rubyid_verb'>verb</span><span class='comma'>,</span> <span class='id identifier rubyid_url'>url</span><span class='comma'>,</span> <span class='id identifier rubyid_command_hash'>command_hash</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_url'>url</span>      <span class='op'>=</span> <span class='id identifier rubyid_server_url'>server_url</span><span class='period'>.</span><span class='id identifier rubyid_merge'>merge</span><span class='lparen'>(</span><span class='id identifier rubyid_url'>url</span><span class='rparen'>)</span> <span class='kw'>unless</span> <span class='id identifier rubyid_url'>url</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>URI</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_headers'>headers</span>  <span class='op'>=</span> <span class='const'>DEFAULT_HEADERS</span><span class='period'>.</span><span class='id identifier rubyid_dup'>dup</span>
+  <span class='id identifier rubyid_headers'>headers</span>  <span class='op'>=</span> <span class='const'><span class='object_link'><a href="#DEFAULT_HEADERS-constant" title="Selenium::WebDriver::Remote::Http::Common::DEFAULT_HEADERS (constant)">DEFAULT_HEADERS</a></span></span><span class='period'>.</span><span class='id identifier rubyid_dup'>dup</span>
   <span class='id identifier rubyid_headers'>headers</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Cache-Control</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>no-cache</span><span class='tstring_end'>&#39;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_verb'>verb</span> <span class='op'>==</span> <span class='symbol'>:get</span>
 
   <span class='kw'>if</span> <span class='id identifier rubyid_command_hash'>command_hash</span>
     <span class='id identifier rubyid_payload'>payload</span>                   <span class='op'>=</span> <span class='const'>JSON</span><span class='period'>.</span><span class='id identifier rubyid_generate'>generate</span><span class='lparen'>(</span><span class='id identifier rubyid_command_hash'>command_hash</span><span class='rparen'>)</span>
-    <span class='id identifier rubyid_headers'>headers</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Content-Type</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span>   <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='const'>CONTENT_TYPE</span><span class='embexpr_end'>}</span><span class='tstring_content'>; charset=utf-8</span><span class='tstring_end'>&quot;</span></span>
+    <span class='id identifier rubyid_headers'>headers</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Content-Type</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span>   <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='const'><span class='object_link'><a href="#CONTENT_TYPE-constant" title="Selenium::WebDriver::Remote::Http::Common::CONTENT_TYPE (constant)">CONTENT_TYPE</a></span></span><span class='embexpr_end'>}</span><span class='tstring_content'>; charset=utf-8</span><span class='tstring_end'>&quot;</span></span>
     <span class='id identifier rubyid_headers'>headers</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Content-Length</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_payload'>payload</span><span class='period'>.</span><span class='id identifier rubyid_bytesize'>bytesize</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span> <span class='kw'>if</span> <span class='lbracket'>[</span><span class='symbol'>:post</span><span class='comma'>,</span> <span class='symbol'>:put</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span><span class='lparen'>(</span><span class='id identifier rubyid_verb'>verb</span><span class='rparen'>)</span>
 
-    <span class='const'>WebDriver</span><span class='period'>.</span><span class='id identifier rubyid_logger'>logger</span><span class='period'>.</span><span class='id identifier rubyid_info'>info</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>   &gt;&gt;&gt; </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_url'>url</span><span class='embexpr_end'>}</span><span class='tstring_content'> | </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_payload'>payload</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
-    <span class='const'>WebDriver</span><span class='period'>.</span><span class='id identifier rubyid_logger'>logger</span><span class='period'>.</span><span class='id identifier rubyid_debug'>debug</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>     &gt; </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_headers'>headers</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+    <span class='const'><span class='object_link'><a href="../../../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span><span class='period'>.</span><span class='id identifier rubyid_logger'><span class='object_link'><a href="../../../WebDriver.html#logger-class_method" title="Selenium::WebDriver.logger (method)">logger</a></span></span><span class='period'>.</span><span class='id identifier rubyid_info'>info</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>   &gt;&gt;&gt; </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_url'>url</span><span class='embexpr_end'>}</span><span class='tstring_content'> | </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_payload'>payload</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+    <span class='const'><span class='object_link'><a href="../../../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span><span class='period'>.</span><span class='id identifier rubyid_logger'><span class='object_link'><a href="../../../WebDriver.html#logger-class_method" title="Selenium::WebDriver.logger (method)">logger</a></span></span><span class='period'>.</span><span class='id identifier rubyid_debug'>debug</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>     &gt; </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_headers'>headers</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
   <span class='kw'>elsif</span> <span class='id identifier rubyid_verb'>verb</span> <span class='op'>==</span> <span class='symbol'>:post</span>
     <span class='id identifier rubyid_payload'>payload</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>{}</span><span class='tstring_end'>&#39;</span></span>
     <span class='id identifier rubyid_headers'>headers</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Content-Length</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>2</span><span class='tstring_end'>&#39;</span></span>
@@ -534,7 +532,7 @@
       <div class="method_details ">
   <h3 class="signature " id="close-instance_method">
   
-    - (<tt>Object</tt>) <strong>close</strong> 
+    #<strong>close</strong>  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -564,7 +562,7 @@
       <div class="method_details ">
   <h3 class="signature " id="quit_errors-instance_method">
   
-    - (<tt>Object</tt>) <strong>quit_errors</strong> 
+    #<strong>quit_errors</strong>  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -595,11 +593,12 @@
 
 </div>
 
-    <div id="footer">
-  Generated on Tue Jun 20 07:17:52 2017 by
+      <div id="footer">
+  Generated on Thu Aug 10 10:15:59 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.8.7.6 (ruby-2.4.0).
+  0.9.9 (ruby-2.4.0).
 </div>
 
+    </div>
   </body>
 </html>
