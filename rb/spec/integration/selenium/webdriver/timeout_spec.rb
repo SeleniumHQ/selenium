@@ -21,8 +21,7 @@ require_relative 'spec_helper'
 
 module Selenium
   module WebDriver
-    # https://github.com/mozilla/geckodriver/issues/800
-    describe Timeouts, except: {browser: :ff_nightly} do
+    describe Timeouts do
       context 'implicit waits' do
         before do
           driver.manage.timeouts.implicit_wait = 0
@@ -80,8 +79,7 @@ module Selenium
         # w3c default is 300,000
         after { driver.manage.timeouts.page_load = 300000 }
 
-        # The pageLoad change is currently only in Nightly
-        it 'should be able to set the page load timeout', except: {driver: :firefox} do
+        it 'should be able to set the page load timeout' do
           expect { driver.manage.timeouts.page_load = 2 }.to_not raise_exception
         end
       end

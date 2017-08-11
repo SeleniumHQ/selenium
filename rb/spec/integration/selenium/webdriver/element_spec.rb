@@ -72,9 +72,7 @@ module Selenium
       end
 
       # PhantomJS on windows issue: https://github.com/ariya/phantomjs/issues/10993
-      # https://github.com/mozilla/geckodriver/issues/644
-      # https://github.com/mozilla/geckodriver/issues/858
-      it 'should handle file uploads', except: {browser: %i[firefox safari edge phantomjs]} do
+      it 'should handle file uploads', except: {browser: %i[safari edge phantomjs]} do
         driver.navigate.to url_for('formPage.html')
 
         element = driver.find_element(id: 'upload')
@@ -179,7 +177,7 @@ module Selenium
       end
 
       # IE - https://github.com/SeleniumHQ/selenium/pull/4043
-      it 'should drag and drop', except: {browser: %i[safari firefox ie]} do
+      it 'should drag and drop', except: {browser: %i[safari ie]} do
         driver.navigate.to url_for('dragAndDropTest.html')
 
         img1 = driver.find_element(id: 'test1')

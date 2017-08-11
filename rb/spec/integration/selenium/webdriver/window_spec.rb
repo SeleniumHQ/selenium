@@ -73,7 +73,7 @@ module Selenium
       end
 
       # remote responds to OSS protocol which doesn't support rect commands
-      context 'window rect', except: {driver: :remote}, only: {browser: :ff_nightly} do
+      context 'window rect', except: {driver: :remote}, only: {browser: %i[firefox ff_nightly]} do
         it 'gets the rect of the current window' do
           rect = driver.manage.window.rect
 
@@ -106,8 +106,7 @@ module Selenium
       end
 
       # TODO: - Create Window Manager guard
-      # Geckodriver issue: https://github.com/mozilla/geckodriver/issues/820
-      it 'can maximize the current window', except: [{platform: :linux}, {browser: %i[safari firefox]}] do
+      it 'can maximize the current window', except: [{platform: :linux}, {browser: :safari}] do
         window.size = old_size = Dimension.new(200, 200)
 
         window.maximize

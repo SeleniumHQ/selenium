@@ -275,8 +275,7 @@ module Selenium
         end
       end
 
-      # https://github.com/mozilla/geckodriver/issues/800
-      describe 'execute async script', except: {browser: :ff_nightly} do
+      describe 'execute async script' do
         before do
           driver.manage.timeouts.script_timeout = 0
           driver.navigate.to url_for('ajaxy_page.html')

@@ -82,8 +82,7 @@ module Selenium
           expect(input.attribute(:value)).to eq('abcddcba')
         end
 
-        # Certain non-ASCII keys are not working in Firefox yet (known but un-filed bug)
-        it 'can send non-ascii keys', except: {driver: %i[firefox ff_nightly]} do
+        it 'can send non-ASCII keys' do
           driver.navigate.to url_for('formPage.html')
 
           input = driver.find_element(css: '#working')
@@ -94,8 +93,7 @@ module Selenium
           expect(input.attribute(:value)).to eq('abcad')
         end
 
-        # These requires pointer actions to be working in Firefox first
-        it 'can send keys to element', except: {driver: :firefox} do
+        it 'can send keys to element' do
           driver.navigate.to url_for('formPage.html')
 
           input = driver.find_element(css: '#working')
@@ -105,7 +103,7 @@ module Selenium
           expect(input.attribute(:value)).to eq('abcd')
         end
 
-        it 'can release pressed keys via release action', only: {driver: :ff_nightly} do
+        it 'can release pressed keys via release action', only: {driver: %i[firefox ff_nightly]} do
           driver.navigate.to url_for('javascriptPage.html')
 
           event_input = driver.find_element(id: 'theworks')
@@ -123,7 +121,7 @@ module Selenium
         end
       end # Key actions
 
-      describe 'Pointer actions', except: {browser: %i[safari firefox]} do
+      describe 'Pointer actions', except: {browser: %i[safari]} do
         it 'clicks an element' do
           driver.navigate.to url_for('javascriptPage.html')
           element = driver.find_element(id: 'clickField')
@@ -148,7 +146,7 @@ module Selenium
         end
 
         # Pending bug with Firefox
-        it 'double clicks an element', except: {driver: :ff_nightly} do
+        it 'double clicks an element', except: {driver: %i[firefox ff_nightly]} do
           driver.navigate.to url_for('javascriptPage.html')
           element = driver.find_element(id: 'doubleClickField')
 
@@ -156,7 +154,7 @@ module Selenium
           expect(element.attribute(:value)).to eq('DoubleClicked')
         end
 
-        it 'context clicks an element', except: {browser: :phantomjs} do
+        it 'context clicks an element', except: {browser: %i[firefox phantomjs]} do
           driver.navigate.to url_for('javascriptPage.html')
           element = driver.find_element(id: 'doubleClickField')
 
@@ -164,7 +162,7 @@ module Selenium
           expect(element.attribute(:value)).to eq('ContextClicked')
         end
 
-        it 'can release pressed buttons via release action', only: {driver: :ff_nightly} do
+        it 'can release pressed buttons via release action', only: {driver: %i[firefox ff_nightly]} do
           driver.navigate.to url_for('javascriptPage.html')
 
           event_input = driver.find_element(id: 'clickField')

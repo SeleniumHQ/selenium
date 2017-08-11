@@ -71,9 +71,8 @@ module Selenium
           expect(cookies.first[:value]).to eq('bar')
         end
 
-        # Firefox - https://bugzilla.mozilla.org/show_bug.cgi?id=1282970
         # IE - Command not implemented
-        it 'should get named cookie', except: {driver: [:firefox, :ff_nightly, :ie]} do
+        it 'should get named cookie', except: {driver: :ie} do
           driver.navigate.to url_for('xhtmlTest.html')
           driver.manage.add_cookie name: 'foo', value: 'bar'
 
@@ -98,9 +97,8 @@ module Selenium
           expect(driver.manage.all_cookies).to be_empty
         end
 
-        # Firefox - https://bugzilla.mozilla.org/show_bug.cgi?id=1256007
         # IE - Command not implemented
-        it 'should use DateTime for expires', except: {browser: %i[firefox ff_nightly ie]} do
+        it 'should use DateTime for expires', except: {browser: :ie} do
           driver.navigate.to url_for('xhtmlTest.html')
 
           expected = DateTime.new(2039)
