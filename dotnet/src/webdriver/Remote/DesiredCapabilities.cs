@@ -140,30 +140,6 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the browser is JavaScript enabled
-        /// </summary>
-        [Obsolete("Capability is not allowed by the W3C specification, and will be removed in a future version of the bindings.")]
-        public bool IsJavaScriptEnabled
-        {
-            get
-            {
-                bool javascriptEnabled = false;
-                object capabilityValue = this.GetCapability(CapabilityType.IsJavaScriptEnabled);
-                if (capabilityValue != null)
-                {
-                    javascriptEnabled = (bool)capabilityValue;
-                }
-
-                return javascriptEnabled;
-            }
-
-            set
-            {
-                this.SetCapability(CapabilityType.IsJavaScriptEnabled, value);
-            }
-        }
-
-        /// <summary>
         /// Gets or sets a value indicating whether the browser accepts SSL certificates.
         /// </summary>
         public bool AcceptInsecureCerts
@@ -248,7 +224,7 @@ namespace OpenQA.Selenium.Remote
         public static DesiredCapabilities HtmlUnitWithJavaScript()
         {
             DesiredCapabilities dc = new DesiredCapabilities("htmlunit", string.Empty, new Platform(PlatformType.Any));
-            dc.IsJavaScriptEnabled = true;
+            dc.SetCapability(CapabilityType.IsJavaScriptEnabled, true);
             return dc;
         }
 
@@ -278,7 +254,6 @@ namespace OpenQA.Selenium.Remote
         {
             // This is strangely inconsistent.
             DesiredCapabilities dc = new DesiredCapabilities("chrome", string.Empty, new Platform(PlatformType.Any));
-            dc.IsJavaScriptEnabled = true;
             return dc;
         }
 
@@ -383,7 +358,6 @@ namespace OpenQA.Selenium.Remote
             result = this.BrowserName != null ? this.BrowserName.GetHashCode() : 0;
             result = (31 * result) + (this.Version != null ? this.Version.GetHashCode() : 0);
             result = (31 * result) + (this.Platform != null ? this.Platform.GetHashCode() : 0);
-            result = (31 * result) + (this.IsJavaScriptEnabled ? 1 : 0);
             return result;
         }
 
@@ -393,7 +367,7 @@ namespace OpenQA.Selenium.Remote
         /// <returns>String of capabilities being used</returns>
         public override string ToString()
         {
-            return string.Format(CultureInfo.InvariantCulture, "Capabilities [BrowserName={0}, IsJavaScriptEnabled={1}, Platform={2}, Version={3}]", this.BrowserName, this.IsJavaScriptEnabled, this.Platform.PlatformType.ToString(), this.Version);
+            return string.Format(CultureInfo.InvariantCulture, "Capabilities [BrowserName={0}, Platform={1}, Version={2}]", this.BrowserName, this.Platform.PlatformType.ToString(), this.Version);
         }
 
         /// <summary>
@@ -410,11 +384,6 @@ namespace OpenQA.Selenium.Remote
 
             DesiredCapabilities other = obj as DesiredCapabilities;
             if (other == null)
-            {
-                return false;
-            }
-
-            if (this.IsJavaScriptEnabled != other.IsJavaScriptEnabled)
             {
                 return false;
             }
