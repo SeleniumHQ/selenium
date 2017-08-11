@@ -39,11 +39,6 @@ namespace OpenQA.Selenium
         string Version { get; }
 
         /// <summary>
-        /// Gets a value indicating whether the browser is JavaScript enabled
-        /// </summary>
-        bool IsJavaScriptEnabled { get; }
-
-        /// <summary>
         /// Gets a value indicating whether the browser has a given capability.
         /// </summary>
         /// <param name="capability">The capability to get.</param>
