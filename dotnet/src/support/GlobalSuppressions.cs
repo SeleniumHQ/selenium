@@ -1,4 +1,4 @@
-// <copyright file="GlobalSuppressions.cs" company="WebDriver Committers">
+﻿// <copyright file="GlobalSuppressions.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -85,3 +85,4 @@
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "IJavaScriptExecutor", Scope = "member", Target = "OpenQA.Selenium.Support.Extensions.WebDriverExtensions.#ExecuteJavaScript`1(OpenQA.Selenium.IWebDriver,System.String,System.Object[])", Justification = "Interface name is correct")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "IHasCapabilities", Scope = "member", Target = "OpenQA.Selenium.Support.Extensions.WebDriverExtensions.#TakeScreenshot(OpenQA.Selenium.IWebDriver)", Justification = "Interface name is correct")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "ITakesScreenshot", Scope = "member", Target = "OpenQA.Selenium.Support.Extensions.WebDriverExtensions.#TakeScreenshot(OpenQA.Selenium.IWebDriver)", Justification = "Interface name is correct")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "IJavaScriptExecutor", Scope = "member", Target = "OpenQA.Selenium.Support.Extensions.WebDriverExtensions.#ExecuteJavaScriptInternal(OpenQA.Selenium.IWebDriver,System.String,System.Object[])", Justification = "Interface name is correct")]
