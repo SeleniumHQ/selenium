@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.firefox.internal;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.io.TemporaryFilesystem;
@@ -30,6 +32,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Iterator;
+import java.io.*;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.NamespaceContext;
@@ -58,7 +61,7 @@ public class FileExtension implements Extension {
 
     File root = obtainRootDirectory(toInstall);
 
-    String id = readIdFromInstallRdf(root);
+    String id = getExtensionId(root);
 
     File extensionDirectory = new File(extensionsDir, id);
 
@@ -87,6 +90,46 @@ public class FileExtension implements Extension {
     return root;
   }
 
+  private String getExtensionId(File root) {
+    File manifestJson = new File(root, "manifest.json");
+    File installRdf = new File(root, "install.rdf");
+
+    if (installRdf.exists())
+      return readIdFromInstallRdf(root);
+    else if (manifestJson.exists())
+      return readIdFromManifestJson(root);
+    else
+      throw new WebDriverException(
+        "Extension should contain either install.rdf or manifest.json metadata file");
+
+  }
+
+  private String readIdFromManifestJson(File root) {
+    final String MANIFEST_JSON_FILE = "manifest.json";
+    File manifestJsonFile = new File(root, MANIFEST_JSON_FILE);
+    try {
+      String addOnId = null;
+      JsonObject manifestObject = new JsonParser().parse(new FileReader(manifestJsonFile)).getAsJsonObject();
+      if (manifestObject.has("applications")) {
+        JsonObject applicationObj = manifestObject.getAsJsonObject("applications");
+        if (applicationObj.has("gecko")) {
+          JsonObject geckoObj = applicationObj.getAsJsonObject("gecko");
+          if (geckoObj.has("id")) {
+            addOnId = geckoObj.get("id").getAsString().trim();
+          }
+        }
+      }
+
+      if (addOnId == null || addOnId.isEmpty()) {
+        addOnId = manifestObject.get("name").getAsString().replaceAll(" ", "") +
+          "@" + manifestObject.get("version").getAsString();
+      }
+
+      return addOnId;
+    } catch (FileNotFoundException e1) {
+      throw new WebDriverException("Unable to file manifest.json in xpi file");
+    }
+  }
 
   private String readIdFromInstallRdf(File root) {
     try {

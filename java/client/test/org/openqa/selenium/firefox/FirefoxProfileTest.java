@@ -50,6 +50,7 @@ public class FirefoxProfileTest {
   private static final String FIREBUG_PATH = "third_party/firebug/firebug-1.5.0-fx.xpi";
   private static final String FIREBUG_RESOURCE_PATH =
       "/org/openqa/selenium/testing/drivers/firebug-1.5.0-fx.xpi";
+  private static final String MOOLTIPASS_PATH = "third_party/firebug/mooltipass-1.1.87.xpi";
 
   private FirefoxProfile profile;
 
@@ -160,12 +161,30 @@ public class FirefoxProfileTest {
   }
 
   @Test
+  public void shouldInstallWebExtensionFromZip() throws IOException {
+    profile.addExtension(InProject.locate(MOOLTIPASS_PATH).toFile());
+    File profileDir = profile.layoutOnDisk();
+    File extensionDir = new File(profileDir, "extensions/MooltipassExtension@1.1.87");
+    assertTrue(extensionDir.exists());
+  }
+
+  @Test
   public void shouldInstallExtensionFromDirectory() throws IOException {
     File extension = InProject.locate(FIREBUG_PATH).toFile();
     File unzippedExtension = Zip.unzipToTempDir(new FileInputStream(extension), "unzip", "stream");
     profile.addExtension(unzippedExtension);
     File profileDir = profile.layoutOnDisk();
     File extensionDir = new File(profileDir, "extensions/firebug@software.joehewitt.com");
+    assertTrue(extensionDir.exists());
+  }
+
+  @Test
+  public void shouldInstallWebExtensionFromDirectory() throws IOException {
+    File extension = InProject.locate(MOOLTIPASS_PATH).toFile();
+    File unzippedExtension = Zip.unzipToTempDir(new FileInputStream(extension), "unzip", "stream");
+    profile.addExtension(unzippedExtension);
+    File profileDir = profile.layoutOnDisk();
+    File extensionDir = new File(profileDir, "extensions/MooltipassExtension@1.1.87");
     assertTrue(extensionDir.exists());
   }
 
