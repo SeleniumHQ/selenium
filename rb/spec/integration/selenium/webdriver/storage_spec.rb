@@ -22,8 +22,7 @@ require_relative 'spec_helper'
 module Selenium
   module WebDriver
     module DriverExtensions
-      # TODO - Find out what settings for turning on web storage in remote server
-      describe HasWebStorage, only: {browser: %i[chrome firefox ff_nightly]}, except: {driver: :remote} do
+      describe HasWebStorage, only: {browser: %i[chrome firefox ff_nightly]} do
         shared_examples_for 'web storage' do
           before do
             driver.navigate.to url_for('clicks.html')

@@ -30,7 +30,7 @@ module Selenium
         driver.file_detector = nil
       end
 
-      it 'uses the file detector', only: {browser: %i[chrome ff_esr firefox ff_nightly]} do
+      it 'uses the file detector' do
         driver.navigate.to url_for('upload.html')
 
         driver.find_element(id: 'upload').send_keys('random string')

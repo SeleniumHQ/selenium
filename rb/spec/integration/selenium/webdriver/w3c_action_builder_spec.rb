@@ -21,8 +21,14 @@ require_relative 'spec_helper'
 
 module Selenium
   module WebDriver
-    describe W3CActionBuilder, only: {driver: :ff_nightly} do
-      after { driver.action.clear_all_actions }
+    describe W3CActionBuilder, only: {browser: %i[firefox ff_nightly]} do
+      after do
+        if driver.action.respond_to?(:clear_all_actions)
+          driver.action.clear_all_actions
+        else
+          driver.action.instance_variable_set(:@actions, [])
+        end
+      end
 
       describe 'Key actions' do
         it 'can release pressed keys via release action' do
@@ -44,12 +50,12 @@ module Selenium
       end # Key actions
 
       describe 'Pointer actions' do
-        it 'can release pressed buttons via release action', except: {driver: :ff_nightly} do
+        it 'can release pressed buttons via release action', except: {browser: :ff_nightly} do
           driver.navigate.to url_for('javascriptPage.html')
 
           event_input = driver.find_element(id: 'clickField')
 
-          driver.action.pointer_down(event_input).perform
+          driver.action.move_to(event_input).pointer_down(:left).perform
           expect(event_input.attribute(:value)).to eq('Hello')
 
           driver.action.release_actions

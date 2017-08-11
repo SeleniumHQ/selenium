@@ -72,7 +72,7 @@ module Selenium
         end
 
         # IE - Command not implemented
-        it 'should get named cookie', except: {driver: :ie} do
+        it 'should get named cookie', except: [{driver: :ie}, {browser: :firefox}] do
           driver.navigate.to url_for('xhtmlTest.html')
           driver.manage.add_cookie name: 'foo', value: 'bar'
 
@@ -80,7 +80,7 @@ module Selenium
         end
 
         # Edge BUG - https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/5751773/
-        it 'should delete one', except: {browser: :edge} do
+        it 'should delete one', except: [{browser: :edge}, [driver: :firefox]] do
           driver.navigate.to url_for('xhtmlTest.html')
           driver.manage.add_cookie name: 'foo', value: 'bar'
 
@@ -98,7 +98,7 @@ module Selenium
         end
 
         # IE - Command not implemented
-        it 'should use DateTime for expires', except: {browser: :ie} do
+        it 'should use DateTime for expires', except: {browser: %i[firefox ie]} do
           driver.navigate.to url_for('xhtmlTest.html')
 
           expected = DateTime.new(2039)

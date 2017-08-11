@@ -21,8 +21,8 @@ require_relative 'spec_helper'
 
 module Selenium
   module WebDriver
-    describe ActionBuilder, except: [{browser: :safari}, {browser: %i[firefox ff_nightly], driver: :remote}] do
-      after { driver.action.instance_variable_set(:@actions, []) }
+    describe ActionBuilder, except: {browser: :safari} do
+      after { reset_driver! }
 
       describe 'Key actions' do
         it 'sends keys to the active element' do
@@ -103,7 +103,7 @@ module Selenium
           expect(input.attribute(:value)).to eq('abcd')
         end
 
-        it 'can release pressed keys via release action', only: {driver: %i[firefox ff_nightly]} do
+        it 'can release pressed keys via release action', only: {browser: %i[firefox ff_nightly]} do
           driver.navigate.to url_for('javascriptPage.html')
 
           event_input = driver.find_element(id: 'theworks')
@@ -146,7 +146,7 @@ module Selenium
         end
 
         # Pending bug with Firefox
-        it 'double clicks an element', except: {driver: %i[firefox ff_nightly]} do
+        it 'double clicks an element', except: {browser: %i[firefox ff_nightly]} do
           driver.navigate.to url_for('javascriptPage.html')
           element = driver.find_element(id: 'doubleClickField')
 
@@ -162,7 +162,7 @@ module Selenium
           expect(element.attribute(:value)).to eq('ContextClicked')
         end
 
-        it 'can release pressed buttons via release action', only: {driver: %i[firefox ff_nightly]} do
+        it 'can release pressed buttons via release action', only: {browser: %i[firefox ff_nightly]} do
           driver.navigate.to url_for('javascriptPage.html')
 
           event_input = driver.find_element(id: 'clickField')
