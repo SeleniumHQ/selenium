@@ -97,22 +97,10 @@ namespace OpenQA.Selenium
         /// to save the image to.</param>
         public void SaveAsFile(string fileName, ScreenshotImageFormat format)
         {
-            this.SaveAsFile(fileName, ConvertScreenshotImageFormat(format));
-        }
-
-        /// <summary>
-        /// Saves the screenshot to a file, overwriting the file if it already exists.
-        /// </summary>
-        /// <param name="fileName">The full path and file name to save the screenshot to.</param>
-        /// <param name="format">A <see cref="System.Drawing.Imaging.ImageFormat"/> object indicating the format
-        /// to save the image to.</param>
-        [Obsolete("System.Drawing.Imaging.ImageFormat is not supported in .NET Core, and depending on it is being removed from WebDriver. Please convert to ScreenshotImageFormat.")]
-        public void SaveAsFile(string fileName, ImageFormat format)
-        {
             using (MemoryStream imageStream = new MemoryStream(this.byteArray))
             {
                 Image screenshotImage = Image.FromStream(imageStream);
-                screenshotImage.Save(fileName, format);
+                screenshotImage.Save(fileName, ConvertScreenshotImageFormat(format));
             }
         }
 
