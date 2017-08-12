@@ -514,7 +514,6 @@ public class Actions {
    * @param pause pause duration, in milliseconds.
    * @return A self reference.
    */
-  @Deprecated
   public Actions pause(long pause) {
     if (isBuildingActions()) {
       action.addAction(new PauseAction(pause));
