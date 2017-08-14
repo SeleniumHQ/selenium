@@ -17,8 +17,10 @@
 
 package org.openqa.selenium.support.events;
 
+import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
@@ -32,6 +34,7 @@ import static org.mockito.Mockito.withSettings;
 
 import com.google.common.collect.ImmutableMap;
 
+import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -255,6 +258,24 @@ public class EventFiringWebDriverTest {
   }
 
   @Test
+  public void shouldWrapElementFoundWhenCallingScripts() {
+    final WebDriver mockedDriver = mock(WebDriver.class,
+                                        withSettings().extraInterfaces(JavascriptExecutor.class));
+    final WebElement stubbedElement = mock(WebElement.class);
+
+    when(((JavascriptExecutor) mockedDriver).executeScript("foo"))
+        .thenReturn(stubbedElement);
+
+    EventFiringWebDriver testedDriver = new EventFiringWebDriver(mockedDriver);
+
+    Object res = testedDriver.executeScript("foo");
+    verify((JavascriptExecutor) mockedDriver).executeScript("foo");
+    assertThat(res, instanceOf(WebElement.class));
+    assertThat(res, instanceOf(WrapsElement.class));
+    assertSame(stubbedElement, ((WrapsElement) res).getWrappedElement());
+  }
+
+  @Test
   public void testShouldUnpackListOfElementArgsWhenCallingScripts() {
     final WebDriver mockedDriver = mock(WebDriver.class,
                                         withSettings().extraInterfaces(JavascriptExecutor.class));
@@ -274,6 +295,27 @@ public class EventFiringWebDriverTest {
     testedDriver.executeScript("foo", args);
 
     verify((JavascriptExecutor) mockedDriver).executeScript("foo", args);
+  }
+
+  @Test
+  public void shouldWrapMultipleElementsFoundWhenCallingScripts() {
+    final WebDriver mockedDriver = mock(WebDriver.class,
+                                        withSettings().extraInterfaces(JavascriptExecutor.class));
+    final WebElement stubbedElement1 = mock(WebElement.class);
+    final WebElement stubbedElement2 = mock(WebElement.class);
+
+    when(((JavascriptExecutor) mockedDriver).executeScript("foo"))
+        .thenReturn(Arrays.asList(stubbedElement1, stubbedElement2));
+
+    EventFiringWebDriver testedDriver = new EventFiringWebDriver(mockedDriver);
+
+    Object res = testedDriver.executeScript("foo");
+    verify((JavascriptExecutor) mockedDriver).executeScript("foo");
+    assertThat(res, instanceOf(List.class));
+    List<Object> resList = (List<Object>) res;
+    resList.stream().forEach(el -> assertTrue(el instanceof WrapsElement));
+    assertSame(stubbedElement1, ((WrapsElement) resList.get(0)).getWrappedElement());
+    assertSame(stubbedElement2, ((WrapsElement) resList.get(1)).getWrappedElement());
   }
 
   @Test

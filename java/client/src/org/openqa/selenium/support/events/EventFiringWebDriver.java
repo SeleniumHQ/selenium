@@ -58,6 +58,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * A wrapper around an arbitrary {@link WebDriver} instance which supports registering of a
@@ -216,7 +217,7 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
       Object[] usedArgs = unpackWrappedArgs(args);
       Object result = ((JavascriptExecutor) driver).executeScript(script, usedArgs);
       dispatcher.afterScript(script, driver);
-      return result;
+      return wrapResult(result);
     }
     throw new UnsupportedOperationException(
         "Underlying driver instance does not support executing javascript");
@@ -263,6 +264,22 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
     } else {
       return arg;
     }
+  }
+
+  private Object wrapResult(Object result) {
+    if (result instanceof WebElement) {
+      return new EventFiringWebElement((WebElement) result);
+    }
+    if (result instanceof List) {
+      return ((List) result).stream().map(this::wrapResult).collect(Collectors.toList());
+    }
+    if (result instanceof Map) {
+      return ((Map<String, Object>) result).entrySet().stream().collect(Collectors.toMap(
+          e -> e.getKey(), e -> wrapResult(e.getValue())
+      ));
+    }
+
+    return result;
   }
 
   public <X> X getScreenshotAs(OutputType<X> target) throws WebDriverException {
