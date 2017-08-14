@@ -1,3 +1,28 @@
+v3.5.1
+======
+ * Added ability to detect spec-compliant capabilities in .NET. This
+   release updates the .NET DesiredCapabilities class to allow the
+   language bindings to construct the correct type of payload for the new
+   session command before sending the command to the remote end. This will
+   remove the burden from intermediate nodes (like the Java standalone server
+   and grid) from incorrectly parsing a driver using the legacy protocol
+   dialect (Edge, Safari, Chrome) and throwing an error on session creation.
+   Fixes issue #4443.
+ * Deprecated the static methods on the DesiredCapabilities class's methods
+   for specific browsers in .NET. For over a year, the guidance for .NET
+   users has been to use a browser-specific options class (FirefoxOptions,
+   InternetExplorerOptions, etc.) to set specific capabilities for the driver
+   to be instaniated. To use the options classes with the Java standalone
+   remote server or grid, call the `ToCapabilities` method on the options
+   object.
+ * Removed deprecated screenshot methods. These have been deprecated
+   since 3.1.0.
+ * Removed IsJavaScriptEnabled property from DesiredCapabilities. Since
+   virtually all driver implementations and all browsers support JavaScript
+   and cannot run properly without it being enabled, this property is nearly
+   useless. Use SetCapability("javascriptEnabled", true) if you require this
+   functionality.
+
 v3.5.0
 ======
  * (on behalf of Matthew Lymer) Fixing the parsing of logging levels to match
