@@ -36,9 +36,14 @@ namespace OpenQA.Selenium.Environment
                 string ieDriverExe = System.IO.Path.Combine(currentDirectory, "IEDriverServer.exe");
                 string chromeDriverExe = System.IO.Path.Combine(currentDirectory, "chromedriver.exe");
                 string geckoDriverExe = System.IO.Path.Combine(currentDirectory, "geckodriver.exe");
+                string edgeDriverExe = System.IO.Path.Combine(currentDirectory, "MicrosoftWebDriver.exe");
                 webserverProcess = new Process();
                 webserverProcess.StartInfo.FileName = "java.exe";
-                webserverProcess.StartInfo.Arguments = "-Dwebdriver.ie.driver=" + ieDriverExe + " -Dwebdriver.gecko.driver=" + geckoDriverExe + " -Dwebdriver.chrome.driver=" + chromeDriverExe + " -jar " + serverJarName + " -port 6000 -enablePassThrough";
+                webserverProcess.StartInfo.Arguments = "-Dwebdriver.ie.driver=" + ieDriverExe
+                                                     + " -Dwebdriver.gecko.driver=" + geckoDriverExe
+                                                     + " -Dwebdriver.chrome.driver=" + chromeDriverExe
+                                                     + " -Dwebdriver.edge.driver=" + edgeDriverExe
+                                                     + " -jar " + serverJarName + " -port 6000";
                 webserverProcess.StartInfo.WorkingDirectory = projectRootPath;
                 webserverProcess.Start();
                 DateTime timeout = DateTime.Now.Add(TimeSpan.FromSeconds(30));
