@@ -25,7 +25,6 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.openqa.selenium.testing.Driver.FIREFOX;
-import static org.openqa.selenium.testing.Driver.MARIONETTE;
 
 import org.junit.After;
 import org.junit.Test;
@@ -33,7 +32,6 @@ import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.NotYetImplemented;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -166,14 +164,13 @@ public class MarionetteTest extends JUnit4TestBase {
     localDriver = new FirefoxDriver(
         new FirefoxOptions()
             .setProfile(profile)
-            .addDesiredCapabilities(caps));
+            .addCapabilities(caps));
     wait.until($ -> "XHTML Test Page".equals(localDriver.getTitle()));
 
     verifyItIsMarionette(localDriver);
   }
 
   @Test
-  @NotYetImplemented(MARIONETTE)
   public void canPassCapabilitiesBinaryAndProfileSeparately() throws IOException {
     FirefoxBinary binary = spy(new FirefoxBinary());
 
@@ -188,7 +185,7 @@ public class MarionetteTest extends JUnit4TestBase {
         new FirefoxOptions()
           .setBinary(binary)
           .setProfile(profile)
-          .addDesiredCapabilities(capabilities));
+          .addCapabilities(capabilities));
     wait.until($ -> "XHTML Test Page".equals(localDriver.getTitle()));
 
     verifyItIsMarionette(localDriver);
