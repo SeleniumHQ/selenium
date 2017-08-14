@@ -15,6 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
+from selenium.webdriver.remote.command import Command
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from .service import Service
@@ -61,6 +62,30 @@ class WebDriver(RemoteWebDriver):
             raise
 
         self._is_remote = False
+
+    def execute_phantomjs(self, script, *args):
+        """
+        Synchronously Executes PhantomJS Script in the current process.
+
+        :Args:
+         - script: The PhantomJS Script to execute.
+         - \*args: Any applicable arguments for your PhantomJS Script.
+
+        :Usage:
+            script = \"""
+                var page = this;
+                page.onInitialized = function () {
+                    page.evaluate(function () {
+                        Math.random = function() { return 42 / 100 }
+                    });
+                };
+            \"""
+            driver.execute_phantomjs(script)
+        """
+        converted_args = list(args)
+        return self.execute(Command.EXECUTE_PHANTOM_JS, {
+            'script': script,
+            'args': converted_args})['value']
 
     def quit(self):
         """
