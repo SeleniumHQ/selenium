@@ -87,7 +87,7 @@ public class WindowsUtils {
    * @return the path to the Windows Program Files
    */
   public static String getProgramFilesPath() {
-    return getEnvVarPath("ProgramFiles", "C:\\Program Files");
+    return getEnvVarPath("ProgramFiles", "C:\\Program Files").replace(" (x86)", "");
   }
 
   public static String getProgramFiles86Path() {
