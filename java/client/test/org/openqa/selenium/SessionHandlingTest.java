@@ -43,7 +43,7 @@ public class SessionHandlingTest extends JUnit4TestBase {
 
   @NoDriverAfterTest
   @Test
-  @Ignore(value = FIREFOX, issue = "https://github.com/SeleniumHQ/selenium/issues/3792")
+  @Ignore(value = FIREFOX)
   @Ignore(PHANTOMJS)
   @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/689")
   public void callingQuitAfterClosingTheLastWindowIsANoOp() {
@@ -54,7 +54,7 @@ public class SessionHandlingTest extends JUnit4TestBase {
 
   @NoDriverAfterTest
   @Test
-  @Ignore(value = FIREFOX, issue = "3792")
+  @Ignore(value = FIREFOX)
   @Ignore(value = PHANTOMJS, reason = "throws NoSuchWindowException")
   @Ignore(value = SAFARI, reason = "throws NullPointerException")
   @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/689")
