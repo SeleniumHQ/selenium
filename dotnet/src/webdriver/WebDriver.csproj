@@ -214,6 +214,7 @@
     <Compile Include="Remote\ICommandExecutor.cs" />
     <Compile Include="Remote\ICommandServer.cs" />
     <Compile Include="Remote\IHasSessionId.cs" />
+    <Compile Include="Remote\ISpecificationCompliant.cs" />
     <Compile Include="Remote\JsonConverters\CharArrayJsonConverter.cs" />
     <Compile Include="Remote\JsonConverters\ResponseValueJsonConverter.cs" />
     <Compile Include="Remote\LocalFileDetector.cs" />
