@@ -66,7 +66,6 @@ import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsFreshDriver;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
 import org.openqa.selenium.testing.NoDriverAfterTest;
-import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.drivers.SauceDriver;
 import org.openqa.selenium.testing.drivers.SynthesizedFirefoxDriver;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
@@ -119,7 +118,6 @@ public class FirefoxDriverTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(MARIONETTE)
   public void canPassCapabilities() {
     DesiredCapabilities capabilities = new DesiredCapabilities();
     capabilities.setCapability(CapabilityType.PAGE_LOAD_STRATEGY, "none");
