@@ -21,12 +21,16 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.withSettings;
+
+import com.google.common.collect.ImmutableMap;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -44,9 +48,8 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.WrapsDriver;
 import org.openqa.selenium.internal.WrapsElement;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.List;
 
 /**
  * @author Michael Tamm
@@ -59,100 +62,39 @@ public class EventFiringWebDriverTest {
     final WebDriver mockedDriver = mock(WebDriver.class);
     final Alert mockedAlert = mock(Alert.class);
     final WebDriver.TargetLocator mockedTargetLocator = mock(WebDriver.TargetLocator.class);
-    final StringBuilder log = new StringBuilder();
 
     when(mockedDriver.switchTo()).thenReturn(mockedTargetLocator);
     when(mockedTargetLocator.alert()).thenReturn(mockedAlert);
 
-    EventFiringWebDriver testedDriver =
-      new EventFiringWebDriver(mockedDriver).register(new AbstractWebDriverEventListener() {
-        @Override
-        public void beforeAlertAccept(WebDriver driver) {
-          log.append("beforeAlertAccept\n");
-        }
+    WebDriverEventListener listener = mock(WebDriverEventListener.class);
 
-        @Override
-        public void afterAlertAccept(WebDriver driver) {
-          log.append("afterAlertAccept\n");
-        }
-
-        @Override
-        public void beforeAlertDismiss(WebDriver driver) {
-          log.append("beforeAlertDismiss\n");
-        }
-
-        @Override
-        public void afterAlertDismiss(WebDriver driver) {
-          log.append("afterAlertDismiss\n");
-        }
-      });
+    EventFiringWebDriver testedDriver = new EventFiringWebDriver(mockedDriver).register(listener);
 
     testedDriver.switchTo().alert().accept();
     testedDriver.switchTo().alert().dismiss();
 
-    assertEquals(
-      "beforeAlertAccept\n" +
-        "afterAlertAccept\n" +
-        "beforeAlertDismiss\n" +
-        "afterAlertDismiss\n",
-      log.toString());
-
-    InOrder order = Mockito.inOrder(mockedDriver, mockedAlert);
+    InOrder order = Mockito.inOrder(mockedDriver, mockedAlert, listener);
+    order.verify(mockedDriver).switchTo();
+    order.verify(listener).beforeAlertAccept(any(WebDriver.class));
     order.verify(mockedAlert).accept();
+    order.verify(listener).afterAlertAccept(any(WebDriver.class));
+    order.verify(mockedDriver).switchTo();
+    order.verify(listener).beforeAlertDismiss(any(WebDriver.class));
     order.verify(mockedAlert).dismiss();
-    order.verifyNoMoreInteractions();
+    order.verify(listener).afterAlertDismiss(any(WebDriver.class));
+    verifyNoMoreInteractions(mockedDriver, mockedAlert, listener);
   }
 
   @Test
   public void navigationEvents() {
     final WebDriver mockedDriver = mock(WebDriver.class);
     final Navigation mockedNavigation = mock(Navigation.class);
-    final StringBuilder log = new StringBuilder();
 
     when(mockedDriver.navigate()).thenReturn(mockedNavigation);
 
-    EventFiringWebDriver testedDriver =
-        new EventFiringWebDriver(mockedDriver).register(new AbstractWebDriverEventListener() {
-          @Override
-          public void beforeNavigateTo(String url, WebDriver driver) {
-            log.append("beforeNavigateTo ").append(url).append("\n");
-          }
+    WebDriverEventListener listener = mock(WebDriverEventListener.class);
 
-          @Override
-          public void afterNavigateTo(String url, WebDriver driver) {
-            log.append("afterNavigateTo ").append(url).append("\n");
-          }
-
-          @Override
-          public void beforeNavigateBack(WebDriver driver) {
-            log.append("beforeNavigateBack\n");
-          }
-
-          @Override
-          public void afterNavigateBack(WebDriver driver) {
-            log.append("afterNavigateBack\n");
-          }
-
-          @Override
-          public void beforeNavigateForward(WebDriver driver) {
-            log.append("beforeNavigateForward\n");
-          }
-
-          @Override
-          public void afterNavigateForward(WebDriver driver) {
-            log.append("afterNavigateForward\n");
-          }
-
-          @Override
-          public void beforeNavigateRefresh(WebDriver driver) {
-            log.append("beforeNavigateRefresh\n");
-          }
-
-          @Override
-          public void afterNavigateRefresh(WebDriver driver) {
-            log.append("afterNavigateRefresh\n");
-          }
-        });
+    EventFiringWebDriver testedDriver = new EventFiringWebDriver(mockedDriver).register(listener);
 
     testedDriver.get("http://www.get.com");
     testedDriver.navigate().to("http://www.navigate-to.com");
@@ -160,106 +102,80 @@ public class EventFiringWebDriverTest {
     testedDriver.navigate().forward();
     testedDriver.navigate().refresh();
 
-    assertEquals(
-        "beforeNavigateTo http://www.get.com\n" +
-            "afterNavigateTo http://www.get.com\n" +
-            "beforeNavigateTo http://www.navigate-to.com\n" +
-            "afterNavigateTo http://www.navigate-to.com\n" +
-            "beforeNavigateBack\n" +
-            "afterNavigateBack\n" +
-            "beforeNavigateForward\n" +
-            "afterNavigateForward\n" +
-            "beforeNavigateRefresh\n" +
-            "afterNavigateRefresh\n",
-        log.toString());
-
-    InOrder order = Mockito.inOrder(mockedDriver, mockedNavigation);
+    InOrder order = Mockito.inOrder(mockedDriver, mockedNavigation, listener);
+    order.verify(listener).beforeNavigateTo(eq("http://www.get.com"), any(WebDriver.class));
     order.verify(mockedDriver).get("http://www.get.com");
+    order.verify(listener).afterNavigateTo(eq("http://www.get.com"), any(WebDriver.class));
+    order.verify(mockedDriver).navigate();
+    order.verify(listener).beforeNavigateTo(eq("http://www.navigate-to.com"), any(WebDriver.class));
     order.verify(mockedNavigation).to("http://www.navigate-to.com");
+    order.verify(listener).afterNavigateTo(eq("http://www.navigate-to.com"), any(WebDriver.class));
+    order.verify(mockedDriver).navigate();
+    order.verify(listener).beforeNavigateBack(any(WebDriver.class));
     order.verify(mockedNavigation).back();
+    order.verify(listener).afterNavigateBack(any(WebDriver.class));
+    order.verify(mockedDriver).navigate();
+    order.verify(listener).beforeNavigateForward(any(WebDriver.class));
     order.verify(mockedNavigation).forward();
+    order.verify(listener).afterNavigateForward(any(WebDriver.class));
+    order.verify(mockedDriver).navigate();
+    order.verify(listener).beforeNavigateRefresh(any(WebDriver.class));
     order.verify(mockedNavigation).refresh();
-    order.verifyNoMoreInteractions();
+    order.verify(listener).afterNavigateRefresh(any(WebDriver.class));
+    verifyNoMoreInteractions(mockedDriver, mockedNavigation, listener);
   }
 
   @Test
   public void clickEvent() {
     final WebDriver mockedDriver = mock(WebDriver.class);
     final WebElement mockedElement = mock(WebElement.class);
-    final StringBuilder log = new StringBuilder();
 
     when(mockedDriver.findElement(By.name("foo"))).thenReturn(mockedElement);
 
-    EventFiringWebDriver testedDriver =
-        new EventFiringWebDriver(mockedDriver).register(new AbstractWebDriverEventListener() {
-          @Override
-          public void beforeClickOn(WebElement element, WebDriver driver) {
-            log.append("beforeClickOn\n");
-          }
+    WebDriverEventListener listener = mock(WebDriverEventListener.class);
 
-          @Override
-          public void afterClickOn(WebElement element, WebDriver driver) {
-            log.append("afterClickOn\n");
-          }
-        });
+    EventFiringWebDriver testedDriver = new EventFiringWebDriver(mockedDriver).register(listener);
 
     testedDriver.findElement(By.name("foo")).click();
 
-    assertEquals(
-        "beforeClickOn\n" +
-            "afterClickOn\n",
-        log.toString());
-
-    InOrder order = Mockito.inOrder(mockedDriver, mockedElement);
+    InOrder order = Mockito.inOrder(mockedDriver, mockedElement, listener);
+    order.verify(listener).beforeFindBy(eq(By.name("foo")), eq(null), any(WebDriver.class));
     order.verify(mockedDriver).findElement(By.name("foo"));
+    order.verify(listener).afterFindBy(eq(By.name("foo")), eq(null), any(WebDriver.class));
+    order.verify(listener).beforeClickOn(any(WebElement.class), any(WebDriver.class));
     order.verify(mockedElement).click();
-    order.verifyNoMoreInteractions();
+    order.verify(listener).afterClickOn(any(WebElement.class), any(WebDriver.class));
+    verifyNoMoreInteractions(mockedDriver, mockedElement, listener);
   }
 
   @Test
   public void changeValueEvent() {
     final WebDriver mockedDriver = mock(WebDriver.class);
     final WebElement mockedElement = mock(WebElement.class);
-    final StringBuilder log = new StringBuilder();
 
     when(mockedDriver.findElement(By.name("foo"))).thenReturn(mockedElement);
 
-    EventFiringWebDriver testedDriver =
-        new EventFiringWebDriver(mockedDriver).register(new AbstractWebDriverEventListener() {
-          @Override
-          public void beforeChangeValueOf(WebElement element, WebDriver driver,
-                                          CharSequence[] keysToSend) {
-            log.append("beforeChangeValueOf" + " " + Arrays.toString(keysToSend) + "\n");
-          }
+    WebDriverEventListener listener = mock(WebDriverEventListener.class);
 
-          @Override
-          public void afterChangeValueOf(WebElement element, WebDriver driver,
-                                         CharSequence[] keysToSend) {
-            log.append("afterChangeValueOf" + " " + Arrays.toString(keysToSend) + "\n");
-          }
-        });
+    EventFiringWebDriver testedDriver = new EventFiringWebDriver(mockedDriver).register(listener);
 
     String someText = "some text";
 
     testedDriver.findElement(By.name("foo")).clear();
     testedDriver.findElement(By.name("foo")).sendKeys(someText);
-    testedDriver.findElement(By.name("foo")).click();
 
-    assertEquals(
-        "beforeChangeValueOf null\n" +
-            "afterChangeValueOf null\n" +
-            "beforeChangeValueOf [" + someText +"]\n" +
-            "afterChangeValueOf [" + someText +"]\n",
-        log.toString());
-
-    InOrder order = Mockito.inOrder(mockedElement);
+    InOrder order = Mockito.inOrder(mockedElement, listener);
+    order.verify(listener).beforeChangeValueOf(any(WebElement.class), any(WebDriver.class), eq(null));
     order.verify(mockedElement).clear();
+    order.verify(listener).afterChangeValueOf(any(WebElement.class), any(WebDriver.class), eq(null));
+    order.verify(listener).beforeChangeValueOf(any(WebElement.class), any(WebDriver.class), eq(new CharSequence[]{someText}));
     order.verify(mockedElement).sendKeys(someText);
-    order.verify(mockedElement).click();
-    order.verifyNoMoreInteractions();
+    order.verify(listener).afterChangeValueOf(any(WebElement.class), any(WebDriver.class), eq(new CharSequence[]{someText}));
 
-    verify(mockedDriver, times(3)).findElement(By.name("foo"));
-    verifyNoMoreInteractions(mockedDriver);
+    verify(mockedDriver, times(2)).findElement(By.name("foo"));
+    verify(listener, times(2)).beforeFindBy(eq(By.name("foo")), eq(null), any(WebDriver.class));
+    verify(listener, times(2)).afterFindBy(eq(By.name("foo")), eq(null), any(WebDriver.class));
+    verifyNoMoreInteractions(mockedDriver, mockedElement, listener);
   }
 
   @Test
@@ -267,65 +183,46 @@ public class EventFiringWebDriverTest {
     final WebDriver mockedDriver = mock(WebDriver.class);
     final WebElement mockedElement = mock(WebElement.class);
     final WebElement mockedChildElement = mock(WebElement.class);
-    final StringBuilder log = new StringBuilder();
 
     when(mockedDriver.findElement(By.id("foo"))).thenReturn(mockedElement);
-    when(mockedElement.findElement(Mockito.<By>any())).thenReturn(mockedChildElement);
+    when(mockedElement.findElement(any())).thenReturn(mockedChildElement);
 
-    EventFiringWebDriver testedDriver =
-        new EventFiringWebDriver(mockedDriver).register(new AbstractWebDriverEventListener() {
-          @Override
-          public void beforeFindBy(By by, WebElement element, WebDriver driver) {
-            log.append("beforeFindBy from ").append(element == null ? "WebDriver" : "WebElement")
-                .append(" ").append(by).append("\n");
-          }
+    WebDriverEventListener listener = mock(WebDriverEventListener.class);
 
-          @Override
-          public void afterFindBy(By by, WebElement element, WebDriver driver) {
-            log.append("afterFindBy from ").append(element == null ? "WebDriver" : "WebElement")
-                .append(" ").append(by).append("\n");
-          }
-        });
+    EventFiringWebDriver testedDriver = new EventFiringWebDriver(mockedDriver).register(listener);
 
     WebElement element = testedDriver.findElement(By.id("foo"));
     element.findElement(By.linkText("bar"));
     element.findElements(By.name("xyz"));
     testedDriver.findElements(By.xpath("//link[@type = 'text/css']"));
 
-    assertEquals(
-        "beforeFindBy from WebDriver By.id: foo\n" +
-            "afterFindBy from WebDriver By.id: foo\n" +
-            "beforeFindBy from WebElement By.linkText: bar\n" +
-            "afterFindBy from WebElement By.linkText: bar\n" +
-            "beforeFindBy from WebElement By.name: xyz\n" +
-            "afterFindBy from WebElement By.name: xyz\n" +
-            "beforeFindBy from WebDriver By.xpath: //link[@type = 'text/css']\n" +
-            "afterFindBy from WebDriver By.xpath: //link[@type = 'text/css']\n",
-        log.toString());
-
-    InOrder order = Mockito.inOrder(mockedElement, mockedDriver);
+    InOrder order = Mockito.inOrder(mockedElement, mockedDriver, listener);
+    verify(listener).beforeFindBy(eq(By.id("foo")), eq(null), any(WebDriver.class));
+    order.verify(mockedDriver).findElement(By.id("foo"));
+    verify(listener).afterFindBy(eq(By.id("foo")), eq(null), any(WebDriver.class));
+    verify(listener).beforeFindBy(eq(By.linkText("bar")), any(WebElement.class), any(WebDriver.class));
     order.verify(mockedElement).findElement(By.linkText("bar"));
+    verify(listener).afterFindBy(eq(By.linkText("bar")), any(WebElement.class), any(WebDriver.class));
+    verify(listener).beforeFindBy(eq(By.name("xyz")), any(WebElement.class), any(WebDriver.class));
     order.verify(mockedElement).findElements(By.name("xyz"));
+    verify(listener).afterFindBy(eq(By.name("xyz")), any(WebElement.class), any(WebDriver.class));
+    verify(listener).beforeFindBy(eq(By.xpath("//link[@type = 'text/css']")), eq(null), any(WebDriver.class));
     order.verify(mockedDriver).findElements(By.xpath("//link[@type = 'text/css']"));
-    order.verifyNoMoreInteractions();
+    verify(listener).afterFindBy(eq(By.xpath("//link[@type = 'text/css']")), eq(null), any(WebDriver.class));
+    verifyNoMoreInteractions(mockedElement, mockedDriver, listener);
   }
 
   @Test
   public void shouldCallListenersWhenAnExceptionIsThrown() {
     final WebDriver mockedDriver = mock(WebDriver.class);
-    final StringBuilder log = new StringBuilder();
 
     final NoSuchElementException exception = new NoSuchElementException("argh");
 
     when(mockedDriver.findElement(By.id("foo"))).thenThrow(exception);
 
-    EventFiringWebDriver testedDriver =
-        new EventFiringWebDriver(mockedDriver).register(new AbstractWebDriverEventListener() {
-          @Override
-          public void onException(Throwable throwable, WebDriver driver) {
-            log.append(throwable.getMessage());
-          }
-        });
+    WebDriverEventListener listener = mock(WebDriverEventListener.class);
+
+    EventFiringWebDriver testedDriver = new EventFiringWebDriver(mockedDriver).register(listener);
 
     try {
       testedDriver.findElement(By.id("foo"));
@@ -334,7 +231,11 @@ public class EventFiringWebDriverTest {
       // Fine
     }
 
-    assertEquals(exception.getMessage(), log.toString());
+    InOrder order = Mockito.inOrder(mockedDriver, listener);
+    order.verify(listener).beforeFindBy(eq(By.id("foo")), eq(null), any(WebDriver.class));
+    order.verify(mockedDriver).findElement(By.id("foo"));
+    order.verify(listener).onException(any(NoSuchElementException.class), any(WebDriver.class));
+    verifyNoMoreInteractions(mockedDriver, listener);
   }
 
   @Test
@@ -368,17 +269,11 @@ public class EventFiringWebDriverTest {
     assertTrue(foundElement instanceof WrapsElement);
     assertSame(mockElement, ((WrapsElement) foundElement).getWrappedElement());
 
-    testedDriver.executeScript("foo", new ArrayList<Object>() {{
-      add("before");
-      add(foundElement);
-      add("after");
-    }});
+    List<Object> args = Arrays.asList("before", foundElement, "after");
 
-    verify((JavascriptExecutor) mockedDriver).executeScript("foo", new ArrayList<Object>() {{
-      add("before");
-      add(mockElement);
-      add("after");
-    }});
+    testedDriver.executeScript("foo", args);
+
+    verify((JavascriptExecutor) mockedDriver).executeScript("foo", args);
   }
 
   @Test
@@ -390,32 +285,21 @@ public class EventFiringWebDriverTest {
     when(mockedDriver.findElement(By.id("foo"))).thenReturn(mockElement);
 
     EventFiringWebDriver testedDriver = new EventFiringWebDriver(mockedDriver);
-    testedDriver.register(new AbstractWebDriverEventListener() {
-    });
+    testedDriver.register(mock(WebDriverEventListener.class));
 
     final WebElement foundElement = testedDriver.findElement(By.id("foo"));
     assertTrue(foundElement instanceof WrapsElement);
     assertSame(mockElement, ((WrapsElement) foundElement).getWrappedElement());
 
-    testedDriver.executeScript("foo", new HashMap<String, Object>() {{
-      put("foo", "bar");
-      put("element", foundElement);
-      put("nested", new ArrayList<Object>() {{
-        add("before");
-        add(foundElement);
-        add("after");
-      }});
-    }});
+    ImmutableMap<String, Object> args = ImmutableMap.of(
+        "foo", "bar",
+        "element", foundElement,
+        "nested", Arrays.asList("before", foundElement, "after")
+    );
 
-    verify((JavascriptExecutor) mockedDriver).executeScript("foo", new HashMap<String, Object>() {{
-      put("foo", "bar");
-      put("element", mockElement);
-      put("nested", new ArrayList<Object>() {{
-        add("before");
-        add(mockElement);
-        add("after");
-      }});
-    }});
+    testedDriver.executeScript("foo", args);
+
+    verify((JavascriptExecutor) mockedDriver).executeScript("foo", args);
   }
 
   @Test
