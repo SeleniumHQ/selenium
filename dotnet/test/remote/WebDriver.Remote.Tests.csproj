@@ -44,8 +44,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyTeardown.cs" />
+    <Compile Include="ChromeRemoteWebDriver.cs" />
+    <Compile Include="EdgeRemoteWebDriver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RemoteSessionCreationTests.cs" />
     <Compile Include="RemoteWebDriverSpecificTests.cs" />
+    <Compile Include="FirefoxRemoteWebDriver.cs" />
     <Compile Include="TestInternetExplorerRemoteWebDriver.cs" />
   </ItemGroup>
   <ItemGroup>

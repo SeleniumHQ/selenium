@@ -1,4 +1,5 @@
 ﻿using System;
+using OpenQA.Selenium.IE;
 
 namespace OpenQA.Selenium.Remote
 {
@@ -7,7 +8,7 @@ namespace OpenQA.Selenium.Remote
     public class TestInternetExplorerRemoteWebDriver : RemoteWebDriver
     {
         public TestInternetExplorerRemoteWebDriver()
-            : base(new Uri("http://127.0.0.1:6000/wd/hub/"), DesiredCapabilities.InternetExplorer())
+            : base(new Uri("http://127.0.0.1:6000/wd/hub/"), new InternetExplorerOptions())
         {
         }
     }
