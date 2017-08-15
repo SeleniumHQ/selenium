@@ -46,7 +46,7 @@ public class ProxyServer {
     String address = new NetworkUtils().getPrivateLocalAddress();
     baseUrl = String.format("%s:%d", address, port);
 
-    proxyServer = DefaultHttpProxyServer.bootstrap().withPort(port)
+    proxyServer = DefaultHttpProxyServer.bootstrap().withAllowLocalOnly(false).withPort(port)
         .withFiltersSource(new HttpFiltersSourceAdapter() {
           public HttpFilters filterRequest(HttpRequest originalRequest, ChannelHandlerContext ctx) {
             return new HttpFiltersAdapter(originalRequest) {
