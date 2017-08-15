@@ -311,7 +311,7 @@ namespace OpenQA.Selenium.Chrome
                 throw new ArgumentException("extension must not be null or empty", "extension");
             }
 
-            this.AddExtensions(extension);
+            this.AddEncodedExtensions(extension);
         }
 
         /// <summary>
