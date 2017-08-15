@@ -23,9 +23,6 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
 
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.BeanToJsonConverter;
@@ -74,18 +71,18 @@ class ExceptionHandler implements CommandHandler {
 
     // JSON Wire Protocol
     toSerialise.put("status", code);
-    value.put(
-        "stackTrace",
-        Stream.of(exception.getStackTrace())
-            .map(ste -> {
-              JsonObject line = new JsonObject();
-              line.add("fileName", new JsonPrimitive(ste.getFileName()));
-              line.add("lineNumber", new JsonPrimitive(ste.getLineNumber()));
-              line.add("className", new JsonPrimitive(ste.getClassName()));
-              line.add("methodName", new JsonPrimitive(ste.getMethodName()));
-              return ste;
-            })
-            .collect(ImmutableList.toImmutableList()));
+      value.put(
+          "stackTrace",
+          Stream.of(exception.getStackTrace())
+              .map(ste -> {
+                HashMap<String, Object> line = new HashMap<>();
+                line.put("fileName", ste.getFileName());
+                line.put("lineNumber", ste.getLineNumber());
+                line.put("className", ste.getClassName());
+                line.put("methodName", ste.getMethodName());
+                return line;
+              })
+              .collect(ImmutableList.toImmutableList()));
 
     toSerialise.put("value", value);
 
