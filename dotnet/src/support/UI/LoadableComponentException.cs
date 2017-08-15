@@ -25,7 +25,9 @@ namespace OpenQA.Selenium.Support.UI
     /// This exception is thrown by <see cref="LoadableComponent{T}"/> to indicate that
     /// the component was not successfully loaded.
     /// </summary>
+    #if !NETSTANDARD1_5
     [Serializable]
+    #endif
     public class LoadableComponentException : WebDriverException
     {
         /// <summary>
@@ -65,9 +67,11 @@ namespace OpenQA.Selenium.Support.UI
         /// object data about the exception being thrown.</param>
         /// <param name="context">The <see cref="StreamingContext"/> that contains contextual
         /// information about the source or destination.</param>
+        #if !NETSTANDARD1_5
         protected LoadableComponentException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
         }
+        #endif
     }
 }

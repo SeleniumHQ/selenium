@@ -25,6 +25,7 @@ using System.Net.Sockets;
 using System.Text;
 using OpenQA.Selenium.Firefox.Internal;
 using OpenQA.Selenium.Remote;
+using WebDriver.Internal;
 
 namespace OpenQA.Selenium.Firefox
 {
@@ -140,18 +141,9 @@ namespace OpenQA.Selenium.Firefox
                 using (Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp))
                 {
                     socket.ExclusiveAddressUse = true;
-                    IPHostEntry hostEntry = Dns.GetHostEntry(host);
 
-                    // Use the first IPv4 address that we find
-                    IPAddress endPointAddress = IPAddress.Parse("127.0.0.1");
-                    foreach (IPAddress ip in hostEntry.AddressList)
-                    {
-                        if (ip.AddressFamily == AddressFamily.InterNetwork)
-                        {
-                            endPointAddress = ip;
-                            break;
-                        }
-                    }
+                    // Get the hosts' first IPv4 address that we find
+                    IPAddress endPointAddress = Host.GetIPAddess();
 
                     IPEndPoint address = new IPEndPoint(endPointAddress, newPort);
 
@@ -204,18 +196,8 @@ namespace OpenQA.Selenium.Firefox
             }
             else
             {
-                IPHostEntry hostEntry = Dns.GetHostEntry(this.host);
-
-                // Use the first IPv4 address that we find
-                IPAddress endPointAddress = IPAddress.Parse("127.0.0.1");
-                foreach (IPAddress ip in hostEntry.AddressList)
-                {
-                    if (ip.AddressFamily == AddressFamily.InterNetwork)
-                    {
-                        endPointAddress = ip;
-                        break;
-                    }
-                }
+                // Use the hosts'first IPv4 address that we find
+                IPAddress endPointAddress = Host.GetIPAddess();
 
                 IPEndPoint hostEndPoint = new IPEndPoint(endPointAddress, port);
                 this.addresses.Add(hostEndPoint);
@@ -282,7 +264,11 @@ namespace OpenQA.Selenium.Firefox
             }
             finally
             {
+#if NETSTANDARD1_5
+                extensionSocket.Dispose();
+#else
                 extensionSocket.Close();
+#endif
             }
         }
     }
