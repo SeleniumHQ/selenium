@@ -1,3 +1,10 @@
+3.5.1 (2017-08-15)
+==================
+
+Ruby:
+  * Fixed a bug when Chrome/Firefox (and probably other) drivers could not be
+    started on JRuby (issue #4453).
+
 3.5.0 (2017-08-10)
 ==================
 
