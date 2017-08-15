@@ -1,5 +1,23 @@
+v3.5.1
+======
+
+Important note:
+
+* The new standalone server and Grid Node feature a "pass through"
+  mode. If you see changes to the Selenium WebDriver "logging" APIs or
+  automatic capture of screenshots on error (or if you want the old
+  behaviour back) you can do so by executing:
+
+  `java -jar selenium-server-standalone-3.5.1.jar -enablePassThrough false`
+
+* Bump guava to version 23. This is work around an issue where maven
+  will select guava's android variant if using a ranged selector.
+
+
 v3.5.0
 ======
+
+Note: Never pushed to maven due to problems resolving guava version.
 
 Important note:
 
