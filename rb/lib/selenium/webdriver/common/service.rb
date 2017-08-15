@@ -92,7 +92,12 @@ module Selenium
       def build_process(*command)
         WebDriver.logger.debug("Executing Process #{command}")
         @process = ChildProcess.build(*command)
-        @process.io.stdout = @process.io.stderr = WebDriver.logger.io if WebDriver.logger.debug?
+        if WebDriver.logger.debug?
+          @process.io.stdout = @process.io.stderr = WebDriver.logger.io
+        elsif Platform.jruby?
+          # Apparently we need to read the output of drivers on JRuby.
+          @process.io.stdout = @process.io.stderr = File.new(Platform.null_device, 'w')
+        end
 
         @process
       end
@@ -117,6 +122,7 @@ module Selenium
       def stop_process
         return if process_exited?
         @process.stop STOP_TIMEOUT
+        @process.io.stdout.close if Platform.jruby? && !WebDriver.logger.debug?
       end
 
       def stop_server
