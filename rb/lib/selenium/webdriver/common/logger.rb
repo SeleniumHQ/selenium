@@ -115,12 +115,20 @@ module Selenium
       def create_logger(output)
         logger = ::Logger.new(output)
         logger.progname = 'Selenium'
-        logger.level = ($DEBUG ? DEBUG : WARN)
+        logger.level = default_level
         logger.formatter = proc do |severity, time, progname, msg|
           "#{time.strftime('%F %T')} #{severity} #{progname} #{msg}\n"
         end
 
         logger
+      end
+
+      def default_level
+        if $DEBUG || ENV.key?('DEBUG')
+          DEBUG
+        else
+          WARN
+        end
       end
     end # Logger
   end # WebDriver
