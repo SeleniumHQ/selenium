@@ -98,8 +98,11 @@ public class WindowTest extends JUnit4TestBase {
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
     Point position = driver.manage().window().getPosition();
 
-    assertThat(position.x, is(greaterThanOrEqualTo(0)));
-    assertThat(position.y, is(greaterThanOrEqualTo(0)));
+    // If the Chrome under test is launched by default as maximized, the window
+    // coordinates may have small negative values (note that elements in the
+    // viewport are, of course, still clickable).
+    assertThat(position.x, is(greaterThanOrEqualTo(-10)));
+    assertThat(position.y, is(greaterThanOrEqualTo(-10)));
   }
 
   @Test
