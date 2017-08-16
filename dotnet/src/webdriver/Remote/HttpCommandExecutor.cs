@@ -38,6 +38,7 @@ namespace OpenQA.Selenium.Remote
         private Uri remoteServerUri;
         private TimeSpan serverResponseTimeout;
         private bool enableKeepAlive;
+        private WebProxy proxy;
         private CommandInfoRepository commandInfoRepository = new WebDriverWireProtocolCommandInfoRepository();
 
         /// <summary>
@@ -53,7 +54,19 @@ namespace OpenQA.Selenium.Remote
         /// <summary>
         /// Initializes a new instance of the <see cref="HttpCommandExecutor"/> class
         /// </summary>
-        /// <param name="addressOfRemoteServer">Address of the WebDriver Server</param>
+        /// <param name="addressOfRemoteServer">Address of the WebDriver Server.</param>
+        /// <param name="proxy">WebProxy to communicate with the WebDriver Server.</param>
+        /// <param name="timeout">The timeout within which the server must respond.</param>
+        public HttpCommandExecutor(Uri addressOfRemoteServer, WebProxy proxy, TimeSpan timeout)
+            : this(addressOfRemoteServer, timeout, true)
+        {
+            this.proxy = proxy;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HttpCommandExecutor"/> class
+        /// </summary>
+        /// <param name="addressOfRemoteServer">Address of the WebDriver Server.</param>
         /// <param name="timeout">The timeout within which the server must respond.</param>
         /// <param name="enableKeepAlive"><see langword="true"/> if the KeepAlive header should be sent
         /// with HTTP requests; otherwise, <see langword="false"/>.</param>
@@ -108,6 +121,11 @@ namespace OpenQA.Selenium.Remote
 
             CommandInfo info = this.commandInfoRepository.GetCommandInfo(commandToExecute.Name);
             HttpRequestInfo requestInfo = new HttpRequestInfo(this.remoteServerUri, commandToExecute, info);
+
+            if (this.proxy != null)
+            {
+                request.Proxy = this.proxy;
+            }
 
             HttpResponseInfo responseInfo = this.MakeHttpRequest(requestInfo);
 

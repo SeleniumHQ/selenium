@@ -21,6 +21,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
+using System.Net;
 using System.Text.RegularExpressions;
 using OpenQA.Selenium.Html5;
 using OpenQA.Selenium.Interactions;
@@ -126,6 +127,18 @@ namespace OpenQA.Selenium.Remote
         /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
         public RemoteWebDriver(Uri remoteAddress, ICapabilities desiredCapabilities, TimeSpan commandTimeout)
             : this(new HttpCommandExecutor(remoteAddress, commandTimeout), desiredCapabilities)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RemoteWebDriver"/> class using the specified remote address, desired capabilities, proxy and command timeout.
+        /// </summary>
+        /// <param name="remoteAddress">URI containing the address of the WebDriver remote server (e.g. http://127.0.0.1:4444/wd/hub).</param>
+        /// <param name="desiredCapabilities">An <see cref="ICapabilities"/> object containing the desired capabilities of the browser.</param>
+        /// <param name="proxy">Proxy details needed to communicate with the remove server.</param>
+        /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
+        public RemoteWebDriver(Uri remoteAddress, ICapabilities desiredCapabilities, WebProxy proxy, TimeSpan commandTimeout)
+            : this(new HttpCommandExecutor(remoteAddress, proxy, commandTimeout), desiredCapabilities)
         {
         }
 
