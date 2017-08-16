@@ -628,7 +628,8 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     this.level = level;
   }
 
-  protected Response execute(String driverCommand, Map<String, ?> parameters) {
+  // This is synchronized to help protect against WebDriver commands being issued in parallel.
+  protected synchronized Response execute(String driverCommand, Map<String, ?> parameters) {
     Command command = new Command(sessionId, driverCommand, parameters);
     Response response;
 
