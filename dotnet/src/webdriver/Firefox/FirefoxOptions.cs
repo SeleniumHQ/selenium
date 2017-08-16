@@ -1,4 +1,4 @@
-﻿// <copyright file="FirefoxOptions.cs" company="WebDriver Committers">
+// <copyright file="FirefoxOptions.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -355,12 +355,15 @@ namespace OpenQA.Selenium.Firefox
             }
             else
             {
-                using (FirefoxBinary executablePathBinary = new FirefoxBinary())
+                if (!this.isMarionette)
                 {
-                    string executablePath = executablePathBinary.BinaryExecutable.ExecutablePath;
-                    if (!string.IsNullOrEmpty(executablePath))
+                    using (FirefoxBinary executablePathBinary = new FirefoxBinary())
                     {
-                        firefoxOptions[FirefoxBinaryCapability] = executablePath;
+                        string executablePath = executablePathBinary.BinaryExecutable.ExecutablePath;
+                        if (!string.IsNullOrEmpty(executablePath))
+                        {
+                            firefoxOptions[FirefoxBinaryCapability] = executablePath;
+                        }
                     }
                 }
             }
