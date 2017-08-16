@@ -1191,14 +1191,14 @@ class Options {
    * __Sample Usage:__
    *
    *     // Set a basic cookie.
-   *     driver.options().addCookie({name: 'foo', value: 'bar'});
+   *     driver.manage().addCookie({name: 'foo', value: 'bar'});
    *
    *     // Set a cookie that expires in 10 minutes.
    *     let expiry = new Date(Date.now() + (10 * 60 * 1000));
-   *     driver.options().addCookie({name: 'foo', value: 'bar', expiry});
+   *     driver.manage().addCookie({name: 'foo', value: 'bar', expiry});
    *
    *     // The cookie expiration may also be specified in seconds since epoch.
-   *     driver.options().addCookie({
+   *     driver.manage().addCookie({
    *       name: 'foo',
    *       value: 'bar',
    *       expiry: Math.floor(Date.now() / 1000)
