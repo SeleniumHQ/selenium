@@ -57,8 +57,11 @@ describe('Google Search', function() {
   it('example', async function() {
     await driver.get('https://www.google.com/ncr');
 
-    await driver.findElement(By.name('q')).sendKeys('webdriver');
-    await driver.findElement(By.name('btnG')).click();
+    let q = await driver.findElement(By.name('q'));
+    await q.sendKeys('webdriver');
+
+    let btnG = await driver.findElement(By.name('btnG'));
+    await btnG.click();
 
     await driver.wait(until.titleIs('webdriver - Google Search'), 1000);
 
