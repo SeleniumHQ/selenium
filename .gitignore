@@ -65,6 +65,7 @@ third_party/java/jetty/jetty-repacked.jar
 *.user
 *.cache
 obj/
+obj_core/
 *.opensdf
 *.suo
 *.sdf
