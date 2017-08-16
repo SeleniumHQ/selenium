@@ -48,6 +48,7 @@ Important note:
   particular.
 * Grid will make use of W3C capabilities in prefernce to the JSON Wire
   Protocol ones.
+* Fixing boolean command line arguments (#3877)
 
 v3.4.0
 ======
