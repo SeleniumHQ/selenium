@@ -23,6 +23,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.testing.Driver.CHROME;
+import static org.openqa.selenium.testing.Driver.EDGE;
 import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.SAFARI;
@@ -139,11 +140,16 @@ public class ContentEditableTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented
+  @NotYetImplemented(value = CHROME, reason = "Prepends text")
+  @NotYetImplemented(value = EDGE)
+  @NotYetImplemented(IE)
+  @NotYetImplemented(value = MARIONETTE, reason = "Doesn't write anything")
+  @NotYetImplemented(value = SAFARI, reason = "Prepends text")
   public void appendsTextToEndOfContentEditableWithMultipleTextNodes() {
     driver.get(appServer.whereIs("content-editable.html"));
     WebElement input = driver.findElement(By.id("editable"));
     input.sendKeys(", world!");
+    System.out.println("input.getText() = " + input.getText());
     assertEquals("Why hello, world!", input.getText());
   }
 
