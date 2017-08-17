@@ -124,3 +124,21 @@ webdriver.ie.isInParentOverflow = function(element) {
   var center = new goog.math.Coordinate(x, y);
   return bot.dom.getOverflowState(element, center);
 };
+
+/**
+ * Gets the size and location of an element.
+ *
+ * @param {!Element} element The element to get the rect of.
+ * @return {!Object} An object containing the element rect.
+ */
+webdriver.ie.getElementRect = function (element) {
+  // For now, we'll return a custom object. If we need
+  // more functionality later provided by goog.math.Rect,
+  // we can upgrade to that when needed.
+  var size = goog.style.getSize(element);
+  var location = goog.style.getPageOffset(element);
+  return {
+     'x': location.x, 'y': location.y,
+     'width': size.width, 'height': size.height
+  };
+};

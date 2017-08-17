@@ -58,71 +58,47 @@ void GetElementRectCommandHandler::ExecuteInternal(
       // Furthermore, we need to invoke the function that is the atom and
       // get the result, but we need to wrap the execution in another function
       // so that it can be invoked without polluting the current namespace.
-      std::wstring script_source = L"(function() { return function() { var result = ";
-      script_source += L"(function() { return (";
-      script_source += atoms::asString(atoms::GET_SIZE);
-      script_source += L")})().apply(null, arguments);";
-      script_source += L"return [result.width, result.height]; };})();";
+      std::wstring script_source(L"(function() { return (");
+      script_source += atoms::asString(atoms::GET_ELEMENT_RECT);
+      script_source += L")})();";
 
       CComPtr<IHTMLDocument2> doc;
       browser_wrapper->GetDocument(&doc);
 
-      Json::Value size_array;
+      Json::Value rect_object;
       Script script_wrapper(doc, script_source, 1);
       script_wrapper.AddArgument(element_wrapper);
       status_code = script_wrapper.Execute();
 
       if (status_code == WD_SUCCESS) {
-        script_wrapper.ConvertResultToJsonValue(executor, &size_array);
+        script_wrapper.ConvertResultToJsonValue(executor, &rect_object);
 
-        Json::UInt index = 0;
         Json::Value response_value;
-        response_value["width"] = size_array[index];
-        ++index;
-        response_value["height"] = size_array[index];
+        response_value["width"] = rect_object["width"];
+        response_value["height"] = rect_object["height"];
 
-        script_source = L"(function() { return function() { var result = ";
-        script_source += L"(function() { return (";
-        script_source += atoms::asString(atoms::GET_LOCATION);
-        script_source += L")})().apply(null, arguments);";
-        script_source += L"return [result.x, result.y]; };})();";
+        int x = rect_object.get("x", 0).asInt();
+        int y = rect_object.get("y", 0).asInt();
 
-        Json::Value location_array;
-        Script location_script_wrapper(doc, script_source, 1);
-        location_script_wrapper.AddArgument(element_wrapper);
-        status_code = location_script_wrapper.Execute();
-
-        if (status_code == WD_SUCCESS) {
-          location_script_wrapper.ConvertResultToJsonValue(executor, &location_array);
-          Json::UInt index = 0;
-          int x = location_array.get(index, 0).asInt();
-          ++index;
-          int y = location_array.get(index, 0).asInt();
-
-          CComPtr<IHTMLDocument2> doc;
-          browser_wrapper->GetDocument(&doc);
-          int browser_version = executor.browser_factory()->browser_version();
-          bool browser_appears_before_ie8 = browser_version < 8 || DocumentHost::GetDocumentMode(doc) <= 7;
-          bool is_quirks_mode = !DocumentHost::IsStandardsMode(doc);
-          if (browser_appears_before_ie8 && !is_quirks_mode) {
-            // NOTE: For IE 6 and 7 in standards mode, elements with "display:none"
-            // in the CSS style should have a 2-pixel offset for their location.
-            std::string display_value = "";
-            element_wrapper->GetCssPropertyValue("display", &display_value);
-            if (display_value == "none") {
-              int offset = 2;
-              x += offset;
-              y += offset;
-            }
+        int browser_version = executor.browser_factory()->browser_version();
+        bool browser_appears_before_ie8 = browser_version < 8 || DocumentHost::GetDocumentMode(doc) <= 7;
+        bool is_quirks_mode = !DocumentHost::IsStandardsMode(doc);
+        if (browser_appears_before_ie8 && !is_quirks_mode) {
+          // NOTE: For IE 6 and 7 in standards mode, elements with "display:none"
+          // in the CSS style should have a 2-pixel offset for their location.
+          std::string display_value = "";
+          element_wrapper->GetCssPropertyValue("display", &display_value);
+          if (display_value == "none") {
+            int offset = 2;
+            x += offset;
+            y += offset;
           }
-
-          response_value["x"] = x;
-          response_value["y"] = y;
-          response->SetSuccessResponse(response_value);
-          return;
-        } else {
-          response->SetErrorResponse(status_code, "Unable to get element location");
         }
+
+        response_value["x"] = x;
+        response_value["y"] = y;
+        response->SetSuccessResponse(response_value);
+        return;
       } else {
         response->SetErrorResponse(status_code, "Unable to get element sizes");
         return;
