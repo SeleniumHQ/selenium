@@ -440,7 +440,6 @@ public class PageLoadingTest extends JUnit4TestBase {
 
   @NoDriverAfterTest // Subsequent tests sometimes fail on Firefox.
   @Test
-  @Ignore(value = MARIONETTE)
   @Ignore(value = SAFARI, reason = "issue 687, comment 41")
   @NeedsLocalEnvironment
   public void testShouldTimeoutIfAPageTakesTooLongToLoadAfterClick() {

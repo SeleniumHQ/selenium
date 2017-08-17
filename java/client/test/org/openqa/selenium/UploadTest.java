@@ -60,7 +60,6 @@ public class UploadTest extends JUnit4TestBase {
 
   @SwitchToTopAfterTest
   @Test
-  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/644")
   public void testFileUploading() throws Exception {
     assumeFalse(
         "This test as written assumes a file on local disk is accessible to the browser. "
@@ -84,7 +83,6 @@ public class UploadTest extends JUnit4TestBase {
   @Ignore(IE)
   @Ignore(PHANTOMJS)
   @Ignore(SAFARI)
-  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/644")
   public void testCleanFileInput() throws Exception {
     driver.get(pages.uploadPage);
     WebElement element = driver.findElement(By.id("upload"));

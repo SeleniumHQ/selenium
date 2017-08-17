@@ -401,7 +401,6 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
 
   @NeedsFreshDriver({IE, CHROME})
   @Test
-  @Ignore(MARIONETTE)
   @NotYetImplemented(HTMLUNIT)
   public void testMoveRelativeToBody() {
     try {

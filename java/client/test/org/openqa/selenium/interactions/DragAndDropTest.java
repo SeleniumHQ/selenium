@@ -53,7 +53,6 @@ import java.util.regex.Pattern;
 public class DragAndDropTest extends JUnit4TestBase {
 
   @Test
-  @Ignore(MARIONETTE)
   public void testDragAndDropRelative() {
     assumeFalse("See issue 2281", TestUtilities.getEffectivePlatform().is(Platform.MAC));
     assumeFalse(Browser.detect() == Browser.opera &&
@@ -73,7 +72,6 @@ public class DragAndDropTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(MARIONETTE)
   public void testDragAndDropToElement() {
     driver.get(pages.dragAndDropPage);
     WebElement img1 = driver.findElement(By.id("test1"));
