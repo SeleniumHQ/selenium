@@ -138,4 +138,13 @@ public class ContentEditableTest extends JUnit4TestBase {
     assertThat(editable.getText(), equalTo("Initial content and cheese"));
   }
 
+  @Test
+  @NotYetImplemented
+  public void appendsTextToEndOfContentEditableWithMultipleTextNodes() {
+    driver.get(appServer.whereIs("content-editable.html"));
+    WebElement input = driver.findElement(By.id("editable"));
+    input.sendKeys(", world!");
+    assertEquals("Why hello, world!", input.getText());
+  }
+
 }
