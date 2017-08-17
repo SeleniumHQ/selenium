@@ -35,6 +35,64 @@ module Selenium
           end
         end
 
+        #
+        # actions
+        #
+
+        #
+        # @return [ActionBuilder]
+        # @api public
+        #
+
+        def action
+          ActionBuilder.new Mouse.new(self), Keyboard.new(self)
+        end
+
+        def mouse
+          WebDriver.logger.deprecate 'Driver#mouse', 'driver.action.<command>.perform'
+          Mouse.new self
+        end
+
+        def keyboard
+          WebDriver.logger.deprecate 'Driver#keyboard', 'driver.action.<command>.perform'
+          Keyboard.new self
+        end
+
+        def click_element(element)
+          execute :click_element, id: element
+        end
+
+        def click
+          execute :click, {}, {button: 0}
+        end
+
+        def double_click
+          execute :double_click
+        end
+
+        def context_click
+          execute :click, {}, {button: 2}
+        end
+
+        def mouse_down
+          execute :mouse_down
+        end
+
+        def mouse_up
+          execute :mouse_up
+        end
+
+        def mouse_move_to(element, x = nil, y = nil)
+          params = {element: element}
+
+          if x && y
+            params[:xoffset] = x
+            params[:yoffset] = y
+          end
+
+          execute :mouse_move_to, {}, params
+        end
+
         def send_keys_to_active_element(key)
           execute :send_keys_to_active_element, {}, {value: key}
         end

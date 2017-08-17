@@ -50,11 +50,13 @@ module Selenium
 
       it 'allows to output to file' do
         begin
-          WebDriver.logger.output = 'test.log'
+          Dir.mkdir 'temp'
+          WebDriver.logger.output = 'temp/test.log'
           WebDriver.logger.warn('message')
-          expect(File.read('test.log')).to include('WARN Selenium message')
+          expect(File.read('temp/test.log')).to include('WARN Selenium message')
         ensure
-          File.delete('test.log')
+          WebDriver.logger.output = $stdout
+          FileUtils.rm_rf 'temp'
         end
       end
 

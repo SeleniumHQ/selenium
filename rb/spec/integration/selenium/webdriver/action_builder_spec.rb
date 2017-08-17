@@ -32,10 +32,10 @@ module Selenium
               driver.find_element(css: 'body').click
               driver.action.send_keys('ab').perform
 
-              wait.until { keylogger.text.split.length == 2 }
-              expect(keylogger.text.strip).to eq('keypress keypress')
+              wait.until { keylogger.text.gsub(/\u00a0/, '').split.length == 2 }
+              expect(keylogger.text.gsub(/\u00a0/, '').split).to eq('keypress keypress')
 
-              expect(driver.find_element(id: 'result').text.strip).to be_empty
+              expect(driver.find_element(id: 'result').text.gsub(/\u00a0/, '').split).to be_empty
             end
 
             # https://github.com/mozilla/geckodriver/issues/646
@@ -52,7 +52,7 @@ module Selenium
                 wait.until { event_input.attribute(:value).length == 2 }
 
                 expect(event_input.attribute(:value)).to eq('AB')
-                expect(keylogger.text.strip).to match(/^(focus )?keydown keydown keypress keyup keydown keypress keyup keyup$/)
+                expect(keylogger.text.gsub(/\u00a0/, '').split).to match(/^(focus )?keydown keydown keypress keyup keydown keypress keyup keyup$/)
               end
             end
 

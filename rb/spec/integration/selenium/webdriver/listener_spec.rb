@@ -24,10 +24,11 @@ module Selenium
     describe Driver do
       it 'supports listener' do
         begin
+          quit_driver
           listener = Selenium::WebDriver::Support::AbstractEventListener.new
-          driver = GlobalTestEnv.send(:create_driver, listener: listener)
+          listening_driver = GlobalTestEnv.send(:create_driver, listener: listener)
         ensure
-          driver.quit if driver
+          listening_driver.quit if listening_driver
         end
       end
     end

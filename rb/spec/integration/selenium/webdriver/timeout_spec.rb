@@ -30,11 +30,13 @@ module Selenium
 
         after { driver.manage.timeouts.implicit_wait = 0 }
 
-        it 'should implicitly wait for a single element' do
-          driver.manage.timeouts.implicit_wait = 6
+        not_compliant_on browser: :edge do
+          it 'should implicitly wait for a single element' do
+            driver.manage.timeouts.implicit_wait = 6
 
-          driver.find_element(id: 'adder').click
-          driver.find_element(id: 'box0')
+            driver.find_element(id: 'adder').click
+            driver.find_element(id: 'box0')
+          end
         end
 
         # https://github.com/SeleniumHQ/selenium/issues/3338
@@ -55,14 +57,16 @@ module Selenium
           end
         end
 
-        it 'should implicitly wait until at least one element is found when searching for many' do
-          add = driver.find_element(id: 'adder')
+        not_compliant_on browser: :edge do
+          it 'should implicitly wait until at least one element is found when searching for many' do
+            add = driver.find_element(id: 'adder')
 
-          driver.manage.timeouts.implicit_wait = 6
-          add.click
-          add.click
+            driver.manage.timeouts.implicit_wait = 6
+            add.click
+            add.click
 
-          expect(driver.find_elements(class_name: 'redbox')).not_to be_empty
+            expect(driver.find_elements(class_name: 'redbox')).not_to be_empty
+          end
         end
 
         not_compliant_on browser: :safari do
