@@ -305,6 +305,12 @@ public abstract class JUnit4TestBase implements WrapsDriver {
           }
           break;
 
+        case EDGE:
+          if (browser == Browser.edge) {
+            return true;
+          }
+          break;
+
         case MARIONETTE:
           if (browser != Browser.ff) {
             return false;
