@@ -44,6 +44,7 @@ module Selenium
       end
 
       def authenticate(username, password)
+        WebDriver.logger.deprecate 'Alert#authenticate'
         @bridge.authentication(username: username, password: password)
         accept
       end
