@@ -22,7 +22,7 @@ require_relative 'spec_helper'
 module Selenium
   module WebDriver
     describe Options, except: {browser: :safari} do
-      describe 'logs', except: {browser: %i[firefox ie edge ff_nightly]} do
+      describe 'logs', except: {browser: %i[firefox ie edge]} do
         it 'can fetch remote log types', only: {driver: :remote}, except: {browser: :phantomjs} do
           expect(driver.manage.logs.available_types).to include(:server, :browser, :driver)
         end
@@ -39,8 +39,12 @@ module Selenium
           expect(driver.manage.logs.available_types).to include(:browser, :har)
         end
 
+<<<<<<< HEAD
         # TODO (Alex): Investigate why this spec passes on macOS but fails on Linux.
         it 'can get the browser log', only: {browser: %i[firefox ff_esr]}, except: {browser: :chrome, platform: :linux} do
+=======
+        it 'can get the browser log', only: {browser: %i[chrome firefox ff_esr]} do
+>>>>>>> 22c3012045... Remove Firefox nightly tests from Ruby
           driver.navigate.to url_for('simpleTest.html')
 
           entries = driver.manage.logs.get(:browser)

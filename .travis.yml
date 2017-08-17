@@ -157,9 +157,6 @@ matrix:
     - env: MARIONETTE=1 TASK=//rb:firefox-test
       <<: *ruby
       <<: *firefox-latest
-    - env: MARIONETTE=1 TASK=//rb:ff-nightly-test
-      <<: *ruby
-      <<: *firefox-nightly
     - env: TASK=//rb:ff-esr-test
       <<: *ruby
       <<: *firefox-esr
@@ -169,9 +166,6 @@ matrix:
     - env: MARIONETTE=1 TASK=//rb:remote-firefox-test
       <<: *ruby
       <<: *firefox-latest
-    - env: MARIONETTE=1 TASK=//rb:remote-ff-nightly-test
-      <<: *ruby
-      <<: *firefox-nightly
     - env: TASK=//rb:remote-ff-esr-test
       <<: *ruby
       <<: *firefox-esr

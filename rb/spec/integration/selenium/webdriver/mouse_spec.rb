@@ -22,7 +22,7 @@ require_relative 'spec_helper'
 module Selenium
   module WebDriver
     # Firefox - "Actions Endpoint Not Yet Implemented"
-    describe Mouse, except: {browser: %i[safari ff_nightly firefox ie]} do
+    describe Mouse, except: {browser: %i[safari firefox ie]} do
       after { reset_driver! }
 
       it 'clicks an element' do

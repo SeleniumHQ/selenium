@@ -21,7 +21,7 @@ require_relative 'spec_helper'
 
 module Selenium
   module WebDriver
-    describe W3CActionBuilder, only: {browser: %i[firefox ff_nightly]} do
+    describe W3CActionBuilder, only: {browser: :firefox} do
       after do
         if driver.action.respond_to?(:clear_all_actions)
           driver.action.clear_all_actions
@@ -50,7 +50,7 @@ module Selenium
       end # Key actions
 
       describe 'Pointer actions' do
-        it 'can release pressed buttons via release action', except: {browser: :ff_nightly} do
+        it 'can release pressed buttons via release action' do
           driver.navigate.to url_for('javascriptPage.html')
 
           event_input = driver.find_element(id: 'clickField')

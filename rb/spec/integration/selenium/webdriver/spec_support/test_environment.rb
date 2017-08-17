@@ -147,12 +147,6 @@ module Selenium
                            opt[:firefox_binary] = ENV['FF_ESR_BINARY']
                            opt[:marionette] = false
                            :firefox
-                         when :ff_nightly
-                           unless ENV['FF_NIGHTLY_BINARY']
-                             raise DriverInstantiationError, "ENV['FF_NIGHTLY_BINARY'] must be set to test Firefox Nightly"
-                           end
-                           opt[:firefox_binary] = ENV['FF_NIGHTLY_BINARY']
-                           :firefox
                          when :safari_preview
                            opt["safari.options"] = {'technologyPreview' => true}
                            :safari
@@ -250,15 +244,6 @@ module Selenium
           opt[:desired_capabilities]['requireWindowFocus'] = true
 
           WebDriver::Driver.for :ie, opt
-        end
-
-        def create_ff_nightly_driver(opt = {})
-          unless ENV['FF_NIGHTLY_BINARY']
-            raise StandardError, "ENV['FF_NIGHTLY_BINARY'] must be set to test Nightly Firefox"
-          end
-          WebDriver::Firefox::Binary.path = ENV['FF_NIGHTLY_BINARY']
-          opt[:marionette] = true
-          WebDriver::Driver.for :firefox, opt
         end
 
         def create_chrome_driver(opt = {})

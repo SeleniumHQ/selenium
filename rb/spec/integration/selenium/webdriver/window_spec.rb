@@ -72,7 +72,7 @@ module Selenium
         expect(new_pos.y).to eq(target_y)
       end
 
-      context 'window rect', only: {browser: %i[firefox ff_nightly]} do
+      context 'window rect', only: {browser: :firefox} do
         it 'gets the rect of the current window' do
           rect = driver.manage.window.rect
 

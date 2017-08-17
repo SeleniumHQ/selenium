@@ -39,7 +39,7 @@ module Selenium
         end
 
         # https://github.com/mozilla/geckodriver/issues/646
-        it 'can send keys with shift pressed', except: {browser: %i[firefox ff_nightly]} do
+        it 'can send keys with shift pressed', except: {browser: :firefox} do
           driver.navigate.to url_for('javascriptPage.html')
 
           event_input = driver.find_element(id: 'theworks')
@@ -103,7 +103,7 @@ module Selenium
           expect(input.attribute(:value)).to eq('abcd')
         end
 
-        it 'can release pressed keys via release action', only: {browser: %i[firefox ff_nightly]} do
+        it 'can release pressed keys via release action', only: {browser: :firefox} do
           driver.navigate.to url_for('javascriptPage.html')
 
           event_input = driver.find_element(id: 'theworks')
@@ -146,7 +146,7 @@ module Selenium
         end
 
         # Pending bug with Firefox
-        it 'double clicks an element', except: {browser: %i[firefox ff_nightly]} do
+        it 'double clicks an element', except: {browser: :firefox} do
           driver.navigate.to url_for('javascriptPage.html')
           element = driver.find_element(id: 'doubleClickField')
 
@@ -162,7 +162,7 @@ module Selenium
           expect(element.attribute(:value)).to eq('ContextClicked')
         end
 
-        it 'can release pressed buttons via release action', only: {browser: %i[firefox ff_nightly]} do
+        it 'can release pressed buttons via release action', only: {browser: :firefox} do
           driver.navigate.to url_for('javascriptPage.html')
 
           event_input = driver.find_element(id: 'clickField')

@@ -122,15 +122,6 @@ ruby_library(name = "firefox",
   deps = [":common"]
 )
 
-ruby_test(name = "ff-nightly",
-  srcs = [
-    "spec/integration/selenium/webdriver/*_spec.rb",
-    "spec/integration/selenium/webdriver/firefox/**/*_spec.rb"
-  ],
-  include = ["rb/spec/integration", "build/rb/lib"],
-  deps = [":firefox"]
-)
-
 ruby_test(name = "firefox",
   srcs = [
     "spec/integration/selenium/webdriver/*_spec.rb",
@@ -215,19 +206,6 @@ ruby_test(name = "remote-ff-esr",
   deps = [
     ":remote",
     ":ff-esr"
-  ]
-)
-
-ruby_test(name = "remote-ff-nightly",
-  srcs = [
-    "spec/integration/selenium/webdriver/*_spec.rb",
-    "spec/integration/selenium/webdriver/firefox/**/*_spec.rb",
-    "spec/integration/selenium/webdriver/remote/**/*_spec.rb"
-  ],
-  include = ["rb/spec/integration", "build/rb/lib"],
-  deps = [
-    ":remote",
-    ":firefox"
   ]
 )
 

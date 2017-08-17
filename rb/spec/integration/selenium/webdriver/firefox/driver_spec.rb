@@ -21,7 +21,7 @@ require_relative '../spec_helper'
 
 module Selenium
   module WebDriver
-    describe Firefox, only: {browser: %i[ff_esr firefox ff_nightly]} do
+    describe Firefox, only: {browser: %i[ff_esr firefox]} do
       it 'creates default capabilities (W3C)', except: {browser: :ff_esr} do
         create_driver! do |driver|
           caps = driver.capabilities

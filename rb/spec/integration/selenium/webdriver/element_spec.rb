@@ -35,7 +35,7 @@ module Selenium
           .to raise_error(Selenium::WebDriver::Error::UnknownError, error)
       end
 
-      it 'should not raise if element is only partially covered', only: {browser: %i[firefox ff_esr ff_nightly]} do
+      it 'should not raise if element is only partially covered', only: {browser: %i[firefox ff_esr]} do
         driver.navigate.to url_for('click_tests/overlapping_elements.html')
         expect { driver.find_element(id: 'other_contents').click }.not_to raise_error
       end
