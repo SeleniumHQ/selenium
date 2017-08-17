@@ -348,32 +348,6 @@ module Selenium
           end
         end
       end
-
-      compliant_on browser: :ie do
-        # Windows 10 changed the auth alert
-        not_compliant_on browser: :ie do
-          describe 'basic auth alerts' do
-            after { reset_driver! }
-
-            it 'allows the user to send valid credentials to an alert' do
-              driver.navigate.to url_for('basicAuth')
-              driver.switch_to.alert.authenticate('test', 'test')
-
-              expect(driver.find_element(tag_name: 'h1').text).to eq('authorized')
-            end
-
-            it 'does not raise an error when invalid credentials are used' do
-              driver.navigate.to url_for('basicAuth')
-              driver.switch_to.alert.authenticate('invalid', 'invalid')
-
-              wait = Selenium::WebDriver::Wait.new(timeout: 5, ignore: Selenium::WebDriver::Error::NoSuchAlertError)
-              wait.until { driver.switch_to.alert }
-
-              expect { driver.switch_to.alert.dismiss }.to_not raise_error
-            end
-          end
-        end
-      end
     end
   end # WebDriver
 end # Selenium

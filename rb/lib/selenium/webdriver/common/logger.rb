@@ -101,13 +101,20 @@ module Selenium
       end
 
       #
-      # Marks code as deprecated with replacement.
+      # Marks code as deprecated with/without replacement.
       #
       # @param [String] old
-      # @param [String] new
+      # @param [String, nil] new
       #
-      def deprecate(old, new)
-        warn "[DEPRECATION] #{old} is deprecated. Use #{new} instead."
+      def deprecate(old, new = nil)
+        message = "[DEPRECATION] #{old} is deprecated"
+        message << if new
+                     ". Use #{new} instead."
+                   else
+                     ' and will be removed in the next releases.'
+                   end
+
+        warn message
       end
 
       private
