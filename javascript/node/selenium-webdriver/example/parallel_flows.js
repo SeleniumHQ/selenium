@@ -25,6 +25,7 @@
 
 var webdriver = require('..'),
     By = webdriver.By,
+    Key = webdriver.Key,
     until = webdriver.until;
 
 for (var i = 0; i < 3; i++) {
@@ -44,8 +45,7 @@ for (var i = 0; i < 3; i++) {
     driver.manage().window().setPosition(300 * i, 400 * i);
 
     driver.get('http://www.google.com');
-    driver.findElement(By.name('q')).sendKeys('webdriver');
-    driver.findElement(By.name('btnG')).click();
+    driver.findElement(By.name('q')).sendKeys('webdriver', Key.RETURN);
     driver.wait(until.titleIs('webdriver - Google Search'), 1000);
 
     driver.quit();
