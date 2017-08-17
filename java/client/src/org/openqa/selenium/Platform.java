@@ -79,7 +79,7 @@ public enum Platform {
     }
   },
 
-  MAC("mac", "darwin", "os x") {},
+  MAC("mac", "darwin", "macOS", "os x") {},
 
   SNOW_LEOPARD("snow leopard", "os x 10.6") {
     @Override
