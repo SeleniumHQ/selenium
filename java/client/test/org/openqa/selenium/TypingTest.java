@@ -670,6 +670,15 @@ public class TypingTest extends JUnit4TestBase {
     assertEquals("3", input.getAttribute("value"));
   }
 
+  @Test
+  @NotYetImplemented
+  public void appendsTextToEndOfContentEditableWithMultipleTextNodes() {
+    driver.get(appServer.whereIs("content-editable.html"));
+    WebElement input = driver.findElement(By.id("editable"));
+    input.sendKeys(", world!");
+    assertEquals("Why hello, world!", input.getText());
+  }
+
   private static String getValueText(WebElement el) {
     // Standardize on \n and strip any trailing whitespace.
     return el.getAttribute("value").replace("\r\n", "\n").trim();
