@@ -9,6 +9,16 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v3.5.1.0
+========
+ * Updates to JavaScript automation atoms.
+ * Updated IE driver atoms to properly return element position. A recent
+   update to the Closure compiler caused a regression in the IE driver as
+   it was more aggressive about renaming properties of objects returned
+   from JavaScript functions than previous versions. This release adds a
+   custom IE-only atom that avoids this behavior of the compiler, and lets
+   the driver properly return an element's location. Fixes issue #4480.
+
 v3.5.0.0
 ========
  * Release to synchronize with release of Selenium project.
