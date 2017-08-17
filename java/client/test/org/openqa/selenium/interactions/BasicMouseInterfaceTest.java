@@ -399,7 +399,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
     wait.until(fuzzyMatchingOfCoordinates(reporter, 0, 0));
   }
 
-  @NeedsFreshDriver({IE, CHROME})
+  @NeedsFreshDriver({IE, CHROME, MARIONETTE})
   @Test
   @NotYetImplemented(HTMLUNIT)
   public void testMoveRelativeToBody() {
