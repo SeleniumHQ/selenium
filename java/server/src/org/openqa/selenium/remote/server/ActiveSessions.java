@@ -25,6 +25,7 @@ import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.server.log.LoggingManager;
 import org.openqa.selenium.remote.server.log.PerSessionLogHandler;
 
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -83,6 +84,10 @@ public class ActiveSessions {
 
   public void invalidate(SessionId id) {
     allSessions.invalidate(id);
+  }
+
+  public Collection<ActiveSession> getAllSessions() {
+    return allSessions.asMap().values();
   }
 
   public void addListener(ActiveSessionListener listener) {
