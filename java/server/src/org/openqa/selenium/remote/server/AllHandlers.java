@@ -28,12 +28,13 @@ import com.google.gson.GsonBuilder;
 
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpMethod;
+import org.openqa.selenium.remote.server.commandhandler.GetAllSessions;
 import org.openqa.selenium.remote.server.commandhandler.GetLogTypes;
 import org.openqa.selenium.remote.server.commandhandler.GetLogsOfType;
 import org.openqa.selenium.remote.server.commandhandler.NoHandler;
 import org.openqa.selenium.remote.server.commandhandler.NoSessionHandler;
 import org.openqa.selenium.remote.server.commandhandler.Status;
-import org.openqa.selenium.remote.server.commandhandler.GetAllSessions;
+import org.openqa.selenium.remote.server.commandhandler.UploadFile;
 
 import java.lang.reflect.Constructor;
 import java.util.List;
@@ -67,7 +68,9 @@ class AllHandlers {
         ),
         HttpMethod.POST, ImmutableList.of(
             handler("/session", BeginSession.class),
-            handler("/session/{sessionId}/log", GetLogsOfType.class)
+            handler("/session/{sessionId}/file", UploadFile.class),
+            handler("/session/{sessionId}/log", GetLogsOfType.class),
+            handler("/session/{sessionId}/se/file", UploadFile.class)
         ));
   }
 
@@ -123,6 +126,7 @@ class AllHandlers {
         ActiveSession session = allSessions.get(id);
         if (session != null) {
           args.add(session);
+          args.add(session.getFileSystem());
         }
       }
       match.getParameters().entrySet().stream()

@@ -21,6 +21,7 @@ package org.openqa.selenium.remote.server;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 import com.google.common.base.Preconditions;
+import com.google.common.base.StandardSystemProperty;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.gson.Gson;
@@ -38,6 +39,7 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -60,6 +62,7 @@ class InMemorySession implements ActiveSession {
   private final Map<String, Object> capabilities;
   private final SessionId id;
   private final Dialect downstream;
+  private final TemporaryFilesystem filesystem;
   private final JsonHttpCommandHandler handler;
 
   private InMemorySession(WebDriver driver, Capabilities capabilities, Dialect downstream)
@@ -79,6 +82,9 @@ class InMemorySession implements ActiveSession {
 
     this.id = new SessionId(UUID.randomUUID().toString());
     this.downstream = Preconditions.checkNotNull(downstream);
+
+    File tempRoot = new File(StandardSystemProperty.JAVA_IO_TMPDIR.value(), id.toString());
+    this.filesystem = TemporaryFilesystem.getTmpFsBasedOn(tempRoot);
 
     this.handler = new JsonHttpCommandHandler(
         new PretendDriverSessions(),
@@ -108,6 +114,11 @@ class InMemorySession implements ActiveSession {
   @Override
   public Map<String, Object> getCapabilities() {
     return capabilities;
+  }
+
+  @Override
+  public TemporaryFilesystem getFileSystem() {
+    return filesystem;
   }
 
   @Override

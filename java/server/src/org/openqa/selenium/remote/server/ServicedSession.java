@@ -20,12 +20,13 @@ package org.openqa.selenium.remote.server;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 
+import com.google.common.base.StandardSystemProperty;
+
 import org.openqa.selenium.SessionNotCreatedException;
+import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.net.PortProber;
-import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.CommandCodec;
 import org.openqa.selenium.remote.Dialect;
-import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.ProtocolHandshake;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.ResponseCodec;
@@ -41,6 +42,7 @@ import org.openqa.selenium.remote.http.W3CHttpResponseCodec;
 import org.openqa.selenium.remote.internal.ApacheHttpClient;
 import org.openqa.selenium.remote.service.DriverService;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
@@ -55,10 +57,11 @@ class ServicedSession implements ActiveSession {
 
   private final DriverService service;
   private final SessionId id;
-  private Dialect downstream;
-  private Dialect upstream;
+  private final Dialect downstream;
+  private final Dialect upstream;
   private final SessionCodec codec;
   private final Map<String, Object> capabilities;
+  private final TemporaryFilesystem filesystem;
 
   public ServicedSession(
       DriverService service,
@@ -73,6 +76,9 @@ class ServicedSession implements ActiveSession {
     this.codec = codec;
     this.id = id;
     this.capabilities = capabilities;
+
+    File tempRoot = new File(StandardSystemProperty.JAVA_IO_TMPDIR.value(), id.toString());
+    this.filesystem = TemporaryFilesystem.getTmpFsBasedOn(tempRoot);
   }
 
 
@@ -99,6 +105,11 @@ class ServicedSession implements ActiveSession {
   @Override
   public Map<String, Object> getCapabilities() {
     return capabilities;
+  }
+
+  @Override
+  public TemporaryFilesystem getFileSystem() {
+    return filesystem;
   }
 
   @Override
