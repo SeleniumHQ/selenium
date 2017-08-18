@@ -33,6 +33,7 @@ import org.openqa.selenium.remote.server.commandhandler.GetLogsOfType;
 import org.openqa.selenium.remote.server.commandhandler.NoHandler;
 import org.openqa.selenium.remote.server.commandhandler.NoSessionHandler;
 import org.openqa.selenium.remote.server.commandhandler.Status;
+import org.openqa.selenium.remote.server.commandhandler.GetAllSessions;
 
 import java.lang.reflect.Constructor;
 import java.util.List;
@@ -61,6 +62,7 @@ class AllHandlers {
         HttpMethod.DELETE, ImmutableList.of(),
         HttpMethod.GET, ImmutableList.of(
             handler("/session/{sessionId}/log/types", GetLogTypes.class),
+            handler("/sessions", GetAllSessions.class),
             handler("/status", Status.class)
         ),
         HttpMethod.POST, ImmutableList.of(
