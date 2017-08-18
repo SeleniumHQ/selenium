@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.remote.server;
 
+import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.SessionId;
 
@@ -34,6 +35,8 @@ public interface ActiveSession extends CommandHandler {
    * Describe the current webdriver session's capabilities.
    */
   Map<String, Object> getCapabilities();
+
+  TemporaryFilesystem getFileSystem();
 
   void stop();
 }

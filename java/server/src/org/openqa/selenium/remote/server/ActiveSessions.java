@@ -21,6 +21,7 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.RemovalListener;
 
+import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.server.log.LoggingManager;
 import org.openqa.selenium.remote.server.log.PerSessionLogHandler;
@@ -44,7 +45,13 @@ public class ActiveSessions {
   public ActiveSessions(long inactiveSessionTimeout, TimeUnit unit) {
     RemovalListener<SessionId, ActiveSession> listener = notification -> {
       ActiveSession session = notification.getValue();
-      listeners.forEach(l -> l.onStop(session));
+      listeners.forEach(l -> {
+        try {
+          l.onStop(session);
+        } catch (Exception e) {
+          LOG.log(Level.WARNING, "Caught exception closing session: " + session.getId(), e);
+        }
+      });
       session.stop();
     };
 
@@ -66,6 +73,15 @@ public class ActiveSessions {
         PerSessionLogHandler logHandler = LoggingManager.perSessionLogHandler();
         logHandler.transferThreadTempLogsToSessionLogs(session.getId());
         logHandler.removeSessionLogs(session.getId());
+      }
+    });
+
+    addListener(new ActiveSessionListener() {
+      @Override
+      public void onStop(ActiveSession session) {
+        TemporaryFilesystem filesystem = session.getFileSystem();
+        filesystem.deleteTemporaryFiles();
+        filesystem.deleteBaseDir();
       }
     });
   }
