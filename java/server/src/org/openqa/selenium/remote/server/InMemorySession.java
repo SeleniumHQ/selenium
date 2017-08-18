@@ -31,6 +31,7 @@ import com.google.gson.reflect.TypeToken;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.HasCapabilities;
 import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.remote.Dialect;
@@ -44,7 +45,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.io.UncheckedIOException;
 import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -84,6 +84,7 @@ class InMemorySession implements ActiveSession {
     this.downstream = Preconditions.checkNotNull(downstream);
 
     File tempRoot = new File(StandardSystemProperty.JAVA_IO_TMPDIR.value(), id.toString());
+    Preconditions.checkState(tempRoot.mkdirs());
     this.filesystem = TemporaryFilesystem.getTmpFsBasedOn(tempRoot);
 
     this.handler = new JsonHttpCommandHandler(
@@ -165,8 +166,8 @@ class InMemorySession implements ActiveSession {
                              Dialect.OSS :
                              payload.getDownstreamDialects().iterator().next();
         return new InMemorySession(driver, caps, downstream);
-      } catch (IOException e) {
-        throw new UncheckedIOException(e);
+      } catch (IOException|IllegalStateException e) {
+        throw new SessionNotCreatedException("Cannot establish new session", e);
       }
     }
 
