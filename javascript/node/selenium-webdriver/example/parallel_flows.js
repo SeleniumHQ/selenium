@@ -23,18 +23,16 @@
  * (see <https://github.com/SeleniumHQ/selenium/issues/2969>).
  */
 
-var webdriver = require('..'),
-    By = webdriver.By,
-    until = webdriver.until;
+const {Builder, By, Key, promise, until} = require('..');
 
 for (var i = 0; i < 3; i++) {
   (function(n) {
-    var flow = new webdriver.promise.ControlFlow()
+    var flow = new promise.ControlFlow()
         .on('uncaughtException', function(e) {
           console.log('uncaughtException in flow %d: %s', n, e);
         });
 
-    var driver = new webdriver.Builder().
+    var driver = new Builder().
         forBrowser('firefox').
         setControlFlow(flow).  // Comment out this line to see the difference.
         build();
@@ -44,8 +42,7 @@ for (var i = 0; i < 3; i++) {
     driver.manage().window().setPosition(300 * i, 400 * i);
 
     driver.get('http://www.google.com');
-    driver.findElement(By.name('q')).sendKeys('webdriver');
-    driver.findElement(By.name('btnG')).click();
+    driver.findElement(By.name('q')).sendKeys('webdriver', Key.RETURN);
     driver.wait(until.titleIs('webdriver - Google Search'), 1000);
 
     driver.quit();

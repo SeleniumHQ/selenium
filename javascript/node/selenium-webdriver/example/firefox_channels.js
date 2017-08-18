@@ -27,7 +27,7 @@
 
 'use strict';
 
-const {Builder, By, promise, until} = require('..');
+const {Builder, By, Key, promise, until} = require('..');
 const {Channel, Options} = require('../firefox');
 
 let i = 0;
@@ -45,8 +45,8 @@ function doSearch(driver) {
     .then(_ => promise.delayed(750))
     // Now do the rest.
     .then(_ => driver.get('http://www.google.com/ncr'))
-    .then(_ => driver.findElement(By.name('q')).sendKeys('webdriver'))
-    .then(_ => driver.findElement(By.name('btnG')).click())
+    .then(_ =>
+        driver.findElement(By.name('q')).sendKeys('webdriver', Key.RETURN))
     .then(_ => driver.wait(until.titleIs('webdriver - Google Search'), 1000))
     .then(_ => driver.quit());
 }

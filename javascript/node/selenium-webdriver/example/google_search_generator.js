@@ -28,7 +28,7 @@
 
 'use strict';
 
-const {Builder, By, promise, until} = require('..');
+const {Builder, By, Key, promise, until} = require('..');
 
 promise.consume(function* () {
   let driver;
@@ -38,10 +38,7 @@ promise.consume(function* () {
     yield driver.get('http://www.google.com/ncr');
 
     let q = yield driver.findElement(By.name('q'));
-    yield q.sendKeys('webdriver');
-
-    let btnG = yield driver.findElement(By.name('btnG'));
-    yield btnG.click();
+    yield q.sendKeys('webdriver', Key.RETURN);
 
     yield driver.wait(until.titleIs('webdriver - Google Search'), 1000);
   } finally {

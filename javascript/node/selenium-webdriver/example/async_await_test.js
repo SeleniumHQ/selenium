@@ -34,7 +34,7 @@
 'use strict';
 
 const assert = require('assert');
-const {Builder, By, promise, until} = require('..');
+const {Builder, By, Key, promise, until} = require('..');
 
 // async/await do not work well when the promise manager is enabled.
 // See https://github.com/SeleniumHQ/selenium/issues/3037
@@ -57,12 +57,13 @@ describe('Google Search', function() {
   it('example', async function() {
     await driver.get('https://www.google.com/ncr');
 
-    await driver.findElement(By.name('q')).sendKeys('webdriver');
-    await driver.findElement(By.name('btnG')).click();
+    await driver.findElement(By.name('q')).sendKeys('webdriver', Key.RETURN);
 
     await driver.wait(until.titleIs('webdriver - Google Search'), 1000);
 
     let url = await driver.getCurrentUrl();
-    assert.equal(url, 'https://www.google.com/#q=webdriver');
+    assert.ok(
+        url.startsWith('https://www.google.com/search'),
+        'unexpected url: ' + url);
   });
 });

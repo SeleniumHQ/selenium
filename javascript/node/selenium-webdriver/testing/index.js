@@ -41,7 +41,7 @@
  * The provided wrappers leverage the {@link webdriver.promise.ControlFlow}
  * to simplify writing asynchronous tests:
  *
- *     var {Builder, By, until} = require('selenium-webdriver');
+ *     var {Builder, By, Key, until} = require('selenium-webdriver');
  *     var test = require('selenium-webdriver/testing');
  *
  *     test.describe('Google Search', function() {
@@ -57,8 +57,7 @@
  *
  *       test.it('should append query to title', function() {
  *         driver.get('http://www.google.com/ncr');
- *         driver.findElement(By.name('q')).sendKeys('webdriver');
- *         driver.findElement(By.name('btnG')).click();
+ *         driver.findElement(By.name('q')).sendKeys('webdriver', Key.RETURN);
  *         driver.wait(until.titleIs('webdriver - Google Search'), 1000);
  *       });
  *     });
