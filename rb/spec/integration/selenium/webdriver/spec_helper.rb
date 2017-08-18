@@ -34,6 +34,7 @@ RSpec.configure do |c|
   c.before(:suite) do
     $DEBUG ||= ENV['DEBUG'] == 'true'
     GlobalTestEnv.remote_server.start if GlobalTestEnv.driver == :remote
+    GlobalTestEnv.print_env
   end
 
   c.after(:suite) do
@@ -53,4 +54,3 @@ end
 WebDriver::Platform.exit_hook { GlobalTestEnv.quit }
 
 $stdout.sync = true
-GlobalTestEnv.print_env

@@ -195,6 +195,7 @@ module Selenium
           {
             browser: browser,
             driver: driver,
+            version: driver_instance.capabilities.version,
             platform: Platform.os,
             native: native_events?,
             ci: Platform.ci
