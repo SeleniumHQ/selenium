@@ -38,6 +38,7 @@ describe('error', function() {
     });
 
     test('unknown error', error.WebDriverError);
+    test('element not interactable', error.ElementNotInteractableError);
     test('element not selectable', error.ElementNotSelectableError);
     test('element not visible', error.ElementNotVisibleError);
     test('invalid argument', error.InvalidArgumentError);
