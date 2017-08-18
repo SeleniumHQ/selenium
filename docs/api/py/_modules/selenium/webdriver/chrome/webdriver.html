@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>selenium.webdriver.chrome.webdriver &mdash; Selenium 3.4 documentation</title>
+    <title>selenium.webdriver.chrome.webdriver &mdash; Selenium 3.5 documentation</title>
     
     <link rel="stylesheet" href="../../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '3.4',
+        VERSION:     '3.5',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../../_static/doctools.js"></script>
-    <link rel="top" title="Selenium 3.4 documentation" href="../../../../index.html" />
+    <link rel="top" title="Selenium 3.5 documentation" href="../../../../index.html" />
     <link rel="up" title="Module code" href="../../../index.html" /> 
   </head>
   <body>
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">Selenium 3.4 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">Selenium 3.5 documentation</a> &raquo;</li>
           <li><a href="../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -125,6 +125,39 @@
         <span class="sd">&quot;&quot;&quot;Launches Chrome app specified by id.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s">&quot;launchApp&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;id&#39;</span><span class="p">:</span> <span class="nb">id</span><span class="p">})</span>
 </div>
+<div class="viewcode-block" id="WebDriver.get_network_conditions"><a class="viewcode-back" href="../../../../webdriver_chrome/selenium.webdriver.chrome.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.get_network_conditions">[docs]</a>    <span class="k">def</span> <span class="nf">get_network_conditions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gets Chrome network emulation settings.</span>
+
+<span class="sd">        :Returns:</span>
+<span class="sd">            A dict. For example:</span>
+
+<span class="sd">            {&#39;latency&#39;: 4, &#39;download_throughput&#39;: 2, &#39;upload_throughput&#39;: 2,</span>
+<span class="sd">            &#39;offline&#39;: False}</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s">&quot;getNetworkConditions&quot;</span><span class="p">)[</span><span class="s">&#39;value&#39;</span><span class="p">]</span>
+</div>
+<div class="viewcode-block" id="WebDriver.set_network_conditions"><a class="viewcode-back" href="../../../../webdriver_chrome/selenium.webdriver.chrome.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.set_network_conditions">[docs]</a>    <span class="k">def</span> <span class="nf">set_network_conditions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">network_conditions</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets Chrome network emulation settings.</span>
+
+<span class="sd">        :Args:</span>
+<span class="sd">         - network_conditions: A dict with conditions specification.</span>
+
+<span class="sd">        :Usage:</span>
+<span class="sd">            driver.set_network_conditions(</span>
+<span class="sd">                offline=False,</span>
+<span class="sd">                latency=5,  # additional latency (ms)</span>
+<span class="sd">                download_throughput=500 * 1024,  # maximal throughput</span>
+<span class="sd">                upload_throughput=500 * 1024)  # maximal throughput</span>
+
+<span class="sd">            Note: &#39;throughput&#39; can be used to set both (for download and upload).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s">&quot;setNetworkConditions&quot;</span><span class="p">,</span> <span class="p">{</span>
+            <span class="s">&#39;network_conditions&#39;</span><span class="p">:</span> <span class="n">network_conditions</span>
+        <span class="p">})</span>
+</div>
 <div class="viewcode-block" id="WebDriver.quit"><a class="viewcode-back" href="../../../../webdriver_chrome/selenium.webdriver.chrome.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.quit">[docs]</a>    <span class="k">def</span> <span class="nf">quit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Closes the browser and shuts down the ChromeDriver executable</span>
@@ -173,7 +206,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">Selenium 3.4 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">Selenium 3.5 documentation</a> &raquo;</li>
           <li><a href="../../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>selenium.webdriver.chrome.webdriver &mdash; Selenium 3.4 documentation</title>
+    <title>selenium.webdriver.chrome.webdriver &mdash; Selenium 3.5 documentation</title>
     
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '3.4',
+        VERSION:     '3.5',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="Selenium 3.4 documentation" href="../index.html" /> 
+    <link rel="top" title="Selenium 3.5 documentation" href="../index.html" /> 
   </head>
   <body>
     <div class="related">
@@ -35,7 +35,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../index.html">Selenium 3.4 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">Selenium 3.5 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -75,6 +75,23 @@ capabilities only, such as &#8220;proxy&#8221; or &#8220;loggingPref&#8221;.</li
 <dd></dd></dl>
 
 <dl class="method">
+<dt id="selenium.webdriver.chrome.webdriver.WebDriver.get_network_conditions">
+<tt class="descname">get_network_conditions</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/chrome/webdriver.html#WebDriver.get_network_conditions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.chrome.webdriver.WebDriver.get_network_conditions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets Chrome network emulation settings.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><p class="first">A dict. For example:</p>
+<p class="last">{&#8216;latency&#8217;: 4, &#8216;download_throughput&#8217;: 2, &#8216;upload_throughput&#8217;: 2,
+&#8216;offline&#8217;: False}</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="selenium.webdriver.chrome.webdriver.WebDriver.launch_app">
 <tt class="descname">launch_app</tt><big>(</big><em>id</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/chrome/webdriver.html#WebDriver.launch_app"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.chrome.webdriver.WebDriver.launch_app" title="Permalink to this definition">¶</a></dt>
 <dd><p>Launches Chrome app specified by id.</p>
@@ -85,6 +102,34 @@ capabilities only, such as &#8220;proxy&#8221; or &#8220;loggingPref&#8221;.</li
 <tt class="descname">quit</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/chrome/webdriver.html#WebDriver.quit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.chrome.webdriver.WebDriver.quit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Closes the browser and shuts down the ChromeDriver executable
 that is started when starting the ChromeDriver</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.chrome.webdriver.WebDriver.set_network_conditions">
+<tt class="descname">set_network_conditions</tt><big>(</big><em>**network_conditions</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/chrome/webdriver.html#WebDriver.set_network_conditions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.chrome.webdriver.WebDriver.set_network_conditions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets Chrome network emulation settings.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first simple">
+<li>network_conditions: A dict with conditions specification.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Usage :</th><td class="field-body"><dl class="first docutils">
+<dt>driver.set_network_conditions(</dt>
+<dd><p class="first last">offline=False,
+latency=5,  # additional latency (ms)
+download_throughput=500 * 1024,  # maximal throughput
+upload_throughput=500 * 1024)  # maximal throughput</p>
+</dd>
+</dl>
+<p class="last">Note: &#8216;throughput&#8217; can be used to set both (for download and upload).</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </dd></dl>
@@ -128,7 +173,7 @@ that is started when starting the ChromeDriver</p>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../index.html">Selenium 3.4 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">Selenium 3.5 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>selenium.webdriver.remote.webdriver &mdash; Selenium 3.4 documentation</title>
+    <title>selenium.webdriver.remote.webdriver &mdash; Selenium 3.5 documentation</title>
     
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '3.4',
+        VERSION:     '3.5',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="Selenium 3.4 documentation" href="../index.html" /> 
+    <link rel="top" title="Selenium 3.5 documentation" href="../index.html" /> 
   </head>
   <body>
     <div class="related">
@@ -35,7 +35,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../index.html">Selenium 3.4 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">Selenium 3.5 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -802,15 +802,17 @@ driver.get_log(&#8216;server&#8217;)</p>
 <dt id="selenium.webdriver.remote.webdriver.WebDriver.get_screenshot_as_file">
 <tt class="descname">get_screenshot_as_file</tt><big>(</big><em>filename</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.get_screenshot_as_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.get_screenshot_as_file" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="docutils">
-<dt>Gets the screenshot of the current window. Returns False if there is</dt>
-<dd>any IOError, else returns True. Use full paths in your filename.</dd>
+<dt>Saves a screenshot of the current window to a PNG image file. Returns</dt>
+<dd>False if there is any IOError, else returns True. Use full paths in
+your filename.</dd>
 </dl>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first simple">
-<li>filename: The full path you wish to save your screenshot to.</li>
+<li>filename: The full path you wish to save your screenshot to. This
+should end with a <cite>.png</cite> extension.</li>
 </ul>
 </td>
 </tr>
@@ -1005,15 +1007,17 @@ execute_async_script, see set_script_timeout.</dd>
 <dt id="selenium.webdriver.remote.webdriver.WebDriver.save_screenshot">
 <tt class="descname">save_screenshot</tt><big>(</big><em>filename</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.save_screenshot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.save_screenshot" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="docutils">
-<dt>Gets the screenshot of the current window. Returns False if there is</dt>
-<dd>any IOError, else returns True. Use full paths in your filename.</dd>
+<dt>Saves a screenshot of the current window to a PNG image file. Returns</dt>
+<dd>False if there is any IOError, else returns True. Use full paths in
+your filename.</dd>
 </dl>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Args :</th><td class="field-body"><ul class="first simple">
-<li>filename: The full path you wish to save your screenshot to.</li>
+<li>filename: The full path you wish to save your screenshot to. This
+should end with a <cite>.png</cite> extension.</li>
 </ul>
 </td>
 </tr>
@@ -1268,7 +1272,7 @@ to define custom shutdown behavior.</p>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../index.html">Selenium 3.4 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">Selenium 3.5 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

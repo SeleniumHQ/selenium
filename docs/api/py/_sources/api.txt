@@ -121,6 +121,16 @@ Webdriver.remote
    selenium.webdriver.remote.webdriver
    selenium.webdriver.remote.webelement
 
+Webdriver.safari
+----------------
+
+.. currentmodule:: selenium.webdriver.safari
+.. autosummary::
+  :toctree: webdriver_safari
+
+  selenium.webdriver.safari.service
+  selenium.webdriver.safari.webdriver
+
 Indices and tables
 
 * :ref:`genindex`

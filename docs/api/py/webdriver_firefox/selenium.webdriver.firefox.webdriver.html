@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>selenium.webdriver.firefox.webdriver &mdash; Selenium 3.4 documentation</title>
+    <title>selenium.webdriver.firefox.webdriver &mdash; Selenium 3.5 documentation</title>
     
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '3.4',
+        VERSION:     '3.5',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="Selenium 3.4 documentation" href="../index.html" /> 
+    <link rel="top" title="Selenium 3.5 documentation" href="../index.html" /> 
   </head>
   <body>
     <div class="related">
@@ -35,7 +35,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../index.html">Selenium 3.4 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">Selenium 3.5 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -141,6 +141,22 @@ saved before entering the block, and restored upon exiting it.</p>
 <dd></dd></dl>
 
 <dl class="method">
+<dt id="selenium.webdriver.firefox.webdriver.WebDriver.install_addon">
+<tt class="descname">install_addon</tt><big>(</big><em>path</em>, <em>temporary=None</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/firefox/webdriver.html#WebDriver.install_addon"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.firefox.webdriver.WebDriver.install_addon" title="Permalink to this definition">¶</a></dt>
+<dd><p>Installs Firefox addon.</p>
+<p>Returns identifier of installed addon. This identifier can later
+be used to uninstall addon.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Usage :</th><td class="field-body">driver.install_addon(&#8216;firebug.xpi&#8217;)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="selenium.webdriver.firefox.webdriver.WebDriver.quit">
 <tt class="descname">quit</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/firefox/webdriver.html#WebDriver.quit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.firefox.webdriver.WebDriver.quit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Quits the driver and close every associated window.</p>
@@ -150,6 +166,20 @@ saved before entering the block, and restored upon exiting it.</p>
 <dt id="selenium.webdriver.firefox.webdriver.WebDriver.set_context">
 <tt class="descname">set_context</tt><big>(</big><em>context</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/firefox/webdriver.html#WebDriver.set_context"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.firefox.webdriver.WebDriver.set_context" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.firefox.webdriver.WebDriver.uninstall_addon">
+<tt class="descname">uninstall_addon</tt><big>(</big><em>identifier</em><big>)</big><a class="reference internal" href="../_modules/selenium/webdriver/firefox/webdriver.html#WebDriver.uninstall_addon"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.firefox.webdriver.WebDriver.uninstall_addon" title="Permalink to this definition">¶</a></dt>
+<dd><p>Uninstalls Firefox addon using its identifier.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Usage :</th><td class="field-body">driver.uninstall_addon(<a class="reference external" href="mailto:'addon&#37;&#52;&#48;foo&#46;com">'addon<span>&#64;</span>foo<span>&#46;</span>com</a>&#8216;)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 </dd></dl>
 
@@ -192,7 +222,7 @@ saved before entering the block, and restored upon exiting it.</p>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../index.html">Selenium 3.4 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">Selenium 3.5 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

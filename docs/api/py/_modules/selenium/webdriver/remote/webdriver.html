@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>selenium.webdriver.remote.webdriver &mdash; Selenium 3.4 documentation</title>
+    <title>selenium.webdriver.remote.webdriver &mdash; Selenium 3.5 documentation</title>
     
     <link rel="stylesheet" href="../../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '3.4',
+        VERSION:     '3.5',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../../_static/doctools.js"></script>
-    <link rel="top" title="Selenium 3.4 documentation" href="../../../../index.html" />
+    <link rel="top" title="Selenium 3.5 documentation" href="../../../../index.html" />
     <link rel="up" title="Module code" href="../../../index.html" /> 
   </head>
   <body>
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">Selenium 3.4 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">Selenium 3.5 documentation</a> &raquo;</li>
           <li><a href="../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -67,6 +67,7 @@
 <span class="sd">&quot;&quot;&quot;The WebDriver implementation.&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">base64</span>
+<span class="kn">import</span> <span class="nn">copy</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">from</span> <span class="nn">contextlib</span> <span class="kn">import</span> <span class="n">contextmanager</span>
 
@@ -86,6 +87,47 @@
     <span class="nb">str</span> <span class="o">=</span> <span class="nb">basestring</span>
 <span class="k">except</span> <span class="ne">NameError</span><span class="p">:</span>
     <span class="k">pass</span>
+
+
+<span class="n">_W3C_CAPABILITY_NAMES</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">([</span>
+    <span class="s">&#39;acceptInsecureCerts&#39;</span><span class="p">,</span>
+    <span class="s">&#39;browserName&#39;</span><span class="p">,</span>
+    <span class="s">&#39;browserVersion&#39;</span><span class="p">,</span>
+    <span class="s">&#39;platformName&#39;</span><span class="p">,</span>
+    <span class="s">&#39;pageLoadStrategy&#39;</span><span class="p">,</span>
+    <span class="s">&#39;proxy&#39;</span><span class="p">,</span>
+    <span class="s">&#39;setWindowRect&#39;</span><span class="p">,</span>
+    <span class="s">&#39;timeouts&#39;</span><span class="p">,</span>
+    <span class="s">&#39;unhandledPromptBehavior&#39;</span><span class="p">,</span>
+<span class="p">])</span>
+
+
+<span class="k">def</span> <span class="nf">_make_w3c_caps</span><span class="p">(</span><span class="n">caps</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Makes a W3C alwaysMatch capabilities object.</span>
+
+<span class="sd">    Filters out capability names that are not in the W3C spec. Spec-compliant</span>
+<span class="sd">    drivers will reject requests containing unknown capability names.</span>
+
+<span class="sd">    Moves the Firefox profile, if present, from the old location to the new Firefox</span>
+<span class="sd">    options object.</span>
+
+<span class="sd">    :Args:</span>
+<span class="sd">     - caps - A dictionary of capabilities requested by the caller.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">profile</span> <span class="o">=</span> <span class="n">caps</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;firefox_profile&#39;</span><span class="p">)</span>
+    <span class="n">always_match</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">caps</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">_W3C_CAPABILITY_NAMES</span> <span class="ow">or</span> <span class="s">&#39;:&#39;</span> <span class="ow">in</span> <span class="n">k</span><span class="p">:</span>
+            <span class="n">always_match</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+    <span class="k">if</span> <span class="n">profile</span><span class="p">:</span>
+        <span class="n">moz_opts</span> <span class="o">=</span> <span class="n">always_match</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;moz:firefoxOptions&#39;</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="c"># If it&#39;s already present, assume the caller did that intentionally.</span>
+        <span class="k">if</span> <span class="s">&#39;profile&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">moz_opts</span><span class="p">:</span>
+            <span class="c"># Don&#39;t mutate the original capabilities.</span>
+            <span class="n">new_opts</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">moz_opts</span><span class="p">)</span>
+            <span class="n">new_opts</span><span class="p">[</span><span class="s">&#39;profile&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">profile</span>
+            <span class="n">always_match</span><span class="p">[</span><span class="s">&#39;moz:firefoxOptions&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_opts</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s">&quot;firstMatch&quot;</span><span class="p">:</span> <span class="p">[{}],</span> <span class="s">&quot;alwaysMatch&quot;</span><span class="p">:</span> <span class="n">always_match</span><span class="p">}</span>
 
 
 <div class="viewcode-block" id="WebDriver"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver">[docs]</a><span class="k">class</span> <span class="nc">WebDriver</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -225,13 +267,12 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">capabilities</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">InvalidArgumentException</span><span class="p">(</span><span class="s">&quot;Capabilities must be a dictionary&quot;</span><span class="p">)</span>
-        <span class="n">w3c_caps</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;firstMatch&quot;</span><span class="p">:</span> <span class="p">[],</span> <span class="s">&quot;alwaysMatch&quot;</span><span class="p">:</span> <span class="p">{}}</span>
         <span class="k">if</span> <span class="n">browser_profile</span><span class="p">:</span>
             <span class="k">if</span> <span class="s">&quot;moz:firefoxOptions&quot;</span> <span class="ow">in</span> <span class="n">capabilities</span><span class="p">:</span>
                 <span class="n">capabilities</span><span class="p">[</span><span class="s">&quot;moz:firefoxOptions&quot;</span><span class="p">][</span><span class="s">&quot;profile&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">browser_profile</span><span class="o">.</span><span class="n">encoded</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">capabilities</span><span class="p">[</span><span class="s">&#39;desiredCapabilities&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s">&#39;firefox_profile&#39;</span><span class="p">:</span> <span class="n">browser_profile</span><span class="o">.</span><span class="n">encoded</span><span class="p">})</span>
-        <span class="n">w3c_caps</span><span class="p">[</span><span class="s">&quot;alwaysMatch&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">capabilities</span><span class="p">)</span>
+                <span class="n">capabilities</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s">&#39;firefox_profile&#39;</span><span class="p">:</span> <span class="n">browser_profile</span><span class="o">.</span><span class="n">encoded</span><span class="p">})</span>
+        <span class="n">w3c_caps</span> <span class="o">=</span> <span class="n">_make_w3c_caps</span><span class="p">(</span><span class="n">capabilities</span><span class="p">)</span>
         <span class="n">parameters</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;capabilities&quot;</span><span class="p">:</span> <span class="n">w3c_caps</span><span class="p">,</span>
                       <span class="s">&quot;desiredCapabilities&quot;</span><span class="p">:</span> <span class="n">capabilities</span><span class="p">}</span>
         <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">NEW_SESSION</span><span class="p">,</span> <span class="n">parameters</span><span class="p">)</span>
@@ -266,13 +307,17 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_web_element_cls</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element_id</span><span class="p">,</span> <span class="n">w3c</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">w3c</span><span class="p">)</span>
 </div>
     <span class="k">def</span> <span class="nf">_unwrap_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="s">&#39;ELEMENT&#39;</span> <span class="ow">in</span> <span class="n">value</span> <span class="ow">or</span> <span class="s">&#39;element-6066-11e4-a52e-4f735466cecf&#39;</span> <span class="ow">in</span> <span class="n">value</span><span class="p">):</span>
-            <span class="n">wrapped_id</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;ELEMENT&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">wrapped_id</span><span class="p">:</span>
-                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_web_element</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="s">&#39;ELEMENT&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="k">if</span> <span class="s">&#39;ELEMENT&#39;</span> <span class="ow">in</span> <span class="n">value</span> <span class="ow">or</span> <span class="s">&#39;element-6066-11e4-a52e-4f735466cecf&#39;</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
+                <span class="n">wrapped_id</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;ELEMENT&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">wrapped_id</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_web_element</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="s">&#39;ELEMENT&#39;</span><span class="p">])</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_web_element</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="s">&#39;element-6066-11e4-a52e-4f735466cecf&#39;</span><span class="p">])</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_web_element</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="s">&#39;element-6066-11e4-a52e-4f735466cecf&#39;</span><span class="p">])</span>
-
+                <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">value</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="n">value</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unwrap_value</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">value</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
             <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_unwrap_value</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">value</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -870,15 +915,20 @@
 </div>
 <div class="viewcode-block" id="WebDriver.get_screenshot_as_file"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver.get_screenshot_as_file">[docs]</a>    <span class="k">def</span> <span class="nf">get_screenshot_as_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Gets the screenshot of the current window. Returns False if there is</span>
-<span class="sd">           any IOError, else returns True. Use full paths in your filename.</span>
+<span class="sd">        Saves a screenshot of the current window to a PNG image file. Returns</span>
+<span class="sd">           False if there is any IOError, else returns True. Use full paths in</span>
+<span class="sd">           your filename.</span>
 
 <span class="sd">        :Args:</span>
-<span class="sd">         - filename: The full path you wish to save your screenshot to.</span>
+<span class="sd">         - filename: The full path you wish to save your screenshot to. This</span>
+<span class="sd">           should end with a `.png` extension.</span>
 
 <span class="sd">        :Usage:</span>
 <span class="sd">            driver.get_screenshot_as_file(&#39;/Screenshots/foo.png&#39;)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">filename</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">&#39;.png&#39;</span><span class="p">):</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&quot;name used for saved screenshot does not match file &quot;</span>
+                          <span class="s">&quot;type. It should end with a `.png` extension&quot;</span><span class="p">,</span> <span class="ne">UserWarning</span><span class="p">)</span>
         <span class="n">png</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_screenshot_as_png</span><span class="p">()</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
@@ -891,11 +941,13 @@
 </div>
 <div class="viewcode-block" id="WebDriver.save_screenshot"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webdriver.html#selenium.webdriver.remote.webdriver.WebDriver.save_screenshot">[docs]</a>    <span class="k">def</span> <span class="nf">save_screenshot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Gets the screenshot of the current window. Returns False if there is</span>
-<span class="sd">           any IOError, else returns True. Use full paths in your filename.</span>
+<span class="sd">        Saves a screenshot of the current window to a PNG image file. Returns</span>
+<span class="sd">           False if there is any IOError, else returns True. Use full paths in</span>
+<span class="sd">           your filename.</span>
 
 <span class="sd">        :Args:</span>
-<span class="sd">         - filename: The full path you wish to save your screenshot to.</span>
+<span class="sd">         - filename: The full path you wish to save your screenshot to. This</span>
+<span class="sd">           should end with a `.png` extension.</span>
 
 <span class="sd">        :Usage:</span>
 <span class="sd">            driver.save_screenshot(&#39;/Screenshots/foo.png&#39;)</span>
@@ -1133,7 +1185,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">Selenium 3.4 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">Selenium 3.5 documentation</a> &raquo;</li>
           <li><a href="../../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>

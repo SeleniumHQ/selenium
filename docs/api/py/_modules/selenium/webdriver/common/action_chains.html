@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>selenium.webdriver.common.action_chains &mdash; Selenium 3.4 documentation</title>
+    <title>selenium.webdriver.common.action_chains &mdash; Selenium 3.5 documentation</title>
     
     <link rel="stylesheet" href="../../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '3.4',
+        VERSION:     '3.5',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../../_static/doctools.js"></script>
-    <link rel="top" title="Selenium 3.4 documentation" href="../../../../index.html" />
+    <link rel="top" title="Selenium 3.5 documentation" href="../../../../index.html" />
     <link rel="up" title="Module code" href="../../../index.html" /> 
   </head>
   <body>
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">Selenium 3.4 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">Selenium 3.5 documentation</a> &raquo;</li>
           <li><a href="../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -314,10 +314,14 @@
 <span class="sd">         - xoffset: X offset to move to, as a positive or negative integer.</span>
 <span class="sd">         - yoffset: Y offset to move to, as a positive or negative integer.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_actions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
-            <span class="n">Command</span><span class="o">.</span><span class="n">MOVE_TO</span><span class="p">,</span> <span class="p">{</span>
-                <span class="s">&#39;xoffset&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">xoffset</span><span class="p">),</span>
-                <span class="s">&#39;yoffset&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">yoffset</span><span class="p">)}))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">w3c</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">w3c_actions</span><span class="o">.</span><span class="n">pointer_action</span><span class="o">.</span><span class="n">move_by</span><span class="p">(</span><span class="n">xoffset</span><span class="p">,</span> <span class="n">yoffset</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">w3c_actions</span><span class="o">.</span><span class="n">key_action</span><span class="o">.</span><span class="n">pause</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_actions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+                <span class="n">Command</span><span class="o">.</span><span class="n">MOVE_TO</span><span class="p">,</span> <span class="p">{</span>
+                    <span class="s">&#39;xoffset&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">xoffset</span><span class="p">),</span>
+                    <span class="s">&#39;yoffset&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">yoffset</span><span class="p">)}))</span>
         <span class="k">return</span> <span class="bp">self</span>
 </div>
 <div class="viewcode-block" id="ActionChains.move_to_element"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.action_chains.html#selenium.webdriver.common.action_chains.ActionChains.move_to_element">[docs]</a>    <span class="k">def</span> <span class="nf">move_to_element</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">to_element</span><span class="p">):</span>
@@ -442,7 +446,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">Selenium 3.4 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">Selenium 3.5 documentation</a> &raquo;</li>
           <li><a href="../../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
