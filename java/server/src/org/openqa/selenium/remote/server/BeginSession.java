@@ -23,8 +23,6 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 import com.google.common.collect.ImmutableMap;
 
-import com.sun.javafx.util.Logging;
-
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.logging.LoggingPreferences;
