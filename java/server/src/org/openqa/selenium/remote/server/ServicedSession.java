@@ -20,6 +20,7 @@ package org.openqa.selenium.remote.server;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 
+import com.google.common.base.Preconditions;
 import com.google.common.base.StandardSystemProperty;
 
 import org.openqa.selenium.SessionNotCreatedException;
@@ -69,7 +70,7 @@ class ServicedSession implements ActiveSession {
       Dialect upstream,
       SessionCodec codec,
       SessionId id,
-      Map<String, Object> capabilities) {
+      Map<String, Object> capabilities) throws IOException {
     this.service = service;
     this.downstream = downstream;
     this.upstream = upstream;
@@ -78,6 +79,7 @@ class ServicedSession implements ActiveSession {
     this.capabilities = capabilities;
 
     File tempRoot = new File(StandardSystemProperty.JAVA_IO_TMPDIR.value(), id.toString());
+    Preconditions.checkState(tempRoot.mkdirs());
     this.filesystem = TemporaryFilesystem.getTmpFsBasedOn(tempRoot);
   }
 
@@ -196,7 +198,7 @@ class ServicedSession implements ActiveSession {
             codec,
             new SessionId(response.getSessionId()),
             (Map<String, Object>) response.getValue());
-      } catch (IOException e) {
+      } catch (IOException|IllegalStateException|NullPointerException e) {
         throw new SessionNotCreatedException("Cannot establish new session", e);
       }
     }
