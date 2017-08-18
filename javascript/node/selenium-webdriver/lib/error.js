@@ -80,6 +80,18 @@ class ElementNotVisibleError extends ElementNotInteractableError {
 
 
 /**
+ * An element command could not be completed because the element is not pointer-
+ * or keyboard interactable.
+ */
+class ElementNotInteractableError extends WebDriverError {
+  /** @param {string=} opt_error the error message, if any. */
+  constructor(opt_error) {
+    super(opt_error);
+  }
+}
+
+
+/**
  * The arguments passed to a command are either invalid or malformed.
  */
 class InvalidArgumentError extends WebDriverError {
@@ -419,6 +431,7 @@ const ERROR_CODE_TO_TYPE = new Map([
     ['element not interactable', ElementNotInteractableError],
     ['element not selectable', ElementNotSelectableError],
     ['element not visible', ElementNotVisibleError],
+    ['element not interactable', ElementNotInteractableError],
     ['invalid argument', InvalidArgumentError],
     ['invalid cookie domain', InvalidCookieDomainError],
     ['invalid element coordinates', InvalidElementCoordinatesError],
@@ -567,6 +580,7 @@ module.exports = {
   ElementNotInteractableError: ElementNotInteractableError,
   ElementNotSelectableError: ElementNotSelectableError,
   ElementNotVisibleError: ElementNotVisibleError,
+  ElementNotInteractableError: ElementNotInteractableError,
   InvalidArgumentError: InvalidArgumentError,
   InvalidCookieDomainError: InvalidCookieDomainError,
   InvalidElementCoordinatesError: InvalidElementCoordinatesError,
