@@ -52,10 +52,26 @@ class ElementNotSelectableError extends WebDriverError {
 
 
 /**
+ * Indicates a command could not be completed because the target element is
+ * not pointer or keyboard interactable. This will often occur if an element
+ * is present in the DOM, but not rendered (i.e. its CSS style has
+ * "display: none").
+ */
+class ElementNotInteractableError extends WebDriverError {
+  /** @param {string=} opt_error the error message, if any. */
+  constructor(opt_error) {
+    super(opt_error);
+  }
+}
+
+
+/**
  * An element command could not be completed because the element is not visible
  * on the page.
+ *
+ * @deprecated Use {@link ElementNotInteractable} instead.
  */
-class ElementNotVisibleError extends WebDriverError {
+class ElementNotVisibleError extends ElementNotInteractableError {
   /** @param {string=} opt_error the error message, if any. */
   constructor(opt_error) {
     super(opt_error);
@@ -400,6 +416,7 @@ const LEGACY_ERROR_CODE_TO_TYPE = new Map([
 
 const ERROR_CODE_TO_TYPE = new Map([
     ['unknown error', WebDriverError],
+    ['element not interactable', ElementNotInteractableError],
     ['element not selectable', ElementNotSelectableError],
     ['element not visible', ElementNotVisibleError],
     ['invalid argument', InvalidArgumentError],
@@ -547,6 +564,7 @@ module.exports = {
   ErrorCode: ErrorCode,
 
   WebDriverError: WebDriverError,
+  ElementNotInteractableError: ElementNotInteractableError,
   ElementNotSelectableError: ElementNotSelectableError,
   ElementNotVisibleError: ElementNotVisibleError,
   InvalidArgumentError: InvalidArgumentError,

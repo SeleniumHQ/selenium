@@ -1,3 +1,11 @@
+## v.next
+
+### Changes for W3C WebDriver Spec Compliance
+
+* Deprecated `error.ElementNotVisibleError` in favor of the more generic
+  `error.ElementNotInteractableError`.
+
+
 ## v3.5.0
 
 ### Notice
