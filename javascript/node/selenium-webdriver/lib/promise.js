@@ -33,13 +33,12 @@
  * > style tests:
  * >
  * > ```js
- * > const {Builder, By, promise, until} = require('selenium-webdriver');
+ * > const {Builder, By, Key, promise, until} = require('selenium-webdriver');
  * >
  * > let result = promise.consume(function* doGoogleSearch() {
  * >   let driver = new Builder().forBrowser('firefox').build();
  * >   yield driver.get('http://www.google.com/ncr');
- * >   yield driver.findElement(By.name('q')).sendKeys('webdriver');
- * >   yield driver.findElement(By.name('btnG')).click();
+ * >   yield driver.findElement(By.name('q')).sendKeys('webdriver', Key.RETURN);
  * >   yield driver.wait(until.titleIs('webdriver - Google Search'), 1000);
  * >   yield driver.quit();
  * > });
@@ -63,8 +62,7 @@
  * control flow, allowing users to write
  *
  *     driver.get('http://www.google.com/ncr');
- *     driver.findElement({name: 'q'}).sendKeys('webdriver');
- *     driver.findElement({name: 'btnGn'}).click();
+ *     driver.findElement({name: 'q'}).sendKeys('webdriver', Key.RETURN);
  *
  * instead of
  *
@@ -73,13 +71,7 @@
  *       return driver.findElement({name: 'q'});
  *     })
  *     .then(function(q) {
- *       return q.sendKeys('webdriver');
- *     })
- *     .then(function() {
- *       return driver.findElement({name: 'btnG'});
- *     })
- *     .then(function(btnG) {
- *       return btnG.click();
+ *       return q.sendKeys('webdriver', Key.RETURN);
  *     });
  *
  * ## Tasks and Task Queues

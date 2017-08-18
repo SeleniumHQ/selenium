@@ -23,7 +23,7 @@
 
 'use strict';
 
-const {Builder, By, promise, until} = require('..');
+const {Builder, By, Key, promise, until} = require('..');
 const {Options} = require('../chrome');
 
 promise.consume(function* () {
@@ -34,8 +34,7 @@ promise.consume(function* () {
         .setChromeOptions(new Options().androidChrome())
         .build();
     yield driver.get('http://www.google.com/ncr');
-    yield driver.findElement(By.name('q')).sendKeys('webdriver');
-    yield driver.findElement(By.name('btnG')).click();
+    yield driver.findElement(By.name('q')).sendKeys('webdriver', Key.RETURN);
     yield driver.wait(until.titleIs('webdriver - Google Search'), 1000);
   } finally {
     yield driver && driver.quit();
