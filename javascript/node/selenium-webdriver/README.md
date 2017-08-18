@@ -33,17 +33,14 @@ Automation in the Develop menu of Safari 10 before testing.
 The sample below and others are included in the `example` directory. You may
 also find the tests for selenium-webdriver informative.
 
-    var webdriver = require('selenium-webdriver'),
-        By = webdriver.By,
-        until = webdriver.until;
+    const {Builder, By, Key, until} = require('selenium-webdriver');
 
-    var driver = new webdriver.Builder()
+    let driver = new Builder()
         .forBrowser('firefox')
         .build();
 
     driver.get('http://www.google.com/ncr');
-    driver.findElement(By.name('q')).sendKeys('webdriver');
-    driver.findElement(By.name('btnG')).click();
+    driver.findElement(By.name('q')).sendKeys('webdriver', Key.RETURN);
     driver.wait(until.titleIs('webdriver - Google Search'), 1000);
     driver.quit();
 

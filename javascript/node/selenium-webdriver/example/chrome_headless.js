@@ -27,7 +27,7 @@
  */
 
 const chrome = require('../chrome');
-const {Builder, By, until} = require('..');
+const {Builder, By, Key, until} = require('..');
 
 const width = 640;
 const height = 480;
@@ -39,8 +39,8 @@ let driver = new Builder()
     .build();
 
 driver.get('http://www.google.com/ncr')
-    .then(_ => driver.findElement(By.name('q')).sendKeys('webdriver'))
-    .then(_ => driver.findElement(By.name('btnG')).click())
+    .then(_ =>
+        driver.findElement(By.name('q')).sendKeys('webdriver', Key.RETURN))
     .then(_ => driver.wait(until.titleIs('webdriver - Google Search'), 1000))
     .then(
         _ => driver.quit(),

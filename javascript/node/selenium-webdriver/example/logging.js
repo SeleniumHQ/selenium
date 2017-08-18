@@ -21,7 +21,7 @@
 
 'use strict';
 
-const {Builder, By, logging, until} = require('..');
+const {Builder, By, Key, logging, until} = require('..');
 
 logging.installConsoleHandler();
 logging.getLogger('webdriver.http').setLevel(logging.Level.ALL);
@@ -29,7 +29,7 @@ logging.getLogger('webdriver.http').setLevel(logging.Level.ALL);
 var driver = new Builder().forBrowser('firefox').build();
 
 driver.get('http://www.google.com/ncr')
-    .then(_ => driver.findElement(By.name('q')).sendKeys('webdriver'))
-    .then(_ => driver.findElement(By.name('btnG')).click())
+    .then(_ =>
+        driver.findElement(By.name('q')).sendKeys('webdriver', Key.RETURN))
     .then(_ => driver.wait(until.titleIs('webdriver - Google Search'), 1000))
     .then(_ => driver.quit());

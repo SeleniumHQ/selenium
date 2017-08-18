@@ -29,7 +29,7 @@
  *         mocha -t 10000 selenium-webdriver/example/google_search_test.js
  */
 
-const {Builder, By, until} = require('..');
+const {Builder, By, Key, until} = require('..');
 const test = require('../testing');
 
 test.describe('Google Search', function() {
@@ -42,8 +42,8 @@ test.describe('Google Search', function() {
   // You can write tests either using traditional promises.
   it('works with promises', function() {
     return driver.get('http://www.google.com/ncr')
-        .then(_ => driver.findElement(By.name('q')).sendKeys('webdriver'))
-        .then(_ => driver.findElement(By.name('btnG')).click())
+        .then(_ =>
+            driver.findElement(By.name('q')).sendKeys('webdriver', Key.RETURN))
         .then(_ => driver.wait(until.titleIs('webdriver - Google Search'), 1000));
   });
 
@@ -52,8 +52,7 @@ test.describe('Google Search', function() {
   // generator.
   test.it('works with generators', function*() {
     yield driver.get('http://www.google.com/ncr');
-    yield driver.findElement(By.name('q')).sendKeys('webdriver');
-    yield driver.findElement(By.name('btnG')).click();
+    yield driver.findElement(By.name('q')).sendKeys('webdriver', Key.RETURN);
     yield driver.wait(until.titleIs('webdriver - Google Search'), 1000);
   });
 
