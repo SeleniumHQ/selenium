@@ -72,6 +72,7 @@ module Selenium
         def quit_driver
           return unless @driver_instance
           @driver_instance.quit
+        ensure
           @driver_instance = nil
         end
 
