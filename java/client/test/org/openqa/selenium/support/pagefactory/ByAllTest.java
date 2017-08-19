@@ -21,7 +21,11 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 
@@ -125,6 +129,32 @@ public class ByAllTest {
 
     ByAll by = new ByAll(By.name("cheese"), By.name("photo"));
     assertThat(by.findElement(driver), equalTo(elem1));
+
+    verify(driver, times(1)).findElements(any(By.class));
+    verifyNoMoreInteractions(driver);
+  }
+
+  @Test
+  public void findFourElementByInReverseOrder() {
+    final WebElement elem1 = mock(WebElement.class, "webElement1");
+    final WebElement elem2 = mock(WebElement.class, "webElement2");
+    final WebElement elem3 = mock(WebElement.class, "webElement3");
+    final WebElement elem4 = mock(WebElement.class, "webElement4");
+    final List<WebElement> elems12 = new ArrayList<>();
+    elems12.add(elem1);
+    elems12.add(elem2);
+    final List<WebElement> elems34 = new ArrayList<>();
+    elems34.add(elem3);
+    elems34.add(elem4);
+
+    when(driver.findElements(By.name("cheese"))).thenReturn(elems12);
+    when(driver.findElements(By.name("photo"))).thenReturn(elems34);
+
+    ByAll by = new ByAll(By.name("photo"), By.name("cheese"));
+    assertThat(by.findElement(driver), equalTo(elem3));
+
+    verify(driver, times(1)).findElements(any(By.class));
+    verifyNoMoreInteractions(driver);
   }
 
   @Test
@@ -148,6 +178,35 @@ public class ByAllTest {
 
     ByAll by = new ByAll(By.name("cheese"), By.name("photo"));
     assertThat(by.findElements(driver), equalTo(elems1234));
+
+    verify(driver, times(2)).findElements(any(By.class));
+    verifyNoMoreInteractions(driver);
+  }
+
+  @Test
+  public void findFourElementsByAnyInReverseOrder() {
+    final WebElement elem1 = mock(WebElement.class, "webElement1");
+    final WebElement elem2 = mock(WebElement.class, "webElement2");
+    final WebElement elem3 = mock(WebElement.class, "webElement3");
+    final WebElement elem4 = mock(WebElement.class, "webElement4");
+    final List<WebElement> elems12 = new ArrayList<>();
+    elems12.add(elem1);
+    elems12.add(elem2);
+    final List<WebElement> elems34 = new ArrayList<>();
+    elems34.add(elem3);
+    elems34.add(elem4);
+    final List<WebElement> elems3412 = new ArrayList<>();
+    elems3412.addAll(elems34);
+    elems3412.addAll(elems12);
+
+    when(driver.findElements(By.name("cheese"))).thenReturn(elems12);
+    when(driver.findElements(By.name("photo"))).thenReturn(elems34);
+
+    ByAll by = new ByAll(By.name("photo"), By.name("cheese"));
+    assertThat(by.findElements(driver), equalTo(elems3412));
+
+    verify(driver, times(2)).findElements(any(By.class));
+    verifyNoMoreInteractions(driver);
   }
 
   @Test
