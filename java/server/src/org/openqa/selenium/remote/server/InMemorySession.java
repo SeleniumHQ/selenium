@@ -44,7 +44,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
@@ -212,20 +211,16 @@ class InMemorySession implements ActiveSession {
 
   private class ActualSession implements Session {
 
-    private final TemporaryFilesystem tempFs;
     private final KnownElements knownElements;
 
     private ActualSession() throws IOException {
       Path tempDirectory = Files.createTempDirectory("session");
-      tempFs = TemporaryFilesystem.getTmpFsBasedOn(tempDirectory.toFile());
       knownElements = new KnownElements();
     }
 
     @Override
     public void close() {
       driver.quit();
-
-      tempFs.deleteBaseDir();
     }
 
     @Override
@@ -260,7 +255,7 @@ class InMemorySession implements ActiveSession {
 
     @Override
     public TemporaryFilesystem getTemporaryFileSystem() {
-      return tempFs;
+      return getFileSystem();
     }
   }
 }
