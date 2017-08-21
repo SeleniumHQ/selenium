@@ -53,7 +53,7 @@ public class GetAllSessions implements RestishHandler<List<GetAllSessions.Sessio
   private Function<SessionId, SessionInfo> toSessionInfo() {
     return new Function<SessionId, SessionInfo>() {
       public SessionInfo apply(SessionId id) {
-        Map<String, ?> capabilities = allSessions.get(id).getCapabilities().asMap();
+        Map<String, ?> capabilities = allSessions.get(id).getCapabilities();
         return new SessionInfo(id, capabilities);
       }
     };

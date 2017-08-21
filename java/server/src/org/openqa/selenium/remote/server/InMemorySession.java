@@ -234,8 +234,8 @@ class InMemorySession implements ActiveSession {
     }
 
     @Override
-    public Capabilities getCapabilities() {
-      return new ImmutableCapabilities(capabilities);
+    public Map<String, Object> getCapabilities() {
+      return capabilities;
     }
 
     @Override
