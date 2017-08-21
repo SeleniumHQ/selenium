@@ -274,9 +274,10 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
       return ((List) result).stream().map(this::wrapResult).collect(Collectors.toList());
     }
     if (result instanceof Map) {
-      return ((Map<String, Object>) result).entrySet().stream().collect(Collectors.toMap(
-          e -> e.getKey(), e -> wrapResult(e.getValue())
-      ));
+      return ((Map<String, Object>) result).entrySet().stream().collect(
+          HashMap::new,
+          (m, e) -> m.put(e.getKey(), e.getValue()),
+          Map::putAll);
     }
 
     return result;

@@ -25,6 +25,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.isNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -52,7 +53,9 @@ import org.openqa.selenium.internal.WrapsDriver;
 import org.openqa.selenium.internal.WrapsElement;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Michael Tamm
@@ -316,6 +319,22 @@ public class EventFiringWebDriverTest {
     resList.stream().forEach(el -> assertTrue(el instanceof WrapsElement));
     assertSame(stubbedElement1, ((WrapsElement) resList.get(0)).getWrappedElement());
     assertSame(stubbedElement2, ((WrapsElement) resList.get(1)).getWrappedElement());
+  }
+
+  @Test
+  public void shouldWrapMapsWithNullValues() {
+    Map<String, Object> map = new HashMap<>();
+    map.put("a", null);
+    final WebDriver mockedDriver = mock(WebDriver.class,
+                                        withSettings().extraInterfaces(JavascriptExecutor.class));
+    when(((JavascriptExecutor) mockedDriver).executeScript("foo")).thenReturn(map);
+
+    EventFiringWebDriver testedDriver = new EventFiringWebDriver(mockedDriver);
+
+    Object res = testedDriver.executeScript("foo");
+    verify((JavascriptExecutor) mockedDriver).executeScript("foo");
+    assertThat(res, instanceOf(Map.class));
+    assertThat(((Map<String, Object>) res).get("a"), is(nullValue()));
   }
 
   @Test
