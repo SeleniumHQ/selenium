@@ -23,8 +23,8 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.openqa.selenium.remote.ErrorCodes.SUCCESS;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.gson.GsonBuilder;
 
+import org.openqa.selenium.remote.BeanToJsonConverter;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.server.ActiveSessions;
@@ -34,13 +34,16 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class GetAllSessions implements CommandHandler {
 
-  private volatile ActiveSessions allSessions;
+  private final ActiveSessions allSessions;
+  private final BeanToJsonConverter toJson;
 
-  public GetAllSessions(ActiveSessions allSessions) {
-    this.allSessions = allSessions;
+  public GetAllSessions(ActiveSessions allSessions, BeanToJsonConverter toJson) {
+    this.allSessions = Objects.requireNonNull(allSessions);
+    this.toJson = Objects.requireNonNull(toJson);
   }
 
   @Override
@@ -55,10 +58,7 @@ public class GetAllSessions implements CommandHandler {
         "value", value);
 
     // Write out a minimal W3C status response.
-    byte[] payload = new GsonBuilder()
-        .serializeNulls()
-        .create()
-        .toJson(payloadObj).getBytes(UTF_8);
+    byte[] payload = toJson.convert(payloadObj).getBytes(UTF_8);
 
     resp.setStatus(HTTP_OK);
     resp.setHeader("Content-Type", JSON_UTF_8.toString());

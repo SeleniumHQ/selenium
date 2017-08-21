@@ -79,7 +79,7 @@ public class UploadFileTest {
     String encoded = Zip.zip(tempFile);
 
     Gson gson = new Gson();
-    UploadFile uploadFile = new UploadFile(gson, session);
+    UploadFile uploadFile = new UploadFile(new JsonToBeanConverter(), session);
     Map<String, Object> args = ImmutableMap.of("file", (Object) encoded);
     HttpRequest request = new HttpRequest(HttpMethod.POST, "/session/%d/se/file");
     request.setContent(gson.toJson(args).getBytes(UTF_8));
@@ -106,7 +106,7 @@ public class UploadFileTest {
     String encoded = Zip.zip(baseDir);
 
     Gson gson = new Gson();
-    UploadFile uploadFile = new UploadFile(gson, session);
+    UploadFile uploadFile = new UploadFile(new JsonToBeanConverter(), session);
     Map<String, Object> args = ImmutableMap.of("file", (Object) encoded);
     HttpRequest request = new HttpRequest(HttpMethod.POST, "/session/%d/se/file");
     request.setContent(gson.toJson(args).getBytes(UTF_8));

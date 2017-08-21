@@ -23,8 +23,8 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.openqa.selenium.remote.ErrorCodes.NO_SUCH_SESSION;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.gson.GsonBuilder;
 
+import org.openqa.selenium.remote.BeanToJsonConverter;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
@@ -34,13 +34,16 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class NoSessionHandler implements CommandHandler {
 
+  private final BeanToJsonConverter toJson;
   private final SessionId sessionId;
 
-  public NoSessionHandler(SessionId sessionId) {
-    this.sessionId = sessionId;
+  public NoSessionHandler(BeanToJsonConverter toJson, SessionId sessionId) {
+    this.toJson = Objects.requireNonNull(toJson);
+    this.sessionId = Objects.requireNonNull(sessionId);
   }
 
   @Override
@@ -55,8 +58,7 @@ public class NoSessionHandler implements CommandHandler {
         "stacktrace", ""));
     responseMap = Collections.unmodifiableMap(responseMap);
 
-    byte[] payload = new GsonBuilder().serializeNulls().create().toJson(responseMap)
-        .getBytes(UTF_8);
+    byte[] payload = toJson.convert(responseMap).getBytes(UTF_8);
 
     resp.setStatus(HTTP_NOT_FOUND);
     resp.setHeader("Content-Type", JSON_UTF_8.toString());

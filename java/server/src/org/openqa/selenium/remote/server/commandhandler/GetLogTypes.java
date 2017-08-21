@@ -21,11 +21,10 @@ import static java.net.HttpURLConnection.HTTP_OK;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 import com.google.common.collect.ImmutableSet;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.remote.ErrorCodes;
+import org.openqa.selenium.remote.JsonToBeanConverter;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
@@ -33,19 +32,17 @@ import org.openqa.selenium.remote.server.ActiveSession;
 import org.openqa.selenium.remote.server.CommandHandler;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
 
 public class GetLogTypes implements CommandHandler {
 
-  private static final Type MAP_TYPE = new TypeToken<Map<String, Object>>(){}.getType();
-  private final Gson gson;
+  private final JsonToBeanConverter toBean;
   private final ActiveSession session;
 
-  public GetLogTypes(Gson gson, ActiveSession session) {
-    this.gson = Objects.requireNonNull(gson);
+  public GetLogTypes(JsonToBeanConverter toBean, ActiveSession session) {
+    this.toBean = Objects.requireNonNull(toBean);
     this.session = Objects.requireNonNull(session);
   }
 
@@ -60,7 +57,7 @@ public class GetLogTypes implements CommandHandler {
     types.add(LogType.SERVER);
 
     if (upRes.getStatus() == HTTP_OK) {
-      Map<String, Object> upstream = gson.fromJson(upRes.getContentString(), MAP_TYPE);
+      Map<?, ?> upstream = toBean.convert(Map.class, upRes.getContentString());
       Object raw = upstream.get("value");
       if (raw instanceof Collection) {
         ((Collection<?>) raw).stream().map(String::valueOf).forEach(types::add);

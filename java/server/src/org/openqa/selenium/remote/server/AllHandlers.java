@@ -23,9 +23,9 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
+import org.openqa.selenium.remote.BeanToJsonConverter;
+import org.openqa.selenium.remote.JsonToBeanConverter;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.server.commandhandler.GetAllSessions;
@@ -51,12 +51,16 @@ import javax.servlet.http.HttpServletRequest;
 
 class AllHandlers {
 
-  private final static Gson GSON = new GsonBuilder().setLenient().serializeNulls().create();
+  private final JsonToBeanConverter toBean;
+  private final BeanToJsonConverter toJson;
   private final ActiveSessions allSessions;
 
   private final Map<HttpMethod, ImmutableList<Function<String, CommandHandler>>> additionalHandlers;
 
   public AllHandlers(ActiveSessions allSessions) {
+    this.toBean = new JsonToBeanConverter();
+    this.toJson = new BeanToJsonConverter();
+
     this.allSessions = allSessions;
 
     additionalHandlers = ImmutableMap.of(
@@ -99,12 +103,12 @@ class AllHandlers {
     if (id != null) {
       ActiveSession session = allSessions.get(id);
       if (session == null) {
-        return new NoSessionHandler(id);
+        return new NoSessionHandler(toJson, id);
       }
       return session;
     }
 
-    return new NoHandler();
+    return new NoHandler(toJson);
   }
 
   private <H extends CommandHandler> Function<String, CommandHandler> handler(
@@ -119,7 +123,8 @@ class AllHandlers {
 
       ImmutableSet.Builder<Object> args = ImmutableSet.builder();
       args.add(allSessions);
-      args.add(GSON);
+      args.add(toBean);
+      args.add(toJson);
       if (match.getParameters().containsKey("sessionId")) {
         SessionId id = new SessionId(match.getParameters().get("sessionId"));
         args.add(id);
