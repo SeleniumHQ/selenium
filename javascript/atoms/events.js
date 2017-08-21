@@ -62,7 +62,7 @@ bot.events.BROKEN_TOUCH_API_ = (function() {
     // Native touch api supported starting in version 4.0 (Ice Cream Sandwich).
     return !bot.userAgent.isProductVersion(4);
   }
-  return !bot.userAgent.IOS;
+  return !bot.userAgent.IOS && !goog.userAgent.product.CHROME;
 })();
 
 
@@ -588,7 +588,7 @@ bot.events.TouchEventFactory_.prototype.create = function(target, opt_args) {
   } else if (strategy == bot.events.TouchEventStrategy_.INIT_TOUCH_EVENT) {
     event = doc.createEvent('TouchEvent');
     // Different browsers have different implementations of initTouchEvent.
-    if (event.initTouchEvent.length == 0) {
+    if (goog.userAgent.product.ANDROID || goog.userAgent.product.CHROME) {
       // Chrome/Android.
       event.initTouchEvent(touches, targetTouches, changedTouches,
           this.type_, view, /*screenX*/ 0, /*screenY*/ 0, args.clientX,
