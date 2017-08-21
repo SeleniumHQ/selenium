@@ -54,8 +54,8 @@ public class Status implements CommandHandler {
     BuildInfo buildInfo = new BuildInfo();
     value.put("build", ImmutableMap.of(
         // We need to fix the BuildInfo to properly fill out these values.
-//          "revision", buildInfo.getBuildRevision(),
-//          "time", buildInfo.getBuildTime(),
+          "revision", buildInfo.getBuildRevision(),
+          "time", buildInfo.getBuildTime(),
         "version", buildInfo.getReleaseLabel()));
 
     value.put("os", ImmutableMap.of(
