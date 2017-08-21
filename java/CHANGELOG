@@ -5,7 +5,8 @@ v3.5.2
 * New "pass through" mode supports file uploads again.
 * Added support for querying running sessions via the
   "/wd/hub/sessions" endpoint
-* `Alert.authenticate()` is deprecated.
+* Fix a NullPointerException when deserializing exceptions from a
+  remote webdriver.
 
 
 v3.5.1
