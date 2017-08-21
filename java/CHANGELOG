@@ -1,3 +1,13 @@
+v3.5.2
+======
+
+* Avoid encoding numbers as floats rather then longs in JSON payloads.
+* New "pass through" mode supports file uploads again.
+* Added support for querying running sessions via the
+  "/wd/hub/sessions" endpoint
+* `Alert.authenticate()` is deprecated.
+
+
 v3.5.1
 ======
 
