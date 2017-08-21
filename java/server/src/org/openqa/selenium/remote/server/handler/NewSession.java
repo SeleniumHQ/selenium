@@ -63,7 +63,7 @@ public class NewSession implements RestishHandler<Response>, JsonParametersAware
     sessionId = allSessions.newSession(Stream.of(desired));
 
     Map<String, Object> capabilities =
-        Maps.newHashMap(allSessions.get(sessionId).getCapabilities().asMap());
+        Maps.newHashMap(allSessions.get(sessionId).getCapabilities());
 
     // Only servers implementing the server-side webdriver-backed selenium need
     // to return this particular value

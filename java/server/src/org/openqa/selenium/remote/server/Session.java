@@ -17,10 +17,11 @@
 
 package org.openqa.selenium.remote.server;
 
-import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.remote.SessionId;
+
+import java.util.Map;
 
 public interface Session {
 
@@ -30,7 +31,7 @@ public interface Session {
 
   KnownElements getKnownElements();
 
-  Capabilities getCapabilities();
+  Map<String, Object> getCapabilities();
 
   void attachScreenshot(String base64EncodedImage);
 
