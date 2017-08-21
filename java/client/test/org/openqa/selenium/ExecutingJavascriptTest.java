@@ -213,6 +213,20 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
 
   @SuppressWarnings("unchecked")
   @Test
+  public void testShouldBeAbleToExecuteSimpleJavascriptAndReturnAnObjectWithANullValue() {
+    driver.get(pages.javascriptPage);
+
+    Object result = executeScript("return {'key': null};");
+
+    assertTrue(
+        "expected Map, but result was: " + result + " (" + result.getClass() + ")",
+        result instanceof Map);
+    Map<String, Object> map = (Map<String, Object>) result;
+    assertNull(map.get("key"));
+  }
+
+  @SuppressWarnings("unchecked")
+  @Test
   @Ignore(IE)
   public void testShouldBeAbleToExecuteSimpleJavascriptAndReturnAComplexObject() {
     driver.get(pages.javascriptPage);
