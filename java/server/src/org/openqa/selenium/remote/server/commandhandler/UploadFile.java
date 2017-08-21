@@ -17,11 +17,10 @@
 
 package org.openqa.selenium.remote.server.commandhandler;
 
-import com.google.gson.Gson;
-
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.io.Zip;
 import org.openqa.selenium.remote.ErrorCodes;
+import org.openqa.selenium.remote.JsonToBeanConverter;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
@@ -35,17 +34,17 @@ import java.util.Objects;
 
 public class UploadFile implements CommandHandler {
 
-  private final Gson gson;
+  private final JsonToBeanConverter toBean;
   private final ActiveSession session;
 
-  public UploadFile(Gson gson, ActiveSession session) {
-    this.gson = Objects.requireNonNull(gson);
+  public UploadFile(JsonToBeanConverter toBean, ActiveSession session) {
+    this.toBean = Objects.requireNonNull(toBean);
     this.session = Objects.requireNonNull(session);
   }
 
   @Override
   public void execute(HttpRequest req, HttpResponse resp) throws IOException {
-    Map<?, ?> args = gson.fromJson(req.getContentString(), Map.class);
+    Map<?, ?> args = toBean.convert(Map.class, req.getContentString());
     String file = (String) args.get("file");
 
     File tempDir = session.getFileSystem().createTempDir("upload", "file");

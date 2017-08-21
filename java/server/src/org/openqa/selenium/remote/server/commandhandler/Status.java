@@ -23,17 +23,24 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.openqa.selenium.remote.ErrorCodes.SUCCESS;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.gson.GsonBuilder;
 
 import org.openqa.selenium.internal.BuildInfo;
+import org.openqa.selenium.remote.BeanToJsonConverter;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.server.CommandHandler;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.Objects;
 
 public class Status implements CommandHandler {
+
+  private final BeanToJsonConverter toJson;
+
+  Status(BeanToJsonConverter toJson) {
+    this.toJson = Objects.requireNonNull(toJson);
+  }
 
   @Override
   public void execute(HttpRequest req, HttpResponse resp) throws IOException {
@@ -63,10 +70,7 @@ public class Status implements CommandHandler {
         "value", value.build());
 
     // Write out a minimal W3C status response.
-    byte[] payload = new GsonBuilder()
-        .serializeNulls()
-        .create()
-        .toJson(payloadObj).getBytes(UTF_8);
+    byte[] payload = toJson.convert(payloadObj).getBytes(UTF_8);
 
     resp.setStatus(HTTP_OK);
     resp.setHeader("Content-Type", JSON_UTF_8.toString());
