@@ -7,6 +7,8 @@ v3.5.2
   "/wd/hub/sessions" endpoint
 * Fix a NullPointerException when deserializing exceptions from a
   remote webdriver.
+* Handle the `macOS` as a valid platform name, as this is used by
+  safaridriver.
 
 
 v3.5.1
