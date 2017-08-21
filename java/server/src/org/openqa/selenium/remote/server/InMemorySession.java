@@ -24,9 +24,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.StandardSystemProperty;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
+import com.google.common.io.CharStreams;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.HasCapabilities;
@@ -35,6 +33,7 @@ import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.remote.Dialect;
+import org.openqa.selenium.remote.JsonToBeanConverter;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
@@ -129,13 +128,11 @@ class InMemorySession implements ActiveSession {
 
   public static class Factory implements SessionFactory {
 
-    private static final Type MAP_TYPE = new TypeToken<Map<String, Object>>(){}.getType();
-    private final Gson gson;
+    private final JsonToBeanConverter toBean = new JsonToBeanConverter();
     private final DriverProvider provider;
 
     public Factory(DriverProvider provider) {
       this.provider = provider;
-      gson = new GsonBuilder().setLenient().create();
     }
 
     @Override
@@ -145,7 +142,7 @@ class InMemorySession implements ActiveSession {
           InputStream is = payload.getPayload().get();
           Reader ir = new InputStreamReader(is, UTF_8);
           Reader reader = new BufferedReader(ir)) {
-        Map<String, Object> raw = gson.fromJson(reader, MAP_TYPE);
+        Map<?, ?> raw = toBean.convert(Map.class, CharStreams.toString(reader));
         Object desired = raw.get("desiredCapabilities");
 
         if (!(desired instanceof Map)) {
