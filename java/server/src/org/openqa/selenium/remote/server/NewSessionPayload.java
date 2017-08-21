@@ -4,7 +4,6 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.StandardOpenOption.CREATE;
 import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 
-import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -14,14 +13,20 @@ import com.google.common.collect.Sets;
 import com.google.common.io.CharStreams;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonParseException;
+import com.google.gson.TypeAdapter;
+import com.google.gson.TypeAdapterFactory;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonToken;
+import com.google.gson.stream.JsonWriter;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.remote.BeanToJsonConverter;
 import org.openqa.selenium.remote.Dialect;
+import org.openqa.selenium.remote.JsonToBeanConverter;
 
 import java.io.ByteArrayInputStream;
 import java.io.Closeable;
@@ -73,7 +78,12 @@ public class NewSessionPayload implements Closeable {
   // Dedicate up to 10% of max ram to holding the payload
   private static final long THRESHOLD = Runtime.getRuntime().maxMemory() / 10;
 
-  private static final Gson GSON = new GsonBuilder().setLenient().serializeNulls().create();
+  private static final Gson GSON = new GsonBuilder()
+      .registerTypeAdapterFactory(ListAdapter.FACTORY)
+      .registerTypeAdapterFactory(MapAdapter.FACTORY)
+      .setLenient()
+      .serializeNulls()
+      .create();
   private static final Type MAP_TYPE = new TypeToken<Map<String, Object>>(){}.getType();
 
   private final Path root;
@@ -128,7 +138,9 @@ public class NewSessionPayload implements Closeable {
       sources = diskBackedSource(source);
     } else {
       this.root = null;
-      sources = memoryBackedSource(GSON.fromJson(source, MAP_TYPE));
+      sources =
+          memoryBackedSource(
+              new JsonToBeanConverter().convert(Map.class, CharStreams.toString(source)));
     }
 
     validate(sources);
@@ -200,7 +212,7 @@ public class NewSessionPayload implements Closeable {
       return sources;
     }
 
-    LOG.info( "Mismatched capabilities. Creating a synthetic w3c capability.");
+    LOG.info("Mismatched capabilities. Creating a synthetic w3c capability.");
 
     ImmutableList.Builder<Supplier<Map<String, Object>>> newFirstMatches = ImmutableList.builder();
     newFirstMatches.add(sources.getOss());
@@ -221,7 +233,7 @@ public class NewSessionPayload implements Closeable {
         sources.getDialects());
   }
 
-  private Sources memoryBackedSource(Map<String, ?> source) {
+  private Sources memoryBackedSource(Map<?, ?> source) {
     LOG.fine("Memory-based payload for: " + source);
 
     Set<Dialect> dialects = new TreeSet<>();
@@ -387,8 +399,8 @@ public class NewSessionPayload implements Closeable {
     if (getDownstreamDialects().contains(Dialect.W3C)) {
       Map<String, Object> always = sources.getAlwaysMatch().get();
       mapStream = sources.getFirstMatch().stream()
-        .map(Supplier::get)
-        .map(m -> ImmutableMap.<String, Object>builder().putAll(always).putAll(m).build());
+          .map(Supplier::get)
+          .map(m -> ImmutableMap.<String, Object>builder().putAll(always).putAll(m).build());
     } else if (getDownstreamDialects().contains(Dialect.OSS)) {
       mapStream = Stream.of(sources.getOss().get());
     } else {
@@ -401,7 +413,7 @@ public class NewSessionPayload implements Closeable {
   public ImmutableSet<Dialect> getDownstreamDialects() {
     return sources.getDialects().isEmpty() ?
            ImmutableSet.of(DEFAULT_DIALECT) :
-           sources .getDialects();
+           sources.getDialects();
   }
 
   public Supplier<InputStream> getPayload() {
@@ -421,6 +433,7 @@ public class NewSessionPayload implements Closeable {
 
 
   private static class Sources {
+
     private final Supplier<InputStream> originalPayload;
     private final long payloadSizeInBytes;
     private final Supplier<Map<String, Object>> oss;
@@ -465,6 +478,132 @@ public class NewSessionPayload implements Closeable {
 
     public long getPayloadSize() {
       return payloadSizeInBytes;
+    }
+  }
+
+  private static Object readValue(JsonReader in, Gson gson) throws IOException {
+    switch (in.peek()) {
+      case BEGIN_ARRAY:
+      case BEGIN_OBJECT:
+      case BOOLEAN:
+      case NULL:
+      case STRING:
+        return gson.fromJson(in, Object.class);
+
+      case NUMBER:
+        String number = in.nextString();
+        if (number.indexOf('.') != -1) {
+          return Double.parseDouble(number);
+        }
+        return Long.parseLong(number);
+
+      default:
+        throw new JsonParseException("Unexpected type: " + in.peek());
+    }
+  }
+
+  private static class MapAdapter extends TypeAdapter<Map<?, ?>> {
+
+    private final static TypeAdapterFactory FACTORY = new TypeAdapterFactory() {
+      @SuppressWarnings("unchecked")
+      @Override
+      public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> type) {
+        if (type.getRawType() == Map.class) {
+          return (TypeAdapter<T>) new MapAdapter(gson);
+        }
+        return null;
+      }
+    };
+
+    private final Gson gson;
+
+    private MapAdapter(Gson gson) {
+      this.gson = Objects.requireNonNull(gson);
+    }
+
+    @Override
+    public Map<?, ?> read(JsonReader in) throws IOException {
+      if (in.peek() == JsonToken.NULL) {
+        in.nextNull();
+        return null;
+      }
+
+      Map<String, Object> map = new TreeMap<>();
+      in.beginObject();
+
+      while (in.hasNext()) {
+        String key = in.nextName();
+        Object value = readValue(in, gson);
+
+        map.put(key, value);
+      }
+
+      in.endObject();
+      return map;
+    }
+
+    @Override
+    public void write(JsonWriter out, Map<?, ?> value) throws IOException {
+      // It's fine to use GSON's own default writer for this.
+      out.beginObject();
+      for (Map.Entry<?, ?> entry : value.entrySet()) {
+        out.name(String.valueOf(entry.getKey()));
+        @SuppressWarnings("unchecked")
+        TypeAdapter<Object>
+            adapter =
+            (TypeAdapter<Object>) gson.getAdapter(entry.getValue().getClass());
+        adapter.write(out, entry.getValue());
+      }
+      out.endObject();
+    }
+  }
+
+  private static class ListAdapter extends TypeAdapter<List<?>> {
+
+    private final static TypeAdapterFactory FACTORY = new TypeAdapterFactory() {
+      @SuppressWarnings("unchecked")
+      @Override
+      public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> type) {
+        if (type.getRawType() == List.class) {
+          return (TypeAdapter<T>) new ListAdapter(gson);
+        }
+        return null;
+      }
+    };
+
+    private final Gson gson;
+
+    private ListAdapter(Gson gson) {
+      this.gson = Objects.requireNonNull(gson);
+    }
+
+    @Override
+    public List<?> read(JsonReader in) throws IOException {
+      if (in.peek() == JsonToken.NULL) {
+        in.nextNull();
+        return null;
+      }
+
+      List<Object> list = new LinkedList<>();
+      in.beginArray();
+
+      while (in.hasNext()) {
+        list.add(readValue(in, gson));
+      }
+
+      in.endArray();
+      return list;
+    }
+
+    @Override
+    public void write(JsonWriter out, List<?> value) throws IOException {
+      out.beginArray();
+      for (Object entry : value) {
+        @SuppressWarnings("unchecked")
+        TypeAdapter<Object> adapter = (TypeAdapter<Object>) gson.getAdapter(entry.getClass());
+        adapter.write(out, entry);
+      }
+      out.endArray();
     }
   }
 }

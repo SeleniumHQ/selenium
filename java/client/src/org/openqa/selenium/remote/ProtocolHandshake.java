@@ -36,7 +36,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonWriter;
@@ -342,8 +341,8 @@ public class ProtocolHandshake {
     // W3C spec properly. Oh well.
     Map<?, ?> blob;
     try {
-      blob = new Gson().fromJson(response.getContentString(), MAP_TYPE);
-    } catch (JsonParseException e) {
+      blob = new JsonToBeanConverter().convert(Map.class, response.getContentString());
+    } catch (JsonException e) {
       throw new WebDriverException(
           "Unable to parse remote response: " + response.getContentString());
     }
