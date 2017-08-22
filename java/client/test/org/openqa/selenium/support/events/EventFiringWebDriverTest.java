@@ -34,7 +34,6 @@ import static org.mockito.Mockito.withSettings;
 
 import com.google.common.collect.ImmutableMap;
 
-import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
