@@ -76,43 +76,7 @@ public abstract class AbstractFindByBuilder {
   }
 
   protected By buildByFromLongFindBy(FindBy findBy) {
-    How how = findBy.how();
-    String using = findBy.using();
-
-    switch (how) {
-      case CLASS_NAME:
-        return By.className(using);
-
-      case CSS:
-        return By.cssSelector(using);
-
-      case ID:
-      case UNSET:
-        return By.id(using);
-
-      case ID_OR_NAME:
-        return new ByIdOrName(using);
-
-      case LINK_TEXT:
-        return By.linkText(using);
-
-      case NAME:
-        return By.name(using);
-
-      case PARTIAL_LINK_TEXT:
-        return By.partialLinkText(using);
-
-      case TAG_NAME:
-        return By.tagName(using);
-
-      case XPATH:
-        return By.xpath(using);
-
-      default:
-        // Note that this shouldn't happen (eg, the above matches all
-        // possible values for the How enum)
-        throw new IllegalArgumentException("Cannot determine how to locate element ");
-    }
+    return findBy.how().buildBy(findBy.using());
   }
 
   protected void assertValidFindBys(FindBys findBys) {
