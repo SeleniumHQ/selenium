@@ -57,7 +57,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/669")
+@Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/764")
 public class ProxySettingTest extends JUnit4TestBase {
 
   @Rule
