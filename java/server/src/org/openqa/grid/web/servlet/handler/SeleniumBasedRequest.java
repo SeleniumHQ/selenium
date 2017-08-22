@@ -31,6 +31,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.CharacterCodingException;
@@ -165,8 +166,8 @@ public abstract class SeleniumBasedRequest extends HttpServletRequestWrapper {
     return null;
   }
 
-  public void setBody(String content) {
-    setBody(content.getBytes());
+  public void setBody(String content) throws UnsupportedEncodingException {
+    setBody(content.getBytes(encoding));
   }
 
   public void setBody(byte[] content) {
