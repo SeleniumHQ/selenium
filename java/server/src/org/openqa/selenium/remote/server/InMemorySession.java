@@ -44,8 +44,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -217,9 +215,9 @@ class InMemorySession implements ActiveSession {
   private class ActualSession implements Session {
 
     private final KnownElements knownElements;
+    private volatile String screenshot;
 
     private ActualSession() throws IOException {
-      Path tempDirectory = Files.createTempDirectory("session");
       knownElements = new KnownElements();
     }
 
@@ -245,12 +243,14 @@ class InMemorySession implements ActiveSession {
 
     @Override
     public void attachScreenshot(String base64EncodedImage) {
-      // no-op
+      screenshot = base64EncodedImage;
     }
 
     @Override
     public String getAndClearScreenshot() {
-      return null;
+      String toReturn = screenshot;
+      screenshot = null;
+      return screenshot;
     }
 
     @Override
