@@ -167,6 +167,16 @@ public enum Platform {
   },
 
   /**
+   * Provide a temporary workaround for an issue where platformName was being overridden by
+   * platform for external providers.
+   */
+  @Deprecated
+  IOS("iOS") {
+    @Override
+    public Platform family() { return MAC; }
+  },
+
+  /**
    * Never returned, but can be used to request a browser running on any operating system.
    */
   ANY("") {
