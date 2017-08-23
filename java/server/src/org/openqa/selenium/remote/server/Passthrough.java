@@ -119,9 +119,7 @@ class Passthrough implements SessionCodec {
         .forEach(entry -> {
           entry.getValue().stream()
               .filter(Objects::nonNull)
-              .forEach(value -> {
-                resp.addHeader(entry.getKey(), value);
-              });
+              .forEach(value -> resp.addHeader(entry.getKey(), value));
         });
     InputStream in = connection.getErrorStream();
     if (in == null) {
