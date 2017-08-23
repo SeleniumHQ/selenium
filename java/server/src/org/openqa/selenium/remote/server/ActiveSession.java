@@ -17,13 +17,14 @@
 
 package org.openqa.selenium.remote.server;
 
+import org.openqa.selenium.internal.WrapsDriver;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.SessionId;
 
 import java.util.Map;
 
-public interface ActiveSession extends CommandHandler {
+public interface ActiveSession extends CommandHandler, WrapsDriver {
 
   SessionId getId();
 

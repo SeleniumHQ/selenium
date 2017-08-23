@@ -121,6 +121,11 @@ class InMemorySession implements ActiveSession {
   }
 
   @Override
+  public WebDriver getWrappedDriver() {
+    return driver;
+  }
+
+  @Override
   public void stop() {
     driver.quit();
   }

@@ -23,12 +23,17 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import com.google.common.base.Preconditions;
 import com.google.common.base.StandardSystemProperty;
 
+import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.net.PortProber;
+import org.openqa.selenium.remote.Augmenter;
 import org.openqa.selenium.remote.CommandCodec;
+import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.ProtocolHandshake;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.ResponseCodec;
 import org.openqa.selenium.remote.SessionId;
@@ -50,11 +55,8 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.Map;
 import java.util.function.Supplier;
-import java.util.logging.Logger;
 
 class ServicedSession implements ActiveSession {
-
-  private final static Logger LOG = Logger.getLogger(ActiveSession.class.getName());
 
   private final DriverService service;
   private final SessionId id;
@@ -63,6 +65,7 @@ class ServicedSession implements ActiveSession {
   private final SessionCodec codec;
   private final Map<String, Object> capabilities;
   private final TemporaryFilesystem filesystem;
+  private final WebDriver driver;
 
   public ServicedSession(
       DriverService service,
@@ -81,6 +84,11 @@ class ServicedSession implements ActiveSession {
     File tempRoot = new File(StandardSystemProperty.JAVA_IO_TMPDIR.value(), id.toString());
     Preconditions.checkState(tempRoot.mkdirs());
     this.filesystem = TemporaryFilesystem.getTmpFsBasedOn(tempRoot);
+
+    CommandExecutor executor = new ActiveSessionCommandExecutor(this);
+    this.driver = new Augmenter().augment(new RemoteWebDriver(
+        executor,
+        new ImmutableCapabilities(getCapabilities())));
   }
 
 
@@ -110,6 +118,11 @@ class ServicedSession implements ActiveSession {
   }
 
   @Override
+  public WebDriver getWrappedDriver() {
+    return driver;
+  }
+
+  @Override
   public TemporaryFilesystem getFileSystem() {
     return filesystem;
   }
@@ -133,7 +146,7 @@ class ServicedSession implements ActiveSession {
     private final Supplier<? extends DriverService> createService;
     private final String serviceClassName;
 
-    public Factory(String serviceClassName) {
+    Factory(String serviceClassName) {
       this.serviceClassName = serviceClassName;
       try {
         Class<? extends DriverService> driverClazz =
