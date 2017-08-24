@@ -58,6 +58,7 @@ _OSS_W3C_CONVERSION = {
     'platform': 'platformName'
 }
 
+
 def _make_w3c_caps(caps):
     """Makes a W3C alwaysMatch capabilities object.
 
