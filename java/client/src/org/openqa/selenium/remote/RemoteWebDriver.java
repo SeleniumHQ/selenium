@@ -69,6 +69,7 @@ import org.openqa.selenium.security.UserAndPassword;
 
 import java.net.URL;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -442,6 +443,9 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     Response response = execute(DriverCommand.FIND_ELEMENTS,
         ImmutableMap.of("using", by, "value", using));
     Object value = response.getValue();
+    if (value == null) { // see https://github.com/SeleniumHQ/selenium/issues/4555
+      return Collections.emptyList();
+    }
     List<WebElement> allElements;
     try {
       allElements = (List<WebElement>) value;
