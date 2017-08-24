@@ -22,7 +22,7 @@ module Selenium
     module DriverExtensions
       module HasTouchScreen
         def touch
-          TouchActionBuilder.new mouse, keyboard, touch_screen
+          TouchActionBuilder.new Mouse.new(@bridge), Keyboard.new(@bridge), touch_screen
         end
 
         private
