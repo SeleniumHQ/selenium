@@ -83,13 +83,14 @@ module Selenium
           element, xoffset, yoffset, speed = args
 
           assert_element element
-          flick_speed = FLICK_SPEED[speed.to_sym]
 
-          unless flick_speed
-            raise ArgumentError, "expected one of #{FLICK_SPEED.keys.inspect}, got #{speed.inspect}"
+          if (speed.is_a?(String) || speed.is_a?(Symbol)) && FLICK_SPEED.keys.include?(speed.to_sym)
+            WebDriver.logger.deprecate "Passing #{speed.inspect} speed",
+                                       "Integer or Selenium::WebDriver::TouchScreen::FLICK_SPEED[:#{speed}]"
+            speed = FLICK_SPEED[speed.to_sym]
           end
 
-          @bridge.touch_element_flick element.ref, Integer(xoffset), Integer(yoffset), flick_speed
+          @bridge.touch_element_flick element.ref, Integer(xoffset), Integer(yoffset), Integer(speed)
         else
           raise ArgumentError, "wrong number of arguments, expected 2 or 4, got #{args.size}"
         end
