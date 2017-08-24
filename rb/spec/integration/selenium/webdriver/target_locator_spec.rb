@@ -136,9 +136,17 @@ module Selenium
         end
       end
 
-      # only an issue with FF 54 and linux (passing on nightly), remove FF guard when stable is 55
-      not_compliant_on browser: [:ie, :safari, :firefox] do
+      not_compliant_on browser: [:ie, :safari] do
         context 'with more than two windows' do
+          after do
+            # We need to reset driver because browsers behave differently
+            # when trying to open the same blank target in a new window.
+            # Sometimes it's opened in a new window (Firefox 55), sometimes
+            # in the same window (Firefox 57). In any event, this has nothing
+            # to do with Selenium test.
+            reset_driver!
+          end
+
           it 'should close current window when more than two windows exist' do
             driver.navigate.to url_for('xhtmlTest.html')
             wait_for_element(link: 'Create a new anonymous window')
