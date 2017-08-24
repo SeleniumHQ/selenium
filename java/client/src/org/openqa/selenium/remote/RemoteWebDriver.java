@@ -257,12 +257,12 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     DesiredCapabilities returnedCapabilities = new DesiredCapabilities();
     for (Map.Entry<String, Object> entry : rawCapabilities.entrySet()) {
       // Handle the platform later
-      if (CapabilityType.PLATFORM.equals(entry.getKey())) {
+      if (CapabilityType.PLATFORM.equals(entry.getKey()) || "platformName".equals(entry.getKey())) {
         continue;
       }
       returnedCapabilities.setCapability(entry.getKey(), entry.getValue());
     }
-    String platformString = (String) rawCapabilities.get(CapabilityType.PLATFORM);
+    String platformString = (String) rawCapabilities.getOrDefault(CapabilityType.PLATFORM, rawCapabilities.get("platformName"));
     Platform platform;
     try {
       if (platformString == null || "".equals(platformString)) {
@@ -275,7 +275,8 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
       // system property. Try to recover and parse this.
       platform = Platform.extractFromSysProperty(platformString);
     }
-    returnedCapabilities.setPlatform(platform);
+    returnedCapabilities.setCapability(CapabilityType.PLATFORM, platform);
+    returnedCapabilities.setCapability("platformName", platform);
 
     if (rawCapabilities.containsKey(SUPPORTS_JAVASCRIPT)) {
       Object raw = rawCapabilities.get(SUPPORTS_JAVASCRIPT);
