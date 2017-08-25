@@ -22,6 +22,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import com.google.common.io.ByteStreams;
 import com.google.common.net.MediaType;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonParseException;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -359,6 +360,8 @@ public class TestSession {
           }
         }
       }
+    } catch (JsonParseException e) {
+      // Nothing to do --- poorly formed payload.
     }
 
     return consumed;
