@@ -76,9 +76,7 @@ public class WebDriverBuilder implements Supplier<WebDriver> {
       setLogLevel.invoke(driver, level.getLevel());
     } catch (NoSuchMethodException e) {
       return;
-    } catch (InvocationTargetException e) {
-      throw new RuntimeException(e);
-    } catch (IllegalAccessException e) {
+    } catch (IllegalAccessException | InvocationTargetException e) {
       throw new RuntimeException(e);
     }
   }
@@ -88,6 +86,7 @@ public class WebDriverBuilder implements Supplier<WebDriver> {
     List<Supplier<WebDriver>> suppliers = Lists.newArrayList();
     suppliers.add(new ExternalDriverSupplier(desiredCaps, requiredCaps));
     suppliers.add(new SauceBackedDriverSupplier(desiredCaps));
+    suppliers.add(new GridSupplier(desiredCaps));
     suppliers.add(new RemoteSupplier(desiredCaps, requiredCaps));
     suppliers.add(new PhantomJSDriverSupplier(desiredCaps));
     suppliers.add(new TestInternetExplorerSupplier(desiredCaps));
