@@ -328,7 +328,9 @@ public abstract class JUnit4TestBase implements WrapsDriver {
           break;
 
         case REMOTE:
-          if (Boolean.getBoolean("selenium.browser.remote") || SauceDriver.shouldUseSauce()) {
+          if (Boolean.getBoolean("selenium.browser.grid") ||
+              Boolean.getBoolean("selenium.browser.remote") ||
+              SauceDriver.shouldUseSauce()) {
             return true;
           }
           break;
