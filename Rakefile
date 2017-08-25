@@ -192,7 +192,8 @@ task :test_htmlunit => [
 task :test_grid => [
   "//java/server/test/org/openqa/grid/common:common:run",
   "//java/server/test/org/openqa/grid:grid:run",
-  "//java/server/test/org/openqa/grid/e2e:e2e:run"
+  "//java/server/test/org/openqa/grid/e2e:e2e:run",
+  "//java/client/test/org/openqa/selenium/remote:remote-driver-grid-tests:run",
 ]
 task :test_ie => [
   "//cpp/iedriverserver:win32",

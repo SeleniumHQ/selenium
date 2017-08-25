@@ -37,5 +37,7 @@
   htmlrunner = //java/server/src/org/openqa/selenium/server/htmlrunner:selenium-runner
 
   # Tests
-  firefox-test  = //java/client/test/org/openqa/selenium/firefox:test-synthesized
+  chrome-test   = //java/client/test/org/openqa/selenium/chrome:chrome
+  firefox-test  = //java/client/test/org/openqa/selenium/firefox:marionette
+  grid-test     = //java/client/test/org/openqa/selenium/remote:remote-driver-grid-tests
   htmlunit-test = //java/client/test/org/openqa/selenium/htmlunit:htmlunit
