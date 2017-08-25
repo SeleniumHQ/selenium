@@ -102,7 +102,7 @@ public interface TouchScreen {
    * @param where The coordinate of the element to flick on
    * @param xOffset The x offset relative to the viewport
    * @param yOffset The y offset relative to the viewport
-   * @param speed speed to flick, 0 = normal, 1 = fast, 2 = slow
+   * @param speed speed in pixels/second
    */
   void flick(Coordinates where, int xOffset, int yOffset, int speed);
 }
