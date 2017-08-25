@@ -106,6 +106,7 @@ Selenium WebDriver is often used as a basis for testing web applications.  Here 
 ::
 
     import unittest
+    from selenium import webdriver
 
     class GoogleTestCase(unittest.TestCase):
 
