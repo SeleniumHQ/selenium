@@ -34,6 +34,9 @@ import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
 import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
 import org.openqa.grid.shared.GridNodeServer;
 import org.openqa.grid.web.servlet.DisplayHelpServlet;
+import org.openqa.grid.web.servlet.HubW3CStatusServlet;
+import org.openqa.grid.web.servlet.NodeW3CStatusServlet;
+import org.openqa.grid.web.servlet.ProxyStatusServlet;
 import org.openqa.grid.web.servlet.ResourceServlet;
 import org.openqa.grid.web.utils.ExtraServletUtil;
 import org.openqa.selenium.Platform;
@@ -88,6 +91,10 @@ public class SelfRegisteringRemote {
         "error getting the parameters from the hub. The node may end up with wrong timeouts." + e
           .getMessage());
     }
+
+    // add the status servlet
+    nodeServlets.put("/status", NodeW3CStatusServlet.class);
+    nodeServlets.put("/wd/hub/status", NodeW3CStatusServlet.class);
 
     // add the resource servlet for nodes
     if (!registrationRequest.getConfiguration().isWithOutServlet(ResourceServlet.class)) {
