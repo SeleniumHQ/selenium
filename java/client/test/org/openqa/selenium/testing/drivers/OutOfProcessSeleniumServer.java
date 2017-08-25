@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -54,7 +55,7 @@ public class OutOfProcessSeleniumServer {
    *
    * @return The new server.
    */
-  public OutOfProcessSeleniumServer start() throws IOException {
+  public OutOfProcessSeleniumServer start(String... extraFlags) throws IOException {
     log.info("Got a request to start a new selenium server");
     if (command != null) {
       log.info("Server already started");
@@ -73,6 +74,7 @@ public class OutOfProcessSeleniumServer {
     cmdLine.add(serverJar);
     cmdLine.add("-port");
     cmdLine.add(String.valueOf(port));
+    cmdLine.addAll(Arrays.asList(extraFlags));
     command = new CommandLine(cmdLine.toArray(new String[cmdLine.size()]));
 
     if (Boolean.getBoolean("webdriver.development")) {
