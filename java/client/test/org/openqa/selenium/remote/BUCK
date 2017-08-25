@@ -63,6 +63,22 @@ java_test(name = 'remote-driver-tests',
   ],
 )
 
+java_test(name = 'remote-driver-grid-tests',
+  srcs = [
+    'RemoteWebDriverTests.java',
+  ],
+  vm_args = [
+    '-Dselenium.browser=ff',
+    '-Dselenium.browser.grid=true',
+  ],
+  deps = [
+    ':remote-driver-test-lib',
+    '//java/client/test/org/openqa/selenium:large-tests',
+    '//third_party/java/junit:junit',
+  ],
+)
+
+
 java_library(name = 'remote-driver-test-lib',
   srcs = [
     'RemoteSpecificTests.java',
