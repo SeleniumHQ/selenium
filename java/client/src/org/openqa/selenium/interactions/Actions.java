@@ -23,6 +23,7 @@ import static org.openqa.selenium.interactions.PointerInput.MouseButton.RIGHT;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Sets;
 
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.UnsupportedCommandException;
@@ -62,7 +63,6 @@ public class Actions {
   private final Keyboard jsonKeyboard;
   private final Mouse jsonMouse;
   protected CompositeAction action = new CompositeAction();
-  private RuntimeException actionsException;
 
   public Actions(WebDriver driver) {
     this.driver = Preconditions.checkNotNull(driver);
@@ -547,17 +547,12 @@ public class Actions {
     for (Interaction action : actions) {
       Sequence sequence = getSequence(action.getSource());
       sequence.addAction(action);
-      seenSources.remove(action.getSource());
     }
 
     // And now pad the remaining sequences with a pause.
-    for (InputSource source : seenSources) {
+    Set<InputSource> unseen = Sets.difference(sequences.keySet(), seenSources);
+    for (InputSource source : unseen) {
       getSequence(source).addAction(new Pause(source, Duration.ZERO));
-    }
-
-    if (isBuildingActions()) {
-      actionsException = new IllegalArgumentException(
-          "You may not use new style interactions with old style actions");
     }
 
     return this;
