@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.interactions;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -27,14 +28,21 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InOrder;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.internal.Coordinates;
 import org.openqa.selenium.internal.Locatable;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Tests the builder for advanced user interaction, the Actions class.
@@ -145,6 +153,82 @@ public class ActionsTest {
     order.verify(mockMouse).contextClick(mockCoordinates);
     order.verifyNoMoreInteractions();
   }
+
+  @SuppressWarnings("unchecked")
+  @Test
+  public void testCtrlClick() {
+    WebDriver driver = mock(WebDriver.class, withSettings().extraInterfaces(Interactive.class));
+    ArgumentCaptor<Collection<Sequence>> sequenceCaptor =
+        ArgumentCaptor.forClass((Class) Collection.class);
+    Mockito.doNothing().when((Interactive) driver).perform(sequenceCaptor.capture());
+
+    new Actions(driver)
+        .keyDown(Keys.CONTROL)
+        .click()
+        .keyUp(Keys.CONTROL)
+        .perform();
+
+    Collection<Sequence> sequence = sequenceCaptor.getValue();
+
+    assertEquals(2, sequence.size());
+
+    // get mouse and keyboard sequences
+    Map[] sequencesJson = sequence.stream().map(Sequence::toJson).toArray(HashMap[]::new);
+    Map mouseSequence = sequencesJson[0];
+    Map keyboardSequence;
+    if (!mouseSequence.get("type").equals("pointer")) {
+      mouseSequence = sequencesJson[1];
+      keyboardSequence = sequencesJson[0];
+    }
+    else {
+      keyboardSequence = sequencesJson[1];
+    }
+
+    assertEquals("pointer", mouseSequence.get("type"));
+    List<Map<?,?>> mouseActions = (List<Map<?,?>>) mouseSequence.get("actions");
+    assertEquals(4, mouseActions.size());
+
+    assertEquals("key", keyboardSequence.get("type"));
+    List<Map<?, ?>> keyboardActions = (List<Map<?, ?>>) keyboardSequence.get("actions");
+    assertEquals(4, keyboardActions.size());
+
+    // Mouse pauses as key goes down
+    Map<?, ?> pauseAction = mouseActions.get(0);
+    assertEquals("pause", pauseAction.get("type"));
+    assertEquals(0L, pauseAction.get("duration"));
+
+    Map<?, ?> keyDownAction = keyboardActions.get(0);
+    assertEquals("keyDown", keyDownAction.get("type"));
+    assertEquals(Keys.CONTROL.toString(), keyDownAction.get("value"));
+
+    // Mouse goes down, so keyboard pauses
+    Map<?, ?> pointerDownAction = mouseActions.get(1);
+    assertEquals("pointerDown", pointerDownAction.get("type"));
+    assertEquals(0, pointerDownAction.get("button"));
+
+    pauseAction = keyboardActions.get(1);
+    assertEquals("pause", pauseAction.get("type"));
+    assertEquals(0L, pauseAction.get("duration"));
+
+    // Mouse goes up, so keyboard pauses
+    Map<?, ?> pointerUpAction = mouseActions.get(2);
+    assertEquals("pointerUp", pointerUpAction.get("type"));
+    assertEquals(0, pointerUpAction.get("button"));
+
+    pauseAction = keyboardActions.get(2);
+    assertEquals("pause", pauseAction.get("type"));
+    assertEquals(0L, pauseAction.get("duration"));
+
+    // Mouse pauses as keyboard releases key
+    pauseAction = mouseActions.get(3);
+    assertEquals("pause", pauseAction.get("type"));
+    assertEquals(0L, pauseAction.get("duration"));
+
+    Map<?, ?> keyUpAction = keyboardActions.get(3);
+    assertEquals("keyUp", keyUpAction.get("type"));
+    assertEquals(Keys.CONTROL.toString(), keyUpAction.get("value"));
+  }
+
 
   private WebElement mockLocatableElementWithCoordinates(Coordinates coord) {
     WebElement element = mock(WebElement.class,
