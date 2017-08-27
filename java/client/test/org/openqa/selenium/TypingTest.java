@@ -471,7 +471,6 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(MARIONETTE)
   @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/646")
   public void testChordControlHomeShiftEndDelete() {
     assumeFalse("FIXME: macs don't have HOME keys, would PGUP work?",
