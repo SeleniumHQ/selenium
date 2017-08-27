@@ -18,6 +18,7 @@
 package org.openqa.selenium.remote.server;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -46,17 +47,31 @@ public class ActiveSessionFactoryTest {
       }
     };
 
-    try (NewSessionPayload payload = new NewSessionPayload(toPayload(caps))) {
+    try (NewSessionPayload payload = new NewSessionPayload(toPayload(caps.getBrowserName()))) {
       ActiveSession session = sessionFactory.createSession(payload);
       assertEquals(driver, session.getWrappedDriver());
     }
   }
 
-  private Map<String, Object> toPayload(Capabilities caps) {
+  @Test
+  public void canBindNewFactoriesAtRunTime() throws IOException {
+    ActiveSession session = Mockito.mock(ActiveSession.class);
+
+    ActiveSessionFactory sessionFactory = new ActiveSessionFactory()
+        .bind(caps -> "cheese".equals(caps.getBrowserName()), payload -> session);
+
+    try (NewSessionPayload payload = new NewSessionPayload(toPayload("cheese"))) {
+      ActiveSession created = sessionFactory.createSession(payload);
+
+      assertSame(session, created);
+    }
+  }
+
+  private Map<String, Object> toPayload(String browserName) {
     return ImmutableMap.of(
         "capabilities", ImmutableMap.of(
-            "alwaysMatch", caps.asMap()),
-        "desiredCapabilities", caps.asMap());
+            "alwaysMatch", ImmutableMap.of("browserName", browserName)),
+        "desiredCapabilities", ImmutableMap.of("browserName", browserName));
   }
 
   private static class StubbedProvider implements DriverProvider {

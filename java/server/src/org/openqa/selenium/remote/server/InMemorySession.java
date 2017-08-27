@@ -201,8 +201,9 @@ class InMemorySession implements ActiveSession {
     }
 
     @Override
-    public void registerDriver(Capabilities capabilities,
-                               Class<? extends WebDriver> implementation) {
+    public void registerDriver(
+        Capabilities capabilities,
+        Class<? extends WebDriver> implementation) {
       throw new UnsupportedOperationException("registerDriver");
     }
 
