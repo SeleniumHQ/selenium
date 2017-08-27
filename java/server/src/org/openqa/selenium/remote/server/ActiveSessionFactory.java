@@ -10,6 +10,7 @@ import static org.openqa.selenium.remote.DesiredCapabilities.operaBlink;
 import static org.openqa.selenium.remote.DesiredCapabilities.phantomjs;
 import static org.openqa.selenium.remote.DesiredCapabilities.safari;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.Capabilities;
@@ -46,7 +47,12 @@ public class ActiveSessionFactory {
   private final Map<Predicate<Capabilities>, SessionFactory> factories;
 
   public ActiveSessionFactory() {
+    // Insertion order matters. The first matching predicate is always used for matching.
     Map<Predicate<Capabilities>, SessionFactory> builder = new LinkedHashMap<>();
+
+    // Allow user-defined factories to override default ones.
+    StreamSupport.stream(loadDriverProviders().spliterator(), false)
+        .forEach(p -> builder.put(p::canCreateDriverInstanceFor, new InMemorySession.Factory(p)));
 
     bind(
         builder,
@@ -80,11 +86,6 @@ public class ActiveSessionFactory {
     // Attempt to bind the htmlunitdriver if it's present.
     bind(builder, "org.openqa.selenium.htmlunit.HtmlUnitDriver", browserName(htmlUnit()), htmlUnit());
 
-    // Allow user-defined factories to override default ones
-    StreamSupport.stream(ServiceLoader.load(DriverProvider.class).spliterator(), false)
-        .forEach(p -> builder
-            .put(browserName(p.getProvidedCapabilities()), new InMemorySession.Factory(p)));
-
     // Finally, add a default factory.
     Stream.of(
         "org.openqa.selenium.chrome.ChromeDriverService",
@@ -101,6 +102,11 @@ public class ActiveSessionFactory {
             });
 
     this.factories = ImmutableMap.copyOf(builder);
+  }
+
+  @VisibleForTesting
+  protected Iterable<DriverProvider> loadDriverProviders() {
+    return () -> ServiceLoader.load(DriverProvider.class).iterator();
   }
 
   private void bind(
