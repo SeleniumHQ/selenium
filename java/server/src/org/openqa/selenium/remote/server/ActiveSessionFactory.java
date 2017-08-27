@@ -44,7 +44,7 @@ public class ActiveSessionFactory {
     }
   };
 
-  private final Map<Predicate<Capabilities>, SessionFactory> factories;
+  private volatile Map<Predicate<Capabilities>, SessionFactory> factories;
 
   public ActiveSessionFactory() {
     // Insertion order matters. The first matching predicate is always used for matching.
@@ -102,6 +102,23 @@ public class ActiveSessionFactory {
             });
 
     this.factories = ImmutableMap.copyOf(builder);
+  }
+
+  public synchronized ActiveSessionFactory bind(
+      Predicate<Capabilities> onThis,
+      SessionFactory useThis) {
+    Objects.requireNonNull(onThis, "Predicated needed.");
+    Objects.requireNonNull(useThis, "SessionFactory is required");
+
+    LOG.info(String.format("Binding %s to respond to %s", useThis, onThis));
+
+    LinkedHashMap<Predicate<Capabilities>, SessionFactory> newMap = new LinkedHashMap<>();
+    newMap.put(onThis, useThis);
+    newMap.putAll(factories);
+
+    factories = newMap;
+
+    return this;
   }
 
   @VisibleForTesting
