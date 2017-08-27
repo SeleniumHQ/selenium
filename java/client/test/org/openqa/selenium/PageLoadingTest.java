@@ -422,6 +422,20 @@ public class PageLoadingTest extends JUnit4TestBase {
     testPageLoadTimeoutIsEnforced(3);
   }
 
+  @NoDriverAfterTest
+  @Test
+  @Ignore(PHANTOMJS)
+  @Ignore(FIREFOX)
+  @Ignore(value = SAFARI, reason = "issue 687, comment 41")
+  @NeedsLocalEnvironment
+  public void testCanHandleSequentialPageLoadTimeouts() {
+    long pageLoadTimeout = 2;
+    long pageLoadTimeBuffer = 10;
+    driver.manage().timeouts().pageLoadTimeout(2, SECONDS);
+    assertPageLoadTimeoutIsEnforced(pageLoadTimeout, pageLoadTimeBuffer);
+    assertPageLoadTimeoutIsEnforced(pageLoadTimeout, pageLoadTimeBuffer);
+  }
+
   @NoDriverAfterTest // Subsequent tests sometimes fail on Firefox.
   @Test
   @Ignore(value = SAFARI, reason = "issue 687, comment 41")
@@ -547,7 +561,11 @@ public class PageLoadingTest extends JUnit4TestBase {
     // Test page will load this many seconds longer than WD pageLoadTimeout.
     long pageLoadTimeBuffer = 10;
     driver.manage().timeouts().pageLoadTimeout(webDriverPageLoadTimeout, SECONDS);
+    assertPageLoadTimeoutIsEnforced(webDriverPageLoadTimeout, pageLoadTimeBuffer);
+  }
 
+  private void assertPageLoadTimeoutIsEnforced(long webDriverPageLoadTimeout,
+                                               long pageLoadTimeBuffer) {
     long start = System.currentTimeMillis();
     try {
       driver.get(appServer.whereIs(
