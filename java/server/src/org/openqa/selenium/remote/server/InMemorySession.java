@@ -251,7 +251,7 @@ class InMemorySession implements ActiveSession {
     public String getAndClearScreenshot() {
       String toReturn = screenshot;
       screenshot = null;
-      return screenshot;
+      return toReturn;
     }
 
     @Override
