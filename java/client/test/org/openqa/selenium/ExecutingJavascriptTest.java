@@ -33,6 +33,7 @@ import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.testing.Driver.ALL;
 import static org.openqa.selenium.testing.Driver.CHROME;
+import static org.openqa.selenium.testing.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
@@ -558,6 +559,7 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   @Ignore(value = IE, reason = "returns WebElement")
   @Ignore(PHANTOMJS)
   @Ignore(SAFARI)
+  @Ignore(HTMLUNIT)
   public void shouldHandleObjectThatThatHaveToJSONMethod() {
     driver.get(pages.simpleTestPage);
 
@@ -571,6 +573,8 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   @Ignore(IE)
   @Ignore(PHANTOMJS)
   @Ignore(SAFARI)
+  @Ignore(FIREFOX)
+  @Ignore(HTMLUNIT)
   @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/904")
   public void shouldHandleRecursiveStructures() {
     driver.get(pages.simpleTestPage);
