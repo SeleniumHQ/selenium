@@ -280,6 +280,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/906")
   public void testSendingKeysToAnotherElementShouldCauseTheBlurEventToFireInNonTopmostWindow() {
     assumeFalse(browserNeedsFocusOnThisOs(driver));
 
