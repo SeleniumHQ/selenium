@@ -28,6 +28,7 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElemen
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.testing.Driver.ALL;
 import static org.openqa.selenium.testing.Driver.CHROME;
+import static org.openqa.selenium.testing.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
@@ -102,6 +103,18 @@ public class ClickScrollingTest extends JUnit4TestBase {
     driver.get(appServer.whereIs("scrolling_tests/page_with_y_overflow_auto.html"));
 
     driver.findElement(By.id("link")).click();
+    wait.until(titleIs("Clicked Successfully!"));
+  }
+
+  @Test
+  @Ignore(IE)
+  @Ignore(FIREFOX)
+  @Ignore(MARIONETTE)
+  @Ignore(value = SAFARI, reason = "not tested")
+  public void testShouldBeAbleToClickOnAnElementPartiallyHiddenByOverflow() {
+    driver.get(appServer.whereIs("scrolling_tests/page_with_partially_hidden_element.html"));
+
+    driver.findElement(By.id("btn")).click();
     wait.until(titleIs("Clicked Successfully!"));
   }
 
