@@ -103,7 +103,7 @@ matrix:
       <<: *firefox-nightly
     - env: TASK=test_java_small_tests
       <<: *java
-    - env: TASK=test_grid
+    - env: MARIONETTE=1 TASK=test_grid
       <<: *java
       <<: *firefox-nightly
     - env: TASK=test_htmlunit
