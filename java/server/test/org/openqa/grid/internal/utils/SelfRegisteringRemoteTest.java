@@ -97,7 +97,7 @@ public class SelfRegisteringRemoteTest {
     remote.startRemoteServer(); // does not actually start anything.
 
     // verify the expected extra servlets also made it to the server instance
-    assertEquals(3, ((DummyGridNodeServer) server).extraServlets.size());
+    assertEquals(5, ((DummyGridNodeServer) server).extraServlets.size());
     assertEquals(ResourceServlet.class,
                  ((DummyGridNodeServer) server).extraServlets.get("/resources/*"));
     assertEquals(DisplayHelpServlet.class,
