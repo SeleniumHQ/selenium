@@ -87,7 +87,7 @@ public class SelfRegisteringRemoteTest {
 
     // there should be three servlets on the remote's map -- The resource servlet, the
     // help servlet, and the one we added above.
-    assertEquals(3, remote.getNodeServlets().size());
+    assertEquals(5, remote.getNodeServlets().size());
     assertEquals(ResourceServlet.class, remote.getNodeServlets().get("/resources/*"));
     assertEquals(DisplayHelpServlet.class,
                  remote.getNodeServlets().get("/extra/DisplayHelpServlet/*"));
