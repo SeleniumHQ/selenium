@@ -553,4 +553,30 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
     assertTrue(value instanceof WebElement);
     assertTrue(((WebElement) value).getText().contains("A single line of text"));
   }
+
+  @Test(timeout = 10000)
+  @Ignore(value = IE, reason = "returns WebElement")
+  @Ignore(PHANTOMJS)
+  @Ignore(SAFARI)
+  public void shouldHandleObjectThatThatHaveToJSONMethod() {
+    driver.get(pages.simpleTestPage);
+
+    Object value = executeScript("return window.performance.timing");
+
+    assertTrue(value instanceof Map);
+  }
+
+  @Test(timeout = 10000)
+  @Ignore(CHROME)
+  @Ignore(IE)
+  @Ignore(PHANTOMJS)
+  @Ignore(SAFARI)
+  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/904")
+  public void shouldHandleRecursiveStructures() {
+    driver.get(pages.simpleTestPage);
+
+    Object value = executeScript("var obj1 = {}; var obj2 = {}; obj1['obj2'] = obj2; obj2['obj1'] = obj1; return obj1");
+
+    assertTrue(value instanceof Map);
+  }
 }
