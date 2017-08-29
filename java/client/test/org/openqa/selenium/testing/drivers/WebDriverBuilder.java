@@ -31,7 +31,6 @@ import java.util.logging.Level;
 
 public class WebDriverBuilder implements Supplier<WebDriver> {
   private Capabilities desiredCapabilities;
-  private Capabilities requiredCapabilities;
   private final Browser browser;
 
   public WebDriverBuilder() {
@@ -51,8 +50,7 @@ public class WebDriverBuilder implements Supplier<WebDriver> {
     Capabilities desiredCaps = new DesiredCapabilities(standardCapabilities,
         desiredCapabilities);
 
-    List<Supplier<WebDriver>> suppliers = getSuppliers(desiredCaps,
-        requiredCapabilities);
+    List<Supplier<WebDriver>> suppliers = getSuppliers(desiredCaps);
 
     for (Supplier<WebDriver> supplier : suppliers) {
       WebDriver driver = supplier.get();
@@ -81,27 +79,21 @@ public class WebDriverBuilder implements Supplier<WebDriver> {
     }
   }
 
-  private List<Supplier<WebDriver>> getSuppliers(Capabilities desiredCaps,
-      Capabilities requiredCaps) {
+  private List<Supplier<WebDriver>> getSuppliers(Capabilities desiredCaps) {
     List<Supplier<WebDriver>> suppliers = Lists.newArrayList();
-    suppliers.add(new ExternalDriverSupplier(desiredCaps, requiredCaps));
+    suppliers.add(new ExternalDriverSupplier(desiredCaps));
     suppliers.add(new SauceBackedDriverSupplier(desiredCaps));
     suppliers.add(new GridSupplier(desiredCaps));
-    suppliers.add(new RemoteSupplier(desiredCaps, requiredCaps));
+    suppliers.add(new RemoteSupplier(desiredCaps));
     suppliers.add(new PhantomJSDriverSupplier(desiredCaps));
     suppliers.add(new TestInternetExplorerSupplier(desiredCaps));
-    suppliers.add(new ReflectionBackedDriverSupplier(desiredCaps, requiredCaps));
-    suppliers.add(new DefaultDriverSupplier(desiredCaps, requiredCaps));
+    suppliers.add(new ReflectionBackedDriverSupplier(desiredCaps));
+    suppliers.add(new DefaultDriverSupplier(desiredCaps));
     return suppliers;
   }
 
   public WebDriverBuilder setDesiredCapabilities(Capabilities caps) {
     this.desiredCapabilities = caps;
-    return this;
-  }
-
-  public WebDriverBuilder setRequiredCapabilities(Capabilities caps) {
-    this.requiredCapabilities = caps;
     return this;
   }
 

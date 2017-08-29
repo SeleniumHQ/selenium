@@ -65,24 +65,21 @@ class ExternalDriverSupplier implements Supplier<WebDriver> {
   private static final String EXTERNAL_SERVER_URL_PROPERTY = "selenium.external.serverUrl";
 
   private final Capabilities desiredCapabilities;
-  private final Capabilities requiredCapabilities;
 
-  ExternalDriverSupplier(Capabilities desiredCapabilities, Capabilities requiredCapabilities) {
+  ExternalDriverSupplier(Capabilities desiredCapabilities) {
     this.desiredCapabilities = new DesiredCapabilities(desiredCapabilities);
-    this.requiredCapabilities = new DesiredCapabilities(requiredCapabilities);
   }
 
   @Override
   public WebDriver get() {
-    Optional<Supplier<WebDriver>> delegate = createDelegate(
-        desiredCapabilities, requiredCapabilities);
-    delegate = createForExternalServer(desiredCapabilities, requiredCapabilities, delegate);
+    Optional<Supplier<WebDriver>> delegate = createDelegate(desiredCapabilities);
+    delegate = createForExternalServer(desiredCapabilities, delegate);
 
     return delegate.orElse(Suppliers.ofInstance(null)).get();
   }
 
   private static Optional<Supplier<WebDriver>> createForExternalServer(
-      Capabilities desiredCapabilities, Capabilities requiredCapabilities,
+      Capabilities desiredCapabilities,
       Optional<Supplier<WebDriver>> delegate) {
     String externalUrl = System.getProperty(EXTERNAL_SERVER_URL_PROPERTY);
     if (externalUrl != null) {
@@ -93,8 +90,7 @@ class ExternalDriverSupplier implements Supplier<WebDriver> {
       } catch (MalformedURLException e) {
         throw new RuntimeException("Invalid server URL: " + externalUrl, e);
       }
-      Supplier<WebDriver> defaultSupplier = new DefaultRemoteSupplier(
-          url, desiredCapabilities, requiredCapabilities);
+      Supplier<WebDriver> defaultSupplier = new DefaultRemoteSupplier(url, desiredCapabilities);
       Supplier<WebDriver> supplier = new ExternalServerDriverSupplier(
           url, delegate.orElse(defaultSupplier));
       return Optional.of(supplier);
@@ -102,8 +98,7 @@ class ExternalDriverSupplier implements Supplier<WebDriver> {
     return delegate;
   }
 
-  private static Optional<Supplier<WebDriver>> createDelegate(
-      Capabilities desiredCapabilities, Capabilities requiredCapabilities) {
+  private static Optional<Supplier<WebDriver>> createDelegate(Capabilities desiredCapabilities) {
     Optional<Class<? extends Supplier>> supplierClass = getDelegateClass();
     if (supplierClass.isPresent()) {
       Class<? extends Supplier> clazz = supplierClass.get();
@@ -111,9 +106,8 @@ class ExternalDriverSupplier implements Supplier<WebDriver> {
       try {
         @SuppressWarnings("unchecked")
         Constructor<Supplier<WebDriver>> ctor =
-            (Constructor<Supplier<WebDriver>>) clazz.getConstructor(
-                Capabilities.class, Capabilities.class);
-        return Optional.of(ctor.newInstance(desiredCapabilities, requiredCapabilities));
+            (Constructor<Supplier<WebDriver>>) clazz.getConstructor(Capabilities.class);
+        return Optional.of(ctor.newInstance(desiredCapabilities));
       } catch (InvocationTargetException e) {
         throw new RuntimeException(e.getTargetException());
       } catch (Exception e) {
@@ -175,18 +169,15 @@ class ExternalDriverSupplier implements Supplier<WebDriver> {
   private static class DefaultRemoteSupplier implements Supplier<WebDriver> {
     private final URL url;
     private final Capabilities desiredCapabilities;
-    private final Capabilities requiredCapabilities;
 
-    private DefaultRemoteSupplier(
-        URL url, Capabilities desiredCapabilities, Capabilities requiredCapabilities) {
+    private DefaultRemoteSupplier(URL url, Capabilities desiredCapabilities) {
       this.url = url;
       this.desiredCapabilities = desiredCapabilities;
-      this.requiredCapabilities = requiredCapabilities;
     }
 
     @Override
     public WebDriver get() {
-      RemoteWebDriver driver = new RemoteWebDriver(url, desiredCapabilities, requiredCapabilities);
+      RemoteWebDriver driver = new RemoteWebDriver(url, desiredCapabilities);
       driver.setFileDetector(new LocalFileDetector());
       return driver;
     }

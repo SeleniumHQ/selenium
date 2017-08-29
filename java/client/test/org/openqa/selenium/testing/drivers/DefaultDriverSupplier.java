@@ -31,12 +31,9 @@ public class DefaultDriverSupplier implements Supplier<WebDriver> {
   private static final Logger log = Logger.getLogger(DefaultDriverSupplier.class.getName());
   private Class<? extends WebDriver> driverClass;
   private final Capabilities desiredCapabilities;
-  private final Capabilities requiredCapabilities;
 
-  public DefaultDriverSupplier(Capabilities desiredCapabilities,
-      Capabilities requiredCapabilities) {
+  public DefaultDriverSupplier(Capabilities desiredCapabilities) {
     this.desiredCapabilities = desiredCapabilities;
-    this.requiredCapabilities = requiredCapabilities;
 
     try {
       // Only support a default driver if we're actually in dev mode.
@@ -55,8 +52,7 @@ public class DefaultDriverSupplier implements Supplier<WebDriver> {
     log.info("Providing default driver instance");
 
     try {
-      return driverClass.getConstructor(Capabilities.class, Capabilities.class).
-          newInstance(desiredCapabilities, requiredCapabilities);
+      return driverClass.getConstructor(Capabilities.class).newInstance(desiredCapabilities);
     } catch (InvocationTargetException e) {
       throw new RuntimeException(e.getTargetException());
     } catch (ReflectiveOperationException e) {
