@@ -460,7 +460,7 @@ task :'prep-release-zip' => [
 end
 
 
-task :'release-java' => [:'publish-maven', ':push-release']
+task :'release-java' => [:'publish-maven', :'push-release']
 
 def read_user_pass_from_m2_settings
     settings = File.read(ENV['HOME'] + "/.m2/settings.xml")
