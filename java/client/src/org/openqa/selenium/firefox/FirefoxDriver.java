@@ -33,6 +33,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.service.DriverCommandExecutor;
 import org.openqa.selenium.remote.service.DriverService;
 
+import java.util.Objects;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -100,11 +101,13 @@ public class FirefoxDriver extends RemoteWebDriver {
   }
 
   public FirefoxDriver(Capabilities desiredCapabilities) {
-    this(new FirefoxOptions(desiredCapabilities));
+    this(new FirefoxOptions(Objects.requireNonNull(desiredCapabilities, "No capabilities seen")));
   }
 
   public FirefoxDriver(GeckoDriverService service, Capabilities desiredCapabilities) {
-    this(service, new FirefoxOptions(desiredCapabilities));
+    this(
+        Objects.requireNonNull(service, "No geckodriver service provided"),
+        new FirefoxOptions(desiredCapabilities));
   }
 
   public FirefoxDriver(FirefoxOptions options) {
@@ -116,6 +119,7 @@ public class FirefoxDriver extends RemoteWebDriver {
   }
 
   private static CommandExecutor toExecutor(FirefoxOptions options) {
+    Objects.requireNonNull(options, "No options to construct executor from");
     DriverService.Builder<?, ?> builder;
 
     if (options.isLegacy()) {
