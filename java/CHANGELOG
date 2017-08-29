@@ -1,5 +1,42 @@
+v3.5.3
+======
+
+Important note:
+
+* The new standalone server and Grid Node feature a "pass through"
+  mode. If you see changes to the Selenium WebDriver "logging" APIs or
+  automatic capture of screenshots on error (or if you want the old
+  behaviour back) you can do so by executing:
+
+  `java -jar selenium-server-standalone-3.5.3.jar -enablePassThrough false`
+
+* Allow user-provided DriverProviders to override default providers in
+  passthrough mode.
+* Fixes issue with W3C Actions not being properly filled when multiple
+  input sources are used.
+* Handle null return values from chromedriver. Fixes #4555
+* Synchronized "platform" and "platformName" capability values. Fixes #4565
+* Add iOS `Platform`.
+* Fix wrapping of maps with null values. Fixes #3380
+* Grid: Add new w3c compatible `status` endpoints for Hub and nodes.
+* Grid: Properly parse responses from upstream nodes that are not
+  200. Fixes issue where `NoSuchElementException` was mistaken for a
+  `NoSuchSessionException`.
+* Grid: Handle re-encoding issue when transferring text from the
+  endpoint node to the local end.
+
+
 v3.5.2
 ======
+
+Important note:
+
+* The new standalone server and Grid Node feature a "pass through"
+  mode. If you see changes to the Selenium WebDriver "logging" APIs or
+  automatic capture of screenshots on error (or if you want the old
+  behaviour back) you can do so by executing:
+
+  `java -jar selenium-server-standalone-3.5.2.jar -enablePassThrough false`
 
 * Avoid encoding numbers as floats rather then longs in JSON payloads.
 * New "pass through" mode supports file uploads again.
