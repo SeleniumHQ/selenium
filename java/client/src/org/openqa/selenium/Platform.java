@@ -32,7 +32,12 @@ public enum Platform {
   /**
    * Never returned, but can be used to request a browser running on any version of Windows.
    */
-  WINDOWS("") {},
+  WINDOWS("") {
+    @Override
+    public Platform family() {
+      return WINDOWS;
+    }
+  },
 
   /**
    * For versions of Windows that "feel like" Windows XP. These are ones that store files in
@@ -79,7 +84,12 @@ public enum Platform {
     }
   },
 
-  MAC("mac", "darwin", "macOS", "os x") {},
+  MAC("mac", "darwin", "macOS", "os x") {
+    @Override
+    public Platform family() {
+      return MAC;
+    }
+  },
 
   SNOW_LEOPARD("snow leopard", "os x 10.6") {
     @Override
@@ -150,12 +160,17 @@ public enum Platform {
   /**
    * Many platforms have UNIX traits, amongst them LINUX, Solaris and BSD.
    */
-  UNIX("solaris", "bsd") {},
+  UNIX("solaris", "bsd") {
+    @Override
+    public Platform family() {
+      return UNIX;
+    }
+  },
 
   LINUX("linux") {
     @Override
     public Platform family() {
-      return UNIX;
+      return LINUX;
     }
   },
 
@@ -166,20 +181,20 @@ public enum Platform {
     }
   },
 
-  /**
-   * Provide a temporary workaround for an issue where platformName was being overridden by
-   * platform for external providers.
-   */
-  @Deprecated
   IOS("iOS") {
     @Override
-    public Platform family() { return MAC; }
+    public Platform family() { return IOS; }
   },
 
   /**
    * Never returned, but can be used to request a browser running on any operating system.
    */
   ANY("") {
+    @Override
+    public Platform family() {
+      return ANY;
+    }
+
     @Override
     public boolean is(Platform compareWith) {
       return this == compareWith;
@@ -190,7 +205,7 @@ public enum Platform {
   private int minorVersion = 0;
   private int majorVersion = 0;
 
-  private Platform(String... partOfOsName) {
+  Platform(String... partOfOsName) {
     this.partOfOsName = partOfOsName;
   }
 
@@ -340,9 +355,7 @@ public enum Platform {
    *
    * @return the family platform for the current one
    */
-  public Platform family() {
-    return ANY;
-  }
+  public abstract Platform family();
 
   private boolean isCurrentPlatform(String osName, String matchAgainst) {
     return osName.contains(matchAgainst);
