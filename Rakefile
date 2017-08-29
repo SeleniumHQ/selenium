@@ -49,7 +49,7 @@ def release_version
 end
 
 def version
-  "#{release_version}.2"
+  "#{release_version}.3"
 end
 
 ide_version = "2.8.0"
