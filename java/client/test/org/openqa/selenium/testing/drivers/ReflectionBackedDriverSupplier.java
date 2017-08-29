@@ -33,12 +33,9 @@ public class ReflectionBackedDriverSupplier implements Supplier<WebDriver> {
   private final static Logger log =
       Logger.getLogger(ReflectionBackedDriverSupplier.class.getName());
   private final Capabilities desiredCapabilities;
-  private final Capabilities requiredCapabilities;
 
-  public ReflectionBackedDriverSupplier(Capabilities desiredCapabilities,
-      Capabilities requiredCapabilities) {
+  public ReflectionBackedDriverSupplier(Capabilities desiredCapabilities) {
     this.desiredCapabilities = desiredCapabilities;
-    this.requiredCapabilities = requiredCapabilities;
   }
 
   public WebDriver get() {
@@ -48,13 +45,6 @@ public class ReflectionBackedDriverSupplier implements Supplier<WebDriver> {
       Class<? extends WebDriver> driverClass = mapToClass(desiredCapsToUse);
       if (driverClass == null) {
         return null;
-      }
-
-      try {
-          return driverClass.getConstructor(Capabilities.class,
-             Capabilities.class).newInstance(desiredCapsToUse, requiredCapabilities);
-      } catch (NoSuchMethodException e) {
-          // ignore
       }
 
       return driverClass.getConstructor(Capabilities.class).newInstance(desiredCapsToUse);
