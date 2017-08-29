@@ -8,7 +8,6 @@ prebuilt_jar(
     '//third_party/java/htmlunit:htmlunit'
   ],
   visibility = [
-    '//java/client/src/org/openqa/selenium:client-combined',
     '//java/client/test/org/openqa/selenium/htmlunit:htmlunit',
     '//java/client/test/org/openqa/selenium/testing:test-base',
     '//java/server/src/org/openqa/selenium/remote/server:standalone-server-lib',
