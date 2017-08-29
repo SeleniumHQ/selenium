@@ -19,11 +19,9 @@ package org.openqa.selenium;
 
 import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.remote.CapabilityType.UNEXPECTED_ALERT_BEHAVIOUR;
 import static org.openqa.selenium.testing.Driver.CHROME;
-import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Driver.SAFARI;
@@ -36,7 +34,6 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
-import org.openqa.selenium.testing.TestUtilities;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 @NeedsLocalEnvironment(reason = "Requires local browser launching environment")
@@ -85,23 +82,6 @@ public class UnexpectedAlertBehaviorTest extends JUnit4TestBase {
   public void canSpecifyUnhandledAlertBehaviourUsingCapabilities() {
     desiredCaps.setCapability(UNEXPECTED_ALERT_BEHAVIOUR, UnexpectedAlertBehaviour.ACCEPT);
     driver2 = new WebDriverBuilder().setDesiredCapabilities(desiredCaps).get();
-
-    runScenarioWithUnhandledAlert("This is a default value");
-  }
-
-  @Test
-  @Ignore(value = IE, reason = "required capabilities not implemented")
-  @Ignore(value = CHROME, reason = "required capabilities not implemented")
-  public void requiredUnhandledAlertCapabilityHasPriorityOverDesired() {
-    // TODO: Resolve why this test doesn't work on the remote server
-    assumeTrue(TestUtilities.isLocal());
-
-    desiredCaps.setCapability(UNEXPECTED_ALERT_BEHAVIOUR, UnexpectedAlertBehaviour.DISMISS);
-    DesiredCapabilities requiredCaps = new DesiredCapabilities();
-    requiredCaps.setCapability(UNEXPECTED_ALERT_BEHAVIOUR, UnexpectedAlertBehaviour.ACCEPT);
-    WebDriverBuilder builder = new WebDriverBuilder().setDesiredCapabilities(desiredCaps).
-        setRequiredCapabilities(requiredCaps);
-    driver2 = builder.get();
 
     runScenarioWithUnhandledAlert("This is a default value");
   }
