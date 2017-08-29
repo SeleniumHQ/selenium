@@ -14,6 +14,8 @@ Important note:
   passthrough mode.
 * Fixes issue with W3C Actions not being properly filled when multiple
   input sources are used.
+* Platform that represent platform families ("WINDOWS", "UNIX", "MAC",
+  and "IOS") return `null` from `Platform.getFamily`.
 * Handle null return values from chromedriver. Fixes #4555
 * Synchronized "platform" and "platformName" capability values. Fixes #4565
 * Add iOS `Platform`.
