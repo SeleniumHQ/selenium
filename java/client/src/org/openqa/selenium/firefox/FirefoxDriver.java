@@ -99,97 +99,20 @@ public class FirefoxDriver extends RemoteWebDriver {
     this(new FirefoxOptions());
   }
 
-  public FirefoxDriver(FirefoxOptions options) {
-    this(toExecutor(options), options.toCapabilities(), options.toCapabilities());
-  }
-
-  /**
-   * @deprecated Prefer {@link FirefoxOptions#setBinary(FirefoxBinary)}.
-   */
-  @Deprecated
-  public FirefoxDriver(FirefoxBinary binary) {
-    this(new FirefoxOptions().setBinary(binary));
-    warnAboutDeprecatedConstructor("FirefoxBinary", "setBinary(binary)");
-  }
-
-  /**
-   * @deprecated Prefer {@link FirefoxOptions#setProfile(FirefoxProfile)}.
-   */
-  @Deprecated
-  public FirefoxDriver(FirefoxProfile profile) {
-    this(new FirefoxOptions().setProfile(profile));
-    warnAboutDeprecatedConstructor("FirefoxProfile", "setProfile(profile)");
-  }
-
-  /**
-   * @deprecated Prefer {@link FirefoxOptions#setBinary(FirefoxBinary)}, and
-   *   {@link FirefoxOptions#setProfile(FirefoxProfile)}.
-   */
-  @Deprecated
-  public FirefoxDriver(FirefoxBinary binary, FirefoxProfile profile) {
-    this(new FirefoxOptions().setBinary(binary).setProfile(profile));
-    warnAboutDeprecatedConstructor(
-        "FirefoxBinary and FirefoxProfile",
-        "setBinary(binary).setProfile(profile)");
-  }
-
   public FirefoxDriver(Capabilities desiredCapabilities) {
-    this(new FirefoxOptions(desiredCapabilities).addCapabilities(desiredCapabilities));
+    this(new FirefoxOptions(desiredCapabilities));
   }
 
-  /**
-   * @deprecated Prefer {@link FirefoxDriver#FirefoxDriver(FirefoxOptions)}
-   */
-  @Deprecated
-  public FirefoxDriver(Capabilities desiredCapabilities, Capabilities requiredCapabilities) {
-    this(new FirefoxOptions(desiredCapabilities)
-             .addCapabilities(desiredCapabilities)
-             .addCapabilities(requiredCapabilities));
-    warnAboutDeprecatedConstructor(
-        "Capabilities, Capabilities",
-        "addCapabilities(capabilities)");
+  public FirefoxDriver(GeckoDriverService service, Capabilities desiredCapabilities) {
+    this(service, new FirefoxOptions(desiredCapabilities));
   }
 
-  /**
-   * @deprecated Prefer {@link FirefoxOptions#setBinary(FirefoxBinary)},
-   *   {@link FirefoxOptions#setProfile(FirefoxProfile)}
-   */
-  @Deprecated
-  public FirefoxDriver(FirefoxBinary binary, FirefoxProfile profile, Capabilities capabilities) {
-    this(new FirefoxOptions(capabilities)
-             .setBinary(binary)
-             .setProfile(profile)
-             .addCapabilities(capabilities));
-    warnAboutDeprecatedConstructor(
-        "FirefoxBinary, FirefoxProfile, Capabilities",
-        "setBinary(binary).setProfile(profile).addCapabilities(capabilities)");
+  public FirefoxDriver(FirefoxOptions options) {
+    super(toExecutor(options), dropCapabilities(options.toCapabilities()));
   }
 
-  /**
-   * @deprecated Prefer {@link FirefoxOptions#setBinary(FirefoxBinary)},
-   *   {@link FirefoxOptions#setProfile(FirefoxProfile)}
-   */
-  @Deprecated
-  public FirefoxDriver(
-      FirefoxBinary binary,
-      FirefoxProfile profile,
-      Capabilities desiredCapabilities,
-      Capabilities requiredCapabilities) {
-    this(new FirefoxOptions(desiredCapabilities)
-             .setBinary(binary).setProfile(profile)
-             .addCapabilities(desiredCapabilities)
-             .addCapabilities(requiredCapabilities));
-    warnAboutDeprecatedConstructor(
-        "FirefoxBinary, FirefoxProfile, Capabilities",
-        "setBinary(binary).setProfile(profile).addCapabilities(capabilities)");
-  }
-
-  private FirefoxDriver(
-      CommandExecutor executor,
-      Capabilities desiredCapabilities,
-      Capabilities requiredCapabilities) {
-    super(executor,
-          dropCapabilities(desiredCapabilities).merge(dropCapabilities(requiredCapabilities)));
+  public FirefoxDriver(GeckoDriverService service, FirefoxOptions options) {
+    super(new DriverCommandExecutor(service), dropCapabilities(options.toCapabilities()));
   }
 
   private static CommandExecutor toExecutor(FirefoxOptions options) {
@@ -205,15 +128,6 @@ public class FirefoxDriver extends RemoteWebDriver {
     }
 
     return new DriverCommandExecutor(builder.build());
-  }
-
-  private void warnAboutDeprecatedConstructor(String arguments, String alternative) {
-    LOG.warning(String.format(
-        "The FirefoxDriver constructor taking %s has been deprecated. Please use the " +
-        "FirefoxDriver(FirefoxOptions) constructor, configuring the FirefoxOptions like this: " +
-        "new FirefoxOptions().%s",
-        arguments,
-        alternative));
   }
 
   @Override
