@@ -59,6 +59,11 @@ public class PlatformTest {
   }
 
   @Test
+  public void androidIsAUnixVariant() {
+    assertTrue(Platform.ANDROID.is(Platform.UNIX));
+  }
+
+  @Test
   public void testXpIsAny() {
     assertTrue(Platform.XP.is(Platform.ANY));
   }
@@ -71,6 +76,12 @@ public class PlatformTest {
   @Test
   public void testLinuxIsAny() {
     assertTrue(Platform.LINUX.is(Platform.ANY));
+  }
+
+  @Test
+  public void windowsIsNotMacOS() {
+    // Both of these are platform definitions, so return "null" for the family.
+    assertFalse(Platform.WINDOWS.is(Platform.MAC));
   }
 
   @Test
@@ -101,6 +112,26 @@ public class PlatformTest {
   @Test
   public void testShouldIdentifyLinux() {
     assertAllAre(Platform.LINUX, "Linux");
+  }
+
+  @Test
+  public void windowsIsWindows() {
+    assertTrue(Platform.WINDOWS.is(Platform.WINDOWS));
+  }
+
+  @Test
+  public void macIsMac() {
+    assertTrue(Platform.MAC.is(Platform.MAC));
+  }
+
+  @Test
+  public void linuxIsLinux() {
+    assertTrue(Platform.LINUX.is(Platform.LINUX));
+  }
+
+  @Test
+  public void unixIsUnix() {
+    assertTrue(Platform.UNIX.is(Platform.UNIX));
   }
 
   @Test
