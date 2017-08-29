@@ -5,7 +5,6 @@ prebuilt_jar(name = 'phantomjs-driver',
     '//java/client/src/org/openqa/selenium/remote:remote',
   ],
   visibility = [
-    '//java/client/src/org/openqa/selenium:client-combined',
     '//java/client/test/org/openqa/selenium/testing/drivers:drivers',
     '//java/server/src/org/openqa/selenium/remote/server:standalone-server-lib',
   ],

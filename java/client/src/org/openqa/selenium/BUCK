@@ -178,8 +178,7 @@ java_library(
     "//java/client/src/org/openqa/selenium/opera:opera",
     "//java/client/src/org/openqa/selenium/remote:remote",
     "//java/client/src/org/openqa/selenium/safari:safari",
-    "//java/client/src/org/openqa/selenium/support:support",
-    '//third_party/java/selenium:htmlunit-driver'
+    "//java/client/src/org/openqa/selenium/support:support"
   ],
   visibility = [
     '//java/server/src/org/openqa/grid/selenium:classes',

@@ -15,7 +15,6 @@ prebuilt_jar(
     '//third_party/java/xalan:xalan'
   ],
   visibility = [
-    '//java/client/src/org/openqa/selenium:client-combined',
     '//java/client/test/...',
     '//third_party/java/selenium:htmlunit-driver',
   ]
