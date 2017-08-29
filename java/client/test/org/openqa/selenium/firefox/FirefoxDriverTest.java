@@ -113,7 +113,7 @@ public class FirefoxDriverTest extends JUnit4TestBase {
     profile.setPreference("browser.startup.page", 1);
     profile.setPreference("browser.startup.homepage", pages.xhtmlTestPage);
 
-    localDriver = new FirefoxDriver(profile);
+    localDriver = new FirefoxDriver(new FirefoxOptions().setProfile(profile));
     wait.until($ -> "XHTML Test Page".equals(localDriver.getTitle()));
   }
 
@@ -266,7 +266,7 @@ public class FirefoxDriverTest extends JUnit4TestBase {
     FirefoxProfile profile = new FirefoxProfile();
 
     try {
-      WebDriver secondDriver = new FirefoxDriver(profile);
+      WebDriver secondDriver = new FirefoxDriver(new FirefoxOptions().setProfile(profile));
       secondDriver.quit();
     } catch (Exception e) {
       e.printStackTrace();
@@ -280,7 +280,7 @@ public class FirefoxDriverTest extends JUnit4TestBase {
     profile.setPreference("browser.startup.homepage", pages.formPage);
 
     try {
-      WebDriver secondDriver = new FirefoxDriver(profile);
+      WebDriver secondDriver = new FirefoxDriver(new FirefoxOptions().setProfile(profile));
       new WebDriverWait(secondDriver, 30).until(titleIs("We Leave From Here"));
       String title = secondDriver.getTitle();
       secondDriver.quit();
@@ -301,7 +301,7 @@ public class FirefoxDriverTest extends JUnit4TestBase {
     profile.setPreference("webdriver.log.file", logFile.getAbsolutePath());
 
     try {
-      WebDriver secondDriver = new FirefoxDriver(profile);
+      WebDriver secondDriver = new FirefoxDriver(new FirefoxOptions().setProfile(profile));
       assertTrue("log file should exist", logFile.exists());
       secondDriver.quit();
     } catch (Exception e) {
@@ -317,7 +317,7 @@ public class FirefoxDriverTest extends JUnit4TestBase {
     profile.setPreference("webdriver.log.file", "/dev/stdout");
 
     try {
-      WebDriver secondDriver = new FirefoxDriver(profile);
+      WebDriver secondDriver = new FirefoxDriver(new FirefoxOptions().setProfile(profile));
       secondDriver.quit();
     } catch (Exception e) {
       e.printStackTrace();
@@ -330,7 +330,7 @@ public class FirefoxDriverTest extends JUnit4TestBase {
     FirefoxProfile profile = new ProfilesIni().getProfile("default");
     assumeNotNull(profile);
 
-    WebDriver firefox = new FirefoxDriver(profile);
+    WebDriver firefox = new FirefoxDriver(new FirefoxOptions().setProfile(profile));
     firefox.quit();
   }
 
@@ -371,7 +371,7 @@ public class FirefoxDriverTest extends JUnit4TestBase {
 
     FirefoxDriver secondDriver = null;
     try {
-      secondDriver = new FirefoxDriver(profile);
+      secondDriver = new FirefoxDriver(new FirefoxOptions().setProfile(profile));
       Capabilities caps = secondDriver.getCapabilities();
       assertFalse(caps.is(ACCEPT_SSL_CERTS));
     } catch (Exception e) {
@@ -390,7 +390,7 @@ public class FirefoxDriverTest extends JUnit4TestBase {
     profile.setPreference("browser.startup.page", "1");
     profile.setPreference("browser.startup.homepage", pages.javascriptPage);
 
-    final WebDriver driver2 = new FirefoxDriver(profile);
+    final WebDriver driver2 = new FirefoxDriver(new FirefoxOptions().setProfile(profile));
 
     try {
       new WebDriverWait(driver2, 30).until(urlToBe(pages.javascriptPage));
@@ -525,8 +525,8 @@ public class FirefoxDriverTest extends JUnit4TestBase {
     WebDriver two = null;
 
     try {
-      one = new FirefoxDriver(profile);
-      two = new FirefoxDriver(profile);
+      one = new FirefoxDriver(new FirefoxOptions().setProfile(profile));
+      two = new FirefoxDriver(new FirefoxOptions().setProfile(profile));
 
       // If we get this far, then both firefoxes have started. If this test
       // two browsers will start, but the second won't have a valid port and an
@@ -540,8 +540,8 @@ public class FirefoxDriverTest extends JUnit4TestBase {
   // See http://code.google.com/p/selenium/issues/detail?id=1774
   @Test
   public void canStartFirefoxDriverWithSubclassOfFirefoxProfile() {
-    new FirefoxDriver(new CustomFirefoxProfile()).quit();
-    new FirefoxDriver(new FirefoxProfile() {}).quit();
+    new FirefoxDriver(new FirefoxOptions().setProfile(new CustomFirefoxProfile())).quit();
+    new FirefoxDriver(new FirefoxOptions().setProfile(new FirefoxProfile() {})).quit();
   }
 
   /**

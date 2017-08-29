@@ -77,7 +77,7 @@ public class MarionetteTest extends JUnit4TestBase {
     profile.setPreference("browser.startup.page", 1);
     profile.setPreference("browser.startup.homepage", pages.xhtmlTestPage);
 
-    localDriver = new FirefoxDriver(profile);
+    localDriver = new FirefoxDriver(new FirefoxOptions().setProfile(profile));
     wait.until($ -> "XHTML Test Page".equals(localDriver.getTitle()));
 
     verifyItIsMarionette(localDriver);
