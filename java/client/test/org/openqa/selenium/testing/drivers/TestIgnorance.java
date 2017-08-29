@@ -24,6 +24,7 @@ import static org.openqa.selenium.testing.Driver.ALL;
 import static org.openqa.selenium.testing.Driver.CHROME;
 import static org.openqa.selenium.testing.Driver.EDGE;
 import static org.openqa.selenium.testing.Driver.FIREFOX;
+import static org.openqa.selenium.testing.Driver.GRID;
 import static org.openqa.selenium.testing.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
@@ -167,8 +168,13 @@ public class TestIgnorance {
   }
 
   private void addIgnoresForBrowser(Browser browser, IgnoreComparator comparator) {
-    if (Boolean.getBoolean("selenium.browser.remote") || SauceDriver.shouldUseSauce()) {
+    if (Boolean.getBoolean("selenium.browser.remote")
+        || Boolean.getBoolean("selenium.browser.grid")
+        || SauceDriver.shouldUseSauce()) {
       comparator.addDriver(REMOTE);
+    }
+    if (Boolean.getBoolean("selenium.browser.grid")) {
+      comparator.addDriver(GRID);
     }
 
     switch (browser) {

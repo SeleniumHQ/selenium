@@ -335,6 +335,12 @@ public abstract class JUnit4TestBase implements WrapsDriver {
           }
           break;
 
+        case GRID:
+          if (Boolean.getBoolean("selenium.browser.grid")) {
+            return true;
+          }
+          break;
+
         case SAFARI:
           if (browser == Browser.safari) {
             return true;
