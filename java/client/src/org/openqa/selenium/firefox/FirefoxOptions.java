@@ -410,22 +410,6 @@ public class FirefoxOptions {
     return this;
   }
 
-  /**
-   * @deprecated Use {@link #addCapabilities(Capabilities)}
-   */
-  @Deprecated
-  public FirefoxOptions addDesiredCapabilities(Capabilities desiredCapabilities) {
-    return addCapabilities(desiredCapabilities);
-  }
-
-  /**
-   * @deprecated Use {@link #addCapabilities(Capabilities)}
-   */
-  @Deprecated
-  public FirefoxOptions addRequiredCapabilities(Capabilities requiredCapabilities) {
-    return addCapabilities(requiredCapabilities);
-  }
-
   public FirefoxOptions addCapabilities(Capabilities capabilities) {
     return validateAndAmendUsing(this.desiredCapabilities, capabilities);
   }
