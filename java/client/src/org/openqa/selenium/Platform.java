@@ -35,7 +35,7 @@ public enum Platform {
   WINDOWS("") {
     @Override
     public Platform family() {
-      return WINDOWS;
+      return null;
     }
   },
 
@@ -87,7 +87,7 @@ public enum Platform {
   MAC("mac", "darwin", "macOS", "os x") {
     @Override
     public Platform family() {
-      return MAC;
+      return null;
     }
   },
 
@@ -163,14 +163,14 @@ public enum Platform {
   UNIX("solaris", "bsd") {
     @Override
     public Platform family() {
-      return UNIX;
+      return null;
     }
   },
 
   LINUX("linux") {
     @Override
     public Platform family() {
-      return LINUX;
+      return UNIX;
     }
   },
 
@@ -183,7 +183,7 @@ public enum Platform {
 
   IOS("iOS") {
     @Override
-    public Platform family() { return IOS; }
+    public Platform family() { return null; }
   },
 
   /**
@@ -346,14 +346,21 @@ public enum Platform {
    * @return true if platforms are approximately similar, false otherwise
    */
   public boolean is(Platform compareWith) {
-    return this == compareWith || this.family().is(compareWith);
+    return
+        // Any platform is itself
+        this == compareWith ||
+        // Any platform is also ANY platform
+        compareWith == ANY ||
+        // And any Platform which is not a platform type belongs to the same family
+        (this.family() != null && this.family().is(compareWith));
   }
 
   /**
    * Returns a platform that represents a family for the current platform.  For instance
    * the LINUX if a part of the UNIX family, the XP is a part of the WINDOWS family.
    *
-   * @return the family platform for the current one
+   * @return the family platform for the current one, or {@code null} if this {@code Platform}
+   *         represents a platform family (such as Windows, or MacOS)
    */
   public abstract Platform family();
 
