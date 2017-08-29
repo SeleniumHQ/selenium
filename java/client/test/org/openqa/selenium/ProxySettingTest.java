@@ -18,11 +18,8 @@
 package org.openqa.selenium;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.remote.CapabilityType.PROXY;
-import static org.openqa.selenium.testing.Driver.CHROME;
-import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Driver.SAFARI;
@@ -155,54 +152,6 @@ public class ProxySettingTest extends JUnit4TestBase {
     driver.get(pages.simpleTestPage);
     assertEquals("Proxy should have permitted direct access to host",
         "Heading", driver.findElement(By.tagName("h1")).getText());
-  }
-
-  @Test
-  @Ignore(CHROME)
-  @Ignore(IE)
-  @Ignore(SAFARI)
-  @Ignore(PHANTOMJS)
-  @NeedsLocalEnvironment
-  public void canConfigureProxyWithRequiredCapability() {
-    Proxy proxyToUse = proxyServer.asProxy();
-    DesiredCapabilities requiredCaps = new DesiredCapabilities();
-    requiredCaps.setCapability(PROXY, proxyToUse);
-
-    WebDriver driver = new WebDriverBuilder().setRequiredCapabilities(requiredCaps).get();
-    registerDriverTeardown(driver);
-
-    driver.get(pages.simpleTestPage);
-    assertTrue("Proxy should have been called", proxyServer.hasBeenCalled("simpleTest.html"));
-  }
-
-  @Test
-  @Ignore(CHROME)
-  @Ignore(IE)
-  @Ignore(SAFARI)
-  @Ignore(PHANTOMJS)
-  @NeedsLocalEnvironment
-  public void requiredProxyCapabilityShouldHavePriority() {
-    ProxyServer desiredProxyServer = new ProxyServer();
-    registerProxyTeardown(desiredProxyServer);
-
-    Proxy desiredProxy = desiredProxyServer.asProxy();
-    Proxy requiredProxy = proxyServer.asProxy();
-
-    DesiredCapabilities desiredCaps = new DesiredCapabilities();
-    desiredCaps.setCapability(PROXY, desiredProxy);
-    DesiredCapabilities requiredCaps = new DesiredCapabilities();
-    requiredCaps.setCapability(PROXY, requiredProxy);
-
-    WebDriver driver = new WebDriverBuilder().setDesiredCapabilities(desiredCaps).
-        setRequiredCapabilities(requiredCaps).get();
-    registerDriverTeardown(driver);
-
-    driver.get(pages.simpleTestPage);
-
-    assertFalse("Desired proxy should not have been called.",
-                desiredProxyServer.hasBeenCalled("simpleTest.html"));
-    assertTrue("Required proxy should have been called.",
-               proxyServer.hasBeenCalled("simpleTest.html"));
   }
 
   private void registerDriverTeardown(final WebDriver driver) {

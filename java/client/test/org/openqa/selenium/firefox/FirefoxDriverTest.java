@@ -560,6 +560,7 @@ public class FirefoxDriverTest extends JUnit4TestBase {
   public void constructorArgsAreNullable() {
     new SynthesizedFirefoxDriver((Capabilities) null).quit();
   }
+
   /**
    * Tests that we do not pollute the global namespace with Sizzle in Firefox 3.
    */
