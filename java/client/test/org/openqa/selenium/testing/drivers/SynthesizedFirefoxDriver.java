@@ -21,12 +21,12 @@ import static org.junit.Assert.fail;
 import static org.openqa.selenium.testing.DevMode.isInDevMode;
 
 import com.google.common.base.Throwables;
-import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.BuckBuild;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.testing.DevMode;
@@ -45,20 +45,15 @@ public class SynthesizedFirefoxDriver extends FirefoxDriver {
   private static File cachedExt = null;
 
   public SynthesizedFirefoxDriver() {
-    this(new DesiredCapabilities(), new DesiredCapabilities());
-  }
-
-  public SynthesizedFirefoxDriver(FirefoxProfile profile) throws IOException {
-    this(new DesiredCapabilities(ImmutableMap.of(PROFILE, profile)), new DesiredCapabilities());
+    this(new FirefoxOptions());
   }
 
   public SynthesizedFirefoxDriver(Capabilities desiredCapabilities) {
-    this(desiredCapabilities, null);
+    super(tweakCapabilities(desiredCapabilities));
   }
 
-  public SynthesizedFirefoxDriver(Capabilities desiredCapabilities,
-                                  Capabilities requiredCapabilities) {
-    super(tweakCapabilities(desiredCapabilities), requiredCapabilities);
+  public SynthesizedFirefoxDriver(FirefoxOptions options) {
+    super(tweakCapabilities(options.toCapabilities()));
   }
 
   private static Capabilities tweakCapabilities(Capabilities desiredCaps) {
