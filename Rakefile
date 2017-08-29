@@ -446,7 +446,7 @@ end
 task :'prep-release-zip' => [
   '//java/client/src/org/openqa/selenium:client-combined:zip',
   '//java/server/src/org/openqa/grid/selenium:selenium:zip',
-  '//java/server/src/org/openqa/selenium/server/htmlrunner:selenium-runner'] do |t|
+  '//java/server/src/org/openqa/selenium/server/htmlrunner:selenium-runner'] do
 
   mkdir_p "build/dist"
   cp Rake::Task['//java/server/src/org/openqa/grid/selenium:selenium'].out, "build/dist/selenium-server-standalone-#{version}.jar"
@@ -460,15 +460,7 @@ task :'prep-release-zip' => [
 end
 
 
-task :release => JAVA_RELEASE_TARGETS + ['prep-release-zip'] do |t|
-  puts t.prerequisites.join(', ')
-
- t.prerequisites.each do |p|
-   if JAVA_RELEASE_TARGETS.include?(p)
-     Buck::buck_cmd.call('publish', ['--dry-run', '--remote-repo', 'https://oss.sonatype.org/service/local/staging/deploy/maven2', p])
-   end
- end
-end
+task :'release-java' => [:'publish-maven', ':push-release']
 
 def read_user_pass_from_m2_settings
     settings = File.read(ENV['HOME'] + "/.m2/settings.xml")
@@ -490,7 +482,7 @@ def read_user_pass_from_m2_settings
     return [user, pass]
 end
 
-task :'publish-maven' do
+task :'publish-maven' => JAVA_RELEASE_TARGETS do
   puts "\n Enter Passphrase:"
   passphrase = STDIN.gets.chomp
 
@@ -510,7 +502,7 @@ task :'maven-install' do
   end
 end
 
-task :push_release => [:release] do
+task :'push-release' => [:'prep-release-zip'] do
   py = "java -jar third_party/py/jython.jar"
   if (python?)
     py = "python"
