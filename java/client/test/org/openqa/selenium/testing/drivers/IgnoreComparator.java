@@ -15,16 +15,12 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package org.openqa.selenium.testing.drivers;
 
 import com.google.common.collect.Sets;
 
 import org.eclipse.egit.github.core.Issue;
-import org.eclipse.egit.github.core.Repository;
-import org.eclipse.egit.github.core.client.GitHubClient;
 import org.eclipse.egit.github.core.service.IssueService;
-import org.eclipse.egit.github.core.service.RepositoryService;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.testing.Driver;
 import org.openqa.selenium.testing.Ignore;
