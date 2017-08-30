@@ -7,7 +7,12 @@ prebuilt_jar(
     '//third_party/java/hamcrest:hamcrest-core'
   ],
   visibility = [
-    'PUBLIC',
+    '//third_party/java/sisu:org.eclipse.sisu.plexus',
+    '//third_party/java/testng:testng',
+    '//java/client/test/...',
+    '//java/server/test/...',
+    '//java/client/src/com/thoughtworks/selenium/...',
+    '//java/client/src/org/openqa/selenium/lift:lift',
   ],
 )
 
