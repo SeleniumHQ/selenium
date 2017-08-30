@@ -20,8 +20,6 @@ package org.openqa.grid.web.servlet.handler;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-import com.google.common.collect.ImmutableMap;
-
 import org.openqa.grid.common.exception.GridException;
 import org.openqa.grid.internal.ExternalSessionKey;
 import org.openqa.grid.internal.Registry;
@@ -30,6 +28,7 @@ import org.openqa.selenium.remote.server.NewSessionPayload;
 
 import java.io.Reader;
 import java.io.StringReader;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -71,7 +70,9 @@ public class WebDriverRequest extends SeleniumBasedRequest {
       Capabilities caps = payload.stream()
           .findFirst()
           .orElseThrow(() -> new GridException("No capabilities found in request: " + json));
-      return ImmutableMap.copyOf(caps.asMap());
+      Map<String, Object> toReturn = new HashMap<>();
+      toReturn.putAll(caps.asMap());
+      return toReturn;
     } catch (GridException e) {
       throw e;
     } catch (Exception e) {
