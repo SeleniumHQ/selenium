@@ -147,30 +147,6 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     }
   }
 
-  /**
-   * @deprecated Use {@link RemoteWebDriver(CommandExecutor, Capabilities)}.
-   */
-  @Deprecated
-  public RemoteWebDriver(
-      CommandExecutor executor,
-      Capabilities desiredCapabilities,
-      Capabilities requiredCapabilities) {
-    this(executor, desiredCapabilities.merge(requiredCapabilities));
-  }
-
-  /**
-   * @deprecated Use {@link RemoteWebDriver(CommandExecutor, Capabilities)}, creating a new
-   *   {@link HttpCommandExecutor}.
-   */
-  @Deprecated
-  public RemoteWebDriver(
-      URL remoteAddress,
-      Capabilities desiredCapabilities,
-      Capabilities requiredCapabilities) {
-    this(new HttpCommandExecutor(remoteAddress), desiredCapabilities,
-        requiredCapabilities);
-  }
-
   public RemoteWebDriver(URL remoteAddress, Capabilities desiredCapabilities) {
     this(new HttpCommandExecutor(remoteAddress), desiredCapabilities);
   }
@@ -234,22 +210,9 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
   }
 
   protected void startSession(Capabilities desiredCapabilities) {
-    startSession(desiredCapabilities, null);
-  }
-
-  /**
-   * @deprecated Use {@link #startSession(Capabilities)} instead.
-   */
-  @Deprecated
-  @SuppressWarnings({"unchecked"})
-  protected void startSession(Capabilities desiredCapabilities,
-      Capabilities requiredCapabilities) {
     ImmutableMap.Builder<String, Capabilities> paramBuilder =
         new ImmutableMap.Builder<>();
     paramBuilder.put("desiredCapabilities", desiredCapabilities);
-    if (requiredCapabilities != null) {
-      paramBuilder.put("requiredCapabilities", requiredCapabilities);
-    }
     Map<String, ?> parameters = paramBuilder.build();
 
     Response response = execute(DriverCommand.NEW_SESSION, parameters);
@@ -310,17 +273,6 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
   }
 
   /**
-   * Method called before {@link #startSession(Capabilities) starting a new session}. The default
-   * implementation is a no-op, but subtypes should override this method to define custom behavior.
-   *
-   * @deprecated Use {@link #startClient(Capabilities)}
-   */
-  @Deprecated
-  protected void startClient(Capabilities desiredCapabilities, Capabilities requiredCapabilities) {
-    startClient(desiredCapabilities.merge(requiredCapabilities));
-  }
-
-  /**
    * Method called after executing a {@link #quit()} command. The default implementation is a no-op,
    * but subtypes should override this method to define custom behavior.
    */
@@ -333,17 +285,6 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
    */
   protected void stopClient(Capabilities desiredCapbilities) {
     stopClient();
-  }
-
-  /**
-   * Method called after executing a {@link #quit()} command. The default implementation is a no-op,
-   * but subtypes should override this method to define custom behavior.
-   *
-   * @deprecated Use {@link #stopClient(Capabilities)}
-   */
-  @Deprecated
-  protected void stopClient(Capabilities desiredCapabilities, Capabilities requiredCapabilities) {
-    stopClient(desiredCapabilities.merge(requiredCapabilities));
   }
 
   public ErrorHandler getErrorHandler() {
