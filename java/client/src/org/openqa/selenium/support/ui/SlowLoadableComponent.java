@@ -18,7 +18,6 @@
 package org.openqa.selenium.support.ui;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.junit.Assert.fail;
 
 
 /**
@@ -91,7 +90,7 @@ public abstract class SlowLoadableComponent<T extends LoadableComponent<T>>
     try {
       Thread.sleep(sleepFor());
     } catch (InterruptedException e) {
-      fail(e.getMessage());
+      throw new AssertionError(e);
     }
   }
 
