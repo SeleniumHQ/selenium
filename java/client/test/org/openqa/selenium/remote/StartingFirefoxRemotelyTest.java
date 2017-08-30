@@ -40,6 +40,7 @@ public class StartingFirefoxRemotelyTest extends JUnit4TestBase {
   @BeforeClass
   public static void ensureTestingFirefox() {
     Assume.assumeTrue("ff".equals(System.getProperty("selenium.browser")));
+    Assume.assumeTrue(Boolean.getBoolean("selenium.browser.remote"));
   }
 
   @Before
