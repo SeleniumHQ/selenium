@@ -476,20 +476,6 @@ public class FirefoxOptions {
     return null;
   }
 
-  /**
-   * @deprecated Use {@link #toCapabilities()}.
-   */
-  public Capabilities toDesiredCapabilities() {
-    return toCapabilities();
-  }
-
-  /**
-   * @deprecated Use {@link #toCapabilities()}.
-   */
-  public Capabilities toRequiredCapabilities() {
-    return toCapabilities();
-  }
-
   public Capabilities toCapabilities() {
     HashMap<String, Object> caps = new HashMap<>(desiredCapabilities.asMap());
 
