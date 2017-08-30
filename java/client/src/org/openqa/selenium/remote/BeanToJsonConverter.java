@@ -179,18 +179,6 @@ public class BeanToJsonConverter {
       return new JsonPrimitive(((File) toConvert).getAbsolutePath());
     }
 
-    Method toMap = getMethod(toConvert, "toMap");
-    if (toMap == null) {
-      toMap = getMethod(toConvert, "asMap");
-    }
-    if (toMap != null) {
-      try {
-        return convertObject(toMap.invoke(toConvert), maxDepth - 1);
-      } catch (ReflectiveOperationException e) {
-        throw new WebDriverException(e);
-      }
-    }
-
     Method toJson = getMethod(toConvert, "toJson");
     if (toJson != null) {
       try {
@@ -210,6 +198,18 @@ public class BeanToJsonConverter {
             return new JsonPrimitive((String) res);
           }
         }
+      } catch (ReflectiveOperationException e) {
+        throw new WebDriverException(e);
+      }
+    }
+
+    Method toMap = getMethod(toConvert, "toMap");
+    if (toMap == null) {
+      toMap = getMethod(toConvert, "asMap");
+    }
+    if (toMap != null) {
+      try {
+        return convertObject(toMap.invoke(toConvert), maxDepth - 1);
       } catch (ReflectiveOperationException e) {
         throw new WebDriverException(e);
       }

@@ -236,6 +236,12 @@ public class BeanToJsonConverterTest {
   }
 
   @Test
+  public void testShouldPreferToJsonMethodToToMapMethod() {
+    String json = new BeanToJsonConverter().convert(new MappableJsonAware("converted"));
+    assertEquals("\"converted\"", json);
+  }
+
+  @Test
   public void toJsonMethodCanConvertibleReturnedMap() {
     class ToJsonReturnsMap {
       @SuppressWarnings("unused")
@@ -583,6 +589,22 @@ public class BeanToJsonConverterTest {
 
     public String toJson() {
       return convertedValue;
+    }
+  }
+
+  public class MappableJsonAware {
+    private String convertedValue;
+
+    public MappableJsonAware(String convertedValue) {
+      this.convertedValue = convertedValue;
+    }
+
+    public String toJson() {
+      return convertedValue;
+    }
+
+    public Map<String, Object> asMap() {
+      return ImmutableMap.of("key", "value");
     }
   }
 
