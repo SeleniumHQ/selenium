@@ -555,12 +555,6 @@ public class FirefoxDriverTest extends JUnit4TestBase {
         ((JavascriptExecutor) driver).executeScript("return typeof Sizzle == 'undefined';"));
   }
 
-  @Test
-  @NeedsLocalEnvironment
-  public void constructorArgsAreNullable() {
-    new SynthesizedFirefoxDriver((Capabilities) null).quit();
-  }
-
   /**
    * Tests that we do not pollute the global namespace with Sizzle in Firefox 3.
    */
