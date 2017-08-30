@@ -92,7 +92,7 @@ public class StartingFirefoxRemotelyTest extends JUnit4TestBase {
     options.setProfile(new FirefoxProfile());
     options.addCapabilities(caps);
 
-    localDriver = new RemoteWebDriver(remoteUrl, options.toDesiredCapabilities());
+    localDriver = new RemoteWebDriver(remoteUrl, options.toCapabilities());
     localDriver.get(pages.xhtmlTestPage);
     assertEquals("XHTML Test Page", localDriver.getTitle());
   }
@@ -105,7 +105,7 @@ public class StartingFirefoxRemotelyTest extends JUnit4TestBase {
     FirefoxOptions options = new FirefoxOptions();
     options.addCapabilities(caps);
 
-    localDriver = new RemoteWebDriver(remoteUrl, options.toDesiredCapabilities());
+    localDriver = new RemoteWebDriver(remoteUrl, options.toCapabilities());
     localDriver.get(pages.xhtmlTestPage);
     assertEquals("XHTML Test Page", localDriver.getTitle());
   }
