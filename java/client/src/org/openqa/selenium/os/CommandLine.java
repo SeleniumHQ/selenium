@@ -85,7 +85,7 @@ public class CommandLine {
   public void updateDynamicLibraryPath(String extraPath) {
     if (extraPath != null) {
       String existing = System.getenv(getLibraryPathPropertyName());
-      String ldPath = existing != null ? existing + File.separator + extraPath : extraPath;
+      String ldPath = existing != null ? existing + File.pathSeparator + extraPath : extraPath;
       setEnvironmentVariable(getLibraryPathPropertyName(), ldPath);
     }
   }
