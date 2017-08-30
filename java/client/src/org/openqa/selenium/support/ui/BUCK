@@ -19,7 +19,6 @@ java_library(name = 'components',
   deps = [
     ':clock',
     '//java/client/src/org/openqa/selenium:selenium',
-    '//third_party/java/junit:junit',
   ],
   visibility = ['PUBLIC'],
 )
