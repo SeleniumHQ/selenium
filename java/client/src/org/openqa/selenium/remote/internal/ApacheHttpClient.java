@@ -188,11 +188,7 @@ public class ApacheHttpClient implements org.openqa.selenium.remote.http.HttpCli
       get.setHeader("Accept", "application/json; charset=utf-8");
       org.apache.http.HttpResponse newResponse = client.execute(targetHost, get, context);
       return followRedirects(client, context, newResponse, redirectCount + 1);
-    } catch (URISyntaxException e) {
-      throw new WebDriverException(e);
-    } catch (ClientProtocolException e) {
-      throw new WebDriverException(e);
-    } catch (IOException e) {
+    } catch (URISyntaxException | IOException e) {
       throw new WebDriverException(e);
     }
   }
