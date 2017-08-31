@@ -186,6 +186,11 @@ namespace OpenQA.Selenium
         /// <summary>
         /// No cookie was found matching the name requested.
         /// </summary>
-        NoSuchCookie = 34
+        NoSuchCookie = 34,
+
+        /// <summary>
+        /// An invalid argument was passed to the command.
+        /// </summary>
+        InvalidArgument = 1000
     }
 }
