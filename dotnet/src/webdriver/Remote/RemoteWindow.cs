@@ -1,4 +1,4 @@
-﻿// <copyright file="RemoteWindow.cs" company="WebDriver Committers">
+// <copyright file="RemoteWindow.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -138,6 +138,24 @@ namespace OpenQA.Selenium.Remote
             }
 
             this.driver.InternalExecute(DriverCommand.MaximizeWindow, parameters);
+        }
+
+        /// <summary>
+        /// Minimizes the current window if it is not already maximized.
+        /// </summary>
+        public void Minimize()
+        {
+            Dictionary<string, object> parameters = null;
+            this.driver.InternalExecute(DriverCommand.MinimizeWindow, parameters);
+        }
+
+        /// <summary>
+        /// Sets the current window to full screen if it is not already in that state.
+        /// </summary>
+        public void FullScreen()
+        {
+            Dictionary<string, object> parameters = null;
+            this.driver.InternalExecute(DriverCommand.FullScreenWindow, parameters);
         }
     }
 }
