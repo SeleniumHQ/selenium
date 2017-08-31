@@ -107,9 +107,9 @@ public class ClickScrollingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(IE)
-  @Ignore(FIREFOX)
-  @Ignore(MARIONETTE)
+  @Ignore(value = IE, issue = "716")
+  @Ignore(value = FIREFOX, issue = "716")
+  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/915")
   @Ignore(value = SAFARI, reason = "not tested")
   public void testShouldBeAbleToClickOnAnElementPartiallyHiddenByOverflow() {
     driver.get(appServer.whereIs("scrolling_tests/page_with_partially_hidden_element.html"));

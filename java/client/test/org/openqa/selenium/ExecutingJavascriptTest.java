@@ -570,12 +570,12 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
 
   @Test(timeout = 10000)
   @Ignore(CHROME)
-  @Ignore(IE)
+  @Ignore(value = IE, issue = "540")
   @Ignore(PHANTOMJS)
   @Ignore(SAFARI)
-  @Ignore(FIREFOX)
+  @Ignore(value = FIREFOX, issue = "540")
   @Ignore(HTMLUNIT)
-  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/904")
+  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/914")
   public void shouldHandleRecursiveStructures() {
     driver.get(pages.simpleTestPage);
 
