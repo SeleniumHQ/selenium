@@ -1042,25 +1042,28 @@ namespace OpenQA.Selenium.Remote
         {
             List<IWebElement> toReturn = new List<IWebElement>();
             object[] elements = response.Value as object[];
-            foreach (object elementObject in elements)
+            if (elements != null)
             {
-                Dictionary<string, object> elementDictionary = elementObject as Dictionary<string, object>;
-                if (elementDictionary != null)
+                foreach (object elementObject in elements)
                 {
-                    // TODO: Remove this "if" logic once the spec is properly updated
-                    // and remote-end implementations comply.
-                    string id = string.Empty;
-                    if (elementDictionary.ContainsKey("element-6066-11e4-a52e-4f735466cecf"))
+                    Dictionary<string, object> elementDictionary = elementObject as Dictionary<string, object>;
+                    if (elementDictionary != null)
                     {
-                        id = (string)elementDictionary["element-6066-11e4-a52e-4f735466cecf"];
-                    }
-                    else if (elementDictionary.ContainsKey("ELEMENT"))
-                    {
-                        id = (string)elementDictionary["ELEMENT"];
-                    }
+                        // TODO: Remove this "if" logic once the spec is properly updated
+                        // and remote-end implementations comply.
+                        string id = string.Empty;
+                        if (elementDictionary.ContainsKey("element-6066-11e4-a52e-4f735466cecf"))
+                        {
+                            id = (string)elementDictionary["element-6066-11e4-a52e-4f735466cecf"];
+                        }
+                        else if (elementDictionary.ContainsKey("ELEMENT"))
+                        {
+                            id = (string)elementDictionary["ELEMENT"];
+                        }
 
-                    RemoteWebElement element = this.CreateElement(id);
-                    toReturn.Add(element);
+                        RemoteWebElement element = this.CreateElement(id);
+                        toReturn.Add(element);
+                    }
                 }
             }
 
