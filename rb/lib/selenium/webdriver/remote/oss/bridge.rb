@@ -558,6 +558,8 @@ module Selenium
                   else
                     execute :find_elements, {}, {using: how, value: what}
                   end
+            # see https://github.com/SeleniumHQ/selenium/issues/4555
+            ids ||= []
 
             ids.map { |id| Element.new self, element_id_from(id) }
           end
