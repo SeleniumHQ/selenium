@@ -253,7 +253,10 @@ module Selenium
               when :platform
                 hash['platform'] = value.to_s.upcase
               when :proxy
-                hash['proxy'] = value.as_json if value
+                if value
+                  hash['proxy'] = value.as_json
+                  hash['proxy']['proxyType'] &&= hash['proxy']['proxyType'].downcase
+                end
               when String, :firefox_binary
                 hash[key.to_s] = value
               when Symbol
