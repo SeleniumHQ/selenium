@@ -1,4 +1,4 @@
-﻿// <copyright file="FirefoxProfile.cs" company="WebDriver Committers">
+// <copyright file="FirefoxProfile.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -241,39 +241,10 @@ namespace OpenQA.Selenium.Firefox
         /// </summary>
         /// <param name="proxy">The <see cref="Proxy"/> object defining the proxy
         /// preferences for the profile.</param>
+        [Obsolete("Use the FirefoxOptions class to set a proxy for Firefox.")]
         public void SetProxyPreferences(Proxy proxy)
         {
-            if (proxy == null)
-            {
-                throw new ArgumentNullException("proxy", "proxy must not be null");
-            }
-
-            if (proxy.Kind == ProxyKind.Unspecified)
-            {
-                return;
-            }
-
-            this.SetPreference("network.proxy.type", (int)proxy.Kind);
-
-            switch (proxy.Kind)
-            {
-                case ProxyKind.Manual: // By default, assume we're proxying the lot
-                    this.SetPreference("network.proxy.no_proxies_on", string.Empty);
-
-                    this.SetManualProxyPreference("ftp", proxy.FtpProxy);
-                    this.SetManualProxyPreference("http", proxy.HttpProxy);
-                    this.SetManualProxyPreference("ssl", proxy.SslProxy);
-                    this.SetManualProxyPreference("socks", proxy.SocksProxy);
-                    if (proxy.NoProxy != null)
-                    {
-                        this.SetPreference("network.proxy.no_proxies_on", proxy.NoProxy);
-                    }
-
-                    break;
-                case ProxyKind.ProxyAutoConfigure:
-                    this.SetPreference("network.proxy.autoconfig_url", proxy.ProxyAutoConfigUrl);
-                    break;
-            }
+            this.InternalSetProxyPreferences(proxy);
         }
 
         /// <summary>
@@ -353,6 +324,46 @@ namespace OpenQA.Selenium.Firefox
             if (!this.extensions.ContainsKey("webdriver"))
             {
                 this.extensions.Add("webdriver", new FirefoxExtension(ExtensionFileName, ExtensionResourceId));
+            }
+        }
+
+        /// <summary>
+        /// Internal implementation to set proxy preferences for this profile.
+        /// </summary>
+        /// <param name="proxy">The <see cref="Proxy"/> object defining the proxy
+        /// preferences for the profile.</param>
+        internal void InternalSetProxyPreferences(Proxy proxy)
+        {
+            if (proxy == null)
+            {
+                throw new ArgumentNullException("proxy", "proxy must not be null");
+            }
+
+            if (proxy.Kind == ProxyKind.Unspecified)
+            {
+                return;
+            }
+
+            this.SetPreference("network.proxy.type", (int)proxy.Kind);
+
+            switch (proxy.Kind)
+            {
+                case ProxyKind.Manual: // By default, assume we're proxying the lot
+                    this.SetPreference("network.proxy.no_proxies_on", string.Empty);
+
+                    this.SetManualProxyPreference("ftp", proxy.FtpProxy);
+                    this.SetManualProxyPreference("http", proxy.HttpProxy);
+                    this.SetManualProxyPreference("ssl", proxy.SslProxy);
+                    this.SetManualProxyPreference("socks", proxy.SocksProxy);
+                    if (proxy.NoProxy != null)
+                    {
+                        this.SetPreference("network.proxy.no_proxies_on", proxy.NoProxy);
+                    }
+
+                    break;
+                case ProxyKind.ProxyAutoConfigure:
+                    this.SetPreference("network.proxy.autoconfig_url", proxy.ProxyAutoConfigUrl);
+                    break;
             }
         }
 

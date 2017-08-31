@@ -1,4 +1,4 @@
-﻿// <copyright file="InternetExplorerOptions.cs" company="WebDriver Committers">
+// <copyright file="InternetExplorerOptions.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -484,7 +484,11 @@ namespace OpenQA.Selenium.IE
 
             if (this.proxy != null)
             {
-                capabilities.SetCapability(CapabilityType.Proxy, this.proxy);
+                Dictionary<string, object> proxyCapability = this.proxy.ToCapability();
+                if (proxyCapability != null)
+                {
+                    capabilities.SetCapability(CapabilityType.Proxy, proxyCapability);
+                }
             }
 
             Dictionary<string, object> internetExplorerOptions = this.BuildInternetExplorerOptionsDictionary();
