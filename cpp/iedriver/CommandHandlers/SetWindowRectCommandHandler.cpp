@@ -36,27 +36,27 @@ void SetWindowRectCommandHandler::ExecuteInternal(
   int x = -1;
   int y = -1;
 
-  ParametersMap::const_iterator width_parameter_iterator = command_parameters.find("width");
-  ParametersMap::const_iterator height_parameter_iterator = command_parameters.find("height");
-  ParametersMap::const_iterator x_parameter_iterator = command_parameters.find("x");
-  ParametersMap::const_iterator y_parameter_iterator = command_parameters.find("y");
-  
-  if (width_parameter_iterator != command_parameters.end()) {
-    width = width_parameter_iterator->second.asInt();
+  std::string argument_error_message = "";
+  if (!GetNumericParameter(command_parameters, "width", &width, &argument_error_message)) {
+    response->SetErrorResponse(ERROR_INVALID_ARGUMENT, argument_error_message);
+    return;
   }
-  
-  if (height_parameter_iterator != command_parameters.end()) {
-    height = height_parameter_iterator->second.asInt();
+
+  if (!GetNumericParameter(command_parameters, "height", &height, &argument_error_message)) {
+    response->SetErrorResponse(ERROR_INVALID_ARGUMENT, argument_error_message);
+    return;
   }
-  
-  if (x_parameter_iterator != command_parameters.end()) {
-    x = x_parameter_iterator->second.asInt();
+
+  if (!GetNumericParameter(command_parameters, "x", &x, &argument_error_message)) {
+    response->SetErrorResponse(ERROR_INVALID_ARGUMENT, argument_error_message);
+    return;
   }
-  
-  if (y_parameter_iterator != command_parameters.end()) {
-    y = y_parameter_iterator->second.asInt();
-  } 
-  
+
+  if (!GetNumericParameter(command_parameters, "y", &y, &argument_error_message)) {
+    response->SetErrorResponse(ERROR_INVALID_ARGUMENT, argument_error_message);
+    return;
+  }
+
   int status_code = WD_SUCCESS;
 
   BrowserHandle browser_wrapper;
@@ -66,12 +66,11 @@ void SetWindowRectCommandHandler::ExecuteInternal(
     return;
   }
 
-  // If the window is maximized, the window needs to be restored.
-  HWND window_handle = browser_wrapper->GetTopLevelWindowHandle();
-  if (::IsZoomed(window_handle) || ::IsIconic(window_handle)) {
-    ::ShowWindow(window_handle, SW_RESTORE);
-  }
+  // If the window is minimized, maximized, or full screen,
+  // the window needs to be restored.
+  browser_wrapper->Restore();
 
+  HWND window_handle = browser_wrapper->GetTopLevelWindowHandle();
   if (x >= 0 && y >= 0) {
     BOOL set_window_pos_result = ::SetWindowPos(window_handle, NULL, x, y, 0, 0, SWP_NOSIZE);
     if (!set_window_pos_result) {
@@ -90,12 +89,38 @@ void SetWindowRectCommandHandler::ExecuteInternal(
     }
   }
 
+  HWND browser_window_handle = browser_wrapper->GetTopLevelWindowHandle();
+  RECT window_rect;
+  ::GetWindowRect(browser_window_handle, &window_rect);
   Json::Value returned_rect;
-  returned_rect["x"] = x;
-  returned_rect["y"] = y;
-  returned_rect["width"] = width;
-  returned_rect["height"] = height;
+  returned_rect["width"] = window_rect.right - window_rect.left;
+  returned_rect["height"] = window_rect.bottom - window_rect.top;
+  returned_rect["x"] = window_rect.left;
+  returned_rect["y"] = window_rect.top;
   response->SetSuccessResponse(returned_rect);
+}
+
+bool SetWindowRectCommandHandler::GetNumericParameter(
+    const ParametersMap& command_parameters,
+    const std::string& argument_name,
+    int* argument_value,
+    std::string* error_message) {
+  ParametersMap::const_iterator parameter_iterator = command_parameters.find(argument_name);
+  if (parameter_iterator != command_parameters.end()) {
+    if (!parameter_iterator->second.isNumeric()) {
+      *error_message = argument_name + " must be a numeric parameter.";
+      return false;
+    }
+    int value = parameter_iterator->second.asInt();
+    if (value < 0) {
+      *error_message = argument_name + " must be a numeric parameter greater than zero.";
+      return false;
+    }
+
+    *argument_value = value;
+    return true;
+  }
+  return true;
 }
 
 } // namespace webdriver

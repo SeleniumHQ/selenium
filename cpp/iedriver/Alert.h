@@ -87,6 +87,7 @@ class Alert {
 
   static bool IsOKButton(HWND button_handle);
   static bool IsCancelButton(HWND button_handle);
+  static bool IsLinkButton(HWND button_handle);
   static bool IsSimpleEdit(HWND edit_handle);
   static bool IsPasswordEdit(HWND edit_handle);
   static BOOL CALLBACK FindDialogButton(HWND hwnd, LPARAM arg);
@@ -99,6 +100,7 @@ class Alert {
   std::tr1::shared_ptr<DocumentHost> browser_;
   bool is_standard_alert_;
   bool is_security_alert_;
+  bool is_standard_control_alert_;
 };
 
 

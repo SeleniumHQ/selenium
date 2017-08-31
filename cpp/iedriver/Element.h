@@ -49,6 +49,9 @@ class Element {
   int GetAttributeValue(const std::string& attribute_name,
                         std::string* attribute_value,
                         bool* value_is_null);
+  int GetPropertyValue(const std::string& property_name,
+                       std::string* property_value,
+                       bool* value_is_null);
   int GetCssPropertyValue(const std::string& property_name,
                           std::string* property_value);
 

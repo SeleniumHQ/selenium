@@ -62,6 +62,10 @@ class DocumentHost {
 
   virtual bool IsValidWindow(void) = 0;
 
+  virtual bool IsFullScreen(void) = 0;
+  virtual bool SetFullScreen(bool is_full_screen) = 0;
+  void Restore(void);
+
   std::string GetCurrentUrl(void);
   std::string GetPageSource(void);
 

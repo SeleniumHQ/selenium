@@ -47,8 +47,8 @@ InputManager::InputManager() {
   this->is_shift_pressed_ = false;
   this->is_left_button_pressed_ = false;
   this->is_right_button_pressed_ = false;
-  this->last_known_mouse_x_ = -1;
-  this->last_known_mouse_y_ = -1;
+  this->last_known_mouse_x_ = 0;
+  this->last_known_mouse_y_ = 0;
   this->last_click_time_ = clock();
 
   this->keyboard_state_buffer_.resize(256);
@@ -74,6 +74,7 @@ InputManager::~InputManager(void) {
 void InputManager::Initialize(ElementRepository* element_map) {
   LOG(TRACE) << "Entering InputManager::Initialize";
   this->element_map_ = element_map;
+  this->SetupKeyDescriptions();
 }
 
 int InputManager::PerformInputSequence(BrowserHandle browser_wrapper, const Json::Value& sequences) {
@@ -181,6 +182,7 @@ int InputManager::PerformInputSequence(BrowserHandle browser_wrapper, const Json
   // If there are inputs in the array, then we've queued up input actions
   // to be played back. So play them back.
   if (this->inputs_.size() > 0) {
+    LOG(DEBUG) << "Processing a total of " << this->inputs_.size() << " input events";
     if (this->require_window_focus_) {
       this->PerformInputWithSendInput(browser_wrapper);
     } else {
@@ -199,6 +201,7 @@ int InputManager::PerformInputSequence(BrowserHandle browser_wrapper, const Json
 }
 
 int InputManager::PerformInputWithSendInput(BrowserHandle browser_wrapper) {
+  LOG(TRACE) << "Entering InputManager::PerformInputWithSendInput";
   // SendInput simulates mouse and keyboard events at a very low level, so
   // low that there is no guarantee that IE will have processed the resulting
   // windows messages before this method returns. Therefore, we'll install
@@ -243,16 +246,18 @@ int InputManager::PerformInputWithSendInput(BrowserHandle browser_wrapper) {
   size_t next_input_index = 0;
   std::vector<size_t>::const_iterator it = sleep_indexes.begin();
   for (; it != sleep_indexes.end(); ++it) {
-    INPUT sleep_input = this->inputs_[*it];
-    size_t number_of_inputs = *it - next_input_index;
+    size_t sleep_input_index = *it;
+    INPUT sleep_input = this->inputs_[sleep_input_index];
+    size_t number_of_inputs = sleep_input_index - next_input_index;
     if (number_of_inputs > 0) {
       this->SetFocusToBrowser(browser_wrapper);
       HookProcessor::ResetEventCount();
       int sent_inputs = ::SendInput(static_cast<int>(number_of_inputs), &this->inputs_[next_input_index], sizeof(INPUT));
       this->WaitForInputEventProcessing(sent_inputs);
     }
-    ::Sleep(this->inputs_[*it].hi.uMsg);
-    next_input_index = *it + 1;
+    LOG(DEBUG) << "Processing pause event";
+    ::Sleep(this->inputs_[sleep_input_index].hi.uMsg);
+    next_input_index = sleep_input_index + 1;
   }
   // Now send any inputs after the last sleep, if any.
   size_t last_inputs = this->inputs_.size() - next_input_index;
@@ -271,6 +276,7 @@ int InputManager::PerformInputWithSendInput(BrowserHandle browser_wrapper) {
 }
 
 int InputManager::PerformInputWithSendMessage(BrowserHandle browser_wrapper) {
+  LOG(TRACE) << "Entering InputManager::PerformInputWithSendMessage";
   HookProcessor message_processor;
   message_processor.Initialize("GetMessageProc", WH_GETMESSAGE);
 
@@ -373,6 +379,96 @@ void InputManager::UpdateInputState(INPUT current_input) {
   }
 }
 
+void InputManager::Reset(BrowserHandle browser_wrapper) {
+  LOG(TRACE) << "Entering InputManager::Reset";
+  Json::Value reset_sequence(Json::arrayValue);
+
+  Json::Value mouse_input_source;
+  mouse_input_source["type"] = "pointer";
+  mouse_input_source["id"] = "default mouse";
+  Json::Value mouse_parameters;
+  mouse_parameters["pointerType"] = "mouse";
+  mouse_input_source["parameters"] = mouse_parameters;
+  mouse_input_source["actions"] = Json::Value(Json::arrayValue);
+
+  if (this->is_left_button_pressed_ || this->is_right_button_pressed_) {
+    if (this->is_left_button_pressed_) {
+      LOG(DEBUG) << "Releasing left mouse button";
+      Json::Value left_button_up;
+      left_button_up["type"] = "pointerUp";
+      left_button_up["button"] = WD_CLIENT_LEFT_MOUSE_BUTTON;
+      mouse_input_source["actions"].append(left_button_up);
+    }
+
+    if (this->is_right_button_pressed_) {
+      LOG(DEBUG) << "Releasing right mouse button";
+      Json::Value right_button_up;
+      right_button_up["type"] = "pointerUp";
+      right_button_up["button"] = WD_CLIENT_RIGHT_MOUSE_BUTTON;
+      mouse_input_source["actions"].append(right_button_up);
+    }
+  }
+
+  Json::Value keyboard_input_source;
+  keyboard_input_source["type"] = "key";
+  keyboard_input_source["id"] = "default keyboard";
+  keyboard_input_source["actions"] = Json::Value(Json::arrayValue);
+
+  if (this->pressed_keys_.size() > 0) {
+    for (size_t i = 0; i < mouse_input_source["actions"].size(); ++i) {
+      Json::Value pause_action;
+      pause_action["type"] = "pause";
+      pause_action["duration"] = 0;
+      keyboard_input_source["actions"].append(pause_action);
+    }
+
+    LOG(DEBUG) << "Releasing " << this->pressed_keys_.size() << " keys";
+    std::vector<wchar_t>::const_reverse_iterator it = this->pressed_keys_.rbegin();
+    for (; it != this->pressed_keys_.rend(); ++it) {
+      std::wstring key_value = L"";
+      key_value.append(1, *it);
+      std::wstring key_description= this->GetKeyDescription(*it);
+      LOG(DEBUG) << "Key: " << LOGWSTRING(key_description);
+      Json::Value keyup;
+      keyup["type"] = "keyUp";
+      keyup["value"] = StringUtilities::ToString(key_value);
+      keyboard_input_source["actions"].append(keyup);
+    }
+    this->pressed_keys_.clear();
+  }
+
+  if (this->last_known_mouse_x_ > 0 || this->last_known_mouse_y_ > 0) {
+    LOG(DEBUG) << "Resetting mouse position";
+    this->last_known_mouse_x_ = 0;
+    this->last_known_mouse_y_ = 0;
+    //for (size_t i = 0; i < keyboard_input_source["actions"].size(); ++i) {
+    //  Json::Value pause_action;
+    //  pause_action["type"] = "pause";
+    //  pause_action["duration"] = 250;
+    //  mouse_input_source["actions"].append(pause_action);
+    //}
+
+    //Json::Value reset_position;
+    //reset_position["type"] = "pointerMove";
+    //reset_position["origin"] = "viewport";
+    //reset_position["x"] = 0;
+    //reset_position["y"] = 0;
+    //mouse_input_source["actions"].append(reset_position);
+  }
+
+  if (mouse_input_source["actions"].size() > 0) {
+    reset_sequence.append(mouse_input_source);
+  }
+
+  if (keyboard_input_source["actions"].size() > 0) {
+    reset_sequence.append(keyboard_input_source);
+  }
+
+  if (reset_sequence.size() > 0) {
+    this->PerformInputSequence(browser_wrapper, reset_sequence);
+  }
+}
+
 InputState InputManager::CloneCurrentInputState(void) {
   InputState current_input_state;
   current_input_state.is_alt_pressed = this->is_alt_pressed_;
@@ -394,7 +490,7 @@ bool InputManager::WaitForInputEventProcessing(int input_count) {
   // or mouse messages processed by the system exceeds the number of
   // input events created by the call to SendInput.
   int total_timeout_in_milliseconds = input_count * WAIT_TIME_IN_MILLISECONDS_PER_INPUT_EVENT;
-  clock_t end = clock() + (total_timeout_in_milliseconds / 1000 * CLOCKS_PER_SEC);
+  clock_t end = clock() + static_cast<clock_t>(((total_timeout_in_milliseconds / 1000.0) * CLOCKS_PER_SEC));
 
   int processed_event_count = HookProcessor::GetEventCount();
   bool inputs_processed = processed_event_count >= input_count;
@@ -404,7 +500,8 @@ bool InputManager::WaitForInputEventProcessing(int input_count) {
     processed_event_count = HookProcessor::GetEventCount();
     inputs_processed = processed_event_count >= input_count;
   }
-  LOG(DEBUG) << "Number of inputs processed: " << processed_event_count;
+  LOG(DEBUG) << "Requested waiting for " << input_count << " events, processed "
+             << processed_event_count << " events";
   return inputs_processed;
 }
 
@@ -433,6 +530,7 @@ bool InputManager::SetFocusToBrowser(BrowserHandle browser_wrapper) {
 }
 
 int InputManager::PointerMoveTo(BrowserHandle browser_wrapper, const Json::Value& move_to_action, InputState* input_state) {
+  LOG(TRACE) << "Entering InputManager::PointerMoveTo";
   int status_code = WD_SUCCESS;
   bool element_specified = false;
   std::string origin = "viewport";
@@ -456,9 +554,11 @@ int InputManager::PointerMoveTo(BrowserHandle browser_wrapper, const Json::Value
     y_offset = move_to_action["y"].asInt();
   }
   
-  bool offset_specified = move_to_action.isMember("x") && move_to_action.isMember("y") && x_offset != 0 && y_offset != 0;
+  bool offset_specified = move_to_action.isMember("x") &&
+                          move_to_action.isMember("y") &&
+                          (x_offset != 0 || y_offset != 0);
 
-  long duration = 0;
+  long duration = 100;
   if (move_to_action.isMember("duration") && move_to_action["duration"].isInt()) {
     duration = move_to_action["duration"].asInt();
   }
@@ -510,47 +610,46 @@ int InputManager::PointerMoveTo(BrowserHandle browser_wrapper, const Json::Value
       }
     }
 
-    if (offset_specified) {
-      // An offset was specified. At this point, the end coordinates should be
-      // set to either (1) the previous mouse position if there was no element
-      // specified, or (2) the origin of the element from which to calculate the
-      // offset, or (3) the absolute position within the view port.
-      if (origin == "viewport") {
-        end_x = x_offset;
-        end_y = y_offset;
-      } else {
+    if (origin == "viewport") {
+      end_x = x_offset;
+      end_y = y_offset;
+    } else {
+      if (offset_specified) {
+        // An offset was specified. At this point, the end coordinates should be
+        // set to either (1) the previous mouse position if there was no element
+        // specified, or (2) the origin of the element from which to calculate the
+        // offset.
         end_x += x_offset;
         end_y += y_offset;
       }
     }
 
+    LOG(DEBUG) << "Queueing SendInput structure for mouse move (origin: " << origin
+               << ", x: " << end_x << ", y: " << end_y << ")";
     HWND browser_window_handle = browser_wrapper->GetContentWindowHandle();
     if (end_x == input_state->mouse_x && end_y == input_state->mouse_y) {
-      LOG(DEBUG) << "Omitting SendInput structure for mouse move; no movement required";
+      LOG(DEBUG) << "Omitting SendInput structure for mouse move; no movement required (x: "
+                 << end_x << ", y: " << end_y << ")";
     } else {
-      long difference_x = abs(end_x - input_state->mouse_x);
-      long difference_y = abs(end_y - input_state->mouse_y);
-      long distance = (long)sqrt(pow((double)difference_x, 2) + pow((double)difference_y, 2));
-
       const int step_count = 10;
-      const int step_size = 5;
-      int steps = distance / step_size;
-
       long step_sleep = duration / max(step_count, 1);
 
+      long x_distance = end_x - input_state->mouse_x;
+      long y_distance = end_y - input_state->mouse_y;
       for (int i = 0; i < step_count; i++) {
         //To avoid integer division rounding and cumulative floating point errors,
         //calculate from scratch each time
-        int current_x = (int)(input_state->mouse_x + ((end_x - input_state->mouse_x) * ((double)i) / step_count));
-        int current_y = (int)(input_state->mouse_y + ((end_y - input_state->mouse_y) * ((double)i) / step_count));
+        double step_progress = ((double)i) / step_count;
+        int current_x = (int)(input_state->mouse_x + (x_distance * step_progress));
+        int current_y = (int)(input_state->mouse_y + (y_distance * step_progress));
         this->AddMouseInput(browser_window_handle, MOUSEEVENTF_MOVE, current_x, current_y);
         if (step_sleep > 0) {
           this->AddPauseInput(browser_window_handle, step_sleep);
         }
       }
       this->AddMouseInput(browser_window_handle, MOUSEEVENTF_MOVE, end_x, end_y);
+      this->AddPauseInput(browser_window_handle, 50);
       if (step_sleep > 0) {
-        this->AddPauseInput(browser_window_handle, step_sleep);
       }
     }
     input_state->mouse_x = end_x;
@@ -593,15 +692,17 @@ int InputManager::PointerMoveTo(BrowserHandle browser_wrapper, const Json::Value
 }
 
 int InputManager::PointerDown(BrowserHandle browser_wrapper, const Json::Value& down_action, InputState* input_state) {
+  LOG(TRACE) << "Entering InputManager::PointerDown";
   int button = down_action["button"].asInt();
   if (this->use_native_events_) {
     HWND browser_window_handle = browser_wrapper->GetContentWindowHandle();
-    LOG(DEBUG) << "Queuing SendInput structure for mouse button down";
+    LOG(DEBUG) << "Queueing SendInput structure for mouse button down";
     long button_event_value = MOUSEEVENTF_LEFTDOWN;
     if (button == WD_CLIENT_RIGHT_MOUSE_BUTTON) {
       button_event_value = MOUSEEVENTF_RIGHTDOWN;
     }
     this->AddMouseInput(browser_window_handle, button_event_value, input_state->mouse_x, input_state->mouse_y);
+    this->AddPauseInput(browser_window_handle, 50);
     if (button == WD_CLIENT_RIGHT_MOUSE_BUTTON) {
       input_state->is_right_button_pressed = true;
     } else {
@@ -630,16 +731,17 @@ int InputManager::PointerDown(BrowserHandle browser_wrapper, const Json::Value& 
 }
 
 int InputManager::PointerUp(BrowserHandle browser_wrapper, const Json::Value& up_action, InputState* input_state) {
+  LOG(TRACE) << "Entering InputManager::PointerUp";
   int button = up_action["button"].asInt();
-  LOG(TRACE) << "Entering InputManager::MouseButtonUp";
   if (this->use_native_events_) {
     HWND browser_window_handle = browser_wrapper->GetContentWindowHandle();
-    LOG(DEBUG) << "Queuing SendInput structure for mouse button down";
+    LOG(DEBUG) << "Queueing SendInput structure for mouse button up";
     long button_event_value = MOUSEEVENTF_LEFTUP;
     if (button == WD_CLIENT_RIGHT_MOUSE_BUTTON) {
       button_event_value = MOUSEEVENTF_RIGHTUP;
     }
     this->AddMouseInput(browser_window_handle, button_event_value, input_state->mouse_x, input_state->mouse_y);
+    this->AddPauseInput(browser_window_handle, 50);
     if (button == WD_CLIENT_RIGHT_MOUSE_BUTTON) {
       input_state->is_right_button_pressed = false;
     } else {
@@ -720,7 +822,6 @@ int InputManager::KeyUp(BrowserHandle browser_wrapper, const Json::Value & up_ac
       L"; return webdriver.atoms.inputs.sendKeys(" +
       L"arguments[0], arguments[1], arguments[2], arguments[3]);" +
       L"};})();";
-    //bool persist_modifier_keys = !auto_release_modifier_keys;
 
     CComPtr<IHTMLDocument2> doc;
     browser_wrapper->GetDocument(&doc);
@@ -797,9 +898,17 @@ void InputManager::AddMouseInput(HWND window_handle, long input_action, int x, i
 void InputManager::AddKeyboardInput(HWND window_handle, wchar_t character, bool key_up, InputState* input_state) {
   LOG(TRACE) << "Entering InputManager::AddKeyboardInput";
 
+  std::wstring log_key = this->GetKeyDescription(character);
+  std::string log_event = "key down";
+  if (key_up) {
+    log_event = "key up";
+  }
+  LOG(DEBUG) << "Queueing SendInput structure for " << log_event
+             << " (key: " << LOGWSTRING(log_key) << ")";
+
   if (this->IsModifierKey(character)) {
     KeyInfo modifier_key_info = { 0, 0, false, false };
-    if (character == WD_KEY_SHIFT || (character == WD_KEY_NULL && input_state->is_shift_pressed)) {
+    if (character == WD_KEY_SHIFT || character == WD_KEY_R_SHIFT || (character == WD_KEY_NULL && input_state->is_shift_pressed)) {
       // If the character represents the Shift key, or represents the 
       // "release all modifiers" key and the Shift key is down, send
       // the appropriate down or up keystroke for the Shift key.
@@ -809,10 +918,12 @@ void InputManager::AddKeyboardInput(HWND window_handle, wchar_t character, bool 
         input_state->is_shift_pressed = false;
       } else {
         input_state->is_shift_pressed = true;
+        this->AddPauseInput(window_handle, 20);
       }
+      this->UpdatePressedKeys(WD_KEY_SHIFT, input_state->is_shift_pressed);
     }
 
-    if (character == WD_KEY_CONTROL || (character == WD_KEY_NULL && input_state->is_control_pressed)) {
+    if (character == WD_KEY_CONTROL || character == WD_KEY_R_CONTROL || (character == WD_KEY_NULL && input_state->is_control_pressed)) {
       // If the character represents the Control key, or represents the 
       // "release all modifiers" key and the Control key is down, send
       // the appropriate down or up keystroke for the Control key.
@@ -822,10 +933,12 @@ void InputManager::AddKeyboardInput(HWND window_handle, wchar_t character, bool 
         input_state->is_control_pressed = false;
       } else {
         input_state->is_control_pressed = true;
+        this->AddPauseInput(window_handle, 20);
       }
+      this->UpdatePressedKeys(WD_KEY_CONTROL, input_state->is_control_pressed);
     }
 
-    if (character == WD_KEY_ALT || (character == WD_KEY_NULL && input_state->is_alt_pressed)) {
+    if (character == WD_KEY_ALT || character == WD_KEY_R_ALT || (character == WD_KEY_NULL && input_state->is_alt_pressed)) {
       // If the character represents the Alt key, or represents the 
       // "release all modifiers" key and the Alt key is down, send
       // the appropriate down or up keystroke for the Alt key.
@@ -835,10 +948,14 @@ void InputManager::AddKeyboardInput(HWND window_handle, wchar_t character, bool 
         input_state->is_alt_pressed = false;
       } else {
         input_state->is_alt_pressed = true;
+        this->AddPauseInput(window_handle, 20);
       }
+      this->UpdatePressedKeys(WD_KEY_ALT, input_state->is_alt_pressed);
     }
     return;
   }
+
+  this->UpdatePressedKeys(character, !key_up);
 
   KeyInfo key_info = this->GetKeyInfo(window_handle, character);
   if (!key_info.is_webdriver_key) {
@@ -869,9 +986,29 @@ void InputManager::AddKeyboardInput(HWND window_handle, wchar_t character, bool 
       this->CreateKeyboardInputItem(shift_key_info, 0, true);
     }
   } else {
-    //key_info.scan_code = 0;
-
     this->CreateKeyboardInputItem(key_info, 0, key_up);
+  }
+}
+
+void InputManager::UpdatePressedKeys(wchar_t character, bool press_key) {
+  std::wstring log_string = this->GetKeyDescription(character);
+  if (press_key) {
+    LOG(TRACE) << "Adding key: " << LOGWSTRING(log_string);
+    this->pressed_keys_.push_back(character);
+  } else {
+    LOG(TRACE) << "Removing key: " << LOGWSTRING(log_string);
+    std::vector<wchar_t>::const_reverse_iterator reverse_it = this->pressed_keys_.rbegin();
+    for (; reverse_it != this->pressed_keys_.rend(); ++reverse_it) {
+      if (*reverse_it == character) {
+        break;
+      }
+    }
+    if (reverse_it != this->pressed_keys_.rend()) {
+      // Must advance the forward iterator to be on the right element
+      // of the vector.
+      std::vector<wchar_t>::const_iterator it = reverse_it.base();
+      this->pressed_keys_.erase(--it);
+    }
   }
 }
 
@@ -901,6 +1038,9 @@ bool InputManager::IsModifierKey(wchar_t character) {
   return character == WD_KEY_SHIFT ||
          character == WD_KEY_CONTROL ||
          character == WD_KEY_ALT ||
+         character == WD_KEY_R_SHIFT ||
+         character == WD_KEY_R_CONTROL ||
+         character == WD_KEY_R_ALT ||
          character == WD_KEY_NULL;
 }
 
@@ -1150,6 +1290,89 @@ KeyInfo InputManager::GetKeyInfo(HWND window_handle, wchar_t character) {
     key_info.is_webdriver_key = false;
   }
   return key_info;
+}
+
+std::wstring InputManager::GetKeyDescription(const wchar_t character) {
+  std::wstring description = L"";
+  description.append(1, character);
+  std::map<wchar_t, std::wstring>::const_iterator it = this->key_descriptions_.find(character);
+  if (it != this->key_descriptions_.end()) {
+    description = it->second;
+  }
+  return description;
+}
+
+void InputManager::SetupKeyDescriptions() {
+  this->key_descriptions_[WD_KEY_NULL] = L"Unidentified";
+  this->key_descriptions_[WD_KEY_CANCEL] = L"Cancel";
+  this->key_descriptions_[WD_KEY_HELP] = L"Help";
+  this->key_descriptions_[WD_KEY_BACKSPACE] = L"Backspace";
+  this->key_descriptions_[WD_KEY_TAB] = L"Tab";
+  this->key_descriptions_[WD_KEY_CLEAR] = L"Clear";
+  this->key_descriptions_[WD_KEY_RETURN] = L"Return";
+  this->key_descriptions_[WD_KEY_ENTER] = L"Enter";
+  this->key_descriptions_[WD_KEY_SHIFT] = L"Shift";
+  this->key_descriptions_[WD_KEY_CONTROL] = L"Control";
+  this->key_descriptions_[WD_KEY_ALT] = L"Alt";
+  this->key_descriptions_[WD_KEY_PAUSE] = L"Pause";
+  this->key_descriptions_[WD_KEY_ESCAPE] = L"Escape";
+  this->key_descriptions_[WD_KEY_SPACE] = L"Space";
+  this->key_descriptions_[WD_KEY_PAGEUP] = L"PageUp";
+  this->key_descriptions_[WD_KEY_PAGEDOWN] = L"PageDown";
+  this->key_descriptions_[WD_KEY_END] = L"End";
+  this->key_descriptions_[WD_KEY_HOME] = L"Home";
+  this->key_descriptions_[WD_KEY_LEFT] = L"ArrowLeft";
+  this->key_descriptions_[WD_KEY_UP] = L"ArrowUp";
+  this->key_descriptions_[WD_KEY_RIGHT] = L"ArrowRight";
+  this->key_descriptions_[WD_KEY_DOWN] = L"ArrowDown";
+  this->key_descriptions_[WD_KEY_INSERT] = L"Insert";
+  this->key_descriptions_[WD_KEY_DELETE] = L"Delete";
+  this->key_descriptions_[WD_KEY_SEMICOLON] = L";";
+  this->key_descriptions_[WD_KEY_EQUALS] = L"=";
+  this->key_descriptions_[WD_KEY_NUMPAD0] = L"0";
+  this->key_descriptions_[WD_KEY_NUMPAD1] = L"1";
+  this->key_descriptions_[WD_KEY_NUMPAD2] = L"2";
+  this->key_descriptions_[WD_KEY_NUMPAD3] = L"3";
+  this->key_descriptions_[WD_KEY_NUMPAD4] = L"4";
+  this->key_descriptions_[WD_KEY_NUMPAD5] = L"5";
+  this->key_descriptions_[WD_KEY_NUMPAD6] = L"6";
+  this->key_descriptions_[WD_KEY_NUMPAD7] = L"7";
+  this->key_descriptions_[WD_KEY_NUMPAD8] = L"8";
+  this->key_descriptions_[WD_KEY_NUMPAD9] = L"9";
+  this->key_descriptions_[WD_KEY_MULTIPLY] = L"*";
+  this->key_descriptions_[WD_KEY_ADD] = L"+";
+  this->key_descriptions_[WD_KEY_SEPARATOR] = L",";
+  this->key_descriptions_[WD_KEY_SUBTRACT] = L"-";
+  this->key_descriptions_[WD_KEY_DECIMAL] = L".";
+  this->key_descriptions_[WD_KEY_DIVIDE] = L"/";
+  this->key_descriptions_[WD_KEY_F1] = L"F1";
+  this->key_descriptions_[WD_KEY_F2] = L"F2";
+  this->key_descriptions_[WD_KEY_F3] = L"F3";
+  this->key_descriptions_[WD_KEY_F4] = L"F4";
+  this->key_descriptions_[WD_KEY_F5] = L"F5";
+  this->key_descriptions_[WD_KEY_F6] = L"F6";
+  this->key_descriptions_[WD_KEY_F7] = L"F7";
+  this->key_descriptions_[WD_KEY_F8] = L"F8";
+  this->key_descriptions_[WD_KEY_F9] = L"F9";
+  this->key_descriptions_[WD_KEY_F10] = L"F10";
+  this->key_descriptions_[WD_KEY_F11] = L"F11";
+  this->key_descriptions_[WD_KEY_F12] = L"F12";
+  this->key_descriptions_[WD_KEY_META] = L"Meta";
+  this->key_descriptions_[WD_KEY_ZEN] = L"ZenkakuHankaku";
+  this->key_descriptions_[WD_KEY_R_SHIFT] = L"Shift";
+  this->key_descriptions_[WD_KEY_R_CONTROL] = L"Control";
+  this->key_descriptions_[WD_KEY_R_ALT] = L"Alt";
+  this->key_descriptions_[WD_KEY_R_META] = L"Meta";
+  this->key_descriptions_[WD_KEY_R_PAGEUP] = L"PageUp";
+  this->key_descriptions_[WD_KEY_R_PAGEDN] = L"PageDown";
+  this->key_descriptions_[WD_KEY_R_END] = L"End";
+  this->key_descriptions_[WD_KEY_R_HOME] = L"Home";
+  this->key_descriptions_[WD_KEY_R_LEFT] = L"ArrowLeft";
+  this->key_descriptions_[WD_KEY_R_UP] = L"ArrowUp";
+  this->key_descriptions_[WD_KEY_R_RIGHT] = L"ArrowRight";
+  this->key_descriptions_[WD_KEY_R_DOWN] = L"ArrowDown";
+  this->key_descriptions_[WD_KEY_R_INSERT] = L"Insert";
+  this->key_descriptions_[WD_KEY_R_DELETE] = L"Delete";
 }
 
 } // namespace webdriver

@@ -431,46 +431,7 @@ int Script::ConvertResultToJsonValue(const IECommandExecutor& executor,
 
 bool Script::ConvertResultToString(std::string* value) {
   LOG(TRACE) << "Entering Script::ConvertResultToString";
-
-  VARTYPE type = this->result_.vt;
-  switch(type) {
-
-    case VT_BOOL:
-      LOG(DEBUG) << "Result type is boolean";
-      *value = this->result_.boolVal == VARIANT_TRUE ? "true" : "false";
-      return true;
-
-    case VT_BSTR:
-      LOG(DEBUG) << "Result type is string";
-      if (!this->result_.bstrVal) {
-        *value = "";
-      } else {
-        std::wstring str_value = this->result_.bstrVal;
-        *value = StringUtilities::ToString(str_value);
-      }
-      return true;
-  
-    case VT_I4:
-      LOG(DEBUG) << "Result type is int";
-      *value = std::to_string(static_cast<long long>(this->result_.lVal));
-      return true;
-
-    case VT_EMPTY:
-    case VT_NULL:
-      LOG(DEBUG) << "Result type is empty";
-      *value = "";
-      return false;
-
-    // This is lame
-    case VT_DISPATCH:
-      LOG(DEBUG) << "Result type is dispatch";
-      *value = "";
-      return true;
-
-    default:
-      LOG(DEBUG) << "Result type is unknown: " << type;
-  }
-  return false;
+  return VariantUtilities::ConvertVariantToString(this->result_, value);
 }
 
 bool Script::CreateAnonymousFunction(VARIANT* result) {

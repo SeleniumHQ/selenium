@@ -14,23 +14,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "MaximizeWindowCommandHandler.h"
+#include "FullScreenWindowCommandHandler.h"
 #include "errorcodes.h"
+#include "logging.h"
 #include "../Browser.h"
 #include "../IECommandExecutor.h"
+#include "../Script.h"
 
 namespace webdriver {
 
-MaximizeWindowCommandHandler::MaximizeWindowCommandHandler(void) {
+FullScreenWindowCommandHandler::FullScreenWindowCommandHandler(void) {
 }
 
-MaximizeWindowCommandHandler::~MaximizeWindowCommandHandler(void) {
+FullScreenWindowCommandHandler::~FullScreenWindowCommandHandler(void) {
 }
 
-void MaximizeWindowCommandHandler::ExecuteInternal(
-    const IECommandExecutor& executor,
-    const ParametersMap& command_parameters,
-    Response* response) {
+void FullScreenWindowCommandHandler::ExecuteInternal(
+  const IECommandExecutor& executor,
+  const ParametersMap& command_parameters,
+  Response* response) {
   int status_code = WD_SUCCESS;
 
   BrowserHandle browser_wrapper;
@@ -40,11 +42,13 @@ void MaximizeWindowCommandHandler::ExecuteInternal(
     return;
   }
 
-  HWND window_handle = browser_wrapper->GetTopLevelWindowHandle();
-  if (!::IsZoomed(window_handle)) {
-    browser_wrapper->Restore();
-    ::ShowWindow(window_handle, SW_MAXIMIZE);
+  bool supports_full_screen = browser_wrapper->SetFullScreen(true);
+  if (!supports_full_screen) {
+    response->SetErrorResponse(ERROR_UNSUPPORTED_OPERATION,
+                               "This version of Internet Explorer does not support setting to full screen");
   }
+
+  HWND window_handle = browser_wrapper->GetTopLevelWindowHandle();
   RECT window_rect;
   ::GetWindowRect(window_handle, &window_rect);
   Json::Value response_value;

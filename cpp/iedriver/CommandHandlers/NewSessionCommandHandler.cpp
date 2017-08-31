@@ -40,8 +40,10 @@ void NewSessionCommandHandler::ExecuteInternal(
   std::string error_message = "";
 
   // Find W3C capabilities first.
+  IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
   ParametersMap::const_iterator it = command_parameters.find("capabilities");
   if (it != command_parameters.end()) {
+    LOG(DEBUG) << "Found W3C capabilities structure";
     returned_capabilities = this->ProcessCapabilities(executor, it->second, &error_message);
   } else {
     // W3C capabilities not found. Try legacy capabilities.
@@ -49,10 +51,14 @@ void NewSessionCommandHandler::ExecuteInternal(
     it = command_parameters.find("desiredCapabilities");
     if (it != command_parameters.end()) {
       returned_capabilities = this->ProcessLegacyCapabilities(executor, it->second, &error_message);
+    } else {
+      error_message = "No property named 'capabilities' or 'desiredCapabilities' found in new session request body.";
+      mutable_executor.set_is_valid(false);
+      response->SetErrorResponse(ERROR_INVALID_ARGUMENT, error_message);
+      return;
     }
   }
 
-  IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
   if (returned_capabilities.isNull()) {
     // The browser was not created successfully, therefore the
     // session must be marked as invalid so the server can
@@ -130,9 +136,11 @@ std::string NewSessionCommandHandler::GetJsonTypeDescription(
 
 std::string NewSessionCommandHandler::GetUnexpectedAlertBehaviorValue(
     const std::string& desired_value) {
-  std::string value = DISMISS_UNEXPECTED_ALERTS;
+  std::string value = DISMISS_AND_NOTIFY_UNEXPECTED_ALERTS;
   if (desired_value == DISMISS_UNEXPECTED_ALERTS ||
       desired_value == ACCEPT_UNEXPECTED_ALERTS ||
+      desired_value == ACCEPT_AND_NOTIFY_UNEXPECTED_ALERTS ||
+      desired_value == DISMISS_AND_NOTIFY_UNEXPECTED_ALERTS ||
       desired_value == IGNORE_UNEXPECTED_ALERTS) {
     value = desired_value;
   } else {
@@ -183,6 +191,7 @@ Json::Value NewSessionCommandHandler::ProcessCapabilities(const IECommandExecuto
   Json::Value returned_capabilities(Json::nullValue);
   Json::Value always_match(Json::objectValue);
   if (capabilities.isMember("alwaysMatch")) {
+    LOG(DEBUG) << "Found alwaysMatch in capabilities";
     always_match = capabilities["alwaysMatch"];
   }
 
@@ -238,10 +247,10 @@ Json::Value NewSessionCommandHandler::ProcessCapabilities(const IECommandExecuto
           if (this->MatchCapabilities(executor, merged_capabilities, &match_error)) {
             IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
 
-            Json::Value unexpected_alert_behavior = this->GetCapability(capabilities, UNHANDLED_PROMPT_BEHAVIOR_CAPABILITY, Json::stringValue, DISMISS_UNEXPECTED_ALERTS);
+            Json::Value unexpected_alert_behavior = this->GetCapability(merged_capabilities, UNHANDLED_PROMPT_BEHAVIOR_CAPABILITY, Json::stringValue, "");
             mutable_executor.set_unexpected_alert_behavior(unexpected_alert_behavior.asString());
 
-            Json::Value page_load_strategy = this->GetCapability(capabilities, PAGE_LOAD_STRATEGY_CAPABILITY, Json::stringValue, NORMAL_PAGE_LOAD_STRATEGY);
+            Json::Value page_load_strategy = this->GetCapability(merged_capabilities, PAGE_LOAD_STRATEGY_CAPABILITY, Json::stringValue, NORMAL_PAGE_LOAD_STRATEGY);
             mutable_executor.set_page_load_strategy(this->GetPageLoadStrategyValue(page_load_strategy.asString()));
 
             Json::Value ie_options(Json::objectValue);
@@ -312,7 +321,7 @@ void NewSessionCommandHandler::SetBrowserFactorySettings(const IECommandExecutor
 }
 
 void NewSessionCommandHandler::SetProxySettings(const IECommandExecutor& executor, const Json::Value& proxy_capability, const bool use_per_process_proxy) {
-  ProxySettings proxy_settings = { false, "", "", "", "", "", "", "", "" };
+  ProxySettings proxy_settings = { false, "", "", "", "", "", "", "", "", "" };
   if (!proxy_capability.isNull()) {
     // TODO(JimEvans): Validate the members of the proxy JSON object.
     std::string proxy_type = proxy_capability.get("proxyType", "").asString();
@@ -335,6 +344,18 @@ void NewSessionCommandHandler::SetProxySettings(const IECommandExecutor& executo
     }
     std::string autoconfig_url = proxy_capability.get("proxyAutoconfigUrl", "").asString();
     proxy_settings.proxy_autoconfig_url = autoconfig_url;
+
+    Json::Value proxy_bypass_list = proxy_capability.get("noProxy", Json::Value::null);
+    if (!proxy_bypass_list.isNull() && proxy_bypass_list.isArray()) {
+      std::string no_proxy = "";
+      for (size_t i = 0; i < proxy_bypass_list.size(); ++i) {
+        if (no_proxy.size() > 0) {
+          no_proxy.append(";");
+        }
+        no_proxy.append(proxy_bypass_list[static_cast<int>(i)].asString());
+      }
+      proxy_settings.proxy_bypass = no_proxy;
+    }
 
     proxy_settings.use_per_process_proxy = use_per_process_proxy;
 
@@ -407,12 +428,6 @@ Json::Value NewSessionCommandHandler::CreateReturnedCapabilities(const IECommand
 }
 
 bool NewSessionCommandHandler::MatchCapabilities(const IECommandExecutor& executor, const Json::Value& merged_capabilities, std::string* error_message) {
-  Json::Value matched_capabilities(Json::objectValue);
-  matched_capabilities[BROWSER_NAME_CAPABILITY] = "internet explorer";
-  matched_capabilities[BROWSER_VERSION_CAPABILITY] = std::to_string(executor.browser_factory()->browser_version());
-  matched_capabilities[PLATFORM_NAME_CAPABILITY] = "windows";
-  matched_capabilities[ACCEPT_INSECURE_CERTS_CAPABILITY] = false;
-  matched_capabilities[SET_WINDOW_RECT_CAPABILITY] = true;
   std::vector<std::string> capability_names = merged_capabilities.getMemberNames();
   std::vector<std::string>::const_iterator name_iterator = capability_names.begin();
   for (; name_iterator != capability_names.end(); ++name_iterator) {
@@ -487,6 +502,7 @@ bool NewSessionCommandHandler::ValidateCapabilities(
     const Json::Value& capabilities,
     const std::string& capability_set_name,
     std::string* error_message) {
+  LOG(DEBUG) << "Validating capabilities object";
   if (!capabilities.isObject() && !capabilities.isNull()) {
     *error_message = capability_set_name + " is not a JSON object.";
     return false;
@@ -502,6 +518,8 @@ bool NewSessionCommandHandler::ValidateCapabilities(
     std::string capability_name = *name_iterator;
     std::string capability_error_message;
     if (capability_name == ACCEPT_INSECURE_CERTS_CAPABILITY) {
+      LOG(DEBUG) << "Found " << ACCEPT_INSECURE_CERTS_CAPABILITY << "capability."
+                 << " Validating value type is boolean.";
       if (!this->ValidateCapabilityType(capabilities,
                                         capability_name,
                                         Json::ValueType::booleanValue,
@@ -514,6 +532,8 @@ bool NewSessionCommandHandler::ValidateCapabilities(
     }
 
     if (capability_name == BROWSER_NAME_CAPABILITY) {
+      LOG(DEBUG) << "Found " << BROWSER_NAME_CAPABILITY << "capability."
+                 << " Validating value type is string.";
       if (!this->ValidateCapabilityType(capabilities,
                                         capability_name,
                                         Json::ValueType::stringValue,
@@ -526,6 +546,8 @@ bool NewSessionCommandHandler::ValidateCapabilities(
     }
 
     if (capability_name == BROWSER_VERSION_CAPABILITY) {
+      LOG(DEBUG) << "Found " << BROWSER_VERSION_CAPABILITY << "capability."
+                 << " Validating value type is string.";
       if (!this->ValidateCapabilityType(capabilities,
                                         capability_name,
                                         Json::ValueType::stringValue,
@@ -539,6 +561,8 @@ bool NewSessionCommandHandler::ValidateCapabilities(
     }
 
     if (capability_name == PLATFORM_NAME_CAPABILITY) {
+      LOG(DEBUG) << "Found " << PLATFORM_NAME_CAPABILITY << "capability."
+                 << " Validating value type is string.";
       if (!this->ValidateCapabilityType(capabilities,
                                         capability_name,
                                         Json::ValueType::stringValue,
@@ -551,18 +575,24 @@ bool NewSessionCommandHandler::ValidateCapabilities(
     }
 
     if (capability_name == UNHANDLED_PROMPT_BEHAVIOR_CAPABILITY) {
-      if (!this->ValidateCapabilityType(capabilities, 
+      LOG(DEBUG) << "Found " << UNHANDLED_PROMPT_BEHAVIOR_CAPABILITY << "capability."
+                 << " Validating value type is string.";
+      if (!this->ValidateCapabilityType(capabilities,
                                         capability_name,
                                         Json::ValueType::stringValue,
                                         &capability_error_message)) {
         *error_message = "Invalid capabilities in " +
                          capability_set_name + ": " + capability_error_message;
         return false;
-      }
-      else {
+      } else {
+        LOG(DEBUG) << "Validating " << UNHANDLED_PROMPT_BEHAVIOR_CAPABILITY << "capability"
+                   << " is a valid value.";
         std::string unhandled_prompt_behavior = capabilities[capability_name].asString();
-        if (unhandled_prompt_behavior != "accept" &&
-            unhandled_prompt_behavior != "dismiss" && unhandled_prompt_behavior != "ignore") {
+        if (unhandled_prompt_behavior != ACCEPT_UNEXPECTED_ALERTS &&
+            unhandled_prompt_behavior != DISMISS_UNEXPECTED_ALERTS &&
+            unhandled_prompt_behavior != ACCEPT_AND_NOTIFY_UNEXPECTED_ALERTS &&
+            unhandled_prompt_behavior != DISMISS_AND_NOTIFY_UNEXPECTED_ALERTS &&
+            unhandled_prompt_behavior != IGNORE_UNEXPECTED_ALERTS) {
           *error_message = "Invalid capabilities in " +
                            capability_set_name + ": " + 
                            "unhandledPromptBehavior is " + 
@@ -576,18 +606,20 @@ bool NewSessionCommandHandler::ValidateCapabilities(
 
     if (capability_name == PAGE_LOAD_STRATEGY_CAPABILITY) {
       std::string page_load_strategy = "";
+      LOG(DEBUG) << "Found " << PAGE_LOAD_STRATEGY_CAPABILITY << "capability."
+                 << " Validating value type is string.";
       if (capabilities[capability_name].isNull()) {
         page_load_strategy = "normal";
-      }
-      else if (!this->ValidateCapabilityType(capabilities,
+      } else if (!this->ValidateCapabilityType(capabilities,
                                              capability_name,
                                              Json::ValueType::stringValue,
                                              &capability_error_message)) {
         *error_message = "Invalid capabilities in " +
                          capability_set_name + ": " + capability_error_message;
         return false;
-      }
-      else {
+      } else {
+        LOG(DEBUG) << "Validating " << PAGE_LOAD_STRATEGY_CAPABILITY << "capability"
+                   << " is a valid value.";
         page_load_strategy = capabilities[capability_name].asString();
         if (page_load_strategy != "none" &&
             page_load_strategy != "eager" &&
@@ -603,6 +635,8 @@ bool NewSessionCommandHandler::ValidateCapabilities(
     }
 
     if (capability_name == TIMEOUTS_CAPABILITY) {
+      LOG(DEBUG) << "Found " << TIMEOUTS_CAPABILITY << "capability."
+                 << " Validating value type is object.";
       if (!this->ValidateCapabilityType(capabilities,
                                         capability_name,
                                         Json::ValueType::objectValue,
@@ -611,6 +645,8 @@ bool NewSessionCommandHandler::ValidateCapabilities(
                          capability_set_name + ": " + capability_error_message;
         return false;
       } else {
+        LOG(DEBUG) << "Validating " << TIMEOUTS_CAPABILITY << "capability"
+                   << " object contains correct property names.";
         Json::Value timeouts = capabilities[capability_name];
         std::vector<std::string> timeout_names = timeouts.getMemberNames();
         std::vector<std::string>::const_iterator timeout_name_iterator = timeout_names.begin();
@@ -649,6 +685,8 @@ bool NewSessionCommandHandler::ValidateCapabilities(
     }
 
     if (capability_name == PROXY_CAPABILITY) {
+      LOG(DEBUG) << "Found " << PROXY_CAPABILITY << "capability."
+                 << " Validating value type is object.";
       if (!this->ValidateCapabilityType(capabilities,
                                         capability_name,
                                         Json::ValueType::objectValue,
@@ -658,6 +696,8 @@ bool NewSessionCommandHandler::ValidateCapabilities(
                          capability_error_message;
         return false;
       } else {
+        LOG(DEBUG) << "Validating " << PROXY_CAPABILITY << "capability"
+                   << " object structure.";
         Json::Value proxy = capabilities[capability_name];
         std::vector<std::string> proxy_setting_names = proxy.getMemberNames();
         std::vector<std::string>::const_iterator proxy_setting_iterator = proxy_setting_names.begin();
@@ -695,9 +735,7 @@ bool NewSessionCommandHandler::ValidateCapabilities(
               proxy_setting == "ftpProxy" ||
               proxy_setting == "httpProxy" ||
               proxy_setting == "sslProxy" ||
-              proxy_setting == "socksProxy" ||
-              proxy_setting == "socksUsername" ||
-              proxy_setting == "socksPassword") {
+              proxy_setting == "socksProxy") {
             if (!this->ValidateCapabilityType(proxy, 
                                               proxy_setting,
                                               Json::ValueType::stringValue,
@@ -710,17 +748,34 @@ bool NewSessionCommandHandler::ValidateCapabilities(
             continue;
           }
 
-          if (proxy_setting == "ftpProxyPort" ||
-              proxy_setting == "httpProxyPort" ||
-              proxy_setting == "sslProxyPort" ||
-              proxy_setting == "socksProxyPort" ||
-              proxy_setting == "socksVersion") {
+          if (proxy_setting == "noProxy")
+          {
+            if (!this->ValidateCapabilityType(proxy,
+                                              proxy_setting,
+                                              Json::ValueType::arrayValue,
+                                              &proxy_error)) {
+              *error_message = "Invalid capabilities in " +
+                                capability_set_name + ": " +
+                                "proxy setting " + proxy_error;
+              return false;
+            }
+            continue;
+          }
+
+          if (proxy_setting == "socksVersion") {
             if (!this->ValidateCapabilityType(proxy, proxy_setting,
-                                              Json::ValueType::stringValue,
+                                              Json::ValueType::intValue,
                                               &proxy_error)) {
               *error_message = "Invalid capabilities in " + 
                                capability_set_name + ": " + 
                                "proxy setting " + proxy_error;
+              return false;
+            }
+            int socks_version = proxy[proxy_setting].asInt();
+            if (socks_version < 0 || socks_version > 255) {
+              *error_message = "Invalid capabilities in " +
+                                capability_set_name + ": " +
+                                "SOCKS version must be between 0 and 255.";
               return false;
             }
             continue;
@@ -736,6 +791,8 @@ bool NewSessionCommandHandler::ValidateCapabilities(
     }
 
     if (capability_name == IE_DRIVER_EXTENSIONS_CAPABILITY) {
+      LOG(DEBUG) << "Found " << PROXY_CAPABILITY << "capability."
+                 << " Validating value type is object.";
       if (!this->ValidateCapabilityType(capabilities,
                                         capability_name,
                                         Json::ValueType::objectValue,

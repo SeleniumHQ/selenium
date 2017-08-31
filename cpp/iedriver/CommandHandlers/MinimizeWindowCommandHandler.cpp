@@ -14,33 +14,45 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "ReleaseActionsCommandHandler.h"
+#include "MinimizeWindowCommandHandler.h"
 #include "errorcodes.h"
-#include "../Alert.h"
 #include "../Browser.h"
 #include "../IECommandExecutor.h"
-#include "../InputManager.h"
 
 namespace webdriver {
 
-ReleaseActionsCommandHandler::ReleaseActionsCommandHandler(void) {
+MinimizeWindowCommandHandler::MinimizeWindowCommandHandler(void) {
 }
 
-ReleaseActionsCommandHandler::~ReleaseActionsCommandHandler(void) {
+MinimizeWindowCommandHandler::~MinimizeWindowCommandHandler(void) {
 }
 
-void ReleaseActionsCommandHandler::ExecuteInternal(
+void MinimizeWindowCommandHandler::ExecuteInternal(
     const IECommandExecutor& executor,
     const ParametersMap& command_parameters,
     Response* response) {
+  int status_code = WD_SUCCESS;
+
   BrowserHandle browser_wrapper;
-  int status_code = executor.GetCurrentBrowser(&browser_wrapper);
+  status_code = executor.GetCurrentBrowser(&browser_wrapper);
   if (status_code != WD_SUCCESS) {
-    response->SetErrorResponse(status_code, "Unable to get current browser");
+    response->SetErrorResponse(ERROR_NO_SUCH_WINDOW, "Error retrieving window");
     return;
   }
-  executor.input_manager()->Reset(browser_wrapper);
-  response->SetSuccessResponse(Json::Value::null);
+
+  HWND window_handle = browser_wrapper->GetTopLevelWindowHandle();
+  if (!::IsIconic(window_handle)) {
+    browser_wrapper->Restore();
+    ::ShowWindow(window_handle, SW_MINIMIZE);
+  }
+  RECT window_rect;
+  ::GetWindowRect(window_handle, &window_rect);
+  Json::Value response_value;
+  response_value["width"] = window_rect.right - window_rect.left;
+  response_value["height"] = window_rect.bottom - window_rect.top;
+  response_value["x"] = window_rect.left;
+  response_value["y"] = window_rect.top;
+  response->SetSuccessResponse(response_value);
 }
 
 } // namespace webdriver
