@@ -62,6 +62,7 @@ namespace OpenQA.Selenium.Firefox
         private string browserBinaryLocation;
         private FirefoxDriverLogLevel logLevel = FirefoxDriverLogLevel.Default;
         private FirefoxProfile profile;
+        private Proxy proxy;
         private List<string> firefoxArguments = new List<string>();
         private Dictionary<string, object> profilePreferences = new Dictionary<string, object>();
         private Dictionary<string, object> additionalCapabilities = new Dictionary<string, object>();
@@ -118,6 +119,15 @@ namespace OpenQA.Selenium.Firefox
         {
             get { return this.browserBinaryLocation; }
             set { this.browserBinaryLocation = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the <see cref="Proxy"/> to be used with Firefox.
+        /// </summary>
+        public Proxy Proxy
+        {
+            get { return this.proxy; }
+            set { this.proxy = value; }
         }
 
         /// <summary>
@@ -270,6 +280,7 @@ namespace OpenQA.Selenium.Firefox
             if (capabilityName == IsMarionetteCapability ||
                 capabilityName == FirefoxProfileCapability ||
                 capabilityName == FirefoxBinaryCapability ||
+                capabilityName == CapabilityType.Proxy ||
                 capabilityName == FirefoxLegacyProfileCapability ||
                 capabilityName == FirefoxLegacyBinaryCapability ||
                 capabilityName == FirefoxArgumentsCapability ||
@@ -307,6 +318,15 @@ namespace OpenQA.Selenium.Firefox
             DesiredCapabilities capabilities = DesiredCapabilities.Firefox();
             if (this.isMarionette)
             {
+                if (this.proxy != null)
+                {
+                    Dictionary<string, object> proxyCapabiity = this.proxy.ToCapability();
+                    if (proxyCapabiity != null)
+                    {
+                        capabilities.SetCapability(CapabilityType.Proxy, proxyCapabiity);
+                    }
+                }
+
                 Dictionary<string, object> firefoxOptions = this.GenerateFirefoxOptionsDictionary();
                 capabilities.SetCapability(FirefoxOptionsCapability, firefoxOptions);
             }
@@ -315,6 +335,11 @@ namespace OpenQA.Selenium.Firefox
                 capabilities.SetCapability(IsMarionetteCapability, this.isMarionette);
                 if (this.profile != null)
                 {
+                    if (this.proxy != null)
+                    {
+                        this.profile.InternalSetProxyPreferences(this.proxy);
+                    }
+
                     capabilities.SetCapability(FirefoxProfileCapability, this.profile.ToBase64String());
                 }
 
