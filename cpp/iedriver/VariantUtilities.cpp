@@ -121,6 +121,55 @@ bool VariantUtilities::VariantIsObject(VARIANT value) {
   return false;
 }
 
+bool VariantUtilities::ConvertVariantToString(VARIANT variant_value,
+                                             std::string* value) {
+  VARTYPE type = variant_value.vt;
+  switch (type) {
+
+  case VT_BOOL:
+    LOG(DEBUG) << "Result type is boolean";
+    *value = variant_value.boolVal == VARIANT_TRUE ? "true" : "false";
+    return true;
+
+  case VT_BSTR:
+    LOG(DEBUG) << "Result type is string";
+    if (!variant_value.bstrVal) {
+      *value = "";
+    }
+    else {
+      std::wstring str_value = variant_value.bstrVal;
+      *value = StringUtilities::ToString(str_value);
+    }
+    return true;
+
+  case VT_I4:
+    LOG(DEBUG) << "Result type is int";
+    *value = std::to_string(static_cast<long long>(variant_value.lVal));
+    return true;
+
+  case VT_R4:
+    LOG(DEBUG) << "Result type is real";
+    *value = std::to_string(variant_value.dblVal);
+    return true;
+
+  case VT_EMPTY:
+  case VT_NULL:
+    LOG(DEBUG) << "Result type is empty";
+    *value = "";
+    return false;
+
+    // This is lame
+  case VT_DISPATCH:
+    LOG(DEBUG) << "Result type is dispatch";
+    *value = "";
+    return true;
+
+  default:
+    LOG(DEBUG) << "Result type is unknown: " << type;
+  }
+  return false;
+}
+
 int VariantUtilities::ConvertVariantToJsonValue(const IECommandExecutor& executor,
                                                 VARIANT variant_value,
                                                 Json::Value* value) {

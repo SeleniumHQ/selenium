@@ -15,9 +15,11 @@
 // limitations under the License.
 
 #include "GoToUrlCommandHandler.h"
+#include <shlwapi.h>
 #include "errorcodes.h"
 #include "../Browser.h"
 #include "../IECommandExecutor.h"
+#include "../StringUtilities.h"
 
 namespace webdriver {
 
@@ -43,8 +45,16 @@ void GoToUrlCommandHandler::ExecuteInternal(
       return;
     }
 
-    // TODO: check result for error
+    // TODO: PathIsURL isn't quite the right thing. We need to
+    // find the correct API that will parse the URL to tell 
+    // us whether the URL is valid according to the URL spec.
     std::string url = url_parameter_iterator->second.asString();
+    std::wstring wide_url = StringUtilities::ToWString(url);
+    BOOL is_valid = ::PathIsURL(wide_url.c_str());
+    if (is_valid != TRUE) {
+      response->SetErrorResponse(ERROR_INVALID_ARGUMENT, "Specified URL (" + url + ") is not valid.");
+    }
+
     status_code = browser_wrapper->NavigateToUrl(url);
     if (status_code != WD_SUCCESS) {
       response->SetErrorResponse(ERROR_UNKNOWN_ERROR, "Failed to navigate to "

@@ -44,6 +44,7 @@ ProxyManager::ProxyManager(void) {
   this->socks_proxy_ = "";
   this->socks_user_name_ = "";
   this->socks_password_ = "";
+  this->proxy_bypass_ = "";
   this->proxy_autoconfigure_url_ = "";
   this->is_proxy_modified_ = false;
   this->is_proxy_authorization_modified_ = false;
@@ -79,6 +80,7 @@ void ProxyManager::Initialize(ProxySettings settings) {
   this->socks_proxy_ = settings.socks_proxy;
   this->socks_user_name_ = settings.socks_user_name;
   this->socks_password_ = settings.socks_password;
+  this->proxy_bypass_ = settings.proxy_bypass;
   this->proxy_autoconfigure_url_ = settings.proxy_autoconfig_url;
   if (this->proxy_type_ == WD_PROXY_TYPE_SYSTEM ||
       this->proxy_type_ == WD_PROXY_TYPE_DIRECT ||
@@ -165,6 +167,10 @@ std::wstring ProxyManager::BuildProxySettingsString() {
         proxy_string.append(" ");
       }
       proxy_string.append("socks=").append(this->socks_proxy_);
+    }
+    if (this->proxy_bypass_.size() > 0) {
+      // TODO: Add proxy bypass info to the string
+      // proxy_string.append("|bypass=").append(this->proxy_bypass_);
     }
   } else if (this->proxy_type_ == WD_PROXY_TYPE_AUTOCONFIGURE) {
     proxy_string = this->proxy_autoconfigure_url_;
@@ -282,6 +288,7 @@ void ProxyManager::SetPerProcessProxySettings(HWND browser_window_handle) {
 void ProxyManager::SetGlobalProxySettings() {
   LOG(TRACE) << "ProxyManager::SetGlobalProxySettings";
   std::wstring proxy = this->BuildProxySettingsString();
+  std::wstring bypass = L"";
 
   INTERNET_PER_CONN_OPTION_LIST option_list;
   unsigned long list_size = sizeof(INTERNET_PER_CONN_OPTION_LIST);
@@ -310,7 +317,7 @@ void ProxyManager::SetGlobalProxySettings() {
     proxy_options[1].dwOption = INTERNET_PER_CONN_FLAGS;
     proxy_options[1].Value.dwValue = PROXY_TYPE_PROXY | PROXY_TYPE_DIRECT;
     proxy_options[2].dwOption = INTERNET_PER_CONN_PROXY_BYPASS;
-    proxy_options[2].Value.pszValue = L"";
+    proxy_options[2].Value.pszValue = const_cast<wchar_t*>(bypass.c_str());;
     option_list.dwOptionCount = 3;
   }
 

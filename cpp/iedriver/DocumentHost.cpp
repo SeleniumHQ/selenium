@@ -128,6 +128,16 @@ std::string DocumentHost::GetPageSource() {
   return page_source;
 }
 
+void DocumentHost::Restore(void) {
+  if (this->IsFullScreen()) {
+    this->SetFullScreen(false);
+  }
+  HWND window_handle = this->GetTopLevelWindowHandle();
+  if (::IsZoomed(window_handle) || ::IsIconic(window_handle)) {
+    ::ShowWindow(window_handle, SW_RESTORE);
+  }
+}
+
 int DocumentHost::SetFocusedFrameByElement(IHTMLElement* frame_element) {
   LOG(TRACE) << "Entering DocumentHost::SetFocusedFrameByElement";
 

@@ -50,6 +50,8 @@ class VariantUtilities {
   static int ConvertVariantToJsonValue(const IECommandExecutor& executor,
                                        VARIANT variant_value,
                                        Json::Value* value);
+  static bool ConvertVariantToString(VARIANT variant_value,
+                                     std::string* value);
   static std::wstring GetVariantObjectTypeName(VARIANT value);
   static bool GetVariantObjectPropertyValue(IDispatch* variant_object,
                                             std::wstring property_name,

@@ -74,6 +74,9 @@ class HtmlDialog : public DocumentHost, public IDispEventSimpleImpl<1, HtmlDialo
 
   bool IsValidWindow(void);
 
+  bool IsFullScreen(void);
+  bool SetFullScreen(bool is_full_screen);
+
  private:
   static BOOL CALLBACK FindChildDialogWindow(HWND hwnd, LPARAM arg);
 

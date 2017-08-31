@@ -18,6 +18,7 @@
 #define WEBDRIVER_IE_INPUTMANAGER_H_
 
 #include <ctime>
+#include <map>
 #include <vector>
 
 #include "CustomTypes.h"
@@ -59,8 +60,9 @@ public:
   void Initialize(ElementRepository* element_map);
 
   int PerformInputSequence(BrowserHandle browser_wrapper,
-    const Json::Value& sequence);
+                           const Json::Value& sequence);
   bool SetFocusToBrowser(BrowserHandle browser_wrapper);
+  void Reset(BrowserHandle browser_wrapper);
 
   void StartPersistentEvents(void);
   void StopPersistentEvents(void);
@@ -142,10 +144,14 @@ public:
   KeyInfo GetKeyInfo(HWND windows_handle, wchar_t character);
   InputState CloneCurrentInputState(void);
   void UpdateInputState(INPUT current_input);
+  void UpdatePressedKeys(wchar_t character, bool press_key);
 
   bool WaitForInputEventProcessing(int input_count);
   int PerformInputWithSendInput(BrowserHandle browser_wrapper);
   int PerformInputWithSendMessage(BrowserHandle browser_wrapper);
+
+  void SetupKeyDescriptions(void);
+  std::wstring GetKeyDescription(const wchar_t character);
 
   bool use_native_events_;
   bool use_persistent_hover_;
@@ -171,6 +177,8 @@ public:
 
   std::vector<INPUT> inputs_;
   std::vector<BYTE> keyboard_state_buffer_;
+  std::vector<wchar_t> pressed_keys_;
+  std::map<wchar_t, std::wstring> key_descriptions_;
 };
 
 } // namespace webdriver

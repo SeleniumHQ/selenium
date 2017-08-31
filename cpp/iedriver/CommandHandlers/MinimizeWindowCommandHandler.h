@@ -13,30 +13,24 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-#ifndef WEBDRIVER_IE_SETWINDOWRECTCOMMANDHANDLER_H_
-#define WEBDRIVER_IE_SETWINDOWRECTCOMMANDHANDLER_H_
+#ifndef WEBDRIVER_IE_MINIMIZEWINDOWCOMMANDHANDLER_H_
+#define WEBDRIVER_IE_MINIMIZEWINDOWCOMMANDHANDLER_H_
 
 #include "../IECommandHandler.h"
 
 namespace webdriver {
 
-class SetWindowRectCommandHandler : public IECommandHandler {
+class MinimizeWindowCommandHandler : public IECommandHandler {
  public:
-  SetWindowRectCommandHandler(void);
-  virtual ~SetWindowRectCommandHandler(void);
+  MinimizeWindowCommandHandler(void);
+  virtual ~MinimizeWindowCommandHandler(void);
 
  protected:
   void ExecuteInternal(const IECommandExecutor& executor,
                        const ParametersMap& command_parameters,
                        Response* response);
-
- private:
-  bool GetNumericParameter(const ParametersMap& command_parameters,
-                           const std::string& argument_name,
-                           int* argument_value,
-                           std::string* error_message);
 };
 
 } // namespace webdriver
 
-#endif // WEBDRIVER_IE_SETWINDOWRECTCOMMANDHANDLER_H_
+#endif // WEBDRIVER_IE_MINIMIZEWINDOWCOMMANDHANDLER_H_

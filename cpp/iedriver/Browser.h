@@ -112,6 +112,9 @@ class Browser : public DocumentHost, public IDispEventSimpleImpl<1, Browser, &DI
 
   bool IsValidWindow(void);
 
+  bool IsFullScreen(void);
+  bool SetFullScreen(bool is_full_screen);
+
   IWebBrowser2* browser(void) { return this->browser_; }
 
  private:

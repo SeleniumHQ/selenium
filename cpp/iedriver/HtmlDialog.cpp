@@ -108,6 +108,14 @@ bool HtmlDialog::IsValidWindow() {
   return true;
 }
 
+bool HtmlDialog::SetFullScreen(bool is_full_screen) {
+  return false;
+}
+
+bool HtmlDialog::IsFullScreen() {
+  return false;
+}
+
 bool HtmlDialog::IsBusy() {
   LOG(TRACE) << "Entering HtmlDialog::IsBusy";
   return false;

@@ -19,6 +19,9 @@
     <Filter Include="Header Files\CommandHandlers">
       <UniqueIdentifier>{6a030b34-e684-4696-91d8-8a62c8e4bf56}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\CommandHandlers">
+      <UniqueIdentifier>{b7774b14-7039-48b6-adf4-8b63455f97dc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Alert.cpp">
@@ -106,160 +109,172 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CommandHandlers\AcceptAlertCommandHandler.cpp">
-      <Filter>Header Files\CommandHandlers</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandHandlers\ActionsCommandHandler.cpp">
-      <Filter>Header Files\CommandHandlers</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandHandlers\AddCookieCommandHandler.cpp">
-      <Filter>Header Files\CommandHandlers</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandHandlers\ClearElementCommandHandler.cpp">
-      <Filter>Header Files\CommandHandlers</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandHandlers\ClickElementCommandHandler.cpp">
-      <Filter>Header Files\CommandHandlers</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandHandlers\CloseWindowCommandHandler.cpp">
-      <Filter>Header Files\CommandHandlers</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandHandlers\DeleteAllCookiesCommandHandler.cpp">
-      <Filter>Header Files\CommandHandlers</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandHandlers\DeleteCookieCommandHandler.cpp">
-      <Filter>Header Files\CommandHandlers</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandHandlers\DismissAlertCommandHandler.cpp">
-      <Filter>Header Files\CommandHandlers</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandHandlers\ElementEqualsCommandHandler.cpp">
-      <Filter>Header Files\CommandHandlers</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandHandlers\ExecuteAsyncScriptCommandHandler.cpp">
-      <Filter>Header Files\CommandHandlers</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandHandlers\ExecuteScriptCommandHandler.cpp">
-      <Filter>Header Files\CommandHandlers</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandHandlers\FindChildElementCommandHandler.cpp">
-      <Filter>Header Files\CommandHandlers</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandHandlers\FindChildElementsCommandHandler.cpp">
-      <Filter>Header Files\CommandHandlers</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandHandlers\FindElementCommandHandler.cpp">
-      <Filter>Header Files\CommandHandlers</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandHandlers\FindElementsCommandHandler.cpp">
-      <Filter>Header Files\CommandHandlers</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandHandlers\GetActiveElementCommandHandler.cpp">
-      <Filter>Header Files\CommandHandlers</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandHandlers\GetAlertTextCommandHandler.cpp">
-      <Filter>Header Files\CommandHandlers</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandHandlers\GetAllCookiesCommandHandler.cpp">
-      <Filter>Header Files\CommandHandlers</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandHandlers\GetAllWindowHandlesCommandHandler.cpp">
-      <Filter>Header Files\CommandHandlers</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandHandlers\GetCurrentUrlCommandHandler.cpp">
-      <Filter>Header Files\CommandHandlers</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandHandlers\GetCurrentWindowHandleCommandHandler.cpp">
-      <Filter>Header Files\CommandHandlers</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandHandlers\GetElementAttributeCommandHandler.cpp">
-      <Filter>Header Files\CommandHandlers</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandHandlers\GetElementRectCommandHandler.cpp">
-      <Filter>Header Files\CommandHandlers</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandHandlers\GetElementTagNameCommandHandler.cpp">
-      <Filter>Header Files\CommandHandlers</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandHandlers\GetElementTextCommandHandler.cpp">
-      <Filter>Header Files\CommandHandlers</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandHandlers\GetElementValueOfCssPropertyCommandHandler.cpp">
-      <Filter>Header Files\CommandHandlers</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandHandlers\GetPageSourceCommandHandler.cpp">
-      <Filter>Header Files\CommandHandlers</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandHandlers\GetSessionCapabilitiesCommandHandler.cpp">
-      <Filter>Header Files\CommandHandlers</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandHandlers\GetTimeoutsCommandHandler.cpp">
-      <Filter>Header Files\CommandHandlers</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandHandlers\GetTitleCommandHandler.cpp">
-      <Filter>Header Files\CommandHandlers</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandHandlers\GetWindowRectCommandHandler.cpp">
-      <Filter>Header Files\CommandHandlers</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandHandlers\GoBackCommandHandler.cpp">
-      <Filter>Header Files\CommandHandlers</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandHandlers\GoForwardCommandHandler.cpp">
-      <Filter>Header Files\CommandHandlers</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandHandlers\GoToUrlCommandHandler.cpp">
-      <Filter>Header Files\CommandHandlers</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandHandlers\IsElementDisplayedCommandHandler.cpp">
-      <Filter>Header Files\CommandHandlers</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandHandlers\IsElementEnabledCommandHandler.cpp">
-      <Filter>Header Files\CommandHandlers</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandHandlers\IsElementSelectedCommandHandler.cpp">
-      <Filter>Header Files\CommandHandlers</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandHandlers\MaximizeWindowCommandHandler.cpp">
-      <Filter>Header Files\CommandHandlers</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandHandlers\NewSessionCommandHandler.cpp">
-      <Filter>Header Files\CommandHandlers</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandHandlers\QuitCommandHandler.cpp">
-      <Filter>Header Files\CommandHandlers</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandHandlers\RefreshCommandHandler.cpp">
-      <Filter>Header Files\CommandHandlers</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandHandlers\ReleaseActionsCommandHandler.cpp">
-      <Filter>Header Files\CommandHandlers</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandHandlers\ScreenshotCommandHandler.cpp">
-      <Filter>Header Files\CommandHandlers</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandHandlers\SendKeysCommandHandler.cpp">
-      <Filter>Header Files\CommandHandlers</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandHandlers\SendKeysToAlertCommandHandler.cpp">
-      <Filter>Header Files\CommandHandlers</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandHandlers\SetAlertCredentialsCommandHandler.cpp">
-      <Filter>Header Files\CommandHandlers</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandHandlers\SetTimeoutsCommandHandler.cpp">
-      <Filter>Header Files\CommandHandlers</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandHandlers\SetWindowRectCommandHandler.cpp">
-      <Filter>Header Files\CommandHandlers</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandHandlers\SwitchToFrameCommandHandler.cpp">
-      <Filter>Header Files\CommandHandlers</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandHandlers\SwitchToParentFrameCommandHandler.cpp">
-      <Filter>Header Files\CommandHandlers</Filter>
+      <Filter>Source Files\CommandHandlers</Filter>
     </ClCompile>
     <ClCompile Include="CommandHandlers\SwitchToWindowCommandHandler.cpp">
-      <Filter>Header Files\CommandHandlers</Filter>
+      <Filter>Source Files\CommandHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandHandlers\SwitchToParentFrameCommandHandler.cpp">
+      <Filter>Source Files\CommandHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandHandlers\SwitchToFrameCommandHandler.cpp">
+      <Filter>Source Files\CommandHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandHandlers\SetWindowRectCommandHandler.cpp">
+      <Filter>Source Files\CommandHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandHandlers\SetTimeoutsCommandHandler.cpp">
+      <Filter>Source Files\CommandHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandHandlers\SetAlertCredentialsCommandHandler.cpp">
+      <Filter>Source Files\CommandHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandHandlers\SendKeysToAlertCommandHandler.cpp">
+      <Filter>Source Files\CommandHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandHandlers\SendKeysCommandHandler.cpp">
+      <Filter>Source Files\CommandHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandHandlers\ScreenshotCommandHandler.cpp">
+      <Filter>Source Files\CommandHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandHandlers\ReleaseActionsCommandHandler.cpp">
+      <Filter>Source Files\CommandHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandHandlers\RefreshCommandHandler.cpp">
+      <Filter>Source Files\CommandHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandHandlers\QuitCommandHandler.cpp">
+      <Filter>Source Files\CommandHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandHandlers\NewSessionCommandHandler.cpp">
+      <Filter>Source Files\CommandHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandHandlers\MaximizeWindowCommandHandler.cpp">
+      <Filter>Source Files\CommandHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandHandlers\IsElementSelectedCommandHandler.cpp">
+      <Filter>Source Files\CommandHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandHandlers\IsElementEnabledCommandHandler.cpp">
+      <Filter>Source Files\CommandHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandHandlers\IsElementDisplayedCommandHandler.cpp">
+      <Filter>Source Files\CommandHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandHandlers\GoToUrlCommandHandler.cpp">
+      <Filter>Source Files\CommandHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandHandlers\GoBackCommandHandler.cpp">
+      <Filter>Source Files\CommandHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandHandlers\GoForwardCommandHandler.cpp">
+      <Filter>Source Files\CommandHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandHandlers\GetWindowRectCommandHandler.cpp">
+      <Filter>Source Files\CommandHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandHandlers\GetTitleCommandHandler.cpp">
+      <Filter>Source Files\CommandHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandHandlers\GetTimeoutsCommandHandler.cpp">
+      <Filter>Source Files\CommandHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandHandlers\GetSessionCapabilitiesCommandHandler.cpp">
+      <Filter>Source Files\CommandHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandHandlers\GetPageSourceCommandHandler.cpp">
+      <Filter>Source Files\CommandHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandHandlers\ActionsCommandHandler.cpp">
+      <Filter>Source Files\CommandHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandHandlers\AddCookieCommandHandler.cpp">
+      <Filter>Source Files\CommandHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandHandlers\ClearElementCommandHandler.cpp">
+      <Filter>Source Files\CommandHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandHandlers\ClickElementCommandHandler.cpp">
+      <Filter>Source Files\CommandHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandHandlers\CloseWindowCommandHandler.cpp">
+      <Filter>Source Files\CommandHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandHandlers\DeleteAllCookiesCommandHandler.cpp">
+      <Filter>Source Files\CommandHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandHandlers\DeleteCookieCommandHandler.cpp">
+      <Filter>Source Files\CommandHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandHandlers\DismissAlertCommandHandler.cpp">
+      <Filter>Source Files\CommandHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandHandlers\ElementEqualsCommandHandler.cpp">
+      <Filter>Source Files\CommandHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandHandlers\ExecuteAsyncScriptCommandHandler.cpp">
+      <Filter>Source Files\CommandHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandHandlers\ExecuteScriptCommandHandler.cpp">
+      <Filter>Source Files\CommandHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandHandlers\FindChildElementCommandHandler.cpp">
+      <Filter>Source Files\CommandHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandHandlers\FindChildElementsCommandHandler.cpp">
+      <Filter>Source Files\CommandHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandHandlers\FindElementCommandHandler.cpp">
+      <Filter>Source Files\CommandHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandHandlers\FindElementsCommandHandler.cpp">
+      <Filter>Source Files\CommandHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandHandlers\GetActiveElementCommandHandler.cpp">
+      <Filter>Source Files\CommandHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandHandlers\GetAlertTextCommandHandler.cpp">
+      <Filter>Source Files\CommandHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandHandlers\GetAllCookiesCommandHandler.cpp">
+      <Filter>Source Files\CommandHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandHandlers\GetAllWindowHandlesCommandHandler.cpp">
+      <Filter>Source Files\CommandHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandHandlers\GetCurrentUrlCommandHandler.cpp">
+      <Filter>Source Files\CommandHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandHandlers\GetCurrentWindowHandleCommandHandler.cpp">
+      <Filter>Source Files\CommandHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandHandlers\GetElementAttributeCommandHandler.cpp">
+      <Filter>Source Files\CommandHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandHandlers\GetElementRectCommandHandler.cpp">
+      <Filter>Source Files\CommandHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandHandlers\GetElementTagNameCommandHandler.cpp">
+      <Filter>Source Files\CommandHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandHandlers\GetElementTextCommandHandler.cpp">
+      <Filter>Source Files\CommandHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandHandlers\GetElementValueOfCssPropertyCommandHandler.cpp">
+      <Filter>Source Files\CommandHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandHandlers\GetElementPropertyCommandHandler.cpp">
+      <Filter>Source Files\CommandHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandHandlers\MinimizeWindowCommandHandler.cpp">
+      <Filter>Source Files\CommandHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandHandlers\FullScreenWindowCommandHandler.cpp">
+      <Filter>Source Files\CommandHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandHandlers\GetNamedCookieCommandHandler.cpp">
+      <Filter>Source Files\CommandHandlers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -526,6 +541,18 @@
     </ClInclude>
     <ClInclude Include="Generated\sizzle.h">
       <Filter>Header Files\Generated</Filter>
+    </ClInclude>
+    <ClInclude Include="CommandHandlers\GetElementPropertyCommandHandler.h">
+      <Filter>Header Files\CommandHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="CommandHandlers\MinimizeWindowCommandHandler.h">
+      <Filter>Header Files\CommandHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="CommandHandlers\FullScreenWindowCommandHandler.h">
+      <Filter>Header Files\CommandHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="CommandHandlers\GetNamedCookieCommandHandler.h">
+      <Filter>Header Files\CommandHandlers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

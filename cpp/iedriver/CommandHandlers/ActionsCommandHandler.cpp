@@ -50,6 +50,9 @@ void ActionsCommandHandler::ExecuteInternal(
     return;
   }
   status_code = executor.input_manager()->PerformInputSequence(browser_wrapper, actions_parameter_iterator->second);
+  if (status_code != WD_SUCCESS) {
+    response->SetErrorResponse(status_code, "Unexpected error performing action sequence.");
+  }
   response->SetSuccessResponse(Json::Value::null);
 }
 

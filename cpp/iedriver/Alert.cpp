@@ -27,8 +27,18 @@ Alert::Alert(std::tr1::shared_ptr<DocumentHost> browser, HWND handle) {
   this->browser_ = browser;
   this->alert_handle_ = handle;
 
+  this->is_standard_alert_ = true;
+  this->is_standard_control_alert_ = true;
   HWND direct_ui_child = this->GetDirectUIChild();
-  this->is_standard_alert_ = direct_ui_child == NULL;
+  if (direct_ui_child) {
+    this->is_standard_control_alert_ = false;
+    DialogButtonInfo cancel_button_info = this->GetDialogButton(CANCEL);
+    if (cancel_button_info.button_exists) {
+      this->is_standard_alert_ = !IsLinkButton(cancel_button_info.button_handle);
+    } else {
+      this->is_standard_alert_ = false;
+    }
+  }
 
   std::vector<HWND> text_boxes;
   ::EnumChildWindows(this->alert_handle_,
@@ -138,7 +148,7 @@ int Alert::SendKeysInternal(const std::string& keys,
 std::string Alert::GetText() {
   LOG(TRACE) << "Entering Alert::GetText";
   std::string alert_text_value = "";
-  if (this->is_standard_alert_) {
+  if (this->is_standard_control_alert_) {
     alert_text_value = this->GetStandardDialogText();
   } else {
     std::string alert_text = this->GetDirectUIDialogText();
@@ -325,7 +335,7 @@ HWND Alert::GetDirectUIChild() {
 int Alert::ClickAlertButton(DialogButtonInfo button_info) {
   LOG(TRACE) << "Entering Alert::ClickAlertButton";
   // Click on the appropriate button of the Alert
-  if (this->is_standard_alert_) {
+  if (this->is_standard_control_alert_) {
     ::SendMessage(this->alert_handle_,
                   WM_COMMAND,
                   button_info.button_control_id,
@@ -428,6 +438,17 @@ bool Alert::IsCancelButton(HWND button_handle) {
     // The BS_DEFCOMMANDLINK mask includes BS_COMMANDLINK, but we
     // want only to match those without the default bits set.
     return button_style == BS_COMMANDLINK || button_style == BS_PUSHBUTTON;
+  }
+  return false;
+}
+
+bool Alert::IsLinkButton(HWND button_handle) {
+  std::vector<wchar_t> button_window_class(100);
+  ::GetClassName(button_handle, &button_window_class[0], static_cast<int>(button_window_class.size()));
+  if (wcscmp(&button_window_class[0], L"Button") == 0) {
+    long window_long = ::GetWindowLong(button_handle, GWL_STYLE);
+    long button_style = window_long & BS_TYPEMASK;
+    return button_style == BS_COMMANDLINK;
   }
   return false;
 }

@@ -16,8 +16,10 @@
 
 #include "GetWindowRectCommandHandler.h"
 #include "errorcodes.h"
+#include "logging.h"
 #include "../Browser.h"
 #include "../IECommandExecutor.h"
+#include "../Script.h"
 
 namespace webdriver {
 

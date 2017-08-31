@@ -9,6 +9,27 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v3.5.1.1
+========
+ * Updated to better support W3C WebDriver Specification. This is a large
+   update that includes implementation of the following things that are part
+   of the WebDriver spec:
+   * Implement the "get element property" command
+   * Implement the "get named cookie" command
+   * Implement the "minimize window" command
+   * Implement the "fullscreen window" command
+   * Update "set window rect" command to correctly recognize and restore 
+     from minimized or full screen state
+   * Fix the "release actions" command to properly roll back all pending
+     actions
+   * Update the "perform actions" command to be more robust for pointer
+     actions
+   * Fix alert handling to handle dialogs with the "Do not show any more
+     dialogs" check box
+   * Added handling for the "dismiss and notify" and "accept and notify"
+     user prompt handler states
+   * Updated proxy handling to more closely align with the spec language
+
 v3.5.1.0
 ========
  * Updates to JavaScript automation atoms.

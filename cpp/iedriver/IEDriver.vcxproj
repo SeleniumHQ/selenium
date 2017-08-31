@@ -186,6 +186,7 @@
     <ClCompile Include="CommandHandlers\FindChildElementsCommandHandler.cpp" />
     <ClCompile Include="CommandHandlers\FindElementCommandHandler.cpp" />
     <ClCompile Include="CommandHandlers\FindElementsCommandHandler.cpp" />
+    <ClCompile Include="CommandHandlers\FullScreenWindowCommandHandler.cpp" />
     <ClCompile Include="CommandHandlers\GetActiveElementCommandHandler.cpp" />
     <ClCompile Include="CommandHandlers\GetAlertTextCommandHandler.cpp" />
     <ClCompile Include="CommandHandlers\GetAllCookiesCommandHandler.cpp" />
@@ -193,10 +194,12 @@
     <ClCompile Include="CommandHandlers\GetCurrentUrlCommandHandler.cpp" />
     <ClCompile Include="CommandHandlers\GetCurrentWindowHandleCommandHandler.cpp" />
     <ClCompile Include="CommandHandlers\GetElementAttributeCommandHandler.cpp" />
+    <ClCompile Include="CommandHandlers\GetElementPropertyCommandHandler.cpp" />
     <ClCompile Include="CommandHandlers\GetElementRectCommandHandler.cpp" />
     <ClCompile Include="CommandHandlers\GetElementTagNameCommandHandler.cpp" />
     <ClCompile Include="CommandHandlers\GetElementTextCommandHandler.cpp" />
     <ClCompile Include="CommandHandlers\GetElementValueOfCssPropertyCommandHandler.cpp" />
+    <ClCompile Include="CommandHandlers\GetNamedCookieCommandHandler.cpp" />
     <ClCompile Include="CommandHandlers\GetPageSourceCommandHandler.cpp" />
     <ClCompile Include="CommandHandlers\GetSessionCapabilitiesCommandHandler.cpp" />
     <ClCompile Include="CommandHandlers\GetTimeoutsCommandHandler.cpp" />
@@ -209,6 +212,7 @@
     <ClCompile Include="CommandHandlers\IsElementEnabledCommandHandler.cpp" />
     <ClCompile Include="CommandHandlers\IsElementSelectedCommandHandler.cpp" />
     <ClCompile Include="CommandHandlers\MaximizeWindowCommandHandler.cpp" />
+    <ClCompile Include="CommandHandlers\MinimizeWindowCommandHandler.cpp" />
     <ClCompile Include="CommandHandlers\NewSessionCommandHandler.cpp" />
     <ClCompile Include="CommandHandlers\QuitCommandHandler.cpp" />
     <ClCompile Include="CommandHandlers\RefreshCommandHandler.cpp" />
@@ -274,6 +278,7 @@
     <ClInclude Include="CommandHandlers\FindChildElementsCommandHandler.h" />
     <ClInclude Include="CommandHandlers\FindElementCommandHandler.h" />
     <ClInclude Include="CommandHandlers\FindElementsCommandHandler.h" />
+    <ClInclude Include="CommandHandlers\FullScreenWindowCommandHandler.h" />
     <ClInclude Include="CommandHandlers\GetActiveElementCommandHandler.h" />
     <ClInclude Include="CommandHandlers\GetAlertTextCommandHandler.h" />
     <ClInclude Include="CommandHandlers\GetAllCookiesCommandHandler.h" />
@@ -281,10 +286,12 @@
     <ClInclude Include="CommandHandlers\GetCurrentUrlCommandHandler.h" />
     <ClInclude Include="CommandHandlers\GetCurrentWindowHandleCommandHandler.h" />
     <ClInclude Include="CommandHandlers\GetElementAttributeCommandHandler.h" />
+    <ClInclude Include="CommandHandlers\GetElementPropertyCommandHandler.h" />
     <ClInclude Include="CommandHandlers\GetElementRectCommandHandler.h" />
     <ClInclude Include="CommandHandlers\GetElementTagNameCommandHandler.h" />
     <ClInclude Include="CommandHandlers\GetElementTextCommandHandler.h" />
     <ClInclude Include="CommandHandlers\GetElementValueOfCssPropertyCommandHandler.h" />
+    <ClInclude Include="CommandHandlers\GetNamedCookieCommandHandler.h" />
     <ClInclude Include="CommandHandlers\GetPageSourceCommandHandler.h" />
     <ClInclude Include="CommandHandlers\GetSessionCapabilitiesCommandHandler.h" />
     <ClInclude Include="CommandHandlers\GetTimeoutsCommandHandler.h" />
@@ -297,6 +304,7 @@
     <ClInclude Include="CommandHandlers\IsElementEnabledCommandHandler.h" />
     <ClInclude Include="CommandHandlers\IsElementSelectedCommandHandler.h" />
     <ClInclude Include="CommandHandlers\MaximizeWindowCommandHandler.h" />
+    <ClInclude Include="CommandHandlers\MinimizeWindowCommandHandler.h" />
     <ClInclude Include="CommandHandlers\NewSessionCommandHandler.h" />
     <ClInclude Include="CommandHandlers\QuitCommandHandler.h" />
     <ClInclude Include="CommandHandlers\RefreshCommandHandler.h" />

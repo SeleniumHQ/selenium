@@ -67,10 +67,18 @@ std::string IEServer::GetStatus() {
   os["arch"] = arch;
   os["name"] = "windows";
   os["version"] = os_version;
-    
+
+  bool is_ready = this->session_count() < 1;
+  std::string message = "Ready to create session";
+  if (!is_ready) {
+    message = "Maximum number of sessions already created";
+  }
+
   Json::Value status;
   status["build"] = build;
   status["os"] = os;
+  status["ready"] = is_ready;
+  status["message"] = message;
   Response response;
   response.SetSuccessResponse(status);
   return response.Serialize();
