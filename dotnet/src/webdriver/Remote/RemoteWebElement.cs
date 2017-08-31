@@ -1,4 +1,4 @@
-﻿// <copyright file="RemoteWebElement.cs" company="WebDriver Committers">
+// <copyright file="RemoteWebElement.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -448,6 +448,33 @@ namespace OpenQA.Selenium.Remote
             }
 
             return attributeValue;
+        }
+
+        /// <summary>
+        /// Gets the value of a JavaScript property of this element.
+        /// </summary>
+        /// <param name="propertyName">The name JavaScript the JavaScript property to get the value of.</param>
+        /// <returns>The JavaScript property's current value. Returns a <see langword="null"/> if the
+        /// value is not set or the property does not exist.</returns>
+        /// <exception cref="StaleElementReferenceException">Thrown when the target element is no longer valid in the document DOM.</exception>
+        public string GetProperty(string propertyName)
+        {
+            string propertyValue = string.Empty;
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            parameters.Add("id", this.Id);
+            parameters.Add("name", propertyName);
+
+            Response commandResponse = this.Execute(DriverCommand.GetElementProperty, parameters);
+            if (commandResponse.Value == null)
+            {
+                propertyValue = null;
+            }
+            else
+            {
+                propertyValue = commandResponse.Value.ToString();
+            }
+
+            return propertyValue;
         }
 
         /// <summary>

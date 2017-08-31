@@ -74,6 +74,7 @@
     <Compile Include="DriverDisposalTest.cs" />
     <Compile Include="DriverElementFindingTest.cs" />
     <Compile Include="DriverTestFixture.cs" />
+    <Compile Include="ElementPropertyTest.cs" />
     <Compile Include="ElementAttributeTest.cs" />
     <Compile Include="ElementElementFindingTest.cs" />
     <Compile Include="ElementEqualityTest.cs" />
