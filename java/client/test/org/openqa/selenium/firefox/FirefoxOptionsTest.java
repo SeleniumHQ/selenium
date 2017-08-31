@@ -22,19 +22,29 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeNotNull;
 import static org.junit.Assume.assumeThat;
+import static org.openqa.selenium.firefox.FirefoxDriver.MARIONETTE;
+import static org.openqa.selenium.firefox.FirefoxDriver.PROFILE;
 import static org.openqa.selenium.firefox.FirefoxDriver.SystemProperty.BROWSER_BINARY;
 import static org.openqa.selenium.firefox.FirefoxDriver.SystemProperty.BROWSER_PROFILE;
 import static org.openqa.selenium.firefox.FirefoxDriver.SystemProperty.DRIVER_USE_MARIONETTE;
+import static org.openqa.selenium.firefox.FirefoxOptions.FIREFOX_OPTIONS;
+import static org.openqa.selenium.remote.CapabilityType.ACCEPT_INSECURE_CERTS;
+import static org.openqa.selenium.remote.CapabilityType.PAGE_LOAD_STRATEGY;
 
 import com.google.common.base.Throwables;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.PageLoadStrategy;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.internal.ProfilesIni;
@@ -53,6 +63,41 @@ import java.util.Map;
 import java.util.Optional;
 
 public class FirefoxOptionsTest {
+
+  @Test
+  public void canInitFirefoxOptionsWithCapabilities() {
+    FirefoxOptions options = new FirefoxOptions(new ImmutableCapabilities(ImmutableMap.of(
+        MARIONETTE, false,
+        PAGE_LOAD_STRATEGY, PageLoadStrategy.EAGER,
+        ACCEPT_INSECURE_CERTS, true)));
+
+    assertTrue(options.isLegacy());
+    assertEquals(options.toCapabilities().getCapability(PAGE_LOAD_STRATEGY), PageLoadStrategy.EAGER);
+    assertEquals(options.toCapabilities().getCapability(ACCEPT_INSECURE_CERTS), true);
+  }
+
+  @Test
+  public void canInitFirefoxOptionsWithCapabilitiesThatContainFirefoxOptions() {
+    FirefoxOptions options = new FirefoxOptions().setLegacy(true).addCapabilities(
+        new ImmutableCapabilities(ImmutableMap.of(PAGE_LOAD_STRATEGY, PageLoadStrategy.EAGER)));
+    Capabilities caps = new ImmutableCapabilities(ImmutableMap.of(FIREFOX_OPTIONS, options));
+
+    FirefoxOptions options2 = new FirefoxOptions(caps);
+
+    assertTrue(options2.isLegacy());
+    assertEquals(options2.toCapabilities().getCapability(PAGE_LOAD_STRATEGY), PageLoadStrategy.EAGER);
+  }
+
+  @Test
+  public void canInitFirefoxOptionsWithCapabilitiesThatContainFirefoxOptionsAsMap() {
+    FirefoxProfile profile = new FirefoxProfile();
+    Capabilities caps = new ImmutableCapabilities(ImmutableMap.of(
+        FIREFOX_OPTIONS, ImmutableMap.of("profile", profile)));
+
+    FirefoxOptions options = new FirefoxOptions(caps);
+
+    assertSame(options.getProfile(), profile);
+  }
 
   @Test
   public void binaryPathNeedNotExist() {
@@ -182,7 +227,7 @@ public class FirefoxOptionsTest {
 
     try {
       DesiredCapabilities caps = new DesiredCapabilities();
-      caps.setCapability(FirefoxDriver.MARIONETTE, true);
+      caps.setCapability(MARIONETTE, true);
 
       property.set("false");
       FirefoxOptions options = new FirefoxOptions().addCapabilities(caps);
