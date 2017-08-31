@@ -1,4 +1,4 @@
-﻿// <copyright file="WebDriverError.cs" company="WebDriver Committers">
+// <copyright file="WebDriverError.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -207,7 +207,7 @@ namespace OpenQA.Selenium.Remote
             resultMap[ElementNotVisible] = WebDriverResult.ElementNotDisplayed;
             resultMap[ElementNotInteractable] = WebDriverResult.ElementNotDisplayed;
             resultMap[InsecureCertificate] = WebDriverResult.InsecureCertificate;
-            resultMap[InvalidArgument] = WebDriverResult.IndexOutOfBounds;
+            resultMap[InvalidArgument] = WebDriverResult.InvalidArgument;
             resultMap[InvalidCookieDomain] = WebDriverResult.InvalidCookieDomain;
             resultMap[InvalidCoordinates] = WebDriverResult.InvalidElementCoordinates;
             resultMap[InvalidElementCoordinates] = WebDriverResult.InvalidElementCoordinates;
