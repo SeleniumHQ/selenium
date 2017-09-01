@@ -1,3 +1,27 @@
+v3.5.2
+======
+ * Changed .NET ChromeOptions to use "goog:chromeOptions" as property name.
+   This aligns with current chromedriver.exe expectations as well as with the
+   W3C WebDriver Specification. It also means that the .NET bindings will now
+   require 2.31 or later of chromedriver.exe.
+ * Guarding against null return value from FindElements. Fixes issue #4555
+   for .NET.
+ * Updating serialization of Proxy for W3C-compliant drivers in .NET. Fixes
+   issue #4574 for .NET.
+ * Added support for W3C 'invalid argument' error code.
+ * Added GetProperty method to IWebElement.
+ * Added support for new new window commands (Minimize and FullScreen).
+ * Updated .NET FirefoxOptions to not force specifying binary location. In
+   the Marionette/Geckodriver case, the service executable can locate the
+   Firefox executable on its own when looking in default installation
+   locations. There is no need for the language bindings to go spelunking
+   through the registry in that case any longer because the bindings do not
+   have to directly launch the Firefox executable.
+ * Committed initial support for .NET Core. This is only committed to the
+   source repository; it is not yet released in any consumable binary form.
+   This support will likely change significantly between now and when it is
+   officially released. Please do not rely on it yet.
+
 v3.5.1
 ======
  * Added ability to detect spec-compliant capabilities in .NET. This
