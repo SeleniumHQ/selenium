@@ -34,8 +34,8 @@ def test_converts_oss_capabilities_to_w3c(mocker):
 
 def test_converts_proxy_type_value_to_lowercase_for_w3c(mocker):
     mock = mocker.patch('selenium.webdriver.remote.webdriver.WebDriver.execute')
-    oss_caps = {'proxy': {'proxyType': 'MANUAL'}}
-    w3c_caps = {'proxy': {'proxyType': 'manual'}}
+    oss_caps = {'proxy': {'proxyType': 'MANUAL', 'httpProxy': 'foo'}}
+    w3c_caps = {'proxy': {'proxyType': 'manual', 'httpProxy': 'foo'}}
     WebDriver(desired_capabilities=deepcopy(oss_caps))
     expected_params = {'capabilities': {'firstMatch': [{}], 'alwaysMatch': w3c_caps},
                        'desiredCapabilities': oss_caps}
