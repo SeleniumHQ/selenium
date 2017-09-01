@@ -76,5 +76,4 @@ bot.json.stringify = bot.json.NATIVE_JSON && bot.json.SUPPORTS_NATIVE_JSON_ ?
  * @return {*} The JSON object.
  * @throws {Error} If the input string is an invalid JSON string.
  */
-bot.json.parse = bot.json.NATIVE_JSON && bot.json.SUPPORTS_NATIVE_JSON_ ?
-    JSON.parse : goog.json.parse;
+bot.json.parse = JSON.parse;
