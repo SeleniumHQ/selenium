@@ -25,7 +25,6 @@ import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
-import static org.openqa.selenium.testing.Driver.CHROME;
 import static org.openqa.selenium.testing.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Driver.IE;
@@ -59,7 +58,6 @@ import java.util.List;
 public class CombinedInputActionsTest extends JUnit4TestBase {
 
   @Test
-  @Ignore(CHROME)
   @Ignore(IE)
   @Ignore(FIREFOX)
   @Ignore(PHANTOMJS)
@@ -85,7 +83,6 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(CHROME)
   @Ignore(IE)
   @Ignore(FIREFOX)
   @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/646")
@@ -112,7 +109,6 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(CHROME)
   @Ignore(IE)
   @Ignore(FIREFOX)
   @Ignore(PHANTOMJS)

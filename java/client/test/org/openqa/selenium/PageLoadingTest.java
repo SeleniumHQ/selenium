@@ -98,7 +98,6 @@ public class PageLoadingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(CHROME)
   @Ignore(SAFARI)
   @Ignore(PHANTOMJS)
   @NeedsLocalEnvironment

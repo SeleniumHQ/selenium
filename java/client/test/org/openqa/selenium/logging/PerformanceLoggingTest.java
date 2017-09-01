@@ -45,7 +45,6 @@ import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 import java.util.Arrays;
 
-@Ignore(CHROME)
 @Ignore(HTMLUNIT)
 @Ignore(IE)
 @Ignore(PHANTOMJS)
@@ -106,6 +105,7 @@ public class PerformanceLoggingTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(CHROME)
   public void testGetsYieldToPageLoadLogEntries() throws Exception {
     startLoggingDriver();
     loggingDriver.get(pages.formPage);
