@@ -36,6 +36,7 @@ import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Objects;
 
 class HttpMessage {
 
@@ -75,8 +76,12 @@ class HttpMessage {
   }
 
   public String getHeader(String name) {
-    Collection<String> values = headers.get(name);
-    return values.isEmpty() ? null : values.iterator().next();
+    return headers.entries().stream()
+        .filter(e -> Objects.nonNull(e.getKey()))
+        .filter(e -> e.getKey().toLowerCase().equals(name.toLowerCase()))
+        .map(Map.Entry::getValue)
+        .findFirst()
+        .orElse(null);
   }
 
   public void setHeader(String name, String value) {

@@ -28,9 +28,11 @@ import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.internal.ApacheHttpClient;
+import org.openqa.selenium.remote.internal.JsonToWebElementConverter;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Map;
 
 class ProtocolConverter implements SessionCodec {
 
@@ -51,6 +53,7 @@ class ProtocolConverter implements SessionCodec {
   private final CommandCodec<HttpRequest> upstream;
   private final ResponseCodec<HttpResponse> downstreamResponse;
   private final ResponseCodec<HttpResponse> upstreamResponse;
+  private final JsonToWebElementConverter converter;
 
   public ProtocolConverter(
       URL upstreamUrl,
@@ -64,11 +67,20 @@ class ProtocolConverter implements SessionCodec {
     this.upstreamResponse = upstreamResponse;
 
     client = new ApacheHttpClient.Factory().createClient(upstreamUrl);
+    converter = new JsonToWebElementConverter(null);
   }
 
   @Override
   public void handle(HttpRequest req, HttpResponse resp) throws IOException {
     Command command = downstream.decode(req);
+    // Massage the webelements
+    @SuppressWarnings("unchecked")
+    Map<String, ?> parameters = (Map<String, ?>) converter.apply(command.getParameters());
+    command = new Command(
+        command.getSessionId(),
+        command.getName(),
+        parameters);
+
     HttpRequest request = upstream.encode(command);
 
     HttpResponse res = makeRequest(request);
