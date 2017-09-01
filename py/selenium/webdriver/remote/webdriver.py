@@ -71,12 +71,15 @@ def _make_w3c_caps(caps):
     :Args:
      - caps - A dictionary of capabilities requested by the caller.
     """
+    caps = copy.deepcopy(caps)
     profile = caps.get('firefox_profile')
     always_match = {}
     for k, v in caps.items():
         if v and k in _OSS_W3C_CONVERSION:
             always_match[_OSS_W3C_CONVERSION[k]] = v.lower() if k == 'platform' else v
         if k in _W3C_CAPABILITY_NAMES or ':' in k:
+            if k == 'proxy' and v.get('proxyType'):
+                v['proxyType'] = v['proxyType'].lower()
             always_match[k] = v
     if profile:
         moz_opts = always_match.get('moz:firefoxOptions', {})

@@ -16,6 +16,8 @@
 # under the License.
 
 
+from copy import deepcopy
+
 from selenium.webdriver.remote.command import Command
 from selenium.webdriver.remote.webdriver import WebDriver
 
@@ -24,7 +26,17 @@ def test_converts_oss_capabilities_to_w3c(mocker):
     mock = mocker.patch('selenium.webdriver.remote.webdriver.WebDriver.execute')
     oss_caps = {'platform': 'WINDOWS', 'version': '11', 'acceptSslCerts': True}
     w3c_caps = {'platformName': 'windows', 'browserVersion': '11', 'acceptInsecureCerts': True}
-    WebDriver(desired_capabilities=oss_caps)
+    WebDriver(desired_capabilities=deepcopy(oss_caps))
+    expected_params = {'capabilities': {'firstMatch': [{}], 'alwaysMatch': w3c_caps},
+                       'desiredCapabilities': oss_caps}
+    mock.assert_called_with(Command.NEW_SESSION, expected_params)
+
+
+def test_converts_proxy_type_value_to_lowercase_for_w3c(mocker):
+    mock = mocker.patch('selenium.webdriver.remote.webdriver.WebDriver.execute')
+    oss_caps = {'proxy': {'proxyType': 'MANUAL'}}
+    w3c_caps = {'proxy': {'proxyType': 'manual'}}
+    WebDriver(desired_capabilities=deepcopy(oss_caps))
     expected_params = {'capabilities': {'firstMatch': [{}], 'alwaysMatch': w3c_caps},
                        'desiredCapabilities': oss_caps}
     mock.assert_called_with(Command.NEW_SESSION, expected_params)
