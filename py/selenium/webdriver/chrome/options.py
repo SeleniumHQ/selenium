@@ -166,6 +166,6 @@ class Options(object):
         if self.debugger_address:
             chrome_options["debuggerAddress"] = self.debugger_address
 
-        chrome["chromeOptions"] = chrome_options
+        chrome["goog:chromeOptions"] = chrome_options
 
         return chrome
