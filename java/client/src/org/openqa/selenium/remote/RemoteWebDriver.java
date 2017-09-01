@@ -75,6 +75,7 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -558,7 +559,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
   }
 
   protected void setElementConverter(JsonToWebElementConverter converter) {
-    this.converter = converter;
+    this.converter = Objects.requireNonNull(converter, "Element converter must not be null");
   }
 
   protected JsonToWebElementConverter getElementConverter() {
@@ -593,7 +594,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
       // Unwrap the response value by converting any JSON objects of the form
       // {"ELEMENT": id} to RemoteWebElements.
-      Object value = converter.apply(response.getValue());
+      Object value = getElementConverter().apply(response.getValue());
       response.setValue(value);
     } catch (WebDriverException e) {
       throw e;
