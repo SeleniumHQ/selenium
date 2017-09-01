@@ -316,8 +316,8 @@ class ActionChains(object):
 
     def pause(self, seconds):
         if self._driver.w3c:
-            self.w3c_actions.pointer_action.pause(self, seconds * 1000)
-            self.w3c_actions.key_action.pause(self, seconds * 1000)
+            self.w3c_actions.pointer_action.pause(self, seconds)
+            self.w3c_actions.key_action.pause(self, seconds)
         else:
             self._actions.append(lambda: self._driver.execute(
                 time.sleep(seconds)
