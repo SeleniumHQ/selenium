@@ -29,7 +29,6 @@ import org.openqa.selenium.html5.LocationContext;
 import org.openqa.selenium.html5.WebStorage;
 import org.openqa.selenium.interactions.HasTouchScreen;
 import org.openqa.selenium.internal.FindsByCssSelector;
-import org.openqa.selenium.internal.Killable;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.mobile.NetworkConnection;
 import org.openqa.selenium.remote.CapabilityType;
@@ -119,9 +118,7 @@ public class DefaultSession implements Session {
   public void close() {
     try {
       WebDriver driver = getDriver();
-      if (driver instanceof Killable) {
-        ((Killable) driver).kill();
-      } else if (driver != null) {
+      if (driver != null) {
         driver.close();
       }
     } catch (RuntimeException e) {
