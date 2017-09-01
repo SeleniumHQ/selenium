@@ -165,12 +165,7 @@ public abstract class BaseAugmenterTest {
       }
 
       public InterfaceImplementation getImplementation(Object value) {
-        return new InterfaceImplementation() {
-          public Object invoke(ExecuteMethod executeMethod, Object self, Method method,
-              Object... args) {
-            return "Hello World";
-          }
-        };
+        return (executeMethod, self, method, args) -> "Hello World";
       }
     });
 

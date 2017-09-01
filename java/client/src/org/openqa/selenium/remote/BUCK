@@ -54,7 +54,7 @@ java_library(name = 'remote',
     '//java/client/src/org/openqa/selenium:selenium',
   ],
   deps = [
-    '//third_party/java/cglib:cglib',
+    '//third_party/java/bytebuddy:bytebuddy',
     '//third_party/java/guava:guava',
   ],
   visibility = ['PUBLIC'],
