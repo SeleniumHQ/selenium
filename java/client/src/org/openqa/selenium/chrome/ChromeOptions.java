@@ -75,7 +75,7 @@ public class ChromeOptions {
    * Key used to store a set of ChromeOptions in a {@link DesiredCapabilities}
    * object.
    */
-  public static final String CAPABILITY = "chromeOptions";
+  public static final String CAPABILITY = "goog:chromeOptions";
 
   private String binary;
   private List<String> args = Lists.newArrayList();
