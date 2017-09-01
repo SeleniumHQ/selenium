@@ -249,6 +249,11 @@
     <Compile Include="ScreenOrientation.cs" />
     <Compile Include="Screenshot.cs" />
     <Compile Include="StaleElementReferenceException.cs" />
+    <Compile Include="Support\DefaultWait{T}.cs" />
+    <Compile Include="Support\IClock.cs" />
+    <Compile Include="Support\IWait{T}.cs" />
+    <Compile Include="Support\SystemClock.cs" />
+    <Compile Include="Support\WebDriverWait.cs" />
     <Compile Include="UnableToSetCookieException.cs" />
     <Compile Include="UnhandledAlertException.cs" />
     <Compile Include="WebDriverException.cs" />

@@ -72,19 +72,14 @@
     <Compile Include="PageObjects\WebElementListProxy.cs" />
     <Compile Include="PageObjects\WebElementProxy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UI\DefaultWait{T}.cs" />
     <Compile Include="UI\ExpectedConditions.cs" />
-    <Compile Include="UI\IClock.cs" />
     <Compile Include="UI\ILoadableComponent.cs" />
-    <Compile Include="UI\IWait{T}.cs" />
     <Compile Include="UI\LoadableComponentException.cs" />
     <Compile Include="UI\LoadableComponent{T}.cs" />
     <Compile Include="UI\PopupWindowFinder.cs" />
     <Compile Include="UI\SelectElement.cs" />
     <Compile Include="UI\SlowLoadableComponent{T}.cs" />
-    <Compile Include="UI\SystemClock.cs" />
     <Compile Include="UI\UnexpectedTagNameException.cs" />
-    <Compile Include="UI\WebDriverWait.cs" />
   </ItemGroup>
   <ItemGroup>
     <Analyzer Include="..\..\..\third_party\dotnet\stylecop\StyleCop.Analyzers.1.0.2\analyzers\dotnet\cs\StyleCop.Analyzers.CodeFixes.dll" />
