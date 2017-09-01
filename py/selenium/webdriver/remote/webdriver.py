@@ -861,9 +861,11 @@ class WebDriver(object):
                 by = By.CSS_SELECTOR
                 value = '[name="%s"]' % value
 
+        # Return empty list if driver returns null
+        # See https://github.com/SeleniumHQ/selenium/issues/4555
         return self.execute(Command.FIND_ELEMENTS, {
             'using': by,
-            'value': value})['value']
+            'value': value})['value'] or []
 
     @property
     def desired_capabilities(self):
