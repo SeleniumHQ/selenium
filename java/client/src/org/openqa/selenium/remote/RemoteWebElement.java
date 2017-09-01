@@ -46,6 +46,7 @@ import org.openqa.selenium.io.Zip;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -194,6 +195,9 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
     Response response = execute(DriverCommand.FIND_CHILD_ELEMENTS,
                                 ImmutableMap.of("id", id, "using", using, "value", value));
     Object responseValue = response.getValue();
+    if (responseValue == null) { // see https://github.com/SeleniumHQ/selenium/issues/4555
+      return Collections.emptyList();
+    }
     List<WebElement> allElements;
     try {
       allElements = (List<WebElement>) responseValue;
