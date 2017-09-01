@@ -43,6 +43,7 @@ import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 import static org.openqa.selenium.testing.TestUtilities.isOldIe;
 
 import org.junit.Test;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
@@ -121,6 +122,24 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     clickOnElementWhichRecordsEvents(driver);
 
     assertEventFired("mouseover", driver);
+  }
+
+  /**
+   * This isn't quite right. We just loaded the page, and the native mouse is assumed to be at 0,0
+   * (or the last location the mouse was in) In order to click the element, the mouse will have to
+   * move towards it.
+   */
+  @Test
+  @Ignore(MARIONETTE)
+  public void testShouldFireMouseMoveEventWhenClicking() {
+    driver.get(pages.simpleTestPage);
+    // Move the mouse cursor to somewhere pretty far down the page
+    new Actions(driver).moveToElement(driver.findElement(By.id("span"))).perform();
+
+    driver.get(pages.javascriptPage);
+    clickOnElementWhichRecordsEvents(driver);
+
+    assertEventFired("mousemove", driver);
   }
 
   @Test
