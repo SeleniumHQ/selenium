@@ -73,7 +73,6 @@ namespace OpenQA.Selenium
         private bool isAutoDetect;
         private string ftpProxyLocation;
         private string httpProxyLocation;
-        private string noProxy;
         private string proxyAutoConfigUrl;
         private string sslProxyLocation;
         private string socksProxyLocation;
@@ -117,7 +116,25 @@ namespace OpenQA.Selenium
 
             if (settings.ContainsKey("noProxy"))
             {
-                this.NoProxy = settings["noProxy"].ToString();
+                List<string> bypassAddresses = new List<string>();
+                string addressesAsString = settings["noProxy"] as string;
+                if (addressesAsString != null)
+                {
+                    bypassAddresses.AddRange(addressesAsString.Split(';'));
+                }
+                else
+                {
+                    object[] addressesAsArray = settings["noProxy"] as object[];
+                    if (addressesAsArray != null)
+                    {
+                        foreach (object address in addressesAsArray)
+                        {
+                            bypassAddresses.Add(address.ToString());
+                        }
+                    }
+                }
+
+                this.AddBypassAddresses(bypassAddresses);
             }
 
             if (settings.ContainsKey("proxyAutoconfigUrl"))
@@ -252,8 +269,24 @@ namespace OpenQA.Selenium
         /// Gets or sets the value for bypass proxy addresses.
         /// </summary>
         [Obsolete("Add addresses to bypass with the proxy by using the AddBypassAddress method.")]
-        [JsonProperty("noProxy", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         public string NoProxy
+        {
+            get
+            {
+                return this.BypassProxyAddresses;
+            }
+
+            set
+            {
+                this.AddBypassAddress(value);
+            }
+        }
+
+        /// <summary>
+        /// Gets the semicolon delimited list of address for which to bypass the proxy.
+        /// </summary>
+        [JsonProperty("noProxy", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        public string BypassProxyAddresses
         {
             get
             {
@@ -262,12 +295,7 @@ namespace OpenQA.Selenium
                     return null;
                 }
 
-                return string.Join(";", this.noProxyAddresses);
-            }
-
-            set
-            {
-                this.AddBypassAddress(value);
+                return string.Join(";", this.noProxyAddresses.ToArray());
             }
         }
 
@@ -456,7 +484,12 @@ namespace OpenQA.Selenium
 
                 if (this.noProxyAddresses.Count > 0)
                 {
-                    List<object> addressList = new List<object>(this.noProxyAddresses);
+                    List<object> addressList = new List<object>();
+                    foreach (string address in this.noProxyAddresses)
+                    {
+                        addressList.Add(address);
+                    }
+
                     serializedDictionary["noProxy"] = addressList;
                 }
             }
