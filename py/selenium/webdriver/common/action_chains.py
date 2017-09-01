@@ -18,6 +18,9 @@
 """
 The ActionChains implementation,
 """
+
+import time
+
 from selenium.webdriver.remote.command import Command
 
 from .utils import keys_to_typing
@@ -309,6 +312,16 @@ class ActionChains(object):
                     'element': to_element.id,
                     'xoffset': int(xoffset),
                     'yoffset': int(yoffset)}))
+        return self
+
+    def pause(self, seconds):
+        if self._driver.w3c:
+            self.w3c_actions.pointer_action.pause(self, seconds * 1000)
+            self.w3c_actions.key_action.pause(self, seconds * 1000)
+        else:
+            self._actions.append(lambda: self._driver.execute(
+                time.sleep(seconds)
+            ))
         return self
 
     def release(self, on_element=None):
