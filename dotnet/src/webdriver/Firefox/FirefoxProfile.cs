@@ -355,9 +355,9 @@ namespace OpenQA.Selenium.Firefox
                     this.SetManualProxyPreference("http", proxy.HttpProxy);
                     this.SetManualProxyPreference("ssl", proxy.SslProxy);
                     this.SetManualProxyPreference("socks", proxy.SocksProxy);
-                    if (proxy.NoProxy != null)
+                    if (proxy.BypassProxyAddresses != null)
                     {
-                        this.SetPreference("network.proxy.no_proxies_on", proxy.NoProxy);
+                        this.SetPreference("network.proxy.no_proxies_on", proxy.BypassProxyAddresses);
                     }
 
                     break;
