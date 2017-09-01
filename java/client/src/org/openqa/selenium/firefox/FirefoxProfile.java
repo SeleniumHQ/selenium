@@ -304,21 +304,6 @@ public class FirefoxProfile {
   }
 
   /**
-   * @deprecated "Native" events are not supported in FirefoxDriver anymore
-   */
-  @Deprecated
-  public boolean areNativeEventsEnabled() {
-    return false;
-  }
-
-  /**
-   * @deprecated "Native" events are not supported in FirefoxDriver anymore
-   */
-  @Deprecated
-  public void setEnableNativeEvents(boolean enableNativeEvents) {
-  }
-
-  /**
    * Returns whether the no focus library should be loaded for Firefox profiles launched on Linux,
    * even if native events are disabled.
    *
