@@ -184,7 +184,7 @@ namespace OpenQA.Selenium.Firefox
         /// Creates a default instance of the FirefoxDriverService using a specified path to the Firefox driver executable with the given name.
         /// </summary>
         /// <param name="driverPath">The directory containing the Firefox driver executable.</param>
-        /// <param name="driverExecutableFileName">The name of th  Firefox driver executable file.</param>
+        /// <param name="driverExecutableFileName">The name of the Firefox driver executable file.</param>
         /// <returns>A FirefoxDriverService using a random port.</returns>
         public static FirefoxDriverService CreateDefaultService(string driverPath, string driverExecutableFileName)
         {
