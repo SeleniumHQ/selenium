@@ -47,16 +47,11 @@ import org.openqa.selenium.remote.http.JsonHttpCommandCodec;
 import org.openqa.selenium.remote.http.JsonHttpResponseCodec;
 import org.openqa.selenium.remote.http.W3CHttpCommandCodec;
 import org.openqa.selenium.remote.http.W3CHttpResponseCodec;
-import org.openqa.testing.FakeHttpServletRequest;
-import org.openqa.testing.FakeHttpServletResponse;
-import org.openqa.testing.UrlInfo;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
 
 public class ProtocolConverterTest {
 
@@ -65,175 +60,159 @@ public class ProtocolConverterTest {
 
   @Test
   public void shouldRoundTripASimpleCommand() throws IOException {
-//    SessionId sessionId = new SessionId("1234567");
-//
-//    SessionCodec handler = new ProtocolConverter(
-//        new URL("http://example.com/wd/hub"),
-//        new W3CHttpCommandCodec(),
-//        new W3CHttpResponseCodec(),
-//        new JsonHttpCommandCodec(),
-//        new JsonHttpResponseCodec()) {
-//      @Override
-//      protected HttpResponse makeRequest(HttpRequest request) throws IOException {
-//        HttpResponse response = new HttpResponse();
-//
-//        response.setHeader("Content-Type", MediaType.JSON_UTF_8.toString());
-//        response.setHeader("Cache-Control", "none");
-//
-//        JsonObject obj = new JsonObject();
-//        obj.addProperty("sessionId", sessionId.toString());
-//        obj.addProperty("status", 0);
-//        obj.add("value", JsonNull.INSTANCE);
-//        String payload = gson.toJson(obj);
-//        response.setContent(payload.getBytes(UTF_8));
-//
-//        return response;
-//      }
-//    };
-//
-//    Command command = new Command(
-//        sessionId,
-//        DriverCommand.GET,
-//        ImmutableMap.of("url", "http://example.com/cheese"));
-//
-//    HttpRequest w3cRequest = new W3CHttpCommandCodec().encode(command);
-//
-//    FakeHttpServletResponse resp = new FakeHttpServletResponse();
-//    handler.handle(decant(w3cRequest), resp);
-//
-//    assertEquals(MediaType.JSON_UTF_8, MediaType.parse(resp.getContentType()));
-//    assertEquals(HttpURLConnection.HTTP_OK, resp.getStatus());
-//
-//    Map<String, Object> parsed = new Gson().fromJson(resp.getBody(), MAP_TYPE.getType());
-//    assertNull(parsed.toString(), parsed.get("sessionId"));
-//    assertTrue(parsed.toString(), parsed.containsKey("value"));
-//    assertNull(parsed.toString(), parsed.get("value"));
+    SessionId sessionId = new SessionId("1234567");
+
+    SessionCodec handler = new ProtocolConverter(
+        new URL("http://example.com/wd/hub"),
+        new W3CHttpCommandCodec(),
+        new W3CHttpResponseCodec(),
+        new JsonHttpCommandCodec(),
+        new JsonHttpResponseCodec()) {
+      @Override
+      protected HttpResponse makeRequest(HttpRequest request) throws IOException {
+        HttpResponse response = new HttpResponse();
+
+        response.setHeader("Content-Type", MediaType.JSON_UTF_8.toString());
+        response.setHeader("Cache-Control", "none");
+
+        JsonObject obj = new JsonObject();
+        obj.addProperty("sessionId", sessionId.toString());
+        obj.addProperty("status", 0);
+        obj.add("value", JsonNull.INSTANCE);
+        String payload = gson.toJson(obj);
+        response.setContent(payload.getBytes(UTF_8));
+
+        return response;
+      }
+    };
+
+    Command command = new Command(
+        sessionId,
+        DriverCommand.GET,
+        ImmutableMap.of("url", "http://example.com/cheese"));
+
+    HttpRequest w3cRequest = new W3CHttpCommandCodec().encode(command);
+
+    HttpResponse resp = new HttpResponse();
+    handler.handle(w3cRequest, resp);
+
+    assertEquals(MediaType.JSON_UTF_8, MediaType.parse(resp.getHeader("Content-type")));
+    assertEquals(HttpURLConnection.HTTP_OK, resp.getStatus());
+
+    Map<String, Object> parsed = new Gson().fromJson(resp.getContentString(), MAP_TYPE.getType());
+    assertNull(parsed.toString(), parsed.get("sessionId"));
+    assertTrue(parsed.toString(), parsed.containsKey("value"));
+    assertNull(parsed.toString(), parsed.get("value"));
   }
 
   @Test
   public void shouldAliasAComplexCommand() throws IOException {
-//    SessionId sessionId = new SessionId("1234567");
-//
-//    // Downstream is JSON, upstream is W3C. This way we can force "isDisplayed" to become JS
-//    // execution.
-//    SessionCodec handler = new ProtocolConverter(
-//        new URL("http://example.com/wd/hub"),
-//        new JsonHttpCommandCodec(),
-//        new JsonHttpResponseCodec(),
-//        new W3CHttpCommandCodec(),
-//        new W3CHttpResponseCodec()) {
-//      @Override
-//      protected HttpResponse makeRequest(HttpRequest request) throws IOException {
-//        assertEquals(String.format("/session/%s/execute/sync", sessionId), request.getUri());
-//        Map<String, Object> params = gson.fromJson(request.getContentString(), MAP_TYPE.getType());
-//
-//        assertEquals(
-//            ImmutableList.of(
-//                ImmutableMap.of(W3C.getEncodedElementKey(), "4567890")),
-//            params.get("args"));
-//
-//        HttpResponse response = new HttpResponse();
-//
-//        response.setHeader("Content-Type", MediaType.JSON_UTF_8.toString());
-//        response.setHeader("Cache-Control", "none");
-//
-//        JsonObject obj = new JsonObject();
-//        obj.addProperty("sessionId", sessionId.toString());
-//        obj.addProperty("status", 0);
-//        obj.addProperty("value", true);
-//        String payload = gson.toJson(obj);
-//        response.setContent(payload.getBytes(UTF_8));
-//
-//        return response;
-//      }
-//    };
-//
-//    Command command = new Command(
-//        sessionId,
-//        DriverCommand.IS_ELEMENT_DISPLAYED,
-//        ImmutableMap.of("id", "4567890"));
-//
-//    HttpRequest w3cRequest = new JsonHttpCommandCodec().encode(command);
-//
-//    FakeHttpServletResponse resp = new FakeHttpServletResponse();
-//    handler.handle(decant(w3cRequest), resp);
-//
-//    assertEquals(MediaType.JSON_UTF_8, MediaType.parse(resp.getContentType()));
-//    assertEquals(HttpURLConnection.HTTP_OK, resp.getStatus());
-//
-//    Map<String, Object> parsed = new Gson().fromJson(resp.getBody(), MAP_TYPE.getType());
-//    assertNull(parsed.get("sessionId"));
-//    assertTrue(parsed.containsKey("value"));
-//    assertEquals(true, parsed.get("value"));
+    SessionId sessionId = new SessionId("1234567");
+
+    // Downstream is JSON, upstream is W3C. This way we can force "isDisplayed" to become JS
+    // execution.
+    SessionCodec handler = new ProtocolConverter(
+        new URL("http://example.com/wd/hub"),
+        new JsonHttpCommandCodec(),
+        new JsonHttpResponseCodec(),
+        new W3CHttpCommandCodec(),
+        new W3CHttpResponseCodec()) {
+      @Override
+      protected HttpResponse makeRequest(HttpRequest request) throws IOException {
+        assertEquals(String.format("/session/%s/execute/sync", sessionId), request.getUri());
+        Map<String, Object> params = gson.fromJson(request.getContentString(), MAP_TYPE.getType());
+
+        assertEquals(
+            ImmutableList.of(
+                ImmutableMap.of(W3C.getEncodedElementKey(), "4567890")),
+            params.get("args"));
+
+        HttpResponse response = new HttpResponse();
+
+        response.setHeader("Content-Type", MediaType.JSON_UTF_8.toString());
+        response.setHeader("Cache-Control", "none");
+
+        JsonObject obj = new JsonObject();
+        obj.addProperty("sessionId", sessionId.toString());
+        obj.addProperty("status", 0);
+        obj.addProperty("value", true);
+        String payload = gson.toJson(obj);
+        response.setContent(payload.getBytes(UTF_8));
+
+        return response;
+      }
+    };
+
+    Command command = new Command(
+        sessionId,
+        DriverCommand.IS_ELEMENT_DISPLAYED,
+        ImmutableMap.of("id", "4567890"));
+
+    HttpRequest w3cRequest = new JsonHttpCommandCodec().encode(command);
+
+    HttpResponse resp = new HttpResponse();
+    handler.handle(w3cRequest, resp);
+
+    assertEquals(MediaType.JSON_UTF_8, MediaType.parse(resp.getHeader("Content-type")));
+    assertEquals(HttpURLConnection.HTTP_OK, resp.getStatus());
+
+    Map<String, Object> parsed = new Gson().fromJson(resp.getContentString(), MAP_TYPE.getType());
+    assertNull(parsed.get("sessionId"));
+    assertTrue(parsed.containsKey("value"));
+    assertEquals(true, parsed.get("value"));
   }
 
   @Test
   public void shouldConvertAnException() throws IOException {
-//    // Json upstream, w3c downstream
-//    SessionId sessionId = new SessionId("1234567");
-//
-//    SessionCodec handler = new ProtocolConverter(
-//        new URL("http://example.com/wd/hub"),
-//        new W3CHttpCommandCodec(),
-//        new W3CHttpResponseCodec(),
-//        new JsonHttpCommandCodec(),
-//        new JsonHttpResponseCodec()) {
-//      @Override
-//      protected HttpResponse makeRequest(HttpRequest request) throws IOException {
-//        HttpResponse response = new HttpResponse();
-//
-//        response.setHeader("Content-Type", MediaType.JSON_UTF_8.toString());
-//        response.setHeader("Cache-Control", "none");
-//
-//       String payload = new BeanToJsonConverter().convert(
-//           ImmutableMap.of(
-//               "sessionId", sessionId.toString(),
-//               "status", UNHANDLED_ERROR,
-//               "value", new WebDriverException("I love cheese and peas")));
-//        response.setContent(payload.getBytes(UTF_8));
-//        response.setStatus(HTTP_INTERNAL_ERROR);
-//
-//        return response;
-//      }
-//    };
-//
-//    Command command = new Command(
-//        sessionId,
-//        DriverCommand.GET,
-//        ImmutableMap.of("url", "http://example.com/cheese"));
-//
-//    HttpRequest w3cRequest = new W3CHttpCommandCodec().encode(command);
-//
-//    FakeHttpServletResponse resp = new FakeHttpServletResponse();
-//    handler.handle(decant(w3cRequest), resp);
-//
-//    assertEquals(MediaType.JSON_UTF_8, MediaType.parse(resp.getContentType()));
-//    assertEquals(HTTP_INTERNAL_ERROR, resp.getStatus());
-//
-//    Map<String, Object> parsed = new Gson().fromJson(resp.getBody(), MAP_TYPE.getType());
-//    assertNull(parsed.get("sessionId"));
-//    assertTrue(parsed.containsKey("value"));
-//    @SuppressWarnings("unchecked") Map<String, Object> value =
-//        (Map<String, Object>) parsed.get("value");
-//    System.out.println("value = " + value.keySet());
-//    assertEquals("unknown error", value.get("error"));
-//    assertTrue(((String) value.get("message")).startsWith("I love cheese and peas"));
-  }
+    // Json upstream, w3c downstream
+    SessionId sessionId = new SessionId("1234567");
 
-  private HttpServletRequest decant(HttpRequest request) {
-    FakeHttpServletRequest req = new FakeHttpServletRequest(
-        request.getMethod().toString(),
-        new UrlInfo("http://localhost", "/wd/hub", request.getUri()));
+    SessionCodec handler = new ProtocolConverter(
+        new URL("http://example.com/wd/hub"),
+        new W3CHttpCommandCodec(),
+        new W3CHttpResponseCodec(),
+        new JsonHttpCommandCodec(),
+        new JsonHttpResponseCodec()) {
+      @Override
+      protected HttpResponse makeRequest(HttpRequest request) throws IOException {
+        HttpResponse response = new HttpResponse();
 
-    for (String name : request.getHeaderNames()) {
-      for (String value : request.getHeaders(name)) {
-        req.addHeader(name, value);
+        response.setHeader("Content-Type", MediaType.JSON_UTF_8.toString());
+        response.setHeader("Cache-Control", "none");
+
+       String payload = new BeanToJsonConverter().convert(
+           ImmutableMap.of(
+               "sessionId", sessionId.toString(),
+               "status", UNHANDLED_ERROR,
+               "value", new WebDriverException("I love cheese and peas")));
+        response.setContent(payload.getBytes(UTF_8));
+        response.setStatus(HTTP_INTERNAL_ERROR);
+
+        return response;
       }
-    }
+    };
 
-    req.setBody(request.getContentString());
+    Command command = new Command(
+        sessionId,
+        DriverCommand.GET,
+        ImmutableMap.of("url", "http://example.com/cheese"));
 
-    return req;
+    HttpRequest w3cRequest = new W3CHttpCommandCodec().encode(command);
+
+    HttpResponse resp = new HttpResponse();
+    handler.handle(w3cRequest, resp);
+
+    assertEquals(MediaType.JSON_UTF_8, MediaType.parse(resp.getHeader("Content-type")));
+    assertEquals(HTTP_INTERNAL_ERROR, resp.getStatus());
+
+    Map<String, Object> parsed = new Gson().fromJson(resp.getContentString(), MAP_TYPE.getType());
+    assertNull(parsed.get("sessionId"));
+    assertTrue(parsed.containsKey("value"));
+    @SuppressWarnings("unchecked") Map<String, Object> value =
+        (Map<String, Object>) parsed.get("value");
+    System.out.println("value = " + value.keySet());
+    assertEquals("unknown error", value.get("error"));
+    assertTrue(((String) value.get("message")).startsWith("I love cheese and peas"));
   }
 
 }
