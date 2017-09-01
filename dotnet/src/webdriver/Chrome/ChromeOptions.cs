@@ -1,4 +1,4 @@
-﻿// <copyright file="ChromeOptions.cs" company="WebDriver Committers">
+// <copyright file="ChromeOptions.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -56,7 +56,7 @@ namespace OpenQA.Selenium.Chrome
         /// Gets the name of the capability used to store Chrome options in
         /// a <see cref="DesiredCapabilities"/> object.
         /// </summary>
-        public static readonly string Capability = "chromeOptions";
+        public static readonly string Capability = "goog:chromeOptions";
 
         private const string ArgumentsChromeOption = "args";
         private const string BinaryChromeOption = "binary";
