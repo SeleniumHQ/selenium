@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.interactions.internal;
 
-import org.openqa.selenium.internal.Locatable;
-
 /**
  * This class represents an abstraction of devices that can execute an action within a display area.
  */

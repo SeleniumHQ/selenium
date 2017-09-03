@@ -36,6 +36,7 @@ java_library(name = 'core',
     'SourceType.java',
     'TouchScreen.java',
     'internal/Coordinates.java',
+    'internal/Locatable.java',
   ],
   deps = [
     '//java/client/src/org/openqa/selenium:primitives',

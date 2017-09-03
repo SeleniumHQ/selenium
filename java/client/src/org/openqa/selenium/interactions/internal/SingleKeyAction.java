@@ -20,7 +20,6 @@ package org.openqa.selenium.interactions.internal;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.interactions.Keyboard;
 import org.openqa.selenium.interactions.Mouse;
-import org.openqa.selenium.internal.Locatable;
 
 /**
  * Used both by KeyDownAction and KeyUpAction

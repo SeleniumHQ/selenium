@@ -15,9 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.internal;
-
-import org.openqa.selenium.interactions.internal.Coordinates;
+package org.openqa.selenium.interactions.internal;
 
 public interface Locatable {
   Coordinates getCoordinates();

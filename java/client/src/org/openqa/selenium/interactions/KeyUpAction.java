@@ -21,7 +21,7 @@ import com.google.common.collect.ImmutableList;
 
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.interactions.internal.SingleKeyAction;
-import org.openqa.selenium.internal.Locatable;
+import org.openqa.selenium.interactions.internal.Locatable;
 
 import java.util.List;
 
