@@ -39,12 +39,8 @@ module Selenium
           expect(driver.manage.logs.available_types).to include(:browser, :har)
         end
 
-<<<<<<< HEAD
         # TODO (Alex): Investigate why this spec passes on macOS but fails on Linux.
         it 'can get the browser log', only: {browser: %i[firefox ff_esr]}, except: {browser: :chrome, platform: :linux} do
-=======
-        it 'can get the browser log', only: {browser: %i[chrome firefox ff_esr]} do
->>>>>>> 22c3012045... Remove Firefox nightly tests from Ruby
           driver.navigate.to url_for('simpleTest.html')
 
           entries = driver.manage.logs.get(:browser)
@@ -75,8 +71,7 @@ module Selenium
           expect(cookies.first[:value]).to eq('bar')
         end
 
-        # IE - Command not implemented
-        it 'should get named cookie', except: [{driver: :ie}, {browser: :firefox}] do
+        it 'should get named cookie', except: {driver: :safari} do
           driver.navigate.to url_for('xhtmlTest.html')
           driver.manage.add_cookie name: 'foo', value: 'bar'
 
@@ -101,8 +96,7 @@ module Selenium
           expect(driver.manage.all_cookies).to be_empty
         end
 
-        # IE - Command not implemented
-        it 'should use DateTime for expires', except: {browser: %i[firefox ie]} do
+        it 'should use DateTime for expires', except: {browser: %i[firefox safari]} do
           driver.navigate.to url_for('xhtmlTest.html')
 
           expected = DateTime.new(2039)

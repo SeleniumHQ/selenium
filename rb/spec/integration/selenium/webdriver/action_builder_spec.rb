@@ -103,7 +103,7 @@ module Selenium
           expect(input.attribute(:value)).to eq('abcd')
         end
 
-        it 'can release pressed keys via release action', only: {browser: :firefox} do
+        it 'can release pressed keys via release action', only: {browser: %i[firefox ie]} do
           driver.navigate.to url_for('javascriptPage.html')
 
           event_input = driver.find_element(id: 'theworks')

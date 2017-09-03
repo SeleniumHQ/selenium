@@ -35,7 +35,7 @@ module Selenium
           .to raise_error(Selenium::WebDriver::Error::UnknownError, error)
       end
 
-      it 'should not raise if element is only partially covered', only: {browser: %i[firefox ff_esr]} do
+      it 'should not raise if element is only partially covered', only: {browser: %i[firefox ff_esr ie]} do
         driver.navigate.to url_for('click_tests/overlapping_elements.html')
         expect { driver.find_element(id: 'other_contents').click }.not_to raise_error
       end
@@ -61,14 +61,12 @@ module Selenium
       end
 
       # https://github.com/mozilla/geckodriver/issues/245
-      compliant_on browser: %i[ff_esr chrome] do
-        it 'should send key presses chords' do
-          driver.navigate.to url_for('javascriptPage.html')
-          key_reporter = driver.find_element(id: 'keyReporter')
+      it 'should send key presses chords', only: {browser: %i[chrome ff_esr ie]} do
+        driver.navigate.to url_for('javascriptPage.html')
+        key_reporter = driver.find_element(id: 'keyReporter')
 
-          key_reporter.send_keys([:shift, 'h'], 'ello')
-          expect(key_reporter.attribute('value')).to eq('Hello')
-        end
+        key_reporter.send_keys([:shift, 'h'], 'ello')
+        expect(key_reporter.attribute('value')).to eq('Hello')
       end
 
       # PhantomJS on windows issue: https://github.com/ariya/phantomjs/issues/10993
@@ -97,8 +95,7 @@ module Selenium
         expect(driver.find_element(id: 'withText').attribute('nonexistent')).to be_nil
       end
 
-      # IE - Command not implemented
-      it 'should get property value', except: {browser: %i[edge ie]} do
+      it 'should get property value', except: {browser: :edge} do
         driver.navigate.to url_for('formPage.html')
         expect(driver.find_element(id: 'withText').property('nodeName')).to eq('TEXTAREA')
       end

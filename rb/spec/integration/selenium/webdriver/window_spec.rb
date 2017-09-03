@@ -22,6 +22,8 @@ require_relative 'spec_helper'
 module Selenium
   module WebDriver
     describe Window do
+      after { reset_driver! }
+
       let(:window) { driver.manage.window }
 
       after { reset_driver! }
@@ -35,7 +37,7 @@ module Selenium
         expect(size.height).to be > 0
       end
 
-      it 'sets the size of the current window', except: {browser: :safari} do
+      it 'sets the size of the current window', except: {browser: %i[ie safari]} do
         size = window.size
 
         target_width = size.width - 20
@@ -57,7 +59,7 @@ module Selenium
         expect(pos.y).to be >= 0
       end
 
-      it 'sets the position of the current window', except: {browser: %i[phantomjs safari]} do
+      it 'sets the position of the current window', except: {browser: %i[ie phantomjs safari]} do
         pos = window.position
 
         target_x = pos.x + 10
@@ -72,40 +74,38 @@ module Selenium
         expect(new_pos.y).to eq(target_y)
       end
 
-      context 'window rect', only: {browser: :firefox} do
-        it 'gets the rect of the current window' do
-          rect = driver.manage.window.rect
+      it 'gets the rect of the current window', only: {browser: %i[firefox ie]} do
+        rect = driver.manage.window.rect
 
-          expect(rect).to be_a(Rectangle)
+        expect(rect).to be_a(Rectangle)
 
-          expect(rect.x).to be >= 0
-          expect(rect.y).to be >= 0
-          expect(rect.width).to be >= 0
-          expect(rect.height).to be >= 0
-        end
+        expect(rect.x).to be >= 0
+        expect(rect.y).to be >= 0
+        expect(rect.width).to be >= 0
+        expect(rect.height).to be >= 0
+      end
 
-        it 'sets the rect of the current window' do
-          rect = window.rect
+      it 'sets the rect of the current window', only: {browser: %i[firefox ie]} do
+        rect = window.rect
 
-          target_x = rect.x + 10
-          target_y = rect.y + 10
-          target_width = rect.width + 10
-          target_height = rect.height + 10
+        target_x = rect.x + 10
+        target_y = rect.y + 10
+        target_width = rect.width + 10
+        target_height = rect.height + 10
 
-          window.rect = Rectangle.new(target_x, target_y, target_width, target_height)
+        window.rect = Rectangle.new(target_x, target_y, target_width, target_height)
 
-          wait.until { window.rect.x != rect.x && window.rect.y != rect.y }
+        wait.until { window.rect.x != rect.x && window.rect.y != rect.y }
 
-          new_rect = window.rect
-          expect(new_rect.x).to eq(target_x)
-          expect(new_rect.y).to eq(target_y)
-          expect(new_rect.width).to eq(target_width)
-          expect(new_rect.height).to eq(target_height)
-        end
+        new_rect = window.rect
+        expect(new_rect.x).to eq(target_x)
+        expect(new_rect.y).to eq(target_y)
+        expect(new_rect.width).to eq(target_width)
+        expect(new_rect.height).to eq(target_height)
       end
 
       # TODO: - Create Window Manager guard
-      it 'can maximize the current window', except: [{platform: :linux}, {browser: :safari}] do
+      it 'can maximize the current window', except: [{platform: :linux}, {browser: %i[ie safari]}] do
         window.size = old_size = Dimension.new(200, 200)
 
         window.maximize
@@ -119,7 +119,7 @@ module Selenium
 
       # Firefox - https://bugzilla.mozilla.org/show_bug.cgi?id=1189749
       # Edge: Not Yet - https://dev.windows.com/en-us/microsoft-edge/platform/status/webdriver/details/
-      it 'can make window full screen', only: {browser: %i[firefox edge]}, except: {browser: %i[firefox edge]} do
+      it 'can make window full screen', only: {browser: :ie} do
         window.maximize
         old_size = window.size
 
@@ -131,7 +131,7 @@ module Selenium
 
       # Firefox - Not implemented yet, no bug to track
       # Edge: Not Yet - https://dev.windows.com/en-us/microsoft-edge/platform/status/webdriver/details/
-      it 'can minimize the window', only: {browser: %i[firefox edge]}, except: {browser: %i[firefox edge]} do
+      it 'can minimize the window', only: {browser: :ie} do
         driver.execute_script('window.minimized = false; window.onblur = function(){ window.minimized = true };')
         window.minimize
         expect(driver.execute_script('return window.minimized;')).to be true
