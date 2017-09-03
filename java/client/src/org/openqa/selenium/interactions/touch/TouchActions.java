@@ -24,7 +24,7 @@ import org.openqa.selenium.interactions.HasInputDevices;
 import org.openqa.selenium.interactions.HasTouchScreen;
 import org.openqa.selenium.interactions.Keyboard;
 import org.openqa.selenium.interactions.TouchScreen;
-import org.openqa.selenium.internal.Locatable;
+import org.openqa.selenium.interactions.internal.Locatable;
 
 /**
  * Implements actions for touch enabled devices, reusing the available composite and builder design

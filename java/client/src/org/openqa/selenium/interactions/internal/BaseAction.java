@@ -20,7 +20,6 @@ package org.openqa.selenium.interactions.internal;
 import com.google.common.base.Preconditions;
 
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.internal.Locatable;
 
 import java.util.Optional;
 
