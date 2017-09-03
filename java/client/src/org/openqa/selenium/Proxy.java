@@ -428,6 +428,7 @@ public class Proxy {
         builder.append("pac: ").append(getProxyAutoconfigUrl());
         break;
 
+      case RESERVED_1:
       case UNSPECIFIED:
         break;
     }
