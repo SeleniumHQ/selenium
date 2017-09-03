@@ -28,6 +28,7 @@ import org.openqa.selenium.remote.BeanToJsonConverter;
 import org.openqa.selenium.remote.JsonToBeanConverter;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpMethod;
+import org.openqa.selenium.remote.server.commandhandler.BeginSession;
 import org.openqa.selenium.remote.server.commandhandler.GetAllSessions;
 import org.openqa.selenium.remote.server.commandhandler.GetLogTypes;
 import org.openqa.selenium.remote.server.commandhandler.GetLogsOfType;

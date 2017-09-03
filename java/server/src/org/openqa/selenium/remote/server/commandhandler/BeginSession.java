@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.remote.server;
+package org.openqa.selenium.remote.server.commandhandler;
 
 import static com.google.common.net.MediaType.JSON_UTF_8;
 import static java.net.HttpURLConnection.HTTP_OK;
@@ -30,6 +30,11 @@ import org.openqa.selenium.remote.BeanToJsonConverter;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.server.ActiveSession;
+import org.openqa.selenium.remote.server.ActiveSessionFactory;
+import org.openqa.selenium.remote.server.ActiveSessions;
+import org.openqa.selenium.remote.server.CommandHandler;
+import org.openqa.selenium.remote.server.NewSessionPayload;
 import org.openqa.selenium.remote.server.log.LoggingManager;
 
 import java.io.IOException;
@@ -37,7 +42,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.logging.Level;
 
-class BeginSession implements CommandHandler {
+public class BeginSession implements CommandHandler {
 
   private final ActiveSessionFactory sessionFactory;
   private final ActiveSessions allSessions;

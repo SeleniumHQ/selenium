@@ -29,6 +29,7 @@ import com.google.common.net.MediaType;
 
 import org.openqa.selenium.logging.LoggingHandler;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.server.commandhandler.ExceptionHandler;
 import org.openqa.selenium.remote.server.log.LoggingManager;
 import org.openqa.selenium.remote.server.log.PerSessionLogHandler;
 import org.openqa.selenium.remote.server.xdrpc.CrossDomainRpc;

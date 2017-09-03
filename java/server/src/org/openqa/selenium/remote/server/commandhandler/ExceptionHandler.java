@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.remote.server;
+package org.openqa.selenium.remote.server.commandhandler;
 
 import static com.google.common.net.MediaType.JSON_UTF_8;
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
@@ -29,6 +29,7 @@ import org.openqa.selenium.remote.BeanToJsonConverter;
 import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.server.CommandHandler;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -39,7 +40,7 @@ import java.util.stream.Stream;
  * Takes an exception and formats it for a local end that speaks either the OSS or W3C dialect of
  * the wire protocol.
  */
-class ExceptionHandler implements CommandHandler {
+public class ExceptionHandler implements CommandHandler {
 
   private final static ErrorCodes ERRORS = new ErrorCodes();
   private final static BeanToJsonConverter toJson = new BeanToJsonConverter();
