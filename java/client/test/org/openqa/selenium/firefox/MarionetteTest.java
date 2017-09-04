@@ -233,6 +233,14 @@ public class MarionetteTest extends JUnit4TestBase {
                      .getCapability(CapabilityType.ACCEPT_INSECURE_CERTS), true);
   }
 
+  @Test
+  public void canStartHeadless() {
+    localDriver = new FirefoxDriver(new FirefoxOptions().setHeadless(true));
+
+    verifyItIsMarionette(localDriver);
+    assertEquals(localDriver.getCapabilities().getCapability("moz:headless"), true);
+  }
+
   private void verifyItIsMarionette(FirefoxDriver driver) {
     assertNotNull(
         Optional.ofNullable(driver.getCapabilities().getCapability("moz:processID"))

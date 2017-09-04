@@ -91,6 +91,7 @@ public class FirefoxOptions {
   private Level logLevel = null;
   private boolean legacy;
   private DesiredCapabilities desiredCapabilities = new DesiredCapabilities();
+  private boolean headless;
 
   private void amend(Map<String, Object> map) throws IOException {
     if (map.containsKey("binary")) {
@@ -416,6 +417,14 @@ public class FirefoxOptions {
 
   public FirefoxOptions setAcceptInsecureCerts(boolean acceptInsecureCerts) {
     desiredCapabilities.setCapability(ACCEPT_INSECURE_CERTS, acceptInsecureCerts);
+    return this;
+  }
+
+  public FirefoxOptions setHeadless(boolean headless) {
+    args.remove("-headless");
+    if (headless) {
+      args.add("-headless");
+    }
     return this;
   }
 
