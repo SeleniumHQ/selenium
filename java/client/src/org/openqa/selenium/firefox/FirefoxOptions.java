@@ -22,6 +22,7 @@ import static org.openqa.selenium.firefox.FirefoxDriver.BINARY;
 import static org.openqa.selenium.firefox.FirefoxDriver.MARIONETTE;
 import static org.openqa.selenium.firefox.FirefoxDriver.PROFILE;
 import static org.openqa.selenium.remote.BrowserType.FIREFOX;
+import static org.openqa.selenium.remote.CapabilityType.ACCEPT_INSECURE_CERTS;
 import static org.openqa.selenium.remote.CapabilityType.ACCEPT_SSL_CERTS;
 import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 import static org.openqa.selenium.remote.CapabilityType.LOGGING_PREFS;
@@ -410,6 +411,11 @@ public class FirefoxOptions {
 
   public FirefoxOptions setUnhandledPromptBehaviour(UnexpectedAlertBehaviour behaviour) {
     desiredCapabilities.setCapability(UNHANDLED_PROMPT_BEHAVIOUR, behaviour);
+    return this;
+  }
+
+  public FirefoxOptions setAcceptInsecureCerts(boolean acceptInsecureCerts) {
+    desiredCapabilities.setCapability(ACCEPT_INSECURE_CERTS, acceptInsecureCerts);
     return this;
   }
 

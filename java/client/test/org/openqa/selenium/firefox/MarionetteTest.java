@@ -28,6 +28,9 @@ import static org.openqa.selenium.testing.Driver.FIREFOX;
 
 import org.junit.After;
 import org.junit.Test;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.PageLoadStrategy;
+import org.openqa.selenium.UnexpectedAlertBehaviour;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.testing.Ignore;
@@ -209,6 +212,25 @@ public class MarionetteTest extends JUnit4TestBase {
     wait.until($ -> "Testing Javascript".equals(localDriver.getTitle()));
 
     verifyItIsMarionette(localDriver);
+  }
+
+  @Test
+  public void canSetPageLoadStrategyViaOptions() {
+    localDriver = new FirefoxDriver(
+        new FirefoxOptions().setPageLoadStrategy(PageLoadStrategy.NONE));
+
+    verifyItIsMarionette(localDriver);
+    assertEquals(localDriver.getCapabilities()
+                     .getCapability(CapabilityType.PAGE_LOAD_STRATEGY), "none");
+  }
+
+  @Test
+  public void canSetInsecureCertSupportViaOptions() {
+    localDriver = new FirefoxDriver(new FirefoxOptions().setAcceptInsecureCerts(true));
+
+    verifyItIsMarionette(localDriver);
+    assertEquals(localDriver.getCapabilities()
+                     .getCapability(CapabilityType.ACCEPT_INSECURE_CERTS), true);
   }
 
   private void verifyItIsMarionette(FirefoxDriver driver) {
