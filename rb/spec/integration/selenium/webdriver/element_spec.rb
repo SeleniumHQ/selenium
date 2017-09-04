@@ -68,6 +68,17 @@ module Selenium
         end
       end
 
+      # https://github.com/mozilla/geckodriver/issues/245
+      compliant_on browser: %i[ff_esr chrome] do
+        it 'should send key presses chords' do
+          driver.navigate.to url_for('javascriptPage.html')
+          key_reporter = driver.find_element(id: 'keyReporter')
+
+          key_reporter.send_keys([:shift, 'h'], 'ello')
+          expect(key_reporter.attribute('value')).to eq('Hello')
+        end
+      end
+
       # PhantomJS on windows issue: https://github.com/ariya/phantomjs/issues/10993
       # https://github.com/mozilla/geckodriver/issues/644
       # https://github.com/mozilla/geckodriver/issues/858
