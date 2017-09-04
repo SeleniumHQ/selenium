@@ -1,0 +1,9 @@
+prebuilt_jar(
+  name = 'bytebuddy',
+  maven_coords = 'net.bytebuddy:byte-buddy:jar:1.7.5',
+  binary_jar = 'byte-buddy-1.7.5.jar',
+  source_jar = 'byte-buddy-1.7.5-sources.jar',
+  visibility = [
+    '//java/client/src/org/openqa/selenium/remote:remote',
+  ],
+)
