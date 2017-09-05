@@ -96,6 +96,7 @@ java_library(name = 'beta',
 
 java_library(name = 'exceptions',
   srcs = [
+    'ElementClickInterceptedException.java',
     'ElementNotInteractableException.java',
     'ElementNotSelectableException.java',
     'ElementNotVisibleException.java',

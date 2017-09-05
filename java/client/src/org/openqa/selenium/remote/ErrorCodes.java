@@ -22,6 +22,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 
 import org.openqa.selenium.Beta;
+import org.openqa.selenium.ElementClickInterceptedException;
 import org.openqa.selenium.ElementNotInteractableException;
 import org.openqa.selenium.ElementNotSelectableException;
 import org.openqa.selenium.ElementNotVisibleException;
@@ -99,6 +100,7 @@ public class ErrorCodes {
   public static final int INVALID_ARGUMENT = 61;
   public static final int NO_SUCH_COOKIE = 62;
   public static final int UNABLE_TO_CAPTURE_SCREEN = 63;
+  public static final int ELEMENT_CLICK_INTERCEPTED = 64;
 
   // The following error codes are derived straight from HTTP return codes.
   public static final int METHOD_NOT_ALLOWED = 405;
@@ -213,6 +215,7 @@ public class ErrorCodes {
   // status to send.
   private static final ImmutableSet<KnownError> KNOWN_ERRORS = ImmutableSet.<KnownError>builder()
     .add(new KnownError(ASYNC_SCRIPT_TIMEOUT, "script timeout", 408, ScriptTimeoutException.class, true, true))
+    .add(new KnownError(ELEMENT_CLICK_INTERCEPTED, "element click intercepted", 400, ElementClickInterceptedException.class, true, true))
     .add(new KnownError(ELEMENT_NOT_SELECTABLE, "element not selectable", 400, ElementNotSelectableException.class, true, true))
     .add(new KnownError(ELEMENT_NOT_INTERACTABLE, "element not interactable", 400, ElementNotInteractableException.class, true, true))
     .add(new KnownError(ELEMENT_NOT_VISIBLE, "element not visible", 400, ElementNotVisibleException.class, true, true))
