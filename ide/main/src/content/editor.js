@@ -51,7 +51,6 @@ function Editor(window) {
       self.updateExperimentalFeatures(self.app.getBooleanOption('enableExperimentalFeatures'));
       self.updateVisualEye(self.app.getBooleanOption('visualEye'));
       self.health.showAlerts(self.app.getBooleanOption('showHealthAlerts'));
-      self.updateWebdriverBrowser(self.app.options.webDriverBrowserString);
     },
 
     testSuiteChanged: function (testSuite) {
@@ -203,12 +202,6 @@ function Editor(window) {
     }
   }
 
-  // disable webdriver related toolbar buttons if webdriver playback is disabled
-  if ( !this.app.getBooleanOption('executeUsingWebDriver') ) {
-    document.getElementById("browser-button").disabled = true;
-    document.getElementById("close-webdriver-button").disabled = true;
-  }
-
   this.updateViewTabs();
   this.infoPanel = new Editor.InfoPanel(this);
 
@@ -228,7 +221,7 @@ function Editor(window) {
   //Samit: Enh: display a webpage on the first start (and also on locale change if the version string is localised)
   var versionString = Editor.getString('selenium-ide.version');
   if (!this.app.options.currentVersion || this.app.options.currentVersion != versionString) {
-    openTabOrWindow('https://github.com/SeleniumHQ/selenium/wiki/SeIDE-Release-Notes');
+    openTabOrWindow('https://github.com/SeleniumHQ/selenium/wiki/SeIDEReleaseNotes');
     Preferences.setAndSave(this.app.options, 'currentVersion', versionString);
   }
 
@@ -276,6 +269,7 @@ Editor.controller = {
       case "cmd_close":
       case "cmd_open":
       case "cmd_add":
+      case "cmd_add_suit":
       case "cmd_new":
       case "cmd_new_suite":
       case "cmd_open_suite":
@@ -309,6 +303,7 @@ Editor.controller = {
       case "cmd_close":
       case "cmd_open":
       case "cmd_add":
+      case "cmd_add_suit":
       case "cmd_new":
       case "cmd_new_suite":
       case "cmd_open_suite":
@@ -365,6 +360,9 @@ Editor.controller = {
         break;
       case "cmd_add":
         editor.app.addTestCase();
+        break;
+	  case "cmd_add_suit":
+        editor.app.addTestSuit();
         break;
       case "cmd_new":
         editor.app.newTestCase();
@@ -430,7 +428,6 @@ Editor.controller = {
       case "cmd_selenium_schedule":
         editor.scheduleButton.checked = !editor.scheduleButton.checked;
         if (editor.scheduleButton.checked) {
-		  editor.scheduleButton.setAttribute("tooltiptext","Scheduler now on, Click to turn Scheduler off")
           //TODO hasJobs() is not enough as there may be jobs that are not valid, need hasValidJobs()
           if (editor.scheduler.hasJobs()) {
             editor.toggleRecordingEnabled(false);
@@ -454,7 +451,6 @@ Editor.controller = {
             }
           }
         } else {
-		  editor.scheduleButton.setAttribute("tooltiptext","Click to turn scheduler on")
           editor.scheduler.stop();
         }
         break;
@@ -739,10 +735,10 @@ Editor.prototype.submitDiagInfo = function(){
   };
   window.openDialog("chrome://selenium-ide/content/health/diag-info.xul", "diagInfo", "chrome,modal,resizable", data);
   if (data.data.length > 0) {
-    GitHub.createGistWithFiles("Selenium IDE diagnostic information", data).then(function(url){
+    GitHub.createGist("Selenium IDE diagnostic information", data).done(function(url){
       alert("Gist created with diagnostic information.\nPlease update the issue on https://github.com/SeleniumHQ/selenium/issues with this url.\nURL: " + url);
     }, function(response, success, status){
-      alert("Gist creation failed with status " + status + " and response:-\n" + (response || ''));
+      alert("Gist creation failed with status " + status + "\nResponse:-\n" + (response || ''));
     });
   }
 };
@@ -1035,35 +1031,6 @@ Editor.prototype.populateFormatsPopup = function (e, action, format) {
       checked: (format && format.id == formats[i].id) ? true : null
     });
   }
-};
-
-Editor.prototype.setWebdriverBrowser = function (browser) {
-  this.getOptions().webDriverBrowserString = browser;
-  this.updateWebdriverBrowser(browser);
-};
-
-Editor.prototype.updateWebdriverBrowser = function (browser) {
-  var class_name = "";
-  var tooltip = "";
-  if (browser == "firefox") {
-    class_name = "fx";
-    tooltip = "Webdriver playback in Firefox";
-  } else if (browser == "chrome") {
-    class_name = "gc";
-    tooltip = "Webdriver playback in Google Chrome";
-  } else if (browser == "internet explorer") {
-    class_name = "ie";
-    tooltip = "Webdriver playback in Internet Explorer";
-  } else if (browser == "safari") {
-    class_name = "sa";
-    tooltip = "Webdriver playback in Safari";
-  }
-  if ( !this.app.getBooleanOption('executeUsingWebDriver') ) {
-    tooltip = "Webdriver playback is off. Turn it on in the options.";
-  }
-  var btn = document.getElementById("browser-button");
-  btn.setAttribute('class', class_name);
-  btn.setAttribute('tooltiptext', tooltip);
 };
 
 Editor.prototype.updateViewTabs = function () {
