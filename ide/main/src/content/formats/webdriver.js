@@ -19,7 +19,7 @@ this.postFilter = function(originalCommands) {
   var commands = [];
   var commandsToSkip = {
     'waitForPageToLoad' : 1,
-    'pause': 1
+    //'pause': 1 //unfilter this because sometimes I want to sleep
   };
   var rc;
   for (var i = 0; i < originalCommands.length; i++) {
@@ -801,6 +801,129 @@ SeleniumWebDriverAdaptor.prototype.select = function(elementLocator, label) {
   var locator = this._elementLocator(this.rawArgs[0]);
   var driver = new WDAPI.Driver();
   return driver.findElement(locator.type, locator.string).select(this._selectLocator(this.rawArgs[1]));
+};
+
+SeleniumWebDriverAdaptor.prototype.getExpression = function() {
+  return xlateArgument(this.rawArgs[0]);
+};
+
+SeleniumWebDriverAdaptor.prototype.getSelectOptions = function() {
+  var locator = this._elementLocator(this.rawArgs[0]);
+  var driver = new WDAPI.Driver();
+  return driver.findElement(locator.type, locator.string).getSelectOptions();
+};
+
+SeleniumWebDriverAdaptor.prototype.keyPress = function() {
+  var locator = this._elementLocator(this.rawArgs[0]);
+  var driver = new WDAPI.Driver();
+  return driver.findElement(locator.type, locator.string).keyPress(this.rawArgs[1]);
+};
+
+SeleniumWebDriverAdaptor.prototype.doubleClick = function() {
+  var locator = this._elementLocator(this.rawArgs[0]);
+  var driver = new WDAPI.Driver();
+  return driver.findElement(locator.type, locator.string).doubleClick();
+};
+
+SeleniumWebDriverAdaptor.prototype.isEditable = function() {
+  var locator = this._elementLocator(this.rawArgs[0]);
+  var driver = new WDAPI.Driver();
+  return driver.findElement(locator.type, locator.string).isEditable();
+};
+
+SeleniumWebDriverAdaptor.prototype.dragAndDrop = function(elementLocator){
+  var locator = this._elementLocator(this.rawArgs[0]);
+  var driver = new WDAPI.Driver();
+  return driver.findElement(locator.type, locator.string).dragAndDropOffset(this.rawArgs[1].split(","));
+}
+
+SeleniumWebDriverAdaptor.prototype.dragAndDropToObject = function(elementLocator, text) {
+  var locator = this._elementLocator(this.rawArgs[0]);
+  var locator2 = this._elementLocator(this.rawArgs[1]);
+  var driver = new WDAPI.Driver();
+  return driver.findElement(locator.type, locator.string).dragAndDrop(driver.findElement(locator2.type, locator2.string));
+};
+
+SeleniumWebDriverAdaptor.prototype.addSelection = function() {
+  var locator = this._elementLocator(this.rawArgs[0]);
+  var driver = new WDAPI.Driver();
+  return driver.findElement(locator.type, locator.string).select(this._selectLocator(this.rawArgs[1]));
+};
+
+SeleniumWebDriverAdaptor.prototype.removeSelection = function() {
+  var locator = this._elementLocator(this.rawArgs[0]);
+  var driver = new WDAPI.Driver();
+  return driver.findElement(locator.type, locator.string).deselect(this._selectLocator(this.rawArgs[1]));
+};
+
+SeleniumWebDriverAdaptor.prototype.mouseDown = function() {
+  var locator = this._elementLocator(this.rawArgs[0]);
+  var driver = new WDAPI.Driver();
+  return driver.findElement(locator.type, locator.string).mouseDown();
+};
+
+SeleniumWebDriverAdaptor.prototype.mouseUp = function() {
+  var locator = this._elementLocator(this.rawArgs[0]);
+  var driver = new WDAPI.Driver();
+  return driver.findElement(locator.type, locator.string).mouseUp();
+};
+
+SeleniumWebDriverAdaptor.prototype.selectWindow = function() {
+  var driver = new WDAPI.Driver();
+  return driver.switchWindow(this.rawArgs[0]);
+};
+
+SeleniumWebDriverAdaptor.prototype.selectPopUp = function() {
+  var driver = new WDAPI.Driver();
+  return driver.selectPopup(this.rawArgs[0]);
+};
+
+SeleniumWebDriverAdaptor.prototype.selectFrame = function() {
+  var driver = new WDAPI.Driver();
+  return driver.switchFrame(this.rawArgs[0]);
+};
+
+SeleniumWebDriverAdaptor.prototype.mouseOver = function() {
+  var locator = this._elementLocator(this.rawArgs[0]);
+  var driver = new WDAPI.Driver();
+  return driver.findElement(locator.type, locator.string).MoveToElement();
+};
+
+SeleniumWebDriverAdaptor.prototype.getElementPositionTop = function() {
+  var locator = this._elementLocator(this.rawArgs[0]);
+  var driver = new WDAPI.Driver();
+  return driver.findElement(locator.type, locator.string).getElementPositionTop();
+};
+
+this.SeleniumWebDriverAdaptor.prototype.contextMenu = function() {
+  var locator = this._elementLocator(this.rawArgs[0]);
+  var driver = new WDAPI.Driver();
+  return driver.findElement(locator.type, locator.string).contextMenu();
+};
+
+this.SeleniumWebDriverAdaptor.prototype.getEval = function() {
+   return WDAPI.Utils.getEval(this.rawArgs[0]);
+};
+
+this.SeleniumWebDriverAdaptor.prototype.getAllWindowTitles = function() {
+   return WDAPI.Utils.getAllWindowTitles(this.rawArgs);
+};
+
+this.SeleniumWebDriverAdaptor.prototype.getSelectedValue = function() {
+  var locator = this._elementLocator(this.rawArgs[0]);
+  var driver = new WDAPI.Driver();
+   return driver.findElement(locator.type, locator.string).SelectedOption().getAttribute("value");
+};
+
+this.SeleniumWebDriverAdaptor.prototype.getSelectedLabel = function() {
+  var locator = this._elementLocator(this.rawArgs[0]);
+  var driver = new WDAPI.Driver();
+   return driver.findElement(locator.type, locator.string).SelectedOption().getText();
+};
+
+//Phase 1/24/2013 - Just adding a pause instead of wait for popup...
+this.SeleniumWebDriverAdaptor.prototype.waitForPopUp = function() {
+   return WDAPI.Utils.waitForPopup(this.rawArgs);
 };
 
 //SeleniumWebDriverAdaptor.prototype.isSomethingSelected = function(elementLocator) {
