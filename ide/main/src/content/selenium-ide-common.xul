@@ -300,7 +300,7 @@ limitations under the License.
       <treecols>
         <treecol label="&suiteTree.testCase.label;" flex="1" />
       </treecols>
-      <treechildren ondraggesture="nsDragAndDrop.startDrag(event, suiteTreeDragObserver);"/>
+      <treechildren draggable="true" ondragstart="suiteTreeDragObserver.onDragStart(event)" ondragover="suiteTreeDragObserver.onDragOver(event)" />
     </tree>
     <hbox id="suiteProgressBar">
       <box id="suiteProgressIndicator" height="16" class="success" />

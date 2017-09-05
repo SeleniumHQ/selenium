@@ -116,7 +116,7 @@ limitations under the License.
                       <splitter class="tree-splitter" />
                       <treecol id="value" label="&value.label;" flex="3" width="120"/>
                     </treecols>
-                    <treechildren ondraggesture="nsDragAndDrop.startDrag(event, commandsDragObserver);"/>
+                    <treechildren draggable="true" ondragstart="commandsDragObserver.onDragStart(event)" ondragover="commandsDragObserver.onDragOver(event)" />
                   </tree>
                   <separator class="thin"/>
                   <!-- command editing -->
