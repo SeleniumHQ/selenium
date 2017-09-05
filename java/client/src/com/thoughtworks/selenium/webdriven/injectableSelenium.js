@@ -24,7 +24,7 @@ var browserbot = {
         if (this.getTagName(element) == "body") {
             if (element.ownerDocument && element.ownerDocument.designMode) {
                 var designMode = new String(element.ownerDocument.designMode).toLowerCase();
-                if (designMode = "on") {
+                if (designMode === "on") {
                     // this must be a rich text control!
                     element.innerHTML = actualValue;
                 }
@@ -132,7 +132,7 @@ var browserbot = {
             evt.button = button ? button : 1;
             // default will be the left mouse click ( http://www.javascriptkit.com/jsref/event.shtml )
             evt.relatedTarget = null;
-            if (!screenX && !screenY && !clientX && !clientY) {
+            if (!clientX && !clientY) {
                 element.fireEvent('on' + eventType);
             } else {
                 evt.screenX = screenX;

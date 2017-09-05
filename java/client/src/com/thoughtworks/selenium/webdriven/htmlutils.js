@@ -160,9 +160,7 @@ reassembleLocation : function(loc) {
         url += "?" + loc.search;
     }
     if (loc.hash) {
-        var hash = loc.hash;
-        hash = loc.hash.replace(/^#/, "");
-        url += "#" + hash;
+        url += "#" + loc.hash.replace(/^#/, "");
     }
     return url;
 },

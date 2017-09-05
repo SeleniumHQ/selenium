@@ -49,9 +49,8 @@ var BrowserVersion = function() {
     var self = this;
 
     var checkChrome = function() {
-        var loc = window.document.location.href;
         try {
-            loc = window.top.document.location.href;
+            var loc = window.top.document.location.href;
             if (/^chrome:\/\//.test(loc)) {
                 self.isChrome = true;
             } else {

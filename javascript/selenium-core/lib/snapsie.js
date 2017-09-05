@@ -53,14 +53,9 @@ function Snapsie() {
         };
         drawableElement.style.overflow = 'hidden';
         
-        var capturableDocument;
         var frameBCR = { left: 0, top: 0 };
-        if (!frameId) {
-            capturableDocument = document;
-        }
-        else {
+        if (frameId) {
             var frame = document.getElementById(frameId);
-            capturableDocument = frame.document;
             
             // scroll as much of the frame into view as possible
             frameBCR = frame.getBoundingClientRect();

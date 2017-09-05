@@ -261,14 +261,14 @@ BrowserBot.prototype.triggerMouseEvent = function(element, eventType, canBubble,
     var screenX = 0;
     var screenY = 0;
 
-    canBubble = (typeof(canBubble) == undefined) ? true : canBubble;
+    canBubble = (typeof(canBubble) === "undefined") ? true : canBubble;
     var evt;
     if (element.fireEvent && element.ownerDocument && element.ownerDocument.createEventObject) { //IE
         evt = createEventObject(element, this.controlKeyDown, this.altKeyDown, this.shiftKeyDown, this.metaKeyDown);
         evt.detail = 0;
         evt.button = button ? button : 1; // default will be the left mouse click ( http://www.javascriptkit.com/jsref/event.shtml )
         evt.relatedTarget = null;
-        if (!screenX && !screenY && !clientX && !clientY && !this.controlKeyDown && !this.altKeyDown && !this.shiftKeyDown && !this.metaKeyDown) {
+        if (!clientX && !clientY && !this.controlKeyDown && !this.altKeyDown && !this.shiftKeyDown && !this.metaKeyDown) {
             element.fireEvent('on' + eventType);
         }
         else {
@@ -971,7 +971,7 @@ BrowserBot.prototype.pollForLoad = function(loadFunction, windowObject, original
             }
             return;
         }
-        LOG.debug("pollForLoad continue (" + marker + "): " + currentHref);
+        LOG.debug("pollForLoad continue (" + marker + ")");
         this.reschedulePoller(loadFunction, windowObject, originalDocument, originalLocation, originalHref, marker);
     } catch (e) {
         LOG.debug("Exception during pollForLoad; this should get noticed soon (" + e.message + ")!");
@@ -2001,7 +2001,7 @@ BrowserBot.prototype.getAllLinks = function() {
 };
 
 function isDefined(value) {
-    return typeof(value) != undefined;
+    return typeof(value) !== "undefined";
 };
 
 BrowserBot.prototype.goBack = function() {
@@ -2361,10 +2361,8 @@ IEBrowserBot.prototype.pollForLoad = function(loadFunction, windowObject, origin
     LOG.debug("IEBrowserBot.pollForLoad: " + marker);
     if (!this.permDeniedCount[marker]) this.permDeniedCount[marker] = 0;
     BrowserBot.prototype.pollForLoad.call(this, loadFunction, windowObject, originalDocument, originalLocation, originalHref, marker);
-    var self;
     if (this.pageLoadError) {
         if (this.pageUnloading) {
-            self = this;
             LOG.debug("pollForLoad UNLOADING (" + marker + "): caught exception while firing events on unloading page: " + this.pageLoadError.message);
             this.reschedulePoller(loadFunction, windowObject, originalDocument, originalLocation, originalHref, marker);
             this.pageLoadError = null;
@@ -2390,7 +2388,6 @@ IEBrowserBot.prototype.pollForLoad = function(loadFunction, windowObject, origin
                 }
             }
 
-            self = this;
             LOG.debug("pollForLoad (" + marker + "): " + this.pageLoadError.message + " (" + this.permDeniedCount[marker] + "), waiting to see if it goes away");
             this.reschedulePoller(loadFunction, windowObject, originalDocument, originalLocation, originalHref, marker);
             this.pageLoadError = null;

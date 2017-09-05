@@ -127,7 +127,7 @@ RegexpMatch.patternAsRawString = function(pattern) {
     str = str.replace(/\n/g, '\\n');
     return '"' + str + '"';
   } else {
-    return str = 'r"' + str + '"';
+    return 'r"' + str + '"';
   }
 };
 

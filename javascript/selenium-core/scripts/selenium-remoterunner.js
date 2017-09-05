@@ -142,7 +142,7 @@ function logToRc(logLevel, message) {
         if (logLevel == null) {
             logLevel = "debug";
         }
-        sendToRCAndForget("logLevel=" + logLevel + ":" + message.replace(/[\n\r\015]/g, " ") + "\n", "logging=true");
+        sendToRCAndForget("logLevel=" + logLevel + ":" + message.replace(/[\n\r]/g, " ") + "\n", "logging=true");
     }
 }
 

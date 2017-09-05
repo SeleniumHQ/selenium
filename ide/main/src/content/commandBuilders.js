@@ -73,11 +73,9 @@ CommandBuilders.callBuilderExecute = function(builder, utilCommand) {
 
 CommandBuilders.add('action', function(window) {
 		var path = window.location.href;
-		var base = '';
 		var r = /^(\w+:\/\/[\w\.-]+(:\d+)?)\/.*/.exec(path);
 		if (r) {
 			path = path.substr(r[1].length);
-			base = r[1] + '/';
 		}
 		return {
 			command: "open",

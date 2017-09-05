@@ -2025,8 +2025,6 @@ Selenium.prototype.getAttributeFromAllWindows = function(attributeName) {
     */
     var attributes = new Array();
 
-    var win = selenium.browserbot.topWindow;
-
     // DGF normally you should use []s instead of eval "win."+attributeName
     // but in this case, attributeName may contain dots (e.g. document.title)
     // in that case, we have no choice but to use eval...
@@ -2038,7 +2036,7 @@ Selenium.prototype.getAttributeFromAllWindows = function(attributeName) {
     for (var windowName in this.browserbot.openedWindows)
     {
         try {
-            win = selenium.browserbot.openedWindows[windowName];
+            var win = selenium.browserbot.openedWindows[windowName];
             if (! selenium.browserbot._windowClosed(win)) {
               attributes.push(eval("win."+attributeName));
             }
@@ -2484,7 +2482,7 @@ Selenium.prototype.getCursorPosition = function(locator) {
         return answer;
     } else {
         if (typeof(element.selectionStart) != "undefined") {
-            if (win.getSelection && typeof(win.getSelection().rangeCount) != undefined && win.getSelection().rangeCount == 0) {
+            if (win.getSelection && typeof(win.getSelection().rangeCount) !== "undefined" && win.getSelection().rangeCount == 0) {
                 Assert.fail("There is no cursor on this page!");
             }
             return element.selectionStart;
