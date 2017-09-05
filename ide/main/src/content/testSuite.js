@@ -118,21 +118,25 @@ TestSuite.prototype = {
     isModified: function() {
 		return this.modified;
     },
-
-    save: function(newFile) {
+    
+    /** @param {bool} newFile Whether saving a new file.
+     *  @param {NSIFile} [previousSuiteFile=undefined] Previous file for this test suite (if any). It serves to recalculate relative paths to test cases. Don't pass it from calls others than a recursive-like handler call for file dialogue triggered by save() itself.
+     * */
+    save: function(newFile, previousSuiteFile ) {
         if (!this.file || newFile) {
             var self = this;
             return showFilePicker(window, Editor.getString("chooseTestSuite"),
                            Components.interfaces.nsIFilePicker.modeSave,
                            TestSuite.TEST_SUITE_DIRECTORY_PREF,
                            function(fp) {
+                               previousSuiteFile= self.file;
                                self.file = fp.file;
-                               return self.save(false);
+                               return self.save(false, previousSuiteFile);
                            });
         }
         var output = FileUtils.openFileOutputStream(this.file);
         var converter = FileUtils.getUnicodeConverter("UTF-8");
-        var content = TestSuite.header + this.formatSuiteTable() + TestSuite.footer;
+        var content = TestSuite.header + this.formatSuiteTable( previousSuiteFile ) + TestSuite.footer;
         var text = converter.ConvertFromUnicode(content);
         output.write(text, text.length);
         var fin = converter.Finish();
@@ -143,12 +147,13 @@ TestSuite.prototype = {
         this.modified = false;	//Samit: Enh: Mark as saved (Issue 586)
         return true;
     },
-
-    formatSuiteTable: function() {
+    
+    /** @param {NSIFile} [previousSuiteFile=undefined] */
+    formatSuiteTable: function( previousSuiteFile ) {
         var content = "<table id=\"suiteTable\" cellpadding=\"1\" cellspacing=\"1\" border=\"1\" class=\"selenium\"><tbody>\n";
         content += "<tr><td><b>Test Suite</b></td></tr>\n";
         for (var i = 0; i < this.tests.length; i++) {
-            content += this.tests[i].format();
+            content += this.tests[i].format( previousSuiteFile );
         }
         content += "</tbody></table>\n";
         return content;
@@ -199,9 +204,12 @@ TestSuite.TestCase = function(testSuite, filename, title) {
 }
 
 TestSuite.TestCase.prototype = {
-    getFile: function() {
-        if (!this.testSuite.file) return null;
-        var file = FileUtils.getFile(this.testSuite.file.parent.path);
+    /** @param {NSIFile} [previousSuiteFile=undefined]*/
+    getFile: function( previousSuiteFile ) {
+        if (!this.testSuite.file && !previousSuiteFile) return null;
+        var file = FileUtils.getFile( previousSuiteFile
+            ? previousSuiteFile.parent.path
+            : this.testSuite.file.parent.path);
         //alert(file + " " + this.filename);
         var filename = this.filename;
         if (Components.interfaces.nsILocalFileWin &&
@@ -222,14 +230,16 @@ TestSuite.TestCase.prototype = {
         return null;
      },
 
-    getRelativeFilePath: function() {
+    /**  @param {NSIFile} [previousSuiteFile=undefined] Previous file for this test suite (if any). */
+    getRelativeFilePath: function( previousSuiteFile ) {
         if (this.content) {
-            return this._computeRelativePath(this.testSuite.file, this.content.file);
+            return this._computeRelativePath( this.testSuite.file, this.content.file );
         } else {
-            return this.filename;
+            // If moving an existing test suite to a different folder,then re-calculate relative paths to its test cases
+            return this._computeRelativePath( this.testSuite.file, this.getFile(previousSuiteFile) );
         }
     },
-
+    
     _computeRelativePath: function(fromFile, toFile) {
         var from = FileUtils.splitPath(fromFile.parent);
         var to = FileUtils.splitPath(toFile);
@@ -272,8 +282,9 @@ TestSuite.TestCase.prototype = {
         }
     },
     
-    format: function() {
-        return "<tr><td><a href=\"" + this.getRelativeFilePath() + "\">" +
+    /**  @param {NSIFile} [previousSuiteFile=undefined] Previous file for this test suite (if any).*/
+    format: function( previousSuiteFile ) {
+        return "<tr><td><a href=\"" + this.getRelativeFilePath(previousSuiteFile) + "\">" +
             this.getTitle() + "</a></td></tr>\n";
     },
 
