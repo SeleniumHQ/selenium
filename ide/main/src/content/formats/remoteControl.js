@@ -140,7 +140,7 @@ function seleniumEquals(type, pattern, expression) {
 		return new RegexpMatch(pattern.substring(6), expression);
 	} else if (type == 'String' && (pattern.match(/^glob:/) || pattern.match(/[\*\?]/))) {
 		pattern = pattern.replace(/^glob:/, '');
-		pattern = pattern.replace(/([\]\[\\\{\}\$\(\).])/g, "\\$1");
+		pattern = pattern.replace(/([\]\[\\\{\}\$\(\).+^|])/g, "\\$1");
 		pattern = pattern.replace(/\?/g, "[\\s\\S]");
 		pattern = pattern.replace(/\*/g, "[\\s\\S]*");
 		return new RegexpMatch("^" + pattern + "$", expression);
