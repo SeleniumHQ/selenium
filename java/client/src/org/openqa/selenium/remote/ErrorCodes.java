@@ -28,6 +28,7 @@ import org.openqa.selenium.ElementNotSelectableException;
 import org.openqa.selenium.ElementNotVisibleException;
 import org.openqa.selenium.ImeActivationFailedException;
 import org.openqa.selenium.ImeNotAvailableException;
+import org.openqa.selenium.InterceptingElementException;
 import org.openqa.selenium.InvalidArgumentException;
 import org.openqa.selenium.InvalidCookieDomainException;
 import org.openqa.selenium.InvalidElementStateException;
@@ -75,6 +76,7 @@ public class ErrorCodes {
   public static final int ELEMENT_NOT_VISIBLE = 11;
   public static final int INVALID_ELEMENT_STATE = 12;
   public static final int UNHANDLED_ERROR = 13;
+  public static final int INTERCEPTING_ELEMENT_ERROR = 14;
   public static final int ELEMENT_NOT_SELECTABLE = 15;
   public static final int JAVASCRIPT_ERROR = 17;
   public static final int XPATH_LOOKUP_ERROR = 19;
@@ -185,8 +187,7 @@ public class ErrorCodes {
   public int toStatusCode(Throwable e) {
     if (e == null) {
       return SUCCESS;
-    }
-
+    } 
     Set<Integer> possibleMatches = KNOWN_ERRORS.stream()
       .filter(knownError -> knownError.getException().equals(e.getClass()))
       .filter(knownError -> knownError.isCanonicalJsonCodeForException)
@@ -221,6 +222,7 @@ public class ErrorCodes {
     .add(new KnownError(ELEMENT_NOT_VISIBLE, "element not visible", 400, ElementNotVisibleException.class, true, true))
     .add(new KnownError(IME_ENGINE_ACTIVATION_FAILED, "unsupported operation", 500, ImeActivationFailedException.class, true, false))
     .add(new KnownError(IME_NOT_AVAILABLE, "unsupported operation", 500, ImeNotAvailableException.class, true, false))
+    .add(new KnownError(INTERCEPTING_ELEMENT_ERROR, "element click intercepted", 400, InterceptingElementException.class, true, false))
     .add(new KnownError(INVALID_ARGUMENT, "invalid argument", 400, InvalidArgumentException.class, true, true))
     .add(new KnownError(INVALID_COOKIE_DOMAIN, "invalid cookie domain", 400, InvalidCookieDomainException.class, true, true))
     .add(new KnownError(INVALID_ELEMENT_COORDINATES, "invalid element coordinates", 400, InvalidCoordinatesException.class, true, true))
