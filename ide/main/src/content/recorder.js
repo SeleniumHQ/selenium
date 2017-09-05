@@ -106,6 +106,7 @@ Recorder.prototype.attach = function() {
 	this.log.debug("attaching");
 	this.locatorBuilders = new LocatorBuilders(this.window);
 	this.eventListeners = {};
+	this.mutationObservers = {};
 	this.reattachWindowMethods();
 	var self = this;
 	for (eventKey in Recorder.eventHandlers) {
@@ -114,27 +115,53 @@ Recorder.prototype.attach = function() {
 		var capture = eventInfo.capture;
 		// create new function so that the variables have new scope.
 		function register() {
-			var handlers = Recorder.eventHandlers[eventKey];
-			//this.log.debug('eventName=' + eventName + ' / handlers.length=' + handlers.length);
-			var listener = function(event) {
-				self.log.debug('listener: event.type=' + event.type + ', target=' + event.target);
-				//self.log.debug('title=' + self.window.document.title);
-				var recording = false;
-				for (var i = 0; i < self.observers.length; i++) {
-					if (self.observers[i].recordingEnabled) recording = true;
-				}
-				for (var i = 0; i < handlers.length; i++) {
-					if (recording || handlers[i].alwaysRecord) {
-						handlers[i].call(self, event);
-					}
-				}
-			}
+			var listener = this.createListener(eventKey);
 			this.window.document.addEventListener(eventName, listener, capture);
 			this.eventListeners[eventKey] = listener;
 		}
 		register.call(this);
 	}
+	for (var mutationKey in Recorder.mutationHandlers) {
+		var handler = Recorder.mutationHandlers[mutationKey];
+		this.mutationObservers[mutationKey] = new MutationObserver(this.createMutationHandler(handler));
+		this.mutationObservers[mutationKey].observe(this.window.document, handler.config);
+	}
 }
+
+Recorder.prototype.createMutationHandler = function(handler) {
+	var self = this;
+	return function(records) {
+		self.log.debug('mutation handler: types=' + (records.map(function(r) {return r.type})) + ', target=' + records[0].target);
+		if (self.isRecording()) {
+			handler.call(self, records);
+		}
+	}
+}
+
+Recorder.prototype.createListener = function(eventKey) {
+	var self = this;
+	var handlers = Recorder.eventHandlers[eventKey];
+	//this.log.debug('eventName=' + eventName + ' / handlers.length=' + handlers.length);
+	return function(event) {
+		self.log.debug('listener: event.type=' + event.type + ', target=' + event.target);
+		//self.log.debug('title=' + self.window.document.title);
+		var recording = self.isRecording();
+		for (var i = 0; i < handlers.length; i++) {
+			if (recording || handlers[i].alwaysRecord) {
+				handlers[i].call(self, event);
+			}
+		}
+	}
+}
+
+Recorder.prototype.isRecording = function() {
+	for (var i = 0; i < this.observers.length; i++) {
+		if (this.observers[i].recordingEnabled) {
+			return true;
+		}
+	}
+	return false;
+};
 
 Recorder.prototype.detach = function() {
 	this.log.debug("detaching");
@@ -144,7 +171,13 @@ Recorder.prototype.detach = function() {
 		this.log.debug("removeEventListener: " + eventInfo.eventName + ", " + eventKey + ", " + eventInfo.capture);
 		this.window.document.removeEventListener(eventInfo.eventName, this.eventListeners[eventKey], eventInfo.capture);
 	}
+	for (var mutationKey in this.mutationObservers) {
+		this.log.debug("mutationObserver.disconnect: " + mutationKey);
+		this.mutationObservers[mutationKey].disconnect();
+		this.mutationObservers[mutationKey] = null;
+	}
 	delete this.eventListeners;
+	delete this.mutationObservers;
 	for (method in this.windowMethods) {
 		this.getWrappedWindow()[method] = this.windowMethods[method];
 	}
@@ -255,6 +288,20 @@ Recorder.decorateEventHandler = function(handlerName, eventName, decorator, opti
    }
 };
 
+Recorder.addMutationHandler = function(handlerName, listener, config) {
+	if (Recorder.mutationHandlers[handlerName]) {
+		this.log.error('addMutationHandler: listener for ' + handlerName + ' is already registered.');
+		return;
+	}
+	config.subtree = true;
+	listener.config = config;
+	Recorder.mutationHandlers[handlerName] = listener;
+}
+
+Recorder.removeMutationHandler = function(handlerName) {
+	Recorder.mutationHandlers[handlerName] = null;
+}
+
 Recorder.register = function(observer, window) {
     this.log.debug("register: window=" + window);
     var pushObserver = true;
@@ -352,3 +399,5 @@ Recorder.forEachFrame = function(window, handler) {
 }
 
 Recorder.eventHandlers = {};
+
+Recorder.mutationHandlers = {};

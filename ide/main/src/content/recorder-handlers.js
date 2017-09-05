@@ -179,20 +179,22 @@ Recorder.addEventHandler('rememberClickedElement', 'mousedown', function(event) 
 		this.clickedElementLocators = this.findLocators(event.target);
 	}, { alwaysRecord: true, capture: true });
 
-Recorder.addEventHandler('attrModified', 'DOMAttrModified', function(event) {
+Recorder.addMutationHandler('attrModified', function(records) {
         this.log.debug('attrModified');
         this.domModified();
-    }, {capture: true});
+    }, {attributes: true});
 
-Recorder.addEventHandler('nodeInserted', 'DOMNodeInserted', function(event) {
-        this.log.debug('nodeInserted');
+Recorder.addMutationHandler('nodeInserted/nodeRemoved', function(records) {
+        for (var i = 0; i < records; i++) {
+          if (records[i].addedNodes.length > 0) {
+            this.log.debug('nodeInserted');
+          }
+          if (records[i].removedNodes.length > 0) {
+            this.log.debug('nodeRemoved');
+          }
+        }
         this.domModified();
-    }, {capture: true});
-
-Recorder.addEventHandler('nodeRemoved', 'DOMNodeRemoved', function(event) {
-        this.log.debug('nodeRemoved');
-        this.domModified();
-    }, {capture: true});
+    }, {childList: true});
 
 Recorder.prototype.domModified = function() {
     if (this.delayedRecorder) {
