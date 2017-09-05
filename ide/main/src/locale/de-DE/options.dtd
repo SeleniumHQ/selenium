@@ -1,0 +1,32 @@
+<!ENTITY options.title "Selenium IDE Einstellungen">
+<!ENTITY options.encoding.description "Encoding der Testdateien">
+<!ENTITY options.timeout.description "Standardwert für Time-out für die Befehlsaufzeichnung in Millisekunden (30s = 30000ms)">
+<!ENTITY options.userExtensionsPaths.description "Selenium Core Extensions (user-extensions.js)">
+<!ENTITY options.ideExtensionsPaths.description "Selenium IDE Extensions">
+<!ENTITY options.extensions.tip "Tipps für die Extensions: Starten Sie das Selenium IDE Fenster neu, um die Änderungen zu nutzen. Sie können mehrere Dateien, abgetrennt durch Kommata, auswählen.">
+<!ENTITY options.rememberBaseURL.description "Übernehme Base-URL">
+<!ENTITY options.recordAssertTitle.description "Automatische Aufzeichnung von assertTitle">
+<!ENTITY options.recordAbsoluteURL.description "Aufzeichnung der absoluten URL">
+<!ENTITY options.browse "Durchsuchen...">
+
+<!ENTITY options.resetOptions "Zurücksetzen">
+<!ENTITY options.general.label "Algemein">
+<!ENTITY options.formats.label "Formate">
+<!ENTITY options.formats.add-button.label "Hinzufügen">
+<!ENTITY options.formats.rename-button.label "Umbenennen">
+<!ENTITY options.formats.delete-button.label "Löschen">
+<!ENTITY options.formats.source-button.label "Quelle">
+
+<!ENTITY options.disableBadPluginCode.label "Automatisch deaktiviertes Plugin liefert Code mit Plugin Fehlern">
+<!ENTITY options.disableBadPluginAddon.label "Deaktivierung des Plugin sollte das Add-On im Firefox komplett deaktivieren.">
+
+<!ENTITY options.enableUIElement.description "Aktiviere UI-Element (experimental, benötigt den Neustart der IDE) ">
+<!ENTITY options.enableUIElement.about "Über die UI-Element">
+
+<!ENTITY options.user-ext.reload.label "Neuladen">
+<!ENTITY options.user-ext.reload.tooltip "Selenium Core und seine Extensions neuladen">
+<!ENTITY options.showDeveloperTools.description "Aktiviert die Entwicklertools">
+<!ENTITY options.enableExperimentalFeatures.label "Aktivert experimentale Funktionen">
+<!ENTITY options.disableFormatChangeMsg.label "Deaktiviere Warnungen über Formatanderungen">
+
+<!ENTITY options.recordOnOpen.description "Startet die Aufzeichnung beim Öffnen des Programms">
