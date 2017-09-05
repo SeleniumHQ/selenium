@@ -76,7 +76,7 @@ class Options(object):
         :Args:
          - value : True or False
         """
-        self._overlay_scrollbars_enabled = value;
+        self._overlay_scrollbars_enabled = value
 
     def to_capabilities(self):
         """
@@ -85,11 +85,11 @@ class Options(object):
         """
         webkitgtk = DesiredCapabilities.WEBKITGTK.copy()
 
-        browser_options = { }
+        browser_options = {}
         if self.browser_executable_path:
             browser_options["binary"] = self.browser_executable_path
         browser_options["args"] = self.browser_arguments
-        browser_options["useOverlayScrollbars"] = self.overlay_scrollbars_enabled;
+        browser_options["useOverlayScrollbars"] = self.overlay_scrollbars_enabled
 
         webkitgtk["webkitgtk:browserOptions"] = browser_options
 

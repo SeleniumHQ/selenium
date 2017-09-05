@@ -21,7 +21,6 @@ except ImportError:
     import httplib as http_client
 
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
-from selenium.webdriver.remote.remote_connection import RemoteConnection
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 from .service import Service
 
@@ -48,7 +47,7 @@ class WebDriver(RemoteWebDriver):
          - service_log_path : Path to write service stdout and stderr output.
         """
         if browser_options is not None:
-            capabilities = browser_options.to_capabilities();
+            capabilities = browser_options.to_capabilities()
             capabilities.update(desired_capabilities)
             desired_capabilities = capabilities
 

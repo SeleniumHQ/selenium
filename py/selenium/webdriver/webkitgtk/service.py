@@ -15,8 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import os
-from selenium.webdriver.common import service, utils
+from selenium.webdriver.common import service
 
 
 class Service(service.Service):
