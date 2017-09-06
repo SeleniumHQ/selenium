@@ -333,6 +333,15 @@ namespace OpenQA.Selenium.Firefox
             else
             {
                 capabilities.SetCapability(IsMarionetteCapability, this.isMarionette);
+                ISpecificationCompliant specCompliant = capabilities as ISpecificationCompliant;
+                if (specCompliant != null)
+                {
+                    // Set the property on the capabilities object so remote
+                    // requests won't attempt to send non-compliant capabilities
+                    // in the remote request's "capabilities" property.
+                    specCompliant.IsSpecificationCompliant = false;
+                }
+
                 if (this.profile != null)
                 {
                     if (this.proxy != null)
