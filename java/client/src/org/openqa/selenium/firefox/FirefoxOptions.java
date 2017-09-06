@@ -44,7 +44,6 @@ import org.openqa.selenium.UnexpectedAlertBehaviour;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.internal.ProfilesIni;
 import org.openqa.selenium.logging.LoggingPreferences;
-import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.io.File;
@@ -88,10 +87,9 @@ public class FirefoxOptions {
   private Map<String, Boolean> booleanPrefs = new HashMap<>();
   private Map<String, Integer> intPrefs = new HashMap<>();
   private Map<String, String> stringPrefs = new HashMap<>();
-  private Level logLevel = null;
+  private FirefoxDriverLogLevel logLevel = null;
   private boolean legacy;
   private DesiredCapabilities desiredCapabilities = new DesiredCapabilities();
-  private boolean headless;
 
   private void amend(Map<String, Object> map) throws IOException {
     if (map.containsKey("binary")) {
@@ -400,7 +398,31 @@ public class FirefoxOptions {
     return this;
   }
 
+  private Map<Level, FirefoxDriverLogLevel> logLevelToGeckoLevelMap
+      = new ImmutableMap.Builder<Level, FirefoxDriverLogLevel>()
+      .put(Level.ALL, FirefoxDriverLogLevel.TRACE)
+      .put(Level.FINEST, FirefoxDriverLogLevel.TRACE)
+      .put(Level.FINER, FirefoxDriverLogLevel.TRACE)
+      .put(Level.FINE, FirefoxDriverLogLevel.DEBUG)
+      .put(Level.CONFIG, FirefoxDriverLogLevel.CONFIG)
+      .put(Level.INFO, FirefoxDriverLogLevel.INFO)
+      .put(Level.WARNING, FirefoxDriverLogLevel.WARN)
+      .put(Level.SEVERE, FirefoxDriverLogLevel.ERROR)
+      .put(Level.OFF, FirefoxDriverLogLevel.FATAL)
+      .build();
+
+  /**
+   * @deprecated Use {@link #setLogLevel(FirefoxDriverLogLevel)}
+   */
+  @Deprecated
   public FirefoxOptions setLogLevel(Level logLevel) {
+    // levels defined by GeckoDriver
+    // https://github.com/mozilla/geckodriver#log-object
+    this.logLevel = logLevelToGeckoLevelMap.getOrDefault(logLevel, FirefoxDriverLogLevel.DEBUG);
+    return this;
+  }
+
+  public FirefoxOptions setLogLevel(FirefoxDriverLogLevel logLevel) {
     this.logLevel = logLevel;
     return this;
   }
@@ -605,41 +627,12 @@ public class FirefoxOptions {
     }
 
     if (logLevel != null) {
-      options.put("log", ImmutableMap.of("level", logLevelToGeckoLevel()));
+      options.put("log", ImmutableMap.of("level", logLevel));
     }
 
     options.put("args", args);
 
     return options.build();
-  }
-
-  private String logLevelToGeckoLevel() {
-    // levels defined by GeckoDriver
-    // https://github.com/mozilla/geckodriver#log-object
-    if (logLevel.intValue() < Level.FINE.intValue()) {
-      return "trace";
-    }
-    if (logLevel == Level.FINE) {
-      return "debug";
-    }
-    if (logLevel == Level.CONFIG) {
-      return "config";
-    }
-    if (logLevel == Level.INFO) {
-      return "info";
-    }
-    if (logLevel == Level.WARNING) {
-      return "warn";
-    }
-    if (logLevel == Level.SEVERE) {
-      return "error";
-    }
-    if (logLevel == Level.OFF) {
-      return "fatal";
-    }
-
-    // something else?  ¯\_(ツ)_/¯
-    return "debug";
   }
 
   @Override

@@ -23,13 +23,11 @@ import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeNotNull;
 import static org.junit.Assume.assumeThat;
 import static org.openqa.selenium.firefox.FirefoxDriver.MARIONETTE;
-import static org.openqa.selenium.firefox.FirefoxDriver.PROFILE;
 import static org.openqa.selenium.firefox.FirefoxDriver.SystemProperty.BROWSER_BINARY;
 import static org.openqa.selenium.firefox.FirefoxDriver.SystemProperty.BROWSER_PROFILE;
 import static org.openqa.selenium.firefox.FirefoxDriver.SystemProperty.DRIVER_USE_MARIONETTE;
@@ -282,4 +280,16 @@ public class FirefoxOptionsTest {
       fail(Throwables.getStackTraceAsString(e));
     }
   }
+
+  @Test
+  public void logLevelStringRepresentationIsLowercase() {
+    assertEquals(FirefoxDriverLogLevel.DEBUG.toString(), "debug");
+  }
+
+  @Test
+  public void canBuildLogLevelFromStringRepresentation() {
+    assertEquals(FirefoxDriverLogLevel.fromString("warn"), FirefoxDriverLogLevel.WARN);
+    assertEquals(FirefoxDriverLogLevel.fromString("ERROR"), FirefoxDriverLogLevel.ERROR);
+  }
+
 }
