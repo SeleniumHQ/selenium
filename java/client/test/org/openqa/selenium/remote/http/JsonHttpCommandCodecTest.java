@@ -46,7 +46,6 @@ import org.junit.runners.JUnit4;
 import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.DriverCommand;
-import org.openqa.selenium.remote.RemoteWebElement;
 import org.openqa.selenium.remote.SessionId;
 
 import java.net.URISyntaxException;
@@ -364,7 +363,7 @@ public class JsonHttpCommandCodecTest {
   }
 
   @Test
-  public void whenDecodingAnHttpRequestRecreateWebElements() {
+  public void whenDecodingAnHttpRequestDoesNotRecreateWebElements() {
     Command command = new Command(
         new SessionId("1234567"),
         DriverCommand.EXECUTE_SCRIPT,
@@ -377,9 +376,8 @@ public class JsonHttpCommandCodecTest {
     Command decoded = codec.decode(request);
 
     List<?> args = (List<?>) decoded.getParameters().get("args");
-    assertEquals(RemoteWebElement.class, args.get(0).getClass());
 
-    RemoteWebElement element = (RemoteWebElement) args.get(0);
-    assertEquals("67890", element.getId());
+    Map<? ,?> element = (Map<?, ?>) args.get(0);
+    assertEquals("67890", element.get(OSS.getEncodedElementKey()));
   }
 }
