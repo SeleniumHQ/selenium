@@ -46,18 +46,12 @@ module Selenium
             :browser_name,
             :browser_version,
             :platform_name,
-            :platform_version,
             :accept_insecure_certs,
             :page_load_strategy,
             :proxy,
-            :remote_session_id,
-            :accessibility_checks,
-            :device,
-            :implicit_timeout,
-            :page_load_timeout,
-            :script_timeout,
-            :unhandled_prompt_behavior,
+            :set_window_rect,
             :timeouts,
+            :unhandled_prompt_behavior
           ].freeze
 
           KNOWN.each do |key|
