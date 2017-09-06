@@ -38,6 +38,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
+import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.ProxyServer;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 import org.seleniumhq.jetty9.server.Handler;
@@ -54,7 +55,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/764")
 public class ProxySettingTest extends JUnit4TestBase {
 
   @Rule
@@ -80,6 +80,7 @@ public class ProxySettingTest extends JUnit4TestBase {
   @Test
   @Ignore(SAFARI)
   @Ignore(PHANTOMJS)
+  @NotYetImplemented(MARIONETTE)
   @NeedsLocalEnvironment
   public void canConfigureManualHttpProxy() {
     Proxy proxyToUse = proxyServer.asProxy();
@@ -89,7 +90,7 @@ public class ProxySettingTest extends JUnit4TestBase {
     WebDriver driver = new WebDriverBuilder().setDesiredCapabilities(caps).get();
     registerDriverTeardown(driver);
 
-    driver.get(pages.simpleTestPage);
+    driver.get(appServer.whereElseIs("simpleTest.html"));
     assertTrue("Proxy should have been called", proxyServer.hasBeenCalled("simpleTest.html"));
   }
 
@@ -114,7 +115,7 @@ public class ProxySettingTest extends JUnit4TestBase {
     WebDriver driver = new WebDriverBuilder().setDesiredCapabilities(caps).get();
     registerDriverTeardown(driver);
 
-    driver.get(pages.mouseOverPage);
+    driver.get(appServer.whereElseIs("mouseOver.html"));
     assertEquals("Should follow proxy to another server",
         "Hello, world!", driver.findElement(By.tagName("h3")).getText());
   }
@@ -149,7 +150,7 @@ public class ProxySettingTest extends JUnit4TestBase {
     assertEquals("Should follow proxy to another server",
         "Goodbye, world!", driver.findElement(By.tagName("h3")).getText());
 
-    driver.get(pages.simpleTestPage);
+    driver.get(appServer.whereElseIs("simpleTest.html"));
     assertEquals("Proxy should have permitted direct access to host",
         "Heading", driver.findElement(By.tagName("h1")).getText());
   }
