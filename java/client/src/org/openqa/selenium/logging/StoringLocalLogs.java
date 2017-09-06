@@ -61,7 +61,9 @@ class StoringLocalLogs extends LocalLogs {
     }
 
     if (!localLogs.containsKey(logType)) {
-      localLogs.put(logType, new ArrayList<>());
+      List<LogEntry> entries = new ArrayList<>();
+      entries.add(entry);
+      localLogs.put(logType, entries);
     } else {
       localLogs.get(logType).add(entry);
     }
