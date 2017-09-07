@@ -17,7 +17,7 @@
 // </copyright>
 
 using System;
-#if NETCOREAPP2_0
+#if NETCOREAPP2_0 || NETSTANDARD2_0
 using ImageSharp;
 using ImageSharp.Formats;
 #else
@@ -104,7 +104,7 @@ namespace OpenQA.Selenium
         {
             using (MemoryStream imageStream = new MemoryStream(this.byteArray))
             {
-#if NETCOREAPP2_0
+#if NETCOREAPP2_0 || NETSTANDARD2_0
                 Image<Rgba32> image = Image.Load(imageStream);
                 using (FileStream fileStream = new FileStream(fileName, FileMode.Create))
                 {
@@ -126,7 +126,7 @@ namespace OpenQA.Selenium
             return this.base64Encoded;
         }
 
-#if NETCOREAPP2_0
+#if NETCOREAPP2_0 || NETSTANDARD2_0
         private static IImageFormat ConvertScreenshotImageFormat(ScreenshotImageFormat format)
         {
             IImageFormat returnedFormat = ImageFormats.Png;
