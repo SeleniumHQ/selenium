@@ -48,15 +48,6 @@ public class ByAll extends By implements Serializable {
   }
 
   @Override
-  public WebElement findElement(SearchContext context) {
-    List<WebElement> elements = findElements(context);
-    if (elements.isEmpty()) {
-      throw new NoSuchElementException("Cannot locate an element using " + toString());
-    }
-    return elements.get(0);
-  }
-
-  @Override
   public List<WebElement> findElements(SearchContext context) {
     List<WebElement> elems = new ArrayList<>();
     for (By by : bys) {
