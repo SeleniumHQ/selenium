@@ -21,11 +21,9 @@ require_relative 'spec_helper'
 
 module Selenium
   module WebDriver
-    describe ActionBuilder, except: {browser: :safari} do
-      after { reset_driver! }
-
+    describe ActionBuilder do
       describe 'Key actions' do
-        it 'sends keys to the active element' do
+        it 'sends keys to the active element', except: {browser: :safari} do
           driver.navigate.to url_for('bodyTypingTest.html')
           keylogger = driver.find_element(id: 'body_result')
 
@@ -39,7 +37,7 @@ module Selenium
         end
 
         # https://github.com/mozilla/geckodriver/issues/646
-        it 'can send keys with shift pressed', except: {browser: :firefox} do
+        it 'can send keys with shift pressed', except: {browser: %i[firefox safari]} do
           driver.navigate.to url_for('javascriptPage.html')
 
           event_input = driver.find_element(id: 'theworks')
@@ -82,7 +80,7 @@ module Selenium
           expect(input.attribute(:value)).to eq('abcddcba')
         end
 
-        it 'can send non-ASCII keys' do
+        it 'can send non-ASCII keys', except: {browser: :safari} do
           driver.navigate.to url_for('formPage.html')
 
           input = driver.find_element(css: '#working')
@@ -93,7 +91,7 @@ module Selenium
           expect(input.attribute(:value)).to eq('abcad')
         end
 
-        it 'can send keys to element' do
+        it 'can send keys to element', except: {browser: :safari} do
           driver.navigate.to url_for('formPage.html')
 
           input = driver.find_element(css: '#working')

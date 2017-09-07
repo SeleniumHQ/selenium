@@ -49,6 +49,11 @@ RSpec.configure do |c|
       pending 'Guarded.'
     end
   end
+
+  c.after do |example|
+    result = example.execution_result
+    reset_driver! if result.exception || result.pending_exception
+  end
 end
 
 WebDriver::Platform.exit_hook { GlobalTestEnv.quit }

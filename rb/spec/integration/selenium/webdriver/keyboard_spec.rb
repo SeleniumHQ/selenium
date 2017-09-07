@@ -22,9 +22,7 @@ require_relative 'spec_helper'
 module Selenium
   module WebDriver
     # Firefox - "Actions Endpoint Not Yet Implemented"
-    describe Keyboard, except: {browser: %i[safari firefox ie]} do
-      after { reset_driver! }
-
+    describe Keyboard, except: {browser: %i[firefox ie]} do
       # Edge - https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/8339952
       it 'sends keys to the active element', except: {browser: %i[edge safari ff_esr]} do
         driver.navigate.to url_for('bodyTypingTest.html')
@@ -38,7 +36,7 @@ module Selenium
       end
 
       # Edge - https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/8339952
-      it 'can send keys with shift pressed', except: {browser: :edge} do
+      it 'can send keys with shift pressed', except: {browser: %i[edge safari]} do
         driver.navigate.to url_for('javascriptPage.html')
 
         event_input = driver.find_element(id: 'theworks')
@@ -58,7 +56,7 @@ module Selenium
         expect { driver.keyboard.press :return }.to raise_error(ArgumentError)
       end
 
-      it 'can press and release modifier keys' do
+      it 'can press and release modifier keys', except: {browser: :safari} do
         driver.navigate.to url_for('javascriptPage.html')
 
         event_input = driver.find_element(id: 'theworks')

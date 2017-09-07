@@ -64,7 +64,6 @@ module Selenium
         expect(driver.find_element(id: 'iframe_page_heading')).to be_kind_of(WebDriver::Element)
       end
 
-      # Safari Note - Ensure Popup Blocker turned off to prevent failures
       it 'should switch to a window and back when given a block' do
         driver.navigate.to url_for('xhtmlTest.html')
 
@@ -93,7 +92,6 @@ module Selenium
         expect(driver.title).to eq('XHTML Test Page')
       end
 
-      # Safari does not want to click that link
       it 'should switch to a window without a block', except: {browser: :safari} do
         driver.navigate.to url_for('xhtmlTest.html')
 
@@ -105,8 +103,7 @@ module Selenium
         expect(driver.title).to eq('We Arrive Here')
       end
 
-      # Safari does not want to click that link
-      it 'should use the original window if the block closes the popup', except: {browser: :safari} do
+      it 'should use the original window if the block closes the popup' do
         driver.navigate.to url_for('xhtmlTest.html')
 
         driver.find_element(link: 'Open new window').click
@@ -198,7 +195,7 @@ module Selenium
         end
       end
 
-      it 'should switch to a window and execute a block when current window is closed', except: {browser: :safari} do
+      it 'should switch to a window and execute a block when current window is closed' do
         driver.navigate.to url_for('xhtmlTest.html')
         driver.find_element(link: 'Open new window').click
         wait.until { driver.window_handles.size == 2 }

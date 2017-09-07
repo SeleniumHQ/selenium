@@ -73,6 +73,7 @@ module Selenium
           return unless @driver_instance
           @driver_instance.quit
         ensure
+          `pkill -f "Safari --automation"` if browser == :safari
           @driver_instance = nil
         end
 
@@ -174,7 +175,7 @@ module Selenium
                      else
                        WebDriver::Driver.for(driver, opts)
                      end
-          @create_driver_error_count -= 1 unless @create_driver_error_count == 0
+          @create_driver_error_count -= 1 unless @create_driver_error_count.zero?
           if block
             begin
               yield(instance)

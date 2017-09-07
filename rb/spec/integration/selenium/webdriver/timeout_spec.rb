@@ -59,12 +59,12 @@ module Selenium
           expect(driver.find_elements(class_name: 'redbox')).not_to be_empty
         end
 
-        it 'should still fail to find elements when implicit waits are enabled', except: {browser: :safari} do
+        it 'should still fail to find elements when implicit waits are enabled' do
           driver.manage.timeouts.implicit_wait = 0.5
           expect(driver.find_elements(class_name: 'redbox')).to be_empty
         end
 
-        it 'should return after first attempt to find many after disabling implicit waits', except: [{browser: :safari}, {browser: :firefox, platform: :windows}] do
+        it 'should return after first attempt to find many after disabling implicit waits', except: {browser: :firefox, platform: :windows} do
           add = driver.find_element(id: 'adder')
 
           driver.manage.timeouts.implicit_wait = 3

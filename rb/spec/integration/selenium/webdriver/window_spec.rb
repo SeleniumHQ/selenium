@@ -26,8 +26,6 @@ module Selenium
 
       let(:window) { driver.manage.window }
 
-      after { reset_driver! }
-
       it 'gets the size of the current window' do
         size = window.size
 

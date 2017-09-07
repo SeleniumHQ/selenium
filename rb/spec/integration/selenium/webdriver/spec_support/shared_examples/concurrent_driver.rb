@@ -17,28 +17,28 @@
 # specific language governing permissions and limitations
 # under the License.
 
-shared_examples_for 'driver that can be started concurrently' do
-  it 'is started sequentially', except: {browser: %i[edge safari]} do
-    expect do
-      # start 5 drivers concurrently
-      threads = []
-      drivers = []
+shared_examples_for 'driver that can be started concurrently' do |guard|
+  before { quit_driver }
 
-      5.times do
-        threads << Thread.new do
-          drivers << create_driver!
-        end
-      end
+  after do
+    drivers.each(&:quit)
+    threads.select(&:alive?).each(&:kill)
+  end
 
-      threads.each do |thread|
-        thread.abort_on_exception = true
-        thread.join
-      end
+  let(:drivers) { [] }
+  let(:threads) { [] }
 
-      drivers.each do |driver|
-        driver.title # make any wire call
-        driver.quit
+  it 'starts 3 drivers sequentially', guard do
+    3.times do
+      threads << Thread.new do
+        drivers << create_driver!
       end
-    end.not_to raise_error
+    end
+
+    expect { threads.each(&:join) }.not_to raise_error
+    expect(drivers.count).to eq(3)
+
+    # make any wire call
+    expect { drivers.each(&:title) }.not_to raise_error
   end
 end

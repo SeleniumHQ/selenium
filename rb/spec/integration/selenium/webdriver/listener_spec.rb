@@ -22,6 +22,8 @@ require_relative 'spec_helper'
 module Selenium
   module WebDriver
     describe Driver do
+      before { quit_driver }
+
       it 'supports listener' do
         create_driver!(listener: Selenium::WebDriver::Support::AbstractEventListener.new) do
           # do nothing
