@@ -52,7 +52,6 @@ module Selenium
               expect(caps.proxy).to be_nil
               expect(caps.platform_name).to_not be_nil
               expect(caps.browser_version).to match(/^\d\d\./)
-              expect(caps.platform_version).to_not be_nil
 
               compliant_on browser: :ff_nightly do
                 expect(caps.accept_insecure_certs).to be == false
@@ -66,6 +65,7 @@ module Selenium
               expect(caps.remote_session_id).to be_nil
 
               compliant_on browser: :ff_esr do
+                expect(caps.platform_version).to_not be_nil
                 expect(caps.rotatable).to be == false
               end
             ensure
