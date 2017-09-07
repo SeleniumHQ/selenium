@@ -5084,6 +5084,11 @@
             Gets the global parallel options for processing tasks in parallel.
             </summary>
         </member>
+        <member name="P:ImageSharp.Configuration.ImageFormats">
+            <summary>
+            Gets the currently registered <see cref="T:ImageSharp.Formats.IImageFormat"/>s.
+            </summary>
+        </member>
         <member name="P:ImageSharp.Configuration.MaxHeaderSize">
             <summary>
             Gets the maximum header size of all the formats.
@@ -5102,11 +5107,6 @@
         <member name="P:ImageSharp.Configuration.ImageEncoders">
             <summary>
             Gets the currently registered <see cref="T:ImageSharp.Formats.IImageEncoder"/>s.
-            </summary>
-        </member>
-        <member name="P:ImageSharp.Configuration.ImageFormats">
-            <summary>
-            Gets the currently registered <see cref="T:ImageSharp.Formats.IImageFormat"/>s.
             </summary>
         </member>
         <member name="M:ImageSharp.Configuration.Configure(ImageSharp.IConfigurationModule)">
@@ -5160,16 +5160,6 @@
             </summary>
             <param name="detector">The detector to add</param>
         </member>
-        <member name="M:ImageSharp.Configuration.CreateDefaultInstance">
-            <summary>
-            Creates the default instance with the following <see cref="T:ImageSharp.IConfigurationModule"/>s preregistered:
-            <para><see cref="T:ImageSharp.Formats.PngConfigurationModule"/></para>
-            <para><see cref="T:ImageSharp.Formats.JpegConfigurationModule"/></para>
-            <para><see cref="T:ImageSharp.Formats.GifConfigurationModule"/></para>
-            <para><see cref="T:ImageSharp.Formats.BmpConfigurationModule"/></para>
-            </summary>
-            <returns>The default configuration of <see cref="T:ImageSharp.Configuration"/></returns>
-        </member>
         <member name="M:ImageSharp.Configuration.FindDecoder(ImageSharp.Formats.IImageFormat)">
             <summary>
             For the specified mime type find the decoder.
@@ -5183,6 +5173,16 @@
             </summary>
             <param name="format">The format to discover</param>
             <returns>The <see cref="T:ImageSharp.Formats.IImageEncoder"/> if found otherwise null</returns>
+        </member>
+        <member name="M:ImageSharp.Configuration.CreateDefaultInstance">
+            <summary>
+            Creates the default instance with the following <see cref="T:ImageSharp.IConfigurationModule"/>s preregistered:
+            <para><see cref="T:ImageSharp.Formats.PngConfigurationModule"/></para>
+            <para><see cref="T:ImageSharp.Formats.JpegConfigurationModule"/></para>
+            <para><see cref="T:ImageSharp.Formats.GifConfigurationModule"/></para>
+            <para><see cref="T:ImageSharp.Formats.BmpConfigurationModule"/></para>
+            </summary>
+            <returns>The default configuration of <see cref="T:ImageSharp.Configuration"/></returns>
         </member>
         <member name="M:ImageSharp.Configuration.SetMaxHeaderSize">
             <summary>
@@ -5704,6 +5704,22 @@
             Reads the <see cref="T:ImageSharp.Formats.BmpInfoHeader"/> from the stream.
             </summary>
         </member>
+        <member name="M:ImageSharp.Formats.BmpDecoderCore.ParseBitmapCoreHeader(System.Byte[])">
+            <summary>
+            Parses the <see cref="T:ImageSharp.Formats.BmpInfoHeader"/> from the stream, assuming it uses the BITMAPCOREHEADER format.
+            </summary>
+            <param name="data">Header bytes read from the stream</param>
+            <returns>Parsed header</returns>
+            <seealso href="https://msdn.microsoft.com/en-us/library/windows/desktop/dd183372.aspx"/>
+        </member>
+        <member name="M:ImageSharp.Formats.BmpDecoderCore.ParseBitmapInfoHeader(System.Byte[])">
+            <summary>
+            Parses the <see cref="T:ImageSharp.Formats.BmpInfoHeader"/> from the stream, assuming it uses the BITMAPINFOHEADER format.
+            </summary>
+            <param name="data">Header bytes read from the stream</param>
+            <returns>Parsed header</returns>
+            <seealso href="https://msdn.microsoft.com/en-us/library/windows/desktop/dd183376.aspx"/>
+        </member>
         <member name="M:ImageSharp.Formats.BmpDecoderCore.ReadFileHeader">
             <summary>
             Reads the <see cref="T:ImageSharp.Formats.BmpFileHeader"/> from the stream.
@@ -5877,14 +5893,29 @@
             <see href="https://en.wikipedia.org/wiki/BMP_file_format"/>
             </summary>
         </member>
-        <member name="F:ImageSharp.Formats.BmpInfoHeader.Size">
+        <member name="F:ImageSharp.Formats.BmpInfoHeader.BitmapInfoHeaderSize">
             <summary>
-            Defines of the data structure in the bitmap file.
+            Defines the size of the BITMAPINFOHEADER data structure in the bitmap file.
+            </summary>
+        </member>
+        <member name="F:ImageSharp.Formats.BmpInfoHeader.BitmapCoreHeaderSize">
+            <summary>
+            Defines the size of the BITMAPCOREHEADER data structure in the bitmap file.
+            </summary>
+        </member>
+        <member name="F:ImageSharp.Formats.BmpInfoHeader.MaxHeaderSize">
+            <summary>
+            Defines the size of the biggest supported header data structure in the bitmap file.
+            </summary>
+        </member>
+        <member name="F:ImageSharp.Formats.BmpInfoHeader.HeaderSizeSize">
+            <summary>
+            Defines the size of the <see cref="P:ImageSharp.Formats.BmpInfoHeader.HeaderSize"/> field.
             </summary>
         </member>
         <member name="P:ImageSharp.Formats.BmpInfoHeader.HeaderSize">
             <summary>
-            Gets or sets the size of this header (40 bytes)
+            Gets or sets the size of this header
             </summary>
         </member>
         <member name="P:ImageSharp.Formats.BmpInfoHeader.Width">
