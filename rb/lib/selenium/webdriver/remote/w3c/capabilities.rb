@@ -35,29 +35,32 @@ module Selenium
         # @api private
         #
 
-        # TODO - uncomment when Mozilla fixes this:
-        # https://bugzilla.mozilla.org/show_bug.cgi?id=1326397
         class Capabilities
 
           EXTENSION_CAPABILITY_PATTERN = /\A[\w-]+:.*\z/
 
-          # TODO (alex): compare with spec
           KNOWN = [
             :browser_name,
             :browser_version,
             :platform_name,
-            :platform_version,
             :accept_insecure_certs,
             :page_load_strategy,
             :proxy,
+            :set_window_rect,
+            :timeouts,
+            :unhandled_prompt_behavior,
+
+            # remote-specific
             :remote_session_id,
+
+            # TODO (alex): deprecate in favor of Firefox::Options?
             :accessibility_checks,
             :device,
+
+            # TODO (alex): deprecate compatibility with OSS-capabilities
             :implicit_timeout,
             :page_load_timeout,
             :script_timeout,
-            :unhandled_prompt_behavior,
-            :timeouts,
           ].freeze
 
           KNOWN.each do |key|
@@ -114,7 +117,6 @@ module Selenium
               caps.browser_name = data.delete('browserName')
               caps.browser_version = data.delete('browserVersion')
               caps.platform_name = data.delete('platformName')
-              caps.platform_version = data.delete('platformVersion')
               caps.accept_insecure_certs = data.delete('acceptInsecureCerts') if data.key?('acceptInsecureCerts')
               caps.page_load_strategy = data.delete('pageLoadStrategy')
               timeouts = data.delete('timeouts')
@@ -196,7 +198,6 @@ module Selenium
           # @option :browser_name             [String] required browser name
           # @option :browser_version          [String] required browser version number
           # @option :platform_name            [Symbol] one of :any, :win, :mac, or :x
-          # @option :platform_version         [String] required platform version number
           # @option :accept_insecure_certs    [Boolean] does the driver accept insecure SSL certifications?
           # @option :proxy                    [Selenium::WebDriver::Proxy, Hash] proxy configuration
           #
