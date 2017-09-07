@@ -99,7 +99,7 @@ module Selenium
               opts[:platform_name] = opts.delete(:platform) if opts.key?(:platform)
               opts[:timeouts] = {}
               opts[:timeouts]['implicit'] = opts.delete(:implicit_timeout) if opts.key?(:implicit_timeout)
-              opts[:timeouts]['page load'] = opts.delete(:page_load_timeout) if opts.key?(:page_load_timeout)
+              opts[:timeouts]['pageLoad'] = opts.delete(:page_load_timeout) if opts.key?(:page_load_timeout)
               opts[:timeouts]['script'] = opts.delete(:script_timeout) if opts.key?(:script_timeout)
               new({browser_name: 'firefox', marionette: true}.merge(opts))
             end
