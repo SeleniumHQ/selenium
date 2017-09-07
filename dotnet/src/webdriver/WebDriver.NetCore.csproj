@@ -1,40 +1,160 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.0</TargetFramework>
-    <AssemblyName>WebDriver.Net.Core</AssemblyName>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <OutputPath>..\..\..\build\cli\Debug\</OutputPath>
+    <TargetFrameworks>netstandard2.0;net45;net40;net35</TargetFrameworks>
+    <AssemblyName>WebDriver</AssemblyName>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <BuildSystem>visual-studio</BuildSystem>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <OutputPath>..\..\..\build\cli\Release\</OutputPath>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath>..\..\..\build\cli\Debug\</OutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <FrameworkPathOverride Condition="'$(TargetFramework)'=='net35'">C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v3.5\Profile\Client</FrameworkPathOverride>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net35|AnyCPU'">
+    <DocumentationFile>..\..\..\build\cli\Release\net35\WebDriver.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net35|AnyCPU'">
+    <DocumentationFile>..\..\..\build\cli\Debug\net35\WebDriver.xml</DocumentationFile>
+    <WarningLevel>0</WarningLevel>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net40|AnyCPU'">
+    <DocumentationFile>..\..\..\build\cli\Release\net40\WebDriver.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net40|AnyCPU'">
+    <DocumentationFile>..\..\..\build\cli\Debug\net40\WebDriver.xml</DocumentationFile>
+    <WarningLevel>0</WarningLevel>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net45|AnyCPU'">
+    <DocumentationFile>..\..\..\build\cli\Release\net45\WebDriver.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net45|AnyCPU'">
+    <DocumentationFile>..\..\..\build\cli\Debug\net45\WebDriver.xml</DocumentationFile>
+    <WarningLevel>0</WarningLevel>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard2.0|AnyCPU'">
+    <DocumentationFile>..\..\..\build\cli\Release\netstandard2.0\WebDriver.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netstandard2.0|AnyCPU'">
+    <DocumentationFile>..\..\..\build\cli\Debug\netstandard2.0\WebDriver.xml</DocumentationFile>
+    <WarningLevel>0</WarningLevel>
+  </PropertyGroup>
+
   <ItemGroup>
-    <Compile Remove="Properties\AssemblyInfo.cs" />
+    <Compile Remove="obj\**" />
+    <Compile Remove="obj_core\**" />
+    <EmbeddedResource Remove="obj\**" />
+    <EmbeddedResource Remove="obj_core\**" />
+    <None Remove="obj\**" />
+    <None Remove="obj_core\**" />
   </ItemGroup>
 
   <ItemGroup>
     <None Remove="BUCK" />
     <None Remove="build.desc" />
     <None Remove="Settings.StyleCop" />
+    <None Remove="WebDriver.nuspec" />
     <None Remove="WebDriver.ruleset" />
   </ItemGroup>
 
-  <ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+    <Reference Include="ImageSharp">
+      <HintPath>..\..\..\third_party\dotnet\imagesharp-1.0.0-alpha9-00194\netstandard1.3\ImageSharp.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\..\..\third_party\dotnet\json-net-10.0r2\netstandard1.3\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="ImageSharp">
-      <HintPath>..\..\..\third_party\dotnet\imagesharp-1.0.0-alpha9-00182\netstandard1.3\ImageSharp.dll</HintPath>
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net45'">
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\third_party\dotnet\json-net-10.0r2\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net40'">
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\third_party\dotnet\json-net-10.0r2\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net35'">
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\third_party\dotnet\json-net-10.0r2\net35\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Properties\" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(BuildSystem)' == 'buck'">
+    <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\..\..\buck-out\gen\javascript\firefox-driver\webdriver\webdriver.xpi">
+      <Visible>False</Visible>
+      <LogicalName>WebDriver.FirefoxExt.zip</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\..\..\buck-out\gen\javascript\firefox-driver\webdriver_prefs">
+      <Visible>False</Visible>
+      <LogicalName>WebDriver.FirefoxPreferences</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\..\..\buck-out\gen\javascript\webdriver\atoms\getAttribute.js">
+      <Visible>False</Visible>
+      <LogicalName>getAttribute.js</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\..\..\buck-out\gen\javascript\atoms\fragments\is-displayed.js">
+      <Visible>False</Visible>
+      <LogicalName>isDisplayed.js</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\..\..\buck-out\gen\cpp\prebuilt\i386\x_ignore_nofocus.so">
+      <Visible>False</Visible>
+      <LogicalName>WebDriver.FirefoxNoFocus.x86.dll</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\..\..\buck-out\gen\cpp\prebuilt\amd64\x_ignore_nofocus.so">
+      <Visible>False</Visible>
+      <LogicalName>WebDriver.FirefoxNoFocus.x64.dll</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

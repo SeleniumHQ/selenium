@@ -1,10 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26730.3
+VisualStudioVersion = 15.0.26730.12
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebDriver", "src\webdriver\WebDriver.csproj", "{EA31F748-5E32-476D-AB6D-FEA245B4AF1E}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebDriver.Support", "src\support\WebDriver.Support.csproj", "{3568C959-D714-46C7-B2FE-97BA9482E1E0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Selenium.WebDriverBackedSelenium", "src\webdriverbackedselenium\Selenium.WebDriverBackedSelenium.csproj", "{A7E35A79-9321-4DE8-8EC8-E5026CB71A08}"
@@ -31,7 +29,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebDriver.Opera.Tests", "te
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Selenium.WebDriverBackedSelenium.Tests", "test\webdriverbackedselenium\Selenium.WebDriverBackedSelenium.Tests.csproj", "{7760D121-0C45-4083-83FD-3171F0CF9BF5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebDriver.NetCore", "src\webdriver\WebDriver.NetCore.csproj", "{08E3D8AB-CB2B-4DC5-9008-1AB20104E989}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebDriver.NetCore", "src\webdriver\WebDriver.NetCore.csproj", "{9FD2D4BD-33D8-4728-AD61-B4E88436F6DC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebDriver", "src\webdriver\WebDriver.csproj", "{EA31F748-5E32-476D-AB6D-FEA245B4AF1E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,10 +39,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{EA31F748-5E32-476D-AB6D-FEA245B4AF1E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EA31F748-5E32-476D-AB6D-FEA245B4AF1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EA31F748-5E32-476D-AB6D-FEA245B4AF1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EA31F748-5E32-476D-AB6D-FEA245B4AF1E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3568C959-D714-46C7-B2FE-97BA9482E1E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3568C959-D714-46C7-B2FE-97BA9482E1E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3568C959-D714-46C7-B2FE-97BA9482E1E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -95,10 +91,14 @@ Global
 		{7760D121-0C45-4083-83FD-3171F0CF9BF5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7760D121-0C45-4083-83FD-3171F0CF9BF5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7760D121-0C45-4083-83FD-3171F0CF9BF5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{08E3D8AB-CB2B-4DC5-9008-1AB20104E989}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{08E3D8AB-CB2B-4DC5-9008-1AB20104E989}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{08E3D8AB-CB2B-4DC5-9008-1AB20104E989}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{08E3D8AB-CB2B-4DC5-9008-1AB20104E989}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9FD2D4BD-33D8-4728-AD61-B4E88436F6DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9FD2D4BD-33D8-4728-AD61-B4E88436F6DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9FD2D4BD-33D8-4728-AD61-B4E88436F6DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9FD2D4BD-33D8-4728-AD61-B4E88436F6DC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EA31F748-5E32-476D-AB6D-FEA245B4AF1E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA31F748-5E32-476D-AB6D-FEA245B4AF1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA31F748-5E32-476D-AB6D-FEA245B4AF1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA31F748-5E32-476D-AB6D-FEA245B4AF1E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
