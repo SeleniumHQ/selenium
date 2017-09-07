@@ -398,27 +398,12 @@ public class FirefoxOptions {
     return this;
   }
 
-  private Map<Level, FirefoxDriverLogLevel> logLevelToGeckoLevelMap
-      = new ImmutableMap.Builder<Level, FirefoxDriverLogLevel>()
-      .put(Level.ALL, FirefoxDriverLogLevel.TRACE)
-      .put(Level.FINEST, FirefoxDriverLogLevel.TRACE)
-      .put(Level.FINER, FirefoxDriverLogLevel.TRACE)
-      .put(Level.FINE, FirefoxDriverLogLevel.DEBUG)
-      .put(Level.CONFIG, FirefoxDriverLogLevel.CONFIG)
-      .put(Level.INFO, FirefoxDriverLogLevel.INFO)
-      .put(Level.WARNING, FirefoxDriverLogLevel.WARN)
-      .put(Level.SEVERE, FirefoxDriverLogLevel.ERROR)
-      .put(Level.OFF, FirefoxDriverLogLevel.FATAL)
-      .build();
-
   /**
    * @deprecated Use {@link #setLogLevel(FirefoxDriverLogLevel)}
    */
   @Deprecated
   public FirefoxOptions setLogLevel(Level logLevel) {
-    // levels defined by GeckoDriver
-    // https://github.com/mozilla/geckodriver#log-object
-    this.logLevel = logLevelToGeckoLevelMap.getOrDefault(logLevel, FirefoxDriverLogLevel.DEBUG);
+    setLogLevel(FirefoxDriverLogLevel.fromLevel(logLevel));
     return this;
   }
 
