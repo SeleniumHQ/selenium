@@ -1,3 +1,22 @@
+3.5.2 (2017-09-07)
+  ==================
+
+Ruby:
+  * Removed platformVersion from W3C payload (issue #4641)
+  * Fixed a bug when proxy type was not compliant to specification (issue #4574)
+  * Added support for passing speed to flick action (issue #4549)
+  * Using TouchActionBuilder no longer prints mouse/key deprecations
+  * Deprecated Alert#authenticate
+  * Added support for DEBUG environment variable which enables full debug mode in gem
+
+Firefox:
+  * Fixed a bug when page load timeout was not properly constructed in new session payload
+  * Fixed a bug when GeckoDriver error stacktrace was not displayed (issue #3683)
+
+Chrome:
+  * Added workardound for the case when findElements call returns null (issue #4555)
+  * Chrome::Driver now includes touch actions by default
+
 3.5.1 (2017-08-15)
 ==================
 
