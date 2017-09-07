@@ -60,7 +60,7 @@ public class ByAll extends By implements Serializable {
   public List<WebElement> findElements(SearchContext context) {
     List<WebElement> elems = new ArrayList<>();
     for (By by : bys) {
-      elems.addAll(by.findElements(context));
+      elems.addAll(context.findElements(by));
     }
 
     return elems;
