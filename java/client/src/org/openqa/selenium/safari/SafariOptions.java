@@ -108,8 +108,9 @@ public class SafariOptions {
    * @param port The port the {@link SafariDriverService} should be started on,
    *    or 0 if the server should select a free port.
    */
-  public void setPort(int port) {
+  SafariOptions setPort(int port) {
     this.port = port;
+    return this;
   }
 
   /**
@@ -122,8 +123,9 @@ public class SafariOptions {
    *
    * @param useCleanSession If true, the SafariDriver will erase all existing session data.
    */
-  public void setUseCleanSession(boolean useCleanSession) {
+  public SafariOptions setUseCleanSession(boolean useCleanSession) {
     this.useCleanSession = useCleanSession;
+    return this;
   }
 
   /**
@@ -133,8 +135,9 @@ public class SafariOptions {
    * @param useTechnologyPreview If true, the SafariDriver will use the Safari Technology Preview,
    *     otherwise will use the release version of Safari.
    */
-  public void setUseTechnologyPreview(boolean useTechnologyPreview) {
+  public SafariOptions setUseTechnologyPreview(boolean useTechnologyPreview) {
     this.useTechnologyPreview = useTechnologyPreview;
+    return this;
   }
 
   // Getters
