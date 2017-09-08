@@ -73,9 +73,6 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-    <Reference Include="ImageSharp">
-      <HintPath>..\..\..\third_party\dotnet\imagesharp-1.0.0-alpha9-00194\netstandard1.3\ImageSharp.dll</HintPath>
-    </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\..\..\third_party\dotnet\json-net-10.0r2\netstandard1.3\Newtonsoft.Json.dll</HintPath>
     </Reference>
