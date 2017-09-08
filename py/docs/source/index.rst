@@ -91,7 +91,7 @@ Example 1:
     browser = webdriver.Firefox()
 
     browser.get('http://www.yahoo.com')
-    assert 'Yahoo!' in browser.title
+    assert 'Yahoo' in browser.title
 
     elem = browser.find_element_by_name('p')  # Find the search box
     elem.send_keys('seleniumhq' + Keys.RETURN)
@@ -106,6 +106,7 @@ Selenium WebDriver is often used as a basis for testing web applications.  Here 
 ::
 
     import unittest
+    from selenium import webdriver
 
     class GoogleTestCase(unittest.TestCase):
 
