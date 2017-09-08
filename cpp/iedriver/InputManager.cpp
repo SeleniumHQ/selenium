@@ -1,4 +1,4 @@
-// Licensed to the Software Freedom Conservancy (SFC) under one
+﻿// Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
 // regarding copyright ownership. The SFC licenses this file
@@ -985,7 +985,24 @@ void InputManager::AddKeyboardInput(HWND window_handle, wchar_t character, bool 
       KeyInfo shift_key_info = { VK_SHIFT, 0, false, false };
       this->CreateKeyboardInputItem(shift_key_info, 0, true);
     }
-  } else {
+  }
+  else if (HIBYTE(key_info.key_code) == 6) {
+    // The byte mask of 6 stands for ALT + CTRL (aka AltGr)
+    KeyInfo control_key_info = { VK_CONTROL, 0, false, false };
+    KeyInfo alt_key_info = { VK_MENU, 0, false, false };
+    if (!key_up) {
+      this->CreateKeyboardInputItem(alt_key_info, 0, false);
+      this->CreateKeyboardInputItem(control_key_info, 0, false);
+    }
+
+    this->CreateKeyboardInputItem(key_info, KEYEVENTF_SCANCODE, key_up);
+
+    if (key_up) {
+      this->CreateKeyboardInputItem(alt_key_info, 0, true);
+      this->CreateKeyboardInputItem(control_key_info, 0, true);
+    }
+  }
+  else {
     this->CreateKeyboardInputItem(key_info, 0, key_up);
   }
 }
