@@ -150,6 +150,9 @@ Layout/MultilineMethodCallIndentation:
 Style/MultilineMemoization:
   Enabled: false
 
+Style/MutableConstant:
+  Enabled: false
+
 Style/RedundantBegin:
   Exclude:
     - 'spec/integration/selenium/webdriver/driver_spec.rb'
