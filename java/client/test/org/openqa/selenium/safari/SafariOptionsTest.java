@@ -17,29 +17,20 @@
 
 package org.openqa.selenium.safari;
 
-import static org.junit.Assume.assumeTrue;
+import static org.junit.Assert.assertEquals;
 
-import org.junit.BeforeClass;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.openqa.selenium.Platform;
-import org.openqa.selenium.StandardSeleniumTests;
-import org.openqa.selenium.testing.TestUtilities;
+import org.junit.Test;
+import org.openqa.selenium.remote.DesiredCapabilities;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-    StandardSeleniumTests.class,
-    AlertsTest.class,
-    CleanSessionTest.class,
-    CrossDomainTest.class,
-    SafariOptionsTest.class,
-    TechnologyPreviewTest.class,
-})
-public class SafariDriverTests {
+public class SafariOptionsTest {
 
-  @BeforeClass
-  public static void isSupportedPlatform() {
-    Platform current = TestUtilities.getEffectivePlatform();
-    assumeTrue(current.is(Platform.MAC));
+  @Test
+  public void commonUsagePatternWorks() {
+    SafariOptions options = new SafariOptions().setPort(99);
+    DesiredCapabilities caps = new DesiredCapabilities();
+    caps.setCapability(SafariOptions.CAPABILITY, options);
+
+    assertEquals(options.asMap(), caps.asMap());
   }
+
 }
