@@ -94,7 +94,7 @@ def join_host_port(host, port):
     return '%s:%d' % (host, port)
 
 
-def is_connectable(port, host="localhost"):
+def is_connectable(port, host="127.0.0.1"):
     """
     Tries to connect to the server at port to see if it is running.
 
