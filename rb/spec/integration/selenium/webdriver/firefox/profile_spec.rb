@@ -119,10 +119,10 @@ module Selenium
 
           it 'can configure a manual proxy' do
             proxy = Proxy.new(
-                http: 'foo:123',
-                ftp: 'bar:234',
-                ssl: 'baz:345',
-                no_proxy: 'localhost'
+              http: 'foo:123',
+              ftp: 'bar:234',
+              ssl: 'baz:345',
+              no_proxy: 'localhost'
             )
 
             profile.proxy = proxy

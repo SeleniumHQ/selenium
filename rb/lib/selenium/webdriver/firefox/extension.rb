@@ -41,7 +41,7 @@ module Selenium
           ext_path = File.join extensions_dir, read_id_from_install_rdf(root_dir)
 
           FileUtils.rm_rf ext_path
-          FileUtils.mkdir_p File.dirname(ext_path), mode: 0700
+          FileUtils.mkdir_p File.dirname(ext_path), mode: 0o700
           FileUtils.cp_r root_dir, ext_path
 
           FileReaper.reap(root_dir) if @should_reap_root

@@ -155,7 +155,7 @@ module Selenium
       protected
 
       def extract_service_args(driver_opts)
-        driver_opts.key?(:args) ? driver_opts.delete(:args) :  []
+        driver_opts.key?(:args) ? driver_opts.delete(:args) : []
       end
 
     end # Service

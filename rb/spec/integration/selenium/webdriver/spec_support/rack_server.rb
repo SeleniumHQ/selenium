@@ -133,6 +133,6 @@ module Selenium
   end # WebDriver
 end # Selenium
 
-if __FILE__ == $PROGRAM_NAME
+if $PROGRAM_NAME == __FILE__
   Selenium::WebDriver::SpecSupport::RackServer.new(ARGV[0], ARGV[1]).run
 end

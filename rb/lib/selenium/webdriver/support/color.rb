@@ -78,12 +78,12 @@ module Selenium
           l = Float(l) / 100
           a = Float(a || 1)
 
-          if s == 0
+          if s.zero?
             r = l
             g = r
             b = r
           else
-            luminocity2 = (l < 0.5) ? l * (1 + s) : l + s - l * s
+            luminocity2 = l < 0.5 ? l * (1 + s) : l + s - l * s
             luminocity1 = 2 * l - luminocity2
 
             r = hue_to_rgb(luminocity1, luminocity2, h + 1.0 / 3.0)

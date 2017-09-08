@@ -94,7 +94,6 @@ module Selenium
               retries += 1
               sleep 2
               retry
-
             rescue Errno::ECONNREFUSED => ex
               raise ex.class, "using proxy: #{proxy.http}" if use_proxy?
               raise
