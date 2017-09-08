@@ -21,13 +21,22 @@ package org.openqa.selenium;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class MutableCapabilities implements Capabilities, Serializable {
 
   private static final long serialVersionUID = -112816287184979465L;
+  private static final Set<String> OPTION_KEYS;
+  static {
+    HashSet<String> keys = new HashSet<>();
+    keys.add("safari.options");
+    OPTION_KEYS = Collections.unmodifiableSet(keys);
+  }
 
   private final Map<String, Object> caps = new HashMap<>();
+
 
   public MutableCapabilities() {
     // no-arg constructor
@@ -106,6 +115,15 @@ public class MutableCapabilities implements Capabilities, Serializable {
   }
 
   public void setCapability(String key, Object value) {
+    // We have to special-case some keys and values because of the popular idiom of calling
+    // something like "capabilities.setCapability(SafariOptions.CAPABILITY, new SafariOptions());
+    // and this is no longer needed as options are capabilities. There will be a large amount of
+    // legacy code that will always try and follow this pattern, however.
+    if (OPTION_KEYS.contains(key) && value instanceof Capabilities) {
+      merge((Capabilities) value);
+      return;
+    }
+
     caps.put(key, value);
   }
 

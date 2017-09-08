@@ -46,7 +46,9 @@ public class SafariDriver extends RemoteWebDriver {
    * @see SafariOptions#fromCapabilities(org.openqa.selenium.Capabilities)
    *
    * @param desiredCapabilities capabilities requested of the driver
+   * @deprecated Use {@link SafariDriver(SafariOptions)} instead.
    */
+  @Deprecated
   public SafariDriver(Capabilities desiredCapabilities) {
     this(SafariOptions.fromCapabilities(desiredCapabilities));
   }
@@ -57,7 +59,7 @@ public class SafariDriver extends RemoteWebDriver {
    * @param safariOptions safari specific options / capabilities for the driver
    */
   public SafariDriver(SafariOptions safariOptions) {
-    super(getExecutor(safariOptions), safariOptions.toCapabilities());
+    super(getExecutor(safariOptions), safariOptions);
   }
 
   private static CommandExecutor getExecutor(SafariOptions options) {
