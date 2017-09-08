@@ -97,7 +97,6 @@ namespace OpenQA.Selenium
         /// file if it already exists.
         /// </summary>
         /// <param name="fileName">The full path and file name to save the screenshot to.</param>
-        /// to save the image to.</param>
         public void SaveAsFile(string fileName)
         {
             this.SaveAsFile(fileName, ScreenshotImageFormat.Png);
