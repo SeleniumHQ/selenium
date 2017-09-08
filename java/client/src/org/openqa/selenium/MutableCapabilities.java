@@ -109,4 +109,28 @@ public class MutableCapabilities implements Capabilities, Serializable {
     caps.put(key, value);
   }
 
+  @Override
+  public String toString() {
+    return String.format("Capabilities [%s]", shortenMapValues(asMap()));
+  }
+
+  private Map<String, ?> shortenMapValues(Map<String, ?> map) {
+    Map<String, Object> newMap = new HashMap<>();
+
+    for (Map.Entry<String, ?> entry : map.entrySet()) {
+      if (entry.getValue() instanceof Map) {
+        @SuppressWarnings("unchecked") Map<String, ?> value = (Map<String, ?>) entry.getValue();
+        newMap.put(entry.getKey(), shortenMapValues(value));
+
+      } else {
+        String value = String.valueOf(entry.getValue());
+        if (value.length() > 1024) {
+          value = value.substring(0, 29) + "...";
+        }
+        newMap.put(entry.getKey(), value);
+      }
+    }
+
+    return newMap;
+  }
 }

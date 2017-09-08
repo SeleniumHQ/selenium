@@ -198,29 +198,4 @@ public class DesiredCapabilities extends MutableCapabilities {
   public static DesiredCapabilities phantomjs() {
     return new DesiredCapabilities(BrowserType.PHANTOMJS, "", Platform.ANY);
   }
-
-  @Override
-  public String toString() {
-    return String.format("Capabilities [%s]", shortenMapValues(asMap()));
-  }
-
-  private Map<String, ?> shortenMapValues(Map<String, ?> map) {
-    Map<String, Object> newMap = new HashMap<>();
-
-    for (Map.Entry<String, ?> entry : map.entrySet()) {
-      if (entry.getValue() instanceof Map) {
-        newMap.put(entry.getKey(), shortenMapValues((Map<String, ?>) entry.getValue()));
-
-      } else {
-        String value = String.valueOf(entry.getValue());
-        if (value.length() > 1024) {
-          value = value.substring(0, 29) + "...";
-        }
-        newMap.put(entry.getKey(), value);
-      }
-    }
-
-    return newMap;
-  }
-
 }
