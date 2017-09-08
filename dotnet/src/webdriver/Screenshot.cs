@@ -93,6 +93,17 @@ namespace OpenQA.Selenium
         }
 
         /// <summary>
+        /// Saves the screenshot to a Portable Network Graphics (PNG) file, overwriting the
+        /// file if it already exists.
+        /// </summary>
+        /// <param name="fileName">The full path and file name to save the screenshot to.</param>
+        /// to save the image to.</param>
+        public void SaveAsFile(string fileName)
+        {
+            this.SaveAsFile(fileName, ScreenshotImageFormat.Png);
+        }
+
+        /// <summary>
         /// Saves the screenshot to a file, overwriting the file if it already exists.
         /// </summary>
         /// <param name="fileName">The full path and file name to save the screenshot to.</param>
