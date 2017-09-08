@@ -72,7 +72,7 @@ module Selenium
 
           it 'supports responses with "value" capabilities' do
             allow(http).to receive(:request)
-              .and_return({'status' => 200, 'sessionId' => '', 'value' => {'browserName' => 'firefox'}})
+              .and_return('status' => 200, 'sessionId' => '', 'value' => {'browserName' => 'firefox'})
 
             bridge = Bridge.handshake(http_client: http, desired_capabilities: Capabilities.new)
             expect(bridge.capabilities[:browser_name]).to eq('firefox')

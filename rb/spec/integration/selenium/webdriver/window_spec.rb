@@ -106,7 +106,7 @@ module Selenium
             expect(new_rect.width).to eq(target_width)
             expect(new_rect.height).to eq(target_height)
           end
-      end
+        end
       end
 
       # TODO: - Create Window Manager guard

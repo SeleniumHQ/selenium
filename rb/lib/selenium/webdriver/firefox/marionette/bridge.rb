@@ -34,7 +34,7 @@ module Selenium
 
           def install_addon(path, temporary)
             payload = {path: path}
-            payload.merge!(temporary: temporary) unless temporary.nil?
+            payload[:temporary] = temporary unless temporary.nil?
             execute :install_addon, {}, payload
           end
 
