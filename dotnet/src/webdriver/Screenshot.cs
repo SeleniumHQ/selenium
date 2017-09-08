@@ -18,8 +18,6 @@
 
 using System;
 #if NETCOREAPP2_0 || NETSTANDARD2_0
-using ImageSharp;
-using ImageSharp.Formats;
 #else
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -102,13 +100,19 @@ namespace OpenQA.Selenium
         /// to save the image to.</param>
         public void SaveAsFile(string fileName, ScreenshotImageFormat format)
         {
+#if NETCOREAPP2_0 || NETSTANDARD2_0
+            if (format != ScreenshotImageFormat.Png)
+            {
+                throw new WebDriverException(".NET Core does not support image manipulation, so only Portable Network Graphics (PNG) format is supported");
+            }
+#endif
+
             using (MemoryStream imageStream = new MemoryStream(this.byteArray))
             {
 #if NETCOREAPP2_0 || NETSTANDARD2_0
-                Image<Rgba32> image = Image.Load(imageStream);
                 using (FileStream fileStream = new FileStream(fileName, FileMode.Create))
                 {
-                    image.Save(fileStream, ConvertScreenshotImageFormat(format));
+                    imageStream.WriteTo(fileStream);
                 }
 #else
                 Image screenshotImage = Image.FromStream(imageStream);
@@ -127,29 +131,6 @@ namespace OpenQA.Selenium
         }
 
 #if NETCOREAPP2_0 || NETSTANDARD2_0
-        private static IImageFormat ConvertScreenshotImageFormat(ScreenshotImageFormat format)
-        {
-            IImageFormat returnedFormat = ImageFormats.Png;
-            switch (format)
-            {
-                case ScreenshotImageFormat.Jpeg:
-                    returnedFormat = ImageFormats.Jpeg;
-                    break;
-
-                case ScreenshotImageFormat.Gif:
-                    returnedFormat = ImageFormats.Gif;
-                    break;
-
-                case ScreenshotImageFormat.Bmp:
-                    returnedFormat = ImageFormats.Bitmap;
-                    break;
-
-                case ScreenshotImageFormat.Tiff:
-                    throw new WebDriverException("TIFF image format not supported by .NET Core library");
-            }
-
-            return returnedFormat;
-        }
 #else
         private static ImageFormat ConvertScreenshotImageFormat(ScreenshotImageFormat format)
         {
