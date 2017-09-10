@@ -94,6 +94,11 @@ module Selenium
           expect(capabilities_hash).not_to have_key('proxy')
         end
 
+        it 'should default to javascript enabled if it is not explicitly defined' do
+          capabilities = Capabilities.new(javascript_enabled: nil)
+          expect(capabilities.javascript_enabled).to eq(true)
+        end
+
         it 'can merge capabilities' do
           a = Capabilities.chrome
           b = Capabilities.htmlunit

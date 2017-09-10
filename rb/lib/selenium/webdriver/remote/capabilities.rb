@@ -48,6 +48,15 @@ module Selenium
           end
         end
 
+        #
+        # Returns javascript_enabled capability.
+        # It is true if not set explicitly.
+        #
+        def javascript_enabled
+          javascript_enabled = @capabilities.fetch(:javascript_enabled)
+          javascript_enabled.nil? ? true : javascript_enabled
+        end
+
         alias_method :css_selectors_enabled?, :css_selectors_enabled
         alias_method :javascript_enabled?, :javascript_enabled
         alias_method :native_events?, :native_events
