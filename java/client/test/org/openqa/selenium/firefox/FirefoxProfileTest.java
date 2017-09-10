@@ -26,6 +26,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.io.Zip;
 import org.openqa.selenium.testing.InProject;
 import org.openqa.selenium.testing.drivers.Firebug;
@@ -39,6 +40,7 @@ import java.io.StringReader;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 @RunWith(JUnit4.class)
 public class FirefoxProfileTest {
@@ -189,7 +191,11 @@ public class FirefoxProfileTest {
     File prefs = new File(dir, "user.js");
     assertTrue(prefs.exists());
 
-    assertTrue(Files.lines(prefs.toPath()).anyMatch(s -> s.contains("i.like.cheese")));
+    try (Stream<String> lines = Files.lines(prefs.toPath())) {
+      assertTrue(lines.anyMatch(s -> s.contains("i.like.cheese")));
+    }
+
+    FileHandler.delete(dir);
   }
 
   private List<String> readGeneratedProperties(FirefoxProfile profile) throws Exception {
