@@ -39,7 +39,10 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @RunWith(JUnit4.class)
@@ -150,7 +153,6 @@ public class FirefoxProfileTest {
 
   @Test
   public void shouldInstallExtensionFromZip() throws IOException {
-    FirefoxProfile profile = new FirefoxProfile();
     profile.addExtension(InProject.locate(FIREBUG_PATH).toFile());
     File profileDir = profile.layoutOnDisk();
     File extensionDir = new File(profileDir, "extensions/firebug@software.joehewitt.com");
@@ -159,7 +161,6 @@ public class FirefoxProfileTest {
 
   @Test
   public void shouldInstallExtensionFromDirectory() throws IOException {
-    FirefoxProfile profile = new FirefoxProfile();
     File extension = InProject.locate(FIREBUG_PATH).toFile();
     File unzippedExtension = Zip.unzipToTempDir(new FileInputStream(extension), "unzip", "stream");
     profile.addExtension(unzippedExtension);
@@ -170,7 +171,6 @@ public class FirefoxProfileTest {
 
   @Test
   public void shouldInstallExtensionUsingClasspath() throws IOException {
-    FirefoxProfile profile = new FirefoxProfile();
     profile.addExtension(Firebug.class, FIREBUG_RESOURCE_PATH);
     File profileDir = profile.layoutOnDisk();
     File extensionDir = new File(profileDir, "extensions/firebug@software.joehewitt.com");
@@ -179,7 +179,6 @@ public class FirefoxProfileTest {
 
   @Test
   public void shouldConvertItselfIntoAMeaningfulRepresentation() throws IOException {
-    FirefoxProfile profile = new FirefoxProfile();
     profile.setPreference("i.like.cheese", true);
 
     String json = profile.toJson();
