@@ -178,6 +178,17 @@ public class FirefoxProfileTest {
   }
 
   @Test
+  public void convertingToJsonShouldNotPolluteTempDir() throws IOException {
+    File sysTemp = new File(System.getProperty("java.io.tmpdir"));
+    Set<String> before = Arrays.stream(sysTemp.list())
+        .filter(f -> f.endsWith("webdriver-profile")).collect(Collectors.toSet());
+    assertNotNull(profile.toJson());
+    Set<String> after = Arrays.stream(sysTemp.list())
+        .filter(f -> f.endsWith("webdriver-profile")).collect(Collectors.toSet());
+    assertEquals(before, after);
+  }
+
+  @Test
   public void shouldConvertItselfIntoAMeaningfulRepresentation() throws IOException {
     profile.setPreference("i.like.cheese", true);
 
