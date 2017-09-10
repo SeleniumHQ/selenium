@@ -187,16 +187,15 @@ public class FluentWait<T> implements Wait<T> {
    * Repeatedly applies this instance's input value to the given function until one of the following
    * occurs:
    * <ol>
-   * <li>the function returns neither null nor false,</li>
-   * <li>the function throws an unignored exception,</li>
-   * <li>the timeout expires,
-   * <li>
+   * <li>the function returns neither null nor false</li>
+   * <li>the function throws an unignored exception</li>
+   * <li>the timeout expires</li>
    * <li>the current thread is interrupted</li>
    * </ol>
    *
    * @param isTrue the parameter to pass to the {@link ExpectedCondition}
    * @param <V> The function's expected return type.
-   * @return The functions' return value if the function returned something different
+   * @return The function's return value if the function returned something different
    *         from null or false before the timeout expired.
    * @throws TimeoutException If the timeout expires.
    */

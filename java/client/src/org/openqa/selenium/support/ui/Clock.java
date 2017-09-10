@@ -40,7 +40,7 @@ public interface Clock {
   /**
    * Tests if a point in time occurs before the {@link #now() current time}.
    *
-   * @param endInMillis The timestamnp to check.
+   * @param endInMillis The timestamp to check.
    * @return Whether the given timestamp represents a point in time before the current time.
    */
   boolean isNowBefore(long endInMillis);
