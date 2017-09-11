@@ -31,6 +31,7 @@ public class MutableCapabilities implements Capabilities, Serializable {
   private static final Set<String> OPTION_KEYS;
   static {
     HashSet<String> keys = new HashSet<>();
+    keys.add("se:ieOptions");
     keys.add("safari.options");
     OPTION_KEYS = Collections.unmodifiableSet(keys);
   }
