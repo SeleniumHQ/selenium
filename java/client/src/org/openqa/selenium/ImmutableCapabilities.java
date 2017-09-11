@@ -145,7 +145,7 @@ public class ImmutableCapabilities implements Capabilities, Serializable {
       Map<?, ?> m = (Map<?, ?>) stringify;
       int length = m.size();
       int i = 0;
-      for (Map.Entry entry : m.entrySet()) {
+      for (Map.Entry<?, ?> entry : m.entrySet()) {
         abbreviate(seen, value, entry.getKey());
         value.append("=");
         abbreviate(seen, value, entry.getValue());

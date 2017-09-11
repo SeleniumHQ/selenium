@@ -154,7 +154,7 @@ public class ActionsTest {
     order.verifyNoMoreInteractions();
   }
 
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings({"unchecked", "rawtypes"})
   @Test
   public void testCtrlClick() {
     WebDriver driver = mock(WebDriver.class, withSettings().extraInterfaces(Interactive.class));
@@ -173,9 +173,9 @@ public class ActionsTest {
     assertEquals(2, sequence.size());
 
     // get mouse and keyboard sequences
-    Map[] sequencesJson = sequence.stream().map(Sequence::toJson).toArray(HashMap[]::new);
-    Map mouseSequence = sequencesJson[0];
-    Map keyboardSequence;
+    Map<String, Object>[] sequencesJson = sequence.stream().map(Sequence::toJson).toArray(HashMap[]::new);
+    Map<String, Object> mouseSequence = sequencesJson[0];
+    Map<String, Object> keyboardSequence;
     if (!mouseSequence.get("type").equals("pointer")) {
       mouseSequence = sequencesJson[1];
       keyboardSequence = sequencesJson[0];
