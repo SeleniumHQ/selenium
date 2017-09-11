@@ -1,4 +1,4 @@
-﻿// <copyright file="EdgeOptions.cs" company="Microsoft">
+// <copyright file="EdgeOptions.cs" company="Microsoft">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -120,7 +120,7 @@ namespace OpenQA.Selenium.Edge
         /// <returns>The DesiredCapabilities for Edge with these options.</returns>
         public override ICapabilities ToCapabilities()
         {
-            DesiredCapabilities capabilities = DesiredCapabilities.Edge();
+            DesiredCapabilities capabilities = new DesiredCapabilities("MicrosoftEdge", string.Empty, new Platform(PlatformType.Windows), false);
             if (this.pageLoadStrategy != EdgePageLoadStrategy.Default)
             {
                 string pageLoadStrategySetting = "normal";

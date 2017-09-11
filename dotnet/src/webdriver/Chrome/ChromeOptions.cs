@@ -549,7 +549,7 @@ namespace OpenQA.Selenium.Chrome
         {
             Dictionary<string, object> chromeOptions = this.BuildChromeOptionsDictionary();
 
-            DesiredCapabilities capabilities = DesiredCapabilities.Chrome();
+            DesiredCapabilities capabilities = new DesiredCapabilities("chrome", string.Empty, new Platform(PlatformType.Any), false);
             capabilities.SetCapability(ChromeOptions.Capability, chromeOptions);
 
             if (this.proxy != null)

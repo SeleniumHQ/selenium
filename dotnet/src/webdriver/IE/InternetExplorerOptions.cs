@@ -120,6 +120,8 @@ namespace OpenQA.Selenium.IE
         /// </summary>
         public static readonly string Capability = "se:ieOptions";
 
+        private const string BrowserName = "internet explorer";
+
         private const string IgnoreProtectedModeSettingsCapability = "ignoreProtectedModeSettings";
         private const string IgnoreZoomSettingCapability = "ignoreZoomSetting";
         private const string InitialBrowserUrlCapability = "initialBrowserUrl";
@@ -446,7 +448,7 @@ namespace OpenQA.Selenium.IE
         /// <returns>The DesiredCapabilities for IE with these options.</returns>
         public override ICapabilities ToCapabilities()
         {
-            DesiredCapabilities capabilities = DesiredCapabilities.InternetExplorer();
+            DesiredCapabilities capabilities = new DesiredCapabilities(BrowserName, string.Empty, new Platform(PlatformType.Windows));
 
             if (this.pageLoadStrategy != InternetExplorerPageLoadStrategy.Default)
             {

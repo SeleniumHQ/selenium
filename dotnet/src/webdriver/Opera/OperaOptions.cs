@@ -1,4 +1,4 @@
-﻿// <copyright file="OperaOptions.cs" company="WebDriver Committers">
+// <copyright file="OperaOptions.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -57,6 +57,8 @@ namespace OpenQA.Selenium.Opera
         /// a <see cref="DesiredCapabilities"/> object.
         /// </summary>
         public static readonly string Capability = "operaOptions";
+
+        private const string BrowserName = "opera";
 
         private const string ArgumentsOperaOption = "args";
         private const string BinaryOperaOption = "binary";
@@ -450,7 +452,7 @@ namespace OpenQA.Selenium.Opera
         {
             Dictionary<string, object> operaOptions = this.BuildOperaOptionsDictionary();
 
-            DesiredCapabilities capabilities = DesiredCapabilities.Opera();
+            DesiredCapabilities capabilities = new DesiredCapabilities(BrowserName, string.Empty, new Platform(PlatformType.Any), false);
             capabilities.SetCapability(OperaOptions.Capability, operaOptions);
 
             if (this.proxy != null)

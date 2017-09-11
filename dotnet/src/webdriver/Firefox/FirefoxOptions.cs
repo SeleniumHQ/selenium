@@ -48,6 +48,8 @@ namespace OpenQA.Selenium.Firefox
     /// </example>
     public class FirefoxOptions : DriverOptions
     {
+        private const string BrowserName = "firefox";
+
         private const string IsMarionetteCapability = "marionette";
         private const string FirefoxLegacyProfileCapability = "firefox_profile";
         private const string FirefoxLegacyBinaryCapability = "firefox_binary";
@@ -315,7 +317,7 @@ namespace OpenQA.Selenium.Firefox
         /// <returns>The DesiredCapabilities for Firefox with these options.</returns>
         public override ICapabilities ToCapabilities()
         {
-            DesiredCapabilities capabilities = DesiredCapabilities.Firefox();
+            DesiredCapabilities capabilities = new DesiredCapabilities(BrowserName, string.Empty, new Platform(PlatformType.Any));
             if (this.isMarionette)
             {
                 if (this.proxy != null)

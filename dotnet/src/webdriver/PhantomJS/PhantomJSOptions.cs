@@ -1,4 +1,4 @@
-﻿// <copyright file="PhantomJSOptions.cs" company="WebDriver Committers">
+// <copyright file="PhantomJSOptions.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -76,7 +76,7 @@ namespace OpenQA.Selenium.PhantomJS
         /// <returns>The DesiredCapabilities for PhantomJS with these options.</returns>
         public override ICapabilities ToCapabilities()
         {
-            DesiredCapabilities capabilities = DesiredCapabilities.PhantomJS();
+            DesiredCapabilities capabilities = new DesiredCapabilities("phantomjs", string.Empty, new Platform(PlatformType.Any), false);
 
             foreach (KeyValuePair<string, object> pair in this.additionalCapabilities)
             {
