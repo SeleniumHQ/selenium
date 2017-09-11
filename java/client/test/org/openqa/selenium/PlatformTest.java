@@ -146,6 +146,11 @@ public class PlatformTest {
                  Platform.WIN8_1, Platform.extractFromSysProperty("windows nt (unknown)", "6.3"));
   }
 
+  @Test
+  public void testWindowsIsWindows() {
+    assertEquals(Platform.fromString("windows"), Platform.WINDOWS);
+  }
+
   private void assertAllAre(Platform platform, String... osNames) {
     for (String osName : osNames) {
       Platform seen = Platform.extractFromSysProperty(osName);

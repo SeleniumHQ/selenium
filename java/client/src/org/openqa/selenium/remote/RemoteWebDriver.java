@@ -233,7 +233,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
       if (platformString == null || "".equals(platformString)) {
         platform = Platform.ANY;
       } else {
-        platform = Platform.valueOf(platformString);
+        platform = Platform.fromString(platformString);
       }
     } catch (IllegalArgumentException e) {
       // The server probably responded with a name matching the os.name
