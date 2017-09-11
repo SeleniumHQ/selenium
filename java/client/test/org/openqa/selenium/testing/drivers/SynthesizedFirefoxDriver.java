@@ -24,7 +24,6 @@ import com.google.common.base.Throwables;
 
 import org.openqa.selenium.BuckBuild;
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
@@ -39,7 +38,6 @@ import java.io.Reader;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
 import java.util.Objects;
 
 public class SynthesizedFirefoxDriver extends FirefoxDriver {

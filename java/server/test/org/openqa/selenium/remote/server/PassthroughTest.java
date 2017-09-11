@@ -19,8 +19,6 @@ package org.openqa.selenium.remote.server;
 
 import static java.net.HttpURLConnection.HTTP_OK;
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 
 import com.google.common.io.ByteStreams;
 
@@ -34,9 +32,6 @@ import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
-import org.openqa.testing.FakeHttpServletRequest;
-import org.openqa.testing.FakeHttpServletResponse;
-import org.openqa.testing.UrlInfo;
 
 import java.io.IOException;
 import java.io.InputStream;

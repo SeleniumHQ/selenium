@@ -33,7 +33,6 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.logging.LogLevelMapping;
 import org.openqa.selenium.logging.LoggingPreferences;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class DesiredCapabilities extends MutableCapabilities {
