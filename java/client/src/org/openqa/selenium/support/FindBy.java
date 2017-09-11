@@ -18,7 +18,6 @@
 package org.openqa.selenium.support;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.support.pagefactory.ByChained;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

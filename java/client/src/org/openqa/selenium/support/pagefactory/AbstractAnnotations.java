@@ -18,14 +18,6 @@
 package org.openqa.selenium.support.pagefactory;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.support.ByIdOrName;
-import org.openqa.selenium.support.FindAll;
-import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.FindBys;
-import org.openqa.selenium.support.How;
-
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Abstract class to work with fields in Page Objects.
