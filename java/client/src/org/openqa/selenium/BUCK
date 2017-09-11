@@ -80,7 +80,7 @@ java_library(name = 'core',
 
 genrule(name = 'manifest',
   out = 'manifest.mf',
-  bash = 'cp $(location :build-stamp) $OUT && printf "Selenium-Version: {}\n\n" >> $OUT'.format(SE_VERSION),
+  bash = "cp $(location :build-stamp) $OUT && printf 'Selenium-Version: {}\n\n' >> $OUT".format(SE_VERSION),
   cmd_exe = "copy $(location :build-stamp) %OUT% && (echo Selenium-Version: {}\n\n) >> %OUT%".format(SE_VERSION),
 )
 
@@ -170,21 +170,51 @@ java_library(
   maven_coords = 'org.seleniumhq.selenium:selenium-java:' + SE_VERSION,
   maven_pom_template = ':template-pom',
   exported_deps = [
-    ":selenium",
-    "//java/client/src/org/openqa/selenium/chrome:chrome",
-    "//java/client/src/org/openqa/selenium/firefox:firefox",
-    "//java/client/src/org/openqa/selenium/edge:edge",
-    "//java/client/src/org/openqa/selenium/ie:ie",
-    "//java/client/src/org/openqa/selenium/opera:opera",
-    "//java/client/src/org/openqa/selenium/remote:remote",
-    "//java/client/src/org/openqa/selenium/safari:safari",
-    "//java/client/src/org/openqa/selenium/support:support"
+    ':selenium',
+    '//java/client/src/org/openqa/selenium/chrome:chrome',
+    '//java/client/src/org/openqa/selenium/firefox:firefox',
+    '//java/client/src/org/openqa/selenium/edge:edge',
+    '//java/client/src/org/openqa/selenium/ie:ie',
+    '//java/client/src/org/openqa/selenium/opera:opera',
+    '//java/client/src/org/openqa/selenium/remote:remote',
+    '//java/client/src/org/openqa/selenium/safari:safari',
+    '//java/client/src/org/openqa/selenium/support:support'
   ],
   visibility = [
     '//java/server/src/org/openqa/grid/selenium:classes',
     '//java/server/test/org/openqa/selenium:lib',
   ],
 )
+
+java_binary(
+  name = 'client-combined-' + SE_VERSION,
+  blacklist = [
+    '^(?!com.thoughtworks.selenium.*|org.openqa.selenium.*|org.openqa.grid.*)',
+  ],
+  deps = [
+    ':client-combined',
+  ],
+)
+
+# Output of this rule is named a source jar so we can do merging later
+genrule(
+  name = 'client-libs',
+  out = 'libs-sources.jar',
+  cmd = 'mkdir libs && echo $(classpath :client-combined) | tr : "\\n" | grep third_party/java | grep .jar | xargs -J % cp % libs && jar cMf $OUT libs/*',
+)
+
+zip_file(
+  name = 'client-combined-zip',
+  out = 'selenium-java-' + SE_VERSION + '.zip',
+  srcs = [
+    ':client-combined-' + SE_VERSION,
+    ':client-libs',
+    '//java:changelog',
+    '//:notice',
+    '//:license',
+  ],
+)
+
 
 export_file(
   name = 'template-pom',
