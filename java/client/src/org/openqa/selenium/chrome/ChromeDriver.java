@@ -140,7 +140,9 @@ public class ChromeDriver extends RemoteWebDriver
    *
    * @param capabilities The capabilities required from the ChromeDriver.
    * @see #ChromeDriver(ChromeDriverService, Capabilities)
+   * @deprecated Use {@link ChromeDriver(ChromeOptions)} instead.
    */
+  @Deprecated
   public ChromeDriver(Capabilities capabilities) {
     this(ChromeDriverService.createDefaultService(), capabilities);
   }
@@ -163,7 +165,7 @@ public class ChromeDriver extends RemoteWebDriver
    * @param options The options to use.
    */
   public ChromeDriver(ChromeDriverService service, ChromeOptions options) {
-    this(service, options.toCapabilities());
+    this(service, (Capabilities) options);
   }
 
   /**
@@ -172,7 +174,9 @@ public class ChromeDriver extends RemoteWebDriver
    *
    * @param service The service to use.
    * @param capabilities The capabilities required from the ChromeDriver.
+   * @deprecated Use {@link ChromeDriver(ChromeDriverService, ChromeOptions)} instead.
    */
+  @Deprecated
   public ChromeDriver(ChromeDriverService service, Capabilities capabilities) {
     super(new ChromeDriverCommandExecutor(service), capabilities);
     locationContext = new RemoteLocationContext(getExecuteMethod());
@@ -231,5 +235,5 @@ public class ChromeDriver extends RemoteWebDriver
   public void launchApp(String id) {
     execute(ChromeDriverCommand.LAUNCH_APP, ImmutableMap.of("id", id));
   }
-  
+
 }
