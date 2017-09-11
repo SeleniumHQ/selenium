@@ -101,7 +101,7 @@ class ExternalDriverSupplier implements Supplier<WebDriver> {
   private static Optional<Supplier<WebDriver>> createDelegate(Capabilities desiredCapabilities) {
     Optional<Class<? extends Supplier<WebDriver>>> supplierClass = getDelegateClass();
     if (supplierClass.isPresent()) {
-      Class<? extends Supplier> clazz = supplierClass.get();
+      Class<? extends Supplier<WebDriver>> clazz = supplierClass.get();
       logger.info("Using delegate supplier: " + clazz.getName());
       try {
         @SuppressWarnings("unchecked")
