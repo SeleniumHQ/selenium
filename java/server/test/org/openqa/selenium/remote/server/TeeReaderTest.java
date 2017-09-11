@@ -40,13 +40,14 @@ public class TeeReaderTest {
 
     Reader tee = new TeeReader(source, writer);
 
-    JsonReader reader = new JsonReader(tee);
+    try (JsonReader reader = new JsonReader(tee)) {
 
-    reader.beginObject();
-    assertEquals("key", reader.nextName());
-    reader.skipValue();
-    reader.endObject();
+      reader.beginObject();
+      assertEquals("key", reader.nextName());
+      reader.skipValue();
+      reader.endObject();
 
-    assertEquals(expected, writer.toString());
+      assertEquals(expected, writer.toString());
+    }
   }
 }
