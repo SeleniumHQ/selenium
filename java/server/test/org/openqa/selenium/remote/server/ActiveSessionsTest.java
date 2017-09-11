@@ -25,9 +25,6 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.openqa.selenium.remote.SessionId;
 
-import java.util.concurrent.TimeUnit;
-
-
 public class ActiveSessionsTest {
 
   @Test

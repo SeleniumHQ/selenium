@@ -18,7 +18,6 @@
 package org.openqa.selenium.server.htmlrunner;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.openqa.selenium.firefox.FirefoxDriver.MARIONETTE;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
@@ -36,7 +35,6 @@ import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.internal.SocketLock;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.opera.OperaDriver;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.safari.SafariDriver;
 import org.seleniumhq.jetty9.server.Connector;
 import org.seleniumhq.jetty9.server.HttpConfiguration;

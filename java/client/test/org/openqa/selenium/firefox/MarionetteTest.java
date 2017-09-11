@@ -28,9 +28,7 @@ import static org.openqa.selenium.testing.Driver.FIREFOX;
 
 import org.junit.After;
 import org.junit.Test;
-import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.PageLoadStrategy;
-import org.openqa.selenium.UnexpectedAlertBehaviour;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.testing.Ignore;

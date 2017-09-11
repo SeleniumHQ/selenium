@@ -17,9 +17,6 @@
 
 package org.openqa.selenium.safari;
 
-import com.google.common.base.Objects;
-import com.google.gson.JsonObject;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.Platform;
