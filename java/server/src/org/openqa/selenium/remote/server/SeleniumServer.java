@@ -183,18 +183,6 @@ public class SeleniumServer implements GridNodeServer {
     }
   }
 
-  private class ShutDownHook implements Runnable {
-    private final SeleniumServer selenium;
-
-    ShutDownHook(SeleniumServer selenium) {
-      this.selenium = selenium;
-    }
-
-    public void run() {
-      selenium.stop();
-    }
-  }
-
   /**
    * Stops the Jetty server
    */
