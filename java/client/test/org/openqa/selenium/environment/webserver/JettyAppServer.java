@@ -223,38 +223,37 @@ public class JettyAppServer implements AppServer {
     httpConfig.setSecureScheme("https");
     httpConfig.setSecurePort(securePort);
 
-    try (ServerConnector http = new ServerConnector(server, new HttpConnectionFactory(httpConfig))) {
-      http.setPort(port);
-      http.setIdleTimeout(500000);
+    ServerConnector http = new ServerConnector(server, new HttpConnectionFactory(httpConfig));
+    http.setPort(port);
+    http.setIdleTimeout(500000);
 
-      Path keystore = getKeyStore();
-      if (!Files.exists(keystore)) {
-        throw new RuntimeException(
-            "Cannot find keystore for SSL cert: " + keystore.toAbsolutePath());
-      }
+    Path keystore = getKeyStore();
+    if (!Files.exists(keystore)) {
+      throw new RuntimeException(
+          "Cannot find keystore for SSL cert: " + keystore.toAbsolutePath());
+    }
 
-      SslContextFactory sslContextFactory = new SslContextFactory();
-      sslContextFactory.setKeyStorePath(keystore.toAbsolutePath().toString());
-      sslContextFactory.setKeyStorePassword("password");
-      sslContextFactory.setKeyManagerPassword("password");
+    SslContextFactory sslContextFactory = new SslContextFactory();
+    sslContextFactory.setKeyStorePath(keystore.toAbsolutePath().toString());
+    sslContextFactory.setKeyStorePassword("password");
+    sslContextFactory.setKeyManagerPassword("password");
 
-      HttpConfiguration httpsConfig = new HttpConfiguration(httpConfig);
-      httpsConfig.addCustomizer(new SecureRequestCustomizer());
+    HttpConfiguration httpsConfig = new HttpConfiguration(httpConfig);
+    httpsConfig.addCustomizer(new SecureRequestCustomizer());
 
-      ServerConnector https = new ServerConnector(
-          server,
-          new SslConnectionFactory(sslContextFactory, HttpVersion.HTTP_1_1.asString()),
-          new HttpConnectionFactory(httpsConfig));
-      https.setPort(securePort);
-      https.setIdleTimeout(500000);
+    ServerConnector https = new ServerConnector(
+        server,
+        new SslConnectionFactory(sslContextFactory, HttpVersion.HTTP_1_1.asString()),
+        new HttpConnectionFactory(httpsConfig));
+    https.setPort(securePort);
+    https.setIdleTimeout(500000);
 
-      server.setConnectors(new Connector[]{http, https});
+    server.setConnectors(new Connector[]{http, https});
 
-      try {
-        server.start();
-      } catch (Exception e) {
-        throw new RuntimeException(e);
-      }
+    try {
+      server.start();
+    } catch (Exception e) {
+      throw new RuntimeException(e);
     }
   }
 
