@@ -33,28 +33,40 @@ closure_fragment(name = 'findElement',
   module = 'core.locators',
   function = 'core.locators.findElement',
   deps = [':deps'],
-  visibility = [ '//java/client/src/com/thoughtworks/selenium/webdriven:findElement' ],
+  visibility = [
+    '//java/client/src/com/thoughtworks/selenium/webdriven:findElement',
+    '//dotnet/src/webdriverbackedselenium:webdriverbackedselenium_deps'
+  ],
 )
 
 closure_fragment(name = 'findOption',
   module = 'core.select.option',
   function = 'core.select.option.findOption',
   deps = [':deps'],
-  visibility = [ '//java/client/src/com/thoughtworks/selenium/webdriven:findOption' ],
+  visibility = [
+    '//java/client/src/com/thoughtworks/selenium/webdriven:findOption',
+    '//dotnet/src/webdriverbackedselenium:webdriverbackedselenium_deps'
+  ],
 )
 
 closure_fragment(name = 'fireEvent',
   module = 'core.events',
   function = 'core.events.fire',
   deps = [':deps'],
-  visibility = [ '//java/client/src/com/thoughtworks/selenium/webdriven:fireEvent' ],
+  visibility = [
+    '//java/client/src/com/thoughtworks/selenium/webdriven:fireEvent',
+    '//dotnet/src/webdriverbackedselenium:webdriverbackedselenium_deps'
+  ],
 )
 
 closure_fragment(name = 'fireEventAt',
   module = 'core.events',
   function = 'core.events.fireAt',
   deps = [':deps'],
-  visibility = [ '//java/client/src/com/thoughtworks/selenium/webdriven:fireEventAt' ],
+  visibility = [
+    '//java/client/src/com/thoughtworks/selenium/webdriven:fireEventAt',
+    '//dotnet/src/webdriverbackedselenium:webdriverbackedselenium_deps'
+  ],
 )
 
 closure_fragment(name = 'getAttribute',
@@ -68,42 +80,60 @@ closure_fragment(name = 'getText',
   module = 'core.text.getText',
   function = 'core.text.getText',
   deps = [':deps'],
-  visibility = [ '//java/client/src/com/thoughtworks/selenium/webdriven:getText' ],
+  visibility = [
+    '//java/client/src/com/thoughtworks/selenium/webdriven:getText',
+    '//dotnet/src/webdriverbackedselenium:webdriverbackedselenium_deps'
+  ],
 )
 
 closure_fragment(name = 'linkLocator',
   module = 'core.text',
   function = 'core.text.linkLocator',
   deps = [':deps'],
-  visibility = [ '//java/client/src/com/thoughtworks/selenium/webdriven:linkLocator' ],
+  visibility = [
+    '//java/client/src/com/thoughtworks/selenium/webdriven:linkLocator',
+    '//dotnet/src/webdriverbackedselenium:webdriverbackedselenium_deps'
+  ],
 )
 
 closure_fragment(name = 'isSomethingSelected',
   module = 'core.select',
   function = 'core.select.isSomethingSelected',
   deps = [':deps'],
-  visibility = [ '//java/client/src/com/thoughtworks/selenium/webdriven:isSomethingSelected' ],
+  visibility = [
+    '//java/client/src/com/thoughtworks/selenium/webdriven:isSomethingSelected',
+    '//dotnet/src/webdriverbackedselenium:webdriverbackedselenium_deps'
+  ],
 )
 
 closure_fragment(name = 'isElementPresent',
   module = 'core.locators',
   function = 'core.locators.isElementPresent',
   deps = [':deps'],
-  visibility = [ '//java/client/src/com/thoughtworks/selenium/webdriven:isElementPresent' ],
+  visibility = [
+    '//java/client/src/com/thoughtworks/selenium/webdriven:isElementPresent',
+    '//dotnet/src/webdriverbackedselenium:webdriverbackedselenium_deps'
+  ],
 )
 
 closure_fragment(name = 'isTextPresent',
   module = 'core.text',
   function = 'core.text.isTextPresent',
   deps = [':deps'],
-  visibility = [ '//java/client/src/com/thoughtworks/selenium/webdriven:isTextPresent' ],
+  visibility = [
+    '//java/client/src/com/thoughtworks/selenium/webdriven:isTextPresent',
+    '//dotnet/src/webdriverbackedselenium:webdriverbackedselenium_deps'
+  ],
 )
 
 closure_fragment(name = 'isVisible',
   module = 'core.browserbot',
   function = 'core.browserbot.isVisible',
   deps = [':deps'],
-  visibility = [ '//java/client/src/com/thoughtworks/selenium/webdriven:isVisible' ],
+  visibility = [
+    '//java/client/src/com/thoughtworks/selenium/webdriven:isVisible',
+    '//dotnet/src/webdriverbackedselenium:webdriverbackedselenium_deps'
+  ],
 )
 
 closure_fragment(name = 'setCursorPosition',
@@ -117,7 +147,10 @@ closure_fragment(name = 'type',
   module = 'core.events',
   function = 'core.events.setValue',
   deps = [':deps'],
-  visibility = [ '//java/client/src/com/thoughtworks/selenium/webdriven:type' ],
+  visibility = [
+    '//java/client/src/com/thoughtworks/selenium/webdriven:type',
+    '//dotnet/src/webdriverbackedselenium:webdriverbackedselenium_deps'
+  ],
 )
 
 browsers = {

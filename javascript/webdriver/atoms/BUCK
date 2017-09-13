@@ -45,6 +45,7 @@ closure_fragment(name = 'getAttribute',
   function = 'webdriver.atoms.element.attribute.get',
   deps = [ ':attribute-lib' ],
   visibility = [
+    '//dotnet/src/webdriver:webdriver_deps',
     '//java/client/src/org/openqa/selenium/remote:get-attribute',
   ],
 )

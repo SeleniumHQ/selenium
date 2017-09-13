@@ -79,3 +79,19 @@ export_file(name = 'sizzle',
   out = 'sizzle.js',
   src = '//third_party/js/sizzle:sizzle',
 )
+
+export_file(name = 'injectableSelenium.js',
+  src = 'injectableSelenium.js',
+  out = 'injectableSelenium.js',
+  visibility = [
+    '//dotnet/src/webdriverbackedselenium:webdriverbackedselenium_deps',
+  ]
+)
+
+export_file(name = 'htmlutils.js',
+  src = 'htmlutils.js',
+  out = 'htmlutils.js',
+  visibility = [
+    '//dotnet/src/webdriverbackedselenium:webdriverbackedselenium_deps',
+  ]
+)

@@ -19,7 +19,7 @@ mozilla_xpt(name = "modifier-keys-xpt",
 mozilla_xpt(name = "mouse-xpt",
   srcs = [ "extension/idl/wdIMouse.idl" ])
 
-mozilla_extension(name = "webdriver",
+mozilla_extension(name = "webdriver_legacy",
   content = [
     "extension/content/**/*.js",
     "extension/content/fxdriver.xul",
@@ -368,5 +368,5 @@ js_library(name = "webloadinglistener",
     ":timer",
   ])
 
-export_file(name = "webdriver_prefs",
+export_file(name = "webdriver_prefs_legacy",
   srcs = [ "webdriver.json" ])

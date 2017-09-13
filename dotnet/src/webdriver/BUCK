@@ -1,22 +1,143 @@
-csharp_library(
-  name = 'webdriver',
-  dll_name = 'WebDriver.dll',
-  framework_ver = 'net40',
-  srcs = glob(['**/*.cs']),
-  resources = {
-    'WebDriver.FirefoxExt.zip': '//javascript/firefox-driver:webdriver',
-    'WebDriver.FirefoxExt.zip': '//javascript/firefox-driver:webdriver',
-    'WebDriver.FirefoxPreferences': '//javascript/firefox-driver:webdriver_prefs',
-#    'WebDriver.FirefoxNoFocus.x86.dll': '//cpp:noblur',
-#    'WebDriver.FirefoxNoFocus.x64.dll': '//cpp:noblur64',
-  },
-  deps = [
-    'System.dll',
-    'System.Core.dll',
-    'System.Data.dll',
-    'System.Drawing.dll',
-    'System.Xml.dll',
-    '//third_party/dotnet/json-net-6.0r2/Net40:json'
-  ],
+include_defs('//dotnet/SELENIUM_DOTNET_VERSION')
+
+genrule(
+  name = 'net35',
+  srcs = [ 'WebDriver.NetCore.csproj' ],
+  cmd = 'echo "$(location :webdriver_deps)" && dotnet build %SRCS% --configuration Release --framework net35 --output %OUT% /p:BuildSystem=buck',
+  out = 'net35'
 )
 
+genrule(
+  name = 'net40',
+  srcs = [ 'WebDriver.NetCore.csproj' ],
+  cmd = 'echo "$(location :webdriver_deps)" && dotnet build %SRCS% --configuration Release --framework net40 --output %OUT% /p:BuildSystem=buck',
+  out = 'net40'
+)
+
+genrule(
+  name = 'net45',
+  srcs = [ 'WebDriver.NetCore.csproj' ],
+  cmd = 'echo "$(location :webdriver_deps)" && dotnet build %SRCS% --configuration Release --framework net45 --output %OUT% /p:BuildSystem=buck',
+  out = 'net45'
+)
+
+genrule(
+  name = 'netstandard2.0',
+  srcs = [ 'WebDriver.NetCore.csproj' ],
+  cmd = 'echo "$(location :webdriver_deps)" && dotnet build %SRCS% --configuration Release --framework netstandard2.0 --output %OUT% /p:BuildSystem=buck',
+  out = 'netstandard2.0'
+)
+
+genrule(
+  name = 'merge',
+  srcs = [
+    ':net35',
+    ':net40',
+    ':net45',
+    ':netstandard2.0'
+  ],
+  cmd_exe = 
+    'setlocal EnableDelayedExpansion && '\
+    '(if not exist %OUT% mkdir %OUT%) && '\
+    'for %%G in (%SRCS%) do ('\
+      'set target_dir=%%G&& '\
+      'for %%H in (!target_dir!) do ('\
+        'set platform_moniker=%%~nxH&& '\
+        'if \"!platform_moniker!\"==\"netstandard2.0\" ('\
+          '(if not exist %OUT%\\!platform_moniker! mkdir %OUT%\\!platform_moniker!) && '\
+          'copy !target_dir!\\WebDriver.dll %OUT%\\!platform_moniker! &&'\
+          'copy !target_dir!\\WebDriver.xml %OUT%\\!platform_moniker!'\
+        ') else ('\
+          'set merge_args=/v4 /xmldocs /internalize /lib=%%H /out=%OUT%\\!platform_moniker!\\WebDriver.dll !target_dir!\\WebDriver.dll !target_dir!\\Newtonsoft.Json.dll&& '\
+          '(if \"!platform_moniker!\"==\"net35\" set merge_args=/v2 /xmldocs /internalize /lib=%%H /out=%OUT%\\!platform_moniker!\\WebDriver.dll !target_dir!\\WebDriver.dll !target_dir!\\Newtonsoft.Json.dll)&& '\
+          '$(exe //third_party/dotnet/ilrepack:ilrepack) !merge_args!'\
+        ')'\
+      ')'\
+    ')',
+  out = 'lib'
+)
+
+genrule(
+  name = 'net35_strongnamed',
+  srcs = [ 'WebDriver.NetCore.csproj' ],
+  cmd = 'echo "$(location :webdriver_deps)" && dotnet build %SRCS% --configuration Release --framework net35 --output %OUT% /p:SignAssembly=true /p:AssemblyOriginatorKeyFile=$(location //dotnet:keyfile) /p:BuildSystem=buck',
+  out = 'net35'
+)
+
+genrule(
+  name = 'net40_strongnamed',
+  srcs = [ 'WebDriver.NetCore.csproj' ],
+  cmd = 'echo "$(location :webdriver_deps)" && dotnet build %SRCS% --configuration Release --framework net40 --output %OUT% /p:SignAssembly=true /p:AssemblyOriginatorKeyFile=$(location //dotnet:keyfile) /p:BuildSystem=buck',
+  out = 'net40'
+)
+
+genrule(
+  name = 'net45_strongnamed',
+  srcs = [ 'WebDriver.NetCore.csproj' ],
+  cmd = 'echo "$(location :webdriver_deps)" && dotnet build %SRCS% --configuration Release --framework net45 --output %OUT% /p:SignAssembly=true /p:AssemblyOriginatorKeyFile=$(location //dotnet:keyfile) /p:BuildSystem=buck',
+  out = 'net45'
+)
+
+genrule(
+  name = 'netstandard2.0_strongnamed',
+  srcs = [ 'WebDriver.NetCore.csproj' ],
+  cmd = 'echo "$(location :webdriver_deps)" && dotnet build %SRCS% --configuration Release --framework netstandard2.0 --output %OUT% /p:SignAssembly=true /p:AssemblyOriginatorKeyFile=$(location //dotnet:keyfile) /p:BuildSystem=buck',
+  out = 'netstandard2.0'
+)
+
+genrule(
+  name = 'merge_strongnamed',
+  srcs = [
+    ':net35_strongnamed',
+    ':net40_strongnamed',
+    ':net45_strongnamed',
+    ':netstandard2.0_strongnamed'
+  ],
+  cmd_exe = 
+    'setlocal EnableDelayedExpansion && '\
+    '(if not exist %OUT% mkdir %OUT%) && '\
+    'for %%G in (%SRCS%) do ('\
+      'set target_dir=%%G&& '\
+      'for %%H in (!target_dir!) do ('\
+        'set platform_moniker=%%~nxH&& '\
+        'if \"!platform_moniker!\"==\"netstandard2.0\" ('\
+          '(if not exist %OUT%\\!platform_moniker! mkdir %OUT%\\!platform_moniker!) && '\
+          'copy !target_dir!\\WebDriver.dll %OUT%\\!platform_moniker! &&'\
+          'copy !target_dir!\\WebDriver.xml %OUT%\\!platform_moniker!'\
+        ') else ('\
+          'set merge_args=/v4 /xmldocs /internalize /keyfile=$(location //dotnet:keyfile) /lib=%%H /out=%OUT%\\!platform_moniker!\\WebDriver.dll !target_dir!\\WebDriver.dll !target_dir!\\Newtonsoft.Json.dll&& '\
+          '(if \"!platform_moniker!\"==\"net35\" set merge_args=/v2 /xmldocs /internalize /keyfile=$(location //dotnet:keyfile) /lib=%%H /out=%OUT%\\!platform_moniker!\\WebDriver.dll !target_dir!\\WebDriver.dll !target_dir!\\Newtonsoft.Json.dll)&& '\
+          '$(exe //third_party/dotnet/ilrepack:ilrepack) !merge_args!'\
+        ')'\
+      ')'\
+    ')',
+  out = 'lib'
+)
+
+genrule(
+  name = 'pack',
+  srcs = ['WebDriver.nuspec'],
+  cmd_exe = "$(exe //third_party/dotnet/nuget:nuget) pack %SRCS% /Properties packageid=Selenium.WebDriver /Version {} /BasePath $(location :merge) /OutputDirectory %OUT%".format(SE_VERSION),
+  out = 'dist'
+)
+
+genrule(
+  name = 'pack_strongnamed',
+  srcs = ['WebDriver.nuspec'],
+  cmd_exe = "$(exe //third_party/dotnet/nuget:nuget) pack %SRCS% /Properties packageid=Selenium.WebDriver.StrongNamed /Version {} /BasePath $(location :merge_strongnamed) /OutputDirectory %OUT%".format(SE_VERSION),
+  out = 'dist'
+)
+
+genrule(
+  name = 'webdriver_deps',
+  srcs = [
+    '//javascript/firefox-driver:webdriver',
+    '//javascript/firefox-driver:webdriver_prefs',
+    '//javascript/webdriver/atoms:getAttribute',
+    '//javascript/atoms/fragments:is-displayed',
+    '//cpp/prebuilt:noblur32',
+    '//cpp/prebuilt:noblur64'
+  ],
+  cmd = 'echo "%SRCS%" > %OUT%',
+  out = 'deps.txt'
+)

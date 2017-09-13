@@ -3,6 +3,7 @@ export_file(
   out = 'i386/x_ignore_nofocus.so',
   src = 'i386/libnoblur.so',
   visibility = [
+    '//dotnet/src/webdriver:webdriver_deps',
     '//java/client/src/org/openqa/selenium/firefox:i386',
   ],
 )
@@ -12,6 +13,7 @@ export_file(
   out = 'amd64/x_ignore_nofocus.so',
   src = 'amd64/libnoblur64.so',
   visibility = [
+    '//dotnet/src/webdriver:webdriver_deps',
     '//java/client/src/org/openqa/selenium/firefox:amd64',
   ],
 )

@@ -1,0 +1,6 @@
+export_file(
+  name = 'keyfile',
+  src = 'WebDriver.snk',
+  out = 'WebDriver.snk',
+  visibility = ['PUBLIC']
+)
