@@ -429,15 +429,11 @@ public class PageLoadingTest extends JUnit4TestBase {
   @NoDriverAfterTest // Subsequent tests sometimes fail on Firefox.
   @Test
   @Ignore(value = SAFARI, reason = "issue 687, comment 41")
+  @Ignore(value = FIREFOX, travis = true)
+  @Ignore(HTMLUNIT)
+  @Ignore(value = CHROME, issue = "https://code.google.com/p/chromedriver/issues/detail?id=1125")
   @NeedsLocalEnvironment
   public void testShouldTimeoutIfAPageTakesTooLongToLoadAfterClick() {
-    // Fails on Chrome 44 (and higher?) https://code.google.com/p/chromedriver/issues/detail?id=1125
-    assumeFalse(
-        "chrome".equals(((HasCapabilities) driver).getCapabilities().getBrowserName())
-        && "44".compareTo(((HasCapabilities) driver).getCapabilities().getVersion()) <= 0);
-    assumeFalse(
-        "htmlunit".equals(((HasCapabilities) driver).getCapabilities().getBrowserName()));
-
     driver.manage().timeouts().pageLoadTimeout(2, SECONDS);
 
     driver.get(appServer.whereIs("page_with_link_to_slow_loading_page.html"));
