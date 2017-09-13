@@ -22,7 +22,6 @@ import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -90,12 +89,9 @@ public class WebDriverWaitTest {
     TickingClock clock = new TickingClock(200);
     WebDriverWait wait = new WebDriverWait(mockDriver, clock, clock, 1, 200);
 
-    try {
-      wait.until(new FalseExpectation());
-      fail();
-    } catch (TimeoutException e) {
-      // this is expected
-    }
+    Throwable ex = catchThrowable(() -> wait.until((d) -> false));
+    assertNotNull(ex);
+    assertThat(ex, instanceOf(TimeoutException.class));
   }
 
   @SuppressWarnings("unchecked")
@@ -136,11 +132,5 @@ public class WebDriverWaitTest {
     TickingClock clock = new TickingClock(500);
     Wait<WebDriver> wait = new WebDriverWait(mockDriver, clock, clock, 5, 500);
     wait.until(condition);
-  }
-
-  private static class FalseExpectation implements ExpectedCondition<Boolean> {
-    public Boolean apply(WebDriver driver) {
-      return false;
-    }
   }
 }
