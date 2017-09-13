@@ -1,5 +1,5 @@
 using NUnit.Framework;
-using NMock2;
+using NMock;
 using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium
@@ -7,30 +7,31 @@ namespace OpenQA.Selenium
     [TestFixture]
     public class ByTest
     {
-        private Mockery mocks = new Mockery();
+        private MockFactory mocks = new MockFactory();
 
         [Test]
         public void ShouldUseFindsByNameToLocateElementsByName() 
         {
-            var mockDriver = mocks.NewMock<IAllDriver>();
-            var mockElement = mocks.NewMock<IWebElement>();
-            Expect.Once.On(mockDriver).Method("FindElementByName").With("cheese").Will(Return.Value(mockElement));
+            var mockDriver = mocks.CreateMock<IAllDriver>();
+            var mockElement = mocks.CreateMock<IWebElement>();
+
+            mockDriver.Expects.One.Method(_ => _.FindElementByName(null)).With("cheese").Will(Return.Value(mockElement.MockObject));
 
             By by = By.Name("cheese");
-            by.FindElement(mockDriver);
+            by.FindElement(mockDriver.MockObject);
             mocks.VerifyAllExpectationsHaveBeenMet();
         }
 
         // TODO (jimevan): This test is disabled in the Java implementation unit tests.
-        // Is the functionality not implemented?
+        // Is the functionality not implemented?*
         public void ShouldUseXPathToFindByNameIfDriverDoesNotImplementFindsByName()
         {
-            var mockDriver = mocks.NewMock<IOnlyXPath>();
-            var mockElement = mocks.NewMock<IWebElement>();
-            Expect.Once.On(mockDriver).Method("FindElementByXPath").With("//*[@name='cheese']").Will(Return.Value(mockElement));
+            var mockDriver = mocks.CreateMock<IOnlyXPath>();
+            var mockElement = mocks.CreateMock<IWebElement>();
+            mockDriver.Expects.One.Method(_ => _.FindElementByXPath("//*[@name='cheese']")).WillReturn(mockElement.MockObject);
 
             By by = By.Name("cheese");
-            by.FindElement(mockDriver);
+            by.FindElement(mockDriver.MockObject);
             mocks.VerifyAllExpectationsHaveBeenMet();
         }
 

@@ -30,8 +30,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="NMock2">
-      <HintPath>..\..\..\third_party\dotnet\nmock-2.0.0.44\NMock2.dll</HintPath>
+    <Reference Include="NMock3">
+      <HintPath>..\..\..\third_party\dotnet\nmock-3.3.5.44\net40\NMock3.dll</HintPath>
     </Reference>
     <Reference Include="nunit.core">
       <HintPath>..\..\..\third_party\dotnet\nunit-3.6.0\addins\nunit.core.dll</HintPath>

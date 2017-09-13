@@ -1,8 +1,8 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-using NMock2;
+using NMock;
 
 using NUnit.Framework;
 
@@ -25,15 +25,15 @@ namespace OpenQA.Selenium.Support.Extensions
         private const string JavaScript = "Hello, World";
         private static readonly object[] JavaScriptParameters = new object[0];
 
-        private Mockery mocks;
-        private IJavaScriptExecutingWebDriver driver;
+        private MockFactory mocks;
+        private Mock<IJavaScriptExecutingWebDriver> driver;
 
         [SetUp]
         public void TestSetUp()
         {
-            mocks = new Mockery();
+            mocks = new MockFactory();
 
-            driver = mocks.NewMock<IJavaScriptExecutingWebDriver>();
+            driver = mocks.CreateMock<IJavaScriptExecutingWebDriver>();
         }
 
         [Test]
@@ -41,12 +41,12 @@ namespace OpenQA.Selenium.Support.Extensions
         {
             var expected = new ReadOnlyCollection<object>(new List<object>());
 
-            Expect.Once.On(driver)
-                .Method("ExecuteScript")
+            driver.Expects.One
+                .Method(_ => _.ExecuteScript(null, null))
                 .With(JavaScript, JavaScriptParameters)
                 .Will(Return.Value(expected));
 
-            Assert.That(() => driver.ExecuteJavaScript<IEnumerable>(JavaScript, JavaScriptParameters), Throws.Nothing);
+            Assert.That(() => driver.MockObject.ExecuteJavaScript<IEnumerable>(JavaScript, JavaScriptParameters), Throws.Nothing);
         }
 
         [Test]
@@ -54,12 +54,12 @@ namespace OpenQA.Selenium.Support.Extensions
         {
             var expected = new ReadOnlyCollection<object>(new List<object>());
 
-            Expect.Once.On(driver)
-                .Method("ExecuteScript")
+            driver.Expects.One
+                .Method(_ => _.ExecuteScript(null, null))
                 .With(JavaScript, JavaScriptParameters)
                 .Will(Return.Value(expected));
 
-            Assert.That(() => driver.ExecuteJavaScript<IEnumerable<object>>(JavaScript, JavaScriptParameters), Throws.Nothing);
+            Assert.That(() => driver.MockObject.ExecuteJavaScript<IEnumerable<object>>(JavaScript, JavaScriptParameters), Throws.Nothing);
         }
 
         [Test]
@@ -67,12 +67,12 @@ namespace OpenQA.Selenium.Support.Extensions
         {
             var expected = new ReadOnlyCollection<object>(new List<object>());
 
-            Expect.Once.On(driver)
-                .Method("ExecuteScript")
+            driver.Expects.One
+                .Method(_ => _.ExecuteScript(null, null))
                 .With(JavaScript, JavaScriptParameters)
                 .Will(Return.Value(expected));
 
-            Assert.That(() => driver.ExecuteJavaScript<IEnumerable<int>>(JavaScript, JavaScriptParameters), Throws.InstanceOf<WebDriverException>());
+            Assert.That(() => driver.MockObject.ExecuteJavaScript<IEnumerable<int>>(JavaScript, JavaScriptParameters), Throws.InstanceOf<WebDriverException>());
         }
 
         [Test]
@@ -80,12 +80,12 @@ namespace OpenQA.Selenium.Support.Extensions
         {
             var expected = new ReadOnlyCollection<object>(new List<object>());
 
-            Expect.Once.On(driver)
-                .Method("ExecuteScript")
+            driver.Expects.One
+                .Method(_ => _.ExecuteScript(null, null))
                 .With(JavaScript, JavaScriptParameters)
                 .Will(Return.Value(expected));
 
-            Assert.That(() => driver.ExecuteJavaScript<ReadOnlyCollection<object>>(JavaScript, JavaScriptParameters), Throws.Nothing);
+            Assert.That(() => driver.MockObject.ExecuteJavaScript<ReadOnlyCollection<object>>(JavaScript, JavaScriptParameters), Throws.Nothing);
         }
 
         [Test]
@@ -93,55 +93,56 @@ namespace OpenQA.Selenium.Support.Extensions
         {
             var expected = new ReadOnlyCollection<object>(new List<object>());
 
-            Expect.Once.On(driver)
-                .Method("ExecuteScript")
+            driver.Expects.One
+                .Method(_ => _.ExecuteScript(null, null))
                 .With(JavaScript, JavaScriptParameters)
                 .Will(Return.Value(expected));
 
-            Assert.That(() => driver.ExecuteJavaScript<SubClassOfReadOnlyCollectionOfObject>(JavaScript, JavaScriptParameters), Throws.InstanceOf<WebDriverException>());
+            Assert.That(() => driver.MockObject.ExecuteJavaScript<SubClassOfReadOnlyCollectionOfObject>(JavaScript, JavaScriptParameters), Throws.InstanceOf<WebDriverException>());
         }
 
         [Test]
         public void ShouldNotThrowWhenNullIsReturned()
         {
-            Expect.Once.On(driver)
-                .Method("ExecuteScript")
+            driver.Expects.One
+                .Method(_ => _.ExecuteScript(null, null))
                 .With(JavaScript, JavaScriptParameters)
                 .Will(Return.Value(null));
 
-            Assert.That(() => driver.ExecuteJavaScript<string>(JavaScript, JavaScriptParameters), Throws.Nothing);
+            Assert.That(() => driver.MockObject.ExecuteJavaScript<string>(JavaScript, JavaScriptParameters), Throws.Nothing);
         }
 
         [Test]
         public void ShouldNotThrowWhenNullIsReturnedForNullableValueType()
         {
-            Expect.Once.On(driver)
-                .Method("ExecuteScript")
+            driver.Expects.One
+                .Method(_ => _.ExecuteScript(null, null))
                 .With(JavaScript, JavaScriptParameters)
                 .Will(Return.Value(null));
 
-            Assert.That(() => driver.ExecuteJavaScript<int?>(JavaScript, JavaScriptParameters), Throws.Nothing);
+            Assert.That(() => driver.MockObject.ExecuteJavaScript<int?>(JavaScript, JavaScriptParameters), Throws.Nothing);
         }
 
         [Test]
         public void ShouldThrowWhenNullIsReturnedForValueType()
         {
-            Expect.Once.On(driver)
-                .Method("ExecuteScript")
+            driver.Expects.One
+                .Method(_ => _.ExecuteScript(null, null))
                 .With(JavaScript, JavaScriptParameters)
                 .Will(Return.Value(null));
 
-            Assert.That(() => driver.ExecuteJavaScript<int>(JavaScript, JavaScriptParameters), Throws.InstanceOf<WebDriverException>());
+            Assert.That(() => driver.MockObject.ExecuteJavaScript<int>(JavaScript, JavaScriptParameters), Throws.InstanceOf<WebDriverException>());
         }
 
         [Test]
         public void ShouldAllowExecutingJavaScriptWithoutReturningResult()
         {
-            Expect.Once.On(driver)
-                .Method("ExecuteScript")
-                .With(JavaScript, JavaScriptParameters);
+            driver.Expects.One
+                .Method(_ => _.ExecuteScript(null, null))
+                .With(JavaScript, JavaScriptParameters)
+                .WillReturn(null);
 
-            Assert.That(() => driver.ExecuteJavaScript(JavaScript, JavaScriptParameters), Throws.Nothing);
+            Assert.That(() => driver.MockObject.ExecuteJavaScript(JavaScript, JavaScriptParameters), Throws.Nothing);
         }
     }
 }
