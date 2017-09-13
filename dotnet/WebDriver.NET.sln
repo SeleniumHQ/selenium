@@ -29,8 +29,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebDriver.Opera.Tests", "te
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Selenium.WebDriverBackedSelenium.Tests", "test\webdriverbackedselenium\Selenium.WebDriverBackedSelenium.Tests.csproj", "{7760D121-0C45-4083-83FD-3171F0CF9BF5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebDriver.NetCore", "src\webdriver\WebDriver.NetCore.csproj", "{9FD2D4BD-33D8-4728-AD61-B4E88436F6DC}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebDriver", "src\webdriver\WebDriver.csproj", "{EA31F748-5E32-476D-AB6D-FEA245B4AF1E}"
 EndProject
 Global
@@ -91,10 +89,6 @@ Global
 		{7760D121-0C45-4083-83FD-3171F0CF9BF5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7760D121-0C45-4083-83FD-3171F0CF9BF5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7760D121-0C45-4083-83FD-3171F0CF9BF5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9FD2D4BD-33D8-4728-AD61-B4E88436F6DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9FD2D4BD-33D8-4728-AD61-B4E88436F6DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9FD2D4BD-33D8-4728-AD61-B4E88436F6DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9FD2D4BD-33D8-4728-AD61-B4E88436F6DC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{EA31F748-5E32-476D-AB6D-FEA245B4AF1E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EA31F748-5E32-476D-AB6D-FEA245B4AF1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EA31F748-5E32-476D-AB6D-FEA245B4AF1E}.Release|Any CPU.ActiveCfg = Release|Any CPU

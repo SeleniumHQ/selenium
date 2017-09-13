@@ -4,6 +4,7 @@
     <TargetFrameworks>netstandard2.0;net45;net40;net35</TargetFrameworks>
     <AssemblyName>WebDriver</AssemblyName>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <RootNamespace>OpenQA.Selenium</RootNamespace>
     <BuildSystem>visual-studio</BuildSystem>
   </PropertyGroup>
 
@@ -72,7 +73,11 @@
     <None Remove="WebDriver.ruleset" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
+  </ItemGroup>
+
+  <!--ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\..\..\third_party\dotnet\json-net-10.0r2\netstandard1.3\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -121,7 +126,7 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-  </ItemGroup>
+  </ItemGroup-->
 
   <ItemGroup>
     <Folder Include="Properties\" />
