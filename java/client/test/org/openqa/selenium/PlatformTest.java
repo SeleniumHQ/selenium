@@ -151,6 +151,11 @@ public class PlatformTest {
     assertEquals(Platform.fromString("windows"), Platform.WINDOWS);
   }
 
+  @Test
+  public void canParseMacOsXCorrectly() {
+    assertEquals(Platform.MAC, Platform.fromString("Mac OS X"));
+  }
+
   private void assertAllAre(Platform platform, String... osNames) {
     for (String osName : osNames) {
       Platform seen = Platform.extractFromSysProperty(osName);

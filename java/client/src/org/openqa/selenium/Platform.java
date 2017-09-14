@@ -84,7 +84,7 @@ public enum Platform {
     }
   },
 
-  MAC("mac", "darwin", "macOS", "os x") {
+  MAC("mac", "darwin", "macOS", "mac os x", "os x") {
     @Override
     public Platform family() {
       return null;
