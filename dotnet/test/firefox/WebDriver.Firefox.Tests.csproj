@@ -48,6 +48,7 @@
     <Compile Include="FirefoxProfileManagerTest.cs" />
     <Compile Include="FirefoxProfileTests.cs" />
     <Compile Include="LegacyFirefoxWebDriver.cs" />
+    <Compile Include="ReleaseFirefoxWebDriver.cs" />
     <Compile Include="NightlyFirefoxWebDriver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
