@@ -27,14 +27,13 @@ namespace OpenQA.Selenium.Environment
             get { return path; }
         }
 
-        public UrlBuilder()
+        public UrlBuilder(WebsiteConfig config)
         {
-            protocol = EnvironmentManager.GetSettingValue("Protocol");
-            hostName = EnvironmentManager.GetSettingValue("HostName");
-            port = EnvironmentManager.GetSettingValue("Port");
-            securePort = EnvironmentManager.GetSettingValue("SecurePort");
-            // TODO(andre.nogueira): Remove trailing / from folder
-            path = EnvironmentManager.GetSettingValue("Folder");
+            protocol = config.Protocol;
+            hostName = config.HostName;
+            port = config.Port;
+            securePort = config.SecurePort;
+            path = config.Folder;
             //Use the first IPv4 address that we find
             IPAddress ipAddress = IPAddress.Parse("127.0.0.1");
             foreach (IPAddress ip in Dns.GetHostEntry(hostName).AddressList)

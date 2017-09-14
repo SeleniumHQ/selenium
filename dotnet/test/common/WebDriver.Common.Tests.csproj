@@ -30,6 +30,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\third_party\dotnet\json-net-10.0r2\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="NMock3">
       <HintPath>..\..\..\third_party\dotnet\nmock-3.3.5.44\net40\NMock3.dll</HintPath>
     </Reference>
@@ -71,6 +75,7 @@
     <Compile Include="CustomTestAttributes\IgnoreBrowserAttribute.cs" />
     <Compile Include="CustomTestAttributes\NeedsFreshDriverAttribute.cs" />
     <Compile Include="DesiredCapabililtiesTest.cs" />
+    <Compile Include="Environment\DriverConfig.cs" />
     <Compile Include="DriverDisposalTest.cs" />
     <Compile Include="DriverElementFindingTest.cs" />
     <Compile Include="DriverTestFixture.cs" />
@@ -118,6 +123,7 @@
     <Compile Include="TagNameTest.cs" />
     <Compile Include="TakesScreenshotTest.cs" />
     <Compile Include="TargetLocatorTest.cs" />
+    <Compile Include="Environment\TestEnvironment.cs" />
     <Compile Include="TestUtilities.cs" />
     <Compile Include="TextHandlingTest.cs" />
     <Compile Include="TextPagesTest.cs" />
@@ -125,6 +131,7 @@
     <Compile Include="UploadTest.cs" />
     <Compile Include="VisibilityTest.cs" />
     <Compile Include="WebElementTest.cs" />
+    <Compile Include="Environment\WebsiteConfig.cs" />
     <Compile Include="WindowSwitchingTest.cs" />
     <Compile Include="WindowTest.cs" />
     <Compile Include="XPathElementFindingTest.cs" />
@@ -136,7 +143,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="appconfig.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />

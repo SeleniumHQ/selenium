@@ -1,6 +1,8 @@
 using System;
 using System.Reflection;
 using System.IO;
+using Newtonsoft.Json;
+using NUnit.Framework;
 
 namespace OpenQA.Selenium.Environment
 {
@@ -17,23 +19,21 @@ namespace OpenQA.Selenium.Environment
 
         private EnvironmentManager()
         {
-            string configFile = AppDomain.CurrentDomain.SetupInformation.ConfigurationFile;
-            try
-            {
-                string driverClassName = GetSettingValue("Driver");
-                string assemblyName = GetSettingValue("Assembly");
-                Assembly assembly = Assembly.Load(assemblyName);
-                driverType = assembly.GetType(driverClassName);
-                browser = (Browser)Enum.Parse(typeof(Browser), GetSettingValue("DriverName"));
-                remoteCapabilities = GetSettingValue("RemoteCapabilities");
-            }
-            catch (Exception)
-            {
-            }
-
-            urlBuilder = new UrlBuilder();
-
             string currentDirectory = this.CurrentDirectory;
+            string content = File.ReadAllText(Path.Combine(currentDirectory, "appconfig.json"));
+            TestEnvironment env = JsonConvert.DeserializeObject<TestEnvironment>(content);
+            string activeDriverConfig = TestContext.Parameters.Get("ActiveDriverConfig", env.ActiveDriverConfig);
+            string activeWebsiteConfig = TestContext.Parameters.Get("ActiveWebsiteConfig", env.ActiveWebsiteConfig);
+            DriverConfig driverConfig = env.DriverConfigs[activeDriverConfig];
+            WebsiteConfig websiteConfig = env.WebSiteConfigs[activeWebsiteConfig];
+
+            Assembly driverAssembly = Assembly.Load(driverConfig.AssemblyName);
+            driverType = driverAssembly.GetType(driverConfig.DriverTypeName);
+            browser = driverConfig.BrowserValue;
+            remoteCapabilities = driverConfig.RemoteCapabilities;
+
+            urlBuilder = new UrlBuilder(websiteConfig);
+
             DirectoryInfo info = new DirectoryInfo(currentDirectory);
             while (info != info.Root && string.Compare(info.Name, "build", StringComparison.OrdinalIgnoreCase) != 0)
             {
@@ -45,7 +45,7 @@ namespace OpenQA.Selenium.Environment
             bool autoStartRemoteServer = false;
             if (browser == Browser.Remote)
             {
-                autoStartRemoteServer = bool.Parse(GetSettingValue("AutoStartRemoteServer"));
+                autoStartRemoteServer = driverConfig.AutoStartRemoteServer;
             }
 
             remoteServer = new RemoteSeleniumServer(info.FullName, autoStartRemoteServer);
@@ -59,20 +59,6 @@ namespace OpenQA.Selenium.Environment
             {
                 driver.Quit();
             }
-        }
-
-        public static string GetSettingValue(string key)
-        {
-            string settingValue = string.Empty;
-            try
-            {
-                settingValue = System.Configuration.ConfigurationManager.AppSettings.GetValues(key)[0];
-            }
-            catch (Exception)
-            {
-            }
-
-            return settingValue;
         }
 
         public Browser Browser 
