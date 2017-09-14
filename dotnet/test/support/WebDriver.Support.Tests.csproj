@@ -68,9 +68,6 @@
     <Compile Include="UI\WebDriverWaitTest.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="WebDriver.Support.Tests.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Include="WebDriver.Support.Tests.nunit">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

@@ -54,9 +54,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="WebDriver.Edge.Tests.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Include="WebDriver.Edge.Tests.nunit">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

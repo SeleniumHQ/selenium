@@ -43,13 +43,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="SafariSpecificTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SafariTechnologyPreviewDriver.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="WebDriver.Safari.Tests.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Include="WebDriver.Safari.Tests.nunit">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
