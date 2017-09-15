@@ -81,8 +81,9 @@ public class OperaOptions extends MutableCapabilities {
    *
    * @param path Path to Opera executable.
    */
-  public void setBinary(File path) {
+  public OperaOptions setBinary(File path) {
     binary = checkNotNull(path).getPath();
+    return this;
   }
 
   /**
@@ -92,16 +93,18 @@ public class OperaOptions extends MutableCapabilities {
    *
    * @param path Path to Opera executable.
    */
-  public void setBinary(String path) {
+  public OperaOptions setBinary(String path) {
     binary = checkNotNull(path);
+    return this;
   }
 
   /**
    * @param arguments The arguments to use when starting Opera.
    * @see #addArguments(java.util.List)
    */
-  public void addArguments(String... arguments) {
+  public OperaOptions addArguments(String... arguments) {
     addArguments(ImmutableList.copyOf(arguments));
+    return this;
   }
 
   /**
@@ -119,16 +122,18 @@ public class OperaOptions extends MutableCapabilities {
    *
    * @param arguments The arguments to use when starting Opera.
    */
-  public void addArguments(List<String> arguments) {
+  public OperaOptions addArguments(List<String> arguments) {
     args.addAll(arguments);
+    return this;
   }
 
   /**
    * @param paths Paths to the extensions to install.
    * @see #addExtensions(java.util.List)
    */
-  public void addExtensions(File... paths) {
+  public OperaOptions addExtensions(File... paths) {
     addExtensions(ImmutableList.copyOf(paths));
+    return this;
   }
 
   /**
@@ -137,7 +142,7 @@ public class OperaOptions extends MutableCapabilities {
    *
    * @param paths Paths to the extensions to install.
    */
-  public void addExtensions(List<File> paths) {
+  public OperaOptions addExtensions(List<File> paths) {
     for (File path : paths) {
       checkNotNull(path);
       checkArgument(path.exists(), "%s does not exist", path.getAbsolutePath());
@@ -145,14 +150,16 @@ public class OperaOptions extends MutableCapabilities {
           path.getAbsolutePath());
     }
     extensionFiles.addAll(paths);
+    return this;
   }
 
   /**
    * @param encoded Base64 encoded data of the extensions to install.
    * @see #addEncodedExtensions(java.util.List)
    */
-  public void addEncodedExtensions(String... encoded) {
+  public OperaOptions addEncodedExtensions(String... encoded) {
     addEncodedExtensions(ImmutableList.copyOf(encoded));
+    return this;
   }
 
   /**
@@ -161,11 +168,12 @@ public class OperaOptions extends MutableCapabilities {
    *
    * @param encoded Base64 encoded data of the extensions to install.
    */
-  public void addEncodedExtensions(List<String> encoded) {
+  public OperaOptions addEncodedExtensions(List<String> encoded) {
     for (String extension : encoded) {
       checkNotNull(extension);
     }
     extensions.addAll(encoded);
+    return this;
   }
 
   /**
@@ -176,8 +184,9 @@ public class OperaOptions extends MutableCapabilities {
    * @param value Value of the experimental option, which must be convertible
    *     to JSON.
    */
-  public void setExperimentalOption(String name, Object value) {
+  public OperaOptions setExperimentalOption(String name, Object value) {
     experimentalOptions.put(checkNotNull(name), value);
+    return this;
   }
 
   /**
