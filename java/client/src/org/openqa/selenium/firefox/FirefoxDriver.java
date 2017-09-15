@@ -100,10 +100,18 @@ public class FirefoxDriver extends RemoteWebDriver {
     this(new FirefoxOptions());
   }
 
+  /**
+   * @deprecated Use {@link FirefoxDriver(FirefoxOptions)}.
+   */
+  @Deprecated
   public FirefoxDriver(Capabilities desiredCapabilities) {
     this(new FirefoxOptions(Objects.requireNonNull(desiredCapabilities, "No capabilities seen")));
   }
 
+  /**
+   * @deprecated Use {@link FirefoxDriver(GeckoDriverService, FirefoxOptions)}.
+   */
+  @Deprecated
   public FirefoxDriver(GeckoDriverService service, Capabilities desiredCapabilities) {
     this(
         Objects.requireNonNull(service, "No geckodriver service provided"),

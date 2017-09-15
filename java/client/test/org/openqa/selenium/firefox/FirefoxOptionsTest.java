@@ -22,6 +22,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -58,7 +59,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.PosixFilePermission;
 import java.util.Map;
-import java.util.Optional;
 
 public class FirefoxOptionsTest {
 
@@ -160,16 +160,16 @@ public class FirefoxOptionsTest {
 
   @Test
   public void stringBasedBinaryRemainsAbsoluteIfSetAsAbsolute() throws IOException {
-    Map<String, Object> json = new FirefoxOptions().setBinary("/i/like/cheese").toJson();
+    Map<String, ?> json = new FirefoxOptions().setBinary("/i/like/cheese").asMap();
 
-    assertEquals("/i/like/cheese", json.get("binary"));
+    assertEquals("/i/like/cheese", ((Map<?, ?>) json.get(FIREFOX_OPTIONS)).get("binary"));
   }
 
   @Test
   public void pathBasedBinaryRemainsAbsoluteIfSetAsAbsolute() throws IOException {
-    Map<String, Object> json = new FirefoxOptions().setBinary(Paths.get("/i/like/cheese")).toJson();
+    Map<String, ?> json = new FirefoxOptions().setBinary(Paths.get("/i/like/cheese")).asMap();
 
-    assertEquals("/i/like/cheese", json.get("binary"));
+    assertEquals("/i/like/cheese", ((Map<?, ?>) json.get(FIREFOX_OPTIONS)).get("binary"));
   }
 
   @Test
@@ -245,9 +245,9 @@ public class FirefoxOptionsTest {
     try {
       property.set("default");
       FirefoxOptions options = new FirefoxOptions();
-      Optional<FirefoxProfile> profile = options.getProfileOrNull();
+      FirefoxProfile profile = options.getProfile();
 
-      assertTrue(profile.isPresent());
+      assertNotNull(profile);
     } finally {
       property.set(resetValue);
     }
