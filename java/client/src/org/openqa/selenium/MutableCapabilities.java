@@ -34,6 +34,7 @@ public class MutableCapabilities implements Capabilities, Serializable {
     keys.add("chromeOptions");
     keys.add("edgeOptions");
     keys.add("goog:chromeOptions");
+    keys.add("operaOptions");
     keys.add("se:ieOptions");
     keys.add("safari.options");
     OPTION_KEYS = Collections.unmodifiableSet(keys);
