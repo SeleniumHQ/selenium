@@ -32,7 +32,6 @@ import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.ie.InternetExplorerDriver;
-import org.openqa.selenium.internal.SocketLock;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.opera.OperaDriver;
 import org.openqa.selenium.safari.SafariDriver;
@@ -149,35 +148,36 @@ public class HTMLLauncher {
     Path path = Paths.get(suiteURL).toAbsolutePath();
     if (Files.exists(path)) {
       // Not all drivers can read files from the disk, so we need to host the suite somewhere.
-      try (SocketLock lock = new SocketLock()) {
-        server = new Server();
-        HttpConfiguration httpConfig = new HttpConfiguration();
+      server = new Server();
+      HttpConfiguration httpConfig = new HttpConfiguration();
 
-        ServerConnector http = new ServerConnector(server, new HttpConnectionFactory(httpConfig));
-        int port = PortProber.findFreePort();
-        http.setPort(port);
-        http.setIdleTimeout(500000);
-        server.setConnectors(new Connector[]{http});
+      ServerConnector http = new ServerConnector(server, new HttpConnectionFactory(httpConfig));
+      int port = PortProber.findFreePort();
+      http.setPort(port);
+      http.setIdleTimeout(500000);
+      server.setConnectors(new Connector[]{http});
 
-        ResourceHandler handler = new ResourceHandler();
-        handler.setDirectoriesListed(true);
-        handler.setWelcomeFiles(new String[]{path.getFileName().toString(), "index.html"});
-        handler.setBaseResource(new PathResource(path.toFile().getParentFile().toPath().toRealPath()));
+      ResourceHandler handler = new ResourceHandler();
+      handler.setDirectoriesListed(true);
+      handler.setWelcomeFiles(new String[]{path.getFileName().toString(), "index.html"});
+      handler
+          .setBaseResource(new PathResource(path.toFile().getParentFile().toPath().toRealPath()));
 
-        ContextHandler context = new ContextHandler("/tests");
-        context.setHandler(handler);
+      ContextHandler context = new ContextHandler("/tests");
+      context.setHandler(handler);
 
-        server.setHandler(context);
+      server.setHandler(context);
+      try {
         server.start();
-
-        PortProber.waitForPortUp(port, 15, SECONDS);
-
-        URL serverUrl = server.getURI().toURL();
-        return new URL(serverUrl.getProtocol(), serverUrl.getHost(), serverUrl.getPort(),
-                       "/tests/");
       } catch (Exception e) {
         throw new IOException(e);
       }
+
+      PortProber.waitForPortUp(port, 15, SECONDS);
+
+      URL serverUrl = server.getURI().toURL();
+      return new URL(serverUrl.getProtocol(), serverUrl.getHost(), serverUrl.getPort(),
+                     "/tests/");
     }
 
     // Well then, it must be a URL relative to whatever the browserUrl. Probe and find out.

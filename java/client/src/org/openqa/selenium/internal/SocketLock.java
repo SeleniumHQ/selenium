@@ -31,7 +31,9 @@ import java.net.SocketException;
  * server socket.
  *
  * @author gregory.block@gmail.com (Gregory Block)
+ * @deprecated No longer used. Scheduled for deletion in 3.7
  */
+@Deprecated
 public class SocketLock implements Closeable, Lock {
   public static final int DEFAULT_PORT = 7055;
   private static final long DELAY_BETWEEN_SOCKET_CHECKS = 2000;

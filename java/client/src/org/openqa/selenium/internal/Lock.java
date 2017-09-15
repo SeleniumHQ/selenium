@@ -17,6 +17,10 @@
 
 package org.openqa.selenium.internal;
 
+/**
+ * @deprecated Scheduled for deletion in 3.7
+ */
+@Deprecated
 public interface Lock {
   void lock(long timeoutInMillis);
 
