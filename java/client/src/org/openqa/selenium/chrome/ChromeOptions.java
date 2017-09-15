@@ -214,6 +214,15 @@ public class ChromeOptions extends MutableCapabilities {
     return this;
   }
 
+  public ChromeOptions setHeadless(boolean headless) {
+    args.remove("--headless");
+    if (headless) {
+      args.add("--headless");
+      args.add("--disable-gpu");
+    }
+    return this;
+  }
+
   /**
    * Returns DesiredCapabilities for Chrome with these options included as
    * capabilities. This does not copy the options. Further changes will be
