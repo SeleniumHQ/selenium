@@ -7,7 +7,7 @@
     <ProjectGuid>{2967BA10-6B5A-4321-BB56-6C2AAC72D4C9}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>WebDriver.Common.Tests</RootNamespace>
+    <RootNamespace>OpenQA.Selenium</RootNamespace>
     <AssemblyName>WebDriver.Common.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
