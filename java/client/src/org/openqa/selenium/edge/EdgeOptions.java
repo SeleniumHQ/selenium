@@ -33,7 +33,7 @@ import java.io.IOException;
  * <p>Example usage:
  * <pre><code>
  * EdgeOptions options = new EdgeOptions()
-
+ *
  *
  * // For use with ChromeDriver:
  * EdgeDriver driver = new EdgeDriver(options);
@@ -52,53 +52,51 @@ import java.io.IOException;
  */
 public class EdgeOptions {
 
-    /**
-     * Key used to store a set of EdgeOptions in a {@link DesiredCapabilities}
-	 * object.
-	 */
-	public static final String CAPABILITY = "edgeOptions";
+  /**
+   * Key used to store a set of EdgeOptions in a {@link DesiredCapabilities} object.
+   */
+  public static final String CAPABILITY = "edgeOptions";
 
-	private String pageLoadStrategy;
+  private String pageLoadStrategy;
 
-	/**
-	 * Sets the page load strategy for  Edge
-	 *
-	 * Supported values are "normal", "eager" and "none"
+  /**
+   * Sets the page load strategy for  Edge
+   *
+   * Supported values are "normal", "eager" and "none"
    *
    * @param strategy strategy for page load: normal, eager or none
-	 */
-	public void setPageLoadStrategy(String strategy) {
-      this.pageLoadStrategy = checkNotNull(strategy);
-	}
+   */
+  public void setPageLoadStrategy(String strategy) {
+    this.pageLoadStrategy = checkNotNull(strategy);
+  }
 
-	/**
-	 * Converts this instance to its JSON representation.
-	 *
-	 * @return The JSON representation of the options.
-	 * @throws IOException If an error occurred while reading the Edge extension files.
-	 */
-	public JsonObject toJson() throws IOException {
-	  JsonObject options = new JsonObject();
-	  if (this.pageLoadStrategy != null) {
-		  options.addProperty(CapabilityType.PAGE_LOAD_STRATEGY, this.pageLoadStrategy);
-	  }
-
-	  return options;
-	}
-
-    /**
-     * Returns DesiredCapabilities for Edge with these options included as
-     * capabilities. This does not copy the options. Further changes will be
-     * reflected in the returned capabilities.
-     *
-     * @return DesiredCapabilities for Edge with these options.
-     */
-    DesiredCapabilities toCapabilities() {
-      DesiredCapabilities capabilities = DesiredCapabilities.edge();
-	  if (this.pageLoadStrategy != null) {
-          capabilities.setCapability(CapabilityType.PAGE_LOAD_STRATEGY, this.pageLoadStrategy);
-	  }
-
-      return capabilities;
+  /**
+   * Converts this instance to its JSON representation.
+   *
+   * @return The JSON representation of the options.
+   * @throws IOException If an error occurred while reading the Edge extension files.
+   */
+  public JsonObject toJson() throws IOException {
+    JsonObject options = new JsonObject();
+    if (this.pageLoadStrategy != null) {
+      options.addProperty(CapabilityType.PAGE_LOAD_STRATEGY, this.pageLoadStrategy);
     }
+
+    return options;
+  }
+
+  /**
+   * Returns DesiredCapabilities for Edge with these options included as capabilities. This does not
+   * copy the options. Further changes will be reflected in the returned capabilities.
+   *
+   * @return DesiredCapabilities for Edge with these options.
+   */
+  DesiredCapabilities toCapabilities() {
+    DesiredCapabilities capabilities = DesiredCapabilities.edge();
+    if (this.pageLoadStrategy != null) {
+      capabilities.setCapability(CapabilityType.PAGE_LOAD_STRATEGY, this.pageLoadStrategy);
+    }
+
+    return capabilities;
+  }
 }
