@@ -9,6 +9,7 @@ namespace OpenQA.Selenium.Support.PageObjects
     [TestFixture]
     public class PageFactoryTest
     {
+#if !NETCOREAPP2_0
         private MockFactory mocks;
         private Mock<ISearchContext> mockDriver;
         private Mock<IWebElement> mockElement;
@@ -532,5 +533,6 @@ namespace OpenQA.Selenium.Support.PageObjects
 
         #pragma warning restore 649
         #endregion
+#endif
     }
 }
