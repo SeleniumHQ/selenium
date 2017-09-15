@@ -83,8 +83,9 @@ public class ChromeOptions extends MutableCapabilities {
    *
    * @param path Path to Chrome executable.
    */
-  public void setBinary(File path) {
+  public ChromeOptions setBinary(File path) {
     binary = checkNotNull(path).getPath();
+    return this;
   }
 
   /**
@@ -94,16 +95,18 @@ public class ChromeOptions extends MutableCapabilities {
    *
    * @param path Path to Chrome executable.
    */
-  public void setBinary(String path) {
+  public ChromeOptions setBinary(String path) {
     binary = checkNotNull(path);
+    return this;
   }
 
   /**
    * @param arguments The arguments to use when starting Chrome.
    * @see #addArguments(java.util.List)
    */
-  public void addArguments(String... arguments) {
+  public ChromeOptions addArguments(String... arguments) {
     addArguments(ImmutableList.copyOf(arguments));
+    return this;
   }
 
   /**
@@ -121,16 +124,18 @@ public class ChromeOptions extends MutableCapabilities {
    *
    * @param arguments The arguments to use when starting Chrome.
    */
-  public void addArguments(List<String> arguments) {
+  public ChromeOptions addArguments(List<String> arguments) {
     args.addAll(arguments);
+    return this;
   }
 
   /**
    * @param paths Paths to the extensions to install.
    * @see #addExtensions(java.util.List)
    */
-  public void addExtensions(File... paths) {
+  public ChromeOptions addExtensions(File... paths) {
     addExtensions(ImmutableList.copyOf(paths));
+    return this;
   }
 
   /**
@@ -139,7 +144,7 @@ public class ChromeOptions extends MutableCapabilities {
    *
    * @param paths Paths to the extensions to install.
    */
-  public void addExtensions(List<File> paths) {
+  public ChromeOptions addExtensions(List<File> paths) {
     for (File path : paths) {
       checkNotNull(path);
       checkArgument(path.exists(), "%s does not exist", path.getAbsolutePath());
@@ -147,14 +152,16 @@ public class ChromeOptions extends MutableCapabilities {
           path.getAbsolutePath());
     }
     extensionFiles.addAll(paths);
+    return this;
   }
 
   /**
    * @param encoded Base64 encoded data of the extensions to install.
    * @see #addEncodedExtensions(java.util.List)
    */
-  public void addEncodedExtensions(String... encoded) {
+  public ChromeOptions addEncodedExtensions(String... encoded) {
     addEncodedExtensions(ImmutableList.copyOf(encoded));
+    return this;
   }
 
   /**
@@ -163,11 +170,12 @@ public class ChromeOptions extends MutableCapabilities {
    *
    * @param encoded Base64 encoded data of the extensions to install.
    */
-  public void addEncodedExtensions(List<String> encoded) {
+  public ChromeOptions addEncodedExtensions(List<String> encoded) {
     for (String extension : encoded) {
       checkNotNull(extension);
     }
     extensions.addAll(encoded);
+    return this;
   }
 
   /**
@@ -178,8 +186,9 @@ public class ChromeOptions extends MutableCapabilities {
    * @param value Value of the experimental option, which must be convertible
    *     to JSON.
    */
-  public void setExperimentalOption(String name, Object value) {
+  public ChromeOptions setExperimentalOption(String name, Object value) {
     experimentalOptions.put(checkNotNull(name), value);
+    return this;
   }
 
   /**
@@ -187,18 +196,22 @@ public class ChromeOptions extends MutableCapabilities {
    *
    * @param name The option name.
    * @return The option value, or {@code null} if not set.
+   * @deprecated Getters are not needed in browser Options classes.
    */
+  @Deprecated
   public Object getExperimentalOption(String name) {
     return experimentalOptions.get(checkNotNull(name));
   }
 
-  public void setPageLoadStrategy(PageLoadStrategy strategy) {
+  public ChromeOptions setPageLoadStrategy(PageLoadStrategy strategy) {
     setCapability(PAGE_LOAD_STRATEGY, strategy);
+    return this;
   }
 
-  public void setUnhandledPromptBehaviour(UnexpectedAlertBehaviour behaviour) {
+  public ChromeOptions setUnhandledPromptBehaviour(UnexpectedAlertBehaviour behaviour) {
     setCapability(UNHANDLED_PROMPT_BEHAVIOUR, behaviour);
     setCapability(UNEXPECTED_ALERT_BEHAVIOUR, behaviour);
+    return this;
   }
 
   /**
