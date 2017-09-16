@@ -48,7 +48,7 @@ module Selenium
         end
 
         def run
-          handler.run @app, Host: @host, Port: @port, AccessLog: []
+          handler.run @app, Host: @host, Port: @port, AccessLog: [], Logger: WEBrick::Log.new(nil, 0)
         end
 
         def where_is(file)
