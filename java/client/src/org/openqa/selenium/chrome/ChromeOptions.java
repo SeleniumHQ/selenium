@@ -40,6 +40,7 @@ import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TreeMap;
 
 /**
@@ -234,6 +235,16 @@ public class ChromeOptions extends MutableCapabilities {
   @Deprecated
   MutableCapabilities toCapabilities() {
     return this;
+  }
+
+  @Override
+  protected int amendHashCode() {
+    return Objects.hash(
+        args,
+        binary,
+        experimentalOptions,
+        extensionFiles,
+        extensions);
   }
 
   @Override
