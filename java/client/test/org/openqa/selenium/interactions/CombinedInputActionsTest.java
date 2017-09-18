@@ -85,7 +85,6 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   @Test
   @Ignore(IE)
   @Ignore(FIREFOX)
-  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/646")
   public void testShiftClickingOnMultiSelectionList() {
     driver.get(pages.formSelectionPage);
 
@@ -112,7 +111,6 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   @Ignore(IE)
   @Ignore(FIREFOX)
   @Ignore(PHANTOMJS)
-  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/646")
   public void testControlClickingOnMultiSelectionList() {
     driver.get(pages.formSelectionPage);
 
@@ -138,7 +136,6 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   @Test
   @Ignore(IE)
   @Ignore(PHANTOMJS)
-  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/646")
   public void testControlClickingOnCustomMultiSelectionList() {
     driver.get(pages.selectableItemsPage);
 
@@ -183,7 +180,6 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   @Test
   @Ignore(SAFARI)
   @Ignore(PHANTOMJS)
-  @Ignore(MARIONETTE)
   public void canMoveMouseToAnElementInAnIframeAndClick() {
     driver.get(appServer.whereIs("click_tests/click_in_iframe.html"));
 
@@ -337,7 +333,6 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/646")
   @Ignore(IE)
   public void testHoldingDownShiftKeyWhileClicking() {
     driver.get(pages.clickEventPage);

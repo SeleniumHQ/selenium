@@ -261,7 +261,6 @@ public class FormHandlingTest extends JUnit4TestBase {
   @Test
   @Ignore(PHANTOMJS)
   @Ignore(SAFARI)
-  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/620")
   public void handleFormWithJavascriptAction() {
     String url = appServer.whereIs("form_handling_js_submit.html");
     driver.get(url);
