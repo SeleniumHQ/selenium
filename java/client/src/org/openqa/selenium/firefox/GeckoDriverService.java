@@ -106,6 +106,7 @@ public class GeckoDriverService extends DriverService {
       checkNotNull(firefoxBinary);
       checkExecutable(firefoxBinary.getFile());
       this.firefoxBinary = firefoxBinary;
+      this.withEnvironment(firefoxBinary.getExtraEnv());
       return this;
     }
 
