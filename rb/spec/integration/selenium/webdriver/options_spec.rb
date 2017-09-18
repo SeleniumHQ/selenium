@@ -79,7 +79,7 @@ module Selenium
         end
 
         # Edge BUG - https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/5751773/
-        it 'should delete one', except: [{browser: :edge}, [driver: :firefox]] do
+        it 'should delete one', except: {browser: :edge} do
           driver.navigate.to url_for('xhtmlTest.html')
           driver.manage.add_cookie name: 'foo', value: 'bar'
 
