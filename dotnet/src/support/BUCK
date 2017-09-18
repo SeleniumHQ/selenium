@@ -3,28 +3,28 @@
 genrule(
   name = 'net35',
   srcs = [ 'WebDriver.Support.csproj' ],
-  cmd = 'dotnet build %SRCS% --configuration Release --framework net35 --output %OUT% /p:BuildSystem=buck',
+  cmd = "echo '$(location //dotnet/src/webdriver:net35)' && dotnet build %SRCS% --configuration Release --framework net35 --output %OUT% /p:Version={} /p:AssemblyVersion={} /p:FileVersion={} /p:BuildSystem=buck".format(SE_VERSION, ASSEMBLY_VERSION, ASSEMBLY_VERSION),
   out = 'net35'
 )
 
 genrule(
   name = 'net40',
   srcs = [ 'WebDriver.Support.csproj' ],
-  cmd = 'dotnet build %SRCS% --configuration Release --framework net40 --output %OUT% /p:BuildSystem=buck',
+  cmd = "echo '$(location //dotnet/src/webdriver:net40)' && dotnet build %SRCS% --configuration Release --framework net40 --output %OUT% /p:Version={} /p:AssemblyVersion={} /p:FileVersion={} /p:BuildSystem=buck".format(SE_VERSION, ASSEMBLY_VERSION, ASSEMBLY_VERSION),
   out = 'net40'
 )
 
 genrule(
   name = 'net45',
   srcs = [ 'WebDriver.Support.csproj' ],
-  cmd = 'dotnet build %SRCS% --configuration Release --framework net45 --output %OUT% /p:BuildSystem=buck',
+  cmd = "echo '$(location //dotnet/src/webdriver:net45)' && dotnet build %SRCS% --configuration Release --framework net45 --output %OUT% /p:Version={} /p:AssemblyVersion={} /p:FileVersion={} /p:BuildSystem=buck".format(SE_VERSION, ASSEMBLY_VERSION, ASSEMBLY_VERSION),
   out = 'net45'
 )
 
 genrule(
   name = 'netstandard2.0',
   srcs = [ 'WebDriver.Support.csproj' ],
-  cmd = 'dotnet build %SRCS% --configuration Release --framework netstandard2.0 --output %OUT% /p:BuildSystem=buck',
+  cmd = "echo '$(location //dotnet/src/webdriver:netstandard2.0)' && dotnet build %SRCS% --configuration Release --framework netstandard2.0 --output %OUT% /p:Version={} /p:AssemblyVersion={} /p:FileVersion={} /p:BuildSystem=buck".format(SE_VERSION, ASSEMBLY_VERSION, ASSEMBLY_VERSION),
   out = 'netstandard2.0'
 )
 
@@ -62,28 +62,28 @@ genrule(
 genrule(
   name = 'net35_strongnamed',
   srcs = [ 'WebDriver.Support.csproj' ],
-  cmd = 'dotnet build %SRCS% --configuration Release --framework net35 --output %OUT% /p:SignAssembly=true /p:AssemblyOriginatorKeyFile=$(location //dotnet:keyfile) /p:BuildSystem=buck',
+  cmd = "echo '$(location //dotnet/src/webdriver:net35_strongnamed)' && dotnet build %SRCS% --configuration Release --framework net35 --output %OUT% /p:SignAssembly=true /p:AssemblyOriginatorKeyFile=$(location //dotnet:keyfile) /p:Version={} /p:AssemblyVersion={} /p:FileVersion={} /p:BuildSystem=buck".format(SE_VERSION, ASSEMBLY_VERSION, ASSEMBLY_VERSION),
   out = 'net35'
 )
 
 genrule(
   name = 'net40_strongnamed',
   srcs = [ 'WebDriver.Support.csproj' ],
-  cmd = 'dotnet build %SRCS% --configuration Release --framework net40 --output %OUT% /p:SignAssembly=true /p:AssemblyOriginatorKeyFile=$(location //dotnet:keyfile) /p:BuildSystem=buck',
+  cmd = "echo '$(location //dotnet/src/webdriver:net40_strongnamed)' && dotnet build %SRCS% --configuration Release --framework net40 --output %OUT% /p:SignAssembly=true /p:AssemblyOriginatorKeyFile=$(location //dotnet:keyfile) /p:Version={} /p:AssemblyVersion={} /p:FileVersion={} /p:BuildSystem=buck".format(SE_VERSION, ASSEMBLY_VERSION, ASSEMBLY_VERSION),
   out = 'net40'
 )
 
 genrule(
   name = 'net45_strongnamed',
   srcs = [ 'WebDriver.Support.csproj' ],
-  cmd = 'dotnet build %SRCS% --configuration Release --framework net45 --output %OUT% /p:SignAssembly=true /p:AssemblyOriginatorKeyFile=$(location //dotnet:keyfile) /p:BuildSystem=buck',
+  cmd = "echo '$(location //dotnet/src/webdriver:net45_strongnamed)' && dotnet build %SRCS% --configuration Release --framework net45 --output %OUT% /p:SignAssembly=true /p:AssemblyOriginatorKeyFile=$(location //dotnet:keyfile) /p:Version={} /p:AssemblyVersion={} /p:FileVersion={} /p:BuildSystem=buck".format(SE_VERSION, ASSEMBLY_VERSION, ASSEMBLY_VERSION),
   out = 'net45'
 )
 
 genrule(
   name = 'netstandard2.0_strongnamed',
   srcs = [ 'WebDriver.Support.csproj' ],
-  cmd = 'dotnet build %SRCS% --configuration Release --framework netstandard2.0 --output %OUT% /p:SignAssembly=true /p:AssemblyOriginatorKeyFile=$(location //dotnet:keyfile) /p:BuildSystem=buck',
+  cmd = "echo '$(location //dotnet/src/webdriver:netstandard2.0_strongnamed)' && dotnet build %SRCS% --configuration Release --framework netstandard2.0 --output %OUT% /p:SignAssembly=true /p:AssemblyOriginatorKeyFile=$(location //dotnet:keyfile) /p:Version={} /p:AssemblyVersion={} /p:FileVersion={} /p:BuildSystem=buck".format(SE_VERSION, ASSEMBLY_VERSION, ASSEMBLY_VERSION),
   out = 'netstandard2.0'
 )
 
