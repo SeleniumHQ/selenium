@@ -116,14 +116,17 @@ public class FirefoxOptions extends MutableCapabilities {
 
     if (raw instanceof FirefoxOptions) {
       FirefoxOptions that = (FirefoxOptions) raw;
-      this.args.addAll(that.args);
-      this.booleanPrefs.putAll(that.booleanPrefs);
-      this.intPrefs.putAll(that.intPrefs);
-      this.stringPrefs.putAll(that.stringPrefs);
-      this.logLevel = that.logLevel;
-      this.binary = that.binary;
-      this.legacy = that.legacy;
-      this.profile = that.profile;
+
+      addArguments(that.args);
+      that.booleanPrefs.forEach(this::addPreference);
+      that.intPrefs.forEach(this::addPreference);
+      that.stringPrefs.forEach(this::addPreference);
+      setLegacy(that.legacy);
+
+      if (that.logLevel != null) { setLogLevel(that.logLevel); }
+      if (that.binary != null) { setCapability(BINARY, that.binary.asCapability()); }
+
+      if (that.profile != null) { setProfile(that.profile); }
     } else if (raw instanceof Map) {
       Map<?, ?> that = (Map<?, ?>) raw;
       if (that.containsKey("args")) { addArguments((String) that.get(args)); }
@@ -153,7 +156,6 @@ public class FirefoxOptions extends MutableCapabilities {
         }
       }
     }
-
   }
 
   public FirefoxOptions setLegacy(boolean legacy) {
