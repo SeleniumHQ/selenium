@@ -1,4 +1,4 @@
-dotnet_release(name = "release_strongnamed",
+dotnet_release(name = "release_strongnamed_legacy",
   deps = [
     "//dotnet/src/webdriver:strongnamed",
     "//dotnet/src/support:strongnamed",
@@ -13,7 +13,7 @@ dotnet_release(name = "release_strongnamed",
   out = "selenium-dotnet-strongnamed.zip"
 )
 
-dotnet_release(name = "release",
+dotnet_release(name = "release_legacy",
   deps = [
     "//dotnet/src/webdriver:package",
     "//dotnet/src/support:package",

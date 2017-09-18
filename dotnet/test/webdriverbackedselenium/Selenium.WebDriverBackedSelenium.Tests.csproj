@@ -1,111 +1,49 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{7760D121-0C45-4083-83FD-3171F0CF9BF5}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Selenium.WebDriverBackedSelenium.Tests</RootNamespace>
+    <TargetFrameworks>net45;netcoreapp2.0</TargetFrameworks>
     <AssemblyName>Selenium.WebDriverBackedSelenium.Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>..\..\..\build\cli\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <OutputPath>..\..\..\build\cli\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath>..\..\..\build\cli\Debug\</OutputPath>
+  </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="nunit.framework">
-      <HintPath>..\..\..\third_party\dotnet\nunit-3.6.0\net-4.5\nunit.framework.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.configuration" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
+    <Compile Remove="obj\**" />
+    <EmbeddedResource Remove="obj\**" />
+    <None Remove="obj\**" />
   </ItemGroup>
+
   <ItemGroup>
-    <Compile Include="CompoundMutator.cs" />
-    <Compile Include="Environment\EnvironmentManager.cs" />
-    <Compile Include="Environment\SeleniumServer.cs" />
-    <Compile Include="GlobalSetup.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SeleniumTestCaseBase.cs" />
-    <Compile Include="TestAddSelection.cs" />
-    <Compile Include="TestAlerts.cs" />
-    <Compile Include="TestCheckUncheck.cs" />
-    <Compile Include="TestClick.cs" />
-    <Compile Include="TestClickAt.cs" />
-    <Compile Include="TestClickBlankTarget.cs" />
-    <Compile Include="TestClickJavascriptHref.cs" />
-    <Compile Include="TestClickJavascriptHrefChrome.cs" />
-    <Compile Include="TestCommandError.cs" />
-    <Compile Include="TestComments.cs" />
-    <Compile Include="TestConfirmations.cs" />
-    <Compile Include="TestEditable.cs" />
-    <Compile Include="TestElementIndex.cs" />
-    <Compile Include="TestElementOrder.cs" />
-    <Compile Include="TestElementPresent.cs" />
-    <Compile Include="TestErrorChecking.cs" />
-    <Compile Include="TestEval.cs" />
-    <Compile Include="TestFramesClick.cs" />
-    <Compile Include="TestFramesOpen.cs" />
-    <Compile Include="TestFunkyEventHandling.cs" />
-    <Compile Include="TestGettingValueOfCheckbox.cs" />
-    <Compile Include="TestGoBack.cs" />
-    <Compile Include="TestHtmlSource.cs" />
-    <Compile Include="TestImplicitLocators.cs" />
-    <Compile Include="TestLocators.cs" />
-    <Compile Include="TestMultiSelect.cs" />
-    <Compile Include="TestOpen.cs" />
-    <Compile Include="TestOpenInTargetFrame.cs" />
-    <Compile Include="TestPatternMatching.cs" />
-    <Compile Include="TestPause.cs" />
-    <Compile Include="TestQuickOpen.cs" />
-    <Compile Include="TestSelect.cs" />
-    <Compile Include="TestType.cs" />
-    <Compile Include="TestTypeRichText.cs" />
-    <Compile Include="TestVerifications.cs" />
-    <Compile Include="TestVisibility.cs" />
-    <Compile Include="TestWait.cs" />
-    <Compile Include="TestWaitForNot.cs" />
-    <Compile Include="TestXPathLocators.cs" />
+    <Compile Remove="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+
   <ItemGroup>
-    <ProjectReference Include="..\..\src\webdriverbackedselenium\Selenium.WebDriverBackedSelenium.csproj">
-      <Project>{a7e35a79-9321-4de8-8ec8-e5026cb71a08}</Project>
-      <Name>Selenium.WebDriverBackedSelenium</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\webdriver\WebDriver.csproj">
-      <Project>{ea31f748-5e32-476d-ab6d-fea245b4af1e}</Project>
-      <Name>WebDriver</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\common\WebDriver.Common.Tests.csproj">
-      <Project>{2967ba10-6b5a-4321-bb56-6c2aac72d4c9}</Project>
-      <Name>WebDriver.Common.Tests</Name>
-    </ProjectReference>
+    <None Remove="build.desc" />
+    <None Remove="Settings.StyleCop" />
   </ItemGroup>
+
   <ItemGroup>
-    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
+    <PackageReference Include="NUnit" Version="3.8.1" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\webdriverbackedselenium\Selenium.WebDriverBackedSelenium.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="testHelpers.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+
 </Project>

@@ -2,28 +2,28 @@
 
 genrule(
   name = 'net35',
-  srcs = [ 'WebDriver.Support.NetCore.csproj' ],
+  srcs = [ 'WebDriver.Support.csproj' ],
   cmd = 'dotnet build %SRCS% --configuration Release --framework net35 --output %OUT% /p:BuildSystem=buck',
   out = 'net35'
 )
 
 genrule(
   name = 'net40',
-  srcs = [ 'WebDriver.Support.NetCore.csproj' ],
+  srcs = [ 'WebDriver.Support.csproj' ],
   cmd = 'dotnet build %SRCS% --configuration Release --framework net40 --output %OUT% /p:BuildSystem=buck',
   out = 'net40'
 )
 
 genrule(
   name = 'net45',
-  srcs = [ 'WebDriver.Support.NetCore.csproj' ],
+  srcs = [ 'WebDriver.Support.csproj' ],
   cmd = 'dotnet build %SRCS% --configuration Release --framework net45 --output %OUT% /p:BuildSystem=buck',
   out = 'net45'
 )
 
 genrule(
   name = 'netstandard2.0',
-  srcs = [ 'WebDriver.Support.NetCore.csproj' ],
+  srcs = [ 'WebDriver.Support.csproj' ],
   cmd = 'dotnet build %SRCS% --configuration Release --framework netstandard2.0 --output %OUT% /p:BuildSystem=buck',
   out = 'netstandard2.0'
 )
@@ -55,33 +55,34 @@ genrule(
   name = 'pack',
   srcs = ['WebDriver.Support.nuspec'],
   cmd_exe = "$(exe //third_party/dotnet/nuget:nuget) pack %SRCS% /Properties packageid=Selenium.Support;version={} /Version {} /BasePath $(location :merge) /OutputDirectory %OUT%".format(SE_VERSION, SE_VERSION),
-  out = 'dist'
+  out = 'dist',
+  visibility = [ 'PUBLIC' ]
 )
 
 genrule(
   name = 'net35_strongnamed',
-  srcs = [ 'WebDriver.Support.NetCore.csproj' ],
+  srcs = [ 'WebDriver.Support.csproj' ],
   cmd = 'dotnet build %SRCS% --configuration Release --framework net35 --output %OUT% /p:SignAssembly=true /p:AssemblyOriginatorKeyFile=$(location //dotnet:keyfile) /p:BuildSystem=buck',
   out = 'net35'
 )
 
 genrule(
   name = 'net40_strongnamed',
-  srcs = [ 'WebDriver.Support.NetCore.csproj' ],
+  srcs = [ 'WebDriver.Support.csproj' ],
   cmd = 'dotnet build %SRCS% --configuration Release --framework net40 --output %OUT% /p:SignAssembly=true /p:AssemblyOriginatorKeyFile=$(location //dotnet:keyfile) /p:BuildSystem=buck',
   out = 'net40'
 )
 
 genrule(
   name = 'net45_strongnamed',
-  srcs = [ 'WebDriver.Support.NetCore.csproj' ],
+  srcs = [ 'WebDriver.Support.csproj' ],
   cmd = 'dotnet build %SRCS% --configuration Release --framework net45 --output %OUT% /p:SignAssembly=true /p:AssemblyOriginatorKeyFile=$(location //dotnet:keyfile) /p:BuildSystem=buck',
   out = 'net45'
 )
 
 genrule(
   name = 'netstandard2.0_strongnamed',
-  srcs = [ 'WebDriver.Support.NetCore.csproj' ],
+  srcs = [ 'WebDriver.Support.csproj' ],
   cmd = 'dotnet build %SRCS% --configuration Release --framework netstandard2.0 --output %OUT% /p:SignAssembly=true /p:AssemblyOriginatorKeyFile=$(location //dotnet:keyfile) /p:BuildSystem=buck',
   out = 'netstandard2.0'
 )
@@ -113,5 +114,6 @@ genrule(
   name = 'pack_strongnamed',
   srcs = ['WebDriver.Support.nuspec'],
   cmd_exe = "$(exe //third_party/dotnet/nuget:nuget) pack %SRCS% /Properties packageid=Selenium.Support.StrongNamed;version={} /Version {} /BasePath $(location :merge_strongnamed) /OutputDirectory %OUT%".format(SE_VERSION, SE_VERSION),
-  out = 'dist'
+  out = 'dist',
+  visibility = [ 'PUBLIC' ]
 )
