@@ -187,7 +187,7 @@ public class FirefoxOptions extends MutableCapabilities {
    * useful when actually starting firefox.
    */
   public FirefoxBinary getBinary() {
-    return null;
+    return getBinaryOrNull().orElse(new FirefoxBinary());
   }
 
   public Optional<FirefoxBinary> getBinaryOrNull() {
