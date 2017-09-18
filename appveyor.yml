@@ -6,10 +6,6 @@ environment:
       TASK: build
     - RUBY_VERSION: 200-x64
       TASK: //rb:ie-test
-matrix:
-  allow_failures:
-    - RUBY_VERSION: 200-x64
-      TASK: //rb:ie-test
 install:
   - 'set JAVA_HOME=C:\Program Files (x86)\Java\jdk1.8.0'
   - 'set PATH=%JAVA_HOME%;%PATH%'
