@@ -154,6 +154,20 @@ module Selenium
           expect(string).to include('user_pref("network.proxy.type", 4)')
         end
 
+        it 'can install extension' do
+          firebug = File.expand_path('../../../../../../third_party/firebug/firebug-1.5.0-fx.xpi', __dir__)
+          profile.add_extension(firebug)
+          extension_directory = File.expand_path('extensions/firebug@software.joehewitt.com', profile.layout_on_disk)
+          expect(Dir.exist?(extension_directory)).to eq(true)
+        end
+
+        it 'can install web extension' do
+          mooltipass = File.expand_path('../../../../../../third_party/firebug/mooltipass-1.1.87.xpi', __dir__)
+          profile.add_extension(mooltipass)
+          extension_directory = File.expand_path('extensions/MooltipassExtension@1.1.87', profile.layout_on_disk)
+          expect(Dir.exist?(extension_directory)).to eq(true)
+        end
+
         describe 'with browser', except: {driver: :ff_esr} do
           before(:each) do
             profile['browser.startup.homepage'] = url_for('simpleTest.html')

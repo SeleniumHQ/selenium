@@ -38,7 +38,7 @@ module Selenium
 
         def write_to(extensions_dir)
           root_dir = create_root
-          ext_path = File.join extensions_dir, read_id_from_install_rdf(root_dir)
+          ext_path = File.join extensions_dir, read_id(root_dir)
 
           FileUtils.rm_rf ext_path
           FileUtils.mkdir_p File.dirname(ext_path), mode: 0o700
@@ -62,8 +62,14 @@ module Selenium
           end
         end
 
+        def read_id(directory)
+          read_id_from_install_rdf(directory) || read_id_from_manifest_json(directory)
+        end
+
         def read_id_from_install_rdf(directory)
           rdf_path = File.join(directory, 'install.rdf')
+          return unless File.exist?(rdf_path)
+
           doc = REXML::Document.new(File.read(rdf_path))
           namespace = doc.root.namespaces.key(NAMESPACE)
 
@@ -76,6 +82,14 @@ module Selenium
           end
 
           raise Error::WebDriverError, "cannot locate extension id in #{rdf_path}"
+        end
+
+        def read_id_from_manifest_json(directory)
+          manifest_path = File.join(directory, 'manifest.json')
+          return unless File.exist?(manifest_path)
+
+          manifest = JSON.parse(File.read(manifest_path))
+          [manifest['name'].delete(' '), manifest['version']].join('@')
         end
       end # Extension
     end # Firefox
