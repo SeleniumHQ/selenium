@@ -24,6 +24,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.CommandExecutor;
@@ -117,6 +118,10 @@ public class FirefoxDriver extends RemoteWebDriver {
 
   public FirefoxDriver(FirefoxOptions options) {
     super(toExecutor(options), dropCapabilities(options));
+  }
+
+  public FirefoxDriver(GeckoDriverService service) {
+    super(new DriverCommandExecutor(service), new FirefoxOptions());
   }
 
   public FirefoxDriver(GeckoDriverService service, FirefoxOptions options) {
