@@ -105,7 +105,13 @@ public class FirefoxOptions extends MutableCapabilities {
   }
 
   public FirefoxOptions(Capabilities source) {
-    super(source);
+    // We need to initialize all our own fields before calling.
+    super();
+    source.asMap().forEach((key, value)-> {
+      if (value != null) {
+        setCapability(key, value);
+      }
+    });
 
     // If `source` has options, we need to mirror those into this instance. This may be either a
     // Map (if we're constructing from a serialized instance) or another FirefoxOptions. *sigh*
