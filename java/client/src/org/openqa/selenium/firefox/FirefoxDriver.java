@@ -131,7 +131,8 @@ public class FirefoxDriver extends RemoteWebDriver {
     Objects.requireNonNull(options, "No options to construct executor from");
     DriverService.Builder<?, ?> builder;
 
-    if (options.isLegacy()) {
+    if (! Boolean.parseBoolean(System.getProperty(DRIVER_USE_MARIONETTE, "true"))
+        || options.isLegacy()) {
       builder = XpiDriverService.builder()
           .withBinary(options.getBinary())
           .withProfile(Optional.ofNullable(options.getProfile()).orElse(new FirefoxProfile()));
