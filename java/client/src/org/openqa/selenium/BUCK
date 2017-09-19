@@ -23,6 +23,13 @@ java_library(name = 'selenium',
   visibility = ['PUBLIC'],
 )
 
+export_file(
+  name = 'template-pom',
+  src = 'pom.xml',
+  out = 'pom.xml',
+  visibility = ['PUBLIC'],
+)
+
 java_library(name = 'core',
   maven_coords = 'org.seleniumhq.selenium:selenium-api:' + SE_VERSION,
   maven_pom_template = ':template-pom',
@@ -186,6 +193,22 @@ java_library(
   ],
 )
 
+
+# This isn't very elegant, but we can build a dist zip like this:
+zip_file(
+  name = 'client-combined-zip',
+  out = 'selenium-java-' + SE_VERSION + '.zip',
+  srcs = [
+    ':client-combined-' + SE_VERSION,
+    ':client-combined-source-zip',
+    ':client-libs',
+    '//java:changelog',
+    '//:notice',
+    '//:license',
+  ],
+)
+
+# The jar file containing merged first party code
 java_binary(
   name = 'client-combined-' + SE_VERSION,
   blacklist = [
@@ -196,29 +219,27 @@ java_binary(
   ],
 )
 
-# Output of this rule is named a source jar so we can do merging later
+# The first party source, as a source jar which we don't want merged
+genrule(
+  name = 'client-combined-sources',
+  out = 'client-combined-' + SE_VERSION + '-sources.jar',
+  cmd = 'mkdir temp && echo $(query_paths "inputs(kind(java_library, deps(//java/client/src/org/openqa/selenium:client-combined)))") | xargs $(exe //java/client/src/org/openqa/selenium/tools:package) $OUT',
+)
+
+# So we hide it in another zip file, which will be merged. Zip file merging isn't recursive.
+zip_file(
+  name = 'client-combined-source-zip',
+  out = 'selenium-java-sources.jar',
+  merge_source_zips = False,
+  srcs = [
+    ':client-combined-sources'
+  ],
+)
+
+# The third party libraries we depend on, as a source jar for merging
 genrule(
   name = 'client-libs',
   out = 'libs-sources.jar',
   cmd = 'mkdir libs && echo $(classpath :client-combined) | tr : "\\n" | grep third_party/java | grep .jar | xargs -J % cp % libs && jar cMf $OUT libs/*',
 )
 
-zip_file(
-  name = 'client-combined-zip',
-  out = 'selenium-java-' + SE_VERSION + '.zip',
-  srcs = [
-    ':client-combined-' + SE_VERSION,
-    ':client-libs',
-    '//java:changelog',
-    '//:notice',
-    '//:license',
-  ],
-)
-
-
-export_file(
-  name = 'template-pom',
-  src = 'pom.xml',
-  out = 'pom.xml',
-  visibility = ['PUBLIC'],
-)

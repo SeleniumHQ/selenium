@@ -45,5 +45,6 @@
 	<classpathentry kind="lib" path="/third-party/java/testng/testng-6.9.9.jar" sourcepath="/third-party/java/testng/testng-6.9.9-sources.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/github/org.eclipse.egit.github.core-2.1.5.jar" sourcepath="/third-party/java/github/org.eclipse.egit.github.core-2.1.5.jar-sources.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/bytebuddy/byte-buddy-1.7.5.jar" sourcepath="/third-party/java/bytebuddy/byte-buddy-1.7.5-sources.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/javaparser/javaparser-core-3.4.0.jar" sourcepath="/third-party/java/javaparser/javaparser-core-3.4.0-sources.jar"/>
 	<classpathentry kind="output" path="build/production"/>
 </classpath>
