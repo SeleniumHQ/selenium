@@ -24,6 +24,7 @@ import static org.openqa.selenium.Platform.MAC;
 import static org.openqa.selenium.Platform.UNIX;
 import static org.openqa.selenium.Platform.WINDOWS;
 import static org.openqa.selenium.os.WindowsUtils.getPathsInProgramFiles;
+import org.openqa.selenium.remote.service.DriverService;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
@@ -138,6 +139,19 @@ public class FirefoxBinary {
     executable = new Executable(pathToFirefoxBinary);
   }
 
+  /**
+   * deprecated Use {@link DriverService.Builder#withEnvironment(Map)} instead:
+   * <p>
+   * new FirefoxDriver(
+   *   new GeckoDriverService.Builder()
+   *     .usingDriverExecutable(new File("path/to/geckodriver.exe"))
+   *     .usingFirefoxBinary(new FirefoxBinary(new File("path/to/firefox.exe")))
+   *     .withEnvironment(ImmutableMap.of("DISPLAY", "0:0"))
+   *     .build());
+   * @param propertyName
+   * @param value
+   */
+  @Deprecated
   public void setEnvironmentProperty(String propertyName, String value) {
     if (propertyName == null || value == null) {
       throw new WebDriverException(
@@ -206,6 +220,10 @@ public class FirefoxBinary {
     return executable.getPath();
   }
 
+  /**
+   * @deprecated No replacement. Environment should be configured in {@link DriverService} instance.
+   */
+  @Deprecated
   public Map<String, String> getExtraEnv() {
     return Collections.unmodifiableMap(extraEnv);
   }
