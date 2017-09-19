@@ -107,6 +107,7 @@ namespace OpenQA.Selenium.Remote
             request.Timeout = (int)this.serverResponseTimeout.TotalMilliseconds;
             request.Accept = RequestAcceptHeader;
             request.KeepAlive = this.enableKeepAlive;
+            request.AutomaticDecompression = DecompressionMethods.GZip;
             request.ServicePoint.ConnectionLimit = 2000;
             if (request.Method == CommandInfo.PostCommand)
             {
