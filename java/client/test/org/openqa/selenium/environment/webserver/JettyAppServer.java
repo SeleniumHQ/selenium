@@ -26,6 +26,7 @@ import static org.openqa.selenium.testing.InProject.locate;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonObject;
 
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.remote.http.HttpClient;
@@ -164,8 +165,14 @@ public class JettyAppServer implements AppServer {
   @Override
   public String getAlternateHostName() {
     String alternativeHostnameFromProperty = System.getenv(ALTERNATIVE_HOSTNAME_FOR_TEST_ENV_NAME);
-    return alternativeHostnameFromProperty == null ?
-           networkUtils.getPrivateLocalAddress() : alternativeHostnameFromProperty;
+    if (alternativeHostnameFromProperty != null) {
+      return alternativeHostnameFromProperty;
+    }
+    try {
+      return networkUtils.getNonLoopbackAddressOfThisMachine();
+    } catch (WebDriverException e) {
+      return networkUtils.getPrivateLocalAddress();
+    }
   }
 
   @Override
