@@ -133,9 +133,14 @@ public class FirefoxDriver extends RemoteWebDriver {
 
     if (! Boolean.parseBoolean(System.getProperty(DRIVER_USE_MARIONETTE, "true"))
         || options.isLegacy()) {
+      FirefoxProfile profile = options.getProfile();
+      if (profile == null) {
+        profile = new FirefoxProfile();
+        options.setCapability(FirefoxDriver.PROFILE, profile);
+      }
       builder = XpiDriverService.builder()
           .withBinary(options.getBinary())
-          .withProfile(Optional.ofNullable(options.getProfile()).orElse(new FirefoxProfile()));
+          .withProfile(profile);
     } else {
       builder = new GeckoDriverService.Builder()
           .usingFirefoxBinary(options.getBinary());
