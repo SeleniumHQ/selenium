@@ -43,3 +43,52 @@ java_library(name = 'classes',
     '//java/server/test/org/openqa/grid/e2e:tests',
   ],
 )
+
+# This isn't very elegant, but we can build a dist zip like this:
+zip_file(
+  name = 'selenium-zip',
+  out = 'selenium-server-' + SE_VERSION + '.zip',
+  srcs = [
+    ':selenium-' + SE_VERSION + '-nodeps',
+    ':selenium-server-source-zip',
+    ':server-libs',
+    '//java:changelog',
+    '//:notice',
+    '//:license',
+  ],
+)
+
+# The jar file containing merged first party code
+java_binary(
+  name = 'selenium-' + SE_VERSION + '-nodeps',
+  blacklist = [
+    '^(?!com.thoughtworks.selenium.*|org.openqa.selenium.*|org.openqa.grid.*)',
+  ],
+  deps = [
+    ':selenium',
+  ],
+)
+
+# The first party source, as a source jar which we don't want merged
+genrule(
+  name = 'selenium-server-sources',
+  out = 'selenium-' + SE_VERSION + '-nodeps-sources.jar',
+  cmd = 'mkdir temp && echo $(query_paths "inputs(kind(java_library, deps(:selenium)))") | xargs $(exe //java/client/src/org/openqa/selenium/tools:package) $OUT',
+)
+
+# So we hide it in another zip file, which will be merged. Zip file merging isn't recursive.
+zip_file(
+  name = 'selenium-server-source-zip',
+  out = 'selenium-server-sources.jar',
+  merge_source_zips = False,
+  srcs = [
+    ':selenium-server-sources'
+  ],
+)
+
+# The third party libraries we depend on, as a source jar for merging
+genrule(
+  name = 'server-libs',
+  out = 'server-libs-sources.jar',
+  cmd = 'mkdir libs && echo $(classpath :selenium) | tr : "\\n" | grep third_party/java | grep .jar | xargs -J % cp % libs && jar cMf $OUT libs/*',
+)

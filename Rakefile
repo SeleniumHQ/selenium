@@ -443,14 +443,12 @@ end
 
 task :'prep-release-zip' => [
   '//java/client/src/org/openqa/selenium:client-combined-zip',
-  '//java/server/src/org/openqa/grid/selenium:selenium:zip',
+  '//java/server/src/org/openqa/grid/selenium:selenium-zip',
   '//java/server/src/org/openqa/selenium/server/htmlrunner:selenium-runner'] do
 
   mkdir_p "build/dist"
   cp Rake::Task['//java/server/src/org/openqa/grid/selenium:selenium'].out, "build/dist/selenium-server-standalone-#{version}.jar"
-  cp Rake::Task['//java/server/src/org/openqa/grid/selenium:selenium:zip'].out, "build/dist/selenium-server-#{version}.zip"
-  `jar uf build/dist/selenium-server-#{version}.zip NOTICE LICENSE`
-  `cd java && jar uf ../build/dist/selenium-server-#{version}.zip CHANGELOG`
+  cp Rake::Task['//java/server/src/org/openqa/grid/selenium:selenium-zip'].out, "build/dist/selenium-server-#{version}.zip"
   cp Rake::Task['//java/client/src/org/openqa/selenium:client-combined-zip'].out, "build/dist/selenium-java-#{version}.zip"
   cp Rake::Task['//java/server/src/org/openqa/selenium/server/htmlrunner:selenium-runner'].out, "build/dist/selenium-html-runner-#{version}.jar"
 end

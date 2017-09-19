@@ -1,6 +1,7 @@
 package org.openqa.selenium.tools;
 
 import com.github.javaparser.JavaParser;
+import com.github.javaparser.ParseProblemException;
 import com.github.javaparser.ast.CompilationUnit;
 
 import java.io.File;
@@ -30,14 +31,22 @@ public class PackageParser {
 
     for (int i = 1; i < args.length; i++) {
       Path source = Paths.get(args[i]);
-      CompilationUnit unit = JavaParser.parse(source);
-      String packageName = unit.getPackageDeclaration()
-          .map(decl -> decl.getName().asString())
-          .orElse("");
-      Path target = Paths.get(packageName.replace('.', File.separatorChar))
-          .resolve(source.getFileName());
+      if (!source.getFileName().toString().endsWith(".java")) {
+        continue;
+      }
 
-      outToIn.put(target.toString(), source);
+      try {
+        CompilationUnit unit = JavaParser.parse(source);
+        String packageName = unit.getPackageDeclaration()
+            .map(decl -> decl.getName().asString())
+            .orElse("");
+        Path target = Paths.get(packageName.replace('.', File.separatorChar))
+            .resolve(source.getFileName());
+
+        outToIn.put(target.toString(), source);
+      } catch (ParseProblemException ignored) {
+        // carry on
+      }
     }
 
     try (ZipOutputStream zos = new ZipOutputStream(Files.newOutputStream(out))) {
