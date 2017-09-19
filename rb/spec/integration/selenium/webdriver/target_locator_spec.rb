@@ -52,7 +52,7 @@ module Selenium
         expect(driver.find_element(name: 'login')).to be_kind_of(WebDriver::Element)
       end
 
-      it 'should switch to parent frame', except: {browser: :phantomjs} do
+      it 'should switch to parent frame' do
         driver.navigate.to url_for('iframes.html')
 
         iframe = driver.find_element(tag_name: 'iframe')
@@ -222,7 +222,7 @@ module Selenium
       end
 
       # Edge BUG - https://connect.microsoft.com/IE/feedback/details/1850030
-      describe 'alerts', except: {browser: :phantomjs} do
+      describe 'alerts' do
         it 'allows the user to accept an alert' do
           driver.navigate.to url_for('alerts.html')
           driver.find_element(id: 'alert').click

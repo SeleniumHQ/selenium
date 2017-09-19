@@ -69,8 +69,7 @@ module Selenium
         expect(key_reporter.attribute('value')).to eq('Hello')
       end
 
-      # PhantomJS on windows issue: https://github.com/ariya/phantomjs/issues/10993
-      it 'should handle file uploads', except: {browser: %i[safari edge phantomjs]} do
+      it 'should handle file uploads', except: {browser: %i[safari edge]} do
         driver.navigate.to url_for('formPage.html')
 
         element = driver.find_element(id: 'upload')

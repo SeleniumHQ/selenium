@@ -34,7 +34,7 @@ module Selenium
         expect(driver.page_source).to match(%r{<title>XHTML Test Page</title>}i)
       end
 
-      it 'should refresh the page', except: {driver: :remote, browser: :phantomjs} do
+      it 'should refresh the page' do
         driver.navigate.to url_for('javascriptPage.html')
         sleep 1 # javascript takes too long to load
         driver.find_element(id: 'updatediv').click
@@ -220,7 +220,7 @@ module Selenium
           expect(driver.execute_script('return true;')).to eq(true)
         end
 
-        it 'should raise if the script is bad', except: {browser: %i[chrome phantomjs edge]} do
+        it 'should raise if the script is bad', except: {browser: %i[chrome edge]} do
           driver.navigate.to url_for('xhtmlTest.html')
           expect { driver.execute_script('return squiggle();') }.to raise_error(Selenium::WebDriver::Error::JavascriptError)
         end

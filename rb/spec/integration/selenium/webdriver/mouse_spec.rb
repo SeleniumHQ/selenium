@@ -59,7 +59,7 @@ module Selenium
         end
       end
 
-      it 'context clicks an element', except: {browser: :phantomjs} do
+      it 'context clicks an element' do
         driver.navigate.to url_for('javascriptPage.html')
         element = driver.find_element(id: 'doubleClickField')
 

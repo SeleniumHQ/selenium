@@ -259,12 +259,6 @@ module Selenium
           WebDriver::Driver.for :chrome, opt
         end
 
-        def create_phantomjs_driver(opt = {})
-          binary = ENV['PHANTOMJS_BINARY']
-          WebDriver::PhantomJS.path = binary if binary
-          WebDriver::Driver.for :phantomjs, opt
-        end
-
         def create_safari_preview_driver(opt = {})
           Safari.technology_preview!
           WebDriver::Driver.for :safari, opt

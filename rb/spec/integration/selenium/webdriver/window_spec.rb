@@ -57,7 +57,7 @@ module Selenium
         expect(pos.y).to be >= 0
       end
 
-      it 'sets the position of the current window', except: {browser: %i[ie phantomjs safari]} do
+      it 'sets the position of the current window', except: {browser: %i[ie safari]} do
         pos = window.position
 
         target_x = pos.x + 10

@@ -23,20 +23,13 @@ module Selenium
   module WebDriver
     describe Options do
       describe 'logs', except: {browser: %i[firefox ie edge safari]} do
-        it 'can fetch remote log types', only: {driver: :remote}, except: {browser: :phantomjs} do
+        it 'can fetch remote log types', only: {driver: :remote} do
           expect(driver.manage.logs.available_types).to include(:server, :browser, :driver)
         end
 
-        it 'can fetch remote log types', only: {driver: :remote, browser: :phantomjs} do
-          expect(driver.manage.logs.available_types).to include(:server, :browser, :har)
-        end
-
-        it 'can fetch available log types', except: {browser: :phantomjs} do
+        it 'can fetch available log types', except: {driver: :remote} do
           expect(driver.manage.logs.available_types).to include(:browser, :driver)
-        end
-
-        it 'can fetch available log types', only: {browser: :phantomjs} do
-          expect(driver.manage.logs.available_types).to include(:browser, :har)
+          expect(driver.manage.logs.available_types).not_to include(:server)
         end
 
         # TODO (Alex): Investigate why this spec passes on macOS but fails on Linux.
@@ -48,9 +41,8 @@ module Selenium
           expect(entries.first).to be_kind_of(LogEntry)
         end
 
-        # Phantomjs Returns har instead of driver
         # Chrome - turned off by default
-        it 'can get the driver log', except: {browser: %i[phantomjs chrome]} do
+        it 'can get the driver log', except: {browser: :chrome} do
           driver.navigate.to url_for('simpleTest.html')
 
           entries = driver.manage.logs.get(:driver)
@@ -59,7 +51,7 @@ module Selenium
         end
       end
 
-      describe 'cookie management', except: {browser: :phantomjs} do
+      describe 'cookie management' do
         it 'should get all', except: {browser: :safari} do
           driver.navigate.to url_for('xhtmlTest.html')
           driver.manage.add_cookie name: 'foo', value: 'bar'
