@@ -34,6 +34,7 @@ import org.openqa.selenium.remote.service.DriverCommandExecutor;
 import org.openqa.selenium.remote.service.DriverService;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -133,7 +134,7 @@ public class FirefoxDriver extends RemoteWebDriver {
     if (options.isLegacy()) {
       builder = XpiDriverService.builder()
           .withBinary(options.getBinary())
-          .withProfile(options.getProfile());
+          .withProfile(Optional.ofNullable(options.getProfile()).orElse(new FirefoxProfile()));
     } else {
       builder = new GeckoDriverService.Builder()
           .usingFirefoxBinary(options.getBinary());
