@@ -1,3 +1,17 @@
+v3.6.0
+======
+
+* Remove direct dependency on HTMLUnit and PhantomJS from Maven
+  artifacts.
+* All `*Option` classes now extend `MutableCapbilities`
+  `new RemoteWebDriver(new ChromeOptions());`
+* Deprecating constructors that don't take strongly-typed `*Options`. 
+* Improved exceptions when a `Wait` times out when using a
+  `WrappedWebDriver`.
+* Added `Interactive` interface to EventFiringWebDriver. Fixes #4589
+* Add options to start Firefox and Chrome in headless modes.
+
+
 v3.5.3
 ======
 
