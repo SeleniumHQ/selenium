@@ -176,6 +176,7 @@ genrule(
     '//cpp/prebuilt:noblur32',
     '//cpp/prebuilt:noblur64'
   ],
-  cmd = 'echo "%SRCS%" > %OUT%',
+  bash = 'echo "$SRCS" > $OUT',
+  cmd_exe = 'echo "%SRCS%" > %OUT%',
   out = 'deps.txt'
 )

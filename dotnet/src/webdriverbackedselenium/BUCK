@@ -139,6 +139,7 @@ genrule(
     '//javascript/selenium-atoms:isVisible',
     '//javascript/selenium-atoms:type'
   ],
+  bash = 'echo "$SRCS" > $OUT',
   cmd = 'echo "%SRCS%" > %OUT%',
   out = 'deps.txt'
 )
