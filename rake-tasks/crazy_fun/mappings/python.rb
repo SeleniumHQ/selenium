@@ -148,7 +148,7 @@ module Python
 	      cp Rake::Task['//javascript/webdriver/atoms:getAttribute'].out, remote_py_home+"getAttribute.js", :verbose => true
 
 	      cp Rake::Task['//javascript/firefox-driver:webdriver'].out, firefox_py_home, :verbose => true
-	      cp Rake::Task['//javascript/firefox-driver:webdriver_prefs'].out, firefox_py_home, :verbose => true
+	      cp Rake::Task['//javascript/firefox-driver:webdriver_prefs'].out, firefox_py_home+"webdriver_prefs.json", :verbose => true
       end
     end
   end
