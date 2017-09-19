@@ -51,8 +51,7 @@ import java.util.TreeMap;
 import java.util.logging.Level;
 
 /**
- * Manage firefox specific settings in a way that geckodriver can understand. Use {@link
- * #addTo(DesiredCapabilities)} to also add settings to a {@link DesiredCapabilities} object.
+ * Manage firefox specific settings in a way that geckodriver can understand.
  * <p>
  * An example of usage:
  * <pre>
@@ -355,11 +354,17 @@ public class FirefoxOptions extends MutableCapabilities {
   }
 
   /**
-   * @deprecated Use {@link MutableCapabilities#merge(Capabilities)}.
+   * @deprecated Use {@link #merge(Capabilities)}.
    */
   @Deprecated
   public FirefoxOptions addCapabilities(Capabilities capabilities) {
     merge(capabilities);
+    return this;
+  }
+
+  @Override
+  public FirefoxOptions merge(Capabilities capabilities) {
+    super.merge(capabilities);
     return this;
   }
 

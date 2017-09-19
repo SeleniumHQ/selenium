@@ -165,7 +165,7 @@ public class MarionetteTest extends JUnit4TestBase {
     localDriver = new FirefoxDriver(
         new FirefoxOptions()
             .setProfile(profile)
-            .addCapabilities(caps));
+            .merge(caps));
     wait.until($ -> "XHTML Test Page".equals(localDriver.getTitle()));
 
     verifyItIsMarionette(localDriver);
@@ -186,7 +186,7 @@ public class MarionetteTest extends JUnit4TestBase {
         new FirefoxOptions()
           .setBinary(binary)
           .setProfile(profile)
-          .addCapabilities(capabilities));
+          .merge(capabilities));
     wait.until($ -> "XHTML Test Page".equals(localDriver.getTitle()));
 
     verifyItIsMarionette(localDriver);

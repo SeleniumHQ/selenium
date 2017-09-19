@@ -86,27 +86,16 @@ public class StartingFirefoxRemotelyTest extends JUnit4TestBase {
 
   @Test
   public void shouldBeAbleToMergeDesiredOptionsIntoFirefoxOptions() {
-    DesiredCapabilities caps = new DesiredCapabilities();
-    caps.setBrowserName(DesiredCapabilities.firefox().getBrowserName());
+    FirefoxOptions options = new FirefoxOptions().setProfile(new FirefoxProfile());
 
-    FirefoxOptions options = new FirefoxOptions();
-    options.setProfile(new FirefoxProfile());
-    options.addCapabilities(caps);
-
-    localDriver = new RemoteWebDriver(remoteUrl, options.toCapabilities());
+    localDriver = new RemoteWebDriver(remoteUrl, options);
     localDriver.get(pages.xhtmlTestPage);
     assertEquals("XHTML Test Page", localDriver.getTitle());
   }
 
   @Test
   public void canStartFirefoxWithoutAnyConfigurationOptions() {
-    DesiredCapabilities caps = new DesiredCapabilities();
-    caps.setBrowserName(DesiredCapabilities.firefox().getBrowserName());
-
-    FirefoxOptions options = new FirefoxOptions();
-    options.addCapabilities(caps);
-
-    localDriver = new RemoteWebDriver(remoteUrl, options.toCapabilities());
+    localDriver = new RemoteWebDriver(remoteUrl, new FirefoxOptions());
     localDriver.get(pages.xhtmlTestPage);
     assertEquals("XHTML Test Page", localDriver.getTitle());
   }

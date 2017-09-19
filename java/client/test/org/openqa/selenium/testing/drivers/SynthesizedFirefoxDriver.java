@@ -54,7 +54,7 @@ public class SynthesizedFirefoxDriver extends FirefoxDriver {
   }
 
   public SynthesizedFirefoxDriver(FirefoxOptions options) {
-    super(tweakCapabilities(options.toCapabilities()));
+    super(tweakCapabilities(options));
   }
 
   private static Capabilities tweakCapabilities(Capabilities desiredCaps) {

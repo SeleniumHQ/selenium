@@ -47,7 +47,6 @@ import org.openqa.selenium.PageLoadStrategy;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.internal.ProfilesIni;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.testing.JreSystemProperty;
 import org.openqa.selenium.testing.TestUtilities;
 
@@ -70,20 +69,20 @@ public class FirefoxOptionsTest {
         ACCEPT_INSECURE_CERTS, true)));
 
     assertTrue(options.isLegacy());
-    assertEquals(options.toCapabilities().getCapability(PAGE_LOAD_STRATEGY), PageLoadStrategy.EAGER);
-    assertEquals(options.toCapabilities().getCapability(ACCEPT_INSECURE_CERTS), true);
+    assertEquals(options.getCapability(PAGE_LOAD_STRATEGY), PageLoadStrategy.EAGER);
+    assertEquals(options.getCapability(ACCEPT_INSECURE_CERTS), true);
   }
 
   @Test
   public void canInitFirefoxOptionsWithCapabilitiesThatContainFirefoxOptions() {
-    FirefoxOptions options = new FirefoxOptions().setLegacy(true).addCapabilities(
+    FirefoxOptions options = new FirefoxOptions().setLegacy(true).merge(
         new ImmutableCapabilities(ImmutableMap.of(PAGE_LOAD_STRATEGY, PageLoadStrategy.EAGER)));
     Capabilities caps = new ImmutableCapabilities(ImmutableMap.of(FIREFOX_OPTIONS, options));
 
     FirefoxOptions options2 = new FirefoxOptions(caps);
 
     assertTrue(options2.isLegacy());
-    assertEquals(options2.toCapabilities().getCapability(PAGE_LOAD_STRATEGY), PageLoadStrategy.EAGER);
+    assertEquals(options2.getCapability(PAGE_LOAD_STRATEGY), PageLoadStrategy.EAGER);
   }
 
   @Test
@@ -109,41 +108,31 @@ public class FirefoxOptionsTest {
   @Test
   public void shouldKeepRelativePathToBinaryAsIs() {
     FirefoxOptions options = new FirefoxOptions().setBinary("some/path");
-    Capabilities caps = options.addTo(new DesiredCapabilities());
-
-    assertEquals("some/path", caps.getCapability(FirefoxDriver.BINARY));
+    assertEquals("some/path", options.getCapability(FirefoxDriver.BINARY));
   }
 
   @Test
   public void shouldConvertPathToBinaryToUseForwardSlashes() {
     FirefoxOptions options = new FirefoxOptions().setBinary("some\\path");
-    Capabilities caps = options.addTo(new DesiredCapabilities());
-
-    assertEquals("some/path", caps.getCapability(FirefoxDriver.BINARY));
+    assertEquals("some/path", options.getCapability(FirefoxDriver.BINARY));
   }
 
   @Test
   public void shouldKeepWindowsDriveLetterInPathToBinary() {
     FirefoxOptions options = new FirefoxOptions().setBinary("F:\\some\\path");
-    Capabilities caps = options.addTo(new DesiredCapabilities());
-
-    assertEquals("F:/some/path", caps.getCapability(FirefoxDriver.BINARY));
+    assertEquals("F:/some/path", options.getCapability(FirefoxDriver.BINARY));
   }
 
   @Test
   public void canUseForwardSlashesInWindowsPaths() {
     FirefoxOptions options = new FirefoxOptions().setBinary("F:\\some\\path");
-    Capabilities caps = options.addTo(new DesiredCapabilities());
-
-    assertEquals("F:/some/path", caps.getCapability(FirefoxDriver.BINARY));
+    assertEquals("F:/some/path", options.getCapability(FirefoxDriver.BINARY));
   }
 
   @Test
   public void shouldKeepWindowsNetworkFileSystemRootInPathToBinary() {
     FirefoxOptions options = new FirefoxOptions().setBinary("\\\\server\\share\\some\\path");
-    Capabilities caps = options.addTo(new DesiredCapabilities());
-
-    assertEquals("//server/share/some/path", caps.getCapability(FirefoxDriver.BINARY));
+    assertEquals("//server/share/some/path", options.getCapability(FirefoxDriver.BINARY));
   }
 
   @Test
@@ -152,10 +141,8 @@ public class FirefoxOptionsTest {
     fakeExecutable.deleteOnExit();
     FirefoxBinary binary = new FirefoxBinary(fakeExecutable);
     FirefoxOptions options = new FirefoxOptions().setBinary(binary);
-
-    Capabilities caps = options.addTo(new DesiredCapabilities());
-
-    assertEquals(binary, caps.getCapability(FirefoxDriver.BINARY));
+    assertEquals(binary, options.getCapability(FirefoxDriver.BINARY));
+    assertEquals(binary, options.getBinary());
   }
 
   @Test
@@ -224,11 +211,10 @@ public class FirefoxOptionsTest {
     String resetValue = property.get();
 
     try {
-      DesiredCapabilities caps = new DesiredCapabilities();
-      caps.setCapability(MARIONETTE, true);
+      Capabilities caps = new ImmutableCapabilities(ImmutableMap.of(MARIONETTE, true));
 
       property.set("false");
-      FirefoxOptions options = new FirefoxOptions().addCapabilities(caps);
+      FirefoxOptions options = new FirefoxOptions().merge(caps);
       assertFalse(options.isLegacy());
     } finally {
       property.set(resetValue);

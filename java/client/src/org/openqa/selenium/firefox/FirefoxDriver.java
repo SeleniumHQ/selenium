@@ -34,9 +34,7 @@ import org.openqa.selenium.remote.service.DriverCommandExecutor;
 import org.openqa.selenium.remote.service.DriverService;
 
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
-import java.util.logging.Logger;
 
 /**
  * An implementation of the {#link WebDriver} interface that drives Firefox.
@@ -89,8 +87,6 @@ public class FirefoxDriver extends RemoteWebDriver {
     public static final String DRIVER_USE_MARIONETTE = "webdriver.firefox.marionette";
   }
 
-  private static final Logger LOG = Logger.getLogger(FirefoxDriver.class.getName());
-
   public static final String BINARY = "firefox_binary";
   public static final String PROFILE = "firefox_profile";
   public static final String MARIONETTE = "marionette";
@@ -120,11 +116,11 @@ public class FirefoxDriver extends RemoteWebDriver {
   }
 
   public FirefoxDriver(FirefoxOptions options) {
-    super(toExecutor(options), dropCapabilities(options.toCapabilities()));
+    super(toExecutor(options), dropCapabilities(options));
   }
 
   public FirefoxDriver(GeckoDriverService service, FirefoxOptions options) {
-    super(new DriverCommandExecutor(service), dropCapabilities(options.toCapabilities()));
+    super(new DriverCommandExecutor(service), dropCapabilities(options));
   }
 
   private static CommandExecutor toExecutor(FirefoxOptions options) {
