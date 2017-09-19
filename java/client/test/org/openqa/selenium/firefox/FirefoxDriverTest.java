@@ -59,6 +59,8 @@ import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.UnreachableBrowserException;
+import org.openqa.selenium.remote.service.DriverCommandExecutor;
+import org.openqa.selenium.remote.service.DriverService;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.Ignore;
@@ -75,6 +77,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.Map;
 
 @NeedsLocalEnvironment(reason = "Requires local browser launching environment")
 public class FirefoxDriverTest extends JUnit4TestBase {
@@ -102,7 +105,7 @@ public class FirefoxDriverTest extends JUnit4TestBase {
         .setBinary(binary);
 
     localDriver = new FirefoxDriver(options);
-
+    
     verify(binary).startFirefoxProcess(any());
   }
 
@@ -362,7 +365,24 @@ public class FirefoxDriverTest extends JUnit4TestBase {
     }
   }
 
-
+  @Test
+  public void shouldBeAbleToSetEnvironmentVariables() throws Exception {
+	  FirefoxBinary binary = new FirefoxBinary();
+	  binary.setEnvironmentProperty("MY_ENVIRONMENT_VAR", "myEnvironmentVarValue");
+	  localDriver = new FirefoxDriver(new FirefoxOptions().setBinary(binary));
+	  
+	  // validate DriverService environment setting
+	  Field serviceField = DriverCommandExecutor.class.getDeclaredField("service");
+	  Field environmentFiled = DriverService.class.getDeclaredField("environment");
+	  serviceField.setAccessible(true);
+	  environmentFiled.setAccessible(true);
+	  DriverCommandExecutor driverExecutor = (DriverCommandExecutor) localDriver.getCommandExecutor();
+	  DriverService driverService = (DriverService) serviceField.get(driverExecutor);
+	  Map<?,?> envMap = (Map<?, ?>) environmentFiled.get(driverService);
+	  assertTrue("Must contain custom environment variable.", envMap.containsKey("MY_ENVIRONMENT_VAR"));
+	  assertThat("Must have custom value.", "myEnvironmentVarValue", is(envMap.get("MY_ENVIRONMENT_VAR").toString()));
+  }
+  
   @Test
   public void canBlockInvalidSslCertificates() {
     FirefoxProfile profile = new FirefoxProfile();
