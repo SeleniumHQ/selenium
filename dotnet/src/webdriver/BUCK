@@ -3,7 +3,8 @@ include_defs('//dotnet/SELENIUM_DOTNET_VERSION')
 genrule(
   name = 'net35',
   srcs = [ 'WebDriver.csproj' ],
-  cmd = "echo '$(location :webdriver_deps)' && dotnet build %SRCS% --configuration Release --framework net35 --output %OUT% /p:Version={} /p:AssemblyVersion={} /p:FileVersion={} /p:BuildSystem=buck".format(SE_VERSION, ASSEMBLY_VERSION, ASSEMBLY_VERSION),
+  bash = "echo '$(location :webdriver_deps)' && dotnet build $SRCS --configuration Release --framework net35 --output $OUT /p:Version={} /p:AssemblyVersion={} /p:FileVersion={} /p:BuildSystem=buck".format(SE_VERSION, ASSEMBLY_VERSION, ASSEMBLY_VERSION),
+  cmd_exe = "echo '$(location :webdriver_deps)' && dotnet build %SRCS% --configuration Release --framework net35 --output %OUT% /p:Version={} /p:AssemblyVersion={} /p:FileVersion={} /p:BuildSystem=buck".format(SE_VERSION, ASSEMBLY_VERSION, ASSEMBLY_VERSION),
   out = 'net35',
   visibility = [
     '//dotnet/src/webdriverbackedselenium:net35',
@@ -14,7 +15,8 @@ genrule(
 genrule(
   name = 'net40',
   srcs = [ 'WebDriver.csproj' ],
-  cmd = "echo '$(location :webdriver_deps)' && dotnet build %SRCS% --configuration Release --framework net40 --output %OUT% /p:Version={} /p:AssemblyVersion={} /p:FileVersion={} /p:BuildSystem=buck".format(SE_VERSION, ASSEMBLY_VERSION, ASSEMBLY_VERSION),
+  bash = "echo '$(location :webdriver_deps)' && dotnet build $SRCS --configuration Release --framework net40 --output $OUT /p:Version={} /p:AssemblyVersion={} /p:FileVersion={} /p:BuildSystem=buck".format(SE_VERSION, ASSEMBLY_VERSION, ASSEMBLY_VERSION),
+  cmd_exe = "echo '$(location :webdriver_deps)' && dotnet build %SRCS% --configuration Release --framework net40 --output %OUT% /p:Version={} /p:AssemblyVersion={} /p:FileVersion={} /p:BuildSystem=buck".format(SE_VERSION, ASSEMBLY_VERSION, ASSEMBLY_VERSION),
   out = 'net40',
   visibility = [
     '//dotnet/src/webdriverbackedselenium:net40',
@@ -25,7 +27,8 @@ genrule(
 genrule(
   name = 'net45',
   srcs = [ 'WebDriver.csproj' ],
-  cmd = "echo '$(location :webdriver_deps)' && dotnet build %SRCS% --configuration Release --framework net45 --output %OUT% /p:Version={} /p:AssemblyVersion={} /p:FileVersion={} /p:BuildSystem=buck".format(SE_VERSION, ASSEMBLY_VERSION, ASSEMBLY_VERSION),
+  bash = "echo '$(location :webdriver_deps)' && dotnet build $SRCS --configuration Release --framework net45 --output $OUT /p:Version={} /p:AssemblyVersion={} /p:FileVersion={} /p:BuildSystem=buck".format(SE_VERSION, ASSEMBLY_VERSION, ASSEMBLY_VERSION),
+  cmd_exe = "echo '$(location :webdriver_deps)' && dotnet build %SRCS% --configuration Release --framework net45 --output %OUT% /p:Version={} /p:AssemblyVersion={} /p:FileVersion={} /p:BuildSystem=buck".format(SE_VERSION, ASSEMBLY_VERSION, ASSEMBLY_VERSION),
   out = 'net45',
   visibility = [
     '//dotnet/src/webdriverbackedselenium:net45',
@@ -36,7 +39,8 @@ genrule(
 genrule(
   name = 'netstandard2.0',
   srcs = [ 'WebDriver.csproj' ],
-  cmd = "echo '$(location :webdriver_deps)' && dotnet build %SRCS% --configuration Release --framework netstandard2.0 --output %OUT% /p:Version={} /p:AssemblyVersion={} /p:FileVersion={} /p:BuildSystem=buck".format(SE_VERSION, ASSEMBLY_VERSION, ASSEMBLY_VERSION),
+  bash = "echo '$(location :webdriver_deps)' && dotnet build $SRCS --configuration Release --framework netstandard2.0 --output $OUT /p:Version={} /p:AssemblyVersion={} /p:FileVersion={} /p:BuildSystem=buck".format(SE_VERSION, ASSEMBLY_VERSION, ASSEMBLY_VERSION),
+  cmd_exe = "echo '$(location :webdriver_deps)' && dotnet build %SRCS% --configuration Release --framework netstandard2.0 --output %OUT% /p:Version={} /p:AssemblyVersion={} /p:FileVersion={} /p:BuildSystem=buck".format(SE_VERSION, ASSEMBLY_VERSION, ASSEMBLY_VERSION),
   out = 'netstandard2.0',
   visibility = [
     '//dotnet/src/webdriverbackedselenium:netstandard2.0',
