@@ -32,6 +32,8 @@ import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.PageLoadStrategy;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.UnexpectedAlertBehaviour;
+import org.openqa.selenium.remote.BrowserType;
+import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.io.File;
@@ -76,6 +78,10 @@ public class ChromeOptions extends MutableCapabilities {
   private List<File> extensionFiles = Lists.newArrayList();
   private List<String> extensions = Lists.newArrayList();
   private Map<String, Object> experimentalOptions = Maps.newHashMap();
+
+  public ChromeOptions() {
+    setCapability(CapabilityType.BROWSER_NAME, BrowserType.CHROME);
+  }
 
   /**
    * Sets the path to the Chrome executable. This path should exist on the
