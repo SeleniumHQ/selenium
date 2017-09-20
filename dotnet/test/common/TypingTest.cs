@@ -649,7 +649,6 @@ namespace OpenQA.Selenium
         [Test]
         [Category("Javascript")]
         [IgnoreBrowser(Browser.HtmlUnit, "Cannot type on contentEditable with synthetic events")]
-        //[IgnoreBrowser(Browser.Safari, "Cannot type on contentEditable with synthetic events")]
         [IgnoreBrowser(Browser.PhantomJS, "Cannot type on contentEditable with synthetic events")]
         [IgnoreBrowser(Browser.Android, "Does not support contentEditable")]
         [IgnoreBrowser(Browser.IPhone, "Does not support contentEditable")]

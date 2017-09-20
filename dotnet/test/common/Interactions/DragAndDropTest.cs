@@ -58,6 +58,7 @@ namespace OpenQA.Selenium.Interactions
 
         [Test]
         [Category("Javascript")]
+        [IgnoreBrowser(Browser.Safari, "Advanced User Interactions not implmented on Safari")]
         public void DragAndDropToElementInIframe()
         {
             driver.Url = iframePage;
@@ -85,6 +86,7 @@ namespace OpenQA.Selenium.Interactions
 
         [Test]
         [Category("Javascript")]
+        [IgnoreBrowser(Browser.Safari, "Advanced User Interactions not implmented on Safari")]
         public void DragAndDropElementWithOffsetInIframeAtBottom()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("iframeAtBottom.html");
@@ -102,6 +104,7 @@ namespace OpenQA.Selenium.Interactions
 
         [Test]
         [Category("Javascript")]
+        [IgnoreBrowser(Browser.Safari, "Advanced User Interactions not implmented on Safari")]
         public void DragAndDropElementWithOffsetInScrolledDiv()
         {
             if (TestUtilities.IsFirefox(driver) && TestUtilities.IsNativeEventsEnabled(driver))
