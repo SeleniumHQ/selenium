@@ -40,6 +40,7 @@ module Selenium
 
       IGNORED_ERRORS = [Errno::EADDRNOTAVAIL]
       IGNORED_ERRORS << Errno::EBADF if Platform.cygwin?
+      IGNORED_ERRORS << Errno::EACCES if Platform.windows?
       IGNORED_ERRORS.freeze
 
       def self.free?(port)
