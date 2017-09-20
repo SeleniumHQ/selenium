@@ -61,7 +61,7 @@ module Selenium
       end
 
       # https://github.com/mozilla/geckodriver/issues/245
-      it 'should send key presses chords', only: {browser: %i[chrome ff_esr ie]} do
+      it 'should send key presses chords', except: {browser: :firefox} do
         driver.navigate.to url_for('javascriptPage.html')
         key_reporter = driver.find_element(id: 'keyReporter')
 
@@ -173,7 +173,7 @@ module Selenium
       end
 
       # IE - https://github.com/SeleniumHQ/selenium/pull/4043
-      it 'should drag and drop', except: {browser: %i[safari ie]} do
+      it 'should drag and drop', except: {browser: %i[edge ie safari]} do
         driver.navigate.to url_for('dragAndDropTest.html')
 
         img1 = driver.find_element(id: 'test1')

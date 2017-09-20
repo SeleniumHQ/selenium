@@ -21,7 +21,7 @@ require_relative 'spec_helper'
 
 module Selenium
   module WebDriver
-    describe ActionBuilder do
+    describe ActionBuilder, except: {browser: :edge} do
       describe 'Key actions' do
         it 'sends keys to the active element', except: {browser: :safari} do
           driver.navigate.to url_for('bodyTypingTest.html')

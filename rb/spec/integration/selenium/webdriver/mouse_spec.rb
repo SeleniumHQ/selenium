@@ -22,7 +22,7 @@ require_relative 'spec_helper'
 module Selenium
   module WebDriver
     # Firefox - "Actions Endpoint Not Yet Implemented"
-    describe Mouse, except: {browser: %i[safari firefox ie]} do
+    describe Mouse, except: {browser: %i[edge firefox ie safari]} do
       it 'clicks an element' do
         driver.navigate.to url_for('formPage.html')
         original_title = driver.title

@@ -245,8 +245,7 @@ module Selenium
           expect(driver.title).to eq('Testing Alerts')
         end
 
-        # Edge Under Consideration - https://dev.windows.com/en-us/microsoft-edge/platform/status/webdriver/details/
-        it 'allows the user to set the value of a prompt', except: {browser: :edge} do
+        it 'allows the user to set the value of a prompt' do
           driver.navigate.to url_for('alerts.html')
           driver.find_element(id: 'prompt').click
 
