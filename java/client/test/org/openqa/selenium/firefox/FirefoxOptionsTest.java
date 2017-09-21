@@ -43,6 +43,7 @@ import com.google.common.collect.ImmutableSet;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.PageLoadStrategy;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
@@ -57,6 +58,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.PosixFilePermission;
+import java.util.Arrays;
 import java.util.Map;
 
 public class FirefoxOptionsTest {
@@ -276,6 +278,41 @@ public class FirefoxOptionsTest {
   public void canBuildLogLevelFromStringRepresentation() {
     assertEquals(FirefoxDriverLogLevel.fromString("warn"), FirefoxDriverLogLevel.WARN);
     assertEquals(FirefoxDriverLogLevel.fromString("ERROR"), FirefoxDriverLogLevel.ERROR);
+  }
+
+  @Test
+  public void canConvertOptionsWithArgsToCapabilitiesAndRestoreBack() {
+    FirefoxOptions options = new FirefoxOptions(
+        new MutableCapabilities(new FirefoxOptions().addArguments("-a", "-b")));
+    Object options2 = options.asMap().get(FirefoxOptions.FIREFOX_OPTIONS);
+    assertNotNull(options2);
+    assertEquals(((Map<String, Object>) options2).get("args"), Arrays.asList("-a", "-b"));
+  }
+
+  @Test
+  public void canConvertOptionsWithPrefsToCapabilitiesAndRestoreBack() {
+    FirefoxOptions options = new FirefoxOptions(
+        new MutableCapabilities(new FirefoxOptions()
+                                    .addPreference("string.pref", "some value")
+                                    .addPreference("int.pref", 42)
+                                    .addPreference("boolean.pref", true)));
+    Object options2 = options.asMap().get(FirefoxOptions.FIREFOX_OPTIONS);
+    assertNotNull(options2);
+    Object prefs = ((Map<String, Object>) options2).get("prefs");
+    assertNotNull(prefs);
+    assertEquals(((Map<String, Object>) prefs).get("string.pref"), "some value");
+    assertEquals(((Map<String, Object>) prefs).get("int.pref"), 42);
+    assertEquals(((Map<String, Object>) prefs).get("boolean.pref"), true);
+  }
+
+  @Test
+  public void canConvertOptionsWithBinaryToCapabilitiesAndRestoreBack() {
+    FirefoxOptions options = new FirefoxOptions(
+        new MutableCapabilities(new FirefoxOptions().setBinary(new FirefoxBinary())));
+    Object options2 = options.asMap().get(FirefoxOptions.FIREFOX_OPTIONS);
+    assertNotNull(options2);
+    assertEquals(((Map<String, Object>) options2).get("binary"),
+                 new FirefoxBinary().getPath().replaceAll("\\\\", "/"));
   }
 
 }

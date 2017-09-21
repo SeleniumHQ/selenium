@@ -134,7 +134,29 @@ public class FirefoxOptions extends MutableCapabilities {
       if (that.profile != null) { setProfile(that.profile); }
     } else if (raw instanceof Map) {
       Map<?, ?> that = (Map<?, ?>) raw;
-      if (that.containsKey("args")) { addArguments((String) that.get("args")); }
+      if (that.containsKey("args")) {
+        Object value = that.get("args");
+        if (value instanceof String) {
+          addArguments((String) that.get("args"));
+        } else if (value instanceof List<?>) {
+          addArguments((List<String>) that.get("args"));
+        } else {
+          // last resort
+          addArguments(that.get("args").toString());
+        }
+      }
+      if (that.containsKey("prefs")) {
+        Map<String, Object> prefs = (Map<String, Object>) that.get("prefs");
+        prefs.forEach((k, v) -> {
+          if (v instanceof String) {
+            stringPrefs.put(k, (String) v);
+          } else if (v instanceof Number) {
+            intPrefs.put(k, ((Number) v).intValue());
+          } else if (v instanceof Boolean) {
+            booleanPrefs.put(k, (Boolean) v);
+          }
+        });
+      }
       if (that.containsKey("binary")) { setBinary((String) that.get("binary")); }
       if (that.containsKey("log")) {
         Map<?, ?> logStruct = (Map<?, ?>) that.get("log");
