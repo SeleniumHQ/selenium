@@ -194,6 +194,10 @@ public class DesiredCapabilities extends MutableCapabilities {
     return new DesiredCapabilities(BrowserType.SAFARI, "", Platform.MAC);
   }
 
+  /**
+   * @deprecated PhantomJS is no longer actively developed, and support will eventually be dropped.
+   */
+  @Deprecated
   public static DesiredCapabilities phantomjs() {
     return new DesiredCapabilities(BrowserType.PHANTOMJS, "", Platform.ANY);
   }
