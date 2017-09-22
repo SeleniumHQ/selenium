@@ -9,6 +9,10 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v3.6.0.0
+========
+ * Release to synchronize with release of Selenium project.
+
 v3.5.1.1
 ========
  * Updated to better support W3C WebDriver Specification. This is a large
