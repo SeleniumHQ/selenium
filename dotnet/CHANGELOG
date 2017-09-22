@@ -1,3 +1,50 @@
+v3.6.0
+======
+ * Removed internal use of deprecated construct in .NET bindings.
+ * Added no-format override to .NET Screenshot class for saving file,
+   which will save the image in a Portable Network Graphics (PNG)
+   format.
+ * Updating .NET bindings to not send incorrect W3C Firefox capabilities
+   Previously, RemoteWebDriver would send the same capabilities dictionary
+   using both the "desiredCapabilities" and "capabilities" properties when
+   requesting a new remote session. In the case of the language bindings
+   expressly requesting to use the legacy Firefox driver, the capabilities
+   dictionary will include properties that are invalid for the W3C-compliant
+   remote server. To resolve that issue, we will mask the explicit attempt by
+   setting a property that causes the .NET RemoteWebDriver to send a
+   legacy-only compatible new session request when explicitly requesting the
+   legacy driver. Fixes issue #4637.
+ * Added the output of .NET Standard 2.0 class libraries to the release
+   artifacts, which will allow the bindings to be used against .NET Core 2.0.
+   This addition marks the initial support of .NET Core in the Selenium .NET
+   language bindings. Use of the .NET bindings against .NET Core should be
+   considered experimental at this stage. The following issues are already
+   known, and should not be reported:
+    - Calls to localhost in .NET Core are slower than those in the full .NET
+      Framework. This is due to internal differences in the .NET libraries
+      themselves, and are not the fault of the bindings directly. See
+      https://github.com/dotnet/corefx/issues/24104 for more details.
+    - Attempting to save a screenshot to any graphics file format other than
+      Portable Network Graphics (PNG) will throw an exception. .NET Core does
+      not provide the image manipulation classes that the full .NET Framework
+      does, and there are no production-ready third-party libraries that
+      provide that functionality yet and also only rely on managed code. This
+      concern is over and above the difficulties with adding dependencies to
+      the language bindings.
+    - When using the bindings against .NET Core, there is no PageFactory
+      class available. This is not an oversight, nor is it a bug. The .NET
+      PageFactory implementation requires use of classes that are not
+      available in .NET Core. It is a non-trivial matter to add additional
+      dependencies to the .NET bindings, so simply replacing those classes
+      with a third-party library that is compatible with .NET Core is not a
+      perfectly obvious option.
+    - References to the .NET Standard 2.0 library versions provided in this
+      and future releases are only valid when using NuGet package references.
+      Simply copying the assembly and adding an assembly reference to the
+      .NET Core 2.0 project will not work. This is by design of the .NET
+      Core ecosystem, which is now entirely dependent on NuGet to propertly
+      resolve dependencies.
+
 v3.5.2
 ======
  * Changed .NET ChromeOptions to use "goog:chromeOptions" as property name.
