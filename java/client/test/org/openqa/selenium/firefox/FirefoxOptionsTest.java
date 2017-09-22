@@ -65,10 +65,10 @@ public class FirefoxOptionsTest {
 
   @Test
   public void canInitFirefoxOptionsWithCapabilities() {
-    FirefoxOptions options = new FirefoxOptions(new ImmutableCapabilities(ImmutableMap.of(
+    FirefoxOptions options = new FirefoxOptions(new ImmutableCapabilities(
         MARIONETTE, false,
         PAGE_LOAD_STRATEGY, PageLoadStrategy.EAGER,
-        ACCEPT_INSECURE_CERTS, true)));
+        ACCEPT_INSECURE_CERTS, true));
 
     assertTrue(options.isLegacy());
     assertEquals(options.getCapability(PAGE_LOAD_STRATEGY), PageLoadStrategy.EAGER);
@@ -78,8 +78,8 @@ public class FirefoxOptionsTest {
   @Test
   public void canInitFirefoxOptionsWithCapabilitiesThatContainFirefoxOptions() {
     FirefoxOptions options = new FirefoxOptions().setLegacy(true).merge(
-        new ImmutableCapabilities(ImmutableMap.of(PAGE_LOAD_STRATEGY, PageLoadStrategy.EAGER)));
-    Capabilities caps = new ImmutableCapabilities(ImmutableMap.of(FIREFOX_OPTIONS, options));
+        new ImmutableCapabilities(PAGE_LOAD_STRATEGY, PageLoadStrategy.EAGER));
+    Capabilities caps = new ImmutableCapabilities(FIREFOX_OPTIONS, options);
 
     FirefoxOptions options2 = new FirefoxOptions(caps);
 
@@ -90,8 +90,8 @@ public class FirefoxOptionsTest {
   @Test
   public void canInitFirefoxOptionsWithCapabilitiesThatContainFirefoxOptionsAsMap() {
     FirefoxProfile profile = new FirefoxProfile();
-    Capabilities caps = new ImmutableCapabilities(ImmutableMap.of(
-        FIREFOX_OPTIONS, ImmutableMap.of("profile", profile)));
+    Capabilities caps = new ImmutableCapabilities(
+        FIREFOX_OPTIONS, ImmutableMap.of("profile", profile));
 
     FirefoxOptions options = new FirefoxOptions(caps);
 
@@ -213,7 +213,7 @@ public class FirefoxOptionsTest {
     String resetValue = property.get();
 
     try {
-      Capabilities caps = new ImmutableCapabilities(ImmutableMap.of(MARIONETTE, true));
+      Capabilities caps = new ImmutableCapabilities(MARIONETTE, true);
 
       property.set("false");
       FirefoxOptions options = new FirefoxOptions().merge(caps);

@@ -26,6 +26,8 @@ import static org.openqa.selenium.testing.Driver.HTMLUNIT;
 
 import org.junit.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
@@ -82,8 +84,7 @@ public class RemoteWebDriverScreenshotTest extends JUnit4TestBase {
       return;
     }
 
-    DesiredCapabilities caps = new DesiredCapabilities();
-    caps.setCapability("webdriver.remote.quietExceptions", true);
+    Capabilities caps = new ImmutableCapabilities("webdriver.remote.quietExceptions", true);
 
     WebDriver noScreenshotDriver = new WebDriverBuilder().setDesiredCapabilities(caps).get();
 

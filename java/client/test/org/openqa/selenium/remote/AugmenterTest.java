@@ -24,6 +24,7 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
+import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_JAVASCRIPT;
 import static org.openqa.selenium.remote.DriverCommand.FIND_ELEMENT;
 
 import com.google.common.collect.ImmutableMap;
@@ -34,6 +35,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
@@ -50,8 +52,7 @@ public class AugmenterTest extends BaseAugmenterTest {
 
   @Test
   public void shouldAllowReflexiveCalls() {
-    DesiredCapabilities caps = new DesiredCapabilities();
-    caps.setCapability(CapabilityType.SUPPORTS_FINDING_BY_CSS, true);
+    Capabilities caps = new ImmutableCapabilities(CapabilityType.SUPPORTS_FINDING_BY_CSS, true);
     StubExecutor executor = new StubExecutor(caps);
     final WebElement element = mock(WebElement.class);
     executor.expect(FIND_ELEMENT, ImmutableMap.of("using", "css selector", "value", "cheese"),
@@ -66,8 +67,7 @@ public class AugmenterTest extends BaseAugmenterTest {
 
   @Test
   public void canUseTheAugmenterToInterceptConcreteMethodCalls() throws Exception {
-    DesiredCapabilities caps = new DesiredCapabilities();
-    caps.setJavascriptEnabled(true);
+    Capabilities caps = new ImmutableCapabilities(SUPPORTS_JAVASCRIPT, true);
     StubExecutor stubExecutor = new StubExecutor(caps);
     stubExecutor.expect(DriverCommand.GET_TITLE, Maps.<String, Object>newHashMap(),
         "StubTitle");
@@ -127,7 +127,7 @@ public class AugmenterTest extends BaseAugmenterTest {
 
   @Test
   public void shouldNotAugmentRemoteWebDriverWithoutExtraCapabilities() {
-    Capabilities caps = new DesiredCapabilities();
+    Capabilities caps = new ImmutableCapabilities();
     StubExecutor stubExecutor = new StubExecutor(caps);
     WebDriver driver = new RemoteWebDriver(stubExecutor, caps);
 
@@ -138,8 +138,7 @@ public class AugmenterTest extends BaseAugmenterTest {
 
   @Test
   public void shouldAugmentRemoteWebDriverWithExtraCapabilities() {
-    DesiredCapabilities caps = new DesiredCapabilities();
-    caps.setCapability(CapabilityType.SUPPORTS_FINDING_BY_CSS, true);
+    Capabilities caps = new ImmutableCapabilities(CapabilityType.SUPPORTS_FINDING_BY_CSS, true);
     StubExecutor stubExecutor = new StubExecutor(caps);
     WebDriver driver = new RemoteWebDriver(stubExecutor, caps);
 
@@ -156,7 +155,7 @@ public class AugmenterTest extends BaseAugmenterTest {
 
   @Test
   public void shouldNotAugmentSubclassesOfRemoteWebDriver() {
-    Capabilities caps = new DesiredCapabilities();
+    Capabilities caps = new ImmutableCapabilities();
     StubExecutor stubExecutor = new StubExecutor(caps);
     WebDriver driver = new RemoteWebDriverSubclass(stubExecutor, caps);
 

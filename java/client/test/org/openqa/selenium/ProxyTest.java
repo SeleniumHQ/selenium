@@ -32,7 +32,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.openqa.selenium.Proxy.ProxyType;
 import org.openqa.selenium.remote.BeanToJsonConverter;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.JsonToBeanConverter;
 
 import java.util.HashMap;
@@ -367,8 +366,7 @@ public class ProxyTest {
     rawProxy.put("ftpProxy", null);
     rawProxy.put("httpProxy", "http://www.example.com");
     rawProxy.put("autodetect", null);
-    DesiredCapabilities caps = new DesiredCapabilities();
-    caps.setCapability(PROXY, rawProxy);
+    Capabilities caps = new ImmutableCapabilities(PROXY, rawProxy);
 
     Proxy proxy = Proxy.extractFrom(caps);
 
@@ -383,8 +381,7 @@ public class ProxyTest {
     Proxy proxy = new Proxy();
     proxy.setProxyAutoconfigUrl("http://www.example.com/config.pac");
 
-    DesiredCapabilities caps = new DesiredCapabilities();
-    caps.setCapability(PROXY, proxy);
+    Capabilities caps = new ImmutableCapabilities(PROXY, proxy);
 
     String rawJson = new BeanToJsonConverter().convert(caps);
     Capabilities converted = new JsonToBeanConverter().convert(Capabilities.class, rawJson);

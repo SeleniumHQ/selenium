@@ -36,9 +36,10 @@ import com.google.common.collect.Iterables;
 import org.junit.After;
 import org.junit.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.logging.profiler.EventType;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
@@ -135,9 +136,9 @@ public class PerformanceLoggingTest extends JUnit4TestBase {
     }));
   }
 
-  private static DesiredCapabilities getCapabilitiesWithProfilerOn(boolean enabled) {
-    DesiredCapabilities capabilities = DesiredCapabilities.firefox();
-    capabilities.setCapability(ENABLE_PROFILING_CAPABILITY, enabled);
-    return capabilities;
+  private static Capabilities getCapabilitiesWithProfilerOn(boolean enabled) {
+    FirefoxOptions options = new FirefoxOptions();
+    options.setCapability(ENABLE_PROFILING_CAPABILITY, enabled);
+    return options;
   }
 }

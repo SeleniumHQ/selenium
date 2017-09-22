@@ -21,7 +21,6 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
@@ -77,8 +76,7 @@ public class TestChromeDriver extends RemoteWebDriver {
     return service.getUrl();
   }
 
-  private static DesiredCapabilities chromeWithCustomCapabilities(
-      Capabilities originalCapabilities) {
+  private static Capabilities chromeWithCustomCapabilities(Capabilities originalCapabilities) {
     ChromeOptions options = new ChromeOptions();
     options.addArguments("disable-extensions", "disable-infobars", "disable-breakpad");
     Map<String, Object> prefs = new HashMap<>();
@@ -90,14 +88,11 @@ public class TestChromeDriver extends RemoteWebDriver {
       options.setBinary(new File(chromePath));
     }
 
-    DesiredCapabilities capabilities = DesiredCapabilities.chrome();
-    capabilities.setCapability(ChromeOptions.CAPABILITY, options);
-
     if (originalCapabilities != null) {
-      capabilities.merge(originalCapabilities);
+      options.merge(originalCapabilities);
     }
 
-    return capabilities;
+    return options;
   }
 
   public <X> X getScreenshotAs(OutputType<X> target) {

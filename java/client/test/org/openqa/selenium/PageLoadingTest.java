@@ -50,7 +50,6 @@ import static org.openqa.selenium.testing.TestUtilities.isChrome;
 import org.junit.After;
 import org.junit.Test;
 import org.openqa.selenium.remote.CapabilityType;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
@@ -72,8 +71,7 @@ public class PageLoadingTest extends JUnit4TestBase {
     if (localDriver != null) {
       localDriver.quit();
     }
-    DesiredCapabilities caps = new DesiredCapabilities();
-    caps.setCapability(CapabilityType.PAGE_LOAD_STRATEGY, strategy);
+    Capabilities caps = new ImmutableCapabilities(CapabilityType.PAGE_LOAD_STRATEGY, strategy);
     localDriver = new WebDriverBuilder().setDesiredCapabilities(caps).get();
   }
 

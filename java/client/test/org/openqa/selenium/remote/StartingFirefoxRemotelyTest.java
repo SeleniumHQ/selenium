@@ -24,6 +24,8 @@ import org.junit.Assume;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
@@ -72,12 +74,9 @@ public class StartingFirefoxRemotelyTest extends JUnit4TestBase {
 
   @Test
   public void canSetProfileThroughFirefoxOptions() {
-    DesiredCapabilities caps = new DesiredCapabilities();
-    caps.setBrowserName(DesiredCapabilities.firefox().getBrowserName());
-
     FirefoxOptions options = new FirefoxOptions();
     options.setProfile(new FirefoxProfile());
-    caps.setCapability(FirefoxOptions.FIREFOX_OPTIONS, options);
+    Capabilities caps = new ImmutableCapabilities(FirefoxOptions.FIREFOX_OPTIONS, options);
 
     localDriver = new RemoteWebDriver(remoteUrl, caps);
     localDriver.get(pages.xhtmlTestPage);

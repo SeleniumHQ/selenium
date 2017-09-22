@@ -25,6 +25,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -42,7 +43,7 @@ public class RemoteWebDriverInitializationTest {
 
     try {
       new BadStartClientRemoteWebDriver(mock(CommandExecutor.class),
-                                        new DesiredCapabilities(),
+                                        new ImmutableCapabilities(),
                                         stopCalled);
     } catch (RuntimeException e) {
       assertTrue(e.getMessage().contains("Stub client that should fail"));
@@ -60,7 +61,7 @@ public class RemoteWebDriverInitializationTest {
 
     try {
       new BadStartSessionRemoteWebDriver(mock(CommandExecutor.class),
-                                         new DesiredCapabilities());
+                                         new ImmutableCapabilities());
     } catch (RuntimeException e) {
       assertTrue(e.getMessage().contains("Stub session that should fail"));
 

@@ -25,6 +25,8 @@ import static org.junit.Assert.fail;
 import com.google.common.collect.ImmutableMap;
 
 import org.junit.Test;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 
 import java.net.MalformedURLException;
@@ -35,8 +37,7 @@ public class W3CHandshakeResponseTest {
 
   @Test
   public void successfulResponseGetsParsedProperly() throws MalformedURLException {
-    DesiredCapabilities caps = new DesiredCapabilities();
-    caps.setCapability("cheese", "peas");
+    Capabilities caps = new ImmutableCapabilities("cheese", "peas");
     ImmutableMap<String, ImmutableMap<String, Object>> payload =
         ImmutableMap.of(
             "value", ImmutableMap.of(
@@ -64,8 +65,7 @@ public class W3CHandshakeResponseTest {
 
   @Test
   public void shouldIgnoreAJsonWireProtocolReply() {
-    DesiredCapabilities caps = new DesiredCapabilities();
-    caps.setCapability("cheese", "peas");
+    Capabilities caps = new ImmutableCapabilities("cheese", "peas");
     ImmutableMap<String, ?> payload =
         ImmutableMap.of(
             "status", 0,
@@ -84,8 +84,7 @@ public class W3CHandshakeResponseTest {
 
   @Test
   public void shouldIgnoreAGeckodriver013Reply() {
-    DesiredCapabilities caps = new DesiredCapabilities();
-    caps.setCapability("cheese", "peas");
+    Capabilities caps = new ImmutableCapabilities("cheese", "peas");
     ImmutableMap<String, ?> payload =
         ImmutableMap.of(
             "value", caps.asMap(),

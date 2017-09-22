@@ -40,7 +40,10 @@ import com.google.gson.JsonSyntaxException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Cookie;
+import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.UnhandledAlertException;
@@ -199,8 +202,7 @@ public class BeanToJsonConverterTest {
 
   @Test
   public void testShouldBeAbleToConvertACapabilityObject() {
-    DesiredCapabilities caps = new DesiredCapabilities();
-    caps.setCapability("key", "alpha");
+    Capabilities caps = new ImmutableCapabilities("key", "alpha");
 
     String json = new BeanToJsonConverter().convert(caps);
 
@@ -214,7 +216,7 @@ public class BeanToJsonConverterTest {
     Proxy proxy = new Proxy();
     proxy.setHttpProxy("localhost:4444");
 
-    DesiredCapabilities caps = new DesiredCapabilities("foo", "1", Platform.LINUX);
+    MutableCapabilities caps = new DesiredCapabilities("foo", "1", Platform.LINUX);
     caps.setCapability(CapabilityType.PROXY, proxy);
     Map<String, ?> asMap = ImmutableMap.of("desiredCapabilities", caps);
     Command command = new Command(new SessionId("empty"), DriverCommand.NEW_SESSION, asMap);

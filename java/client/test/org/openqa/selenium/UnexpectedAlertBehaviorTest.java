@@ -29,7 +29,6 @@ import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 
 import org.junit.After;
 import org.junit.Test;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
@@ -43,7 +42,6 @@ import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 public class UnexpectedAlertBehaviorTest extends JUnit4TestBase {
 
   private WebDriver driver2;
-  private DesiredCapabilities desiredCaps = new DesiredCapabilities();
 
   @After
   public void quitDriver() throws Exception {
@@ -80,18 +78,19 @@ public class UnexpectedAlertBehaviorTest extends JUnit4TestBase {
 
   @Test
   public void canSpecifyUnhandledAlertBehaviourUsingCapabilities() {
-    desiredCaps.setCapability(UNEXPECTED_ALERT_BEHAVIOUR, UnexpectedAlertBehaviour.ACCEPT);
-    driver2 = new WebDriverBuilder().setDesiredCapabilities(desiredCaps).get();
+    Capabilities caps = new ImmutableCapabilities(
+        UNEXPECTED_ALERT_BEHAVIOUR, UnexpectedAlertBehaviour.ACCEPT);
+    driver2 = new WebDriverBuilder().setDesiredCapabilities(caps).get();
 
     runScenarioWithUnhandledAlert("This is a default value");
   }
 
   private void runScenarioWithUnhandledAlert(UnexpectedAlertBehaviour behaviour,
       String expectedAlertText) {
-    if (behaviour != null) {
-      desiredCaps.setCapability(UNEXPECTED_ALERT_BEHAVIOUR, behaviour);
-    }
-    driver2 = new WebDriverBuilder().setDesiredCapabilities(desiredCaps).get();
+    Capabilities caps = behaviour == null
+                        ? new ImmutableCapabilities()
+                        : new ImmutableCapabilities(UNEXPECTED_ALERT_BEHAVIOUR, behaviour);
+    driver2 = new WebDriverBuilder().setDesiredCapabilities(caps).get();
     runScenarioWithUnhandledAlert(expectedAlertText, behaviour != UnexpectedAlertBehaviour.IGNORE);
   }
 

@@ -14,7 +14,6 @@ import org.openqa.selenium.ImmutableCapabilities;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.lang.reflect.Type;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -37,8 +36,6 @@ import java.util.Map;
  */
 public class SyntheticNewSessionPayloadTest {
 
-  private static Type MAP_TYPE = new TypeToken<Map<String, Object>>(){}.getType();
-
   @Test
   public void shouldDoNothingIfOssAndW3CPayloadsAreBothEmpty() {
     Map<String, Object> empty = ImmutableMap.of(
@@ -49,7 +46,7 @@ public class SyntheticNewSessionPayloadTest {
 
     List<Capabilities> allCaps = getCapabilities(empty);
 
-    assertEquals(ImmutableList.of(new ImmutableCapabilities(new HashMap<>())), allCaps);
+    assertEquals(ImmutableList.of(new ImmutableCapabilities()), allCaps);
   }
 
   @Test
@@ -114,9 +111,9 @@ public class SyntheticNewSessionPayloadTest {
       List<Capabilities> allCaps = newSession.stream().collect(ImmutableList.toImmutableList());
 
       assertEquals(3, allCaps.size());
-      assertTrue(allCaps.contains(new ImmutableCapabilities(ImmutableMap.of("browserName", "cheese", "se:cake", "cheese"))));
-      assertTrue(allCaps.contains(new ImmutableCapabilities(ImmutableMap.of("browserName", "chrome"))));
-      assertTrue(allCaps.contains(new ImmutableCapabilities(ImmutableMap.of("browserName", "edge", "se:cake", "cheese"))));
+      assertTrue(allCaps.contains(new ImmutableCapabilities("browserName", "cheese", "se:cake", "cheese")));
+      assertTrue(allCaps.contains(new ImmutableCapabilities("browserName", "chrome")));
+      assertTrue(allCaps.contains(new ImmutableCapabilities("browserName", "edge", "se:cake", "cheese")));
     }
   }
 

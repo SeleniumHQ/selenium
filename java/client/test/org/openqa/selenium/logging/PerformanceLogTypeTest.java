@@ -33,9 +33,10 @@ import com.google.common.collect.Iterables;
 
 import org.junit.After;
 import org.junit.Test;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.CapabilityType;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
@@ -68,10 +69,9 @@ public class PerformanceLogTypeTest extends JUnit4TestBase {
   }
 
   void createLocalDriverWithPerformanceLogType() {
-  	DesiredCapabilities caps = new DesiredCapabilities();
     LoggingPreferences logPrefs = new LoggingPreferences();
     logPrefs.enable(LogType.PERFORMANCE, Level.INFO);
-    caps.setCapability(CapabilityType.LOGGING_PREFS, logPrefs);
+    Capabilities caps = new ImmutableCapabilities(CapabilityType.LOGGING_PREFS, logPrefs);
     localDriver = new WebDriverBuilder().setDesiredCapabilities(caps).get();
   }
 

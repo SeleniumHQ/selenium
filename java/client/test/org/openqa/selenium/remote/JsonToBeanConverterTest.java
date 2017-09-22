@@ -39,6 +39,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Cookie;
+import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.logging.LogType;
@@ -293,8 +294,7 @@ public class JsonToBeanConverterTest {
 
   @Test
   public void testShouldConvertCapabilitiesToAMapAndIncludeCustomValues() throws Exception {
-    DesiredCapabilities caps = new DesiredCapabilities();
-    caps.setCapability("furrfu", "fishy");
+    Capabilities caps = new ImmutableCapabilities("furrfu", "fishy");
 
     String raw = new BeanToJsonConverter().convert(caps);
     Capabilities converted = new JsonToBeanConverter().convert(Capabilities.class, raw);

@@ -27,6 +27,8 @@ import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 
 import org.junit.Test;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriverException;
 
@@ -38,8 +40,7 @@ public class JsonWireProtocolResponseTest {
 
   @Test
   public void successfulResponseGetsParsedProperly() throws MalformedURLException {
-    DesiredCapabilities caps = new DesiredCapabilities();
-    caps.setCapability("cheese", "peas");
+    Capabilities caps = new ImmutableCapabilities("cheese", "peas");
     ImmutableMap<String, ?> payload =
         ImmutableMap.of(
             "status", 0,
@@ -67,8 +68,7 @@ public class JsonWireProtocolResponseTest {
 
   @Test
   public void shouldIgnoreAw3CProtocolReply() {
-    DesiredCapabilities caps = new DesiredCapabilities();
-    caps.setCapability("cheese", "peas");
+    Capabilities caps = new ImmutableCapabilities("cheese", "peas");
     ImmutableMap<String, ImmutableMap<String, Object>> payload =
         ImmutableMap.of(
             "value", ImmutableMap.of(
@@ -87,8 +87,7 @@ public class JsonWireProtocolResponseTest {
 
   @Test
   public void shouldIgnoreAGeckodriver013Reply() {
-    DesiredCapabilities caps = new DesiredCapabilities();
-    caps.setCapability("cheese", "peas");
+    Capabilities caps = new ImmutableCapabilities("cheese", "peas");
     ImmutableMap<String, ?> payload =
         ImmutableMap.of(
             "value", caps.asMap(),

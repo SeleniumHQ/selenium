@@ -22,9 +22,9 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import com.google.common.base.Suppliers;
 
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.net.UrlChecker;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.LocalFileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
@@ -67,7 +67,7 @@ class ExternalDriverSupplier implements Supplier<WebDriver> {
   private final Capabilities desiredCapabilities;
 
   ExternalDriverSupplier(Capabilities desiredCapabilities) {
-    this.desiredCapabilities = new DesiredCapabilities(desiredCapabilities);
+    this.desiredCapabilities = new ImmutableCapabilities(desiredCapabilities);
   }
 
   @Override

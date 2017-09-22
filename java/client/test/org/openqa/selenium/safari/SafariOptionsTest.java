@@ -19,17 +19,18 @@ package org.openqa.selenium.safari;
 
 import static org.junit.Assert.assertEquals;
 
+import com.google.common.collect.ImmutableMap;
+
 import org.junit.Test;
-import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
 
 public class SafariOptionsTest {
 
   @Test
   public void commonUsagePatternWorks() {
     SafariOptions options = new SafariOptions().setPort(99);
-    DesiredCapabilities caps = new DesiredCapabilities();
-    caps.setCapability(SafariOptions.CAPABILITY, options);
-
+    Capabilities caps = new ImmutableCapabilities(SafariOptions.CAPABILITY, options);
     assertEquals(options.asMap(), caps.asMap());
   }
 

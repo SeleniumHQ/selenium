@@ -34,6 +34,7 @@ import org.openqa.selenium.Cookie;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.HasCapabilities;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.NoSuchWindowException;
 import org.openqa.selenium.OutputType;
@@ -211,15 +212,12 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
   }
 
   protected void startSession(Capabilities desiredCapabilities) {
-    ImmutableMap.Builder<String, Capabilities> paramBuilder =
-        new ImmutableMap.Builder<>();
-    paramBuilder.put("desiredCapabilities", desiredCapabilities);
-    Map<String, ?> parameters = paramBuilder.build();
+    Map<String, ?> parameters = ImmutableMap.of("desiredCapabilities", desiredCapabilities);
 
     Response response = execute(DriverCommand.NEW_SESSION, parameters);
 
     Map<String, Object> rawCapabilities = (Map<String, Object>) response.getValue();
-    DesiredCapabilities returnedCapabilities = new DesiredCapabilities();
+    MutableCapabilities returnedCapabilities = new MutableCapabilities();
     for (Map.Entry<String, Object> entry : rawCapabilities.entrySet()) {
       // Handle the platform later
       if (CapabilityType.PLATFORM.equals(entry.getKey()) || "platformName".equals(entry.getKey())) {

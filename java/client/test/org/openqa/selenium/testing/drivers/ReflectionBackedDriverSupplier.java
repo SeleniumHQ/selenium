@@ -40,14 +40,12 @@ public class ReflectionBackedDriverSupplier implements Supplier<WebDriver> {
 
   public WebDriver get() {
     try {
-      DesiredCapabilities desiredCapsToUse = new DesiredCapabilities(desiredCapabilities);
-
-      Class<? extends WebDriver> driverClass = mapToClass(desiredCapsToUse);
+      Class<? extends WebDriver> driverClass = mapToClass(desiredCapabilities);
       if (driverClass == null) {
         return null;
       }
 
-      return driverClass.getConstructor(Capabilities.class).newInstance(desiredCapsToUse);
+      return driverClass.getConstructor(Capabilities.class).newInstance(desiredCapabilities);
     } catch (InvocationTargetException e) {
       throw new RuntimeException(e.getTargetException());
     } catch (Exception e) {

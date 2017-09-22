@@ -41,7 +41,9 @@ import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 import org.openqa.selenium.BuckBuild;
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.internal.WrapsDriver;
@@ -140,7 +142,7 @@ public class InternalSelenseTestBase extends SeleneseTestBase {
         return;
       }
 
-      DesiredCapabilities caps = createCapabilities();
+      MutableCapabilities caps = new MutableCapabilities(createCapabilities());
       caps.setCapability(UNEXPECTED_ALERT_BEHAVIOUR, IGNORE);
 
       String baseUrl = whereIs("selenium-server/");
@@ -153,7 +155,7 @@ public class InternalSelenseTestBase extends SeleneseTestBase {
     }
   };
 
-  private DesiredCapabilities createCapabilities() {
+  private Capabilities createCapabilities() {
     String property = System.getProperty("selenium.browser", "ff");
 
     Browser browser = Browser.valueOf(property);

@@ -37,7 +37,7 @@ public class ActiveSessionFactoryTest {
   @Test
   public void factoriesFoundViaServiceLoadersAreUsedFirst() throws IOException {
     WebDriver driver = Mockito.mock(WebDriver.class);
-    Capabilities caps = new ImmutableCapabilities(ImmutableMap.of("browserName", "chrome"));
+    Capabilities caps = new ImmutableCapabilities("browserName", "chrome");
     DriverProvider provider = new StubbedProvider(caps, driver);
 
     ActiveSessionFactory sessionFactory = new ActiveSessionFactory() {

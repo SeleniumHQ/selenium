@@ -38,9 +38,9 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.logging.SessionLogHandler;
 import org.openqa.selenium.logging.SessionLogs;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.LocalFileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.testing.Ignore;
@@ -85,10 +85,7 @@ public class SessionLogsTest extends JUnit4TestBase {
   }
 
   private void startDriver() {
-    DesiredCapabilities caps = BrowserToCapabilities.of(Browser.detect());
-    if (caps == null) {
-      caps = new DesiredCapabilities();
-    }
+    Capabilities caps = BrowserToCapabilities.of(Browser.detect());
     localDriver = new RemoteWebDriver(server.getWebDriverUrl(), caps);
     localDriver.setFileDetector(new LocalFileDetector());
   }
