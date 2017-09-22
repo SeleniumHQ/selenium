@@ -1,3 +1,5 @@
+include_defs('//dotnet/SELENIUM_DOTNET_VERSION')
+
 export_file(
   name = 'keyfile',
   src = 'WebDriver.snk',
@@ -12,7 +14,7 @@ zip_file(
     '//dotnet/src/webdriverbackedselenium:pack',
     '//dotnet/src/support:pack'
   ],
-  out = 'selenium-dotnet.zip'
+  out = "selenium-dotnet-{}.zip".format(SE_VERSION)
 )
 
 zip_file(
@@ -22,5 +24,5 @@ zip_file(
     '//dotnet/src/webdriverbackedselenium:pack_strongnamed',
     '//dotnet/src/support:pack_strongnamed'
   ],
-  out = 'selenium-dotnet-strongnamed.zip'
+  out = "selenium-dotnet-strongnamed-{}.zip".format(SE_VERSION)
 )
