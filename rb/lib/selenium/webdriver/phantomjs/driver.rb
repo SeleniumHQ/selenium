@@ -30,7 +30,7 @@ module Selenium
         include DriverExtensions::TakesScreenshot
 
         def initialize(opts = {})
-          WebDriver.logger.deprecate 'Selenium support for PhantomJS', 'headless Chrome/Firefox'
+          WebDriver.logger.deprecate 'Selenium support for PhantomJS', 'headless Chrome/Firefox or HTMLUnit'
 
           opts[:desired_capabilities] ||= Remote::Capabilities.phantomjs
 
