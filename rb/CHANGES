@@ -1,5 +1,17 @@
+3.6.0 (2017-09-22)
+==================
+
+Edge:
+  * Fixed a bug when execute_script failed using server + Edge (issue #4651)
+
+Firefox:
+  * Fixed a bug when web extension failed to install using profile class (issue #4093)
+
+PhantomJS:
+  * Support is deprecated in favor of headless Chrome/Firefox
+
 3.5.2 (2017-09-07)
-  ==================
+==================
 
 Ruby:
   * Removed platformVersion from W3C payload (issue #4641)
