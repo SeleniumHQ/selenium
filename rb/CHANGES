@@ -8,7 +8,9 @@ Firefox:
   * Fixed a bug when web extension failed to install using profile class (issue #4093)
 
 PhantomJS:
-  * Support is deprecated in favor of headless Chrome/Firefox or HTMLUnit
+  * Support is deprecated in favor of headless Chrome/Firefox or HTMLUnit.
+    PhantomJS is no longer actively developed, and support will eventually
+    be dropped.
 
 3.5.2 (2017-09-07)
 ==================

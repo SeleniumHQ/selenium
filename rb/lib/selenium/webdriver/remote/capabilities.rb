@@ -120,6 +120,7 @@ module Selenium
           alias_method :ie, :internet_explorer
 
           def phantomjs(opts = {})
+            WebDriver.logger.deprecate 'Selenium support for PhantomJS', 'headless Chrome/Firefox or HTMLUnit'
             new({
               browser_name: 'phantomjs',
               javascript_enabled: true,
