@@ -18,6 +18,9 @@
 package org.openqa.selenium;
 
 
+import org.openqa.selenium.logging.LogLevelMapping;
+import org.openqa.selenium.logging.LoggingPreferences;
+
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
@@ -137,6 +140,32 @@ public class MutableCapabilities implements Capabilities, Serializable {
     // legacy code that will always try and follow this pattern, however.
     if (OPTION_KEYS.contains(key) && value instanceof Capabilities) {
       merge((Capabilities) value);
+      return;
+    }
+
+    if ("loggingPrefs".equals(key) && value instanceof Map) {
+      LoggingPreferences prefs = new LoggingPreferences();
+      @SuppressWarnings("unchecked") Map<String, String> prefsMap = (Map<String, String>) value;
+
+      for (String logType : prefsMap.keySet()) {
+        prefs.enable(logType, LogLevelMapping.toLevel(prefsMap.get(logType)));
+      }
+      caps.put(key, prefs);
+      return;
+    }
+
+    if ("platform".equals(key) && value instanceof String) {
+      try {
+        caps.put(key, Platform.fromString((String) value));
+      } catch (WebDriverException e) {
+        caps.put(key, value);
+      }
+      return;
+    }
+
+    if ("unexpectedAlertBehaviour".equals(key)) {
+      caps.put("unexpectedAlertBehaviour", value);
+      caps.put("unhandledPromptBehavior", value);
       return;
     }
 
