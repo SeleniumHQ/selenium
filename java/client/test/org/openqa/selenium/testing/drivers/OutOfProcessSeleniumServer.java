@@ -20,12 +20,10 @@ package org.openqa.selenium.testing.drivers;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 import org.openqa.selenium.BuckBuild;
-import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.net.UrlChecker;
 import org.openqa.selenium.os.CommandLine;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.testing.InProject;
 
 import java.io.IOException;
@@ -101,14 +99,6 @@ public class OutOfProcessSeleniumServer {
     }
 
     return this;
-  }
-
-  public Capabilities describe() {
-    // Default to supplying firefox instances.
-    // TODO(simon): It's wrong to have this here.
-    DesiredCapabilities capabilities = DesiredCapabilities.firefox();
-    capabilities.setCapability("selenium.server.url", baseUrl);
-    return capabilities;
   }
 
   public void stop() {
