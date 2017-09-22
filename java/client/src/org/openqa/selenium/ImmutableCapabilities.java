@@ -32,6 +32,40 @@ public class ImmutableCapabilities implements Capabilities, Serializable {
 
   private final Map<String, Object> caps = new HashMap<>();
 
+  public ImmutableCapabilities() { }
+
+  public ImmutableCapabilities(String k, Object v) {
+    caps.put(k, v);
+  }
+
+  public ImmutableCapabilities(String k1, Object v1, String k2, Object v2) {
+    caps.put(k1, v1);
+    caps.put(k2, v2);
+  }
+
+  public ImmutableCapabilities(String k1, Object v1, String k2, Object v2, String k3, Object v3) {
+    caps.put(k1, v1);
+    caps.put(k2, v2);
+    caps.put(k3, v3);
+  }
+
+  public ImmutableCapabilities(String k1, Object v1, String k2, Object v2, String k3, Object v3,
+                               String k4, Object v4) {
+    caps.put(k1, v1);
+    caps.put(k2, v2);
+    caps.put(k3, v3);
+    caps.put(k4, v4);
+  }
+
+  public ImmutableCapabilities(String k1, Object v1, String k2, Object v2, String k3, Object v3,
+                               String k4, Object v4, String k5, Object v5) {
+    caps.put(k1, v1);
+    caps.put(k2, v2);
+    caps.put(k3, v3);
+    caps.put(k4, v4);
+    caps.put(k5, v5);
+  }
+
   public ImmutableCapabilities(Capabilities other) {
     this(other.asMap());
   }
