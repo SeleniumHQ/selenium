@@ -1,5 +1,3 @@
-# -*- encoding: utf-8 -*-
-
 root = File.expand_path(File.dirname(__FILE__))
 raise "cwd must be #{root} when reading gemspec" if root != Dir.pwd
 
