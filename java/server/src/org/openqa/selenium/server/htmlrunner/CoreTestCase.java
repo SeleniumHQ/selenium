@@ -134,15 +134,6 @@ public class CoreTestCase {
         throw new SeleniumException("Unknown command: " + step.get(0));
       }
       String value = step.get(1);
-      if (baseUrl != null && "open".equals(step.get(0)) || "openWindow".equals(step.get(0))) {
-        try {
-          value = value.indexOf("://") == -1 ?
-                  new URL(baseUrl, value).toString() :
-                  value;
-        } catch (MalformedURLException e) {
-          throw new SeleniumException("Unable to determine URL to open: " + value);
-        }
-      }
       steps.add(new LoggableStep(
         STEP_FACTORY.get(step.get(0)).create(value, step.get(2)),
         step.get(0),
