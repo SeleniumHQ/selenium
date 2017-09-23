@@ -21,6 +21,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
+import com.beust.jcommander.ParameterException;
 import com.thoughtworks.selenium.Selenium;
 import com.thoughtworks.selenium.webdriven.WebDriverBackedSelenium;
 
@@ -205,7 +206,14 @@ public class HTMLLauncher {
     Args processed = new Args();
     JCommander jCommander = new JCommander(processed);
     jCommander.setCaseSensitiveOptions(false);
-    jCommander.parse(args);
+    try {
+      jCommander.parse(args);
+    } catch (ParameterException ex) {
+      StringBuilder help = new StringBuilder();
+      jCommander.usage(help);
+      System.err.print(ex.getMessage() + "\n" + help);
+      return 0;
+    }
 
     if (processed.help) {
       StringBuilder help = new StringBuilder();
