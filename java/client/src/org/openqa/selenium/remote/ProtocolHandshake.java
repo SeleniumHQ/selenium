@@ -41,6 +41,7 @@ import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonWriter;
 
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriverException;
@@ -91,15 +92,12 @@ public class ProtocolHandshake {
       .map(Pattern::asPredicate)
       .reduce(identity -> false, Predicate::or);
 
-  private final static Type MAP_TYPE = new TypeToken<Map<?, ?>>(){}.getType();
-
-
   public Result createSession(HttpClient client, Command command)
     throws IOException {
     Capabilities desired = (Capabilities) command.getParameters().get("desiredCapabilities");
-    desired = desired == null ? new DesiredCapabilities() : desired;
+    desired = desired == null ? new ImmutableCapabilities() : desired;
     Capabilities required = (Capabilities) command.getParameters().get("requiredCapabilities");
-    required = required == null ? new DesiredCapabilities() : required;
+    required = required == null ? new ImmutableCapabilities() : required;
 
     BeanToJsonConverter converter = new BeanToJsonConverter();
     JsonObject des = (JsonObject) converter.convertObject(desired);

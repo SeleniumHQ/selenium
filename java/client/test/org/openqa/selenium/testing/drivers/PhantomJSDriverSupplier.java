@@ -20,7 +20,7 @@ package org.openqa.selenium.testing.drivers;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
-import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.BrowserType;
 
 import java.util.function.Supplier;
 
@@ -36,7 +36,7 @@ public class PhantomJSDriverSupplier implements Supplier<WebDriver> {
       return null;
     }
 
-    if (!DesiredCapabilities.phantomjs().getBrowserName().equals(capabilities.getBrowserName())) {
+    if (!BrowserType.PHANTOMJS.equals(capabilities.getBrowserName())) {
       return null;
     }
 

@@ -33,6 +33,7 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.HasCapabilities;
+import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.NoSuchFrameException;
@@ -108,7 +109,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
   // For cglib
   protected RemoteWebDriver() {
-    init(new DesiredCapabilities());
+    init(new ImmutableCapabilities());
   }
 
   public RemoteWebDriver(Capabilities desiredCapabilities) {
@@ -154,7 +155,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
   }
 
   private void init(Capabilities capabilities) {
-    capabilities = capabilities == null ? new DesiredCapabilities() : capabilities;
+    capabilities = capabilities == null ? new ImmutableCapabilities() : capabilities;
 
     logger.addHandler(LoggingHandler.getInstance());
 

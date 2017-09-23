@@ -22,7 +22,6 @@ import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.CapabilityType;
-import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.io.IOException;
 import java.util.Map;
@@ -48,7 +47,7 @@ import java.util.TreeMap;
 public class SafariOptions extends MutableCapabilities {
 
   /**
-   * Key used to store SafariOptions in a {@link DesiredCapabilities} object.
+   * Key used to store SafariOptions in a {@link Capabilities} object.
    */
   public static final String CAPABILITY = "safari.options";
 

@@ -20,7 +20,6 @@ package org.openqa.selenium.safari;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.CommandExecutor;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.FileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.service.DriverCommandExecutor;
@@ -41,9 +40,9 @@ public class SafariDriver extends RemoteWebDriver {
   }
 
   /**
-   * Converts the specified {@link DesiredCapabilities} to a {@link SafariOptions}
+   * Converts the specified {@link Capabilities} to a {@link SafariOptions}
    * instance and initializes a new SafariDriver using these options.
-   * @see SafariOptions#fromCapabilities(org.openqa.selenium.Capabilities)
+   * @see SafariOptions#fromCapabilities(Capabilities)
    *
    * @param desiredCapabilities capabilities requested of the driver
    * @deprecated Use {@link SafariDriver(SafariOptions)} instead.

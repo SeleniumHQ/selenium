@@ -24,6 +24,7 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -122,7 +123,7 @@ public class SauceDriver extends RemoteWebDriver {
       mungedCapabilities.setCapability("name", jobName);
     }
 
-    if (DesiredCapabilities.internetExplorer().getBrowserName().equals(desiredCapabilities.getBrowserName())) {
+    if (BrowserType.IE.equals(desiredCapabilities.getBrowserName())) {
       String ieDriverVersion = System.getenv(SELENIUM_IEDRIVER_ENV_NAME);
       if (ieDriverVersion != null) {
         mungedCapabilities.setCapability("iedriver-version", ieDriverVersion);
@@ -130,7 +131,7 @@ public class SauceDriver extends RemoteWebDriver {
       mungedCapabilities.setCapability(InternetExplorerDriver.REQUIRE_WINDOW_FOCUS, true);
     }
 
-    if (DesiredCapabilities.chrome().getBrowserName().equals(desiredCapabilities.getBrowserName())) {
+    if (BrowserType.CHROME.equals(desiredCapabilities.getBrowserName())) {
       String chromeDriverVersion = System.getenv(SELENIUM_CHROMEDRIVER_ENV_NAME);
       if (chromeDriverVersion != null) {
         System.out.println("Setting chromedriver-version capability to " + chromeDriverVersion);

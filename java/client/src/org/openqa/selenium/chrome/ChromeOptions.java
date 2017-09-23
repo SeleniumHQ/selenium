@@ -28,13 +28,13 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.io.Files;
 
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.PageLoadStrategy;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.UnexpectedAlertBehaviour;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
-import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.io.File;
 import java.io.IOException;
@@ -68,7 +68,7 @@ import java.util.TreeMap;
 public class ChromeOptions extends MutableCapabilities {
 
   /**
-   * Key used to store a set of ChromeOptions in a {@link DesiredCapabilities}
+   * Key used to store a set of ChromeOptions in a {@link Capabilities}
    * object.
    */
   public static final String CAPABILITY = "goog:chromeOptions";

@@ -19,7 +19,7 @@ package org.openqa.selenium.testing.drivers;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.BrowserType;
 
 import java.util.function.Supplier;
 
@@ -35,7 +35,7 @@ public class TestInternetExplorerSupplier implements Supplier<WebDriver> {
       return null;
     }
 
-    if (!DesiredCapabilities.internetExplorer().getBrowserName().equals(caps.getBrowserName())) {
+    if (!BrowserType.IE.equals(caps.getBrowserName())) {
       return null;
     }
 

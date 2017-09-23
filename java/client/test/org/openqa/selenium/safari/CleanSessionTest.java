@@ -26,7 +26,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
 
@@ -45,11 +44,9 @@ public class CleanSessionTest extends JUnit4TestBase {
 
     SafariOptions safariOptions = new SafariOptions();
     safariOptions.setUseCleanSession(true);
-    DesiredCapabilities capabilities = DesiredCapabilities.safari();
-    capabilities.setCapability(SafariOptions.CAPABILITY, safariOptions);
     WebDriver otherDriver = null;
     try {
-      otherDriver = new SafariDriver(capabilities);
+      otherDriver = new SafariDriver(safariOptions);
       driver.get(pages.alertsPage);
     } finally {
       if (otherDriver != null) {
