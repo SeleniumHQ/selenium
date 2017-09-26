@@ -137,11 +137,11 @@ bot.action.focusOnElement = function(element) {
  *    constructs one.
  * @param {boolean=} opt_persistModifiers Whether modifier keys should remain
  *     pressed when this function ends.
- * @param {boolean=} opt_html5 Whether html5 app is being ran
+ * @param {boolean=} opt_autofocus Whether app will focus automatically
  * @throws {bot.Error} If the element cannot be interacted with.
  */
 bot.action.type = function(
-    element, values, opt_keyboard, opt_persistModifiers, opt_html5) {
+    element, values, opt_keyboard, opt_persistModifiers, opt_autofocus) {
 
   var keyboard = opt_keyboard || new bot.Keyboard();
 
@@ -150,7 +150,7 @@ bot.action.type = function(
   // "interactable" state. For example, an element that is hidden by overflow
   // can be typed on, so long as the user first tabs to it or the app calls
   // focus() on the element first.
-  if (!opt_html5){
+  if (!opt_autofocus){
     if (element != bot.dom.getActiveElement(element)) {
       bot.action.checkInteractable_(element);
       bot.action.scrollIntoView(element);
@@ -164,9 +164,9 @@ bot.action.type = function(
         var keyShiftPair = bot.Keyboard.Key.fromChar(ch);
         var shiftIsPressed = keyboard.isPressed(bot.Keyboard.Keys.SHIFT);
         if (keyShiftPair.shift && !shiftIsPressed) {
-          keyboard.pressKey(bot.Keyboard.Keys.SHIFT, opt_html5);
+          keyboard.pressKey(bot.Keyboard.Keys.SHIFT, opt_autofocus);
         }
-        keyboard.pressKey(keyShiftPair.key, opt_html5);
+        keyboard.pressKey(keyShiftPair.key, opt_autofocus);
         keyboard.releaseKey(keyShiftPair.key);
         if (keyShiftPair.shift && !shiftIsPressed) {
           keyboard.releaseKey(bot.Keyboard.Keys.SHIFT);
@@ -176,10 +176,10 @@ bot.action.type = function(
       if (keyboard.isPressed(/** @type {!bot.Keyboard.Key} */ (value))) {
         keyboard.releaseKey(value);
       } else {
-        keyboard.pressKey(value, opt_html5);
+        keyboard.pressKey(value, opt_autofocus);
       }
     } else {
-      keyboard.pressKey(value, opt_html5);
+      keyboard.pressKey(value, opt_autofocus);
       keyboard.releaseKey(value);
     }
   }

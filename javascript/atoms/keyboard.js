@@ -417,9 +417,9 @@ bot.Keyboard.prototype.isPressed = function(key) {
  * which must be released before they can be pressed again.
  *
  * @param {!bot.Keyboard.Key} key Key to press.
- * @param {boolean=} opt_html5 Whether html5 app is being ran 
+ * @param {boolean=} opt_autofocus Whether app will focus automatically
  */
-bot.Keyboard.prototype.pressKey = function(key, opt_html5) {
+bot.Keyboard.prototype.pressKey = function(key, opt_autofocus) {
   if (goog.array.contains(bot.Keyboard.MODIFIERS, key) && this.isPressed(key)) {
     throw new bot.Error(bot.ErrorCode.UNKNOWN_ERROR,
         'Cannot press a modifier key that is already pressed.');
@@ -434,7 +434,7 @@ bot.Keyboard.prototype.pressKey = function(key, opt_html5) {
   // Fires keydown and stops if unsuccessful.
   if (performDefault || goog.userAgent.GECKO) {
     // Fires keypress if required and stops if unsuccessful.
-    if (opt_html5) {
+    if (opt_autofocus) {
       this.setElementToActive_();
     }    
     if (!this.requiresKeyPress_(key) ||
