@@ -491,7 +491,7 @@ bot.Keyboard.prototype.requiresKeyPress_ = function(key) {
       case bot.Keyboard.Keys.CONTEXT_MENU:
         return goog.userAgent.GECKO;
       default:
-        return false;
+        return true;
     }
   }
 };
