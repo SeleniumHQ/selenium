@@ -412,7 +412,8 @@ bot.events.KeyboardEventFactory_.prototype.create = function(target, opt_args) {
   var doc = goog.dom.getOwnerDocument(target);
   var event;
 
-  if (goog.userAgent.GECKO) {
+  if (goog.userAgent.GECKO &&
+      typeof doc.createEvent('KeyboardEvent').initKeyEvent === "function") {
     var view = goog.dom.getWindow(doc);
     var keyCode = args.charCode ? 0 : args.keyCode;
     event = doc.createEvent('KeyboardEvent');
@@ -435,7 +436,7 @@ bot.events.KeyboardEventFactory_.prototype.create = function(target, opt_args) {
     event.metaKey = args.metaKey;
     event.shiftKey = args.shiftKey;
     event.keyCode = args.charCode || args.keyCode;
-    if (goog.userAgent.WEBKIT || goog.userAgent.EDGE) {
+    if (goog.userAgent.WEBKIT || goog.userAgent.EDGE || goog.userAgent.GECKO) {
       event.charCode = (this == bot.events.EventType.KEYPRESS) ?
           event.keyCode : 0;
     }

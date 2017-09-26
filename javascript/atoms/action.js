@@ -137,22 +137,26 @@ bot.action.focusOnElement = function(element) {
  *    constructs one.
  * @param {boolean=} opt_persistModifiers Whether modifier keys should remain
  *     pressed when this function ends.
+ * @param {boolean=} opt_html5 Whether html5 app is being ran
  * @throws {bot.Error} If the element cannot be interacted with.
  */
 bot.action.type = function(
-    element, values, opt_keyboard, opt_persistModifiers) {
+    element, values, opt_keyboard, opt_persistModifiers, opt_html5) {
+
+  var keyboard = opt_keyboard || new bot.Keyboard();
+
   // If the element has already been brought into focus somewhow, typing is
   // always allowed to proceed. Otherwise, we require the element be in an
   // "interactable" state. For example, an element that is hidden by overflow
   // can be typed on, so long as the user first tabs to it or the app calls
   // focus() on the element first.
-  if (element != bot.dom.getActiveElement(element)) {
-    bot.action.checkInteractable_(element);
-    bot.action.scrollIntoView(element);
+  if (!opt_html5){
+    if (element != bot.dom.getActiveElement(element)) {
+      bot.action.checkInteractable_(element);
+      bot.action.scrollIntoView(element);
+    }
+    keyboard.moveCursor(element);
   }
-
-  var keyboard = opt_keyboard || new bot.Keyboard();
-  keyboard.moveCursor(element);
 
   function typeValue(value) {
     if (goog.isString(value)) {
@@ -160,9 +164,9 @@ bot.action.type = function(
         var keyShiftPair = bot.Keyboard.Key.fromChar(ch);
         var shiftIsPressed = keyboard.isPressed(bot.Keyboard.Keys.SHIFT);
         if (keyShiftPair.shift && !shiftIsPressed) {
-          keyboard.pressKey(bot.Keyboard.Keys.SHIFT);
+          keyboard.pressKey(bot.Keyboard.Keys.SHIFT, opt_html5);
         }
-        keyboard.pressKey(keyShiftPair.key);
+        keyboard.pressKey(keyShiftPair.key, opt_html5);
         keyboard.releaseKey(keyShiftPair.key);
         if (keyShiftPair.shift && !shiftIsPressed) {
           keyboard.releaseKey(bot.Keyboard.Keys.SHIFT);
@@ -172,10 +176,10 @@ bot.action.type = function(
       if (keyboard.isPressed(/** @type {!bot.Keyboard.Key} */ (value))) {
         keyboard.releaseKey(value);
       } else {
-        keyboard.pressKey(value);
+        keyboard.pressKey(value, opt_html5);
       }
     } else {
-      keyboard.pressKey(value);
+      keyboard.pressKey(value, opt_html5);
       keyboard.releaseKey(value);
     }
   }

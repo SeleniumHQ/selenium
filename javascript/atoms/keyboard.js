@@ -30,6 +30,7 @@ goog.require('bot.ErrorCode');
 goog.require('bot.dom');
 goog.require('bot.events.EventType');
 goog.require('goog.array');
+goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.dom.selection');
 goog.require('goog.structs.Map');
@@ -416,8 +417,9 @@ bot.Keyboard.prototype.isPressed = function(key) {
  * which must be released before they can be pressed again.
  *
  * @param {!bot.Keyboard.Key} key Key to press.
+ * @param {boolean=} opt_html5 Whether html5 app is being ran 
  */
-bot.Keyboard.prototype.pressKey = function(key) {
+bot.Keyboard.prototype.pressKey = function(key, opt_html5) {
   if (goog.array.contains(bot.Keyboard.MODIFIERS, key) && this.isPressed(key)) {
     throw new bot.Error(bot.ErrorCode.UNKNOWN_ERROR,
         'Cannot press a modifier key that is already pressed.');
@@ -432,6 +434,9 @@ bot.Keyboard.prototype.pressKey = function(key) {
   // Fires keydown and stops if unsuccessful.
   if (performDefault || goog.userAgent.GECKO) {
     // Fires keypress if required and stops if unsuccessful.
+    if (opt_html5) {
+      this.setElementToActive_();
+    }    
     if (!this.requiresKeyPress_(key) ||
         this.fireKeyEvent_(
             bot.events.EventType.KEYPRESS, key, !performDefault)) {
@@ -445,6 +450,18 @@ bot.Keyboard.prototype.pressKey = function(key) {
   }
 
   this.setKeyPressed_(key, true);
+};
+
+
+/**
+ * Sets the element to Active Element and update editable
+ *
+ * @private
+ */
+bot.Keyboard.prototype.setElementToActive_ = function() {
+  this.setElement(bot.dom.getActiveElement(this.getElement()) ||
+      this.getElement());
+  this.editable_ = bot.dom.isEditable(this.getElement());
 };
 
 
@@ -474,7 +491,7 @@ bot.Keyboard.prototype.requiresKeyPress_ = function(key) {
       case bot.Keyboard.Keys.CONTEXT_MENU:
         return goog.userAgent.GECKO;
       default:
-        return true;
+        return false;
     }
   }
 };
@@ -601,7 +618,8 @@ bot.Keyboard.prototype.updateOnCharacter_ = function(key) {
 
   var character = this.getChar_(key);
   var newPos = goog.dom.selection.getStart(this.getElement()) + 1;
-  if (bot.Keyboard.supportsSelection(this.getElement())) {
+  if ('type' in goog.dom.getDocument().createElement("INPUT") &&
+      bot.Keyboard.supportsSelection(this.getElement())) {
     goog.dom.selection.setText(this.getElement(), character);
     goog.dom.selection.setStart(this.getElement(), newPos);
   } else {
