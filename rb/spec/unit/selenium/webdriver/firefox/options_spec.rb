@@ -75,6 +75,13 @@ module Selenium
           end
         end
 
+        describe '#headless!' do
+          it 'adds the -headless command-line flag' do
+            subject.headless!
+            expect(subject.as_json['moz:firefoxOptions'][:args]).to include('-headless')
+          end
+        end
+
         describe '#add_argument' do
           it 'adds a command-line argument' do
             subject.add_argument('foo')
