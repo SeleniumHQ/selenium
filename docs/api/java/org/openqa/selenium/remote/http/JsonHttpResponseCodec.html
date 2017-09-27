@@ -17,6 +17,12 @@
     catch(err) {
     }
 //-->
+var methods = {"i0":10,"i1":10};
+var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
+var altColor = "altColor";
+var rowColor = "rowColor";
+var tableTab = "tableTab";
+var activeTableTab = "activeTableTab";
 </script>
 <noscript>
 <div>JavaScript is disabled on your browser.</div>
@@ -69,13 +75,13 @@
 <li>Nested&nbsp;|&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
-<li><a href="#methods.inherited.from.class.org.openqa.selenium.remote.http.AbstractHttpResponseCodec">Method</a></li>
+<li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
-<li>Method</li>
+<li><a href="#method.detail">Method</a></li>
 </ul>
 </div>
 <a name="skip.navbar.top">
@@ -115,8 +121,8 @@ extends <a href="../../../../../org/openqa/selenium/remote/http/AbstractHttpResp
 <div class="block">A response codec that adheres to the Selenium project's JSON/HTTP wire protocol.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol">
-   JSON wire protocol</a></dd>
+<dd><a href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol"> JSON wire
+ protocol</a></dd>
 </dl>
 </li>
 </ul>
@@ -147,12 +153,27 @@ extends <a href="../../../../../org/openqa/selenium/remote/http/AbstractHttpResp
 <!--   -->
 </a>
 <h3>Method Summary</h3>
+<table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Method Summary table, listing methods, and an explanation">
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colLast" scope="col">Method and Description</th>
+</tr>
+<tr id="i0" class="altColor">
+<td class="colFirst"><code>protected java.lang.Object</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/http/JsonHttpResponseCodec.html#getValueToEncode-org.openqa.selenium.remote.Response-">getValueToEncode</a></span>(<a href="../../../../../org/openqa/selenium/remote/Response.html" title="class in org.openqa.selenium.remote">Response</a>&nbsp;response)</code>&nbsp;</td>
+</tr>
+<tr id="i1" class="rowColor">
+<td class="colFirst"><code>protected <a href="../../../../../org/openqa/selenium/remote/Response.html" title="class in org.openqa.selenium.remote">Response</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/http/JsonHttpResponseCodec.html#reconstructValue-org.openqa.selenium.remote.Response-">reconstructValue</a></span>(<a href="../../../../../org/openqa/selenium/remote/Response.html" title="class in org.openqa.selenium.remote">Response</a>&nbsp;response)</code>&nbsp;</td>
+</tr>
+</table>
 <ul class="blockList">
 <li class="blockList"><a name="methods.inherited.from.class.org.openqa.selenium.remote.http.AbstractHttpResponseCodec">
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;org.openqa.selenium.remote.http.<a href="../../../../../org/openqa/selenium/remote/http/AbstractHttpResponseCodec.html" title="class in org.openqa.selenium.remote.http">AbstractHttpResponseCodec</a></h3>
-<code><a href="../../../../../org/openqa/selenium/remote/http/AbstractHttpResponseCodec.html#decode-org.openqa.selenium.remote.http.HttpResponse-">decode</a>, <a href="../../../../../org/openqa/selenium/remote/http/AbstractHttpResponseCodec.html#encode-org.openqa.selenium.remote.Response-">encode</a></code></li>
+<code><a href="../../../../../org/openqa/selenium/remote/http/AbstractHttpResponseCodec.html#decode-org.openqa.selenium.remote.http.HttpResponse-">decode</a>, <a href="../../../../../org/openqa/selenium/remote/http/AbstractHttpResponseCodec.html#encode-java.util.function.Supplier-org.openqa.selenium.remote.Response-">encode</a></code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a name="methods.inherited.from.class.java.lang.Object">
@@ -182,6 +203,40 @@ extends <a href="../../../../../org/openqa/selenium/remote/http/AbstractHttpResp
 <li class="blockList">
 <h4>JsonHttpResponseCodec</h4>
 <pre>public&nbsp;JsonHttpResponseCodec()</pre>
+</li>
+</ul>
+</li>
+</ul>
+<!-- ============ METHOD DETAIL ========== -->
+<ul class="blockList">
+<li class="blockList"><a name="method.detail">
+<!--   -->
+</a>
+<h3>Method Detail</h3>
+<a name="reconstructValue-org.openqa.selenium.remote.Response-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>reconstructValue</h4>
+<pre>protected&nbsp;<a href="../../../../../org/openqa/selenium/remote/Response.html" title="class in org.openqa.selenium.remote">Response</a>&nbsp;reconstructValue(<a href="../../../../../org/openqa/selenium/remote/Response.html" title="class in org.openqa.selenium.remote">Response</a>&nbsp;response)</pre>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../../../../../org/openqa/selenium/remote/http/AbstractHttpResponseCodec.html#reconstructValue-org.openqa.selenium.remote.Response-">reconstructValue</a></code>&nbsp;in class&nbsp;<code><a href="../../../../../org/openqa/selenium/remote/http/AbstractHttpResponseCodec.html" title="class in org.openqa.selenium.remote.http">AbstractHttpResponseCodec</a></code></dd>
+</dl>
+</li>
+</ul>
+<a name="getValueToEncode-org.openqa.selenium.remote.Response-">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>getValueToEncode</h4>
+<pre>protected&nbsp;java.lang.Object&nbsp;getValueToEncode(<a href="../../../../../org/openqa/selenium/remote/Response.html" title="class in org.openqa.selenium.remote">Response</a>&nbsp;response)</pre>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../../../../../org/openqa/selenium/remote/http/AbstractHttpResponseCodec.html#getValueToEncode-org.openqa.selenium.remote.Response-">getValueToEncode</a></code>&nbsp;in class&nbsp;<code><a href="../../../../../org/openqa/selenium/remote/http/AbstractHttpResponseCodec.html" title="class in org.openqa.selenium.remote.http">AbstractHttpResponseCodec</a></code></dd>
+</dl>
 </li>
 </ul>
 </li>
@@ -239,13 +294,13 @@ extends <a href="../../../../../org/openqa/selenium/remote/http/AbstractHttpResp
 <li>Nested&nbsp;|&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
-<li><a href="#methods.inherited.from.class.org.openqa.selenium.remote.http.AbstractHttpResponseCodec">Method</a></li>
+<li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
-<li>Method</li>
+<li><a href="#method.detail">Method</a></li>
 </ul>
 </div>
 <a name="skip.navbar.bottom">

@@ -42,7 +42,7 @@
 <div class="subNav">
 <ul class="navList">
 <li><a href="../../../../../org/openqa/selenium/remote/mobile/package-tree.html">Prev</a></li>
-<li><a href="../../../../../org/openqa/selenium/remote/server/handler/package-tree.html">Next</a></li>
+<li><a href="../../../../../org/openqa/selenium/remote/server/commandhandler/package-tree.html">Next</a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../../../index.html?org/openqa/selenium/remote/server/package-tree.html" target="_top">Frames</a></li>
@@ -79,6 +79,10 @@
 <ul>
 <li type="circle">java.lang.Object
 <ul>
+<li type="circle">org.openqa.selenium.remote.server.<a href="../../../../../org/openqa/selenium/remote/server/ActiveSessionCommandExecutor.html" title="class in org.openqa.selenium.remote.server"><span class="typeNameLink">ActiveSessionCommandExecutor</span></a> (implements org.openqa.selenium.remote.<a href="../../../../../org/openqa/selenium/remote/CommandExecutor.html" title="interface in org.openqa.selenium.remote">CommandExecutor</a>)</li>
+<li type="circle">org.openqa.selenium.remote.server.<a href="../../../../../org/openqa/selenium/remote/server/ActiveSessionFactory.html" title="class in org.openqa.selenium.remote.server"><span class="typeNameLink">ActiveSessionFactory</span></a></li>
+<li type="circle">org.openqa.selenium.remote.server.<a href="../../../../../org/openqa/selenium/remote/server/ActiveSessionListener.html" title="class in org.openqa.selenium.remote.server"><span class="typeNameLink">ActiveSessionListener</span></a></li>
+<li type="circle">org.openqa.selenium.remote.server.<a href="../../../../../org/openqa/selenium/remote/server/ActiveSessions.html" title="class in org.openqa.selenium.remote.server"><span class="typeNameLink">ActiveSessions</span></a></li>
 <li type="circle">org.openqa.selenium.remote.server.<a href="../../../../../org/openqa/selenium/remote/server/DefaultDriverFactory.html" title="class in org.openqa.selenium.remote.server"><span class="typeNameLink">DefaultDriverFactory</span></a> (implements org.openqa.selenium.remote.server.<a href="../../../../../org/openqa/selenium/remote/server/DriverFactory.html" title="interface in org.openqa.selenium.remote.server">DriverFactory</a>)</li>
 <li type="circle">org.openqa.selenium.remote.server.<a href="../../../../../org/openqa/selenium/remote/server/DefaultDriverProvider.html" title="class in org.openqa.selenium.remote.server"><span class="typeNameLink">DefaultDriverProvider</span></a> (implements org.openqa.selenium.remote.server.<a href="../../../../../org/openqa/selenium/remote/server/DriverProvider.html" title="interface in org.openqa.selenium.remote.server">DriverProvider</a>)</li>
 <li type="circle">org.openqa.selenium.remote.server.<a href="../../../../../org/openqa/selenium/remote/server/DefaultDriverSessions.html" title="class in org.openqa.selenium.remote.server"><span class="typeNameLink">DefaultDriverSessions</span></a> (implements org.openqa.selenium.remote.server.<a href="../../../../../org/openqa/selenium/remote/server/DriverSessions.html" title="interface in org.openqa.selenium.remote.server">DriverSessions</a>)</li>
@@ -89,25 +93,35 @@
 <li type="circle">javax.servlet.http.HttpServlet
 <ul>
 <li type="circle">org.openqa.selenium.remote.server.<a href="../../../../../org/openqa/selenium/remote/server/DriverServlet.html" title="class in org.openqa.selenium.remote.server"><span class="typeNameLink">DriverServlet</span></a></li>
+<li type="circle">org.openqa.selenium.remote.server.<a href="../../../../../org/openqa/selenium/remote/server/WebDriverServlet.html" title="class in org.openqa.selenium.remote.server"><span class="typeNameLink">WebDriverServlet</span></a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li type="circle">org.openqa.selenium.remote.server.<a href="../../../../../org/openqa/selenium/remote/server/JsonHttpCommandHandler.html" title="class in org.openqa.selenium.remote.server"><span class="typeNameLink">JsonHttpCommandHandler</span></a></li>
 <li type="circle">org.openqa.selenium.remote.server.<a href="../../../../../org/openqa/selenium/remote/server/KnownElements.html" title="class in org.openqa.selenium.remote.server"><span class="typeNameLink">KnownElements</span></a></li>
+<li type="circle">org.openqa.selenium.remote.server.<a href="../../../../../org/openqa/selenium/remote/server/NewSessionPayload.html" title="class in org.openqa.selenium.remote.server"><span class="typeNameLink">NewSessionPayload</span></a> (implements java.io.Closeable)</li>
 <li type="circle">org.openqa.selenium.remote.server.<a href="../../../../../org/openqa/selenium/remote/server/SeleniumServer.html" title="class in org.openqa.selenium.remote.server"><span class="typeNameLink">SeleniumServer</span></a> (implements org.openqa.grid.shared.GridNodeServer)</li>
-<li type="circle">org.openqa.selenium.remote.server.<a href="../../../../../org/openqa/selenium/remote/server/SystemClock.html" title="class in org.openqa.selenium.remote.server"><span class="typeNameLink">SystemClock</span></a> (implements org.openqa.selenium.remote.server.<a href="../../../../../org/openqa/selenium/remote/server/Clock.html" title="interface in org.openqa.selenium.remote.server">Clock</a>)</li>
 </ul>
 </li>
 </ul>
 <h2 title="Interface Hierarchy">Interface Hierarchy</h2>
 <ul>
-<li type="circle">org.openqa.selenium.remote.server.<a href="../../../../../org/openqa/selenium/remote/server/Clock.html" title="interface in org.openqa.selenium.remote.server"><span class="typeNameLink">Clock</span></a></li>
+<li type="circle">org.openqa.selenium.remote.server.<a href="../../../../../org/openqa/selenium/remote/server/CommandHandler.html" title="interface in org.openqa.selenium.remote.server"><span class="typeNameLink">CommandHandler</span></a>
+<ul>
+<li type="circle">org.openqa.selenium.remote.server.<a href="../../../../../org/openqa/selenium/remote/server/ActiveSession.html" title="interface in org.openqa.selenium.remote.server"><span class="typeNameLink">ActiveSession</span></a> (also extends org.openqa.selenium.internal.<a href="../../../../../org/openqa/selenium/internal/WrapsDriver.html" title="interface in org.openqa.selenium.internal">WrapsDriver</a>)</li>
+</ul>
+</li>
 <li type="circle">org.openqa.selenium.remote.server.<a href="../../../../../org/openqa/selenium/remote/server/DriverFactory.html" title="interface in org.openqa.selenium.remote.server"><span class="typeNameLink">DriverFactory</span></a></li>
 <li type="circle">org.openqa.selenium.remote.server.<a href="../../../../../org/openqa/selenium/remote/server/DriverProvider.html" title="interface in org.openqa.selenium.remote.server"><span class="typeNameLink">DriverProvider</span></a></li>
 <li type="circle">org.openqa.selenium.remote.server.<a href="../../../../../org/openqa/selenium/remote/server/DriverSessions.html" title="interface in org.openqa.selenium.remote.server"><span class="typeNameLink">DriverSessions</span></a></li>
 <li type="circle">org.openqa.selenium.remote.server.<a href="../../../../../org/openqa/selenium/remote/server/JsonParametersAware.html" title="interface in org.openqa.selenium.remote.server"><span class="typeNameLink">JsonParametersAware</span></a></li>
 <li type="circle">org.openqa.selenium.remote.server.<a href="../../../../../org/openqa/selenium/remote/server/Session.html" title="interface in org.openqa.selenium.remote.server"><span class="typeNameLink">Session</span></a></li>
+<li type="circle">org.openqa.selenium.internal.<a href="../../../../../org/openqa/selenium/internal/WrapsDriver.html" title="interface in org.openqa.selenium.internal"><span class="typeNameLink">WrapsDriver</span></a>
+<ul>
+<li type="circle">org.openqa.selenium.remote.server.<a href="../../../../../org/openqa/selenium/remote/server/ActiveSession.html" title="interface in org.openqa.selenium.remote.server"><span class="typeNameLink">ActiveSession</span></a> (also extends org.openqa.selenium.remote.server.<a href="../../../../../org/openqa/selenium/remote/server/CommandHandler.html" title="interface in org.openqa.selenium.remote.server">CommandHandler</a>)</li>
+</ul>
+</li>
 <li type="circle">org.openqa.selenium.internal.<a href="../../../../../org/openqa/selenium/internal/WrapsElement.html" title="interface in org.openqa.selenium.internal"><span class="typeNameLink">WrapsElement</span></a>
 <ul>
 <li type="circle">org.openqa.selenium.remote.server.<a href="../../../../../org/openqa/selenium/remote/server/KnownElements.ProxiedElement.html" title="interface in org.openqa.selenium.remote.server"><span class="typeNameLink">KnownElements.ProxiedElement</span></a></li>
@@ -136,7 +150,7 @@
 <div class="subNav">
 <ul class="navList">
 <li><a href="../../../../../org/openqa/selenium/remote/mobile/package-tree.html">Prev</a></li>
-<li><a href="../../../../../org/openqa/selenium/remote/server/handler/package-tree.html">Next</a></li>
+<li><a href="../../../../../org/openqa/selenium/remote/server/commandhandler/package-tree.html">Next</a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../../../index.html?org/openqa/selenium/remote/server/package-tree.html" target="_top">Frames</a></li>

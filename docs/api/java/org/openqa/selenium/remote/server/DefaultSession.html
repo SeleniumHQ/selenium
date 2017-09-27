@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":9,"i3":9,"i4":9,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10};
+var methods = {"i0":10,"i1":10,"i2":9,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -150,72 +150,33 @@ implements <a href="../../../../../org/openqa/selenium/remote/server/Session.htm
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code>static <a href="../../../../../org/openqa/selenium/remote/server/Session.html" title="interface in org.openqa.selenium.remote.server">Session</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/DefaultSession.html#createSession-org.openqa.selenium.remote.server.DriverFactory-org.openqa.selenium.remote.server.Clock-org.openqa.selenium.remote.SessionId-org.openqa.selenium.Capabilities-">createSession</a></span>(<a href="../../../../../org/openqa/selenium/remote/server/DriverFactory.html" title="interface in org.openqa.selenium.remote.server">DriverFactory</a>&nbsp;factory,
-             <a href="../../../../../org/openqa/selenium/remote/server/Clock.html" title="interface in org.openqa.selenium.remote.server">Clock</a>&nbsp;clock,
-             <a href="../../../../../org/openqa/selenium/remote/SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;sessionId,
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/DefaultSession.html#createSession-org.openqa.selenium.remote.server.DriverFactory-org.openqa.selenium.io.TemporaryFilesystem-org.openqa.selenium.Capabilities-">createSession</a></span>(<a href="../../../../../org/openqa/selenium/remote/server/DriverFactory.html" title="interface in org.openqa.selenium.remote.server">DriverFactory</a>&nbsp;factory,
+             <a href="../../../../../org/openqa/selenium/io/TemporaryFilesystem.html" title="class in org.openqa.selenium.io">TemporaryFilesystem</a>&nbsp;tempFs,
              <a href="../../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</code>&nbsp;</td>
 </tr>
 <tr id="i3" class="rowColor">
-<td class="colFirst"><code>static <a href="../../../../../org/openqa/selenium/remote/server/Session.html" title="interface in org.openqa.selenium.remote.server">Session</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/DefaultSession.html#createSession-org.openqa.selenium.remote.server.DriverFactory-org.openqa.selenium.remote.SessionId-org.openqa.selenium.Capabilities-">createSession</a></span>(<a href="../../../../../org/openqa/selenium/remote/server/DriverFactory.html" title="interface in org.openqa.selenium.remote.server">DriverFactory</a>&nbsp;factory,
-             <a href="../../../../../org/openqa/selenium/remote/SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;sessionId,
-             <a href="../../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</code>&nbsp;</td>
-</tr>
-<tr id="i4" class="altColor">
-<td class="colFirst"><code>static <a href="../../../../../org/openqa/selenium/remote/server/Session.html" title="interface in org.openqa.selenium.remote.server">Session</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/DefaultSession.html#createSession-org.openqa.selenium.remote.server.DriverFactory-org.openqa.selenium.io.TemporaryFilesystem-org.openqa.selenium.remote.server.Clock-org.openqa.selenium.remote.SessionId-org.openqa.selenium.Capabilities-">createSession</a></span>(<a href="../../../../../org/openqa/selenium/remote/server/DriverFactory.html" title="interface in org.openqa.selenium.remote.server">DriverFactory</a>&nbsp;factory,
-             <a href="../../../../../org/openqa/selenium/io/TemporaryFilesystem.html" title="class in org.openqa.selenium.io">TemporaryFilesystem</a>&nbsp;tempFs,
-             <a href="../../../../../org/openqa/selenium/remote/server/Clock.html" title="interface in org.openqa.selenium.remote.server">Clock</a>&nbsp;clock,
-             <a href="../../../../../org/openqa/selenium/remote/SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;sessionId,
-             <a href="../../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</code>&nbsp;</td>
-</tr>
-<tr id="i5" class="rowColor">
-<td class="colFirst"><code>&lt;X&gt;&nbsp;X</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/DefaultSession.html#execute-java.util.concurrent.FutureTask-">execute</a></span>(java.util.concurrent.FutureTask&lt;X&gt;&nbsp;future)</code>&nbsp;</td>
-</tr>
-<tr id="i6" class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/DefaultSession.html#getAndClearScreenshot--">getAndClearScreenshot</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i7" class="rowColor">
-<td class="colFirst"><code><a href="../../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></code></td>
+<tr id="i4" class="altColor">
+<td class="colFirst"><code>java.util.Map&lt;java.lang.String,java.lang.Object&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/DefaultSession.html#getCapabilities--">getCapabilities</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code><a href="../../../../../org/openqa/selenium/WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/DefaultSession.html#getDriver--">getDriver</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code><a href="../../../../../org/openqa/selenium/remote/server/KnownElements.html" title="class in org.openqa.selenium.remote.server">KnownElements</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/DefaultSession.html#getKnownElements--">getKnownElements</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code><a href="../../../../../org/openqa/selenium/remote/SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/DefaultSession.html#getSessionId--">getSessionId</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code><a href="../../../../../org/openqa/selenium/io/TemporaryFilesystem.html" title="class in org.openqa.selenium.io">TemporaryFilesystem</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/DefaultSession.html#getTemporaryFileSystem--">getTemporaryFileSystem</a></span>()</code>&nbsp;</td>
-</tr>
-<tr id="i12" class="altColor">
-<td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/DefaultSession.html#interrupt--">interrupt</a></span>()</code>&nbsp;</td>
-</tr>
-<tr id="i13" class="rowColor">
-<td class="colFirst"><code>boolean</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/DefaultSession.html#isInUse--">isInUse</a></span>()</code>
-<div class="block">Indicates that the session is in use at this moment (being forwarded to browser)</div>
-</td>
-</tr>
-<tr id="i14" class="altColor">
-<td class="colFirst"><code>boolean</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/DefaultSession.html#isTimedOut-long-">isTimedOut</a></span>(long&nbsp;timeout)</code>&nbsp;</td>
-</tr>
-<tr id="i15" class="rowColor">
-<td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/DefaultSession.html#updateLastAccessTime--">updateLastAccessTime</a></span>()</code>
-<div class="block">Touches the session.</div>
-</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -239,40 +200,7 @@ implements <a href="../../../../../org/openqa/selenium/remote/server/Session.htm
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a name="createSession-org.openqa.selenium.remote.server.DriverFactory-org.openqa.selenium.remote.SessionId-org.openqa.selenium.Capabilities-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>createSession</h4>
-<pre>public static&nbsp;<a href="../../../../../org/openqa/selenium/remote/server/Session.html" title="interface in org.openqa.selenium.remote.server">Session</a>&nbsp;createSession(<a href="../../../../../org/openqa/selenium/remote/server/DriverFactory.html" title="interface in org.openqa.selenium.remote.server">DriverFactory</a>&nbsp;factory,
-                                    <a href="../../../../../org/openqa/selenium/remote/SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;sessionId,
-                                    <a href="../../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)
-                             throws java.lang.Exception</pre>
-<dl>
-<dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>java.lang.Exception</code></dd>
-</dl>
-</li>
-</ul>
-<a name="createSession-org.openqa.selenium.remote.server.DriverFactory-org.openqa.selenium.remote.server.Clock-org.openqa.selenium.remote.SessionId-org.openqa.selenium.Capabilities-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>createSession</h4>
-<pre>public static&nbsp;<a href="../../../../../org/openqa/selenium/remote/server/Session.html" title="interface in org.openqa.selenium.remote.server">Session</a>&nbsp;createSession(<a href="../../../../../org/openqa/selenium/remote/server/DriverFactory.html" title="interface in org.openqa.selenium.remote.server">DriverFactory</a>&nbsp;factory,
-                                    <a href="../../../../../org/openqa/selenium/remote/server/Clock.html" title="interface in org.openqa.selenium.remote.server">Clock</a>&nbsp;clock,
-                                    <a href="../../../../../org/openqa/selenium/remote/SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;sessionId,
-                                    <a href="../../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)
-                             throws java.lang.Exception</pre>
-<dl>
-<dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>java.lang.Exception</code></dd>
-</dl>
-</li>
-</ul>
-<a name="createSession-org.openqa.selenium.remote.server.DriverFactory-org.openqa.selenium.io.TemporaryFilesystem-org.openqa.selenium.remote.server.Clock-org.openqa.selenium.remote.SessionId-org.openqa.selenium.Capabilities-">
+<a name="createSession-org.openqa.selenium.remote.server.DriverFactory-org.openqa.selenium.io.TemporaryFilesystem-org.openqa.selenium.Capabilities-">
 <!--   -->
 </a>
 <ul class="blockList">
@@ -280,40 +208,11 @@ implements <a href="../../../../../org/openqa/selenium/remote/server/Session.htm
 <h4>createSession</h4>
 <pre>public static&nbsp;<a href="../../../../../org/openqa/selenium/remote/server/Session.html" title="interface in org.openqa.selenium.remote.server">Session</a>&nbsp;createSession(<a href="../../../../../org/openqa/selenium/remote/server/DriverFactory.html" title="interface in org.openqa.selenium.remote.server">DriverFactory</a>&nbsp;factory,
                                     <a href="../../../../../org/openqa/selenium/io/TemporaryFilesystem.html" title="class in org.openqa.selenium.io">TemporaryFilesystem</a>&nbsp;tempFs,
-                                    <a href="../../../../../org/openqa/selenium/remote/server/Clock.html" title="interface in org.openqa.selenium.remote.server">Clock</a>&nbsp;clock,
-                                    <a href="../../../../../org/openqa/selenium/remote/SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;sessionId,
                                     <a href="../../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)
                              throws java.lang.Exception</pre>
 <dl>
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code>java.lang.Exception</code></dd>
-</dl>
-</li>
-</ul>
-<a name="updateLastAccessTime--">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>updateLastAccessTime</h4>
-<pre>public&nbsp;void&nbsp;updateLastAccessTime()</pre>
-<div class="block">Touches the session.</div>
-<dl>
-<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../../../../org/openqa/selenium/remote/server/Session.html#updateLastAccessTime--">updateLastAccessTime</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../org/openqa/selenium/remote/server/Session.html" title="interface in org.openqa.selenium.remote.server">Session</a></code></dd>
-</dl>
-</li>
-</ul>
-<a name="isTimedOut-long-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>isTimedOut</h4>
-<pre>public&nbsp;boolean&nbsp;isTimedOut(long&nbsp;timeout)</pre>
-<dl>
-<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../../../../org/openqa/selenium/remote/server/Session.html#isTimedOut-long-">isTimedOut</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../org/openqa/selenium/remote/server/Session.html" title="interface in org.openqa.selenium.remote.server">Session</a></code></dd>
 </dl>
 </li>
 </ul>
@@ -327,22 +226,6 @@ implements <a href="../../../../../org/openqa/selenium/remote/server/Session.htm
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../../../../../org/openqa/selenium/remote/server/Session.html#close--">close</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../org/openqa/selenium/remote/server/Session.html" title="interface in org.openqa.selenium.remote.server">Session</a></code></dd>
-</dl>
-</li>
-</ul>
-<a name="execute-java.util.concurrent.FutureTask-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>execute</h4>
-<pre>public&nbsp;&lt;X&gt;&nbsp;X&nbsp;execute(java.util.concurrent.FutureTask&lt;X&gt;&nbsp;future)
-              throws java.lang.Exception</pre>
-<dl>
-<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../../../../org/openqa/selenium/remote/server/Session.html#execute-java.util.concurrent.FutureTask-">execute</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../org/openqa/selenium/remote/server/Session.html" title="interface in org.openqa.selenium.remote.server">Session</a></code></dd>
-<dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>java.lang.Exception</code></dd>
 </dl>
 </li>
 </ul>
@@ -378,7 +261,7 @@ implements <a href="../../../../../org/openqa/selenium/remote/server/Session.htm
 <ul class="blockList">
 <li class="blockList">
 <h4>getCapabilities</h4>
-<pre>public&nbsp;<a href="../../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;getCapabilities()</pre>
+<pre>public&nbsp;java.util.Map&lt;java.lang.String,java.lang.Object&gt;&nbsp;getCapabilities()</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../../../../../org/openqa/selenium/remote/server/Session.html#getCapabilities--">getCapabilities</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../org/openqa/selenium/remote/server/Session.html" title="interface in org.openqa.selenium.remote.server">Session</a></code></dd>
@@ -427,43 +310,13 @@ implements <a href="../../../../../org/openqa/selenium/remote/server/Session.htm
 <a name="getTemporaryFileSystem--">
 <!--   -->
 </a>
-<ul class="blockList">
+<ul class="blockListLast">
 <li class="blockList">
 <h4>getTemporaryFileSystem</h4>
 <pre>public&nbsp;<a href="../../../../../org/openqa/selenium/io/TemporaryFilesystem.html" title="class in org.openqa.selenium.io">TemporaryFilesystem</a>&nbsp;getTemporaryFileSystem()</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../../../../../org/openqa/selenium/remote/server/Session.html#getTemporaryFileSystem--">getTemporaryFileSystem</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../org/openqa/selenium/remote/server/Session.html" title="interface in org.openqa.selenium.remote.server">Session</a></code></dd>
-</dl>
-</li>
-</ul>
-<a name="isInUse--">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>isInUse</h4>
-<pre>public&nbsp;boolean&nbsp;isInUse()</pre>
-<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../../../../../org/openqa/selenium/remote/server/Session.html#isInUse--">Session</a></code></span></div>
-<div class="block">Indicates that the session is in use at this moment (being forwarded to browser)</div>
-<dl>
-<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../../../../org/openqa/selenium/remote/server/Session.html#isInUse--">isInUse</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../org/openqa/selenium/remote/server/Session.html" title="interface in org.openqa.selenium.remote.server">Session</a></code></dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>true if the session is active inside the browser</dd>
-</dl>
-</li>
-</ul>
-<a name="interrupt--">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>interrupt</h4>
-<pre>public&nbsp;void&nbsp;interrupt()</pre>
-<dl>
-<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../../../../org/openqa/selenium/remote/server/Session.html#interrupt--">interrupt</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../org/openqa/selenium/remote/server/Session.html" title="interface in org.openqa.selenium.remote.server">Session</a></code></dd>
 </dl>
 </li>
 </ul>

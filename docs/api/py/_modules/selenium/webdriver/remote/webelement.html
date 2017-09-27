@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>selenium.webdriver.remote.webelement &mdash; Selenium 3.5 documentation</title>
+    <title>selenium.webdriver.remote.webelement &mdash; Selenium 3.6 documentation</title>
     
     <link rel="stylesheet" href="../../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '3.5',
+        VERSION:     '3.6',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../../_static/doctools.js"></script>
-    <link rel="top" title="Selenium 3.5 documentation" href="../../../../index.html" />
+    <link rel="top" title="Selenium 3.6 documentation" href="../../../../index.html" />
     <link rel="up" title="Module code" href="../../../index.html" /> 
   </head>
   <body>
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">Selenium 3.5 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">Selenium 3.6 documentation</a> &raquo;</li>
           <li><a href="../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -87,8 +87,10 @@
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>  <span class="c"># 3+</span>
     <span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">BytesIO</span> <span class="k">as</span> <span class="n">IOStream</span>
 
-<span class="n">getAttribute_js</span> <span class="o">=</span> <span class="n">pkgutil</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="n">__package__</span><span class="p">,</span> <span class="s">&#39;getAttribute.js&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s">&#39;utf8&#39;</span><span class="p">)</span>
-<span class="n">isDisplayed_js</span> <span class="o">=</span> <span class="n">pkgutil</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="n">__package__</span><span class="p">,</span> <span class="s">&#39;isDisplayed.js&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s">&#39;utf8&#39;</span><span class="p">)</span>
+<span class="c"># not relying on __package__ here as it can be `None` in some situations (see #4558)</span>
+<span class="n">_pkg</span> <span class="o">=</span> <span class="s">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">__name__</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">getAttribute_js</span> <span class="o">=</span> <span class="n">pkgutil</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="n">_pkg</span><span class="p">,</span> <span class="s">&#39;getAttribute.js&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s">&#39;utf8&#39;</span><span class="p">)</span>
+<span class="n">isDisplayed_js</span> <span class="o">=</span> <span class="n">pkgutil</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="n">_pkg</span><span class="p">,</span> <span class="s">&#39;isDisplayed.js&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s">&#39;utf8&#39;</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="WebElement"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement">[docs]</a><span class="k">class</span> <span class="nc">WebElement</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -636,7 +638,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">Selenium 3.5 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">Selenium 3.6 documentation</a> &raquo;</li>
           <li><a href="../../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>

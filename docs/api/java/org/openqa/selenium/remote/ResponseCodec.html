@@ -135,7 +135,8 @@ var activeTableTab = "activeTableTab";
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/remote/ResponseCodec.html" title="type parameter in ResponseCodec">T</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/remote/ResponseCodec.html#encode-org.openqa.selenium.remote.Response-">encode</a></span>(<a href="../../../../org/openqa/selenium/remote/Response.html" title="class in org.openqa.selenium.remote">Response</a>&nbsp;response)</code>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/remote/ResponseCodec.html#encode-java.util.function.Supplier-org.openqa.selenium.remote.Response-">encode</a></span>(java.util.function.Supplier&lt;<a href="../../../../org/openqa/selenium/remote/ResponseCodec.html" title="type parameter in ResponseCodec">T</a>&gt;&nbsp;factory,
+      <a href="../../../../org/openqa/selenium/remote/Response.html" title="class in org.openqa.selenium.remote">Response</a>&nbsp;response)</code>
 <div class="block">Encodes a response.</div>
 </td>
 </tr>
@@ -154,16 +155,18 @@ var activeTableTab = "activeTableTab";
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a name="encode-org.openqa.selenium.remote.Response-">
+<a name="encode-java.util.function.Supplier-org.openqa.selenium.remote.Response-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>encode</h4>
-<pre><a href="../../../../org/openqa/selenium/remote/ResponseCodec.html" title="type parameter in ResponseCodec">T</a>&nbsp;encode(<a href="../../../../org/openqa/selenium/remote/Response.html" title="class in org.openqa.selenium.remote">Response</a>&nbsp;response)</pre>
+<pre><a href="../../../../org/openqa/selenium/remote/ResponseCodec.html" title="type parameter in ResponseCodec">T</a>&nbsp;encode(java.util.function.Supplier&lt;<a href="../../../../org/openqa/selenium/remote/ResponseCodec.html" title="type parameter in ResponseCodec">T</a>&gt;&nbsp;factory,
+         <a href="../../../../org/openqa/selenium/remote/Response.html" title="class in org.openqa.selenium.remote">Response</a>&nbsp;response)</pre>
 <div class="block">Encodes a response.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>factory</code> - creates a new instance of <code>T</code>.</dd>
 <dd><code>response</code> - the response to encode.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>the encoded response.</dd>

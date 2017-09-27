@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -109,11 +109,11 @@ var activeTableTab = "activeTableTab";
 <br>
 <pre>public class <span class="typeNameLabel">DeviceRotation</span>
 extends java.lang.Object</pre>
-<div class="block">Defines an object which represents the three dimensional plane and how a device can be rotated about it.
- Each of the axis is in positive degrees on the real number scale (0 &lt;= deg &lt;= 360).
+<div class="block">Defines an object which represents the three dimensional plane and how a device can be rotated
+ about it. Each of the axis is in positive degrees on the real number scale (0 &lt;= deg &lt;=
+ 360).
 
- Example Instantiation to rotate device to "Landscape Right":
- DeviceRotation(0, 0, 90);</div>
+ <p>Example Instantiation to rotate device to "Landscape Right": DeviceRotation(0, 0, 90);</div>
 </li>
 </ul>
 </div>
@@ -140,11 +140,8 @@ extends java.lang.Object</pre>
 </tr>
 <tr class="rowColor">
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../org/openqa/selenium/DeviceRotation.html#DeviceRotation-java.util.Map-">DeviceRotation</a></span>(java.util.Map&lt;java.lang.String,java.lang.Number&gt;&nbsp;map)</code>
-<div class="block">Instantiate a DeviceRotation object based on a
- HashMap object where the keys are the axis x, y, and z respectively:
- x : xVal
- y : yVal
- z : zVal</div>
+<div class="block">Instantiate a DeviceRotation object based on a HashMap object where the keys are the axis x, y,
+ and z respectively: x : xVal y : yVal z : zVal</div>
 </td>
 </tr>
 </table>
@@ -179,6 +176,10 @@ extends java.lang.Object</pre>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/openqa/selenium/DeviceRotation.html#getZ--">getZ</a></span>()</code>&nbsp;</td>
 </tr>
 <tr id="i4" class="altColor">
+<td class="colFirst"><code>int</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../org/openqa/selenium/DeviceRotation.html#hashCode--">hashCode</a></span>()</code>&nbsp;</td>
+</tr>
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>java.util.Map&lt;java.lang.String,java.lang.Integer&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/openqa/selenium/DeviceRotation.html#parameters--">parameters</a></span>()</code>&nbsp;</td>
 </tr>
@@ -188,7 +189,7 @@ extends java.lang.Object</pre>
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;java.lang.Object</h3>
-<code>clone, finalize, getClass, hashCode, notify, notifyAll, toString, wait, wait, wait</code></li>
+<code>clone, finalize, getClass, notify, notifyAll, toString, wait, wait, wait</code></li>
 </ul>
 </li>
 </ul>
@@ -229,11 +230,8 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>DeviceRotation</h4>
 <pre>public&nbsp;DeviceRotation(java.util.Map&lt;java.lang.String,java.lang.Number&gt;&nbsp;map)</pre>
-<div class="block">Instantiate a DeviceRotation object based on a
- HashMap object where the keys are the axis x, y, and z respectively:
- x : xVal
- y : yVal
- z : zVal</div>
+<div class="block">Instantiate a DeviceRotation object based on a HashMap object where the keys are the axis x, y,
+ and z respectively: x : xVal y : yVal z : zVal</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>map</code> - </dd>
@@ -303,13 +301,26 @@ extends java.lang.Object</pre>
 <a name="equals-java.lang.Object-">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>equals</h4>
 <pre>public&nbsp;boolean&nbsp;equals(java.lang.Object&nbsp;o)</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
 <dd><code>equals</code>&nbsp;in class&nbsp;<code>java.lang.Object</code></dd>
+</dl>
+</li>
+</ul>
+<a name="hashCode--">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>hashCode</h4>
+<pre>public&nbsp;int&nbsp;hashCode()</pre>
+<dl>
+<dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
+<dd><code>hashCode</code>&nbsp;in class&nbsp;<code>java.lang.Object</code></dd>
 </dl>
 </li>
 </ul>

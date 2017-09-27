@@ -129,27 +129,11 @@ implements <a href="../../../../../org/openqa/selenium/remote/server/DriverSessi
 <table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Constructor Summary table, listing constructors, and an explanation">
 <caption><span>Constructors</span><span class="tabEnd">&nbsp;</span></caption>
 <tr>
-<th class="colFirst" scope="col">Modifier</th>
-<th class="colLast" scope="col">Constructor and Description</th>
+<th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code>&nbsp;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/DefaultDriverSessions.html#DefaultDriverSessions--">DefaultDriverSessions</a></span>()</code>&nbsp;</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code>&nbsp;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/DefaultDriverSessions.html#DefaultDriverSessions-org.openqa.selenium.remote.server.DriverFactory-">DefaultDriverSessions</a></span>(<a href="../../../../../org/openqa/selenium/remote/server/DriverFactory.html" title="interface in org.openqa.selenium.remote.server">DriverFactory</a>&nbsp;factory)</code>&nbsp;</td>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>protected </code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/DefaultDriverSessions.html#DefaultDriverSessions-org.openqa.selenium.Platform-org.openqa.selenium.remote.server.DriverFactory-">DefaultDriverSessions</a></span>(<a href="../../../../../org/openqa/selenium/Platform.html" title="enum in org.openqa.selenium">Platform</a>&nbsp;runningOn,
-                     <a href="../../../../../org/openqa/selenium/remote/server/DriverFactory.html" title="interface in org.openqa.selenium.remote.server">DriverFactory</a>&nbsp;factory)</code>&nbsp;</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code>protected </code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/DefaultDriverSessions.html#DefaultDriverSessions-org.openqa.selenium.Platform-org.openqa.selenium.remote.server.DriverFactory-org.openqa.selenium.remote.server.Clock-">DefaultDriverSessions</a></span>(<a href="../../../../../org/openqa/selenium/Platform.html" title="enum in org.openqa.selenium">Platform</a>&nbsp;runningOn,
-                     <a href="../../../../../org/openqa/selenium/remote/server/DriverFactory.html" title="interface in org.openqa.selenium.remote.server">DriverFactory</a>&nbsp;factory,
-                     <a href="../../../../../org/openqa/selenium/remote/server/Clock.html" title="interface in org.openqa.selenium.remote.server">Clock</a>&nbsp;clock)</code>&nbsp;</td>
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/DefaultDriverSessions.html#DefaultDriverSessions-org.openqa.selenium.remote.server.DriverFactory-long-">DefaultDriverSessions</a></span>(<a href="../../../../../org/openqa/selenium/remote/server/DriverFactory.html" title="interface in org.openqa.selenium.remote.server">DriverFactory</a>&nbsp;factory,
+                     long&nbsp;inactiveSessionTimeoutMs)</code>&nbsp;</td>
 </tr>
 </table>
 </li>
@@ -180,7 +164,7 @@ implements <a href="../../../../../org/openqa/selenium/remote/server/DriverSessi
 </tr>
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code><a href="../../../../../org/openqa/selenium/remote/SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/DefaultDriverSessions.html#newSession-org.openqa.selenium.Capabilities-">newSession</a></span>(<a href="../../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;desiredCapabilities)</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/DefaultDriverSessions.html#newSession-java.util.stream.Stream-">newSession</a></span>(java.util.stream.Stream&lt;<a href="../../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&gt;&nbsp;desiredCapabilities)</code>&nbsp;</td>
 </tr>
 <tr id="i4" class="altColor">
 <td class="colFirst"><code>void</code></td>
@@ -209,43 +193,14 @@ implements <a href="../../../../../org/openqa/selenium/remote/server/DriverSessi
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a name="DefaultDriverSessions--">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>DefaultDriverSessions</h4>
-<pre>public&nbsp;DefaultDriverSessions()</pre>
-</li>
-</ul>
-<a name="DefaultDriverSessions-org.openqa.selenium.remote.server.DriverFactory-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>DefaultDriverSessions</h4>
-<pre>public&nbsp;DefaultDriverSessions(<a href="../../../../../org/openqa/selenium/remote/server/DriverFactory.html" title="interface in org.openqa.selenium.remote.server">DriverFactory</a>&nbsp;factory)</pre>
-</li>
-</ul>
-<a name="DefaultDriverSessions-org.openqa.selenium.Platform-org.openqa.selenium.remote.server.DriverFactory-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>DefaultDriverSessions</h4>
-<pre>protected&nbsp;DefaultDriverSessions(<a href="../../../../../org/openqa/selenium/Platform.html" title="enum in org.openqa.selenium">Platform</a>&nbsp;runningOn,
-                                <a href="../../../../../org/openqa/selenium/remote/server/DriverFactory.html" title="interface in org.openqa.selenium.remote.server">DriverFactory</a>&nbsp;factory)</pre>
-</li>
-</ul>
-<a name="DefaultDriverSessions-org.openqa.selenium.Platform-org.openqa.selenium.remote.server.DriverFactory-org.openqa.selenium.remote.server.Clock-">
+<a name="DefaultDriverSessions-org.openqa.selenium.remote.server.DriverFactory-long-">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>DefaultDriverSessions</h4>
-<pre>protected&nbsp;DefaultDriverSessions(<a href="../../../../../org/openqa/selenium/Platform.html" title="enum in org.openqa.selenium">Platform</a>&nbsp;runningOn,
-                                <a href="../../../../../org/openqa/selenium/remote/server/DriverFactory.html" title="interface in org.openqa.selenium.remote.server">DriverFactory</a>&nbsp;factory,
-                                <a href="../../../../../org/openqa/selenium/remote/server/Clock.html" title="interface in org.openqa.selenium.remote.server">Clock</a>&nbsp;clock)</pre>
+<pre>public&nbsp;DefaultDriverSessions(<a href="../../../../../org/openqa/selenium/remote/server/DriverFactory.html" title="interface in org.openqa.selenium.remote.server">DriverFactory</a>&nbsp;factory,
+                             long&nbsp;inactiveSessionTimeoutMs)</pre>
 </li>
 </ul>
 </li>
@@ -270,17 +225,17 @@ implements <a href="../../../../../org/openqa/selenium/remote/server/DriverSessi
 </dl>
 </li>
 </ul>
-<a name="newSession-org.openqa.selenium.Capabilities-">
+<a name="newSession-java.util.stream.Stream-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>newSession</h4>
-<pre>public&nbsp;<a href="../../../../../org/openqa/selenium/remote/SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;newSession(<a href="../../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;desiredCapabilities)
+<pre>public&nbsp;<a href="../../../../../org/openqa/selenium/remote/SessionId.html" title="class in org.openqa.selenium.remote">SessionId</a>&nbsp;newSession(java.util.stream.Stream&lt;<a href="../../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&gt;&nbsp;desiredCapabilities)
                      throws java.lang.Exception</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../../../../org/openqa/selenium/remote/server/DriverSessions.html#newSession-org.openqa.selenium.Capabilities-">newSession</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../org/openqa/selenium/remote/server/DriverSessions.html" title="interface in org.openqa.selenium.remote.server">DriverSessions</a></code></dd>
+<dd><code><a href="../../../../../org/openqa/selenium/remote/server/DriverSessions.html#newSession-java.util.stream.Stream-">newSession</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../org/openqa/selenium/remote/server/DriverSessions.html" title="interface in org.openqa.selenium.remote.server">DriverSessions</a></code></dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code>java.lang.Exception</code></dd>
 </dl>

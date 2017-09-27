@@ -110,7 +110,7 @@ var activeTableTab = "activeTableTab";
 <pre>public interface <span class="typeNameLabel">WebDriver</span>
 extends <a href="../../../org/openqa/selenium/SearchContext.html" title="interface in org.openqa.selenium">SearchContext</a></pre>
 <div class="block">The main interface to use for testing, which represents an idealised web browser. The methods in
- this class fall into three categories:
+ this interface fall into three categories:
  <ul>
  <li>Control of the browser itself</li>
  <li>Selection of <a href="../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium"><code>WebElement</code></a>s</li>
@@ -121,8 +121,8 @@ extends <a href="../../../org/openqa/selenium/SearchContext.html" title="interfa
  various methods similar to <a href="../../../org/openqa/selenium/WebDriver.html#findElement-org.openqa.selenium.By-"><code>findElement(By)</code></a>, which is used to find
  <a href="../../../org/openqa/selenium/WebElement.html" title="interface in org.openqa.selenium"><code>WebElement</code></a>s.
  <p>
- Currently, you will need to instantiate implementations of this class directly. It is hoped that
- you write your tests against this interface so that you may "swap in" a more fully featured
+ Currently, you will need to instantiate implementations of this interface directly. It is hoped
+ that you write your tests against this interface so that you may "swap in" a more fully featured
  browser when there is a requirement for one.
  <p>
  Note that all methods that use XPath to locate elements will throw a <code>RuntimeException</code>

@@ -102,9 +102,13 @@
 <li class="blockList">
 <h3>Serialized Fields</h3>
 <ul class="blockList">
+<li class="blockList">
+<h4>sessions</h4>
+<pre><a href="org/openqa/selenium/remote/server/ActiveSessions.html" title="class in org.openqa.selenium.remote.server">ActiveSessions</a> sessions</pre>
+</li>
 <li class="blockListLast">
-<h4>sessionsSupplier</h4>
-<pre>java.util.function.Supplier&lt;T&gt; sessionsSupplier</pre>
+<h4>listener</h4>
+<pre><a href="org/openqa/selenium/remote/server/ActiveSessionListener.html" title="class in org.openqa.selenium.remote.server">ActiveSessionListener</a> listener</pre>
 </li>
 </ul>
 </li>
@@ -319,6 +323,11 @@
 </li>
 </ul>
 </li>
+<li class="blockList"><a name="org.openqa.selenium.ElementClickInterceptedException">
+<!--   -->
+</a>
+<h3>Class <a href="org/openqa/selenium/ElementClickInterceptedException.html" title="class in org.openqa.selenium">org.openqa.selenium.ElementClickInterceptedException</a> extends <a href="org/openqa/selenium/ElementNotInteractableException.html" title="class in org.openqa.selenium">ElementNotInteractableException</a> implements Serializable</h3>
+</li>
 <li class="blockList"><a name="org.openqa.selenium.ElementNotInteractableException">
 <!--   -->
 </a>
@@ -388,6 +397,26 @@
 <!--   -->
 </a>
 <h3>Class <a href="org/openqa/selenium/JavascriptException.html" title="class in org.openqa.selenium">org.openqa.selenium.JavascriptException</a> extends <a href="org/openqa/selenium/WebDriverException.html" title="class in org.openqa.selenium">WebDriverException</a> implements Serializable</h3>
+</li>
+<li class="blockList"><a name="org.openqa.selenium.MutableCapabilities">
+<!--   -->
+</a>
+<h3>Class <a href="org/openqa/selenium/MutableCapabilities.html" title="class in org.openqa.selenium">org.openqa.selenium.MutableCapabilities</a> extends java.lang.Object implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>-112816287184979465L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockListLast">
+<h4>caps</h4>
+<pre>java.util.Map&lt;K,V&gt; caps</pre>
+</li>
+</ul>
+</li>
+</ul>
 </li>
 <li class="blockList"><a name="org.openqa.selenium.NoAlertPresentException">
 <!--   -->
@@ -494,8 +523,99 @@
 </ul>
 </li>
 <li class="blockList">
+<h2 title="Package">Package&nbsp;org.openqa.selenium.chrome</h2>
+<ul class="blockList">
+<li class="blockList"><a name="org.openqa.selenium.chrome.ChromeOptions">
+<!--   -->
+</a>
+<h3>Class <a href="org/openqa/selenium/chrome/ChromeOptions.html" title="class in org.openqa.selenium.chrome">org.openqa.selenium.chrome.ChromeOptions</a> extends <a href="org/openqa/selenium/MutableCapabilities.html" title="class in org.openqa.selenium">MutableCapabilities</a> implements Serializable</h3>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>binary</h4>
+<pre>java.lang.String binary</pre>
+</li>
+<li class="blockList">
+<h4>args</h4>
+<pre>java.util.List&lt;E&gt; args</pre>
+</li>
+<li class="blockList">
+<h4>extensionFiles</h4>
+<pre>java.util.List&lt;E&gt; extensionFiles</pre>
+</li>
+<li class="blockList">
+<h4>extensions</h4>
+<pre>java.util.List&lt;E&gt; extensions</pre>
+</li>
+<li class="blockListLast">
+<h4>experimentalOptions</h4>
+<pre>java.util.Map&lt;K,V&gt; experimentalOptions</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList">
+<h2 title="Package">Package&nbsp;org.openqa.selenium.edge</h2>
+<ul class="blockList">
+<li class="blockList"><a name="org.openqa.selenium.edge.EdgeOptions">
+<!--   -->
+</a>
+<h3>Class <a href="org/openqa/selenium/edge/EdgeOptions.html" title="class in org.openqa.selenium.edge">org.openqa.selenium.edge.EdgeOptions</a> extends <a href="org/openqa/selenium/MutableCapabilities.html" title="class in org.openqa.selenium">MutableCapabilities</a> implements Serializable</h3>
+</li>
+</ul>
+</li>
+<li class="blockList">
 <h2 title="Package">Package&nbsp;org.openqa.selenium.firefox</h2>
 <ul class="blockList">
+<li class="blockList"><a name="org.openqa.selenium.firefox.FirefoxOptions">
+<!--   -->
+</a>
+<h3>Class <a href="org/openqa/selenium/firefox/FirefoxOptions.html" title="class in org.openqa.selenium.firefox">org.openqa.selenium.firefox.FirefoxOptions</a> extends <a href="org/openqa/selenium/MutableCapabilities.html" title="class in org.openqa.selenium">MutableCapabilities</a> implements Serializable</h3>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>args</h4>
+<pre>java.util.List&lt;E&gt; args</pre>
+</li>
+<li class="blockList">
+<h4>booleanPrefs</h4>
+<pre>java.util.Map&lt;K,V&gt; booleanPrefs</pre>
+</li>
+<li class="blockList">
+<h4>intPrefs</h4>
+<pre>java.util.Map&lt;K,V&gt; intPrefs</pre>
+</li>
+<li class="blockList">
+<h4>stringPrefs</h4>
+<pre>java.util.Map&lt;K,V&gt; stringPrefs</pre>
+</li>
+<li class="blockList">
+<h4>logLevel</h4>
+<pre><a href="org/openqa/selenium/firefox/FirefoxDriverLogLevel.html" title="enum in org.openqa.selenium.firefox">FirefoxDriverLogLevel</a> logLevel</pre>
+</li>
+<li class="blockList">
+<h4>binary</h4>
+<pre>org.openqa.selenium.firefox.FirefoxOptions.Binary binary</pre>
+</li>
+<li class="blockList">
+<h4>legacy</h4>
+<pre>boolean legacy</pre>
+</li>
+<li class="blockListLast">
+<h4>profile</h4>
+<pre><a href="org/openqa/selenium/firefox/FirefoxProfile.html" title="class in org.openqa.selenium.firefox">FirefoxProfile</a> profile</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="blockList"><a name="org.openqa.selenium.firefox.NotConnectedException">
 <!--   -->
 </a>
@@ -505,6 +625,27 @@
 <!--   -->
 </a>
 <h3>Class <a href="org/openqa/selenium/firefox/UnableToCreateProfileException.html" title="class in org.openqa.selenium.firefox">org.openqa.selenium.firefox.UnableToCreateProfileException</a> extends <a href="org/openqa/selenium/WebDriverException.html" title="class in org.openqa.selenium">WebDriverException</a> implements Serializable</h3>
+</li>
+</ul>
+</li>
+<li class="blockList">
+<h2 title="Package">Package&nbsp;org.openqa.selenium.ie</h2>
+<ul class="blockList">
+<li class="blockList"><a name="org.openqa.selenium.ie.InternetExplorerOptions">
+<!--   -->
+</a>
+<h3>Class <a href="org/openqa/selenium/ie/InternetExplorerOptions.html" title="class in org.openqa.selenium.ie">org.openqa.selenium.ie.InternetExplorerOptions</a> extends <a href="org/openqa/selenium/MutableCapabilities.html" title="class in org.openqa.selenium">MutableCapabilities</a> implements Serializable</h3>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockListLast">
+<h4>ieOptions</h4>
+<pre>java.util.Map&lt;K,V&gt; ieOptions</pre>
+</li>
+</ul>
+</li>
+</ul>
 </li>
 </ul>
 </li>
@@ -559,6 +700,43 @@
 </ul>
 </li>
 <li class="blockList">
+<h2 title="Package">Package&nbsp;org.openqa.selenium.opera</h2>
+<ul class="blockList">
+<li class="blockList"><a name="org.openqa.selenium.opera.OperaOptions">
+<!--   -->
+</a>
+<h3>Class <a href="org/openqa/selenium/opera/OperaOptions.html" title="class in org.openqa.selenium.opera">org.openqa.selenium.opera.OperaOptions</a> extends <a href="org/openqa/selenium/MutableCapabilities.html" title="class in org.openqa.selenium">MutableCapabilities</a> implements Serializable</h3>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>binary</h4>
+<pre>java.lang.String binary</pre>
+</li>
+<li class="blockList">
+<h4>args</h4>
+<pre>java.util.List&lt;E&gt; args</pre>
+</li>
+<li class="blockList">
+<h4>extensionFiles</h4>
+<pre>java.util.List&lt;E&gt; extensionFiles</pre>
+</li>
+<li class="blockList">
+<h4>extensions</h4>
+<pre>java.util.List&lt;E&gt; extensions</pre>
+</li>
+<li class="blockListLast">
+<h4>experimentalOptions</h4>
+<pre>java.util.Map&lt;K,V&gt; experimentalOptions</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList">
 <h2 title="Package">Package&nbsp;org.openqa.selenium.os</h2>
 <ul class="blockList">
 <li class="blockList"><a name="org.openqa.selenium.os.ProcessUtils.ProcessStillAliveException">
@@ -574,18 +752,7 @@
 <li class="blockList"><a name="org.openqa.selenium.remote.DesiredCapabilities">
 <!--   -->
 </a>
-<h3>Class <a href="org/openqa/selenium/remote/DesiredCapabilities.html" title="class in org.openqa.selenium.remote">org.openqa.selenium.remote.DesiredCapabilities</a> extends java.lang.Object implements Serializable</h3>
-<ul class="blockList">
-<li class="blockList">
-<h3>Serialized Fields</h3>
-<ul class="blockList">
-<li class="blockListLast">
-<h4>capabilities</h4>
-<pre>java.util.Map&lt;K,V&gt; capabilities</pre>
-</li>
-</ul>
-</li>
-</ul>
+<h3>Class <a href="org/openqa/selenium/remote/DesiredCapabilities.html" title="class in org.openqa.selenium.remote">org.openqa.selenium.remote.DesiredCapabilities</a> extends <a href="org/openqa/selenium/MutableCapabilities.html" title="class in org.openqa.selenium">MutableCapabilities</a> implements Serializable</h3>
 </li>
 <li class="blockList"><a name="org.openqa.selenium.remote.ErrorHandler.UnknownServerException">
 <!--   -->
@@ -633,19 +800,59 @@
 <ul class="blockList">
 <li class="blockList">
 <h4>staticResourceHandler</h4>
-<pre>org.openqa.selenium.remote.server.DriverServlet.StaticResourceHandler staticResourceHandler</pre>
+<pre>org.openqa.selenium.remote.server.StaticResourceHandler staticResourceHandler</pre>
+</li>
+<li class="blockList">
+<h4>executor</h4>
+<pre>java.util.concurrent.ExecutorService executor</pre>
 </li>
 <li class="blockList">
 <h4>sessionsSupplier</h4>
 <pre>java.util.function.Supplier&lt;T&gt; sessionsSupplier</pre>
 </li>
 <li class="blockList">
-<h4>sessionCleaner</h4>
-<pre>org.openqa.selenium.remote.server.SessionCleaner sessionCleaner</pre>
+<h4>errorCodes</h4>
+<pre><a href="org/openqa/selenium/remote/ErrorCodes.html" title="class in org.openqa.selenium.remote">ErrorCodes</a> errorCodes</pre>
 </li>
-<li class="blockListLast">
+<li class="blockList">
 <h4>commandHandler</h4>
 <pre><a href="org/openqa/selenium/remote/server/JsonHttpCommandHandler.html" title="class in org.openqa.selenium.remote.server">JsonHttpCommandHandler</a> commandHandler</pre>
+</li>
+<li class="blockList">
+<h4>individualCommandTimeoutMs</h4>
+<pre>long individualCommandTimeoutMs</pre>
+</li>
+<li class="blockListLast">
+<h4>inactiveSessionTimeoutMs</h4>
+<pre>long inactiveSessionTimeoutMs</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a name="org.openqa.selenium.remote.server.WebDriverServlet">
+<!--   -->
+</a>
+<h3>Class <a href="org/openqa/selenium/remote/server/WebDriverServlet.html" title="class in org.openqa.selenium.remote.server">org.openqa.selenium.remote.server.WebDriverServlet</a> extends javax.servlet.http.HttpServlet implements Serializable</h3>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>staticResourceHandler</h4>
+<pre>org.openqa.selenium.remote.server.StaticResourceHandler staticResourceHandler</pre>
+</li>
+<li class="blockList">
+<h4>executor</h4>
+<pre>java.util.concurrent.ExecutorService executor</pre>
+</li>
+<li class="blockList">
+<h4>allSessions</h4>
+<pre><a href="org/openqa/selenium/remote/server/ActiveSessions.html" title="class in org.openqa.selenium.remote.server">ActiveSessions</a> allSessions</pre>
+</li>
+<li class="blockListLast">
+<h4>handlers</h4>
+<pre>org.openqa.selenium.remote.server.AllHandlers handlers</pre>
 </li>
 </ul>
 </li>
@@ -660,6 +867,22 @@
 <!--   -->
 </a>
 <h3>Class <a href="org/openqa/selenium/safari/ConnectionClosedException.html" title="class in org.openqa.selenium.safari">org.openqa.selenium.safari.ConnectionClosedException</a> extends <a href="org/openqa/selenium/WebDriverException.html" title="class in org.openqa.selenium">WebDriverException</a> implements Serializable</h3>
+</li>
+<li class="blockList"><a name="org.openqa.selenium.safari.SafariOptions">
+<!--   -->
+</a>
+<h3>Class <a href="org/openqa/selenium/safari/SafariOptions.html" title="class in org.openqa.selenium.safari">org.openqa.selenium.safari.SafariOptions</a> extends <a href="org/openqa/selenium/MutableCapabilities.html" title="class in org.openqa.selenium">MutableCapabilities</a> implements Serializable</h3>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockListLast">
+<h4>options</h4>
+<pre>java.util.Map&lt;K,V&gt; options</pre>
+</li>
+</ul>
+</li>
+</ul>
 </li>
 </ul>
 </li>

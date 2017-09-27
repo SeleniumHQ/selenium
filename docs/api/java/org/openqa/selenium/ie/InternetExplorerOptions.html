@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -98,23 +98,36 @@ var activeTableTab = "activeTableTab";
 <li>java.lang.Object</li>
 <li>
 <ul class="inheritance">
+<li><a href="../../../../org/openqa/selenium/MutableCapabilities.html" title="class in org.openqa.selenium">org.openqa.selenium.MutableCapabilities</a></li>
+<li>
+<ul class="inheritance">
 <li>org.openqa.selenium.ie.InternetExplorerOptions</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
 <div class="description">
 <ul class="blockList">
 <li class="blockList">
+<dl>
+<dt>All Implemented Interfaces:</dt>
+<dd>java.io.Serializable, <a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></dd>
+</dl>
 <hr>
 <br>
 <pre><a href="../../../../org/openqa/selenium/Beta.html" title="annotation in org.openqa.selenium">@Beta</a>
 public class <span class="typeNameLabel">InternetExplorerOptions</span>
-extends java.lang.Object</pre>
+extends <a href="../../../../org/openqa/selenium/MutableCapabilities.html" title="class in org.openqa.selenium">MutableCapabilities</a></pre>
 <div class="block">Options for configuring the use of IE. Can be used like so:
  <pre>InternetExplorerOptions options = new InternetExplorerOptions()
    .requireWindowFocus();
 
-new InternetExplorerDriver(options.merge(DesiredCapabilities.internetExplorer());</pre></div>
+new InternetExplorerDriver(options);</pre></div>
+<dl>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../../serialized-form.html#org.openqa.selenium.ie.InternetExplorerOptions">Serialized Form</a></dd>
+</dl>
 </li>
 </ul>
 </div>
@@ -158,98 +171,117 @@ new InternetExplorerDriver(options.merge(DesiredCapabilities.internetExplorer())
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/ie/InternetExplorerOptions.html#addCommandSwitches-java.lang.String...-">addCommandSwitches</a></span>(java.lang.String...&nbsp;switches)</code>&nbsp;</td>
 </tr>
 <tr id="i1" class="rowColor">
-<td class="colFirst"><code>java.util.Map&lt;java.lang.String,?&gt;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/ie/InternetExplorerOptions.html#asMap--">asMap</a></span>()</code>&nbsp;</td>
-</tr>
-<tr id="i2" class="altColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/ie/InternetExplorerOptions.html" title="class in org.openqa.selenium.ie">InternetExplorerOptions</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/ie/InternetExplorerOptions.html#destructivelyEnsureCleanSession--">destructivelyEnsureCleanSession</a></span>()</code>
 <div class="block">Clear the Internet Explorer cache before launching the browser.</div>
 </td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i2" class="altColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/ie/InternetExplorerOptions.html" title="class in org.openqa.selenium.ie">InternetExplorerOptions</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/ie/InternetExplorerOptions.html#elementScrollTo-org.openqa.selenium.internal.ElementScrollBehavior-">elementScrollTo</a></span>(<a href="../../../../org/openqa/selenium/internal/ElementScrollBehavior.html" title="enum in org.openqa.selenium.internal">ElementScrollBehavior</a>&nbsp;behavior)</code>&nbsp;</td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/ie/InternetExplorerOptions.html" title="class in org.openqa.selenium.ie">InternetExplorerOptions</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/ie/InternetExplorerOptions.html#enableNativeEvents--">enableNativeEvents</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/ie/InternetExplorerOptions.html" title="class in org.openqa.selenium.ie">InternetExplorerOptions</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/ie/InternetExplorerOptions.html#enablePersistentHovering--">enablePersistentHovering</a></span>()</code>
 <div class="block">Enable persistently sending <code>WM_MOUSEMOVE</code> messages to the IE window during a mouse
  hover.</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/ie/InternetExplorerOptions.html" title="class in org.openqa.selenium.ie">InternetExplorerOptions</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/ie/InternetExplorerOptions.html#ignoreZoomSettings--">ignoreZoomSettings</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/ie/InternetExplorerOptions.html" title="class in org.openqa.selenium.ie">InternetExplorerOptions</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/ie/InternetExplorerOptions.html#introduceFlakinessByIgnoringSecurityDomains--">introduceFlakinessByIgnoringSecurityDomains</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i8" class="altColor">
-<td class="colFirst"><code><a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/ie/InternetExplorerOptions.html#merge-org.openqa.selenium.Capabilities-">merge</a></span>(<a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;other)</code>&nbsp;</td>
-</tr>
-<tr id="i9" class="rowColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/ie/InternetExplorerOptions.html" title="class in org.openqa.selenium.ie">InternetExplorerOptions</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/ie/InternetExplorerOptions.html#requireWindowFocus--">requireWindowFocus</a></span>()</code>&nbsp;</td>
 </tr>
+<tr id="i8" class="altColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/ie/InternetExplorerOptions.html#setCapability-java.lang.String-java.lang.Object-">setCapability</a></span>(java.lang.String&nbsp;key,
+             java.lang.Object&nbsp;value)</code>&nbsp;</td>
+</tr>
+<tr id="i9" class="rowColor">
+<td class="colFirst"><code><a href="../../../../org/openqa/selenium/ie/InternetExplorerOptions.html" title="class in org.openqa.selenium.ie">InternetExplorerOptions</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/ie/InternetExplorerOptions.html#setPageLoadStrategy-org.openqa.selenium.PageLoadStrategy-">setPageLoadStrategy</a></span>(<a href="../../../../org/openqa/selenium/PageLoadStrategy.html" title="enum in org.openqa.selenium">PageLoadStrategy</a>&nbsp;strategy)</code>&nbsp;</td>
+</tr>
 <tr id="i10" class="altColor">
+<td class="colFirst"><code><a href="../../../../org/openqa/selenium/ie/InternetExplorerOptions.html" title="class in org.openqa.selenium.ie">InternetExplorerOptions</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/ie/InternetExplorerOptions.html#setUnhandledPromptBehaviour-org.openqa.selenium.UnexpectedAlertBehaviour-">setUnhandledPromptBehaviour</a></span>(<a href="../../../../org/openqa/selenium/UnexpectedAlertBehaviour.html" title="enum in org.openqa.selenium">UnexpectedAlertBehaviour</a>&nbsp;behaviour)</code>&nbsp;</td>
+</tr>
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/ie/InternetExplorerOptions.html" title="class in org.openqa.selenium.ie">InternetExplorerOptions</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/ie/InternetExplorerOptions.html#takeFullPageScreenshot--">takeFullPageScreenshot</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i12" class="altColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/ie/InternetExplorerOptions.html" title="class in org.openqa.selenium.ie">InternetExplorerOptions</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/ie/InternetExplorerOptions.html#useCreateProcessApiToLaunchIe--">useCreateProcessApiToLaunchIe</a></span>()</code>
 <div class="block">Force the use of the Windows CreateProcess API when launching Internet Explorer.</div>
 </td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/ie/InternetExplorerOptions.html" title="class in org.openqa.selenium.ie">InternetExplorerOptions</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/ie/InternetExplorerOptions.html#usePerProcessProxy--">usePerProcessProxy</a></span>()</code>
 <div class="block">Use the <a href="../../../../org/openqa/selenium/Proxy.html" title="class in org.openqa.selenium"><code>Proxy</code></a> defined in other <a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a> on a
   per-process basis, not updating the system installed proxy setting.</div>
 </td>
 </tr>
-<tr id="i13" class="rowColor">
+<tr id="i14" class="altColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/ie/InternetExplorerOptions.html" title="class in org.openqa.selenium.ie">InternetExplorerOptions</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/ie/InternetExplorerOptions.html#useShellWindowsApiToAttachToIe--">useShellWindowsApiToAttachToIe</a></span>()</code>
 <div class="block">Use the Windows ShellWindows API when attaching to Internet Explorer.</div>
 </td>
 </tr>
-<tr id="i14" class="altColor">
+<tr id="i15" class="rowColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/ie/InternetExplorerOptions.html" title="class in org.openqa.selenium.ie">InternetExplorerOptions</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/ie/InternetExplorerOptions.html#waitForUploadDialogUpTo-java.time.Duration-">waitForUploadDialogUpTo</a></span>(java.time.Duration&nbsp;duration)</code>&nbsp;</td>
 </tr>
-<tr id="i15" class="rowColor">
+<tr id="i16" class="altColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/ie/InternetExplorerOptions.html" title="class in org.openqa.selenium.ie">InternetExplorerOptions</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/ie/InternetExplorerOptions.html#waitForUploadDialogUpTo-long-java.util.concurrent.TimeUnit-">waitForUploadDialogUpTo</a></span>(long&nbsp;duration,
                        java.util.concurrent.TimeUnit&nbsp;unit)</code>&nbsp;</td>
 </tr>
-<tr id="i16" class="altColor">
+<tr id="i17" class="rowColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/ie/InternetExplorerOptions.html" title="class in org.openqa.selenium.ie">InternetExplorerOptions</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/ie/InternetExplorerOptions.html#withAttachTimeout-java.time.Duration-">withAttachTimeout</a></span>(java.time.Duration&nbsp;duration)</code>&nbsp;</td>
 </tr>
-<tr id="i17" class="rowColor">
+<tr id="i18" class="altColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/ie/InternetExplorerOptions.html" title="class in org.openqa.selenium.ie">InternetExplorerOptions</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/ie/InternetExplorerOptions.html#withAttachTimeout-long-java.util.concurrent.TimeUnit-">withAttachTimeout</a></span>(long&nbsp;duration,
                  java.util.concurrent.TimeUnit&nbsp;unit)</code>&nbsp;</td>
 </tr>
-<tr id="i18" class="altColor">
+<tr id="i19" class="rowColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/ie/InternetExplorerOptions.html" title="class in org.openqa.selenium.ie">InternetExplorerOptions</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/ie/InternetExplorerOptions.html#withInitialBrowserUrl-java.lang.String-">withInitialBrowserUrl</a></span>(java.lang.String&nbsp;url)</code>&nbsp;</td>
 </tr>
 </table>
 <ul class="blockList">
+<li class="blockList"><a name="methods.inherited.from.class.org.openqa.selenium.MutableCapabilities">
+<!--   -->
+</a>
+<h3>Methods inherited from class&nbsp;org.openqa.selenium.<a href="../../../../org/openqa/selenium/MutableCapabilities.html" title="class in org.openqa.selenium">MutableCapabilities</a></h3>
+<code><a href="../../../../org/openqa/selenium/MutableCapabilities.html#amendHashCode--">amendHashCode</a>, <a href="../../../../org/openqa/selenium/MutableCapabilities.html#asMap--">asMap</a>, <a href="../../../../org/openqa/selenium/MutableCapabilities.html#equals-java.lang.Object-">equals</a>, <a href="../../../../org/openqa/selenium/MutableCapabilities.html#getCapability-java.lang.String-">getCapability</a>, <a href="../../../../org/openqa/selenium/MutableCapabilities.html#hashCode--">hashCode</a>, <a href="../../../../org/openqa/selenium/MutableCapabilities.html#merge-org.openqa.selenium.Capabilities-">merge</a>, <a href="../../../../org/openqa/selenium/MutableCapabilities.html#setCapability-java.lang.String-boolean-">setCapability</a>, <a href="../../../../org/openqa/selenium/MutableCapabilities.html#setCapability-java.lang.String-org.openqa.selenium.Platform-">setCapability</a>, <a href="../../../../org/openqa/selenium/MutableCapabilities.html#setCapability-java.lang.String-java.lang.String-">setCapability</a>, <a href="../../../../org/openqa/selenium/MutableCapabilities.html#toString--">toString</a></code></li>
+</ul>
+<ul class="blockList">
 <li class="blockList"><a name="methods.inherited.from.class.java.lang.Object">
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;java.lang.Object</h3>
-<code>clone, equals, finalize, getClass, hashCode, notify, notifyAll, toString, wait, wait, wait</code></li>
+<code>clone, finalize, getClass, notify, notifyAll, wait, wait, wait</code></li>
+</ul>
+<ul class="blockList">
+<li class="blockList"><a name="methods.inherited.from.class.org.openqa.selenium.Capabilities">
+<!--   -->
+</a>
+<h3>Methods inherited from interface&nbsp;org.openqa.selenium.<a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></h3>
+<code><a href="../../../../org/openqa/selenium/Capabilities.html#getBrowserName--">getBrowserName</a>, <a href="../../../../org/openqa/selenium/Capabilities.html#getPlatform--">getPlatform</a>, <a href="../../../../org/openqa/selenium/Capabilities.html#getVersion--">getVersion</a>, <a href="../../../../org/openqa/selenium/Capabilities.html#is-java.lang.String-">is</a>, <a href="../../../../org/openqa/selenium/Capabilities.html#isJavascriptEnabled--">isJavascriptEnabled</a></code></li>
 </ul>
 </li>
 </ul>
@@ -462,22 +494,36 @@ new InternetExplorerDriver(options.merge(DesiredCapabilities.internetExplorer())
 <pre>public&nbsp;<a href="../../../../org/openqa/selenium/ie/InternetExplorerOptions.html" title="class in org.openqa.selenium.ie">InternetExplorerOptions</a>&nbsp;takeFullPageScreenshot()</pre>
 </li>
 </ul>
-<a name="merge-org.openqa.selenium.Capabilities-">
+<a name="setPageLoadStrategy-org.openqa.selenium.PageLoadStrategy-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>merge</h4>
-<pre>public&nbsp;<a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;merge(<a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;other)</pre>
+<h4>setPageLoadStrategy</h4>
+<pre>public&nbsp;<a href="../../../../org/openqa/selenium/ie/InternetExplorerOptions.html" title="class in org.openqa.selenium.ie">InternetExplorerOptions</a>&nbsp;setPageLoadStrategy(<a href="../../../../org/openqa/selenium/PageLoadStrategy.html" title="enum in org.openqa.selenium">PageLoadStrategy</a>&nbsp;strategy)</pre>
 </li>
 </ul>
-<a name="asMap--">
+<a name="setUnhandledPromptBehaviour-org.openqa.selenium.UnexpectedAlertBehaviour-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setUnhandledPromptBehaviour</h4>
+<pre>public&nbsp;<a href="../../../../org/openqa/selenium/ie/InternetExplorerOptions.html" title="class in org.openqa.selenium.ie">InternetExplorerOptions</a>&nbsp;setUnhandledPromptBehaviour(<a href="../../../../org/openqa/selenium/UnexpectedAlertBehaviour.html" title="enum in org.openqa.selenium">UnexpectedAlertBehaviour</a>&nbsp;behaviour)</pre>
+</li>
+</ul>
+<a name="setCapability-java.lang.String-java.lang.Object-">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
-<h4>asMap</h4>
-<pre>public&nbsp;java.util.Map&lt;java.lang.String,?&gt;&nbsp;asMap()</pre>
+<h4>setCapability</h4>
+<pre>public&nbsp;void&nbsp;setCapability(java.lang.String&nbsp;key,
+                          java.lang.Object&nbsp;value)</pre>
+<dl>
+<dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
+<dd><code><a href="../../../../org/openqa/selenium/MutableCapabilities.html#setCapability-java.lang.String-java.lang.Object-">setCapability</a></code>&nbsp;in class&nbsp;<code><a href="../../../../org/openqa/selenium/MutableCapabilities.html" title="class in org.openqa.selenium">MutableCapabilities</a></code></dd>
+</dl>
 </li>
 </ul>
 </li>

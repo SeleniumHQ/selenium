@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>selenium.webdriver.ie.webdriver &mdash; Selenium 3.5 documentation</title>
+    <title>selenium.webdriver.ie.webdriver &mdash; Selenium 3.6 documentation</title>
     
     <link rel="stylesheet" href="../../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '3.5',
+        VERSION:     '3.6',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../../_static/doctools.js"></script>
-    <link rel="top" title="Selenium 3.5 documentation" href="../../../../index.html" />
+    <link rel="top" title="Selenium 3.6 documentation" href="../../../../index.html" />
     <link rel="up" title="Module code" href="../../../index.html" /> 
   </head>
   <body>
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">Selenium 3.5 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">Selenium 3.6 documentation</a> &raquo;</li>
           <li><a href="../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -68,6 +68,7 @@
 <span class="kn">from</span> <span class="nn">selenium.webdriver.remote.webdriver</span> <span class="kn">import</span> <span class="n">WebDriver</span> <span class="k">as</span> <span class="n">RemoteWebDriver</span>
 <span class="kn">from</span> <span class="nn">selenium.webdriver.common.desired_capabilities</span> <span class="kn">import</span> <span class="n">DesiredCapabilities</span>
 <span class="kn">from</span> <span class="nn">.service</span> <span class="kn">import</span> <span class="n">Service</span>
+<span class="kn">from</span> <span class="nn">.options</span> <span class="kn">import</span> <span class="n">Options</span>
 
 <span class="n">DEFAULT_TIMEOUT</span> <span class="o">=</span> <span class="mi">30</span>
 <span class="n">DEFAULT_PORT</span> <span class="o">=</span> <span class="mi">0</span>
@@ -77,16 +78,40 @@
 
 
 <div class="viewcode-block" id="WebDriver"><a class="viewcode-back" href="../../../../webdriver_ie/selenium.webdriver.ie.webdriver.html#selenium.webdriver.ie.webdriver.WebDriver">[docs]</a><span class="k">class</span> <span class="nc">WebDriver</span><span class="p">(</span><span class="n">RemoteWebDriver</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Controls the IEServerDriver and allows you to drive Internet Explorer &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">executable_path</span><span class="o">=</span><span class="s">&#39;IEDriverServer.exe&#39;</span><span class="p">,</span> <span class="n">capabilities</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                  <span class="n">port</span><span class="o">=</span><span class="n">DEFAULT_PORT</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">DEFAULT_TIMEOUT</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="n">DEFAULT_HOST</span><span class="p">,</span>
-                 <span class="n">log_level</span><span class="o">=</span><span class="n">DEFAULT_LOG_LEVEL</span><span class="p">,</span> <span class="n">log_file</span><span class="o">=</span><span class="n">DEFAULT_LOG_FILE</span><span class="p">):</span>
+                 <span class="n">log_level</span><span class="o">=</span><span class="n">DEFAULT_LOG_LEVEL</span><span class="p">,</span> <span class="n">log_file</span><span class="o">=</span><span class="n">DEFAULT_LOG_FILE</span><span class="p">,</span> <span class="n">ie_options</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates a new instance of the chrome driver.</span>
+
+<span class="sd">        Starts the service and then creates new instance of chrome driver.</span>
+
+<span class="sd">        :Args:</span>
+<span class="sd">         - executable_path - path to the executable. If the default is used it assumes the executable is in the $PATH</span>
+<span class="sd">         - capabilities: capabilities Dictionary object</span>
+<span class="sd">         - port - port you would like the service to run, if left as 0, a free port will be found.</span>
+<span class="sd">         - log_level - log level you would like the service to run.</span>
+<span class="sd">         - log_file - log file you would like the service to log to.</span>
+<span class="sd">         - ie_options: IE Options instance, providing additional IE options</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="n">port</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">port</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">free_port</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">host</span> <span class="o">=</span> <span class="n">host</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">log_level</span> <span class="o">=</span> <span class="n">log_level</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">log_file</span> <span class="o">=</span> <span class="n">log_file</span>
+
+        <span class="k">if</span> <span class="n">ie_options</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="c"># desired_capabilities stays as passed in</span>
+            <span class="k">if</span> <span class="n">capabilities</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">capabilities</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_options</span><span class="p">()</span><span class="o">.</span><span class="n">to_capabilities</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">capabilities</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">capabilities</span> <span class="o">=</span> <span class="n">ie_options</span><span class="o">.</span><span class="n">to_capabilities</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">capabilities</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">ie_options</span><span class="o">.</span><span class="n">to_capabilities</span><span class="p">())</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">iedriver</span> <span class="o">=</span> <span class="n">Service</span><span class="p">(</span>
             <span class="n">executable_path</span><span class="p">,</span>
@@ -108,7 +133,10 @@
 
 <div class="viewcode-block" id="WebDriver.quit"><a class="viewcode-back" href="../../../../webdriver_ie/selenium.webdriver.ie.webdriver.html#selenium.webdriver.ie.webdriver.WebDriver.quit">[docs]</a>    <span class="k">def</span> <span class="nf">quit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">RemoteWebDriver</span><span class="o">.</span><span class="n">quit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">iedriver</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">iedriver</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="WebDriver.create_options"><a class="viewcode-back" href="../../../../webdriver_ie/selenium.webdriver.ie.webdriver.html#selenium.webdriver.ie.webdriver.WebDriver.create_options">[docs]</a>    <span class="k">def</span> <span class="nf">create_options</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Options</span><span class="p">()</span></div></div>
 </pre></div>
 
           </div>
@@ -142,7 +170,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">Selenium 3.5 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">Selenium 3.6 documentation</a> &raquo;</li>
           <li><a href="../../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>

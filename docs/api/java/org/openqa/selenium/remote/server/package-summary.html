@@ -42,7 +42,7 @@
 <div class="subNav">
 <ul class="navList">
 <li><a href="../../../../../org/openqa/selenium/remote/mobile/package-summary.html">Prev&nbsp;Package</a></li>
-<li><a href="../../../../../org/openqa/selenium/remote/server/handler/package-summary.html">Next&nbsp;Package</a></li>
+<li><a href="../../../../../org/openqa/selenium/remote/server/commandhandler/package-summary.html">Next&nbsp;Package</a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../../../index.html?org/openqa/selenium/remote/server/package-summary.html" target="_top">Frames</a></li>
@@ -81,35 +81,37 @@
 </tr>
 <tbody>
 <tr class="altColor">
-<td class="colFirst"><a href="../../../../../org/openqa/selenium/remote/server/Clock.html" title="interface in org.openqa.selenium.remote.server">Clock</a></td>
-<td class="colLast">
-<div class="block">A simple encapsulation to allowing timing</div>
-</td>
+<td class="colFirst"><a href="../../../../../org/openqa/selenium/remote/server/ActiveSession.html" title="interface in org.openqa.selenium.remote.server">ActiveSession</a></td>
+<td class="colLast">&nbsp;</td>
 </tr>
 <tr class="rowColor">
-<td class="colFirst"><a href="../../../../../org/openqa/selenium/remote/server/DriverFactory.html" title="interface in org.openqa.selenium.remote.server">DriverFactory</a></td>
+<td class="colFirst"><a href="../../../../../org/openqa/selenium/remote/server/CommandHandler.html" title="interface in org.openqa.selenium.remote.server">CommandHandler</a></td>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="altColor">
+<td class="colFirst"><a href="../../../../../org/openqa/selenium/remote/server/DriverFactory.html" title="interface in org.openqa.selenium.remote.server">DriverFactory</a></td>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="rowColor">
 <td class="colFirst"><a href="../../../../../org/openqa/selenium/remote/server/DriverProvider.html" title="interface in org.openqa.selenium.remote.server">DriverProvider</a></td>
 <td class="colLast">
 <div class="block">Classes that implement this interface are used by {org.openqa.selenium.remote.server.DriverFactory}
  to create new driver instances associated with specific set of capabilities.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><a href="../../../../../org/openqa/selenium/remote/server/DriverSessions.html" title="interface in org.openqa.selenium.remote.server">DriverSessions</a></td>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><a href="../../../../../org/openqa/selenium/remote/server/JsonParametersAware.html" title="interface in org.openqa.selenium.remote.server">JsonParametersAware</a></td>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><a href="../../../../../org/openqa/selenium/remote/server/KnownElements.ProxiedElement.html" title="interface in org.openqa.selenium.remote.server">KnownElements.ProxiedElement</a></td>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><a href="../../../../../org/openqa/selenium/remote/server/Session.html" title="interface in org.openqa.selenium.remote.server">Session</a></td>
 <td class="colLast">&nbsp;</td>
 </tr>
@@ -124,6 +126,26 @@
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tbody>
+<tr class="altColor">
+<td class="colFirst"><a href="../../../../../org/openqa/selenium/remote/server/ActiveSessionCommandExecutor.html" title="class in org.openqa.selenium.remote.server">ActiveSessionCommandExecutor</a></td>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><a href="../../../../../org/openqa/selenium/remote/server/ActiveSessionFactory.html" title="class in org.openqa.selenium.remote.server">ActiveSessionFactory</a></td>
+<td class="colLast">
+<div class="block">Used to create new <a href="../../../../../org/openqa/selenium/remote/server/ActiveSession.html" title="interface in org.openqa.selenium.remote.server"><code>ActiveSession</code></a> instances as required.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><a href="../../../../../org/openqa/selenium/remote/server/ActiveSessionListener.html" title="class in org.openqa.selenium.remote.server">ActiveSessionListener</a></td>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><a href="../../../../../org/openqa/selenium/remote/server/ActiveSessions.html" title="class in org.openqa.selenium.remote.server">ActiveSessions</a></td>
+<td class="colLast">
+<div class="block">All current <a href="../../../../../org/openqa/selenium/remote/server/ActiveSession.html" title="interface in org.openqa.selenium.remote.server"><code>ActiveSession</code></a>s that we're aware of.</div>
+</td>
+</tr>
 <tr class="altColor">
 <td class="colFirst"><a href="../../../../../org/openqa/selenium/remote/server/DefaultDriverFactory.html" title="class in org.openqa.selenium.remote.server">DefaultDriverFactory</a></td>
 <td class="colLast">&nbsp;</td>
@@ -151,8 +173,8 @@
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><a href="../../../../../org/openqa/selenium/remote/server/FirefoxDriverProvider.html" title="class in org.openqa.selenium.remote.server">FirefoxDriverProvider</a></td>
-<td class="colLast">
-<div class="block">This driver provider that instantiates FirefoxDriver.</div>
+<td class="colLast">Deprecated
+<div class="block"><span class="deprecationComment">No longer used.</span></div>
 </td>
 </tr>
 <tr class="altColor">
@@ -164,13 +186,17 @@
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="altColor">
+<td class="colFirst"><a href="../../../../../org/openqa/selenium/remote/server/NewSessionPayload.html" title="class in org.openqa.selenium.remote.server">NewSessionPayload</a></td>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="rowColor">
 <td class="colFirst"><a href="../../../../../org/openqa/selenium/remote/server/SeleniumServer.html" title="class in org.openqa.selenium.remote.server">SeleniumServer</a></td>
 <td class="colLast">
 <div class="block">Provides a server that can launch and manage selenium sessions.</div>
 </td>
 </tr>
-<tr class="rowColor">
-<td class="colFirst"><a href="../../../../../org/openqa/selenium/remote/server/SystemClock.html" title="class in org.openqa.selenium.remote.server">SystemClock</a></td>
+<tr class="altColor">
+<td class="colFirst"><a href="../../../../../org/openqa/selenium/remote/server/WebDriverServlet.html" title="class in org.openqa.selenium.remote.server">WebDriverServlet</a></td>
 <td class="colLast">&nbsp;</td>
 </tr>
 </tbody>
@@ -199,7 +225,7 @@
 <div class="subNav">
 <ul class="navList">
 <li><a href="../../../../../org/openqa/selenium/remote/mobile/package-summary.html">Prev&nbsp;Package</a></li>
-<li><a href="../../../../../org/openqa/selenium/remote/server/handler/package-summary.html">Next&nbsp;Package</a></li>
+<li><a href="../../../../../org/openqa/selenium/remote/server/commandhandler/package-summary.html">Next&nbsp;Package</a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../../../index.html?org/openqa/selenium/remote/server/package-summary.html" target="_top">Frames</a></li>

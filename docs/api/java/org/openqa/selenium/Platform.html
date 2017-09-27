@@ -17,8 +17,8 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":9,"i1":9,"i2":10,"i3":9,"i4":9,"i5":10,"i6":10,"i7":10,"i8":10,"i9":9,"i10":9};
-var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
+var methods = {"i0":9,"i1":9,"i2":6,"i3":9,"i4":9,"i5":10,"i6":10,"i7":10,"i8":10,"i9":9,"i10":9};
+var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -47,7 +47,7 @@ var activeTableTab = "activeTableTab";
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../org/openqa/selenium/OutputType.html" title="interface in org.openqa.selenium"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
+<li><a href="../../../org/openqa/selenium/PageLoadStrategy.html" title="enum in org.openqa.selenium"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
 <li><a href="../../../org/openqa/selenium/Point.html" title="class in org.openqa.selenium"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
@@ -150,55 +150,58 @@ extends java.lang.Enum&lt;<a href="../../../org/openqa/selenium/Platform.html" t
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../org/openqa/selenium/Platform.html#EL_CAPITAN">EL_CAPITAN</a></span></code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../org/openqa/selenium/Platform.html#IOS">IOS</a></span></code>&nbsp;</td>
+</tr>
+<tr class="altColor">
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../org/openqa/selenium/Platform.html#LINUX">LINUX</a></span></code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../org/openqa/selenium/Platform.html#MAC">MAC</a></span></code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../org/openqa/selenium/Platform.html#MAVERICKS">MAVERICKS</a></span></code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../org/openqa/selenium/Platform.html#MOUNTAIN_LION">MOUNTAIN_LION</a></span></code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../org/openqa/selenium/Platform.html#SIERRA">SIERRA</a></span></code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../org/openqa/selenium/Platform.html#SNOW_LEOPARD">SNOW_LEOPARD</a></span></code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../org/openqa/selenium/Platform.html#UNIX">UNIX</a></span></code>
 <div class="block">Many platforms have UNIX traits, amongst them LINUX, Solaris and BSD.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../org/openqa/selenium/Platform.html#VISTA">VISTA</a></span></code>
 <div class="block">For versions of Windows that "feel like" Windows Vista.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../org/openqa/selenium/Platform.html#WIN10">WIN10</a></span></code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../org/openqa/selenium/Platform.html#WIN8">WIN8</a></span></code>
 <div class="block">For versions of Windows that "feel like" Windows 8.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../org/openqa/selenium/Platform.html#WIN8_1">WIN8_1</a></span></code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../org/openqa/selenium/Platform.html#WINDOWS">WINDOWS</a></span></code>
 <div class="block">Never returned, but can be used to request a browser running on any version of Windows.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../org/openqa/selenium/Platform.html#XP">XP</a></span></code>
 <div class="block">For versions of Windows that "feel like" Windows XP.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../org/openqa/selenium/Platform.html#YOSEMITE">YOSEMITE</a></span></code>&nbsp;</td>
 </tr>
 </table>
@@ -211,7 +214,7 @@ extends java.lang.Enum&lt;<a href="../../../org/openqa/selenium/Platform.html" t
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Method Summary table, listing methods, and an explanation">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t1" class="tableTab"><span><a href="javascript:show(1);">Static Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t1" class="tableTab"><span><a href="javascript:show(1);">Static Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t3" class="tableTab"><span><a href="javascript:show(4);">Abstract Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colLast" scope="col">Method and Description</th>
@@ -232,7 +235,7 @@ extends java.lang.Enum&lt;<a href="../../../org/openqa/selenium/Platform.html" t
 </td>
 </tr>
 <tr id="i2" class="altColor">
-<td class="colFirst"><code><a href="../../../org/openqa/selenium/Platform.html" title="enum in org.openqa.selenium">Platform</a></code></td>
+<td class="colFirst"><code>abstract <a href="../../../org/openqa/selenium/Platform.html" title="enum in org.openqa.selenium">Platform</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/openqa/selenium/Platform.html#family--">family</a></span>()</code>
 <div class="block">Returns a platform that represents a family for the current platform.</div>
 </td>
@@ -463,6 +466,15 @@ the order they are declared.</div>
 <pre>public static final&nbsp;<a href="../../../org/openqa/selenium/Platform.html" title="enum in org.openqa.selenium">Platform</a> ANDROID</pre>
 </li>
 </ul>
+<a name="IOS">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>IOS</h4>
+<pre>public static final&nbsp;<a href="../../../org/openqa/selenium/Platform.html" title="enum in org.openqa.selenium">Platform</a> IOS</pre>
+</li>
+</ul>
 <a name="ANY">
 <!--   -->
 </a>
@@ -624,12 +636,13 @@ not permitted.)</div>
 <ul class="blockList">
 <li class="blockList">
 <h4>family</h4>
-<pre>public&nbsp;<a href="../../../org/openqa/selenium/Platform.html" title="enum in org.openqa.selenium">Platform</a>&nbsp;family()</pre>
+<pre>public abstract&nbsp;<a href="../../../org/openqa/selenium/Platform.html" title="enum in org.openqa.selenium">Platform</a>&nbsp;family()</pre>
 <div class="block">Returns a platform that represents a family for the current platform.  For instance
  the LINUX if a part of the UNIX family, the XP is a part of the WINDOWS family.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>the family platform for the current one</dd>
+<dd>the family platform for the current one, or <code>null</code> if this <code>Platform</code>
+         represents a platform family (such as Windows, or MacOS)</dd>
 </dl>
 </li>
 </ul>
@@ -688,7 +701,7 @@ not permitted.)</div>
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../org/openqa/selenium/OutputType.html" title="interface in org.openqa.selenium"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
+<li><a href="../../../org/openqa/selenium/PageLoadStrategy.html" title="enum in org.openqa.selenium"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
 <li><a href="../../../org/openqa/selenium/Point.html" title="class in org.openqa.selenium"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">

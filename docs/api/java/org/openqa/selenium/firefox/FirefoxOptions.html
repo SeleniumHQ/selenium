@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":42,"i4":10,"i5":10,"i6":10,"i7":42,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":42,"i21":10,"i22":42,"i23":10};
+var methods = {"i0":10,"i1":10,"i2":42,"i3":10,"i4":10,"i5":10,"i6":42,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10,"i21":10,"i22":42,"i23":10,"i24":10,"i25":10,"i26":42};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"],32:["t6","Deprecated Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -47,7 +47,7 @@ var activeTableTab = "activeTableTab";
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../org/openqa/selenium/firefox/FirefoxDriver.SystemProperty.html" title="class in org.openqa.selenium.firefox"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
+<li><a href="../../../../org/openqa/selenium/firefox/FirefoxDriverLogLevel.html" title="enum in org.openqa.selenium.firefox"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
 <li><a href="../../../../org/openqa/selenium/firefox/FirefoxProfile.html" title="class in org.openqa.selenium.firefox"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
@@ -98,18 +98,27 @@ var activeTableTab = "activeTableTab";
 <li>java.lang.Object</li>
 <li>
 <ul class="inheritance">
+<li><a href="../../../../org/openqa/selenium/MutableCapabilities.html" title="class in org.openqa.selenium">org.openqa.selenium.MutableCapabilities</a></li>
+<li>
+<ul class="inheritance">
 <li>org.openqa.selenium.firefox.FirefoxOptions</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
 <div class="description">
 <ul class="blockList">
 <li class="blockList">
+<dl>
+<dt>All Implemented Interfaces:</dt>
+<dd>java.io.Serializable, <a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></dd>
+</dl>
 <hr>
 <br>
 <pre>public class <span class="typeNameLabel">FirefoxOptions</span>
-extends java.lang.Object</pre>
-<div class="block">Manage firefox specific settings in a way that geckodriver can understand. Use <a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html#addTo-org.openqa.selenium.remote.DesiredCapabilities-"><code>addTo(DesiredCapabilities)</code></a> to also add settings to a <a href="../../../../org/openqa/selenium/remote/DesiredCapabilities.html" title="class in org.openqa.selenium.remote"><code>DesiredCapabilities</code></a> object.
+extends <a href="../../../../org/openqa/selenium/MutableCapabilities.html" title="class in org.openqa.selenium">MutableCapabilities</a></pre>
+<div class="block">Manage firefox specific settings in a way that geckodriver can understand.
  <p>
  An example of usage:
  <pre>
@@ -118,6 +127,10 @@ extends java.lang.Object</pre>
       .addPreference("browser.startup.homepage", "https://www.google.co.uk");
     WebDriver driver = new FirefoxDriver(options);
  </pre></div>
+<dl>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../../serialized-form.html#org.openqa.selenium.firefox.FirefoxOptions">Serialized Form</a></dd>
+</dl>
 </li>
 </ul>
 </div>
@@ -157,6 +170,9 @@ extends java.lang.Object</pre>
 <tr class="altColor">
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html#FirefoxOptions--">FirefoxOptions</a></span>()</code>&nbsp;</td>
 </tr>
+<tr class="rowColor">
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html#FirefoxOptions-org.openqa.selenium.Capabilities-">FirefoxOptions</a></span>(<a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;source)</code>&nbsp;</td>
+</tr>
 </table>
 </li>
 </ul>
@@ -182,42 +198,44 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html#addCapabilities-org.openqa.selenium.Capabilities-">addCapabilities</a></span>(<a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</code>&nbsp;</td>
-</tr>
-<tr id="i3" class="rowColor">
-<td class="colFirst"><code><a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html#addDesiredCapabilities-org.openqa.selenium.Capabilities-">addDesiredCapabilities</a></span>(<a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;desiredCapabilities)</code>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html#addCapabilities-org.openqa.selenium.Capabilities-">addCapabilities</a></span>(<a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</code>
 <div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
-<div class="block"><span class="deprecationComment">Use <a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html#addCapabilities-org.openqa.selenium.Capabilities-"><code>addCapabilities(Capabilities)</code></a></span></div>
+<div class="block"><span class="deprecationComment">Use <a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html#merge-org.openqa.selenium.Capabilities-"><code>merge(Capabilities)</code></a>.</span></div>
 </div>
 </td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html#addPreference-java.lang.String-boolean-">addPreference</a></span>(java.lang.String&nbsp;key,
              boolean&nbsp;value)</code>&nbsp;</td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html#addPreference-java.lang.String-int-">addPreference</a></span>(java.lang.String&nbsp;key,
              int&nbsp;value)</code>&nbsp;</td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html#addPreference-java.lang.String-java.lang.String-">addPreference</a></span>(java.lang.String&nbsp;key,
              java.lang.String&nbsp;value)</code>&nbsp;</td>
 </tr>
-<tr id="i7" class="rowColor">
-<td class="colFirst"><code><a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html#addRequiredCapabilities-org.openqa.selenium.Capabilities-">addRequiredCapabilities</a></span>(<a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;requiredCapabilities)</code>
+<tr id="i6" class="altColor">
+<td class="colFirst"><code><a href="../../../../org/openqa/selenium/remote/DesiredCapabilities.html" title="class in org.openqa.selenium.remote">DesiredCapabilities</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html#addTo-org.openqa.selenium.remote.DesiredCapabilities-">addTo</a></span>(<a href="../../../../org/openqa/selenium/remote/DesiredCapabilities.html" title="class in org.openqa.selenium.remote">DesiredCapabilities</a>&nbsp;capabilities)</code>
 <div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
-<div class="block"><span class="deprecationComment">Use <a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html#addCapabilities-org.openqa.selenium.Capabilities-"><code>addCapabilities(Capabilities)</code></a></span></div>
+<div class="block"><span class="deprecationComment">Use <a href="../../../../org/openqa/selenium/MutableCapabilities.html#merge-org.openqa.selenium.Capabilities-"><code>MutableCapabilities.merge(Capabilities)</code></a>.</span></div>
 </div>
 </td>
 </tr>
+<tr id="i7" class="rowColor">
+<td class="colFirst"><code>protected int</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html#amendHashCode--">amendHashCode</a></span>()</code>
+<div class="block">Subclasses can use this to add information that isn't always in the capabilities map.</div>
+</td>
+</tr>
 <tr id="i8" class="altColor">
-<td class="colFirst"><code><a href="../../../../org/openqa/selenium/remote/DesiredCapabilities.html" title="class in org.openqa.selenium.remote">DesiredCapabilities</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html#addTo-org.openqa.selenium.remote.DesiredCapabilities-">addTo</a></span>(<a href="../../../../org/openqa/selenium/remote/DesiredCapabilities.html" title="class in org.openqa.selenium.remote">DesiredCapabilities</a>&nbsp;capabilities)</code>&nbsp;</td>
+<td class="colFirst"><code>java.util.Map&lt;java.lang.String,?&gt;</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html#asMap--">asMap</a></span>()</code>&nbsp;</td>
 </tr>
 <tr id="i9" class="rowColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/firefox/FirefoxBinary.html" title="class in org.openqa.selenium.firefox">FirefoxBinary</a></code></td>
@@ -240,63 +258,92 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i13" class="rowColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html#setBinary-org.openqa.selenium.firefox.FirefoxBinary-">setBinary</a></span>(<a href="../../../../org/openqa/selenium/firefox/FirefoxBinary.html" title="class in org.openqa.selenium.firefox">FirefoxBinary</a>&nbsp;binary)</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html#merge-org.openqa.selenium.Capabilities-">merge</a></span>(<a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</code>
+<div class="block">Merges the extra capabilities provided into this DesiredCapabilities instance.</div>
+</td>
 </tr>
 <tr id="i14" class="altColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html#setBinary-java.nio.file.Path-">setBinary</a></span>(java.nio.file.Path&nbsp;path)</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html#setAcceptInsecureCerts-boolean-">setAcceptInsecureCerts</a></span>(boolean&nbsp;acceptInsecureCerts)</code>&nbsp;</td>
 </tr>
 <tr id="i15" class="rowColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html#setBinary-java.lang.String-">setBinary</a></span>(java.lang.String&nbsp;path)</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html#setBinary-org.openqa.selenium.firefox.FirefoxBinary-">setBinary</a></span>(<a href="../../../../org/openqa/selenium/firefox/FirefoxBinary.html" title="class in org.openqa.selenium.firefox">FirefoxBinary</a>&nbsp;binary)</code>&nbsp;</td>
 </tr>
 <tr id="i16" class="altColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html#setLegacy-boolean-">setLegacy</a></span>(boolean&nbsp;legacy)</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html#setBinary-java.nio.file.Path-">setBinary</a></span>(java.nio.file.Path&nbsp;path)</code>&nbsp;</td>
 </tr>
 <tr id="i17" class="rowColor">
 <td class="colFirst"><code><a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html#setLogLevel-java.util.logging.Level-">setLogLevel</a></span>(java.util.logging.Level&nbsp;logLevel)</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html#setBinary-java.lang.String-">setBinary</a></span>(java.lang.String&nbsp;path)</code>&nbsp;</td>
 </tr>
 <tr id="i18" class="altColor">
-<td class="colFirst"><code><a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html#setProfile-org.openqa.selenium.firefox.FirefoxProfile-">setProfile</a></span>(<a href="../../../../org/openqa/selenium/firefox/FirefoxProfile.html" title="class in org.openqa.selenium.firefox">FirefoxProfile</a>&nbsp;profile)</code>&nbsp;</td>
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html#setCapability-java.lang.String-java.lang.Object-">setCapability</a></span>(java.lang.String&nbsp;key,
+             java.lang.Object&nbsp;value)</code>&nbsp;</td>
 </tr>
 <tr id="i19" class="rowColor">
-<td class="colFirst"><code><a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html#toCapabilities--">toCapabilities</a></span>()</code>&nbsp;</td>
+<td class="colFirst"><code><a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html#setHeadless-boolean-">setHeadless</a></span>(boolean&nbsp;headless)</code>&nbsp;</td>
 </tr>
 <tr id="i20" class="altColor">
-<td class="colFirst"><code><a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html#toDesiredCapabilities--">toDesiredCapabilities</a></span>()</code>
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
-<div class="block"><span class="deprecationComment">Use <a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html#toCapabilities--"><code>toCapabilities()</code></a>.</span></div>
-</div>
-</td>
+<td class="colFirst"><code><a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html#setLegacy-boolean-">setLegacy</a></span>(boolean&nbsp;legacy)</code>&nbsp;</td>
 </tr>
 <tr id="i21" class="rowColor">
-<td class="colFirst"><code>com.google.gson.JsonObject</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html#toJson--">toJson</a></span>()</code>&nbsp;</td>
+<td class="colFirst"><code><a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html#setLogLevel-org.openqa.selenium.firefox.FirefoxDriverLogLevel-">setLogLevel</a></span>(<a href="../../../../org/openqa/selenium/firefox/FirefoxDriverLogLevel.html" title="enum in org.openqa.selenium.firefox">FirefoxDriverLogLevel</a>&nbsp;logLevel)</code>&nbsp;</td>
 </tr>
 <tr id="i22" class="altColor">
-<td class="colFirst"><code><a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html#toRequiredCapabilities--">toRequiredCapabilities</a></span>()</code>
+<td class="colFirst"><code><a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html#setLogLevel-java.util.logging.Level-">setLogLevel</a></span>(java.util.logging.Level&nbsp;logLevel)</code>
 <div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
-<div class="block"><span class="deprecationComment">Use <a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html#toCapabilities--"><code>toCapabilities()</code></a>.</span></div>
+<div class="block"><span class="deprecationComment">Use <a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html#setLogLevel-org.openqa.selenium.firefox.FirefoxDriverLogLevel-"><code>setLogLevel(FirefoxDriverLogLevel)</code></a></span></div>
 </div>
 </td>
 </tr>
 <tr id="i23" class="rowColor">
-<td class="colFirst"><code>java.lang.String</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html#toString--">toString</a></span>()</code>&nbsp;</td>
+<td class="colFirst"><code><a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html#setPageLoadStrategy-org.openqa.selenium.PageLoadStrategy-">setPageLoadStrategy</a></span>(<a href="../../../../org/openqa/selenium/PageLoadStrategy.html" title="enum in org.openqa.selenium">PageLoadStrategy</a>&nbsp;strategy)</code>&nbsp;</td>
+</tr>
+<tr id="i24" class="altColor">
+<td class="colFirst"><code><a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html#setProfile-org.openqa.selenium.firefox.FirefoxProfile-">setProfile</a></span>(<a href="../../../../org/openqa/selenium/firefox/FirefoxProfile.html" title="class in org.openqa.selenium.firefox">FirefoxProfile</a>&nbsp;profile)</code>&nbsp;</td>
+</tr>
+<tr id="i25" class="rowColor">
+<td class="colFirst"><code><a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html#setUnhandledPromptBehaviour-org.openqa.selenium.UnexpectedAlertBehaviour-">setUnhandledPromptBehaviour</a></span>(<a href="../../../../org/openqa/selenium/UnexpectedAlertBehaviour.html" title="enum in org.openqa.selenium">UnexpectedAlertBehaviour</a>&nbsp;behaviour)</code>&nbsp;</td>
+</tr>
+<tr id="i26" class="altColor">
+<td class="colFirst"><code><a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html#toCapabilities--">toCapabilities</a></span>()</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
+<div class="block"><span class="deprecationComment">No replacement. We are already <a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a>.</span></div>
+</div>
+</td>
 </tr>
 </table>
+<ul class="blockList">
+<li class="blockList"><a name="methods.inherited.from.class.org.openqa.selenium.MutableCapabilities">
+<!--   -->
+</a>
+<h3>Methods inherited from class&nbsp;org.openqa.selenium.<a href="../../../../org/openqa/selenium/MutableCapabilities.html" title="class in org.openqa.selenium">MutableCapabilities</a></h3>
+<code><a href="../../../../org/openqa/selenium/MutableCapabilities.html#equals-java.lang.Object-">equals</a>, <a href="../../../../org/openqa/selenium/MutableCapabilities.html#getCapability-java.lang.String-">getCapability</a>, <a href="../../../../org/openqa/selenium/MutableCapabilities.html#hashCode--">hashCode</a>, <a href="../../../../org/openqa/selenium/MutableCapabilities.html#setCapability-java.lang.String-boolean-">setCapability</a>, <a href="../../../../org/openqa/selenium/MutableCapabilities.html#setCapability-java.lang.String-org.openqa.selenium.Platform-">setCapability</a>, <a href="../../../../org/openqa/selenium/MutableCapabilities.html#setCapability-java.lang.String-java.lang.String-">setCapability</a>, <a href="../../../../org/openqa/selenium/MutableCapabilities.html#toString--">toString</a></code></li>
+</ul>
 <ul class="blockList">
 <li class="blockList"><a name="methods.inherited.from.class.java.lang.Object">
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;java.lang.Object</h3>
-<code>clone, equals, finalize, getClass, hashCode, notify, notifyAll, wait, wait, wait</code></li>
+<code>clone, finalize, getClass, notify, notifyAll, wait, wait, wait</code></li>
+</ul>
+<ul class="blockList">
+<li class="blockList"><a name="methods.inherited.from.class.org.openqa.selenium.Capabilities">
+<!--   -->
+</a>
+<h3>Methods inherited from interface&nbsp;org.openqa.selenium.<a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></h3>
+<code><a href="../../../../org/openqa/selenium/Capabilities.html#getBrowserName--">getBrowserName</a>, <a href="../../../../org/openqa/selenium/Capabilities.html#getPlatform--">getPlatform</a>, <a href="../../../../org/openqa/selenium/Capabilities.html#getVersion--">getVersion</a>, <a href="../../../../org/openqa/selenium/Capabilities.html#is-java.lang.String-">is</a>, <a href="../../../../org/openqa/selenium/Capabilities.html#isJavascriptEnabled--">isJavascriptEnabled</a></code></li>
 </ul>
 </li>
 </ul>
@@ -336,10 +383,19 @@ extends java.lang.Object</pre>
 <a name="FirefoxOptions--">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>FirefoxOptions</h4>
 <pre>public&nbsp;FirefoxOptions()</pre>
+</li>
+</ul>
+<a name="FirefoxOptions-org.openqa.selenium.Capabilities-">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>FirefoxOptions</h4>
+<pre>public&nbsp;FirefoxOptions(<a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;source)</pre>
 </li>
 </ul>
 </li>
@@ -487,29 +543,85 @@ extends java.lang.Object</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>setLogLevel</h4>
-<pre>public&nbsp;<a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a>&nbsp;setLogLevel(java.util.logging.Level&nbsp;logLevel)</pre>
+<pre>@Deprecated
+public&nbsp;<a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a>&nbsp;setLogLevel(java.util.logging.Level&nbsp;logLevel)</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;<span class="deprecationComment">Use <a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html#setLogLevel-org.openqa.selenium.firefox.FirefoxDriverLogLevel-"><code>setLogLevel(FirefoxDriverLogLevel)</code></a></span></div>
 </li>
 </ul>
-<a name="addDesiredCapabilities-org.openqa.selenium.Capabilities-">
+<a name="setLogLevel-org.openqa.selenium.firefox.FirefoxDriverLogLevel-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>addDesiredCapabilities</h4>
-<pre>@Deprecated
-public&nbsp;<a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a>&nbsp;addDesiredCapabilities(<a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;desiredCapabilities)</pre>
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;<span class="deprecationComment">Use <a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html#addCapabilities-org.openqa.selenium.Capabilities-"><code>addCapabilities(Capabilities)</code></a></span></div>
+<h4>setLogLevel</h4>
+<pre>public&nbsp;<a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a>&nbsp;setLogLevel(<a href="../../../../org/openqa/selenium/firefox/FirefoxDriverLogLevel.html" title="enum in org.openqa.selenium.firefox">FirefoxDriverLogLevel</a>&nbsp;logLevel)</pre>
 </li>
 </ul>
-<a name="addRequiredCapabilities-org.openqa.selenium.Capabilities-">
+<a name="setPageLoadStrategy-org.openqa.selenium.PageLoadStrategy-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>addRequiredCapabilities</h4>
-<pre>@Deprecated
-public&nbsp;<a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a>&nbsp;addRequiredCapabilities(<a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;requiredCapabilities)</pre>
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;<span class="deprecationComment">Use <a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html#addCapabilities-org.openqa.selenium.Capabilities-"><code>addCapabilities(Capabilities)</code></a></span></div>
+<h4>setPageLoadStrategy</h4>
+<pre>public&nbsp;<a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a>&nbsp;setPageLoadStrategy(<a href="../../../../org/openqa/selenium/PageLoadStrategy.html" title="enum in org.openqa.selenium">PageLoadStrategy</a>&nbsp;strategy)</pre>
+</li>
+</ul>
+<a name="setUnhandledPromptBehaviour-org.openqa.selenium.UnexpectedAlertBehaviour-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setUnhandledPromptBehaviour</h4>
+<pre>public&nbsp;<a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a>&nbsp;setUnhandledPromptBehaviour(<a href="../../../../org/openqa/selenium/UnexpectedAlertBehaviour.html" title="enum in org.openqa.selenium">UnexpectedAlertBehaviour</a>&nbsp;behaviour)</pre>
+</li>
+</ul>
+<a name="setAcceptInsecureCerts-boolean-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setAcceptInsecureCerts</h4>
+<pre>public&nbsp;<a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a>&nbsp;setAcceptInsecureCerts(boolean&nbsp;acceptInsecureCerts)</pre>
+</li>
+</ul>
+<a name="setHeadless-boolean-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setHeadless</h4>
+<pre>public&nbsp;<a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a>&nbsp;setHeadless(boolean&nbsp;headless)</pre>
+</li>
+</ul>
+<a name="setCapability-java.lang.String-java.lang.Object-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setCapability</h4>
+<pre>public&nbsp;void&nbsp;setCapability(java.lang.String&nbsp;key,
+                          java.lang.Object&nbsp;value)</pre>
+<dl>
+<dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
+<dd><code><a href="../../../../org/openqa/selenium/MutableCapabilities.html#setCapability-java.lang.String-java.lang.Object-">setCapability</a></code>&nbsp;in class&nbsp;<code><a href="../../../../org/openqa/selenium/MutableCapabilities.html" title="class in org.openqa.selenium">MutableCapabilities</a></code></dd>
+</dl>
+</li>
+</ul>
+<a name="asMap--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>asMap</h4>
+<pre>public&nbsp;java.util.Map&lt;java.lang.String,?&gt;&nbsp;asMap()</pre>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../../../../org/openqa/selenium/Capabilities.html#asMap--">asMap</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></code></dd>
+<dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
+<dd><code><a href="../../../../org/openqa/selenium/MutableCapabilities.html#asMap--">asMap</a></code>&nbsp;in class&nbsp;<code><a href="../../../../org/openqa/selenium/MutableCapabilities.html" title="class in org.openqa.selenium">MutableCapabilities</a></code></dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The capabilities as a Map</dd>
+</dl>
 </li>
 </ul>
 <a name="addCapabilities-org.openqa.selenium.Capabilities-">
@@ -518,27 +630,32 @@ public&nbsp;<a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html
 <ul class="blockList">
 <li class="blockList">
 <h4>addCapabilities</h4>
-<pre>public&nbsp;<a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a>&nbsp;addCapabilities(<a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</pre>
+<pre>@Deprecated
+public&nbsp;<a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a>&nbsp;addCapabilities(<a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;<span class="deprecationComment">Use <a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html#merge-org.openqa.selenium.Capabilities-"><code>merge(Capabilities)</code></a>.</span></div>
 </li>
 </ul>
-<a name="toDesiredCapabilities--">
+<a name="merge-org.openqa.selenium.Capabilities-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>toDesiredCapabilities</h4>
-<pre>public&nbsp;<a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;toDesiredCapabilities()</pre>
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;<span class="deprecationComment">Use <a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html#toCapabilities--"><code>toCapabilities()</code></a>.</span></div>
-</li>
-</ul>
-<a name="toRequiredCapabilities--">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>toRequiredCapabilities</h4>
-<pre>public&nbsp;<a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;toRequiredCapabilities()</pre>
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;<span class="deprecationComment">Use <a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html#toCapabilities--"><code>toCapabilities()</code></a>.</span></div>
+<h4>merge</h4>
+<pre>public&nbsp;<a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a>&nbsp;merge(<a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../../../../org/openqa/selenium/MutableCapabilities.html#merge-org.openqa.selenium.Capabilities-">MutableCapabilities</a></code></span></div>
+<div class="block">Merges the extra capabilities provided into this DesiredCapabilities instance. If capabilities
+ with the same name exist in this instance, they will be overridden by the values from the
+ extraCapabilities object.</div>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../../../../org/openqa/selenium/Capabilities.html#merge-org.openqa.selenium.Capabilities-">merge</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></code></dd>
+<dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
+<dd><code><a href="../../../../org/openqa/selenium/MutableCapabilities.html#merge-org.openqa.selenium.Capabilities-">merge</a></code>&nbsp;in class&nbsp;<code><a href="../../../../org/openqa/selenium/MutableCapabilities.html" title="class in org.openqa.selenium">MutableCapabilities</a></code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>capabilities</code> - Additional capabilities to be added.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>DesiredCapabilities after the merge</dd>
+</dl>
 </li>
 </ul>
 <a name="toCapabilities--">
@@ -547,7 +664,9 @@ public&nbsp;<a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html
 <ul class="blockList">
 <li class="blockList">
 <h4>toCapabilities</h4>
-<pre>public&nbsp;<a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;toCapabilities()</pre>
+<pre>@Deprecated
+public&nbsp;<a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;toCapabilities()</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;<span class="deprecationComment">No replacement. We are already <a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium"><code>Capabilities</code></a>.</span></div>
 </li>
 </ul>
 <a name="addTo-org.openqa.selenium.remote.DesiredCapabilities-">
@@ -556,33 +675,24 @@ public&nbsp;<a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html
 <ul class="blockList">
 <li class="blockList">
 <h4>addTo</h4>
-<pre>public&nbsp;<a href="../../../../org/openqa/selenium/remote/DesiredCapabilities.html" title="class in org.openqa.selenium.remote">DesiredCapabilities</a>&nbsp;addTo(<a href="../../../../org/openqa/selenium/remote/DesiredCapabilities.html" title="class in org.openqa.selenium.remote">DesiredCapabilities</a>&nbsp;capabilities)</pre>
+<pre>@Deprecated
+public&nbsp;<a href="../../../../org/openqa/selenium/remote/DesiredCapabilities.html" title="class in org.openqa.selenium.remote">DesiredCapabilities</a>&nbsp;addTo(<a href="../../../../org/openqa/selenium/remote/DesiredCapabilities.html" title="class in org.openqa.selenium.remote">DesiredCapabilities</a>&nbsp;capabilities)</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;<span class="deprecationComment">Use <a href="../../../../org/openqa/selenium/MutableCapabilities.html#merge-org.openqa.selenium.Capabilities-"><code>MutableCapabilities.merge(Capabilities)</code></a>.</span></div>
 </li>
 </ul>
-<a name="toJson--">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>toJson</h4>
-<pre>public&nbsp;com.google.gson.JsonObject&nbsp;toJson()
-                                  throws java.io.IOException</pre>
-<dl>
-<dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>java.io.IOException</code></dd>
-</dl>
-</li>
-</ul>
-<a name="toString--">
+<a name="amendHashCode--">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
-<h4>toString</h4>
-<pre>public&nbsp;java.lang.String&nbsp;toString()</pre>
+<h4>amendHashCode</h4>
+<pre>protected&nbsp;int&nbsp;amendHashCode()</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../../../../org/openqa/selenium/MutableCapabilities.html#amendHashCode--">MutableCapabilities</a></code></span></div>
+<div class="block">Subclasses can use this to add information that isn't always in the capabilities map.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
-<dd><code>toString</code>&nbsp;in class&nbsp;<code>java.lang.Object</code></dd>
+<dd><code><a href="../../../../org/openqa/selenium/MutableCapabilities.html#amendHashCode--">amendHashCode</a></code>&nbsp;in class&nbsp;<code><a href="../../../../org/openqa/selenium/MutableCapabilities.html" title="class in org.openqa.selenium">MutableCapabilities</a></code></dd>
+<dt><span class="returnLabel">Returns:</span></dt>
 </dl>
 </li>
 </ul>
@@ -613,7 +723,7 @@ public&nbsp;<a href="../../../../org/openqa/selenium/firefox/FirefoxOptions.html
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../org/openqa/selenium/firefox/FirefoxDriver.SystemProperty.html" title="class in org.openqa.selenium.firefox"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
+<li><a href="../../../../org/openqa/selenium/firefox/FirefoxDriverLogLevel.html" title="enum in org.openqa.selenium.firefox"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
 <li><a href="../../../../org/openqa/selenium/firefox/FirefoxProfile.html" title="class in org.openqa.selenium.firefox"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">

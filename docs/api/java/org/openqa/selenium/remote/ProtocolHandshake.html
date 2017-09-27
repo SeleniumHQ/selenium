@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10};
+var methods = {"i0":10,"i1":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -168,6 +168,12 @@ extends java.lang.Object</pre>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/remote/ProtocolHandshake.html#createSession-org.openqa.selenium.remote.http.HttpClient-org.openqa.selenium.remote.Command-">createSession</a></span>(<a href="../../../../org/openqa/selenium/remote/http/HttpClient.html" title="interface in org.openqa.selenium.remote.http">HttpClient</a>&nbsp;client,
              <a href="../../../../org/openqa/selenium/remote/Command.html" title="class in org.openqa.selenium.remote">Command</a>&nbsp;command)</code>&nbsp;</td>
 </tr>
+<tr id="i1" class="rowColor">
+<td class="colFirst"><code>java.util.Optional&lt;<a href="../../../../org/openqa/selenium/remote/ProtocolHandshake.Result.html" title="class in org.openqa.selenium.remote">ProtocolHandshake.Result</a>&gt;</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/remote/ProtocolHandshake.html#createSession-org.openqa.selenium.remote.http.HttpClient-java.io.InputStream-long-">createSession</a></span>(<a href="../../../../org/openqa/selenium/remote/http/HttpClient.html" title="interface in org.openqa.selenium.remote.http">HttpClient</a>&nbsp;client,
+             java.io.InputStream&nbsp;newSessionBlob,
+             long&nbsp;size)</code>&nbsp;</td>
+</tr>
 </table>
 <ul class="blockList">
 <li class="blockList"><a name="methods.inherited.from.class.java.lang.Object">
@@ -210,12 +216,28 @@ extends java.lang.Object</pre>
 <a name="createSession-org.openqa.selenium.remote.http.HttpClient-org.openqa.selenium.remote.Command-">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>createSession</h4>
 <pre>public&nbsp;<a href="../../../../org/openqa/selenium/remote/ProtocolHandshake.Result.html" title="class in org.openqa.selenium.remote">ProtocolHandshake.Result</a>&nbsp;createSession(<a href="../../../../org/openqa/selenium/remote/http/HttpClient.html" title="interface in org.openqa.selenium.remote.http">HttpClient</a>&nbsp;client,
                                               <a href="../../../../org/openqa/selenium/remote/Command.html" title="class in org.openqa.selenium.remote">Command</a>&nbsp;command)
                                        throws java.io.IOException</pre>
+<dl>
+<dt><span class="throwsLabel">Throws:</span></dt>
+<dd><code>java.io.IOException</code></dd>
+</dl>
+</li>
+</ul>
+<a name="createSession-org.openqa.selenium.remote.http.HttpClient-java.io.InputStream-long-">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>createSession</h4>
+<pre>public&nbsp;java.util.Optional&lt;<a href="../../../../org/openqa/selenium/remote/ProtocolHandshake.Result.html" title="class in org.openqa.selenium.remote">ProtocolHandshake.Result</a>&gt;&nbsp;createSession(<a href="../../../../org/openqa/selenium/remote/http/HttpClient.html" title="interface in org.openqa.selenium.remote.http">HttpClient</a>&nbsp;client,
+                                                                  java.io.InputStream&nbsp;newSessionBlob,
+                                                                  long&nbsp;size)
+                                                           throws java.io.IOException</pre>
 <dl>
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code>java.io.IOException</code></dd>

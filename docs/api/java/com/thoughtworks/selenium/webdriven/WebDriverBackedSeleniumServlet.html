@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10};
+var methods = {"i0":10,"i1":10,"i2":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -165,9 +165,17 @@ extends javax.servlet.http.HttpServlet</pre>
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr id="i0" class="altColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/thoughtworks/selenium/webdriven/WebDriverBackedSeleniumServlet.html#destroy--">destroy</a></span>()</code>&nbsp;</td>
+</tr>
+<tr id="i1" class="rowColor">
 <td class="colFirst"><code>protected void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/thoughtworks/selenium/webdriven/WebDriverBackedSeleniumServlet.html#doPost-javax.servlet.http.HttpServletRequest-javax.servlet.http.HttpServletResponse-">doPost</a></span>(javax.servlet.http.HttpServletRequest&nbsp;req,
       javax.servlet.http.HttpServletResponse&nbsp;resp)</code>&nbsp;</td>
+</tr>
+<tr id="i2" class="altColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/thoughtworks/selenium/webdriven/WebDriverBackedSeleniumServlet.html#init--">init</a></span>()</code>&nbsp;</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -182,7 +190,7 @@ extends javax.servlet.http.HttpServlet</pre>
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;javax.servlet.GenericServlet</h3>
-<code>destroy, getInitParameter, getInitParameterNames, getServletConfig, getServletContext, getServletInfo, getServletName, init, init, log, log</code></li>
+<code>getInitParameter, getInitParameterNames, getServletConfig, getServletContext, getServletInfo, getServletName, init, log, log</code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a name="methods.inherited.from.class.java.lang.Object">
@@ -222,6 +230,37 @@ extends javax.servlet.http.HttpServlet</pre>
 <!--   -->
 </a>
 <h3>Method Detail</h3>
+<a name="init--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>init</h4>
+<pre>public&nbsp;void&nbsp;init()
+          throws javax.servlet.ServletException</pre>
+<dl>
+<dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
+<dd><code>init</code>&nbsp;in class&nbsp;<code>javax.servlet.GenericServlet</code></dd>
+<dt><span class="throwsLabel">Throws:</span></dt>
+<dd><code>javax.servlet.ServletException</code></dd>
+</dl>
+</li>
+</ul>
+<a name="destroy--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>destroy</h4>
+<pre>public&nbsp;void&nbsp;destroy()</pre>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code>destroy</code>&nbsp;in interface&nbsp;<code>javax.servlet.Servlet</code></dd>
+<dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
+<dd><code>destroy</code>&nbsp;in class&nbsp;<code>javax.servlet.GenericServlet</code></dd>
+</dl>
+</li>
+</ul>
 <a name="doPost-javax.servlet.http.HttpServletRequest-javax.servlet.http.HttpServletResponse-">
 <!--   -->
 </a>

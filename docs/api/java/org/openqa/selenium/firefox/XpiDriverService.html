@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":9,"i1":9,"i2":10,"i3":10,"i4":10};
+var methods = {"i0":9,"i1":9,"i2":10,"i3":10,"i4":10,"i5":10};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -177,13 +177,17 @@ extends <a href="../../../../org/openqa/selenium/remote/service/DriverService.ht
 <div class="block">Stops this service is it is currently running.</div>
 </td>
 </tr>
+<tr id="i5" class="rowColor">
+<td class="colFirst"><code>protected void</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/firefox/XpiDriverService.html#waitUntilAvailable--">waitUntilAvailable</a></span>()</code>&nbsp;</td>
+</tr>
 </table>
 <ul class="blockList">
 <li class="blockList"><a name="methods.inherited.from.class.org.openqa.selenium.remote.service.DriverService">
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;org.openqa.selenium.remote.service.<a href="../../../../org/openqa/selenium/remote/service/DriverService.html" title="class in org.openqa.selenium.remote.service">DriverService</a></h3>
-<code><a href="../../../../org/openqa/selenium/remote/service/DriverService.html#checkExecutable-java.io.File-">checkExecutable</a>, <a href="../../../../org/openqa/selenium/remote/service/DriverService.html#findExecutable-java.lang.String-java.lang.String-java.lang.String-java.lang.String-">findExecutable</a>, <a href="../../../../org/openqa/selenium/remote/service/DriverService.html#getOutputStream--">getOutputStream</a>, <a href="../../../../org/openqa/selenium/remote/service/DriverService.html#getUrl--">getUrl</a>, <a href="../../../../org/openqa/selenium/remote/service/DriverService.html#isRunning--">isRunning</a>, <a href="../../../../org/openqa/selenium/remote/service/DriverService.html#sendOutputTo-java.io.OutputStream-">sendOutputTo</a>, <a href="../../../../org/openqa/selenium/remote/service/DriverService.html#waitUntilAvailable--">waitUntilAvailable</a></code></li>
+<code><a href="../../../../org/openqa/selenium/remote/service/DriverService.html#checkExecutable-java.io.File-">checkExecutable</a>, <a href="../../../../org/openqa/selenium/remote/service/DriverService.html#findExecutable-java.lang.String-java.lang.String-java.lang.String-java.lang.String-">findExecutable</a>, <a href="../../../../org/openqa/selenium/remote/service/DriverService.html#getOutputStream--">getOutputStream</a>, <a href="../../../../org/openqa/selenium/remote/service/DriverService.html#getUrl--">getUrl</a>, <a href="../../../../org/openqa/selenium/remote/service/DriverService.html#isRunning--">isRunning</a>, <a href="../../../../org/openqa/selenium/remote/service/DriverService.html#sendOutputTo-java.io.OutputStream-">sendOutputTo</a></code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a name="methods.inherited.from.class.java.lang.Object">
@@ -213,12 +217,12 @@ extends <a href="../../../../org/openqa/selenium/remote/service/DriverService.ht
 <li class="blockList">
 <h4>getUrl</h4>
 <pre>protected&nbsp;java.net.URL&nbsp;getUrl(int&nbsp;port)
-                       throws java.io.IOException</pre>
+                       throws java.net.MalformedURLException</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
 <dd><code><a href="../../../../org/openqa/selenium/remote/service/DriverService.html#getUrl-int-">getUrl</a></code>&nbsp;in class&nbsp;<code><a href="../../../../org/openqa/selenium/remote/service/DriverService.html" title="class in org.openqa.selenium.remote.service">DriverService</a></code></dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>java.io.IOException</code></dd>
+<dd><code>java.net.MalformedURLException</code></dd>
 </dl>
 </li>
 </ul>
@@ -240,6 +244,22 @@ extends <a href="../../../../org/openqa/selenium/remote/service/DriverService.ht
 <dd><code>java.io.IOException</code> - If an error occurs while spawning the child process.</dd>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../org/openqa/selenium/remote/service/DriverService.html#stop--"><code>DriverService.stop()</code></a></dd>
+</dl>
+</li>
+</ul>
+<a name="waitUntilAvailable--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>waitUntilAvailable</h4>
+<pre>protected&nbsp;void&nbsp;waitUntilAvailable()
+                           throws java.net.MalformedURLException</pre>
+<dl>
+<dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
+<dd><code><a href="../../../../org/openqa/selenium/remote/service/DriverService.html#waitUntilAvailable--">waitUntilAvailable</a></code>&nbsp;in class&nbsp;<code><a href="../../../../org/openqa/selenium/remote/service/DriverService.html" title="class in org.openqa.selenium.remote.service">DriverService</a></code></dd>
+<dt><span class="throwsLabel">Throws:</span></dt>
+<dd><code>java.net.MalformedURLException</code></dd>
 </dl>
 </li>
 </ul>

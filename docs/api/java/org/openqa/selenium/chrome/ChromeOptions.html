@@ -17,8 +17,8 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10};
-var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":42,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10};
+var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"],32:["t6","Deprecated Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -98,17 +98,26 @@ var activeTableTab = "activeTableTab";
 <li>java.lang.Object</li>
 <li>
 <ul class="inheritance">
+<li><a href="../../../../org/openqa/selenium/MutableCapabilities.html" title="class in org.openqa.selenium">org.openqa.selenium.MutableCapabilities</a></li>
+<li>
+<ul class="inheritance">
 <li>org.openqa.selenium.chrome.ChromeOptions</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
 <div class="description">
 <ul class="blockList">
 <li class="blockList">
+<dl>
+<dt>All Implemented Interfaces:</dt>
+<dd>java.io.Serializable, <a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></dd>
+</dl>
 <hr>
 <br>
 <pre>public class <span class="typeNameLabel">ChromeOptions</span>
-extends java.lang.Object</pre>
+extends <a href="../../../../org/openqa/selenium/MutableCapabilities.html" title="class in org.openqa.selenium">MutableCapabilities</a></pre>
 <div class="block">Class to manage options specific to <a href="../../../../org/openqa/selenium/chrome/ChromeDriver.html" title="class in org.openqa.selenium.chrome"><code>ChromeDriver</code></a>.
 
  <p>Example usage:
@@ -120,20 +129,16 @@ extends java.lang.Object</pre>
  // For use with ChromeDriver:
  ChromeDriver driver = new ChromeDriver(options);
 
- // or alternatively:
- DesiredCapabilities capabilities = DesiredCapabilities.chrome();
- capabilities.setCapability(ChromeOptions.CAPABILITY, options);
- ChromeDriver driver = new ChromeDriver(capabilities);
-
  // For use with RemoteWebDriver:
- DesiredCapabilities capabilities = DesiredCapabilities.chrome();
- capabilities.setCapability(ChromeOptions.CAPABILITY, options);
  RemoteWebDriver driver = new RemoteWebDriver(
-     new URL("http://localhost:4444/wd/hub"), capabilities);
+     new URL("http://localhost:4444/wd/hub"),
+     new ChromeOptions());
  </code></pre></div>
 <dl>
 <dt><span class="simpleTagLabel">Since:</span></dt>
 <dd>Since chromedriver v17.0.963.0</dd>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../../serialized-form.html#org.openqa.selenium.chrome.ChromeOptions">Serialized Form</a></dd>
 </dl>
 </li>
 </ul>
@@ -187,87 +192,111 @@ extends java.lang.Object</pre>
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Method Summary table, listing methods, and an explanation">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t6" class="tableTab"><span><a href="javascript:show(32);">Deprecated Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr id="i0" class="altColor">
-<td class="colFirst"><code>void</code></td>
+<td class="colFirst"><code><a href="../../../../org/openqa/selenium/chrome/ChromeOptions.html" title="class in org.openqa.selenium.chrome">ChromeOptions</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/chrome/ChromeOptions.html#addArguments-java.util.List-">addArguments</a></span>(java.util.List&lt;java.lang.String&gt;&nbsp;arguments)</code>
 <div class="block">Adds additional command line arguments to be used when starting Chrome.</div>
 </td>
 </tr>
 <tr id="i1" class="rowColor">
-<td class="colFirst"><code>void</code></td>
+<td class="colFirst"><code><a href="../../../../org/openqa/selenium/chrome/ChromeOptions.html" title="class in org.openqa.selenium.chrome">ChromeOptions</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/chrome/ChromeOptions.html#addArguments-java.lang.String...-">addArguments</a></span>(java.lang.String...&nbsp;arguments)</code>&nbsp;</td>
 </tr>
 <tr id="i2" class="altColor">
-<td class="colFirst"><code>void</code></td>
+<td class="colFirst"><code><a href="../../../../org/openqa/selenium/chrome/ChromeOptions.html" title="class in org.openqa.selenium.chrome">ChromeOptions</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/chrome/ChromeOptions.html#addEncodedExtensions-java.util.List-">addEncodedExtensions</a></span>(java.util.List&lt;java.lang.String&gt;&nbsp;encoded)</code>
 <div class="block">Adds a new Chrome extension to install on browser startup.</div>
 </td>
 </tr>
 <tr id="i3" class="rowColor">
-<td class="colFirst"><code>void</code></td>
+<td class="colFirst"><code><a href="../../../../org/openqa/selenium/chrome/ChromeOptions.html" title="class in org.openqa.selenium.chrome">ChromeOptions</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/chrome/ChromeOptions.html#addEncodedExtensions-java.lang.String...-">addEncodedExtensions</a></span>(java.lang.String...&nbsp;encoded)</code>&nbsp;</td>
 </tr>
 <tr id="i4" class="altColor">
-<td class="colFirst"><code>void</code></td>
+<td class="colFirst"><code><a href="../../../../org/openqa/selenium/chrome/ChromeOptions.html" title="class in org.openqa.selenium.chrome">ChromeOptions</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/chrome/ChromeOptions.html#addExtensions-java.io.File...-">addExtensions</a></span>(java.io.File...&nbsp;paths)</code>&nbsp;</td>
 </tr>
 <tr id="i5" class="rowColor">
-<td class="colFirst"><code>void</code></td>
+<td class="colFirst"><code><a href="../../../../org/openqa/selenium/chrome/ChromeOptions.html" title="class in org.openqa.selenium.chrome">ChromeOptions</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/chrome/ChromeOptions.html#addExtensions-java.util.List-">addExtensions</a></span>(java.util.List&lt;java.io.File&gt;&nbsp;paths)</code>
 <div class="block">Adds a new Chrome extension to install on browser startup.</div>
 </td>
 </tr>
 <tr id="i6" class="altColor">
-<td class="colFirst"><code>boolean</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/chrome/ChromeOptions.html#equals-java.lang.Object-">equals</a></span>(java.lang.Object&nbsp;other)</code>&nbsp;</td>
-</tr>
-<tr id="i7" class="rowColor">
-<td class="colFirst"><code>java.lang.Object</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/chrome/ChromeOptions.html#getExperimentalOption-java.lang.String-">getExperimentalOption</a></span>(java.lang.String&nbsp;name)</code>
-<div class="block">Returns the value of an experimental option.</div>
+<td class="colFirst"><code>protected int</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/chrome/ChromeOptions.html#amendHashCode--">amendHashCode</a></span>()</code>
+<div class="block">Subclasses can use this to add information that isn't always in the capabilities map.</div>
 </td>
 </tr>
+<tr id="i7" class="rowColor">
+<td class="colFirst"><code>java.util.Map&lt;java.lang.String,?&gt;</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/chrome/ChromeOptions.html#asMap--">asMap</a></span>()</code>&nbsp;</td>
+</tr>
 <tr id="i8" class="altColor">
-<td class="colFirst"><code>int</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/chrome/ChromeOptions.html#hashCode--">hashCode</a></span>()</code>&nbsp;</td>
+<td class="colFirst"><code>java.lang.Object</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/chrome/ChromeOptions.html#getExperimentalOption-java.lang.String-">getExperimentalOption</a></span>(java.lang.String&nbsp;name)</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
+<div class="block"><span class="deprecationComment">Getters are not needed in browser Options classes.</span></div>
+</div>
+</td>
 </tr>
 <tr id="i9" class="rowColor">
-<td class="colFirst"><code>void</code></td>
+<td class="colFirst"><code><a href="../../../../org/openqa/selenium/chrome/ChromeOptions.html" title="class in org.openqa.selenium.chrome">ChromeOptions</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/chrome/ChromeOptions.html#setBinary-java.io.File-">setBinary</a></span>(java.io.File&nbsp;path)</code>
 <div class="block">Sets the path to the Chrome executable.</div>
 </td>
 </tr>
 <tr id="i10" class="altColor">
-<td class="colFirst"><code>void</code></td>
+<td class="colFirst"><code><a href="../../../../org/openqa/selenium/chrome/ChromeOptions.html" title="class in org.openqa.selenium.chrome">ChromeOptions</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/chrome/ChromeOptions.html#setBinary-java.lang.String-">setBinary</a></span>(java.lang.String&nbsp;path)</code>
 <div class="block">Sets the path to the Chrome executable.</div>
 </td>
 </tr>
 <tr id="i11" class="rowColor">
-<td class="colFirst"><code>void</code></td>
+<td class="colFirst"><code><a href="../../../../org/openqa/selenium/chrome/ChromeOptions.html" title="class in org.openqa.selenium.chrome">ChromeOptions</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/chrome/ChromeOptions.html#setExperimentalOption-java.lang.String-java.lang.Object-">setExperimentalOption</a></span>(java.lang.String&nbsp;name,
                      java.lang.Object&nbsp;value)</code>
 <div class="block">Sets an experimental option.</div>
 </td>
 </tr>
 <tr id="i12" class="altColor">
-<td class="colFirst"><code>com.google.gson.JsonElement</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/chrome/ChromeOptions.html#toJson--">toJson</a></span>()</code>
-<div class="block">Converts this instance to its JSON representation.</div>
-</td>
+<td class="colFirst"><code><a href="../../../../org/openqa/selenium/chrome/ChromeOptions.html" title="class in org.openqa.selenium.chrome">ChromeOptions</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/chrome/ChromeOptions.html#setHeadless-boolean-">setHeadless</a></span>(boolean&nbsp;headless)</code>&nbsp;</td>
+</tr>
+<tr id="i13" class="rowColor">
+<td class="colFirst"><code><a href="../../../../org/openqa/selenium/chrome/ChromeOptions.html" title="class in org.openqa.selenium.chrome">ChromeOptions</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/chrome/ChromeOptions.html#setPageLoadStrategy-org.openqa.selenium.PageLoadStrategy-">setPageLoadStrategy</a></span>(<a href="../../../../org/openqa/selenium/PageLoadStrategy.html" title="enum in org.openqa.selenium">PageLoadStrategy</a>&nbsp;strategy)</code>&nbsp;</td>
+</tr>
+<tr id="i14" class="altColor">
+<td class="colFirst"><code><a href="../../../../org/openqa/selenium/chrome/ChromeOptions.html" title="class in org.openqa.selenium.chrome">ChromeOptions</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../org/openqa/selenium/chrome/ChromeOptions.html#setUnhandledPromptBehaviour-org.openqa.selenium.UnexpectedAlertBehaviour-">setUnhandledPromptBehaviour</a></span>(<a href="../../../../org/openqa/selenium/UnexpectedAlertBehaviour.html" title="enum in org.openqa.selenium">UnexpectedAlertBehaviour</a>&nbsp;behaviour)</code>&nbsp;</td>
 </tr>
 </table>
+<ul class="blockList">
+<li class="blockList"><a name="methods.inherited.from.class.org.openqa.selenium.MutableCapabilities">
+<!--   -->
+</a>
+<h3>Methods inherited from class&nbsp;org.openqa.selenium.<a href="../../../../org/openqa/selenium/MutableCapabilities.html" title="class in org.openqa.selenium">MutableCapabilities</a></h3>
+<code><a href="../../../../org/openqa/selenium/MutableCapabilities.html#equals-java.lang.Object-">equals</a>, <a href="../../../../org/openqa/selenium/MutableCapabilities.html#getCapability-java.lang.String-">getCapability</a>, <a href="../../../../org/openqa/selenium/MutableCapabilities.html#hashCode--">hashCode</a>, <a href="../../../../org/openqa/selenium/MutableCapabilities.html#merge-org.openqa.selenium.Capabilities-">merge</a>, <a href="../../../../org/openqa/selenium/MutableCapabilities.html#setCapability-java.lang.String-boolean-">setCapability</a>, <a href="../../../../org/openqa/selenium/MutableCapabilities.html#setCapability-java.lang.String-java.lang.Object-">setCapability</a>, <a href="../../../../org/openqa/selenium/MutableCapabilities.html#setCapability-java.lang.String-org.openqa.selenium.Platform-">setCapability</a>, <a href="../../../../org/openqa/selenium/MutableCapabilities.html#setCapability-java.lang.String-java.lang.String-">setCapability</a>, <a href="../../../../org/openqa/selenium/MutableCapabilities.html#toString--">toString</a></code></li>
+</ul>
 <ul class="blockList">
 <li class="blockList"><a name="methods.inherited.from.class.java.lang.Object">
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;java.lang.Object</h3>
-<code>clone, finalize, getClass, notify, notifyAll, toString, wait, wait, wait</code></li>
+<code>clone, finalize, getClass, notify, notifyAll, wait, wait, wait</code></li>
+</ul>
+<ul class="blockList">
+<li class="blockList"><a name="methods.inherited.from.class.org.openqa.selenium.Capabilities">
+<!--   -->
+</a>
+<h3>Methods inherited from interface&nbsp;org.openqa.selenium.<a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></h3>
+<code><a href="../../../../org/openqa/selenium/Capabilities.html#getBrowserName--">getBrowserName</a>, <a href="../../../../org/openqa/selenium/Capabilities.html#getPlatform--">getPlatform</a>, <a href="../../../../org/openqa/selenium/Capabilities.html#getVersion--">getVersion</a>, <a href="../../../../org/openqa/selenium/Capabilities.html#is-java.lang.String-">is</a>, <a href="../../../../org/openqa/selenium/Capabilities.html#isJavascriptEnabled--">isJavascriptEnabled</a></code></li>
 </ul>
 </li>
 </ul>
@@ -329,7 +358,7 @@ extends java.lang.Object</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>setBinary</h4>
-<pre>public&nbsp;void&nbsp;setBinary(java.io.File&nbsp;path)</pre>
+<pre>public&nbsp;<a href="../../../../org/openqa/selenium/chrome/ChromeOptions.html" title="class in org.openqa.selenium.chrome">ChromeOptions</a>&nbsp;setBinary(java.io.File&nbsp;path)</pre>
 <div class="block">Sets the path to the Chrome executable. This path should exist on the
  machine which will launch Chrome. The path should either be absolute or
  relative to the location of running ChromeDriver server.</div>
@@ -345,7 +374,7 @@ extends java.lang.Object</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>setBinary</h4>
-<pre>public&nbsp;void&nbsp;setBinary(java.lang.String&nbsp;path)</pre>
+<pre>public&nbsp;<a href="../../../../org/openqa/selenium/chrome/ChromeOptions.html" title="class in org.openqa.selenium.chrome">ChromeOptions</a>&nbsp;setBinary(java.lang.String&nbsp;path)</pre>
 <div class="block">Sets the path to the Chrome executable. This path should exist on the
  machine which will launch Chrome. The path should either be absolute or
  relative to the location of running ChromeDriver server.</div>
@@ -361,7 +390,7 @@ extends java.lang.Object</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>addArguments</h4>
-<pre>public&nbsp;void&nbsp;addArguments(java.lang.String...&nbsp;arguments)</pre>
+<pre>public&nbsp;<a href="../../../../org/openqa/selenium/chrome/ChromeOptions.html" title="class in org.openqa.selenium.chrome">ChromeOptions</a>&nbsp;addArguments(java.lang.String...&nbsp;arguments)</pre>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>arguments</code> - The arguments to use when starting Chrome.</dd>
@@ -376,7 +405,7 @@ extends java.lang.Object</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>addArguments</h4>
-<pre>public&nbsp;void&nbsp;addArguments(java.util.List&lt;java.lang.String&gt;&nbsp;arguments)</pre>
+<pre>public&nbsp;<a href="../../../../org/openqa/selenium/chrome/ChromeOptions.html" title="class in org.openqa.selenium.chrome">ChromeOptions</a>&nbsp;addArguments(java.util.List&lt;java.lang.String&gt;&nbsp;arguments)</pre>
 <div class="block">Adds additional command line arguments to be used when starting Chrome.
  For example:
  <pre><code>
@@ -400,7 +429,7 @@ extends java.lang.Object</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>addExtensions</h4>
-<pre>public&nbsp;void&nbsp;addExtensions(java.io.File...&nbsp;paths)</pre>
+<pre>public&nbsp;<a href="../../../../org/openqa/selenium/chrome/ChromeOptions.html" title="class in org.openqa.selenium.chrome">ChromeOptions</a>&nbsp;addExtensions(java.io.File...&nbsp;paths)</pre>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>paths</code> - Paths to the extensions to install.</dd>
@@ -415,7 +444,7 @@ extends java.lang.Object</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>addExtensions</h4>
-<pre>public&nbsp;void&nbsp;addExtensions(java.util.List&lt;java.io.File&gt;&nbsp;paths)</pre>
+<pre>public&nbsp;<a href="../../../../org/openqa/selenium/chrome/ChromeOptions.html" title="class in org.openqa.selenium.chrome">ChromeOptions</a>&nbsp;addExtensions(java.util.List&lt;java.io.File&gt;&nbsp;paths)</pre>
 <div class="block">Adds a new Chrome extension to install on browser startup. Each path should
  specify a packed Chrome extension (CRX file).</div>
 <dl>
@@ -430,7 +459,7 @@ extends java.lang.Object</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>addEncodedExtensions</h4>
-<pre>public&nbsp;void&nbsp;addEncodedExtensions(java.lang.String...&nbsp;encoded)</pre>
+<pre>public&nbsp;<a href="../../../../org/openqa/selenium/chrome/ChromeOptions.html" title="class in org.openqa.selenium.chrome">ChromeOptions</a>&nbsp;addEncodedExtensions(java.lang.String...&nbsp;encoded)</pre>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>encoded</code> - Base64 encoded data of the extensions to install.</dd>
@@ -445,7 +474,7 @@ extends java.lang.Object</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>addEncodedExtensions</h4>
-<pre>public&nbsp;void&nbsp;addEncodedExtensions(java.util.List&lt;java.lang.String&gt;&nbsp;encoded)</pre>
+<pre>public&nbsp;<a href="../../../../org/openqa/selenium/chrome/ChromeOptions.html" title="class in org.openqa.selenium.chrome">ChromeOptions</a>&nbsp;addEncodedExtensions(java.util.List&lt;java.lang.String&gt;&nbsp;encoded)</pre>
 <div class="block">Adds a new Chrome extension to install on browser startup. Each string data should
  specify a Base64 encoded string of packed Chrome extension (CRX file).</div>
 <dl>
@@ -460,8 +489,8 @@ extends java.lang.Object</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>setExperimentalOption</h4>
-<pre>public&nbsp;void&nbsp;setExperimentalOption(java.lang.String&nbsp;name,
-                                  java.lang.Object&nbsp;value)</pre>
+<pre>public&nbsp;<a href="../../../../org/openqa/selenium/chrome/ChromeOptions.html" title="class in org.openqa.selenium.chrome">ChromeOptions</a>&nbsp;setExperimentalOption(java.lang.String&nbsp;name,
+                                           java.lang.Object&nbsp;value)</pre>
 <div class="block">Sets an experimental option.  Useful for new ChromeDriver options not yet
  exposed through the <a href="../../../../org/openqa/selenium/chrome/ChromeOptions.html" title="class in org.openqa.selenium.chrome"><code>ChromeOptions</code></a> API.</div>
 <dl>
@@ -478,7 +507,9 @@ extends java.lang.Object</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>getExperimentalOption</h4>
-<pre>public&nbsp;java.lang.Object&nbsp;getExperimentalOption(java.lang.String&nbsp;name)</pre>
+<pre>@Deprecated
+public&nbsp;java.lang.Object&nbsp;getExperimentalOption(java.lang.String&nbsp;name)</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;<span class="deprecationComment">Getters are not needed in browser Options classes.</span></div>
 <div class="block">Returns the value of an experimental option.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -488,47 +519,63 @@ extends java.lang.Object</pre>
 </dl>
 </li>
 </ul>
-<a name="toJson--">
+<a name="setPageLoadStrategy-org.openqa.selenium.PageLoadStrategy-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>toJson</h4>
-<pre>public&nbsp;com.google.gson.JsonElement&nbsp;toJson()
-                                   throws java.io.IOException</pre>
-<div class="block">Converts this instance to its JSON representation.</div>
-<dl>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>The JSON representation of these options.</dd>
-<dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>java.io.IOException</code> - If an error occurs while reading the
-     <a href="../../../../org/openqa/selenium/chrome/ChromeOptions.html#addExtensions-java.util.List-"><code>extension files</code></a> from disk.</dd>
-</dl>
+<h4>setPageLoadStrategy</h4>
+<pre>public&nbsp;<a href="../../../../org/openqa/selenium/chrome/ChromeOptions.html" title="class in org.openqa.selenium.chrome">ChromeOptions</a>&nbsp;setPageLoadStrategy(<a href="../../../../org/openqa/selenium/PageLoadStrategy.html" title="enum in org.openqa.selenium">PageLoadStrategy</a>&nbsp;strategy)</pre>
 </li>
 </ul>
-<a name="equals-java.lang.Object-">
+<a name="setUnhandledPromptBehaviour-org.openqa.selenium.UnexpectedAlertBehaviour-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>equals</h4>
-<pre>public&nbsp;boolean&nbsp;equals(java.lang.Object&nbsp;other)</pre>
+<h4>setUnhandledPromptBehaviour</h4>
+<pre>public&nbsp;<a href="../../../../org/openqa/selenium/chrome/ChromeOptions.html" title="class in org.openqa.selenium.chrome">ChromeOptions</a>&nbsp;setUnhandledPromptBehaviour(<a href="../../../../org/openqa/selenium/UnexpectedAlertBehaviour.html" title="enum in org.openqa.selenium">UnexpectedAlertBehaviour</a>&nbsp;behaviour)</pre>
+</li>
+</ul>
+<a name="setHeadless-boolean-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setHeadless</h4>
+<pre>public&nbsp;<a href="../../../../org/openqa/selenium/chrome/ChromeOptions.html" title="class in org.openqa.selenium.chrome">ChromeOptions</a>&nbsp;setHeadless(boolean&nbsp;headless)</pre>
+</li>
+</ul>
+<a name="amendHashCode--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>amendHashCode</h4>
+<pre>protected&nbsp;int&nbsp;amendHashCode()</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../../../../org/openqa/selenium/MutableCapabilities.html#amendHashCode--">MutableCapabilities</a></code></span></div>
+<div class="block">Subclasses can use this to add information that isn't always in the capabilities map.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
-<dd><code>equals</code>&nbsp;in class&nbsp;<code>java.lang.Object</code></dd>
+<dd><code><a href="../../../../org/openqa/selenium/MutableCapabilities.html#amendHashCode--">amendHashCode</a></code>&nbsp;in class&nbsp;<code><a href="../../../../org/openqa/selenium/MutableCapabilities.html" title="class in org.openqa.selenium">MutableCapabilities</a></code></dd>
+<dt><span class="returnLabel">Returns:</span></dt>
 </dl>
 </li>
 </ul>
-<a name="hashCode--">
+<a name="asMap--">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
-<h4>hashCode</h4>
-<pre>public&nbsp;int&nbsp;hashCode()</pre>
+<h4>asMap</h4>
+<pre>public&nbsp;java.util.Map&lt;java.lang.String,?&gt;&nbsp;asMap()</pre>
 <dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../../../../org/openqa/selenium/Capabilities.html#asMap--">asMap</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../org/openqa/selenium/Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></code></dd>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
-<dd><code>hashCode</code>&nbsp;in class&nbsp;<code>java.lang.Object</code></dd>
+<dd><code><a href="../../../../org/openqa/selenium/MutableCapabilities.html#asMap--">asMap</a></code>&nbsp;in class&nbsp;<code><a href="../../../../org/openqa/selenium/MutableCapabilities.html" title="class in org.openqa.selenium">MutableCapabilities</a></code></dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The capabilities as a Map</dd>
 </dl>
 </li>
 </ul>

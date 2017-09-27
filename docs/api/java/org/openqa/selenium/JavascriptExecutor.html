@@ -187,6 +187,7 @@ var activeTableTab = "activeTableTab";
  <li>For all other cases, a String is returned.</li>
  <li>For an array, return a List&lt;Object&gt; with each object following the rules above. We
  support nested lists.</li>
+ <li>For a map, return a Map&lt;String, Object&gt; with values following the rules above.</li>
  <li>Unless the value is null or there is no return value, in which null is returned</li>
  </ul>
 
@@ -200,7 +201,7 @@ var activeTableTab = "activeTableTab";
 <dd><code>script</code> - The JavaScript to execute</dd>
 <dd><code>args</code> - The arguments to the script. May be empty</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>One of Boolean, Long, Double, String, List or WebElement. Or null.</dd>
+<dd>One of Boolean, Long, Double, String, List, Map or WebElement. Or null.</dd>
 </dl>
 </li>
 </ul>
@@ -229,6 +230,7 @@ var activeTableTab = "activeTableTab";
  <li>For all other cases, a String is returned.</li>
  <li>For an array, return a List&lt;Object&gt; with each object following the rules above. We
  support nested lists.</li>
+ <li>For a map, return a Map&lt;String, Object&gt; with values following the rules above.</li>
  <li>Unless the value is null or there is no return value, in which null is returned</li>
  </ul>
 
@@ -285,7 +287,7 @@ var activeTableTab = "activeTableTab";
 <dd><code>script</code> - The JavaScript to execute.</dd>
 <dd><code>args</code> - The arguments to the script. May be empty.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>One of Boolean, Long, String, List, WebElement, or null.</dd>
+<dd>One of Boolean, Long, String, List, Map, WebElement, or null.</dd>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../org/openqa/selenium/WebDriver.Timeouts.html#setScriptTimeout-long-java.util.concurrent.TimeUnit-"><code>WebDriver.Timeouts.setScriptTimeout(long, java.util.concurrent.TimeUnit)</code></a></dd>
 </dl>

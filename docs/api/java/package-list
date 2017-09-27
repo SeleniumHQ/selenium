@@ -28,6 +28,7 @@ org.openqa.selenium.remote.html5
 org.openqa.selenium.remote.http
 org.openqa.selenium.remote.mobile
 org.openqa.selenium.remote.server
+org.openqa.selenium.remote.server.commandhandler
 org.openqa.selenium.remote.server.handler
 org.openqa.selenium.remote.server.handler.html5
 org.openqa.selenium.remote.server.handler.interactions
@@ -47,3 +48,4 @@ org.openqa.selenium.support.events.internal
 org.openqa.selenium.support.pagefactory
 org.openqa.selenium.support.pagefactory.internal
 org.openqa.selenium.support.ui
+org.openqa.selenium.tools

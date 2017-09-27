@@ -151,8 +151,9 @@ extends java.lang.Object</pre>
              java.lang.Class&lt;? extends <a href="../../../../../org/openqa/selenium/remote/server/rest/RestishHandler.html" title="interface in org.openqa.selenium.remote.server.rest">RestishHandler</a>&lt;?&gt;&gt;&nbsp;implementationClass)</code>&nbsp;</td>
 </tr>
 <tr id="i1" class="rowColor">
-<td class="colFirst"><code><a href="../../../../../org/openqa/selenium/remote/http/HttpResponse.html" title="class in org.openqa.selenium.remote.http">HttpResponse</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/JsonHttpCommandHandler.html#handleRequest-org.openqa.selenium.remote.http.HttpRequest-">handleRequest</a></span>(<a href="../../../../../org/openqa/selenium/remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&nbsp;request)</code>&nbsp;</td>
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/remote/server/JsonHttpCommandHandler.html#handleRequest-org.openqa.selenium.remote.http.HttpRequest-org.openqa.selenium.remote.http.HttpResponse-">handleRequest</a></span>(<a href="../../../../../org/openqa/selenium/remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&nbsp;request,
+             <a href="../../../../../org/openqa/selenium/remote/http/HttpResponse.html" title="class in org.openqa.selenium.remote.http">HttpResponse</a>&nbsp;resp)</code>&nbsp;</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -204,13 +205,19 @@ extends java.lang.Object</pre>
                           java.lang.Class&lt;? extends <a href="../../../../../org/openqa/selenium/remote/server/rest/RestishHandler.html" title="interface in org.openqa.selenium.remote.server.rest">RestishHandler</a>&lt;?&gt;&gt;&nbsp;implementationClass)</pre>
 </li>
 </ul>
-<a name="handleRequest-org.openqa.selenium.remote.http.HttpRequest-">
+<a name="handleRequest-org.openqa.selenium.remote.http.HttpRequest-org.openqa.selenium.remote.http.HttpResponse-">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>handleRequest</h4>
-<pre>public&nbsp;<a href="../../../../../org/openqa/selenium/remote/http/HttpResponse.html" title="class in org.openqa.selenium.remote.http">HttpResponse</a>&nbsp;handleRequest(<a href="../../../../../org/openqa/selenium/remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&nbsp;request)</pre>
+<pre>public&nbsp;void&nbsp;handleRequest(<a href="../../../../../org/openqa/selenium/remote/http/HttpRequest.html" title="class in org.openqa.selenium.remote.http">HttpRequest</a>&nbsp;request,
+                          <a href="../../../../../org/openqa/selenium/remote/http/HttpResponse.html" title="class in org.openqa.selenium.remote.http">HttpResponse</a>&nbsp;resp)
+                   throws java.io.IOException</pre>
+<dl>
+<dt><span class="throwsLabel">Throws:</span></dt>
+<dd><code>java.io.IOException</code></dd>
+</dl>
 </li>
 </ul>
 </li>

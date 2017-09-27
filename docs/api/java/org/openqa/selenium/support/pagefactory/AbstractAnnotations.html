@@ -17,8 +17,8 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":6,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":6};
-var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"],8:["t4","Concrete Methods"]};
+var methods = {"i0":6,"i1":6};
+var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -147,7 +147,7 @@ extends java.lang.Object</pre>
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Method Summary table, listing methods, and an explanation">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t3" class="tableTab"><span><a href="javascript:show(4);">Abstract Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t3" class="tableTab"><span><a href="javascript:show(4);">Abstract Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colLast" scope="col">Method and Description</th>
@@ -160,26 +160,6 @@ extends java.lang.Object</pre>
 </td>
 </tr>
 <tr id="i1" class="rowColor">
-<td class="colFirst"><code>protected <a href="../../../../../org/openqa/selenium/By.html" title="class in org.openqa.selenium">By</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/pagefactory/AbstractAnnotations.html#buildByFromFindBy-org.openqa.selenium.support.FindBy-">buildByFromFindBy</a></span>(<a href="../../../../../org/openqa/selenium/support/FindBy.html" title="annotation in org.openqa.selenium.support">FindBy</a>&nbsp;findBy)</code>&nbsp;</td>
-</tr>
-<tr id="i2" class="altColor">
-<td class="colFirst"><code>protected <a href="../../../../../org/openqa/selenium/By.html" title="class in org.openqa.selenium">By</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/pagefactory/AbstractAnnotations.html#buildByFromFindBys-org.openqa.selenium.support.FindBys-">buildByFromFindBys</a></span>(<a href="../../../../../org/openqa/selenium/support/FindBys.html" title="annotation in org.openqa.selenium.support">FindBys</a>&nbsp;findBys)</code>&nbsp;</td>
-</tr>
-<tr id="i3" class="rowColor">
-<td class="colFirst"><code>protected <a href="../../../../../org/openqa/selenium/By.html" title="class in org.openqa.selenium">By</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/pagefactory/AbstractAnnotations.html#buildByFromLongFindBy-org.openqa.selenium.support.FindBy-">buildByFromLongFindBy</a></span>(<a href="../../../../../org/openqa/selenium/support/FindBy.html" title="annotation in org.openqa.selenium.support">FindBy</a>&nbsp;findBy)</code>&nbsp;</td>
-</tr>
-<tr id="i4" class="altColor">
-<td class="colFirst"><code>protected <a href="../../../../../org/openqa/selenium/By.html" title="class in org.openqa.selenium">By</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/pagefactory/AbstractAnnotations.html#buildByFromShortFindBy-org.openqa.selenium.support.FindBy-">buildByFromShortFindBy</a></span>(<a href="../../../../../org/openqa/selenium/support/FindBy.html" title="annotation in org.openqa.selenium.support">FindBy</a>&nbsp;findBy)</code>&nbsp;</td>
-</tr>
-<tr id="i5" class="rowColor">
-<td class="colFirst"><code>protected <a href="../../../../../org/openqa/selenium/By.html" title="class in org.openqa.selenium">By</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/pagefactory/AbstractAnnotations.html#buildBysFromFindByOneOf-org.openqa.selenium.support.FindAll-">buildBysFromFindByOneOf</a></span>(<a href="../../../../../org/openqa/selenium/support/FindAll.html" title="annotation in org.openqa.selenium.support">FindAll</a>&nbsp;findBys)</code>&nbsp;</td>
-</tr>
-<tr id="i6" class="altColor">
 <td class="colFirst"><code>abstract boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../org/openqa/selenium/support/pagefactory/AbstractAnnotations.html#isLookupCached--">isLookupCached</a></span>()</code>
 <div class="block">Defines whether or not given element
@@ -243,7 +223,7 @@ extends java.lang.Object</pre>
 <a name="isLookupCached--">
 <!--   -->
 </a>
-<ul class="blockList">
+<ul class="blockListLast">
 <li class="blockList">
 <h4>isLookupCached</h4>
 <pre>public abstract&nbsp;boolean&nbsp;isLookupCached()</pre>
@@ -253,51 +233,6 @@ extends java.lang.Object</pre>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>boolean if lookup cached</dd>
 </dl>
-</li>
-</ul>
-<a name="buildByFromFindBys-org.openqa.selenium.support.FindBys-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>buildByFromFindBys</h4>
-<pre>protected&nbsp;<a href="../../../../../org/openqa/selenium/By.html" title="class in org.openqa.selenium">By</a>&nbsp;buildByFromFindBys(<a href="../../../../../org/openqa/selenium/support/FindBys.html" title="annotation in org.openqa.selenium.support">FindBys</a>&nbsp;findBys)</pre>
-</li>
-</ul>
-<a name="buildBysFromFindByOneOf-org.openqa.selenium.support.FindAll-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>buildBysFromFindByOneOf</h4>
-<pre>protected&nbsp;<a href="../../../../../org/openqa/selenium/By.html" title="class in org.openqa.selenium">By</a>&nbsp;buildBysFromFindByOneOf(<a href="../../../../../org/openqa/selenium/support/FindAll.html" title="annotation in org.openqa.selenium.support">FindAll</a>&nbsp;findBys)</pre>
-</li>
-</ul>
-<a name="buildByFromFindBy-org.openqa.selenium.support.FindBy-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>buildByFromFindBy</h4>
-<pre>protected&nbsp;<a href="../../../../../org/openqa/selenium/By.html" title="class in org.openqa.selenium">By</a>&nbsp;buildByFromFindBy(<a href="../../../../../org/openqa/selenium/support/FindBy.html" title="annotation in org.openqa.selenium.support">FindBy</a>&nbsp;findBy)</pre>
-</li>
-</ul>
-<a name="buildByFromLongFindBy-org.openqa.selenium.support.FindBy-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>buildByFromLongFindBy</h4>
-<pre>protected&nbsp;<a href="../../../../../org/openqa/selenium/By.html" title="class in org.openqa.selenium">By</a>&nbsp;buildByFromLongFindBy(<a href="../../../../../org/openqa/selenium/support/FindBy.html" title="annotation in org.openqa.selenium.support">FindBy</a>&nbsp;findBy)</pre>
-</li>
-</ul>
-<a name="buildByFromShortFindBy-org.openqa.selenium.support.FindBy-">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>buildByFromShortFindBy</h4>
-<pre>protected&nbsp;<a href="../../../../../org/openqa/selenium/By.html" title="class in org.openqa.selenium">By</a>&nbsp;buildByFromShortFindBy(<a href="../../../../../org/openqa/selenium/support/FindBy.html" title="annotation in org.openqa.selenium.support">FindBy</a>&nbsp;findBy)</pre>
 </li>
 </ul>
 </li>
