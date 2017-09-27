@@ -442,6 +442,7 @@ end
 
 
 task :'prep-release-zip' => [
+  '//java/server/src/org/openqa/grid/selenium:selenium',
   '//java/client/src/org/openqa/selenium:client-combined-zip',
   '//java/server/src/org/openqa/grid/selenium:selenium-zip',
   '//java/server/src/org/openqa/selenium/server/htmlrunner:selenium-runner'] do
