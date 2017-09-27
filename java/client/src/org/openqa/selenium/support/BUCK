@@ -1,4 +1,6 @@
-include_defs('//SELENIUM_VERSION')
+# BUILD FILE SYNTAX: SKYLARK
+# BUILD FILE SYNTAX: SKYLARK
+load("//:selenium-version.bzl", "SE_VERSION")
 
 java_library(name = 'support',
   srcs = [

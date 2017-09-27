@@ -1,4 +1,5 @@
-include_defs('//dotnet/SELENIUM_DOTNET_VERSION')
+# BUILD FILE SYNTAX: SKYLARK
+load("//dotnet:selenium-dotnet-version.bzl", "SE_VERSION", "ASSEMBLY_VERSION")
 
 genrule(
   name = 'net35',
@@ -57,22 +58,22 @@ genrule(
     ':netstandard2.0'
   ],
   cmd_exe = 
-    'setlocal EnableDelayedExpansion && '\
-    '(if not exist %OUT% mkdir %OUT%) && '\
-    'for %%G in (%SRCS%) do ('\
-      'set target_dir=%%G&& '\
-      'for %%H in (!target_dir!) do ('\
-        'set platform_moniker=%%~nxH&& '\
-        'if \"!platform_moniker!\"==\"netstandard2.0\" ('\
-          '(if not exist %OUT%\\!platform_moniker! mkdir %OUT%\\!platform_moniker!) && '\
-          'copy !target_dir!\\WebDriver.dll %OUT%\\!platform_moniker! &&'\
-          'copy !target_dir!\\WebDriver.xml %OUT%\\!platform_moniker!'\
-        ') else ('\
-          'set merge_args=/v4 /xmldocs /internalize /lib=%%H /out=%OUT%\\!platform_moniker!\\WebDriver.dll !target_dir!\\WebDriver.dll !target_dir!\\Newtonsoft.Json.dll&& '\
-          '(if \"!platform_moniker!\"==\"net35\" set merge_args=/v2 /xmldocs /internalize /lib=%%H /out=%OUT%\\!platform_moniker!\\WebDriver.dll !target_dir!\\WebDriver.dll !target_dir!\\Newtonsoft.Json.dll)&& '\
-          '$(exe //third_party/dotnet/ilrepack:ilrepack) !merge_args!'\
-        ')'\
-      ')'\
+    'setlocal EnableDelayedExpansion && ' +
+    '(if not exist %OUT% mkdir %OUT%) && ' +
+    'for %%G in (%SRCS%) do (' +
+      'set target_dir=%%G&& ' +
+      'for %%H in (!target_dir!) do (' +
+        'set platform_moniker=%%~nxH&& ' +
+        'if \"!platform_moniker!\"==\"netstandard2.0\" (' +
+          '(if not exist %OUT%\\!platform_moniker! mkdir %OUT%\\!platform_moniker!) && ' +
+          'copy !target_dir!\\WebDriver.dll %OUT%\\!platform_moniker! &&' +
+          'copy !target_dir!\\WebDriver.xml %OUT%\\!platform_moniker!' +
+        ') else (' +
+          'set merge_args=/v4 /xmldocs /internalize /lib=%%H /out=%OUT%\\!platform_moniker!\\WebDriver.dll !target_dir!\\WebDriver.dll !target_dir!\\Newtonsoft.Json.dll&& ' +
+          '(if \"!platform_moniker!\"==\"net35\" set merge_args=/v2 /xmldocs /internalize /lib=%%H /out=%OUT%\\!platform_moniker!\\WebDriver.dll !target_dir!\\WebDriver.dll !target_dir!\\Newtonsoft.Json.dll)&& ' +
+          '$(exe //third_party/dotnet/ilrepack:ilrepack) !merge_args!' +
+        ')' +
+      ')' +
     ')',
   out = 'lib'
 )
@@ -130,22 +131,22 @@ genrule(
     ':netstandard2.0_strongnamed'
   ],
   cmd_exe = 
-    'setlocal EnableDelayedExpansion && '\
-    '(if not exist %OUT% mkdir %OUT%) && '\
-    'for %%G in (%SRCS%) do ('\
-      'set target_dir=%%G&& '\
-      'for %%H in (!target_dir!) do ('\
-        'set platform_moniker=%%~nxH&& '\
-        'if \"!platform_moniker!\"==\"netstandard2.0\" ('\
-          '(if not exist %OUT%\\!platform_moniker! mkdir %OUT%\\!platform_moniker!) && '\
-          'copy !target_dir!\\WebDriver.dll %OUT%\\!platform_moniker! &&'\
-          'copy !target_dir!\\WebDriver.xml %OUT%\\!platform_moniker!'\
-        ') else ('\
-          'set merge_args=/v4 /xmldocs /internalize /keyfile=$(location //dotnet:keyfile) /lib=%%H /out=%OUT%\\!platform_moniker!\\WebDriver.dll !target_dir!\\WebDriver.dll !target_dir!\\Newtonsoft.Json.dll&& '\
-          '(if \"!platform_moniker!\"==\"net35\" set merge_args=/v2 /xmldocs /internalize /keyfile=$(location //dotnet:keyfile) /lib=%%H /out=%OUT%\\!platform_moniker!\\WebDriver.dll !target_dir!\\WebDriver.dll !target_dir!\\Newtonsoft.Json.dll)&& '\
-          '$(exe //third_party/dotnet/ilrepack:ilrepack) !merge_args!'\
-        ')'\
-      ')'\
+    'setlocal EnableDelayedExpansion && ' +
+    '(if not exist %OUT% mkdir %OUT%) && ' +
+    'for %%G in (%SRCS%) do (' +
+      'set target_dir=%%G&& ' +
+      'for %%H in (!target_dir!) do (' +
+        'set platform_moniker=%%~nxH&& ' +
+        'if \"!platform_moniker!\"==\"netstandard2.0\" (' +
+          '(if not exist %OUT%\\!platform_moniker! mkdir %OUT%\\!platform_moniker!) && ' +
+          'copy !target_dir!\\WebDriver.dll %OUT%\\!platform_moniker! &&' +
+          'copy !target_dir!\\WebDriver.xml %OUT%\\!platform_moniker!' +
+        ') else (' +
+          'set merge_args=/v4 /xmldocs /internalize /keyfile=$(location //dotnet:keyfile) /lib=%%H /out=%OUT%\\!platform_moniker!\\WebDriver.dll !target_dir!\\WebDriver.dll !target_dir!\\Newtonsoft.Json.dll&& ' +
+          '(if \"!platform_moniker!\"==\"net35\" set merge_args=/v2 /xmldocs /internalize /keyfile=$(location //dotnet:keyfile) /lib=%%H /out=%OUT%\\!platform_moniker!\\WebDriver.dll !target_dir!\\WebDriver.dll !target_dir!\\Newtonsoft.Json.dll)&& ' +
+          '$(exe //third_party/dotnet/ilrepack:ilrepack) !merge_args!' +
+        ')' +
+      ')' +
     ')',
   out = 'lib'
 )

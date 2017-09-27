@@ -1,3 +1,4 @@
+# BUILD FILE SYNTAX: SKYLARK
 prebuilt_jar(
   name = 'guava',
   maven_coords = 'com.google.guava:guava:jar:23.0',

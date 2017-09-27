@@ -1,3 +1,4 @@
+# BUILD FILE SYNTAX: SKYLARK
 prebuilt_jar(
   name = 'commons-codec',
   maven_coords = 'commons-codec:commons-codec:jar:1.10',

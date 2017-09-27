@@ -1,3 +1,4 @@
+# BUILD FILE SYNTAX: SKYLARK
 prebuilt_jar(
   name = 'javaparser-core',
   maven_coords = 'com.github.javaparser:javaparser-core:jar:3.4.0',

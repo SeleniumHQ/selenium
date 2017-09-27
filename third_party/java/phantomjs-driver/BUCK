@@ -1,3 +1,4 @@
+# BUILD FILE SYNTAX: SKYLARK
 prebuilt_jar(name = 'phantomjs-driver',
   maven_coords = 'com.codeborne:phantomjsdriver:1.4.0',
   binary_jar = 'phantomjsdriver-1.4.0.jar',

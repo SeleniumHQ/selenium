@@ -1,3 +1,4 @@
+# BUILD FILE SYNTAX: SKYLARK
 java_library(name = 'environment',
   srcs = glob(['*.java', 'webserver/*.java'], excludes = ['**/*Test.java']),
   deps = [

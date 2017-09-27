@@ -1,4 +1,5 @@
-include_defs('//dotnet/SELENIUM_DOTNET_VERSION')
+# BUILD FILE SYNTAX: SKYLARK
+load("//dotnet:selenium-dotnet-version.bzl", "SE_VERSION")
 
 export_file(
   name = 'keyfile',

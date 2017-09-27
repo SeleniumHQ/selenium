@@ -1,3 +1,4 @@
+# BUILD FILE SYNTAX: SKYLARK
 java_binary(
   name = 'jarjar-links',
   main_class = 'org.pantsbuild.jarjar.Main',

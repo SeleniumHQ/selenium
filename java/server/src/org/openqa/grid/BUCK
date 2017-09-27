@@ -1,3 +1,4 @@
+# BUILD FILE SYNTAX: SKYLARK
 java_library(name = 'grid',
   srcs = glob([
     'common/**/*.java',

@@ -1,3 +1,4 @@
+# BUILD FILE SYNTAX: SKYLARK
 export_file(
   name = 'changelog',
   out = "CHANGELOG",

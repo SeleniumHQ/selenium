@@ -1,3 +1,4 @@
+# BUILD FILE SYNTAX: SKYLARK
 SUITES = glob([
   'internal/**/*Tests.java',
   'plugin/**/*Tests.java',

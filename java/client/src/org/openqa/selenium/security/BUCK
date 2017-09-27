@@ -1,3 +1,4 @@
+# BUILD FILE SYNTAX: SKYLARK
 java_library(name = 'security',
   srcs = glob(['*.java']),
   deps = [

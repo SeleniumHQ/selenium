@@ -1,3 +1,4 @@
+# BUILD FILE SYNTAX: SKYLARK
 prebuilt_jar(
   name = 'javax.inject',
   maven_coords = 'javax.inject:javax.inject:jar:1',

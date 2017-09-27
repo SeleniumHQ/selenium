@@ -1,3 +1,4 @@
+# BUILD FILE SYNTAX: SKYLARK
 prebuilt_jar(name = 'netty',
   binary_jar = 'netty-all-4.1.14.Final.jar',
   maven_coords = 'io.netty:netty-all:4.1.14.Final',

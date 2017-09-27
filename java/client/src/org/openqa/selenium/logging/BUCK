@@ -1,3 +1,4 @@
+# BUILD FILE SYNTAX: SKYLARK
 API_SRCS = [
   'Logs.java',
   'LogEntries.java',

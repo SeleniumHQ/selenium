@@ -1,4 +1,3 @@
-
 java_library(name = 'webdriven',
   srcs = [
     'CompoundMutator.java',

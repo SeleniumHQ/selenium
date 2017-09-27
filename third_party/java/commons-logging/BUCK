@@ -1,3 +1,4 @@
+# BUILD FILE SYNTAX: SKYLARK
 prebuilt_jar(
   name = 'commons-logging',
   maven_coords = 'commons-logging:commons-logging:jar:1.2',
