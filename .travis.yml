@@ -171,6 +171,8 @@ matrix:
       <<: *firefox-esr
     - env: TASK=//rb:docs
       <<: *ruby
+    - env: TASK=//rb:lint
+      <<: *ruby
   allow_failures:
     - env: CHROME=1 TASK=//java/client/test/com/thoughtworks/selenium:chrome-rc-test:run
     - env: MARIONETTE=1 TASK=//java/client/test/com/thoughtworks/selenium:firefox-rc-test:run
