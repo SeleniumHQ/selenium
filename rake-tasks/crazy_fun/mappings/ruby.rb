@@ -8,6 +8,8 @@ class RubyMappings
     fun.add_mapping "ruby_test", RubyTest.new
     fun.add_mapping "ruby_test", AddTestDependencies.new
 
+    fun.add_mapping "ruby_lint", RubyLinter.new
+
     fun.add_mapping "rubydocs", RubyDocs.new
     fun.add_mapping "rubygem",  RubyGem.new
   end
@@ -111,6 +113,18 @@ class RubyMappings
       end
     end
   end
+
+  class RubyLinter < Tasks
+    def handle(_fun, dir, args)
+      desc 'Run rubocop'
+      task task_name(dir, "#{args[:name]}") => %W[//#{dir}:bundle] do
+        Dir.chdir('rb') do
+          ruby :command => 'rubocop',
+               :gemfile => 'Gemfile'
+        end
+      end
+    end
+  end # RubyLinter
 
   class RubyDocs < Tasks
     def handle(_fun, dir, args)

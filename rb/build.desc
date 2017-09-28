@@ -310,3 +310,6 @@ ruby_test(name = "unit",
     ":support"
   ]
 )
+
+ruby_lint(name = "lint"
+)
