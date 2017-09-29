@@ -311,5 +311,4 @@ ruby_test(name = "unit",
   ]
 )
 
-ruby_lint(name = "lint"
-)
+ruby_lint(name = "lint")
