@@ -62,12 +62,12 @@ public class DefaultElementLocator implements ElementLocator {
    * Find the element.
    */
   public WebElement findElement() {
-    if (cachedElement != null && shouldCache) {
+    if (cachedElement != null && shouldCache()) {
       return cachedElement;
     }
 
     WebElement element = searchContext.findElement(by);
-    if (shouldCache) {
+    if (shouldCache()) {
       cachedElement = element;
     }
 
@@ -78,16 +78,25 @@ public class DefaultElementLocator implements ElementLocator {
    * Find the element list.
    */
   public List<WebElement> findElements() {
-    if (cachedElementList != null && shouldCache) {
+    if (cachedElementList != null && shouldCache()) {
       return cachedElementList;
     }
 
     List<WebElement> elements = searchContext.findElements(by);
-    if (shouldCache) {
+    if (shouldCache()) {
       cachedElementList = elements;
     }
 
     return elements;
+  }
+
+  /**
+   * Returns whether the element should be cached.
+   *
+   * @return {@code true} if the element should be cached
+   */
+  protected boolean shouldCache() {
+    return shouldCache;
   }
 
   @Override
