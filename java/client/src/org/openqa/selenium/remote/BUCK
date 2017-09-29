@@ -141,7 +141,7 @@ java_library(name = 'remote-lib',
 
 export_file(
   name = 'get-attribute',
-  src = '//javascript/webdriver/atoms:getAttribute',
+  src = '//javascript/webdriver/atoms:get-attribute',
   out = 'getAttribute.js',
 )
 

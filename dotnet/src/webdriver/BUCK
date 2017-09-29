@@ -172,7 +172,7 @@ genrule(
   srcs = [
     '//javascript/firefox-driver:webdriver',
     '//javascript/firefox-driver:webdriver_prefs',
-    '//javascript/webdriver/atoms:getAttribute',
+    '//javascript/webdriver/atoms:get-attribute',
     '//javascript/atoms/fragments:is-displayed',
     '//cpp/prebuilt:noblur32',
     '//cpp/prebuilt:noblur64'
