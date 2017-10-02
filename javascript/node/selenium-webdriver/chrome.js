@@ -739,11 +739,9 @@ class Driver extends webdriver.WebDriver {
    *     for an externally managed endpoint. If neither is provided, the
    *     {@linkplain ##getDefaultService default service} will be used by
    *     default.
-   * @param {promise.ControlFlow=} opt_flow The control flow to use, or `null`
-   *     to use the currently active flow.
    * @return {!Driver} A new driver instance.
    */
-  static createSession(opt_config, opt_serviceExecutor, opt_flow) {
+  static createSession(opt_config, opt_serviceExecutor) {
     let executor;
     if (opt_serviceExecutor instanceof http.Executor) {
       executor = opt_serviceExecutor;
@@ -757,8 +755,7 @@ class Driver extends webdriver.WebDriver {
         opt_config instanceof Options ? opt_config.toCapabilities() :
         (opt_config || Capabilities.chrome());
 
-    return /** @type {!Driver} */(
-        super.createSession(executor, caps, opt_flow));
+    return /** @type {!Driver} */(super.createSession(executor, caps));
   }
 
   /**
@@ -771,7 +768,7 @@ class Driver extends webdriver.WebDriver {
   /**
    * Schedules a command to launch Chrome App with given ID.
    * @param {string} id ID of the App to launch.
-   * @return {!promise.Thenable<void>} A promise that will be resolved
+   * @return {!Promise<void>} A promise that will be resolved
    *     when app is launched.
    */
   launchApp(id) {
@@ -782,8 +779,8 @@ class Driver extends webdriver.WebDriver {
 
   /**
    * Schedules a command to get Chrome network emulation settings.
-   * @return {!promise.Thenable<T>} A promise that will be resolved
-   *     when network emulation settings are retrievied.
+   * @return {!Promise} A promise that will be resolved when network
+   *     emulation settings are retrievied.
    */
   getNetworkConditions() {
     return this.schedule(
@@ -804,8 +801,8 @@ class Driver extends webdriver.WebDriver {
    * });
    *
    * @param {Object} spec Defines the network conditions to set
-   * @return {!promise.Thenable<void>} A promise that will be resolved
-   *     when network emulation settings are set.
+   * @return {!Promise<void>} A promise that will be resolved when network
+   *     emulation settings are set.
    */
   setNetworkConditions(spec) {
     if (!spec || typeof spec !== 'object') {

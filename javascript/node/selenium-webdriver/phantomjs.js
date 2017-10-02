@@ -51,7 +51,6 @@ const http = require('./http'),
     capabilities = require('./lib/capabilities'),
     command = require('./lib/command'),
     logging = require('./lib/logging'),
-    promise = require('./lib/promise'),
     webdriver = require('./lib/webdriver'),
     portprober = require('./net/portprober'),
     remote = require('./remote');
@@ -152,14 +151,12 @@ class Driver extends webdriver.WebDriver {
    *
    * @param {capabilities.Capabilities=} opt_capabilities The desired
    *     capabilities.
-   * @param {promise.ControlFlow=} opt_flow The control flow to use,
-   *     or {@code null} to use the currently active flow.
    * @param {string=} opt_logFile Path to the log file for the phantomjs
    *     executable's output. For convenience, this may be set at runtime with
    *     the `SELENIUM_PHANTOMJS_LOG` environment variable.
    * @return {!Driver} A new driver reference.
    */
-  static createSession(opt_capabilities, opt_flow, opt_logFile) {
+  static createSession(opt_capabilities, opt_logFile) {
     // TODO: add an Options class for consistency with the other driver types.
 
     var caps = opt_capabilities || capabilities.Capabilities.phantomjs();
@@ -218,7 +215,7 @@ class Driver extends webdriver.WebDriver {
 
     var executor = createExecutor(service.start());
     return /** @type {!Driver} */(super.createSession(
-        executor, caps, opt_flow, () => service.kill()));
+        executor, caps, () => service.kill()));
   }
 
   /**
@@ -258,8 +255,7 @@ class Driver extends webdriver.WebDriver {
    *
    * @param {(string|!Function)} script The script to execute.
    * @param {...*} var_args The arguments to pass to the script.
-   * @return {!promise.Thenable<T>} A promise that resolve to the
-   *     script's return value.
+   * @return {!Promise<T>} A promise that resolve to the script's return value.
    * @template T
    */
   executePhantomJS(script, var_args) {

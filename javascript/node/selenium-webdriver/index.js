@@ -107,7 +107,7 @@ function ensureFileDetectorsAreEnabled(ctor) {
  * every issued command will fail.
  *
  * @extends {webdriver.IWebDriver}
- * @extends {promise.CancellableThenable<!webdriver.IWebDriver>}
+ * @extends {IThenable<!webdriver.IWebDriver>}
  * @interface
  */
 class ThenableWebDriver {
@@ -147,24 +147,13 @@ function createDriver(ctor, ...args) {
           return new ctor(session, ...rest);
         });
 
-        /**
-         * @param {(string|Error)=} opt_reason
-         * @override
-         */
-        this.cancel = function(opt_reason) {
-          if (promise.CancellableThenable.isImplementation(pd)) {
-            /** @type {!promise.CancellableThenable} */(pd).cancel(opt_reason);
-          }
-        };
-
         /** @override */
         this.then = pd.then.bind(pd);
 
         /** @override */
-        this.catch = pd.then.bind(pd);
+        this.catch = pd.catch.bind(pd);
       }
     };
-    promise.CancellableThenable.addImplementation(thenableWebDriverProxy);
     THENABLE_DRIVERS.set(ctor, thenableWebDriverProxy);
   }
   return thenableWebDriverProxy.createSession(...args);
@@ -214,9 +203,6 @@ class Builder {
   constructor() {
     /** @private @const */
     this.log_ = logging.getLogger('webdriver.Builder');
-
-    /** @private {promise.ControlFlow} */
-    this.flow_ = null;
 
     /** @private {string} */
     this.url_ = '';
@@ -530,19 +516,6 @@ class Builder {
   }
 
   /**
-   * Sets the control flow that created drivers should execute actions in. If
-   * the flow is never set, or is set to {@code null}, it will use the active
-   * flow at the time {@link #build()} is called.
-   * @param {promise.ControlFlow} flow The control flow to use, or
-   *     {@code null} to
-   * @return {!Builder} A self reference.
-   */
-  setControlFlow(flow) {
-    this.flow_ = flow;
-    return this;
-  }
-
-  /**
    * Creates a new WebDriver client based on this builder's current
    * configuration.
    *
@@ -623,41 +596,38 @@ class Builder {
 
       if (browser === Browser.CHROME) {
         const driver = ensureFileDetectorsAreEnabled(chrome.Driver);
-        return createDriver(
-            driver, capabilities, executor, this.flow_);
+        return createDriver(driver, capabilities, executor);
       }
 
       if (browser === Browser.FIREFOX) {
         const driver = ensureFileDetectorsAreEnabled(firefox.Driver);
-        return createDriver(
-            driver, capabilities, executor, this.flow_);
+        return createDriver(driver, capabilities, executor);
       }
-      return createDriver(
-          WebDriver, executor, capabilities, this.flow_);
+      return createDriver(WebDriver, executor, capabilities);
     }
 
     // Check for a native browser.
     switch (browser) {
       case Browser.CHROME:
-        return createDriver(chrome.Driver, capabilities, null, this.flow_);
+        return createDriver(chrome.Driver, capabilities, null);
 
       case Browser.FIREFOX:
-        return createDriver(firefox.Driver, capabilities, null, this.flow_);
+        return createDriver(firefox.Driver, capabilities, null);
 
       case Browser.INTERNET_EXPLORER:
-        return createDriver(ie.Driver, capabilities, this.flow_);
+        return createDriver(ie.Driver, capabilities);
 
       case Browser.EDGE:
-        return createDriver(edge.Driver, capabilities, null, this.flow_);
+        return createDriver(edge.Driver, capabilities, null);
 
       case Browser.OPERA:
-        return createDriver(opera.Driver, capabilities, null, this.flow_);
+        return createDriver(opera.Driver, capabilities, null);
 
       case Browser.PHANTOM_JS:
-        return createDriver(phantomjs.Driver, capabilities, this.flow_);
+        return createDriver(phantomjs.Driver, capabilities);
 
       case Browser.SAFARI:
-        return createDriver(safari.Driver, capabilities, this.flow_);
+        return createDriver(safari.Driver, capabilities);
 
       default:
         throw new Error('Do not know how to build driver: ' + browser

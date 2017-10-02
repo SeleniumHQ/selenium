@@ -130,7 +130,6 @@ const {Binary, Channel} = require('./binary'),
     capabilities = require('../lib/capabilities'),
     command = require('../lib/command'),
     logging = require('../lib/logging'),
-    promise = require('../lib/promise'),
     webdriver = require('../lib/webdriver'),
     net = require('../net'),
     portprober = require('../net/portprober'),
@@ -483,13 +482,11 @@ class Driver extends webdriver.WebDriver {
    *
    *   _This parameter may only be used with Mozilla's GeckoDriver._
    *
-   * @param {promise.ControlFlow=} opt_flow The flow to
-   *     schedule commands through. Defaults to the active flow object.
    * @throws {Error} If a custom command executor is provided and the driver is
    *     configured to use the legacy FirefoxDriver from the Selenium project.
    * @return {!Driver} A new driver instance.
    */
-  static createSession(opt_config, opt_executor, opt_flow) {
+  static createSession(opt_config, opt_executor) {
     let caps;
     if (opt_config instanceof Options) {
       caps = opt_config.toCapabilities();
@@ -518,8 +515,7 @@ class Driver extends webdriver.WebDriver {
       onQuit = () => service.kill();
     }
 
-    return /** @type {!Driver} */(super.createSession(
-        executor, caps, opt_flow, onQuit));
+    return /** @type {!Driver} */(super.createSession(executor, caps, onQuit));
   }
 
   /**
@@ -533,7 +529,7 @@ class Driver extends webdriver.WebDriver {
   /**
    * Get the context that is currently in effect.
    *
-   * @return {!promise.Thenable<Context>} Current context.
+   * @return {!Promise<Context>} Current context.
    */
   getContext() {
     return this.schedule(
@@ -553,7 +549,7 @@ class Driver extends webdriver.WebDriver {
    *
    * Use your powers wisely.
    *
-   * @param {!promise.Thenable<void>} ctx The context to switch to.
+   * @param {!Promise<void>} ctx The context to switch to.
    */
   setContext(ctx) {
     return this.schedule(

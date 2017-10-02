@@ -110,21 +110,18 @@ class ActionSequence {
   /**
    * Executes this action sequence.
    *
-   * @return {!./promise.Thenable} A promise that will be resolved once
-   *     this sequence has completed.
+   * @return {!Promise} A promise that will be resolved once this sequence has
+   *     completed.
    */
   perform() {
     // Make a protected copy of the scheduled actions. This will protect against
     // users defining additional commands before this sequence is actually
     // executed.
     let actions = this.actions_.concat();
-    let driver = this.driver_;
-    return driver.controlFlow().execute(function() {
-      let results = actions.map(action => {
-        return driver.schedule(action.command, action.description);
-      });
-      return Promise.all(results);
-    }, 'ActionSequence.perform');
+    let results = actions.map(action => {
+      return this.driver_.schedule(action.command, action.description);
+    });
+    return Promise.all(results);
   }
 
   /**
@@ -422,21 +419,18 @@ class TouchSequence {
 
   /**
    * Executes this action sequence.
-   * @return {!./promise.Thenable} A promise that will be resolved once
-   *     this sequence has completed.
+   * @return {!Promise} A promise that will be resolved once this sequence has
+   *     completed.
    */
   perform() {
     // Make a protected copy of the scheduled actions. This will protect against
     // users defining additional commands before this sequence is actually
     // executed.
     let actions = this.actions_.concat();
-    let driver = this.driver_;
-    return driver.controlFlow().execute(function() {
-      let results = actions.map(action => {
-        return driver.schedule(action.command, action.description);
-      });
-      return Promise.all(results);
-    }, 'TouchSequence.perform');
+    let results = actions.map(action => {
+      return this.driver_.schedule(action.command, action.description);
+    });
+    return Promise.all(results);
   }
 
   /**

@@ -182,7 +182,7 @@ class By {
    *
    * @param {!(string|Function)} script The script to execute.
    * @param {...*} var_args The arguments to pass to the script.
-   * @return {function(!./webdriver.WebDriver): !./promise.Promise}
+   * @return {function(!./webdriver.WebDriver): !Promise}
    *     A new JavaScript-based locator function.
    */
   static js(script, var_args) {

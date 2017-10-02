@@ -229,11 +229,9 @@ class Driver extends webdriver.WebDriver {
    *
    * @param {(Options|Capabilities)=} opt_config The configuration
    *     options for the new session.
-   * @param {promise.ControlFlow=} opt_flow The control flow to create
-   *     the driver under.
    * @return {!Driver} A new driver instance.
    */
-  static createSession(opt_config, opt_flow) {
+  static createSession(opt_config) {
     let caps, exe;
 
     if (opt_config instanceof Options) {
@@ -251,7 +249,7 @@ class Driver extends webdriver.WebDriver {
         service.start().then(url => new http.HttpClient(url)));
 
     return /** @type {!Driver} */(super.createSession(
-        executor, caps, opt_flow, () => service.kill()));
+        executor, caps, () => service.kill()));
   }
 }
 

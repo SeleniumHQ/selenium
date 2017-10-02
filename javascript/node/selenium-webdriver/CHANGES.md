@@ -2,6 +2,13 @@
 
 ### API Changes
 
+* The core WebDriver API no longer uses promise manager
+  - Removed `index.Builder#setControlFlow()`
+  - The following thenable types no longer have a `cancel()` method:
+    - The dynamically generated thenable WebDrivers created by `index.Builder`
+    - `lib/webdriver.AlertPromise`
+    - `lib/webdriver.WebElementPromise`
+* The `testing/index` module no longer wraps the promise manager
 * Removed `remote/index.DriverService.prototype.stop()` (use `#kill()` instead)
 
 
