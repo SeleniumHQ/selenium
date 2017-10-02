@@ -189,8 +189,6 @@ module Selenium
           else
             raise ArgumentError, "unsupported proxy type #{proxy.type}"
           end
-
-          proxy
         end
 
         def encoded
