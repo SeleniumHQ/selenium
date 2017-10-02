@@ -43,7 +43,7 @@ ruby_library(name = "common",
   ],
   resources = [
     { "../LICENSE" : "rb/LICENSE" },
-    { "//javascript/webdriver/atoms:getAttribute": "rb/lib/selenium/webdriver/atoms/getAttribute.js"}
+    { "//javascript/webdriver/atoms:get-attribute": "rb/lib/selenium/webdriver/atoms/getAttribute.js"}
   ]
 )
 
