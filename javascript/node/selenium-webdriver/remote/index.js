@@ -28,7 +28,6 @@ const exec = require('../io/exec');
 const {Zip} = require('../io/zip');
 const cmd = require('../lib/command');
 const input = require('../lib/input');
-const promise = require('../lib/promise');
 const webdriver = require('../lib/webdriver');
 const net = require('../net');
 const portprober = require('../net/portprober');
@@ -253,7 +252,7 @@ class DriverService {
 
             httpUtil.waitForServer(serverUrl, timeout, cancelToken)
                 .then(_ => fulfill(serverUrl), err => {
-                  if (err instanceof promise.CancellationError) {
+                  if (err instanceof httpUtil.CancellationError) {
                     fulfill(serverUrl);
                   } else {
                     reject(err);
@@ -282,16 +281,6 @@ class DriverService {
     this.address_ = null;
     this.command_ = null;
     return cmd.then(c => c.kill('SIGTERM'));
-  }
-
-  /**
-   * Schedules a task in the current control flow to stop the server if it is
-   * currently running.
-   * @return {!promise.Thenable} A promise that will be resolved when
-   *     the server has been stopped.
-   */
-  stop() {
-    return promise.controlFlow().execute(this.kill.bind(this));
   }
 }
 
@@ -529,11 +518,9 @@ class SeleniumServer extends DriverService {
  *
  * @typedef {{
  *   loopback: (boolean|undefined),
- *   port: (number|!promise.Promise<number>),
- *   args: !(Array<string>|promise.Promise<!Array<string>>),
- *   jvmArgs: (!Array<string>|
- *             !promise.Promise<!Array<string>>|
- *             undefined),
+ *   port: (number|!IThenable<number>),
+ *   args: !(Array<string>|IThenable<!Array<string>>),
+ *   jvmArgs: (!Array<string>|!IThenable<!Array<string>>|undefined),
  *   env: (!Object<string, string>|undefined),
  *   stdio: (string|!Array<string|number|!stream.Stream|null|undefined>|
  *           undefined)

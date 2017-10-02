@@ -1,3 +1,10 @@
+## v.next
+
+### API Changes
+
+* Removed `remote/index.DriverService.prototype.stop()` (use `#kill()` instead)
+
+
 ## v3.6.0
 
 ### Bug Fixes
