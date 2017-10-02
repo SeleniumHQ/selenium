@@ -30,7 +30,7 @@ Style/NumericLiterals:
   Enabled: false
 
 # Bug
-Style/FileName:
+Naming/FileName:
   Exclude:
     - 'lib/selenium-webdriver.rb'
 
@@ -83,8 +83,9 @@ Metrics/LineLength:
   Exclude:
     - 'lib/selenium/webdriver/remote/w3c/capabilities.rb'
     - 'lib/selenium/webdriver/remote/bridge.rb'
-    - 'spec/unit/selenium/server_spec.rb'
     - 'lib/selenium/webdriver/ie/service.rb'
+    - 'spec/unit/selenium/server_spec.rb'
+    - 'spec/integration/selenium/webdriver/timeout_spec.rb'
 
 Metrics/ModuleLength:
   Exclude:
@@ -167,4 +168,11 @@ Style/SymbolArray:
   Enabled: false
 
 Style/TrailingCommaInLiteral:
+  Enabled: false
+
+Style/Dir:
+  Exclude:
+    - 'selenium-webdriver.gemspec'
+
+Lint/RescueWithoutErrorClass:
   Enabled: false
