@@ -86,17 +86,17 @@ test.suite(function(env) {
     };
   }
 
-  test.before(mkStartFunc(proxyServer));
-  test.before(mkStartFunc(helloServer));
-  test.before(mkStartFunc(goodbyeServer));
+  before(mkStartFunc(proxyServer));
+  before(mkStartFunc(helloServer));
+  before(mkStartFunc(goodbyeServer));
 
-  test.after(proxyServer.stop.bind(proxyServer));
-  test.after(helloServer.stop.bind(helloServer));
-  test.after(goodbyeServer.stop.bind(goodbyeServer));
+  after(proxyServer.stop.bind(proxyServer));
+  after(helloServer.stop.bind(helloServer));
+  after(goodbyeServer.stop.bind(goodbyeServer));
 
   var driver;
-  test.beforeEach(function() { driver = null; });
-  test.afterEach(function() { return driver && driver.quit(); });
+  beforeEach(function() { driver = null; });
+  afterEach(function() { return driver && driver.quit(); });
 
   function createDriver(proxy) {
     // For Firefox we need to explicitly enable proxies for localhost by
@@ -116,14 +116,14 @@ test.suite(function(env) {
     // phantomjs 1.9.1 in webdriver mode does not appear to respect proxy
     // settings.
     test.ignore(env.browsers(Browser.PHANTOM_JS)).
-    it('can configure HTTP proxy host', function*() {
-      yield createDriver(proxy.manual({
+    it('can configure HTTP proxy host', async function() {
+      await createDriver(proxy.manual({
         http: proxyServer.host()
       }));
 
-      yield driver.get(helloServer.url());
-      yield assert(driver.getTitle()).equalTo('Proxy page');
-      yield assert(driver.findElement({tagName: 'h3'}).getText()).
+      await driver.get(helloServer.url());
+      await assert(driver.getTitle()).equalTo('Proxy page');
+      await assert(driver.findElement({tagName: 'h3'}).getText()).
           equalTo('This is the proxy landing page');
     });
 
@@ -134,20 +134,20 @@ test.suite(function(env) {
         Browser.FIREFOX,
         'legacy-' + Browser.FIREFOX,
         Browser.PHANTOM_JS)).
-    it('can bypass proxy for specific hosts', function*() {
-      yield createDriver(proxy.manual({
+    it('can bypass proxy for specific hosts', async function() {
+      await createDriver(proxy.manual({
         http: proxyServer.host(),
         bypass: helloServer.host()
       }));
 
-      yield driver.get(helloServer.url());
-      yield assert(driver.getTitle()).equalTo('Hello');
-      yield assert(driver.findElement({tagName: 'h3'}).getText()).
+      await driver.get(helloServer.url());
+      await assert(driver.getTitle()).equalTo('Hello');
+      await assert(driver.findElement({tagName: 'h3'}).getText()).
           equalTo('Hello, world!');
 
-      yield driver.get(goodbyeServer.url());
-      yield assert(driver.getTitle()).equalTo('Proxy page');
-      yield assert(driver.findElement({tagName: 'h3'}).getText()).
+      await driver.get(goodbyeServer.url());
+      await assert(driver.getTitle()).equalTo('Proxy page');
+      await assert(driver.findElement({tagName: 'h3'}).getText()).
           equalTo('This is the proxy landing page');
     });
 
@@ -159,17 +159,17 @@ test.suite(function(env) {
   test.ignore(env.browsers(
       Browser.IE, Browser.OPERA, Browser.PHANTOM_JS, Browser.SAFARI)).
   describe('pac proxy settings', function() {
-    test.it('can configure proxy through PAC file', function*() {
-      yield createDriver(proxy.pac(proxyServer.url('/proxy.pac')));
+    it('can configure proxy through PAC file', async function() {
+      await createDriver(proxy.pac(proxyServer.url('/proxy.pac')));
 
-      yield driver.get(helloServer.url());
-      yield assert(driver.getTitle()).equalTo('Proxy page');
-      yield assert(driver.findElement({tagName: 'h3'}).getText()).
+      await driver.get(helloServer.url());
+      await assert(driver.getTitle()).equalTo('Proxy page');
+      await assert(driver.findElement({tagName: 'h3'}).getText()).
           equalTo('This is the proxy landing page');
 
-      yield driver.get(goodbyeServer.url());
-      yield assert(driver.getTitle()).equalTo('Goodbye');
-      yield assert(driver.findElement({tagName: 'h3'}).getText()).
+      await driver.get(goodbyeServer.url());
+      await assert(driver.getTitle()).equalTo('Goodbye');
+      await assert(driver.findElement({tagName: 'h3'}).getText()).
           equalTo('Goodbye, world!');
     });
   });

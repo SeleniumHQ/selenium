@@ -71,17 +71,17 @@ test.suite(function(env) {
 
   describe('session management', function() {
     var driver;
-    test.before(function*() {
-      driver = yield env.builder().build();
+    before(async function() {
+      driver = await env.builder().build();
     });
 
-    test.after(function() {
+    after(function() {
       return driver.quit();
     });
 
-    test.it('can connect to an existing session', function*() {
-      yield driver.get(Pages.simpleTestPage);
-      yield assert(driver.getTitle()).equalTo('Hello WebDriver');
+    it('can connect to an existing session', async function() {
+      await driver.get(Pages.simpleTestPage);
+      await assert(driver.getTitle()).equalTo('Hello WebDriver');
 
       return driver.getSession().then(session1 => {
         let driver2 = WebDriver.attachToSession(

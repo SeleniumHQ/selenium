@@ -22,9 +22,7 @@ var assert = require('assert'),
     path = require('path');
 
 var promise = require('../..').promise,
-    Profile = require('../../firefox/profile').Profile,
-    decode = require('../../firefox/profile').decode,
-    loadUserPrefs = require('../../firefox/profile').loadUserPrefs,
+    {Profile, decode, loadUserPrefs} = require('../../firefox/profile'),
     io = require('../../io');
 
 

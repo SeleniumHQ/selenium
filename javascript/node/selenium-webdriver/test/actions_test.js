@@ -26,21 +26,21 @@ var Browser = require('..').Browser,
 
 test.suite(function(env) {
   var driver;
-  test.beforeEach(function*() { driver = yield env.builder().build(); });
-  test.afterEach(function() { return driver.quit(); });
+
+  beforeEach(async function() { driver = await env.builder().build(); });
+  afterEach(function() { return driver.quit(); });
 
   test.ignore(
       env.browsers(Browser.FIREFOX, Browser.PHANTOM_JS, Browser.SAFARI)).
   describe('WebDriver.actions()', function() {
+    it('can move to and click element in an iframe', async function() {
+      await driver.get(fileServer.whereIs('click_tests/click_in_iframe.html'));
 
-    test.it('can move to and click element in an iframe', function*() {
-      yield driver.get(fileServer.whereIs('click_tests/click_in_iframe.html'));
-
-      yield driver.wait(until.elementLocated(By.id('ifr')), 5000)
+      await driver.wait(until.elementLocated(By.id('ifr')), 5000)
           .then(frame => driver.switchTo().frame(frame));
 
-      let link = yield driver.findElement(By.id('link'));
-      yield driver.actions()
+      let link = await driver.findElement(By.id('link'));
+      await driver.actions()
           .mouseMove(link)
           .click()
           .perform();

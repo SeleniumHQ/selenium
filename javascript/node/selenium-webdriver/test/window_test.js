@@ -26,59 +26,59 @@ var Browser = require('..').Browser,
 test.suite(function(env) {
   var driver;
 
-  test.before(function*() { driver = yield env.builder().build(); });
-  test.after(function() { return driver.quit(); });
+  before(async function() { driver = await env.builder().build(); });
+  after(function() { return driver.quit(); });
 
-  test.beforeEach(function() {
+  beforeEach(function() {
     return driver.switchTo().defaultContent();
   });
 
-  test.it('can set size of the current window', function*() {
-    yield driver.get(test.Pages.echoPage);
-    yield changeSizeBy(-20, -20);
+  it('can set size of the current window', async function() {
+    await driver.get(test.Pages.echoPage);
+    await changeSizeBy(-20, -20);
   });
 
-  test.it('can set size of the current window from frame', function*() {
-    yield driver.get(test.Pages.framesetPage);
+  it('can set size of the current window from frame', async function() {
+    await driver.get(test.Pages.framesetPage);
 
-    var frame = yield driver.findElement({css: 'frame[name="fourth"]'});
-    yield driver.switchTo().frame(frame);
-    yield changeSizeBy(-20, -20);
+    var frame = await driver.findElement({css: 'frame[name="fourth"]'});
+    await driver.switchTo().frame(frame);
+    await changeSizeBy(-20, -20);
   });
 
-  test.it('can set size of the current window from iframe', function*() {
-    yield driver.get(test.Pages.iframePage);
+  it('can set size of the current window from iframe', async function() {
+    await driver.get(test.Pages.iframePage);
 
-    var frame = yield driver.findElement({css: 'iframe[name="iframe1-name"]'});
-    yield driver.switchTo().frame(frame);
-    yield changeSizeBy(-20, -20);
+    var frame = await driver.findElement({css: 'iframe[name="iframe1-name"]'});
+    await driver.switchTo().frame(frame);
+    await changeSizeBy(-20, -20);
   });
 
-  test.it('can switch to a new window', function*() {
-    yield driver.get(test.Pages.xhtmlTestPage);
+  it('can switch to a new window', async function() {
+    await driver.get(test.Pages.xhtmlTestPage);
 
-    let handle = yield driver.getWindowHandle();
-    let originalHandles = yield driver.getAllWindowHandles();
+    let handle = await driver.getWindowHandle();
+    let originalHandles = await driver.getAllWindowHandles();
 
-    yield driver.findElement(By.linkText("Open new window")).click();
-    yield driver.wait(forNewWindowToBeOpened(originalHandles), 2000);
-    yield assert(driver.getTitle()).equalTo("XHTML Test Page");
+    await driver.findElement(By.linkText("Open new window")).click();
+    await driver.wait(forNewWindowToBeOpened(originalHandles), 2000);
+    await assert(driver.getTitle()).equalTo("XHTML Test Page");
 
-    let newHandle = yield getNewWindowHandle(originalHandles);
+    let newHandle = await getNewWindowHandle(originalHandles);
 
-    yield driver.switchTo().window(newHandle);
-    yield assert(driver.getTitle()).equalTo("We Arrive Here");
+    await driver.switchTo().window(newHandle);
+    await assert(driver.getTitle()).equalTo("We Arrive Here");
   });
 
-  test.it('can set the window position of the current window', function*() {
-    let position = yield driver.manage().window().getPosition();
+  it('can set the window position of the current window', async function() {
+    let position = await driver.manage().window().getPosition();
 
-    yield driver.manage().window().setSize(640, 480);
-    yield driver.manage().window().setPosition(position.x + 10, position.y + 10);
+    await driver.manage().window().setSize(640, 480);
+    await driver.manage().window().setPosition(position.x + 10, position.y + 10);
 
     // For phantomjs, setPosition is a no-op and the "window" stays at (0, 0)
     if (env.currentBrowser() === Browser.PHANTOM_JS) {
-      position = yield driver.manage().window().getPosition();
+      position = await driver.manage().window().getPosition();
       assert(position.x).equalTo(0);
       assert(position.y).equalTo(0);
     } else {
@@ -88,15 +88,15 @@ test.suite(function(env) {
     }
   });
 
-  test.it('can set the window position from a frame', function*() {
-    yield driver.get(test.Pages.iframePage);
+  it('can set the window position from a frame', async function() {
+    await driver.get(test.Pages.iframePage);
 
-    let frame = yield driver.findElement(By.name('iframe1-name'));
-    yield driver.switchTo().frame(frame);
+    let frame = await driver.findElement(By.name('iframe1-name'));
+    await driver.switchTo().frame(frame);
 
-    let position = yield driver.manage().window().getPosition();
-    yield driver.manage().window().setSize(640, 480);
-    yield driver.manage().window().setPosition(position.x + 10, position.y + 10);
+    let position = await driver.manage().window().getPosition();
+    await driver.manage().window().setSize(640, 480);
+    await driver.manage().window().setPosition(position.x + 10, position.y + 10);
 
     // For phantomjs, setPosition is a no-op and the "window" stays at (0, 0)
     if (env.currentBrowser() === Browser.PHANTOM_JS) {

@@ -30,112 +30,112 @@ test.suite(function(env) {
   var browsers = env.browsers;
 
   var driver;
-  test.before(function*() {
-    driver = yield env.builder().build();
+  before(async function() {
+    driver = await env.builder().build();
   });
 
-  test.beforeEach(function*() {
+  beforeEach(async function() {
     if (!driver) {
-      driver = yield env.builder().build();
+      driver = await env.builder().build();
     }
   });
 
-  test.after(function() {
+  after(function() {
     if (driver) {
       return driver.quit();
     }
   });
 
-  test.it('should wait for document to be loaded', function*() {
-    yield driver.get(Pages.simpleTestPage);
+  it('should wait for document to be loaded', async function() {
+    await driver.get(Pages.simpleTestPage);
     return assert(driver.getTitle()).equalTo('Hello WebDriver');
   });
 
-  test.it('should follow redirects sent in the http response headers',
-      function*() {
-    yield driver.get(Pages.redirectPage);
+  it('should follow redirects sent in the http response headers',
+      async function() {
+    await driver.get(Pages.redirectPage);
     return assert(driver.getTitle()).equalTo('We Arrive Here');
   });
 
   // Skip Firefox; see https://bugzilla.mozilla.org/show_bug.cgi?id=1280300
   test.ignore(browsers(Browser.FIREFOX)).
-  it('should be able to get a fragment on the current page', function*() {
-    yield driver.get(Pages.xhtmlTestPage);
-    yield driver.get(Pages.xhtmlTestPage + '#text');
-    yield driver.findElement(By.id('id1'));
+  it('should be able to get a fragment on the current page', async function() {
+    await driver.get(Pages.xhtmlTestPage);
+    await driver.get(Pages.xhtmlTestPage + '#text');
+    await driver.findElement(By.id('id1'));
   });
 
   test.ignore(browsers(Browser.IPAD, Browser.IPHONE)).
-  it('should wait for all frames to load in a frameset', function*() {
-    yield driver.get(Pages.framesetPage);
-    yield driver.switchTo().frame(0);
+  it('should wait for all frames to load in a frameset', async function() {
+    await driver.get(Pages.framesetPage);
+    await driver.switchTo().frame(0);
 
-    let txt = yield driver.findElement(By.css('span#pageNumber')).getText();
+    let txt = await driver.findElement(By.css('span#pageNumber')).getText();
     assert(txt.trim()).equalTo('1');
 
-    yield driver.switchTo().defaultContent();
-    yield driver.switchTo().frame(1);
-    txt = yield driver.findElement(By.css('span#pageNumber')).getText();
+    await driver.switchTo().defaultContent();
+    await driver.switchTo().frame(1);
+    txt = await driver.findElement(By.css('span#pageNumber')).getText();
 
     assert(txt.trim()).equalTo('2');
   });
 
   test.ignore(browsers(Browser.SAFARI)).
-  it('should be able to navigate back in browser history', function*() {
-    yield driver.get(Pages.formPage);
+  it('should be able to navigate back in browser history', async function() {
+    await driver.get(Pages.formPage);
 
-    yield driver.findElement(By.id('imageButton')).click();
-    yield driver.wait(until.titleIs('We Arrive Here'), 2500);
+    await driver.findElement(By.id('imageButton')).click();
+    await driver.wait(until.titleIs('We Arrive Here'), 2500);
 
-    yield driver.navigate().back();
-    yield driver.wait(until.titleIs('We Leave From Here'), 2500);
+    await driver.navigate().back();
+    await driver.wait(until.titleIs('We Leave From Here'), 2500);
   });
 
   test.ignore(browsers(Browser.SAFARI)).
-  it('should be able to navigate back in presence of iframes', function*() {
-    yield driver.get(Pages.xhtmlTestPage);
+  it('should be able to navigate back in presence of iframes', async function() {
+    await driver.get(Pages.xhtmlTestPage);
 
-    yield driver.findElement(By.name('sameWindow')).click();
-    yield driver.wait(until.titleIs('This page has iframes'), 2500);
+    await driver.findElement(By.name('sameWindow')).click();
+    await driver.wait(until.titleIs('This page has iframes'), 2500);
 
-    yield driver.navigate().back();
-    yield driver.wait(until.titleIs('XHTML Test Page'), 2500);
+    await driver.navigate().back();
+    await driver.wait(until.titleIs('XHTML Test Page'), 2500);
   });
 
   test.ignore(browsers(Browser.SAFARI)).
-  it('should be able to navigate forwards in browser history', function*() {
-    yield driver.get(Pages.formPage);
+  it('should be able to navigate forwards in browser history', async function() {
+    await driver.get(Pages.formPage);
 
-    yield driver.findElement(By.id('imageButton')).click();
-    yield driver.wait(until.titleIs('We Arrive Here'), 5000);
+    await driver.findElement(By.id('imageButton')).click();
+    await driver.wait(until.titleIs('We Arrive Here'), 5000);
 
-    yield driver.navigate().back();
-    yield driver.wait(until.titleIs('We Leave From Here'), 5000);
+    await driver.navigate().back();
+    await driver.wait(until.titleIs('We Leave From Here'), 5000);
 
-    yield driver.navigate().forward();
-    yield driver.wait(until.titleIs('We Arrive Here'), 5000);
+    await driver.navigate().forward();
+    await driver.wait(until.titleIs('We Arrive Here'), 5000);
   });
 
   // PhantomJS 2.0 does not properly reload pages on refresh.
   test.ignore(browsers(Browser.PHANTOM_JS)).
-  it('should be able to refresh a page', function*() {
-    yield driver.get(Pages.xhtmlTestPage);
+  it('should be able to refresh a page', async function() {
+    await driver.get(Pages.xhtmlTestPage);
 
-    yield driver.navigate().refresh();
+    await driver.navigate().refresh();
 
-    yield assert(driver.getTitle()).equalTo('XHTML Test Page');
+    await assert(driver.getTitle()).equalTo('XHTML Test Page');
   });
 
-  test.it('should return title of page if set', function*() {
-    yield driver.get(Pages.xhtmlTestPage);
-    yield assert(driver.getTitle()).equalTo('XHTML Test Page');
+  it('should return title of page if set', async function() {
+    await driver.get(Pages.xhtmlTestPage);
+    await assert(driver.getTitle()).equalTo('XHTML Test Page');
 
-    yield driver.get(Pages.simpleTestPage);
-    yield assert(driver.getTitle()).equalTo('Hello WebDriver');
+    await driver.get(Pages.simpleTestPage);
+    await assert(driver.getTitle()).equalTo('Hello WebDriver');
   });
 
   describe('timeouts', function() {
-    test.afterEach(function() {
+    afterEach(function() {
       let nullDriver = () => driver = null;
       if (driver) {
         return driver.quit().then(nullDriver, nullDriver);
@@ -150,8 +150,8 @@ test.suite(function(env) {
         Browser.IPHONE,
         Browser.OPERA,
         Browser.PHANTOM_JS)).
-    it('should timeout if page load timeout is set', function*() {
-      yield driver.manage().timeouts().pageLoadTimeout(1);
+    it('should timeout if page load timeout is set', async function() {
+      await driver.manage().timeouts().pageLoadTimeout(1);
       return driver.get(Pages.sleepingPage + '?time=3')
           .then(function() {
             throw Error('Should have timed out on page load');

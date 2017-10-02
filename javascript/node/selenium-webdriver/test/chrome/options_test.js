@@ -204,23 +204,23 @@ describe('chrome.Options', function() {
 test.suite(function(env) {
   var driver;
 
-  test.afterEach(function() {
+  afterEach(function() {
     return driver.quit();
   });
 
   describe('Chrome options', function() {
-    test.it('can start Chrome with custom args', function*() {
+    it('can start Chrome with custom args', async function() {
       var options = new chrome.Options().
           addArguments('user-agent=foo;bar');
 
-      driver = yield env.builder()
+      driver = await env.builder()
           .setChromeOptions(options)
           .build();
 
-      yield driver.get(test.Pages.ajaxyPage);
+      await driver.get(test.Pages.ajaxyPage);
 
       var userAgent =
-          yield driver.executeScript('return window.navigator.userAgent');
+          await driver.executeScript('return window.navigator.userAgent');
       assert(userAgent).equalTo('foo;bar');
     });
   });

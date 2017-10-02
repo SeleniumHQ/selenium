@@ -33,7 +33,7 @@ test.suite(function(env) {
   var FILE_HTML = '<!DOCTYPE html><div>' + LOREM_IPSUM_TEXT + '</div>';
 
   var fp;
-  test.before(function() {
+  before(function() {
     return fp = io.tmpFile().then(function(fp) {
       fs.writeFileSync(fp, FILE_HTML);
       return fp;
@@ -41,11 +41,11 @@ test.suite(function(env) {
   })
 
   var driver;
-  test.before(function*() {
-    driver = yield env.builder().build();
+  before(async function() {
+    driver = await env.builder().build();
   });
 
-  test.after(function() {
+  after(function() {
     if (driver) {
       return driver.quit();
     }
@@ -58,29 +58,29 @@ test.suite(function(env) {
       // See https://github.com/ariya/phantomjs/issues/12506
       Browser.PHANTOM_JS,
       Browser.SAFARI)).
-  it('can upload files', function*() {
+  it('can upload files', async function() {
     driver.setFileDetector(new remote.FileDetector);
 
-    yield driver.get(Pages.uploadPage);
+    await driver.get(Pages.uploadPage);
 
-    var fp = yield driver.call(function() {
+    var fp = await driver.call(function() {
       return io.tmpFile().then(function(fp) {
         fs.writeFileSync(fp, FILE_HTML);
         return fp;
       });
     });
 
-    yield driver.findElement(By.id('upload')).sendKeys(fp);
-    yield driver.findElement(By.id('go')).click();
+    await driver.findElement(By.id('upload')).sendKeys(fp);
+    await driver.findElement(By.id('go')).click();
 
     // Uploading files across a network may take a while, even if they're small.
-    var label = yield driver.findElement(By.id('upload_label'));
-    yield driver.wait(until.elementIsNotVisible(label),
+    var label = await driver.findElement(By.id('upload_label'));
+    await driver.wait(until.elementIsNotVisible(label),
         10 * 1000, 'File took longer than 10 seconds to upload!');
 
-    var frame = yield driver.findElement(By.id('upload_target'));
-    yield driver.switchTo().frame(frame);
-    yield assert(driver.findElement(By.css('body')).getText())
+    var frame = await driver.findElement(By.id('upload_target'));
+    await driver.switchTo().frame(frame);
+    await assert(driver.findElement(By.css('body')).getText())
         .equalTo(LOREM_IPSUM_TEXT);
   });
 });

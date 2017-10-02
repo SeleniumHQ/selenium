@@ -27,13 +27,13 @@ var test = require('../../lib/test');
 test.suite(function(env) {
   describe('chromedriver', function() {
     var service;
-    test.afterEach(function() {
+    afterEach(function() {
       if (service) {
         return service.kill();
       }
     });
 
-    test.it('can be started on a custom path', function() {
+    it('can be started on a custom path', function() {
       service = new chrome.ServiceBuilder()
           .setPath('/foo/bar/baz')
           .build();

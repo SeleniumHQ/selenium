@@ -24,31 +24,31 @@ var test = require('../../lib/test');
 test.suite(function(env) {
   var driver;
 
-  test.before(function*() {
-    driver = yield env.builder().build();
+  before(async function() {
+    driver = await env.builder().build();
   });
 
-  test.after(function() {
+  after(function() {
     return driver.quit();
   });
 
   var testPageUrl =
       'data:text/html,<html><h1>' + path.basename(__filename) + '</h1></html>';
 
-  test.beforeEach(function() {
+  beforeEach(function() {
     return driver.get(testPageUrl);
   });
 
   describe('phantomjs.Driver', function() {
     describe('#executePhantomJS()', function() {
 
-      test.it('can execute scripts using PhantomJS API', function*() {
-        let url = yield driver.executePhantomJS('return this.url;');
+      it('can execute scripts using PhantomJS API', async function() {
+        let url = await driver.executePhantomJS('return this.url;');
         assert.equal(testPageUrl, decodeURIComponent(url));
       });
 
-      test.it('can execute scripts as functions', function*() {
-        let result = yield driver.executePhantomJS(function(a, b) {
+      it('can execute scripts as functions', async function() {
+        let result = await driver.executePhantomJS(function(a, b) {
           return a + b;
         }, 1, 2);
 

@@ -24,8 +24,7 @@ var assert = require('assert'),
 
 var extension = require('../../firefox/extension'),
     io = require('../../io'),
-    zip = require('../../io/zip'),
-    it = require('../../testing').it;
+    zip = require('../../io/zip');
 
 
 var JETPACK_EXTENSION = path.join(__dirname,

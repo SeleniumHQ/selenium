@@ -36,25 +36,25 @@ test.suite(function(env) {
   describe('logging', function() {
     var driver;
 
-    test.beforeEach(function() {
+    beforeEach(function() {
       driver = null;
     });
 
-    test.afterEach(function*() {
+    afterEach(async function() {
       if (driver) {
         return driver.quit();
       }
     });
 
-    test.it('can be disabled', function*() {
+    it('can be disabled', async function() {
       var prefs = new logging.Preferences();
       prefs.setLevel(logging.Type.BROWSER, logging.Level.OFF);
 
-      driver = yield env.builder()
+      driver = await env.builder()
           .setLoggingPrefs(prefs)
           .build();
 
-      yield driver.get(dataUrl(
+      await driver.get(dataUrl(
           '<!DOCTYPE html><script>',
           'console.info("hello");',
           'console.warn("this is a warning");',
@@ -66,15 +66,15 @@ test.suite(function(env) {
 
     // Firefox does not capture JS error console log messages.
     test.ignore(env.browsers(Browser.FIREFOX, 'legacy-firefox')).
-    it('can be turned down', function*() {
+    it('can be turned down', async function() {
       var prefs = new logging.Preferences();
       prefs.setLevel(logging.Type.BROWSER, logging.Level.SEVERE);
 
-      driver = yield env.builder()
+      driver = await env.builder()
           .setLoggingPrefs(prefs)
           .build();
 
-      yield driver.get(dataUrl(
+      await driver.get(dataUrl(
           '<!DOCTYPE html><script>',
           'console.info("hello");',
           'console.warn("this is a warning");',
@@ -90,15 +90,15 @@ test.suite(function(env) {
 
     // Firefox does not capture JS error console log messages.
     test.ignore(env.browsers(Browser.FIREFOX, 'legacy-firefox')).
-    it('can be made verbose', function*() {
+    it('can be made verbose', async function() {
       var prefs = new logging.Preferences();
       prefs.setLevel(logging.Type.BROWSER, logging.Level.DEBUG);
 
-      driver = yield env.builder()
+      driver = await env.builder()
           .setLoggingPrefs(prefs)
           .build();
 
-      yield driver.get(dataUrl(
+      await driver.get(dataUrl(
           '<!DOCTYPE html><script>',
           'console.debug("hello");',
           'console.warn("this is a warning");',
@@ -120,36 +120,36 @@ test.suite(function(env) {
 
     // Firefox does not capture JS error console log messages.
     test.ignore(env.browsers(Browser.FIREFOX, 'legacy-firefox')).
-    it('clears records after retrieval', function*() {
+    it('clears records after retrieval', async function() {
       var prefs = new logging.Preferences();
       prefs.setLevel(logging.Type.BROWSER, logging.Level.DEBUG);
 
-      driver = yield env.builder()
+      driver = await env.builder()
           .setLoggingPrefs(prefs)
           .build();
 
-      yield driver.get(dataUrl(
+      await driver.get(dataUrl(
           '<!DOCTYPE html><script>',
           'console.debug("hello");',
           'console.warn("this is a warning");',
           'console.error("and this is an error");',
           '</script>'));
-      yield driver.manage().logs().get(logging.Type.BROWSER)
+      await driver.manage().logs().get(logging.Type.BROWSER)
           .then(entries => assert(entries.length).equalTo(3));
       return driver.manage().logs().get(logging.Type.BROWSER)
           .then(entries => assert(entries.length).equalTo(0));
     });
 
-    test.it('does not mix log types', function*() {
+    it('does not mix log types', async function() {
       var prefs = new logging.Preferences();
       prefs.setLevel(logging.Type.BROWSER, logging.Level.DEBUG);
       prefs.setLevel(logging.Type.DRIVER, logging.Level.SEVERE);
 
-      driver = yield env.builder()
+      driver = await env.builder()
           .setLoggingPrefs(prefs)
           .build();
 
-      yield driver.get(dataUrl(
+      await driver.get(dataUrl(
           '<!DOCTYPE html><script>',
           'console.debug("hello");',
           'console.warn("this is a warning");',
