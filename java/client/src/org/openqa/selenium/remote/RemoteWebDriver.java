@@ -234,7 +234,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
       } else {
         platform = Platform.fromString(platformString);
       }
-    } catch (IllegalArgumentException e) {
+    } catch (WebDriverException e) {
       // The server probably responded with a name matching the os.name
       // system property. Try to recover and parse this.
       platform = Platform.extractFromSysProperty(platformString);
