@@ -86,7 +86,7 @@ module Selenium
           expect(driver.manage.all_cookies).to be_empty
         end
 
-        it 'should use DateTime for expires', except: {browser: %i[firefox safari]} do
+        it 'should use DateTime for expires', except: {browser: :safari} do
           driver.navigate.to url_for('xhtmlTest.html')
 
           expected = DateTime.new(2039)
