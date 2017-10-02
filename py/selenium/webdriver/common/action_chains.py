@@ -315,13 +315,12 @@ class ActionChains(object):
         return self
 
     def pause(self, seconds):
+        """ Pause all inputs for the specified duration in seconds """
         if self._driver.w3c:
-            self.w3c_actions.pointer_action.pause(self, seconds)
-            self.w3c_actions.key_action.pause(self, seconds)
+            self.w3c_actions.pointer_action.pause(seconds)
+            self.w3c_actions.key_action.pause(seconds)
         else:
-            self._actions.append(lambda: self._driver.execute(
-                time.sleep(seconds)
-            ))
+            self._actions.append(lambda: time.sleep(seconds))
         return self
 
     def release(self, on_element=None):

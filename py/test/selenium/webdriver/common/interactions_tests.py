@@ -216,3 +216,22 @@ def testSendingKeysToActiveElementWithModifier(driver, pages):
 
 def test_can_reset_interactions(driver, pages):
     ActionChains(driver).reset_actions()
+
+
+def test_can_pause(driver, pages):
+    from time import time
+    pages.load("javascriptPage.html")
+
+    pause_time = 2
+    toClick = driver.find_element_by_id("clickField")
+    toDoubleClick = driver.find_element_by_id("doubleClickField")
+
+    pause = ActionChains(driver).click(toClick).pause(pause_time).click(toDoubleClick)
+
+    start = time()
+    pause.perform()
+    end = time()
+
+    assert pause_time < end - start
+    assert "Clicked" == toClick.get_attribute('value')
+    assert "Clicked" == toDoubleClick.get_attribute('value')
