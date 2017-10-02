@@ -24,7 +24,7 @@ module Selenium
       module Http
         # @api private
         class Default < Common
-          attr_accessor :proxy
+          attr_writer :proxy
 
           attr_accessor :open_timeout
           attr_accessor :read_timeout

@@ -40,7 +40,7 @@ module Selenium
         def each
           return enum_for(:each) unless block_given?
 
-          keys.each do |k|
+          keys.each do |k| # rubocop:disable Performance/HashEachMethods
             yield k, self[k]
           end
         end
