@@ -28,10 +28,7 @@ import com.google.gson.JsonPrimitive;
 
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.logging.LogEntries;
 import org.openqa.selenium.logging.LogLevelMapping;
-import org.openqa.selenium.logging.LoggingPreferences;
-import org.openqa.selenium.logging.SessionLogs;
 
 import java.io.File;
 import java.lang.reflect.Array;
@@ -112,23 +109,6 @@ public class BeanToJsonConverter {
 
     if (toConvert.getClass().isEnum() || toConvert instanceof Enum) {
       return new JsonPrimitive(toConvert.toString());
-    }
-
-    if (toConvert instanceof LoggingPreferences) {
-      LoggingPreferences prefs = (LoggingPreferences) toConvert;
-      JsonObject converted = new JsonObject();
-      for (String logType : prefs.getEnabledLogTypes()) {
-        converted.addProperty(logType, LogLevelMapping.getName(prefs.getLevel(logType)));
-      }
-      return converted;
-    }
-
-    if (toConvert instanceof SessionLogs) {
-      return convertObject(((SessionLogs)toConvert).getAll(), maxDepth - 1);
-    }
-
-    if (toConvert instanceof LogEntries) {
-      return convertObject(((LogEntries)toConvert).getAll(), maxDepth - 1);
     }
 
     if (toConvert instanceof Map) {

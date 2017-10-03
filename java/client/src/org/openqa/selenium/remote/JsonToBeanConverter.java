@@ -183,11 +183,7 @@ public class JsonToBeanConverter {
     if (fromJson != null) {
       try {
         return (T) fromJson.invoke(null, source.toString());
-      } catch (IllegalArgumentException e) {
-        throw new WebDriverException(e);
-      } catch (IllegalAccessException e) {
-        throw new WebDriverException(e);
-      } catch (InvocationTargetException e) {
+      } catch (ReflectiveOperationException e) {
         throw new WebDriverException(e);
       }
     }

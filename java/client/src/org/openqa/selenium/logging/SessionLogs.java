@@ -77,4 +77,9 @@ public class SessionLogs {
     }
     return sessionLogs;
   }
+
+  @Beta
+  public Map<String, LogEntries> toJson() {
+    return getAll();
+  }
 }
