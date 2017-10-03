@@ -1211,36 +1211,29 @@ class Options {
    *     invalid.
    * @throws {TypeError} if `spec` is not a cookie object.
    */
-  addCookie(spec) {
-    if (!spec || typeof spec !== 'object') {
-      throw TypeError('addCookie called with non-cookie parameter');
-    }
-
+  addCookie({name, value, path, domain, secure, httpOnly, expiry}) {
     // We do not allow '=' or ';' in the name.
-    let name = spec.name;
     if (/[;=]/.test(name)) {
       throw new error.InvalidArgumentError(
           'Invalid cookie name "' + name + '"');
     }
 
     // We do not allow ';' in value.
-    let value = spec.value;
     if (/;/.test(value)) {
       throw new error.InvalidArgumentError(
           'Invalid cookie value "' + value + '"');
     }
 
     let cookieString = name + '=' + value +
-        (spec.domain ? ';domain=' + spec.domain : '') +
-        (spec.path ? ';path=' + spec.path : '') +
-        (spec.secure ? ';secure' : '');
+        (domain ? ';domain=' + domain : '') +
+        (path ? ';path=' + path : '') +
+        (secure ? ';secure' : '');
 
-    let expiry;
-    if (typeof spec.expiry === 'number') {
-      expiry = Math.floor(spec.expiry);
-      cookieString += ';expires=' + new Date(spec.expiry * 1000).toUTCString();
-    } else if (spec.expiry instanceof Date) {
-      let date = /** @type {!Date} */(spec.expiry);
+    if (typeof expiry === 'number') {
+      expiry = Math.floor(expiry);
+      cookieString += ';expires=' + new Date(expiry * 1000).toUTCString();
+    } else if (expiry instanceof Date) {
+      let date = /** @type {!Date} */(expiry);
       expiry = Math.floor(date.getTime() / 1000);
       cookieString += ';expires=' + date.toUTCString();
     }
@@ -1250,9 +1243,10 @@ class Options {
             setParameter('cookie', {
               'name': name,
               'value': value,
-              'path': spec.path,
-              'domain': spec.domain,
-              'secure': !!spec.secure,
+              'path': path,
+              'domain': domain,
+              'secure': !!secure,
+              'httpOnly': !!httpOnly,
               'expiry': expiry
             }),
         'WebDriver.manage().addCookie(' + cookieString + ')');
@@ -1506,8 +1500,7 @@ Options.Cookie.prototype.httpOnly;
  * When the cookie expires.
  *
  * When {@linkplain Options#addCookie() adding a cookie}, this may be specified
- * in _seconds_ since Unix epoch (January 1, 1970). The expiry will default to
- * 20 years in the future if omitted.
+ * as a {@link Date} object, or in _seconds_ since Unix epoch (January 1, 1970).
  *
  * The expiry is always returned in seconds since epoch when
  * {@linkplain Options#getCookies() retrieving cookies} from the browser.

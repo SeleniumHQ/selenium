@@ -4,6 +4,7 @@
 
 * Deprecated `error.ElementNotVisibleError` in favor of the more generic
   `error.ElementNotInteractableError`.
+* Support the `httpOnly` option when adding a cookie.
 
 
 ## v3.5.0
