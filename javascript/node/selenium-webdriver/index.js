@@ -39,8 +39,6 @@ const promise = require('./lib/promise');
 const session = require('./lib/session');
 const until = require('./lib/until');
 const webdriver = require('./lib/webdriver');
-const opera = require('./opera');
-const phantomjs = require('./phantomjs');
 const remote = require('./remote');
 const safari = require('./safari');
 
@@ -218,9 +216,6 @@ class Builder {
 
     /** @private {firefox.Options} */
     this.firefoxOptions_ = null;
-
-    /** @private {opera.Options} */
-    this.operaOptions_ = null;
 
     /** @private {ie.Options} */
     this.ieOptions_ = null;
@@ -454,20 +449,6 @@ class Builder {
   }
 
   /**
-   * Sets Opera specific {@linkplain opera.Options options} for drivers created
-   * by this builder. Any logging or proxy settings defined on the given options
-   * will take precedence over those set through {@link #setLoggingPrefs} and
-   * {@link #setProxy}, respectively.
-   *
-   * @param {!opera.Options} options The OperaDriver options to use.
-   * @return {!Builder} A self reference.
-   */
-  setOperaOptions(options) {
-    this.operaOptions_ = options;
-    return this;
-  }
-
-  /**
    * Set Internet Explorer specific {@linkplain ie.Options options} for drivers
    * created by this builder. Any proxy settings defined on the given options
    * will take precedence over those set through {@link #setProxy}.
@@ -564,9 +545,6 @@ class Builder {
     } else if (browser === Browser.INTERNET_EXPLORER && this.ieOptions_) {
       capabilities.merge(this.ieOptions_.toCapabilities());
 
-    } else if (browser === Browser.OPERA && this.operaOptions_) {
-      capabilities.merge(this.operaOptions_.toCapabilities());
-
     } else if (browser === Browser.SAFARI && this.safariOptions_) {
       capabilities.merge(this.safariOptions_.toCapabilities());
 
@@ -619,12 +597,6 @@ class Builder {
 
       case Browser.EDGE:
         return createDriver(edge.Driver, capabilities, null);
-
-      case Browser.OPERA:
-        return createDriver(opera.Driver, capabilities, null);
-
-      case Browser.PHANTOM_JS:
-        return createDriver(phantomjs.Driver, capabilities);
 
       case Browser.SAFARI:
         return createDriver(safari.Driver, capabilities);

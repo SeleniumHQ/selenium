@@ -1,5 +1,15 @@
 ## v.next
 
+### Changes to Supported Browsers
+
+Native support has been removed for Opera and PhantomJS as the WebDriver
+implementations for these browsers are no longer under active development.
+
+For Opera, users should be able to simply rely on testing Chrome as the Opera
+browser is based on Chromium (and the operadriver was a thin wrapper around
+chromedriver). For PhantomJS, users should use Chrome or Firefox in headless
+mode.
+
 ### API Changes
 
 * The core WebDriver API no longer uses promise manager
@@ -10,6 +20,8 @@
     - `lib/webdriver.WebElementPromise`
 * The `testing/index` module no longer wraps the promise manager
 * Removed `remote/index.DriverService.prototype.stop()` (use `#kill()` instead)
+* Removed the `phantomjs` module
+* Removed the 'opera' module
 
 
 ## v3.6.0

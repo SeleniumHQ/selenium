@@ -22,8 +22,6 @@ const chrome = require('../chrome');
 const edge = require('../edge');
 const firefox = require('../firefox');
 const ie = require('../ie');
-const opera = require('../opera');
-const phantomjs = require('../phantomjs');
 const safari = require('../safari');
 const test = require('../lib/test');
 const {Browser} = require('../lib/capabilities');
@@ -39,8 +37,6 @@ test.suite(function(env) {
     [Browser.EDGE, edge.Driver],
     [Browser.FIREFOX, firefox.Driver],
     [Browser.INTERNET_EXPLORER, ie.Driver],
-    [Browser.OPERA, opera.Driver],
-    [Browser.PHANTOM_JS, phantomjs.Driver],
     [Browser.SAFARI, safari.Driver],
   ]);
 

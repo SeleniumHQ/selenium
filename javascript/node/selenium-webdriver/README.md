@@ -11,11 +11,11 @@ Selenium may be installed via npm with
     npm install selenium-webdriver
 
 You will need to download additional components to work with each of the major
-browsers. The drivers for Chrome, Firefox, PhantomJS, Opera, and
-Microsoft's IE and Edge web browsers are all standalone executables that should
-be placed on your system [PATH]. Apple's safaridriver is shipped with
-Safari 10 for OS X El Capitan and macOS Sierra. You will need to enable Remote
-Automation in the Develop menu of Safari 10 before testing.
+browsers. The drivers for Chrome, Firefox, and Microsoft's IE and Edge web
+browsers are all standalone executables that should be placed on your system
+[PATH]. Apple's safaridriver is shipped with Safari 10 for OS X El Capitan and
+macOS Sierra. You will need to enable Remote Automation in the Develop menu of
+Safari 10 before testing.
 
 
 | Browser           | Component                          |
@@ -24,8 +24,6 @@ Automation in the Develop menu of Safari 10 before testing.
 | Internet Explorer | [IEDriverServer.exe][release]      |
 | Edge              | [MicrosoftWebDriver.msi][edge]     |
 | Firefox           | [geckodriver(.exe)][geckodriver]   |
-| PhantomJS         | [phantomjs(.exe)][phantomjs]       |
-| Opera             | [operadriver(.exe)][opera]         |
 | Safari            | [safaridriver]                     |
 
 ## Usage
@@ -216,8 +214,6 @@ under the License.
 [chrome]: http://chromedriver.storage.googleapis.com/index.html
 [gh]: https://github.com/SeleniumHQ/selenium/
 [issues]: https://github.com/SeleniumHQ/selenium/issues
-[opera]: https://github.com/operasoftware/operachromiumdriver/releases
-[phantomjs]: http://phantomjs.org/
 [edge]: http://go.microsoft.com/fwlink/?LinkId=619687
 [geckodriver]: https://github.com/mozilla/geckodriver/releases/
 [reduction]: http://www.webkit.org/quality/reduction.html
