@@ -37,7 +37,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonWriter;
 
 import org.openqa.selenium.Capabilities;
@@ -54,7 +53,6 @@ import java.io.BufferedInputStream;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
@@ -96,12 +94,9 @@ public class ProtocolHandshake {
     throws IOException {
     Capabilities desired = (Capabilities) command.getParameters().get("desiredCapabilities");
     desired = desired == null ? new ImmutableCapabilities() : desired;
-    Capabilities required = (Capabilities) command.getParameters().get("requiredCapabilities");
-    required = required == null ? new ImmutableCapabilities() : required;
 
     BeanToJsonConverter converter = new BeanToJsonConverter();
     JsonObject des = (JsonObject) converter.convertObject(desired);
-    JsonObject req = (JsonObject) converter.convertObject(required);
 
     // We don't know how large the generated JSON is going to be. Spool it to disk, and then read
     // the file size, then stream it to the remote end. If we could be sure the remote end could
@@ -116,12 +111,12 @@ public class ProtocolHandshake {
       Gson gson = new Gson();
       out.beginObject();
 
-      streamJsonWireProtocolParameters(out, gson, des, req);
+      streamJsonWireProtocolParameters(out, gson, des);
 
       out.name("capabilities");
       out.beginObject();
-      streamGeckoDriver013Parameters(out, gson, des, req);
-      streamW3CProtocolParameters(out, gson, des, req);
+      streamGeckoDriver013Parameters(out, gson, des);
+      streamW3CProtocolParameters(out, gson, des);
       out.endObject();
 
       out.endObject();
@@ -146,27 +141,22 @@ public class ProtocolHandshake {
     throw new SessionNotCreatedException(
       String.format(
         "Unable to create new remote session. " +
-        "desired capabilities = %s, required capabilities = %s",
-        desired,
-        required));
+        "desired capabilities = %s",
+        desired));
   }
 
   private void streamJsonWireProtocolParameters(
       JsonWriter out,
       Gson gson,
-      JsonObject des,
-      JsonObject req) throws IOException {
+      JsonObject des) throws IOException {
     out.name("desiredCapabilities");
     gson.toJson(des, out);
-    out.name("requiredCapabilities");
-    gson.toJson(req, out);
   }
 
   private void streamW3CProtocolParameters(
       JsonWriter out,
       Gson gson,
-      JsonObject des,
-      JsonObject req) throws IOException {
+      JsonObject des) throws IOException {
     // Technically we should be building up a combination of "alwaysMatch" and "firstMatch" options.
     // We're going to do a little processing to figure out what we might be able to do, and assume
     // that people don't really understand the difference between required and desired (which is
@@ -187,25 +177,19 @@ public class ProtocolHandshake {
     // We can't use the constants defined in the classes because it would introduce circular
     // dependencies between the remote library and the implementations. Yay!
 
-    Map<String, ?> chrome = Stream.of(des, req)
-        .map(JsonObject::entrySet)
-        .flatMap(Collection::stream)
+    Map<String, ?> chrome = des.entrySet().stream()
         .filter(entry ->
                     ("browserName".equals(entry.getKey()) && CHROME.equals(entry.getValue().getAsString())) ||
                     "chromeOptions".equals(entry.getKey()))
         .distinct()
         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (left, right) -> right));
 
-    Map<String, ?> edge = Stream.of(des, req)
-        .map(JsonObject::entrySet)
-        .flatMap(Collection::stream)
+    Map<String, ?> edge = des.entrySet().stream()
         .filter(entry -> ("browserName".equals(entry.getKey()) && EDGE.equals(entry.getValue().getAsString())))
         .distinct()
         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (left, right) -> right));
 
-    Map<String, ?> firefox = Stream.of(des, req)
-        .map(JsonObject::entrySet)
-        .flatMap(Collection::stream)
+    Map<String, ?> firefox = des.entrySet().stream()
         .filter(entry ->
                     ("browserName".equals(entry.getKey()) && FIREFOX.equals(entry.getValue().getAsString())) ||
                     entry.getKey().startsWith("firefox_") ||
@@ -213,9 +197,7 @@ public class ProtocolHandshake {
         .distinct()
         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (left, right) -> right));
 
-    Map<String, ?> ie = Stream.of(req, des)
-        .map(JsonObject::entrySet)
-        .flatMap(Collection::stream)
+    Map<String, ?> ie = des.entrySet().stream()
         .filter(entry ->
                     ("browserName".equals(entry.getKey()) && IE.equals(entry.getValue().getAsString())) ||
                     "browserAttachTimeout".equals(entry.getKey()) ||
@@ -234,9 +216,7 @@ public class ProtocolHandshake {
         .distinct()
         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (left, right) -> right));
 
-    Map<String, ?> opera = Stream.of(des, req)
-        .map(JsonObject::entrySet)
-        .flatMap(Collection::stream)
+    Map<String, ?> opera = des.entrySet().stream()
         .filter(entry ->
                     ("browserName".equals(entry.getKey()) && OPERA_BLINK.equals(entry.getValue().getAsString())) ||
                     ("browserName".equals(entry.getKey()) && OPERA.equals(entry.getValue().getAsString())) ||
@@ -244,9 +224,7 @@ public class ProtocolHandshake {
         .distinct()
         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (left, right) -> right));
 
-    Map<String, ?> safari = Stream.of(des, req)
-        .map(JsonObject::entrySet)
-        .flatMap(Collection::stream)
+    Map<String, ?> safari = des.entrySet().stream()
         .filter(entry ->
                     ("browserName".equals(entry.getKey()) && SAFARI.equals(entry.getValue().getAsString())) ||
                     "safari.options".equals(entry.getKey()))
@@ -259,7 +237,7 @@ public class ProtocolHandshake {
         .distinct()
         .collect(ImmutableSet.toImmutableSet());
 
-    JsonObject alwaysMatch = Stream.of(des, req)
+    JsonObject alwaysMatch = Stream.of(des)
         .map(JsonObject::entrySet)
         .flatMap(Collection::stream)
         .filter(entry -> !excludedKeys.contains(entry.getKey()))
@@ -363,12 +341,9 @@ public class ProtocolHandshake {
   private void streamGeckoDriver013Parameters(
       JsonWriter out,
       Gson gson,
-      JsonObject des,
-      JsonObject req) throws IOException {
+      JsonObject des) throws IOException {
     out.name("desiredCapabilities");
     gson.toJson(des, out);
-    out.name("requiredCapabilities");
-    gson.toJson(req, out);
   }
 
   public static class Result {

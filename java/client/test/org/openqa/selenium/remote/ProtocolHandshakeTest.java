@@ -76,7 +76,6 @@ public class ProtocolHandshakeTest {
         .fromJson(request.getContentString(), new TypeToken<Map<String, Object>>(){}.getType());
 
     assertEquals(ImmutableMap.of(), json.get("desiredCapabilities"));
-    assertEquals(ImmutableMap.of(), json.get("requiredCapabilities"));
   }
 
   @Test
@@ -98,7 +97,6 @@ public class ProtocolHandshakeTest {
     Map<String, Object> capabilities = (Map<String, Object>) json.get("capabilities");
 
     assertEquals(ImmutableMap.of(), capabilities.get("desiredCapabilities"));
-    assertEquals(ImmutableMap.of(), capabilities.get("requiredCapabilities"));
   }
 
   @Test
@@ -197,7 +195,6 @@ public class ProtocolHandshakeTest {
 
     // GeckoDriver
     assertTrue(capabilities.containsKey("desiredCapabilities"));
-    assertTrue(capabilities.containsKey("requiredCapabilities"));
 
     // W3C
     assertTrue(capabilities.containsKey("alwaysMatch"));
