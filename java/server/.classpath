@@ -4,7 +4,7 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="test"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/client"/>
-	<classpathentry kind="lib" path="/third-party/java/gson/gson-2.8.0.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/gson/gson-2.8.2.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/servlet/javax.servlet-api-3.1.0.jar" sourcepath="/third-party/java/servlet/javax.servlet-api-3.1.0-sources.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/httpcomponents/httpclient-4.5.3.jar" sourcepath="/third-party/java/httpcomponents/httpclient-4.5.3-sources.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/httpcomponents/httpcore-4.4.6.jar" sourcepath="/third-party/java/httpcomponents/httpcore-4.4.6-sources.jar"/>
