@@ -205,7 +205,7 @@ function suite(fn, opt_options) {
       if (isDevMode && !noBuild) {
         return build.of(
             '//javascript/atoms/fragments:is-displayed',
-            '//javascript/webdriver/atoms:getAttribute')
+            '//javascript/webdriver/atoms:get-attribute')
             .onlyOnce().go();
       }
     });

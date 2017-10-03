@@ -35,7 +35,7 @@ const WebElement = require('./webdriver').WebElement;
 const {getAttribute, isDisplayed} = /** @suppress {undefinedVars|uselessCode} */(function() {
   try {
     return {
-      getAttribute: require('./atoms/getAttribute.js'),
+      getAttribute: require('./atoms/get-attribute.js'),
       isDisplayed: require('./atoms/is-displayed.js')
     };
   } catch (ex) {
