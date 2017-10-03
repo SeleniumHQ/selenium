@@ -1045,13 +1045,15 @@ class WebDriver {
       let cmd = new command.Command(command.Name.FIND_ELEMENTS).
           setParameter('using', locator.using).
           setParameter('value', locator.value);
-      let res = this.schedule(cmd, 'WebDriver.findElements(' + locator + ')');
-      return res.catch(function(e) {
-        if (e instanceof error.NoSuchElementError) {
-          return [];
-        }
-        throw e;
-      });
+      return this.schedule(cmd, 'WebDriver.findElements(' + locator + ')')
+          .then(
+              (res) => Array.isArray(res) ? res : [],
+              (e) =>  {
+                if (e instanceof error.NoSuchElementError) {
+                  return [];
+                }
+                throw e;
+              });
     }
   }
 
@@ -2076,7 +2078,8 @@ class WebElement {
           command.Name.FIND_CHILD_ELEMENTS).
           setParameter('using', locator.using).
           setParameter('value', locator.value);
-      return this.schedule_(cmd, 'WebElement.findElements(' + locator + ')');
+      return this.schedule_(cmd, 'WebElement.findElements(' + locator + ')')
+          .then(result => Array.isArray(result) ? result : []);
     }
   }
 
