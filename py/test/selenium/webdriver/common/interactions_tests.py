@@ -110,8 +110,6 @@ def testDoubleClick(driver, pages):
     assert "DoubleClicked" == toDoubleClick.get_attribute('value')
 
 
-@pytest.mark.xfail_marionette(
-    reason='https://github.com/mozilla/geckodriver/issues/660')
 @pytest.mark.xfail_phantomjs(
     reason='https://github.com/ariya/phantomjs/issues/14005')
 def testContextClick(driver, pages):

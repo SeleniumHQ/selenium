@@ -150,8 +150,6 @@ def testDragAndDrop(driver, pages):
 @pytest.mark.xfail_firefox
 @pytest.mark.xfail_remote
 @pytest.mark.xfail_phantomjs
-@pytest.mark.xfail_marionette(
-    reason='https://github.com/mozilla/geckodriver/issues/660')
 def test_context_click(driver, pages):
 
     pages.load("javascriptPage.html")

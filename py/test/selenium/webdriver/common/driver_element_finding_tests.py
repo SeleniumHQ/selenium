@@ -642,9 +642,6 @@ def test_Should_Be_Able_To_Find_AHidden_Elements_By_Name(driver, pages):
     assert element.get_attribute("name") == "hidden"
 
 
-@pytest.mark.xfail_marionette(
-    reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1312674',
-    run=False)
 def test_Should_Not_Be_Able_To_Find_An_Element_On_ABlank_Page(driver, pages):
     driver.get("about:blank")
     with pytest.raises(NoSuchElementException):
