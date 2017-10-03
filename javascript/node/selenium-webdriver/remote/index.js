@@ -278,9 +278,10 @@ class DriverService {
     if (!this.address_ || !this.command_) {
       return Promise.resolve(); // Not currently running.
     }
-    return this.command_.then(function(command) {
-      command.kill('SIGTERM');
-    });
+    let cmd = this.command_;
+    this.address_ = null;
+    this.command_ = null;
+    return cmd.then(c => c.kill('SIGTERM'));
   }
 
   /**
