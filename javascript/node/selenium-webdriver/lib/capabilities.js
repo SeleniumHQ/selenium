@@ -221,8 +221,7 @@ class Capabilities extends Map {
    */
   static android() {
     return new Capabilities()
-        .set(Capability.BROWSER_NAME, Browser.ANDROID)
-        .set(Capability.PLATFORM, 'ANDROID');
+        .set(Capability.BROWSER_NAME, Browser.ANDROID);
   }
 
   /**
@@ -237,8 +236,7 @@ class Capabilities extends Map {
    */
   static edge() {
     return new Capabilities()
-        .set(Capability.BROWSER_NAME, Browser.EDGE)
-        .set(Capability.PLATFORM, 'WINDOWS');
+        .set(Capability.BROWSER_NAME, Browser.EDGE);
   }
 
   /**
@@ -253,8 +251,7 @@ class Capabilities extends Map {
    */
   static ie() {
     return new Capabilities().
-        set(Capability.BROWSER_NAME, Browser.INTERNET_EXPLORER).
-        set(Capability.PLATFORM, 'WINDOWS');
+        set(Capability.BROWSER_NAME, Browser.INTERNET_EXPLORER);
   }
 
   /**
@@ -262,8 +259,7 @@ class Capabilities extends Map {
    */
   static ipad() {
     return new Capabilities().
-        set(Capability.BROWSER_NAME, Browser.IPAD).
-        set(Capability.PLATFORM, 'MAC');
+        set(Capability.BROWSER_NAME, Browser.IPAD);
   }
 
   /**
@@ -271,8 +267,7 @@ class Capabilities extends Map {
    */
   static iphone() {
     return new Capabilities().
-        set(Capability.BROWSER_NAME, Browser.IPHONE).
-        set(Capability.PLATFORM, 'MAC');
+        set(Capability.BROWSER_NAME, Browser.IPHONE);
   }
 
   /**
@@ -296,8 +291,7 @@ class Capabilities extends Map {
    */
   static safari() {
     return new Capabilities().
-        set(Capability.BROWSER_NAME, Browser.SAFARI).
-        set(Capability.PLATFORM, 'MAC');
+        set(Capability.BROWSER_NAME, Browser.SAFARI);
   }
 
   /**
