@@ -245,12 +245,11 @@ class IWebDriver {
    * {@link command.Executor}.
    *
    * @param {!command.Command} command The command to schedule.
-   * @param {string} description A description of the command for debugging.
    * @return {!Promise<T>} A promise that will be resolved with the command
    *     result.
    * @template T
    */
-  schedule(command, description) {}
+  execute(command) {}
 
   /**
    * Sets the {@linkplain input.FileDetector file detector} that should be
@@ -755,7 +754,7 @@ class WebDriver {
   }
 
   /** @override */
-  schedule(command, description) {
+  execute(command) {
     command.setParameter('sessionId', this.session_);
     return toWireValue(command.getParameters())
         .then((parameters) => {
@@ -787,9 +786,7 @@ class WebDriver {
 
   /** @override */
   quit() {
-    var result = this.schedule(
-        new command.Command(command.Name.QUIT),
-        'WebDriver.quit()');
+    let result = this.execute(new command.Command(command.Name.QUIT));
     // Delete our session ID when the quit command finishes; this will allow us
     // to throw an error when attempting to use a driver post-quit.
     return promise.finally(result, () => {
@@ -823,11 +820,10 @@ class WebDriver {
     }
     let args =
         arguments.length > 1 ? Array.prototype.slice.call(arguments, 1) : [];
-   return this.schedule(
+   return this.execute(
         new command.Command(command.Name.EXECUTE_SCRIPT).
             setParameter('script', script).
-            setParameter('args', args),
-        'WebDriver.executeScript()');
+            setParameter('args', args));
   }
 
   /** @override */
@@ -836,11 +832,10 @@ class WebDriver {
       script = 'return (' + script + ').apply(null, arguments);';
     }
     let args = Array.prototype.slice.call(arguments, 1);
-    return this.schedule(
+    return this.execute(
         new command.Command(command.Name.EXECUTE_ASYNC_SCRIPT).
             setParameter('script', script).
-            setParameter('args', args),
-        'WebDriver.executeScript()');
+            setParameter('args', args));
   }
 
   /** @override */
@@ -958,29 +953,25 @@ class WebDriver {
 
   /** @override */
   getWindowHandle() {
-    return this.schedule(
-        new command.Command(command.Name.GET_CURRENT_WINDOW_HANDLE),
-        'WebDriver.getWindowHandle()');
+    return this.execute(
+        new command.Command(command.Name.GET_CURRENT_WINDOW_HANDLE));
   }
 
   /** @override */
   getAllWindowHandles() {
-    return this.schedule(
-        new command.Command(command.Name.GET_WINDOW_HANDLES),
-        'WebDriver.getAllWindowHandles()');
+    return this.execute(
+        new command.Command(command.Name.GET_WINDOW_HANDLES));
   }
 
   /** @override */
   getPageSource() {
-    return this.schedule(
-        new command.Command(command.Name.GET_PAGE_SOURCE),
-        'WebDriver.getPageSource()');
+    return this.execute(
+        new command.Command(command.Name.GET_PAGE_SOURCE));
   }
 
   /** @override */
   close() {
-    return this.schedule(new command.Command(command.Name.CLOSE),
-                         'WebDriver.close()');
+    return this.execute(new command.Command(command.Name.CLOSE));
   }
 
   /** @override */
@@ -990,15 +981,12 @@ class WebDriver {
 
   /** @override */
   getCurrentUrl() {
-    return this.schedule(
-        new command.Command(command.Name.GET_CURRENT_URL),
-        'WebDriver.getCurrentUrl()');
+    return this.execute(new command.Command(command.Name.GET_CURRENT_URL));
   }
 
   /** @override */
   getTitle() {
-    return this.schedule(new command.Command(command.Name.GET_TITLE),
-                         'WebDriver.getTitle()');
+    return this.execute(new command.Command(command.Name.GET_TITLE));
   }
 
   /** @override */
@@ -1011,7 +999,7 @@ class WebDriver {
       let cmd = new command.Command(command.Name.FIND_ELEMENT).
           setParameter('using', locator.using).
           setParameter('value', locator.value);
-      id = this.schedule(cmd, 'WebDriver.findElement(' + locator + ')');
+      id = this.execute(cmd);
     }
     return new WebElementPromise(this, id);
   }
@@ -1044,7 +1032,7 @@ class WebDriver {
       let cmd = new command.Command(command.Name.FIND_ELEMENTS).
           setParameter('using', locator.using).
           setParameter('value', locator.value);
-      return this.schedule(cmd, 'WebDriver.findElements(' + locator + ')')
+      return this.execute(cmd)
           .then(
               (res) => Array.isArray(res) ? res : [],
               (e) =>  {
@@ -1081,8 +1069,7 @@ class WebDriver {
 
   /** @override */
   takeScreenshot() {
-    return this.schedule(new command.Command(command.Name.SCREENSHOT),
-        'WebDriver.takeScreenshot()');
+    return this.execute(new command.Command(command.Name.SCREENSHOT));
   }
 
   /** @override */
@@ -1130,10 +1117,9 @@ class Navigation {
    *     has been loaded.
    */
   to(url) {
-    return this.driver_.schedule(
+    return this.driver_.execute(
         new command.Command(command.Name.GET).
-            setParameter('url', url),
-        'WebDriver.navigate().to(' + url + ')');
+            setParameter('url', url));
   }
 
   /**
@@ -1143,9 +1129,7 @@ class Navigation {
    *     navigation event has completed.
    */
   back() {
-    return this.driver_.schedule(
-        new command.Command(command.Name.GO_BACK),
-        'WebDriver.navigate().back()');
+    return this.driver_.execute(new command.Command(command.Name.GO_BACK));
   }
 
   /**
@@ -1155,9 +1139,7 @@ class Navigation {
    *     navigation event has completed.
    */
   forward() {
-    return this.driver_.schedule(
-        new command.Command(command.Name.GO_FORWARD),
-        'WebDriver.navigate().forward()');
+    return this.driver_.execute(new command.Command(command.Name.GO_FORWARD));
   }
 
   /**
@@ -1167,9 +1149,7 @@ class Navigation {
    *     navigation event has completed.
    */
   refresh() {
-    return this.driver_.schedule(
-        new command.Command(command.Name.REFRESH),
-        'WebDriver.navigate().refresh()');
+    return this.driver_.execute(new command.Command(command.Name.REFRESH));
   }
 }
 
@@ -1229,21 +1209,14 @@ class Options {
           'Invalid cookie value "' + value + '"');
     }
 
-    let cookieString = name + '=' + value +
-        (domain ? ';domain=' + domain : '') +
-        (path ? ';path=' + path : '') +
-        (secure ? ';secure' : '');
-
     if (typeof expiry === 'number') {
       expiry = Math.floor(expiry);
-      cookieString += ';expires=' + new Date(expiry * 1000).toUTCString();
     } else if (expiry instanceof Date) {
       let date = /** @type {!Date} */(expiry);
       expiry = Math.floor(date.getTime() / 1000);
-      cookieString += ';expires=' + date.toUTCString();
     }
 
-    return this.driver_.schedule(
+    return this.driver_.execute(
         new command.Command(command.Name.ADD_COOKIE).
             setParameter('cookie', {
               'name': name,
@@ -1253,8 +1226,7 @@ class Options {
               'secure': !!secure,
               'httpOnly': !!httpOnly,
               'expiry': expiry
-            }),
-        'WebDriver.manage().addCookie(' + cookieString + ')');
+            }));
   }
 
   /**
@@ -1264,9 +1236,8 @@ class Options {
    *     when all cookies have been deleted.
    */
   deleteAllCookies() {
-    return this.driver_.schedule(
-        new command.Command(command.Name.DELETE_ALL_COOKIES),
-        'WebDriver.manage().deleteAllCookies()');
+    return this.driver_.execute(
+        new command.Command(command.Name.DELETE_ALL_COOKIES));
   }
 
   /**
@@ -1278,10 +1249,9 @@ class Options {
    *     when the cookie has been deleted.
    */
   deleteCookie(name) {
-    return this.driver_.schedule(
+    return this.driver_.execute(
         new command.Command(command.Name.DELETE_COOKIE).
-            setParameter('name', name),
-        'WebDriver.manage().deleteCookie(' + name + ')');
+            setParameter('name', name));
   }
 
   /**
@@ -1292,9 +1262,8 @@ class Options {
    *     resolved with the cookies visible to the current browsing context.
    */
   getCookies() {
-    return this.driver_.schedule(
-        new command.Command(command.Name.GET_ALL_COOKIES),
-        'WebDriver.manage().getCookies()');
+    return this.driver_.execute(
+        new command.Command(command.Name.GET_ALL_COOKIES));
   }
 
   /**
@@ -1328,9 +1297,8 @@ class Options {
    * @see #setTimeouts()
    */
   getTimeouts() {
-    return this.driver_.schedule(
-        new command.Command(command.Name.GET_TIMEOUT),
-        `WebDriver.manage().getTimeouts()`)
+    return this.driver_.execute(
+        new command.Command(command.Name.GET_TIMEOUT));
   }
 
   /**
@@ -1381,7 +1349,7 @@ class Options {
     setParam('script', script);
 
     if (valid) {
-      return this.driver_.schedule(cmd, `WebDriver.manage().setTimeouts()`)
+      return this.driver_.execute(cmd)
           .catch(() => {
             // Fallback to the legacy method.
             let cmds = [];
@@ -1431,11 +1399,10 @@ class Options {
  * @return {!Promise<void>}
  */
 function legacyTimeout(driver, type, ms) {
-  return driver.schedule(
+  return driver.execute(
       new command.Command(command.Name.SET_TIMEOUT)
           .setParameter('type', type)
-          .setParameter('ms', ms),
-      `WebDriver.manage().setTimeouts({${type}: ${ms}})`);
+          .setParameter('ms', ms));
 }
 
 
@@ -1625,10 +1592,9 @@ class Window {
    *     {x:number, y:number} object literal.
    */
   getPosition() {
-    return this.driver_.schedule(
+    return this.driver_.execute(
         new command.Command(command.Name.GET_WINDOW_POSITION).
-            setParameter('windowHandle', 'current'),
-        'WebDriver.manage().window().getPosition()');
+            setParameter('windowHandle', 'current'));
   }
 
   /**
@@ -1641,12 +1607,11 @@ class Window {
    *     when the command has completed.
    */
   setPosition(x, y) {
-    return this.driver_.schedule(
+    return this.driver_.execute(
         new command.Command(command.Name.SET_WINDOW_POSITION).
             setParameter('windowHandle', 'current').
             setParameter('x', x).
-            setParameter('y', y),
-        'WebDriver.manage().window().setPosition(' + x + ', ' + y + ')');
+            setParameter('y', y));
   }
 
   /**
@@ -1656,10 +1621,9 @@ class Window {
    *     {width:number, height:number} object literal.
    */
   getSize() {
-    return this.driver_.schedule(
+    return this.driver_.execute(
         new command.Command(command.Name.GET_WINDOW_SIZE).
-            setParameter('windowHandle', 'current'),
-        'WebDriver.manage().window().getSize()');
+            setParameter('windowHandle', 'current'));
   }
 
   /**
@@ -1670,12 +1634,11 @@ class Window {
    *     when the command has completed.
    */
   setSize(width, height) {
-    return this.driver_.schedule(
+    return this.driver_.execute(
         new command.Command(command.Name.SET_WINDOW_SIZE).
             setParameter('windowHandle', 'current').
             setParameter('width', width).
-            setParameter('height', height),
-        'WebDriver.manage().window().setSize(' + width + ', ' + height + ')');
+            setParameter('height', height));
   }
 
   /**
@@ -1684,10 +1647,9 @@ class Window {
    *     when the command has completed.
    */
   maximize() {
-    return this.driver_.schedule(
+    return this.driver_.execute(
         new command.Command(command.Name.MAXIMIZE_WINDOW).
-            setParameter('windowHandle', 'current'),
-        'WebDriver.manage().window().maximize()');
+            setParameter('windowHandle', 'current'));
   }
 }
 
@@ -1729,8 +1691,7 @@ class Logs {
   get(type) {
     let cmd = new command.Command(command.Name.GET_LOG).
         setParameter('type', type);
-    return this.driver_.schedule(
-        cmd, 'WebDriver.manage().logs().get(' + type + ')').
+    return this.driver_.execute(cmd).
         then(function(entries) {
           return entries.map(function(entry) {
             if (!(entry instanceof logging.Entry)) {
@@ -1749,9 +1710,8 @@ class Logs {
    *     promise that will resolve to a list of available log types.
    */
   getAvailableLogTypes() {
-    return this.driver_.schedule(
-        new command.Command(command.Name.GET_AVAILABLE_LOG_TYPES),
-        'WebDriver.manage().logs().getAvailableLogTypes()');
+    return this.driver_.execute(
+        new command.Command(command.Name.GET_AVAILABLE_LOG_TYPES));
   }
 }
 
@@ -1784,9 +1744,8 @@ class TargetLocator {
    * @return {!WebElementPromise} The active element.
    */
   activeElement() {
-    var id = this.driver_.schedule(
-        new command.Command(command.Name.GET_ACTIVE_ELEMENT),
-        'WebDriver.switchTo().activeElement()');
+    var id = this.driver_.execute(
+        new command.Command(command.Name.GET_ACTIVE_ELEMENT));
     return new WebElementPromise(this.driver_, id);
   }
 
@@ -1798,10 +1757,9 @@ class TargetLocator {
    *     when the driver has changed focus to the default content.
    */
   defaultContent() {
-    return this.driver_.schedule(
+    return this.driver_.execute(
         new command.Command(command.Name.SWITCH_TO_FRAME).
-            setParameter('id', null),
-        'WebDriver.switchTo().defaultContent()');
+            setParameter('id', null));
   }
 
   /**
@@ -1823,10 +1781,9 @@ class TargetLocator {
    *     when the driver has changed focus to the specified frame.
    */
   frame(id) {
-    return this.driver_.schedule(
+    return this.driver_.execute(
         new command.Command(command.Name.SWITCH_TO_FRAME).
-            setParameter('id', id),
-        'WebDriver.switchTo().frame(' + id + ')');
+            setParameter('id', id));
   }
 
   /**
@@ -1843,13 +1800,12 @@ class TargetLocator {
    *     when the driver has changed focus to the specified window.
    */
   window(nameOrHandle) {
-    return this.driver_.schedule(
+    return this.driver_.execute(
         new command.Command(command.Name.SWITCH_TO_WINDOW).
             // "name" supports the legacy drivers. "handle" is the W3C
             // compliant parameter.
             setParameter('name', nameOrHandle).
-            setParameter('handle', nameOrHandle),
-        'WebDriver.switchTo().window(' + nameOrHandle + ')');
+            setParameter('handle', nameOrHandle));
   }
 
   /**
@@ -1861,9 +1817,8 @@ class TargetLocator {
    * @return {!AlertPromise} The open alert.
    */
   alert() {
-    var text = this.driver_.schedule(
-        new command.Command(command.Name.GET_ALERT_TEXT),
-        'WebDriver.switchTo().alert()');
+    var text = this.driver_.execute(
+        new command.Command(command.Name.GET_ALERT_TEXT));
     var driver = this.driver_;
     return new AlertPromise(driver, text.then(function(text) {
       return new Alert(driver, text);
@@ -1970,7 +1925,7 @@ class WebElement {
       let cmd = new command.Command(command.Name.ELEMENT_EQUALS);
       cmd.setParameter('id', ids[0]);
       cmd.setParameter('other', ids[1]);
-      return a.driver_.schedule(cmd, 'WebElement.equals()');
+      return a.driver_.execute(cmd);
     });
   }
 
@@ -2000,16 +1955,14 @@ class WebElement {
    * parameters under the "id" key.
    *
    * @param {!command.Command} command The command to schedule.
-   * @param {string} description A description of the command for debugging.
-   * @return {!Promise<T>} A promise that will be resolved
-   *     with the command result.
+   * @return {!Promise<T>} A promise that will be resolved with the result.
    * @template T
    * @see WebDriver#schedule
    * @private
    */
-  schedule_(command, description) {
+  execute_(command) {
     command.setParameter('id', this);
-    return this.driver_.schedule(command, description);
+    return this.driver_.execute(command);
   }
 
   /**
@@ -2056,7 +2009,7 @@ class WebElement {
           command.Name.FIND_CHILD_ELEMENT).
           setParameter('using', locator.using).
           setParameter('value', locator.value);
-      id = this.schedule_(cmd, 'WebElement.findElement(' + locator + ')');
+      id = this.execute_(cmd);
     }
     return new WebElementPromise(this.driver_, id);
   }
@@ -2080,7 +2033,7 @@ class WebElement {
           command.Name.FIND_CHILD_ELEMENTS).
           setParameter('using', locator.using).
           setParameter('value', locator.value);
-      return this.schedule_(cmd, 'WebElement.findElements(' + locator + ')')
+      return this.execute_(cmd)
           .then(result => Array.isArray(result) ? result : []);
     }
   }
@@ -2092,9 +2045,7 @@ class WebElement {
    *     command has completed.
    */
   click() {
-    return this.schedule_(
-        new command.Command(command.Name.CLICK_ELEMENT),
-        'WebElement.click()');
+    return this.execute_(new command.Command(command.Name.CLICK_ELEMENT));
   }
 
   /**
@@ -2173,22 +2124,20 @@ class WebElement {
         });
 
     if (!this.driver_.fileDetector_) {
-      return this.schedule_(
+      return this.execute_(
           new command.Command(command.Name.SEND_KEYS_TO_ELEMENT).
               setParameter('text', keys.then(keys => keys.join(''))).
-              setParameter('value', keys),
-          'WebElement.sendKeys()');
+              setParameter('value', keys));
     }
 
     return keys.then(keys => {
       let driver = this.driver_;
       return driver.fileDetector_.handleFile(driver, keys.join(''));
     }).then(keys => {
-      return this.schedule_(
+      return this.execute_(
           new command.Command(command.Name.SEND_KEYS_TO_ELEMENT).
               setParameter('text', keys).
-              setParameter('value', keys.split('')),
-          'WebElement.sendKeys()');
+              setParameter('value', keys.split('')));
     });
   }
 
@@ -2199,9 +2148,8 @@ class WebElement {
    *     element's tag name.
    */
   getTagName() {
-    return this.schedule_(
-        new command.Command(command.Name.GET_ELEMENT_TAG_NAME),
-        'WebElement.getTagName()');
+    return this.execute_(
+        new command.Command(command.Name.GET_ELEMENT_TAG_NAME));
   }
 
   /**
@@ -2220,10 +2168,9 @@ class WebElement {
    */
   getCssValue(cssStyleProperty) {
     var name = command.Name.GET_ELEMENT_VALUE_OF_CSS_PROPERTY;
-    return this.schedule_(
+    return this.execute_(
         new command.Command(name).
-            setParameter('propertyName', cssStyleProperty),
-        'WebElement.getCssValue(' + cssStyleProperty + ')');
+            setParameter('propertyName', cssStyleProperty));
   }
 
   /**
@@ -2256,10 +2203,9 @@ class WebElement {
    *     either a string or null.
    */
   getAttribute(attributeName) {
-    return this.schedule_(
+    return this.execute_(
         new command.Command(command.Name.GET_ELEMENT_ATTRIBUTE).
-            setParameter('name', attributeName),
-        'WebElement.getAttribute(' + attributeName + ')');
+            setParameter('name', attributeName));
   }
 
   /**
@@ -2270,9 +2216,7 @@ class WebElement {
    *     resolved with the element's visible text.
    */
   getText() {
-    return this.schedule_(
-        new command.Command(command.Name.GET_ELEMENT_TEXT),
-        'WebElement.getText()');
+    return this.execute_(new command.Command(command.Name.GET_ELEMENT_TEXT));
   }
 
   /**
@@ -2283,9 +2227,7 @@ class WebElement {
    *     {@code {width:number, height:number}} object.
    */
   getSize() {
-    return this.schedule_(
-        new command.Command(command.Name.GET_ELEMENT_SIZE),
-        'WebElement.getSize()');
+    return this.execute_(new command.Command(command.Name.GET_ELEMENT_SIZE));
   }
 
   /**
@@ -2296,9 +2238,8 @@ class WebElement {
    *     {@code {x:number, y:number}} object.
    */
   getLocation() {
-    return this.schedule_(
-        new command.Command(command.Name.GET_ELEMENT_LOCATION),
-        'WebElement.getLocation()');
+    return this.execute_(
+        new command.Command(command.Name.GET_ELEMENT_LOCATION));
   }
 
   /**
@@ -2309,9 +2250,7 @@ class WebElement {
    *     resolved with whether this element is currently enabled.
    */
   isEnabled() {
-    return this.schedule_(
-        new command.Command(command.Name.IS_ELEMENT_ENABLED),
-        'WebElement.isEnabled()');
+    return this.execute_(new command.Command(command.Name.IS_ELEMENT_ENABLED));
   }
 
   /**
@@ -2321,9 +2260,8 @@ class WebElement {
    *     resolved with whether this element is currently selected.
    */
   isSelected() {
-    return this.schedule_(
-        new command.Command(command.Name.IS_ELEMENT_SELECTED),
-        'WebElement.isSelected()');
+    return this.execute_(
+        new command.Command(command.Name.IS_ELEMENT_SELECTED));
   }
 
   /**
@@ -2335,9 +2273,7 @@ class WebElement {
    *     when the form has been submitted.
    */
   submit() {
-    return this.schedule_(
-        new command.Command(command.Name.SUBMIT_ELEMENT),
-        'WebElement.submit()');
+    return this.execute_(new command.Command(command.Name.SUBMIT_ELEMENT));
   }
 
   /**
@@ -2349,9 +2285,7 @@ class WebElement {
    *     when the element has been cleared.
    */
   clear() {
-    return this.schedule_(
-        new command.Command(command.Name.CLEAR_ELEMENT),
-        'WebElement.clear()');
+    return this.execute_(new command.Command(command.Name.CLEAR_ELEMENT));
   }
 
   /**
@@ -2361,9 +2295,8 @@ class WebElement {
    *     resolved with whether this element is currently visible on the page.
    */
   isDisplayed() {
-    return this.schedule_(
-        new command.Command(command.Name.IS_ELEMENT_DISPLAYED),
-        'WebElement.isDisplayed()');
+    return this.execute_(
+        new command.Command(command.Name.IS_ELEMENT_DISPLAYED));
   }
 
   /**
@@ -2378,10 +2311,9 @@ class WebElement {
    */
   takeScreenshot(opt_scroll) {
     var scroll = !!opt_scroll;
-    return this.schedule_(
+    return this.execute_(
         new command.Command(command.Name.TAKE_ELEMENT_SCREENSHOT)
-            .setParameter('scroll', scroll),
-        'WebElement.takeScreenshot(' + scroll + ')');
+            .setParameter('scroll', scroll));
   }
 }
 
@@ -2480,10 +2412,8 @@ class Alert {
    *     command has completed.
    */
   authenticateAs(username, password) {
-    return this.driver_.schedule(
-        new command.Command(command.Name.SET_ALERT_CREDENTIALS),
-        'WebDriver.switchTo().alert()'
-            + `.authenticateAs("${username}", "${password}")`);
+    return this.driver_.execute(
+        new command.Command(command.Name.SET_ALERT_CREDENTIALS));
   }
 
   /**
@@ -2493,9 +2423,8 @@ class Alert {
    *     when this command has completed.
    */
   accept() {
-    return this.driver_.schedule(
-        new command.Command(command.Name.ACCEPT_ALERT),
-        'WebDriver.switchTo().alert().accept()');
+    return this.driver_.execute(
+        new command.Command(command.Name.ACCEPT_ALERT));
   }
 
   /**
@@ -2505,9 +2434,8 @@ class Alert {
    *     when this command has completed.
    */
   dismiss() {
-    return this.driver_.schedule(
-        new command.Command(command.Name.DISMISS_ALERT),
-        'WebDriver.switchTo().alert().dismiss()');
+    return this.driver_.execute(
+        new command.Command(command.Name.DISMISS_ALERT));
   }
 
   /**
@@ -2520,10 +2448,9 @@ class Alert {
    *     when this command has completed.
    */
   sendKeys(text) {
-    return this.driver_.schedule(
+    return this.driver_.execute(
         new command.Command(command.Name.SET_ALERT_TEXT).
-            setParameter('text', text),
-        'WebDriver.switchTo().alert().sendKeys(' + text + ')');
+            setParameter('text', text));
   }
 }
 

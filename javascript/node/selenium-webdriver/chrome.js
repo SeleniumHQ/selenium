@@ -772,9 +772,8 @@ class Driver extends webdriver.WebDriver {
    *     when app is launched.
    */
   launchApp(id) {
-    return this.schedule(
-        new command.Command(Command.LAUNCH_APP).setParameter('id', id),
-        'Driver.launchApp()');
+    return this.execute(
+        new command.Command(Command.LAUNCH_APP).setParameter('id', id));
   }
 
   /**
@@ -783,9 +782,7 @@ class Driver extends webdriver.WebDriver {
    *     emulation settings are retrievied.
    */
   getNetworkConditions() {
-    return this.schedule(
-        new command.Command(Command.GET_NETWORK_CONDITIONS),
-        'Driver.getNetworkConditions()');
+    return this.execute(new command.Command(Command.GET_NETWORK_CONDITIONS));
   }
 
   /**
@@ -808,10 +805,9 @@ class Driver extends webdriver.WebDriver {
     if (!spec || typeof spec !== 'object') {
       throw TypeError('setNetworkConditions called with non-network-conditions parameter');
     }
-
-    return this.schedule(
-        new command.Command(Command.SET_NETWORK_CONDITIONS).setParameter('network_conditions', spec),
-        'Driver.setNetworkConditions(' + JSON.stringify(spec) + ')');
+    return this.execute(
+        new command.Command(Command.SET_NETWORK_CONDITIONS)
+            .setParameter('network_conditions', spec));
   }
 }
 

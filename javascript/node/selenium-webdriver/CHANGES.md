@@ -22,6 +22,7 @@ mode.
 * Removed `remote/index.DriverService.prototype.stop()` (use `#kill()` instead)
 * Removed the `phantomjs` module
 * Removed the 'opera' module
+* Renamed `WebDriver#schedule()` to `WebDriver#execute()`
 
 
 ## v3.6.0

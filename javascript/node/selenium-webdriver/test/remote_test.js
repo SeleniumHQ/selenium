@@ -77,7 +77,7 @@ describe('DriverService', function() {
 
 describe('FileDetector', function() {
   class ExplodingDriver {
-    schedule() {
+    execute() {
       throw Error('unexpected call');
     }
   }
@@ -104,7 +104,7 @@ describe('FileDetector', function() {
       return (new remote.FileDetector)
           .handleFile(
               new (class FakeDriver {
-                schedule(command) {
+                execute(command) {
                   assert.equal(command.getName(), cmd.Name.UPLOAD_FILE);
                   assert.equal(typeof command.getParameters()['file'], 'string');
                   return Promise.resolve('success!');

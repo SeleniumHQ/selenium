@@ -119,7 +119,7 @@ class ActionSequence {
     // executed.
     let actions = this.actions_.concat();
     let results = actions.map(action => {
-      return this.driver_.schedule(action.command, action.description);
+      return this.driver_.execute(action.command);
     });
     return Promise.all(results);
   }
@@ -428,7 +428,7 @@ class TouchSequence {
     // executed.
     let actions = this.actions_.concat();
     let results = actions.map(action => {
-      return this.driver_.schedule(action.command, action.description);
+      return this.driver_.execute(action.command);
     });
     return Promise.all(results);
   }

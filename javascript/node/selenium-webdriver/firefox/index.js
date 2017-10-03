@@ -532,9 +532,7 @@ class Driver extends webdriver.WebDriver {
    * @return {!Promise<Context>} Current context.
    */
   getContext() {
-    return this.schedule(
-        new command.Command(ExtensionCommand.GET_CONTEXT),
-        'get WebDriver.context');
+    return this.execute(new command.Command(ExtensionCommand.GET_CONTEXT));
   }
 
   /**
@@ -552,10 +550,9 @@ class Driver extends webdriver.WebDriver {
    * @param {!Promise<void>} ctx The context to switch to.
    */
   setContext(ctx) {
-    return this.schedule(
+    return this.execute(
         new command.Command(ExtensionCommand.SET_CONTEXT)
-            .setParameter("context", ctx),
-        'set WebDriver.context');
+            .setParameter("context", ctx));
   }
 }
 

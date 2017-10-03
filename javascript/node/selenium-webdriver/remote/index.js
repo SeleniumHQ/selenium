@@ -570,8 +570,7 @@ class FileDetector extends input.FileDetector {
           .then(encodedZip => {
             let command = new cmd.Command(cmd.Name.UPLOAD_FILE)
                 .setParameter('file', encodedZip);
-            return driver.schedule(command,
-                'remote.FileDetector.handleFile(' + file + ')');
+            return driver.execute(command);
           });
     }, function(err) {
       if (err.code === 'ENOENT') {
