@@ -19,7 +19,6 @@ package org.openqa.selenium.safari;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.FileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.service.DriverCommandExecutor;
@@ -58,15 +57,25 @@ public class SafariDriver extends RemoteWebDriver {
    * @param safariOptions safari specific options / capabilities for the driver
    */
   public SafariDriver(SafariOptions safariOptions) {
-    super(getExecutor(safariOptions), safariOptions);
+    this(SafariDriverService.createDefaultService(safariOptions), safariOptions);
   }
 
-  private static CommandExecutor getExecutor(SafariOptions options) {
-    SafariDriverService service = SafariDriverService.createDefaultService(options);
-    if (service == null) {
-      throw new WebDriverException("SafariDriver requires Safari 10 running on OSX El Capitan or greater.");
-    }
-    return new DriverCommandExecutor(service);
+  /**
+   * Initializes a new SafariDriver backed by the specified {@link SafariDriverService}.
+   *
+   * @param safariService preconfigured safari service
+   */
+  public SafariDriver(SafariDriverService safariService) {
+    this(safariService, new SafariOptions());
+  }
+
+  /**
+   * Initializes a new SafariDriver using the specified {@link SafariOptions}.
+   *
+   * @param safariOptions safari specific options / capabilities for the driver
+   */
+  public SafariDriver(SafariDriverService safariServer, SafariOptions safariOptions) {
+    super(new DriverCommandExecutor(safariServer), safariOptions);
   }
 
   @Override

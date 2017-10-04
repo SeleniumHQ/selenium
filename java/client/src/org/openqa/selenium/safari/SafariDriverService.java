@@ -45,13 +45,17 @@ public class SafariDriverService extends DriverService {
     return createDefaultService(new SafariOptions());
   }
 
+  /**
+   * Use {@link #createDefaultService()} instead.
+   */
+  @Deprecated
   public static SafariDriverService createDefaultService(SafariOptions options) {
     File exe = options.getUseTechnologyPreview() ?
                TP_SAFARI_DRIVER_EXECUTABLE : SAFARI_DRIVER_EXECUTABLE;
     if (exe.exists()) {
       return new Builder().usingPort(options.getPort()).usingDriverExecutable(exe).build();
     }
-    return null;
+    throw new WebDriverException("SafariDriver requires Safari 10 running on OSX El Capitan or greater.");
   }
 
   @Override
