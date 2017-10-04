@@ -19,12 +19,15 @@ package org.openqa.selenium.edge;
 
 import static org.openqa.selenium.remote.CapabilityType.PAGE_LOAD_STRATEGY;
 
+import com.google.common.collect.ImmutableMap;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
 
+import java.util.Map;
 import java.util.Objects;
 
 
@@ -76,5 +79,10 @@ public class EdgeOptions extends MutableCapabilities {
    */
   MutableCapabilities toCapabilities() {
     return this;
+  }
+
+  @Override
+  public Map<String, ?> asMap() {
+    return ImmutableMap.of(CAPABILITY, super.asMap());
   }
 }
