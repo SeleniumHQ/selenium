@@ -206,7 +206,7 @@ public class WebDriverServlet extends HttpServlet {
 
       try {
         if (handler instanceof ActiveSession) {
-          sessionLogHandler .attachToCurrentThread(((ActiveSession) handler).getId());
+          sessionLogHandler.attachToCurrentThread(((ActiveSession) handler).getId());
           ActiveSession session = (ActiveSession) handler;
           Thread.currentThread().setName(String.format(
               "Handler thread for session %s (%s)",
