@@ -218,7 +218,9 @@ public class BeanToJsonConverter {
 
   private Method getMethod(Object toConvert, String methodName) {
     try {
-      return toConvert.getClass().getMethod(methodName);
+      Method method = toConvert.getClass().getMethod(methodName);
+      method.setAccessible(true);
+      return method;
     } catch (NoSuchMethodException | SecurityException e) {
       // fall through
     }
