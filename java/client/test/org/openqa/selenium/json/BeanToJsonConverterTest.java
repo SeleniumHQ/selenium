@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.remote;
+package org.openqa.selenium.json;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
@@ -52,6 +52,11 @@ import org.openqa.selenium.logging.LogEntries;
 import org.openqa.selenium.logging.LogEntry;
 import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.logging.LoggingPreferences;
+import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.remote.Command;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.DriverCommand;
+import org.openqa.selenium.remote.SessionId;
 
 import java.awt.*;
 import java.io.StringReader;
@@ -151,7 +156,8 @@ public class BeanToJsonConverterTest {
 
   @Test
   public void testNullAndAnEmptyStringAreEncodedDifferently() throws Exception {
-    BeanToJsonConverter converter = new BeanToJsonConverter();
+    BeanToJsonConverter
+        converter = new BeanToJsonConverter();
 
     String nullValue = converter.convert(null);
     String emptyString = converter.convert("");

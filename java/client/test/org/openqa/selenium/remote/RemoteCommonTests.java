@@ -19,15 +19,15 @@ package org.openqa.selenium.remote;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
+import org.openqa.selenium.json.BeanToJsonConverterTest;
+import org.openqa.selenium.json.JsonToBeanConverterTest;
 import org.openqa.selenium.remote.http.JsonHttpCommandCodecTest;
 import org.openqa.selenium.remote.http.JsonHttpResponseCodecTest;
 import org.openqa.selenium.remote.http.W3CHttpResponseCodecTest;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-    BeanToJsonConverterTest.class,
     DesiredCapabilitiesTest.class,
-    JsonToBeanConverterTest.class,
     JsonHttpCommandCodecTest.class,
     JsonHttpResponseCodecTest.class,
     W3CHttpResponseCodecTest.class

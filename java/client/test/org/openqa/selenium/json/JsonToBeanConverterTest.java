@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.remote;
+package org.openqa.selenium.json;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasEntry;
@@ -34,6 +34,7 @@ import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -44,6 +45,13 @@ import org.openqa.selenium.Platform;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.logging.LoggingPreferences;
+import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.remote.Command;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.DriverCommand;
+import org.openqa.selenium.remote.ErrorCodes;
+import org.openqa.selenium.remote.Response;
+import org.openqa.selenium.remote.SessionId;
 
 import java.util.Collections;
 import java.util.Date;
@@ -140,7 +148,7 @@ public class JsonToBeanConverterTest {
     capabilities.setJavascriptEnabled(true);
     String text = new BeanToJsonConverter().convert(capabilities);
 
-    DesiredCapabilities readCapabilities =
+    Capabilities readCapabilities =
         new JsonToBeanConverter().convert(DesiredCapabilities.class, text);
 
     assertEquals(capabilities, readCapabilities);
@@ -165,8 +173,9 @@ public class JsonToBeanConverterTest {
     toModel.addProperty("thing", "hairy");
     toModel.addProperty("hairy", "true");
 
-    Map<?,?> modelled = (Map<?,?>) new JsonToBeanConverter().convert(Object.class,
-                                                                     toModel.toString());
+    Map<?,?> modelled = (Map<?,?>) new JsonToBeanConverter().convert(
+        Object.class,
+        toModel.toString());
     assertEquals(2, modelled.size());
   }
 
@@ -174,7 +183,8 @@ public class JsonToBeanConverterTest {
   public void testShouldConvertAResponseWithAnElementInIt() throws Exception {
     String json =
         "{\"value\":{\"value\":\"\",\"text\":\"\",\"selected\":false,\"enabled\":true,\"id\":\"three\"},\"context\":\"con\",\"sessionId\":\"sess\"}";
-    Response converted = new JsonToBeanConverter().convert(Response.class, json);
+    Response
+        converted = new JsonToBeanConverter().convert(Response.class, json);
 
     Map<?,?> value = (Map<?,?>) converted.getValue();
     assertEquals("three", value.get("id"));
@@ -277,7 +287,7 @@ public class JsonToBeanConverterTest {
   public void testShouldBeAbleToConvertACommand() throws Exception {
     SessionId sessionId = new SessionId("session id");
     Command original = new Command(sessionId, DriverCommand.NEW_SESSION,
-        new HashMap<String, String>() {
+                                   new HashMap<String, String>() {
           {
             put("food", "cheese");
           }
@@ -387,7 +397,7 @@ public class JsonToBeanConverterTest {
       .convert(Response.class, "{\"status\":0,\"value\":\"cheese\"}");
 
     assertEquals(0, response.getStatus().intValue());
-    assertEquals(new ErrorCodes().toState(0), response.getState());
+    Assert.assertEquals(new ErrorCodes().toState(0), response.getState());
     String value = (String) response.getValue();
     assertEquals("cheese", value);
   }

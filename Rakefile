@@ -208,6 +208,7 @@ task :test_remote_server => [
    '//java/server/test/org/openqa/selenium/remote/server/log:test:run',
 ]
 task :test_remote => [
+  '//java/client/test/org/openqa/selenium/json:small-tests:run',
   '//java/client/test/org/openqa/selenium/remote:common-tests:run',
   '//java/client/test/org/openqa/selenium/remote:client-tests:run',
   '//java/client/test/org/openqa/selenium/remote:remote-driver-tests:run',
@@ -256,6 +257,7 @@ task :test_java => [
 
 task :test_java_small_tests => [
   "//java/client/test/org/openqa/selenium:small-tests:run",
+  "//java/client/test/org/openqa/selenium/json:small-tests:run",
   "//java/client/test/org/openqa/selenium/support:small-tests:run",
   "//java/client/test/org/openqa/selenium/remote:common-tests:run",
   "//java/client/test/org/openqa/selenium/remote:client-tests:run",
