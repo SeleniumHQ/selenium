@@ -59,6 +59,12 @@ public class EdgeOptions extends MutableCapabilities {
     setCapability(CapabilityType.PLATFORM, Platform.WINDOWS);
   }
 
+  @Override
+  public EdgeOptions merge(Capabilities extraCapabilities) {
+    super.merge(extraCapabilities);
+    return this;
+  }
+
   /**
    * Sets the page load strategy for  Edge
    *

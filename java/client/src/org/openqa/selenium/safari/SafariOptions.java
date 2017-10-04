@@ -72,6 +72,12 @@ public class SafariOptions extends MutableCapabilities {
     setCapability(CapabilityType.PLATFORM, Platform.MAC);
   }
 
+  @Override
+  public SafariOptions merge(Capabilities extraCapabilities) {
+    super.merge(extraCapabilities);
+    return this;
+  }
+
   /**
    * Construct a {@link SafariOptions} instance from given capabilites.
    * When the {@link #CAPABILITY} capability is set, all other capabilities will be ignored!

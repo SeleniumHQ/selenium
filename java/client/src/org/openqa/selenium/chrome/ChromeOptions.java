@@ -84,6 +84,12 @@ public class ChromeOptions extends MutableCapabilities {
     setCapability(CapabilityType.BROWSER_NAME, BrowserType.CHROME);
   }
 
+  @Override
+  public ChromeOptions merge(Capabilities extraCapabilities) {
+    super.merge(extraCapabilities);
+    return this;
+  }
+
   /**
    * Sets the path to the Chrome executable. This path should exist on the
    * machine which will launch Chrome. The path should either be absolute or

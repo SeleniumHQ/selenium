@@ -111,6 +111,12 @@ public class InternetExplorerOptions extends MutableCapabilities {
     merge(source);
   }
 
+  @Override
+  public InternetExplorerOptions merge(Capabilities extraCapabilities) {
+    super.merge(extraCapabilities);
+    return this;
+  }
+
   public InternetExplorerOptions withAttachTimeout(long duration, TimeUnit unit) {
     return withAttachTimeout(Duration.ofMillis(unit.toMillis(duration)));
   }
