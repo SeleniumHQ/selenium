@@ -42,7 +42,7 @@ public class SendKeysAction extends KeysRelatedAction implements Action {
       CharSequence... keysToSend) {
     super(keyboard, mouse, locationProvider);
 
-    if (keysToSend == null) {
+    if (keysToSend == null || keysToSend.length == 0) {
       throw new IllegalArgumentException("Keys should be a not null CharSequence");
     }
     this.keysToSend = keysToSend;
