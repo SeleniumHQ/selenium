@@ -21,6 +21,7 @@ import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.net.HttpHeaders.CONTENT_LENGTH;
 import static com.google.common.net.HttpHeaders.CONTENT_TYPE;
 import static com.google.common.net.MediaType.JSON_UTF_8;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.BrowserType.CHROME;
 import static org.openqa.selenium.remote.BrowserType.EDGE;
 import static org.openqa.selenium.remote.BrowserType.FIREFOX;
@@ -32,18 +33,15 @@ import static org.openqa.selenium.remote.CapabilityType.PROXY;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
-import com.google.gson.stream.JsonWriter;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.json.Json;
+import org.openqa.selenium.json.JsonException;
+import org.openqa.selenium.json.JsonOutput;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -56,9 +54,11 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
@@ -66,7 +66,6 @@ import java.util.regex.Pattern;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 public class ProtocolHandshake {
 
@@ -95,8 +94,7 @@ public class ProtocolHandshake {
     Capabilities desired = (Capabilities) command.getParameters().get("desiredCapabilities");
     desired = desired == null ? new ImmutableCapabilities() : desired;
 
-    BeanToJsonConverter converter = new BeanToJsonConverter();
-    JsonObject des = (JsonObject) converter.convertObject(desired);
+    Map<String, ?> des = desired.asMap();
 
     // We don't know how large the generated JSON is going to be. Spool it to disk, and then read
     // the file size, then stream it to the remote end. If we could be sure the remote end could
@@ -105,22 +103,19 @@ public class ProtocolHandshake {
 
     try (
         BufferedWriter fileWriter = Files.newBufferedWriter(jsonFile, UTF_8);
-        JsonWriter out = new JsonWriter(fileWriter)) {
-      out.setHtmlSafe(true);
-      out.setIndent("  ");
-      Gson gson = new Gson();
+        JsonOutput out = new Json().newOutput(fileWriter)) {
       out.beginObject();
 
-      streamJsonWireProtocolParameters(out, gson, des);
+      streamJsonWireProtocolParameters(out, des);
 
       out.name("capabilities");
       out.beginObject();
-      streamGeckoDriver013Parameters(out, gson, des);
-      streamW3CProtocolParameters(out, gson, des);
+      streamGeckoDriver013Parameters(out, des);
+      streamW3CProtocolParameters(out, des);
       out.endObject();
 
       out.endObject();
-      out.flush();
+      out.close();
 
       long size = Files.size(jsonFile);
       try (InputStream rawIn = Files.newInputStream(jsonFile);
@@ -146,17 +141,15 @@ public class ProtocolHandshake {
   }
 
   private void streamJsonWireProtocolParameters(
-      JsonWriter out,
-      Gson gson,
-      JsonObject des) throws IOException {
+      JsonOutput out,
+      Map<String, ?> des) throws IOException {
     out.name("desiredCapabilities");
-    gson.toJson(des, out);
+    out.write(des, MAP_TYPE);
   }
 
   private void streamW3CProtocolParameters(
-      JsonWriter out,
-      Gson gson,
-      JsonObject des) throws IOException {
+      JsonOutput out,
+      Map<String, ?> des) throws IOException {
     // Technically we should be building up a combination of "alwaysMatch" and "firstMatch" options.
     // We're going to do a little processing to figure out what we might be able to do, and assume
     // that people don't really understand the difference between required and desired (which is
@@ -179,19 +172,19 @@ public class ProtocolHandshake {
 
     Map<String, ?> chrome = des.entrySet().stream()
         .filter(entry ->
-                    ("browserName".equals(entry.getKey()) && CHROME.equals(entry.getValue().getAsString())) ||
+                    ("browserName".equals(entry.getKey()) && CHROME.equals(entry.getValue())) ||
                     "chromeOptions".equals(entry.getKey()))
         .distinct()
         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (left, right) -> right));
 
     Map<String, ?> edge = des.entrySet().stream()
-        .filter(entry -> ("browserName".equals(entry.getKey()) && EDGE.equals(entry.getValue().getAsString())))
+        .filter(entry -> ("browserName".equals(entry.getKey()) && EDGE.equals(entry.getValue())))
         .distinct()
         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (left, right) -> right));
 
     Map<String, ?> firefox = des.entrySet().stream()
         .filter(entry ->
-                    ("browserName".equals(entry.getKey()) && FIREFOX.equals(entry.getValue().getAsString())) ||
+                    ("browserName".equals(entry.getKey()) && FIREFOX.equals(entry.getValue())) ||
                     entry.getKey().startsWith("firefox_") ||
                     entry.getKey().startsWith("moz:"))
         .distinct()
@@ -199,7 +192,7 @@ public class ProtocolHandshake {
 
     Map<String, ?> ie = des.entrySet().stream()
         .filter(entry ->
-                    ("browserName".equals(entry.getKey()) && IE.equals(entry.getValue().getAsString())) ||
+                    ("browserName".equals(entry.getKey()) && IE.equals(entry.getValue())) ||
                     "browserAttachTimeout".equals(entry.getKey()) ||
                     "enableElementCacheCleanup".equals(entry.getKey()) ||
                     "enablePersistentHover".equals(entry.getKey()) ||
@@ -218,15 +211,15 @@ public class ProtocolHandshake {
 
     Map<String, ?> opera = des.entrySet().stream()
         .filter(entry ->
-                    ("browserName".equals(entry.getKey()) && OPERA_BLINK.equals(entry.getValue().getAsString())) ||
-                    ("browserName".equals(entry.getKey()) && OPERA.equals(entry.getValue().getAsString())) ||
+                    ("browserName".equals(entry.getKey()) && OPERA_BLINK.equals(entry.getValue())) ||
+                    ("browserName".equals(entry.getKey()) && OPERA.equals(entry.getValue())) ||
                     "operaOptions".equals(entry.getKey()))
         .distinct()
         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (left, right) -> right));
 
     Map<String, ?> safari = des.entrySet().stream()
         .filter(entry ->
-                    ("browserName".equals(entry.getKey()) && SAFARI.equals(entry.getValue().getAsString())) ||
+                    ("browserName".equals(entry.getKey()) && SAFARI.equals(entry.getValue())) ||
                     "safari.options".equals(entry.getKey()))
         .distinct()
         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (left, right) -> right));
@@ -237,68 +230,64 @@ public class ProtocolHandshake {
         .distinct()
         .collect(ImmutableSet.toImmutableSet());
 
-    JsonObject alwaysMatch = Stream.of(des)
-        .map(JsonObject::entrySet)
-        .flatMap(Collection::stream)
+    Map<String, Object> alwaysMatch = des.entrySet().stream()
         .filter(entry -> !excludedKeys.contains(entry.getKey()))
         .filter(entry -> entry.getValue() != null)
         .filter(entry -> ACCEPTED_W3C_PATTERNS.test(entry.getKey()))
         .filter(entry ->
                     !("platformName".equals(entry.getKey()) &&
-                    entry.getValue().isJsonPrimitive() &&
-                    "ANY".equalsIgnoreCase(entry.getValue().getAsString())))
+//                    entry.getValue().isJsonPrimitive() &&
+                    "ANY".equalsIgnoreCase(entry.getValue().toString())))
         .distinct()
         .collect(Collector.of(
-            JsonObject::new,
-            (obj, e) -> obj.add(e.getKey(), e.getValue()),
+            TreeMap::new,
+            (obj, e) -> obj.put(e.getKey(), e.getValue()),
             (left, right) -> {
-              for (Map.Entry<String, JsonElement> entry : right.entrySet()) {
-                left.add(entry.getKey(), entry.getValue());
+              for (Map.Entry<String, Object> entry : right.entrySet()) {
+                left.put(entry.getKey(), entry.getValue());
               }
               return left;
             }));
 
     // Now, hopefully we're left with just the browser-specific pieces. Skip the empty ones.
-    JsonArray firstMatch = Stream.of(chrome, edge, firefox, ie, opera, safari)
+    List<Map<String, Object>> firstMatch = Stream.of(chrome, edge, firefox, ie, opera, safari)
         .map(map -> {
-          JsonObject json = new JsonObject();
+          TreeMap<String, Object> json = new TreeMap<>();
           for (Map.Entry<String, ?> entry : map.entrySet()) {
             if (ACCEPTED_W3C_PATTERNS.test(entry.getKey())) {
-              json.add(entry.getKey(), gson.toJsonTree(entry.getValue()));
+              json.put(entry.getKey(), entry.getValue());
             }
           }
           return json;
         })
         .filter(obj -> !obj.entrySet().isEmpty())
-        .collect(Collector.of(
-            JsonArray::new,
-            JsonArray::add,
-            (left, right) -> {
-              for (JsonElement element : right) {
-                left.add(element);
-              }
-              return left;
-            }
-        ));
+        .collect(Collectors.toList());
 
     // TODO(simon): transform some capabilities that changed in the spec (timeout's "pageLoad")
-    Stream.concat(Stream.of(alwaysMatch), StreamSupport.stream(firstMatch.spliterator(), false))
-        .map(el -> (JsonObject) el)
+    Stream.concat(Stream.of(alwaysMatch), firstMatch.stream())
         .forEach(obj -> {
-          if (obj.has("proxy")) {
-            JsonObject proxy = obj.getAsJsonObject("proxy");
-            if (proxy.has("proxyType")) {
-              proxy.add(
-                  "proxyType",
-                  new JsonPrimitive(proxy.get("proxyType").getAsString().toLowerCase()));
+          if (obj.containsKey("proxy")) {
+            Object rawProxy = obj.get("proxy");
+            Map<String, Object> proxy;
+            if (rawProxy instanceof Proxy) {
+              proxy = new TreeMap<>(((Proxy) rawProxy).toJson());
+            } else {
+              //noinspection unchecked
+              proxy = new TreeMap<>((Map<String, Object>) rawProxy);
             }
+            if (proxy.containsKey("proxyType")) {
+              proxy.put(
+                  "proxyType",
+                  String.valueOf(proxy.get("proxyType")).toLowerCase());
+            }
+            obj.put("proxy", proxy);
           }
         });
 
     out.name("alwaysMatch");
-    gson.toJson(alwaysMatch, out);
+    out.write(alwaysMatch, MAP_TYPE);
     out.name("firstMatch");
-    gson.toJson(firstMatch, out);
+    out.write(firstMatch, Collection.class);
   }
 
   public Optional<Result> createSession(HttpClient client, InputStream newSessionBlob, long size)
@@ -339,11 +328,10 @@ public class ProtocolHandshake {
   }
 
   private void streamGeckoDriver013Parameters(
-      JsonWriter out,
-      Gson gson,
-      JsonObject des) throws IOException {
+      JsonOutput out,
+      Map<String, ?> des) throws IOException {
     out.name("desiredCapabilities");
-    gson.toJson(des, out);
+    out.write(des, MAP_TYPE);
   }
 
   public static class Result {

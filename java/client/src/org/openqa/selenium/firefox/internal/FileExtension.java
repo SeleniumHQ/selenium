@@ -17,12 +17,14 @@
 
 package org.openqa.selenium.firefox.internal;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.io.Zip;
+import org.openqa.selenium.json.Json;
+import org.openqa.selenium.json.JsonInput;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
@@ -30,9 +32,11 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.Reader;
 import java.util.Iterator;
-import java.io.*;
+import java.util.Map;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.NamespaceContext;
@@ -109,20 +113,23 @@ public class FileExtension implements Extension {
     File manifestJsonFile = new File(root, MANIFEST_JSON_FILE);
     try {
       String addOnId = null;
-      JsonObject manifestObject = new JsonParser().parse(new FileReader(manifestJsonFile)).getAsJsonObject();
-      if (manifestObject.has("applications")) {
-        JsonObject applicationObj = manifestObject.getAsJsonObject("applications");
-        if (applicationObj.has("gecko")) {
-          JsonObject geckoObj = applicationObj.getAsJsonObject("gecko");
-          if (geckoObj.has("id")) {
-            addOnId = geckoObj.get("id").getAsString().trim();
+      Reader reader = new FileReader(manifestJsonFile);
+      JsonInput json = new Json().newInput(reader);
+
+      Map<String, Object> manifestObject = json.read(MAP_TYPE);
+      if (manifestObject.get("applications") instanceof Map) {
+        Map<?, ?> applicationObj = (Map<?, ?>) manifestObject.get("applications");
+        if (applicationObj.get("gecko") instanceof Map) {
+          Map<?, ?> geckoObj = (Map<?, ?>) applicationObj.get("gecko");
+          if (geckoObj.get("id") instanceof String) {
+            addOnId = ((String) geckoObj.get("id")).trim();
           }
         }
       }
 
       if (addOnId == null || addOnId.isEmpty()) {
-        addOnId = manifestObject.get("name").getAsString().replaceAll(" ", "") +
-          "@" + manifestObject.get("version").getAsString();
+        addOnId = ((String) manifestObject.get("name")).replaceAll(" ", "") +
+          "@" + manifestObject.get("version");
       }
 
       return addOnId;

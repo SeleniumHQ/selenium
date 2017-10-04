@@ -3,6 +3,7 @@ package org.openqa.selenium.remote.server;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.StandardOpenOption.CREATE;
 import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -11,19 +12,13 @@ import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.Ordering;
 import com.google.common.collect.Sets;
 import com.google.common.io.CharStreams;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonParseException;
-import com.google.gson.TypeAdapter;
-import com.google.gson.TypeAdapterFactory;
-import com.google.gson.reflect.TypeToken;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonToken;
-import com.google.gson.stream.JsonWriter;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.io.FileHandler;
+import org.openqa.selenium.json.Json;
+import org.openqa.selenium.json.JsonInput;
+import org.openqa.selenium.json.JsonOutput;
 import org.openqa.selenium.remote.BeanToJsonConverter;
 import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.JsonToBeanConverter;
@@ -36,7 +31,6 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.io.UncheckedIOException;
 import java.io.Writer;
-import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
@@ -78,14 +72,7 @@ public class NewSessionPayload implements Closeable {
   // Dedicate up to 10% of max ram to holding the payload
   private static final long THRESHOLD = Runtime.getRuntime().maxMemory() / 10;
 
-  private static final Gson GSON = new GsonBuilder()
-      .registerTypeAdapterFactory(ListAdapter.FACTORY)
-      .registerTypeAdapterFactory(MapAdapter.FACTORY)
-      .setLenient()
-      .serializeNulls()
-      .create();
-  private static final Type MAP_TYPE = new TypeToken<Map<String, Object>>(){}.getType();
-
+  private final Json json = new Json();
   private final Path root;
   private final Sources sources;
 
@@ -287,57 +274,57 @@ public class NewSessionPayload implements Closeable {
 
     try (
         Reader in = Files.newBufferedReader(payload);
-        JsonReader json = GSON.newJsonReader(in)) {
+        JsonInput jin = json.newInput(in)) {
       Set<Dialect> dialects = new TreeSet<>();
       Supplier<Map<String, Object>> oss = null;
       Supplier<Map<String, Object>> always = ImmutableMap::of;
       List<Supplier<Map<String, Object>>> first = new LinkedList<>();
 
-      json.beginObject();
+      jin.beginObject();
 
-      while (json.hasNext()) {
-        switch (json.nextName()) {
+      while (jin.hasNext()) {
+        switch (jin.nextName()) {
           case "capabilities":
-            json.beginObject();
-            while (json.hasNext()) {
-              switch (json.nextName()) {
+            jin.beginObject();
+            while (jin.hasNext()) {
+              switch (jin.nextName()) {
 
                 case "alwaysMatch":
-                  Path a = write("always-match.json", json);
+                  Path a = write("always-match.json", jin);
                   always = () -> read(a);
                   dialects.add(Dialect.W3C);
                   break;
 
                 case "firstMatch":
-                  json.beginArray();
+                  jin.beginArray();
                   int i = 0;
-                  while (json.hasNext()) {
-                    Path f = write("first-match-" + i + ".json", json);
+                  while (jin.hasNext()) {
+                    Path f = write("first-match-" + i + ".json", jin);
                     first.add(() -> read(f));
                     i++;
                   }
-                  json.endArray();
+                  jin.endArray();
                   dialects.add(Dialect.W3C);
                   break;
 
                 default:
-                  json.skipValue();
+                  jin.skipValue();
               }
             }
-            json.endObject();
+            jin.endObject();
             break;
 
           case "desiredCapabilities":
-            Path ossCaps = write("oss.json", json);
+            Path ossCaps = write("oss.json", jin);
             oss = () -> read(ossCaps);
             dialects.add(Dialect.OSS);
             break;
 
           default:
-            json.skipValue();
+            jin.skipValue();
         }
       }
-      json.endObject();
+      jin.endObject();
 
       if (first.isEmpty()) {
         first.add(ImmutableMap::of);
@@ -361,21 +348,23 @@ public class NewSessionPayload implements Closeable {
     }
   }
 
-  private Path write(String fileName, JsonReader json) throws IOException {
+  private Path write(String fileName, JsonInput json) {
     Path out = root.resolve(fileName);
 
-    Map<String, Object> value = GSON.fromJson(json, MAP_TYPE);
-
-    try (Writer writer = Files.newBufferedWriter(out, UTF_8, TRUNCATE_EXISTING, CREATE)) {
-      GSON.toJson(value, writer);
+    try (Writer writer = Files.newBufferedWriter(out, UTF_8, TRUNCATE_EXISTING, CREATE);
+         JsonOutput jsonOut = this.json.newOutput(writer)) {
+      jsonOut.write(json, MAP_TYPE);
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
     }
 
     return out;
   }
 
   private Map<String, Object> read(Path path) {
-    try (Reader reader = Files.newBufferedReader(path, UTF_8)) {
-      return GSON.fromJson(reader, MAP_TYPE);
+    try (Reader reader = Files.newBufferedReader(path, UTF_8);
+         JsonInput jin = json.newInput(reader)) {
+      return jin.read(MAP_TYPE);
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }
@@ -478,132 +467,6 @@ public class NewSessionPayload implements Closeable {
 
     public long getPayloadSize() {
       return payloadSizeInBytes;
-    }
-  }
-
-  private static Object readValue(JsonReader in, Gson gson) throws IOException {
-    switch (in.peek()) {
-      case BEGIN_ARRAY:
-      case BEGIN_OBJECT:
-      case BOOLEAN:
-      case NULL:
-      case STRING:
-        return gson.fromJson(in, Object.class);
-
-      case NUMBER:
-        String number = in.nextString();
-        if (number.indexOf('.') != -1) {
-          return Double.parseDouble(number);
-        }
-        return Long.parseLong(number);
-
-      default:
-        throw new JsonParseException("Unexpected type: " + in.peek());
-    }
-  }
-
-  private static class MapAdapter extends TypeAdapter<Map<?, ?>> {
-
-    private final static TypeAdapterFactory FACTORY = new TypeAdapterFactory() {
-      @SuppressWarnings("unchecked")
-      @Override
-      public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> type) {
-        if (type.getRawType() == Map.class) {
-          return (TypeAdapter<T>) new MapAdapter(gson);
-        }
-        return null;
-      }
-    };
-
-    private final Gson gson;
-
-    private MapAdapter(Gson gson) {
-      this.gson = Objects.requireNonNull(gson);
-    }
-
-    @Override
-    public Map<?, ?> read(JsonReader in) throws IOException {
-      if (in.peek() == JsonToken.NULL) {
-        in.nextNull();
-        return null;
-      }
-
-      Map<String, Object> map = new TreeMap<>();
-      in.beginObject();
-
-      while (in.hasNext()) {
-        String key = in.nextName();
-        Object value = readValue(in, gson);
-
-        map.put(key, value);
-      }
-
-      in.endObject();
-      return map;
-    }
-
-    @Override
-    public void write(JsonWriter out, Map<?, ?> value) throws IOException {
-      // It's fine to use GSON's own default writer for this.
-      out.beginObject();
-      for (Map.Entry<?, ?> entry : value.entrySet()) {
-        out.name(String.valueOf(entry.getKey()));
-        @SuppressWarnings("unchecked")
-        TypeAdapter<Object>
-            adapter =
-            (TypeAdapter<Object>) gson.getAdapter(entry.getValue().getClass());
-        adapter.write(out, entry.getValue());
-      }
-      out.endObject();
-    }
-  }
-
-  private static class ListAdapter extends TypeAdapter<List<?>> {
-
-    private final static TypeAdapterFactory FACTORY = new TypeAdapterFactory() {
-      @SuppressWarnings("unchecked")
-      @Override
-      public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> type) {
-        if (type.getRawType() == List.class) {
-          return (TypeAdapter<T>) new ListAdapter(gson);
-        }
-        return null;
-      }
-    };
-
-    private final Gson gson;
-
-    private ListAdapter(Gson gson) {
-      this.gson = Objects.requireNonNull(gson);
-    }
-
-    @Override
-    public List<?> read(JsonReader in) throws IOException {
-      if (in.peek() == JsonToken.NULL) {
-        in.nextNull();
-        return null;
-      }
-
-      List<Object> list = new LinkedList<>();
-      in.beginArray();
-
-      while (in.hasNext()) {
-        list.add(readValue(in, gson));
-      }
-
-      in.endArray();
-      return list;
-    }
-
-    @Override
-    public void write(JsonWriter out, List<?> value) throws IOException {
-      out.beginArray();
-      for (Object entry : value) {
-        @SuppressWarnings("unchecked")
-        TypeAdapter<Object> adapter = (TypeAdapter<Object>) gson.getAdapter(entry.getClass());
-        adapter.write(out, entry);
-      }
-      out.endArray();
     }
   }
 }

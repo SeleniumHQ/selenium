@@ -81,12 +81,12 @@ public class ActionsTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void throwsIllegalArgumentExceptionIfKeysNull() {
-    new Actions(driver).sendKeys(null).perform();
+    new Actions(driver).sendKeys().perform();
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void throwsIllegalArgumentExceptionOverridenIfKeysNull() {
-    new Actions(driver).sendKeys(dummyLocatableElement,null).perform();
+    new Actions(driver).sendKeys(dummyLocatableElement).perform();
   }
 
   @Test

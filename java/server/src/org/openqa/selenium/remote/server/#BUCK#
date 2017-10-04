@@ -1,5 +1,4 @@
 # BUILD FILE SYNTAX: SKYLARK
-
 java_library(name = 'sessions',
   srcs = [
     'DriverSessions.java',
@@ -49,7 +48,6 @@ java_library(name = 'server',
   deps = [
     ':sessions',
     '//java/client/src/org/openqa/selenium:selenium',
-    '//java/client/src/org/openqa/selenium/json:json',
     '//java/client/src/org/openqa/selenium/remote:remote',
     '//java/client/src/org/openqa/selenium/support/events:events',
     '//java/server/src/org/openqa/selenium/remote/server/log:log',

@@ -7,9 +7,18 @@ java_library(
     'Augmentable.java',
     'Command.java',
     'CommandExecutor.java',
+    'ErrorCodes.java',
     'Response.java',
+    'ScreenshotException.java',
     'SessionId.java',
   ],
+  deps = [
+    '//java/client/src/org/openqa/selenium:core',
+    '//third_party/java/guava:guava',
+  ],
+  visibility = [
+    '//java/client/src/org/openqa/selenium/json:json',
+  ]
 )
 
 java_library(
@@ -49,8 +58,6 @@ java_library(name = 'remote',
     'mobile/AddNetworkConnection.java',
   ],
   exported_deps = [
-    ':api',
-    ':capabilities',
     ':remote-lib',
     '//java/client/src/org/openqa/selenium:selenium',
   ],
@@ -60,6 +67,7 @@ java_library(name = 'remote',
   ],
   visibility = ['PUBLIC'],
 )
+
 
 java_library(name = 'remote-lib',
   srcs = [
@@ -77,7 +85,6 @@ java_library(name = 'remote-lib',
     'HandshakeResponse.java',
     'HttpCommandExecutor.java',
     'InitialHandshakeResponse.java',
-    'JsonException.java',
     'JsonToBeanConverter.java',
     'JsonWireProtocolResponse.java',
     'LocalFileDetector.java',
@@ -91,8 +98,6 @@ java_library(name = 'remote-lib',
     'RemoteWebDriver.java',
     'RemoteWebElement.java',
     'ResponseCodec.java',
-    'ScreenshotException.java',
-    'SimplePropertyDescriptor.java',
     'UnreachableBrowserException.java',
     'UselessFileDetector.java',
     'W3CHandshakeResponse.java',
@@ -126,12 +131,13 @@ java_library(name = 'remote-lib',
     ':is-displayed',
   ],
   exported_deps = [
+    ':api',
+    ':capabilities',
+    '//java/client/src/org/openqa/selenium/json:json',
     '//third_party/java/httpcomponents:httpclient',
     '//third_party/java/httpcomponents:httpcore',
   ],
   deps = [
-    ':api',
-    ':capabilities',
     ':http-session-id',
     '//java/client/src/org/openqa/selenium:selenium',
     '//third_party/java/gson:gson',

@@ -69,7 +69,7 @@ java_library(name = 'core',
      'mobile/*.java',
   ]),
   manifest_file = ':manifest',
-  deps = [
+  exported_deps = [
     # This list of dependencies MUST NOT include anything other than code
     # from the selenium project. That means no guava and no gson.
     ':beta',
@@ -82,7 +82,7 @@ java_library(name = 'core',
     '//java/client/src/org/openqa/selenium/security:security',
   ],
   visibility = [
-    '//java/client/src/org/openqa/selenium/interactions:interactions',
+    'PUBLIC',
   ],
 )
 
@@ -140,6 +140,7 @@ java_library(name = 'exceptions',
     '//java/client/src/org/openqa/selenium/interactions:exceptions',
     '//java/client/src/org/openqa/selenium/interactions:interactions',
     '//java/client/src/org/openqa/selenium/io:io',
+    '//java/client/src/org/openqa/selenium/logging:logging',
     '//java/client/src/org/openqa/selenium/net:net',
     '//java/client/src/org/openqa/selenium/os:os',
     '//java/client/test/org/openqa/selenium/testing:helpers',

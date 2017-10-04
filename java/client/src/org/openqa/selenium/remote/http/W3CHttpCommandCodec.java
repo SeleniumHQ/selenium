@@ -66,19 +66,20 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.io.Resources;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonPrimitive;
 
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.internal.WebElementToJsonConverter;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
 
 /**
  * A command codec that adheres to the W3C's WebDriver wire protocol.
@@ -302,12 +303,12 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
     }
   }
 
-  private JsonArray stringToUtf8Array(String toConvert) {
-    JsonArray toReturn = new JsonArray();
+  private List<String> stringToUtf8Array(String toConvert) {
+    List<String> toReturn = new ArrayList<>();
     int offset = 0;
     while (offset < toConvert.length()) {
       int next = toConvert.codePointAt(offset);
-      toReturn.add(new JsonPrimitive(new StringBuilder().appendCodePoint(next).toString()));
+      toReturn.add(new StringBuilder().appendCodePoint(next).toString());
       offset += Character.charCount(next);
     }
     return toReturn;
