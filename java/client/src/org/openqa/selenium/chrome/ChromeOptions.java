@@ -19,6 +19,7 @@ package org.openqa.selenium.chrome;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static org.openqa.selenium.remote.CapabilityType.ACCEPT_INSECURE_CERTS;
 import static org.openqa.selenium.remote.CapabilityType.PAGE_LOAD_STRATEGY;
 import static org.openqa.selenium.remote.CapabilityType.UNEXPECTED_ALERT_BEHAVIOUR;
 import static org.openqa.selenium.remote.CapabilityType.UNHANDLED_PROMPT_BEHAVIOUR;
@@ -218,6 +219,11 @@ public class ChromeOptions extends MutableCapabilities {
   public ChromeOptions setUnhandledPromptBehaviour(UnexpectedAlertBehaviour behaviour) {
     setCapability(UNHANDLED_PROMPT_BEHAVIOUR, behaviour);
     setCapability(UNEXPECTED_ALERT_BEHAVIOUR, behaviour);
+    return this;
+  }
+
+  public ChromeOptions setAcceptInsecureCerts(boolean acceptInsecureCerts) {
+    setCapability(ACCEPT_INSECURE_CERTS, acceptInsecureCerts);
     return this;
   }
 
