@@ -204,10 +204,7 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
     } catch (ClassCastException ex) {
       throw new WebDriverException("Returned value cannot be converted to List<WebElement>: " + responseValue, ex);
     }
-    for (WebElement element : allElements) {
-      parent.setFoundBy(this, element, using, value);
-    }
-
+    allElements.forEach(element -> parent.setFoundBy(this, element, using, value));
     return allElements;
   }
 
