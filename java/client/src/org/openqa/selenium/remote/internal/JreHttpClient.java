@@ -46,7 +46,7 @@ public class JreHttpClient implements HttpClient {
     }
     this.url = url;
 
-    String authority = url.getAuthority();
+    String authority = url.getUserInfo();
     if (authority == null || "".equals(authority)) {
       auth = null;
     } else {
