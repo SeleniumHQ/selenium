@@ -22,6 +22,8 @@ mode.
 * Removed `remote/index.DriverService.prototype.stop()` (use `#kill()` instead)
 * Removed the `phantomjs` module
 * Removed the 'opera' module
+* Removed the `WebDriver.attachToSession()` factory method. Users can just use
+  use the `WebDriver` constructor directly instead.
 * Renamed `WebDriver#schedule()` to `WebDriver#execute()`
 
 

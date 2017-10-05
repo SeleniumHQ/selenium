@@ -226,50 +226,6 @@ describe('WebDriver', function() {
   /////////////////////////////////////////////////////////////////////////////
 
 
-  describe('testAttachToSession', function() {
-    it('sessionIsAvailable', function() {
-      let aSession = new Session(SESSION_ID, {'browserName': 'firefox'});
-      let executor = new FakeExecutor().
-          expect(CName.DESCRIBE_SESSION).
-          withParameters({'sessionId': SESSION_ID}).
-          andReturnSuccess(aSession).
-          end();
-
-      let driver = WebDriver.attachToSession(executor, SESSION_ID);
-      return driver.getSession().then(v => assert.strictEqual(v, aSession));
-    });
-
-    it('failsToGetSessionInfo', function() {
-      let e = new Error('boom');
-      let executor = new FakeExecutor().
-          expect(CName.DESCRIBE_SESSION).
-          withParameters({'sessionId': SESSION_ID}).
-          andReturnError(e).
-          end();
-
-      let driver = WebDriver.attachToSession(executor, SESSION_ID);
-      return driver.getSession()
-          .then(() => assert.fail('should have failed!'),
-                (actual) => assert.strictEqual(actual, e));
-    });
-
-    it('remote end does not recognize DESCRIBE_SESSION command', function() {
-      let e = new error.UnknownCommandError;
-      let executor = new FakeExecutor().
-          expect(CName.DESCRIBE_SESSION).
-          withParameters({'sessionId': SESSION_ID}).
-          andReturnError(e).
-          end();
-
-      let driver = WebDriver.attachToSession(executor, SESSION_ID);
-      return driver.getSession().then(session => {
-        assert.ok(session instanceof Session);
-        assert.strictEqual(session.getId(), SESSION_ID);
-        assert.equal(session.getCapabilities().size, 0);
-      });
-    });
-  });
-
   describe('testCreateSession', function() {
     it('happyPathWithCapabilitiesHashObject', function() {
       let aSession = new Session(SESSION_ID, {'browserName': 'firefox'});

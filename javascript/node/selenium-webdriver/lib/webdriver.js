@@ -668,29 +668,6 @@ class WebDriver {
   }
 
   /**
-   * Creates a new WebDriver client for an existing session.
-   * @param {!command.Executor} executor Command executor to use when querying
-   *     for session details.
-   * @param {string} sessionId ID of the session to attach to.
-   * @return {!WebDriver} A new client for the specified session.
-   */
-  static attachToSession(executor, sessionId) {
-    let cmd = new command.Command(command.Name.DESCRIBE_SESSION)
-        .setParameter('sessionId', sessionId);
-    let session = executeCommand(executor, cmd)
-        .catch(err => {
-          // The DESCRIBE_SESSION command is not supported by the W3C spec, so
-          // if we get back an unknown command, just return a session with
-          // unknown capabilities.
-          if (err instanceof error.UnknownCommandError) {
-            return new Session(sessionId, new Capabilities);
-          }
-          throw err;
-        });
-    return new WebDriver(session, executor);
-  }
-
-  /**
    * Creates a new WebDriver session.
    *
    * By default, the requested session `capabilities` are merely "desired" and

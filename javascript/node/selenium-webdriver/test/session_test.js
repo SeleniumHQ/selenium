@@ -64,32 +64,4 @@ test.suite(function(env) {
       });
     });
   }
-
-  describe('session management', function() {
-    var driver;
-    before(async function() {
-      driver = await env.builder().build();
-    });
-
-    after(function() {
-      return driver.quit();
-    });
-
-    it('can connect to an existing session', async function() {
-      await driver.get(Pages.simpleTestPage);
-      await assert(driver.getTitle()).equalTo('Hello WebDriver');
-
-      return driver.getSession().then(session1 => {
-        let driver2 = WebDriver.attachToSession(
-            driver.getExecutor(),
-            session1.getId());
-
-        return assert(driver2.getTitle()).equalTo('Hello WebDriver')
-            .then(_ => {
-              let session2Id = driver2.getSession().then(s => s.getId());
-              return assert(session2Id).equalTo(session1.getId());
-            });
-      });
-    });
-  });
 });
