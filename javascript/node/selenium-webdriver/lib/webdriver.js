@@ -989,7 +989,7 @@ class WebDriver {
    * @private
    */
   findElementInternal_(locatorFn, context) {
-    return this.call(() => locatorFn(context)).then(function(result) {
+    return Promise.resolve(locatorFn(context)).then(function(result) {
       if (Array.isArray(result)) {
         result = result[0];
       }
@@ -1029,7 +1029,7 @@ class WebDriver {
    * @private
    */
   findElementsInternal_(locatorFn, context) {
-    return this.call(() => locatorFn(context)).then(function(result) {
+    return Promise.resolve(locatorFn(context)).then(function(result) {
       if (result instanceof WebElement) {
         return [result];
       }
