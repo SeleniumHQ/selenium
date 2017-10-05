@@ -29,6 +29,7 @@ import com.beust.jcommander.JCommander;
 import org.junit.Test;
 import org.openqa.grid.common.exception.GridConfigurationException;
 import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
+import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -268,7 +269,7 @@ public class RegistrationRequestTest {
     // should have the default capabilities
     // fixUpCapabilities should have been internally called
     assertEquals(3, req.getConfiguration().capabilities.size());
-    for (DesiredCapabilities capabilities : req.getConfiguration().capabilities) {
+    for (MutableCapabilities capabilities : req.getConfiguration().capabilities) {
       assertNotNull(capabilities.getPlatform());
       assertNotNull(capabilities.getCapability("seleniumProtocol"));
     }

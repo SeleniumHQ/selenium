@@ -37,6 +37,7 @@ import org.openqa.grid.common.exception.GridConfigurationException;
 import org.openqa.grid.internal.utils.configuration.converters.BrowserDesiredCapabilityConverter;
 import org.openqa.grid.internal.utils.configuration.converters.NoOpParameterSplitter;
 import org.openqa.grid.internal.utils.configuration.validators.FileExistsValueValidator;
+import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.remote.BeanToJsonConverter;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.JsonToBeanConverter;
@@ -114,7 +115,7 @@ public class GridNodeConfiguration extends GridConfiguration {
    * Default DesiredCapabilites
    */
   static final class DefaultDesiredCapabilitiesBuilder {
-    static final List<DesiredCapabilities> getCapabilities() {
+    static final List<MutableCapabilities> getCapabilities() {
       DesiredCapabilities chrome = new DesiredCapabilities();
       chrome.setBrowserName("chrome");
       chrome.setCapability("maxInstances", 5);
@@ -208,7 +209,7 @@ public class GridNodeConfiguration extends GridConfiguration {
     converter = BrowserDesiredCapabilityConverter.class,
     splitter = NoOpParameterSplitter.class
   )
-  public List<DesiredCapabilities> capabilities = DefaultDesiredCapabilitiesBuilder.getCapabilities();
+  public List<MutableCapabilities> capabilities = DefaultDesiredCapabilitiesBuilder.getCapabilities();
 
   /**
    * The down polling limit for the node. Defaults to {@code null}.
@@ -453,22 +454,22 @@ public class GridNodeConfiguration extends GridConfiguration {
   }
 
   protected static void staticAddJsonTypeAdapter(GsonBuilder builder) {
-    builder.registerTypeAdapter(new TypeToken<List<DesiredCapabilities>>(){}.getType(),
+    builder.registerTypeAdapter(new TypeToken<List<MutableCapabilities>>(){}.getType(),
                                 new CollectionOfDesiredCapabilitiesSerializer());
-    builder.registerTypeAdapter(new TypeToken<List<DesiredCapabilities>>(){}.getType(),
+    builder.registerTypeAdapter(new TypeToken<List<MutableCapabilities>>(){}.getType(),
                                 new CollectionOfDesiredCapabilitiesDeSerializer());
   }
 
   public static class CollectionOfDesiredCapabilitiesSerializer
-    implements JsonSerializer<List<DesiredCapabilities>> {
+    implements JsonSerializer<List<MutableCapabilities>> {
 
     @Override
-    public JsonElement serialize(List<DesiredCapabilities> desiredCapabilities, Type type,
+    public JsonElement serialize(List<MutableCapabilities> desiredCapabilities, Type type,
                                  JsonSerializationContext jsonSerializationContext) {
 
       JsonArray capabilities = new JsonArray();
       BeanToJsonConverter converter = new BeanToJsonConverter();
-      for (DesiredCapabilities dc : desiredCapabilities) {
+      for (MutableCapabilities dc : desiredCapabilities) {
         capabilities.add(converter.convertObject(dc));
       }
       return capabilities;
@@ -476,15 +477,15 @@ public class GridNodeConfiguration extends GridConfiguration {
   }
 
   public  static class CollectionOfDesiredCapabilitiesDeSerializer
-    implements JsonDeserializer<List<DesiredCapabilities>> {
+    implements JsonDeserializer<List<MutableCapabilities>> {
 
     @Override
-    public List<DesiredCapabilities> deserialize(JsonElement jsonElement, Type type,
+    public List<MutableCapabilities> deserialize(JsonElement jsonElement, Type type,
                                                  JsonDeserializationContext jsonDeserializationContext)
       throws JsonParseException {
 
       if (jsonElement.isJsonArray()) {
-        List<DesiredCapabilities> desiredCapabilities = new ArrayList<>();
+        List<MutableCapabilities> desiredCapabilities = new ArrayList<>();
         JsonToBeanConverter converter = new JsonToBeanConverter();
         for (JsonElement arrayElement : jsonElement.getAsJsonArray()) {
           desiredCapabilities.add(converter.convert(DesiredCapabilities.class, arrayElement));

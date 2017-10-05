@@ -36,6 +36,7 @@ import org.openqa.grid.internal.utils.CapabilityMatcher;
 import org.openqa.grid.internal.utils.DefaultHtmlRenderer;
 import org.openqa.grid.internal.utils.HtmlRenderer;
 import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
+import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.internal.HttpClientFactory;
 
@@ -136,10 +137,10 @@ public class BaseRemoteProxy implements RemoteProxy {
       this.id = remoteHost.toExternalForm();
     }
 
-    List<DesiredCapabilities> capabilities = request.getConfiguration().capabilities;
+    List<MutableCapabilities>capabilities = request.getConfiguration().capabilities;
 
     List<TestSlot> slots = new ArrayList<>();
-    for (DesiredCapabilities capability : capabilities) {
+    for (MutableCapabilities capability : capabilities) {
       Object maxInstance = capability.getCapability(MAX_INSTANCES);
 
       SeleniumProtocol protocol = SeleniumProtocol.fromCapabilitiesMap(capability.asMap());

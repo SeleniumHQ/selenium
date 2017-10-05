@@ -28,9 +28,10 @@ import org.openqa.grid.common.exception.GridConfigurationException;
 import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
 import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration.CollectionOfDesiredCapabilitiesDeSerializer;
 import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration.CollectionOfDesiredCapabilitiesSerializer;
+import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.net.NetworkUtils;
-import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.CapabilityType;
 
 import java.util.List;
 
@@ -121,12 +122,15 @@ public class RegistrationRequest {
 
   public JsonObject toJson() {
     GsonBuilder builder = new GsonBuilder();
-    builder.registerTypeAdapter(new TypeToken<List<DesiredCapabilities>>(){}.getType(),
+    builder.registerTypeAdapter(new TypeToken<List<MutableCapabilities>>(){}.getType(),
                                 new CollectionOfDesiredCapabilitiesSerializer());
 
     // note: it's very important that nulls are serialized for this type.
-    return builder.serializeNulls().excludeFieldsWithoutExposeAnnotation().create()
-      .toJsonTree(this, RegistrationRequest.class).getAsJsonObject();
+    return builder.serializeNulls()
+        .excludeFieldsWithoutExposeAnnotation()
+        .create()
+        .toJsonTree(this, RegistrationRequest.class)
+        .getAsJsonObject();
   }
 
   /**
@@ -137,7 +141,7 @@ public class RegistrationRequest {
    */
   public static RegistrationRequest fromJson(JsonObject json) throws JsonSyntaxException {
     GsonBuilder builder = new GsonBuilder();
-    builder.registerTypeAdapter(new TypeToken<List<DesiredCapabilities>>(){}.getType(),
+    builder.registerTypeAdapter(new TypeToken<List<MutableCapabilities>>(){}.getType(),
                                 new CollectionOfDesiredCapabilitiesDeSerializer());
 
     RegistrationRequest request = builder.excludeFieldsWithoutExposeAnnotation().create()
@@ -154,7 +158,7 @@ public class RegistrationRequest {
    */
   public static RegistrationRequest fromJson(String json) throws JsonSyntaxException {
     GsonBuilder builder = new GsonBuilder();
-    builder.registerTypeAdapter(new TypeToken<List<DesiredCapabilities>>(){}.getType(),
+    builder.registerTypeAdapter(new TypeToken<List<MutableCapabilities>>(){}.getType(),
                                 new CollectionOfDesiredCapabilitiesDeSerializer());
 
     RegistrationRequest request = builder.excludeFieldsWithoutExposeAnnotation().create()
@@ -243,9 +247,9 @@ public class RegistrationRequest {
     }
 
     Platform current = Platform.getCurrent();
-    for (DesiredCapabilities cap : configuration.capabilities) {
+    for (MutableCapabilities cap : configuration.capabilities) {
       if (cap.getPlatform() == null) {
-        cap.setPlatform(current);
+        cap.setCapability(CapabilityType.PLATFORM, current);
       }
       if (cap.getCapability(SELENIUM_PROTOCOL) == null) {
         cap.setCapability(SELENIUM_PROTOCOL, SeleniumProtocol.WebDriver.toString());

@@ -71,8 +71,11 @@ public class TestSlot {
    * @param path the protocol path this test slot uses
    * @param capabilities capabilities of this test slot
    */
-  public TestSlot(RemoteProxy proxy, SeleniumProtocol protocol, String path,
-                  Map<String, Object> capabilities) {
+  public TestSlot(
+      RemoteProxy proxy,
+      SeleniumProtocol protocol,
+      String path,
+      Map<String, Object> capabilities) {
     this.proxy = proxy;
     this.protocol = protocol;
     this.path = path;
@@ -82,7 +85,7 @@ public class TestSlot {
       throw new InvalidParameterException("the proxy needs to have a valid "
           + "capabilityMatcher to support have some test slots attached to it");
     }
-    matcher = proxy.getCapabilityHelper();
+    this.matcher = proxy.getCapabilityHelper();
     this.capabilities = capabilities;
   }
 
