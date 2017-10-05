@@ -1,7 +1,11 @@
-## v.next
+## v3.6.0
 
 ### Bug Fixes
 
+* The Capabilities factory methods should only specify the name of the browser.
+* Protect against the remote end sometimes not returning a list to findElements
+  commands.
+* Properly reset state in `remote.DriverService#kill()`
 * The firefox module will no longer apply the preferences required by the legacy
   FirefoxDriver. These preferences were only required when using the legacy
   driver, support for which was dropped in v3.5.0.
