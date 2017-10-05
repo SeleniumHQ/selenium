@@ -184,6 +184,11 @@ class Driver extends webdriver.WebDriver {
       args.push('--webdriver-logfile=' + opt_logFile);
     }
 
+    var acceptSsl = caps.get(capabilities.Capability.ACCEPT_SSL_CERTS);
+    if (acceptSsl){
+      args.push('--ignore-ssl-errors=true');
+    }
+
     var proxy = caps.get(capabilities.Capability.PROXY);
     if (proxy) {
       switch (proxy.proxyType) {
