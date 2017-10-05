@@ -8,6 +8,8 @@
 
 ### API Changes
 
+* Added `selenium-webdriver/firefox.Options#addArguments()`
+* Deprecated `selenium-webdriver/firefox/binary.Binary`
 * Removed `selenium-webdriver/firefox.Options#useGeckoDriver()`
 * Removed the unused `selenium-webdriver/firefox/profile.decode()`
 * Removed methods from `selenium-webdriver/firefox/profile.Profile` that had

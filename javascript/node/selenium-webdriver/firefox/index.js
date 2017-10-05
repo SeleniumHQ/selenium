@@ -148,11 +148,26 @@ class Options {
     /** @private {(Binary|Channel|string|null)} */
     this.binary_ = null;
 
+    /** @private {!Array<string>} */
+    this.args_ = [];
+
     /** @private {logging.Preferences} */
     this.logPrefs_ = null;
 
     /** @private {?capabilities.ProxyConfig} */
     this.proxy_ = null;
+  }
+
+  /**
+   * Specify additional command line arguments that should be used when starting
+   * the Firefox browser.
+   *
+   * @param {...(string|!Array<string>)} args The arguments to include.
+   * @return {!Options} A self reference.
+   */
+  addArguments(...args) {
+    this.args_ = this.args_.concat(...args);
+    return this;
   }
 
   /**
@@ -230,6 +245,10 @@ class Options {
       caps.set(capabilities.Capability.PROXY, this.proxy_);
     }
 
+    if (this.args_.length) {
+      firefoxOptions['args'] = this.args_.concat();
+    }
+
     if (this.binary_) {
       if (this.binary_ instanceof Binary) {
         let exe = this.binary_.getExe();
@@ -239,6 +258,11 @@ class Options {
 
         let args = this.binary_.getArguments();
         if (args.length) {
+          if (this.args_.length) {
+            throw Error(
+                'You may specify browser arguments with Options.addArguments'
+                    + ' (preferred) or Binary.addArguments, but not both');
+          }
           firefoxOptions['args'] = args;
         }
       } else if (this.binary_ instanceof Channel) {

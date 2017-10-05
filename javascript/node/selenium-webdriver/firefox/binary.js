@@ -203,6 +203,8 @@ function installNoFocusLibs(profileDir) {
  * `PATH`.
  *
  * @final
+ * @deprecated This class will be removed in 4.0. Use the binary management
+ *     functions available on the {@link ./index.Options firefox.Options} class.
  */
 class Binary {
   /**
@@ -242,6 +244,7 @@ class Binary {
    * Add arguments to the command line used to start Firefox.
    * @param {...(string|!Array.<string>)} var_args Either the arguments to add
    *     as varargs, or the arguments as an array.
+   * @deprecated Use {@link ./index.Options#addArguments}.
    */
   addArguments(var_args) {
     for (var i = 0; i < arguments.length; i++) {
