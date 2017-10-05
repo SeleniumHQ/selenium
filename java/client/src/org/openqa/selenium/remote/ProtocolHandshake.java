@@ -236,8 +236,7 @@ public class ProtocolHandshake {
         .filter(entry -> ACCEPTED_W3C_PATTERNS.test(entry.getKey()))
         .filter(entry ->
                     !("platformName".equals(entry.getKey()) &&
-//                    entry.getValue().isJsonPrimitive() &&
-                    "ANY".equalsIgnoreCase(entry.getValue().toString())))
+                    "ANY".equalsIgnoreCase(String.valueOf(entry.getValue()))))
         .distinct()
         .collect(Collector.of(
             TreeMap::new,
