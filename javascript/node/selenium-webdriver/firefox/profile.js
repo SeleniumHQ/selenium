@@ -146,22 +146,6 @@ function installExtensions(extensions, dir) {
 }
 
 
-/**
- * Decodes a base64 encoded profile.
- * @param {string} data The base64 encoded string.
- * @return {!Promise<string>} A promise for the path to the decoded profile
- *     directory.
- */
-function decode(data) {
-  return io.tmpFile().then(function(file) {
-    let buf = new Buffer(data, 'base64');
-    return io.write(file, buf)
-        .then(io.tmpDir)
-        .then(dir => unzip(file, dir));
-  });
-}
-
-
 
 /**
  * Models a Firefox profile directory for use with the FirefoxDriver. The
@@ -390,5 +374,4 @@ class Profile {
 
 
 exports.Profile = Profile;
-exports.decode = decode;
 exports.loadUserPrefs = loadUserPrefs;

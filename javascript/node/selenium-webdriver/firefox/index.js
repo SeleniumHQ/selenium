@@ -124,7 +124,6 @@ const url = require('url');
 
 const {Binary, Channel} = require('./binary'),
     Profile = require('./profile').Profile,
-    decodeProfile = require('./profile').decode,
     http = require('../http'),
     httpUtil = require('../http/util'),
     io = require('../io'),

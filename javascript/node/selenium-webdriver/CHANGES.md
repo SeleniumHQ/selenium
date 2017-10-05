@@ -3,6 +3,7 @@
 ### API Changes
 
 * Removed `selenium-webdriver/firefox.Options#useGeckoDriver()`
+* Removed the unused `selenium-webdriver/firefox/profile.decode()`
 
 ### Changes for W3C WebDriver Spec Compliance
 
