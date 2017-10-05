@@ -204,16 +204,19 @@ function toMap(hash) {
 /**
  * Describes a set of capabilities for a WebDriver session.
  */
-class Capabilities extends Map {
+class Capabilities {
   /**
-   * @param {(Capabilities|Map<string, ?>|Object)=} opt_other Another set of
+   * @param {(Capabilities|Map<string, ?>|Object)=} other Another set of
    *     capabilities to initialize this instance from.
    */
-  constructor(opt_other) {
-    if (opt_other && !(opt_other instanceof Map)) {
-      opt_other = toMap(opt_other);
+  constructor(other = undefined) {
+    if (other instanceof Capabilities) {
+      other = other.map_;
+    } else if (other && !(other instanceof Map)) {
+      other = toMap(other);
     }
-    super(opt_other);
+    /** @private @const {!Map<string, ?>} */
+    this.map_ = new Map(other);
   }
 
   /**
@@ -323,6 +326,35 @@ class Capabilities extends Map {
   }
 
   /**
+   * @param {string} key the parameter key to get.
+   * @return {T} the stored parameter value.
+   * @template T
+   */
+  get(key) {
+    return this.map_.get(key);
+  }
+
+  /**
+   * @param {string} key the key to test.
+   * @return {boolean} whether this capability set has the specified key.
+   */
+  has(key) {
+    return this.map_.has(key);
+  }
+
+  /**
+   * @return {!Iterator<string>} an iterator of the keys set.
+   */
+  keys() {
+    return this.map_.keys();
+  }
+
+  /** @return {number} The number of capabilities set. */
+  get size() {
+    return this.map_.size;
+  }
+
+  /**
    * Merges another set of capabilities into this instance.
    * @param {!(Capabilities|Map<String, ?>|Object<string, ?>)} other The other
    *     set of capabilities to merge.
@@ -333,7 +365,12 @@ class Capabilities extends Map {
       throw new TypeError('no capabilities provided for merge');
     }
 
-    if (!(other instanceof Map)) {
+    let map;
+    if (other instanceof Capabilities) {
+      map = other.map_;
+    } else if (other instanceof Map) {
+      map = other;
+    } else {
       other = toMap(other);
     }
 
@@ -345,17 +382,25 @@ class Capabilities extends Map {
   }
 
   /**
+   * Deletes an entry from this set of capabilities.
+   *
+   * @param {string} key the capability key to delete.
+   */
+  delete(key) {
+    this.map_.delete(key);
+  }
+
+  /**
    * @param {string} key The capability key.
    * @param {*} value The capability value.
    * @return {!Capabilities} A self reference.
    * @throws {TypeError} If the `key` is not a string.
-   * @override
    */
   set(key, value) {
     if (typeof key !== 'string') {
       throw new TypeError('Capability keys must be strings: ' + typeof key);
     }
-    super.set(key, value);
+    this.map_.set(key, value);
     return this;
   }
 
