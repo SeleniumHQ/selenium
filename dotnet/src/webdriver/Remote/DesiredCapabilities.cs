@@ -29,7 +29,7 @@ namespace OpenQA.Selenium.Remote
     public class DesiredCapabilities : ICapabilities, ISpecificationCompliant
     {
         private readonly Dictionary<string, object> capabilities = new Dictionary<string, object>();
-        private bool isSpecCompliant = true;
+        private bool isSpecCompliant;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DesiredCapabilities"/> class

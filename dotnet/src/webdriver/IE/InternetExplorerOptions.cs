@@ -448,7 +448,7 @@ namespace OpenQA.Selenium.IE
         /// <returns>The DesiredCapabilities for IE with these options.</returns>
         public override ICapabilities ToCapabilities()
         {
-            DesiredCapabilities capabilities = new DesiredCapabilities(BrowserName, string.Empty, new Platform(PlatformType.Windows));
+            DesiredCapabilities capabilities = new DesiredCapabilities(BrowserName, string.Empty, new Platform(PlatformType.Windows), true);
 
             if (this.pageLoadStrategy != InternetExplorerPageLoadStrategy.Default)
             {
