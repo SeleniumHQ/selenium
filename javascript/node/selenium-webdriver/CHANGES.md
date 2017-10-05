@@ -16,6 +16,10 @@
   - nativeEventsEnabled
   - getPort
   - setPort
+* Removed `selenium-webdriver/firefox.ServiceBuilder#setFirefoxBinary()`; custom
+  binaries should be configured through the `firefox.Options` class.
+* Removed `selenium-webdriver/firefox.Capability`. These hold overs from the
+  legacy FirefoxDriver are no longer supported.
 
 ### Changes for W3C WebDriver Spec Compliance
 
