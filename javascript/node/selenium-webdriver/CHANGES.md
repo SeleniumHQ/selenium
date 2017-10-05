@@ -10,6 +10,9 @@
 
 * Removed `selenium-webdriver/firefox.Options#useGeckoDriver()`
 * Removed the unused `selenium-webdriver/firefox/profile.decode()`
+* Removed `selenium-webdriver/firefox/profile.setNativeEventsEnabled()` and
+  `selenium-webdriver/firefox/profile.nativeEventsEnabled()`. These methods
+  had no effect.
 
 ### Changes for W3C WebDriver Spec Compliance
 

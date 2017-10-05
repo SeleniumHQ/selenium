@@ -144,9 +144,6 @@ class Profile {
     /** @private {!Object} */
     this.preferences_ = {};
 
-    /** @private {boolean} */
-    this.nativeEventsEnabled_ = true;
-
     /** @private {(string|undefined)} */
     this.template_ = opt_dir;
 
@@ -270,22 +267,6 @@ class Profile {
    */
   assumeUntrustedCertIssuer() {
     return !!this.preferences_['webdriver_assume_untrusted_issuer'];
-  }
-
-  /**
-   * Sets whether to use native events with this profile.
-   * @param {boolean} enabled .
-   */
-  setNativeEventsEnabled(enabled) {
-    this.nativeEventsEnabled_ = enabled;
-  }
-
-  /**
-   * Returns whether native events are enabled in this profile.
-   * @return {boolean} .
-   */
-  nativeEventsEnabled() {
-    return this.nativeEventsEnabled_;
   }
 
   /**
