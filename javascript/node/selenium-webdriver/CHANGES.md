@@ -1,5 +1,9 @@
 ## v.next
 
+### API Changes
+
+* Removed `selenium-webdriver/firefox.Options#useGeckoDriver()`
+
 ### Changes for W3C WebDriver Spec Compliance
 
 * Deprecated `error.ElementNotVisibleError` in favor of the more generic

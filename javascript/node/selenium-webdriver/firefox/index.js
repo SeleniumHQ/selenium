@@ -246,14 +246,6 @@ class Options {
   }
 
   /**
-   * @deprecated This method has been deprecated and will be removed in the next
-   *     release. It is a no-op.
-   */
-  useGeckoDriver(enable) {
-    return this;
-  }
-
-  /**
    * Converts these options to a {@link capabilities.Capabilities} instance.
    *
    * @return {!capabilities.Capabilities} A new capabilities object.
