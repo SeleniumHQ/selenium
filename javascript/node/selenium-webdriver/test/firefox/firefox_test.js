@@ -53,6 +53,17 @@ test.suite(function(env) {
       });
 
       /**
+       * @param {...string} extensions the extensions to install.
+       * @return {!firefox.Profile} a new profile.
+       */
+      function profileWithExtensions(...extensions) {
+        let profile = new firefox.Profile();
+        profile.setPreference('xpinstall.signatures.required', false);
+        extensions.forEach(ext => profile.addExtension(ext));
+        return profile;
+      }
+
+      /**
        * Runs a test that requires Firefox Developer Edition. The test will be
        * skipped if dev cannot be found on the current system.
        */
@@ -99,9 +110,7 @@ test.suite(function(env) {
       });
 
       test.it('can start Firefox with a jetpack extension', function() {
-        let profile = new firefox.Profile();
-        profile.addExtension(JETPACK_EXTENSION);
-
+        let profile = profileWithExtensions(JETPACK_EXTENSION);
         let options = new firefox.Options().setProfile(profile);
 
         return runWithFirefoxDev(options, function*() {
@@ -115,9 +124,7 @@ test.suite(function(env) {
       });
 
       test.it('can start Firefox with a normal extension', function() {
-        let profile = new firefox.Profile();
-        profile.addExtension(NORMAL_EXTENSION);
-
+        let profile = profileWithExtensions(NORMAL_EXTENSION);
         let options = new firefox.Options().setProfile(profile);
 
         return runWithFirefoxDev(options, function*() {
@@ -131,9 +138,7 @@ test.suite(function(env) {
       });
 
       test.it('can start Firefox with a webextension extension', function() {
-        let profile = new firefox.Profile();
-        profile.addExtension(WEBEXTENSION_EXTENSION);
-
+        let profile = profileWithExtensions(WEBEXTENSION_EXTENSION);
         let options = new firefox.Options().setProfile(profile);
 
         return runWithFirefoxDev(options, function*() {
@@ -147,10 +152,8 @@ test.suite(function(env) {
       });
 
       test.it('can start Firefox with multiple extensions', function() {
-        let profile = new firefox.Profile();
-        profile.addExtension(JETPACK_EXTENSION);
-        profile.addExtension(NORMAL_EXTENSION);
-
+        let profile =
+            profileWithExtensions(JETPACK_EXTENSION, NORMAL_EXTENSION);
         let options = new firefox.Options().setProfile(profile);
 
         return runWithFirefoxDev(options, function*() {
@@ -171,8 +174,7 @@ test.suite(function(env) {
       test.it('can be used alongside preset capabilities', function*() {
         let binary = yield firefox.Channel.AURORA.locate();
 
-        let profile = new firefox.Profile();
-        profile.addExtension(JETPACK_EXTENSION);
+        let profile = profileWithExtensions(JETPACK_EXTENSION);
         profile.setPreference('general.useragent.override', 'foo;bar');
 
         driver = yield env.builder()

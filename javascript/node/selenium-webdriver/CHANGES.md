@@ -1,5 +1,11 @@
 ## v.next
 
+### Bug Fixes
+
+* The firefox module will no longer apply the preferences required by the legacy
+  FirefoxDriver. These preferences were only required when using the legacy
+  driver, support for which was dropped in v3.5.0.
+
 ### API Changes
 
 * Removed `selenium-webdriver/firefox.Options#useGeckoDriver()`

@@ -33,28 +33,6 @@ const isDevMode = require('../lib/devmode'),
     extension = require('./extension');
 
 
-/** @const */
-const WEBDRIVER_PREFERENCES_PATH = isDevMode
-    ? path.join(__dirname, '../../../firefox-driver/webdriver.json')
-    : path.join(__dirname, '../lib/firefox/webdriver.json');
-
-/** @type {Object} */
-var defaultPreferences = null;
-
-/**
- * Synchronously loads the default preferences used for the FirefoxDriver.
- * @return {!Object} The default preferences JSON object.
- */
-function getDefaultPreferences() {
-  if (!defaultPreferences) {
-    var contents = /** @type {string} */(
-        fs.readFileSync(WEBDRIVER_PREFERENCES_PATH, 'utf8'));
-    defaultPreferences = /** @type {!Object} */(JSON.parse(contents));
-  }
-  return defaultPreferences;
-}
-
-
 /**
  * Parses a user.js file in a Firefox profile directory.
  * @param {string} f Path to the file to parse.
@@ -96,9 +74,13 @@ function writeUserPrefs(prefs, dir) {
   var userPrefs = path.join(dir, 'user.js');
   return loadUserPrefs(userPrefs).then(function(overrides) {
     Object.assign(prefs, overrides);
-    Object.assign(prefs, getDefaultPreferences()['frozen']);
 
-    var contents = Object.keys(prefs).map(function(key) {
+    let keys = Object.keys(prefs);
+    if (!keys.length) {
+      return dir;
+    }
+
+    let contents = Object.keys(prefs).map(function(key) {
       return 'user_pref(' + JSON.stringify(key) + ', ' +
           JSON.stringify(prefs[key]) + ');';
     }).join('\n');
@@ -206,12 +188,6 @@ class Profile {
    * @throws {Error} If attempting to set a frozen preference.
    */
   setPreference(key, value) {
-    var frozen = getDefaultPreferences()['frozen'];
-    if (frozen.hasOwnProperty(key) && frozen[key] !== value) {
-      throw Error('You may not set ' + key + '=' + JSON.stringify(value)
-          + '; value is frozen for proper WebDriver functionality ('
-          + key + '=' + JSON.stringify(frozen[key]) + ')');
-    }
     this.preferences_[key] = value;
   }
 
@@ -328,10 +304,7 @@ class Profile {
     }
 
     // Freeze preferences for async operations.
-    var prefs = {};
-    Object.assign(prefs, getDefaultPreferences()['mutable']);
-    Object.assign(prefs, getDefaultPreferences()['frozen']);
-    Object.assign(prefs, this.preferences_);
+    let prefs = Object.assign({}, this.preferences_);
 
     // Freeze extensions for async operations.
     var extensions = this.extensions_.concat();

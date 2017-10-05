@@ -547,7 +547,6 @@ namespace :node do
         " --output=build/javascript/node/selenium-webdriver" <<
         " --resource=LICENSE:/LICENSE" <<
         " --resource=NOTICE:/NOTICE" <<
-        " --resource=javascript/firefox-driver/webdriver.json:firefox/webdriver.json" <<
         " --resource=common/src/web/:test/data/" <<
         " --exclude_resource=common/src/web/Bin" <<
         " --exclude_resource=.gitignore" <<
