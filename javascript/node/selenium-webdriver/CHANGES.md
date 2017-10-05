@@ -10,9 +10,12 @@
 
 * Removed `selenium-webdriver/firefox.Options#useGeckoDriver()`
 * Removed the unused `selenium-webdriver/firefox/profile.decode()`
-* Removed `selenium-webdriver/firefox/profile.setNativeEventsEnabled()` and
-  `selenium-webdriver/firefox/profile.nativeEventsEnabled()`. These methods
-  had no effect.
+* Removed methods from `selenium-webdriver/firefox/profile.Profile` that had
+  no effect since support for the legacy FirefoxDriver was dropped in 3.5.0:
+  - setNativeEventsEnabled
+  - nativeEventsEnabled
+  - getPort
+  - setPort
 
 ### Changes for W3C WebDriver Spec Compliance
 

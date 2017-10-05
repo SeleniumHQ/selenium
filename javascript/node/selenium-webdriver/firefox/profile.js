@@ -147,9 +147,6 @@ class Profile {
     /** @private {(string|undefined)} */
     this.template_ = opt_dir;
 
-    /** @private {number} */
-    this.port_ = 0;
-
     /** @private {!Array<string>} */
     this.extensions_ = [];
   }
@@ -217,23 +214,6 @@ class Profile {
    */
   setHost(host) {
     this.preferences_['webdriver_firefox_allowed_hosts'] = host;
-  }
-
-  /**
-   * @return {number} The port this profile is currently configured to use, or
-   *     0 if the port will be selected at random when the profile is written
-   *     to disk.
-   */
-  getPort() {
-    return this.port_;
-  }
-
-  /**
-   * Sets the port to use for the WebDriver extension loaded by this profile.
-   * @param {number} port The desired port, or 0 to use any free port.
-   */
-  setPort(port) {
-    this.port_ = port;
   }
 
   /**
