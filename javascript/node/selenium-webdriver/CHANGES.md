@@ -8,7 +8,10 @@
 
 ### API Changes
 
-* Added `selenium-webdriver/firefox.Options#addArguments()`
+* Added new methods to `selenium-webdriver/firefox.Options`:
+  - addArguments()
+  - headless()
+  - windowSize()
 * Deprecated `selenium-webdriver/firefox/binary.Binary`
 * Removed `selenium-webdriver/firefox.Options#useGeckoDriver()`
 * Removed the unused `selenium-webdriver/firefox/profile.decode()`

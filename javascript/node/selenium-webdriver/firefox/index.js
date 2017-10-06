@@ -171,6 +171,35 @@ class Options {
   }
 
   /**
+   * Configures the geckodriver to start Firefox in headless mode.
+   *
+   * @return {!Options} A self reference.
+   */
+  headless() {
+    return this.addArguments('-headless');
+  }
+
+  /**
+   * Sets the initial window size when running in
+   * {@linkplain #headless headless} mode.
+   *
+   * @param {{width: number, height: number}} size The desired window size.
+   * @return {!Options} A self reference.
+   * @throws {TypeError} if width or height is unspecified, not a number, or
+   *     less than or equal to 0.
+   */
+  windowSize({width, height}) {
+    function checkArg(arg) {
+      if (typeof arg !== 'number' || arg <= 0) {
+        throw TypeError('Arguments must be {width, height} with numbers > 0');
+      }
+    }
+    checkArg(width);
+    checkArg(height);
+    return this.addArguments(`--window-size=${width},${height}`);
+  }
+
+  /**
    * Sets the profile to use. The profile may be specified as a
    * {@link Profile} object or as the path to an existing Firefox profile to use
    * as a template.

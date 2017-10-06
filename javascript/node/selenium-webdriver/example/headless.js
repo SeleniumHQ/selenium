@@ -16,17 +16,23 @@
 // under the License.
 
 /**
- * @fileoverview An example of running Chrome in headless mode.
+ * @fileoverview An example of running Chrome or Firefox in headless mode.
  *
- * Before running this script, ensure you have Chrome 59+ installed and that
+ * To run with Chrome, ensure you have Chrome 59+ installed and that
  * chromedriver 2.30+ is present on your system PATH:
  * <https://sites.google.com/a/chromium.org/chromedriver/downloads>
  *
- * Usage:
- *   node selenium-webdriver/example/chrome_headless.js
+ *     SELENIUM_BROWSER=chrome node selenium-webdriver/example/headless.js
+ *
+ * To run with Firefox, ensure you have Firefox 57+ installed and that
+ * geckodriver 0.19.0+ is present on your system PATH:
+ * <https://github.com/mozilla/geckodriver/releases>
+ *
+ *     SELENIUM_BROWSER=firefox node selenium-webdriver/example/headless.js
  */
 
 const chrome = require('../chrome');
+const firefox = require('../firefox');
 const {Builder, By, Key, until} = require('..');
 
 const width = 640;
@@ -36,6 +42,8 @@ let driver = new Builder()
     .forBrowser('chrome')
     .setChromeOptions(
         new chrome.Options().headless().windowSize({width, height}))
+    .setFirefoxOptions(
+        new firefox.Options().headless().windowSize({width, height}))
     .build();
 
 driver.get('http://www.google.com/ncr')
