@@ -230,6 +230,11 @@ public class ChromeOptions extends MutableCapabilities {
     return this;
   }
 
+  /**
+   * Returns ChromeOptions with the capability ACCEPT_INSECURE_CERTS set.
+   * @param acceptInsecureCerts
+   * @return ChromeOptions
+   */
   public ChromeOptions setAcceptInsecureCerts(boolean acceptInsecureCerts) {
     setCapability(ACCEPT_INSECURE_CERTS, acceptInsecureCerts);
     return this;
