@@ -22,6 +22,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.After;
 import org.junit.Test;
+import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
 
@@ -59,5 +60,15 @@ public class ChromeOptionsFunctionalTest extends JUnit4TestBase {
     options1.asMap();
     assertEquals("empty chrome options after one is .toJson() should be equal",
                options1, options2);
+  }
+
+  @NeedsLocalEnvironment
+  @Test
+  public void canSetAcceptInsecureCerts() {
+    ChromeOptions options = new ChromeOptions();
+    options.setAcceptInsecureCerts(true);
+    driver = new ChromeDriver(options);
+
+    assertEquals(driver.getCapabilities().getCapability(CapabilityType.ACCEPT_SSL_CERTS), true);
   }
 }
