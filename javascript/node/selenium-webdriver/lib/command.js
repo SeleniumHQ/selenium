@@ -124,6 +124,8 @@ const Name = {
   GET_WINDOW_SIZE: 'getWindowSize',
   SET_WINDOW_SIZE: 'setWindowSize',
   MAXIMIZE_WINDOW: 'maximizeWindow',
+  MINIMIZE_WINDOW: 'minimizeWindow',
+  FULLSCREEN_WINDOW: 'fullscreenWindow',
 
   SWITCH_TO_WINDOW: 'switchToWindow',
   SWITCH_TO_FRAME: 'switchToFrame',

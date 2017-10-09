@@ -258,6 +258,8 @@ const W3C_COMMAND_MAP = new Map([
   [cmd.Name.EXECUTE_SCRIPT, post('/session/:sessionId/execute/sync')],
   [cmd.Name.EXECUTE_ASYNC_SCRIPT, post('/session/:sessionId/execute/async')],
   [cmd.Name.MAXIMIZE_WINDOW, post('/session/:sessionId/window/maximize')],
+  [cmd.Name.MINIMIZE_WINDOW, post('/session/:sessionId/window/minimize')],
+  [cmd.Name.FULLSCREEN_WINDOW, post('/session/:sessionId/window/fullscreen')],
   [cmd.Name.GET_WINDOW_POSITION, get('/session/:sessionId/window/position')],
   [cmd.Name.SET_WINDOW_POSITION, post('/session/:sessionId/window/position')],
   [cmd.Name.GET_WINDOW_SIZE, get('/session/:sessionId/window/size')],

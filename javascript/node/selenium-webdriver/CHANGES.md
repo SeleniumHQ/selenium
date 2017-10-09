@@ -12,6 +12,8 @@ mode.
 
 ### API Changes
 
+* Added `webdriver.manage().window().minimize()`
+* Added `webdriver.manage().window().fullscreen()`
 * The core WebDriver API no longer uses promise manager
   - Removed `index.Builder#setControlFlow()`
   - The following thenable types no longer have a `cancel()` method:
@@ -34,10 +36,11 @@ mode.
 
 ### Changes for W3C WebDriver Spec Compliance
 
-Revamped the actions API to conform with the WebDriver Spec:
-<https://www.w3.org/TR/webdriver/#actions>. For details, refer to the JS doc
-on the `lib/webdriver.ActionSequence` class. For simplicity, support for the
-legacy actions API has been removed.
+*  Revamped the actions API to conform with the WebDriver Spec:
+   <https://www.w3.org/TR/webdriver/#actions>. For details, refer to the JS doc
+   on the `lib/webdriver.ActionSequence` class. For simplicity, support for the
+   legacy actions API has been removed.
+*  Added supported for minimizing windows and toggling fullscreen.
 
 
 ## v3.6.0

@@ -1592,14 +1592,45 @@ class Window {
   }
 
   /**
-   * Maximizes the current window.
-   * @return {!Promise<void>} A promise that will be resolved
-   *     when the command has completed.
+   * Maximizes the current window. The exact behavior of this command is
+   * specific to individual window managers, but typically involves increasing
+   * the window to the maximum available size without going full-screen.
+   *
+   * @return {!Promise<void>} A promise that will be resolved when the command
+   *     has completed.
    */
   maximize() {
     return this.driver_.execute(
         new command.Command(command.Name.MAXIMIZE_WINDOW).
             setParameter('windowHandle', 'current'));
+  }
+
+  /**
+   * Minimizes the current window. The exact behavior of this command is
+   * specific to individual window managers, but typicallly involves hiding
+   * the window in the system tray.
+   *
+   * @return {!Promise<void>} A promise that will be resolved when the command
+   *     has completed.
+   */
+  minimize() {
+    return this.driver_.execute(
+        new command.Command(command.Name.MINIMIZE_WINDOW));
+  }
+
+  /**
+   * Invokes the "full screen" operation on the current window. The exact
+   * behavior of this command is specific to individual window managers, but
+   * this will typically increase the window size to the size of the physical
+   * display and hide the browser chrome.
+   *
+   * @return {!Promise<void>} A promise that will be resolved when the command
+   *     has completed.
+   * @see <https://fullscreen.spec.whatwg.org/#fullscreen-an-element>
+   */
+  fullscreen() {
+    return this.driver_.execute(
+        new command.Command(command.Name.FULLSCREEN_WINDOW));
   }
 }
 
