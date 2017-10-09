@@ -122,7 +122,7 @@
 
 const url = require('url');
 
-const {Binary, Channel} = require('./binary'),
+const {Channel} = require('./binary'),
     Profile = require('./profile').Profile,
     http = require('../http'),
     httpUtil = require('../http/util'),
@@ -144,7 +144,7 @@ class Options {
     /** @private {Profile} */
     this.profile_ = null;
 
-    /** @private {(Binary|Channel|string|null)} */
+    /** @private {(Channel|string|null)} */
     this.binary_ = null;
 
     /** @private {!Array<string>} */
@@ -216,22 +216,18 @@ class Options {
 
   /**
    * Sets the binary to use. The binary may be specified as the path to a
-   * Firefox executable, a specific {@link Channel}, or as a {@link Binary}
-   * object.
+   * Firefox executable or a desired release {@link Channel}.
    *
-   * @param {(string|!Binary|!Channel)} binary The binary to use.
+   * @param {(string|!Channel)} binary The binary to use.
    * @return {!Options} A self reference.
    * @throws {TypeError} If `binary` is an invalid type.
    */
   setBinary(binary) {
-    if (binary instanceof Binary
-        || binary instanceof Channel
-        || typeof binary === 'string') {
+    if (binary instanceof Channel || typeof binary === 'string') {
       this.binary_ = binary;
       return this;
     }
-    throw TypeError(
-        'binary must be a string path, Channel, or Binary object');
+    throw TypeError('binary must be a string path or Channel object');
   }
 
   /**
@@ -278,22 +274,7 @@ class Options {
     }
 
     if (this.binary_) {
-      if (this.binary_ instanceof Binary) {
-        let exe = this.binary_.getExe();
-        if (exe) {
-          firefoxOptions['binary'] = exe;
-        }
-
-        let args = this.binary_.getArguments();
-        if (args.length) {
-          if (this.args_.length) {
-            throw Error(
-                'You may specify browser arguments with Options.addArguments'
-                    + ' (preferred) or Binary.addArguments, but not both');
-          }
-          firefoxOptions['args'] = args;
-        }
-      } else if (this.binary_ instanceof Channel) {
+      if (this.binary_ instanceof Channel) {
         firefoxOptions['binary'] = this.binary_.locate();
 
       } else if (typeof this.binary_ === 'string') {
@@ -560,7 +541,6 @@ class Driver extends webdriver.WebDriver {
 // PUBLIC API
 
 
-exports.Binary = Binary;
 exports.Channel = Channel;
 exports.Context = Context;
 exports.Driver = Driver;

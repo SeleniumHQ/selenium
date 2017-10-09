@@ -181,29 +181,6 @@ suite(function(env) {
       }
     });
 
-    describe('binary management', function() {
-      var driver1, driver2;
-
-      ignore(env.isRemote).
-      it('can start multiple sessions with single binary instance', async function() {
-        var options = new firefox.Options().setBinary(new firefox.Binary);
-        env.builder().setFirefoxOptions(options);
-        driver1 = await env.builder().build();
-        driver2 = await env.builder().build();
-        // Ok if this doesn't fail.
-      });
-
-      afterEach(async function() {
-        if (driver1) {
-          await driver1.quit();
-        }
-
-        if (driver2) {
-          await driver2.quit();
-        }
-      });
-    });
-
     describe('context switching', function() {
       var driver;
 
