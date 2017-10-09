@@ -20,11 +20,21 @@ mode.
     - `lib/webdriver.WebElementPromise`
 * The `testing/index` module no longer wraps the promise manager
 * Removed `remote/index.DriverService.prototype.stop()` (use `#kill()` instead)
+* Removed the `lib/actions` module
 * Removed the `phantomjs` module
 * Removed the 'opera' module
 * Removed the `WebDriver.attachToSession()` factory method. Users can just use
   use the `WebDriver` constructor directly instead.
+* Removed the `WebDriver.prototype.touchActions()` method. Action sequences
+  are now defined from a single origin: `WebDriver.prototype.actions()`.
 * Renamed `WebDriver#schedule()` to `WebDriver#execute()`
+
+### Changes for W3C WebDriver Spec Compliance
+
+Revamped the actions API to conform with the WebDriver Spec:
+<https://www.w3.org/TR/webdriver/#actions>. For details, refer to the JS doc
+on the `lib/webdriver.ActionSequence` class. For simplicity, support for the
+legacy actions API has been removed.
 
 
 ## v3.6.0

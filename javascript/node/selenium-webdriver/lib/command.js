@@ -210,7 +210,10 @@ const Name = {
   GET_SESSION_LOGS: 'getSessionLogs',
 
   // Non-standard commands used by the standalone Selenium server.
-  UPLOAD_FILE: 'uploadFile'
+  UPLOAD_FILE: 'uploadFile',
+  
+  ACTIONS: 'actions',
+  CLEAR_ACTIONS: 'clearActions',
 };
 
 

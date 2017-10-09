@@ -1561,59 +1561,87 @@ describe('WebDriver', function() {
   });
 
   describe('actions()', function() {
-    it('failsIfInitialDriverCreationFailed', function() {
-      let session = Promise.reject(new StubError('no session for you'));
-      let driver = new FakeExecutor().createDriver(session);
-      driver.getSession().catch(function() {});
-      return driver.
-          actions().
-          mouseDown().
-          mouseUp().
-          perform().
-          catch(assertIsStubError);
-    });
-
-    describe('mouseMove', function() {
-      it('noElement', function() {
+    describe('mouse().pointerMove()', function() {
+      it('no origin', function() {
         let executor = new FakeExecutor()
-            .expect(CName.MOVE_TO, {'xoffset': 0, 'yoffset': 125})
+            .expect(CName.ACTIONS, {
+              actions:  [{
+                type: 'pointer',
+                id: 'default mouse',
+                parameters: {
+                  pointerType: 'mouse'
+                },
+                actions: [{
+                  duration: 100,
+                  origin: 'viewport',
+                  type: 'pointerMove',
+                  x: 0,
+                  y: 125
+                }]
+              }]
+            })
             .andReturnSuccess()
             .end();
 
-        return executor.createDriver().
-            actions().
-            mouseMove({x: 0, y: 125}).
-            perform();
+        let driver = executor.createDriver();
+        let actions = driver.actions();
+        actions.mouse().pointerMove({x: 0, y: 125});
+        return actions.perform();
       });
 
-      it('element', function() {
+      it('origin = element', function() {
         let executor = new FakeExecutor()
             .expect(CName.FIND_ELEMENT,
                     {using: 'css selector', value: '*[id="foo"]'})
                 .andReturnSuccess(WebElement.buildId('abc123'))
-            .expect(CName.MOVE_TO,
-                    {'element': 'abc123', 'xoffset': 0, 'yoffset': 125})
-                .andReturnSuccess()
+            .expect(CName.ACTIONS, {
+              actions:  [{
+                type: 'pointer',
+                id: 'default mouse',
+                parameters: {
+                  pointerType: 'mouse'
+                },
+                actions: [{
+                  duration: 100,
+                  origin: WebElement.buildId('abc123'),
+                  type: 'pointerMove',
+                  x: 0,
+                  y: 125
+                }]
+              }]
+            })
             .end();
 
-        var driver = executor.createDriver();
-        var element = driver.findElement(By.id('foo'));
-        return driver.actions()
-            .mouseMove(element, {x: 0, y: 125})
-            .perform();
+        let driver = executor.createDriver();
+        let element = driver.findElement(By.id('foo'));
+        let actions = driver.actions();
+        actions.mouse().pointerMove({x: 0, y: 125, origin: element});
+        return actions.perform();
       });
     });
 
-    it('supportsMouseDown', function() {
-      let executor = new FakeExecutor()
-          .expect(CName.MOUSE_DOWN, {'button': Button.LEFT})
-              .andReturnSuccess()
-          .end();
+    describe('keyboard()', function() {
+      it('sendkeys()', function() {
+        let executor = new FakeExecutor()
+            .expect(CName.ACTIONS, {
+              actions:  [{
+                type: 'key',
+                id: 'default keyboard',
+                actions: [
+                  {type: 'keyDown', value: 'a'}, {type: 'keyUp', value: 'a'},
+                  {type: 'keyDown', value: 'b'}, {type: 'keyUp', value: 'b'},
+                  {type: 'keyDown', value: 'c'}, {type: 'keyUp', value: 'c'},
+                  {type: 'keyDown', value: 'd'}, {type: 'keyUp', value: 'd'},
+                ]
+              }]
+            })
+            .end();
 
-      return executor.createDriver().
-          actions().
-          mouseDown().
-          perform();
+        let driver = executor.createDriver();
+        let actions = driver.actions();
+        actions.keyboard().sendKeys('abc', 'd');
+        return actions.perform();
+      });
     });
 
     it('testActionSequence', function() {
@@ -1624,56 +1652,62 @@ describe('WebDriver', function() {
           .expect(CName.FIND_ELEMENT,
                   {using: 'css selector', value: '*[id="b"]'})
               .andReturnSuccess(WebElement.buildId('id2'))
-          .expect(CName.SEND_KEYS_TO_ACTIVE_ELEMENT,
-              {'value': [Key.SHIFT]})
-              .andReturnSuccess()
-          .expect(CName.MOVE_TO, {'element': 'id1'})
-              .andReturnSuccess()
-          .expect(CName.CLICK, {'button': Button.LEFT})
-              .andReturnSuccess()
-          .expect(CName.MOVE_TO, {'element': 'id2'})
-              .andReturnSuccess()
-          .expect(CName.CLICK, {'button': Button.LEFT})
-              .andReturnSuccess()
+          .expect(CName.ACTIONS, {
+            actions:  [{
+              type: 'key',
+              id: 'default keyboard',
+              actions: [
+                {type: 'keyDown', value: Key.SHIFT},
+                {type: 'pause', duration: 0},
+                {type: 'pause', duration: 0},
+                {type: 'pause', duration: 0},
+                {type: 'pause', duration: 0},
+                {type: 'pause', duration: 0},
+                {type: 'pause', duration: 0},
+                {type: 'keyUp', value: Key.SHIFT},
+              ]
+            },
+            {
+              type: 'pointer',
+              id: 'default mouse',
+              parameters: {
+                pointerType: 'mouse'
+              },
+              actions: [
+                {type: 'pause', duration: 0},
+                {
+                  duration: 100,
+                  origin: WebElement.buildId('id1'),
+                  type: 'pointerMove',
+                  x: 0,
+                  y: 0
+                },
+                {type: 'pointerDown', button: Button.LEFT},
+                {type: 'pointerUp', button: Button.LEFT},
+                {
+                  duration: 100,
+                  origin: WebElement.buildId('id2'),
+                  type: 'pointerMove',
+                  x: 0,
+                  y: 0
+                },
+                {type: 'pointerDown', button: Button.LEFT},
+                {type: 'pointerUp', button: Button.LEFT}
+              ]
+            }]
+          })
           .end();
 
-      var driver = executor.createDriver();
-      var element1 = driver.findElement(By.id('a'));
-      var element2 = driver.findElement(By.id('b'));
+      let driver = executor.createDriver();
+      let element1 = driver.findElement(By.id('a'));
+      let element2 = driver.findElement(By.id('b'));
 
-      return driver.actions()
-          .keyDown(Key.SHIFT)
-          .click(element1)
-          .click(element2)
-          .perform();
-    });
-  });
-
-  describe('touchActions()', function() {
-    it('failsIfInitialDriverCreationFailed', function() {
-      let session = Promise.reject(new StubError);
-      let driver = new FakeExecutor().createDriver(session);
-      driver.getSession().catch(function() {});
-      return driver.
-          touchActions().
-          scroll({x: 3, y: 4}).
-          perform().
-          catch(assertIsStubError);
-    });
-
-    it('testTouchActionSequence', function() {
-      let executor = new FakeExecutor()
-          .expect(CName.TOUCH_DOWN, {x: 1, y: 2}).andReturnSuccess()
-          .expect(CName.TOUCH_MOVE, {x: 3, y: 4}).andReturnSuccess()
-          .expect(CName.TOUCH_UP, {x: 5, y: 6}).andReturnSuccess()
-          .end();
-
-      var driver = executor.createDriver();
-      return driver.touchActions()
-          .tapAndHold({x: 1, y: 2})
-          .move({x: 3, y: 4})
-          .release({x: 5, y: 6})
-          .perform();
+      let actions = driver.actions();
+      actions.keyboard().keyDown(Key.SHIFT);
+      actions.mouse().pause().click(element1).click(element2);
+      actions.synchronize();
+      actions.keyboard().keyUp(Key.SHIFT);
+      return actions.perform();
     });
   });
 

@@ -17,22 +17,22 @@
 
 'use strict';
 
-var Browser = require('..').Browser,
-    By = require('..').By,
-    until = require('..').until,
-    test = require('../lib/test'),
-    fileServer = require('../lib/test/fileserver');
+const assert = require('assert');
+
+const {Browser, By, until} = require('..');
+const test = require('../lib/test');
+const fileServer = require('../lib/test/fileserver');
 
 
 test.suite(function(env) {
-  var driver;
-
-  beforeEach(async function() { driver = await env.builder().build(); });
-  afterEach(function() { return driver.quit(); });
-
-  test.ignore(
-      env.browsers(Browser.FIREFOX, Browser.PHANTOM_JS, Browser.SAFARI)).
+  test.ignore(env.browsers(Browser.CHROME, Browser.SAFARI)).
   describe('WebDriver.actions()', function() {
+    let driver;
+
+    before(async function() { driver = await env.builder().build(); });
+    afterEach(function() { return driver.actions().clear(); });
+    after(function() { return driver.quit(); });
+
     it('can move to and click element in an iframe', async function() {
       await driver.get(fileServer.whereIs('click_tests/click_in_iframe.html'));
 
@@ -40,13 +40,27 @@ test.suite(function(env) {
           .then(frame => driver.switchTo().frame(frame));
 
       let link = await driver.findElement(By.id('link'));
-      await driver.actions()
-          .mouseMove(link)
-          .click()
-          .perform();
+
+      let actions = driver.actions();
+      actions.mouse().click(link);
+      await actions.perform();
 
       return driver.wait(until.titleIs('Submitted Successfully!'), 5000);
     });
 
+    it('can interact with simple form elements', async function() {
+      await driver.get(test.Pages.formPage);
+
+      let el = await driver.findElement(By.id('email'));
+      assert.equal(await el.getAttribute('value'), '');
+
+      let actions = driver.actions();
+      actions.mouse().click(el);
+      actions.synchronize();
+      actions.keyboard().sendKeys('foobar');
+      await actions.perform();
+
+      assert.equal(await el.getAttribute('value'), 'foobar');
+    });
   });
 });

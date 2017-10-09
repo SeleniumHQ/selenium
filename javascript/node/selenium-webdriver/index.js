@@ -27,7 +27,6 @@ const edge = require('./edge');
 const firefox = require('./firefox');
 const _http = require('./http');
 const ie = require('./ie');
-const actions = require('./lib/actions');
 const by = require('./lib/by');
 const capabilities = require('./lib/capabilities');
 const command = require('./lib/command');
@@ -612,7 +611,7 @@ class Builder {
 // PUBLIC API
 
 
-exports.ActionSequence = actions.ActionSequence;
+exports.ActionSequence = webdriver.ActionSequence;
 exports.Browser = capabilities.Browser;
 exports.Builder = Builder;
 exports.Button = input.Button;
@@ -625,7 +624,6 @@ exports.FileDetector = input.FileDetector;
 exports.Key = input.Key;
 exports.Session = session.Session;
 exports.ThenableWebDriver = ThenableWebDriver;
-exports.TouchSequence = actions.TouchSequence;
 exports.WebDriver = webdriver.WebDriver;
 exports.WebElement = webdriver.WebElement;
 exports.WebElementCondition = webdriver.WebElementCondition;

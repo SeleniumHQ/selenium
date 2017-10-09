@@ -256,6 +256,8 @@ const COMMAND_MAP = new Map([
 
 /** @const {!Map<string, (CommandSpec|CommandTransformer)>} */
 const W3C_COMMAND_MAP = new Map([
+  [cmd.Name.ACTIONS, post('/session/:sessionId/actions')],
+  [cmd.Name.CLEAR_ACTIONS, del('/session/:sessionId/actions')],
   [cmd.Name.GET_ACTIVE_ELEMENT, get('/session/:sessionId/element/active')],
   [cmd.Name.GET_ALERT_TEXT, get('/session/:sessionId/alert/text')],
   [cmd.Name.SET_ALERT_TEXT, post('/session/:sessionId/alert/text')],

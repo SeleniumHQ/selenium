@@ -21,7 +21,6 @@
 
 'use strict';
 
-const actions = require('./actions');
 const by = require('./by');
 const Capabilities = require('./capabilities').Capabilities;
 const command = require('./command');
@@ -286,32 +285,18 @@ class IWebDriver {
 
   /**
    * Creates a new action sequence using this driver. The sequence will not be
-   * scheduled for execution until {@link actions.ActionSequence#perform} is
-   * called. Example:
+   * submitted for execution until {@link ActionSequence#perform} is called.
+   * Example:
    *
-   *     driver.actions().
-   *         mouseDown(element1).
-   *         mouseMove(element2).
-   *         mouseUp().
-   *         perform();
+   *     driver.actions()
+   *         .mouseDown(element1)
+   *         .mouseMove({x: 15, y: 15})
+   *         .mouseUp()
+   *         .perform();
    *
-   * @return {!actions.ActionSequence} A new action sequence for this instance.
+   * @return {!ActionSequence} A new action sequence for this instance.
    */
   actions() {}
-
-  /**
-   * Creates a new touch sequence using this driver. The sequence will not be
-   * scheduled for execution until {@link actions.TouchSequence#perform} is
-   * called. Example:
-   *
-   *     driver.touchActions().
-   *         tap(element1).
-   *         doubleTap(element2).
-   *         perform();
-   *
-   * @return {!actions.TouchSequence} A new touch sequence for this instance.
-   */
-  touchActions() {}
 
   /**
    * Executes a snippet of JavaScript in the context of the currently selected
@@ -782,12 +767,7 @@ class WebDriver {
 
   /** @override */
   actions() {
-    return new actions.ActionSequence(this);
-  }
-
-  /** @override */
-  touchActions() {
-    return new actions.TouchSequence(this);
+    return new ActionSequence(this);
   }
 
   /** @override */
@@ -2515,10 +2495,159 @@ class AlertPromise extends Alert {
 }
 
 
+/**
+ * User facing API for generating complex user gestures. Each action sequence
+ * will not be executed until {@link #perform()} is called.
+ *
+ * Action sequences are divided into a series of "ticks". At each tick, the
+ * WebDriver remote end will perform a single action for each device in the
+ * action sequence. At tick 0, the driver will perform the first action
+ * defined for each device, at tick 1 the second action for each device, and
+ * so on until all actions have been executed. If an individual device does
+ * not have an action defined at a particular tick, it will automatically
+ * pause.
+ *
+ * For example, suppose you want to emulate a user pressing the SHIFT key,
+ * clicking on two elements, then releasing the SHIFT key. This sequence
+ * involves 2 devices (mouse and keyboard) with actions defined over 7
+ * ticks:
+ *
+ * 1.  press the SHIFT key while moving the mouse over element 1
+ * 2.  pressing the left mouse button
+ * 3.  releasing the left mouse button
+ * 4.  moving the mouse over element 2
+ * 5.  pressing the left mouse button
+ * 6.  releasing the left mouse button
+ * 7.  releasing the SHIFT key
+ *
+ * Note there are no actions (or change in state) for the keyboard for
+ * ticks 2 - 6.
+ *
+ * This input sequence can be producing using the ActionSequence API with
+ * the code below. Actions must be defined individually for each device and
+ * explicitly kept in sync by the user. The list of actions for the mouse is
+ * far longer than the keyboard. Rather than keeping track of the number of
+ * steps for the keyboard to pause, notice there is a single call to
+ * {@link #synchronize()}. This instructs the ActionSequence to ensure the
+ * input sequence for all devices are the same length - inserting explicit
+ * {@linkplain input.Sequence#pause pauses} as necessary.
+ *
+ *     let actions = driver.actions();
+ *     actions.keyboard().keyDown(Key.SHIFT);
+ *     actions.mouse().click(element1).click(element2);
+ *
+ *     // Insert pauses for the keyboard to cover the span of all mouse actions
+ *     actions.synchronize();
+ *
+ *     actions.keyboard().keyUp(Key.SHIFT);
+ *     actions.perform();
+ *
+ * @final
+ * @see <https://www.w3.org/TR/webdriver/#actions>
+ */
+class ActionSequence {
+  /**
+   * @param {!IWebDriver} driver The driver instance to execute the configured
+   *     actions with.
+   */
+  constructor(driver) {
+    /** @private @const */
+    this.driver_ = driver;
+
+    /** @private @const */
+    this.keyboard_ =
+        new input.KeySequence(new input.Keyboard('default keyboard'));
+
+    /** @private @const */
+    this.mouse_ =
+        new input.PointerSequence(
+            new input.Pointer('default mouse', input.Pointer.Type.MOUSE));
+
+    /** @private @const */
+    this.touch_ =
+        new input.PointerSequence(
+            new input.Pointer('default touch', input.Pointer.Type.TOUCH));
+  }
+  
+  /**
+   * Ensures the action sequence for every device referenced in this action
+   * sequence is the same length. For devices whose sequence is too short,
+   * this will insert {@linkplain input.Sequence#pause pauses} so that every
+   * device has an explicit action defined at each tick.
+   *
+   * @return {!ActionSequence} a self reference.
+   */
+  synchronize() {
+    let max = this.keyboard_.length();
+    max = Math.max(max, this.mouse_.length());
+    max = Math.max(max, this.touch_.length());
+    
+    function extend(/** !input.Sequence */ sequence) {
+      while (sequence.length() < max) {
+        sequence.pause();
+      }
+    }
+
+    extend(this.keyboard_);
+    extend(this.mouse_);
+    extend(this.touch_);
+
+    return this;
+  }
+
+  /** @return {!input.KeySequence} the keyboard action sequence builder. */
+  keyboard() {
+    return this.keyboard_;
+  }
+
+  /** @return {!input.PointerSequence} the mouse action sequence builder. */
+  mouse() {
+    return this.mouse_;
+  }
+
+  /** @return {!input.PointerSequence} the touch action sequence builder. */
+  touch() {
+    return this.touch_;
+  }
+
+  /**
+   * Releases all keys and pointer buttons and clears internal state.
+   *
+   * @return {!Promise<void>} a promise that will resolve when finished
+   *     clearing all action state.
+   */
+  clear() {
+    this.keyboard_.clear();
+    this.mouse_.clear();
+    this.touch_.clear();
+    return this.driver_.execute(
+        new command.Command(command.Name.CLEAR_ACTIONS));
+  }
+
+  /**
+   * Performs the configured action sequence.
+   *
+   * @return {!Promise<void>} a promise that will resolve when all actions have
+   *     been completed.  
+   */
+  perform() {
+    let actions = [
+        this.keyboard_,
+        this.mouse_,
+        this.touch_
+    ].filter(sequence => !sequence.isIdle());
+    return this.driver_.execute(
+        new command.Command(command.Name.ACTIONS)
+            .setParameter('actions', actions));
+  }
+}
+
+
 // PUBLIC API
 
 
 module.exports = {
+  ActionSequence,
   Alert: Alert,
   AlertPromise: AlertPromise,
   Condition: Condition,
