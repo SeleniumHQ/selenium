@@ -1875,8 +1875,7 @@ describe('WebDriver', function() {
 
         it('with sub-objects', function() {
           var expected = {sessionId: {value: 'foo'}};
-          return runSerializeTest(
-              {sessionId: {value: 'foo'}}, expected);
+          return runSerializeTest({sessionId: {value: 'foo'}}, expected);
         });
 
         it('with values that have toJSON', function() {
@@ -1907,6 +1906,24 @@ describe('WebDriver', function() {
           };
 
           return runSerializeTest(parameters, expected);
+        });
+
+        it('nested promises', function() {
+          const input = {
+            'struct': Promise.resolve({
+              'element': new WebElementPromise(
+                  FAKE_DRIVER,
+                  Promise.resolve(new WebElement(FAKE_DRIVER, 'fefifofum')))
+            })
+          };
+
+          const want = {
+            'struct': {
+              'element': WebElement.buildId('fefifofum')
+            }
+          };
+
+          return runSerializeTest(input, want);
         });
       });
     });

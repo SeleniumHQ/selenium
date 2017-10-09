@@ -22,7 +22,7 @@
 'use strict';
 
 const by = require('./by');
-const Capabilities = require('./capabilities').Capabilities;
+const {Capabilities} = require('./capabilities');
 const command = require('./command');
 const error = require('./error');
 const input = require('./input');
@@ -120,12 +120,8 @@ function executeCommand(executor, command) {
  * @return {!Promise<?>} A promise that will resolve to the input value's JSON
  *     representation.
  */
-function toWireValue(obj) {
-  return Promise.resolve(obj).then(convertValue);
-}
-
-
-function convertValue(value) {
+async function toWireValue(obj) {
+  let value = await Promise.resolve(obj);
   if (value === void 0 || value === null) {
     return value;
   }
@@ -153,53 +149,33 @@ function convertValue(value) {
 }
 
 
-function convertKeys(obj) {
+async function convertKeys(obj) {
   const isArray = Array.isArray(obj);
   const numKeys = isArray ? obj.length : Object.keys(obj).length;
   const ret = isArray ? new Array(numKeys) : {};
   if (!numKeys) {
-    return Promise.resolve(ret);
+    return ret;
   }
 
   let numResolved = 0;
 
-  function forEachKey(obj, fn) {
+  async function forEachKey(obj, fn) {
     if (Array.isArray(obj)) {
       for (let i = 0, n = obj.length; i < n; i++) {
-        fn(obj[i], i);
+        await fn(obj[i], i);
       }
     } else {
       for (let key in obj) {
-        fn(obj[key], key);
+        await fn(obj[key], key);
       }
     }
   }
 
-  return new Promise(function(done, reject) {
-    forEachKey(obj, function(value, key) {
-      if (promise.isPromise(value)) {
-        value.then(toWireValue).then(setValue, reject);
-      } else {
-        value = convertValue(value);
-        if (promise.isPromise(value)) {
-          value.then(toWireValue).then(setValue, reject);
-        } else {
-          setValue(value);
-        }
-      }
-
-      function setValue(value) {
-        ret[key] = value;
-        maybeFulfill();
-      }
-    });
-
-    function maybeFulfill() {
-      if (++numResolved === numKeys) {
-        done(ret);
-      }
-    }
+  await forEachKey(obj, async function(value, key) {
+    ret[key] = await toWireValue(value);
   });
+
+  return ret;
 }
 
 
@@ -322,12 +298,12 @@ class IWebDriver {
    *     the rules above
    *
    * @param {!(string|Function)} script The script to execute.
-   * @param {...*} var_args The arguments to pass to the script.
+   * @param {...*} args The arguments to pass to the script.
    * @return {!IThenable<T>} A promise that will resolve to the
    *    scripts return value.
    * @template T
    */
-  executeScript(script, var_args) {}
+  executeScript(script, ...args) {}
 
   /**
    * Executes a snippet of asynchronous JavaScript in the context of the
@@ -399,24 +375,24 @@ class IWebDriver {
    *     });
    *
    * @param {!(string|Function)} script The script to execute.
-   * @param {...*} var_args The arguments to pass to the script.
+   * @param {...*} args The arguments to pass to the script.
    * @return {!IThenable<T>} A promise that will resolve to the scripts return
    *     value.
    * @template T
    */
-  executeAsyncScript(script, var_args) {}
+  executeAsyncScript(script, ...args) {}
 
   /**
    * Executes a custom function.
    *
    * @param {function(...): (T|IThenable<T>)} fn The function to execute.
-   * @param {Object=} opt_scope The object in whose scope to execute the function.
-   * @param {...*} var_args Any arguments to pass to the function.
+   * @param {Object=} scope The object in whose scope to execute the function.
+   * @param {...*} args Any arguments to pass to the function.
    * @return {!IThenable<T>} A promise that will be resolved' with the
    *     function's result.
    * @template T
    */
-  call(fn, opt_scope, var_args) {}
+  call(fn, scope = undefined, ...args) {}
 
   /**
    * Waits for a condition to evaluate to a "truthy" value. The condition may be
@@ -449,9 +425,8 @@ class IWebDriver {
    *           function(!WebDriver): T)} condition The condition to
    *     wait on, defined as a promise, condition object, or  a function to
    *     evaluate as a condition.
-   * @param {number=} opt_timeout How long to wait for the condition to be true.
-   * @param {string=} opt_message An optional message to use if the wait times
-   *     out.
+   * @param {number=} timeout How long to wait for the condition to be true.
+   * @param {string=} message An optional message to use if the wait times out.
    * @return {!(IThenable<T>|WebElementPromise)} A promise that will be
    *     resolved with the first truthy value returned by the condition
    *     function, or rejected if the condition times out. If the input
@@ -460,7 +435,7 @@ class IWebDriver {
    * @throws {TypeError} if the provided `condition` is not a valid type.
    * @template T
    */
-  wait(condition, opt_timeout, opt_message) {}
+  wait(condition, timeout = undefined, message = undefined) {}
 
   /**
    * Makes the driver sleep for the given amount of time.
@@ -684,12 +659,12 @@ class WebDriver {
    *          {desired: (Capabilities|undefined),
    *           required: (Capabilities|undefined)})} capabilities The desired
    *     capabilities for the new session.
-   * @param {(function(this: void): ?)=} opt_onQuit A callback to invoke when
+   * @param {(function(this: void): ?)=} onQuit A callback to invoke when
    *    the newly created session is terminated. This should be used to clean
    *    up any resources associated with the session.
    * @return {!WebDriver} The driver for the newly created session.
    */
-  static createSession(executor, capabilities, opt_onQuit) {
+  static createSession(executor, capabilities, onQuit = undefined) {
     let cmd = new command.Command(command.Name.NEW_SESSION);
 
     if (capabilities && (capabilities.desired || capabilities.required)) {
@@ -700,23 +675,21 @@ class WebDriver {
     }
 
     let session = executeCommand(executor, cmd);
-    if (typeof opt_onQuit === 'function') {
+    if (typeof onQuit === 'function') {
       session = session.catch(err => {
-        return Promise.resolve(opt_onQuit.call(void 0)).then(_ => {throw err;});
+        return Promise.resolve(onQuit.call(void 0)).then(_ => {throw err;});
       });
     }
-    return new this(session, executor, opt_onQuit);
+    return new this(session, executor, onQuit);
   }
 
   /** @override */
-  execute(command) {
+  async execute(command) {
     command.setParameter('sessionId', this.session_);
-    return toWireValue(command.getParameters())
-        .then((parameters) => {
-          command.setParameters(parameters);
-          return this.executor_.execute(command);
-        })
-        .then(value => fromWireValue(this, value));
+    let parameters = await toWireValue(command.getParameters());
+    command.setParameters(parameters);
+    let value = await this.executor_.execute(command);
+    return fromWireValue(this, value);
   }
 
   /** @override */
@@ -764,12 +737,10 @@ class WebDriver {
   }
 
   /** @override */
-  executeScript(script, var_args) {
+  executeScript(script, ...args) {
     if (typeof script === 'function') {
       script = 'return (' + script + ').apply(null, arguments);';
     }
-    let args =
-        arguments.length > 1 ? Array.prototype.slice.call(arguments, 1) : [];
    return this.execute(
         new command.Command(command.Name.EXECUTE_SCRIPT).
             setParameter('script', script).
@@ -777,11 +748,10 @@ class WebDriver {
   }
 
   /** @override */
-  executeAsyncScript(script, var_args) {
+  executeAsyncScript(script, ...args) {
     if (typeof script === 'function') {
       script = 'return (' + script + ').apply(null, arguments);';
     }
-    let args = Array.prototype.slice.call(arguments, 1);
     return this.execute(
         new command.Command(command.Name.EXECUTE_ASYNC_SCRIPT).
             setParameter('script', script).
@@ -789,10 +759,9 @@ class WebDriver {
   }
 
   /** @override */
-  call(fn, opt_scope, var_args) {
-    let args = Array.prototype.slice.call(arguments, 2);
+  call(fn, scope = undefined, ...args) {
     return promise.fullyResolved(args).then(function(args) {
-      return fn.apply(opt_scope, args);
+      return fn.apply(scope, args);
     });
   }
 
@@ -857,7 +826,7 @@ class WebDriver {
 
     let result = new Promise((resolve, reject) => {
       const startTime = Date.now();
-      const pollCondition = () => {
+      const pollCondition = async () => {
         evaluateCondition().then(function(value) {
           const elapsed = Date.now() - startTime;
           if (!!value) {
@@ -953,20 +922,19 @@ class WebDriver {
    *     WebElements.
    * @private
    */
-  findElementInternal_(locatorFn, context) {
-    return Promise.resolve(locatorFn(context)).then(function(result) {
-      if (Array.isArray(result)) {
-        result = result[0];
-      }
-      if (!(result instanceof WebElement)) {
-        throw new TypeError('Custom locator did not return a WebElement');
-      }
-      return result;
-    });
+  async findElementInternal_(locatorFn, context) {
+    let result = await locatorFn(context);
+    if (Array.isArray(result)) {
+      result = result[0];
+    }
+    if (!(result instanceof WebElement)) {
+      throw new TypeError('Custom locator did not return a WebElement');
+    }
+    return result;
   }
 
   /** @override */
-  findElements(locator) {
+  async findElements(locator) {
     locator = by.checkedLocator(locator);
     if (typeof locator === 'function') {
       return this.findElementsInternal_(locator, this);
@@ -974,15 +942,15 @@ class WebDriver {
       let cmd = new command.Command(command.Name.FIND_ELEMENTS).
           setParameter('using', locator.using).
           setParameter('value', locator.value);
-      return this.execute(cmd)
-          .then(
-              (res) => Array.isArray(res) ? res : [],
-              (e) =>  {
-                if (e instanceof error.NoSuchElementError) {
-                  return [];
-                }
-                throw e;
-              });
+      try {
+        let res = await this.execute(cmd);
+        return Array.isArray(res) ? res : [];
+      } catch (ex) {
+        if (ex instanceof error.NoSuchElementError) {
+          return [];
+        }
+        throw ex;
+      }
     }
   }
 
@@ -993,19 +961,18 @@ class WebDriver {
    *     array of WebElements.
    * @private
    */
-  findElementsInternal_(locatorFn, context) {
-    return Promise.resolve(locatorFn(context)).then(function(result) {
-      if (result instanceof WebElement) {
-        return [result];
-      }
+  async findElementsInternal_(locatorFn, context) {
+    const result = await locatorFn(context);
+    if (result instanceof WebElement) {
+      return [result];
+    }
 
-      if (!Array.isArray(result)) {
-        return [];
-      }
+    if (!Array.isArray(result)) {
+      return [];
+    }
 
-      return result.filter(function(item) {
-        return item instanceof WebElement;
-      });
+    return result.filter(function(item) {
+      return item instanceof WebElement;
     });
   }
 
@@ -1217,15 +1184,14 @@ class Options {
    * @return {!Promise<?Options.Cookie>} A promise that will be resolved
    *     with the named cookie, or `null` if there is no such cookie.
    */
-  getCookie(name) {
-    return this.getCookies().then(function(cookies) {
-      for (let cookie of cookies) {
-        if (cookie && cookie['name'] === name) {
-          return cookie;
-        }
+  async getCookie(name) {
+    const cookies = await this.getCookies();
+    for (let cookie of cookies) {
+      if (cookie && cookie['name'] === name) {
+        return cookie;
       }
-      return null;
-    });
+    }
+    return null;
   }
 
   /**
@@ -1239,8 +1205,7 @@ class Options {
    * @see #setTimeouts()
    */
   getTimeouts() {
-    return this.driver_.execute(
-        new command.Command(command.Name.GET_TIMEOUT));
+    return this.driver_.execute(new command.Command(command.Name.GET_TIMEOUT));
   }
 
   /**
@@ -1837,11 +1802,11 @@ class WebElement {
 
   /**
    * @param {string} id The raw ID.
-   * @param {boolean=} opt_noLegacy Whether to exclude the legacy element key.
+   * @param {boolean=} noLegacy Whether to exclude the legacy element key.
    * @return {!Object} The element ID for use with WebDriver's wire protocol.
    */
-  static buildId(id, opt_noLegacy) {
-    return opt_noLegacy
+  static buildId(id, noLegacy = false) {
+    return noLegacy
         ? {[ELEMENT_ID_KEY]: id}
         : {[ELEMENT_ID_KEY]: id, [LEGACY_ELEMENT_ID_KEY]: id};
   }
@@ -1882,24 +1847,23 @@ class WebElement {
    * @return {!Promise<boolean>} A promise that will be
    *     resolved to whether the two WebElements are equal.
    */
-  static equals(a, b) {
+  static async equals(a, b) {
     if (a === b) {
-      return Promise.resolve(true);
+      return true;
     }
-    let ids = [a.getId(), b.getId()];
-    return Promise.all(ids).then(function(ids) {
-      // If the two element's have the same ID, they should be considered
-      // equal. Otherwise, they may still be equivalent, but we'll need to
-      // ask the server to check for us.
-      if (ids[0] === ids[1]) {
-        return true;
-      }
 
-      let cmd = new command.Command(command.Name.ELEMENT_EQUALS);
-      cmd.setParameter('id', ids[0]);
-      cmd.setParameter('other', ids[1]);
-      return a.driver_.execute(cmd);
-    });
+    let ids = await Promise.all([a.getId(), b.getId()]);
+    // If the two element's have the same ID, they should be considered
+    // equal. Otherwise, they may still be equivalent, but we'll need to
+    // ask the server to check for us.
+    if (ids[0] === ids[1]) {
+      return true;
+    }
+
+    let cmd = new command.Command(command.Name.ELEMENT_EQUALS);
+    cmd.setParameter('id', ids[0]);
+    cmd.setParameter('other', ids[1]);
+    return a.driver_.execute(cmd);
   }
 
   /** @return {!WebDriver} The parent driver for this instance. */
@@ -1996,18 +1960,17 @@ class WebElement {
    * @return {!Promise<!Array<!WebElement>>} A promise that will resolve to an
    *     array of WebElements.
    */
-  findElements(locator) {
+  async findElements(locator) {
     locator = by.checkedLocator(locator);
     let id;
     if (typeof locator === 'function') {
       return this.driver_.findElementsInternal_(locator, this);
     } else {
-      var cmd = new command.Command(
-          command.Name.FIND_CHILD_ELEMENTS).
-          setParameter('using', locator.using).
-          setParameter('value', locator.value);
-      return this.execute_(cmd)
-          .then(result => Array.isArray(result) ? result : []);
+      let cmd = new command.Command(command.Name.FIND_CHILD_ELEMENTS)
+          .setParameter('using', locator.using)
+          .setParameter('value', locator.value);
+      let result = await this.execute_(cmd);
+      return Array.isArray(result) ? result : [];
     }
   }
 
@@ -2069,49 +2032,42 @@ class WebElement {
    * punctuation keys will be synthesized according to a standard QWERTY en-us
    * keyboard layout.
    *
-   * @param {...(number|string|!IThenable<(number|string)>)} var_args The
+   * @param {...(number|string|!IThenable<(number|string)>)} args The
    *     sequence of keys to type. Number keys may be referenced numerically or
    *     by string (1 or '1'). All arguments will be joined into a single
    *     sequence.
    * @return {!Promise<void>} A promise that will be resolved when all keys
    *     have been typed.
    */
-  sendKeys(var_args) {
-    let keys = Promise.all(Array.prototype.slice.call(arguments, 0)).
-        then(keys => {
-          let ret = [];
-          keys.forEach(key => {
-            let type = typeof key;
-            if (type === 'number') {
-              key = String(key);
-            } else if (type !== 'string') {
-              throw TypeError(
-                  'each key must be a number of string; got ' + type);
-            }
+  async sendKeys(...args) {
+    let keys = [];
+    (await Promise.all(args)).forEach(key => {
+      let type = typeof key;
+      if (type === 'number') {
+        key = String(key);
+      } else if (type !== 'string') {
+        throw TypeError('each key must be a number of string; got ' + type);
+      }
 
-            // The W3C protocol requires keys to be specified as an array where
-            // each element is a single key.
-            ret.push.apply(ret, key.split(''));
-          });
-          return ret;
-        });
+      // The W3C protocol requires keys to be specified as an array where
+      // each element is a single key.
+      keys.push(...key.split(''));
+    });
 
     if (!this.driver_.fileDetector_) {
       return this.execute_(
-          new command.Command(command.Name.SEND_KEYS_TO_ELEMENT).
-              setParameter('text', keys.then(keys => keys.join(''))).
-              setParameter('value', keys));
+          new command.Command(command.Name.SEND_KEYS_TO_ELEMENT)
+              .setParameter('text', keys.join(''))
+              .setParameter('value', keys));
     }
 
-    return keys.then(keys => {
-      let driver = this.driver_;
-      return driver.fileDetector_.handleFile(driver, keys.join(''));
-    }).then(keys => {
-      return this.execute_(
-          new command.Command(command.Name.SEND_KEYS_TO_ELEMENT).
-              setParameter('text', keys).
-              setParameter('value', keys.split('')));
-    });
+    keys =
+        await this.driver_.fileDetector_.handleFile(
+            this.driver_, keys.join(''));
+    return this.execute_(
+        new command.Command(command.Name.SEND_KEYS_TO_ELEMENT)
+            .setParameter('text', keys)
+            .setParameter('value', keys.split('')));
   }
 
   /**
@@ -2276,14 +2232,13 @@ class WebElement {
    * Take a screenshot of the visible region encompassed by this element's
    * bounding rectangle.
    *
-   * @param {boolean=} opt_scroll Optional argument that indicates whether the
+   * @param {boolean=} scroll Optional argument that indicates whether the
    *     element should be scrolled into view before taking a screenshot.
    *     Defaults to false.
    * @return {!Promise<string>} A promise that will be
    *     resolved to the screenshot as a base-64 encoded PNG.
    */
-  takeScreenshot(opt_scroll) {
-    var scroll = !!opt_scroll;
+  takeScreenshot(scroll = false) {
     return this.execute_(
         new command.Command(command.Name.TAKE_ELEMENT_SCREENSHOT)
             .setParameter('scroll', scroll));
@@ -2664,18 +2619,18 @@ class ActionSequence {
 
 module.exports = {
   ActionSequence,
-  Alert: Alert,
-  AlertPromise: AlertPromise,
-  Condition: Condition,
-  Logs: Logs,
-  Navigation: Navigation,
-  Options: Options,
-  TargetLocator: TargetLocator,
-  Timeouts: Timeouts,
-  IWebDriver: IWebDriver,
-  WebDriver: WebDriver,
-  WebElement: WebElement,
-  WebElementCondition: WebElementCondition,
-  WebElementPromise: WebElementPromise,
-  Window: Window
+  Alert,
+  AlertPromise,
+  Condition,
+  Logs,
+  Navigation,
+  Options,
+  TargetLocator,
+  Timeouts,
+  IWebDriver,
+  WebDriver,
+  WebElement,
+  WebElementCondition,
+  WebElementPromise,
+  Window
 };
