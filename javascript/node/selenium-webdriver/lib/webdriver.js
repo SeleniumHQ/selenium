@@ -323,7 +323,7 @@ class IWebDriver {
    *
    * @param {!(string|Function)} script The script to execute.
    * @param {...*} var_args The arguments to pass to the script.
-   * @return {!promise.Thenable<T>} A promise that will resolve to the
+   * @return {!IThenable<T>} A promise that will resolve to the
    *    scripts return value.
    * @template T
    */
@@ -400,8 +400,8 @@ class IWebDriver {
    *
    * @param {!(string|Function)} script The script to execute.
    * @param {...*} var_args The arguments to pass to the script.
-   * @return {!promise.Thenable<T>} A promise that will resolve to the
-   *    scripts return value.
+   * @return {!IThenable<T>} A promise that will resolve to the scripts return
+   *     value.
    * @template T
    */
   executeAsyncScript(script, var_args) {}
@@ -412,8 +412,8 @@ class IWebDriver {
    * @param {function(...): (T|IThenable<T>)} fn The function to execute.
    * @param {Object=} opt_scope The object in whose scope to execute the function.
    * @param {...*} var_args Any arguments to pass to the function.
-   * @return {!promise.Thenable<T>} A promise that will be resolved'
-   *     with the function's result.
+   * @return {!IThenable<T>} A promise that will be resolved' with the
+   *     function's result.
    * @template T
    */
   call(fn, opt_scope, var_args) {}
@@ -452,7 +452,7 @@ class IWebDriver {
    * @param {number=} opt_timeout How long to wait for the condition to be true.
    * @param {string=} opt_message An optional message to use if the wait times
    *     out.
-   * @return {!(promise.Thenable<T>|WebElementPromise)} A promise that will be
+   * @return {!(IThenable<T>|WebElementPromise)} A promise that will be
    *     resolved with the first truthy value returned by the condition
    *     function, or rejected if the condition times out. If the input
    *     input condition is an instance of a {@link WebElementCondition},
@@ -792,10 +792,6 @@ class WebDriver {
   call(fn, opt_scope, var_args) {
     let args = Array.prototype.slice.call(arguments, 2);
     return promise.fullyResolved(args).then(function(args) {
-      if (promise.isGenerator(fn)) {
-        args.unshift(fn, opt_scope);
-        return promise.consume.apply(null, args);
-      }
       return fn.apply(opt_scope, args);
     });
   }
@@ -852,11 +848,7 @@ class WebDriver {
     function evaluateCondition() {
       return new Promise((resolve, reject) => {
         try {
-          if (promise.isGenerator(fn)) {
-            resolve(promise.consume(fn, null, [driver]));
-          } else {
-            resolve(fn(driver));
-          }
+          resolve(fn(driver));
         } catch (ex) {
           reject(ex);
         }

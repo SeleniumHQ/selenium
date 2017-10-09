@@ -1,4 +1,4 @@
-## v.next
+## v4.0.0-dev
 
 ### Changes to Supported Browsers
 
@@ -12,27 +12,52 @@ mode.
 
 ### API Changes
 
-* Added `webdriver.manage().window().minimize()`
-* Added `webdriver.manage().window().fullscreen()`
-* The core WebDriver API no longer uses promise manager
-  - Removed `index.Builder#setControlFlow()`
-  - The following thenable types no longer have a `cancel()` method:
-    - The dynamically generated thenable WebDrivers created by `index.Builder`
-    - `lib/webdriver.AlertPromise`
-    - `lib/webdriver.WebElementPromise`
-* The `testing/index` module no longer wraps the promise manager
-* Removed `remote/index.DriverService.prototype.stop()` (use `#kill()` instead)
-* Removed the `firefox.Binary` class. Custom binaries can still be selected
-  using `firefox.Options#setBinary()`. Likewise, custom binary arguments can be
-  specified with `firefox.Options#addArguments()`.
-* Removed the `lib/actions` module
-* Removed the `phantomjs` module
-* Removed the 'opera' module
-* Removed the `WebDriver.attachToSession()` factory method. Users can just use
-  use the `WebDriver` constructor directly instead.
-* Removed the `WebDriver.prototype.touchActions()` method. Action sequences
-  are now defined from a single origin: `WebDriver.prototype.actions()`.
-* Renamed `WebDriver#schedule()` to `WebDriver#execute()`
+*  Added `webdriver.manage().window().minimize()`
+*  Added `webdriver.manage().window().fullscreen()`
+*  The core WebDriver API no longer uses promise manager
+   -  Removed `index.Builder#setControlFlow()`
+   -  The following thenable types no longer have a `cancel()` method:
+     -  The dynamically generated thenable WebDrivers created by `index.Builder`
+     -  `lib/webdriver.AlertPromise`
+     -  `lib/webdriver.WebElementPromise`
+*  The `testing/index` module no longer wraps the promise manager
+*  Removed `remote/index.DriverService.prototype.stop()` (use `#kill()` instead)
+*  Removed the `firefox.Binary` class. Custom binaries can still be selected
+   using `firefox.Options#setBinary()`. Likewise, custom binary arguments can be
+   specified with `firefox.Options#addArguments()`.
+*  Removed the `lib/actions` module
+*  Removed the `phantomjs` module
+*  Removed the 'opera' module
+*  Removed the `WebDriver.attachToSession()` factory method. Users can just use
+   use the `WebDriver` constructor directly instead.
+*  Removed the `WebDriver.prototype.touchActions()` method. Action sequences
+   are now defined from a single origin: `WebDriver.prototype.actions()`.
+*  Removed the promise manager from `lib/promise`, which includes the removal
+   of the following exported names (replacements, if any, in parentheses):
+   -  CancellableThenable
+   -  CancellationError
+   -  ControlFlow
+   -  Deferred
+   -  LONG_STACK_TRACES
+   -  MultipleUnhandledRejectionError
+   -  Promise (use native Promises)
+   -  Resolver
+   -  Scheduler
+   -  Thenable
+   -  USE_PROMISE_MANAGER
+   -  all (use Promise.all)
+   -  asap (use Promise.resolve)
+   -  captureStackTrace (use Error.captureStackTrace)
+   -  consume (use async functions)
+   -  controlFlow
+   -  createPromise (use new Promise)
+   -  defer
+   -  fulfilled (use Promise.resolve)
+   -  isGenerator
+   -  rejected (use Promise.reject)
+   -  setDefaultFlow
+   -  when (use Promise.resolve)
+*  Renamed `WebDriver#schedule()` to `WebDriver#execute()`
 
 ### Changes for W3C WebDriver Spec Compliance
 

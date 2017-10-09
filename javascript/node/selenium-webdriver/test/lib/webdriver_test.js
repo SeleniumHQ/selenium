@@ -17,7 +17,8 @@
 
 'use strict';
 
-const testutil = require('./testutil');
+const {StubError, assertIsInstance, assertIsStubError, throwStubError} =
+    require('./testutil');
 
 const By = require('../../lib/by').By;
 const Capabilities = require('../../lib/capabilities').Capabilities;
@@ -41,32 +42,12 @@ const assert = require('assert');
 const sinon = require('sinon');
 
 const SESSION_ID = 'test_session_id';
-
-// Aliases for readability.
-const NativePromise = Promise;
-const StubError = testutil.StubError;
-const assertIsInstance = testutil.assertIsInstance;
-const assertIsStubError = testutil.assertIsStubError;
-const throwStubError = testutil.throwStubError;
 const fail = (msg) => assert.fail(msg);
 
 describe('WebDriver', function() {
   const LOG = logging.getLogger('webdriver.test');
 
   var driver;
-  var uncaughtExceptions;
-
-  beforeEach(function setUp() {
-    uncaughtExceptions = [];
-  });
-
-  afterEach(function tearDown() {
-    assert.deepEqual([], uncaughtExceptions);
-  });
-
-  function onUncaughtException(e) {
-    uncaughtExceptions.push(e);
-  }
 
   function defer() {
     let d = {};
@@ -75,28 +56,6 @@ describe('WebDriver', function() {
     });
     d.promise = promise;
     return d;
-  }
-
-  function waitForAbort(opt_flow, opt_n) {
-    var n = opt_n || 1;
-    var theFlow = opt_flow || flow;
-    theFlow.removeAllListeners(
-        promise.ControlFlow.EventType.UNCAUGHT_EXCEPTION);
-    return new Promise(function(fulfill, reject) {
-      theFlow.once('idle', function() {
-        reject(Error('expected flow to report an unhandled error'));
-      });
-
-      var errors = [];
-      theFlow.on('uncaughtException', onError);
-      function onError(e) {
-        errors.push(e);
-        if (errors.length === n) {
-          theFlow.removeListener('uncaughtException', onError);
-          fulfill(n === 1 ? errors[0] : errors);
-        }
-      }
-    });
   }
 
   function expectedError(ctor, message) {
@@ -1811,71 +1770,6 @@ describe('WebDriver', function() {
         });
       });
     });
-  });
-
-  describe('generator support', function() {
-    var driver;
-
-    beforeEach(function() {
-      driver = new WebDriver(
-          new Session('test-session', {}),
-          new ExplodingExecutor());
-    });
-
-    it('canUseGeneratorsWithWebDriverCall', function() {
-      return driver.call(function* () {
-        var x = yield Promise.resolve(1);
-        var y = yield Promise.resolve(2);
-        return x + y;
-      }).then(function(value) {
-        assert.deepEqual(3, value);
-      });
-    });
-
-    it('canDefineScopeOnGeneratorCall', function() {
-      return driver.call(function* () {
-        var x = yield Promise.resolve(1);
-        return this.name + x;
-      }, {name: 'Bob'}).then(function(value) {
-        assert.deepEqual('Bob1', value);
-      });
-    });
-
-    it('canSpecifyArgsOnGeneratorCall', function() {
-      return driver.call(function* (a, b) {
-        var x = yield Promise.resolve(1);
-        var y = yield Promise.resolve(2);
-        return [x + y, a, b];
-      }, null, 'abc', 123).then(function(value) {
-        assert.deepEqual([3, 'abc', 123], value);
-      });
-    });
-
-    it('canUseGeneratorWithWebDriverWait', function() {
-      var values = [];
-      return driver.wait(function* () {
-        yield values.push(1);
-        values.push(yield promise.delayed(10).then(function() {
-          return 2;
-        }));
-        yield values.push(3);
-        return values.length === 6;
-      }, 250).then(function() {
-        assert.deepEqual([1, 2, 3, 1, 2, 3], values);
-      });
-    });
-
-    /**
-     * @constructor
-     * @implements {CommandExecutor}
-     */
-    function ExplodingExecutor() {}
-
-
-    /** @override */
-    ExplodingExecutor.prototype.execute = function(command, cb) {
-      cb(Error('Unsupported operation'));
-    };
   });
 
   describe('wire format', function() {

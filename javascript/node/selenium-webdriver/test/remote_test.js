@@ -17,16 +17,14 @@
 
 'use strict';
 
-var assert = require('assert'),
-    fs = require('fs'),
-    path = require('path');
+const assert = require('assert');
+const fs = require('fs');
+const path = require('path');
 
-var promise = require('../').promise,
-    io = require('../io'),
-    cmd = require('../lib/command'),
-    remote = require('../remote');
-
-const {enablePromiseManager} = require('../lib/test/promise');
+const io = require('../io');
+const cmd = require('../lib/command');
+const remote = require('../remote');
+const {CancellationError} = require('../http/util');
 
 describe('DriverService', function() {
   describe('start()', function() {
@@ -48,24 +46,8 @@ describe('DriverService', function() {
       return service.start(500).then(expectFailure, verifyFailure);
     });
 
-    enablePromiseManager(function() {
-      describe(
-          'failures propagate through control flow if child-process dies',
-          function() {
-            it('', function() {
-              this.timeout(1000);
-
-              return promise.controlFlow().execute(function() {
-                promise.controlFlow().execute(function() {
-                  return service.start(500);
-                });
-              }).then(expectFailure, verifyFailure);
-            });
-          });
-    });
-
     function verifyFailure(e) {
-      assert.ok(!(e instanceof promise.CancellationError));
+      assert.ok(!(e instanceof CancellationError));
       assert.equal('Server terminated early with status 1', e.message);
     }
 

@@ -30,13 +30,12 @@
  */
 
 const {Builder, By, Key, until} = require('..');
-const test = require('../testing');
 
-test.describe('Google Search', function() {
+describe('Google Search', function() {
   let driver;
 
-  test.before(function *() {
-    driver = yield new Builder().forBrowser('firefox').build();
+  before(async function() {
+    driver = await new Builder().forBrowser('firefox').build();
   });
 
   // You can write tests either using traditional promises.
@@ -47,14 +46,12 @@ test.describe('Google Search', function() {
         .then(_ => driver.wait(until.titleIs('webdriver - Google Search'), 1000));
   });
 
-  // Or you can define the test as a generator function. The test will wait for
-  // any yielded promises to resolve before invoking the next step in the
-  // generator.
-  test.it('works with generators', function*() {
-    yield driver.get('http://www.google.com/ncr');
-    yield driver.findElement(By.name('q')).sendKeys('webdriver', Key.RETURN);
-    yield driver.wait(until.titleIs('webdriver - Google Search'), 1000);
+  // Or you can define the test with an async function.
+  it('works with generators', async function() {
+    await driver.get('http://www.google.com/ncr');
+    await driver.findElement(By.name('q')).sendKeys('webdriver', Key.RETURN);
+    await driver.wait(until.titleIs('webdriver - Google Search'), 1000);
   });
 
-  test.after(() => driver.quit());
+  after(() => driver.quit());
 });
