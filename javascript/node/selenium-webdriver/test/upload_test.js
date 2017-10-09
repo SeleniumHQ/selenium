@@ -63,11 +63,9 @@ test.suite(function(env) {
 
     await driver.get(Pages.uploadPage);
 
-    var fp = await driver.call(function() {
-      return io.tmpFile().then(function(fp) {
-        fs.writeFileSync(fp, FILE_HTML);
-        return fp;
-      });
+    var fp = await io.tmpFile().then(function(fp) {
+      fs.writeFileSync(fp, FILE_HTML);
+      return fp;
     });
 
     await driver.findElement(By.id('upload')).sendKeys(fp);

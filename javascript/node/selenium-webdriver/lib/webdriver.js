@@ -383,18 +383,6 @@ class IWebDriver {
   executeAsyncScript(script, ...args) {}
 
   /**
-   * Executes a custom function.
-   *
-   * @param {function(...): (T|IThenable<T>)} fn The function to execute.
-   * @param {Object=} scope The object in whose scope to execute the function.
-   * @param {...*} args Any arguments to pass to the function.
-   * @return {!IThenable<T>} A promise that will be resolved' with the
-   *     function's result.
-   * @template T
-   */
-  call(fn, scope = undefined, ...args) {}
-
-  /**
    * Waits for a condition to evaluate to a "truthy" value. The condition may be
    * specified by a {@link Condition}, as a custom function, or as any
    * promise-like thenable.
@@ -756,13 +744,6 @@ class WebDriver {
         new command.Command(command.Name.EXECUTE_ASYNC_SCRIPT).
             setParameter('script', script).
             setParameter('args', args));
-  }
-
-  /** @override */
-  call(fn, scope = undefined, ...args) {
-    return promise.fullyResolved(args).then(function(args) {
-      return fn.apply(scope, args);
-    });
   }
 
   /** @override */

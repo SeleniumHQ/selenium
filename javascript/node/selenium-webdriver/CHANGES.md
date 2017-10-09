@@ -35,6 +35,11 @@ mode.
 *  Removed the 'opera' module
 *  Removed the `WebDriver.attachToSession()` factory method. Users can just use
    use the `WebDriver` constructor directly instead.
+*  Removed the `WebDriver.prototype.call()` method. This was used to inject
+   custom function calls into the control flow. Now that the promise manager is
+   no longer used, this method is no longer necessary. Users are now responsible
+   for coordinating actions (ideally with async functions) and can just call
+   functions directly instead of through `driver.call()`.
 *  Removed the `WebDriver.prototype.touchActions()` method. Action sequences
    are now defined from a single origin: `WebDriver.prototype.actions()`.
 *  Removed the promise manager from `lib/promise`, which includes the removal
