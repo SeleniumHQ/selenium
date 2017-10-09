@@ -30,6 +30,7 @@ mode.
    using `firefox.Options#setBinary()`. Likewise, custom binary arguments can be
    specified with `firefox.Options#addArguments()`.
 *  Removed the `lib/actions` module
+*  Removed the `lib/events` module
 *  Removed the `phantomjs` module
 *  Removed the 'opera' module
 *  Removed the `WebDriver.attachToSession()` factory method. Users can just use
