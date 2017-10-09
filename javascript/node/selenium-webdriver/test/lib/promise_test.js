@@ -285,6 +285,58 @@ describe('promise', function() {
     });
   });
 
+  describe('finally', function() {
+    it('successful callback does not suppress original error', async () => {
+      let p = Promise.reject(new StubError);
+      let called = false;
+
+      try {
+        await promise.finally(p, function() { called = true; });
+        fail('should have thrown');
+      } catch (e) {
+        assertIsStubError(e);
+        assert.ok(called);
+      }
+    });
+
+    it('failing callback suppresses original error', async () => {
+      let p = Promise.reject(Error('original'));
+      let called = false;
+
+      try {
+        await promise.finally(p, throwStubError);
+        fail('should have thrown');
+      } catch (e) {
+        assertIsStubError(e);
+      }
+    });
+
+    it('callback throws after fulfilled promise', async () => {
+      try {
+        await promise.finally(Promise.resolve(), throwStubError);
+        fail('should have thrown');
+      } catch (e) {
+        assertIsStubError(e);
+      }
+    });
+
+    it('callback returns rejected promise', async () => {
+      try {
+        await promise.finally(
+            Promise.resolve(), () => Promise.reject(new StubError));
+        fail('should have thrown');
+      } catch (e) {
+        assertIsStubError(e);
+      }
+    });
+
+    it('returned promise resolves with callback result', async () => {
+      let value =
+          await promise.finally(Promise.resolve(1), () => 2);
+      assert.equal(value, 2);
+    });
+  });
+
   describe('checkedNodeCall', function() {
     it('functionThrows', function() {
       return promise.checkedNodeCall(throwStubError)

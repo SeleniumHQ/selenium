@@ -72,10 +72,9 @@ function delayed(ms) {
 function checkedNodeCall(fn, ...args) {
   return new Promise(function(fulfill, reject) {
     try {
-      args.push(function(error, value) {
+      fn(...args, function(error, value) {
         error ? reject(error) : fulfill(value);
       });
-      fn(...args);
     } catch (ex) {
       reject(ex);
     }
@@ -119,20 +118,14 @@ function checkedNodeCall(fn, ...args) {
  *     result.
  * @template R
  */
-function thenFinally(promise, callback) {
-  let error;
-  let mustThrow = false;
-  return Promise.resolve(promise).then(function() {
+async function thenFinally(promise, callback) {
+  try {
+    await Promise.resolve(promise);
     return callback();
-  }, function(err) {
-    error = err;
-    mustThrow = true;
-    return callback();
-  }).then(function() {
-    if (mustThrow) {
-      throw error;
-    }
-  });
+  } catch (e) {
+    await callback();
+    throw e;
+  }
 }
 
 
@@ -149,49 +142,30 @@ function thenFinally(promise, callback) {
  * Only the first failure will be reported; all subsequent errors will be
  * silently ignored.
  *
- * @param {!(Array<TYPE>|IThenable<!Array<TYPE>>)} arr The
- *     array to iterator over, or a promise that will resolve to said array.
+ * @param {!(Array<TYPE>|IThenable<!Array<TYPE>>)} array The array to iterate
+ *     over, or a promise that will resolve to said array.
  * @param {function(this: SELF, TYPE, number, !Array<TYPE>): ?} fn The
  *     function to call for each element in the array. This function should
  *     expect three arguments (the element, the index, and the array itself.
- * @param {SELF=} opt_self The object to be used as the value of 'this' within
- *     {@code fn}.
+ * @param {SELF=} self The object to be used as the value of 'this' within `fn`.
  * @template TYPE, SELF
  */
-function map(arr, fn, opt_self) {
-  return Promise.resolve(arr).then(v => {
-    if (!Array.isArray(v)) {
-      throw TypeError('not an array');
+async function map(array, fn, self = undefined) {
+  const v = await Promise.resolve(array);
+  if (!Array.isArray(v)) {
+    throw TypeError('not an array');
+  }
+
+  const arr = /** @type {!Array} */(v);
+  const n = arr.length;
+  const values = new Array(n);
+
+  for (let i = 0; i < n; i++) {
+    if (i in arr) {
+      values[i] = await Promise.resolve(fn.call(self, arr[i], i, arr));
     }
-    var arr = /** @type {!Array} */(v);
-    return new Promise(function(fulfill, reject) {
-      var n = arr.length;
-      var values = new Array(n);
-      (function processNext(i) {
-        for (; i < n; i++) {
-          if (i in arr) {
-            break;
-          }
-        }
-        if (i >= n) {
-          fulfill(values);
-          return;
-        }
-        try {
-          Promise
-              .resolve(fn.call(opt_self, arr[i], i, /** @type {!Array} */(arr)))
-              .then(
-                  function(value) {
-                    values[i] = value;
-                    processNext(i + 1);
-                  },
-                  reject);
-        } catch (ex) {
-          reject(ex);
-        }
-      })(0);
-    });
-  });
+  }
+  return values;
 }
 
 
@@ -208,53 +182,35 @@ function map(arr, fn, opt_self) {
  * first failure will be reported; all subsequent errors will be silently
  * ignored.
  *
- * @param {!(Array<TYPE>|IThenable<!Array<TYPE>>)} arr The
- *     array to iterator over, or a promise that will resolve to said array.
+ * @param {!(Array<TYPE>|IThenable<!Array<TYPE>>)} array The array to iterate
+ *     over, or a promise that will resolve to said array.
  * @param {function(this: SELF, TYPE, number, !Array<TYPE>): (
  *             boolean|IThenable<boolean>)} fn The function
  *     to call for each element in the array.
- * @param {SELF=} opt_self The object to be used as the value of 'this' within
- *     {@code fn}.
+ * @param {SELF=} self The object to be used as the value of 'this' within `fn`.
  * @template TYPE, SELF
  */
-function filter(arr, fn, opt_self) {
-  return Promise.resolve(arr).then(v => {
-    if (!Array.isArray(v)) {
-      throw TypeError('not an array');
+async function filter(array, fn, self = undefined) {
+  const v = await Promise.resolve(array);
+  if (!Array.isArray(v)) {
+    throw TypeError('not an array');
+  }
+
+  const arr = /** @type {!Array} */(v);
+  const n = arr.length;
+  const values = [];
+  let valuesLength = 0;
+
+  for (let i = 0; i < n; i++) {
+    if (i in arr) {
+      let value = arr[i];
+      let include = await fn.call(self, value, i, arr);
+      if (include) {
+        values[valuesLength++] = value;
+      }
     }
-    var arr = /** @type {!Array} */(v);
-    return new Promise(function(fulfill, reject) {
-      var n = arr.length;
-      var values = [];
-      var valuesLength = 0;
-      (function processNext(i) {
-        for (; i < n; i++) {
-          if (i in arr) {
-            break;
-          }
-        }
-        if (i >= n) {
-          fulfill(values);
-          return;
-        }
-        try {
-          var value = arr[i];
-          var include = fn.call(opt_self, value, i, /** @type {!Array} */(arr));
-          Promise.resolve(include)
-              .then(
-                  function(include) {
-                    if (include) {
-                      values[valuesLength++] = value;
-                    }
-                    processNext(i + 1);
-                  },
-                  reject);
-        } catch (ex) {
-          reject(ex);
-        }
-      })(0);
-    });
-  });
+  }
+  return values;
 }
 
 
@@ -277,18 +233,8 @@ function filter(arr, fn, opt_self) {
  * @return {!Thenable} A promise for a fully resolved version
  *     of the input value.
  */
-function fullyResolved(value) {
-  return Promise.resolve(value).then(fullyResolveValue);
-}
-
-
-/**
- * @param {*} value The value to fully resolve. If a promise, assumed to
- *     already be resolved.
- * @return {!Thenable} A promise for a fully resolved version
- *     of the input value.
- */
-function fullyResolveValue(value) {
+async function fullyResolved(value) {
+  value = await Promise.resolve(value);
   if (Array.isArray(value)) {
     return fullyResolveKeys(/** @type {!Array} */ (value));
   }
@@ -301,7 +247,7 @@ function fullyResolveValue(value) {
     return fullyResolveKeys(/** @type {!Object} */ (value));
   }
 
-  return Promise.resolve(value);
+  return value;
 }
 
 
@@ -310,55 +256,36 @@ function fullyResolveValue(value) {
  * @return {!Thenable} A promise that will be resolved with the
  *     input object once all of its values have been fully resolved.
  */
-function fullyResolveKeys(obj) {
-  var isArray = Array.isArray(obj);
-  var numKeys = isArray ? obj.length : (function() {
-    let n = 0;
-    for (let key in obj) {
-      n += 1;
-    }
-    return n;
-  })();
+async function fullyResolveKeys(obj) {
+  const isArray = Array.isArray(obj);
+  const numKeys = isArray ? obj.length : Object.keys(obj).length;
 
   if (!numKeys) {
-    return Promise.resolve(obj);
+    return obj;
   }
 
-  function forEachProperty(obj, fn) {
+  async function forEachProperty(obj, fn) {
     for (let key in obj) {
-      fn.call(null, obj[key], key, obj);
+      await fn(obj[key], key);
     }
   }
 
-  function forEachElement(arr, fn) {
-    arr.forEach(fn);
+  async function forEachElement(arr, fn) {
+    for (let i = 0; i < arr.length; i++) {
+      await fn(arr[i], i);
+    }
   }
 
-  var numResolved = 0;
-  return new Promise(function(fulfill, reject) {
-    var forEachKey = isArray ? forEachElement: forEachProperty;
-
-    forEachKey(obj, function(partialValue, key) {
-      if (!Array.isArray(partialValue)
-          && (!partialValue || typeof partialValue !== 'object')) {
-        maybeResolveValue();
-        return;
-      }
-
-      fullyResolved(partialValue).then(
-          function(resolvedValue) {
-            obj[key] = resolvedValue;
-            maybeResolveValue();
-          },
-          reject);
-    });
-
-    function maybeResolveValue() {
-      if (++numResolved == numKeys) {
-        fulfill(obj);
-      }
+  const forEachKey = isArray ? forEachElement : forEachProperty;
+  await forEachKey(obj, async function(partialValue, key) {
+    if (!Array.isArray(partialValue)
+        && (!partialValue || typeof partialValue !== 'object')) {
+      return;
     }
+    let resolvedValue = await fullyResolved(partialValue);
+    obj[key] = resolvedValue;
   });
+  return obj;
 }
 
 
