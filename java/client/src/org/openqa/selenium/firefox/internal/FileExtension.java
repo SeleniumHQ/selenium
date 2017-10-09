@@ -35,6 +35,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.io.UncheckedIOException;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -98,23 +99,22 @@ public class FileExtension implements Extension {
     File manifestJson = new File(root, "manifest.json");
     File installRdf = new File(root, "install.rdf");
 
-    if (installRdf.exists())
+    if (installRdf.exists()) {
       return readIdFromInstallRdf(root);
-    else if (manifestJson.exists())
+    } else if (manifestJson.exists()) {
       return readIdFromManifestJson(root);
-    else
+    } else {
       throw new WebDriverException(
-        "Extension should contain either install.rdf or manifest.json metadata file");
-
+          "Extension should contain either install.rdf or manifest.json metadata file");
+    }
   }
 
   private String readIdFromManifestJson(File root) {
     final String MANIFEST_JSON_FILE = "manifest.json";
     File manifestJsonFile = new File(root, MANIFEST_JSON_FILE);
-    try {
+    try (Reader reader = new FileReader(manifestJsonFile);
+         JsonInput json = new Json().newInput(reader)) {
       String addOnId = null;
-      Reader reader = new FileReader(manifestJsonFile);
-      JsonInput json = new Json().newInput(reader);
 
       Map<String, Object> manifestObject = json.read(MAP_TYPE);
       if (manifestObject.get("applications") instanceof Map) {
@@ -135,6 +135,8 @@ public class FileExtension implements Extension {
       return addOnId;
     } catch (FileNotFoundException e1) {
       throw new WebDriverException("Unable to file manifest.json in xpi file");
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
     }
   }
 

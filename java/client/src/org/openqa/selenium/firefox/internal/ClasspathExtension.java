@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.firefox.internal;
 
-import com.google.common.io.Closeables;
 import com.google.common.io.Resources;
 
 import org.openqa.selenium.WebDriverException;
@@ -53,13 +52,9 @@ public class ClasspathExtension implements Extension {
     }
 
     URL resourceUrl = Resources.getResource(loadResourcesUsing, loadFrom);
-    OutputStream stream = null;
 
-    try {
-      stream = new FileOutputStream(extractedXpi);
+    try (OutputStream stream = new FileOutputStream(extractedXpi)){
       Resources.copy(resourceUrl, stream);
-    } finally {
-      Closeables.close(stream, false);
     }
     new FileExtension(extractedXpi).writeTo(extensionsDir);
   }
