@@ -126,11 +126,11 @@ const Key = {
  * Note: when the low-level webdriver key handlers see Keys.NULL, active
  * modifier keys (CTRL/ALT/SHIFT/etc) release via a keyup event.
  *
- * @param {...string} var_args The key sequence to concatenate.
+ * @param {...string} keys The key sequence to concatenate.
  * @return {string} The null-terminated key sequence.
  */
-Key.chord = function(keys) {
-  return Array.prototype.slice.call(arguments, 0).join('') + Key.NULL;
+Key.chord = function(...keys) {
+  return keys.join('') + Key.NULL;
 };
 
 
@@ -179,7 +179,7 @@ Action.prototype.type;
 /** @type {(number|undefined)} */
 Action.prototype.duration;
 
-/** @type {(number|undefined)} */
+/** @type {(string|undefined)} */
 Action.prototype.value;
 
 /** @type {(Button|undefined)} */
@@ -315,7 +315,8 @@ class Sequence {
   }
 
   /**
-   * @return {boolean} whether this sequence contains any non-pause actions.
+   * @return {boolean} whether this sequence is empty or contains only
+   *     {@linkplain #pause pause} actions.
    * @final
    */
   isIdle() {
