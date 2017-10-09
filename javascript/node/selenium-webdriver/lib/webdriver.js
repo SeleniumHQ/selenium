@@ -286,13 +286,6 @@ class IWebDriver {
   /**
    * Creates a new action sequence using this driver. The sequence will not be
    * submitted for execution until {@link ActionSequence#perform} is called.
-   * Example:
-   *
-   *     driver.actions()
-   *         .mouseDown(element1)
-   *         .mouseMove({x: 15, y: 15})
-   *         .mouseUp()
-   *         .perform();
    *
    * @return {!ActionSequence} A new action sequence for this instance.
    */
@@ -2500,8 +2493,8 @@ class AlertPromise extends Alert {
  * will not be executed until {@link #perform()} is called.
  *
  * Action sequences are divided into a series of "ticks". At each tick, the
- * WebDriver remote end will perform a single action for each device in the
- * action sequence. At tick 0, the driver will perform the first action
+ * WebDriver remote end will perform a single action for each device included
+ * in the action sequence. At tick 0, the driver will perform the first action
  * defined for each device, at tick 1 the second action for each device, and
  * so on until all actions have been executed. If an individual device does
  * not have an action defined at a particular tick, it will automatically
@@ -2521,13 +2514,13 @@ class AlertPromise extends Alert {
  * 7.  releasing the SHIFT key
  *
  * Note there are no actions (or change in state) for the keyboard for
- * ticks 2 - 6.
+ * ticks 2 - 6, so it should pause for these ticks.
  *
- * This input sequence can be producing using the ActionSequence API with
+ * This input sequence can be produced using the ActionSequence API with
  * the code below. Actions must be defined individually for each device and
  * explicitly kept in sync by the user. The list of actions for the mouse is
  * far longer than the keyboard. Rather than keeping track of the number of
- * steps for the keyboard to pause, notice there is a single call to
+ * steps for the keyboard to pause, there is a single call to
  * {@link #synchronize()}. This instructs the ActionSequence to ensure the
  * input sequence for all devices are the same length - inserting explicit
  * {@linkplain input.Sequence#pause pauses} as necessary.
@@ -2568,7 +2561,7 @@ class ActionSequence {
         new input.PointerSequence(
             new input.Pointer('default touch', input.Pointer.Type.TOUCH));
   }
-  
+
   /**
    * Ensures the action sequence for every device referenced in this action
    * sequence is the same length. For devices whose sequence is too short,
@@ -2581,7 +2574,7 @@ class ActionSequence {
     let max = this.keyboard_.length();
     max = Math.max(max, this.mouse_.length());
     max = Math.max(max, this.touch_.length());
-    
+
     function extend(/** !input.Sequence */ sequence) {
       while (sequence.length() < max) {
         sequence.pause();
@@ -2628,7 +2621,7 @@ class ActionSequence {
    * Performs the configured action sequence.
    *
    * @return {!Promise<void>} a promise that will resolve when all actions have
-   *     been completed.  
+   *     been completed.
    */
   perform() {
     let actions = [
