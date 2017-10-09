@@ -1,5 +1,9 @@
 ## v4.0.0-dev
 
+### Notice
+
+*  The minimum supported version of Node is now 8.6.0
+
 ### Changes to Supported Browsers
 
 Native support has been removed for Opera and PhantomJS as the WebDriver
