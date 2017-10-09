@@ -54,17 +54,12 @@ public class ActiveSessionFactory {
     StreamSupport.stream(loadDriverProviders().spliterator(), false)
         .forEach(p -> builder.put(p::canCreateDriverInstanceFor, new InMemorySession.Factory(p)));
 
-    bind(
-        builder,
-        "org.openqa.selenium.firefox.FirefoxDriver",
-        caps -> {
+    ImmutableMap.<Predicate<Capabilities>, String>builder()
+        .put(caps -> {
           Object marionette = caps.getCapability("marionette");
 
           return marionette instanceof Boolean && !(Boolean) marionette;
-        },
-        firefox());
-
-    ImmutableMap.<Predicate<Capabilities>, String>builder()
+        }, "org.openqa.selenium.firefox.XpiDriverService")
         .put(browserName(chrome()), "org.openqa.selenium.chrome.ChromeDriverService")
         .put(containsKey("chromeOptions"), "org.openqa.selenium.chrome.ChromeDriverService")
         .put(browserName(edge()), "org.openqa.selenium.edge.EdgeDriverService")
