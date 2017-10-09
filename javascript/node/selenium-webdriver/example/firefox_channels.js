@@ -56,11 +56,6 @@ function createDriver(channel) {
   return new Builder().forBrowser('firefox').setFirefoxOptions(options).build();
 }
 
-// NOTE: disabling the promise manager so searches all run concurrently.
-// For more on the promise manager and its pending deprecation, see
-// https://github.com/SeleniumHQ/selenium/issues/2969
-promise.USE_PROMISE_MANAGER = false;
-
 Promise.all([
   doSearch(createDriver(Channel.RELEASE)),
   doSearch(createDriver(Channel.AURORA)),  // Developer Edition.
