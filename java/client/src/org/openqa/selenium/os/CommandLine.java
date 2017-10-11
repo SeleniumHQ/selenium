@@ -35,7 +35,7 @@ public class CommandLine {
   private OsProcess process;
 
   public CommandLine(String executable, String... args) {
-    process = new UnixProcess(executable, args);
+    process = new OsProcess(executable, args);
   }
 
   public CommandLine(String[] cmdarray) {
@@ -44,7 +44,7 @@ public class CommandLine {
     String[] args = new String[length];
     System.arraycopy(cmdarray, 1, args, 0, length);
 
-    process = new UnixProcess(executable, args);
+    process = new OsProcess(executable, args);
   }
 
   @VisibleForTesting
