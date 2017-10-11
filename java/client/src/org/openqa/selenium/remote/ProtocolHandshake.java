@@ -25,7 +25,10 @@ import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.CapabilityType.PROXY;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableSortedMap;
+import com.google.common.collect.Ordering;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -40,12 +43,17 @@ import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.session.CapabilitiesFilter;
+import org.openqa.selenium.remote.session.CapabilityTransform;
 import org.openqa.selenium.remote.session.ChromeFilter;
 import org.openqa.selenium.remote.session.EdgeFilter;
 import org.openqa.selenium.remote.session.FirefoxFilter;
 import org.openqa.selenium.remote.session.InternetExplorerFilter;
 import org.openqa.selenium.remote.session.OperaFilter;
+import org.openqa.selenium.remote.session.ProxyTransform;
 import org.openqa.selenium.remote.session.SafariFilter;
+import org.openqa.selenium.remote.session.StripAnyPlatform;
+import org.openqa.selenium.remote.session.W3CNameTransform;
+import org.openqa.selenium.remote.session.W3CPlatformNameNormaliser;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedWriter;
@@ -54,60 +62,46 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
-import java.util.List;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Queue;
 import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.logging.Logger;
-import java.util.regex.Pattern;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class ProtocolHandshake {
 
   private final static Logger LOG = Logger.getLogger(ProtocolHandshake.class.getName());
 
-  /**
-   * Patterns that are acceptable to send to a w3c remote end.
-   */
-  private final static Predicate<String> ACCEPTED_W3C_PATTERNS = Stream.of(
-      "^[\\w-]+:.*$",
-      "^acceptInsecureCerts$",
-      "^browserName$",
-      "^browserVersion$",
-      "^platformName$",
-      "^pageLoadStrategy$",
-      "^proxy$",
-      "^setWindowRect$",
-      "^timeouts$",
-      "^unhandledPromptBehavior$")
-      .map(Pattern::compile)
-      .map(Pattern::asPredicate)
-      .reduce(identity -> false, Predicate::or);
-
   private final Set<CapabilitiesFilter> adapters;
+  private final Set<CapabilityTransform> transforms;
 
   public ProtocolHandshake() {
-    ImmutableSet.Builder<CapabilitiesFilter> builder = ImmutableSet.builder();
-
-    ServiceLoader<CapabilitiesFilter> loader = ServiceLoader.load(CapabilitiesFilter.class);
-    loader.forEach(builder::add);
-
-    builder
+    ImmutableSet.Builder<CapabilitiesFilter> adapters = ImmutableSet.builder();
+    ServiceLoader.load(CapabilitiesFilter.class).forEach(adapters::add);
+    adapters
         .add(new ChromeFilter())
         .add(new EdgeFilter())
         .add(new FirefoxFilter())
         .add(new InternetExplorerFilter())
         .add(new OperaFilter())
         .add(new SafariFilter());
+    this.adapters = adapters.build();
 
-    this.adapters = builder.build();
+    ImmutableSet.Builder<CapabilityTransform> transforms = ImmutableSet.builder();
+    ServiceLoader.load(CapabilityTransform.class).forEach(transforms::add);
+    transforms
+        .add(new ProxyTransform())
+        .add(new StripAnyPlatform())
+        .add(new W3CPlatformNameNormaliser())
+        .add(new W3CNameTransform());
+    this.transforms = transforms.build();
   }
 
   public Result createSession(HttpClient client, Command command)
@@ -191,69 +185,27 @@ public class ProtocolHandshake {
     // We can't use the constants defined in the classes because it would introduce circular
     // dependencies between the remote library and the implementations. Yay!
 
-    ImmutableSet<Map<String, Object>> browserSpecific = adapters.stream()
+    ImmutableList<Map<String, Object>> firstMatch = adapters.stream()
         .map(adapter -> adapter.apply(des))
         .filter(Objects::nonNull)
-        .collect(ImmutableSet.toImmutableSet());
+        .map(this::applyTransforms)
+        .filter(w3cCaps -> !w3cCaps.isEmpty())
+        .collect(ImmutableList.toImmutableList());
 
-    Set<String> excludedKeys = browserSpecific.stream()
+    Set<String> excludedKeys = firstMatch.stream()
         .map(Map::keySet)
         .flatMap(Collection::stream)
         .distinct()
         .collect(ImmutableSet.toImmutableSet());
 
-    Map<String, Object> alwaysMatch = des.entrySet().stream()
+    Map<String, Object> alwaysMatch = applyTransforms(des).entrySet().stream()
         .filter(entry -> !excludedKeys.contains(entry.getKey()))
         .filter(entry -> entry.getValue() != null)
-        .filter(entry -> ACCEPTED_W3C_PATTERNS.test(entry.getKey()))
-        .filter(entry ->
-                    !("platformName".equals(entry.getKey()) &&
-                    "ANY".equalsIgnoreCase(String.valueOf(entry.getValue()))))
-        .distinct()
-        .collect(Collector.of(
-            TreeMap::new,
-            (obj, e) -> obj.put(e.getKey(), e.getValue()),
-            (left, right) -> {
-              for (Map.Entry<String, Object> entry : right.entrySet()) {
-                left.put(entry.getKey(), entry.getValue());
-              }
-              return left;
-            }));
-
-    // Now, hopefully we're left with just the browser-specific pieces. Skip the empty ones.
-    List<Map<String, Object>> firstMatch = browserSpecific.stream()
-        .map(map -> {
-          TreeMap<String, Object> json = new TreeMap<>();
-          for (Map.Entry<String, ?> entry : map.entrySet()) {
-            if (ACCEPTED_W3C_PATTERNS.test(entry.getKey())) {
-              json.put(entry.getKey(), entry.getValue());
-            }
-          }
-          return json;
-        })
-        .filter(obj -> !obj.entrySet().isEmpty())
-        .collect(Collectors.toList());
-
-    // TODO(simon): transform some capabilities that changed in the spec (timeout's "pageLoad")
-    Stream.concat(Stream.of(alwaysMatch), firstMatch.stream())
-        .forEach(obj -> {
-          if (obj.containsKey("proxy")) {
-            Object rawProxy = obj.get("proxy");
-            Map<String, Object> proxy;
-            if (rawProxy instanceof Proxy) {
-              proxy = new TreeMap<>(((Proxy) rawProxy).toJson());
-            } else {
-              //noinspection unchecked
-              proxy = new TreeMap<>((Map<String, Object>) rawProxy);
-            }
-            if (proxy.containsKey("proxyType")) {
-              proxy.put(
-                  "proxyType",
-                  String.valueOf(proxy.get("proxyType")).toLowerCase());
-            }
-            obj.put("proxy", proxy);
-          }
-        });
+        .peek(entry -> System.out.println(String.format("%s -> %s", entry.getKey(), entry.getValue())))
+        .collect(ImmutableSortedMap.toImmutableSortedMap(
+            Ordering.natural(),
+            Map.Entry::getKey,
+            Map.Entry::getValue));
 
     out.name("alwaysMatch");
     out.write(alwaysMatch, MAP_TYPE);
@@ -303,6 +255,44 @@ public class ProtocolHandshake {
       Map<String, Object> des) throws IOException {
     out.name("desiredCapabilities");
     out.write(des, MAP_TYPE);
+  }
+
+  private Map<String, Object> applyTransforms(Map<String, Object> caps) {
+    Queue<Map.Entry<String, Object>> toExamine = new LinkedList<>();
+    toExamine.addAll(caps.entrySet());
+    Set<String> seenKeys = new HashSet<>();
+    Map<String, Object> toReturn = new TreeMap<>();
+
+    // Take each entry and apply the transforms
+    while (!toExamine.isEmpty()) {
+      Map.Entry<String, Object> entry = toExamine.remove();
+      seenKeys.add(entry.getKey());
+
+      if (entry.getValue() == null) {
+        continue;
+      }
+
+      for (CapabilityTransform transform : transforms) {
+        Collection<Map.Entry<String, Object>> result = transform.apply(entry);
+        if (result == null) {
+          toReturn.remove(entry.getKey());
+          break;
+        }
+
+        for (Map.Entry<String, Object> newEntry : result) {
+          if (!seenKeys.contains(newEntry.getKey())) {
+            toExamine.add(newEntry);
+          } else {
+            if (newEntry.getKey().equals(entry.getKey())) {
+              entry = newEntry;
+            }
+            toReturn.put(newEntry.getKey(), newEntry.getValue());
+          }
+        }
+      }
+    }
+
+    return toReturn;
   }
 
   public static class Result {
