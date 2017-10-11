@@ -45,7 +45,7 @@ import java.util.Optional;
 import java.util.function.Function;
 
 /**
- * @deprecated Visibility will be reduced. Use {@link Json#toType(String, Type)}.
+ * @deprecated Visibility will be reduced. Use {@link Json#toType(Object, Type)}.
  */
 @Deprecated
 public class JsonToBeanConverter {
