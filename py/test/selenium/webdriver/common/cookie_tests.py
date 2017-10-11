@@ -40,12 +40,14 @@ def pages(request, driver, pages):
     driver.delete_all_cookies()
 
 
+@pytest.mark.xfail_marionette(reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1407675')
 def testAddCookie(cookie, driver):
     driver.add_cookie(cookie)
     returned = driver.execute_script('return document.cookie')
     assert cookie['name'] in returned
 
 
+@pytest.mark.xfail_marionette(reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1407675')
 @pytest.mark.xfail_ie
 def testAddingACookieThatExpiredInThePast(cookie, driver):
     expired = cookie.copy()
@@ -54,12 +56,14 @@ def testAddingACookieThatExpiredInThePast(cookie, driver):
     assert 0 == len(driver.get_cookies())
 
 
+@pytest.mark.xfail_marionette(reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1407675')
 def testDeleteAllCookie(cookie, driver):
     driver.add_cookie(cookie)
     driver.delete_all_cookies()
     assert not driver.get_cookies()
 
 
+@pytest.mark.xfail_marionette(reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1407675')
 def testDeleteCookie(cookie, driver):
     driver.add_cookie(cookie)
     driver.delete_cookie('foo')
@@ -73,6 +77,7 @@ def testShouldGetCookieByName(driver):
     assert 'set' == cookie['value']
 
 
+@pytest.mark.xfail_marionette(reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1407675')
 def testGetAllCookies(cookie, driver, pages, webserver):
     cookies = driver.get_cookies()
     count = len(cookies)
@@ -85,6 +90,7 @@ def testGetAllCookies(cookie, driver, pages, webserver):
     assert count + 2 == len(driver.get_cookies())
 
 
+@pytest.mark.xfail_marionette(reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1407675')
 def testShouldNotDeleteCookiesWithASimilarName(cookie, driver, webserver):
     cookie2 = cookie.copy()
     cookie2['name'] = '{}x'.format(cookie['name'])
