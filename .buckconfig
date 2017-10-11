@@ -3,7 +3,6 @@
   source_level = 8 
   target_level = 8
   jar_spool_mode = direct_to_jar
-  abi_generation_mode = source_with_deps
   compile_against_abis = true
 
 [project]
