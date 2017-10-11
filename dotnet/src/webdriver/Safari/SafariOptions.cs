@@ -45,14 +45,15 @@ namespace OpenQA.Selenium.Safari
     /// </example>
     public class SafariOptions : DriverOptions
     {
-        private const string BrowserName = "safari";
+        private const string BrowserNameValue = "safari";
         private Dictionary<string, object> additionalCapabilities = new Dictionary<string, object>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SafariOptions"/> class.
         /// </summary>
-        public SafariOptions()
+        public SafariOptions() : base()
         {
+            this.BrowserName = BrowserNameValue;
         }
 
         /// <summary>
@@ -85,7 +86,7 @@ namespace OpenQA.Selenium.Safari
         /// <returns>The ICapabilities for Safari with these options.</returns>
         public override ICapabilities ToCapabilities()
         {
-            DesiredCapabilities capabilities = new DesiredCapabilities(BrowserName, string.Empty, new Platform(PlatformType.Mac), false);
+            DesiredCapabilities capabilities = this.GenerateDesiredCapabilities(false);
             foreach (KeyValuePair<string, object> pair in this.additionalCapabilities)
             {
                 capabilities.SetCapability(pair.Key, pair.Value);

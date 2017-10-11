@@ -71,17 +71,14 @@ namespace OpenQA.Selenium.Edge
     /// </example>
     public class EdgeOptions : DriverOptions
     {
+        private const string BrowserNameValue = "MicrosoftEdge";
+
         private EdgePageLoadStrategy pageLoadStrategy = EdgePageLoadStrategy.Default;
         private Dictionary<string, object> additionalCapabilities = new Dictionary<string, object>();
 
-        /// <summary>
-        /// Gets or sets the value for describing how the browser is to wait for pages to load in the Edge driver.
-        /// Defaults to <see cref="EdgePageLoadStrategy.Default"/>.
-        /// </summary>
-        public EdgePageLoadStrategy PageLoadStrategy
+        public EdgeOptions() : base()
         {
-            get { return this.pageLoadStrategy; }
-            set { this.pageLoadStrategy = value; }
+            this.BrowserName = BrowserNameValue;
         }
 
         /// <summary>
@@ -98,12 +95,6 @@ namespace OpenQA.Selenium.Edge
         /// has already been added will overwrite the existing value with the new value in <paramref name="capabilityValue"/></remarks>
         public override void AddAdditionalCapability(string capabilityName, object capabilityValue)
         {
-            if (capabilityName == CapabilityType.PageLoadStrategy)
-            {
-                string message = string.Format(CultureInfo.InvariantCulture, "There is already an option for the {0} capability. Please use that instead.", capabilityName);
-                throw new ArgumentException(message, "capabilityName");
-            }
-
             if (string.IsNullOrEmpty(capabilityName))
             {
                 throw new ArgumentException("Capability name may not be null an empty string.", "capabilityName");
@@ -120,23 +111,7 @@ namespace OpenQA.Selenium.Edge
         /// <returns>The DesiredCapabilities for Edge with these options.</returns>
         public override ICapabilities ToCapabilities()
         {
-            DesiredCapabilities capabilities = new DesiredCapabilities("MicrosoftEdge", string.Empty, new Platform(PlatformType.Windows), false);
-            if (this.pageLoadStrategy != EdgePageLoadStrategy.Default)
-            {
-                string pageLoadStrategySetting = "normal";
-                switch (this.pageLoadStrategy)
-                {
-                    case EdgePageLoadStrategy.Eager:
-                        pageLoadStrategySetting = "eager";
-                        break;
-
-                    case EdgePageLoadStrategy.None:
-                        pageLoadStrategySetting = "none";
-                        break;
-                }
-
-                capabilities.SetCapability(CapabilityType.PageLoadStrategy, pageLoadStrategySetting);
-            }
+            DesiredCapabilities capabilities = this.GenerateDesiredCapabilities(false);
 
             foreach (KeyValuePair<string, object> pair in this.additionalCapabilities)
             {

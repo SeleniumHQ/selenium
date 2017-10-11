@@ -66,32 +66,6 @@ namespace OpenQA.Selenium.IE
     }
 
     /// <summary>
-    /// Specifies the behavior of waiting for page loads in the IE driver.
-    /// </summary>
-    public enum InternetExplorerPageLoadStrategy
-    {
-        /// <summary>
-        /// Indicates the behavior is not set.
-        /// </summary>
-        Default,
-
-        /// <summary>
-        /// Waits for pages to load and ready state to be 'complete'.
-        /// </summary>
-        Normal,
-
-        /// <summary>
-        /// Waits for pages to load and for ready state to be 'interactive' or 'complete'.
-        /// </summary>
-        Eager,
-
-        /// <summary>
-        /// Does not wait for pages to load, returning immediately.
-        /// </summary>
-        None
-    }
-
-    /// <summary>
     /// Class to manage options specific to <see cref="InternetExplorerDriver"/>
     /// </summary>
     /// <example>
@@ -120,7 +94,7 @@ namespace OpenQA.Selenium.IE
         /// </summary>
         public static readonly string Capability = "se:ieOptions";
 
-        private const string BrowserName = "internet explorer";
+        private const string BrowserNameValue = "internet explorer";
 
         private const string IgnoreProtectedModeSettingsCapability = "ignoreProtectedModeSettings";
         private const string IgnoreZoomSettingCapability = "ignoreZoomSetting";
@@ -134,7 +108,6 @@ namespace OpenQA.Selenium.IE
         private const string UsePerProcessProxyCapability = "ie.usePerProcessProxy";
         private const string EnsureCleanSessionCapability = "ie.ensureCleanSession";
         private const string ForceShellWindowsApiCapability = "ie.forceShellWindowsApi";
-        private const string ValidateCookieDocumentTypeCapability = "ie.validateCookieDocumentType";
         private const string FileUploadDialogTimeoutCapability = "ie.fileUploadDialogTimeout";
         private const string EnableFullPageScreenshotCapability = "ie.enableFullPageScreenshot";
 
@@ -154,11 +127,31 @@ namespace OpenQA.Selenium.IE
         private string initialBrowserUrl = string.Empty;
         private string browserCommandLineArguments = string.Empty;
         private InternetExplorerElementScrollBehavior elementScrollBehavior = InternetExplorerElementScrollBehavior.Top;
-        private InternetExplorerUnexpectedAlertBehavior unexpectedAlertBehavior = InternetExplorerUnexpectedAlertBehavior.Default;
-        private InternetExplorerPageLoadStrategy pageLoadStrategy = InternetExplorerPageLoadStrategy.Default;
-        private Proxy proxy;
         private Dictionary<string, object> additionalCapabilities = new Dictionary<string, object>();
         private Dictionary<string, object> additionalInternetExplorerOptions = new Dictionary<string, object>();
+
+        public InternetExplorerOptions() : base()
+        {
+            this.BrowserName = BrowserNameValue;
+            this.PlatformName = "windows";
+            this.AddKnownCapabilityName(Capability, "current InterentExplorerOptions class instance");
+            this.AddKnownCapabilityName(IgnoreProtectedModeSettingsCapability, "IntroduceInstabilityByIgnoringProtectedModeSettings property");
+            this.AddKnownCapabilityName(IgnoreZoomSettingCapability, "IgnoreZoomLevel property");
+            this.AddKnownCapabilityName(CapabilityType.HasNativeEvents, "EnableNativeEvents property");
+            this.AddKnownCapabilityName(InitialBrowserUrlCapability, "InitialBrowserUrl property");
+            this.AddKnownCapabilityName(ElementScrollBehaviorCapability, "ElementScrollBehavior property");
+            this.AddKnownCapabilityName(CapabilityType.UnexpectedAlertBehavior, "UnhandledPromptBehavior property");
+            this.AddKnownCapabilityName(EnablePersistentHoverCapability, "EnablePersistentHover property");
+            this.AddKnownCapabilityName(RequireWindowFocusCapability, "RequireWindowFocus property");
+            this.AddKnownCapabilityName(BrowserAttachTimeoutCapability, "BrowserAttachTimeout property");
+            this.AddKnownCapabilityName(ForceCreateProcessApiCapability, "ForceCreateProcessApi property");
+            this.AddKnownCapabilityName(ForceShellWindowsApiCapability, "ForceShellWindowsApi property");
+            this.AddKnownCapabilityName(BrowserCommandLineSwitchesCapability, "BrowserComaandLineArguments property");
+            this.AddKnownCapabilityName(UsePerProcessProxyCapability, "UsePerProcessProxy property");
+            this.AddKnownCapabilityName(EnsureCleanSessionCapability, "EnsureCleanSession property");
+            this.AddKnownCapabilityName(FileUploadDialogTimeoutCapability, "FileUploadDialogTimeout property");
+            this.AddKnownCapabilityName(EnableFullPageScreenshotCapability, "EnableFullPageScreenshot property");
+        }
 
         /// <summary>
         /// Gets or sets a value indicating whether to ignore the settings of the Internet Explorer Protected Mode.
@@ -226,20 +219,11 @@ namespace OpenQA.Selenium.IE
         /// Gets or sets the value for describing how unexpected alerts are to be handled in the IE driver.
         /// Defaults to <see cref="InternetExplorerUnexpectedAlertBehavior.Default"/>.
         /// </summary>
+        [Obsolete("This property is being replaced by the UnhandledPromptBehavior property, and will be removed in a future version of the .NET bindings. Please use that instead.")]
         public InternetExplorerUnexpectedAlertBehavior UnexpectedAlertBehavior
         {
-            get { return this.unexpectedAlertBehavior; }
-            set { this.unexpectedAlertBehavior = value; }
-        }
-
-        /// <summary>
-        /// Gets or sets the value for describing how the browser is to wait for pages to load in the IE driver.
-        /// Defaults to <see cref="InternetExplorerPageLoadStrategy.Default"/>.
-        /// </summary>
-        public InternetExplorerPageLoadStrategy PageLoadStrategy
-        {
-            get { return this.pageLoadStrategy; }
-            set { this.pageLoadStrategy = value; }
+            get { return this.GetUnexpectedAlertBehavior(); }
+            set { this.SetUnhandledPromptBehavior(value); }
         }
 
         /// <summary>
@@ -293,17 +277,6 @@ namespace OpenQA.Selenium.IE
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether to validate the document type of the loaded
-        /// document when setting cookies.
-        /// </summary>
-        [Obsolete("The IE driver no longer validates document types for cookie retrieval or setting. This property will be removed in a future release.")]
-        public bool ValidateCookieDocumentType
-        {
-            get { return this.validateCookieDocumentType; }
-            set { this.validateCookieDocumentType = value; }
-        }
-
-        /// <summary>
         /// Gets or sets the command line arguments used in launching Internet Explorer when the
         /// Windows CreateProcess API is used. This property only has an effect when the
         /// <see cref="ForceCreateProcessApi"/> is <see langword="true"/>.
@@ -312,18 +285,6 @@ namespace OpenQA.Selenium.IE
         {
             get { return this.browserCommandLineArguments; }
             set { this.browserCommandLineArguments = value; }
-        }
-
-        /// <summary>
-        /// Gets or sets the <see cref="Proxy"/> to be used with Internet Explorer. By default,
-        /// will install the specified proxy to be the system proxy, used by all instances of
-        /// Internet Explorer. To change this default behavior, change the <see cref="UsePerProcessProxy"/>
-        /// property.
-        /// </summary>
-        public Proxy Proxy
-        {
-            get { return this.proxy; }
-            set { this.proxy = value; }
         }
 
         /// <summary>
@@ -356,6 +317,7 @@ namespace OpenQA.Selenium.IE
         /// Gets or sets a value indicating whether to enable full-page screenshots for
         /// the IE driver. Defaults to <see langword="true"/>.
         /// </summary>
+        [Obsolete("The driver no longer supports this capability. It will be removed in a future release.")]
         public bool EnableFullPageScreenshot
         {
             get { return this.enableFullPageScreenshot; }
@@ -401,27 +363,10 @@ namespace OpenQA.Selenium.IE
         /// has already been added will overwrite the existing value with the new value in <paramref name="capabilityValue"/></remarks>
         public void AddAdditionalCapability(string capabilityName, object capabilityValue, bool isGlobalCapability)
         {
-            if (capabilityName == IgnoreProtectedModeSettingsCapability ||
-                capabilityName == IgnoreZoomSettingCapability ||
-                capabilityName == CapabilityType.HasNativeEvents ||
-                capabilityName == InitialBrowserUrlCapability ||
-                capabilityName == ElementScrollBehaviorCapability ||
-                capabilityName == CapabilityType.UnexpectedAlertBehavior ||
-                capabilityName == EnablePersistentHoverCapability ||
-                capabilityName == RequireWindowFocusCapability ||
-                capabilityName == BrowserAttachTimeoutCapability ||
-                capabilityName == ForceCreateProcessApiCapability ||
-                capabilityName == ForceShellWindowsApiCapability ||
-                capabilityName == BrowserCommandLineSwitchesCapability ||
-                capabilityName == CapabilityType.Proxy ||
-                capabilityName == UsePerProcessProxyCapability ||
-                capabilityName == EnsureCleanSessionCapability ||
-                capabilityName == ValidateCookieDocumentTypeCapability ||
-                capabilityName == CapabilityType.PageLoadStrategy ||
-                capabilityName == FileUploadDialogTimeoutCapability ||
-                capabilityName == EnableFullPageScreenshotCapability)
+            if (this.IsKnownCapabilityName(capabilityName))
             {
-                string message = string.Format(CultureInfo.InvariantCulture, "There is already an option for the {0} capability. Please use that instead.", capabilityName);
+                string typeSafeOptionName = this.GetTypeSafeOptionName(capabilityName);
+                string message = string.Format(CultureInfo.InvariantCulture, "There is already an option for the {0} capability. Please use the {1} instead.", capabilityName, typeSafeOptionName);
                 throw new ArgumentException(message, "capabilityName");
             }
 
@@ -448,50 +393,7 @@ namespace OpenQA.Selenium.IE
         /// <returns>The DesiredCapabilities for IE with these options.</returns>
         public override ICapabilities ToCapabilities()
         {
-            DesiredCapabilities capabilities = new DesiredCapabilities(BrowserName, string.Empty, new Platform(PlatformType.Windows), true);
-
-            if (this.pageLoadStrategy != InternetExplorerPageLoadStrategy.Default)
-            {
-                string pageLoadStrategySetting = "normal";
-                switch (this.pageLoadStrategy)
-                {
-                    case InternetExplorerPageLoadStrategy.Eager:
-                        pageLoadStrategySetting = "eager";
-                        break;
-
-                    case InternetExplorerPageLoadStrategy.None:
-                        pageLoadStrategySetting = "none";
-                        break;
-                }
-
-                capabilities.SetCapability(CapabilityType.PageLoadStrategy, pageLoadStrategySetting);
-            }
-
-            if (this.unexpectedAlertBehavior != InternetExplorerUnexpectedAlertBehavior.Default)
-            {
-                string unexpectedAlertBehaviorSetting = "dismiss";
-                switch (this.unexpectedAlertBehavior)
-                {
-                    case InternetExplorerUnexpectedAlertBehavior.Ignore:
-                        unexpectedAlertBehaviorSetting = "ignore";
-                        break;
-
-                    case InternetExplorerUnexpectedAlertBehavior.Accept:
-                        unexpectedAlertBehaviorSetting = "accept";
-                        break;
-                }
-
-                capabilities.SetCapability(CapabilityType.UnexpectedAlertBehavior, unexpectedAlertBehaviorSetting);
-            }
-
-            if (this.proxy != null)
-            {
-                Dictionary<string, object> proxyCapability = this.proxy.ToCapability();
-                if (proxyCapability != null)
-                {
-                    capabilities.SetCapability(CapabilityType.Proxy, proxyCapability);
-                }
-            }
+            DesiredCapabilities capabilities = this.GenerateDesiredCapabilities(true);
 
             Dictionary<string, object> internetExplorerOptions = this.BuildInternetExplorerOptionsDictionary();
             capabilities.SetCapability(InternetExplorerOptions.Capability, internetExplorerOptions);
@@ -559,7 +461,7 @@ namespace OpenQA.Selenium.IE
                 internetExplorerOptionsDictionary[ForceShellWindowsApiCapability] = true;
             }
 
-            if (this.proxy != null)
+            if (this.Proxy != null)
             {
                 internetExplorerOptionsDictionary[UsePerProcessProxyCapability] = this.usePerProcessProxy;
             }
@@ -580,6 +482,45 @@ namespace OpenQA.Selenium.IE
             }
 
             return internetExplorerOptionsDictionary;
+        }
+
+        private void SetUnhandledPromptBehavior(InternetExplorerUnexpectedAlertBehavior unexpectedAlertBehavior)
+        {
+            switch (unexpectedAlertBehavior)
+            {
+                case InternetExplorerUnexpectedAlertBehavior.Accept:
+                    this.UnhandledPromptBehavior = UnhandledPromptBehavior.AcceptAndNotify;
+                    break;
+
+                case InternetExplorerUnexpectedAlertBehavior.Dismiss:
+                    this.UnhandledPromptBehavior = UnhandledPromptBehavior.DismissAndNotify;
+                    break;
+
+                case InternetExplorerUnexpectedAlertBehavior.Ignore:
+                    this.UnhandledPromptBehavior = UnhandledPromptBehavior.Ignore;
+                    break;
+
+                default:
+                    this.UnhandledPromptBehavior = UnhandledPromptBehavior.Default;
+                    break;
+            }
+        }
+
+        private InternetExplorerUnexpectedAlertBehavior GetUnexpectedAlertBehavior()
+        {
+            switch (this.UnhandledPromptBehavior)
+            {
+                case UnhandledPromptBehavior.AcceptAndNotify:
+                    return InternetExplorerUnexpectedAlertBehavior.Accept;
+
+                case UnhandledPromptBehavior.DismissAndNotify:
+                    return InternetExplorerUnexpectedAlertBehavior.Dismiss;
+
+                case UnhandledPromptBehavior.Ignore:
+                    return InternetExplorerUnexpectedAlertBehavior.Ignore;
+            }
+
+            return InternetExplorerUnexpectedAlertBehavior.Default;
         }
     }
 }

@@ -44,7 +44,14 @@ namespace OpenQA.Selenium.PhantomJS
     /// </example>
     public class PhantomJSOptions : DriverOptions
     {
+        private const string BrowserNameValue = "phantomjs";
+
         private Dictionary<string, object> additionalCapabilities = new Dictionary<string, object>();
+
+        public PhantomJSOptions() : base()
+        {
+            this.BrowserName = BrowserNameValue;
+        }
 
         /// <summary>
         /// Provides a means to add additional capabilities not yet added as type safe options
@@ -76,7 +83,7 @@ namespace OpenQA.Selenium.PhantomJS
         /// <returns>The DesiredCapabilities for PhantomJS with these options.</returns>
         public override ICapabilities ToCapabilities()
         {
-            DesiredCapabilities capabilities = new DesiredCapabilities("phantomjs", string.Empty, new Platform(PlatformType.Any), false);
+            DesiredCapabilities capabilities = this.GenerateDesiredCapabilities(false);
 
             foreach (KeyValuePair<string, object> pair in this.additionalCapabilities)
             {

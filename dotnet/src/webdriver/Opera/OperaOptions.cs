@@ -58,7 +58,7 @@ namespace OpenQA.Selenium.Opera
         /// </summary>
         public static readonly string Capability = "operaOptions";
 
-        private const string BrowserName = "opera";
+        private const string BrowserNameValue = "opera";
 
         private const string ArgumentsOperaOption = "args";
         private const string BinaryOperaOption = "binary";
@@ -84,6 +84,11 @@ namespace OpenQA.Selenium.Opera
         private Dictionary<string, object> localStatePreferences;
         private Proxy proxy;
 
+        public OperaOptions() : base()
+        {
+            this.BrowserName = BrowserNameValue;
+        }
+
         /// <summary>
         /// Gets or sets the location of the Opera browser's binary executable file.
         /// </summary>
@@ -101,15 +106,6 @@ namespace OpenQA.Selenium.Opera
         {
             get { return this.leaveBrowserRunning; }
             set { this.leaveBrowserRunning = value; }
-        }
-
-        /// <summary>
-        /// Gets or sets the proxy to use with this instance of Opera.
-        /// </summary>
-        public Proxy Proxy
-        {
-            get { return this.proxy; }
-            set { this.proxy = value; }
         }
 
         /// <summary>
@@ -452,13 +448,8 @@ namespace OpenQA.Selenium.Opera
         {
             Dictionary<string, object> operaOptions = this.BuildOperaOptionsDictionary();
 
-            DesiredCapabilities capabilities = new DesiredCapabilities(BrowserName, string.Empty, new Platform(PlatformType.Any), false);
+            DesiredCapabilities capabilities = this.GenerateDesiredCapabilities(false);
             capabilities.SetCapability(OperaOptions.Capability, operaOptions);
-
-            if (this.proxy != null)
-            {
-                capabilities.SetCapability(CapabilityType.Proxy, this.proxy);
-            }
 
             foreach (KeyValuePair<string, object> pair in this.additionalCapabilities)
             {
