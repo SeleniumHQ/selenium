@@ -99,7 +99,6 @@ public class UploadTest extends JUnit4TestBase {
   @Test
   @Ignore(IE)
   @Ignore(MARIONETTE)
-  @Ignore(FIREFOX)
   @Ignore(CHROME)
   @Ignore(PHANTOMJS)
   @Ignore(SAFARI)
