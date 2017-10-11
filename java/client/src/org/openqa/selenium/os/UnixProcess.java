@@ -54,8 +54,7 @@ class UnixProcess implements OsProcess {
   private final Executor executor = new DaemonExecutor();
 
   private volatile OutputStream drainTo;
-  private SeleniumWatchDog executeWatchdog = new SeleniumWatchDog(
-      ExecuteWatchdog.INFINITE_TIMEOUT);
+  private SeleniumWatchDog executeWatchdog = new SeleniumWatchDog(ExecuteWatchdog.INFINITE_TIMEOUT);
   private PumpStreamHandler streamHandler;
 
   private final org.apache.commons.exec.CommandLine cl;
@@ -148,8 +147,7 @@ class UnixProcess implements OsProcess {
       return getExitCode();
     }
 
-    log.severe(String.format("Unable to kill process with PID %s",
-                             watchdog.getPID()));
+    log.severe(String.format("Unable to kill process %s", watchdog.process));
     int exitCode = -1;
     executor.setExitValue(exitCode);
     return exitCode;
@@ -236,10 +234,6 @@ class UnixProcess implements OsProcess {
       starting = true;
     }
 
-    private String getPID() {
-      return String.valueOf(ProcessUtils.getProcessId(process));
-    }
-
     private void waitForProcessStarted() {
       while (starting) {
         try {
@@ -262,8 +256,13 @@ class UnixProcess implements OsProcess {
     }
 
     private void destroyHarder() {
-      ProcessUtils.killProcess(process);
+      try {
+        Process awaitFor = this.process.destroyForcibly();
+        awaitFor.waitFor(10, SECONDS);
+      } catch (InterruptedException e) {
+        Thread.interrupted();
+        throw new RuntimeException(e);
+      }
     }
   }
-
 }
