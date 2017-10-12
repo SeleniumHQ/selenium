@@ -27,6 +27,7 @@ import com.google.common.collect.ImmutableSet;
 
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.BeanToJsonConverter;
 import org.openqa.selenium.remote.Dialect;
@@ -182,6 +183,27 @@ public class NewSessionPayloadTest {
             "alwaysMatch", ImmutableMap.of("se:cake", "cheese"),
             "firstMatch", ImmutableList.of(ImmutableMap.of("se:cake", "sausages")))));
     fail("We should never see this");
+  }
+
+  @Test
+  public void convertEverythingToFirstMatchOnlyifPayloadContainsAlwaysMatchSectionAndOssCapabilities()
+      throws IOException {
+    List<Capabilities> capabilities = create(ImmutableMap.of(
+        "desiredCapabilities", ImmutableMap.of(
+            "browserName", "firefox",
+            "platform", "WINDOWS"),
+        "capabilities", ImmutableMap.of(
+            "alwaysMatch", ImmutableMap.of(
+                "platformName", "macos"),
+            "firstMatch", ImmutableList.of(
+                ImmutableMap.of("browserName", "foo"),
+                ImmutableMap.of("browserName", "firefox")))));
+
+    assertEquals(ImmutableList.of(
+        new ImmutableCapabilities("browserName", "firefox", "platformName", "windows", "platform", "WINDOWS"),
+        new ImmutableCapabilities("browserName", "foo", "platformName", "macos", "platform", "MAC"),
+        new ImmutableCapabilities("browserName", "firefox", "platformName", "macos", "platform", "MAC")),
+                 capabilities);
   }
 
   private List<Capabilities> create(Map<String, ?> source) throws IOException {
