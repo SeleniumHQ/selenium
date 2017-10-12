@@ -20,8 +20,8 @@ rubydocs(
     "CHANGES"
   ],
   readme = "README.md",
-  output_dir = "../docs/api/rb",
-  deps = [ "//rb:gem:build", "//rb:bundle" ]
+  output_dir = "docs/api/rb",
+  deps = ["//rb:gem:build", "//rb:bundle"]
 )
 
 ruby_library(name = "common",
@@ -311,4 +311,12 @@ ruby_test(name = "unit",
   ]
 )
 
-ruby_lint(name = "lint")
+ruby_lint(name = "lint",
+  srcs = [
+    "lib/**/*.rb",
+    "spec/**/*.rb",
+    "Gemfile",
+    "selenium-webdriver.gemspec"
+  ],
+  deps = ["//rb:bundle"]
+)
