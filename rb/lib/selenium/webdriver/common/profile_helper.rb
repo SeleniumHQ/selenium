@@ -61,7 +61,7 @@ module Selenium
 
       module ClassMethods
         def from_json(json)
-          data = JSON.parse(json).fetch('zip')
+          data = JSON.parse(json)
 
           # can't use Tempfile here since it doesn't support File::BINARY mode on 1.8
           # can't use Dir.mktmpdir(&blk) because of http://jira.codehaus.org/browse/JRUBY-4082
