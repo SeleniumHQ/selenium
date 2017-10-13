@@ -18,7 +18,7 @@ _bindings:
     python: "2.7"
   ruby: &ruby
     language: ruby
-    rvm: 2.3.3
+    rvm: 2.0.0-p648
     jdk: oraclejdk8
 
 _browsers:
