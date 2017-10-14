@@ -111,7 +111,7 @@ class WebDriver(object):
 
     def __init__(self, command_executor='http://127.0.0.1:4444/wd/hub',
                  desired_capabilities=None, browser_profile=None, proxy=None,
-                 keep_alive=False, file_detector=None):
+                 keep_alive=False, file_detector=None, options=None):
         """
         Create a new driver that will issue commands using the wire protocol.
 
@@ -128,6 +128,7 @@ class WebDriver(object):
              HTTP keep-alive. Defaults to False.
          - file_detector - Pass custom file detector object during instantiation. If None,
              then default LocalFileDetector() will be used.
+         - options - instance of a driver options.Options class
         """
         if desired_capabilities is None:
             raise WebDriverException("Desired Capabilities can't be None")
@@ -137,6 +138,8 @@ class WebDriver(object):
             warnings.warn("Please use FirefoxOptions to set proxy",
                           DeprecationWarning)
             proxy.add_to_capabilities(desired_capabilities)
+        if options is not None:
+            desired_capabilities.update(options.to_capabilities())
         self.command_executor = command_executor
         if type(self.command_executor) is bytes or isinstance(self.command_executor, str):
             self.command_executor = RemoteConnection(command_executor, keep_alive=keep_alive)

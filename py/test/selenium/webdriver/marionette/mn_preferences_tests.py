@@ -25,7 +25,7 @@ def driver_kwargs(request, driver_kwargs):
     options = Options()
     options.set_preference('browser.startup.homepage_override.mstone', '')
     options.set_preference('startup.homepage_welcome_url', 'about:')
-    driver_kwargs['firefox_options'] = options
+    driver_kwargs['options'] = options
     return driver_kwargs
 
 

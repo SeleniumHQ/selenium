@@ -17,7 +17,11 @@
 
 
 from copy import deepcopy
+from importlib import import_module
 
+import pytest
+
+from selenium.webdriver import DesiredCapabilities
 from selenium.webdriver.remote.command import Command
 from selenium.webdriver.remote.webdriver import WebDriver
 
@@ -40,3 +44,19 @@ def test_converts_proxy_type_value_to_lowercase_for_w3c(mocker):
     expected_params = {'capabilities': {'firstMatch': [{}], 'alwaysMatch': w3c_caps},
                        'desiredCapabilities': oss_caps}
     mock.assert_called_with(Command.NEW_SESSION, expected_params)
+
+
+@pytest.mark.parametrize('browser_name', ['firefox', 'chrome', 'ie', 'opera'])
+def test_accepts_firefox_options_to_remote_driver(mocker, browser_name):
+    options = import_module('selenium.webdriver.{}.options'.format(browser_name))
+    caps_name = browser_name.upper() if browser_name != 'ie' else 'INTERNETEXPLORER'
+    mock = mocker.patch('selenium.webdriver.remote.webdriver.WebDriver.start_session')
+
+    opts = options.Options()
+    opts.add_argument('foo')
+    expected_caps = getattr(DesiredCapabilities, caps_name)
+    caps = expected_caps.copy()
+    expected_caps.update(opts.to_capabilities())
+
+    WebDriver(desired_capabilities=caps, options=opts)
+    mock.assert_called_with(expected_caps, None)

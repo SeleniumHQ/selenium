@@ -22,6 +22,7 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 
 class Options(object):
+    KEY = "goog:chromeOptions"
 
     def __init__(self):
         self._binary_location = ''
@@ -166,6 +167,6 @@ class Options(object):
         if self.debugger_address:
             chrome_options["debuggerAddress"] = self.debugger_address
 
-        chrome["goog:chromeOptions"] = chrome_options
+        chrome[self.KEY] = chrome_options
 
         return chrome
