@@ -2,14 +2,14 @@ shallow_clone: true
 build: off
 environment:
   matrix:
-    - RUBY_VERSION: 22-x64
+    - RUBY_VERSION: 200
       TASK: build
-    - RUBY_VERSION: 200-x64
+    - RUBY_VERSION: 200
       TASK: //rb:ie-test
 install:
   - 'set JAVA_HOME=C:\Program Files (x86)\Java\jdk1.8.0'
   - 'set PATH=%JAVA_HOME%;%PATH%'
-  - 'set RUBY_HOME=C:\Ruby22-x64\bin'
+  - 'set RUBY_HOME=C:\Ruby200\bin'
   - 'set PATH=%RUBY_HOME%;%PATH%'
   - 'set BUCK_EXTRA_JAVA_ARGS=-Djna.nosys=true'
 before_test:
