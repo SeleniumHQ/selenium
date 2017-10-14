@@ -30,7 +30,7 @@ module Selenium
       end
 
       def as_json(*)
-        {zip: Zipper.zip(layout_on_disk)}
+        {"zip" => Zipper.zip(layout_on_disk)}
       end
 
       def to_json(*)
