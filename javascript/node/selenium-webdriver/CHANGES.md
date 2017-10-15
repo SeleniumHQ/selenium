@@ -27,6 +27,7 @@ mode.
 *  Removed the `firefox.Binary` class. Custom binaries can still be selected
    using `firefox.Options#setBinary()`. Likewise, custom binary arguments can be
    specified with `firefox.Options#addArguments()`.
+*  Removed the `firefox/binary` module
 *  Removed the `lib/actions` module
 *  Removed the `lib/events` module
 *  Removed the `phantomjs` module
