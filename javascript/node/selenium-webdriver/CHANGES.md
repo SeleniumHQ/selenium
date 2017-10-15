@@ -67,6 +67,10 @@ mode.
    -  setDefaultFlow
    -  when (use Promise.resolve)
 *  Renamed `WebDriver#schedule()` to `WebDriver#execute()`
+*  Changes to `firefox.Options`
+   -  Removed setLoggingPreferences (was a no-op)
+*  Changes to `safari.Options`
+   -  Removed setLoggingPreferences (was a no-op)
 *  Changes to `lib/webdriver.Window` (`driver.manage().window()`):
    -   Added
        -  getRect

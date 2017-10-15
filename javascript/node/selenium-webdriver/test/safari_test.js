@@ -40,14 +40,11 @@ describe('safari.Options', function() {
 
     it('extracts supported WebDriver capabilities', function() {
       let proxyPrefs = proxy.direct(),
-        logPrefs = {},
         caps = webdriver.Capabilities.chrome()
-          .set(webdriver.Capability.PROXY, proxyPrefs)
-          .set(webdriver.Capability.LOGGING_PREFS, logPrefs);
+          .set(webdriver.Capability.PROXY, proxyPrefs);
 
       let options = safari.Options.fromCapabilities(caps);
       assert(options.proxy_).equalTo(proxyPrefs);
-      assert(options.logPrefs_).equalTo(logPrefs);
     });
   });
 
@@ -73,16 +70,12 @@ describe('safari.Options', function() {
     });
 
     it('sets generic driver capabilities', function() {
-      let proxyPrefs = proxy.direct(),
-        loggingPrefs = {};
+      let proxyPrefs = proxy.direct();
 
-      options
-        .setLoggingPrefs(loggingPrefs)
-        .setProxy(proxyPrefs);
+      options.setProxy(proxyPrefs);
 
       let caps = options.toCapabilities();
       assert(caps.get('proxy')).equalTo(proxyPrefs);
-      assert(caps.get('loggingPrefs')).equalTo(loggingPrefs);
     });
   });
 });

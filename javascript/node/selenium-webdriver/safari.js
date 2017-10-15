@@ -26,7 +26,6 @@ const io = require('./io');
 const {Capabilities, Capability} = require('./lib/capabilities');
 const command = require('./lib/command');
 const error = require('./lib/error');
-const logging = require('./lib/logging');
 const promise = require('./lib/promise');
 const Symbols = require('./lib/symbols');
 const webdriver = require('./lib/webdriver');
@@ -78,9 +77,6 @@ class Options {
     /** @private {Object<string, *>} */
     this.options_ = null;
 
-    /** @private {./lib/logging.Preferences} */
-    this.logPrefs_ = null;
-
     /** @private {?./lib/capabilities.ProxyConfig} */
     this.proxy_ = null;
   }
@@ -106,10 +102,6 @@ class Options {
       options.setProxy(capabilities.get(Capability.PROXY));
     }
 
-    if (capabilities.has(Capability.LOGGING_PREFS)) {
-      options.setLoggingPrefs(capabilities.get(Capability.LOGGING_PREFS));
-    }
-
     return options;
   }
 
@@ -125,16 +117,6 @@ class Options {
       this.options_ = {};
     }
     this.options_['cleanSession'] = clean;
-    return this;
-  }
-
-  /**
-   * Sets the logging preferences for the new session.
-   * @param {!./lib/logging.Preferences} prefs The logging preferences.
-   * @return {!Options} A self reference.
-   */
-  setLoggingPrefs(prefs) {
-    this.logPrefs_ = prefs;
     return this;
   }
 
@@ -173,9 +155,6 @@ class Options {
    */
   toCapabilities(opt_capabilities) {
     var caps = opt_capabilities || Capabilities.safari();
-    if (this.logPrefs_) {
-      caps.set(Capability.LOGGING_PREFS, this.logPrefs_);
-    }
     if (this.proxy_) {
       caps.set(Capability.PROXY, this.proxy_);
     }

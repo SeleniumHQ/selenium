@@ -130,7 +130,6 @@ const io = require('../io');
 const exec = require('../io/exec');
 const capabilities = require('../lib/capabilities');
 const command = require('../lib/command');
-const logging = require('../lib/logging');
 const webdriver = require('../lib/webdriver');
 const net = require('../net');
 const portprober = require('../net/portprober');
@@ -150,9 +149,6 @@ class Options {
 
     /** @private {!Array<string>} */
     this.args_ = [];
-
-    /** @private {logging.Preferences} */
-    this.logPrefs_ = null;
 
     /** @private {?capabilities.ProxyConfig} */
     this.proxy_ = null;
@@ -232,16 +228,6 @@ class Options {
   }
 
   /**
-   * Sets the logging preferences for the new session.
-   * @param {logging.Preferences} prefs The logging preferences.
-   * @return {!Options} A self reference.
-   */
-  setLoggingPreferences(prefs) {
-    this.logPrefs_ = prefs;
-    return this;
-  }
-
-  /**
    * Sets the proxy to use.
    *
    * @param {capabilities.ProxyConfig} proxy The proxy configuration to use.
@@ -261,10 +247,6 @@ class Options {
     let caps = capabilities.Capabilities.firefox();
     let firefoxOptions = {};
     caps.set('moz:firefoxOptions', firefoxOptions);
-
-    if (this.logPrefs_) {
-      caps.set(capabilities.Capability.LOGGING_PREFS, this.logPrefs_);
-    }
 
     if (this.proxy_) {
       caps.set(capabilities.Capability.PROXY, this.proxy_);
