@@ -1473,60 +1473,72 @@ class Window {
   }
 
   /**
-   * Retrieves the window's current position, relative to the top left corner of
-   * the screen.
-   * @return {!Promise<{x: number, y: number}>} A promise
-   *     that will be resolved with the window's position in the form of a
-   *     {x:number, y:number} object literal.
+   * Retrieves the a rect describing the current top-level window's size and
+   * position.
+   *
+   * @return {!Promise<{x: number, y: number, width: number, height: number}>}
+   *     A promise that will resolve to the window rect of the current window.
    */
-  getPosition() {
-    return this.driver_.execute(
-        new command.Command(command.Name.GET_WINDOW_POSITION).
-            setParameter('windowHandle', 'current'));
+  async getRect() {
+    try {
+      return await this.driver_.execute(
+          new command.Command(command.Name.GET_WINDOW_RECT));
+    } catch (ex) {
+      if (ex instanceof error.UnknownCommandError) {
+        let {width, height} =
+            await this.driver_.execute(
+                new command.Command(command.Name.GET_WINDOW_SIZE)
+                    .setParameter('windowHandle', 'current'));
+        let {x, y} =
+            await this.driver_.execute(
+                new command.Command(command.Name.GET_WINDOW_POSITION)
+                    .setParameter('windowHandle', 'current'));
+        return {x, y, width, height};
+      }
+      throw ex;
+    }
   }
 
   /**
-   * Repositions the current window.
-   * @param {number} x The desired horizontal position, relative to the left
-   *     side of the screen.
-   * @param {number} y The desired vertical position, relative to the top of the
-   *     of the screen.
-   * @return {!Promise<void>} A promise that will be resolved
-   *     when the command has completed.
+   * Sets the current top-level window's size and position. You may update just
+   * the size by omitting `width` & `height`, or just the position by omitting
+   * `x` & `y` options.
+   *
+   * @param {{x: (number|undefined),
+   *          y: (number|undefined),
+   *          width: (number|undefined),
+   *          height: (number|undefined)}} options
+   *     The desired window size and position.
+   * @return {!Promise<{x: number, y: number, width: number, height: number}>}
+   *     A promise that will resolve to the current widnow's updated window
+   *     rect.
    */
-  setPosition(x, y) {
-    return this.driver_.execute(
-        new command.Command(command.Name.SET_WINDOW_POSITION).
-            setParameter('windowHandle', 'current').
-            setParameter('x', x).
-            setParameter('y', y));
-  }
+  async setRect({x, y, width, height}) {
+    try {
+      return await this.driver_.execute(
+          new command.Command(command.Name.SET_WINDOW_RECT)
+              .setParameters({x, y, width, height}));
+    } catch (ex) {
+      if (ex instanceof error.UnknownCommandError) {
+        if (typeof x === 'number' && typeof y === 'number') {
+          await this.driver_.execute(
+              new command.Command(command.Name.SET_WINDOW_POSITION)
+                  .setParameter('windowHandle', 'current')
+                  .setParameter('x', x)
+                  .setParameter('y', y));
+        }
 
-  /**
-   * Retrieves the window's current size.
-   * @return {!Promise<{width: number, height: number}>} A
-   *     promise that will be resolved with the window's size in the form of a
-   *     {width:number, height:number} object literal.
-   */
-  getSize() {
-    return this.driver_.execute(
-        new command.Command(command.Name.GET_WINDOW_SIZE).
-            setParameter('windowHandle', 'current'));
-  }
-
-  /**
-   * Resizes the current window.
-   * @param {number} width The desired window width.
-   * @param {number} height The desired window height.
-   * @return {!Promise<void>} A promise that will be resolved
-   *     when the command has completed.
-   */
-  setSize(width, height) {
-    return this.driver_.execute(
-        new command.Command(command.Name.SET_WINDOW_SIZE).
-            setParameter('windowHandle', 'current').
-            setParameter('width', width).
-            setParameter('height', height));
+        if (typeof  width === 'number' && typeof height === 'number') {
+          await this.driver_.execute(
+              new command.Command(command.Name.SET_WINDOW_SIZE)
+                  .setParameter('windowHandle', 'current')
+                  .setParameter('width', width)
+                  .setParameter('height', height));
+        }
+        return this.getRect();
+      }
+      throw ex;
+    }
   }
 
   /**

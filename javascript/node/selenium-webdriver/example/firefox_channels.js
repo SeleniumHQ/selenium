@@ -32,23 +32,32 @@ const {Channel, Options} = require('../firefox');
 
 let i = 0;
 function resposition(driver) {
-  return driver.manage().window().setSize(600, 400)
-      .then(_ => driver.manage().window().setPosition(300 * (i++), 0));
+  return driver.manage().window().setRect({
+    width: 600,
+    height: 400,
+    x: 300 * (i++),
+    y: 0
+  });
 }
 
-function doSearch(driver) {
-  // Start on the base about page.
-  return driver.get('about:')
+async function doSearch(driver) {
+  try {
+    // Start on the base about page.
+    await driver.get('about:')
     // Reposition so users can see the three windows.
-    .then(_ => resposition(driver))
+    await resposition(driver);
     // Pause so users can see the magic.
-    .then(_ => promise.delayed(750))
+    await promise.delayed(750);
     // Now do the rest.
-    .then(_ => driver.get('http://www.google.com/ncr'))
-    .then(_ =>
-        driver.findElement(By.name('q')).sendKeys('webdriver', Key.RETURN))
-    .then(_ => driver.wait(until.titleIs('webdriver - Google Search'), 1000))
-    .then(_ => driver.quit());
+    await driver.get('http://www.google.com/ncr');
+    await driver.findElement(By.name('q')).sendKeys('webdriver', Key.RETURN);
+    await driver.wait(until.titleIs('webdriver - Google Search'), 1000);
+    console.log('Success!');
+  } catch (ex) {
+    console.log('An error occured! ' + ex);
+  } finally {
+    await driver.quit();
+  }
 }
 
 function createDriver(channel) {
@@ -61,7 +70,7 @@ Promise.all([
   doSearch(createDriver(Channel.AURORA)),  // Developer Edition.
   doSearch(createDriver(Channel.NIGHTLY)),
 ]).then(_ => {
-  console.log('Success!');
+  console.log('All done!');
 }, err => {
   console.error('An error occured! ' + err);
   setTimeout(() => {throw err}, 0);

@@ -123,6 +123,8 @@ const Name = {
   SET_WINDOW_POSITION: 'setWindowPosition',
   GET_WINDOW_SIZE: 'getWindowSize',
   SET_WINDOW_SIZE: 'setWindowSize',
+  GET_WINDOW_RECT: 'getWindowRect',
+  SET_WINDOW_RECT: 'setWindowRect',
   MAXIMIZE_WINDOW: 'maximizeWindow',
   MINIMIZE_WINDOW: 'minimizeWindow',
   FULLSCREEN_WINDOW: 'fullscreenWindow',

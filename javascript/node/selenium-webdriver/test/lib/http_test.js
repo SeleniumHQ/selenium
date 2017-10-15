@@ -153,14 +153,6 @@ describe('http', function() {
         beforeEach(() => executor = new http.Executor(client));
 
         describe('in legacy mode', function() {
-          test(CommandName.GET_WINDOW_SIZE, {sessionId:'s123'}, false,
-               'GET', '/session/s123/window/current/size');
-
-          test(CommandName.SET_WINDOW_SIZE,
-               {sessionId:'s123', width: 1, height: 1}, false,
-               'POST', '/session/s123/window/current/size',
-               {width: 1, height: 1});
-
           test(CommandName.MAXIMIZE_WINDOW, {sessionId:'s123'}, false,
                'POST', '/session/s123/window/current/maximize');
 
@@ -171,14 +163,6 @@ describe('http', function() {
         });
 
         describe('in W3C mode', function() {
-          test(CommandName.GET_WINDOW_SIZE,
-               {sessionId:'s123'}, true,
-               'GET', '/session/s123/window/size');
-
-          test(CommandName.SET_WINDOW_SIZE,
-               {sessionId:'s123', width: 1, height: 1}, true,
-               'POST', '/session/s123/window/size', {width: 1, height: 1});
-
           test(CommandName.MAXIMIZE_WINDOW, {sessionId:'s123'}, true,
                'POST', '/session/s123/window/maximize');
 

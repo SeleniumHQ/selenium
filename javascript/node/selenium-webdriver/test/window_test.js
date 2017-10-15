@@ -71,21 +71,18 @@ test.suite(function(env) {
   });
 
   it('can set the window position of the current window', async function() {
-    let position = await driver.manage().window().getPosition();
+    let {x, y} = await driver.manage().window().getRect();
+    let newX = x + 10;
+    let newY = y + 10;
 
-    await driver.manage().window().setSize(640, 480);
-    await driver.manage().window().setPosition(position.x + 10, position.y + 10);
+    await driver.manage().window().setRect({
+      x: newX,
+      y: newY,
+      width: 640,
+      height: 480
+    });
 
-    // For phantomjs, setPosition is a no-op and the "window" stays at (0, 0)
-    if (env.currentBrowser() === Browser.PHANTOM_JS) {
-      position = await driver.manage().window().getPosition();
-      assert(position.x).equalTo(0);
-      assert(position.y).equalTo(0);
-    } else {
-      var dx = position.x + 10;
-      var dy = position.y + 10;
-      return driver.wait(forPositionToBe(dx, dy), 1000);
-    }
+    return driver.wait(forPositionToBe(newX, newY), 1000);
   });
 
   it('can set the window position from a frame', async function() {
@@ -94,51 +91,41 @@ test.suite(function(env) {
     let frame = await driver.findElement(By.name('iframe1-name'));
     await driver.switchTo().frame(frame);
 
-    let position = await driver.manage().window().getPosition();
-    await driver.manage().window().setSize(640, 480);
-    await driver.manage().window().setPosition(position.x + 10, position.y + 10);
+    let {x, y} = await driver.manage().window().getRect();
+    x += 10;
+    y += 10;
 
-    // For phantomjs, setPosition is a no-op and the "window" stays at (0, 0)
-    if (env.currentBrowser() === Browser.PHANTOM_JS) {
-      return driver.manage().window().getPosition().then(function(position) {
-        assert(position.x).equalTo(0);
-        assert(position.y).equalTo(0);
-      });
-    } else {
-      var dx = position.x + 10;
-      var dy = position.y + 10;
-      return driver.wait(forPositionToBe(dx, dy), 1000);
-    }
+    await driver.manage().window().setRect({width: 640, height: 480, x, y});
+    return driver.wait(forPositionToBe(x, y), 1000);
   });
 
-  function changeSizeBy(dx, dy) {
-    return driver.manage().window().getSize().then(function(size) {
-      return driver.manage().window()
-          .setSize(size.width + dx, size.height + dy)
-          .then(_ => {
-            return driver.wait(
-                forSizeToBe(size.width + dx, size.height + dy), 1000);
-          });
-    });
+  async function changeSizeBy(dx, dy) {
+    let {width, height} = await driver.manage().window().getRect();
+    width += dx;
+    height += dy;
+
+    let rect = await driver.manage().window().setRect({width, height});
+    if (rect.width === width && rect.height === height) {
+      return;
+    }
+    return driver.wait(forSizeToBe(width, height), 1000);
   }
 
   function forSizeToBe(w, h) {
-    return function() {
-      return driver.manage().window().getSize().then(function(size) {
-        return size.width === w && size.height === h;
-      });
+    return async function() {
+      let {width, height} = await driver.manage().window().getRect();
+      return width === w && height === h;
     };
   }
 
   function forPositionToBe(x, y) {
-    return function() {
-      return driver.manage().window().getPosition().then(function(position) {
-        return position.x === x &&
-            // On OSX, the window height may be bumped down 22px for the top
-            // status bar.
-            // On Linux, Opera's window position will be off by 28px.
-           (position.y >= y && position.y <= (y + 28));
-      });
+    return async function() {
+      let position = await driver.manage().window().getRect();
+      return position.x === x &&
+          // On OSX, the window height may be bumped down 22px for the top
+          // status bar.
+          // On Linux, Opera's window position will be off by 28px.
+         (position.y >= y && position.y <= (y + 28));
     };
   }
 

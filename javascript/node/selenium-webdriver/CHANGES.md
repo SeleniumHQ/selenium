@@ -16,8 +16,6 @@ mode.
 
 ### API Changes
 
-*  Added `webdriver.manage().window().minimize()`
-*  Added `webdriver.manage().window().fullscreen()`
 *  The core WebDriver API no longer uses promise manager
    -  Removed `index.Builder#setControlFlow()`
    -  The following thenable types no longer have a `cancel()` method:
@@ -68,6 +66,17 @@ mode.
    -  setDefaultFlow
    -  when (use Promise.resolve)
 *  Renamed `WebDriver#schedule()` to `WebDriver#execute()`
+*  Changes to `lib/webdriver.Window` (`driver.manage().window()`):
+   -   Added
+       -  getRect
+       -  setRect
+       -  fullscreen
+       -  minimize
+   -   Removed (use the getRect/setRect methods)
+       -  getPosition
+       -  setPosition
+       -  getSize
+       -  setSize
 
 ### Changes for W3C WebDriver Spec Compliance
 
@@ -75,7 +84,7 @@ mode.
    <https://www.w3.org/TR/webdriver/#actions>. For details, refer to the JS doc
    on the `lib/webdriver.ActionSequence` class. For simplicity, support for the
    legacy actions API has been removed.
-*  Added supported for minimizing windows and toggling fullscreen.
+*  All window manipulation commands are now supported.
 
 
 ## v3.6.0
