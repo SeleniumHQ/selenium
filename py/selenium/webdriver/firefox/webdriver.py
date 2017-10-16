@@ -237,6 +237,8 @@ class WebDriver(RemoteWebDriver):
         Returns identifier of installed addon. This identifier can later
         be used to uninstall addon.
 
+        :param path: Full path to the addon that will be installed.
+
         :Usage:
             driver.install_addon('firebug.xpi')
         """
