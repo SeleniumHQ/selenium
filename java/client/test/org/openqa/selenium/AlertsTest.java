@@ -541,6 +541,7 @@ public class AlertsTest extends JUnit4TestBase {
 
   @Test
   @Ignore(CHROME)
+  @Ignore(value = HTMLUNIT, reason = "https://github.com/SeleniumHQ/htmlunit-driver/issues/57")
   @NotYetImplemented(value = MARIONETTE,
       reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1279211")
   public void testIncludesAlertTextInUnhandledAlertException() {
