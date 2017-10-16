@@ -38,6 +38,7 @@ module Selenium
     autoload :PhantomJS, 'selenium/webdriver/phantomjs'
     autoload :Remote,    'selenium/webdriver/remote'
     autoload :Safari,    'selenium/webdriver/safari'
+    autoload :Servo,     'selenium/webdriver/servo'
     autoload :Support,   'selenium/webdriver/support'
 
     # @api private
