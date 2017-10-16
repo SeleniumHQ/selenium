@@ -54,6 +54,8 @@ module Selenium
             Edge::Driver.new(opts)
           when :remote
             Remote::Driver.new(opts)
+          when :servo
+            Servo::Driver.new(opts)
           else
             raise ArgumentError, "unknown driver: #{browser.inspect}"
           end
