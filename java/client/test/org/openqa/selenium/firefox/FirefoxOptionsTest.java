@@ -315,4 +315,17 @@ public class FirefoxOptionsTest {
                  new FirefoxBinary().getPath().replaceAll("\\\\", "/"));
   }
 
+  @Test
+  public void roundTrippingToCapabilitiesAndBackWorks() {
+    FirefoxOptions expected = new FirefoxOptions()
+        .setLegacy(true)
+        .addPreference("cake", "walk");
+
+    // Convert to a Map so we can create a standalone capabilities instance, which we then use to
+    // create a new set of options. This is the round trip, ladies and gentlemen.
+    FirefoxOptions seen = new FirefoxOptions(new ImmutableCapabilities(expected.asMap()));
+
+    assertEquals(expected, seen);
+  }
+
 }
