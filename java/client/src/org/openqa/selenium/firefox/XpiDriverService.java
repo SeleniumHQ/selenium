@@ -18,14 +18,16 @@
 package org.openqa.selenium.firefox;
 
 
-import static org.openqa.selenium.firefox.FirefoxProfile.PORT_PREFERENCE;
 import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.openqa.selenium.firefox.FirefoxOptions.FIREFOX_OPTIONS;
+import static org.openqa.selenium.firefox.FirefoxProfile.PORT_PREFERENCE;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.io.ByteStreams;
 
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.internal.ClasspathExtension;
 import org.openqa.selenium.firefox.internal.Extension;
@@ -38,9 +40,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 public class XpiDriverService extends DriverService {
 
@@ -175,6 +181,60 @@ public class XpiDriverService extends DriverService {
     }
   }
 
+  @SuppressWarnings("unchecked")
+  static XpiDriverService createDefaultService(Capabilities caps) {
+    Builder builder = new Builder().usingAnyFreePort();
+
+    FirefoxProfile profile = Stream.<ThrowingSupplier<FirefoxProfile>>of(
+        () -> (FirefoxProfile) caps.getCapability(FirefoxDriver.PROFILE),
+        () -> FirefoxProfile.fromJson((String) caps.getCapability(FirefoxDriver.PROFILE)),
+        () -> ((FirefoxOptions) caps).getProfile(),
+        () -> (FirefoxProfile) ((Map<String, Object>) caps.getCapability(FIREFOX_OPTIONS)).get("profile"),
+        () -> FirefoxProfile.fromJson((String) ((Map<String, Object>) caps.getCapability(FIREFOX_OPTIONS)).get("profile")),
+        () -> {
+          Map<String, Object> options = (Map<String, Object>) caps.getCapability(FIREFOX_OPTIONS);
+          FirefoxProfile toReturn = new FirefoxProfile();
+          ((Map<String, Object>) options.get("prefs")).forEach((key, value) -> {
+            if (value instanceof Boolean) { toReturn.setPreference(key, (Boolean) value); }
+            if (value instanceof Integer) { toReturn.setPreference(key, (Integer) value); }
+            if (value instanceof String) { toReturn.setPreference(key, (String) value); }
+          });
+          return toReturn;
+        })
+        .map(supplier -> {
+          try {
+            return supplier.get();
+          } catch (Exception e) {
+            return null;
+          }
+        })
+        .filter(Objects::nonNull)
+        .findFirst()
+        .orElse(null);
+
+    if (profile != null) {
+      builder.withProfile(profile);
+    }
+
+    Object binary = caps.getCapability(FirefoxDriver.BINARY);
+    if (binary != null) {
+      FirefoxBinary actualBinary;
+      if (binary instanceof FirefoxBinary) {
+        actualBinary = (FirefoxBinary) binary;
+      } else if (binary instanceof String) {
+        actualBinary = new FirefoxBinary(new File(String.valueOf(binary)));
+      } else {
+        throw new IllegalArgumentException(
+            "Expected binary to be a string or a binary: " + binary);
+      }
+
+      builder.withBinary(actualBinary);
+    }
+
+    return builder.build();
+
+  }
+
   public static Builder builder() {
     return new Builder();
   }
@@ -228,6 +288,25 @@ public class XpiDriverService extends DriverService {
             getLogFile());
       } catch (IOException e) {
         throw new WebDriverException(e);
+      }
+    }
+  }
+
+  @FunctionalInterface
+  private interface ThrowingSupplier<V> extends Supplier<V> {
+
+    V throwingGet() throws Exception;
+
+    @Override
+    default V get() {
+      try {
+        return throwingGet();
+      } catch (Exception e) {
+        if (e instanceof RuntimeException) {
+          throw (RuntimeException) e;
+        } else {
+          throw new RuntimeException(e);
+        }
       }
     }
   }
