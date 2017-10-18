@@ -22,6 +22,7 @@ import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.CapabilityType;
 
@@ -155,6 +156,11 @@ public class SafariOptions extends MutableCapabilities {
   @Deprecated
   public SafariOptions setUseTechnologyPreview(boolean useTechnologyPreview) {
     options.put(Option.TECHNOLOGY_PREVIEW, useTechnologyPreview);
+    return this;
+  }
+
+  public SafariOptions setProxy(Proxy proxy) {
+    setCapability(CapabilityType.PROXY, proxy);
     return this;
   }
 

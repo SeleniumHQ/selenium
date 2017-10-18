@@ -32,6 +32,7 @@ import com.google.common.io.Files;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.PageLoadStrategy;
+import org.openqa.selenium.Proxy;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.UnexpectedAlertBehaviour;
 import org.openqa.selenium.remote.BrowserType;
@@ -239,6 +240,11 @@ public class ChromeOptions extends MutableCapabilities {
       args.add("--headless");
       args.add("--disable-gpu");
     }
+    return this;
+  }
+
+  public ChromeOptions setProxy(Proxy proxy) {
+    setCapability(CapabilityType.PROXY, proxy);
     return this;
   }
 

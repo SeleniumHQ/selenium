@@ -32,6 +32,7 @@ import com.google.common.collect.ImmutableSortedMap;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.PageLoadStrategy;
+import org.openqa.selenium.Proxy;
 import org.openqa.selenium.UnexpectedAlertBehaviour;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.internal.ProfilesIni;
@@ -293,6 +294,11 @@ public class FirefoxOptions extends MutableCapabilities {
     if (headless) {
       args.add("-headless");
     }
+    return this;
+  }
+
+  public FirefoxOptions setProxy(Proxy proxy) {
+    setCapability(CapabilityType.PROXY, proxy);
     return this;
   }
 

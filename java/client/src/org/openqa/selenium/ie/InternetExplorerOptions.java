@@ -44,6 +44,7 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.PageLoadStrategy;
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.Proxy;
 import org.openqa.selenium.UnexpectedAlertBehaviour;
 import org.openqa.selenium.internal.ElementScrollBehavior;
 import org.openqa.selenium.remote.BrowserType;
@@ -227,6 +228,11 @@ public class InternetExplorerOptions extends MutableCapabilities {
 
   public InternetExplorerOptions setUnhandledPromptBehaviour(UnexpectedAlertBehaviour behaviour) {
     return amend(UNHANDLED_PROMPT_BEHAVIOUR, behaviour);
+  }
+
+  public InternetExplorerOptions setProxy(Proxy proxy) {
+    setCapability(CapabilityType.PROXY, proxy);
+    return this;
   }
 
   private InternetExplorerOptions amend(String optionName, Object value) {
