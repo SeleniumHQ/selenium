@@ -38,4 +38,17 @@ public class SafariOptionsTest {
     assertEquals(((Map<String, ?>) caps.get(SafariOptions.CAPABILITY)).get("cleanSession"), true);
   }
 
+  @Test
+  public void roundTrippingToCapabilitiesAndBackWorks() {
+    SafariOptions expected = new SafariOptions()
+        .useCleanSession(true)
+        .setUseTechnologyPreview(true);
+
+    // Convert to a Map so we can create a standalone capabilities instance, which we then use to
+    // create a new set of options. This is the round trip, ladies and gentlemen.
+    SafariOptions seen = new SafariOptions(new ImmutableCapabilities(expected.asMap()));
+
+    assertEquals(expected, seen);
+  }
+
 }

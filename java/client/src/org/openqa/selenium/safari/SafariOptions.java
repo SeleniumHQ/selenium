@@ -18,6 +18,7 @@
 package org.openqa.selenium.safari;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSortedMap;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.MutableCapabilities;
@@ -54,23 +55,37 @@ public class SafariOptions extends MutableCapabilities {
    */
   public static final String CAPABILITY = "safari.options";
 
-  private static class Option {
-    private Option() {}  // Utility class.
-
-    private static final String CLEAN_SESSION = "cleanSession";
-    private static final String TECHNOLOGY_PREVIEW = "technologyPreview";
-    private static final String PORT = "port";
+  private interface Option {
+    String CLEAN_SESSION = "cleanSession";
+    String TECHNOLOGY_PREVIEW = "technologyPreview";
+    String PORT = "port";
   }
 
   private Map<String, Object> options = new TreeMap<>();
 
   public SafariOptions() {
     options.put(Option.PORT, 0);
-    options.put(Option.TECHNOLOGY_PREVIEW, false);
 
-    setCapability(Option.CLEAN_SESSION, false);
+    setUseTechnologyPreview(false);
+    setUseCleanSession(false);
+
     setCapability(CapabilityType.BROWSER_NAME, "safari");
     setCapability(CapabilityType.PLATFORM, Platform.MAC);
+  }
+
+  public SafariOptions(Capabilities source) {
+    this();
+
+    source.asMap().forEach((key, value)-> {
+      if (CAPABILITY.equals(key) && value instanceof Map) {
+
+        @SuppressWarnings("unchecked")
+        Map<? extends String, ?> map = (Map<? extends String, ?>) value;
+        options.putAll(map);
+      } else if (value != null) {
+        setCapability(key, value);
+      }
+    });
   }
 
   @Override
@@ -237,7 +252,15 @@ public class SafariOptions extends MutableCapabilities {
   }
 
   @Override
+  protected int amendHashCode() {
+    return options.hashCode();
+  }
+
+  @Override
   public Map<String, ?> asMap() {
-    return ImmutableMap.of(CAPABILITY, super.asMap());
+    return ImmutableSortedMap.<String, Object>naturalOrder()
+        .putAll(super.asMap())
+        .put(CAPABILITY, options)
+        .build();
   }
 }
