@@ -18,6 +18,11 @@
 package org.openqa.selenium.remote.server;
 
 
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.remote.Dialect;
+
+import java.util.Set;
+
 interface SessionFactory {
-  ActiveSession apply(NewSessionPayload payload);
+  ActiveSession apply(Set<Dialect> downstreamDialects, Capabilities capabilities);
 }

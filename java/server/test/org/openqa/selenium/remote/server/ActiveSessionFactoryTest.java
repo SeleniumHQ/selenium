@@ -28,6 +28,7 @@ import org.mockito.Mockito;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.remote.Dialect;
 
 import java.io.IOException;
 import java.util.Map;
@@ -47,10 +48,8 @@ public class ActiveSessionFactoryTest {
       }
     };
 
-    try (NewSessionPayload payload = new NewSessionPayload(toPayload(caps.getBrowserName()))) {
-      ActiveSession session = sessionFactory.createSession(payload);
-      assertEquals(driver, session.getWrappedDriver());
-    }
+    ActiveSession session = sessionFactory.createSession(ImmutableSet.of(Dialect.W3C), caps);
+    assertEquals(driver, session.getWrappedDriver());
   }
 
   @Test
@@ -58,20 +57,15 @@ public class ActiveSessionFactoryTest {
     ActiveSession session = Mockito.mock(ActiveSession.class);
 
     ActiveSessionFactory sessionFactory = new ActiveSessionFactory()
-        .bind(caps -> "cheese".equals(caps.getBrowserName()), payload -> session);
+        .bind(caps -> "cheese".equals(caps.getBrowserName()), (dialects, caps) -> session);
 
-    try (NewSessionPayload payload = new NewSessionPayload(toPayload("cheese"))) {
-      ActiveSession created = sessionFactory.createSession(payload);
+    ActiveSession created = sessionFactory.createSession(ImmutableSet.copyOf(Dialect.values()), toPayload("cheese"));
 
-      assertSame(session, created);
-    }
+    assertSame(session, created);
   }
 
-  private Map<String, Object> toPayload(String browserName) {
-    return ImmutableMap.of(
-        "capabilities", ImmutableMap.of(
-            "alwaysMatch", ImmutableMap.of("browserName", browserName)),
-        "desiredCapabilities", ImmutableMap.of("browserName", browserName));
+  private Capabilities toPayload(String browserName) {
+    return new ImmutableCapabilities("browserName", browserName);
   }
 
   private static class StubbedProvider implements DriverProvider {

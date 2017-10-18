@@ -23,15 +23,18 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import com.google.common.base.Preconditions;
 import com.google.common.base.StandardSystemProperty;
 
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.Augmenter;
+import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.CommandCodec;
 import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.Dialect;
+import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.ProtocolHandshake;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.Response;
@@ -50,10 +53,10 @@ import org.openqa.selenium.remote.service.DriverService;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Supplier;
 
 class ServicedSession implements ActiveSession {
@@ -169,10 +172,10 @@ class ServicedSession implements ActiveSession {
     }
 
     @Override
-    public ActiveSession apply(NewSessionPayload payload) {
+    public ActiveSession apply(Set<Dialect> downstreamDialects, Capabilities capabilities) {
       DriverService service = createService.get();
 
-      try (InputStream in = payload.getPayload().get()) {
+      try {
         service.start();
 
         PortProber.waitForPortUp(service.getUrl().getPort(), 30, SECONDS);
@@ -181,18 +184,18 @@ class ServicedSession implements ActiveSession {
 
         HttpClient client = new ApacheHttpClient.Factory().createClient(url);
 
-        ProtocolHandshake.Result result = new ProtocolHandshake()
-            .createSession(client, in, payload.getPayloadSize())
-            .orElseThrow(() -> new SessionNotCreatedException("Unable to create session"));
+        Command command = new Command(null, DriverCommand.NEW_SESSION, capabilities.asMap());
+
+        ProtocolHandshake.Result result = new ProtocolHandshake().createSession(client, command);
 
         SessionCodec codec;
         Dialect upstream = result.getDialect();
         Dialect downstream;
-        if (payload.getDownstreamDialects().contains(result.getDialect())) {
+        if (downstreamDialects.contains(result.getDialect())) {
           codec = new Passthrough(url);
           downstream = upstream;
         } else {
-          downstream = payload.getDownstreamDialects().iterator().next();
+          downstream = downstreamDialects.iterator().next();
 
           codec = new ProtocolConverter(
               url,

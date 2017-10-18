@@ -18,17 +18,13 @@
 package org.openqa.selenium.remote.server;
 
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
 import com.google.common.base.Preconditions;
 import com.google.common.base.StandardSystemProperty;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.io.CharStreams;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.HasCapabilities;
-import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.io.TemporaryFilesystem;
@@ -38,12 +34,8 @@ import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -138,22 +130,9 @@ class InMemorySession implements ActiveSession {
     }
 
     @Override
-    public ActiveSession apply(NewSessionPayload payload) {
+    public ActiveSession apply(Set<Dialect> downstreamDialects, Capabilities caps) {
       // Assume the blob fits in the available memory.
-      try (
-          InputStream is = payload.getPayload().get();
-          Reader ir = new InputStreamReader(is, UTF_8);
-          Reader reader = new BufferedReader(ir)) {
-        Map<?, ?> raw = toBean.convert(Map.class, CharStreams.toString(reader));
-        Object desired = raw.get("desiredCapabilities");
-
-        if (!(desired instanceof Map)) {
-          return null;
-        }
-
-        @SuppressWarnings("unchecked") ImmutableCapabilities caps =
-            new ImmutableCapabilities((Map<String, ?>) desired);
-
+      try {
         if (!provider.canCreateDriverInstanceFor(caps)) {
           return null;
         }
@@ -161,9 +140,9 @@ class InMemorySession implements ActiveSession {
         WebDriver driver = provider.newInstance(caps);
 
         // Prefer the OSS dialect.
-        Dialect downstream = payload.getDownstreamDialects().contains(Dialect.OSS) ?
+        Dialect downstream = downstreamDialects.contains(Dialect.OSS) ?
                              Dialect.OSS :
-                             payload.getDownstreamDialects().iterator().next();
+                             downstreamDialects.iterator().next();
         return new InMemorySession(driver, caps, downstream);
       } catch (IOException|IllegalStateException e) {
         throw new SessionNotCreatedException("Cannot establish new session", e);

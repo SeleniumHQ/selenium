@@ -21,17 +21,18 @@ import static java.util.concurrent.TimeUnit.MINUTES;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
+import com.google.common.collect.ImmutableSet;
 
 import com.thoughtworks.selenium.CommandProcessor;
 import com.thoughtworks.selenium.SeleniumException;
 
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.server.ActiveSession;
 import org.openqa.selenium.remote.server.ActiveSessionFactory;
 import org.openqa.selenium.remote.server.ActiveSessionListener;
 import org.openqa.selenium.remote.server.ActiveSessions;
-import org.openqa.selenium.remote.server.NewSessionPayload;
 import org.openqa.selenium.remote.server.WebDriverServlet;
 
 import java.io.IOException;
@@ -211,11 +212,11 @@ public class WebDriverBackedSeleniumServlet extends HttpServlet {
       }
 
       try {
-        try (NewSessionPayload payload = NewSessionPayload.create(caps)) {
-          ActiveSession session = new ActiveSessionFactory().createSession(payload);
-          sessions.put(session);
-          sessionId = session.getId();
-        }
+        ActiveSession session = new ActiveSessionFactory().createSession(
+            ImmutableSet.copyOf(Dialect.values()),
+            caps);
+        sessions.put(session);
+        sessionId = session.getId();
       } catch (Exception e) {
         log("Unable to start session", e);
         sendError(

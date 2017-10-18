@@ -40,6 +40,7 @@ import org.openqa.selenium.remote.server.log.LoggingManager;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.Objects;
 import java.util.logging.Level;
 
 public class BeginSession implements CommandHandler {
@@ -69,7 +70,19 @@ public class BeginSession implements CommandHandler {
         req.consumeContentStream(),
         req.getContentEncoding());
          NewSessionPayload payload = new NewSessionPayload(contentLength, reader)) {
-      session = sessionFactory.createSession(payload);
+      session = payload.stream()
+          .map(caps -> {
+            try {
+              return sessionFactory.createSession(payload.getDownstreamDialects(), caps);
+            } catch (SessionNotCreatedException e) {
+              // Do nothing. We'll complain at the end.
+              return null;
+            }
+          })
+          .filter(Objects::nonNull)
+          .findFirst()
+          .orElseThrow(
+              () -> new SessionNotCreatedException("Unable to create session: " + payload));
       allSessions.put(session);
     }
 

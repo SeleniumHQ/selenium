@@ -33,12 +33,14 @@ import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.remote.Dialect;
 
 import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.ServiceLoader;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
@@ -176,17 +178,15 @@ public class ActiveSessionFactory {
     return toCompare -> toCompare.asMap().keySet().stream().anyMatch(pattern.asPredicate());
   }
 
-  public ActiveSession createSession(NewSessionPayload newSessionPayload) throws IOException {
-    return newSessionPayload.stream()
-        .peek(caps -> LOG.info("Capabilities are: " + caps))
-        // Grab any factories that claim to be able to build each capability
-        .flatMap(caps -> factories.entrySet().stream()
-            .filter(e -> e.getKey().test(caps))
-            .peek(e -> LOG.info(String.format("%s matched %s", caps, e.getValue())))
-            .map(Map.Entry::getValue))
+  public ActiveSession createSession(Set<Dialect> downstreamDialects, Capabilities caps) {
+    LOG.info("Capabilities are: " + caps);
+    return factories.entrySet().stream()
+        .filter(e -> e.getKey().test(caps))
+        .peek(e -> LOG.info(String.format("%s matched %s", caps, e.getValue())))
+        .map(Map.Entry::getValue)
         .findFirst()
-        .map(factory -> factory.apply(newSessionPayload))
+        .map(factory -> factory.apply(downstreamDialects, caps))
         .orElseThrow(() -> new SessionNotCreatedException(
-            "Unable to create a new session because of no configuration."));
+            "Unable to create a new session because of no configuration. " + caps));
   }
 }
