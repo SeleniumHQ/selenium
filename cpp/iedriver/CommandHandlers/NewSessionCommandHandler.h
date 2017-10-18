@@ -50,6 +50,8 @@ class NewSessionCommandHandler : public IECommandHandler {
                                  const Json::Value& capabilities);
   void SetInputSettings(const IECommandExecutor& executor,
                         const Json::Value& capabilities);
+  void SetTimeoutSettings(const IECommandExecutor& executor,
+                          const Json::Value& capabilities);
   void SetProxySettings(const IECommandExecutor& executor,
                         const Json::Value& proxy_capability,
                         const bool use_per_process_proxy);
@@ -60,6 +62,9 @@ class NewSessionCommandHandler : public IECommandHandler {
   Json::Value ProcessCapabilities(const IECommandExecutor& executor,
                                   const Json::Value& capabilities,
                                   std::string* error_message);
+
+  Json::Value ValidateArguments(const Json::Value& capabilities,
+                                std::string* error_message);
 
   bool ValidateCapabilities(const Json::Value& capabilities,
                             const std::string& capability_set_name,

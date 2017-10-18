@@ -44,7 +44,17 @@ void NewSessionCommandHandler::ExecuteInternal(
   ParametersMap::const_iterator it = command_parameters.find("capabilities");
   if (it != command_parameters.end()) {
     LOG(DEBUG) << "Found W3C capabilities structure";
-    returned_capabilities = this->ProcessCapabilities(executor, it->second, &error_message);
+    Json::Value validated_capabilities = this->ValidateArguments(it->second, &error_message);
+    if (validated_capabilities.size() == 0) {
+      // validated_capabilities returns an array with validated capabilities
+      // in it. If there are no entries in the array, then something failed
+      // validation. The error_message string will tell us what.
+      mutable_executor.set_is_valid(false);
+      response->SetErrorResponse(ERROR_INVALID_ARGUMENT, error_message);
+      return;
+    }
+    error_message = "";
+    returned_capabilities = this->ProcessCapabilities(executor, validated_capabilities, &error_message);
   } else {
     // W3C capabilities not found. Try legacy capabilities.
     // Note that we ignore requiredCapabilities. This is by design.
@@ -187,12 +197,20 @@ Json::Value NewSessionCommandHandler::ProcessLegacyCapabilities(const IECommandE
   return this->CreateReturnedCapabilities(executor);
 }
 
-Json::Value NewSessionCommandHandler::ProcessCapabilities(const IECommandExecutor& executor, const Json::Value& capabilities, std::string* error_message) {
-  Json::Value returned_capabilities(Json::nullValue);
+Json::Value NewSessionCommandHandler::ValidateArguments(const Json::Value& capabilities, std::string* error_message) {
+  Json::Value validated_capabilities(Json::arrayValue);
+  if (!capabilities.isObject()) {
+    *error_message = "'capabilities' in new session request body is not a JSON object.";
+    return validated_capabilities;
+  }
   Json::Value always_match(Json::objectValue);
   if (capabilities.isMember("alwaysMatch")) {
     LOG(DEBUG) << "Found alwaysMatch in capabilities";
     always_match = capabilities["alwaysMatch"];
+    if (!always_match.isObject()) {
+      *error_message = "alwaysMatch must be a JSON object";
+      return validated_capabilities;
+    }
   }
 
   if (this->ValidateCapabilities(always_match, "alwaysMatch", error_message)) {
@@ -204,6 +222,7 @@ Json::Value NewSessionCommandHandler::ProcessCapabilities(const IECommandExecuto
     }
     if (!first_match_candidates.isArray()) {
       *error_message = "firstMatch must be a JSON list";
+      return validated_capabilities;
     } else {
       // If the user passed a "firstMatch" array, but it was empty,
       // seed the firstMatch array with an empty object for merging
@@ -211,6 +230,7 @@ Json::Value NewSessionCommandHandler::ProcessCapabilities(const IECommandExecuto
       if (first_match_candidates.size() == 0) {
         first_match_candidates.append(empty_capabilities);
       }
+      bool first_match_validation_failure = false;
       Json::Value validated_first_match_candidates(Json::arrayValue);
       for (size_t i = 0; i < first_match_candidates.size(); ++i) {
         std::string first_match_validation_error = "";
@@ -218,12 +238,18 @@ Json::Value NewSessionCommandHandler::ProcessCapabilities(const IECommandExecuto
         if (this->ValidateCapabilities(first_match_candidate, "firstMatch element " + std::to_string(i), &first_match_validation_error)) {
           validated_first_match_candidates.append(first_match_candidate);
         } else {
-          if (error_message->size() > 0) {
+          first_match_validation_failure = true;
+          if (error_message->size() == 0) {
             error_message->append("All firstMatch elements failed validation\n");
+          } else {
+            error_message->append("\n");
           }
           error_message->append(first_match_validation_error);
-          LOG(WARN) << "Error validating capabilities: " << first_match_validation_error;
         }
+      }
+
+      if (first_match_validation_failure) {
+        return validated_capabilities;
       }
 
       // Because we seed the list of "firstMatch" values with an empty value
@@ -240,51 +266,78 @@ Json::Value NewSessionCommandHandler::ProcessCapabilities(const IECommandExecuto
           Json::Value first_match = validated_first_match_candidates[static_cast<int>(i)];
           if (!this->MergeCapabilities(always_match, first_match, &merged_capabilities, error_message)) {
             // If any of the capabilities can't be merged, this is a failure
-            // condition according to the spec, so we fail here.
-            break;
+            // condition according to the spec, so we fail here, returning an
+            // empty array.
+            return Json::Value(Json::arrayValue);
           }
-          std::string match_error = "";
-          if (this->MatchCapabilities(executor, merged_capabilities, &match_error)) {
-            IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
-
-            Json::Value unexpected_alert_behavior = this->GetCapability(merged_capabilities, UNHANDLED_PROMPT_BEHAVIOR_CAPABILITY, Json::stringValue, "");
-            mutable_executor.set_unexpected_alert_behavior(unexpected_alert_behavior.asString());
-
-            Json::Value page_load_strategy = this->GetCapability(merged_capabilities, PAGE_LOAD_STRATEGY_CAPABILITY, Json::stringValue, NORMAL_PAGE_LOAD_STRATEGY);
-            mutable_executor.set_page_load_strategy(this->GetPageLoadStrategyValue(page_load_strategy.asString()));
-
-            Json::Value ie_options(Json::objectValue);
-            if (merged_capabilities.isMember(IE_DRIVER_EXTENSIONS_CAPABILITY)) {
-              ie_options = merged_capabilities[IE_DRIVER_EXTENSIONS_CAPABILITY];
-            }
-
-            std::string default_initial_url = "http://localhost:" + std::to_string(static_cast<long long>(executor.port())) + "/";
-            this->SetBrowserFactorySettings(executor, ie_options);
-
-            this->SetInputSettings(executor, ie_options);
-
-            if (merged_capabilities.isMember(PROXY_CAPABILITY)) {
-              Json::Value use_per_process_proxy_capability = this->GetCapability(ie_options, USE_PER_PROCESS_PROXY_CAPABILITY, Json::booleanValue, false);
-              bool use_per_process_proxy = use_per_process_proxy_capability.asBool();
-              this->SetProxySettings(executor, merged_capabilities[PROXY_CAPABILITY], use_per_process_proxy);
-            }
-
-            // Use CreateReturnedCapabilities to fill in unspecified capabilities values.
-            return this->CreateReturnedCapabilities(executor);
-          } else {
-            if (error_message->size() > 0) {
-              error_message->append("No matching capability sets found.\n");
-            }
-            error_message->append("Unable to match capability set ");
-            error_message->append(std::to_string(i));
-            error_message->append(": ");
-            error_message->append(match_error);
-          }
+          validated_capabilities.append(merged_capabilities);
         }
       }
     }
   }
-  return returned_capabilities;
+  return validated_capabilities;
+}
+
+Json::Value NewSessionCommandHandler::ProcessCapabilities(const IECommandExecutor& executor, const Json::Value& capabilities, std::string* error_message) {
+  for (size_t i = 0; i < capabilities.size(); ++i) {
+    std::string match_error = "";
+    Json::Value merged_capabilities = capabilities[static_cast<int>(i)];
+    if (this->MatchCapabilities(executor, merged_capabilities, &match_error)) {
+      IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
+
+      Json::Value unexpected_alert_behavior = this->GetCapability(merged_capabilities, UNHANDLED_PROMPT_BEHAVIOR_CAPABILITY, Json::stringValue, "");
+      mutable_executor.set_unexpected_alert_behavior(unexpected_alert_behavior.asString());
+
+      Json::Value page_load_strategy = this->GetCapability(merged_capabilities, PAGE_LOAD_STRATEGY_CAPABILITY, Json::stringValue, NORMAL_PAGE_LOAD_STRATEGY);
+      mutable_executor.set_page_load_strategy(this->GetPageLoadStrategyValue(page_load_strategy.asString()));
+
+      Json::Value timeouts = this->GetCapability(merged_capabilities, TIMEOUTS_CAPABILITY, Json::objectValue, Json::Value());
+      this->SetTimeoutSettings(executor, timeouts);
+
+      Json::Value ie_options(Json::objectValue);
+      if (merged_capabilities.isMember(IE_DRIVER_EXTENSIONS_CAPABILITY)) {
+        ie_options = merged_capabilities[IE_DRIVER_EXTENSIONS_CAPABILITY];
+      }
+
+      std::string default_initial_url = "http://localhost:" + std::to_string(static_cast<long long>(executor.port())) + "/";
+      this->SetBrowserFactorySettings(executor, ie_options);
+
+      this->SetInputSettings(executor, ie_options);
+
+      if (merged_capabilities.isMember(PROXY_CAPABILITY)) {
+        Json::Value use_per_process_proxy_capability = this->GetCapability(ie_options, USE_PER_PROCESS_PROXY_CAPABILITY, Json::booleanValue, false);
+        bool use_per_process_proxy = use_per_process_proxy_capability.asBool();
+        this->SetProxySettings(executor, merged_capabilities[PROXY_CAPABILITY], use_per_process_proxy);
+      }
+
+      // Use CreateReturnedCapabilities to fill in unspecified capabilities values.
+      return this->CreateReturnedCapabilities(executor);
+    } else {
+      if (error_message->size() == 0) {
+        error_message->append("No matching capability sets found.\n");
+      } else {
+        error_message->append("\n");
+      }
+      error_message->append("Unable to match capability set ");
+      error_message->append(std::to_string(i));
+      error_message->append(": ");
+      error_message->append(match_error);
+    }
+  }
+  return Json::Value(Json::nullValue);
+}
+
+void NewSessionCommandHandler::SetTimeoutSettings(const IECommandExecutor& executor, const Json::Value& capabilities) {
+  IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
+  if (capabilities.isMember("implicit")) {
+    mutable_executor.set_implicit_wait_timeout(capabilities["implicit"].asInt());
+  }
+  if (capabilities.isMember("pageLoad")) {
+    mutable_executor.set_page_load_timeout(capabilities["pageLoad"].asInt());
+  }
+  if (capabilities.isMember("script")) {
+    mutable_executor.set_async_script_timeout(capabilities["script"].asInt());
+  }
 }
 
 void NewSessionCommandHandler::SetBrowserFactorySettings(const IECommandExecutor& executor, const Json::Value& capabilities) {
@@ -404,6 +457,12 @@ Json::Value NewSessionCommandHandler::CreateReturnedCapabilities(const IECommand
     capabilities[UNHANDLED_PROMPT_BEHAVIOR_CAPABILITY] = executor.unexpected_alert_behavior();
   }
 
+  Json::Value timeouts;
+  timeouts["implicit"] = executor.implicit_wait_timeout();
+  timeouts["pageLoad"] = executor.page_load_timeout();
+  timeouts["script"] = executor.async_script_timeout();
+  capabilities[TIMEOUTS_CAPABILITY] = timeouts;
+
   Json::Value ie_options;
   ie_options[IGNORE_PROTECTED_MODE_CAPABILITY] = executor.browser_factory()->ignore_protected_mode_settings();
   ie_options[IGNORE_ZOOM_SETTING_CAPABILITY] = executor.browser_factory()->ignore_zoom_setting();
@@ -421,6 +480,8 @@ Json::Value NewSessionCommandHandler::CreateReturnedCapabilities(const IECommand
   if (executor.proxy_manager()->is_proxy_set()) {
     ie_options[USE_PER_PROCESS_PROXY_CAPABILITY] = executor.proxy_manager()->use_per_process_proxy();
     capabilities[PROXY_CAPABILITY] = executor.proxy_manager()->GetProxyAsJson();
+  } else {
+    capabilities[PROXY_CAPABILITY] = Json::Value(Json::objectValue);
   }
 
   capabilities[IE_DRIVER_EXTENSIONS_CAPABILITY] = ie_options;
@@ -467,6 +528,12 @@ bool NewSessionCommandHandler::MatchCapabilities(const IECommandExecutor& execut
     if (capability_name == ACCEPT_INSECURE_CERTS_CAPABILITY &&
         merged_capabilities[ACCEPT_INSECURE_CERTS_CAPABILITY].asBool()) {
       *error_message = "acceptInsecureCerts was 'true', but the IE driver does not allow bypassing insecure (self-signed) SSL certificates";
+      return false;
+    }
+
+    if (capability_name.find(":") != std::string::npos &&
+        capability_name != IE_DRIVER_EXTENSIONS_CAPABILITY) {
+      *error_message = capability_name + " is an unknown extension capability for IE";
       return false;
     }
   }
@@ -518,7 +585,7 @@ bool NewSessionCommandHandler::ValidateCapabilities(
     std::string capability_name = *name_iterator;
     std::string capability_error_message;
     if (capability_name == ACCEPT_INSECURE_CERTS_CAPABILITY) {
-      LOG(DEBUG) << "Found " << ACCEPT_INSECURE_CERTS_CAPABILITY << "capability."
+      LOG(DEBUG) << "Found " << ACCEPT_INSECURE_CERTS_CAPABILITY << " capability."
                  << " Validating value type is boolean.";
       if (!this->ValidateCapabilityType(capabilities,
                                         capability_name,
@@ -532,7 +599,7 @@ bool NewSessionCommandHandler::ValidateCapabilities(
     }
 
     if (capability_name == BROWSER_NAME_CAPABILITY) {
-      LOG(DEBUG) << "Found " << BROWSER_NAME_CAPABILITY << "capability."
+      LOG(DEBUG) << "Found " << BROWSER_NAME_CAPABILITY << " capability."
                  << " Validating value type is string.";
       if (!this->ValidateCapabilityType(capabilities,
                                         capability_name,
@@ -546,7 +613,7 @@ bool NewSessionCommandHandler::ValidateCapabilities(
     }
 
     if (capability_name == BROWSER_VERSION_CAPABILITY) {
-      LOG(DEBUG) << "Found " << BROWSER_VERSION_CAPABILITY << "capability."
+      LOG(DEBUG) << "Found " << BROWSER_VERSION_CAPABILITY << " capability."
                  << " Validating value type is string.";
       if (!this->ValidateCapabilityType(capabilities,
                                         capability_name,
@@ -561,7 +628,7 @@ bool NewSessionCommandHandler::ValidateCapabilities(
     }
 
     if (capability_name == PLATFORM_NAME_CAPABILITY) {
-      LOG(DEBUG) << "Found " << PLATFORM_NAME_CAPABILITY << "capability."
+      LOG(DEBUG) << "Found " << PLATFORM_NAME_CAPABILITY << " capability."
                  << " Validating value type is string.";
       if (!this->ValidateCapabilityType(capabilities,
                                         capability_name,
@@ -575,7 +642,7 @@ bool NewSessionCommandHandler::ValidateCapabilities(
     }
 
     if (capability_name == UNHANDLED_PROMPT_BEHAVIOR_CAPABILITY) {
-      LOG(DEBUG) << "Found " << UNHANDLED_PROMPT_BEHAVIOR_CAPABILITY << "capability."
+      LOG(DEBUG) << "Found " << UNHANDLED_PROMPT_BEHAVIOR_CAPABILITY << " capability."
                  << " Validating value type is string.";
       if (!this->ValidateCapabilityType(capabilities,
                                         capability_name,
@@ -585,7 +652,7 @@ bool NewSessionCommandHandler::ValidateCapabilities(
                          capability_set_name + ": " + capability_error_message;
         return false;
       } else {
-        LOG(DEBUG) << "Validating " << UNHANDLED_PROMPT_BEHAVIOR_CAPABILITY << "capability"
+        LOG(DEBUG) << "Validating " << UNHANDLED_PROMPT_BEHAVIOR_CAPABILITY << " capability"
                    << " is a valid value.";
         std::string unhandled_prompt_behavior = capabilities[capability_name].asString();
         if (unhandled_prompt_behavior != ACCEPT_UNEXPECTED_ALERTS &&
@@ -601,12 +668,13 @@ bool NewSessionCommandHandler::ValidateCapabilities(
           return false;
         }
       }
+
       continue;
     }
 
     if (capability_name == PAGE_LOAD_STRATEGY_CAPABILITY) {
       std::string page_load_strategy = "";
-      LOG(DEBUG) << "Found " << PAGE_LOAD_STRATEGY_CAPABILITY << "capability."
+      LOG(DEBUG) << "Found " << PAGE_LOAD_STRATEGY_CAPABILITY << " capability."
                  << " Validating value type is string.";
       if (capabilities[capability_name].isNull()) {
         page_load_strategy = "normal";
@@ -618,7 +686,7 @@ bool NewSessionCommandHandler::ValidateCapabilities(
                          capability_set_name + ": " + capability_error_message;
         return false;
       } else {
-        LOG(DEBUG) << "Validating " << PAGE_LOAD_STRATEGY_CAPABILITY << "capability"
+        LOG(DEBUG) << "Validating " << PAGE_LOAD_STRATEGY_CAPABILITY << " capability"
                    << " is a valid value.";
         page_load_strategy = capabilities[capability_name].asString();
         if (page_load_strategy != "none" &&
@@ -635,7 +703,7 @@ bool NewSessionCommandHandler::ValidateCapabilities(
     }
 
     if (capability_name == TIMEOUTS_CAPABILITY) {
-      LOG(DEBUG) << "Found " << TIMEOUTS_CAPABILITY << "capability."
+      LOG(DEBUG) << "Found " << TIMEOUTS_CAPABILITY << " capability."
                  << " Validating value type is object.";
       if (!this->ValidateCapabilityType(capabilities,
                                         capability_name,
@@ -645,7 +713,7 @@ bool NewSessionCommandHandler::ValidateCapabilities(
                          capability_set_name + ": " + capability_error_message;
         return false;
       } else {
-        LOG(DEBUG) << "Validating " << TIMEOUTS_CAPABILITY << "capability"
+        LOG(DEBUG) << "Validating " << TIMEOUTS_CAPABILITY << " capability"
                    << " object contains correct property names.";
         Json::Value timeouts = capabilities[capability_name];
         std::vector<std::string> timeout_names = timeouts.getMemberNames();
@@ -685,7 +753,7 @@ bool NewSessionCommandHandler::ValidateCapabilities(
     }
 
     if (capability_name == PROXY_CAPABILITY) {
-      LOG(DEBUG) << "Found " << PROXY_CAPABILITY << "capability."
+      LOG(DEBUG) << "Found " << PROXY_CAPABILITY << " capability."
                  << " Validating value type is object.";
       if (!this->ValidateCapabilityType(capabilities,
                                         capability_name,
@@ -791,7 +859,7 @@ bool NewSessionCommandHandler::ValidateCapabilities(
     }
 
     if (capability_name == IE_DRIVER_EXTENSIONS_CAPABILITY) {
-      LOG(DEBUG) << "Found " << PROXY_CAPABILITY << "capability."
+      LOG(DEBUG) << "Found " << IE_DRIVER_EXTENSIONS_CAPABILITY << " capability."
                  << " Validating value type is object.";
       if (!this->ValidateCapabilityType(capabilities,
                                         capability_name,
@@ -802,6 +870,12 @@ bool NewSessionCommandHandler::ValidateCapabilities(
                          capability_error_message;
         return false;
       }
+      continue;
+    }
+
+    if (capability_name.find(":") != std::string::npos) {
+      LOG(DEBUG) << "Found extension capability named " << capability_name << "."
+                 << " Nothing further to validate.";
       continue;
     }
 
