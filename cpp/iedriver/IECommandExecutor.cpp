@@ -73,8 +73,8 @@ LRESULT IECommandExecutor::OnCreate(UINT uMsg,
   this->serialized_response_ = "";
   this->unexpected_alert_behavior_ = "";
   this->implicit_wait_timeout_ = 0;
-  this->async_script_timeout_ = -1;
-  this->page_load_timeout_ = -1;
+  this->async_script_timeout_ = 30000;
+  this->page_load_timeout_ = 300000;
   this->is_waiting_ = false;
   this->page_load_strategy_ = "normal";
   this->file_upload_dialog_timeout_ = DEFAULT_FILE_UPLOAD_DIALOG_TIMEOUT_IN_MILLISECONDS;
