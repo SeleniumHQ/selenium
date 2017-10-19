@@ -57,7 +57,7 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Supplier;
+import java.util.function.Function;
 
 class ServicedSession implements ActiveSession {
 
@@ -146,7 +146,7 @@ class ServicedSession implements ActiveSession {
 
   public static class Factory implements SessionFactory {
 
-    private final Supplier<? extends DriverService> createService;
+    private final Function<Capabilities, ? extends DriverService> createService;
     private final String serviceClassName;
 
     Factory(String serviceClassName) {
@@ -155,25 +155,51 @@ class ServicedSession implements ActiveSession {
         Class<? extends DriverService> driverClazz =
             Class.forName(serviceClassName).asSubclass(DriverService.class);
 
-        Method serviceMethod = driverClazz.getMethod("createDefaultService");
-        serviceMethod.setAccessible(true);
+        Function<Capabilities, ? extends DriverService> factory =
+            get(driverClazz, "createDefaultService", Capabilities.class);
+        if (factory == null) {
+          factory = get(driverClazz, "createDefaultService");
+        }
 
-        this.createService = () -> {
+        if (factory == null) {
+          throw new IllegalArgumentException(
+              "DriverService has no mechansim to create a default instance");
+        }
+
+        this.createService = factory;
+      } catch (ReflectiveOperationException e) {
+        throw new IllegalArgumentException(
+            "DriverService class does not exist: " + serviceClassName);
+      }
+    }
+
+    private Function<Capabilities, ? extends DriverService> get(
+        Class<? extends DriverService> driverServiceClazz,
+        String methodName,
+        Class... args) {
+      try {
+        Method serviceMethod = driverServiceClazz.getDeclaredMethod(methodName, args);
+        serviceMethod.setAccessible(true);
+        return caps -> {
           try {
-            return (DriverService) serviceMethod.invoke(null);
+            if (args.length > 0) {
+              return (DriverService) serviceMethod.invoke(null, caps);
+            } else {
+              return (DriverService) serviceMethod.invoke(null);
+            }
           } catch (ReflectiveOperationException e) {
             throw new SessionNotCreatedException(
-                "Unable to create new service: " + driverClazz.getSimpleName(), e);
+                "Unable to create new service: " + driverServiceClazz.getSimpleName(), e);
           }
         };
       } catch (ReflectiveOperationException e) {
-        throw new SessionNotCreatedException("Cannot find service factory method", e);
+        return null;
       }
     }
 
     @Override
     public ActiveSession apply(Set<Dialect> downstreamDialects, Capabilities capabilities) {
-      DriverService service = createService.get();
+      DriverService service = createService.apply(capabilities);
 
       try {
         service.start();
