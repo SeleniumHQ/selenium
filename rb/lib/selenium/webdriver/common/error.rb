@@ -298,7 +298,7 @@ module Selenium
       class << self
         def for_code(code)
           return if [nil, 0].include? code
-          return ERRORS[code] if code.is_a? Integer
+          return ERRORS.fetch(code) if code.is_a? Integer
 
           klass_name = code.split(' ').map(&:capitalize).join
           Error.const_get("#{klass_name.gsub('Error', '')}Error")
