@@ -38,64 +38,90 @@ void FindChildElementsCommandHandler::ExecuteInternal(
   if (id_parameter_iterator == command_parameters.end()) {
     response->SetErrorResponse(ERROR_INVALID_ARGUMENT, "Missing parameter in URL: id");
     return;
-  } else if (using_parameter_iterator == command_parameters.end()) {
+  }
+  if (using_parameter_iterator == command_parameters.end()) {
     response->SetErrorResponse(ERROR_INVALID_ARGUMENT, "Missing parameter: using");
     return;
-  } else if (value_parameter_iterator == command_parameters.end()) {
+  }
+  if (!using_parameter_iterator->second.isString()) {
+    response->SetErrorResponse(ERROR_INVALID_ARGUMENT, "using parameter must be a string");
+    return;
+  }
+  if (value_parameter_iterator == command_parameters.end()) {
     response->SetErrorResponse(ERROR_INVALID_ARGUMENT, "Missing parameter: value");
     return;
-  } else {
-    std::string mechanism = using_parameter_iterator->second.asString();
-    std::string value = value_parameter_iterator->second.asString();
-    std::string element_id = id_parameter_iterator->second.asString();
+  }
+  if (!value_parameter_iterator->second.isString()) {
+    response->SetErrorResponse(ERROR_INVALID_ARGUMENT, "value parameter must be a string");
+    return;
+  }
 
-    ElementHandle parent_element_wrapper;
-    int status_code = this->GetElement(executor,
-                                        element_id,
-                                        &parent_element_wrapper);
+  std::string mechanism = using_parameter_iterator->second.asString();
+  std::string value = value_parameter_iterator->second.asString();
+  std::string element_id = id_parameter_iterator->second.asString();
 
-    if (status_code == WD_SUCCESS) {
-      Json::Value found_elements(Json::arrayValue);
+  if (mechanism != "css selector" &&
+      mechanism != "tag name" &&
+      mechanism != "link text" &&
+      mechanism != "partial link text" &&
+      mechanism != "xpath") {
+    response->SetErrorResponse(ERROR_INVALID_ARGUMENT, "using parameter value '" + mechanism + "' is not a valid value");
+    return;
+  }
 
-      int timeout = executor.implicit_wait_timeout();
-      clock_t end = clock() + (timeout / 1000 * CLOCKS_PER_SEC);
-      if (timeout > 0 && timeout < 1000) {
-        end += 1 * CLOCKS_PER_SEC;
-      }
+  BrowserHandle browser_wrapper;
+  int status_code = executor.GetCurrentBrowser(&browser_wrapper);
+  if (status_code != WD_SUCCESS) {
+    response->SetErrorResponse(status_code, "Currently focused window has been closed.");
+    return;
+  }
 
-      do {
-        status_code = executor.LocateElements(parent_element_wrapper,
-                                              mechanism,
-                                              value,
-                                              &found_elements);
-        if (status_code == WD_SUCCESS) {
-          if (found_elements.isArray() && found_elements.size() > 0) {
-            response->SetSuccessResponse(found_elements);
-            return;
-          }
-        } else if (status_code == ENOSUCHWINDOW) {
-          response->SetErrorResponse(ERROR_NO_SUCH_WINDOW, "Unable to find elements on closed window");
-          return;
-        } else {
-          response->SetErrorResponse(status_code, found_elements.asString());
+  ElementHandle parent_element_wrapper;
+  status_code = this->GetElement(executor,
+                                 element_id,
+                                 &parent_element_wrapper);
+
+  if (status_code == WD_SUCCESS) {
+    Json::Value found_elements(Json::arrayValue);
+
+    int timeout = executor.implicit_wait_timeout();
+    clock_t end = clock() + (timeout / 1000 * CLOCKS_PER_SEC);
+    if (timeout > 0 && timeout < 1000) {
+      end += 1 * CLOCKS_PER_SEC;
+    }
+
+    do {
+      status_code = executor.LocateElements(parent_element_wrapper,
+                                            mechanism,
+                                            value,
+                                            &found_elements);
+      if (status_code == WD_SUCCESS) {
+        if (found_elements.isArray() && found_elements.size() > 0) {
+          response->SetSuccessResponse(found_elements);
           return;
         }
-
-        // Release the thread so that the browser doesn't starve.
-        ::Sleep(FIND_ELEMENT_WAIT_TIME_IN_MILLISECONDS);
-      } while (clock() < end);
-
-      // This code is executed when no elements where found and no errors occurred.
-      if (status_code == WD_SUCCESS) {
-        response->SetSuccessResponse(found_elements);
+      } else if (status_code == ENOSUCHWINDOW) {
+        response->SetErrorResponse(ERROR_NO_SUCH_WINDOW, "Unable to find elements on closed window");
+        return;
       } else {
-        response->SetErrorResponse(status_code, 
-            "Finding elements with " + mechanism + " == " + value +
-            "returned an unexpected error");
+        response->SetErrorResponse(status_code, found_elements.asString());
+        return;
       }
+
+      // Release the thread so that the browser doesn't starve.
+      ::Sleep(FIND_ELEMENT_WAIT_TIME_IN_MILLISECONDS);
+    } while (clock() < end);
+
+    // This code is executed when no elements where found and no errors occurred.
+    if (status_code == WD_SUCCESS) {
+      response->SetSuccessResponse(found_elements);
     } else {
-      response->SetErrorResponse(status_code, "Element is no longer valid");
+      response->SetErrorResponse(status_code, 
+          "Finding elements with " + mechanism + " == " + value +
+          "returned an unexpected error");
     }
+  } else {
+    response->SetErrorResponse(ERROR_INVALID_ARGUMENT, "Element is no longer valid");
   }
 }
 
