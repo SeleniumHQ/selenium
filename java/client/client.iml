@@ -20,7 +20,6 @@
     <orderEntry type="library" scope="RUNTIME" name="commons-codec" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="commons-collections" level="project" />
     <orderEntry type="library" name="commons-exec" level="project" />
-    <orderEntry type="library" name="commons-fileupload" level="project" />
     <orderEntry type="library" name="commons-io" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="commons-lang" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="commons-logging" level="project" />
@@ -29,7 +28,6 @@
     <orderEntry type="library" exported="" name="gson" level="project" />
     <orderEntry type="library" name="hamcrest" level="project" />
     <orderEntry type="library" name="htmlunit" level="project" />
-    <orderEntry type="library" name="jna" level="project" />
     <orderEntry type="library" name="junit" level="project" />
     <orderEntry type="library" name="netty" level="project" />
     <orderEntry type="library" name="phantomjsdriver" level="project" />
