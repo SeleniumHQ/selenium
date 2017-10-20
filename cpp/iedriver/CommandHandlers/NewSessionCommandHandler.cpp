@@ -330,13 +330,13 @@ Json::Value NewSessionCommandHandler::ProcessCapabilities(const IECommandExecuto
 void NewSessionCommandHandler::SetTimeoutSettings(const IECommandExecutor& executor, const Json::Value& capabilities) {
   IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
   if (capabilities.isMember("implicit")) {
-    mutable_executor.set_implicit_wait_timeout(capabilities["implicit"].asInt());
+    mutable_executor.set_implicit_wait_timeout(capabilities["implicit"].asUInt64());
   }
   if (capabilities.isMember("pageLoad")) {
-    mutable_executor.set_page_load_timeout(capabilities["pageLoad"].asInt());
+    mutable_executor.set_page_load_timeout(capabilities["pageLoad"].asUInt64());
   }
   if (capabilities.isMember("script")) {
-    mutable_executor.set_async_script_timeout(capabilities["script"].asInt());
+    mutable_executor.set_async_script_timeout(capabilities["script"].asUInt64());
   }
 }
 
@@ -731,20 +731,19 @@ bool NewSessionCommandHandler::ValidateCapabilities(
             return false;
           }
           std::string timeout_error = "";
-          if (!this->ValidateCapabilityType(timeouts,
-                                            timeout_name,
-                                            Json::ValueType::intValue,
-                                            &timeout_error)) {
+          Json::Value timeout_value = timeouts[timeout_name];
+          if (!timeout_value.isNumeric() || !timeout_value.isIntegral()) {
             *error_message = "Invalid capabilities in " +
                              capability_set_name + ": " +
-                             "timeout " + timeout_error;
+                             "timeout " + timeout_name +
+                             "must be an integer";
             return false;
           }
-          int timeout_value = timeouts[timeout_name].asInt();
-          if (timeout_value < 0) {
+          if (!timeout_value.isUInt64()) {
             *error_message = "Invalid capabilities in " +
-                             capability_set_name + ": " + 
-                             "timeout " + timeout_name + " is less than zero";
+                             capability_set_name + ": " +
+                             "timeout " + timeout_name +
+                             "must be an integer between 0 and 2^64 - 1";
             return false;
           }
         }

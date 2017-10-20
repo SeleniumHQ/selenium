@@ -93,6 +93,7 @@ BrowserFactory::BrowserFactory(void) {
   // Must be done in the constructor. Do not move to Initialize().
   this->GetExecutableLocation();
   this->GetIEVersion();
+  this->oleacc_instance_handle_ = NULL;
 }
 
 BrowserFactory::~BrowserFactory(void) {
