@@ -124,7 +124,15 @@ public class FirefoxDriver extends RemoteWebDriver {
     super(new DriverCommandExecutor(service), new FirefoxOptions());
   }
 
+  public FirefoxDriver(XpiDriverService service) {
+    super(new DriverCommandExecutor(service), new FirefoxOptions());
+  }
+
   public FirefoxDriver(GeckoDriverService service, FirefoxOptions options) {
+    super(new DriverCommandExecutor(service), dropCapabilities(options));
+  }
+
+  public FirefoxDriver(XpiDriverService service, FirefoxOptions options) {
     super(new DriverCommandExecutor(service), dropCapabilities(options));
   }
 
