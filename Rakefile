@@ -133,7 +133,7 @@ task :all => [
   :"selenium-java",
   "//java/client/test/org/openqa/selenium/environment:webserver"
 ]
-task :all_zip => [:'selenium-java_zip']
+task :all_zip => [:'prep-release-zip']
 task :tests => [
   "//java/client/test/org/openqa/selenium/htmlunit:htmlunit",
   "//java/client/test/org/openqa/selenium/firefox:test-synthesized",
@@ -151,16 +151,12 @@ task :tests => [
 task :chrome => [ "//java/client/src/org/openqa/selenium/chrome" ]
 task :grid => [ "//java/server/src/org/openqa/grid/selenium" ]
 task :ie => [ "//java/client/src/org/openqa/selenium/ie" ]
-task :firefox => [
-  "//java/client/src/org/openqa/selenium/firefox"
-]
+task :firefox => [ "//java/client/src/org/openqa/selenium/firefox" ]
 task :'debug-server' => "//java/client/test/org/openqa/selenium/environment:webserver:run"
 task :remote => [:remote_server, :remote_client]
 task :remote_client => ["//java/client/src/org/openqa/selenium/remote"]
 task :remote_server => ["//java/server/src/org/openqa/selenium/remote/server"]
-task :safari => [
-  "//java/client/src/org/openqa/selenium/safari",
-]
+task :safari => [ "//java/client/src/org/openqa/selenium/safari" ]
 task :selenium => [ "//java/client/src/org/openqa/selenium" ]
 task :support => [
   "//java/client/src/org/openqa/selenium/lift",
