@@ -98,7 +98,7 @@ public class UploadTest extends JUnit4TestBase {
 
   @Test
   @Ignore(IE)
-  @Ignore(MARIONETTE)
+  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/1011")
   @Ignore(CHROME)
   @Ignore(PHANTOMJS)
   @Ignore(SAFARI)
