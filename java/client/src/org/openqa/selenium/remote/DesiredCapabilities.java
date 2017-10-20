@@ -19,19 +19,13 @@ package org.openqa.selenium.remote;
 
 import static org.openqa.selenium.remote.CapabilityType.ACCEPT_INSECURE_CERTS;
 import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
-import static org.openqa.selenium.remote.CapabilityType.LOGGING_PREFS;
 import static org.openqa.selenium.remote.CapabilityType.PLATFORM;
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_JAVASCRIPT;
-import static org.openqa.selenium.remote.CapabilityType.UNEXPECTED_ALERT_BEHAVIOUR;
-import static org.openqa.selenium.remote.CapabilityType.UNHANDLED_PROMPT_BEHAVIOUR;
 import static org.openqa.selenium.remote.CapabilityType.VERSION;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.Platform;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.logging.LogLevelMapping;
-import org.openqa.selenium.logging.LoggingPreferences;
 
 import java.util.Map;
 
