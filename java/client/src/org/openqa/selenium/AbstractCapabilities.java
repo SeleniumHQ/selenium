@@ -17,6 +17,9 @@
 
 package org.openqa.selenium;
 
+import org.openqa.selenium.logging.LogLevelMapping;
+import org.openqa.selenium.logging.LoggingPreferences;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -41,6 +44,32 @@ abstract class AbstractCapabilities implements Capabilities {
 
     if (value == null) {
       caps.remove(key);
+      return;
+    }
+
+    if ("loggingPrefs".equals(key) && value instanceof Map) {
+      LoggingPreferences prefs = new LoggingPreferences();
+      @SuppressWarnings("unchecked") Map<String, String> prefsMap = (Map<String, String>) value;
+
+      for (String logType : prefsMap.keySet()) {
+        prefs.enable(logType, LogLevelMapping.toLevel(prefsMap.get(logType)));
+      }
+      caps.put(key, prefs);
+      return;
+    }
+
+    if ("platform".equals(key) && value instanceof String) {
+      try {
+        caps.put(key, Platform.fromString((String) value));
+      } catch (WebDriverException e) {
+        caps.put(key, value);
+      }
+      return;
+    }
+
+    if ("unexpectedAlertBehaviour".equals(key)) {
+      caps.put("unexpectedAlertBehaviour", value);
+      caps.put("unhandledPromptBehavior", value);
       return;
     }
 
