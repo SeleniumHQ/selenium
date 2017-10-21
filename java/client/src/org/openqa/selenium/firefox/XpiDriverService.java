@@ -24,6 +24,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.io.ByteStreams;
 
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.internal.ClasspathExtension;
@@ -56,7 +57,8 @@ public class XpiDriverService extends DriverService {
       ImmutableList<String> args,
       ImmutableMap<String, String> environment,
       FirefoxBinary binary,
-      FirefoxProfile profile)
+      FirefoxProfile profile,
+      File logFile)
       throws IOException {
     super(executable, port, args, environment);
 
@@ -67,12 +69,23 @@ public class XpiDriverService extends DriverService {
     this.profile = profile;
 
     String firefoxLogFile = System.getProperty(FirefoxDriver.SystemProperty.BROWSER_LOGFILE);
-
-    if (firefoxLogFile !=  null) {
+    if (firefoxLogFile != null) { // System property has higher precedence
       if ("/dev/stdout".equals(firefoxLogFile)) {
         sendOutputTo(System.out);
+      } else if ("/dev/stderr".equals(firefoxLogFile)) {
+        sendOutputTo(System.err);
+      } else if ("/dev/null".equals(firefoxLogFile)) {
+        sendOutputTo(ByteStreams.nullOutputStream());
       } else {
+        // TODO: This stream is leaked.
         sendOutputTo(new FileOutputStream(firefoxLogFile));
+      }
+    } else {
+      if (logFile != null) {
+        // TODO: This stream is leaked.
+        sendOutputTo(new FileOutputStream(logFile));
+      } else {
+        sendOutputTo(ByteStreams.nullOutputStream());
       }
     }
   }
@@ -211,7 +224,8 @@ public class XpiDriverService extends DriverService {
             args,
             environment,
             binary == null ? new FirefoxBinary() : binary,
-            profile == null ? new FirefoxProfile() : profile);
+            profile == null ? new FirefoxProfile() : profile,
+            getLogFile());
       } catch (IOException e) {
         throw new WebDriverException(e);
       }

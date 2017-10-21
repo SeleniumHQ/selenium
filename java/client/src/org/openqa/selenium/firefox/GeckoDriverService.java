@@ -134,22 +134,24 @@ public class GeckoDriverService extends DriverService {
                                                      ImmutableMap<String, String> environment) {
       try {
         GeckoDriverService service = new GeckoDriverService(exe, port, args, environment);
-        if (getLogFile() !=  null) {
-          // TODO: This stream is leaked.
-          service.sendOutputTo(new FileOutputStream(getLogFile()));
+        String firefoxLogFile = System.getProperty(FirefoxDriver.SystemProperty.BROWSER_LOGFILE);
+        if (firefoxLogFile != null) { // System property has higher precedence
+          if ("/dev/stdout".equals(firefoxLogFile)) {
+            service.sendOutputTo(System.out);
+          } else if ("/dev/stderr".equals(firefoxLogFile)) {
+            service.sendOutputTo(System.err);
+          } else if ("/dev/null".equals(firefoxLogFile)) {
+            service.sendOutputTo(ByteStreams.nullOutputStream());
+          } else {
+            // TODO: The stream is leaked.
+            service.sendOutputTo(new FileOutputStream(firefoxLogFile));
+          }
         } else {
-          String firefoxLogFile = System.getProperty(FirefoxDriver.SystemProperty.BROWSER_LOGFILE);
-          if (firefoxLogFile != null) {
-            if ("/dev/stdout".equals(firefoxLogFile)) {
-              service.sendOutputTo(System.out);
-            } else if ("/dev/stderr".equals(firefoxLogFile)) {
-              service.sendOutputTo(System.err);
-            } else if ("/dev/null".equals(firefoxLogFile)) {
-              service.sendOutputTo(ByteStreams.nullOutputStream());
-            } else {
-              // TODO: The stream is leaked.
-              service.sendOutputTo(new FileOutputStream(firefoxLogFile));
-            }
+          if (getLogFile() != null) {
+            // TODO: This stream is leaked.
+            service.sendOutputTo(new FileOutputStream(getLogFile()));
+          } else {
+            service.sendOutputTo(ByteStreams.nullOutputStream());
           }
         }
         return service;
