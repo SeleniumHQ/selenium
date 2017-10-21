@@ -18,16 +18,66 @@
 package org.openqa.selenium;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.IdentityHashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 abstract class AbstractCapabilities implements Capabilities {
 
-  protected final Map<String, Object> caps = new TreeMap<>();
+  private final Map<String, Object> caps = new TreeMap<>();
+
+  @Override
+  public Object getCapability(String capabilityName) {
+    return caps.get(capabilityName);
+  }
+
+  protected void setCapability(String key, Object value) {
+    Objects.requireNonNull(key, "Cannot set a capability without a name");
+
+    if (value == null) {
+      caps.remove(key);
+      return;
+    }
+
+    caps.put(key, value);
+  }
+
+  @Override
+  public Map<String, ?> asMap() {
+    return Collections.unmodifiableMap(caps);
+  }
+
+  /**
+   * Subclasses can use this to add information that isn't always in the capabilities map.
+   * @return
+   */
+  protected int amendHashCode() {
+    return 0;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(amendHashCode(), caps);
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof Capabilities)) {
+      return false;
+    }
+
+    Capabilities that = (Capabilities) o;
+
+    return asMap().equals(that.asMap());
+  }
 
   @Override
   public String toString() {

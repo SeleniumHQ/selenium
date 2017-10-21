@@ -19,14 +19,7 @@ package org.openqa.selenium;
 
 
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.IdentityHashMap;
 import java.util.Map;
-import java.util.TreeMap;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class ImmutableCapabilities extends AbstractCapabilities implements Serializable {
 
@@ -36,18 +29,18 @@ public class ImmutableCapabilities extends AbstractCapabilities implements Seria
   }
 
   public ImmutableCapabilities(String k, Object v) {
-    caps.put(k, v);
+    setCapability(k, v);
   }
 
   public ImmutableCapabilities(String k1, Object v1, String k2, Object v2) {
-    caps.put(k1, v1);
-    caps.put(k2, v2);
+    setCapability(k1, v1);
+    setCapability(k2, v2);
   }
 
   public ImmutableCapabilities(String k1, Object v1, String k2, Object v2, String k3, Object v3) {
-    caps.put(k1, v1);
-    caps.put(k2, v2);
-    caps.put(k3, v3);
+    setCapability(k1, v1);
+    setCapability(k2, v2);
+    setCapability(k3, v3);
   }
 
   public ImmutableCapabilities(
@@ -55,10 +48,10 @@ public class ImmutableCapabilities extends AbstractCapabilities implements Seria
       String k2, Object v2,
       String k3, Object v3,
       String k4, Object v4) {
-    caps.put(k1, v1);
-    caps.put(k2, v2);
-    caps.put(k3, v3);
-    caps.put(k4, v4);
+    setCapability(k1, v1);
+    setCapability(k2, v2);
+    setCapability(k3, v3);
+    setCapability(k4, v4);
   }
 
   public ImmutableCapabilities(
@@ -67,11 +60,11 @@ public class ImmutableCapabilities extends AbstractCapabilities implements Seria
       String k3, Object v3,
       String k4, Object v4,
       String k5, Object v5) {
-    caps.put(k1, v1);
-    caps.put(k2, v2);
-    caps.put(k3, v3);
-    caps.put(k4, v4);
-    caps.put(k5, v5);
+    setCapability(k1, v1);
+    setCapability(k2, v2);
+    setCapability(k3, v3);
+    setCapability(k4, v4);
+    setCapability(k5, v5);
   }
 
   public ImmutableCapabilities(Capabilities other) {
@@ -79,14 +72,12 @@ public class ImmutableCapabilities extends AbstractCapabilities implements Seria
   }
 
   public ImmutableCapabilities(Map<String, ?> capabilities) {
-    capabilities.forEach((key, value) -> {
-      if (value != null) {
-        caps.put(key, value);
-      }
-    });
+    capabilities.forEach(this::setCapability);
 
-    // Normalise the "platform" value for both OSS and W3C.
-    Object value = caps.getOrDefault("platform", caps.get("platformName"));
+    Object value = getCapability("platform");
+    if (value == null) {
+      value = getCapability("platformName");
+    }
     if (value != null) {
       Object platform;
       if (value instanceof Platform) {
@@ -102,38 +93,8 @@ public class ImmutableCapabilities extends AbstractCapabilities implements Seria
         throw new IllegalStateException("Platform was neither a string or a Platform: " + value);
       }
 
-      caps.put("platform", platform);
-      caps.put("platformName", platform);
+      setCapability("platform", platform);
+      setCapability("platformName", platform);
     }
   }
-
-  @Override
-  public Object getCapability(String capabilityName) {
-    return caps.get(capabilityName);
-  }
-
-  @Override
-  public Map<String, ?> asMap() {
-    return Collections.unmodifiableMap(caps);
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (!(o instanceof Capabilities)) {
-      return false;
-    }
-
-    Capabilities that = (Capabilities) o;
-
-    return caps.equals(that.asMap());
-  }
-
-  @Override
-  public int hashCode() {
-    return caps.hashCode();
-  }
-
 }

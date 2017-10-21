@@ -22,17 +22,10 @@ import org.openqa.selenium.logging.LogLevelMapping;
 import org.openqa.selenium.logging.LoggingPreferences;
 
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
-import java.util.IdentityHashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
-import java.util.TreeMap;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class MutableCapabilities extends AbstractCapabilities implements Serializable {
 
@@ -65,43 +58,6 @@ public class MutableCapabilities extends AbstractCapabilities implements Seriali
         setCapability(key, value);
       }
     });
-  }
-
-  @Override
-  public Object getCapability(String capabilityName) {
-    return caps.get(capabilityName);
-  }
-
-  @Override
-  public Map<String, ?> asMap() {
-    return Collections.unmodifiableMap(caps);
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (!(o instanceof Capabilities)) {
-      return false;
-    }
-
-    Capabilities that = (Capabilities) o;
-
-    return asMap().equals(that.asMap());
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(amendHashCode(), caps);
-  }
-
-  /**
-   * Subclasses can use this to add information that isn't always in the capabilities map.
-   * @return
-   */
-  protected int amendHashCode() {
-    return 0;
   }
 
   /**
@@ -152,29 +108,25 @@ public class MutableCapabilities extends AbstractCapabilities implements Seriali
       for (String logType : prefsMap.keySet()) {
         prefs.enable(logType, LogLevelMapping.toLevel(prefsMap.get(logType)));
       }
-      caps.put(key, prefs);
+      super.setCapability(key, prefs);
       return;
     }
 
     if ("platform".equals(key) && value instanceof String) {
       try {
-        caps.put(key, Platform.fromString((String) value));
+        super.setCapability(key, Platform.fromString((String) value));
       } catch (WebDriverException e) {
-        caps.put(key, value);
+        super.setCapability(key, value);
       }
       return;
     }
 
     if ("unexpectedAlertBehaviour".equals(key)) {
-      caps.put("unexpectedAlertBehaviour", value);
-      caps.put("unhandledPromptBehavior", value);
+      super.setCapability("unexpectedAlertBehaviour", value);
+      super.setCapability("unhandledPromptBehavior", value);
       return;
     }
 
-    if (value == null) {
-      caps.remove(key);
-    } else {
-      caps.put(key, value);
-    }
+    super.setCapability(key, value);
   }
 }
