@@ -30,8 +30,6 @@ import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.openqa.selenium.Capabilities;
@@ -51,7 +49,6 @@ import org.openqa.selenium.remote.SessionId;
 
 import java.io.IOException;
 
-@RunWith(JUnit4.class)
 public class WebDriverWaitTest {
 
   @Mock private WebDriver mockDriver;
@@ -80,7 +77,7 @@ public class WebDriverWaitTest {
     Throwable ex = catchThrowable(() -> wait.until((d) -> false));
     assertNotNull(ex);
     assertThat(ex, instanceOf(TimeoutException.class));
-    assertThat(ex.getMessage(), containsString("Capabilities [{javascriptEnabled=true, platformName=ANY, platform=ANY}]"));
+    assertThat(ex.getMessage(), containsString("Capabilities {javascriptEnabled: true, platform: ANY, platformName: ANY}"));
     assertThat(ex.getMessage(), containsString("Session ID: foo"));
   }
 

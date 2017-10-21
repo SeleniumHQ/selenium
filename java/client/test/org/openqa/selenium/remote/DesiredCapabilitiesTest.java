@@ -20,6 +20,7 @@ package org.openqa.selenium.remote;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -128,7 +129,8 @@ public class DesiredCapabilitiesTest {
     }};
 
     DesiredCapabilities caps = new DesiredCapabilities(capabilitiesMap);
-    assertEquals(caps.toString().length(), 53);
+    String expected = "key: " + createString(27) + "...";
+    assertTrue(caps.toString(), caps.toString().contains(expected));
   }
 
   @Test
@@ -140,7 +142,8 @@ public class DesiredCapabilitiesTest {
     }};
 
     DesiredCapabilities caps = new DesiredCapabilities(capabilitiesMap);
-    assertEquals(caps.toString().length(), 62);
+    String expected = "{subkey: " + createString(27) + "..." + "}";
+    assertTrue(caps.toString(), caps.toString().contains(expected));
   }
 
   @Test

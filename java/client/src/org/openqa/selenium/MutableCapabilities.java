@@ -22,14 +22,19 @@ import org.openqa.selenium.logging.LogLevelMapping;
 import org.openqa.selenium.logging.LoggingPreferences;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.Comparator;
 import java.util.HashSet;
+import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-public class MutableCapabilities implements Capabilities, Serializable {
+public class MutableCapabilities extends AbstractCapabilities implements Serializable {
 
   private static final long serialVersionUID = -112816287184979465L;
 
@@ -45,9 +50,6 @@ public class MutableCapabilities implements Capabilities, Serializable {
     keys.add("safari.options");
     OPTION_KEYS = Collections.unmodifiableSet(keys);
   }
-
-  private final Map<String, Object> caps = new HashMap<>();
-
 
   public MutableCapabilities() {
     // no-arg constructor
@@ -174,30 +176,5 @@ public class MutableCapabilities implements Capabilities, Serializable {
     } else {
       caps.put(key, value);
     }
-  }
-
-  @Override
-  public String toString() {
-    return String.format("Capabilities [%s]", shortenMapValues(asMap()));
-  }
-
-  private Map<String, ?> shortenMapValues(Map<String, ?> map) {
-    Map<String, Object> newMap = new HashMap<>();
-
-    for (Map.Entry<String, ?> entry : map.entrySet()) {
-      if (entry.getValue() instanceof Map) {
-        @SuppressWarnings("unchecked") Map<String, ?> value = (Map<String, ?>) entry.getValue();
-        newMap.put(entry.getKey(), shortenMapValues(value));
-
-      } else {
-        String value = String.valueOf(entry.getValue());
-        if (value.length() > 1024) {
-          value = value.substring(0, 29) + "...";
-        }
-        newMap.put(entry.getKey(), value);
-      }
-    }
-
-    return newMap;
   }
 }

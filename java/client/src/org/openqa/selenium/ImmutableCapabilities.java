@@ -19,20 +19,21 @@ package org.openqa.selenium;
 
 
 import java.io.Serializable;
-import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Map;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-public class ImmutableCapabilities implements Capabilities, Serializable {
+public class ImmutableCapabilities extends AbstractCapabilities implements Serializable {
 
   private static final long serialVersionUID = 665766108972704060L;
 
-  private final Map<String, Object> caps = new HashMap<>();
-
-  public ImmutableCapabilities() { }
+  public ImmutableCapabilities() {
+  }
 
   public ImmutableCapabilities(String k, Object v) {
     caps.put(k, v);
@@ -49,16 +50,23 @@ public class ImmutableCapabilities implements Capabilities, Serializable {
     caps.put(k3, v3);
   }
 
-  public ImmutableCapabilities(String k1, Object v1, String k2, Object v2, String k3, Object v3,
-                               String k4, Object v4) {
+  public ImmutableCapabilities(
+      String k1, Object v1,
+      String k2, Object v2,
+      String k3, Object v3,
+      String k4, Object v4) {
     caps.put(k1, v1);
     caps.put(k2, v2);
     caps.put(k3, v3);
     caps.put(k4, v4);
   }
 
-  public ImmutableCapabilities(String k1, Object v1, String k2, Object v2, String k3, Object v3,
-                               String k4, Object v4, String k5, Object v5) {
+  public ImmutableCapabilities(
+      String k1, Object v1,
+      String k2, Object v2,
+      String k3, Object v3,
+      String k4, Object v4,
+      String k5, Object v5) {
     caps.put(k1, v1);
     caps.put(k2, v2);
     caps.put(k3, v3);
@@ -128,76 +136,4 @@ public class ImmutableCapabilities implements Capabilities, Serializable {
     return caps.hashCode();
   }
 
-  @Override
-  public String toString() {
-    Map<Object, String> seen = new IdentityHashMap<>();
-    StringBuilder builder = new StringBuilder("Capabilities ");
-    abbreviate(seen, builder, caps);
-    return builder.toString();
-  }
-
-  private void abbreviate(
-      Map<Object, String> seen,
-      StringBuilder builder,
-      Object stringify) {
-
-    if (stringify == null) {
-      builder.append("null");
-      return;
-    }
-
-    StringBuilder value = new StringBuilder();
-
-    if (stringify.getClass().isArray()) {
-      Array ary = (Array) stringify;
-      value.append("[");
-      int length = Array.getLength(ary);
-      for (int i = 0; i < length; i++) {
-        abbreviate(seen, value, Array.get(ary, i));
-        if (i < length - 1) {
-          value.append(", ");
-        }
-      }
-      value.append("]");
-    } else if (stringify instanceof Collection) {
-      Collection<?> c = (Collection<?>) stringify;
-      value.append("[");
-      int length = c.size();
-      int i = 0;
-
-      for (Object o : c) {
-        abbreviate(seen, value, o);
-        if (i < length - 1) {
-          value.append(", ");
-        }
-        i++;
-      }
-      value.append("]");
-    } else if (stringify instanceof Map) {
-      value.append("{");
-
-      Map<?, ?> m = (Map<?, ?>) stringify;
-      int length = m.size();
-      int i = 0;
-      for (Map.Entry<?, ?> entry : m.entrySet()) {
-        abbreviate(seen, value, entry.getKey());
-        value.append("=");
-        abbreviate(seen, value, entry.getValue());
-        if (i < length - 1) {
-          value.append(", ");
-        }
-      }
-      value.append("}");
-    } else {
-      String s = String.valueOf(stringify);
-      if (s.length() > 30) {
-        value.append(s.substring(0, 27)).append("...");
-      } else {
-        value.append(s);
-      }
-    }
-
-    seen.put(stringify, value.toString());
-    builder.append(value.toString());
-  }
 }

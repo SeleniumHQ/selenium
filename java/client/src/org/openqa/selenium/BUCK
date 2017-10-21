@@ -35,6 +35,7 @@ java_library(name = 'core',
   maven_coords = 'org.seleniumhq.selenium:selenium-api:' + SE_VERSION,
   maven_pom_template = ':template-pom',
   srcs = [
+    'AbstractCapabilities.java',
     'Alert.java',
     'By.java',
     'Capabilities.java',
