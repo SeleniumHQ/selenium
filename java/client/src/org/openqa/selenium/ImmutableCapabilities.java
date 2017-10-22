@@ -73,28 +73,5 @@ public class ImmutableCapabilities extends AbstractCapabilities implements Seria
 
   public ImmutableCapabilities(Map<String, ?> capabilities) {
     capabilities.forEach(this::setCapability);
-
-    Object value = getCapability("platform");
-    if (value == null) {
-      value = getCapability("platformName");
-    }
-    if (value != null) {
-      Object platform;
-      if (value instanceof Platform) {
-        platform = (Platform) value;
-      } else if (value instanceof String) {
-        try {
-          platform = Platform.fromString((String) value);
-        } catch (WebDriverException ignored) {
-          // Just use the string we were given.
-          platform = value;
-        }
-      } else {
-        throw new IllegalStateException("Platform was neither a string or a Platform: " + value);
-      }
-
-      setCapability("platform", platform);
-      setCapability("platformName", platform);
-    }
   }
 }

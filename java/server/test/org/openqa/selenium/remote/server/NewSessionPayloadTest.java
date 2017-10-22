@@ -151,7 +151,7 @@ public class NewSessionPayloadTest {
 
     assertEquals(Platform.LINUX, capabilities.get(0).getPlatform());
     assertEquals(Platform.LINUX, capabilities.get(0).getCapability("platform"));
-    assertEquals(Platform.LINUX, capabilities.get(0).getCapability("platformName"));
+    assertEquals(null, capabilities.get(0).getCapability("platformName"));
   }
 
   @Test
@@ -161,8 +161,8 @@ public class NewSessionPayloadTest {
             "alwaysMatch", ImmutableMap.of("platformName", "linux"))));
 
     assertEquals(Platform.LINUX, capabilities.get(0).getPlatform());
-    assertEquals(Platform.LINUX, capabilities.get(0).getCapability("platform"));
-    assertEquals(Platform.LINUX, capabilities.get(0).getCapability("platformName"));
+    assertEquals(null, capabilities.get(0).getCapability("platform"));
+    assertEquals("linux", capabilities.get(0).getCapability("platformName"));
   }
 
   @Test(expected = IllegalArgumentException.class)
