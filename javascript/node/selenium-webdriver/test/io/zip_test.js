@@ -27,19 +27,18 @@ const zip = require('../../io/zip');
 const {InvalidArgumentError} = require('../../lib/error');
 
 
-const SAMPLE_XPI_PATH =
-    path.join(__dirname, '../../lib/test/data/firefox/sample.xpi');
+const XPI_PATH =
+    path.join(__dirname, '../../lib/test/data/firefox/webextension.xpi');
 
 describe('io/zip', function() {
   describe('unzip', function() {
     it('creates destination dir if necessary', function() {
       return io.tmpDir()
-          .then(dir => zip.unzip(SAMPLE_XPI_PATH, dir))
+          .then(dir => zip.unzip(XPI_PATH, dir))
           .then(dir => {
-            assertExists(path.join(dir, 'chrome.manifest'));
-            assertExists(path.join(dir, 'content/overlay.js'));
-            assertExists(path.join(dir, 'content/overlay.xul'));
-            assertExists(path.join(dir, 'install.rdf'));
+            assertExists(path.join(dir, 'inject.js'));
+            assertExists(path.join(dir, 'manifest.json'));
+            assertExists(path.join(dir, 'META-INF/manifest.mf'));
           });
     });
   });

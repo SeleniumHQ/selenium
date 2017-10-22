@@ -17,26 +17,17 @@
 
 'use strict';
 
-var assert = require('assert'),
-    fs = require('fs'),
-    path = require('path');
+const assert = require('assert');
+const fs = require('fs');
+const path = require('path');
 
-var promise = require('../..').promise,
-    {Profile, decode, loadUserPrefs} = require('../../firefox/profile'),
-    io = require('../../io');
+const io = require('../../io');
+const {Profile, decode, loadUserPrefs} = require('../../firefox/profile');
 
 
-var JETPACK_EXTENSION = path.join(__dirname,
-    '../../lib/test/data/firefox/jetpack-sample.xpi');
-var NORMAL_EXTENSION = path.join(__dirname,
-    '../../lib/test/data/firefox/sample.xpi');
-var WEBEXTENSION_EXTENSION = path.join(__dirname,
-  '../../lib/test/data/firefox/webextension.xpi');
-
-var JETPACK_EXTENSION_ID = 'jid1-EaXX7k0wwiZR7w@jetpack.xpi';
-var NORMAL_EXTENSION_ID = 'sample@seleniumhq.org';
-var WEBEXTENSION_EXTENSION_ID = 'webextensions-selenium-example@example.com';
-
+const WEBEXTENSION_EXTENSION =
+    path.join(__dirname, '../../lib/test/data/firefox/webextension.xpi');
+const WEBEXTENSION_EXTENSION_ID = 'webextensions-selenium-example@example.com';
 
 
 describe('Profile', function() {
@@ -116,14 +107,10 @@ describe('Profile', function() {
     describe('extensions', function() {
       it('are copied into new profile directory', function() {
         var profile = new Profile();
-        profile.addExtension(JETPACK_EXTENSION);
-        profile.addExtension(NORMAL_EXTENSION);
         profile.addExtension(WEBEXTENSION_EXTENSION);
 
         return profile.writeToDisk().then(function(dir) {
           dir = path.join(dir, 'extensions');
-          assertExists(JETPACK_EXTENSION_ID);
-          assertExists(NORMAL_EXTENSION_ID);
           assertExists(WEBEXTENSION_EXTENSION_ID + '.xpi');
 
           function assertExists(file) {

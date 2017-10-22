@@ -17,21 +17,17 @@
 
 'use strict';
 
-var path = require('path');
+const path = require('path');
 
-var firefox = require('../../firefox'),
-    io = require('../../io'),
-    {Pages, suite, ignore} = require('../../lib/test'),
-    assert = require('../../testing/assert'),
-    Context = require('../../firefox').Context,
-    error = require('../..').error;
+const assert = require('../../testing/assert');
+const error = require('../../lib/error');
+const firefox = require('../../firefox');
+const io = require('../../io');
+const {Context} = require('../../firefox');
+const {Pages, suite, ignore} = require('../../lib/test');
 
-var JETPACK_EXTENSION = path.join(__dirname,
-    '../../lib/test/data/firefox/jetpack-sample.xpi');
-var NORMAL_EXTENSION = path.join(__dirname,
-    '../../lib/test/data/firefox/sample.xpi');
-var WEBEXTENSION_EXTENSION = path.join(__dirname,
-  '../../lib/test/data/firefox/webextension.xpi');
+const WEBEXTENSION_EXTENSION =
+    path.join(__dirname, '../../lib/test/data/firefox/webextension.xpi');
 
 
 suite(function(env) {
@@ -104,34 +100,6 @@ suite(function(env) {
         });
       });
 
-      it('can start Firefox with a jetpack extension', function() {
-        let profile = profileWithExtensions(JETPACK_EXTENSION);
-        let options = new firefox.Options().setProfile(profile);
-
-        return runWithFirefoxDev(options, async function() {
-          await loadJetpackPage(driver,
-              'data:text/html;charset=UTF-8,<html><div>content</div></html>');
-
-          let text =
-              await driver.findElement({id: 'jetpack-sample-banner'}).getText();
-          assert(text).equalTo('Hello, world!');
-        });
-      });
-
-      it('can start Firefox with a normal extension', function() {
-        let profile = profileWithExtensions(NORMAL_EXTENSION);
-        let options = new firefox.Options().setProfile(profile);
-
-        return runWithFirefoxDev(options, async function() {
-          await driver.get('data:text/html,<html><div>content</div></html>');
-
-          let footer =
-              await driver.findElement({id: 'sample-extension-footer'});
-          let text = await footer.getText();
-          assert(text).equalTo('Goodbye');
-        });
-      });
-
       it('can start Firefox with a webextension extension', function() {
         let profile = profileWithExtensions(WEBEXTENSION_EXTENSION);
         let options = new firefox.Options().setProfile(profile);
@@ -145,37 +113,6 @@ suite(function(env) {
           assert(text).equalTo('Content injected by webextensions-selenium-example');
         });
       });
-
-      it('can start Firefox with multiple extensions', function() {
-        let profile =
-            profileWithExtensions(JETPACK_EXTENSION, NORMAL_EXTENSION);
-        let options = new firefox.Options().setProfile(profile);
-
-        return runWithFirefoxDev(options, async function() {
-          await loadJetpackPage(driver,
-              'data:text/html;charset=UTF-8,<html><div>content</div></html>');
-
-          let banner =
-              await driver.findElement({id: 'jetpack-sample-banner'}).getText();
-          assert(banner).equalTo('Hello, world!');
-
-          let footer =
-              await driver.findElement({id: 'sample-extension-footer'})
-                  .getText();
-          assert(footer).equalTo('Goodbye');
-        });
-      });
-
-      function loadJetpackPage(driver, url) {
-        // On linux the jetpack extension does not always run the first time
-        // we load a page. If this happens, just reload the page (a simple
-        // refresh doesn't appear to work).
-        return driver.wait(function() {
-          driver.get(url);
-          return driver.findElements({id: 'jetpack-sample-banner'})
-              .then(found => found.length > 0);
-        }, 3000);
-      }
     });
 
     describe('context switching', function() {
