@@ -308,11 +308,22 @@ const GECKO_DRIVER_EXE =
 
 
 /**
+ * _Synchronously_ attempts to locate the geckodriver executable on the current
+ * system.
+ *
+ * @return {?string} the located executable, or `null`.
+ */
+function locateSynchronously() {
+  return io.findInPath(GECKO_DRIVER_EXE, true);
+}
+
+
+/**
  * @return {string} .
  * @throws {Error}
  */
 function findGeckoDriver() {
-  let exe = io.findInPath(GECKO_DRIVER_EXE, true);
+  let exe = locateSynchronously();
   if (!exe) {
     throw Error(
       'The ' + GECKO_DRIVER_EXE + ' executable could not be found on the current ' +
@@ -649,3 +660,4 @@ exports.Driver = Driver;
 exports.Options = Options;
 exports.Profile = Profile;
 exports.ServiceBuilder = ServiceBuilder;
+exports.locateSynchronously = locateSynchronously;

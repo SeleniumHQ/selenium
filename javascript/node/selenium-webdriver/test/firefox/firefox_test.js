@@ -26,9 +26,6 @@ var firefox = require('../../firefox'),
     Context = require('../../firefox').Context,
     error = require('../..').error;
 
-var {consume} = require('../../lib/promise');
-
-
 var JETPACK_EXTENSION = path.join(__dirname,
     '../../lib/test/data/firefox/jetpack-sample.xpi');
 var NORMAL_EXTENSION = path.join(__dirname,

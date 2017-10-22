@@ -42,7 +42,6 @@ describe('DriverService', function() {
     });
 
     it('fails if child-process dies', function() {
-      this.timeout(1000);
       return service.start(500).then(expectFailure, verifyFailure);
     });
 

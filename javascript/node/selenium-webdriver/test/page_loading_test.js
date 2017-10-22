@@ -27,7 +27,7 @@ var Browser = require('..').Browser,
 
 
 test.suite(function(env) {
-  var browsers = env.browsers;
+  var browsers = (...args) => env.browsers(...args);
 
   var driver;
   before(async function() {

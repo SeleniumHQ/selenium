@@ -23,7 +23,6 @@ const {Browser, By, until} = require('..');
 const test = require('../lib/test');
 const fileServer = require('../lib/test/fileserver');
 
-
 test.suite(function(env) {
   test.ignore(env.browsers(Browser.CHROME, Browser.SAFARI)).
   describe('WebDriver.actions()', function() {

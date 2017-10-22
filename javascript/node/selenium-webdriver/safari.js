@@ -34,11 +34,23 @@ const remote = require('./remote');
 
 
 /**
+ * _Synchronously_ attempts to locate the IE driver executable on the current
+ * system.
+ *
+ * @return {?string} the located executable, or `null`.
+ */
+function locateSynchronously() {
+  return process.platform === 'darwin'
+      ? io.findInPath('safaridriver', true) : null;
+}
+
+
+/**
  * @return {string} .
  * @throws {Error}
  */
 function findSafariDriver() {
-  let exe = io.findInPath('safaridriver', true);
+  let exe = locateSynchronously();
   if (!exe) {
     throw Error(
       `The safaridriver executable could not be found on the current PATH.
@@ -239,3 +251,4 @@ class Driver extends webdriver.WebDriver {
 exports.Driver = Driver;
 exports.Options = Options;
 exports.ServiceBuilder = ServiceBuilder;
+exports.locateSynchronously = locateSynchronously;

@@ -26,7 +26,7 @@ var {Browser, By, error, until} = require('..'),
 
 
 suite(function(env) {
-  var browsers = env.browsers;
+  const browsers = (...args) => env.browsers(...args);
 
   var driver;
 

@@ -173,8 +173,4 @@ test.suite(function(env) {
           equalTo('Goodbye, world!');
     });
   });
-
-  // TODO: figure out how to test direct and system proxy settings.
-  describe.skip('direct proxy settings', function() {});
-  describe.skip('system proxy settings', function() {});
 });

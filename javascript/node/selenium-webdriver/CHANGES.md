@@ -22,7 +22,6 @@ mode.
      -  The dynamically generated thenable WebDrivers created by `index.Builder`
      -  `lib/webdriver.AlertPromise`
      -  `lib/webdriver.WebElementPromise`
-*  The `testing/index` module no longer wraps the promise manager
 *  Removed `remote/index.DriverService.prototype.stop()` (use `#kill()` instead)
 *  Removed the `firefox.Binary` class. Custom binaries can still be selected
    using `firefox.Options#setBinary()`. Likewise, custom binary arguments can be
@@ -82,6 +81,18 @@ mode.
        -  setPosition
        -  getSize
        -  setSize
+*  Changes to `testing/index`
+   -  Since the promise manager has been removed, it is no longer necessary to
+      wrap the Mocha test hooks; instead, users can simply use async functions.
+      The following have all been removed:
+      -  describe
+      -  before
+      -  beforeEach
+      -  after
+      -  afterEach
+      -  it
+   -  Added the `suite` function. For details, refer to the jsdoc or
+      `example/google_search_test.js`
 
 ### Changes for W3C WebDriver Spec Compliance
 

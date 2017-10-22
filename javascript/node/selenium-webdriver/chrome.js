@@ -197,6 +197,17 @@ function configureExecutor(executor) {
 
 
 /**
+ * _Synchronously_ attempts to locate the chromedriver executable on the current
+ * system.
+ *
+ * @return {?string} the located executable, or `null`.
+ */
+function locateSynchronously() {
+  return io.findInPath(CHROMEDRIVER_EXE, true);
+}
+
+
+/**
  * Creates {@link selenium-webdriver/remote.DriverService} instances that manage
  * a [ChromeDriver](https://sites.google.com/a/chromium.org/chromedriver/)
  * server in a child process.
@@ -210,7 +221,7 @@ class ServiceBuilder extends remote.DriverService.Builder {
    *     cannot be found on the PATH.
    */
   constructor(opt_exe) {
-    let exe = opt_exe || io.findInPath(CHROMEDRIVER_EXE, true);
+    let exe = opt_exe || locateSynchronously();
     if (!exe) {
       throw Error(
           'The ChromeDriver could not be found on the current PATH. Please ' +
@@ -820,3 +831,4 @@ exports.Options = Options;
 exports.ServiceBuilder = ServiceBuilder;
 exports.getDefaultService = getDefaultService;
 exports.setDefaultService = setDefaultService;
+exports.locateSynchronously = locateSynchronously;

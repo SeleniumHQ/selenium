@@ -30,7 +30,7 @@ const {WebDriver} = require('..');
 
 
 test.suite(function(env) {
-  var browsers = env.browsers;
+  const browsers = (...args) => env.browsers(...args);
 
   const BROWSER_MAP = new Map([
     [Browser.CHROME, chrome.Driver],
@@ -40,16 +40,16 @@ test.suite(function(env) {
     [Browser.SAFARI, safari.Driver],
   ]);
 
-  if (BROWSER_MAP.has(env.currentBrowser())) {
+  if (BROWSER_MAP.has(env.browser.name)) {
     describe('builder creates thenable driver instances', function() {
       let driver;
 
       after(() => driver && driver.quit());
 
-      it(env.currentBrowser(), function() {
+      it(env.browser.name, function() {
         driver = env.builder().build();
 
-        const want = BROWSER_MAP.get(env.currentBrowser());
+        const want = BROWSER_MAP.get(env.browser.name);
         assert(driver).instanceOf(want,
             `want ${want.name}, but got ${driver.name}`);
         assert(typeof driver.then).equalTo('function');

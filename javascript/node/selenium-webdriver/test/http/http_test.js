@@ -27,7 +27,6 @@ var HttpClient = require('../../http').HttpClient,
     Server = require('../../lib/test/httpserver').Server;
 
 describe('HttpClient', function() {
-  this.timeout(4 * 1000);
 
   var server = new Server(function(req, res) {
     let parsedUrl = url.parse(req.url);
