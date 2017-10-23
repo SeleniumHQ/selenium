@@ -24,11 +24,14 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.stalenessOf;
 import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 
 import org.junit.Test;
+import org.openqa.selenium.testing.Driver;
+import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 
 public class StaleElementReferenceTest extends JUnit4TestBase {
 
   @Test
+  @Ignore(value = Driver.MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1410799")
   public void testOldPage() {
     driver.get(pages.simpleTestPage);
     WebElement elem = driver.findElement(By.id("links"));
