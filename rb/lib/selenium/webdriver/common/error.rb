@@ -1,5 +1,3 @@
-# encoding: utf-8
-#
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -20,14 +18,27 @@
 module Selenium
   module WebDriver
     module Error
+
+      #
+      # Returns exception from code (Integer - OSS, String - W3C).
+      # @param [Integer, String, nil] code
+      #
+
+      def self.for_code(code)
+        case code
+        when nil, 0
+          nil
+        when Integer
+          ERRORS.fetch(code)
+        when String
+          klass_name = code.split(' ').map(&:capitalize).join.sub(/Error$/, '')
+          const_get("#{klass_name}Error")
+        end
+      rescue NameError
+        WebDriverError
+      end
+
       class WebDriverError < StandardError; end
-
-      #
-      # Indicates that a command that should have executed properly cannot be supported for some
-      # reason.
-      #
-
-      class UnsupportedOperationError < WebDriverError; end
 
       class IndexOutOfBoundsError < WebDriverError; end # 1
       class NoCollectionError < WebDriverError; end # 2
@@ -107,6 +118,7 @@ module Selenium
       #
 
       class TimeOutError < WebDriverError; end # 21
+
       class NullPointerError < WebDriverError; end # 22
       class NoSuchWindowError < WebDriverError; end # 23
 
@@ -117,7 +129,7 @@ module Selenium
       class InvalidCookieDomainError < WebDriverError; end # 24
 
       #
-      # A command to set a cookie’s value could not be satisfied.
+      # A command to set a cookie's value could not be satisfied.
       #
 
       class UnableToSetCookieError < WebDriverError; end # 25
@@ -128,10 +140,17 @@ module Selenium
       class UnhandledAlertError < WebDriverError; end # 26
 
       #
-      # Indicates that a user has tried to access an alert when one is not present.
+      # An attempt was made to operate on a modal dialog when one was not open:
+      #
+      #   * W3C dialect is NoSuchAlertError
+      #   * OSS dialect is NoAlertPresentError
+      #
+      # We want to allow clients to rescue NoSuchAlertError as a superclass for
+      # dialect-agnostic implementation, so NoAlertPresentError should inherit from it.
       #
 
-      class NoAlertPresentError < WebDriverError; end # 27
+      class NoSuchAlertError < WebDriverError; end
+      class NoAlertPresentError < NoSuchAlertError; end # 27
 
       #
       # A script did not complete before its timeout expired.
@@ -171,7 +190,7 @@ module Selenium
       class SessionNotCreatedError < WebDriverError; end # 33
 
       #
-      # The target for mouse interaction is not in the browser’s viewport and cannot be brought
+      # The target for mouse interaction is not in the browser's viewport and cannot be brought
       # into that viewport.
       #
 
@@ -181,47 +200,41 @@ module Selenium
       # Indicates that the XPath selector is invalid
       #
 
-      class InvalidXpathSelectorError < WebDriverError; end # 51
-      class InvalidXpathSelectorReturnTyperError < WebDriverError; end # 52
+      class InvalidXpathSelectorError < WebDriverError; end
+      class InvalidXpathSelectorReturnTyperError < WebDriverError; end
 
       #
       # A command could not be completed because the element is not pointer or keyboard
       # interactable.
       #
 
-      class ElementNotInteractableError < WebDriverError; end # 60
+      class ElementNotInteractableError < WebDriverError; end
 
       #
       # The arguments passed to a command are either invalid or malformed.
       #
 
-      class InvalidArgumentError < WebDriverError; end # 61
+      class InvalidArgumentError < WebDriverError; end
 
       #
       # No cookie matching the given path name was found amongst the associated cookies of the
-      # current browsing context’s active document.
+      # current browsing context's active document.
       #
 
-      class NoSuchCookieError < WebDriverError; end # 62
+      class NoSuchCookieError < WebDriverError; end
 
       #
       # A screen capture was made impossible.
       #
 
-      class UnableToCaptureScreenError < WebDriverError; end # 63
+      class UnableToCaptureScreenError < WebDriverError; end
 
       #
       # Occurs if the given session id is not in the list of active sessions, meaning the session
-      # either does not exist or that it’s not active.
+      # either does not exist or that it's not active.
       #
 
       class InvalidSessionIdError < WebDriverError; end
-
-      #
-      # An attempt was made to operate on a modal dialog when one was not open.
-      #
-
-      class NoSuchAlertError < WebDriverError; end
 
       #
       # A modal dialog was open, blocking this operation.
@@ -242,26 +255,37 @@ module Selenium
 
       class ElementClickInterceptedError < WebDriverError; end
 
-      # aliased for backwards compatibility
-      NoAlertPresentError       = NoSuchAlertError
-      ScriptTimeOutError        = ScriptTimeoutError
+      #
+      # Indicates that a command that should have executed properly cannot be supported for some
+      # reason.
+      #
+
+      class UnsupportedOperationError < WebDriverError; end
+
+      # Aliases for OSS dialect.
+      ScriptTimeoutError  = ScriptTimeOutError
+      NoAlertOpenError    = NoAlertPresentError
+
+      # Aliases for backwards compatibility.
       ObsoleteElementError      = StaleElementReferenceError
       UnhandledError            = UnknownError
       UnexpectedJavascriptError = JavascriptError
-      NoAlertOpenError          = NoAlertPresentError
       ElementNotDisplayedError  = ElementNotVisibleError
 
+      #
       # @api private
+      #
+
       ERRORS = {
-        1 => IndexOutOfBoundsError,
-        2 => NoCollectionError,
-        3 => NoStringError,
-        4 => NoStringLengthError,
-        5 => NoStringWrapperError,
-        6 => NoSuchDriverError,
-        7 => NoSuchElementError,
-        8 => NoSuchFrameError,
-        9 => UnknownCommandError,
+        1  => IndexOutOfBoundsError,
+        2  => NoCollectionError,
+        3  => NoStringError,
+        4  => NoStringLengthError,
+        5  => NoStringWrapperError,
+        6  => NoSuchDriverError,
+        7  => NoSuchElementError,
+        8  => NoSuchFrameError,
+        9  => UnknownCommandError,
         10 => StaleElementReferenceError,
         11 => ElementNotVisibleError,
         12 => InvalidElementStateError,
@@ -287,6 +311,8 @@ module Selenium
         32 => InvalidSelectorError,
         33 => SessionNotCreatedError,
         34 => MoveTargetOutOfBoundsError,
+        # The following are W3C-specific errors,
+        # they don't really need error codes, we just make them up!
         51 => InvalidXpathSelectorError,
         52 => InvalidXpathSelectorReturnTyperError,
         60 => ElementNotInteractableError,
@@ -295,17 +321,6 @@ module Selenium
         63 => UnableToCaptureScreenError
       }.freeze
 
-      class << self
-        def for_code(code)
-          return if [nil, 0].include? code
-          return ERRORS.fetch(code) if code.is_a? Integer
-
-          klass_name = code.split(' ').map(&:capitalize).join
-          Error.const_get("#{klass_name.gsub('Error', '')}Error")
-        rescue NameError
-          WebDriverError
-        end
-      end
     end # Error
   end # WebDriver
 end # Selenium
