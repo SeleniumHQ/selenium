@@ -446,7 +446,7 @@ public class ElementFindingTest extends JUnit4TestBase {
   @Ignore(IE)
   @Ignore(SAFARI)
   @Ignore(CHROME)
-  @NotYetImplemented(value = FIREFOX, reason="The spec doesn't demand being able to parse XML")
+  @NotYetImplemented(value = MARIONETTE, reason="https://bugzilla.mozilla.org/show_bug.cgi?id=1410799")
   public void testShouldBeAbleToFindElementByXPathInXmlDocument() {
     driver.get(pages.simpleXmlDocument);
     WebElement element = driver.findElement(By.xpath("//foo"));
