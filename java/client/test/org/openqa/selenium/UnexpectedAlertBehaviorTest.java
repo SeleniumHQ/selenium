@@ -85,7 +85,7 @@ public class UnexpectedAlertBehaviorTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = CHROME, reason = "Chrome uses IGNORE mode by default")
-  public void canSilentlyDismissUnhandledAlertsByDefault() {
+  public void canDismissUnhandledAlertsByDefault() {
     runScenarioWithUnhandledAlert(null, "null", false);
   }
 
