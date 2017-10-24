@@ -76,6 +76,7 @@ java_library(
     'AllHandlers.java',
     'CommandHandler.java',
     'InMemorySession.java',
+    'NewSessionPipeline.java',
     'Passthrough.java',
     'ProtocolConverter.java',
     'ServicedSession.java',

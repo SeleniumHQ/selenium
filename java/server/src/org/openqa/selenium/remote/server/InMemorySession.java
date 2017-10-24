@@ -25,11 +25,9 @@ import com.google.common.collect.ImmutableSet;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.HasCapabilities;
-import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.remote.Dialect;
-import org.openqa.selenium.remote.JsonToBeanConverter;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
@@ -37,6 +35,7 @@ import org.openqa.selenium.remote.http.HttpResponse;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Logger;
@@ -122,7 +121,6 @@ class InMemorySession implements ActiveSession {
 
   public static class Factory implements SessionFactory {
 
-    private final JsonToBeanConverter toBean = new JsonToBeanConverter();
     private final DriverProvider provider;
 
     public Factory(DriverProvider provider) {
@@ -130,7 +128,7 @@ class InMemorySession implements ActiveSession {
     }
 
     @Override
-    public ActiveSession apply(Set<Dialect> downstreamDialects, Capabilities caps) {
+    public Optional<ActiveSession> apply(Set<Dialect> downstreamDialects, Capabilities caps) {
       // Assume the blob fits in the available memory.
       try {
         if (!provider.canCreateDriverInstanceFor(caps)) {
@@ -143,9 +141,9 @@ class InMemorySession implements ActiveSession {
         Dialect downstream = downstreamDialects.contains(Dialect.OSS) ?
                              Dialect.OSS :
                              downstreamDialects.iterator().next();
-        return new InMemorySession(driver, caps, downstream);
-      } catch (IOException|IllegalStateException e) {
-        throw new SessionNotCreatedException("Cannot establish new session", e);
+        return Optional.of(new InMemorySession(driver, caps, downstream));
+      } catch (IOException | IllegalStateException e) {
+        return Optional.empty();
       }
     }
 

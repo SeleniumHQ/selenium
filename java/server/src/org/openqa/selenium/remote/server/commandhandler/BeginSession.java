@@ -35,22 +35,48 @@ import org.openqa.selenium.remote.server.ActiveSessionFactory;
 import org.openqa.selenium.remote.server.ActiveSessions;
 import org.openqa.selenium.remote.server.CommandHandler;
 import org.openqa.selenium.remote.server.NewSessionPayload;
+import org.openqa.selenium.remote.server.NewSessionPipeline;
+import org.openqa.selenium.remote.server.ServicedSession;
+import org.openqa.selenium.remote.server.SessionFactory;
 import org.openqa.selenium.remote.server.log.LoggingManager;
+import org.openqa.selenium.remote.service.DriverService;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.util.Objects;
+import java.util.Optional;
 import java.util.logging.Level;
+import java.util.stream.Stream;
 
 public class BeginSession implements CommandHandler {
 
-  private final ActiveSessionFactory sessionFactory;
+  private final NewSessionPipeline pipeline;
   private final ActiveSessions allSessions;
 
   public BeginSession(ActiveSessions allSessions) {
+    SessionFactory fallback = Stream.of(
+        "org.openqa.selenium.chrome.ChromeDriverService",
+        "org.openqa.selenium.firefox.GeckoDriverService",
+        "org.openqa.selenium.edge.EdgeDriverService",
+        "org.openqa.selenium.ie.InternetExplorerDriverService",
+        "org.openqa.selenium.safari.SafariDriverService")
+        .filter(name -> {
+          try {
+            Class.forName(name).asSubclass(DriverService.class);
+            return true;
+          } catch (ReflectiveOperationException e) {
+            return false;
+          }
+        })
+        .findFirst()
+        .map(serviceName -> (SessionFactory) new ServicedSession.Factory(serviceName))
+        .orElse((dialects, caps) -> Optional.empty());
+
     this.allSessions = allSessions;
-    this.sessionFactory = new ActiveSessionFactory();
+    this.pipeline = NewSessionPipeline.builder()
+        .add(new ActiveSessionFactory())
+        .fallback(fallback)
+        .create();
   }
 
   @Override
@@ -70,19 +96,7 @@ public class BeginSession implements CommandHandler {
         req.consumeContentStream(),
         req.getContentEncoding());
          NewSessionPayload payload = new NewSessionPayload(contentLength, reader)) {
-      session = payload.stream()
-          .map(caps -> {
-            try {
-              return sessionFactory.createSession(payload.getDownstreamDialects(), caps);
-            } catch (SessionNotCreatedException e) {
-              // Do nothing. We'll complain at the end.
-              return null;
-            }
-          })
-          .filter(Objects::nonNull)
-          .findFirst()
-          .orElseThrow(
-              () -> new SessionNotCreatedException("Unable to create session: " + payload));
+      session = pipeline.createNewSession(payload);
       allSessions.put(session);
     }
 

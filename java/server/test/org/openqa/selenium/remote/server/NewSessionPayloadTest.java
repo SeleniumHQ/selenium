@@ -200,9 +200,9 @@ public class NewSessionPayloadTest {
                 ImmutableMap.of("browserName", "firefox")))));
 
     assertEquals(ImmutableList.of(
-        new ImmutableCapabilities("browserName", "firefox", "platformName", "windows", "platform", "WINDOWS"),
-        new ImmutableCapabilities("browserName", "foo", "platformName", "macos", "platform", "MAC"),
-        new ImmutableCapabilities("browserName", "firefox", "platformName", "macos", "platform", "MAC")),
+        new ImmutableCapabilities("browserName", "firefox", "platform", "WINDOWS"),
+        new ImmutableCapabilities("browserName", "foo", "platformName", "macos"),
+        new ImmutableCapabilities("browserName", "firefox", "platformName", "macos")),
                  capabilities);
   }
 

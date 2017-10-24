@@ -21,18 +21,19 @@ import static java.util.concurrent.TimeUnit.MINUTES;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
-import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableMap;
 
 import com.thoughtworks.selenium.CommandProcessor;
 import com.thoughtworks.selenium.SeleniumException;
 
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.server.ActiveSession;
 import org.openqa.selenium.remote.server.ActiveSessionFactory;
 import org.openqa.selenium.remote.server.ActiveSessionListener;
 import org.openqa.selenium.remote.server.ActiveSessions;
+import org.openqa.selenium.remote.server.NewSessionPayload;
+import org.openqa.selenium.remote.server.NewSessionPipeline;
 import org.openqa.selenium.remote.server.WebDriverServlet;
 
 import java.io.IOException;
@@ -56,6 +57,7 @@ public class WebDriverBackedSeleniumServlet extends HttpServlet {
   // Prepare the shared set of thingies
   private static final Map<SessionId, CommandProcessor> PROCESSORS = new ConcurrentHashMap<>();
 
+  private NewSessionPipeline pipeline;
   private ActiveSessions sessions;
   private ActiveSessionListener listener;
 
@@ -74,6 +76,8 @@ public class WebDriverBackedSeleniumServlet extends HttpServlet {
         PROCESSORS.remove(session.getId());
       }
     };
+
+    this.pipeline = NewSessionPipeline.builder().add(new ActiveSessionFactory()).create();
   }
 
   @Override
@@ -211,10 +215,9 @@ public class WebDriverBackedSeleniumServlet extends HttpServlet {
           return;
       }
 
-      try {
-        ActiveSession session = new ActiveSessionFactory().createSession(
-            ImmutableSet.copyOf(Dialect.values()),
-            caps);
+      try (NewSessionPayload payload = new NewSessionPayload(
+          ImmutableMap.of("desiredCapabilities", caps.asMap()))) {
+        ActiveSession session = pipeline.createNewSession(payload);
         sessions.put(session);
         sessionId = session.getId();
       } catch (Exception e) {

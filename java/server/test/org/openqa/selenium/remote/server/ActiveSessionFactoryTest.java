@@ -20,7 +20,6 @@ package org.openqa.selenium.remote.server;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
 import org.junit.Test;
@@ -31,7 +30,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.Dialect;
 
 import java.io.IOException;
-import java.util.Map;
+import java.util.Optional;
 
 public class ActiveSessionFactoryTest {
 
@@ -48,7 +47,7 @@ public class ActiveSessionFactoryTest {
       }
     };
 
-    ActiveSession session = sessionFactory.createSession(ImmutableSet.of(Dialect.W3C), caps);
+    ActiveSession session = sessionFactory.apply(ImmutableSet.of(Dialect.W3C), caps).get();
     assertEquals(driver, session.getWrappedDriver());
   }
 
@@ -57,9 +56,9 @@ public class ActiveSessionFactoryTest {
     ActiveSession session = Mockito.mock(ActiveSession.class);
 
     ActiveSessionFactory sessionFactory = new ActiveSessionFactory()
-        .bind(caps -> "cheese".equals(caps.getBrowserName()), (dialects, caps) -> session);
+        .bind(caps -> "cheese".equals(caps.getBrowserName()), (dialects, caps) -> Optional.of(session));
 
-    ActiveSession created = sessionFactory.createSession(ImmutableSet.copyOf(Dialect.values()), toPayload("cheese"));
+    ActiveSession created = sessionFactory.apply(ImmutableSet.copyOf(Dialect.values()), toPayload("cheese")).get();
 
     assertSame(session, created);
   }

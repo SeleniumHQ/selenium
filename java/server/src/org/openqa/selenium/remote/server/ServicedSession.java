@@ -56,10 +56,11 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 
-class ServicedSession implements ActiveSession {
+public class ServicedSession implements ActiveSession {
 
   private final DriverService service;
   private final SessionId id;
@@ -149,7 +150,7 @@ class ServicedSession implements ActiveSession {
     private final Function<Capabilities, ? extends DriverService> createService;
     private final String serviceClassName;
 
-    Factory(String serviceClassName) {
+    public Factory(String serviceClassName) {
       this.serviceClassName = serviceClassName;
       try {
         Class<? extends DriverService> driverClazz =
@@ -198,7 +199,7 @@ class ServicedSession implements ActiveSession {
     }
 
     @Override
-    public ActiveSession apply(Set<Dialect> downstreamDialects, Capabilities capabilities) {
+    public Optional<ActiveSession> apply(Set<Dialect> downstreamDialects, Capabilities capabilities) {
       DriverService service = createService.apply(capabilities);
 
       try {
@@ -233,14 +234,14 @@ class ServicedSession implements ActiveSession {
 
         Response response = result.createResponse();
         //noinspection unchecked
-        return new ServicedSession(
+        return Optional.of(new ServicedSession(
             service,
             downstream,
             upstream,
             codec,
             new SessionId(response.getSessionId()),
-            (Map<String, Object>) response.getValue());
-      } catch (IOException|IllegalStateException|NullPointerException e) {
+            (Map<String, Object>) response.getValue()));
+      } catch (IOException | IllegalStateException | NullPointerException e) {
         throw new SessionNotCreatedException("Cannot establish new session", e);
       }
     }
