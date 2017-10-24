@@ -18,15 +18,16 @@
  */
 
 
-goog.require('goog.structs.Map');
-
-
+goog.setTestOnly('goog.testing.MockStorage');
 goog.provide('goog.testing.MockStorage');
+
+
+goog.require('goog.structs.Map');
 
 
 
 /**
- * A JS storage instance, implementing the HMTL5 Storage interface.
+ * A JS storage instance, implementing the HTML5 Storage interface.
  * See http://www.w3.org/TR/webstorage/ for details.
  *
  * @constructor

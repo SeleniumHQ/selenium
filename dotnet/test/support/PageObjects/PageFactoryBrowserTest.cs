@@ -1,9 +1,7 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using NUnit.Framework;
 using OpenQA.Selenium.Environment;
 using OpenQA.Selenium.Interactions;
-using OpenQA.Selenium.Support.UI;
-using System.Collections.ObjectModel;
 using System;
 
 namespace OpenQA.Selenium.Support.PageObjects
@@ -11,14 +9,15 @@ namespace OpenQA.Selenium.Support.PageObjects
     [TestFixture]
     public class PageFactoryBrowserTest : DriverTestFixture
     {
+#if !NETCOREAPP2_0
         //TODO: Move these to a standalone class when more tests rely on the server being up
-        [TestFixtureSetUp]
+        [OneTimeSetUp]
         public void RunBeforeAnyTest()
         {
             EnvironmentManager.Instance.WebServer.Start();
         }
         
-        [TestFixtureTearDown]
+        [OneTimeTearDown]
         public void RunAfterAnyTests()
         {
             EnvironmentManager.Instance.CloseCurrentDriver();
@@ -109,12 +108,20 @@ namespace OpenQA.Selenium.Support.PageObjects
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentException), ExpectedMessage = "Cannot specify FindsBySequence and FindsByAll on the same member", MatchType = MessageMatch.Contains)]
         public void MixingFindBySequenceAndFindByAllShouldThrow()
         {
             driver.Url = xhtmlTestPage;
             var page = new PageFactoryBrowserTest.InvalidAttributeCombinationPage();
+            Assert.Throws<ArgumentException>(() => PageFactory.InitElements(driver, page), "Cannot specify FindsBySequence and FindsByAll on the same member");
+        }
+
+        [Test]
+        public void FrameTest()
+        {
+            driver.Url = iframePage;
+            var page = new PageFactoryBrowserTest.IFramePage();
             PageFactory.InitElements(driver, page);
+            driver.SwitchTo().Frame(page.Frame);
         }
 
         #region Page classes for tests
@@ -157,7 +164,14 @@ namespace OpenQA.Selenium.Support.PageObjects
             public IWebElement NotFound;
         }
 
+        private class IFramePage
+        {
+            [FindsBy(How = How.Id, Using = "iframe1")]
+            public IWebElement Frame;
+        }
+
         #pragma warning restore 649
         #endregion
+#endif
     }
 }

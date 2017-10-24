@@ -1,5 +1,8 @@
-// Copyright 2011 Software Freedom Conservancy
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -14,10 +17,9 @@
 #ifndef WEBDRIVER_IE_HTMLDIALOG_H_
 #define WEBDRIVER_IE_HTMLDIALOG_H_
 
-#include <exdispid.h>
-#include <exdisp.h>
 #include <mshtml.h>
 #include <mshtmdid.h>
+
 #include "DocumentHost.h"
 #include "messages.h"
 
@@ -46,9 +48,11 @@ class HtmlDialog : public DocumentHost, public IDispEventSimpleImpl<1, HtmlDialo
   STDMETHOD_(void, OnBeforeUnload)(IHTMLEventObj* pEvtObj);
   STDMETHOD_(void, OnLoad)(IHTMLEventObj* pEvtObj);
 
+  void GetDocument(const bool force_top_level_document,
+                   IHTMLDocument2** doc);
   void GetDocument(IHTMLDocument2** doc);
   void Close(void);
-  bool Wait(void);
+  bool Wait(const std::string& page_load_strategy);
   bool IsBusy(void);
   HWND GetContentWindowHandle(void);
   HWND GetBrowserWindowHandle(void);
@@ -69,6 +73,9 @@ class HtmlDialog : public DocumentHost, public IDispEventSimpleImpl<1, HtmlDialo
   int Refresh(void);
 
   bool IsValidWindow(void);
+
+  bool IsFullScreen(void);
+  bool SetFullScreen(bool is_full_screen);
 
  private:
   static BOOL CALLBACK FindChildDialogWindow(HWND hwnd, LPARAM arg);

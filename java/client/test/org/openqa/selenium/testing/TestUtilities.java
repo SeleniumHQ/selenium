@@ -1,23 +1,21 @@
-/*
-Copyright 2011 Selenium committers
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
- */
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium.testing;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.HasCapabilities;
@@ -28,6 +26,9 @@ import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.testing.drivers.SauceDriver;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class TestUtilities {
 
   public static boolean isNativeEventsEnabled(WebDriver driver) {
@@ -37,6 +38,9 @@ public class TestUtilities {
   }
 
   public static String getUserAgent(WebDriver driver) {
+    if (driver instanceof HtmlUnitDriver) {
+      return ((HtmlUnitDriver) driver).getBrowserVersion().getUserAgent();
+    }
     try {
       return (String) ((JavascriptExecutor) driver).executeScript(
         "return navigator.userAgent;");
@@ -51,14 +55,12 @@ public class TestUtilities {
   }
 
   public static boolean isFirefox(WebDriver driver) {
-    return !(driver instanceof HtmlUnitDriver)
-        && getUserAgent(driver).contains("Firefox");
+    return getUserAgent(driver).contains("Firefox");
   }
 
   public static boolean isInternetExplorer(WebDriver driver) {
     String userAgent = getUserAgent(driver);
-    return !(driver instanceof HtmlUnitDriver)
-        && (userAgent.contains("MSIE") || userAgent.contains("Trident"));
+    return userAgent.contains("MSIE") || userAgent.contains("Trident");
   }
 
   public static boolean isIe6(WebDriver driver) {
@@ -75,6 +77,10 @@ public class TestUtilities {
     if (!isInternetExplorer(driver)) {
       return false;
     }
+    if (driver instanceof HtmlUnitDriver) {
+      String applicationVersion = ((HtmlUnitDriver) driver).getBrowserVersion().getApplicationVersion();
+      return Double.parseDouble(applicationVersion.split(" ")[0]) < 5;
+    }
     try {
       String jsToExecute = "return parseInt(window.navigator.appVersion.split(' ')[0]);";
       // IE9 is trident version 5.  IE9 is the start of new IE.
@@ -84,34 +90,16 @@ public class TestUtilities {
     }
   }
 
-  public  static boolean isFirefox30(WebDriver driver) {
-    return isFirefox(driver)
-        && getUserAgent(driver).contains("Firefox/3.0.");
-  }
-
-  public static boolean isFirefox35(WebDriver driver) {
-    return isFirefox(driver)
-        && getUserAgent(driver).contains("Firefox/3.5.");
-  }
-
-  public static boolean isFirefox9(WebDriver driver) {
-    return isFirefox(driver)
-        && getUserAgent(driver).contains("Firefox/9.0");
-  }
-
   public static boolean isChrome(WebDriver driver) {
-    return !(driver instanceof HtmlUnitDriver)
-        && getUserAgent(driver).contains("Chrome");
+    return !(driver instanceof HtmlUnitDriver) && getUserAgent(driver).contains("Chrome");
   }
 
   public static boolean isOldChromedriver(WebDriver driver) {
-    Capabilities caps;
-    try {
-      caps = ((HasCapabilities) driver).getCapabilities();
-    } catch (ClassCastException e) {
+    if (!(driver instanceof HasCapabilities)) {
       // Driver does not support capabilities -- not a chromedriver at all.
       return false;
     }
+    Capabilities caps = ((HasCapabilities) driver).getCapabilities();
     String chromedriverVersion = (String) caps.getCapability("chrome.chromedriverVersion");
     if (chromedriverVersion != null) {
       String[] versionMajorMinor = chromedriverVersion.split("\\.", 2);
@@ -174,7 +162,7 @@ public class TestUtilities {
     } else if (tridentMatcher.find()) {
       versionMatcher = Pattern.compile("rv:(\\d+)").matcher(userAgent);
     } else {
-      return 0;
+      return Integer.MAX_VALUE;  // Because people check to see if we're at this version or less
     }
 
     // extract version string
@@ -207,5 +195,18 @@ public class TestUtilities {
 
   public static boolean isLocal() {
     return !Boolean.getBoolean("selenium.browser.remote") && !SauceDriver.shouldUseSauce();
+  }
+
+  public static boolean isOnTravis() {
+    return Boolean.valueOf(System.getenv("TRAVIS"));
+  }
+
+  public static Throwable catchThrowable(Runnable f) {
+    try {
+      f.run();
+    } catch (Throwable throwable) {
+      return throwable;
+    }
+    return null;
   }
 }

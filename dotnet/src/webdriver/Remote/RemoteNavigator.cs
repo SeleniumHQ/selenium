@@ -1,7 +1,9 @@
 ﻿// <copyright file="RemoteNavigator.cs" company="WebDriver Committers">
-// Copyright 2015 Software Freedom Conservancy
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -15,8 +17,6 @@
 // </copyright>
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace OpenQA.Selenium.Remote
 {
@@ -28,7 +28,7 @@ namespace OpenQA.Selenium.Remote
         private RemoteWebDriver driver;
 
         /// <summary>
-        /// Initializes a new instance of the RemoteNavigator class
+        /// Initializes a new instance of the <see cref="RemoteNavigator"/> class
         /// </summary>
         /// <param name="driver">Driver in use</param>
         public RemoteNavigator(RemoteWebDriver driver)
@@ -36,7 +36,6 @@ namespace OpenQA.Selenium.Remote
             this.driver = driver;
         }
 
-        #region INavigation members
         /// <summary>
         /// Move the browser back
         /// </summary>
@@ -84,6 +83,5 @@ namespace OpenQA.Selenium.Remote
             // driver.SwitchTo().DefaultContent();
             this.driver.InternalExecute(DriverCommand.Refresh, null);
         }
-        #endregion
     }
 }

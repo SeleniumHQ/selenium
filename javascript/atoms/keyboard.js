@@ -1,17 +1,19 @@
-// Copyright 2010 WebDriver committers
-// Copyright 2010 Google Inc.
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
+//   http://www.apache.org/licenses/LICENSE-2.0
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 /**
  * @fileoverview The file contains an abstraction of a keyboad
@@ -457,7 +459,7 @@ bot.Keyboard.prototype.pressKey = function(key) {
 bot.Keyboard.prototype.requiresKeyPress_ = function(key) {
   if (key.character || key == bot.Keyboard.Keys.ENTER) {
     return true;
-  } else if (goog.userAgent.WEBKIT) {
+  } else if (goog.userAgent.WEBKIT || goog.userAgent.EDGE) {
     return false;
   } else if (goog.userAgent.IE) {
     return key == bot.Keyboard.Keys.ESC;
@@ -810,7 +812,9 @@ bot.Keyboard.prototype.updateOnHomeOrEnd_ = function(key) {
  */
 bot.Keyboard.checkCanUpdateSelection_ = function(element) {
   try {
-    element.selectionStart;
+    if (typeof element.selectionStart == 'number') {
+      return;
+    }
   } catch (ex) {
     // The native error message is actually pretty informative, just add a
     // reference to the relevant Chrome bug to provide more context.
@@ -821,6 +825,7 @@ bot.Keyboard.checkCanUpdateSelection_ = function(element) {
     }
     throw ex;
   }
+  throw Error('Element does not support selection');
 };
 
 

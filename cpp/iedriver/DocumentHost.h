@@ -1,5 +1,8 @@
-// Copyright 2011 Software Freedom Conservancy
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -14,24 +17,30 @@
 #ifndef WEBDRIVER_IE_DOCUMENTHOST_H_
 #define WEBDRIVER_IE_DOCUMENTHOST_H_
 
-#include <string>
 #include <map>
 #include <memory>
-#include "ErrorCodes.h"
+#include <string>
+
 #include "LocationInfo.h"
 
 #define EELEMENTCLICKPOINTNOTSCROLLED 100
 
 namespace webdriver {
 
+// Forward declaration of classes.
+class BrowserCookie;
+class CookieManager;
+
 class DocumentHost {
  public:
   DocumentHost(HWND hwnd, HWND executor_handle);
   virtual ~DocumentHost(void);
 
+  virtual void GetDocument(const bool force_top_level_document,
+                           IHTMLDocument2** doc) = 0;
   virtual void GetDocument(IHTMLDocument2** doc) = 0;
   virtual void Close(void) = 0;
-  virtual bool Wait(void) = 0;
+  virtual bool Wait(const std::string& page_load_strategy) = 0;
   virtual bool IsBusy(void) = 0;
   virtual HWND GetContentWindowHandle(void) = 0;
   virtual HWND GetBrowserWindowHandle(void) = 0;
@@ -53,6 +62,10 @@ class DocumentHost {
 
   virtual bool IsValidWindow(void) = 0;
 
+  virtual bool IsFullScreen(void) = 0;
+  virtual bool SetFullScreen(bool is_full_screen) = 0;
+  void Restore(void);
+
   std::string GetCurrentUrl(void);
   std::string GetPageSource(void);
 
@@ -60,10 +73,6 @@ class DocumentHost {
   static bool IsStandardsMode(IHTMLDocument2* doc);
   static bool GetDocumentDimensions(IHTMLDocument2* doc, LocationInfo* info);
 
-  void GetCookies(std::map<std::string, std::string>* cookies);
-  int AddCookie(const std::string& cookie, const bool validate_document_type);
-  int DeleteCookie(const std::string& cookie_name);
-  
   int SetFocusedFrameByIndex(const int frame_index);
   int SetFocusedFrameByName(const std::string& frame_name);
   int SetFocusedFrameByElement(IHTMLElement* frame_element);
@@ -76,6 +85,7 @@ class DocumentHost {
 
   std::string browser_id(void) const { return this->browser_id_; }
   HWND window_handle(void) const { return this->window_handle_; }
+  CookieManager* cookie_manager(void) { return this->cookie_manager_; }
 
  protected:
   void PostQuitMessage(void);
@@ -94,9 +104,9 @@ class DocumentHost {
   }
 
  private:
-  bool IsHtmlPage(IHTMLDocument2* doc);
   int SetFocusedFrameByIdentifier(VARIANT frame_identifier);
 
+  CookieManager* cookie_manager_;
   CComPtr<IHTMLWindow2> focused_frame_window_;
   HWND window_handle_;
   HWND executor_handle_;
@@ -104,8 +114,6 @@ class DocumentHost {
   bool wait_required_;
   bool is_closing_;
 };
-
-typedef std::tr1::shared_ptr<DocumentHost> BrowserHandle;
 
 } // namespace webdriver
 

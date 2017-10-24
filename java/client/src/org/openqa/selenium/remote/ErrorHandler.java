@@ -1,44 +1,41 @@
-/*
-Copyright 2012 Selenium committers
-Copyright 2012 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
-
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium.remote;
 
 import static org.openqa.selenium.remote.ErrorCodes.SUCCESS;
 
-import com.google.common.base.Function;
-import com.google.common.base.Predicates;
 import com.google.common.base.Throwables;
-import com.google.common.collect.Iterables;
+import com.google.common.primitives.Ints;
 
 import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.WebDriverException;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Function;
 
 /**
  * Maps exceptions to status codes for sending over the wire.
- * 
- * @author jmleyba@gmail.com (Jason Leyba)
  */
 public class ErrorHandler {
 
@@ -91,12 +88,14 @@ public class ErrorHandler {
 
   @SuppressWarnings("unchecked")
   public Response throwIfResponseFailed(Response response, long duration) throws RuntimeException {
-    if (response.getStatus() == SUCCESS) {
+    if (response.getStatus() == null || response.getStatus() == SUCCESS) {
       return response;
     }
-    
+
     if (response.getValue() instanceof Throwable) {
-      throw Throwables.propagate((Throwable) response.getValue());
+      Throwable throwable = (Throwable) response.getValue();
+      Throwables.throwIfUnchecked(throwable);
+      throw new RuntimeException(throwable);
     }
 
     Class<? extends WebDriverException> outerErrorType =
@@ -108,6 +107,11 @@ public class ErrorHandler {
 
     if (value instanceof Map) {
       Map<String, Object> rawErrorData = (Map<String, Object>) value;
+      if (!rawErrorData.containsKey(MESSAGE) && rawErrorData.containsKey("value")) {
+        try {
+          rawErrorData = (Map<String, Object>) rawErrorData.get("value");
+        } catch (ClassCastException cce) {}
+      }
       try {
         message = (String) rawErrorData.get(MESSAGE);
       } catch (ClassCastException e) {
@@ -150,6 +154,12 @@ public class ErrorHandler {
     if (outerErrorType.equals(UnhandledAlertException.class)
         && value instanceof Map) {
       toThrow = createUnhandledAlertException(value);
+    }
+
+    if (toThrow == null) {
+      toThrow = createThrowable(outerErrorType,
+                                new Class<?>[] {String.class, Throwable.class, Integer.class},
+                                new Object[] {message, cause, response.getStatus()});
     }
 
     if (toThrow == null) {
@@ -202,16 +212,8 @@ public class ErrorHandler {
     try {
       Constructor<T> constructor = clazz.getConstructor(parameterTypes);
       return constructor.newInstance(parameters);
-    } catch (NoSuchMethodException e) {
+    } catch (OutOfMemoryError | ReflectiveOperationException e) {
       // Do nothing - fall through.
-    } catch (InvocationTargetException e) {
-      // Do nothing - fall through.
-    } catch (InstantiationException e) {
-      // Do nothing - fall through.
-    } catch (IllegalAccessException e) {
-      // Do nothing - fall through.
-    } catch (OutOfMemoryError error) {
-      // It can happen...
     }
     return null;
   }
@@ -225,7 +227,7 @@ public class ErrorHandler {
 
     Throwable toReturn = null;
     String message = (String) rawErrorData.get(MESSAGE);
-    Class clazz = null;
+    Class<?> clazz = null;
 
     // First: allow Remote Driver to specify the Selenium Server internal exception
     if (rawErrorData.containsKey(CLASS)) {
@@ -264,10 +266,11 @@ public class ErrorHandler {
       @SuppressWarnings({"unchecked"})
       List<Map<String, Object>> stackTraceInfo =
           (List<Map<String, Object>>) rawErrorData.get(STACK_TRACE);
-      Iterable<StackTraceElement> stackFrames =
-          Iterables.transform(stackTraceInfo, new FrameInfoToStackFrame());
-      stackFrames = Iterables.filter(stackFrames, Predicates.notNull());
-      stackTrace = Iterables.toArray(stackFrames, StackTraceElement.class);
+
+      stackTrace = stackTraceInfo.stream()
+          .map(entry -> new FrameInfoToStackFrame().apply(entry))
+          .filter(Objects::nonNull)
+          .toArray(StackTraceElement[]::new);
     }
 
     toReturn.setStackTrace(stackTrace);
@@ -294,23 +297,34 @@ public class ErrorHandler {
         return null;
       }
 
-      Number lineNumber = (Number) frameInfo.get(LINE_NUMBER);
-      if (lineNumber == null) {
-        return null;
+      Optional<Number> maybeLineNumberInteger = Optional.empty();
+
+      final Object lineNumberObject = frameInfo.get(LINE_NUMBER);
+      if (lineNumberObject instanceof Number) {
+        maybeLineNumberInteger = Optional.of((Number) lineNumberObject);
+      } else if (lineNumberObject != null) {
+        // might be a Number as a String
+        maybeLineNumberInteger = Optional.ofNullable(Ints.tryParse(lineNumberObject.toString()));
       }
+
+      // default -1 for unknown, see StackTraceElement constructor javadoc
+      final int lineNumber = maybeLineNumberInteger.orElse(-1).intValue();
 
       // Gracefully handle remote servers that don't (or can't) send back
       // complete stack trace info. At least some of this information should
       // be included...
-      String className = frameInfo.containsKey(CLASS_NAME)
-          ? toStringOrNull(frameInfo.get(CLASS_NAME)) : UNKNOWN_CLASS;
-      String methodName = frameInfo.containsKey(METHOD_NAME)
-          ? toStringOrNull(frameInfo.get(METHOD_NAME)) : UNKNOWN_METHOD;
-      String fileName = frameInfo.containsKey(FILE_NAME)
-          ? toStringOrNull(frameInfo.get(FILE_NAME)) : UNKNOWN_FILE;
+      String className = frameInfo.containsKey(CLASS_NAME) ?
+                         toStringOrNull(frameInfo.get(CLASS_NAME)) : UNKNOWN_CLASS;
+      String methodName = frameInfo.containsKey(METHOD_NAME) ?
+                          toStringOrNull(frameInfo.get(METHOD_NAME)) : UNKNOWN_METHOD;
+      String fileName = frameInfo.containsKey(FILE_NAME) ?
+                        toStringOrNull(frameInfo.get(FILE_NAME)) : UNKNOWN_FILE;
 
-      return new StackTraceElement(className, methodName, fileName,
-          lineNumber.intValue());
+      return new StackTraceElement(
+          className,
+          methodName,
+          fileName,
+          lineNumber);
     }
 
     private static String toStringOrNull(Object o) {

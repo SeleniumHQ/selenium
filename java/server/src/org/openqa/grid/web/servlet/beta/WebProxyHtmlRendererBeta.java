@@ -1,20 +1,19 @@
-/*
-Copyright 2012 Selenium committers
-Copyright 2012 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
-
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.grid.web.servlet.beta;
 
@@ -28,8 +27,6 @@ import org.openqa.grid.internal.TestSlot;
 import org.openqa.grid.internal.utils.HtmlRenderer;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.CapabilityType;
-
-import java.util.Map;
 
 public class WebProxyHtmlRendererBeta implements HtmlRenderer {
 
@@ -90,16 +87,7 @@ public class WebProxyHtmlRendererBeta implements HtmlRenderer {
   private String tabConfig() {
     StringBuilder builder = new StringBuilder();
     builder.append("<div type='config' class='content_detail'>");
-    Map<String, Object> config = proxy.getConfig();
-
-    for (String key : config.keySet()) {
-      builder.append("<p>");
-      builder.append(key);
-      builder.append(":");
-      builder.append(config.get(key));
-      builder.append("</p>");
-    }
-
+    builder.append(proxy.getConfig().toString("<p>%1$s: %2$s</p>"));
     builder.append("</div>");
     return builder.toString();
   }
@@ -196,44 +184,40 @@ public class WebProxyHtmlRendererBeta implements HtmlRenderer {
 
   /**
    * return the platform for the proxy. It should be the same for all slots of the proxy, so checking that.
+   * @param proxy remote proxy
    * @return Either the platform name, "Unknown", "mixed OS", or "not specified".
    */
   public static String getPlatform(RemoteProxy proxy) {
     Platform res = null;
     if (proxy.getTestSlots().size() == 0) {
       return "Unknown";
-    } else {
-      res = getPlatform(proxy.getTestSlots().get(0));
-
     }
+    res = getPlatform(proxy.getTestSlots().get(0));
 
     for (TestSlot slot : proxy.getTestSlots()) {
       Platform tmp = getPlatform(slot);
       if (tmp != res) {
         return "mixed OS";
-      } else {
-        res = tmp;
       }
+      res = tmp;
     }
     if (res == null) {
       return "not specified";
-    } else {
-      return res.toString();
     }
+    return res.toString();
   }
 
   private static Platform getPlatform(TestSlot slot) {
     Object o = slot.getCapabilities().get(CapabilityType.PLATFORM);
     if (o == null) {
       return Platform.ANY;
+    }
+    if (o instanceof String) {
+      return Platform.valueOf((String) o);
+    } else if (o instanceof Platform) {
+      return (Platform) o;
     } else {
-      if (o instanceof String) {
-        return Platform.valueOf((String) o);
-      } else if (o instanceof Platform) {
-        return (Platform) o;
-      } else {
-        throw new GridException("Cannot cast " + o + " to org.openqa.selenium.Platform");
-      }
+      throw new GridException("Cannot cast " + o + " to org.openqa.selenium.Platform");
     }
   }
 }

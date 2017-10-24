@@ -1,7 +1,9 @@
 ﻿// <copyright file="OperaDriverService.cs" company="WebDriver Committers">
-// Copyright 2015 Software Freedom Conservancy
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -15,9 +17,7 @@
 // </copyright>
 
 using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
 using System.Text;
 using OpenQA.Selenium.Internal;
 
@@ -37,7 +37,7 @@ namespace OpenQA.Selenium.Opera
         private bool enableVerboseLogging;
 
         /// <summary>
-        /// Initializes a new instance of the OperaDriverService class.
+        /// Initializes a new instance of the <see cref="OperaDriverService"/> class.
         /// </summary>
         /// <param name="executablePath">The full path to the OperaDriver executable.</param>
         /// <param name="executableFileName">The file name of the OperaDriver executable.</param>

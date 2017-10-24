@@ -1,8 +1,7 @@
 # selenium-webdriver
 
 This gem provides Ruby bindings for WebDriver
-and has been tested to work on MRI (1.9.2 through 2.1),
-JRuby and Rubinius.
+and has been tested to work on MRI (2.0 through 2.2),
 
 ## Install
 
@@ -11,17 +10,21 @@ JRuby and Rubinius.
 ## Links
 
 * http://rubygems.org/gems/selenium-webdriver
-* http://selenium.googlecode.com/git/docs/api/rb/index.html
+* http://seleniumhq.github.io/selenium/docs/api/rb/index.html
 * https://github.com/SeleniumHQ/selenium/wiki/Ruby-Bindings
 * https://github.com/SeleniumHQ/selenium/issues
 
 ## License
 
-Copyright 2009-2015 Software Freedom Conservancy
+Copyright 2009-2017 Software Freedom Conservancy
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
+Licensed to the Software Freedom Conservancy (SFC) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The SFC licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
 
      http://www.apache.org/licenses/LICENSE-2.0
 

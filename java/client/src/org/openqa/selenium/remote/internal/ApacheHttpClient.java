@@ -1,17 +1,30 @@
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
 package org.openqa.selenium.remote.internal;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static org.apache.http.protocol.HttpCoreContext.HTTP_TARGET_HOST;
 
-import com.google.common.base.Throwables;
-
 import org.apache.http.Header;
-import org.apache.http.HeaderElement;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
 import org.apache.http.NoHttpResponseException;
 import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
@@ -31,6 +44,7 @@ import java.net.BindException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.concurrent.TimeUnit;
 
 public class ApacheHttpClient implements org.openqa.selenium.remote.http.HttpClient {
 
@@ -82,9 +96,7 @@ public class ApacheHttpClient implements org.openqa.selenium.remote.http.HttpCli
 
     internalResponse.setStatus(response.getStatusLine().getStatusCode());
     for (Header header : response.getAllHeaders()) {
-      for (HeaderElement headerElement : header.getElements()) {
-        internalResponse.addHeader(header.getName(), headerElement.getValue());
-      }
+      internalResponse.addHeader(header.getName(), header.getValue());
     }
 
     HttpEntity entity = response.getEntity();
@@ -130,7 +142,7 @@ public class ApacheHttpClient implements org.openqa.selenium.remote.http.HttpCli
       try {
         Thread.sleep(2000);
       } catch (InterruptedException ie) {
-        throw Throwables.propagate(ie);
+        throw new RuntimeException(ie);
       }
     } catch (NoHttpResponseException e) {
       // If we get this, there's a chance we've used all the remote ephemeral sockets
@@ -138,7 +150,7 @@ public class ApacheHttpClient implements org.openqa.selenium.remote.http.HttpCli
       try {
         Thread.sleep(2000);
       } catch (InterruptedException ie) {
-        throw Throwables.propagate(ie);
+        throw new RuntimeException(ie);
       }
     }
     return client.execute(targetHost, httpMethod, context);
@@ -175,11 +187,7 @@ public class ApacheHttpClient implements org.openqa.selenium.remote.http.HttpCli
       get.setHeader("Accept", "application/json; charset=utf-8");
       org.apache.http.HttpResponse newResponse = client.execute(targetHost, get, context);
       return followRedirects(client, context, newResponse, redirectCount + 1);
-    } catch (URISyntaxException e) {
-      throw new WebDriverException(e);
-    } catch (ClientProtocolException e) {
-      throw new WebDriverException(e);
-    } catch (IOException e) {
+    } catch (URISyntaxException | IOException e) {
       throw new WebDriverException(e);
     }
   }
@@ -235,5 +243,10 @@ public class ApacheHttpClient implements org.openqa.selenium.remote.http.HttpCli
       }
       return defaultClientFactory;
     }
+  }
+
+  @Override
+  public void close() throws IOException {
+    client.getConnectionManager().closeIdleConnections(0, TimeUnit.SECONDS);
   }
 }

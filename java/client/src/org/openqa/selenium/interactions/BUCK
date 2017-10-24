@@ -1,23 +1,43 @@
+# BUILD FILE SYNTAX: SKYLARK
 java_library(name = 'interactions',
   srcs = [
     'Actions.java',
-  ] + glob(['*Action.java', 'internal/*Action.java', 'touch/*.java']),
+    'KeyInput.java',
+    'IsInteraction.java',
+    'PointerInput.java',
+  ] + glob(['*Action.java', 'internal/*Action.java', 'touch/*.java'], excludes = ['Action.java', 'IsInteraction.java']),
   exported_deps = [
     ':core',
     ':exceptions',
     '//java/client/src/org/openqa/selenium:core',
   ],
-  visibility = ['PUBLIC'],
+  deps = [
+    '//java/client/src/org/openqa/selenium:beta',
+    '//java/client/src/org/openqa/selenium:exceptions',
+    '//third_party/java/guava:guava',
+  ],
+  visibility = [
+    '//java/client/src/org/openqa/selenium:selenium',
+  ],
 )
 
 java_library(name = 'core',
   srcs = [
+    'Action.java',
+    'Encodable.java',
     'HasInputDevices.java',
     'HasTouchScreen.java',
+    'InputSource.java',
+    'Interaction.java',
+    'Interactive.java',
     'Keyboard.java',
     'Mouse.java',
+    'Pause.java',
+    'Sequence.java',
+    'SourceType.java',
     'TouchScreen.java',
     'internal/Coordinates.java',
+    'internal/Locatable.java',
   ],
   deps = [
     '//java/client/src/org/openqa/selenium:primitives',
@@ -36,7 +56,7 @@ java_library(name = 'exceptions',
     '//java/client/src/org/openqa/selenium:exceptions',
   ],
   visibility = [
-    '//java/client/src/org/openqa/selenium:webdriver-api',
+    '//java/client/src/org/openqa/selenium:core',
     '//java/client/src/org/openqa/selenium/remote:remote',
   ],
 )

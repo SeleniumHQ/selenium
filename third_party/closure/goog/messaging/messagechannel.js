@@ -85,8 +85,8 @@ goog.messaging.MessageChannel.prototype.isConnected = function() {};
  *     a string automatically if necessary. It's the responsibility of
  *     implementors of this class to perform the deserialization.
  */
-goog.messaging.MessageChannel.prototype.registerService =
-    function(serviceName, callback, opt_objectPayload) {};
+goog.messaging.MessageChannel.prototype.registerService = function(
+    serviceName, callback, opt_objectPayload) {};
 
 
 /**
@@ -98,8 +98,8 @@ goog.messaging.MessageChannel.prototype.registerService =
  *     some channels can pass objects natively, the payload may be either an
  *     object or a string.
  */
-goog.messaging.MessageChannel.prototype.registerDefaultService =
-    function(callback) {};
+goog.messaging.MessageChannel.prototype.registerDefaultService = function(
+    callback) {};
 
 
 /**
@@ -112,5 +112,5 @@ goog.messaging.MessageChannel.prototype.registerDefaultService =
  *     the responsibility of implementors of this class to perform the
  *     serialization.
  */
-goog.messaging.MessageChannel.prototype.send =
-    function(serviceName, payload) {};
+goog.messaging.MessageChannel.prototype.send = function(serviceName, payload) {
+};

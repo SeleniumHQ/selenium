@@ -1,19 +1,19 @@
-/*
-Copyright 2011 Selenium committers
-Copyright 2011 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.grid.internal;
 
@@ -59,21 +59,21 @@ public class ExternalSessionKey {
   public int hashCode() {
     return key.hashCode();
   }
-  
-  public static ExternalSessionKey fromSe1Request(String piece){
+
+  public static ExternalSessionKey fromSe1Request(String piece) {
     if (piece.startsWith("sessionId=")) {
       return new ExternalSessionKey(piece.replace("sessionId=", ""));
     }
     return null;
   }
-  
+
   /**
    * extract the session xxx from http://host:port/a/b/c/session/xxx/...
    *
    * @param path The path to the session
    * @return the ExternalSessionKey provided by the remote., or null if the url didn't contain a session id
    */
-  public static ExternalSessionKey fromWebDriverRequest(String path){
+  public static ExternalSessionKey fromWebDriverRequest(String path) {
       int sessionIndex = path.indexOf("/session/");
       if (sessionIndex != -1) {
         sessionIndex += "/session/".length();
@@ -101,15 +101,24 @@ public class ExternalSessionKey {
   public static ExternalSessionKey fromJsonResponseBody(String responseBody) {
     try {
       JsonObject json = new JsonParser().parse(responseBody).getAsJsonObject();
-      if (!json.has("sessionId") || json.get("sessionId").isJsonNull()) {
-        return null;
+      if (json.has("sessionId") && !json.get("sessionId").isJsonNull()) {
+        return new ExternalSessionKey(json.get("sessionId").getAsString());
       }
-      return new ExternalSessionKey(json.get("sessionId").getAsString());
+
+      // W3C response
+      if (json.has("value") && json.get("value").isJsonObject()) {
+        JsonObject value = json.getAsJsonObject("value");
+        if (value.has("sessionId") && !value.get("sessionId").isJsonNull()) {
+          return new ExternalSessionKey(value.get("sessionId").getAsString());
+        }
+      }
     } catch (JsonSyntaxException e) {
       return null;
     }
+
+    return null;
   }
-  
+
   /**
    * extract the external key from the server response for a selenium1 new session request.
    * @param responseBody the response from the server
@@ -119,17 +128,15 @@ public class ExternalSessionKey {
   public static ExternalSessionKey fromResponseBody(String responseBody) throws NewSessionException {
     if (responseBody != null && responseBody.startsWith("OK,")) {
       return new ExternalSessionKey(responseBody.replace("OK,", ""));
-    }else {
-      throw new NewSessionException("The server returned an error : "+responseBody);
     }
-    
+    throw new NewSessionException("The server returned an error : "+responseBody);
   }
 
-  public static ExternalSessionKey fromString(String keyString){
+  public static ExternalSessionKey fromString(String keyString) {
     return new ExternalSessionKey(keyString);
   }
 
-  public static ExternalSessionKey fromJSON(String keyString){
+  public static ExternalSessionKey fromJSON(String keyString) {
     return new ExternalSessionKey(keyString);
   }
 

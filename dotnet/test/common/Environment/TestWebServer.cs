@@ -9,8 +9,8 @@ namespace OpenQA.Selenium.Environment
     {
         private Process webserverProcess;
 
-        private string standaloneTestJar = @"build/java/client/test/org/openqa/selenium/tests-standalone.jar";
-        private string webserverClassName = "org.openqa.selenium.environment.webserver.Jetty7AppServer";
+        private string standaloneTestJar = @"buck-out/gen/java/client/test/org/openqa/selenium/environment/webserver.jar";
+        private string webserverClassName = "org.openqa.selenium.environment.webserver.JettyAppServer";
         private string projectRootPath;
 
         public TestWebServer(string projectRoot)
@@ -27,9 +27,9 @@ namespace OpenQA.Selenium.Environment
                 {
                     throw new FileNotFoundException(
                         string.Format(
-                            "Standalone test jar at {0} didn't exist - please build it using something like {1}",
+                            "Test webserver jar at {0} didn't exist - please build it using something like {1}",
                             standaloneTestJar,
-                            "go //java/client/test/org/openqa/selenium:tests:uber"));
+                            "go //java/client/test/org/openqa/selenium/environment:webserver"));
                 }
 
                 string javaExecutableName = "java";
@@ -82,14 +82,22 @@ namespace OpenQA.Selenium.Environment
 
             if (webserverProcess != null)
             {
-                webserverProcess.WaitForExit(10000);
-                if (!webserverProcess.HasExited)
+                try
                 {
-                    webserverProcess.Kill();
+                    webserverProcess.WaitForExit(10000);
+                    if (!webserverProcess.HasExited)
+                    {
+                        webserverProcess.Kill();
+                    }
                 }
-
-                webserverProcess.Dispose();
-                webserverProcess = null;
+                catch (Exception)
+                {
+                }
+                finally
+                {
+                    webserverProcess.Dispose();
+                    webserverProcess = null;
+                }
             }
         }
     }

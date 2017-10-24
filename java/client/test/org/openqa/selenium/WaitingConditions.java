@@ -1,20 +1,19 @@
-/*
-Copyright 2012-2013 Software Freedom Conservancy
-Copyright 2010-2013 Selenium committers
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
- */
-
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium;
 
@@ -28,11 +27,12 @@ public class WaitingConditions {
     // utility class
   }
 
-  private static abstract class ElementTextComperator implements ExpectedCondition<String> {
+  private static abstract class ElementTextComparator implements ExpectedCondition<String> {
     private String lastText = "";
     private WebElement element;
     private String expectedValue;
-    ElementTextComperator(WebElement element, String expectedValue) {
+
+    ElementTextComparator(WebElement element, String expectedValue) {
       this.element = element;
       this.expectedValue = expectedValue;
     }
@@ -56,7 +56,7 @@ public class WaitingConditions {
 
   public static ExpectedCondition<String> elementTextToEqual(
       final WebElement element, final String value) {
-    return new ElementTextComperator(element, value) {
+    return new ElementTextComparator(element, value) {
 
       @Override
       boolean compareText(String expectedValue, String actualValue) {
@@ -67,7 +67,7 @@ public class WaitingConditions {
 
   public static ExpectedCondition<String> elementTextToContain(
       final WebElement element, final String value) {
-    return new ElementTextComperator(element, value) {
+    return new ElementTextComparator(element, value) {
 
       @Override
       boolean compareText(String expectedValue, String actualValue) {
@@ -188,20 +188,8 @@ public class WaitingConditions {
   }
 
   public static ExpectedCondition<String> newWindowIsOpened(final Set<String> originalHandles) {
-    return new ExpectedCondition<String>() {
-
-      @Override
-      public String apply(WebDriver driver) {
-        Set<String> currentWindowHandles = driver.getWindowHandles();
-        if (currentWindowHandles.size() > originalHandles.size()) {
-          currentWindowHandles.removeAll(originalHandles);
-          return currentWindowHandles.iterator().next();
-        } else {
-          return null;
-        }
-      }
-    };
-    
+    return driver -> driver.getWindowHandles().stream()
+        .filter(handle -> ! originalHandles.contains(handle)).findFirst().orElse(null);
   }
 
   public static ExpectedCondition<WebDriver> windowToBeSwitchedToWithName(final String windowName) {

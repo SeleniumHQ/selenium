@@ -196,6 +196,9 @@ goog.a11y.aria.Role = {
   // ARIA role for a textbox element.
   TEXTBOX: 'textbox',
 
+  // ARIA role for a textinfo element.
+  TEXTINFO: 'textinfo',
+
   // ARIA role for an element displaying elapsed time or time remaining.
   TIMER: 'timer',
 

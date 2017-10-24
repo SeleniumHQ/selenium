@@ -1,7 +1,32 @@
-// Copyright 2012 Google Inc. All Rights Reserved.
+ /**
+  * @license
+  * The MIT License
+  *
+  * Copyright (c) 2007 Cybozu Labs, Inc.
+  * Copyright (c) 2012 Google Inc.
+  *
+  * Permission is hereby granted, free of charge, to any person obtaining a copy
+  * of this software and associated documentation files (the "Software"), to
+  * deal in the Software without restriction, including without limitation the
+  * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+  * sell copies of the Software, and to permit persons to whom the Software is
+  * furnished to do so, subject to the following conditions:
+  *
+  * The above copyright notice and this permission notice shall be included in
+  * all copies or substantial portions of the Software.
+  *
+  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+  * IN THE SOFTWARE.
+  */
 
 /**
  * @fileoverview A recursive descent Parser.
+ * @author evanrthomas@google.com (Evan Thomas)
  */
 
 goog.provide('wgxpath.Parser');
@@ -245,9 +270,14 @@ wgxpath.Parser.prototype.parseNameTest_ = function() {
     return new wgxpath.NameTest(name);
   } else {
     var namespacePrefix = name.substring(0, colonIndex);
-    var namespaceUri = this.nsResolver_(namespacePrefix);
-    if (!namespaceUri) {
-      throw Error('Namespace prefix not declared: ' + namespacePrefix);
+    var namespaceUri;
+    if (namespacePrefix == wgxpath.NameTest.WILDCARD) {
+      namespaceUri = wgxpath.NameTest.WILDCARD;
+    } else {
+      namespaceUri = this.nsResolver_(namespacePrefix);
+      if (!namespaceUri) {
+        throw Error('Namespace prefix not declared: ' + namespacePrefix);
+      }
     }
     name = name.substr(colonIndex + 1);
     return new wgxpath.NameTest(name, namespaceUri);
@@ -363,12 +393,8 @@ wgxpath.Parser.prototype.parseStep_ = function(op) {
 
     // Grab the test.
     token = this.lexer_.peek();
-    if (!/(?![0-9])[\w]/.test(token.charAt(0))) {
-      if (token == '*') {
-        test = this.parseNameTest_();
-      } else {
-        throw Error('Bad token: ' + this.lexer_.next());
-      }
+    if (!/(?![0-9])[\w\*]/.test(token.charAt(0))) {
+      throw Error('Bad token: ' + this.lexer_.next());
     } else {
       if (this.lexer_.peek(1) == '(') {
         if (!wgxpath.KindTest.isValidType(token)) {

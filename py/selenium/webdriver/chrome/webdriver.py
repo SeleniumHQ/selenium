@@ -1,25 +1,25 @@
-#!/usr/bin/python
+# Licensed to the Software Freedom Conservancy (SFC) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The SFC licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
 #
-# Copyright 2011-2013 Software freedom conservancy
+#   http://www.apache.org/licenses/LICENSE-2.0
 #
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
 
-import base64
-from selenium.webdriver.remote.command import Command
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
-from selenium.common.exceptions import WebDriverException
+from .remote_connection import ChromeRemoteConnection
 from .service import Service
 from .options import Options
+
 
 class WebDriver(RemoteWebDriver):
     """
@@ -54,19 +54,60 @@ class WebDriver(RemoteWebDriver):
             else:
                 desired_capabilities.update(chrome_options.to_capabilities())
 
-        self.service = Service(executable_path, port=port,
-            service_args=service_args, log_path=service_log_path)
+        self.service = Service(
+            executable_path,
+            port=port,
+            service_args=service_args,
+            log_path=service_log_path)
         self.service.start()
 
         try:
-            RemoteWebDriver.__init__(self,
-                command_executor=self.service.service_url,
-                desired_capabilities=desired_capabilities,
-                keep_alive=True)
-        except:
+            RemoteWebDriver.__init__(
+                self,
+                command_executor=ChromeRemoteConnection(
+                    remote_server_addr=self.service.service_url),
+                desired_capabilities=desired_capabilities)
+        except Exception:
             self.quit()
             raise
         self._is_remote = False
+
+    def launch_app(self, id):
+        """Launches Chrome app specified by id."""
+        return self.execute("launchApp", {'id': id})
+
+    def get_network_conditions(self):
+        """
+        Gets Chrome network emulation settings.
+
+        :Returns:
+            A dict. For example:
+
+            {'latency': 4, 'download_throughput': 2, 'upload_throughput': 2,
+            'offline': False}
+
+        """
+        return self.execute("getNetworkConditions")['value']
+
+    def set_network_conditions(self, **network_conditions):
+        """
+        Sets Chrome network emulation settings.
+
+        :Args:
+         - network_conditions: A dict with conditions specification.
+
+        :Usage:
+            driver.set_network_conditions(
+                offline=False,
+                latency=5,  # additional latency (ms)
+                download_throughput=500 * 1024,  # maximal throughput
+                upload_throughput=500 * 1024)  # maximal throughput
+
+            Note: 'throughput' can be used to set both (for download and upload).
+        """
+        self.execute("setNetworkConditions", {
+            'network_conditions': network_conditions
+        })
 
     def quit(self):
         """
@@ -75,7 +116,7 @@ class WebDriver(RemoteWebDriver):
         """
         try:
             RemoteWebDriver.quit(self)
-        except:
+        except Exception:
             # We don't care about the message because something probably has gone wrong
             pass
         finally:

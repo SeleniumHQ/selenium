@@ -1,7 +1,9 @@
 ﻿// <copyright file="DriverService.cs" company="WebDriver Committers">
-// Copyright 2015 Software Freedom Conservancy
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -38,7 +40,7 @@ namespace OpenQA.Selenium
         private Process driverServiceProcess;
 
         /// <summary>
-        /// Initializes a new instance of the DriverService class.
+        /// Initializes a new instance of the <see cref="DriverService"/> class.
         /// </summary>
         /// <param name="servicePath">The full path to the directory containing the executable providing the service to drive the browser.</param>
         /// <param name="port">The port on which the driver executable should listen.</param>
@@ -156,6 +158,63 @@ namespace OpenQA.Selenium
         }
 
         /// <summary>
+        /// Gets a value indicating the time to wait for an initial connection before timing out.
+        /// </summary>
+        protected virtual TimeSpan InitializationTimeout
+        {
+            get { return TimeSpan.FromSeconds(20); }
+        }
+
+        /// <summary>
+        /// Gets a value indicating the time to wait for the service to terminate before forcing it to terminate.
+        /// </summary>
+        protected virtual TimeSpan TerminationTimeout
+        {
+            get { return TimeSpan.FromSeconds(10); }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the service has a shutdown API that can be called to terminate
+        /// it gracefully before forcing a termination.
+        /// </summary>
+        protected virtual bool HasShutdown
+        {
+            get { return true; }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the service is responding to HTTP requests.
+        /// </summary>
+        protected virtual bool IsInitialized
+        {
+            get
+            {
+                bool isInitialized = false;
+                try
+                {
+                    Uri serviceHealthUri = new Uri(this.ServiceUrl, new Uri(DriverCommand.Status, UriKind.Relative));
+                    HttpWebRequest request = HttpWebRequest.Create(serviceHealthUri) as HttpWebRequest;
+                    request.KeepAlive = false;
+                    request.Timeout = 5000;
+                    HttpWebResponse response = request.GetResponse() as HttpWebResponse;
+
+                    // Checking the response from the 'status' end point. Note that we are simply checking
+                    // that the HTTP status returned is a 200 status, and that the resposne has the correct
+                    // Content-Type header. A more sophisticated check would parse the JSON response and
+                    // validate its values. At the moment we do not do this more sophisticated check.
+                    isInitialized = response.StatusCode == HttpStatusCode.OK && response.ContentType.StartsWith("application/json", StringComparison.OrdinalIgnoreCase);
+                    response.Close();
+                }
+                catch (WebException ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+
+                return isInitialized;
+            }
+        }
+
+        /// <summary>
         /// Releases all resources associated with this <see cref="DriverService"/>.
         /// </summary>
         public void Dispose()
@@ -176,36 +235,9 @@ namespace OpenQA.Selenium
             this.driverServiceProcess.StartInfo.UseShellExecute = false;
             this.driverServiceProcess.StartInfo.CreateNoWindow = this.hideCommandPromptWindow;
             this.driverServiceProcess.Start();
-            Uri serviceHealthUri = new Uri(this.ServiceUrl, new Uri(DriverCommand.Status, UriKind.Relative));
-            bool processStarted = false;
-            DateTime timeout = DateTime.Now.Add(TimeSpan.FromSeconds(20));
-            while (!processStarted && DateTime.Now < timeout)
-            {
-                try
-                {
-                    // If the driver service process has exited, we can exit early.
-                    if (this.driverServiceProcess.HasExited)
-                    {
-                        break;
-                    }
+            bool serviceAvailable = this.WaitForServiceInitialization();
 
-                    HttpWebRequest request = HttpWebRequest.Create(serviceHealthUri) as HttpWebRequest;
-                    request.KeepAlive = false;
-                    HttpWebResponse response = request.GetResponse() as HttpWebResponse;
-
-                    // Checking the response from the 'status' end point. Note that we are simply checking
-                    // that the HTTP status returned is a 200 status, and that the resposne has the correct
-                    // Content-Type header. A more sophisticated check would parse the JSON response and
-                    // validate its values. At the moment we do not do this more sophisticated check.
-                    processStarted = response.StatusCode == HttpStatusCode.OK && response.ContentType.StartsWith("application/json", StringComparison.OrdinalIgnoreCase);
-                    response.Close();
-                }
-                catch (WebException)
-                {
-                }
-            }
-
-            if (!processStarted)
+            if (!serviceAvailable)
             {
                 string msg = "Cannot start the driver service on " + this.ServiceUrl;
                 throw new WebDriverException(msg);
@@ -250,39 +282,39 @@ namespace OpenQA.Selenium
         [SecurityPermission(SecurityAction.Demand)]
         private void Stop()
         {
-            if (this.driverServiceProcess != null && !this.driverServiceProcess.HasExited)
+            if (this.IsRunning)
             {
-                Uri shutdownUrl = new Uri(this.ServiceUrl, "/shutdown");
-                DateTime timeout = DateTime.Now.Add(TimeSpan.FromSeconds(10));
-                bool processStopped = false;
-                while (!processStopped && DateTime.Now < timeout)
+                if (this.HasShutdown)
                 {
-                    try
+                    Uri shutdownUrl = new Uri(this.ServiceUrl, "/shutdown");
+                    DateTime timeout = DateTime.Now.Add(this.TerminationTimeout);
+                    while (this.IsRunning && DateTime.Now < timeout)
                     {
-                        // Issue the shutdown HTTP request, then wait a short while for
-                        // the process to have exited. If the process hasn't yet exited,
-                        // we'll retry. We wait for exit here, since catching the exception
-                        // for a failed HTTP request due to a closed socket is particularly
-                        // expensive.
-                        HttpWebRequest request = HttpWebRequest.Create(shutdownUrl) as HttpWebRequest;
-                        request.KeepAlive = false;
-                        HttpWebResponse response = request.GetResponse() as HttpWebResponse;
-                        response.Close();
-                        this.driverServiceProcess.WaitForExit(3000);
-                        processStopped = this.driverServiceProcess.HasExited;
-                    }
-                    catch (WebException)
-                    {
-                        processStopped = true;
+                        try
+                        {
+                            // Issue the shutdown HTTP request, then wait a short while for
+                            // the process to have exited. If the process hasn't yet exited,
+                            // we'll retry. We wait for exit here, since catching the exception
+                            // for a failed HTTP request due to a closed socket is particularly
+                            // expensive.
+                            HttpWebRequest request = HttpWebRequest.Create(shutdownUrl) as HttpWebRequest;
+                            request.KeepAlive = false;
+                            HttpWebResponse response = request.GetResponse() as HttpWebResponse;
+                            response.Close();
+                            this.driverServiceProcess.WaitForExit(3000);
+                        }
+                        catch (WebException)
+                        {
+                        }
                     }
                 }
 
                 // If at this point, the process still hasn't exited, wait for one
                 // last-ditch time, then, if it still hasn't exited, kill it. Note
                 // that falling into this branch of code should be exceedingly rare.
-                if (!this.driverServiceProcess.HasExited)
+                if (this.IsRunning)
                 {
-                    this.driverServiceProcess.WaitForExit(5000);
+                    this.driverServiceProcess.WaitForExit(Convert.ToInt32(this.TerminationTimeout.TotalMilliseconds));
                     if (!this.driverServiceProcess.HasExited)
                     {
                         this.driverServiceProcess.Kill();
@@ -292,6 +324,30 @@ namespace OpenQA.Selenium
                 this.driverServiceProcess.Dispose();
                 this.driverServiceProcess = null;
             }
+        }
+
+        /// <summary>
+        /// Waits until a the service is initialized, or the timeout set
+        /// by the <see cref="InitializationTimeout"/> property is reached.
+        /// </summary>
+        /// <returns><see langword="true"/> if the service is properly started and receiving HTTP requests;
+        /// otherwise; <see langword="false"/>.</returns>
+        private bool WaitForServiceInitialization()
+        {
+            bool isInitialized = false;
+            DateTime timeout = DateTime.Now.Add(this.InitializationTimeout);
+            while (!isInitialized && DateTime.Now < timeout)
+            {
+                // If the driver service process has exited, we can exit early.
+                if (!this.IsRunning)
+                {
+                    break;
+                }
+
+                isInitialized = this.IsInitialized;
+            }
+
+            return isInitialized;
         }
     }
 }

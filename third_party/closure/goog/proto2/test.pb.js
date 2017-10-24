@@ -19,12 +19,13 @@
  */
 
 goog.provide('proto2.TestAllTypes');
+goog.provide('proto2.TestAllTypes.NestedEnum');
 goog.provide('proto2.TestAllTypes.NestedMessage');
 goog.provide('proto2.TestAllTypes.OptionalGroup');
 goog.provide('proto2.TestAllTypes.RepeatedGroup');
-goog.provide('proto2.TestAllTypes.NestedEnum');
-goog.provide('proto2.TestDefaultParent');
 goog.provide('proto2.TestDefaultChild');
+goog.provide('proto2.TestDefaultParent');
+goog.setTestOnly('proto2.TestAllTypes');
 
 goog.require('goog.proto2.Message');
 
@@ -34,11 +35,19 @@ goog.require('goog.proto2.Message');
  * Message TestAllTypes.
  * @constructor
  * @extends {goog.proto2.Message}
+ * @final
  */
 proto2.TestAllTypes = function() {
   goog.proto2.Message.call(this);
 };
 goog.inherits(proto2.TestAllTypes, goog.proto2.Message);
+
+
+/**
+ * Descriptor for this message, deserialized lazily in getDescriptor().
+ * @private {?goog.proto2.Descriptor}
+ */
+proto2.TestAllTypes.descriptor_ = null;
 
 
 /**
@@ -816,10 +825,10 @@ proto2.TestAllTypes.prototype.clearOptionalBytes = function() {
 
 /**
  * Gets the value of the optionalgroup field.
- * @return {proto2.TestAllTypes.OptionalGroup} The value.
+ * @return {?proto2.TestAllTypes.OptionalGroup} The value.
  */
 proto2.TestAllTypes.prototype.getOptionalgroup = function() {
-  return /** @type {proto2.TestAllTypes.OptionalGroup} */ (this.get$Value(16));
+  return /** @type {?proto2.TestAllTypes.OptionalGroup} */ (this.get$Value(16));
 };
 
 
@@ -867,10 +876,10 @@ proto2.TestAllTypes.prototype.clearOptionalgroup = function() {
 
 /**
  * Gets the value of the optional_nested_message field.
- * @return {proto2.TestAllTypes.NestedMessage} The value.
+ * @return {?proto2.TestAllTypes.NestedMessage} The value.
  */
 proto2.TestAllTypes.prototype.getOptionalNestedMessage = function() {
-  return /** @type {proto2.TestAllTypes.NestedMessage} */ (this.get$Value(18));
+  return /** @type {?proto2.TestAllTypes.NestedMessage} */ (this.get$Value(18));
 };
 
 
@@ -927,16 +936,16 @@ proto2.TestAllTypes.prototype.getOptionalNestedEnum = function() {
 
 /**
  * Gets the value of the optional_nested_enum field or the default value if not set.
- * @return {proto2.TestAllTypes.NestedEnum} The value.
+ * @return {!proto2.TestAllTypes.NestedEnum} The value.
  */
 proto2.TestAllTypes.prototype.getOptionalNestedEnumOrDefault = function() {
-  return /** @type {proto2.TestAllTypes.NestedEnum} */ (this.get$ValueOrDefault(21));
+  return /** @type {!proto2.TestAllTypes.NestedEnum} */ (this.get$ValueOrDefault(21));
 };
 
 
 /**
  * Sets the value of the optional_nested_enum field.
- * @param {proto2.TestAllTypes.NestedEnum} value The value.
+ * @param {!proto2.TestAllTypes.NestedEnum} value The value.
  */
 proto2.TestAllTypes.prototype.setOptionalNestedEnum = function(value) {
   this.set$Value(21, value);
@@ -1100,10 +1109,10 @@ proto2.TestAllTypes.prototype.addRepeatedInt32 = function(value) {
 
 /**
  * Returns the array of values in the repeated_int32 field.
- * @return {!Array.<number>} The values in the field.
+ * @return {!Array<number>} The values in the field.
  */
 proto2.TestAllTypes.prototype.repeatedInt32Array = function() {
-  return /** @type {!Array.<number>} */ (this.array$Values(31));
+  return /** @type {!Array<number>} */ (this.array$Values(31));
 };
 
 
@@ -1162,10 +1171,10 @@ proto2.TestAllTypes.prototype.addRepeatedInt64 = function(value) {
 
 /**
  * Returns the array of values in the repeated_int64 field.
- * @return {!Array.<string>} The values in the field.
+ * @return {!Array<string>} The values in the field.
  */
 proto2.TestAllTypes.prototype.repeatedInt64Array = function() {
-  return /** @type {!Array.<string>} */ (this.array$Values(32));
+  return /** @type {!Array<string>} */ (this.array$Values(32));
 };
 
 
@@ -1224,10 +1233,10 @@ proto2.TestAllTypes.prototype.addRepeatedUint32 = function(value) {
 
 /**
  * Returns the array of values in the repeated_uint32 field.
- * @return {!Array.<number>} The values in the field.
+ * @return {!Array<number>} The values in the field.
  */
 proto2.TestAllTypes.prototype.repeatedUint32Array = function() {
-  return /** @type {!Array.<number>} */ (this.array$Values(33));
+  return /** @type {!Array<number>} */ (this.array$Values(33));
 };
 
 
@@ -1286,10 +1295,10 @@ proto2.TestAllTypes.prototype.addRepeatedUint64 = function(value) {
 
 /**
  * Returns the array of values in the repeated_uint64 field.
- * @return {!Array.<string>} The values in the field.
+ * @return {!Array<string>} The values in the field.
  */
 proto2.TestAllTypes.prototype.repeatedUint64Array = function() {
-  return /** @type {!Array.<string>} */ (this.array$Values(34));
+  return /** @type {!Array<string>} */ (this.array$Values(34));
 };
 
 
@@ -1348,10 +1357,10 @@ proto2.TestAllTypes.prototype.addRepeatedSint32 = function(value) {
 
 /**
  * Returns the array of values in the repeated_sint32 field.
- * @return {!Array.<number>} The values in the field.
+ * @return {!Array<number>} The values in the field.
  */
 proto2.TestAllTypes.prototype.repeatedSint32Array = function() {
-  return /** @type {!Array.<number>} */ (this.array$Values(35));
+  return /** @type {!Array<number>} */ (this.array$Values(35));
 };
 
 
@@ -1410,10 +1419,10 @@ proto2.TestAllTypes.prototype.addRepeatedSint64 = function(value) {
 
 /**
  * Returns the array of values in the repeated_sint64 field.
- * @return {!Array.<string>} The values in the field.
+ * @return {!Array<string>} The values in the field.
  */
 proto2.TestAllTypes.prototype.repeatedSint64Array = function() {
-  return /** @type {!Array.<string>} */ (this.array$Values(36));
+  return /** @type {!Array<string>} */ (this.array$Values(36));
 };
 
 
@@ -1472,10 +1481,10 @@ proto2.TestAllTypes.prototype.addRepeatedFixed32 = function(value) {
 
 /**
  * Returns the array of values in the repeated_fixed32 field.
- * @return {!Array.<number>} The values in the field.
+ * @return {!Array<number>} The values in the field.
  */
 proto2.TestAllTypes.prototype.repeatedFixed32Array = function() {
-  return /** @type {!Array.<number>} */ (this.array$Values(37));
+  return /** @type {!Array<number>} */ (this.array$Values(37));
 };
 
 
@@ -1534,10 +1543,10 @@ proto2.TestAllTypes.prototype.addRepeatedFixed64 = function(value) {
 
 /**
  * Returns the array of values in the repeated_fixed64 field.
- * @return {!Array.<string>} The values in the field.
+ * @return {!Array<string>} The values in the field.
  */
 proto2.TestAllTypes.prototype.repeatedFixed64Array = function() {
-  return /** @type {!Array.<string>} */ (this.array$Values(38));
+  return /** @type {!Array<string>} */ (this.array$Values(38));
 };
 
 
@@ -1596,10 +1605,10 @@ proto2.TestAllTypes.prototype.addRepeatedSfixed32 = function(value) {
 
 /**
  * Returns the array of values in the repeated_sfixed32 field.
- * @return {!Array.<number>} The values in the field.
+ * @return {!Array<number>} The values in the field.
  */
 proto2.TestAllTypes.prototype.repeatedSfixed32Array = function() {
-  return /** @type {!Array.<number>} */ (this.array$Values(39));
+  return /** @type {!Array<number>} */ (this.array$Values(39));
 };
 
 
@@ -1658,10 +1667,10 @@ proto2.TestAllTypes.prototype.addRepeatedSfixed64 = function(value) {
 
 /**
  * Returns the array of values in the repeated_sfixed64 field.
- * @return {!Array.<string>} The values in the field.
+ * @return {!Array<string>} The values in the field.
  */
 proto2.TestAllTypes.prototype.repeatedSfixed64Array = function() {
-  return /** @type {!Array.<string>} */ (this.array$Values(40));
+  return /** @type {!Array<string>} */ (this.array$Values(40));
 };
 
 
@@ -1720,10 +1729,10 @@ proto2.TestAllTypes.prototype.addRepeatedFloat = function(value) {
 
 /**
  * Returns the array of values in the repeated_float field.
- * @return {!Array.<number>} The values in the field.
+ * @return {!Array<number>} The values in the field.
  */
 proto2.TestAllTypes.prototype.repeatedFloatArray = function() {
-  return /** @type {!Array.<number>} */ (this.array$Values(41));
+  return /** @type {!Array<number>} */ (this.array$Values(41));
 };
 
 
@@ -1782,10 +1791,10 @@ proto2.TestAllTypes.prototype.addRepeatedDouble = function(value) {
 
 /**
  * Returns the array of values in the repeated_double field.
- * @return {!Array.<number>} The values in the field.
+ * @return {!Array<number>} The values in the field.
  */
 proto2.TestAllTypes.prototype.repeatedDoubleArray = function() {
-  return /** @type {!Array.<number>} */ (this.array$Values(42));
+  return /** @type {!Array<number>} */ (this.array$Values(42));
 };
 
 
@@ -1844,10 +1853,10 @@ proto2.TestAllTypes.prototype.addRepeatedBool = function(value) {
 
 /**
  * Returns the array of values in the repeated_bool field.
- * @return {!Array.<boolean>} The values in the field.
+ * @return {!Array<boolean>} The values in the field.
  */
 proto2.TestAllTypes.prototype.repeatedBoolArray = function() {
-  return /** @type {!Array.<boolean>} */ (this.array$Values(43));
+  return /** @type {!Array<boolean>} */ (this.array$Values(43));
 };
 
 
@@ -1906,10 +1915,10 @@ proto2.TestAllTypes.prototype.addRepeatedString = function(value) {
 
 /**
  * Returns the array of values in the repeated_string field.
- * @return {!Array.<string>} The values in the field.
+ * @return {!Array<string>} The values in the field.
  */
 proto2.TestAllTypes.prototype.repeatedStringArray = function() {
-  return /** @type {!Array.<string>} */ (this.array$Values(44));
+  return /** @type {!Array<string>} */ (this.array$Values(44));
 };
 
 
@@ -1968,10 +1977,10 @@ proto2.TestAllTypes.prototype.addRepeatedBytes = function(value) {
 
 /**
  * Returns the array of values in the repeated_bytes field.
- * @return {!Array.<string>} The values in the field.
+ * @return {!Array<string>} The values in the field.
  */
 proto2.TestAllTypes.prototype.repeatedBytesArray = function() {
-  return /** @type {!Array.<string>} */ (this.array$Values(45));
+  return /** @type {!Array<string>} */ (this.array$Values(45));
 };
 
 
@@ -2002,10 +2011,10 @@ proto2.TestAllTypes.prototype.clearRepeatedBytes = function() {
 /**
  * Gets the value of the repeatedgroup field at the index given.
  * @param {number} index The index to lookup.
- * @return {proto2.TestAllTypes.RepeatedGroup} The value.
+ * @return {?proto2.TestAllTypes.RepeatedGroup} The value.
  */
 proto2.TestAllTypes.prototype.getRepeatedgroup = function(index) {
-  return /** @type {proto2.TestAllTypes.RepeatedGroup} */ (this.get$Value(46, index));
+  return /** @type {?proto2.TestAllTypes.RepeatedGroup} */ (this.get$Value(46, index));
 };
 
 
@@ -2030,10 +2039,10 @@ proto2.TestAllTypes.prototype.addRepeatedgroup = function(value) {
 
 /**
  * Returns the array of values in the repeatedgroup field.
- * @return {!Array.<!proto2.TestAllTypes.RepeatedGroup>} The values in the field.
+ * @return {!Array<!proto2.TestAllTypes.RepeatedGroup>} The values in the field.
  */
 proto2.TestAllTypes.prototype.repeatedgroupArray = function() {
-  return /** @type {!Array.<!proto2.TestAllTypes.RepeatedGroup>} */ (this.array$Values(46));
+  return /** @type {!Array<!proto2.TestAllTypes.RepeatedGroup>} */ (this.array$Values(46));
 };
 
 
@@ -2064,10 +2073,10 @@ proto2.TestAllTypes.prototype.clearRepeatedgroup = function() {
 /**
  * Gets the value of the repeated_nested_message field at the index given.
  * @param {number} index The index to lookup.
- * @return {proto2.TestAllTypes.NestedMessage} The value.
+ * @return {?proto2.TestAllTypes.NestedMessage} The value.
  */
 proto2.TestAllTypes.prototype.getRepeatedNestedMessage = function(index) {
-  return /** @type {proto2.TestAllTypes.NestedMessage} */ (this.get$Value(48, index));
+  return /** @type {?proto2.TestAllTypes.NestedMessage} */ (this.get$Value(48, index));
 };
 
 
@@ -2092,10 +2101,10 @@ proto2.TestAllTypes.prototype.addRepeatedNestedMessage = function(value) {
 
 /**
  * Returns the array of values in the repeated_nested_message field.
- * @return {!Array.<!proto2.TestAllTypes.NestedMessage>} The values in the field.
+ * @return {!Array<!proto2.TestAllTypes.NestedMessage>} The values in the field.
  */
 proto2.TestAllTypes.prototype.repeatedNestedMessageArray = function() {
-  return /** @type {!Array.<!proto2.TestAllTypes.NestedMessage>} */ (this.array$Values(48));
+  return /** @type {!Array<!proto2.TestAllTypes.NestedMessage>} */ (this.array$Values(48));
 };
 
 
@@ -2136,16 +2145,16 @@ proto2.TestAllTypes.prototype.getRepeatedNestedEnum = function(index) {
 /**
  * Gets the value of the repeated_nested_enum field at the index given or the default value if not set.
  * @param {number} index The index to lookup.
- * @return {proto2.TestAllTypes.NestedEnum} The value.
+ * @return {!proto2.TestAllTypes.NestedEnum} The value.
  */
 proto2.TestAllTypes.prototype.getRepeatedNestedEnumOrDefault = function(index) {
-  return /** @type {proto2.TestAllTypes.NestedEnum} */ (this.get$ValueOrDefault(49, index));
+  return /** @type {!proto2.TestAllTypes.NestedEnum} */ (this.get$ValueOrDefault(49, index));
 };
 
 
 /**
  * Adds a value to the repeated_nested_enum field.
- * @param {proto2.TestAllTypes.NestedEnum} value The value to add.
+ * @param {!proto2.TestAllTypes.NestedEnum} value The value to add.
  */
 proto2.TestAllTypes.prototype.addRepeatedNestedEnum = function(value) {
   this.add$Value(49, value);
@@ -2154,10 +2163,10 @@ proto2.TestAllTypes.prototype.addRepeatedNestedEnum = function(value) {
 
 /**
  * Returns the array of values in the repeated_nested_enum field.
- * @return {!Array.<proto2.TestAllTypes.NestedEnum>} The values in the field.
+ * @return {!Array<!proto2.TestAllTypes.NestedEnum>} The values in the field.
  */
 proto2.TestAllTypes.prototype.repeatedNestedEnumArray = function() {
-  return /** @type {!Array.<proto2.TestAllTypes.NestedEnum>} */ (this.array$Values(49));
+  return /** @type {!Array<!proto2.TestAllTypes.NestedEnum>} */ (this.array$Values(49));
 };
 
 
@@ -2216,10 +2225,10 @@ proto2.TestAllTypes.prototype.addRepeatedInt64Number = function(value) {
 
 /**
  * Returns the array of values in the repeated_int64_number field.
- * @return {!Array.<number>} The values in the field.
+ * @return {!Array<number>} The values in the field.
  */
 proto2.TestAllTypes.prototype.repeatedInt64NumberArray = function() {
-  return /** @type {!Array.<number>} */ (this.array$Values(52));
+  return /** @type {!Array<number>} */ (this.array$Values(52));
 };
 
 
@@ -2278,10 +2287,10 @@ proto2.TestAllTypes.prototype.addRepeatedInt64String = function(value) {
 
 /**
  * Returns the array of values in the repeated_int64_string field.
- * @return {!Array.<string>} The values in the field.
+ * @return {!Array<string>} The values in the field.
  */
 proto2.TestAllTypes.prototype.repeatedInt64StringArray = function() {
-  return /** @type {!Array.<string>} */ (this.array$Values(53));
+  return /** @type {!Array<string>} */ (this.array$Values(53));
 };
 
 
@@ -2340,10 +2349,10 @@ proto2.TestAllTypes.prototype.addPackedInt32 = function(value) {
 
 /**
  * Returns the array of values in the packed_int32 field.
- * @return {!Array.<number>} The values in the field.
+ * @return {!Array<number>} The values in the field.
  */
 proto2.TestAllTypes.prototype.packedInt32Array = function() {
-  return /** @type {!Array.<number>} */ (this.array$Values(54));
+  return /** @type {!Array<number>} */ (this.array$Values(54));
 };
 
 
@@ -2402,10 +2411,10 @@ proto2.TestAllTypes.prototype.addPackedInt64 = function(value) {
 
 /**
  * Returns the array of values in the packed_int64 field.
- * @return {!Array.<number>} The values in the field.
+ * @return {!Array<number>} The values in the field.
  */
 proto2.TestAllTypes.prototype.packedInt64Array = function() {
-  return /** @type {!Array.<number>} */ (this.array$Values(55));
+  return /** @type {!Array<number>} */ (this.array$Values(55));
 };
 
 
@@ -2464,10 +2473,10 @@ proto2.TestAllTypes.prototype.addPackedUint32 = function(value) {
 
 /**
  * Returns the array of values in the packed_uint32 field.
- * @return {!Array.<number>} The values in the field.
+ * @return {!Array<number>} The values in the field.
  */
 proto2.TestAllTypes.prototype.packedUint32Array = function() {
-  return /** @type {!Array.<number>} */ (this.array$Values(56));
+  return /** @type {!Array<number>} */ (this.array$Values(56));
 };
 
 
@@ -2526,10 +2535,10 @@ proto2.TestAllTypes.prototype.addPackedUint64 = function(value) {
 
 /**
  * Returns the array of values in the packed_uint64 field.
- * @return {!Array.<number>} The values in the field.
+ * @return {!Array<number>} The values in the field.
  */
 proto2.TestAllTypes.prototype.packedUint64Array = function() {
-  return /** @type {!Array.<number>} */ (this.array$Values(57));
+  return /** @type {!Array<number>} */ (this.array$Values(57));
 };
 
 
@@ -2588,10 +2597,10 @@ proto2.TestAllTypes.prototype.addPackedSint32 = function(value) {
 
 /**
  * Returns the array of values in the packed_sint32 field.
- * @return {!Array.<number>} The values in the field.
+ * @return {!Array<number>} The values in the field.
  */
 proto2.TestAllTypes.prototype.packedSint32Array = function() {
-  return /** @type {!Array.<number>} */ (this.array$Values(58));
+  return /** @type {!Array<number>} */ (this.array$Values(58));
 };
 
 
@@ -2650,10 +2659,10 @@ proto2.TestAllTypes.prototype.addPackedSint64 = function(value) {
 
 /**
  * Returns the array of values in the packed_sint64 field.
- * @return {!Array.<number>} The values in the field.
+ * @return {!Array<number>} The values in the field.
  */
 proto2.TestAllTypes.prototype.packedSint64Array = function() {
-  return /** @type {!Array.<number>} */ (this.array$Values(59));
+  return /** @type {!Array<number>} */ (this.array$Values(59));
 };
 
 
@@ -2712,10 +2721,10 @@ proto2.TestAllTypes.prototype.addPackedFixed32 = function(value) {
 
 /**
  * Returns the array of values in the packed_fixed32 field.
- * @return {!Array.<number>} The values in the field.
+ * @return {!Array<number>} The values in the field.
  */
 proto2.TestAllTypes.prototype.packedFixed32Array = function() {
-  return /** @type {!Array.<number>} */ (this.array$Values(60));
+  return /** @type {!Array<number>} */ (this.array$Values(60));
 };
 
 
@@ -2774,10 +2783,10 @@ proto2.TestAllTypes.prototype.addPackedFixed64 = function(value) {
 
 /**
  * Returns the array of values in the packed_fixed64 field.
- * @return {!Array.<number>} The values in the field.
+ * @return {!Array<number>} The values in the field.
  */
 proto2.TestAllTypes.prototype.packedFixed64Array = function() {
-  return /** @type {!Array.<number>} */ (this.array$Values(61));
+  return /** @type {!Array<number>} */ (this.array$Values(61));
 };
 
 
@@ -2836,10 +2845,10 @@ proto2.TestAllTypes.prototype.addPackedSfixed32 = function(value) {
 
 /**
  * Returns the array of values in the packed_sfixed32 field.
- * @return {!Array.<number>} The values in the field.
+ * @return {!Array<number>} The values in the field.
  */
 proto2.TestAllTypes.prototype.packedSfixed32Array = function() {
-  return /** @type {!Array.<number>} */ (this.array$Values(62));
+  return /** @type {!Array<number>} */ (this.array$Values(62));
 };
 
 
@@ -2898,10 +2907,10 @@ proto2.TestAllTypes.prototype.addPackedSfixed64 = function(value) {
 
 /**
  * Returns the array of values in the packed_sfixed64 field.
- * @return {!Array.<number>} The values in the field.
+ * @return {!Array<number>} The values in the field.
  */
 proto2.TestAllTypes.prototype.packedSfixed64Array = function() {
-  return /** @type {!Array.<number>} */ (this.array$Values(63));
+  return /** @type {!Array<number>} */ (this.array$Values(63));
 };
 
 
@@ -2960,10 +2969,10 @@ proto2.TestAllTypes.prototype.addPackedFloat = function(value) {
 
 /**
  * Returns the array of values in the packed_float field.
- * @return {!Array.<number>} The values in the field.
+ * @return {!Array<number>} The values in the field.
  */
 proto2.TestAllTypes.prototype.packedFloatArray = function() {
-  return /** @type {!Array.<number>} */ (this.array$Values(64));
+  return /** @type {!Array<number>} */ (this.array$Values(64));
 };
 
 
@@ -3022,10 +3031,10 @@ proto2.TestAllTypes.prototype.addPackedDouble = function(value) {
 
 /**
  * Returns the array of values in the packed_double field.
- * @return {!Array.<number>} The values in the field.
+ * @return {!Array<number>} The values in the field.
  */
 proto2.TestAllTypes.prototype.packedDoubleArray = function() {
-  return /** @type {!Array.<number>} */ (this.array$Values(65));
+  return /** @type {!Array<number>} */ (this.array$Values(65));
 };
 
 
@@ -3084,10 +3093,10 @@ proto2.TestAllTypes.prototype.addPackedBool = function(value) {
 
 /**
  * Returns the array of values in the packed_bool field.
- * @return {!Array.<boolean>} The values in the field.
+ * @return {!Array<boolean>} The values in the field.
  */
 proto2.TestAllTypes.prototype.packedBoolArray = function() {
-  return /** @type {!Array.<boolean>} */ (this.array$Values(66));
+  return /** @type {!Array<boolean>} */ (this.array$Values(66));
 };
 
 
@@ -3121,6 +3130,7 @@ proto2.TestAllTypes.prototype.clearPackedBool = function() {
  */
 proto2.TestAllTypes.NestedEnum = {
   FOO: 0,
+  OOF: 1,
   BAR: 2,
   BAZ: 3
 };
@@ -3131,11 +3141,19 @@ proto2.TestAllTypes.NestedEnum = {
  * Message NestedMessage.
  * @constructor
  * @extends {goog.proto2.Message}
+ * @final
  */
 proto2.TestAllTypes.NestedMessage = function() {
   goog.proto2.Message.call(this);
 };
 goog.inherits(proto2.TestAllTypes.NestedMessage, goog.proto2.Message);
+
+
+/**
+ * Descriptor for this message, deserialized lazily in getDescriptor().
+ * @private {?goog.proto2.Descriptor}
+ */
+proto2.TestAllTypes.NestedMessage.descriptor_ = null;
 
 
 /**
@@ -3253,11 +3271,19 @@ proto2.TestAllTypes.NestedMessage.prototype.clearC = function() {
  * Message OptionalGroup.
  * @constructor
  * @extends {goog.proto2.Message}
+ * @final
  */
 proto2.TestAllTypes.OptionalGroup = function() {
   goog.proto2.Message.call(this);
 };
 goog.inherits(proto2.TestAllTypes.OptionalGroup, goog.proto2.Message);
+
+
+/**
+ * Descriptor for this message, deserialized lazily in getDescriptor().
+ * @private {?goog.proto2.Descriptor}
+ */
+proto2.TestAllTypes.OptionalGroup.descriptor_ = null;
 
 
 /**
@@ -3324,11 +3350,19 @@ proto2.TestAllTypes.OptionalGroup.prototype.clearA = function() {
  * Message RepeatedGroup.
  * @constructor
  * @extends {goog.proto2.Message}
+ * @final
  */
 proto2.TestAllTypes.RepeatedGroup = function() {
   goog.proto2.Message.call(this);
 };
 goog.inherits(proto2.TestAllTypes.RepeatedGroup, goog.proto2.Message);
+
+
+/**
+ * Descriptor for this message, deserialized lazily in getDescriptor().
+ * @private {?goog.proto2.Descriptor}
+ */
+proto2.TestAllTypes.RepeatedGroup.descriptor_ = null;
 
 
 /**
@@ -3370,10 +3404,10 @@ proto2.TestAllTypes.RepeatedGroup.prototype.addA = function(value) {
 
 /**
  * Returns the array of values in the a field.
- * @return {!Array.<number>} The values in the field.
+ * @return {!Array<number>} The values in the field.
  */
 proto2.TestAllTypes.RepeatedGroup.prototype.aArray = function() {
-  return /** @type {!Array.<number>} */ (this.array$Values(47));
+  return /** @type {!Array<number>} */ (this.array$Values(47));
 };
 
 
@@ -3406,11 +3440,19 @@ proto2.TestAllTypes.RepeatedGroup.prototype.clearA = function() {
  * Message TestDefaultParent.
  * @constructor
  * @extends {goog.proto2.Message}
+ * @final
  */
 proto2.TestDefaultParent = function() {
   goog.proto2.Message.call(this);
 };
 goog.inherits(proto2.TestDefaultParent, goog.proto2.Message);
+
+
+/**
+ * Descriptor for this message, deserialized lazily in getDescriptor().
+ * @private {?goog.proto2.Descriptor}
+ */
+proto2.TestDefaultParent.descriptor_ = null;
 
 
 /**
@@ -3423,10 +3465,10 @@ proto2.TestDefaultParent.prototype.clone;
 
 /**
  * Gets the value of the child field.
- * @return {proto2.TestDefaultChild} The value.
+ * @return {?proto2.TestDefaultChild} The value.
  */
 proto2.TestDefaultParent.prototype.getChild = function() {
-  return /** @type {proto2.TestDefaultChild} */ (this.get$Value(1));
+  return /** @type {?proto2.TestDefaultChild} */ (this.get$Value(1));
 };
 
 
@@ -3477,11 +3519,19 @@ proto2.TestDefaultParent.prototype.clearChild = function() {
  * Message TestDefaultChild.
  * @constructor
  * @extends {goog.proto2.Message}
+ * @final
  */
 proto2.TestDefaultChild = function() {
   goog.proto2.Message.call(this);
 };
 goog.inherits(proto2.TestDefaultChild, goog.proto2.Message);
+
+
+/**
+ * Descriptor for this message, deserialized lazily in getDescriptor().
+ * @private {?goog.proto2.Descriptor}
+ */
+proto2.TestDefaultChild.descriptor_ = null;
 
 
 /**
@@ -3545,7 +3595,8 @@ proto2.TestDefaultChild.prototype.clearFoo = function() {
 
 /** @override */
 proto2.TestAllTypes.prototype.getDescriptor = function() {
-  if (!proto2.TestAllTypes.descriptor_) {
+  var descriptor = proto2.TestAllTypes.descriptor_;
+  if (!descriptor) {
     // The descriptor is created lazily when we instantiate a new instance.
     var descriptorObj = {
       0: {
@@ -3871,21 +3922,23 @@ proto2.TestAllTypes.prototype.getDescriptor = function() {
         type: Boolean
       }
     };
-    proto2.TestAllTypes.descriptor_ =
+    proto2.TestAllTypes.descriptor_ = descriptor =
         goog.proto2.Message.createDescriptor(
              proto2.TestAllTypes, descriptorObj);
   }
-  return proto2.TestAllTypes.descriptor_;
+  return descriptor;
 };
 
 
-proto2.TestAllTypes['ctor'] = proto2.TestAllTypes;proto2.TestAllTypes['ctor'].getDescriptor =
+/** @nocollapse */
+proto2.TestAllTypes.getDescriptor =
     proto2.TestAllTypes.prototype.getDescriptor;
 
 
 /** @override */
 proto2.TestAllTypes.NestedMessage.prototype.getDescriptor = function() {
-  if (!proto2.TestAllTypes.NestedMessage.descriptor_) {
+  var descriptor = proto2.TestAllTypes.NestedMessage.descriptor_;
+  if (!descriptor) {
     // The descriptor is created lazily when we instantiate a new instance.
     var descriptorObj = {
       0: {
@@ -3904,21 +3957,23 @@ proto2.TestAllTypes.NestedMessage.prototype.getDescriptor = function() {
         type: Number
       }
     };
-    proto2.TestAllTypes.NestedMessage.descriptor_ =
+    proto2.TestAllTypes.NestedMessage.descriptor_ = descriptor =
         goog.proto2.Message.createDescriptor(
              proto2.TestAllTypes.NestedMessage, descriptorObj);
   }
-  return proto2.TestAllTypes.NestedMessage.descriptor_;
+  return descriptor;
 };
 
 
-proto2.TestAllTypes.NestedMessage['ctor'] = proto2.TestAllTypes.NestedMessage;proto2.TestAllTypes.NestedMessage['ctor'].getDescriptor =
+/** @nocollapse */
+proto2.TestAllTypes.NestedMessage.getDescriptor =
     proto2.TestAllTypes.NestedMessage.prototype.getDescriptor;
 
 
 /** @override */
 proto2.TestAllTypes.OptionalGroup.prototype.getDescriptor = function() {
-  if (!proto2.TestAllTypes.OptionalGroup.descriptor_) {
+  var descriptor = proto2.TestAllTypes.OptionalGroup.descriptor_;
+  if (!descriptor) {
     // The descriptor is created lazily when we instantiate a new instance.
     var descriptorObj = {
       0: {
@@ -3932,21 +3987,23 @@ proto2.TestAllTypes.OptionalGroup.prototype.getDescriptor = function() {
         type: Number
       }
     };
-    proto2.TestAllTypes.OptionalGroup.descriptor_ =
+    proto2.TestAllTypes.OptionalGroup.descriptor_ = descriptor =
         goog.proto2.Message.createDescriptor(
              proto2.TestAllTypes.OptionalGroup, descriptorObj);
   }
-  return proto2.TestAllTypes.OptionalGroup.descriptor_;
+  return descriptor;
 };
 
 
-proto2.TestAllTypes.OptionalGroup['ctor'] = proto2.TestAllTypes.OptionalGroup;proto2.TestAllTypes.OptionalGroup['ctor'].getDescriptor =
+/** @nocollapse */
+proto2.TestAllTypes.OptionalGroup.getDescriptor =
     proto2.TestAllTypes.OptionalGroup.prototype.getDescriptor;
 
 
 /** @override */
 proto2.TestAllTypes.RepeatedGroup.prototype.getDescriptor = function() {
-  if (!proto2.TestAllTypes.RepeatedGroup.descriptor_) {
+  var descriptor = proto2.TestAllTypes.RepeatedGroup.descriptor_;
+  if (!descriptor) {
     // The descriptor is created lazily when we instantiate a new instance.
     var descriptorObj = {
       0: {
@@ -3961,21 +4018,23 @@ proto2.TestAllTypes.RepeatedGroup.prototype.getDescriptor = function() {
         type: Number
       }
     };
-    proto2.TestAllTypes.RepeatedGroup.descriptor_ =
+    proto2.TestAllTypes.RepeatedGroup.descriptor_ = descriptor =
         goog.proto2.Message.createDescriptor(
              proto2.TestAllTypes.RepeatedGroup, descriptorObj);
   }
-  return proto2.TestAllTypes.RepeatedGroup.descriptor_;
+  return descriptor;
 };
 
 
-proto2.TestAllTypes.RepeatedGroup['ctor'] = proto2.TestAllTypes.RepeatedGroup;proto2.TestAllTypes.RepeatedGroup['ctor'].getDescriptor =
+/** @nocollapse */
+proto2.TestAllTypes.RepeatedGroup.getDescriptor =
     proto2.TestAllTypes.RepeatedGroup.prototype.getDescriptor;
 
 
 /** @override */
 proto2.TestDefaultParent.prototype.getDescriptor = function() {
-  if (!proto2.TestDefaultParent.descriptor_) {
+  var descriptor = proto2.TestDefaultParent.descriptor_;
+  if (!descriptor) {
     // The descriptor is created lazily when we instantiate a new instance.
     var descriptorObj = {
       0: {
@@ -3988,21 +4047,23 @@ proto2.TestDefaultParent.prototype.getDescriptor = function() {
         type: proto2.TestDefaultChild
       }
     };
-    proto2.TestDefaultParent.descriptor_ =
+    proto2.TestDefaultParent.descriptor_ = descriptor =
         goog.proto2.Message.createDescriptor(
              proto2.TestDefaultParent, descriptorObj);
   }
-  return proto2.TestDefaultParent.descriptor_;
+  return descriptor;
 };
 
 
-proto2.TestDefaultParent['ctor'] = proto2.TestDefaultParent;proto2.TestDefaultParent['ctor'].getDescriptor =
+/** @nocollapse */
+proto2.TestDefaultParent.getDescriptor =
     proto2.TestDefaultParent.prototype.getDescriptor;
 
 
 /** @override */
 proto2.TestDefaultChild.prototype.getDescriptor = function() {
-  if (!proto2.TestDefaultChild.descriptor_) {
+  var descriptor = proto2.TestDefaultChild.descriptor_;
+  if (!descriptor) {
     // The descriptor is created lazily when we instantiate a new instance.
     var descriptorObj = {
       0: {
@@ -4016,13 +4077,14 @@ proto2.TestDefaultChild.prototype.getDescriptor = function() {
         type: Boolean
       }
     };
-    proto2.TestDefaultChild.descriptor_ =
+    proto2.TestDefaultChild.descriptor_ = descriptor =
         goog.proto2.Message.createDescriptor(
              proto2.TestDefaultChild, descriptorObj);
   }
-  return proto2.TestDefaultChild.descriptor_;
+  return descriptor;
 };
 
 
-proto2.TestDefaultChild['ctor'] = proto2.TestDefaultChild;proto2.TestDefaultChild['ctor'].getDescriptor =
+/** @nocollapse */
+proto2.TestDefaultChild.getDescriptor =
     proto2.TestDefaultChild.prototype.getDescriptor;

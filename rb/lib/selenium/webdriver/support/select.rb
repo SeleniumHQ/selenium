@@ -1,8 +1,24 @@
+# Licensed to the Software Freedom Conservancy (SFC) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The SFC licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
 module Selenium
   module WebDriver
     module Support
       class Select
-
         #
         # @param [Element] element The select element to use
         #
@@ -10,12 +26,12 @@ module Selenium
         def initialize(element)
           tag_name = element.tag_name
 
-          unless tag_name.downcase == "select"
+          unless tag_name.casecmp('select').zero?
             raise ArgumentError, "unexpected tag name #{tag_name.inspect}"
           end
 
           @element = element
-          @multi   = ![nil, "false"].include?(element.attribute(:multiple))
+          @multi = ![nil, 'false'].include?(element.attribute(:multiple))
         end
 
         #
@@ -35,7 +51,7 @@ module Selenium
         #
 
         def options
-          @element.find_elements :tag_name, 'option'
+          @element.find_elements tag_name: 'option'
         end
 
         #
@@ -45,7 +61,7 @@ module Selenium
         #
 
         def selected_options
-          options.select { |e| e.selected? }
+          options.select(&:selected?)
         end
 
         #
@@ -56,8 +72,9 @@ module Selenium
         #
 
         def first_selected_option
-          option = options.find { |e| e.selected? }
-          option or raise Error::NoSuchElementError, 'no options are selected'
+          option = options.find(&:selected?)
+          return option if option
+          raise Error::NoSuchElementError, 'no options are selected'
         end
 
         #
@@ -98,6 +115,7 @@ module Selenium
         #
         # @param [:text, :index, :value] how How to find the option
         # @param [String] what What value to find the option by.
+        # @raise [Error::UnsupportedOperationError] if the element does not support multiple selections.
         #
         # @see Select#select_by
         #
@@ -148,64 +166,53 @@ module Selenium
         def select_by_text(text)
           opts = find_by_text text
 
-          if opts.empty?
-            raise Error::NoSuchElementError, "cannot locate element with text: #{text.inspect}"
-          end
-
-          select_options opts
+          return select_options(opts) unless opts.empty?
+          raise Error::NoSuchElementError, "cannot locate element with text: #{text.inspect}"
         end
 
         def select_by_index(index)
           opts = find_by_index index
 
-          if opts.empty?
-            raise Error::NoSuchElementError, "cannot locate element with index: #{index.inspect}"
-          end
-
-          select_options opts
+          return select_option(opts.first) unless opts.empty?
+          raise Error::NoSuchElementError, "cannot locate element with index: #{index.inspect}"
         end
 
         def select_by_value(value)
           opts = find_by_value value
 
-          if opts.empty?
-            raise Error::NoSuchElementError, "cannot locate option with value: #{value.inspect}"
-          end
-
-          select_options opts
+          return select_options(opts) unless opts.empty?
+          raise Error::NoSuchElementError, "cannot locate option with value: #{value.inspect}"
         end
 
         def deselect_by_text(text)
+          unless multiple?
+            raise Error::UnsupportedOperationError, 'you may only deselect option of a multi-select'
+          end
           opts = find_by_text text
 
-          if opts.empty?
-            raise Error::NoSuchElementError, "cannot locate element with text: #{text.inspect}"
-          end
-
-          deselect_options opts
+          return deselect_options(opts) unless opts.empty?
+          raise Error::NoSuchElementError, "cannot locate element with text: #{text.inspect}"
         end
 
         def deselect_by_value(value)
+          unless multiple?
+            raise Error::UnsupportedOperationError, 'you may only deselect option of a multi-select'
+          end
           opts = find_by_value value
 
-          if opts.empty?
-            raise Error::NoSuchElementError, "cannot locate option with value: #{value.inspect}"
-          end
-
-          deselect_options opts
+          return deselect_options(opts) unless opts.empty?
+          raise Error::NoSuchElementError, "cannot locate option with value: #{value.inspect}"
         end
 
         def deselect_by_index(index)
+          unless multiple?
+            raise Error::UnsupportedOperationError, 'you may only deselect option of a multi-select'
+          end
           opts = find_by_index index
 
-          if opts.empty?
-            raise Error::NoSuchElementError, "cannot locate option with index: #{index}"
-          end
-
-          deselect_options opts
+          return deselect_option(opts.first) unless opts.empty?
+          raise Error::NoSuchElementError, "cannot locate option with index: #{index}"
         end
-
-        private
 
         def select_option(option)
           option.click unless option.selected?
@@ -233,61 +240,30 @@ module Selenium
 
         def find_by_text(text)
           xpath = ".//option[normalize-space(.) = #{Escaper.escape text}]"
-          opts = @element.find_elements(:xpath, xpath)
+          opts = @element.find_elements(xpath: xpath)
 
-          if opts.empty? && text =~ /\s+/
-            longest_word = text.split(/\s+/).max_by { |item| item.length }
+          return opts unless opts.empty? && text =~ /\s+/
 
-            if longest_word.empty?
-              candidates = options
-            else
-              xpath = ".//option[contains(., #{Escaper.escape longest_word})]"
-              candidates = @element.find_elements(:xpath, xpath)
-            end
-
-            if multiple?
-              candidates.select { |option| text == option.text }
-            else
-              Array(candidates.find { |option| text == option.text })
-            end
+          longest_word = text.split(/\s+/).max_by(&:length)
+          if longest_word.empty?
+            candidates = options
           else
-            opts
+            xpath = ".//option[contains(., #{Escaper.escape longest_word})]"
+            candidates = @element.find_elements(xpath: xpath)
           end
+
+          return Array(candidates.find { |option| text == option.text }) unless multiple?
+          candidates.select { |option| text == option.text }
         end
 
         def find_by_index(index)
-          index = index.to_s
-          options.select { |option| option.attribute(:index) == index }
+          options.select { |option| option.attribute(:index) == index.to_s }
         end
 
         def find_by_value(value)
-          @element.find_elements(:xpath, ".//option[@value = #{Escaper.escape value}]")
+          @element.find_elements(xpath: ".//option[@value = #{Escaper.escape value}]")
         end
-
-        #
-        # @api private
-        #
-
-        module Escaper
-          def self.escape(str)
-            if str.include?('"') && str.include?("'")
-              parts = str.split('"', -1).map { |part| %{"#{part}"} }
-
-              quoted = parts.join(%{, '"', }).
-                             gsub(/^"", |, ""$/, '')
-
-              "concat(#{quoted})"
-            elsif str.include?('"')
-              # escape string with just a quote into being single quoted: f"oo -> 'f"oo'
-              "'#{str}'"
-            else
-              # otherwise return the quoted string
-              %{"#{str}"}
-            end
-          end
-        end # Escaper
-
       end # Select
-    end
-  end
-end
+    end # Support
+  end # WebDriver
+end # Selenium

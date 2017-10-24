@@ -21,6 +21,7 @@
 goog.provide('goog.ui.MenuSeparatorRenderer');
 
 goog.require('goog.dom');
+goog.require('goog.dom.TagName');
 goog.require('goog.dom.classlist');
 goog.require('goog.ui.ControlRenderer');
 
@@ -54,7 +55,8 @@ goog.ui.MenuSeparatorRenderer.CSS_CLASS = goog.getCssName('goog-menuseparator');
  * @override
  */
 goog.ui.MenuSeparatorRenderer.prototype.createDom = function(separator) {
-  return separator.getDomHelper().createDom('div', this.getCssClass());
+  return separator.getDomHelper().createDom(
+      goog.dom.TagName.DIV, this.getCssClass());
 };
 
 
@@ -67,14 +69,14 @@ goog.ui.MenuSeparatorRenderer.prototype.createDom = function(separator) {
  * @return {!Element} Decorated element.
  * @override
  */
-goog.ui.MenuSeparatorRenderer.prototype.decorate = function(separator,
-                                                            element) {
+goog.ui.MenuSeparatorRenderer.prototype.decorate = function(
+    separator, element) {
   // Normally handled in the superclass. But we don't call the superclass.
   if (element.id) {
     separator.setId(element.id);
   }
 
-  if (element.tagName == 'HR') {
+  if (element.tagName == goog.dom.TagName.HR) {
     // Replace HR with separator.
     var hr = element;
     element = this.createDom(separator);
@@ -95,8 +97,8 @@ goog.ui.MenuSeparatorRenderer.prototype.decorate = function(separator,
  *    set as the separators's content (ignored).
  * @override
  */
-goog.ui.MenuSeparatorRenderer.prototype.setContent = function(separator,
-                                                              content) {
+goog.ui.MenuSeparatorRenderer.prototype.setContent = function(
+    separator, content) {
   // Do nothing.  Separators are empty.
 };
 

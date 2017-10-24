@@ -1,3 +1,4 @@
+# BUILD FILE SYNTAX: SKYLARK
 java_library(name = 'clock',
   srcs = [
     'Clock.java',
@@ -6,7 +7,7 @@ java_library(name = 'clock',
     'SystemClock.java',
   ],
   deps = [
-    '//third_party/java/guava-libraries:guava-libraries',
+    '//third_party/java/guava:guava',
   ],
   visibility = ['PUBLIC'],
 )
@@ -18,19 +19,20 @@ java_library(name = 'components',
   ],
   deps = [
     ':clock',
-    '//java/client/src/org/openqa/selenium:webdriver-api',
-    '//third_party/java/junit:junit',
+    '//java/client/src/org/openqa/selenium:selenium',
   ],
   visibility = ['PUBLIC'],
 )
 
 java_library(name = 'elements',
   srcs = [
+    'Quotes.java',
+    'ISelect.java',
     'Select.java',
     'UnexpectedTagNameException.java',
   ],
   deps = [
-    '//java/client/src/org/openqa/selenium:webdriver-api',
+    '//java/client/src/org/openqa/selenium:selenium',
   ],
   visibility = ['PUBLIC'],
 )
@@ -45,9 +47,9 @@ java_library(name = 'wait',
   ],
   deps = [
     ':clock',
-    '//java/client/src/org/openqa/selenium:webdriver-api',
+    '//java/client/src/org/openqa/selenium:selenium',
     '//java/client/src/org/openqa/selenium/remote:remote',
-    '//third_party/java/guava-libraries:guava-libraries',
+    '//third_party/java/guava:guava',
   ],
   visibility = ['PUBLIC'],
 )

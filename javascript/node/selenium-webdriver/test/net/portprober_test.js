@@ -1,25 +1,26 @@
-// Copyright 2013 Selenium committers
-// Copyright 2013 Software Freedom Conservancy
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-//     You may obtain a copy of the License at
+//   http://www.apache.org/licenses/LICENSE-2.0
 //
-// http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 'use strict';
 
-var assert = require('assert'),
-    net = require('net');
+const assert = require('assert');
+const net = require('net');
 
-var promise = require('../..').promise,
-    portprober = require('../../net/portprober');
+const portprober = require('../../net/portprober');
 
 describe('isFree', function() {
 
@@ -40,12 +41,12 @@ describe('isFree', function() {
     server.listen(0, function() {
       var port = server.address().port;
       assertPortNotfree(port).then(function() {
-        var done = promise.defer();
-        server.close(function() {
-          server = null;
-          done.fulfill(assertPortIsFree(port));
+        return new Promise(resolve => {
+          server.close(function() {
+            server = null;
+            resolve(assertPortIsFree(port));
+          });
         });
-        return done.promise;
       }).then(function() { done(); }, done);
     });
   });
@@ -55,12 +56,12 @@ describe('isFree', function() {
     server.listen(0, host, function() {
       var port = server.address().port;
       assertPortNotfree(port, host).then(function() {
-        var done = promise.defer();
-        server.close(function() {
-          server = null;
-          done.fulfill(assertPortIsFree(port, host));
+        return new Promise(resolve => {
+          server.close(function() {
+            server = null;
+            resolve(assertPortIsFree(port, host));
+          });
         });
-        return done.promise;
       }).then(function() { done(); }, done);
     });
   });
@@ -84,12 +85,12 @@ describe('findFreePort', function() {
     portprober.findFreePort().then(function(port) {
       server.listen(port, function() {
         assertPortNotfree(port).then(function() {
-          var done = promise.defer();
-          server.close(function() {
-            server = null;
-            done.fulfill(assertPortIsFree(port));
+          return new Promise(resolve => {
+            server.close(function() {
+              server = null;
+              resolve(assertPortIsFree(port));
+            });
           });
-          return done.promise;
         }).then(function() { done(); }, done);
       });
     });
@@ -100,12 +101,12 @@ describe('findFreePort', function() {
     portprober.findFreePort(host).then(function(port) {
       server.listen(port, host, function() {
         assertPortNotfree(port, host).then(function() {
-          var done = promise.defer();
-          server.close(function() {
-            server = null;
-            done.fulfill(assertPortIsFree(port, host));
+          return new Promise(resolve => {
+            server.close(function() {
+              server = null;
+              resolve(assertPortIsFree(port, host));
+            });
           });
-          return done.promise;
         }).then(function() { done(); }, done);
       });
     });

@@ -165,5 +165,5 @@ goog.events.WheelEvent.PIXELS_PER_LINE_ = 15;
  * @const {number}
  * @private
  */
-goog.events.WheelEvent.PIXELS_PER_PAGE_ = 30 *
-    goog.events.WheelEvent.PIXELS_PER_LINE_;
+goog.events.WheelEvent.PIXELS_PER_PAGE_ =
+    30 * goog.events.WheelEvent.PIXELS_PER_LINE_;

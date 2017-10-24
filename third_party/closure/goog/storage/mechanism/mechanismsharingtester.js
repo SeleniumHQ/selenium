@@ -25,13 +25,12 @@
 goog.provide('goog.storage.mechanism.mechanismSharingTester');
 
 goog.require('goog.iter.StopIteration');
+/** @suppress {extraRequire} */
+goog.require('goog.storage.mechanism.mechanismTestDefinition');
 goog.require('goog.testing.asserts');
+
+
 goog.setTestOnly('goog.storage.mechanism.mechanismSharingTester');
-
-
-var mechanism = null;
-var mechanism_shared = null;
-
 
 function testSharedSet() {
   if (!mechanism || !mechanism_shared) {
@@ -42,8 +41,7 @@ function testSharedSet() {
   assertEquals(1, mechanism_shared.getCount());
   var iterator = mechanism_shared.__iterator__();
   assertEquals('one', iterator.next());
-  assertEquals(goog.iter.StopIteration,
-               assertThrows(iterator.next));
+  assertEquals(goog.iter.StopIteration, assertThrows(iterator.next));
 }
 
 
@@ -56,8 +54,7 @@ function testSharedSetInverse() {
   assertEquals(1, mechanism.getCount());
   var iterator = mechanism.__iterator__();
   assertEquals('two', iterator.next());
-  assertEquals(goog.iter.StopIteration,
-               assertThrows(iterator.next));
+  assertEquals(goog.iter.StopIteration, assertThrows(iterator.next));
 }
 
 
@@ -69,8 +66,9 @@ function testSharedRemove() {
   mechanism.remove('first');
   assertNull(mechanism_shared.get('first'));
   assertEquals(0, mechanism_shared.getCount());
-  assertEquals(goog.iter.StopIteration,
-               assertThrows(mechanism_shared.__iterator__().next));
+  assertEquals(
+      goog.iter.StopIteration,
+      assertThrows(mechanism_shared.__iterator__().next));
 }
 
 
@@ -81,6 +79,6 @@ function testSharedClean() {
   mechanism.set('first', 'four');
   mechanism_shared.clear();
   assertEquals(0, mechanism.getCount());
-  assertEquals(goog.iter.StopIteration,
-               assertThrows(mechanism.__iterator__().next));
+  assertEquals(
+      goog.iter.StopIteration, assertThrows(mechanism.__iterator__().next));
 }

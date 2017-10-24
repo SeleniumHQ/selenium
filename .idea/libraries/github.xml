@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="github">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/third_party/java/github/org.eclipse.egit.github.core-2.1.5.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/third_party/java/github/org.eclipse.egit.github.core-2.1.5-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

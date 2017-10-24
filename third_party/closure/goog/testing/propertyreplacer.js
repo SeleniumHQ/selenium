@@ -17,6 +17,7 @@
  *
  */
 
+goog.setTestOnly('goog.testing.PropertyReplacer');
 goog.provide('goog.testing.PropertyReplacer');
 
 /** @suppress {extraRequire} Needed for some tests to compile. */
@@ -33,24 +34,25 @@ goog.require('goog.userAgent');
  * http://protobuf.googlecode.com/svn/trunk/python/stubout.py
  *
  * Example usage:
- * <pre>var stubs = new goog.testing.PropertyReplacer();
  *
- * function setUp() {
- *   // Mock functions used in all test cases.
- *   stubs.set(Math, 'random', function() {
- *     return 4;  // Chosen by fair dice roll. Guaranteed to be random.
- *   });
- * }
+ *     var stubs = new goog.testing.PropertyReplacer();
  *
- * function tearDown() {
- *   stubs.reset();
- * }
+ *     function setUp() {
+ *       // Mock functions used in all test cases.
+ *       stubs.set(Math, 'random', function() {
+ *         return 4;  // Chosen by fair dice roll. Guaranteed to be random.
+ *       });
+ *     }
  *
- * function testThreeDice() {
- *   // Mock a constant used only in this test case.
- *   stubs.set(goog.global, 'DICE_COUNT', 3);
- *   assertEquals(12, rollAllDice());
- * }</pre>
+ *     function tearDown() {
+ *       stubs.reset();
+ *     }
+ *
+ *     function testThreeDice() {
+ *       // Mock a constant used only in this test case.
+ *       stubs.set(goog.global, 'DICE_COUNT', 3);
+ *       assertEquals(12, rollAllDice());
+ *     }
  *
  * Constraints on altered objects:
  * <ul>
@@ -68,7 +70,7 @@ goog.testing.PropertyReplacer = function() {
    * Its items are objects with 3 fields: 'object', 'key', 'value'. The
    * original value for the given key in the given object is stored under the
    * 'value' key.
-   * @type {Array<Object>}
+   * @type {Array<{ object: ?, key: string, value: ? }>}
    * @private
    */
   this.original_ = [];
@@ -89,6 +91,7 @@ goog.testing.PropertyReplacer.NO_SUCH_KEY_ = {};
  * @param {string} key The key to check.
  * @return {boolean} Whether the object has the key as own key.
  * @private
+ * @suppress {unusedLocalVariables}
  */
 goog.testing.PropertyReplacer.hasKey_ = function(obj, key) {
   if (!(key in obj)) {
@@ -104,7 +107,7 @@ goog.testing.PropertyReplacer.hasKey_ = function(obj, key) {
   // examining obj.toString().
   if (obj.constructor == Object &&
       (!goog.userAgent.OPERA ||
-          Object.prototype.toString.call(obj) == '[object Object]')) {
+       Object.prototype.toString.call(obj) == '[object Object]')) {
     return false;
   }
   try {
@@ -128,6 +131,7 @@ goog.testing.PropertyReplacer.hasKey_ = function(obj, key) {
  * delete failed.
  * @param {Object|Function} obj The object or function to delete a key from.
  * @param {string} key The key to delete.
+ * @throws {Error} In case of trying to set a read-only property
  * @private
  */
 goog.testing.PropertyReplacer.deleteKey_ = function(obj, key) {
@@ -148,6 +152,25 @@ goog.testing.PropertyReplacer.deleteKey_ = function(obj, key) {
     // so undefined will become 'undefined'.
     obj[key] = '';
   }
+
+  if (obj[key]) {
+    throw Error(
+        'Cannot delete non configurable property "' + key + '" in ' + obj);
+  }
+};
+
+
+/**
+ * Restore the original state of a key in an object.
+ * @param {{ object: ?, key: string, value: ? }} original Original state
+ * @private
+ */
+goog.testing.PropertyReplacer.restoreOriginal_ = function(original) {
+  if (original.value == goog.testing.PropertyReplacer.NO_SUCH_KEY_) {
+    goog.testing.PropertyReplacer.deleteKey_(original.object, original.key);
+  } else {
+    original.object[original.key] = original.value;
+  }
 };
 
 
@@ -157,12 +180,23 @@ goog.testing.PropertyReplacer.deleteKey_ = function(obj, key) {
  *     alter. See the constraints in the class description.
  * @param {string} key The key to change the value for.
  * @param {*} value The new value to set.
+ * @throws {Error} In case of trying to set a read-only property.
  */
 goog.testing.PropertyReplacer.prototype.set = function(obj, key, value) {
-  var origValue = goog.testing.PropertyReplacer.hasKey_(obj, key) ? obj[key] :
-                  goog.testing.PropertyReplacer.NO_SUCH_KEY_;
+  var origValue = goog.testing.PropertyReplacer.hasKey_(obj, key) ?
+      obj[key] :
+      goog.testing.PropertyReplacer.NO_SUCH_KEY_;
   this.original_.push({object: obj, key: key, value: origValue});
   obj[key] = value;
+
+  // Check whether obj[key] was a read-only value and the assignment failed.
+  // Also, check that we're not comparing returned pixel values when "value"
+  // is 0. In other words, account for this case:
+  // document.body.style.margin = 0;
+  // document.body.style.margin; // returns "0px"
+  if (obj[key] != value && (value + 'px') != obj[key]) {
+    throw Error('Cannot overwrite read-only property "' + key + '" in ' + obj);
+  }
 };
 
 
@@ -184,7 +218,8 @@ goog.testing.PropertyReplacer.prototype.replace = function(obj, key, value) {
     throw Error('Cannot replace missing property "' + key + '" in ' + obj);
   }
   if (goog.typeOf(obj[key]) != goog.typeOf(value)) {
-    throw Error('Cannot replace property "' + key + '" in ' + obj +
+    throw Error(
+        'Cannot replace property "' + key + '" in ' + obj +
         ' with a value of different type');
   }
   this.set(obj, key, value);
@@ -229,16 +264,31 @@ goog.testing.PropertyReplacer.prototype.remove = function(obj, key) {
 
 
 /**
+ * Restore the original state of key in an object.
+ * @param {!Object|!Function} obj The JavaScript or native object whose state
+ *     should be restored.
+ * @param {string} key The key to restore the original value for.
+ * @throws {Error} In case the object/key pair hadn't been modified earlier.
+ */
+goog.testing.PropertyReplacer.prototype.restore = function(obj, key) {
+  for (var i = this.original_.length - 1; i >= 0; i--) {
+    var original = this.original_[i];
+    if (original.object === obj && original.key == key) {
+      goog.testing.PropertyReplacer.restoreOriginal_(original);
+      this.original_.splice(i, 1);
+      return;
+    }
+  }
+  throw Error('Cannot restore unmodified property "' + key + '" of ' + obj);
+};
+
+
+/**
  * Resets all changes made by goog.testing.PropertyReplacer.prototype.set.
  */
 goog.testing.PropertyReplacer.prototype.reset = function() {
   for (var i = this.original_.length - 1; i >= 0; i--) {
-    var original = this.original_[i];
-    if (original.value == goog.testing.PropertyReplacer.NO_SUCH_KEY_) {
-      goog.testing.PropertyReplacer.deleteKey_(original.object, original.key);
-    } else {
-      original.object[original.key] = original.value;
-    }
+    goog.testing.PropertyReplacer.restoreOriginal_(this.original_[i]);
     delete this.original_[i];
   }
   this.original_.length = 0;

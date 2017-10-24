@@ -1,5 +1,8 @@
-// Copyright 2011 Software Freedom Conservancy
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -12,18 +15,77 @@
 // limitations under the License.
 
 #include "BrowserFactory.h"
+
 #include <ctime>
 #include <vector>
+
 #include <exdispid.h>
 #include <iepmapi.h>
-#include <oleacc.h>
+#include <psapi.h>
 #include <sddl.h>
 #include <shlguid.h>
 #include <shlobj.h>
-#include <WinInet.h>
+
 #include "logging.h"
-#include "psapi.h"
+
+#include "FileUtilities.h"
 #include "RegistryUtilities.h"
+#include "StringUtilities.h"
+
+#define HTML_GETOBJECT_MSG L"WM_HTML_GETOBJECT"
+#define OLEACC_LIBRARY_NAME L"OLEACC.DLL"
+#define IEFRAME_LIBRARY_NAME L"ieframe.dll"
+#define IELAUNCHURL_FUNCTION_NAME "IELaunchURL"
+
+#define IE_FRAME_WINDOW_CLASS "IEFrame"
+#define SHELL_DOCOBJECT_VIEW_WINDOW_CLASS "Shell DocObject View"
+#define IE_SERVER_CHILD_WINDOW_CLASS "Internet Explorer_Server"
+
+#define IE_CLSID_REGISTRY_KEY L"SOFTWARE\\Classes\\InternetExplorer.Application\\CLSID"
+#define IE_SECURITY_ZONES_REGISTRY_KEY L"Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\Zones"
+#define IE_TABPROCGROWTH_REGISTRY_KEY L"Software\\Microsoft\\Internet Explorer\\Main"
+
+#define IE_PROTECTED_MODE_SETTING_VALUE_NAME L"2500"
+
+#define IELAUNCHURL_ERROR_MESSAGE "IELaunchURL() returned HRESULT %X ('%s') for URL '%s'"
+#define CREATEPROCESS_ERROR_MESSAGE "CreateProcess() failed for command line '%s'"
+#define NULL_PROCESS_ID_ERROR_MESSAGE " successfully launched Internet Explorer, but did not return a valid process ID."
+#define PROTECTED_MODE_SETTING_ERROR_MESSAGE "Protected Mode settings are not the same for all zones. Enable Protected Mode must be set to the same value (enabled or disabled) for all zones."
+#define ZOOM_SETTING_ERROR_MESSAGE "Browser zoom level was set to %d%%. It should be set to 100%%"
+#define ATTACH_TIMEOUT_ERROR_MESSAGE "Could not find an Internet Explorer window belonging to the process with ID %d within %d milliseconds."
+#define ATTACH_FAILURE_ERROR_MESSAGE "Found browser window using ShellWindows API, but could not attach to the browser IWebBrowser2 object."
+#define CREATEPROCESS_REGISTRY_ERROR_MESSAGE "Unable to use CreateProcess() API. To use CreateProcess() with Internet Explorer 8 or higher, the value of registry setting in HKEY_CURRENT_USER\\Software\\Microsoft\\Internet Explorer\\Main\\TabProcGrowth must be '0'."
+
+#define ZONE_MY_COMPUTER L"0"
+#define ZONE_LOCAL_INTRANET L"1"
+#define ZONE_TRUSTED_SITES L"2"
+#define ZONE_INTERNET L"3"
+#define ZONE_RESTRICTED_SITES L"4"
+
+#define IELAUNCHURL_API L"ielaunchurl"
+#define CREATEPROCESS_API L"createprocess"
+
+#define RUNDLL_EXE_NAME L"rundll32.exe"
+#define INTERNET_CONTROL_PANEL_APPLET_NAME L"inetcpl.cpl"
+#define CLEAR_CACHE_COMMAND_LINE_ARGS L"rundll32.exe %s,ClearMyTracksByProcess %u"
+// This magic value is the combination of the following bitflags:
+// #define CLEAR_HISTORY         0x0001 // Clears history
+// #define CLEAR_COOKIES         0x0002 // Clears cookies
+// #define CLEAR_CACHE           0x0004 // Clears Temporary Internet Files folder
+// #define CLEAR_CACHE_ALL       0x0008 // Clears offline favorites and download history
+// #define CLEAR_FORM_DATA       0x0010 // Clears saved form data for form auto-fill-in
+// #define CLEAR_PASSWORDS       0x0020 // Clears passwords saved for websites
+// #define CLEAR_PHISHING_FILTER 0x0040 // Clears phishing filter data
+// #define CLEAR_RECOVERY_DATA   0x0080 // Clears webpage recovery data
+// #define CLEAR_PRIVACY_ADVISOR 0x0800 // Clears tracking data
+// #define CLEAR_SHOW_NO_GUI     0x0100 // Do not show a GUI when running the cache clearing
+//
+// Bitflags available but not used in this magic value are as follows:
+// #define CLEAR_USE_NO_THREAD      0x0200 // Do not use multithreading for deletion
+// #define CLEAR_PRIVATE_CACHE      0x0400 // Valid only when browser is in private browsing mode
+// #define CLEAR_DELETE_ALL         0x1000 // Deletes data stored by add-ons
+// #define CLEAR_PRESERVE_FAVORITES 0x2000 // Preserves cached data for "favorite" websites
+#define CLEAR_CACHE_OPTIONS 0x09FF
 
 namespace webdriver {
 
@@ -31,13 +93,20 @@ BrowserFactory::BrowserFactory(void) {
   // Must be done in the constructor. Do not move to Initialize().
   this->GetExecutableLocation();
   this->GetIEVersion();
-  this->GetOSVersion();
 }
 
 BrowserFactory::~BrowserFactory(void) {
   if (this->oleacc_instance_handle_) {
     ::FreeLibrary(this->oleacc_instance_handle_);
   }
+}
+
+std::string BrowserFactory::initial_browser_url(void) {
+  return StringUtilities::ToString(this->initial_browser_url_);
+}
+
+std::string BrowserFactory::browser_command_line_switches(void) {
+  return StringUtilities::ToString(this->browser_command_line_switches_);
 }
 
 void BrowserFactory::Initialize(BrowserFactorySettings settings) {
@@ -60,7 +129,7 @@ void BrowserFactory::Initialize(BrowserFactorySettings settings) {
 void BrowserFactory::ClearCache() {
   LOG(TRACE) << "Entering BrowserFactory::ClearCache";
   if (this->clear_cache_) {
-    if (this->windows_major_version_ >= 6) {
+    if (IsWindowsVistaOrGreater()) {
       LOG(DEBUG) << "Clearing cache with low mandatory integrity level as required on Windows Vista or later.";
       this->InvokeClearCacheUtility(true);
     }
@@ -303,10 +372,15 @@ bool BrowserFactory::AttachToBrowser(ProcessWindowInfo* process_window_info,
   // ShellWindows might fail if there is an IE modal dialog blocking
   // execution (unverified).
   if (!this->force_shell_windows_api_) {
+    LOG(DEBUG) << "Using Active Accessibility to find IWebBrowser2 interface";
     attached = this->AttachToBrowserUsingActiveAccessibility(process_window_info,
                                                              error_message);
     if (!attached) {
-      LOG(DEBUG) << "Failed to find IWebBrowser2 using ActiveAccessibility: " << *error_message;
+      LOG(DEBUG) << "Failed to find IWebBrowser2 using ActiveAccessibility: "
+                 << *error_message;
+      // Reset the browser window handle to NULL, since we didn't attach
+      // using Active Accessibility.
+      process_window_info->hwndBrowser = NULL;
     }
   }
 
@@ -356,13 +430,28 @@ bool BrowserFactory::AttachToBrowserUsingActiveAccessibility
                                              process_window_info->dwProcessId,
                                              this->browser_attach_timeout_);
     return false;
+  } else {
+    LOG(DEBUG) << "Found window handle " << process_window_info->hwndBrowser
+               << " for window with class 'Internet Explorer_Server' belonging"
+               << " to process with id " << process_window_info->dwProcessId;
   }
 
   CComPtr<IHTMLDocument2> document;
   if (this->GetDocumentFromWindowHandle(process_window_info->hwndBrowser,
                                         &document)) {
+    int get_parent_window_retry_count = 8;
     CComPtr<IHTMLWindow2> window;
     HRESULT hr = document->get_parentWindow(&window);
+    while (FAILED(hr) && get_parent_window_retry_count > 0) {
+      // We know we have a valid document. We *should* be able to do a
+      // document.parentWindow call to get the window. However, on the off-
+      // chance that the document exists, but IE is slow to initialize all
+      // of the COM objects and the full DOM, we'll sleep up to 2 seconds,
+      // retrying to get the parent window.
+      ::Sleep(250);
+      hr = document->get_parentWindow(&window);
+      --get_parent_window_retry_count;
+    }
     if (SUCCEEDED(hr)) {
       // http://support.microsoft.com/kb/257717
       CComPtr<IServiceProvider> provider;
@@ -413,9 +502,6 @@ bool BrowserFactory::AttachToBrowserUsingShellWindows(
     return false;
   }
 
-  HWND hwnd_browser = NULL;
-  CComPtr<IWebBrowser2> browser;
-
   clock_t end = clock() + (this->browser_attach_timeout_ / 1000 * CLOCKS_PER_SEC);
 
   CComPtr<IEnumVARIANT> enumerator;
@@ -426,7 +512,7 @@ bool BrowserFactory::AttachToBrowserUsingShellWindows(
     }
     enumerator->Reset();
     for (CComVariant shell_window_variant;
-         enumerator->Next(1, &shell_window_variant, nullptr) == S_OK;
+         enumerator->Next(1, &shell_window_variant, NULL) == S_OK;
          shell_window_variant.Clear()) {
 
       if (shell_window_variant.vt != VT_DISPATCH) {
@@ -445,14 +531,27 @@ bool BrowserFactory::AttachToBrowserUsingShellWindows(
                              &BrowserFactory::FindChildWindowForProcess, 
                              reinterpret_cast<LPARAM>(process_window_info));
           if (process_window_info->hwndBrowser != NULL) {
+            LOG(DEBUG) << "Found window handle "
+                       << process_window_info->hwndBrowser
+                       << " for window with class 'Internet Explorer_Server'"
+                       << " belonging to process with id "
+                       << process_window_info->dwProcessId;
+            CComPtr<IWebBrowser2> browser;
             hr = shell_window_variant.pdispVal->QueryInterface<IWebBrowser2>(&browser);
-            process_window_info->pBrowser = browser.Detach();
+            if (FAILED(hr)) {
+              LOGHR(WARN, hr) << "Found browser window using ShellWindows "
+                              << "API, but QueryInterface for IWebBrowser2 "
+                              << "failed, so could not attach to the browser.";
+            } else {
+              process_window_info->pBrowser = browser.Detach();
+            }
             break;
           }
         }
       }
     }
-    if (process_window_info->hwndBrowser == NULL) {
+    if (process_window_info->hwndBrowser == NULL ||
+        process_window_info->pBrowser == NULL) {
       ::Sleep(250);
     }
   }
@@ -461,6 +560,11 @@ bool BrowserFactory::AttachToBrowserUsingShellWindows(
     *error_message = StringUtilities::Format(ATTACH_TIMEOUT_ERROR_MESSAGE,
                                              process_window_info->dwProcessId,
                                              this->browser_attach_timeout_);
+    return false;
+  }
+
+  if (process_window_info->pBrowser == NULL) {
+    *error_message = ATTACH_FAILURE_ERROR_MESSAGE;
     return false;
   }
   return true;
@@ -596,7 +700,7 @@ IWebBrowser2* BrowserFactory::CreateBrowser() {
 
   IWebBrowser2* browser = NULL;
   DWORD context = CLSCTX_LOCAL_SERVER;
-  if (this->ie_major_version_ == 7 && this->windows_major_version_ >= 6) {
+  if (this->ie_major_version_ == 7 && IsWindowsVistaOrGreater()) {
     // ONLY for IE 7 on Windows Vista. XP and below do not have Protected Mode;
     // Windows 7 shipped with IE8.
     context = context | CLSCTX_ENABLE_CLOAKING;
@@ -934,15 +1038,9 @@ void BrowserFactory::GetExecutableLocation() {
 void BrowserFactory::GetIEVersion() {
   LOG(TRACE) << "Entering BrowserFactory::GetIEVersion";
 
-  struct LANGANDCODEPAGE {
-    WORD language;
-    WORD code_page;
-    } *lpTranslate;
-
-  DWORD dummy = 0;
-  DWORD length = ::GetFileVersionInfoSize(this->ie_executable_location_.c_str(),
-                                          &dummy);
-  if (length == 0) {
+  std::string ie_version = FileUtilities::GetFileVersion(this->ie_executable_location_);
+  
+  if (ie_version.size() == 0) {
     // 64-bit Windows 8 has a bug where it does not return the executable location properly
     this->ie_major_version_ = -1;
     LOG(WARN) << "Couldn't find IE version for executable "
@@ -951,45 +1049,9 @@ void BrowserFactory::GetIEVersion() {
                << this->ie_major_version_;
     return;
   }
-  std::vector<BYTE> version_buffer(length);
-  ::GetFileVersionInfo(this->ie_executable_location_.c_str(),
-                       0, /* ignored */
-                       length,
-                       &version_buffer[0]);
 
-  UINT page_count;
-  BOOL query_result = ::VerQueryValue(&version_buffer[0],
-                                      FILE_LANGUAGE_INFO,
-                                      reinterpret_cast<void**>(&lpTranslate),
-                                      &page_count);
-    
-  wchar_t sub_block[MAX_PATH];
-  _snwprintf_s(sub_block,
-               MAX_PATH,
-               MAX_PATH,
-               FILE_VERSION_INFO,
-               lpTranslate->language,
-               lpTranslate->code_page);
-  LPVOID value = NULL;
-  UINT size;
-  query_result = ::VerQueryValue(&version_buffer[0],
-                                 sub_block,
-                                 &value,
-                                 &size);
-  std::wstring ie_version;
-  ie_version.assign(static_cast<wchar_t*>(value));
-  std::wstringstream version_stream(ie_version);
+  std::stringstream version_stream(ie_version);
   version_stream >> this->ie_major_version_;
-}
-
-void BrowserFactory::GetOSVersion() {
-  LOG(TRACE) << "Entering BrowserFactory::GetOSVersion";
-
-  OSVERSIONINFO osVersion;
-  osVersion.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
-  ::GetVersionEx(&osVersion);
-  this->windows_major_version_ = osVersion.dwMajorVersion;
-  this->windows_minor_version_ = osVersion.dwMinorVersion;
 }
 
 bool BrowserFactory::ProtectedModeSettingsAreValid() {
@@ -997,14 +1059,15 @@ bool BrowserFactory::ProtectedModeSettingsAreValid() {
 
   bool settings_are_valid = true;
   LOG(DEBUG) << "Detected IE version: " << this->ie_major_version_
-             << ", detected Windows version: " << this->windows_major_version_;
+             << ", Windows version supports Protected Mode: "
+	           << IsWindowsVistaOrGreater() ? "true" : "false";
   // Only need to check Protected Mode settings on IE 7 or higher
   // and on Windows Vista or higher. Otherwise, Protected Mode
   // doesn't come into play, and are valid.
   // Documentation of registry settings can be found at the following
   // Microsoft KnowledgeBase article:
   // http://support.microsoft.com/kb/182569
-  if (this->ie_major_version_ >= 7 && this->windows_major_version_ >= 6) {
+  if (this->ie_major_version_ >= 7 && IsWindowsVistaOrGreater()) {
     HKEY key_handle;
     if (ERROR_SUCCESS == ::RegOpenKeyEx(HKEY_CURRENT_USER,
                                         IE_SECURITY_ZONES_REGISTRY_KEY,
@@ -1114,5 +1177,30 @@ int BrowserFactory::GetZoneProtectedModeSetting(const HKEY key_handle,
   }
   return protected_mode_value;
 }
+
+bool BrowserFactory::IsWindowsVersionOrGreater(unsigned short major_version,
+                                               unsigned short minor_version,
+                                               unsigned short service_pack) {
+  OSVERSIONINFOEXW osvi = { sizeof(osvi), 0, 0, 0, 0,{ 0 }, 0, 0 };
+  DWORDLONG        const dwlConditionMask = VerSetConditionMask(
+    VerSetConditionMask(
+      VerSetConditionMask(
+        0, VER_MAJORVERSION, VER_GREATER_EQUAL),
+      VER_MINORVERSION, VER_GREATER_EQUAL),
+    VER_SERVICEPACKMAJOR, VER_GREATER_EQUAL);
+
+  osvi.dwMajorVersion = major_version;
+  osvi.dwMinorVersion = minor_version;
+  osvi.wServicePackMajor = service_pack;
+
+  return VerifyVersionInfoW(&osvi,
+                            VER_MAJORVERSION | VER_MINORVERSION | VER_SERVICEPACKMAJOR,
+                            dwlConditionMask) != FALSE;
+}
+ 
+bool BrowserFactory::IsWindowsVistaOrGreater() {
+  return IsWindowsVersionOrGreater(HIBYTE(_WIN32_WINNT_VISTA), LOBYTE(_WIN32_WINNT_VISTA), 0);
+}
+
 
 } // namespace webdriver

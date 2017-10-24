@@ -103,7 +103,7 @@ goog.messaging.LoggerClient.prototype.sendLog_ = function(logRecord) {
       'lineNumber': normalizedException.lineNumber,
       'fileName': normalizedException.fileName,
       // Normalized exceptions without a stack have 'stack' set to 'Not
-      // available', so we check for the existance of 'stack' on the original
+      // available', so we check for the existence of 'stack' on the original
       // exception instead.
       'stack': originalException.stack ||
           goog.debug.getStacktrace(goog.debug.Logger.prototype.log)
@@ -118,7 +118,10 @@ goog.messaging.LoggerClient.prototype.sendLog_ = function(logRecord) {
     }
   }
   this.channel_.send(this.serviceName_, {
-    'name': name, 'level': level.value, 'message': msg, 'exception': exception
+    'name': name,
+    'level': level.value,
+    'message': msg,
+    'exception': exception
   });
 };
 

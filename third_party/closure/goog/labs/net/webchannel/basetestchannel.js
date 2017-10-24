@@ -22,8 +22,10 @@ goog.provide('goog.labs.net.webChannel.BaseTestChannel');
 
 goog.require('goog.labs.net.webChannel.Channel');
 goog.require('goog.labs.net.webChannel.ChannelRequest');
+goog.require('goog.labs.net.webChannel.WebChannelDebug');
 goog.require('goog.labs.net.webChannel.requestStats');
 goog.require('goog.labs.net.webChannel.requestStats.Stat');
+goog.require('goog.net.WebChannel');
 
 
 
@@ -73,27 +75,6 @@ goog.labs.net.webChannel.BaseTestChannel = function(channel, channelDebug) {
   this.receivedIntermediateResult_ = false;
 
   /**
-   * The time when the test request was started. We use timing in IE as
-   * a heuristic for whether we're behind a buffering proxy.
-   * @private {?number}
-   */
-  this.startTime_ = null;
-
-  /**
-   * The time for of the first result part. We use timing in IE as a
-   * heuristic for whether we're behind a buffering proxy.
-   * @private {?number}
-   */
-  this.firstTime_ = null;
-
-  /**
-   * The time for of the last result part. We use timing in IE as a
-   * heuristic for whether we're behind a buffering proxy.
-   * @private {?number}
-   */
-  this.lastTime_ = null;
-
-  /**
    * The relative path for test requests.
    * @private {?string}
    */
@@ -123,6 +104,7 @@ goog.labs.net.webChannel.BaseTestChannel = function(channel, channelDebug) {
 
 
 goog.scope(function() {
+var WebChannel = goog.net.WebChannel;
 var BaseTestChannel = goog.labs.net.webChannel.BaseTestChannel;
 var WebChannelDebug = goog.labs.net.webChannel.WebChannelDebug;
 var ChannelRequest = goog.labs.net.webChannel.ChannelRequest;
@@ -159,16 +141,6 @@ BaseTestChannel.prototype.state_ = null;
 
 
 /**
- * Time between chunks in the test connection that indicates that we
- * are not behind a buffering proxy. This value should be less than or
- * equals to the time between chunks sent from the server.
- * @type {number}
- * @private
- */
-BaseTestChannel.MIN_TIME_EXPECTED_BETWEEN_DATA_ = 500;
-
-
-/**
  * Sets extra HTTP headers to add to all the requests sent to the server.
  *
  * @param {Object} extraHeaders The HTTP headers.
@@ -188,7 +160,6 @@ BaseTestChannel.prototype.connect = function(path) {
   var sendDataUri = this.channel_.getForwardChannelUri(this.path_);
 
   requestStats.notifyStatEvent(requestStats.Stat.TEST_STAGE_ONE_START);
-  this.startTime_ = goog.now();
 
   // If the channel already has the result of the handshake, then skip it.
   var handshakeResult = this.channel_.getConnectionState().handshakeResult;
@@ -201,10 +172,21 @@ BaseTestChannel.prototype.connect = function(path) {
 
   // the first request returns server specific parameters
   sendDataUri.setParameterValues('MODE', 'init');
+
+  // http-session-id to be generated as the response
+  if (!this.channel_.getBackgroundChannelTest() &&
+      this.channel_.getHttpSessionIdParam()) {
+    sendDataUri.setParameterValues(WebChannel.X_HTTP_SESSION_ID,
+        this.channel_.getHttpSessionIdParam());
+  }
+
   this.request_ = ChannelRequest.createChannelRequest(this, this.channelDebug_);
+
   this.request_.setExtraHeaders(this.extraHeaders_);
-  this.request_.xmlHttpGet(sendDataUri, false /* decodeChunks */,
-      null /* hostPrefix */, true /* opt_noClose */);
+
+  this.request_.xmlHttpGet(
+      sendDataUri, false /* decodeChunks */, null /* hostPrefix */,
+      true /* opt_noClose */);
   this.state_ = BaseTestChannel.State_.INIT;
 };
 
@@ -226,31 +208,37 @@ BaseTestChannel.prototype.checkBufferingProxy_ = function() {
   if (goog.isDefAndNotNull(bufferingProxyResult)) {
     this.channelDebug_.debug(
         'TestConnection: skipping stage 2, precomputed result is ' +
-        bufferingProxyResult ? 'Buffered' : 'Unbuffered');
+                bufferingProxyResult ?
+            'Buffered' :
+            'Unbuffered');
     requestStats.notifyStatEvent(requestStats.Stat.TEST_STAGE_TWO_START);
-    if (bufferingProxyResult) { // Buffered/Proxy connection
+    if (bufferingProxyResult) {  // Buffered/Proxy connection
       requestStats.notifyStatEvent(requestStats.Stat.PROXY);
       this.channel_.testConnectionFinished(this, false);
-    } else { // Unbuffered/NoProxy connection
+    } else {  // Unbuffered/NoProxy connection
       requestStats.notifyStatEvent(requestStats.Stat.NOPROXY);
       this.channel_.testConnectionFinished(this, true);
     }
-    return; // Skip the test
+    return;  // Skip the test
   }
   this.request_ = ChannelRequest.createChannelRequest(this, this.channelDebug_);
   this.request_.setExtraHeaders(this.extraHeaders_);
-  var recvDataUri = this.channel_.getBackChannelUri(this.hostPrefix_,
+  var recvDataUri = this.channel_.getBackChannelUri(
+      this.hostPrefix_,
       /** @type {string} */ (this.path_));
 
   requestStats.notifyStatEvent(requestStats.Stat.TEST_STAGE_TWO_START);
-  if (!ChannelRequest.supportsXhrStreaming()) {
-    recvDataUri.setParameterValues('TYPE', 'html');
-    this.request_.tridentGet(recvDataUri, Boolean(this.hostPrefix_));
-  } else {
-    recvDataUri.setParameterValues('TYPE', 'xmlhttp');
-    this.request_.xmlHttpGet(recvDataUri, false /** decodeChunks */,
-        this.hostPrefix_, false /** opt_noClose */);
+  recvDataUri.setParameterValues('TYPE', 'xmlhttp');
+
+  var param = this.channel_.getHttpSessionIdParam();
+  var value = this.channel_.getHttpSessionId();
+  if (param && value) {
+    recvDataUri.setParameterValue(param, value);
   }
+
+  this.request_.xmlHttpGet(
+      recvDataUri, false /** decodeChunks */, this.hostPrefix_,
+      false /** opt_noClose */);
 };
 
 
@@ -297,15 +285,21 @@ BaseTestChannel.prototype.onRequestData = function(req, responseText) {
   this.lastStatusCode_ = req.getLastStatusCode();
   if (this.state_ == BaseTestChannel.State_.INIT) {
     this.channelDebug_.debug('TestConnection: Got data for stage 1');
+
+    this.applyControlHeaders_(req);
+
     if (!responseText) {
       this.channelDebug_.debug('TestConnection: Null responseText');
       // The server should always send text; something is wrong here
       this.channel_.testConnectionFailure(this, ChannelRequest.Error.BAD_DATA);
       return;
     }
-    /** @preserveTry */
+
+
     try {
-      var respArray = this.channel_.getWireCodec().decodeMessage(responseText);
+      var channel = /** @type {!goog.labs.net.webChannel.WebChannelBase} */ (
+          this.channel_);
+      var respArray = channel.getWireCodec().decodeMessage(responseText);
     } catch (e) {
       this.channelDebug_.dumpException(e);
       this.channel_.testConnectionFailure(this, ChannelRequest.Error.BAD_DATA);
@@ -315,14 +309,12 @@ BaseTestChannel.prototype.onRequestData = function(req, responseText) {
   } else if (this.state_ == BaseTestChannel.State_.CONNECTION_TESTING) {
     if (this.receivedIntermediateResult_) {
       requestStats.notifyStatEvent(requestStats.Stat.TEST_STAGE_TWO_DATA_TWO);
-      this.lastTime_ = goog.now();
     } else {
       // '11111' is used instead of '1' to prevent a small amount of buffering
       // by Safari.
       if (responseText == '11111') {
         requestStats.notifyStatEvent(requestStats.Stat.TEST_STAGE_TWO_DATA_ONE);
         this.receivedIntermediateResult_ = true;
-        this.firstTime_ = goog.now();
         if (this.checkForEarlyNonBuffered_()) {
           // If early chunk detection is on, and we passed the tests,
           // assume HTTP_OK, cancel the test and turn on noproxy mode.
@@ -336,7 +328,6 @@ BaseTestChannel.prototype.onRequestData = function(req, responseText) {
       } else {
         requestStats.notifyStatEvent(
             requestStats.Stat.TEST_STAGE_TWO_DATA_BOTH);
-        this.firstTime_ = this.lastTime_ = goog.now();
         this.receivedIntermediateResult_ = false;
       }
     }
@@ -360,14 +351,14 @@ BaseTestChannel.prototype.onRequestComplete = function(req) {
     } else if (this.state_ == BaseTestChannel.State_.CONNECTION_TESTING) {
       requestStats.notifyStatEvent(requestStats.Stat.TEST_STAGE_TWO_FAILED);
     }
-    this.channel_.testConnectionFailure(this,
+    this.channel_.testConnectionFailure(
+        this,
         /** @type {ChannelRequest.Error} */
         (this.request_.getLastError()));
     return;
   }
 
   if (this.state_ == BaseTestChannel.State_.INIT) {
-    this.recordClientProtocol_(req);
     this.state_ = BaseTestChannel.State_.CONNECTION_TESTING;
 
     this.channelDebug_.debug(
@@ -376,31 +367,15 @@ BaseTestChannel.prototype.onRequestComplete = function(req) {
     this.checkBufferingProxy_();
   } else if (this.state_ == BaseTestChannel.State_.CONNECTION_TESTING) {
     this.channelDebug_.debug('TestConnection: request complete for stage 2');
-    var goodConn = false;
 
-    if (!ChannelRequest.supportsXhrStreaming()) {
-      // we always get Trident responses in separate calls to
-      // onRequestData, so we have to check the time they came
-      var ms = this.lastTime_ - this.firstTime_;
-      if (ms < 200) {
-        // TODO: need to empirically verify that this number is OK
-        // for slow computers
-        goodConn = false;
-      } else {
-        goodConn = true;
-      }
-    } else {
-      goodConn = this.receivedIntermediateResult_;
-    }
-
+    var goodConn = this.receivedIntermediateResult_;
     if (goodConn) {
       this.channelDebug_.debug(
           'Test connection succeeded; using streaming connection');
       requestStats.notifyStatEvent(requestStats.Stat.NOPROXY);
       this.channel_.testConnectionFinished(this, true);
     } else {
-      this.channelDebug_.debug(
-          'Test connection failed; not using streaming');
+      this.channelDebug_.debug('Test connection failed; not using streaming');
       requestStats.notifyStatEvent(requestStats.Stat.PROXY);
       this.channel_.testConnectionFinished(this, false);
     }
@@ -409,16 +384,32 @@ BaseTestChannel.prototype.onRequestComplete = function(req) {
 
 
 /**
- * Record the client protocol header from the initial handshake response.
+ * Apply any control headers from the initial handshake response.
  *
  * @param {!ChannelRequest} req The request object.
  * @private
  */
-BaseTestChannel.prototype.recordClientProtocol_ = function(req) {
-  var xmlHttp = req.getXhr();
-  if (xmlHttp) {
-    var protocolHeader = xmlHttp.getResponseHeader('x-client-wire-protocol');
+BaseTestChannel.prototype.applyControlHeaders_ = function(req) {
+  if (this.channel_.getBackgroundChannelTest()) {
+    return;
+  }
+
+  var xhr = req.getXhr();
+  if (xhr) {
+    var protocolHeader = xhr.getStreamingResponseHeader(
+        WebChannel.X_CLIENT_WIRE_PROTOCOL);
     this.clientProtocol_ = protocolHeader ? protocolHeader : null;
+
+    if (this.channel_.getHttpSessionIdParam()) {
+      var httpSessionIdHeader = xhr.getStreamingResponseHeader(
+          WebChannel.X_HTTP_SESSION_ID);
+      if (httpSessionIdHeader) {
+        this.channel_.setHttpSessionId(httpSessionIdHeader);
+      } else {
+        this.channelDebug_.warning(
+            'Missing X_HTTP_SESSION_ID in the handshake response');
+      }
+    }
   }
 };
 
@@ -465,14 +456,7 @@ BaseTestChannel.prototype.isActive = function() {
  * @private
  */
 BaseTestChannel.prototype.checkForEarlyNonBuffered_ = function() {
-  var ms = this.firstTime_ - this.startTime_;
-
-  // we always get Trident responses in separate calls to
-  // onRequestData, so we have to check the time that the first came in
-  // and verify that the data arrived before the second portion could
-  // have been sent. For all other browser's we skip the timing test.
-  return ChannelRequest.supportsXhrStreaming() ||
-      ms < BaseTestChannel.MIN_TIME_EXPECTED_BETWEEN_DATA_;
+  return ChannelRequest.supportsXhrStreaming();
 };
 
 
@@ -516,4 +500,34 @@ BaseTestChannel.prototype.testConnectionFailure = goog.abstractMethod;
  * @override
  */
 BaseTestChannel.prototype.getConnectionState = goog.abstractMethod;
+
+
+/**
+ * @override
+ */
+BaseTestChannel.prototype.setHttpSessionIdParam = goog.abstractMethod;
+
+
+/**
+ * @override
+ */
+BaseTestChannel.prototype.getHttpSessionIdParam = goog.abstractMethod;
+
+
+/**
+ * @override
+ */
+BaseTestChannel.prototype.setHttpSessionId = goog.abstractMethod;
+
+
+/**
+ * @override
+ */
+BaseTestChannel.prototype.getHttpSessionId = goog.abstractMethod;
+
+
+/**
+ * @override
+ */
+BaseTestChannel.prototype.getBackgroundChannelTest = goog.abstractMethod;
 });  // goog.scope

@@ -19,11 +19,10 @@ mozilla_xpt(name = "modifier-keys-xpt",
 mozilla_xpt(name = "mouse-xpt",
   srcs = [ "extension/idl/wdIMouse.idl" ])
 
-mozilla_extension(name = "webdriver",
+mozilla_extension(name = "webdriver_legacy",
   content = [
     "extension/content/**/*.js",
     "extension/content/fxdriver.xul",
-    "extension/content/fx4driver.xul",
   ],
   components = [
     "extension/components/httpd.js",
@@ -42,29 +41,11 @@ mozilla_extension(name = "webdriver",
     ":session-store",
     ":status-xpt",
     ":synthetic-mouse",
-    "//cpp:native_events_xpt",
-    "//cpp:native_mouse_xpt",
-    "//cpp:native_keyboard_xpt",
-    "//cpp:native_ime_xpt",
   ],
   resources = [
-    { "//cpp/webdriver-firefox:previous_esr" : "platform/WINNT_x86-msvc/components/webdriver-firefox-esr-previous.dll" },
-    { "//cpp/webdriver-firefox:latest_esr" : "platform/WINNT_x86-msvc/components/webdriver-firefox-esr-latest.dll" },
-    { "//cpp/webdriver-firefox:previous" : "platform/WINNT_x86-msvc/components/webdriver-firefox-previous.dll" },
-    { "//cpp/webdriver-firefox:latest" : "platform/WINNT_x86-msvc/components/webdriver-firefox-latest.dll" },
-    { "//cpp:imehandler_dll" : "platform/WINNT_x86-msvc/components/imehandler.dll" },
-    { "//cpp:webdriver_firefox_esr_previous" : "platform/Linux_x86-gcc3/components/libwebdriver-firefox-esr-previous.so" },
-    { "//cpp:webdriver_firefox_esr_previous_64" : "platform/Linux_x86_64-gcc3/components/libwebdriver-firefox-esr-previous.so" },
-    { "//cpp:webdriver_firefox_esr_latest" : "platform/Linux_x86-gcc3/components/libwebdriver-firefox-esr-latest.so" },
-    { "//cpp:webdriver_firefox_esr_latest_64" : "platform/Linux_x86_64-gcc3/components/libwebdriver-firefox-esr-latest.so" },
-    { "//cpp:webdriver_firefox_previous" : "platform/Linux_x86-gcc3/components/libwebdriver-firefox-previous.so" },
-    { "//cpp:webdriver_firefox_latest" : "platform/Linux_x86-gcc3/components/libwebdriver-firefox-latest.so" },
-    { "//cpp:webdriver_firefox_previous_64" : "platform/Linux_x86_64-gcc3/components/libwebdriver-firefox-previous.so" },
-    { "//cpp:webdriver_firefox_latest_64" : "platform/Linux_x86_64-gcc3/components/libwebdriver-firefox-latest.so" },
     { ":web-element-cache" : "resource/modules/web-element-cache.js" },
     { "js/timer.js" : "resource/modules/timer.js" },
     { "js/evaluate.js" : "resource/evaluate.js" },
-    { "js/json2.js" : "resource/json2.js" },
   ],
   chrome = "extension/chrome.manifest",
   install = "extension/install.rdf")
@@ -277,6 +258,9 @@ js_library(name = "events",
 js_library(name = "files",
   srcs = [
     "js/files.js",
+  ],
+  deps = [
+    ":error",
   ])
 
 js_library(name = "logging",
@@ -384,5 +368,5 @@ js_library(name = "webloadinglistener",
     ":timer",
   ])
 
-export_file(name = "webdriver_prefs",
+export_file(name = "webdriver_prefs_legacy",
   srcs = [ "webdriver.json" ])

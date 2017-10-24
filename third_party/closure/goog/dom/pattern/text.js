@@ -36,18 +36,14 @@ goog.require('goog.dom.pattern.MatchType');
  * @final
  */
 goog.dom.pattern.Text = function(match) {
+  /**
+   * The text or regular expression to match.
+   *
+   * @private {string|RegExp}
+   */
   this.match_ = match;
 };
 goog.inherits(goog.dom.pattern.Text, goog.dom.pattern.AbstractPattern);
-
-
-/**
- * The text or regular expression to match.
- *
- * @type {string|RegExp}
- * @private
- */
-goog.dom.pattern.Text.prototype.match_;
 
 
 /**

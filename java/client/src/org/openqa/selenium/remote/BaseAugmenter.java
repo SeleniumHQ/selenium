@@ -1,18 +1,19 @@
-/*
-Copyright 2007-2014 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
- */
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium.remote;
 
@@ -80,9 +81,9 @@ public abstract class BaseAugmenter {
    * CapabilityType#SUPPORTS_FINDING_BY_CSS} represents the interface
    * {@link org.openqa.selenium.internal.FindsByCssSelector}, which is implemented via the
    * {@link AddFindsByCss} provider.
-   * 
+   *
    * Note: This method is still experimental. Use at your own risk.
-   * 
+   *
    * @param capabilityName The name of the capability to model
    * @param handlerClass The provider of the interface and implementation
    */
@@ -94,10 +95,10 @@ public abstract class BaseAugmenter {
   /**
    * Enhance the interfaces implemented by this instance of WebDriver iff that instance is a
    * {@link org.openqa.selenium.remote.RemoteWebDriver}.
-   * 
+   *
    * The WebDriver that is returned may well be a dynamic proxy. You cannot rely on the concrete
    * implementing class to remain constant.
-   * 
+   *
    * @param driver The driver to enhance
    * @return A class implementing the described interfaces.
    */
@@ -112,10 +113,10 @@ public abstract class BaseAugmenter {
   /**
    * Enhance the interfaces implemented by this instance of WebElement iff that instance is a
    * {@link org.openqa.selenium.remote.RemoteWebElement}.
-   * 
+   *
    * The WebElement that is returned may well be a dynamic proxy. You cannot rely on the concrete
    * implementing class to remain constant.
-   * 
+   *
    * @param element The driver to enhance.
    * @return A class implementing the described interfaces.
    */
@@ -131,6 +132,11 @@ public abstract class BaseAugmenter {
 
   /**
    * Subclasses should perform the requested augmentation.
+   *
+   * @param <X>             typically a RemoteWebDriver or RemoteWebElement
+   * @param augmentors      augumentors to augment the object
+   * @param driver          RWD instance
+   * @param objectToAugment object to augment
    * @return an augmented version of objectToAugment.
    */
   protected abstract <X> X create(RemoteWebDriver driver, Map<String, AugmenterProvider> augmentors,
@@ -138,6 +144,9 @@ public abstract class BaseAugmenter {
 
   /**
    * Subclasses should extract the remote webdriver or return null if it can't extract it.
+   *
+   * @param driver WebDriver instance to extract
+   * @return extracted RemoteWebDriver or null
    */
   protected abstract RemoteWebDriver extractRemoteWebDriver(WebDriver driver);
 }

@@ -75,8 +75,10 @@ goog.labs.style.PixelDensityMonitor = function(opt_domHelper) {
    * @type {?MediaQueryList}
    * @private
    */
-  this.mediaQueryList_ = this.window_.matchMedia ? this.window_.matchMedia(
-      goog.labs.style.PixelDensityMonitor.HIGH_DENSITY_QUERY_) : null;
+  this.mediaQueryList_ = this.window_.matchMedia ?
+      this.window_.matchMedia(
+          goog.labs.style.PixelDensityMonitor.HIGH_DENSITY_QUERY_) :
+      null;
 };
 goog.inherits(goog.labs.style.PixelDensityMonitor, goog.events.EventTarget);
 

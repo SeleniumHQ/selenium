@@ -1,7 +1,9 @@
-﻿// <copyright file="WebDriverObjectProxy.cs" company="WebDriver Committers">
-// Copyright 2015 Software Freedom Conservancy
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
+// <copyright file="WebDriverObjectProxy.cs" company="WebDriver Committers">
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -14,13 +16,12 @@
 // limitations under the License.
 // </copyright>
 
+#if !NETSTANDARD2_0
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.Remoting.Messaging;
 using System.Runtime.Remoting.Proxies;
-using System.Text;
 
 namespace OpenQA.Selenium.Support.PageObjects
 {
@@ -71,7 +72,7 @@ namespace OpenQA.Selenium.Support.PageObjects
         protected bool Cache
         {
             get { return this.cache; }
-        } 
+        }
 
         /// <summary>
         /// Invokes a method on the object this proxy represents.
@@ -92,3 +93,4 @@ namespace OpenQA.Selenium.Support.PageObjects
         }
     }
 }
+#endif

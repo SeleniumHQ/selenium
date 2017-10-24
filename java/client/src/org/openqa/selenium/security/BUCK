@@ -1,3 +1,4 @@
+# BUILD FILE SYNTAX: SKYLARK
 java_library(name = 'security',
   srcs = glob(['*.java']),
   deps = [
@@ -5,6 +6,6 @@ java_library(name = 'security',
   ],
   visibility = [
     '//java/client/src/org/openqa/selenium:core',
-    '//java/client/src/org/openqa/selenium:webdriver-api',
+    '//java/client/src/org/openqa/selenium:selenium',
   ],
 )

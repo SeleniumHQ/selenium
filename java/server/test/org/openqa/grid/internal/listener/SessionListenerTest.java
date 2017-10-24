@@ -1,19 +1,19 @@
-/*
-Copyright 2011 Selenium committers
-Copyright 2011 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.grid.internal.listener;
 
@@ -21,13 +21,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.openqa.grid.common.RegistrationRequest.APP;
-import static org.openqa.grid.common.RegistrationRequest.CLEAN_UP_CYCLE;
-import static org.openqa.grid.common.RegistrationRequest.ID;
-import static org.openqa.grid.common.RegistrationRequest.MAX_SESSION;
-import static org.openqa.grid.common.RegistrationRequest.TIME_OUT;
 
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.internal.DetachedRemoteProxy;
@@ -38,6 +33,8 @@ import org.openqa.grid.internal.listeners.TestSessionListener;
 import org.openqa.grid.internal.listeners.TimeoutListener;
 import org.openqa.grid.internal.mock.GridHelper;
 import org.openqa.grid.web.servlet.handler.RequestHandler;
+import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -46,7 +43,17 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class SessionListenerTest {
 
-  static class MyRemoteProxy extends DetachedRemoteProxy implements TestSessionListener {
+  private RegistrationRequest req = null;
+  private Map<String, Object> app1 = new HashMap<>();
+
+  @Before
+  public void prepare() {
+    app1.put(CapabilityType.APPLICATION_NAME, "app1");
+    req = new RegistrationRequest();
+    req.getConfiguration().capabilities.add(new DesiredCapabilities(app1));
+  }
+
+  private static class MyRemoteProxy extends DetachedRemoteProxy implements TestSessionListener {
 
     public MyRemoteProxy(RegistrationRequest request, Registry registry) {
       super(request, registry);
@@ -60,20 +67,6 @@ public class SessionListenerTest {
     public void beforeSession(TestSession session) {
       session.put("FLAG", true);
     }
-  }
-
-  static RegistrationRequest req = null;
-  static Map<String, Object> app1 = new HashMap<String, Object>();
-
-  @BeforeClass
-  public static void prepare() {
-    app1.put(APP, "app1");
-    Map<String, Object> config = new HashMap<String, Object>();
-    config.put(ID, "abc");
-    req = new RegistrationRequest();
-    req.addDesiredCapability(app1);
-    req.setConfiguration(config);
-
   }
 
   @Test
@@ -248,23 +241,17 @@ public class SessionListenerTest {
 
   /**
    * using a proxy that times out instantly and spends a long time in the after method. check
-   * aftermethod cannot be excecuted twice for a session.
+   * aftermethod cannot be executed twice for a session.
    */
   @Test
   public void doubleRelease() throws InterruptedException {
     RegistrationRequest req = new RegistrationRequest();
-    Map<String, Object> cap = new HashMap<String, Object>();
-    cap.put(APP, "app1");
-
-    Map<String, Object> config = new HashMap<String, Object>();
-    config.put(TIME_OUT, 1);
-    config.put(CLEAN_UP_CYCLE, 1);
-    config.put(MAX_SESSION, 2);
-    config.put(ID, "abc");
-
-
-    req.addDesiredCapability(cap);
-    req.setConfiguration(config);
+    Map<String, Object> cap = new HashMap<>();
+    cap.put(CapabilityType.APPLICATION_NAME, "app1");
+    req.getConfiguration().timeout = 1;
+    req.getConfiguration().cleanUpCycle = 1;
+    req.getConfiguration().maxSession = 2;
+    req.getConfiguration().capabilities.add(new DesiredCapabilities(cap));
 
     Registry registry = Registry.newInstance();
     try {
@@ -276,7 +263,7 @@ public class SessionListenerTest {
       r.process();
       TestSession session = r.getSession();
 
-      Thread.sleep(150);
+      Thread.sleep(1100);
       // the session has timed out -> doing the long after method.
       assertEquals(session.get("after"), true);
 
@@ -291,5 +278,4 @@ public class SessionListenerTest {
     }
 
   }
-
 }

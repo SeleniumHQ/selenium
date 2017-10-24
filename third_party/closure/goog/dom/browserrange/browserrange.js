@@ -19,8 +19,6 @@
  * DO NOT USE THIS FILE DIRECTLY.  Use goog.dom.Range instead.
  *
  * @author robbyw@google.com (Robby Walker)
- *
- * @supported IE6, IE7, FF1.5+, Safari.
  */
 
 
@@ -112,24 +110,24 @@ goog.dom.browserrange.createRangeFromNodeContents = function(node) {
  *     the index into the character array for text endNodes.
  * @return {!goog.dom.browserrange.AbstractRange} A wrapper object.
  */
-goog.dom.browserrange.createRangeFromNodes = function(startNode, startOffset,
-    endNode, endOffset) {
+goog.dom.browserrange.createRangeFromNodes = function(
+    startNode, startOffset, endNode, endOffset) {
   if (goog.userAgent.IE && !goog.userAgent.isDocumentModeOrHigher(9)) {
-    return goog.dom.browserrange.IeRange.createFromNodes(startNode, startOffset,
-        endNode, endOffset);
+    return goog.dom.browserrange.IeRange.createFromNodes(
+        startNode, startOffset, endNode, endOffset);
   } else if (goog.userAgent.WEBKIT) {
-    return goog.dom.browserrange.WebKitRange.createFromNodes(startNode,
-        startOffset, endNode, endOffset);
+    return goog.dom.browserrange.WebKitRange.createFromNodes(
+        startNode, startOffset, endNode, endOffset);
   } else if (goog.userAgent.GECKO) {
-    return goog.dom.browserrange.GeckoRange.createFromNodes(startNode,
-        startOffset, endNode, endOffset);
+    return goog.dom.browserrange.GeckoRange.createFromNodes(
+        startNode, startOffset, endNode, endOffset);
   } else if (goog.userAgent.OPERA) {
-    return goog.dom.browserrange.OperaRange.createFromNodes(startNode,
-        startOffset, endNode, endOffset);
+    return goog.dom.browserrange.OperaRange.createFromNodes(
+        startNode, startOffset, endNode, endOffset);
   } else {
     // Default other browsers to W3c ranges.
-    return goog.dom.browserrange.W3cRange.createFromNodes(startNode,
-        startOffset, endNode, endOffset);
+    return goog.dom.browserrange.W3cRange.createFromNodes(
+        startNode, startOffset, endNode, endOffset);
   }
 };
 

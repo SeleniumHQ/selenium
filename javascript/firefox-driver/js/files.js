@@ -1,21 +1,27 @@
-// Copyright 2012 Software Freedom Conservancy
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
 //
-// Licensed under the Apache License, Version 2.0 (the 'License');
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
+//   http://www.apache.org/licenses/LICENSE-2.0
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an 'AS IS' BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 /** @fileoverview Provides a filesystem API. */
 
 goog.provide('fxdriver.files');
 goog.provide('fxdriver.files.File');
+
+goog.require('WebDriverError');
+goog.require('bot.ErrorCode');
 
 /**
  * Creates a temporary text file starting with opt_prefix and ending with
@@ -124,8 +130,11 @@ fxdriver.files.READ_MODE_ = 0x01;
 fxdriver.files.File.prototype.append = function(toAppend) {
   var ostream = Components.classes['@mozilla.org/network/file-output-stream;1']
       .createInstance(Components.interfaces['nsIFileOutputStream']);
-  ostream.init(this.nsIFile_, fxdriver.files.APPEND_MODE_,
-      parseInt('666', 8), 0);
+  try {
+    ostream.init(this.nsIFile_, fxdriver.files.APPEND_MODE_, parseInt('666', 8), 0);
+  } catch (e) {
+    throw new WebDriverError(bot.ErrorCode.UNKNOWN_ERROR, e);
+  }
 
   var converter =
       Components.classes['@mozilla.org/intl/converter-output-stream;1']

@@ -1,27 +1,30 @@
-/*
-Copyright 2011 Selenium committers
-Copyright 2011 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.grid.e2e.utils;
+
+import com.beust.jcommander.JCommander;
 
 import org.openqa.grid.common.GridRole;
 import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.common.SeleniumProtocol;
-import org.openqa.grid.internal.utils.GridHubConfiguration;
 import org.openqa.grid.internal.utils.SelfRegisteringRemote;
+import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
+import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
 import org.openqa.grid.web.Hub;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -37,20 +40,10 @@ public class GridTestHelper {
   }
 
   public static SelfRegisteringRemote getRemoteWithoutCapabilities(URL hub, GridRole role) {
-    RegistrationRequest req = RegistrationRequest.build("-role", "node","-host","localhost");
-
-
-    req.getConfiguration().put(RegistrationRequest.PORT, PortProber.findFreePort());
-
-    // some values have to be computed again after changing internals.
-    String url =
-        "http://" + req.getConfiguration().get(RegistrationRequest.HOST) + ":"
-            + req.getConfiguration().get(RegistrationRequest.PORT);
-    req.getConfiguration().put(RegistrationRequest.REMOTE_HOST, url);
-
-    req.getConfiguration().put(RegistrationRequest.HUB_HOST, hub.getHost());
-    req.getConfiguration().put(RegistrationRequest.HUB_PORT, hub.getPort());
-
+    String[] args = {"-role", "node","-host","localhost","-hub",hub.toString(),"-port",String.valueOf(PortProber.findFreePort())};
+    GridNodeConfiguration config = new GridNodeConfiguration();
+    new JCommander(config, args);
+    RegistrationRequest req = RegistrationRequest.build(config);
     SelfRegisteringRemote remote = new SelfRegisteringRemote(req);
     remote.deleteAllBrowsers();
     return remote;
@@ -64,25 +57,20 @@ public class GridTestHelper {
     return firefoxOnSeleniumCapability;
   }
 
-  public static DesiredCapabilities getFirefoxCapability() {
-    return DesiredCapabilities.firefox();
-  }
-
   public static DesiredCapabilities getDefaultBrowserCapability() {
     String browser = System.getProperty("webdriver.gridtest.browser");
     if (browser != null) {
       DesiredCapabilities caps = new DesiredCapabilities();
       caps.setBrowserName(browser);
       return caps;
-    } else {
-      return DesiredCapabilities.firefox();
     }
+    return DesiredCapabilities.htmlUnit();
   }
 
   public static Hub getHub() throws Exception {
     GridHubConfiguration config = new GridHubConfiguration();
-    config.setHost("localhost");
-    config.setPort(PortProber.findFreePort());
+    config.host = "localhost";
+    config.port = PortProber.findFreePort();
     return getHub(config);
   }
 
@@ -92,12 +80,8 @@ public class GridTestHelper {
     return hub;
   }
 
-  public static void getRemoteWebDriver(DesiredCapabilities caps, Hub hub)
+  public static RemoteWebDriver getRemoteWebDriver(DesiredCapabilities caps, Hub hub)
       throws MalformedURLException {
-    new RemoteWebDriver(getGridDriver(hub), caps);
-  }
-
-  public static URL getGridDriver(Hub hub) throws MalformedURLException {
-    return new URL(hub.getUrl() + "/grid/driver");
+    return new RemoteWebDriver(hub.getWebDriverHubRequestURL(), caps);
   }
 }

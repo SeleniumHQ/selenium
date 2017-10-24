@@ -16,9 +16,9 @@
  * @fileoverview Definition of the ChannelRequest class. The request
  * object encapsulates the logic for making a single request, either for the
  * forward channel, back channel, or test channel, to the server. It contains
- * the logic for the three types of transports we use:
- * XMLHTTP, Trident ActiveX (ie only), and Image request. It provides timeout
- * detection.
+ * the logic for the two types of transports we use:
+ * XMLHTTP and Image request. It provides timeout detection. More transports
+ * to be added in future, such as Fetch, WebSocket.
  *
  * @visibility {:internal}
  */
@@ -29,6 +29,8 @@ goog.provide('goog.labs.net.webChannel.ChannelRequest');
 goog.require('goog.Timer');
 goog.require('goog.async.Throttle');
 goog.require('goog.events.EventHandler');
+goog.require('goog.labs.net.webChannel.Channel');
+goog.require('goog.labs.net.webChannel.WebChannelDebug');
 goog.require('goog.labs.net.webChannel.requestStats');
 goog.require('goog.labs.net.webChannel.requestStats.ServerReachability');
 goog.require('goog.labs.net.webChannel.requestStats.Stat');
@@ -36,7 +38,6 @@ goog.require('goog.net.ErrorCode');
 goog.require('goog.net.EventType');
 goog.require('goog.net.XmlHttp');
 goog.require('goog.object');
-goog.require('goog.uri.utils.StandardQueryParam');
 goog.require('goog.userAgent');
 
 
@@ -55,8 +56,8 @@ goog.require('goog.userAgent');
  * @struct
  * @final
  */
-goog.labs.net.webChannel.ChannelRequest = function(channel, channelDebug,
-    opt_sessionId, opt_requestId, opt_retryId) {
+goog.labs.net.webChannel.ChannelRequest = function(
+    channel, channelDebug, opt_sessionId, opt_requestId, opt_retryId) {
   /**
    * The channel object that owns the request.
    * @private {goog.labs.net.webChannel.Channel}
@@ -145,7 +146,7 @@ goog.labs.net.webChannel.ChannelRequest = function(channel, channelDebug,
   this.requestStartTime_ = null;
 
   /**
-   * The type of request (XMLHTTP, IMG, Trident)
+   * The type of request (XMLHTTP, IMG)
    * @private {?number}
    */
   this.type_ = null;
@@ -181,12 +182,6 @@ goog.labs.net.webChannel.ChannelRequest = function(channel, channelDebug,
    * @private {number}
    */
   this.xmlHttpChunkStart_ = 0;
-
-  /**
-   * The Trident instance if the request is using Trident.
-   * @private {ActiveXObject}
-   */
-  this.trident_ = null;
 
   /**
    * The verb (Get or Post) for the request.
@@ -283,12 +278,7 @@ ChannelRequest.Type_ = {
   /**
    * IMG requests.
    */
-  IMG: 2,
-
-  /**
-   * Requests that use the MSHTML ActiveX control.
-   */
-  TRIDENT: 3
+  CLOSE_REQUEST: 2
 };
 
 
@@ -330,12 +320,7 @@ ChannelRequest.Error = {
   /**
    * The browser declared itself offline during the request.
    */
-  BROWSER_OFFLINE: 6,
-
-  /**
-   * IE is blocking ActiveX streaming.
-   */
-  ACTIVE_X_BLOCKED: 7
+  BROWSER_OFFLINE: 6
 };
 
 
@@ -377,9 +362,6 @@ ChannelRequest.INCOMPLETE_CHUNK_ = {};
 
 /**
  * Returns whether XHR streaming is supported on this browser.
- *
- * If XHR streaming is not supported, we will try to use an ActiveXObject
- * to create a Forever IFrame.
  *
  * @return {boolean} Whether XHR streaming is supported.
  * @see http://code.google.com/p/closure-library/issues/detail?id=346
@@ -448,27 +430,15 @@ ChannelRequest.prototype.xmlHttpPost = function(uri, postData, decodeChunks) {
  *     won't cause it to be added to the URL.
  * @param {boolean=} opt_noClose   Whether to request that the tcp/ip connection
  *     should be closed.
- * @param {boolean=} opt_duplicateRandom   Whether to duplicate the randomness
- *     parameter which is only required for the initial handshake. This allows
- *     a server to break compatibility with old version clients.
  */
-ChannelRequest.prototype.xmlHttpGet = function(uri, decodeChunks,
-    hostPrefix, opt_noClose, opt_duplicateRandom) {
+ChannelRequest.prototype.xmlHttpGet = function(
+    uri, decodeChunks, hostPrefix, opt_noClose) {
   this.type_ = ChannelRequest.Type_.XML_HTTP;
   this.baseUri_ = uri.clone().makeUnique();
   this.postData_ = null;
   this.decodeChunks_ = decodeChunks;
   if (opt_noClose) {
     this.sendClose_ = false;
-  }
-
-  // TODO(user): clean this up once we phase out all BrowserChannel clients,
-  if (opt_duplicateRandom) {
-    var randomParam = this.baseUri_.getParameterValue(
-        goog.uri.utils.StandardQueryParam.RANDOM);
-    this.baseUri_.setParameterValue(  // baseUri_ reusable for future requests
-        goog.uri.utils.StandardQueryParam.RANDOM + '1',  // 'zx1'
-        randomParam);
   }
 
   this.sendXmlHttp_(hostPrefix);
@@ -495,8 +465,8 @@ ChannelRequest.prototype.sendXmlHttp_ = function(hostPrefix) {
   // send the request either as a POST or GET
   this.xmlHttpChunkStart_ = 0;
   var useSecondaryDomains = this.channel_.shouldUseSecondaryDomains();
-  this.xmlHttp_ = this.channel_.createXhrIo(useSecondaryDomains ?
-      hostPrefix : null);
+  this.xmlHttp_ =
+      this.channel_.createXhrIo(useSecondaryDomains ? hostPrefix : null);
 
   if (this.readyStateChangeThrottleMs_ > 0) {
     this.readyStateChangeThrottle_ = new goog.async.Throttle(
@@ -504,8 +474,8 @@ ChannelRequest.prototype.sendXmlHttp_ = function(hostPrefix) {
         this.readyStateChangeThrottleMs_);
   }
 
-  this.eventHandler_.listen(this.xmlHttp_,
-      goog.net.EventType.READY_STATE_CHANGE,
+  this.eventHandler_.listen(
+      this.xmlHttp_, goog.net.EventType.READY_STATE_CHANGE,
       this.readyStateChangeHandler_);
 
   var headers = this.extraHeaders_ ? goog.object.clone(this.extraHeaders_) : {};
@@ -526,9 +496,8 @@ ChannelRequest.prototype.sendXmlHttp_ = function(hostPrefix) {
   }
   requestStats.notifyServerReachabilityEvent(
       requestStats.ServerReachability.REQUEST_MADE);
-  this.channelDebug_.xmlHttpChannelRequest(this.verb_,
-      this.requestUri_, this.rid_, this.retryId_,
-      this.postData_);
+  this.channelDebug_.xmlHttpChannelRequest(
+      this.verb_, this.requestUri_, this.rid_, this.retryId_, this.postData_);
 };
 
 
@@ -560,19 +529,20 @@ ChannelRequest.prototype.readyStateChangeHandler_ = function(evt) {
 ChannelRequest.prototype.xmlHttpHandler_ = function(xmlhttp) {
   requestStats.onStartExecution();
 
-  /** @preserveTry */
+
   try {
     if (xmlhttp == this.xmlHttp_) {
       this.onXmlHttpReadyStateChanged_();
     } else {
-      this.channelDebug_.warning('Called back with an ' +
-                                     'unexpected xmlhttp');
+      this.channelDebug_.warning(
+          'Called back with an ' +
+          'unexpected xmlhttp');
     }
   } catch (ex) {
     this.channelDebug_.debug('Failed call to OnXmlHttpReadyStateChanged_');
     if (this.xmlHttp_ && this.xmlHttp_.getResponseText()) {
-      this.channelDebug_.dumpException(ex,
-          'ResponseText: ' + this.xmlHttp_.getResponseText());
+      this.channelDebug_.dumpException(
+          ex, 'ResponseText: ' + this.xmlHttp_.getResponseText());
     } else {
       this.channelDebug_.dumpException(ex, 'No response text');
     }
@@ -591,32 +561,24 @@ ChannelRequest.prototype.onXmlHttpReadyStateChanged_ = function() {
   var readyState = this.xmlHttp_.getReadyState();
   var errorCode = this.xmlHttp_.getLastErrorCode();
   var statusCode = this.xmlHttp_.getStatus();
-  if (!ChannelRequest.supportsXhrStreaming()) {
-    if (readyState < goog.net.XmlHttp.ReadyState.COMPLETE) {
-      // not yet ready
-      return;
-    }
-  } else {
-    // we get partial results in browsers that support ready state interactive.
-    // We also make sure that getResponseText is not null in interactive mode
-    // before we continue.  However, we don't do it in Opera because it only
-    // fire readyState == INTERACTIVE once.  We need the following code to poll
-    if (readyState < goog.net.XmlHttp.ReadyState.INTERACTIVE ||
-        readyState == goog.net.XmlHttp.ReadyState.INTERACTIVE &&
-        !goog.userAgent.OPERA && !this.xmlHttp_.getResponseText()) {
-      // not yet ready
-      return;
-    }
+
+  // we get partial results in browsers that support ready state interactive.
+  // We also make sure that getResponseText is not null in interactive mode
+  // before we continue.  However, we don't do it in Opera because it only
+  // fire readyState == INTERACTIVE once.  We need the following code to poll
+  if (readyState < goog.net.XmlHttp.ReadyState.INTERACTIVE ||
+      readyState == goog.net.XmlHttp.ReadyState.INTERACTIVE &&
+          !goog.userAgent.OPERA && !this.xmlHttp_.getResponseText()) {
+    // not yet ready
+    return;
   }
 
   // Dispatch any appropriate network events.
   if (!this.cancelled_ && readyState == goog.net.XmlHttp.ReadyState.COMPLETE &&
       errorCode != goog.net.ErrorCode.ABORT) {
-
     // Pretty conservative, these are the only known scenarios which we'd
     // consider indicative of a truly non-functional network connection.
-    if (errorCode == goog.net.ErrorCode.TIMEOUT ||
-        statusCode <= 0) {
+    if (errorCode == goog.net.ErrorCode.TIMEOUT || statusCode <= 0) {
       requestStats.notifyServerReachabilityEvent(
           requestStats.ServerReachability.REQUEST_FAILED);
     } else {
@@ -632,19 +594,17 @@ ChannelRequest.prototype.onXmlHttpReadyStateChanged_ = function() {
   this.lastStatusCode_ = status;
   var responseText = this.xmlHttp_.getResponseText();
   if (!responseText) {
-    this.channelDebug_.debug('No response text for uri ' +
-        this.requestUri_ + ' status ' + status);
+    this.channelDebug_.debug(
+        'No response text for uri ' + this.requestUri_ + ' status ' + status);
   }
   this.successful_ = (status == 200);
 
   this.channelDebug_.xmlHttpChannelResponseMetaData(
-      /** @type {string} */ (this.verb_),
-      this.requestUri_, this.rid_, this.retryId_, readyState,
-      status);
+      /** @type {string} */ (this.verb_), this.requestUri_, this.rid_,
+      this.retryId_, readyState, status);
 
   if (!this.successful_) {
-    if (status == 400 &&
-        responseText.indexOf('Unknown SID') > 0) {
+    if (status == 400 && responseText.indexOf('Unknown SID') > 0) {
       // the server error string will include 'Unknown SID' which indicates the
       // server doesn't know about the session (maybe it got restarted, maybe
       // the user got moved to another server, etc.,). Handlers can special
@@ -664,10 +624,6 @@ ChannelRequest.prototype.onXmlHttpReadyStateChanged_ = function() {
     return;
   }
 
-  if (readyState == goog.net.XmlHttp.ReadyState.COMPLETE) {
-    this.cleanup_();
-  }
-
   if (this.decodeChunks_) {
     this.decodeNextChunks_(readyState, responseText);
     if (goog.userAgent.OPERA && this.successful_ &&
@@ -678,6 +634,10 @@ ChannelRequest.prototype.onXmlHttpReadyStateChanged_ = function() {
     this.channelDebug_.xmlHttpChannelResponseText(
         this.rid_, responseText, null);
     this.safeOnRequestData_(responseText);
+  }
+
+  if (readyState == goog.net.XmlHttp.ReadyState.COMPLETE) {
+    this.cleanup_();
   }
 
   if (!this.successful_) {
@@ -704,18 +664,16 @@ ChannelRequest.prototype.onXmlHttpReadyStateChanged_ = function() {
  * @param {string} responseText The value of responseText.
  * @private
  */
-ChannelRequest.prototype.decodeNextChunks_ = function(readyState,
-    responseText) {
+ChannelRequest.prototype.decodeNextChunks_ = function(
+    readyState, responseText) {
   var decodeNextChunksSuccessful = true;
-  while (!this.cancelled_ &&
-         this.xmlHttpChunkStart_ < responseText.length) {
+  while (!this.cancelled_ && this.xmlHttpChunkStart_ < responseText.length) {
     var chunkText = this.getNextChunk_(responseText);
     if (chunkText == ChannelRequest.INCOMPLETE_CHUNK_) {
       if (readyState == goog.net.XmlHttp.ReadyState.COMPLETE) {
         // should have consumed entire response when the request is done
         this.lastError_ = ChannelRequest.Error.BAD_DATA;
-        requestStats.notifyStatEvent(
-            requestStats.Stat.REQUEST_INCOMPLETE_DATA);
+        requestStats.notifyStatEvent(requestStats.Stat.REQUEST_INCOMPLETE_DATA);
         decodeNextChunksSuccessful = false;
       }
       this.channelDebug_.xmlHttpChannelResponseText(
@@ -778,32 +736,9 @@ ChannelRequest.prototype.pollResponse_ = function() {
  * @private
  */
 ChannelRequest.prototype.startPolling_ = function() {
-  this.eventHandler_.listen(this.pollingTimer_, goog.Timer.TICK,
-      this.pollResponse_);
+  this.eventHandler_.listen(
+      this.pollingTimer_, goog.Timer.TICK, this.pollResponse_);
   this.pollingTimer_.start();
-};
-
-
-/**
- * Called when the browser declares itself offline at the start of a request or
- * during its lifetime.  Abandons that request.
- * @private
- */
-ChannelRequest.prototype.cancelRequestAsBrowserIsOffline_ = function() {
-  if (this.successful_) {
-    // Should never happen.
-    this.channelDebug_.severe(
-        'Received browser offline event even though request completed ' +
-        'successfully');
-  }
-
-  this.channelDebug_.browserOfflineResponse(this.requestUri_);
-  this.cleanup_();
-
-  // set error and dispatch failure
-  this.lastError_ = ChannelRequest.Error.BROWSER_OFFLINE;
-  requestStats.notifyStatEvent(requestStats.Stat.BROWSER_OFFLINE);
-  this.dispatchFailure_();
 };
 
 
@@ -847,158 +782,38 @@ ChannelRequest.prototype.getNextChunk_ = function(responseText) {
 
 
 /**
- * Uses the Trident htmlfile ActiveX control to send a GET request in IE. This
- * is the innovation discovered that lets us get intermediate results in
- * Internet Explorer.  Thanks to http://go/kev
- * @param {goog.Uri} uri The uri to request from.
- * @param {boolean} usingSecondaryDomain Whether to use a secondary domain.
- */
-ChannelRequest.prototype.tridentGet = function(uri, usingSecondaryDomain) {
-  this.type_ = ChannelRequest.Type_.TRIDENT;
-  this.baseUri_ = uri.clone().makeUnique();
-  this.tridentGet_(usingSecondaryDomain);
-};
-
-
-/**
- * Starts the Trident request.
- * @param {boolean} usingSecondaryDomain Whether to use a secondary domain.
- * @private
- */
-ChannelRequest.prototype.tridentGet_ = function(usingSecondaryDomain) {
-  this.requestStartTime_ = goog.now();
-  this.ensureWatchDogTimer_();
-
-  var hostname = usingSecondaryDomain ? window.location.hostname : '';
-  this.requestUri_ = this.baseUri_.clone();
-  this.requestUri_.setParameterValue('DOMAIN', hostname);
-  this.requestUri_.setParameterValue('t', this.retryId_);
-
-  try {
-    this.trident_ = new ActiveXObject('htmlfile');
-  } catch (e) {
-    this.channelDebug_.severe('ActiveX blocked');
-    this.cleanup_();
-
-    this.lastError_ = ChannelRequest.Error.ACTIVE_X_BLOCKED;
-    requestStats.notifyStatEvent(requestStats.Stat.ACTIVE_X_BLOCKED);
-    this.dispatchFailure_();
-    return;
-  }
-
-  var body = '<html><body>';
-  if (usingSecondaryDomain) {
-    body += '<script>document.domain="' + hostname + '"</scr' + 'ipt>';
-  }
-  body += '</body></html>';
-
-  this.trident_.open();
-  this.trident_.write(body);
-  this.trident_.close();
-
-  this.trident_.parentWindow['m'] = goog.bind(this.onTridentRpcMessage_, this);
-  this.trident_.parentWindow['d'] = goog.bind(this.onTridentDone_, this, true);
-  this.trident_.parentWindow['rpcClose'] =
-      goog.bind(this.onTridentDone_, this, false);
-
-  var div = this.trident_.createElement('div');
-  this.trident_.parentWindow.document.body.appendChild(div);
-  div.innerHTML = '<iframe src="' + this.requestUri_ + '"></iframe>';
-  this.channelDebug_.tridentChannelRequest('GET',
-      this.requestUri_, this.rid_, this.retryId_);
-  requestStats.notifyServerReachabilityEvent(
-      requestStats.ServerReachability.REQUEST_MADE);
-};
-
-
-/**
- * Callback from the Trident htmlfile ActiveX control for when a new message
- * is received.
+ * Uses an IMG tag or navigator.sendBeacon to send an HTTP get to the server.
  *
- * @param {string} msg The data payload.
- * @private
- */
-ChannelRequest.prototype.onTridentRpcMessage_ = function(msg) {
-  // need to do async b/c this gets called off of the context of the ActiveX
-  requestStats.setTimeout(
-      goog.bind(this.onTridentRpcMessageAsync_, this, msg), 0);
-};
-
-
-/**
- * Callback from the Trident htmlfile ActiveX control for when a new message
- * is received.
+ * This is only currently used to terminate the connection, as an IMG tag is
+ * the most reliable way to send something to the server while the page
+ * is getting torn down.
  *
- * @param {string} msg  The data payload.
- * @private
- */
-ChannelRequest.prototype.onTridentRpcMessageAsync_ = function(msg) {
-  if (this.cancelled_) {
-    return;
-  }
-  this.channelDebug_.tridentChannelResponseText(this.rid_, msg);
-  this.cancelWatchDogTimer_();
-  this.safeOnRequestData_(msg);
-  this.ensureWatchDogTimer_();
-};
-
-
-/**
- * Callback from the Trident htmlfile ActiveX control for when the request
- * is complete
+ * Navigator.sendBeacon is available on Chrome and Firefox as a formal
+ * solution to ensure delivery without blocking window close. See
+ * https://developer.mozilla.org/en-US/docs/Web/API/Navigator/sendBeacon
  *
- * @param {boolean} successful Whether the request successfully completed.
- * @private
- */
-ChannelRequest.prototype.onTridentDone_ = function(successful) {
-  // need to do async b/c this gets called off of the context of the ActiveX
-  requestStats.setTimeout(
-      goog.bind(this.onTridentDoneAsync_, this, successful), 0);
-};
-
-
-/**
- * Callback from the Trident htmlfile ActiveX control for when the request
- * is complete
+ * For Chrome Apps, sendBeacon is always necessary due to Content Security
+ * Policy (CSP) violation of using an IMG tag.
  *
- * @param {boolean} successful Whether the request successfully completed.
- * @private
- */
-ChannelRequest.prototype.onTridentDoneAsync_ = function(successful) {
-  if (this.cancelled_) {
-    return;
-  }
-  this.channelDebug_.tridentChannelResponseDone(
-      this.rid_, successful);
-  this.cleanup_();
-  this.successful_ = successful;
-  this.channel_.onRequestComplete(this);
-  requestStats.notifyServerReachabilityEvent(
-      requestStats.ServerReachability.BACK_CHANNEL_ACTIVITY);
-};
-
-
-/**
- * Uses an IMG tag to send an HTTP get to the server. This is only currently
- * used to terminate the connection, as an IMG tag is the most reliable way to
- * send something to the server while the page is getting torn down.
  * @param {goog.Uri} uri The uri to send a request to.
  */
-ChannelRequest.prototype.sendUsingImgTag = function(uri) {
-  this.type_ = ChannelRequest.Type_.IMG;
+ChannelRequest.prototype.sendCloseRequest = function(uri) {
+  this.type_ = ChannelRequest.Type_.CLOSE_REQUEST;
   this.baseUri_ = uri.clone().makeUnique();
-  this.imgTagGet_();
-};
 
+  var requestSent = false;
 
-/**
- * Starts the IMG request.
- *
- * @private
- */
-ChannelRequest.prototype.imgTagGet_ = function() {
-  var eltImg = new Image();
-  eltImg.src = this.baseUri_;
+  if (goog.global.navigator && goog.global.navigator.sendBeacon) {
+    // empty string body to avoid 413 error on chrome < 41
+    requestSent =
+        goog.global.navigator.sendBeacon(this.baseUri_.toString(), '');
+  }
+
+  if (!requestSent) {
+    var eltImg = new Image();
+    eltImg.src = this.baseUri_;
+  }
+
   this.requestStartTime_ = goog.now();
   this.ensureWatchDogTimer_();
 };
@@ -1036,8 +851,8 @@ ChannelRequest.prototype.startWatchDogTimer_ = function(time) {
     // assertion
     throw Error('WatchDog timer not null');
   }
-  this.watchDogTimerId_ = requestStats.setTimeout(
-      goog.bind(this.onWatchDogTimeout_, this), time);
+  this.watchDogTimerId_ =
+      requestStats.setTimeout(goog.bind(this.onWatchDogTimeout_, this), time);
 };
 
 
@@ -1088,17 +903,20 @@ ChannelRequest.prototype.handleTimeout_ = function() {
   }
 
   this.channelDebug_.timeoutResponse(this.requestUri_);
-  // IMG requests never notice if they were successful, and always 'time out'.
-  // This fact says nothing about reachability.
-  if (this.type_ != ChannelRequest.Type_.IMG) {
+
+  // IMG or SendBeacon requests never notice if they were successful,
+  // and always 'time out'. This fact says nothing about reachability.
+  if (this.type_ != ChannelRequest.Type_.CLOSE_REQUEST) {
     requestStats.notifyServerReachabilityEvent(
         requestStats.ServerReachability.REQUEST_FAILED);
+    requestStats.notifyStatEvent(requestStats.Stat.REQUEST_TIMEOUT);
   }
+
   this.cleanup_();
 
-  // set error and dispatch failure
+  // Set error and dispatch failure.
+  // This is called for CLOSE_REQUEST too to ensure channel_.onRequestComplete.
   this.lastError_ = ChannelRequest.Error.TIMEOUT;
-  requestStats.notifyStatEvent(requestStats.Stat.REQUEST_TIMEOUT);
   this.dispatchFailure_();
 };
 
@@ -1141,10 +959,6 @@ ChannelRequest.prototype.cleanup_ = function() {
     this.xmlHttp_ = null;
     xmlhttp.abort();
     xmlhttp.dispose();
-  }
-
-  if (this.trident_) {
-    this.trident_ = null;
   }
 };
 
@@ -1237,15 +1051,14 @@ ChannelRequest.prototype.getRequestStartTime = function() {
  * @private
  */
 ChannelRequest.prototype.safeOnRequestData_ = function(data) {
-  /** @preserveTry */
+
   try {
     this.channel_.onRequestData(this, data);
     var stats = requestStats.ServerReachability;
     requestStats.notifyServerReachabilityEvent(stats.BACK_CHANNEL_ACTIVITY);
   } catch (e) {
     // Dump debug info, but keep going without closing the channel.
-    this.channelDebug_.dumpException(
-        e, 'Error in httprequest callback');
+    this.channelDebug_.dumpException(e, 'Error in httprequest callback');
   }
 };
 
@@ -1260,9 +1073,9 @@ ChannelRequest.prototype.safeOnRequestData_ = function(data) {
  * @param {number=} opt_retryId  The retry id for this request.
  * @return {!ChannelRequest} The created channel request.
  */
-ChannelRequest.createChannelRequest = function(channel, channelDebug,
-    opt_sessionId, opt_requestId, opt_retryId) {
-  return new ChannelRequest(channel, channelDebug, opt_sessionId, opt_requestId,
-      opt_retryId);
+ChannelRequest.createChannelRequest = function(
+    channel, channelDebug, opt_sessionId, opt_requestId, opt_retryId) {
+  return new ChannelRequest(
+      channel, channelDebug, opt_sessionId, opt_requestId, opt_retryId);
 };
 });  // goog.scope

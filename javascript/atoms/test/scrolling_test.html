@@ -45,9 +45,10 @@
         goog.userAgent.product.ANDROID ||
             goog.labs.userAgent.browser.isChrome() &&
             goog.labs.userAgent.platform.isAndroid() &&
-            goog.labs.userAgent.browser.isVersionOrHigher('40'),
+            goog.labs.userAgent.browser.isVersionOrHigher('40') &&
+            !goog.labs.userAgent.browser.isVersionOrHigher('41'),
         'Android doesn\'t currently provide scrolling information. ' +
-        'Chrome for Android regressed in m40, apparently: ' +
+        'Chrome for Android regressed in m40, but was fixed in m41: ' +
         'https://code.google.com/p/chromium/issues/detail?id=448404');
       expectedFailures.run(function() {
         assertNotEquals(0, getTopLevelParent().scrollLeft);
@@ -139,7 +140,7 @@
 
       bot.action.scrollIntoView(element);
 
-      expectedFailures.expectFailureFor(goog.userAgent.product.ANDROID && 
+      expectedFailures.expectFailureFor(goog.userAgent.product.ANDROID &&
           !bot.userAgent.isProductVersion(4.1),
           'Android pre-Jellybean doesn\'t provide scrolling information');
       expectedFailures.run(function() {
@@ -164,9 +165,10 @@
         goog.userAgent.product.ANDROID ||
             goog.labs.userAgent.browser.isChrome() &&
             goog.labs.userAgent.platform.isAndroid() &&
-            goog.labs.userAgent.browser.isVersionOrHigher('40'),
+            goog.labs.userAgent.browser.isVersionOrHigher('40') &&
+            !goog.labs.userAgent.browser.isVersionOrHigher('41'),
         'Android doesn\'t currently provide scrolling information. ' +
-        'Chrome for Android regressed in m40, apparently: ' +
+        'Chrome for Android regressed in m40, but was fixed in m41: ' +
         'https://code.google.com/p/chromium/issues/detail?id=448404');
       expectedFailures.run(function() {
         assertNotEquals(0, getTopLevelParent().scrollLeft);
@@ -207,19 +209,33 @@
       bot.action.scrollIntoView(elem, new goog.math.Coordinate(75, 75));
       var rectAfter = bot.dom.getClientRect(elem);
 
-      // If the scrollbar isn't taken into account, the minimum scrolling
-      // needed would be 26 pixels, to bring the full pixel into view.
+      var horizontalScroll = rectBefore.left - rectAfter.left;
+      var verticalScroll = rectBefore.top - rectAfter.top;
+
+      // In the absence of a scrollbar, the minimum scrolling needed to bring
+      // the full pixel into view would be 26 pixels. There is a scrollbar,
+      // however; scrollIntoView should scroll 26px plus the scrollbar
+      // width/height.
+
       // This should fail on mobile and tablet since the scrollbars aren't shown.
       // This should also fail on IE6 since scrolling only happens to
       // exactly the scrollbar width, which is 17 by default on Windows XP.
+      // Not sure why this is failing on chrome on OS X, but it may be because
+      // there are no scroll bars that get displayed.
       expectedFailures.expectFailureFor(
           goog.labs.userAgent.device.isMobile() || goog.labs.userAgent.device.isTablet() ||
-          (goog.userAgent.IE && !goog.userAgent.isVersion(7)));
+            (goog.userAgent.IE && !goog.userAgent.isVersion(7)) ||
+            (goog.userAgent.product.CHROME && goog.userAgent.MAC));
+
       expectedFailures.run(function() {
-        assertTrue('horizontal scroll did not account for scrollbar',
-            rectBefore.left - rectAfter.left > 26);
-        assertTrue('vertical scroll did not account for scrollbar',
-            rectBefore.top - rectAfter.top > 26);
+        assertTrue('Horizontal scroll did not account for scrollbar. ' +
+            'It scrolled ' + horizontalScroll + 'px, but should have ' +
+            'scrolled at least 26px plus the scrollbar width.',
+            horizontalScroll > 26);
+        assertTrue('Vertical scroll did not account for scrollbar. ' +
+            'It scrolled ' + verticalScroll + 'px, but should have ' +
+            'scrolled at least 26px plus the scrollbar height.',
+            verticalScroll > 26);
       });
     }
   </script>

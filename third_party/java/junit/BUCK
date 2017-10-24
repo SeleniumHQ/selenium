@@ -1,8 +1,19 @@
-prebuilt_jar(name = 'junit',
-  binary_jar = 'junit-dep-4.11.jar',
-  source_jar = 'junit-4.11-src.jar',
+# BUILD FILE SYNTAX: SKYLARK
+prebuilt_jar(
+  name = 'junit',
+  maven_coords = 'junit:junit:jar:4.12',
+  binary_jar = 'junit-4.12.jar',
+  source_jar = 'junit-4.12-sources.jar',
   deps = [
-    '//third_party/java/hamcrest:hamcrest',
+    '//third_party/java/hamcrest:hamcrest-core'
   ],
-  visibility = ['PUBLIC'],
+  visibility = [
+    '//third_party/java/sisu:org.eclipse.sisu.plexus',
+    '//third_party/java/testng:testng',
+    '//java/client/test/...',
+    '//java/server/test/...',
+    '//java/client/src/com/thoughtworks/selenium/...',
+    '//java/client/src/org/openqa/selenium/lift:lift',
+  ],
 )
+

@@ -27,6 +27,7 @@
 goog.provide('goog.ui.HsvPalette');
 
 goog.require('goog.color');
+goog.require('goog.dom.InputType');
 goog.require('goog.dom.TagName');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
@@ -83,7 +84,7 @@ goog.ui.HsvPalette.MSG_HSV_PALETTE_HEX_COLOR_ = goog.getMsg('Hex color');
 
 /**
  * DOM element representing the hue/saturation background image.
- * @type {Element}
+ * @type {HTMLElement}
  * @private
  */
 goog.ui.HsvPalette.prototype.hsImageEl_;
@@ -91,7 +92,7 @@ goog.ui.HsvPalette.prototype.hsImageEl_;
 
 /**
  * DOM element representing the hue/saturation handle.
- * @type {Element}
+ * @type {HTMLElement}
  * @private
  */
 goog.ui.HsvPalette.prototype.hsHandleEl_;
@@ -99,7 +100,7 @@ goog.ui.HsvPalette.prototype.hsHandleEl_;
 
 /**
  * DOM element representing the value background image.
- * @type {Element}
+ * @type {HTMLElement}
  * @protected
  */
 goog.ui.HsvPalette.prototype.valueBackgroundImageElement;
@@ -107,7 +108,7 @@ goog.ui.HsvPalette.prototype.valueBackgroundImageElement;
 
 /**
  * DOM element representing the value handle.
- * @type {Element}
+ * @type {HTMLElement}
  * @private
  */
 goog.ui.HsvPalette.prototype.vHandleEl_;
@@ -238,9 +239,8 @@ goog.ui.HsvPalette.prototype.setColorInternal = function(color) {
  * @param {?number=} opt_saturation (optional) saturation in [0, 1].
  * @param {?number=} opt_value (optional) value in [0, 255].
  */
-goog.ui.HsvPalette.prototype.setHsv = function(opt_hue,
-                                               opt_saturation,
-                                               opt_value) {
+goog.ui.HsvPalette.prototype.setHsv = function(
+    opt_hue, opt_saturation, opt_value) {
   if (opt_hue != null || opt_saturation != null || opt_value != null) {
     this.setHsv_(opt_hue, opt_saturation, opt_value);
     this.updateUi();
@@ -256,20 +256,16 @@ goog.ui.HsvPalette.prototype.setHsv = function(opt_hue,
  * @param {?number=} opt_value (optional) value in [0, 255].
  * @private
  */
-goog.ui.HsvPalette.prototype.setHsv_ = function(opt_hue,
-                                                opt_saturation,
-                                                opt_value) {
+goog.ui.HsvPalette.prototype.setHsv_ = function(
+    opt_hue, opt_saturation, opt_value) {
   this.hsv_[0] = (opt_hue != null) ? opt_hue : this.hsv_[0];
   this.hsv_[1] = (opt_saturation != null) ? opt_saturation : this.hsv_[1];
   this.hsv_[2] = (opt_value != null) ? opt_value : this.hsv_[2];
   // Hue is multiplied by 360 because the documentation for goog.color is
   // currently incorrect.
   // TODO(user): Fix this, see http://1324469 .
-  this.color = goog.color.hsvArrayToHex([
-    this.hsv_[0] * 360,
-    this.hsv_[1],
-    this.hsv_[2]
-  ]);
+  this.color = goog.color.hsvArrayToHex(
+      [this.hsv_[0] * 360, this.hsv_[1], this.hsv_[2]]);
 };
 
 
@@ -289,44 +285,45 @@ goog.ui.HsvPalette.prototype.canDecorate = function(element) {
 goog.ui.HsvPalette.prototype.createDom = function() {
   var dom = this.getDomHelper();
   var noalpha = (goog.userAgent.IE && !goog.userAgent.isVersionOrHigher('7')) ?
-      ' ' + goog.getCssName(this.className, 'noalpha') : '';
+      ' ' + goog.getCssName(this.className, 'noalpha') :
+      '';
 
-  var backdrop = dom.createDom(goog.dom.TagName.DIV,
-      goog.getCssName(this.className, 'hs-backdrop'));
+  var backdrop = dom.createDom(
+      goog.dom.TagName.DIV, goog.getCssName(this.className, 'hs-backdrop'));
 
-  this.hsHandleEl_ = dom.createDom(goog.dom.TagName.DIV,
-      goog.getCssName(this.className, 'hs-handle'));
+  this.hsHandleEl_ = /** @type {!HTMLElement} */ (
+      dom.createDom(
+          goog.dom.TagName.DIV, goog.getCssName(this.className, 'hs-handle')));
 
-  this.hsImageEl_ = dom.createDom(goog.dom.TagName.DIV,
-      goog.getCssName(this.className, 'hs-image'),
-      this.hsHandleEl_);
+  this.hsImageEl_ = /** @type {!HTMLElement} */ (
+      dom.createDom(
+          goog.dom.TagName.DIV, goog.getCssName(this.className, 'hs-image'),
+          this.hsHandleEl_));
 
-  this.valueBackgroundImageElement = dom.createDom(
-      goog.dom.TagName.DIV,
-      goog.getCssName(this.className, 'v-image'));
+  this.valueBackgroundImageElement = /** @type {!HTMLElement} */ (
+      dom.createDom(
+          goog.dom.TagName.DIV, goog.getCssName(this.className, 'v-image')));
 
-  this.vHandleEl_ = dom.createDom(
-      goog.dom.TagName.DIV,
-      goog.getCssName(this.className, 'v-handle'));
+  this.vHandleEl_ = /** @type {!HTMLElement} */ (
+      dom.createDom(
+          goog.dom.TagName.DIV, goog.getCssName(this.className, 'v-handle')));
 
-  this.swatchElement = dom.createDom(goog.dom.TagName.DIV,
-      goog.getCssName(this.className, 'swatch'));
+  this.swatchElement = dom.createDom(
+      goog.dom.TagName.DIV, goog.getCssName(this.className, 'swatch'));
 
-  this.inputElement = dom.createDom('input', {
+  this.inputElement = dom.createDom(goog.dom.TagName.INPUT, {
     'class': goog.getCssName(this.className, 'input'),
     'aria-label': goog.ui.HsvPalette.MSG_HSV_PALETTE_HEX_COLOR_,
-    'type': 'text', 'dir': 'ltr'
+    'type': goog.dom.InputType.TEXT,
+    'dir': 'ltr'
   });
 
-  var labelElement = dom.createDom('label', null, this.inputElement);
+  var labelElement =
+      dom.createDom(goog.dom.TagName.LABEL, null, this.inputElement);
 
-  var element = dom.createDom(goog.dom.TagName.DIV,
-      this.className + noalpha,
-      backdrop,
-      this.hsImageEl_,
-      this.valueBackgroundImageElement,
-      this.vHandleEl_,
-      this.swatchElement,
+  var element = dom.createDom(
+      goog.dom.TagName.DIV, this.className + noalpha, backdrop, this.hsImageEl_,
+      this.valueBackgroundImageElement, this.vHandleEl_, this.swatchElement,
       labelElement);
 
   this.setElementInternal(element);
@@ -348,8 +345,8 @@ goog.ui.HsvPalette.prototype.enterDocument = function() {
   this.updateUi();
 
   var handler = this.getHandler();
-  handler.listen(this.getElement(), goog.events.EventType.MOUSEDOWN,
-      this.handleMouseDown);
+  handler.listen(
+      this.getElement(), goog.events.EventType.MOUSEDOWN, this.handleMouseDown);
 
   // Cannot create InputHandler in createDom because IE throws an exception
   // on document.activeElement
@@ -357,8 +354,9 @@ goog.ui.HsvPalette.prototype.enterDocument = function() {
     this.inputHandler_ = new goog.events.InputHandler(this.inputElement);
   }
 
-  handler.listen(this.inputHandler_,
-      goog.events.InputHandler.EventType.INPUT, this.handleInput);
+  handler.listen(
+      this.inputHandler_, goog.events.InputHandler.EventType.INPUT,
+      this.handleInput);
 };
 
 
@@ -409,8 +407,8 @@ goog.ui.HsvPalette.prototype.updateUi = function() {
     // Account for the handle size.
     top -= Math.ceil(this.hsHandleEl_.offsetHeight / 2);
 
-    goog.style.bidi.setPosition(this.hsHandleEl_, left, top,
-        this.isRightToLeft());
+    goog.style.bidi.setPosition(
+        this.hsHandleEl_, left, top, this.isRightToLeft());
 
     top = this.valueBackgroundImageElement.offsetTop -
         Math.floor(this.vHandleEl_.offsetHeight / 2) +
@@ -419,12 +417,14 @@ goog.ui.HsvPalette.prototype.updateUi = function() {
     this.vHandleEl_.style.top = top + 'px';
     goog.style.setOpacity(this.hsImageEl_, (v / 255));
 
-    goog.style.setStyle(this.valueBackgroundImageElement, 'background-color',
+    goog.style.setStyle(
+        this.valueBackgroundImageElement, 'background-color',
         goog.color.hsvToHex(this.hsv_[0] * 360, this.hsv_[1], 255));
 
     goog.style.setStyle(this.swatchElement, 'background-color', this.color);
-    goog.style.setStyle(this.swatchElement, 'color',
-                        (this.hsv_[2] > 255 / 2) ? '#000' : '#fff');
+    goog.style.setStyle(
+        this.swatchElement, 'color',
+        (this.hsv_[2] > 255 / 2) ? '#000' : '#fff');
     this.updateInput();
   }
 };
@@ -441,20 +441,22 @@ goog.ui.HsvPalette.prototype.handleMouseDown = function(e) {
     // Setup value change listeners
     var b = goog.style.getBounds(this.valueBackgroundImageElement);
     this.handleMouseMoveV_(b, e);
-    this.mouseMoveListener = goog.events.listen(this.document_,
-        goog.events.EventType.MOUSEMOVE,
+    this.mouseMoveListener = goog.events.listen(
+        this.document_, goog.events.EventType.MOUSEMOVE,
         goog.bind(this.handleMouseMoveV_, this, b));
-    this.mouseUpListener = goog.events.listen(this.document_,
-        goog.events.EventType.MOUSEUP, this.handleMouseUp, false, this);
+    this.mouseUpListener = goog.events.listen(
+        this.document_, goog.events.EventType.MOUSEUP, this.handleMouseUp,
+        false, this);
   } else if (e.target == this.hsImageEl_ || e.target == this.hsHandleEl_) {
     // Setup hue/saturation change listeners
     var b = goog.style.getBounds(this.hsImageEl_);
     this.handleMouseMoveHs_(b, e);
-    this.mouseMoveListener = goog.events.listen(this.document_,
-        goog.events.EventType.MOUSEMOVE,
+    this.mouseMoveListener = goog.events.listen(
+        this.document_, goog.events.EventType.MOUSEMOVE,
         goog.bind(this.handleMouseMoveHs_, this, b));
-    this.mouseUpListener = goog.events.listen(this.document_,
-        goog.events.EventType.MOUSEUP, this.handleMouseUp, false, this);
+    this.mouseUpListener = goog.events.listen(
+        this.document_, goog.events.EventType.MOUSEUP, this.handleMouseUp,
+        false, this);
   }
 };
 
@@ -471,12 +473,10 @@ goog.ui.HsvPalette.prototype.handleMouseMoveV_ = function(b, e) {
   e.preventDefault();
   var vportPos = this.getDomHelper().getDocumentScroll();
 
-  var height = Math.min(
-      Math.max(vportPos.y + e.clientY, b.top),
-      b.top + b.height);
+  var height =
+      Math.min(Math.max(vportPos.y + e.clientY, b.top), b.top + b.height);
 
-  var newV = Math.round(
-      255 * (b.top + b.height - height) / b.height);
+  var newV = Math.round(255 * (b.top + b.height - height) / b.height);
 
   this.setHsv(null, null, newV);
 };
@@ -493,10 +493,14 @@ goog.ui.HsvPalette.prototype.handleMouseMoveV_ = function(b, e) {
 goog.ui.HsvPalette.prototype.handleMouseMoveHs_ = function(b, e) {
   e.preventDefault();
   var vportPos = this.getDomHelper().getDocumentScroll();
-  var newH = (Math.min(Math.max(vportPos.x + e.clientX, b.left),
-      b.left + b.width) - b.left) / b.width;
-  var newS = (-Math.min(Math.max(vportPos.y + e.clientY, b.top),
-      b.top + b.height) + b.top + b.height) / b.height;
+  var newH =
+      (Math.min(Math.max(vportPos.x + e.clientX, b.left), b.left + b.width) -
+       b.left) /
+      b.width;
+  var newS =
+      (-Math.min(Math.max(vportPos.y + e.clientY, b.top), b.top + b.height) +
+       b.top + b.height) /
+      b.height;
   this.setHsv(newH, newS, null);
 };
 

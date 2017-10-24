@@ -1,7 +1,9 @@
 ﻿// <copyright file="RemoteCoordinates.cs" company="WebDriver Committers">
-// Copyright 2015 Software Freedom Conservancy
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -16,8 +18,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using OpenQA.Selenium.Interactions.Internal;
+using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.Remote
 {
@@ -37,7 +39,6 @@ namespace OpenQA.Selenium.Remote
             this.element = element;
         }
 
-        #region ICoordinates Members
         /// <summary>
         /// Gets the location of an element in absolute screen coordinates.
         /// </summary>
@@ -67,8 +68,20 @@ namespace OpenQA.Selenium.Remote
         /// </summary>
         public object AuxiliaryLocator
         {
-            get { return this.element.InternalElementId; }
+            get
+            {
+                IWebElementReference elementReference = this.element as IWebElementReference;
+                if (elementReference == null)
+                {
+                    return null;
+                }
+
+                // Note that the OSS dialect of the wire protocol for the Actions API
+                // uses the raw ID of the element, not an element reference. To use this,
+                // extract the ID using the well-known key to the dictionary for element
+                // references.
+                return elementReference.ElementReferenceId;
+            }
         }
-        #endregion
     }
 }

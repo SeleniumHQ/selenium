@@ -1,19 +1,19 @@
-/*
- Copyright 2011 WebDriver committers
- Copyright 2011 Google Inc.
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
- http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
- */
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 goog.provide('SyntheticMouse');
 
@@ -77,11 +77,136 @@ SyntheticMouse.newResponse = function(status, message) {
 };
 
 
+SyntheticMouse.prototype.isElementShownAndClickable = function(element) {
+  var error = this.isElementShown(element);
+  if (error) {
+    return error;
+  }
+
+  var checkOverlapping = true;
+  try {
+    var prefStore = fxdriver.moz.getService('@mozilla.org/preferences-service;1',
+                                            'nsIPrefBranch');
+    if (prefStore.getBoolPref('webdriver.overlappingCheckDisabled', false)) {
+      checkOverlapping = false;
+    }
+  } catch (ignored) {}
+
+  if (checkOverlapping) {
+    error = this.isElementClickable(element);
+    if (error) {
+      return error;
+    }
+  }
+}
+
+
 SyntheticMouse.prototype.isElementShown = function(element) {
   if (!bot.dom.isShown(element, /*ignoreOpacity=*/true)) {
     return SyntheticMouse.newResponse(bot.ErrorCode.ELEMENT_NOT_VISIBLE,
         'Element is not currently visible and so may not be interacted with');
   }
+};
+
+
+SyntheticMouse.prototype.isElementClickable = function(element) {
+  // get the outermost ancestor of the element. This will be either the document
+  // or a shadow root.
+  var owner = element;
+  while (owner.parentNode) {
+    owner = owner.parentNode;
+  }
+
+  var tagName = element.tagName.toLowerCase();
+
+  // TODO: https://gist.github.com/p0deje/c549e93fa19bf7aaee49
+  if ('select' == tagName) {
+    return;
+  }
+
+  // Check to see if this is an option element. If it is, and the parent isn't a multiple
+  // select, then check that select is clickable.
+  if ('option' == tagName) {
+    var parent = element;
+    while (parent.parentNode != null && parent.tagName.toLowerCase() != 'select') {
+      parent = parent.parentNode;
+    }
+
+    if (parent && parent.tagName.toLowerCase() == 'select') {
+      return this.isElementClickable(parent);
+    }
+  }
+
+  // Check to see if this is an area element. If it is, find the image element that
+  // uses area's map, then check that image is clickable.
+  if ('area' == tagName) {
+    var map = element.parentElement;
+    if (map.tagName.toLowerCase() != 'map') {
+      throw new Error('the area is not within a map');
+    }
+    var mapName = map.getAttribute('name');
+    if (mapName == null) {
+      throw new Error ("area's parent map must have a name");
+    }
+    mapName = '#' + mapName.toLowerCase();
+    var images = owner.getElementsByTagName('img');
+    for (var i = 0; i < images.length; i++) {
+      var image = images[i];
+      if (image.useMap.toLowerCase() == mapName) {
+        return this.isElementClickable(image);
+      }
+    }
+  }
+
+  var rect = bot.dom.getClientRect(element);
+  var coords = {
+    x: this.lastMousePosition.x + rect.left,
+    y: this.lastMousePosition.y + rect.top
+  }
+
+  var elementAtPoint = owner.elementFromPoint(coords.x, coords.y);
+
+  // element may be huge, so coordinates are outside the viewport
+  if (elementAtPoint === null) {
+    return;
+  }
+
+  if (element == elementAtPoint) {
+    return;
+  }
+
+  // allow clicks to element descendants
+  var parentElemIter = elementAtPoint.parentNode;
+  while (parentElemIter) {
+    if (parentElemIter == element) {
+      return;
+    }
+    parentElemIter = parentElemIter.parentNode;
+  }
+
+  // elementFromPoint is not without fault, for example:
+  // <button><span></button> and span.click() results in
+  // elementAtPoint being the button rather than the span.
+  // catch these potential edge cases by checking if the
+  // target element is a direct descendent of the elementAtPoint
+  parentElemIter = element.parentNode;
+  while (parentElemIter) {
+    if (parentElemIter == elementAtPoint) {
+      return;
+    }
+    parentElemIter = parentElemIter.parentNode;
+  }
+
+  var elementAtPointHTML =
+    elementAtPoint.outerHTML.replace(elementAtPoint.innerHTML, '');
+  
+  var elementHTML =
+    element.outerHTML.replace(element.innerHTML, '');
+
+  return SyntheticMouse.newResponse(bot.ErrorCode.UNKNOWN_ERROR,
+      'Element ' + elementHTML + ' is not clickable at point (' 
+       + coords.x + ', ' + coords.y + '). ' +
+      'Other element would receive the click: ' + elementAtPointHTML);
 };
 
 
@@ -176,7 +301,7 @@ SyntheticMouse.prototype.click = function(target) {
   // No need to unwrap the target. All information is provided by the wrapped
   // version, and unwrapping does not work for all firefox versions.
   var element = target ? target : this.lastElement;
-  var error = this.isElementShown(element);
+  var error = this.isElementShownAndClickable(element);
   if (error) {
     return error;
   }
@@ -191,25 +316,24 @@ SyntheticMouse.prototype.click = function(target) {
     }
 
     if (parent && parent.tagName.toLowerCase() == 'select' && !parent.multiple) {
+      goog.log.info(SyntheticMouse.LOG_, 'About to do a bot.action.click on ' + parent);
       bot.action.click(parent, undefined /* coords */);
     }
+
+    goog.log.info(SyntheticMouse.LOG_, 'About to do a bot.action.click on ' + element);
+    bot.action.click(element, undefined, new bot.Mouse(null, this.modifierKeys));
+
+  } else {
+    goog.log.info(SyntheticMouse.LOG_, 'About to do a bot.action.click on ' + element);
+    bot.action.click(element, this.lastMousePosition, this.getMouse_(), true);
   }
 
-  goog.log.info(SyntheticMouse.LOG_,
-      'About to do a bot.action.click on ' + element);
-  var keyboardState = new bot.Device.ModifiersState();
-  if (this.modifierKeys !== undefined) {
-    keyboardState.setPressed(bot.Device.Modifier.SHIFT, this.modifierKeys.isShiftPressed());
-    keyboardState.setPressed(bot.Device.Modifier.CONTROL, this.modifierKeys.isControlPressed());
-    keyboardState.setPressed(bot.Device.Modifier.ALT, this.modifierKeys.isAltPressed());
-    keyboardState.setPressed(bot.Device.Modifier.META, this.modifierKeys.isMetaPressed());
-  }
-
-  bot.action.click(element, this.lastMousePosition, new bot.Mouse(null, keyboardState));
-
-  if (bot.dom.isEditable(element) && element.value !== undefined) {
-    goog.dom.selection.setCursorPosition(
+  try { // https://github.com/SeleniumHQ/selenium/issues/1509
+    if (bot.dom.isEditable(element) && element.value !== undefined) {
+      goog.dom.selection.setCursorPosition(
         element, element.value.length);
+    }
+  } catch (ignored) {
   }
 
   this.lastElement = element;
@@ -223,7 +347,7 @@ SyntheticMouse.prototype.contextClick = function(target) {
   // No need to unwrap the target. All information is provided by the wrapped
   // version, and unwrapping does not work for all firefox versions.
   var element = target ? target : this.lastElement;
-  var error = this.isElementShown(element);
+  var error = this.isElementShownAndClickable(element);
   if (error) {
     return error;
   }
@@ -242,14 +366,14 @@ SyntheticMouse.prototype.doubleClick = function(target) {
       'SyntheticMouse.doubleClick ' + target);
 
   var element = target ? target : this.lastElement;
-  var error = this.isElementShown(element);
+  var error = this.isElementShownAndClickable(element);
   if (error) {
     return error;
   }
 
   goog.log.info(SyntheticMouse.LOG_,
-      'About to do a bot.action.doubleClick on ' + element);
-  bot.action.doubleClick(element, this.lastMousePosition);
+      'About to do a bot.action.doubleClick2 on ' + element);
+  bot.action.doubleClick2(element, this.lastMousePosition, this.getMouse_());
 
   this.lastElement = element;
 
@@ -268,17 +392,6 @@ SyntheticMouse.prototype.down = function(coordinates) {
   var doc = goog.dom.getOwnerDocument(element);
   this.viewPortOffset = goog.dom.getDomHelper(doc).getDocumentScroll();
 
-  // TODO(simon): This implementation isn't good enough. Again
-  // Defaults to left mouse button, which is right.
-  //this.buttonDown = bot.Mouse.Button.LEFT;
-  //var botCoords = {
-  //  'clientX': coordinates['x'] + pos.x,
-  //  'clientY': coordinates['y'] + pos.y,
-  //  'button': bot.Mouse.Button.LEFT
-  //};
-  //this.addEventModifierKeys(botCoords);
-  //bot.events.fire(element, bot.events.EventType.MOUSEDOWN, botCoords);
-
   this.lastElement = element;
 
   return SyntheticMouse.newResponse(bot.ErrorCode.SUCCESS, 'ok');
@@ -291,21 +404,6 @@ SyntheticMouse.prototype.up = function(coordinates) {
   var element = this.getElement_(coordinates);
 
   this.getMouse_().releaseButton();
-
-  //var doc = goog.dom.getOwnerDocument(element);
-  //var pos = goog.style.getClientPosition(element);
-
-  // TODO(simon): This implementation isn't good enough. Again
-  // Defaults to left mouse button, which is the correct one.
-  //var button = this.buttonDown;
-  //var botCoords = {
-  //  'clientX': coordinates['x'] + pos.x,
-  //  'clientY': coordinates['y'] + pos.y,
-  //  'button': button
-  //};
-  //this.addEventModifierKeys(botCoords);
-  //bot.events.fire(element, bot.events.EventType.MOUSEMOVE, botCoords);
-  //bot.events.fire(element, bot.events.EventType.MOUSEUP, botCoords);
 
   this.buttonDown = null;
   this.isButtonPressed = false;
@@ -419,7 +517,7 @@ SyntheticMouse.EventEmitter.prototype.fireMouseEvent = function(target, type, ar
   goog.log.info(SyntheticMouse.LOG_,
       'Calling fireMouseEvent ' + type + ' ' + args.clientX +
       ', ' + args.clientY + ', ' + target);
-  if (type == 'click') {
+  if (type == 'click' || type == 'dblclick') {
     // A click event will be automatically fired as a result of a mousedown and mouseup in sequence
     return true;
   }
@@ -429,14 +527,13 @@ SyntheticMouse.EventEmitter.prototype.fireMouseEvent = function(target, type, ar
   var modifiers = this._parseModifiers(args);
   if (utils.sendMouseEventToWindow) {
     // Firefox 4+
-    utils.sendMouseEventToWindow(type, Math.round(args.clientX), Math.round(args.clientY), args.button, 1, modifiers);
+    utils.sendMouseEventToWindow(type.type_, Math.round(args.clientX), Math.round(args.clientY),
+                                 args.button, args.count, modifiers);
   } else {
     // Firefox 3
-    utils.sendMouseEvent(type, Math.round(args.clientX), Math.round(args.clientY), args.button, 1, modifiers);
+    utils.sendMouseEvent(type.type_, Math.round(args.clientX), Math.round(args.clientY),
+                         args.button, args.count, modifiers);
   }
-  goog.log.info(SyntheticMouse.LOG_,
-      'Called fireMouseEvent ' + type + ' ' + args.clientX +
-      ', ' + args.clientY + ', ' + target);
   return true;
 };
 

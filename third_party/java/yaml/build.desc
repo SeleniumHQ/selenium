@@ -1,4 +1,0 @@
-java_library(name = "yaml",
-  deps = [
-    "snakeyaml-1.8.jar"
-  ])

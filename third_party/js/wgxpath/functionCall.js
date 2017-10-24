@@ -1,7 +1,32 @@
-// Copyright 2012 Google Inc. All Rights Reserved.
+ /**
+  * @license
+  * The MIT License
+  *
+  * Copyright (c) 2007 Cybozu Labs, Inc.
+  * Copyright (c) 2012 Google Inc.
+  *
+  * Permission is hereby granted, free of charge, to any person obtaining a copy
+  * of this software and associated documentation files (the "Software"), to
+  * deal in the Software without restriction, including without limitation the
+  * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+  * sell copies of the Software, and to permit persons to whom the Software is
+  * furnished to do so, subject to the following conditions:
+  *
+  * The above copyright notice and this permission notice shall be included in
+  * all copies or substantial portions of the Software.
+  *
+  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+  * IN THE SOFTWARE.
+  */
 
 /**
  * @fileoverview A function call expression.
+ * @author gdennis@google.com (Greg Dennis)
  */
 
 goog.provide('wgxpath.FunctionCall');
@@ -109,7 +134,7 @@ wgxpath.FunctionCall.prototype.toString = function() {
  *     context node when not given arguments.
  * @param {boolean} needContextNodeWithArgs Whether the function needs a context
  *     node when the function is given arguments.
- * @param {function(!wgxpath.Context, ...[!wgxpath.Expr]):*} evaluate
+ * @param {function(!wgxpath.Context, ...!wgxpath.Expr):*} evaluate
  *     Evaluates the function in a context with any number of expression
  *     arguments.
  * @param {number} minArgs Minimum number of arguments accepted by the function.
@@ -153,7 +178,7 @@ wgxpath.FunctionCall.Func_ = function(name, dataType, needContextPosition,
   this.needContextNodeWithArgs_ = needContextNodeWithArgs;
 
   /**
-   * @type {function(!wgxpath.Context, ...[!wgxpath.Expr]):*}
+   * @type {function(!wgxpath.Context, ...!wgxpath.Expr):*}
    * @private
    */
   this.evaluate_ = evaluate;
@@ -206,7 +231,7 @@ wgxpath.FunctionCall.nameToFuncMap_ = {};
  *     context node when not given arguments.
  * @param {boolean} needContextNodeWithArgs Whether the function needs a context
  *     node when the function is given arguments.
- * @param {function(!wgxpath.Context, ...[!wgxpath.Expr]):*} evaluate
+ * @param {function(!wgxpath.Context, ...!wgxpath.Expr):*} evaluate
  *     Evaluates the function in a context with any number of expression
  *     arguments.
  * @param {number} minArgs Minimum number of arguments accepted by the function.
@@ -346,7 +371,7 @@ wgxpath.FunctionCall.Func = {
       wgxpath.DataType.STRING, false, true, false,
       function(ctx, opt_expr) {
         var node = opt_expr ? opt_expr.evaluate(ctx).getFirst() : ctx.getNode();
-        return node ? node.nodeName.toLowerCase() : '';
+        return node ? (node.localName || node.nodeName.toLowerCase()) : '';
       }, 0, 1, true),
   NAME: wgxpath.FunctionCall.createFunc_('name',
       wgxpath.DataType.STRING, false, true, false,
@@ -466,7 +491,7 @@ wgxpath.FunctionCall.Func = {
         var str2 = expr2.asString(ctx);
         var str3 = expr3.asString(ctx);
 
-        var map = [];
+        var map = {};
         for (var i = 0; i < str2.length; i++) {
           var ch = str2.charAt(i);
           if (!(ch in map)) {

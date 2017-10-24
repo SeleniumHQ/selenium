@@ -27,7 +27,7 @@ goog.require('goog.locale');
  * Returns the displayable list of short timezone names paired with its id for
  * the current locale, selected based on the region or language provided.
  *
- * This method depends on goog.locale.TimeZone*__<locale> available
+ * This method depends on `goog.locale.TimeZone*__<locale>` available
  * from http://go/js_locale_data. Users of this method must add a dependency on
  * this.
  *
@@ -41,8 +41,8 @@ goog.require('goog.locale');
  *    and ids.
  */
 goog.locale.getTimeZoneSelectedShortNames = function(opt_regionOrLang) {
-  return goog.locale.getTimeZoneNameList_('TimeZoneSelectedShortNames',
-      opt_regionOrLang);
+  return goog.locale.getTimeZoneNameList_(
+      'TimeZoneSelectedShortNames', opt_regionOrLang);
 };
 
 
@@ -50,7 +50,7 @@ goog.locale.getTimeZoneSelectedShortNames = function(opt_regionOrLang) {
  * Returns the displayable list of long timezone names paired with its id for
  * the current locale, selected based on the region or language provided.
  *
- * This method depends on goog.locale.TimeZone*__<locale> available
+ * This method depends on `goog.locale.TimeZone*__<locale>` available
  * from http://go/js_locale_data. Users of this method must add a dependency on
  * this.
  *
@@ -64,8 +64,8 @@ goog.locale.getTimeZoneSelectedShortNames = function(opt_regionOrLang) {
  *    and ids.
  */
 goog.locale.getTimeZoneSelectedLongNames = function(opt_regionOrLang) {
-  return goog.locale.getTimeZoneNameList_('TimeZoneSelectedLongNames',
-      opt_regionOrLang);
+  return goog.locale.getTimeZoneNameList_(
+      'TimeZoneSelectedLongNames', opt_regionOrLang);
 };
 
 
@@ -73,7 +73,7 @@ goog.locale.getTimeZoneSelectedLongNames = function(opt_regionOrLang) {
  * Returns the displayable list of long timezone names paired with its id for
  * the current locale.
  *
- * This method depends on goog.locale.TimeZoneAllLongNames__<locale> available
+ * This method depends on `goog.locale.TimeZoneAllLongNames__<locale>` available
  * from http://go/js_locale_data. Users of this method must add a dependency on
  * this.
  *
@@ -91,7 +91,7 @@ goog.locale.getTimeZoneAllLongNames = function() {
  * Returns the displayable list of timezone names paired with its id for
  * the current locale, selected based on the region or language provided.
  *
- * This method depends on goog.locale.TimeZone*__<locale> available
+ * This method depends on `goog.locale.TimeZone*__<locale>` available
  * from http://go/js_locale_data. Users of this method must add a dependency on
  * this.
  *
@@ -128,4 +128,3 @@ goog.locale.getTimeZoneNameList_ = function(nameType, opt_resource) {
   }
   return result;
 };
-

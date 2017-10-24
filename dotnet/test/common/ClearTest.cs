@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 
 namespace OpenQA.Selenium
 {
@@ -20,24 +17,22 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Android, "Untested feature")]
-        [ExpectedException(typeof(InvalidElementStateException))]
         public void TextInputShouldNotClearWhenDisabled()
         {
             driver.Url = readOnlyPage;
             IWebElement element = driver.FindElement(By.Id("textInputnotenabled"));
             Assert.IsFalse(element.Enabled);
-            element.Clear();
+            Assert.Throws<InvalidElementStateException>(() => element.Clear());
         }
 
         [Test]
         [IgnoreBrowser(Browser.Android, "Untested feature")]
         [IgnoreBrowser(Browser.Opera, "Untested feature")]
-        [ExpectedException(typeof(InvalidElementStateException))]
         public void TextInputShouldNotClearWhenReadOnly()
         {
             driver.Url = readOnlyPage;
             IWebElement element = driver.FindElement(By.Id("readOnlyTextInput"));
-            element.Clear();
+            Assert.Throws<InvalidElementStateException>(() => element.Clear());
         }
 
         [Test]
@@ -52,23 +47,21 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Android, "Untested feature")]
-        [ExpectedException(typeof(InvalidElementStateException))]
         public void TextAreaShouldNotClearWhenDisabled()
         {
             driver.Url = readOnlyPage;
             IWebElement element = driver.FindElement(By.Id("textAreaNotenabled"));
-            element.Clear();
+            Assert.Throws<InvalidElementStateException>(() => element.Clear());
         }
 
         [Test]
         [IgnoreBrowser(Browser.Android, "Untested feature")]
         [IgnoreBrowser(Browser.Opera, "Untested feature")]
-        [ExpectedException(typeof(InvalidElementStateException))]
         public void TextAreaShouldNotClearWhenReadOnly()
         {
             driver.Url = readOnlyPage;
             IWebElement element = driver.FindElement(By.Id("textAreaReadOnly"));
-            element.Clear();
+            Assert.Throws<InvalidElementStateException>(() => element.Clear());
         }
 
         [Test]

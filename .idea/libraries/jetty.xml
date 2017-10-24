@@ -1,11 +1,9 @@
 <component name="libraryTable">
   <library name="jetty">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/third_party/java/jetty/jetty-repacked-7.6.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/jetty/jetty-repacked.jar!/" />
     </CLASSES>
     <JAVADOC />
-    <SOURCES>
-      <root url="jar://$PROJECT_DIR$/third_party/java/jetty/jetty-repacked-7.6.1-sources.jar!/" />
-    </SOURCES>
+    <SOURCES />
   </library>
 </component>

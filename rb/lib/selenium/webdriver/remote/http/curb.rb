@@ -1,14 +1,27 @@
+# Licensed to the Software Freedom Conservancy (SFC) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The SFC licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
 require 'curb'
 
 module Selenium
   module WebDriver
     module Remote
 
-      # added for rescue
-      Bridge::QUIT_ERRORS << Curl::Err::RecvError
-
       module Http
-
         #
         # An alternative to the default Net::HTTP client.
         #
@@ -24,14 +37,18 @@ module Selenium
 
         class Curb < Common
 
+          def quit_errors
+            [Curl::Err::RecvError] + super
+          end
+
           private
 
           def request(verb, url, headers, payload)
-            client.url     = url.to_s
+            client.url = url.to_s
 
             # workaround for http://github.com/taf2/curb/issues/issue/40
             # curb will handle this for us anyway
-            headers.delete "Content-Length"
+            headers.delete 'Content-Length'
 
             client.headers = headers
 
@@ -43,10 +60,10 @@ module Selenium
             when :get
               client.http_get
             when :post
-              client.post_body = payload || ""
+              client.post_body = payload || ''
               client.http_post
             when :put
-              client.put_data = payload || ""
+              client.put_data = payload || ''
               client.http_put
             when :delete
               client.http_delete
@@ -66,12 +83,11 @@ module Selenium
               c.max_redirects   = MAX_REDIRECTS
               c.follow_location = true
               c.timeout         = @timeout if @timeout
-              c.verbose         = !!$DEBUG
+              c.verbose         = WebDriver.logger.info?
 
               c
             )
           end
-
         end # Curb
       end # Http
     end # Remote

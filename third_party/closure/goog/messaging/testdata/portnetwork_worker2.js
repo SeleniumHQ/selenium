@@ -20,8 +20,8 @@ goog.require('goog.messaging.PortCaller');
 goog.require('goog.messaging.PortChannel');
 
 function startListening() {
-  var caller = new goog.messaging.PortCaller(
-      new goog.messaging.PortChannel(self));
+  var caller =
+      new goog.messaging.PortCaller(new goog.messaging.PortChannel(self));
 
   caller.dial('main').registerService('sendToFrame', function(msg) {
     msg.push('worker2');

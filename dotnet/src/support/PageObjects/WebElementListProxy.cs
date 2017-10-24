@@ -1,7 +1,9 @@
-﻿// <copyright file="WebElementListProxy.cs" company="WebDriver Committers">
-// Copyright 2015 Software Freedom Conservancy
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
+// <copyright file="WebElementListProxy.cs" company="WebDriver Committers">
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -14,13 +16,11 @@
 // limitations under the License.
 // </copyright>
 
+#if !NETSTANDARD2_0
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
 using System.Runtime.Remoting.Messaging;
-using System.Text;
 
 namespace OpenQA.Selenium.Support.PageObjects
 {
@@ -30,7 +30,7 @@ namespace OpenQA.Selenium.Support.PageObjects
     internal class WebElementListProxy : WebDriverObjectProxy
     {
         private List<IWebElement> collection = null;
-        
+
         /// <summary>
         /// Initializes a new instance of the <see cref="WebElementListProxy"/> class.
         /// </summary>
@@ -71,7 +71,7 @@ namespace OpenQA.Selenium.Support.PageObjects
         /// <param name="bys">The list of methods by which to search for the elements.</param>
         /// <param name="cacheLookups"><see langword="true"/> to cache the lookup to the
         /// element; otherwise, <see langword="false"/>.</param>
-        /// <returns>An object used to proxy calls to properties and methods of the 
+        /// <returns>An object used to proxy calls to properties and methods of the
         /// list of <see cref="IWebElement"/> objects.</returns>
         public static object CreateProxy(Type classToProxy, IElementLocator locator, IEnumerable<By> bys, bool cacheLookups)
         {
@@ -79,7 +79,7 @@ namespace OpenQA.Selenium.Support.PageObjects
         }
 
         /// <summary>
-        /// Invokes the method that is specified in the provided <see cref="IMessage"/> on the 
+        /// Invokes the method that is specified in the provided <see cref="IMessage"/> on the
         /// object that is represented by the current instance.
         /// </summary>
         /// <param name="msg">An <see cref="IMessage"/> that contains an <see cref="IDictionary"/>  of
@@ -93,3 +93,4 @@ namespace OpenQA.Selenium.Support.PageObjects
         }
     }
 }
+#endif

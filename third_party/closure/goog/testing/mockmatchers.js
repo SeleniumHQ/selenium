@@ -22,6 +22,7 @@
  */
 
 
+goog.setTestOnly('goog.testing.mockmatchers');
 goog.provide('goog.testing.mockmatchers');
 goog.provide('goog.testing.mockmatchers.ArgumentMatcher');
 goog.provide('goog.testing.mockmatchers.IgnoreArgument');
@@ -35,6 +36,8 @@ goog.require('goog.array');
 goog.require('goog.dom');
 goog.require('goog.testing.asserts');
 
+goog.forwardDeclare('goog.testing.MockExpectation'); // circular
+
 
 
 /**
@@ -47,8 +50,8 @@ goog.require('goog.testing.asserts');
  *      an error message for when a match fails.
  * @constructor
  */
-goog.testing.mockmatchers.ArgumentMatcher =
-    function(opt_matchFn, opt_matchName) {
+goog.testing.mockmatchers.ArgumentMatcher = function(
+    opt_matchFn, opt_matchName) {
   /**
    * A function that evaluates a given argument and returns true if it meets a
    * given criteria.
@@ -75,18 +78,19 @@ goog.testing.mockmatchers.ArgumentMatcher =
  *     for this match.
  * @return {boolean} Whether or not a given argument passes verification.
  */
-goog.testing.mockmatchers.ArgumentMatcher.prototype.matches =
-    function(toVerify, opt_expectation) {
+goog.testing.mockmatchers.ArgumentMatcher.prototype.matches = function(
+    toVerify, opt_expectation) {
   if (this.matchFn_) {
     var isamatch = this.matchFn_(toVerify);
     if (!isamatch && opt_expectation) {
       if (this.matchName_) {
-        opt_expectation.addErrorMessage('Expected: ' +
-            this.matchName_ + ' but was: ' + _displayStringForValue(toVerify));
-      } else {
-        opt_expectation.addErrorMessage('Expected: missing mockmatcher' +
-            ' description but was: ' +
+        opt_expectation.addErrorMessage(
+            'Expected: ' + this.matchName_ + ' but was: ' +
             _displayStringForValue(toVerify));
+      } else {
+        opt_expectation.addErrorMessage(
+            'Expected: missing mockmatcher' +
+            ' description but was: ' + _displayStringForValue(toVerify));
       }
     }
     return isamatch;
@@ -105,16 +109,16 @@ goog.testing.mockmatchers.ArgumentMatcher.prototype.matches =
  * @final
  */
 goog.testing.mockmatchers.InstanceOf = function(ctor) {
-  goog.testing.mockmatchers.ArgumentMatcher.call(this,
-      function(obj) {
-        return obj instanceof ctor;
-        // NOTE: Browser differences on ctor.toString() output
-        // make using that here problematic. So for now, just let
-        // people know the instanceOf() failed without providing
-        // browser specific details...
-      }, 'instanceOf()');
+  goog.testing.mockmatchers.ArgumentMatcher.call(this, function(obj) {
+    return obj instanceof ctor;
+    // NOTE: Browser differences on ctor.toString() output
+    // make using that here problematic. So for now, just let
+    // people know the instanceOf() failed without providing
+    // browser specific details...
+  }, 'instanceOf()');
 };
-goog.inherits(goog.testing.mockmatchers.InstanceOf,
+goog.inherits(
+    goog.testing.mockmatchers.InstanceOf,
     goog.testing.mockmatchers.ArgumentMatcher);
 
 
@@ -127,12 +131,12 @@ goog.inherits(goog.testing.mockmatchers.InstanceOf,
  * @final
  */
 goog.testing.mockmatchers.TypeOf = function(type) {
-  goog.testing.mockmatchers.ArgumentMatcher.call(this,
-      function(obj) {
-        return goog.typeOf(obj) == type;
-      }, 'typeOf(' + type + ')');
+  goog.testing.mockmatchers.ArgumentMatcher.call(this, function(obj) {
+    return goog.typeOf(obj) == type;
+  }, 'typeOf(' + type + ')');
 };
-goog.inherits(goog.testing.mockmatchers.TypeOf,
+goog.inherits(
+    goog.testing.mockmatchers.TypeOf,
     goog.testing.mockmatchers.ArgumentMatcher);
 
 
@@ -145,12 +149,12 @@ goog.inherits(goog.testing.mockmatchers.TypeOf,
  * @final
  */
 goog.testing.mockmatchers.RegexpMatch = function(regexp) {
-  goog.testing.mockmatchers.ArgumentMatcher.call(this,
-      function(str) {
-        return regexp.test(str);
-      }, 'match(' + regexp + ')');
+  goog.testing.mockmatchers.ArgumentMatcher.call(this, function(str) {
+    return regexp.test(str);
+  }, 'match(' + regexp + ')');
 };
-goog.inherits(goog.testing.mockmatchers.RegexpMatch,
+goog.inherits(
+    goog.testing.mockmatchers.RegexpMatch,
     goog.testing.mockmatchers.ArgumentMatcher);
 
 
@@ -164,12 +168,11 @@ goog.inherits(goog.testing.mockmatchers.RegexpMatch,
  * @final
  */
 goog.testing.mockmatchers.IgnoreArgument = function() {
-  goog.testing.mockmatchers.ArgumentMatcher.call(this,
-      function() {
-        return true;
-      }, 'true');
+  goog.testing.mockmatchers.ArgumentMatcher.call(
+      this, function() { return true; }, 'true');
 };
-goog.inherits(goog.testing.mockmatchers.IgnoreArgument,
+goog.inherits(
+    goog.testing.mockmatchers.IgnoreArgument,
     goog.testing.mockmatchers.ArgumentMatcher);
 
 
@@ -183,31 +186,28 @@ goog.inherits(goog.testing.mockmatchers.IgnoreArgument,
  * @extends {goog.testing.mockmatchers.ArgumentMatcher}
  */
 goog.testing.mockmatchers.ObjectEquals = function(expectedObject) {
-  goog.testing.mockmatchers.ArgumentMatcher.call(this,
-      function(matchObject) {
-        assertObjectEquals('Expected equal objects', expectedObject,
-            matchObject);
-        return true;
-      }, 'objectEquals(' + expectedObject + ')');
+  /** @private */
+  this.expectedObject_ = expectedObject;
 };
-goog.inherits(goog.testing.mockmatchers.ObjectEquals,
+goog.inherits(
+    goog.testing.mockmatchers.ObjectEquals,
     goog.testing.mockmatchers.ArgumentMatcher);
 
 
 /** @override */
-goog.testing.mockmatchers.ObjectEquals.prototype.matches =
-    function(toVerify, opt_expectation) {
-  // Override the default matches implementation to capture the exception thrown
-  // by assertObjectEquals (if any) and add that message to the expectation.
-  try {
-    return goog.testing.mockmatchers.ObjectEquals.superClass_.matches.call(
-        this, toVerify, opt_expectation);
-  } catch (e) {
+goog.testing.mockmatchers.ObjectEquals.prototype.matches = function(
+    toVerify, opt_expectation) {
+  // Override the default matches implementation to provide a custom error
+  // message to opt_expectation if it exists.
+  var differences =
+      goog.testing.asserts.findDifferences(this.expectedObject_, toVerify);
+  if (differences) {
     if (opt_expectation) {
-      opt_expectation.addErrorMessage(e.message);
+      opt_expectation.addErrorMessage('Expected equal objects\n' + differences);
     }
     return false;
   }
+  return true;
 };
 
 
@@ -241,7 +241,8 @@ goog.testing.mockmatchers.SaveArgument = function(opt_matcher, opt_matchName) {
     this.delegateMatcher_ = goog.testing.mockmatchers.ignoreArgument;
   }
 };
-goog.inherits(goog.testing.mockmatchers.SaveArgument,
+goog.inherits(
+    goog.testing.mockmatchers.SaveArgument,
     goog.testing.mockmatchers.ArgumentMatcher);
 
 
@@ -277,8 +278,7 @@ goog.testing.mockmatchers.ignoreArgument =
  * @type {goog.testing.mockmatchers.ArgumentMatcher}
  */
 goog.testing.mockmatchers.isArray =
-    new goog.testing.mockmatchers.ArgumentMatcher(goog.isArray,
-        'isArray');
+    new goog.testing.mockmatchers.ArgumentMatcher(goog.isArray, 'isArray');
 
 
 /**
@@ -287,8 +287,8 @@ goog.testing.mockmatchers.isArray =
  * @type {goog.testing.mockmatchers.ArgumentMatcher}
  */
 goog.testing.mockmatchers.isArrayLike =
-    new goog.testing.mockmatchers.ArgumentMatcher(goog.isArrayLike,
-        'isArrayLike');
+    new goog.testing.mockmatchers.ArgumentMatcher(
+        goog.isArrayLike, 'isArrayLike');
 
 
 /**
@@ -296,8 +296,8 @@ goog.testing.mockmatchers.isArrayLike =
  * @type {goog.testing.mockmatchers.ArgumentMatcher}
  */
 goog.testing.mockmatchers.isDateLike =
-    new goog.testing.mockmatchers.ArgumentMatcher(goog.isDateLike,
-        'isDateLike');
+    new goog.testing.mockmatchers.ArgumentMatcher(
+        goog.isDateLike, 'isDateLike');
 
 
 /**
@@ -305,8 +305,7 @@ goog.testing.mockmatchers.isDateLike =
  * @type {goog.testing.mockmatchers.ArgumentMatcher}
  */
 goog.testing.mockmatchers.isString =
-    new goog.testing.mockmatchers.ArgumentMatcher(goog.isString,
-        'isString');
+    new goog.testing.mockmatchers.ArgumentMatcher(goog.isString, 'isString');
 
 
 /**
@@ -314,8 +313,7 @@ goog.testing.mockmatchers.isString =
  * @type {goog.testing.mockmatchers.ArgumentMatcher}
  */
 goog.testing.mockmatchers.isBoolean =
-    new goog.testing.mockmatchers.ArgumentMatcher(goog.isBoolean,
-        'isBoolean');
+    new goog.testing.mockmatchers.ArgumentMatcher(goog.isBoolean, 'isBoolean');
 
 
 /**
@@ -323,8 +321,7 @@ goog.testing.mockmatchers.isBoolean =
  * @type {goog.testing.mockmatchers.ArgumentMatcher}
  */
 goog.testing.mockmatchers.isNumber =
-    new goog.testing.mockmatchers.ArgumentMatcher(goog.isNumber,
-        'isNumber');
+    new goog.testing.mockmatchers.ArgumentMatcher(goog.isNumber, 'isNumber');
 
 
 /**
@@ -332,8 +329,8 @@ goog.testing.mockmatchers.isNumber =
  * @type {goog.testing.mockmatchers.ArgumentMatcher}
  */
 goog.testing.mockmatchers.isFunction =
-    new goog.testing.mockmatchers.ArgumentMatcher(goog.isFunction,
-        'isFunction');
+    new goog.testing.mockmatchers.ArgumentMatcher(
+        goog.isFunction, 'isFunction');
 
 
 /**
@@ -341,8 +338,7 @@ goog.testing.mockmatchers.isFunction =
  * @type {goog.testing.mockmatchers.ArgumentMatcher}
  */
 goog.testing.mockmatchers.isObject =
-    new goog.testing.mockmatchers.ArgumentMatcher(goog.isObject,
-        'isObject');
+    new goog.testing.mockmatchers.ArgumentMatcher(goog.isObject, 'isObject');
 
 
 /**
@@ -350,8 +346,8 @@ goog.testing.mockmatchers.isObject =
  * @type {goog.testing.mockmatchers.ArgumentMatcher}
  */
 goog.testing.mockmatchers.isNodeLike =
-    new goog.testing.mockmatchers.ArgumentMatcher(goog.dom.isNodeLike,
-        'isNodeLike');
+    new goog.testing.mockmatchers.ArgumentMatcher(
+        goog.dom.isNodeLike, 'isNodeLike');
 
 
 /**
@@ -366,8 +362,8 @@ goog.testing.mockmatchers.isNodeLike =
  *     for this match.
  * @return {boolean} Whether or not the given array matches the expectations.
  */
-goog.testing.mockmatchers.flexibleArrayMatcher =
-    function(expectedArr, arr, opt_expectation) {
+goog.testing.mockmatchers.flexibleArrayMatcher = function(
+    expectedArr, arr, opt_expectation) {
   return goog.array.equals(expectedArr, arr, function(a, b) {
     var errCount = 0;
     if (opt_expectation) {
@@ -375,7 +371,7 @@ goog.testing.mockmatchers.flexibleArrayMatcher =
     }
     var isamatch = a === b ||
         a instanceof goog.testing.mockmatchers.ArgumentMatcher &&
-        a.matches(b, opt_expectation);
+            a.matches(b, opt_expectation);
     var failureMessage = null;
     if (!isamatch) {
       failureMessage = goog.testing.asserts.findDifferences(a, b);

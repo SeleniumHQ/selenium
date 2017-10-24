@@ -1,4 +1,0 @@
-java_library(name = "jcip_annotations",
-  deps = [
-    "jcip-annotations-1.0.jar",
-   ])

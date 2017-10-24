@@ -1,17 +1,19 @@
-// Copyright 2013 Selenium committers
-// Copyright 2013 Software Freedom Conservancy
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-//     You may obtain a copy of the License at
+//   http://www.apache.org/licenses/LICENSE-2.0
 //
-// http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 'use strict';
 
@@ -48,14 +50,14 @@ var Server = function(requestHandler) {
    * Starts the server on the given port. If no port, or 0, is provided,
    * the server will be started on a random port.
    * @param {number=} opt_port The port to start on.
-   * @return {!webdriver.promise.Promise.<Host>} A promise that will resolve
+   * @return {!Promise<Host>} A promise that will resolve
    *     with the server host when it has fully started.
    */
   this.start = function(opt_port) {
     assert(typeof opt_port !== 'function',
            "start invoked with function, not port (mocha callback)?");
     var port = opt_port || portprober.findFreePort('localhost');
-    return promise.when(port, function(port) {
+    return Promise.resolve(port).then(port => {
       return promise.checkedNodeCall(
           server.listen.bind(server, port, 'localhost'));
     }).then(function() {
@@ -65,13 +67,11 @@ var Server = function(requestHandler) {
 
   /**
    * Stops the server.
-   * @return {!webdriver.promise.Promise} A promise that will resolve when the
+   * @return {!Promise} A promise that will resolve when the
    *     server has closed all connections.
    */
   this.stop = function() {
-    var d = promise.defer();
-    server.close(d.fulfill);
-    return d.promise;
+    return new Promise(resolve => server.close(resolve));
   };
 
   /**

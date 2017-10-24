@@ -1,16 +1,19 @@
-// Copyright 2013 Software Freedom Conservancy
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
+//   http://www.apache.org/licenses/LICENSE-2.0
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 /**
  * @fileoverview Defines the webdriver.Capabilities class.
@@ -21,8 +24,7 @@ goog.provide('webdriver.Capabilities');
 goog.provide('webdriver.Capability');
 goog.provide('webdriver.ProxyConfig');
 
-goog.require('webdriver.Serializable');
-goog.require('webdriver.logging.Preferences');
+goog.require('webdriver.logging');
 
 
 
@@ -36,6 +38,7 @@ webdriver.Browser = {
   FIREFOX: 'firefox',
   IE: 'internet explorer',
   INTERNET_EXPLORER: 'internet explorer',
+  EDGE: 'MicrosoftEdge',
   IPAD: 'iPad',
   IPHONE: 'iPhone',
   OPERA: 'opera',
@@ -162,10 +165,8 @@ webdriver.Capability = {
  * @param {(webdriver.Capabilities|Object)=} opt_other Another set of
  *     capabilities to merge into this instance.
  * @constructor
- * @extends {webdriver.Serializable.<!Object.<string, ?>>}
  */
 webdriver.Capabilities = function(opt_other) {
-  webdriver.Serializable.call(this);
 
   /** @private {!Object.<string, ?>} */
   this.caps_ = {};
@@ -174,7 +175,6 @@ webdriver.Capabilities = function(opt_other) {
     this.merge(opt_other);
   }
 };
-goog.inherits(webdriver.Capabilities, webdriver.Serializable);
 
 
 /**
@@ -214,6 +214,16 @@ webdriver.Capabilities.ie = function() {
       set(webdriver.Capability.BROWSER_NAME,
           webdriver.Browser.INTERNET_EXPLORER).
       set(webdriver.Capability.PLATFORM, 'WINDOWS');
+};
+
+/**
+ * @return {!webdriver.Capabilities} A basic set of capabilities for
+ *     Microsoft Edge.
+ */
+webdriver.Capabilities.edge = function() {
+  return new webdriver.Capabilities().
+    set(webdriver.Capability.BROWSER_NAME, webdriver.Browser.EDGE).
+    set(webdriver.Capability.PLATFORM, 'WINDOWS');
 };
 
 
@@ -260,7 +270,8 @@ webdriver.Capabilities.phantomjs = function() {
  */
 webdriver.Capabilities.safari = function() {
   return new webdriver.Capabilities().
-      set(webdriver.Capability.BROWSER_NAME, webdriver.Browser.SAFARI);
+      set(webdriver.Capability.BROWSER_NAME, webdriver.Browser.SAFARI).
+      set(webdriver.Capability.PLATFORM, 'MAC');
 };
 
 
@@ -287,7 +298,6 @@ webdriver.Capabilities.htmlunitwithjs = function() {
 /**
  * @return {!Object.<string, ?>} The JSON representation of this instance. Note,
  *    the returned object may contain nested promises that are promised values.
- * @override
  */
 webdriver.Capabilities.prototype.serialize = function() {
   return this.caps_;

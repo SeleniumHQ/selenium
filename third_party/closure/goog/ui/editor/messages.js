@@ -45,8 +45,8 @@ goog.ui.editor.messages.MSG_ON_THE_WEB = goog.getMsg('Web address');
 
 
 /** @desc More details on what linking to a web address involves.. */
-goog.ui.editor.messages.MSG_ON_THE_WEB_TIP = goog.getMsg(
-    'Link to a page or file somewhere else on the web');
+goog.ui.editor.messages.MSG_ON_THE_WEB_TIP =
+    goog.getMsg('Link to a page or file somewhere else on the web');
 
 
 /**
@@ -61,31 +61,33 @@ goog.ui.editor.messages.MSG_TEST_THIS_LINK = goog.getMsg('Test this link');
  */
 goog.ui.editor.messages.MSG_TR_LINK_EXPLANATION = goog.getMsg(
     '{$startBold}Not sure what to put in the box?{$endBold} ' +
-    'First, find the page on the web that you want to ' +
-    'link to. (A {$searchEngineLink}search engine{$endLink} ' +
-    'might be useful.) Then, copy the web address from ' +
-    "the box in your browser's address bar, and paste it into " +
-    'the box above.',
-    {'startBold': '<b>',
+        'First, find the page on the web that you want to ' +
+        'link to. (A {$searchEngineLink}search engine{$endLink} ' +
+        'might be useful.) Then, copy the web address from ' +
+        "the box in your browser's address bar, and paste it into " +
+        'the box above.',
+    {
+      'startBold': '<b>',
       'endBold': '</b>',
       'searchEngineLink': "<a href='http://www.google.com/' target='_new'>",
-      'endLink': '</a>'});
+      'endLink': '</a>'
+    });
 
 
 /**
  * @return {!goog.html.SafeHtml} SafeHtml version of MSG_TR_LINK_EXPLANATION.
  */
 goog.ui.editor.messages.getTrLinkExplanationSafeHtml = function() {
-  return goog.html.uncheckedconversions.
-      safeHtmlFromStringKnownToSatisfyTypeContract(
+  return goog.html.uncheckedconversions
+      .safeHtmlFromStringKnownToSatisfyTypeContract(
           goog.string.Const.from('Parameterless translation'),
           goog.ui.editor.messages.MSG_TR_LINK_EXPLANATION);
 };
 
 
 /** @desc Prompt for the URL of a link that the user is creating. */
-goog.ui.editor.messages.MSG_WHAT_URL = goog.getMsg(
-    'To what URL should this link go?');
+goog.ui.editor.messages.MSG_WHAT_URL =
+    goog.getMsg('To what URL should this link go?');
 
 
 /**
@@ -98,21 +100,21 @@ goog.ui.editor.messages.MSG_EMAIL_ADDRESS = goog.getMsg('Email address');
 /**
  * @desc Explanation of the prompt for an email address in a link.
  */
-goog.ui.editor.messages.MSG_EMAIL_ADDRESS_TIP = goog.getMsg(
-    'Link to an email address');
+goog.ui.editor.messages.MSG_EMAIL_ADDRESS_TIP =
+    goog.getMsg('Link to an email address');
 
 
 /** @desc Error message when the user enters an invalid email address. */
-goog.ui.editor.messages.MSG_INVALID_EMAIL = goog.getMsg(
-    'Invalid email address');
+goog.ui.editor.messages.MSG_INVALID_EMAIL =
+    goog.getMsg('Invalid email address');
 
 
 /**
  * @desc When the user creates a mailto link, asks them what email
  *     address clicking on this link will send mail to.
  */
-goog.ui.editor.messages.MSG_WHAT_EMAIL = goog.getMsg(
-    'To what email address should this link?');
+goog.ui.editor.messages.MSG_WHAT_EMAIL =
+    goog.getMsg('To what email address should this link?');
 
 
 /**
@@ -121,16 +123,17 @@ goog.ui.editor.messages.MSG_WHAT_EMAIL = goog.getMsg(
  */
 goog.ui.editor.messages.MSG_EMAIL_EXPLANATION = goog.getMsg(
     '{$preb}Be careful.{$postb} ' +
-    'Remember that any time you include an email address on a web page, ' +
-    'nasty spammers can find it too.', {'preb': '<b>', 'postb': '</b>'});
+        'Remember that any time you include an email address on a web page, ' +
+        'nasty spammers can find it too.',
+    {'preb': '<b>', 'postb': '</b>'});
 
 
 /**
  * @return {!goog.html.SafeHtml} SafeHtml version of MSG_EMAIL_EXPLANATION.
  */
 goog.ui.editor.messages.getEmailExplanationSafeHtml = function() {
-  return goog.html.uncheckedconversions.
-      safeHtmlFromStringKnownToSatisfyTypeContract(
+  return goog.html.uncheckedconversions
+      .safeHtmlFromStringKnownToSatisfyTypeContract(
           goog.string.Const.from('Parameterless translation'),
           goog.ui.editor.messages.MSG_EMAIL_EXPLANATION);
 };
@@ -140,8 +143,8 @@ goog.ui.editor.messages.getEmailExplanationSafeHtml = function() {
  * @desc Label for the checkbox that allows the user to specify what when this
  *     link is clicked, it should be opened in a new window.
  */
-goog.ui.editor.messages.MSG_OPEN_IN_NEW_WINDOW = goog.getMsg(
-    'Open this link in a new window');
+goog.ui.editor.messages.MSG_OPEN_IN_NEW_WINDOW =
+    goog.getMsg('Open this link in a new window');
 
 
 /** @desc Image bubble caption. */

@@ -1,29 +1,26 @@
-/*
-Copyright 2012 Selenium committers
-Copyright 2012 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium.logging;
-
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 
 import org.openqa.selenium.Beta;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -38,7 +35,7 @@ public class SessionLogs {
   private final Map<String, LogEntries> logTypeToEntriesMap;
 
   public SessionLogs() {
-    this.logTypeToEntriesMap = new HashMap<String, LogEntries>();
+    this.logTypeToEntriesMap = new HashMap<>();
   }
 
   public LogEntries getLogs(String logType) {
@@ -59,22 +56,27 @@ public class SessionLogs {
   public Map<String, LogEntries> getAll() {
     return Collections.unmodifiableMap(logTypeToEntriesMap);
   }
-  
-  public static SessionLogs fromJSON(JsonObject rawSessionLogs) {
+
+  public static SessionLogs fromJSON(Map<String, Object> rawSessionLogs) {
     SessionLogs sessionLogs = new SessionLogs();
-    for (Map.Entry<String, JsonElement> entry : rawSessionLogs.entrySet()) {
+    for (Map.Entry<String, Object> entry : rawSessionLogs.entrySet()) {
       String logType = entry.getKey();
-      JsonArray rawLogEntries = entry.getValue().getAsJsonArray();
-      List<LogEntry> logEntries = new ArrayList<LogEntry>();
-      for (int index = 0; index < rawLogEntries.size(); index++) {
-        JsonObject rawEntry = rawLogEntries.get(index).getAsJsonObject();
-        logEntries.add(new LogEntry(LogLevelMapping.toLevel(
-            rawEntry.get("level").getAsString()),
-            rawEntry.get("timestamp").getAsLong(),
-            rawEntry.get("message").getAsString()));
+      Collection<?> rawLogEntries = (Collection<?>) entry.getValue();
+      List<LogEntry> logEntries = new ArrayList<>();
+      for (Object o : rawLogEntries) {
+        @SuppressWarnings("unchecked") Map<String, Object> rawEntry = (Map<String, Object>) o;
+        logEntries.add(new LogEntry(
+            LogLevelMapping.toLevel(String.valueOf(rawEntry.get("level"))),
+            ((Number) rawEntry.get("timestamp")).longValue(),
+            String.valueOf(rawEntry.get("message"))));
       }
       sessionLogs.addLog(logType, new LogEntries(logEntries));
     }
     return sessionLogs;
+  }
+
+  @Beta
+  public Map<String, LogEntries> toJson() {
+    return getAll();
   }
 }

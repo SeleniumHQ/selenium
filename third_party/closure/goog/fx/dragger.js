@@ -27,6 +27,7 @@ goog.provide('goog.fx.Dragger');
 goog.provide('goog.fx.Dragger.EventType');
 
 goog.require('goog.dom');
+goog.require('goog.dom.TagName');
 goog.require('goog.events');
 goog.require('goog.events.Event');
 goog.require('goog.events.EventHandler');
@@ -51,20 +52,153 @@ goog.require('goog.userAgent');
  *
  * @extends {goog.events.EventTarget}
  * @constructor
+ * @struct
  */
 goog.fx.Dragger = function(target, opt_handle, opt_limits) {
-  goog.events.EventTarget.call(this);
+  goog.fx.Dragger.base(this, 'constructor');
+
+  /**
+   * Reference to drag target element.
+   * @type {?Element}
+   */
   this.target = target;
+
+  /**
+   * Reference to the handler that initiates the drag.
+   * @type {?Element}
+   */
   this.handle = opt_handle || target;
+
+  /**
+   * Object representing the limits of the drag region.
+   * @type {goog.math.Rect}
+   */
   this.limits = opt_limits || new goog.math.Rect(NaN, NaN, NaN, NaN);
 
+  /**
+   * Reference to a document object to use for the events.
+   * @private {Document}
+   */
   this.document_ = goog.dom.getOwnerDocument(target);
+
+  /** @private {!goog.events.EventHandler} */
   this.eventHandler_ = new goog.events.EventHandler(this);
   this.registerDisposable(this.eventHandler_);
 
+  /**
+   * Whether the element is rendered right-to-left. We initialize this lazily.
+   * @private {boolean|undefined}}
+   */
+  this.rightToLeft_;
+
+  /**
+   * Current x position of mouse or touch relative to viewport.
+   * @type {number}
+   */
+  this.clientX = 0;
+
+  /**
+   * Current y position of mouse or touch relative to viewport.
+   * @type {number}
+   */
+  this.clientY = 0;
+
+  /**
+   * Current x position of mouse or touch relative to screen. Deprecated because
+   * it doesn't take into affect zoom level or pixel density.
+   * @type {number}
+   * @deprecated Consider switching to clientX instead.
+   */
+  this.screenX = 0;
+
+  /**
+   * Current y position of mouse or touch relative to screen. Deprecated because
+   * it doesn't take into affect zoom level or pixel density.
+   * @type {number}
+   * @deprecated Consider switching to clientY instead.
+   */
+  this.screenY = 0;
+
+  /**
+   * The x position where the first mousedown or touchstart occurred.
+   * @type {number}
+   */
+  this.startX = 0;
+
+  /**
+   * The y position where the first mousedown or touchstart occurred.
+   * @type {number}
+   */
+  this.startY = 0;
+
+  /**
+   * Current x position of drag relative to target's parent.
+   * @type {number}
+   */
+  this.deltaX = 0;
+
+  /**
+   * Current y position of drag relative to target's parent.
+   * @type {number}
+   */
+  this.deltaY = 0;
+
+  /**
+   * The current page scroll value.
+   * @type {?goog.math.Coordinate}
+   */
+  this.pageScroll;
+
+  /**
+   * Whether dragging is currently enabled.
+   * @private {boolean}
+   */
+  this.enabled_ = true;
+
+  /**
+   * Whether object is currently being dragged.
+   * @private {boolean}
+   */
+  this.dragging_ = false;
+
+  /**
+   * Whether mousedown should be default prevented.
+   * @private {boolean}
+   **/
+  this.preventMouseDown_ = true;
+
+  /**
+   * The amount of distance, in pixels, after which a mousedown or touchstart is
+   * considered a drag.
+   * @private {number}
+   */
+  this.hysteresisDistanceSquared_ = 0;
+
+  /**
+   * The SCROLL event target used to make drag element follow scrolling.
+   * @private {?EventTarget}
+   */
+  this.scrollTarget_;
+
+  /**
+   * Whether IE drag events cancelling is on.
+   * @private {boolean}
+   */
+  this.ieDragStartCancellingOn_ = false;
+
+  /**
+   * Whether the dragger implements the changes described in http://b/6324964,
+   * making it truly RTL.  This is a temporary flag to allow clients to
+   * transition to the new behavior at their convenience.  At some point it will
+   * be the default.
+   * @private {boolean}
+   */
+  this.useRightPositioningForRtl_ = false;
+
   // Add listener. Do not use the event handler here since the event handler is
   // used for listeners added and removed during the drag operation.
-  goog.events.listen(this.handle,
+  goog.events.listen(
+      this.handle,
       [goog.events.EventType.TOUCHSTART, goog.events.EventType.MOUSEDOWN],
       this.startDrag, false, this);
 };
@@ -76,14 +210,15 @@ goog.tagUnsealableClass(goog.fx.Dragger);
 
 /**
  * Whether setCapture is supported by the browser.
+ * IE and Gecko after 1.9.3 have setCapture. MS Edge and WebKit
+ * (https://bugs.webkit.org/show_bug.cgi?id=27330) don't.
  * @type {boolean}
  * @private
  */
-goog.fx.Dragger.HAS_SET_CAPTURE_ =
-    // IE and Gecko after 1.9.3 has setCapture
-    // WebKit does not yet: https://bugs.webkit.org/show_bug.cgi?id=27330
-    goog.userAgent.IE ||
-    goog.userAgent.GECKO && goog.userAgent.isVersionOrHigher('1.9.3');
+goog.fx.Dragger.HAS_SET_CAPTURE_ = goog.global.document &&
+    goog.global.document.documentElement &&
+    !!goog.global.document.documentElement.setCapture &&
+    !!goog.global.document.releaseCapture;
 
 
 /**
@@ -95,24 +230,29 @@ goog.fx.Dragger.HAS_SET_CAPTURE_ =
  * @return {!Element} The clone of {@code sourceEl}.
  */
 goog.fx.Dragger.cloneNode = function(sourceEl) {
-  var clonedEl = /** @type {Element} */ (sourceEl.cloneNode(true)),
-      origTexts = sourceEl.getElementsByTagName('textarea'),
-      dragTexts = clonedEl.getElementsByTagName('textarea');
+  var clonedEl = sourceEl.cloneNode(true),
+      origTexts =
+          goog.dom.getElementsByTagName(goog.dom.TagName.TEXTAREA, sourceEl),
+      dragTexts =
+          goog.dom.getElementsByTagName(goog.dom.TagName.TEXTAREA, clonedEl);
   // Cloning does not copy the current value of textarea elements, so correct
   // this manually.
   for (var i = 0; i < origTexts.length; i++) {
     dragTexts[i].value = origTexts[i].value;
   }
-  switch (sourceEl.tagName.toLowerCase()) {
-    case 'tr':
+  switch (sourceEl.tagName) {
+    case String(goog.dom.TagName.TR):
       return goog.dom.createDom(
-          'table', null, goog.dom.createDom('tbody', null, clonedEl));
-    case 'td':
-    case 'th':
+          goog.dom.TagName.TABLE, null,
+          goog.dom.createDom(goog.dom.TagName.TBODY, null, clonedEl));
+    case String(goog.dom.TagName.TD):
+    case String(goog.dom.TagName.TH):
       return goog.dom.createDom(
-          'table', null, goog.dom.createDom('tbody', null, goog.dom.createDom(
-          'tr', null, clonedEl)));
-    case 'textarea':
+          goog.dom.TagName.TABLE, null,
+          goog.dom.createDom(
+              goog.dom.TagName.TBODY, null,
+              goog.dom.createDom(goog.dom.TagName.TR, null, clonedEl)));
+    case String(goog.dom.TagName.TEXTAREA):
       clonedEl.value = sourceEl.value;
     default:
       return clonedEl;
@@ -137,170 +277,6 @@ goog.fx.Dragger.EventType = {
 
 
 /**
- * Reference to drag target element.
- * @type {Element}
- */
-goog.fx.Dragger.prototype.target;
-
-
-/**
- * Reference to the handler that initiates the drag.
- * @type {Element}
- */
-goog.fx.Dragger.prototype.handle;
-
-
-/**
- * Object representing the limits of the drag region.
- * @type {goog.math.Rect}
- */
-goog.fx.Dragger.prototype.limits;
-
-
-/**
- * Whether the element is rendered right-to-left. We initialize this lazily.
- * @type {boolean|undefined}}
- * @private
- */
-goog.fx.Dragger.prototype.rightToLeft_;
-
-
-/**
- * Current x position of mouse or touch relative to viewport.
- * @type {number}
- */
-goog.fx.Dragger.prototype.clientX = 0;
-
-
-/**
- * Current y position of mouse or touch relative to viewport.
- * @type {number}
- */
-goog.fx.Dragger.prototype.clientY = 0;
-
-
-/**
- * Current x position of mouse or touch relative to screen. Deprecated because
- * it doesn't take into affect zoom level or pixel density.
- * @type {number}
- * @deprecated Consider switching to clientX instead.
- */
-goog.fx.Dragger.prototype.screenX = 0;
-
-
-/**
- * Current y position of mouse or touch relative to screen. Deprecated because
- * it doesn't take into affect zoom level or pixel density.
- * @type {number}
- * @deprecated Consider switching to clientY instead.
- */
-goog.fx.Dragger.prototype.screenY = 0;
-
-
-/**
- * The x position where the first mousedown or touchstart occurred.
- * @type {number}
- */
-goog.fx.Dragger.prototype.startX = 0;
-
-
-/**
- * The y position where the first mousedown or touchstart occurred.
- * @type {number}
- */
-goog.fx.Dragger.prototype.startY = 0;
-
-
-/**
- * Current x position of drag relative to target's parent.
- * @type {number}
- */
-goog.fx.Dragger.prototype.deltaX = 0;
-
-
-/**
- * Current y position of drag relative to target's parent.
- * @type {number}
- */
-goog.fx.Dragger.prototype.deltaY = 0;
-
-
-/**
- * The current page scroll value.
- * @type {goog.math.Coordinate}
- */
-goog.fx.Dragger.prototype.pageScroll;
-
-
-/**
- * Whether dragging is currently enabled.
- * @type {boolean}
- * @private
- */
-goog.fx.Dragger.prototype.enabled_ = true;
-
-
-/**
- * Whether object is currently being dragged.
- * @type {boolean}
- * @private
- */
-goog.fx.Dragger.prototype.dragging_ = false;
-
-
-/**
- * The amount of distance, in pixels, after which a mousedown or touchstart is
- * considered a drag.
- * @type {number}
- * @private
- */
-goog.fx.Dragger.prototype.hysteresisDistanceSquared_ = 0;
-
-
-/**
- * Timestamp of when the mousedown or touchstart occurred.
- * @type {number}
- * @private
- */
-goog.fx.Dragger.prototype.mouseDownTime_ = 0;
-
-
-/**
- * Reference to a document object to use for the events.
- * @type {Document}
- * @private
- */
-goog.fx.Dragger.prototype.document_;
-
-
-/**
- * The SCROLL event target used to make drag element follow scrolling.
- * @type {EventTarget}
- * @private
- */
-goog.fx.Dragger.prototype.scrollTarget_;
-
-
-/**
- * Whether IE drag events cancelling is on.
- * @type {boolean}
- * @private
- */
-goog.fx.Dragger.prototype.ieDragStartCancellingOn_ = false;
-
-
-/**
- * Whether the dragger implements the changes described in http://b/6324964,
- * making it truly RTL.  This is a temporary flag to allow clients to transition
- * to the new behavior at their convenience.  At some point it will be the
- * default.
- * @type {boolean}
- * @private
- */
-goog.fx.Dragger.prototype.useRightPositioningForRtl_ = false;
-
-
-/**
  * Turns on/off true RTL behavior.  This should be called immediately after
  * construction.  This is a temporary flag to allow clients to transition
  * to the new component at their convenience.  At some point true will be the
@@ -308,8 +284,8 @@ goog.fx.Dragger.prototype.useRightPositioningForRtl_ = false;
  * @param {boolean} useRightPositioningForRtl True if "right" should be used for
  *     positioning, false if "left" should be used for positioning.
  */
-goog.fx.Dragger.prototype.enableRightPositioningForRtl =
-    function(useRightPositioningForRtl) {
+goog.fx.Dragger.prototype.enableRightPositioningForRtl = function(
+    useRightPositioningForRtl) {
   this.useRightPositioningForRtl_ = useRightPositioningForRtl;
 };
 
@@ -317,7 +293,7 @@ goog.fx.Dragger.prototype.enableRightPositioningForRtl =
 /**
  * Returns the event handler, intended for subclass use.
  * @return {!goog.events.EventHandler<T>} The event handler.
- * @this T
+ * @this {T}
  * @template T
  */
 goog.fx.Dragger.prototype.getHandler = function() {
@@ -400,10 +376,21 @@ goog.fx.Dragger.prototype.setEnabled = function(enabled) {
 };
 
 
+/**
+ * Set whether mousedown should be default prevented.
+ * @param {boolean} preventMouseDown Whether mousedown should be default
+ *     prevented.
+ */
+goog.fx.Dragger.prototype.setPreventMouseDown = function(preventMouseDown) {
+  this.preventMouseDown_ = preventMouseDown;
+};
+
+
 /** @override */
 goog.fx.Dragger.prototype.disposeInternal = function() {
   goog.fx.Dragger.superClass_.disposeInternal.call(this);
-  goog.events.unlisten(this.handle,
+  goog.events.unlisten(
+      this.handle,
       [goog.events.EventType.TOUCHSTART, goog.events.EventType.MOUSEDOWN],
       this.startDrag, false, this);
   this.cleanUpAfterDragging_();
@@ -441,16 +428,17 @@ goog.fx.Dragger.prototype.startDrag = function(e) {
 
   if (this.enabled_ && !this.dragging_ &&
       (!isMouseDown || e.isMouseActionButton())) {
-    this.maybeReinitTouchEvent_(e);
     if (this.hysteresisDistanceSquared_ == 0) {
       if (this.fireDragStart_(e)) {
         this.dragging_ = true;
-        e.preventDefault();
+        if (this.preventMouseDown_ && isMouseDown) {
+          e.preventDefault();
+        }
       } else {
         // If the start drag is cancelled, don't setup for a drag.
         return;
       }
-    } else {
+    } else if (this.preventMouseDown_ && isMouseDown) {
       // Need to preventDefault for hysteresis to prevent page getting selected.
       e.preventDefault();
     }
@@ -462,8 +450,6 @@ goog.fx.Dragger.prototype.startDrag = function(e) {
     this.screenY = e.screenY;
     this.computeInitialPosition();
     this.pageScroll = goog.dom.getDomHelper(this.document_).getDocumentScroll();
-
-    this.mouseDownTime_ = goog.now();
   } else {
     this.dispatchEvent(goog.fx.Dragger.EventType.EARLY_CANCEL);
   }
@@ -481,37 +467,36 @@ goog.fx.Dragger.prototype.setupDragHandlers = function() {
   // problems with the capturing events in combination with setCapture.
   var useCapture = !goog.fx.Dragger.HAS_SET_CAPTURE_;
 
-  this.eventHandler_.listen(doc,
-      [goog.events.EventType.TOUCHMOVE, goog.events.EventType.MOUSEMOVE],
+  this.eventHandler_.listen(
+      doc, [goog.events.EventType.TOUCHMOVE, goog.events.EventType.MOUSEMOVE],
       this.handleMove_, useCapture);
-  this.eventHandler_.listen(doc,
-      [goog.events.EventType.TOUCHEND, goog.events.EventType.MOUSEUP],
+  this.eventHandler_.listen(
+      doc, [goog.events.EventType.TOUCHEND, goog.events.EventType.MOUSEUP],
       this.endDrag, useCapture);
 
   if (goog.fx.Dragger.HAS_SET_CAPTURE_) {
     docEl.setCapture(false);
-    this.eventHandler_.listen(docEl,
-                              goog.events.EventType.LOSECAPTURE,
-                              this.endDrag);
+    this.eventHandler_.listen(
+        docEl, goog.events.EventType.LOSECAPTURE, this.endDrag);
   } else {
     // Make sure we stop the dragging if the window loses focus.
     // Don't use capture in this listener because we only want to end the drag
     // if the actual window loses focus. Since blur events do not bubble we use
     // a bubbling listener on the window.
-    this.eventHandler_.listen(goog.dom.getWindow(doc),
-                              goog.events.EventType.BLUR,
-                              this.endDrag);
+    this.eventHandler_.listen(
+        goog.dom.getWindow(doc), goog.events.EventType.BLUR, this.endDrag);
   }
 
   if (goog.userAgent.IE && this.ieDragStartCancellingOn_) {
     // Cancel IE's 'ondragstart' event.
-    this.eventHandler_.listen(doc, goog.events.EventType.DRAGSTART,
-                              goog.events.Event.preventDefault);
+    this.eventHandler_.listen(
+        doc, goog.events.EventType.DRAGSTART, goog.events.Event.preventDefault);
   }
 
   if (this.scrollTarget_) {
-    this.eventHandler_.listen(this.scrollTarget_, goog.events.EventType.SCROLL,
-                              this.onScroll_, useCapture);
+    this.eventHandler_.listen(
+        this.scrollTarget_, goog.events.EventType.SCROLL, this.onScroll_,
+        useCapture);
   }
 };
 
@@ -523,8 +508,9 @@ goog.fx.Dragger.prototype.setupDragHandlers = function() {
  * @private
  */
 goog.fx.Dragger.prototype.fireDragStart_ = function(e) {
-  return this.dispatchEvent(new goog.fx.DragEvent(
-      goog.fx.Dragger.EventType.START, this, e.clientX, e.clientY, e));
+  return this.dispatchEvent(
+      new goog.fx.DragEvent(
+          goog.fx.Dragger.EventType.START, this, e.clientX, e.clientY, e));
 };
 
 
@@ -550,16 +536,16 @@ goog.fx.Dragger.prototype.endDrag = function(e, opt_dragCanceled) {
   this.cleanUpAfterDragging_();
 
   if (this.dragging_) {
-    this.maybeReinitTouchEvent_(e);
     this.dragging_ = false;
 
     var x = this.limitX(this.deltaX);
     var y = this.limitY(this.deltaY);
-    var dragCanceled = opt_dragCanceled ||
-        e.type == goog.events.EventType.TOUCHCANCEL;
-    this.dispatchEvent(new goog.fx.DragEvent(
-        goog.fx.Dragger.EventType.END, this, e.clientX, e.clientY, e, x, y,
-        dragCanceled));
+    var dragCanceled =
+        opt_dragCanceled || e.type == goog.events.EventType.TOUCHCANCEL;
+    this.dispatchEvent(
+        new goog.fx.DragEvent(
+            goog.fx.Dragger.EventType.END, this, e.clientX, e.clientY, e, x, y,
+            dragCanceled));
   } else {
     this.dispatchEvent(goog.fx.Dragger.EventType.EARLY_CANCEL);
   }
@@ -576,35 +562,15 @@ goog.fx.Dragger.prototype.endDragCancel = function(e) {
 
 
 /**
- * Re-initializes the event with the first target touch event or, in the case
- * of a stop event, the last changed touch.
- * @param {goog.events.BrowserEvent} e A TOUCH... event.
- * @private
- */
-goog.fx.Dragger.prototype.maybeReinitTouchEvent_ = function(e) {
-  var type = e.type;
-
-  if (type == goog.events.EventType.TOUCHSTART ||
-      type == goog.events.EventType.TOUCHMOVE) {
-    e.init(e.getBrowserEvent().targetTouches[0], e.currentTarget);
-  } else if (type == goog.events.EventType.TOUCHEND ||
-             type == goog.events.EventType.TOUCHCANCEL) {
-    e.init(e.getBrowserEvent().changedTouches[0], e.currentTarget);
-  }
-};
-
-
-/**
  * Event handler that is used on mouse / touch move to update the drag
  * @param {goog.events.BrowserEvent} e Event object.
  * @private
  */
 goog.fx.Dragger.prototype.handleMove_ = function(e) {
   if (this.enabled_) {
-    this.maybeReinitTouchEvent_(e);
     // dx in right-to-left cases is relative to the right.
-    var sign = this.useRightPositioningForRtl_ &&
-        this.isRightToLeft_() ? -1 : 1;
+    var sign =
+        this.useRightPositioningForRtl_ && this.isRightToLeft_() ? -1 : 1;
     var dx = sign * (e.clientX - this.clientX);
     var dy = e.clientY - this.clientY;
     this.clientX = e.clientX;
@@ -635,10 +601,10 @@ goog.fx.Dragger.prototype.handleMove_ = function(e) {
     var y = pos.y;
 
     if (this.dragging_) {
-
-      var rv = this.dispatchEvent(new goog.fx.DragEvent(
-          goog.fx.Dragger.EventType.BEFOREDRAG, this, e.clientX, e.clientY,
-          e, x, y));
+      var rv = this.dispatchEvent(
+          new goog.fx.DragEvent(
+              goog.fx.Dragger.EventType.BEFOREDRAG, this, e.clientX, e.clientY,
+              e, x, y));
 
       // Only do the defaultAction and dispatch drag event if predrag didn't
       // prevent default
@@ -699,8 +665,9 @@ goog.fx.Dragger.prototype.onScroll_ = function(e) {
  */
 goog.fx.Dragger.prototype.doDrag = function(e, x, y, dragFromScroll) {
   this.defaultAction(x, y);
-  this.dispatchEvent(new goog.fx.DragEvent(
-      goog.fx.Dragger.EventType.DRAG, this, e.clientX, e.clientY, e, x, y));
+  this.dispatchEvent(
+      new goog.fx.DragEvent(
+          goog.fx.Dragger.EventType.DRAG, this, e.clientX, e.clientY, e, x, y));
 };
 
 
@@ -743,8 +710,9 @@ goog.fx.Dragger.prototype.limitY = function(y) {
  */
 goog.fx.Dragger.prototype.computeInitialPosition = function() {
   this.deltaX = this.useRightPositioningForRtl_ ?
-      goog.style.bidi.getOffsetStart(this.target) : this.target.offsetLeft;
-  this.deltaY = this.target.offsetTop;
+      goog.style.bidi.getOffsetStart(this.target) :
+      /** @type {!HTMLElement} */ (this.target).offsetLeft;
+  this.deltaY = /** @type {!HTMLElement} */ (this.target).offsetTop;
 };
 
 
@@ -788,10 +756,12 @@ goog.fx.Dragger.prototype.isDragging = function() {
  * @param {number=} opt_actY Optional actual y for drag if it has been limited.
  * @param {boolean=} opt_dragCanceled Whether the drag has been canceled.
  * @constructor
+ * @struct
  * @extends {goog.events.Event}
  */
-goog.fx.DragEvent = function(type, dragobj, clientX, clientY, browserEvent,
-                             opt_actX, opt_actY, opt_dragCanceled) {
+goog.fx.DragEvent = function(
+    type, dragobj, clientX, clientY, browserEvent, opt_actX, opt_actY,
+    opt_dragCanceled) {
   goog.events.Event.call(this, type);
 
   /**

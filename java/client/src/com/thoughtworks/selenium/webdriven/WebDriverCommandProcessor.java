@@ -1,23 +1,25 @@
-/*
-Copyright 2007-2009 Selenium committers
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
- */
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package com.thoughtworks.selenium.webdriven;
 
+import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_JAVASCRIPT;
+
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Supplier;
 import com.google.common.collect.Maps;
 
 import com.thoughtworks.selenium.CommandProcessor;
@@ -30,6 +32,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.internal.WrapsDriver;
 
 import java.util.Map;
+import java.util.function.Supplier;
 
 
 /**
@@ -94,10 +97,9 @@ public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver 
     if (driver != null) {
       if (maker != null) {
         throw new SeleniumException("You may not start more than one session at a time");
-      } else {
-        // The command processor was instantiated with an already started driver
-        return;
       }
+      // The command processor was instantiated with an already started driver
+      return;
     }
 
     driver = maker.get();
@@ -175,7 +177,7 @@ public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver 
       return;
     }
 
-    if (!((HasCapabilities) driver).getCapabilities().isJavascriptEnabled()) {
+    if (!((HasCapabilities) driver).getCapabilities().is(SUPPORTS_JAVASCRIPT)) {
       throw new IllegalStateException("JS support must be enabled.");
     }
   }
@@ -184,6 +186,8 @@ public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver 
    * Sets whether to enable emulation of Selenium's alert handling functions or
    * to preserve WebDriver's alert handling. This has no affect after calling
    * {@link #start()}.
+   *
+   * @param enableAlertOverrides boolean to enable overrides
    */
   public void setEnableAlertOverrides(boolean enableAlertOverrides) {
     this.enableAlertOverrides = enableAlertOverrides;
@@ -203,6 +207,7 @@ public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver 
     seleneseMethods.put("allowNativeXpath", new AllowNativeXPath());
     seleneseMethods.put("altKeyDown", new AltKeyDown(keyState));
     seleneseMethods.put("altKeyUp", new AltKeyUp(keyState));
+    seleneseMethods.put("answerOnNextPrompt", new AnswerOnNextPrompt());
     seleneseMethods.put("assignId", new AssignId(javascriptLibrary, elementFinder));
     seleneseMethods.put("attachFile", new AttachFile(elementFinder));
     seleneseMethods.put("captureScreenshotToString", new CaptureScreenshotToString());
@@ -236,6 +241,7 @@ public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver 
     seleneseMethods.put("getConfirmation", new GetConfirmation(alertOverride));
     seleneseMethods.put("getCookie", new GetCookie());
     seleneseMethods.put("getCookieByName", new GetCookieByName());
+    seleneseMethods.put("getCursorPosition", new GetCursorPosition(elementFinder));
     seleneseMethods.put("getElementHeight", new GetElementHeight(elementFinder));
     seleneseMethods.put("getElementIndex", new GetElementIndex(elementFinder,
         javascriptLibrary));
@@ -246,6 +252,7 @@ public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver 
     seleneseMethods.put("getExpression", new GetExpression());
     seleneseMethods.put("getHtmlSource", new GetHtmlSource());
     seleneseMethods.put("getLocation", new GetLocation());
+    seleneseMethods.put("getMouseSpeed", new NoOp(10));
     seleneseMethods.put("getSelectedId", new FindFirstSelectedOptionProperty(javascriptLibrary,
         elementFinder, "id"));
     seleneseMethods.put("getSelectedIds", new FindSelectedOptionProperties(javascriptLibrary,
@@ -279,6 +286,7 @@ public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver 
     seleneseMethods.put("isEditable", new IsEditable(elementFinder));
     seleneseMethods.put("isElementPresent", new IsElementPresent(elementFinder));
     seleneseMethods.put("isOrdered", new IsOrdered(elementFinder, javascriptLibrary));
+    seleneseMethods.put("isPromptPresent", new IsPromptPresent(alertOverride));
     seleneseMethods.put("isSomethingSelected", new IsSomethingSelected(javascriptLibrary));
     seleneseMethods.put("isTextPresent", new IsTextPresent(javascriptLibrary));
     seleneseMethods.put("isVisible", new IsVisible(elementFinder));
@@ -315,6 +323,10 @@ public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver 
     seleneseMethods.put("selectWindow", new SelectWindow(windows));
     seleneseMethods.put("setBrowserLogLevel", new NoOp(null));
     seleneseMethods.put("setContext", new NoOp(null));
+    seleneseMethods.put(
+      "setCursorPosition",
+      new SetCursorPosition(javascriptLibrary, elementFinder));
+    seleneseMethods.put("setMouseSpeed", new NoOp(null));
     seleneseMethods.put("setSpeed", new NoOp(null));
     seleneseMethods.put("setTimeout", new SetTimeout(timer));
     seleneseMethods.put("shiftKeyDown", new ShiftKeyDown(keyState));

@@ -20,9 +20,7 @@
 
 
 goog.provide('goog.Disposable');
-/** @suppress {extraProvide} */
 goog.provide('goog.dispose');
-/** @suppress {extraProvide} */
 goog.provide('goog.disposeAll');
 
 goog.require('goog.disposable.IDisposable');
@@ -38,6 +36,13 @@ goog.require('goog.disposable.IDisposable');
  * @implements {goog.disposable.IDisposable}
  */
 goog.Disposable = function() {
+  /**
+   * If monitoring the goog.Disposable instances is enabled, stores the creation
+   * stack trace of the Disposable instance.
+   * @type {string|undefined}
+   */
+  this.creationStack;
+
   if (goog.Disposable.MONITORING_MODE != goog.Disposable.MonitoringMode.OFF) {
     if (goog.Disposable.INCLUDE_STACK_ON_CREATION) {
       this.creationStack = new Error().stack;
@@ -140,14 +145,6 @@ goog.Disposable.prototype.onDisposeCallbacks_;
 
 
 /**
- * If monitoring the goog.Disposable instances is enabled, stores the creation
- * stack trace of the Disposable instance.
- * @const {string}
- */
-goog.Disposable.prototype.creationStack;
-
-
-/**
  * @return {boolean} Whether the object has been disposed of.
  * @override
  */
@@ -181,9 +178,10 @@ goog.Disposable.prototype.dispose = function() {
     if (goog.Disposable.MONITORING_MODE != goog.Disposable.MonitoringMode.OFF) {
       var uid = goog.getUid(this);
       if (goog.Disposable.MONITORING_MODE ==
-          goog.Disposable.MonitoringMode.PERMANENT &&
+              goog.Disposable.MonitoringMode.PERMANENT &&
           !goog.Disposable.instances_.hasOwnProperty(uid)) {
-        throw Error(this + ' did not call the goog.Disposable base ' +
+        throw Error(
+            this + ' did not call the goog.Disposable base ' +
             'constructor or was disposed of after a clearUndisposedObjects ' +
             'call');
       }
@@ -206,12 +204,17 @@ goog.Disposable.prototype.registerDisposable = function(disposable) {
 
 /**
  * Invokes a callback function when this object is disposed. Callbacks are
- * invoked in the order in which they were added.
+ * invoked in the order in which they were added. If a callback is added to
+ * an already disposed Disposable, it will be called immediately.
  * @param {function(this:T):?} callback The callback function.
  * @param {T=} opt_scope An optional scope to call the callback in.
  * @template T
  */
 goog.Disposable.prototype.addOnDisposeCallback = function(callback, opt_scope) {
+  if (this.disposed_) {
+    goog.isDef(opt_scope) ? callback.call(opt_scope) : callback();
+    return;
+  }
   if (!this.onDisposeCallbacks_) {
     this.onDisposeCallbacks_ = [];
   }

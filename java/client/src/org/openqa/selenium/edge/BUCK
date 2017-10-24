@@ -1,0 +1,15 @@
+# BUILD FILE SYNTAX: SKYLARK
+load("//:selenium-version.bzl", "SE_VERSION")
+
+java_library(
+  name = 'edge',
+  maven_coords = 'org.seleniumhq.selenium:selenium-edge-driver:' + SE_VERSION,
+  maven_pom_template = '//java/client/src/org/openqa/selenium:template-pom',
+  srcs = glob(['*.java']),
+  deps = [
+    '//java/client/src/org/openqa/selenium:selenium',
+    '//java/client/src/org/openqa/selenium/remote:remote',
+    '//third_party/java/guava:guava',
+  ],
+  visibility = [ 'PUBLIC' ],
+)

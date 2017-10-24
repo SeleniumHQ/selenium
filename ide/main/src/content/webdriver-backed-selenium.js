@@ -1,8 +1,22 @@
-function WebdriverBackedSelenium(baseUrl, webDriverBrowserString) {
+function WebdriverBackedSelenium(baseUrl, useLastWindow, webDriverBrowserString, reuseBrowser, webDriverServer) {
   this.defaultTimeout = WebdriverBackedSelenium.DEFAULT_TIMEOUT;
   this.mouseSpeed = WebdriverBackedSelenium.DEFAULT_MOUSE_SPEED;
   this.baseUrl = baseUrl;
   this.webDriverBrowserString = webDriverBrowserString;
+  this.webDriverServer = webDriverServer || "http://localhost:4444";
+  this.webDriverServer = this.webDriverServer.replace(/\/\s*$/, "");
+  WebdriverBackedSelenium.webDriverServer = this.webDriverServer;
+  if ( reuseBrowser == 'never') { // never: Always open a new window, i.e. never reuse
+    this.reuseBrowser = false;
+    LOG.debug("Asked to always open a new window");
+  } else if (reuseBrowser == 'always') { // always: Never open a new window, i.e. always reuse
+    this.reuseBrowser = true;
+    LOG.debug("Asked to always reuse an existing window");
+  } else { // suite: Open a new window for a test suite, i.e. do not reuse for a play suite
+    // TODO currently this results in a new window for every test case if you interactively play it. Fix it is there is demand
+    this.reuseBrowser = useLastWindow ? true : false;
+    LOG.debug("Asked to open a new window for a suite, will " + (this.reuseBrowser ? "reuse window if available" : "open a new window"));
+  }
   this.browserbot = {
     baseUrl: baseUrl,
     runScheduledPollers: function() {
@@ -70,6 +84,7 @@ function webdriverBackedSeleniumBuilder() {
   }
   WebdriverBackedSelenium.DEFAULT_TIMEOUT = Selenium.DEFAULT_TIMEOUT;
   WebdriverBackedSelenium.DEFAULT_MOUSE_SPEED = Selenium.DEFAULT_MOUSE_SPEED;
+  WebdriverBackedSelenium.webDriverServer = "http://localhost:4444";
 
   //The following do* are from selenium-runner.js
   //TODO: Samit: find a way to eliminate the copied code
@@ -215,7 +230,6 @@ webdriverBackedSeleniumBuilder();
 //TODO Samit: get these on some other object
 WebdriverBackedSelenium.prototype.startNewSession = function() {
   var self = this;
-//  return this.startNewWebdriverSession('firefox').pipe(function() {
   return this.startNewWebdriverSession(this.webDriverBrowserString).pipe(function() {
     return self.startNewBrowserSession({});
   }, function (msg) {
@@ -228,25 +242,70 @@ WebdriverBackedSelenium.prototype.startNewSession = function() {
 WebdriverBackedSelenium.prototype.startNewWebdriverSession = function(browserName) {
   var self = this;
   return new Deferred(function(deferred) {
+    if (self.reuseBrowser && WebdriverBackedSelenium.webdriverSID) {
+      LOG.debug('Reusing existing connection to Selenium Server');
+      self.webdriverSID = WebdriverBackedSelenium.webdriverSID;
+      self.webdriverResponse = WebdriverBackedSelenium.webdriverResponse;
+      deferred.resolve(self.webdriverSID);
+      return;
+    }
     LOG.debug('Connecting to Selenium Server');
-    HTTP.post('http://localhost:4444/wd/hub/session',
+    HTTP.post(self.webDriverServer + '/wd/hub/session',
         JSON.stringify({
           'desiredCapabilities': {'browserName': browserName}
         }), {'Accept': 'application/json; charset=utf-8'}, function(response, success) {
           if (success && response) {
             self.webdriverResponse = JSON.parse(response.replace(/\0/g, ''));
             self.webdriverSID = self.webdriverResponse.sessionId;
+            WebdriverBackedSelenium.webdriverSID = self.webdriverSID;
+            WebdriverBackedSelenium.webdriverResponse = self.webdriverResponse;
             deferred.resolve(self.webdriverSID);
           } else {
+            if (response) {
+              var result = JSON.parse(response.replace(/\0/g, ''));
+              if (result.value.class && result.value.class == "org.openqa.selenium.WebDriverException") {
+                deferred.reject({message: {t: 'RemoteConnectError', m: 'Could not start browser. Have you installed the driver correctly? Error message was: ' + result.value.message }});
+                return;
+              }
+            }
             deferred.reject({message: {t: 'RemoteConnectError', m: 'Could not connect to Selenium Server. Have you started the Selenium Server yet?'}});
           }
         });
   });
 };
 
+WebdriverBackedSelenium.closeWebdriverSession = function() {
+  return new Deferred(function(deferred) {
+    if (WebdriverBackedSelenium.webdriverSID) {
+      LOG.debug('Closing existing connection to Selenium Server');
+      var webdriverSID = WebdriverBackedSelenium.webdriverSID;
+      WebdriverBackedSelenium.webdriverSID = null;
+      WebdriverBackedSelenium.sessionId = null;
+
+      HTTP._delete(WebdriverBackedSelenium.webDriverServer + '/wd/hub/session/' + webdriverSID,
+        {'Accept': 'application/json; charset=utf-8'}, function(response, success) {
+          if (success && response) {
+            deferred.resolve();
+          } else {
+            deferred.reject({message: {t: 'RemoteConnectError', m: 'Could not close session, probably none existed.'}});
+          }
+        }
+      );
+    } else {
+      deferred.resolve();
+    }
+  });
+};
+
 WebdriverBackedSelenium.prototype.startNewBrowserSession = function(options, callback) {
   //options should be an array of items in the form key=value
   var self = this;
+  if (self.reuseBrowser && WebdriverBackedSelenium.sessionId) {
+    return new Deferred(function(deferred) {
+      self.sessionId = WebdriverBackedSelenium.sessionId;
+      deferred.resolve(self.sessionId);
+    });
+  }
   var startArgs = ['*webdriver', self.baseUrl, ''];
   var sid = this.webdriverResponse.value['webdriver.remote.sessionid'];
   startArgs.push('webdriver.remote.sessionid=' + sid);
@@ -255,27 +314,37 @@ WebdriverBackedSelenium.prototype.startNewBrowserSession = function(options, cal
   }
   return self.remoteControlCommand('getNewBrowserSession', startArgs).done(function(response) {
     self.sessionId = response;
+    WebdriverBackedSelenium.sessionId = response;
   });
 };
 
 WebdriverBackedSelenium.prototype.remoteControlCommand = function(verb, args) {
+  var self = this;
   //TODO handle timeout stuff: timeout(@default_timeout_in_seconds) do
   var requestData = httpRequestFor(verb, args, this.sessionId);
 //  alert("Sending server request: " + requestData);
   return new Deferred(function(deferred) {
-    HTTP.post('http://localhost:4444/selenium-server/driver/', requestData, {'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'}, function(response, success) {
+    HTTP.post(self.webDriverServer + '/selenium-server/driver/', requestData, {'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'}, function(response, success, status) {
       if (success) {
         if (response.substr(0, 2) === 'OK') {
           deferred.resolve(response.substr(3)); //strip "OK," from response
         } else {
           //TODO raise CommandError, response unless status == "OK"
           if (response.substr(0, 5) === 'ERROR') {
-            deferred.reject(response.substr(6));   //strip "ERROR," from response
+            if (response.substr(6, 58) === "Window not found. The browser window may have been closed.") {
+              deferred.reject({message: {t: 'RemoteConnectError', m: 'It seems like the old window was closed. Close session and run test again to start over.'}});
+            } else if (response.substr(6, 79).match(/Server Exception: sessionId [0-9a-f-]+ doesn't exist;/)) {
+              deferred.reject({message: {t: 'RemoteConnectError', m: 'It seems like Selenium server was restarted. Close session and run test again to start over.'}});
+            } else {
+              deferred.reject(response.substr(6));   //strip "ERROR," from response
+            }
           } else {
             alert("Received command response (!=OK/ERROR): " + response + "\n Request Data: " + requestData);
             deferred.reject(response);
           }
         }
+      } else if ( ! status ) {
+        deferred.reject({message: {t: 'RemoteConnectError', m: 'Could not connect to Selenium Server. Have you started the Selenium Server yet?'}});
       } else {
         deferred.reject('Received an invalid status code from Selenium Server');
       }
@@ -302,8 +371,9 @@ WebdriverBackedSelenium.prototype.webDriverCommand = function(url, opts, args) {
     contentType = {'Content-Type': 'application/json; charset=utf-8'};
   }
 //  alert("Sending server request: " + requestData);
+  var self = this;
   return new Deferred(function(deferred) {
-    HTTP.request(requestMethod, 'http://localhost:4444/wd/hub/' + url, requestData, contentType, function(response, success, status) {
+    HTTP.request(requestMethod, self.webDriverServer + '/wd/hub/' + url, requestData, contentType, function(response, success, status) {
       var result;
       if (response) {
 //          alert("Response: " + response);
@@ -317,9 +387,21 @@ WebdriverBackedSelenium.prototype.webDriverCommand = function(url, opts, args) {
         }
       } else {
         if (response) {
-          deferred.reject(result.value.message);
+          if (result.value.class && result.value.class == "org.openqa.selenium.remote.SessionNotFoundException" ) {
+            self.webdriverSID = null;
+            WebdriverBackedSelenium.webdriverSID = null;
+            self.sessionId = null;
+            WebdriverBackedSelenium.sessionId = null;
+            deferred.reject({message: {t: 'RemoteConnectError', m: 'It seems like Selenium server was restarted. Run test again to start over.'}});
+          } else if (result.value.class && result.value.class == "org.openqa.selenium.NoSuchWindowException" ) {
+            self.sessionId = null;
+            WebdriverBackedSelenium.sessionId = null;
+            deferred.reject({message: {t: 'RemoteConnectError', m: 'It seems like the old window was closed. Please close session and run test again to start over.'}});
+          } else {
+            deferred.reject(result.value.message);
+          }
         } else {
-          deferred.reject('Error');
+          deferred.reject('Unknown webdriver error');
         }
       }
     });

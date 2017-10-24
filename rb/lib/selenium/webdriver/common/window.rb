@@ -1,12 +1,27 @@
+# Licensed to the Software Freedom Conservancy (SFC) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The SFC licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
 module Selenium
   module WebDriver
-
     #
     # @api beta This API may be changed or removed in a future release.
     #
 
     class Window
-
       #
       # @api private
       #
@@ -23,11 +38,11 @@ module Selenium
 
       def size=(dimension)
         unless dimension.respond_to?(:width) && dimension.respond_to?(:height)
-          raise ArgumentError, "expected #{dimension.inspect}:#{dimension.class}" +
-                                " to respond to #width and #height"
+          raise ArgumentError, "expected #{dimension.inspect}:#{dimension.class}" \
+                               ' to respond to #width and #height'
         end
 
-        @bridge.setWindowSize dimension.width, dimension.height
+        @bridge.resize_window dimension.width, dimension.height
       end
 
       #
@@ -37,7 +52,7 @@ module Selenium
       #
 
       def size
-        @bridge.getWindowSize
+        @bridge.window_size
       end
 
       #
@@ -48,11 +63,11 @@ module Selenium
 
       def position=(point)
         unless point.respond_to?(:x) && point.respond_to?(:y)
-          raise ArgumentError, "expected #{point.inspect}:#{point.class}" +
-                                " to respond to #x and #y"
+          raise ArgumentError, "expected #{point.inspect}:#{point.class}" \
+                               ' to respond to #x and #y'
         end
 
-        @bridge.setWindowPosition point.x, point.y
+        @bridge.reposition_window point.x, point.y
       end
 
       #
@@ -62,7 +77,35 @@ module Selenium
       #
 
       def position
-        @bridge.getWindowPosition
+        @bridge.window_position
+      end
+
+      #
+      # Sets the current window rect to the given point and position.
+      #
+      # @param [Selenium::WebDriver::Rectangle, #x, #y, #width, #height] rectangle The new rect.
+      #
+
+      def rect=(rectangle)
+        unless %w[x y width height].all? { |val| rectangle.respond_to? val }
+          raise ArgumentError, "expected #{rectangle.inspect}:#{rectangle.class}" \
+                               ' to respond to #x, #y, #width, and #height'
+        end
+
+        @bridge.set_window_rect(x: rectangle.x,
+                                y: rectangle.y,
+                                width: rectangle.width,
+                                height: rectangle.height)
+      end
+
+      #
+      # Get the rect of the current window.
+      #
+      # @return [Selenium::WebDriver::Rectangle] The rectangle.
+      #
+
+      def rect
+        @bridge.window_rect
       end
 
       #
@@ -75,7 +118,7 @@ module Selenium
       #
 
       def resize_to(width, height)
-        @bridge.setWindowSize Integer(width), Integer(height)
+        @bridge.resize_window Integer(width), Integer(height)
       end
 
       #
@@ -87,7 +130,7 @@ module Selenium
       #
 
       def move_to(x, y)
-        @bridge.setWindowPosition Integer(x), Integer(y)
+        @bridge.reposition_window Integer(x), Integer(y)
       end
 
       #
@@ -95,10 +138,24 @@ module Selenium
       #
 
       def maximize
-        @bridge.maximizeWindow
+        @bridge.maximize_window
       end
 
+      #
+      # Minimize the current window
+      #
 
-    end
-  end
-end
+      def minimize
+        @bridge.minimize_window
+      end
+
+      #
+      # Make current window full screen
+      #
+
+      def full_screen
+        @bridge.full_screen_window
+      end
+    end # Window
+  end # WebDriver
+end # Selenium

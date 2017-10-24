@@ -31,6 +31,7 @@ goog.require('goog.storage.ErrorCode');
  * @param {!goog.storage.mechanism.Mechanism} mechanism The underlying
  *     storage mechanism.
  * @constructor
+ * @struct
  */
 goog.storage.Storage = function(mechanism) {
   /**
@@ -77,7 +78,7 @@ goog.storage.Storage.prototype.get = function(key) {
   if (goog.isNull(json)) {
     return undefined;
   }
-  /** @preserveTry */
+
   try {
     return goog.json.parse(json);
   } catch (e) {

@@ -1,31 +1,34 @@
-/*
-Copyright 2015 Software Freedom Conservancy
-Copyright 2012 Selenium committers
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
-
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium.support.ui;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
+import static org.openqa.selenium.testing.Driver.ALL;
+import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
@@ -39,10 +42,11 @@ public class SelectElementTest extends JUnit4TestBase {
     driver.get(pages.formPage);
   }
 
-  @Test(expected = org.openqa.selenium.support.ui.UnexpectedTagNameException.class)
+  @Test
   public void shouldThrowAnExceptionIfTheElementIsNotASelectElement() {
     WebElement selectElement = driver.findElement(By.name("checky"));
-    Select select = new Select(selectElement);
+    Throwable t = catchThrowable(() -> new Select(selectElement));
+    assertThat(t, instanceOf(UnexpectedTagNameException.class));
   }
 
   @Test
@@ -141,12 +145,13 @@ public class SelectElementTest extends JUnit4TestBase {
     assertEquals("Eggs",firstSelected.getText());
   }
 
-  @Test(expected = org.openqa.selenium.NoSuchElementException.class)
+  @Test
   public void shouldThrowANoSuchElementExceptionIfNothingIsSelected() {
     WebElement selectElement = driver.findElement(By.name("select_empty_multiple"));
     Select select = new Select(selectElement);
 
-    select.getFirstSelectedOption();
+    Throwable t = catchThrowable(select::getFirstSelectedOption);
+    assertThat(t, instanceOf(NoSuchElementException.class));
   }
 
   @Test
@@ -158,18 +163,23 @@ public class SelectElementTest extends JUnit4TestBase {
     assertEquals("select_2",firstSelected.getText());
   }
 
-  @Test(expected = org.openqa.selenium.NoSuchElementException.class)
+  @Test
+  @Ignore(ALL)
   public void shouldNotAllowInvisibleOptionsToBeSelectedByVisibleText() {
-    WebElement selectElement = driver.findElement(By.name("invisi_select"));
+    WebElement selectElement = driver.findElement(By.id("invisi_select"));
     Select select = new Select(selectElement);
-    select.selectByVisibleText("Apples");
+
+    Throwable t = catchThrowable(() -> select.selectByVisibleText("Apples"));
+    assertThat(t, instanceOf(NoSuchElementException.class));
   }
 
-  @Test(expected = org.openqa.selenium.NoSuchElementException.class)
+  @Test
   public void shouldThrowExceptionOnSelectByVisibleTextIfOptionDoesNotExist() {
     WebElement selectElement = driver.findElement(By.name("select_empty_multiple"));
     Select select = new Select(selectElement);
-    select.selectByVisibleText("not there");
+
+    Throwable t = catchThrowable(() -> select.selectByVisibleText("not there"));
+    assertThat(t, instanceOf(NoSuchElementException.class));
   }
 
   @Test
@@ -181,11 +191,13 @@ public class SelectElementTest extends JUnit4TestBase {
     assertEquals("select_2",firstSelected.getText());
   }
 
-  @Test(expected = org.openqa.selenium.NoSuchElementException.class)
+  @Test
   public void shouldThrowExceptionOnSelectByIndexIfOptionDoesNotExist() {
     WebElement selectElement = driver.findElement(By.name("select_empty_multiple"));
     Select select = new Select(selectElement);
-    select.selectByIndex(10);
+
+    Throwable t = catchThrowable(() -> select.selectByIndex(10));
+    assertThat(t, instanceOf(NoSuchElementException.class));
   }
 
   @Test
@@ -197,15 +209,16 @@ public class SelectElementTest extends JUnit4TestBase {
     assertEquals("select_2",firstSelected.getText());
   }
 
-  @Test(expected = org.openqa.selenium.NoSuchElementException.class)
+  @Test
   public void shouldThrowExceptionOnSelectByReturnedValueIfOptionDoesNotExist() {
     WebElement selectElement = driver.findElement(By.name("select_empty_multiple"));
     Select select = new Select(selectElement);
-    select.selectByValue("not there");
+
+    Throwable t = catchThrowable(() -> select.selectByValue("not there"));
+    assertThat(t, instanceOf(NoSuchElementException.class));
   }
 
   @Test
-  @Ignore(MARIONETTE)
   public void shouldAllowUserToDeselectAllWhenSelectSupportsMultipleSelections() {
     WebElement selectElement = driver.findElement(By.name("multi"));
     Select select = new Select(selectElement);
@@ -215,11 +228,13 @@ public class SelectElementTest extends JUnit4TestBase {
     assertEquals(0,returnedOptions.size());
   }
 
-  @Test(expected = java.lang.UnsupportedOperationException.class)
+  @Test
   public void shouldNotAllowUserToDeselectAllWhenSelectDoesNotSupportMultipleSelections() {
     WebElement selectElement = driver.findElement(By.name("selectomatic"));
     Select select = new Select(selectElement);
-    select.deselectAll();
+
+    Throwable t = catchThrowable(select::deselectAll);
+    assertThat(t, instanceOf(UnsupportedOperationException.class));
   }
 
   @Test
@@ -232,11 +247,14 @@ public class SelectElementTest extends JUnit4TestBase {
     assertEquals(1,returnedOptions.size());
   }
 
-  @Test(expected = org.openqa.selenium.NoSuchElementException.class)
+  @Test
+  @Ignore(ALL)
   public void shouldNotAllowUserToDeselectOptionsByInvisibleText() {
-    WebElement selectElement = driver.findElement(By.name("invisi_select"));
+    WebElement selectElement = driver.findElement(By.id("invisi_select"));
     Select select = new Select(selectElement);
-    select.deselectByVisibleText("Apples");
+
+    Throwable t = catchThrowable(() -> select.deselectByVisibleText("Apples"));
+    assertThat(t, instanceOf(NoSuchElementException.class));
   }
 
   @Test
@@ -257,5 +275,70 @@ public class SelectElementTest extends JUnit4TestBase {
     List<WebElement> returnedOptions = select.getAllSelectedOptions();
 
     assertEquals(1,returnedOptions.size());
+  }
+
+  @Test
+  public void shouldAllowOptionsToBeSelectedFromTheSelectElementThatIsNarrowerThanOptions() {
+    driver.get(pages.selectPage);
+    WebElement selectElement = driver.findElement(By.id("narrow"));
+    Select select = new Select(selectElement);
+    select.selectByIndex(1);
+    List<WebElement> returnedOptions = select.getAllSelectedOptions();
+
+    assertEquals(1,returnedOptions.size());
+  }
+  
+  @Test
+  public void shouldThrowExceptionOnDeselectByReturnedValueIfOptionDoesNotExist() {
+    WebElement selectElement = driver.findElement(By.name("select_empty_multiple"));
+    Select select = new Select(selectElement);
+
+    Throwable t = catchThrowable(() -> select.deselectByValue("not there"));
+    assertThat(t, instanceOf(NoSuchElementException.class));
+  }
+  
+  @Test
+  public void shouldThrowExceptionOnDeselectByVisibleTextIfOptionDoesNotExist() {
+    WebElement selectElement = driver.findElement(By.name("select_empty_multiple"));
+    Select select = new Select(selectElement);
+
+    Throwable t = catchThrowable(() -> select.deselectByVisibleText("not there"));
+    assertThat(t, instanceOf(NoSuchElementException.class));
+  }
+  
+  @Test
+  public void shouldThrowExceptionOnDeselectByIndexIfOptionDoesNotExist() {
+    WebElement selectElement = driver.findElement(By.name("select_empty_multiple"));
+    Select select = new Select(selectElement);
+
+    Throwable t = catchThrowable(() -> select.deselectByIndex(10));
+    assertThat(t, instanceOf(NoSuchElementException.class));
+  }
+  
+  @Test
+  public void shouldNotAllowUserToDeselectByIndexWhenSelectDoesNotSupportMultipleSelections() {
+    WebElement selectElement = driver.findElement(By.name("selectomatic"));
+    Select select = new Select(selectElement);
+
+    Throwable t = catchThrowable(() -> select.deselectByIndex(10));
+    assertThat(t, instanceOf(UnsupportedOperationException.class));
+  }
+  
+  @Test
+  public void shouldNotAllowUserToDeselectByValueWhenSelectDoesNotSupportMultipleSelections() {
+    WebElement selectElement = driver.findElement(By.name("selectomatic"));
+    Select select = new Select(selectElement);
+
+    Throwable t = catchThrowable(() -> select.deselectByValue("two"));
+    assertThat(t, instanceOf(UnsupportedOperationException.class));
+  }
+  
+  @Test
+  public void shouldNotAllowUserToDeselectByVisibleTextWhenSelectDoesNotSupportMultipleSelections() {
+    WebElement selectElement = driver.findElement(By.name("selectomatic"));
+    Select select = new Select(selectElement);
+
+    Throwable t = catchThrowable(() -> select.deselectByVisibleText("Four"));
+    assertThat(t, instanceOf(UnsupportedOperationException.class));
   }
 }

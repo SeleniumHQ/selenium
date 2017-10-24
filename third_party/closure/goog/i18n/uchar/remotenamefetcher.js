@@ -34,9 +34,11 @@ goog.provide('goog.i18n.uChar.RemoteNameFetcher');
 
 goog.require('goog.Disposable');
 goog.require('goog.Uri');
+goog.require('goog.events');
 goog.require('goog.i18n.uChar');
 goog.require('goog.i18n.uChar.NameFetcher');
 goog.require('goog.log');
+goog.require('goog.net.EventType');
 goog.require('goog.net.XhrIo');
 goog.require('goog.structs.Map');
 
@@ -132,8 +134,9 @@ goog.i18n.uChar.RemoteNameFetcher.prototype.disposeInternal = function() {
 goog.i18n.uChar.RemoteNameFetcher.prototype.prefetch = function(characters) {
   // Abort the current request if there is one
   if (this.prefetchXhrIo_.isActive()) {
-    goog.i18n.uChar.RemoteNameFetcher.logger_.
-        info('Aborted previous prefetch() call for new incoming request');
+    goog.log.info(
+        goog.i18n.uChar.RemoteNameFetcher.logger_,
+        'Aborted previous prefetch() call for new incoming request');
     this.prefetchXhrIo_.abort();
   }
   if (this.prefetchLastListenerKey_) {
@@ -142,11 +145,12 @@ goog.i18n.uChar.RemoteNameFetcher.prototype.prefetch = function(characters) {
 
   // Set up new listener
   var preFetchCallback = goog.bind(this.prefetchCallback_, this);
-  this.prefetchLastListenerKey_ = goog.events.listenOnce(this.prefetchXhrIo_,
-      goog.net.EventType.COMPLETE, preFetchCallback);
+  this.prefetchLastListenerKey_ = goog.events.listenOnce(
+      this.prefetchXhrIo_, goog.net.EventType.COMPLETE, preFetchCallback);
 
-  this.fetch_(goog.i18n.uChar.RemoteNameFetcher.RequestType_.BASE_88,
-      characters, this.prefetchXhrIo_);
+  this.fetch_(
+      goog.i18n.uChar.RemoteNameFetcher.RequestType_.BASE_88, characters,
+      this.prefetchXhrIo_);
 };
 
 
@@ -161,8 +165,8 @@ goog.i18n.uChar.RemoteNameFetcher.prototype.prefetchCallback_ = function() {
 
 
 /** @override */
-goog.i18n.uChar.RemoteNameFetcher.prototype.getName = function(character,
-    callback) {
+goog.i18n.uChar.RemoteNameFetcher.prototype.getName = function(
+    character, callback) {
   var codepoint = goog.i18n.uChar.toCharCode(character).toString(16);
 
   if (this.charNames_.containsKey(codepoint)) {
@@ -173,8 +177,9 @@ goog.i18n.uChar.RemoteNameFetcher.prototype.getName = function(character,
 
   // Abort the current request if there is one
   if (this.getNameXhrIo_.isActive()) {
-    goog.i18n.uChar.RemoteNameFetcher.logger_.
-        info('Aborted previous getName() call for new incoming request');
+    goog.log.info(
+        goog.i18n.uChar.RemoteNameFetcher.logger_,
+        'Aborted previous getName() call for new incoming request');
     this.getNameXhrIo_.abort();
   }
   if (this.getNameLastListenerKey_) {
@@ -182,13 +187,14 @@ goog.i18n.uChar.RemoteNameFetcher.prototype.getName = function(character,
   }
 
   // Set up new listener
-  var getNameCallback = goog.bind(this.getNameCallback_, this, codepoint,
-      callback);
-  this.getNameLastListenerKey_ = goog.events.listenOnce(this.getNameXhrIo_,
-      goog.net.EventType.COMPLETE, getNameCallback);
+  var getNameCallback =
+      goog.bind(this.getNameCallback_, this, codepoint, callback);
+  this.getNameLastListenerKey_ = goog.events.listenOnce(
+      this.getNameXhrIo_, goog.net.EventType.COMPLETE, getNameCallback);
 
-  this.fetch_(goog.i18n.uChar.RemoteNameFetcher.RequestType_.CODEPOINT,
-      codepoint, this.getNameXhrIo_);
+  this.fetch_(
+      goog.i18n.uChar.RemoteNameFetcher.RequestType_.CODEPOINT, codepoint,
+      this.getNameXhrIo_);
 };
 
 
@@ -218,7 +224,8 @@ goog.i18n.uChar.RemoteNameFetcher.prototype.getNameCallback_ = function(
  */
 goog.i18n.uChar.RemoteNameFetcher.prototype.processResponse_ = function(xhrIo) {
   if (!xhrIo.isSuccess()) {
-    goog.log.error(goog.i18n.uChar.RemoteNameFetcher.logger_,
+    goog.log.error(
+        goog.i18n.uChar.RemoteNameFetcher.logger_,
         'Problem with data source: ' + xhrIo.getLastError());
     return;
   }
@@ -264,13 +271,13 @@ goog.i18n.uChar.RemoteNameFetcher.RequestType_ = {
  * @param {!goog.net.XhrIo} xhrIo The XHRIo object to execute the server call.
  * @private
  */
-goog.i18n.uChar.RemoteNameFetcher.prototype.fetch_ = function(requestType,
-    requestInput, xhrIo) {
+goog.i18n.uChar.RemoteNameFetcher.prototype.fetch_ = function(
+    requestType, requestInput, xhrIo) {
   var url = new goog.Uri(this.dataSourceUri_);
   url.setParameterValue(requestType, requestInput);
   url.setParameterValue('p', 'name');
-  goog.log.info(goog.i18n.uChar.RemoteNameFetcher.logger_, 'Request: ' +
-      url.toString());
+  goog.log.info(
+      goog.i18n.uChar.RemoteNameFetcher.logger_, 'Request: ' + url.toString());
   xhrIo.send(url);
 };
 

@@ -48,15 +48,16 @@ goog.net.WebChannelTransport = function() {};
 
 
 /**
- * The latest protocol version. The protocol version is requested
- * from the server which is responsible for terminating the underlying
- * wire protocols.
+ * The client version. This integer value will be passed to the server
+ * when a channel is opened to inform the server the client "capabilities".
+ *
+ * Wire protocol version is a different concept and is internal to the
+ * transport implementation.
  *
  * @const
  * @type {number}
- * @private
  */
-goog.net.WebChannelTransport.LATEST_VERSION_ = 0;
+goog.net.WebChannelTransport.CLIENT_VERSION = 20;
 
 
 /**

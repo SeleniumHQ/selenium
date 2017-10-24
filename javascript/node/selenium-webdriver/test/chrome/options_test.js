@@ -1,17 +1,19 @@
-// Copyright 2013 Selenium committers
-// Copyright 2013 Software Freedom Conservancy
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-//     You may obtain a copy of the License at
+//   http://www.apache.org/licenses/LICENSE-2.0
 //
-// http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 'use strict';
 
@@ -19,6 +21,7 @@ var fs = require('fs');
 
 var webdriver = require('../..'),
     chrome = require('../../chrome'),
+    symbols = require('../../lib/symbols'),
     proxy = require('../../proxy'),
     assert = require('../../testing/assert');
 
@@ -26,7 +29,6 @@ var test = require('../../lib/test');
 
 
 describe('chrome.Options', function() {
-
   describe('fromCapabilities', function() {
 
     it('should return a new Options instance if none were defined',
@@ -56,7 +58,7 @@ describe('chrome.Options', function() {
       });
 
       var options = chrome.Options.fromCapabilities(caps);
-      var json = options.serialize();
+      var json = options[symbols.serialize]();
 
       assert(json.args.length).equalTo(2);
       assert(json.args[0]).equalTo('a');
@@ -77,7 +79,7 @@ describe('chrome.Options', function() {
           });
 
           var options = chrome.Options.fromCapabilities(caps);
-          var json = options.serialize();
+          var json = options[symbols.serialize]();
           assert(json.args).isUndefined();
           assert(json.binary).isUndefined();
           assert(json.detach).isUndefined();
@@ -107,10 +109,10 @@ describe('chrome.Options', function() {
   describe('addArguments', function() {
     it('takes var_args', function() {
       var options = new chrome.Options();
-      assert(options.serialize().args).isUndefined();
+      assert(options[symbols.serialize]().args).isUndefined();
 
       options.addArguments('a', 'b');
-      var json = options.serialize();
+      var json = options[symbols.serialize]();
       assert(json.args.length).equalTo(2);
       assert(json.args[0]).equalTo('a');
       assert(json.args[1]).equalTo('b');
@@ -118,10 +120,10 @@ describe('chrome.Options', function() {
 
     it('flattens input arrays', function() {
       var options = new chrome.Options();
-      assert(options.serialize().args).isUndefined();
+      assert(options[symbols.serialize]().args).isUndefined();
 
       options.addArguments(['a', 'b'], 'c', [1, 2], 3);
-      var json = options.serialize();
+      var json = options[symbols.serialize]();
       assert(json.args.length).equalTo(6);
       assert(json.args[0]).equalTo('a');
       assert(json.args[1]).equalTo('b');
@@ -161,7 +163,9 @@ describe('chrome.Options', function() {
   describe('serialize', function() {
     it('base64 encodes extensions', function() {
       var expected = fs.readFileSync(__filename, 'base64');
-      var wire = new chrome.Options().addExtensions(__filename).serialize();
+      var wire = new chrome.Options()
+          .addExtensions(__filename)
+          [symbols.serialize]();
       assert(wire.extensions.length).equalTo(1);
       assert(wire.extensions[0]).equalTo(expected);
     });
@@ -200,23 +204,23 @@ describe('chrome.Options', function() {
 test.suite(function(env) {
   var driver;
 
-  test.afterEach(function() {
-    driver.quit();
+  afterEach(function() {
+    return driver.quit();
   });
 
   describe('Chrome options', function() {
-    test.it('can start Chrome with custom args', function() {
+    it('can start Chrome with custom args', async function() {
       var options = new chrome.Options().
           addArguments('user-agent=foo;bar');
 
-      driver = env.builder().
-          setChromeOptions(options).
-          build();
+      driver = await env.builder()
+          .setChromeOptions(options)
+          .build();
 
-      driver.get(test.Pages.ajaxyPage);
+      await driver.get(test.Pages.ajaxyPage);
 
-      var userAgent = driver.executeScript(
-          'return window.navigator.userAgent');
+      var userAgent =
+          await driver.executeScript('return window.navigator.userAgent');
       assert(userAgent).equalTo('foo;bar');
     });
   });

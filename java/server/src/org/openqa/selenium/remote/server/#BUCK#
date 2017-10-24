@@ -1,0 +1,146 @@
+# BUILD FILE SYNTAX: SKYLARK
+java_library(name = 'sessions',
+  srcs = [
+    'DriverSessions.java',
+    'KnownElements.java',
+    'Session.java',
+  ],
+  deps = [
+    '//java/client/src/org/openqa/selenium:selenium',
+    '//java/client/src/org/openqa/selenium/remote:remote',
+    '//third_party/java/guava:guava',
+  ],
+  visibility = [
+    '//java/server/src/com/thoughtworks/selenium/webdriven:rc-emulation-servlet',
+    '//java/server/test/...',
+  ],
+)
+
+java_library(name = 'server',
+  srcs = [
+    'CapabilitiesComparator.java',
+    'DefaultDriverFactory.java',
+    'DefaultDriverProvider.java',
+    'DefaultDriverSessions.java',
+    'DefaultSession.java',
+    'DriverFactory.java',
+    'DriverProvider.java',
+    'DriverServlet.java',
+    'FirefoxDriverProvider.java',
+    'InputStreamWrappingServletInputStream.java',
+    'JsonHttpCommandHandler.java',
+    'JsonParametersAware.java',
+    'NewSessionPayload.java',
+    'ServletRequestWrappingHttpRequest.java',
+    'ServletResponseWrappingHttpResponse.java',
+    'SnapshotScreenListener.java',
+    'StaticResourceHandler.java',
+  ] + glob([
+    'handler/**/*.java',
+    'rest/*.java',
+    'xdrpc/*.java',
+  ]),
+  resources = [
+    ':client',
+    ':hub',
+    ':style',
+  ],
+  deps = [
+    ':sessions',
+    '//java/client/src/org/openqa/selenium:selenium',
+    '//java/client/src/org/openqa/selenium/remote:remote',
+    '//java/client/src/org/openqa/selenium/support/events:events',
+    '//java/server/src/org/openqa/selenium/remote/server/log:log',
+    '//third_party/java/gson:gson',
+    '//third_party/java/guava:guava',
+    '//third_party/java/servlet:servlet-api',
+  ],
+  visibility = [
+    '//java/server/src/org/openqa/grid:grid',
+    '//java/server/src/org/openqa/grid/selenium:classes',
+    '//java/server/src/com/thoughtworks/selenium/webdriven:rc-emulation-servlet',
+    '//java/server/test/...',
+  ],
+)
+
+java_library(
+  name = 'webdriver-servlet',
+  srcs = [
+    'ActiveSession.java',
+    'ActiveSessionCommandExecutor.java',
+    'ActiveSessionFactory.java',
+    'ActiveSessionListener.java',
+    'ActiveSessions.java',
+    'AllHandlers.java',
+    'CommandHandler.java',
+    'InMemorySession.java',
+    'Passthrough.java',
+    'ProtocolConverter.java',
+    'ServicedSession.java',
+    'SessionCodec.java',
+    'SessionFactory.java',
+    'TeeReader.java',
+    'UrlTemplate.java',
+    'WebDriverServlet.java',
+  ] + glob(['commandhandler/*.java']),
+  provided_deps = [
+    '//third_party/java/servlet:servlet-api',
+  ],
+  deps = [
+    ':server',
+    ':sessions',
+    '//java/client/src/org/openqa/selenium/remote:remote',
+    '//java/server/src/org/openqa/selenium/remote/server/log:log',
+    '//third_party/java/gson:gson',
+    '//third_party/java/guava:guava',
+  ],
+  visibility = [
+    '//java/server/src/com/thoughtworks/selenium/webdriven:rc-emulation-servlet',
+    '//java/server/src/org/openqa/grid:grid',
+    '//java/server/test/com/thoughtworks/selenium/webdriven:webdriven',
+    '//java/server/test/org/openqa/selenium/remote/server:tests',
+  ],
+)
+
+export_file(name = 'client',
+  src = '//javascript/remote:client',
+  out = 'client.js',
+)
+
+export_file(name = 'hub',
+  src = '//javascript/remote:hub',
+  out = 'hub.html',
+)
+
+export_file(name = 'style',
+  src = '//javascript/remote:style',
+  out = 'style.css',
+)
+
+java_library(name = 'standalone-server-lib',
+  srcs = [
+    'SeleniumServer.java',
+  ],
+  deps = [
+    ':server',
+    ':sessions',
+    ':webdriver-servlet',
+    '//java/client/src/org/openqa/selenium/chrome:chrome',
+    '//java/client/src/org/openqa/selenium/edge:edge',
+    '//java/client/src/org/openqa/selenium/firefox:firefox',
+    '//java/client/src/org/openqa/selenium/ie:ie',
+    '//java/client/src/org/openqa/selenium/opera:opera',
+    '//java/client/src/org/openqa/selenium/remote:remote',
+    '//java/client/src/org/openqa/selenium/safari:safari',
+    '//java/server/src/org/openqa/grid:grid',
+    '//third_party/java/beust:jcommander',
+    '//third_party/java/jetty:jetty',
+    '//third_party/java/phantomjs-driver:phantomjs-driver',
+    '//third_party/java/selenium:htmlunit-driver',
+    '//third_party/java/servlet:servlet-api',
+  ],
+  visibility = [
+    '//java/server/src/org/openqa/grid/selenium:classes',
+    '//java/server/test/org/openqa/grid/e2e:tests',
+  ],
+)

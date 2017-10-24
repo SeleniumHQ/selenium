@@ -1,7 +1,9 @@
 ﻿// <copyright file="ReturnedCookie.cs" company="WebDriver Committers">
-// Copyright 2015 Software Freedom Conservancy
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -15,10 +17,7 @@
 // </copyright>
 
 using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Net.Sockets;
-using System.Text;
 
 namespace OpenQA.Selenium.Internal
 {
@@ -28,9 +27,10 @@ namespace OpenQA.Selenium.Internal
     public class ReturnedCookie : Cookie
     {
         private bool isSecure;
+        private bool isHttpOnly;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ReturnedCookie"/> class with a specific name, 
+        /// Initializes a new instance of the <see cref="ReturnedCookie"/> class with a specific name,
         /// value, domain, path and expiration date.
         /// </summary>
         /// <param name="name">The name of the cookie.</param>
@@ -39,17 +39,19 @@ namespace OpenQA.Selenium.Internal
         /// <param name="path">The path of the cookie.</param>
         /// <param name="expiry">The expiration date of the cookie.</param>
         /// <param name="isSecure"><see langword="true"/> if the cookie is secure; otherwise <see langword="false"/></param>
+        /// <param name="isHttpOnly"><see langword="true"/> if the cookie is an HTTP-only cookie; otherwise <see langword="false"/></param>
         /// <exception cref="ArgumentException">If the name is <see langword="null"/> or an empty string,
         /// or if it contains a semi-colon.</exception>
         /// <exception cref="ArgumentNullException">If the value or currentUrl is <see langword="null"/>.</exception>
-        public ReturnedCookie(string name, string value, string domain, string path, DateTime? expiry, bool isSecure)
+        public ReturnedCookie(string name, string value, string domain, string path, DateTime? expiry, bool isSecure, bool isHttpOnly)
             : base(name, value, domain, path, expiry)
         {
             this.isSecure = isSecure;
+            this.isHttpOnly = isHttpOnly;
         }
 
         /// <summary>
-        /// Gets a value determining if the cookie is secure.
+        /// Gets a value indicating whether the cookie is secure.
         /// </summary>
         public override bool Secure
         {
@@ -57,7 +59,15 @@ namespace OpenQA.Selenium.Internal
         }
 
         /// <summary>
-        /// Creates and returns a string representation of the current cookie. 
+        /// Gets a value indicating whether the cookie is an HTTP-only cookie.
+        /// </summary>
+        public override bool IsHttpOnly
+        {
+            get { return this.isHttpOnly; }
+        }
+
+        /// <summary>
+        /// Creates and returns a string representation of the current cookie.
         /// </summary>
         /// <returns>A string representation of the current cookie.</returns>
         public override string ToString()
@@ -66,7 +76,8 @@ namespace OpenQA.Selenium.Internal
                 + (this.Expiry == null ? string.Empty : "; expires=" + this.Expiry.Value.ToUniversalTime().ToString("ddd MM/dd/yyyy HH:mm:ss UTC", CultureInfo.InvariantCulture))
                     + (string.IsNullOrEmpty(this.Path) ? string.Empty : "; path=" + this.Path)
                     + (string.IsNullOrEmpty(this.Domain) ? string.Empty : "; domain=" + this.Domain)
-                    + (this.isSecure ? ";secure;" : string.Empty);
+                    + (this.isSecure ? "; secure" : string.Empty)
+                    + (this.isHttpOnly ? "; httpOnly" : string.Empty);
         }
     }
 }

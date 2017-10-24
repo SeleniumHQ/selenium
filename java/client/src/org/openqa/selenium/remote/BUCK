@@ -1,13 +1,24 @@
+# BUILD FILE SYNTAX: SKYLARK
+load("//:selenium-version.bzl", "SE_VERSION")
+
 java_library(
   name = 'api',
   srcs = [
     'Augmentable.java',
     'Command.java',
     'CommandExecutor.java',
+    'ErrorCodes.java',
     'Response.java',
+    'ScreenshotException.java',
     'SessionId.java',
   ],
-  visibility = ['PUBLIC'],
+  deps = [
+    '//java/client/src/org/openqa/selenium:core',
+    '//third_party/java/guava:guava',
+  ],
+  visibility = [
+    '//java/client/src/org/openqa/selenium/json:json',
+  ]
 )
 
 java_library(
@@ -18,11 +29,9 @@ java_library(
     'DesiredCapabilities.java',
   ],
   deps = [
-    '//java/client/src/org/openqa/selenium:webdriver-api',
-    '//java/client/src/org/openqa/selenium/logging:logging',
-    '//third_party/java/guava-libraries:guava-libraries',
+    '//java/client/src/org/openqa/selenium:selenium',
+    '//third_party/java/guava:guava',
   ],
-  visibility = ['PUBLIC'],
 )
 
 java_library(
@@ -31,21 +40,55 @@ java_library(
 )
 
 java_library(name = 'remote',
+  maven_coords = 'org.seleniumhq.selenium:selenium-remote-driver:' + SE_VERSION,
+  maven_pom_template = '//java/client/src/org/openqa/selenium:template-pom',
+  srcs = [
+    'Augmenter.java',
+    'AugmenterProvider.java',
+    'AddFindsByCss.java',
+    'AddFindsChildByCss.java',
+    'AddRemoteTouchScreen.java',
+    'AddRotatable.java',
+    'BaseAugmenter.java',
+    'InterfaceImplementation.java',
+    'JdkAugmenter.java',
+    'html5/AddApplicationCache.java',
+    'html5/AddLocationContext.java',
+    'html5/AddWebStorage.java',
+    'mobile/AddNetworkConnection.java',
+  ],
+  exported_deps = [
+    ':remote-lib',
+    '//java/client/src/org/openqa/selenium:selenium',
+  ],
+  deps = [
+    '//third_party/java/bytebuddy:bytebuddy',
+    '//third_party/java/guava:guava',
+  ],
+  visibility = ['PUBLIC'],
+)
+
+
+java_library(name = 'remote-lib',
   srcs = [
     'BeanToJsonConverter.java',
     'CommandCodec.java',
     'CommandInfo.java',
     'CoordinatesUtils.java',
+    'Dialect.java',
     'DriverCommand.java',
     'ErrorCodes.java',
     'ErrorHandler.java',
     'ExecuteMethod.java',
     'FileDetector.java',
+    'Gecko013ProtocolResponse.java',
+    'HandshakeResponse.java',
     'HttpCommandExecutor.java',
-    'HttpVerb.java',
-    'JsonException.java',
+    'InitialHandshakeResponse.java',
     'JsonToBeanConverter.java',
+    'JsonWireProtocolResponse.java',
     'LocalFileDetector.java',
+    'ProtocolHandshake.java',
     'RemoteExecuteMethod.java',
     'RemoteKeyboard.java',
     'RemoteLogs.java',
@@ -55,11 +98,9 @@ java_library(name = 'remote',
     'RemoteWebDriver.java',
     'RemoteWebElement.java',
     'ResponseCodec.java',
-    'ScreenshotException.java',
-    'SessionNotFoundException.java',
-    'SimplePropertyDescriptor.java',
     'UnreachableBrowserException.java',
     'UselessFileDetector.java',
+    'W3CHandshakeResponse.java',
     'html5/RemoteApplicationCache.java',
     'html5/RemoteLocalStorage.java',
     'html5/RemoteLocationContext.java',
@@ -70,28 +111,48 @@ java_library(name = 'remote',
     'http/HttpMethod.java',
     'http/HttpRequest.java',
     'http/HttpResponse.java',
+    'http/AbstractHttpCommandCodec.java',
+    'http/AbstractHttpResponseCodec.java',
     'http/JsonHttpCommandCodec.java',
     'http/JsonHttpResponseCodec.java',
+    'http/W3CHttpCommandCodec.java',
+    'http/W3CHttpResponseCodec.java',
     'internal/ApacheHttpClient.java',
-    'internal/CircularOutputStream.java',
     'internal/HttpClientFactory.java',
+    'internal/JreHttpClient.java',
     'internal/JsonToWebElementConverter.java',
     'internal/WebElementToJsonConverter.java',
+    'mobile/RemoteNetworkConnection.java',
+  ] + glob([
+    'service/*.java',
+  ]),
+  resources = [
+    ':get-attribute',
+    ':is-displayed',
   ],
   exported_deps = [
     ':api',
     ':capabilities',
-    '//java/client/src/org/openqa/selenium:webdriver-api',
-    '//java/client/src/org/openqa/selenium/interactions:exceptions',
-    '//java/client/src/org/openqa/selenium/logging:logging',
+    '//java/client/src/org/openqa/selenium/json:json',
+    '//third_party/java/httpcomponents:httpclient',
+    '//third_party/java/httpcomponents:httpcore',
   ],
   deps = [
     ':http-session-id',
-    '//java/client/src/org/openqa/selenium/io:io',
-    '//java/client/src/org/openqa/selenium/net:net',
-    '//third_party/java/apache-httpclient:apache-httpclient',
-    '//third_party/java/guava-libraries:guava-libraries',
+    '//java/client/src/org/openqa/selenium:selenium',
     '//third_party/java/gson:gson',
+    '//third_party/java/guava:guava',
   ],
-  visibility = ['PUBLIC'],
+)
+
+export_file(
+  name = 'get-attribute',
+  src = '//javascript/webdriver/atoms:get-attribute',
+  out = 'getAttribute.js',
+)
+
+export_file(
+  name = 'is-displayed',
+  src = '//javascript/atoms/fragments:is-displayed',
+  out = 'isDisplayed.js',
 )

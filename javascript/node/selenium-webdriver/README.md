@@ -6,43 +6,39 @@ interaction with the browser.
 
 ## Installation
 
-Install via npm with
+Selenium may be installed via npm with
 
     npm install selenium-webdriver
 
-Out of the box, Selenium includes everything you need to work with Firefox. You
-will need to download additional components to work with the other major
-browsers. The drivers for Chrome, IE, PhantomJS, and Opera are all standalone
-executables that should be placed on your
-[PATH](http://en.wikipedia.org/wiki/PATH_%28variable%29). The SafariDriver
-browser extension should be installed in your browser before using Selenium; we
-recommend disabling the extension when using the browser without Selenium or
-installing the extension in a profile only used for testing.
+You will need to download additional components to work with each of the major
+browsers. The drivers for Chrome, Firefox, and Microsoft's IE and Edge web
+browsers are all standalone executables that should be placed on your system
+[PATH]. Apple's safaridriver is shipped with Safari 10 for OS X El Capitan and
+macOS Sierra. You will need to enable Remote Automation in the Develop menu of
+Safari 10 before testing.
+
 
 | Browser           | Component                          |
 | ----------------- | ---------------------------------- |
 | Chrome            | [chromedriver(.exe)][chrome]       |
 | Internet Explorer | [IEDriverServer.exe][release]      |
-| PhantomJS         | [phantomjs(.exe)][phantomjs]       |
-| Opera             | [operadriver(.exe)][opera]         |
-| Safari            | [SafariDriver.safariextz][release] |
+| Edge              | [MicrosoftWebDriver.msi][edge]     |
+| Firefox           | [geckodriver(.exe)][geckodriver]   |
+| Safari            | [safaridriver]                     |
 
 ## Usage
 
 The sample below and others are included in the `example` directory. You may
 also find the tests for selenium-webdriver informative.
 
-    var webdriver = require('selenium-webdriver'),
-        By = require('selenium-webdriver').By,
-        until = require('selenium-webdriver').until;
+    const {Builder, By, Key, until} = require('selenium-webdriver');
 
-    var driver = new webdriver.Builder()
+    let driver = new Builder()
         .forBrowser('firefox')
         .build();
 
     driver.get('http://www.google.com/ncr');
-    driver.findElement(By.name('q')).sendKeys('webdriver');
-    driver.findElement(By.name('btnG')).click();
+    driver.findElement(By.name('q')).sendKeys('webdriver', Key.RETURN);
     driver.wait(until.titleIs('webdriver - Google Search'), 1000);
     driver.quit();
 
@@ -109,8 +105,8 @@ script provided with `selenium-webdriver`.
 
 ## Documentation
 
-API documentation is included in the `docs` directory and is also available
-online from the [Selenium project][api]. Addition resources include
+API documentation is available online from the [Selenium project][api].
+Additional resources include
 
 - the #selenium channel on freenode IRC
 - the [selenium-users@googlegroups.com][users] list
@@ -121,6 +117,54 @@ online from the [Selenium project][api]. Addition resources include
 Contributions are accepted either through [GitHub][gh] pull requests or patches
 via the [Selenium issue tracker][issues]. You must sign our
 [Contributor License Agreement][cla] before your changes will be accepted.
+
+## Node Support Policy
+
+Each version of selenium-webdriver will support the latest _semver-minor_
+version of the [LTS] and stable Node releases. All _semver-major_ &
+_semver-minor_ versions between the LTS and stable release will have "best
+effort" support. Following a Selenium release, any _semver-minor_ Node releases
+will also have "best effort" support. Releases older than the latest LTS,
+_semver-major_ releases, and all unstable release branches (e.g. "v.Next")
+are considered strictly unsupported.
+
+For example, suppose the current LTS and stable releases are v6.9.5 and v7.5.0,
+respectively. Then a Selenium release would have the following support levels:
+
+| Version | Support       |
+| ------- | ------------- |
+| <= 6.8  | _unsupported_ |
+| 6.9     | supported     |
+| 7.0-4   | best effort   |
+| 7.5     | supported     |
+| >= 7.5  | best effort   |
+| v.Next  | _unsupported_ |
+
+### Support Level Definitions
+
+- _supported:_ A selenium-webdriver release will be API compatible with the
+    platform API, without the use of runtime flags.
+
+- _best effort:_ Bugs will be investigated as time permits. API compatibility is
+    only guaranteed where required by a _supported_ release. This effectively
+    means the adoption of new JS features, such as ES2015 modules, will depend
+    on what is supported in Node's LTS.
+
+- _unsupported:_ Bug submissions will be closed as will-not-fix and API
+    compatibility is not guaranteed.
+
+### Projected Support Schedule
+
+If Node releases a new [LTS] each October and a new major version every 6
+months, the support window for selenium-webdriver will be roughly:
+
+| Date      | LTS  | Stable |
+| --------- | ---: | -----: |
+| (current) |  6.9 |    7.5 |
+| 2017-04   |  6.0 |    8.0 |
+| 2017-10   |  8.0 |    9.0 |
+| 2018-04   |  8.0 |   10.0 |
+| 2018-10   | 10.0 |   11.0 |
 
 ## Issues
 
@@ -141,32 +185,38 @@ the issue tracker
 - __Do not__ post empty "I see this too" or "Any updates?" comments. These
     provide no additional information and clutter the log.
 - __Do not__ report regressions on closed bugs as they are not actively
-    monitored for upates (especially bugs that are >6 months old). Please open a
+    monitored for updates (especially bugs that are >6 months old). Please open a
     new issue and reference the original bug in your report.
 
 ## License
 
-Copyright 2009-2015 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
+Licensed to the Software Freedom Conservancy (SFC) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The SFC licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
 
 http://www.apache.org/licenses/LICENSE-2.0
 
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
 
-[api]: http://selenium.googlecode.com/git/docs/api/javascript/index.html
+[LTS]: https://github.com/nodejs/LTS
+[PATH]: http://en.wikipedia.org/wiki/PATH_%28variable%29
+[api]: http://seleniumhq.github.io/selenium/docs/api/javascript/module/selenium-webdriver/
 [cla]: http://goo.gl/qC50R
 [chrome]: http://chromedriver.storage.googleapis.com/index.html
 [gh]: https://github.com/SeleniumHQ/selenium/
 [issues]: https://github.com/SeleniumHQ/selenium/issues
-[opera]: https://github.com/operasoftware/operachromiumdriver/releases
-[phantomjs]: http://phantomjs.org/
+[edge]: http://go.microsoft.com/fwlink/?LinkId=619687
+[geckodriver]: https://github.com/mozilla/geckodriver/releases/
 [reduction]: http://www.webkit.org/quality/reduction.html
 [release]: http://selenium-release.storage.googleapis.com/index.html
 [users]: https://groups.google.com/forum/#!forum/selenium-users
+[safaridriver]: https://developer.apple.com/library/prerelease/content/releasenotes/General/WhatsNewInSafari/Articles/Safari_10_0.html#//apple_ref/doc/uid/TP40014305-CH11-DontLinkElementID_28

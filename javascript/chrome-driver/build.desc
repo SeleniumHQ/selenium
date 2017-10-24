@@ -37,15 +37,6 @@ js_fragment(name = "find_element",
   function = "webdriver.chrome.findElement",
   deps = [ ":lib" ])
 
-js_test(name = "test",
-  srcs = [ "test/*_test.html" ],
-  deps = [
-    ":lib",
-    "//java/client/src/org/openqa/selenium/chrome",
-    "//java/client/test/org/openqa/selenium/javascript",
-  ],
-  browsers = [ "chrome" ])
-
 js_fragment_cpp(name = "atoms",
   deps = [
     "//javascript/atoms/fragments:clear:chrome",

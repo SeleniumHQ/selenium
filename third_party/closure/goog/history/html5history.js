@@ -47,7 +47,8 @@ goog.require('goog.history.Event');
  */
 goog.history.Html5History = function(opt_win, opt_transformer) {
   goog.events.EventTarget.call(this);
-  goog.asserts.assert(goog.history.Html5History.isSupported(opt_win),
+  goog.asserts.assert(
+      goog.history.Html5History.isSupported(opt_win),
       'HTML5 history is not supported.');
 
   /**
@@ -65,10 +66,20 @@ goog.history.Html5History = function(opt_win, opt_transformer) {
    */
   this.transformer_ = opt_transformer || null;
 
-  goog.events.listen(this.window_, goog.events.EventType.POPSTATE,
-      this.onHistoryEvent_, false, this);
-  goog.events.listen(this.window_, goog.events.EventType.HASHCHANGE,
-      this.onHistoryEvent_, false, this);
+  /**
+   * The fragment of the last navigation. Used to eliminate duplicate/redundant
+   * NAVIGATE events when a POPSTATE and HASHCHANGE event are triggered for the
+   * same navigation (e.g., back button click).
+   * @private {?string}
+   */
+  this.lastFragment_ = null;
+
+  goog.events.listen(
+      this.window_, goog.events.EventType.POPSTATE, this.onHistoryEvent_, false,
+      this);
+  goog.events.listen(
+      this.window_, goog.events.EventType.HASHCHANGE, this.onHistoryEvent_,
+      false, this);
 };
 goog.inherits(goog.history.Html5History, goog.events.EventTarget);
 
@@ -136,9 +147,7 @@ goog.history.Html5History.prototype.setEnabled = function(enable) {
  */
 goog.history.Html5History.prototype.getToken = function() {
   if (this.useFragment_) {
-    var loc = this.window_.location.href;
-    var index = loc.indexOf('#');
-    return index < 0 ? '' : loc.substring(index + 1);
+    return goog.asserts.assertString(this.getFragment_());
   } else {
     return this.transformer_ ?
         this.transformer_.retrieveToken(
@@ -159,8 +168,9 @@ goog.history.Html5History.prototype.setToken = function(token, opt_title) {
   }
 
   // Per externs/gecko_dom.js document.title can be null.
-  this.window_.history.pushState(null,
-      opt_title || this.window_.document.title || '', this.getUrl_(token));
+  this.window_.history.pushState(
+      null, opt_title || this.window_.document.title || '',
+      this.getUrl_(token));
   this.dispatchEvent(new goog.history.Event(token, false));
 };
 
@@ -173,19 +183,22 @@ goog.history.Html5History.prototype.setToken = function(token, opt_title) {
  */
 goog.history.Html5History.prototype.replaceToken = function(token, opt_title) {
   // Per externs/gecko_dom.js document.title can be null.
-  this.window_.history.replaceState(null,
-      opt_title || this.window_.document.title || '', this.getUrl_(token));
+  this.window_.history.replaceState(
+      null, opt_title || this.window_.document.title || '',
+      this.getUrl_(token));
   this.dispatchEvent(new goog.history.Event(token, false));
 };
 
 
 /** @override */
 goog.history.Html5History.prototype.disposeInternal = function() {
-  goog.events.unlisten(this.window_, goog.events.EventType.POPSTATE,
-      this.onHistoryEvent_, false, this);
+  goog.events.unlisten(
+      this.window_, goog.events.EventType.POPSTATE, this.onHistoryEvent_, false,
+      this);
   if (this.useFragment_) {
-    goog.events.unlisten(this.window_, goog.events.EventType.HASHCHANGE,
-        this.onHistoryEvent_, false, this);
+    goog.events.unlisten(
+        this.window_, goog.events.EventType.HASHCHANGE, this.onHistoryEvent_,
+        false, this);
   }
 };
 
@@ -197,11 +210,13 @@ goog.history.Html5History.prototype.disposeInternal = function() {
 goog.history.Html5History.prototype.setUseFragment = function(useFragment) {
   if (this.useFragment_ != useFragment) {
     if (useFragment) {
-      goog.events.listen(this.window_, goog.events.EventType.HASHCHANGE,
-          this.onHistoryEvent_, false, this);
+      goog.events.listen(
+          this.window_, goog.events.EventType.HASHCHANGE, this.onHistoryEvent_,
+          false, this);
     } else {
-      goog.events.unlisten(this.window_, goog.events.EventType.HASHCHANGE,
-          this.onHistoryEvent_, false, this);
+      goog.events.unlisten(
+          this.window_, goog.events.EventType.HASHCHANGE, this.onHistoryEvent_,
+          false, this);
     }
     this.useFragment_ = useFragment;
   }
@@ -224,6 +239,22 @@ goog.history.Html5History.prototype.setPathPrefix = function(pathPrefix) {
  */
 goog.history.Html5History.prototype.getPathPrefix = function() {
   return this.pathPrefix_;
+};
+
+
+/**
+ * Gets the current hash fragment, if useFragment_ is enabled.
+ * @return {?string} The hash fragment.
+ * @private
+ */
+goog.history.Html5History.prototype.getFragment_ = function() {
+  if (this.useFragment_) {
+    var loc = this.window_.location.href;
+    var index = loc.indexOf('#');
+    return index < 0 ? '' : loc.substring(index + 1);
+  } else {
+    return null;
+  }
 };
 
 
@@ -252,7 +283,15 @@ goog.history.Html5History.prototype.getUrl_ = function(token) {
  */
 goog.history.Html5History.prototype.onHistoryEvent_ = function(e) {
   if (this.enabled_) {
-    this.dispatchEvent(new goog.history.Event(this.getToken(), true));
+    var fragment = this.getFragment_();
+    // Only fire NAVIGATE event if it's POPSTATE or if the fragment has changed
+    // without a POPSTATE event. The latter is an indication the browser doesn't
+    // support POPSTATE, and the event is a HASHCHANGE instead.
+    if (e.type == goog.events.EventType.POPSTATE ||
+        fragment != this.lastFragment_) {
+      this.lastFragment_ = fragment;
+      this.dispatchEvent(new goog.history.Event(this.getToken(), true));
+    }
   }
 };
 

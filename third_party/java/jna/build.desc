@@ -1,5 +1,0 @@
-java_library(name = "jna",
-  deps = [
-    "jna-3.4.0.jar",
-    "jna-platform-3.4.0.jar",
-  ])

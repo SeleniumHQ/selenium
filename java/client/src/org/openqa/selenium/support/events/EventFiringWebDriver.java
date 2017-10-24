@@ -1,18 +1,19 @@
-/*
-Copyright 2007-2009 Selenium committers
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
- */
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium.support.events;
 
@@ -24,20 +25,24 @@ import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Point;
+import org.openqa.selenium.Rectangle;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.HasInputDevices;
 import org.openqa.selenium.interactions.HasTouchScreen;
+import org.openqa.selenium.interactions.Interactive;
 import org.openqa.selenium.interactions.Keyboard;
 import org.openqa.selenium.interactions.Mouse;
+import org.openqa.selenium.interactions.Sequence;
 import org.openqa.selenium.interactions.TouchScreen;
 import org.openqa.selenium.interactions.internal.Coordinates;
-import org.openqa.selenium.internal.Locatable;
+import org.openqa.selenium.interactions.internal.Locatable;
 import org.openqa.selenium.internal.WrapsDriver;
 import org.openqa.selenium.internal.WrapsElement;
 import org.openqa.selenium.logging.Logs;
+import org.openqa.selenium.security.Credentials;
 import org.openqa.selenium.support.events.internal.EventFiringKeyboard;
 import org.openqa.selenium.support.events.internal.EventFiringMouse;
 import org.openqa.selenium.support.events.internal.EventFiringTouch;
@@ -49,24 +54,27 @@ import java.lang.reflect.Proxy;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * A wrapper around an arbitrary {@link WebDriver} instance which supports registering of a
  * {@link WebDriverEventListener}, e&#46;g&#46; for logging purposes.
  */
 public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, TakesScreenshot,
-    WrapsDriver, HasInputDevices, HasTouchScreen {
+                                             WrapsDriver, HasInputDevices, HasTouchScreen,
+                                             Interactive {
 
   private final WebDriver driver;
 
   private final List<WebDriverEventListener> eventListeners =
-      new ArrayList<WebDriverEventListener>();
+      new ArrayList<>();
   private final WebDriverEventListener dispatcher = (WebDriverEventListener) Proxy
       .newProxyInstance(
           WebDriverEventListener.class.getClassLoader(),
@@ -78,7 +86,7 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
                 method.invoke(eventListener, args);
               }
               return null;
-              } catch (InvocationTargetException e){
+              } catch (InvocationTargetException e) {
                 throw e.getTargetException();
               }
             }
@@ -109,7 +117,7 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
   }
 
   private Class<?>[] extractInterfaces(Object object) {
-    Set<Class<?>> allInterfaces = new HashSet<Class<?>>();
+    Set<Class<?>> allInterfaces = new HashSet<>();
     allInterfaces.add(WrapsDriver.class);
     if (object instanceof WebElement) {
       allInterfaces.add(WrapsElement.class);
@@ -130,6 +138,7 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
   }
 
   /**
+   * @param eventListener the event listener to register
    * @return this for method chaining.
    */
   public EventFiringWebDriver register(WebDriverEventListener eventListener) {
@@ -138,6 +147,7 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
   }
 
   /**
+   * @param eventListener the event listener to unregister
    * @return this for method chaining.
    */
   public EventFiringWebDriver unregister(WebDriverEventListener eventListener) {
@@ -149,9 +159,8 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
   public WebDriver getWrappedDriver() {
     if (driver instanceof WrapsDriver) {
       return ((WrapsDriver) driver).getWrappedDriver();
-    } else {
-      return driver;
     }
+    return driver;
   }
 
   public void get(String url) {
@@ -172,7 +181,7 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
     dispatcher.beforeFindBy(by, null, driver);
     List<WebElement> temp = driver.findElements(by);
     dispatcher.afterFindBy(by, null, driver);
-    List<WebElement> result = new ArrayList<WebElement>(temp.size());
+    List<WebElement> result = new ArrayList<>(temp.size());
     for (WebElement element : temp) {
       result.add(createWebElement(element));
     }
@@ -212,7 +221,7 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
       Object[] usedArgs = unpackWrappedArgs(args);
       Object result = ((JavascriptExecutor) driver).executeScript(script, usedArgs);
       dispatcher.afterScript(script, driver);
-      return result;
+      return wrapResult(result);
     }
     throw new UnsupportedOperationException(
         "Underlying driver instance does not support executing javascript");
@@ -242,14 +251,14 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
   private Object unpackWrappedElement(Object arg) {
     if (arg instanceof List<?>) {
       List<?> aList = (List<?>) arg;
-      List<Object> toReturn = new ArrayList<Object>();
+      List<Object> toReturn = new ArrayList<>();
       for (Object anAList : aList) {
         toReturn.add(unpackWrappedElement(anAList));
       }
       return toReturn;
     } else if (arg instanceof Map<?, ?>) {
       Map<?, ?> aMap = (Map<?, ?>) arg;
-      Map<Object, Object> toReturn = new HashMap<Object, Object>();
+      Map<Object, Object> toReturn = new HashMap<>();
       for (Object key : aMap.keySet()) {
         toReturn.put(key, unpackWrappedElement(aMap.get(key)));
       }
@@ -259,6 +268,23 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
     } else {
       return arg;
     }
+  }
+
+  private Object wrapResult(Object result) {
+    if (result instanceof WebElement) {
+      return new EventFiringWebElement((WebElement) result);
+    }
+    if (result instanceof List) {
+      return ((List<?>) result).stream().map(this::wrapResult).collect(Collectors.toList());
+    }
+    if (result instanceof Map) {
+      return ((Map<?, ?>) result).entrySet().stream().collect(
+          HashMap::new,
+          (m, e) -> m.put(e.getKey(), e.getValue()),
+          Map::putAll);
+    }
+
+    return result;
   }
 
   public <X> X getScreenshotAs(OutputType<X> target) throws WebDriverException {
@@ -289,28 +315,47 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
   public Keyboard getKeyboard() {
     if (driver instanceof HasInputDevices) {
       return new EventFiringKeyboard(driver, dispatcher);
-    } else {
-      throw new UnsupportedOperationException("Underlying driver does not implement advanced"
-          + " user interactions yet.");
     }
+    throw new UnsupportedOperationException("Underlying driver does not implement advanced"
+        + " user interactions yet.");
   }
 
   public Mouse getMouse() {
     if (driver instanceof HasInputDevices) {
       return new EventFiringMouse(driver, dispatcher);
-    } else {
-      throw new UnsupportedOperationException("Underlying driver does not implement advanced"
-          + " user interactions yet.");
     }
+    throw new UnsupportedOperationException("Underlying driver does not implement advanced"
+        + " user interactions yet.");
   }
 
   public TouchScreen getTouch() {
     if (driver instanceof HasTouchScreen) {
       return new EventFiringTouch(driver, dispatcher);
-    } else {
-      throw new UnsupportedOperationException("Underlying driver does not implement advanced"
-          + " user interactions yet.");
     }
+    throw new UnsupportedOperationException("Underlying driver does not implement advanced"
+        + " user interactions yet.");
+ }
+
+  @Override
+  public void perform(Collection<Sequence> actions) {
+    if (driver instanceof Interactive) {
+      ((Interactive) driver).perform(actions);
+      return;
+    }
+    throw new UnsupportedOperationException("Underlying driver does not implement advanced"
+                                            + " user interactions yet.");
+
+  }
+
+  @Override
+  public void resetInputState() {
+    if (driver instanceof Interactive) {
+      ((Interactive) driver).resetInputState();
+      return;
+    }
+    throw new UnsupportedOperationException("Underlying driver does not implement advanced"
+                                            + " user interactions yet.");
+
   }
 
   private class EventFiringWebElement implements WebElement, WrapsElement, WrapsDriver, Locatable {
@@ -350,15 +395,15 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
     }
 
     public void sendKeys(CharSequence... keysToSend) {
-      dispatcher.beforeChangeValueOf(element, driver);
+      dispatcher.beforeChangeValueOf(element, driver, keysToSend);
       element.sendKeys(keysToSend);
-      dispatcher.afterChangeValueOf(element, driver);
+      dispatcher.afterChangeValueOf(element, driver, keysToSend);
     }
 
     public void clear() {
-      dispatcher.beforeChangeValueOf(element, driver);
+      dispatcher.beforeChangeValueOf(element, driver, null);
       element.clear();
-      dispatcher.afterChangeValueOf(element, driver);
+      dispatcher.afterChangeValueOf(element, driver, null);
     }
 
     public String getTagName() {
@@ -393,6 +438,10 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
       return element.getSize();
     }
 
+    public Rectangle getRect() {
+      return element.getRect();
+    }
+
     public String getCssValue(String propertyName) {
       return element.getCssValue(propertyName);
     }
@@ -408,7 +457,7 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
       dispatcher.beforeFindBy(by, element, driver);
       List<WebElement> temp = element.findElements(by);
       dispatcher.afterFindBy(by, element, driver);
-      List<WebElement> result = new ArrayList<WebElement>(temp.size());
+      List<WebElement> result = new ArrayList<>(temp.size());
       for (WebElement element : temp) {
         result.add(createWebElement(element));
       }
@@ -450,6 +499,10 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
     public Coordinates getCoordinates() {
       return ((Locatable) underlyingElement).getCoordinates();
     }
+
+    public <X> X getScreenshotAs(OutputType<X> outputType) throws WebDriverException {
+      return element.getScreenshotAs(outputType);
+    }
   }
 
   private class EventFiringNavigation implements Navigation {
@@ -483,7 +536,9 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
     }
 
     public void refresh() {
+      dispatcher.beforeNavigateRefresh(driver);
       navigation.refresh();
+      dispatcher.afterNavigateRefresh(driver);
     }
   }
 
@@ -528,7 +583,7 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
     }
 
     public ImeHandler ime() {
-      throw new UnsupportedOperationException("Driver does not support IME interactions");
+      return options.ime();
     }
 
     @Beta
@@ -598,7 +653,7 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
     }
 
     public Alert alert() {
-      return targetLocator.alert();
+      return new EventFiringAlert(this.targetLocator.alert());
     }
   }
 
@@ -628,6 +683,46 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
 
     public void maximize() {
       window.maximize();
+    }
+
+    public void fullscreen() {
+      window.fullscreen();
+    }
+  }
+
+  private class EventFiringAlert implements Alert {
+    private final Alert alert;
+
+    private EventFiringAlert(Alert alert) {
+      this.alert = alert;
+    }
+
+    public void dismiss() {
+      dispatcher.beforeAlertDismiss(driver);
+      alert.dismiss();
+      dispatcher.afterAlertDismiss(driver);
+    }
+
+    public void accept() {
+      dispatcher.beforeAlertAccept(driver);
+      alert.accept();
+      dispatcher.afterAlertAccept(driver);
+    }
+
+    public String getText() {
+      return alert.getText();
+    }
+
+    public void sendKeys(String keysToSend) {
+      alert.sendKeys(keysToSend);
+    }
+
+    public void setCredentials(Credentials credentials) {
+      alert.setCredentials(credentials);
+    }
+
+    public void authenticateUsing(Credentials credentials) {
+      alert.authenticateUsing(credentials);
     }
   }
 }

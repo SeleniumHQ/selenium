@@ -1,7 +1,9 @@
-﻿// <copyright file="RetryingElementLocator.cs" company="WebDriver Committers">
-// Copyright 2015 Software Freedom Conservancy
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
+// <copyright file="RetryingElementLocator.cs" company="WebDriver Committers">
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -14,11 +16,10 @@
 // limitations under the License.
 // </copyright>
 
+#if !NETSTANDARD2_0
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
 using System.Threading;
 
 namespace OpenQA.Selenium.Support.PageObjects
@@ -39,7 +40,7 @@ namespace OpenQA.Selenium.Support.PageObjects
         /// <summary>
         /// Initializes a new instance of the <see cref="RetryingElementLocator"/> class.
         /// </summary>
-        /// <param name="searchContext">The <see cref="ISearchContext"/> object that the 
+        /// <param name="searchContext">The <see cref="ISearchContext"/> object that the
         /// locator uses for locating elements.</param>
         public RetryingElementLocator(ISearchContext searchContext)
             : this(searchContext, DefaultTimeout)
@@ -49,7 +50,7 @@ namespace OpenQA.Selenium.Support.PageObjects
         /// <summary>
         /// Initializes a new instance of the <see cref="RetryingElementLocator"/> class.
         /// </summary>
-        /// <param name="searchContext">The <see cref="ISearchContext"/> object that the 
+        /// <param name="searchContext">The <see cref="ISearchContext"/> object that the
         /// locator uses for locating elements.</param>
         /// <param name="timeout">The <see cref="TimeSpan"/> indicating how long the locator should
         /// retry before timing out.</param>
@@ -61,7 +62,7 @@ namespace OpenQA.Selenium.Support.PageObjects
         /// <summary>
         /// Initializes a new instance of the <see cref="RetryingElementLocator"/> class.
         /// </summary>
-        /// <param name="searchContext">The <see cref="ISearchContext"/> object that the 
+        /// <param name="searchContext">The <see cref="ISearchContext"/> object that the
         /// locator uses for locating elements.</param>
         /// <param name="timeout">The <see cref="TimeSpan"/> indicating how long the locator should
         /// retry before timing out.</param>
@@ -155,3 +156,4 @@ namespace OpenQA.Selenium.Support.PageObjects
         }
     }
 }
+#endif

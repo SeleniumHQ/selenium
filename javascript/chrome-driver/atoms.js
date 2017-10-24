@@ -1,17 +1,19 @@
-// Copyright 2011 WebDriver committers
-// Copyright 2011 Google Inc.
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
+//   http://www.apache.org/licenses/LICENSE-2.0
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 /**
  * @fileoverview Chrome specific atoms.
@@ -116,8 +118,16 @@ webdriver.chrome.scrollIntoView_ = function(elem, region, center) {
     scrollable.scrollTop += scroll.y;
   }
 
+  function getContainer(elem) {
+    var container = elem.parentNode;
+    if (SHADOW_DOM_ENABLED && (container instanceof ShadowRoot)) {
+      container = elem.host;
+    }
+    return container;
+  }
+
   var doc = goog.dom.getOwnerDocument(elem);
-  var container = elem.parentNode;
+  var container = getContainer(elem);
   var offset;
   while (container &&
          container != doc.documentElement &&
@@ -127,10 +137,7 @@ webdriver.chrome.scrollIntoView_ = function(elem, region, center) {
     var containerSize = new goog.math.Size(container.clientWidth,
                                            container.clientHeight);
     scrollHelper(container, containerSize, offset, region, center);
-    container = container.parentNode;
-    if (SHADOW_DOM_ENABLED && (container instanceof ShadowRoot)) {
-      container = container.host;
-    }
+    container = getContainer(container);
   }
 
   offset = goog.style.getClientPosition(elem);
@@ -233,14 +240,9 @@ webdriver.chrome.isElementClickable = function(elem, coord) {
     return makeResult(
         false, 'Element is not clickable at point ' + coordStr);
   }
-  var elemAtPointHTML = elemAtPoint.outerHTML;
-  if (elemAtPoint.hasChildNodes()) {
-    var inner = elemAtPoint.innerHTML;
-    var closingTag = '</' + elemAtPoint.tagName + '>';
-    var innerStart = elemAtPointHTML.length - inner.length - closingTag.length;
-    elemAtPointHTML = elemAtPointHTML.substring(0, innerStart) + '...' +
-        elemAtPointHTML.substring(innerStart + inner.length);
-  }
+  var elemAtPointHTML = elemAtPoint.outerHTML.replace(elemAtPoint.innerHTML, 
+                                                      elemAtPoint.hasChildNodes() 
+                                                      ? '...' : '');
   var parentElemIter = elemAtPoint.parentNode;
   while (parentElemIter) {
     if (parentElemIter == elem) {
@@ -252,10 +254,13 @@ webdriver.chrome.isElementClickable = function(elem, coord) {
     }
     parentElemIter = parentElemIter.parentNode;
   }
+  var elemHTML = elem.outerHTML.replace(elem.innerHTML, 
+                                        elem.hasChildNodes() ? '...' : '');
   return makeResult(
       false,
-      'Element is not clickable at point ' + coordStr + '. Other element ' +
-          'would receive the click: ' + elemAtPointHTML);
+      'Element ' + elemHTML + ' is not clickable at point '
+      + coordStr + '. Other element ' +
+      'would receive the click: ' + elemAtPointHTML);
 };
 
 
@@ -280,12 +285,15 @@ webdriver.chrome.getPageZoom = function(elem) {
  * on bot.dom.isShown, but with extra intelligence regarding shadow DOM.
  *
  * @param {!Element} elem The element to consider.
+ * @param {boolean=} opt_inComposedDom Whether to check if the element is shown
+ *     within the composed DOM; defaults to false.
  * @param {boolean=} opt_ignoreOpacity Whether to ignore the element's opacity
  *     when determining whether it is shown; defaults to false.
  * @return {boolean} Whether or not the element is visible.
  */
-webdriver.chrome.isElementDisplayed = function(elem, opt_ignoreOpacity) {
-  // use bot.dom.isShown to check whether the element is invisible
+webdriver.chrome.isElementDisplayed = function(elem,
+                                               opt_inComposedDom,
+                                               opt_ignoreOpacity) {
   if (!bot.dom.isShown(elem, opt_ignoreOpacity)) {
     return false;
   }
@@ -297,7 +305,8 @@ webdriver.chrome.isElementDisplayed = function(elem, opt_ignoreOpacity) {
       topLevelNode = topLevelNode.parentNode;
     }
     if (topLevelNode instanceof ShadowRoot) {
-      return webdriver.chrome.isElementDisplayed(topLevelNode.host);
+      return webdriver.chrome.isElementDisplayed(topLevelNode.host,
+                                                 opt_inComposedDom);
     }
   }
   // if it's not invisible, or in a shadow DOM, then it's definitely visible

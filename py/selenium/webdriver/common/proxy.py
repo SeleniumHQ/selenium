@@ -1,6 +1,24 @@
+# Licensed to the Software Freedom Conservancy (SFC) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The SFC licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
 """
 The Proxy implementation.
 """
+
 
 class ProxyTypeFactory:
     """
@@ -11,6 +29,7 @@ class ProxyTypeFactory:
     def make(ff_value, string):
         return {'ff_value': ff_value, 'string': string}
 
+
 class ProxyType:
     """
     Set of possible types of proxy.
@@ -20,13 +39,13 @@ class ProxyType:
        'string' is id of proxy type.
     """
 
-    DIRECT = ProxyTypeFactory.make(0, 'DIRECT')           # Direct connection, no proxy (default on Windows).
-    MANUAL = ProxyTypeFactory.make(1, 'MANUAL')           # Manual proxy settings (e.g., for httpProxy).
-    PAC = ProxyTypeFactory.make(2, 'PAC')                 # Proxy autoconfiguration from URL.
-    RESERVED_1 = ProxyTypeFactory.make(3, 'RESERVED1')    # Never used.
-    AUTODETECT = ProxyTypeFactory.make(4, 'AUTODETECT')   # Proxy autodetection (presumably with WPAD).
-    SYSTEM = ProxyTypeFactory.make(5, 'SYSTEM')           # Use system settings (default on Linux).
-    UNSPECIFIED = ProxyTypeFactory.make(6, 'UNSPECIFIED') # Not initialized (for internal use).
+    DIRECT = ProxyTypeFactory.make(0, 'DIRECT')  # Direct connection, no proxy (default on Windows).
+    MANUAL = ProxyTypeFactory.make(1, 'MANUAL')  # Manual proxy settings (e.g., for httpProxy).
+    PAC = ProxyTypeFactory.make(2, 'PAC')  # Proxy autoconfiguration from URL.
+    RESERVED_1 = ProxyTypeFactory.make(3, 'RESERVED1')  # Never used.
+    AUTODETECT = ProxyTypeFactory.make(4, 'AUTODETECT')  # Proxy autodetection (presumably with WPAD).
+    SYSTEM = ProxyTypeFactory.make(5, 'SYSTEM')  # Use system settings (default on Linux).
+    UNSPECIFIED = ProxyTypeFactory.make(6, 'UNSPECIFIED')  # Not initialized (for internal use).
 
     @classmethod
     def load(cls, value):
@@ -35,10 +54,13 @@ class ProxyType:
         value = str(value).upper()
         for attr in dir(cls):
             attr_value = getattr(cls, attr)
-            if isinstance(attr_value, dict) and 'string' in attr_value and \
-                attr_value['string'] is not None and attr_value['string'] == value:
+            if isinstance(attr_value, dict) and \
+                    'string' in attr_value and \
+                    attr_value['string'] is not None and \
+                    attr_value['string'] == value:
                 return attr_value
         raise Exception("No proxy type is found for %s" % (value))
+
 
 class Proxy(object):
     """
@@ -79,11 +101,11 @@ class Proxy(object):
             if 'autodetect' in raw and raw['autodetect'] is not None:
                 self.auto_detect = raw['autodetect']
             if 'socksProxy' in raw and raw['socksProxy'] is not None:
-                self.socksProxy = raw['socksProxy']
+                self.socks_proxy = raw['socksProxy']
             if 'socksUsername' in raw and raw['socksUsername'] is not None:
-                self.socksUsername = raw['socksUsername']
+                self.socks_username = raw['socksUsername']
             if 'socksPassword' in raw and raw['socksPassword'] is not None:
-                self.socksPassword = raw['socksPassword']
+                self.socks_password = raw['socksPassword']
 
     @property
     def proxy_type(self):
@@ -280,9 +302,7 @@ class Proxy(object):
 
     def _verify_proxy_type_compatibility(self, compatibleProxy):
         if self.proxyType != ProxyType.UNSPECIFIED and self.proxyType != compatibleProxy:
-            raise Exception(" Specified proxy type (%s) not compatible with current setting (%s)" % \
-                                                (compatibleProxy, self.proxyType))
-
+            raise Exception(" Specified proxy type (%s) not compatible with current setting (%s)" % (compatibleProxy, self.proxyType))
 
     def add_to_capabilities(self, capabilities):
         """

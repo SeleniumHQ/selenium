@@ -1,3 +1,20 @@
+# Licensed to the Software Freedom Conservancy (SFC) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The SFC licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
 module Selenium
   module WebDriver
     module Remote
@@ -6,19 +23,18 @@ module Selenium
       # server is being asked to create.
       #
       class Capabilities
-
         DEFAULTS = {
-          :browser_name          => "",
-          :version               => "",
-          :platform              => :any,
-          :javascript_enabled    => false,
-          :css_selectors_enabled => false,
-          :takes_screenshot      => false,
-          :native_events         => false,
-          :rotatable             => false,
-          :firefox_profile       => nil,
-          :proxy                 => nil
-        }
+          browser_name: '',
+          version: '',
+          platform: :any,
+          javascript_enabled: false,
+          css_selectors_enabled: false,
+          takes_screenshot: false,
+          native_events: false,
+          rotatable: false,
+          firefox_profile: nil,
+          proxy: nil
+        }.freeze
 
         DEFAULTS.each_key do |key|
           define_method key do
@@ -30,99 +46,94 @@ module Selenium
           end
         end
 
+        #
+        # Returns javascript_enabled capability.
+        # It is true if not set explicitly.
+        #
+        def javascript_enabled
+          javascript_enabled = @capabilities.fetch(:javascript_enabled)
+          javascript_enabled.nil? ? true : javascript_enabled
+        end
+
         alias_method :css_selectors_enabled?, :css_selectors_enabled
-        alias_method :javascript_enabled?   , :javascript_enabled
-        alias_method :native_events?        , :native_events
-        alias_method :takes_screenshot?     , :takes_screenshot
-        alias_method :rotatable?            , :rotatable
+        alias_method :javascript_enabled?, :javascript_enabled
+        alias_method :native_events?, :native_events
+        alias_method :takes_screenshot?, :takes_screenshot
+        alias_method :rotatable?, :rotatable
 
         #
         # Convenience methods for the common choices.
         #
 
         class << self
-          def android(opts = {})
+          def chrome(opts = {})
             new({
-              :browser_name       => "android",
-              :platform           => :android,
-              :javascript_enabled => true,
-              :rotatable          => true,
-              :takes_screenshot   => true
+              browser_name: 'chrome',
+              javascript_enabled: true,
+              css_selectors_enabled: true
             }.merge(opts))
           end
 
-          def chrome(opts = {})
+          def edge(opts = {})
             new({
-              :browser_name          => "chrome",
-              :javascript_enabled    => true,
-              :css_selectors_enabled => true
+              browser_name: 'MicrosoftEdge',
+              platform: :windows,
+              javascript_enabled: true,
+              takes_screenshot: true,
+              css_selectors_enabled: true
             }.merge(opts))
           end
 
           def firefox(opts = {})
             new({
-              :browser_name          => "firefox",
-              :javascript_enabled    => true,
-              :takes_screenshot      => true,
-              :css_selectors_enabled => true
+              browser_name: 'firefox',
+              javascript_enabled: true,
+              takes_screenshot: true,
+              css_selectors_enabled: true
             }.merge(opts))
           end
 
           def htmlunit(opts = {})
             new({
-              :browser_name => "htmlunit"
+              browser_name: 'htmlunit'
             }.merge(opts))
           end
 
           def htmlunitwithjs(opts = {})
             new({
-              :browser_name => "htmlunit",
-              :javascript_enabled => true
+              browser_name: 'htmlunit',
+              javascript_enabled: true
             }.merge(opts))
           end
 
           def internet_explorer(opts = {})
             new({
-              :browser_name          => "internet explorer",
-              :platform              => :windows,
-              :takes_screenshot      => true,
-              :css_selectors_enabled => true,
-              :native_events         => true
+              browser_name: 'internet explorer',
+              platform: :windows,
+              takes_screenshot: true,
+              css_selectors_enabled: true,
+              native_events: true
             }.merge(opts))
           end
           alias_method :ie, :internet_explorer
 
-          def iphone(opts = {})
-            new({
-              :browser_name       => "iPhone",
-              :platform           => :mac,
-              :javascript_enabled => true
-            }.merge(opts))
-          end
-
-          def ipad(opts = {})
-            new({
-              :browser_name       => "iPad",
-              :platform           => :mac,
-              :javascript_enabled => true
-            }.merge(opts))
-          end
-
           def phantomjs(opts = {})
+            WebDriver.logger.deprecate 'Selenium support for PhantomJS', 'headless Chrome/Firefox or HTMLUnit'
             new({
-              :browser_name          => "phantomjs",
-              :javascript_enabled    => true,
-              :takes_screenshot      => true,
-              :css_selectors_enabled => true
+              browser_name: 'phantomjs',
+              javascript_enabled: true,
+              takes_screenshot: true,
+              css_selectors_enabled: true
             }.merge(opts))
           end
 
           def safari(opts = {})
             new({
-              :browser_name          => "safari",
-              :javascript_enabled    => true,
-              :takes_screenshot      => true,
-              :css_selectors_enabled => true
+              browser_name: 'safari',
+              platform: :mac,
+              javascript_enabled: true,
+              takes_screenshot: true,
+              css_selectors_enabled: true
             }.merge(opts))
           end
 
@@ -134,15 +145,15 @@ module Selenium
             data = data.dup
 
             caps = new
-            caps.browser_name          = data.delete("browserName")
-            caps.version               = data.delete("version")
-            caps.platform              = data.delete("platform").downcase.to_sym if data.has_key?('platform')
-            caps.javascript_enabled    = data.delete("javascriptEnabled")
-            caps.css_selectors_enabled = data.delete("cssSelectorsEnabled")
-            caps.takes_screenshot      = data.delete("takesScreenshot")
-            caps.native_events         = data.delete("nativeEvents")
-            caps.rotatable             = data.delete("rotatable")
-            caps.proxy                 = Proxy.json_create(data['proxy']) if data.has_key?('proxy')
+            caps.browser_name          = data.delete('browserName')
+            caps.version               = data.delete('version')
+            caps.platform              = data.delete('platform').downcase.tr(' ', '_').to_sym if data.key?('platform')
+            caps.javascript_enabled    = data.delete('javascriptEnabled')
+            caps.css_selectors_enabled = data.delete('cssSelectorsEnabled')
+            caps.takes_screenshot      = data.delete('takesScreenshot')
+            caps.native_events         = data.delete('nativeEvents')
+            caps.rotatable             = data.delete('rotatable')
+            caps.proxy                 = Proxy.json_create(data['proxy']) if data.key?('proxy') && !data['proxy'].empty?
 
             # any remaining pairs will be added as is, with no conversion
             caps.merge!(data)
@@ -151,6 +162,7 @@ module Selenium
           end
         end
 
+        #
         # @option :browser_name           [String] required browser name
         # @option :version                [String] required browser version number
         # @option :platform               [Symbol] one of :any, :win, :mac, or :x
@@ -185,12 +197,12 @@ module Selenium
         end
 
         def merge!(other)
-          if other.respond_to?(:capabilities, true) && other.capabilities.kind_of?(Hash)
+          if other.respond_to?(:capabilities, true) && other.capabilities.is_a?(Hash)
             @capabilities.merge! other.capabilities
-          elsif other.kind_of? Hash
+          elsif other.is_a? Hash
             @capabilities.merge! other
           else
-            raise ArgumentError, "argument should be a Hash or implement #capabilities"
+            raise ArgumentError, 'argument should be a Hash or implement #capabilities'
           end
         end
 
@@ -205,10 +217,11 @@ module Selenium
           end
         end
 
+        #
         # @api private
         #
 
-        def as_json(opts = nil)
+        def as_json(*)
           hash = {}
 
           @capabilities.each do |key, value|
@@ -231,28 +244,25 @@ module Selenium
           hash
         end
 
-        def to_json(*args)
-          WebDriver.json_dump as_json
+        def to_json(*)
+          JSON.generate as_json
         end
 
         def ==(other)
-          return false unless other.kind_of? self.class
+          return false unless other.is_a? self.class
           as_json == other.as_json
         end
         alias_method :eql?, :==
 
         protected
 
-        def capabilities
-          @capabilities
-        end
+        attr_reader :capabilities
 
         private
 
         def camel_case(str)
-          str.gsub(/_([a-z])/) { $1.upcase }
+          str.gsub(/_([a-z])/) { Regexp.last_match(1).upcase }
         end
-
       end # Capabilities
     end # Remote
   end # WebDriver

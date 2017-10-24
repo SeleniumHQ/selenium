@@ -43,6 +43,20 @@ goog.require('goog.userAgent');
  * @final
  */
 goog.storage.mechanism.IEUserData = function(storageKey, opt_storageNodeId) {
+  /**
+   * The key to store the data under.
+   *
+   * @private {?string}
+   */
+  this.storageKey_ = storageKey;
+
+  /**
+   * The document element used for storing data.
+   *
+   * @private {Element}
+   */
+  this.storageNode_ = null;
+
   goog.storage.mechanism.IEUserData.base(this, 'constructor');
 
   // Tested on IE6, IE7 and IE8. It seems that IE9 introduces some security
@@ -66,9 +80,8 @@ goog.storage.mechanism.IEUserData = function(storageKey, opt_storageNodeId) {
       goog.storage.mechanism.IEUserData.storageMap_.set(
           storageKey, this.storageNode_);
     }
-    this.storageKey_ = storageKey;
 
-    /** @preserveTry */
+
     try {
       // Availability check.
       this.loadNode_();
@@ -77,8 +90,9 @@ goog.storage.mechanism.IEUserData = function(storageKey, opt_storageNodeId) {
     }
   }
 };
-goog.inherits(goog.storage.mechanism.IEUserData,
-              goog.storage.mechanism.IterableMechanism);
+goog.inherits(
+    goog.storage.mechanism.IEUserData,
+    goog.storage.mechanism.IterableMechanism);
 
 
 /**
@@ -107,24 +121,6 @@ goog.storage.mechanism.IEUserData.ENCODE_MAP = {
  * @private
  */
 goog.storage.mechanism.IEUserData.storageMap_ = null;
-
-
-/**
- * The document element used for storing data.
- *
- * @type {Element}
- * @private
- */
-goog.storage.mechanism.IEUserData.prototype.storageNode_ = null;
-
-
-/**
- * The key to store the data under.
- *
- * @type {?string}
- * @private
- */
-goog.storage.mechanism.IEUserData.prototype.storageKey_ = null;
 
 
 /**
@@ -259,7 +255,7 @@ goog.storage.mechanism.IEUserData.prototype.loadNode_ = function() {
  * @private
  */
 goog.storage.mechanism.IEUserData.prototype.saveNode_ = function() {
-  /** @preserveTry */
+
   try {
     // This is a special IE-only method on Elements letting us persist data.
     // Do not try to assign this.storageNode_['save'] to a variable, it does

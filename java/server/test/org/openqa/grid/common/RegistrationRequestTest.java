@@ -1,175 +1,277 @@
-/*
-Copyright 2011 Selenium committers
-Copyright 2011 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.grid.common;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
-import static org.openqa.grid.common.RegistrationRequest.CLEAN_UP_CYCLE;
-import static org.openqa.grid.common.RegistrationRequest.REMOTE_HOST;
+
+import com.beust.jcommander.JCommander;
 
 import org.junit.Test;
+import org.openqa.grid.common.exception.GridConfigurationException;
+import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
+import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.BrowserType;
-import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.net.URL;
 
 public class RegistrationRequestTest {
 
   @Test
-  public void getConfigAsTests() {
-    RegistrationRequest req = new RegistrationRequest();
-    String url = "http://a.c:2";
+  public void getConfigAsTests() throws Exception {
+    URL url = new URL("http://a.c:2");
 
-    Map<String, Object> config = new HashMap<String, Object>();
-    config.put(CLEAN_UP_CYCLE, 1);
-    config.put(REMOTE_HOST, url);
+    GridNodeConfiguration config = new GridNodeConfiguration();
+    config.cleanUpCycle = 1;
+    config.host = url.getHost();
+    config.port = url.getPort();
 
-    req.setConfiguration(config);
+    RegistrationRequest req = new RegistrationRequest(config);
 
-    int c = req.getConfigAsInt(CLEAN_UP_CYCLE, -1);
+    int c = req.getConfiguration().cleanUpCycle;
     assertTrue(c == 1);
 
-    int e = req.getConfigAsInt("doesn't exist", 20);
-    assertTrue(e == 20);
-
-    String url2 = req.getConfigAsString(REMOTE_HOST);
-    assertEquals(url2, url);
+    String url2 = req.getConfiguration().getRemoteHost();
+    assertEquals(url2, url.toString());
   }
 
   @Test
-  public void json() {
-    RegistrationRequest req = new RegistrationRequest();
-    req.setId("id");
-    req.setName("Franзois");
-    req.setDescription("a\nb\nc");
-
-    String name = "%super !";
-    String value = "%з // \\";
-
-    Map<String, Object> config = new HashMap<String, Object>();
-    config.put(name, value);
-
-    req.setConfiguration(config);
+  public void testToJson() {
+    RegistrationRequest req =
+      new RegistrationRequest(new GridNodeConfiguration(), "Franзois", "a\nb\nc");
 
     for (int i = 0; i < 5; i++) {
-      DesiredCapabilities cap = new DesiredCapabilities(BrowserType.FIREFOX, "" + i, Platform.LINUX);
-      req.addDesiredCapability(cap);
+      DesiredCapabilities cap = new DesiredCapabilities(BrowserType.FIREFOX, String.valueOf(i), Platform.LINUX);
+      req.getConfiguration().capabilities.add(cap);
     }
 
-    String json = req.toJSON();
+    String json = req.toJson().toString();
 
-    RegistrationRequest req2 = RegistrationRequest.getNewInstance(json);
+    RegistrationRequest req2 = RegistrationRequest.fromJson(json);
 
-    assertEquals(req2.getId(), req.getId());
-    assertEquals(req2.getName(), req.getName());
-    assertEquals(req2.getDescription(), req.getDescription());
+    assertEquals(req.getName(), req2.getName());
+    assertEquals(req.getDescription(), req2.getDescription());
 
-    assertEquals(req2.getConfigAsString(name), req.getConfigAsString(name));
-    assertEquals(req2.getCapabilities().size(), req.getCapabilities().size());
-
-  }
-
-  @Test
-  public void seleniumGrid1Request() {
-    RegistrationRequest request =
-        RegistrationRequest
-            .getNewInstance("host=localhost&port=5000&environment=Firefox%3A+4%3B+MacOS+X%3A+10.6.7");
-
-    assertEquals(null, request.getId());
-    assertEquals(null, request.getName());
-    assertEquals(null, request.getDescription());
-
-    // Verify the capabilities were set up properly.
-    assertEquals(1, request.getCapabilities().size());
-    DesiredCapabilities caps = request.getCapabilities().get(0);
-
-//    Assert.assertEquals(Platform.LINUX.toString(), caps.get(CapabilityType.PLATFORM));
-    assertEquals("Firefox: 4; MacOS X: 10.6.7",
-                 caps.getCapability(CapabilityType.BROWSER_NAME));
-
-    // Verify the configuration was set up properly.
-   assertEquals("http://localhost:5000", request.getConfiguration()
-       .get(RegistrationRequest.REMOTE_HOST));
-    assertEquals(SeleniumProtocol.Selenium.toString(), request.getConfiguration()
-        .get(RegistrationRequest.SELENIUM_PROTOCOL));
-   
+    assertEquals(req.getConfiguration().role, req2.getConfiguration().role);
+    assertEquals(req.getConfiguration().capabilities.size(),
+                 req2.getConfiguration().capabilities.size());
+    assertEquals(req.getConfiguration().capabilities.get(0).getBrowserName(),
+                 req2.getConfiguration().capabilities.get(0).getBrowserName());
+    assertEquals(req.getConfiguration().capabilities.get(0).getPlatform(),
+                 req2.getConfiguration().capabilities.get(0).getPlatform());
   }
 
 
   @Test
   public void basicCommandLineParam() {
-    String hubHost = "-" + RegistrationRequest.HUB_HOST;
-    String hubPort = "-" + RegistrationRequest.HUB_PORT;
-    RegistrationRequest req =
-        RegistrationRequest.build("-role", "rc", hubHost, "ABC", hubPort, "1234","-host","localhost");
+    GridNodeConfiguration config = new GridNodeConfiguration();
+    new JCommander(config, "-role", "wd", "-hubHost", "ABC", "-hubPort", "1234","-host","localhost");
+    RegistrationRequest req = RegistrationRequest.build(config);
 
-    assertEquals(GridRole.NODE, req.getRole());
-    assertEquals("ABC", req.getConfiguration().get(RegistrationRequest.HUB_HOST));
-    assertEquals(1234, req.getConfiguration().get(RegistrationRequest.HUB_PORT));
+    assertEquals(GridRole.NODE, GridRole.get(req.getConfiguration().role));
+    assertEquals("ABC", req.getConfiguration().getHubHost());
+    assertEquals(1234, req.getConfiguration().getHubPort().longValue());
 
   }
 
   @Test
   public void commandLineParamDefault() {
-    RegistrationRequest req = RegistrationRequest.build("-role", "rc");
+    GridNodeConfiguration config = new GridNodeConfiguration();
+    new JCommander(config, "-role", "wd");
+    RegistrationRequest req = RegistrationRequest.build(config);
     // the hub defaults to current IP.
-    assertNotNull(req.getConfiguration().get(RegistrationRequest.HUB_HOST));
-    assertEquals(4444, req.getConfiguration().get(RegistrationRequest.HUB_PORT));
+    assertNotNull(req.getConfiguration().getHubHost());
+    assertEquals(4444, req.getConfiguration().getHubPort().longValue());
     // the node defaults to current IP.
-    assertNotNull(req.getConfiguration().get(RegistrationRequest.HOST));
-    assertEquals(5555, req.getConfiguration().get(RegistrationRequest.PORT));
+    assertNotNull(req.getConfiguration().host);
+    assertEquals(5555, req.getConfiguration().port.longValue());
   }
 
   @Test
   public void commandLineParamDefaultCapabilities() {
-    String hubHost = "-" + RegistrationRequest.HUB_HOST;
-    RegistrationRequest req = RegistrationRequest.build("-role", "rc", hubHost, "ABC","-host","localhost");
-    assertEquals("ABC", req.getConfiguration().get(RegistrationRequest.HUB_HOST));
-    assertNotSame(0, req.getCapabilities().size());
-
+    GridNodeConfiguration config = new GridNodeConfiguration();
+    new JCommander(config, "-role", "wd", "-hubHost", "ABC", "-host","localhost");
+    RegistrationRequest req = RegistrationRequest.build(config);
+    assertEquals("ABC", req.getConfiguration().getHubHost());
+    assertEquals(config.capabilities.size(), req.getConfiguration().capabilities.size());
   }
 
   @Test
   public void registerParam() {
-    String hubHost = "-" + RegistrationRequest.HUB_HOST;
-    RegistrationRequest req = RegistrationRequest.build("-role", "rc", hubHost, "ABC","-host","localhost");
-    assertEquals(true, req.getConfiguration().get(RegistrationRequest.AUTO_REGISTER));
+    GridNodeConfiguration config = new GridNodeConfiguration();
+    new JCommander(config, "-role", "wd", "-hubHost", "ABC", "-host","localhost");
+    RegistrationRequest req = RegistrationRequest.build(config);
+    assertEquals(true, req.getConfiguration().register);
 
-    RegistrationRequest req2 =
-        RegistrationRequest.build("-role", "rc", hubHost, "ABC", "-" +
-            RegistrationRequest.AUTO_REGISTER, "false","-host","localhost");
-    assertEquals(false, req2.getConfiguration().get(RegistrationRequest.AUTO_REGISTER));
+    config = new GridNodeConfiguration();
+    new JCommander(config, "-role", "wd", "-hubHost", "ABC", "-hubPort", "1234","-host","localhost", "-register","false");
+    RegistrationRequest req2 = RegistrationRequest.build(config);
+    assertEquals(false, req2.getConfiguration().register);
 
   }
 
   @Test
   public void ensurePre2_9HubCompatibility() {
-    RegistrationRequest req = RegistrationRequest.build("-role", "rc", "-host", "example.com", "-port", "5555");
+    GridNodeConfiguration config = new GridNodeConfiguration();
+    new JCommander(config, "-role", "wd", "-host","example.com", "-port", "5555");
+    RegistrationRequest req = RegistrationRequest.build(config);
 
-    // This is the configuration value for >= v2.9 hubs.
-    assertEquals("http://example.com:5555", req.getConfigAsString(RegistrationRequest.REMOTE_HOST));
+    assertEquals("http://example.com:5555", req.getConfiguration().getRemoteHost());
+  }
 
-    // This is the configuration value for < v2.9 hubs.
-    assertEquals("http://example.com:5555", req.getConfigAsString("url"));
+  @Test(expected = GridConfigurationException.class)
+  public void validateWithException() {
+    GridNodeConfiguration config = new GridNodeConfiguration();
+    new JCommander(config, "-role", "node", "-hubHost", "localhost", "-hub", "localhost:4444");
+    RegistrationRequest req = new RegistrationRequest(config);
+
+    req.validate();
+  }
+
+  /**
+   * Tests that RegistrationRequest.build(config) returns the expected configuration
+   */
+  @Test
+  public void testBuildWithConfiguration() {
+    GridNodeConfiguration actualConfig = new GridNodeConfiguration();
+    actualConfig.maxSession = 50;
+    actualConfig.timeout = 10;
+    actualConfig.host = "dummyhost";
+    actualConfig.port = 1234;
+    actualConfig.capabilities.set(0, DesiredCapabilities.operaBlink());
+    actualConfig.nodeConfigFile = GridNodeConfiguration.DEFAULT_NODE_CONFIG_FILE;
+
+    RegistrationRequest req = RegistrationRequest.build(actualConfig);
+    assertConstruction(req);
+
+    // we should get a new config object ref back, since the nodeConfigFile was processed
+    assertNotSame(req.getConfiguration(), actualConfig);
+    // reset to new config which build() produced
+    actualConfig = req.getConfiguration();
+
+    // make sure the nodeConfigFile was processed by ensuring that it now is null;
+    assertNull(actualConfig.nodeConfigFile);
+
+    // make sure the first capability is for operaBlink
+    assertEquals(DesiredCapabilities.operaBlink().getBrowserName(),
+                 actualConfig.capabilities.get(0).getBrowserName());
+
+    // make sure this merge protected value was preserved, then remove it for the final assert
+    assertEquals("dummyhost", actualConfig.host);
+    actualConfig.host = null;
+    // make sure this merge protected value was preserved, then reset it for the final assert
+    assertEquals(1234, actualConfig.port.intValue());
+    actualConfig.port = 5555;
+
+    // merge actualConfig onto it.. which is what build(config) should do
+    GridNodeConfiguration expectedConfig = new GridNodeConfiguration();
+    expectedConfig.merge(actualConfig);
+
+    assertEquals(expectedConfig.toString(), actualConfig.toString());
+  }
+
+  /**
+   * Tests that new RegistrationRequest(config) performs as expected
+   */
+  @Test
+  public void testConstructorWithConfiguration() {
+    GridNodeConfiguration actualConfig = new GridNodeConfiguration();
+    actualConfig.host = "dummyhost";
+    RegistrationRequest req = new RegistrationRequest(actualConfig);
+    assertConstruction(req);
+    // make sure the provided config was used.
+    assertSame(req.getConfiguration(), actualConfig);
+  }
+
+  /**
+   * Tests that RegistrationRequest.build() performs as expected
+   */
+  @Test
+  public void testBuild() {
+    assertConstruction(RegistrationRequest.build());
+  }
+
+  /**
+   * Tests that RegistrationRequest.build(null) performs as expected
+   */
+  @Test
+  public void testBuildWithNullConfiguration() {
+    assertConstruction(RegistrationRequest.build(null));
+  }
+
+  /**
+   * Tests that new RegistrationRequest() performs as expected
+   */
+  @Test
+  public void testNoArgConstructor() {
+    assertConstruction(new RegistrationRequest());
+  }
+
+  /**
+   * Tests that new RegistrationRequest(null) performs as expected
+   */
+  @Test
+  public void testConstructorWithNullConfiguration() {
+    assertConstruction(new RegistrationRequest(null));
+  }
+
+  /**
+   * Should not result in any NPE during the internal call to fixUpCapabilities
+   */
+  @Test
+  public void testConstructorWithConfigurationAndNullCapabilities() {
+    GridNodeConfiguration config = new GridNodeConfiguration();
+    config.capabilities = null;
+    RegistrationRequest req = new RegistrationRequest(config);
+    assertNull(req.getConfiguration().capabilities);
+  }
+
+  /**
+   * Should not result in any NPE during the internal call to fixUpCapabilities
+   */
+  @Test
+  public void testBuildWithConfigurationAndNullCapabilities() {
+    GridNodeConfiguration config = new GridNodeConfiguration();
+    config.capabilities = null;
+    RegistrationRequest req = RegistrationRequest.build(config);
+    assertNull(req.getConfiguration().capabilities);
+  }
+
+  private void assertConstruction(RegistrationRequest req) {
+    assertNotNull(req);
+    assertNotNull(req.getConfiguration());
+    assertNull(req.getName());
+    assertNull(req.getDescription());
+    // fixUpHost should have been internally called
+    assertNotNull(req.getConfiguration().host);
+    assertNotNull(req.getConfiguration().capabilities);
+    // should have the default capabilities
+    // fixUpCapabilities should have been internally called
+    assertEquals(3, req.getConfiguration().capabilities.size());
+    for (MutableCapabilities capabilities : req.getConfiguration().capabilities) {
+      assertNotNull(capabilities.getPlatform());
+      assertNotNull(capabilities.getCapability("seleniumProtocol"));
+    }
   }
 }

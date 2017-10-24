@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using NUnit.Framework;
 using System.Text.RegularExpressions;
 using System.Drawing;
+using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.Interactions
 {
@@ -11,6 +10,16 @@ namespace OpenQA.Selenium.Interactions
     [IgnoreBrowser(Browser.Safari, "Not implemented (issue 4136)")]
     public class BasicMouseInterfaceTest : DriverTestFixture
     {
+        [SetUp]
+        public void SetupTest()
+        {
+            IActionExecutor actionExecutor = driver as IActionExecutor;
+            if (actionExecutor != null)
+            {
+                actionExecutor.ResetInputState();
+            }
+        }
+
         [Test]
         [IgnoreBrowser(Browser.IPhone, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Android, "API not implemented in driver")]
@@ -107,7 +116,7 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "ChromeDriver2 does not perform this yet")]
+        //[IgnoreBrowser(Browser.Chrome, "ChromeDriver2 does not perform this yet")]
         [IgnoreBrowser(Browser.IPhone, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Android, "API not implemented in driver")]
         public void ShouldAllowContextClick()
@@ -142,6 +151,8 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
+        [IgnoreBrowser(Browser.IE, "Clicking without context is perfectly valid for W3C-compliant remote ends.")]
+        [IgnoreBrowser(Browser.Firefox, "Clicking without context is perfectly valid for W3C-compliant remote ends.")]
         [IgnoreBrowser(Browser.IPhone, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Remote, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Android, "API not implemented in driver")]
@@ -150,10 +161,9 @@ namespace OpenQA.Selenium.Interactions
         {
             driver.Url = javascriptPage;
 
-            Actions actionProvider = new Actions(driver);
             try
             {
-                IAction contextClick = actionProvider.MoveToElement(null).Build();
+                IAction contextClick = new Actions(driver).MoveToElement(null).Build();
 
                 contextClick.Perform();
                 Assert.Fail("Shouldn't be allowed to click on null element.");
@@ -165,7 +175,7 @@ namespace OpenQA.Selenium.Interactions
 
             try
             {
-                actionProvider.Click().Build().Perform();
+                new Actions(driver).Click().Build().Perform();
                 Assert.Fail("Shouldn't be allowed to click without a context.");
             }
             catch (Exception)
@@ -187,7 +197,7 @@ namespace OpenQA.Selenium.Interactions
                 IWebElement element = driver.FindElement(By.Id("otherframe"));
                 new Actions(driver).MoveToElement(element).Click().Perform();
                 driver.SwitchTo().DefaultContent().SwitchTo().Frame("target");
-                WaitFor(() => { return driver.FindElement(By.Id("span")).Text == "An inline element"; });
+                WaitFor(() => { return driver.FindElement(By.Id("span")).Text == "An inline element"; }, "Could not find element with text 'An inline element'");
             }
             finally
             {
@@ -242,11 +252,11 @@ namespace OpenQA.Selenium.Interactions
 
             IWebElement reporter = driver.FindElement(By.Id("status"));
 
-            WaitFor(FuzzyMatchingOfCoordinates(reporter, 50, 200));
+            WaitFor(FuzzyMatchingOfCoordinates(reporter, 50, 200), "Coordinate matching was not within tolerance");
 
             new Actions(driver).MoveByOffset(10, 20).Build().Perform();
 
-            WaitFor(FuzzyMatchingOfCoordinates(reporter, 60, 220));
+            WaitFor(FuzzyMatchingOfCoordinates(reporter, 60, 220), "Coordinate matching was not within tolerance");
         }
 
         [Test]
@@ -262,12 +272,12 @@ namespace OpenQA.Selenium.Interactions
 
             IWebElement reporter = driver.FindElement(By.Id("status"));
 
-            WaitFor(FuzzyMatchingOfCoordinates(reporter, 95, 195));
+            WaitFor(FuzzyMatchingOfCoordinates(reporter, 95, 195), "Coordinate matching was not within tolerance");
         }
 
         [Test]
         [Category("Javascript")]
-        [NeedsFreshDriver(BeforeTest = true)]
+        [NeedsFreshDriver(IsCreatedBeforeTest = true)]
         [IgnoreBrowser(Browser.HtmlUnit, "Advanced mouse actions only implemented in rendered browsers")]
         [IgnoreBrowser(Browser.Safari, "Advanced user interactions not implemented for Safari")]
         public void MoveRelativeToBody()
@@ -278,12 +288,12 @@ namespace OpenQA.Selenium.Interactions
 
             IWebElement reporter = driver.FindElement(By.Id("status"));
 
-            WaitFor(FuzzyMatchingOfCoordinates(reporter, 40, 20));
+            WaitFor(FuzzyMatchingOfCoordinates(reporter, 40, 20), "Coordinate matching was not within tolerance");
         }
 
         [Test]
         [Category("Javascript")]
-        [NeedsFreshDriver(BeforeTest = true)]
+        [NeedsFreshDriver(IsCreatedBeforeTest = true)]
         [IgnoreBrowser(Browser.HtmlUnit, "Advanced mouse actions only implemented in rendered browsers")]
         [IgnoreBrowser(Browser.Safari, "Advanced user interactions not implemented for Safari")]
         public void CanMouseOverAndOutOfAnElement()
@@ -332,14 +342,13 @@ namespace OpenQA.Selenium.Interactions
             IWebElement toDrag = driver.FindElement(By.Id("rightitem-3"));
             IWebElement dragInto = driver.FindElement(By.Id("sortable1"));
 
-            Actions actionProvider = new Actions(driver);
-            IAction holdItem = actionProvider.ClickAndHold(toDrag).Build();
+            IAction holdItem = new Actions(driver).ClickAndHold(toDrag).Build();
 
-            IAction moveToSpecificItem = actionProvider.MoveToElement(driver.FindElement(By.Id("leftitem-4"))).Build();
+            IAction moveToSpecificItem = new Actions(driver).MoveToElement(driver.FindElement(By.Id("leftitem-4"))).Build();
 
-            IAction moveToOtherList = actionProvider.MoveToElement(dragInto).Build();
+            IAction moveToOtherList = new Actions(driver).MoveToElement(dragInto).Build();
 
-            IAction drop = actionProvider.Release(dragInto).Build();
+            IAction drop = new Actions(driver).Release(dragInto).Build();
 
             Assert.AreEqual("Nothing happened.", dragReporter.Text);
 

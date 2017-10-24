@@ -1,21 +1,25 @@
-// Copyright 2012 Software Freedom Conservancy. All Rights Reserved.
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
+//   http://www.apache.org/licenses/LICENSE-2.0
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 goog.provide('remote.ui.Client');
 
 goog.require('bot.response');
 goog.require('goog.Disposable');
+goog.require('goog.Promise');
 goog.require('goog.Uri');
 goog.require('goog.array');
 goog.require('goog.debug.Console');
@@ -30,7 +34,6 @@ goog.require('remote.ui.WebDriverScriptButton');
 goog.require('webdriver.Command');
 goog.require('webdriver.CommandName');
 goog.require('webdriver.Session');
-goog.require('webdriver.promise');
 
 
 
@@ -136,7 +139,7 @@ remote.ui.Client.prototype.disposeInternal = function() {
  * Initializes the client and renders it into the DOM.
  * @param {!Element=} opt_element The element to render to; defaults to the
  *     current document's BODY element.
- * @return {!webdriver.promise.Promise} A promise that will be resolved when
+ * @return {!goog.Promise} A promise that will be resolved when
  *     the client has been initialized.
  */
 remote.ui.Client.prototype.init = function(opt_element) {
@@ -163,14 +166,13 @@ remote.ui.Client.prototype.getSessionContainer = function() {
 /**
  * Executes a single command.
  * @param {!webdriver.Command} command The command to execute.
- * @return {!webdriver.promise.Promise} A promise that will be resolved with the
+ * @return {!goog.Promise} A promise that will be resolved with the
  *     command response.
  * @private
  */
 remote.ui.Client.prototype.execute_ = function(command) {
   this.banner_.setVisible(false);
-  var fn = goog.bind(this.executor_.execute, this.executor_, command);
-  return webdriver.promise.checkedNodeCall(fn).
+  return this.executor_.execute(command).
       then(bot.response.checkResponse);
 };
 
@@ -190,7 +192,7 @@ remote.ui.Client.prototype.logError_ = function(msg, e) {
 
 /**
  * Queries the server for its build info.
- * @return {!webdriver.promise.Promise} A promise that will be resolved with the
+ * @return {!goog.Promise} A promise that will be resolved with the
  *     server build info.
  * @private
  */
@@ -319,7 +321,7 @@ remote.ui.Client.prototype.onLoad_ = function(e) {
 remote.ui.Client.prototype.onScreenshot_ = function() {
   var session = this.sessionContainer_.getSelectedSession();
   if (!session) {
-    goog.log.warning(this.log_, 
+    goog.log.warning(this.log_,
         'Cannot take screenshot; no session selected!');
     return;
   }

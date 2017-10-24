@@ -1,6 +1,0 @@
-prebuilt_jar(name = 'serializer',
-  binary_jar = 'serializer-2.7.1.jar',
-  visibility = [
-    '//third_party/java/...',
-  ],
-)

@@ -1,31 +1,31 @@
-/*
-Copyright 2007-2009 Selenium committers
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
- */
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium.remote.server.rest;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 
+import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.SessionId;
-import org.openqa.selenium.remote.SessionNotFoundException;
 import org.openqa.selenium.remote.UnreachableBrowserException;
 import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.JsonParametersAware;
@@ -40,6 +40,7 @@ import java.lang.reflect.UndeclaredThrowableException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -52,7 +53,8 @@ public class ResultConfig {
 
   public ResultConfig(
       String commandName, Class<? extends RestishHandler<?>> handlerClazz,
-      DriverSessions sessions, Logger log) {
+      DriverSessions sessions,
+      Logger log) {
     if (commandName == null || handlerClazz == null) {
       throw new IllegalArgumentException("You must specify the handler and the command name");
     }
@@ -68,7 +70,7 @@ public class ResultConfig {
     RestishHandler<?> createHandler(SessionId sessionId) throws Exception;
   }
 
-  protected RestishHandler populate(RestishHandler handler, Command command) {
+  protected RestishHandler<?> populate(RestishHandler<?> handler, Command command) {
     for (Map.Entry<String, ?> entry : command.getParameters().entrySet()) {
       try {
         PropertyMunger.set(entry.getKey(), handler, entry.getValue());
@@ -131,9 +133,9 @@ public class ResultConfig {
       Throwable toUse = getRootExceptionCause(e);
 
       log.warning("Exception: " + toUse.getMessage());
-      Optional<String> screenshot = Optional.absent();
+      Optional<String> screenshot = Optional.empty();
       if (handler instanceof WebDriverHandler) {
-        screenshot = Optional.fromNullable(((WebDriverHandler) handler).getScreenshot());
+        screenshot = Optional.ofNullable(((WebDriverHandler<?>) handler).getScreenshot());
       }
       response = Responses.failure(sessionId, toUse, screenshot);
     } catch (Error e) {
@@ -151,12 +153,12 @@ public class ResultConfig {
     return response;
   }
 
-  private void throwUpIfSessionTerminated(SessionId sessId) throws SessionNotFoundException {
+  private void throwUpIfSessionTerminated(SessionId sessId) throws NoSuchSessionException {
     if (sessId == null) return;
     Session session = sessions.get(sessId);
     final boolean isTerminated = session == null;
-    if (isTerminated){
-      throw new SessionNotFoundException();
+    if (isTerminated) {
+      throw new NoSuchSessionException();
     }
   }
 
@@ -203,41 +205,26 @@ public class ResultConfig {
   private HandlerFactory getHandlerFactory(Class<? extends RestishHandler<?>> handlerClazz) {
     final Constructor<? extends RestishHandler<?>> sessionAware = getConstructor(handlerClazz, Session.class);
     if (sessionAware != null) {
-      return new HandlerFactory() {
-        @Override
-        public RestishHandler<?> createHandler(SessionId sessionId) throws Exception {
-          return sessionAware.newInstance(sessionId != null ? sessions.get(sessionId) : null);
-        }
-      };
+      return (sessionId) ->
+          sessionAware.newInstance(sessionId != null ? sessions.get(sessionId) : null);
     }
 
-    final Constructor<? extends RestishHandler> driverSessions =
+    final Constructor<? extends RestishHandler<?>> driverSessions =
         getConstructor(handlerClazz, DriverSessions.class);
     if (driverSessions != null) {
-      return new HandlerFactory() {
-        @Override
-        public RestishHandler<?> createHandler(SessionId sessionId) throws Exception {
-          return driverSessions.newInstance(sessions);
-        }
-      };
+      return (sessionId) -> driverSessions.newInstance(sessions);
     }
 
-
-    final Constructor<? extends RestishHandler> norags = getConstructor(handlerClazz);
-    if (norags != null) {
-      return new HandlerFactory() {
-        @Override
-        public RestishHandler<?> createHandler(SessionId sessionId) throws Exception {
-          return norags.newInstance();
-        }
-      };
+    final Constructor<? extends RestishHandler<?>> noArgs = getConstructor(handlerClazz);
+    if (noArgs != null) {
+      return (sessionId) -> noArgs.newInstance();
     }
 
     throw new IllegalArgumentException("Don't know how to construct " + handlerClazz);
   }
 
   private static Constructor<? extends RestishHandler<?>> getConstructor(
-      Class<? extends RestishHandler<?>> handlerClazz, Class... types) {
+      Class<? extends RestishHandler<?>> handlerClazz, Class<?>... types) {
     try {
       return handlerClazz.getConstructor(types);
     } catch (NoSuchMethodException e) {

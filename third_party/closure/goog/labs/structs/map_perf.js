@@ -20,28 +20,31 @@
  * @author chrishenry@google.com (Chris Henry)
  */
 
-goog.provide('goog.labs.structs.mapPerf');
+goog.provide('goog.labs.structs.MapPerf');
+goog.setTestOnly('goog.labs.structs.MapPerf');
 
+goog.require('goog.asserts');
 goog.require('goog.dom');
+goog.require('goog.dom.TagName');
 goog.require('goog.labs.structs.Map');
 goog.require('goog.structs.Map');
 goog.require('goog.testing.PerformanceTable');
 goog.require('goog.testing.jsunit');
 
 goog.scope(function() {
-var mapPerf = goog.labs.structs.mapPerf;
+var MapPerf = goog.labs.structs.MapPerf;
 
 
 /**
  * @typedef {goog.labs.structs.Map|goog.structs.Map}
  */
-mapPerf.MapType;
+MapPerf.MapType;
 
 
 /**
  * @type {goog.testing.PerformanceTable}
  */
-mapPerf.perfTable;
+MapPerf.perfTable;
 
 
 /**
@@ -54,7 +57,7 @@ mapPerf.perfTable;
  *
  * @type {!Array<string>}
  */
-mapPerf.keyList = [];
+MapPerf.keyList = [];
 
 
 /**
@@ -62,34 +65,34 @@ mapPerf.keyList = [];
  * test).
  * @type {number}
  */
-mapPerf.MAX_NUM_KEY = 10000;
+MapPerf.MAX_NUM_KEY = 10000;
 
 
 /**
  * Fills the given map with generated key-value pair.
- * @param {mapPerf.MapType} map The map to fill.
+ * @param {MapPerf.MapType} map The map to fill.
  * @param {number} numKeys The number of key-value pair to fill.
  */
-mapPerf.fillMap = function(map, numKeys) {
-  goog.asserts.assert(numKeys <= mapPerf.MAX_NUM_KEY);
+MapPerf.fillMap = function(map, numKeys) {
+  goog.asserts.assert(numKeys <= MapPerf.MAX_NUM_KEY);
 
   for (var i = 0; i < numKeys; ++i) {
-    map.set(mapPerf.keyList[i], i);
+    map.set(MapPerf.keyList[i], i);
   }
 };
 
 
 /**
  * Primes the given map with deletion of keys.
- * @param {mapPerf.MapType} map The map to prime.
- * @return {mapPerf.MapType} The primed map (for chaining).
+ * @param {MapPerf.MapType} map The map to prime.
+ * @return {MapPerf.MapType} The primed map (for chaining).
  */
-mapPerf.primeMapWithDeletion = function(map) {
+MapPerf.primeMapWithDeletion = function(map) {
   for (var i = 0; i < 1000; ++i) {
-    map.set(mapPerf.keyList[i], i);
+    map.set(MapPerf.keyList[i], i);
   }
   for (var i = 0; i < 1000; ++i) {
-    map.remove(mapPerf.keyList[i]);
+    map.remove(MapPerf.keyList[i]);
   }
   return map;
 };
@@ -97,105 +100,106 @@ mapPerf.primeMapWithDeletion = function(map) {
 
 /**
  * Runs performance test for Map#get with the given map.
- * @param {mapPerf.MapType} map The map to stress.
+ * @param {MapPerf.MapType} map The map to stress.
  * @param {string} message Message to be put in performance table.
  */
-mapPerf.runPerformanceTestForMapGet = function(map, message) {
-  mapPerf.fillMap(map, 10000);
+MapPerf.runPerformanceTestForMapGet = function(map, message) {
+  MapPerf.fillMap(map, 10000);
 
-  mapPerf.perfTable.run(
-      function() {
-        // Creates local alias for map and keyList.
-        var localMap = map;
-        var localKeyList = mapPerf.keyList;
+  MapPerf.perfTable.run(function() {
+    // Creates local alias for map and keyList.
+    var localMap = map;
+    var localKeyList = MapPerf.keyList;
 
-        for (var i = 0; i < 500; ++i) {
-          var sum = 0;
-          for (var j = 0; j < 10000; ++j) {
-            sum += localMap.get(localKeyList[j]);
-          }
-        }
-      },
-      message);
+    for (var i = 0; i < 500; ++i) {
+      var sum = 0;
+      for (var j = 0; j < 10000; ++j) {
+        sum += localMap.get(localKeyList[j]);
+      }
+    }
+  }, message);
 };
 
 
 /**
  * Runs performance test for Map#set with the given map.
- * @param {mapPerf.MapType} map The map to stress.
+ * @param {MapPerf.MapType} map The map to stress.
  * @param {string} message Message to be put in performance table.
  */
-mapPerf.runPerformanceTestForMapSet = function(map, message) {
-  mapPerf.perfTable.run(
-      function() {
-        // Creates local alias for map and keyList.
-        var localMap = map;
-        var localKeyList = mapPerf.keyList;
+MapPerf.runPerformanceTestForMapSet = function(map, message) {
+  MapPerf.perfTable.run(function() {
+    // Creates local alias for map and keyList.
+    var localMap = map;
+    var localKeyList = MapPerf.keyList;
 
-        for (var i = 0; i < 500; ++i) {
-          for (var j = 0; j < 10000; ++j) {
-            localMap.set(localKeyList[i], i);
-          }
-        }
-      },
-      message);
+    for (var i = 0; i < 500; ++i) {
+      for (var j = 0; j < 10000; ++j) {
+        localMap.set(localKeyList[i], i);
+      }
+    }
+  }, message);
 };
 
 
 goog.global['setUpPage'] = function() {
-  var content = goog.dom.createDom('div');
+  var content = goog.dom.createDom(goog.dom.TagName.DIV);
   goog.dom.insertChildAt(document.body, content, 0);
-  var ua = navigator.userAgent;
-  content.innerHTML =
-      '<h1>Closure Performance Tests - Map</h1>' +
-      '<p><strong>User-agent: </strong><span id="ua">' + ua + '</span></p>' +
-      '<div id="perf-table"></div>' +
-      '<hr>';
+  goog.dom.append(
+      content,
+      goog.dom.createDom(
+          goog.dom.TagName.H1, null, 'Closure Performance Tests - Map'),
+      goog.dom.createDom(
+          goog.dom.TagName.P, null,
+          goog.dom.createDom(goog.dom.TagName.STRONG, null, 'User-agent: '),
+          goog.dom.createDom(
+              goog.dom.TagName.SPAN, {'id': 'ua'}, navigator.userAgent)),
+      goog.dom.createDom(goog.dom.TagName.DIV, {'id': 'perf-table'}),
+      goog.dom.createDom(goog.dom.TagName.HR));
 
-  mapPerf.perfTable = new goog.testing.PerformanceTable(
-      goog.dom.getElement('perf-table'));
+  MapPerf.perfTable =
+      new goog.testing.PerformanceTable(goog.dom.getElement('perf-table'));
 
   // Fills keyList.
-  for (var i = 0; i < mapPerf.MAX_NUM_KEY; ++i) {
-    mapPerf.keyList.push('k' + i);
+  for (var i = 0; i < MapPerf.MAX_NUM_KEY; ++i) {
+    MapPerf.keyList.push('k' + i);
   }
 };
 
 
 goog.global['testGetFromLabsMap'] = function() {
-  mapPerf.runPerformanceTestForMapGet(
+  MapPerf.runPerformanceTestForMapGet(
       new goog.labs.structs.Map(), '#get: no previous deletion (Labs)');
 };
 
 
 goog.global['testGetFromOriginalMap'] = function() {
-  mapPerf.runPerformanceTestForMapGet(
+  MapPerf.runPerformanceTestForMapGet(
       new goog.structs.Map(), '#get: no previous deletion (Original)');
 };
 
 
 goog.global['testGetWithPreviousDeletionFromLabsMap'] = function() {
-  mapPerf.runPerformanceTestForMapGet(
-      mapPerf.primeMapWithDeletion(new goog.labs.structs.Map()),
+  MapPerf.runPerformanceTestForMapGet(
+      MapPerf.primeMapWithDeletion(new goog.labs.structs.Map()),
       '#get: with previous deletion (Labs)');
 };
 
 
 goog.global['testGetWithPreviousDeletionFromOriginalMap'] = function() {
-  mapPerf.runPerformanceTestForMapGet(
-      mapPerf.primeMapWithDeletion(new goog.structs.Map()),
+  MapPerf.runPerformanceTestForMapGet(
+      MapPerf.primeMapWithDeletion(new goog.structs.Map()),
       '#get: with previous deletion (Original)');
 };
 
 
 goog.global['testSetFromLabsMap'] = function() {
-  mapPerf.runPerformanceTestForMapSet(
+  MapPerf.runPerformanceTestForMapSet(
       new goog.labs.structs.Map(), '#set: no previous deletion (Labs)');
 };
 
 
 goog.global['testSetFromOriginalMap'] = function() {
-  mapPerf.runPerformanceTestForMapSet(
+  MapPerf.runPerformanceTestForMapSet(
       new goog.structs.Map(), '#set: no previous deletion (Original)');
 };
 

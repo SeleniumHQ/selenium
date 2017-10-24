@@ -28,6 +28,7 @@ goog.provide('goog.math.Coordinate3');
  * @param {number=} opt_x X coordinate, defaults to 0.
  * @param {number=} opt_y Y coordinate, defaults to 0.
  * @param {number=} opt_z Z coordinate, defaults to 0.
+ * @struct
  * @constructor
  */
 goog.math.Coordinate3 = function(opt_x, opt_y, opt_z) {

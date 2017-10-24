@@ -1,3 +1,0 @@
-export_file(
-    name = "SafariDriver",
-    srcs = ["SafariDriver.safariextz"])

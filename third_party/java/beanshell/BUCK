@@ -1,7 +1,10 @@
-
-prebuilt_jar(name = 'beanshell',
-  binary_jar = 'bsh-1.3.0.jar',
+# BUILD FILE SYNTAX: SKYLARK
+prebuilt_jar(
+  name = 'bsh',
+  maven_coords = 'org.beanshell:bsh:jar:2.0b4',
+  binary_jar = 'bsh-2.0b4.jar',
   visibility = [
-    '//third_party/java/testng:testng',
+    '//third_party/java/testng:testng'
   ],
 )
+

@@ -1,31 +1,26 @@
-/*
-Copyright 2012-2015 Software Freedom Conservancy
-Copyright 2007-2012 Selenium committers
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
- */
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium;
 
-import org.junit.Test;
-import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.JavascriptEnabled;
-
-import java.util.List;
-
 import static org.hamcrest.Matchers.anyOf;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertEquals;
@@ -34,9 +29,17 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.openqa.selenium.testing.Ignore.Driver.IE;
-import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
+import static org.junit.Assume.assumeFalse;
+import static org.openqa.selenium.testing.Driver.MARIONETTE;
+import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
+
+import org.junit.Test;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.NotYetImplemented;
+import org.openqa.selenium.testing.TestUtilities;
+
+import java.util.List;
 
 public class ElementAttributeTest extends JUnit4TestBase {
 
@@ -79,7 +82,6 @@ public class ElementAttributeTest extends JUnit4TestBase {
     assertThat(body.getAttribute("style"), equalTo(""));
   }
 
-  @Ignore({MARIONETTE})
   @Test
   public void testShouldReturnTheValueOfTheDisabledAttributeAsNullIfNotSet() {
     driver.get(pages.formPage);
@@ -124,27 +126,18 @@ public class ElementAttributeTest extends JUnit4TestBase {
     assertThat(disabledSubmitElement.isEnabled(), is(false));
   }
 
-  @Ignore(value = {MARIONETTE},
-          reason = "sendKeys does not determine whether the element is disabled")
   @Test
+  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/668")
   public void testShouldThrowExceptionIfSendingKeysToElementDisabledUsingRandomDisabledStrings() {
     driver.get(pages.formPage);
     WebElement disabledTextElement1 = driver.findElement(By.id("disabledTextElement1"));
-    try {
-      disabledTextElement1.sendKeys("foo");
-      fail("Should have thrown exception");
-    } catch (InvalidElementStateException e) {
-      // Expected
-    }
+    Throwable t = catchThrowable(() -> disabledTextElement1.sendKeys("foo"));
+    assertThat(t, instanceOf(InvalidElementStateException.class));
     assertThat(disabledTextElement1.getText(), is(""));
 
     WebElement disabledTextElement2 = driver.findElement(By.id("disabledTextElement2"));
-    try {
-      disabledTextElement2.sendKeys("bar");
-      fail("Should have thrown exception");
-    } catch (InvalidElementStateException e) {
-      // Expected
-    }
+    Throwable t2 = catchThrowable(() -> disabledTextElement2.sendKeys("bar"));
+    assertThat(t2, instanceOf(InvalidElementStateException.class));
     assertThat(disabledTextElement2.getText(), is(""));
   }
 
@@ -225,6 +218,15 @@ public class ElementAttributeTest extends JUnit4TestBase {
   }
 
   @Test
+  public void testShouldReturnInnerHtml() {
+    assumeFalse("IE before 10 returns innerHTML with uppercase tag names", TestUtilities.getIEVersion(driver) < 10);
+    driver.get(pages.simpleTestPage);
+
+    String html = driver.findElement(By.id("wrappingtext")).getAttribute("innerHTML");
+    assertThat(html, containsString("<tbody>"));
+  }
+
+  @Test
   public void testShouldTreatReadonlyAsAValue() {
     driver.get(pages.formPage);
 
@@ -237,6 +239,18 @@ public class ElementAttributeTest extends JUnit4TestBase {
     String notReadonly = textInput.getAttribute("readonly");
 
     assertFalse(readonly.equals(notReadonly));
+  }
+
+  @Test
+  public void testShouldReturnHiddenTextForTextContentAttribute() {
+    assumeFalse("IE before 9 doesn't handle textContent attribute; IE9 loads page in quirks mode, so no textContent attribute", TestUtilities.getIEVersion(driver) < 10);
+
+    driver.get(pages.simpleTestPage);
+
+    WebElement element = driver.findElement(By.id("hiddenline"));
+    String textContent = element.getAttribute("textContent");
+
+    assertEquals(textContent, "A hidden line of text");
   }
 
   @Test
@@ -262,8 +276,7 @@ public class ElementAttributeTest extends JUnit4TestBase {
     try {
       Thread.sleep(1000);
     } catch (InterruptedException e) {
-      e.printStackTrace(); // To change body of catch statement use File | Settings | File
-      // Templates.
+      e.printStackTrace();
     }
 
     WebElement th1 = driver.findElement(By.id("th1"));
@@ -294,9 +307,10 @@ public class ElementAttributeTest extends JUnit4TestBase {
     assertEquals(null, mousedownDiv.getAttribute("onclick"));
   }
 
-  @Ignore(value = {IE}, reason = "IE7 Does not support SVG")
   @Test
   public void testGetAttributeDoesNotReturnAnObjectForSvgProperties() {
+    assumeFalse("IE before 9 doesn't support SVG", TestUtilities.isOldIe(driver));
+
     driver.get(pages.svgPage);
     WebElement svgElement = driver.findElement(By.id("rotate"));
     assertEquals("rotate(30)", svgElement.getAttribute("transform"));
@@ -308,7 +322,7 @@ public class ElementAttributeTest extends JUnit4TestBase {
     WebElement element = driver.findElement(By.id("working"));
     assertEquals("", element.getAttribute("value"));
     element.sendKeys("hello world");
-    assertEquals("hello world", element.getAttribute("value"));
+    shortWait.until(ExpectedConditions.attributeToBe(element, "value", "hello world"));
   }
 
   @Test
@@ -317,7 +331,7 @@ public class ElementAttributeTest extends JUnit4TestBase {
     WebElement element = driver.findElement(By.id("email"));
     assertEquals("", element.getAttribute("value"));
     element.sendKeys("hello@example.com");
-    assertEquals("hello@example.com", element.getAttribute("value"));
+    shortWait.until(ExpectedConditions.attributeToBe(element, "value", "hello@example.com"));
   }
 
   @Test
@@ -326,10 +340,9 @@ public class ElementAttributeTest extends JUnit4TestBase {
     WebElement element = driver.findElement(By.id("emptyTextArea"));
     assertEquals("", element.getAttribute("value"));
     element.sendKeys("hello world");
-    assertEquals("hello world", element.getAttribute("value"));
+    shortWait.until(ExpectedConditions.attributeToBe(element, "value", "hello world"));
   }
 
-  @Ignore({MARIONETTE})
   @Test
   public void testShouldReturnNullForNonPresentBooleanAttributes() {
     driver.get(pages.booleanAttributes);
@@ -354,7 +367,6 @@ public class ElementAttributeTest extends JUnit4TestBase {
     assertEquals("true", element5.getAttribute("nowrap"));
   }
 
-  @Ignore({MARIONETTE})
   @Test
   public void testMultipleAttributeShouldBeNullWhenNotSet() {
     driver.get(pages.selectPage);
@@ -390,9 +402,7 @@ public class ElementAttributeTest extends JUnit4TestBase {
     assertEquals("true", element.getAttribute("multiple"));
   }
 
-  @JavascriptEnabled
   @Test
-  @Ignore(MARIONETTE)
   public void testGetAttributeOfUserDefinedProperty() {
     driver.get(pages.userDefinedProperty);
     WebElement element = driver.findElement(By.id("d"));

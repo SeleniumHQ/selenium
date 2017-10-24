@@ -1,19 +1,19 @@
-/*
-Copyright 2011 Selenium committers
-Copyright 2011-2015 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.grid.selenium.proxy;
 
@@ -30,7 +30,6 @@ import org.openqa.grid.internal.listeners.SelfHealingProxy;
 import org.openqa.grid.internal.listeners.TestSessionListener;
 import org.openqa.grid.internal.listeners.TimeoutListener;
 import org.openqa.grid.internal.utils.HtmlRenderer;
-import org.openqa.grid.selenium.utils.WebProxyHtmlRenderer;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.remote.BrowserType;
@@ -55,7 +54,7 @@ public class DefaultRemoteProxy extends BaseRemoteProxy
       CommandListener,
       TestSessionListener {
 
-  private static final Logger log = Logger.getLogger(DefaultRemoteProxy.class.getName());
+  private static final Logger LOG = Logger.getLogger(DefaultRemoteProxy.class.getName());
 
   public static final int DEFAULT_POLLING_INTERVAL = 10000;
   public static final int DEFAULT_UNREGISTER_DELAY = 60000;
@@ -68,12 +67,9 @@ public class DefaultRemoteProxy extends BaseRemoteProxy
   public DefaultRemoteProxy(RegistrationRequest request, Registry registry) {
     super(request, registry);
 
-    pollingInterval = request.getConfigAsInt(RegistrationRequest.NODE_POLLING,
-                                             DEFAULT_POLLING_INTERVAL);
-    unregisterDelay = request.getConfigAsInt(RegistrationRequest.UNREGISTER_IF_STILL_DOWN_AFTER,
-                                             DEFAULT_UNREGISTER_DELAY);
-    downPollingLimit = request.getConfigAsInt(RegistrationRequest.DOWN_POLLING_LIMIT,
-                                                DEFAULT_DOWN_POLLING_LIMIT);
+    pollingInterval = config.nodePolling != null ? config.nodePolling : DEFAULT_POLLING_INTERVAL;
+    unregisterDelay = config.unregisterIfStillDownAfter != null ? config.unregisterIfStillDownAfter : DEFAULT_UNREGISTER_DELAY;
+    downPollingLimit = config.downPollingLimit != null ? config.downPollingLimit : DEFAULT_DOWN_POLLING_LIMIT;
   }
 
   public void beforeRelease(TestSession session) {
@@ -83,18 +79,18 @@ public class DefaultRemoteProxy extends BaseRemoteProxy
     }
     boolean ok = session.sendDeleteSessionRequest();
     if (!ok) {
-      log.warning("Error releasing the resources on timeout for session " + session);
+      LOG.warning("Error releasing the resources on timeout for session " + session);
     }
   }
 
 
   public void afterCommand(TestSession session, HttpServletRequest request, HttpServletResponse response) {
-    session.put("lastCommand", request.getMethod() + " - " + request.getPathInfo() + " executing ...");
+    session.put("lastCommand", request.getMethod() + " - " + request.getPathInfo() + " executed.");
   }
 
 
   public void beforeCommand(TestSession session, HttpServletRequest request, HttpServletResponse response) {
-    session.put("lastCommand", request.getMethod() + " - " + request.getPathInfo() + " executed.");
+    session.put("lastCommand", request.getMethod() + " - " + request.getPathInfo() + " executing ...");
   }
 
   private final HtmlRenderer renderer = new WebProxyHtmlRenderer(this);
@@ -111,7 +107,7 @@ public class DefaultRemoteProxy extends BaseRemoteProxy
   private volatile boolean poll = true;
 
   // TODO freynaud
-  private List<RemoteException> errors = new CopyOnWriteArrayList<RemoteException>();
+  private List<RemoteException> errors = new CopyOnWriteArrayList<>();
   private Thread pollingThread = null;
 
   public boolean isAlive() {
@@ -119,7 +115,7 @@ public class DefaultRemoteProxy extends BaseRemoteProxy
       getStatus();
       return true;
     } catch (Exception e) {
-      log.warning("Failed to check status of node: " + e.getMessage());
+      LOG.fine("Failed to check status of node: " + e.getMessage());
       return false;
     }
   }
@@ -138,14 +134,16 @@ public class DefaultRemoteProxy extends BaseRemoteProxy
                     failedPollingTries++;
                     if (failedPollingTries >= downPollingLimit) {
                       downSince = System.currentTimeMillis();
-                      addNewEvent(new RemoteNotReachableException("Marking the node as down. " +
-                                                                  "Cannot reach the node for " + failedPollingTries + " tries."));
+                      addNewEvent(new RemoteNotReachableException(String.format(
+                        "Marking the node %s as down: cannot reach the node for %s tries",
+                        DefaultRemoteProxy.this, failedPollingTries)));
                     }
                   } else {
                     long downFor = System.currentTimeMillis() - downSince;
                     if (downFor > unregisterDelay) {
-                      addNewEvent(new RemoteUnregisterException(
-                          "Unregistering the node. It's been down for " + downFor + " milliseconds."));
+                      addNewEvent(new RemoteUnregisterException(String.format(
+                        "Unregistering the node %s because it's been down for %s milliseconds",
+                        DefaultRemoteProxy.this, downFor)));
                     }
                   }
                 } else {
@@ -176,12 +174,12 @@ public class DefaultRemoteProxy extends BaseRemoteProxy
   public void onEvent(List<RemoteException> events, RemoteException lastInserted) {
     for (RemoteException e : events) {
       if (e instanceof RemoteNotReachableException) {
-        log.warning(e.getMessage());
+        LOG.info(e.getMessage());
         down = true;
         this.errors.clear();
       }
       if (e instanceof RemoteUnregisterException) {
-        log.warning(e.getMessage());
+        LOG.info(e.getMessage());
         Registry registry = this.getRegistry();
         registry.removeIfPresent(this);
       }
@@ -236,7 +234,7 @@ public class DefaultRemoteProxy extends BaseRemoteProxy
         if (session.getSlot().getCapabilities().get("chrome_binary") != null) {
           Map<String, Object> options = (Map<String, Object>) cap.get(ChromeOptions.CAPABILITY);
           if (options == null) {
-            options = new HashMap<String, Object>();
+            options = new HashMap<>();
           }
           if (!options.containsKey("binary")) {
             options.put("binary", session.getSlot().getCapabilities().get("chrome_binary"));
@@ -248,8 +246,7 @@ public class DefaultRemoteProxy extends BaseRemoteProxy
   }
 
   public void afterSession(TestSession session) {
-    // TODO Auto-generated method stub
-
+    // nothing to do here in this default implementation
   }
 
   @Override

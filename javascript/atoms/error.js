@@ -1,17 +1,19 @@
-// Copyright 2010 WebDriver committers
-// Copyright 2010 Google Inc.
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
+//   http://www.apache.org/licenses/LICENSE-2.0
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 /**
  * @fileoverview Utilities for working with errors as defined by WebDriver's
@@ -23,7 +25,7 @@ goog.provide('bot.ErrorCode');
 
 
 /**
- * Error codes from the WebDriver wire protocol:
+ * Error codes from the Selenium WebDriver protocol:
  * https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#response-status-codes
  *
  * @enum {number}
@@ -58,16 +60,14 @@ bot.ErrorCode = {
   SQL_DATABASE_ERROR: 35,
   INVALID_XPATH_SELECTOR: 51,
   INVALID_XPATH_SELECTOR_RETURN_TYPE: 52,
+  INVALID_ARGUMENT: 61,
   // The following error codes are derived straight from HTTP return codes.
   METHOD_NOT_ALLOWED: 405
 };
 
 
-
 /**
- * Error extension that includes error status codes from the WebDriver wire
- * protocol:
- * https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#response-status-codes
+ * Represents an error returned from a WebDriver command request.
  *
  * @param {!bot.ErrorCode} code The error's status code.
  * @param {string=} opt_message Optional error message.
@@ -116,35 +116,34 @@ goog.inherits(bot.Error, Error);
 
 
 /**
- * Status strings enumerated in the W3C WebDriver working draft.
+ * Status strings enumerated in the W3C WebDriver protocol.
  * @enum {string}
- * @see http://www.w3.org/TR/webdriver/#status-codes
+ * @see https://w3c.github.io/webdriver/webdriver-spec.html#handling-errors
  */
 bot.Error.State = {
   ELEMENT_NOT_SELECTABLE: 'element not selectable',
   ELEMENT_NOT_VISIBLE: 'element not visible',
-  IME_ENGINE_ACTIVATION_FAILED: 'ime engine activation failed',
-  IME_NOT_AVAILABLE: 'ime not available',
+  INVALID_ARGUMENT: 'invalid argument',
   INVALID_COOKIE_DOMAIN: 'invalid cookie domain',
   INVALID_ELEMENT_COORDINATES: 'invalid element coordinates',
   INVALID_ELEMENT_STATE: 'invalid element state',
   INVALID_SELECTOR: 'invalid selector',
+  INVALID_SESSION_ID: 'invalid session id',
   JAVASCRIPT_ERROR: 'javascript error',
   MOVE_TARGET_OUT_OF_BOUNDS: 'move target out of bounds',
   NO_SUCH_ALERT: 'no such alert',
-  NO_SUCH_DOM: 'no such dom',
   NO_SUCH_ELEMENT: 'no such element',
   NO_SUCH_FRAME: 'no such frame',
   NO_SUCH_WINDOW: 'no such window',
   SCRIPT_TIMEOUT: 'script timeout',
   SESSION_NOT_CREATED: 'session not created',
   STALE_ELEMENT_REFERENCE: 'stale element reference',
-  SUCCESS: 'success',
   TIMEOUT: 'timeout',
   UNABLE_TO_SET_COOKIE: 'unable to set cookie',
   UNEXPECTED_ALERT_OPEN: 'unexpected alert open',
   UNKNOWN_COMMAND: 'unknown command',
   UNKNOWN_ERROR: 'unknown error',
+  UNKNOWN_METHOD: 'unknown method',
   UNSUPPORTED_OPERATION: 'unsupported operation'
 };
 
@@ -161,8 +160,8 @@ goog.scope(function() {
 
   map[code.ELEMENT_NOT_SELECTABLE] = state.ELEMENT_NOT_SELECTABLE;
   map[code.ELEMENT_NOT_VISIBLE] = state.ELEMENT_NOT_VISIBLE;
-  map[code.IME_ENGINE_ACTIVATION_FAILED] = state.IME_ENGINE_ACTIVATION_FAILED;
-  map[code.IME_NOT_AVAILABLE] = state.IME_NOT_AVAILABLE;
+  map[code.IME_ENGINE_ACTIVATION_FAILED] = state.UNKNOWN_ERROR;
+  map[code.IME_NOT_AVAILABLE] = state.UNKNOWN_ERROR;
   map[code.INVALID_COOKIE_DOMAIN] = state.INVALID_COOKIE_DOMAIN;
   map[code.INVALID_ELEMENT_COORDINATES] = state.INVALID_ELEMENT_COORDINATES;
   map[code.INVALID_ELEMENT_STATE] = state.INVALID_ELEMENT_STATE;
@@ -179,7 +178,6 @@ goog.scope(function() {
   map[code.SCRIPT_TIMEOUT] = state.SCRIPT_TIMEOUT;
   map[code.SESSION_NOT_CREATED] = state.SESSION_NOT_CREATED;
   map[code.STALE_ELEMENT_REFERENCE] = state.STALE_ELEMENT_REFERENCE;
-  map[code.SUCCESS] = state.SUCCESS;
   map[code.TIMEOUT] = state.TIMEOUT;
   map[code.UNABLE_TO_SET_COOKIE] = state.UNABLE_TO_SET_COOKIE;
   map[code.UNEXPECTED_ALERT_OPEN] = state.UNEXPECTED_ALERT_OPEN

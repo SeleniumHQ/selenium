@@ -1,3 +1,4 @@
+# BUILD FILE SYNTAX: SKYLARK
 
 java_library(name = 'slf4j',
   exported_deps = [

@@ -1,6 +1,0 @@
-prebuilt_jar(name = 'jetty-websocket',
-  binary_jar = 'jetty-websocket-8.1.8.jar',
-  visibility = [
-    '//third_party/java/...',
-  ],
-)

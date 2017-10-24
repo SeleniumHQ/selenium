@@ -183,8 +183,8 @@ goog.math.angleDy = function(degrees, radius) {
  *     x1,y1 to x2,y2.
  */
 goog.math.angle = function(x1, y1, x2, y2) {
-  return goog.math.standardAngle(goog.math.toDegrees(Math.atan2(y2 - y1,
-                                                                x2 - x1)));
+  return goog.math.standardAngle(
+      goog.math.toDegrees(Math.atan2(y2 - y1, x2 - x1)));
 };
 
 
@@ -203,8 +203,8 @@ goog.math.angle = function(x1, y1, x2, y2) {
  *     angleDifference(350, 10) is 20, and angleDifference(10, 350) is -20.
  */
 goog.math.angleDifference = function(startAngle, endAngle) {
-  var d = goog.math.standardAngle(endAngle) -
-          goog.math.standardAngle(startAngle);
+  var d =
+      goog.math.standardAngle(endAngle) - goog.math.standardAngle(startAngle);
   if (d > 180) {
     d = d - 360;
   } else if (d <= -180) {
@@ -217,10 +217,17 @@ goog.math.angleDifference = function(startAngle, endAngle) {
 /**
  * Returns the sign of a number as per the "sign" or "signum" function.
  * @param {number} x The number to take the sign of.
- * @return {number} -1 when negative, 1 when positive, 0 when 0.
+ * @return {number} -1 when negative, 1 when positive, 0 when 0. Preserves
+ *     signed zeros and NaN.
  */
 goog.math.sign = function(x) {
-  return x == 0 ? 0 : (x < 0 ? -1 : 1);
+  if (x > 0) {
+    return 1;
+  }
+  if (x < 0) {
+    return -1;
+  }
+  return x;  // Preserves signed zeros and NaN.
 };
 
 
@@ -230,8 +237,8 @@ goog.math.sign = function(x) {
  *
  * Returns the longest possible array that is subarray of both of given arrays.
  *
- * @param {Array<Object>} array1 First array of objects.
- * @param {Array<Object>} array2 Second array of objects.
+ * @param {IArrayLike<S>} array1 First array of objects.
+ * @param {IArrayLike<T>} array2 Second array of objects.
  * @param {Function=} opt_compareFn Function that acts as a custom comparator
  *     for the array ojects. Function should return true if objects are equal,
  *     otherwise false.
@@ -239,20 +246,17 @@ goog.math.sign = function(x) {
  *     as a result subsequence. It accepts 2 arguments: index of common element
  *     in the first array and index in the second. The default function returns
  *     element from the first array.
- * @return {!Array<Object>} A list of objects that are common to both arrays
+ * @return {!Array<S|T>} A list of objects that are common to both arrays
  *     such that there is no common subsequence with size greater than the
  *     length of the list.
+ * @template S,T
  */
 goog.math.longestCommonSubsequence = function(
     array1, array2, opt_compareFn, opt_collectorFn) {
 
-  var compare = opt_compareFn || function(a, b) {
-    return a == b;
-  };
+  var compare = opt_compareFn || function(a, b) { return a == b; };
 
-  var collect = opt_collectorFn || function(i1, i2) {
-    return array1[i1];
-  };
+  var collect = opt_collectorFn || function(i1, i2) { return array1[i1]; };
 
   var length1 = array1.length;
   var length2 = array2.length;
@@ -305,10 +309,9 @@ goog.math.longestCommonSubsequence = function(
  *     {@code NaN} if any of the arguments is not a valid number).
  */
 goog.math.sum = function(var_args) {
-  return /** @type {number} */ (goog.array.reduce(arguments,
-      function(sum, value) {
-        return sum + value;
-      }, 0));
+  return /** @type {number} */ (
+      goog.array.reduce(
+          arguments, function(sum, value) { return sum + value; }, 0));
 };
 
 
@@ -338,8 +341,8 @@ goog.math.sampleVariance = function(var_args) {
   }
 
   var mean = goog.math.average.apply(null, arguments);
-  var variance = goog.math.sum.apply(null, goog.array.map(arguments,
-      function(val) {
+  var variance =
+      goog.math.sum.apply(null, goog.array.map(arguments, function(val) {
         return Math.pow(val - mean, 2);
       })) / (sampleSize - 1);
 
@@ -376,9 +379,19 @@ goog.math.isInt = function(num) {
  * Returns whether the supplied number is finite and not NaN.
  * @param {number} num The number to test.
  * @return {boolean} Whether {@code num} is a finite number.
+ * @deprecated Use {@link isFinite} instead.
  */
 goog.math.isFiniteNumber = function(num) {
-  return isFinite(num) && !isNaN(num);
+  return isFinite(num);
+};
+
+
+/**
+ * @param {number} num The number to test.
+ * @return {boolean} Whether it is negative zero.
+ */
+goog.math.isNegativeZero = function(num) {
+  return num == 0 && 1 / num < 0;
 };
 
 
@@ -398,7 +411,7 @@ goog.math.isFiniteNumber = function(num) {
 goog.math.log10Floor = function(num) {
   if (num > 0) {
     var x = Math.round(Math.log(num) * Math.LOG10E);
-    return x - (parseFloat('1e' + x) > num);
+    return x - (parseFloat('1e' + x) > num ? 1 : 0);
   }
   return num == 0 ? -Infinity : NaN;
 };

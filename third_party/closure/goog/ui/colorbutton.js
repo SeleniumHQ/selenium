@@ -45,15 +45,15 @@ goog.require('goog.ui.registry');
  * @final
  */
 goog.ui.ColorButton = function(content, opt_renderer, opt_domHelper) {
-  goog.ui.Button.call(this, content, opt_renderer ||
-      goog.ui.ColorButtonRenderer.getInstance(), opt_domHelper);
+  goog.ui.Button.call(
+      this, content, opt_renderer || goog.ui.ColorButtonRenderer.getInstance(),
+      opt_domHelper);
 };
 goog.inherits(goog.ui.ColorButton, goog.ui.Button);
 
 // Register a decorator factory function for goog.ui.ColorButtons.
-goog.ui.registry.setDecoratorByClassName(goog.ui.ColorButtonRenderer.CSS_CLASS,
-    function() {
+goog.ui.registry.setDecoratorByClassName(
+    goog.ui.ColorButtonRenderer.CSS_CLASS, function() {
       // ColorButton defaults to using ColorButtonRenderer.
       return new goog.ui.ColorButton(null);
     });
-

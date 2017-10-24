@@ -1,16 +1,19 @@
-// Copyright 2014 Software Freedom Conservancy. All Rights Reserved.
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
+//   http://www.apache.org/licenses/LICENSE-2.0
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 goog.require('goog.testing.jsunit');
 goog.require('webdriver.test.testutil');
@@ -23,21 +26,21 @@ function testCallbackHelper_functionCalled() {
   var callback = callbackHelper();
   callback();
   assertNotThrows(callback.assertCalled);
-  assertThrows(callback.assertNotCalled);
+  assertThrowsJsUnitException(callback.assertNotCalled);
 }
 
 function testCallbackHelper_functionCalledMoreThanOnce() {
   var callback = callbackHelper();
   callback();
   callback(123, 'abc');
-  assertThrows(callback.assertCalled);
-  assertThrows(callback.assertNotCalled);
+  assertThrowsJsUnitException(callback.assertCalled);
+  assertThrowsJsUnitException(callback.assertNotCalled);
 }
 
 function testCallbackHelper_functionNotCalled() {
   var callback = callbackHelper();
   assertNotThrows(callback.assertNotCalled);
-  assertThrows(callback.assertCalled);
+  assertThrowsJsUnitException(callback.assertCalled);
 }
 
 function testCallbackHelper_wrappedFunctionIsCalled() {
@@ -47,38 +50,36 @@ function testCallbackHelper_wrappedFunctionIsCalled() {
   });
   callback();
   assertNotThrows(callback.assertCalled);
-  assertThrows(callback.assertNotCalled);
+  assertThrowsJsUnitException(callback.assertNotCalled);
   assertEquals(1, count);
 }
 
 function testCallbackPair_callbackExpected() {
   var pair = callbackPair();
-  assertThrows(pair.assertCallback);
+  assertThrowsJsUnitException(pair.assertCallback);
   pair.callback();
   assertNotThrows(pair.assertCallback);
   pair.errback();
-  assertThrows(pair.assertCallback);
+  assertThrowsJsUnitException(pair.assertCallback);
 
   pair.reset();
   pair.callback();
   assertNotThrows(pair.assertCallback);
   pair.callback();
-  assertThrows('Should expect to be called only once',
-      pair.assertCallback);
 }
 
 function testCallbackPair_errbackExpected() {
   var pair = callbackPair();
-  assertThrows(pair.assertErrback);
+  assertThrowsJsUnitException(pair.assertErrback);
   pair.errback();
   assertNotThrows(pair.assertErrback);
   pair.callback();
-  assertThrows(pair.assertErrback);
+  assertThrowsJsUnitException(pair.assertErrback);
 }
 
 function testCallbackPair_eitherExpected() {
   var pair = callbackPair();
-  assertThrows(pair.assertEither);
+  assertThrowsJsUnitException(pair.assertEither);
   pair.errback();
   assertNotThrows(pair.assertEither);
   pair.reset();
@@ -92,10 +93,10 @@ function testCallbackPair_neitherExpected() {
   var pair = callbackPair();
   assertNotThrows(pair.assertNeither);
   pair.errback();
-  assertThrows(pair.assertNeither);
+  assertThrowsJsUnitException(pair.assertNeither);
   pair.reset();
   pair.callback();
-  assertThrows(pair.assertNeither);
+  assertThrowsJsUnitException(pair.assertNeither);
   pair.errback();
-  assertThrows(pair.assertNeither);
+  assertThrowsJsUnitException(pair.assertNeither);
 }

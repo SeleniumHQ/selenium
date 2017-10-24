@@ -27,7 +27,7 @@ goog.require('goog.string');
 goog.require('goog.structs.Set');
 
 goog.scope(function() {
-// type checking only (no require)
+/** @suppress {missingRequire} type checking only */
 var ChannelRequest = goog.labs.net.webChannel.ChannelRequest;
 
 
@@ -47,7 +47,7 @@ goog.labs.net.webChannel.ForwardChannelRequestPool = function(opt_maxPoolSize) {
    * @private {number}
    */
   this.maxPoolSizeConfigured_ = opt_maxPoolSize ||
-          goog.labs.net.webChannel.ForwardChannelRequestPool.MAX_POOL_SIZE_;
+      goog.labs.net.webChannel.ForwardChannelRequestPool.MAX_POOL_SIZE_;
 
   /**
    * The current size limit of the request pool. This limit is meant to be
@@ -59,7 +59,8 @@ goog.labs.net.webChannel.ForwardChannelRequestPool = function(opt_maxPoolSize) {
    * @private {number}
    */
   this.maxSize_ = ForwardChannelRequestPool.isSpdyEnabled_() ?
-      this.maxPoolSizeConfigured_ : 1;
+      this.maxPoolSizeConfigured_ :
+      1;
 
   /**
    * The container for all the pending request objects.
@@ -98,8 +99,10 @@ ForwardChannelRequestPool.MAX_POOL_SIZE_ = 10;
  * @private
  */
 ForwardChannelRequestPool.isSpdyEnabled_ = function() {
-  return !!(window.chrome && window.chrome.loadTimes &&
-      window.chrome.loadTimes() && window.chrome.loadTimes().wasFetchedViaSpdy);
+  return !!(
+      goog.global.chrome && goog.global.chrome.loadTimes &&
+      goog.global.chrome.loadTimes() &&
+      goog.global.chrome.loadTimes().wasFetchedViaSpdy);
 };
 
 
@@ -117,7 +120,8 @@ ForwardChannelRequestPool.prototype.applyClientProtocol = function(
   }
 
   if (goog.string.contains(clientProtocol, 'spdy') ||
-      goog.string.contains(clientProtocol, 'quic')) {
+      goog.string.contains(clientProtocol, 'quic') ||
+      goog.string.contains(clientProtocol, 'h2')) {
     this.maxSize_ = this.maxPoolSizeConfigured_;
     this.requestPool_ = new goog.structs.Set();
     if (this.request_) {
@@ -231,9 +235,8 @@ ForwardChannelRequestPool.prototype.cancel = function() {
   }
 
   if (this.requestPool_ && !this.requestPool_.isEmpty()) {
-    goog.array.forEach(this.requestPool_.getValues(), function(val) {
-      val.cancel();
-    });
+    goog.array.forEach(
+        this.requestPool_.getValues(), function(val) { val.cancel(); });
     this.requestPool_.clear();
   }
 };
@@ -254,7 +257,7 @@ ForwardChannelRequestPool.prototype.hasPendingRequest = function() {
  * Need go through the standard onRequestComplete logic to expose the max-retry
  * failure in the standard way.
  *
- * @param {!function(!ChannelRequest)} onComplete The completion callback.
+ * @param {function(!ChannelRequest)} onComplete The completion callback.
  * @return {boolean} true if any request has been forced to complete.
  */
 ForwardChannelRequestPool.prototype.forceComplete = function(onComplete) {
@@ -265,11 +268,10 @@ ForwardChannelRequestPool.prototype.forceComplete = function(onComplete) {
   }
 
   if (this.requestPool_ && !this.requestPool_.isEmpty()) {
-    goog.array.forEach(this.requestPool_.getValues(),
-        function(val) {
-          val.cancel();
-          onComplete(val);
-        });
+    goog.array.forEach(this.requestPool_.getValues(), function(val) {
+      val.cancel();
+      onComplete(val);
+    });
     return true;
   }
 

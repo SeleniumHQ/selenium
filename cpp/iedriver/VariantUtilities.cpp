@@ -1,5 +1,8 @@
-// Copyright 2013 Software Freedom Conservancy
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -12,9 +15,14 @@
 // limitations under the License.
 
 #include "VariantUtilities.h"
-#include "IECommandExecutor.h"
+
+#include "errorcodes.h"
 #include "json.h"
 #include "logging.h"
+
+#include "Element.h"
+#include "IECommandExecutor.h"
+#include "StringUtilities.h"
 
 namespace webdriver {
 VariantUtilities::VariantUtilities(void) {
@@ -109,6 +117,55 @@ bool VariantUtilities::VariantIsObject(VARIANT value) {
   std::wstring type_name = GetVariantObjectTypeName(value);
   if (type_name == L"JScriptTypeInfo") {
     return true;
+  }
+  return false;
+}
+
+bool VariantUtilities::ConvertVariantToString(VARIANT variant_value,
+                                             std::string* value) {
+  VARTYPE type = variant_value.vt;
+  switch (type) {
+
+  case VT_BOOL:
+    LOG(DEBUG) << "Result type is boolean";
+    *value = variant_value.boolVal == VARIANT_TRUE ? "true" : "false";
+    return true;
+
+  case VT_BSTR:
+    LOG(DEBUG) << "Result type is string";
+    if (!variant_value.bstrVal) {
+      *value = "";
+    }
+    else {
+      std::wstring str_value = variant_value.bstrVal;
+      *value = StringUtilities::ToString(str_value);
+    }
+    return true;
+
+  case VT_I4:
+    LOG(DEBUG) << "Result type is int";
+    *value = std::to_string(static_cast<long long>(variant_value.lVal));
+    return true;
+
+  case VT_R4:
+    LOG(DEBUG) << "Result type is real";
+    *value = std::to_string(variant_value.dblVal);
+    return true;
+
+  case VT_EMPTY:
+  case VT_NULL:
+    LOG(DEBUG) << "Result type is empty";
+    *value = "";
+    return false;
+
+    // This is lame
+  case VT_DISPATCH:
+    LOG(DEBUG) << "Result type is dispatch";
+    *value = "";
+    return true;
+
+  default:
+    LOG(DEBUG) << "Result type is unknown: " << type;
   }
   return false;
 }

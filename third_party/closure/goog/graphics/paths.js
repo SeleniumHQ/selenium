@@ -42,8 +42,9 @@ goog.graphics.paths.createRegularNGon = function(center, vertex, n) {
   var radius = goog.math.Coordinate.distance(center, vertex);
   for (var i = 1; i < n; i++) {
     var angle = startAngle + 2 * Math.PI * (i / n);
-    path.lineTo(center.x + radius * Math.cos(angle),
-                center.y + radius * Math.sin(angle));
+    path.lineTo(
+        center.x + radius * Math.cos(angle),
+        center.y + radius * Math.sin(angle));
   }
   path.close();
   return path;
@@ -70,8 +71,7 @@ goog.graphics.paths.createArrow = function(a, b, aHead, bHead) {
     path.appendPath(
         goog.graphics.paths.createRegularNGon(
             new goog.math.Coordinate(
-                a.x + aHead * Math.cos(angle),
-                a.y + aHead * Math.sin(angle)),
+                a.x + aHead * Math.cos(angle), a.y + aHead * Math.sin(angle)),
             a, 3));
   }
   if (bHead) {

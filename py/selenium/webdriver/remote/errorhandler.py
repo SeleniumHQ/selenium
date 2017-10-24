@@ -1,36 +1,37 @@
-# Copyright 2010 WebDriver committers
-# Copyright 2010 Google Inc.
+# Licensed to the Software Freedom Conservancy (SFC) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The SFC licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
 #
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
+#   http://www.apache.org/licenses/LICENSE-2.0
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
 
-from selenium.common.exceptions import ElementNotSelectableException
-from selenium.common.exceptions import ElementNotVisibleException
-from selenium.common.exceptions import InvalidCookieDomainException
-from selenium.common.exceptions import InvalidElementStateException
-from selenium.common.exceptions import InvalidSelectorException
-from selenium.common.exceptions import ImeNotAvailableException
-from selenium.common.exceptions import ImeActivationFailedException
-from selenium.common.exceptions import NoSuchElementException
-from selenium.common.exceptions import NoSuchFrameException
-from selenium.common.exceptions import NoSuchWindowException
-from selenium.common.exceptions import StaleElementReferenceException
-from selenium.common.exceptions import UnableToSetCookieException
-from selenium.common.exceptions import UnexpectedAlertPresentException
-from selenium.common.exceptions import NoAlertPresentException
-from selenium.common.exceptions import ErrorInResponseException
-from selenium.common.exceptions import TimeoutException
-from selenium.common.exceptions import WebDriverException
-from selenium.common.exceptions import MoveTargetOutOfBoundsException
+from selenium.common.exceptions import (ElementNotInteractableException,
+                                        ElementNotSelectableException,
+                                        ElementNotVisibleException,
+                                        ErrorInResponseException,
+                                        InvalidElementStateException,
+                                        InvalidSelectorException,
+                                        ImeNotAvailableException,
+                                        ImeActivationFailedException,
+                                        MoveTargetOutOfBoundsException,
+                                        NoSuchElementException,
+                                        NoSuchFrameException,
+                                        NoSuchWindowException,
+                                        NoAlertPresentException,
+                                        StaleElementReferenceException,
+                                        TimeoutException,
+                                        UnexpectedAlertPresentException,
+                                        WebDriverException)
 
 try:
     basestring
@@ -51,6 +52,7 @@ class ErrorCode(object):
     ELEMENT_NOT_VISIBLE = [11, 'element not visible']
     INVALID_ELEMENT_STATE = [12, 'invalid element state']
     UNKNOWN_ERROR = [13, 'unknown error']
+    ELEMENT_NOT_INTERACTABLE = ["element not interactable"]
     ELEMENT_IS_NOT_SELECTABLE = [15, 'element not selectable']
     JAVASCRIPT_ERROR = [17, 'javascript error']
     XPATH_LOOKUP_ERROR = [19, 'invalid selector']
@@ -85,9 +87,33 @@ class ErrorHandler(object):
 
         :Raises: If the response contains an error message.
         """
-        status = response['status']
-        if status == ErrorCode.SUCCESS:
+        status = response.get('status', None)
+        if status is None or status == ErrorCode.SUCCESS:
             return
+        value = None
+        message = response.get("message", "")
+        screen = response.get("screen", "")
+        stacktrace = None
+        if isinstance(status, int):
+            value_json = response.get('value', None)
+            if value_json and isinstance(value_json, basestring):
+                import json
+                try:
+                    value = json.loads(value_json)
+                    if len(value.keys()) == 1:
+                        value = value['value']
+                    status = value.get('error', None)
+                    if status is None:
+                        status = value["status"]
+                        message = value["value"]
+                        if not isinstance(message, basestring):
+                            value = message
+                            message = message.get('message')
+                    else:
+                        message = value.get('message', None)
+                except ValueError:
+                    pass
+
         exception_class = ErrorInResponseException
         if status in ErrorCode.NO_SUCH_ELEMENT:
             exception_class = NoSuchElementException
@@ -107,6 +133,8 @@ class ErrorHandler(object):
             exception_class = InvalidSelectorException
         elif status in ErrorCode.ELEMENT_IS_NOT_SELECTABLE:
             exception_class = ElementNotSelectableException
+        elif status in ErrorCode.ELEMENT_NOT_INTERACTABLE:
+            exception_class = ElementNotInteractableException
         elif status in ErrorCode.INVALID_COOKIE_DOMAIN:
             exception_class = WebDriverException
         elif status in ErrorCode.UNABLE_TO_SET_COOKIE:
@@ -129,13 +157,13 @@ class ErrorHandler(object):
             exception_class = MoveTargetOutOfBoundsException
         else:
             exception_class = WebDriverException
-        value = response['value']
+        if value == '' or value is None:
+            value = response['value']
         if isinstance(value, basestring):
             if exception_class == ErrorInResponseException:
                 raise exception_class(response, value)
             raise exception_class(value)
-        message = ''
-        if 'message' in value:
+        if message == "" and 'message' in value:
             message = value['message']
 
         screen = None
@@ -166,4 +194,4 @@ class ErrorHandler(object):
         raise exception_class(message, screen, stacktrace)
 
     def _value_or_default(self, obj, key, default):
-      return obj[key] if key in obj else default
+        return obj[key] if key in obj else default

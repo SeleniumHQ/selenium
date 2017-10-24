@@ -1,7 +1,9 @@
-﻿// <copyright file="DefaultPageObjectMemberDecorator.cs" company="WebDriver Committers">
-// Copyright 2015 Software Freedom Conservancy
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
+// <copyright file="DefaultPageObjectMemberDecorator.cs" company="WebDriver Committers">
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -14,13 +16,12 @@
 // limitations under the License.
 // </copyright>
 
+#if !NETSTANDARD2_0
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
-using System.Text;
 using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.Support.PageObjects
@@ -212,8 +213,8 @@ namespace OpenQA.Selenium.Support.PageObjects
         {
             AssemblyName tempAssemblyName = new AssemblyName(Guid.NewGuid().ToString());
 
-            AssemblyBuilder dynamicAssembly = AppDomain.CurrentDomain.DefineDynamicAssembly(tempAssemblyName, AssemblyBuilderAccess.RunAndCollect);
-            ModuleBuilder moduleBuilder = dynamicAssembly.DefineDynamicModule(tempAssemblyName.Name, tempAssemblyName + ".dll");
+            AssemblyBuilder dynamicAssembly = AppDomain.CurrentDomain.DefineDynamicAssembly(tempAssemblyName, AssemblyBuilderAccess.Run);
+            ModuleBuilder moduleBuilder = dynamicAssembly.DefineDynamicModule(tempAssemblyName.Name);
             TypeBuilder typeBuilder = moduleBuilder.DefineType(typeof(IWebElement).FullName, TypeAttributes.Public | TypeAttributes.Interface | TypeAttributes.Abstract);
 
             foreach (Type type in InterfacesToBeProxied)
@@ -225,3 +226,4 @@ namespace OpenQA.Selenium.Support.PageObjects
         }
     }
 }
+#endif

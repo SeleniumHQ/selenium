@@ -1,31 +1,30 @@
-/*
-Copyright 2012 Software Freedom Conservancy
-Copyright 2012 Selenium committers
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -123,24 +122,16 @@ public class ArchitectureTest {
 
   @Test
   public void determineArchEmpty() {
-    try {
-      Architecture.extractFromSysProperty("");
-      fail("Expected UnsupportedOperationException");
-    } catch (RuntimeException e) {
-      assertThat(e, is(instanceOf(UnsupportedOperationException.class)));
-      assertThat(e.getMessage(), containsString("Unknown architecture"));
-    }
+    Throwable t = catchThrowable(() -> Architecture.extractFromSysProperty(""));
+    assertThat(t, instanceOf(UnsupportedOperationException.class));
+    assertThat(t.getMessage(), containsString("Unknown architecture"));
   }
 
   @Test
   public void determineArchBogus() {
-    try {
-      Architecture.extractFromSysProperty("hoobaflooba");
-      fail("Expected UnsupportedOperationException");
-    } catch (RuntimeException e) {
-      assertThat(e, is(instanceOf(UnsupportedOperationException.class)));
-      assertThat(e.getMessage(), containsString("Unknown architecture"));
-    }
+    Throwable t = catchThrowable(() -> Architecture.extractFromSysProperty("hoobaflooba"));
+    assertThat(t, instanceOf(UnsupportedOperationException.class));
+    assertThat(t.getMessage(), containsString("Unknown architecture"));
   }
 
   @Test

@@ -28,8 +28,7 @@ goog.require('goog.testing.jsunit');
 
 goog.setTestOnly('goog.jsonPerf');
 
-var table = new goog.testing.PerformanceTable(
-    goog.dom.getElement('perfTable'));
+var table = new goog.testing.PerformanceTable(goog.dom.getElement('perfTable'));
 
 var stubs = new goog.testing.PropertyReplacer();
 
@@ -53,9 +52,7 @@ function testParse() {
   var obj = populateObject({}, 50, 4);
   var s = JSON.stringify(obj);
 
-  table.run(function() {
-    var o = JSON.parse(s);
-  }, 'Parse using JSON.parse');
+  table.run(function() { var o = JSON.parse(s); }, 'Parse using JSON.parse');
 
   table.run(function() {
     var o = goog.json.parse(s);

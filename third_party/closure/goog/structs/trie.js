@@ -134,7 +134,7 @@ goog.structs.Trie.prototype.setAll = function(trie) {
 goog.structs.Trie.prototype.getChildNode_ = function(path) {
   var node = this;
   for (var characterPosition = 0; characterPosition < path.length;
-      characterPosition++) {
+       characterPosition++) {
     var currentCharacter = path.charAt(characterPosition);
     node = node.childNodes_[currentCharacter];
     if (!node) {
@@ -169,8 +169,8 @@ goog.structs.Trie.prototype.get = function(key) {
  * @return {!Object<string, VALUE>} Map of end index of matching prefixes and
  *     corresponding values. Empty if no match found.
  */
-goog.structs.Trie.prototype.getKeyAndPrefixes = function(key,
-                                                         opt_keyStartIndex) {
+goog.structs.Trie.prototype.getKeyAndPrefixes = function(
+    key, opt_keyStartIndex) {
   var node = this;
   var matches = {};
   var characterPosition = opt_keyStartIndex || 0;
@@ -235,7 +235,7 @@ goog.structs.Trie.prototype.getKeys = function(opt_prefix) {
     // keys below that point.
     var node = this;
     for (var characterPosition = 0; characterPosition < opt_prefix.length;
-        characterPosition++) {
+         characterPosition++) {
       var currentCharacter = opt_prefix.charAt(characterPosition);
       if (!node.childNodes_[currentCharacter]) {
         return [];
@@ -296,7 +296,7 @@ goog.structs.Trie.prototype.containsPrefix = function(prefix) {
 /**
  * Checks to see if a certain value is in the trie.  Worst case is O(N) where
  * N is the number of nodes in the trie.
- * @param {!VALUE} value A value that may be in the trie.
+ * @param {VALUE} value A value that may be in the trie.
  * @return {boolean} Whether the trie contains the value.
  */
 goog.structs.Trie.prototype.containsValue = function(value) {
@@ -325,7 +325,7 @@ goog.structs.Trie.prototype.clear = function() {
  * Removes a key from the trie or throws an exception if the key is not in the
  * trie.  O(L), where L is the length of the key.
  * @param {string} key A key that should be removed from the trie.
- * @return {!VALUE} The value whose key was removed.
+ * @return {VALUE} The value whose key was removed.
  */
 goog.structs.Trie.prototype.remove = function(key) {
   var node = this;

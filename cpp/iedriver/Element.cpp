@@ -1,5 +1,8 @@
-// Copyright 2013 Software Freedom Conservancy
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -23,13 +26,18 @@
 #pragma warning (disable: 6387)
 
 #include "Element.h"
+
 #include <algorithm>
+
+#include "errorcodes.h"
+#include "logging.h"
+#include "json.h"
+
 #include "Browser.h"
 #include "Generated/atoms.h"
-#include "interactions.h"
-#include "json.h"
-#include "logging.h"
 #include "Script.h"
+#include "StringUtilities.h"
+#include "VariantUtilities.h"
 
 namespace webdriver {
 
@@ -62,7 +70,6 @@ Element::Element(IHTMLElement* element, HWND containing_window_handle) {
 
   this->element_ = element;
   this->containing_window_handle_ = containing_window_handle;
-  this->last_click_time_ = 0;
 }
 
 Element::~Element(void) {
@@ -75,12 +82,11 @@ Json::Value Element::ConvertToJson() {
   // TODO: Remove the "ELEMENT" property once all target bindings 
   // have been updated to use spec-compliant protocol.
   json_wrapper["element-6066-11e4-a52e-4f735466cecf"] = this->element_id_;
-  json_wrapper["ELEMENT"] = this->element_id_;
 
   return json_wrapper;
 }
 
-int Element::IsDisplayed(bool* result) {
+int Element::IsDisplayed(bool ignore_opacity, bool* result) {
   LOG(TRACE) << "Entering Element::IsDisplayed";
 
   int status_code = WD_SUCCESS;
@@ -97,7 +103,7 @@ int Element::IsDisplayed(bool* result) {
   // N.B., The second argument to the IsDisplayed atom is "ignoreOpacity".
   Script script_wrapper(doc, script_source, 2);
   script_wrapper.AddArgument(this->element_);
-  script_wrapper.AddArgument(false);
+  script_wrapper.AddArgument(ignore_opacity);
   status_code = script_wrapper.Execute();
 
   if (status_code == WD_SUCCESS) {
@@ -205,13 +211,13 @@ bool Element::IsEditable() {
   return result;
 }
 
-int Element::GetClickLocation(const ELEMENT_SCROLL_BEHAVIOR scroll_behavior,
+int Element::GetClickLocation(const ElementScrollBehavior scroll_behavior,
                               LocationInfo* element_location,
                               LocationInfo* click_location) {
   LOG(TRACE) << "Entering Element::GetClickLocation";
 
   bool displayed;
-  int status_code = this->IsDisplayed(&displayed);
+  int status_code = this->IsDisplayed(true, &displayed);
   if (status_code != WD_SUCCESS) {
     LOG(WARN) << "Unable to determine element is displayed";
     return status_code;
@@ -266,6 +272,57 @@ int Element::GetAttributeValue(const std::string& attribute_name,
   return WD_SUCCESS;
 }
 
+int Element::GetPropertyValue(const std::string& property_name,
+                              std::string* property_value,
+                              bool* value_is_null) {
+  LOG(TRACE) << "Entering Element::GetPropertyValue";
+
+  std::wstring wide_property_name = StringUtilities::ToWString(property_name);
+  int status_code = WD_SUCCESS;
+
+  LPOLESTR property_name_pointer = reinterpret_cast<LPOLESTR>(const_cast<wchar_t*>(wide_property_name.data()));
+  DISPID dispid_property;
+  HRESULT hr = this->element_->GetIDsOfNames(IID_NULL,
+                                             &property_name_pointer,
+                                             1,
+                                             LOCALE_USER_DEFAULT,
+                                             &dispid_property);
+  if (FAILED(hr)) {
+    LOGHR(WARN, hr) << "Unable to get dispatch ID (dispid) for property "
+                    << property_name;
+    *property_value = "";
+    *value_is_null = true;
+    return WD_SUCCESS;
+  }
+
+  // get the value of eval result
+  CComVariant property_value_variant;
+  DISPPARAMS no_args_dispatch_parameters = { 0 };
+  hr = this->element_->Invoke(dispid_property,
+                              IID_NULL,
+                              LOCALE_USER_DEFAULT,
+                              DISPATCH_PROPERTYGET,
+                              &no_args_dispatch_parameters,
+                              &property_value_variant,
+                              NULL,
+                              NULL);
+  if (FAILED(hr)) {
+    LOGHR(WARN, hr) << "Unable to get result for property "
+                    << property_name;
+    *property_value = "";
+    *value_is_null = true;
+    return WD_SUCCESS;
+  }
+
+  if (status_code == WD_SUCCESS) {
+    *value_is_null = !VariantUtilities::ConvertVariantToString(property_value_variant, property_value);
+  } else {
+    LOG(WARN) << "Failed to determine element attribute";
+  }
+
+  return WD_SUCCESS;
+}
+
 int Element::GetCssPropertyValue(const std::string& property_name,
                                  std::string* property_value) {
   LOG(TRACE) << "Entering Element::GetCssPropertyValue";
@@ -299,7 +356,7 @@ int Element::GetCssPropertyValue(const std::string& property_name,
   return status_code;
 }
 
-int Element::GetLocationOnceScrolledIntoView(const ELEMENT_SCROLL_BEHAVIOR scroll,
+int Element::GetLocationOnceScrolledIntoView(const ElementScrollBehavior scroll,
                                              LocationInfo* location,
                                              std::vector<LocationInfo>* frame_locations) {
   LOG(TRACE) << "Entering Element::GetLocationOnceScrolledIntoView";

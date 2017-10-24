@@ -1,20 +1,19 @@
-/*
-Copyright 2012 Selenium committers
-Copyright 2012 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
-
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium.support;
 
@@ -85,6 +84,13 @@ public class Color {
     return String.format("#%02x%02x%02x", red, green, blue);
   }
 
+  /**
+   * @return a java.awt.Color class instance
+   */
+  public java.awt.Color getColor() {
+    return new java.awt.Color(red, green, blue, (int)(alpha*255));
+  }
+
   @Override
   public String toString() {
     return "Color: " + asRgba();
@@ -107,9 +113,9 @@ public class Color {
   public int hashCode() {
     int result;
     long temp;
-    result = (int) red;
-    result = 31 * result + (int) green;
-    result = 31 * result + (int) blue;
+    result = red;
+    result = 31 * result + green;
+    result = 31 * result + blue;
     temp = alpha != +0.0d ? Double.doubleToLongBits(alpha) : 0L;
     result = 31 * result + (int) (temp ^ (temp >>> 32));
     return result;

@@ -44,8 +44,8 @@ goog.require('goog.style');
 goog.positioning.ViewportClientPosition = function(arg1, opt_arg2) {
   goog.positioning.ClientPosition.call(this, arg1, opt_arg2);
 };
-goog.inherits(goog.positioning.ViewportClientPosition,
-              goog.positioning.ClientPosition);
+goog.inherits(
+    goog.positioning.ViewportClientPosition, goog.positioning.ClientPosition);
 
 
 /**
@@ -86,13 +86,14 @@ goog.positioning.ViewportClientPosition.prototype.reposition = function(
       this.coordinate.x + scrollEl.scrollLeft,
       this.coordinate.y + scrollEl.scrollTop);
 
-  var failXY = goog.positioning.Overflow.FAIL_X |
-               goog.positioning.Overflow.FAIL_Y;
+  var failXY =
+      goog.positioning.Overflow.FAIL_X | goog.positioning.Overflow.FAIL_Y;
   var corner = popupCorner;
 
   // Try the requested position.
-  var status = goog.positioning.positionAtCoordinate(clientPos, element, corner,
-      opt_margin, viewport, failXY, opt_preferredSize);
+  var status = goog.positioning.positionAtCoordinate(
+      clientPos, element, corner, opt_margin, viewport, failXY,
+      opt_preferredSize);
   if ((status & goog.positioning.OverflowStatus.FAILED) == 0) {
     return;
   }
@@ -110,8 +111,9 @@ goog.positioning.ViewportClientPosition.prototype.reposition = function(
   }
 
   // Try flipped position.
-  status = goog.positioning.positionAtCoordinate(clientPos, element, corner,
-      opt_margin, viewport, failXY, opt_preferredSize);
+  status = goog.positioning.positionAtCoordinate(
+      clientPos, element, corner, opt_margin, viewport, failXY,
+      opt_preferredSize);
   if ((status & goog.positioning.OverflowStatus.FAILED) == 0) {
     return;
   }

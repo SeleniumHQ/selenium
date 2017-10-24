@@ -1,19 +1,19 @@
-/*
- Copyright 2012 Selenium committers
- Copyright 2012 Software Freedom Conservancy
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
- http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
- */
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 goog.provide('fxdriver.proxy');
 goog.provide('fxdriver.proxy.ProxyConfig');
@@ -46,6 +46,35 @@ fxdriver.proxy.LOG_ = fxdriver.logging.getLogger('fxdriver.proxy');
 
 
 /**
+ * Splits a hostport, e.g., 'www.example.com:80' into host and port.
+ * @param {string} hostport A hostport.
+ * @return {{host: string, port: ?number}} A host and port. If no port is
+ *     present in the argument hostport, port is null.
+ * @private
+ */
+fxdriver.proxy.splitHostPort_ = function(hostport) {
+  var colonIndex = hostport.lastIndexOf(':');
+  if (colonIndex < 0) {
+    return {host: hostport, port: null};
+  }
+  var secondColonIndex = hostport.indexOf(':');
+  if (secondColonIndex != colonIndex && !hostport.includes('[')) {
+    // The hostport contains multiple colons, but no part of it is bracketed,
+    // e.g., '2001:4860:4860::8888'. Treat it as an IPv6 literal with no port.
+    return {host: hostport, port: null};
+  }
+
+  var host = hostport.slice(0, colonIndex);
+  // Strip brackets from bracketed IPv6 hosts, e.g., '[::1]'.
+  if (host.startsWith('[') && host.endsWith(']')) {
+    host = host.slice(1, -1);
+  }
+  var portStr = hostport.slice(colonIndex + 1);
+  return {host: host, port: parseInt(portStr, 10)};
+};
+
+
+/**
  * Set a specific proxy preference.
  *
  * @param {!nsIPrefBranch} prefs The preferences to use.
@@ -57,10 +86,12 @@ fxdriver.proxy.setProxyPreference_ = function(prefs, type, setting) {
   if (!setting) {
     return;
   }
-  var hostPort = setting.split(':');
-  prefs.setCharPref('network.proxy.' + type, hostPort[0]);
-  if (hostPort.length > 1) {
-    prefs.setIntPref('network.proxy.' + type + '_port', parseInt(hostPort[1]));
+  var hostAndPort = fxdriver.proxy.splitHostPort_(setting);
+  var host = hostAndPort.host;
+  var port = hostAndPort.port;
+  prefs.setCharPref('network.proxy.' + type, host);
+  if (port != null) {
+    prefs.setIntPref('network.proxy.' + type + '_port', port);
   }
 };
 

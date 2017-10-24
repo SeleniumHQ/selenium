@@ -1,7 +1,9 @@
-﻿// <copyright file="ChromeOptions.cs" company="WebDriver Committers">
-// Copyright 2015 Software Freedom Conservancy
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
+// <copyright file="ChromeOptions.cs" company="WebDriver Committers">
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -19,8 +21,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
-using System.Text;
-using Newtonsoft.Json;
 using OpenQA.Selenium.Remote;
 
 namespace OpenQA.Selenium.Chrome
@@ -50,13 +50,13 @@ namespace OpenQA.Selenium.Chrome
     /// RemoteWebDriver driver = new RemoteWebDriver(new Uri("http://localhost:4444/wd/hub"), options.ToCapabilities());
     /// </code>
     /// </example>
-    public class ChromeOptions
+    public class ChromeOptions : DriverOptions
     {
         /// <summary>
         /// Gets the name of the capability used to store Chrome options in
         /// a <see cref="DesiredCapabilities"/> object.
         /// </summary>
-        public static readonly string Capability = "chromeOptions";
+        public static readonly string Capability = "goog:chromeOptions";
 
         private const string ArgumentsChromeOption = "args";
         private const string BinaryChromeOption = "binary";
@@ -67,6 +67,9 @@ namespace OpenQA.Selenium.Chrome
         private const string DebuggerAddressChromeOption = "debuggerAddress";
         private const string ExcludeSwitchesChromeOption = "excludeSwitches";
         private const string MinidumpPathChromeOption = "minidumpPath";
+        private const string MobileEmulationChromeOption = "mobileEmulation";
+        private const string PerformanceLoggingPreferencesChromeOption = "perfLoggingPrefs";
+        private const string WindowTypesChromeOption = "windowTypes";
 
         private bool leaveBrowserRunning;
         private string binaryLocation;
@@ -76,10 +79,16 @@ namespace OpenQA.Selenium.Chrome
         private List<string> extensionFiles = new List<string>();
         private List<string> encodedExtensions = new List<string>();
         private List<string> excludedSwitches = new List<string>();
+        private List<string> windowTypes = new List<string>();
         private Dictionary<string, object> additionalCapabilities = new Dictionary<string, object>();
         private Dictionary<string, object> additionalChromeOptions = new Dictionary<string, object>();
         private Dictionary<string, object> userProfilePreferences;
         private Dictionary<string, object> localStatePreferences;
+
+        private string mobileEmulationDeviceName;
+        private ChromeMobileEmulationDeviceSettings mobileEmulationDeviceSettings;
+        private ChromePerformanceLoggingPreferences perfLoggingPreferences;
+
         private Proxy proxy;
 
         /// <summary>
@@ -157,6 +166,15 @@ namespace OpenQA.Selenium.Chrome
         }
 
         /// <summary>
+        /// Gets or sets the performance logging preferences for the driver.
+        /// </summary>
+        public ChromePerformanceLoggingPreferences PerformanceLoggingPreferences
+        {
+            get { return this.perfLoggingPreferences; }
+            set { this.perfLoggingPreferences = value; }
+        }
+
+        /// <summary>
         /// Adds a single argument to the list of arguments to be appended to the Chrome.exe command line.
         /// </summary>
         /// <param name="argument">The argument to add.</param>
@@ -194,7 +212,7 @@ namespace OpenQA.Selenium.Chrome
         }
 
         /// <summary>
-        /// Adds a single argument to be excluded from the list of arguments passed by default 
+        /// Adds a single argument to be excluded from the list of arguments passed by default
         /// to the Chrome.exe command line by chromedriver.exe.
         /// </summary>
         /// <param name="argument">The argument to exclude.</param>
@@ -209,7 +227,7 @@ namespace OpenQA.Selenium.Chrome
         }
 
         /// <summary>
-        /// Adds arguments to be excluded from the list of arguments passed by default 
+        /// Adds arguments to be excluded from the list of arguments passed by default
         /// to the Chrome.exe command line by chromedriver.exe.
         /// </summary>
         /// <param name="argumentsToExclude">An array of arguments to exclude.</param>
@@ -219,7 +237,7 @@ namespace OpenQA.Selenium.Chrome
         }
 
         /// <summary>
-        /// Adds arguments to be excluded from the list of arguments passed by default 
+        /// Adds arguments to be excluded from the list of arguments passed by default
         /// to the Chrome.exe command line by chromedriver.exe.
         /// </summary>
         /// <param name="argumentsToExclude">An <see cref="IEnumerable{T}"/> object of arguments to exclude.</param>
@@ -234,7 +252,7 @@ namespace OpenQA.Selenium.Chrome
         }
 
         /// <summary>
-        /// Adds a path to a packed Chrome extension (.crx file) to the list of extensions 
+        /// Adds a path to a packed Chrome extension (.crx file) to the list of extensions
         /// to be installed in the instance of Chrome.
         /// </summary>
         /// <param name="pathToExtension">The full path to the extension to add.</param>
@@ -282,7 +300,7 @@ namespace OpenQA.Selenium.Chrome
         }
 
         /// <summary>
-        /// Adds a base64-encoded string representing a Chrome extension to the list of extensions 
+        /// Adds a base64-encoded string representing a Chrome extension to the list of extensions
         /// to be installed in the instance of Chrome.
         /// </summary>
         /// <param name="extension">A base64-encoded string representing the extension to add.</param>
@@ -297,7 +315,7 @@ namespace OpenQA.Selenium.Chrome
         }
 
         /// <summary>
-        /// Adds a list of base64-encoded strings representing Chrome extensions to the list of extensions 
+        /// Adds a list of base64-encoded strings representing Chrome extensions to the list of extensions
         /// to be installed in the instance of Chrome.
         /// </summary>
         /// <param name="extensions">An array of base64-encoded strings representing the extensions to add.</param>
@@ -369,30 +387,107 @@ namespace OpenQA.Selenium.Chrome
         }
 
         /// <summary>
-        /// Provides a means to add additional capabilities not yet added as type safe options 
+        /// Allows the Chrome browser to emulate a mobile device.
+        /// </summary>
+        /// <param name="deviceName">The name of the device to emulate. The device name must be a
+        /// valid device name from the Chrome DevTools Emulation panel.</param>
+        /// <remarks>Specifying an invalid device name will not throw an exeption, but
+        /// will generate an error in Chrome when the driver starts. To unset mobile
+        /// emulation, call this method with <see langword="null"/> as the argument.</remarks>
+        public void EnableMobileEmulation(string deviceName)
+        {
+            this.mobileEmulationDeviceSettings = null;
+            this.mobileEmulationDeviceName = deviceName;
+        }
+
+        /// <summary>
+        /// Allows the Chrome browser to emulate a mobile device.
+        /// </summary>
+        /// <param name="deviceSettings">The <see cref="ChromeMobileEmulationDeviceSettings"/>
+        /// object containing the settings of the device to emulate.</param>
+        /// <exception cref="ArgumentException">Thrown if the device settings option does
+        /// not have a user agent string set.</exception>
+        /// <remarks>Specifying an invalid device name will not throw an exeption, but
+        /// will generate an error in Chrome when the driver starts. To unset mobile
+        /// emulation, call this method with <see langword="null"/> as the argument.</remarks>
+        public void EnableMobileEmulation(ChromeMobileEmulationDeviceSettings deviceSettings)
+        {
+            this.mobileEmulationDeviceName = null;
+            if (deviceSettings != null && string.IsNullOrEmpty(deviceSettings.UserAgent))
+            {
+                throw new ArgumentException("Device settings must include a user agent string.", "deviceSettings");
+            }
+
+            this.mobileEmulationDeviceSettings = deviceSettings;
+        }
+
+        /// <summary>
+        /// Adds a type of window that will be listed in the list of window handles
+        /// returned by the Chrome driver.
+        /// </summary>
+        /// <param name="windowType">The name of the window type to add.</param>
+        /// <remarks>This method can be used to allow the driver to access {webview}
+        /// elements by adding "webview" as a window type.</remarks>
+        public void AddWindowType(string windowType)
+        {
+            if (string.IsNullOrEmpty(windowType))
+            {
+                throw new ArgumentException("windowType must not be null or empty", "windowType");
+            }
+
+            this.AddWindowTypes(windowType);
+        }
+
+        /// <summary>
+        /// Adds a list of window types that will be listed in the list of window handles
+        /// returned by the Chrome driver.
+        /// </summary>
+        /// <param name="windowTypesToAdd">An array of window types to add.</param>
+        public void AddWindowTypes(params string[] windowTypesToAdd)
+        {
+            this.AddWindowTypes(new List<string>(windowTypesToAdd));
+        }
+
+        /// <summary>
+        /// Adds a list of window types that will be listed in the list of window handles
+        /// returned by the Chrome driver.
+        /// </summary>
+        /// <param name="windowTypesToAdd">An <see cref="IEnumerable{T}"/> of window types to add.</param>
+        public void AddWindowTypes(IEnumerable<string> windowTypesToAdd)
+        {
+            if (windowTypesToAdd == null)
+            {
+                throw new ArgumentNullException("windowTypesToAdd", "windowTypesToAdd must not be null");
+            }
+
+            this.windowTypes.AddRange(windowTypesToAdd);
+        }
+
+        /// <summary>
+        /// Provides a means to add additional capabilities not yet added as type safe options
         /// for the Chrome driver.
         /// </summary>
         /// <param name="capabilityName">The name of the capability to add.</param>
         /// <param name="capabilityValue">The value of the capability to add.</param>
         /// <exception cref="ArgumentException">
-        /// thrown when attempting to add a capability for which there is already a type safe option, or 
+        /// thrown when attempting to add a capability for which there is already a type safe option, or
         /// when <paramref name="capabilityName"/> is <see langword="null"/> or the empty string.
         /// </exception>
-        /// <remarks>Calling <see cref="AddAdditionalCapability(System.String, System.Object)"/>
-        /// where <paramref name="capabilityName"/> has already been added will overwrite the 
+        /// <remarks>Calling <see cref="AddAdditionalCapability(string, object)"/>
+        /// where <paramref name="capabilityName"/> has already been added will overwrite the
         /// existing value with the new value in <paramref name="capabilityValue"/>.
         /// Also, by default, calling this method adds capabilities to the options object passed to
         /// chromedriver.exe.</remarks>
-        public void AddAdditionalCapability(string capabilityName, object capabilityValue)
+        public override void AddAdditionalCapability(string capabilityName, object capabilityValue)
         {
             // Add the capability to the chromeOptions object by default. This is to handle
             // the 80% case where the chromedriver team adds a new option in chromedriver.exe
             // and the bindings have not yet had a type safe option added.
             this.AddAdditionalCapability(capabilityName, capabilityValue, false);
         }
-        
+
         /// <summary>
-        /// Provides a means to add additional capabilities not yet added as type safe options 
+        /// Provides a means to add additional capabilities not yet added as type safe options
         /// for the Chrome driver.
         /// </summary>
         /// <param name="capabilityName">The name of the capability to add.</param>
@@ -400,16 +495,17 @@ namespace OpenQA.Selenium.Chrome
         /// <param name="isGlobalCapability">Indicates whether the capability is to be set as a global
         /// capability for the driver instead of a Chrome-specific option.</param>
         /// <exception cref="ArgumentException">
-        /// thrown when attempting to add a capability for which there is already a type safe option, or 
+        /// thrown when attempting to add a capability for which there is already a type safe option, or
         /// when <paramref name="capabilityName"/> is <see langword="null"/> or the empty string.
         /// </exception>
-        /// <remarks>Calling <see cref="AddAdditionalCapability(System.String, System.Object, System.Boolean)"/>
+        /// <remarks>Calling <see cref="AddAdditionalCapability(string, object, bool)"/>
         /// where <paramref name="capabilityName"/> has already been added will overwrite the
         /// existing value with the new value in <paramref name="capabilityValue"/></remarks>
         public void AddAdditionalCapability(string capabilityName, object capabilityValue, bool isGlobalCapability)
         {
             if (capabilityName == ChromeOptions.Capability ||
                 capabilityName == CapabilityType.Proxy ||
+                capabilityName == CapabilityType.LoggingPreferences ||
                 capabilityName == ChromeOptions.ArgumentsChromeOption ||
                 capabilityName == ChromeOptions.BinaryChromeOption ||
                 capabilityName == ChromeOptions.ExtensionsChromeOption ||
@@ -419,7 +515,10 @@ namespace OpenQA.Selenium.Chrome
                 capabilityName == ChromeOptions.DebuggerAddressChromeOption ||
                 capabilityName == ChromeOptions.ExtensionsChromeOption ||
                 capabilityName == ChromeOptions.ExcludeSwitchesChromeOption ||
-                capabilityName == ChromeOptions.MinidumpPathChromeOption)
+                capabilityName == ChromeOptions.MinidumpPathChromeOption ||
+                capabilityName == ChromeOptions.MobileEmulationChromeOption ||
+                capabilityName == ChromeOptions.PerformanceLoggingPreferencesChromeOption ||
+                capabilityName == ChromeOptions.WindowTypesChromeOption)
             {
                 string message = string.Format(CultureInfo.InvariantCulture, "There is already an option for the {0} capability. Please use that instead.", capabilityName);
                 throw new ArgumentException(message, "capabilityName");
@@ -446,16 +545,22 @@ namespace OpenQA.Selenium.Chrome
         /// reflected in the returned capabilities.
         /// </summary>
         /// <returns>The DesiredCapabilities for Chrome with these options.</returns>
-        public ICapabilities ToCapabilities()
+        public override ICapabilities ToCapabilities()
         {
             Dictionary<string, object> chromeOptions = this.BuildChromeOptionsDictionary();
 
-            DesiredCapabilities capabilities = DesiredCapabilities.Chrome();
+            DesiredCapabilities capabilities = new DesiredCapabilities("chrome", string.Empty, new Platform(PlatformType.Any), false);
             capabilities.SetCapability(ChromeOptions.Capability, chromeOptions);
 
             if (this.proxy != null)
             {
                 capabilities.SetCapability(CapabilityType.Proxy, this.proxy);
+            }
+
+            Dictionary<string, object> loggingPreferences = this.GenerateLoggingPreferencesDictionary();
+            if (loggingPreferences != null)
+            {
+                capabilities.SetCapability(CapabilityType.LoggingPreferences, loggingPreferences);
             }
 
             foreach (KeyValuePair<string, object> pair in this.additionalCapabilities)
@@ -515,12 +620,71 @@ namespace OpenQA.Selenium.Chrome
                 chromeOptions[MinidumpPathChromeOption] = this.minidumpPath;
             }
 
+            if (!string.IsNullOrEmpty(this.mobileEmulationDeviceName) || this.mobileEmulationDeviceSettings != null)
+            {
+                chromeOptions[MobileEmulationChromeOption] = this.GenerateMobileEmulationSettingsDictionary();
+            }
+
+            if (this.perfLoggingPreferences != null)
+            {
+                chromeOptions[PerformanceLoggingPreferencesChromeOption] = this.GeneratePerformanceLoggingPreferencesDictionary();
+            }
+
+            if (this.windowTypes.Count > 0)
+            {
+                chromeOptions[WindowTypesChromeOption] = this.windowTypes;
+            }
+
             foreach (KeyValuePair<string, object> pair in this.additionalChromeOptions)
             {
                 chromeOptions.Add(pair.Key, pair.Value);
             }
 
             return chromeOptions;
+        }
+
+        private Dictionary<string, object> GeneratePerformanceLoggingPreferencesDictionary()
+        {
+            Dictionary<string, object> perfLoggingPrefsDictionary = new Dictionary<string, object>();
+            perfLoggingPrefsDictionary["enableNetwork"] = this.perfLoggingPreferences.IsCollectingNetworkEvents;
+            perfLoggingPrefsDictionary["enablePage"] = this.perfLoggingPreferences.IsCollectingPageEvents;
+            perfLoggingPrefsDictionary["enableTimeline"] = this.perfLoggingPreferences.IsCollectingTimelineEvents;
+
+            string tracingCategories = this.perfLoggingPreferences.TracingCategories;
+            if (!string.IsNullOrEmpty(tracingCategories))
+            {
+                perfLoggingPrefsDictionary["traceCategories"] = tracingCategories;
+            }
+
+            perfLoggingPrefsDictionary["bufferUsageReportingInterval"] = Convert.ToInt64(this.perfLoggingPreferences.BufferUsageReportingInterval.TotalMilliseconds);
+
+            return perfLoggingPrefsDictionary;
+        }
+
+        private Dictionary<string, object> GenerateMobileEmulationSettingsDictionary()
+        {
+            Dictionary<string, object> mobileEmulationSettings = new Dictionary<string, object>();
+
+            if (!string.IsNullOrEmpty(this.mobileEmulationDeviceName))
+            {
+                mobileEmulationSettings["deviceName"] = this.mobileEmulationDeviceName;
+            }
+            else if (this.mobileEmulationDeviceSettings != null)
+            {
+                mobileEmulationSettings["userAgent"] = this.mobileEmulationDeviceSettings.UserAgent;
+                Dictionary<string, object> deviceMetrics = new Dictionary<string, object>();
+                deviceMetrics["width"] = this.mobileEmulationDeviceSettings.Width;
+                deviceMetrics["height"] = this.mobileEmulationDeviceSettings.Height;
+                deviceMetrics["pixelRatio"] = this.mobileEmulationDeviceSettings.PixelRatio;
+                if (!this.mobileEmulationDeviceSettings.EnableTouchEvents)
+                {
+                    deviceMetrics["touch"] = this.mobileEmulationDeviceSettings.EnableTouchEvents;
+                }
+
+                mobileEmulationSettings["deviceMetrics"] = deviceMetrics;
+            }
+
+            return mobileEmulationSettings;
         }
     }
 }

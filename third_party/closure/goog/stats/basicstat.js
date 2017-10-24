@@ -126,9 +126,8 @@ goog.stats.BasicStat.prototype.incBy = function(amt, opt_now) {
  * @return {number} The total count over the tracked interval.
  */
 goog.stats.BasicStat.prototype.get = function(opt_now) {
-  return this.reduceSlots_(opt_now,
-      function(sum, slot) { return sum + slot.count; },
-      0);
+  return this.reduceSlots_(
+      opt_now, function(sum, slot) { return sum + slot.count; }, 0);
 };
 
 
@@ -141,9 +140,9 @@ goog.stats.BasicStat.prototype.get = function(opt_now) {
  * @return {number} The maximum count of this statistic.
  */
 goog.stats.BasicStat.prototype.getMax = function(opt_now) {
-  return this.reduceSlots_(opt_now,
-      function(max, slot) { return Math.max(max, slot.max); },
-      Number.MIN_VALUE);
+  return this.reduceSlots_(opt_now, function(max, slot) {
+    return Math.max(max, slot.max);
+  }, Number.MIN_VALUE);
 };
 
 
@@ -156,9 +155,9 @@ goog.stats.BasicStat.prototype.getMax = function(opt_now) {
  * @return {number} The minimum count of this statistic.
  */
 goog.stats.BasicStat.prototype.getMin = function(opt_now) {
-  return this.reduceSlots_(opt_now,
-      function(min, slot) { return Math.min(min, slot.min); },
-      Number.MAX_VALUE);
+  return this.reduceSlots_(opt_now, function(min, slot) {
+    return Math.min(min, slot.min);
+  }, Number.MAX_VALUE);
 };
 
 
@@ -214,9 +213,11 @@ goog.stats.BasicStat.prototype.checkForTimeTravel_ = function(now) {
   if (slot) {
     var slotStart = slot.end - this.slotInterval_;
     if (now < slotStart) {
-      goog.log.warning(this.logger_, goog.string.format(
-          'Went backwards in time: now=%d, slotStart=%d.  Resetting state.',
-          now, slotStart));
+      goog.log.warning(
+          this.logger_,
+          goog.string.format(
+              'Went backwards in time: now=%d, slotStart=%d.  Resetting state.',
+              now, slotStart));
       this.reset_();
     }
   }

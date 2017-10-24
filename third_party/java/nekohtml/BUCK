@@ -1,7 +1,0 @@
-prebuilt_jar(name = 'nekohtml',
-  binary_jar = 'nekohtml-1.9.21.jar',
-  source_jar = 'nekohtml-1.9.21-sources.jar',
-  visibility = [
-    '//third_party/java/...',
-  ],
-)

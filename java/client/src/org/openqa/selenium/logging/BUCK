@@ -1,7 +1,9 @@
+# BUILD FILE SYNTAX: SKYLARK
 API_SRCS = [
   'Logs.java',
   'LogEntries.java',
   'LogEntry.java',
+  'LogLevelMapping.java',
   'LoggingPreferences.java',
 ]
 
@@ -10,7 +12,10 @@ java_library(name = 'api',
   deps = [
     '//java/client/src/org/openqa/selenium:beta',
   ],
-  visibility = ['PUBLIC'],
+  visibility = [
+    '//java/client/src/org/openqa/selenium:core',
+    '//java/client/src/org/openqa/selenium:selenium',
+  ],
 )
 
 java_library(name = 'logging',
@@ -18,8 +23,11 @@ java_library(name = 'logging',
   deps = [
     ':api',
     '//java/client/src/org/openqa/selenium:beta',
-    '//third_party/java/guava-libraries:guava-libraries',
-    '//third_party/java/gson:gson',
+    '//java/client/src/org/openqa/selenium:exceptions',
+    '//java/client/src/org/openqa/selenium/json:json',
+    '//third_party/java/guava:guava',
   ],
-  visibility = ['PUBLIC'],
+  visibility = [
+    '//java/client/src/org/openqa/selenium:selenium'
+  ],
 )

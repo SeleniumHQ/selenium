@@ -51,8 +51,8 @@
  *   video.setSelected(true);
  * </pre>
  *
+ * Requires flash to actually work.
  *
- * @supported IE6, FF2+, Safari. Requires flash to actually work.
  *
  * TODO(user): Support non flash users. Maybe show a link to the Flick set,
  * or fetch the data and rendering it using javascript (instead of a broken
@@ -62,6 +62,8 @@
 goog.provide('goog.ui.media.FlickrSet');
 goog.provide('goog.ui.media.FlickrSetModel');
 
+goog.require('goog.html.TrustedResourceUrl');
+goog.require('goog.string.Const');
 goog.require('goog.ui.media.FlashObject');
 goog.require('goog.ui.media.Media');
 goog.require('goog.ui.media.MediaModel');
@@ -110,11 +112,12 @@ goog.ui.media.FlickrSet.CSS_CLASS = goog.getCssName('goog-ui-media-flickrset');
 /**
  * Flash player URL. Uses Flickr's flash player by default.
  *
- * @type {string}
+ * @type {!goog.html.TrustedResourceUrl}
  * @private
  */
-goog.ui.media.FlickrSet.flashUrl_ =
-    'http://www.flickr.com/apps/slideshow/show.swf?v=63961';
+goog.ui.media.FlickrSet.flashUrl_ = goog.html.TrustedResourceUrl.fromConstant(
+    goog.string.Const.from(
+        'http://www.flickr.com/apps/slideshow/show.swf?v=63961'));
 
 
 /**
@@ -144,7 +147,8 @@ goog.ui.media.FlickrSet.newControl = function(dataModel, opt_domHelper) {
  * A static method that sets which flash URL this class should use. Use this if
  * you want to host your own flash flickr player.
  *
- * @param {string} flashUrl The URL of the flash flickr player.
+ * @param {!goog.html.TrustedResourceUrl} flashUrl The URL of the flash flickr
+ *     player.
  */
 goog.ui.media.FlickrSet.setFlashUrl = function(flashUrl) {
   goog.ui.media.FlickrSet.flashUrl_ = flashUrl;
@@ -169,8 +173,7 @@ goog.ui.media.FlickrSet.prototype.createDom = function(c) {
   // TODO(user): find out what is the policy about hosting this SWF. figure out
   // if it works over https.
   var flash = new goog.ui.media.FlashObject(
-      model.getPlayer().getUrl() || '',
-      control.getDomHelper());
+      model.getPlayer().getTrustedResourceUrl(), control.getDomHelper());
   flash.addFlashVars(model.getPlayer().getVars());
   flash.render(div);
 
@@ -203,16 +206,11 @@ goog.ui.media.FlickrSet.prototype.getCssClass = function() {
  * @extends {goog.ui.media.MediaModel}
  * @final
  */
-goog.ui.media.FlickrSetModel = function(userId,
-                                        setId,
-                                        opt_caption,
-                                        opt_description) {
+goog.ui.media.FlickrSetModel = function(
+    userId, setId, opt_caption, opt_description) {
   goog.ui.media.MediaModel.call(
-      this,
-      goog.ui.media.FlickrSetModel.buildUrl(userId, setId),
-      opt_caption,
-      opt_description,
-      goog.ui.media.MediaModel.MimeType.FLASH);
+      this, goog.ui.media.FlickrSetModel.buildUrl(userId, setId), opt_caption,
+      opt_description, goog.ui.media.MediaModel.MimeType.FLASH);
 
   /**
    * The Flickr user id.
@@ -268,9 +266,8 @@ goog.ui.media.FlickrSetModel.MATCHER_ =
  *     Flickr set.
  * @throws exception in case the parsing fails
  */
-goog.ui.media.FlickrSetModel.newInstance = function(flickrSetUrl,
-                                                    opt_caption,
-                                                    opt_description) {
+goog.ui.media.FlickrSetModel.newInstance = function(
+    flickrSetUrl, opt_caption, opt_description) {
   if (goog.ui.media.FlickrSetModel.MATCHER_.test(flickrSetUrl)) {
     var data = goog.ui.media.FlickrSetModel.MATCHER_.exec(flickrSetUrl);
     return new goog.ui.media.FlickrSetModel(

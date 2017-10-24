@@ -1,7 +1,9 @@
 ﻿// <copyright file="ByAll.cs" company="WebDriver Committers">
-// Copyright 2015 Software Freedom Conservancy
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -101,7 +103,7 @@ namespace OpenQA.Selenium.Support.PageObjects
         /// <summary>
         /// Writes out a comma separated list of the <see cref="By"/> objects used in the chain.
         /// </summary>
-        /// <returns>Converts the value of this instance to a <see cref="System.String"/></returns>
+        /// <returns>Converts the value of this instance to a <see cref="string"/></returns>
         public override string ToString()
         {
             StringBuilder stringBuilder = new StringBuilder();

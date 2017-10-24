@@ -1,7 +1,9 @@
 // <copyright file="WebDriverResult.cs" company="WebDriver Committers">
-// Copyright 2015 Software Freedom Conservancy
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -174,6 +176,21 @@ namespace OpenQA.Selenium
         /// <summary>
         /// The selector used (CSS/XPath) was invalid.
         /// </summary>
-        InvalidSelector = 32
+        InvalidSelector = 32,
+
+        /// <summary>
+        /// An insecure SSl certificate was specified.
+        /// </summary>
+        InsecureCertificate = 33,
+
+        /// <summary>
+        /// No cookie was found matching the name requested.
+        /// </summary>
+        NoSuchCookie = 34,
+
+        /// <summary>
+        /// An invalid argument was passed to the command.
+        /// </summary>
+        InvalidArgument = 1000
     }
 }

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using NUnit.Framework;
 using OpenQA.Selenium.Environment;
 using System.Drawing;
@@ -63,7 +61,7 @@ namespace OpenQA.Selenium
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("scrolling_tests/page_with_double_overflow_auto.html");
 
             driver.FindElement(By.Id("link")).Click();
-            WaitFor(TitleToBe("Clicked Successfully!"));
+            WaitFor(TitleToBe("Clicked Successfully!"), "Browser title was not 'Clicked Successfully'");
         }
 
         [Test]
@@ -73,7 +71,7 @@ namespace OpenQA.Selenium
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("scrolling_tests/page_with_y_overflow_auto.html");
 
             driver.FindElement(By.Id("link")).Click();
-            WaitFor(TitleToBe("Clicked Successfully!"));
+            WaitFor(TitleToBe("Clicked Successfully!"), "Browser title was not 'Clicked Successfully'");
         }
 
         [Test]
@@ -92,7 +90,6 @@ namespace OpenQA.Selenium
         [Test]
         [IgnoreBrowser(Browser.Chrome, "Webkit-based browsers apparently scroll anyway.")]
         [IgnoreBrowser(Browser.IPhone, "Webkit-based browsers apparently scroll anyway.")]
-        [IgnoreBrowser(Browser.Safari, "Webkit-based browsers apparently scroll anyway.")]
         [IgnoreBrowser(Browser.PhantomJS, "Webkit-based browsers apparently scroll anyway.")]
         public void ShouldNotScrollIfAlreadyScrolledAndElementIsInView()
         {
@@ -123,7 +120,6 @@ namespace OpenQA.Selenium
         [Test]
         [IgnoreBrowser(Browser.Opera, "Opera fails.")]
         [IgnoreBrowser(Browser.IPhone, "Not tested.")]
-        [IgnoreBrowser(Browser.Safari, "Not tested.")]
         public void ShouldBeAbleToClickElementInAFrameThatIsOutOfView()
         {
             try
@@ -143,7 +139,6 @@ namespace OpenQA.Selenium
         [Test]
         [IgnoreBrowser(Browser.Opera, "Opera fails.")]
         [IgnoreBrowser(Browser.IPhone, "Not tested.")]
-        [IgnoreBrowser(Browser.Safari, "Not tested.")]
         public void ShouldBeAbleToClickElementThatIsOutOfViewInAFrame()
         {
             try
@@ -161,7 +156,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [ExpectedException]
         [Ignore("All tested browses scroll non-scrollable frames")]
         public void ShouldNotBeAbleToClickElementThatIsOutOfViewInANonScrollableFrame()
         {
@@ -170,7 +164,7 @@ namespace OpenQA.Selenium
                 driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("scrolling_tests/page_with_non_scrolling_frame.html");
                 driver.SwitchTo().Frame("scrolling_frame");
                 IWebElement element = driver.FindElement(By.Name("scroll_checkbox"));
-                element.Click();
+                Assert.Throws<WebDriverException>(() => element.Click());
             }
             finally
             {
@@ -181,7 +175,6 @@ namespace OpenQA.Selenium
         [Test]
         [IgnoreBrowser(Browser.Opera, "Opera fails.")]
         [IgnoreBrowser(Browser.IPhone, "Not tested.")]
-        [IgnoreBrowser(Browser.Safari, "Not tested.")]
         public void ShouldBeAbleToClickElementThatIsOutOfViewInAFrameThatIsOutOfView()
         {
             try
@@ -201,7 +194,6 @@ namespace OpenQA.Selenium
         [Test]
         [IgnoreBrowser(Browser.Opera, "Opera fails.")]
         [IgnoreBrowser(Browser.IPhone, "Not tested.")]
-        [IgnoreBrowser(Browser.Safari, "Not tested.")]
         public void ShouldBeAbleToClickElementThatIsOutOfViewInANestedFrame()
         {
             try
@@ -222,7 +214,6 @@ namespace OpenQA.Selenium
         [Test]
         [IgnoreBrowser(Browser.Opera, "Opera fails.")]
         [IgnoreBrowser(Browser.IPhone, "Not tested.")]
-        [IgnoreBrowser(Browser.Safari, "Not tested.")]
         public void ShouldBeAbleToClickElementThatIsOutOfViewInANestedFrameThatIsOutOfView()
         {
             try

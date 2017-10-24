@@ -43,6 +43,6 @@ goog.promise.Resolver.prototype.resolve;
 
 /**
  * Rejects this resolver with the specified reason.
- * @type {function(*): void}
+ * @type {function(*=): void}
  */
 goog.promise.Resolver.prototype.reject;

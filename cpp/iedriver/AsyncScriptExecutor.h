@@ -1,5 +1,8 @@
-// Copyright 2013 Software Freedom Conservancy
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -15,6 +18,7 @@
 #define WEBDRIVER_IE_ASYNCATOMEXECUTOR_H_
 
 #include <vector>
+
 #include "messages.h"
 
 #define ASYNC_SCRIPT_EVENT_NAME L"WD_ASYNC_SCRIPT_START_EVENT"

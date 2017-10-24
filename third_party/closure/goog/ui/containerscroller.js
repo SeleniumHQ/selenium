@@ -64,14 +64,14 @@ goog.ui.ContainerScroller = function(container) {
    */
   this.eventHandler_ = new goog.events.EventHandler(this);
 
-  this.eventHandler_.listen(container, goog.ui.Component.EventType.HIGHLIGHT,
-      this.onHighlight_);
-  this.eventHandler_.listen(container, goog.ui.Component.EventType.ENTER,
-      this.onEnter_);
-  this.eventHandler_.listen(container, goog.ui.Container.EventType.AFTER_SHOW,
-      this.onAfterShow_);
-  this.eventHandler_.listen(container, goog.ui.Component.EventType.HIDE,
-      this.onHide_);
+  this.eventHandler_.listen(
+      container, goog.ui.Component.EventType.HIGHLIGHT, this.onHighlight_);
+  this.eventHandler_.listen(
+      container, goog.ui.Component.EventType.ENTER, this.onEnter_);
+  this.eventHandler_.listen(
+      container, goog.ui.Container.EventType.AFTER_SHOW, this.onAfterShow_);
+  this.eventHandler_.listen(
+      container, goog.ui.Component.EventType.HIDE, this.onHide_);
 
   // TODO(gboyer): Allow a ContainerScroller to be attached with a Container
   // before the container is rendered.
@@ -194,8 +194,8 @@ goog.ui.ContainerScroller.prototype.doScrolling_ = function(opt_center) {
   if (this.container_.isVisible() && highlighted &&
       highlighted != this.lastEnterTarget_) {
     var element = this.container_.getElement();
-    goog.style.scrollIntoContainerView(highlighted.getElement(), element,
-        opt_center);
+    goog.style.scrollIntoContainerView(
+        highlighted.getElement(), element, opt_center);
     this.temporarilyDisableHover_();
     this.lastEnterTarget_ = null;
   }
@@ -209,9 +209,7 @@ goog.ui.ContainerScroller.prototype.doScrolling_ = function(opt_center) {
  */
 goog.ui.ContainerScroller.prototype.temporarilyDisableHover_ = function() {
   this.disableHover_ = true;
-  goog.Timer.callOnce(function() {
-    this.disableHover_ = false;
-  }, 0, this);
+  goog.Timer.callOnce(function() { this.disableHover_ = false; }, 0, this);
 };
 
 

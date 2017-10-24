@@ -1,18 +1,19 @@
-/*
-Copyright 2007-2009 Selenium committers
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
- */
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium.support.events;
 
@@ -25,6 +26,22 @@ import org.openqa.selenium.WebElement;
  * only interested in some events. All methods provided by this class have an empty method body.
  */
 public abstract class AbstractWebDriverEventListener implements WebDriverEventListener {
+
+  public void beforeAlertAccept(WebDriver driver) {
+    // Do nothing.
+  }
+
+  public void afterAlertAccept(WebDriver driver) {
+    // Do nothing.
+  }
+
+  public void afterAlertDismiss(WebDriver driver) {
+    // Do nothing.
+  }
+
+  public void beforeAlertDismiss(WebDriver driver) {
+    // Do nothing.
+  }
 
   public void beforeNavigateTo(String url, WebDriver driver) {
     // Do nothing.
@@ -50,6 +67,14 @@ public abstract class AbstractWebDriverEventListener implements WebDriverEventLi
     // Do nothing.
   }
 
+  public void beforeNavigateRefresh(WebDriver driver) {
+    // Do nothing.
+  }
+
+  public void afterNavigateRefresh(WebDriver driver) {
+    // Do nothing.
+  }
+
   public void beforeFindBy(By by, WebElement element, WebDriver driver) {
     // Do nothing.
   }
@@ -66,11 +91,11 @@ public abstract class AbstractWebDriverEventListener implements WebDriverEventLi
     // Do nothing.
   }
 
-  public void beforeChangeValueOf(WebElement element, WebDriver driver) {
+  public void beforeChangeValueOf(WebElement element, WebDriver driver, CharSequence[] keysToSend) {
     // Do nothing.
   }
 
-  public void afterChangeValueOf(WebElement element, WebDriver driver) {
+  public void afterChangeValueOf(WebElement element, WebDriver driver, CharSequence[] keysToSend) {
     // Do nothing.
   }
 

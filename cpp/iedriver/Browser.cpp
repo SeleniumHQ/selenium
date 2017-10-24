@@ -1,5 +1,8 @@
-// Copyright 2011 Software Freedom Conservancy
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -12,11 +15,17 @@
 // limitations under the License.
 
 #include "Browser.h"
-#include "logging.h"
+
 #include <comutil.h>
 #include <ShlGuid.h>
+
+#include "errorcodes.h"
+#include "logging.h"
+
 #include "Alert.h"
 #include "BrowserFactory.h"
+#include "messages.h"
+#include "StringUtilities.h"
 
 namespace webdriver {
 
@@ -109,10 +118,15 @@ void __stdcall Browser::DocumentComplete(IDispatch* pDisp, VARIANT* URL) {
 }
 
 void Browser::GetDocument(IHTMLDocument2** doc) {
+  this->GetDocument(false, doc);
+}
+
+void Browser::GetDocument(const bool force_top_level_document,
+                          IHTMLDocument2** doc) {
   LOG(TRACE) << "Entering Browser::GetDocument";
   CComPtr<IHTMLWindow2> window;
 
-  if (this->focused_frame_window() == NULL) {
+  if (this->focused_frame_window() == NULL || force_top_level_document) {
     LOG(INFO) << "No child frame focus. Focus is on top-level frame";
 
     CComPtr<IDispatch> dispatch;
@@ -420,8 +434,14 @@ bool Browser::IsBusy() {
   return SUCCEEDED(hr) && is_busy == VARIANT_TRUE;
 }
 
-bool Browser::Wait() {
+bool Browser::Wait(const std::string& page_load_strategy) {
   LOG(TRACE) << "Entering Browser::Wait";
+  
+  if (page_load_strategy == "none") {
+    LOG(DEBUG) << "Page load strategy is 'none'. Aborting wait.";
+    this->set_wait_required(false);
+    return true;
+  }
 
   bool is_navigating = true;
 
@@ -446,17 +466,22 @@ bool Browser::Wait() {
     return false;
   }
 
-  // Waiting for browser.ReadyState == READYSTATE_COMPLETE...;
+  READYSTATE expected_ready_state = READYSTATE_COMPLETE;
+  if (page_load_strategy == "eager") {
+    expected_ready_state = READYSTATE_INTERACTIVE;
+  }
+
+  // Waiting for browser.ReadyState >= expected ready state
   is_navigating = this->is_navigation_started_;
   READYSTATE ready_state;
   HRESULT hr = this->browser_->get_ReadyState(&ready_state);
-  if (is_navigating || FAILED(hr) || ready_state != READYSTATE_COMPLETE) {
+  if (is_navigating || FAILED(hr) || ready_state < expected_ready_state) {
     if (is_navigating) {
       LOG(DEBUG) << "DocumentComplete event fired, indicating a new navigation.";
     } else if (FAILED(hr)) {
       LOGHR(DEBUG, hr) << "IWebBrowser2::get_ReadyState failed.";
     } else {
-      LOG(DEBUG) << "Browser ReadyState is not '4', indicating 'Complete'; it was " << ready_state;
+      LOG(DEBUG) << "Browser ReadyState is not at least '" << expected_ready_state << "'; it was " << ready_state;
     }
     return false;
   }
@@ -481,7 +506,7 @@ bool Browser::Wait() {
   hr = document_dispatch->QueryInterface(&doc);
   if (SUCCEEDED(hr)) {
     LOG(DEBUG) << "Waiting for document to complete...";
-    is_navigating = this->IsDocumentNavigating(doc);
+    is_navigating = this->IsDocumentNavigating(page_load_strategy, doc);
   }
 
   if (!is_navigating) {
@@ -492,27 +517,36 @@ bool Browser::Wait() {
   return !is_navigating;
 }
 
-bool Browser::IsDocumentNavigating(IHTMLDocument2* doc) {
+bool Browser::IsDocumentNavigating(const std::string& page_load_strategy,
+                                   IHTMLDocument2* doc) {
   LOG(TRACE) << "Entering Browser::IsDocumentNavigating";
 
   bool is_navigating = true;
 
   // Starting WaitForDocumentComplete()
   is_navigating = this->is_navigation_started_;
-  CComBSTR ready_state;
-  HRESULT hr = doc->get_readyState(&ready_state);
-  if (FAILED(hr) || is_navigating || _wcsicmp(ready_state, L"complete") != 0) {
+  CComBSTR ready_state_bstr;
+  HRESULT hr = doc->get_readyState(&ready_state_bstr);
+  if (FAILED(hr) || is_navigating) {
     if (FAILED(hr)) {
       LOGHR(DEBUG, hr) << "IHTMLDocument2::get_readyState failed.";
     } else if (is_navigating) {
       LOG(DEBUG) << "DocumentComplete event fired, indicating a new navigation.";
-    } else {
-      std::wstring state = ready_state;
-      LOG(DEBUG) << "document.readyState is not 'complete'; it was " << LOGWSTRING(state);
     }
     return true;
   } else {
-    is_navigating = false;
+    std::wstring ready_state = ready_state_bstr;
+    if ((ready_state == L"complete") ||
+        (page_load_strategy == "eager" && ready_state == L"interactive")) {
+      is_navigating = false;
+    } else {
+      if (page_load_strategy == "eager") {
+        LOG(DEBUG) << "document.readyState is not 'complete' or 'interactive'; it was " << LOGWSTRING(ready_state);
+      } else {
+        LOG(DEBUG) << "document.readyState is not 'complete'; it was " << LOGWSTRING(ready_state);
+      }
+      return true;
+    }
   }
 
   // document.readyState == complete
@@ -562,7 +596,7 @@ bool Browser::IsDocumentNavigating(IHTMLDocument2* doc) {
 
       // Recursively call to wait for the frame document to complete
       if (is_valid_frame_document) {
-        is_navigating = this->IsDocumentNavigating(frame_document);
+        is_navigating = this->IsDocumentNavigating(page_load_strategy, frame_document);
         if (is_navigating) {
           break;
         }
@@ -647,33 +681,20 @@ HWND Browser::GetBrowserWindowHandle() {
   return hwnd;
 }
 
-//HWND Browser::GetTabWindowHandle() {
-//  LOG(TRACE) << "Entering Browser::GetTabWindowHandle";
-//
-//  HWND hwnd = NULL;
-//  CComPtr<IServiceProvider> service_provider;
-//  HRESULT hr = this->browser_->QueryInterface(IID_IServiceProvider,
-//                                              reinterpret_cast<void**>(&service_provider));
-//  if (SUCCEEDED(hr)) {
-//    CComPtr<IOleWindow> window;
-//    hr = service_provider->QueryService(SID_SShellBrowser,
-//                                        IID_IOleWindow,
-//                                        reinterpret_cast<void**>(&window));
-//    if (SUCCEEDED(hr)) {
-//      // This gets the TabWindowClass window in IE 7 and 8,
-//      // and the top-level window frame in IE 6. The window
-//      // we need is the InternetExplorer_Server window.
-//      window->GetWindow(&hwnd);
-//      hwnd = this->FindContentWindowHandle(hwnd);
-//    } else {
-//      LOGHR(WARN, hr) << "Unable to get window, call to IOleWindow::QueryService for SID_SShellBrowser failed";
-//    }
-//  } else {
-//    LOGHR(WARN, hr) << "Unable to get service, call to IWebBrowser2::QueryInterface for IID_IServiceProvider failed";
-//  }
-//
-//  return hwnd;
-//}
+bool Browser::SetFullScreen(bool is_full_screen) {
+  if (is_full_screen) {
+    this->browser_->put_FullScreen(VARIANT_TRUE);
+  } else {
+    this->browser_->put_FullScreen(VARIANT_FALSE);
+  }
+  return true;
+}
+
+bool Browser::IsFullScreen() {
+  VARIANT_BOOL is_full_screen = VARIANT_FALSE;
+  this->browser_->get_FullScreen(&is_full_screen);
+  return is_full_screen == VARIANT_TRUE;
+}
 
 HWND Browser::GetActiveDialogWindowHandle() {
   LOG(TRACE) << "Entering Browser::GetActiveDialogWindowHandle";

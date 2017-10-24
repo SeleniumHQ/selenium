@@ -24,6 +24,8 @@ goog.provide('goog.color.names');
  * This list is way larger than the minimal one dictated by W3C.
  * The keys of this map are the lowercase "readable" names of the colors, while
  * the values are the "hex" values.
+ *
+ * @type {!Object<string, string>}
  */
 goog.color.names = {
   'aliceblue': '#f0f8ff',

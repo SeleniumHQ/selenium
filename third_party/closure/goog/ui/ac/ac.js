@@ -15,6 +15,7 @@
 /**
  * @fileoverview Utility methods supporting the autocomplete package.
  *
+ * @author adamwos@google.com (Adam Wos)
  * @see ../../demos/autocomplete-basic.html
  */
 
@@ -36,14 +37,14 @@ goog.require('goog.ui.ac.Renderer');
  * @param {boolean=} opt_useSimilar use similar matches. e.g. "gost" => "ghost".
  * @return {!goog.ui.ac.AutoComplete} A new autocomplete object.
  */
-goog.ui.ac.createSimpleAutoComplete =
-    function(data, input, opt_multi, opt_useSimilar) {
+goog.ui.ac.createSimpleAutoComplete = function(
+    data, input, opt_multi, opt_useSimilar) {
   var matcher = new goog.ui.ac.ArrayMatcher(data, !opt_useSimilar);
   var renderer = new goog.ui.ac.Renderer();
   var inputHandler = new goog.ui.ac.InputHandler(null, null, !!opt_multi);
 
-  var autoComplete = new goog.ui.ac.AutoComplete(
-      matcher, renderer, inputHandler);
+  var autoComplete =
+      new goog.ui.ac.AutoComplete(matcher, renderer, inputHandler);
   inputHandler.attachAutoComplete(autoComplete);
   inputHandler.attachInputs(input);
   return autoComplete;

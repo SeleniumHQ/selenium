@@ -1,5 +1,8 @@
-// Copyright 2011 Software Freedom Conservancy
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -27,7 +30,7 @@ class IEServer : public Server {
            const std::string& log_level,
            const std::string& log_file,
            const std::string& version,
-           const std::string& driver_implementation);
+           const std::string& acl);
   virtual ~IEServer(void);
 
  protected:
@@ -36,7 +39,6 @@ class IEServer : public Server {
   virtual void ShutDown(void);
  private:
   std::string version_;
-  std::string driver_implementation_;
 };
 
 } // namespace webdriver

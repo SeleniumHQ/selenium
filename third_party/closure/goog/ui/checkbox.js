@@ -58,8 +58,8 @@ goog.ui.Checkbox = function(opt_checked, opt_domHelper, opt_renderer) {
    * @type {goog.ui.Checkbox.State}
    * @private
    */
-  this.checked_ = goog.isDef(opt_checked) ?
-      opt_checked : goog.ui.Checkbox.State.UNCHECKED;
+  this.checked_ =
+      goog.isDef(opt_checked) ? opt_checked : goog.ui.Checkbox.State.UNCHECKED;
 };
 goog.inherits(goog.ui.Checkbox, goog.ui.Control);
 goog.tagUnsealableClass(goog.ui.Checkbox);
@@ -146,15 +146,22 @@ goog.ui.Checkbox.prototype.setCheckedInternal = function(checked) {
  * Behaves the same way as the 'label' HTML tag. The label element has to be the
  * direct or non-direct ancestor of the checkbox element because it will get the
  * focus when keyboard support is implemented.
+ * Note: Control#enterDocument also sets aria-label on the element but
+ * Checkbox#enterDocument sets aria-labeledby on the same element which
+ * overrides the aria-label in all modern screen readers.
  *
- * @param {Element} label The label control to set. If null, only the checkbox
+ * @param {?Element} label The label control to set. If null, only the checkbox
  *     reacts to clicks.
  */
 goog.ui.Checkbox.prototype.setLabel = function(label) {
   if (this.isInDocument()) {
+    var wasFocused = this.isFocused();
     this.exitDocument();
     this.label_ = label;
     this.enterDocument();
+    if (wasFocused) {
+      this.getElementStrict().focus();
+    }
   } else {
     this.label_ = label;
   }
@@ -170,8 +177,9 @@ goog.ui.Checkbox.prototype.setLabel = function(label) {
  * </ul>
  */
 goog.ui.Checkbox.prototype.toggle = function() {
-  this.setChecked(this.checked_ ? goog.ui.Checkbox.State.UNCHECKED :
-      goog.ui.Checkbox.State.CHECKED);
+  this.setChecked(
+      this.checked_ ? goog.ui.Checkbox.State.UNCHECKED :
+                      goog.ui.Checkbox.State.CHECKED);
 };
 
 
@@ -185,33 +193,37 @@ goog.ui.Checkbox.prototype.enterDocument = function() {
       // Any mouse events that happen to the associated label should have the
       // same effect on the checkbox as if they were happening to the checkbox
       // itself.
-      handler.
-          listen(this.label_, goog.events.EventType.CLICK,
-              this.handleClickOrSpace_).
-          listen(this.label_, goog.events.EventType.MOUSEOVER,
-              this.handleMouseOver).
-          listen(this.label_, goog.events.EventType.MOUSEOUT,
-              this.handleMouseOut).
-          listen(this.label_, goog.events.EventType.MOUSEDOWN,
-              this.handleMouseDown).
-          listen(this.label_, goog.events.EventType.MOUSEUP,
-              this.handleMouseUp);
+      handler
+          .listen(
+              this.label_, goog.events.EventType.CLICK,
+              this.handleClickOrSpace_)
+          .listen(
+              this.label_, goog.events.EventType.MOUSEOVER,
+              this.handleMouseOver)
+          .listen(
+              this.label_, goog.events.EventType.MOUSEOUT, this.handleMouseOut)
+          .listen(
+              this.label_, goog.events.EventType.MOUSEDOWN,
+              this.handleMouseDown)
+          .listen(
+              this.label_, goog.events.EventType.MOUSEUP, this.handleMouseUp);
     }
     // Checkbox needs to explicitly listen for click event.
-    handler.listen(this.getElement(),
-        goog.events.EventType.CLICK, this.handleClickOrSpace_);
+    handler.listen(
+        this.getElement(), goog.events.EventType.CLICK,
+        this.handleClickOrSpace_);
   }
 
   // Set aria label.
   var checkboxElement = this.getElementStrict();
   if (this.label_ && checkboxElement != this.label_ &&
-      goog.string.isEmptyOrWhitespace(goog.a11y.aria.getLabel(checkboxElement))) {
+      goog.string.isEmptyOrWhitespace(
+          goog.a11y.aria.getLabel(checkboxElement))) {
     if (!this.label_.id) {
       this.label_.id = this.makeId('lbl');
     }
-    goog.a11y.aria.setState(checkboxElement,
-        goog.a11y.aria.State.LABELLEDBY,
-        this.label_.id);
+    goog.a11y.aria.setState(
+        checkboxElement, goog.a11y.aria.State.LABELLEDBY, this.label_.id);
   }
 };
 
@@ -240,7 +252,7 @@ goog.ui.Checkbox.prototype.setEnabled = function(enabled) {
 goog.ui.Checkbox.prototype.handleClickOrSpace_ = function(e) {
   e.stopPropagation();
   var eventType = this.checked_ ? goog.ui.Component.EventType.UNCHECK :
-      goog.ui.Component.EventType.CHECK;
+                                  goog.ui.Component.EventType.CHECK;
   if (this.isEnabled() && !e.target.href && this.dispatchEvent(eventType)) {
     e.preventDefault();  // Prevent scrolling in Chrome if SPACE is pressed.
     this.toggle();
@@ -252,6 +264,7 @@ goog.ui.Checkbox.prototype.handleClickOrSpace_ = function(e) {
 /** @override */
 goog.ui.Checkbox.prototype.handleKeyEventInternal = function(e) {
   if (e.keyCode == goog.events.KeyCodes.SPACE) {
+    this.performActionInternal(e);
     this.handleClickOrSpace_(e);
   }
   return false;
@@ -263,6 +276,4 @@ goog.ui.Checkbox.prototype.handleKeyEventInternal = function(e) {
  */
 goog.ui.registry.setDecoratorByClassName(
     goog.ui.CheckboxRenderer.CSS_CLASS,
-    function() {
-      return new goog.ui.Checkbox();
-    });
+    function() { return new goog.ui.Checkbox(); });

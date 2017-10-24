@@ -1,19 +1,19 @@
-/*
-Copyright 2011 Selenium committers
-Copyright 2011 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.grid.e2e.node;
 
@@ -22,13 +22,11 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import com.google.common.base.Function;
-import com.google.common.base.Throwables;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.openqa.grid.common.GridRole;
-import org.openqa.grid.common.RegistrationRequest;
 import org.openqa.grid.e2e.utils.GridTestHelper;
 import org.openqa.grid.e2e.utils.RegistryTestHelper;
 import org.openqa.grid.internal.Registry;
@@ -36,6 +34,7 @@ import org.openqa.grid.internal.RemoteProxy;
 import org.openqa.grid.internal.utils.SelfRegisteringRemote;
 import org.openqa.grid.selenium.proxy.DefaultRemoteProxy;
 import org.openqa.grid.web.Hub;
+import org.openqa.selenium.remote.server.SeleniumServer;
 import org.openqa.selenium.support.ui.FluentWait;
 
 import java.util.Iterator;
@@ -43,30 +42,31 @@ import java.util.concurrent.Callable;
 
 public class DefaultProxyIsUnregisteredIfDownForTooLongTest {
 
-  private static Hub hub;
-  private static Registry registry;
-  private static SelfRegisteringRemote remote;
+  private Hub hub;
+  private Registry registry;
+  private SelfRegisteringRemote remote;
 
-  private static String proxyId;
+  private String proxyId;
 
-  @BeforeClass
-  public static void prepare() throws Exception {
+  @Before
+  public void prepare() throws Exception {
     hub = GridTestHelper.getHub();
     registry = hub.getRegistry();
 
     remote = GridTestHelper.getRemoteWithoutCapabilities(hub.getUrl(), GridRole.NODE);
 
     // check if the node is up every 900 ms
-    remote.getConfiguration().put(RegistrationRequest.NODE_POLLING, 900);
+    remote.getConfiguration().nodePolling = 900;
     // unregister the proxy is it's down for more than 10 sec in a row.
-    remote.getConfiguration().put(RegistrationRequest.UNREGISTER_IF_STILL_DOWN_AFTER, 10000);
+    remote.getConfiguration().unregisterIfStillDownAfter = 10000;
     // mark as down after 3 tries
-    remote.getConfiguration().put(RegistrationRequest.DOWN_POLLING_LIMIT, 3);
+    remote.getConfiguration().downPollingLimit = 3;
     // limit connection and socket timeout for node alive check up to
-    remote.getConfiguration().put(RegistrationRequest.STATUS_CHECK_TIMEOUT, 100);
+    remote.getConfiguration().nodeStatusCheckTimeout = 100;
     // add browser
     remote.addBrowser(GridTestHelper.getDefaultBrowserCapability(), 1);
 
+    remote.setRemoteServer(new SeleniumServer(remote.getConfiguration()));
     remote.startRemoteServer();
     remote.sendRegistrationRequest();
     RegistryTestHelper.waitForNode(registry, 1);
@@ -113,15 +113,7 @@ public class DefaultProxyIsUnregisteredIfDownForTooLongTest {
     };
   }
 
-  private Callable<Boolean> isDown(final DefaultRemoteProxy proxy) {
-    return new Callable<Boolean>() {
-      public Boolean call() throws Exception {
-        return proxy.isDown();
-      }
-    };
-  }
-
-  private static String getProxyId() throws Exception {
+  private String getProxyId() throws Exception {
     RemoteProxy p = null;
     Iterator<RemoteProxy> it = registry.getAllProxies().iterator();
     while(it.hasNext()) {
@@ -137,8 +129,8 @@ public class DefaultProxyIsUnregisteredIfDownForTooLongTest {
     return proxyId;
   }
 
-  @AfterClass
-  public static void tearDown() throws Exception {
+  @After
+  public void tearDown() throws Exception {
     hub.stop();
   }
 
@@ -150,7 +142,7 @@ public class DefaultProxyIsUnregisteredIfDownForTooLongTest {
         try {
           return thing.call();
         } catch (Exception e) {
-          throw Throwables.propagate(e);
+          throw new RuntimeException(e);
         }
       }
     });

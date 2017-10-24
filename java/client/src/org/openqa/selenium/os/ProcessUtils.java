@@ -1,40 +1,41 @@
-/*
-Copyright 2012 Selenium committers
-Copyright 2012 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
-
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium.os;
-
-import org.openqa.selenium.Platform;
-
-import com.google.common.io.Closeables;
-
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.util.logging.Logger;
 
 import static org.openqa.selenium.Platform.WINDOWS;
 import static org.openqa.selenium.os.WindowsUtils.killPID;
 import static org.openqa.selenium.os.WindowsUtils.thisIsWindows;
 
+import com.google.common.io.Closeables;
+
 import com.sun.jna.Pointer;
 import com.sun.jna.platform.win32.WinNT;
 
+import org.openqa.selenium.Platform;
+
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 public class ProcessUtils {
-  static Logger log = Logger.getLogger(ProcessUtils.class.getName());
+
+  private static Logger LOG = Logger.getLogger(ProcessUtils.class.getName());
 
   /**
    * Waits the specified timeout for the process to die
@@ -77,9 +78,8 @@ public class ProcessUtils {
   public static int killProcess(Process process) {
     if (thisIsWindows()) {
       return killWinProcess(process);
-    } else {
-      return killUnixProcess(process);
     }
+    return killUnixProcess(process);
   }
 
   private static int killUnixProcess(Process process) {
@@ -106,13 +106,12 @@ public class ProcessUtils {
         throw ex;
       }
       try {
-        log.info("Process didn't die after 10 seconds");
+        LOG.info("Process didn't die after 10 seconds");
         kill9(process);
         exitValue = waitForProcessDeath(process, 10000);
         closeAllStreamsAndDestroyProcess( process);
       } catch (Exception e) {
-        log.warning("Process refused to die after 10 seconds, and couldn't kill9 it");
-        e.printStackTrace();
+        LOG.log(Level.WARNING, "Process refused to die after 10 seconds, and couldn't kill9 it", ex);
         throw new RuntimeException(
             "Process refused to die after 10 seconds, and couldn't kill9 it: " + e.getMessage(),
             ex);
@@ -125,20 +124,10 @@ public class ProcessUtils {
     int exitValue;
 
     try {
-      Field f = process.getClass().getDeclaredField("handle");
-      f.setAccessible(true);
-      long hndl = f.getLong(process);
-
-      Kernel32 kernel = Kernel32.INSTANCE;
-      WinNT.HANDLE handle = new WinNT.HANDLE();
-      handle.setPointer(Pointer.createConstant(hndl));
-      int pid = kernel.GetProcessId(handle);
-
-      killPID("" + pid);
+      killPID(String.valueOf(getProcessId(process)));
       exitValue = waitForProcessDeath(process, 10000);
-    } catch (Throwable ex) {
-      log.warning("Process refused to die after 10 seconds, and couldn't taskkill it");
-      ex.printStackTrace();
+    } catch (Exception ex) {
+      LOG.log(Level.WARNING, "Process refused to die after 10 seconds, and couldn't taskkill it", ex);
       throw new RuntimeException(
           "Process refused to die after 10 seconds, and couldn't taskkill it: " + ex.getMessage(),
           ex);
@@ -151,12 +140,12 @@ public class ProcessUtils {
     private volatile InterruptedException t;
     private final Process p;
 
-    public InterruptedException getException() {
-      return t;
-    }
-
     public ProcessWaiter(Process p) {
       this.p = p;
+    }
+
+    public InterruptedException getException() {
+      return t;
     }
 
     public void run() {
@@ -185,14 +174,22 @@ public class ProcessUtils {
   }
 
   static int getProcessId(Process p) {
-    if (Platform.getCurrent().is(WINDOWS)) {
-      throw new IllegalStateException("UnixUtils may not be used on Windows");
-    }
     try {
+      if (Platform.getCurrent().is(WINDOWS)) {
+        Field f = p.getClass().getDeclaredField("handle");
+        f.setAccessible(true);
+        long hndl = f.getLong(p);
+
+        Kernel32 kernel = Kernel32.INSTANCE;
+        WinNT.HANDLE handle = new WinNT.HANDLE();
+        handle.setPointer(Pointer.createConstant(hndl));
+        return kernel.GetProcessId(handle);
+      }
+
       Field f = p.getClass().getDeclaredField("pid");
       f.setAccessible(true);
-      Integer pid = (Integer) f.get(p);
-      return pid;
+      return (Integer) f.get(p);
+
     } catch (Exception e) {
       throw new RuntimeException("Couldn't detect pid", e);
     }
@@ -200,13 +197,13 @@ public class ProcessUtils {
 
   /** runs "kill -9" on the specified pid */
   private static void kill9(Integer pid) {
-    log.fine("kill -9 " + pid);
+    LOG.fine("kill -9 " + pid);
 
     CommandLine command = new CommandLine("kill", "-9", pid.toString());
     command.execute();
     String result = command.getStdOut();
     int output = command.getExitCode();
-    log.fine(String.valueOf(output));
+    LOG.fine(String.valueOf(output));
     if (!command.isSuccessful()) {
       throw new RuntimeException("exec return code " + result + ": " + output);
     }

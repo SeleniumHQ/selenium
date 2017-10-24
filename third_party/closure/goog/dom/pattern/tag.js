@@ -45,65 +45,43 @@ goog.require('goog.object');
  * @extends {goog.dom.pattern.AbstractPattern}
  */
 goog.dom.pattern.Tag = function(tag, type, opt_attrs, opt_styles, opt_test) {
-  if (goog.isString(tag)) {
-    this.tag_ = tag.toUpperCase();
-  } else {
-    this.tag_ = tag;
-  }
+  /**
+   * The tag to match.
+   *
+   * @private {string|RegExp}
+   */
+  this.tag_ = goog.isString(tag) ? tag.toUpperCase() : tag;
 
+  /**
+   * The type of token to match.
+   *
+   * @private {goog.dom.TagWalkType}
+   */
   this.type_ = type;
 
+  /**
+   * The attributes to test for.
+   *
+   * @private {Object}
+   */
   this.attrs_ = opt_attrs || null;
+
+  /**
+   * The styles to test for.
+   *
+   * @private {Object}
+   */
   this.styles_ = opt_styles || null;
+
+  /**
+   * Function that takes the element as a parameter and returns true if this
+   * pattern should match it.
+   *
+   * @private {Function}
+   */
   this.test_ = opt_test || null;
 };
 goog.inherits(goog.dom.pattern.Tag, goog.dom.pattern.AbstractPattern);
-
-
-/**
- * The tag to match.
- *
- * @type {string|RegExp}
- * @private
- */
-goog.dom.pattern.Tag.prototype.tag_;
-
-
-/**
- * The type of token to match.
- *
- * @type {goog.dom.TagWalkType}
- * @private
- */
-goog.dom.pattern.Tag.prototype.type_;
-
-
-/**
- * The attributes to test for.
- *
- * @type {Object}
- * @private
- */
-goog.dom.pattern.Tag.prototype.attrs_ = null;
-
-
-/**
- * The styles to test for.
- *
- * @type {Object}
- * @private
- */
-goog.dom.pattern.Tag.prototype.styles_ = null;
-
-
-/**
- * Function that takes the element as a parameter and returns true if this
- * pattern should match it.
- *
- * @type {Function}
- * @private
- */
-goog.dom.pattern.Tag.prototype.test_ = null;
 
 
 /**
@@ -123,16 +101,13 @@ goog.dom.pattern.Tag.prototype.matchToken = function(token, type) {
     // Check the attributes.
     if (this.attrs_ &&
         !goog.object.every(
-            this.attrs_,
-            goog.dom.pattern.matchStringOrRegexMap,
-            token)) {
+            this.attrs_, goog.dom.pattern.matchStringOrRegexMap, token)) {
       return goog.dom.pattern.MatchType.NO_MATCH;
     }
     // Check the styles.
     if (this.styles_ &&
         !goog.object.every(
-            this.styles_,
-            goog.dom.pattern.matchStringOrRegexMap,
+            this.styles_, goog.dom.pattern.matchStringOrRegexMap,
             token.style)) {
       return goog.dom.pattern.MatchType.NO_MATCH;
     }

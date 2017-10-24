@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+using System;
 using System.Drawing;
-using System.Text;
 using NUnit.Framework;
 
 namespace OpenQA.Selenium
@@ -93,6 +91,58 @@ namespace OpenQA.Selenium
 
 
         [Test]
+        [IgnoreBrowser(Browser.Edge, "Not implemented in driver")]
+        [IgnoreBrowser(Browser.Chrome, "Not implemented in driver")]
+        [IgnoreBrowser(Browser.Firefox, "Not implemented in driver")]
+        [IgnoreBrowser(Browser.HtmlUnit, "Not implemented in driver")]
+        [IgnoreBrowser(Browser.Opera, "Not implemented in driver")]
+        [IgnoreBrowser(Browser.Android, "Not implemented in driver")]
+        [IgnoreBrowser(Browser.IPhone, "Not implemented in driver")]
+        [IgnoreBrowser(Browser.WindowsPhone, "Not implemented in mobile driver")]
+        [IgnoreBrowser(Browser.PhantomJS, "As a headless browser, there is no position of the window.")]
+        public void ShouldBeAbleToFullScreenTheCurrentWindow()
+        {
+            Size targetSize = new Size(450, 275);
+
+            ChangeSizeTo(targetSize);
+
+            FullScreen();
+
+            IWindow window = driver.Manage().Window;
+            Size windowSize = window.Size;
+            Point windowPosition = window.Position;
+            Assert.Greater(windowSize.Height, targetSize.Height);
+            Assert.Greater(windowSize.Width, targetSize.Width);
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.Edge, "Not implemented in driver")]
+        [IgnoreBrowser(Browser.Chrome, "Not implemented in driver")]
+        [IgnoreBrowser(Browser.Firefox, "Not implemented in driver")]
+        [IgnoreBrowser(Browser.HtmlUnit, "Not implemented in driver")]
+        [IgnoreBrowser(Browser.Opera, "Not implemented in driver")]
+        [IgnoreBrowser(Browser.Android, "Not implemented in driver")]
+        [IgnoreBrowser(Browser.IPhone, "Not implemented in driver")]
+        [IgnoreBrowser(Browser.WindowsPhone, "Not implemented in mobile driver")]
+        [IgnoreBrowser(Browser.PhantomJS, "As a headless browser, there is no position of the window.")]
+        public void ShouldBeAbleToMinimizeTheCurrentWindow()
+        {
+            Size targetSize = new Size(450, 275);
+
+            ChangeSizeTo(targetSize);
+
+            Minimize();
+
+            IWindow window = driver.Manage().Window;
+            Size windowSize = window.Size;
+            Point windowPosition = window.Position;
+            Assert.Less(windowSize.Height, targetSize.Height);
+            Assert.Less(windowSize.Width, targetSize.Width);
+            Assert.Less(windowPosition.X, 0);
+            Assert.Less(windowPosition.Y, 0);
+        }
+
+        [Test]
         [IgnoreBrowser(Browser.HtmlUnit, "Not implemented in driver")]
         [IgnoreBrowser(Browser.Opera, "Not implemented in driver")]
         [IgnoreBrowser(Browser.Android, "Not implemented in driver")]
@@ -158,21 +208,35 @@ namespace OpenQA.Selenium
             }
         }
 
+        private void FullScreen()
+        {
+            IWindow window = driver.Manage().Window;
+            Size currentSize = window.Size;
+            window.FullScreen();
+        }
+
         private void Maximize()
         {
             IWindow window = driver.Manage().Window;
             Size currentSize = window.Size;
             window.Maximize();
-            WaitFor(WindowHeightToBeGreaterThan(currentSize.Height));
-            WaitFor(WindowWidthToBeGreaterThan(currentSize.Width));
+            WaitFor(WindowHeightToBeGreaterThan(currentSize.Height), "Window height was not greater than " + currentSize.Height.ToString());
+            WaitFor(WindowWidthToBeGreaterThan(currentSize.Width), "Window width was not greater than " + currentSize.Width.ToString());
+        }
+
+        private void Minimize()
+        {
+            IWindow window = driver.Manage().Window;
+            Size currentSize = window.Size;
+            window.Minimize();
         }
 
         private void ChangeSizeTo(Size targetSize)
         {
             IWindow window = driver.Manage().Window;
             window.Size = targetSize;
-            WaitFor(WindowHeightToBeEqualTo(targetSize.Height));
-            WaitFor(WindowWidthToBeEqualTo(targetSize.Width));
+            WaitFor(WindowHeightToBeEqualTo(targetSize.Height), "Window height was not " + targetSize.Height.ToString());
+            WaitFor(WindowWidthToBeEqualTo(targetSize.Width), "Window width was not " + targetSize.Width.ToString());
         }
 
         private Func<bool> WindowHeightToBeEqualTo(int height)

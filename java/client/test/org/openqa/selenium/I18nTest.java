@@ -1,19 +1,19 @@
-/*
-Copyright 2015 Software Freedom Conservancy
-Copyright 2007-2009 Selenium committers
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
- */
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium;
 
@@ -22,21 +22,22 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeFalse;
 import static org.junit.Assume.assumeTrue;
-import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
-import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
-import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
-import static org.openqa.selenium.testing.Ignore.Driver.IE;
-import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
+import static org.openqa.selenium.testing.Driver.CHROME;
+import static org.openqa.selenium.testing.Driver.FIREFOX;
+import static org.openqa.selenium.testing.Driver.HTMLUNIT;
+import static org.openqa.selenium.testing.Driver.IE;
+import static org.openqa.selenium.testing.Driver.MARIONETTE;
 
 import org.junit.Test;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.NeedsFreshDriver;
+import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.TestUtilities;
 
 import java.util.Arrays;
 import java.util.List;
-
 
 public class I18nTest extends JUnit4TestBase {
 
@@ -57,14 +58,12 @@ public class I18nTest extends JUnit4TestBase {
    */
   private static final String tokyo = "\u6771\u4EAC";
 
-  @Ignore({MARIONETTE})
   @Test
   public void testCn() {
     driver.get(pages.chinesePage);
     driver.findElement(By.linkText(Messages.getString("I18nTest.link1"))).click();
   }
 
-  @Ignore({MARIONETTE})
   @Test
   public void testEnteringHebrewTextFromLeftToRight() {
     driver.get(pages.chinesePage);
@@ -75,7 +74,6 @@ public class I18nTest extends JUnit4TestBase {
     assertEquals(shalom, input.getAttribute("value"));
   }
 
-  @Ignore({MARIONETTE})
   @Test
   public void testEnteringHebrewTextFromRightToLeft() {
     driver.get(pages.chinesePage);
@@ -87,18 +85,11 @@ public class I18nTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(
-      value = {MARIONETTE, CHROME},
-      reason = "MARIONETTE: not checked, "
-               + "CHROME: ChromeDriver only supports characters in the BMP")
+  @Ignore(value = CHROME, reason = "ChromeDriver only supports characters in the BMP")
   public void testEnteringSupplementaryCharacters() {
     assumeFalse("IE: versions less thank 10 have issue 5069",
                 TestUtilities.isInternetExplorer(driver) &&
                 TestUtilities.getIEVersion(driver) < 10);
-    assumeFalse("FF: native events at linux broke it - see issue 5069",
-                TestUtilities.isFirefox(driver) &&
-                TestUtilities.isNativeEventsEnabled(driver) &&
-                TestUtilities.getEffectivePlatform().is(Platform.LINUX));
     driver.get(pages.chinesePage);
 
     String input = "";
@@ -116,7 +107,6 @@ public class I18nTest extends JUnit4TestBase {
 
   @NeedsFreshDriver
   @Test
-  @Ignore(MARIONETTE)
   public void testShouldBeAbleToReturnTheTextInAPage() {
     String url = GlobalTestEnvironment.get()
         .getAppServer()
@@ -129,15 +119,15 @@ public class I18nTest extends JUnit4TestBase {
   }
 
   @NeedsFreshDriver
-  @Ignore(value = {IE, CHROME, HTMLUNIT, FIREFOX},
-      reason = "Not implemented on anything other than"
-          + "Firefox/Linux at the moment.")
   @Test
+  @Ignore(IE)
+  @Ignore(CHROME)
+  @Ignore(FIREFOX)
+  @Ignore(MARIONETTE)
+  @NotYetImplemented(HTMLUNIT)
   public void testShouldBeAbleToActivateIMEEngine() throws InterruptedException {
     assumeTrue("IME is supported on Linux only.",
                TestUtilities.getEffectivePlatform().is(Platform.LINUX));
-    assumeTrue("Native events are disabled, IME will not work.",
-               TestUtilities.isNativeEventsEnabled(driver));
 
     driver.get(pages.formPage);
 
@@ -179,15 +169,13 @@ public class I18nTest extends JUnit4TestBase {
         + " It was:" + elementValue, elementValue.equals(tokyo));
   }
 
-  @Ignore(value = {IE, CHROME, HTMLUNIT},
-      reason = "Not implemented on anything other than"
-          + "Firefox/Linux at the moment.")
   @Test
+  @Ignore(IE)
+  @Ignore(CHROME)
+  @Ignore(FIREFOX)
   public void testShouldBeAbleToInputJapanese() {
     assumeTrue("IME is supported on Linux only.",
                TestUtilities.getEffectivePlatform().is(Platform.LINUX));
-    assumeTrue("Native events are disabled, IME will not work.",
-               TestUtilities.isNativeEventsEnabled(driver));
 
     driver.get(pages.formPage);
 

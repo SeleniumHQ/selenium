@@ -1,6 +1,7 @@
 dotnet_test(name = "remote",
   deps = [
-    "//java/server/src/org/openqa/selenium/server:server:uber"
+    "//java/client/test/org/openqa/selenium/environment:webserver",
+    "//java/server/src/org/openqa/grid/selenium:selenium"
   ],
   srcs = "**/*.cs",
   refs = [
@@ -11,7 +12,7 @@ dotnet_test(name = "remote",
     "System.Xml.dll",
     "//dotnet/src/webdriver:webdriver",
     "//dotnet/test/common:common",
-    "third_party/dotnet/nunit-2.6.2/framework/nunit.framework.dll"
+    "third_party/dotnet/nunit-3.6.0/net-4.0/nunit.framework.dll"
   ],
   out = "WebDriver.Remote.Tests.dll",
   files = [

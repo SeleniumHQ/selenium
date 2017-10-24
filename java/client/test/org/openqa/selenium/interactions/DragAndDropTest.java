@@ -1,19 +1,19 @@
-/*
-Copyright 2012 Software Freedom Conservancy
-Copyright 2007-2012 Selenium committers
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
- */
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium.interactions;
 
@@ -22,40 +22,36 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeFalse;
-import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.WaitingConditions.elementLocationToBe;
-import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
-import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
-import static org.openqa.selenium.testing.Ignore.Driver.IE;
-import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
-import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
+import static org.openqa.selenium.testing.Driver.CHROME;
+import static org.openqa.selenium.testing.Driver.FIREFOX;
+import static org.openqa.selenium.testing.Driver.HTMLUNIT;
+import static org.openqa.selenium.testing.Driver.IE;
+import static org.openqa.selenium.testing.Driver.MARIONETTE;
+import static org.openqa.selenium.testing.Driver.PHANTOMJS;
+import static org.openqa.selenium.testing.Driver.SAFARI;
 
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.NoDriverAfterTest;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.JavascriptEnabled;
+import org.openqa.selenium.testing.NeedsFreshDriver;
+import org.openqa.selenium.testing.NoDriverAfterTest;
+import org.openqa.selenium.testing.SwitchToTopAfterTest;
 import org.openqa.selenium.testing.TestUtilities;
 import org.openqa.selenium.testing.drivers.Browser;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@Ignore(
-    value = {HTMLUNIT, MARIONETTE},
-    reason = "HtmlUnit: Advanced mouse actions only implemented in rendered browsers" +
-             "Safari: not implemented (issue 4136)",
-    issues = {4136})
+@Ignore(value = HTMLUNIT, reason = "Advanced mouse actions only implemented in rendered browsers")
 public class DragAndDropTest extends JUnit4TestBase {
 
-  @JavascriptEnabled
   @Test
   public void testDragAndDropRelative() {
     assumeFalse("See issue 2281", TestUtilities.getEffectivePlatform().is(Platform.MAC));
@@ -75,7 +71,6 @@ public class DragAndDropTest extends JUnit4TestBase {
     wait.until(elementLocationToBe(img, expectedLocation));
   }
 
-  @JavascriptEnabled
   @Test
   public void testDragAndDropToElement() {
     driver.get(pages.dragAndDropPage);
@@ -85,7 +80,7 @@ public class DragAndDropTest extends JUnit4TestBase {
     assertEquals(img1.getLocation(), img2.getLocation());
   }
 
-  @JavascriptEnabled
+  @SwitchToTopAfterTest
   @Test
   public void testDragAndDropToElementInIframe() {
     driver.get(pages.iframePage);
@@ -99,7 +94,7 @@ public class DragAndDropTest extends JUnit4TestBase {
     assertEquals(img1.getLocation(), img2.getLocation());
   }
 
-  @JavascriptEnabled
+  @SwitchToTopAfterTest
   @Test
   public void testDragAndDropElementWithOffsetInIframeAtBottom() {
     driver.get(appServer.whereIs("iframeAtBottom.html"));
@@ -115,13 +110,11 @@ public class DragAndDropTest extends JUnit4TestBase {
     assertEquals(initial.moveBy(20, 20), img1.getLocation());
   }
 
-  @JavascriptEnabled
-  @Ignore(value = {IE})
+  @NeedsFreshDriver // fails in Sauce if run in a dirty state; to be investigated
   @Test
+  @Ignore(value = IE, reason = "IE fails this test if requireWindowFocus=true")
+  @Ignore(MARIONETTE)
   public void testDragAndDropElementWithOffsetInScrolledDiv() {
-    assumeFalse("See issue 4241", Browser.detect() == Browser.ff &&
-                                  TestUtilities.isNativeEventsEnabled(driver));
-
     driver.get(appServer.whereIs("dragAndDropInsideScrolledDiv.html"));
 
     WebElement el = driver.findElement(By.id("test1"));
@@ -132,7 +125,6 @@ public class DragAndDropTest extends JUnit4TestBase {
     assertEquals(initial.moveBy(3700, 3700), el.getLocation());
   }
 
-  @JavascriptEnabled
   @Test
   public void testElementInDiv() {
     assumeFalse("See issue 2281", TestUtilities.getEffectivePlatform().is(Platform.MAC));
@@ -144,12 +136,12 @@ public class DragAndDropTest extends JUnit4TestBase {
     assertEquals(expectedLocation, img.getLocation());
   }
 
-  @JavascriptEnabled
-  @Ignore({CHROME, IE, PHANTOMJS})
   @Test
+  @Ignore(CHROME)
+  @Ignore(IE)
+  @Ignore(PHANTOMJS)
+  @Ignore(FIREFOX)
   public void testDragTooFar() {
-    assumeTrue(TestUtilities.isNativeEventsEnabled(driver));
-
     driver.get(pages.dragAndDropPage);
     Actions actions = new Actions(driver);
 
@@ -166,7 +158,6 @@ public class DragAndDropTest extends JUnit4TestBase {
     }
   }
 
-  @JavascriptEnabled
   @NoDriverAfterTest
   // We can't reliably resize the window back afterwards, cross-browser, so have to kill the
   // window, otherwise we are stuck with a small window for the rest of the tests.
@@ -193,7 +184,6 @@ public class DragAndDropTest extends JUnit4TestBase {
     expectedLocation.move(expectedLocation.x + moveRightBy, expectedLocation.y + moveDownBy);
   }
 
-  @JavascriptEnabled
   @Test
   public void testDragAndDropOnJQueryItems() {
     driver.get(pages.droppableItems);
@@ -228,9 +218,11 @@ public class DragAndDropTest extends JUnit4TestBase {
     assertTrue("Reporter text:" + reporterText, matcher.matches());
   }
 
-  @JavascriptEnabled
   @Test
-  @Ignore({IE, PHANTOMJS, SAFARI})
+  @Ignore(value = IE, reason = "IE fails this test if requireWindowFocus=true")
+  @Ignore(PHANTOMJS)
+  @Ignore(SAFARI)
+  @Ignore(MARIONETTE)
   public void canDragAnElementNotVisibleInTheCurrentViewportDueToAParentOverflow() {
     driver.get(pages.dragDropOverflow);
 

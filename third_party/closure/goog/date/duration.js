@@ -146,8 +146,5 @@ goog.date.duration.format = function(durationMs) {
  */
 goog.date.duration.getDurationMessagePart_ = function(pattern, count, text) {
   var formatter = new goog.i18n.MessageFormat(pattern);
-  return formatter.format({
-    'COUNT': count,
-    'TEXT': text
-  });
+  return formatter.format({'COUNT': count, 'TEXT': text});
 };

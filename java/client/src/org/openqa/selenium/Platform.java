@@ -1,19 +1,19 @@
-/*
-Copyright 2007-2011 Selenium committers
-Copyright 2011 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium;
 
@@ -32,13 +32,18 @@ public enum Platform {
   /**
    * Never returned, but can be used to request a browser running on any version of Windows.
    */
-  WINDOWS("") {},
+  WINDOWS("") {
+    @Override
+    public Platform family() {
+      return null;
+    }
+  },
 
   /**
    * For versions of Windows that "feel like" Windows XP. These are ones that store files in
    * "\Program Files\" and documents under "\\documents and settings\\username"
    */
-  XP("Windows Server 2003", "xp", "windows", "winnt") {
+  XP("Windows Server 2003", "xp", "windows", "winnt", "windows_nt", "windows nt") {
     @Override
     public Platform family() {
       return WINDOWS;
@@ -72,7 +77,19 @@ public enum Platform {
     }
   },
 
-  MAC("mac", "darwin", "os x") {},
+  WIN10("windows 10", "win10") {
+    @Override
+    public Platform family() {
+      return WINDOWS;
+    }
+  },
+
+  MAC("mac", "darwin", "macOS", "mac os x", "os x") {
+    @Override
+    public Platform family() {
+      return null;
+    }
+  },
 
   SNOW_LEOPARD("snow leopard", "os x 10.6") {
     @Override
@@ -118,10 +135,37 @@ public enum Platform {
     }
   },
 
+  EL_CAPITAN("el capitan", "os x 10.11") {
+    @Override
+    public Platform family() {
+      return MAC;
+    }
+    @Override
+    public String toString() {
+      return "OS X 10.11";
+    }
+  },
+
+  SIERRA("sierra", "macos 10.12") {
+    @Override
+    public Platform family() {
+      return MAC;
+    }
+    @Override
+    public String toString() {
+      return "macOS 10.12";
+    }
+  },
+
   /**
    * Many platforms have UNIX traits, amongst them LINUX, Solaris and BSD.
    */
-  UNIX("solaris", "bsd") {},
+  UNIX("solaris", "bsd") {
+    @Override
+    public Platform family() {
+      return null;
+    }
+  },
 
   LINUX("linux") {
     @Override
@@ -131,14 +175,15 @@ public enum Platform {
   },
 
   ANDROID("android", "dalvik") {
-    public String getLineEnding() {
-      return "\n";
-    }
-
     @Override
     public Platform family() {
       return LINUX;
     }
+  },
+
+  IOS("iOS") {
+    @Override
+    public Platform family() { return null; }
   },
 
   /**
@@ -146,40 +191,29 @@ public enum Platform {
    */
   ANY("") {
     @Override
+    public Platform family() {
+      return ANY;
+    }
+
+    @Override
     public boolean is(Platform compareWith) {
       return this == compareWith;
     }
   };
 
   private final String[] partOfOsName;
-  private final int minorVersion;
-  private final int majorVersion;
+  private int minorVersion = 0;
+  private int majorVersion = 0;
 
-  private Platform(String... partOfOsName) {
+  Platform(String... partOfOsName) {
     this.partOfOsName = partOfOsName;
-
-    String version = System.getProperty("os.version", "0.0.0");
-    int major = 0;
-    int min = 0;
-
-    Pattern pattern = Pattern.compile("^(\\d+)\\.(\\d+).*");
-    Matcher matcher = pattern.matcher(version);
-    if (matcher.matches()) {
-      try {
-        major = Integer.parseInt(matcher.group(1));
-        min = Integer.parseInt(matcher.group(2));
-      } catch (NumberFormatException e) {
-        // These things happen
-      }
-    }
-
-    majorVersion = major;
-    minorVersion = min;
   }
 
   public String[] getPartOfOsName() {
     return partOfOsName;
   }
+
+  private static Platform current;
 
   /**
    * Get current platform (not necessarily the same as operating system).
@@ -187,7 +221,28 @@ public enum Platform {
    * @return current platform
    */
   public static Platform getCurrent() {
-    return extractFromSysProperty(System.getProperty("os.name"));
+    if (current == null) {
+      current = extractFromSysProperty(System.getProperty("os.name"));
+
+      String version = System.getProperty("os.version", "0.0.0");
+      int major = 0;
+      int min = 0;
+
+      Pattern pattern = Pattern.compile("^(\\d+)\\.(\\d+).*");
+      Matcher matcher = pattern.matcher(version);
+      if (matcher.matches()) {
+        try {
+          major = Integer.parseInt(matcher.group(1));
+          min = Integer.parseInt(matcher.group(2));
+        } catch (NumberFormatException e) {
+          // These things happen
+        }
+      }
+
+      current.majorVersion = major;
+      current.minorVersion = min;
+    }
+    return current;
   }
 
   /**
@@ -254,18 +309,20 @@ public enum Platform {
    * @return the Platform enum value matching the parameter
    */
   public static Platform fromString(String name) {
-    try {
-      return Platform.valueOf(name);
-    } catch (IllegalArgumentException ex) {
-      for (Platform os : Platform.values()) {
-        for (String matcher : os.partOfOsName) {
-          if (name.toLowerCase().equals(matcher.toLowerCase())) {
-            return os;
-          }
+    for (Platform platform : values()) {
+      if (platform.toString().equalsIgnoreCase(name)) {
+        return platform;
+      }
+    }
+
+    for (Platform os : Platform.values()) {
+      for (String matcher : os.partOfOsName) {
+        if (name.toLowerCase().equals(matcher.toLowerCase())) {
+          return os;
         }
       }
-      throw new WebDriverException("Unrecognized platform: " + name);
     }
+    throw new WebDriverException("Unrecognized platform: " + name);
   }
 
   /**
@@ -289,18 +346,23 @@ public enum Platform {
    * @return true if platforms are approximately similar, false otherwise
    */
   public boolean is(Platform compareWith) {
-    return this == compareWith || this.family().is(compareWith);
+    return
+        // Any platform is itself
+        this == compareWith ||
+        // Any platform is also ANY platform
+        compareWith == ANY ||
+        // And any Platform which is not a platform type belongs to the same family
+        (this.family() != null && this.family().is(compareWith));
   }
 
   /**
    * Returns a platform that represents a family for the current platform.  For instance
    * the LINUX if a part of the UNIX family, the XP is a part of the WINDOWS family.
    *
-   * @return the family platform for the current one
+   * @return the family platform for the current one, or {@code null} if this {@code Platform}
+   *         represents a platform family (such as Windows, or MacOS)
    */
-  public Platform family() {
-    return ANY;
-  }
+  public abstract Platform family();
 
   private boolean isCurrentPlatform(String osName, String matchAgainst) {
     return osName.contains(matchAgainst);

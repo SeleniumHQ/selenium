@@ -32,17 +32,14 @@ goog.require('goog.dom.pattern.MatchType');
  * @extends {goog.dom.pattern.AbstractPattern}
  */
 goog.dom.pattern.AllChildren = function() {
+  /**
+   * Tracks the matcher's depth to detect the end of the tag.
+   *
+   * @private {number}
+   */
+  this.depth_ = 0;
 };
 goog.inherits(goog.dom.pattern.AllChildren, goog.dom.pattern.AbstractPattern);
-
-
-/**
- * Tracks the matcher's depth to detect the end of the tag.
- *
- * @type {number}
- * @private
- */
-goog.dom.pattern.AllChildren.prototype.depth_ = 0;
 
 
 /**

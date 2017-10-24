@@ -1,7 +1,9 @@
-﻿// <copyright file="EventFiringWebDriver.cs" company="WebDriver Committers">
-// Copyright 2015 Software Freedom Conservancy
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
+// <copyright file="EventFiringWebDriver.cs" company="WebDriver Committers">
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -18,13 +20,12 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing;
-using System.Text;
 using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.Support.Events
 {
     /// <summary>
-    /// A wrapper around an arbitrary WebDriver instance which supports registering for 
+    /// A wrapper around an arbitrary WebDriver instance which supports registering for
     /// events, e.g. for logging purposes.
     /// </summary>
     public class EventFiringWebDriver : IWebDriver, IJavaScriptExecutor, ITakesScreenshot, IWrapsDriver
@@ -32,7 +33,7 @@ namespace OpenQA.Selenium.Support.Events
         private IWebDriver driver;
 
         /// <summary>
-        /// Initializes a new instance of the EventFiringWebDriver class.
+        /// Initializes a new instance of the <see cref="EventFiringWebDriver"/> class.
         /// </summary>
         /// <param name="parentDriver">The driver to register events for.</param>
         public EventFiringWebDriver(IWebDriver parentDriver)
@@ -109,13 +110,12 @@ namespace OpenQA.Selenium.Support.Events
         /// Fires after a script is executed.
         /// </summary>
         public event EventHandler<WebDriverScriptEventArgs> ScriptExecuted;
-        
+
         /// <summary>
         /// Fires when an exception is thrown.
         /// </summary>
         public event EventHandler<WebDriverExceptionEventArgs> ExceptionThrown;
 
-        #region IWrapsDriver Members
         /// <summary>
         /// Gets the <see cref="IWebDriver"/> wrapped by this EventsFiringWebDriver instance.
         /// </summary>
@@ -124,22 +124,19 @@ namespace OpenQA.Selenium.Support.Events
             get { return this.driver; }
         }
 
-        #endregion
-
-        #region IWebDriver Members
         /// <summary>
         /// Gets or sets the URL the browser is currently displaying.
         /// </summary>
         /// <remarks>
-        /// Setting the <see cref="Url"/> property will load a new web page in the current browser window. 
-        /// This is done using an HTTP GET operation, and the method will block until the 
-        /// load is complete. This will follow redirects issued either by the server or 
+        /// Setting the <see cref="Url"/> property will load a new web page in the current browser window.
+        /// This is done using an HTTP GET operation, and the method will block until the
+        /// load is complete. This will follow redirects issued either by the server or
         /// as a meta-redirect from within the returned HTML. Should a meta-redirect "rest"
-        /// for any duration of time, it is best to wait until this timeout is over, since 
-        /// should the underlying page change while your test is executing the results of 
-        /// future calls against this interface will be against the freshly loaded page. 
+        /// for any duration of time, it is best to wait until this timeout is over, since
+        /// should the underlying page change while your test is executing the results of
+        /// future calls against this interface will be against the freshly loaded page.
         /// </remarks>
-        /// <seealso cref="INavigation.GoToUrl(System.String)"/>
+        /// <seealso cref="INavigation.GoToUrl(string)"/>
         /// <seealso cref="INavigation.GoToUrl(System.Uri)"/>
         public string Url
         {
@@ -194,7 +191,7 @@ namespace OpenQA.Selenium.Support.Events
                     throw;
                 }
 
-                return title; 
+                return title;
             }
         }
 
@@ -202,13 +199,13 @@ namespace OpenQA.Selenium.Support.Events
         /// Gets the source of the page last loaded by the browser.
         /// </summary>
         /// <remarks>
-        /// If the page has been modified after loading (for example, by JavaScript) 
-        /// there is no guarantee that the returned text is that of the modified page. 
-        /// Please consult the documentation of the particular driver being used to 
-        /// determine whether the returned text reflects the current state of the page 
-        /// or the text last sent by the web server. The page source returned is a 
-        /// representation of the underlying DOM: do not expect it to be formatted 
-        /// or escaped in the same way as the response sent from the web server. 
+        /// If the page has been modified after loading (for example, by JavaScript)
+        /// there is no guarantee that the returned text is that of the modified page.
+        /// Please consult the documentation of the particular driver being used to
+        /// determine whether the returned text reflects the current state of the page
+        /// or the text last sent by the web server. The page source returned is a
+        /// representation of the underlying DOM: do not expect it to be formatted
+        /// or escaped in the same way as the response sent from the web server.
         /// </remarks>
         public string PageSource
         {
@@ -230,7 +227,7 @@ namespace OpenQA.Selenium.Support.Events
         }
 
         /// <summary>
-        /// Gets the current window handle, which is an opaque handle to this 
+        /// Gets the current window handle, which is an opaque handle to this
         /// window that uniquely identifies it within this driver instance.
         /// </summary>
         public string CurrentWindowHandle
@@ -248,7 +245,7 @@ namespace OpenQA.Selenium.Support.Events
                     throw;
                 }
 
-                return handle; 
+                return handle;
             }
         }
 
@@ -257,7 +254,7 @@ namespace OpenQA.Selenium.Support.Events
         /// </summary>
         public ReadOnlyCollection<string> WindowHandles
         {
-            get 
+            get
             {
                 ReadOnlyCollection<string> handles = null;
                 try
@@ -270,7 +267,7 @@ namespace OpenQA.Selenium.Support.Events
                     throw;
                 }
 
-                return handles; 
+                return handles;
             }
         }
 
@@ -319,7 +316,7 @@ namespace OpenQA.Selenium.Support.Events
         /// <summary>
         /// Instructs the driver to navigate the browser to another location.
         /// </summary>
-        /// <returns>An <see cref="INavigation"/> object allowing the user to access 
+        /// <returns>An <see cref="INavigation"/> object allowing the user to access
         /// the browser's history and to navigate to a given URL.</returns>
         public INavigation Navigate()
         {
@@ -335,11 +332,9 @@ namespace OpenQA.Selenium.Support.Events
         {
             return new EventFiringTargetLocator(this);
         }
-        #endregion
 
-        #region ISearchContext Members
         /// <summary>
-        /// Find the first <see cref="IWebElement"/> using the given method. 
+        /// Find the first <see cref="IWebElement"/> using the given method.
         /// </summary>
         /// <param name="by">The locating mechanism to use.</param>
         /// <returns>The first matching <see cref="IWebElement"/> on the current context.</returns>
@@ -365,7 +360,7 @@ namespace OpenQA.Selenium.Support.Events
         }
 
         /// <summary>
-        /// Find all <see cref="IWebElement">IWebElements</see> within the current context 
+        /// Find all <see cref="IWebElement">IWebElements</see> within the current context
         /// using the given mechanism.
         /// </summary>
         /// <param name="by">The locating mechanism to use.</param>
@@ -394,9 +389,7 @@ namespace OpenQA.Selenium.Support.Events
 
             return wrappedElementList.AsReadOnly();
         }
-        #endregion
 
-        #region IDisposable Members
         /// <summary>
         /// Frees all managed and unmanaged resources used by this instance.
         /// </summary>
@@ -405,9 +398,7 @@ namespace OpenQA.Selenium.Support.Events
             this.Dispose(true);
             GC.SuppressFinalize(this);
         }
-        #endregion
 
-        #region IJavaScriptExecutor Methods
         /// <summary>
         /// Executes JavaScript in the context of the currently selected frame or window.
         /// </summary>
@@ -416,18 +407,18 @@ namespace OpenQA.Selenium.Support.Events
         /// <returns>The value returned by the script.</returns>
         /// <remarks>
         /// <para>
-        /// The <see cref="ExecuteScript"/>method executes JavaScript in the context of 
-        /// the currently selected frame or window. This means that "document" will refer 
-        /// to the current document. If the script has a return value, then the following 
+        /// The <see cref="ExecuteScript"/>method executes JavaScript in the context of
+        /// the currently selected frame or window. This means that "document" will refer
+        /// to the current document. If the script has a return value, then the following
         /// steps will be taken:
         /// </para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>For an HTML element, this method returns a <see cref="IWebElement"/></description></item>
-        /// <item><description>For a number, a <see cref="System.Int64"/> is returned</description></item>
-        /// <item><description>For a boolean, a <see cref="System.Boolean"/> is returned</description></item>
-        /// <item><description>For all other cases a <see cref="System.String"/> is returned.</description></item>
-        /// <item><description>For an array,we check the first element, and attempt to return a 
+        /// <item><description>For a number, a <see cref="long"/> is returned</description></item>
+        /// <item><description>For a boolean, a <see cref="bool"/> is returned</description></item>
+        /// <item><description>For all other cases a <see cref="string"/> is returned.</description></item>
+        /// <item><description>For an array,we check the first element, and attempt to return a
         /// <see cref="List{T}"/> of that type, following the rules above. Nested lists are not
         /// supported.</description></item>
         /// <item><description>If the value is null or there is no return value,
@@ -435,11 +426,11 @@ namespace OpenQA.Selenium.Support.Events
         /// </list>
         /// </para>
         /// <para>
-        /// Arguments must be a number (which will be converted to a <see cref="System.Int64"/>),
-        /// a <see cref="System.Boolean"/>, a <see cref="System.String"/> or a <see cref="IWebElement"/>.
-        /// An exception will be thrown if the arguments do not meet these criteria. 
-        /// The arguments will be made available to the JavaScript via the "arguments" magic 
-        /// variable, as if the function were called via "Function.apply" 
+        /// Arguments must be a number (which will be converted to a <see cref="long"/>),
+        /// a <see cref="bool"/>, a <see cref="string"/> or a <see cref="IWebElement"/>.
+        /// An exception will be thrown if the arguments do not meet these criteria.
+        /// The arguments will be made available to the JavaScript via the "arguments" magic
+        /// variable, as if the function were called via "Function.apply"
         /// </para>
         /// </remarks>
         public object ExecuteScript(string script, params object[] args)
@@ -447,7 +438,7 @@ namespace OpenQA.Selenium.Support.Events
             IJavaScriptExecutor javascriptDriver = this.driver as IJavaScriptExecutor;
             if (javascriptDriver == null)
             {
-                throw new NotSupportedException("Underlying driver instance does not support executing javascript");
+                throw new NotSupportedException("Underlying driver instance does not support executing JavaScript");
             }
 
             object scriptResult = null;
@@ -480,7 +471,7 @@ namespace OpenQA.Selenium.Support.Events
             IJavaScriptExecutor javascriptDriver = this.driver as IJavaScriptExecutor;
             if (javascriptDriver == null)
             {
-                throw new NotSupportedException("Underlying driver instance does not support executing javascript");
+                throw new NotSupportedException("Underlying driver instance does not support executing JavaScript");
             }
 
             try
@@ -499,9 +490,7 @@ namespace OpenQA.Selenium.Support.Events
 
             return scriptResult;
         }
-        #endregion
 
-        #region ITakesScreenshot Members
         /// <summary>
         /// Gets a <see cref="Screenshot"/> object representing the image of the page on the screen.
         /// </summary>
@@ -518,7 +507,6 @@ namespace OpenQA.Selenium.Support.Events
             screen = screenshotDriver.GetScreenshot();
             return screen;
         }
-        #endregion
 
         /// <summary>
         /// Frees all managed and, optionally, unmanaged resources used by this instance.
@@ -748,7 +736,7 @@ namespace OpenQA.Selenium.Support.Events
             private INavigation wrappedNavigation;
 
             /// <summary>
-            /// Initializes a new instance of the EventFiringNavigation class
+            /// Initializes a new instance of the <see cref="EventFiringNavigation"/> class
             /// </summary>
             /// <param name="driver">Driver in use</param>
             public EventFiringNavigation(EventFiringWebDriver driver)
@@ -757,7 +745,6 @@ namespace OpenQA.Selenium.Support.Events
                 this.wrappedNavigation = this.parentDriver.WrappedDriver.Navigate();
             }
 
-            #region INavigation Members
             /// <summary>
             /// Move the browser back
             /// </summary>
@@ -856,8 +843,6 @@ namespace OpenQA.Selenium.Support.Events
                     throw;
                 }
             }
-
-            #endregion
         }
 
         /// <summary>
@@ -868,7 +853,7 @@ namespace OpenQA.Selenium.Support.Events
             private IOptions wrappedOptions;
 
             /// <summary>
-            /// Initializes a new instance of the EventFiringOptions class
+            /// Initializes a new instance of the <see cref="EventFiringOptions"/> class
             /// </summary>
             /// <param name="driver">Instance of the driver currently in use</param>
             public EventFiringOptions(EventFiringWebDriver driver)
@@ -876,7 +861,6 @@ namespace OpenQA.Selenium.Support.Events
                 this.wrappedOptions = driver.WrappedDriver.Manage();
             }
 
-            #region IOptions Members
             /// <summary>
             /// Gets an object allowing the user to manipulate cookies on the page.
             /// </summary>
@@ -895,6 +879,11 @@ namespace OpenQA.Selenium.Support.Events
                 get { return this.wrappedOptions.Window; }
             }
 
+            public ILogs Logs
+            {
+                get { return this.wrappedOptions.Logs; }
+            }
+
             /// <summary>
             /// Provides access to the timeouts defined for this driver.
             /// </summary>
@@ -903,8 +892,6 @@ namespace OpenQA.Selenium.Support.Events
             {
                 return new EventFiringTimeouts(this.wrappedOptions);
             }
-
-            #endregion
         }
 
         /// <summary>
@@ -916,7 +903,7 @@ namespace OpenQA.Selenium.Support.Events
             private EventFiringWebDriver parentDriver;
 
             /// <summary>
-            /// Initializes a new instance of the EventFiringTargetLocator class
+            /// Initializes a new instance of the <see cref="EventFiringTargetLocator"/> class
             /// </summary>
             /// <param name="driver">The driver that is currently in use</param>
             public EventFiringTargetLocator(EventFiringWebDriver driver)
@@ -925,7 +912,6 @@ namespace OpenQA.Selenium.Support.Events
                 this.wrappedLocator = this.parentDriver.WrappedDriver.SwitchTo();
             }
 
-            #region ITargetLocator Members
             /// <summary>
             /// Move to a different frame using its index
             /// </summary>
@@ -1032,7 +1018,7 @@ namespace OpenQA.Selenium.Support.Events
             }
 
             /// <summary>
-            /// Change the active frame to the default 
+            /// Change the active frame to the default
             /// </summary>
             /// <returns>Element of the default</returns>
             public IWebDriver DefaultContent()
@@ -1090,8 +1076,6 @@ namespace OpenQA.Selenium.Support.Events
 
                 return alert;
             }
-
-            #endregion
         }
 
         /// <summary>
@@ -1102,7 +1086,7 @@ namespace OpenQA.Selenium.Support.Events
             private ITimeouts wrappedTimeouts;
 
             /// <summary>
-            /// Initializes a new instance of the EventFiringTimeouts class
+            /// Initializes a new instance of the <see cref="EventFiringTimeouts"/> class
             /// </summary>
             /// <param name="options">The <see cref="IOptions"/> object to wrap.</param>
             public EventFiringTimeouts(IOptions options)
@@ -1110,7 +1094,52 @@ namespace OpenQA.Selenium.Support.Events
                 this.wrappedTimeouts = options.Timeouts();
             }
 
-            #region ITimeouts Members
+            /// <summary>
+            /// Gets or sets the implicit wait timeout, which is the  amount of time the
+            /// driver should wait when searching for an element if it is not immediately
+            /// present.
+            /// </summary>
+            /// <remarks>
+            /// When searching for a single element, the driver should poll the page
+            /// until the element has been found, or this timeout expires before throwing
+            /// a <see cref="NoSuchElementException"/>. When searching for multiple elements,
+            /// the driver should poll the page until at least one element has been found
+            /// or this timeout has expired.
+            /// <para>
+            /// Increasing the implicit wait timeout should be used judiciously as it
+            /// will have an adverse effect on test run time, especially when used with
+            /// slower location strategies like XPath.
+            /// </para>
+            /// </remarks>
+            public TimeSpan ImplicitWait
+            {
+                get { return this.wrappedTimeouts.ImplicitWait; }
+                set { this.wrappedTimeouts.ImplicitWait = value; }
+            }
+
+            /// <summary>
+            /// Gets or sets the asynchronous script timeout, which is the amount
+            /// of time the driver should wait when executing JavaScript asynchronously.
+            /// This timeout only affects the <see cref="IJavaScriptExecutor.ExecuteAsyncScript(string, object[])"/>
+            /// method.
+            /// </summary>
+            public TimeSpan AsynchronousJavaScript
+            {
+                get { return this.wrappedTimeouts.AsynchronousJavaScript; }
+                set { this.wrappedTimeouts.AsynchronousJavaScript = value; }
+            }
+
+            /// <summary>
+            /// Gets or sets the page load timeout, which is the amount of time the driver
+            /// should wait for a page to load when setting the <see cref="IWebDriver.Url"/>
+            /// property.
+            /// </summary>
+            public TimeSpan PageLoad
+            {
+                get { return this.wrappedTimeouts.PageLoad; }
+                set { this.wrappedTimeouts.PageLoad = value; }
+            }
+
             /// <summary>
             /// Specifies the amount of time the driver should wait when searching for an
             /// element if it is not immediately present.
@@ -1129,6 +1158,7 @@ namespace OpenQA.Selenium.Support.Events
             /// slower location strategies like XPath.
             /// </para>
             /// </remarks>
+            [Obsolete("This method will be removed in a future version. Please set the ImplicitWait property instead.")]
             public ITimeouts ImplicitlyWait(TimeSpan timeToWait)
             {
                 return this.wrappedTimeouts.ImplicitlyWait(timeToWait);
@@ -1139,6 +1169,7 @@ namespace OpenQA.Selenium.Support.Events
             /// </summary>
             /// <param name="timeToWait">A <see cref="TimeSpan"/> structure defining the amount of time to wait.</param>
             /// <returns>A self reference</returns>
+            [Obsolete("This method will be removed in a future version. Please set the AsynchronousJavaScript property instead.")]
             public ITimeouts SetScriptTimeout(TimeSpan timeToWait)
             {
                 return this.wrappedTimeouts.SetScriptTimeout(timeToWait);
@@ -1149,12 +1180,12 @@ namespace OpenQA.Selenium.Support.Events
             /// </summary>
             /// <param name="timeToWait">A <see cref="TimeSpan"/> structure defining the amount of time to wait.</param>
             /// <returns>A self reference</returns>
+            [Obsolete("This method will be removed in a future version. Please set the PageLoad property instead.")]
             public ITimeouts SetPageLoadTimeout(TimeSpan timeToWait)
             {
                 this.wrappedTimeouts.SetPageLoadTimeout(timeToWait);
                 return this;
             }
-            #endregion
         }
 
         /// <summary>
@@ -1176,7 +1207,6 @@ namespace OpenQA.Selenium.Support.Events
                 this.parentDriver = driver;
             }
 
-            #region IWrapsElement Members
             /// <summary>
             /// Gets the underlying wrapped <see cref="IWebElement"/>.
             /// </summary>
@@ -1184,9 +1214,7 @@ namespace OpenQA.Selenium.Support.Events
             {
                 get { return this.underlyingElement; }
             }
-            #endregion
 
-            #region IWebElement Properties
             /// <summary>
             /// Gets the DOM Tag of element
             /// </summary>
@@ -1205,7 +1233,7 @@ namespace OpenQA.Selenium.Support.Events
                         throw;
                     }
 
-                    return tagName; 
+                    return tagName;
                 }
             }
 
@@ -1227,7 +1255,7 @@ namespace OpenQA.Selenium.Support.Events
                         throw;
                     }
 
-                    return text; 
+                    return text;
                 }
             }
 
@@ -1236,7 +1264,7 @@ namespace OpenQA.Selenium.Support.Events
             /// </summary>
             public bool Enabled
             {
-                get 
+                get
                 {
                     bool enabled = false;
                     try
@@ -1249,7 +1277,7 @@ namespace OpenQA.Selenium.Support.Events
                         throw;
                     }
 
-                    return enabled; 
+                    return enabled;
                 }
             }
 
@@ -1263,7 +1291,7 @@ namespace OpenQA.Selenium.Support.Events
                     bool selected = false;
                     try
                     {
-                        selected = this.underlyingElement.Selected; 
+                        selected = this.underlyingElement.Selected;
                     }
                     catch (Exception ex)
                     {
@@ -1280,12 +1308,12 @@ namespace OpenQA.Selenium.Support.Events
             /// </summary>
             public Point Location
             {
-                get 
+                get
                 {
-                    Point location = new Point();
+                    Point location = default(Point);
                     try
                     {
-                        location = this.underlyingElement.Location; 
+                        location = this.underlyingElement.Location;
                     }
                     catch (Exception ex)
                     {
@@ -1302,9 +1330,9 @@ namespace OpenQA.Selenium.Support.Events
             /// </summary>
             public Size Size
             {
-                get 
+                get
                 {
-                    Size size = new Size();
+                    Size size = default(Size);
                     try
                     {
                         size = this.underlyingElement.Size;
@@ -1324,12 +1352,12 @@ namespace OpenQA.Selenium.Support.Events
             /// </summary>
             public bool Displayed
             {
-                get 
+                get
                 {
                     bool displayed = false;
                     try
                     {
-                        displayed = this.underlyingElement.Displayed; 
+                        displayed = this.underlyingElement.Displayed;
                     }
                     catch (Exception ex)
                     {
@@ -1340,7 +1368,6 @@ namespace OpenQA.Selenium.Support.Events
                     return displayed;
                 }
             }
-            #endregion
 
             /// <summary>
             /// Gets the underlying EventFiringWebDriver for this element.
@@ -1350,7 +1377,6 @@ namespace OpenQA.Selenium.Support.Events
                 get { return this.parentDriver; }
             }
 
-            #region IWebElement methods
             /// <summary>
             /// Method to clear the text out of an Input element
             /// </summary>
@@ -1391,7 +1417,7 @@ namespace OpenQA.Selenium.Support.Events
             }
 
             /// <summary>
-            /// If this current element is a form, or an element within a form, then this will be submitted to the remote server. 
+            /// If this current element is a form, or an element within a form, then this will be submitted to the remote server.
             /// If this causes the current page to change, then this method will block until the new page is loaded.
             /// </summary>
             public void Submit()
@@ -1408,11 +1434,11 @@ namespace OpenQA.Selenium.Support.Events
             }
 
             /// <summary>
-            /// Click this element. If this causes a new page to load, this method will block until 
-            /// the page has loaded. At this point, you should discard all references to this element 
+            /// Click this element. If this causes a new page to load, this method will block until
+            /// the page has loaded. At this point, you should discard all references to this element
             /// and any further operations performed on this element will have undefined behavior unless
-            /// you know that the element and the page will still be present. If this element is not 
-            /// clickable, then this operation is a no-op since it's pretty common for someone to 
+            /// you know that the element and the page will still be present. If this element is not
+            /// clickable, then this operation is a no-op since it's pretty common for someone to
             /// accidentally miss  the target when clicking in Real Life
             /// </summary>
             public void Click()
@@ -1453,6 +1479,28 @@ namespace OpenQA.Selenium.Support.Events
             }
 
             /// <summary>
+            /// Gets the value of a JavaScript property of this element.
+            /// </summary>
+            /// <param name="propertyName">The name JavaScript the JavaScript property to get the value of.</param>
+            /// <returns>The JavaScript property's current value. Returns a <see langword="null"/> if the
+            /// value is not set or the property does not exist.</returns>
+            public string GetProperty(string propertyName)
+            {
+                string elementProperty = string.Empty;
+                try
+                {
+                    elementProperty = this.underlyingElement.GetProperty(propertyName);
+                }
+                catch (Exception ex)
+                {
+                    this.parentDriver.OnException(new WebDriverExceptionEventArgs(this.parentDriver, ex));
+                    throw;
+                }
+
+                return elementProperty;
+            }
+
+            /// <summary>
             /// Method to return the value of a CSS Property
             /// </summary>
             /// <param name="propertyName">CSS property key</param>
@@ -1472,9 +1520,7 @@ namespace OpenQA.Selenium.Support.Events
 
                 return cssValue;
             }
-            #endregion
 
-            #region ISearchContext Members
             /// <summary>
             /// Finds the first element in the page that matches the <see cref="By"/> object
             /// </summary>
@@ -1528,7 +1574,6 @@ namespace OpenQA.Selenium.Support.Events
 
                 return wrappedElementList.AsReadOnly();
             }
-            #endregion
         }
     }
 }

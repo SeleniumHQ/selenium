@@ -1,5 +1,8 @@
-// Copyright 2011 Software Freedom Conservancy
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -12,8 +15,12 @@
 // limitations under the License.
 
 #include "HtmlDialog.h"
-#include "BrowserFactory.h"
+
+#include "errorcodes.h"
 #include "logging.h"
+
+#include "BrowserFactory.h"
+#include "StringUtilities.h"
 
 namespace webdriver {
 
@@ -51,9 +58,14 @@ void __stdcall HtmlDialog::OnLoad(IHTMLEventObj *pEvtObj) {
 }
 
 void HtmlDialog::GetDocument(IHTMLDocument2** doc) {
+  this->GetDocument(false, doc);
+}
+
+void HtmlDialog::GetDocument(const bool force_top_level_document,
+                             IHTMLDocument2** doc) {
   LOG(TRACE) << "Entering HtmlDialog::GetDocument";
   HRESULT hr = S_OK;
-  if (this->focused_frame_window() == NULL) {
+  if (this->focused_frame_window() == NULL || force_top_level_document) {
     hr = this->window_->get_document(doc);
   } else {
     hr = this->focused_frame_window()->get_document(doc);
@@ -96,12 +108,20 @@ bool HtmlDialog::IsValidWindow() {
   return true;
 }
 
+bool HtmlDialog::SetFullScreen(bool is_full_screen) {
+  return false;
+}
+
+bool HtmlDialog::IsFullScreen() {
+  return false;
+}
+
 bool HtmlDialog::IsBusy() {
   LOG(TRACE) << "Entering HtmlDialog::IsBusy";
   return false;
 }
 
-bool HtmlDialog::Wait() {
+bool HtmlDialog::Wait(const std::string& page_load_strategy) {
   LOG(TRACE) << "Entering HtmlDialog::Wait";
   // If the window is no longer valid, the window is closing,
   // and the wait is completed.

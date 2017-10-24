@@ -14,6 +14,7 @@
 
 /**
  * @fileoverview Protocol Buffer Message base class.
+ * @suppress {unusedPrivateMembers} For descriptor_ declaration.
  */
 
 goog.provide('goog.proto2.Message');
@@ -21,6 +22,8 @@ goog.provide('goog.proto2.Message');
 goog.require('goog.asserts');
 goog.require('goog.proto2.Descriptor');
 goog.require('goog.proto2.FieldDescriptor');
+
+goog.forwardDeclare('goog.proto2.LazyDeserializer');  // circular reference
 
 
 
@@ -33,7 +36,7 @@ goog.require('goog.proto2.FieldDescriptor');
 goog.proto2.Message = function() {
   /**
    * Stores the field values in this message. Keyed by the tag of the fields.
-   * @type {*}
+   * @type {!Object}
    * @private
    */
   this.values_ = {};
@@ -98,22 +101,6 @@ goog.proto2.Message.FieldType = {
 
 
 /**
- * All instances of goog.proto2.Message should have a static descriptorObj_
- * property. This is a JSON representation of a Descriptor. The real Descriptor
- * will be deserialized lazily in the getDescriptor() method.
- *
- * This declaration is just here for documentation purposes.
- * goog.proto2.Message does not have its own descriptor.
- *
- * TODO(user): Delete after components update for cl/76695317.
- *
- * @type {undefined}
- * @private
- */
-goog.proto2.Message.descriptorObj_;
-
-
-/**
  * All instances of goog.proto2.Message should have a static descriptor_
  * property. The Descriptor will be deserialized lazily in the getDescriptor()
  * method.
@@ -134,7 +121,7 @@ goog.proto2.Message.descriptor_;
  * @param {goog.proto2.LazyDeserializer} deserializer The lazy deserializer to
  *   use to decode the data on the fly.
  *
- * @param {*} data The data to decode/deserialize.
+ * @param {?} data The data to decode/deserialize.
  */
 goog.proto2.Message.prototype.initializeForLazyDeserializer = function(
     deserializer, data) {
@@ -152,9 +139,12 @@ goog.proto2.Message.prototype.initializeForLazyDeserializer = function(
  * @param {*} value The value for that unknown field.
  */
 goog.proto2.Message.prototype.setUnknown = function(tag, value) {
-  goog.asserts.assert(!this.fields_[tag],
-      'Field is not unknown in this message');
-  goog.asserts.assert(tag >= 1, 'Tag is not valid');
+  goog.asserts.assert(
+      !this.fields_[tag], 'Field is not unknown in this message');
+  goog.asserts.assert(
+      tag >= 1, 'Tag ' + tag + ' has value "' + value + '" in descriptor ' +
+          this.getDescriptor().getName());
+
   goog.asserts.assert(value !== null, 'Value cannot be null');
 
   this.values_[tag] = value;
@@ -167,10 +157,11 @@ goog.proto2.Message.prototype.setUnknown = function(tag, value) {
 /**
  * Iterates over all the unknown fields in the message.
  *
- * @param {function(number, *)} callback A callback method
+ * @param {function(this:T, number, *)} callback A callback method
  *     which gets invoked for each unknown field.
- * @param {Object=} opt_scope The scope under which to execute the callback.
+ * @param {T=} opt_scope The scope under which to execute the callback.
  *     If not given, the current message will be used.
+ * @template T
  */
 goog.proto2.Message.prototype.forEachUnknown = function(callback, opt_scope) {
   var scope = opt_scope || this;
@@ -188,20 +179,9 @@ goog.proto2.Message.prototype.forEachUnknown = function(callback, opt_scope) {
  *
  * This only works if we assume people never subclass protobufs.
  *
- * TODO(user): Replace with goog.abstractMethod after components update
- *     with cl/76695317.
- *
  * @return {!goog.proto2.Descriptor} The descriptor.
  */
-goog.proto2.Message.prototype.getDescriptor = function() {
-  // NOTE(nicksantos): These sorts of indirect references to descriptor
-  // through this.constructor are fragile. See the comments
-  // in set$Metadata for more info.
-  var Ctor = this.constructor;
-  return Ctor.descriptor_ ||
-      (Ctor.descriptor_ = goog.proto2.Message.createDescriptor(
-          Ctor, Ctor.descriptorObj_));
-};
+goog.proto2.Message.prototype.getDescriptor = goog.abstractMethod;
 
 
 /**
@@ -265,7 +245,7 @@ goog.proto2.Message.prototype.countOf = function(field) {
  * @param {number=} opt_index If the field is repeated, the index to use when
  *     looking up the value.
  *
- * @return {*} The value found or null if none.
+ * @return {?} The value found or null if none.
  */
 goog.proto2.Message.prototype.get = function(field, opt_index) {
   goog.asserts.assert(
@@ -285,7 +265,7 @@ goog.proto2.Message.prototype.get = function(field, opt_index) {
  * @param {number=} opt_index If the field is repeated, the index to use when
  *     looking up the value.
  *
- * @return {*} The value found or the default if none.
+ * @return {?} The value found or the default if none.
  */
 goog.proto2.Message.prototype.getOrDefault = function(field, opt_index) {
   goog.asserts.assert(
@@ -346,7 +326,7 @@ goog.proto2.Message.prototype.clear = function(field) {
 
 /**
  * Compares this message with another one ignoring the unknown fields.
- * @param {*} other The other message.
+ * @param {?} other The other message.
  * @return {boolean} Whether they are equal. Returns false if the {@code other}
  *     argument is a different type of message or not a message.
  */
@@ -399,7 +379,8 @@ goog.proto2.Message.prototype.equals = function(other) {
  * @param {!goog.proto2.Message} message The source message.
  */
 goog.proto2.Message.prototype.copyFrom = function(message) {
-  goog.asserts.assert(this.constructor == message.constructor,
+  goog.asserts.assert(
+      this.constructor == message.constructor,
       'The source message must have the same type.');
 
   if (this != message) {
@@ -420,7 +401,8 @@ goog.proto2.Message.prototype.copyFrom = function(message) {
  * @param {!goog.proto2.Message} message The source message.
  */
 goog.proto2.Message.prototype.mergeFrom = function(message) {
-  goog.asserts.assert(this.constructor == message.constructor,
+  goog.asserts.assert(
+      this.constructor == message.constructor,
       'The source message must have the same type.');
   var fields = this.getDescriptor().getFields();
 
@@ -526,7 +508,7 @@ goog.proto2.Message.prototype.has$Value = function(tag) {
  * value.
  *
  * @param {number} tag The tag number.
- * @return {*} The corresponding value, if any.
+ * @return {?} The corresponding value, if any.
  * @private
  */
 goog.proto2.Message.prototype.getValueForTag_ = function(tag) {
@@ -541,7 +523,7 @@ goog.proto2.Message.prototype.getValueForTag_ = function(tag) {
   if (this.lazyDeserializer_) {
     // If the tag is not deserialized, then we must do so now. Deserialize
     // the field's value via the deserializer.
-    if (!(tag in this.deserializedFields_)) {
+    if (!(tag in /** @type {!Object} */ (this.deserializedFields_))) {
       var deserializedValue = this.lazyDeserializer_.deserializeField(
           this, this.fields_[tag], value);
       this.deserializedFields_[tag] = deserializedValue;
@@ -565,7 +547,7 @@ goog.proto2.Message.prototype.getValueForTag_ = function(tag) {
  * @param {number=} opt_index If the field is a repeated field, the index
  *     at which to get the value.
  *
- * @return {*} The value found or null for none.
+ * @return {?} The value found or null for none.
  * @protected
  */
 goog.proto2.Message.prototype.get$Value = function(tag, opt_index) {
@@ -575,8 +557,8 @@ goog.proto2.Message.prototype.get$Value = function(tag, opt_index) {
     var index = opt_index || 0;
     goog.asserts.assert(
         index >= 0 && index < value.length,
-        'Given index %s is out of bounds.  Repeated field length: %s',
-        index, value.length);
+        'Given index %s is out of bounds.  Repeated field length: %s', index,
+        value.length);
     return value[index];
   }
 
@@ -594,7 +576,7 @@ goog.proto2.Message.prototype.get$Value = function(tag, opt_index) {
  * @param {number=} opt_index If the field is a repeated field, the index
  *     at which to get the value.
  *
- * @return {*} The value found or the default value if none set.
+ * @return {?} The value found or the default value if none set.
  * @protected
  */
 goog.proto2.Message.prototype.get$ValueOrDefault = function(tag, opt_index) {
@@ -615,12 +597,12 @@ goog.proto2.Message.prototype.get$ValueOrDefault = function(tag, opt_index) {
  *
  * @param {number} tag The field's tag index.
  *
- * @return {!Array<*>} The values found. If none, returns an empty array.
+ * @return {!Array<?>} The values found. If none, returns an empty array.
  * @protected
  */
 goog.proto2.Message.prototype.array$Values = function(tag) {
   var value = this.getValueForTag_(tag);
-  return /** @type {Array<*>} */ (value) || [];
+  return value || [];
 };
 
 
@@ -704,7 +686,7 @@ goog.proto2.Message.prototype.checkFieldType_ = function(field, value) {
   if (field.getFieldType() == goog.proto2.FieldDescriptor.FieldType.ENUM) {
     goog.asserts.assertNumber(value);
   } else {
-    goog.asserts.assert(value.constructor == field.getNativeType());
+    goog.asserts.assert(Object(value).constructor == field.getNativeType());
   }
 };
 
@@ -746,29 +728,4 @@ goog.proto2.Message.createDescriptor = function(messageType, metadataObj) {
   }
 
   return new goog.proto2.Descriptor(messageType, descriptorInfo, fields);
-};
-
-
-/**
- * Sets the metadata that represents the definition of this message.
- *
- * GENERATED CODE USE ONLY. Called when constructing message classes.
- *
- * TODO(user): Delete after components update with cl/76695317.
- *
- * @param {!Function} messageType Constructor for the
- *     message type to which this metadata applies.
- * @param {Object} metadataObj The object containing the metadata.
- */
-goog.proto2.Message.set$Metadata = function(messageType, metadataObj) {
-  // NOTE(nicksantos): JSCompiler's type-based optimizations really do not
-  // like indirectly defined methods (both prototype methods and
-  // static methods). This is very fragile in compiled code. I think it only
-  // really works by accident, and is highly likely to break in the future.
-  messageType.descriptorObj_ = metadataObj;
-  messageType.getDescriptor = function() {
-    // The descriptor is created lazily when we instantiate a new instance.
-    return messageType.descriptor_ ||
-        (new messageType()).getDescriptor();
-  };
 };

@@ -1,5 +1,6 @@
+# BUILD FILE SYNTAX: SKYLARK
 java_library(
-  name = 'jna',
+   name = 'jna',
   exported_deps = [
     ':core',
     ':platform',
@@ -11,10 +12,18 @@ java_library(
 
 prebuilt_jar(
   name = 'core',
-  binary_jar = 'jna-3.4.0.jar',
+  maven_coords = 'net.java.dev.jna:jna:jar:4.1.0',
+  binary_jar = 'jna-4.1.0.jar',
+  source_jar = 'jna-4.1.0-sources.jar',
 )
 
 prebuilt_jar(
   name = 'platform',
-  binary_jar = 'jna-platform-3.4.0.jar',
+  maven_coords = 'net.java.dev.jna:jna-platform:jar:4.1.0',
+  binary_jar = 'jna-platform-4.1.0.jar',
+  source_jar = 'jna-platform-4.1.0-sources.jar',
+  deps = [
+    ':core'
+  ],
 )
+

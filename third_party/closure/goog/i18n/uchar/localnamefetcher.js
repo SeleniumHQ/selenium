@@ -21,8 +21,8 @@
 
 goog.provide('goog.i18n.uChar.LocalNameFetcher');
 
-goog.require('goog.i18n.uChar');
 goog.require('goog.i18n.uChar.NameFetcher');
+goog.require('goog.i18n.uCharNames');
 goog.require('goog.log');
 
 
@@ -36,8 +36,7 @@ goog.require('goog.log');
  * @implements {goog.i18n.uChar.NameFetcher}
  * @final
  */
-goog.i18n.uChar.LocalNameFetcher = function() {
-};
+goog.i18n.uChar.LocalNameFetcher = function() {};
 
 
 /**
@@ -51,17 +50,16 @@ goog.i18n.uChar.LocalNameFetcher.logger_ =
 
 
 /** @override */
-goog.i18n.uChar.LocalNameFetcher.prototype.prefetch = function(character) {
-};
+goog.i18n.uChar.LocalNameFetcher.prototype.prefetch = function(character) {};
 
 
 /** @override */
-goog.i18n.uChar.LocalNameFetcher.prototype.getName = function(character,
-    callback) {
-  var localName = goog.i18n.uChar.toName(character);
+goog.i18n.uChar.LocalNameFetcher.prototype.getName = function(
+    character, callback) {
+  var localName = goog.i18n.uCharNames.toName(character);
   if (!localName) {
-    goog.i18n.uChar.LocalNameFetcher.logger_.
-        warning('No local name defined for character ' + character);
+    goog.i18n.uChar.LocalNameFetcher.logger_.warning(
+        'No local name defined for character ' + character);
   }
   callback(localName);
 };
@@ -70,5 +68,5 @@ goog.i18n.uChar.LocalNameFetcher.prototype.getName = function(character,
 /** @override */
 goog.i18n.uChar.LocalNameFetcher.prototype.isNameAvailable = function(
     character) {
-  return !!goog.i18n.uChar.toName(character);
+  return !!goog.i18n.uCharNames.toName(character);
 };

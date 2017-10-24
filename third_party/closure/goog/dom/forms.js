@@ -20,20 +20,112 @@
 
 goog.provide('goog.dom.forms');
 
+goog.require('goog.dom.InputType');
+goog.require('goog.dom.TagName');
 goog.require('goog.structs.Map');
+goog.require('goog.window');
+
+
+
+/**
+ * Submits form data via a new window. This hides references to the parent
+ * window and should be used when submitting forms to untrusted 3rd party urls.
+ * By default, this uses the action and method of the specified form
+ * element. It is possible to override the default action and method if an
+ * optional submit element with formaction and/or formmethod attributes is
+ * provided.
+ * @param {!HTMLFormElement} form The form.
+ * @param {!HTMLElement=} opt_submitElement The `<button>` or `<input>` element
+ *     used to submit the form. The element should have a submit type.
+ * @return {boolean} true If the form was submitted succesfully.
+ * @throws {!Error} If opt_submitElement is not a valid form submit element.
+ */
+goog.dom.forms.submitFormInNewWindow = function(form, opt_submitElement) {
+  var formData = goog.dom.forms.getFormDataMap(form);
+  var action = form.action;
+  var method = form.method;
+
+  if (opt_submitElement) {
+    if (goog.dom.InputType.SUBMIT != opt_submitElement.type.toLowerCase()) {
+      throw Error('opt_submitElement does not have a valid type.');
+    }
+
+
+    var submitValue =
+        /** @type {?string} */ (goog.dom.forms.getValue(opt_submitElement));
+    if (submitValue != null) {
+      goog.dom.forms.addFormDataToMap_(
+          formData, opt_submitElement.name, submitValue);
+    }
+
+    if (opt_submitElement.getAttribute('formaction')) {
+      action = opt_submitElement.getAttribute('formaction');
+    }
+
+    if (opt_submitElement.getAttribute('formmethod')) {
+      method = opt_submitElement.getAttribute('formmethod');
+    }
+  }
+
+  return goog.dom.forms.submitFormDataInNewWindow(action, method, formData);
+};
+
+/**
+ * Submits form data via a new window. This hides references to the parent
+ * window and should be used when submitting forms to untrusted 3rd party urls.
+ * @param {string} actionUri uri to submit form content to.
+ * @param {string} method HTTP method used to submit the form.
+ * @param {!goog.structs.Map<string, !Array<string>>} formData A map of the form
+ *     data as field name to arrays of values.
+ * @return {boolean} true If the form was submitted succesfully.
+ */
+goog.dom.forms.submitFormDataInNewWindow = function(
+    actionUri, method, formData) {
+  var newWin = goog.window.openBlank('', {noreferrer: true});
+
+  // This could be null if a new window could not be opened. e.g. if it was
+  // stopped by a popup blocker.
+  if (!newWin) {
+    return false;
+  }
+
+  var newDocument = newWin.document;
+
+  var newForm =
+      /** @type {!HTMLFormElement} */ (newDocument.createElement('form'));
+  newForm.method = method;
+  newForm.action = actionUri;
+
+  // After this point, do not directly reference the form object's functions as
+  // field names can shadow the form's properties.
+
+  formData.forEach(function(fieldValues, fieldName) {
+    for (var i = 0; i < fieldValues.length; i++) {
+      var fieldValue = fieldValues[i];
+      var newInput = newDocument.createElement('input');
+      newInput.name = fieldName;
+      newInput.value = fieldValue;
+      newInput.type = 'hidden';
+      HTMLFormElement.prototype.appendChild.call(newForm, newInput);
+    }
+  });
+
+  HTMLFormElement.prototype.submit.call(newForm);
+  return true;
+};
 
 
 /**
  * Returns form data as a map of name to value arrays. This doesn't
  * support file inputs.
  * @param {HTMLFormElement} form The form.
- * @return {!goog.structs.Map.<string, !Array.<string>>} A map of the form data
+ * @return {!goog.structs.Map<string, !Array<string>>} A map of the form data
  *     as field name to arrays of values.
  */
 goog.dom.forms.getFormDataMap = function(form) {
   var map = new goog.structs.Map();
-  goog.dom.forms.getFormDataHelper_(form, map,
-      goog.dom.forms.addFormDataToMap_);
+  goog.dom.forms.getFormDataHelper_(
+      form, map, goog.dom.forms.addFormDataToMap_);
   return map;
 };
 
@@ -46,8 +138,8 @@ goog.dom.forms.getFormDataMap = function(form) {
  */
 goog.dom.forms.getFormDataString = function(form) {
   var sb = [];
-  goog.dom.forms.getFormDataHelper_(form, sb,
-      goog.dom.forms.addFormDataToStringBuffer_);
+  goog.dom.forms.getFormDataHelper_(
+      form, sb, goog.dom.forms.addFormDataToStringBuffer_);
   return sb.join('&');
 };
 
@@ -65,28 +157,27 @@ goog.dom.forms.getFormDataString = function(form) {
 goog.dom.forms.getFormDataHelper_ = function(form, result, fnAppend) {
   var els = form.elements;
   for (var el, i = 0; el = els[i]; i++) {
-    if (// Make sure we don't include elements that are not part of the form.
+    if (  // Make sure we don't include elements that are not part of the form.
         // Some browsers include non-form elements. Check for 'form' property.
         // See http://code.google.com/p/closure-library/issues/detail?id=227
         // and
         // http://www.whatwg.org/specs/web-apps/current-work/multipage/the-input-element.html#the-input-element
-        (el.form != form) ||
-        el.disabled ||
+        (el.form != form) || el.disabled ||
         // HTMLFieldSetElement has a form property but no value.
-        el.tagName.toLowerCase() == 'fieldset') {
+        el.tagName == goog.dom.TagName.FIELDSET) {
       continue;
     }
 
     var name = el.name;
     switch (el.type.toLowerCase()) {
-      case 'file':
-        // file inputs are not supported
-      case 'submit':
-      case 'reset':
-      case 'button':
+      case goog.dom.InputType.FILE:
+      // file inputs are not supported
+      case goog.dom.InputType.SUBMIT:
+      case goog.dom.InputType.RESET:
+      case goog.dom.InputType.BUTTON:
         // don't submit these
         break;
-      case 'select-multiple':
+      case goog.dom.InputType.SELECT_MULTIPLE:
         var values = goog.dom.forms.getValue(el);
         if (values != null) {
           for (var value, j = 0; value = values[j]; j++) {
@@ -103,9 +194,10 @@ goog.dom.forms.getFormDataHelper_ = function(form, result, fnAppend) {
   }
 
   // input[type=image] are not included in the elements collection
-  var inputs = form.getElementsByTagName('input');
+  var inputs = form.getElementsByTagName(String(goog.dom.TagName.INPUT));
   for (var input, i = 0; input = inputs[i]; i++) {
-    if (input.form == form && input.type.toLowerCase() == 'image') {
+    if (input.form == form &&
+        input.type.toLowerCase() == goog.dom.InputType.IMAGE) {
       name = input.name;
       fnAppend(result, name, input.value);
       fnAppend(result, name + '.x', '0');
@@ -117,7 +209,7 @@ goog.dom.forms.getFormDataHelper_ = function(form, result, fnAppend) {
 
 /**
  * Adds the name/value pair to the map.
- * @param {!goog.structs.Map.<string, !Array.<string>>} map The map to add to.
+ * @param {!goog.structs.Map<string, !Array<string>>} map The map to add to.
  * @param {string} name The name.
  * @param {string} value The value.
  * @private
@@ -152,7 +244,8 @@ goog.dom.forms.addFormDataToStringBuffer_ = function(sb, name, value) {
 goog.dom.forms.hasFileInput = function(form) {
   var els = form.elements;
   for (var el, i = 0; el = els[i]; i++) {
-    if (!el.disabled && el.type && el.type.toLowerCase() == 'file') {
+    if (!el.disabled && el.type &&
+        el.type.toLowerCase() == goog.dom.InputType.FILE) {
       return true;
     }
   }
@@ -167,8 +260,8 @@ goog.dom.forms.hasFileInput = function(form) {
  */
 goog.dom.forms.setDisabled = function(el, disabled) {
   // disable all elements in a form
-  if (el.tagName == 'FORM') {
-    var els = el.elements;
+  if (el.tagName == goog.dom.TagName.FORM) {
+    var els = /** @type {!HTMLFormElement} */ (el).elements;
     for (var i = 0; el = els[i]; i++) {
       goog.dom.forms.setDisabled(el, disabled);
     }
@@ -225,31 +318,22 @@ goog.dom.forms.hasValueByName = function(form, name) {
  *     (or null).
  */
 goog.dom.forms.getValue = function(el) {
-  var type = el.type;
+  var type = /** @type {!HTMLInputElement} */ (el).type;
   if (!goog.isDef(type)) {
     return null;
   }
   switch (type.toLowerCase()) {
-    case 'checkbox':
-    case 'radio':
+    case goog.dom.InputType.CHECKBOX:
+    case goog.dom.InputType.RADIO:
       return goog.dom.forms.getInputChecked_(el);
-    case 'select-one':
+    case goog.dom.InputType.SELECT_ONE:
       return goog.dom.forms.getSelectSingle_(el);
-    case 'select-multiple':
+    case goog.dom.InputType.SELECT_MULTIPLE:
       return goog.dom.forms.getSelectMultiple_(el);
     default:
       return goog.isDef(el.value) ? el.value : null;
   }
 };
-
-
-/**
- * Alias for goog.dom.form.element.getValue
- * @type {Function}
- * @deprecated Use {@link goog.dom.forms.getValue} instead.
- * @suppress {missingProvide}
- */
-goog.dom.$F = goog.dom.forms.getValue;
 
 
 /**
@@ -288,7 +372,7 @@ goog.dom.forms.getValueByName = function(form, name) {
  * @private
  */
 goog.dom.forms.getInputChecked_ = function(el) {
-  return el.checked ? el.value : null;
+  return el.checked ? /** @type {?} */ (el).value : null;
 };
 
 
@@ -299,8 +383,10 @@ goog.dom.forms.getInputChecked_ = function(el) {
  * @private
  */
 goog.dom.forms.getSelectSingle_ = function(el) {
-  var selectedIndex = el.selectedIndex;
-  return selectedIndex >= 0 ? el.options[selectedIndex].value : null;
+  var selectedIndex = /** @type {!HTMLSelectElement} */ (el).selectedIndex;
+  return selectedIndex >= 0 ?
+      /** @type {!HTMLSelectElement} */ (el).options[selectedIndex].value :
+      null;
 };
 
 
@@ -312,7 +398,8 @@ goog.dom.forms.getSelectSingle_ = function(el) {
  */
 goog.dom.forms.getSelectMultiple_ = function(el) {
   var values = [];
-  for (var option, i = 0; option = el.options[i]; i++) {
+  for (var option, i = 0;
+       option = /** @type {!HTMLSelectElement} */ (el).options[i]; i++) {
     if (option.selected) {
       values.push(option.value);
     }
@@ -329,20 +416,23 @@ goog.dom.forms.getSelectMultiple_ = function(el) {
  *     an array for setting the value of select multiple elements.
  */
 goog.dom.forms.setValue = function(el, opt_value) {
-  var type = el.type;
+  var type = /** @type {!HTMLInputElement} */ (el).type;
   if (goog.isDef(type)) {
     switch (type.toLowerCase()) {
-      case 'checkbox':
-      case 'radio':
-        goog.dom.forms.setInputChecked_(el,
+      case goog.dom.InputType.CHECKBOX:
+      case goog.dom.InputType.RADIO:
+        goog.dom.forms.setInputChecked_(
+            el,
             /** @type {string} */ (opt_value));
         break;
-      case 'select-one':
-        goog.dom.forms.setSelectSingle_(el,
+      case goog.dom.InputType.SELECT_ONE:
+        goog.dom.forms.setSelectSingle_(
+            el,
             /** @type {string} */ (opt_value));
         break;
-      case 'select-multiple':
-        goog.dom.forms.setSelectMultiple_(el,
+      case goog.dom.InputType.SELECT_MULTIPLE:
+        goog.dom.forms.setSelectMultiple_(
+            el,
             /** @type {Array<string>} */ (opt_value));
         break;
       default:
@@ -363,7 +453,7 @@ goog.dom.forms.setValue = function(el, opt_value) {
  * @private
  */
 goog.dom.forms.setInputChecked_ = function(el, opt_value) {
-  el.checked = opt_value ? 'checked' : null;
+  el.checked = opt_value;
 };
 
 
@@ -377,7 +467,8 @@ goog.dom.forms.setSelectSingle_ = function(el, opt_value) {
   // unset any prior selections
   el.selectedIndex = -1;
   if (goog.isString(opt_value)) {
-    for (var option, i = 0; option = el.options[i]; i++) {
+    for (var option, i = 0;
+         option = /** @type {!HTMLSelectElement} */ (el).options[i]; i++) {
       if (option.value == opt_value) {
         option.selected = true;
         break;
@@ -399,7 +490,8 @@ goog.dom.forms.setSelectMultiple_ = function(el, opt_value) {
   if (goog.isString(opt_value)) {
     opt_value = [opt_value];
   }
-  for (var option, i = 0; option = el.options[i]; i++) {
+  for (var option, i = 0;
+       option = /** @type {!HTMLSelectElement} */ (el).options[i]; i++) {
     // we have to reset the other options to false for select-multiple
     option.selected = false;
     if (opt_value) {

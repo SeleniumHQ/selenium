@@ -68,8 +68,8 @@ goog.ds.Expr = function(opt_expr) {
  *   processing.
  * @private
  */
-goog.ds.Expr.prototype.setSource_ = function(expr, opt_parts,
-    opt_childExpr, opt_prevExpr) {
+goog.ds.Expr.prototype.setSource_ = function(
+    expr, opt_parts, opt_childExpr, opt_prevExpr) {
   this.src_ = expr;
 
   if (!opt_childExpr && !opt_prevExpr) {
@@ -109,16 +109,16 @@ goog.ds.Expr.prototype.setSource_ = function(expr, opt_parts,
     this.rootExpr_ = this;
     this.isAbsolute_ = goog.string.startsWith(expr, '$');
   } else {
-    this.rootExpr_ = goog.ds.Expr.createInternal_(this.root_, null,
-        this, null);
+    this.rootExpr_ = goog.ds.Expr.createInternal_(this.root_, null, this, null);
     this.isAbsolute_ = this.rootExpr_.isAbsolute_;
     this.root_ = this.rootExpr_.root_;
   }
 
   if (this.size_ == 1 && !this.isAbsolute_) {
     // Check whether expression maps to current node, for convenience
-    this.isCurrent_ = (expr == goog.ds.Expr.String_.CURRENT_NODE_EXPR ||
-        expr == goog.ds.Expr.String_.EMPTY_EXPR);
+    this.isCurrent_ =
+        (expr == goog.ds.Expr.String_.CURRENT_NODE_EXPR ||
+         expr == goog.ds.Expr.String_.EMPTY_EXPR);
 
     // Whether this expression is just an attribute (i.e. '@foo')
     this.isJustAttribute_ =
@@ -157,8 +157,8 @@ goog.ds.Expr.prototype.getLast = function() {
 goog.ds.Expr.prototype.getParent = function() {
   if (!this.parentExprSet_) {
     if (this.size_ > 1) {
-      this.parentExpr_ = goog.ds.Expr.createInternal_(null,
-          this.parts_.slice(0, this.parts_.length - 1), this, null);
+      this.parentExpr_ = goog.ds.Expr.createInternal_(
+          null, this.parts_.slice(0, this.parts_.length - 1), this, null);
     }
     this.parentExprSet_ = true;
   }
@@ -173,8 +173,8 @@ goog.ds.Expr.prototype.getParent = function() {
 goog.ds.Expr.prototype.getNext = function() {
   if (!this.nextExprSet_) {
     if (this.size_ > 1) {
-      this.nextExpr_ = goog.ds.Expr.createInternal_(null, this.parts_.slice(1),
-          null, this);
+      this.nextExpr_ =
+          goog.ds.Expr.createInternal_(null, this.parts_.slice(1), null, this);
     }
     this.nextExprSet_ = true;
   }
@@ -190,13 +190,15 @@ goog.ds.Expr.prototype.getNext = function() {
  * @param {goog.ds.DataNode=} opt_ds Optional datasource to evaluate against.
  *     If not provided, evaluates against DataManager global root.
  * @return {*} Value of the node, or null if doesn't exist.
+ * @suppress {missingRequire} Cannot depend on goog.ds.DataManager because
+ *     it creates a circular dependency.
  */
 goog.ds.Expr.prototype.getValue = function(opt_ds) {
   if (opt_ds == null) {
     opt_ds = goog.ds.DataManager.getInstance();
   } else if (this.isAbsolute_) {
     opt_ds = opt_ds.getDataRoot ? opt_ds.getDataRoot() :
-        goog.ds.DataManager.getInstance();
+                                  goog.ds.DataManager.getInstance();
   }
 
   if (this.isCount_) {
@@ -230,8 +232,8 @@ goog.ds.Expr.prototype.getValue = function(opt_ds) {
  * @return {goog.ds.DataNodeList} Matching nodes.
  */
 goog.ds.Expr.prototype.getNodes = function(opt_ds, opt_canCreate) {
-  return /** @type {goog.ds.DataNodeList} */(this.getNodes_(opt_ds,
-      false, opt_canCreate));
+  return /** @type {goog.ds.DataNodeList} */ (
+      this.getNodes_(opt_ds, false, opt_canCreate));
 };
 
 
@@ -245,8 +247,8 @@ goog.ds.Expr.prototype.getNodes = function(opt_ds, opt_canCreate) {
  * @return {goog.ds.DataNode} Matching nodes, or null if doesn't exist.
  */
 goog.ds.Expr.prototype.getNode = function(opt_ds, opt_canCreate) {
-  return /** @type {goog.ds.DataNode} */(this.getNodes_(opt_ds,
-      true, opt_canCreate));
+  return /** @type {goog.ds.DataNode} */ (
+      this.getNodes_(opt_ds, true, opt_canCreate));
 };
 
 
@@ -262,25 +264,26 @@ goog.ds.Expr.prototype.getNode = function(opt_ds, opt_canCreate) {
  * @return {goog.ds.DataNode|goog.ds.DataNodeList} Matching node or nodes,
  *     depending on value of opt_selectOne.
  * @private
+ * @suppress {missingRequire} Cannot depend on goog.ds.DataManager because
+ *     it creates a circular dependency.
  */
-goog.ds.Expr.prototype.getNodes_ = function(opt_ds, opt_selectOne,
-    opt_canCreate) {
+goog.ds.Expr.prototype.getNodes_ = function(
+    opt_ds, opt_selectOne, opt_canCreate) {
   if (opt_ds == null) {
     opt_ds = goog.ds.DataManager.getInstance();
   } else if (this.isAbsolute_) {
     opt_ds = opt_ds.getDataRoot ? opt_ds.getDataRoot() :
-        goog.ds.DataManager.getInstance();
+                                  goog.ds.DataManager.getInstance();
   }
 
   if (this.size_ == 0 && opt_selectOne) {
-      return opt_ds;
+    return opt_ds;
   } else if (this.size_ == 0 && !opt_selectOne) {
     return new goog.ds.BasicNodeList([opt_ds]);
   } else if (this.size_ == 1) {
     if (opt_selectOne) {
       return opt_ds.getChildNode(this.root_, opt_canCreate);
-    }
-    else {
+    } else {
       var possibleListChild = opt_ds.getChildNode(this.root_);
       if (possibleListChild && possibleListChild.isList()) {
         return possibleListChild.getChildNodes();
@@ -446,8 +449,8 @@ goog.ds.Expr.create = function(expr) {
  * @return {goog.ds.Expr} The expression object.
  * @private
  */
-goog.ds.Expr.createInternal_ = function(opt_expr, opt_parts, opt_childExpr,
-    opt_prevExpr) {
+goog.ds.Expr.createInternal_ = function(
+    opt_expr, opt_parts, opt_childExpr, opt_prevExpr) {
   var expr = opt_expr || opt_parts.join('/');
   var result = goog.ds.Expr.cache_[expr];
 
@@ -497,8 +500,8 @@ goog.ds.Expr.String_ = {
 /**
  * The current node
  */
-goog.ds.Expr.CURRENT = goog.ds.Expr.create(
-    goog.ds.Expr.String_.CURRENT_NODE_EXPR);
+goog.ds.Expr.CURRENT =
+    goog.ds.Expr.create(goog.ds.Expr.String_.CURRENT_NODE_EXPR);
 
 
 /**

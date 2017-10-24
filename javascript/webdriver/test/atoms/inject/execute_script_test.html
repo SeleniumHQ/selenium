@@ -50,15 +50,9 @@ limitations under the License.
       assertEquals("there", getValue(webdriver.atoms.inject.executeScript(func, [], win)));
     }
 
-    function testExecuteScriptWithUnexistingWindow() {
+    function testExecuteScriptWithNullWindow() {
       var func = function () {return document.getElementById('bou').value;};
-      var win = getValue(webdriver.atoms.inject.frame.findFrameByIdOrName("bou"));
-      try {
-        webdriver.atoms.inject.executeScript(func, [], win);
-        fail();
-      } catch (e) {
-        // expected
-      }
+      assertEquals("here", getValue(webdriver.atoms.inject.executeScript(func, [], null)));
     }
 
     function testExecuteScriptWithoutWindow() {

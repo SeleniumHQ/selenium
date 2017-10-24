@@ -1,0 +1,7 @@
+prebuilt_dotnet_library(
+  name = 'json',
+  assembly = 'Newtonsoft.Json.dll',
+  visibility = [
+	'//dotnet/src/webdriver:webdriver'
+  ]
+)

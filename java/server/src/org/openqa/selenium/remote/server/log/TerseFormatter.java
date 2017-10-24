@@ -1,20 +1,19 @@
-/*
-Copyright 2012 Selenium committers
-Copyright 2012 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
-
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium.remote.server.log;
 
@@ -40,6 +39,12 @@ public class TerseFormatter extends Formatter {
    */
   private static final String SUFFIX = " - ";
 
+  /**
+   * Line separator string.  This is the value of the line.separator
+   * property at the moment that the TerseFormatter was created.
+   */
+  private final String lineSeparator = System.getProperty("line.separator");
+
   /*
    * DGF - These have to be compile time constants to be used with switch
    */
@@ -52,21 +57,18 @@ public class TerseFormatter extends Formatter {
    * Buffer for formatting messages. We will reuse this buffer in order to reduce memory
    * allocations.
    */
-  private final StringBuffer buffer;
+  private final StringBuilder buffer;
   private SimpleDateFormat timestampFormatter;
 
-  private boolean longForm;
-
-  public TerseFormatter(boolean longForm) {
-    buffer = new StringBuffer();
+  public TerseFormatter() {
+    buffer = new StringBuilder();
     buffer.append(PREFIX);
     timestampFormatter = new SimpleDateFormat("HH:mm:ss.SSS");
-    this.longForm = longForm;
   }
 
   /**
    * Format the given log record and return the formatted string.
-   * 
+   *
    * @param record the log record to be formatted.
    * @return a formatted log record
    */
@@ -76,14 +78,8 @@ public class TerseFormatter extends Formatter {
     buffer.append(timestampFormatter.format(new Date(record.getMillis())));
     buffer.append(' ');
     buffer.append(levelNumberToCommonsLevelName(record.getLevel()));
-    if (longForm) {
-      buffer.append(" [");
-      buffer.append(record.getThreadID());
-      buffer.append("] ");
-      buffer.append(record.getLoggerName());
-    }
     buffer.append(SUFFIX);
-    buffer.append(formatMessage(record)).append('\n');
+    buffer.append(formatMessage(record)).append(lineSeparator);
     if (record.getThrown() != null) {
       final StringWriter trace = new StringWriter();
       record.getThrown().printStackTrace(new PrintWriter(trace));

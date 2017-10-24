@@ -1,2 +1,0 @@
-java_library(name = "commons-el",
-  deps = [ "commons-el-1.0.jar" ])

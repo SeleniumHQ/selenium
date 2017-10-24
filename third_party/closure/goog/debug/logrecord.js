@@ -35,8 +35,8 @@ goog.provide('goog.debug.LogRecord');
  * @param {number=} opt_sequenceNumber Sequence number of this log record. This
  *     should only be passed in when restoring a log record from persistence.
  */
-goog.debug.LogRecord = function(level, msg, loggerName,
-    opt_time, opt_sequenceNumber) {
+goog.debug.LogRecord = function(
+    level, msg, loggerName, opt_time, opt_sequenceNumber) {
   this.reset(level, msg, loggerName, opt_time, opt_sequenceNumber);
 };
 
@@ -91,14 +91,6 @@ goog.debug.LogRecord.prototype.exception_ = null;
 
 
 /**
- * Exception text associated with the record
- * @type {?string}
- * @private
- */
-goog.debug.LogRecord.prototype.exceptionText_ = null;
-
-
-/**
  * @define {boolean} Whether to enable log sequence numbers.
  */
 goog.define('goog.debug.LogRecord.ENABLE_SEQUENCE_NUMBERS', true);
@@ -123,11 +115,12 @@ goog.debug.LogRecord.nextSequenceNumber_ = 0;
  * @param {number=} opt_sequenceNumber Sequence number of this log record. This
  *     should only be passed in when restoring a log record from persistence.
  */
-goog.debug.LogRecord.prototype.reset = function(level, msg, loggerName,
-    opt_time, opt_sequenceNumber) {
+goog.debug.LogRecord.prototype.reset = function(
+    level, msg, loggerName, opt_time, opt_sequenceNumber) {
   if (goog.debug.LogRecord.ENABLE_SEQUENCE_NUMBERS) {
     this.sequenceNumber_ = typeof opt_sequenceNumber == 'number' ?
-        opt_sequenceNumber : goog.debug.LogRecord.nextSequenceNumber_++;
+        opt_sequenceNumber :
+        goog.debug.LogRecord.nextSequenceNumber_++;
   }
 
   this.time_ = opt_time || goog.now();
@@ -135,7 +128,6 @@ goog.debug.LogRecord.prototype.reset = function(level, msg, loggerName,
   this.msg_ = msg;
   this.loggerName_ = loggerName;
   delete this.exception_;
-  delete this.exceptionText_;
 };
 
 
@@ -166,26 +158,6 @@ goog.debug.LogRecord.prototype.getException = function() {
  */
 goog.debug.LogRecord.prototype.setException = function(exception) {
   this.exception_ = exception;
-};
-
-
-/**
- * Get the exception text that is part of the log record.
- *
- * @return {?string} Exception text.
- */
-goog.debug.LogRecord.prototype.getExceptionText = function() {
-  return this.exceptionText_;
-};
-
-
-/**
- * Set the exception text that is part of the log record.
- *
- * @param {string} text The exception text.
- */
-goog.debug.LogRecord.prototype.setExceptionText = function(text) {
-  this.exceptionText_ = text;
 };
 
 
@@ -268,4 +240,3 @@ goog.debug.LogRecord.prototype.setMillis = function(time) {
 goog.debug.LogRecord.prototype.getSequenceNumber = function() {
   return this.sequenceNumber_;
 };
-

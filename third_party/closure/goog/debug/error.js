@@ -46,6 +46,15 @@ goog.debug.Error = function(opt_msg) {
   if (opt_msg) {
     this.message = String(opt_msg);
   }
+
+  /**
+   * Whether to report this error to the server. Setting this to false will
+   * cause the error reporter to not report the error back to the server,
+   * which can be useful if the client knows that the error has already been
+   * logged on the server.
+   * @type {boolean}
+   */
+  this.reportErrorToServer = true;
 };
 goog.inherits(goog.debug.Error, Error);
 

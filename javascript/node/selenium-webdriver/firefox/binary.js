@@ -1,65 +1,44 @@
-// Copyright 2014 Selenium committers
-// Copyright 2014 Software Freedom Conservancy
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-//     You may obtain a copy of the License at
+//   http://www.apache.org/licenses/LICENSE-2.0
 //
-// http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 /**
  * @fileoverview Manages Firefox binaries. This module is considered internal;
- * users should use {@link selenium-webdriver/firefox}.
+ * users should use {@link ./firefox selenium-webdriver/firefox}.
  */
 
 'use strict';
 
-var child = require('child_process'),
-    fs = require('fs'),
-    path = require('path'),
-    util = require('util');
+const path = require('path');
 
-var Serializable = require('..').Serializable,
-    promise = require('..').promise,
-    _base = require('../_base'),
-    io = require('../io'),
-    exec = require('../io/exec');
-
-
-
-/** @const */
-var NO_FOCUS_LIB_X86 = _base.isDevMode() ?
-    path.join(__dirname, '../../../../cpp/prebuilt/i386/libnoblur.so') :
-    path.join(__dirname, '../lib/firefox/i386/libnoblur.so') ;
-
-/** @const */
-var NO_FOCUS_LIB_AMD64 = _base.isDevMode() ?
-    path.join(__dirname, '../../../../cpp/prebuilt/amd64/libnoblur64.so') :
-    path.join(__dirname, '../lib/firefox/amd64/libnoblur64.so') ;
-
-var X_IGNORE_NO_FOCUS_LIB = 'x_ignore_nofocus.so';
-
-var foundBinary = null;
+const io = require('../io');
+const exec = require('../io/exec');
 
 
 /**
- * Checks the default Windows Firefox locations in Program Files.
- * @return {!promise.Promise.<?string>} A promise for the located executable.
- *     The promise will resolve to {@code null} if Fireox was not found.
+ * @param {string} file Path to the file to find, relative to the program files
+ *     root.
+ * @return {!Promise<?string>} A promise for the located executable.
+ *     The promise will resolve to {@code null} if Firefox was not found.
  */
-function defaultWindowsLocation() {
-  var files = [
+function findInProgramFiles(file) {
+  let files = [
     process.env['PROGRAMFILES'] || 'C:\\Program Files',
     process.env['PROGRAMFILES(X86)'] || 'C:\\Program Files (x86)'
-  ].map(function(prefix) {
-    return path.join(prefix, 'Mozilla Firefox\\firefox.exe');
-  });
+  ].map(prefix => path.join(prefix, file));
   return io.exists(files[0]).then(function(exists) {
     return exists ? files[0] : io.exists(files[1]).then(function(exists) {
       return exists ? files[1] : null;
@@ -69,219 +48,110 @@ function defaultWindowsLocation() {
 
 
 /**
- * Locates the Firefox binary for the current system.
- * @return {!promise.Promise.<string>} A promise for the located binary. The
- *     promise will be rejected if Firefox cannot be located.
- */
-function findFirefox() {
-  if (foundBinary) {
-    return foundBinary;
-  }
-
-  if (process.platform === 'darwin') {
-    var osxExe =  '/Applications/Firefox.app/Contents/MacOS/firefox-bin';
-    foundBinary = io.exists(osxExe).then(function(exists) {
-      return exists ? osxExe : null;
-    });
-  } else if (process.platform === 'win32') {
-    foundBinary = defaultWindowsLocation();
-  } else {
-    foundBinary = promise.fulfilled(io.findInPath('firefox'));
-  }
-
-  return foundBinary = foundBinary.then(function(found) {
-    if (found) {
-      return found;
-    }
-    throw Error('Could not locate Firefox on the current system');
-  });
-}
-
-
-/**
- * Copies the no focus libs into the given profile directory.
- * @param {string} profileDir Path to the profile directory to install into.
- * @return {!promise.Promise.<string>} The LD_LIBRARY_PATH prefix string to use
- *     for the installed libs.
- */
-function installNoFocusLibs(profileDir) {
-  var x86 = path.join(profileDir, 'x86');
-  var amd64 = path.join(profileDir, 'amd64');
-
-  return mkdir(x86)
-      .then(copyLib.bind(null, NO_FOCUS_LIB_X86, x86))
-      .then(mkdir.bind(null, amd64))
-      .then(copyLib.bind(null, NO_FOCUS_LIB_AMD64, amd64))
-      .then(function() {
-        return x86 + ':' + amd64;
-      });
-
-  function mkdir(dir) {
-    return io.exists(dir).then(function(exists) {
-      if (!exists) {
-        return promise.checkedNodeCall(fs.mkdir, dir);
-      }
-    });
-  }
-
-  function copyLib(src, dir) {
-    return io.copy(src, path.join(dir, X_IGNORE_NO_FOCUS_LIB));
-  }
-}
-
-
-/**
- * Silently runs Firefox to install a profile directory (which is assumed to be
- * defined in the given environment variables).
- * @param {string} firefox Path to the Firefox executable.
- * @param {!Object.<string, string>} env The environment variables to use.
- * @return {!promise.Promise} A promise for when the profile has been installed.
- */
-function installProfile(firefox, env) {
-  var installed = promise.defer();
-  child.exec(firefox + ' -silent', {env: env, timeout: 180 * 1000},
-      function(err) {
-        if (err) {
-          installed.reject(new Error(
-              'Failed to install Firefox profile: ' + err));
-          return;
-        }
-        installed.fulfill();
-      });
-  return installed.promise;
-}
-
-
-/**
- * Manages a Firefox subprocess configured for use with WebDriver.
+ * Provides methods for locating the executable for a Firefox release channel
+ * on Windows and MacOS. For other systems (i.e. Linux), Firefox will always
+ * be located on the system PATH.
  *
- * @param {string=} opt_exe Path to the Firefox binary to use. If not
- *     specified, will attempt to locate Firefox on the current system.
- * @constructor
- * @extends {Serializable.<string>}
+ * @final
  */
-var Binary = function(opt_exe) {
-  Serializable.call(this);
-
-  /** @private {(string|undefined)} */
-  this.exe_ = opt_exe;
-
-  /** @private {!Array.<string>} */
-  this.args_ = [];
-
-  /** @private {!Object.<string, string>} */
-  this.env_ = {};
-  Object.keys(process.env).forEach(function(key) {
-    this.env_[key] = process.env[key];
-  }.bind(this));
-  this.env_['MOZ_CRASHREPORTER_DISABLE'] = '1';
-  this.env_['MOZ_NO_REMOTE'] = '1';
-  this.env_['NO_EM_RESTART'] = '1';
-
-  /** @private {promise.Promise.<!exec.Command>} */
-  this.command_ = null;
-};
-util.inherits(Binary, Serializable);
-
-
-/**
- * Add arguments to the command line used to start Firefox.
- * @param {...(string|!Array.<string>)} var_args Either the arguments to add as
- *     varargs, or the arguments as an array.
- */
-Binary.prototype.addArguments = function(var_args) {
-  for (var i = 0; i < arguments.length; i++) {
-    if (util.isArray(arguments[i])) {
-      this.args_ = this.args_.concat(arguments[i]);
-    } else {
-      this.args_.push(arguments[i]);
-    }
-  }
-};
-
-
-/**
- * Launches Firefox and eturns a promise that will be fulfilled when the process
- * terminates.
- * @param {string} profile Path to the profile directory to use.
- * @return {!promise.Promise.<!exec.Result>} A promise for the process result.
- * @throws {Error} If this instance has already been started.
- */
-Binary.prototype.launch = function(profile) {
-  if (this.command_) {
-    throw Error('Firefox is already running');
+class Channel {
+  /**
+   * @param {string} darwin The path to check when running on MacOS.
+   * @param {string} win32 The path to check when running on Windows.
+   */
+  constructor(darwin, win32) {
+    /** @private @const */ this.darwin_ = darwin;
+    /** @private @const */ this.win32_ = win32;
+    /** @private {Promise<string>} */
+    this.found_ = null;
   }
 
-  var env = {};
-  Object.keys(this.env_).forEach(function(key) {
-    env[key] = this.env_[key];
-  }.bind(this));
-  env['XRE_PROFILE_PATH'] = profile;
-
-  var args = ['-foreground'].concat(this.args_);
-
-  var self = this;
-
-  this.command_ = promise.when(this.exe_ || findFirefox(), function(firefox) {
-    if (process.platform === 'win32' || process.platform === 'darwin') {
-      return firefox;
+  /**
+   * Attempts to locate the Firefox executable for this release channel. This
+   * will first check the default installation location for the channel before
+   * checking the user's PATH. The returned promise will be rejected if Firefox
+   * can not be found.
+   *
+   * @return {!Promise<string>} A promise for the location of the located
+   *     Firefox executable.
+   */
+  locate() {
+    if (this.found_) {
+      return this.found_;
     }
-    return installNoFocusLibs(profile).then(function(ldLibraryPath) {
-      env['LD_LIBRARY_PATH'] = ldLibraryPath + ':' + env['LD_LIBRARY_PATH'];
-      env['LD_PRELOAD'] = X_IGNORE_NO_FOCUS_LIB;
-      return firefox;
-    });
-  }).then(function(firefox) {
-    var install = exec(firefox, {args: ['-silent'], env: env});
-    return install.result().then(function(result) {
-      if (result.code !== 0) {
-        throw Error(
-            'Failed to install profile; firefox terminated with ' + result);
+
+    let found;
+    switch (process.platform) {
+      case 'darwin':
+        found = io.exists(this.darwin_)
+            .then(exists => exists ? this.darwin_ : io.findInPath('firefox'));
+        break;
+
+      case 'win32':
+        found = findInProgramFiles(this.win32_)
+            .then(found => found || io.findInPath('firefox.exe'));
+        break;
+
+      default:
+        found = Promise.resolve(io.findInPath('firefox'));
+        break;
+    }
+
+    this.found_ = found.then(found => {
+      if (found) {
+        // TODO: verify version info.
+        return found;
       }
-
-      return exec(firefox, {args: args, env: env});
+      throw Error('Could not locate Firefox on the current system');
     });
-  });
-
-  return this.command_.then(function() {
-    // Don't return the actual command handle, just a promise to signal it has
-    // been started.
-  });
-};
-
-
-/**
- * Kills the managed Firefox process.
- * @return {!promise.Promise} A promise for when the process has terminated.
- */
-Binary.prototype.kill = function() {
-  if (!this.command_) {
-    return promise.defer();  // Not running.
+    return this.found_;
   }
-  return this.command_.then(function(command) {
-    command.kill();
-    return command.result();
-  });
-};
+}
 
 
 /**
- * Returns a promise for the wire representation of this binary. Note: the
- * FirefoxDriver only supports passing the path to the binary executable over
- * the wire; all command line arguments and environment variables will be
- * discarded.
- *
- * @return {!promise.Promise.<string>} A promise for this binary's wire
- *     representation.
- * @override
+ * Firefox's developer channel.
+ * @const
+ * @see <https://www.mozilla.org/en-US/firefox/channel/desktop/#aurora>
  */
-Binary.prototype.serialize = function() {
-  return promise.when(this.exe_ || findFirefox());
-};
+Channel.AURORA = new Channel(
+  '/Applications/FirefoxDeveloperEdition.app/Contents/MacOS/firefox-bin',
+  'Firefox Developer Edition\\firefox.exe');
+
+/**
+ * Firefox's beta channel. Note this is provided mainly for convenience as
+ * the beta channel has the same installation location as the main release
+ * channel.
+ * @const
+ * @see <https://www.mozilla.org/en-US/firefox/channel/desktop/#beta>
+ */
+Channel.BETA = new Channel(
+  '/Applications/Firefox.app/Contents/MacOS/firefox-bin',
+  'Mozilla Firefox\\firefox.exe');
+
+/**
+ * Firefox's release channel.
+ * @const
+ * @see <https://www.mozilla.org/en-US/firefox/desktop/>
+ */
+Channel.RELEASE = new Channel(
+  '/Applications/Firefox.app/Contents/MacOS/firefox-bin',
+  'Mozilla Firefox\\firefox.exe');
+
+/**
+ * Firefox's nightly release channel.
+ * @const
+ * @see <https://www.mozilla.org/en-US/firefox/channel/desktop/#nightly>
+ */
+Channel.NIGHTLY = new Channel(
+  '/Applications/FirefoxNightly.app/Contents/MacOS/firefox-bin',
+  'Nightly\\firefox.exe');
+
+
 
 
 // PUBLIC API
 
 
-exports.Binary = Binary;
+exports.Channel = Channel;
 

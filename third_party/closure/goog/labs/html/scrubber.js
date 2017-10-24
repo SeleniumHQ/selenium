@@ -54,8 +54,7 @@ goog.labs.html.scrubber.scrub = function(tagWhitelist, attrWhitelist, html) {
   return goog.labs.html.scrubber.render_(
       goog.labs.html.scrubber.balance_(
           goog.labs.html.scrubber.filter_(
-              tagWhitelist,
-              attrWhitelist,
+              tagWhitelist, attrWhitelist,
               goog.labs.html.scrubber.lex_(html))));
 };
 
@@ -69,8 +68,7 @@ goog.labs.html.scrubber.scrub = function(tagWhitelist, attrWhitelist, html) {
  */
 goog.labs.html.scrubber.balance = function(html) {
   return goog.labs.html.scrubber.render_(
-      goog.labs.html.scrubber.balance_(
-          goog.labs.html.scrubber.lex_(html)));
+      goog.labs.html.scrubber.balance_(goog.labs.html.scrubber.lex_(html)));
 };
 
 
@@ -116,9 +114,9 @@ goog.labs.html.scrubber.SINGLE_QUOTED_ATTR_VALUE_ = "(?:'[^']*'?)";
  * @private
  */
 goog.labs.html.scrubber.ATTR_VALUE_ = '=\\s*(?:' +
-    goog.labs.html.scrubber.UNQUOTED_ATTR_VALUE_ +
-    '|' + goog.labs.html.scrubber.DOUBLE_QUOTED_ATTR_VALUE_ +
-    '|' + goog.labs.html.scrubber.SINGLE_QUOTED_ATTR_VALUE_ + ')?';
+    goog.labs.html.scrubber.UNQUOTED_ATTR_VALUE_ + '|' +
+    goog.labs.html.scrubber.DOUBLE_QUOTED_ATTR_VALUE_ + '|' +
+    goog.labs.html.scrubber.SINGLE_QUOTED_ATTR_VALUE_ + ')?';
 
 
 /**
@@ -126,9 +124,9 @@ goog.labs.html.scrubber.ATTR_VALUE_ = '=\\s*(?:' +
  * if any.
  * @private
  */
-goog.labs.html.scrubber.ATTRS_ =
-    '(?:' + goog.labs.html.scrubber.ATTR_VALUE_PRECEDER_ +
-    '|' + goog.labs.html.scrubber.ATTR_VALUE_ + ')*';
+goog.labs.html.scrubber.ATTRS_ = '(?:' +
+    goog.labs.html.scrubber.ATTR_VALUE_PRECEDER_ + '|' +
+    goog.labs.html.scrubber.ATTR_VALUE_ + ')*';
 
 
 /**
@@ -176,8 +174,8 @@ goog.labs.html.scrubber.SPECIAL_ELEMENT_ = '<(?:' +
  * Regexp pattern for an HTML tag.
  * @private
  */
-goog.labs.html.scrubber.TAG_ =
-    '<[/]?[a-z]' + goog.labs.html.scrubber.TAG_NAME_CHAR_ + '*' +
+goog.labs.html.scrubber.TAG_ = '<[/]?[a-z]' +
+    goog.labs.html.scrubber.TAG_NAME_CHAR_ + '*' +
     goog.labs.html.scrubber.ATTRS_ + '>?';
 
 
@@ -205,10 +203,10 @@ goog.labs.html.scrubber.COMMENT_ =
  * @private
  */
 goog.labs.html.scrubber.HTML_TOKENS_RE_ = new RegExp(
-    '(?:' + goog.labs.html.scrubber.TEXT_NODE_ +
-    '|' + goog.labs.html.scrubber.SPECIAL_ELEMENT_ +
-    '|' + goog.labs.html.scrubber.TAG_ +
-    '|' + goog.labs.html.scrubber.COMMENT_ + ')',
+    '(?:' + goog.labs.html.scrubber.TEXT_NODE_ + '|' +
+        goog.labs.html.scrubber.SPECIAL_ELEMENT_ + '|' +
+        goog.labs.html.scrubber.TAG_ + '|' + goog.labs.html.scrubber.COMMENT_ +
+        ')',
     'ig');
 
 
@@ -219,7 +217,7 @@ goog.labs.html.scrubber.HTML_TOKENS_RE_ = new RegExp(
  */
 goog.labs.html.scrubber.TAG_RE_ = new RegExp(
     '<[/]?([a-z]' + goog.labs.html.scrubber.TAG_NAME_CHAR_ + '*)' +
-    '(' + goog.labs.html.scrubber.ATTRS_ + ')>?',
+        '(' + goog.labs.html.scrubber.ATTRS_ + ')>?',
     'i');
 
 
@@ -288,20 +286,17 @@ goog.labs.html.scrubber.filter_ = function(
       if (!isCloseTag && tag[2]) {
         var tagSpecificAttrWhitelist =
             /** @type {Object<string, goog.labs.html.AttributeRewriter>} */ (
-            goog.labs.html.scrubber.readOwnProperty_(
-                attrWhitelist, lowerCaseTagName));
+                goog.labs.html.scrubber.readOwnProperty_(
+                    attrWhitelist, lowerCaseTagName));
         if (genericAttrWhitelist || tagSpecificAttrWhitelist) {
           attrs = goog.labs.html.scrubber.filterAttrs_(
               tag[2], genericAttrWhitelist, tagSpecificAttrWhitelist);
         }
       }
       var specialContent = htmlToken.substring(tag[0].length);
-      htmlTokens[i] =
-          (tagWhitelist[lowerCaseTagName] === true) ?
-          (
-              (isCloseTag ? '</' : '<') + lowerCaseTagName + attrs + '>' +
-              specialContent
-          ) :
+      htmlTokens[i] = (tagWhitelist[lowerCaseTagName] === true) ?
+          ((isCloseTag ? '</' : '<') + lowerCaseTagName + attrs + '>' +
+           specialContent) :
           '';
     } else if (htmlToken.length > 1) {
       switch (htmlToken.charCodeAt(1)) {
@@ -339,8 +334,8 @@ goog.labs.html.scrubber.filter_ = function(
  * @return {string} a tag-body that consists only of safe attributes.
  * @private
  */
-goog.labs.html.scrubber.filterAttrs_ =
-    function(attrsText, genericAttrWhitelist, tagSpecificAttrWhitelist) {
+goog.labs.html.scrubber.filterAttrs_ = function(
+    attrsText, genericAttrWhitelist, tagSpecificAttrWhitelist) {
   var attrs = attrsText.match(goog.labs.html.scrubber.ATTRS_RE_);
   var nAttrs = attrs ? attrs.length : 0;
   var safeAttrs = '';
@@ -350,18 +345,19 @@ goog.labs.html.scrubber.filterAttrs_ =
     var name, value;
     if (eq >= 0) {
       name = goog.string.trim(attr.substr(0, eq));
-      value = goog.string.stripQuotes(
-          goog.string.trim(attr.substr(eq + 1)), '"\'');
+      value =
+          goog.string.stripQuotes(goog.string.trim(attr.substr(eq + 1)), '"\'');
     } else {
       name = value = attr;
     }
     name = name.toLowerCase();
     var rewriter = /** @type {?goog.labs.html.AttributeRewriter} */ (
         tagSpecificAttrWhitelist &&
-        goog.labs.html.scrubber.readOwnProperty_(
-            tagSpecificAttrWhitelist, name) ||
+            goog.labs.html.scrubber.readOwnProperty_(
+                tagSpecificAttrWhitelist, name) ||
         genericAttrWhitelist &&
-        goog.labs.html.scrubber.readOwnProperty_(genericAttrWhitelist, name));
+            goog.labs.html.scrubber.readOwnProperty_(
+                genericAttrWhitelist, name));
     if (rewriter) {
       var safeValue = rewriter(goog.string.unescapeEntities(value));
       if (safeValue != null) {
@@ -374,8 +370,7 @@ goog.labs.html.scrubber.filterAttrs_ =
           safeValue += ' ';
         }
         safeAttrs +=
-            ' ' + name + '="' + goog.string.htmlEscape(safeValue, false) +
-            '"';
+            ' ' + name + '="' + goog.string.htmlEscape(safeValue, false) + '"';
       }
     }
   }
@@ -479,8 +474,8 @@ goog.labs.html.scrubber.balance_ = function(htmlTokens) {
       if (nClosed) {  // ["p", "a", "b"] -> "</b></a></p>"
         // First, dump anything past the nesting limit.
         if (nOpenElements > goog.labs.html.scrubber.BALANCE_NESTING_LIMIT_) {
-          nClosed -= nOpenElements -
-              goog.labs.html.scrubber.BALANCE_NESTING_LIMIT_;
+          nClosed -=
+              nOpenElements - goog.labs.html.scrubber.BALANCE_NESTING_LIMIT_;
           nOpenElements = goog.labs.html.scrubber.BALANCE_NESTING_LIMIT_;
         }
         // Truncate to the new limit, and produce end tags.
@@ -604,8 +599,7 @@ goog.labs.html.scrubber.Scope_ = {
 
 
 /** @const @private */
-goog.labs.html.scrubber.ALL_SCOPES_ =
-    goog.labs.html.scrubber.Scope_.COMMON_ |
+goog.labs.html.scrubber.ALL_SCOPES_ = goog.labs.html.scrubber.Scope_.COMMON_ |
     goog.labs.html.scrubber.Scope_.BUTTON_ |
     goog.labs.html.scrubber.Scope_.LIST_ITEM_ |
     goog.labs.html.scrubber.Scope_.TABLE_;
@@ -622,8 +616,8 @@ goog.labs.html.scrubber.ALL_SCOPES_ =
  *               need to be closed.
  * @private
  */
-goog.labs.html.scrubber.pickElementsToClose_ =
-    function(lowerCaseTagName, isCloseTag, openElementStack) {
+goog.labs.html.scrubber.pickElementsToClose_ = function(
+    lowerCaseTagName, isCloseTag, openElementStack) {
   var nOpenElements = openElementStack.length;
   if (isCloseTag) {
     // Look for a matching close tag inside blocking scopes.
@@ -790,26 +784,27 @@ goog.labs.html.scrubber.ELEMENT_GROUPS_ = {
       goog.labs.html.scrubber.Group_.INLINE_MINUS_A_,
   'samp': goog.labs.html.scrubber.Group_.INLINE_ |
       goog.labs.html.scrubber.Group_.INLINE_MINUS_A_,
-  'script': (goog.labs.html.scrubber.Group_.BLOCK_ |
-      goog.labs.html.scrubber.Group_.INLINE_ |
-      goog.labs.html.scrubber.Group_.INLINE_MINUS_A_ |
-      goog.labs.html.scrubber.Group_.MIXED_ |
-      goog.labs.html.scrubber.Group_.TABLE_CONTENT_ |
-      goog.labs.html.scrubber.Group_.HEAD_CONTENT_ |
-      goog.labs.html.scrubber.Group_.TOP_CONTENT_ |
-      goog.labs.html.scrubber.Group_.AREA_ELEMENT_ |
-      goog.labs.html.scrubber.Group_.FORM_ELEMENT_ |
-      goog.labs.html.scrubber.Group_.LEGEND_ELEMENT_ |
-      goog.labs.html.scrubber.Group_.LI_ELEMENT_ |
-      goog.labs.html.scrubber.Group_.DL_PART_ |
-      goog.labs.html.scrubber.Group_.P_ELEMENT_ |
-      goog.labs.html.scrubber.Group_.OPTIONS_ELEMENT_ |
-      goog.labs.html.scrubber.Group_.OPTION_ELEMENT_ |
-      goog.labs.html.scrubber.Group_.PARAM_ELEMENT_ |
-      goog.labs.html.scrubber.Group_.TABLE_ELEMENT_ |
-      goog.labs.html.scrubber.Group_.TR_ELEMENT_ |
-      goog.labs.html.scrubber.Group_.TD_ELEMENT_ |
-      goog.labs.html.scrubber.Group_.COL_ELEMENT_),
+  'script':
+      (goog.labs.html.scrubber.Group_.BLOCK_ |
+       goog.labs.html.scrubber.Group_.INLINE_ |
+       goog.labs.html.scrubber.Group_.INLINE_MINUS_A_ |
+       goog.labs.html.scrubber.Group_.MIXED_ |
+       goog.labs.html.scrubber.Group_.TABLE_CONTENT_ |
+       goog.labs.html.scrubber.Group_.HEAD_CONTENT_ |
+       goog.labs.html.scrubber.Group_.TOP_CONTENT_ |
+       goog.labs.html.scrubber.Group_.AREA_ELEMENT_ |
+       goog.labs.html.scrubber.Group_.FORM_ELEMENT_ |
+       goog.labs.html.scrubber.Group_.LEGEND_ELEMENT_ |
+       goog.labs.html.scrubber.Group_.LI_ELEMENT_ |
+       goog.labs.html.scrubber.Group_.DL_PART_ |
+       goog.labs.html.scrubber.Group_.P_ELEMENT_ |
+       goog.labs.html.scrubber.Group_.OPTIONS_ELEMENT_ |
+       goog.labs.html.scrubber.Group_.OPTION_ELEMENT_ |
+       goog.labs.html.scrubber.Group_.PARAM_ELEMENT_ |
+       goog.labs.html.scrubber.Group_.TABLE_ELEMENT_ |
+       goog.labs.html.scrubber.Group_.TR_ELEMENT_ |
+       goog.labs.html.scrubber.Group_.TD_ELEMENT_ |
+       goog.labs.html.scrubber.Group_.COL_ELEMENT_),
   'select': goog.labs.html.scrubber.Group_.INLINE_,
   'small': goog.labs.html.scrubber.Group_.INLINE_ |
       goog.labs.html.scrubber.Group_.INLINE_MINUS_A_,
@@ -898,11 +893,12 @@ goog.labs.html.scrubber.ELEMENT_CONTENTS_ = {
       goog.labs.html.scrubber.Group_.INLINE_ |
       goog.labs.html.scrubber.Group_.LEGEND_ELEMENT_,
   'font': goog.labs.html.scrubber.Group_.INLINE_,
-  'form': (goog.labs.html.scrubber.Group_.BLOCK_ |
-      goog.labs.html.scrubber.Group_.INLINE_ |
-      goog.labs.html.scrubber.Group_.INLINE_MINUS_A_ |
-      goog.labs.html.scrubber.Group_.TR_ELEMENT_ |
-      goog.labs.html.scrubber.Group_.TD_ELEMENT_),
+  'form':
+      (goog.labs.html.scrubber.Group_.BLOCK_ |
+       goog.labs.html.scrubber.Group_.INLINE_ |
+       goog.labs.html.scrubber.Group_.INLINE_MINUS_A_ |
+       goog.labs.html.scrubber.Group_.TR_ELEMENT_ |
+       goog.labs.html.scrubber.Group_.TD_ELEMENT_),
   'h1': goog.labs.html.scrubber.Group_.INLINE_,
   'h2': goog.labs.html.scrubber.Group_.INLINE_,
   'h3': goog.labs.html.scrubber.Group_.INLINE_,

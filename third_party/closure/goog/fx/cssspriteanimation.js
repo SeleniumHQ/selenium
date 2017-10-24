@@ -50,11 +50,12 @@ goog.require('goog.fx.Animation');
  *    after a single loop of the images in the sprite.
  *
  * @constructor
+ * @struct
  * @extends {goog.fx.Animation}
  * @final
  */
-goog.fx.CssSpriteAnimation = function(element, size, box, time, opt_acc,
-    opt_disableLoop) {
+goog.fx.CssSpriteAnimation = function(
+    element, size, box, time, opt_acc, opt_disableLoop) {
   var start = [box.left, box.top];
   // We never draw for the end so we do not need to subtract for the size
   var end = [box.right, box.bottom];

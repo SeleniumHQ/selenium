@@ -1,5 +1,8 @@
-// Copyright 2013 Software Freedom Conservancy
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -174,6 +177,38 @@ std::wstring StringUtilities::TrimLeft(const std::wstring& input) {
 std::wstring StringUtilities::TrimRight(const std::wstring& input) {
     size_t endpos = input.find_last_not_of(WIDE_WHITESPACE);
     return (endpos == std::wstring::npos) ? L"" : input.substr(0, endpos + 1);
+}
+
+void StringUtilities::Split(const std::string& input,
+                            const std::string& delimiter,
+                            std::vector<std::string>* tokens) {
+  std::string input_copy = input;
+  while (input_copy.size() > 0) {
+    size_t delimiter_pos = input_copy.find(delimiter);
+    std::string token = input_copy.substr(0, delimiter_pos);
+    if (delimiter_pos == std::string::npos) {
+      input_copy = "";
+    } else {
+      input_copy = input_copy.substr(delimiter_pos + delimiter.size());
+    }
+    tokens->push_back(token);
+  }
+}
+
+void StringUtilities::Split(const std::wstring& input,
+                            const std::wstring& delimiter,
+                            std::vector<std::wstring>* tokens) {
+  std::wstring input_copy = input;
+  while (input_copy.size() > 0) {
+    size_t delimiter_pos = input_copy.find(delimiter);
+    std::wstring token = input_copy.substr(0, delimiter_pos);
+    if (delimiter_pos == std::wstring::npos) {
+      input_copy = L"";
+    } else {
+      input_copy = input_copy.substr(delimiter_pos + delimiter.size());
+    }
+    tokens->push_back(token);
+  }
 }
 
 } // namespace webdriver

@@ -1,8 +1,24 @@
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
 package org.openqa.selenium.logging;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -12,7 +28,7 @@ import java.util.Set;
  * of logs, such as for profiling.
  */
 class StoringLocalLogs extends LocalLogs {
-  private final Map<String, List<LogEntry>> localLogs = Maps.newHashMap();
+  private final Map<String, List<LogEntry>> localLogs = new HashMap<>();
   private final Set<String> logTypesToInclude;
 
   public StoringLocalLogs(Set<String> logTypesToInclude) {
@@ -26,11 +42,11 @@ class StoringLocalLogs extends LocalLogs {
   private Iterable<LogEntry> getLocalLogs(String logType) {
     if (localLogs.containsKey(logType)) {
       List<LogEntry> entries = localLogs.get(logType);
-      localLogs.put(logType, Lists.<LogEntry>newArrayList());
+      localLogs.put(logType, new ArrayList<>());
       return entries;
     }
 
-    return Lists.newArrayList();
+    return new ArrayList<>();
   }
 
   /**
@@ -45,7 +61,9 @@ class StoringLocalLogs extends LocalLogs {
     }
 
     if (!localLogs.containsKey(logType)) {
-      localLogs.put(logType, Lists.newArrayList(entry));
+      List<LogEntry> entries = new ArrayList<>();
+      entries.add(entry);
+      localLogs.put(logType, entries);
     } else {
       localLogs.get(logType).add(entry);
     }

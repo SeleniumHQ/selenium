@@ -78,9 +78,7 @@ goog.structs.TreeNode.prototype.clone = function() {
  */
 goog.structs.TreeNode.prototype.deepClone = function() {
   var clone = this.clone();
-  this.forEachChild(function(child) {
-    clone.addChild(child.deepClone());
-  });
+  this.forEachChild(function(child) { clone.addChild(child.deepClone()); });
   return clone;
 };
 
@@ -309,16 +307,18 @@ goog.structs.TreeNode.prototype.forEachChild = function(f, opt_this) {
 
 /**
  * Traverses all child nodes recursively in preorder.
- * @param {function(!goog.structs.TreeNode<KEY, VALUE>)} f Callback function.
- *     It takes the node as argument.
- * @param {Object=} opt_this The object to be used as the value of {@code this}
+ * @param {function(this:THIS, !goog.structs.TreeNode<KEY, VALUE>)} f Callback
+ *     function.  It takes the node as argument.
+ * @param {THIS=} opt_this The object to be used as the value of {@code this}
  *     within {@code f}.
+ * @template THIS
  */
 goog.structs.TreeNode.prototype.forEachDescendant = function(f, opt_this) {
-  goog.array.forEach(this.getChildren(), function(child) {
-    f.call(opt_this, child);
-    child.forEachDescendant(f, opt_this);
-  });
+  var children = this.getChildren();
+  for (var i = 0; i < children.length; i++) {
+    f.call(opt_this, children[i]);
+    children[i].forEachDescendant(f, opt_this);
+  }
 };
 
 
@@ -335,9 +335,10 @@ goog.structs.TreeNode.prototype.forEachDescendant = function(f, opt_this) {
  */
 goog.structs.TreeNode.prototype.traverse = function(f, opt_this) {
   if (f.call(opt_this, this) !== false) {
-    goog.array.forEach(this.getChildren(), function(child) {
-      child.traverse(f, opt_this);
-    });
+    var children = this.getChildren();
+    for (var i = 0; i < children.length; i++) {
+      children[i].traverse(f, opt_this);
+    }
   }
 };
 
@@ -386,8 +387,8 @@ goog.structs.TreeNode.prototype.addChildAt = function(child, index) {
  *     detached from its parent.
  */
 goog.structs.TreeNode.prototype.replaceChildAt = function(newChild, index) {
-  goog.asserts.assert(!newChild.getParent(),
-      'newChild must not have parent node');
+  goog.asserts.assert(
+      !newChild.getParent(), 'newChild must not have parent node');
   var children = this.getChildren();
   var oldChild = children[index];
   goog.asserts.assert(oldChild, 'Invalid child or child index is given.');
@@ -408,8 +409,8 @@ goog.structs.TreeNode.prototype.replaceChildAt = function(newChild, index) {
  *     detached from its parent.
  */
 goog.structs.TreeNode.prototype.replaceChild = function(newChild, oldChild) {
-  return this.replaceChildAt(newChild,
-      goog.array.indexOf(this.getChildren(), oldChild));
+  return this.replaceChildAt(
+      newChild, goog.array.indexOf(this.getChildren(), oldChild));
 };
 
 
@@ -424,7 +425,7 @@ goog.structs.TreeNode.prototype.removeChildAt = function(index) {
     child.setParent(null);
     goog.array.removeAt(this.children_, index);
     if (this.children_.length == 0) {
-      delete this.children_;
+      this.children_ = null;
     }
     return child;
   }
@@ -438,7 +439,8 @@ goog.structs.TreeNode.prototype.removeChildAt = function(index) {
  * @return {goog.structs.TreeNode<KEY, VALUE>} The removed node if any.
  */
 goog.structs.TreeNode.prototype.removeChild = function(child) {
-  return this.removeChildAt(goog.array.indexOf(this.getChildren(), child));
+  return child &&
+      this.removeChildAt(goog.array.indexOf(this.getChildren(), child));
 };
 
 
@@ -447,9 +449,9 @@ goog.structs.TreeNode.prototype.removeChild = function(child) {
  */
 goog.structs.TreeNode.prototype.removeChildren = function() {
   if (this.children_) {
-    goog.array.forEach(this.children_, function(child) {
-      child.setParent(null);
-    });
+    for (var i = 0; i < this.children_.length; i++) {
+      this.children_[i].setParent(null);
+    }
+    this.children_ = null;
   }
-  delete this.children_;
 };

@@ -20,6 +20,7 @@
 goog.provide('goog.format.HtmlPrettyPrinter');
 goog.provide('goog.format.HtmlPrettyPrinter.Buffer');
 
+goog.require('goog.dom.TagName');
 goog.require('goog.object');
 goog.require('goog.string.StringBuffer');
 
@@ -40,15 +41,14 @@ goog.format.HtmlPrettyPrinter = function(opt_timeOutMillis) {
    * @type {number}
    * @private
    */
-  this.timeOutMillis_ = opt_timeOutMillis && opt_timeOutMillis > 0 ?
-      opt_timeOutMillis : 0;
+  this.timeOutMillis_ =
+      opt_timeOutMillis && opt_timeOutMillis > 0 ? opt_timeOutMillis : 0;
 };
 
 
 /**
  * Singleton.
- * @type {goog.format.HtmlPrettyPrinter?}
- * @private
+ * @private {goog.format.HtmlPrettyPrinter?}
  */
 goog.format.HtmlPrettyPrinter.instance_ = null;
 
@@ -81,23 +81,21 @@ goog.format.HtmlPrettyPrinter.format = function(html) {
  * List of patterns used to tokenize HTML for pretty printing. Cache
  * subexpression for tag name.
  * comment|meta-tag|tag|text|other-less-than-characters
- * @type {RegExp}
- * @private
+ * @private {!RegExp}
+ * @const
  */
 goog.format.HtmlPrettyPrinter.TOKEN_REGEX_ =
-    /(?:<!--.*?-->|<!.*?>|<(\/?)(\w+)[^>]*>|[^<]+|<)/g;
+    /(?:<!--.*?-->|<!.*?>|<(\/?)(\w+)[^<>]*>|[^<]+|<)/g;
 
 
 /**
  * Tags whose contents we don't want pretty printed.
- * @type {Object}
- * @private
+ * @private {!Object}
+ * @const
  */
 goog.format.HtmlPrettyPrinter.NON_PRETTY_PRINTED_TAGS_ = goog.object.createSet(
-    'script',
-    'style',
-    'pre',
-    'xmp');
+    goog.dom.TagName.SCRIPT, goog.dom.TagName.STYLE, goog.dom.TagName.PRE,
+    'XMP');
 
 
 /**
@@ -105,86 +103,47 @@ goog.format.HtmlPrettyPrinter.NON_PRETTY_PRINTED_TAGS_ = goog.object.createSet(
  * pretty printing. Tags drawn mostly from HTML4 definitions for block and other
  * non-online tags, excepting the ones in
  * #goog.format.HtmlPrettyPrinter.NON_PRETTY_PRINTED_TAGS_.
- *
- * @type {Object}
- * @private
+ * @private {!Object}
+ * @const
  */
 goog.format.HtmlPrettyPrinter.BLOCK_TAGS_ = goog.object.createSet(
-    'address',
-    'applet',
-    'area',
-    'base',
-    'basefont',
-    'blockquote',
-    'body',
-    'caption',
-    'center',
-    'col',
-    'colgroup',
-    'dir',
-    'div',
-    'dl',
-    'fieldset',
-    'form',
-    'frame',
-    'frameset',
-    'h1',
-    'h2',
-    'h3',
-    'h4',
-    'h5',
-    'h6',
-    'head',
-    'hr',
-    'html',
-    'iframe',
-    'isindex',
-    'legend',
-    'link',
-    'menu',
-    'meta',
-    'noframes',
-    'noscript',
-    'ol',
-    'optgroup',
-    'option',
-    'p',
-    'param',
-    'table',
-    'tbody',
-    'td',
-    'tfoot',
-    'th',
-    'thead',
-    'title',
-    'tr',
-    'ul');
+    goog.dom.TagName.ADDRESS, goog.dom.TagName.APPLET, goog.dom.TagName.AREA,
+    goog.dom.TagName.BASE, goog.dom.TagName.BASEFONT,
+    goog.dom.TagName.BLOCKQUOTE, goog.dom.TagName.BODY,
+    goog.dom.TagName.CAPTION, goog.dom.TagName.CENTER, goog.dom.TagName.COL,
+    goog.dom.TagName.COLGROUP, goog.dom.TagName.DIR, goog.dom.TagName.DIV,
+    goog.dom.TagName.DL, goog.dom.TagName.FIELDSET, goog.dom.TagName.FORM,
+    goog.dom.TagName.FRAME, goog.dom.TagName.FRAMESET, goog.dom.TagName.H1,
+    goog.dom.TagName.H2, goog.dom.TagName.H3, goog.dom.TagName.H4,
+    goog.dom.TagName.H5, goog.dom.TagName.H6, goog.dom.TagName.HEAD,
+    goog.dom.TagName.HR, goog.dom.TagName.HTML, goog.dom.TagName.IFRAME,
+    goog.dom.TagName.ISINDEX, goog.dom.TagName.LEGEND, goog.dom.TagName.LINK,
+    goog.dom.TagName.MENU, goog.dom.TagName.META, goog.dom.TagName.NOFRAMES,
+    goog.dom.TagName.NOSCRIPT, goog.dom.TagName.OL, goog.dom.TagName.OPTGROUP,
+    goog.dom.TagName.OPTION, goog.dom.TagName.P, goog.dom.TagName.PARAM,
+    goog.dom.TagName.TABLE, goog.dom.TagName.TBODY, goog.dom.TagName.TD,
+    goog.dom.TagName.TFOOT, goog.dom.TagName.TH, goog.dom.TagName.THEAD,
+    goog.dom.TagName.TITLE, goog.dom.TagName.TR, goog.dom.TagName.UL);
 
 
 /**
  * Non-block tags that break flow. We insert a line break after, but not before
  * these. Tags drawn from HTML4 definitions.
- * @type {Object}
- * @private
+ * @private {!Object}
+ * @const
  */
 goog.format.HtmlPrettyPrinter.BREAKS_FLOW_TAGS_ = goog.object.createSet(
-    'br',
-    'dd',
-    'dt',
-    'br',
-    'li',
-    'noframes');
+    goog.dom.TagName.BR, goog.dom.TagName.DD, goog.dom.TagName.DT,
+    goog.dom.TagName.LI, goog.dom.TagName.NOFRAMES);
 
 
 /**
  * Empty tags. These are treated as both start and end tags.
- * @type {Object}
- * @private
+ * @private {!Object}
+ * @const
  */
 goog.format.HtmlPrettyPrinter.EMPTY_TAGS_ = goog.object.createSet(
-    'br',
-    'hr',
-    'isindex');
+    goog.dom.TagName.BR, goog.dom.TagName.HR, goog.dom.TagName.ISINDEX);
 
 
 /**
@@ -221,7 +180,7 @@ goog.format.HtmlPrettyPrinter.prototype.format = function(html) {
   // Used to verify we're making progress through our regex tokenization.
   var lastIndex = 0;
 
-  // Use this to track non-pretty-printed tags and childen.
+  // Use this to track non-pretty-printed tags and children.
   var nonPpTagStack = [];
 
   // Loop through each matched token.
@@ -234,7 +193,7 @@ goog.format.HtmlPrettyPrinter.prototype.format = function(html) {
     if (match.length == 3) {
       var tagName = match[2];
       if (tagName) {
-        tagName = tagName.toLowerCase();
+        tagName = tagName.toUpperCase();
       }
 
       // Non-pretty-printed tags?
@@ -363,14 +322,13 @@ goog.format.HtmlPrettyPrinter.Buffer.prototype.needsNewLine_ = false;
  */
 goog.format.HtmlPrettyPrinter.Buffer.prototype.pushToken = function(
     breakBefore, token, breakAfter) {
-  // If this token needs a preceeding line break, and
+  // If this token needs a preceding line break, and
   // we haven't already added a line break, and
   // this token does not start with a line break,
   // then add line break.
   // Due to FF3.0 bug with lists, we don't insert a /n
   // right before </ul>. See bug 1520665.
-  if ((this.needsNewLine_ || breakBefore) &&
-      !/^\r?\n/.test(token) &&
+  if ((this.needsNewLine_ || breakBefore) && !/^\r?\n/.test(token) &&
       !/\/ul/i.test(token)) {
     this.lineBreak();
   }

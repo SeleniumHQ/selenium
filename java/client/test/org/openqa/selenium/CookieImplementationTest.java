@@ -1,33 +1,21 @@
-/*
-Copyright 2015 Software Freedom Conservancy
-Copyright 2007-2009 Selenium committers
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
- */
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.openqa.selenium.environment.DomainHelper;
-import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.JavascriptEnabled;
-
-import java.net.URI;
-import java.util.Date;
-import java.util.Random;
-import java.util.Set;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
@@ -39,14 +27,24 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
-import static org.openqa.selenium.testing.Ignore.Driver.ALL;
-import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
-import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
-import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
-import static org.openqa.selenium.testing.Ignore.Driver.IE;
-import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
-import static org.openqa.selenium.testing.Ignore.Driver.REMOTE;
-import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
+import static org.openqa.selenium.testing.Driver.ALL;
+import static org.openqa.selenium.testing.Driver.CHROME;
+import static org.openqa.selenium.testing.Driver.FIREFOX;
+import static org.openqa.selenium.testing.Driver.IE;
+import static org.openqa.selenium.testing.Driver.PHANTOMJS;
+import static org.openqa.selenium.testing.Driver.SAFARI;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.openqa.selenium.environment.DomainHelper;
+import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.SwitchToTopAfterTest;
+
+import java.net.URI;
+import java.util.Date;
+import java.util.Random;
+import java.util.Set;
 
 public class CookieImplementationTest extends JUnit4TestBase {
 
@@ -79,7 +77,6 @@ public class CookieImplementationTest extends JUnit4TestBase {
     assertNoCookiesArePresent();
   }
 
-  @JavascriptEnabled
   @Test
   public void testShouldGetCookieByName() {
     String key = generateUniqueKey();
@@ -92,7 +89,6 @@ public class CookieImplementationTest extends JUnit4TestBase {
     assertEquals(value, cookie.getValue());
   }
 
-  @JavascriptEnabled
   @Test
   public void testShouldBeAbleToAddCookie() {
     String key = generateUniqueKey();
@@ -133,7 +129,6 @@ public class CookieImplementationTest extends JUnit4TestBase {
     assertTrue(cookies.contains(two));
   }
 
-  @JavascriptEnabled
   @Test
   public void testDeleteAllCookies() {
     addCookieOnServerSide(new Cookie("foo", "set"));
@@ -147,7 +142,6 @@ public class CookieImplementationTest extends JUnit4TestBase {
     assertNoCookiesArePresent();
   }
 
-  @JavascriptEnabled
   @Test
   public void testDeleteCookieWithName() {
     String key1 = generateUniqueKey();
@@ -203,12 +197,15 @@ public class CookieImplementationTest extends JUnit4TestBase {
     assertCookieIsPresentWithName(cookie1.getName());
     assertCookieIsPresentWithName(cookie2.getName());
 
-    driver.get(domainHelper.getUrlForFirstValidHostname("/common/simplePage.html"));
+    driver.get(domainHelper.getUrlForFirstValidHostname("/common/simpleTest.html"));
     assertCookieIsNotPresentWithName(cookie1.getName());
   }
 
-  @Ignore(value = {CHROME, PHANTOMJS, SAFARI})
+  @SwitchToTopAfterTest
   @Test
+  @Ignore(CHROME)
+  @Ignore(PHANTOMJS)
+  @Ignore(SAFARI)
   public void testGetCookiesInAFrame() {
     driver.get(domainHelper.getUrlForFirstValidHostname("/common/animals"));
     Cookie cookie1 = new Cookie.Builder("fish", "cod").path("/common/animals").build();
@@ -221,8 +218,8 @@ public class CookieImplementationTest extends JUnit4TestBase {
     assertCookieIsPresentWithName(cookie1.getName());
   }
 
-  @Ignore({CHROME})
   @Test
+  @Ignore(CHROME)
   public void testCannotGetCookiesWithPathDifferingOnlyInCase() {
     String cookieName = "fish";
     Cookie cookie = new Cookie.Builder(cookieName, "cod").path("/Common/animals").build();
@@ -245,8 +242,8 @@ public class CookieImplementationTest extends JUnit4TestBase {
     assertCookieIsNotPresentWithName(cookieName);
   }
 
-  @Ignore(value = {CHROME, HTMLUNIT, IE}, reason = "Untested browsers.")
   @Test
+  @Ignore(CHROME)
   public void testShouldBeAbleToAddToADomainWhichIsRelatedToTheCurrentDomain() {
     String cookieName = "name";
     assertCookieIsNotPresentWithName(cookieName);
@@ -258,8 +255,8 @@ public class CookieImplementationTest extends JUnit4TestBase {
     assertCookieIsPresentWithName(cookieName);
   }
 
-  @Ignore(value = {ALL})
   @Test
+  @Ignore(ALL)
   public void testsShouldNotGetCookiesRelatedToCurrentDomainWithoutLeadingPeriod() {
     String cookieName = "name";
     assertCookieIsNotPresentWithName(cookieName);
@@ -270,7 +267,6 @@ public class CookieImplementationTest extends JUnit4TestBase {
     assertCookieIsNotPresentWithName(cookieName);
   }
 
-  @Ignore({REMOTE, IE})
   @Test
   public void testShouldBeAbleToIncludeLeadingPeriodInDomainName() throws Exception {
     String cookieName = "name";
@@ -284,7 +280,6 @@ public class CookieImplementationTest extends JUnit4TestBase {
     assertCookieIsPresentWithName(cookieName);
   }
 
-  @Ignore(IE)
   @Test
   public void testShouldBeAbleToSetDomainToTheCurrentDomain() throws Exception {
     URI url = new URI(driver.getCurrentUrl());
@@ -326,7 +321,6 @@ public class CookieImplementationTest extends JUnit4TestBase {
     assertNoCookiesArePresent();
   }
 
-  @Ignore(IE)
   @Test
   public void testShouldIgnoreThePortNumberOfTheHostWhenSettingTheCookie() throws Exception {
     URI uri = new URI(driver.getCurrentUrl());
@@ -368,8 +362,6 @@ public class CookieImplementationTest extends JUnit4TestBase {
     assertEquals(addedCookie, retrievedCookie);
   }
 
-  @Ignore(value = {IE}, reason =
-      "Selenium, which use JavaScript to retrieve cookies, cannot return expiry info")
   @Test
   public void testRetainsCookieExpiry() {
     Cookie addedCookie =
@@ -384,8 +376,30 @@ public class CookieImplementationTest extends JUnit4TestBase {
     assertEquals(addedCookie.getExpiry(), retrieved.getExpiry());
   }
 
-  @Ignore(value = {IE, PHANTOMJS, SAFARI})
   @Test
+  @Ignore(IE)
+  @Ignore(PHANTOMJS)
+  @Ignore(SAFARI)
+  public void canHandleSecureCookie() {
+    driver.get(domainHelper.getSecureUrlForFirstValidHostname("animals"));
+
+    Cookie addedCookie =
+      new Cookie.Builder("fish", "cod")
+        .path("/common/animals")
+        .isSecure(true)
+        .build();
+    driver.manage().addCookie(addedCookie);
+
+    driver.navigate().refresh();
+
+    Cookie retrieved = driver.manage().getCookieNamed("fish");
+    assertNotNull(retrieved);
+  }
+
+  @Test
+  @Ignore(IE)
+  @Ignore(PHANTOMJS)
+  @Ignore(SAFARI)
   public void testRetainsCookieSecure() {
     driver.get(domainHelper.getSecureUrlForFirstValidHostname("animals"));
 
@@ -403,8 +417,25 @@ public class CookieImplementationTest extends JUnit4TestBase {
     assertTrue(retrieved.isSecure());
   }
 
-  @Ignore(value = {CHROME, FIREFOX, HTMLUNIT, IE, PHANTOMJS, SAFARI})
   @Test
+  @Ignore(SAFARI)
+  public void canHandleHttpOnlyCookie() {
+    Cookie addedCookie =
+      new Cookie.Builder("fish", "cod")
+        .path("/common/animals")
+        .isHttpOnly(true)
+        .build();
+
+    addCookieOnServerSide(addedCookie);
+
+    driver.get(domainHelper.getUrlForFirstValidHostname("animals"));
+    Cookie retrieved = driver.manage().getCookieNamed("fish");
+    assertNotNull(retrieved);
+  }
+
+  @Test
+  @Ignore(CHROME)
+  @Ignore(SAFARI)
   public void testRetainsHttpOnlyFlag() {
     Cookie addedCookie =
         new Cookie.Builder("fish", "cod")
@@ -414,6 +445,7 @@ public class CookieImplementationTest extends JUnit4TestBase {
 
     addCookieOnServerSide(addedCookie);
 
+    driver.get(domainHelper.getUrlForFirstValidHostname("animals"));
     Cookie retrieved = driver.manage().getCookieNamed("fish");
     assertNotNull(retrieved);
     assertTrue(retrieved.isHttpOnly());
@@ -427,7 +459,7 @@ public class CookieImplementationTest extends JUnit4TestBase {
 
     cookie = driver.manage().getCookieNamed("fish");
     assertNull(
-        "Cookie expired before it was set, so nothing should be returned: " + cookie, cookie);
+      "Cookie expired before it was set, so nothing should be returned: " + cookie, cookie);
   }
 
   @Test
@@ -450,8 +482,12 @@ public class CookieImplementationTest extends JUnit4TestBase {
     driver.manage().deleteCookieNamed(key);
   }
 
-  @Ignore(value = {CHROME, FIREFOX, IE, PHANTOMJS, SAFARI})
   @Test
+  @Ignore(CHROME)
+  @Ignore(FIREFOX)
+  @Ignore(IE)
+  @Ignore(PHANTOMJS)
+  @Ignore(SAFARI)
   public void testShouldDeleteOneOfTheCookiesWithTheSameName() {
     driver.get(domainHelper.getUrlForFirstValidHostname("/common/animals"));
     Cookie cookie1 = new Cookie.Builder("fish", "cod")
@@ -570,5 +606,38 @@ public class CookieImplementationTest extends JUnit4TestBase {
       url.append("&httpOnly=").append(cookie.isHttpOnly());
     }
     driver.get(url.toString());
+  }
+
+  @Test
+  public void deleteAllCookies() throws Exception {
+    assumeTrue(domainHelper.checkHasValidAlternateHostname());
+
+    Cookie cookie1 = new Cookie.Builder("fish1", "cod")
+        .domain(appServer.getHostName()).build();
+    Cookie cookie2 = new Cookie.Builder("fish2", "tune")
+        .domain(appServer.getAlternateHostName()).build();
+
+    String url1 = domainHelper.getUrlForFirstValidHostname("/common");
+    String url2 = domainHelper.getUrlForSecondValidHostname("/common");
+
+    WebDriver.Options options = driver.manage();
+
+    options.addCookie(cookie1);
+    assertCookieIsPresentWithName(cookie1.getName());
+
+    driver.get(url2);
+    options.addCookie(cookie2);
+    assertCookieIsNotPresentWithName(cookie1.getName());
+    assertCookieIsPresentWithName(cookie2.getName());
+
+    driver.get(url1);
+    assertCookieIsPresentWithName(cookie1.getName());
+    assertCookieIsNotPresentWithName(cookie2.getName());
+
+    options.deleteAllCookies();
+    assertCookieIsNotPresentWithName(cookie1.getName());
+
+    driver.get(url2);
+    assertCookieIsPresentWithName(cookie2.getName());
   }
 }

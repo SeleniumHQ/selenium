@@ -1,3 +1,191 @@
-language: java
-script: ./go clean build
-sudo: false
+dist: trusty
+sudo: required
+env:
+  global:
+    - DISPLAY=:99.0
+    - PYTEST_ADDOPTS="--verbose --instafail"
+    - FF_ESR_BINARY=$HOME/firefox-latest-esr/firefox/firefox-bin
+    - FF_NIGHTLY_BINARY=$HOME/firefox-latest-nightly/firefox/firefox-bin
+git:
+  depth: 10
+
+_bindings:
+  java: &java
+    language: java
+    jdk: oraclejdk8
+  python: &python
+    language: python
+    python: "2.7"
+  ruby: &ruby
+    language: ruby
+    rvm: 2.3.3
+    jdk: oraclejdk8
+
+_browsers:
+  firefox: &firefox-latest
+    addons:
+      firefox: latest
+  firefox-esr: &firefox-esr
+    addons:
+      firefox: latest-esr
+  firefox-nightly: &firefox-nightly
+    addons:
+      firefox: latest-nightly
+  chrome: &chrome
+    addons:
+      apt:
+        packages:
+          - google-chrome-stable
+
+matrix:
+  fast_finish: true
+  exclude:
+    - env: CHROME=1 TASK="calcdeps //javascript/atoms:atoms-chrome:run"
+      <<: *java
+      <<: *chrome
+    - env: MARIONETTE=1 TASK=//java/client/test/com/thoughtworks/selenium:firefox-rc-test:run
+      <<: *java
+      <<: *firefox-nightly
+    - env: CHROME=1 TASK=//java/client/test/com/thoughtworks/selenium:chrome-rc-test:run
+      <<: *java
+      <<: *chrome
+    - env: CHROME=1 TASK=test_chrome
+      <<: *java
+      <<: *chrome
+    - env: CHROME=1 TOXENV=py27-chrome
+      <<: *python
+      <<: *chrome
+    - env: CHROME=1 TOXENV=py36-chrome
+      <<: *python
+      <<: *chrome
+      python: 3.6
+  include:
+    - env: TASK=build
+      <<: *java
+    - env: TASK=//javascript/atoms:atoms
+      <<: *java
+    - env: TASK=//javascript/webdriver:all_js
+      <<: *java
+    - env: TASK=//javascript/ie-driver:atoms
+      <<: *java
+    - env: TASK=//javascript/chrome-driver:atoms
+      <<: *java
+    - env: TASK="//javascript/android-atoms:atoms ios_driver"
+      <<: *java
+    - env: TASK=//java/client/test/org/openqa/selenium/atoms:test:run
+      <<: *java
+    - env: CHROME=1 TASK="calcdeps //javascript/selenium-atoms:selenium-atoms-chrome:run"
+      <<: *java
+      <<: *chrome
+    - env: CHROME=1 TASK="calcdeps //javascript/selenium-core:selenium-core-chrome:run"
+      <<: *java
+      <<: *chrome
+    - env: CHROME=1 TASK="calcdeps //javascript/webdriver:webdriver-chrome:run"
+      <<: *java
+      <<: *chrome
+    - env: MARIONETTE=1 TASK="calcdeps //javascript/atoms:atoms-firefox:run"
+      <<: *java
+      <<: *firefox-latest
+    - env: MARIONETTE=1 TASK="calcdeps //javascript/webdriver:webdriver-firefox:run"
+      <<: *java
+      <<: *firefox-latest
+    - env: MARIONETTE=1 TASK="calcdeps //javascript/selenium-atoms:selenium-atoms-firefox:run"
+      <<: *java
+      <<: *firefox-latest
+    - env: MARIONETTE=1 TASK="calcdeps //javascript/selenium-core:selenium-core-firefox:run"
+      <<: *java
+      <<: *firefox-latest
+    - env: TASK=test_firefox
+      <<: *java
+      <<: *firefox-esr
+    - env: MARIONETTE=1 TASK=//java/client/test/org/openqa/selenium/firefox:marionette:run
+      <<: *java
+      <<: *firefox-nightly
+    - env: TASK=test_java_small_tests
+      <<: *java
+    - env: MARIONETTE=1 TASK=test_grid
+      <<: *java
+      <<: *firefox-nightly
+    - env: TASK=test_htmlunit
+      <<: *java
+    - env: TASK=javadocs
+      <<: *java
+    - env: TOXENV=flake8
+      <<: *python
+    - env: TOXENV=docs
+      <<: *python
+    - env: TOXENV=py27-unit
+      <<: *python
+    - env: TOXENV=py27-firefox
+      <<: *python
+      <<: *firefox-esr
+    - env: TOXENV=py27-remote
+      <<: *python
+      <<: *firefox-esr
+    - env: MARIONETTE=1 TOXENV=py27-marionette
+      <<: *python
+      <<: *firefox-nightly
+    - env: TOXENV=py33-unit
+      <<: *python
+      python: 3.3
+    - env: TOXENV=flake8
+      <<: *python
+      python: 3.6
+    - env: TOXENV=docs
+      <<: *python
+      python: 3.6
+    - env: TOXENV=py36-unit
+      <<: *python
+      python: 3.6
+    - env: TOXENV=py36-firefox
+      <<: *python
+      <<: *firefox-esr
+      python: 3.6
+    - env: TOXENV=py36-remote
+      <<: *python
+      <<: *firefox-esr
+      python: 3.6
+    - env: MARIONETTE=1 TOXENV=py36-marionette
+      <<: *python
+      <<: *firefox-nightly
+      python: 3.6
+    - env: TASK=//rb:unit-test
+      <<: *ruby
+    - env: CHROME=1 TASK=//rb:chrome-test
+      <<: *ruby
+      <<: *chrome
+    - env: MARIONETTE=1 TASK=//rb:firefox-test
+      <<: *ruby
+      <<: *firefox-latest
+    - env: TASK=//rb:ff-esr-test
+      <<: *ruby
+      <<: *firefox-esr
+    - env: CHROME=1 TASK=//rb:remote-chrome-test
+      <<: *ruby
+      <<: *chrome
+    - env: MARIONETTE=1 TASK=//rb:remote-firefox-test
+      <<: *ruby
+      <<: *firefox-latest
+    - env: TASK=//rb:remote-ff-esr-test
+      <<: *ruby
+      <<: *firefox-esr
+    - env: TASK=//rb:docs
+      <<: *ruby
+    - env: TASK=//rb:lint
+      <<: *ruby
+  allow_failures:
+    - env: CHROME=1 TASK=//java/client/test/com/thoughtworks/selenium:chrome-rc-test:run
+    - env: MARIONETTE=1 TASK=//java/client/test/com/thoughtworks/selenium:firefox-rc-test:run
+before_install: ./scripts/travis/before_install.sh
+install: ./scripts/travis/install.sh
+before_script: ./scripts/travis/before_script.sh
+script: ./scripts/travis/script.sh
+notifications:
+  email: false
+  irc:
+    channels:
+      - secure: K+Wuro8Y/66zt9truTZuZzFmPqiGrFsH/sPzOBDK3+57mL6/vg2NoQCXOTq3U5RLdVKavlvZcm6+9nsNncVPRgzL7ORuW3BgLaBJis3lTA13AqlOnAbXcYytQEulVeWmvPipHFFFqaHs/z77lxm4fKwAAuBnK1f+mXKZDZR2hLo=
+    on_success: never
+    on_failure: always
+    use_notice: true
+    skip_join: true

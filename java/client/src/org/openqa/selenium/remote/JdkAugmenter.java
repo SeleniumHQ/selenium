@@ -1,18 +1,19 @@
-/*
-Copyright 2007-2010 Selenium committers
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
- */
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium.remote;
 
@@ -55,7 +56,7 @@ public class JdkAugmenter extends BaseAugmenter {
     } else if (Proxy.isProxyClass(driver.getClass())) {
       InvocationHandler handler = Proxy.getInvocationHandler(driver);
       if (handler instanceof JdkHandler) {
-        return ((JdkHandler) handler).driver;
+        return ((JdkHandler<?>) handler).driver;
       }
     }
     return null;
@@ -89,6 +90,7 @@ public class JdkAugmenter extends BaseAugmenter {
       Class<?> interfaceProvided = augmenter.getDescribedInterface();
       checkState(interfaceProvided.isInterface(),
           "JdkAugmenter can only augment interfaces. %s is not an interface.", interfaceProvided);
+      proxiedInterfaces.add(interfaceProvided);
       InterfaceImplementation augmentedImplementation = augmenter.getImplementation(value);
       for (Method method : interfaceProvided.getMethods()) {
         InterfaceImplementation oldHandler = augmentationHandlers.put(method,
@@ -103,7 +105,7 @@ public class JdkAugmenter extends BaseAugmenter {
       return objectToAugment;
     }
 
-    InvocationHandler proxyHandler = new JdkHandler((RemoteWebDriver) driver,
+    InvocationHandler proxyHandler = new JdkHandler<>(driver,
         objectToAugment, augmentationHandlers);
     X augmentedProxy = (X) Proxy.newProxyInstance(
         getClass().getClassLoader(),
@@ -133,9 +135,8 @@ public class JdkAugmenter extends BaseAugmenter {
         System.out.println("Method: " + method + "all handlers: " + handlers.keySet());
         if (null == handler) {
           return method.invoke(realInstance, args);
-        } else {
-          return handler.invoke(new RemoteExecuteMethod(driver), proxy, method, args);
         }
+        return handler.invoke(new RemoteExecuteMethod(driver), proxy, method, args);
       } catch (InvocationTargetException i) {
         throw i.getCause();
       }

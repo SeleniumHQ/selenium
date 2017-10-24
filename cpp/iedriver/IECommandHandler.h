@@ -1,5 +1,8 @@
-// Copyright 2011 Software Freedom Conservancy
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -15,30 +18,31 @@
 #define WEBDRIVER_IE_COMMANDHANDLER_H_
 
 #include <map>
-#include <memory>
 #include <string>
+
 #include "command_handler.h"
 #include "command.h"
-#include "Element.h"
 #include "response.h"
-#include "Script.h"
+
+#include "CustomTypes.h"
 
 #define BROWSER_NAME_CAPABILITY "browserName"
-#define BROWSER_VERSION_CAPABILITY "version"
-#define PLATFORM_CAPABILITY "platform"
-#define JAVASCRIPT_ENABLED_CAPABILITY "javascriptEnabled"
-#define TAKES_SCREENSHOT_CAPABILITY "takesScreenshot"
-#define HANDLES_ALERTS_CAPABILITY "handlesAlerts"
-#define UNEXPECTED_ALERT_BEHAVIOR_CAPABILITY "unexpectedAlertBehaviour"
-#define CSS_SELECTOR_ENABLED_CAPABILITY "cssSelectorsEnabled"
-#define NATIVE_EVENTS_CAPABILITY "nativeEvents"
+#define BROWSER_VERSION_CAPABILITY "browserVersion"
+#define PLATFORM_NAME_CAPABILITY "platformName"
+#define ACCEPT_INSECURE_CERTS_CAPABILITY "acceptInsecureCerts"
+#define PAGE_LOAD_STRATEGY_CAPABILITY "pageLoadStrategy"
 #define PROXY_CAPABILITY "proxy"
+#define SET_WINDOW_RECT_CAPABILITY "setWindowRect"
+#define TIMEOUTS_CAPABILITY "timeouts"
+#define UNHANDLED_PROMPT_BEHAVIOR_CAPABILITY "unhandledPromptBehavior"
+#define IE_DRIVER_EXTENSIONS_CAPABILITY "se:ieOptions"
+
+#define NATIVE_EVENTS_CAPABILITY "nativeEvents"
 #define IGNORE_PROTECTED_MODE_CAPABILITY "ignoreProtectedModeSettings"
 #define IGNORE_ZOOM_SETTING_CAPABILITY "ignoreZoomSetting"
 #define INITIAL_BROWSER_URL_CAPABILITY "initialBrowserUrl"
 #define ELEMENT_SCROLL_BEHAVIOR_CAPABILITY "elementScrollBehavior"
 #define ENABLE_PERSISTENT_HOVER_CAPABILITY "enablePersistentHover"
-#define ENABLE_ELEMENT_CACHE_CLEANUP_CAPABILITY "enableElementCacheCleanup"
 #define REQUIRE_WINDOW_FOCUS_CAPABILITY "requireWindowFocus"
 #define BROWSER_ATTACH_TIMEOUT_CAPABILITY "browserAttachTimeout"
 #define BROWSER_COMMAND_LINE_SWITCHES_CAPABILITY "ie.browserCommandLineSwitches"
@@ -46,9 +50,10 @@
 #define USE_PER_PROCESS_PROXY_CAPABILITY "ie.usePerProcessProxy"
 #define ENSURE_CLEAN_SESSION_CAPABILITY "ie.ensureCleanSession"
 #define FORCE_SHELL_WINDOWS_API_CAPABILITY "ie.forceShellWindowsApi"
-#define VALIDATE_COOKIE_DOCUMENT_TYPE_CAPABILITY "ie.validateCookieDocumentType"
-
-using namespace std;
+#define FILE_UPLOAD_DIALOG_TIMEOUT_CAPABILITY "ie.fileUploadDialogTimeout"
+#define USE_LEGACY_FILE_UPLOAD_DIALOG_HANDLING_CAPABILITY "ie.useLegacyFileUploadDialogHandling"
+#define ENABLE_FULL_PAGE_SCREENSHOT_CAPABILITY "ie.enableFullPageScreenshot"
+#define IE_DRIVER_EXTENSIONS_CAPABILITY "se:ieOptions"
 
 namespace webdriver {
 
@@ -70,8 +75,6 @@ class IECommandHandler : public CommandHandler<IECommandExecutor> {
                  ElementHandle* element_wrapper);
   Json::Value RecreateJsonParameterObject(const ParametersMap& command_parameters);
 };
-
-typedef std::tr1::shared_ptr<IECommandHandler> CommandHandlerHandle;
 
 } // namespace webdriver
 

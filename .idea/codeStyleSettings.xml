@@ -15,6 +15,7 @@
             <option name="USE_RELATIVE_INDENTS" value="false" />
           </value>
         </option>
+        <option name="LINE_SEPARATOR" value="&#10;" />
         <option name="CLASS_COUNT_TO_USE_IMPORT_ON_DEMAND" value="99" />
         <option name="NAMES_COUNT_TO_USE_IMPORT_ON_DEMAND" value="99" />
         <option name="IMPORT_LAYOUT_TABLE">
@@ -289,9 +290,15 @@
         <option name="DOWHILE_BRACE_FORCE" value="3" />
         <option name="WHILE_BRACE_FORCE" value="3" />
         <option name="FOR_BRACE_FORCE" value="3" />
+        <MarkdownNavigatorCodeStyleSettings>
+          <option name="RIGHT_MARGIN" value="72" />
+        </MarkdownNavigatorCodeStyleSettings>
         <XML>
           <option name="XML_LEGACY_SETTINGS_IMPORTED" value="true" />
         </XML>
+        <editorconfig>
+          <option name="ENABLED" value="false" />
+        </editorconfig>
         <codeStyleSettings language="CFML">
           <option name="KEEP_BLANK_LINES_IN_CODE" value="1" />
           <option name="ALIGN_MULTILINE_PARAMETERS_IN_CALLS" value="true" />
@@ -411,6 +418,7 @@
           <indentOptions>
             <option name="INDENT_SIZE" value="2" />
             <option name="CONTINUATION_INDENT_SIZE" value="4" />
+            <option name="TAB_SIZE" value="2" />
           </indentOptions>
         </codeStyleSettings>
         <codeStyleSettings language="JSON">
@@ -418,6 +426,7 @@
           <option name="PARENT_SETTINGS_INSTALLED" value="true" />
         </codeStyleSettings>
         <codeStyleSettings language="JavaScript">
+          <option name="RIGHT_MARGIN" value="80" />
           <option name="KEEP_BLANK_LINES_IN_CODE" value="1" />
           <option name="ALIGN_MULTILINE_PARAMETERS_IN_CALLS" value="true" />
           <option name="ALIGN_MULTILINE_BINARY_OPERATION" value="true" />
@@ -470,7 +479,6 @@
           <option name="PARENT_SETTINGS_INSTALLED" value="true" />
         </codeStyleSettings>
         <codeStyleSettings language="Python">
-          <option name="KEEP_BLANK_LINES_IN_CODE" value="1" />
           <option name="PARENT_SETTINGS_INSTALLED" value="true" />
         </codeStyleSettings>
         <codeStyleSettings language="SQL">

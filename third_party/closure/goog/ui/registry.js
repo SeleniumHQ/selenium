@@ -44,14 +44,16 @@ goog.ui.registry.getDefaultRenderer = function(componentCtor) {
       break;
     }
     componentCtor = componentCtor.superClass_ ?
-        componentCtor.superClass_.constructor : null;
+        componentCtor.superClass_.constructor :
+        null;
   }
 
   // If the renderer has a static getInstance method, return the singleton
   // instance; otherwise create and return a new instance.
   if (rendererCtor) {
     return goog.isFunction(rendererCtor.getInstance) ?
-        rendererCtor.getInstance() : new rendererCtor();
+        rendererCtor.getInstance() :
+        new rendererCtor();
   }
 
   return null;
@@ -92,7 +94,8 @@ goog.ui.registry.setDefaultRenderer = function(componentCtor, rendererCtor) {
  */
 goog.ui.registry.getDecoratorByClassName = function(className) {
   return className in goog.ui.registry.decoratorFunctions_ ?
-      goog.ui.registry.decoratorFunctions_[className]() : null;
+      goog.ui.registry.decoratorFunctions_[className]() :
+      null;
 };
 
 

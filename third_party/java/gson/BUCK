@@ -1,4 +1,11 @@
-prebuilt_jar(name = 'gson',
-  binary_jar = 'gson-2.3.1.jar',
-  visibility = [ 'PUBLIC' ],
+# BUILD FILE SYNTAX: SKYLARK
+prebuilt_jar(
+  name = 'gson',
+  maven_coords = 'com.google.code.gson:gson:jar:2.8.2',
+  binary_jar = 'gson-2.8.2.jar',
+  source_jar = 'gson-2.8.2-sources.jar',
+  visibility = [
+    'PUBLIC',
+  ],
 )
+

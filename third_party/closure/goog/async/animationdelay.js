@@ -46,12 +46,15 @@ goog.require('goog.functions');
  * animations, see:
  * @see http://paulirish.com/2011/requestanimationframe-for-smart-animating/
  *
- * @param {function(number)} listener Function to call when the delay completes.
- *     Will be passed the timestamp when it's called, in unix ms.
+ * @param {function(this:THIS, number)} listener Function to call
+ *     when the delay completes. Will be passed the timestamp when it's called,
+ *     in unix ms.
  * @param {Window=} opt_window The window object to execute the delay in.
  *     Defaults to the global object.
- * @param {Object=} opt_handler The object scope to invoke the function in.
+ * @param {THIS=} opt_handler The object scope to invoke the function in.
+ * @template THIS
  * @constructor
+ * @struct
  * @extends {goog.Disposable}
  * @final
  */
@@ -59,50 +62,44 @@ goog.async.AnimationDelay = function(listener, opt_window, opt_handler) {
   goog.async.AnimationDelay.base(this, 'constructor');
 
   /**
+   * Identifier of the active delay timeout, or event listener,
+   * or null when inactive.
+   * @private {goog.events.Key|number}
+   */
+  this.id_ = null;
+
+  /**
+   * If we're using dom listeners.
+   * @private {?boolean}
+   */
+  this.usingListeners_ = false;
+
+  /**
    * The function that will be invoked after a delay.
-   * @type {function(number)}
+   * @const
    * @private
    */
   this.listener_ = listener;
 
   /**
    * The object context to invoke the callback in.
-   * @type {Object|undefined}
-   * @private
+   * @const
+   * @private {(THIS|undefined)}
    */
   this.handler_ = opt_handler;
 
   /**
-   * @type {Window}
-   * @private
+   * @private {Window}
    */
   this.win_ = opt_window || window;
 
   /**
    * Cached callback function invoked when the delay finishes.
-   * @type {function()}
-   * @private
+   * @private {function()}
    */
   this.callback_ = goog.bind(this.doAction_, this);
 };
 goog.inherits(goog.async.AnimationDelay, goog.Disposable);
-
-
-/**
- * Identifier of the active delay timeout, or event listener,
- * or null when inactive.
- * @type {goog.events.Key|number|null}
- * @private
- */
-goog.async.AnimationDelay.prototype.id_ = null;
-
-
-/**
- * If we're using dom listeners.
- * @type {?boolean}
- * @private
- */
-goog.async.AnimationDelay.prototype.usingListeners_ = false;
 
 
 /**
@@ -148,8 +145,7 @@ goog.async.AnimationDelay.prototype.start = function() {
     // but not the W3C requestAnimationFrame function (as in draft) or the
     // equivalent cancel functions.
     this.id_ = goog.events.listen(
-        this.win_,
-        goog.async.AnimationDelay.MOZ_BEFORE_PAINT_EVENT_,
+        this.win_, goog.async.AnimationDelay.MOZ_BEFORE_PAINT_EVENT_,
         this.callback_);
     this.win_.mozRequestAnimationFrame(null);
     this.usingListeners_ = true;
@@ -159,8 +155,17 @@ goog.async.AnimationDelay.prototype.start = function() {
     this.id_ = this.win_.setTimeout(
         // Prior to Firefox 13, Gecko passed a non-standard parameter
         // to the callback that we want to ignore.
-        goog.functions.lock(this.callback_),
-        goog.async.AnimationDelay.TIMEOUT);
+        goog.functions.lock(this.callback_), goog.async.AnimationDelay.TIMEOUT);
+  }
+};
+
+
+/**
+ * Starts the delay timer if it's not already active.
+ */
+goog.async.AnimationDelay.prototype.startIfNotActive = function() {
+  if (!this.isActive()) {
+    this.start();
   }
 };
 
@@ -247,26 +252,21 @@ goog.async.AnimationDelay.prototype.disposeInternal = function() {
  */
 goog.async.AnimationDelay.prototype.getRaf_ = function() {
   var win = this.win_;
-  return win.requestAnimationFrame ||
-      win.webkitRequestAnimationFrame ||
-      win.mozRequestAnimationFrame ||
-      win.oRequestAnimationFrame ||
-      win.msRequestAnimationFrame ||
-      null;
+  return win.requestAnimationFrame || win.webkitRequestAnimationFrame ||
+      win.mozRequestAnimationFrame || win.oRequestAnimationFrame ||
+      win.msRequestAnimationFrame || null;
 };
 
 
 /**
- * @return {?function(number): number} The cancelAnimationFrame function,
+ * @return {?function(number): undefined} The cancelAnimationFrame function,
  *     or null if not available on this browser.
  * @private
  */
 goog.async.AnimationDelay.prototype.getCancelRaf_ = function() {
   var win = this.win_;
-  return win.cancelRequestAnimationFrame ||
+  return win.cancelAnimationFrame || win.cancelRequestAnimationFrame ||
       win.webkitCancelRequestAnimationFrame ||
-      win.mozCancelRequestAnimationFrame ||
-      win.oCancelRequestAnimationFrame ||
-      win.msCancelRequestAnimationFrame ||
-      null;
+      win.mozCancelRequestAnimationFrame || win.oCancelRequestAnimationFrame ||
+      win.msCancelRequestAnimationFrame || null;
 };

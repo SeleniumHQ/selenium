@@ -1,19 +1,19 @@
-/*
-Copyright 2012 Selenium committers
-Copyright 2012 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium.remote.server;
 
@@ -22,12 +22,16 @@ import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.remote.Command;
+import org.openqa.selenium.remote.CommandCodec;
 import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.Response;
+import org.openqa.selenium.remote.ResponseCodec;
+import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.JsonHttpCommandCodec;
 import org.openqa.selenium.remote.http.JsonHttpResponseCodec;
+import org.openqa.selenium.remote.http.W3CHttpCommandCodec;
 import org.openqa.selenium.remote.server.handler.AcceptAlert;
 import org.openqa.selenium.remote.server.handler.AddConfig;
 import org.openqa.selenium.remote.server.handler.AddCookie;
@@ -49,11 +53,13 @@ import org.openqa.selenium.remote.server.handler.FindChildElement;
 import org.openqa.selenium.remote.server.handler.FindChildElements;
 import org.openqa.selenium.remote.server.handler.FindElement;
 import org.openqa.selenium.remote.server.handler.FindElements;
+import org.openqa.selenium.remote.server.handler.FullscreenWindow;
 import org.openqa.selenium.remote.server.handler.GetAlertText;
 import org.openqa.selenium.remote.server.handler.GetAllCookies;
 import org.openqa.selenium.remote.server.handler.GetAllSessions;
 import org.openqa.selenium.remote.server.handler.GetAllWindowHandles;
 import org.openqa.selenium.remote.server.handler.GetAvailableLogTypesHandler;
+import org.openqa.selenium.remote.server.handler.GetCookie;
 import org.openqa.selenium.remote.server.handler.GetCssProperty;
 import org.openqa.selenium.remote.server.handler.GetCurrentUrl;
 import org.openqa.selenium.remote.server.handler.GetCurrentWindowHandle;
@@ -62,6 +68,7 @@ import org.openqa.selenium.remote.server.handler.GetElementDisplayed;
 import org.openqa.selenium.remote.server.handler.GetElementEnabled;
 import org.openqa.selenium.remote.server.handler.GetElementLocation;
 import org.openqa.selenium.remote.server.handler.GetElementLocationInView;
+import org.openqa.selenium.remote.server.handler.GetElementRect;
 import org.openqa.selenium.remote.server.handler.GetElementSelected;
 import org.openqa.selenium.remote.server.handler.GetElementSize;
 import org.openqa.selenium.remote.server.handler.GetElementText;
@@ -87,6 +94,7 @@ import org.openqa.selenium.remote.server.handler.NewSession;
 import org.openqa.selenium.remote.server.handler.RefreshPage;
 import org.openqa.selenium.remote.server.handler.Rotate;
 import org.openqa.selenium.remote.server.handler.SendKeys;
+import org.openqa.selenium.remote.server.handler.SetAlertCredentials;
 import org.openqa.selenium.remote.server.handler.SetAlertText;
 import org.openqa.selenium.remote.server.handler.SetScriptTimeout;
 import org.openqa.selenium.remote.server.handler.SetWindowPosition;
@@ -97,6 +105,7 @@ import org.openqa.selenium.remote.server.handler.SwitchToFrame;
 import org.openqa.selenium.remote.server.handler.SwitchToParentFrame;
 import org.openqa.selenium.remote.server.handler.SwitchToWindow;
 import org.openqa.selenium.remote.server.handler.UploadFile;
+import org.openqa.selenium.remote.server.handler.W3CActions;
 import org.openqa.selenium.remote.server.handler.html5.ClearLocalStorage;
 import org.openqa.selenium.remote.server.handler.html5.ClearSessionStorage;
 import org.openqa.selenium.remote.server.handler.html5.GetAppCacheStatus;
@@ -126,11 +135,18 @@ import org.openqa.selenium.remote.server.handler.interactions.touch.Move;
 import org.openqa.selenium.remote.server.handler.interactions.touch.Scroll;
 import org.openqa.selenium.remote.server.handler.interactions.touch.SingleTapOnElement;
 import org.openqa.selenium.remote.server.handler.interactions.touch.Up;
+import org.openqa.selenium.remote.server.handler.mobile.GetNetworkConnection;
+import org.openqa.selenium.remote.server.handler.mobile.SetNetworkConnection;
+import org.openqa.selenium.remote.server.log.LoggingManager;
+import org.openqa.selenium.remote.server.log.PerSessionLogHandler;
 import org.openqa.selenium.remote.server.rest.RestishHandler;
 import org.openqa.selenium.remote.server.rest.ResultConfig;
 
+import java.io.IOException;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 
 public class JsonHttpCommandHandler {
@@ -139,32 +155,36 @@ public class JsonHttpCommandHandler {
 
   private final DriverSessions sessions;
   private final Logger log;
-  private final JsonHttpCommandCodec commandCodec;
-  private final JsonHttpResponseCodec responseCodec;
-  private final Map<String, ResultConfig> configs = new LinkedHashMap<String, ResultConfig>();
+  private final Set<CommandCodec<HttpRequest>> commandCodecs;
+  private final ResponseCodec<HttpResponse> responseCodec;
+  private final Map<String, ResultConfig> configs = new LinkedHashMap<>();
   private final ErrorCodes errorCodes = new ErrorCodes();
 
   public JsonHttpCommandHandler(DriverSessions sessions, Logger log) {
     this.sessions = sessions;
     this.log = log;
-    this.commandCodec = new JsonHttpCommandCodec();
+    this.commandCodecs = new LinkedHashSet<>();
+    this.commandCodecs.add(new JsonHttpCommandCodec());
+    this.commandCodecs.add(new W3CHttpCommandCodec());
     this.responseCodec = new JsonHttpResponseCodec();
     setUpMappings();
   }
 
   public void addNewMapping(
-      String commandName, Class<? extends RestishHandler<?>> implementationClass) {
+      String commandName,
+      Class<? extends RestishHandler<?>> implementationClass) {
     ResultConfig config = new ResultConfig(commandName, implementationClass, sessions, log);
     configs.put(commandName, config);
   }
 
-  public HttpResponse handleRequest(HttpRequest request) {
+  public void handleRequest(HttpRequest request, HttpResponse resp) throws IOException {
+    LoggingManager.perSessionLogHandler().clearThreadTempLogs();
     log.fine(String.format("Handling: %s %s", request.getMethod(), request.getUri()));
 
     Command command = null;
     Response response;
     try {
-      command = commandCodec.decode(request);
+      command = decode(request);
       ResultConfig config = configs.get(command.getName());
       if (config == null) {
         throw new UnsupportedCommandException();
@@ -182,11 +202,38 @@ public class JsonHttpCommandHandler {
         response.setSessionId(command.getSessionId().toString());
       }
     }
-    return responseCodec.encode(response);
+
+    PerSessionLogHandler handler = LoggingManager.perSessionLogHandler();
+    if (response.getSessionId() != null) {
+      handler.attachToCurrentThread(new SessionId(response.getSessionId()));
+    }
+    try {
+      responseCodec.encode(() -> resp, response);
+    } finally {
+      handler.detachFromCurrentThread();
+    }
+  }
+
+  private Command decode(HttpRequest request) {
+    UnsupportedCommandException lastException = null;
+    for (CommandCodec<HttpRequest> codec : commandCodecs) {
+      try {
+        return codec.decode(request);
+      } catch (UnsupportedCommandException e) {
+        lastException = e;
+      }
+    }
+    if (lastException != null) {
+      throw lastException;
+    }
+    throw new UnsupportedOperationException("Cannot find command for: " + request.getUri());
   }
 
   private void setUpMappings() {
-    commandCodec.defineCommand(ADD_CONFIG_COMMAND_NAME, POST, "/config/drivers");
+    for (CommandCodec<HttpRequest> codec : commandCodecs) {
+      codec.defineCommand(ADD_CONFIG_COMMAND_NAME, POST, "/config/drivers");
+    }
+
     addNewMapping(ADD_CONFIG_COMMAND_NAME, AddConfig.class);
 
     addNewMapping(STATUS, Status.class);
@@ -202,6 +249,7 @@ public class JsonHttpCommandHandler {
     addNewMapping(ACCEPT_ALERT, AcceptAlert.class);
     addNewMapping(GET_ALERT_TEXT, GetAlertText.class);
     addNewMapping(SET_ALERT_VALUE, SetAlertText.class);
+    addNewMapping(SET_ALERT_CREDENTIALS, SetAlertCredentials.class);
 
     addNewMapping(GET, ChangeUrl.class);
     addNewMapping(GET_CURRENT_URL, GetCurrentUrl.class);
@@ -241,11 +289,13 @@ public class JsonHttpCommandHandler {
     addNewMapping(GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW, GetElementLocationInView.class);
     addNewMapping(GET_ELEMENT_SIZE, GetElementSize.class);
     addNewMapping(GET_ELEMENT_VALUE_OF_CSS_PROPERTY, GetCssProperty.class);
+    addNewMapping(GET_ELEMENT_RECT, GetElementRect.class);
 
     addNewMapping(GET_ELEMENT_ATTRIBUTE, GetElementAttribute.class);
     addNewMapping(ELEMENT_EQUALS, ElementEquality.class);
 
     addNewMapping(GET_ALL_COOKIES, GetAllCookies.class);
+    addNewMapping(GET_COOKIE, GetCookie.class);
     addNewMapping(ADD_COOKIE, AddCookie.class);
     addNewMapping(DELETE_ALL_COOKIES, DeleteCookie.class);
     addNewMapping(DELETE_COOKIE, DeleteNamedCookie.class);
@@ -255,11 +305,12 @@ public class JsonHttpCommandHandler {
     addNewMapping(SWITCH_TO_WINDOW, SwitchToWindow.class);
     addNewMapping(CLOSE, CloseWindow.class);
 
-    addNewMapping(GET_WINDOW_SIZE, GetWindowSize.class);
-    addNewMapping(SET_WINDOW_SIZE, SetWindowSize.class);
-    addNewMapping(GET_WINDOW_POSITION, GetWindowPosition.class);
-    addNewMapping(SET_WINDOW_POSITION, SetWindowPosition.class);
-    addNewMapping(MAXIMIZE_WINDOW, MaximizeWindow.class);
+    addNewMapping(GET_CURRENT_WINDOW_SIZE, GetWindowSize.class);
+    addNewMapping(SET_CURRENT_WINDOW_SIZE, SetWindowSize.class);
+    addNewMapping(GET_CURRENT_WINDOW_POSITION, GetWindowPosition.class);
+    addNewMapping(SET_CURRENT_WINDOW_POSITION, SetWindowPosition.class);
+    addNewMapping(MAXIMIZE_CURRENT_WINDOW, MaximizeWindow.class);
+    addNewMapping(FULLSCREEN_CURRENT_WINDOW, FullscreenWindow.class);
 
     addNewMapping(SET_TIMEOUT, ConfigureTimeout.class);
     addNewMapping(IMPLICITLY_WAIT, ImplicitlyWait.class);
@@ -300,6 +351,8 @@ public class JsonHttpCommandHandler {
     addNewMapping(IME_DEACTIVATE, ImeDeactivate.class);
     addNewMapping(IME_ACTIVATE_ENGINE, ImeActivateEngine.class);
 
+    addNewMapping(ACTIONS, W3CActions.class);
+
     // Advanced Touch API
     addNewMapping(TOUCH_SINGLE_TAP, SingleTapOnElement.class);
     addNewMapping(TOUCH_DOWN, Down.class);
@@ -313,5 +366,13 @@ public class JsonHttpCommandHandler {
     addNewMapping(GET_AVAILABLE_LOG_TYPES, GetAvailableLogTypesHandler.class);
     addNewMapping(GET_LOG, GetLogHandler.class);
     addNewMapping(GET_SESSION_LOGS, GetSessionLogsHandler.class);
+
+    addNewMapping(GET_NETWORK_CONNECTION, GetNetworkConnection.class);
+    addNewMapping(SET_NETWORK_CONNECTION, SetNetworkConnection.class);
+
+    // Deprecated end points. Will be removed.
+    addNewMapping("getWindowSize", GetWindowSize.class);
+    addNewMapping("setWindowSize", SetWindowSize.class);
+    addNewMapping("maximizeWindow", MaximizeWindow.class);
   }
 }

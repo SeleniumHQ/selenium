@@ -42,12 +42,7 @@ var Channel = goog.labs.net.webChannel.Channel;
  * a host prefix. This allows us to work around browser per-domain
  * connection limits.
  *
- * Currently, we  use secondary domains when using Trident's ActiveXObject,
- * because it supports cross-domain requests out of the box.  Note that in IE10
- * we no longer use ActiveX since it's not supported in Metro mode and IE10
- * supports XHR streaming.
- *
- * If you need to use secondary domains on other browsers and IE10,
+ * If you need to use secondary domains on different browsers and IE10,
  * you have two choices:
  *     1) If you only care about browsers that support CORS
  *        (https://developer.mozilla.org/en-US/docs/HTTP_access_control), you
@@ -183,4 +178,44 @@ Channel.prototype.testConnectionFailure = goog.abstractMethod;
  * @return {!goog.labs.net.webChannel.ConnectionState} The connectivity state.
  */
 Channel.prototype.getConnectionState = goog.abstractMethod;
+
+
+/**
+ * Sets the parameter name for the http session id.
+ *
+ * @param {?string} httpSessionIdParam The parameter name for http session id
+ */
+Channel.prototype.setHttpSessionIdParam = goog.abstractMethod;
+
+
+/**
+ * Gets the parameter name for the http session id.
+ *
+ * @return {?string} The parameter name for the http session id.
+ */
+Channel.prototype.getHttpSessionIdParam = goog.abstractMethod;
+
+
+/**
+ * Sets the http session id.
+ *
+ * @param {string} httpSessionId The http session id
+ */
+Channel.prototype.setHttpSessionId = goog.abstractMethod;
+
+
+/**
+ * Gets the http session id.
+ *
+ * @return {?string} The http session id if there is one in effect.
+ */
+Channel.prototype.getHttpSessionId = goog.abstractMethod;
+
+
+/**
+ * Returns true if the channel-test is done in background.
+ *
+ * @return {boolean} if the channel-test is done in background.
+ */
+Channel.prototype.getBackgroundChannelTest = goog.abstractMethod;
 });  // goog.scope

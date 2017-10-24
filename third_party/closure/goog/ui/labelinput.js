@@ -39,6 +39,8 @@ goog.require('goog.a11y.aria');
 goog.require('goog.a11y.aria.State');
 goog.require('goog.asserts');
 goog.require('goog.dom');
+goog.require('goog.dom.InputType');
+goog.require('goog.dom.TagName');
 goog.require('goog.dom.classlist');
 goog.require('goog.events.EventHandler');
 goog.require('goog.events.EventType');
@@ -99,7 +101,7 @@ goog.ui.LabelInput.prototype.formAttached_;
  * @type {?boolean}
  * @private
  */
-goog.ui.LabelInput.SUPPORTS_PLACEHOLDER_;
+goog.ui.LabelInput.supportsPlaceholder_;
 
 
 /**
@@ -108,11 +110,11 @@ goog.ui.LabelInput.SUPPORTS_PLACEHOLDER_;
  * @private
  */
 goog.ui.LabelInput.isPlaceholderSupported_ = function() {
-  if (!goog.isDefAndNotNull(goog.ui.LabelInput.SUPPORTS_PLACEHOLDER_)) {
-    goog.ui.LabelInput.SUPPORTS_PLACEHOLDER_ = (
-        'placeholder' in document.createElement('input'));
+  if (!goog.isDefAndNotNull(goog.ui.LabelInput.supportsPlaceholder_)) {
+    goog.ui.LabelInput.supportsPlaceholder_ =
+        ('placeholder' in goog.dom.createElement(goog.dom.TagName.INPUT));
   }
-  return goog.ui.LabelInput.SUPPORTS_PLACEHOLDER_;
+  return goog.ui.LabelInput.supportsPlaceholder_;
 };
 
 
@@ -136,7 +138,8 @@ goog.ui.LabelInput.prototype.hasFocus_ = false;
  */
 goog.ui.LabelInput.prototype.createDom = function() {
   this.setElementInternal(
-      this.getDomHelper().createDom('input', {'type': 'text'}));
+      this.getDomHelper().createDom(
+          goog.dom.TagName.INPUT, {'type': goog.dom.InputType.TEXT}));
 };
 
 
@@ -166,11 +169,10 @@ goog.ui.LabelInput.prototype.decorateInternal = function(element) {
     this.getElement().placeholder = this.label_;
   }
   var labelInputElement = this.getElement();
-  goog.asserts.assert(labelInputElement,
-      'The label input element cannot be null.');
-  goog.a11y.aria.setState(labelInputElement,
-      goog.a11y.aria.State.LABEL,
-      this.label_);
+  goog.asserts.assert(
+      labelInputElement, 'The label input element cannot be null.');
+  goog.a11y.aria.setState(
+      labelInputElement, goog.a11y.aria.State.LABEL, this.label_);
 };
 
 
@@ -210,11 +212,13 @@ goog.ui.LabelInput.prototype.attachEvents_ = function() {
   }
 
   if (goog.userAgent.GECKO) {
-    eh.listen(this.getElement(), [
-      goog.events.EventType.KEYPRESS,
-      goog.events.EventType.KEYDOWN,
-      goog.events.EventType.KEYUP
-    ], this.handleEscapeKeys_);
+    eh.listen(
+        this.getElement(),
+        [
+          goog.events.EventType.KEYPRESS, goog.events.EventType.KEYDOWN,
+          goog.events.EventType.KEYUP
+        ],
+        this.handleEscapeKeys_);
   }
 
   // IE sets defaultValue upon load so we need to test that as well.
@@ -236,9 +240,9 @@ goog.ui.LabelInput.prototype.attachEventsToForm_ = function() {
   // in case we have are in a form we need to make sure the label is not
   // submitted
   if (!this.formAttached_ && this.eventHandler_ && this.getElement().form) {
-    this.eventHandler_.listen(this.getElement().form,
-                              goog.events.EventType.SUBMIT,
-                              this.handleFormSubmit_);
+    this.eventHandler_.listen(
+        this.getElement().form, goog.events.EventType.SUBMIT,
+        this.handleFormSubmit_);
     this.formAttached_ = true;
   }
 };
@@ -455,7 +459,7 @@ goog.ui.LabelInput.prototype.getValue = function() {
     return this.ffKeyRestoreValue_;
   }
   return this.hasChanged() ? /** @type {string} */ (this.getElement().value) :
-      '';
+                                                   '';
 };
 
 
@@ -483,9 +487,8 @@ goog.ui.LabelInput.prototype.setLabel = function(label) {
   }
   // Check if this has been called before DOM structure building
   if (labelInputElement) {
-    goog.a11y.aria.setState(labelInputElement,
-        goog.a11y.aria.State.LABEL,
-        this.label_);
+    goog.a11y.aria.setState(
+        labelInputElement, goog.a11y.aria.State.LABEL, this.label_);
   }
 };
 
@@ -504,17 +507,16 @@ goog.ui.LabelInput.prototype.getLabel = function() {
  */
 goog.ui.LabelInput.prototype.check_ = function() {
   var labelInputElement = this.getElement();
-  goog.asserts.assert(labelInputElement,
-      'The label input element cannot be null.');
+  goog.asserts.assert(
+      labelInputElement, 'The label input element cannot be null.');
   if (!goog.ui.LabelInput.isPlaceholderSupported_()) {
     // if we haven't got a form yet try now
     this.attachEventsToForm_();
   } else if (this.getElement().placeholder != this.label_) {
     this.getElement().placeholder = this.label_;
   }
-  goog.a11y.aria.setState(labelInputElement,
-      goog.a11y.aria.State.LABEL,
-      this.label_);
+  goog.a11y.aria.setState(
+      labelInputElement, goog.a11y.aria.State.LABEL, this.label_);
 
   if (!this.hasChanged()) {
     if (!this.inFocusAndSelect_ && !this.hasFocus_) {
@@ -525,8 +527,7 @@ goog.ui.LabelInput.prototype.check_ = function() {
 
     // Allow browser to catchup with CSS changes before restoring the label.
     if (!goog.ui.LabelInput.isPlaceholderSupported_()) {
-      goog.Timer.callOnce(this.restoreLabel_, this.labelRestoreDelayMs,
-          this);
+      goog.Timer.callOnce(this.restoreLabel_, this.labelRestoreDelayMs, this);
     }
   } else {
     var el = this.getElement();
@@ -577,8 +578,8 @@ goog.ui.LabelInput.prototype.setEnabled = function(enabled) {
   this.getElement().disabled = !enabled;
   var el = this.getElement();
   goog.asserts.assert(el);
-  goog.dom.classlist.enable(el,
-      goog.getCssName(this.labelCssClassName, 'disabled'), !enabled);
+  goog.dom.classlist.enable(
+      el, goog.getCssName(this.labelCssClassName, 'disabled'), !enabled);
 };
 
 

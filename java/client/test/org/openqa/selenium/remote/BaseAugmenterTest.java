@@ -1,18 +1,19 @@
-/*
-Copyright 2007-2010 Selenium committers
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
- */
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium.remote;
 
@@ -22,6 +23,7 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mock;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
@@ -30,10 +32,10 @@ import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.HasCapabilities;
+import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.Rotatable;
 import org.openqa.selenium.ScreenOrientation;
-import org.openqa.selenium.StubDriver;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -47,7 +49,7 @@ public abstract class BaseAugmenterTest {
 
   @Test
   public void shouldReturnANormalWebDriverUntouched() {
-    WebDriver driver = new StubDriver();
+    WebDriver driver = mock(WebDriver.class);
 
     WebDriver returned = getAugmenter().augment(driver);
 
@@ -56,8 +58,7 @@ public abstract class BaseAugmenterTest {
 
   @Test
   public void shouldAddInterfaceFromCapabilityIfNecessary() {
-    DesiredCapabilities caps = new DesiredCapabilities();
-    caps.setCapability("magic.numbers", true);
+    final Capabilities caps = new ImmutableCapabilities("magic.numbers", true);
     WebDriver driver = new RemoteWebDriver(new StubExecutor(caps), caps);
 
     BaseAugmenter augmenter = getAugmenter();
@@ -70,8 +71,7 @@ public abstract class BaseAugmenterTest {
 
   @Test
   public void shouldNotAddInterfaceWhenBooleanValueForItIsFalse() {
-    DesiredCapabilities caps = new DesiredCapabilities();
-    caps.setCapability("magic.numbers", false);
+    Capabilities caps = new ImmutableCapabilities("magic.numbers", false);
     WebDriver driver = new RemoteWebDriver(new StubExecutor(caps), caps);
 
     BaseAugmenter augmenter = getAugmenter();
@@ -84,8 +84,7 @@ public abstract class BaseAugmenterTest {
 
   @Test
   public void shouldDelegateToHandlerIfAdded() {
-    DesiredCapabilities caps = new DesiredCapabilities();
-    caps.setCapability("foo", true);
+    Capabilities caps = new ImmutableCapabilities("foo", true);
 
     BaseAugmenter augmenter = getAugmenter();
     augmenter.addDriverAugmentation("foo", new AugmenterProvider() {
@@ -112,10 +111,9 @@ public abstract class BaseAugmenterTest {
 
   @Test
   public void shouldDelegateUnmatchedMethodCallsToDriverImplementation() {
-    DesiredCapabilities caps = new DesiredCapabilities();
-    caps.setCapability("magic.numbers", true);
+    Capabilities caps = new ImmutableCapabilities("magic.numbers", true);
     StubExecutor stubExecutor = new StubExecutor(caps);
-    stubExecutor.expect(DriverCommand.GET_TITLE, new HashMap<String, Object>(), "Title");
+    stubExecutor.expect(DriverCommand.GET_TITLE, new HashMap<>(), "Title");
     WebDriver driver = new RemoteWebDriver(stubExecutor, caps);
 
     BaseAugmenter augmenter = getAugmenter();
@@ -127,9 +125,8 @@ public abstract class BaseAugmenterTest {
 
   @Test(expected = NoSuchElementException.class)
   public void proxyShouldNotAppearInStackTraces() {
-    final DesiredCapabilities caps = new DesiredCapabilities();
     // This will force the class to be enhanced
-    caps.setCapability("magic.numbers", true);
+    final Capabilities caps = new ImmutableCapabilities("magic.numbers", true);
 
     DetonatingDriver driver = new DetonatingDriver();
     driver.setCapabilities(caps);
@@ -164,17 +161,11 @@ public abstract class BaseAugmenterTest {
       }
 
       public InterfaceImplementation getImplementation(Object value) {
-        return new InterfaceImplementation() {
-          public Object invoke(ExecuteMethod executeMethod, Object self, Method method,
-              Object... args) {
-            return "Hello World";
-          }
-        };
+        return (executeMethod, self, method, args) -> "Hello World";
       }
     });
 
-    final DesiredCapabilities caps = new DesiredCapabilities();
-    caps.setCapability("foo", true);
+    final Capabilities caps = new ImmutableCapabilities("foo", true);
 
     StubExecutor executor = new StubExecutor(caps);
     RemoteWebDriver parent = new RemoteWebDriver(executor, caps) {
@@ -216,9 +207,7 @@ public abstract class BaseAugmenterTest {
 
   @Test
   public void shouldBeAbleToAugmentMultipleTimes() {
-    DesiredCapabilities caps = new DesiredCapabilities();
-    caps.setCapability("canRotate", true);
-    caps.setCapability("magic.numbers", true);
+    Capabilities caps = new ImmutableCapabilities("canRotate", true, "magic.numbers", true);
 
     StubExecutor stubExecutor = new StubExecutor(caps);
     stubExecutor.expect(DriverCommand.GET_SCREEN_ORIENTATION,
@@ -344,7 +333,7 @@ public abstract class BaseAugmenterTest {
 
     @Override
     public Capabilities getCapabilities() {
-      return new DesiredCapabilities();
+      return new ImmutableCapabilities();
     }
   }
 

@@ -1,7 +1,23 @@
+# Licensed to the Software Freedom Conservancy (SFC) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The SFC licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
 module Selenium
   module WebDriver
     class Options
-
       #
       # @api private
       #
@@ -24,18 +40,16 @@ module Selenium
       #
 
       def add_cookie(opts = {})
-        raise ArgumentError, "name is required" unless opts[:name]
-        raise ArgumentError, "value is required" unless opts[:value]
+        raise ArgumentError, 'name is required' unless opts[:name]
+        raise ArgumentError, 'value is required' unless opts[:value]
 
-        opts[:path] ||= "/"
+        opts[:path] ||= '/'
         opts[:secure] ||= false
 
-        if obj = opts.delete(:expires)
-          opts[:expiry] = seconds_from(obj)
-        end
+        obj = opts.delete(:expires)
+        opts[:expiry] = seconds_from(obj).to_i if obj
 
-
-        @bridge.addCookie opts
+        @bridge.add_cookie opts
       end
 
       #
@@ -56,7 +70,7 @@ module Selenium
       #
 
       def delete_cookie(name)
-        @bridge.deleteCookie name
+        @bridge.delete_cookie name
       end
 
       #
@@ -64,7 +78,7 @@ module Selenium
       #
 
       def delete_all_cookies
-        @bridge.deleteAllCookies
+        @bridge.delete_all_cookies
       end
 
       #
@@ -74,16 +88,7 @@ module Selenium
       #
 
       def all_cookies
-        @bridge.getAllCookies.map do |cookie|
-          {
-            :name    => cookie["name"],
-            :value   => cookie["value"],
-            :path    => cookie["path"],
-            :domain  => cookie["domain"] && strip_port(cookie["domain"]),
-            :expires => cookie["expiry"] && datetime_at(cookie['expiry']),
-            :secure  => cookie["secure"]
-          }
-        end
+        @bridge.cookies.map { |cookie| convert_cookie(cookie) }
       end
 
       def timeouts
@@ -128,9 +133,19 @@ module Selenium
       end
 
       def strip_port(str)
-        str.split(":", 2).first
+        str.split(':', 2).first
       end
 
+      def convert_cookie(cookie)
+        {
+          name: cookie['name'],
+          value: cookie['value'],
+          path: cookie['path'],
+          domain: cookie['domain'] && strip_port(cookie['domain']),
+          expires: cookie['expiry'] && datetime_at(cookie['expiry']),
+          secure: cookie['secure']
+        }
+      end
     end # Options
   end # WebDriver
 end # Selenium

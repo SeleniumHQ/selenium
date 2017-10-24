@@ -1,5 +1,8 @@
-// Copyright 2011 Software Freedom Conservancy
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -14,35 +17,19 @@
 #ifndef WEBDRIVER_IE_GETPAGESOURCECOMMANDHANDLER_H_
 #define WEBDRIVER_IE_GETPAGESOURCECOMMANDHANDLER_H_
 
-#include "../Browser.h"
 #include "../IECommandHandler.h"
-#include "../IECommandExecutor.h"
-#include "logging.h"
 
 namespace webdriver {
 
 class GetPageSourceCommandHandler : public IECommandHandler {
  public:
-  GetPageSourceCommandHandler(void) {
-  }
-
-  virtual ~GetPageSourceCommandHandler(void) {
-  }
+  GetPageSourceCommandHandler(void);
+  virtual ~GetPageSourceCommandHandler(void);
 
  protected:
   void ExecuteInternal(const IECommandExecutor& executor,
-                       const ParametersMap& command_parameters,
-                       Response* response) {
-    BrowserHandle browser_wrapper;
-    int status_code = executor.GetCurrentBrowser(&browser_wrapper);
-    if (status_code != WD_SUCCESS) {
-      response->SetErrorResponse(status_code, "Unable to get browser");
-      return;
-    }
-
-    std::string page_source = browser_wrapper->GetPageSource();
-    response->SetSuccessResponse(page_source);
-  }
+                      const ParametersMap& command_parameters,
+                      Response* response);
 };
 
 } // namespace webdriver

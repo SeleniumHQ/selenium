@@ -17,6 +17,7 @@
  */
 
 function SeleniumScheduler(editor) {
+  this.editor = editor;
   var jobRunner = new JobRunner(editor);
   this.scheduler = Scheduler.fromData(FileUtils.readJSONStoredFile('scheduler.json', []), function(job) {
     jobRunner.run(job);
@@ -27,7 +28,12 @@ function SeleniumScheduler(editor) {
   this.schedulerMemoryWatcher = new MemoryWatcher(editor, this, jobRunner);
   this.jobRunnerWatchDog = new JobRunnerWatchDog(editor, this, jobRunner);
   //TODO plugins, plugin dependency
+  this.plugins = {};
 }
+
+SeleniumScheduler.prototype.addPlugin = function(id, ctorFn) {
+  this.plugins[id] = ctorFn(this.editor, this, this.jobRunner);
+};
 
 function JobRunner(editor) {
   this.editor = editor;
@@ -60,9 +66,11 @@ JobRunner.prototype.run = function(job) {
   if (job.action && job.action.suite && job.action.suite.length > 0) {
     this.editor.app.loadTestCaseWithNewSuite(job.action.suite);
   }
+  var resultsFolder = FileUtils.getStoredTimeStampedFile('job_results');
+  resultsFolder.append(FileUtils.getSafeFilename(job.title));
   //The following code is out of the above if block as it is a feature. Allow scheduling the currently open test suite if no suite is specified in the job
   //TODO check if it really loaded!
-  this.notify('jobStarting', job);
+  this.notify('jobStarting', job, resultsFolder.path);
   this.editor.playTestSuite();
 };
 
@@ -113,20 +121,30 @@ SaveHTMLResults.prototype.getFolder = function() {
 
 function PostResults(editor, seleniumScheduler, jobRunner) {
   this.editor = editor;
-  this.dispatcher = new Dispatcher(null, editor.app.options.jobResultsServer);
+  this.server = "http://localhost:3000/api/result";
+  this.dispatcher = new Dispatcher(null, this.server);
   var self = this;
   if (jobRunner) {
     jobRunner.addObserver({
       jobComplete: function (job, result) {
-        var testSuite = self.editor.app.getTestSuite();
-        var data = {
-          title: job.title,
-          schedule: job.schedule.getData(),
-          scheduledTime: job.nextRun.getTime(),
-          startTime: job.startTime.getTime(),
-          suite: testSuite.result()
-        };
-        self.dispatcher.send(data);
+        var server = self.editor.app.options.jobResultsServer || "";
+        server = server.trim();
+        if (server.length > 0) {  // set server to an empty string to turn off sending results
+          if (server != self.server) {
+            self.server = server;
+            self.dispatcher.setServer(server);
+          }
+          self.editor.health.addEvent('postResults', 'sending results to ' + self.server);
+          var testSuite = self.editor.app.getTestSuite();
+          var data = {
+            title: job.title,
+            schedule: job.schedule.getData(),
+            scheduledTime: job.nextRun.getTime(),
+            startTime: job.startTime.getTime(),
+            suite: testSuite.result()
+          };
+          self.dispatcher.send(data);
+        }
       }
     });
   }

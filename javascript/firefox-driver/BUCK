@@ -3,17 +3,17 @@ export_file(name = 'webdriver_prefs',
   src = 'webdriver.json',
   visibility = [
     '//java/client/src/org/openqa/selenium/firefox:prefs',
+    '//dotnet/src/webdriver:webdriver_deps',
   ],
 )
 
 
 mozilla_extension(name = 'webdriver',
   content = [
-    'extension/content/fxdriver.xul',
-    'extension/content/fx4driver.xul',
-  ] + glob(['extension/content/**/*.js']),
+    ':content',
+  ],
   components = [
-    'extension/components/httpd.js',
+    ':httpd-js',
     ':bad-cert-listener',
     ':command-processor',
     ':command-processor-xpt',
@@ -29,21 +29,6 @@ mozilla_extension(name = 'webdriver',
     ':session-store',
     ':status-xpt',
     ':synthetic-mouse',
-    '//cpp/webdriver-firefox:native-events-xpt',
-    '//cpp/webdriver-firefox:native-mouse-xpt',
-    '//cpp/webdriver-firefox:native-keyboard-xpt',
-    '//cpp/webdriver-firefox:native-ime-xpt',
-  ],
-  platforms = [
-    ':winnt-x86-msvc',
-#    { '//cpp:webdriver_firefox_esr_previous' : 'platform/Linux_x86-gcc3/components/libwebdriver-firefox-esr-previous.so' },
-#    { '//cpp:webdriver_firefox_esr_previous_64' : 'platform/Linux_x86_64-gcc3/components/libwebdriver-firefox-esr-previous.so' },
-#    { '//cpp:webdriver_firefox_esr_latest' : 'platform/Linux_x86-gcc3/components/libwebdriver-firefox-esr-latest.so' },
-#    { '//cpp:webdriver_firefox_esr_latest_64' : 'platform/Linux_x86_64-gcc3/components/libwebdriver-firefox-esr-latest.so' },
-#    { '//cpp:webdriver_firefox_previous' : 'platform/Linux_x86-gcc3/components/libwebdriver-firefox-previous.so' },
-#    { '//cpp:webdriver_firefox_latest' : 'platform/Linux_x86-gcc3/components/libwebdriver-firefox-latest.so' },
-#    { '//cpp:webdriver_firefox_previous_64' : 'platform/Linux_x86_64-gcc3/components/libwebdriver-firefox-previous.so' },
-#    { '//cpp:webdriver_firefox_latest_64' : 'platform/Linux_x86_64-gcc3/components/libwebdriver-firefox-latest.so' },
   ],
   resources = [
     ':js-resources',
@@ -55,12 +40,19 @@ mozilla_extension(name = 'webdriver',
   ]
 )
 
+zip_file(name = 'content',
+  out = 'content.src.zip',
+  flatten = True,
+  srcs = [
+    'extension/content/fxdriver.xul',
+  ] + glob(['extension/content/**/*.js']),
+)
+
 # There has to be less attractive way of creating a zip. Ho hum.
-zip(name = 'js-resources',
+zip_file(name = 'js-resources',
   out = 'js-resources.src.zip',
   srcs = [
     ':evaluate.js',
-    ':json2.js',
     ':modules',
   ],
 )
@@ -76,26 +68,10 @@ export_file(name = 'evaluate.js',
   src = 'js/evaluate.js',
 )
 
-export_file(name = 'json2.js',
-  src = 'js/json2.js',
-)
-
-folder(name = 'winnt-x86-msvc',
-  out = 'WINNT_x86-msvc',
-  srcs = [
-    ':win-components',
-  ],
-)
-
-folder(name = 'win-components',
-  out = 'components',
-  srcs = [
-    '//cpp/prebuilt:imehandler-dll',
-    '//cpp/webdriver-firefox:previous-esr',
-    '//cpp/webdriver-firefox:latest-esr',
-    '//cpp/webdriver-firefox:previous',
-    '//cpp/webdriver-firefox:latest',
-  ],
+export_file(
+  name = 'httpd-js',
+  out = 'httpd.js',
+  src = 'extension/components/httpd.js',
 )
 
 mozilla_xpt(name = 'command-processor-xpt',
@@ -140,7 +116,7 @@ mozilla_xpt(name = 'mouse-xpt',
 )
 
 
-js_binary(name = 'bad-cert-listener',
+closure_binary(name = 'bad-cert-listener',
   srcs = [
     'js/badCertListener.js',
   ],
@@ -158,7 +134,7 @@ js_binary(name = 'bad-cert-listener',
 )
 
 
-js_binary(name = 'command-processor',
+closure_binary(name = 'command-processor',
   srcs = [
     'js/nsCommandProcessor.js',
   ],
@@ -190,7 +166,7 @@ js_binary(name = 'command-processor',
 )
 
 
-js_binary(name = 'driver-component',
+closure_binary(name = 'driver-component',
   srcs = [
     'js/driver-component.js',
   ],
@@ -213,7 +189,7 @@ js_binary(name = 'driver-component',
 )
 
 
-js_binary(name = 'modifier-keys',
+closure_binary(name = 'modifier-keys',
   srcs = [
     'js/modifierKeys.js',
   ],
@@ -231,7 +207,7 @@ js_binary(name = 'modifier-keys',
 )
 
 
-js_binary(name = 'prompt-service',
+closure_binary(name = 'prompt-service',
   srcs = [
     'js/promptService.js',
   ],
@@ -250,7 +226,7 @@ js_binary(name = 'prompt-service',
 )
 
 
-js_binary(name = 'session',
+closure_binary(name = 'session',
   srcs = [
     'js/wdsession.js',
   ],
@@ -267,7 +243,7 @@ js_binary(name = 'session',
 )
 
 
-js_binary(name = 'session-store',
+closure_binary(name = 'session-store',
   srcs = [
     'js/sessionstore.js',
   ],
@@ -287,7 +263,7 @@ js_binary(name = 'session-store',
 )
 
 
-js_binary(name = 'synthetic-mouse',
+closure_binary(name = 'synthetic-mouse',
   srcs = [
     'js/syntheticMouse.js',
   ],
@@ -313,7 +289,7 @@ js_binary(name = 'synthetic-mouse',
 )
 
 
-js_binary(name = 'web-element-cache',
+closure_binary(name = 'web-element-cache',
   srcs = [
     'js/element_cache.js',
   ],
@@ -334,7 +310,7 @@ js_binary(name = 'web-element-cache',
 )
 
 
-js_library(name = 'dispatcher',
+closure_library(name = 'dispatcher',
   srcs = [
     'js/dispatcher.js'
   ],
@@ -349,14 +325,14 @@ js_library(name = 'dispatcher',
 )
 
 
-js_library(name = 'error',
+closure_library(name = 'error',
   srcs = [
     'js/error.js',
   ],
 )
 
 
-js_library(name = 'events',
+closure_library(name = 'events',
   srcs = [
     'js/events.js',
   ],
@@ -369,17 +345,19 @@ js_library(name = 'events',
 )
 
 
-js_library(name = 'files',
+closure_library(name = 'files',
   srcs = [
     'js/files.js',
   ],
   deps = [
+    ':error',
+    '//javascript/atoms:errors',
     '//third_party/closure:closure',
   ],
 )
 
 
-js_library(name = 'firefox-utils',
+closure_library(name = 'firefox-utils',
   srcs = [
     'js/firefox-utils.js',
   ],
@@ -392,7 +370,7 @@ js_library(name = 'firefox-utils',
 )
 
 
-js_library(name = 'firefoxdriver',
+closure_library(name = 'firefoxdriver',
   srcs = [
     'js/firefoxDriver.js'
   ],
@@ -416,7 +394,7 @@ js_library(name = 'firefoxdriver',
 )
 
 
-js_library(name = 'logging',
+closure_library(name = 'logging',
   srcs = [
     'js/logger.js',
     'js/profiler.js',
@@ -431,7 +409,7 @@ js_library(name = 'logging',
 )
 
 
-js_library(name = 'modals',
+closure_library(name = 'modals',
   srcs = [ 'js/modals.js' ],
   deps = [
     ':firefox-utils',
@@ -444,7 +422,7 @@ js_library(name = 'modals',
 )
 
 
-js_library(name = 'moz',
+closure_library(name = 'moz',
   srcs = [ 'js/moz.js' ],
   deps = [
     '//javascript/atoms:json',
@@ -453,7 +431,7 @@ js_library(name = 'moz',
 )
 
 
-js_library(name = 'preconditions',
+closure_library(name = 'preconditions',
   srcs = [
     'js/preconditions.js',
   ],
@@ -464,7 +442,7 @@ js_library(name = 'preconditions',
 )
 
 
-js_library(name = 'prefs',
+closure_library(name = 'prefs',
   srcs = [
     'js/prefs.js',
   ],
@@ -474,7 +452,7 @@ js_library(name = 'prefs',
 )
 
 
-js_library(name = 'proxy',
+closure_library(name = 'proxy',
   srcs = [ 'js/proxy.js' ],
   deps = [
     ':logging',
@@ -483,7 +461,7 @@ js_library(name = 'proxy',
 )
 
 
-js_library(name = 'request',
+closure_library(name = 'request',
   srcs = [
     'js/request.js',
   ],
@@ -493,14 +471,14 @@ js_library(name = 'request',
 )
 
 
-js_library(name = 'response',
+closure_library(name = 'response',
   srcs = [
     'js/response.js',
   ],
 )
 
 
-js_library(name = 'screenshooter',
+closure_library(name = 'screenshooter',
   srcs = [
     'js/screenshooter.js',
   ],
@@ -509,7 +487,7 @@ js_library(name = 'screenshooter',
   ],
 )
 
-js_library(name = 'timer',
+closure_library(name = 'timer',
   srcs = [
     ':timer.js',
   ],
@@ -519,7 +497,7 @@ export_file(name = 'timer.js',
   src = 'js/timer.js',
 )
 
-js_library(name = 'utils',
+closure_library(name = 'utils',
   srcs = [
     'js/utils.js',
   ],
@@ -535,7 +513,7 @@ js_library(name = 'utils',
 )
 
 
-js_library(name = 'webdriver-server',
+closure_library(name = 'webdriver-server',
   srcs = [
     'js/webdriverserver.js',
   ],
@@ -550,7 +528,7 @@ js_library(name = 'webdriver-server',
 )
 
 
-js_library(name = 'webelement',
+closure_library(name = 'webelement',
   srcs = [
     'js/wrappedElement.js',
   ],
@@ -569,7 +547,7 @@ js_library(name = 'webelement',
 )
 
 
-js_library(name = 'web-loading-listener',
+closure_library(name = 'web-loading-listener',
   srcs = [
     'js/webLoadingListener.js',
   ],

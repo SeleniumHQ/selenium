@@ -42,8 +42,9 @@ goog.require('goog.ui.registry');
  * @extends {goog.ui.Control}
  */
 goog.ui.Tab = function(content, opt_renderer, opt_domHelper) {
-  goog.ui.Control.call(this, content,
-      opt_renderer || goog.ui.TabRenderer.getInstance(), opt_domHelper);
+  goog.ui.Control.call(
+      this, content, opt_renderer || goog.ui.TabRenderer.getInstance(),
+      opt_domHelper);
 
   // Tabs support the SELECTED state.
   this.setSupportedState(goog.ui.Component.State.SELECTED, true);
@@ -97,7 +98,6 @@ goog.ui.Tab.prototype.setTooltipInternal = function(tooltip) {
 
 
 // Register a decorator factory function for goog.ui.Tabs.
-goog.ui.registry.setDecoratorByClassName(goog.ui.TabRenderer.CSS_CLASS,
-    function() {
-      return new goog.ui.Tab(null);
-    });
+goog.ui.registry.setDecoratorByClassName(
+    goog.ui.TabRenderer.CSS_CLASS,
+    function() { return new goog.ui.Tab(null); });

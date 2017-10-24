@@ -1,18 +1,20 @@
-# Copyright 2014 Software Freedom Conservancy
-# Copyright 2008-2011 WebDriver committers
-# Copyright 2008-2011 Google Inc.
+# Licensed to the Software Freedom Conservancy (SFC) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The SFC licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
 #
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
+#   http://www.apache.org/licenses/LICENSE-2.0
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
 from __future__ import with_statement
 
 import base64
@@ -79,7 +81,7 @@ class FirefoxProfile(object):
         self.extensionsDir = os.path.join(self.profile_dir, "extensions")
         self.userPrefs = os.path.join(self.profile_dir, "user.js")
 
-    #Public Methods
+    # Public Methods
     def set_preference(self, key, value):
         """
         sets the preference that we want in the profile.
@@ -94,7 +96,7 @@ class FirefoxProfile(object):
             self.default_preferences[key] = value
         self._write_user_prefs(self.default_preferences)
 
-    #Properties
+    # Properties
 
     @property
     def path(self):
@@ -121,7 +123,7 @@ class FirefoxProfile(object):
             port = int(port)
             if port < 1 or port > 65535:
                 raise WebDriverException("Port number must be in the range 1..65535")
-        except (ValueError, TypeError) as e:
+        except (ValueError, TypeError):
             raise WebDriverException("Port needs to be an integer")
         self._port = port
         self.set_preference("webdriver_firefox_port", self._port)
@@ -163,6 +165,7 @@ class FirefoxProfile(object):
         A zipped, base64 encoded string of profile directory
         for use with remote WebDriver JSON wire protocol
         """
+        self.update_preferences()
         fp = BytesIO()
         zipped = zipfile.ZipFile(fp, 'w', zipfile.ZIP_DEFLATED)
         path_root = len(self.path) + 1  # account for trailing slash
@@ -229,10 +232,10 @@ class FirefoxProfile(object):
                     matches = re.search(PREF_RE, usr)
                     try:
                         self.default_preferences[matches.group(1)] = json.loads(matches.group(2))
-                    except:
+                    except Exception:
                         warnings.warn("(skipping) failed to json.loads existing preference: " +
                                       matches.group(1) + matches.group(2))
-        except:
+        except Exception:
             # The profile given hasn't had any changes made, i.e no users.js
             pass
 
@@ -252,8 +255,9 @@ class FirefoxProfile(object):
             tmpdir = tempfile.mkdtemp(suffix='.' + os.path.split(addon)[-1])
             compressed_file = zipfile.ZipFile(addon, 'r')
             for name in compressed_file.namelist():
-                if name.endswith('/') and not os.path.isdir(os.path.join(tmpdir, name)):
-                    os.makedirs(os.path.join(tmpdir, name))
+                if name.endswith('/'):
+                    if not os.path.isdir(os.path.join(tmpdir, name)):
+                        os.makedirs(os.path.join(tmpdir, name))
                 else:
                     if not os.path.isdir(os.path.dirname(os.path.join(tmpdir, name))):
                         os.makedirs(os.path.dirname(os.path.join(tmpdir, name)))

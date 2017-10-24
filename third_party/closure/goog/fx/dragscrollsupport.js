@@ -44,12 +44,26 @@ goog.require('goog.style');
  *     event handler, useful when events are generated for more than one source
  *     element and/or are not real mousemove events.
  * @constructor
+ * @struct
  * @extends {goog.Disposable}
  * @see ../demos/dragscrollsupport.html
  */
-goog.fx.DragScrollSupport = function(containerNode, opt_margin,
-                                     opt_externalMouseMoveTracking) {
-  goog.Disposable.call(this);
+goog.fx.DragScrollSupport = function(
+    containerNode, opt_margin, opt_externalMouseMoveTracking) {
+  goog.fx.DragScrollSupport.base(this, 'constructor');
+
+  /**
+   * Whether scrolling should be constrained to happen only when the cursor is
+   * inside the container node.
+   * @private {boolean}
+   */
+  this.constrainScroll_ = false;
+
+  /**
+   * Whether horizontal scrolling is allowed.
+   * @private {boolean}
+   */
+  this.horizontalScrolling_ = true;
 
   /**
    * The container to be scrolled.
@@ -134,23 +148,6 @@ goog.fx.DragScrollSupport.MARGIN = 32;
 
 
 /**
- * Whether scrolling should be constrained to happen only when the cursor is
- * inside the container node.
- * @type {boolean}
- * @private
- */
-goog.fx.DragScrollSupport.prototype.constrainScroll_ = false;
-
-
-/**
- * Whether horizontal scrolling is allowed.
- * @type {boolean}
- * @private
- */
-goog.fx.DragScrollSupport.prototype.horizontalScrolling_ = true;
-
-
-/**
  * Sets whether scrolling should be constrained to happen only when the cursor
  * is inside the container node.
  * NOTE: If a margin is not set, then it does not make sense to
@@ -167,8 +164,8 @@ goog.fx.DragScrollSupport.prototype.setConstrainScroll = function(constrain) {
  * Sets whether horizontal scrolling is allowed.
  * @param {boolean} scrolling Whether horizontal scrolling is allowed.
  */
-goog.fx.DragScrollSupport.prototype.setHorizontalScrolling =
-    function(scrolling) {
+goog.fx.DragScrollSupport.prototype.setHorizontalScrolling = function(
+    scrolling) {
   this.horizontalScrolling_ = scrolling;
 };
 
@@ -191,8 +188,8 @@ goog.fx.DragScrollSupport.prototype.constrainBounds_ = function(bounds) {
 
     var quarterWidth = bounds.width * 0.25;
     var xMargin = Math.min(margin, quarterWidth);
-    bounds.top += xMargin;
-    bounds.height -= 2 * xMargin;
+    bounds.left += xMargin;
+    bounds.width -= 2 * xMargin;
   }
   return bounds;
 };
@@ -208,7 +205,8 @@ goog.fx.DragScrollSupport.prototype.setupListeners_ = function(
     externalMouseMoveTracking) {
   if (!externalMouseMoveTracking) {
     // Track mouse pointer position to determine scroll direction.
-    this.eventHandler_.listen(goog.dom.getOwnerDocument(this.containerNode_),
+    this.eventHandler_.listen(
+        goog.dom.getOwnerDocument(this.containerNode_),
         goog.events.EventType.MOUSEMOVE, this.onMouseMove);
   }
 
@@ -234,10 +232,12 @@ goog.fx.DragScrollSupport.prototype.onTick_ = function(event) {
  * @param {goog.events.Event} event Mouse move event.
  */
 goog.fx.DragScrollSupport.prototype.onMouseMove = function(event) {
-  var deltaX = this.horizontalScrolling_ ? this.calculateScrollDelta(
-      event.clientX, this.scrollBounds_.left, this.scrollBounds_.width) : 0;
-  var deltaY = this.calculateScrollDelta(event.clientY,
-      this.scrollBounds_.top, this.scrollBounds_.height);
+  var deltaX = this.horizontalScrolling_ ?
+      this.calculateScrollDelta(
+          event.clientX, this.scrollBounds_.left, this.scrollBounds_.width) :
+      0;
+  var deltaY = this.calculateScrollDelta(
+      event.clientY, this.scrollBounds_.top, this.scrollBounds_.height);
   this.scrollDelta_.x = deltaX;
   this.scrollDelta_.y = deltaY;
 
@@ -263,9 +263,9 @@ goog.fx.DragScrollSupport.prototype.onMouseMove = function(event) {
 goog.fx.DragScrollSupport.prototype.isInContainerBounds_ = function(x, y) {
   var containerBounds = this.containerBounds_;
   return containerBounds.left <= x &&
-         containerBounds.left + containerBounds.width >= x &&
-         containerBounds.top <= y &&
-         containerBounds.top + containerBounds.height >= y;
+      containerBounds.left + containerBounds.width >= x &&
+      containerBounds.top <= y &&
+      containerBounds.top + containerBounds.height >= y;
 };
 
 

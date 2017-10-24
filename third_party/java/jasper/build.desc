@@ -1,8 +1,0 @@
-java_library(name = "jasper",
-  deps = [
-    "jasper-compiler-5.5.15.jar",
-    "jasper-compiler-jdt-5.5.15.jar",
-    "jasper-runtime-5.5.15.jar",
-    "jsp-api-2.0.jar",
-    "//third_party/java/commons-el"
-  ])

@@ -13,13 +13,10 @@
     goog.require('goog.events');
     goog.require('goog.testing.jsunit');
     goog.require('goog.userAgent');
-    goog.require('goog.testing.ExpectedFailures');
   </script>
   <script type="text/javascript">
     var singleSelect, multiSelect, radioButtons, checkboxes, changeCount;
     var gotPointerCaptureCount, lostPointerCaptureCount;
-
-    var expectedFailures;
 
     function setUpPage() {
       singleSelect = bot.locators.findElement({id: 'singleSelect'});
@@ -47,11 +44,6 @@
       goog.array.forEach(radioButtons, function(e) {
         e.checked = false;
       });
-      expectedFailures = new goog.testing.ExpectedFailures();
-    }
-
-    function tearDown() {
-      expectedFailures.handleTearDown();
     }
 
     function checkActionCompatibility(action) {
@@ -196,23 +188,23 @@
       assertTrue(bot.dom.isSelected(multiSelect.options[2]));
     }
 
-    function testClickCanToggleOptionsInAMultiSelect() {
-      expectedFailures.expectFailureFor(
-        goog.userAgent.WEBKIT, 'Chrome fails this test, have not figured it out yet...');
-      // TODO: Figure it out
-      expectedFailures.run(function() {
-        canToggleOptionsInAMultiSelect(bot.action.click)
-      });
-    }
+    var testClickCanToggleOptionsInAMultiSelect =
+        // Disabled on Chrome due to
+        // https://code.google.com/p/chromedriver/issues/detail?id=1073
+        // Disabled on Safari due to
+        // https://github.com/SeleniumHQ/selenium/issues/461
+        (goog.userAgent.product.CHROME || goog.userAgent.product.SAFARI) ?
+        goog.nullFunction :
+        goog.partial(canToggleOptionsInAMultiSelect, bot.action.click);
 
-    function testTapCanToggleOptionsInAMultiSelect() {
-      expectedFailures.expectFailureFor(
-        goog.userAgent.WEBKIT, 'Chrome fails this test, have not figured it out yet...');
-      // TODO: Figure it out
-      expectedFailures.run(function() {
-        canToggleOptionsInAMultiSelect(bot.action.tap)
-      });
-    }
+    var testTapCanToggleOptionsInAMultiSelect =
+        // Disabled on Chrome due to
+        // https://code.google.com/p/chromedriver/issues/detail?id=1073
+        // Disabled on Safari due to
+        // https://github.com/SeleniumHQ/selenium/issues/461
+        (goog.userAgent.product.CHROME || goog.userAgent.product.SAFARI) ?
+        goog.nullFunction :
+        goog.partial(canToggleOptionsInAMultiSelect, bot.action.tap);
 
     function canToggleCheckboxes(action) {
       if (!checkActionCompatibility(action)) {
@@ -283,7 +275,6 @@
       expectChanges(radioButtons[0]);
 
       action(radioButtons[0]);
-
       assertChanges(0);
       assertTrue(bot.dom.isSelected(radioButtons[0]));
     }
@@ -342,16 +333,20 @@
     }
 
     var testClickCanSelectOptionWhenDefaultPrevented =
+        // Disabled on Safari due to
+        // https://github.com/SeleniumHQ/selenium/issues/461
+        goog.userAgent.product.SAFARI ?
+        goog.nullFunction :
         goog.partial(canSelectOptionWhenDefaultPrevented, bot.action.click);
 
-    function testTapCanSelectOptionWhenDefaultPrevented() {
-      expectedFailures.expectFailureFor(
-        goog.userAgent.WEBKIT, 'Chrome fails this test, have not figured it out yet...');
-      // TODO: Figure it out
-      expectedFailures.run(function() {
-        canSelectOptionWhenDefaultPrevented(bot.action.tap)
-      });
-    }
+    var testTapCanSelectOptionWhenDefaultPrevented =
+        // Disabled on Chrome due to
+        // https://code.google.com/p/chromedriver/issues/detail?id=1073
+        // Disabled on Safari due to
+        // https://github.com/SeleniumHQ/selenium/issues/461
+        (goog.userAgent.product.CHROME || goog.userAgent.product.SAFARI) ?
+        goog.nullFunction :
+        goog.partial(canSelectOptionWhenDefaultPrevented, bot.action.tap);
 
     function cannotSelectCheckboxWhenDefaultPrevented(action) {
       if (!checkActionCompatibility(action)) {
@@ -365,11 +360,24 @@
 
       action(elem);
 
-      // WebKit and IE9 standards mode fire change events when the
-      // checkbox isn't toggled.
-      assertChanges(
-          goog.userAgent.WEBKIT || bot.userAgent.IE_DOC_9 ? 1 : 0);
+      // Some browsers fire change events when the checkbox isn't toggled.
+      assertChanges(firesChangeEventIfNotToggled() ? 1 : 0);
       assertFalse(bot.dom.isSelected(elem));
+    }
+
+    function firesChangeEventIfNotToggled() {
+      if (goog.userAgent.product.CHROME && bot.userAgent.isProductVersion(45)) {
+        // Chrome 45 and above do not fire the change event.
+        return false;
+      } else if (goog.userAgent.WEBKIT || bot.userAgent.IE_DOC_9 ||
+                 goog.userAgent.EDGE) {
+        // Other browsers with goog.userAgent.WEBKIT fire the change event.
+        // IE 9 standards mode fires the change event.
+        return true;
+      }
+
+      // All other browsers do not fire the change event.
+      return false;
     }
 
     var testClickCannotSelectCheckboxWhenDefaultPrevented =
@@ -399,12 +407,8 @@
         assertChanges(1);
         assertTrue(bot.dom.isSelected(elem));
       } else {
-        // IE9 standards mode and Chrome still fire the change event.
-        if (bot.userAgent.IE_DOC_9 || goog.userAgent.product.CHROME) {
-          assertChanges(1);
-        } else {
-          assertChanges(0);
-        }
+        // Some browsers fire change events when the checkbox isn't toggled.
+        assertChanges(firesChangeEventIfNotToggled() ? 1 : 0);
         assertFalse(bot.dom.isSelected(elem));
       }
     }
@@ -545,16 +549,20 @@
     }
 
     var testClickTogglesByTheTimeChangeEventFires =
+        // Disabled on Safari due to
+        // https://github.com/SeleniumHQ/selenium/issues/461
+        goog.userAgent.product.SAFARI ?
+        goog.nullFunction :
         goog.partial(togglesByTheTimeChangeEventFires, bot.action.click);
 
-    function testTapTogglesByTheTimeChangeEventFires() {
-      expectedFailures.expectFailureFor(
-        goog.userAgent.WEBKIT, 'Chrome fails this test, have not figured it out yet...');
-      // TODO: Figure it out
-      expectedFailures.run(function() {
-        togglesByTheTimeChangeEventFires(bot.action.tap)
-      });
-    }
+    var testTapTogglesByTheTimeChangeEventFires =
+        // Disabled on Chrome due to
+        // https://code.google.com/p/chromedriver/issues/detail?id=1073
+        // Disabled on Safari due to
+        // https://github.com/SeleniumHQ/selenium/issues/461
+        (goog.userAgent.product.CHROME || goog.userAgent.product.SAFARI) ?
+        goog.nullFunction :
+        goog.partial(togglesByTheTimeChangeEventFires, bot.action.tap);
   </script>
 </head>
 <body>

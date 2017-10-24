@@ -400,7 +400,9 @@ function start(baseURL, handler, useLastWindow) {
   //Samit: use the web driver backed selenium
   if (this.executeUsingWebDriver) {
     var webDriverBrowserString = this.editor.getOptions().webDriverBrowserString;
-    selenium = new WebdriverBackedSelenium(baseURL, webDriverBrowserString);
+    var reuseBrowser = this.editor.getOptions().webDriverReuseWindow;
+    var server = this.editor.getOptions().webDriverServer;
+    selenium = new WebdriverBackedSelenium(baseURL, useLastWindow, webDriverBrowserString, reuseBrowser, server);
   } else {
     selenium = createSelenium(baseURL, useLastWindow);
     selenium.browserbot.selectWindow(null);
@@ -417,6 +419,13 @@ function start(baseURL, handler, useLastWindow) {
   testCase.debugContext.reset();
   currentTest.start();
   //setState(Debugger.PLAYING);
+}
+
+function closeSession() {
+  //Samit: If we are using the web driver backed selenium, close the session
+  if (this.executeUsingWebDriver && WebdriverBackedSelenium && WebdriverBackedSelenium.closeWebdriverSession) {
+    WebdriverBackedSelenium.closeWebdriverSession();
+  }
 }
 
 function executeCommand(baseURL, command) {

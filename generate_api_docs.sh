@@ -4,24 +4,30 @@
 # Python
 ./go py_docs || exit
 
+# Ruby
+./go //rb:docs || exit
 
 # switch to gh-pages and copy the files
 git checkout gh-pages || exit
-rm -rf docs/api/java docs/api/py
+rm -rf docs/api/java docs/api/py docs/api/rb
 
 mv build/javadoc docs/api/java
 mv build/docs/api/py docs/api/py
+mv build/docs/api/rb docs/api/rb
 
 git add -A docs/api
 
-echo "Do you want to commit the changes? (Y/n):"
+read -p "Do you want to commit the chages? (Y/n):" changes </dev/tty
 
-read changes
-
-if [ $changes != "" || $changes != "Y" || $changes != "y" ]
-then
-  exit;
+if [ -z $changes ]; then
+  changes=Y
 fi
+
+case "$changes" in
+  Y|y) echo "";;
+  N|n) exit;;
+  *) exit;;
+esac
 
 echo "Commiting changes"
 git commit -am "updating javadoc and py docs"

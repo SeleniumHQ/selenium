@@ -1,17 +1,19 @@
-// Copyright 2013 Selenium committers
-// Copyright 2013 Software Freedom Conservancy
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-//     You may obtain a copy of the License at
+//   http://www.apache.org/licenses/LICENSE-2.0
 //
-// http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 'use strict';
 
@@ -26,9 +28,7 @@ var serveIndex = require('serve-index');
 
 var Server = require('./httpserver').Server,
     resources = require('./resources'),
-    promise = require('../..').promise,
-    isDevMode = require('../../_base').isDevMode(),
-    string = require('../../_base').require('goog.string');
+    isDevMode = require('../devmode');
 
 var WEB_ROOT = '/common';
 var JS_ROOT = '/javascript';
@@ -193,15 +193,18 @@ function sendDelayedResponse(request, response) {
 }
 
 
-function handleUpload(request, response, next) {
-  multer({
-    inMemory: true,
-    onFileUploadComplete: function(file) {
+function handleUpload(request, response) {
+  let upload = multer({storage: multer.memoryStorage()}).any();
+  upload(request, response, function(err) {
+    if (err) {
+      response.writeHead(500);
+      response.end(err + '');
+    } else {
       response.writeHead(200);
-      response.write(file.buffer);
+      response.write(request.files[0].buffer);
       response.end('<script>window.top.window.onUploadDone();</script>');
     }
-  })(request, response, function() {});
+  });
 }
 
 
@@ -268,7 +271,7 @@ function sendIndex(request, response) {
 /**
  * Starts the server on the specified port.
  * @param {number=} opt_port The port to use, or 0 for any free port.
- * @return {!webdriver.promise.Promise.<Host>} A promise that will resolve
+ * @return {!Promise<Host>} A promise that will resolve
  *     with the server host when it has fully started.
  */
 exports.start = server.start.bind(server);
@@ -276,7 +279,7 @@ exports.start = server.start.bind(server);
 
 /**
  * Stops the server.
- * @return {!webdriver.promise.Promise} A promise that will resolve when the
+ * @return {!Promise} A promise that will resolve when the
  *     server has closed all connections.
  */
 exports.stop = server.stop.bind(server);
@@ -301,7 +304,7 @@ exports.url = server.url.bind(server);
  */
 exports.whereIs = function(filePath) {
   filePath = filePath.replace(/\\/g, '/');
-  if (!string.startsWith(filePath, '/')) {
+  if (!filePath.startsWith('/')) {
     filePath = '/' + filePath;
   }
   return server.url(WEB_ROOT + filePath);

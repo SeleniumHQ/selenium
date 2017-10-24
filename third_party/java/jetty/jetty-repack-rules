@@ -1,0 +1,1 @@
+rule org.eclipse.jetty.** org.seleniumhq.jetty9.@1

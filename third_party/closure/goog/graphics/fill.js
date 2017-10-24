@@ -43,4 +43,3 @@ goog.graphics.Fill.prototype.getColor1 = goog.abstractMethod;
  * @return {string} The end color of a gradient fill.
  */
 goog.graphics.Fill.prototype.getColor2 = goog.abstractMethod;
-

@@ -49,16 +49,16 @@ goog.require('goog.ui.emoji.EmojiPicker');
  * @constructor
  * @final
  */
-goog.ui.emoji.PopupEmojiPicker =
-    function(defaultImgUrl, opt_domHelper) {
+goog.ui.emoji.PopupEmojiPicker = function(defaultImgUrl, opt_domHelper) {
   goog.ui.Component.call(this, opt_domHelper);
 
-  this.emojiPicker_ = new goog.ui.emoji.EmojiPicker(defaultImgUrl,
-                                                    opt_domHelper);
+  this.emojiPicker_ =
+      new goog.ui.emoji.EmojiPicker(defaultImgUrl, opt_domHelper);
   this.addChild(this.emojiPicker_);
 
-  this.getHandler().listen(this.emojiPicker_,
-      goog.ui.Component.EventType.ACTION, this.onEmojiPicked_);
+  this.getHandler().listen(
+      this.emojiPicker_, goog.ui.Component.EventType.ACTION,
+      this.onEmojiPicked_);
 };
 goog.inherits(goog.ui.emoji.PopupEmojiPicker, goog.ui.Component);
 
@@ -111,8 +111,8 @@ goog.ui.emoji.PopupEmojiPicker.prototype.toggleMode_ = true;
  * @param {Array<Array<?>>} emojiGroup A new group of emoji to be added. Each
  *    internal array contains [emojiUrl, emojiId].
  */
-goog.ui.emoji.PopupEmojiPicker.prototype.addEmojiGroup =
-    function(title, emojiGroup) {
+goog.ui.emoji.PopupEmojiPicker.prototype.addEmojiGroup = function(
+    title, emojiGroup) {
   this.emojiPicker_.addEmojiGroup(title, emojiGroup);
 };
 
@@ -143,8 +143,8 @@ goog.ui.emoji.PopupEmojiPicker.prototype.getToggleMode = function() {
  *
  * @param {boolean} shouldDelay Whether to delay loading the images.
  */
-goog.ui.emoji.PopupEmojiPicker.prototype.setDelayedLoad =
-    function(shouldDelay) {
+goog.ui.emoji.PopupEmojiPicker.prototype.setDelayedLoad = function(
+    shouldDelay) {
   if (this.emojiPicker_) {
     this.emojiPicker_.setDelayedLoad(shouldDelay);
   }
@@ -181,8 +181,8 @@ goog.ui.emoji.PopupEmojiPicker.prototype.setUrlPrefix = function(urlPrefix) {
  *
  * @param {goog.ui.TabPane.TabLocation} tabLocation The location of the tabs.
  */
-goog.ui.emoji.PopupEmojiPicker.prototype.setTabLocation =
-    function(tabLocation) {
+goog.ui.emoji.PopupEmojiPicker.prototype.setTabLocation = function(
+    tabLocation) {
   this.emojiPicker_.setTabLocation(tabLocation);
 };
 
@@ -215,8 +215,8 @@ goog.ui.emoji.PopupEmojiPicker.prototype.setNumColumns = function(numCols) {
  *
  * @param {boolean} progressive Whether the picker should render progressively.
  */
-goog.ui.emoji.PopupEmojiPicker.prototype.setProgressiveRender =
-    function(progressive) {
+goog.ui.emoji.PopupEmojiPicker.prototype.setProgressiveRender = function(
+    progressive) {
   if (this.emojiPicker_) {
     this.emojiPicker_.setProgressiveRender(progressive);
   }
@@ -394,8 +394,9 @@ goog.ui.emoji.PopupEmojiPicker.prototype.show_ = function(e) {
   }
 
   this.lastTarget_ = /** @type {Element} */ (e.currentTarget);
-  this.popup_.setPosition(new goog.positioning.AnchoredPosition(
-      this.lastTarget_, goog.positioning.Corner.BOTTOM_LEFT));
+  this.popup_.setPosition(
+      new goog.positioning.AnchoredPosition(
+          this.lastTarget_, goog.positioning.Corner.BOTTOM_LEFT));
   this.popup_.setVisible(true);
 };
 

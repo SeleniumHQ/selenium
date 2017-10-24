@@ -1,20 +1,24 @@
-/*
-Copyright 2010 Selenium committers
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
- */
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium.net;
+
+import static java.lang.Math.max;
+import static java.util.concurrent.TimeUnit.SECONDS;
 
 import org.openqa.selenium.Platform;
 
@@ -23,13 +27,10 @@ import java.net.ConnectException;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.Random;
-import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
-
-import static java.lang.Math.max;
-import static java.util.concurrent.TimeUnit.SECONDS;
 
 public class PortProber {
 
@@ -41,7 +42,7 @@ public class PortProber {
 
     if (current.is(Platform.LINUX)) {
        ephemeralRangeDetector = LinuxEphemeralPortRangeDetector.getInstance();
-     } else if (current.is(Platform.XP)){
+     } else if (current.is(Platform.XP)) {
        ephemeralRangeDetector = new OlderWindowsVersionEphemeralPortDetector();
     } else {
        ephemeralRangeDetector = new FixedIANAPortRange();
@@ -64,19 +65,6 @@ public class PortProber {
       }
     }
     throw new RuntimeException("Unable to find a free port");
-  }
-
-  public static Callable<Integer> freeLocalPort(final int port) {
-    return new Callable<Integer>() {
-
-      public Integer call()
-          throws Exception {
-        if (checkPortIsFree(port) != -1) {
-          return port;
-        }
-        return null;
-      }
-    };
   }
 
   /**
@@ -154,5 +142,23 @@ public class PortProber {
     }
 
     return false;
+  }
+
+  public static void waitForPortUp(int port, int timeout, TimeUnit unit) {
+    long end = System.currentTimeMillis() + unit.toMillis(timeout);
+    while (System.currentTimeMillis() < end) {
+      try {
+        Socket socket = new Socket();
+        socket.connect(new InetSocketAddress("localhost", port), 1000);
+        socket.close();
+        return;
+      } catch (ConnectException e) {
+        // Ignore this
+      } catch (SocketTimeoutException e) {
+        // Ignore this
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      }
+    }
   }
 }

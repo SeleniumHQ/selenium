@@ -1,7 +1,9 @@
 ﻿// <copyright file="DriverServiceCommandExecutor.cs" company="WebDriver Committers">
-// Copyright 2015 Software Freedom Conservancy
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -15,13 +17,6 @@
 // </copyright>
 
 using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Net;
-using System.Net.Sockets;
-using System.Text;
-using System.Threading;
 
 namespace OpenQA.Selenium.Remote
 {
@@ -57,12 +52,25 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
+        /// Gets the <see cref="CommandInfoRepository"/> object associated with this executor.
+        /// </summary>
+        public CommandInfoRepository CommandInfoRepository
+        {
+            get { return this.internalExecutor.CommandInfoRepository; }
+        }
+
+        /// <summary>
         /// Executes a command
         /// </summary>
         /// <param name="commandToExecute">The command you wish to execute</param>
         /// <returns>A response from the browser</returns>
         public Response Execute(Command commandToExecute)
         {
+            if (commandToExecute == null)
+            {
+                throw new ArgumentNullException("commandToExecute", "Command to execute cannot be null");
+            }
+
             Response toReturn = null;
             if (commandToExecute.Name == DriverCommand.NewSession)
             {

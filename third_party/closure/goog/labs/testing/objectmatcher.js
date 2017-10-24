@@ -17,8 +17,7 @@
  *     hasProperty, instanceOf, etc.
  */
 
-
-
+goog.provide('goog.labs.testing.AnyObjectMatcher');
 goog.provide('goog.labs.testing.HasPropertyMatcher');
 goog.provide('goog.labs.testing.InstanceOfMatcher');
 goog.provide('goog.labs.testing.IsNullMatcher');
@@ -26,8 +25,28 @@ goog.provide('goog.labs.testing.IsNullOrUndefinedMatcher');
 goog.provide('goog.labs.testing.IsUndefinedMatcher');
 goog.provide('goog.labs.testing.ObjectEqualsMatcher');
 
-
 goog.require('goog.labs.testing.Matcher');
+
+
+
+/**
+ * Matches any object value.
+ *
+ * @constructor @struct @implements {goog.labs.testing.Matcher} @final
+ */
+goog.labs.testing.AnyObjectMatcher = function() {};
+
+
+/** @override */
+goog.labs.testing.AnyObjectMatcher.prototype.matches = function(actualValue) {
+  return goog.isObject(actualValue);
+};
+
+
+/** @override */
+goog.labs.testing.AnyObjectMatcher.prototype.describe = function(actualValue) {
+  return '<' + actualValue + '> is not an object';
+};
 
 
 
@@ -55,8 +74,8 @@ goog.labs.testing.ObjectEqualsMatcher = function(expectedObject) {
  *
  * @override
  */
-goog.labs.testing.ObjectEqualsMatcher.prototype.matches =
-    function(actualObject) {
+goog.labs.testing.ObjectEqualsMatcher.prototype.matches = function(
+    actualObject) {
   return actualObject === this.object_;
 };
 
@@ -64,8 +83,8 @@ goog.labs.testing.ObjectEqualsMatcher.prototype.matches =
 /**
  * @override
  */
-goog.labs.testing.ObjectEqualsMatcher.prototype.describe =
-    function(actualObject) {
+goog.labs.testing.ObjectEqualsMatcher.prototype.describe = function(
+    actualObject) {
   return 'Input object is not the same as the expected object.';
 };
 
@@ -95,8 +114,8 @@ goog.labs.testing.HasPropertyMatcher = function(property) {
  *
  * @override
  */
-goog.labs.testing.HasPropertyMatcher.prototype.matches =
-    function(actualObject) {
+goog.labs.testing.HasPropertyMatcher.prototype.matches = function(
+    actualObject) {
   return this.property_ in actualObject;
 };
 
@@ -104,8 +123,8 @@ goog.labs.testing.HasPropertyMatcher.prototype.matches =
 /**
  * @override
  */
-goog.labs.testing.HasPropertyMatcher.prototype.describe =
-    function(actualObject) {
+goog.labs.testing.HasPropertyMatcher.prototype.describe = function(
+    actualObject) {
   return 'Object does not have property: ' + this.property_;
 };
 
@@ -135,8 +154,7 @@ goog.labs.testing.InstanceOfMatcher = function(object) {
  *
  * @override
  */
-goog.labs.testing.InstanceOfMatcher.prototype.matches =
-    function(actualObject) {
+goog.labs.testing.InstanceOfMatcher.prototype.matches = function(actualObject) {
   return actualObject instanceof this.object_;
 };
 
@@ -144,8 +162,8 @@ goog.labs.testing.InstanceOfMatcher.prototype.matches =
 /**
  * @override
  */
-goog.labs.testing.InstanceOfMatcher.prototype.describe =
-    function(actualObject) {
+goog.labs.testing.InstanceOfMatcher.prototype.describe = function(
+    actualObject) {
   return 'Input object is not an instance of the expected object';
 };
 
@@ -167,8 +185,8 @@ goog.labs.testing.IsNullOrUndefinedMatcher = function() {};
  *
  * @override
  */
-goog.labs.testing.IsNullOrUndefinedMatcher.prototype.matches =
-    function(actualValue) {
+goog.labs.testing.IsNullOrUndefinedMatcher.prototype.matches = function(
+    actualValue) {
   return !goog.isDefAndNotNull(actualValue);
 };
 
@@ -176,8 +194,8 @@ goog.labs.testing.IsNullOrUndefinedMatcher.prototype.matches =
 /**
  * @override
  */
-goog.labs.testing.IsNullOrUndefinedMatcher.prototype.describe =
-    function(actualValue) {
+goog.labs.testing.IsNullOrUndefinedMatcher.prototype.describe = function(
+    actualValue) {
   return actualValue + ' is not null or undefined.';
 };
 
@@ -199,8 +217,7 @@ goog.labs.testing.IsNullMatcher = function() {};
  *
  * @override
  */
-goog.labs.testing.IsNullMatcher.prototype.matches =
-    function(actualValue) {
+goog.labs.testing.IsNullMatcher.prototype.matches = function(actualValue) {
   return goog.isNull(actualValue);
 };
 
@@ -208,8 +225,7 @@ goog.labs.testing.IsNullMatcher.prototype.matches =
 /**
  * @override
  */
-goog.labs.testing.IsNullMatcher.prototype.describe =
-    function(actualValue) {
+goog.labs.testing.IsNullMatcher.prototype.describe = function(actualValue) {
   return actualValue + ' is not null.';
 };
 
@@ -231,8 +247,7 @@ goog.labs.testing.IsUndefinedMatcher = function() {};
  *
  * @override
  */
-goog.labs.testing.IsUndefinedMatcher.prototype.matches =
-    function(actualValue) {
+goog.labs.testing.IsUndefinedMatcher.prototype.matches = function(actualValue) {
   return !goog.isDef(actualValue);
 };
 
@@ -240,10 +255,16 @@ goog.labs.testing.IsUndefinedMatcher.prototype.matches =
 /**
  * @override
  */
-goog.labs.testing.IsUndefinedMatcher.prototype.describe =
-    function(actualValue) {
+goog.labs.testing.IsUndefinedMatcher.prototype.describe = function(
+    actualValue) {
   return actualValue + ' is not undefined.';
 };
+
+
+/** @return {!goog.labs.testing.AnyObjectMatcher} */
+function anyObject() {
+  return new goog.labs.testing.AnyObjectMatcher();
+}
 
 
 /**

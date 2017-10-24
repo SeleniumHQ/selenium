@@ -44,15 +44,16 @@ goog.require('goog.ui.registry');
  * @extends {goog.ui.Button}
  */
 goog.ui.CustomButton = function(content, opt_renderer, opt_domHelper) {
-  goog.ui.Button.call(this, content, opt_renderer ||
-      goog.ui.CustomButtonRenderer.getInstance(), opt_domHelper);
+  goog.ui.Button.call(
+      this, content, opt_renderer || goog.ui.CustomButtonRenderer.getInstance(),
+      opt_domHelper);
 };
 goog.inherits(goog.ui.CustomButton, goog.ui.Button);
 
 
 // Register a decorator factory function for goog.ui.CustomButtons.
-goog.ui.registry.setDecoratorByClassName(goog.ui.CustomButtonRenderer.CSS_CLASS,
-    function() {
+goog.ui.registry.setDecoratorByClassName(
+    goog.ui.CustomButtonRenderer.CSS_CLASS, function() {
       // CustomButton defaults to using CustomButtonRenderer.
       return new goog.ui.CustomButton(null);
     });

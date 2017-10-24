@@ -1,17 +1,19 @@
-// Copyright 2010 WebDriver committers
-// Copyright 2010 Google Inc.
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
+//   http://www.apache.org/licenses/LICENSE-2.0
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 goog.provide('bot.locators.id');
 
@@ -51,14 +53,15 @@ bot.locators.id.single = function(target, root) {
   }
 
   // On IE getting by ID returns the first match by id _or_ name.
-  if (bot.dom.getAttribute(e, 'id') == target && goog.dom.contains(root, e)) {
+  if (bot.dom.getAttribute(e, 'id') == target &&
+      root != e && goog.dom.contains(root, e)) {
     return e;
   }
 
   var elements = dom.getElementsByTagNameAndClass('*');
   var element = goog.array.find(elements, function(element) {
     return bot.dom.getAttribute(element, 'id') == target &&
-        goog.dom.contains(root, element);
+        root != element && goog.dom.contains(root, element);
   });
   return /**@type{Element}*/ (element);
 };
@@ -69,7 +72,7 @@ bot.locators.id.single = function(target, root) {
  * @param {string} target The id to search for.
  * @param {!(Document|Element)} root The document or element to perform the
  *     search under.
- * @return {!goog.array.ArrayLike} All matching elements, or an empty list.
+ * @return {!IArrayLike} All matching elements, or an empty list.
  */
 bot.locators.id.many = function(target, root) {
   if (!target) {
@@ -77,8 +80,7 @@ bot.locators.id.many = function(target, root) {
   }
   if (bot.locators.id.canUseQuerySelector_(root, target)) {
     try {
-      // ID can contain anything but spaces. Need to escape for CSS selector.
-      // http://www.w3.org/TR/html5/dom.html#the-id-attribute
+      // Need to escape the ID for use in a CSS selector.
       return root.querySelectorAll('#' + bot.locators.id.cssEscape_(target));
     } catch (e) {
       return [];
@@ -95,6 +97,10 @@ bot.locators.id.many = function(target, root) {
  * Given a string, escapes all the characters that have special meaning in CSS.
  * https://mathiasbynens.be/notes/css-escapes
  *
+ * An ID can contain anything but spaces, but we also escape whitespace because
+ * some webpages use spaces, and getElementById allows spaces in every browser.
+ * http://www.w3.org/TR/html5/dom.html#the-id-attribute
+ *
  * This could be further improved, perhaps by using
  * http://dev.w3.org/csswg/cssom/#the-css.escape()-method , where implemented,
  * or a polyfill such as https://github.com/mathiasbynens/CSS.escape.
@@ -105,5 +111,5 @@ bot.locators.id.many = function(target, root) {
  */
 bot.locators.id.cssEscape_ = function(s) {
   // One backslash escapes things in a regex statement; we need two in a string.
-  return s.replace(/(['"\\#.:;,!?+<>=~*^$|%&@`{}\-\/\[\]\(\)])/g, '\\$1');
+  return s.replace(/([\s'"\\#.:;,!?+<>=~*^$|%&@`{}\-\/\[\]\(\)])/g, '\\$1');
 };

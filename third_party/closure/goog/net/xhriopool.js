@@ -30,20 +30,39 @@ goog.require('goog.structs.PriorityPool');
  * A pool of XhrIo objects.
  * @param {goog.structs.Map=} opt_headers Map of default headers to add to every
  *     request.
- * @param {number=} opt_minCount Minimum number of objects (Default: 1).
+ * @param {number=} opt_minCount Minimum number of objects (Default: 0).
  * @param {number=} opt_maxCount Maximum number of objects (Default: 10).
+ * @param {boolean=} opt_withCredentials Add credentials to every request
+ *     (Default: false).
  * @constructor
  * @extends {goog.structs.PriorityPool}
  */
-goog.net.XhrIoPool = function(opt_headers, opt_minCount, opt_maxCount) {
-  goog.structs.PriorityPool.call(this, opt_minCount, opt_maxCount);
-
+goog.net.XhrIoPool = function(
+    opt_headers, opt_minCount, opt_maxCount, opt_withCredentials) {
   /**
    * Map of default headers to add to every request.
    * @type {goog.structs.Map|undefined}
    * @private
    */
   this.headers_ = opt_headers;
+
+  /**
+   * Whether a "credentialed" requests are to be sent (ones that is aware of
+   * cookies and authentication). This is applicable only for cross-domain
+   * requests and more recent browsers that support this part of the HTTP Access
+   * Control standard.
+   *
+   * @see http://www.w3.org/TR/XMLHttpRequest/#the-withcredentials-attribute
+   *
+   * @private {boolean}
+   */
+  this.withCredentials_ = !!opt_withCredentials;
+
+  // Must break convention of putting the super-class's constructor first. This
+  // is because the super-class constructor calls adjustForMinMax, which calls
+  // this class' createObject. In this class's implementation, it assumes that
+  // there is a headers_, and will lack those if not yet present.
+  goog.structs.PriorityPool.call(this, opt_minCount, opt_maxCount);
 };
 goog.inherits(goog.net.XhrIoPool, goog.structs.PriorityPool);
 
@@ -57,9 +76,10 @@ goog.net.XhrIoPool.prototype.createObject = function() {
   var xhrIo = new goog.net.XhrIo();
   var headers = this.headers_;
   if (headers) {
-    headers.forEach(function(value, key) {
-      xhrIo.headers.set(key, value);
-    });
+    headers.forEach(function(value, key) { xhrIo.headers.set(key, value); });
+  }
+  if (this.withCredentials_) {
+    xhrIo.setWithCredentials(true);
   }
   return xhrIo;
 };

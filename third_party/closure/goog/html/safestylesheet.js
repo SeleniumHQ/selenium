@@ -15,11 +15,12 @@
 /**
  * @fileoverview The SafeStyleSheet type and its builders.
  *
- * TODO(user): Link to document stating type contract.
+ * TODO(xtof): Link to document stating type contract.
  */
 
 goog.provide('goog.html.SafeStyleSheet');
 
+goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.string');
 goog.require('goog.string.Const');
@@ -42,6 +43,15 @@ goog.require('goog.string.TypedString');
  * content of a style element within HTML. The SafeStyleSheet string should
  * not be escaped before interpolation.
  *
+ * Values of this type must be composable, i.e. for any two values
+ * {@code styleSheet1} and {@code styleSheet2} of this type,
+ * {@code goog.html.SafeStyleSheet.unwrap(styleSheet1) +
+ * goog.html.SafeStyleSheet.unwrap(styleSheet2)} must itself be a value that
+ * satisfies the SafeStyleSheet type constraint. This requirement implies that
+ * for any value {@code styleSheet} of this type,
+ * {@code goog.html.SafeStyleSheet.unwrap(styleSheet1)} must end in
+ * "beginning of rule" context.
+
  * A SafeStyleSheet can be constructed via security-reviewed unchecked
  * conversions. In this case producers of SafeStyleSheet must ensure themselves
  * that the SafeStyleSheet does not contain unsafe script. Note in particular
@@ -52,7 +62,8 @@ goog.require('goog.string.TypedString');
  * style element and {@code evil} would execute. Also note that within an HTML
  * style (raw text) element, HTML character references, such as
  * {@code &amp;lt;}, are not allowed. See
- * http://www.w3.org/TR/html5/scripting-1.html#restrictions-for-contents-of-script-elements
+ *
+ http://www.w3.org/TR/html5/scripting-1.html#restrictions-for-contents-of-script-elements
  * (similar considerations apply to the style element).
  *
  * @see goog.html.SafeStyleSheet#fromConstant
@@ -73,10 +84,10 @@ goog.html.SafeStyleSheet = function() {
   /**
    * A type marker used to implement additional run-time type checking.
    * @see goog.html.SafeStyleSheet#unwrap
-   * @const
+   * @const {!Object}
    * @private
    */
-  this.SAFE_SCRIPT_TYPE_MARKER_GOOG_HTML_SECURITY_PRIVATE_ =
+  this.SAFE_STYLE_SHEET_TYPE_MARKER_GOOG_HTML_SECURITY_PRIVATE_ =
       goog.html.SafeStyleSheet.TYPE_MARKER_GOOG_HTML_SECURITY_PRIVATE_;
 };
 
@@ -91,10 +102,37 @@ goog.html.SafeStyleSheet.prototype.implementsGoogStringTypedString = true;
 /**
  * Type marker for the SafeStyleSheet type, used to implement additional
  * run-time type checking.
- * @const
+ * @const {!Object}
  * @private
  */
 goog.html.SafeStyleSheet.TYPE_MARKER_GOOG_HTML_SECURITY_PRIVATE_ = {};
+
+
+/**
+ * Creates a new SafeStyleSheet object by concatenating values.
+ * @param {...(!goog.html.SafeStyleSheet|!Array<!goog.html.SafeStyleSheet>)}
+ *     var_args Values to concatenate.
+ * @return {!goog.html.SafeStyleSheet}
+ */
+goog.html.SafeStyleSheet.concat = function(var_args) {
+  var result = '';
+
+  /**
+   * @param {!goog.html.SafeStyleSheet|!Array<!goog.html.SafeStyleSheet>}
+   *     argument
+   */
+  var addArgument = function(argument) {
+    if (goog.isArray(argument)) {
+      goog.array.forEach(argument, addArgument);
+    } else {
+      result += goog.html.SafeStyleSheet.unwrap(argument);
+    }
+  };
+
+  goog.array.forEach(arguments, addArgument);
+  return goog.html.SafeStyleSheet
+      .createSafeStyleSheetSecurityPrivateDoNotAccessOrElse(result);
+};
 
 
 /**
@@ -115,10 +153,11 @@ goog.html.SafeStyleSheet.fromConstant = function(styleSheet) {
   }
   // > is a valid character in CSS selectors and there's no strict need to
   // block it if we already block <.
-  goog.asserts.assert(!goog.string.contains(styleSheetString, '<'),
+  goog.asserts.assert(
+      !goog.string.contains(styleSheetString, '<'),
       "Forbidden '<' character in style sheet string: " + styleSheetString);
-  return goog.html.SafeStyleSheet.
-      createSafeStyleSheetSecurityPrivateDoNotAccessOrElse(styleSheetString);
+  return goog.html.SafeStyleSheet
+      .createSafeStyleSheetSecurityPrivateDoNotAccessOrElse(styleSheetString);
 };
 
 
@@ -188,13 +227,13 @@ goog.html.SafeStyleSheet.unwrap = function(safeStyleSheet) {
   // to stand out in code reviews.
   if (safeStyleSheet instanceof goog.html.SafeStyleSheet &&
       safeStyleSheet.constructor === goog.html.SafeStyleSheet &&
-      safeStyleSheet.SAFE_SCRIPT_TYPE_MARKER_GOOG_HTML_SECURITY_PRIVATE_ ===
+      safeStyleSheet
+              .SAFE_STYLE_SHEET_TYPE_MARKER_GOOG_HTML_SECURITY_PRIVATE_ ===
           goog.html.SafeStyleSheet.TYPE_MARKER_GOOG_HTML_SECURITY_PRIVATE_) {
     return safeStyleSheet.privateDoNotAccessOrElseSafeStyleSheetWrappedValue_;
   } else {
-    goog.asserts.fail(
-        "expected object of type SafeStyleSheet, got '" + safeStyleSheet +
-        "'");
+    goog.asserts.fail('expected object of type SafeStyleSheet, got \'' +
+        safeStyleSheet + '\' of type ' + goog.typeOf(safeStyleSheet));
     return 'type_error:SafeStyleSheet';
   }
 };
@@ -210,10 +249,23 @@ goog.html.SafeStyleSheet.unwrap = function(safeStyleSheet) {
  */
 goog.html.SafeStyleSheet.createSafeStyleSheetSecurityPrivateDoNotAccessOrElse =
     function(styleSheet) {
-  var safeStyleSheet = new goog.html.SafeStyleSheet();
-  safeStyleSheet.privateDoNotAccessOrElseSafeStyleSheetWrappedValue_ =
-      styleSheet;
-  return safeStyleSheet;
+  return new goog.html.SafeStyleSheet().initSecurityPrivateDoNotAccessOrElse_(
+      styleSheet);
+};
+
+
+/**
+ * Called from createSafeStyleSheetSecurityPrivateDoNotAccessOrElse(). This
+ * method exists only so that the compiler can dead code eliminate static
+ * fields (like EMPTY) when they're not accessed.
+ * @param {string} styleSheet
+ * @return {!goog.html.SafeStyleSheet}
+ * @private
+ */
+goog.html.SafeStyleSheet.prototype.initSecurityPrivateDoNotAccessOrElse_ =
+    function(styleSheet) {
+  this.privateDoNotAccessOrElseSafeStyleSheetWrappedValue_ = styleSheet;
+  return this;
 };
 
 
@@ -222,5 +274,5 @@ goog.html.SafeStyleSheet.createSafeStyleSheetSecurityPrivateDoNotAccessOrElse =
  * @const {!goog.html.SafeStyleSheet}
  */
 goog.html.SafeStyleSheet.EMPTY =
-    goog.html.SafeStyleSheet.
-        createSafeStyleSheetSecurityPrivateDoNotAccessOrElse('');
+    goog.html.SafeStyleSheet
+        .createSafeStyleSheetSecurityPrivateDoNotAccessOrElse('');

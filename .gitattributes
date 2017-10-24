@@ -7,6 +7,7 @@
 *.css    text eol=lf
 *.js     text eol=lf
 *.sql    text
+*.xml    text
 
 *.csproj text merge=union
 *.sln    text merge=union eol=crlf

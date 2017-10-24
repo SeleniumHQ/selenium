@@ -1,19 +1,19 @@
-/*
-Copyright 2011 Selenium committers
-Copyright 2011 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.grid.web.servlet;
 
@@ -78,7 +78,6 @@ public class ProxyStatusServlet extends RegistryBasedServlet {
     } catch (JsonSyntaxException e) {
       throw new GridException(e.getMessage());
     }
-
   }
 
   private JsonObject getResponse(HttpServletRequest request) throws IOException {
@@ -95,7 +94,6 @@ public class ProxyStatusServlet extends RegistryBasedServlet {
       if (!"".equals(json)) {
         requestJSON = new JsonParser().parse(json).getAsJsonObject();
       }
-
     }
 
     JsonObject res = new JsonObject();
@@ -108,14 +106,12 @@ public class ProxyStatusServlet extends RegistryBasedServlet {
     } else {
       if (!requestJSON.has("id")) {
         res.addProperty("msg",
-                        "you need to specify at least an id when call the node  status service.");
+                        "you need to specify at least an id when call the node status service.");
         return res;
-      } else {
-        id = requestJSON.get("id").getAsString();
       }
+      id = requestJSON.get("id").getAsString();
     }
 
-    // see RegistrationRequest.ensureBackwardCompatibility()
     try {
       URL u = new URL(id);
       id = "http://" + u.getHost() + ":" + u.getPort();
@@ -126,35 +122,33 @@ public class ProxyStatusServlet extends RegistryBasedServlet {
     if (proxy == null) {
       res.addProperty("msg", "Cannot find proxy with ID =" + id + " in the registry.");
       return res;
-    } else {
-      res.addProperty("msg", "proxy found !");
-      res.addProperty("success", true);
-      res.addProperty("id", proxy.getId());
-      res.add("request", proxy.getOriginalRegistrationRequest().getAssociatedJSON());
+    }
+    res.addProperty("msg", "proxy found !");
+    res.addProperty("success", true);
+    res.addProperty("id", proxy.getId());
+    res.add("request", proxy.getOriginalRegistrationRequest().toJson());
 
-      // maybe the request was for more info
-      if (requestJSON != null) {
-        // use basic (= no objects ) reflexion to get the extra stuff
-        // requested.
-        List<String> methods = getExtraMethodsRequested(requestJSON);
+    // maybe the request was for more info
+    if (requestJSON != null) {
+      // use basic (= no objects ) reflexion to get the extra stuff
+      // requested.
+      List<String> methods = getExtraMethodsRequested(requestJSON);
 
-        List<String> errors = new ArrayList<String>();
-        for (String method : methods) {
-          try {
-            Object o = getValueByReflection(proxy, method);
-            res.add(method, new Gson().toJsonTree(o));
-          } catch (Throwable t) {
-            errors.add(t.getMessage());
-          }
-        }
-        if (!errors.isEmpty()) {
-          res.addProperty("success", false);
-          res.addProperty("errors", errors.toString());
+      List<String> errors = new ArrayList<>();
+      for (String method : methods) {
+        try {
+          Object o = getValueByReflection(proxy, method);
+          res.add(method, new Gson().toJsonTree(o));
+        } catch (Throwable t) {
+          errors.add(t.getMessage());
         }
       }
-      return res;
+      if (!errors.isEmpty()) {
+        res.addProperty("success", false);
+        res.addProperty("errors", errors.toString());
+      }
     }
-
+    return res;
   }
 
   private Object getValueByReflection(RemoteProxy proxy, String method) {
@@ -168,7 +162,7 @@ public class ProxyStatusServlet extends RegistryBasedServlet {
   }
 
   private List<String> getExtraMethodsRequested(JsonObject request) {
-    List<String> res = new ArrayList<String>();
+    List<String> res = new ArrayList<>();
 
     for (Map.Entry<String, JsonElement> entry : request.entrySet()) {
       if (!"id".equals(entry.getKey())) {

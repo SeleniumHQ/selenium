@@ -25,9 +25,9 @@ goog.provide('goog.disposable.IDisposable');
 
 /**
  * Interface for a disposable object.  If a instance requires cleanup
- * (references COM objects, DOM notes, or other disposable objects), it should
+ * (references COM objects, DOM nodes, or other disposable objects), it should
  * implement this interface (it may subclass goog.Disposable).
- * @interface
+ * @record
  */
 goog.disposable.IDisposable = function() {};
 

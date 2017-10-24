@@ -1,22 +1,21 @@
-/*
-Copyright 2012-2014 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium.remote.server.handler.html5;
-
-import com.google.common.base.Throwables;
 
 import org.openqa.selenium.HasCapabilities;
 import org.openqa.selenium.UnsupportedCommandException;
@@ -25,11 +24,13 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.html5.ApplicationCache;
 import org.openqa.selenium.html5.LocationContext;
 import org.openqa.selenium.html5.WebStorage;
+import org.openqa.selenium.mobile.NetworkConnection;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.ExecuteMethod;
 import org.openqa.selenium.remote.html5.RemoteApplicationCache;
 import org.openqa.selenium.remote.html5.RemoteLocationContext;
 import org.openqa.selenium.remote.html5.RemoteWebStorage;
+import org.openqa.selenium.remote.mobile.RemoteNetworkConnection;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -38,11 +39,16 @@ import java.lang.reflect.InvocationTargetException;
  * role interfaces. Each method will throw an {@link UnsupportedCommandException} if the driver
  * does not support the corresponding HTML5 feature.
  */
-class Utils {
+public class Utils {
 
   static ApplicationCache getApplicationCache(WebDriver driver) {
     return convert(driver, ApplicationCache.class, CapabilityType.SUPPORTS_APPLICATION_CACHE,
                    RemoteApplicationCache.class);
+  }
+
+  public static NetworkConnection getNetworkConnection(WebDriver driver) {
+	    return convert(driver, NetworkConnection.class, CapabilityType.SUPPORTS_NETWORK_CONNECTION,
+	        RemoteNetworkConnection.class);
   }
 
   static LocationContext getLocationContext(WebDriver driver) {
@@ -69,13 +75,12 @@ class Utils {
         return remoteImplementationClazz
             .getConstructor(ExecuteMethod.class)
             .newInstance((ExecuteMethod) driver);
-      } catch (InstantiationException e) {
-        throw new WebDriverException(e);
-      } catch (IllegalAccessException e) {
-        throw new WebDriverException(e);
       } catch (InvocationTargetException e) {
-        throw Throwables.propagate(e.getCause());
-      } catch (NoSuchMethodException e) {
+        Throwable cause = e.getCause();
+        throw cause instanceof RuntimeException ?
+              (RuntimeException) cause :
+              new RuntimeException(cause);
+      } catch (ReflectiveOperationException e) {
         throw new WebDriverException(e);
       }
     }

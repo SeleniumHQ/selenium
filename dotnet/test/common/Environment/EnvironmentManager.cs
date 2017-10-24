@@ -1,16 +1,14 @@
 using System;
-using System.Collections.Generic;
-using System.Configuration;
 using System.Reflection;
-using System.Text;
-using OpenQA.Selenium;
 using System.IO;
+using Newtonsoft.Json;
+using NUnit.Framework;
 
 namespace OpenQA.Selenium.Environment
 {
     public class EnvironmentManager
     {
-        private static readonly EnvironmentManager instance = new EnvironmentManager();
+        private static EnvironmentManager instance;
         private Type driverType;
         private Browser browser;
         private IWebDriver driver;
@@ -21,28 +19,21 @@ namespace OpenQA.Selenium.Environment
 
         private EnvironmentManager()
         {
-            // TODO(andre.nogueira): Error checking to guard against malformed config files
-            string driverClassName = GetSettingValue("Driver");
-            string assemblyName = GetSettingValue("Assembly");
-            Assembly assembly = Assembly.Load(assemblyName);
-            driverType = assembly.GetType(driverClassName);
-            browser = (Browser)Enum.Parse(typeof(Browser), GetSettingValue("DriverName"));
-            remoteCapabilities = GetSettingValue("RemoteCapabilities");
+            string currentDirectory = this.CurrentDirectory;
+            string content = File.ReadAllText(Path.Combine(currentDirectory, "appconfig.json"));
+            TestEnvironment env = JsonConvert.DeserializeObject<TestEnvironment>(content);
+            string activeDriverConfig = TestContext.Parameters.Get("ActiveDriverConfig", env.ActiveDriverConfig);
+            string activeWebsiteConfig = TestContext.Parameters.Get("ActiveWebsiteConfig", env.ActiveWebsiteConfig);
+            DriverConfig driverConfig = env.DriverConfigs[activeDriverConfig];
+            WebsiteConfig websiteConfig = env.WebSiteConfigs[activeWebsiteConfig];
 
-            urlBuilder = new UrlBuilder();
+            Assembly driverAssembly = Assembly.Load(driverConfig.AssemblyName);
+            driverType = driverAssembly.GetType(driverConfig.DriverTypeName);
+            browser = driverConfig.BrowserValue;
+            remoteCapabilities = driverConfig.RemoteCapabilities;
 
-            Assembly executingAssembly = Assembly.GetExecutingAssembly();
-            string assemblyLocation = executingAssembly.Location;
+            urlBuilder = new UrlBuilder(websiteConfig);
 
-            // If we're shadow copying,. fiddle with 
-            // the codebase instead 
-            if (AppDomain.CurrentDomain.ShadowCopyFiles)
-            {
-                Uri uri = new Uri(executingAssembly.CodeBase);
-                assemblyLocation = uri.LocalPath;
-            }
-
-            string currentDirectory = Path.GetDirectoryName(assemblyLocation);
             DirectoryInfo info = new DirectoryInfo(currentDirectory);
             while (info != info.Root && string.Compare(info.Name, "build", StringComparison.OrdinalIgnoreCase) != 0)
             {
@@ -54,7 +45,7 @@ namespace OpenQA.Selenium.Environment
             bool autoStartRemoteServer = false;
             if (browser == Browser.Remote)
             {
-                autoStartRemoteServer = bool.Parse(GetSettingValue("AutoStartRemoteServer"));
+                autoStartRemoteServer = driverConfig.AutoStartRemoteServer;
             }
 
             remoteServer = new RemoteSeleniumServer(info.FullName, autoStartRemoteServer);
@@ -70,16 +61,31 @@ namespace OpenQA.Selenium.Environment
             }
         }
 
-        public static string GetSettingValue(string key)
-        {
-            return System.Configuration.ConfigurationManager.AppSettings.GetValues(key)[0];
-        }
-
         public Browser Browser 
         {
             get { return browser; }
         }
 
+        public string CurrentDirectory
+        {
+            get
+            {
+                Assembly executingAssembly = Assembly.GetExecutingAssembly();
+                string assemblyLocation = executingAssembly.Location;
+
+                // If we're shadow copying,. fiddle with 
+                // the codebase instead 
+                if (AppDomain.CurrentDomain.ShadowCopyFiles)
+                {
+                    Uri uri = new Uri(executingAssembly.CodeBase);
+                    assemblyLocation = uri.LocalPath;
+                }
+
+                string currentDirectory = Path.GetDirectoryName(assemblyLocation);
+                return currentDirectory;
+            }
+        }
+        
         public TestWebServer WebServer
         {
             get { return webServer; }
@@ -132,6 +138,11 @@ namespace OpenQA.Selenium.Environment
         {
             get
             {
+                if (instance == null)
+                {
+                    instance = new EnvironmentManager();
+                }
+
                 return instance;
             }
         }

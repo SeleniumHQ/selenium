@@ -1,8 +1,5 @@
 using System;
-using System.Collections.Generic;
-using System.Configuration;
 using System.Reflection;
-using System.Text;
 using OpenQA.Selenium;
 using System.IO;
 
@@ -54,7 +51,7 @@ namespace Selenium.Tests.Environment
 
         public static string GetSettingValue(string key)
         {
-            return System.Configuration.ConfigurationManager.AppSettings.GetValues(key)[0];
+            return string.Empty;
         }
 
         public SeleniumServer RemoteServer

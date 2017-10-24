@@ -1,7 +1,9 @@
-﻿// <copyright file="RemoteWindow.cs" company="WebDriver Committers">
-// Copyright 2015 Software Freedom Conservancy
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
+// <copyright file="RemoteWindow.cs" company="WebDriver Committers">
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -18,7 +20,6 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
-using System.Text;
 
 namespace OpenQA.Selenium.Remote
 {
@@ -46,9 +47,18 @@ namespace OpenQA.Selenium.Remote
         {
             get
             {
-                Dictionary<string, object> parameters = new Dictionary<string, object>();
-                parameters.Add("windowHandle", "current");
-                Response commandResponse = this.driver.InternalExecute(DriverCommand.GetWindowPosition, parameters);
+                Response commandResponse;
+                if (this.driver.IsSpecificationCompliant)
+                {
+                    commandResponse = this.driver.InternalExecute(DriverCommand.GetWindowRect, null);
+                }
+                else
+                {
+                    Dictionary<string, object> parameters = new Dictionary<string, object>();
+                    parameters.Add("windowHandle", "current");
+                    commandResponse = this.driver.InternalExecute(DriverCommand.GetWindowPosition, parameters);
+                }
+
                 Dictionary<string, object> rawPosition = (Dictionary<string, object>)commandResponse.Value;
                 int x = Convert.ToInt32(rawPosition["x"], CultureInfo.InvariantCulture);
                 int y = Convert.ToInt32(rawPosition["y"], CultureInfo.InvariantCulture);
@@ -58,10 +68,17 @@ namespace OpenQA.Selenium.Remote
             set
             {
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
-                parameters.Add("windowHandle", "current");
                 parameters.Add("x", value.X);
                 parameters.Add("y", value.Y);
-                this.driver.InternalExecute(DriverCommand.SetWindowPosition, parameters);
+                if (this.driver.IsSpecificationCompliant)
+                {
+                    this.driver.InternalExecute(DriverCommand.SetWindowRect, parameters);
+                }
+                else
+                {
+                    parameters.Add("windowHandle", "current");
+                    this.driver.InternalExecute(DriverCommand.SetWindowPosition, parameters);
+                }
             }
         }
 
@@ -73,9 +90,18 @@ namespace OpenQA.Selenium.Remote
         {
             get
             {
-                Dictionary<string, object> parameters = new Dictionary<string, object>();
-                parameters.Add("windowHandle", "current");
-                Response commandResponse = this.driver.InternalExecute(DriverCommand.GetWindowSize, parameters);
+                Response commandResponse;
+                if (this.driver.IsSpecificationCompliant)
+                {
+                    commandResponse = this.driver.InternalExecute(DriverCommand.GetWindowRect, null);
+                }
+                else
+                {
+                    Dictionary<string, object> parameters = new Dictionary<string, object>();
+                    parameters.Add("windowHandle", "current");
+                    commandResponse = this.driver.InternalExecute(DriverCommand.GetWindowSize, parameters);
+                }
+
                 Dictionary<string, object> rawPosition = (Dictionary<string, object>)commandResponse.Value;
                 int height = Convert.ToInt32(rawPosition["height"], CultureInfo.InvariantCulture);
                 int width = Convert.ToInt32(rawPosition["width"], CultureInfo.InvariantCulture);
@@ -85,10 +111,17 @@ namespace OpenQA.Selenium.Remote
             set
             {
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
-                parameters.Add("windowHandle", "current");
                 parameters.Add("width", value.Width);
                 parameters.Add("height", value.Height);
-                this.driver.InternalExecute(DriverCommand.SetWindowSize, parameters);
+                if (this.driver.IsSpecificationCompliant)
+                {
+                    this.driver.InternalExecute(DriverCommand.SetWindowRect, parameters);
+                }
+                else
+                {
+                    parameters.Add("windowHandle", "current");
+                    this.driver.InternalExecute(DriverCommand.SetWindowSize, parameters);
+                }
             }
         }
 
@@ -97,9 +130,32 @@ namespace OpenQA.Selenium.Remote
         /// </summary>
         public void Maximize()
         {
-            Dictionary<string, object> parameters = new Dictionary<string, object>();
-            parameters.Add("windowHandle", "current");
+            Dictionary<string, object> parameters = null;
+            if (!this.driver.IsSpecificationCompliant)
+            {
+                parameters = new Dictionary<string, object>();
+                parameters.Add("windowHandle", "current");
+            }
+
             this.driver.InternalExecute(DriverCommand.MaximizeWindow, parameters);
+        }
+
+        /// <summary>
+        /// Minimizes the current window if it is not already maximized.
+        /// </summary>
+        public void Minimize()
+        {
+            Dictionary<string, object> parameters = null;
+            this.driver.InternalExecute(DriverCommand.MinimizeWindow, parameters);
+        }
+
+        /// <summary>
+        /// Sets the current window to full screen if it is not already in that state.
+        /// </summary>
+        public void FullScreen()
+        {
+            Dictionary<string, object> parameters = null;
+            this.driver.InternalExecute(DriverCommand.FullScreenWindow, parameters);
         }
     }
 }

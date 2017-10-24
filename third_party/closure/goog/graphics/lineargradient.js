@@ -46,8 +46,8 @@ goog.require('goog.graphics.Fill');
  *     http://en.wikipedia.org/wiki/Canvas_element for details.
  * @final
  */
-goog.graphics.LinearGradient =
-    function(x1, y1, x2, y2, color1, color2, opt_opacity1, opt_opacity2) {
+goog.graphics.LinearGradient = function(
+    x1, y1, x2, y2, color1, color2, opt_opacity1, opt_opacity2) {
   /**
    * Start X position of the gradient.
    * @type {number}

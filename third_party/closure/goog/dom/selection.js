@@ -23,6 +23,7 @@
 
 goog.provide('goog.dom.selection');
 
+goog.require('goog.dom.InputType');
 goog.require('goog.string');
 goog.require('goog.userAgent');
 
@@ -36,7 +37,7 @@ goog.require('goog.userAgent');
 goog.dom.selection.setStart = function(textfield, pos) {
   if (goog.dom.selection.useSelectionProperties_(textfield)) {
     textfield.selectionStart = pos;
-  } else if (goog.userAgent.IE) {
+  } else if (goog.dom.selection.isLegacyIe_()) {
     // destructuring assignment would have been sweet
     var tmp = goog.dom.selection.getRangeIe_(textfield);
     var range = tmp[0];
@@ -161,7 +162,8 @@ goog.dom.selection.getEndPointsTextareaIe_ = function(
   }
   return [
     untrimmedBeforeSelectionText.length,
-    untrimmedBeforeSelectionText.length + untrimmedSelectionText.length];
+    untrimmedBeforeSelectionText.length + untrimmedSelectionText.length
+  ];
 };
 
 
@@ -197,19 +199,20 @@ goog.dom.selection.getEndPoints = function(textfield) {
  * @private
  */
 goog.dom.selection.getEndPoints_ = function(textfield, getOnlyStart) {
+  textfield = /** @type {!HTMLInputElement|!HTMLTextAreaElement} */ (textfield);
   var startPos = 0;
   var endPos = 0;
   if (goog.dom.selection.useSelectionProperties_(textfield)) {
     startPos = textfield.selectionStart;
     endPos = getOnlyStart ? -1 : textfield.selectionEnd;
-  } else if (goog.userAgent.IE) {
+  } else if (goog.dom.selection.isLegacyIe_()) {
     var tmp = goog.dom.selection.getRangeIe_(textfield);
     var range = tmp[0];
     var selectionRange = tmp[1];
 
     if (range.inRange(selectionRange)) {
       range.setEndPoint('EndToStart', selectionRange);
-      if (textfield.type == 'textarea') {
+      if (textfield.type == goog.dom.InputType.TEXTAREA) {
         return goog.dom.selection.getEndPointsTextareaIe_(
             range, selectionRange, getOnlyStart);
       }
@@ -234,7 +237,7 @@ goog.dom.selection.getEndPoints_ = function(textfield, getOnlyStart) {
 goog.dom.selection.setEnd = function(textfield, pos) {
   if (goog.dom.selection.useSelectionProperties_(textfield)) {
     textfield.selectionEnd = pos;
-  } else if (goog.userAgent.IE) {
+  } else if (goog.dom.selection.isLegacyIe_()) {
     var tmp = goog.dom.selection.getRangeIe_(textfield);
     var range = tmp[0];
     var selectionRange = tmp[1];
@@ -276,7 +279,7 @@ goog.dom.selection.setCursorPosition = function(textfield, pos) {
     textfield.selectionStart = pos;
     textfield.selectionEnd = pos;
 
-  } else if (goog.userAgent.IE) {
+  } else if (goog.dom.selection.isLegacyIe_()) {
     pos = goog.dom.selection.canonicalizePositionIe_(textfield, pos);
 
     // IE has textranges. A textfield's textrange encompasses the
@@ -296,6 +299,7 @@ goog.dom.selection.setCursorPosition = function(textfield, pos) {
  * @param {string} text The text to change the selection to.
  */
 goog.dom.selection.setText = function(textfield, text) {
+  textfield = /** @type {!HTMLInputElement|!HTMLTextAreaElement} */ (textfield);
   if (goog.dom.selection.useSelectionProperties_(textfield)) {
     var value = textfield.value;
     var oldSelectionStart = textfield.selectionStart;
@@ -304,7 +308,7 @@ goog.dom.selection.setText = function(textfield, text) {
     textfield.value = before + text + after;
     textfield.selectionStart = oldSelectionStart;
     textfield.selectionEnd = oldSelectionStart + text.length;
-  } else if (goog.userAgent.IE) {
+  } else if (goog.dom.selection.isLegacyIe_()) {
     var tmp = goog.dom.selection.getRangeIe_(textfield);
     var range = tmp[0];
     var selectionRange = tmp[1];
@@ -332,19 +336,20 @@ goog.dom.selection.setText = function(textfield, text) {
  * @return {string} The selected text.
  */
 goog.dom.selection.getText = function(textfield) {
+  textfield = /** @type {!HTMLInputElement|!HTMLTextAreaElement} */ (textfield);
   if (goog.dom.selection.useSelectionProperties_(textfield)) {
     var s = textfield.value;
     return s.substring(textfield.selectionStart, textfield.selectionEnd);
   }
 
-  if (goog.userAgent.IE) {
+  if (goog.dom.selection.isLegacyIe_()) {
     var tmp = goog.dom.selection.getRangeIe_(textfield);
     var range = tmp[0];
     var selectionRange = tmp[1];
 
     if (!range.inRange(selectionRange)) {
       return '';
-    } else if (textfield.type == 'textarea') {
+    } else if (textfield.type == goog.dom.InputType.TEXTAREA) {
       return goog.dom.selection.getSelectionRangeText_(selectionRange);
     }
     return selectionRange.text;
@@ -419,7 +424,7 @@ goog.dom.selection.getRangeIe_ = function(el) {
   // el.createTextRange() doesn't work on textareas
   var range;
 
-  if (el.type == 'textarea') {
+  if (/** @type {?} */ (el).type == goog.dom.InputType.TEXTAREA) {
     range = doc.body.createTextRange();
     range.moveToElementText(el);
   } else {
@@ -441,7 +446,8 @@ goog.dom.selection.getRangeIe_ = function(el) {
  *     move('character', pos).
  */
 goog.dom.selection.canonicalizePositionIe_ = function(textfield, pos) {
-  if (textfield.type == 'textarea') {
+  textfield = /** @type {!HTMLTextAreaElement} */ (textfield);
+  if (textfield.type == goog.dom.InputType.TEXTAREA) {
     // We do this only for textarea because it is the only one which can
     // have a \r\n (input cannot have this).
     var value = textfield.value.substring(0, pos);
@@ -468,4 +474,18 @@ goog.dom.selection.useSelectionProperties_ = function(el) {
     // on an element with display: none.
     return false;
   }
+};
+
+
+/**
+ * Whether the client is legacy IE which does not support
+ * selectionStart/selectionEnd properties of a text input element.
+ *
+ * @see https://msdn.microsoft.com/en-us/library/ff974768(v=vs.85).aspx
+ *
+ * @return {boolean} Whether the client is a legacy version of IE.
+ * @private
+ */
+goog.dom.selection.isLegacyIe_ = function() {
+  return goog.userAgent.IE && !goog.userAgent.isVersionOrHigher('9');
 };

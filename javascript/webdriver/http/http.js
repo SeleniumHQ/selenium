@@ -1,16 +1,19 @@
-// Copyright 2011 Software Freedom Conservancy. All Rights Reserved.
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
+//   http://www.apache.org/licenses/LICENSE-2.0
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 /**
  * @fileoverview Defines a {@code webdriver.CommandExecutor} that communicates
@@ -24,10 +27,9 @@ goog.provide('webdriver.http.Response');
 
 goog.require('bot.ErrorCode');
 goog.require('goog.array');
-goog.require('goog.json');
 goog.require('webdriver.CommandExecutor');
 goog.require('webdriver.CommandName');
-goog.require('webdriver.promise');
+goog.require('webdriver.logging');
 
 
 
@@ -40,18 +42,15 @@ webdriver.http.Client = function() {
 
 
 /**
- * Sends a request to the server. If an error occurs while sending the request,
- * such as a failure to connect to the server, the provided callback will be
- * invoked with a non-null {@link Error} describing the error. Otherwise, when
- * the server's response has been received, the callback will be invoked with a
- * null Error and non-null {@link webdriver.http.Response} object.
+ * Sends a request to the server. The client will automatically follow any
+ * redirects returned by the server, fulfilling the returned promise with the
+ * final response.
  *
  * @param {!webdriver.http.Request} request The request to send.
- * @param {function(Error, !webdriver.http.Response=)} callback the function to
- *     invoke when the server's response is ready.
+ * @return {!goog.Promise<!webdriver.http.Response>} A promise that
+ *     will be fulfilled with the server's response.
  */
-webdriver.http.Client.prototype.send = function(request, callback) {
-};
+webdriver.http.Client.prototype.send = function(request) {};
 
 
 
@@ -75,6 +74,11 @@ webdriver.http.Executor = function(client) {
    * @private {!Object<{method:string, path:string}>}
    */
   this.customCommands_ = {};
+
+  /**
+   * @private {!webdriver.logging.Logger}
+   */
+  this.log_ = webdriver.logging.getLogger('webdriver.http.Executor');
 };
 
 
@@ -98,7 +102,7 @@ webdriver.http.Executor.prototype.defineCommand = function(
 
 
 /** @override */
-webdriver.http.Executor.prototype.execute = function(command, callback) {
+webdriver.http.Executor.prototype.execute = function(command) {
   var resource =
       this.customCommands_[command.getName()] ||
       webdriver.http.Executor.COMMAND_MAP_[command.getName()];
@@ -110,17 +114,17 @@ webdriver.http.Executor.prototype.execute = function(command, callback) {
   var path = webdriver.http.Executor.buildPath_(resource.path, parameters);
   var request = new webdriver.http.Request(resource.method, path, parameters);
 
-  this.client_.send(request, function(e, response) {
-    var responseObj;
-    if (!e) {
-      try {
-        responseObj = webdriver.http.Executor.parseHttpResponse_(
-            /** @type {!webdriver.http.Response} */ (response));
-      } catch (ex) {
-        e = ex;
-      }
-    }
-    callback(e, responseObj);
+  var log = this.log_;
+  log.finer(function() {
+    return '>>>\n' + request;
+  });
+
+  return this.client_.send(request).then(function(response) {
+    log.finer(function() {
+      return '<<<\n' + response;
+    });
+    return webdriver.http.Executor.parseHttpResponse_(
+          /** @type {!webdriver.http.Response} */ (response));
   });
 };
 
@@ -171,7 +175,7 @@ webdriver.http.Executor.buildPath_ = function(path, parameters) {
  */
 webdriver.http.Executor.parseHttpResponse_ = function(httpResponse) {
   try {
-    return /** @type {!bot.response.ResponseObject} */ (goog.json.parse(
+    return /** @type {!bot.response.ResponseObject} */ (JSON.parse(
         httpResponse.body));
   } catch (ex) {
     // Whoops, looks like the server sent us a malformed response. We'll need
@@ -266,6 +270,8 @@ webdriver.http.Executor.COMMAND_MAP_ = (function() {
           get('/session/:sessionId/element/:id/css/:propertyName')).
       put(webdriver.CommandName.ELEMENT_EQUALS,
           get('/session/:sessionId/element/:id/equals/:other')).
+      put(webdriver.CommandName.TAKE_ELEMENT_SCREENSHOT,
+          get('/session/:sessionId/element/:id/screenshot')).
       put(webdriver.CommandName.SWITCH_TO_WINDOW,
           post('/session/:sessionId/window')).
       put(webdriver.CommandName.MAXIMIZE_WINDOW,
@@ -418,7 +424,7 @@ webdriver.http.Request.prototype.toString = function() {
     this.method + ' ' + this.path + ' HTTP/1.1',
     webdriver.http.headersToString_(this.headers),
     '',
-    goog.json.serialize(this.data)
+    JSON.stringify(this.data)
   ].join('\n');
 };
 

@@ -1,7 +1,9 @@
-﻿// <copyright file="IWindow.cs" company="WebDriver Committers">
-// Copyright 2015 Software Freedom Conservancy
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
+// <copyright file="IWindow.cs" company="WebDriver Committers">
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -14,10 +16,7 @@
 // limitations under the License.
 // </copyright>
 
-using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Text;
 
 namespace OpenQA.Selenium
 {
@@ -42,5 +41,15 @@ namespace OpenQA.Selenium
         /// Maximizes the current window if it is not already maximized.
         /// </summary>
         void Maximize();
+
+        /// <summary>
+        /// Minimizes the current window if it is not already maximized.
+        /// </summary>
+        void Minimize();
+
+        /// <summary>
+        /// Sets the current window to full screen if it is not already in that state.
+        /// </summary>
+        void FullScreen();
     }
 }

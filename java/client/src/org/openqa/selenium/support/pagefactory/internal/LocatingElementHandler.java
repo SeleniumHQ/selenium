@@ -32,11 +32,11 @@ public class LocatingElementHandler implements InvocationHandler {
   }
 
   public Object invoke(Object object, Method method, Object[] objects) throws Throwable {
-        
+
     if ("toString".equals(method.getName())) {
       return "Proxy element for: " + locator.toString();
     }
-    
+
     WebElement element;
     try {
       element = locator.findElement();

@@ -24,7 +24,6 @@
  * <br>
  * Known issues:
  * <ul>
- * <li>Does not trigger for drop events on Opera due to browser bug.
  * <li>IE doesn't have native support for input event. WebKit before version 531
  *     doesn't have support for textareas. For those browsers an emulation mode
  *     based on key, clipboard and drop events is used. Thus this event won't
@@ -39,7 +38,7 @@ goog.provide('goog.events.InputHandler');
 goog.provide('goog.events.InputHandler.EventType');
 
 goog.require('goog.Timer');
-goog.require('goog.dom');
+goog.require('goog.dom.TagName');
 goog.require('goog.events.BrowserEvent');
 goog.require('goog.events.EventHandler');
 goog.require('goog.events.EventTarget');
@@ -82,9 +81,9 @@ goog.events.InputHandler = function(element) {
   //   event.
   // IE9 supports input events when characters are inserted, but not deleted.
   // WebKit before version 531 did not support input events for textareas.
-  var emulateInputEvents = goog.userAgent.IE ||
+  var emulateInputEvents = goog.userAgent.IE || goog.userAgent.EDGE ||
       (goog.userAgent.WEBKIT && !goog.userAgent.isVersionOrHigher('531') &&
-          element.tagName == 'TEXTAREA');
+       element.tagName == goog.dom.TagName.TEXTAREA);
 
   /**
    * @type {goog.events.EventHandler<!goog.events.InputHandler>}
@@ -101,9 +100,8 @@ goog.events.InputHandler = function(element) {
   // fit.)
   this.eventHandler_.listen(
       this.element_,
-      emulateInputEvents ?
-          ['keydown', 'paste', 'cut', 'drop', 'input'] :
-          'input',
+      emulateInputEvents ? ['keydown', 'paste', 'cut', 'drop', 'input'] :
+                           'input',
       this);
 };
 goog.inherits(goog.events.InputHandler, goog.events.EventTarget);
@@ -137,14 +135,7 @@ goog.events.InputHandler.prototype.handleEvent = function(e) {
     // will end up firing an extra event.
     this.cancelTimerIfSet_();
 
-    // Unlike other browsers, Opera fires an extra input event when an element
-    // is blurred after the user has input into it. Since Opera doesn't fire
-    // input event on drop, it's enough to check whether element still has focus
-    // to suppress bogus notification.
-    if (!goog.userAgent.OPERA || this.element_ ==
-        goog.dom.getOwnerDocument(this.element_).activeElement) {
-      this.dispatchEvent(this.createInputEvent_(e));
-    }
+    this.dispatchEvent(this.createInputEvent_(e));
   } else {
     // Filter out key events that don't modify text.
     if (e.type == 'keydown' &&

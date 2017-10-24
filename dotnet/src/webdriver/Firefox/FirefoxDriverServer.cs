@@ -1,7 +1,9 @@
 ﻿// <copyright file="FirefoxDriverServer.cs" company="WebDriver Committers">
-// Copyright 2015 Software Freedom Conservancy
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -17,7 +19,6 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
@@ -87,7 +88,6 @@ namespace OpenQA.Selenium.Firefox
                     int portToUse = DetermineNextFreePort(this.host, this.profile.Port);
                     this.profile.Port = portToUse;
                     this.profile.WriteToDisk();
-                    this.process.Clean(this.profile);
                     this.process.StartProfile(this.profile, new string[] { "-foreground" });
 
                     this.SetAddress(portToUse);
@@ -113,10 +113,10 @@ namespace OpenQA.Selenium.Firefox
         }
 
         /// <summary>
-        /// Releases the unmanaged resources used by the <see cref="FirefoxDriverServer"/> and optionally 
+        /// Releases the unmanaged resources used by the <see cref="FirefoxDriverServer"/> and optionally
         /// releases the managed resources.
         /// </summary>
-        /// <param name="disposing"><see langword="true"/> to release managed and resources; 
+        /// <param name="disposing"><see langword="true"/> to release managed and resources;
         /// <see langword="false"/> to only release unmanaged resources.</param>
         protected virtual void Dispose(bool disposing)
         {
@@ -124,11 +124,9 @@ namespace OpenQA.Selenium.Firefox
             {
                 // This should only be called after the QUIT command has been sent,
                 // so go ahead and clean up our process and profile.
-                this.process.Quit();
+                this.process.Dispose();
                 this.profile.Clean();
             }
-
-            GC.SuppressFinalize(this);
         }
 
         private static int DetermineNextFreePort(string host, int port)
@@ -272,12 +270,12 @@ namespace OpenQA.Selenium.Firefox
                             addressBuilder.AppendFormat(CultureInfo.InvariantCulture, "{0}:{1}", address.Address.ToString(), address.Port.ToString(CultureInfo.InvariantCulture));
                         }
 
-                        throw new WebDriverException(string.Format(CultureInfo.InvariantCulture, "Failed to start up socket within {0} ms. Attempted to connect to the following addresses: {1}", timeToWait.TotalMilliseconds, addressBuilder.ToString()));
+                        throw new WebDriverException(string.Format(CultureInfo.InvariantCulture, "Failed to start up socket within {0} milliseconds. Attempted to connect to the following addresses: {1}", timeToWait.TotalMilliseconds, addressBuilder.ToString()));
                     }
                     else
                     {
                         IPEndPoint endPoint = (IPEndPoint)extensionSocket.RemoteEndPoint;
-                        string formattedError = string.Format(CultureInfo.InvariantCulture, "Unable to connect to host {0} on port {1} after {2} ms", endPoint.Address.ToString(), endPoint.Port.ToString(CultureInfo.InvariantCulture), timeToWait.TotalMilliseconds);
+                        string formattedError = string.Format(CultureInfo.InvariantCulture, "Unable to connect to host {0} on port {1} after {2} milliseconds", endPoint.Address.ToString(), endPoint.Port.ToString(CultureInfo.InvariantCulture), timeToWait.TotalMilliseconds);
                         throw new WebDriverException(formattedError);
                     }
                 }

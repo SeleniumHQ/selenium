@@ -1,5 +1,8 @@
-// Copyright 2011 Software Freedom Conservancy
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -14,44 +17,19 @@
 #ifndef WEBDRIVER_IE_QUITCOMMANDHANDLER_H_
 #define WEBDRIVER_IE_QUITCOMMANDHANDLER_H_
 
-#include "../Browser.h"
 #include "../IECommandHandler.h"
-#include "../IECommandExecutor.h"
 
 namespace webdriver {
 
 class QuitCommandHandler : public IECommandHandler {
  public:
-  QuitCommandHandler(void) {
-  }
-
-  virtual ~QuitCommandHandler(void) {
-  }
+  QuitCommandHandler(void);
+  virtual ~QuitCommandHandler(void);
 
  protected:
   void ExecuteInternal(const IECommandExecutor& executor,
                        const ParametersMap& command_parameters,
-                       Response* response) {
-    std::vector<std::string> managed_browser_handles;
-    executor.GetManagedBrowserHandles(&managed_browser_handles);
-
-    std::vector<std::string>::iterator end = managed_browser_handles.end();
-    for (std::vector<std::string>::iterator it = managed_browser_handles.begin();
-         it != end;
-         ++it) {
-      BrowserHandle browser_wrapper;
-      int status_code = executor.GetManagedBrowser(*it, &browser_wrapper);
-      if (status_code == WD_SUCCESS && !browser_wrapper->is_closing()) {
-        browser_wrapper->Close();
-      }
-    }
-
-    // Calling quit will always result in an invalid session.
-    IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
-    mutable_executor.set_is_valid(false);
-    mutable_executor.set_is_quitting(true);
-    response->SetSuccessResponse(Json::Value::null);
-  }
+                       Response* response);
 };
 
 } // namespace webdriver

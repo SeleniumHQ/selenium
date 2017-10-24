@@ -1,3 +1,20 @@
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
 package org.openqa.selenium.remote.http;
 
 import static com.google.common.base.Charsets.UTF_16;
@@ -10,12 +27,15 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.startsWith;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
+import static org.openqa.selenium.remote.Dialect.OSS;
 import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
@@ -25,9 +45,11 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.remote.Command;
+import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.SessionId;
 
 import java.net.URISyntaxException;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -191,7 +213,7 @@ public class JsonHttpCommandCodecTest {
     codec.defineCommand("pick", GET, "/fruit/:fruit/size/:size");
 
     Command decoded = codec.decode(request);
-    assertThat(decoded.getParameters(), is((Map) ImmutableMap.of(
+    assertThat(decoded.getParameters(), is((Map<String, String>) ImmutableMap.of(
         "fruit", "apple",
         "size", "large")));
   }
@@ -211,7 +233,7 @@ public class JsonHttpCommandCodecTest {
 
     Command decoded = codec.decode(request);
     assertThat(decoded.getSessionId(), is(new SessionId("sessionX")));
-    assertThat(decoded.getParameters(), is((Map) ImmutableMap.of(
+    assertThat(decoded.getParameters(), is((Map<String, String>) ImmutableMap.of(
         "fruit", "apple", "size", "large", "color", "red")));
   }
 
@@ -230,7 +252,7 @@ public class JsonHttpCommandCodecTest {
 
     Command decoded = codec.decode(request);
     assertThat(decoded.getSessionId(), is(nullValue()));
-    assertThat(decoded.getParameters(), is((Map) ImmutableMap.of(
+    assertThat(decoded.getParameters(), is((Map<String, String>) ImmutableMap.of(
         "fruit", "apple", "size", "large", "color", "red")));
   }
 
@@ -273,7 +295,7 @@ public class JsonHttpCommandCodecTest {
 
     assertThat(decoded.getName(), is(original.getName()));
     assertThat(decoded.getSessionId(), is(original.getSessionId()));
-    assertThat(decoded.getParameters(), is((Map) original.getParameters()));
+    assertThat(decoded.getParameters(), is((Map<?, ?>) original.getParameters()));
   }
 
   @Test
@@ -338,5 +360,24 @@ public class JsonHttpCommandCodecTest {
     } catch (UnsupportedCommandException expected) {
       // Do nothing.
     }
+  }
+
+  @Test
+  public void whenDecodingAnHttpRequestDoesNotRecreateWebElements() {
+    Command command = new Command(
+        new SessionId("1234567"),
+        DriverCommand.EXECUTE_SCRIPT,
+        ImmutableMap.of(
+            "script", "",
+            "args", ImmutableList.of(ImmutableMap.of(OSS.getEncodedElementKey(), "67890"))));
+
+    HttpRequest request = codec.encode(command);
+
+    Command decoded = codec.decode(request);
+
+    List<?> args = (List<?>) decoded.getParameters().get("args");
+
+    Map<? ,?> element = (Map<?, ?>) args.get(0);
+    assertEquals("67890", element.get(OSS.getEncodedElementKey()));
   }
 }

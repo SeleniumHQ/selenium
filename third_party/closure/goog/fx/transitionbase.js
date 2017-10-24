@@ -29,6 +29,7 @@ goog.require('goog.fx.Transition');  // Unreferenced: interface
  * Constructor for a transition object.
  *
  * @constructor
+ * @struct
  * @implements {goog.fx.Transition}
  * @extends {goog.events.EventTarget}
  */

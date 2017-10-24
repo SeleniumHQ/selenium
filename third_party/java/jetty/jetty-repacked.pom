@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.seleniumhq.selenium</groupId>
+    <artifactId>jetty-repacked</artifactId>
+    <version>9.2.13.v20150730</version>
+    
+    <name>selenium-jetty-server-repacked</name>
+    <description>Browser automation framework dependency on jetty</description>
+    <url>http://selenium.googlecode.com/</url>
+
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <id>simon.m.stewart</id>
+            <name>Simon Stewart</name>
+            <roles>
+                <role>Owner</role>
+            </roles>
+        </developer>
+        <developer>
+            <id>lsemerau</id>
+            <name>Luke Inman-Semerau</name>
+            <roles>
+                <role>Committer</role>
+            </roles>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:https://github.com/SeleniumHQ/selenium</connection>
+        <developerConnection>scm:git:https://github.com/SeleniumHQ/selenium</developerConnection>
+        <url>https://github.com/SeleniumHQ/selenium</url>
+    </scm>
+    <profiles>
+        <profile>
+            <id>sign</id>
+            <build>
+                <plugins>
+                    <!-- See http://maven.apache.org/plugins/maven-gpg-plugin/ -->
+                    <plugin>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.4</version>
+                        <executions>
+                            <execution>
+                                <phase>install</phase>
+                                    <goals>
+                                        <goal>sign</goal>
+                                    </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+    <distributionManagement>
+        <snapshotRepository>
+            <id>sonatype-nexus-snapshots</id>
+            <url>http://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>sonatype-nexus-staging</id>
+            <url>http://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+        </repository>
+    </distributionManagement>
+</project>

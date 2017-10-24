@@ -1,5 +1,8 @@
-// Copyright 2011 Software Freedom Conservancy
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -14,42 +17,19 @@
 #ifndef WEBDRIVER_IE_GETELEMENTTAGNAMECOMMANDHANDLER_H_
 #define WEBDRIVER_IE_GETELEMENTTAGNAMECOMMANDHANDLER_H_
 
-#include "../Browser.h"
 #include "../IECommandHandler.h"
-#include "../IECommandExecutor.h"
 
 namespace webdriver {
 
 class GetElementTagNameCommandHandler : public IECommandHandler {
  public:
-  GetElementTagNameCommandHandler(void) {
-  }
-
-  virtual ~GetElementTagNameCommandHandler(void) {
-  }
+  GetElementTagNameCommandHandler(void);
+  virtual ~GetElementTagNameCommandHandler(void);
 
  protected:
   void ExecuteInternal(const IECommandExecutor& executor,
                        const ParametersMap& command_parameters,
-                       Response* response) {
-    ParametersMap::const_iterator id_parameter_iterator = command_parameters.find("id");
-    if (id_parameter_iterator == command_parameters.end()) {
-      response->SetErrorResponse(400, "Missing parameter in URL: id");
-      return;
-    } else {
-      std::string element_id = id_parameter_iterator->second.asString();
-      ElementHandle element_wrapper;
-      int status_code = this->GetElement(executor, element_id, &element_wrapper);
-      if (status_code == WD_SUCCESS) {
-        std::string return_value = element_wrapper->GetTagName();
-        response->SetSuccessResponse(return_value);
-        return;
-      } else {
-        response->SetErrorResponse(status_code, "Element is no longer valid");
-        return;
-      }
-    }
-  }
+                       Response* response);
 };
 
 } // namespace webdriver

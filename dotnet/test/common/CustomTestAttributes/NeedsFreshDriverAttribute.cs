@@ -1,24 +1,45 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using NUnit.Framework;
+using NUnit.Framework.Interfaces;
+using OpenQA.Selenium.Environment;
 
 namespace OpenQA.Selenium
 {
-    public class NeedsFreshDriverAttribute : Attribute
+    public class NeedsFreshDriverAttribute : TestActionAttribute
     {
-        private bool beforeTest = false;
-        private bool afterTest = false;
+        private bool isCreatedBeforeTest = false;
+        private bool isCreatedAfterTest = false;
 
-        public bool BeforeTest
+        public bool IsCreatedBeforeTest
         {
-            get { return beforeTest; }
-            set { beforeTest = value; }
+            get { return isCreatedBeforeTest; }
+            set { isCreatedBeforeTest = value; }
         }
 
-        public bool AfterTest
+        public bool IsCreatedAfterTest
         {
-            get { return afterTest; }
-            set { afterTest = value; }
+            get { return isCreatedAfterTest; }
+            set { isCreatedAfterTest = value; }
+        }
+
+        public override void BeforeTest(ITest test)
+        {
+            DriverTestFixture fixtureInstance = test.Fixture as DriverTestFixture;
+            if (fixtureInstance != null && this.isCreatedBeforeTest)
+            {
+                EnvironmentManager.Instance.CreateFreshDriver();
+                fixtureInstance.DriverInstance = EnvironmentManager.Instance.GetCurrentDriver();
+            }
+            base.BeforeTest(test);
+        }
+
+        public override void AfterTest(ITest test)
+        {
+            DriverTestFixture fixtureInstance = test.Fixture as DriverTestFixture;
+            if (fixtureInstance != null && this.isCreatedAfterTest)
+            {
+                EnvironmentManager.Instance.CreateFreshDriver();
+                fixtureInstance.DriverInstance = EnvironmentManager.Instance.GetCurrentDriver();
+            }
         }
     }
 }

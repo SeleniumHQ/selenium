@@ -26,7 +26,7 @@ goog.require('goog.html.SafeHtml');
 
 /**
  * Attributes and param tag name attributes not allowed to be overriden
- * when calling createObjectFlash*().
+ * when calling createObject() and createObjectForOldIe().
  *
  * While values that should be specified as params are probably not
  * recognized as attributes, we block them anyway just to be sure.
@@ -34,11 +34,11 @@ goog.require('goog.html.SafeHtml');
  * @private
  */
 goog.html.flash.FORBIDDEN_ATTRS_AND_PARAMS_ON_FLASH_ = [
-  'classid',  // Used on old IE.
-  'data',  // Used in <object> to specify a URL.
-  'movie',  // Used on old IE.
-  'type',  // Used in <object> on for non-IE/modern IE.
-  'typemustmatch'
+  'classid',       // Used on old IE.
+  'data',          // Used in <object> to specify a URL.
+  'movie',         // Used on old IE.
+  'type',          // Used in <object> on for non-IE/modern IE.
+  'typemustmatch'  // Always set to a fixed value.
 ];
 
 
@@ -52,33 +52,27 @@ goog.html.flash.createEmbed = function(src, opt_attributes) {
     'allownetworking': 'none',
     'allowscriptaccess': 'never'
   };
-  var attributes = goog.html.flash.combineAttributes_(
+  var attributes = goog.html.SafeHtml.combineAttributes(
       fixedAttributes, defaultAttributes, opt_attributes);
-  return goog.html.SafeHtml.
-      createSafeHtmlTagSecurityPrivateDoNotAccessOrElse('embed', attributes);
+  return goog.html.SafeHtml.createSafeHtmlTagSecurityPrivateDoNotAccessOrElse(
+      'embed', attributes);
 };
 
 
-goog.html.flash.createObject = function(
-    data, opt_params, opt_attributes) {
-  goog.html.flash.verifyKeysNotInMaps_(
-      goog.html.flash.FORBIDDEN_ATTRS_AND_PARAMS_ON_FLASH_,
-      opt_attributes,
+goog.html.flash.createObject = function(data, opt_params, opt_attributes) {
+  goog.html.flash.verifyKeysNotInMaps(
+      goog.html.flash.FORBIDDEN_ATTRS_AND_PARAMS_ON_FLASH_, opt_attributes,
       opt_params);
 
-  var paramTags = goog.html.flash.combineParams_(
-      {
-        'allownetworking': 'none',
-        'allowscriptaccess': 'never'
-      },
-      opt_params);
+  var paramTags = goog.html.flash.combineParams(
+      {'allownetworking': 'none', 'allowscriptaccess': 'never'}, opt_params);
   var fixedAttributes = {
     'data': data,
     'type': 'application/x-shockwave-flash',
     'typemustmatch': ''
   };
-  var attributes = goog.html.flash.combineAttributes_(
-      fixedAttributes, {}, opt_attributes);
+  var attributes =
+      goog.html.SafeHtml.combineAttributes(fixedAttributes, {}, opt_attributes);
 
   return goog.html.SafeHtml.createSafeHtmlTagSecurityPrivateDoNotAccessOrElse(
       'object', attributes, paramTags);
@@ -87,22 +81,18 @@ goog.html.flash.createObject = function(
 
 goog.html.flash.createObjectForOldIe = function(
     movie, opt_params, opt_attributes) {
-  goog.html.flash.verifyKeysNotInMaps_(
-      goog.html.flash.FORBIDDEN_ATTRS_AND_PARAMS_ON_FLASH_,
-      opt_attributes,
+  goog.html.flash.verifyKeysNotInMaps(
+      goog.html.flash.FORBIDDEN_ATTRS_AND_PARAMS_ON_FLASH_, opt_attributes,
       opt_params);
 
-  var paramTags = goog.html.flash.combineParams_(
-      {
-        'allownetworking': 'none',
-        'allowscriptaccess': 'never',
-        'movie': movie
-      },
+  var paramTags = goog.html.flash.combineParams(
+      {'allownetworking': 'none', 'allowscriptaccess': 'never', 'movie': movie},
       opt_params);
-  var fixedAttributes =
-      {'classid': 'clsid:d27cdb6e-ae6d-11cf-96b8-444553540000'};
-  var attributes = goog.html.flash.combineAttributes_(
-      fixedAttributes, {}, opt_attributes);
+  var fixedAttributes = {
+    'classid': 'clsid:d27cdb6e-ae6d-11cf-96b8-444553540000'
+  };
+  var attributes =
+      goog.html.SafeHtml.combineAttributes(fixedAttributes, {}, opt_attributes);
 
   return goog.html.SafeHtml.createSafeHtmlTagSecurityPrivateDoNotAccessOrElse(
       'object', attributes, paramTags);
@@ -110,55 +100,15 @@ goog.html.flash.createObjectForOldIe = function(
 
 
 /**
- * @param {!Object<string, string>} fixedAttributes
- * @param {!Object<string, string>} defaultAttributes
- * @param {!Object<string, goog.html.SafeHtml.AttributeValue_>=}
- *     opt_attributes Optional attributes passed to create*().
- * @return {!Object<string, goog.html.SafeHtml.AttributeValue_>}
- * @throws {Error} If opt_attributes contains an attribute with the same name
- *     as an attribute in fixedAttributes.
- * @private
- */
-goog.html.flash.combineAttributes_ = function(
-    fixedAttributes, defaultAttributes, opt_attributes) {
-  var combinedAttributes = {};
-  var name;
-
-  for (name in fixedAttributes) {
-    goog.asserts.assert(name.toLowerCase() == name, 'Must be lower case');
-    combinedAttributes[name] = fixedAttributes[name];
-  }
-  for (name in defaultAttributes) {
-    goog.asserts.assert(name.toLowerCase() == name, 'Must be lower case');
-    combinedAttributes[name] = defaultAttributes[name];
-  }
-
-  for (name in opt_attributes) {
-    var nameLower = name.toLowerCase();
-    if (nameLower in fixedAttributes) {
-      throw Error('Cannot override "' + nameLower + '" attribute, got "' +
-          name + '" with value "' + opt_attributes[name] + '"');
-    }
-    if (nameLower in defaultAttributes) {
-      delete combinedAttributes[nameLower];
-    }
-    combinedAttributes[name] = opt_attributes[name];
-  }
-
-  return combinedAttributes;
-};
-
-
-/**
  * @param {!Object<string, string|!goog.string.TypedString>} defaultParams
- * @param {!Object<string, string>=}
- *     opt_params Optional params passed to create*().
+ * @param {?Object<string, string>=} opt_params Optional params passed to
+ *     create*().
  * @return {!Array<!goog.html.SafeHtml>} Combined params.
  * @throws {Error} If opt_attributes contains an attribute with the same name
  *     as an attribute in fixedAttributes.
- * @private
+ * @package
  */
-goog.html.flash.combineParams_ = function(defaultParams, opt_params) {
+goog.html.flash.combineParams = function(defaultParams, opt_params) {
   var combinedParams = {};
   var name;
 
@@ -179,7 +129,6 @@ goog.html.flash.combineParams_ = function(defaultParams, opt_params) {
     paramTags.push(
         goog.html.SafeHtml.createSafeHtmlTagSecurityPrivateDoNotAccessOrElse(
             'param', {'name': name, 'value': combinedParams[name]}));
-
   }
   return paramTags;
 };
@@ -188,15 +137,15 @@ goog.html.flash.combineParams_ = function(defaultParams, opt_params) {
 /**
  * Checks that keys are not present as keys in maps.
  * @param {!Array<string>} keys Keys that must not be present, lower-case.
- * @param {!Object<string, goog.html.SafeHtml.AttributeValue_>=}
- *     opt_attributes Optional attributes passed to create*().
- * @param {!Object<string, string>=}  opt_params Optional params passed to
+ * @param {?Object<string, ?goog.html.SafeHtml.AttributeValue>=} opt_attributes
+ *     Optional attributes passed to create*().
+ * @param {?Object<string, string>=}  opt_params Optional params passed to
  *     createObject*().
  * @throws {Error} If any of keys exist as a key, ignoring case, in
  *     opt_attributes or opt_params.
- * @private
+ * @package
  */
-goog.html.flash.verifyKeysNotInMaps_ = function(
+goog.html.flash.verifyKeysNotInMaps = function(
     keys, opt_attributes, opt_params) {
   var verifyNotInMap = function(keys, map, type) {
     for (var keyMap in map) {
@@ -205,8 +154,9 @@ goog.html.flash.verifyKeysNotInMaps_ = function(
         var keyToCheck = keys[i];
         goog.asserts.assert(keyToCheck.toLowerCase() == keyToCheck);
         if (keyMapLower == keyToCheck) {
-          throw Error('Cannot override "' + keyToCheck + '" ' + type +
-              ', got "' + keyMap + '" with value "' + map[keyMap] + '"');
+          throw Error(
+              'Cannot override "' + keyToCheck + '" ' + type + ', got "' +
+              keyMap + '" with value "' + map[keyMap] + '"');
         }
       }
     }

@@ -29,6 +29,7 @@ goog.provide('goog.ui.media.MediaModel.SubTitle');
 goog.provide('goog.ui.media.MediaModel.Thumbnail');
 
 goog.require('goog.array');
+goog.require('goog.html.TrustedResourceUrl');
 
 
 
@@ -44,11 +45,6 @@ goog.require('goog.array');
  * values are allowed. {@code goog.ui.media.MediaRenderer} checks whether the
  * values are available before creating DOMs for them.
  *
- * TODO(user): support asynchronous data models by subclassing
- * {@link goog.events.EventTarget} or {@link goog.ds.DataNode}. Understand why
- * {@link http://goto/datanode} is not available in closure. Add setters to
- * MediaModel once this is supported.
- *
  * @param {string=} opt_url An optional URL of the media.
  * @param {string=} opt_caption An optional caption of the media.
  * @param {string=} opt_description An optional description of the media.
@@ -59,14 +55,9 @@ goog.require('goog.array');
  * @param {number=} opt_height The height of the media in pixels.
  * @constructor
  */
-goog.ui.media.MediaModel = function(opt_url,
-                                    opt_caption,
-                                    opt_description,
-                                    opt_type,
-                                    opt_medium,
-                                    opt_duration,
-                                    opt_width,
-                                    opt_height) {
+goog.ui.media.MediaModel = function(
+    opt_url, opt_caption, opt_description, opt_type, opt_medium, opt_duration,
+    opt_width, opt_height) {
   /**
    * The URL of the media.
    * @type {string|undefined}
@@ -460,9 +451,8 @@ goog.ui.media.MediaModel.prototype.setCredits = function(credits) {
  *     with the given role. May be empty.
  */
 goog.ui.media.MediaModel.prototype.findCreditsWithRole = function(role) {
-  var credits = goog.array.filter(this.credits_, function(credit) {
-    return role == credit.getRole();
-  });
+  var credits = goog.array.filter(
+      this.credits_, function(credit) { return role == credit.getRole(); });
   return /** @type {!Array<!goog.ui.media.MediaModel.Credit>} */ (credits);
 };
 
@@ -559,7 +549,7 @@ goog.ui.media.MediaModel.Thumbnail.prototype.setSize = function(size) {
 /**
  * Constructs a player containing details of the player's URL and
  * optionally its size.
- * @param {string} url The URL of the player.
+ * @param {!goog.html.TrustedResourceUrl} url The URL of the player.
  * @param {Object=} opt_vars Optional map of arguments to the player.
  * @param {goog.math.Size=} opt_size The size of the player if known.
  * @constructor
@@ -568,10 +558,10 @@ goog.ui.media.MediaModel.Thumbnail.prototype.setSize = function(size) {
 goog.ui.media.MediaModel.Player = function(url, opt_vars, opt_size) {
   /**
    * The player's URL.
-   * @type {string}
+   * @type {!goog.html.TrustedResourceUrl}
    * @private
    */
-  this.url_ = url;
+  this.trustedResourceUrl_ = url;
 
   /**
    * Player arguments, typically flash arguments.
@@ -590,22 +580,31 @@ goog.ui.media.MediaModel.Player = function(url, opt_vars, opt_size) {
 
 
 /**
- * Gets the player url.
- * @return {string} The thumbnail's image URL.
+ * Gets the player URL.
+ * @return {!goog.html.TrustedResourceUrl} The player's URL.
  */
-goog.ui.media.MediaModel.Player.prototype.getUrl = function() {
-  return this.url_;
+goog.ui.media.MediaModel.Player.prototype.getTrustedResourceUrl = function() {
+  return this.trustedResourceUrl_;
 };
 
 
 /**
- * Sets the player url.
- * @param {string} url The thumbnail's image URL.
+ * Gets the player URL.
+ * @return {string} The player's URL.
+ */
+goog.ui.media.MediaModel.Player.prototype.getUrl = function() {
+  return this.trustedResourceUrl_.getTypedStringValue();
+};
+
+
+/**
+ * Sets the player URL.
+ * @param {!goog.html.TrustedResourceUrl} url The player's URL.
  * @return {!goog.ui.media.MediaModel.Player} The object itself, used for
  *     chaining.
  */
 goog.ui.media.MediaModel.Player.prototype.setUrl = function(url) {
-  this.url_ = url;
+  this.trustedResourceUrl_ = url;
   return this;
 };
 

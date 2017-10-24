@@ -1,5 +1,8 @@
-// Copyright 2011 Software Freedom Conservancy
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -14,33 +17,19 @@
 #ifndef WEBDRIVER_IE_GETALLWINDOWHANDLESCOMMANDHANDLER_H_
 #define WEBDRIVER_IE_GETALLWINDOWHANDLESCOMMANDHANDLER_H_
 
-#include "../Browser.h"
 #include "../IECommandHandler.h"
-#include "../IECommandExecutor.h"
 
 namespace webdriver {
 
 class GetAllWindowHandlesCommandHandler : public IECommandHandler {
  public:
-  GetAllWindowHandlesCommandHandler(void) {
-  }
-
-  virtual ~GetAllWindowHandlesCommandHandler(void) {
-  }
+  GetAllWindowHandlesCommandHandler(void);
+  virtual ~GetAllWindowHandlesCommandHandler(void);
 
  protected:
   void ExecuteInternal(const IECommandExecutor& executor,
-                       const ParametersMap& command_parameters,
-                       Response* response) {
-    Json::Value handles(Json::arrayValue);
-    std::vector<std::string> handle_list;
-    executor.GetManagedBrowserHandles(&handle_list);
-    for (unsigned int i = 0; i < handle_list.size(); ++i) {
-      handles.append(handle_list[i]);
-    }
-
-    response->SetSuccessResponse(handles);
-  }
+                      const ParametersMap& command_parameters,
+                      Response* response);
 };
 
 } // namespace webdriver

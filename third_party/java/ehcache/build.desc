@@ -1,6 +1,0 @@
-
-java_library(name = "ehcache",
-  deps = [ 
-    "ehcache-core-2.5.2.jar",
-    "//third_party/java/slf4j",
-  ])

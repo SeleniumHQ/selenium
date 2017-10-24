@@ -35,6 +35,7 @@ goog.require('goog.storage.Storage');
  * @param {!goog.storage.mechanism.Mechanism} mechanism The underlying
  *     storage mechanism.
  * @constructor
+ * @struct
  * @extends {goog.storage.Storage}
  */
 goog.storage.RichStorage = function(mechanism) {
@@ -116,7 +117,8 @@ goog.storage.RichStorage.Wrapper.unwrapIfPossible = function(wrapper) {
 
 /** @override */
 goog.storage.RichStorage.prototype.set = function(key, value) {
-  goog.storage.RichStorage.base(this, 'set', key,
+  goog.storage.RichStorage.base(
+      this, 'set', key,
       goog.storage.RichStorage.Wrapper.wrapIfNecessary(value));
 };
 

@@ -1,19 +1,19 @@
-/**
-Copyright 2010 WebDriver committers
-Copyright 2010 Google Inc.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 goog.provide('core.filters');
 goog.provide('core.filters.Strategy');
@@ -26,7 +26,7 @@ goog.require('goog.array');
 
 /**
  * @param {string} name The expected name value to match against.
- * @param {!goog.array.ArrayLike.<!Element>} elements The list to filter.
+ * @param {!IArrayLike.<!Element>} elements The list to filter.
  * @return {!Array.<!Element>} The filtered list of elements.
  * @private
  */
@@ -39,7 +39,7 @@ core.filters.name_ = function(name, elements) {
 
 /**
  * @param {string} value The expected value to match against.
- * @param {!goog.array.ArrayLike.<!Element>} elements The list to filter.
+ * @param {!IArrayLike.<!Element>} elements The list to filter.
  * @return {!Array.<!Element>} The filtered list of elements.
  * @private
  */
@@ -52,7 +52,7 @@ core.filters.value_ = function(value, elements) {
 
 /**
  * @param {string} index The index to select.
- * @param {!goog.array.ArrayLike.<!Element>} elements The list to filter.
+ * @param {!IArrayLike.<!Element>} elements The list to filter.
  * @return {!Array.<!Element>} The filtered list of elements.
  * @private
  */
@@ -70,7 +70,7 @@ core.filters.index_ = function(index, elements) {
 
 /**
  * @typedef {function(string,
- *     !goog.array.ArrayLike.<!Element>):!Array.<Element>}
+ *     !IArrayLike.<!Element>):!Array.<Element>}
  */
 core.filters.Strategy;
 
@@ -93,7 +93,7 @@ core.filters.Filters_ = {
  *
  * @param {string} filterType The type of filter to use.
  * @param {string} filter The value to pass to the filter function.
- * @param {!goog.array.ArrayLike.<!Element>} elements The list of elements to
+ * @param {!IArrayLike.<!Element>} elements The list of elements to
  *     filter.
  * @return {!Array.<!Element>} The filtered list of elements.
  * @private
@@ -113,7 +113,7 @@ core.filters.selectElementsBy_ = function(filterType, filter, elements) {
  * Refine a list of elements using a filter.
  *
  * @param {string} filterExpr The type of filter to use.
- * @param {!goog.array.ArrayLike.<!Element>} elements The list of elements to
+ * @param {!IArrayLike.<!Element>} elements The list of elements to
  *     filter.
  * @param {string} defaultFilterType The default type of filter to use.
  * @return {!Array.<!Element>} The filtered list of elements.

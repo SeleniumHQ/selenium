@@ -1,19 +1,19 @@
-/*
- Copyright 2010 WebDriver committers
- Copyright 2010 Google Inc.
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
- http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
- */
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 /**
  * @fileoverview Methods for dealing with modal dialogs.
@@ -252,7 +252,7 @@ fxdriver.modals.closeUnhandledAlert = function(response, driver, accept) {
         'wildly inconsistent state, and the alert may still be ' +
         'open. This is not good. If you can reliably reproduce this' +
         ', please report a new issue at ' +
-        'https://code.google.com/p/selenium/issues/entry ' +
+        'https://github.com/SeleniumHQ/selenium/issues ' +
         'with reproduction steps. Exception message: ' + e;
       }
     } else {

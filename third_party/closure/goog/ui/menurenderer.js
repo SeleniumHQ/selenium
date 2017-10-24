@@ -25,6 +25,7 @@ goog.require('goog.a11y.aria.Role');
 goog.require('goog.a11y.aria.State');
 goog.require('goog.asserts');
 goog.require('goog.dom');
+goog.require('goog.dom.TagName');
 goog.require('goog.ui.ContainerRenderer');
 goog.require('goog.ui.Separator');
 
@@ -38,8 +39,8 @@ goog.require('goog.ui.Separator');
  * @extends {goog.ui.ContainerRenderer}
  */
 goog.ui.MenuRenderer = function(opt_ariaRole) {
-  goog.ui.ContainerRenderer.call(this,
-      opt_ariaRole || goog.a11y.aria.Role.MENU);
+  goog.ui.ContainerRenderer.call(
+      this, opt_ariaRole || goog.a11y.aria.Role.MENU);
 };
 goog.inherits(goog.ui.MenuRenderer, goog.ui.ContainerRenderer);
 goog.addSingletonGetter(goog.ui.MenuRenderer);
@@ -60,7 +61,7 @@ goog.ui.MenuRenderer.CSS_CLASS = goog.getCssName('goog-menu');
  * @override
  */
 goog.ui.MenuRenderer.prototype.canDecorate = function(element) {
-  return element.tagName == 'UL' ||
+  return element.tagName == goog.dom.TagName.UL ||
       goog.ui.MenuRenderer.superClass_.canDecorate.call(this, element);
 };
 
@@ -75,10 +76,9 @@ goog.ui.MenuRenderer.prototype.canDecorate = function(element) {
  * @override
  */
 goog.ui.MenuRenderer.prototype.getDecoratorForChild = function(element) {
-  return element.tagName == 'HR' ?
+  return element.tagName == goog.dom.TagName.HR ?
       new goog.ui.Separator() :
-      goog.ui.MenuRenderer.superClass_.getDecoratorForChild.call(this,
-          element);
+      goog.ui.MenuRenderer.superClass_.getDecoratorForChild.call(this, element);
 };
 
 

@@ -1,3 +1,4 @@
+# BUILD FILE SYNTAX: SKYLARK
 prebuilt_jar(name = 'dnssec4j',
   binary_jar = 'dnssec4j-0.1-SNAPSHOT.jar',
   visibility = [

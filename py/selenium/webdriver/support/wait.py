@@ -1,18 +1,19 @@
-#!/usr/bin/python
+# Licensed to the Software Freedom Conservancy (SFC) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The SFC licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
 #
-# Copyright 2011 Software Freedom Conservancy.
+#   http://www.apache.org/licenses/LICENSE-2.0
 #
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
 
 import time
 from selenium.common.exceptions import NoSuchElementException
@@ -53,6 +54,10 @@ class WebDriverWait(object):
             except TypeError:  # ignored_exceptions is not iterable
                 exceptions.append(ignored_exceptions)
         self._ignored_exceptions = tuple(exceptions)
+
+    def __repr__(self):
+        return '<{0.__module__}.{0.__name__} (session="{1}")>'.format(
+            type(self), self._driver.session_id)
 
     def until(self, method, message=''):
         """Calls the method provided with the driver as an argument until the \

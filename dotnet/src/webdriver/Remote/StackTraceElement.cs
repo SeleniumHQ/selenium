@@ -1,7 +1,9 @@
 ﻿// <copyright file="StackTraceElement.cs" company="WebDriver Committers">
-// Copyright 2015 Software Freedom Conservancy
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -58,7 +60,11 @@ namespace OpenQA.Selenium.Remote
 
                 if (elementAttributes.ContainsKey("lineNumber"))
                 {
-                    this.lineNumber = Convert.ToInt32(elementAttributes["lineNumber"], CultureInfo.InvariantCulture);
+                    int line = 0;
+                    if (int.TryParse(elementAttributes["lineNumber"].ToString(), out line))
+                    {
+                        this.lineNumber = line;
+                    }
                 }
 
                 if (elementAttributes.ContainsKey("fileName") && elementAttributes["fileName"] != null)

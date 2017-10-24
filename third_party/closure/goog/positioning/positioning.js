@@ -35,6 +35,19 @@ goog.require('goog.style.bidi');
 
 
 /**
+ * Enum for bits in the {@see goog.positioning.Corner) bitmap.
+ *
+ * @enum {number}
+ */
+goog.positioning.CornerBit = {
+  BOTTOM: 1,
+  CENTER: 2,
+  RIGHT: 4,
+  FLIP_RTL: 8
+};
+
+
+/**
  * Enum for representing an element corner for positioning the popup.
  *
  * The START constants map to LEFT if element directionality is left
@@ -45,25 +58,20 @@ goog.require('goog.style.bidi');
  */
 goog.positioning.Corner = {
   TOP_LEFT: 0,
-  TOP_RIGHT: 2,
-  BOTTOM_LEFT: 1,
-  BOTTOM_RIGHT: 3,
-  TOP_START: 4,
-  TOP_END: 6,
-  BOTTOM_START: 5,
-  BOTTOM_END: 7
-};
-
-
-/**
- * Enum for bits in the {@see goog.positioning.Corner) bitmap.
- *
- * @enum {number}
- */
-goog.positioning.CornerBit = {
-  BOTTOM: 1,
-  RIGHT: 2,
-  FLIP_RTL: 4
+  TOP_RIGHT: goog.positioning.CornerBit.RIGHT,
+  BOTTOM_LEFT: goog.positioning.CornerBit.BOTTOM,
+  BOTTOM_RIGHT:
+      goog.positioning.CornerBit.BOTTOM | goog.positioning.CornerBit.RIGHT,
+  TOP_START: goog.positioning.CornerBit.FLIP_RTL,
+  TOP_END:
+      goog.positioning.CornerBit.FLIP_RTL | goog.positioning.CornerBit.RIGHT,
+  BOTTOM_START:
+      goog.positioning.CornerBit.BOTTOM | goog.positioning.CornerBit.FLIP_RTL,
+  BOTTOM_END: goog.positioning.CornerBit.BOTTOM |
+      goog.positioning.CornerBit.RIGHT | goog.positioning.CornerBit.FLIP_RTL,
+  TOP_CENTER: goog.positioning.CornerBit.CENTER,
+  BOTTOM_CENTER:
+      goog.positioning.CornerBit.BOTTOM | goog.positioning.CornerBit.CENTER
 };
 
 
@@ -194,15 +202,9 @@ goog.positioning.OverflowStatus.FAILED_VERTICAL =
  * @return {goog.positioning.OverflowStatus} Status bitmap,
  *     {@see goog.positioning.OverflowStatus}.
  */
-goog.positioning.positionAtAnchor = function(anchorElement,
-                                             anchorElementCorner,
-                                             movableElement,
-                                             movableElementCorner,
-                                             opt_offset,
-                                             opt_margin,
-                                             opt_overflow,
-                                             opt_preferredSize,
-                                             opt_viewport) {
+goog.positioning.positionAtAnchor = function(
+    anchorElement, anchorElementCorner, movableElement, movableElementCorner,
+    opt_offset, opt_margin, opt_overflow, opt_preferredSize, opt_viewport) {
 
   goog.asserts.assert(movableElement);
   var movableParentTopLeft =
@@ -214,20 +216,24 @@ goog.positioning.positionAtAnchor = function(anchorElement,
 
   // Translate anchorRect to be relative to movableElement's page.
   goog.style.translateRectForAnotherFrame(
-      anchorRect,
-      goog.dom.getDomHelper(anchorElement),
+      anchorRect, goog.dom.getDomHelper(anchorElement),
       goog.dom.getDomHelper(movableElement));
 
   // Offset based on which corner of the element we want to position against.
-  var corner = goog.positioning.getEffectiveCorner(anchorElement,
-                                                   anchorElementCorner);
+  var corner =
+      goog.positioning.getEffectiveCorner(anchorElement, anchorElementCorner);
+  var offsetLeft = anchorRect.left;
+  if (corner & goog.positioning.CornerBit.RIGHT) {
+    offsetLeft += anchorRect.width;
+  } else if (corner & goog.positioning.CornerBit.CENTER) {
+    offsetLeft += anchorRect.width / 2;
+  }
+
   // absolutePos is a candidate position relative to the
   // movableElement's window.
   var absolutePos = new goog.math.Coordinate(
-      corner & goog.positioning.CornerBit.RIGHT ?
-          anchorRect.left + anchorRect.width : anchorRect.left,
-      corner & goog.positioning.CornerBit.BOTTOM ?
-          anchorRect.top + anchorRect.height : anchorRect.top);
+      offsetLeft, anchorRect.top +
+          (corner & goog.positioning.CornerBit.BOTTOM ? anchorRect.height : 0));
 
   // Translate absolutePos to be relative to the offsetParent.
   absolutePos =
@@ -235,10 +241,10 @@ goog.positioning.positionAtAnchor = function(anchorElement,
 
   // Apply offset, if specified
   if (opt_offset) {
-    absolutePos.x += (corner & goog.positioning.CornerBit.RIGHT ? -1 : 1) *
-        opt_offset.x;
-    absolutePos.y += (corner & goog.positioning.CornerBit.BOTTOM ? -1 : 1) *
-        opt_offset.y;
+    absolutePos.x +=
+        (corner & goog.positioning.CornerBit.RIGHT ? -1 : 1) * opt_offset.x;
+    absolutePos.y +=
+        (corner & goog.positioning.CornerBit.BOTTOM ? -1 : 1) * opt_offset.y;
   }
 
   // Determine dimension of viewport.
@@ -257,13 +263,9 @@ goog.positioning.positionAtAnchor = function(anchorElement,
     }
   }
 
-  return goog.positioning.positionAtCoordinate(absolutePos,
-                                               movableElement,
-                                               movableElementCorner,
-                                               opt_margin,
-                                               viewport,
-                                               opt_overflow,
-                                               opt_preferredSize);
+  return goog.positioning.positionAtCoordinate(
+      absolutePos, movableElement, movableElementCorner, opt_margin, viewport,
+      opt_overflow, opt_preferredSize);
 };
 
 
@@ -282,20 +284,19 @@ goog.positioning.getOffsetParentPageOffset = function(movableElement) {
   // IE strict mode) there's no need to get the position of the BODY as it
   // doesn't affect the page offset.
   var movableParentTopLeft;
-  var parent = movableElement.offsetParent;
+  var parent = /** @type {?} */ (movableElement).offsetParent;
   if (parent) {
     var isBody = parent.tagName == goog.dom.TagName.HTML ||
         parent.tagName == goog.dom.TagName.BODY;
-    if (!isBody ||
-        goog.style.getComputedPosition(parent) != 'static') {
+    if (!isBody || goog.style.getComputedPosition(parent) != 'static') {
       // Get the top-left corner of the parent, in page coordinates.
       movableParentTopLeft = goog.style.getPageOffset(parent);
 
       if (!isBody) {
         movableParentTopLeft = goog.math.Coordinate.difference(
             movableParentTopLeft,
-            new goog.math.Coordinate(goog.style.bidi.getScrollLeft(parent),
-                parent.scrollTop));
+            new goog.math.Coordinate(
+                goog.style.bidi.getScrollLeft(parent), parent.scrollTop));
       }
     }
   }
@@ -346,25 +347,20 @@ goog.positioning.getVisiblePart_ = function(el) {
  *     movableElement. Defaults to the current size.
  * @return {goog.positioning.OverflowStatus} Status bitmap.
  */
-goog.positioning.positionAtCoordinate = function(absolutePos,
-                                                 movableElement,
-                                                 movableElementCorner,
-                                                 opt_margin,
-                                                 opt_viewport,
-                                                 opt_overflow,
-                                                 opt_preferredSize) {
+goog.positioning.positionAtCoordinate = function(
+    absolutePos, movableElement, movableElementCorner, opt_margin, opt_viewport,
+    opt_overflow, opt_preferredSize) {
   absolutePos = absolutePos.clone();
-  var status = goog.positioning.OverflowStatus.NONE;
 
   // Offset based on attached corner and desired margin.
-  var corner = goog.positioning.getEffectiveCorner(movableElement,
-                                                   movableElementCorner);
+  var corner =
+      goog.positioning.getEffectiveCorner(movableElement, movableElementCorner);
   var elementSize = goog.style.getSize(movableElement);
-  var size = opt_preferredSize ? opt_preferredSize.clone() :
-      elementSize.clone();
+  var size =
+      opt_preferredSize ? opt_preferredSize.clone() : elementSize.clone();
 
-  var positionResult = goog.positioning.getPositionAtCoordinate(absolutePos,
-      size, corner, opt_margin, opt_viewport, opt_overflow);
+  var positionResult = goog.positioning.getPositionAtCoordinate(
+      absolutePos, size, corner, opt_margin, opt_viewport, opt_overflow);
 
   if (positionResult.status & goog.positioning.OverflowStatus.FAILED) {
     return positionResult.status;
@@ -404,11 +400,7 @@ goog.positioning.positionAtCoordinate = function(absolutePos,
  *     Object containing the computed position and status bitmap.
  */
 goog.positioning.getPositionAtCoordinate = function(
-    absolutePos,
-    elementSize,
-    elementCorner,
-    opt_margin,
-    opt_viewport,
+    absolutePos, elementSize, elementCorner, opt_margin, opt_viewport,
     opt_overflow) {
   absolutePos = absolutePos.clone();
   elementSize = elementSize.clone();
@@ -417,12 +409,14 @@ goog.positioning.getPositionAtCoordinate = function(
   if (opt_margin || elementCorner != goog.positioning.Corner.TOP_LEFT) {
     if (elementCorner & goog.positioning.CornerBit.RIGHT) {
       absolutePos.x -= elementSize.width + (opt_margin ? opt_margin.right : 0);
+    } else if (elementCorner & goog.positioning.CornerBit.CENTER) {
+      absolutePos.x -= elementSize.width / 2;
     } else if (opt_margin) {
       absolutePos.x += opt_margin.left;
     }
     if (elementCorner & goog.positioning.CornerBit.BOTTOM) {
-      absolutePos.y -= elementSize.height +
-          (opt_margin ? opt_margin.bottom : 0);
+      absolutePos.y -=
+          elementSize.height + (opt_margin ? opt_margin.bottom : 0);
     } else if (opt_margin) {
       absolutePos.y += opt_margin.top;
     }
@@ -483,13 +477,24 @@ goog.positioning.adjustForViewport_ = function(pos, size, viewport, overflow) {
     status |= goog.positioning.OverflowStatus.ADJUSTED_X;
   }
 
-  // Left edge inside and right edge outside viewport, try to resize it.
-  if (pos.x < viewport.left &&
-      pos.x + size.width > viewport.right &&
-      overflow & goog.positioning.Overflow.RESIZE_WIDTH) {
-    size.width = Math.max(
-        size.width - ((pos.x + size.width) - viewport.right), 0);
-    status |= goog.positioning.OverflowStatus.WIDTH_ADJUSTED;
+  // Ensure object is inside the viewport width if required.
+  if (overflow & goog.positioning.Overflow.RESIZE_WIDTH) {
+    // Move left edge inside viewport.
+    var originalX = pos.x;
+    if (pos.x < viewport.left) {
+      pos.x = viewport.left;
+      status |= goog.positioning.OverflowStatus.WIDTH_ADJUSTED;
+    }
+
+    // Shrink width to inside right of viewport.
+    if (pos.x + size.width > viewport.right) {
+      // Set the width to be either the new maximum width within the viewport
+      // or the width originally within the viewport, whichever is less.
+      size.width = Math.min(
+          viewport.right - pos.x, originalX + size.width - viewport.left);
+      size.width = Math.max(size.width, 0);
+      status |= goog.positioning.OverflowStatus.WIDTH_ADJUSTED;
+    }
   }
 
   // Right edge outside viewport, try to move it.
@@ -502,10 +507,12 @@ goog.positioning.adjustForViewport_ = function(pos, size, viewport, overflow) {
   // Left or right edge still outside viewport, fail if the FAIL_X option was
   // specified, ignore it otherwise.
   if (overflow & goog.positioning.Overflow.FAIL_X) {
-    status |= (pos.x < viewport.left ?
-                   goog.positioning.OverflowStatus.FAILED_LEFT : 0) |
-              (pos.x + size.width > viewport.right ?
-                   goog.positioning.OverflowStatus.FAILED_RIGHT : 0);
+    status |=
+        (pos.x < viewport.left ? goog.positioning.OverflowStatus.FAILED_LEFT :
+                                 0) |
+        (pos.x + size.width > viewport.right ?
+             goog.positioning.OverflowStatus.FAILED_RIGHT :
+             0);
   }
 
   // Top edge outside viewport, try to move it.
@@ -514,22 +521,24 @@ goog.positioning.adjustForViewport_ = function(pos, size, viewport, overflow) {
     status |= goog.positioning.OverflowStatus.ADJUSTED_Y;
   }
 
-  // Bottom edge inside and top edge outside viewport, try to resize it.
-  if (pos.y <= viewport.top &&
-      pos.y + size.height < viewport.bottom &&
-      overflow & goog.positioning.Overflow.RESIZE_HEIGHT) {
-    size.height = Math.max(size.height - (viewport.top - pos.y), 0);
-    pos.y = viewport.top;
-    status |= goog.positioning.OverflowStatus.HEIGHT_ADJUSTED;
-  }
+  // Ensure object is inside the viewport height if required.
+  if (overflow & goog.positioning.Overflow.RESIZE_HEIGHT) {
+    // Move top edge inside viewport.
+    var originalY = pos.y;
+    if (pos.y < viewport.top) {
+      pos.y = viewport.top;
+      status |= goog.positioning.OverflowStatus.HEIGHT_ADJUSTED;
+    }
 
-  // Top edge inside and bottom edge outside viewport, try to resize it.
-  if (pos.y >= viewport.top &&
-      pos.y + size.height > viewport.bottom &&
-      overflow & goog.positioning.Overflow.RESIZE_HEIGHT) {
-    size.height = Math.max(
-        size.height - ((pos.y + size.height) - viewport.bottom), 0);
-    status |= goog.positioning.OverflowStatus.HEIGHT_ADJUSTED;
+    // Shrink height to inside bottom of viewport.
+    if (pos.y + size.height > viewport.bottom) {
+      // Set the height to be either the new maximum height within the viewport
+      // or the height originally within the viewport, whichever is less.
+      size.height = Math.min(
+          viewport.bottom - pos.y, originalY + size.height - viewport.top);
+      size.height = Math.max(size.height, 0);
+      status |= goog.positioning.OverflowStatus.HEIGHT_ADJUSTED;
+    }
   }
 
   // Bottom edge outside viewport, try to move it.
@@ -542,10 +551,12 @@ goog.positioning.adjustForViewport_ = function(pos, size, viewport, overflow) {
   // Top or bottom edge still outside viewport, fail if the FAIL_Y option was
   // specified, ignore it otherwise.
   if (overflow & goog.positioning.Overflow.FAIL_Y) {
-    status |= (pos.y < viewport.top ?
-                   goog.positioning.OverflowStatus.FAILED_TOP : 0) |
-              (pos.y + size.height > viewport.bottom ?
-                   goog.positioning.OverflowStatus.FAILED_BOTTOM : 0);
+    status |=
+        (pos.y < viewport.top ? goog.positioning.OverflowStatus.FAILED_TOP :
+                                0) |
+        (pos.y + size.height > viewport.bottom ?
+             goog.positioning.OverflowStatus.FAILED_BOTTOM :
+             0);
   }
 
   return status;
@@ -564,10 +575,10 @@ goog.positioning.adjustForViewport_ = function(pos, size, viewport, overflow) {
 goog.positioning.getEffectiveCorner = function(element, corner) {
   return /** @type {goog.positioning.Corner} */ (
       (corner & goog.positioning.CornerBit.FLIP_RTL &&
-          goog.style.isRightToLeft(element) ?
-          corner ^ goog.positioning.CornerBit.RIGHT :
-          corner
-      ) & ~goog.positioning.CornerBit.FLIP_RTL);
+               goog.style.isRightToLeft(element) ?
+           corner ^ goog.positioning.CornerBit.RIGHT :
+           corner) &
+      ~goog.positioning.CornerBit.FLIP_RTL);
 };
 
 
@@ -577,8 +588,8 @@ goog.positioning.getEffectiveCorner = function(element, corner) {
  * @return {goog.positioning.Corner} The opposite corner horizontally.
  */
 goog.positioning.flipCornerHorizontal = function(corner) {
-  return /** @type {goog.positioning.Corner} */ (corner ^
-      goog.positioning.CornerBit.RIGHT);
+  return /** @type {goog.positioning.Corner} */ (
+      corner ^ goog.positioning.CornerBit.RIGHT);
 };
 
 
@@ -588,8 +599,8 @@ goog.positioning.flipCornerHorizontal = function(corner) {
  * @return {goog.positioning.Corner} The opposite corner vertically.
  */
 goog.positioning.flipCornerVertical = function(corner) {
-  return /** @type {goog.positioning.Corner} */ (corner ^
-      goog.positioning.CornerBit.BOTTOM);
+  return /** @type {goog.positioning.Corner} */ (
+      corner ^ goog.positioning.CornerBit.BOTTOM);
 };
 
 
@@ -600,8 +611,7 @@ goog.positioning.flipCornerVertical = function(corner) {
  *     vertically.
  */
 goog.positioning.flipCorner = function(corner) {
-  return /** @type {goog.positioning.Corner} */ (corner ^
-      goog.positioning.CornerBit.BOTTOM ^
+  return /** @type {goog.positioning.Corner} */ (
+      corner ^ goog.positioning.CornerBit.BOTTOM ^
       goog.positioning.CornerBit.RIGHT);
 };
-

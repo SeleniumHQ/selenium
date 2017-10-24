@@ -1,8 +1,0 @@
-
-java_library(name = "locators",
-  srcs = [ "*.java" ],
-  deps = [
-    "//java/client/src/org/openqa/selenium/io",
-    "//java/client/src/org/openqa/selenium/os",
-    "//java/client/src/org/openqa/selenium/remote:base",
-  ])

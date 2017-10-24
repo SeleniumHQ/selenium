@@ -35,6 +35,14 @@ goog.net.tmpnetwork.GOOGLECOM_TIMEOUT = 10000;
 
 
 /**
+ * @define {string} url to use to test for internet connectivity.
+ * Use protocol-relative URLs to avoid insecure content warnings in IE.
+ */
+goog.define(
+    'goog.net.tmpnetwork.TEST_URL', '//www.google.com/images/cleardot.gif');
+
+
+/**
  * Pings the network to check if an error is a server error or user's network
  * error.
  *
@@ -50,11 +58,11 @@ goog.net.tmpnetwork.testGoogleCom = function(callback, opt_imageUri) {
   // by browser cache.
   var uri = opt_imageUri;
   if (!uri) {
-    uri = new goog.Uri('//www.google.com/images/cleardot.gif');
+    uri = new goog.Uri(goog.net.tmpnetwork.TEST_URL);
     uri.makeUnique();
   }
-  goog.net.tmpnetwork.testLoadImage(uri.toString(),
-      goog.net.tmpnetwork.GOOGLECOM_TIMEOUT, callback);
+  goog.net.tmpnetwork.testLoadImage(
+      uri.toString(), goog.net.tmpnetwork.GOOGLECOM_TIMEOUT, callback);
 };
 
 
@@ -67,8 +75,8 @@ goog.net.tmpnetwork.testGoogleCom = function(callback, opt_imageUri) {
  * @param {number=} opt_pauseBetweenRetriesMS Optional number of milliseconds
  *     between retries - defaults to 0.
  */
-goog.net.tmpnetwork.testLoadImageWithRetries = function(url, timeout, callback,
-    retries, opt_pauseBetweenRetriesMS) {
+goog.net.tmpnetwork.testLoadImageWithRetries = function(
+    url, timeout, callback, retries, opt_pauseBetweenRetriesMS) {
   var channelDebug = new goog.net.ChannelDebug();
   channelDebug.debug('TestLoadImageWithRetries: ' + opt_pauseBetweenRetriesMS);
   if (retries == 0) {
@@ -85,8 +93,8 @@ goog.net.tmpnetwork.testLoadImageWithRetries = function(url, timeout, callback,
     } else {
       // try again
       goog.global.setTimeout(function() {
-        goog.net.tmpnetwork.testLoadImageWithRetries(url, timeout, callback,
-            retries, pauseBetweenRetries);
+        goog.net.tmpnetwork.testLoadImageWithRetries(
+            url, timeout, callback, retries, pauseBetweenRetries);
       }, pauseBetweenRetries);
     }
   });

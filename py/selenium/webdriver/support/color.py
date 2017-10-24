@@ -1,18 +1,19 @@
-#!/usr/bin/python
-
-# Copyright 2011 Software Freedom Conservancy.
+# Licensed to the Software Freedom Conservancy (SFC) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The SFC licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
 #
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
+#   http://www.apache.org/licenses/LICENSE-2.0
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
 
 RGB_PATTERN = r"^\s*rgb\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)\s*$"
 RGB_PCT_PATTERN = r"^\s*rgb\(\s*(\d{1,3}|\d{1,2}\.\d+)%\s*,\s*(\d{1,3}|\d{1,2}\.\d+)%\s*,\s*(\d{1,3}|\d{1,2}\.\d+)%\s*\)\s*$"
@@ -91,7 +92,7 @@ class Color(object):
             g = r
             b = r
         else:
-            luminocity2 = l * (1 + s) if  l < 0.5 else  l + s - l * s
+            luminocity2 = l * (1 + s) if l < 0.5 else l + s - l * s
             luminocity1 = 2 * l - luminocity2
 
             def hue_to_rgb(lum1, lum2, hue):
@@ -102,7 +103,7 @@ class Color(object):
 
                 if hue < 1.0 / 6.0:
                     return (lum1 + (lum2 - lum1) * 6.0 * hue)
-                elif  hue < 1.0 / 2.0:
+                elif hue < 1.0 / 2.0:
                     return lum2
                 elif hue < 2.0 / 3.0:
                     return lum1 + (lum2 - lum1) * ((2.0 / 3.0) - hue) * 6.0
@@ -277,6 +278,7 @@ Colors = {
     "PLUM": Color(221, 160, 221),
     "POWDERBLUE": Color(176, 224, 230),
     "PURPLE": Color(128, 0, 128),
+    "REBECCAPURPLE": Color(128, 51, 153),
     "RED": Color(255, 0, 0),
     "ROSYBROWN": Color(188, 143, 143),
     "ROYALBLUE": Color(65, 105, 225),

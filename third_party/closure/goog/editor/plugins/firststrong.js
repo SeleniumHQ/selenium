@@ -45,6 +45,7 @@ goog.require('goog.dom.NodeType');
 goog.require('goog.dom.TagIterator');
 goog.require('goog.dom.TagName');
 goog.require('goog.editor.Command');
+goog.require('goog.editor.Field');
 goog.require('goog.editor.Plugin');
 goog.require('goog.editor.node');
 goog.require('goog.editor.range');
@@ -103,15 +104,15 @@ goog.editor.plugins.FirstStrong.prototype.getTrogClassId = function() {
 
 
 /** @override */
-goog.editor.plugins.FirstStrong.prototype.queryCommandValue =
-    function(command) {
+goog.editor.plugins.FirstStrong.prototype.queryCommandValue = function(
+    command) {
   return false;
 };
 
 
 /** @override */
-goog.editor.plugins.FirstStrong.prototype.handleSelectionChange =
-    function(e, node) {
+goog.editor.plugins.FirstStrong.prototype.handleSelectionChange = function(
+    e, node) {
   this.isNewBlock_ = true;
   return false;
 };
@@ -128,6 +129,12 @@ goog.editor.plugins.FirstStrong.INPUT_ATTRIBUTE = 'fs-input';
 
 /** @override */
 goog.editor.plugins.FirstStrong.prototype.handleKeyPress = function(e) {
+  if (goog.editor.Field.SELECTION_CHANGE_KEYCODES[e.keyCode]) {
+    // Key triggered selection change event (e.g. on ENTER) is throttled and a
+    // later LTR/RTL strong keypress may come before it. Need to capture it.
+    this.isNewBlock_ = true;
+    return false;  // A selection-changing key is not LTR/RTL strong.
+  }
   if (!this.isNewBlock_) {
     return false;  // We've already determined this paragraph's direction.
   }
@@ -147,8 +154,8 @@ goog.editor.plugins.FirstStrong.prototype.handleKeyPress = function(e) {
         newInput = browserEvent['getAttribute'](
             goog.editor.plugins.FirstStrong.INPUT_ATTRIBUTE);
       } else {
-        newInput = browserEvent[
-            goog.editor.plugins.FirstStrong.INPUT_ATTRIBUTE];
+        newInput =
+            browserEvent[goog.editor.plugins.FirstStrong.INPUT_ATTRIBUTE];
       }
     }
   }
@@ -222,18 +229,17 @@ goog.editor.plugins.FirstStrong.prototype.isNeutralBlock_ = function() {
   var root = this.getBlockAncestor_();
   // The exact node with the cursor location. Simply calling getStartNode() on
   // the range only returns the containing block node.
-  var cursor = goog.editor.range.getDeepEndPoint(
-      this.getFieldObject().getRange(), false).node;
+  var cursor =
+      goog.editor.range.getDeepEndPoint(this.getFieldObject().getRange(), false)
+          .node;
 
   // In FireFox the BR tag also represents a change in paragraph if not inside a
   // list. So we need special handling to only look at the sub-block between
   // BR elements.
-  var blockFunction = (goog.userAgent.GECKO &&
-      !this.isList_(root)) ?
-          goog.editor.plugins.FirstStrong.isGeckoBlock_ :
-          goog.editor.plugins.FirstStrong.isBlock_;
-  var paragraph = this.getTextAround_(root, cursor,
-      blockFunction);
+  var blockFunction = (goog.userAgent.GECKO && !this.isList_(root)) ?
+      goog.editor.plugins.FirstStrong.isGeckoBlock_ :
+      goog.editor.plugins.FirstStrong.isBlock_;
+  var paragraph = this.getTextAround_(root, cursor, blockFunction);
   // Not using {@code goog.i18n.bidi.isNeutralText} as it contains additional,
   // unwanted checks to the content.
   return !goog.i18n.bidi.hasAnyLtr(paragraph) &&
@@ -271,8 +277,8 @@ goog.editor.plugins.FirstStrong.prototype.isList_ = function(element) {
  * @return {string} the text in the paragraph around the cursor location.
  * @private
  */
-goog.editor.plugins.FirstStrong.prototype.getTextAround_ = function(root,
-    cursorLocation, isParagraphBoundary) {
+goog.editor.plugins.FirstStrong.prototype.getTextAround_ = function(
+    root, cursorLocation, isParagraphBoundary) {
   // The buffer where we're collecting the text.
   var buffer = [];
   // Have we reached the cursor yet, or are we still before it?
@@ -310,7 +316,7 @@ goog.editor.plugins.FirstStrong.prototype.getTextAround_ = function(root,
  */
 goog.editor.plugins.FirstStrong.isBlock_ = function(node) {
   return !!node && goog.editor.node.isBlockTag(node) &&
-      node.tagName != goog.dom.TagName.LI;
+      /** @type {!Element} */ (node).tagName != goog.dom.TagName.LI;
 };
 
 
@@ -322,6 +328,7 @@ goog.editor.plugins.FirstStrong.isBlock_ = function(node) {
  * @private
  */
 goog.editor.plugins.FirstStrong.isGeckoBlock_ = function(node) {
-  return !!node && (node.tagName == goog.dom.TagName.BR ||
-      goog.editor.plugins.FirstStrong.isBlock_(node));
+  return !!node &&
+      (/** @type {!Element} */ (node).tagName == goog.dom.TagName.BR ||
+       goog.editor.plugins.FirstStrong.isBlock_(node));
 };

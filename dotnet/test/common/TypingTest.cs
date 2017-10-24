@@ -1,8 +1,6 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using NUnit.Framework;
-using NUnit.Framework.Constraints;
+using OpenQA.Selenium.Environment;
 
 namespace OpenQA.Selenium
 {
@@ -482,7 +480,6 @@ namespace OpenQA.Selenium
         [Test]
         [Category("Javascript")]
         [IgnoreBrowser(Browser.HtmlUnit, "untested user agents")]
-        [IgnoreBrowser(Browser.Safari, "Issue 4221")]
         public void ShiftSelectionDeletes()
         {
             driver.Url = javascriptPage;
@@ -637,13 +634,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [Category("Javascript")]
-        [IgnoreBrowser(Browser.IE, "Firefox-specific test. IE does not report key press event.")]
-        [IgnoreBrowser(Browser.Chrome, "firefox-specific")]
         [IgnoreBrowser(Browser.PhantomJS, "firefox-specific")]
-        [IgnoreBrowser(Browser.Safari, "firefox-specific")]
-        [IgnoreBrowser(Browser.Opera, "firefox-specific")]
-        [IgnoreBrowser(Browser.IPhone, "firefox-specific")]
-        [IgnoreBrowser(Browser.Android, "firefox-specific")]
         public void GenerateKeyPressEventEvenWhenElementPreventsDefault()
         {
             driver.Url = javascriptPage;
@@ -653,13 +644,11 @@ namespace OpenQA.Selenium
 
             silent.SendKeys("s");
             string text = result.Text;
-            Assert.IsTrue(text.Contains("press"), "Text should contain 'press'. Actual text: {0}", text);
         }
 
         [Test]
         [Category("Javascript")]
         [IgnoreBrowser(Browser.HtmlUnit, "Cannot type on contentEditable with synthetic events")]
-        [IgnoreBrowser(Browser.Safari, "Cannot type on contentEditable with synthetic events")]
         [IgnoreBrowser(Browser.PhantomJS, "Cannot type on contentEditable with synthetic events")]
         [IgnoreBrowser(Browser.Android, "Does not support contentEditable")]
         [IgnoreBrowser(Browser.IPhone, "Does not support contentEditable")]
@@ -668,6 +657,11 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.WindowsPhone, "Cannot type on contentEditable with synthetic events")]
         public void TypingIntoAnIFrameWithContentEditableOrDesignModeSet()
         {
+            if (TestUtilities.IsMarionette(driver))
+            {
+                Assert.Ignore("Marionette does not ContentEditable.");
+            }
+
             driver.Url = richTextPage;
 
             driver.SwitchTo().Frame("editFrame");
@@ -692,6 +686,11 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.WindowsPhone, "Cannot type on contentEditable with synthetic events")]
         public void NonPrintableCharactersShouldWorkWithContentEditableOrDesignModeSet()
         {
+            if (TestUtilities.IsMarionette(driver))
+            {
+                Assert.Ignore("Marionette does not ContentEditable.");
+            }
+
             driver.Url = richTextPage;
 
             // not tested on mac
@@ -721,16 +720,29 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        public void ShouldBeAbleToTypeOnANumberInputField()
+        {
+            driver.Url = formsPage;
+            IWebElement numberElement = driver.FindElement(By.Id("age"));
+            numberElement.SendKeys("33");
+            Assert.AreEqual("33", numberElement.GetAttribute("value"));
+        }
+
+        [Test]
         [IgnoreBrowser(Browser.HtmlUnit, "Cannot type on contentEditable with synthetic events")]
-        [IgnoreBrowser(Browser.Safari, "Cannot type on contentEditable with synthetic events")]
         [IgnoreBrowser(Browser.PhantomJS, "Cannot type on contentEditable with synthetic events")]
         [IgnoreBrowser(Browser.Android, "Does not support contentEditable")]
         [IgnoreBrowser(Browser.IPhone, "Does not support contentEditable")]
         [IgnoreBrowser(Browser.Opera, "Does not support contentEditable")]
         [IgnoreBrowser(Browser.Chrome, "ChromeDriver2 does not support contentEditable yet")]
         [IgnoreBrowser(Browser.WindowsPhone, "Cannot type on contentEditable with synthetic events")]
-        public void testShouldBeAbleToTypeIntoEmptyContentEditableElement()
+        public void ShouldBeAbleToTypeIntoEmptyContentEditableElement()
         {
+            if (TestUtilities.IsMarionette(driver))
+            {
+                Assert.Ignore("Marionette does not ContentEditable.");
+            }
+
             driver.Url = readOnlyPage;
             IWebElement editable = driver.FindElement(By.Id("content-editable"));
 
@@ -738,6 +750,83 @@ namespace OpenQA.Selenium
             editable.SendKeys("cheese"); // requires focus on OS X
 
             Assert.AreEqual("cheese", editable.Text);
+        }
+
+        [IgnoreBrowser(Browser.Chrome, "ChromeDriver2 does not support contentEditable yet")]
+        [IgnoreBrowser(Browser.IE, "IE places cursor at beginning of content")]
+        [Test]
+        public void ShouldBeAbleToTypeIntoContentEditableElementWithExistingValue()
+        {
+            if (TestUtilities.IsMarionette(driver))
+            {
+                Assert.Ignore("Marionette does not ContentEditable.");
+            }
+
+            driver.Url = readOnlyPage;
+            IWebElement editable = driver.FindElement(By.Id("content-editable"));
+
+            string initialText = editable.Text;
+            editable.SendKeys(", edited");
+
+            Assert.AreEqual(initialText + ", edited", editable.Text);
+        }
+
+        [IgnoreBrowser(Browser.HtmlUnit, "Cannot type on contentEditable with synthetic events")]
+        [IgnoreBrowser(Browser.IE, "Untested browser")]
+        [NeedsFreshDriver(IsCreatedAfterTest = true)]
+        [Test]
+        public void ShouldBeAbleToTypeIntoTinyMCE()
+        {
+            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("tinymce.html");
+            driver.SwitchTo().Frame("mce_0_ifr");
+
+            IWebElement editable = driver.FindElement(By.Id("tinymce"));
+
+            editable.Clear();
+            editable.SendKeys("cheese"); // requires focus on OS X
+
+            Assert.AreEqual("cheese", editable.Text);
+        }
+
+        [Test]
+        public void CanSafelyTypeOnElementThatIsRemovedFromTheDomOnKeyPress()
+        {
+            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("key_tests/remove_on_keypress.html");
+
+            IWebElement input = driver.FindElement(By.Id("target"));
+            IWebElement log = driver.FindElement(By.Id("log"));
+
+            Assert.AreEqual("", log.GetAttribute("value"));
+
+            input.SendKeys("b");
+            string expected = "keydown (target)\nkeyup (target)\nkeyup (body)";
+            Assert.AreEqual(expected, GetValueText(log));
+
+            input.SendKeys("a");
+
+            // Some drivers (IE, Firefox) do not always generate the final keyup event since the element
+            // is removed from the DOM in response to the keypress (note, this is a product of how events
+            // are generated and does not match actual user behavior).
+            expected += "\nkeydown (target)\na pressed; removing";
+            Assert.That(GetValueText(log), Is.EqualTo(expected).Or.EqualTo(expected + "\nkeyup (body)"));
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.Chrome, "Not implemented")]
+        public void CanClearNumberInputAfterTypingInvalidInput()
+        {
+            driver.Url = formsPage;
+            IWebElement input = driver.FindElement(By.Id("age"));
+            input.SendKeys("e");
+            input.Clear();
+            input.SendKeys("3");
+            Assert.AreEqual("3", input.GetAttribute("value"));
+        }
+
+        private string GetValueText(IWebElement el)
+        {
+            // Standardize on \n and strip any trailing whitespace.
+            return el.GetAttribute("value").Replace("\r\n", "\n").Trim();
         }
     }
 }

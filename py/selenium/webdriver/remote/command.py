@@ -1,18 +1,20 @@
-# Copyright 2015 Software Freedom Conservancy
-# Copyright 2010 WebDriver committers
-# Copyright 2010 Google Inc.
+# Licensed to the Software Freedom Conservancy (SFC) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The SFC licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
 #
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
+#   http://www.apache.org/licenses/LICENSE-2.0
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
 
 class Command(object):
     """
@@ -54,19 +56,30 @@ class Command(object):
     SUBMIT_ELEMENT = "submitElement"
     UPLOAD_FILE = "uploadFile"
     GET_CURRENT_WINDOW_HANDLE = "getCurrentWindowHandle"
+    W3C_GET_CURRENT_WINDOW_HANDLE = "w3cGetCurrentWindowHandle"
     GET_WINDOW_HANDLES = "getWindowHandles"
+    W3C_GET_WINDOW_HANDLES = "w3cGetWindowHandles"
     GET_WINDOW_SIZE = "getWindowSize"
+    W3C_GET_WINDOW_SIZE = "w3cGetWindowSize"
+    W3C_GET_WINDOW_POSITION = "w3cGetWindowPosition"
     GET_WINDOW_POSITION = "getWindowPosition"
     SET_WINDOW_SIZE = "setWindowSize"
+    W3C_SET_WINDOW_SIZE = "w3cSetWindowSize"
+    SET_WINDOW_RECT = "setWindowRect"
+    GET_WINDOW_RECT = "getWindowRect"
     SET_WINDOW_POSITION = "setWindowPosition"
+    W3C_SET_WINDOW_POSITION = "w3cSetWindowPosition"
     SWITCH_TO_WINDOW = "switchToWindow"
     SWITCH_TO_FRAME = "switchToFrame"
     SWITCH_TO_PARENT_FRAME = "switchToParentFrame"
     GET_ACTIVE_ELEMENT = "getActiveElement"
+    W3C_GET_ACTIVE_ELEMENT = "w3cGetActiveElement"
     GET_CURRENT_URL = "getCurrentUrl"
     GET_PAGE_SOURCE = "getPageSource"
     GET_TITLE = "getTitle"
     EXECUTE_SCRIPT = "executeScript"
+    W3C_EXECUTE_SCRIPT = "w3cExecuteScript"
+    W3C_EXECUTE_SCRIPT_ASYNC = "w3cExecuteScriptAsync"
     GET_ELEMENT_TEXT = "getElementText"
     GET_ELEMENT_VALUE = "getElementValue"
     GET_ELEMENT_TAG_NAME = "getElementTagName"
@@ -79,24 +92,34 @@ class Command(object):
     GET_ELEMENT_SIZE = "getElementSize"
     GET_ELEMENT_RECT = "getElementRect"
     GET_ELEMENT_ATTRIBUTE = "getElementAttribute"
+    GET_ELEMENT_PROPERTY = "getElementProperty"
     GET_ELEMENT_VALUE_OF_CSS_PROPERTY = "getElementValueOfCssProperty"
     ELEMENT_EQUALS = "elementEquals"
     SCREENSHOT = "screenshot"
+    ELEMENT_SCREENSHOT = "elementScreenshot"
     IMPLICIT_WAIT = "implicitlyWait"
     EXECUTE_ASYNC_SCRIPT = "executeAsyncScript"
     SET_SCRIPT_TIMEOUT = "setScriptTimeout"
     SET_TIMEOUTS = "setTimeouts"
     MAXIMIZE_WINDOW = "windowMaximize"
+    W3C_MAXIMIZE_WINDOW = "w3cMaximizeWindow"
     GET_LOG = "getLog"
     GET_AVAILABLE_LOG_TYPES = "getAvailableLogTypes"
 
-    #Alerts
+    # Alerts
     DISMISS_ALERT = "dismissAlert"
+    W3C_DISMISS_ALERT = "w3cDismissAlert"
     ACCEPT_ALERT = "acceptAlert"
+    W3C_ACCEPT_ALERT = "w3cAcceptAlert"
     SET_ALERT_VALUE = "setAlertValue"
+    W3C_SET_ALERT_VALUE = "w3cSetAlertValue"
     GET_ALERT_TEXT = "getAlertText"
+    W3C_GET_ALERT_TEXT = "w3cGetAlertText"
+    SET_ALERT_CREDENTIALS = "setAlertCredentials"
 
     # Advanced user interactions
+    W3C_ACTIONS = "actions"
+    W3C_CLEAR_ACTIONS = "clearActionState"
     CLICK = "mouseClick"
     DOUBLE_CLICK = "mouseDoubleClick"
     MOUSE_DOWN = "mouseButtonDown"
@@ -117,7 +140,7 @@ class Command(object):
     LONG_PRESS = "touchLongPress"
     FLICK = "touchFlick"
 
-    #HTML 5
+    # HTML 5
     EXECUTE_SQL = "executeSql"
 
     GET_LOCATION = "getLocation"
@@ -140,7 +163,7 @@ class Command(object):
     SET_SESSION_STORAGE_ITEM = "setSessionStorageItem"
     CLEAR_SESSION_STORAGE = "clearSessionStorage"
     GET_SESSION_STORAGE_SIZE = "getSessionStorageSize"
-    
+
     # Mobile
     GET_NETWORK_CONNECTION = "getNetworkConnection"
     SET_NETWORK_CONNECTION = "setNetworkConnection"

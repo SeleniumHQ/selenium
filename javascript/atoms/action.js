@@ -1,17 +1,19 @@
-// Copyright 2010 WebDriver committers
-// Copyright 2010 Google Inc.
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
+//   http://www.apache.org/licenses/LICENSE-2.0
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 /**
  * @fileoverview Atoms for simulating user actions against the DOM.
@@ -89,6 +91,12 @@ bot.action.clear = function(element) {
   if (element.value) {
     element.value = '';
     bot.events.fire(element, bot.events.EventType.CHANGE);
+  } else if (bot.dom.isElement(element, goog.dom.TagName.INPUT) &&
+             (element.getAttribute('type') && element.getAttribute('type').toLowerCase() == "number")) {
+    // number input fields that have invalid inputs
+    // report their value as empty string with no way to tell if there is a
+    // current value or not
+    element.value = '';
   }
 
   if (bot.dom.isContentEditable(element)) {
@@ -251,14 +259,16 @@ bot.action.moveMouse = function(element, opt_coords, opt_mouse) {
  * @param {goog.math.Coordinate=} opt_coords Mouse position relative to the
  *   element.
  * @param {bot.Mouse=} opt_mouse Mouse to use; if not provided, constructs one.
+ * @param {boolean=} opt_force Whether the release event should be fired even if the
+ *     element is not interactable.
  * @throws {bot.Error} If the element cannot be interacted with.
  */
-bot.action.click = function(element, opt_coords, opt_mouse) {
+bot.action.click = function(element, opt_coords, opt_mouse, opt_force) {
   var coords = bot.action.prepareToInteractWith_(element, opt_coords);
   var mouse = opt_mouse || new bot.Mouse();
   mouse.move(element, coords);
   mouse.pressButton(bot.Mouse.Button.LEFT);
-  mouse.releaseButton();
+  mouse.releaseButton(opt_force);
 };
 
 
@@ -297,6 +307,24 @@ bot.action.doubleClick = function(element, opt_coords, opt_mouse) {
   mouse.releaseButton();
   mouse.pressButton(bot.Mouse.Button.LEFT);
   mouse.releaseButton();
+};
+
+
+/**
+ * Double-clicks on the given {@code element} with a virtual mouse.
+ *
+ * @param {!Element} element The element to click.
+ * @param {goog.math.Coordinate=} opt_coords Mouse position relative to the
+ *   element.
+ * @param {bot.Mouse=} opt_mouse Mouse to use; if not provided, constructs one.
+ * @throws {bot.Error} If the element cannot be interacted with.
+ */
+bot.action.doubleClick2 = function(element, opt_coords, opt_mouse) {
+  var coords = bot.action.prepareToInteractWith_(element, opt_coords);
+  var mouse = opt_mouse || new bot.Mouse();
+  mouse.move(element, coords);
+  mouse.pressButton(bot.Mouse.Button.LEFT, 2);
+  mouse.releaseButton(true, 2);
 };
 
 

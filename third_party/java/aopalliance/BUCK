@@ -1,0 +1,11 @@
+# BUILD FILE SYNTAX: SKYLARK
+prebuilt_jar(
+  name = 'aopalliance',
+  maven_coords = 'aopalliance:aopalliance:jar:1.0',
+  binary_jar = 'aopalliance-1.0.jar',
+  source_jar = 'aopalliance-1.0-sources.jar',
+  visibility = [
+    '//third_party/java/inject:guice'
+  ],
+)
+

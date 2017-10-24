@@ -1,9 +1,14 @@
-prebuilt_jar(name = 'cssparser',
-  binary_jar = 'cssparser-0.9.14.jar',
+# BUILD FILE SYNTAX: SKYLARK
+prebuilt_jar(
+  name = 'cssparser',
+  maven_coords = 'net.sourceforge.cssparser:cssparser:jar:0.9.23',
+  binary_jar = 'cssparser-0.9.23.jar',
+  source_jar = 'cssparser-0.9.23-sources.jar',
   deps = [
-    '//third_party/java/sac:sac',
+    '//third_party/java/css:sac'
   ],
   visibility = [
-    '//third_party/java/...',
+    '//third_party/java/htmlunit:htmlunit'
   ],
 )
+

@@ -27,6 +27,8 @@ goog.require('goog.a11y.aria');
 goog.require('goog.a11y.aria.AutoCompleteValues');
 goog.require('goog.a11y.aria.State');
 goog.require('goog.dom');
+goog.require('goog.dom.InputType');
+goog.require('goog.dom.TagName');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('goog.events.InputHandler');
@@ -169,26 +171,31 @@ goog.ui.FilteredMenu.prototype.createDom = function() {
   goog.ui.FilteredMenu.superClass_.createDom.call(this);
 
   var dom = this.getDomHelper();
-  var el = dom.createDom('div',
+  var el = dom.createDom(
+      goog.dom.TagName.DIV,
       goog.getCssName(this.getRenderer().getCssClass(), 'filter'),
-      this.labelEl_ = dom.createDom('div', null, this.label_),
-      this.filterInput_ = dom.createDom('input', {'type': 'text'}));
+      this.labelEl_ = dom.createDom(goog.dom.TagName.DIV, null, this.label_),
+      this.filterInput_ = dom.createDom(
+          goog.dom.TagName.INPUT, {'type': goog.dom.InputType.TEXT}));
   var element = this.getElement();
   dom.appendChild(element, el);
   var contentElementId = this.makeId(goog.ui.FilteredMenu.Id_.CONTENT_ELEMENT);
-  this.contentElement_ = dom.createDom('div', goog.object.create(
-      'class', goog.getCssName(this.getRenderer().getCssClass(), 'content'),
-      'id', contentElementId));
+  this.contentElement_ = dom.createDom(
+      goog.dom.TagName.DIV,
+      goog.object.create(
+          'class', goog.getCssName(this.getRenderer().getCssClass(), 'content'),
+          'id', contentElementId));
   dom.appendChild(element, this.contentElement_);
 
   this.initFilterInput_();
 
-  goog.a11y.aria.setState(this.filterInput_, goog.a11y.aria.State.AUTOCOMPLETE,
+  goog.a11y.aria.setState(
+      this.filterInput_, goog.a11y.aria.State.AUTOCOMPLETE,
       goog.a11y.aria.AutoCompleteValues.LIST);
-  goog.a11y.aria.setState(this.filterInput_, goog.a11y.aria.State.OWNS,
-      contentElementId);
-  goog.a11y.aria.setState(this.filterInput_, goog.a11y.aria.State.EXPANDED,
-      true);
+  goog.a11y.aria.setState(
+      this.filterInput_, goog.a11y.aria.State.OWNS, contentElementId);
+  goog.a11y.aria.setState(
+      this.filterInput_, goog.a11y.aria.State.EXPANDED, true);
 };
 
 
@@ -220,12 +227,12 @@ goog.ui.FilteredMenu.prototype.setUpFilterListeners_ = function() {
     this.inputHandler_ = new goog.events.InputHandler(
         /** @type {Element} */ (this.filterInput_));
     goog.style.setUnselectable(this.filterInput_, false);
-    goog.events.listen(this.inputHandler_,
-                       goog.events.InputHandler.EventType.INPUT,
-                       this.handleFilterEvent, false, this);
-    goog.events.listen(this.filterInput_.parentNode,
-                       goog.events.EventType.CLICK,
-                       this.onFilterLabelClick_, false, this);
+    goog.events.listen(
+        this.inputHandler_, goog.events.InputHandler.EventType.INPUT,
+        this.handleFilterEvent, false, this);
+    goog.events.listen(
+        this.filterInput_.parentNode, goog.events.EventType.CLICK,
+        this.onFilterLabelClick_, false, this);
     if (this.allowMultiple_) {
       this.enteredItems_ = [];
     }
@@ -239,12 +246,12 @@ goog.ui.FilteredMenu.prototype.setUpFilterListeners_ = function() {
  */
 goog.ui.FilteredMenu.prototype.tearDownFilterListeners_ = function() {
   if (this.inputHandler_) {
-    goog.events.unlisten(this.inputHandler_,
-                         goog.events.InputHandler.EventType.INPUT,
-                         this.handleFilterEvent, false, this);
-    goog.events.unlisten(this.filterInput_.parentNode,
-                         goog.events.EventType.CLICK,
-                         this.onFilterLabelClick_, false, this);
+    goog.events.unlisten(
+        this.inputHandler_, goog.events.InputHandler.EventType.INPUT,
+        this.handleFilterEvent, false, this);
+    goog.events.unlisten(
+        this.filterInput_.parentNode, goog.events.EventType.CLICK,
+        this.onFilterLabelClick_, false, this);
 
     this.inputHandler_.dispose();
     this.inputHandler_ = undefined;
@@ -255,8 +262,8 @@ goog.ui.FilteredMenu.prototype.tearDownFilterListeners_ = function() {
 
 /** @override */
 goog.ui.FilteredMenu.prototype.setVisible = function(show, opt_force, opt_e) {
-  var visibilityChanged = goog.ui.FilteredMenu.superClass_.setVisible.call(this,
-      show, opt_force, opt_e);
+  var visibilityChanged = goog.ui.FilteredMenu.superClass_.setVisible.call(
+      this, show, opt_force, opt_e);
   if (visibilityChanged && show && this.isInDocument()) {
     this.setFilter('');
     this.setUpFilterListeners_();
@@ -316,7 +323,8 @@ goog.ui.FilteredMenu.prototype.setFilter = function(str) {
  */
 goog.ui.FilteredMenu.prototype.getFilter = function() {
   return this.filterInput_ && goog.isString(this.filterInput_.value) ?
-      this.filterInput_.value : '';
+      this.filterInput_.value :
+      '';
 };
 
 
@@ -371,8 +379,8 @@ goog.ui.FilteredMenu.prototype.getAllowMultiple = function() {
  * @param {goog.ui.Component} child Child to change.
  * @param {boolean} persistent Whether the child should be persistent.
  */
-goog.ui.FilteredMenu.prototype.setPersistentVisibility = function(child,
-                                                                  persistent) {
+goog.ui.FilteredMenu.prototype.setPersistentVisibility = function(
+    child, persistent) {
   if (!this.persistentChildren_) {
     this.persistentChildren_ = {};
   }
@@ -387,8 +395,8 @@ goog.ui.FilteredMenu.prototype.setPersistentVisibility = function(child,
  * @return {boolean} Whether the menu item is persistent.
  */
 goog.ui.FilteredMenu.prototype.hasPersistentVisibility = function(child) {
-  return !!(this.persistentChildren_ &&
-            this.persistentChildren_[child.getId()]);
+  return !!(
+      this.persistentChildren_ && this.persistentChildren_[child.getId()]);
 };
 
 
@@ -456,8 +464,8 @@ goog.ui.FilteredMenu.prototype.filterItems_ = function(str) {
     }
   }
 
-  var matcher = new RegExp('(^|[- ,_/.:])' +
-      goog.string.regExpEscape(str), 'i');
+  var matcher =
+      new RegExp('(^|[- ,_/.:])' + goog.string.regExpEscape(str), 'i');
   for (var child, i = this.filterFromIndex_; child = this.getChildAt(i); i++) {
     if (child instanceof goog.ui.FilterObservingMenuItem) {
       child.callObserver(str);
@@ -480,7 +488,6 @@ goog.ui.FilteredMenu.prototype.filterItems_ = function(str) {
           child.setVisible(false);
         }
       } else {
-
         // Hide separators and other items without a caption if a filter string
         // has been entered.
         child.setVisible(str == '');
@@ -509,16 +516,17 @@ goog.ui.FilteredMenu.prototype.boldContent_ = function(child, start, len) {
     var match = caption.substr(start, len);
     var postMatch = caption.substr(start + len);
     boldedCaption = this.getDomHelper().createDom(
-        'span',
-        null,
-        preMatch,
-        this.getDomHelper().createDom('b', null, match),
+        goog.dom.TagName.SPAN, null, preMatch,
+        this.getDomHelper().createDom(goog.dom.TagName.B, null, match),
         postMatch);
   }
   var accelerator = child.getAccelerator && child.getAccelerator();
   if (accelerator) {
-    child.setContent([boldedCaption, this.getDomHelper().createDom('span',
-        goog.ui.MenuItem.ACCELERATOR_CLASS, accelerator)]);
+    child.setContent([
+      boldedCaption, this.getDomHelper().createDom(
+                         goog.dom.TagName.SPAN,
+                         goog.ui.MenuItem.ACCELERATOR_CLASS, accelerator)
+    ]);
   } else {
     child.setContent(boldedCaption);
   }
@@ -560,14 +568,16 @@ goog.ui.FilteredMenu.prototype.handleKeyEventInternal = function(e) {
 goog.ui.FilteredMenu.prototype.setHighlightedIndex = function(index) {
   goog.ui.FilteredMenu.superClass_.setHighlightedIndex.call(this, index);
   var contentEl = this.getContentElement();
-  var el = this.getHighlighted() ? this.getHighlighted().getElement() : null;
+  var el = /** @type {!HTMLElement} */ (
+      this.getHighlighted() ? this.getHighlighted().getElement() : null);
   if (this.filterInput_) {
     goog.a11y.aria.setActiveDescendant(this.filterInput_, el);
   }
 
   if (el && goog.dom.contains(contentEl, el)) {
     var contentTop = goog.userAgent.IE && !goog.userAgent.isVersionOrHigher(8) ?
-        0 : contentEl.offsetTop;
+        0 :
+        contentEl.offsetTop;
 
     // IE (tested on IE8) sometime does not scroll enough by about
     // 1px. So we add 1px to the scroll amount. This still looks ok in
@@ -619,15 +629,17 @@ goog.ui.FilteredMenu.prototype.decorateInternal = function(element) {
   this.decorateContent(element);
 
   // Locate internally managed elements.
-  var el = this.getDomHelper().getElementsByTagNameAndClass('div',
+  var el = this.getDomHelper().getElementsByTagNameAndClass(
+      goog.dom.TagName.DIV,
       goog.getCssName(this.getRenderer().getCssClass(), 'filter'), element)[0];
   this.labelEl_ = goog.dom.getFirstElementChild(el);
   this.filterInput_ = goog.dom.getNextElementSibling(this.labelEl_);
   this.contentElement_ = goog.dom.getNextElementSibling(el);
 
   // Decorate additional menu items (like 'apply').
-  this.getRenderer().decorateChildren(this, el.parentNode,
-      this.contentElement_);
+  this.getRenderer().decorateChildren(
+      this,
+      /** @type {!Element} */ (el.parentNode), this.contentElement_);
 
   this.initFilterInput_();
 };

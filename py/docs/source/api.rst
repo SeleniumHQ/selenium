@@ -1,15 +1,8 @@
+:orphan:
+
 ======================
 Selenium Documentation
 ======================
-
-Selenium
---------
-
-.. currentmodule:: selenium
-.. autosummary::
-   :toctree: selenium
-   
-   selenium
 
 Common
 ------
@@ -35,8 +28,8 @@ Webdriver.common
    selenium.webdriver.common.touch_actions
    selenium.webdriver.common.utils
    selenium.webdriver.common.proxy
+   selenium.webdriver.common.service
    selenium.webdriver.common.html5.application_cache
-
 
 Webdriver.support
 -----------------
@@ -52,6 +45,15 @@ Webdriver.support
    selenium.webdriver.support.select
    selenium.webdriver.support.wait
 
+Webdriver.android
+-----------------
+
+.. currentmodule:: selenium.webdriver.android
+.. autosummary::
+   :toctree: webdriver_android
+
+   selenium.webdriver.android.webdriver
+
 Webdriver.chrome
 ----------------
 
@@ -59,6 +61,7 @@ Webdriver.chrome
 .. autosummary::
    :toctree: webdriver_chrome
 
+   selenium.webdriver.chrome.options
    selenium.webdriver.chrome.service
    selenium.webdriver.chrome.webdriver
 
@@ -71,6 +74,7 @@ Webdriver.firefox
 
    selenium.webdriver.firefox.extension_connection
    selenium.webdriver.firefox.firefox_binary
+   selenium.webdriver.firefox.options
    selenium.webdriver.firefox.firefox_profile
    selenium.webdriver.firefox.webdriver
 
@@ -90,7 +94,6 @@ Webdriver.opera
 .. autosummary::
    :toctree: webdriver_opera
 
-   selenium.webdriver.opera.service
    selenium.webdriver.opera.webdriver
 
 Webdriver.phantomjs
@@ -112,14 +115,24 @@ Webdriver.remote
 
    selenium.webdriver.remote.command
    selenium.webdriver.remote.errorhandler
+   selenium.webdriver.remote.mobile
    selenium.webdriver.remote.remote_connection
    selenium.webdriver.remote.utils
    selenium.webdriver.remote.webdriver
    selenium.webdriver.remote.webelement
+
+Webdriver.safari
+----------------
+
+.. currentmodule:: selenium.webdriver.safari
+.. autosummary::
+  :toctree: webdriver_safari
+
+  selenium.webdriver.safari.service
+  selenium.webdriver.safari.webdriver
 
 Indices and tables
 
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
-

@@ -15,7 +15,7 @@
 /**
  * @fileoverview The SafeScript type and its builders.
  *
- * TODO(user): Link to document stating type contract.
+ * TODO(xtof): Link to document stating type contract.
  */
 
 goog.provide('goog.html.SafeScript');
@@ -78,7 +78,7 @@ goog.html.SafeScript = function() {
   /**
    * A type marker used to implement additional run-time type checking.
    * @see goog.html.SafeScript#unwrap
-   * @const
+   * @const {!Object}
    * @private
    */
   this.SAFE_SCRIPT_TYPE_MARKER_GOOG_HTML_SECURITY_PRIVATE_ =
@@ -96,7 +96,7 @@ goog.html.SafeScript.prototype.implementsGoogStringTypedString = true;
 /**
  * Type marker for the SafeScript type, used to implement additional
  * run-time type checking.
- * @const
+ * @const {!Object}
  * @private
  */
 goog.html.SafeScript.TYPE_MARKER_GOOG_HTML_SECURITY_PRIVATE_ = {};
@@ -190,8 +190,8 @@ goog.html.SafeScript.unwrap = function(safeScript) {
           goog.html.SafeScript.TYPE_MARKER_GOOG_HTML_SECURITY_PRIVATE_) {
     return safeScript.privateDoNotAccessOrElseSafeScriptWrappedValue_;
   } else {
-    goog.asserts.fail(
-        'expected object of type SafeScript, got \'' + safeScript + '\'');
+    goog.asserts.fail('expected object of type SafeScript, got \'' +
+        safeScript + '\' of type ' + goog.typeOf(safeScript));
     return 'type_error:SafeScript';
   }
 };
@@ -206,9 +206,23 @@ goog.html.SafeScript.unwrap = function(safeScript) {
  */
 goog.html.SafeScript.createSafeScriptSecurityPrivateDoNotAccessOrElse =
     function(script) {
-  var safeScript = new goog.html.SafeScript();
-  safeScript.privateDoNotAccessOrElseSafeScriptWrappedValue_ = script;
-  return safeScript;
+  return new goog.html.SafeScript().initSecurityPrivateDoNotAccessOrElse_(
+      script);
+};
+
+
+/**
+ * Called from createSafeScriptSecurityPrivateDoNotAccessOrElse(). This
+ * method exists only so that the compiler can dead code eliminate static
+ * fields (like EMPTY) when they're not accessed.
+ * @param {string} script
+ * @return {!goog.html.SafeScript}
+ * @private
+ */
+goog.html.SafeScript.prototype.initSecurityPrivateDoNotAccessOrElse_ = function(
+    script) {
+  this.privateDoNotAccessOrElseSafeScriptWrappedValue_ = script;
+  return this;
 };
 
 

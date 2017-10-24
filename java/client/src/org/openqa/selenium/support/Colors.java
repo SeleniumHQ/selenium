@@ -1,3 +1,20 @@
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
 package org.openqa.selenium.support;
 
 // Basic colour keywords as defined by the W3C HTML4 spec
@@ -124,6 +141,7 @@ public enum Colors {
     PLUM(new Color(221, 160, 221, 1d)),
     POWDERBLUE(new Color(176, 224, 230, 1d)),
     PURPLE(new Color(128, 0, 128, 1d)),
+    REBECCAPURPLE(new Color(102, 51, 153, 1d)),
     RED(new Color(255, 0, 0, 1d)),
     ROSYBROWN(new Color(188, 143, 143, 1d)),
     ROYALBLUE(new Color(65, 105, 225, 1d)),

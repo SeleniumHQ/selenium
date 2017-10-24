@@ -1,0 +1,71 @@
+{
+  "ActiveDriverConfig": "Chrome",
+  "ActiveWebsiteConfig": "Default",
+  "WebsiteConfigs": {
+    "Default": {
+      "Protocol": "http",
+      "HostName": "localhost",
+      "Port": "2310",
+      "SecurePort": "2410",
+      "Folder": "common"
+    }
+  },
+  "DriverConfigs": {
+    "Chrome": {
+      "DriverTypeName": "OpenQA.Selenium.Chrome.ChromeDriver",
+      "AssemblyName": "WebDriver",
+      "BrowserValue": "Chrome",
+      "RemoteCapabilities": "chrome"
+    },
+
+    "IE": {
+      "DriverTypeName": "OpenQA.Selenium.IE.InternetExplorerDriver",
+      "AssemblyName": "WebDriver",
+      "BrowserValue": "IE",
+      "RemoteCapabilities": "internet explorer"
+    },
+
+    "Edge": {
+      "DriverTypeName": "OpenQA.Selenium.Edge.EdgeDriver",
+      "AssemblyName": "WebDriver",
+      "BrowserValue": "Edge",
+      "RemoteCapabilities": "MicrosoftEdge"
+    },
+
+    "Firefox": {
+      "DriverTypeName": "OpenQA.Selenium.Firefox.ReleaseFirefoxWebDriver",
+      "AssemblyName": "WebDriver.Firefox.Tests",
+      "BrowserValue": "Firefox",
+      "RemoteCapabilities": "firefox"
+    },
+
+    "FirefoxNightly": {
+      "DriverTypeName": "OpenQA.Selenium.Firefox.NightlyFirefoxWebDriver",
+      "AssemblyName": "WebDriver.Firefox.Tests",
+      "BrowserValue": "Firefox",
+      "RemoteCapabilities": "firefox"
+    },
+
+    "FirefoxLegacy": {
+      "DriverTypeName": "OpenQA.Selenium.Firefox.LegacyFirefoxWebDriver",
+      "AssemblyName": "WebDriver.Firefox.Tests",
+      "BrowserValue": "Firefox",
+      "RemoteCapabilities": "firefox"
+    },
+
+    "Safari": {
+      "DriverTypeName": "OpenQA.Selenium.Safari.SafariDriver",
+      "AssemblyName": "WebDriver",
+      "BrowserValue": "Safari",
+      "RemoteCapabilities": "safari"
+    },
+
+    "Remote": {
+      "DriverTypeName": "OpenQA.Selenium.Remote.TestInternetExplorerRemoteWebDriver",
+      "AssemblyName": "WebDriver.Remote.Tests",
+      "BrowserValue": "Remote",
+      "RemoteCapabilities": "internet explorer",
+      "AutoStartRemoteServer":  true
+    }
+  }
+}

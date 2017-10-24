@@ -19,6 +19,8 @@
  * future.
  *
  * @author nnaze@google.com (Nathan Naze)
+ * @suppress {extraRequire} All the requires in this file are "extra"
+ * because this file is not actually using them.
  */
 
 goog.provide('goog.fx');

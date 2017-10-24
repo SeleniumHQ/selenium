@@ -82,6 +82,9 @@ limitations under the License.
       <toolbarseparator/>
       <toolbarbutton id="rollup-button" label="Rollup" class="icon" tooltiptext="&rollupButton.tooltip;" command="cmd_selenium_rollup"/>
       <toolbarbutton id="reload-button" label="Reload" class="icon" tooltiptext="&reloadExtButton.tooltip;" command="cmd_selenium_reload" hidden="true"/>
+      <toolbarseparator/>
+      <toolbarbutton id="browser-button"/>
+      <toolbarbutton id="close-webdriver-button" label="Close Webdriver" class="toolbar2 toolbarbutton-1" tooltiptext="Close Webdriver session to the Selenium Server" oncommand="window.editor.selDebugger.closeWebDriverSession()"/>
       <toolbarspacer flex="1"/>
       <toolbarbutton id="schedule-button"/>
       <toolbarbutton id="record-button" label="Record" class="icon" tooltiptext="&recordButton.tooltip;" checked="true" command="cmd_selenium_record"/>

@@ -1,5 +1,8 @@
-// Copyright 2013 Software Freedom Conservancy
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -14,29 +17,21 @@
 #ifndef WEBDRIVER_IE_ELEMENT_H_
 #define WEBDRIVER_IE_ELEMENT_H_
 
-#include <ctime>
 #include <memory>
 #include <string>
 #include <vector>
+
+#include "ElementScrollBehavior.h"
 #include "LocationInfo.h"
 
-// Forward declaration of classes to avoid
-// circular include files.
+// Forward declaration of classes.
 namespace Json {
   class Value;
 } // namespace Json
 
 namespace webdriver {
 
-enum ELEMENT_SCROLL_BEHAVIOR {
-  TOP,
-  BOTTOM
-};
-
-typedef unsigned int (__stdcall *ASYNCEXECPROC)(void*);
-
-// Forward declaration of classes to avoid
-// circular include files.
+// Forward declaration of classes.
 class Browser;
 
 class Element {
@@ -45,19 +40,22 @@ class Element {
   virtual ~Element(void);
   Json::Value ConvertToJson(void);
   std::string GetTagName(void);
-  int GetLocationOnceScrolledIntoView(const ELEMENT_SCROLL_BEHAVIOR scroll,
+  int GetLocationOnceScrolledIntoView(const ElementScrollBehavior scroll,
                                       LocationInfo* location,
                                       std::vector<LocationInfo>* frame_locations);
-  int GetClickLocation(const ELEMENT_SCROLL_BEHAVIOR scroll_behavior,
+  int GetClickLocation(const ElementScrollBehavior scroll_behavior,
                        LocationInfo* element_location,
                        LocationInfo* click_location);
   int GetAttributeValue(const std::string& attribute_name,
                         std::string* attribute_value,
                         bool* value_is_null);
+  int GetPropertyValue(const std::string& property_name,
+                       std::string* property_value,
+                       bool* value_is_null);
   int GetCssPropertyValue(const std::string& property_name,
                           std::string* property_value);
 
-  int IsDisplayed(bool* result);
+  int IsDisplayed(bool ignore_opacity, bool* result);
   bool IsEnabled(void);
   bool IsSelected(void);
   bool IsInteractable(void);
@@ -66,9 +64,6 @@ class Element {
 
   std::string element_id(void) const { return this->element_id_; }
   IHTMLElement* element(void) { return this->element_; }
-
-  clock_t last_click_time(void) const { return this->last_click_time_; }
-  void set_last_click_time(clock_t click_time) { this->last_click_time_ = click_time; }
 
  private:
   int GetLocation(LocationInfo* location,
@@ -95,10 +90,7 @@ class Element {
   std::string element_id_;
   CComPtr<IHTMLElement> element_;
   HWND containing_window_handle_;
-  clock_t last_click_time_;
 };
-
-typedef std::tr1::shared_ptr<Element> ElementHandle;
 
 } // namespace webdriver
 

@@ -1,27 +1,27 @@
-/*
-Copyright 2012 Selenium committers
-Copyright 2012 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
-
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium.environment.webserver;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.io.File;
+import com.google.common.base.Charsets;
+import com.google.common.io.Files;
 
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
@@ -35,16 +35,12 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.os.CommandLine;
+import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
-import com.google.common.base.Charsets;
-import com.google.common.base.Throwables;
-import com.google.common.io.Files;
+import java.io.File;
 
 @RunWith(JUnit4.class)
 public class AppServerTest {
@@ -54,13 +50,12 @@ public class AppServerTest {
 
   @BeforeClass
   public static void startDriver() throws Throwable {
-    System.setProperty("webdriver.chrome.driver", CommandLine.find("chromedriver"));
-    driver = new ChromeDriver();
+    driver = new WebDriverBuilder().get();
   }
 
   @Before
   public void startServer() throws Throwable {
-    server = new WebbitAppServer();
+    server = new JettyAppServer();
     server.start();
   }
 
@@ -158,8 +153,10 @@ public class AppServerTest {
 
     try {
       response = httpclient.execute(httpget);
+    } catch (RuntimeException e) {
+      throw e;
     } catch (Throwable t) {
-      throw Throwables.propagate(t);
+      throw new RuntimeException(t);
     }
 
     Header[] contentTypeHeaders = response.getHeaders("Content-Type");

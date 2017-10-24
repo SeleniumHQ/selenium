@@ -12,11 +12,102 @@ namespace OpenQA.Selenium.IE
     public class IeSpecificTests : DriverTestFixture
     {
         [Test]
+        public void KeysTest()
+        {
+            List<string> keyComboNames = new List<string>()
+            {
+                "Control",
+                "Shift",
+                "Alt",
+                "Control + Shift",
+                "Control + Alt",
+                "Shift + Alt",
+                "Control + Shift + Alt"
+            };
+
+            List<string> colorNames = new List<string>()
+            {
+                "red",
+                "green",
+                "lightblue",
+                "yellow",
+                "lightgreen",
+                "silver",
+                "magenta"
+            };
+
+            List<List<string>> modifierCombonations = new List<List<string>>()
+            {
+                new List<string>() { Keys.Control },
+                new List<string>() { Keys.Shift },
+                new List<string>() { Keys.Alt },
+                new List<string>() { Keys.Control, Keys.Shift },
+                new List<string>() { Keys.Control, Keys.Alt },
+                new List<string>() { Keys.Shift, Keys.Alt },
+                new List<string>() { Keys.Control, Keys.Shift, Keys.Alt}
+            };
+
+            List<string> expectedColors = new List<string>()
+            {
+                "rgba(255, 0, 0, 1)",
+                "rgba(0, 128, 0, 1)",
+                "rgba(173, 216, 230, 1)",
+                "rgba(255, 255, 0, 1)",
+                "rgba(144, 238, 144, 1)",
+                "rgba(192, 192, 192, 1)",
+                "rgba(255, 0, 255, 1)"
+            };
+
+            bool passed = true;
+            string errors = string.Empty;
+
+            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("keyboard_shortcut.html");
+            IWebElement body = driver.FindElement(By.CssSelector("body"));
+            Actions actions = new Actions(driver);
+            for (int i = 0; i < keyComboNames.Count; i++)
+            {
+                for (int j = 0; j < modifierCombonations[i].Count; j++)
+                {
+                    actions.KeyDown(modifierCombonations[i][j]);
+                }
+
+                actions.SendKeys("1");
+                
+                // Alternatively, the following single line of code would release
+                // all modifier keys, instead of looping through each key.
+                // actions.SendKeys(Keys.Null);
+                for (int j = 0; j < modifierCombonations[i].Count; j++)
+                {
+                    actions.KeyUp(modifierCombonations[i][j]);
+                }
+
+                actions.Perform();
+                string background = body.GetCssValue("background-color");
+                passed = passed && background == expectedColors[i];
+                if (background != expectedColors[i])
+                {
+                    if (errors.Length > 0)
+                    {
+                        errors += "\n";
+                    }
+
+                    errors += string.Format("Key not properly processed for {0}. Background should be {1}, Expected: '{2}', Actual: '{3}'",
+                        keyComboNames[i],
+                        colorNames[i],
+                        expectedColors[i],
+                        background);
+                }
+            }
+
+            Assert.IsTrue(passed, errors);
+        }
+
+        [Test]
         public void InputOnChangeAlert()
         {
             driver.Url = alertsPage;
             driver.FindElement(By.Id("input")).Clear();
-            IAlert alert = WaitFor<IAlert>(() => { return driver.SwitchTo().Alert(); });
+            IAlert alert = WaitFor<IAlert>(() => { return driver.SwitchTo().Alert(); }, "No alert found");
             alert.Accept();
         }
 
@@ -27,15 +118,15 @@ namespace OpenQA.Selenium.IE
             {
                 driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("frameScrollPage.html");
 
-                WaitFor(FrameToExistAndBeSwitchedTo("scrolling_frame"));
+                WaitFor(FrameToExistAndBeSwitchedTo("scrolling_frame"), "No frame with name or id 'scrolling_frame' found");
                 IWebElement element = driver.FindElement(By.Name("scroll_checkbox"));
                 element.Click();
                 Assert.IsTrue(element.Selected);
 
                 driver.SwitchTo().DefaultContent();
 
-                WaitFor(FrameToExistAndBeSwitchedTo("scrolling_child_frame"));
-                WaitFor(FrameToExistAndBeSwitchedTo("scrolling_frame"));
+                WaitFor(FrameToExistAndBeSwitchedTo("scrolling_child_frame"), "No frame with name or id 'scrolling_child_frame' found");
+                WaitFor(FrameToExistAndBeSwitchedTo("scrolling_frame"), "No frame with name or id 'scrolling_frame' found");
                 element = driver.FindElement(By.Name("scroll_checkbox"));
                 element.Click();
                 Assert.IsTrue(element.Selected);
@@ -51,7 +142,7 @@ namespace OpenQA.Selenium.IE
         {
             driver.Url = alertsPage;
             driver.FindElement(By.Id("value1")).Click();
-            IAlert alert = WaitFor<IAlert>(() => { return driver.SwitchTo().Alert(); });
+            IAlert alert = WaitFor<IAlert>(() => { return driver.SwitchTo().Alert(); }, "No alert found");
             alert.Accept();
         }
 
@@ -113,7 +204,7 @@ namespace OpenQA.Selenium.IE
             IWebElement element = driver.FindElement(By.Id("dialog"));
             element.Click();
 
-            WaitFor(() => { return driver.WindowHandles.Count > 1; });
+            WaitFor(() => { return driver.WindowHandles.Count > 1; }, "Window count was not greater than 1");
 
             ReadOnlyCollection<string> windowHandles = driver.WindowHandles;
             Assert.AreEqual(2, windowHandles.Count);
@@ -134,7 +225,7 @@ namespace OpenQA.Selenium.IE
             IWebElement closeElement = driver.FindElement(By.Id("close"));
             closeElement.Click();
 
-            WaitFor(() => { return driver.WindowHandles.Count == 1; });
+            WaitFor(() => { return driver.WindowHandles.Count == 1; }, "Window count was not 1");
 
             windowHandles = driver.WindowHandles;
             Assert.AreEqual(1, windowHandles.Count);
@@ -179,7 +270,7 @@ namespace OpenQA.Selenium.IE
  
             // Launch first modal
             driver.FindElement(By.CssSelector("input[type='button'][value='btn1']")).Click();
-            WaitFor(() => { return driver.WindowHandles.Count > 1; });
+            WaitFor(() => { return driver.WindowHandles.Count > 1; }, "Window count was not greater than 1");
             ReadOnlyCollection<string> windows = driver.WindowHandles;
             string firstWindowHandle = windows.Except(new List<string>() { parentHandle }).First();
             driver.SwitchTo().Window(firstWindowHandle);
@@ -187,7 +278,7 @@ namespace OpenQA.Selenium.IE
 
             // Launch second modal
             driver.FindElement(By.CssSelector("input[type='button'][value='btn2']")).Click();
-            WaitFor(() => { return driver.WindowHandles.Count > 2; });
+            WaitFor(() => { return driver.WindowHandles.Count > 2; }, "Window count was not greater than 2");
             ReadOnlyCollection<string> windows_1 = driver.WindowHandles;
             string secondWindowHandle = windows_1.Except(windows).First();
             driver.SwitchTo().Window(secondWindowHandle);
@@ -195,7 +286,7 @@ namespace OpenQA.Selenium.IE
 
             // Launch third modal
             driver.FindElement(By.CssSelector("input[type='button'][value='btn3']")).Click();
-            WaitFor(() => { return driver.WindowHandles.Count > 3; });
+            WaitFor(() => { return driver.WindowHandles.Count > 3; }, "Window count was not greater than 3");
             ReadOnlyCollection<string> windows_2 = driver.WindowHandles;
             string finalWindowHandle = windows_2.Except(windows_1).First();
             Assert.AreEqual(4, windows_2.Count);
@@ -214,7 +305,7 @@ namespace OpenQA.Selenium.IE
  
             // Launch first modal
             driver.FindElement(By.CssSelector("a[id='lnk1']")).Click();
-            WaitFor(() => { return driver.WindowHandles.Count > 1; });
+            WaitFor(() => { return driver.WindowHandles.Count > 1; }, "Window count was not greater than 1");
             ReadOnlyCollection<string> windows = driver.WindowHandles;
             string firstWindowHandle = windows.Except(new List<string>() { parentHandle }).First();
             driver.SwitchTo().Window(firstWindowHandle);
@@ -223,7 +314,7 @@ namespace OpenQA.Selenium.IE
             // Launch second modal
             driver.FindElement(By.CssSelector("a[id='lnk2']")).Click();
             System.Threading.Thread.Sleep(5000);
-            WaitFor(() => { return driver.WindowHandles.Count > 2; });
+            WaitFor(() => { return driver.WindowHandles.Count > 2; }, "Window count was not greater than 2");
             ReadOnlyCollection<string> windows_1 = driver.WindowHandles;
             string secondWindowHandle = windows_1.Except(windows).First();
             driver.SwitchTo().Window(secondWindowHandle);
@@ -231,7 +322,7 @@ namespace OpenQA.Selenium.IE
 
             // Launch third modal
             driver.FindElement(By.CssSelector("a[id='lnk3']")).Click();
-            WaitFor(() => { return driver.WindowHandles.Count > 3; });
+            WaitFor(() => { return driver.WindowHandles.Count > 3; }, "Window count was not greater than 3");
             ReadOnlyCollection<string> windows_2 = driver.WindowHandles;
             string finalWindowHandle = windows_2.Except(windows_1).First();
             Assert.AreEqual(4, windows_2.Count);

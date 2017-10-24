@@ -1,0 +1,26 @@
+# BUILD FILE SYNTAX: SKYLARK
+prebuilt_jar(name = 'servlet-api',
+  maven_coords = 'javax.servlet:javax.servlet-api:jar:3.1.0',
+  binary_jar = 'javax.servlet-api-3.1.0.jar',
+  source_jar = 'javax.servlet-api-3.1.0-sources.jar',
+  visibility = [
+    '//java/client/test/org/openqa/selenium:tests',
+    '//java/client/test/org/openqa/selenium/environment:environment',
+
+    # The standalone selenium server
+    '//java/client/test/com/thoughtworks/selenium:tests',
+    '//java/server/src/com/thoughtworks/selenium/webdriven:rc-emulation-servlet',
+    '//java/server/test/com/thoughtworks/selenium/webdriven:webdriven',
+    '//java/server/src/org/openqa/selenium/remote/server:standalone-server-lib',
+
+    # Everything under grid
+    '//java/server/src/org/openqa/grid/...',
+    '//java/server/src/org/openqa/selenium/remote/...',
+
+    # Including the tests
+    '//java/server/test/org/openqa/...',
+
+    # Everything declared in the jetty BUCK file.
+    '//third_party/java/jetty:',
+  ],
+)

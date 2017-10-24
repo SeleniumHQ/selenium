@@ -1,19 +1,19 @@
-/*
- Copyright 2007-2010 WebDriver committers
- Copyright 2007-2010 Google Inc.
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
- http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
- */
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 package org.openqa.selenium.net;
 
 import static java.util.Collections.list;
@@ -31,22 +31,13 @@ import java.util.logging.Logger;
 public class NetworkInterface {
 
   private final String name;
+  private java.net.NetworkInterface networkInterface;
   private final Iterable<InetAddress> inetAddresses;
-  private boolean isLoopback;
+  private Boolean isLoopback;
 
   public NetworkInterface(java.net.NetworkInterface networkInterface) {
     this(networkInterface.getName(), list(networkInterface.getInetAddresses()));
-    try {
-      // Issue 1181 : determine whether this NetworkInterface instance is loopback
-      // from java.net.NetworkInterface API
-      this.isLoopback = networkInterface.isLoopback();
-    } catch (SocketException ex) {
-      Logger.getLogger(NetworkInterface.class.getName()).log(Level.WARNING, null, ex);
-      // If an SocketException is caught, determine whether this NetworkInterface
-      // instance is loopback from computation from its inetAddresses
-      this.isLoopback =
-          isLoopBackFromINetAddresses(list(networkInterface.getInetAddresses()));
-    }
+    this.networkInterface = networkInterface;
   }
 
   NetworkInterface(String name, Iterable<InetAddress> inetAddresses) {
@@ -64,6 +55,22 @@ public class NetworkInterface {
   }
 
   public boolean isLoopBack() {
+    if (isLoopback == null) {
+      if (networkInterface != null) {
+        try {
+          // Issue 1181 : determine whether this NetworkInterface instance is loopback
+          // from java.net.NetworkInterface API
+          isLoopback = networkInterface.isLoopback();
+        } catch (SocketException ex) {
+          Logger.getLogger(NetworkInterface.class.getName()).log(Level.WARNING, null, ex);
+        }
+      }
+      // If a SocketException is caught, determine whether this NetworkInterface
+      // instance is loopback from computation from its inetAddresses
+      if (isLoopback == null) {
+        isLoopback = isLoopBackFromINetAddresses(list(networkInterface.getInetAddresses()));
+      }
+    }
     return isLoopback;
   }
 
@@ -80,11 +87,11 @@ public class NetworkInterface {
     // Most "normal" boxes don't have multiple addresses so we'll just refine this
     // algorithm until it works.
     // See NetworkUtilsTest#testOpenSuseBoxIssue1181
-    InetAddress lastFound = null;
     // Issue 1181
-    if (!isLoopback) {
-      return lastFound;
+    if (!isLoopBack()) {
+      return null;
     }
+    InetAddress lastFound = null;
     for (InetAddress inetAddress : inetAddresses) {
       if (inetAddress.isLoopbackAddress() && !isIpv6(inetAddress)) {
         lastFound = inetAddress;

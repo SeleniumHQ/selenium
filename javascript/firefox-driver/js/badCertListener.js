@@ -1,20 +1,19 @@
-/*
- Copyright 2007-2009 WebDriver committers
- Copyright 2007-2009 Google Inc.
- Portions copyright 2011 Software Freedom Conservancy
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
- http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
- */
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 /**
  * @fileoverview Contains a Javascript implementation for
@@ -75,10 +74,16 @@ WdCertOverrideService = function() {
   goog.log.info(WdCertOverrideService.LOG_,
                 'Accept untrusted certificates: ' + acceptCerts);
 
+  // Firefox ignores certificate overrides for domains that use HSTS or HPKP:
+  // https://hg.mozilla.org/mozilla-central/file/48a77f828d59/security/manager/ssl/SSLServerCertVerification.cpp#l509
+  //
   // If capabilities are configured to accept all SSL certs, we need to disable
-  // Firefox's HSTS (HTTP Strict Transport Security) or WebDriver will not be
-  // able to accept any self-signed certs for domains on the HSTS list (e.g.
-  // a test is intentionally using a man-in-the-middle proxy to access a site).
+  // those features, or else WebDriver will not be able accept self-signed certs
+  // for those domains (which is useful for, e.g., tests that intentionally use
+  // a man-in-the-middle proxy to access a site).
+  //
+  // Disabling HPKP is a pretty straightforward preference change.
+  //
   // Unfortunately, the only way to disable HSTS is to rely on an undocumented
   // test preference:
   // http://mxr.mozilla.org/mozilla-release/source/security/manager/boot/src/nsSiteSecurityService.cpp#423
@@ -94,6 +99,9 @@ WdCertOverrideService = function() {
     CC['@mozilla.org/preferences-service;1'].
         getService(CI['nsIPrefBranch']).
         setIntPref('test.currentTimeOffsetSeconds', offsetSeconds);
+    CC['@mozilla.org/preferences-service;1'].
+        getService(CI['nsIPrefBranch']).
+        setIntPref('security.cert_pinning.enforcement_level', 0);
   }
 
   // UUID of the original implementor of this service.

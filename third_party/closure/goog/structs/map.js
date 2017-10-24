@@ -20,8 +20,7 @@
  * This file contains an implementation of a Map structure. It implements a lot
  * of the methods used in goog.structs so those functions work on hashes. This
  * is best suited for complex key types. For simple keys such as numbers and
- * strings, and where special names like __proto__ are not a concern, consider
- * using the lighter-weight utilities in goog.object.
+ * strings consider using the lighter-weight utilities in goog.object.
  */
 
 
@@ -224,7 +223,7 @@ goog.structs.Map.prototype.remove = function(key) {
     this.count_--;
     this.version_++;
 
-    // clean up the keys array if the threshhold is hit
+    // clean up the keys array if the threshold is hit
     if (this.keys_.length > 2 * this.count_) {
       this.cleanupKeysArray_();
     }
@@ -303,7 +302,9 @@ goog.structs.Map.prototype.get = function(key, opt_val) {
 goog.structs.Map.prototype.set = function(key, value) {
   if (!(goog.structs.Map.hasKey_(this.map_, key))) {
     this.count_++;
-    this.keys_.push(key);
+    // TODO(johnlenz): This class lies, it claims to return an array of string
+    // keys, but instead returns the original object used.
+    this.keys_.push(/** @type {?} */ (key));
     // Only change the version if we add a new key.
     this.version_++;
   }
@@ -425,23 +426,19 @@ goog.structs.Map.prototype.__iterator__ = function(opt_keys) {
   this.cleanupKeysArray_();
 
   var i = 0;
-  var keys = this.keys_;
-  var map = this.map_;
   var version = this.version_;
   var selfObj = this;
 
   var newIter = new goog.iter.Iterator;
   newIter.next = function() {
-    while (true) {
-      if (version != selfObj.version_) {
-        throw Error('The map has changed since the iterator was created');
-      }
-      if (i >= keys.length) {
-        throw goog.iter.StopIteration;
-      }
-      var key = keys[i++];
-      return opt_keys ? key : map[key];
+    if (version != selfObj.version_) {
+      throw Error('The map has changed since the iterator was created');
     }
+    if (i >= selfObj.keys_.length) {
+      throw goog.iter.StopIteration;
+    }
+    var key = selfObj.keys_[i++];
+    return opt_keys ? key : selfObj.map_[key];
   };
   return newIter;
 };

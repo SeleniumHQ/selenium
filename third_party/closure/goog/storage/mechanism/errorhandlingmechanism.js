@@ -32,11 +32,12 @@ goog.require('goog.storage.mechanism.Mechanism');
  * @param {goog.storage.mechanism.ErrorHandlingMechanism.ErrorHandler}
  *     errorHandler An error handler.
  * @constructor
+ * @struct
  * @extends {goog.storage.mechanism.Mechanism}
  * @final
  */
-goog.storage.mechanism.ErrorHandlingMechanism = function(mechanism,
-                                                         errorHandler) {
+goog.storage.mechanism.ErrorHandlingMechanism = function(
+    mechanism, errorHandler) {
   goog.storage.mechanism.ErrorHandlingMechanism.base(this, 'constructor');
 
   /**
@@ -53,8 +54,9 @@ goog.storage.mechanism.ErrorHandlingMechanism = function(mechanism,
    */
   this.errorHandler_ = errorHandler;
 };
-goog.inherits(goog.storage.mechanism.ErrorHandlingMechanism,
-              goog.storage.mechanism.Mechanism);
+goog.inherits(
+    goog.storage.mechanism.ErrorHandlingMechanism,
+    goog.storage.mechanism.Mechanism);
 
 
 /**
@@ -90,15 +92,13 @@ goog.storage.mechanism.ErrorHandlingMechanism.ErrorHandler;
 
 
 /** @override */
-goog.storage.mechanism.ErrorHandlingMechanism.prototype.set = function(key,
-                                                                       value) {
+goog.storage.mechanism.ErrorHandlingMechanism.prototype.set = function(
+    key, value) {
   try {
     this.mechanism_.set(key, value);
   } catch (e) {
     this.errorHandler_(
-        e,
-        goog.storage.mechanism.ErrorHandlingMechanism.Operation.SET,
-        key,
+        e, goog.storage.mechanism.ErrorHandlingMechanism.Operation.SET, key,
         value);
   }
 };
@@ -110,9 +110,8 @@ goog.storage.mechanism.ErrorHandlingMechanism.prototype.get = function(key) {
     return this.mechanism_.get(key);
   } catch (e) {
     this.errorHandler_(
-        e,
-        goog.storage.mechanism.ErrorHandlingMechanism.Operation.GET,
-        key);
+        e, goog.storage.mechanism.ErrorHandlingMechanism.Operation.GET, key);
+    return null;
   }
 };
 
@@ -123,8 +122,6 @@ goog.storage.mechanism.ErrorHandlingMechanism.prototype.remove = function(key) {
     this.mechanism_.remove(key);
   } catch (e) {
     this.errorHandler_(
-        e,
-        goog.storage.mechanism.ErrorHandlingMechanism.Operation.REMOVE,
-        key);
+        e, goog.storage.mechanism.ErrorHandlingMechanism.Operation.REMOVE, key);
   }
 };

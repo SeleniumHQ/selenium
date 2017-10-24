@@ -21,18 +21,44 @@ goog.provide('goog.object');
 
 
 /**
+ * Whether two values are not observably distinguishable. This
+ * correctly detects that 0 is not the same as -0 and two NaNs are
+ * practically equivalent.
+ *
+ * The implementation is as suggested by harmony:egal proposal.
+ *
+ * @param {*} v The first value to compare.
+ * @param {*} v2 The second value to compare.
+ * @return {boolean} Whether two values are not observably distinguishable.
+ * @see http://wiki.ecmascript.org/doku.php?id=harmony:egal
+ */
+goog.object.is = function(v, v2) {
+  if (v === v2) {
+    // 0 === -0, but they are not identical.
+    // We need the cast because the compiler requires that v2 is a
+    // number (although 1/v2 works with non-number). We cast to ? to
+    // stop the compiler from type-checking this statement.
+    return v !== 0 || 1 / v === 1 / /** @type {?} */ (v2);
+  }
+
+  // NaN is non-reflexive: NaN !== NaN, although they are identical.
+  return v !== v && v2 !== v2;
+};
+
+
+/**
  * Calls a function for each element in an object/map/hash.
  *
  * @param {Object<K,V>} obj The object over which to iterate.
  * @param {function(this:T,V,?,Object<K,V>):?} f The function to call
- *     for every element. This function takes 3 arguments (the element, the
- *     index and the object) and the return value is ignored.
+ *     for every element. This function takes 3 arguments (the value, the
+ *     key and the object) and the return value is ignored.
  * @param {T=} opt_obj This is used as the 'this' object within f.
  * @template T,K,V
  */
 goog.object.forEach = function(obj, f, opt_obj) {
   for (var key in obj) {
-    f.call(opt_obj, obj[key], key, obj);
+    f.call(/** @type {?} */ (opt_obj), obj[key], key, obj);
   }
 };
 
@@ -44,7 +70,7 @@ goog.object.forEach = function(obj, f, opt_obj) {
  * @param {Object<K,V>} obj The object over which to iterate.
  * @param {function(this:T,V,?,Object<K,V>):boolean} f The function to call
  *     for every element. This
- *     function takes 3 arguments (the element, the index and the object)
+ *     function takes 3 arguments (the value, the key and the object)
  *     and should return a boolean. If the return value is true the
  *     element is added to the result object. If it is false the
  *     element is not included.
@@ -56,7 +82,7 @@ goog.object.forEach = function(obj, f, opt_obj) {
 goog.object.filter = function(obj, f, opt_obj) {
   var res = {};
   for (var key in obj) {
-    if (f.call(opt_obj, obj[key], key, obj)) {
+    if (f.call(/** @type {?} */ (opt_obj), obj[key], key, obj)) {
       res[key] = obj[key];
     }
   }
@@ -71,7 +97,7 @@ goog.object.filter = function(obj, f, opt_obj) {
  * @param {Object<K,V>} obj The object over which to iterate.
  * @param {function(this:T,V,?,Object<K,V>):R} f The function to call
  *     for every element. This function
- *     takes 3 arguments (the element, the index and the object)
+ *     takes 3 arguments (the value, the key and the object)
  *     and should return something. The result will be inserted
  *     into a new object.
  * @param {T=} opt_obj This is used as the 'this' object within f.
@@ -81,7 +107,7 @@ goog.object.filter = function(obj, f, opt_obj) {
 goog.object.map = function(obj, f, opt_obj) {
   var res = {};
   for (var key in obj) {
-    res[key] = f.call(opt_obj, obj[key], key, obj);
+    res[key] = f.call(/** @type {?} */ (opt_obj), obj[key], key, obj);
   }
   return res;
 };
@@ -95,7 +121,7 @@ goog.object.map = function(obj, f, opt_obj) {
  * @param {Object<K,V>} obj The object to check.
  * @param {function(this:T,V,?,Object<K,V>):boolean} f The function to
  *     call for every element. This function
- *     takes 3 arguments (the element, the index and the object) and should
+ *     takes 3 arguments (the value, the key and the object) and should
  *     return a boolean.
  * @param {T=} opt_obj This is used as the 'this' object within f.
  * @return {boolean} true if any element passes the test.
@@ -103,7 +129,7 @@ goog.object.map = function(obj, f, opt_obj) {
  */
 goog.object.some = function(obj, f, opt_obj) {
   for (var key in obj) {
-    if (f.call(opt_obj, obj[key], key, obj)) {
+    if (f.call(/** @type {?} */ (opt_obj), obj[key], key, obj)) {
       return true;
     }
   }
@@ -119,7 +145,7 @@ goog.object.some = function(obj, f, opt_obj) {
  * @param {Object<K,V>} obj The object to check.
  * @param {?function(this:T,V,?,Object<K,V>):boolean} f The function to
  *     call for every element. This function
- *     takes 3 arguments (the element, the index and the object) and should
+ *     takes 3 arguments (the value, the key and the object) and should
  *     return a boolean.
  * @param {T=} opt_obj This is used as the 'this' object within f.
  * @return {boolean} false if any element fails the test.
@@ -127,7 +153,7 @@ goog.object.some = function(obj, f, opt_obj) {
  */
 goog.object.every = function(obj, f, opt_obj) {
   for (var key in obj) {
-    if (!f.call(opt_obj, obj[key], key, obj)) {
+    if (!f.call(/** @type {?} */ (opt_obj), obj[key], key, obj)) {
       return false;
     }
   }
@@ -143,9 +169,6 @@ goog.object.every = function(obj, f, opt_obj) {
  * @return {number} The number of key-value pairs in the object map.
  */
 goog.object.getCount = function(obj) {
-  // JS1.5 has __count__ but it has been deprecated so it raises a warning...
-  // in other words do not use. Also __count__ only includes the fields on the
-  // actual object and not in the prototype chain.
   var rv = 0;
   for (var key in obj) {
     rv++;
@@ -238,7 +261,8 @@ goog.object.getKeys = function(obj) {
  * Example usage: getValueByKeys(jsonObj, 'foo', 'entries', 3)
  *
  * @param {!Object} obj An object to get the value from.  Can be array-like.
- * @param {...(string|number|!Array<number|string>)} var_args A number of keys
+ * @param {...(string|number|!IArrayLike<number|string>)}
+ *     var_args A number of keys
  *     (as strings, or numbers, for array-like objects).  Can also be
  *     specified as a single array of keys.
  * @return {*} The resulting value.  If, at any point, the value for a key
@@ -264,11 +288,11 @@ goog.object.getValueByKeys = function(obj, var_args) {
  * Whether the object/map/hash contains the given key.
  *
  * @param {Object} obj The object in which to look for key.
- * @param {*} key The key for which to check.
+ * @param {?} key The key for which to check.
  * @return {boolean} true If the map contains the key.
  */
 goog.object.containsKey = function(obj, key) {
-  return key in obj;
+  return obj !== null && key in obj;
 };
 
 
@@ -304,7 +328,7 @@ goog.object.containsValue = function(obj, val) {
  */
 goog.object.findKey = function(obj, f, opt_this) {
   for (var key in obj) {
-    if (f.call(opt_this, obj[key], key, obj)) {
+    if (f.call(/** @type {?} */ (opt_this), obj[key], key, obj)) {
       return key;
     }
   }
@@ -360,12 +384,12 @@ goog.object.clear = function(obj) {
  * Removes a key-value pair based on the key.
  *
  * @param {Object} obj The object from which to remove the key.
- * @param {*} key The key to remove.
+ * @param {?} key The key to remove.
  * @return {boolean} Whether an element was removed.
  */
 goog.object.remove = function(obj, key) {
   var rv;
-  if ((rv = key in obj)) {
+  if (rv = key in /** @type {!Object} */ (obj)) {
     delete obj[key];
   }
   return rv;
@@ -382,7 +406,7 @@ goog.object.remove = function(obj, key) {
  * @template K,V
  */
 goog.object.add = function(obj, key, val) {
-  if (key in obj) {
+  if (obj !== null && key in obj) {
     throw Error('The object already contains the key "' + key + '"');
   }
   goog.object.set(obj, key, val);
@@ -400,7 +424,7 @@ goog.object.add = function(obj, key, val) {
  * @template K,V,R
  */
 goog.object.get = function(obj, key, opt_val) {
-  if (key in obj) {
+  if (obj !== null && key in obj) {
     return obj[key];
   }
   return opt_val;
@@ -430,7 +454,32 @@ goog.object.set = function(obj, key, value) {
  * @template K,V
  */
 goog.object.setIfUndefined = function(obj, key, value) {
-  return key in obj ? obj[key] : (obj[key] = value);
+  return key in /** @type {!Object} */ (obj) ? obj[key] : (obj[key] = value);
+};
+
+
+/**
+ * Sets a key and value to an object if the key is not set. The value will be
+ * the return value of the given function. If the key already exists, the
+ * object will not be changed and the function will not be called (the function
+ * will be lazily evaluated -- only called if necessary).
+ *
+ * This function is particularly useful for use with a map used a as a cache.
+ *
+ * @param {!Object<K,V>} obj The object to which to add the key-value pair.
+ * @param {string} key The key to add.
+ * @param {function():V} f The value to add if the key wasn't present.
+ * @return {V} The value of the entry at the end of the function.
+ * @template K,V
+ */
+goog.object.setWithReturnValueIfNotSet = function(obj, key, f) {
+  if (key in obj) {
+    return obj[key];
+  }
+
+  var val = f();
+  obj[key] = val;
+  return val;
 };
 
 
@@ -458,7 +507,7 @@ goog.object.equals = function(a, b) {
 
 
 /**
- * Does a flat clone of the object.
+ * Returns a shallow clone of the object.
  *
  * @param {Object<K,V>} obj Object to clone.
  * @return {!Object<K,V>} Clone of the input object.
@@ -488,13 +537,14 @@ goog.object.clone = function(obj) {
  * <code>goog.object.unsafeClone</code> is unaware of unique identifiers, and
  * copies UIDs created by <code>getUid</code> into cloned results.
  *
- * @param {*} obj The value to clone.
- * @return {*} A clone of the input value.
+ * @param {T} obj The value to clone.
+ * @return {T} A clone of the input value.
+ * @template T
  */
 goog.object.unsafeClone = function(obj) {
   var type = goog.typeOf(obj);
   if (type == 'object' || type == 'array') {
-    if (obj.clone) {
+    if (goog.isFunction(obj.clone)) {
       return obj.clone();
     }
     var clone = type == 'array' ? [] : {};
@@ -531,13 +581,8 @@ goog.object.transpose = function(obj) {
  * @private
  */
 goog.object.PROTOTYPE_FIELDS_ = [
-  'constructor',
-  'hasOwnProperty',
-  'isPrototypeOf',
-  'propertyIsEnumerable',
-  'toLocaleString',
-  'toString',
-  'valueOf'
+  'constructor', 'hasOwnProperty', 'isPrototypeOf', 'propertyIsEnumerable',
+  'toLocaleString', 'toString', 'valueOf'
 ];
 
 
@@ -584,7 +629,7 @@ goog.object.extend = function(target, var_args) {
 /**
  * Creates a new object built from the key-value pairs provided as arguments.
  * @param {...*} var_args If only one argument is provided and it is an array
- *     then this is used as the arguments,  otherwise even arguments are used as
+ *     then this is used as the arguments, otherwise even arguments are used as
  *     the property names and odd arguments are used as the property values.
  * @return {!Object} The new object.
  * @throws {Error} If there are uneven number of arguments or there is only one
@@ -612,7 +657,7 @@ goog.object.create = function(var_args) {
  * Creates a new object where the property names come from the arguments but
  * the value is always set to true
  * @param {...*} var_args If only one argument is provided and it is an array
- *     then this is used as the arguments,  otherwise the arguments are used
+ *     then this is used as the arguments, otherwise the arguments are used
  *     as the property names.
  * @return {!Object} The new object.
  */
@@ -658,4 +703,49 @@ goog.object.createImmutableView = function(obj) {
  */
 goog.object.isImmutableView = function(obj) {
   return !!Object.isFrozen && Object.isFrozen(obj);
+};
+
+
+/**
+ * Get all properties names on a given Object regardless of enumerability.
+ *
+ * <p> If the browser does not support {@code Object.getOwnPropertyNames} nor
+ * {@code Object.getPrototypeOf} then this is equivalent to using {@code
+ * goog.object.getKeys}
+ *
+ * @param {?Object} obj The object to get the properties of.
+ * @param {boolean=} opt_includeObjectPrototype Whether properties defined on
+ *     {@code Object.prototype} should be included in the result.
+ * @param {boolean=} opt_includeFunctionPrototype Whether properties defined on
+ *     {@code Function.prototype} should be included in the result.
+ * @return {!Array<string>}
+ * @public
+ */
+goog.object.getAllPropertyNames = function(
+    obj, opt_includeObjectPrototype, opt_includeFunctionPrototype) {
+  if (!obj) {
+    return [];
+  }
+
+  // Naively use a for..in loop to get the property names if the browser doesn't
+  // support any other APIs for getting it.
+  if (!Object.getOwnPropertyNames || !Object.getPrototypeOf) {
+    return goog.object.getKeys(obj);
+  }
+
+  var visitedSet = {};
+
+  // Traverse the prototype chain and add all properties to the visited set.
+  var proto = obj;
+  while (proto &&
+         (proto !== Object.prototype || !!opt_includeObjectPrototype) &&
+         (proto !== Function.prototype || !!opt_includeFunctionPrototype)) {
+    var names = Object.getOwnPropertyNames(proto);
+    for (var i = 0; i < names.length; i++) {
+      visitedSet[names[i]] = true;
+    }
+    proto = Object.getPrototypeOf(proto);
+  }
+
+  return goog.object.getKeys(visitedSet);
 };

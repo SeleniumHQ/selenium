@@ -30,8 +30,8 @@ goog.setTestOnly('collectablestorage_test');
  * @param {goog.testing.MockClock} clock
  * @param {goog.storage.CollectableStorage} storage
   */
-goog.storage.collectableStorageTester.runBasicTests =
-    function(mechanism, clock, storage) {
+goog.storage.collectableStorageTester.runBasicTests = function(
+    mechanism, clock, storage) {
   // No expiration.
   storage.set('first', 'three seconds', 3000);
   storage.set('second', 'one second', 1000);

@@ -42,6 +42,7 @@ goog.provide('goog.ui.TwoThumbSlider');
 goog.require('goog.a11y.aria');
 goog.require('goog.a11y.aria.Role');
 goog.require('goog.dom');
+goog.require('goog.dom.TagName');
 goog.require('goog.ui.SliderBase');
 
 
@@ -113,7 +114,7 @@ goog.ui.TwoThumbSlider.prototype.getCssClass = function(orient) {
  * @private
  */
 goog.ui.TwoThumbSlider.prototype.createThumb_ = function(cs) {
-  var thumb = this.getDomHelper().createDom('div', cs);
+  var thumb = this.getDomHelper().createDom(goog.dom.TagName.DIV, cs);
   goog.a11y.aria.setRole(thumb, goog.a11y.aria.Role.BUTTON);
   return /** @type {!HTMLDivElement} */ (thumb);
 };
@@ -132,10 +133,12 @@ goog.ui.TwoThumbSlider.prototype.createThumbs = function() {
   // find range highlight and thumbs
   var valueThumb = goog.dom.getElementsByTagNameAndClass(
       null, goog.ui.TwoThumbSlider.VALUE_THUMB_CSS_CLASS, this.getElement())[0];
-  var extentThumb = goog.dom.getElementsByTagNameAndClass(null,
-      goog.ui.TwoThumbSlider.EXTENT_THUMB_CSS_CLASS, this.getElement())[0];
-  var rangeHighlight = goog.dom.getElementsByTagNameAndClass(null,
-      goog.ui.TwoThumbSlider.RANGE_HIGHLIGHT_CSS_CLASS, this.getElement())[0];
+  var extentThumb = goog.dom.getElementsByTagNameAndClass(
+      null, goog.ui.TwoThumbSlider.EXTENT_THUMB_CSS_CLASS,
+      this.getElement())[0];
+  var rangeHighlight = goog.dom.getElementsByTagNameAndClass(
+      null, goog.ui.TwoThumbSlider.RANGE_HIGHLIGHT_CSS_CLASS,
+      this.getElement())[0];
   if (!valueThumb) {
     valueThumb =
         this.createThumb_(goog.ui.TwoThumbSlider.VALUE_THUMB_CSS_CLASS);
@@ -147,12 +150,12 @@ goog.ui.TwoThumbSlider.prototype.createThumbs = function() {
     this.getElement().appendChild(extentThumb);
   }
   if (!rangeHighlight) {
-    rangeHighlight = this.getDomHelper().createDom('div',
-        goog.ui.TwoThumbSlider.RANGE_HIGHLIGHT_CSS_CLASS);
+    rangeHighlight = this.getDomHelper().createDom(
+        goog.dom.TagName.DIV, goog.ui.TwoThumbSlider.RANGE_HIGHLIGHT_CSS_CLASS);
     // Insert highlight before value thumb so that it renders under the thumbs.
     this.getDomHelper().insertSiblingBefore(rangeHighlight, valueThumb);
   }
-  this.valueThumb = valueThumb;
-  this.extentThumb = extentThumb;
-  this.rangeHighlight = rangeHighlight;
+  this.valueThumb = /** @type {!HTMLDivElement} */ (valueThumb);
+  this.extentThumb = /** @type {!HTMLDivElement} */ (extentThumb);
+  this.rangeHighlight = /** @type {!HTMLDivElement} */ (rangeHighlight);
 };

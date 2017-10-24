@@ -1,0 +1,45 @@
+# BUILD FILE SYNTAX: SKYLARK
+prebuilt_jar(
+  name = 'httpclient',
+  maven_coords = 'org.apache.httpcomponents:httpclient:jar:4.5.3',
+  binary_jar = 'httpclient-4.5.3.jar',
+  source_jar = 'httpclient-4.5.3-sources.jar',
+  deps = [
+    ':httpcore',
+    '//third_party/java/commons-codec:commons-codec',
+    '//third_party/java/commons-logging:commons-logging'
+  ],
+  visibility = [
+    '//java/client/src/org/openqa/selenium/remote:remote-lib',
+    '//java/client/test/...',
+    '//java/server/src/org/openqa/grid:grid',
+    '//java/server/test/...',
+    '//third_party/java/htmlunit:htmlunit',
+  ],
+)
+
+prebuilt_jar(
+  name = 'httpcore',
+  maven_coords = 'org.apache.httpcomponents:httpcore:jar:4.4.6',
+  binary_jar = 'httpcore-4.4.6.jar',
+  source_jar = 'httpcore-4.4.6-sources.jar',
+  visibility = [
+    # Only made visible because of a bug in prebuilt_jar not exporting deps
+    '//java/client/src/org/openqa/selenium/remote:remote-lib',
+  ],
+)
+
+prebuilt_jar(
+  name = 'httpmime',
+  maven_coords = 'org.apache.httpcomponents:httpmime:jar:4.5.3',
+  binary_jar = 'httpmime-4.5.3.jar',
+  source_jar = 'httpmime-4.5.3-sources.jar',
+  deps = [
+    ':httpclient'
+  ],
+  visibility = [
+    '//third_party/java/htmlunit:htmlunit',
+    '//third_party/java/selenium:selenium-remote-driver'
+  ],
+)
+

@@ -19,7 +19,6 @@
 
 goog.provide('goog.fs.FileSaver');
 goog.provide('goog.fs.FileSaver.EventType');
-goog.provide('goog.fs.FileSaver.ProgressEvent');
 goog.provide('goog.fs.FileSaver.ReadyState');
 
 goog.require('goog.events.EventTarget');
@@ -165,12 +164,3 @@ goog.fs.FileSaver.prototype.disposeInternal = function() {
   delete this.saver_;
   goog.fs.FileSaver.base(this, 'disposeInternal');
 };
-
-
-/**
- * A wrapper for the progress events emitted by the FileSaver.
- *
- * @deprecated Use {goog.fs.ProgressEvent}.
- * @final
- */
-goog.fs.FileSaver.ProgressEvent = goog.fs.ProgressEvent;

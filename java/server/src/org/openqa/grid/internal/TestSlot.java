@@ -1,19 +1,19 @@
-/*
-Copyright 2011 Selenium committers
-Copyright 2011 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 package org.openqa.grid.internal;
 
 import com.google.common.base.Throwables;
@@ -22,11 +22,12 @@ import org.openqa.grid.common.SeleniumProtocol;
 import org.openqa.grid.common.exception.GridException;
 import org.openqa.grid.internal.listeners.TestSessionListener;
 import org.openqa.grid.internal.utils.CapabilityMatcher;
-import org.openqa.grid.internal.utils.GridHubConfiguration;
+import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.InvalidParameterException;
+import java.time.Clock;
 import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.locks.Lock;
@@ -37,15 +38,15 @@ import java.util.logging.Logger;
  * The entity on a proxy that can host a test session. A test slot has only 1 desired capabilities (
  * firefox or chrome for instance, but if a remoteproxy needs to support both, the remoteproxy will
  * need 2 TestSlots ) A TestSlot can host 1 TestSession max at a time.
- * <p/>
+ * <p>
  * The listener ({@link TestSessionListener} attached to the test session of this test slot is
  * thread safe. If 2 threads are trying to execute the before / after session, only 1 will be
  * executed.The other one will be discarded.
- * 
+ *
  * This class sees multiple threads but is currently sort-of protected by the lock in Registry.
  * Unfortunately the CleanUpThread also messes around in here, so it should be thread safe on its
  * own.
- * 
+ *
  */
 public class TestSlot {
 
@@ -61,10 +62,20 @@ public class TestSlot {
   private volatile TestSession currentSession;
   volatile boolean beingReleased = false;
   private boolean showWarning = false;
+  private long lastSessionStart = -1;
 
-
-  public TestSlot(RemoteProxy proxy, SeleniumProtocol protocol, String path,
-                  Map<String, Object> capabilities) {
+  /**
+   * Create a new test slot specifying a custom protocol path
+   * @param proxy the {@link RemoteProxy} which includes this test slot
+   * @param protocol the {@link SeleniumProtocol} this test slot conforms to
+   * @param path the protocol path this test slot uses
+   * @param capabilities capabilities of this test slot
+   */
+  public TestSlot(
+      RemoteProxy proxy,
+      SeleniumProtocol protocol,
+      String path,
+      Map<String, Object> capabilities) {
     this.proxy = proxy;
     this.protocol = protocol;
     this.path = path;
@@ -74,16 +85,29 @@ public class TestSlot {
       throw new InvalidParameterException("the proxy needs to have a valid "
           + "capabilityMatcher to support have some test slots attached to it");
     }
-    matcher = proxy.getCapabilityHelper();
+    this.matcher = proxy.getCapabilityHelper();
     this.capabilities = capabilities;
   }
 
+  /**
+   * Create a new test slot
+   * @param proxy the {@link RemoteProxy} which includes this test slot
+   * @param protocol the {@link SeleniumProtocol} this test slot conforms to
+   * @param capabilities capabilities of this test slot
+   */
+  public TestSlot(RemoteProxy proxy, SeleniumProtocol protocol, Map<String, Object> capabilities) {
+    this(proxy, protocol, protocol.getPathConsideringCapabilitiesMap(capabilities), capabilities);
+  }
+
+  /**
+   * @return the capabilities of this test slot
+   */
   public Map<String, Object> getCapabilities() {
     return Collections.unmodifiableMap(capabilities);
   }
 
   /**
-   * @return the RemoteProxy that hosts this slot.
+   * @return the {@link RemoteProxy} that hosts this slot.
    */
   public RemoteProxy getProxy() {
     return proxy;
@@ -93,10 +117,10 @@ public class TestSlot {
    * Try to get a new session for the test slot for the desired capability. To define if the
    * test slot can host the desired capabilities, {@link CapabilityMatcher#matches(Map, Map)} is
    * invoked.
-   * <p/>
-   * Use {@link GridHubConfiguration#setCapabilityMatcher(CapabilityMatcher)}
-   * on the proxy hosting the test slot to modify the definition of match
-   * 
+   * <p>
+   * Use {@link GridHubConfiguration#capabilityMatcher} on the proxy hosting the test slot to
+   * modify the definition of match
+   *
    * @param desiredCapabilities capabilities for the new session
    * @return a new session linked to that testSlot if possible, null otherwise.
    */
@@ -105,27 +129,24 @@ public class TestSlot {
       lock.lock();
       if (currentSession != null) {
         return null;
-      } else {
-        if (matches(desiredCapabilities)) {
-          log.info("Trying to create a new session on test slot " + this.capabilities);
-          TestSession session = new TestSession(this, desiredCapabilities, new DefaultTimeSource());
-          currentSession = session;
-          return session;
-        } else {
-          return null;
-        }
       }
+      if (matches(desiredCapabilities)) {
+        log.info("Trying to create a new session on test slot " + this.capabilities);
+        TestSession session = new TestSession(this, desiredCapabilities, Clock.systemUTC());
+        currentSession = session;
+        lastSessionStart = System.currentTimeMillis();
+        return session;
+      }
+      return null;
     } finally {
       lock.unlock();
     }
   }
 
-
-
   /**
    * the type of protocol for the TestSlot.Ideally should always be webdriver, but can also be
    * selenium1 protocol for backward compatibility purposes.
-   * 
+   *
    * @return the protocol for this TestSlot
    */
   public SeleniumProtocol getProtocol() {
@@ -135,7 +156,7 @@ public class TestSlot {
   /**
    * the path the server is using to handle the request. Typically /wd/hub for a webdriver based
    * protocol and /selenium-server/driver/ for a selenium1 based protocol
-   * 
+   *
    * @return the path the server is using for the requests of this slot.
    */
   public String getPath() {
@@ -147,13 +168,13 @@ public class TestSlot {
    * @return true if the desired capabilities matches for the
    *         {@link RemoteProxy#getCapabilityHelper()}
    */
-  boolean matches(Map<String, Object> desiredCapabilities) {
+  public boolean matches(Map<String, Object> desiredCapabilities) {
     return matcher.matches(capabilities, desiredCapabilities);
   }
 
   /**
    * get the test session currently executed on this test slot.
-   * 
+   *
    * @return the session. Null if the slot is not used at the moment.
    */
   public TestSession getSession() {
@@ -164,10 +185,10 @@ public class TestSlot {
    * Starts the release process for the TestSlot. Once the release process has started, the clients
    * can't access the test slot any more, but the slot can't be reserved for another test until
    * finishReleaseProcess is called.
-   * <p/>
+   * <p>
    * That gives time to run exactly once the cleanup operation needed using @see
    * {@link TestSessionListener#afterSession(TestSession)}
-   * 
+   *
    * @return true if that's the first thread trying to release this test slot, false otherwise.
    * @see TestSlot#finishReleaseProcess()
    */
@@ -180,10 +201,9 @@ public class TestSlot {
       lock.lock();
       if (beingReleased) {
         return false;
-      } else {
-        beingReleased = true;
-        return true;
       }
+      beingReleased = true;
+      return true;
     } finally {
       lock.unlock();
     }
@@ -201,15 +221,24 @@ public class TestSlot {
     }
   }
 
+  /**
+   * Finish releasing all resources so the slot can be reused.
+   */
   public void doFinishRelease() {
     currentSession = null;
     beingReleased = false;
   }
 
+  /**
+   * @return the test session internal key
+   */
   String getInternalKey() {
     return currentSession == null ? null : currentSession.getInternalKey();
   }
 
+  /**
+   * @return invokes after session {@link TestSessionListener} events on this test slot
+   */
   boolean performAfterSessionEvent() {
     // run the pre-release listener
     try {
@@ -236,7 +265,7 @@ public class TestSlot {
 
   /**
    * get the full URL the underlying server is listening on for selenium / webdriver commands.
-   * 
+   *
    * @return the url
    */
   public URL getRemoteURL() {
@@ -246,5 +275,12 @@ public class TestSlot {
     } catch (MalformedURLException e) {
       throw new GridException("Configuration error for the node." + u + " isn't a valid URL");
     }
+  }
+
+  /**
+   * @return System.currentTimeMillis() of when the session was started, otherwise -1
+   */
+  public long getLastSessionStart() {
+    return lastSessionStart;
   }
 }

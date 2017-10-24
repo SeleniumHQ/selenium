@@ -53,8 +53,7 @@ goog.editor.plugins.Emoticons.prototype.getTrogClassId =
 
 
 /** @override */
-goog.editor.plugins.Emoticons.prototype.isSupportedCommand = function(
-    command) {
+goog.editor.plugins.Emoticons.prototype.isSupportedCommand = function(command) {
   return command == goog.editor.plugins.Emoticons.COMMAND;
 };
 
@@ -70,12 +69,22 @@ goog.editor.plugins.Emoticons.prototype.isSupportedCommand = function(
 goog.editor.plugins.Emoticons.prototype.execCommandInternal = function(
     command, opt_arg) {
   var emoji = /** @type {goog.ui.emoji.Emoji} */ (opt_arg);
+
+  var styleProperties = 'margin:0 0.2ex;vertical-align:middle;';
+  var emojiHeight = emoji.getHeight();
+  styleProperties += emojiHeight ? 'height:' + emojiHeight + 'px;' : '';
+  var emojiWidth = emoji.getWidth();
+  styleProperties += emojiWidth ? 'width:' + emojiWidth + 'px;' : '';
+
   var dom = this.getFieldDomHelper();
-  var img = dom.createDom(goog.dom.TagName.IMG, {
-    'src': emoji.getUrl(),
-    'style': 'margin:0 0.2ex;vertical-align:middle'
-  });
+  var imgAttributes = {'src': emoji.getUrl(), 'style': styleProperties};
+  if (emoji.getAltText()) {
+    imgAttributes['alt'] = emoji.getAltText();
+  }
+  var img = dom.createDom(goog.dom.TagName.IMG, imgAttributes);
+
   img.setAttribute(goog.ui.emoji.Emoji.ATTRIBUTE, emoji.getId());
+  img.setAttribute(goog.ui.emoji.Emoji.DATA_ATTRIBUTE, emoji.getId());
 
   this.getFieldObject().getRange().replaceContentsWithNode(img);
 

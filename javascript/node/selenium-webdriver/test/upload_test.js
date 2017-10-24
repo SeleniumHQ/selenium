@@ -1,17 +1,19 @@
-// Copyright 2015 Selenium committers
-// Copyright 2015 Software Freedom Conservancy
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-//     You may obtain a copy of the License at
+//   http://www.apache.org/licenses/LICENSE-2.0
 //
-// http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 'use strict';
 
@@ -31,7 +33,7 @@ test.suite(function(env) {
   var FILE_HTML = '<!DOCTYPE html><div>' + LOREM_IPSUM_TEXT + '</div>';
 
   var fp;
-  test.before(function() {
+  before(function() {
     return fp = io.tmpFile().then(function(fp) {
       fs.writeFileSync(fp, FILE_HTML);
       return fp;
@@ -39,13 +41,13 @@ test.suite(function(env) {
   })
 
   var driver;
-  test.before(function() {
-    driver = env.builder().build();
+  before(async function() {
+    driver = await env.builder().build();
   });
 
-  test.after(function() {
+  after(function() {
     if (driver) {
-      driver.quit();
+      return driver.quit();
     }
   });
 
@@ -56,28 +58,29 @@ test.suite(function(env) {
       // See https://github.com/ariya/phantomjs/issues/12506
       Browser.PHANTOM_JS,
       Browser.SAFARI)).
-  it('can upload files', function() {
+  it('can upload files', async function() {
     driver.setFileDetector(new remote.FileDetector);
 
-    driver.get(Pages.uploadPage);
+    await driver.get(Pages.uploadPage);
 
-    var fp = driver.call(function() {
+    var fp = await driver.call(function() {
       return io.tmpFile().then(function(fp) {
         fs.writeFileSync(fp, FILE_HTML);
         return fp;
       });
     });
 
-    driver.findElement(By.id('upload')).sendKeys(fp);
-    driver.findElement(By.id('go')).submit();
+    await driver.findElement(By.id('upload')).sendKeys(fp);
+    await driver.findElement(By.id('go')).click();
 
     // Uploading files across a network may take a while, even if they're small.
-    var label = driver.findElement(By.id('upload_label'));
-    driver.wait(until.elementIsNotVisible(label),
+    var label = await driver.findElement(By.id('upload_label'));
+    await driver.wait(until.elementIsNotVisible(label),
         10 * 1000, 'File took longer than 10 seconds to upload!');
 
-    driver.switchTo().frame('upload_target');
-    assert(driver.findElement(By.css('body')).getText())
+    var frame = await driver.findElement(By.id('upload_target'));
+    await driver.switchTo().frame(frame);
+    await assert(driver.findElement(By.css('body')).getText())
         .equalTo(LOREM_IPSUM_TEXT);
   });
 });

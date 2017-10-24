@@ -134,7 +134,7 @@ goog.events.EventTarget.prototype.setParentEventTarget = function(parent) {
  * using the same type then it will only be called once when the event is
  * dispatched.
  *
- * @param {string} type The type of the event to listen for.
+ * @param {string|!goog.events.EventId} type The type of the event to listen for
  * @param {function(?):?|{handleEvent:function(?):?}|null} handler The function
  *     to handle the event. The handler can also be an object that implements
  *     the handleEvent method which takes the event object as argument.
@@ -330,7 +330,7 @@ goog.events.EventTarget.prototype.assertInitialized_ = function() {
   goog.asserts.assert(
       this.eventTargetListeners_,
       'Event target is not initialized. Did you call the superclass ' +
-      '(goog.events.EventTarget) constructor?');
+          '(goog.events.EventTarget) constructor?');
 };
 
 
@@ -375,7 +375,7 @@ goog.events.EventTarget.dispatchEventInternal_ = function(
 
   // Executes capture and bubble listeners on the target.
   if (!e.propagationStopped_) {
-    currentTarget = e.currentTarget = target;
+    currentTarget = /** @type {?} */ (e.currentTarget = target);
     rv = currentTarget.fireListeners(type, true, e) && rv;
     if (!e.propagationStopped_) {
       rv = currentTarget.fireListeners(type, false, e) && rv;

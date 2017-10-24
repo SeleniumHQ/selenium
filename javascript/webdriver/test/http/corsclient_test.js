@@ -1,21 +1,24 @@
-// Copyright 2014 Software Freedom Conservancy. All Rights Reserved.
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
+//   http://www.apache.org/licenses/LICENSE-2.0
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
-goog.require('goog.json');
 goog.require('goog.testing.MockControl');
 goog.require('goog.testing.PropertyReplacer');
 goog.require('goog.testing.jsunit');
+goog.require('goog.userAgent');
 goog.require('webdriver.http.CorsClient');
 goog.require('webdriver.http.Request');
 goog.require('webdriver.test.testutil');
@@ -37,6 +40,10 @@ var REQUEST = new webdriver.http.Request('GET', '/foo');
 var control = new goog.testing.MockControl();
 var stubs = new goog.testing.PropertyReplacer();
 var mockClient, mockXhr;
+
+function shouldRunTests() {
+  return !goog.userAgent.IE || goog.userAgent.isVersionOrHigher(10);
+}
 
 function setUp() {
   mockClient = control.createStrictMock(webdriver.http.Client);
@@ -65,7 +72,7 @@ function setXdr(opt_value) {
 
 function expectRequest(mockXhr) {
   mockXhr.open('POST', URL + '/xdrpc', true);
-  return mockXhr.send(goog.json.serialize({
+  return mockXhr.send(JSON.stringify({
     'method': REQUEST.method,
     'path': REQUEST.path,
     'data': REQUEST.data
@@ -92,14 +99,11 @@ function testCorsClient_whenUnableToSendARequest() {
   });
   control.$replayAll();
 
-  var callback;
-  new webdriver.http.CorsClient(URL).send(REQUEST,
-      callback = callbackHelper(function(error) {
-        assertNotNullNorUndefined(error);
-        assertEquals(1, arguments.length);
-      }));
-  callback.assertCalled();
-  control.$verifyAll();
+  return new webdriver.http.CorsClient(URL)
+      .send(REQUEST)
+      .then(fail, function() {
+        control.$verifyAll();
+      });
 }
 
 function testCorsClient_handlesResponsesWithNoHeaders() {
@@ -110,17 +114,15 @@ function testCorsClient_handlesResponsesWithNoHeaders() {
   });
   control.$replayAll();
 
-  var callback;
-  new webdriver.http.CorsClient(URL).send(REQUEST,
-      callback = callbackHelper(function(e, response) {
-        assertNull(e);
+  return new webdriver.http.CorsClient(URL)
+      .send(REQUEST)
+      .then(function(response) {
         assertEquals(200, response.status);
         assertEquals('', response.body);
 
         webdriver.test.testutil.assertObjectEquals({}, response.headers);
-      }));
-  callback.assertCalled();
-  control.$verifyAll();
+        control.$verifyAll();
+      });
 }
 
 function testCorsClient_stripsNullCharactersFromResponseBody() {
@@ -131,14 +133,12 @@ function testCorsClient_stripsNullCharactersFromResponseBody() {
   });
   control.$replayAll();
 
-  var callback;
-  new webdriver.http.CorsClient(URL).send(REQUEST,
-      callback = callbackHelper(function(e, response) {
-        assertNull(e);
+  return new webdriver.http.CorsClient(URL)
+      .send(REQUEST)
+      .then(function(response) {
         assertEquals(200, response.status);
         assertEquals('foobar', response.body);
         webdriver.test.testutil.assertObjectEquals({}, response.headers);
-      }));
-  callback.assertCalled();
-  control.$verifyAll();
+        control.$verifyAll();
+      });
 }

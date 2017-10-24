@@ -1,7 +1,0 @@
-
-java_library(name = "webbit",
-  deps = [
-    "webbit-0.4.14.jar",
-    "//third_party/java/netty",
-   ])
-

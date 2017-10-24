@@ -40,8 +40,8 @@ goog.require('goog.userAgent');
 goog.dom.browserrange.WebKitRange = function(range) {
   goog.dom.browserrange.W3cRange.call(this, range);
 };
-goog.inherits(goog.dom.browserrange.WebKitRange,
-              goog.dom.browserrange.W3cRange);
+goog.inherits(
+    goog.dom.browserrange.WebKitRange, goog.dom.browserrange.W3cRange);
 
 
 /**
@@ -63,11 +63,11 @@ goog.dom.browserrange.WebKitRange.createFromNodeContents = function(node) {
  * @param {number} endOffset The offset within the end node.
  * @return {!goog.dom.browserrange.WebKitRange} A wrapper object.
  */
-goog.dom.browserrange.WebKitRange.createFromNodes = function(startNode,
-    startOffset, endNode, endOffset) {
+goog.dom.browserrange.WebKitRange.createFromNodes = function(
+    startNode, startOffset, endNode, endOffset) {
   return new goog.dom.browserrange.WebKitRange(
-      goog.dom.browserrange.W3cRange.getBrowserRangeForNodes(startNode,
-          startOffset, endNode, endOffset));
+      goog.dom.browserrange.W3cRange.getBrowserRangeForNodes(
+          startNode, startOffset, endNode, endOffset));
 };
 
 
@@ -79,18 +79,19 @@ goog.dom.browserrange.WebKitRange.prototype.compareBrowserRangeEndpoints =
   // it works fine.
   // https://bugs.webkit.org/show_bug.cgi?id=20738
   if (goog.userAgent.isVersionOrHigher('528')) {
-    return (goog.dom.browserrange.WebKitRange.superClass_.
-                compareBrowserRangeEndpoints.call(
-                    this, range, thisEndpoint, otherEndpoint));
+    return (
+        goog.dom.browserrange.WebKitRange.superClass_
+            .compareBrowserRangeEndpoints.call(
+                this, range, thisEndpoint, otherEndpoint));
   }
   return this.range_.compareBoundaryPoints(
       otherEndpoint == goog.dom.RangeEndpoint.START ?
           (thisEndpoint == goog.dom.RangeEndpoint.START ?
-              goog.global['Range'].START_TO_START :
-              goog.global['Range'].END_TO_START) : // Sense reversed
+               goog.global['Range'].START_TO_START :
+               goog.global['Range'].END_TO_START) :  // Sense reversed
           (thisEndpoint == goog.dom.RangeEndpoint.START ?
-              goog.global['Range'].START_TO_END : // Sense reversed
-              goog.global['Range'].END_TO_END),
+               goog.global['Range'].START_TO_END :  // Sense reversed
+               goog.global['Range'].END_TO_END),
       /** @type {Range} */ (range));
 };
 
@@ -98,16 +99,13 @@ goog.dom.browserrange.WebKitRange.prototype.compareBrowserRangeEndpoints =
 /** @override */
 goog.dom.browserrange.WebKitRange.prototype.selectInternal = function(
     selection, reversed) {
-  // Unselect everything. This addresses a bug in Webkit where it sometimes
-  // caches the old selection.
-  // https://bugs.webkit.org/show_bug.cgi?id=20117
-  selection.removeAllRanges();
-
   if (reversed) {
-    selection.setBaseAndExtent(this.getEndNode(), this.getEndOffset(),
-        this.getStartNode(), this.getStartOffset());
+    selection.setBaseAndExtent(
+        this.getEndNode(), this.getEndOffset(), this.getStartNode(),
+        this.getStartOffset());
   } else {
-    selection.setBaseAndExtent(this.getStartNode(), this.getStartOffset(),
-        this.getEndNode(), this.getEndOffset());
+    selection.setBaseAndExtent(
+        this.getStartNode(), this.getStartOffset(), this.getEndNode(),
+        this.getEndOffset());
   }
 };

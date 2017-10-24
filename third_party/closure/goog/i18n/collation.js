@@ -29,17 +29,21 @@ goog.provide('goog.i18n.collation');
  * will be a simple codepoint comparator.
  *
  * @param {string=} opt_locale the locale that the comparator is used for.
+ * @param {{usage: (string|undefined), localeMatcher: (string|undefined),
+ *     sensitivity: (string|undefined), ignorePunctuation: (boolean|undefined),
+ *     numeric: (boolean|undefined), caseFirst: (string|undefined)}=}
+ *         opt_options the optional set of options for use with the native
+ *         collator.
  * @return {function(string, string): number} The locale-specific comparator.
  */
-goog.i18n.collation.createComparator = function(opt_locale) {
+goog.i18n.collation.createComparator = function(opt_locale, opt_options) {
   // See http://code.google.com/p/v8-i18n.
   if (goog.i18n.collation.hasNativeComparator()) {
     var intl = goog.global.Intl;
-    return new intl.Collator([opt_locale || goog.LOCALE]).compare;
+    return new intl.Collator([opt_locale || goog.LOCALE], opt_options || {})
+        .compare;
   } else {
-    return function(arg1, arg2) {
-      return arg1.localeCompare(arg2);
-    };
+    return function(arg1, arg2) { return arg1.localeCompare(arg2); };
   }
 };
 

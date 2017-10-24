@@ -54,6 +54,7 @@
 
 goog.provide('goog.ui.media.Photo');
 
+goog.require('goog.dom.TagName');
 goog.require('goog.ui.media.Media');
 goog.require('goog.ui.media.MediaRenderer');
 
@@ -103,9 +104,8 @@ goog.ui.media.Photo.CSS_CLASS = goog.getCssName('goog-ui-media-photo');
  *     renderer.
  */
 goog.ui.media.Photo.newControl = function(dataModel) {
-  var control = new goog.ui.media.Media(
-      dataModel,
-      goog.ui.media.Photo.getInstance());
+  var control =
+      new goog.ui.media.Media(dataModel, goog.ui.media.Photo.getInstance());
   return control;
 };
 
@@ -121,7 +121,7 @@ goog.ui.media.Photo.prototype.createDom = function(c) {
   var control = /** @type {goog.ui.media.Media} */ (c);
   var div = goog.ui.media.Photo.superClass_.createDom.call(this, control);
 
-  var img = control.getDomHelper().createDom('img', {
+  var img = control.getDomHelper().createDom(goog.dom.TagName.IMG, {
     src: control.getDataModel().getPlayer().getUrl(),
     className: goog.getCssName(this.getCssClass(), 'image')
   });

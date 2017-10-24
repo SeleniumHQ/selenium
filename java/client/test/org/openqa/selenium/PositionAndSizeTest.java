@@ -1,50 +1,60 @@
-/*
-Copyright 2012-2015 Software Freedom Conservancy
-Copyright 2012 Selenium committers
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium;
 
 import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.lessThanOrEqualTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeFalse;
-import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.Platform.ANDROID;
-import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
-import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
-import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
-import static org.openqa.selenium.testing.Ignore.Driver.IE;
-import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
-import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
+import static org.openqa.selenium.testing.Driver.CHROME;
+import static org.openqa.selenium.testing.Driver.FIREFOX;
+import static org.openqa.selenium.testing.Driver.HTMLUNIT;
+import static org.openqa.selenium.testing.Driver.IE;
+import static org.openqa.selenium.testing.Driver.MARIONETTE;
+import static org.openqa.selenium.testing.Driver.PHANTOMJS;
+import static org.openqa.selenium.testing.Driver.SAFARI;
 
 import org.junit.Test;
-import org.openqa.selenium.internal.Locatable;
+import org.openqa.selenium.interactions.internal.Locatable;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.JavascriptEnabled;
+import org.openqa.selenium.testing.SwitchToTopAfterTest;
 import org.openqa.selenium.testing.TestUtilities;
 
-@Ignore(value = {HTMLUNIT, MARIONETTE},
-        reason = "HtmlUnit: Getting coordinates requires rendering, others: not tested")
+@Ignore(value = HTMLUNIT,
+          reason = "Getting coordinates requires rendering, others: not tested")
 public class PositionAndSizeTest extends JUnit4TestBase {
+
+  @Test
+  public void testShouldBeAbleToDetermineTheLocationOfAnElement() {
+    driver.get(pages.xhtmlTestPage);
+
+    WebElement element = driver.findElement(By.id("username"));
+    Point location = element.getLocation();
+
+    assertThat(location.getX() > 0, is(true));
+    assertThat(location.getY() > 0, is(true));
+  }
 
   @Test
   public void testShouldGetCoordinatesOfAnElement() {
@@ -82,8 +92,8 @@ public class PositionAndSizeTest extends JUnit4TestBase {
     assertThat(getLocationOnPage(By.id("box")), is(new Point(0, 0)));
   }
 
-  @Ignore(value = {SAFARI})
   @Test
+  @Ignore(SAFARI)
   public void testShouldScrollPageAndGetCoordinatesOfAnElementThatIsOutOfViewPort() {
     assumeFalse(
         "window().getSize() is not implemented for Chrome for Android. "
@@ -98,6 +108,7 @@ public class PositionAndSizeTest extends JUnit4TestBase {
     assertThat(getLocationOnPage(By.id("box")), is(new Point(10, 5010)));
   }
 
+  @SwitchToTopAfterTest
   @Test
   public void testShouldGetCoordinatesOfAnElementInAFrame() {
     driver.get(appServer.whereIs("coordinates_tests/element_in_frame.html"));
@@ -107,8 +118,10 @@ public class PositionAndSizeTest extends JUnit4TestBase {
     assertThat(getLocationOnPage(By.id("box")), is(new Point(10, 10)));
   }
 
-  @Ignore({SAFARI})
+  @SwitchToTopAfterTest
   @Test
+  @Ignore(SAFARI)
+  @Ignore(MARIONETTE)
   public void testShouldGetCoordinatesInViewPortOfAnElementInAFrame() {
     driver.get(appServer.whereIs("coordinates_tests/element_in_frame.html"));
     driver.switchTo().frame("ifr");
@@ -116,8 +129,10 @@ public class PositionAndSizeTest extends JUnit4TestBase {
     assertThat(getLocationOnPage(By.id("box")), is(new Point(10, 10)));
   }
 
-  @Ignore({SAFARI})
+  @SwitchToTopAfterTest
   @Test
+  @Ignore(SAFARI)
+  @Ignore(MARIONETTE)
   public void testShouldGetCoordinatesInViewPortOfAnElementInANestedFrame() {
     driver.get(appServer.whereIs("coordinates_tests/element_in_nested_frame.html"));
     driver.switchTo().frame("ifr");
@@ -126,8 +141,9 @@ public class PositionAndSizeTest extends JUnit4TestBase {
     assertThat(getLocationOnPage(By.id("box")), is(new Point(10, 10)));
   }
 
-  @Ignore({FIREFOX, SAFARI})
   @Test
+  @Ignore(FIREFOX)
+  @Ignore(SAFARI)
   public void testShouldGetCoordinatesOfAnElementWithFixedPosition() {
     assumeFalse("Ignoring fixed-position elements in IE6", TestUtilities.isIe6(driver));
     driver.get(appServer.whereIs("coordinates_tests/page_with_fixed_element.html"));
@@ -139,7 +155,6 @@ public class PositionAndSizeTest extends JUnit4TestBase {
     assertThat(getLocationOnPage(By.id("fixed")).getY(), greaterThan(0));
   }
 
-  @JavascriptEnabled
   @Test
   public void testShouldCorrectlyIdentifyThatAnElementHasWidthAndHeight() {
     driver.get(pages.xhtmlTestPage);
@@ -153,10 +168,12 @@ public class PositionAndSizeTest extends JUnit4TestBase {
   // TODO: This test's value seems dubious at best. The CSS spec does not define how browsers
   // should handle sub-pixel rendering, and every browser seems to be different anyhow:
   // http://ejohn.org/blog/sub-pixel-problems-in-css/
-  @JavascriptEnabled
-  @Ignore({IE, CHROME, SAFARI, PHANTOMJS, MARIONETTE})
-  // Reason for Chrome: WebKit bug 28804
   @Test
+  @Ignore(IE)
+  @Ignore(value = CHROME, reason = "WebKit bug 28804")
+  @Ignore(SAFARI)
+  @Ignore(PHANTOMJS)
+  @Ignore(MARIONETTE)
   public void testShouldHandleNonIntegerPositionAndSize() {
     driver.get(pages.rectanglesPage);
 

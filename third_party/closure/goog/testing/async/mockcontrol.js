@@ -44,6 +44,7 @@
  */
 
 
+goog.setTestOnly('goog.testing.async.MockControl');
 goog.provide('goog.testing.async.MockControl');
 
 goog.require('goog.asserts');
@@ -77,7 +78,7 @@ goog.testing.async.MockControl = function(mockControl) {
  * callback when it is.
  *
  * @param {string} name The name of the callback mock.
- * @param {function(...[*]) : *} callback The wrapped callback. This will be
+ * @param {function(...*) : *} callback The wrapped callback. This will be
  *     called when the returned function is called.
  * @param {Object=} opt_selfObj The object which this should point to when the
  *     callback is run.
@@ -114,7 +115,7 @@ goog.testing.async.MockControl.prototype.createCallbackMock = function(
  *
  * @param {string} message A message to print if the arguments are wrong.
  * @param {...*} var_args The arguments to assert.
- * @return {function(...[*]) : void} The mock callback.
+ * @return {function(...*) : void} The mock callback.
  */
 goog.testing.async.MockControl.prototype.asyncAssertEquals = function(
     message, var_args) {
@@ -135,8 +136,8 @@ goog.testing.async.MockControl.prototype.asyncAssertEquals = function(
  */
 goog.testing.async.MockControl.prototype.assertDeferredError = function(
     deferred, fn) {
-  deferred.addErrback(this.createCallbackMock(
-      'assertDeferredError', function() {}));
+  deferred.addErrback(
+      this.createCallbackMock('assertDeferredError', function() {}));
   goog.testing.asserts.callWithoutLogging(fn);
 };
 
@@ -156,15 +157,15 @@ goog.testing.async.MockControl.prototype.assertDeferredEquals = function(
   if (expected instanceof goog.async.Deferred &&
       actual instanceof goog.async.Deferred) {
     // Assert that the first deferred is resolved.
-    expected.addCallback(this.createCallbackMock(
-        'assertDeferredEquals', function(exp) {
+    expected.addCallback(
+        this.createCallbackMock('assertDeferredEquals', function(exp) {
           // Assert that the second deferred is resolved, and that the value is
           // as expected.
           actual.addCallback(this.asyncAssertEquals(message, exp));
         }, this));
   } else if (expected instanceof goog.async.Deferred) {
-    expected.addCallback(this.createCallbackMock(
-        'assertDeferredEquals', function(exp) {
+    expected.addCallback(
+        this.createCallbackMock('assertDeferredEquals', function(exp) {
           assertObjectEquals(message, exp, actual);
         }));
   } else if (actual instanceof goog.async.Deferred) {

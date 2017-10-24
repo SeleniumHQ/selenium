@@ -19,6 +19,7 @@
  *
  */
 
+goog.setTestOnly('goog.testing.fs');
 goog.provide('goog.testing.fs');
 
 goog.require('goog.Timer');
@@ -126,8 +127,8 @@ goog.testing.fs.getBlob = function(var_args) {
  * @return {!goog.testing.fs.Blob} The blob.
  */
 goog.testing.fs.getBlobWithProperties = function(parts, opt_type, opt_endings) {
-  return new goog.testing.fs.Blob(goog.array.map(parts, String).join(''),
-      opt_type);
+  return new goog.testing.fs.Blob(
+      goog.array.map(parts, String).join(''), opt_type);
 };
 
 
@@ -142,6 +143,23 @@ goog.testing.fs.blobToString = function(blob, opt_encoding) {
   var d = new goog.async.Deferred();
   goog.Timer.callOnce(goog.bind(d.callback, d, blob.toString()));
   return d;
+};
+
+
+/**
+ * Slices the blob. The returned blob contains data from the start byte
+ * (inclusive) till the end byte (exclusive). Negative indices can be used
+ * to count bytes from the end of the blob (-1 == blob.size - 1). Indices
+ * are always clamped to blob range. If end is omitted, all the data till
+ * the end of the blob is taken.
+ *
+ * @param {!goog.testing.fs.Blob} testBlob The blob to slice.
+ * @param {number} start Index of the starting byte.
+ * @param {number=} opt_end Index of the ending byte.
+ * @return {goog.testing.fs.Blob} The new blob or null if not supported.
+ */
+goog.testing.fs.sliceBlob = function(testBlob, start, opt_end) {
+  return testBlob.slice(start, opt_end);
 };
 
 
@@ -161,9 +179,8 @@ goog.testing.fs.install = function(stubs) {
   stubs.replace(fs, 'createObjectUrl', goog.testing.fs.createObjectUrl);
   stubs.replace(fs, 'revokeObjectUrl', goog.testing.fs.revokeObjectUrl);
   stubs.replace(fs, 'getBlob', goog.testing.fs.getBlob);
-  stubs.replace(fs, 'getBlobWithProperties',
-      goog.testing.fs.getBlobWithProperties);
+  stubs.replace(
+      fs, 'getBlobWithProperties', goog.testing.fs.getBlobWithProperties);
   stubs.replace(fs, 'blobToString', goog.testing.fs.blobToString);
-  stubs.replace(fs, 'browserSupportsObjectUrls',
-      function() { return true; });
+  stubs.replace(fs, 'browserSupportsObjectUrls', function() { return true; });
 };

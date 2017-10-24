@@ -1,5 +1,8 @@
-// Copyright 2011 Software Freedom Conservancy
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -14,13 +17,12 @@
 #ifndef WEBDRIVER_IE_BROWSER_H_
 #define WEBDRIVER_IE_BROWSER_H_
 
-#include <exdispid.h>
-#include <exdisp.h>
-#include <mshtml.h>
-#include <iostream>
 #include <string>
+
+#include <exdispid.h>
+#include <mshtml.h>
+
 #include "DocumentHost.h"
-#include "messages.h"
 
 namespace webdriver {
 
@@ -84,9 +86,11 @@ class Browser : public DocumentHost, public IDispEventSimpleImpl<1, Browser, &DI
   STDMETHOD_(void, OnQuit)();
   STDMETHOD_(void, NewWindow3)(IDispatch** ppDisp, VARIANT_BOOL* pbCancel, DWORD dwFlags, BSTR bstrUrlContext, BSTR bstrUrl);
 
-  bool Wait(void);
+  bool Wait(const std::string& page_load_strategy);
   void Close(void);
   bool IsBusy(void);
+  void GetDocument(const bool force_top_level_document,
+                   IHTMLDocument2** doc);
   void GetDocument(IHTMLDocument2** doc);
   std::string GetWindowName(void);
   std::string GetTitle(void);
@@ -108,14 +112,17 @@ class Browser : public DocumentHost, public IDispEventSimpleImpl<1, Browser, &DI
 
   bool IsValidWindow(void);
 
+  bool IsFullScreen(void);
+  bool SetFullScreen(bool is_full_screen);
+
   IWebBrowser2* browser(void) { return this->browser_; }
 
  private:
   void AttachEvents(void);
   void DetachEvents(void);
-  bool IsDocumentNavigating(IHTMLDocument2* doc);
+  bool IsDocumentNavigating(const std::string& page_load_strategy,
+                            IHTMLDocument2* doc);
   bool GetDocumentFromWindow(IHTMLWindow2* window, IHTMLDocument2** doc);
-  //HWND GetTabWindowHandle(void);
   void CheckDialogType(HWND dialog_window_handle);
 
   static unsigned int WINAPI GoBackThreadProc(LPVOID param);

@@ -23,7 +23,7 @@
       browser = 'GECKO';
     } else if (goog.userAgent.IE) {
       browser = 'IE';
-    } else if (goog.userAgent.WEBKIT) {
+    } else if (goog.userAgent.WEBKIT || goog.userAgent.EDGE) {
       browser = 'WEBKIT';
     } else {
       fail('unknown browser');

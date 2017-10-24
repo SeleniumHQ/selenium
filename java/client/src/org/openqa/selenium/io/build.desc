@@ -1,9 +1,0 @@
-
-java_library(name = "io",
-  srcs = [ "*.java" ],
-  deps = [
-    "//java/client/src/org/openqa/selenium:base",
-    "//java/client/src/org/openqa/selenium:codecs",
-    "//third_party/java/guava-libraries",
-  ])
-

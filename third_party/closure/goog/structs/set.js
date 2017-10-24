@@ -263,9 +263,8 @@ goog.structs.Set.prototype.isSubsetOf = function(col) {
     // O(1) time instead of O(n) time.
     col = new goog.structs.Set(col);
   }
-  return goog.structs.every(this, function(value) {
-    return goog.structs.contains(col, value);
-  });
+  return goog.structs.every(
+      this, function(value) { return goog.structs.contains(col, value); });
 };
 
 

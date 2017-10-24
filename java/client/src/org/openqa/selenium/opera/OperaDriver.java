@@ -1,19 +1,19 @@
-/*
-Copyright 2014 Selenium committers
-Copyright 2014-2015 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium.opera;
 
@@ -118,7 +118,7 @@ public class OperaDriver extends RemoteWebDriver
   /**
    * Creates a new OperaDriver instance. The {@code service} will be started along with the driver,
    * and shutdown upon calling {@link #quit()}.
-   * 
+   *
    * @param service The service to use.
    * @see #OperaDriver(OperaDriverService, OperaOptions)
    */
@@ -129,10 +129,12 @@ public class OperaDriver extends RemoteWebDriver
   /**
    * Creates a new OperaDriver instance. The {@code capabilities} will be passed to the
    * chromedriver service.
-   * 
+   *
    * @param capabilities The capabilities required from the OperaDriver.
    * @see #OperaDriver(OperaDriverService, Capabilities)
+   * @deprecated Use {@link OperaDriver(OperaOptions)} instead.
    */
+  @Deprecated
   public OperaDriver(Capabilities capabilities) {
     this(OperaDriverService.createDefaultService(), capabilities);
   }
@@ -155,7 +157,7 @@ public class OperaDriver extends RemoteWebDriver
    * @param options The options to use.
    */
   public OperaDriver(OperaDriverService service, OperaOptions options) {
-    this(service, options.toCapabilities());
+    this(service, (Capabilities) options);
   }
 
   /**
@@ -164,7 +166,9 @@ public class OperaDriver extends RemoteWebDriver
    *
    * @param service The service to use.
    * @param capabilities The capabilities required from the OperaDriver.
+   * @deprecated Use {@link OperaDriver(OperaDriverService, OperaOptions)} instead.
    */
+  @Deprecated
   public OperaDriver(OperaDriverService service, Capabilities capabilities) {
     super(new DriverCommandExecutor(service), capabilities);
     locationContext = new RemoteLocationContext(getExecuteMethod());

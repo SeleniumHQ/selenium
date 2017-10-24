@@ -1,20 +1,19 @@
-/*
- Copyright 2007-2009 WebDriver committers
- Copyright 2007-2009 Google Inc.
- Portions copyright 2011 Software Freedom Conservancy
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
- http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
- */
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 goog.provide('WebDriverServer');
 
@@ -36,7 +35,6 @@ WebDriverServer = function() {
   Components.classes['@mozilla.org/network/server-socket;1'].
       createInstance(Components.interfaces.nsIServerSocket);
   this.generator = fxdriver.moz.getService('@mozilla.org/uuid-generator;1', 'nsIUUIDGenerator');
-  this.enableNativeEvents = null;
 
   // Force our cert override service to be loaded - otherwise, it will not be
   // loaded and cause a "too deep recursion" error.
@@ -67,12 +65,7 @@ WebDriverServer.LOG_ = fxdriver.logging.getLogger('fxdriver.WebDriverServer');
 
 
 WebDriverServer.prototype.newDriver = function(window) {
-  if (!this.enableNativeEvents) {
-    this.enableNativeEvents = Utils.useNativeEvents();
-    goog.log.info(WebDriverServer.LOG_,
-        'Using native events: ' + this.enableNativeEvents);
-  }
-  window.fxdriver = new FirefoxDriver(this, this.enableNativeEvents, window);
+  window.fxdriver = new FirefoxDriver(this, window);
   return window.fxdriver;
 };
 

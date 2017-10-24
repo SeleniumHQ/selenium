@@ -27,6 +27,7 @@
  *
  */
 
+// clang-format off
 
 /**
  * Namespace for Script to Languages mapping

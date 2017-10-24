@@ -1,5 +1,8 @@
-// Copyright 2012 Software Freedom Conservancy
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements. See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership. The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -28,13 +31,15 @@ class CommandLineArguments {
 
   std::wstring GetValue(std::wstring arg_name,
                         std::wstring default_value);
-  bool is_help_requested (void) const { return this->is_help_requested_; }
+  bool is_help_requested(void) const { return this->is_help_requested_; }
+  bool is_version_requested(void) const { return this->is_version_requested_; }
 
  private:
   void ParseArguments(int argc, _TCHAR* argv[]);
   int GetSwitchDelimiterLength(std::wstring arg);
 
   bool is_help_requested_;
+  bool is_version_requested_;
   std::map<std::wstring, std::wstring> args_map_;
 };
 

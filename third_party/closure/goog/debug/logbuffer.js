@@ -35,9 +35,10 @@ goog.require('goog.debug.LogRecord');
  * @final
  */
 goog.debug.LogBuffer = function() {
-  goog.asserts.assert(goog.debug.LogBuffer.isBufferingEnabled(),
+  goog.asserts.assert(
+      goog.debug.LogBuffer.isBufferingEnabled(),
       'Cannot use goog.debug.LogBuffer without defining ' +
-      'goog.debug.LogBuffer.CAPACITY.');
+          'goog.debug.LogBuffer.CAPACITY.');
   this.clear();
 };
 
@@ -105,7 +106,7 @@ goog.debug.LogBuffer.prototype.addRecord = function(level, msg, loggerName) {
   }
   this.isFull_ = curIndex == goog.debug.LogBuffer.CAPACITY - 1;
   return this.buffer_[curIndex] =
-      new goog.debug.LogRecord(level, msg, loggerName);
+             new goog.debug.LogRecord(level, msg, loggerName);
 };
 
 
@@ -145,4 +146,3 @@ goog.debug.LogBuffer.prototype.forEachRecord = function(func) {
     func(/** @type {!goog.debug.LogRecord} */ (buffer[i]));
   } while (i != curIndex);
 };
-

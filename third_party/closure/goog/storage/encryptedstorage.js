@@ -51,12 +51,26 @@ goog.require('goog.storage.RichStorage');
  *     storage mechanism.
  * @param {string} secret The secret key used to encrypt the storage.
  * @constructor
+ * @struct
  * @extends {goog.storage.CollectableStorage}
  * @final
  */
 goog.storage.EncryptedStorage = function(mechanism, secret) {
   goog.storage.EncryptedStorage.base(this, 'constructor', mechanism);
+  /**
+   * The secret used to encrypt the storage.
+   *
+   * @private {!Array<number>}
+   */
   this.secret_ = goog.crypt.stringToByteArray(secret);
+
+  /**
+   * The JSON serializer used to serialize values before encryption. This can
+   * be potentially different from serializing for the storage mechanism (see
+   * goog.storage.Storage), so a separate serializer is kept here.
+   *
+   * @private {!goog.json.Serializer}
+   */
   this.cleartextSerializer_ = new goog.json.Serializer();
 };
 goog.inherits(goog.storage.EncryptedStorage, goog.storage.CollectableStorage);
@@ -69,26 +83,6 @@ goog.inherits(goog.storage.EncryptedStorage, goog.storage.CollectableStorage);
  * @protected
  */
 goog.storage.EncryptedStorage.SALT_KEY = 'salt';
-
-
-/**
- * The secret used to encrypt the storage.
- *
- * @type {Array<number>}
- * @private
- */
-goog.storage.EncryptedStorage.prototype.secret_ = null;
-
-
-/**
- * The JSON serializer used to serialize values before encryption. This can
- * be potentially different from serializing for the storage mechanism (see
- * goog.storage.Storage), so a separate serializer is kept here.
- *
- * @type {goog.json.Serializer}
- * @private
- */
-goog.storage.EncryptedStorage.prototype.cleartextSerializer_ = null;
 
 
 /**
@@ -163,19 +157,19 @@ goog.storage.EncryptedStorage.prototype.set = function(
     salt[i] = Math.floor(Math.random() * 0x100);
   }
   var wrapper = new goog.storage.RichStorage.Wrapper(
-      this.encryptValue_(salt, key,
-                         this.cleartextSerializer_.serialize(value)));
+      this.encryptValue_(
+          salt, key, this.cleartextSerializer_.serialize(value)));
   wrapper[goog.storage.EncryptedStorage.SALT_KEY] = salt;
-  goog.storage.EncryptedStorage.base(this, 'set',
-      this.hashKeyWithSecret_(key), wrapper, opt_expiration);
+  goog.storage.EncryptedStorage.base(
+      this, 'set', this.hashKeyWithSecret_(key), wrapper, opt_expiration);
 };
 
 
 /** @override */
 goog.storage.EncryptedStorage.prototype.getWrapper = function(
     key, opt_expired) {
-  var wrapper = goog.storage.EncryptedStorage.base(this, 'getWrapper',
-      this.hashKeyWithSecret_(key), opt_expired);
+  var wrapper = goog.storage.EncryptedStorage.base(
+      this, 'getWrapper', this.hashKeyWithSecret_(key), opt_expired);
   if (!wrapper) {
     return undefined;
   }
@@ -185,7 +179,7 @@ goog.storage.EncryptedStorage.prototype.getWrapper = function(
     throw goog.storage.ErrorCode.INVALID_VALUE;
   }
   var json = this.decryptValue_(salt, key, value);
-  /** @preserveTry */
+
   try {
     wrapper[goog.storage.RichStorage.DATA_KEY] = goog.json.parse(json);
   } catch (e) {

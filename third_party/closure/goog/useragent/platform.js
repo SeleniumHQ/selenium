@@ -29,7 +29,7 @@ goog.require('goog.userAgent');
  * @return {string} The platform version.
  */
 goog.userAgent.platform.determineVersion_ = function() {
-  var version = '', re;
+  var re;
   if (goog.userAgent.WINDOWS) {
     re = /Windows NT ([0-9.]+)/;
     var match = re.exec(goog.userAgent.getUserAgentString());
@@ -48,7 +48,8 @@ goog.userAgent.platform.determineVersion_ = function() {
     re = /Android\s+([^\);]+)(\)|;)/;
     var match = re.exec(goog.userAgent.getUserAgentString());
     return match ? match[1] : '';
-  } else if (goog.userAgent.IPHONE || goog.userAgent.IPAD) {
+  } else if (
+      goog.userAgent.IPHONE || goog.userAgent.IPAD || goog.userAgent.IPOD) {
     re = /(?:iPhone|CPU)\s+OS\s+(\S+)/;
     var match = re.exec(goog.userAgent.getUserAgentString());
     // Report the version as x.y.z and not x_y_z
@@ -79,5 +80,5 @@ goog.userAgent.platform.VERSION = goog.userAgent.platform.determineVersion_();
  */
 goog.userAgent.platform.isVersion = function(version) {
   return goog.string.compareVersions(
-      goog.userAgent.platform.VERSION, version) >= 0;
+             goog.userAgent.platform.VERSION, version) >= 0;
 };

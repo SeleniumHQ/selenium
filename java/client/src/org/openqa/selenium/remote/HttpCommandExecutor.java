@@ -1,18 +1,19 @@
-/*
-Copyright 2007-2014 Software Freedom Conservancy
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
- */
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 
 package org.openqa.selenium.remote;
 
@@ -23,6 +24,8 @@ import static org.openqa.selenium.remote.DriverCommand.QUIT;
 
 import com.google.common.collect.ImmutableMap;
 
+import org.openqa.selenium.NoSuchSessionException;
+import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.logging.LocalLogs;
@@ -33,8 +36,6 @@ import org.openqa.selenium.logging.profiler.HttpProfilerLogEntry;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.remote.http.JsonHttpCommandCodec;
-import org.openqa.selenium.remote.http.JsonHttpResponseCodec;
 import org.openqa.selenium.remote.internal.ApacheHttpClient;
 
 import java.io.IOException;
@@ -48,17 +49,26 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
 
   private final URL remoteServer;
   private final HttpClient client;
-  private final JsonHttpCommandCodec commandCodec;
-  private final JsonHttpResponseCodec responseCodec;
+  private final Map<String, CommandInfo> additionalCommands;
+  private CommandCodec<HttpRequest> commandCodec;
+  private ResponseCodec<HttpResponse> responseCodec;
 
   private LocalLogs logs = LocalLogs.getNullLogger();
 
   public HttpCommandExecutor(URL addressOfRemoteServer) {
-    this(ImmutableMap.<String, CommandInfo>of(), addressOfRemoteServer);
+    this(ImmutableMap.of(), addressOfRemoteServer);
   }
 
+  /**
+   * Creates an {@link HttpCommandExecutor} that supports non-standard
+   * {@code additionalCommands} in addition to the standard.
+   *
+   * @param additionalCommands additional commands to allow the command executor to process
+   * @param addressOfRemoteServer URL of remote end Selenium server
+   */
   public HttpCommandExecutor(
-      Map<String, CommandInfo> additionalCommands, URL addressOfRemoteServer) {
+      Map<String, CommandInfo> additionalCommands,
+      URL addressOfRemoteServer) {
     this(additionalCommands, addressOfRemoteServer, getDefaultClientFactory());
   }
 
@@ -74,13 +84,8 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
       throw new WebDriverException(e);
     }
 
-    commandCodec = new JsonHttpCommandCodec();
-    responseCodec = new JsonHttpResponseCodec();
-    client = httpClientFactory.createClient(remoteServer);
-
-    for (Map.Entry<String, CommandInfo> entry : additionalCommands.entrySet()) {
-      defineCommand(entry.getKey(), entry.getValue());
-    }
+    this.additionalCommands = additionalCommands;
+    this.client = httpClientFactory.createClient(remoteServer);
   }
 
   private static synchronized HttpClient.Factory getDefaultClientFactory() {
@@ -96,6 +101,7 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
    * for subclasses only to call this.
    *
    * @param commandName The name of the command to use.
+   * @param info CommandInfo for the command name provided
    */
   protected void defineCommand(String commandName, CommandInfo info) {
     checkNotNull(commandName);
@@ -122,9 +128,31 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
       }
       if (!GET_ALL_SESSIONS.equals(command.getName())
           && !NEW_SESSION.equals(command.getName())) {
-        throw new SessionNotFoundException(
+        throw new NoSuchSessionException(
             "Session ID is null. Using WebDriver after calling quit()?");
       }
+    }
+
+    if (NEW_SESSION.equals(command.getName())) {
+      if (commandCodec != null) {
+        throw new SessionNotCreatedException("Session already exists");
+      }
+      ProtocolHandshake handshake = new ProtocolHandshake();
+      log(LogType.PROFILER, new HttpProfilerLogEntry(command.getName(), true));
+      ProtocolHandshake.Result result = handshake.createSession(client, command);
+      Dialect dialect = result.getDialect();
+      commandCodec = dialect.getCommandCodec();
+      for (Map.Entry<String, CommandInfo> entry : additionalCommands.entrySet()) {
+        defineCommand(entry.getKey(), entry.getValue());
+      }
+      responseCodec = dialect.getResponseCodec();
+      log(LogType.PROFILER, new HttpProfilerLogEntry(command.getName(), false));
+      return result.createResponse();
+    }
+
+    if (commandCodec == null || responseCodec == null) {
+      throw new WebDriverException(
+        "No command or response codec has been defined. Unable to proceed");
     }
 
     HttpRequest httpRequest = commandCodec.encode(command);
@@ -134,9 +162,16 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
       log(LogType.PROFILER, new HttpProfilerLogEntry(command.getName(), false));
 
       Response response = responseCodec.decode(httpResponse);
-      if (response.getSessionId() == null && httpResponse.getTargetHost() != null) {
-        String sessionId = HttpSessionId.getSessionId(httpResponse.getTargetHost());
-        response.setSessionId(sessionId);
+      if (response.getSessionId() == null) {
+        if (httpResponse.getTargetHost() != null) {
+          response.setSessionId(HttpSessionId.getSessionId(httpResponse.getTargetHost()));
+        } else {
+          // Spam in the session id from the request
+          response.setSessionId(command.getSessionId().toString());
+        }
+      }
+      if (QUIT.equals(command.getName())) {
+    	  client.close();
       }
       return response;
     } catch (UnsupportedCommandException e) {

@@ -44,6 +44,23 @@ goog.require('goog.userAgent');
  * @final
  */
 goog.dom.ControlRange = function() {
+  /**
+   * The IE control range obejct.
+   * @private {Object}
+   */
+  this.range_ = null;
+
+  /**
+   * Cached list of elements.
+   * @private {Array<Element>}
+   */
+  this.elements_ = null;
+
+  /**
+   * Cached sorted list of elements.
+   * @private {Array<Element>}
+   */
+  this.sortedElements_ = null;
 };
 goog.inherits(goog.dom.ControlRange, goog.dom.AbstractMultiRange);
 
@@ -76,30 +93,6 @@ goog.dom.ControlRange.createFromElements = function(var_args) {
 };
 
 
-/**
- * The IE control range obejct.
- * @type {Object}
- * @private
- */
-goog.dom.ControlRange.prototype.range_ = null;
-
-
-/**
- * Cached list of elements.
- * @type {Array<Element>?}
- * @private
- */
-goog.dom.ControlRange.prototype.elements_ = null;
-
-
-/**
- * Cached sorted list of elements.
- * @type {Array<Element>?}
- * @private
- */
-goog.dom.ControlRange.prototype.sortedElements_ = null;
-
-
 // Method implementations
 
 
@@ -115,8 +108,8 @@ goog.dom.ControlRange.prototype.clearCachedValues_ = function() {
 
 /** @override */
 goog.dom.ControlRange.prototype.clone = function() {
-  return goog.dom.ControlRange.createFromElements.apply(this,
-                                                        this.getElements());
+  return goog.dom.ControlRange.createFromElements.apply(
+      this, this.getElements());
 };
 
 
@@ -258,8 +251,8 @@ goog.dom.ControlRange.prototype.getText = function() {
 
 /** @override */
 goog.dom.ControlRange.prototype.getHtmlFragment = function() {
-  return goog.array.map(this.getSortedElements(), goog.dom.getOuterHtml).
-      join('');
+  return goog.array.map(this.getSortedElements(), goog.dom.getOuterHtml)
+      .join('');
 };
 
 
@@ -366,7 +359,8 @@ goog.inherits(goog.dom.DomSavedControlRange_, goog.dom.SavedRange);
 /** @override */
 goog.dom.DomSavedControlRange_.prototype.restoreInternal = function() {
   var doc = this.elements_.length ?
-      goog.dom.getOwnerDocument(this.elements_[0]) : document;
+      goog.dom.getOwnerDocument(this.elements_[0]) :
+      document;
   var controlRange = doc.body.createControlRange();
   for (var i = 0, len = this.elements_.length; i < len; i++) {
     controlRange.addElement(this.elements_[i]);
@@ -396,6 +390,24 @@ goog.dom.DomSavedControlRange_.prototype.disposeInternal = function() {
  * @final
  */
 goog.dom.ControlRangeIterator = function(range) {
+  /**
+   * The first node in the selection.
+   * @private {Node}
+   */
+  this.startNode_ = null;
+
+  /**
+   * The last node in the selection.
+   * @private {Node}
+   */
+  this.endNode_ = null;
+
+  /**
+   * The list of elements left to traverse.
+   * @private {Array<Element>?}
+   */
+  this.elements_ = null;
+
   if (range) {
     this.elements_ = range.getSortedElements();
     this.startNode_ = this.elements_.shift();
@@ -403,33 +415,10 @@ goog.dom.ControlRangeIterator = function(range) {
         this.startNode_;
   }
 
-  goog.dom.RangeIterator.call(this, this.startNode_, false);
+  goog.dom.ControlRangeIterator.base(
+      this, 'constructor', this.startNode_, false);
 };
 goog.inherits(goog.dom.ControlRangeIterator, goog.dom.RangeIterator);
-
-
-/**
- * The first node in the selection.
- * @type {Node}
- * @private
- */
-goog.dom.ControlRangeIterator.prototype.startNode_ = null;
-
-
-/**
- * The last node in the selection.
- * @type {Node}
- * @private
- */
-goog.dom.ControlRangeIterator.prototype.endNode_ = null;
-
-
-/**
- * The list of elements left to traverse.
- * @type {Array<Element>?}
- * @private
- */
-goog.dom.ControlRangeIterator.prototype.elements_ = null;
 
 
 /** @override */
@@ -474,9 +463,8 @@ goog.dom.ControlRangeIterator.prototype.next = function() {
     throw goog.iter.StopIteration;
   } else if (!this.depth) {
     var el = this.elements_.shift();
-    this.setPosition(el,
-                     goog.dom.TagWalkType.START_TAG,
-                     goog.dom.TagWalkType.START_TAG);
+    this.setPosition(
+        el, goog.dom.TagWalkType.START_TAG, goog.dom.TagWalkType.START_TAG);
     return el;
   }
 
