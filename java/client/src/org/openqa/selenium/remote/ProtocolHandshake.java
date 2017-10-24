@@ -201,7 +201,6 @@ public class ProtocolHandshake {
     Map<String, Object> alwaysMatch = applyTransforms(des).entrySet().stream()
         .filter(entry -> !excludedKeys.contains(entry.getKey()))
         .filter(entry -> entry.getValue() != null)
-        .peek(entry -> System.out.println(String.format("%s -> %s", entry.getKey(), entry.getValue())))
         .collect(ImmutableSortedMap.toImmutableSortedMap(
             Ordering.natural(),
             Map.Entry::getKey,
