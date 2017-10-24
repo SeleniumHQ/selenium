@@ -23,11 +23,13 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 import com.google.common.collect.ImmutableMap;
 
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.remote.BeanToJsonConverter;
 import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.server.ActiveSession;
@@ -45,10 +47,14 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Optional;
+import java.util.Set;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Stream;
 
 public class BeginSession implements CommandHandler {
+
+  private final Logger LOG = Logger.getLogger(BeginSession.class.getName());
 
   private final NewSessionPipeline pipeline;
   private final ActiveSessions allSessions;
@@ -69,7 +75,13 @@ public class BeginSession implements CommandHandler {
           }
         })
         .findFirst()
-        .map(serviceName -> (SessionFactory) new ServicedSession.Factory(serviceName))
+        .map(serviceName -> {
+          SessionFactory factory = new ServicedSession.Factory(serviceName);
+          return (SessionFactory) (dialects, caps) -> {
+            LOG.info("Using default factory: " + serviceName);
+            return factory.apply(dialects, caps);
+          };
+        })
         .orElse((dialects, caps) -> Optional.empty());
 
     this.allSessions = allSessions;
