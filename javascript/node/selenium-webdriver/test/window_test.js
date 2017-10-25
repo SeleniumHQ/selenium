@@ -17,10 +17,10 @@
 
 'use strict';
 
-var Browser = require('..').Browser,
-    By = require('..').By,
-    assert = require('../testing/assert'),
-    test = require('../lib/test');
+const assert = require('assert');
+
+const test = require('../lib/test');
+const {Browser, By} = require('..');
 
 
 test.suite(function(env) {
@@ -62,12 +62,12 @@ test.suite(function(env) {
 
     await driver.findElement(By.linkText("Open new window")).click();
     await driver.wait(forNewWindowToBeOpened(originalHandles), 2000);
-    await assert(driver.getTitle()).equalTo("XHTML Test Page");
+    assert.equal(await driver.getTitle(), "XHTML Test Page");
 
     let newHandle = await getNewWindowHandle(originalHandles);
 
     await driver.switchTo().window(newHandle);
-    await assert(driver.getTitle()).equalTo("We Arrive Here");
+    assert.equal(await driver.getTitle(), "We Arrive Here");
   });
 
   it('can set the window position of the current window', async function() {

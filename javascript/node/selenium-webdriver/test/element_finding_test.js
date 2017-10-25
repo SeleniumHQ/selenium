@@ -17,12 +17,12 @@
 
 'use strict';
 
-var fail = require('assert').fail;
+const assert = require('assert');
+const {fail} = require('assert');
 
-var {Browser, By, error, until} = require('..'),
-    promise = require('../lib/promise'),
-    {Pages, ignore, suite, whereIs} = require('../lib/test'),
-    assert = require('../testing/assert');
+const promise = require('../lib/promise');
+const {Browser, By, error, until} = require('..');
+const {Pages, ignore, suite, whereIs} = require('../lib/test');
 
 
 suite(function(env) {
@@ -57,7 +57,7 @@ suite(function(env) {
         await driver.get(Pages.formPage);
         return driver.findElement(By.id('nonExistantButton')).
             then(fail, function(e) {
-              assert(e).instanceOf(error.NoSuchElementError);
+              assert.ok(e instanceof error.NoSuchElementError);
             });
       });
 
@@ -68,7 +68,7 @@ suite(function(env) {
             await driver.get(Pages.nestedPage);
 
             let elements = await driver.findElements(By.id('2'));
-            assert(elements.length).equalTo(8);
+            assert.equal(elements.length, 8);
           });
     });
 
@@ -92,7 +92,7 @@ suite(function(env) {
         let el = await driver.findElement(By.linkText('Link=equalssign'));
 
         let id = await el.getAttribute('id');
-        assert(id).equalTo('linkWithEqualsSign');
+        assert.equal(id, 'linkWithEqualsSign');
       });
 
       it('matches by partial text when containing equals sign',
@@ -101,7 +101,7 @@ suite(function(env) {
           let link = await driver.findElement(By.partialLinkText('Link='));
 
           let id = await link.getAttribute('id');
-          assert(id).equalTo('linkWithEqualsSign');
+          assert.equal(id, 'linkWithEqualsSign');
         });
 
       it('works when searching for multiple and text contains =',
@@ -110,10 +110,10 @@ suite(function(env) {
             let elements =
                 await driver.findElements(By.linkText('Link=equalssign'));
 
-            assert(elements.length).equalTo(1);
+            assert.equal(elements.length, 1);
 
             let id = await elements[0].getAttribute('id');
-            assert(id).equalTo('linkWithEqualsSign');
+            assert.equal(id, 'linkWithEqualsSign');
           });
 
       it(
@@ -123,17 +123,17 @@ suite(function(env) {
             let elements =
                 await driver.findElements(By.partialLinkText('Link='));
 
-            assert(elements.length).equalTo(1);
+            assert.equal(elements.length, 1);
 
             let id = await elements[0].getAttribute('id');
-            assert(id).equalTo('linkWithEqualsSign');
+            assert.equal(id, 'linkWithEqualsSign');
           });
 
       it('should be able to find multiple exact matches',
           async function() {
             await driver.get(Pages.xhtmlTestPage);
             let elements = await driver.findElements(By.linkText('click me'));
-            assert(elements.length).equalTo(2);
+            assert.equal(elements.length, 2);
           });
 
       it('should be able to find multiple partial matches',
@@ -141,7 +141,7 @@ suite(function(env) {
             await driver.get(Pages.xhtmlTestPage);
             let elements =
                 await driver.findElements(By.partialLinkText('ick me'));
-            assert(elements.length).equalTo(2);
+            assert.equal(elements.length, 2);
           });
 
       ignore(browsers(Browser.SAFARI)).
@@ -149,7 +149,7 @@ suite(function(env) {
         await driver.get(whereIs('actualXhtmlPage.xhtml'));
 
         let el = await driver.findElement(By.linkText('Foo'));
-        return assert(el.getText()).equalTo('Foo');
+        assert.equal(await el.getText(), 'Foo');
       });
     });
 
@@ -158,14 +158,14 @@ suite(function(env) {
         await driver.get(Pages.formPage);
 
         let el = await driver.findElement(By.name('checky'));
-        await assert(el.getAttribute('value')).equalTo('furrfu');
+        assert.equal(await el.getAttribute('value'), 'furrfu');
       });
 
       it('should find multiple elements with same name', async function() {
         await driver.get(Pages.nestedPage);
 
         let elements = await driver.findElements(By.name('checky'));
-        assert(elements.length).greaterThan(1);
+        assert.ok(elements.length > 1);
       });
 
       it(
@@ -188,48 +188,51 @@ suite(function(env) {
         await driver.get(Pages.xhtmlTestPage);
 
         let el = await driver.findElement(By.className('extraDiv'));
-        await assert(el.getText()).startsWith('Another div starts here.');
+        let text = await el.getText();
+        assert.ok(
+            text.startsWith('Another div starts here.'),
+            `Unexpected text: "${text}"`);
       });
 
       it('should work when name is first name among many', async function() {
         await driver.get(Pages.xhtmlTestPage);
 
         let el = await driver.findElement(By.className('nameA'));
-        await assert(el.getText()).equalTo('An H2 title');
+        assert.equal(await el.getText(), 'An H2 title');
       });
 
       it('should work when name is last name among many', async function() {
         await driver.get(Pages.xhtmlTestPage);
 
         let el = await driver.findElement(By.className('nameC'));
-        await assert(el.getText()).equalTo('An H2 title');
+        assert.equal(await el.getText(), 'An H2 title');
       });
 
       it('should work when name is middle of many', async function() {
         await driver.get(Pages.xhtmlTestPage);
 
         let el = await driver.findElement(By.className('nameBnoise'));
-        await assert(el.getText()).equalTo('An H2 title');
+        assert.equal(await el.getText(), 'An H2 title');
       });
 
       it('should work when name surrounded by whitespace', async function() {
         await driver.get(Pages.xhtmlTestPage);
 
         let el = await driver.findElement(By.className('spaceAround'));
-        await assert(el.getText()).equalTo('Spaced out');
+        assert.equal(await el.getText(), 'Spaced out');
       });
 
       it('should fail if queried name only partially matches', async function() {
         await driver.get(Pages.xhtmlTestPage);
         return driver.findElement(By.className('nameB')).
             then(fail, function(e) {
-              assert(e).instanceOf(error.NoSuchElementError);
+              assert.ok(e instanceof error.NoSuchElementError);
             });
       });
 
       it('should implicitly wait', async function() {
-        var TIMEOUT_IN_MS = 1000;
-        var EPSILON = TIMEOUT_IN_MS / 2;
+        const TIMEOUT_IN_MS = 1000;
+        const EPSILON = TIMEOUT_IN_MS / 2;
 
         await driver.manage().timeouts().implicitlyWait(TIMEOUT_IN_MS);
         await driver.get(Pages.formPage);
@@ -238,8 +241,13 @@ suite(function(env) {
         return driver.findElement(By.id('nonExistantButton')).
             then(fail, function(e) {
               var end = new Date();
-              assert(e).instanceOf(error.NoSuchElementError);
-              assert(end - start).closeTo(TIMEOUT_IN_MS, EPSILON);
+              assert.ok(e instanceof error.NoSuchElementError);
+
+              let elapsed = end - start;
+              let diff = Math.abs(elapsed - TIMEOUT_IN_MS);
+              assert.ok(
+                  diff < EPSILON,
+                  `Expected ${TIMEOUT_IN_MS} \u00b1 ${EPSILON} but got ${elapsed}`);
             });
       });
 
@@ -247,14 +255,14 @@ suite(function(env) {
         await driver.get(Pages.xhtmlTestPage);
 
         let elements = await driver.findElements(By.className('nameC'));
-        assert(elements.length).greaterThan(1);
+        assert.ok(elements.length > 1);
       });
 
       it('permits compound class names', function() {
         return driver.get(Pages.xhtmlTestPage)
             .then(() => driver.findElement(By.className('nameA nameC')))
             .then(el => el.getText())
-            .then(text => assert(text).equalTo('An H2 title'));
+            .then(text => assert.equal(text, 'An H2 title'));
       });
     });
 
@@ -262,7 +270,7 @@ suite(function(env) {
       it('should work with multiple matches', async function() {
         await driver.get(Pages.xhtmlTestPage);
         let elements = await driver.findElements(By.xpath('//div'));
-        assert(elements.length).greaterThan(1);
+        assert.ok(elements.length > 1);
       });
 
       it('should work for selectors using contains keyword', async function() {
@@ -277,14 +285,14 @@ suite(function(env) {
         await driver.get(Pages.formPage);
 
         let el = await driver.findElement(By.tagName('input'));
-        await assert(el.getTagName()).equalTo('input');
+        assert.equal(await el.getTagName(), 'input');
       });
 
       it('can find multiple elements', async function() {
         await driver.get(Pages.formPage);
 
         let elements = await driver.findElements(By.tagName('input'));
-        assert(elements.length).greaterThan(1);
+        assert.ok(elements.length > 1);
       });
     });
 
@@ -299,7 +307,7 @@ suite(function(env) {
         await driver.get(Pages.xhtmlTestPage);
 
         let elements = await driver.findElements(By.css('p'));
-        assert(elements.length).greaterThan(1);
+        assert.ok(elements.length > 1);
         // Pass if no error.
       });
 
@@ -311,7 +319,7 @@ suite(function(env) {
 
             let el =
                 await driver.findElement(By.css('div.extraDiv, div.content'));
-            await assert(el.getAttribute('class')).equalTo('content');
+            assert.equal(await el.getAttribute('class'), 'content');
           });
 
       it('should be able to find multiple elements by compound selector',
@@ -325,8 +333,9 @@ suite(function(env) {
               assertClassIs(elements[1], 'extraDiv')
             ]);
 
-            function assertClassIs(el, expected) {
-              return assert(el.getAttribute('class')).equalTo(expected);
+            async function assertClassIs(el, expected) {
+              let clazz = await el.getAttribute('class');
+              assert.equal(clazz, expected);
             }
           });
 
@@ -337,7 +346,7 @@ suite(function(env) {
             'locators_tests/boolean_attribute_selected.html'));
 
         let el = await driver.findElement(By.css('option[selected="selected"]'));
-        await assert(el.getAttribute('value')).equalTo('two');
+        assert.equal(await el.getAttribute('value'), 'two');
       });
 
       it(
@@ -348,7 +357,7 @@ suite(function(env) {
                 'locators_tests/boolean_attribute_selected.html'));
 
             let el = await driver.findElement(By.css('option[selected]'));
-            await assert(el.getAttribute('value')).equalTo('two');
+            assert.equal(await el.getAttribute('value'), 'two');
           });
 
       it(
@@ -359,7 +368,7 @@ suite(function(env) {
                 'locators_tests/boolean_attribute_selected_html4.html'));
 
             let el = await driver.findElement(By.css('option[selected]'));
-            await assert(el.getAttribute('value')).equalTo('two');
+            assert.equal(await el.getAttribute('value'), 'two');
           });
     });
 
@@ -374,7 +383,9 @@ suite(function(env) {
           }).then(links => links[0]);
         });
 
-        await assert(link.getText()).matches(/Update\s+a\s+div/);
+        let text = await link.getText();
+        let regex = /Update\s+a\s+div/;
+        assert.ok(regex.test(text), `"${text}" does not match ${regex}`);
       });
 
       it('uses first element if locator resolves to list', async function() {
@@ -384,7 +395,7 @@ suite(function(env) {
           return driver.findElements(By.tagName('a'));
         });
 
-        await assert(link.getText()).isEqualTo('Change the page title!');
+        assert.equal(await link.getText(), 'Change the page title!');
       });
 
       it('fails if locator returns non-webelement value', async function() {
@@ -396,7 +407,7 @@ suite(function(env) {
 
         return link.then(
             () => fail('Should have failed'),
-            (e) => assert(e).instanceOf(TypeError));
+            (e) => assert.ok(e instanceof TypeError));
       });
     });
 
@@ -413,7 +424,7 @@ suite(function(env) {
         let ae = await driver.switchTo().activeElement();
         let equal = await driver.executeScript(
             'return arguments[0] === arguments[1]', email, ae);
-        assert(equal).isTrue();
+        assert.ok(equal);
       });
     });
   });

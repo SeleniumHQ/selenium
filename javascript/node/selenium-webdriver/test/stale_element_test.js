@@ -17,15 +17,12 @@
 
 'use strict';
 
-var fail = require('assert').fail;
+const assert = require('assert');
+const {fail} = require('assert');
 
-var Browser = require('..').Browser,
-    By = require('..').By,
-    error = require('..').error,
-    until = require('..').until,
-    assert = require('../testing/assert'),
-    test = require('../lib/test'),
-    Pages = test.Pages;
+const test = require('../lib/test');
+const {Browser, By, error, until} = require('..');
+const Pages = test.Pages;
 
 
 test.suite(function(env) {
@@ -42,7 +39,7 @@ test.suite(function(env) {
         await driver.get(Pages.javascriptPage);
 
         var toBeDeleted = await driver.findElement(By.id('deleted'));
-        await assert(toBeDeleted.getTagName()).isEqualTo('p');
+        assert.equal(await toBeDeleted.getTagName(), 'p');
 
         await driver.findElement(By.id('delete')).click();
         await driver.wait(until.stalenessOf(toBeDeleted), 5000);
@@ -57,7 +54,7 @@ test.suite(function(env) {
     var el = await driver.findElement(By.id('oneline'));
     await driver.switchTo().defaultContent();
     return el.getText().then(fail, function(e) {
-      assert(e).instanceOf(error.StaleElementReferenceError);
+      assert.ok(e instanceof error.StaleElementReferenceError);
     });
   });
 });

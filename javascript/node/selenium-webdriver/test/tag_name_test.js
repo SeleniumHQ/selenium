@@ -17,9 +17,10 @@
 
 'use strict';
 
-var By = require('..').By,
-    assert = require('../testing/assert'),
-    test = require('../lib/test');
+const assert = require('assert');
+
+const test = require('../lib/test');
+const {By} = require('..');
 
 
 test.suite(function(env) {
@@ -31,6 +32,6 @@ test.suite(function(env) {
     await driver.get(test.Pages.formPage);
 
     let el = await driver.findElement(By.id('cheese'));
-    return assert(el.getTagName()).equalTo('input');
+    assert.equal(await el.getTagName(), 'input');
   });
 });

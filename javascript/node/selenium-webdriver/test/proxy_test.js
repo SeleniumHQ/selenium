@@ -17,17 +17,17 @@
 
 'use strict';
 
-var http = require('http'),
-    url = require('url');
+const assert = require('assert');
+const http = require('http');
+const url = require('url');
 
-var Browser = require('..').Browser,
-    promise = require('..').promise,
-    firefox = require('../firefox'),
-    proxy = require('../proxy'),
-    assert = require('../testing/assert'),
-    test = require('../lib/test'),
-    Server = require('../lib/test/httpserver').Server,
-    Pages = test.Pages;
+const firefox = require('../firefox');
+const proxy = require('../proxy');
+const test = require('../lib/test');
+const {Browser} = require('..');
+const {Server} = require('../lib/test/httpserver');
+
+const Pages = test.Pages;
 
 test.suite(function(env) {
   function writeResponse(res, body, encoding, contentType) {
@@ -122,9 +122,10 @@ test.suite(function(env) {
       }));
 
       await driver.get(helloServer.url());
-      await assert(driver.getTitle()).equalTo('Proxy page');
-      await assert(driver.findElement({tagName: 'h3'}).getText()).
-          equalTo('This is the proxy landing page');
+      assert.equal(await driver.getTitle(), 'Proxy page');
+      assert.equal(
+          await driver.findElement({tagName: 'h3'}).getText(),
+          'This is the proxy landing page');
     });
 
     // PhantomJS does not support bypassing the proxy for individual hosts.
@@ -141,14 +142,16 @@ test.suite(function(env) {
       }));
 
       await driver.get(helloServer.url());
-      await assert(driver.getTitle()).equalTo('Hello');
-      await assert(driver.findElement({tagName: 'h3'}).getText()).
-          equalTo('Hello, world!');
+      assert.equal(await driver.getTitle(), 'Hello');
+      assert.equal(
+          await driver.findElement({tagName: 'h3'}).getText(),
+          'Hello, world!');
 
       await driver.get(goodbyeServer.url());
-      await assert(driver.getTitle()).equalTo('Proxy page');
-      await assert(driver.findElement({tagName: 'h3'}).getText()).
-          equalTo('This is the proxy landing page');
+      assert.equal(await driver.getTitle(), 'Proxy page');
+      assert.equal(
+          await driver.findElement({tagName: 'h3'}).getText(),
+          'This is the proxy landing page');
     });
 
     // TODO: test ftp and https proxies.
@@ -163,14 +166,16 @@ test.suite(function(env) {
       await createDriver(proxy.pac(proxyServer.url('/proxy.pac')));
 
       await driver.get(helloServer.url());
-      await assert(driver.getTitle()).equalTo('Proxy page');
-      await assert(driver.findElement({tagName: 'h3'}).getText()).
-          equalTo('This is the proxy landing page');
+      assert.equal(await driver.getTitle(), 'Proxy page');
+      assert.equal(
+          await driver.findElement({tagName: 'h3'}).getText(),
+          'This is the proxy landing page');
 
       await driver.get(goodbyeServer.url());
-      await assert(driver.getTitle()).equalTo('Goodbye');
-      await assert(driver.findElement({tagName: 'h3'}).getText()).
-          equalTo('Goodbye, world!');
+      assert.equal(await driver.getTitle(), 'Goodbye');
+      assert.equal(
+          await driver.findElement({tagName: 'h3'}).getText(),
+          'Goodbye, world!');
     });
   });
 });

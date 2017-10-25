@@ -17,16 +17,15 @@
 
 'use strict';
 
-var fs = require('fs');
+const assert = require('assert');
+const fs = require('fs');
 
-var Browser = require('..').Browser,
-    By = require('..').By,
-    until = require('..').until,
-    io = require('../io'),
-    remote = require('../remote'),
-    assert = require('../testing/assert'),
-    test = require('../lib/test'),
-    Pages = test.Pages;
+const io = require('../io');
+const remote = require('../remote');
+const test = require('../lib/test');
+const {Browser, By, until} = require('..');
+
+const Pages = test.Pages;
 
 test.suite(function(env) {
   var LOREM_IPSUM_TEXT = 'lorem ipsum dolor sit amet';
@@ -78,7 +77,8 @@ test.suite(function(env) {
 
     var frame = await driver.findElement(By.id('upload_target'));
     await driver.switchTo().frame(frame);
-    await assert(driver.findElement(By.css('body')).getText())
-        .equalTo(LOREM_IPSUM_TEXT);
+    assert.equal(
+        await driver.findElement(By.css('body')).getText(),
+        LOREM_IPSUM_TEXT);
   });
 });

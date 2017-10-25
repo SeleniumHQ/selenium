@@ -17,11 +17,10 @@
 
 'use strict';
 
-var Browser = require('..').Browser,
-    By = require('..').By,
-    logging = require('..').logging,
-    assert = require('../testing/assert'),
-    test = require('../lib/test');
+const assert = require('assert');
+
+const test = require('../lib/test');
+const {Browser, By, logging} = require('..');
 
 test.suite(function(env) {
   // Logging API has numerous issues with PhantomJS:
@@ -61,7 +60,7 @@ test.suite(function(env) {
           'console.error("and this is an error");',
           '</script>'));
       return driver.manage().logs().get(logging.Type.BROWSER)
-          .then(entries => assert(entries.length).equalTo(0));
+          .then(entries => assert.equal(entries.length, 0));
     });
 
     // Firefox does not capture JS error console log messages.
@@ -82,9 +81,9 @@ test.suite(function(env) {
           '</script>'));
       return driver.manage().logs().get(logging.Type.BROWSER)
           .then(function(entries) {
-            assert(entries.length).equalTo(1);
-            assert(entries[0].level.name).equalTo('SEVERE');
-            assert(entries[0].message).matches(/.*\"?and this is an error\"?/);
+            assert.equal(entries.length, 1);
+            assert.equal(entries[0].level.name, 'SEVERE');
+            assert.ok(/.*\"?and this is an error\"?/.test(entries[0].message));
           });
     });
 
@@ -106,15 +105,15 @@ test.suite(function(env) {
           '</script>'));
       return driver.manage().logs().get(logging.Type.BROWSER)
           .then(function(entries) {
-            assert(entries.length).equalTo(3);
-            assert(entries[0].level.name).equalTo('DEBUG');
-            assert(entries[0].message).matches(/.*\"?hello\"?/);
+            assert.equal(entries.length, 3);
+            assert.equal(entries[0].level.name, 'DEBUG');
+            assert.ok(/.*\"?hello\"?/.test(entries[0].message));
 
-            assert(entries[1].level.name).equalTo('WARNING');
-            assert(entries[1].message).matches(/.*\"?this is a warning\"?/);
+            assert.equal(entries[1].level.name, 'WARNING');
+            assert.ok(/.*\"?this is a warning\"?/.test(entries[1].message));
 
-            assert(entries[2].level.name).equalTo('SEVERE');
-            assert(entries[2].message).matches(/.*\"?and this is an error\"?/);
+            assert.equal(entries[2].level.name, 'SEVERE');
+            assert.ok(/.*\"?and this is an error\"?/.test(entries[2].message));
           });
     });
 
@@ -135,9 +134,9 @@ test.suite(function(env) {
           'console.error("and this is an error");',
           '</script>'));
       await driver.manage().logs().get(logging.Type.BROWSER)
-          .then(entries => assert(entries.length).equalTo(3));
+          .then(entries => assert.equal(entries.length, 3));
       return driver.manage().logs().get(logging.Type.BROWSER)
-          .then(entries => assert(entries.length).equalTo(0));
+          .then(entries => assert.equal(entries.length, 0));
     });
 
     it('does not mix log types', async function() {
@@ -156,7 +155,7 @@ test.suite(function(env) {
           'console.error("and this is an error");',
           '</script>'));
       return driver.manage().logs().get(logging.Type.DRIVER)
-          .then(entries => assert(entries.length).equalTo(0));
+          .then(entries => assert.equal(entries.length, 0));
     });
   });
 

@@ -17,13 +17,13 @@
 
 'use strict';
 
-var Browser = require('..').Browser,
-    By = require('..').By,
-    until = require('..').until,
-    assert = require('../testing/assert'),
-    error = require('../lib/error'),
-    test = require('../lib/test'),
-    Pages = test.Pages;
+const assert = require('assert');
+
+const error = require('../lib/error');
+const test = require('../lib/test');
+const {Browser, By, until} = require('..');
+
+const Pages = test.Pages;
 
 
 test.suite(function(env) {
@@ -48,13 +48,13 @@ test.suite(function(env) {
 
   it('should wait for document to be loaded', async function() {
     await driver.get(Pages.simpleTestPage);
-    return assert(driver.getTitle()).equalTo('Hello WebDriver');
+    assert.equal(await driver.getTitle(), 'Hello WebDriver');
   });
 
   it('should follow redirects sent in the http response headers',
       async function() {
     await driver.get(Pages.redirectPage);
-    return assert(driver.getTitle()).equalTo('We Arrive Here');
+    assert.equal(await driver.getTitle(), 'We Arrive Here');
   });
 
   // Skip Firefox; see https://bugzilla.mozilla.org/show_bug.cgi?id=1280300
@@ -71,13 +71,13 @@ test.suite(function(env) {
     await driver.switchTo().frame(0);
 
     let txt = await driver.findElement(By.css('span#pageNumber')).getText();
-    assert(txt.trim()).equalTo('1');
+    assert.equal(txt.trim(), '1');
 
     await driver.switchTo().defaultContent();
     await driver.switchTo().frame(1);
     txt = await driver.findElement(By.css('span#pageNumber')).getText();
 
-    assert(txt.trim()).equalTo('2');
+    assert.equal(txt.trim(), '2');
   });
 
   test.ignore(browsers(Browser.SAFARI)).
@@ -123,15 +123,15 @@ test.suite(function(env) {
 
     await driver.navigate().refresh();
 
-    await assert(driver.getTitle()).equalTo('XHTML Test Page');
+    assert.equal(await driver.getTitle(), 'XHTML Test Page');
   });
 
   it('should return title of page if set', async function() {
     await driver.get(Pages.xhtmlTestPage);
-    await assert(driver.getTitle()).equalTo('XHTML Test Page');
+    assert.equal(await driver.getTitle(), 'XHTML Test Page');
 
     await driver.get(Pages.simpleTestPage);
-    await assert(driver.getTitle()).equalTo('Hello WebDriver');
+    assert.equal(await driver.getTitle(), 'Hello WebDriver');
   });
 
   describe('timeouts', function() {

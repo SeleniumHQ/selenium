@@ -17,9 +17,9 @@
 
 'use strict';
 
+const assert = require('assert');
 const path = require('path');
 
-const assert = require('../../testing/assert');
 const error = require('../../lib/error');
 const firefox = require('../../firefox');
 const io = require('../../io');
@@ -88,7 +88,7 @@ suite(function(env) {
 
           var userAgent = await driver.executeScript(
               'return window.navigator.userAgent');
-          assert(userAgent).equalTo('foo;bar');
+          assert.equal(userAgent, 'foo;bar');
         }
 
         it('profile created from scratch', function() {
@@ -110,7 +110,7 @@ suite(function(env) {
           let footer =
               await driver.findElement({id: 'webextensions-selenium-example'});
           let text = await footer.getText();
-          assert(text).equalTo('Content injected by webextensions-selenium-example');
+          assert.equal(text, 'Content injected by webextensions-selenium-example');
         });
       });
     });
@@ -128,23 +128,23 @@ suite(function(env) {
         }
       });
 
-      it('can get context', function() {
-        return assert(driver.getContext()).equalTo(Context.CONTENT);
+      it('can get context', async function() {
+        assert.equal(await driver.getContext(), Context.CONTENT);
       });
 
       it('can set context', async function() {
         await driver.setContext(Context.CHROME);
         let ctxt = await driver.getContext();
-        assert(ctxt).equalTo(Context.CHROME);
+        assert.equal(ctxt, Context.CHROME);
 
         await driver.setContext(Context.CONTENT);
         ctxt = await driver.getContext();
-        assert(ctxt).equalTo(Context.CONTENT);
+        assert.equal(ctxt, Context.CONTENT);
       });
 
       it('throws on unknown context', function() {
         return driver.setContext("foo").then(assert.fail, function(e) {
-          assert(e).instanceOf(error.InvalidArgumentError);
+          assert(e instanceof error.InvalidArgumentError);
         });
       });
     });

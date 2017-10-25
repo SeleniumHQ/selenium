@@ -81,6 +81,7 @@ mode.
        -  setPosition
        -  getSize
        -  setSize
+*  Removed the `testing/assert` module
 *  Changes to `testing/index`
    -  Since the promise manager has been removed, it is no longer necessary to
       wrap the Mocha test hooks; instead, users can simply use async functions.

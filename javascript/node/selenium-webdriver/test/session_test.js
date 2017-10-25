@@ -17,7 +17,8 @@
 
 'use strict';
 
-const assert = require('../testing/assert');
+const assert = require('assert');
+
 const chrome = require('../chrome');
 const edge = require('../edge');
 const firefox = require('../firefox');
@@ -50,14 +51,17 @@ test.suite(function(env) {
         driver = env.builder().build();
 
         const want = BROWSER_MAP.get(env.browser.name);
-        assert(driver).instanceOf(want,
+        assert.ok(
+            driver instanceof want,
             `want ${want.name}, but got ${driver.name}`);
-        assert(typeof driver.then).equalTo('function');
+        assert.equal(typeof driver.then, 'function');
 
         return driver
             .then(
-                d => assert(d)
-                    .instanceOf(want, `want ${want.name}, but got ${d.name}`))
+                d =>
+                    assert.ok(
+                        d instanceof want,
+                        `want ${want.name}, but got ${d.name}`))
             // Load something so the safari driver doesn't crash from starting and
             // stopping in short time.
             .then(() => driver.get(Pages.echoPage));

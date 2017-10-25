@@ -17,11 +17,11 @@
 
 'use strict';
 
-var webdriver = require('../..'),
-    chrome = require('../../chrome'),
-    assert = require('../../testing/assert');
+const assert = require('assert');
 
-var test = require('../../lib/test');
+const chrome = require('../../chrome');
+const test = require('../../lib/test');
+const webdriver = require('../..');
 
 
 test.suite(function(env) {
@@ -38,7 +38,7 @@ test.suite(function(env) {
           .setPath('/foo/bar/baz')
           .build();
       return service.start().then(function(url) {
-        assert(url).endsWith('/foo/bar/baz');
+        assert.ok(url.endsWith('/foo/bar/baz'), 'unexpected url: ' + url);
       });
     });
   });
