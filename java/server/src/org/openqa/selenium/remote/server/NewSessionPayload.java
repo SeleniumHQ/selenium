@@ -399,7 +399,7 @@ public class NewSessionPayload implements Closeable {
         .collect(ImmutableMap.toImmutableMap(e -> String.valueOf(e.getKey()), Map.Entry::getValue));
   }
 
-  public Stream<Capabilities> stream() throws IOException {
+  public Stream<ImmutableCapabilities> stream() throws IOException {
     Stream<? extends Map<String, Object>> mapStream;
 
     if (getDownstreamDialects().contains(Dialect.W3C)) {
