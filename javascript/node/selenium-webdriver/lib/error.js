@@ -548,8 +548,11 @@ function throwDecodedError(data) {
   if (isErrorResponse(data)) {
     let ctor = ERROR_CODE_TO_TYPE.get(data.error) || WebDriverError;
     let err = new ctor(data.message);
+    // TODO(jleyba): remove whichever case is excluded from the final W3C spec.
     if (typeof data.stacktrace === 'string') {
       err.remoteStacktrace = data.stacktrace;
+    } else if (typeof data.stackTrace === 'string') {
+      err.remoteStacktrace = data.stackTrace;
     }
     throw err;
   }

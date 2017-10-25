@@ -223,6 +223,24 @@ describe('error', function() {
             });
       });
     }
+
+    describe('remote stack trace decoding', function() {
+      test('stacktrace');
+      test('stackTrace');
+
+      function test(key) {
+        it(`encoded as "${key}"`, function() {
+          let data = {error: 'unknown command', message: 'oops'};
+          data[key] = 'some-stacktrace';
+          assert.throws(
+              () => error.throwDecodedError(data),
+              (e) => {
+                assert.strictEqual(e.remoteStacktrace, 'some-stacktrace');
+                return true;
+              });
+        });
+      }
+    });
   });
 
   describe('checkLegacyResponse', function() {
