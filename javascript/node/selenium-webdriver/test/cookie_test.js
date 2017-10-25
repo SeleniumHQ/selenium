@@ -36,8 +36,6 @@ suite(function(env) {
     return driver.quit();
   });
 
-  // Cookie handling is broken.
-  ignore(env.browsers(Browser.PHANTOM_JS, Browser.SAFARI)).
   describe('Cookie Management;', function() {
 
     beforeEach(async function() {
@@ -154,7 +152,6 @@ suite(function(env) {
     ignore(env.browsers(
         Browser.ANDROID,
         Browser.FIREFOX,
-        'legacy-' + Browser.FIREFOX,
         Browser.IE)).
     it('should retain cookie expiry', async function() {
       let expirationDelay = 5 * 1000;
@@ -164,8 +161,27 @@ suite(function(env) {
       await driver.manage().addCookie(cookie);
       await driver.manage().getCookie(cookie.name).then(function(actual) {
         assert.equal(actual.value, cookie.value);
-        // expiry times are exchanged in seconds since January 1, 1970 UTC.
-        assert.equal(actual.expiry, Math.floor(expiry.getTime() / 1000));
+
+        // expiry times should be in seconds since January 1, 1970 UTC
+        try {
+          assert.equal(actual.expiry, Math.floor(expiry.getTime() / 1000));
+          assert.notEqual(
+              env.browser.name, Browser.SAFARI,
+              'Safari cookie expiry fixed; update test');
+        } catch (ex) {
+          if (env.browser.name !== Browser.SAFARI
+              || !(ex instanceof assert.AssertionError)) {
+            throw ex;
+          }
+
+          // Safari returns milliseconds (and is off by a few seconds...)
+          let diff = Math.abs(actual.expiry - expiry.getTime());
+          if (diff > 2000) {
+            assert.fail(
+                actual.expiry, expiry.getTime(),
+                'Expect Safari to return expiry in millis since epoch ± 2s');
+          }
+        }
       });
 
       await driver.sleep(expirationDelay);
