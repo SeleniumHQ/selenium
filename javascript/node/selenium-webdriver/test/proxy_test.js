@@ -113,9 +113,6 @@ test.suite(function(env) {
   // Proxy support not implemented.
   test.ignore(env.browsers(Browser.IE, Browser.OPERA, Browser.SAFARI)).
   describe('manual proxy settings', function() {
-    // phantomjs 1.9.1 in webdriver mode does not appear to respect proxy
-    // settings.
-    test.ignore(env.browsers(Browser.PHANTOM_JS)).
     it('can configure HTTP proxy host', async function() {
       await createDriver(proxy.manual({
         http: proxyServer.host()
@@ -128,13 +125,11 @@ test.suite(function(env) {
           'This is the proxy landing page');
     });
 
-    // PhantomJS does not support bypassing the proxy for individual hosts.
     // geckodriver does not support the bypass option, this must be configured
     // through profile preferences.
     test.ignore(env.browsers(
         Browser.FIREFOX,
-        'legacy-' + Browser.FIREFOX,
-        Browser.PHANTOM_JS)).
+        'legacy-' + Browser.FIREFOX)).
     it('can bypass proxy for specific hosts', async function() {
       await createDriver(proxy.manual({
         http: proxyServer.host(),
@@ -159,8 +154,7 @@ test.suite(function(env) {
 
   // PhantomJS does not support PAC file proxy configuration.
   // Safari does not support proxies.
-  test.ignore(env.browsers(
-      Browser.IE, Browser.OPERA, Browser.PHANTOM_JS, Browser.SAFARI)).
+  test.ignore(env.browsers(Browser.IE, Browser.OPERA, Browser.SAFARI)).
   describe('pac proxy settings', function() {
     it('can configure proxy through PAC file', async function() {
       await createDriver(proxy.pac(proxyServer.url('/proxy.pac')));

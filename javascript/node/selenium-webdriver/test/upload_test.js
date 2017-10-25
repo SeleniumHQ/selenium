@@ -53,9 +53,6 @@ test.suite(function(env) {
   test.ignore(env.browsers(
       Browser.IPAD,
       Browser.IPHONE,
-      // Uploads broken in PhantomJS 2.0.
-      // See https://github.com/ariya/phantomjs/issues/12506
-      Browser.PHANTOM_JS,
       Browser.SAFARI)).
   it('can upload files', async function() {
     driver.setFileDetector(new remote.FileDetector);

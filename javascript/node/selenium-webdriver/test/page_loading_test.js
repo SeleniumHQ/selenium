@@ -116,8 +116,6 @@ test.suite(function(env) {
     await driver.wait(until.titleIs('We Arrive Here'), 5000);
   });
 
-  // PhantomJS 2.0 does not properly reload pages on refresh.
-  test.ignore(browsers(Browser.PHANTOM_JS)).
   it('should be able to refresh a page', async function() {
     await driver.get(Pages.xhtmlTestPage);
 
@@ -148,8 +146,7 @@ test.suite(function(env) {
         Browser.IE,
         Browser.IPAD,
         Browser.IPHONE,
-        Browser.OPERA,
-        Browser.PHANTOM_JS)).
+        Browser.OPERA)).
     it('should timeout if page load timeout is set', async function() {
       await driver.manage().timeouts().pageLoadTimeout(1);
       return driver.get(Pages.sleepingPage + '?time=3')

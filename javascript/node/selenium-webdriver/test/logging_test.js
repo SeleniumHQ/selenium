@@ -23,15 +23,10 @@ const test = require('../lib/test');
 const {Browser, By, logging} = require('..');
 
 test.suite(function(env) {
-  // Logging API has numerous issues with PhantomJS:
-  //   - does not support adjusting log levels for type "browser".
-  //   - does not return proper log level for "browser" messages.
-  //   - does not delete logs after retrieval
   // Logging API is not supported in IE.
   // Logging API not supported in Marionette.
   // Tests depend on opening data URLs, which is broken in Safari (issue 7586)
-  test.ignore(env.browsers(
-      Browser.PHANTOM_JS, Browser.IE, Browser.SAFARI, Browser.FIREFOX)).
+  test.ignore(env.browsers(Browser.IE, Browser.SAFARI, Browser.FIREFOX)).
   describe('logging', function() {
     var driver;
 
