@@ -70,6 +70,15 @@ mode.
    -  Removed setLoggingPreferences (was a no-op)
 *  Changes to `safari.Options`
    -  Removed setLoggingPreferences (was a no-op)
+*  Changes to `lib/error`:
+   -   Added
+       -   ElementClickInterceptedError
+       -   InsecureCertificateError
+       -   InvalidCoordinatesError
+       -   NoSuchCookieError
+   -   Removed
+       -  ElementNotVisibleError
+       -  InvalidElementCoordinatesError
 *  Changes to `lib/webdriver.Window` (`driver.manage().window()`):
    -   Added
        -  getRect
