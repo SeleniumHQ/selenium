@@ -948,13 +948,15 @@ class WebDriver(object):
         :Usage:
             driver.set_window_size(800,600)
         """
-        command = Command.SET_WINDOW_SIZE
         if self.w3c:
-            command = Command.W3C_SET_WINDOW_SIZE
-        self.execute(command, {
-            'width': int(width),
-            'height': int(height),
-            'windowHandle': windowHandle})
+            if windowHandle != 'current':
+                warnings.warn("Only 'current' window is supported for W3C compatibile browsers.")
+            self.set_window_rect(width=int(width), height=int(height))
+        else:
+            self.execute(Command.SET_WINDOW_SIZE, {
+                'width': int(width),
+                'height': int(height),
+                'windowHandle': windowHandle})
 
     def get_window_size(self, windowHandle='current'):
         """
@@ -965,13 +967,16 @@ class WebDriver(object):
         """
         command = Command.GET_WINDOW_SIZE
         if self.w3c:
-            command = Command.W3C_GET_WINDOW_SIZE
-        size = self.execute(command, {'windowHandle': windowHandle})
+            if windowHandle != 'current':
+                warnings.warn("Only 'current' window is supported for W3C compatibile browsers.")
+            size = self.get_window_rect()
+        else:
+            size = self.execute(command, {'windowHandle': windowHandle})
 
         if size.get('value', None) is not None:
-            return size['value']
-        else:
-            return size
+            size = size['value']
+
+        return {k: size[k] for k in ('width', 'height')}
 
     def set_window_position(self, x, y, windowHandle='current'):
         """
@@ -985,10 +990,9 @@ class WebDriver(object):
             driver.set_window_position(0,0)
         """
         if self.w3c:
-            return self.execute(Command.W3C_SET_WINDOW_POSITION, {
-                                'x': int(x),
-                                'y': int(y)
-                                })
+            if windowHandle != 'current':
+                warnings.warn("Only 'current' window is supported for W3C compatibile browsers.")
+            return self.set_window_rect(x=int(x), y=int(y))
         else:
             self.execute(Command.SET_WINDOW_POSITION,
                          {
@@ -1005,10 +1009,14 @@ class WebDriver(object):
             driver.get_window_position()
         """
         if self.w3c:
-            return self.execute(Command.W3C_GET_WINDOW_POSITION)['value']
+            if windowHandle != 'current':
+                warnings.warn("Only 'current' window is supported for W3C compatibile browsers.")
+            position = self.get_window_rect()
         else:
-            return self.execute(Command.GET_WINDOW_POSITION, {
-                'windowHandle': windowHandle})['value']
+            position = self.execute(Command.GET_WINDOW_POSITION,
+                                    {'windowHandle': windowHandle})['value']
+
+        return {k: position[k] for k in ('x', 'y')}
 
     def get_window_rect(self):
         """

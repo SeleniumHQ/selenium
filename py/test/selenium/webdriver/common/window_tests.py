@@ -17,6 +17,7 @@
 
 import pytest
 
+from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.support.wait import WebDriverWait
 
 
@@ -38,3 +39,83 @@ def testShouldMaximizeTheWindow(driver):
     new_size = driver.get_window_size()
     assert new_size["width"] > size["width"]
     assert new_size["height"] > size["height"]
+
+
+def test_should_get_the_size_of_the_current_window(driver):
+    size = driver.get_window_size()
+    assert size.get('width') > 0
+    assert size.get('height') > 0
+
+
+def test_should_set_the_size_of_the_current_window(driver):
+    size = driver.get_window_size()
+
+    target_width = size.get('width') - 20
+    target_height = size.get('height') - 20
+    driver.set_window_size(width=target_width, height=target_height)
+
+    new_size = driver.get_window_size()
+    assert new_size.get('width') == target_width
+    assert new_size.get('height') == target_height
+
+
+def test_should_get_the_position_of_the_current_window(driver):
+    position = driver.get_window_position()
+    assert position.get('x') >= 0
+    assert position.get('y') >= 0
+
+
+def test_should_set_the_position_of_the_current_window(driver):
+    position = driver.get_window_position()
+
+    target_x = position.get('x') + 10
+    target_y = position.get('y') + 10
+    driver.set_window_position(x=target_x, y=target_y)
+
+    WebDriverWait(driver, 2).until(lambda d: d.get_window_position()['x'] != position['x'] and
+                                   d.get_window_position()['y'] != position['y'])
+
+    new_position = driver.get_window_position()
+    assert new_position.get('x') == target_x
+    assert new_position.get('y') == target_y
+
+
+@pytest.mark.xfail_chrome(raises=WebDriverException,
+                          reason='Get Window Rect command not implemented')
+@pytest.mark.xfail_phantomjs(raises=WebDriverException,
+                             reason='Get Window Rect command not implemented')
+@pytest.mark.xfail_safari(raises=WebDriverException,
+                          reason='Get Window Rect command not implemented')
+def test_should_get_the_rect_of_the_current_window(driver):
+    rect = driver.get_window_rect()
+    assert rect.get('x') >= 0
+    assert rect.get('y') >= 0
+    assert rect.get('width') >= 0
+    assert rect.get('height') >= 0
+
+
+@pytest.mark.xfail_chrome(raises=WebDriverException,
+                          reason='Get Window Rect command not implemented')
+@pytest.mark.xfail_phantomjs(raises=WebDriverException,
+                             reason='Get Window Rect command not implemented')
+@pytest.mark.xfail_safari(raises=WebDriverException,
+                          reason='Get Window Rect command not implemented')
+def test_should_set_the_rect_of_the_current_window(driver):
+    rect = driver.get_window_rect()
+
+    target_x = rect.get('x') + 10
+    target_y = rect.get('y') + 10
+    target_width = rect.get('width') + 10
+    target_height = rect.get('height') + 10
+
+    driver.set_window_rect(x=target_x, y=target_y, width=target_width, height=target_height)
+
+    WebDriverWait(driver, 2).until(lambda d: d.get_window_position()['x'] != rect['x'] and
+                                   d.get_window_position()['y'] != rect['y'])
+
+    new_rect = driver.get_window_rect()
+
+    assert new_rect.get('x') == target_x
+    assert new_rect.get('y') == target_y
+    assert new_rect.get('width') == target_width
+    assert new_rect.get('height') == target_height
