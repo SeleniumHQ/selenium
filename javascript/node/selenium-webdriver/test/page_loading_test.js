@@ -76,9 +76,14 @@ test.suite(function(env) {
     txt = await driver.findElement(By.css('span#pageNumber')).getText();
 
     assert.equal(txt.trim(), '2');
+
+    // For safari, need to make sure browser is focused on the main frame or
+    // subsequent tests will fail.
+    if (env.browser.name === Browser.SAFARI) {
+      await driver.switchTo().defaultContent();
+    }
   });
 
-  test.ignore(browsers(Browser.SAFARI)).
   it('should be able to navigate back in browser history', async function() {
     await driver.get(Pages.formPage);
 
@@ -89,7 +94,6 @@ test.suite(function(env) {
     await driver.wait(until.titleIs('We Leave From Here'), 2500);
   });
 
-  test.ignore(browsers(Browser.SAFARI)).
   it('should be able to navigate back in presence of iframes', async function() {
     await driver.get(Pages.xhtmlTestPage);
 
@@ -100,7 +104,6 @@ test.suite(function(env) {
     await driver.wait(until.titleIs('XHTML Test Page'), 2500);
   });
 
-  test.ignore(browsers(Browser.SAFARI)).
   it('should be able to navigate forwards in browser history', async function() {
     await driver.get(Pages.formPage);
 
@@ -138,10 +141,7 @@ test.suite(function(env) {
       }
     });
 
-    // Only implemented in Firefox.
     test.ignore(browsers(
-        Browser.CHROME,
-        Browser.IE,
         Browser.IPAD,
         Browser.IPHONE,
         Browser.OPERA)).
