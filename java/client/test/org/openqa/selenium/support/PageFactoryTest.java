@@ -39,7 +39,6 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.TickingClock;
 import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.testng.Assert;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -114,8 +113,8 @@ public class PageFactoryTest {
     fail("Should not instantiate class because it has no relevant constructors");
     }
     catch (Exception e){
-      Assert.assertEquals(e.getClass(), RuntimeException.class);
-      Assert.assertEquals(e.getCause().getClass(), InstantiationException.class);
+      assertThat(e.getClass(), equalTo(RuntimeException.class));
+      assertThat(e.getCause().getClass(), equalTo(InstantiationException.class));
     }
   }
 
