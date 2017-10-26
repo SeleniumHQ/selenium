@@ -435,7 +435,9 @@ class RemoteConnection(object):
             Command.SWITCH_TO_CONTEXT:
                 ('POST', '/session/$sessionId/context'),
             Command.FULLSCREEN_WINDOW:
-                ('POST', '/session/$sessionId/window/fullscreen')
+                ('POST', '/session/$sessionId/window/fullscreen'),
+            Command.MINIMIZE_WINDOW:
+                ('POST', '/session/$sessionId/window/minimize')
         }
 
     def execute(self, command, params):

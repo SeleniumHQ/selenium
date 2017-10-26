@@ -140,12 +140,34 @@ def test_should_set_the_rect_of_the_current_window(driver):
 @pytest.mark.xfail_safari(raises=WebDriverException,
                           reason='Get Window Rect command not implemented')
 def test_should_fullscreen_the_current_window(driver):
-    target_width = 450
-    target_height = 275
+    start_width = driver.execute_script('return window.innerWidth;')
+    start_height = driver.execute_script('return window.innerHeight;')
 
-    driver.set_window_rect(width=target_width, height=target_height)
     driver.fullscreen_window()
-    new_rect = driver.get_window_rect()
 
-    assert new_rect.get('width') > target_width
-    assert new_rect.get('height') > target_height
+    end_width = driver.execute_script('return window.innerWidth;')
+    end_height = driver.execute_script('return window.innerHeight;')
+
+    driver.fullscreen_window()  # Restore to original size
+
+    assert end_width > start_width
+    assert end_height > start_height
+
+
+@pytest.mark.xfail_chrome(raises=WebDriverException,
+                          reason='Get Window Rect command not implemented')
+@pytest.mark.xfail_firefox(raises=WebDriverException,
+                           reason='Get Window Rect command not implemented')
+@pytest.mark.xfail_phantomjs(raises=WebDriverException,
+                             reason='Get Window Rect command not implemented')
+@pytest.mark.xfail_remote(raises=WebDriverException,
+                          reason='Get Window Rect command not implemented')
+@pytest.mark.xfail_safari(raises=WebDriverException,
+                          reason='Get Window Rect command not implemented')
+@pytest.mark.no_driver_after_test
+def test_should_minimize_the_current_window(driver):
+    driver.minimize_window()
+    minimized = driver.execute_script('return document.hidden;')
+    driver.quit()  # Kill driver so we aren't running minimized after
+
+    assert minimized is True

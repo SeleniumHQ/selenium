@@ -106,6 +106,7 @@ class Command(object):
     GET_LOG = "getLog"
     GET_AVAILABLE_LOG_TYPES = "getAvailableLogTypes"
     FULLSCREEN_WINDOW = "fullscreenWindow"
+    MINIMIZE_WINDOW = "minimizeWindow"
 
     # Alerts
     DISMISS_ALERT = "dismissAlert"

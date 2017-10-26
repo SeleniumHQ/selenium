@@ -643,7 +643,13 @@ class WebDriver(object):
         """
         Invokes the window manager-specific 'full screen' operation
         """
-        self.execute(Command.FULLSCREEN_WINDOW, {"windowHandle": "current"})
+        self.execute(Command.FULLSCREEN_WINDOW)
+
+    def minimize_window(self):
+        """
+        Invokes the window manager-specific 'minimize' operation
+        """
+        self.execute(Command.MINIMIZE_WINDOW)
 
     @property
     def switch_to(self):
