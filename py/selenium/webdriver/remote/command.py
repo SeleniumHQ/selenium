@@ -101,6 +101,7 @@ class Command(object):
     EXECUTE_ASYNC_SCRIPT = "executeAsyncScript"
     SET_SCRIPT_TIMEOUT = "setScriptTimeout"
     SET_TIMEOUTS = "setTimeouts"
+    W3C_MINIMIZE_WINDOW = "w3cMinimizeWindow"
     MAXIMIZE_WINDOW = "windowMaximize"
     W3C_MAXIMIZE_WINDOW = "w3cMaximizeWindow"
     GET_LOG = "getLog"
