@@ -127,3 +127,25 @@ def test_should_set_the_rect_of_the_current_window(driver):
     assert new_rect.get('y') == target_y
     assert new_rect.get('width') == target_width
     assert new_rect.get('height') == target_height
+
+
+@pytest.mark.xfail_chrome(raises=WebDriverException,
+                          reason='Get Window Rect command not implemented')
+@pytest.mark.xfail_firefox(raises=WebDriverException,
+                           reason='Get Window Rect command not implemented')
+@pytest.mark.xfail_phantomjs(raises=WebDriverException,
+                             reason='Get Window Rect command not implemented')
+@pytest.mark.xfail_remote(raises=WebDriverException,
+                          reason='Get Window Rect command not implemented')
+@pytest.mark.xfail_safari(raises=WebDriverException,
+                          reason='Get Window Rect command not implemented')
+def test_should_fullscreen_the_current_window(driver):
+    target_width = 450
+    target_height = 275
+
+    driver.set_window_rect(width=target_width, height=target_height)
+    driver.fullscreen_window()
+    new_rect = driver.get_window_rect()
+
+    assert new_rect.get('width') > target_width
+    assert new_rect.get('height') > target_height

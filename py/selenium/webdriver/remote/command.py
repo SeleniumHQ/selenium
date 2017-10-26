@@ -105,6 +105,7 @@ class Command(object):
     W3C_MAXIMIZE_WINDOW = "w3cMaximizeWindow"
     GET_LOG = "getLog"
     GET_AVAILABLE_LOG_TYPES = "getAvailableLogTypes"
+    FULLSCREEN_WINDOW = "fullscreenWindow"
 
     # Alerts
     DISMISS_ALERT = "dismissAlert"

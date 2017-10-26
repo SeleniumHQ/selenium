@@ -639,6 +639,12 @@ class WebDriver(object):
             command = Command.W3C_MAXIMIZE_WINDOW
         self.execute(command, {"windowHandle": "current"})
 
+    def fullscreen_window(self):
+        """
+        Invokes the window manager-specific 'full screen' operation
+        """
+        self.execute(Command.FULLSCREEN_WINDOW, {"windowHandle": "current"})
+
     @property
     def switch_to(self):
         return self._switch_to
