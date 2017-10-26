@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.tools;
 
+import com.google.common.collect.ImmutableMap;
+
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseProblemException;
 import com.github.javaparser.ast.CompilationUnit;
@@ -29,6 +31,8 @@ import java.nio.file.Paths;
 import java.util.Calendar;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -40,32 +44,43 @@ public class PackageParser {
     TIME_STAMP = c.getTimeInMillis();
   }
 
-
   public static void main(String[] args) throws IOException {
     Path out = Paths.get(args[0]);
 
     Map<String, Path> outToIn = new TreeMap<>();
 
     for (int i = 1; i < args.length; i++) {
-      Path source = Paths.get(args[i]);
-      if (!source.getFileName().toString().endsWith(".java")) {
-        continue;
-      }
+      if (args[i].startsWith("@")) {
+        Path macro = Paths.get(args[i].substring(1));
+        Stream.of(Files.lines(macro).collect(Collectors.joining(" ")).split(" "))
+            .forEach(line -> outToIn.putAll(processSingleSourceFile(Paths.get(line))));
 
-      try {
-        CompilationUnit unit = JavaParser.parse(source);
-        String packageName = unit.getPackageDeclaration()
-            .map(decl -> decl.getName().asString())
-            .orElse("");
-        Path target = Paths.get(packageName.replace('.', File.separatorChar))
-            .resolve(source.getFileName());
-
-        outToIn.put(target.toString(), source);
-      } catch (ParseProblemException ignored) {
-        // carry on
+      } else {
+        outToIn.putAll(processSingleSourceFile(Paths.get(args[i])));
       }
     }
 
+    zip(outToIn, out);
+  }
+
+  private static Map<String, Path> processSingleSourceFile(Path source) {
+    if (!source.getFileName().toString().endsWith(".java")) {
+      return ImmutableMap.of();
+    }
+    try {
+      CompilationUnit unit = JavaParser.parse(source);
+      String packageName = unit.getPackageDeclaration()
+          .map(decl -> decl.getName().asString())
+          .orElse("");
+      Path target = Paths.get(packageName.replace('.', File.separatorChar))
+          .resolve(source.getFileName());
+      return ImmutableMap.of(target.toString(), source);
+    } catch (ParseProblemException|IOException ignored) {
+      return ImmutableMap.of();
+    }
+  }
+
+  private static void zip(Map<String, Path> outToIn, Path out) throws IOException {
     try (ZipOutputStream zos = new ZipOutputStream(Files.newOutputStream(out))) {
       outToIn.forEach((target, source) -> {
         ZipEntry entry = new ZipEntry(target);

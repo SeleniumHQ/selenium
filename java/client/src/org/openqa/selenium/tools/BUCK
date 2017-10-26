@@ -6,6 +6,7 @@ java_library(
   ],
   deps = [
     "//third_party/java/javaparser:javaparser-core",
+    "//third_party/java/guava:guava",
   ],
 )
 
