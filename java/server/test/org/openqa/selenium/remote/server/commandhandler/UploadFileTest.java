@@ -36,6 +36,7 @@ import org.junit.runners.JUnit4;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.io.Zip;
+import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.ErrorHandler;
 import org.openqa.selenium.remote.JsonToBeanConverter;
@@ -79,7 +80,7 @@ public class UploadFileTest {
     String encoded = Zip.zip(tempFile);
 
     Gson gson = new Gson();
-    UploadFile uploadFile = new UploadFile(new JsonToBeanConverter(), session);
+    UploadFile uploadFile = new UploadFile(new Json(), session);
     Map<String, Object> args = ImmutableMap.of("file", (Object) encoded);
     HttpRequest request = new HttpRequest(HttpMethod.POST, "/session/%d/se/file");
     request.setContent(gson.toJson(args).getBytes(UTF_8));
@@ -106,7 +107,7 @@ public class UploadFileTest {
     String encoded = Zip.zip(baseDir);
 
     Gson gson = new Gson();
-    UploadFile uploadFile = new UploadFile(new JsonToBeanConverter(), session);
+    UploadFile uploadFile = new UploadFile(new Json(), session);
     Map<String, Object> args = ImmutableMap.of("file", (Object) encoded);
     HttpRequest request = new HttpRequest(HttpMethod.POST, "/session/%d/se/file");
     request.setContent(gson.toJson(args).getBytes(UTF_8));

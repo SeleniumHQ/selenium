@@ -22,9 +22,9 @@ import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 import com.google.common.collect.ImmutableSet;
 
+import org.openqa.selenium.json.Json;
 import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.remote.ErrorCodes;
-import org.openqa.selenium.remote.JsonToBeanConverter;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
@@ -38,11 +38,11 @@ import java.util.Objects;
 
 public class GetLogTypes implements CommandHandler {
 
-  private final JsonToBeanConverter toBean;
+  private final Json json;
   private final ActiveSession session;
 
-  public GetLogTypes(JsonToBeanConverter toBean, ActiveSession session) {
-    this.toBean = Objects.requireNonNull(toBean);
+  public GetLogTypes(Json json, ActiveSession session) {
+    this.json = Objects.requireNonNull(json);
     this.session = Objects.requireNonNull(session);
   }
 
@@ -57,7 +57,7 @@ public class GetLogTypes implements CommandHandler {
     types.add(LogType.SERVER);
 
     if (upRes.getStatus() == HTTP_OK) {
-      Map<?, ?> upstream = toBean.convert(Map.class, upRes.getContentString());
+      Map<?, ?> upstream = json.toType(upRes.getContentString(), Json.MAP_TYPE);
       Object raw = upstream.get("value");
       if (raw instanceof Collection) {
         ((Collection<?>) raw).stream().map(String::valueOf).forEach(types::add);

@@ -23,13 +23,11 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 import com.google.common.collect.ImmutableMap;
 
-import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.SessionNotCreatedException;
+import org.openqa.selenium.json.Json;
 import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.logging.LoggingPreferences;
-import org.openqa.selenium.remote.BeanToJsonConverter;
 import org.openqa.selenium.remote.CapabilityType;
-import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.server.ActiveSession;
@@ -47,7 +45,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Optional;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
@@ -58,8 +55,11 @@ public class BeginSession implements CommandHandler {
 
   private final NewSessionPipeline pipeline;
   private final ActiveSessions allSessions;
+  private final Json json;
 
-  public BeginSession(ActiveSessions allSessions) {
+  public BeginSession(ActiveSessions allSessions, Json json) {
+    this.json = json;
+
     SessionFactory fallback = Stream.of(
         "org.openqa.selenium.chrome.ChromeDriverService",
         "org.openqa.selenium.firefox.GeckoDriverService",
@@ -145,7 +145,7 @@ public class BeginSession implements CommandHandler {
               "Unrecognized downstream dialect: " + session.getDownstreamDialect());
       }
 
-      byte[] payload = new BeanToJsonConverter().convert(toConvert).getBytes(UTF_8);
+      byte[] payload = json.toJson(toConvert).getBytes(UTF_8);
 
       resp.setStatus(HTTP_OK);
       resp.setHeader("Cache-Control", "no-cache");

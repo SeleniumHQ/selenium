@@ -24,7 +24,7 @@ import static org.openqa.selenium.remote.ErrorCodes.NO_SUCH_SESSION;
 
 import com.google.common.collect.ImmutableMap;
 
-import org.openqa.selenium.remote.BeanToJsonConverter;
+import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
@@ -38,11 +38,11 @@ import java.util.Objects;
 
 public class NoSessionHandler implements CommandHandler {
 
-  private final BeanToJsonConverter toJson;
+  private final Json json;
   private final SessionId sessionId;
 
-  public NoSessionHandler(BeanToJsonConverter toJson, SessionId sessionId) {
-    this.toJson = Objects.requireNonNull(toJson);
+  public NoSessionHandler(Json json, SessionId sessionId) {
+    this.json = Objects.requireNonNull(json);
     this.sessionId = Objects.requireNonNull(sessionId);
   }
 
@@ -58,7 +58,7 @@ public class NoSessionHandler implements CommandHandler {
         "stacktrace", ""));
     responseMap = Collections.unmodifiableMap(responseMap);
 
-    byte[] payload = toJson.convert(responseMap).getBytes(UTF_8);
+    byte[] payload = json.toJson(responseMap).getBytes(UTF_8);
 
     resp.setStatus(HTTP_NOT_FOUND);
     resp.setHeader("Content-Type", JSON_UTF_8.toString());

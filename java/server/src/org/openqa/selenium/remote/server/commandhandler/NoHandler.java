@@ -24,7 +24,7 @@ import static org.openqa.selenium.remote.ErrorCodes.UNKNOWN_COMMAND;
 
 import com.google.common.collect.ImmutableMap;
 
-import org.openqa.selenium.remote.BeanToJsonConverter;
+import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.server.CommandHandler;
@@ -37,10 +37,10 @@ import java.util.Objects;
 
 public class NoHandler implements CommandHandler {
 
-  private final BeanToJsonConverter toJson;
+  private final Json json;
 
-  public NoHandler(BeanToJsonConverter toJson) {
-    this.toJson = Objects.requireNonNull(toJson);
+  public NoHandler(Json json) {
+    this.json = Objects.requireNonNull(json);
   }
 
   @Override
@@ -58,7 +58,7 @@ public class NoHandler implements CommandHandler {
         "stacktrace", ""));
     responseMap = Collections.unmodifiableMap(responseMap);
 
-    byte[] payload = toJson.convert(responseMap).getBytes(UTF_8);
+    byte[] payload = json.toJson(responseMap).getBytes(UTF_8);
 
     resp.setStatus(HTTP_NOT_FOUND);
     resp.setHeader("Content-Type", JSON_UTF_8.toString());

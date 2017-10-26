@@ -20,10 +20,10 @@ package org.openqa.selenium.remote.server.commandhandler;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
+import org.openqa.selenium.json.Json;
 import org.openqa.selenium.logging.LogEntries;
 import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.remote.ErrorCodes;
-import org.openqa.selenium.remote.JsonToBeanConverter;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
@@ -37,11 +37,11 @@ import java.util.Objects;
 
 public class GetLogsOfType implements CommandHandler {
 
-  private final JsonToBeanConverter toBean;
+  private final Json json;
   private final ActiveSession session;
 
-  public GetLogsOfType(JsonToBeanConverter toBean, ActiveSession session) {
-    this.toBean = Objects.requireNonNull(toBean);
+  public GetLogsOfType(Json json, ActiveSession session) {
+    this.json = Objects.requireNonNull(json);
     this.session = Objects.requireNonNull(session);
   }
 
@@ -49,7 +49,7 @@ public class GetLogsOfType implements CommandHandler {
   public void execute(HttpRequest req, HttpResponse resp) throws IOException {
     String originalPayload = req.getContentString();
 
-    Map<?, ?> args = toBean.convert(Map.class, originalPayload);
+    Map<?, ?> args = json.toType(originalPayload, Json.MAP_TYPE);
     String type = (String) args.get("type");
 
     if (!LogType.SERVER.equals(type)) {

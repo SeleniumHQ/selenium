@@ -24,8 +24,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
-import org.openqa.selenium.remote.BeanToJsonConverter;
-import org.openqa.selenium.remote.JsonToBeanConverter;
+import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.server.commandhandler.BeginSession;
@@ -52,17 +51,14 @@ import javax.servlet.http.HttpServletRequest;
 
 class AllHandlers {
 
-  private final JsonToBeanConverter toBean;
-  private final BeanToJsonConverter toJson;
+  private final Json json;
   private final ActiveSessions allSessions;
 
   private final Map<HttpMethod, ImmutableList<Function<String, CommandHandler>>> additionalHandlers;
 
   public AllHandlers(ActiveSessions allSessions) {
-    this.toBean = new JsonToBeanConverter();
-    this.toJson = new BeanToJsonConverter();
-
-    this.allSessions = allSessions;
+    this.allSessions = Objects.requireNonNull(allSessions);
+    this.json = new Json();
 
     additionalHandlers = ImmutableMap.of(
         HttpMethod.DELETE, ImmutableList.of(),
@@ -104,12 +100,12 @@ class AllHandlers {
     if (id != null) {
       ActiveSession session = allSessions.get(id);
       if (session == null) {
-        return new NoSessionHandler(toJson, id);
+        return new NoSessionHandler(json, id);
       }
       return session;
     }
 
-    return new NoHandler(toJson);
+    return new NoHandler(json);
   }
 
   private <H extends CommandHandler> Function<String, CommandHandler> handler(
@@ -124,8 +120,7 @@ class AllHandlers {
 
       ImmutableSet.Builder<Object> args = ImmutableSet.builder();
       args.add(allSessions);
-      args.add(toBean);
-      args.add(toJson);
+      args.add(json);
       if (match.getParameters().containsKey("sessionId")) {
         SessionId id = new SessionId(match.getParameters().get("sessionId"));
         args.add(id);
