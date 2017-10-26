@@ -14,7 +14,7 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-
+import os
 import pytest
 
 from selenium.common.exceptions import WebDriverException
@@ -130,20 +130,25 @@ def test_should_set_the_rect_of_the_current_window(driver):
 
 
 @pytest.mark.xfail_chrome(raises=WebDriverException,
-                          reason='Get Window Rect command not implemented')
+                          reason='Fullscreen command not implemented')
 @pytest.mark.xfail_firefox(raises=WebDriverException,
-                           reason='Get Window Rect command not implemented')
+                           reason='Fullscreen command not implemented')
 @pytest.mark.xfail_phantomjs(raises=WebDriverException,
-                             reason='Get Window Rect command not implemented')
+                             reason='Fullscreen command not implemented')
 @pytest.mark.xfail_remote(raises=WebDriverException,
-                          reason='Get Window Rect command not implemented')
+                          reason='Fullscreen command not implemented')
 @pytest.mark.xfail_safari(raises=WebDriverException,
-                          reason='Get Window Rect command not implemented')
+                          reason='Fullscreen command not implemented')
+@pytest.mark.skipif(os.environ.get('CI') == 'true',
+                    reason='Fullscreen command causes Travis to hang')
 def test_should_fullscreen_the_current_window(driver):
     start_width = driver.execute_script('return window.innerWidth;')
     start_height = driver.execute_script('return window.innerHeight;')
 
     driver.fullscreen_window()
+
+    WebDriverWait(driver, 2).until(lambda d: driver.execute_script('return window.innerWidth;') >
+                                   start_width)
 
     end_width = driver.execute_script('return window.innerWidth;')
     end_height = driver.execute_script('return window.innerHeight;')
@@ -155,15 +160,17 @@ def test_should_fullscreen_the_current_window(driver):
 
 
 @pytest.mark.xfail_chrome(raises=WebDriverException,
-                          reason='Get Window Rect command not implemented')
+                          reason='Minimize command not implemented')
 @pytest.mark.xfail_firefox(raises=WebDriverException,
-                           reason='Get Window Rect command not implemented')
+                           reason='Minimize command not implemented')
 @pytest.mark.xfail_phantomjs(raises=WebDriverException,
-                             reason='Get Window Rect command not implemented')
+                             reason='Minimize command not implemented')
 @pytest.mark.xfail_remote(raises=WebDriverException,
-                          reason='Get Window Rect command not implemented')
+                          reason='Minimize command not implemented')
 @pytest.mark.xfail_safari(raises=WebDriverException,
-                          reason='Get Window Rect command not implemented')
+                          reason='Minimize command not implemented')
+@pytest.mark.skipif(os.environ.get('CI') == 'true',
+                    reason='Minimize command causes Travis to hang')
 @pytest.mark.no_driver_after_test
 def test_should_minimize_the_current_window(driver):
     driver.minimize_window()
