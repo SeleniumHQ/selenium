@@ -38,7 +38,7 @@ namespace OpenQA.Selenium.Remote
         private Uri remoteServerUri;
         private TimeSpan serverResponseTimeout;
         private bool enableKeepAlive;
-        private WebProxy proxy;
+        private IWebProxy proxy;
         private CommandInfoRepository commandInfoRepository = new WebDriverWireProtocolCommandInfoRepository();
 
         /// <summary>
@@ -57,7 +57,7 @@ namespace OpenQA.Selenium.Remote
         /// <param name="addressOfRemoteServer">Address of the WebDriver Server.</param>
         /// <param name="proxy">WebProxy to communicate with the WebDriver Server.</param>
         /// <param name="timeout">The timeout within which the server must respond.</param>
-        public HttpCommandExecutor(Uri addressOfRemoteServer, WebProxy proxy, TimeSpan timeout)
+        public HttpCommandExecutor(Uri addressOfRemoteServer, IWebProxy proxy, TimeSpan timeout)
             : this(addressOfRemoteServer, timeout, true)
         {
             this.proxy = proxy;
@@ -122,11 +122,6 @@ namespace OpenQA.Selenium.Remote
             CommandInfo info = this.commandInfoRepository.GetCommandInfo(commandToExecute.Name);
             HttpRequestInfo requestInfo = new HttpRequestInfo(this.remoteServerUri, commandToExecute, info);
 
-            if (this.proxy != null)
-            {
-                request.Proxy = this.proxy;
-            }
-
             HttpResponseInfo responseInfo = this.MakeHttpRequest(requestInfo);
 
             Response toReturn = this.CreateResponse(responseInfo);
@@ -172,6 +167,12 @@ namespace OpenQA.Selenium.Remote
             request.Accept = RequestAcceptHeader;
             request.KeepAlive = this.enableKeepAlive;
             request.ServicePoint.ConnectionLimit = 2000;
+
+            if (this.proxy != null)
+            {
+                request.Proxy = this.proxy;
+            }
+
             if (request.Method == CommandInfo.PostCommand)
             {
                 string payload = requestInfo.RequestBody;

@@ -137,7 +137,7 @@ namespace OpenQA.Selenium.Remote
         /// <param name="desiredCapabilities">An <see cref="ICapabilities"/> object containing the desired capabilities of the browser.</param>
         /// <param name="proxy">Proxy details needed to communicate with the remove server.</param>
         /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
-        public RemoteWebDriver(Uri remoteAddress, ICapabilities desiredCapabilities, WebProxy proxy, TimeSpan commandTimeout)
+        public RemoteWebDriver(Uri remoteAddress, ICapabilities desiredCapabilities, IWebProxy proxy, TimeSpan commandTimeout)
             : this(new HttpCommandExecutor(remoteAddress, proxy, commandTimeout), desiredCapabilities)
         {
         }
