@@ -23,7 +23,7 @@ import java.util.Arrays;
  * Representations of pressable keys that aren't text.  These are stored in the Unicode PUA (Private
  * Use Area) code points, 0xE000-0xF8FF.
  *
- * @see <a href="http://www.google.com.au/search?&amp;q=unicode+pua&amp;btnG=Search">http://www.google.com.au/search?&amp;q=unicode+pua&amp;btnG=Search</a>
+ * @see <a href="http://www.google.com.au/search?&amp;q=unicode+pua&amp;btnK=Search">http://www.google.com.au/search?&amp;q=unicode+pua&amp;btnK=Search</a>
  */
 public enum Keys implements CharSequence {
 

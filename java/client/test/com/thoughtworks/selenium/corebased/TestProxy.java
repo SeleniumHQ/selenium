@@ -33,7 +33,7 @@ public class TestProxy extends InternalSelenseTestBase {
     // // TODO(simon): Re-enable this test
     // selenium.open("http://www.google.com/");
     // selenium.type("q", "Selenium");
-    // selenium.click("btnG");
+    // selenium.click("btnK");
     // selenium.waitForPageToLoad("30000");
   }
 }

@@ -20,7 +20,7 @@ module Selenium
     module Keys
       #
       # @see Element#send_keys
-      # @see http://www.google.com.au/search?&q=unicode+pua&btnG=Search
+      # @see http://www.google.com.au/search?&q=unicode+pua&btnK=Search
       #
 
       KEYS = {
