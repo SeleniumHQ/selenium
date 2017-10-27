@@ -39,10 +39,9 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.openqa.selenium.ScriptTimeoutException;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.remote.BeanToJsonConverter;
+import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.ErrorCodes;
-import org.openqa.selenium.remote.JsonToBeanConverter;
 import org.openqa.selenium.remote.RemoteWebElement;
 import org.openqa.selenium.remote.Response;
 
@@ -61,8 +60,7 @@ public class JsonHttpResponseCodecTest {
     assertThat(converted.getStatus(), is(HTTP_OK));
     assertThat(converted.getHeader(CONTENT_TYPE), is(JSON_UTF_8.toString()));
 
-    Response rebuilt = new JsonToBeanConverter().convert(
-        Response.class, new String(converted.getContent(), UTF_8));
+    Response rebuilt = new Json().toType(new String(converted.getContent(), UTF_8), Response.class);
 
     assertEquals(response.getStatus(), rebuilt.getStatus());
     assertEquals(new ErrorCodes().toState(response.getStatus()), rebuilt.getState());
@@ -80,8 +78,7 @@ public class JsonHttpResponseCodecTest {
     assertThat(converted.getStatus(), is(HTTP_INTERNAL_ERROR));
     assertThat(converted.getHeader(CONTENT_TYPE), is(JSON_UTF_8.toString()));
 
-    Response rebuilt = new JsonToBeanConverter().convert(
-        Response.class, new String(converted.getContent(), UTF_8));
+    Response rebuilt = new Json().toType(new String(converted.getContent(), UTF_8), Response.class);
 
     assertEquals(response.getStatus(), rebuilt.getStatus());
     assertEquals(new ErrorCodes().toState(response.getStatus()), rebuilt.getState());
@@ -154,8 +151,7 @@ public class JsonHttpResponseCodecTest {
 
     HttpResponse httpResponse = new HttpResponse();
     httpResponse.setStatus(HTTP_OK);
-    httpResponse.setContent(
-        new BeanToJsonConverter().convert(response).getBytes(UTF_8));
+    httpResponse.setContent(new Json().toJson(response).getBytes(UTF_8));
 
     Response decoded = codec.decode(httpResponse);
     assertEquals(response.getStatus(), decoded.getStatus());
@@ -189,7 +185,7 @@ public class JsonHttpResponseCodecTest {
   public void shouldConvertElementReferenceToRemoteWebElement() {
     HttpResponse response = new HttpResponse();
     response.setStatus(HTTP_OK);
-    response.setContent(new BeanToJsonConverter().convert(ImmutableMap.of(
+    response.setContent(new Json().toJson(ImmutableMap.of(
         "status", 0,
         "value", ImmutableMap.of(Dialect.OSS.getEncodedElementKey(), "345678"))).getBytes(UTF_8));
 
@@ -206,8 +202,7 @@ public class JsonHttpResponseCodecTest {
 
     HttpResponse httpResponse = new HttpResponse();
     httpResponse.setStatus(HTTP_CLIENT_TIMEOUT);
-    httpResponse.setContent(
-        new BeanToJsonConverter().convert(response).getBytes(UTF_8));
+    httpResponse.setContent(new Json().toJson(response).getBytes(UTF_8));
 
     Response decoded = codec.decode(httpResponse);
     assertEquals(ErrorCodes.ASYNC_SCRIPT_TIMEOUT, decoded.getStatus().intValue());

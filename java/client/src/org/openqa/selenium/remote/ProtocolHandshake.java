@@ -228,7 +228,7 @@ public class ProtocolHandshake {
     // W3C spec properly. Oh well.
     Map<?, ?> blob;
     try {
-      blob = new JsonToBeanConverter().convert(Map.class, response.getContentString());
+      blob = new Json().toType(response.getContentString(), Map.class);
     } catch (JsonException e) {
       throw new WebDriverException(
           "Unable to parse remote response: " + response.getContentString());

@@ -30,10 +30,9 @@ import org.openqa.grid.internal.BaseRemoteProxy;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.RemoteProxy;
 import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
-import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.MutableCapabilities;
+import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.JsonToBeanConverter;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -175,8 +174,7 @@ public class RegistrationServlet extends RegistryBasedServlet {
       configuration.capabilities.clear();
       JsonArray capabilities = json.get("capabilities").getAsJsonArray();
       for (int i = 0; i < capabilities.size(); i++) {
-        MutableCapabilities cap = new JsonToBeanConverter()
-            .convert(DesiredCapabilities.class, capabilities.get(i));
+        MutableCapabilities cap = new Json().toType(capabilities.get(i), DesiredCapabilities.class);
         configuration.capabilities.add(cap);
       }
     }

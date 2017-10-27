@@ -38,9 +38,8 @@ import org.openqa.grid.internal.utils.configuration.converters.BrowserDesiredCap
 import org.openqa.grid.internal.utils.configuration.converters.NoOpParameterSplitter;
 import org.openqa.grid.internal.utils.configuration.validators.FileExistsValueValidator;
 import org.openqa.selenium.MutableCapabilities;
-import org.openqa.selenium.remote.BeanToJsonConverter;
+import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.JsonToBeanConverter;
 
 import java.lang.reflect.Type;
 import java.net.MalformedURLException;
@@ -475,9 +474,9 @@ public class GridNodeConfiguration extends GridConfiguration {
                                  JsonSerializationContext jsonSerializationContext) {
 
       JsonArray capabilities = new JsonArray();
-      BeanToJsonConverter converter = new BeanToJsonConverter();
+      Json json = new Json();
       for (MutableCapabilities dc : desiredCapabilities) {
-        capabilities.add(converter.convertObject(dc));
+        capabilities.add(json.toJson(dc));
       }
       return capabilities;
     }
@@ -493,9 +492,9 @@ public class GridNodeConfiguration extends GridConfiguration {
 
       if (jsonElement.isJsonArray()) {
         List<MutableCapabilities> desiredCapabilities = new ArrayList<>();
-        JsonToBeanConverter converter = new JsonToBeanConverter();
+        Json json = new Json();
         for (JsonElement arrayElement : jsonElement.getAsJsonArray()) {
-          desiredCapabilities.add(converter.convert(DesiredCapabilities.class, arrayElement));
+          desiredCapabilities.add(json.toType(arrayElement, DesiredCapabilities.class));
         }
         return desiredCapabilities;
       }

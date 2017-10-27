@@ -31,8 +31,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.openqa.selenium.Proxy.ProxyType;
-import org.openqa.selenium.remote.BeanToJsonConverter;
-import org.openqa.selenium.remote.JsonToBeanConverter;
+import org.openqa.selenium.json.Json;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -383,8 +382,8 @@ public class ProxyTest {
 
     Capabilities caps = new ImmutableCapabilities(PROXY, proxy);
 
-    String rawJson = new BeanToJsonConverter().convert(caps);
-    Capabilities converted = new JsonToBeanConverter().convert(Capabilities.class, rawJson);
+    String rawJson = new Json().toJson(caps);
+    Capabilities converted = new Json().toType(rawJson, Capabilities.class);
 
     Object returnedProxy = converted.getCapability(PROXY);
     assertTrue(returnedProxy instanceof Proxy);

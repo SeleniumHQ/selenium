@@ -37,7 +37,7 @@ import com.google.gson.reflect.TypeToken;
 
 import org.junit.Test;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.remote.BeanToJsonConverter;
+import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.SessionId;
@@ -180,7 +180,7 @@ public class ProtocolConverterTest {
         response.setHeader("Content-Type", MediaType.JSON_UTF_8.toString());
         response.setHeader("Cache-Control", "none");
 
-       String payload = new BeanToJsonConverter().convert(
+       String payload = new Json().toJson(
            ImmutableMap.of(
                "sessionId", sessionId.toString(),
                "status", UNHANDLED_ERROR,
