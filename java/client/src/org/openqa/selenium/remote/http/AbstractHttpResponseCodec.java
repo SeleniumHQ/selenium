@@ -27,9 +27,10 @@ import static com.google.common.net.MediaType.JSON_UTF_8;
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.net.HttpURLConnection.HTTP_OK;
 
-import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonException;
+import org.openqa.selenium.remote.BeanToJsonConverter;
 import org.openqa.selenium.remote.ErrorCodes;
+import org.openqa.selenium.remote.JsonToBeanConverter;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.ResponseCodec;
 
@@ -43,7 +44,8 @@ import java.util.function.Supplier;
  */
 public abstract class AbstractHttpResponseCodec implements ResponseCodec<HttpResponse> {
   private final ErrorCodes errorCodes = new ErrorCodes();
-  private final Json json = new Json();
+  private final BeanToJsonConverter beanToJsonConverter = new BeanToJsonConverter();
+  private final JsonToBeanConverter jsonToBeanConverter = new JsonToBeanConverter();
 
   /**
    * Encodes the given response as a HTTP response message. This method is guaranteed not to throw.
@@ -57,7 +59,7 @@ public abstract class AbstractHttpResponseCodec implements ResponseCodec<HttpRes
                  ? HTTP_OK
                  : HTTP_INTERNAL_ERROR;
 
-    byte[] data = json.toJson(getValueToEncode(response)).getBytes(UTF_8);
+    byte[] data = beanToJsonConverter.convert(getValueToEncode(response)).getBytes(UTF_8);
 
     HttpResponse httpResponse = factory.get();
     httpResponse.setStatus(status);
@@ -77,7 +79,7 @@ public abstract class AbstractHttpResponseCodec implements ResponseCodec<HttpRes
     String contentType = nullToEmpty(encodedResponse.getHeader(CONTENT_TYPE));
     String content = encodedResponse.getContentString().trim();
     try {
-      return reconstructValue(json.toType(content, Response.class));
+      return reconstructValue(jsonToBeanConverter.convert(Response.class, content));
     } catch (JsonException e) {
       if (contentType.startsWith("application/json")) {
         throw new IllegalArgumentException(

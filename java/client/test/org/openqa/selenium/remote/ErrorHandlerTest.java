@@ -57,7 +57,6 @@ import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.interactions.InvalidCoordinatesException;
 import org.openqa.selenium.interactions.MoveTargetOutOfBoundsException;
-import org.openqa.selenium.json.Json;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -521,7 +520,7 @@ public class ErrorHandlerTest {
 
   @SuppressWarnings({"unchecked"})
   private static Map<String, Object> toMap(Object o) throws Exception {
-    String rawJson = new Json().toJson(o);
-    return new Json().toType(rawJson, Map.class);
+    String rawJson = new BeanToJsonConverter().convert(o);
+    return new JsonToBeanConverter().convert(Map.class, rawJson);
   }
 }

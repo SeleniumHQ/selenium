@@ -31,7 +31,6 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.json.Json;
 
 import java.net.MalformedURLException;
 import java.util.Map;
@@ -109,7 +108,7 @@ public class JsonWireProtocolResponseTest {
     WebDriverException exception = new SessionNotCreatedException("me no likey");
 
     ImmutableMap<String, ?> payload = ImmutableMap.of(
-            "value", new Gson().fromJson(new Json().toJson(exception), Map.class),
+            "value", new Gson().fromJson(new BeanToJsonConverter().convert(exception), Map.class),
             "status", ErrorCodes.SESSION_NOT_CREATED);
 
     InitialHandshakeResponse initialResponse = new InitialHandshakeResponse(

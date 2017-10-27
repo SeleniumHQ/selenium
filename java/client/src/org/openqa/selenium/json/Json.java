@@ -19,7 +19,6 @@ package org.openqa.selenium.json;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.google.gson.TypeAdapter;
 import com.google.gson.TypeAdapterFactory;
@@ -56,10 +55,6 @@ public class Json {
 
   public String toJson(Object toConvert) {
     return toJson.convert(toConvert);
-  }
-
-  public JsonElement toJsonElement(Object toConvert) {
-    return toJson.convertObject(toConvert);
   }
 
   public <T> T toType(Object source, Class<T> typeOfT) {

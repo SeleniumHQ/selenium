@@ -39,6 +39,7 @@ import org.openqa.selenium.io.Zip;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.ErrorHandler;
+import org.openqa.selenium.remote.JsonToBeanConverter;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpMethod;
@@ -86,8 +87,8 @@ public class UploadFileTest {
     HttpResponse response = new HttpResponse();
     uploadFile.execute(request, response);
 
-    String path = (String) new Json()
-        .toType(response.getContentString(), Response.class)
+    String path = (String) new JsonToBeanConverter()
+        .convert(Response.class, response.getContentString())
         .getValue();
     assertTrue(new File(path).exists());
     assertTrue(path.endsWith(tempFile.getName()));
@@ -115,7 +116,7 @@ public class UploadFileTest {
 
     try {
       new ErrorHandler(false).throwIfResponseFailed(
-          new Json().toType(response.getContentString(), Response.class),
+          new JsonToBeanConverter().convert(Response.class, response.getContentString()),
           100);
       fail("Should not get this far");
     } catch (WebDriverException ignored) {

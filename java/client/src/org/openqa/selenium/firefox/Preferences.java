@@ -27,7 +27,7 @@ import com.google.common.io.Closeables;
 import com.google.common.io.LineReader;
 
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.json.Json;
+import org.openqa.selenium.remote.JsonToBeanConverter;
 
 import java.io.File;
 import java.io.FileReader;
@@ -92,7 +92,7 @@ class Preferences {
   private void readDefaultPreferences(Reader defaultsReader) {
     try {
       String rawJson = CharStreams.toString(defaultsReader);
-      Map<String, Object> map = new Json().toType(rawJson, Map.class);
+      Map<String, Object> map = new JsonToBeanConverter().convert(Map.class, rawJson);
 
       Map<String, Object> frozen = (Map<String, Object>) map.get("frozen");
       for (Map.Entry<String, Object> entry : frozen.entrySet()) {

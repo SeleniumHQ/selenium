@@ -27,7 +27,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
-import org.openqa.selenium.json.Json;
+import org.openqa.selenium.remote.BeanToJsonConverter;
+import org.openqa.selenium.remote.JsonToBeanConverter;
 
 import java.util.Map;
 
@@ -92,9 +93,9 @@ public class InternetExplorerOptionsTest {
         .withInitialBrowserUrl("http://www.cheese.com")
         .addCommandSwitches("--cake");
 
-    String json = new Json().toJson(options);
+    String json = new BeanToJsonConverter().convert(options);
     System.out.println("json = " + json);
-    Capabilities capabilities = new Json().toType(json, Capabilities.class);
+    Capabilities capabilities = new JsonToBeanConverter().convert(Capabilities.class, json);
 
     assertEquals(options, capabilities);
 

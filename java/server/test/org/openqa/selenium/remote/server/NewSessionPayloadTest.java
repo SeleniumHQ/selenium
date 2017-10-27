@@ -29,7 +29,7 @@ import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.Platform;
-import org.openqa.selenium.json.Json;
+import org.openqa.selenium.remote.BeanToJsonConverter;
 import org.openqa.selenium.remote.Dialect;
 
 import java.io.IOException;
@@ -48,7 +48,7 @@ public class NewSessionPayloadTest {
       assertEquals(ImmutableSet.of(Dialect.OSS), payload.getDownstreamDialects());
     }
 
-    String json = new Json().toJson(caps);
+    String json = new BeanToJsonConverter().convert(caps);
     try (NewSessionPayload payload = new NewSessionPayload(Long.MAX_VALUE, new StringReader(json))) {
       assertEquals(ImmutableSet.of(Dialect.OSS), payload.getDownstreamDialects());
     }
@@ -64,7 +64,7 @@ public class NewSessionPayloadTest {
       assertEquals(ImmutableSet.of(Dialect.W3C), payload.getDownstreamDialects());
     }
 
-    String json = new Json().toJson(caps);
+    String json = new BeanToJsonConverter().convert(caps);
     try (NewSessionPayload payload = new NewSessionPayload(Long.MAX_VALUE, new StringReader(json))) {
       assertEquals(ImmutableSet.of(Dialect.W3C), payload.getDownstreamDialects());
     }
@@ -77,7 +77,7 @@ public class NewSessionPayloadTest {
       assertEquals(ImmutableSet.of(Dialect.OSS), payload.getDownstreamDialects());
     }
 
-    String json = new Json().toJson(caps);
+    String json = new BeanToJsonConverter().convert(caps);
     try (NewSessionPayload payload = new NewSessionPayload(Long.MAX_VALUE, new StringReader(json))) {
       assertEquals(ImmutableSet.of(Dialect.OSS), payload.getDownstreamDialects());
     }
@@ -214,7 +214,7 @@ public class NewSessionPayloadTest {
       presumablyFromMemory = payload.stream().collect(ImmutableList.toImmutableList());
     }
 
-    String json = new Json().toJson(source);
+    String json = new BeanToJsonConverter().convert(source);
     try (NewSessionPayload payload = new NewSessionPayload(Long.MAX_VALUE, new StringReader(json))) {
       fromDisk = payload.stream().collect(ImmutableList.toImmutableList());
     }
