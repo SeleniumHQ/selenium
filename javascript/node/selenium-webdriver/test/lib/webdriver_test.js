@@ -191,7 +191,10 @@ describe('WebDriver', function() {
       let executor = new FakeExecutor().
           expect(CName.NEW_SESSION).
           withParameters({
-            'desiredCapabilities': {'browserName': 'firefox'}
+            'desiredCapabilities': {'browserName': 'firefox'},
+            'capabilities': {
+              'alwaysMatch': {'browserName': 'firefox'},
+            },
           }).
           andReturnSuccess(aSession).
           end();
@@ -206,7 +209,12 @@ describe('WebDriver', function() {
       let aSession = new Session(SESSION_ID, {'browserName': 'firefox'});
       let executor = new FakeExecutor().
           expect(CName.NEW_SESSION).
-          withParameters({'desiredCapabilities': {'browserName': 'firefox'}}).
+          withParameters({
+            'desiredCapabilities': {'browserName': 'firefox'},
+            'capabilities': {
+              'alwaysMatch': {'browserName': 'firefox'},
+            },
+          }).
           andReturnSuccess(aSession).
           end();
 
@@ -220,7 +228,10 @@ describe('WebDriver', function() {
           expect(CName.NEW_SESSION).
           withParameters({
             'desiredCapabilities': {'foo': 'bar'},
-            'requiredCapabilities': {'bim': 'baz'}
+            'requiredCapabilities': {'bim': 'baz'},
+            'capabilities': {
+              'alwaysMatch': {'foo': 'bar', 'bim': 'baz'},
+            },
           }).
           andReturnSuccess(aSession).
           end();
@@ -234,7 +245,12 @@ describe('WebDriver', function() {
     it('failsToCreateSession', function() {
       let executor = new FakeExecutor().
           expect(CName.NEW_SESSION).
-          withParameters({'desiredCapabilities': {'browserName': 'firefox'}}).
+          withParameters({
+            'desiredCapabilities': {'browserName': 'firefox'},
+            'capabilities': {
+              'alwaysMatch': {'browserName': 'firefox'},
+            },
+          }).
           andReturnError(new StubError()).
           end();
 
@@ -247,7 +263,12 @@ describe('WebDriver', function() {
       let called = false;
       let executor = new FakeExecutor()
           .expect(CName.NEW_SESSION)
-          .withParameters({'desiredCapabilities': {'browserName': 'firefox'}})
+          .withParameters({
+            'desiredCapabilities': {'browserName': 'firefox'},
+            'capabilities': {
+              'alwaysMatch': {'browserName': 'firefox'},
+            },
+          })
           .andReturnError(new StubError())
           .end();
 
@@ -1610,7 +1631,12 @@ describe('WebDriver', function() {
       function runSerializeTest(input, want) {
         let executor = new FakeExecutor().
             expect(CName.NEW_SESSION).
-            withParameters({'desiredCapabilities': want}).
+            withParameters({
+              'desiredCapabilities': want,
+              'capabilities': {
+                'alwaysMatch': want,
+              },
+            }).
             andReturnSuccess({'browserName': 'firefox'}).
             end();
         return WebDriver.createSession(executor, input)

@@ -656,10 +656,18 @@ class WebDriver {
     let cmd = new command.Command(command.Name.NEW_SESSION);
 
     if (capabilities && (capabilities.desired || capabilities.required)) {
+      // For OSS remote ends.
       cmd.setParameter('desiredCapabilities', capabilities.desired);
       cmd.setParameter('requiredCapabilities', capabilities.required);
+      // For W3C remote ends.
+      let merged = new Capabilities(capabilities.desired);
+      merged.merge(capabilities.required);
+      cmd.setParameter('capabilities', {alwaysMatch: merged});
     } else {
+      // For OSS remote ends.
       cmd.setParameter('desiredCapabilities', capabilities);
+      // For W3C remote ends.
+      cmd.setParameter('capabilities', {alwaysMatch: capabilities});
     }
 
     let session = executeCommand(executor, cmd);

@@ -380,7 +380,7 @@ function normalizeProxyConfiguration(config) {
     }
   } else if ('pac' === config.proxyType) {
     if (config.proxyAutoconfigUrl && !config.pacUrl) {
-      config.pacUrl = config.proxyAutoconfigUrl;
+      config.proxyAutoconfigUrl = config.proxyAutoconfigUrl;
     }
   }
   return config;
