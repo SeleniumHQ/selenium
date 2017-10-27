@@ -144,9 +144,9 @@ class HttpClient {
  * @param {function(!Error)} onError The function to call if the request fails.
  * @param {?string=} opt_data The data to send with the request.
  * @param {?RequestOptions=} opt_proxy The proxy server to use for the request.
- * @param {!number=} retries The current number of retries.
+ * @param {number=} opt_retries The current number of retries.
  */
-function sendRequest(options, onOk, onError, opt_data, opt_proxy, retries) {
+function sendRequest(options, onOk, onError, opt_data, opt_proxy, opt_retries) {
   var hostname = options.hostname;
   var port = options.port;
 
@@ -227,14 +227,14 @@ function sendRequest(options, onOk, onError, opt_data, opt_proxy, retries) {
   });
 
   request.on('error', function(e) {
-    if (typeof retries === 'undefined') {
-      retries = 0;
+    if (typeof opt_retries === 'undefined') {
+      opt_retries = 0;
     }
 
-    if (shouldRetryRequest(retries, e)) {
-      retries += 1;
+    if (shouldRetryRequest(opt_retries, e)) {
+      opt_retries += 1;
       setTimeout(function() {
-        sendRequest(options, onOk, onError, opt_data, opt_proxy, retries);
+        sendRequest(options, onOk, onError, opt_data, opt_proxy, opt_retries);
       }, 15);
     } else {
       var message = e.message;
@@ -262,7 +262,7 @@ const MAX_RETRIES = 3;
  *
  * @param {!number} retries
  * @param {!Error} err
- * @return {!boolean}
+ * @return {boolean}
  */
 function shouldRetryRequest(retries, err) {
   return retries < MAX_RETRIES && isRetryableNetworkError(err);
@@ -270,7 +270,7 @@ function shouldRetryRequest(retries, err) {
 
 /**
  * @param {!Error} err
- * @return {!boolean}
+ * @return {boolean}
  */
 function isRetryableNetworkError(err) {
   if (err && err.code) {
