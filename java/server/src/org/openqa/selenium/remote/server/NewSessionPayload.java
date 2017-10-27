@@ -36,9 +36,7 @@ import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.json.JsonOutput;
-import org.openqa.selenium.remote.BeanToJsonConverter;
 import org.openqa.selenium.remote.Dialect;
-import org.openqa.selenium.remote.JsonToBeanConverter;
 
 import java.io.ByteArrayInputStream;
 import java.io.Closeable;
@@ -119,7 +117,7 @@ public class NewSessionPayload implements Closeable {
   public NewSessionPayload(Map<String, ?> source) throws IOException {
     Objects.requireNonNull(source, "Payload must be set");
 
-    String json = new BeanToJsonConverter().convert(source);
+    String json = new Json().toJson(source);
 
     Sources sources;
     long size = json.length() * 2;  // Each character takes two bytes
@@ -142,9 +140,7 @@ public class NewSessionPayload implements Closeable {
       sources = diskBackedSource(source);
     } else {
       this.root = null;
-      sources =
-          memoryBackedSource(
-              new JsonToBeanConverter().convert(Map.class, CharStreams.toString(source)));
+      sources = memoryBackedSource(new Json().toType(CharStreams.toString(source), Map.class));
     }
 
     validate(sources);
@@ -269,7 +265,7 @@ public class NewSessionPayload implements Closeable {
       }
     }
 
-    byte[] json = new BeanToJsonConverter().convert(source).getBytes(UTF_8);
+    byte[] json = new Json().toJson(source).getBytes(UTF_8);
 
     return new Sources(
         () -> new ByteArrayInputStream(json),

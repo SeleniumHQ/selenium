@@ -19,7 +19,7 @@ package org.openqa.selenium.remote.server.rest;
 
 import com.google.gson.JsonObject;
 
-import org.openqa.selenium.remote.BeanToJsonConverter;
+import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.SessionId;
@@ -83,7 +83,7 @@ class Responses {
     response.setState(ERROR_CODES.toState(response.getStatus()));
 
     if (reason != null) {
-      JsonObject json = new BeanToJsonConverter().convertObject(reason).getAsJsonObject();
+      JsonObject json = new Json().toJsonElement(reason).getAsJsonObject();
       json.addProperty("screen", screenshot.orElse(null));
       response.setValue(json);
     }

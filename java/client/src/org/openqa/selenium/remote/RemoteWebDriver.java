@@ -58,6 +58,7 @@ import org.openqa.selenium.internal.FindsByLinkText;
 import org.openqa.selenium.internal.FindsByName;
 import org.openqa.selenium.internal.FindsByTagName;
 import org.openqa.selenium.internal.FindsByXPath;
+import org.openqa.selenium.json.Json;
 import org.openqa.selenium.logging.LocalLogs;
 import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.logging.LoggingHandler;
@@ -748,7 +749,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
       Set<Cookie> toReturn = new HashSet<>();
 
       List<Map<String, Object>> cookies =
-          new JsonToBeanConverter().convert(List.class, returned);
+          new Json().toType(returned, List.class);
       if (cookies == null) {
         return toReturn;
       }

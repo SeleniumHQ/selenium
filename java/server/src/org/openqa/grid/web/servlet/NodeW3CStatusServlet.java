@@ -25,7 +25,7 @@ import static org.openqa.selenium.remote.ErrorCodes.SUCCESS;
 import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.internal.BuildInfo;
-import org.openqa.selenium.remote.BeanToJsonConverter;
+import org.openqa.selenium.json.Json;
 
 import java.io.IOException;
 import java.util.Map;
@@ -67,7 +67,7 @@ public class NodeW3CStatusServlet extends HttpServlet {
         "value", value.build());
 
     // Write out a minimal W3C status response.
-    byte[] payload = new BeanToJsonConverter().convert(payloadObj).getBytes(UTF_8);
+    byte[] payload = new Json().toJson(payloadObj).getBytes(UTF_8);
 
     resp.setStatus(HTTP_OK);
     resp.setHeader("Content-Type", JSON_UTF_8.toString());

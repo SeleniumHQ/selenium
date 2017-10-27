@@ -19,8 +19,8 @@ package org.openqa.selenium.testing.drivers;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.JsonToBeanConverter;
 import org.openqa.selenium.remote.LocalFileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.http.HttpClient;
@@ -83,7 +83,7 @@ public class GridSupplier implements Supplier<WebDriver> {
 
     // Keep polling the status page of the hub until it claims to be ready
     HttpClient client = new ApacheHttpClient.Factory().createClient(hub.getWebDriverUrl());
-    JsonToBeanConverter toBean = new JsonToBeanConverter();
+    Json json = new Json();
     Wait<HttpClient> wait = new FluentWait<>(client)
         .ignoring(RuntimeException.class)
         .withTimeout(30, TimeUnit.SECONDS);
@@ -95,7 +95,7 @@ public class GridSupplier implements Supplier<WebDriver> {
       } catch (IOException e) {
         throw new RuntimeException(e);
       }
-      Map<?, ?> value = toBean.convert(Map.class, response.getContentString());
+      Map<?, ?> value = json.toType(response.getContentString(), Map.class);
 
       return ((Map<?, ?>) value.get("value")).get("ready") == Boolean.TRUE;
     });

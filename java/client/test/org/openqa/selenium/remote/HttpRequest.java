@@ -27,6 +27,7 @@ import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.util.EntityUtils;
+import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.internal.HttpClientFactory;
 
 import java.io.IOException;
@@ -95,7 +96,7 @@ public class HttpRequest {
         post.addHeader("Content-Type", "application/json; charset=utf8");
 
         if (payload != null) {
-          String content = new BeanToJsonConverter().convert(payload);
+          String content = new Json().toJson(payload);
           post.setEntity(new StringEntity(content, "UTF-8"));
         }
         return post;
