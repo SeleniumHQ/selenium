@@ -28,6 +28,5 @@ import java.util.Map;
  * {@link GridHubConfiguration#capabilityMatcher}
  */
 public interface CapabilityMatcher {
-  public boolean matches(Map<String, Object> currentCapability,
-      Map<String, Object> requestedCapability);
+  boolean matches(Map<String, Object> currentCapability, Map<String, Object> requestedCapability);
 }

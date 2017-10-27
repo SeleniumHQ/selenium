@@ -23,7 +23,6 @@ import org.openqa.selenium.remote.CapabilityType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 /**
  * Default (naive) implementation of the capability matcher.
@@ -33,7 +32,6 @@ import java.util.logging.Logger;
  */
 public class DefaultCapabilityMatcher implements CapabilityMatcher {
 
-  private static final Logger log = Logger.getLogger(DefaultCapabilityMatcher.class.getName());
   private static final String GRID_TOKEN = "_";
 
   protected final List<String> toConsider = new ArrayList<>();
