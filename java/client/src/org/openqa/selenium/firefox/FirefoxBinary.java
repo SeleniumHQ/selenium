@@ -342,6 +342,10 @@ public class FirefoxBinary {
     return "FirefoxBinary(" + executable.getPath() + ")";
   }
 
+  public String toJson() {
+    return executable.getPath();
+  }
+
   public void setOutputWatcher(OutputStream stream) {
     this.stream = stream;
   }
