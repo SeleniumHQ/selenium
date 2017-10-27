@@ -25,6 +25,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.io.ByteStreams;
 
 //import org.apache.commons.io.output.NullOutputStream;
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.service.DriverService;
@@ -68,6 +69,27 @@ public class GeckoDriverService extends DriverService {
    */
   public static GeckoDriverService createDefaultService() {
     return new Builder().usingAnyFreePort().build();
+  }
+
+  static GeckoDriverService createDefaultService(Capabilities caps) {
+    Builder builder = new Builder().usingAnyFreePort();
+
+    Object binary = caps.getCapability(FirefoxDriver.BINARY);
+    if (binary != null) {
+      FirefoxBinary actualBinary;
+      if (binary instanceof FirefoxBinary) {
+        actualBinary = (FirefoxBinary) binary;
+      } else if (binary instanceof String) {
+        actualBinary = new FirefoxBinary(new File(String.valueOf(binary)));
+      } else {
+        throw new IllegalArgumentException(
+            "Expected binary to be a string or a binary: " + binary);
+      }
+
+      builder.usingFirefoxBinary(actualBinary);
+    }
+
+    return new Builder().build();
   }
 
   @Override
