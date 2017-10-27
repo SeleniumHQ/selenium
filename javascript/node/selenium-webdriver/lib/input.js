@@ -503,14 +503,14 @@ class PointerSequence extends Sequence {
    * {@linkplain ./webdriver.WebElement WebElement}.
    *
    * @param {{
-   *   x: number,
-   *   y: number,
+   *   x: (number|undefined),
+   *   y: (number|undefined),
    *   duration: (number|undefined),
    *   origin: (!Origin|!./webdriver.WebElement|undefined),
    * }} options the move options.
    * @return {!PointerSequence} a self reference.
    */
-  pointerMove({x, y, duration = 100, origin = Origin.VIEWPORT}) {
+  pointerMove({x = 0, y = 0, duration = 100, origin = Origin.VIEWPORT}) {
     this.actions_.push({
       type: ActionType.POINTER_MOVE,
       origin,
