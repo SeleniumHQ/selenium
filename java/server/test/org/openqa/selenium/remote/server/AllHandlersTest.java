@@ -34,7 +34,9 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 public class AllHandlersTest {
-  private AllHandlers allHandlers = new AllHandlers(new ActiveSessions(120, SECONDS));
+  private AllHandlers allHandlers = new AllHandlers(
+      NewSessionPipeline.builder().add(new ActiveSessionFactory()).create(),
+      new ActiveSessions(120, SECONDS));
 
   static class NoArgs implements CommandHandler {
     @Override

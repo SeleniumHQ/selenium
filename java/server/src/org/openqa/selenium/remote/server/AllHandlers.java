@@ -52,11 +52,13 @@ import javax.servlet.http.HttpServletRequest;
 class AllHandlers {
 
   private final Json json;
+  private final NewSessionPipeline pipeline;
   private final ActiveSessions allSessions;
 
   private final Map<HttpMethod, ImmutableList<Function<String, CommandHandler>>> additionalHandlers;
 
-  public AllHandlers(ActiveSessions allSessions) {
+  public AllHandlers(NewSessionPipeline pipeline, ActiveSessions allSessions) {
+    this.pipeline = pipeline;
     this.allSessions = Objects.requireNonNull(allSessions);
     this.json = new Json();
 
@@ -119,6 +121,7 @@ class AllHandlers {
       }
 
       ImmutableSet.Builder<Object> args = ImmutableSet.builder();
+      args.add(pipeline);
       args.add(allSessions);
       args.add(json);
       if (match.getParameters().containsKey("sessionId")) {

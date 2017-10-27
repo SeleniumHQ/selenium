@@ -34,10 +34,12 @@ import org.openqa.selenium.remote.server.log.LoggingManager;
 import org.openqa.selenium.remote.server.log.PerSessionLogHandler;
 import org.openqa.selenium.remote.server.xdrpc.CrossDomainRpc;
 import org.openqa.selenium.remote.server.xdrpc.CrossDomainRpcLoader;
+import org.openqa.selenium.remote.service.DriverService;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -45,6 +47,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Handler;
 import java.util.logging.Logger;
+import java.util.stream.Stream;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletInputStream;
@@ -57,6 +60,7 @@ public class WebDriverServlet extends HttpServlet {
 
   private static final Logger LOG = Logger.getLogger(WebDriverServlet.class.getName());
   public static final String ACTIVE_SESSIONS_KEY = WebDriverServlet.class.getName() + ".sessions";
+  public static final String NEW_SESSION_PIPELINE_KEY = WebDriverServlet.class.getName() + ".pipeline";
 
   private static final String CROSS_DOMAIN_RPC_PATH = "/xdrpc";
 
@@ -81,7 +85,42 @@ public class WebDriverServlet extends HttpServlet {
       getServletContext().setAttribute(ACTIVE_SESSIONS_KEY, allSessions);
     }
 
-    handlers = new AllHandlers(allSessions);
+    NewSessionPipeline pipeline =
+        (NewSessionPipeline) getServletContext().getAttribute(NEW_SESSION_PIPELINE_KEY);
+    if (pipeline == null) {
+      // Set up the pipeline to inject
+      SessionFactory fallback = Stream.of(
+          "org.openqa.selenium.chrome.ChromeDriverService",
+          "org.openqa.selenium.firefox.GeckoDriverService",
+          "org.openqa.selenium.edge.EdgeDriverService",
+          "org.openqa.selenium.ie.InternetExplorerDriverService",
+          "org.openqa.selenium.safari.SafariDriverService")
+          .filter(name -> {
+            try {
+              Class.forName(name).asSubclass(DriverService.class);
+              return true;
+            } catch (ReflectiveOperationException e) {
+              return false;
+            }
+          })
+          .findFirst()
+          .map(serviceName -> {
+            SessionFactory factory = new ServicedSession.Factory(serviceName);
+            return (SessionFactory) (dialects, caps) -> {
+              LOG.info("Using default factory: " + serviceName);
+              return factory.apply(dialects, caps);
+            };
+          })
+          .orElse((dialects, caps) -> Optional.empty());
+
+      pipeline = NewSessionPipeline.builder()
+          .add(new ActiveSessionFactory())
+          .fallback(fallback)
+          .create();
+      getServletContext().setAttribute(NEW_SESSION_PIPELINE_KEY, pipeline);
+    }
+
+    handlers = new AllHandlers(pipeline, allSessions);
   }
 
   private synchronized Logger configureLogging() {

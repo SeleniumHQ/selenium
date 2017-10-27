@@ -31,23 +31,17 @@ import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.server.ActiveSession;
-import org.openqa.selenium.remote.server.ActiveSessionFactory;
 import org.openqa.selenium.remote.server.ActiveSessions;
 import org.openqa.selenium.remote.server.CommandHandler;
 import org.openqa.selenium.remote.server.NewSessionPayload;
 import org.openqa.selenium.remote.server.NewSessionPipeline;
-import org.openqa.selenium.remote.server.ServicedSession;
-import org.openqa.selenium.remote.server.SessionFactory;
 import org.openqa.selenium.remote.server.log.LoggingManager;
-import org.openqa.selenium.remote.service.DriverService;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Stream;
 
 public class BeginSession implements CommandHandler {
 
@@ -57,38 +51,10 @@ public class BeginSession implements CommandHandler {
   private final ActiveSessions allSessions;
   private final Json json;
 
-  public BeginSession(ActiveSessions allSessions, Json json) {
-    this.json = json;
-
-    SessionFactory fallback = Stream.of(
-        "org.openqa.selenium.chrome.ChromeDriverService",
-        "org.openqa.selenium.firefox.GeckoDriverService",
-        "org.openqa.selenium.edge.EdgeDriverService",
-        "org.openqa.selenium.ie.InternetExplorerDriverService",
-        "org.openqa.selenium.safari.SafariDriverService")
-        .filter(name -> {
-          try {
-            Class.forName(name).asSubclass(DriverService.class);
-            return true;
-          } catch (ReflectiveOperationException e) {
-            return false;
-          }
-        })
-        .findFirst()
-        .map(serviceName -> {
-          SessionFactory factory = new ServicedSession.Factory(serviceName);
-          return (SessionFactory) (dialects, caps) -> {
-            LOG.info("Using default factory: " + serviceName);
-            return factory.apply(dialects, caps);
-          };
-        })
-        .orElse((dialects, caps) -> Optional.empty());
-
+  public BeginSession(NewSessionPipeline pipeline, ActiveSessions allSessions, Json json) {
+    this.pipeline = pipeline;
     this.allSessions = allSessions;
-    this.pipeline = NewSessionPipeline.builder()
-        .add(new ActiveSessionFactory())
-        .fallback(fallback)
-        .create();
+    this.json = json;
   }
 
   @Override
