@@ -28,12 +28,12 @@ import org.openqa.selenium.json.Json;
 import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.remote.NewSessionPayload;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.server.ActiveSession;
 import org.openqa.selenium.remote.server.ActiveSessions;
 import org.openqa.selenium.remote.server.CommandHandler;
-import org.openqa.selenium.remote.server.NewSessionPayload;
 import org.openqa.selenium.remote.server.NewSessionPipeline;
 import org.openqa.selenium.remote.server.log.LoggingManager;
 
@@ -73,7 +73,7 @@ public class BeginSession implements CommandHandler {
     try (Reader reader = new InputStreamReader(
         req.consumeContentStream(),
         req.getContentEncoding());
-         NewSessionPayload payload = new NewSessionPayload(contentLength, reader)) {
+         NewSessionPayload payload = NewSessionPayload.create(contentLength, reader)) {
       session = pipeline.createNewSession(payload);
       allSessions.put(session);
     }

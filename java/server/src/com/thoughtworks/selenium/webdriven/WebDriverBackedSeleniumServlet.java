@@ -32,7 +32,7 @@ import org.openqa.selenium.remote.server.ActiveSession;
 import org.openqa.selenium.remote.server.ActiveSessionFactory;
 import org.openqa.selenium.remote.server.ActiveSessionListener;
 import org.openqa.selenium.remote.server.ActiveSessions;
-import org.openqa.selenium.remote.server.NewSessionPayload;
+import org.openqa.selenium.remote.NewSessionPayload;
 import org.openqa.selenium.remote.server.NewSessionPipeline;
 import org.openqa.selenium.remote.server.WebDriverServlet;
 
@@ -215,8 +215,7 @@ public class WebDriverBackedSeleniumServlet extends HttpServlet {
           return;
       }
 
-      try (NewSessionPayload payload = new NewSessionPayload(
-          ImmutableMap.of("desiredCapabilities", caps.asMap()))) {
+      try (NewSessionPayload payload = NewSessionPayload.create(caps)) {
         ActiveSession session = pipeline.createNewSession(payload);
         sessions.put(session);
         sessionId = session.getId();

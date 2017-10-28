@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.remote.server;
+package org.openqa.selenium.remote;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.StandardOpenOption.CREATE;
@@ -25,6 +25,7 @@ import static org.openqa.selenium.json.Json.MAP_TYPE;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableSortedMap;
 import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.Ordering;
 import com.google.common.collect.Sets;
@@ -36,24 +37,38 @@ import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.json.JsonOutput;
-import org.openqa.selenium.remote.Dialect;
+import org.openqa.selenium.remote.session.CapabilitiesFilter;
+import org.openqa.selenium.remote.session.CapabilityTransform;
+import org.openqa.selenium.remote.session.ChromeFilter;
+import org.openqa.selenium.remote.session.EdgeFilter;
+import org.openqa.selenium.remote.session.FirefoxFilter;
+import org.openqa.selenium.remote.session.InternetExplorerFilter;
+import org.openqa.selenium.remote.session.OperaFilter;
+import org.openqa.selenium.remote.session.ProxyTransform;
+import org.openqa.selenium.remote.session.SafariFilter;
+import org.openqa.selenium.remote.session.StripAnyPlatform;
+import org.openqa.selenium.remote.session.W3CNameTransform;
+import org.openqa.selenium.remote.session.W3CPlatformNameNormaliser;
 
 import java.io.ByteArrayInputStream;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Reader;
-import java.io.StringReader;
 import java.io.UncheckedIOException;
 import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Queue;
+import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -67,6 +82,9 @@ import java.util.stream.Stream;
 public class NewSessionPayload implements Closeable {
 
   private static final Logger LOG = Logger.getLogger(NewSessionPayload.class.getName());
+
+  private final Set<CapabilitiesFilter> adapters;
+  private final Set<CapabilityTransform> transforms;
 
   private static final Dialect DEFAULT_DIALECT = Dialect.OSS;
   private final static Predicate<String> ACCEPTED_W3C_PATTERNS = Stream.of(
@@ -111,29 +129,23 @@ public class NewSessionPayload implements Closeable {
         "capabilities", ImmutableMap.of(
             "firstMatch", ImmutableList.of(w3cCaps.build())));
 
-    return new NewSessionPayload(builder.build());
+    return create(builder.build());
   }
 
-  public NewSessionPayload(Map<String, ?> source) throws IOException {
+  public static NewSessionPayload create(Map<String, ?> source) throws IOException {
     Objects.requireNonNull(source, "Payload must be set");
 
-    String json = new Json().toJson(source);
-
-    Sources sources;
-    long size = json.length() * 2;  // Each character takes two bytes
-    if (size > THRESHOLD || Runtime.getRuntime().freeMemory() < size) {
-      this.root = Files.createTempDirectory("new-session");
-      sources = diskBackedSource(new StringReader(json));
-    } else {
-      this.root = null;
-      sources = memoryBackedSource(source);
-    }
-
-    validate(sources);
-    this.sources = rewrite(sources);
+    byte[] json = new Json().toJson(source).getBytes(UTF_8);
+    return new NewSessionPayload(
+        json.length,
+        new InputStreamReader(new ByteArrayInputStream(json), UTF_8));
   }
 
-  public NewSessionPayload(long size, Reader source) throws IOException {
+  public static NewSessionPayload create(long size, Reader source) throws IOException {
+    return new NewSessionPayload(size, source);
+  }
+
+  private NewSessionPayload(long size, Reader source) throws IOException {
     Sources sources;
     if (size > THRESHOLD || Runtime.getRuntime().freeMemory() < size) {
       this.root = Files.createTempDirectory("new-session");
@@ -145,6 +157,63 @@ public class NewSessionPayload implements Closeable {
 
     validate(sources);
     this.sources = rewrite(sources);
+
+    ImmutableSet.Builder<CapabilitiesFilter> adapters = ImmutableSet.builder();
+    ServiceLoader.load(CapabilitiesFilter.class).forEach(adapters::add);
+    adapters
+        .add(new ChromeFilter())
+        .add(new EdgeFilter())
+        .add(new FirefoxFilter())
+        .add(new InternetExplorerFilter())
+        .add(new OperaFilter())
+        .add(new SafariFilter());
+    this.adapters = adapters.build();
+
+    ImmutableSet.Builder<CapabilityTransform> transforms = ImmutableSet.builder();
+    ServiceLoader.load(CapabilityTransform.class).forEach(transforms::add);
+    transforms
+        .add(new ProxyTransform())
+        .add(new StripAnyPlatform())
+        .add(new W3CPlatformNameNormaliser())
+        .add(new W3CNameTransform());
+    this.transforms = transforms.build();
+  }
+
+  public void writeTo(Appendable appendable) throws IOException {
+    try (JsonOutput json = new Json().newOutput(appendable)) {
+      json.beginObject();
+
+      @SuppressWarnings("unchecked")
+      Map<String, Object> first = (Map<String, Object>) stream().findFirst()
+          .orElse(new ImmutableCapabilities())
+          .asMap();
+
+      // Write the first capability we get as the desired capability.
+      json.name("desiredCapabilities");
+      json.write(first, Json.MAP_TYPE);
+
+      // And write the first capability for gecko13
+      json.name("capabilities");
+      json.beginObject();
+
+      json.name("desiredCapabilities");
+      json.write(first, Json.MAP_TYPE);
+
+      // Then write everything into the w3c payload. Because of the way we do this, it's easiest
+      // to just populate the "firstMatch" section. The spec says it's fine to omit the
+      // "alwaysMatch" field, so we do this.
+      json.name("firstMatch");
+      json.beginArray();
+      //noinspection unchecked
+      stream()
+          .map(Capabilities::asMap)
+          .map(map -> (Map<String, Object>) map)
+          .forEach(map -> streamW3CProtocolParameters(json, map));
+      json.endArray();
+
+      json.endObject();  // Close "capabilities" object
+      json.endObject();
+    }
   }
 
   private void validate(Sources sources) {
@@ -179,6 +248,91 @@ public class NewSessionPayload implements Closeable {
       throw new IllegalArgumentException(
           "W3C payload contained keys that do not comply with the spec: " + badKeys);
     }
+  }
+
+  private void streamW3CProtocolParameters(JsonOutput out, Map<String, Object> des) {
+    // Technically we should be building up a combination of "alwaysMatch" and "firstMatch" options.
+    // We're going to do a little processing to figure out what we might be able to do, and assume
+    // that people don't really understand the difference between required and desired (which is
+    // commonly the case). Wish us luck. Looking at the current implementations, people may have
+    // set options for multiple browsers, in which case a compliant W3C remote end won't start
+    // a session. If we find this, then we create multiple firstMatch capabilities. Furrfu.
+    // The table of options are:
+    //
+    // Chrome: chromeOptions
+    // Firefox: moz:.*, firefox_binary, firefox_profile, marionette
+    // Edge: none given
+    // IEDriver: ignoreZoomSetting, initialBrowserUrl, enableElementCacheCleanup,
+    //   browserAttachTimeout, enablePersistentHover, requireWindowFocus, logFile, logLevel, host,
+    //   extractPath, silent, ie.*
+    // Opera: operaOptions
+    // SafariDriver: safari.options
+    //
+    // We can't use the constants defined in the classes because it would introduce circular
+    // dependencies between the remote library and the implementations. Yay!
+
+    ImmutableList<Map<String, Object>> firstMatch = adapters.stream()
+        .map(adapter -> adapter.apply(des))
+        .filter(Objects::nonNull)
+        .map(this::applyTransforms)
+        .filter(w3cCaps -> !w3cCaps.isEmpty())
+        .collect(ImmutableList.toImmutableList());
+
+    Set<String> excludedKeys = firstMatch.stream()
+        .map(Map::keySet)
+        .flatMap(Collection::stream)
+        .distinct()
+        .collect(ImmutableSet.toImmutableSet());
+
+    Map<String, Object> alwaysMatch = applyTransforms(des).entrySet().stream()
+        .filter(entry -> !excludedKeys.contains(entry.getKey()))
+        .filter(entry -> entry.getValue() != null)
+        .collect(ImmutableSortedMap.toImmutableSortedMap(
+            Ordering.natural(),
+            Map.Entry::getKey,
+            Map.Entry::getValue));
+
+    firstMatch.stream()
+        .map(first -> ImmutableSortedMap.naturalOrder().putAll(alwaysMatch).putAll(first).build())
+        .forEach(map -> out.write(map, MAP_TYPE));
+  }
+
+  private Map<String, Object> applyTransforms(Map<String, Object> caps) {
+    Queue<Map.Entry<String, Object>> toExamine = new LinkedList<>();
+    toExamine.addAll(caps.entrySet());
+    Set<String> seenKeys = new HashSet<>();
+    Map<String, Object> toReturn = new TreeMap<>();
+
+    // Take each entry and apply the transforms
+    while (!toExamine.isEmpty()) {
+      Map.Entry<String, Object> entry = toExamine.remove();
+      seenKeys.add(entry.getKey());
+
+      if (entry.getValue() == null) {
+        continue;
+      }
+
+      for (CapabilityTransform transform : transforms) {
+        Collection<Map.Entry<String, Object>> result = transform.apply(entry);
+        if (result == null) {
+          toReturn.remove(entry.getKey());
+          break;
+        }
+
+        for (Map.Entry<String, Object> newEntry : result) {
+          if (!seenKeys.contains(newEntry.getKey())) {
+            toExamine.add(newEntry);
+          } else {
+            if (newEntry.getKey().equals(entry.getKey())) {
+              entry = newEntry;
+            }
+            toReturn.put(newEntry.getKey(), newEntry.getValue());
+          }
+        }
+      }
+    }
+
+    return toReturn;
   }
 
   /**
@@ -432,7 +586,6 @@ public class NewSessionPayload implements Closeable {
       FileHandler.delete(root.toAbsolutePath().toFile());
     }
   }
-
 
   private static class Sources {
 

@@ -31,6 +31,7 @@ import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.Dialect;
+import org.openqa.selenium.remote.NewSessionPayload;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -44,12 +45,12 @@ public class NewSessionPayloadTest {
     ImmutableMap<String, ImmutableMap<String, String>> caps = ImmutableMap.of(
         "desiredCapabilities", ImmutableMap.of("browserName", "cheese"));
 
-    try (NewSessionPayload payload = new NewSessionPayload(caps)) {
+    try (NewSessionPayload payload = NewSessionPayload.create(caps)) {
       assertEquals(ImmutableSet.of(Dialect.OSS), payload.getDownstreamDialects());
     }
 
     String json = new Json().toJson(caps);
-    try (NewSessionPayload payload = new NewSessionPayload(Long.MAX_VALUE, new StringReader(json))) {
+    try (NewSessionPayload payload = NewSessionPayload.create(Long.MAX_VALUE, new StringReader(json))) {
       assertEquals(ImmutableSet.of(Dialect.OSS), payload.getDownstreamDialects());
     }
   }
@@ -60,12 +61,12 @@ public class NewSessionPayloadTest {
         "capabilities", ImmutableMap.of(
             "alwaysMatch", ImmutableMap.of("browserName", "cheese")));
 
-    try (NewSessionPayload payload = new NewSessionPayload(caps)) {
+    try (NewSessionPayload payload = NewSessionPayload.create(caps)) {
       assertEquals(ImmutableSet.of(Dialect.W3C), payload.getDownstreamDialects());
     }
 
     String json = new Json().toJson(caps);
-    try (NewSessionPayload payload = new NewSessionPayload(Long.MAX_VALUE, new StringReader(json))) {
+    try (NewSessionPayload payload = NewSessionPayload.create(Long.MAX_VALUE, new StringReader(json))) {
       assertEquals(ImmutableSet.of(Dialect.W3C), payload.getDownstreamDialects());
     }
   }
@@ -73,12 +74,12 @@ public class NewSessionPayloadTest {
   @Test
   public void shouldDefaultToAssumingADownstreamOssDialect() throws IOException {
     ImmutableMap<String, Object> caps = ImmutableMap.of();
-    try (NewSessionPayload payload = new NewSessionPayload(caps)) {
+    try (NewSessionPayload payload = NewSessionPayload.create(caps)) {
       assertEquals(ImmutableSet.of(Dialect.OSS), payload.getDownstreamDialects());
     }
 
     String json = new Json().toJson(caps);
-    try (NewSessionPayload payload = new NewSessionPayload(Long.MAX_VALUE, new StringReader(json))) {
+    try (NewSessionPayload payload = NewSessionPayload.create(Long.MAX_VALUE, new StringReader(json))) {
       assertEquals(ImmutableSet.of(Dialect.OSS), payload.getDownstreamDialects());
     }
   }
@@ -210,12 +211,12 @@ public class NewSessionPayloadTest {
     List<Capabilities> presumablyFromMemory;
     List<Capabilities> fromDisk;
 
-    try (NewSessionPayload payload = new NewSessionPayload(source)) {
+    try (NewSessionPayload payload = NewSessionPayload.create(source)) {
       presumablyFromMemory = payload.stream().collect(ImmutableList.toImmutableList());
     }
 
     String json = new Json().toJson(source);
-    try (NewSessionPayload payload = new NewSessionPayload(Long.MAX_VALUE, new StringReader(json))) {
+    try (NewSessionPayload payload = NewSessionPayload.create(Long.MAX_VALUE, new StringReader(json))) {
       fromDisk = payload.stream().collect(ImmutableList.toImmutableList());
     }
 

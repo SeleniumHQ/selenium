@@ -22,15 +22,14 @@ import static org.junit.Assert.assertTrue;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.gson.reflect.TypeToken;
 
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.remote.NewSessionPayload;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
 
@@ -124,7 +123,7 @@ public class SyntheticNewSessionPayloadTest {
               ImmutableMap.of("browserName", "edge"),
               ImmutableMap.of("browserName", "cheese"))));
 
-    try (NewSessionPayload newSession = new NewSessionPayload(payload)) {
+    try (NewSessionPayload newSession = NewSessionPayload.create(payload)) {
       List<Capabilities> allCaps = newSession.stream().collect(ImmutableList.toImmutableList());
 
       assertEquals(3, allCaps.size());
@@ -151,7 +150,7 @@ public class SyntheticNewSessionPayloadTest {
 //  }
 
   private List<Capabilities> getCapabilities(Map<String, Object> payload) {
-    try (NewSessionPayload newSessionPayload = new NewSessionPayload(payload)) {
+    try (NewSessionPayload newSessionPayload = NewSessionPayload.create(payload)) {
       return newSessionPayload.stream().collect(ImmutableList.toImmutableList());
     } catch (IOException e) {
       throw new UncheckedIOException(e);

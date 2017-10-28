@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
+import org.openqa.selenium.remote.NewSessionPayload;
 
 import java.io.IOException;
 import java.util.LinkedList;

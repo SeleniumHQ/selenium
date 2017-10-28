@@ -23,7 +23,7 @@ import org.openqa.grid.common.exception.GridException;
 import org.openqa.grid.internal.ExternalSessionKey;
 import org.openqa.grid.internal.Registry;
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.remote.server.NewSessionPayload;
+import org.openqa.selenium.remote.NewSessionPayload;
 
 import java.io.Reader;
 import java.io.StringReader;
@@ -65,7 +65,7 @@ public class WebDriverRequest extends SeleniumBasedRequest {
     String json = getBody();
 
     try (Reader in = new StringReader(json);
-         NewSessionPayload payload = new NewSessionPayload(json.getBytes(UTF_8).length, in)) {
+         NewSessionPayload payload = NewSessionPayload.create(json.getBytes(UTF_8).length, in)) {
       Capabilities caps = payload.stream()
           .findFirst()
           .orElseThrow(() -> new GridException("No capabilities found in request: " + json));
