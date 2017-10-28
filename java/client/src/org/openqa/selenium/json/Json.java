@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.json;
 
+import com.google.common.io.CharStreams;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
@@ -31,7 +32,6 @@ import com.google.gson.stream.JsonWriter;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.UncheckedIOException;
-import java.io.Writer;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.LinkedList;
@@ -103,9 +103,9 @@ public class Json {
     return new JsonInput(GSON, GSON.newJsonReader(from));
   }
 
-  public JsonOutput newOutput(Writer to) throws UncheckedIOException {
+  public JsonOutput newOutput(Appendable to) throws UncheckedIOException {
     try {
-      return new JsonOutput(toJson, GSON.newJsonWriter(to));
+      return new JsonOutput(toJson, GSON.newJsonWriter(CharStreams.asWriter(to)));
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }
