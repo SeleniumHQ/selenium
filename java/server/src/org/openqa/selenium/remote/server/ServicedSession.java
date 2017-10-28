@@ -22,6 +22,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.StandardSystemProperty;
+import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -211,7 +212,8 @@ public class ServicedSession implements ActiveSession {
 
         HttpClient client = new ApacheHttpClient.Factory().createClient(url);
 
-        Command command = new Command(null, DriverCommand.NEW_SESSION, capabilities.asMap());
+        Command command = new Command(null, DriverCommand.NEW_SESSION,
+                                      ImmutableMap.of("desiredCapabilities", capabilities));
 
         ProtocolHandshake.Result result = new ProtocolHandshake().createSession(client, command);
 
