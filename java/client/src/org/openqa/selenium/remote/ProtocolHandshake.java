@@ -29,6 +29,8 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSortedMap;
 import com.google.common.collect.Ordering;
+import com.google.common.io.CountingOutputStream;
+import com.google.common.io.FileBackedOutputStream;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -56,11 +58,10 @@ import org.openqa.selenium.remote.session.W3CNameTransform;
 import org.openqa.selenium.remote.session.W3CPlatformNameNormaliser;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -109,16 +110,15 @@ public class ProtocolHandshake {
     Capabilities desired = (Capabilities) command.getParameters().get("desiredCapabilities");
     desired = desired == null ? new ImmutableCapabilities() : desired;
 
-    @SuppressWarnings("unchecked") Map<String, Object> des = (Map<String, Object>) desired.asMap();
+    @SuppressWarnings("unchecked")
+    Map<String, Object> des = (Map<String, Object>) desired.asMap();
 
-    // We don't know how large the generated JSON is going to be. Spool it to disk, and then read
-    // the file size, then stream it to the remote end. If we could be sure the remote end could
-    // cope with chunked requests we'd use those. I don't think we can. *sigh*
-    Path jsonFile = Files.createTempFile("new-session", ".json");
-
+    int threshold = (int) Math.min(Runtime.getRuntime().freeMemory() / 10, Integer.MAX_VALUE);
+    FileBackedOutputStream os = new FileBackedOutputStream(threshold);
     try (
-        BufferedWriter fileWriter = Files.newBufferedWriter(jsonFile, UTF_8);
-        JsonOutput out = new Json().newOutput(fileWriter)) {
+        CountingOutputStream counter = new CountingOutputStream(os);
+        Writer writer = new OutputStreamWriter(os, UTF_8);
+        JsonOutput out = new Json().newOutput(writer)) {
       out.beginObject();
 
       streamJsonWireProtocolParameters(out, des);
@@ -132,11 +132,10 @@ public class ProtocolHandshake {
       out.endObject();
       out.close();
 
-      long size = Files.size(jsonFile);
-      try (InputStream rawIn = Files.newInputStream(jsonFile);
+      try (InputStream rawIn = os.asByteSource().openBufferedStream();
            BufferedInputStream contentStream = new BufferedInputStream(rawIn)) {
         LOG.fine("Attempting multi-dialect session, assuming Postel's Law holds true on the remote end");
-        Optional<Result> result = createSession(client, contentStream, size);
+        Optional<Result> result = createSession(client, contentStream, counter.getCount());
 
         if (result.isPresent()) {
           Result toReturn = result.get();
@@ -145,7 +144,7 @@ public class ProtocolHandshake {
         }
       }
     } finally {
-      Files.deleteIfExists(jsonFile);
+      os.reset();
     }
 
     throw new SessionNotCreatedException(
