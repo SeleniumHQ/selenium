@@ -461,11 +461,11 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   @NeedsFreshDriver
   @NoDriverAfterTest
   @Test
-  @Ignore(value = ALL, reason = "Failure indicates hang condition, which would break the" +
-                                " test suite. Really needs a timeout set.")
-  public void testShouldThrowExceptionIfExecutingOnNoPage() {
-    Throwable t = catchThrowable(() -> executeScript("return 1;"));
-    assertThat(t, instanceOf(WebDriverException.class));
+  @NotYetImplemented(value = HTMLUNIT,
+      reason = "HtmlUnit: can't execute JavaScript before a page is loaded")
+  public void testShouldBeAbleToExecuteScriptOnNoPage() {
+    String text = (String) executeScript("return 'test';");
+    assertEquals(text, "test");
   }
 
   @Test
