@@ -17,6 +17,8 @@
 
 package org.openqa.grid.web.servlet.handler;
 
+import com.google.common.collect.ImmutableMap;
+
 import org.openqa.grid.common.exception.ClientGoneException;
 import org.openqa.grid.common.exception.GridException;
 import org.openqa.grid.internal.ExternalSessionKey;
@@ -27,6 +29,7 @@ import org.openqa.grid.internal.TestSession;
 import org.openqa.grid.internal.exception.NewSessionException;
 import org.openqa.grid.internal.listeners.TestSessionListener;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.NewSessionPayload;
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
@@ -79,7 +82,11 @@ public class RequestHandler implements Comparable<RequestHandler> {
    */
   public void forwardNewSessionRequestAndUpdateRegistry(TestSession session)
       throws NewSessionException {
-    try {
+    try (NewSessionPayload payload = NewSessionPayload.create(
+        ImmutableMap.of("desiredCapabilities", session.getRequestedCapabilities()))) {
+      StringBuilder json = new StringBuilder();
+      payload.writeTo(json);
+      request.setBody(payload.toString());
       session.forward(getRequest(), getResponse(), true);
     } catch (IOException e) {
       //log.warning("Error forwarding the request " + e.getMessage());
