@@ -23,6 +23,7 @@ const path = require('path');
 const error = require('../../lib/error');
 const firefox = require('../../firefox');
 const io = require('../../io');
+const {Browser} = require('../../');
 const {Context} = require('../../firefox');
 const {Pages, suite, ignore} = require('../../lib/test');
 
@@ -32,18 +33,35 @@ const WEBEXTENSION_EXTENSION =
 
 suite(function(env) {
   describe('firefox', function() {
+    let driver;
+
+    beforeEach(function() {
+      driver = null;
+    });
+
+    afterEach(function() {
+      return driver && driver.quit();
+    });
+
+    /**
+     * Runs a test that requires Firefox Developer Edition. The test will be
+     * skipped if dev cannot be found on the current system.
+     */
+    function runWithFirefoxDev(options, testFn) {
+      return firefox.Channel.AURORA.locate().then(async (exe) => {
+        options = options || new firefox.Options();
+        options.setBinary(exe);
+        driver = await env.builder()
+            .setFirefoxOptions(options)
+            .build();
+        return testFn();
+      }, err => {
+        console.warn(
+            'Skipping test: could not find Firefox Dev Edition: ' + err);
+      });
+    }
+
     describe('Options', function() {
-      let driver;
-
-      beforeEach(function() {
-        driver = null;
-      });
-
-      afterEach(function() {
-        if (driver) {
-          return driver.quit();
-        }
-      });
 
       /**
        * @param {...string} extensions the extensions to install.
@@ -54,23 +72,6 @@ suite(function(env) {
         profile.setPreference('xpinstall.signatures.required', false);
         extensions.forEach(ext => profile.addExtension(ext));
         return profile;
-      }
-
-      /**
-       * Runs a test that requires Firefox Developer Edition. The test will be
-       * skipped if dev cannot be found on the current system.
-       */
-      function runWithFirefoxDev(options, testFn) {
-        return firefox.Channel.AURORA.locate().then(async (exe) => {
-          options.setBinary(exe);
-          driver = await env.builder()
-              .setFirefoxOptions(options)
-              .build();
-          return testFn();
-        }, err => {
-          console.warn(
-              'Skipping test: could not find Firefox Dev Edition: ' + err);
-        });
       }
 
       describe('can start Firefox with custom preferences', function() {
@@ -116,16 +117,8 @@ suite(function(env) {
     });
 
     describe('context switching', function() {
-      var driver;
-
       beforeEach(async function() {
         driver = await env.builder().build();
-      });
-
-      afterEach(function() {
-        if (driver) {
-          return driver.quit();
-        }
       });
 
       it('can get context', async function() {
@@ -149,5 +142,36 @@ suite(function(env) {
       });
     });
 
+    it('addons can be installed and uninstalled at runtime', function() {
+      return runWithFirefoxDev(null, async function() {
+        const locator = {id: 'webextensions-selenium-example'};
+
+        await driver.get(Pages.echoPage);
+        await verifyExtensionFooterNotPresent();
+
+        let id = await driver.installAddon(WEBEXTENSION_EXTENSION);
+
+        await driver.get(Pages.echoPage);
+        await verifyExtensionFooterIsPresent();
+
+        await driver.uninstallAddon(id);
+        await driver.get(Pages.echoPage);
+        await verifyExtensionFooterNotPresent();
+
+        async function verifyExtensionFooterNotPresent() {
+          let found = await driver.findElements(locator);
+          assert.equal(found.length, 0);
+        }
+
+        async function verifyExtensionFooterIsPresent() {
+          let footer =
+              await driver.findElement({id: 'webextensions-selenium-example'});
+          let text = await footer.getText();
+          assert.equal(
+              text, 'Content injected by webextensions-selenium-example');
+        }
+      });
+    });
+
   });
-}, {browsers: ['firefox']});
+}, {browsers: [Browser.FIREFOX]});

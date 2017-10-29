@@ -69,6 +69,9 @@ mode.
 *  Changes to the `Builder` class:
    -  Removed setEnableNativeEvents
    -  Removed setScrollBehavior
+*  Changes to `firefox.Driver`
+   -  Added installAddon(path)
+   -  Added uninstallAddon(id)
 *  Changes to `firefox.Options`
    -  Removed setLoggingPreferences (was a no-op)
 *  Changes to `safari.Options`

@@ -123,17 +123,17 @@
 const path = require('path');
 const url = require('url');
 
-const {Profile} = require('./profile');
+const capabilities = require('../lib/capabilities');
+const command = require('../lib/command');
+const exec = require('../io/exec');
 const http = require('../http');
 const httpUtil = require('../http/util');
 const io = require('../io');
-const exec = require('../io/exec');
-const capabilities = require('../lib/capabilities');
-const command = require('../lib/command');
-const webdriver = require('../lib/webdriver');
 const net = require('../net');
 const portprober = require('../net/portprober');
 const remote = require('../remote');
+const webdriver = require('../lib/webdriver');
+const {Profile} = require('./profile');
 
 
 /**
@@ -391,6 +391,8 @@ function normalizeProxyConfiguration(config) {
 const ExtensionCommand = {
   GET_CONTEXT: 'getContext',
   SET_CONTEXT: 'setContext',
+  INSTALL_ADDON: 'install addon',
+  UNINSTALL_ADDON: 'uninstall addon',
 };
 
 
@@ -421,6 +423,16 @@ function configureExecutor(executor) {
       ExtensionCommand.SET_CONTEXT,
       'POST',
       '/session/:sessionId/moz/context');
+
+  executor.defineCommand(
+      ExtensionCommand.INSTALL_ADDON,
+      'POST',
+      '/session/:sessionId/moz/addon/install');
+
+  executor.defineCommand(
+      ExtensionCommand.UNINSTALL_ADDON,
+      'POST',
+      '/session/:sessionId/moz/addon/uninstall');
 }
 
 
@@ -546,6 +558,40 @@ class Driver extends webdriver.WebDriver {
     return this.execute(
         new command.Command(ExtensionCommand.SET_CONTEXT)
             .setParameter("context", ctx));
+  }
+
+  /**
+   * Installs a new addon with the current session. This function will return an
+   * ID that may later be used to {@linkplain #uninstallAddon uninstall} the
+   * addon.
+   *
+   *
+   * @param {string} path Path on the local filesystem to the web extension to
+   *     install.
+   * @return {!Promise<string>} A promise that will resolve to an ID for the
+   *     newly installed addon.
+   * @see #uninstallAddon
+   */
+  async installAddon(path) {
+    let buf = await io.read(path);
+    return this.execute(
+        new command.Command(ExtensionCommand.INSTALL_ADDON)
+            .setParameter('addon', buf.toString('base64')));
+  }
+
+  /**
+   * Uninstalls an addon from the current browser session's profile.
+   *
+   * @param {(string|!Promise<string>)} id ID of the addon to uninstall.
+   * @return {!Promise} A promise that will resolve when the operation has
+   *     completed.
+   * @see #installAddon
+   */
+  async uninstallAddon(id) {
+    id = await Promise.resolve(id);
+    return this.execute(
+        new command.Command(ExtensionCommand.UNINSTALL_ADDON)
+            .setParameter('id', id));
   }
 }
 
