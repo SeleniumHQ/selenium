@@ -53,7 +53,7 @@ public class Color {
     );
   }
 
-  Color(int red, int green, int blue, double alpha) {
+  public Color(int red, int green, int blue, double alpha) {
     this.red = red;
     this.green = green;
     this.blue = blue;
