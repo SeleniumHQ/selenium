@@ -205,51 +205,6 @@ class Profile {
   }
 
   /**
-   * Specifies which host the driver should listen for commands on. If not
-   * specified, the driver will default to "localhost". This option should be
-   * specified when "localhost" is not mapped to the loopback address
-   * (127.0.0.1) in `/etc/hosts`.
-   *
-   * @param {string} host the host the driver should listen for commands on
-   */
-  setHost(host) {
-    this.preferences_['webdriver_firefox_allowed_hosts'] = host;
-  }
-
-  /**
-   * @return {boolean} Whether the FirefoxDriver is configured to automatically
-   *     accept untrusted SSL certificates.
-   */
-  acceptUntrustedCerts() {
-    return !!this.preferences_['webdriver_accept_untrusted_certs'];
-  }
-
-  /**
-   * Sets whether the FirefoxDriver should automatically accept untrusted SSL
-   * certificates.
-   * @param {boolean} value .
-   */
-  setAcceptUntrustedCerts(value) {
-    this.preferences_['webdriver_accept_untrusted_certs'] = !!value;
-  }
-
-  /**
-   * Sets whether to assume untrusted certificates come from untrusted issuers.
-   * @param {boolean} value .
-   */
-  setAssumeUntrustedCertIssuer(value) {
-    this.preferences_['webdriver_assume_untrusted_issuer'] = !!value;
-  }
-
-  /**
-   * @return {boolean} Whether to assume untrusted certs come from untrusted
-   *     issuers.
-   */
-  assumeUntrustedCertIssuer() {
-    return !!this.preferences_['webdriver_assume_untrusted_issuer'];
-  }
-
-  /**
    * Writes this profile to disk.
    * @return {!Promise<string>} A promise for the path to the new profile
    *     directory.

@@ -74,6 +74,13 @@ mode.
    -  Added uninstallAddon(id)
 *  Changes to `firefox.Options`
    -  Removed setLoggingPreferences (was a no-op)
+*  Changes to `firefox.Profile`
+   -  Removed no-op methods
+      -  acceptUntrustedCerts
+      -  assumeUntrustedCertIssuer
+      -  setAcceptUntrustedCerts
+      -  setAssumeUntrustedCertIssuer
+      -  setHost
 *  Changes to `safari.Options`
    -  Removed setCleanSession (was a no-op)
    -  Removed setLoggingPreferences (was a no-op)
