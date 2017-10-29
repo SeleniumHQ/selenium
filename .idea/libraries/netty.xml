@@ -3,7 +3,6 @@
     <CLASSES>
       <root url="jar://$PROJECT_DIR$/third_party/java/netty/netty-3.5.7.Final.jar!/" />
     </CLASSES>
-    <JAVADOC />
     <SOURCES>
       <root url="jar://$PROJECT_DIR$/third_party/java/netty/netty-3.5.7.Final-src.jar!/" />
     </SOURCES>

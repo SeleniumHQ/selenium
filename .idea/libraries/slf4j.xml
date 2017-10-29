@@ -4,7 +4,6 @@
       <root url="jar://$PROJECT_DIR$/third_party/java/slf4j/slf4j-api-1.6.6.jar!/" />
       <root url="jar://$PROJECT_DIR$/third_party/java/slf4j/slf4j-jdk14-1.6.6.jar!/" />
     </CLASSES>
-    <JAVADOC />
     <SOURCES />
   </library>
 </component>

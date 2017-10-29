@@ -3,7 +3,6 @@
     <CLASSES>
       <root url="jar://$PROJECT_DIR$/third_party/java/junit/junit-4.12.jar!/" />
     </CLASSES>
-    <JAVADOC />
     <SOURCES>
       <root url="jar://$PROJECT_DIR$/third_party/java/junit/junit-4.12-sources.jar!/" />
     </SOURCES>

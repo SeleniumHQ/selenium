@@ -3,7 +3,6 @@
     <CLASSES>
       <root url="jar://$PROJECT_DIR$/third_party/java/mockito/mockito-core-1.9.5.jar!/" />
     </CLASSES>
-    <JAVADOC />
     <SOURCES>
       <root url="jar://$PROJECT_DIR$/third_party/java/mockito/mockito-core-1.9.5-srcs.jar!/" />
     </SOURCES>

@@ -3,7 +3,6 @@
     <CLASSES>
       <root url="jar://$PROJECT_DIR$/third_party/java/commons-collections/commons-collections-3.2.2.jar!/" />
     </CLASSES>
-    <JAVADOC />
     <SOURCES>
       <root url="jar://$PROJECT_DIR$/third_party/java/commons-collections/commons-collections-3.2.2-sources.jar!/" />
     </SOURCES>

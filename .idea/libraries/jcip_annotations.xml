@@ -3,7 +3,6 @@
     <CLASSES>
       <root url="jar://$PROJECT_DIR$/third_party/java/jcip_annotations/jcip-annotations-1.0.jar!/" />
     </CLASSES>
-    <JAVADOC />
     <SOURCES>
       <root url="jar://$PROJECT_DIR$/third_party/java/jcip_annotations/jcip-annotations-1.0-sources.jar!/" />
     </SOURCES>

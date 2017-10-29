@@ -3,7 +3,6 @@
     <CLASSES>
       <root url="jar://$PROJECT_DIR$/third_party/java/little_proxy/littleproxy-0.5.3.jar!/" />
     </CLASSES>
-    <JAVADOC />
     <SOURCES>
       <root url="jar://$PROJECT_DIR$/third_party/java/little_proxy/littleproxy-0.5.3-sources.jar!/" />
     </SOURCES>

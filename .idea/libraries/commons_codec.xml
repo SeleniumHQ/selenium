@@ -3,7 +3,6 @@
     <CLASSES>
       <root url="jar://$PROJECT_DIR$/third_party/java/commons-codec/commons-codec-1.10.jar!/" />
     </CLASSES>
-    <JAVADOC />
     <SOURCES>
       <root url="jar://$PROJECT_DIR$/third_party/java/commons-codec/commons-codec-1.10-sources.jar!/" />
     </SOURCES>
