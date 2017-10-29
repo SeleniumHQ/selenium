@@ -119,18 +119,94 @@
 const path = require('path');
 const url = require('url');
 
-const capabilities = require('../lib/capabilities');
-const command = require('../lib/command');
-const exec = require('../io/exec');
-const extension = require('./extension');
-const http = require('../http');
-const httpUtil = require('../http/util');
-const io = require('../io');
-const net = require('../net');
-const portprober = require('../net/portprober');
-const remote = require('../remote');
-const webdriver = require('../lib/webdriver');
-const {Zip} = require('../io/zip');
+const capabilities = require('./lib/capabilities');
+const command = require('./lib/command');
+const exec = require('./io/exec');
+const http = require('./http');
+const httpUtil = require('./http/util');
+const io = require('./io');
+const net = require('./net');
+const portprober = require('./net/portprober');
+const remote = require('./remote');
+const webdriver = require('./lib/webdriver');
+const zip = require('./io/zip');
+const {Zip} = require('./io/zip');
+
+
+/**
+ * Thrown when there an add-on is malformed.
+ * @final
+ */
+class AddonFormatError extends Error {
+  /** @param {string} msg The error message. */
+  constructor(msg) {
+    super(msg);
+    /** @override */
+    this.name = this.constructor.name;
+  }
+}
+
+
+/**
+ * Installs an extension to the given directory.
+ * @param {string} extension Path to the xpi extension file to install.
+ * @param {string} dir Path to the directory to install the extension in.
+ * @return {!Promise<string>} A promise for the add-on ID once
+ *     installed.
+ */
+async function installExtension(extension, dir) {
+  if (extension.slice(-4) !== '.xpi') {
+    throw Error('Path ath is not a xpi file: ' + extension);
+  }
+
+  let archive = await zip.load(extension);
+  if (!archive.has('manifest.json')) {
+    throw new AddonFormatError(`Couldn't find manifest.json in ${extension}`);
+  }
+
+  let buf = await archive.getFile('manifest.json');
+  let {applications} =
+      /** @type {{applications:{gecko:{id:string}}}} */(
+          JSON.parse(buf.toString('utf8')));
+  if (!(applications && applications.gecko && applications.gecko.id)) {
+    throw new AddonFormatError(`Could not find add-on ID for ${extension}`);
+  }
+
+  await io.copy(extension, `${path.join(dir, applications.gecko.id)}.xpi`);
+  return applications.gecko.id;
+}
+
+
+/**
+ * @param {?string} template path to an existing profile to use as a template.
+ * @param {!Array<string>} extensions paths to extensions to install in the new
+ *     profile.
+ * @return {!Promise<string>} a promise for the base64 encoded profile.
+ */
+async function buildProfile(template, extensions) {
+  let dir = template;
+
+  if (extensions.length) {
+    dir = await io.tmpDir();
+    if (template) {
+      await io.copyDir(
+          /** @type {string} */(template),
+          dir, /(parent\.lock|lock|\.parentlock)/);
+    }
+
+    const extensionsDir = path.join(dir, 'extensions');
+    await io.mkdir(extensionsDir);
+
+    for (let i = 0; i < extensions.length; i++) {
+      await installExtension(extensions[i], extensionsDir);
+    }
+  }
+
+  let zip = new Zip;
+  return zip.addDir(dir)
+      .then(() => zip.toBuffer())
+      .then(buf => buf.toString('base64'));
+}
 
 
 /**
@@ -150,7 +226,7 @@ class Options {
     /** @private {!Array<string>} */
     this.args_ = [];
 
-    /** @private {?../lib/proxy.Config} */
+    /** @private {?./lib/proxy.Config} */
     this.proxy_ = null;
 
     /** @private {!Array<string>} */
@@ -265,7 +341,7 @@ class Options {
   /**
    * Sets the proxy to use.
    *
-   * @param {../lib/proxy.Config} proxy The proxy configuration to use.
+   * @param {./lib/proxy.Config} proxy The proxy configuration to use.
    * @return {!Options} A self reference.
    */
   setProxy(proxy) {
@@ -314,38 +390,6 @@ class Options {
 
     return caps;
   }
-}
-
-
-/**
- * @param {?string} template path to an existing profile to use as a template.
- * @param {!Array<string>} extensions paths to extensions to install in the new
- *     profile.
- * @return {!Promise<string>} a promise for the base64 encoded profile.
- */
-async function buildProfile(template, extensions) {
-  let dir = template;
-
-  if (extensions.length) {
-    dir = await io.tmpDir();
-    if (template) {
-      await io.copyDir(
-          /** @type {string} */(template),
-          dir, /(parent\.lock|lock|\.parentlock)/);
-    }
-
-    const extensionsDir = path.join(dir, 'extensions');
-    await io.mkdir(extensionsDir);
-
-    for (let i = 0; i < extensions.length; i++) {
-      await extension.install(extensions[i], extensionsDir);
-    }
-  }
-
-  let zip = new Zip;
-  return zip.addDir(dir)
-      .then(() => zip.toBuffer())
-      .then(buf => buf.toString('base64'));
 }
 
 

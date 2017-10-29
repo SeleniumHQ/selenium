@@ -20,16 +20,16 @@
 const assert = require('assert');
 const path = require('path');
 
-const error = require('../../lib/error');
-const firefox = require('../../firefox');
-const io = require('../../io');
-const {Browser} = require('../../');
-const {Context} = require('../../firefox');
-const {Pages, suite, ignore} = require('../../lib/test');
+const error = require('../lib/error');
+const firefox = require('../firefox');
+const io = require('../io');
+const {Browser} = require('../');
+const {Context} = require('../firefox');
+const {Pages, suite, ignore} = require('../lib/test');
 
 
 const WEBEXTENSION_EXTENSION =
-    path.join(__dirname, '../../lib/test/data/firefox/webextension.xpi');
+    path.join(__dirname, '../lib/test/data/firefox/webextension.xpi');
 
 const WEBEXTENSION_EXTENSION_ID =
     'webextensions-selenium-example@example.com.xpi';
