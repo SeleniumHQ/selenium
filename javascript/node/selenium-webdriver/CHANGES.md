@@ -26,7 +26,6 @@ mode.
 *  Removed the `firefox.Binary` class. Custom binaries can still be selected
    using `firefox.Options#setBinary()`. Likewise, custom binary arguments can be
    specified with `firefox.Options#addArguments()`.
-*  Removed the `firefox/binary` module
 *  Removed the `lib/actions` module
 *  Removed the `lib/events` module
 *  Removed the `phantomjs` module
@@ -74,13 +73,13 @@ mode.
    -  Added uninstallAddon(id)
 *  Changes to `firefox.Options`
    -  Removed setLoggingPreferences (was a no-op)
-*  Changes to `firefox.Profile`
-   -  Removed no-op methods
-      -  acceptUntrustedCerts
-      -  assumeUntrustedCertIssuer
-      -  setAcceptUntrustedCerts
-      -  setAssumeUntrustedCertIssuer
-      -  setHost
+   -  setProfile now only accepts a path to an existing profile
+   -  Added addExtensions
+   -  Added setPreference
+*  Removed the `firefox.Profile` class. All of its functionality is now
+   provided directly by `firefox.Options`
+*  Removed the `firefox/binary` module
+*  Removed the `firefox/profile` module
 *  Changes to `safari.Options`
    -  Removed setCleanSession (was a no-op)
    -  Removed setLoggingPreferences (was a no-op)

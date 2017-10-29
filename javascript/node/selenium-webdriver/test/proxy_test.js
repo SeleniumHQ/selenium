@@ -99,13 +99,12 @@ test.suite(function(env) {
   afterEach(function() { return driver && driver.quit(); });
 
   function createDriver(proxy) {
-    // For Firefox we need to explicitly enable proxies for localhost by
-    // clearing the network.proxy.no_proxies_on preference.
-    let profile = new firefox.Profile();
-    profile.setPreference('network.proxy.no_proxies_on', '');
-
     return driver = env.builder()
-        .setFirefoxOptions(new firefox.Options().setProfile(profile))
+        // For Firefox we need to explicitly enable proxies for localhost by
+        // clearing the network.proxy.no_proxies_on preference.
+        .setFirefoxOptions(
+            new firefox.Options()
+                .setPreference('network.proxy.no_proxies_on', ''))
         .setProxy(proxy)
         .build();
   }

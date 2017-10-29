@@ -19,9 +19,9 @@
 
 'use strict';
 
-const fs = require('fs'),
-    path = require('path'),
-    xml = require('xml2js');
+const fs = require('fs');
+const path = require('path');
+const xml = require('xml2js');
 
 const io = require('../io');
 const zip = require('../io/zip');

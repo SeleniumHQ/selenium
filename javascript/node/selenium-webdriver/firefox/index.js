@@ -26,30 +26,26 @@
  *
  * __Customizing the Firefox Profile__
  *
- * The {@linkplain Profile} class may be used to configure the browser profile
- * used with WebDriver, with functions to install additional
- * {@linkplain Profile#addExtension extensions}, configure browser
- * {@linkplain Profile#setPreference preferences}, and more. For example, you
- * may wish to include Firebug:
+ * The profile used for each WebDriver session may be configured using the
+ * {@linkplain Options} class. For example, you may install an extension, like
+ * Firebug:
  *
  *     const {Builder} = require('selenium-webdriver');
  *     const firefox = require('selenium-webdriver/firefox');
  *
- *     let profile = new firefox.Profile();
- *     profile.addExtension('/path/to/firebug.xpi');
- *     profile.setPreference('extensions.firebug.showChromeErrors', true);
+ *     let options = new firefox.Options()
+ *         .addExtensions('/path/to/firebug.xpi')
+ *         .setPreference('extensions.firebug.showChromeErrors', true);
  *
- *     let options = new firefox.Options().setProfile(profile);
  *     let driver = new Builder()
  *         .forBrowser('firefox')
  *         .setFirefoxOptions(options)
  *         .build();
  *
- * The {@linkplain Profile} class may also be used to configure WebDriver based
+ * The {@linkplain Options} class may also be used to configure WebDriver based
  * on a pre-existing browser profile:
  *
- *     let profile = new firefox.Profile(
- *         '/usr/local/home/bob/.mozilla/firefox/3fgog75h.testing');
+ *     let profile = '/usr/local/home/bob/.mozilla/firefox/3fgog75h.testing';
  *     let options = new firefox.Options().setProfile(profile);
  *
  * The FirefoxDriver will _never_ modify a pre-existing profile; instead it will
@@ -126,6 +122,7 @@ const url = require('url');
 const capabilities = require('../lib/capabilities');
 const command = require('../lib/command');
 const exec = require('../io/exec');
+const extension = require('./extension');
 const http = require('../http');
 const httpUtil = require('../http/util');
 const io = require('../io');
@@ -133,7 +130,7 @@ const net = require('../net');
 const portprober = require('../net/portprober');
 const remote = require('../remote');
 const webdriver = require('../lib/webdriver');
-const {Profile} = require('./profile');
+const {Zip} = require('../io/zip');
 
 
 /**
@@ -141,8 +138,11 @@ const {Profile} = require('./profile');
  */
 class Options {
   constructor() {
-    /** @private {./profile.Profile} */
+    /** @private {?string} */
     this.profile_ = null;
+
+    /** @private @const {!Map<string, (string|number|boolean)>} */
+    this.prefs_ = new Map;
 
     /** @private {(Channel|string|null)} */
     this.binary_ = null;
@@ -152,6 +152,9 @@ class Options {
 
     /** @private {?../lib/proxy.Config} */
     this.proxy_ = null;
+
+    /** @private {!Array<string>} */
+    this.extensions_ = [];
   }
 
   /**
@@ -196,16 +199,48 @@ class Options {
   }
 
   /**
-   * Sets the profile to use. The profile may be specified as a
-   * {@link Profile} object or as the path to an existing Firefox profile to use
-   * as a template.
+   * Add extensions that should be installed when starting Firefox.
    *
-   * @param {(string|!./profile.Profile)} profile The profile to use.
+   * @param {...string} paths The paths to the extension XPI files to install.
    * @return {!Options} A self reference.
    */
+  addExtensions(...paths) {
+    this.extensions_ = this.extensions_.concat(...paths);
+    return this;
+  }
+
+  /**
+   * @param {string} key the preference key.
+   * @param {(string|number|boolean)} value the preference value.
+   * @return {!Options} A self reference.
+   * @throws {TypeError} if either the key or value has an invalid type.
+   */
+  setPreference(key, value) {
+    if (typeof key !== 'string') {
+      throw TypeError(`key must be a string, but got ${typeof key}`);
+    }
+    if (typeof value !== 'string'
+        && typeof value !== 'number'
+        && typeof value !== 'boolean') {
+      throw TypeError(
+          `value must be a string, number, or boolean, but got ${typeof value}`);
+    }
+    this.prefs_.set(key, value);
+    return this;
+  }
+
+  /**
+   * Sets the path to an existing profile to use as a template for new browser
+   * sessions. This profile will be copied for each new session - changes will
+   * not be applied to the profile itself.
+   *
+   * @param {string} profile The profile to use.
+   * @return {!Options} A self reference.
+   * @throws {TypeError} if profile is not a string.
+   */
   setProfile(profile) {
-    if (typeof profile === 'string') {
-      profile = new Profile(profile);
+    if (typeof profile !== 'string') {
+      throw TypeError(`profile must be a string, but got ${typeof profile}`);
     }
     this.profile_ = profile;
     return this;
@@ -265,25 +300,52 @@ class Options {
       }
     }
 
-    if (this.profile_) {
-      // If the user specified a template directory or any extensions to
-      // install, we need to encode the profile as a base64 string (which
-      // requires writing it to disk first). Otherwise, if the user just
-      // specified some custom preferences, we can send those directly.
-      let profile = this.profile_;
-      if (profile.getTemplateDir() || profile.getExtensions().length) {
-        firefoxOptions['profile'] = profile.encode();
+    if (this.profile_ || this.extensions_.length) {
+      firefoxOptions['profile'] = buildProfile(this.profile_, this.extensions_);
+    }
 
-      } else {
-        let prefs = profile.getPreferences();
-        if (Object.keys(prefs).length) {
-          firefoxOptions['prefs'] = prefs;
-        }
+    if (this.prefs_.size) {
+      let prefs = {};
+      firefoxOptions['prefs'] = prefs;
+      for (let entry of this.prefs_.entries()) {
+        prefs[entry[0]] = entry[1];
       }
     }
 
     return caps;
   }
+}
+
+
+/**
+ * @param {?string} template path to an existing profile to use as a template.
+ * @param {!Array<string>} extensions paths to extensions to install in the new
+ *     profile.
+ * @return {!Promise<string>} a promise for the base64 encoded profile.
+ */
+async function buildProfile(template, extensions) {
+  let dir = template;
+
+  if (extensions.length) {
+    dir = await io.tmpDir();
+    if (template) {
+      await io.copyDir(
+          /** @type {string} */(template),
+          dir, /(parent\.lock|lock|\.parentlock)/);
+    }
+
+    const extensionsDir = path.join(dir, 'extensions');
+    await io.mkdir(extensionsDir);
+
+    for (let i = 0; i < extensions.length; i++) {
+      await extension.install(extensions[i], extensionsDir);
+    }
+  }
+
+  let zip = new Zip;
+  return zip.addDir(dir)
+      .then(() => zip.toBuffer())
+      .then(buf => buf.toString('base64'));
 }
 
 
@@ -704,6 +766,5 @@ exports.Channel = Channel;
 exports.Context = Context;
 exports.Driver = Driver;
 exports.Options = Options;
-exports.Profile = Profile;
 exports.ServiceBuilder = ServiceBuilder;
 exports.locateSynchronously = locateSynchronously;
