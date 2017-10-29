@@ -89,7 +89,7 @@ class Options {
     /** @private {Object<string, *>} */
     this.options_ = null;
 
-    /** @private {?./lib/capabilities.ProxyConfig} */
+    /** @private {?./lib/proxy.Config} */
     this.proxy_ = null;
   }
 
@@ -135,7 +135,7 @@ class Options {
   /**
    * Sets the proxy to use.
    *
-   * @param {./lib/capabilities.ProxyConfig} proxy The proxy configuration to use.
+   * @param {./lib/proxy.Config} proxy The proxy configuration to use.
    * @return {!Options} A self reference.
    */
   setProxy(proxy) {

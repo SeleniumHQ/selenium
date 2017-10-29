@@ -141,7 +141,7 @@ const remote = require('../remote');
  */
 class Options {
   constructor() {
-    /** @private {Profile} */
+    /** @private {./profile.Profile} */
     this.profile_ = null;
 
     /** @private {(Channel|string|null)} */
@@ -150,7 +150,7 @@ class Options {
     /** @private {!Array<string>} */
     this.args_ = [];
 
-    /** @private {?capabilities.ProxyConfig} */
+    /** @private {?../lib/proxy.Config} */
     this.proxy_ = null;
   }
 
@@ -200,7 +200,7 @@ class Options {
    * {@link Profile} object or as the path to an existing Firefox profile to use
    * as a template.
    *
-   * @param {(string|!Profile)} profile The profile to use.
+   * @param {(string|!./profile.Profile)} profile The profile to use.
    * @return {!Options} A self reference.
    */
   setProfile(profile) {
@@ -230,7 +230,7 @@ class Options {
   /**
    * Sets the proxy to use.
    *
-   * @param {capabilities.ProxyConfig} proxy The proxy configuration to use.
+   * @param {../lib/proxy.Config} proxy The proxy configuration to use.
    * @return {!Options} A self reference.
    */
   setProxy(proxy) {

@@ -91,7 +91,7 @@ class Options {
     /** @private {!Object<(boolean|number|string|!Array<string>)>} */
     this.options_ = {};
 
-    /** @private {(capabilities.ProxyConfig|null)} */
+    /** @private {(./lib/proxy.Config|null)} */
     this.proxy_ = null;
   }
 
@@ -324,7 +324,7 @@ class Options {
 
   /**
    * Sets the proxy settings for the new session.
-   * @param {capabilities.ProxyConfig} proxy The proxy configuration to use.
+   * @param {./lib/proxy.Config} proxy The proxy configuration to use.
    * @return {!Options} A self reference.
    */
   setProxy(proxy) {

@@ -22,6 +22,7 @@
  * WebDriver session.
  */
 
+const proxy = require('./proxy');
 const Symbols = require('./symbols');
 
 
@@ -46,143 +47,178 @@ const Browser = {
 
 
 /**
- * Common Capability keys.
+ * Strategies for waiting for [document readiness] after a navigation
+ * event.
+ *
+ * [document readiness]: https://html.spec.whatwg.org/#current-document-readiness
+ *
  * @enum {string}
+ */
+const PageLoadStrategy = {
+  /**
+   * Indicates WebDriver should not wait on the document readiness state after a
+   * navigation event.
+   */
+  NONE: 'none',
+
+  /**
+   * Indicates WebDriver should wait for the document readiness state to
+   * become "interactive" after navigation.
+   */
+  EAGER: 'eager',
+
+  /**
+   * Indicates WebDriver should wait for the document readiness state to
+   * be "complete" after navigation. This is the default page loading strategy.
+   */
+  NORMAL: 'normal'
+};
+
+
+/**
+ * Common platform names. These platforms are not explicitly defined by the
+ * WebDriver spec, however, their use is encouraged for interoperability.
+ *
+ * @enum {string}
+ * @see <https://w3c.github.io/webdriver/webdriver-spec.html>
+ */
+const Platform = {
+  LINUX: 'linux',
+  MAC: 'mac',
+  WINDOWS: 'windows'
+};
+
+
+/**
+ * Record object defining the timeouts that apply to certain WebDriver actions.
+ *
+ * @record
+ */
+function Timeouts() {}
+
+/**
+ * Defines when, in milliseconds, to interupt a script that is being
+ * {@linkplain ./webdriver.IWebDriver#executeScript evaluated}.
+ * @type {number}
+ */
+Timeouts.prototype.script;
+
+/**
+ * The timeout, in milliseconds, to apply to navigation events along with the
+ * {@link PageLoadStrategy}.
+ * @type {number}
+ */
+Timeouts.prototype.pageLoad;
+
+/**
+ * The maximimum amount of time, in milliseconds, to spend attempting to
+ * {@linkplain ./webdriver.IWebDriver#findElement locate} an element on the
+ * current page.
+ * @type {number}
+ */
+Timeouts.prototype.implicit;
+
+
+/**
+ * The possible default actions a WebDriver session can take to respond to
+ * unhandled user prompts (`window.alert()`, `window.confirm()`, and
+ * `window.prompt()`).
+ *
+ * @enum {string}
+ */
+const UserPromptHandler = {
+  /** All prompts should be silently accepted. */
+  ACCEPT: 'accept',
+  /** All prompts should be silently dismissed. */
+  DISMISS: 'dismiss',
+  /**
+   * All prompts should be automatically accepted, but an error should be
+   * returned to the next (or currently executing) WebDriver command.
+   */
+  ACCEPT_AND_NOTIFY: 'accept and notify',
+  /**
+   * All prompts should be automatically dismissed, but an error should be
+   * returned to the next (or currently executing) WebDriver command.
+   */
+  DISMISS_AND_NOTIFY: 'dismiss and notify',
+  /** All prompts should be left unhandled. */
+  IGNORE: 'ignore'
+};
+
+
+/**
+ * The standard WebDriver capability keys.
+ *
+ * @enum {string}
+ * @see <https://w3c.github.io/webdriver/webdriver-spec.html#capabilities>
  */
 const Capability = {
 
   /**
-   * Indicates whether a driver should accept all SSL certs by default. This
-   * capability only applies when requesting a new session. To query whether
-   * a driver can handle insecure SSL certs, see {@link #SECURE_SSL}.
+   * Indicates whether a WebDriver session implicity trusts otherwise untrusted
+   * and self-signed TLS certificates during navigation.
    */
-  ACCEPT_SSL_CERTS: 'acceptSslCerts',
-
+  ACCEPT_INSECURE_TLS_CERTS: 'acceptInsecureCerts',
 
   /**
-   * The browser name. Common browser names are defined in the {@link Browser}
-   * enum.
+   * The browser name. Common browser names are defined in the
+   * {@link ./capabilities.Browser Browser} enum.
    */
   BROWSER_NAME: 'browserName',
 
-  /**
-   * Defines how elements should be scrolled into the viewport for interaction.
-   * This capability will be set to zero (0) if elements are aligned with the
-   * top of the viewport, or one (1) if aligned with the bottom. The default
-   * behavior is to align with the top of the viewport.
-   */
-  ELEMENT_SCROLL_BEHAVIOR: 'elementScrollBehavior',
-
-  /**
-   * Whether the driver is capable of handling modal alerts (e.g. alert,
-   * confirm, prompt). To define how a driver <i>should</i> handle alerts,
-   * use {@link #UNEXPECTED_ALERT_BEHAVIOR}.
-   */
-  HANDLES_ALERTS: 'handlesAlerts',
+  /** Identifies the browser version. */
+  BROWSER_VERSION: 'browserVersion',
 
   /**
    * Key for the logging driver logging preferences.
+   * The browser name. Common browser names are defined in the
+   * {@link ./capabilities.Browser Browser} enum.
    */
   LOGGING_PREFS: 'loggingPrefs',
 
   /**
-   * Whether this session generates native events when simulating user input.
+   * Defines the session's
+   * {@linkplain ./capabilities.PageLoadStrategy page loading strategy}.
    */
-  NATIVE_EVENTS: 'nativeEvents',
+  PAGE_LOAD_STRATEGY: 'pageLoadStrategy',
 
   /**
-   * Describes the platform the browser is running on. Will be one of
-   * ANDROID, IOS, LINUX, MAC, UNIX, or WINDOWS. When <i>requesting</i> a
-   * session, ANY may be used to indicate no platform preference (this is
-   * semantically equivalent to omitting the platform capability).
+   * Identifies the operating system of the endpoint node. Common values
+   * recognized by the most WebDriver server implementations are predefined in
+   * the {@link ./capabilities.Platform Platform} enum.
    */
-  PLATFORM: 'platform',
+  PLATFORM_NAME: 'platformName',
 
   /**
    * Describes the proxy configuration to use for a new WebDriver session.
    */
   PROXY: 'proxy',
 
-  /** Whether the driver supports changing the browser's orientation. */
-  ROTATABLE: 'rotatable',
+  /**
+   * Indicates whether the remote end supports all of the window resizing and
+   * positioning commands:
+   *
+   * -  {@linkplain ./webdriver.Window#getRect Window.getRect()}
+   * -  {@linkplain ./webdriver.Window#setRect Window.setRect()}
+   * -  {@linkplain ./webdriver.Window#maximize Window.maximize()}
+   * -  {@linkplain ./webdriver.Window#minimize Window.minimize()}
+   * -  {@linkplain ./webdriver.Window#fullscreen Window.fullscreen()}
+   */
+  SET_WINDOW_RECT: 'setWindowRect',
 
   /**
-   * Whether a driver is only capable of handling secure SSL certs. To request
-   * that a driver accept insecure SSL certs by default, use
-   * {@link #ACCEPT_SSL_CERTS}.
+   * Describes the {@linkplain ./capabilities.Timeouts timeouts} imposed on
+   * certain session operations.
    */
-  SECURE_SSL: 'secureSsl',
-
-  /** Whether the driver supports manipulating the app cache. */
-  SUPPORTS_APPLICATION_CACHE: 'applicationCacheEnabled',
-
-  /** Whether the driver supports locating elements with CSS selectors. */
-  SUPPORTS_CSS_SELECTORS: 'cssSelectorsEnabled',
-
-  /** Whether the browser supports JavaScript. */
-  SUPPORTS_JAVASCRIPT: 'javascriptEnabled',
-
-  /** Whether the driver supports controlling the browser's location info. */
-  SUPPORTS_LOCATION_CONTEXT: 'locationContextEnabled',
-
-  /** Whether the driver supports taking screenshots. */
-  TAKES_SCREENSHOT: 'takesScreenshot',
+  TIMEOUTS: 'timeouts',
 
   /**
-   * Defines how the driver should handle unexpected alerts. The value should
-   * be one of "accept", "dismiss", or "ignore".
+   * Defines how a WebDriver session should
+   * {@linkplain ./capabilities.UserPromptHandler respond} to unhandled user
+   * prompts.
    */
-  UNEXPECTED_ALERT_BEHAVIOR: 'unexpectedAlertBehaviour',
-
-  /** Defines the browser version. */
-  VERSION: 'version'
+  UNHANDLED_PROMPT_BEHAVIOR: 'unhandledPromptBehavior',
 };
-
-
-/**
- * Describes how a proxy should be configured for a WebDriver session.
- * @record
- */
-function ProxyConfig() {}
-
-/**
- * The proxy type. Must be one of {"manual", "pac", "system"}.
- * @type {string}
- */
-ProxyConfig.prototype.proxyType;
-
-/**
- * URL for the PAC file to use. Only used if {@link #proxyType} is "pac".
- * @type {(string|undefined)}
- */
-ProxyConfig.prototype.proxyAutoconfigUrl;
-
-/**
- * The proxy host for FTP requests. Only used if {@link #proxyType} is "manual".
- * @type {(string|undefined)}
- */
-ProxyConfig.prototype.ftpProxy;
-
-/**
- * The proxy host for HTTP requests. Only used if {@link #proxyType} is
- * "manual".
- * @type {(string|undefined)}
- */
-ProxyConfig.prototype.httpProxy;
-
-/**
- * The proxy host for HTTPS requests. Only used if {@link #proxyType} is
- * "manual".
- * @type {(string|undefined)}
- */
-ProxyConfig.prototype.sslProxy;
-
-/**
- * A comma delimited list of hosts which should bypass all proxies. Only used if
- * {@link #proxyType} is "manual".
- * @type {(string|undefined)}
- */
-ProxyConfig.prototype.noProxy;
 
 
 /**
@@ -223,86 +259,77 @@ class Capabilities {
    * @return {!Capabilities} A basic set of capabilities for Android.
    */
   static android() {
-    return new Capabilities()
-        .set(Capability.BROWSER_NAME, Browser.ANDROID);
+    return new Capabilities().setBrowserName(Browser.ANDROID);
   }
 
   /**
    * @return {!Capabilities} A basic set of capabilities for Chrome.
    */
   static chrome() {
-    return new Capabilities().set(Capability.BROWSER_NAME, Browser.CHROME);
+    return new Capabilities().setBrowserName(Browser.CHROME);
   }
 
   /**
    * @return {!Capabilities} A basic set of capabilities for Microsoft Edge.
    */
   static edge() {
-    return new Capabilities()
-        .set(Capability.BROWSER_NAME, Browser.EDGE);
+    return new Capabilities().setBrowserName(Browser.EDGE);
   }
 
   /**
    * @return {!Capabilities} A basic set of capabilities for Firefox.
    */
   static firefox() {
-    return new Capabilities().set(Capability.BROWSER_NAME, Browser.FIREFOX);
+    return new Capabilities().setBrowserName(Browser.FIREFOX);
   }
 
   /**
    * @return {!Capabilities} A basic set of capabilities for Internet Explorer.
    */
   static ie() {
-    return new Capabilities().
-        set(Capability.BROWSER_NAME, Browser.INTERNET_EXPLORER);
+    return new Capabilities().setBrowserName(Browser.INTERNET_EXPLORER);
   }
 
   /**
    * @return {!Capabilities} A basic set of capabilities for iPad.
    */
   static ipad() {
-    return new Capabilities().
-        set(Capability.BROWSER_NAME, Browser.IPAD);
+    return new Capabilities().setBrowserName(Browser.IPAD);
   }
 
   /**
    * @return {!Capabilities} A basic set of capabilities for iPhone.
    */
   static iphone() {
-    return new Capabilities().
-        set(Capability.BROWSER_NAME, Browser.IPHONE);
+    return new Capabilities().setBrowserName(Browser.IPHONE);
   }
 
   /**
    * @return {!Capabilities} A basic set of capabilities for Opera.
    */
   static opera() {
-    return new Capabilities().
-        set(Capability.BROWSER_NAME, Browser.OPERA);
+    return new Capabilities().setBrowserName(Browser.OPERA);
   }
 
   /**
    * @return {!Capabilities} A basic set of capabilities for PhantomJS.
    */
   static phantomjs() {
-    return new Capabilities().
-        set(Capability.BROWSER_NAME, Browser.PHANTOM_JS);
+    return new Capabilities().setBrowserName(Browser.PHANTOM_JS);
   }
 
   /**
    * @return {!Capabilities} A basic set of capabilities for Safari.
    */
   static safari() {
-    return new Capabilities().
-        set(Capability.BROWSER_NAME, Browser.SAFARI);
+    return new Capabilities().setBrowserName(Browser.SAFARI);
   }
 
   /**
    * @return {!Capabilities} A basic set of capabilities for HTMLUnit.
    */
   static htmlunit() {
-    return new Capabilities().
-        set(Capability.BROWSER_NAME, Browser.HTMLUNIT);
+    return new Capabilities().setBrowserName(Browser.HTMLUNIT);
   }
 
   /**
@@ -310,9 +337,9 @@ class Capabilities {
    *     with enabled Javascript.
    */
   static htmlunitwithjs() {
-    return new Capabilities().
-        set(Capability.BROWSER_NAME, Browser.HTMLUNIT).
-        set(Capability.SUPPORTS_JAVASCRIPT, true);
+    return new Capabilities()
+        .setBrowserName(Browser.HTMLUNIT)
+        .set('javascriptEnabled', true);
   }
 
   /**
@@ -405,6 +432,98 @@ class Capabilities {
   }
 
   /**
+   * Sets whether a WebDriver session should implicitly accept self-signed, or
+   * other untrusted TLS certificates on navigation.
+   *
+   * @param {boolean} accept whether to accept insecure certs.
+   * @return {!Capabilities} a self reference.
+   */
+  setAcceptInsecureCerts(accept) {
+    return this.set(Capability.ACCEPT_INSECURE_TLS_CERTS, accept);
+  }
+
+  /**
+   * @return {boolean} whether the session is configured to accept insecure
+   *     TLS certificates.
+   */
+  getAcceptInsecureCerts() {
+    return this.get(Capability.ACCEPT_INSECURE_TLS_CERTS);
+  }
+
+  /**
+   * Sets the name of the target browser.
+   *
+   * @param {(Browser|string)} name the browser name.
+   * @return {!Capabilities} a self reference.
+   */
+  setBrowserName(name) {
+    return this.set(Capability.BROWSER_NAME, name);
+  }
+
+  /**
+   * @return {(string|undefined)} the configured browser name, or undefined if
+   *     not set.
+   */
+  getBrowserName() {
+    return this.get(Capability.BROWSER_NAME);
+  }
+
+  /**
+   * Sets the desired version of the target browser.
+   *
+   * @param {string} version the desired version.
+   * @return {!Capabilities} a self reference.
+   */
+  setBrowserVersion(version) {
+    return this.set(Capability.BROWSER_VERSION, version);
+  }
+
+  /**
+   * @return {(string|undefined)} the configured browser version, or undefined
+   *     if not set.
+   */
+  getBrowserVersion() {
+    return this.get(Capability.BROWSER_VERSION);
+  }
+
+  /**
+   * Sets the desired page loading strategy for a new WebDriver session.
+   *
+   * @param {PageLoadStrategy} strategy the desired strategy.
+   * @return {!Capabilities} a self reference.
+   */
+  setPageLoadStrategy(strategy) {
+    return this.set(Capability.PAGE_LOAD_STRATEGY, strategy);
+  }
+
+  /**
+   * Returns the configured page load strategy.
+   *
+   * @return {(string|undefined)} the page load strategy.
+   */
+  getPageLoadStrategy() {
+    return this.get(Capability.PAGE_LOAD_STRATEGY);
+  }
+
+  /**
+   * Sets the target platform.
+   *
+   * @param {(Platform|string)} platform the target platform.
+   * @return {!Capabilities} a self reference.
+   */
+  setPlatform(platform) {
+    return this.set(Capability.PLATFORM_NAME, platform);
+  }
+
+  /**
+   * @return {(string|undefined)} the configured platform or undefined if not
+   *     set.
+   */
+  getPlatform() {
+    return this.get(Capability.PLATFORM_NAME);
+  }
+
+  /**
    * Sets the logging preferences. Preferences may be specified as a
    * {@link ./logging.Preferences} instance, or as a map of log-type to
    * log-level.
@@ -418,7 +537,7 @@ class Capabilities {
 
   /**
    * Sets the proxy configuration for this instance.
-   * @param {ProxyConfig} proxy The desired proxy configuration.
+   * @param {proxy.Config} proxy The desired proxy configuration.
    * @return {!Capabilities} A self reference.
    */
   setProxy(proxy) {
@@ -426,33 +545,32 @@ class Capabilities {
   }
 
   /**
-   * Sets whether native events should be used.
-   * @param {boolean} enabled Whether to enable native events.
-   * @return {!Capabilities} A self reference.
+   * @return {(proxy.Config|undefined)} the configured proxy settings, or
+   *     undefined if not set.
    */
-  setEnableNativeEvents(enabled) {
-    return this.set(Capability.NATIVE_EVENTS, enabled);
-  }
-
-  /**
-   * Sets how elements should be scrolled into view for interaction.
-   * @param {number} behavior The desired scroll behavior: either 0 to align
-   *     with the top of the viewport or 1 to align with the bottom.
-   * @return {!Capabilities} A self reference.
-   */
-  setScrollBehavior(behavior) {
-    return this.set(Capability.ELEMENT_SCROLL_BEHAVIOR, behavior);
+  getProxy() {
+    return this.get(Capability.PROXY);
   }
 
   /**
    * Sets the default action to take with an unexpected alert before returning
-   * an error.
-   * @param {string} behavior The desired behavior should be "accept",
-   *     "dismiss", or "ignore". Defaults to "dismiss".
+   * an error. If unspecified, WebDriver will default to
+   * {@link UserPromptHandler.DISMISS_AND_NOTIFY}.
+   *
+   * @param {?UserPromptHandler} behavior The way WebDriver should respond to
+   *     unhandled user prompts.
    * @return {!Capabilities} A self reference.
    */
   setAlertBehavior(behavior) {
-    return this.set(Capability.UNEXPECTED_ALERT_BEHAVIOR, behavior);
+    return this.set(Capability.UNHANDLED_PROMPT_BEHAVIOR, behavior);
+  }
+
+  /**
+   * @return {(UserPromptHandler|undefined)} the behavior pattern for responding
+   *     to unhandled user prompts, or undefined if not set.
+   */
+  getAlertBehavior() {
+    return this.get(Capability.UNHANDLED_PROMPT_BEHAVIOR);
   }
 }
 
@@ -482,8 +600,11 @@ function serialize(caps) {
 
 
 module.exports = {
-  Browser: Browser,
-  Capabilities: Capabilities,
-  Capability: Capability,
-  ProxyConfig: ProxyConfig
+  Browser,
+  Capabilities,
+  Capability,
+  PageLoadStrategy,
+  Platform,
+  Timeouts,
+  UserPromptHandler,
 };

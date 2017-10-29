@@ -66,6 +66,9 @@ mode.
    -  setDefaultFlow
    -  when (use Promise.resolve)
 *  Renamed `WebDriver#schedule()` to `WebDriver#execute()`
+*  Changes to the `Builder` class:
+   -  Removed setEnableNativeEvents
+   -  Removed setScrollBehavior
 *  Changes to `firefox.Options`
    -  Removed setLoggingPreferences (was a no-op)
 *  Changes to `safari.Options`

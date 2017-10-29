@@ -335,7 +335,7 @@ class Options {
     /** @private {?logging.Preferences} */
     this.logPrefs_ = null;
 
-    /** @private {?./lib/capabilities.ProxyConfig} */
+    /** @private {?./lib/proxy.Config} */
     this.proxy_ = null;
   }
 
@@ -686,7 +686,7 @@ class Options {
 
   /**
    * Sets the proxy settings for the new session.
-   * @param {./lib/capabilities.ProxyConfig} proxy The proxy configuration to
+   * @param {./lib/proxy.Config} proxy The proxy configuration to
    *    use.
    * @return {!Options} A self reference.
    */
