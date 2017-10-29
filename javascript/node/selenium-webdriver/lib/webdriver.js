@@ -1264,14 +1264,6 @@ class Options {
   }
 
   /**
-   * @return {!Timeouts} The interface for managing driver timeouts.
-   * @deprecated Use {@link #setTimeouts()} instead.
-   */
-  timeouts() {
-    return new Timeouts(this.driver_);
-  }
-
-  /**
    * @return {!Window} The interface for managing the current window.
    */
   window() {
@@ -1366,89 +1358,6 @@ Options.Cookie.prototype.httpOnly;
  * @type {(!Date|number|undefined)}
  */
 Options.Cookie.prototype.expiry;
-
-
-/**
- * An interface for managing timeout behavior for WebDriver instances.
- *
- * This class should never be instantiated directly. Instead, obtain an instance
- * with
- *
- *    webdriver.manage().timeouts()
- *
- * @deprecated This has been deprecated in favor of
- *     {@link Options#setTimeouts()}, which supports setting multiple timeouts
- *     at once.
- * @see WebDriver#manage()
- * @see Options#timeouts()
- */
-class Timeouts {
-  /**
-   * @param {!WebDriver} driver The parent driver.
-   * @private
-   */
-  constructor(driver) {
-    /** @private {!WebDriver} */
-    this.driver_ = driver;
-  }
-
-  /**
-   * Specifies the amount of time the driver should wait when searching for an
-   * element if it is not immediately present.
-   *
-   * When searching for a single element, the driver should poll the page
-   * until the element has been found, or this timeout expires before failing
-   * with a {@link bot.ErrorCode.NO_SUCH_ELEMENT} error. When searching
-   * for multiple elements, the driver should poll the page until at least one
-   * element has been found or this timeout has expired.
-   *
-   * Setting the wait timeout to 0 (its default value), disables implicit
-   * waiting.
-   *
-   * Increasing the implicit wait timeout should be used judiciously as it
-   * will have an adverse effect on test run time, especially when used with
-   * slower location strategies like XPath.
-   *
-   * @param {number} ms The amount of time to wait, in milliseconds.
-   * @return {!Promise<void>} A promise that will be resolved
-   *     when the implicit wait timeout has been set.
-   * @deprecated Use {@link Options#setTimeouts()
-   *     driver.manage().setTimeouts({implicit: ms})}.
-   */
-  implicitlyWait(ms) {
-    return this.driver_.manage().setTimeouts({implicit: ms});
-  }
-
-  /**
-   * Sets the amount of time to wait, in milliseconds, for an asynchronous
-   * script to finish execution before returning an error. If the timeout is
-   * less than or equal to 0, the script will be allowed to run indefinitely.
-   *
-   * @param {number} ms The amount of time to wait, in milliseconds.
-   * @return {!Promise<void>} A promise that will be resolved
-   *     when the script timeout has been set.
-   * @deprecated Use {@link Options#setTimeouts()
-   *     driver.manage().setTimeouts({script: ms})}.
-   */
-  setScriptTimeout(ms) {
-    return this.driver_.manage().setTimeouts({script: ms});
-  }
-
-  /**
-   * Sets the amount of time to wait for a page load to complete before
-   * returning an error.  If the timeout is negative, page loads may be
-   * indefinite.
-   *
-   * @param {number} ms The amount of time to wait, in milliseconds.
-   * @return {!Promise<void>} A promise that will be resolved
-   *     when the timeout has been set.
-   * @deprecated Use {@link Options#setTimeouts()
-   *     driver.manage().setTimeouts({pageLoad: ms})}.
-   */
-  pageLoadTimeout(ms) {
-    return this.driver_.manage().setTimeouts({pageLoad: ms});
-  }
-}
 
 
 /**
@@ -2619,7 +2528,6 @@ module.exports = {
   Navigation,
   Options,
   TargetLocator,
-  Timeouts,
   IWebDriver,
   WebDriver,
   WebElement,

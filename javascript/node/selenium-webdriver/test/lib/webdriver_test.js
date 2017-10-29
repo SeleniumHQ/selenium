@@ -1600,35 +1600,6 @@ describe('WebDriver', function() {
         let driver = executor.createDriver();
         return driver.manage().setTimeouts({implicit: 3});
       });
-
-      describe('deprecated API calls setTimeouts()', function() {
-        it('implicitlyWait()', function() {
-          let executor = new FakeExecutor()
-              .expect(CName.SET_TIMEOUT, {implicit: 3})
-              .andReturnSuccess()
-              .end();
-          let driver = executor.createDriver();
-          return driver.manage().timeouts().implicitlyWait(3);
-        });
-
-        it('setScriptTimeout()', function() {
-          let executor = new FakeExecutor()
-              .expect(CName.SET_TIMEOUT, {script: 3})
-              .andReturnSuccess()
-              .end();
-          let driver = executor.createDriver();
-          return driver.manage().timeouts().setScriptTimeout(3);
-        });
-
-        it('pageLoadTimeout()', function() {
-          let executor = new FakeExecutor()
-              .expect(CName.SET_TIMEOUT, {pageLoad: 3})
-              .andReturnSuccess()
-              .end();
-          let driver = executor.createDriver();
-          return driver.manage().timeouts().pageLoadTimeout(3);
-        });
-      });
     });
   });
 

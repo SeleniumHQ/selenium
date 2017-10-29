@@ -314,7 +314,7 @@ suite(function(env) {
       var TOO_LONG_WAIT = TIMEOUT_IN_MS * 10;
 
       before(function() {
-        return driver.manage().timeouts().setScriptTimeout(TIMEOUT_IN_MS)
+        return driver.manage().setTimeouts({script: TIMEOUT_IN_MS});
       });
 
       it('does not fail if script execute in time', function() {

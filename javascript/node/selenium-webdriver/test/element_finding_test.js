@@ -234,7 +234,7 @@ suite(function(env) {
         const TIMEOUT_IN_MS = 1000;
         const EPSILON = TIMEOUT_IN_MS / 2;
 
-        await driver.manage().timeouts().implicitlyWait(TIMEOUT_IN_MS);
+        await driver.manage().setTimeouts({implicit: TIMEOUT_IN_MS});
         await driver.get(Pages.formPage);
 
         var start = new Date();

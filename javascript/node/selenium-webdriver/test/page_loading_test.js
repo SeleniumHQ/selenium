@@ -146,7 +146,7 @@ test.suite(function(env) {
         Browser.IPHONE,
         Browser.OPERA)).
     it('should timeout if page load timeout is set', async function() {
-      await driver.manage().timeouts().pageLoadTimeout(1);
+      await driver.manage().setTimeouts({pageLoad: 1});
       return driver.get(Pages.sleepingPage + '?time=3')
           .then(function() {
             throw Error('Should have timed out on page load');

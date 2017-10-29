@@ -84,6 +84,8 @@ mode.
    -   Removed
        -  ElementNotVisibleError
        -  InvalidElementCoordinatesError
+*  Changes to `lib/webdriver.Options` (`driver.manage()`):
+   -  Removed timeouts (use get/setTimeouts)
 *  Changes to `lib/webdriver.Window` (`driver.manage().window()`):
    -   Added
        -  getRect
