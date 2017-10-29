@@ -174,12 +174,13 @@ function isFree(port, opt_host) {
 function findFreePort(opt_host) {
   return findSystemPortRange().then(function(range) {
     var attempts = 0;
+    var maxAttempts = 100;
     return new Promise((resolve, reject) => {
       findPort();
 
       function findPort() {
         attempts += 1;
-        if (attempts > 10) {
+        if (attempts > maxAttempts) {
           reject(Error('Unable to find a free port'));
         }
 
