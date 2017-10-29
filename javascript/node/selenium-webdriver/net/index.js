@@ -17,11 +17,11 @@
 
 'use strict';
 
-var os = require('os');
+const os = require('os');
 
 
 function getLoInterface() {
-  var name;
+  let name;
   if (process.platform === 'darwin') {
     name = 'lo0';
   } else if (process.platform === 'linux') {
@@ -34,32 +34,28 @@ function getLoInterface() {
 /**
  * Queries the system network interfaces for an IP address.
  * @param {boolean} loopback Whether to find a loopback address.
- * @param {string=} opt_family The IP family (IPv4 or IPv6). Defaults to IPv4.
- * @return {string} The located IP address or undefined.
+ * @param {string} family The IP family (IPv4 or IPv6). Defaults to IPv4.
+ * @return {(string|undefined)} The located IP address or undefined.
  */
-function getAddress(loopback, opt_family) {
-  var family = opt_family || 'IPv4';
-  var addresses = [];
-
-  var interfaces;
+function getAddress(loopback, family) {
+  let interfaces;
   if (loopback) {
-    var lo = getLoInterface();
+    let lo = getLoInterface();
     interfaces = lo ? [lo] : null;
   }
   interfaces = interfaces || os.networkInterfaces();
-  for (var key in interfaces) {
+  for (let key in interfaces) {
     if (!interfaces.hasOwnProperty(key)) {
       continue;
     }
 
-    interfaces[key].forEach(function(ipAddress) {
-      if (ipAddress.family === family &&
-          ipAddress.internal === loopback) {
-        addresses.push(ipAddress.address);
+    for (let ipAddress of interfaces[key]) {
+      if (ipAddress.family === family && ipAddress.internal === loopback) {
+        return ipAddress.address;
       }
-    });
+    }
   }
-  return addresses[0];
+  return undefined;
 }
 
 
@@ -68,21 +64,21 @@ function getAddress(loopback, opt_family) {
 
 /**
  * Retrieves the external IP address for this host.
- * @param {string=} opt_family The IP family to retrieve. Defaults to "IPv4".
- * @return {string} The IP address or undefined if not available.
+ * @param {string=} family The IP family to retrieve. Defaults to "IPv4".
+ * @return {(string|undefined)} The IP address or undefined if not available.
  */
-exports.getAddress = function(opt_family) {
-  return getAddress(false, opt_family);
+exports.getAddress = function(family = 'IPv4') {
+  return getAddress(false, family);
 };
 
 
 /**
  * Retrieves a loopback address for this machine.
- * @param {string=} opt_family The IP family to retrieve. Defaults to "IPv4".
- * @return {string} The IP address or undefined if not available.
+ * @param {string=} family The IP family to retrieve. Defaults to "IPv4".
+ * @return {(string|undefined)} The IP address or undefined if not available.
  */
-exports.getLoopbackAddress = function(opt_family) {
-  return getAddress(true, opt_family);
+exports.getLoopbackAddress = function(family = 'IPv4') {
+  return getAddress(true, family);
 };
 
 
