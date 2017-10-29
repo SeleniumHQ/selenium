@@ -72,7 +72,9 @@ mode.
 *  Changes to `firefox.Options`
    -  Removed setLoggingPreferences (was a no-op)
 *  Changes to `safari.Options`
+   -  Removed setCleanSession (was a no-op)
    -  Removed setLoggingPreferences (was a no-op)
+   -  Removed setProxy (was a no-op)
 *  Changes to `lib/error`:
    -   Added
        -   ElementClickInterceptedError

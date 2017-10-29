@@ -88,9 +88,6 @@ class Options {
   constructor() {
     /** @private {Object<string, *>} */
     this.options_ = null;
-
-    /** @private {?./lib/proxy.Config} */
-    this.proxy_ = null;
   }
 
   /**
@@ -100,47 +97,16 @@ class Options {
    * @return {!Options} The SafariDriver options.
    */
   static fromCapabilities(capabilities) {
-    var options = new Options();
-    var o = capabilities.get(OPTIONS_CAPABILITY_KEY);
+    let options = new Options();
+    let o = capabilities.get(OPTIONS_CAPABILITY_KEY);
 
     if (o instanceof Options) {
       options = o;
     } else if (o) {
-      options.setCleanSession(o.cleanSession);
       options.setTechnologyPreview(o[TECHNOLOGY_PREVIEW_OPTIONS_KEY]);
     }
 
-    if (capabilities.has(Capability.PROXY)) {
-      options.setProxy(capabilities.get(Capability.PROXY));
-    }
-
     return options;
-  }
-
-  /**
-   * Sets whether to force Safari to start with a clean session. Enabling this
-   * option will cause all global browser data to be deleted.
-   * @param {boolean} clean Whether to make sure the session has no cookies,
-   *     cache entries, local storage, or databases.
-   * @return {!Options} A self reference.
-   */
-  setCleanSession(clean) {
-    if (!this.options_) {
-      this.options_ = {};
-    }
-    this.options_['cleanSession'] = clean;
-    return this;
-  }
-
-  /**
-   * Sets the proxy to use.
-   *
-   * @param {./lib/proxy.Config} proxy The proxy configuration to use.
-   * @return {!Options} A self reference.
-   */
-  setProxy(proxy) {
-    this.proxy_ = proxy;
-    return this;
   }
 
   /**
@@ -166,10 +132,7 @@ class Options {
    * @return {!Capabilities} The capabilities.
    */
   toCapabilities(opt_capabilities) {
-    var caps = opt_capabilities || Capabilities.safari();
-    if (this.proxy_) {
-      caps.set(Capability.PROXY, this.proxy_);
-    }
+    let caps = opt_capabilities || Capabilities.safari();
     if (this.options_) {
       caps.set(OPTIONS_CAPABILITY_KEY, this);
     }
