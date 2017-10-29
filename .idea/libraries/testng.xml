@@ -3,6 +3,7 @@
     <CLASSES>
       <root url="jar://$PROJECT_DIR$/third_party/java/testng/testng-6.9.9.jar!/" />
     </CLASSES>
+    <JAVADOC />
     <SOURCES>
       <root url="jar://$PROJECT_DIR$/third_party/java/testng/testng-6.9.9-sources.jar!/" />
     </SOURCES>

@@ -3,6 +3,7 @@
     <CLASSES>
       <root url="jar://$PROJECT_DIR$/third_party/java/commons-io/commons-io-2.5.jar!/" />
     </CLASSES>
+    <JAVADOC />
     <SOURCES>
       <root url="jar://$PROJECT_DIR$/third_party/java/commons-io/commons-io-2.5-sources.jar!/" />
     </SOURCES>
