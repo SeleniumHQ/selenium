@@ -150,7 +150,6 @@ suite(function(env) {
     });
 
     ignore(env.browsers(
-        Browser.ANDROID,
         Browser.FIREFOX,
         Browser.IE)).
     it('should retain cookie expiry', async function() {

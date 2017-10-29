@@ -63,7 +63,6 @@ test.suite(function(env) {
     await driver.findElement(By.id('id1'));
   });
 
-  test.ignore(browsers(Browser.IPAD, Browser.IPHONE)).
   it('should wait for all frames to load in a frameset', async function() {
     await driver.get(Pages.framesetPage);
     await driver.switchTo().frame(0);
@@ -141,10 +140,6 @@ test.suite(function(env) {
       }
     });
 
-    test.ignore(browsers(
-        Browser.IPAD,
-        Browser.IPHONE,
-        Browser.OPERA)).
     it('should timeout if page load timeout is set', async function() {
       await driver.manage().setTimeouts({pageLoad: 1});
       return driver.get(Pages.sleepingPage + '?time=3')

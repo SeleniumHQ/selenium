@@ -78,6 +78,19 @@ mode.
    -  Removed setCleanSession (was a no-op)
    -  Removed setLoggingPreferences (was a no-op)
    -  Removed setProxy (was a no-op)
+*  Changes to `lib/capabilities.Browser`:
+   -  Removed several enum values.
+      -  ANDROID (use Chrome for Android; see docs on the chrome module)
+      -  IPAD (no support available)
+      -  IPHONE (no support available)
+      -  OPERA (use Chrome)
+      -  PHANTOM_JS (use Chrome or Firefox in headless mode)
+      -  HTMLUNIT (use Chrome or Firefox in headless mode)
+*  Changes to `lib/capabilities.Capabilities`:
+   -  Removed static factory methods android(), ipad(), iphone(), opera(),
+      phantomjs(), htmlunit(), and htmlunitwithjs(). Users can still manually
+      configure capabilities for these, but their use is not recommended and
+      they will no longer be surfaced in the API.
 *  Changes to `lib/error`:
    -   Added
        -   ElementClickInterceptedError

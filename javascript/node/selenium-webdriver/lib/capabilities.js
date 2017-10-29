@@ -31,18 +31,12 @@ const Symbols = require('./symbols');
  * @enum {string}
  */
 const Browser = {
-  ANDROID: 'android',
   CHROME: 'chrome',
   EDGE: 'MicrosoftEdge',
   FIREFOX: 'firefox',
   IE: 'internet explorer',
   INTERNET_EXPLORER: 'internet explorer',
-  IPAD: 'iPad',
-  IPHONE: 'iPhone',
-  OPERA: 'opera',
-  PHANTOM_JS: 'phantomjs',
   SAFARI: 'safari',
-  HTMLUNIT: 'htmlunit'
 };
 
 
@@ -256,13 +250,6 @@ class Capabilities {
   }
 
   /**
-   * @return {!Capabilities} A basic set of capabilities for Android.
-   */
-  static android() {
-    return new Capabilities().setBrowserName(Browser.ANDROID);
-  }
-
-  /**
    * @return {!Capabilities} A basic set of capabilities for Chrome.
    */
   static chrome() {
@@ -291,55 +278,10 @@ class Capabilities {
   }
 
   /**
-   * @return {!Capabilities} A basic set of capabilities for iPad.
-   */
-  static ipad() {
-    return new Capabilities().setBrowserName(Browser.IPAD);
-  }
-
-  /**
-   * @return {!Capabilities} A basic set of capabilities for iPhone.
-   */
-  static iphone() {
-    return new Capabilities().setBrowserName(Browser.IPHONE);
-  }
-
-  /**
-   * @return {!Capabilities} A basic set of capabilities for Opera.
-   */
-  static opera() {
-    return new Capabilities().setBrowserName(Browser.OPERA);
-  }
-
-  /**
-   * @return {!Capabilities} A basic set of capabilities for PhantomJS.
-   */
-  static phantomjs() {
-    return new Capabilities().setBrowserName(Browser.PHANTOM_JS);
-  }
-
-  /**
    * @return {!Capabilities} A basic set of capabilities for Safari.
    */
   static safari() {
     return new Capabilities().setBrowserName(Browser.SAFARI);
-  }
-
-  /**
-   * @return {!Capabilities} A basic set of capabilities for HTMLUnit.
-   */
-  static htmlunit() {
-    return new Capabilities().setBrowserName(Browser.HTMLUNIT);
-  }
-
-  /**
-   * @return {!Capabilities} A basic set of capabilities for HTMLUnit
-   *     with enabled Javascript.
-   */
-  static htmlunitwithjs() {
-    return new Capabilities()
-        .setBrowserName(Browser.HTMLUNIT)
-        .set('javascriptEnabled', true);
   }
 
   /**

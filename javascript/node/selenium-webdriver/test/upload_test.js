@@ -50,10 +50,7 @@ test.suite(function(env) {
     }
   });
 
-  test.ignore(env.browsers(
-      Browser.IPAD,
-      Browser.IPHONE,
-      Browser.SAFARI)).
+  test.ignore(env.browsers(Browser.SAFARI)).
   it('can upload files', async function() {
     driver.setFileDetector(new remote.FileDetector);
 
