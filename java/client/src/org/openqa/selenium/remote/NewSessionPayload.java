@@ -549,6 +549,16 @@ public class NewSessionPayload implements Closeable {
         .collect(ImmutableMap.toImmutableMap(e -> String.valueOf(e.getKey()), Map.Entry::getValue));
   }
 
+  /**
+   * Stream the {@link Capabilities} encoded in the payload used to create this instance. The
+   * {@link Stream} will start with a {@link Capabilities} object matching the OSS capabilities, and
+   * will then expand each of the "{@code firstMatch}" and "{@code alwaysMatch}" contents as defined
+   * in the W3C WebDriver spec.
+   * <p>
+   * The OSS {@link Capabilities} are listed first because converting the OSS capabilities to the
+   * equivalent W3C capabilities isn't particularly easy, so it's hoped that this approach gives us
+   * the most compatible implementation.
+   */
   public Stream<ImmutableCapabilities> stream() throws IOException {
     Stream<? extends Map<String, Object>> mapStream;
 
