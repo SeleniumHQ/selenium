@@ -63,7 +63,7 @@ public class ProtocolHandshake {
     FileBackedOutputStream os = new FileBackedOutputStream(threshold);
     try (
         CountingOutputStream counter = new CountingOutputStream(os);
-        Writer writer = new OutputStreamWriter(os, UTF_8);
+        Writer writer = new OutputStreamWriter(counter, UTF_8);
         NewSessionPayload payload = NewSessionPayload.create(desired)) {
 
       payload.writeTo(writer);
