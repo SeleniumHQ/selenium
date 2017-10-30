@@ -73,7 +73,7 @@ public class BeginSession implements CommandHandler {
     try (Reader reader = new InputStreamReader(
         req.consumeContentStream(),
         req.getContentEncoding());
-         NewSessionPayload payload = NewSessionPayload.create(contentLength, reader)) {
+         NewSessionPayload payload = NewSessionPayload.create(reader)) {
       session = pipeline.createNewSession(payload);
       allSessions.put(session);
     }

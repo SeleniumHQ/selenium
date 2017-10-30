@@ -112,10 +112,10 @@ public class ProtocolHandshakeTest {
     HttpRequest request = client.getRequest();
     Map<String, Object> json = new Gson()
         .fromJson(request.getContentString(), new TypeToken<Map<String, Object>>(){}.getType());
-    Map<String, Object> caps = (Map<String, Object>) json.get("capabilities");
 
-    assertEquals(ImmutableMap.of(), caps.get("alwaysMatch"));
-    assertEquals(ImmutableList.of(), caps.get("firstMatch"));
+    List<Map<String, Object>> caps = mergeW3C(json);
+
+    assertFalse(caps.isEmpty());
   }
 
   @Test
@@ -194,8 +194,7 @@ public class ProtocolHandshakeTest {
     assertTrue(capabilities.containsKey("desiredCapabilities"));
 
     // W3C
-    assertTrue(capabilities.containsKey("alwaysMatch"));
-    assertTrue(capabilities.containsKey("firstMatch"));
+    assertFalse(mergeW3C(handshakeRequest).isEmpty());
   }
 
   @Test
@@ -217,6 +216,9 @@ public class ProtocolHandshakeTest {
     new ProtocolHandshake().createSession(client, command);
 
     HttpRequest request = client.getRequest();
+
+    System.out.println(request.getContentString());
+
     Map<String, Object> handshakeRequest = new Gson().fromJson(
         request.getContentString(),
         new TypeToken<Map<String, Object>>() {}.getType());
@@ -226,11 +228,11 @@ public class ProtocolHandshakeTest {
 
     Map<?, ?> capabilities = (Map<?, ?>) rawCaps;
 
-    Map<String, ?> always = (Map<String, ?>) capabilities.get("alwaysMatch");
+    assertNull(capabilities.get("alwaysMatch"));
     List<Map<?, ?>> first = (List<Map<?, ?>>) capabilities.get("firstMatch");
 
     // We don't care where they are, but we want to see "se:option" and not "option"
-    Set<String> keys = new HashSet<>(always.keySet());
+    Set<String> keys = new HashSet<>();
     keys.addAll(first.stream()
                     .map(Map::keySet)
                     .flatMap(Collection::stream)
@@ -263,18 +265,16 @@ public class ProtocolHandshakeTest {
         request.getContentString(),
         new TypeToken<Map<String, Object>>() {}.getType());
 
-    Object rawCaps = handshakeRequest.get("capabilities");
-    assertTrue(rawCaps instanceof Map);
+    List<Map<String, Object>> capabilities = mergeW3C(handshakeRequest);
 
-    Map<?, ?> capabilities = (Map<?, ?>) rawCaps;
+    System.out.println("capabilities = " + capabilities);
 
-    Map<String, ?> always = (Map<String, ?>) capabilities.get("alwaysMatch");
-    List<Map<?, ?>> first = (List<Map<?, ?>>) capabilities.get("firstMatch");
-
-    assertTrue(always.isEmpty());
-    assertThat(first, containsInAnyOrder(
-        hasKey("moz:firefoxOptions"),
-        hasEntry("browserName", "chrome")));
+    assertThat(capabilities, containsInAnyOrder(
+        // OSS with valid w3c keys. It's fine that this won't match
+        ImmutableMap.of("browserName", "chrome", "moz:firefoxOptions", ImmutableMap.of()),
+        // Generated capabilities
+        ImmutableMap.of("moz:firefoxOptions", ImmutableMap.of()),
+        ImmutableMap.of("browserName", "chrome")));
   }
 
   @Test
@@ -300,20 +300,14 @@ public class ProtocolHandshakeTest {
         request.getContentString(),
         new TypeToken<Map<String, Object>>() {}.getType());
 
-    Object rawCaps = handshakeRequest.get("capabilities");
-    assertTrue(rawCaps instanceof Map);
+    List<Map<String, Object>> w3c = mergeW3C(handshakeRequest);
 
-    Map<?, ?> capabilities = (Map<?, ?>) rawCaps;
-
-    Map<String, ?> always = (Map<String, ?>) capabilities.get("alwaysMatch");
-    List<Map<?, ?>> first = (List<Map<?, ?>>) capabilities.get("firstMatch");
-
-    assertTrue(always.isEmpty());
+    assertEquals(1, w3c.size());
     // firstMatch should not contain an object for Chrome-specific capabilities. Because
     // "chromeOptions" is not a W3C capability name, it is stripped from any firstMatch objects.
     // The resulting empty object should be omitted from firstMatch; if it is present, then the
     // Firefox-specific capabilities might be ignored.
-    assertThat(first, contains(
+    assertThat(w3c, contains(
         allOf(hasKey("moz:firefoxOptions"), hasEntry("browserName", "firefox"))));
   }
 
@@ -338,17 +332,15 @@ public class ProtocolHandshakeTest {
         request.getContentString(),
         new TypeToken<Map<String, Object>>() {}.getType());
 
+    mergeW3C(handshakeRequest).forEach(always -> {
+          Map<String, ?> seenProxy = (Map<String, ?>) always.get("proxy");
+          assertEquals("autodetect", seenProxy.get("proxyType"));
+        });
+
     Object rawCaps = handshakeRequest.get("capabilities");
-    assertTrue(rawCaps instanceof Map);
 
-    Map<?, ?> capabilities = (Map<?, ?>) rawCaps;
-
-    Map<String, ?> always = (Map<String, ?>) capabilities.get("alwaysMatch");
-    Map<String, ?> seenProxy = (Map<String, ?>) always.get("proxy");
-    assertEquals("autodetect", seenProxy.get("proxyType"));
-
-    Map<String, ?> jsonCaps = (Map<String, ?>) capabilities.get("desiredCapabilities");
-    seenProxy = (Map<String, ?>) jsonCaps.get("proxy");
+    Map<String, ?> jsonCaps = (Map<String, ?>) handshakeRequest.get("desiredCapabilities");
+    Map<String, ?> seenProxy = (Map<String, ?>) jsonCaps.get("proxy");
     assertEquals("AUTODETECT", seenProxy.get("proxyType"));
   }
 
@@ -375,15 +367,35 @@ public class ProtocolHandshakeTest {
         request.getContentString(),
         new TypeToken<Map<String, Object>>() {}.getType());
 
-    Object rawCaps = handshakeRequest.get("capabilities");
-    assertTrue(rawCaps instanceof Map);
+    mergeW3C(handshakeRequest)
+        .forEach(capabilities -> {
+          assertEquals("cake", capabilities.get("browserName"));
+          assertNull(capabilities.toString(), capabilities.get("platformName"));
+          assertNull(capabilities.toString(), capabilities.get("platform"));
+        });
+  }
 
-    Map<?, ?> capabilities = (Map<?, ?>) rawCaps;
+  private List<Map<String, Object>> mergeW3C(Map<String, Object> caps) {
+    Map<String, Object> capabilities = (Map<String, Object>) caps.get("capabilities");
+    if (capabilities == null) {
+      return null;
+    }
 
-    Map<String, ?> always = (Map<String, ?>) capabilities.get("alwaysMatch");
-    assertEquals("cake", always.get("browserName"));
-    assertNull(capabilities.toString(), always.get("platformName"));
-    assertNull(capabilities.toString(), always.get("platform"));
+    Map<String, Object> alwaysMatch = (Map<String, Object>) capabilities.get("alwaysMatch");
+    Map<String, Object> always = alwaysMatch == null ? ImmutableMap.of() : alwaysMatch;
+
+    Collection<Map<String, Object>> firsts =
+        (Collection<Map<String, Object>>) capabilities.get("firstMatch");
+    if (firsts == null) {
+      firsts = ImmutableList.of(ImmutableMap.of());
+    }
+    List<Map<String, Object>> allCaps = firsts.stream()
+        .map(first -> ImmutableMap.<String, Object>builder().putAll(always).putAll(first).build())
+        .collect(Collectors.toList());
+
+    assertFalse("Unable to construct valid capabilities", allCaps.isEmpty());
+
+    return allCaps;
   }
 
   class RecordingHttpClient implements HttpClient {

@@ -50,7 +50,7 @@ public class NewSessionPayloadTest {
     }
 
     String json = new Json().toJson(caps);
-    try (NewSessionPayload payload = NewSessionPayload.create(Long.MAX_VALUE, new StringReader(json))) {
+    try (NewSessionPayload payload = NewSessionPayload.create(new StringReader(json))) {
       assertEquals(ImmutableSet.of(Dialect.OSS), payload.getDownstreamDialects());
     }
   }
@@ -66,7 +66,7 @@ public class NewSessionPayloadTest {
     }
 
     String json = new Json().toJson(caps);
-    try (NewSessionPayload payload = NewSessionPayload.create(Long.MAX_VALUE, new StringReader(json))) {
+    try (NewSessionPayload payload = NewSessionPayload.create(new StringReader(json))) {
       assertEquals(ImmutableSet.of(Dialect.W3C), payload.getDownstreamDialects());
     }
   }
@@ -79,7 +79,7 @@ public class NewSessionPayloadTest {
     }
 
     String json = new Json().toJson(caps);
-    try (NewSessionPayload payload = NewSessionPayload.create(Long.MAX_VALUE, new StringReader(json))) {
+    try (NewSessionPayload payload = NewSessionPayload.create(new StringReader(json))) {
       assertEquals(ImmutableSet.of(Dialect.OSS), payload.getDownstreamDialects());
     }
   }
@@ -201,7 +201,11 @@ public class NewSessionPayloadTest {
                 ImmutableMap.of("browserName", "firefox")))));
 
     assertEquals(ImmutableList.of(
+        // From OSS
         new ImmutableCapabilities("browserName", "firefox", "platform", "WINDOWS"),
+        // Generated from OSS
+        new ImmutableCapabilities("browserName", "firefox", "platformName", "windows"),
+        // From the actual W3C capabilities
         new ImmutableCapabilities("browserName", "foo", "platformName", "macos"),
         new ImmutableCapabilities("browserName", "firefox", "platformName", "macos")),
                  capabilities);
@@ -216,7 +220,7 @@ public class NewSessionPayloadTest {
     }
 
     String json = new Json().toJson(source);
-    try (NewSessionPayload payload = NewSessionPayload.create(Long.MAX_VALUE, new StringReader(json))) {
+    try (NewSessionPayload payload = NewSessionPayload.create(new StringReader(json))) {
       fromDisk = payload.stream().collect(ImmutableList.toImmutableList());
     }
 

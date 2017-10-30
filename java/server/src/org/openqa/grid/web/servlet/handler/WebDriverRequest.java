@@ -17,8 +17,6 @@
 
 package org.openqa.grid.web.servlet.handler;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
 import org.openqa.grid.common.exception.GridException;
 import org.openqa.grid.internal.ExternalSessionKey;
 import org.openqa.grid.internal.Registry;
@@ -65,7 +63,7 @@ public class WebDriverRequest extends SeleniumBasedRequest {
     String json = getBody();
 
     try (Reader in = new StringReader(json);
-         NewSessionPayload payload = NewSessionPayload.create(json.getBytes(UTF_8).length, in)) {
+         NewSessionPayload payload = NewSessionPayload.create(in)) {
       Capabilities caps = payload.stream()
           .findFirst()
           .orElseThrow(() -> new GridException("No capabilities found in request: " + json));
