@@ -55,6 +55,11 @@ function suite(fn, options = undefined) {
 // GLOBAL TEST SETUP
 
 
+process.on('unhandledRejection', (reason) => {
+  console.error('Unhandled promise rejection:', reason);
+});
+
+
 if (/^1|true$/i.test(process.env['SELENIUM_VERBOSE'])) {
   logging.installConsoleHandler();
   logging.getLogger('webdriver.http').setLevel(logging.Level.ALL);

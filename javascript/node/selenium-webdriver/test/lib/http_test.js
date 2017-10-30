@@ -118,7 +118,7 @@ describe('http', function() {
         });
       });
 
-      it('rejects commands missing URL parameters', function() {
+      it('rejects commands missing URL parameters', async function() {
         let command =
             new Command(CommandName.FIND_CHILD_ELEMENT).
                 setParameter('sessionId', 's123').
@@ -126,12 +126,13 @@ describe('http', function() {
                 setParameter('using', 'id').
                 setParameter('value', 'foo');
 
-        assert.throws(
-            () => executor.execute(command),
-            function(err) {
-              return err instanceof error.InvalidArgumentError
-                  && 'Missing required parameter: id' === err.message;
-            });
+        try {
+          await executor.execute(command);
+          return Promise.reject(Error('should have thrown'));
+        } catch (err) {
+          assert.strictEqual(err.constructor, error.InvalidArgumentError);
+          assert.equal(err.message, 'Missing required parameter: id');
+        }
         assert.ok(!send.called);
       });
 
