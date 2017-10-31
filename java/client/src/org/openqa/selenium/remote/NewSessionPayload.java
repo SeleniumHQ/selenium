@@ -217,10 +217,13 @@ public class NewSessionPayload implements Closeable {
     try (JsonOutput json = new Json().newOutput(appendable)) {
       json.beginObject();
 
-      @SuppressWarnings("unchecked")
-      Map<String, Object> first = (Map<String, Object>) stream().findFirst()
-          .orElse(new ImmutableCapabilities())
-          .asMap();
+      Map<String, Object> first = getOss();
+      if (first == null) {
+        //noinspection unchecked
+        first = (Map<String, Object>) stream().findFirst()
+            .orElse(new ImmutableCapabilities())
+            .asMap();
+      }
 
       // Write the first capability we get as the desired capability.
       json.name("desiredCapabilities");
@@ -295,7 +298,7 @@ public class NewSessionPayload implements Closeable {
   }
 
   public ImmutableSet<Dialect> getDownstreamDialects() {
-    return dialects.isEmpty() ? ImmutableSet.of(Dialect.OSS) : dialects;
+    return dialects.isEmpty() ? ImmutableSet.of(DEFAULT_DIALECT) : dialects;
   }
 
   @Override
@@ -325,7 +328,7 @@ public class NewSessionPayload implements Closeable {
     // then add magic to generate each of the w3c capabilities. For the sake of simplicity, we're
     // going to make the (probably wrong) assumption we can hold all of the firstMatch values and
     // alwaysMatch value in memory at the same time.
-    Map<String, Object> oss = getOss();
+    Map<String, Object> oss = convertOssToW3C(getOss());
     Stream<Map<String, Object>> fromOss;
     if (oss != null) {
       Set<String> usedKeys = new HashSet<>();
@@ -357,11 +360,10 @@ public class NewSessionPayload implements Closeable {
       // into the stream to form a unified set of capabilities. Woohoo!
       fromOss = firsts.stream()
           .map(first -> ImmutableMap.<String, Object>builder().putAll(always).putAll(first).build())
-          .map(this::convertOssToW3C)
+          .map(this::applyTransforms)
           .map(map -> map.entrySet().stream()
               .filter(entry -> ACCEPTED_W3C_PATTERNS.test(entry.getKey()))
              .collect(ImmutableMap.toImmutableMap(Map.Entry::getKey, Map.Entry::getValue)))
-          .filter(map -> !map.isEmpty())
           .map(map -> (Map<String, Object>) map);
     } else {
       fromOss = Stream.of();
@@ -386,10 +388,14 @@ public class NewSessionPayload implements Closeable {
           .map(first -> ImmutableMap.<String, Object>builder().putAll(always).putAll(first).build());
     }
 
-    return Stream.concat(fromOss, fromW3c);
+    return Stream.concat(fromOss, fromW3c).distinct();
   }
 
-  private Map<String, Object> convertOssToW3C(ImmutableMap<String, Object> capabilities) {
+  private Map<String, Object> convertOssToW3C(Map<String, Object> capabilities) {
+    if (capabilities == null) {
+      return null;
+    }
+
     Map<String, Object> toReturn = new TreeMap<>();
     toReturn.putAll(capabilities);
 

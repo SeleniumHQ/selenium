@@ -157,12 +157,15 @@ public class SyntheticNewSessionPayloadTest {
 
     List<Capabilities> allCaps = getCapabilities(rawCapabilities);
 
-    assertEquals(2, allCaps.size());
+    assertEquals(3, allCaps.size());
     assertEquals(false, allCaps.get(0).getCapability("marionette"));
   }
 
   private List<Capabilities> getCapabilities(Map<String, Object> payload) {
     try (NewSessionPayload newSessionPayload = NewSessionPayload.create(payload)) {
+      StringBuilder b = new StringBuilder();
+      newSessionPayload.writeTo(b);
+      System.out.println("b = " + b);
       return newSessionPayload.stream().collect(ImmutableList.toImmutableList());
     } catch (IOException e) {
       throw new UncheckedIOException(e);

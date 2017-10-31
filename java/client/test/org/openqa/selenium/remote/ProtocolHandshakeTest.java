@@ -217,8 +217,6 @@ public class ProtocolHandshakeTest {
 
     HttpRequest request = client.getRequest();
 
-    System.out.println(request.getContentString());
-
     Map<String, Object> handshakeRequest = new Gson().fromJson(
         request.getContentString(),
         new TypeToken<Map<String, Object>>() {}.getType());
@@ -267,12 +265,7 @@ public class ProtocolHandshakeTest {
 
     List<Map<String, Object>> capabilities = mergeW3C(handshakeRequest);
 
-    System.out.println("capabilities = " + capabilities);
-
     assertThat(capabilities, containsInAnyOrder(
-        // OSS with valid w3c keys. It's fine that this won't match
-        ImmutableMap.of("browserName", "chrome", "moz:firefoxOptions", ImmutableMap.of()),
-        // Generated capabilities
         ImmutableMap.of("moz:firefoxOptions", ImmutableMap.of()),
         ImmutableMap.of("browserName", "chrome")));
   }
@@ -280,7 +273,7 @@ public class ProtocolHandshakeTest {
   @Test
   public void doesNotCreateFirstMatchForNonW3CCaps() throws IOException {
     Capabilities caps = new ImmutableCapabilities(
-        "chromeOptions", ImmutableMap.of(),
+        "cheese", ImmutableMap.of(),
         "moz:firefoxOptions", ImmutableMap.of(),
         "browserName", "firefox");
 
@@ -336,8 +329,6 @@ public class ProtocolHandshakeTest {
           Map<String, ?> seenProxy = (Map<String, ?>) always.get("proxy");
           assertEquals("autodetect", seenProxy.get("proxyType"));
         });
-
-    Object rawCaps = handshakeRequest.get("capabilities");
 
     Map<String, ?> jsonCaps = (Map<String, ?>) handshakeRequest.get("desiredCapabilities");
     Map<String, ?> seenProxy = (Map<String, ?>) jsonCaps.get("proxy");
