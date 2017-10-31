@@ -327,6 +327,7 @@ ie_generate_type_mapping(:name => "ie_result_type_java",
 
 
 task :javadocs => [:'repack-jetty', :common, :firefox, :ie, :remote, :support, :chrome, :selenium] do
+  rm_rf "build/javadoc"
   mkdir_p "build/javadoc"
    sourcepath = ""
    classpath = '.'
@@ -339,6 +340,7 @@ task :javadocs => [:'repack-jetty', :common, :firefox, :ie, :remote, :support, :
    [File.join(%w(java server src))].each do |m|
      sourcepath += File::PATH_SEPARATOR + m
    end
+
    p sourcepath
    cmd = "javadoc -notimestamp -d build/javadoc -sourcepath #{sourcepath} -classpath #{classpath} -subpackages org.openqa.selenium -subpackages com.thoughtworks "
    cmd << " -exclude org.openqa.selenium.internal.selenesedriver:org.openqa.selenium.internal.seleniumemulation:org.openqa.selenium.remote.internal"
@@ -347,6 +349,23 @@ task :javadocs => [:'repack-jetty', :common, :firefox, :ie, :remote, :support, :
      cmd = cmd.gsub(/\//, "\\").gsub(/:/, ";")
    end
    sh cmd
+
+   File.open("build/javadoc/stylesheet.css", "a") { |file| file.write(<<EOF
+
+/* Custom selenium-specific styling */
+.blink {
+  animation: 2s cubic-bezier(0.5, 0, 0.85, 0.85) infinite blink;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+EOF
+)
+   }
 end
 
 task :py_prep_for_install_release => [
