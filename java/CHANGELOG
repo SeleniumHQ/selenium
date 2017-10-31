@@ -1,6 +1,17 @@
 v3.7.0
 ======
 
+* Firefox and Chrome binary paths specified in Grid Node configs are
+  now honoured.
+* W3C spec compliant drivers need not return RGBA values for colours
+  defined in CSS.
+* Minimise disk usage when starting new remote sessions.
+* SafariDriver and legacy FirefoxDriver can now be configured when
+  using the remote server through Capabilities. Notably, this allows
+  the Safari Technology Preview to be used if it's installed.
+* Implemented the ability to configure the firefox log target using
+  the driver service builder or a system property. Logs are sent to
+  the null output stream by default. Fixes #4136
 * Simulate some w3c Actions commands using the old APIs. This allows a
   local end that only speaks the JSON Wire Protocol to use
   "Actions.moveTo" when communicating with a W3C compliant remote
