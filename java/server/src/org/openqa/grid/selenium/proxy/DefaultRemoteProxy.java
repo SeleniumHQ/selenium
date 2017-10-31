@@ -32,6 +32,7 @@ import org.openqa.grid.internal.listeners.TimeoutListener;
 import org.openqa.grid.internal.utils.HtmlRenderer;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
 
@@ -222,11 +223,20 @@ public class DefaultRemoteProxy extends BaseRemoteProxy
     if (session.getSlot().getProtocol() == SeleniumProtocol.WebDriver) {
       Map<String, Object> cap = session.getRequestedCapabilities();
 
-      if (BrowserType.FIREFOX.equals(cap.get(CapabilityType.BROWSER_NAME))) {
-        if (session.getSlot().getCapabilities().get(FirefoxDriver.BINARY) != null
-            && cap.get(FirefoxDriver.BINARY) == null) {
-          session.getRequestedCapabilities().put(FirefoxDriver.BINARY,
-              session.getSlot().getCapabilities().get(FirefoxDriver.BINARY));
+      if (BrowserType.FIREFOX.equals(cap.get(CapabilityType.BROWSER_NAME)) &&
+          session.getSlot().getCapabilities().get(FirefoxDriver.BINARY) != null) {
+        String binary = (String) session.getSlot().getCapabilities().get(FirefoxDriver.BINARY);
+
+        if (cap.get(FirefoxDriver.BINARY) == null) {
+          session.getRequestedCapabilities().put(FirefoxDriver.BINARY, binary);
+        }
+
+        if (cap.get(FirefoxOptions.FIREFOX_OPTIONS) instanceof Map) {
+          @SuppressWarnings("unchecked") Map<String, Object> options =
+              (Map<String, Object>) cap.get(FirefoxOptions.FIREFOX_OPTIONS);
+          if (options.get("binary") == null) {
+            options.put("binary", session.getSlot().getCapabilities().get(FirefoxDriver.BINARY));
+          }
         }
       }
 
