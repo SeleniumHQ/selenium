@@ -87,8 +87,7 @@ public class CrashWhenStartingBrowserTest {
 
     try {
       Capabilities ff = new FirefoxOptions()
-          .setBinary(WRONG_PATH)
-          .addTo(DesiredCapabilities.firefox());
+          .setBinary(WRONG_PATH);
       new RemoteWebDriver(hub.getWebDriverHubRequestURL(), ff);
       fail("Expected WebDriverException to be thrown");
     } catch (SessionNotCreatedException expected) {

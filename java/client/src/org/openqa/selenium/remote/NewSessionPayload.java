@@ -239,10 +239,7 @@ public class NewSessionPayload implements Closeable {
       json.name("firstMatch");
       json.beginArray();
       //noinspection unchecked
-      stream()
-          .map(Capabilities::asMap)
-          .map(map -> (Map<String, Object>) map)
-          .forEach(map -> json.write(map, MAP_TYPE));
+      getW3C().forEach(map -> json.write(map, MAP_TYPE));
       json.endArray();
 
       json.endObject();  // Close "capabilities" object
