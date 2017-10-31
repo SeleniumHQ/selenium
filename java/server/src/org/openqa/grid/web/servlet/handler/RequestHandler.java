@@ -86,7 +86,7 @@ public class RequestHandler implements Comparable<RequestHandler> {
         ImmutableMap.of("desiredCapabilities", session.getRequestedCapabilities()))) {
       StringBuilder json = new StringBuilder();
       payload.writeTo(json);
-      request.setBody(payload.toString());
+      request.setBody(json.toString());
       session.forward(getRequest(), getResponse(), true);
     } catch (IOException e) {
       //log.warning("Error forwarding the request " + e.getMessage());
