@@ -45,6 +45,24 @@ public class FirefoxFilter implements CapabilitiesFilter {
       caps.put("browserName", "firefox");
     }
 
+    // People might have just put the binary and profile in the OSS payload, and not in firefox
+    // options.
+    @SuppressWarnings("unchecked")
+    Map<String, Object> options = (Map<String, Object>) unmodifiedCaps.getOrDefault(
+        "moz:firefoxOptions",
+        new TreeMap<>());
+    if (unmodifiedCaps.containsKey("firefox_binary") && !options.containsKey("binary")) {
+      // Here's hoping that the binary is just a string. It should be as FirefoxBinary.toJson just
+      // encodes the path.
+      options.put("binary", unmodifiedCaps.get("firefox_binary"));
+    }
+    if (unmodifiedCaps.containsKey("firefox_profile") && !options.containsKey("profile")) {
+      options.put("profile", unmodifiedCaps.get("firefox_profile"));
+    }
+    if (!options.isEmpty()) {
+      caps.put("moz:firefoxOptions", options);
+    }
+
     return caps.isEmpty() ? null : caps;
   }
 }
