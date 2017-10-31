@@ -81,7 +81,11 @@ public class Json {
   private static Object readValue(JsonReader in, Gson gson) throws IOException {
     switch (in.peek()) {
       case BEGIN_ARRAY:
+        return gson.fromJson(in, List.class);
+
       case BEGIN_OBJECT:
+        return gson.fromJson(in, Map.class);
+
       case BOOLEAN:
       case NULL:
       case STRING:
