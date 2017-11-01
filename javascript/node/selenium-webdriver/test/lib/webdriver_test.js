@@ -227,18 +227,38 @@ describe('WebDriver', function() {
       let executor = new FakeExecutor().
           expect(CName.NEW_SESSION).
           withParameters({
-            'desiredCapabilities': {'foo': 'bar'},
-            'requiredCapabilities': {'bim': 'baz'},
+            'desiredCapabilities': {'foo:x': 'bar'},
+            'requiredCapabilities': {'bim:x': 'baz'},
             'capabilities': {
-              'alwaysMatch': {'foo': 'bar', 'bim': 'baz'},
+              'alwaysMatch': {'foo:x': 'bar', 'bim:x': 'baz'},
             },
           }).
           andReturnSuccess(aSession).
           end();
 
-      let desired = new Capabilities().set('foo', 'bar');
-      let required = new Capabilities().set('bim', 'baz');
+      let desired = new Capabilities().set('foo:x', 'bar');
+      let required = new Capabilities().set('bim:x', 'baz');
       var driver = WebDriver.createSession(executor, {desired, required});
+      return driver.getSession().then(v => assert.strictEqual(v, aSession));
+    });
+
+    it('drops non-W3C capability names from W3C capabilities', function() {
+      let aSession = new Session(SESSION_ID, {'browserName': 'firefox'});
+      let executor = new FakeExecutor().
+          expect(CName.NEW_SESSION).
+          withParameters({
+            'desiredCapabilities': {'browserName': 'firefox', 'foo': 'bar'},
+            'capabilities': {
+              'alwaysMatch': {'browserName': 'firefox'},
+            },
+          }).
+          andReturnSuccess(aSession).
+          end();
+
+      var driver = WebDriver.createSession(executor, {
+        'browserName': 'firefox',
+        'foo': 'bar',
+      });
       return driver.getSession().then(v => assert.strictEqual(v, aSession));
     });
 
@@ -1632,14 +1652,15 @@ describe('WebDriver', function() {
         let executor = new FakeExecutor().
             expect(CName.NEW_SESSION).
             withParameters({
-              'desiredCapabilities': want,
-              'capabilities': {
-                'alwaysMatch': want,
-              },
+              'desiredCapabilities': {'serialize-test': want},
+              'capabilities': {'alwaysMatch': {}},
             }).
             andReturnSuccess({'browserName': 'firefox'}).
             end();
-        return WebDriver.createSession(executor, input)
+        // We stuff the value to be serialized inside of a capabilities object,
+        // using a non-W3C key so that the value gets dropped from the W3C
+        // capabilities object.
+        return WebDriver.createSession(executor, {'serialize-test': input})
             .getSession();
       }
 
