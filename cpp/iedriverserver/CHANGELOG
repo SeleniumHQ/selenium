@@ -9,6 +9,18 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v3.6.0.1
+========
+ * Updated existing command to better follow the W3C WebDriver Specification.
+   In particular, aligned certain HTTP response codes to be returned from
+   the driver, added initial timeout values for timeouts, updated new session
+   payload processing, updated navigation to URL, and updated finding of
+   elements all to comply with spec behavior.
+ * Updated proxy processing to properly support `direct` value.
+   Fixes issue #4981.
+ * Updated action processing to correctly handle carriage return ('\r')
+   characters in sendKeys.
+
 v3.6.0.0
 ========
  * Release to synchronize with release of Selenium project.
