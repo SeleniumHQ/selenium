@@ -27,14 +27,14 @@ UIElementTest.prototype.test_UIElement_validate = function() {
         , description: 'desc'
         , xpath: '//a'
     });
-    
+
     // happy path 1
     uiElement.validate({ name: 'name', description: 'desc', xpath: '//a' });
-    
+
     // happy path 2
     uiElement.validate({ name: 'name', description: 'desc',
         getLocator: function(args) { return '//a'; } });
-    
+
     // destructive: no name
     try {
         uiElement.validate({ description: 'desc', xpath: '//a' });
@@ -43,7 +43,7 @@ UIElementTest.prototype.test_UIElement_validate = function() {
     catch (e) {
         this.assertEquals('UIElementException', e.name);
     }
-    
+
     // destructive: no description
     try {
         uiElement.validate({ name: 'name', xpath: '//a' });
@@ -52,7 +52,7 @@ UIElementTest.prototype.test_UIElement_validate = function() {
     catch (e) {
         this.assertEquals('UIElementException', e.name);
     }
-    
+
     // destructive: no xpath
     try {
         uiElement.validate({ name: 'name', description: 'desc' });
@@ -72,7 +72,7 @@ UIElementTest.prototype.test_UIElement_init = function() {
         , description: 'desc'
         , xpath: '//a'
     });
-    
+
     // happy path 1
     uiElement.init({ name: 'name', description: 'desc', xpath: '//a' });
     this.assertEquals('name', uiElement.name);
@@ -81,7 +81,7 @@ UIElementTest.prototype.test_UIElement_init = function() {
     this.assertEquals('//a', uiElement.getLocator());
     this.assertTrue(are_equal([], uiElement.getTestcases()));
     this.assertTrue(are_equal({ '//a': {} }, uiElement.getDefaultLocators()));
-    
+
     // happy path 2
     uiElement.init({ name: 'name', description: 'desc',
         getLocator: function() { return '//a'; } });
@@ -91,7 +91,7 @@ UIElementTest.prototype.test_UIElement_init = function() {
     this.assertEquals('//a', uiElement.getLocator());
     this.assertTrue(are_equal([], uiElement.getTestcases()));
     this.assertTrue(are_equal({ '//a': {} }, uiElement.getDefaultLocators()));
-    
+
     // happy path 3
     uiElement.init({ name: 'name', description: 'desc', args: [],
         xpath: '//a', testcase1: { args: {},
@@ -140,7 +140,7 @@ UIElementTest.prototype.test_UIElement_permuteArgs = function() {
         ]
         , getLocator: function(args) { return '//a'; }
     });
-    
+
     this.assertTrue(are_equal(
         [
             {arg1: '4', arg3: '%'},
@@ -181,7 +181,7 @@ UIElementTest.prototype.test_UIElement_permuteArgsRespectsRequiredArguments = fu
         ]
         , getLocator: function(args) { return '//a'; }
     });
-    
+
     this.assertTrue(are_equal([], testUIElement.permuteArgs(testUIElement.args, 'foo')));
 }
 
@@ -203,7 +203,7 @@ UIElementTest.prototype.test_UIElement_getTestcases = function() {
                 + '</div></div>'
         }
     });
-    
+
     var output = testUIElement.getTestcases();
     this.assertArrayEqualsIgnoreOrder(['testcase1','testcase2'], [output[0].name, output[1].name]);
     this.assertArrayEqualsIgnoreOrder(['<div id="content" expected-result></div>','<div id="main"><div id="content" expected-result></div></div>'], [output[0].xhtml, output[1].xhtml]);
@@ -228,7 +228,7 @@ UIElementTest.prototype.DISABLEDtest_UIElement_test = function() {
         }
     });
     this.assertTrue(testUIElement.test());
-    
+
     // more complicated
     testUIElement = new UIElement({
         name: 'name'
@@ -254,7 +254,7 @@ UIElementTest.prototype.DISABLEDtest_UIElement_test = function() {
         }
     });
     this.assertTrue(testUIElement.test());
-    
+
     // destructive
     testUIElement = new UIElement({
         name: 'name'
@@ -319,7 +319,7 @@ UIElementTest.prototype.test_UIElement_initDefaultXPaths = function() {
         },
         testUIElement.getDefaultLocators())
     );
-    
+
     testUIElement = new UIElement({
         name: 'name'
         , description: 'desc'
@@ -341,19 +341,19 @@ UIElementTest.prototype.test_UIArgument_validate = function() {
         , description: 'desc'
         , defaultValues: [1, 2]
     });
-    
+
     // happy path 1
     uiArgument.validate({ name: 'name'
         , description: 'desc'
         , defaultValues: [1, 2]
     });
-    
+
     // happy path 2
     uiArgument.validate({ name: 'name'
         , description: 'desc'
         , getDefaultValues: function() { return [1, 2]; }
     });
-    
+
     // destructive: no name
     try {
         uiArgument.validate({ description: 'desc', defaultValues: [1, 2] });
@@ -362,7 +362,7 @@ UIElementTest.prototype.test_UIArgument_validate = function() {
     catch (e) {
         this.assertEquals('UIArgumentException', e.name);
     }
-    
+
     // destructive: no description
     try {
         uiArgument.validate({ name: 'name', defaultValues: [1, 2] });
@@ -371,7 +371,7 @@ UIElementTest.prototype.test_UIArgument_validate = function() {
     catch (e) {
         this.assertEquals('UIArgumentException', e.name);
     }
-    
+
     // destructive: no default values
     try {
         uiArgument.validate({ name: 'name', description: 'desc' });
@@ -389,7 +389,7 @@ UIElementTest.prototype.test_UIArgument_init = function() {
         , defaultValues: []
     });
     var localVars = { _foo: 'bar' };
-    
+
     // happy path 1: specifying defaultValues
     uiArgument.init({ name: 'name', description: 'desc', defaultValues: [1, 2]},
         localVars);
@@ -398,7 +398,7 @@ UIElementTest.prototype.test_UIArgument_init = function() {
     this.assertEquals(false, uiArgument.required);
     this.assertTrue(are_equal([1, 2], uiArgument.getDefaultValues()));
     this.assertEquals('bar', uiArgument._foo);
-    
+
     // happy path 2: specifying getDefaultValues()
     uiArgument.init({ name: 'name', description: 'desc',
         getDefaultValues: function() { return [1, 2]; } }, localVars);
@@ -420,7 +420,7 @@ UIElementTest.prototype.test_UISpecifier = function() {
     this.assertEquals('pagesetName', testUISpecifier.pagesetName);
     this.assertEquals('elementName', testUISpecifier.elementName);
     this.assertTrue(are_equal({k1: 'v1', k2: 'v2'}, testUISpecifier.args));
-    
+
     // construct from components
     testUISpecifier = new UISpecifier('pagesetName', 'elementName',
         {k1: 'v1', k2: 'v2'});
@@ -436,20 +436,20 @@ UIElementTest.prototype.test_UISpecifier__initFromUISpecifierString = function()
     this.assertEquals('pagesetName', testUISpecifier.pagesetName);
     this.assertEquals('elementName', testUISpecifier.elementName);
     this.assertTrue(are_equal({}, testUISpecifier.args));
-    
+
     testUISpecifier._initFromUISpecifierString('pagesetName::elementName(k1=v1, k2=v2)');
     this.assertEquals('pagesetName', testUISpecifier.pagesetName);
     this.assertEquals('elementName', testUISpecifier.elementName);
     this.assertTrue(are_equal({k1: 'v1', k2: 'v2'}, testUISpecifier.args));
-    
+
     testUISpecifier._initFromUISpecifierString('complex:. pagesetName  ::# elementName:*@  ( k1 = v1 ,  k  2=v2   )');
     this.assertEquals('complex:. pagesetName  ', testUISpecifier.pagesetName);
     this.assertEquals('# elementName:*@  ', testUISpecifier.elementName);
     this.assertTrue(are_equal({k1: 'v1', 'k  2': 'v2'}, testUISpecifier.args));
-    
+
     testUISpecifier._initFromUISpecifierString('a::b(k1=v1())');
     this.assertTrue(are_equal({k1: 'v1()'}, testUISpecifier.args));
-    
+
     // destructive
     try {
         testUISpecifier._initFromUISpecifierString('pagesetName::()');
@@ -471,7 +471,7 @@ UIElementTest.prototype.test_UISpecifier__initFromUISpecifierString = function()
     }
     catch (e) {
         this.assertEquals('UISpecifierException', e.name);
-    }	
+    }
     try {
         testUISpecifier._initFromUISpecifierString('pagesetName::elementName(k1=v1, k2=v2');
         this.fail('Expected UISpecifierException, but none was thrown: missing close parenthesis for arguments');
@@ -492,7 +492,7 @@ UIElementTest.prototype.test_UISpecifier_toString = function() {
         {pagesetName: 'pagesetName', elementName: 'elementName', args: {k1: 'v1', k2: 'v2'}},
         {pagesetName: 'complex:. pagesetName  ', elementName: '# elementName:*@  ', args: {k1: 'v1', 'k  2': 'v2'}}
     ];
-    
+
     for (var i = 0; i < inputs.length; ++i) {
         testUISpecifier.pagesetName = inputs[i].pagesetName;
         testUISpecifier.elementName = inputs[i].elementName;
@@ -502,7 +502,7 @@ UIElementTest.prototype.test_UISpecifier_toString = function() {
         this.assertEquals(inputs[i].elementName, testUISpecifier2.elementName);
         this.assertTrue(are_equal(inputs[i].args, testUISpecifier2.args));
     }
-    
+
     // destructive
     try {
         testUISpecifier.pagesetName = undefined;
@@ -544,7 +544,7 @@ UIElementTest.prototype.test_Pageset_init = function() {
         , description: 'desc'
         , paths: [ 'foo' ]
     });
-    
+
     // happy path 1
     pageset.init({
         name: 'name'
@@ -556,7 +556,7 @@ UIElementTest.prototype.test_Pageset_init = function() {
     this.assertEquals('desc', pageset.description);
     this.assertEquals('^foo\\/(?:bar|baz|shizzle\\.py)$', pageset.pathRegexp.source);
     this.assertTrue(are_equal({}, pageset.paramRegexps));
-    
+
     // happy path 2
     pageset.init({
         name: 'name'
@@ -581,7 +581,7 @@ UIElementTest.prototype.test_Pageset_init = function() {
     this.assertEquals('desc', pageset.description);
     this.assertEquals('^(?:just\\.html|do\\.html|it\\.html)$',
         pageset.pathRegexp.source);
-    
+
     // happy path: pathRegexp only
     pageset.init({
         name: 'name'
@@ -591,7 +591,7 @@ UIElementTest.prototype.test_Pageset_init = function() {
     this.assertEquals('name', pageset.name);
     this.assertEquals('desc', pageset.description);
     this.assertEquals('^(?:.+\\.rb)$', pageset.pathRegexp.source);
-    
+
     // omitting both paths and pathRegexp isn't allowed now, but we might allow
     // it in the future
     try {
@@ -622,7 +622,7 @@ UIElementTest.prototype.test_Pageset_contains = function() {
     this.assertTrue(pageset.contains(mockDoc));
     mockDoc.location.href = 'http://foo.org/baz.html';
     this.assertFalse(pageset.contains(mockDoc));
-    
+
     pageset = new Pageset({
         name: 'name'
         , description: 'desc'
@@ -637,7 +637,7 @@ UIElementTest.prototype.test_Pageset_contains = function() {
     this.assertFalse(pageset.contains(mockDoc));
     mockDoc.location.href = 'http://w3.org/bar.mitzvah?baz=hag'
     this.assertFalse(pageset.contains(mockDoc));
-    
+
     pageset = new Pageset({
         name: 'name'
         , description: 'desc'
@@ -652,7 +652,7 @@ UIElementTest.prototype.test_Pageset_contains = function() {
     this.assertFalse(pageset.contains(mockDoc));
     mockDoc.location.href = 'http://w3.org/prefix/foo';
     this.assertFalse(pageset.contains(mockDoc));
-    
+
 }
 
 
@@ -666,7 +666,7 @@ UIElementTest.prototype.test_Pageset_validate = function() {
     catch (e) {
         this.assertEquals('PagesetException', e.name);
     }
-    
+
     // no description
     try {
         new Pageset({ name: 'name', paths: [ 'foo' ] });
@@ -675,7 +675,7 @@ UIElementTest.prototype.test_Pageset_validate = function() {
     catch (e) {
         this.assertEquals('PagesetException', e.name);
     }
-    
+
     // no paths, pathRegexp, or pageContent
     try {
         new Pageset({ name: 'name', description: 'desc' });
@@ -684,7 +684,7 @@ UIElementTest.prototype.test_Pageset_validate = function() {
     catch (e) {
         this.assertEquals('PagesetException', e.name);
     }
-    
+
     // happy paths
     new Pageset({ name: 'name', description: 'desc', paths: [ 'foo' ] });
     new Pageset({ name: 'name', description: 'desc', pathRegexp: 'bar' });
@@ -695,7 +695,7 @@ UIElementTest.prototype.test_Pageset_validate = function() {
 
 UIElementTest.prototype.test_UIMap_getUIElementsByUrl = function() {
     var myMap = new UIMap(true);
-    
+
     this.assertTrue(myMap.addPageset({
         name: 'ishPages'
         , description: 'pages whose URLs end with "ish"'
@@ -707,7 +707,7 @@ UIElementTest.prototype.test_UIMap_getUIElementsByUrl = function() {
         , args: []
         , getLocator: function(args) { return "//input"; }
     }));
-    
+
     // it's ugly, but it give us coverage! Test "this" in the getDefaultValues()
     // and getLocator() methods.
     this.assertTrue(myMap.addPageset({
@@ -737,7 +737,7 @@ UIElementTest.prototype.test_UIMap_getUIElementsByUrl = function() {
     var uiElement = myMap.getUIElement('discPages', 'anElement');
     this.assertArrayEqualsIgnoreOrder(['foo', 'baz'], uiElement.args[0].getDefaultValues());
     this.assertEquals("//div[@id='hep']", uiElement.getLocator({name: 'baz'}));
-    
+
     // test forthcoming ...
 }
 
@@ -761,7 +761,7 @@ UIElementTest.prototype.test_CommandMatcher_validate = function() {
     catch (e) {
         this.assertEquals('CommandMatcherException', e.name);
     }
-    
+
     // minMatches > maxMatches
     try {
         new CommandMatcher({
@@ -775,7 +775,7 @@ UIElementTest.prototype.test_CommandMatcher_validate = function() {
     catch (e) {
         this.assertEquals('CommandMatcherException', e.name);
     }
-    
+
     // happy path
     new CommandMatcher({ command: 'command', target: 'target' });
 }
@@ -798,7 +798,7 @@ UIElementTest.prototype.test_CommandMatcher_init = function() {
     this.assertEquals(1, cm.minMatches);
     this.assertEquals(5, cm.maxMatches);
     this.assertEquals(f, cm.updateArgs);
-    
+
     // leave out all non-required fields
     cm = new CommandMatcher({ command: 'command', target: 'target' });
     this.assertEquals('command', cm.command);
@@ -817,7 +817,7 @@ UIElementTest.prototype.test_CommandMatcher_match = function() {
         , target: 'ui=allPages::.+'
         , value: '\\d{4}'
     });
-    
+
     // happy path
     var command = {
         command: 'clickAndWait'
@@ -825,16 +825,16 @@ UIElementTest.prototype.test_CommandMatcher_match = function() {
         , value: '2085'
     };
     this.assertTrue(cm.isMatch(command));
-    
+
     // sad path 1: failed command
     command.command = 'type';
     this.assertFalse(cm.isMatch(command));
-    
+
     // sad path 2: failed target
     command.command = 'click';
     command.target = 'password';
     this.assertFalse(cm.isMatch(command));
-    
+
     // sad path 3: failed value
     command.target = 'ui=allPages::faq()';
     command.value = 'asdf';
@@ -860,7 +860,7 @@ UIElementTest.prototype.test_RollupRule_getRollup = function() {
         ]
         , expandedCommands: []
     });
-    
+
     // exact match
     var commands = [
         new Command('cmd1', 'tar1', '')
@@ -871,7 +871,7 @@ UIElementTest.prototype.test_RollupRule_getRollup = function() {
     this.assertEquals('name', result.target);
     this.assertEquals('', result.value);
     this.assertTrue(are_equal([ 0, 1 ], result.replacementIndexes));
-    
+
     // now we set maxMatches, and have multiple matches for the first
     // CommandMatcher
     rule.commandMatchers[0].maxMatches = 5;
@@ -889,16 +889,16 @@ UIElementTest.prototype.test_RollupRule_getRollup = function() {
     result = rule.getRollup(commands);
     this.assertTrue(are_equal({ count: '3' }, parse_kwargs(result.value)));
     this.assertTrue(are_equal([ 0, 1, 2, 3 ], result.replacementIndexes));
-    
+
     // now we add non-matching commands after
     commands.push(new Command('cmd1', 'target'));
     commands.push(new Command('cmd2', 'tar2', 'dro$$'));
     result = rule.getRollup(commands);
     this.assertTrue(are_equal({ count: '3' }, parse_kwargs(result.value)));
     this.assertTrue(are_equal([ 0, 1, 2, 3 ], result.replacementIndexes));
-    
+
     // now we set minMatches. The first test should fail to match.
-    rule.commandMatchers[1].minMatches = 2;    
+    rule.commandMatchers[1].minMatches = 2;
     rule.commandMatchers[1].maxMatches = 5;
     rule.commandMatchers[1].updateArgs = function(command, args) {
         if (args.count2) {
@@ -911,31 +911,31 @@ UIElementTest.prototype.test_RollupRule_getRollup = function() {
     };
     result = rule.getRollup(commands);
     this.assertFalse(result);
-    
+
     // this test uses commands that satisfy the minMatches.
     commands.splice(4, 0, new Command('cmd2', 'tar2', '$_'));
     result = rule.getRollup(commands);
     this.assertTrue(are_equal({ count: '3', count2: '2' },
         parse_kwargs(result.value)));
     this.assertTrue(are_equal([ 0, 1, 2, 3, 4 ], result.replacementIndexes));
-    
+
     // test the alternate command replacement
     rule = new RollupRule({
-        name: 'btnG'
+        name: 'btnK'
         , description: 'desc'
         , alternateCommand: 'clickAndWait'
         , commandMatchers: [
             {
                 command: 'click'
-                , target: 'btnG'
+                , target: 'btnK'
             }
         ]
         , expandedCommands: []
     });
-    commands = [ new Command('click', 'btnG') ];
+    commands = [ new Command('click', 'btnK') ];
     result = rule.getRollup(commands);
     this.assertEquals('clickAndWait', result.command);
-    this.assertEquals('btnG', result.target);
+    this.assertEquals('btnK', result.target);
 }
 
 UIElementTest.prototype.assertArrayEqualsIgnoreOrder = function(arr1, arr2) {
