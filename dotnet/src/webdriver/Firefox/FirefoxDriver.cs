@@ -1,4 +1,4 @@
-﻿// <copyright file="FirefoxDriver.cs" company="WebDriver Committers">
+// <copyright file="FirefoxDriver.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -111,6 +111,7 @@ namespace OpenQA.Selenium.Firefox
         /// </summary>
         /// <param name="profile">A <see cref="FirefoxProfile"/> object representing the profile settings
         /// to be used in starting Firefox.</param>
+        [Obsolete("FirefoxDriver should not be constructed with a FirefoxProfile object. Use FirefoxOptions instead. This constructor will be removed in a future release.")]
         public FirefoxDriver(FirefoxProfile profile)
             : this(new FirefoxOptions(profile, null))
         {
@@ -150,7 +151,7 @@ namespace OpenQA.Selenium.Firefox
         /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
         [Obsolete("FirefoxDriver should not be constructed  with a FirefoxBinary object. Use FirefoxOptions instead. This constructor will be removed in a future release.")]
         public FirefoxDriver(FirefoxBinary binary, FirefoxProfile profile, TimeSpan commandTimeout)
-            : this(null, new FirefoxOptions(profile, binary), commandTimeout)
+            : this((FirefoxDriverService)null, new FirefoxOptions(profile, binary), commandTimeout)
         {
         }
 
@@ -169,6 +170,39 @@ namespace OpenQA.Selenium.Firefox
         /// <param name="service">The <see cref="FirefoxDriverService"/> used to initialize the driver.</param>
         public FirefoxDriver(FirefoxDriverService service)
             : this(service, new FirefoxOptions(), RemoteWebDriver.DefaultCommandTimeout)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FirefoxDriver"/> class using the specified path
+        /// to the directory containing ChromeDriver.exe.
+        /// </summary>
+        /// <param name="geckoDriverDirectory">The full path to the directory containing geckodriver.exe.</param>
+        public FirefoxDriver(string geckoDriverDirectory)
+            : this(geckoDriverDirectory, new FirefoxOptions())
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ChromeDriver"/> class using the specified path
+        /// to the directory containing ChromeDriver.exe and options.
+        /// </summary>
+        /// <param name="geckoDriverDirectory">The full path to the directory containing ChromeDriver.exe.</param>
+        /// <param name="options">The <see cref="ChromeOptions"/> to be used with the Chrome driver.</param>
+        public FirefoxDriver(string geckoDriverDirectory, FirefoxOptions options)
+            : this(geckoDriverDirectory, options, RemoteWebDriver.DefaultCommandTimeout)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ChromeDriver"/> class using the specified path
+        /// to the directory containing ChromeDriver.exe, options, and command timeout.
+        /// </summary>
+        /// <param name="geckoDriverDirectory">The full path to the directory containing ChromeDriver.exe.</param>
+        /// <param name="options">The <see cref="ChromeOptions"/> to be used with the Chrome driver.</param>
+        /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
+        public FirefoxDriver(string geckoDriverDirectory, FirefoxOptions options, TimeSpan commandTimeout)
+            : this(FirefoxDriverService.CreateDefaultService(geckoDriverDirectory), options, commandTimeout)
         {
         }
 
