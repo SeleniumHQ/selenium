@@ -783,7 +783,7 @@ bool NewSessionCommandHandler::ValidateCapabilities(
             }
             std::string proxy_type = proxy[proxy_setting].asString();
             if (proxy_type != "pac" && 
-                proxy_type != "noproxy" && 
+                proxy_type != "direct" && 
                 proxy_type != "autodetect" && 
                 proxy_type != "system" && 
                 proxy_type != "manual") {
@@ -791,7 +791,7 @@ bool NewSessionCommandHandler::ValidateCapabilities(
                                capability_set_name + ": " + 
                                "a proxy type named " + proxy_type + 
                                " is specified, but proxy type must be " +
-                               "'pac', 'noproxy', 'autodetect', 'system', " +
+                               "'pac', 'direct', 'autodetect', 'system', " +
                                "or 'manual'";
               return false;
             }
@@ -815,8 +815,7 @@ bool NewSessionCommandHandler::ValidateCapabilities(
             continue;
           }
 
-          if (proxy_setting == "noProxy")
-          {
+          if (proxy_setting == "noProxy") {
             if (!this->ValidateCapabilityType(proxy,
                                               proxy_setting,
                                               Json::ValueType::arrayValue,

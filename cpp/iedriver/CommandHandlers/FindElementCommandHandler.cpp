@@ -70,7 +70,7 @@ void FindElementCommandHandler::ExecuteInternal(
     return;
   }
 
-  int timeout = executor.implicit_wait_timeout();
+  int timeout = static_cast<int>(executor.implicit_wait_timeout());
   clock_t end = clock() + (timeout / 1000 * CLOCKS_PER_SEC);
   if (timeout > 0 && timeout < 1000) {
     end += 1 * CLOCKS_PER_SEC;
