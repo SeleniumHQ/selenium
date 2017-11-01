@@ -130,15 +130,16 @@ public class PageFactory {
   private static <T> T instantiatePage(SearchContext context, Class<T> pageClassToProxy) {
     try {
       Constructor<?>[] availableConstructors = pageClassToProxy.getDeclaredConstructors();
-      for (Constructor<?> c: availableConstructors){
-
+      for (Constructor<?> c: availableConstructors) {
           Class<?>[] parameterTypes = c.getParameterTypes();
-          if (parameterTypes.length != 1)
+          if (parameterTypes.length != 1) {
             continue;
+          }
 
           Class<?> parameterClazz = parameterTypes[0];
-          if (!parameterClazz.isAssignableFrom(context.getClass()))
+          if (!parameterClazz.isAssignableFrom(context.getClass())) {
             continue;
+          }
           c.setAccessible(true);
           return (T) c.newInstance(context);
       }

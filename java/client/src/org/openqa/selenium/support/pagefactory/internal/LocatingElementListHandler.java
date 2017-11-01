@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.support.pagefactory.internal;
 
+import static java.lang.String.format;
+
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.pagefactory.ElementLocator;
 
@@ -34,7 +36,7 @@ public class LocatingElementListHandler implements InvocationHandler {
 
   public Object invoke(Object object, Method method, Object[] objects) throws Throwable {
     if ("toString".equals(method.getName())) {
-      return "Proxy list of elements for: " + locator.toString();
+      return format("Proxy list of elements for: %s", locator.toString());
     }
     
     List<WebElement> elements = locator.findElements();

@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.support.pagefactory.internal;
 
+import static java.lang.String.format;
+
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.pagefactory.ElementLocator;
@@ -35,7 +37,7 @@ public class LocatingElementHandler implements InvocationHandler {
   public Object invoke(Object object, Method method, Object[] objects) throws Throwable {
 
     if ("toString".equals(method.getName())) {
-      return "Proxy element for: " + locator.toString();
+      return format("Proxy element for: %s", locator.toString());
     }
 
     WebElement element;
