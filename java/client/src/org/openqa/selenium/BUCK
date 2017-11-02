@@ -243,6 +243,6 @@ zip_file(
 genrule(
   name = 'client-libs',
   out = 'libs-sources.jar',
-  cmd = 'mkdir libs && python -c "import sys,shutil;map(lambda f:shutil.copy(f,\'libs\'),[l for l in open(sys.argv[1][1:]).read().split(\';\' if sys.platform.startswith(\'win\') else \':\') if l.endswith(\'.jar\') and \'third_party/java\' in l.replace(\'\\\\\',\'/\')])" $(@classpath :client-combined) && jar cMf $OUT libs/*',
+  cmd = 'mkdir libs && python -c "import sys,shutil;map(lambda f:shutil.copy(f,\'libs\'),[l for l in open(sys.argv[1][1:]).read().split(\';\' if sys.platform.startswith(\'win\') else \':\') if l.endswith(\'.jar\') and \'third_party/java\' in l.replace(\'\\\\\'\',\'/\')])" $(@classpath :client-combined) && jar cMf $OUT libs/*',
 )
 
