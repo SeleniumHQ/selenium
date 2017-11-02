@@ -35,6 +35,7 @@ struct KeyInfo {
   UINT scan_code;
   bool is_extended_key;
   bool is_webdriver_key;
+  bool is_ignored_key;
 };
 
 struct InputState {
