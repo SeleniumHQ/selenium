@@ -280,9 +280,8 @@ public class GridLauncherV3 {
 
           public void launch() throws Exception {
             log.info("Launching a Selenium Grid node");
-            RegistrationRequest
-              c =
-              RegistrationRequest.build((GridNodeConfiguration) configuration);
+            RegistrationRequest c =
+                RegistrationRequest.build((GridNodeConfiguration) configuration);
             SelfRegisteringRemote remote = new SelfRegisteringRemote(c);
             remote.setRemoteServer(new SeleniumServer(c.getConfiguration()));
             remote.startRemoteServer();

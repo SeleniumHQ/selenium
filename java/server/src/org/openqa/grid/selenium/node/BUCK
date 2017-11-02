@@ -9,6 +9,7 @@ java_library(
     ],
     visibility = [
         "//java/server/src/org/openqa/grid/selenium:classes",
+        "//java/server/src/org/openqa/selenium/remote/server:standalone-server-lib",
         "//java/server/test/org/openqa/grid/selenium/node:",
     ],
 )
