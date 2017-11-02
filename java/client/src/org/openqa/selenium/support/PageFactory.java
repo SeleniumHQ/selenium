@@ -111,8 +111,9 @@ public class PageFactory {
     Field[] fields = proxyIn.getDeclaredFields();
     for (Field field : fields) {
       int modifiers = field.getModifiers();
-      if (Modifier.isFinal(modifiers) || Modifier.isStatic(modifiers))
+      if (Modifier.isFinal(modifiers) || Modifier.isStatic(modifiers)) {
         continue;
+      }
       
       Object value = decorator.decorate(page.getClass().getClassLoader(), field);
       if (value != null) {
@@ -141,7 +142,7 @@ public class PageFactory {
             continue;
           }
           c.setAccessible(true);
-          return (T) c.newInstance(context);
+          return pageClassToProxy.cast(c.newInstance(context));
       }
 
       return pageClassToProxy.newInstance();
