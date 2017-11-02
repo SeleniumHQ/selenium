@@ -11,10 +11,11 @@ java_library(name = 'firefox',
     ':prefs',
     ':webdriver.xpi',
   ],
+  exported_deps = [
+    '//java/client/src/org/openqa/selenium/remote:remote',
+  ],
   deps = [
     ':prefs',
-    '//java/client/src/org/openqa/selenium:selenium',
-    '//java/client/src/org/openqa/selenium/remote:remote',
     '//third_party/java/guava:guava',
   ],
   visibility = [ 'PUBLIC' ],

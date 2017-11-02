@@ -5,9 +5,10 @@ java_library(name = 'safari',
   maven_coords = 'org.seleniumhq.selenium:selenium-safari-driver:' + SE_VERSION,
   maven_pom_template = '//java/client/src/org/openqa/selenium:template-pom',
   srcs = glob(['*.java']),
-  deps = [
-    '//java/client/src/org/openqa/selenium:selenium',
+  exported_deps = [
     '//java/client/src/org/openqa/selenium/remote:remote',
+  ],
+  deps = [
     '//third_party/java/guava:guava',
   ],
   visibility = ['PUBLIC'],
